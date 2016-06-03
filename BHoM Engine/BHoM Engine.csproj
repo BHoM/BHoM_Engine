@@ -20,6 +20,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\BHoM Engine.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -31,7 +32,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="BHoM">
-      <HintPath>..\..\BHoM\Build\BHoM.dll</HintPath>
+      <HintPath>..\..\BHoM\BHoM\bin\Debug\BHoM.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -43,11 +44,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Relax.cs" />
+    <Compile Include="FormFinding\BarForce.cs" />
+    <Compile Include="FormFinding\DynamicRelaxation.cs" />
+    <Compile Include="FormFinding\NodalResult.cs" />
+    <Compile Include="FormFinding\Test.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Structure.cs" />
+    <Compile Include="FormFinding\Structure.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy /Y "$(TargetDir)$(ProjectName).dll" "C:\Users\$(Username)\AppData\Roaming\Dynamo\Dynamo Core\1.0\packages\BH Dynamo Tools\bin\$(ProjectName).dll"
+copy /Y "$(TargetDir)$(ProjectName).xml" "C:\Users\$(Username)\AppData\Roaming\Dynamo\Dynamo Core\1.0\packages\BH Dynamo Tools\bin\$(ProjectName).xml"</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
