@@ -235,169 +235,151 @@ namespace BHoM_Engine.FormFinding
             return hasConverged;
         }
 
-        //public int IndexOfLargest(List<double> values)
-        //{
-        //    int maxIndex = -1;
-        //    double maxValue = 0;
-        //    int index = 0;
+        public int IndexOfLargest(List<double> values)
+        {
+            int maxIndex = -1;
+            double maxValue = 0;
+            int index = 0;
 
-        //    foreach (double val in values)
-        //    {
-        //        if (val > maxValue)
-        //        {
-        //            maxValue = val;
-        //            maxIndex = index;
-        //        }
-        //        index++;
-        //    }
+            foreach (double val in values)
+            {
+                if (val > maxValue)
+                {
+                    maxValue = val;
+                    maxIndex = index;
+                }
+                index++;
+            }
 
-        //    return maxIndex;
-        //}
+            return maxIndex;
+        }
 
-        //public int IndexOfSmallest(List<double> values)
-        //{
-        //    int minIndex = -1;
-        //    double minValue = 10000000;
-        //    int index = 0;
+        public int IndexOfSmallest(List<double> values)
+        {
+            int minIndex = -1;
+            double minValue = 10000000;
+            int index = 0;
 
-        //    foreach (double val in values)
-        //    {
-        //        if (val < minValue)
-        //        {
-        //            minValue = val;
-        //            minIndex = index;
-        //        }
-        //        index++;
-        //    }
+            foreach (double val in values)
+            {
+                if (val < minValue)
+                {
+                    minValue = val;
+                    minIndex = index;
+                }
+                index++;
+            }
 
-        //    return minIndex;
-        //}
-
-
+            return minIndex;
+        }
 
 
 
 
-        ///** Find the node with the smallest mass
-        //*
-        //*/
-        //public Node FindLightestNode()
-        //{
-        //    double smallestMass = 1000000000;
-        //    int index = 0;
-        //    foreach (Node node in Nodes)
-        //    {
-        //        if ((double)node.CustomData["Mass"] < smallestMass)
-        //        {
-        //            smallestMass = (double)node.CustomData["Mass"];
-        //            index = Nodes.IndexOf(node);
-        //        }
-        //    }
-        //    return Nodes[index];
-        //}
-
-        ///** Find the bar with the greatest stiffness
-        //*
-        //*/
-
-        //public Bar FindStiffestBar()
-        //{
-        //    if (Bars.Count == 0) return null;
-
-        //    double stiffest = 0;
-        //    double barStiffness;
-        //    int index = 0;
-        //    foreach (BHoM.Structural.Bar bar in Bars)
-        //    {
-        //        barStiffness = (double)bar.CustomData["Stiffness"] * (double)bar.CustomData["StiffnessGlobalScaleFactor"] * (double)bar.CustomData["StiffnessCustomScaleFactor"];
-        //        if (barStiffness > stiffest)
-        //        {
-        //            stiffest = barStiffness;
-        //            index = Bars.IndexOf(bar);
-        //        }
-        //    }
-        //    return Bars[index];
-        //}
 
 
+        /** Find the node with the smallest mass
+        *
+        */
+        public Node FindLightestNode()
+        {
+            double smallestMass = 1000000000;
+            int index = 0;
+            foreach (Node node in Nodes)
+            {
+                if ((double)node.CustomData["Mass"] < smallestMass)
+                {
+                    smallestMass = (double)node.CustomData["Mass"];
+                    index = Nodes.IndexOf(node);
+                }
+            }
+            return Nodes[index];
+        }
 
-        ///** Loops throught all mNodes and calculates the weight of all bars connected to the node.
-        //*
-        //*/
-        //public void SetNodalMassesPerUnitLength(double massPerUnitLength)
-        //{
-        //    List<BHoM.Structural.Bar> tempBars = new List<BHoM.Structural.Bar>();
-        //    double sumLength;
+        /** Find the bar with the greatest stiffness
+        *
+        */
 
-        //    foreach (BHoM.Structural.Node node in Nodes)
-        //    {
-        //        sumLength = 0;
-        //        tempBars = node.GetRingEdges();
+        public Bar FindStiffestBar()
+        {
+            if (Bars.Count == 0) return null;
 
-        //        foreach (BHoM.Structural.Bar bar in tempBars)
-        //        {
-        //            sumLength += bar.Length / 2;
-        //        }
-        //        node.Mass = massPerUnitLength * sumLength;
-        //    }
-
-        //    foreach (BHoM.Structural.Node node in Nodes)
-        //    {
-        //        node.CustomData.Add("SumLength", 0);
-        //    }
-
-        //        foreach (Bar bar in Bars)
-        //    {
-        //        bar.StartNode.CustomData["SumLength"] = (double)bar.StartNode.CustomData["SumLength"] + massPerUnitLength * bar.Length / 2;
-        //        bar.EndNode.CustomData["SumLength"] = (double)bar.StartNode.CustomData["SumLength"] + massPerUnitLength * bar.Length / 2;
-        //    }
-        //}
+            double stiffest = 0;
+            double barStiffness;
+            int index = 0;
+            foreach (BHoM.Structural.Bar bar in Bars)
+            {
+                barStiffness = (double)bar.CustomData["Stiffness"] * (double)bar.CustomData["StiffnessGlobalScaleFactor"] * (double)bar.CustomData["StiffnessCustomScaleFactor"];
+                if (barStiffness > stiffest)
+                {
+                    stiffest = barStiffness;
+                    index = Bars.IndexOf(bar);
+                }
+            }
+            return Bars[index];
+        }
 
 
 
+        /** Loops throught all mNodes and calculates the weight of all bars connected to the node.
+        *
+        */
+        public void SetNodalMassesPerUnitLength(double massPerUnitLength)
+        {
+            foreach (BHoM.Structural.Node node in Nodes)
+            {
+                node.CustomData.Add("SumLength", 0);
+            }
 
-        //     /// <summary>
-        //     ///  Calculate the total average length of bars in the model
-        //     /// </summary>
-        //     /// <returns></returns>
-        //     public double CalculateMeanBarLength()
-        //     {
-        //         double avrgLength = 0;
-        //         foreach (BHoM.Structural.Bar bar in _edges)
-        //         {
-        //             avrgLength += bar.Length;
-        //         }
-        //         avrgLength /= _edges.Count;
-        //         return avrgLength;
-        //     }
+                foreach (Bar bar in Bars)
+            {
+                bar.StartNode.CustomData["SumLength"] = (double)bar.StartNode.CustomData["SumLength"] + massPerUnitLength * bar.Length / 2;
+                bar.EndNode.CustomData["SumLength"] = (double)bar.StartNode.CustomData["SumLength"] + massPerUnitLength * bar.Length / 2;
+            }
+        }
 
-        //     public double CalculateMeanVelocity()
-        //     {
-        //         double mAvrgVelocity;
-        //         // double[] mAvrgVelocities = new double[3];
-        //         BHoM.Geometry.Vector mAvrgVelocities = new BHoM.Geometry.Vector();
+        /// <summary>
+        ///  Calculate the total average length of bars in the model
+        /// </summary>
+        /// <returns></returns>
+        public double CalculateMeanBarLength()
+        {
+            double avrgLength = 0;
+            foreach (Bar bar in Bars)
+            {
+                avrgLength += bar.Length;
+            }
+            avrgLength /= Bars.Count;
+            return avrgLength;
+        }
 
-        //         mAvrgVelocity = 0;
+        public double CalculateMeanVelocity()
+        {
+            double mAvrgVelocity;
+            // double[] mAvrgVelocities = new double[3];
+            Vector mAvrgVelocities = new Vector();
 
-        //         foreach (BHoM.Structural.Node node in _vertices)
-        //         {
-        //             //mAvrgVelocities[0] += node.Velocity[0];
-        //             //mAvrgVelocities[1] += node.Velocity[1];
-        //             //mAvrgVelocities[2] += node.Velocity[2];
-        //             //mAvrgVelocity += Math.Sqrt(node.Velocity[0] * node.Velocity[0] + node.Velocity[1] * node.Velocity[1] + node.Velocity[2] * node.Velocity[2]);
-        //             mAvrgVelocities += nodalResultCollection.TryGetNodalResult(node.Number, timeStep).Velocity;
-        //             mAvrgVelocity += node.Velocity.Length;
+            mAvrgVelocity = 0;
 
-        //         }
-        //         //mAvrgVelocities[0] = mAvrgVelocities[0] / _vertices.Count;
-        //         //mAvrgVelocities[1] = mAvrgVelocities[1] / _vertices.Count;
-        //         //mAvrgVelocities[2] = mAvrgVelocities[2] / _vertices.Count;
-        //         //why? does it do anything?
-        //         mAvrgVelocities = mAvrgVelocities / _vertices.Count;
+            foreach (BHoM.Structural.Node node in Nodes)
+            {
+                //mAvrgVelocities[0] += node.Velocity[0];
+                //mAvrgVelocities[1] += node.Velocity[1];
+                //mAvrgVelocities[2] += node.Velocity[2];
+                //mAvrgVelocity += Math.Sqrt(node.Velocity[0] * node.Velocity[0] + node.Velocity[1] * node.Velocity[1] + node.Velocity[2] * node.Velocity[2]);
+                mAvrgVelocities = mAvrgVelocities + nodalResultCollection[node.Name + ":" + t.ToString()].Velocity;
+                mAvrgVelocity += nodalResultCollection[node.Name + ":" + t.ToString()].Velocity.Length;
 
-        //         return mAvrgVelocity / _vertices.Count;
+            }
+            //mAvrgVelocities[0] = mAvrgVelocities[0] / _vertices.Count;
+            //mAvrgVelocities[1] = mAvrgVelocities[1] / _vertices.Count;
+            //mAvrgVelocities[2] = mAvrgVelocities[2] / _vertices.Count;
+            //why? does it do anything?
+            mAvrgVelocities = mAvrgVelocities / Nodes.Count;
 
-        //     }
+            return mAvrgVelocity / Nodes.Count;
+
+        }
 
 
 

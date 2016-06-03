@@ -6,3 +6,4 @@ C:\Users\jisaksso\Documents\GitHub\BHoM_Engine\BHoM Engine\bin\Debug\BHoM.xml
 C:\Users\jisaksso\Documents\GitHub\BHoM_Engine\BHoM Engine\obj\Debug\BHoM Engine.dll
 C:\Users\jisaksso\Documents\GitHub\BHoM_Engine\BHoM Engine\obj\Debug\BHoM Engine.pdb
 C:\Users\jisaksso\Documents\GitHub\BHoM_Engine\BHoM Engine\bin\Debug\BHoM Engine.XML
+C:\Users\jisaksso\Documents\GitHub\BHoM_Engine\BHoM Engine\obj\Debug\BHoM Engine.csprojResolveAssemblyReference.cache

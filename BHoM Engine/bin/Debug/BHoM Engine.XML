@@ -112,5 +112,23 @@
         <member name="M:BHoM_Engine.FormFinding.NodalResult.#ctor(System.Int32,BHoM.Geometry.Plane)">
             <summary>Construct a nodal result with orientation plane</summary>
         </member>
+        <member name="M:BHoM_Engine.FormFinding.Structure.FindLightestNode">
+            Find the node with the smallest mass
+            
+        </member>
+        <member name="M:BHoM_Engine.FormFinding.Structure.FindStiffestBar">
+            Find the bar with the greatest stiffness
+            
+        </member>
+        <member name="M:BHoM_Engine.FormFinding.Structure.SetNodalMassesPerUnitLength(System.Double)">
+            Loops throught all mNodes and calculates the weight of all bars connected to the node.
+            
+        </member>
+        <member name="M:BHoM_Engine.FormFinding.Structure.CalculateMeanBarLength">
+            <summary>
+             Calculate the total average length of bars in the model
+            </summary>
+            <returns></returns>
+        </member>
     </members>
 </doc>

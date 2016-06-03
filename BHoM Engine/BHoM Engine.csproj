@@ -47,7 +47,6 @@
     <Compile Include="FormFinding\BarForce.cs" />
     <Compile Include="FormFinding\DynamicRelaxation.cs" />
     <Compile Include="FormFinding\NodalResult.cs" />
-    <Compile Include="FormFinding\Test.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="FormFinding\Structure.cs" />
   </ItemGroup>
