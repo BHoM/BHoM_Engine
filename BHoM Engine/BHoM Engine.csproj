@@ -31,12 +31,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-<<<<<<< HEAD
     <Reference Include="BHoM">
       <HintPath>..\..\BHoM\BHoM\bin\Debug\BHoM.dll</HintPath>
     </Reference>
-=======
->>>>>>> refs/remotes/BuroHappoldEngineering/master
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -47,20 +44,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-<<<<<<< HEAD
     <Compile Include="FormFinding\BarForce.cs" />
     <Compile Include="FormFinding\DynamicRelaxation.cs" />
     <Compile Include="FormFinding\NodalResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="FormFinding\Structure.cs" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>copy /Y "$(TargetDir)$(ProjectName).dll" "C:\Users\$(Username)\AppData\Roaming\Dynamo\Dynamo Core\1.0\packages\BH Dynamo Tools\bin\$(ProjectName).dll"
-copy /Y "$(TargetDir)$(ProjectName).xml" "C:\Users\$(Username)\AppData\Roaming\Dynamo\Dynamo Core\1.0\packages\BH Dynamo Tools\bin\$(ProjectName).xml"</PostBuildEvent>
-=======
-    <Compile Include="Graph\GraphNavigator.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
+	<Compile Include="Graph\GraphNavigator.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\BHoM\BHoM\BHoM.csproj">
@@ -70,9 +59,11 @@ copy /Y "$(TargetDir)$(ProjectName).xml" "C:\Users\$(Username)\AppData\Roaming\D
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <StartAction>Program</StartAction>
+      <StartAction>Program</StartAction>
     <StartProgram>C:\Program Files\Rhinoceros 5 (64-bit)\System\Rhino.exe</StartProgram>
->>>>>>> refs/remotes/BuroHappoldEngineering/master
+    <PostBuildEvent>copy /Y "$(TargetDir)$(ProjectName).dll" "C:\Users\$(Username)\AppData\Roaming\Dynamo\Dynamo Core\1.0\packages\BH Dynamo Tools\bin\$(ProjectName).dll"
+copy /Y "$(TargetDir)$(ProjectName).xml" "C:\Users\$(Username)\AppData\Roaming\Dynamo\Dynamo Core\1.0\packages\BH Dynamo Tools\bin\$(ProjectName).xml"</PostBuildEvent>
+
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
