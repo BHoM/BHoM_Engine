@@ -44,6 +44,9 @@ Thumbs.db
 /obj/
 */bin/
 */obj
+/Build/
+*/Build
+/.vs/
 
 # Visual Studio User File #
 ###########################
