@@ -34,6 +34,18 @@
     <Reference Include="BHoM">
       <HintPath>..\..\BHoM\BHoM\bin\Debug\BHoM.dll</HintPath>
     </Reference>
+    <Reference Include="MongoDB.Bson, Version=2.2.4.26, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MongoDB.Bson.2.2.4\lib\net45\MongoDB.Bson.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="MongoDB.Driver, Version=2.2.4.26, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MongoDB.Driver.2.2.4\lib\net45\MongoDB.Driver.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="MongoDB.Driver.Core, Version=2.2.4.26, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MongoDB.Driver.Core.2.2.4\lib\net45\MongoDB.Driver.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -44,12 +56,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Databases\Mongo\MongoLink.cs" />
     <Compile Include="FormFinding\BarForce.cs" />
     <Compile Include="FormFinding\DynamicRelaxation.cs" />
     <Compile Include="FormFinding\NodalResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="FormFinding\Structure.cs" />
-	<Compile Include="Graph\GraphNavigator.cs" />
+    <Compile Include="Graph\GraphNavigator.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\BHoM\BHoM\BHoM.csproj">
@@ -57,13 +70,15 @@
       <Name>BHoM</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-      <StartAction>Program</StartAction>
+    <StartAction>Program</StartAction>
     <StartProgram>C:\Program Files\Rhinoceros 5 (64-bit)\System\Rhino.exe</StartProgram>
     <PostBuildEvent>copy /Y "$(TargetDir)$(ProjectName).dll" "C:\Users\$(Username)\AppData\Roaming\Dynamo\Dynamo Core\1.0\packages\BH Dynamo Tools\bin\$(ProjectName).dll"
 copy /Y "$(TargetDir)$(ProjectName).xml" "C:\Users\$(Username)\AppData\Roaming\Dynamo\Dynamo Core\1.0\packages\BH Dynamo Tools\bin\$(ProjectName).xml"</PostBuildEvent>
-
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
