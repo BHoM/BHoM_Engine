@@ -7,8 +7,10 @@ C:\Users\jisaksso\Documents\GitHub\BHoM_Engine\BHoM Engine\obj\Debug\BHoM Engine
 C:\Users\jisaksso\Documents\GitHub\BHoM_Engine\BHoM Engine\obj\Debug\BHoM Engine.pdb
 C:\Users\jisaksso\Documents\GitHub\BHoM_Engine\BHoM Engine\bin\Debug\BHoM Engine.XML
 C:\Users\jisaksso\Documents\GitHub\BHoM_Engine\BHoM Engine\obj\Debug\BHoM Engine.csprojResolveAssemblyReference.cache
-C:\Users\jisaksso\Documents\GitHub\BHoM_Engine\Build\Structural\Section Properties\Databases\UK Sections.mdf
-C:\Users\jisaksso\Documents\GitHub\BHoM_Engine\Build\Structural\Section Properties\Databases\UK Sections_log.ldf
 C:\Users\jisaksso\Documents\GitHub\BHoM_Engine\Build\BHoM Engine.dll
 C:\Users\jisaksso\Documents\GitHub\BHoM_Engine\Build\BHoM Engine.pdb
 C:\Users\jisaksso\Documents\GitHub\BHoM_Engine\Build\BHoM Engine.XML
+C:\Users\jisaksso\Documents\GitHub\BHoM_Engine\Build\Structural\Databases\Materials.mdf
+C:\Users\jisaksso\Documents\GitHub\BHoM_Engine\Build\Structural\Databases\Materials_log.ldf
+C:\Users\jisaksso\Documents\GitHub\BHoM_Engine\Build\Structural\Databases\SteelSections.mdf
+C:\Users\jisaksso\Documents\GitHub\BHoM_Engine\Build\Structural\Databases\SteelSections_log.ldf

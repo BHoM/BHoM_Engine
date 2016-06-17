@@ -130,5 +130,9 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="M:BHoM_Engine.FormFinding.Structure.CalcSafeDynamicTimeStep">
+            Calculates the bounding box for the geometry
+            
+        </member>
     </members>
 </doc>
