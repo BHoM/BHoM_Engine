@@ -11,7 +11,7 @@ namespace BHoM_Engine.FormFinding
     /// Bar force object contains a set of coexisting forces, bar reference
     /// and orientation information
     /// </summary>
-    public class NodalResult : BHoMObject
+    public class NodalResult
     {
         /// <summary>Associated bar number</summary>
         public int NodeNumber { get; set; }

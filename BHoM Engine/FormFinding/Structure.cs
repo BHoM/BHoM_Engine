@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using BHoM.Geometry;
 using BHoM.Structural;
+using BHoM.Structural.SectionProperties;
 using BHoM.Structural.Results.Bars;
 using BHoM.Structural.Results.Nodes;
 using BHoM.Structural.Loads;
@@ -19,12 +20,6 @@ namespace BHoM_Engine.FormFinding
         public List<Node> Nodes = new List<Node>();
         public List<Node> LockedNodes = new List<Node>();
 
-        public NodalResultCollection NodalResultCollection = new NodalResultCollection();
-        public BarForceCollection BarForceCollection = new BarForceCollection();
-
-        // public ObjectManager<string, FormFinding.BarForce> barForceCollection = new ObjectManager<string, FormFinding.BarForce>("TimeStepKey2", FilterOption.UserData);
-        // public ObjectManager<string, FormFinding.NodalResult> nodalResultCollection = new ObjectManager<string, FormFinding.NodalResult>("Nodes2", FilterOption.UserData);
-
         public Dictionary<string, NodalResult> nodalResultCollection = new Dictionary<string, NodalResult>();
         public Dictionary<string, BarForce> barForceCollection = new Dictionary<string, BarForce>();
 
@@ -36,48 +31,109 @@ namespace BHoM_Engine.FormFinding
         public double nodeTol = 0.1;
         public double treshold;
 
-        public Structure(List<Line> lines)
+        public double safeTimeStep;
+        public double maxTimeStep;
+
+        public Structure(List<Bar> bars)
         {
-            foreach (Line ln in lines)
+            foreach (Bar bar in bars)
             {
-                Bar newBar = new Bar(new Node(ln.StartPoint.X, ln.StartPoint.Y, ln.StartPoint.Z), new Node(ln.EndPoint.X, ln.EndPoint.Y, ln.EndPoint.Z));
-                newBar.Name = this.Bars.Count.ToString();
+                bar.Name = this.Bars.Count.ToString();
 
-                if (NodeExists(ln.StartPoint) != null)
-                {
-                    newBar.StartNode = NodeExists(ln.StartPoint);
-                }
+                if (NodeExists(bar.StartNode) != null)
+                    bar.StartNode = NodeExists(bar.StartNode);
                 else
                 {
-                    Node newNode = new Node(ln.StartPoint.X, ln.StartPoint.Y, ln.StartPoint.Z);
-                    newNode.Name = this.Nodes.Count.ToString();
-                    newBar.StartNode = newNode;
-                    this.Nodes.Add(newNode);
+                    bar.StartNode.Name = this.Nodes.Count.ToString();
+                    this.Nodes.Add(bar.StartNode);
                 }
 
-                if (NodeExists(ln.EndPoint) != null)
-                {
-                    newBar.EndNode = NodeExists(ln.EndPoint);
-                }
+                if (NodeExists(bar.EndNode) != null)
+                    bar.EndNode = NodeExists(bar.EndNode);
                 else
                 {
-                    Node newNode = new Node(ln.EndPoint.X, ln.EndPoint.Y, ln.EndPoint.Z);
-                    newNode.Name = this.Nodes.Count.ToString();
-                    newBar.EndNode = newNode;
-                    this.Nodes.Add(newNode);
+                    bar.EndNode.Name = this.Nodes.Count.ToString();
+                    this.Nodes.Add(bar.EndNode);
                 }
 
-                this.Bars.Add(newBar);
-
+                this.Bars.Add(bar);
             }
         }
 
-        public Node NodeExists(Point pt)
+        public void SetMassPerMetre()
+        {
+            foreach (Bar bar in Bars)
+            {
+                double diameter;
+                if (double.TryParse((string)bar.CustomData["SecType"], out diameter))
+                {
+                    bar.CustomData.Add("Area", Math.Pow(diameter / 2, 2) * Math.PI);
+                    bar.CustomData.Add("MassPerMetre", (double)bar.CustomData["Area"] * bar.Material.Density * 10);
+                }
+                else
+                {
+                    if ((string)bar.CustomData["SecType"] == "Radial")
+                    {
+                        bar.CustomData.Add("Area", 0.00846);
+                        SectionProperty radial = new SectionProperty();
+                        radial.MassPerMetre = (double)bar.CustomData["Area"] * bar.Material.Density * 10;
+                        bar.SectionProperty = radial;
+                    }
+
+                    else if ((string)bar.CustomData["SecType"] == "TensionRing")
+                    {
+                        bar.CustomData.Add("Area", 0.06168);
+                        SectionProperty tensionRing = new SectionProperty();
+                        tensionRing.MassPerMetre = (double)bar.CustomData["Area"] * bar.Material.Density * 10;
+                        bar.SectionProperty = tensionRing;
+                    }
+
+                    else if ((string)bar.CustomData["SecType"] == "Diagonal")
+                    {
+                        bar.CustomData.Add("Area", 0.00249);
+                        SectionProperty diagonal = new SectionProperty();
+                        diagonal.MassPerMetre = (double)bar.CustomData["Area"] * bar.Material.Density * 10;
+                        bar.SectionProperty = diagonal;
+                    }
+
+                    else if ((string)bar.CustomData["SecType"] == "CompressionRing")
+                    {
+                        bar.CustomData.Add("Area", 1 * 2);
+                        bar.SectionProperty.MassPerMetre = (double)bar.CustomData["Area"] * bar.Material.Density * 10;
+                    }
+
+                    else
+                    {
+                        bar.CustomData.Add("Area", Math.Pow(0.04 / 2, 2) * Math.PI);
+                        bar.SectionProperty.MassPerMetre = (double)bar.CustomData["Area"] * bar.Material.Density * 10;
+                    }
+
+                }
+            }
+        }
+
+        public void SetStiffness()
+        {
+            foreach (Bar bar in Bars)
+            {
+                double Ks = (bar.Material.YoungsModulus * (double)bar.CustomData["Area"] + (double)bar.CustomData["prestress"]) / (double)bar.CustomData["StartLength"];
+                bar.CustomData.Add("Ks", Ks);
+            }
+
+        }
+
+        public void RestrainXY()
+        {
+            foreach (Node node in Nodes)
+                node.SetConstraint(new NodeConstraint("XYFix", new double[] { -1, -1, 0, 0, 0, 0 }));
+        }
+
+        public Node NodeExists(Node node)
         {
             Node existingNode = null;
             foreach (Node structureNode in this.Nodes)
             {
-                double d = structureNode.Point.DistanceTo(pt);
+                double d = structureNode.Point.DistanceTo(node.Point);
                 if (d < this.nodeTol)
                     existingNode = structureNode;
             }
@@ -96,42 +152,74 @@ namespace BHoM_Engine.FormFinding
             }
         }
 
-        public void CalcSlackLength(List<double> lengthMultiplier)
+        public List<Bar> GetConnectedBars(Node node)
         {
-            for (int i = 0; i < this.Bars.Count; i++)
-                if (lengthMultiplier.Count > 1)
-                    this.Bars[i].CustomData.Add("SlackLength", (this.Bars[i].Length * lengthMultiplier[i]));
-                else
-                    this.Bars[i].CustomData.Add("SlackLength", (this.Bars[i].Length * lengthMultiplier[0]));
+            List<Bar> connectedBars = new List<Bar>();
+            foreach (Bar bar in Bars)
+            {
+                if (bar.StartNode.Point.DistanceTo(node.Point) < nodeTol)
+                    connectedBars.Add(bar);
+                if (bar.EndNode.Point.DistanceTo(node.Point) < nodeTol)
+                    connectedBars.Add(bar);
+            }
+            return connectedBars;
         }
 
-        public void SetBarStiffness(List<double> barStiffnesses)
+        public void SetFictionalNodeMass()
         {
-            for (int i = 0; i < this.Bars.Count; i++)
-                if (barStiffnesses.Count > 1)
-                    this.Bars[i].CustomData.Add("Stiffness", barStiffnesses[i]);
-                else
-                    this.Bars[i].CustomData.Add("Stiffness", barStiffnesses[0]);
+            foreach (Node node in Nodes)
+            {
+                List<Bar> connectedBars = GetConnectedBars(node);
+                double S = 0;
+                double g = 1;
+                foreach (Bar bar in connectedBars)
+                {
+                    S += bar.Material.YoungsModulus * (double)bar.CustomData["Area"] / (double)bar.CustomData["StartLength"] + g * (double)bar.CustomData["prestress"] / bar.Length;
+                }
+                        
+                double M = dt * dt / 2 * S;
+                node.CustomData.Add("Mass", M);
+            }
         }
 
-        public void SetNodeMass(List<double> nodeMass)
+        public void SetLumpedNodeMass()
         {
-            for (int i = 0; i < this.Nodes.Count; i++)
-                if (nodeMass.Count > 1)
-                    this.Nodes[i].CustomData.Add("Mass", nodeMass[i]);
-                else
-                    this.Nodes[i].CustomData.Add("Mass", nodeMass[0]);
+            foreach (Node node in Nodes)
+            {
+                List<Bar> connectedBars = GetConnectedBars(node);
+                double lumpedMass = 0;
+                foreach (Bar bar in connectedBars)
+                {                  
+                    lumpedMass += bar.SectionProperty.MassPerMetre * bar.Length / 2;
+                }
+
+                node.CustomData.Add("Mass", lumpedMass);
+            }
+        }
+
+        public void UpdateNodeMass()
+        {
+            foreach (Node node in Nodes)
+            {
+                List<Bar> connectedBars = GetConnectedBars(node);
+                double S = 0;
+                double g = 1;
+                foreach (Bar bar in connectedBars)
+                    S += bar.Material.YoungsModulus * (double)bar.CustomData["Area"] / (double)bar.CustomData["StartLength"] + g * (double)bar.CustomData["prestress"] / bar.Length;
+                double M = dt * dt / 2 * S;
+                node.CustomData["Mass"]= M;
+            }
         }
 
 
-        public void FindLockedNodes(List<Point> listLocked)
+        public void FindLockedNodes(List<Node> listLocked)
         {
             foreach (Node node in this.Nodes)
                 node.CustomData.Add("isLocked", false);
 
             foreach (Node node in this.Nodes)
-                foreach (Point lockedPt in listLocked)
-                    if (node.Point.DistanceTo(lockedPt) < this.nodeTol)
+                foreach (Node lockedPt in listLocked)
+                    if (node.Point.DistanceTo(lockedPt.Point) < this.nodeTol)
                         node.CustomData["isLocked"] = true;
         }
 
@@ -142,20 +230,31 @@ namespace BHoM_Engine.FormFinding
                 FormFinding.BarForce barForce = new FormFinding.BarForce(Int32.Parse(bar.Name), 0.5, this.loadcase, new Plane(bar.StartNode.Point, Vector.CrossProduct(new Vector(bar.EndNode.X - bar.StartNode.X, bar.EndNode.Y - bar.StartNode.Y, bar.EndNode.Z - bar.StartNode.Z), new Vector(0, 0, 1))));
                 Vector unitVec = new Vector((bar.EndNode.Point.X - bar.StartNode.Point.X) / bar.Length, (bar.EndNode.Point.Y - bar.StartNode.Point.Y) / bar.Length, (bar.EndNode.Point.Z - bar.StartNode.Point.Z) / bar.Length);
 
-                double dl = bar.Length - (double)bar.CustomData["SlackLength"];
+                double dl = bar.Length - (double)bar.CustomData["StartLength"];
 
-                barForce.FX = unitVec.X * dl * (double)bar.CustomData["Stiffness"];
-                barForce.FY = unitVec.Y * dl * (double)bar.CustomData["Stiffness"];
-                barForce.FZ = unitVec.Z * dl * (double)bar.CustomData["Stiffness"];
+                double T = (double)bar.CustomData["prestress"] + dl * (double)bar.CustomData["Ks"];
+
+                bar.CustomData["T"] =  T;
+
+                if (T >= 0)
+                {
+                    barForce.FX = unitVec.X * T;
+                    barForce.FY = unitVec.Y * T;
+                    barForce.FZ = unitVec.Z * T;
+                }
+                else
+                {
+                    barForce.FX = 0;
+                    barForce.FY = 0;
+                    barForce.FZ = 0;
+                }
 
                 barForceCollection.Add(bar.Name + ":" + t.ToString(), barForce);
 
-
-                //this.BarForceCollection.Add(barForce, this.t);
             }
         }
 
-        public void CalcNodeForce(List<double> gravity)
+        public void CalcNodeForce(double gravity)
         {
             foreach (Node node in this.Nodes)
             {
@@ -163,28 +262,41 @@ namespace BHoM_Engine.FormFinding
 
                 nodeResult.Force = new Vector(0, 0, 0);
 
-                if (gravity.Count > 1)
-                    nodeResult.Force = nodeResult.Force + new Vector(0, 0, (double)node.CustomData["Mass"] * gravity[Int32.Parse(node.Name)]);
-                else
-                    nodeResult.Force = nodeResult.Force + new BHoM.Geometry.Vector(0, 0, (double)node.CustomData["Mass"] * gravity[0]);
+                nodeResult.Force = nodeResult.Force + new BHoM.Geometry.Vector(0, 0, gravity);
 
                 nodalResultCollection.Add(node.Name + ":" + t.ToString(), nodeResult);
-                //  this.NodalResultCollection.Add(nodeResult, this.t);
             }
 
             foreach (Bar bar in this.Bars)
             {
                 FormFinding.BarForce barForce = barForceCollection[bar.Name + ":" + t.ToString()];
-                nodalResultCollection[bar.StartNode.Name + ":" + t.ToString()].Force = nodalResultCollection[bar.StartNode.Name + ":" + t.ToString()].Force + new Vector(barForce.FX, barForce.FY, barForce.FZ);
-                nodalResultCollection[bar.EndNode.Name + ":" + t.ToString()].Force = nodalResultCollection[bar.EndNode.Name + ":" + t.ToString()].Force + new Vector(-barForce.FX, -barForce.FY, -barForce.FZ);
+                nodalResultCollection[bar.StartNode.Name + ":" + t.ToString()].Force = nodalResultCollection[bar.StartNode.Name + ":" + t.ToString()].Force + new Vector(barForce.FX, barForce.FY, barForce.FZ - bar.SectionProperty.MassPerMetre * (double)bar.CustomData["StartLength"] / 2);
+                nodalResultCollection[bar.EndNode.Name + ":" + t.ToString()].Force = nodalResultCollection[bar.EndNode.Name + ":" + t.ToString()].Force + new Vector(-barForce.FX, -barForce.FY, -barForce.FZ - bar.SectionProperty.MassPerMetre * (double)bar.CustomData["StartLength"] / 2);
             }
         }
 
         public void SetLockedToZero()
         {
             foreach (Node node in this.Nodes)
+            {
                 if ((bool)node.CustomData["isLocked"])
-                    nodalResultCollection[node.Name + ":" + t.ToString()].Force = new Vector(0, 0, 0);
+                    nodalResultCollection[node.Name + ":" + t.ToString()].Velocity = new Vector(0, 0, 0);
+            }
+        }
+
+        public void SetRestrainedTranslationsToZero()
+        {
+            foreach (Node node in this.Nodes)
+            {
+                if (node.IsConstrained)
+                {
+                    if (node.Constraint.UX.Type == DOFType.Fixed)
+                        nodalResultCollection[node.Name + ":" + t.ToString()].Translation = new Vector(0, nodalResultCollection[node.Name + ":" + t.ToString()].Translation.Y, nodalResultCollection[node.Name + ":" + t.ToString()].Translation.Z);
+
+                    if (node.Constraint.UY.Type == DOFType.Fixed)
+                        nodalResultCollection[node.Name + ":" + t.ToString()].Translation = new Vector(nodalResultCollection[node.Name + ":" + t.ToString()].Translation.X, 0, nodalResultCollection[node.Name + ":" + t.ToString()].Translation.Z);
+                }
+            }
         }
 
         public void CalcAcceleration()
@@ -235,154 +347,18 @@ namespace BHoM_Engine.FormFinding
             return hasConverged;
         }
 
-        public int IndexOfLargest(List<double> values)
+
+        public void CalcSafeTimeStep()
         {
-            int maxIndex = -1;
-            double maxValue = 0;
-            int index = 0;
-
-            foreach (double val in values)
-            {
-                if (val > maxValue)
-                {
-                    maxValue = val;
-                    maxIndex = index;
-                }
-                index++;
-            }
-
-            return maxIndex;
-        }
-
-        public int IndexOfSmallest(List<double> values)
-        {
-            int minIndex = -1;
-            double minValue = 10000000;
-            int index = 0;
-
-            foreach (double val in values)
-            {
-                if (val < minValue)
-                {
-                    minValue = val;
-                    minIndex = index;
-                }
-                index++;
-            }
-
-            return minIndex;
-        }
-
-
-
-
-
-
-        /** Find the node with the smallest mass
-        *
-        */
-        public Node FindLightestNode()
-        {
-            double smallestMass = 1000000000;
-            int index = 0;
+            double smallestRatio = 100000000000;
             foreach (Node node in Nodes)
-            {
-                if ((double)node.CustomData["Mass"] < smallestMass)
-                {
-                    smallestMass = (double)node.CustomData["Mass"];
-                    index = Nodes.IndexOf(node);
-                }
-            }
-            return Nodes[index];
+                foreach (Bar bar in GetConnectedBars(node))
+                    if ((double)node.CustomData["Mass"] / (double)bar.CustomData["Ks"] < smallestRatio)
+                        smallestRatio = (double)node.CustomData["Mass"] / (double)bar.CustomData["Ks"];
+
+            safeTimeStep = Math.Sqrt(2 * smallestRatio);
+            dt = safeTimeStep;
         }
-
-        /** Find the bar with the greatest stiffness
-        *
-        */
-
-        public Bar FindStiffestBar()
-        {
-            if (Bars.Count == 0) return null;
-
-            double stiffest = 0;
-            double barStiffness;
-            int index = 0;
-            foreach (BHoM.Structural.Bar bar in Bars)
-            {
-                barStiffness = (double)bar.CustomData["Stiffness"] * (double)bar.CustomData["StiffnessGlobalScaleFactor"] * (double)bar.CustomData["StiffnessCustomScaleFactor"];
-                if (barStiffness > stiffest)
-                {
-                    stiffest = barStiffness;
-                    index = Bars.IndexOf(bar);
-                }
-            }
-            return Bars[index];
-        }
-
-
-
-        /** Loops throught all mNodes and calculates the weight of all bars connected to the node.
-        *
-        */
-        public void SetNodalMassesPerUnitLength(double massPerUnitLength)
-        {
-            foreach (BHoM.Structural.Node node in Nodes)
-            {
-                node.CustomData.Add("SumLength", 0);
-            }
-
-                foreach (Bar bar in Bars)
-            {
-                bar.StartNode.CustomData["SumLength"] = (double)bar.StartNode.CustomData["SumLength"] + massPerUnitLength * bar.Length / 2;
-                bar.EndNode.CustomData["SumLength"] = (double)bar.StartNode.CustomData["SumLength"] + massPerUnitLength * bar.Length / 2;
-            }
-        }
-
-        /// <summary>
-        ///  Calculate the total average length of bars in the model
-        /// </summary>
-        /// <returns></returns>
-        public double CalculateMeanBarLength()
-        {
-            double avrgLength = 0;
-            foreach (Bar bar in Bars)
-            {
-                avrgLength += bar.Length;
-            }
-            avrgLength /= Bars.Count;
-            return avrgLength;
-        }
-
-        public double CalculateMeanVelocity()
-        {
-            double mAvrgVelocity;
-            // double[] mAvrgVelocities = new double[3];
-            Vector mAvrgVelocities = new Vector();
-
-            mAvrgVelocity = 0;
-
-            foreach (BHoM.Structural.Node node in Nodes)
-            {
-                //mAvrgVelocities[0] += node.Velocity[0];
-                //mAvrgVelocities[1] += node.Velocity[1];
-                //mAvrgVelocities[2] += node.Velocity[2];
-                //mAvrgVelocity += Math.Sqrt(node.Velocity[0] * node.Velocity[0] + node.Velocity[1] * node.Velocity[1] + node.Velocity[2] * node.Velocity[2]);
-                mAvrgVelocities = mAvrgVelocities + nodalResultCollection[node.Name + ":" + t.ToString()].Velocity;
-                mAvrgVelocity += nodalResultCollection[node.Name + ":" + t.ToString()].Velocity.Length;
-
-            }
-            //mAvrgVelocities[0] = mAvrgVelocities[0] / _vertices.Count;
-            //mAvrgVelocities[1] = mAvrgVelocities[1] / _vertices.Count;
-            //mAvrgVelocities[2] = mAvrgVelocities[2] / _vertices.Count;
-            //why? does it do anything?
-            mAvrgVelocities = mAvrgVelocities / Nodes.Count;
-
-            return mAvrgVelocity / Nodes.Count;
-
-        }
-
-
-
 
     }
 }
