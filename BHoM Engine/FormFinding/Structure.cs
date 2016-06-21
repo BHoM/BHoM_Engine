@@ -25,7 +25,7 @@ namespace BHoM_Engine.FormFinding
 
         public Loadcase loadcase = new Loadcase(1, "Loadcase", LoadNature.Dead, 0);
 
-        public double dt = 0.01;
+        public double dt = 0.05;
         public double t = 0;
         public double c = 0.95;
         public double nodeTol = 0.1;
@@ -76,7 +76,7 @@ namespace BHoM_Engine.FormFinding
                     {
                         bar.CustomData.Add("Area", 0.00846);
                         SectionProperty radial = new SectionProperty();
-                        radial.MassPerMetre = 69.8 * 10;
+                        radial.MassPerMetre = (double)bar.CustomData["Area"] * bar.Material.Density * 10;
                         bar.SectionProperty = radial;
                     }
 
@@ -84,7 +84,7 @@ namespace BHoM_Engine.FormFinding
                     {
                         bar.CustomData.Add("Area", 0.06168);
                         SectionProperty tensionRing = new SectionProperty();
-                        tensionRing.MassPerMetre = 508.9 * 10;
+                        tensionRing.MassPerMetre = (double)bar.CustomData["Area"] * bar.Material.Density * 10;
                         bar.SectionProperty = tensionRing;
                     }
 
@@ -92,7 +92,7 @@ namespace BHoM_Engine.FormFinding
                     {
                         bar.CustomData.Add("Area", 0.00249);
                         SectionProperty diagonal = new SectionProperty();
-                        diagonal.MassPerMetre = 20.5 * 10;
+                        diagonal.MassPerMetre = (double)bar.CustomData["Area"] * bar.Material.Density * 10;
                         bar.SectionProperty = diagonal;
                     }
 
@@ -107,8 +107,19 @@ namespace BHoM_Engine.FormFinding
                         bar.CustomData.Add("Area", Math.Pow(0.04 / 2, 2) * Math.PI);
                         bar.SectionProperty.MassPerMetre = (double)bar.CustomData["Area"] * bar.Material.Density * 10;
                     }
+
                 }
             }
+        }
+
+        public void SetStiffness()
+        {
+            foreach (Bar bar in Bars)
+            {
+                double Ks = (bar.Material.YoungsModulus * (double)bar.CustomData["Area"] + (double)bar.CustomData["prestress"]) / (double)bar.CustomData["StartLength"];
+                bar.CustomData.Add("Ks", Ks);
+            }
+
         }
 
         public void RestrainXY()
@@ -154,19 +165,7 @@ namespace BHoM_Engine.FormFinding
             return connectedBars;
         }
 
-        //public void CalcSlackLength()
-        //{
-        //    foreach (Bar bar in Bars)
-        //    {
-        //        if ((double)bar.CustomData["prestress"] != 0)
-        //            bar.CustomData.Add("SlackLength", (bar.Length - (double)bar.CustomData["prestress"]/(double)bar.CustomData["Stiffness"]));
-        //        else
-        //            bar.CustomData.Add("SlackLength", (bar.Length * (double)bar.CustomData["lengthMultiplier"]));               
-        //    }
-                
-        //}
-
-        public void SetNodeMass()
+        public void SetFictionalNodeMass()
         {
             foreach (Node node in Nodes)
             {
@@ -174,9 +173,27 @@ namespace BHoM_Engine.FormFinding
                 double S = 0;
                 double g = 1;
                 foreach (Bar bar in connectedBars)
+                {
                     S += bar.Material.YoungsModulus * (double)bar.CustomData["Area"] / (double)bar.CustomData["StartLength"] + g * (double)bar.CustomData["prestress"] / bar.Length;
+                }
+                        
                 double M = dt * dt / 2 * S;
-                node.CustomData.Add("FormFindMass", M);
+                node.CustomData.Add("Mass", M);
+            }
+        }
+
+        public void SetLumpedNodeMass()
+        {
+            foreach (Node node in Nodes)
+            {
+                List<Bar> connectedBars = GetConnectedBars(node);
+                double lumpedMass = 0;
+                foreach (Bar bar in connectedBars)
+                {                  
+                    lumpedMass += bar.SectionProperty.MassPerMetre * bar.Length / 2;
+                }
+
+                node.CustomData.Add("Mass", lumpedMass);
             }
         }
 
@@ -190,7 +207,7 @@ namespace BHoM_Engine.FormFinding
                 foreach (Bar bar in connectedBars)
                     S += bar.Material.YoungsModulus * (double)bar.CustomData["Area"] / (double)bar.CustomData["StartLength"] + g * (double)bar.CustomData["prestress"] / bar.Length;
                 double M = dt * dt / 2 * S;
-                node.CustomData["FormFindMass"]= M;
+                node.CustomData["Mass"]= M;
             }
         }
 
@@ -206,24 +223,6 @@ namespace BHoM_Engine.FormFinding
                         node.CustomData["isLocked"] = true;
         }
 
-        public void CalcBarForceOld()
-        {
-            foreach (Bar bar in this.Bars)
-            {
-                FormFinding.BarForce barForce = new FormFinding.BarForce(Int32.Parse(bar.Name), 0.5, this.loadcase, new Plane(bar.StartNode.Point, Vector.CrossProduct(new Vector(bar.EndNode.X - bar.StartNode.X, bar.EndNode.Y - bar.StartNode.Y, bar.EndNode.Z - bar.StartNode.Z), new Vector(0, 0, 1))));
-                Vector unitVec = new Vector((bar.EndNode.Point.X - bar.StartNode.Point.X) / bar.Length, (bar.EndNode.Point.Y - bar.StartNode.Point.Y) / bar.Length, (bar.EndNode.Point.Z - bar.StartNode.Point.Z) / bar.Length);
-
-                double dl = bar.Length - (double)bar.CustomData["SlackLength"];
-
-                barForce.FX = unitVec.X * dl * (double)bar.CustomData["Stiffness"];
-                barForce.FY = unitVec.Y * dl * (double)bar.CustomData["Stiffness"];
-                barForce.FZ = unitVec.Z * dl * (double)bar.CustomData["Stiffness"];
-
-                barForceCollection.Add(bar.Name + ":" + t.ToString(), barForce);
-
-            }
-        }
-
         public void CalcBarForce()
         {
             foreach (Bar bar in this.Bars)
@@ -232,13 +231,10 @@ namespace BHoM_Engine.FormFinding
                 Vector unitVec = new Vector((bar.EndNode.Point.X - bar.StartNode.Point.X) / bar.Length, (bar.EndNode.Point.Y - bar.StartNode.Point.Y) / bar.Length, (bar.EndNode.Point.Z - bar.StartNode.Point.Z) / bar.Length);
 
                 double dl = bar.Length - (double)bar.CustomData["StartLength"];
-                double Ks = (bar.Material.YoungsModulus * (double)bar.CustomData["Area"] + (double)bar.CustomData["prestress"]) / (double)bar.CustomData["StartLength"];
 
-                bar.CustomData.Add("Ks", Ks);
+                double T = (double)bar.CustomData["prestress"] + dl * (double)bar.CustomData["Ks"];
 
-                double T = (double)bar.CustomData["prestress"] + dl * Ks;
-
-                bar.CustomData.Add("T", T);
+                bar.CustomData["T"] =  T;
 
                 if (T >= 0)
                 {
@@ -351,248 +347,18 @@ namespace BHoM_Engine.FormFinding
             return hasConverged;
         }
 
-        public int IndexOfLargest(List<double> values)
+
+        public void CalcSafeTimeStep()
         {
-            int maxIndex = -1;
-            double maxValue = 0;
-            int index = 0;
-
-            foreach (double val in values)
-            {
-                if (val > maxValue)
-                {
-                    maxValue = val;
-                    maxIndex = index;
-                }
-                index++;
-            }
-
-            return maxIndex;
-        }
-
-        public int IndexOfSmallest(List<double> values)
-        {
-            int minIndex = -1;
-            double minValue = 10000000;
-            int index = 0;
-
-            foreach (double val in values)
-            {
-                if (val < minValue)
-                {
-                    minValue = val;
-                    minIndex = index;
-                }
-                index++;
-            }
-
-            return minIndex;
-        }
-
-
-
-
-
-
-        /** Find the node with the smallest mass
-        *
-        */
-        public Node FindLightestNode()
-        {
-            double smallestMass = 1000000000;
-            int index = 0;
+            double smallestRatio = 100000000000;
             foreach (Node node in Nodes)
-            {
-                if ((double)node.CustomData["Mass"] < smallestMass)
-                {
-                    smallestMass = (double)node.CustomData["Mass"];
-                    index = Nodes.IndexOf(node);
-                }
-            }
-            return Nodes[index];
+                foreach (Bar bar in GetConnectedBars(node))
+                    if ((double)node.CustomData["Mass"] / (double)bar.CustomData["Ks"] < smallestRatio)
+                        smallestRatio = (double)node.CustomData["Mass"] / (double)bar.CustomData["Ks"];
+
+            safeTimeStep = Math.Sqrt(2 * smallestRatio);
+            dt = safeTimeStep;
         }
-
-        /** Find the bar with the greatest stiffness
-        *
-        */
-
-        public Bar FindStiffestBar()
-        {
-            if (Bars.Count == 0) return null;             
-
-            double stiffest = 0;
-            double barStiffness;
-            int index = 0;
-            foreach (BHoM.Structural.Bar bar in Bars)
-            {         
-                barStiffness = bar.Material.YoungsModulus * (double)bar.CustomData["Area"] / (double)bar.Length * (double)bar.CustomData["GlobalStiffnessScaleFactor"] * (double)bar.CustomData["CustomStiffnessScaleFactor"];
-
-                if (barStiffness > stiffest)
-                {
-                    stiffest = barStiffness;
-                    index = Bars.IndexOf(bar);
-                }
-            }
-            return Bars[index];
-        }
-
-
-
-        /** Loops throught all mNodes and calculates the weight of all bars connected to the node.
-        *
-        */
-        public void SetNodalMassesPerUnitLength(double massPerUnitLength)
-        {
-            foreach (BHoM.Structural.Node node in Nodes)
-            {
-                node.CustomData.Add("SumLength", 0);
-            }
-
-                foreach (Bar bar in Bars)
-            {
-                bar.StartNode.CustomData["SumLength"] = (double)bar.StartNode.CustomData["SumLength"] + massPerUnitLength * bar.Length / 2;
-                bar.EndNode.CustomData["SumLength"] = (double)bar.StartNode.CustomData["SumLength"] + massPerUnitLength * bar.Length / 2;
-            }
-        }
-
-        /// <summary>
-        ///  Calculate the total average length of bars in the model
-        /// </summary>
-        /// <returns></returns>
-        public double CalculateMeanBarLength()
-        {
-            double avrgLength = 0;
-            foreach (Bar bar in Bars)
-            {
-                avrgLength += bar.Length;
-            }
-            avrgLength /= Bars.Count;
-            return avrgLength;
-        }
-
-        public double CalculateMeanVelocity()
-        {
-            double mAvrgVelocity;
-            // double[] mAvrgVelocities = new double[3];
-            Vector mAvrgVelocities = new Vector();
-
-            mAvrgVelocity = 0;
-
-            foreach (BHoM.Structural.Node node in Nodes)
-            {
-                //mAvrgVelocities[0] += node.Velocity[0];
-                //mAvrgVelocities[1] += node.Velocity[1];
-                //mAvrgVelocities[2] += node.Velocity[2];
-                //mAvrgVelocity += Math.Sqrt(node.Velocity[0] * node.Velocity[0] + node.Velocity[1] * node.Velocity[1] + node.Velocity[2] * node.Velocity[2]);
-                mAvrgVelocities = mAvrgVelocities + nodalResultCollection[node.Name + ":" + t.ToString()].Velocity;
-                mAvrgVelocity += nodalResultCollection[node.Name + ":" + t.ToString()].Velocity.Length;
-
-            }
-            //mAvrgVelocities[0] = mAvrgVelocities[0] / _vertices.Count;
-            //mAvrgVelocities[1] = mAvrgVelocities[1] / _vertices.Count;
-            //mAvrgVelocities[2] = mAvrgVelocities[2] / _vertices.Count;
-            //why? does it do anything?
-            mAvrgVelocities = mAvrgVelocities / Nodes.Count;
-
-            return mAvrgVelocity / Nodes.Count;
-
-        }
-
-        public void SetGlobalStriffnessScaleFactor()
-        {
-            double factor = 0.3;
-            foreach (Bar bar in Bars)
-                bar.CustomData.Add("GlobalStiffnessScaleFactor", factor);
-        }
-
-        public void SetCustomStriffnessScaleFactor()
-        {
-            double factor = 0.3;
-            foreach (Bar bar in Bars)
-                bar.CustomData.Add("CustomStiffnessScaleFactor", factor);
-        }
-
-        /** Calculates the bounding box for the geometry
-*
-*/
-        public void CalcSafeDynamicTimeStep()
-        {
-            if (this == null || Bars.Count == 0) { return; }
-
-            double ts1;
-            double ts2;
-            double newTimeStep;
-            double tempStiff = 0;
-            double stiffest = 0;
-            double lightest;
-
-            Bar stiffestBar = FindStiffestBar();
-            Node lightestNode = FindLightestNode();
-
-            //Find the stiffest bar connected to the node.
-            foreach (BHoM.Structural.Bar bar in GetConnectedBars(lightestNode))
-            {
-                tempStiff = bar.Material.YoungsModulus * (double)bar.CustomData["Area"] / (double)bar.Length * (double)bar.CustomData["GlobalStiffnessScaleFactor"] * (double)bar.CustomData["CustomStiffnessScaleFactor"];
-                if (tempStiff > stiffest)
-                    stiffest = tempStiff;
-            }
-            ts1 = Math.Sqrt(2 * (double)lightestNode.CustomData["FormFindMass"] / tempStiff);
-
-            //Find the lightest node connected to the stiffest bar.
-            if ((double)stiffestBar.StartNode.CustomData["FormFindMass"] > (double)stiffestBar.EndNode.CustomData["FormFindMass"])
-                lightest = (double)stiffestBar.StartNode.CustomData["FormFindMass"];
-            else
-                lightest = (double)stiffestBar.EndNode.CustomData["FormFindMass"];
-
-            ts2 = Math.Sqrt(2 * lightest / ((stiffestBar.Material.YoungsModulus * (double)stiffestBar.CustomData["Area"] / (double)stiffestBar.Length) * (double)stiffestBar.CustomData["GlobalStiffnessScaleFactor"] * (double)stiffestBar.CustomData["CustomStiffnessScaleFactor"]));
-
-            if (ts1 < ts2)
-                newTimeStep = ts1;
-            else
-                newTimeStep = ts2;
-
-            safeTimeStep = newTimeStep;
-        }
-
-        public void CalcDynamicMaxTimeStep()
-        {
-            List<double> stiffnessValues = new List<double>(Bars.Count);
-            List<double> massValues = new List<double>(Nodes.Count);
-
-            double tempStiffness;
-            double medianStiffness;
-            double medianMass;
-
-            foreach (Bar bar in Bars)
-            {
-                tempStiffness = bar.Material.YoungsModulus * (double)bar.CustomData["Area"] / (double)bar.Length * (double)bar.CustomData["GlobalStiffnessScaleFactor"] * (double)bar.CustomData["CustomStiffnessScaleFactor"];
-                stiffnessValues.Add(tempStiffness);
-            }
-            foreach (Node node in Nodes)
-            {
-                massValues.Add((double)node.CustomData["Mass"]);
-            }
-
-            //Get max, min and median stiffness
-            stiffnessValues.Sort();
-            medianStiffness = stiffnessValues[(int)Math.Round((double)Bars.Count / 2, 0)];
-
-            //Get max, min and median mass
-            massValues.Sort();
-            medianMass = massValues[(int)Math.Round((double)Nodes.Count / 2, 0)];
-
-            //Current timestep value is based on the smallest mass and the maximum stiffness.
-            maxTimeStep = 0.4 * Math.Sqrt((2 * medianMass) / medianStiffness);
-        }
-
-        //public void UpdateTimeStep()
-        //{
-        //    if (_autoTimeStep)
-        //        _timeStep = 0.35 * _safeTimeStep;
-        //    else
-        //        _timeStep = _maxTimeStep * _timeStepScaleFactor;
-        //}
-
 
     }
 }

@@ -13,7 +13,7 @@ namespace BHoM_Engine.FormFinding
 {
         public class DynamicRelaxation
         {
-        public static void SetBarData(List<Bar> bars, List<double> barStiffnesses, List<double> lengthMultiplier, List<double> prestresses)
+        public static void SetBarData(List<Bar> bars, List<double> prestresses)
         {
             for (int i = 0; i < bars.Count; i++)
             {
@@ -22,25 +22,17 @@ namespace BHoM_Engine.FormFinding
                 else
                     bars[i].CustomData.Add("SecType", 0.050);
 
-                //try
-                //{
-                //    bars[i].CustomData.Add("lengthMultiplier", lengthMultiplier[i]);
-                //}
-                //catch
-                //{
-                //    bars[i].CustomData.Add("lengthMultiplier", 1);
-                //}
-
                 try
                 {
                     bars[i].CustomData.Add("prestress", prestresses[i]);
+                    bars[i].CustomData.Add("T", prestresses[i]);
                 }
                 catch
                 {
                     bars[i].CustomData.Add("prestress", 0);
+                    bars[i].CustomData.Add("T", 0);
                 }
 
-                //bars[i].CustomData.Add("Stiffness", barStiffnesses[i]);
                 bars[i].CustomData.Add("StartLength", bars[i].Length);
 
                 BHoM.Materials.Material material = new BHoM.Materials.Material("GalvLockedCoilCables", BHoM.Materials.MaterialType.Steel, 165000000000, 1, 1, 1, 8250);
@@ -48,33 +40,31 @@ namespace BHoM_Engine.FormFinding
             }
         }
 
-        public static Structure SetStructure(List<Bar> bars, List<Node> lockedPts, List<double> barStiffnesses, List<double> prestresses, List<double> lengthMultiplier, bool restrainXY, double treshold)
+        public static Structure SetStructure(List<Bar> bars, List<Node> lockedPts, List<double> prestresses, bool restrainXY, double treshold)
             {
 
-            SetBarData(bars, barStiffnesses, lengthMultiplier, prestresses);
+            SetBarData(bars, prestresses);
 
             Structure structure = new Structure(bars);
 
-            structure.c = 0.95;  //Which is the damping constant for viscous damping.
-            structure.dt = 0.001;  //Is the time step.
-            structure.t = 0; //startTime
-            structure.nodeTol = 0.1;  //Tolerance, used for position comparision
+            structure.c = 0.95;
+            structure.dt = 0.1;  
+            structure.t = 0; 
+            structure.nodeTol = 0.1;  
             structure.treshold = treshold;
             List<double> nodeMass = new List<double>() { 1.0 };
 
-            //structure.SegmentStructure(6);
-            //structure.CalcSlackLength();
-            //structure.SetBarStiffness();
             structure.SetMassPerMetre();
+            structure.SetStiffness();
 
-            structure.SetNodeMass();
+            //structure.SetLumpedNodeMass();
+            structure.SetFictionalNodeMass();
             structure.SetStartVelocity();
             structure.FindLockedNodes(lockedPts);
             if (restrainXY)
                 structure.RestrainXY();
 
-            structure.SetCustomStriffnessScaleFactor();
-            structure.SetGlobalStriffnessScaleFactor();
+            //structure.CalcSafeTimeStep();
 
             return structure;
             }
@@ -102,8 +92,6 @@ namespace BHoM_Engine.FormFinding
             structure.UpdateGeometry();
 
             structure.CalcKineticEnergy();
-
-           // structure.CalcSafeDynamicTimeStep();
         }
     }
 
