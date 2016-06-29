@@ -106,9 +106,9 @@ namespace BHoM_Engine.FormFinding
             List<Bar> connectedBars = new List<Bar>();
             foreach (Bar bar in Bars)
             {
-                if (bar.StartNode.Point.DistanceTo(node.Point) < nodeTol)
+                if (bar.StartPoint.DistanceTo(node.Point) < nodeTol)
                     connectedBars.Add(bar);
-                if (bar.EndNode.Point.DistanceTo(node.Point) < nodeTol)
+                if (bar.EndPoint.DistanceTo(node.Point) < nodeTol)
                     connectedBars.Add(bar);
             }
             return connectedBars;
@@ -175,8 +175,8 @@ namespace BHoM_Engine.FormFinding
         {
             foreach (Bar bar in this.Bars)
             {
-                FormFinding.BarForce barForce = new FormFinding.BarForce(Int32.Parse(bar.Name), 0.5, this.loadcase, new Plane(bar.StartNode.Point, Vector.CrossProduct(new Vector(bar.EndNode.X - bar.StartNode.X, bar.EndNode.Y - bar.StartNode.Y, bar.EndNode.Z - bar.StartNode.Z), new Vector(0, 0, 1))));
-                Vector unitVec = new Vector((bar.EndNode.Point.X - bar.StartNode.Point.X) / bar.Length, (bar.EndNode.Point.Y - bar.StartNode.Point.Y) / bar.Length, (bar.EndNode.Point.Z - bar.StartNode.Point.Z) / bar.Length);
+                FormFinding.BarForce barForce = new FormFinding.BarForce(Int32.Parse(bar.Name), 0.5, this.loadcase, new Plane(bar.StartPoint, Vector.CrossProduct(new Vector(bar.EndNode.X - bar.StartNode.X, bar.EndNode.Y - bar.StartNode.Y, bar.EndNode.Z - bar.StartNode.Z), new Vector(0, 0, 1))));
+                Vector unitVec = new Vector((bar.EndPoint.X - bar.StartPoint.X) / bar.Length, (bar.EndPoint.Y - bar.StartPoint.Y) / bar.Length, (bar.EndPoint.Z - bar.StartPoint.Z) / bar.Length);
 
                 double dl = bar.Length - (double)bar.CustomData["StartLength"];
 

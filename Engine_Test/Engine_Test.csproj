@@ -33,6 +33,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="BHoM">
+      <HintPath>..\..\BHoM\Build\BHoM.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -50,10 +53,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\BHoM\BHoM\BHoM.csproj">
-      <Project>{94d88927-62a2-48fc-8efe-d139b67a3373}</Project>
-      <Name>BHoM</Name>
-    </ProjectReference>
     <ProjectReference Include="..\BHoM Engine\BHoM Engine.csproj">
       <Project>{06eb84d6-283c-48ed-bd50-9a418d763a13}</Project>
       <Name>BHoM Engine</Name>
