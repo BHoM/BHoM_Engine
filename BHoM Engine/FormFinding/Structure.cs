@@ -63,63 +63,13 @@ namespace BHoM_Engine.FormFinding
         public void SetMassPerMetre()
         {
             foreach (Bar bar in Bars)
-            {
-                double diameter;
-                if (double.TryParse((string)bar.CustomData["SecType"], out diameter))
-                {
-                    bar.CustomData.Add("Area", Math.Pow(diameter / 2, 2) * Math.PI);
-                    bar.CustomData.Add("MassPerMetre", (double)bar.CustomData["Area"] * bar.Material.Density * 10);
-                }
-                else
-                {
-                    if ((string)bar.CustomData["SecType"] == "Radial")
-                    {
-                        bar.CustomData.Add("Area", 0.00846);
-                        SectionProperty radial = new SectionProperty();
-                        radial.MassPerMetre = (double)bar.CustomData["Area"] * bar.Material.Density * 10;
-                        bar.SectionProperty = radial;
-                    }
-
-                    else if ((string)bar.CustomData["SecType"] == "TensionRing")
-                    {
-                        bar.CustomData.Add("Area", 0.06168);
-                        SectionProperty tensionRing = new SectionProperty();
-                        tensionRing.MassPerMetre = (double)bar.CustomData["Area"] * bar.Material.Density * 10;
-                        bar.SectionProperty = tensionRing;
-                    }
-
-                    else if ((string)bar.CustomData["SecType"] == "Diagonal")
-                    {
-                        bar.CustomData.Add("Area", 0.00249);
-                        SectionProperty diagonal = new SectionProperty();
-                        diagonal.MassPerMetre = (double)bar.CustomData["Area"] * bar.Material.Density * 10;
-                        bar.SectionProperty = diagonal;
-                    }
-
-                    else if ((string)bar.CustomData["SecType"] == "CompressionRing")
-                    {
-                        bar.CustomData.Add("Area", 1 * 2);
-                        bar.SectionProperty.MassPerMetre = (double)bar.CustomData["Area"] * bar.Material.Density * 10;
-                    }
-
-                    else
-                    {
-                        bar.CustomData.Add("Area", Math.Pow(0.04 / 2, 2) * Math.PI);
-                        bar.SectionProperty.MassPerMetre = (double)bar.CustomData["Area"] * bar.Material.Density * 10;
-                    }
-
-                }
-            }
+                bar.CustomData.Add("MassPerMetre", (double)bar.CustomData["Area"] * (double)bar.CustomData["Density"] * 10);
         }
 
         public void SetStiffness()
         {
             foreach (Bar bar in Bars)
-            {
-                double Ks = (bar.Material.YoungsModulus * (double)bar.CustomData["Area"] + (double)bar.CustomData["prestress"]) / (double)bar.CustomData["StartLength"];
-                bar.CustomData.Add("Ks", Ks);
-            }
-
+                bar.CustomData.Add("Ks", ((double)bar.CustomData["E"] * (double)bar.CustomData["Area"] + (double)bar.CustomData["Prestress"]) / (double)bar.CustomData["StartLength"]);
         }
 
         public void RestrainXY()
@@ -137,7 +87,6 @@ namespace BHoM_Engine.FormFinding
                 if (d < this.nodeTol)
                     existingNode = structureNode;
             }
-
             return existingNode;
         }
 
@@ -157,9 +106,9 @@ namespace BHoM_Engine.FormFinding
             List<Bar> connectedBars = new List<Bar>();
             foreach (Bar bar in Bars)
             {
-                if (bar.StartPoint.DistanceTo(node.Point) < nodeTol)
+                if (bar.StartNode.Point.DistanceTo(node.Point) < nodeTol)
                     connectedBars.Add(bar);
-                if (bar.EndPoint.DistanceTo(node.Point) < nodeTol)
+                if (bar.EndNode.Point.DistanceTo(node.Point) < nodeTol)
                     connectedBars.Add(bar);
             }
             return connectedBars;
@@ -173,9 +122,8 @@ namespace BHoM_Engine.FormFinding
                 double S = 0;
                 double g = 1;
                 foreach (Bar bar in connectedBars)
-                {
-                    S += bar.Material.YoungsModulus * (double)bar.CustomData["Area"] / (double)bar.CustomData["StartLength"] + g * (double)bar.CustomData["prestress"] / bar.Length;
-                }
+                    if((double)bar.CustomData["E"] * (double)bar.CustomData["Area"] / (double)bar.CustomData["StartLength"] + g * (double)bar.CustomData["Prestress"] / bar.Length > S)
+                        S = (double)bar.CustomData["E"] * (double)bar.CustomData["Area"] / (double)bar.CustomData["StartLength"] + g * (double)bar.CustomData["Prestress"] / bar.Length;
                         
                 double M = dt * dt / 2 * S;
                 node.CustomData.Add("Mass", M);
@@ -190,7 +138,7 @@ namespace BHoM_Engine.FormFinding
                 double lumpedMass = 0;
                 foreach (Bar bar in connectedBars)
                 {                  
-                    lumpedMass += bar.SectionProperty.MassPerMetre * bar.Length / 2;
+                    lumpedMass += (double)bar.CustomData["MassPerMetre"] * bar.Length / 2;
                 }
 
                 node.CustomData.Add("Mass", lumpedMass);
@@ -205,7 +153,7 @@ namespace BHoM_Engine.FormFinding
                 double S = 0;
                 double g = 1;
                 foreach (Bar bar in connectedBars)
-                    S += bar.Material.YoungsModulus * (double)bar.CustomData["Area"] / (double)bar.CustomData["StartLength"] + g * (double)bar.CustomData["prestress"] / bar.Length;
+                    S += (double)bar.CustomData["E"] * (double)bar.CustomData["Area"] / (double)bar.CustomData["StartLength"] + g * (double)bar.CustomData["Prestress"] / bar.Length;
                 double M = dt * dt / 2 * S;
                 node.CustomData["Mass"]= M;
             }
@@ -227,27 +175,27 @@ namespace BHoM_Engine.FormFinding
         {
             foreach (Bar bar in this.Bars)
             {
-                FormFinding.BarForce barForce = new FormFinding.BarForce(Int32.Parse(bar.Name), 0.5, this.loadcase, new Plane(bar.StartPoint, Vector.CrossProduct(new Vector(bar.EndNode.X - bar.StartNode.X, bar.EndNode.Y - bar.StartNode.Y, bar.EndNode.Z - bar.StartNode.Z), new Vector(0, 0, 1))));
-                Vector unitVec = new Vector((bar.EndPoint.X - bar.StartPoint.X) / bar.Length, (bar.EndPoint.Y - bar.StartPoint.Y) / bar.Length, (bar.EndPoint.Z - bar.StartPoint.Z) / bar.Length);
+                FormFinding.BarForce barForce = new FormFinding.BarForce(Int32.Parse(bar.Name), 0.5, this.loadcase, new Plane(bar.StartNode.Point, Vector.CrossProduct(new Vector(bar.EndNode.X - bar.StartNode.X, bar.EndNode.Y - bar.StartNode.Y, bar.EndNode.Z - bar.StartNode.Z), new Vector(0, 0, 1))));
+                Vector unitVec = new Vector((bar.EndNode.X - bar.StartNode.X) / bar.Length, (bar.EndNode.Y - bar.StartNode.Y) / bar.Length, (bar.EndNode.Z - bar.StartNode.Z) / bar.Length);
 
                 double dl = bar.Length - (double)bar.CustomData["StartLength"];
 
-                double T = (double)bar.CustomData["prestress"] + dl * (double)bar.CustomData["Ks"];
+                double T = (double)bar.CustomData["Prestress"] + dl * (double)bar.CustomData["Ks"];
 
                 bar.CustomData["T"] =  T;
 
-                if (T >= 0)
-                {
+               // if (T >= 0)
+               // {
                     barForce.FX = unitVec.X * T;
                     barForce.FY = unitVec.Y * T;
                     barForce.FZ = unitVec.Z * T;
-                }
-                else
-                {
-                    barForce.FX = 0;
-                    barForce.FY = 0;
-                    barForce.FZ = 0;
-                }
+               // }
+               // else
+               // {
+               //     barForce.FX = 0;
+               //     barForce.FY = 0;
+               //     barForce.FZ = 0;
+               // }
 
                 barForceCollection.Add(bar.Name + ":" + t.ToString(), barForce);
 
@@ -270,8 +218,8 @@ namespace BHoM_Engine.FormFinding
             foreach (Bar bar in this.Bars)
             {
                 FormFinding.BarForce barForce = barForceCollection[bar.Name + ":" + t.ToString()];
-                nodalResultCollection[bar.StartNode.Name + ":" + t.ToString()].Force = nodalResultCollection[bar.StartNode.Name + ":" + t.ToString()].Force + new Vector(barForce.FX, barForce.FY, barForce.FZ - bar.SectionProperty.MassPerMetre * (double)bar.CustomData["StartLength"] / 2);
-                nodalResultCollection[bar.EndNode.Name + ":" + t.ToString()].Force = nodalResultCollection[bar.EndNode.Name + ":" + t.ToString()].Force + new Vector(-barForce.FX, -barForce.FY, -barForce.FZ - bar.SectionProperty.MassPerMetre * (double)bar.CustomData["StartLength"] / 2);
+                nodalResultCollection[bar.StartNode.Name + ":" + t.ToString()].Force = nodalResultCollection[bar.StartNode.Name + ":" + t.ToString()].Force + new Vector(barForce.FX, barForce.FY, barForce.FZ - (double)bar.CustomData["MassPerMetre"] * (double)bar.CustomData["StartLength"] / 2);
+                nodalResultCollection[bar.EndNode.Name + ":" + t.ToString()].Force = nodalResultCollection[bar.EndNode.Name + ":" + t.ToString()].Force + new Vector(-barForce.FX, -barForce.FY, -barForce.FZ - (double)bar.CustomData["MassPerMetre"] * (double)bar.CustomData["StartLength"] / 2);
             }
         }
 

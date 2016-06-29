@@ -13,37 +13,27 @@ namespace BHoM_Engine.FormFinding
 {
         public class DynamicRelaxation
         {
-        public static void SetBarData(List<Bar> bars, List<double> prestresses)
+        public static void SetBarData(List<Bar> bars, List<double> areas, List<double> densities, List<double> eModulus, List<double> prestresses)
         {
             for (int i = 0; i < bars.Count; i++)
             {
-                if (bars[i].Name != null)
-                    bars[i].CustomData.Add("SecType", bars[i].Name);
-                else
-                    bars[i].CustomData.Add("SecType", 0.050);
-
-                try
-                {
-                    bars[i].CustomData.Add("prestress", prestresses[i]);
-                    bars[i].CustomData.Add("T", prestresses[i]);
-                }
-                catch
-                {
-                    bars[i].CustomData.Add("prestress", 0);
-                    bars[i].CustomData.Add("T", 0);
-                }
-
                 bars[i].CustomData.Add("StartLength", bars[i].Length);
 
-                BHoM.Materials.Material material = new BHoM.Materials.Material("GalvLockedCoilCables", BHoM.Materials.MaterialType.Steel, 165000000000, 1, 1, 1, 8250);
-                bars[i].Material = material;
+                bars[i].CustomData.Add("Area", areas[i]);
+
+                bars[i].CustomData.Add("Density", densities[i]);
+
+                bars[i].CustomData.Add("E", eModulus[i]);
+
+                bars[i].CustomData.Add("Prestress", prestresses[i]);
+
             }
         }
 
-        public static Structure SetStructure(List<Bar> bars, List<Node> lockedPts, List<double> prestresses, bool restrainXY, double treshold)
+        public static Structure SetStructure(List<Bar> bars, List<Node> lockedPts, List<double> areas, List<double> densities, List<double> eModules, List<double> prestresses, bool restrainXY, double treshold)
             {
 
-            SetBarData(bars, prestresses);
+            SetBarData(bars, areas, densities, eModules, prestresses);
 
             Structure structure = new Structure(bars);
 
