@@ -64,10 +64,10 @@ namespace BHoM_Engine.ModelLaundry
             return new Line(line.StartPoint - dir, line.EndPoint + dir);
         }
 
-        public static List<GeometryBase> FilterByBoundingBox(List<GeometryBase> elements, List<BoundingBox> boxes)
+        public static List<GeometryBase> FilterByBoundingBox(List<GeometryBase> elements, List<BoundingBox> boxes, out List<GeometryBase> outsiders)
         {
             List<GeometryBase> insiders = new List<GeometryBase>();
-
+            outsiders = new List<GeometryBase>();
             foreach (GeometryBase element in elements)
             {
                 bool keep = false;
@@ -82,6 +82,10 @@ namespace BHoM_Engine.ModelLaundry
                 }
                 if (keep)
                     insiders.Add(element);
+                else
+                {
+                    outsiders.Add(element);
+                }
             }
 
             return insiders;
