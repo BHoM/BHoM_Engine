@@ -9,7 +9,7 @@ namespace BHoM_Engine.ModelLaundry
 {
     public static class Util
     {
-        public static Polyline HorizontalExtend(Polyline contour, double dist)
+        public static Curve HorizontalExtend(Curve contour, double dist)
         {
             List<Point> oldPoints = contour.ControlPoints;
             List<Point> newPoints = new List<Point>();
@@ -64,40 +64,68 @@ namespace BHoM_Engine.ModelLaundry
             return new Line(line.StartPoint - dir, line.EndPoint + dir);
         }
 
+        public static Group<Curve> HorizontalExtend(Group<Curve> group, double dist)
+        {
+            Group<Curve> newGroup = new Group<Curve>();
+            foreach ( Curve curve in Curve.Join(group) )
+            {
+                newGroup.Add(HorizontalExtend(curve, dist));
+            }
+            return newGroup;
+        }
+
         public static List<GeometryBase> FilterByBoundingBox(List<GeometryBase> elements, List<BoundingBox> boxes, out List<GeometryBase> outsiders)
         {
             List<GeometryBase> insiders = new List<GeometryBase>();
             outsiders = new List<GeometryBase>();
             foreach (GeometryBase element in elements)
             {
-                bool keep = false;
-                BoundingBox eBox = element.Bounds();
-                foreach (BoundingBox box in boxes)
-                {
-                    if (box.Contains(eBox))
-                    {
-                        keep = true;
-                        break;
-                    }
-                }
-                if (keep)
+                if (IsInside(element, boxes))
                     insiders.Add(element);
                 else
-                {
                     outsiders.Add(element);
-                }
             }
 
             return insiders;
         }
 
-        public static List<Curve> GetNearContours(Polyline refContour, List<Polyline> contours, double tolerance)
+        public static List<BHoM.Global.BHoMObject> FilterByBoundingBox(List<BHoM.Global.BHoMObject> elements, List<BoundingBox> boxes, out List<BHoM.Global.BHoMObject> outsiders)
+        {
+            List<BHoM.Global.BHoMObject> insiders = new List<BHoM.Global.BHoMObject>();
+            outsiders = new List<BHoM.Global.BHoMObject>();
+            foreach (BHoM.Global.BHoMObject element in elements)
+            {
+                if (IsInside(element.GetGeometry(), boxes))
+                    insiders.Add(element);
+                else
+                    outsiders.Add(element);
+            }
+
+            return insiders;
+        }
+
+        public static bool IsInside(GeometryBase geometry, List<BoundingBox> boxes)
+        {
+            bool inside = false;
+            BoundingBox eBox = geometry.Bounds();
+            foreach (BoundingBox box in boxes)
+            {
+                if (box.Contains(eBox))
+                {
+                    inside = true;
+                    break;
+                }
+            }
+            return inside;
+        }
+
+        public static List<Curve> GetNearContours(Curve refContour, List<Curve> contours, double tolerance)
         {
             BoundingBox ROI = refContour.Bounds();
             ROI.Inflate(tolerance);
 
             List<Curve> nearContours = new List<Curve>();
-            foreach (Polyline refC in contours)
+            foreach (Curve refC in contours)
             {
                 BoundingBox cBox = refC.Bounds();
                 if (ROI.Contains(cBox))
@@ -108,6 +136,22 @@ namespace BHoM_Engine.ModelLaundry
             }
 
             return nearContours;
+        }
+
+        public static Group<Curve> RemoveSmallContours(Group<Curve> contours, double maxLength, out Group<Curve> removed)
+        {
+            Group<Curve> remaining = new Group<Curve>();
+            removed = new Group<Curve>();
+
+            foreach( Curve contour in contours)
+            {
+                if (contour.Length < maxLength)
+                    removed.Add(contour);
+                else
+                    remaining.Add(contour);
+            }
+
+            return remaining;
         }
     }
 }
