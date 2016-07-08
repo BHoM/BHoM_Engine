@@ -11,77 +11,63 @@ using BHoM;
 
 namespace BHoM_Engine.FormFinding
 {
-        public class DynamicRelaxation
+    public class DynamicRelaxation
+    {
+        public static Structure SetStructure(List<Bar> bars, List<Node> restrainedNodes, List<double> areas, List<double> prestresses, double timeStep, double damping, bool useMassDamping, bool calcSafeTimeStep, double treshold)
         {
-        public static void SetBarData(List<Bar> bars, List<double> areas, List<double> densities, List<double> eModulus, List<double> prestresses)
-        {
-            for (int i = 0; i < bars.Count; i++)
-            {
-                bars[i].CustomData.Add("StartLength", bars[i].Length);
+            Structure structure = new Structure(bars, restrainedNodes);
 
-                bars[i].CustomData.Add("Area", areas[i]);
+            structure.SetBarData(areas, prestresses);
 
-                bars[i].CustomData.Add("Density", densities[i]);
-
-                bars[i].CustomData.Add("E", eModulus[i]);
-
-                bars[i].CustomData.Add("Prestress", prestresses[i]);
-
-            }
-        }
-
-        public static Structure SetStructure(List<Bar> bars, List<Node> lockedPts, List<double> areas, List<double> densities, List<double> eModules, List<double> prestresses, bool restrainXY, double treshold)
-            {
-
-            SetBarData(bars, areas, densities, eModules, prestresses);
-
-            Structure structure = new Structure(bars);
-
-            structure.c = 0.95;
-            structure.dt = 0.1;  
+            structure.c = damping;
+            structure.dt = timeStep;  
             structure.t = 0; 
             structure.nodeTol = 0.1;  
             structure.treshold = treshold;
-            List<double> nodeMass = new List<double>() { 1.0 };
 
-            structure.SetMassPerMetre();
+            structure.SetConnectedBars();
             structure.SetStiffness();
 
-            //structure.SetLumpedNodeMass();
-            structure.SetFictionalNodeMass();
-            structure.SetStartVelocity();
-            structure.FindLockedNodes(lockedPts);
-            if (restrainXY)
-                structure.RestrainXY();
+            if(useMassDamping)
+                structure.SetFictionalNodeMass();
+            else
+                structure.SetLumpedNodeMass();
 
-            //structure.CalcSafeTimeStep();
+            if (calcSafeTimeStep)
+                structure.CalcSafeTimeStep();
+
+            structure.SetStartVelocity();
 
             return structure;
-            }
+        }
 
-        public static void RelaxStructure(Structure structure, double gravity)
+        public static void RelaxStructure(Structure structure, double gravity, bool useMassDamping)
         {
+
             structure.t += structure.dt;
 
             structure.CalcBarForce();
 
-            structure.CalcNodeForce(gravity);          
+            structure.CalcNodeForce(gravity);
 
-            structure.UpdateNodeMass();
+            if(useMassDamping)
+                structure.SetFictionalNodeMass();
 
             structure.CalcAcceleration();
 
             structure.CalcVelocity();
 
-            structure.SetLockedToZero();
+            structure.CheckConstraints();
 
             structure.CalcTranslation();
 
-            structure.SetRestrainedTranslationsToZero();
+                
+            structure.CalcKineticEnergy();
+
+            structure.CheckKineticEnergyPeak();
 
             structure.UpdateGeometry();
 
-            structure.CalcKineticEnergy();
         }
     }
 
