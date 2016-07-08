@@ -58,9 +58,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Databases\Mongo\MongoLink.cs" />
-    <Compile Include="FormFinding\BarForce.cs" />
     <Compile Include="FormFinding\DynamicRelaxation.cs" />
-    <Compile Include="FormFinding\NodalResult.cs" />
     <Compile Include="FormFinding\Structure.cs" />
     <Compile Include="ModelLaundry\Snapping.cs" />
     <Compile Include="ModelLaundry\Util.cs" />
