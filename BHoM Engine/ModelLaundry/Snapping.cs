@@ -13,7 +13,7 @@ namespace BHoM_Engine.ModelLaundry
 
 
         /******************************************/
-        /****  Vertical End Point Snapping     ****/
+        /****  Vertical Point Snapping         ****/
         /******************************************/
 
         public static Point VerticalPointSnap(Point point, List<double> refHeights, double tolerance)
@@ -31,11 +31,13 @@ namespace BHoM_Engine.ModelLaundry
             return newPoint;
         }
 
-        public static Point VerticalPointSnap(Point point, List<Polyline> refContours, double tolerance)
+        /******************************************/
+
+        public static Point VerticalPointSnap(Point point, List<Curve> refContours, double tolerance)
         {
             Point newPoint = new Point(point);
 
-            foreach (Polyline contour in refContours)
+            foreach (Curve contour in refContours)
             {
                 double height = contour.Bounds().Centre.Z;
                 if (Math.Abs(newPoint.Z - height) < tolerance) // Need to add && contour.IsInside(newPoint)
@@ -47,7 +49,26 @@ namespace BHoM_Engine.ModelLaundry
             return newPoint;
         }
 
-        public static Polyline VerticalEndSnap(Polyline contour, List<double> refHeights, double tolerance)
+
+        /******************************************/
+        /****  Vertical End Point Snapping     ****/
+        /******************************************/
+
+        public static Line VerticalEndSnap(Line line, List<double> refHeights, double tolerance)
+        {
+            return new Line(VerticalPointSnap(line.StartPoint, refHeights, tolerance), VerticalPointSnap(line.EndPoint, refHeights, tolerance));
+        }
+
+        /******************************************/
+
+        public static Line VerticalEndSnap(Line line, List<Curve> refContours, double tolerance)
+        {
+            return new Line(VerticalPointSnap(line.StartPoint, refContours, tolerance), VerticalPointSnap(line.EndPoint, refContours, tolerance));
+        }
+
+        /******************************************/
+
+        public static Curve VerticalEndSnap(Curve contour, List<double> refHeights, double tolerance)
         {
             List<Point> oldPoints = contour.ControlPoints;
             List<Point> newPoints = new List<Point>();
@@ -59,7 +80,9 @@ namespace BHoM_Engine.ModelLaundry
             return new Polyline(newPoints);
         }
 
-        public static Polyline VerticalEndSnap(Polyline contour, List<Polyline> refContours, double tolerance)
+        /******************************************/
+
+        public static Curve VerticalEndSnap(Curve contour, List<Curve> refContours, double tolerance)
         {
             List<Point> oldPoints = contour.ControlPoints;
             List<Point> newPoints = new List<Point>();
@@ -71,14 +94,28 @@ namespace BHoM_Engine.ModelLaundry
             return new Polyline(newPoints);
         }
 
-        public static Line VerticalEndSnap(Line line, List<double> refHeights, double tolerance)
+        /******************************************/
+
+        public static Group<Curve> VerticalEndSnap(Group<Curve> group, List<double> refHeights, double tolerance)
         {
-            return new Line(VerticalPointSnap(line.StartPoint, refHeights, tolerance), VerticalPointSnap(line.EndPoint, refHeights, tolerance));
+            Group<Curve> newGroup = new Group<Curve>();
+            foreach (Curve curve in group)
+            {
+                newGroup.Add(VerticalEndSnap(curve, refHeights, tolerance));
+            }
+            return newGroup;
         }
 
-        public static Line VerticalEndSnap(Line line, List<Polyline> refContours, double tolerance)
+        /******************************************/
+
+        public static Group<Curve> VerticalEndSnap(Group<Curve> group, List<Curve> refContours, double tolerance)
         {
-            return new Line(VerticalPointSnap(line.StartPoint, refContours, tolerance), VerticalPointSnap(line.EndPoint, refContours, tolerance));
+            Group<Curve> newGroup = new Group<Curve>();
+            foreach (Curve curve in group)
+            {
+                newGroup.Add(VerticalEndSnap(curve, refContours, tolerance));
+            }
+            return newGroup;
         }
 
 
@@ -86,31 +123,32 @@ namespace BHoM_Engine.ModelLaundry
         /****  Horizontal End Point Snapping   ****/
         /******************************************/
 
-        public static Polyline HorizontalPointSnap(Polyline contour, List<Polyline> refContours, double tolerance)
+        public static Curve HorizontalPointSnap(Curve contour, List<Curve> refContours, double tolerance)
         {
             // Get the refContours that are close enought to matter
             List<Curve> nearContours = Util.GetNearContours(contour, refContours, tolerance);
 
             // Get the horizontal perpendicular direction of the contour
+            List<Point> oldPoints = contour.ControlPoints;
             Vector hDir = new Vector(0, 0, 0);
-            foreach (Line line in contour.Explode())
+            for (int i = 1; i < oldPoints.Count; i++)
             {
-                if (Math.Abs(line.Direction.Z) < 1e-3)
+                Vector dir = oldPoints[i] - oldPoints[i - 1];
+                if (Math.Abs(dir.Z) < 1e-3)
                 {
-                    hDir = new Vector(-line.Direction.Y, line.Direction.X, 0);
+                    hDir = new Vector(-dir.Y, dir.X, 0);
                     hDir.Unitize();
                     break;
                 }
             }
 
             // Create snapping propositions per horizontal position
-            List<Point> oldPoints = contour.ControlPoints;
             Dictionary<string, Vector> snapDirections = new Dictionary<string, Vector>();
             foreach (Point pt in oldPoints)
             {
                 string code = getPointCode(pt);
 
-                foreach (Polyline refC in nearContours)
+                foreach (Curve refC in nearContours)
                 {
                     Vector dir = refC.ClosestPoint(pt) - pt;
                     if (dir.Length > 1e-3 && dir.Length < tolerance && Math.Abs(dir * hDir) < 1e-3)
@@ -133,10 +171,23 @@ namespace BHoM_Engine.ModelLaundry
         }
 
         /******************************************/
-        /****  Horizontal End Point Snapping   ****/
+
+        public static Group<Curve> HorizontalPointSnap(Group<Curve> group, List<Curve> refContours, double tolerance)
+        {
+            Group<Curve> newGroup = new Group<Curve>();
+            foreach (Curve curve in Curve.Join(group))
+            {
+                newGroup.Add(HorizontalPointSnap(curve, refContours, tolerance));
+            }
+            return newGroup;
+        }
+
+
+        /******************************************/
+        /****  Horizontal Parrallel Snapping   ****/
         /******************************************/
 
-        public static Polyline HorizontalParallelSnap(Polyline contour, List<Polyline> refContours, double tolerance)
+        public static Curve HorizontalParallelSnap(Curve contour, List<Curve> refContours, double tolerance)
         {
             // Get the refContours that are close enought to matter
             List<Curve> nearContours = Util.GetNearContours(contour, refContours, tolerance);
@@ -162,7 +213,7 @@ namespace BHoM_Engine.ModelLaundry
 
                 // Add snap propositions
                 List<Snap> snaps = new List<Snap>();
-                foreach (Polyline refC in nearContours)
+                foreach (Curve refC in nearContours)
                 {
                     foreach (Line refL in refC.Explode())
                     {
@@ -211,6 +262,18 @@ namespace BHoM_Engine.ModelLaundry
             return new Polyline(newPoints);
         }
 
+        /******************************************/
+
+        public static Group<Curve> HorizontalParallelSnap(Group<Curve> group, List<Curve> refContours, double tolerance)
+        {
+            Group<Curve> newGroup = new Group<Curve>();
+            foreach (Curve curve in Curve.Join(group))
+            {
+                newGroup.Add(HorizontalParallelSnap(curve, refContours, tolerance));
+            }
+            return newGroup;
+        }
+
 
         /******************************************/
         /****  Utility classes and functions   ****/
@@ -233,6 +296,8 @@ namespace BHoM_Engine.ModelLaundry
                 target = t;
             }
         }
+
+        /******************************************/
 
         private static string getPointCode(Point pt)
         {
