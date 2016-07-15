@@ -40,9 +40,11 @@ namespace BHoM_Engine.Databases.Mongo
 
         public IEnumerable<BHoMObject> GetObjects(string filterString)
         {
+            Project tempProject = new Project();
+
             FilterDefinition<BsonDocument> filter = filterString;
             var result = collection.Find(filter);
-            var ret = result.ToList().Select(x => BHoMObject.FromJSON(x.ToString()));
+            var ret = result.ToList().Select(x => BHoMObject.FromJSON(x.ToString(), tempProject));
             Console.WriteLine(collection.Count(new BsonDocument()));
             return ret;
         }
