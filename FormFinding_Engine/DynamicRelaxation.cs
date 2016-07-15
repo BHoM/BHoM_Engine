@@ -9,7 +9,7 @@ using BHoM.Structural.Results.Bars;
 using BHoM.Structural.Results.Nodes;
 using BHoM;
 
-namespace BHoM_Engine.FormFinding
+namespace FormFinding_Engine
 {
     public class DynamicRelaxation
     {

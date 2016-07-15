@@ -7,7 +7,7 @@ using BHoM.Global;
 using MongoDB.Bson;
 using MongoDB.Driver;
 
-namespace BHoM_Engine.Databases.Mongo
+namespace Databases_Engine.Mongo
 {
     public class MongoLink
     {

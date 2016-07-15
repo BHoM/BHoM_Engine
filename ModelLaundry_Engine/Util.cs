@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using BHoM.Geometry;
 
-namespace BHoM_Engine.ModelLaundry
+namespace ModelLaundry_Engine
 {
     public static class Util
     {

@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("BHoM Engine")]
+[assembly: AssemblyTitle("FormFinding_Engine")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("BuroHappold")]
-[assembly: AssemblyProduct("BHoM Engine")]
-[assembly: AssemblyCopyright("Copyright © BuroHappold 2016")]
+[assembly: AssemblyCompany("")]
+[assembly: AssemblyProduct("FormFinding_Engine")]
+[assembly: AssemblyCopyright("Copyright ©  2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("06eb84d6-283c-48ed-bd50-9a418d763a13")]
+[assembly: Guid("6112d632-6143-4866-9aba-28cdd1340c6d")]
 
 // Version information for an assembly consists of the following four values:
 //

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using BHoM.Geometry;
 using BHoM.Generic;
 
-namespace BHoM_Engine.Graph
+namespace Graph_Engine
 {
     
 

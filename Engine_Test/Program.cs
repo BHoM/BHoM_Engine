@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using BHoM.Geometry;
 using BHoM.Global;
 using BHoM.Generic;
-using BHoM_Engine.Graph;
 using BHoM.Structural;
 
 namespace Engine_Test
@@ -55,13 +54,13 @@ namespace Engine_Test
 
             List<double> heights = new List<double>();
             heights.Add(45);
-            BHoM_Engine.ModelLaundry.Snapping.VerticalEndSnap(panel.Edges, heights, 1);
-            panel.Edges = BHoM_Engine.ModelLaundry.Util.HorizontalExtend(panel.Edges, 1);
-            panel2.Edges = BHoM_Engine.ModelLaundry.Util.HorizontalExtend(panel2.Edges, 1);
+            ModelLaundry_Engine.Snapping.VerticalEndSnap(panel.Edges, heights, 1);
+            panel.Edges = ModelLaundry_Engine.Util.HorizontalExtend(panel.Edges, 1);
+            panel2.Edges = ModelLaundry_Engine.Util.HorizontalExtend(panel2.Edges, 1);
 
             List<Curve> refCurves = new List<Curve>();
             refCurves.Add(panel2.External_Contour);
-            BHoM_Engine.ModelLaundry.Snapping.HorizontalPointSnap(panel.Edges, refCurves, 1);
+            ModelLaundry_Engine.Snapping.HorizontalPointSnap(panel.Edges, refCurves, 1);
 
             Console.WriteLine("Done");
         }
@@ -84,7 +83,7 @@ namespace Engine_Test
                 project.AddObject(bar);
 
             // Create database
-            var mongo = new BHoM_Engine.Databases.Mongo.MongoLink();
+            var mongo = new Databases_Engine.Mongo.MongoLink();
             Console.WriteLine("Database link created");
 
             // Add Objects to the dtabase
@@ -114,7 +113,7 @@ namespace Engine_Test
             graph.AddUndirectedLink(points[1], points[3], points[1].DistanceTo(points[3]));
             graph.AddUndirectedLink(points[2], points[4], points[2].DistanceTo(points[4]));
 
-            GraphNavigator<Point> navigator = new GraphNavigator<Point>(graph);
+            Graph_Engine.GraphNavigator<Point> navigator = new Graph_Engine.GraphNavigator<Point>(graph);
             List<GraphNode<Point>> path = navigator.GetPath(nodes[0], nodes.Last(), PointDist);
         }
 
