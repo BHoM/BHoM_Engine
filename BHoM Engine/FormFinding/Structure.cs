@@ -17,8 +17,8 @@ namespace BHoM_Engine.FormFinding
 {
     public class Structure
     {
-        public List<Bar> Bars;
-        public List<Node> Nodes;
+        public List<Bar> Bars = new List<Bar>();
+        public List<Node> Nodes = new List<Node>();
 
         public Dictionary<string, NodalResult> nodalResultCollection;
         public Dictionary<string, BarForce> barForceCollection;
@@ -39,12 +39,58 @@ namespace BHoM_Engine.FormFinding
 
         public Structure(List<Bar> bars, List<Node> lockedNodes)
         {
-            Bars = bars;
+            //Fix - Creating new bars and nodes to not change position of input BHoM objects.
+            //Fix - Forcing node names to not mix up when some nodes are added as restrained and some from bars.
 
+            int nodeID = 1;
             foreach (Node node in lockedNodes)
-                node.SetConstraint(new NodeConstraint("Pin", new bool[6] { true, true, true, false, false, false }, new double[6] { -1, -1, -1, 0, 0, 0 }));
+            {
+                Node newNode = new Node(node.Point);
+                newNode.Name = nodeID.ToString();
+                newNode.CustomData.Add("Mass", 1.0);
 
-            Nodes = lockedNodes;
+                newNode.SetConstraint(new NodeConstraint("Pin", new bool[6] { true, true, true, false, false, false }, new double[6] { -1, -1, -1, 0, 0, 0 }));
+                Nodes.Add(newNode);
+                nodeID++;
+            }
+
+            foreach (Bar bar in bars)
+            {
+                Node startNode;
+                Node endNode;
+
+                if (NodeExists(bar.StartNode) != null)
+                    startNode = NodeExists(bar.StartNode);
+                else
+                {
+                    startNode = new Node(bar.StartNode.Point, nodeID.ToString());
+                    nodeID++;
+                    Nodes.Add(startNode);
+                }
+
+                if (NodeExists(bar.EndNode) != null)
+                    endNode = NodeExists(bar.EndNode);
+                else
+                {
+                    endNode = new Node(bar.EndNode.Point, nodeID.ToString());
+                    nodeID++;
+                    Nodes.Add(endNode);
+                }
+
+                Bar newBar = new Bar(startNode,endNode);
+                newBar.CustomData = bar.CustomData;
+                newBar.Material = bar.Material;
+                newBar.Name = bar.Name;
+                newBar.OrientationAngle = bar.OrientationAngle;
+                newBar.Release = bar.Release;
+                newBar.SectionProperty = bar.SectionProperty;
+                newBar.Spring = bar.Spring;
+                
+                Bars.Add(newBar);
+            }
+
+
+
 
             for (int i = 0; i < Bars.Count; i++)
             {
@@ -66,13 +112,6 @@ namespace BHoM_Engine.FormFinding
                     Bars[i].EndNode.Name = Nodes.Count.ToString();
                     Nodes.Add(Bars[i].EndNode);
                 }
-            }
-
-            for (int i = 0; i < Nodes.Count; i++)
-            {
-                Nodes[i].CustomData.Clear();
-                Nodes[i].CustomData.Add("Mass", 1.0);
-                Nodes[i].Name = i.ToString();
             }
 
             loadcase = new Loadcase(1, "Loadcase", LoadNature.Dead, 0);
@@ -144,7 +183,7 @@ namespace BHoM_Engine.FormFinding
                 double S = 0;
                 double g = 1;
                 foreach (Bar bar in node.ConnectedBars)
-                    S += bar.Material.YoungsModulus * 1000000 * (double)bar.CustomData["Area"] / (double)bar.CustomData["StartLength"] + g * (double)bar.CustomData["Prestress"] / bar.Length;
+                    S += bar.Material.YoungsModulus * 1000000 * (double)bar.CustomData["Area"] / (double)bar.CustomData["StartLength"] + g * Math.Abs((double)bar.CustomData["Prestress"]) / bar.Length;
 
                 double M = dt * dt / 2 * S;
                 node.CustomData["Mass"]= M;
@@ -178,20 +217,19 @@ namespace BHoM_Engine.FormFinding
 
                 bar.CustomData["T"] =  T;
 
-               // if (T >= 0)
-               // {
-                    barForce.FX = unitVec.X * T;
-                    barForce.FY = unitVec.Y * T;
-                    barForce.FZ = unitVec.Z * T;
-               // }
-               // else
-               // {
-               //     barForce.FX = 0;
-               //     barForce.FY = 0;
-               //     barForce.FZ = 0;
-               // }
+                barForce.FX = unitVec.X * T;
+                barForce.FY = unitVec.Y * T;
+                barForce.FZ = unitVec.Z * T;
 
-                barForceCollection.Add(bar.Name + ":" + t.ToString(), barForce);
+                //if(bar is Cable)
+                //  if(T<0) 
+                //  {
+                //      barForce.FX = 0;
+                //      barForce.FY = 0;
+                //      barForce.FZ = 0;
+                //  }
+
+            barForceCollection.Add(bar.Name + ":" + t.ToString(), barForce);
             }
         }
 
@@ -264,7 +302,7 @@ namespace BHoM_Engine.FormFinding
             foreach (Node node in this.Nodes)
                 node.Point += nodalResultCollection[node.Name + ":" + t.ToString()].Translation;
 
-            foreach (Bar bar in Bars) //Make bar update line and length instead
+            foreach (Bar bar in Bars) //Make BHoMbar update line and length when node points change instead?
             {
                 Node newStartNode = bar.StartNode;
                 bar.StartNode = newStartNode;

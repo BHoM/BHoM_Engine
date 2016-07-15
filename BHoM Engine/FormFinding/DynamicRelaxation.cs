@@ -64,7 +64,8 @@ namespace BHoM_Engine.FormFinding
                 
             structure.CalcKineticEnergy();
 
-            structure.CheckKineticEnergyPeak();
+            //Sets velocities to 0 if energy peak. Can use less damping and hence quicker, but needs more work.
+            //structure.CheckKineticEnergyPeak();
 
             structure.UpdateGeometry();
 
