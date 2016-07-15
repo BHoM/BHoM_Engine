@@ -9,6 +9,52 @@ namespace BHoM_Engine.ModelLaundry
 {
     public static class Util
     {
+        /*************************************/
+        /****  Horizontal Extend          ****/
+        /*************************************/
+
+        public static object HorizontalExtend(object element, double dist)
+        {
+            // Get the geometry
+            GeometryBase geometry = null;
+            if (element is BHoM.Global.BHoMObject)
+                geometry = ((BHoM.Global.BHoMObject)element).GetGeometry();
+            else if (element is GeometryBase)
+                geometry = element as GeometryBase;
+
+            GeometryBase output = null;
+            if (geometry is Line)
+            {
+                output = Util.HorizontalExtend((Line)geometry, dist);
+            }
+            else if (geometry is Curve)
+            {
+                output = Util.HorizontalExtend((Curve)geometry, dist);
+            }
+            else if (geometry is Group<Curve>)
+            {
+                output = Util.HorizontalExtend((Group<Curve>)geometry, dist);
+            }
+
+            // Prepare the result
+            object result = element;
+            if (element is BHoM.Global.BHoMObject)
+            {
+                result = (BHoM.Global.BHoMObject)((BHoM.Global.BHoMObject)element).ShallowClone();
+                ((BHoM.Global.BHoMObject)result).SetGeometry(output);
+            }
+            else if (element is GeometryBase)
+            {
+                result = output;
+            }
+
+            // Return the result
+            return result;
+
+        }
+
+        /*************************************/
+
         public static Curve HorizontalExtend(Curve contour, double dist)
         {
             List<Point> oldPoints = contour.ControlPoints;
@@ -53,6 +99,7 @@ namespace BHoM_Engine.ModelLaundry
             return new Polyline(newPoints);
         }
 
+        /*************************************/
 
         public static Line HorizontalExtend(Line line, double dist)
         {
@@ -64,6 +111,8 @@ namespace BHoM_Engine.ModelLaundry
             return new Line(line.StartPoint - dir, line.EndPoint + dir);
         }
 
+        /*************************************/
+
         public static Group<Curve> HorizontalExtend(Group<Curve> group, double dist)
         {
             Group<Curve> newGroup = new Group<Curve>();
@@ -73,6 +122,31 @@ namespace BHoM_Engine.ModelLaundry
             }
             return newGroup;
         }
+
+
+        /*************************************/
+        /****  Filter By Bounding Box     ****/
+        /*************************************/
+
+        public static List<object> FilterByBoundingBox(List<object> elements, List<BoundingBox> boxes, out List<object> outsiders)
+        {
+            // Separate the objects between insiders and outsiders
+            List<object> insiders = new List<object>();
+            outsiders = new List<object>();
+            foreach (object element in elements)
+            {
+                if (element is BHoM.Global.BHoMObject && Util.IsInside(((BHoM.Global.BHoMObject)element).GetGeometry(), boxes))
+                    insiders.Add(element);
+                else if (element is GeometryBase && Util.IsInside((GeometryBase)element, boxes))
+                    insiders.Add(element);
+                else
+                    outsiders.Add(element);
+            }
+
+            return insiders;
+        }
+
+        /*************************************/
 
         public static List<GeometryBase> FilterByBoundingBox(List<GeometryBase> elements, List<BoundingBox> boxes, out List<GeometryBase> outsiders)
         {
@@ -89,6 +163,8 @@ namespace BHoM_Engine.ModelLaundry
             return insiders;
         }
 
+        /*************************************/
+
         public static List<BHoM.Global.BHoMObject> FilterByBoundingBox(List<BHoM.Global.BHoMObject> elements, List<BoundingBox> boxes, out List<BHoM.Global.BHoMObject> outsiders)
         {
             List<BHoM.Global.BHoMObject> insiders = new List<BHoM.Global.BHoMObject>();
@@ -104,6 +180,8 @@ namespace BHoM_Engine.ModelLaundry
             return insiders;
         }
 
+        /*************************************/
+
         public static bool IsInside(GeometryBase geometry, List<BoundingBox> boxes)
         {
             bool inside = false;
@@ -118,6 +196,72 @@ namespace BHoM_Engine.ModelLaundry
             }
             return inside;
         }
+
+        /*************************************/
+        /****  Remove Small Contours      ****/
+        /*************************************/
+
+        public static object RemoveSmallContours(object element, double maxLength, out Group<Curve> removed)
+        {
+            // Get the geometry
+            GeometryBase geometry = null;
+            if (element is BHoM.Global.BHoMObject)
+                geometry = ((BHoM.Global.BHoMObject)element).GetGeometry();
+            else if (element is GeometryBase)
+                geometry = element as GeometryBase;
+
+            removed = new Group<Curve>();
+            GeometryBase output = null;
+            if (geometry is Curve)
+            {
+                Group<Curve> group = new Group<Curve>();
+                group.Add((Curve)geometry);
+                output = Util.RemoveSmallContours(group, maxLength, out removed);
+            }
+            else if (geometry is Group<Curve>)
+            {
+                output = Util.RemoveSmallContours((Group<Curve>)geometry, maxLength, out removed);
+            }
+
+            // Prepare the result
+            object result = element;
+            if (element is BHoM.Global.BHoMObject)
+            {
+                result = (BHoM.Global.BHoMObject)((BHoM.Global.BHoMObject)element).ShallowClone();
+                ((BHoM.Global.BHoMObject)result).SetGeometry(output);
+            }
+            else if (element is GeometryBase)
+            {
+                result = output;
+            }
+
+            // Return the result
+            return result;
+
+        }
+
+        /*************************************/
+
+        public static Group<Curve> RemoveSmallContours(Group<Curve> contours, double maxLength, out Group<Curve> removed)
+        {
+            Group<Curve> remaining = new Group<Curve>();
+            removed = new Group<Curve>();
+
+            foreach (Curve contour in contours)
+            {
+                if (contour.Length < maxLength)
+                    removed.Add(contour);
+                else
+                    remaining.Add(contour);
+            }
+
+            return remaining;
+        }
+
+
+        /*************************************/
+        /****  Get Near Contours          ****/
+        /*************************************/
 
         public static List<Curve> GetNearContours(Curve refContour, List<Curve> contours, double tolerance)
         {
@@ -138,20 +282,6 @@ namespace BHoM_Engine.ModelLaundry
             return nearContours;
         }
 
-        public static Group<Curve> RemoveSmallContours(Group<Curve> contours, double maxLength, out Group<Curve> removed)
-        {
-            Group<Curve> remaining = new Group<Curve>();
-            removed = new Group<Curve>();
-
-            foreach( Curve contour in contours)
-            {
-                if (contour.Length < maxLength)
-                    removed.Add(contour);
-                else
-                    remaining.Add(contour);
-            }
-
-            return remaining;
-        }
+        
     }
 }
