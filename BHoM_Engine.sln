@@ -1,9 +1,12 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Engine_Test", "Engine_Test\Engine_Test.csproj", "{178E7641-FB4D-41E9-A250-120A2B834912}"
+	ProjectSection(ProjectDependencies) = postProject
+		{DD942373-95D4-46C9-AED7-7B58149F5D2E} = {DD942373-95D4-46C9-AED7-7B58149F5D2E}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FormFinding_Engine", "FormFinding_Engine\FormFinding_Engine.csproj", "{6112D632-6143-4866-9ABA-28CDD1340C6D}"
 EndProject

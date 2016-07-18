@@ -7,6 +7,7 @@ using BHoM.Geometry;
 using BHoM.Global;
 using BHoM.Generic;
 using BHoM.Structural;
+using ModelLaundry_Engine;
 
 namespace Engine_Test
 {
@@ -14,7 +15,7 @@ namespace Engine_Test
     {
         static void Main(string[] args)
         {
-            TestProject();
+            TestLineVSnap();
 
             Console.Read();
         }
@@ -44,8 +45,9 @@ namespace Engine_Test
             Project project2 = Project.FromJSON(json);
         }
 
-        static void TestVSnap()
+        static void TestPanelVSnap()
         {
+            // Test panel snapping
             string panelJson = "{ \"Type\":\"BHoM.Structural.Panel\",\"Primitive\":\"BHoM.Structural.Panel; BHoM; Version=1.0.0.0; Culture=neutral; PublicKeyToken=null\",\"Properties\":{ \"Edges\":{ \"Primitive\":\"group\",\"groupType\":\"BHoM.Geometry.Curve\",\"group\":[{\"Primitive\":\"line\",\"start\":[24.5778681994532,-2.74803939183246,45.315],\"end\":[29.5556354116369,-9.05481358976734,45.315]},{\"Primitive\":\"line\",\"start\":[29.5556354116369,-9.05481358976734,45.315],\"end\":[29.5556354116369,-9.05481358976734,48.065]},{\"Primitive\":\"line\",\"start\":[29.5556354116369,-9.05481358976734,48.065],\"end\":[24.5778681994532,-2.74803939183246,48.065]},{\"Primitive\":\"line\",\"start\":[24.5778681994532,-2.74803939183246,48.065],\"end\":[24.5778681994532,-2.74803939183246,45.315]}]},\"ThicknessProperty\":\"ab645fdd-b100-4d87-ab16-84ab6e053218\",\"BHoM_Guid\":\"ea18e6ab-1cae-4cbd-9f24-05c9f608f486\",\"CustomData\":{\"RevitId\":804997,\"RevitType\":\"Wall\"}}}";
             Panel panel = BHoMObject.FromJSON(panelJson, Project.ActiveProject) as Panel;
 
@@ -54,13 +56,34 @@ namespace Engine_Test
 
             List<double> heights = new List<double>();
             heights.Add(45);
-            ModelLaundry_Engine.Snapping.VerticalEndSnap(panel.Edges, heights, 1);
-            panel.Edges = ModelLaundry_Engine.Util.HorizontalExtend(panel.Edges, 1);
-            panel2.Edges = ModelLaundry_Engine.Util.HorizontalExtend(panel2.Edges, 1);
+            ModelLaundry_Engine.Snapping.VerticalPointSnap(panel, heights, 1);
+            panel = ModelLaundry_Engine.Util.HorizontalExtend(panel, 1) as Panel;
+            panel2 = ModelLaundry_Engine.Util.HorizontalExtend(panel2, 1) as Panel;
 
-            List<Curve> refCurves = new List<Curve>();
+            List<object> refCurves = new List<object>();
             refCurves.Add(panel2.External_Contour);
-            ModelLaundry_Engine.Snapping.HorizontalPointSnap(panel.Edges, refCurves, 1);
+            ModelLaundry_Engine.Snapping.HorizontalPointSnap(panel, refCurves, 1);
+
+            Console.WriteLine("Done");
+        }
+
+        static void TestLineVSnap()
+        { 
+            // Test Line and Bar snapping
+            Point pt1 = new Point(0 , 0, 0.5);
+            Point pt2 = new Point(0, 0, 4.5);
+
+            List<double> heights = new List<double>();
+            heights.Add(0);
+            heights.Add(5);
+
+            Line line = new Line(pt1, pt2);
+            Curve r1 = Snapping.VerticalPointSnap(line, heights, 0.7);
+            Console.WriteLine("Line: [{0} - {1}", r1.StartPoint.ToString(), r1.EndPoint.ToString());
+
+            Bar bar = new Bar(pt1, pt2);
+            Bar r2 = Snapping.VerticalPointSnap(bar, heights, 0.7) as Bar;
+            Console.WriteLine("Line: [{0} - {1}", r2.StartPoint.ToString(), r2.EndPoint.ToString());
 
             Console.WriteLine("Done");
         }
