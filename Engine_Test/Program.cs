@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 using BHoM.Geometry;
 using BHoM.Global;
 using BHoM.Generic;
-using BHoM_Engine.Graph;
 using BHoM.Structural;
+using ModelLaundry_Engine;
 
 namespace Engine_Test
 {
@@ -15,28 +15,75 @@ namespace Engine_Test
     {
         static void Main(string[] args)
         {
-            TestVSnap();
+            TestLineVSnap();
 
             Console.Read();
         }
 
-        static void TestVSnap()
+        static void TestProject()
         {
+            Project project = Project.ActiveProject;
+
+            List<Point> points = new List<Point>();
+            points.Add(new Point(0, 0, 0));
+            points.Add(new Point(0, 1, 0));
+            points.Add(new Point(1, 1, 0));
+            points.Add(new Point(0, 0, 0));
+
+            Group<Curve> edges = new Group<Curve>();
+            for (int i = 1; i < points.Count; i++)
+                edges.Add(new Line(points[i - 1], points[i]));
+
+            Panel panel = new Panel(edges);
+            panel.ThicknessProperty = new ConstantThickness("test", 0.25);
+
+            project.AddObject(panel);
+
+            string json = project.ToJSON();
+            project.Clear();
+
+            Project project2 = Project.FromJSON(json);
+        }
+
+        static void TestPanelVSnap()
+        {
+            // Test panel snapping
             string panelJson = "{ \"Type\":\"BHoM.Structural.Panel\",\"Primitive\":\"BHoM.Structural.Panel; BHoM; Version=1.0.0.0; Culture=neutral; PublicKeyToken=null\",\"Properties\":{ \"Edges\":{ \"Primitive\":\"group\",\"groupType\":\"BHoM.Geometry.Curve\",\"group\":[{\"Primitive\":\"line\",\"start\":[24.5778681994532,-2.74803939183246,45.315],\"end\":[29.5556354116369,-9.05481358976734,45.315]},{\"Primitive\":\"line\",\"start\":[29.5556354116369,-9.05481358976734,45.315],\"end\":[29.5556354116369,-9.05481358976734,48.065]},{\"Primitive\":\"line\",\"start\":[29.5556354116369,-9.05481358976734,48.065],\"end\":[24.5778681994532,-2.74803939183246,48.065]},{\"Primitive\":\"line\",\"start\":[24.5778681994532,-2.74803939183246,48.065],\"end\":[24.5778681994532,-2.74803939183246,45.315]}]},\"ThicknessProperty\":\"ab645fdd-b100-4d87-ab16-84ab6e053218\",\"BHoM_Guid\":\"ea18e6ab-1cae-4cbd-9f24-05c9f608f486\",\"CustomData\":{\"RevitId\":804997,\"RevitType\":\"Wall\"}}}";
-            Panel panel = BHoMObject.FromJSON(panelJson) as Panel;
+            Panel panel = BHoMObject.FromJSON(panelJson, Project.ActiveProject) as Panel;
 
             panelJson = "{ \"Type\":\"BHoM.Structural.Panel\",\"Primitive\":\"BHoM.Structural.Panel; BHoM; Version=1.0.0.0; Culture=neutral; PublicKeyToken=null\",\"Properties\":{ \"Edges\":{ \"Primitive\":\"group\",\"groupType\":\"BHoM.Geometry.Curve\",\"group\":[{\"Primitive\":\"line\",\"start\":[28.8385630649439,-7.90417884756682,45.315],\"end\":[31.0639227821543,-6.14776228848485,45.315]},{\"Primitive\":\"line\",\"start\":[31.0639227821543,-6.14776228848485,45.315],\"end\":[31.0639227821543,-6.14776228848485,48.065]},{\"Primitive\":\"line\",\"start\":[31.0639227821543,-6.14776228848485,48.065],\"end\":[28.8385630649439,-7.90417884756682,48.065]},{\"Primitive\":\"line\",\"start\":[28.8385630649439,-7.90417884756682,48.065],\"end\":[28.8385630649439,-7.90417884756682,45.315]}]},\"ThicknessProperty\":\"460c4041-6c21-41cb-9b68-0e34250ee406\",\"BHoM_Guid\":\"6c21eefa-8c84-4256-8979-f232bc3e8917\",\"CustomData\":{\"RevitId\":804999,\"RevitType\":\"Wall\"}}}";
-            Panel panel2 = BHoMObject.FromJSON(panelJson) as Panel;
+            Panel panel2 = BHoMObject.FromJSON(panelJson, Project.ActiveProject) as Panel;
 
             List<double> heights = new List<double>();
             heights.Add(45);
-            BHoM_Engine.ModelLaundry.Snapping.VerticalEndSnap(panel.Edges, heights, 1);
-            panel.Edges = BHoM_Engine.ModelLaundry.Util.HorizontalExtend(panel.Edges, 1);
-            panel2.Edges = BHoM_Engine.ModelLaundry.Util.HorizontalExtend(panel2.Edges, 1);
+            ModelLaundry_Engine.Snapping.VerticalPointSnap(panel, heights, 1);
+            panel = ModelLaundry_Engine.Util.HorizontalExtend(panel, 1) as Panel;
+            panel2 = ModelLaundry_Engine.Util.HorizontalExtend(panel2, 1) as Panel;
 
-            List<Curve> refCurves = new List<Curve>();
+            List<object> refCurves = new List<object>();
             refCurves.Add(panel2.External_Contour);
-            BHoM_Engine.ModelLaundry.Snapping.HorizontalPointSnap(panel.Edges, refCurves, 1);
+            ModelLaundry_Engine.Snapping.HorizontalPointSnap(panel, refCurves, 1);
+
+            Console.WriteLine("Done");
+        }
+
+        static void TestLineVSnap()
+        { 
+            // Test Line and Bar snapping
+            Point pt1 = new Point(0 , 0, 0.5);
+            Point pt2 = new Point(0, 0, 4.5);
+
+            List<double> heights = new List<double>();
+            heights.Add(0);
+            heights.Add(5);
+
+            Line line = new Line(pt1, pt2);
+            Curve r1 = Snapping.VerticalPointSnap(line, heights, 0.7);
+            Console.WriteLine("Line: [{0} - {1}", r1.StartPoint.ToString(), r1.EndPoint.ToString());
+
+            Bar bar = new Bar(pt1, pt2);
+            Bar r2 = Snapping.VerticalPointSnap(bar, heights, 0.7) as Bar;
+            Console.WriteLine("Line: [{0} - {1}", r2.StartPoint.ToString(), r2.EndPoint.ToString());
 
             Console.WriteLine("Done");
         }
@@ -59,7 +106,7 @@ namespace Engine_Test
                 project.AddObject(bar);
 
             // Create database
-            var mongo = new BHoM_Engine.Databases.Mongo.MongoLink();
+            var mongo = new Databases_Engine.Mongo.MongoLink();
             Console.WriteLine("Database link created");
 
             // Add Objects to the dtabase
@@ -89,7 +136,7 @@ namespace Engine_Test
             graph.AddUndirectedLink(points[1], points[3], points[1].DistanceTo(points[3]));
             graph.AddUndirectedLink(points[2], points[4], points[2].DistanceTo(points[4]));
 
-            GraphNavigator<Point> navigator = new GraphNavigator<Point>(graph);
+            Graph_Engine.GraphNavigator<Point> navigator = new Graph_Engine.GraphNavigator<Point>(graph);
             List<GraphNode<Point>> path = navigator.GetPath(nodes[0], nodes.Last(), PointDist);
         }
 

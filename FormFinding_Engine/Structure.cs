@@ -13,7 +13,7 @@ using BHoM.Structural.Loads;
 using BHoM.Global;
 
 
-namespace BHoM_Engine.FormFinding
+namespace FormFinding_Engine
 {
     public class Structure
     {
