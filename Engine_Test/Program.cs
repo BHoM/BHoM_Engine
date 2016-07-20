@@ -56,13 +56,13 @@ namespace Engine_Test
 
             List<double> heights = new List<double>();
             heights.Add(45);
-            ModelLaundry_Engine.Snapping.VerticalPointSnap(panel, heights, 1);
+            ModelLaundry_Engine.Snapping.VerticalSnapToHeight(panel, heights, 1);
             panel = ModelLaundry_Engine.Util.HorizontalExtend(panel, 1) as Panel;
             panel2 = ModelLaundry_Engine.Util.HorizontalExtend(panel2, 1) as Panel;
 
             List<object> refCurves = new List<object>();
             refCurves.Add(panel2.External_Contour);
-            ModelLaundry_Engine.Snapping.HorizontalPointSnap(panel, refCurves, 1);
+            ModelLaundry_Engine.Snapping.HorizontalSnapToShape(panel, refCurves, 1);
 
             Console.WriteLine("Done");
         }
@@ -78,11 +78,11 @@ namespace Engine_Test
             heights.Add(5);
 
             Line line = new Line(pt1, pt2);
-            Curve r1 = Snapping.VerticalPointSnap(line, heights, 0.7);
+            Curve r1 = Snapping.VerticalSnapToHeight(line, heights, 0.7);
             Console.WriteLine("Line: [{0} - {1}", r1.StartPoint.ToString(), r1.EndPoint.ToString());
 
             Bar bar = new Bar(pt1, pt2);
-            Bar r2 = Snapping.VerticalPointSnap(bar, heights, 0.7) as Bar;
+            Bar r2 = Snapping.VerticalSnapToHeight(bar, heights, 0.7) as Bar;
             Console.WriteLine("Line: [{0} - {1}", r2.StartPoint.ToString(), r2.EndPoint.ToString());
 
             Console.WriteLine("Done");

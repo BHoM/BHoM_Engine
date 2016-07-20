@@ -13,7 +13,7 @@ namespace ModelLaundry_Engine
         /****  Vertical Snapping to Height     ****/
         /******************************************/
 
-        public static object VerticalPointSnap(object element, List<double> refHeights, double tolerance)
+        public static object VerticalSnapToHeight(object element, List<double> refHeights, double tolerance)
         {
             // Get the geometry of the element
             GeometryBase geometry = GetGeometry(element);
@@ -22,19 +22,19 @@ namespace ModelLaundry_Engine
             GeometryBase output = null;
             if (geometry is Point)
             {
-                output = Snapping.VerticalPointSnap((Point)geometry, refHeights, tolerance);
+                output = Snapping.VerticalSnapToHeight((Point)geometry, refHeights, tolerance);
             }
             else if (geometry is Line)
             {
-                output = Snapping.VerticalPointSnap((Line)geometry, refHeights, tolerance);
+                output = Snapping.VerticalSnapToHeight((Line)geometry, refHeights, tolerance);
             }
             else if (geometry is Curve)
             {
-                output = Snapping.VerticalPointSnap((Curve)geometry, refHeights, tolerance);
+                output = Snapping.VerticalSnapToHeight((Curve)geometry, refHeights, tolerance);
             }
             else if (geometry is Group<Curve>)
             {
-                output = Snapping.VerticalPointSnap((Group<Curve>)geometry, refHeights, tolerance);
+                output = Snapping.VerticalSnapToHeight((Group<Curve>)geometry, refHeights, tolerance);
             }
 
             // Return the final result
@@ -43,7 +43,7 @@ namespace ModelLaundry_Engine
 
         /******************************************/
 
-        public static Point VerticalPointSnap(Point point, List<double> refHeights, double tolerance)
+        public static Point VerticalSnapToHeight(Point point, List<double> refHeights, double tolerance)
         {
             Point newPoint = new Point(point);
 
@@ -60,33 +60,36 @@ namespace ModelLaundry_Engine
 
         /******************************************/
 
-        public static Line VerticalPointSnap(Line line, List<double> refHeights, double tolerance)
+        public static Line VerticalSnapToHeight(Line line, List<double> refHeights, double tolerance)
         {
-            return new Line(VerticalPointSnap(line.StartPoint, refHeights, tolerance), VerticalPointSnap(line.EndPoint, refHeights, tolerance));
+            return new Line(VerticalSnapToHeight(line.StartPoint, refHeights, tolerance), VerticalSnapToHeight(line.EndPoint, refHeights, tolerance));
         }
 
         /******************************************/
 
-        public static Curve VerticalPointSnap(Curve contour, List<double> refHeights, double tolerance)
+        public static Curve VerticalSnapToHeight(Curve contour, List<double> refHeights, double tolerance)
         {
             List<Point> oldPoints = contour.ControlPoints;
             List<Point> newPoints = new List<Point>();
 
             foreach (Point pt in oldPoints)
             {
-                newPoints.Add(VerticalPointSnap(pt, refHeights, tolerance));
+                newPoints.Add(VerticalSnapToHeight(pt, refHeights, tolerance));
             }
             return new Polyline(newPoints);
         }
 
         /******************************************/
 
-        public static Group<Curve> VerticalPointSnap(Group<Curve> group, List<double> refHeights, double tolerance)
+        public static Group<Curve> VerticalSnapToHeight(Group<Curve> group, List<double> refHeights, double tolerance)
         {
             Group<Curve> newGroup = new Group<Curve>();
             foreach (Curve curve in group)
             {
-                newGroup.Add(VerticalPointSnap(curve, refHeights, tolerance));
+                if (curve is Line)
+                    newGroup.Add(VerticalSnapToHeight((Line)curve, refHeights, tolerance));
+                else
+                    newGroup.Add(VerticalSnapToHeight(curve, refHeights, tolerance));
             }
             return newGroup;
         }
@@ -96,7 +99,7 @@ namespace ModelLaundry_Engine
         /****  Vertical Snapping to Curves     ****/
         /******************************************/
 
-        public static object VerticalPointSnap(object element, List<object> refElements, double tolerance)
+        public static object VerticalSnapToShape(object element, List<object> refElements, double tolerance)
         {
             // Get the geometry of the elements
             GeometryBase geometry = GetGeometry(element);
@@ -108,19 +111,19 @@ namespace ModelLaundry_Engine
             GeometryBase output = null;
             if (geometry is Point)
             {
-                output = Snapping.VerticalPointSnap((Point)geometry, refGeom, tolerance);
+                output = Snapping.VerticalSnapToShape((Point)geometry, refGeom, tolerance);
             }
             else if (geometry is Line)
             {
-                output = Snapping.VerticalPointSnap((Line)geometry, refGeom, tolerance);
+                output = Snapping.VerticalSnapToShape((Line)geometry, refGeom, tolerance);
             }
             else if (geometry is Curve)
             {
-                output = Snapping.VerticalPointSnap((Curve)geometry, refGeom, tolerance);
+                output = Snapping.VerticalSnapToShape((Curve)geometry, refGeom, tolerance);
             }
             else if (geometry is Group<Curve>)
             {
-                output = Snapping.VerticalPointSnap((Group<Curve>)geometry, refGeom, tolerance);
+                output = Snapping.VerticalSnapToShape((Group<Curve>)geometry, refGeom, tolerance);
             }
 
             // Return the final result
@@ -129,7 +132,7 @@ namespace ModelLaundry_Engine
 
         /******************************************/
 
-        public static Point VerticalPointSnap(Point point, List<Curve> refContours, double tolerance)
+        public static Point VerticalSnapToShape(Point point, List<Curve> refContours, double tolerance)
         {
             Point newPoint = new Point(point);
 
@@ -147,43 +150,46 @@ namespace ModelLaundry_Engine
 
         /******************************************/
 
-        public static Line VerticalPointSnap(Line line, List<Curve> refContours, double tolerance)
+        public static Line VerticalSnapToShape(Line line, List<Curve> refContours, double tolerance)
         {
-            return new Line(VerticalPointSnap(line.StartPoint, refContours, tolerance), VerticalPointSnap(line.EndPoint, refContours, tolerance));
+            return new Line(VerticalSnapToShape(line.StartPoint, refContours, tolerance), VerticalSnapToShape(line.EndPoint, refContours, tolerance));
         }
 
         /******************************************/
 
-        public static Curve VerticalPointSnap(Curve contour, List<Curve> refContours, double tolerance)
+        public static Curve VerticalSnapToShape(Curve contour, List<Curve> refContours, double tolerance)
         {
             List<Point> oldPoints = contour.ControlPoints;
             List<Point> newPoints = new List<Point>();
 
             foreach (Point pt in oldPoints)
             {
-                newPoints.Add(VerticalPointSnap(pt, refContours, tolerance));
+                newPoints.Add(VerticalSnapToShape(pt, refContours, tolerance));
             }
             return new Polyline(newPoints);
         }
 
         /******************************************/
 
-        public static Group<Curve> VerticalPointSnap(Group<Curve> group, List<Curve> refContours, double tolerance)
+        public static Group<Curve> VerticalSnapToShape(Group<Curve> group, List<Curve> refContours, double tolerance)
         {
             Group<Curve> newGroup = new Group<Curve>();
             foreach (Curve curve in group)
             {
-                newGroup.Add(VerticalPointSnap(curve, refContours, tolerance));
+                if (curve is Line)
+                    newGroup.Add(VerticalSnapToShape((Line)curve, refContours, tolerance));
+                else
+                    newGroup.Add(VerticalSnapToShape(curve, refContours, tolerance));
             }
             return newGroup;
         }
 
 
         /******************************************/
-        /****  Horizontal End Point Snapping   ****/
+        /****  Horizontal Spnap to Shapes      ****/
         /******************************************/
 
-        public static object HorizontalPointSnap(object element, List<object> refElements, double tolerance)
+        public static object HorizontalSnapToShape(object element, List<object> refElements, double tolerance)
         {
             // Get the geometry of the element
             GeometryBase geometry = GetGeometry(element);
@@ -195,15 +201,15 @@ namespace ModelLaundry_Engine
             GeometryBase output = null;
             if (geometry is Point)
             {
-                output = Snapping.HorizontalPointSnap((Point)geometry, refGeom, tolerance);
+                output = Snapping.HorizontalSnapToShape((Point)geometry, refGeom, tolerance);
             }
             else if (geometry is Curve)
             {
-                output = Snapping.HorizontalPointSnap((Curve)geometry, refGeom, tolerance);
+                output = Snapping.HorizontalSnapToShape((Curve)geometry, refGeom, tolerance);
             }
             else if (geometry is Group<Curve>)
             {
-                output = Snapping.HorizontalPointSnap((Group<Curve>)geometry, refGeom, tolerance);
+                output = Snapping.HorizontalSnapToShape((Group<Curve>)geometry, refGeom, tolerance);
             }
 
             // Return the final result
@@ -212,7 +218,7 @@ namespace ModelLaundry_Engine
 
         /******************************************/
 
-        public static Point HorizontalPointSnap(Point point, List<Curve> refContours, double tolerance)
+        public static Point HorizontalSnapToShape(Point point, List<Curve> refContours, double tolerance)
         {
             foreach (Curve refC in refContours)
             {
@@ -229,7 +235,7 @@ namespace ModelLaundry_Engine
 
         /******************************************/
 
-        public static Curve HorizontalPointSnap(Curve contour, List<Curve> refContours, double tolerance)
+        public static Curve HorizontalSnapToShape(Curve contour, List<Curve> refContours, double tolerance)
         {
             // Get the refContours that are close enought to matter
             List<Curve> nearContours = Util.GetNearContours(contour, refContours, tolerance);
@@ -278,12 +284,15 @@ namespace ModelLaundry_Engine
 
         /******************************************/
 
-        public static Group<Curve> HorizontalPointSnap(Group<Curve> group, List<Curve> refContours, double tolerance)
+        public static Group<Curve> HorizontalSnapToShape(Group<Curve> group, List<Curve> refContours, double tolerance)
         {
             Group<Curve> newGroup = new Group<Curve>();
             foreach (Curve curve in Curve.Join(group))
             {
-                newGroup.Add(HorizontalPointSnap(curve, refContours, tolerance));
+                if (curve is Line)
+                    newGroup.Add(HorizontalSnapToShape((Line)curve, refContours, tolerance));
+                else
+                    newGroup.Add(HorizontalSnapToShape(curve, refContours, tolerance));
             }
             return newGroup;
         }
@@ -400,7 +409,102 @@ namespace ModelLaundry_Engine
             Group<Curve> newGroup = new Group<Curve>();
             foreach (Curve curve in Curve.Join(group))
             {
-                newGroup.Add(HorizontalParallelSnap(curve, refContours, tolerance));
+                if (curve is Line)
+                    newGroup.Add(HorizontalParallelSnap((Line)curve, refContours, tolerance));
+                else
+                    newGroup.Add(HorizontalParallelSnap(curve, refContours, tolerance));
+            }
+            return newGroup;
+        }
+
+
+        /******************************************/
+        /****  Snapping to reference points    ****/
+        /******************************************/
+
+        public static object PointToPointSnap(object element, List<object> refElements, double tolerance)
+        {
+            // Get the geometry of the elements
+            GeometryBase geometry = GetGeometry(element);
+            BoundingBox ROI = geometry.Bounds();
+            ROI.Inflate(tolerance);
+
+            // Get the reference points
+            List<Point> refPoints = new List<Point>();
+            List<Curve> refGeom = GetGeometries(refElements, ROI);
+            foreach (Curve curve in refGeom)
+            {
+                foreach (Point pt in curve.ControlPoints)
+                    refPoints.Add(pt);
+            }
+
+            // Do the actal snapping
+            GeometryBase output = null;
+            if (geometry is Point)
+            {
+                output = Snapping.PointToPointSnap((Point)geometry, refPoints, tolerance);
+            }
+            else if (geometry is Line)
+            {
+                output = Snapping.PointToPointSnap((Line)geometry, refPoints, tolerance);
+            }
+            else if (geometry is Curve)
+            {
+                output = Snapping.PointToPointSnap((Curve)geometry, refPoints, tolerance);
+            }
+            else if (geometry is Group<Curve>)
+            {
+                output = Snapping.PointToPointSnap((Group<Curve>)geometry, refPoints, tolerance);
+            }
+
+            // Return the final result
+            return SetGeometry(element, output);
+        }
+
+        /******************************************/
+
+        public static Point PointToPointSnap(Point point, List<Point> refPoints, double tolerance)
+        {
+            
+            foreach(Point refPt in refPoints)
+            {
+                if (refPt.DistanceTo(point) < tolerance)
+                    return (Point)refPt.ShallowClone();
+            }
+
+            return (Point)point.ShallowClone();
+        }
+
+        /******************************************/
+
+        public static Line PointToPointSnap(Line line, List<Point> refPoints, double tolerance)
+        {
+            return new Line(PointToPointSnap(line.StartPoint, refPoints, tolerance), PointToPointSnap(line.EndPoint, refPoints, tolerance));
+        }
+
+        /******************************************/
+
+        public static Polyline PointToPointSnap(Curve curve, List<Point> refPoints, double tolerance)
+        {
+            List<Point> points = new List<Point>();
+            foreach(Point pt in curve.ControlPoints)
+            {
+                points.Add(PointToPointSnap(pt, refPoints, tolerance));
+            }
+            return new Polyline(points);
+        }
+
+        /******************************************/
+
+        public static Group<Curve> PointToPointSnap(Group<Curve> group, List<Point> refPoints, double tolerance)
+        {
+            Group<Curve> newGroup = new Group<Curve>();
+            foreach (Curve curve in group)
+            {
+                if (curve is Line)
+                    newGroup.Add(PointToPointSnap((Line)curve, refPoints, tolerance));
+                else
+                    newGroup.Add(PointToPointSnap(curve, refPoints, tolerance));
             }
             return newGroup;
         }
