@@ -282,6 +282,85 @@ namespace ModelLaundry_Engine
             return nearContours;
         }
 
-        
+
+        /*************************************/
+        /****  Geometry accessors         ****/
+        /*************************************/
+
+        internal static GeometryBase GetGeometry(object element)
+        {
+            GeometryBase geometry = null;
+            if (element is BHoM.Global.BHoMObject)
+                geometry = ((BHoM.Global.BHoMObject)element).GetGeometry();
+            else if (element is GeometryBase)
+                geometry = element as GeometryBase;
+            return geometry;
+        }
+
+        /******************************************/
+
+        internal static object SetGeometry(object element, GeometryBase geometry)
+        {
+            object result = element;
+            if (element is BHoM.Global.BHoMObject)
+            {
+                result = (BHoM.Global.BHoMObject)((BHoM.Global.BHoMObject)element).ShallowClone();
+                ((BHoM.Global.BHoMObject)result).SetGeometry(geometry);
+            }
+            else if (element is GeometryBase)
+            {
+                result = geometry;
+            }
+
+            return result;
+        }
+
+        /******************************************/
+
+        internal static List<Curve> GetGeometries(List<object> elements)
+        {
+            // Get the geometry of the ref elements
+            List<Curve> geometries = new List<Curve>();
+            foreach (object element in elements)
+            {
+                GeometryBase geometry = GetGeometry(element);
+
+                if (geometry is Curve)
+                    geometries.Add((Curve)geometry);
+                else if (geometry is Group<Curve>)
+                {
+                    List<Curve> list = Curve.Join((Group<Curve>)geometry);
+                    geometries.Add(list[0]);
+                }
+            }
+
+            return geometries;
+        }
+
+        /******************************************/
+
+        internal static List<Curve> GetGeometries(List<object> elements, BoundingBox ROI)
+        {
+            // Get the geometry of the ref elements
+            List<Curve> geometries = new List<Curve>();
+            foreach (object element in elements)
+            {
+                GeometryBase geometry = GetGeometry(element);
+
+                if (BoundingBox.InRange(ROI, geometry.Bounds()))
+                {
+                    if (geometry is Curve)
+                        geometries.Add((Curve)geometry);
+                    else if (geometry is Group<Curve>)
+                    {
+                        List<Curve> list = Curve.Join((Group<Curve>)geometry);
+                        geometries.Add(list[0]);
+                    }
+                }
+            }
+
+            return geometries;
+        }
+
     }
 }

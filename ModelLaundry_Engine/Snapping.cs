@@ -16,7 +16,7 @@ namespace ModelLaundry_Engine
         public static object VerticalSnapToHeight(object element, List<double> refHeights, double tolerance)
         {
             // Get the geometry of the element
-            GeometryBase geometry = GetGeometry(element);
+            GeometryBase geometry = Util.GetGeometry(element);
 
             // Do the actal snapping
             GeometryBase output = null;
@@ -38,7 +38,7 @@ namespace ModelLaundry_Engine
             }
 
             // Return the final result
-            return SetGeometry(element, output);
+            return Util.SetGeometry(element, output);
         }
 
         /******************************************/
@@ -102,10 +102,10 @@ namespace ModelLaundry_Engine
         public static object VerticalSnapToShape(object element, List<object> refElements, double tolerance)
         {
             // Get the geometry of the elements
-            GeometryBase geometry = GetGeometry(element);
+            GeometryBase geometry = Util.GetGeometry(element);
             BoundingBox ROI = geometry.Bounds();
             ROI.Inflate(tolerance);
-            List<Curve> refGeom = GetGeometries(refElements, ROI);
+            List<Curve> refGeom = Util.GetGeometries(refElements, ROI);
 
             // Do the actal snapping
             GeometryBase output = null;
@@ -127,7 +127,7 @@ namespace ModelLaundry_Engine
             }
 
             // Return the final result
-            return SetGeometry(element, output);
+            return Util.SetGeometry(element, output);
         }
 
         /******************************************/
@@ -192,10 +192,10 @@ namespace ModelLaundry_Engine
         public static object HorizontalSnapToShape(object element, List<object> refElements, double tolerance)
         {
             // Get the geometry of the element
-            GeometryBase geometry = GetGeometry(element);
+            GeometryBase geometry = Util.GetGeometry(element);
             BoundingBox ROI = geometry.Bounds();
             ROI.Inflate(tolerance);
-            List<Curve> refGeom = GetGeometries(refElements, ROI);
+            List<Curve> refGeom = Util.GetGeometries(refElements, ROI);
 
             // Do the actal snapping
             GeometryBase output = null;
@@ -213,7 +213,7 @@ namespace ModelLaundry_Engine
             }
 
             // Return the final result
-            return SetGeometry(element, output);
+            return Util.SetGeometry(element, output);
         }
 
         /******************************************/
@@ -305,10 +305,10 @@ namespace ModelLaundry_Engine
         public static object HorizontalParallelSnap(object element, List<object> refElements, double tolerance)
         {
             // Get the geometry of the element
-            GeometryBase geometry = GetGeometry(element);
+            GeometryBase geometry = Util.GetGeometry(element);
             BoundingBox ROI = geometry.Bounds();
             ROI.Inflate(tolerance);
-            List<Curve> refGeom = GetGeometries(refElements, ROI);
+            List<Curve> refGeom = Util.GetGeometries(refElements, ROI);
 
             // Do the actal snapping
             GeometryBase output = null;
@@ -322,7 +322,7 @@ namespace ModelLaundry_Engine
             }
 
             // Return the final result
-            return SetGeometry(element, output);
+            return Util.SetGeometry(element, output);
         }
 
         /******************************************/
@@ -425,13 +425,13 @@ namespace ModelLaundry_Engine
         public static object PointToPointSnap(object element, List<object> refElements, double tolerance)
         {
             // Get the geometry of the elements
-            GeometryBase geometry = GetGeometry(element);
+            GeometryBase geometry = Util.GetGeometry(element);
             BoundingBox ROI = geometry.Bounds();
             ROI.Inflate(tolerance);
 
             // Get the reference points
             List<Point> refPoints = new List<Point>();
-            List<Curve> refGeom = GetGeometries(refElements, ROI);
+            List<Curve> refGeom = Util.GetGeometries(refElements, ROI);
             foreach (Curve curve in refGeom)
             {
                 foreach (Point pt in curve.ControlPoints)
@@ -458,7 +458,7 @@ namespace ModelLaundry_Engine
             }
 
             // Return the final result
-            return SetGeometry(element, output);
+            return Util.SetGeometry(element, output);
         }
 
         /******************************************/
@@ -539,59 +539,6 @@ namespace ModelLaundry_Engine
             return Math.Round(pt.X, 3).ToString() + '-' + Math.Round(pt.Y, 3).ToString();
         }
 
-        /******************************************/
-
-        private static GeometryBase GetGeometry(object element)
-        {
-            GeometryBase geometry = null;
-            if (element is BHoM.Global.BHoMObject)
-                geometry = ((BHoM.Global.BHoMObject)element).GetGeometry();
-            else if (element is GeometryBase)
-                geometry = element as GeometryBase;
-            return geometry;
-        }
-
-        /******************************************/
-
-        private static object SetGeometry(object element, GeometryBase geometry)
-        {
-            object result = element;
-            if (element is BHoM.Global.BHoMObject)
-            {
-                result = (BHoM.Global.BHoMObject)((BHoM.Global.BHoMObject)element).ShallowClone();
-                ((BHoM.Global.BHoMObject)result).SetGeometry(geometry);
-            }
-            else if (element is GeometryBase)
-            {
-                result = geometry;
-            }
-
-            return result;
-        }
-
-        /******************************************/
-
-        private static List<Curve> GetGeometries(List<object> elements, BoundingBox ROI)
-        {
-            // Get the geometry of the ref elements
-            List<Curve> geometries = new List<Curve>();
-            foreach (object element in elements)
-            {
-                GeometryBase geometry = GetGeometry(element);
-
-                if (BoundingBox.InRange(ROI, geometry.Bounds()))
-                {
-                    if (geometry is Curve)
-                        geometries.Add((Curve)geometry);
-                    else if (geometry is Group<Curve>)
-                    {
-                        List<Curve> list = Curve.Join((Group<Curve>)geometry);
-                        geometries.Add(list[0]);
-                    }
-                }
-            }
-
-            return geometries;
-        }
+        
     }
 }
