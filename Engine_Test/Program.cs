@@ -61,7 +61,8 @@ namespace Engine_Test
             panel2 = ModelLaundry_Engine.Util.HorizontalExtend(panel2, 1) as Panel;
 
             List<object> refCurves = new List<object>();
-            refCurves.Add(panel2.External_Contour);
+            foreach (Curve curve in panel2.External_Contours)
+            refCurves.Add(curve);
             ModelLaundry_Engine.Snapping.HorizontalSnapToShape(panel, refCurves, 1);
 
             Console.WriteLine("Done");
