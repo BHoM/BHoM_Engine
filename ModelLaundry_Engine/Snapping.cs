@@ -103,8 +103,7 @@ namespace ModelLaundry_Engine
         {
             // Get the geometry of the elements
             GeometryBase geometry = Util.GetGeometry(element);
-            BoundingBox ROI = geometry.Bounds();
-            ROI.Inflate(tolerance);
+            BoundingBox ROI = geometry.Bounds().Inflate(tolerance);
             List<Curve> refGeom = Util.GetGeometries(refElements, ROI);
 
             // Do the actal snapping
@@ -193,8 +192,7 @@ namespace ModelLaundry_Engine
         {
             // Get the geometry of the element
             GeometryBase geometry = Util.GetGeometry(element);
-            BoundingBox ROI = geometry.Bounds();
-            ROI.Inflate(tolerance);
+            BoundingBox ROI = geometry.Bounds().Inflate(tolerance);
             List<Curve> refGeom = Util.GetGeometries(refElements, ROI);
 
             // Do the actal snapping
@@ -202,6 +200,10 @@ namespace ModelLaundry_Engine
             if (geometry is Point)
             {
                 output = Snapping.HorizontalSnapToShape((Point)geometry, refGeom, tolerance);
+            }
+            else if (geometry is Line)
+            {
+                output = Snapping.HorizontalSnapToShape((Line)geometry, refGeom, tolerance);
             }
             else if (geometry is Curve)
             {
@@ -231,6 +233,13 @@ namespace ModelLaundry_Engine
             }
 
             return point;
+        }
+
+        /******************************************/
+
+        public static Line HorizontalSnapToShape(Line line, List<Curve> refContours, double tolerance)
+        {
+            return new Line(HorizontalSnapToShape(line.StartPoint, refContours, tolerance), HorizontalSnapToShape(line.EndPoint, refContours, tolerance));
         }
 
         /******************************************/
@@ -306,8 +315,7 @@ namespace ModelLaundry_Engine
         {
             // Get the geometry of the element
             GeometryBase geometry = Util.GetGeometry(element);
-            BoundingBox ROI = geometry.Bounds();
-            ROI.Inflate(tolerance);
+            BoundingBox ROI = geometry.Bounds().Inflate(tolerance);
             List<Curve> refGeom = Util.GetGeometries(refElements, ROI);
 
             // Do the actal snapping
@@ -426,17 +434,10 @@ namespace ModelLaundry_Engine
         {
             // Get the geometry of the elements
             GeometryBase geometry = Util.GetGeometry(element);
-            BoundingBox ROI = geometry.Bounds();
-            ROI.Inflate(tolerance);
+            BoundingBox ROI = geometry.Bounds().Inflate(tolerance);
 
             // Get the reference points
-            List<Point> refPoints = new List<Point>();
-            List<Curve> refGeom = Util.GetGeometries(refElements, ROI);
-            foreach (Curve curve in refGeom)
-            {
-                foreach (Point pt in curve.ControlPoints)
-                    refPoints.Add(pt);
-            }
+            List<Point> refPoints = Util.GetControlPoints(refElements, ROI);
 
             // Do the actal snapping
             GeometryBase output = null;
