@@ -384,7 +384,7 @@ namespace ModelLaundry_Engine
                             bestSnap = snaps[i];
                     }
                     snapDirections[getPointCode(line.StartPoint)].Add(bestSnap);
-                    snapDirections[getPointCode(line.StartPoint)].Add(bestSnap);
+                    snapDirections[getPointCode(line.EndPoint)].Add(bestSnap);
                 }
             }
 
@@ -395,12 +395,16 @@ namespace ModelLaundry_Engine
                 List<Snap> snaps = snapDirections[getPointCode(pt)];
                 if (snaps.Count > 0)
                 {
-                    Vector finalDir = snaps[0].dir;
-                    Vector refDir = snaps[0].dir;
+                    Vector finalDir = snaps[0].dir.DuplicateVector();
+                    Vector refDir = snaps[0].dir.DuplicateVector();
                     refDir.Unitize();
 
-                    for (int i = 0; i < snaps.Count; i++)
-                        finalDir += snaps[i].dir * Math.Sin(Vector.VectorAngle(refDir, snaps[i].dir));
+                    for (int i = 1; i < snaps.Count; i++)
+                    {
+                        double sin = Math.Sin(Vector.VectorAngle(refDir, snaps[i].dir));
+                        if (!Double.IsNaN(sin))
+                            finalDir += snaps[i].dir * sin;
+                    } 
                     newPoints.Add(pt + finalDir);
                 }
                 else
@@ -537,7 +541,7 @@ namespace ModelLaundry_Engine
 
         private static string getPointCode(Point pt)
         {
-            return Math.Round(pt.X, 3).ToString() + '-' + Math.Round(pt.Y, 3).ToString();
+            return Math.Round(pt.X, 3).ToString() + ';' + Math.Round(pt.Y, 3).ToString();
         }
 
         
