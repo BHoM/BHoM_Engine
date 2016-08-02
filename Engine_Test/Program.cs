@@ -15,7 +15,7 @@ namespace Engine_Test
     {
         static void Main(string[] args)
         {
-            TestLineVSnap();
+            TestMongo3();
 
             Console.Read();
         }
@@ -56,13 +56,14 @@ namespace Engine_Test
 
             List<double> heights = new List<double>();
             heights.Add(45);
-            ModelLaundry_Engine.Snapping.VerticalPointSnap(panel, heights, 1);
+            ModelLaundry_Engine.Snapping.VerticalSnapToHeight(panel, heights, 1);
             panel = ModelLaundry_Engine.Util.HorizontalExtend(panel, 1) as Panel;
             panel2 = ModelLaundry_Engine.Util.HorizontalExtend(panel2, 1) as Panel;
 
             List<object> refCurves = new List<object>();
-            refCurves.Add(panel2.External_Contour);
-            ModelLaundry_Engine.Snapping.HorizontalPointSnap(panel, refCurves, 1);
+            foreach (Curve curve in panel2.External_Contours)
+            refCurves.Add(curve);
+            ModelLaundry_Engine.Snapping.HorizontalSnapToShape(panel, refCurves, 1);
 
             Console.WriteLine("Done");
         }
@@ -78,11 +79,11 @@ namespace Engine_Test
             heights.Add(5);
 
             Line line = new Line(pt1, pt2);
-            Curve r1 = Snapping.VerticalPointSnap(line, heights, 0.7);
+            Curve r1 = Snapping.VerticalSnapToHeight(line, heights, 0.7);
             Console.WriteLine("Line: [{0} - {1}", r1.StartPoint.ToString(), r1.EndPoint.ToString());
 
             Bar bar = new Bar(pt1, pt2);
-            Bar r2 = Snapping.VerticalPointSnap(bar, heights, 0.7) as Bar;
+            Bar r2 = Snapping.VerticalSnapToHeight(bar, heights, 0.7) as Bar;
             Console.WriteLine("Line: [{0} - {1}", r2.StartPoint.ToString(), r2.EndPoint.ToString());
 
             Console.WriteLine("Done");
@@ -116,6 +117,69 @@ namespace Engine_Test
             // Get all object from database
             IEnumerable<BHoM.Global.BHoMObject> objects = mongo.GetObjects("{}");
             Console.WriteLine("Objects obtained from the database: {0}", objects.Count());
+        }
+
+        static void TestMongo2()
+        {
+            Databases_Engine.Mongo.MongoLink link = new Databases_Engine.Mongo.MongoLink("mongodb://host:27017", "project", "bhomObjects");
+
+            Node A = new Node(1, 2, 3, "A");
+            Node B = new Node(4, 5, 6, "B");
+            Node C = new Node(4, 0, 1, "C");
+            Node D = new Node(7, 8, 9, "D");
+
+
+            List <BHoMObject> list1 = new List<BHoMObject>();
+            list1.Add(new Bar(A, B, "b11"));
+            list1.Add(new Bar(A, C, "b12"));
+            link.SaveObjects(list1, "list1");
+
+            List<BHoMObject> list2 = new List<BHoMObject>();
+            list2.Add(new Bar(D, B, "b21"));
+            list2.Add(new Bar(D, C, "b22"));
+            link.SaveObjects(list2, "list2");
+
+            string filter1 = "{ \"Key\": \"list1\" }";
+            var result1 = link.GetObjects(filter1);
+
+            string filter2 = "{ \"Properties.Name\": \"b11\" }";
+            var result2 = link.GetObjects(filter2);
+
+            string filter3 = "{ \"Properties.StartPoint.point.0\": 1 }";
+            var result3 = link.GetObjects(filter3);
+
+            string filter4 = "{ \"Properties.BHoM_Guid\": \"" + list1[0].BHoM_Guid.ToString() + "\"}";
+            var result4 = link.GetObjects(filter4);
+
+            string filter5 = "{ \"Type\": \"BHoM.Structural.Bar\" }";
+            var result5 = link.GetObjects(filter5);
+        }
+
+        static void TestMongo3()
+        {
+            string inServer = "mongodb://localhost:27017";
+            string outServer = "mongodb://collective:computational@ds029565.mlab.com:29565/bhom";
+            Databases_Engine.Mongo.MongoLink link = new Databases_Engine.Mongo.MongoLink(outServer, "bhom", "bhomObjects");
+
+            List<Point> points = new List<Point>();
+            points.Add(new Point(0, 0, 0));
+            points.Add(new Point(0, 5, 0));
+            points.Add(new Point(5, 5, 0));
+            points.Add(new Point(5, 0, 0));
+            points.Add(new Point(0, 0, 0));
+            Polyline contour = new Polyline(points);
+            Group<Curve> edges = new Group<Curve>();
+            edges.Add(contour);
+
+            Panel panel = new Panel(edges);
+            panel.ThicknessProperty = new ConstantThickness("TestThickness", 0.3);
+
+            List<BHoMObject> objects = new List<BHoMObject>();
+            objects.Add(panel);
+            link.SaveObjects(objects, "panels_01");
+
+            string filter1 = "{ \"Type\": \"BHoM.Structural.Panel\" }";
+            var result1 = link.GetObjects(filter1);
         }
 
         static void TestGraph()

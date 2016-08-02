@@ -265,8 +265,7 @@ namespace ModelLaundry_Engine
 
         public static List<Curve> GetNearContours(Curve refContour, List<Curve> contours, double tolerance)
         {
-            BoundingBox ROI = refContour.Bounds();
-            ROI.Inflate(tolerance);
+            BoundingBox ROI = refContour.Bounds().Inflate(tolerance);
 
             List<Curve> nearContours = new List<Curve>();
             foreach (Curve refC in contours)
@@ -282,6 +281,152 @@ namespace ModelLaundry_Engine
             return nearContours;
         }
 
-        
+
+        /*************************************/
+        /****  Geometry accessors         ****/
+        /*************************************/
+
+        internal static GeometryBase GetGeometry(object element)
+        {
+            GeometryBase geometry = null;
+            if (element is BHoM.Global.BHoMObject)
+                geometry = ((BHoM.Global.BHoMObject)element).GetGeometry();
+            else if (element is GeometryBase)
+                geometry = element as GeometryBase;
+            return geometry;
+        }
+
+        /******************************************/
+
+        internal static object SetGeometry(object element, GeometryBase geometry)
+        {
+            object result = element;
+            if (element is BHoM.Global.BHoMObject)
+            {
+                result = (BHoM.Global.BHoMObject)((BHoM.Global.BHoMObject)element).ShallowClone();
+                ((BHoM.Global.BHoMObject)result).SetGeometry(geometry);
+            }
+            else if (element is GeometryBase)
+            {
+                result = geometry;
+            }
+
+            return result;
+        }
+
+        /******************************************/
+
+        internal static List<Curve> GetGeometries(List<object> elements)
+        {
+            // Get the geometry of the ref elements
+            List<Curve> geometries = new List<Curve>();
+            foreach (object element in elements)
+            {
+                GeometryBase geometry = GetGeometry(element);
+
+                if (geometry is Curve)
+                    geometries.Add((Curve)geometry);
+                else if (geometry is Group<Curve>)
+                {
+                    List<Curve> list = Curve.Join((Group<Curve>)geometry);
+                    geometries.Add(list[0]);
+                }
+            }
+
+            return geometries;
+        }
+
+        /******************************************/
+
+        internal static List<Curve> GetGeometries(List<object> elements, BoundingBox ROI)
+        {
+            // Get the geometry of the ref elements
+            List<Curve> geometries = new List<Curve>();
+            foreach (object element in elements)
+            {
+                GeometryBase geometry = GetGeometry(element);
+
+                if (BoundingBox.InRange(ROI, geometry.Bounds()))
+                {
+                    if (geometry is Curve)
+                        geometries.Add((Curve)geometry);
+                    else if (geometry is Group<Curve>)
+                    {
+                        foreach (Curve curve in Curve.Join((Group<Curve>)geometry))
+                        {
+                            geometries.Add(curve);
+                        }
+                    }
+                }
+            }
+
+            return geometries;
+        }
+
+        /******************************************/
+
+        internal static List<Point> GetControlPoints(List<object> elements, BoundingBox ROI)
+        {
+            // Get the geometry of the ref elements
+            List<Point> points = new List<Point>();
+            foreach (object element in elements)
+            {
+                GeometryBase geometry = GetGeometry(element);
+
+                if (BoundingBox.InRange(ROI, geometry.Bounds()))
+                {
+                    foreach (Point pt in GetControlPoints(geometry))
+                        points.Add(pt);
+                }
+            }
+
+            return points;
+        }
+
+        /******************************************/
+
+        internal static List<Point> GetControlPoints(List<object> elements)
+        {
+            // Get the geometry of the ref elements
+            List<Point> points = new List<Point>();
+            foreach (object element in elements)
+            {
+                foreach (Point pt in GetControlPoints(GetGeometry(element)))
+                    points.Add(pt);
+            }
+
+            return points;
+        }
+
+        /******************************************/
+
+        internal static List<Point> GetControlPoints(object element)
+        {
+            // Get the geometry of the ref elements
+            List<Point> points = new List<Point>();
+
+            GeometryBase geometry = GetGeometry(element);
+
+            if (geometry is Point)
+            {
+                points.Add(geometry as Point);
+            }
+            else if (geometry is Curve)
+            {
+                foreach (Point pt in ((Curve)geometry).ControlPoints)
+                    points.Add(pt);
+            }
+            else if (geometry is Group<Curve>)
+            {
+                foreach (Curve curve in Curve.Join((Group<Curve>)geometry))
+                {
+                    foreach (Point pt in curve.ControlPoints)
+                        points.Add(pt);
+                }
+            }
+
+            return points;
+        }
+
     }
 }
