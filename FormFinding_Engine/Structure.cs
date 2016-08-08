@@ -233,20 +233,20 @@ namespace FormFinding_Engine
             }
         }
 
-        public void CalcNodeForce(double gravity)
+        public void CalcNodeForce(double unaryNodalLoad)
         {
-            foreach (Node node in this.Nodes)
+            foreach (Node node in Nodes)
             {
-                NodalResult nodeResult = new NodalResult();
+               NodalResult nodeResult = new NodalResult();
 
                 nodeResult.Force = new Vector(0, 0, 0);
 
-                nodeResult.Force = nodeResult.Force + new BHoM.Geometry.Vector(0, 0, gravity);
+                nodeResult.Force = nodeResult.Force + new BHoM.Geometry.Vector(0, 0, unaryNodalLoad);
 
                 nodalResultCollection.Add(node.Name + ":" + t.ToString(), nodeResult);
             }
 
-            foreach (Bar bar in this.Bars)
+            foreach (Bar bar in Bars)
             {
                 BarForce barForce = barForceCollection[bar.Name + ":" + t.ToString()];
                 nodalResultCollection[bar.StartNode.Name + ":" + t.ToString()].Force = nodalResultCollection[bar.StartNode.Name + ":" + t.ToString()].Force + new Vector(barForce.FX, barForce.FY, barForce.FZ - bar.SectionProperty.MassPerMetre * (double)bar.CustomData["StartLength"] / 2);
