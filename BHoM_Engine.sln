@@ -14,8 +14,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Graph_Engine", "Graph_Engin
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModelLaundry_Engine", "ModelLaundry_Engine\ModelLaundry_Engine.csproj", "{DD942373-95D4-46C9-AED7-7B58149F5D2E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Databases_Engine", "Databases_Engine\Databases_Engine.csproj", "{8CE32CAD-9191-4690-88A2-106245CD6F9F}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -38,10 +36,6 @@ Global
 		{DD942373-95D4-46C9-AED7-7B58149F5D2E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DD942373-95D4-46C9-AED7-7B58149F5D2E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DD942373-95D4-46C9-AED7-7B58149F5D2E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8CE32CAD-9191-4690-88A2-106245CD6F9F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8CE32CAD-9191-4690-88A2-106245CD6F9F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8CE32CAD-9191-4690-88A2-106245CD6F9F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8CE32CAD-9191-4690-88A2-106245CD6F9F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
