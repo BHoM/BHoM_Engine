@@ -4,9 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BHoM.Geometry;
+using BHoM.Base;
 using BHoM.Global;
 using BHoM.Generic;
-using BHoM.Structural;
+using BHoM.Structural.Elements;
+using BHoM.Structural.Properties;
 using ModelLaundry_Engine;
 
 namespace Engine_Test
@@ -15,7 +17,6 @@ namespace Engine_Test
     {
         static void Main(string[] args)
         {
-            TestMongo3();
 
             Console.Read();
         }
@@ -35,7 +36,7 @@ namespace Engine_Test
                 edges.Add(new Line(points[i - 1], points[i]));
 
             Panel panel = new Panel(edges);
-            panel.ThicknessProperty = new ConstantThickness("test", 0.25);
+            panel.PanelProperty = new ConstantThickness("test", 0.25);
 
             project.AddObject(panel);
 
@@ -87,99 +88,6 @@ namespace Engine_Test
             Console.WriteLine("Line: [{0} - {1}", r2.StartPoint.ToString(), r2.EndPoint.ToString());
 
             Console.WriteLine("Done");
-        }
-
-        static void TestMongo()
-        {
-            // Create a fake project
-            List<Node> nodes = new List<Node>();
-            for (int i = 0; i < 10; i++)
-                nodes.Add(new Node(i, 2, 3));
-
-            List<Bar> bars = new List<Bar>();
-            for (int i = 1; i < 10; i++)
-                bars.Add(new Bar(nodes[i - 1], nodes[i]));
-
-            var project = Project.ActiveProject;
-            foreach (Node node in nodes)
-                project.AddObject(node);
-            foreach (Bar bar in bars)
-                project.AddObject(bar);
-
-            // Create database
-            var mongo = new Databases_Engine.Mongo.MongoLink();
-            Console.WriteLine("Database link created");
-
-            // Add Objects to the dtabase
-            //mongo.SaveObjects(project.Objects);
-            //Console.WriteLine("Objects added to the database");
-
-            // Get all object from database
-            IEnumerable<BHoM.Global.BHoMObject> objects = mongo.GetObjects("{}");
-            Console.WriteLine("Objects obtained from the database: {0}", objects.Count());
-        }
-
-        static void TestMongo2()
-        {
-            Databases_Engine.Mongo.MongoLink link = new Databases_Engine.Mongo.MongoLink("mongodb://host:27017", "project", "bhomObjects");
-
-            Node A = new Node(1, 2, 3, "A");
-            Node B = new Node(4, 5, 6, "B");
-            Node C = new Node(4, 0, 1, "C");
-            Node D = new Node(7, 8, 9, "D");
-
-
-            List <BHoMObject> list1 = new List<BHoMObject>();
-            list1.Add(new Bar(A, B, "b11"));
-            list1.Add(new Bar(A, C, "b12"));
-            link.SaveObjects(list1, "list1");
-
-            List<BHoMObject> list2 = new List<BHoMObject>();
-            list2.Add(new Bar(D, B, "b21"));
-            list2.Add(new Bar(D, C, "b22"));
-            link.SaveObjects(list2, "list2");
-
-            string filter1 = "{ \"Key\": \"list1\" }";
-            var result1 = link.GetObjects(filter1);
-
-            string filter2 = "{ \"Properties.Name\": \"b11\" }";
-            var result2 = link.GetObjects(filter2);
-
-            string filter3 = "{ \"Properties.StartPoint.point.0\": 1 }";
-            var result3 = link.GetObjects(filter3);
-
-            string filter4 = "{ \"Properties.BHoM_Guid\": \"" + list1[0].BHoM_Guid.ToString() + "\"}";
-            var result4 = link.GetObjects(filter4);
-
-            string filter5 = "{ \"Type\": \"BHoM.Structural.Bar\" }";
-            var result5 = link.GetObjects(filter5);
-        }
-
-        static void TestMongo3()
-        {
-            string inServer = "mongodb://localhost:27017";
-            string outServer = "mongodb://collective:computational@ds029565.mlab.com:29565/bhom";
-            Databases_Engine.Mongo.MongoLink link = new Databases_Engine.Mongo.MongoLink(outServer, "bhom", "bhomObjects");
-
-            List<Point> points = new List<Point>();
-            points.Add(new Point(0, 0, 0));
-            points.Add(new Point(0, 5, 0));
-            points.Add(new Point(5, 5, 0));
-            points.Add(new Point(5, 0, 0));
-            points.Add(new Point(0, 0, 0));
-            Polyline contour = new Polyline(points);
-            Group<Curve> edges = new Group<Curve>();
-            edges.Add(contour);
-
-            Panel panel = new Panel(edges);
-            panel.ThicknessProperty = new ConstantThickness("TestThickness", 0.3);
-
-            List<BHoMObject> objects = new List<BHoMObject>();
-            objects.Add(panel);
-            link.SaveObjects(objects, "panels_01");
-
-            string filter1 = "{ \"Type\": \"BHoM.Structural.Panel\" }";
-            var result1 = link.GetObjects(filter1);
         }
 
         static void TestGraph()

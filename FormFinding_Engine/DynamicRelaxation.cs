@@ -4,9 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BHoM.Geometry;
-using BHoM.Structural;
-using BHoM.Structural.Results.Bars;
-using BHoM.Structural.Results.Nodes;
+using BHoM.Structural.Elements;
+using BHoM.Structural.Results;
 using BHoM;
 
 namespace FormFinding_Engine

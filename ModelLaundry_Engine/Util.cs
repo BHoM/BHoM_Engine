@@ -17,8 +17,8 @@ namespace ModelLaundry_Engine
         {
             // Get the geometry
             GeometryBase geometry = null;
-            if (element is BHoM.Global.BHoMObject)
-                geometry = ((BHoM.Global.BHoMObject)element).GetGeometry();
+            if (element is BHoM.Base.BHoMObject)
+                geometry = ((BHoM.Base.BHoMObject)element).GetGeometry();
             else if (element is GeometryBase)
                 geometry = element as GeometryBase;
 
@@ -38,10 +38,10 @@ namespace ModelLaundry_Engine
 
             // Prepare the result
             object result = element;
-            if (element is BHoM.Global.BHoMObject)
+            if (element is BHoM.Base.BHoMObject)
             {
-                result = (BHoM.Global.BHoMObject)((BHoM.Global.BHoMObject)element).ShallowClone();
-                ((BHoM.Global.BHoMObject)result).SetGeometry(output);
+                result = (BHoM.Base.BHoMObject)((BHoM.Base.BHoMObject)element).ShallowClone();
+                ((BHoM.Base.BHoMObject)result).SetGeometry(output);
             }
             else if (element is GeometryBase)
             {
@@ -135,7 +135,7 @@ namespace ModelLaundry_Engine
             outsiders = new List<object>();
             foreach (object element in elements)
             {
-                if (element is BHoM.Global.BHoMObject && Util.IsInside(((BHoM.Global.BHoMObject)element).GetGeometry(), boxes))
+                if (element is BHoM.Base.BHoMObject && Util.IsInside(((BHoM.Base.BHoMObject)element).GetGeometry(), boxes))
                     insiders.Add(element);
                 else if (element is GeometryBase && Util.IsInside((GeometryBase)element, boxes))
                     insiders.Add(element);
@@ -165,11 +165,11 @@ namespace ModelLaundry_Engine
 
         /*************************************/
 
-        public static List<BHoM.Global.BHoMObject> FilterByBoundingBox(List<BHoM.Global.BHoMObject> elements, List<BoundingBox> boxes, out List<BHoM.Global.BHoMObject> outsiders)
+        public static List<BHoM.Base.BHoMObject> FilterByBoundingBox(List<BHoM.Base.BHoMObject> elements, List<BoundingBox> boxes, out List<BHoM.Base.BHoMObject> outsiders)
         {
-            List<BHoM.Global.BHoMObject> insiders = new List<BHoM.Global.BHoMObject>();
-            outsiders = new List<BHoM.Global.BHoMObject>();
-            foreach (BHoM.Global.BHoMObject element in elements)
+            List<BHoM.Base.BHoMObject> insiders = new List<BHoM.Base.BHoMObject>();
+            outsiders = new List<BHoM.Base.BHoMObject>();
+            foreach (BHoM.Base.BHoMObject element in elements)
             {
                 if (IsInside(element.GetGeometry(), boxes))
                     insiders.Add(element);
@@ -205,8 +205,8 @@ namespace ModelLaundry_Engine
         {
             // Get the geometry
             GeometryBase geometry = null;
-            if (element is BHoM.Global.BHoMObject)
-                geometry = ((BHoM.Global.BHoMObject)element).GetGeometry();
+            if (element is BHoM.Base.BHoMObject)
+                geometry = ((BHoM.Base.BHoMObject)element).GetGeometry();
             else if (element is GeometryBase)
                 geometry = element as GeometryBase;
 
@@ -225,10 +225,10 @@ namespace ModelLaundry_Engine
 
             // Prepare the result
             object result = element;
-            if (element is BHoM.Global.BHoMObject)
+            if (element is BHoM.Base.BHoMObject)
             {
-                result = (BHoM.Global.BHoMObject)((BHoM.Global.BHoMObject)element).ShallowClone();
-                ((BHoM.Global.BHoMObject)result).SetGeometry(output);
+                result = (BHoM.Base.BHoMObject)((BHoM.Base.BHoMObject)element).ShallowClone();
+                ((BHoM.Base.BHoMObject)result).SetGeometry(output);
             }
             else if (element is GeometryBase)
             {
@@ -289,8 +289,8 @@ namespace ModelLaundry_Engine
         internal static GeometryBase GetGeometry(object element)
         {
             GeometryBase geometry = null;
-            if (element is BHoM.Global.BHoMObject)
-                geometry = ((BHoM.Global.BHoMObject)element).GetGeometry();
+            if (element is BHoM.Base.BHoMObject)
+                geometry = ((BHoM.Base.BHoMObject)element).GetGeometry();
             else if (element is GeometryBase)
                 geometry = element as GeometryBase;
             return geometry;
@@ -301,10 +301,10 @@ namespace ModelLaundry_Engine
         internal static object SetGeometry(object element, GeometryBase geometry)
         {
             object result = element;
-            if (element is BHoM.Global.BHoMObject)
+            if (element is BHoM.Base.BHoMObject)
             {
-                result = (BHoM.Global.BHoMObject)((BHoM.Global.BHoMObject)element).ShallowClone();
-                ((BHoM.Global.BHoMObject)result).SetGeometry(geometry);
+                result = (BHoM.Base.BHoMObject)((BHoM.Base.BHoMObject)element).ShallowClone();
+                ((BHoM.Base.BHoMObject)result).SetGeometry(geometry);
             }
             else if (element is GeometryBase)
             {
