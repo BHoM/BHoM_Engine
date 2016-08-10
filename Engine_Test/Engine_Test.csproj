@@ -18,7 +18,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\Build\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -42,9 +42,6 @@
     <Reference Include="Graph_Engine">
       <HintPath>..\Build\Graph_Engine.dll</HintPath>
     </Reference>
-    <Reference Include="ModelLaundry_Engine">
-      <HintPath>..\Build\ModelLaundry_Engine.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -60,6 +57,16 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\FormFinding_Engine\FormFinding_Engine.csproj">
+      <Project>{6112d632-6143-4866-9aba-28cdd1340c6d}</Project>
+      <Name>FormFinding_Engine</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ModelLaundry_Engine\ModelLaundry_Engine.csproj">
+      <Project>{dd942373-95d4-46c9-aed7-7b58149f5d2e}</Project>
+      <Name>ModelLaundry_Engine</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
