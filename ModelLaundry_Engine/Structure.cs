@@ -52,7 +52,7 @@ namespace ModelLaundry_Engine
 
                     BHG.Group<BHG.Curve> perimeter = new BHG.Group<BHG.Curve>(new List<BHG.Curve>() { line1, line2, line3, line4 });
 
-                    string propertyName = "Wall: " + Math.Round(thickness * 1000, 2) + " mm";
+                    string propertyName = "Wall " + Math.Round(thickness * 1000, 2) + " mm";
 
                     if (thicknessManager[propertyName] == null)
                     {
