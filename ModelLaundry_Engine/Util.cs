@@ -265,16 +265,14 @@ namespace ModelLaundry_Engine
 
         public static List<Curve> GetNearContours(Curve refContour, List<Curve> contours, double tolerance)
         {
-            BoundingBox ROI = refContour.Bounds().Inflate(tolerance);
+            BoundingBox bounds = refContour.Bounds();
+            BoundingBox ROI = bounds.Inflate(tolerance);
 
             List<Curve> nearContours = new List<Curve>();
             foreach (Curve refC in contours)
             {
                 BoundingBox cBox = refC.Bounds();
-                if (ROI.Contains(cBox))
-                    continue;
-
-                if (BoundingBox.InRange(ROI, cBox))
+                if (cBox.Centre.DistanceTo(bounds.Centre) > 1e-5 && BoundingBox.InRange(ROI, cBox))
                     nearContours.Add(refC);
             }
 
