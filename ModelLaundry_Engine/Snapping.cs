@@ -249,31 +249,43 @@ namespace ModelLaundry_Engine
             // Get the refContours that are close enought to matter
             List<Curve> nearContours = Util.GetNearContours(contour, refContours, tolerance);
 
-            // Get the horizontal perpendicular direction of the contour
+            // Create snapping proposition list per horizontal position
             List<Point> oldPoints = contour.ControlPoints;
-            Vector hDir = new Vector(0, 0, 0);
-            for (int i = 1; i < oldPoints.Count; i++)
-            {
-                Vector dir = oldPoints[i] - oldPoints[i - 1];
-                if (Math.Abs(dir.Z) < 1e-3)
-                {
-                    hDir = new Vector(-dir.Y, dir.X, 0);
-                    hDir.Unitize();
-                    break;
-                }
-            }
-
-            // Create snapping propositions per horizontal position
-            Dictionary<string, Vector> snapDirections = new Dictionary<string, Vector>();
+            Dictionary<string, List<Snap>> snapDirections = new Dictionary<string, List<Snap>>();
             foreach (Point pt in oldPoints)
             {
-                string code = getPointCode(pt);
+                snapDirections[getPointCode(pt)] = new List<Snap>();
+            }
 
+            // Get the lines to vote for points
+            foreach (Line line in contour.Explode())
+            {
+                // Only work with horizontal lines
+                if (Math.Abs(line.Direction.Z) > 1e-3) continue;
+
+                // Get directions of the line
+                Vector hDir = line.Direction;
+                hDir.Unitize();
+                Vector pDir = new Vector(-hDir.Y, hDir.X, 0);
+
+                // Add snap propositions
+                List<Snap> snaps = new List<Snap>();
                 foreach (Curve refC in nearContours)
                 {
-                    Vector dir = refC.ClosestPoint(pt) - pt;
-                    if (dir.Length > 1e-3 && dir.Length < tolerance && Math.Abs(dir * hDir) < 1e-3)
-                        snapDirections[code] = dir;
+                    foreach (Line refL in refC.Explode())
+                    {
+                        Point intersection = Intersect.LineLine(line, refL);
+                        if (intersection != null)
+                        {
+                            Vector startDir = intersection - line.StartPoint;
+                            if (startDir.Length < tolerance && startDir.Length > 0)
+                                snapDirections[getPointCode(line.StartPoint)].Add(new Snap(startDir, refL));
+
+                            Vector endDir = intersection - line.EndPoint;
+                            if (endDir.Length < tolerance && endDir.Length > 0)
+                                snapDirections[getPointCode(line.EndPoint)].Add(new Snap(endDir, refL));
+                        }
+                    }
                 }
             }
 
@@ -281,9 +293,21 @@ namespace ModelLaundry_Engine
             List<Point> newPoints = new List<Point>();
             foreach (Point pt in oldPoints)
             {
-                string code = getPointCode(pt);
-                if (snapDirections.ContainsKey(code))
-                    newPoints.Add(pt + snapDirections[code]);
+                List<Snap> snaps = snapDirections[getPointCode(pt)];
+                if (snaps.Count > 0)
+                {
+                    Vector finalDir = snaps[0].dir.DuplicateVector();
+                    Vector refDir = snaps[0].dir.DuplicateVector();
+                    refDir.Unitize();
+
+                    for (int i = 1; i < snaps.Count; i++)
+                    {
+                        double sin = Math.Sin(Vector.VectorAngle(refDir, snaps[i].dir));
+                        if (!Double.IsNaN(sin))
+                            finalDir += snaps[i].dir * sin;
+                    }
+                    newPoints.Add(pt + finalDir);
+                }
                 else
                     newPoints.Add(pt);
             }
@@ -352,7 +376,7 @@ namespace ModelLaundry_Engine
             foreach (Line line in contour.Explode())
             {
                 // Only work with horizontal lines
-                if (line.Direction.Z > 1e-3) continue;
+                if (Math.Abs(line.Direction.Z) > 1e-3) continue;
 
                 // Get directions of the line
                 Vector hDir = line.Direction;
