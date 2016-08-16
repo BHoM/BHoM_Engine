@@ -9,7 +9,7 @@ namespace ModelLaundry_Engine
 {
     public static class Diagnostic
     {
-        public static List<Point> CheckSnappedPoints(List<object> elements, double tolerance)
+        public static List<Point> CheckSnappedPoints(List<object> elements, double tolerance, double minDist = BHoM.Base.Tolerance.MIN_DIST)
         {
             PointMatrix matrix = new PointMatrix(tolerance);
 
@@ -24,7 +24,7 @@ namespace ModelLaundry_Engine
 
             // Get all the errors
             HashSet<Point> errors = new HashSet<Point>();
-            foreach (Tuple<PointMatrix.CompositeValue, PointMatrix.CompositeValue> tuple in matrix.GetRelatedPairs(0, tolerance))
+            foreach (Tuple<PointMatrix.CompositeValue, PointMatrix.CompositeValue> tuple in matrix.GetRelatedPairs(minDist, tolerance))
             {
                 errors.Add(tuple.Item1.Point);
             }
