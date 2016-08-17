@@ -389,7 +389,7 @@ namespace ModelLaundry_Engine
                 {
                     foreach (Line refL in refC.Explode())
                     {
-                        if (line.Direction.IsParallel(refL.Direction))
+                        if (line.Direction.IsParallel(refL.Direction) && line.DistanceTo(refL) < tolerance)
                         {
                             Vector dir = (pDir * (refL.EndPoint - line.EndPoint)) * pDir;
                             if (dir.Length < tolerance && dir.Length > 0)
