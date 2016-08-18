@@ -241,7 +241,7 @@ namespace ModelLaundry_Engine
 
         public static Line HorizontalSnapToShape(Line line, List<Curve> refContours, double tolerance, bool anyHeight = false)
         {
-            return new Line(HorizontalSnapToShape(line.StartPoint, refContours, tolerance), HorizontalSnapToShape(line.EndPoint, refContours, tolerance, anyHeight));
+            return new Line(HorizontalSnapToShape(line.StartPoint, refContours, tolerance, anyHeight), HorizontalSnapToShape(line.EndPoint, refContours, tolerance, anyHeight));
         }
 
         /******************************************/
