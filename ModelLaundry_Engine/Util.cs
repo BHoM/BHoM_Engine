@@ -263,10 +263,11 @@ namespace ModelLaundry_Engine
         /****  Get Near Contours          ****/
         /*************************************/
 
-        public static List<Curve> GetNearContours(Curve refContour, List<Curve> contours, double tolerance)
+        public static List<Curve> GetNearContours(Curve refContour, List<Curve> contours, double tolerance, bool anyHeight = false)
         {
             BoundingBox bounds = refContour.Bounds();
             BoundingBox ROI = bounds.Inflate(tolerance);
+            if (anyHeight) ROI.Extents.Z = 1e12;
 
             List<Curve> nearContours = new List<Curve>();
             foreach (Curve refC in contours)

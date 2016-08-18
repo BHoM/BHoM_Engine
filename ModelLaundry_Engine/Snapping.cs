@@ -188,30 +188,31 @@ namespace ModelLaundry_Engine
         /****  Horizontal Spnap to Shapes      ****/
         /******************************************/
 
-        public static object HorizontalSnapToShape(object element, List<object> refElements, double tolerance)
+        public static object HorizontalSnapToShape(object element, List<object> refElements, double tolerance, bool anyHeight = false)
         {
             // Get the geometry of the element
             GeometryBase geometry = Util.GetGeometry(element);
             BoundingBox ROI = geometry.Bounds().Inflate(tolerance);
+            if (anyHeight) ROI.Extents.Z = 1e12;
             List<Curve> refGeom = Util.GetGeometries(refElements, ROI);
 
             // Do the actal snapping
             GeometryBase output = null;
             if (geometry is Point)
             {
-                output = Snapping.HorizontalSnapToShape((Point)geometry, refGeom, tolerance);
+                output = Snapping.HorizontalSnapToShape((Point)geometry, refGeom, tolerance, anyHeight);
             }
             else if (geometry is Line)
             {
-                output = Snapping.HorizontalSnapToShape((Line)geometry, refGeom, tolerance);
+                output = Snapping.HorizontalSnapToShape((Line)geometry, refGeom, tolerance, anyHeight);
             }
             else if (geometry is Curve)
             {
-                output = Snapping.HorizontalSnapToShape((Curve)geometry, refGeom, tolerance);
+                output = Snapping.HorizontalSnapToShape((Curve)geometry, refGeom, tolerance, anyHeight);
             }
             else if (geometry is Group<Curve>)
             {
-                output = Snapping.HorizontalSnapToShape((Group<Curve>)geometry, refGeom, tolerance);
+                output = Snapping.HorizontalSnapToShape((Group<Curve>)geometry, refGeom, tolerance, anyHeight);
             }
 
             // Return the final result
@@ -220,11 +221,12 @@ namespace ModelLaundry_Engine
 
         /******************************************/
 
-        public static Point HorizontalSnapToShape(Point point, List<Curve> refContours, double tolerance)
+        public static Point HorizontalSnapToShape(Point point, List<Curve> refContours, double tolerance, bool anyHeight = false)
         {
             foreach (Curve refC in refContours)
             {
                 Vector dir = refC.ClosestPoint(point) - point;
+                if (anyHeight) dir.Z = 0;
                 if (dir.Length < tolerance)
                 {
                     dir.Z = 0;
@@ -237,17 +239,29 @@ namespace ModelLaundry_Engine
 
         /******************************************/
 
-        public static Line HorizontalSnapToShape(Line line, List<Curve> refContours, double tolerance)
+        public static Line HorizontalSnapToShape(Line line, List<Curve> refContours, double tolerance, bool anyHeight = false)
         {
-            return new Line(HorizontalSnapToShape(line.StartPoint, refContours, tolerance), HorizontalSnapToShape(line.EndPoint, refContours, tolerance));
+            return new Line(HorizontalSnapToShape(line.StartPoint, refContours, tolerance), HorizontalSnapToShape(line.EndPoint, refContours, tolerance, anyHeight));
         }
 
         /******************************************/
 
-        public static Curve HorizontalSnapToShape(Curve contour, List<Curve> refContours, double tolerance)
+        public static Curve HorizontalSnapToShape(Curve contour, List<Curve> refContours, double tolerance, bool anyHeight = false)
         {
             // Get the refContours that are close enought to matter
-            List<Curve> nearContours = Util.GetNearContours(contour, refContours, tolerance);
+            List<Curve> nearContours = Util.GetNearContours(contour, refContours, tolerance, anyHeight);
+
+            // Get all reference lines
+            List<Line> refLines = new List<Line>();
+            foreach (Curve refC in nearContours)
+            {
+                foreach (Line refL in refC.Explode())
+                {
+                    if (Math.Abs(refL.Direction.Z) < 1e-3)
+                        refLines.Add(refL.ProjectToGround());
+                }
+
+            }
 
             // Create snapping proposition list per horizontal position
             List<Point> oldPoints = contour.ControlPoints;
@@ -258,10 +272,11 @@ namespace ModelLaundry_Engine
             }
 
             // Get the lines to vote for points
-            foreach (Line line in contour.Explode())
+            foreach (Line cLine in contour.Explode())
             {
                 // Only work with horizontal lines
-                if (Math.Abs(line.Direction.Z) > 1e-3) continue;
+                if (Math.Abs(cLine.Direction.Z) > 1e-3) continue;
+                Line line = cLine.ProjectToGround();
 
                 // Get directions of the line
                 Vector hDir = line.Direction;
@@ -270,23 +285,20 @@ namespace ModelLaundry_Engine
 
                 // Add snap propositions
                 List<Snap> snaps = new List<Snap>();
-                foreach (Curve refC in nearContours)
+                foreach (Line refL in refLines)
                 {
-                    foreach (Line refL in refC.Explode())
+                    Point intersection = Intersect.LineLine(line, refL);
+                    if (intersection != null)
                     {
-                        Point intersection = Intersect.LineLine(line, refL);
-                        if (intersection != null)
-                        {
-                            Vector startDir = intersection - line.StartPoint;
-                            if (startDir.Length < tolerance && startDir.Length > 0)
-                                snapDirections[getPointCode(line.StartPoint)].Add(new Snap(startDir, refL));
+                        Vector startDir = intersection - line.StartPoint;
+                        if (startDir.Length < tolerance && startDir.Length > 0)
+                            snapDirections[getPointCode(line.StartPoint)].Add(new Snap(startDir, refL));
 
-                            Vector endDir = intersection - line.EndPoint;
-                            if (endDir.Length < tolerance && endDir.Length > 0)
-                                snapDirections[getPointCode(line.EndPoint)].Add(new Snap(endDir, refL));
-                        }
+                        Vector endDir = intersection - line.EndPoint;
+                        if (endDir.Length < tolerance && endDir.Length > 0)
+                            snapDirections[getPointCode(line.EndPoint)].Add(new Snap(endDir, refL));
                     }
-                }
+                } 
             }
 
             // Move points according to snapping propositions
@@ -317,15 +329,15 @@ namespace ModelLaundry_Engine
 
         /******************************************/
 
-        public static Group<Curve> HorizontalSnapToShape(Group<Curve> group, List<Curve> refContours, double tolerance)
+        public static Group<Curve> HorizontalSnapToShape(Group<Curve> group, List<Curve> refContours, double tolerance, bool anyHeight = false)
         {
             Group<Curve> newGroup = new Group<Curve>();
             foreach (Curve curve in Curve.Join(group))
             {
                 if (curve is Line)
-                    newGroup.Add(HorizontalSnapToShape((Line)curve, refContours, tolerance));
+                    newGroup.Add(HorizontalSnapToShape((Line)curve, refContours, tolerance, anyHeight));
                 else
-                    newGroup.Add(HorizontalSnapToShape(curve, refContours, tolerance));
+                    newGroup.Add(HorizontalSnapToShape(curve, refContours, tolerance, anyHeight));
             }
             return newGroup;
         }
@@ -335,22 +347,23 @@ namespace ModelLaundry_Engine
         /****  Horizontal Parrallel Snapping   ****/
         /******************************************/
 
-        public static object HorizontalParallelSnap(object element, List<object> refElements, double tolerance)
+        public static object HorizontalParallelSnap(object element, List<object> refElements, double tolerance, bool anyHeight = false)
         {
             // Get the geometry of the element
             GeometryBase geometry = Util.GetGeometry(element);
             BoundingBox ROI = geometry.Bounds().Inflate(tolerance);
+            if (anyHeight) ROI.Extents.Z = 1e12;
             List<Curve> refGeom = Util.GetGeometries(refElements, ROI);
 
             // Do the actal snapping
             GeometryBase output = null;
             if (geometry is Curve)
             {
-                output = Snapping.HorizontalParallelSnap((Curve)geometry, refGeom, tolerance);
+                output = Snapping.HorizontalParallelSnap((Curve)geometry, refGeom, tolerance, anyHeight);
             }
             else if (geometry is Group<Curve>)
             {
-                output = Snapping.HorizontalParallelSnap((Group<Curve>)geometry, refGeom, tolerance);
+                output = Snapping.HorizontalParallelSnap((Group<Curve>)geometry, refGeom, tolerance, anyHeight);
             }
 
             // Return the final result
@@ -359,10 +372,10 @@ namespace ModelLaundry_Engine
 
         /******************************************/
 
-        public static Curve HorizontalParallelSnap(Curve contour, List<Curve> refContours, double tolerance)
+        public static Curve HorizontalParallelSnap(Curve contour, List<Curve> refContours, double tolerance, bool anyHeight = false)
         {
             // Get the refContours that are close enought to matter
-            List<Curve> nearContours = Util.GetNearContours(contour, refContours, tolerance);
+            List<Curve> nearContours = Util.GetNearContours(contour, refContours, tolerance, anyHeight);
 
             // Create snapping proposition list per horizontal position
             List<Point> oldPoints = contour.ControlPoints;
@@ -372,11 +385,24 @@ namespace ModelLaundry_Engine
                 snapDirections[getPointCode(pt)] = new List<Snap>();
             }
 
+            // Get all reference lines
+            List<Line> refLines = new List<Line>();
+            foreach (Curve refC in nearContours)
+            {
+                foreach (Line refL in refC.Explode())
+                {
+                    if (Math.Abs(refL.Direction.Z) < 1e-3)
+                        refLines.Add(refL.ProjectToGround());
+                }
+                    
+            }
+
             // Get the lines to vote for points
-            foreach (Line line in contour.Explode())
+            foreach (Line cLine in contour.Explode())
             {
                 // Only work with horizontal lines
-                if (Math.Abs(line.Direction.Z) > 1e-3) continue;
+                if (Math.Abs(cLine.Direction.Z) > 1e-3) continue;
+                Line line = cLine.ProjectToGround();
 
                 // Get directions of the line
                 Vector hDir = line.Direction;
@@ -385,16 +411,13 @@ namespace ModelLaundry_Engine
 
                 // Add snap propositions
                 List<Snap> snaps = new List<Snap>();
-                foreach (Curve refC in nearContours)
+                foreach (Line refL in refLines)
                 {
-                    foreach (Line refL in refC.Explode())
+                    if (line.Direction.IsParallel(refL.Direction) && line.DistanceTo(refL) < tolerance)
                     {
-                        if (line.Direction.IsParallel(refL.Direction) && line.DistanceTo(refL) < tolerance)
-                        {
-                            Vector dir = (pDir * (refL.EndPoint - line.EndPoint)) * pDir;
-                            if (dir.Length < tolerance && dir.Length > 0)
-                                snaps.Add(new Snap(dir, refL));
-                        }
+                        Vector dir = (pDir * (refL.EndPoint - line.EndPoint)) * pDir;
+                        if (dir.Length < tolerance && dir.Length > 0)
+                            snaps.Add(new Snap(dir, refL));
                     }
                 }
 
@@ -440,15 +463,15 @@ namespace ModelLaundry_Engine
 
         /******************************************/
 
-        public static Group<Curve> HorizontalParallelSnap(Group<Curve> group, List<Curve> refContours, double tolerance)
+        public static Group<Curve> HorizontalParallelSnap(Group<Curve> group, List<Curve> refContours, double tolerance, bool anyHeight = false)
         {
             Group<Curve> newGroup = new Group<Curve>();
             foreach (Curve curve in Curve.Join(group))
             {
                 if (curve is Line)
-                    newGroup.Add(HorizontalParallelSnap((Line)curve, refContours, tolerance));
+                    newGroup.Add(HorizontalParallelSnap((Line)curve, refContours, tolerance, anyHeight));
                 else
-                    newGroup.Add(HorizontalParallelSnap(curve, refContours, tolerance));
+                    newGroup.Add(HorizontalParallelSnap(curve, refContours, tolerance, anyHeight));
             }
             return newGroup;
         }
