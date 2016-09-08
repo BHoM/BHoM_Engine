@@ -56,7 +56,7 @@ namespace ModelLaundry_Engine
 
                     if (thicknessManager[propertyName] == null)
                     {
-                        thicknessManager.Add(propertyName, new BHP.ConstantThickness(propertyName, thickness));
+                        thicknessManager.Add(propertyName, new BHP.ConstantThickness(propertyName, thickness, BHoM.Structural.Properties.PanelType.Wall));
                     }
 
                     BHE.Panel panel = new BHE.Panel(perimeter);

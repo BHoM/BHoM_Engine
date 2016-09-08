@@ -36,7 +36,7 @@ namespace Engine_Test
                 edges.Add(new Line(points[i - 1], points[i]));
 
             Panel panel = new Panel(edges);
-            panel.PanelProperty = new ConstantThickness("test", 0.25);
+            panel.PanelProperty = new ConstantThickness("test", 0.25, PanelType.Wall);
 
             project.AddObject(panel);
 
