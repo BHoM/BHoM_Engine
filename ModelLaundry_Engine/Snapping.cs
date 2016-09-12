@@ -417,8 +417,10 @@ namespace ModelLaundry_Engine
                 {
                     if (line.Direction.IsParallel(refL.Direction, angleTol) && line.DistanceTo(refL) < tolerance)
                     {
-                        Vector dir = (pDir * (refL.EndPoint - line.EndPoint)) * pDir;
-                        if (dir.Length < tolerance && dir.Length > 0)
+                        Vector startDir = (pDir * (refL.StartPoint - line.StartPoint)) * pDir;
+                        Vector endDir = (pDir * (refL.EndPoint - line.EndPoint)) * pDir;
+                        Vector dir = (startDir.Length < endDir.Length) ? startDir : endDir;
+                        if (dir.Length < tolerance)
                             snaps.Add(new Snap(dir, refL));
                     }
                 }
@@ -445,22 +447,46 @@ namespace ModelLaundry_Engine
             foreach (Point pt in oldPoints)
             {
                 List<Snap> snaps = snapDirections[getPointCode(pt)];
-                if (snaps.Count > 0)
-                {
-                    Vector finalDir = snaps[0].dir.DuplicateVector();
-                    Vector refDir = snaps[0].dir.DuplicateVector();
-                    refDir.Unitize();
 
-                    for (int i = 1; i < snaps.Count; i++)
-                    {
-                        double sin = Math.Sin(Vector.VectorAngle(refDir, snaps[i].dir));
-                        if (!Double.IsNaN(sin))
-                            finalDir += snaps[i].dir * sin;
-                    } 
-                    newPoints.Add(pt + finalDir);
+                if (snaps.Count == 0)
+                {
+                    newPoints.Add(pt);
                 }
                 else
-                    newPoints.Add(pt);
+                {
+                    List<Snap> cleanSnaps = new List<Snap>();
+                    cleanSnaps[0] = snaps[0];
+                    for (int i = 1; i < snaps.Count; i++)
+                    {
+                        bool match = false;
+                        for (int j = 0; j < cleanSnaps.Count; j++)
+                        {
+                            if (snaps[i].target.Direction.IsParallel(cleanSnaps[j].target.Direction))
+                            {
+                                if ((cleanSnaps[j].dir.Length < snaps[i].dir.Length))
+                                    cleanSnaps[j] = snaps[i];
+                                match = true;
+                                break;
+                            }
+                        }
+                        if (!match)
+                            cleanSnaps.Add(snaps[i]);
+                    }
+
+                    if (cleanSnaps.Count == 1)
+                    {
+                        newPoints.Add(pt + cleanSnaps[0].dir.DuplicateVector());
+                    }
+                    else
+                    {
+                        cleanSnaps = cleanSnaps.OrderBy(x => x.dir.Length).ToList();
+                        Point target = Intersect.LineLine(snaps[0].target, snaps[1].target);
+                        target.Z = pt.Z;
+                        newPoints.Add(target);
+                    }
+                }
+
+                
             }
 
             return new Polyline(newPoints);
