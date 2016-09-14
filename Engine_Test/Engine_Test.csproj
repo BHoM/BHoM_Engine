@@ -63,6 +63,10 @@
       <Project>{6112d632-6143-4866-9aba-28cdd1340c6d}</Project>
       <Name>FormFinding_Engine</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MachineLearning_Engine\MachineLearning_Engine.csproj">
+      <Project>{02f81857-2d83-42ab-a0d7-030dcdd4d49f}</Project>
+      <Name>MachineLearning_Engine</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ModelLaundry_Engine\ModelLaundry_Engine.csproj">
       <Project>{dd942373-95d4-46c9-aed7-7b58149f5d2e}</Project>
       <Name>ModelLaundry_Engine</Name>

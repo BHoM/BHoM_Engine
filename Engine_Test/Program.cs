@@ -17,7 +17,7 @@ namespace Engine_Test
     {
         static void Main(string[] args)
         {
-
+            TestVideo();
             Console.Read();
         }
 
@@ -44,6 +44,15 @@ namespace Engine_Test
             project.Clear();
 
             Project project2 = Project.FromJSON(json);
+        }
+
+        static void TestVideo()
+        {
+            string videoFile = @"C:\Users\adecler\Documents\Projects\StadiaCrowdAnalysis\InputVideos\Fan Cam- Preston North End.mp4";
+            string outFolder = @"C:\Users\adecler\Documents\Projects\StadiaCrowdAnalysis\Results\Video_01";
+
+            MachineLearning_Engine.MotionLevelAnalyser analyser = new MachineLearning_Engine.MotionLevelAnalyser();
+            Dictionary<int, double> result = analyser.Run(videoFile, 0, int.MaxValue, outFolder).Result;
         }
 
         static void TestPanelVSnap()
