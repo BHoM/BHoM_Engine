@@ -455,7 +455,7 @@ namespace ModelLaundry_Engine
                 else
                 {
                     List<Snap> cleanSnaps = new List<Snap>();
-                    cleanSnaps[0] = snaps[0];
+                    cleanSnaps.Add(snaps[0]);
                     for (int i = 1; i < snaps.Count; i++)
                     {
                         bool match = false;
