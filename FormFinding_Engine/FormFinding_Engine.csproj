@@ -45,10 +45,35 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DynamicRelaxation.cs" />
+    <Compile Include="Base\Interfaces\IRelaxPosition.cs" />
+    <Compile Include="Base\Interfaces\IRelaxPositionBC.cs" />
+    <Compile Include="Base\Interfaces\IRelaxPositionGoal.cs" />
+    <Compile Include="Base\Interfaces\IRelaxBC.cs" />
+    <Compile Include="Base\Interfaces\IRelaxItem.cs" />
+    <Compile Include="Base\RelaxNode.cs" />
+    <Compile Include="Structural\CableNetSetUp\CableNetPrecalculations.cs" />
+    <Compile Include="Structural\Constraints\NodeConstraint.cs" />
+    <Compile Include="Structural\Goals\ConstantHorizontalPrestressGoal.cs" />
+    <Compile Include="Structural\Goals\RotationalSpring.cs" />
+    <Compile Include="Structural\Masses\IRelaxMass.cs" />
+    <Compile Include="Structural\Masses\PointMass.cs" />
+    <Compile Include="Structural\Goals\Spring.cs" />
+    <Compile Include="Structural\Goals\UnaryForce.cs" />
+    <Compile Include="Structural\RelaxUtilities.cs" />
+    <Compile Include="Structural\StructuralDynamicRelaxation.cs" />
+    <Compile Include="Structural\StructuralRelaxCalculator.cs" />
+    <Compile Include="Superseeded\DynamicRelaxation.cs" />
+    <Compile Include="Superseeded\DynamicRelaxation2.cs" />
+    <Compile Include="Superseeded\DynamicRelaxation3.cs" />
+    <Compile Include="Base\Interfaces\IRelaxCalculator.cs" />
+    <Compile Include="Base\Interfaces\IRelaxGoal.cs" />
+    <Compile Include="Superseeded\NodalResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Structure.cs" />
+    <Compile Include="Base\RelaxSystem.cs" />
+    <Compile Include="Superseeded\Structure.cs" />
+    <Compile Include="Superseeded\Structure3.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -18,21 +18,23 @@ namespace FormFinding_Engine
         public List<Node> Nodes = new List<Node>();
 
         public Dictionary<string, NodalResult> nodalResultCollection;
+
+
         public Dictionary<string, BarForce> barForceCollection;
 
-        public Dictionary<string, double> kineticEnergy;
+        public Dictionary<string, double> m_kineticEnergy;
 
-        public Loadcase loadcase;
+        public Loadcase m_loadcase;
 
-        public double t = 0;
-        public double dt;
-        public double c;
+        public double m_t = 0;
+        public double m_dt;
+        public double m_c;
 
-        public double nodeTol = 0.1;
-        public double treshold;
+        public double m_nodeTol = 0.1;
+        public double m_treshold;
 
-        public double safeTimeStep;
-        public double maxTimeStep;
+        public double m_safeTimeStep;
+        public double m_maxTimeStep;
 
         public Structure(List<Bar> bars, List<Node> lockedNodes)
         {
@@ -74,15 +76,15 @@ namespace FormFinding_Engine
                     Nodes.Add(endNode);
                 }
 
-                Bar newBar = new Bar(startNode,endNode);
+                Bar newBar = new Bar(startNode, endNode);
                 newBar.CustomData = bar.CustomData;
-                newBar.Material = bar.Material;
+                //newBar.Material = bar.Material;
                 newBar.Name = bar.Name;
                 newBar.OrientationAngle = bar.OrientationAngle;
                 newBar.Release = bar.Release;
                 newBar.SectionProperty = bar.SectionProperty;
                 newBar.Spring = bar.Spring;
-                
+
                 Bars.Add(newBar);
             }
 
@@ -111,12 +113,15 @@ namespace FormFinding_Engine
                 }
             }
 
-            loadcase = new Loadcase(1, "Loadcase", LoadNature.Dead, 0);
+            // loadcase = new Loadcase(1, "Loadcase", LoadNature.Dead, 0);
+            m_loadcase = new Loadcase("Loadcase", LoadNature.Dead, 0);
             nodalResultCollection = new Dictionary<string, NodalResult>();
-            barForceCollection = new Dictionary<string, BarForce>();
-            kineticEnergy = new Dictionary<string, double>();
 
-    }
+
+            barForceCollection = new Dictionary<string, BarForce>();
+            m_kineticEnergy = new Dictionary<string, double>();
+
+        }
 
         private Node NodeExists(Node node)
         {
@@ -124,7 +129,7 @@ namespace FormFinding_Engine
             foreach (Node structureNode in this.Nodes)
             {
                 double d = structureNode.Point.DistanceTo(node.Point);
-                if (d < this.nodeTol)
+                if (d < this.m_nodeTol)
                     existingNode = structureNode;
             }
             return existingNode;
@@ -148,7 +153,7 @@ namespace FormFinding_Engine
         public void SetStiffness()
         {
             foreach (Bar bar in Bars)
-                bar.CustomData.Add("Ks", (bar.Material.YoungsModulus*1000000 * (double)bar.CustomData["Area"] + (double)bar.CustomData["Prestress"]) / (double)bar.CustomData["StartLength"]);
+                bar.CustomData.Add("Ks", (bar.Material.YoungsModulus * (double)bar.CustomData["Area"] + (double)bar.CustomData["Prestress"]) / (double)bar.CustomData["StartLength"]);
         }
 
         public void SetStartVelocity()
@@ -157,18 +162,18 @@ namespace FormFinding_Engine
             {
                 NodalResult nodeResult = new NodalResult();
                 nodeResult.Velocity = new Vector(0, 0, 0);
-                nodalResultCollection.Add(node.Name + ":" + t.ToString(), nodeResult);     
+                nodalResultCollection.Add(node.Name + ":" + m_t.ToString(), nodeResult);
             }
         }
 
         public void SetConnectedBars()
         {
-            foreach(Node node in Nodes)
+            foreach (Node node in Nodes)
                 foreach (Bar bar in Bars)
                 {
-                    if (bar.StartNode.Point.DistanceTo(node.Point) < nodeTol)
+                    if (bar.StartNode.Point.DistanceTo(node.Point) < m_nodeTol)
                         node.ConnectedBars.Add(bar);
-                    if (bar.EndNode.Point.DistanceTo(node.Point) < nodeTol)
+                    if (bar.EndNode.Point.DistanceTo(node.Point) < m_nodeTol)
                         node.ConnectedBars.Add(bar);
                 }
         }
@@ -180,10 +185,10 @@ namespace FormFinding_Engine
                 double S = 0;
                 double g = 1;
                 foreach (Bar bar in node.ConnectedBars)
-                    S += bar.Material.YoungsModulus * 1000000 * (double)bar.CustomData["Area"] / (double)bar.CustomData["StartLength"] + g * Math.Abs((double)bar.CustomData["Prestress"]) / bar.Length;
+                    S += bar.Material.YoungsModulus * (double)bar.CustomData["Area"] / (double)bar.CustomData["StartLength"] + g * Math.Abs((double)bar.CustomData["Prestress"]) / bar.Length;
 
-                double M = dt * dt / 2 * S;
-                node.CustomData["Mass"]= M;
+                double M = m_dt * m_dt / 2 * S;
+                node.CustomData["Mass"] = M;
             }
         }
 
@@ -193,7 +198,7 @@ namespace FormFinding_Engine
             {
                 double lumpedMass = 0;
                 foreach (Bar bar in node.ConnectedBars)
-                {                  
+                {
                     lumpedMass += bar.SectionProperty.MassPerMetre * bar.Length / 2;
                 }
 
@@ -212,7 +217,7 @@ namespace FormFinding_Engine
 
                 double T = (double)bar.CustomData["Prestress"] + dl * (double)bar.CustomData["Ks"];
 
-                bar.CustomData["T"] =  T;
+                bar.CustomData["T"] = T;
 
                 barForce.FX = unitVec.X * T;
                 barForce.FY = unitVec.Y * T;
@@ -226,7 +231,7 @@ namespace FormFinding_Engine
                 //      barForce.FZ = 0;
                 //  }
 
-            barForceCollection.Add(bar.Name + ":" + t.ToString(), barForce);
+                barForceCollection.Add(bar.Name + ":" + m_t.ToString(), barForce);
             }
         }
 
@@ -234,33 +239,33 @@ namespace FormFinding_Engine
         {
             foreach (Node node in Nodes)
             {
-               NodalResult nodeResult = new NodalResult();
+                NodalResult nodeResult = new NodalResult();
 
                 nodeResult.Force = new Vector(0, 0, 0);
 
                 nodeResult.Force = nodeResult.Force + new BHoM.Geometry.Vector(0, 0, unaryNodalLoad);
 
-                nodalResultCollection.Add(node.Name + ":" + t.ToString(), nodeResult);
+                nodalResultCollection.Add(node.Name + ":" + m_t.ToString(), nodeResult);
             }
 
             foreach (Bar bar in Bars)
             {
-                BarForce barForce = barForceCollection[bar.Name + ":" + t.ToString()];
-                nodalResultCollection[bar.StartNode.Name + ":" + t.ToString()].Force = nodalResultCollection[bar.StartNode.Name + ":" + t.ToString()].Force + new Vector(barForce.FX, barForce.FY, barForce.FZ - bar.SectionProperty.MassPerMetre * (double)bar.CustomData["StartLength"] / 2);
-                nodalResultCollection[bar.EndNode.Name + ":" + t.ToString()].Force = nodalResultCollection[bar.EndNode.Name + ":" + t.ToString()].Force + new Vector(-barForce.FX, -barForce.FY, -barForce.FZ - bar.SectionProperty.MassPerMetre * (double)bar.CustomData["StartLength"] / 2);
+                BarForce barForce = barForceCollection[bar.Name + ":" + m_t.ToString()];
+                nodalResultCollection[bar.StartNode.Name + ":" + m_t.ToString()].Force = nodalResultCollection[bar.StartNode.Name + ":" + m_t.ToString()].Force + new Vector(barForce.FX, barForce.FY, barForce.FZ - bar.SectionProperty.MassPerMetre * (double)bar.CustomData["StartLength"] / 2);
+                nodalResultCollection[bar.EndNode.Name + ":" + m_t.ToString()].Force = nodalResultCollection[bar.EndNode.Name + ":" + m_t.ToString()].Force + new Vector(-barForce.FX, -barForce.FY, -barForce.FZ - bar.SectionProperty.MassPerMetre * (double)bar.CustomData["StartLength"] / 2);
             }
         }
 
         public void CalcAcceleration()
         {
             foreach (Node node in this.Nodes)
-                nodalResultCollection[node.Name + ":" + t.ToString()].Acceleration = nodalResultCollection[node.Name + ":" + t.ToString()].Force / (double)node.CustomData["Mass"];
+                nodalResultCollection[node.Name + ":" + m_t.ToString()].Acceleration = nodalResultCollection[node.Name + ":" + m_t.ToString()].Force / (double)node.CustomData["Mass"];
         }
 
         public void CalcVelocity()
         {
             foreach (Node node in this.Nodes)
-                nodalResultCollection[node.Name + ":" + t.ToString()].Velocity = c * nodalResultCollection[node.Name + ":" + (t - dt).ToString()].Velocity + nodalResultCollection[node.Name + ":" + t.ToString()].Acceleration * dt;
+                nodalResultCollection[node.Name + ":" + m_t.ToString()].Velocity = m_c * nodalResultCollection[node.Name + ":" + (m_t - m_dt).ToString()].Velocity + nodalResultCollection[node.Name + ":" + m_t.ToString()].Acceleration * m_dt;
         }
 
         public void CheckConstraints()
@@ -268,36 +273,36 @@ namespace FormFinding_Engine
             foreach (Node node in this.Nodes)
                 if (node.IsConstrained)
                 {
-                    if (node.Constraint.UX.Type == DOFType.Fixed)
-                        nodalResultCollection[node.Name + ":" + t.ToString()].Velocity.X = 0;
+                    if (node.Constraint.UX == DOFType.Fixed)
+                        nodalResultCollection[node.Name + ":" + m_t.ToString()].Velocity.X = 0;
 
-                    if (node.Constraint.UY.Type == DOFType.Fixed)
-                        nodalResultCollection[node.Name + ":" + t.ToString()].Velocity.Y = 0;
+                    if (node.Constraint.UY == DOFType.Fixed)
+                        nodalResultCollection[node.Name + ":" + m_t.ToString()].Velocity.Y = 0;
 
-                    if (node.Constraint.UZ.Type == DOFType.Fixed)
-                        nodalResultCollection[node.Name + ":" + t.ToString()].Velocity.Z = 0;
+                    if (node.Constraint.UZ == DOFType.Fixed)
+                        nodalResultCollection[node.Name + ":" + m_t.ToString()].Velocity.Z = 0;
 
-                    if (node.Constraint.RX.Type == DOFType.Fixed)
-                        nodalResultCollection[node.Name + ":" + t.ToString()].AngularVelocity.X = 0;
+                    if (node.Constraint.RX == DOFType.Fixed)
+                        nodalResultCollection[node.Name + ":" + m_t.ToString()].AngularVelocity.X = 0;
 
-                    if (node.Constraint.RY.Type == DOFType.Fixed)
-                        nodalResultCollection[node.Name + ":" + t.ToString()].AngularVelocity.Y = 0;
+                    if (node.Constraint.RY == DOFType.Fixed)
+                        nodalResultCollection[node.Name + ":" + m_t.ToString()].AngularVelocity.Y = 0;
 
-                    if (node.Constraint.RZ.Type == DOFType.Fixed)
-                        nodalResultCollection[node.Name + ":" + t.ToString()].AngularVelocity.Z = 0;
+                    if (node.Constraint.RZ == DOFType.Fixed)
+                        nodalResultCollection[node.Name + ":" + m_t.ToString()].AngularVelocity.Z = 0;
                 }
         }
 
         public void CalcTranslation()
         {
             foreach (Node node in this.Nodes)
-                nodalResultCollection[node.Name + ":" + t.ToString()].Translation = nodalResultCollection[node.Name + ":" + t.ToString()].Velocity * dt;
+                nodalResultCollection[node.Name + ":" + m_t.ToString()].Translation = nodalResultCollection[node.Name + ":" + m_t.ToString()].Velocity * m_dt;
         }
 
         public void UpdateGeometry()
         {
             foreach (Node node in this.Nodes)
-                node.Point += nodalResultCollection[node.Name + ":" + t.ToString()].Translation;
+                node.Point += nodalResultCollection[node.Name + ":" + m_t.ToString()].Translation;
 
             foreach (Bar bar in Bars) //Make BHoMbar update line and length when node points change instead?
             {
@@ -312,15 +317,15 @@ namespace FormFinding_Engine
         {
             double Ke = 0;
             foreach (Node node in Nodes)
-                Ke += Math.Pow(nodalResultCollection[node.Name + ":" + t.ToString()].Velocity.Length, 2) * (double)node.CustomData["Mass"] / 2.0;
+                Ke += Math.Pow(nodalResultCollection[node.Name + ":" + m_t.ToString()].Velocity.Length, 2) * (double)node.CustomData["Mass"] / 2.0;
 
-            kineticEnergy.Add(t.ToString(), Ke);
+            m_kineticEnergy.Add(m_t.ToString(), Ke);
         }
 
         public void CheckKineticEnergyPeak()
         {
-            if(kineticEnergy.ContainsKey((t- 2*dt).ToString()))
-                if((double)kineticEnergy[(t- dt).ToString()] > (double)kineticEnergy[(t - 2*dt).ToString()] && (double)kineticEnergy[t.ToString()]<(double)kineticEnergy[(t- dt).ToString()])
+            if (m_kineticEnergy.ContainsKey((m_t - 2 * m_dt).ToString()))
+                if ((double)m_kineticEnergy[(m_t - m_dt).ToString()] > (double)m_kineticEnergy[(m_t - 2 * m_dt).ToString()] && (double)m_kineticEnergy[m_t.ToString()] < (double)m_kineticEnergy[(m_t - m_dt).ToString()])
                     Reinitialise();
         }
 
@@ -328,15 +333,15 @@ namespace FormFinding_Engine
         {
             foreach (Node node in Nodes)
             {
-                nodalResultCollection[node.Name + ":" + t.ToString()].Translation = nodalResultCollection[node.Name + ":" + t.ToString()].Velocity * dt/2;
-                nodalResultCollection[node.Name + ":" + t.ToString()].Velocity = new Vector(0, 0, 0);
+                nodalResultCollection[node.Name + ":" + m_t.ToString()].Translation = nodalResultCollection[node.Name + ":" + m_t.ToString()].Velocity * m_dt / 2;
+                nodalResultCollection[node.Name + ":" + m_t.ToString()].Velocity = new Vector(0, 0, 0);
             }
         }
 
         public bool HasConverged()
         {
             bool hasConverged = true;
-            if ((double)kineticEnergy[t.ToString()] > this.treshold)
+            if ((double)m_kineticEnergy[m_t.ToString()] > this.m_treshold)
                 hasConverged = false;
 
             return hasConverged;
@@ -350,8 +355,8 @@ namespace FormFinding_Engine
                     if ((double)node.CustomData["Mass"] / (double)bar.CustomData["Ks"] < smallestRatio)
                         smallestRatio = (double)node.CustomData["Mass"] / (double)bar.CustomData["Ks"];
 
-            safeTimeStep = Math.Sqrt(2 * smallestRatio);
-            dt = safeTimeStep;
+            m_safeTimeStep = Math.Sqrt(2 * smallestRatio);
+            m_dt = m_safeTimeStep;
         }
 
     }

@@ -18,11 +18,11 @@ namespace FormFinding_Engine
 
             structure.SetBarData(areas, prestresses);
 
-            structure.c = damping;
-            structure.dt = timeStep;  
-            structure.t = 0; 
-            structure.nodeTol = 0.1;  
-            structure.treshold = treshold;
+            structure.m_c = damping;
+            structure.m_dt = timeStep;  
+            structure.m_t = 0; 
+            structure.m_nodeTol = 0.1;  
+            structure.m_treshold = treshold;
 
             structure.SetConnectedBars();
             structure.SetStiffness();
@@ -43,7 +43,7 @@ namespace FormFinding_Engine
         public static void RelaxStructure(Structure structure, double gravity, bool useMassDamping)
         {
 
-            structure.t += structure.dt;
+            structure.m_t += structure.m_dt;
 
             structure.CalcBarForce();
 
