@@ -23,7 +23,7 @@ namespace Engine_Test
 
         static void TestProject()
         {
-            Project project = Project.ActiveProject;
+            /*Project project = Project.ActiveProject;
 
             List<Point> points = new List<Point>();
             points.Add(new Point(0, 0, 0));
@@ -43,7 +43,7 @@ namespace Engine_Test
             string json = project.ToJSON();
             project.Clear();
 
-            Project project2 = Project.FromJSON(json);
+            Project project2 = Project.FromJSON(json);*/
         }
 
         static void TestVideo()
