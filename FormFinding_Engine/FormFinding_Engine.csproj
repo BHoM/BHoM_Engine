@@ -63,15 +63,12 @@
     <Compile Include="Structural\StructuralDynamicRelaxation.cs" />
     <Compile Include="Structural\StructuralRelaxCalculator.cs" />
     <Compile Include="Superseeded\DynamicRelaxation.cs" />
-    <Compile Include="Superseeded\DynamicRelaxation2.cs" />
-    <Compile Include="Superseeded\DynamicRelaxation3.cs" />
     <Compile Include="Base\Interfaces\IRelaxCalculator.cs" />
     <Compile Include="Base\Interfaces\IRelaxGoal.cs" />
     <Compile Include="Superseeded\NodalResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Base\RelaxSystem.cs" />
     <Compile Include="Superseeded\Structure.cs" />
-    <Compile Include="Superseeded\Structure3.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
