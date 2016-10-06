@@ -62,8 +62,8 @@ namespace ModelLaundry_Engine
                     BHE.Panel panel = new BHE.Panel(perimeter);
 
                     BHP.PanelProperty property = thicknessManager[propertyName];
+                    property.Material = bar.Material;
                     panel.PanelProperty = property;
-                    panel.Material = bar.Material;
                     panels.Add(panel);
 
                     BHoM.Global.Project.ActiveProject.RemoveObject(bar.BHoM_Guid);
