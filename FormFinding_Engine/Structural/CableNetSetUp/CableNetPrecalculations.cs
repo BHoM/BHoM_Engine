@@ -187,75 +187,50 @@ namespace FormFinding_Engine.Structural.CableNetSetUp
 
         }
 
-        public static List<ConstantHorizontalPrestressGoal> HorForceCalcGeneric(List<Point> crPts, List<Point> trPts, List<Vector> loadVs, int baseGridIndex)
+        public static List<ConstantHorizontalPrestressGoal> HorForceCalcGeneric(List<Point> crPts, List<Point> trPts, List<Vector> loadVs, double scaleFactor)
         {
 
+            double initialForceVal;
 
-            //Keeping the initial vector the same as before untill a better solution is found
-            /*************************************************************************************************/
+            Point trPt1 = trPts[0];
+            Point crPt = crPts[0];
+            Point trPt2 = trPts[1];
 
-            double baseRadialForceValue;
+            Vector radVec = crPt - trPt1;
 
+            radVec.Unitize();
 
-            // Calculate the horizontal Radial Force
-            //-----------------------------------------------------------------------------------------------------
+            if (radVec.Z == 0)
+                return null;
 
-            Vector baseLoadVec = loadVs[baseGridIndex];
+            radVec *= loadVs[0].Z / radVec.Z;
 
-            Vector basRadVec = crPts[baseGridIndex] - trPts[baseGridIndex];
+            radVec /= -2;
 
-            basRadVec.Unitize();
+            Vector trVec = trPt2 - trPt1;
 
-            baseRadialForceValue = -1 * (baseLoadVec.Z / basRadVec.Z);
+            Vector trForceVec = trVec * Vector.DotProduct(radVec, radVec) / Vector.DotProduct(trVec, radVec);
 
-            basRadVec *= baseRadialForceValue;
-
-            Vector xyRadialForceVec = new Vector(basRadVec.X, basRadVec.Y, 0);
-
-            Vector xyLoadForceVec = new Vector(baseLoadVec.X, baseLoadVec.Y, 0);
-
-            Vector xyTotalForceVec = xyRadialForceVec + xyLoadForceVec;
-
-
-
-            //-----------------------------------------------------------------------------------------------------
-
-
-            // Calculate the horizontal TR force.
-            //-----------------------------------------------------------------------------------------------------
-
-            Point trPt = trPts[baseGridIndex];
-            //Point nextPt = trPts[baseGridIndex];
-            Point prevPt = trPts[baseGridIndex - 1];
-
-            Vector trVec = prevPt - trPt;
-
-
-            xyTotalForceVec /= 2;
-
-            Vector trForceVec = trVec * Vector.DotProduct(xyTotalForceVec, xyTotalForceVec) / Vector.DotProduct(trVec, xyTotalForceVec);
-
-            double trXyPrestressValue = trForceVec.Length;
-
-            /***************************************************************************************************************/
+            double trXyPrestressValue = trForceVec.Length * scaleFactor;
 
 
             List<ConstantHorizontalPrestressGoal> prestresses = new List<ConstantHorizontalPrestressGoal>();
             Vector v1;
 
-            v1 = (trPts[0] - trPts[trPts.Count - 1]);
+            v1 = (trPts[0]-trPts[trPts.Count - 1]);
             v1.Unitize();
             v1 *= trXyPrestressValue;
+
+            List<double> debug = new List<double>();
+
+            v1.Z = 0;
 
             for (int i = 0; i < trPts.Count; i++)
             {
 
-                Point prevTrPoint;
-
-                if (i == 0)
-                    prevTrPoint = trPts[trPts.Count - 1];
-                else
-                    prevTrPoint = trPts[i - 1];
+                //Add the load
+                v1.X -= loadVs[i].X;
+                v1.Y -= loadVs[i].Y;
 
                 Point thisCRPt = crPts[i];
                 Point thisTRPt = trPts[i];
@@ -273,15 +248,24 @@ namespace FormFinding_Engine.Structural.CableNetSetUp
                 v2 = thisCRPt - thisTRPt;
                 v3 = nextTRPt - thisTRPt;
 
+                v2.Z = 0;
+                v3.Z = 0;
+
                 v2.Unitize();
                 v3.Unitize();
 
-                double a = (v1.X * v3.Y - v1.Y * v3.X) / (v2.X * v3.Y - v2.Y * v3.X);
+                double a = (v1.X * v3.Y- v1.Y * v3.X) / (v2.X * v3.Y - v2.Y * v3.X);
                 double b = (v2.X * v1.Y - v2.Y * v1.X) / (v2.X * v3.Y - v2.Y * v3.X);
 
-                prestresses.Add(new ConstantHorizontalPrestressGoal(thisTRPt, thisCRPt, a));
+                prestresses.Add(new ConstantHorizontalPrestressGoal(thisCRPt, thisTRPt, a));
                 prestresses.Add(new ConstantHorizontalPrestressGoal(thisTRPt, nextTRPt, b));
 
+
+                Vector debugVec = v2 * a + v3 * b - v1;
+
+                debugVec.Z = 0;
+
+                debug.Add(debugVec.Length);
 
                 v1 = v3 * b;
             }
