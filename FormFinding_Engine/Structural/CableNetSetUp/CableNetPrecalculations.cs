@@ -274,50 +274,61 @@ namespace FormFinding_Engine.Structural.CableNetSetUp
             return prestresses;
         }
 
+
         public static List<ConstantHorizontalPrestressGoal> HorForceCalcGenericIterative(List<Point> crPts, List<Point> trPts, List<Vector> trForces, List<Vector> crForces, double scaleFactor, out List<Point> newTrPts, int iterations = 1000)
         {
-
-
             //Calculate gridline planes
             List<Plane> grPlns = CalcGridLinePLanes(crPts, trPts);
 
-
             //Calculate scaled initial force value
-            Point trPt = trPts[0];
-            Point crPt = crPts[0];
-            Vector radVec = crPt - trPt;
-
-            radVec.Unitize();
-
-            if (radVec.Z == 0)
-            {
-                newTrPts = null;
-                return null;
-            }
-
-            radVec *= (trForces[0].Z / radVec.Z) * scaleFactor;
+            Vector initRadForce = CalculateScaledInitialRadialForce(trPts[0], crPts[0], trForces[0], scaleFactor);
 
             //Calculate compressionring vectors
-            List<Vector> crVecs = CompressionRingForces(crPts, radVec);
-
+            List<Vector> crVecs = CompressionRingForces(crPts, initRadForce);
 
             //Project compressionring forces to gridline planes
-            List<Vector> prCrForce = new List<Vector>();
-
-
-            for (int i = 0; i < trForces.Count; i++)
-            {
-                Vector l = crForces[i];
-                Vector n = grPlns[i].Normal;
-                prCrForce.Add(l - Vector.DotProduct(l, n) / Vector.DotProduct(n, n) * n);
-            }
-
+            List<Vector> crProjForces = ProjectForce(crForces, grPlns);
 
             //Calculate radial force vectors
-            List<Vector> radVecs = RadialForces(crVecs, prCrForce);
+            List<Vector> radVecs = RadialForces(crVecs, crProjForces);
 
+            //Project Tensionring forces
+            List<Vector> trProjForces = ProjectForce(trForces, grPlns);
 
+            //Calculate total tensionring forces
+            List<Vector> totHorTrForce = AddVectorsHorisontal(radVecs, trProjForces);
 
+            //Loop through tensionring points until equilibrium is found
+            List<Vector> trVecs;
+            FindTensionRingPositionAndForce(trPts, grPlns, totHorTrForce, iterations, out newTrPts, out trVecs);
+
+            //Construct the prestress goals
+            return ConstructPrestressGoals(newTrPts, crPts, radVecs, trVecs);
+
+        }
+
+        /***********************************************************************/
+
+        private static List<ConstantHorizontalPrestressGoal> ConstructPrestressGoals(List<Point> newTrPts, List<Point> crPts, List<Vector> radVecs, List<Vector> trVecs)
+        {
+            List<ConstantHorizontalPrestressGoal> prestresses = new List<ConstantHorizontalPrestressGoal>();
+
+            for (int i = 0; i < radVecs.Count; i++)
+            {
+                int nextIndex = (i == newTrPts.Count - 1) ? 0 : i + 1;
+
+                prestresses.Add(new ConstantHorizontalPrestressGoal(newTrPts[i], crPts[i], radVecs[i].Length));
+                prestresses.Add(new ConstantHorizontalPrestressGoal(newTrPts[i], newTrPts[nextIndex], trVecs[i].Length));
+            }
+
+            return prestresses;
+        }
+
+        /***********************************************************************/
+
+        private static void FindTensionRingPositionAndForce(List<Point> trPts, List<Plane> grPlns, List<Vector> totTrForce, int iterations, out List<Point> newTrPts, out List<Vector> trVecs)
+        {
+            //Copy Tensionring points
             newTrPts = new List<Point>();
 
             foreach (Point p in trPts)
@@ -325,46 +336,26 @@ namespace FormFinding_Engine.Structural.CableNetSetUp
                 newTrPts.Add(p.DuplicatePoint());
             }
 
-
             //Construct list with default elements for tensionring vector values
-            List<Vector> trVecs = FillListWithDefault<Vector>(trPts.Count);
+            trVecs = FillListWithDefault<Vector>(trPts.Count);
+            Vector adjustment = new Vector(0, 0, 0);
 
-            List<Vector> projForces = new List<Vector>();
-
-            for (int i = 0; i < trForces.Count; i++)
-            {
-                Vector l = trForces[i];
-                Vector n = grPlns[i].Normal;
-                projForces.Add(l - Vector.DotProduct(l, n) / Vector.DotProduct(n, n) * n);
-            }
-
-
-
-            List<Vector> totForces = new List<Vector>();
-
-            for (int i = 0; i < radVecs.Count; i++)
-            {
-                totForces.Add(new Vector(radVecs[i].X + projForces[i].X, radVecs[i].Y + projForces[i].Y, 0));
-            }
-
+            //While loop setup parameters and bailout
             bool run = true;
-
             int counter = 0;
             int bailout = iterations;
 
-            List<Vector> move = FillWithZeros(newTrPts.Count);
-            Vector adjustment = new Vector(0, 0, 0);
 
+            //Loop through the tensionring nodes until convergence is found
             while (run)
             {
 
 
+                //Adjust the second point in the tr list
                 if (counter > 0)
                 {
                     int halfCount = newTrPts.Count / 2;
                     Vector dist = newTrPts[halfCount] - trPts[halfCount];
-
-                    //dist *= -1;
 
                     if (dist.Length < 0.00000000001)
                         run = false;
@@ -376,9 +367,10 @@ namespace FormFinding_Engine.Structural.CableNetSetUp
                     newTrPts[1] = trPts[1] + adjustment;
 
                 }
+
+                //Mirror the the second point in the list, assuming symetry
                 Point p1, p2, p3;
 
-                //p1 = newTrPts[newTrPts.Count - 1];
                 p2 = trPts[0];
                 p3 = newTrPts[1];
 
@@ -387,9 +379,7 @@ namespace FormFinding_Engine.Structural.CableNetSetUp
 
                 p1 = p3 - 2 * Vector.DotProduct(new Vector(p3), n) / Vector.DotProduct(n, n) * n;
 
-
-
-                Vector force = totForces[0];
+                Vector force = totTrForce[0];
 
                 Vector v2 = p1 - p2;
                 Vector v3 = p2 - p3;
@@ -400,18 +390,11 @@ namespace FormFinding_Engine.Structural.CableNetSetUp
                 v2.Unitize();
                 v3.Unitize();
 
+                //Calculate the scale factor for the tensionring force vector
                 double a = (force.X * v3.Y - force.Y * v3.X) / (v2.X * v3.Y - v2.Y * v3.X);
                 double b = (v2.X * force.Y - v2.Y * force.X) / (v2.X * v3.Y - v2.Y * v3.X);
 
                 Vector v1 = v3 * b;
-
-
-                //List<Vector> avgTrVecs = CalcAvgTrVectors(totForces, newTrPts);
-
-
-                List<Point> tempPts = FillListWithDefault<Point>(newTrPts.Count);
-                move = FillWithZeros(newTrPts.Count);
-
                 trVecs[0] = v1;
 
                 for (int i = 1; i < newTrPts.Count; i++)
@@ -426,7 +409,7 @@ namespace FormFinding_Engine.Structural.CableNetSetUp
                     thisPt = newTrPts[i];
                     nextPt = newTrPts[nextIndex];
 
-                    force = totForces[i];
+                    force = totTrForce[i];
 
                     v3 = force + v1;
 
@@ -438,79 +421,70 @@ namespace FormFinding_Engine.Structural.CableNetSetUp
 
                     trVecs[i] = v3;
 
-
-                    move[nextIndex] = interPt - nextPt;
                     newTrPts[nextIndex] = interPt;
-                    
 
                     v1 = v3;
 
                 }
-                
+
 
                 counter++;
 
                 if (counter > bailout)
                     run = false;
             }
+        }
 
-            List<ConstantHorizontalPrestressGoal> prestresses = new List<ConstantHorizontalPrestressGoal>();
+
+        /***********************************************************************/
+
+        private static List<Vector> AddVectorsHorisontal(List<Vector> radVecs, List<Vector> trProjForces)
+        {
+            List<Vector> totForces = new List<Vector>();
 
             for (int i = 0; i < radVecs.Count; i++)
             {
-                int nextIndex = (i == newTrPts.Count - 1) ? 0 : i + 1;
-
-                prestresses.Add(new ConstantHorizontalPrestressGoal(newTrPts[i], crPts[i], radVecs[i].Length));
-                prestresses.Add(new ConstantHorizontalPrestressGoal(newTrPts[i], newTrPts[nextIndex], trVecs[i].Length));
+                totForces.Add(new Vector(radVecs[i].X + trProjForces[i].X, radVecs[i].Y + trProjForces[i].Y, 0));
             }
 
-            return prestresses;
+            return totForces;
         }
 
-        //private static List<Vector> CalcAvgTrVectors(List<Vector> totForces, List<Point> trPts)
-        //{
-        //    List<Vector> tr1 = FillListWithDefault<Vector>(totForces.Count);
-        //    List<Vector> tr2 = FillListWithDefault<Vector>(totForces.Count);
+        /***********************************************************************/
 
-        //    for (int i = 0; i < trPts.Count; i++)
-        //    {
-        //        int nextIndex = (i == trPts.Count - 1) ? 0 : i + 1;
-        //        int prevIndex = (i == 0) ? trPts.Count - 1 : i - 1;
+        private static List<Vector> ProjectForce(List<Vector> forces, List<Plane> plns)
+        {
+            List<Vector> prForces = new List<Vector>();
 
-        //        Point prevPt, thisPt, nextPt;
 
-        //        prevPt = trPts[prevIndex];
-        //        thisPt = trPts[i];
-        //        nextPt = trPts[nextIndex];
+            for (int i = 0; i < forces.Count; i++)
+            {
+                Vector l = forces[i];
+                Vector n = plns[i].Normal;
+                prForces.Add(l - Vector.DotProduct(l, n) / Vector.DotProduct(n, n) * n);
+            }
 
-        //        Vector v1 = totForces[i];
+            return prForces;
+        }
 
-        //        Vector v2 = prevPt - thisPt;
-        //        Vector v3 = thisPt - nextPt;
+        /***********************************************************************/
 
-        //        v2.Z = 0;
-        //        v3.Z = 0;
+        private static Vector CalculateScaledInitialRadialForce(Point trPt, Point crPt, Vector trForce, double scaleFactor)
+        {
+            Vector radVec = crPt - trPt;
 
-        //        v2.Unitize();
-        //        v3.Unitize();
+            radVec.Unitize();
 
-        //        double a = (v1.X * v3.Y - v1.Y * v3.X) / (v2.X * v3.Y - v2.Y * v3.X);
-        //        double b = (v2.X * v1.Y - v2.Y * v1.X) / (v2.X * v3.Y - v2.Y * v3.X);
+            if (radVec.Z == 0)
+            {
+                return null;
+            }
 
-        //        tr1[i] = v2 * a;
-        //        tr2[nextIndex] = v3 * -b;
+            radVec *= (trForce.Z / radVec.Z) * scaleFactor;
+            return radVec;
+        }
 
-        //    }
-
-        //    List<Vector> tr = new List<Vector>();
-
-        //    for (int i = 0; i < tr1.Count; i++)
-        //    {
-        //        tr.Add(tr1[i] / 2 + tr2[i] / 2);
-        //    }
-
-        //    return tr;
-        //}
+        /***********************************************************************/
 
         private static List<Plane> CalcGridLinePLanes(List<Point> crPts, List<Point> trPts)
         {
@@ -532,6 +506,8 @@ namespace FormFinding_Engine.Structural.CableNetSetUp
             return grPlns;
         }
 
+        /***********************************************************************/
+
         private static List<Vector> RadialForces(List<Vector> crVecs, List<Vector> crForces)
         {
             List<Vector> radVecs = new List<Vector>();
@@ -548,7 +524,9 @@ namespace FormFinding_Engine.Structural.CableNetSetUp
             }
 
             return radVecs;
-        } 
+        }
+
+        /***********************************************************************/
 
         private static List<Vector> CompressionRingForces(List<Point> compRingPts, Vector radVec)
         {
@@ -601,6 +579,8 @@ namespace FormFinding_Engine.Structural.CableNetSetUp
             return compVecs;
         }
 
+        /***********************************************************************/
+
         private static List<T> FillListWithDefault<T>(int size)
         {
             List<T> list = new List<T>();
@@ -613,6 +593,8 @@ namespace FormFinding_Engine.Structural.CableNetSetUp
             return list;
         }
 
+        /***********************************************************************/
+
         private static List<Vector> FillWithZeros(int size)
         {
             List<Vector> list = new List<Vector>();
@@ -623,6 +605,193 @@ namespace FormFinding_Engine.Structural.CableNetSetUp
             }
 
             return list;
+        }
+
+        /***********************************************************************/
+
+        public static List<ConstantHorizontalPrestressGoal> HorForceCalcGenericIterativeOld(List<Point> crPts, List<Point> trPts, List<Vector> trForces, List<Vector> crForces, double scaleFactor, out List<Point> newTrPts, int iterations = 1000)
+        {
+
+
+            //Calculate gridline planes
+            List<Plane> grPlns = CalcGridLinePLanes(crPts, trPts);
+
+
+            //Calculate scaled initial force value
+            Point trPt = trPts[0];
+            Point crPt = crPts[0];
+            Vector radVec = crPt - trPt;
+
+            radVec.Unitize();
+
+            if (radVec.Z == 0)
+            {
+                newTrPts = null;
+                return null;
+            }
+
+            radVec *= (trForces[0].Z / radVec.Z) * scaleFactor;
+
+            //Calculate compressionring vectors
+            List<Vector> crVecs = CompressionRingForces(crPts, radVec);
+
+
+            //Project compressionring forces to gridline planes
+            List<Vector> prCrForce = new List<Vector>();
+
+
+            for (int i = 0; i < trForces.Count; i++)
+            {
+                Vector l = crForces[i];
+                Vector n = grPlns[i].Normal;
+                prCrForce.Add(l - Vector.DotProduct(l, n) / Vector.DotProduct(n, n) * n);
+            }
+
+
+            //Calculate radial force vectors
+            List<Vector> radVecs = RadialForces(crVecs, prCrForce);
+
+
+            //Project Tensionring forces
+
+            List<Vector> projForces = new List<Vector>();
+
+            for (int i = 0; i < trForces.Count; i++)
+            {
+                Vector l = trForces[i];
+                Vector n = grPlns[i].Normal;
+                projForces.Add(l - Vector.DotProduct(l, n) / Vector.DotProduct(n, n) * n);
+            }
+
+            //Calculate total tensionring forces
+
+            List<Vector> totForces = new List<Vector>();
+
+            for (int i = 0; i < radVecs.Count; i++)
+            {
+                totForces.Add(new Vector(radVecs[i].X + projForces[i].X, radVecs[i].Y + projForces[i].Y, 0));
+            }
+
+            //Copy Tensionring points
+            newTrPts = new List<Point>();
+
+            foreach (Point p in trPts)
+            {
+                newTrPts.Add(p.DuplicatePoint());
+            }
+
+            //Construct list with default elements for tensionring vector values
+            List<Vector> trVecs = FillListWithDefault<Vector>(trPts.Count);
+            Vector adjustment = new Vector(0, 0, 0);
+
+            bool run = true;
+
+            int counter = 0;
+            int bailout = iterations;
+
+
+            while (run)
+            {
+
+
+                if (counter > 0)
+                {
+                    int halfCount = newTrPts.Count / 2;
+                    Vector dist = newTrPts[halfCount] - trPts[halfCount];
+
+                    //dist *= -1;
+
+                    if (dist.Length < 0.00000000001)
+                        run = false;
+
+                    Vector nextNorm = grPlns[1].Normal;
+                    Vector stepAdjustment = dist - Vector.DotProduct(dist, nextNorm) / Vector.DotProduct(nextNorm, nextNorm) * nextNorm;
+                    stepAdjustment /= 1000;
+                    adjustment += stepAdjustment;
+                    newTrPts[1] = trPts[1] + adjustment;
+
+                }
+                Point p1, p2, p3;
+
+                p2 = trPts[0];
+                p3 = newTrPts[1];
+
+                Plane p = grPlns[0];
+                Vector n = p.Normal;
+
+                p1 = p3 - 2 * Vector.DotProduct(new Vector(p3), n) / Vector.DotProduct(n, n) * n;
+
+
+
+                Vector force = totForces[0];
+
+                Vector v2 = p1 - p2;
+                Vector v3 = p2 - p3;
+
+                v2.Z = 0;
+                v3.Z = 0;
+
+                v2.Unitize();
+                v3.Unitize();
+
+                double a = (force.X * v3.Y - force.Y * v3.X) / (v2.X * v3.Y - v2.Y * v3.X);
+                double b = (v2.X * force.Y - v2.Y * force.X) / (v2.X * v3.Y - v2.Y * v3.X);
+
+                Vector v1 = v3 * b;
+
+                List<Point> tempPts = FillListWithDefault<Point>(newTrPts.Count);
+
+                trVecs[0] = v1;
+
+                for (int i = 1; i < newTrPts.Count; i++)
+                {
+                    int nextIndex = (i == newTrPts.Count - 1) ? 0 : i + 1;
+                    int prevIndex = (i == 0) ? newTrPts.Count - 1 : i - 1;
+
+
+                    Point prevPt, thisPt, nextPt;
+
+                    prevPt = newTrPts[prevIndex];
+                    thisPt = newTrPts[i];
+                    nextPt = newTrPts[nextIndex];
+
+                    force = totForces[i];
+
+                    v3 = force + v1;
+
+                    Line ln = new Line(thisPt, thisPt + v3);
+
+                    Plane nxtPl = grPlns[nextIndex];
+
+                    Point interPt = Intersect.PlaneLine(nxtPl, ln, false);
+
+                    trVecs[i] = v3;
+
+                    newTrPts[nextIndex] = interPt;
+
+
+                    v1 = v3;
+
+                }
+
+
+                counter++;
+
+                if (counter > bailout)
+                    run = false;
+            }
+
+            List<ConstantHorizontalPrestressGoal> prestresses = new List<ConstantHorizontalPrestressGoal>();
+
+            for (int i = 0; i < radVecs.Count; i++)
+            {
+                int nextIndex = (i == newTrPts.Count - 1) ? 0 : i + 1;
+
+                prestresses.Add(new ConstantHorizontalPrestressGoal(newTrPts[i], crPts[i], radVecs[i].Length));
+                prestresses.Add(new ConstantHorizontalPrestressGoal(newTrPts[i], newTrPts[nextIndex], trVecs[i].Length));
+            }
+
+            return prestresses;
         }
 
     }
