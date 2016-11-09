@@ -51,13 +51,15 @@ namespace FormFinding_Engine.Base
                 if (ResultCallback == null)
                     continue;
 
-                if (timer.ElapsedMilliseconds == 30L)
+                if (timer.ElapsedMilliseconds > 30L)
                 {
                     ResultCallback.Invoke(m_nodes);
                     timer.Restart();
                 }
             }
 
+            if(ResultCallback != null)
+                ResultCallback.Invoke(m_nodes);
         }
 
         /************************************************/

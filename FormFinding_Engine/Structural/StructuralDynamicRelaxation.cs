@@ -15,28 +15,28 @@ namespace FormFinding_Engine.Structural
 
 
         private PointMatrix<int> m_positions;
-        private RelaxSystem engine;
-        private IRelaxCalculator calculator;
+        private RelaxSystem m_engine;
+        private IRelaxCalculator m_calculator;
         
 
         public StructuralDynamicRelaxation()
         {
-            calculator = new StructuralRelaxCalculator();
+            m_calculator = new StructuralRelaxCalculator();
             m_positions = new PointMatrix<int>(0.1);
-            engine = new RelaxSystem(calculator);
+            m_engine = new RelaxSystem(m_calculator);
         }
 
 
         public StructuralDynamicRelaxation(double dt, double threshold, double damping, double maxiterations)
         {
-            calculator = new StructuralRelaxCalculator(dt, threshold, damping, maxiterations);
+            m_calculator = new StructuralRelaxCalculator(dt, threshold, damping, maxiterations);
             m_positions = new PointMatrix<int>(0.1);
-            engine = new RelaxSystem(calculator);
+            m_engine = new RelaxSystem(m_calculator);
         }
 
         public void Run()
         {
-            engine.Run();
+            m_engine.Run();
         }
 
         /***********************************************************/
@@ -45,7 +45,7 @@ namespace FormFinding_Engine.Structural
 
         private void AddPositionItem(IRelaxPosition item)
         {
-            int maxIndex = engine.Nodes.Count;
+            int maxIndex = m_engine.Nodes.Count;
             List<int> indices = new List<int>();
 
             for (int i = 0; i < item.Positions.Count; i++)
@@ -57,9 +57,9 @@ namespace FormFinding_Engine.Structural
                 {
                     m_positions.AddPoint(p, maxIndex);
                     indices.Add( maxIndex);
-                    RelaxNode node = new RelaxNode(calculator, 3);
+                    RelaxNode node = new RelaxNode(m_calculator, 3);
                     node.Data[NodeProps.POS] = new double[] { p.X, p.Y, p.Z };
-                    engine.Nodes.Add(node);
+                    m_engine.Nodes.Add(node);
                     maxIndex++;
                 }
                 else
@@ -78,7 +78,7 @@ namespace FormFinding_Engine.Structural
             foreach (IRelaxPositionGoal goal in goals)
             {
                 AddPositionItem(goal);
-                engine.AddGoal(goal);
+                m_engine.AddGoal(goal);
             }
         }
 
@@ -90,7 +90,7 @@ namespace FormFinding_Engine.Structural
             foreach (IRelaxPositionBC bc in bcs)
             {
                 AddPositionItem(bc);
-                engine.BoundaryConditions.Add(bc);
+                m_engine.BoundaryConditions.Add(bc);
             }
         }
 
@@ -101,7 +101,7 @@ namespace FormFinding_Engine.Structural
             foreach (IRelaxMass mass in masses)
             {
                 AddPositionItem(mass);
-                mass.ApplyMass(engine.Nodes);
+                mass.ApplyMass(m_engine.Nodes);
             }
         }
 
@@ -113,7 +113,7 @@ namespace FormFinding_Engine.Structural
         {
             List<Point> pts = new List<Point>();
 
-            foreach (RelaxNode n in engine.Nodes)
+            foreach (RelaxNode n in m_engine.Nodes)
             {
                 double[] newPos = n.NewPosition();
                 pts.Add(new Point(newPos[0], newPos[1], newPos[2]));
@@ -124,17 +124,21 @@ namespace FormFinding_Engine.Structural
 
         public int Iterations()
         {
-            return engine.Iterations;
+            return m_engine.Iterations;
         }
 
 
         public Action<List<RelaxNode>> ResultCallback
         {
-            get { return engine.ResultCallback; }
-            set { engine.ResultCallback = value; }
+            get { return m_engine.ResultCallback; }
+            set { m_engine.ResultCallback = value; }
         }
 
 
+        public List<IRelaxGoal> Goals
+        {
+            get { return m_engine.Goals; }
+        }
 
         /***********************************************************/
         /***************** Get Forces ******************************/
