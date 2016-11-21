@@ -275,7 +275,7 @@ namespace FormFinding_Engine.Structural.CableNetSetUp
         }
 
 
-        public static List<ConstantHorizontalPrestressGoal> HorForceCalcGenericIterative(List<Point> crPts, List<Point> trPts, List<Vector> trForces, List<Vector> crForces, double scaleFactor, out List<Point> newTrPts, int iterations = 1000)
+        public static List<ConstantHorizontalPrestressGoal> HorForceCalcGenericIterative(List<Point> crPts, List<Point> trPts, List<Vector> trForces, List<Vector> crForces, double scaleFactor, out List<Point> newTrPts, out List<double> crPrestressForce, int iterations = 1000)
         {
             //Calculate gridline planes
             List<Plane> grPlns = CalcGridLinePLanes(crPts, trPts);
@@ -286,14 +286,19 @@ namespace FormFinding_Engine.Structural.CableNetSetUp
             //Calculate compressionring vectors
             List<Vector> crVecs = CompressionRingForces(crPts, initRadForce);
 
+            //Calulate CR force values for output
+            crPrestressForce = crVecs.Select(x => x.Length).ToList();
+
             //Project compressionring forces to gridline planes
-            List<Vector> crProjForces = ProjectForce(crForces, grPlns);
+            //List<Vector> crProjForces = ProjectForce(crForces, grPlns);
+            List<Vector> crProjForces = crForces;
 
             //Calculate radial force vectors
             List<Vector> radVecs = RadialForces(crVecs, crProjForces);
 
             //Project Tensionring forces
-            List<Vector> trProjForces = ProjectForce(trForces, grPlns);
+            //List<Vector> trProjForces = ProjectForce(trForces, grPlns);
+            List<Vector> trProjForces = trForces;
 
             //Calculate total tensionring forces
             List<Vector> totHorTrForce = AddVectorsHorisontal(radVecs, trProjForces);
@@ -419,11 +424,11 @@ namespace FormFinding_Engine.Structural.CableNetSetUp
 
                     Point interPt = Intersect.PlaneLine(nxtPl, ln, false);
 
-                    trVecs[i] = v3;
+                    trVecs[i] = v3.DuplicateVector();
 
                     newTrPts[nextIndex] = interPt;
 
-                    v1 = v3;
+                    v1 = v3.DuplicateVector();
 
                 }
 
