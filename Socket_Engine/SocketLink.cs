@@ -61,7 +61,8 @@ namespace Socket_Engine
             {
                 try
                 {
-                    int RetnCheck = mySocket.SendTo(new ArraySegment<byte>(data, bytessent, totalbytes - bytessent).ToArray(), ePoint); //Try to send remaining bytes
+                    int nbBytes = Math.Min(5000, totalbytes - bytessent);
+                    int RetnCheck = mySocket.SendTo(new ArraySegment<byte>(data, bytessent, nbBytes).ToArray(), ePoint); //Try to send remaining bytes
                     bytessent += RetnCheck; //Add to total bytes sent
                 }
                 catch
