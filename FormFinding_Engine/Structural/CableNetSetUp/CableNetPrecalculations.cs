@@ -287,11 +287,14 @@ namespace FormFinding_Engine.Structural.CableNetSetUp
             List<Vector> crVecs = CompressionRingForces(crPts, initRadForce);
 
             //Calulate CR force values for output
-            crPrestressForce = crVecs.Select(x => x.Length).ToList();
+            //crPrestressForce = crVecs.Select(x => x.Length).ToList();
 
             //Project compressionring forces to gridline planes
-            //List<Vector> crProjForces = ProjectForce(crForces, grPlns);
-            List<Vector> crProjForces = crForces;
+            List<Vector> outOfBalanceVecs;
+            List<Vector> crProjForces = ProjectForce(crForces, grPlns, out outOfBalanceVecs);
+            //List<Vector> crProjForces = crForces;
+
+            crPrestressForce = CalculateCrPrestressForce(crVecs, outOfBalanceVecs);
 
             //Calculate radial force vectors
             List<Vector> radVecs = RadialForces(crVecs, crProjForces);
@@ -310,6 +313,53 @@ namespace FormFinding_Engine.Structural.CableNetSetUp
             //Construct the prestress goals
             return ConstructPrestressGoals(newTrPts, crPts, radVecs, trVecs);
 
+        }
+
+        private static List<double> CalculateCrPrestressForce(List<Vector> crVecs, List<Vector> outOfBalanceVecs)
+        {
+            List<double> psForces = new List<double>();
+
+            List<Vector> crUnitVectors = new List<Vector>();
+
+            foreach (Vector v in crVecs)
+            {
+                Vector dup = v.DuplicateVector();
+                dup.Unitize();
+                crUnitVectors.Add(dup);
+            }
+
+            List<Vector> additionalCrForce = FillWithZeros(crVecs.Count);
+
+            for (int i = 0; i < outOfBalanceVecs.Count; i++)
+            {
+                int prevIndex = (i == 0) ? outOfBalanceVecs.Count - 1 : i - 1;
+
+                Vector v1 = outOfBalanceVecs[i];
+
+                Vector v2 = crUnitVectors[prevIndex];
+                Vector v3 = crUnitVectors[i];
+
+                v2.Z = 0;
+                v3.Z = 0;
+
+                v2.Unitize();
+                v3.Unitize();
+
+                //Calculate the scale factor for the tensionring force vector
+                double a = (v1.X * v3.Y - v1.Y * v3.X) / (v2.X * v3.Y - v2.Y * v3.X);
+                double b = (v2.X * v1.Y - v2.Y * v1.X) / (v2.X * v3.Y - v2.Y * v3.X);
+
+                additionalCrForce[prevIndex] -= v2 * a;
+                additionalCrForce[i] += v3 * b;
+            }
+
+            for (int i = 0; i < crVecs.Count; i++)
+            {
+                Vector res = crVecs[i] + additionalCrForce[i];
+                psForces.Add(res.Length);
+            }
+
+            return psForces;
         }
 
         /***********************************************************************/
@@ -457,16 +507,18 @@ namespace FormFinding_Engine.Structural.CableNetSetUp
 
         /***********************************************************************/
 
-        private static List<Vector> ProjectForce(List<Vector> forces, List<Plane> plns)
+        private static List<Vector> ProjectForce(List<Vector> forces, List<Plane> plns, out List<Vector> outOfBalanceVectors)
         {
             List<Vector> prForces = new List<Vector>();
-
+            outOfBalanceVectors = new List<Vector>();
 
             for (int i = 0; i < forces.Count; i++)
             {
                 Vector l = forces[i];
                 Vector n = plns[i].Normal;
-                prForces.Add(l - Vector.DotProduct(l, n) / Vector.DotProduct(n, n) * n);
+                Vector proj = Vector.DotProduct(l, n) / Vector.DotProduct(n, n) * n;
+                prForces.Add(l- proj);
+                outOfBalanceVectors.Add(proj);
             }
 
             return prForces;
