@@ -17,7 +17,7 @@ namespace Engine_Test
     {
         static void Main(string[] args)
         {
-            TestVideo();
+            TestAudio();
             Console.Read();
         }
 
@@ -48,11 +48,27 @@ namespace Engine_Test
 
         static void TestVideo()
         {
-            string videoFile = @"C:\Users\adecler\Documents\Projects\StadiaCrowdAnalysis\InputVideos\Fan Cam- Preston North End.mp4";
-            string outFolder = @"C:\Users\adecler\Documents\Projects\StadiaCrowdAnalysis\Results\Video_01";
-
+            string videoFile = @"C:\Users\adecler\Documents\Projects\StadiaCrowdAnalysis\InputVideos\Fan Cam- Preston North End_mpeg4.avi";
             MachineLearning_Engine.MotionLevelAnalyser analyser = new MachineLearning_Engine.MotionLevelAnalyser();
-            Dictionary<int, double> result = analyser.Run(videoFile, 0, int.MaxValue, outFolder).Result;
+
+            MachineLearning_Engine.MotionLevelAnalyser.Config config = new MachineLearning_Engine.MotionLevelAnalyser.Config();
+            config.FrameStep = 10;
+            config.OutFolder = @"C:\Users\adecler\Documents\Projects\StadiaCrowdAnalysis\Results\Video_01";
+            config.NbRows = 3;
+            config.NbColumns = 1;
+
+            Dictionary<int, List<double>> result = analyser.Run(videoFile, config).Result;
+        }
+
+        static void TestAudio()
+        {
+            string videoFile = @"C:\Users\adecler\Documents\Projects\StadiaCrowdAnalysis\InputVideos\Fan Cam- Preston North End_mpeg4.wav";
+            MachineLearning_Engine.SoundLevelAnalyser analyser = new MachineLearning_Engine.SoundLevelAnalyser();
+
+            MachineLearning_Engine.SoundLevelAnalyser.Config config = new MachineLearning_Engine.SoundLevelAnalyser.Config();
+            config.OutFolder = @"C:\Users\adecler\Documents\Projects\StadiaCrowdAnalysis\Results\Video_01";
+
+            Dictionary<int, double> result = analyser.Run(videoFile, config).Result;
         }
 
         static void TestPanelVSnap()
