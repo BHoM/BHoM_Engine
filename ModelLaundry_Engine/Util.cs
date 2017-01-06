@@ -186,12 +186,15 @@ namespace ModelLaundry_Engine
         {
             bool inside = false;
             BoundingBox eBox = geometry.Bounds();
-            foreach (BoundingBox box in boxes)
+            if (eBox != null)
             {
-                if (box.Contains(eBox))
+                foreach (BoundingBox box in boxes)
                 {
-                    inside = true;
-                    break;
+                    if (box.Contains(eBox))
+                    {
+                        inside = true;
+                        break;
+                    }
                 }
             }
             return inside;
