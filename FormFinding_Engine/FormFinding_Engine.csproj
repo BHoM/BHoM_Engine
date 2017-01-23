@@ -51,7 +51,8 @@
     <Compile Include="Base\Interfaces\IRelaxBC.cs" />
     <Compile Include="Base\Interfaces\IRelaxItem.cs" />
     <Compile Include="Base\RelaxNode.cs" />
-    <Compile Include="Structural\CableNetSetUp\CableNetPrecalculations.cs" />
+    <Compile Include="Structural\CableNetFormFinding\CableNetFormFinding.cs" />
+    <Compile Include="Structural\CableNetFormFinding\CableNetPrecalculations.cs" />
     <Compile Include="Structural\Constraints\NodeConstraint.cs" />
     <Compile Include="Structural\Goals\ConstantHorizontalPrestressGoal.cs" />
     <Compile Include="Structural\Goals\RotationalSpring.cs" />

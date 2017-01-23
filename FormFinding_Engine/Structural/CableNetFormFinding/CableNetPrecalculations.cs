@@ -7,7 +7,7 @@ using BHoM.Geometry;
 using FormFinding_Engine.Structural.Goals;
 
 
-namespace FormFinding_Engine.Structural.CableNetSetUp
+namespace FormFinding_Engine.Structural.CableNetFormFinding
 {
     public static class CableNetPrecalculations
     {
