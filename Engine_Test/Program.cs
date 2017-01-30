@@ -17,7 +17,7 @@ namespace Engine_Test
     {
         static void Main(string[] args)
         {
-            TestAudio();
+            TestServerSocket();
             Console.Read();
         }
 
@@ -44,6 +44,29 @@ namespace Engine_Test
             project.Clear();
 
             Project project2 = Project.FromJSON(json);*/
+        }
+
+        static void TestServerSocket()
+        {
+            Socket_Engine.SocketServer m_Socket = new Socket_Engine.SocketServer();
+            m_Socket.MessageReceived += MessageReceived;
+            m_Socket.Listen(8887);
+
+            while (true)
+            {
+                string message = Console.ReadLine();
+                if (message.Length == 0)
+                    break;
+
+                Socket_Engine.SocketLink.SendData("127.0.0.1", 8887, message);
+            }
+            
+
+        }
+
+        static void MessageReceived(string message)
+        {
+            Console.WriteLine("Message received: " + message);
         }
 
         static void TestVideo()
