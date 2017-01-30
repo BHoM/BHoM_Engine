@@ -286,35 +286,197 @@ namespace FormFinding_Engine.Structural.CableNetFormFinding
             //Calculate compressionring vectors
             List<Vector> crVecs = CompressionRingForces(crPts, initRadForce);
 
+            //Calculate radial force vectors
+            List<Vector> radVecs = RadialForces(crVecs);
+
             //Calulate CR force values for output
             //crPrestressForce = crVecs.Select(x => x.Length).ToList();
+            List<Vector> addCrForce, addRadForce;
+
+            //Calculate distributed point loads on compression ring
+            CalculateCrForceComponents(crForces, radVecs, crVecs, out addCrForce, out addRadForce);
+
+
 
             //Project compressionring forces to gridline planes
-            List<Vector> outOfBalanceVecs;
-            List<Vector> crProjForces = ProjectForce(crForces, grPlns, out outOfBalanceVecs);
+            //List<Vector> outOfBalanceVecs;
+            //List<Vector> crProjForces = ProjectForce(crForces, grPlns, out outOfBalanceVecs);
             //List<Vector> crProjForces = crForces;
 
-            crPrestressForce = CalculateCrPrestressForce(crVecs, outOfBalanceVecs);
+            //crPrestressForce = CalculateCrPrestressForce(crVecs, outOfBalanceVecs);
+            //crPrestressForce = CalculateCrPrestressForce2(ref crVecs, outOfBalanceVecs, ref crProjForces);
+
+            List<Vector> totCrForce = AddVectors(crVecs, addCrForce);
+            crPrestressForce = totCrForce.Select(x => x.Length).ToList();
+
+            List<Vector> totRadVecs = AddVectors(radVecs, addRadForce);
 
             //Calculate radial force vectors
-            List<Vector> radVecs = RadialForces(crVecs, crProjForces);
+            //List<Vector> radVecs = RadialForces(crVecs, crProjForces);
 
             //Project Tensionring forces
             //List<Vector> trProjForces = ProjectForce(trForces, grPlns);
             List<Vector> trProjForces = trForces;
 
             //Calculate total tensionring forces
-            List<Vector> totHorTrForce = AddVectorsHorisontal(radVecs, trProjForces);
+            List<Vector> totHorTrForce = AddVectorsHorisontal(totRadVecs, trProjForces);
 
             //Loop through tensionring points until equilibrium is found
             List<Vector> trVecs;
             FindTensionRingPositionAndForce(trPts, grPlns, totHorTrForce, iterations, out newTrPts, out trVecs);
 
             //Construct the prestress goals
-            return ConstructPrestressGoals(newTrPts, crPts, radVecs, trVecs);
+            return ConstructPrestressGoals(newTrPts, crPts, totRadVecs, trVecs);
 
         }
 
+        private static List<Vector> AddVectors(List<Vector> vecs1, List<Vector> vecs2)
+        {
+            List<Vector> sums = new List<Vector>();
+
+            for (int i = 0; i < vecs1.Count; i++)
+            {
+                sums.Add(vecs1[i] + vecs2[i]);
+            }
+
+            return sums;
+        }
+
+        private static void CalculateCrForceComponents(List<Vector> crForces, List<Vector> radVecs, List<Vector> crVecs, out List<Vector> addCrForce, out List<Vector> addRadForce)
+        {
+            List<Vector> crUnits = crVecs.Select(x => x / x.Length).ToList();
+            List<Vector> radUnits = radVecs.Select(x => x / x.Length).ToList();
+            int count = crUnits.Count;
+            int quarterCount = count / 4;
+            int halfQ = quarterCount / 2;
+
+            addCrForce = FillWithZeros(count);
+            addRadForce = FillWithZeros(count);
+
+            for (int i = 0; i < 4; i++)
+            {
+                CalcCrForceCompQuarter(i * quarterCount, quarterCount, crUnits,  crForces, radUnits, ref addCrForce, ref addRadForce);
+            }
+
+            for (int i = 0; i < count; i += quarterCount)
+            {
+                int prev = i == 0 ? count - 1 : i-1;
+                Vector force = crForces[i].DuplicateVector();
+                force.Z = 0;
+                addRadForce[i] = addCrForce[i] - addCrForce[prev] + force;
+            }
+
+        }
+
+        private static void CalcCrForceCompQuarter(int start, int quarterCount, List<Vector> crUnits, List<Vector> crForces, List<Vector> radVecs, ref List<Vector> addCrForce, ref List<Vector> addRadForce)
+        {
+            int mid = quarterCount/2;
+            Vector midForce = crForces[start + mid].DuplicateVector();
+            midForce.Z = 0;
+            Vector radProj = ProjectVector(radVecs[start + mid], midForce);
+            Vector rem = midForce - radProj;
+
+            addRadForce[start + mid] += radProj;
+
+
+            Vector v2 = crUnits[start + mid - 1];
+            Vector v3 = crUnits[start + mid];
+
+            double a = (rem.X * v3.Y - rem.Y * v3.X) / (v2.X * v3.Y - v2.Y * v3.X);
+            double b = (v2.X * rem.Y - v2.Y * rem.X) / (v2.X * v3.Y - v2.Y * v3.X);
+
+            addCrForce[start + mid - 1] = v2 * a;
+            addCrForce[start + mid] = v3 * (-b);
+
+            for (int i = start+mid-1; i > start; i--)
+            {
+                Vector f = addCrForce[i] + crForces[i];
+                f.Z = 0;
+                v2 = crUnits[i - 1];
+                v3 = radVecs[i];
+
+                a = (f.X * v3.Y - f.Y * v3.X) / (v2.X * v3.Y - v2.Y * v3.X);
+                b = (v2.X * f.Y - v2.Y * f.X) / (v2.X * v3.Y - v2.Y * v3.X);
+
+                addCrForce[i - 1] = v2 * a;
+                addRadForce[i] = v3 * b;
+            }
+
+
+            for (int i = start + mid+1; i < start + quarterCount; i++)
+            {
+                Vector f = crForces[i] - addCrForce[i - 1];
+                f.Z = 0;
+                v2 = crUnits[i];
+                v3 = radVecs[i];
+
+                a = (f.X * v3.Y - f.Y * v3.X) / (v2.X * v3.Y - v2.Y * v3.X);
+                b = (v2.X * f.Y - v2.Y * f.X) / (v2.X * v3.Y - v2.Y * v3.X);
+
+                addCrForce[i] = v2 * (-a);
+                addRadForce[i] = v3 * b;
+            }
+
+            //TODO: finish this
+
+        }
+
+        private static List<double> CalculateCrPrestressForce2(ref List<Vector> crVecs, List<Vector> outOfBalanceVecs, ref List<Vector> crForces)
+        {
+            //List<double> psForces = new List<double>();
+
+            Vector v1;
+            
+            v1 = ProjectVector(crVecs[0], outOfBalanceVecs[1]);
+            crVecs[0] += v1;
+            crForces[1] += v1;
+
+            v1 = ProjectVector(crVecs[13], outOfBalanceVecs[13]);
+            crVecs[13] -= v1;
+            crForces[13] += v1;
+
+            v1 = ProjectVector(crVecs[14], outOfBalanceVecs[15]);
+            crVecs[14] += v1;
+            crForces[15] += v1;
+
+            v1 = ProjectVector(crVecs[27], outOfBalanceVecs[27]);
+            crVecs[27] -= v1;
+            crForces[27] += v1;
+
+            v1 = ProjectVector(crVecs[28], outOfBalanceVecs[29]);
+            crVecs[28] += v1;
+            crForces[29] += v1;
+
+            v1 = ProjectVector(crVecs[41], outOfBalanceVecs[41]);
+            crVecs[41] -= v1;
+            crForces[41] += v1;
+
+            v1 = ProjectVector(crVecs[42], outOfBalanceVecs[43]);
+            crVecs[42] += v1;
+            crForces[43] += v1;
+
+            v1 = ProjectVector(crVecs[55], outOfBalanceVecs[55]);
+            crVecs[55] -= v1;
+            crForces[55] += v1;
+
+            //crVecs[0] += ProjectVector(crVecs[0], outOfBalanceVecs[1]);
+            //crVecs[13] -= ProjectVector(crVecs[13], outOfBalanceVecs[13]);
+            //crVecs[14] += ProjectVector(crVecs[14], outOfBalanceVecs[15]);
+            //crVecs[27] -= ProjectVector(crVecs[27], outOfBalanceVecs[27]);
+            //crVecs[28] += ProjectVector(crVecs[28], outOfBalanceVecs[29]);
+            //crVecs[40] -= ProjectVector(crVecs[40], outOfBalanceVecs[40]);
+            //crVecs[41] += ProjectVector(crVecs[41], outOfBalanceVecs[42]);
+            //crVecs[55] -= ProjectVector(crVecs[55], outOfBalanceVecs[55]);
+
+
+
+            return crVecs.Select(x => x.Length).ToList();
+        }
+
+        private static Vector ProjectVector(Vector target, Vector v)
+        {
+            return Vector.DotProduct(target, v) / Vector.DotProduct(target, target) * target;
+        }
         private static List<double> CalculateCrPrestressForce(List<Vector> crVecs, List<Vector> outOfBalanceVecs)
         {
             List<double> psForces = new List<double>();
@@ -514,14 +676,21 @@ namespace FormFinding_Engine.Structural.CableNetFormFinding
 
             for (int i = 0; i < forces.Count; i++)
             {
-                Vector l = forces[i];
+                Vector f = forces[i];
                 Vector n = plns[i].Normal;
-                Vector proj = Vector.DotProduct(l, n) / Vector.DotProduct(n, n) * n;
-                prForces.Add(l- proj);
+                Vector proj = Vector.DotProduct(f, n) / Vector.DotProduct(n, n) * n;
+                prForces.Add(f- proj);
                 outOfBalanceVectors.Add(proj);
             }
 
             return prForces;
+        }
+
+        private static Vector ProjectToPlane(Vector v, Plane p, out Vector remainder)
+        {
+            Vector n = p.Normal;
+            remainder = Vector.DotProduct(v, n) / Vector.DotProduct(n, n) * n;
+            return v - remainder;
         }
 
         /***********************************************************************/
@@ -564,6 +733,24 @@ namespace FormFinding_Engine.Structural.CableNetFormFinding
         }
 
         /***********************************************************************/
+
+        private static List<Vector> RadialForces(List<Vector> crVecs)
+        {
+            List<Vector> radVecs = new List<Vector>();
+
+            for (int i = 0; i < crVecs.Count; i++)
+            {
+                Vector v1, v2;
+                v1 = (i == 0) ? crVecs[crVecs.Count - 1] : crVecs[i - 1];
+                v2 = crVecs[i];
+
+                radVecs.Add((v2 - v1));
+            }
+
+            return radVecs;
+        }
+
+        /*****************************************************************************/
 
         private static List<Vector> RadialForces(List<Vector> crVecs, List<Vector> crForces)
         {
