@@ -71,10 +71,6 @@
       <Project>{dd942373-95d4-46c9-aed7-7b58149f5d2e}</Project>
       <Name>ModelLaundry_Engine</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Socket_Engine\Socket_Engine.csproj">
-      <Project>{ffef6e83-840b-41b3-94a1-7dd10550ab02}</Project>
-      <Name>Socket_Engine</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
