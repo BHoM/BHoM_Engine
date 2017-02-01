@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Net;
 using SS = System.Net.Sockets;
 using System.Threading;
+using System.Diagnostics;
 
 namespace Socket_Engine
 {
@@ -19,6 +20,7 @@ namespace Socket_Engine
             public byte[] buffer = null;                        // Receive buffer.
             public MessageEvent callback = null;                // Callback method
             public int totalBytesRead = 0;                      // Total number of bytes read so far
+            public int port = 0;                                // port used by socket
         }
 
         public delegate void MessageEvent(string data);
@@ -28,9 +30,18 @@ namespace Socket_Engine
             m_Socket = new SS.Socket(SS.AddressFamily.InterNetwork, SS.SocketType.Dgram, SS.ProtocolType.Udp);
         }
 
+        ~SocketServer()
+        {
+            if (m_Socket != null && m_Socket.Connected)
+                m_Socket.Disconnect(false);
+
+            if (m_Thread != null && m_Thread.IsAlive)
+                m_Thread.Abort();
+        }
+
         public bool Listen(int port = 8888)
         {
-            if (m_Port == port)
+            if (m_Port == port || port == 0)
                 return true;
             else if (m_Port != 0)
                 m_Socket.Disconnect(true);
@@ -43,12 +54,18 @@ namespace Socket_Engine
                 StateObject state = new StateObject();
                 state.callback = MessageReceived;
                 state.handler = m_Socket;
+                state.port = port;
 
-                Thread thread = new Thread(() => ReadMessage(state));
-                thread.Start();
+                if (m_Thread != null && m_Thread.IsAlive)
+                    m_Thread.Abort();
+
+                m_Thread = new Thread(() => ReadMessage(state));
+                m_Thread.Start();
             }
             catch (Exception e)
             {
+                Debug.WriteLine("Something went wrong inside the Listen method of the socket on port " + port);
+                Debug.WriteLine(e);
                 return false;
             }
 
@@ -64,19 +81,22 @@ namespace Socket_Engine
 
         private int m_Port = 0;
         private SS.Socket m_Socket = null;
+        private Thread m_Thread = null;
 
         private static void ReadMessage(StateObject state)
         {
             while (true)
             {
                 int bufferSize = ReadInt(state);
-                state.buffer = new byte[bufferSize];
+                if (bufferSize > 0)
+                {
+                    state.totalBytesRead = 0;
+                    state.buffer = new byte[bufferSize];
+                    string message = ReadString(state);
 
-                state.totalBytesRead = 0;
-                string message = ReadString(state);
-
-                if (state.callback != null)
-                    state.callback.Invoke(message);
+                    if (state.callback != null)
+                        state.callback.Invoke(message);
+                }
 
                 Thread.Sleep(100);
             }
