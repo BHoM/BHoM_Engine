@@ -22,6 +22,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AcousticSPI_Engine", "Acous
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpeechRecognition_Engine", "SpeechRecognition_Engine\SpeechRecognition_Engine.csproj", "{CE5C3A41-B40B-4B4B-8748-FFC590E91669}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpeechSynthesis_Engine", "SpeechSynthesis_Engine\SpeechSynthesis_Engine.csproj", "{E91BAEF0-C946-4D2C-830F-E8626D4A4237}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -92,6 +94,14 @@ Global
 		{CE5C3A41-B40B-4B4B-8748-FFC590E91669}.Release|Any CPU.Build.0 = Release|Any CPU
 		{CE5C3A41-B40B-4B4B-8748-FFC590E91669}.Release|x86.ActiveCfg = Release|Any CPU
 		{CE5C3A41-B40B-4B4B-8748-FFC590E91669}.Release|x86.Build.0 = Release|Any CPU
+		{E91BAEF0-C946-4D2C-830F-E8626D4A4237}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E91BAEF0-C946-4D2C-830F-E8626D4A4237}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E91BAEF0-C946-4D2C-830F-E8626D4A4237}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E91BAEF0-C946-4D2C-830F-E8626D4A4237}.Debug|x86.Build.0 = Debug|Any CPU
+		{E91BAEF0-C946-4D2C-830F-E8626D4A4237}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E91BAEF0-C946-4D2C-830F-E8626D4A4237}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E91BAEF0-C946-4D2C-830F-E8626D4A4237}.Release|x86.ActiveCfg = Release|Any CPU
+		{E91BAEF0-C946-4D2C-830F-E8626D4A4237}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
