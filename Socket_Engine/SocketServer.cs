@@ -87,15 +87,23 @@ namespace Socket_Engine
         {
             while (true)
             {
-                int bufferSize = ReadInt(state);
-                if (bufferSize > 0)
+                try
                 {
-                    state.totalBytesRead = 0;
-                    state.buffer = new byte[bufferSize];
-                    string message = ReadString(state);
+                    int bufferSize = ReadInt(state);
+                    if (bufferSize > 0)
+                    {
+                        state.totalBytesRead = 0;
+                        state.buffer = new byte[bufferSize];
+                        state.handler.ReceiveBufferSize = bufferSize;
+                        string message = ReadString(state);
 
-                    if (state.callback != null)
-                        state.callback.Invoke(message);
+                        if (state.callback != null)
+                            state.callback.Invoke(message);
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
                 }
 
                 Thread.Sleep(100);
