@@ -46,7 +46,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Graph.cs" />
+    <Compile Include="GraphLink.cs" />
     <Compile Include="GraphNavigator.cs" />
+    <Compile Include="GraphNode.cs" />
+    <Compile Include="PointMatrix.cs" />
+    <Compile Include="PriorityQueue.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
