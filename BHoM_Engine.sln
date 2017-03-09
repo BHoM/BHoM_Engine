@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Engine_Test", "Engine_Test\Engine_Test.csproj", "{178E7641-FB4D-41E9-A250-120A2B834912}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -10,19 +10,17 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Engine_Test", "Engine_Test\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FormFinding_Engine", "FormFinding_Engine\FormFinding_Engine.csproj", "{6112D632-6143-4866-9ABA-28CDD1340C6D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Graph_Engine", "Graph_Engine\Graph_Engine.csproj", "{8082CA2A-AC5C-4690-9F09-960E0D3E4102}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModelLaundry_Engine", "ModelLaundry_Engine\ModelLaundry_Engine.csproj", "{DD942373-95D4-46C9-AED7-7B58149F5D2E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MachineLearning_Engine", "MachineLearning_Engine\MachineLearning_Engine.csproj", "{02F81857-2D83-42AB-A0D7-030DCDD4D49F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Socket_Engine", "Socket_Engine\Socket_Engine.csproj", "{FFEF6E83-840B-41B3-94A1-7DD10550AB02}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AcousticSPI_Engine", "AcousticSPI_Engine\AcousticSPI_Engine.csproj", "{68300030-BC17-49BD-A363-CFCD3828E812}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Acoustic_Engine", "Acoustic_Engine\Acoustic_Engine.csproj", "{68300030-BC17-49BD-A363-CFCD3828E812}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpeechRecognition_Engine", "SpeechRecognition_Engine\SpeechRecognition_Engine.csproj", "{CE5C3A41-B40B-4B4B-8748-FFC590E91669}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataStructure_Engine", "DataStructure_Engine\DataStructure_Engine.csproj", "{8082CA2A-AC5C-4690-9F09-960E0D3E4102}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpeechSynthesis_Engine", "SpeechSynthesis_Engine\SpeechSynthesis_Engine.csproj", "{E91BAEF0-C946-4D2C-830F-E8626D4A4237}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Speech_Engine", "Speech_Engine\Speech_Engine.csproj", "{CE5C3A41-B40B-4B4B-8748-FFC590E91669}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -46,14 +44,6 @@ Global
 		{6112D632-6143-4866-9ABA-28CDD1340C6D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6112D632-6143-4866-9ABA-28CDD1340C6D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6112D632-6143-4866-9ABA-28CDD1340C6D}.Release|x86.ActiveCfg = Release|Any CPU
-		{8082CA2A-AC5C-4690-9F09-960E0D3E4102}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8082CA2A-AC5C-4690-9F09-960E0D3E4102}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8082CA2A-AC5C-4690-9F09-960E0D3E4102}.Debug|x86.ActiveCfg = Release|Any CPU
-		{8082CA2A-AC5C-4690-9F09-960E0D3E4102}.Debug|x86.Build.0 = Release|Any CPU
-		{8082CA2A-AC5C-4690-9F09-960E0D3E4102}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8082CA2A-AC5C-4690-9F09-960E0D3E4102}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8082CA2A-AC5C-4690-9F09-960E0D3E4102}.Release|x86.ActiveCfg = Release|Any CPU
-		{8082CA2A-AC5C-4690-9F09-960E0D3E4102}.Release|x86.Build.0 = Release|Any CPU
 		{DD942373-95D4-46C9-AED7-7B58149F5D2E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{DD942373-95D4-46C9-AED7-7B58149F5D2E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DD942373-95D4-46C9-AED7-7B58149F5D2E}.Debug|x86.ActiveCfg = Release|Any CPU
@@ -86,6 +76,14 @@ Global
 		{68300030-BC17-49BD-A363-CFCD3828E812}.Release|Any CPU.Build.0 = Release|Any CPU
 		{68300030-BC17-49BD-A363-CFCD3828E812}.Release|x86.ActiveCfg = Release|Any CPU
 		{68300030-BC17-49BD-A363-CFCD3828E812}.Release|x86.Build.0 = Release|Any CPU
+		{8082CA2A-AC5C-4690-9F09-960E0D3E4102}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8082CA2A-AC5C-4690-9F09-960E0D3E4102}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8082CA2A-AC5C-4690-9F09-960E0D3E4102}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{8082CA2A-AC5C-4690-9F09-960E0D3E4102}.Debug|x86.Build.0 = Debug|Any CPU
+		{8082CA2A-AC5C-4690-9F09-960E0D3E4102}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8082CA2A-AC5C-4690-9F09-960E0D3E4102}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8082CA2A-AC5C-4690-9F09-960E0D3E4102}.Release|x86.ActiveCfg = Release|Any CPU
+		{8082CA2A-AC5C-4690-9F09-960E0D3E4102}.Release|x86.Build.0 = Release|Any CPU
 		{CE5C3A41-B40B-4B4B-8748-FFC590E91669}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{CE5C3A41-B40B-4B4B-8748-FFC590E91669}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CE5C3A41-B40B-4B4B-8748-FFC590E91669}.Debug|x86.ActiveCfg = Debug|Any CPU
@@ -94,14 +92,6 @@ Global
 		{CE5C3A41-B40B-4B4B-8748-FFC590E91669}.Release|Any CPU.Build.0 = Release|Any CPU
 		{CE5C3A41-B40B-4B4B-8748-FFC590E91669}.Release|x86.ActiveCfg = Release|Any CPU
 		{CE5C3A41-B40B-4B4B-8748-FFC590E91669}.Release|x86.Build.0 = Release|Any CPU
-		{E91BAEF0-C946-4D2C-830F-E8626D4A4237}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E91BAEF0-C946-4D2C-830F-E8626D4A4237}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E91BAEF0-C946-4D2C-830F-E8626D4A4237}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{E91BAEF0-C946-4D2C-830F-E8626D4A4237}.Debug|x86.Build.0 = Debug|Any CPU
-		{E91BAEF0-C946-4D2C-830F-E8626D4A4237}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E91BAEF0-C946-4D2C-830F-E8626D4A4237}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E91BAEF0-C946-4D2C-830F-E8626D4A4237}.Release|x86.ActiveCfg = Release|Any CPU
-		{E91BAEF0-C946-4D2C-830F-E8626D4A4237}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
