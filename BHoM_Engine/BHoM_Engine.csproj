@@ -30,6 +30,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="BHoM">
+      <HintPath>..\..\BHoM\Build\BHoM.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -43,7 +46,56 @@
     <Compile Include="Base\GeometryUtils.cs" />
     <Compile Include="Base\ObjectUtils.cs" />
     <Compile Include="Base\Tolerance.cs" />
+    <Compile Include="Geometry\CreateGeometry.cs" />
+    <Compile Include="Geometry\Curve\Arc.cs" />
+    <Compile Include="Geometry\Curve\Circle.cs" />
+    <Compile Include="Geometry\Curve\Curve.cs" />
+    <Compile Include="Geometry\Curve\Line.cs" />
+    <Compile Include="Geometry\Curve\PolyCurve.cs" />
+    <Compile Include="Geometry\Curve\PolyLine.cs" />
+    <Compile Include="Geometry\Factory\CreateArc.cs" />
+    <Compile Include="Geometry\Factory\CreateCircle.cs" />
+    <Compile Include="Geometry\Factory\CreateExtrusion.cs" />
+    <Compile Include="Geometry\Factory\CreateLine.cs" />
+    <Compile Include="Geometry\Factory\CreateLoft.cs" />
+    <Compile Include="Geometry\Factory\CreatePipe.cs" />
+    <Compile Include="Geometry\Factory\CreatePlane.cs" />
+    <Compile Include="Geometry\Factory\CreatePoint.cs" />
+    <Compile Include="Geometry\Factory\CreatePolyline.cs" />
+    <Compile Include="Geometry\Factory\CreateSurface.cs" />
+    <Compile Include="Geometry\Factory\CreateVector.cs" />
+    <Compile Include="Geometry\Factory\ShapeBuilder.cs" />
+    <Compile Include="Geometry\GeometryBase.cs" />
+    <Compile Include="Geometry\Group.cs" />
+    <Compile Include="Geometry\Surface\Brep.cs" />
+    <Compile Include="Geometry\Surface\Extrusion.cs" />
+    <Compile Include="Geometry\Surface\Loft.cs" />
+    <Compile Include="Geometry\Surface\Pipe.cs" />
+    <Compile Include="Geometry\Surface\PolySurface.cs" />
+    <Compile Include="Geometry\Surface\Surface.cs" />
+    <Compile Include="Geometry\Transform\Quarternion.cs" />
+    <Compile Include="Geometry\Transform\Transform.cs" />
+    <Compile Include="Geometry\Utils\ArrayUtils.cs" />
+    <Compile Include="Geometry\Utils\BrepUtils.cs" />
+    <Compile Include="Geometry\Utils\CurveUtils.cs" />
+    <Compile Include="Geometry\Utils\GeometryHelper.cs" />
+    <Compile Include="Geometry\Utils\Intersect.cs" />
+    <Compile Include="Geometry\Utils\PlaneUtils.cs" />
+    <Compile Include="Geometry\Utils\PointUtils.cs" />
+    <Compile Include="Geometry\Utils\VectorUtils.cs" />
+    <Compile Include="Geometry\Vector\Plane.cs" />
+    <Compile Include="Geometry\Vector\Point.cs" />
+    <Compile Include="Geometry\Vector\Vector.cs" />
+    <Compile Include="Math\Integration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Structural\Design\StructuralLayout.cs" />
+    <Compile Include="Structural\Element\Node.cs" />
+    <Compile Include="Structural\Element\Panel.cs" />
+    <Compile Include="Structural\Factory\CreateElement.cs" />
+    <Compile Include="Structural\Factory\CreateMaterial.cs" />
+    <Compile Include="Structural\Factory\CreateSectionProperty.cs" />
+    <Compile Include="Structural\Materials\Material.cs" />
+    <Compile Include="Structural\Properties\SectionProperty\SectionProperties.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
