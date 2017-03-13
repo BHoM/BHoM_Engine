@@ -11,7 +11,7 @@ namespace BHoM.Geometry
 
         internal static void Mirror(IGroup group, Plane p)
         {
-            foreach (GeometryBase geom in group.Objects)
+            foreach (BHoMGeometry geom in group.Objects)
             {
                 geom.Mirror(p);
             }
@@ -19,7 +19,7 @@ namespace BHoM.Geometry
 
         internal static void Project(IGroup group, Plane p) 
         {
-            foreach (GeometryBase geom in group.Objects)
+            foreach (BHoMGeometry geom in group.Objects)
             {
                 geom.Project(p);
             }
@@ -27,7 +27,7 @@ namespace BHoM.Geometry
 
         internal static void Transform(IGroup group, Transform t) 
         {
-            foreach (GeometryBase geom in group.Objects)
+            foreach (BHoMGeometry geom in group.Objects)
             {
                 geom.Transform(t);
             }
@@ -35,13 +35,13 @@ namespace BHoM.Geometry
 
         internal static void Translate(IGroup group, Vector v)
         {
-            foreach (GeometryBase geom in group.Objects)
+            foreach (BHoMGeometry geom in group.Objects)
             {
                 geom.Translate(v);
             }
         }
 
-        public static void Mirror<T>(this Group<T> group, Plane p) where T : GeometryBase
+        public static void Mirror<T>(this Group<T> group, Plane p) where T : BHoMGeometry
         {
             for (int i = 0; i < group.Geometry.Count; i++)
             {
@@ -50,7 +50,7 @@ namespace BHoM.Geometry
             group.Update();
         }
 
-        public static void Project<T>(this Group<T> group, Plane p) where T : GeometryBase
+        public static void Project<T>(this Group<T> group, Plane p) where T : BHoMGeometry
         {
             for (int i = 0; i < group.Geometry.Count; i++)
             {
@@ -59,7 +59,7 @@ namespace BHoM.Geometry
             group.Update();
         }
 
-        public static void Transform<T>(this Group<T> group, Transform t) where T : GeometryBase
+        public static void Transform<T>(this Group<T> group, Transform t) where T : BHoMGeometry
         {
             for (int i = 0; i < group.Geometry.Count; i++)
             {
@@ -68,7 +68,7 @@ namespace BHoM.Geometry
             group.Update();
         }
 
-        public static void Translate<T>(this Group<T> group, Vector v) where T : GeometryBase
+        public static void Translate<T>(this Group<T> group, Vector v) where T : BHoMGeometry
         {
             for (int i = 0; i < group.Geometry.Count; i++)
             {

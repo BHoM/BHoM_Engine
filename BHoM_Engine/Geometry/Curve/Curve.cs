@@ -1,5 +1,4 @@
 ﻿using BHoM.Base;
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,7 +36,7 @@ namespace BHoM.Geometry
         internal static double[] ControlPoint(this Curve curve, int i)
         {
             return i < (int)(curve.ControlPointVector.Length / (curve.Dimensions + 1)) ?
-                new Point(Utils.SubArray<double>(curve.ControlPointVector, i * (curve.Dimensions + 1), curve.Dimensions)) : null;
+                new Point(CollectionUtils.SubArray<double>(curve.ControlPointVector, i * (curve.Dimensions + 1), curve.Dimensions)) : null;
         }
 
         public static bool ContainsCurve(this Curve curve, Curve other)
@@ -50,10 +49,10 @@ namespace BHoM.Geometry
                 {
                     for (int i = 0; i < other.ControlPointVector.Length; i += other.Dimensions + 1)
                     {
-                        double[] pointArray = Utils.SubArray(other.ControlPointVector, i, other.Dimensions + 1);
+                        double[] pointArray = CollectionUtils.SubArray(other.ControlPointVector, i, other.Dimensions + 1);
                         double[] direction = ArrayUtils.Add(ArrayUtils.Sub(pointArray, p.Origin), pointArray);
                         double[] up = ArrayUtils.Add(pointArray, p.Normal);
-                        Plane cuttingPlane = Create.PlaneFrom3Points(Utils.Merge(pointArray, direction, up), curve.Dimensions + 1);
+                        Plane cuttingPlane = Create.PlaneFrom3Points(CollectionUtils.Merge(pointArray, direction, up), curve.Dimensions + 1);
                         Point point = new Point(pointArray);
                         List<Point> intersects = Intersect.PlaneCurve(cuttingPlane, curve, 0.0001);
 
@@ -180,8 +179,8 @@ namespace BHoM.Geometry
         {
             double[] sumNwP = new double[curve.Dimensions];
             double sumNw = 0;
-            if (t == 0) return Utils.SubArray<double>(curve.ControlPointVector, 0, 3);
-            else if (t >= curve.Knots[curve.Knots.Length - 1]) return Utils.SubArray<double>(curve.ControlPointVector, curve.ControlPointVector.Length - 4, 3);
+            if (t == 0) return CollectionUtils.SubArray<double>(curve.ControlPointVector, 0, 3);
+            else if (t >= curve.Knots[curve.Knots.Length - 1]) return CollectionUtils.SubArray<double>(curve.ControlPointVector, curve.ControlPointVector.Length - 4, 3);
             for (int i = 0; i < curve.ControlPointVector.Length / (curve.Dimensions + 1); i++)
             {
                 double Nt = curve.BasisFunction(i, curve.Order - 1, t);
@@ -204,7 +203,7 @@ namespace BHoM.Geometry
             {
                 double Nt = curve.BasisFunction(i, curve.Degree, t);
                 double Nder = curve.DerivativeFunction(i, curve.Degree, t);
-                double[] P = Utils.SubArray<double>(curve.ControlPointVector, i * (curve.Dimensions + 1), curve.Dimensions);
+                double[] P = CollectionUtils.SubArray<double>(curve.ControlPointVector, i * (curve.Dimensions + 1), curve.Dimensions);
                 sumNwP = ArrayUtils.Add(sumNwP, ArrayUtils.Multiply(P, Nt * curve.Weights[i]));
                 sumNwPDer = ArrayUtils.Add(sumNwPDer, ArrayUtils.Multiply(P, Nder * curve.Weights[i]));
                 sumNw += Nt * curve.Weights[i];
@@ -227,7 +226,7 @@ namespace BHoM.Geometry
             while (t >= curve.Knots[index]) { index++; }
             index -= curve.Degree;
 
-            return Utils.SubArray<double>(curve.ControlPointVector, 0, index * (curve.Dimensions + 1));
+            return CollectionUtils.SubArray<double>(curve.ControlPointVector, 0, index * (curve.Dimensions + 1));
         }
 
         public static double[] RightControlPoints(this Curve curve, double t)
@@ -239,7 +238,7 @@ namespace BHoM.Geometry
 
             if (index < curve.PointCount)
             {
-                return Utils.SubArray<double>(curve.ControlPointVector, index * (curve.Dimensions + 1), (curve.PointCount - index) * (curve.Dimensions + 1));
+                return CollectionUtils.SubArray<double>(curve.ControlPointVector, index * (curve.Dimensions + 1), (curve.PointCount - index) * (curve.Dimensions + 1));
             }
             else
             {
@@ -264,8 +263,8 @@ namespace BHoM.Geometry
                     {
                         knots.Add(curve.Knots[i - 1]);
 
-                        double[] pnts = Utils.SubArray<double>(curve.ControlPointVector, (i - curve.Order) * size, size * curve.Order);
-                        double[] weightResults = Utils.SubArray<double>(curve.Weights, i - curve.Order, curve.Order);
+                        double[] pnts = CollectionUtils.SubArray<double>(curve.ControlPointVector, (i - curve.Order) * size, size * curve.Order);
+                        double[] weightResults = CollectionUtils.SubArray<double>(curve.Weights, i - curve.Order, curve.Order);
 
                         for (int j = 0; j < curve.Degree + 1; j++)
                         {
@@ -293,7 +292,7 @@ namespace BHoM.Geometry
                 }
 
                 weights.Add(curve.Weights[curve.Weights.Length - 1]);
-                newPoints.AddRange(Utils.SubArray<double>(curve.ControlPointVector, curve.ControlPointVector.Length - size, size));
+                newPoints.AddRange(CollectionUtils.SubArray<double>(curve.ControlPointVector, curve.ControlPointVector.Length - size, size));
 
                 knots.Add(curve.Knots[curve.Knots.Length - 1]);
                 curve.SetDegree(newDegree);
@@ -349,7 +348,7 @@ namespace BHoM.Geometry
                 }
             }
 
-            double[] newControlPnts = Utils.Merge<double>(curve.LeftControlPoints(lowerKnot), points, curve.RightControlPoints(upperKnot));
+            double[] newControlPnts = CollectionUtils.Merge<double>(curve.LeftControlPoints(lowerKnot), points, curve.RightControlPoints(upperKnot));
 
             double[] newWeight = new double[curve.Weights.Length + 1];
             Array.Copy(curve.Weights, newWeight, controlPointIndex);
@@ -466,9 +465,9 @@ namespace BHoM.Geometry
                 insertedIndex = newCurve.InsertKnot(t);
             }
 
-            double[] midPoint = curve.Degree > 1 ? Utils.Merge<double>(newCurve.UnsafePointAt(t), new double[] { 1 }) : new double[0];
-            double[] lhsPnts = Utils.Merge<double>(newCurve.LeftControlPoints(t), midPoint);
-            double[] rhsPnts = Utils.Merge<double>(midPoint, newCurve.RightControlPoints(t));
+            double[] midPoint = curve.Degree > 1 ? CollectionUtils.Merge<double>(newCurve.UnsafePointAt(t), new double[] { 1 }) : new double[0];
+            double[] lhsPnts = CollectionUtils.Merge<double>(newCurve.LeftControlPoints(t), midPoint);
+            double[] rhsPnts = CollectionUtils.Merge<double>(midPoint, newCurve.RightControlPoints(t));
 
             double[] lhsWeights = new double[lhsPnts.Length / (curve.Dimensions + 1)];
             double[] rhsWeights = new double[rhsPnts.Length / (curve.Dimensions + 1)];
@@ -517,7 +516,7 @@ namespace BHoM.Geometry
         public static bool Equal(this Curve curve, Curve other, double tolerance = 0.001)
         {
             if (!curve.IsNurbForm) curve.CreateNurbForm();
-            if (Utils.Equal(curve.Length(), other.Length(), tolerance))
+            if (NumberUtils.NearEqual(curve.Length(), other.Length(), tolerance))
             {
                 if ((ArrayUtils.Equal(curve.StartPoint, other.StartPoint, tolerance) &&
                     ArrayUtils.Equal(curve.EndPoint, other.EndPoint, tolerance)) ||
@@ -600,7 +599,7 @@ namespace BHoM.Geometry
                 }
                 c.Curves.Reverse();
             }
-            curve.SetControlPoints(Utils.Reverse<double>(curve.ControlPointVector, curve.Dimensions + 1));
+            curve.SetControlPoints(CollectionUtils.Reverse<double>(curve.ControlPointVector, curve.Dimensions + 1));
             if (curve.IsNurbForm)
             {
                 double max = curve.Knots.Max();
@@ -621,7 +620,7 @@ namespace BHoM.Geometry
             List<double> pnts = new List<double>();
             List<double> weights = new List<double>();
 
-            knots.AddRange(Utils.SubArray<double>(curve.Knots, 0, curve.Knots.Length - 1));
+            knots.AddRange(CollectionUtils.SubArray<double>(curve.Knots, 0, curve.Knots.Length - 1));
             pnts.AddRange(curve.ControlPointVector);
             weights.AddRange(curve.Weights);
 
@@ -630,8 +629,8 @@ namespace BHoM.Geometry
                 if (other.Knots[i] != 0) knots.Add(other.Knots[i] + curve.Knots[curve.Knots.Length - 1]);
             }
 
-            pnts.AddRange(Utils.SubArray<double>(other.ControlPointVector, curve.Dimensions + 1, other.ControlPointVector.Length - curve.Dimensions - 1));
-            weights.AddRange(Utils.SubArray<double>(other.Weights, 1, other.Weights.Length - 1));
+            pnts.AddRange(CollectionUtils.SubArray<double>(other.ControlPointVector, curve.Dimensions + 1, other.ControlPointVector.Length - curve.Dimensions - 1));
+            weights.AddRange(CollectionUtils.SubArray<double>(other.Weights, 1, other.Weights.Length - 1));
 
             if (curve.Degree == 1)
             {

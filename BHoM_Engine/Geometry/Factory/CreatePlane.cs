@@ -18,7 +18,7 @@ namespace BHoM.Geometry
             double[] v1 = ArrayUtils.Sub(pnts, length, 0, length);
             double[] v2 = ArrayUtils.Sub(pnts, 2 * length, 0, length);
             Vector normal = new Vector(ArrayUtils.Normalise(ArrayUtils.CrossProduct(v1, v2)));
-            Point origin = new Point(Utils.SubArray<double>(pnts, 0, 4));
+            Point origin = new Point(CollectionUtils.SubArray<double>(pnts, 0, 4));
 
             return new Plane(origin, normal);
         }
@@ -28,8 +28,8 @@ namespace BHoM.Geometry
             if (pnts.Length > 3 * length)
             {
                 double[] planePts = new double[3 * length];
-                double[] currentPoint = Utils.SubArray<double>(pnts, 0, length);
-                double[] nextPoint = Utils.SubArray<double>(pnts, length, length);
+                double[] currentPoint = CollectionUtils.SubArray<double>(pnts, 0, length);
+                double[] nextPoint = CollectionUtils.SubArray<double>(pnts, length, length);
                 double[] currentVector = null;
                 Array.Copy(currentPoint, planePts, length);
 
@@ -38,7 +38,7 @@ namespace BHoM.Geometry
                 while (ArrayUtils.Equal(currentPoint, nextPoint, 0.0001))
                 {
                     currentPoint = nextPoint;
-                    nextPoint = Utils.SubArray<double>(pnts, length * (++counter), length);
+                    nextPoint = CollectionUtils.SubArray<double>(pnts, length * (++counter), length);
                 }
                 Array.Copy(nextPoint, 0, planePts, length, length);
 
@@ -47,7 +47,7 @@ namespace BHoM.Geometry
                 for (int i = counter; i < pnts.Length / length - 1; i++)
                 {
                     currentPoint = nextPoint;
-                    nextPoint = Utils.SubArray<double>(pnts, length * (i + 1), length);
+                    nextPoint = CollectionUtils.SubArray<double>(pnts, length * (i + 1), length);
                     if (!ArrayUtils.Equal(currentPoint, nextPoint))
                     {
                         if (ArrayUtils.Parallel(currentVector, ArrayUtils.Sub(nextPoint, currentPoint), 0.0001) == 0)

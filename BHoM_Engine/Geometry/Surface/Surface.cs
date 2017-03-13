@@ -25,10 +25,10 @@ namespace BHoM.Geometry
             surface.PointColumns = 2;
             surface.ControlPointVector = new double[4 * (surface.Dimensions + 1)];
 
-            double[] row1 = Utils.SubArray<double>(c.ControlPointVector, 0, (surface.Dimensions + 1) * 2);
-            double[] row2 = Utils.Reverse<double>(Utils.SubArray<double>(c.ControlPointVector, (surface.Dimensions + 1) * 2, (surface.Dimensions + 1) * 2), surface.Dimensions + 1);
+            double[] row1 = CollectionUtils.SubArray<double>(c.ControlPointVector, 0, (surface.Dimensions + 1) * 2);
+            double[] row2 = CollectionUtils.Reverse<double>(CollectionUtils.SubArray<double>(c.ControlPointVector, (surface.Dimensions + 1) * 2, (surface.Dimensions + 1) * 2), surface.Dimensions + 1);
 
-            surface.ControlPointVector = Utils.Merge<double>(row1, row2);
+            surface.ControlPointVector = CollectionUtils.Merge<double>(row1, row2);
 
             surface.Weights = new double[] { 1, 1, 1, 1 };
 

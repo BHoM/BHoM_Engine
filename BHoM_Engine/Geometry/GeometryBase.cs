@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace BHoM.Geometry
 {
-    public static class XGeometryBase
+    public static class XBHoMGeometry
     {
-        public static void Transform(this GeometryBase geometry, Transform t)
+        public static void Transform(this BHoMGeometry geometry, Transform t)
         {
             switch (geometry.GeometryType)
             {
@@ -51,7 +51,7 @@ namespace BHoM.Geometry
 
         }
 
-        public static void Translate(this GeometryBase geometry, Vector v)
+        public static void Translate(this BHoMGeometry geometry, Vector v)
         {
             switch (geometry.GeometryType)
             {
@@ -93,7 +93,7 @@ namespace BHoM.Geometry
             }
         }
 
-        public static void Mirror(this GeometryBase geometry, Plane p)
+        public static void Mirror(this BHoMGeometry geometry, Plane p)
         {
             switch (geometry.GeometryType)
             {
@@ -134,7 +134,7 @@ namespace BHoM.Geometry
             }
         }
 
-        public static void Project(this GeometryBase geometry, Plane p)
+        public static void Project(this BHoMGeometry geometry, Plane p)
         {
             switch (geometry.GeometryType)
             {

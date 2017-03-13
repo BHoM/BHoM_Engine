@@ -13,8 +13,8 @@ namespace BHoM.Geometry
         public static void CreateNurbForm(this Arc arc)
         {
             double[] centre = arc.Centre();
-            double[] P1 = Utils.SubArray<double>(arc.ControlPointVector, 0, arc.Dimensions + 1);
-            double[] P2 = Utils.SubArray<double>(arc.ControlPointVector, (arc.Dimensions + 1) * 2, arc.Dimensions + 1);
+            double[] P1 = CollectionUtils.SubArray<double>(arc.ControlPointVector, 0, arc.Dimensions + 1);
+            double[] P2 = CollectionUtils.SubArray<double>(arc.ControlPointVector, (arc.Dimensions + 1) * 2, arc.Dimensions + 1);
 
             double[] V1 = ArrayUtils.Sub(P1, centre);
             double[] V2 = ArrayUtils.Sub(P2, centre);
@@ -68,7 +68,7 @@ namespace BHoM.Geometry
 
         public static double Radius(this Arc arc)
         {
-            return ArrayUtils.Length(ArrayUtils.Sub(arc.Centre(), Utils.SubArray<double>(arc.ControlPointVector, 0, 4)));
+            return ArrayUtils.Length(ArrayUtils.Sub(arc.Centre(), CollectionUtils.SubArray<double>(arc.ControlPointVector, 0, 4)));
         }
     }
 }

@@ -45,7 +45,7 @@ namespace BHoM.Geometry
             {
                 double[] vector = ArrayUtils.Sub(line.ControlPointVector, (line.Dimensions + 1) * i, (line.Dimensions + 1) * (i + 1), line.Dimensions + 1);
                 double[] dir = ArrayUtils.Normalise(vector);
-                double t = ArrayUtils.DotProduct(dir, ArrayUtils.Sub(point, Utils.SubArray(line.ControlPointVector, (line.Dimensions + 1) * (i - 1), line.Dimensions + 1)));
+                double t = ArrayUtils.DotProduct(dir, ArrayUtils.Sub(point, CollectionUtils.SubArray(line.ControlPointVector, (line.Dimensions + 1) * (i - 1), line.Dimensions + 1)));
                 t = Math.Min(Math.Max(t, 0), ArrayUtils.Length(vector));
 
                 Point cp = new Point(ArrayUtils.Add(line.StartPoint, ArrayUtils.Multiply(dir, t)));
