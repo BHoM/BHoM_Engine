@@ -45,7 +45,7 @@ namespace BHoM.Project
     /// <summary>
     /// 
     /// </summary>
-    public class ObjectFilter<T> : IEnumerable<T>, IEnumerable where T : IBase
+    public class ObjectFilter<T> : IEnumerable<T>, IEnumerable where T : IObject
     {
         private Instance m_Project;
         protected List<T> m_Data;
@@ -104,7 +104,7 @@ namespace BHoM.Project
         public ObjectFilter<T> Implements(Type t)
         {
             List<T> result = new List<T>();
-            foreach (IBase obj in m_Data)
+            foreach (IObject obj in m_Data)
             {
                 if (t.IsAssignableFrom(obj.GetType()))
                 {

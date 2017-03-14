@@ -46,6 +46,9 @@
     <Compile Include="Base\CollectionUtils.cs" />
     <Compile Include="Base\NumberUtils.cs" />
     <Compile Include="Base\Tolerance.cs" />
+    <Compile Include="Database\Enum.cs" />
+    <Compile Include="Database\IDataAdapter.cs" />
+    <Compile Include="Database\IDataRow.cs" />
     <Compile Include="Geometry\CreateGeometry.cs" />
     <Compile Include="Geometry\Curve\Arc.cs" />
     <Compile Include="Geometry\Curve\Circle.cs" />

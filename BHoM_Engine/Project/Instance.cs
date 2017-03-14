@@ -112,13 +112,6 @@ namespace BHoM.Project
                 return;
 
             m_Objects.Add(value.BHoM_Guid, value);
-
-            Dictionary<Guid, BHoMObject> dependencies = value.GetShallowDependencies();
-
-            foreach (KeyValuePair<Guid, BHoMObject> obj in dependencies)
-            {
-                AddObject(obj.Value);
-            }
         }
 
         /// <summary>
@@ -174,8 +167,8 @@ namespace BHoM.Project
             IDataAdapter result = null;
             if (!m_Databases.TryGetValue(dbType, out result))
             {
-                result = new JsonFileDB<T>(dbType);
-                m_Databases.Add(dbType, result);
+                //result = new JsonFileDB<T>(dbType);
+                //m_Databases.Add(dbType, result);
             }
             return result;
         }

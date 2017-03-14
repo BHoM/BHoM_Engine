@@ -15,7 +15,7 @@ namespace BHoM.Base
     /// Used to add objects to the project where a unique identifier other than a Guid is required. Just inputting the BHoMObject type will default the key to the object name.
     /// </summary>
     /// <typeparam name="TValue">Type of BHoMObject</typeparam>
-    public class ObjectManager<TValue> : ObjectManager<string, TValue> where TValue : IBase
+    public class ObjectManager<TValue> : ObjectManager<string, TValue> where TValue : IObject
     {
         /// <summary>
         /// Initialises a new object manager where the BHoM object name is used as the default key
@@ -38,7 +38,7 @@ namespace BHoM.Base
     /// </summary>
     /// <typeparam name="TKey">Type of unique identifier</typeparam>
     /// <typeparam name="TValue">Type of BHoMObject</typeparam>
-    public class ObjectManager<TKey, TValue> : IEnumerable<TValue> where TValue : IBase
+    public class ObjectManager<TKey, TValue> : IEnumerable<TValue> where TValue : IObject
     {
         Instance m_Project;
         Dictionary<TKey, TValue> m_Data;
