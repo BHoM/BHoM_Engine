@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BHoM.Generic
+namespace BHoM.DataStructure
 {
     public class GraphNode<T>
     {
         public T Value { get; set; }
-        new public List<GraphLink<T>> Links { get; private set; }
+        public List<GraphLink<T>> Links { get; private set; }
 
         public GraphNode()
         {

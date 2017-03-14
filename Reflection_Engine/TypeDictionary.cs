@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Reflection;
 
-namespace BHoM.Base
+namespace BHoM.Reflection
 {
     public static class TypeDictionary
     {
@@ -42,7 +42,7 @@ namespace BHoM.Base
                     foreach (Type type in types)
                         m_TypeDictionary[type.FullName] = type;
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     Console.WriteLine("Cannot load types of assembly " + asm.GetName().Name);
                 }

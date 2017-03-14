@@ -91,7 +91,7 @@ namespace AcousticSPI_Engine
         {
 
             BHG.Vector deltaPos = location - speaker.Position;
-            double recieverAngle = BHG.Vector.VectorAngle(deltaPos, speaker.Direction) * (180 / Math.PI);
+            double recieverAngle = BHG.VectorUtils.VectorAngle(deltaPos, speaker.Direction) * (180 / Math.PI);
             double distance = deltaPos.Length;
 
             double orientationFactor = speaker.GetGainAngleFactor(recieverAngle, octave);  // take out octave, Matlab does some weird thing here where frequency is tied to octave

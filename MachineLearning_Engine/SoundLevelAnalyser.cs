@@ -26,6 +26,7 @@ namespace MachineLearning_Engine
             public string OutFolder;
         }
 
+        public delegate void ResultEvent(Dictionary<int, double> result);
 
         public SoundLevelAnalyser()
         {
@@ -36,7 +37,7 @@ namespace MachineLearning_Engine
         /****  Public Methods                ****/
         /****************************************/
 
-        public async Task<Dictionary<int, double>> Run(string audioFileName, Config config)
+        public void /*async Task<Dictionary<int, double>>*/ Run(string audioFileName, Config config)
         {
             m_OutFolder = config.OutFolder;
             if (!m_OutFolder.EndsWith("\\"))
@@ -50,13 +51,15 @@ namespace MachineLearning_Engine
             m_AudioSource.NewFrame += NewFrame;
             m_AudioSource.Start();
 
-            m_AudioSource.WaitForStop();
+            /*m_AudioSource.WaitForStop();
             SaveData();
 
-            return m_SoundLevel;
+            return m_SoundLevel;*/
         }
 
-        
+        /****************************************/
+
+        public ResultEvent ResultReceived;
 
 
         /****************************************/
@@ -77,6 +80,11 @@ namespace MachineLearning_Engine
             if (m_FrameIndex > m_Config.EndFrame)
             {
                 m_AudioSource.SignalToStop();
+                SaveData();
+
+                if (ResultReceived != null)
+                    ResultReceived.Invoke(m_SoundLevel);
+
                 return;
             }
 
@@ -89,6 +97,7 @@ namespace MachineLearning_Engine
             m_FrameIndex++;
         }
 
+        /****************************************/
 
         private void SaveData()
         {

@@ -27,7 +27,7 @@ namespace FormFinding_Engine.Structural.CableNetFormFinding
 
             Vector basRadVec = crPts[baseGridIndex] - trPts[baseGridIndex];
 
-            basRadVec.Unitize();
+            basRadVec.Normalise();
 
             baseRadialForceValue = -1 * (baseLoadVec.Z / basRadVec.Z);
             //baseRadialForceValue = baseLoadVec.Z / basRadVec.Z;
@@ -122,8 +122,8 @@ namespace FormFinding_Engine.Structural.CableNetFormFinding
                 Vector v1 = prevTrPoint - thisTRPt;
                 Vector v2 = nextTRPt - thisTRPt;
                 Vector v3 = new Vector(loadVs[i].X, loadVs[i].Y, 0);
-                v1.Unitize();
-                v2.Unitize();
+                v1.Normalise();
+                v2.Normalise();
                 v1 *= trXyPrestressValue;
                 v2 *= trXyPrestressValue;
 
@@ -190,7 +190,7 @@ namespace FormFinding_Engine.Structural.CableNetFormFinding
         public static List<ConstantHorizontalPrestressGoal> HorForceCalcGeneric(List<Point> crPts, List<Point> trPts, List<Vector> loadVs, double scaleFactor)
         {
 
-            double initialForceVal;
+            // double initialForceVal;  // Never used
 
             Point trPt1 = trPts[0];
             Point crPt = crPts[0];
@@ -198,7 +198,7 @@ namespace FormFinding_Engine.Structural.CableNetFormFinding
 
             Vector radVec = crPt - trPt1;
 
-            radVec.Unitize();
+            radVec.Normalise();
 
             if (radVec.Z == 0)
                 return null;
@@ -218,7 +218,7 @@ namespace FormFinding_Engine.Structural.CableNetFormFinding
             Vector v1;
 
             v1 = (trPts[0]-trPts[trPts.Count - 1]);
-            v1.Unitize();
+            v1.Normalise();
             v1 *= trXyPrestressValue;
 
             List<double> debug = new List<double>();
@@ -251,8 +251,8 @@ namespace FormFinding_Engine.Structural.CableNetFormFinding
                 v2.Z = 0;
                 v3.Z = 0;
 
-                v2.Unitize();
-                v3.Unitize();
+                v2.Normalise();
+                v3.Normalise();
 
                 double a = (v1.X * v3.Y- v1.Y * v3.X) / (v2.X * v3.Y - v2.Y * v3.X);
                 double b = (v2.X * v1.Y - v2.Y * v1.X) / (v2.X * v3.Y - v2.Y * v3.X);
@@ -486,7 +486,7 @@ namespace FormFinding_Engine.Structural.CableNetFormFinding
             foreach (Vector v in crVecs)
             {
                 Vector dup = v.DuplicateVector();
-                dup.Unitize();
+                dup.Normalise();
                 crUnitVectors.Add(dup);
             }
 
@@ -504,8 +504,8 @@ namespace FormFinding_Engine.Structural.CableNetFormFinding
                 v2.Z = 0;
                 v3.Z = 0;
 
-                v2.Unitize();
-                v3.Unitize();
+                v2.Normalise();
+                v3.Normalise();
 
                 //Calculate the scale factor for the tensionring force vector
                 double a = (v1.X * v3.Y - v1.Y * v3.X) / (v2.X * v3.Y - v2.Y * v3.X);
@@ -604,8 +604,8 @@ namespace FormFinding_Engine.Structural.CableNetFormFinding
                 v2.Z = 0;
                 v3.Z = 0;
 
-                v2.Unitize();
-                v3.Unitize();
+                v2.Normalise();
+                v3.Normalise();
 
                 //Calculate the scale factor for the tensionring force vector
                 double a = (force.X * v3.Y - force.Y * v3.X) / (v2.X * v3.Y - v2.Y * v3.X);
@@ -699,7 +699,7 @@ namespace FormFinding_Engine.Structural.CableNetFormFinding
         {
             Vector radVec = crPt - trPt;
 
-            radVec.Unitize();
+            radVec.Normalise();
 
             if (radVec.Z == 0)
             {
@@ -722,7 +722,7 @@ namespace FormFinding_Engine.Structural.CableNetFormFinding
             {
                 Vector dup = crPts[i] - trPts[i];
                 dup.Z = 0;
-                dup.Unitize();
+                dup.Normalise();
 
                 Vector norm = Vector.CrossProduct(dup, z);
                 
@@ -795,8 +795,8 @@ namespace FormFinding_Engine.Structural.CableNetFormFinding
             v2.Z = 0;
             v3.Z = 0;
 
-            v2.Unitize();
-            v3.Unitize();
+            v2.Normalise();
+            v3.Normalise();
 
             double a = (v1.X * v3.Y - v1.Y * v3.X) / (v2.X * v3.Y - v2.Y * v3.X);
             double b = (v2.X * v1.Y - v2.Y * v1.X) / (v2.X * v3.Y - v2.Y * v3.X);
@@ -814,7 +814,7 @@ namespace FormFinding_Engine.Structural.CableNetFormFinding
 
 
                 Vector compRingVec = p2 - p1;
-                compRingVec.Unitize();
+                compRingVec.Normalise();
 
                 compVecs.Add(compRingVec * a);
             }
@@ -866,7 +866,7 @@ namespace FormFinding_Engine.Structural.CableNetFormFinding
             Point crPt = crPts[0];
             Vector radVec = crPt - trPt;
 
-            radVec.Unitize();
+            radVec.Normalise();
 
             if (radVec.Z == 0)
             {
@@ -975,8 +975,8 @@ namespace FormFinding_Engine.Structural.CableNetFormFinding
                 v2.Z = 0;
                 v3.Z = 0;
 
-                v2.Unitize();
-                v3.Unitize();
+                v2.Normalise();
+                v3.Normalise();
 
                 double a = (force.X * v3.Y - force.Y * v3.X) / (v2.X * v3.Y - v2.Y * v3.X);
                 double b = (v2.X * force.Y - v2.Y * force.X) / (v2.X * v3.Y - v2.Y * v3.X);

@@ -4,8 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
 using System.Reflection;
+using BHoM.Reflection;
+using BHoM.Geometry;
 
 namespace BHoM.Base
 {
@@ -87,7 +88,7 @@ namespace BHoM.Base
             if (type == null) return null;
 
             // Process the BHoM geometry differently for now   TODO: get a proper cleanup of the old json
-            if (type.IsSubclassOf(typeof(Geometry.GeometryBase)))
+            if (type.IsSubclassOf(typeof(BHoMGeometry)))
                 return type.GetMethod("FromJSON").Invoke(null, new object[] { json, null });
 
             // Create the object and set the properties
@@ -241,7 +242,6 @@ namespace BHoM.Base
             int i0 = json.IndexOf('[') + 1;
             string inside = json.Substring(i0, json.LastIndexOf(']') - i0);
             i0 = 0;
-            int index = 0;
             List<string> array = new List<string>();
             for (int i = 0; i < inside.Length; i++)
             {

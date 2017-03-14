@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BHoM.Geometry;
-using BHoM.Generic;
+using BHoM.DataStructure;
 
 namespace Graph_Engine
 {
@@ -82,12 +82,12 @@ namespace Graph_Engine
             return path;
         }
 
-        private class PathItem<T> : IComparable<PathItem<T>>
+        private class PathItem<T1> : IComparable<PathItem<T1>> where T1 : T
         {
             public double StartCost { get; set; }    // Cost of going from start to that node
             public double EndCost { get; set; }     // estimated cost of going from this node to the end
-            public GraphNode<T> Node { get; set; }
-            public PathItem<T> Previous { get; set; }
+            public GraphNode<T1> Node { get; set; }
+            public PathItem<T1> Previous { get; set; }
             public bool IsValid { get { return Node != null; } }
 
             public double Score { get { return StartCost + EndCost; } } 
@@ -97,7 +97,7 @@ namespace Graph_Engine
                 Node = null;
             }
 
-            public PathItem(GraphNode<T> node, double startCost = 0, double endCost = 0)
+            public PathItem(GraphNode<T1> node, double startCost = 0, double endCost = 0)
             {
                 Node = node;
                 StartCost = startCost;
@@ -105,7 +105,7 @@ namespace Graph_Engine
                 Previous = null;
             }
 
-            int IComparable<PathItem<T>>.CompareTo(PathItem<T> other)
+            int IComparable<PathItem<T1>>.CompareTo(PathItem<T1> other)
             {
                 return Score.CompareTo(other.Score);
             }

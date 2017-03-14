@@ -44,13 +44,13 @@ namespace FormFinding_Engine.Structural.Goals
 
             double[] vec = new double[stPos.Length];
 
-            vec = VectorUtils.Sub(endPos, stPos);
+            vec = ArrayUtils.Sub(endPos, stPos);
 
-            double[] unitVec = VectorUtils.Normalise(vec);
+            double[] unitVec = ArrayUtils.Normalise(vec);
 
             double cableForceValue = m_prestressForce / Math.Sqrt(unitVec[0] * unitVec[0] + unitVec[1] * unitVec[1]);
 
-            double[] cableForce = VectorUtils.Multiply(unitVec, cableForceValue);
+            double[] cableForce = ArrayUtils.Multiply(unitVec, cableForceValue);
 
 
             // Calculate force

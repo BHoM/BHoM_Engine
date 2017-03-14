@@ -17,7 +17,7 @@ namespace FormFinding_Engine.Structural
         private double m_prevEnergy;
         private double m_damping;
         private double m_maxiterations;
-        private bool m_peakEnergyReached;
+        // private bool m_peakEnergyReached;   //Never used
         
 
         public StructuralRelaxCalculator():this(0.1,0.0001,0.1,5000)
@@ -30,7 +30,7 @@ namespace FormFinding_Engine.Structural
             m_ConvergenceThreshold = threshold;
             m_damping = damping;
             m_maxiterations = maxiterations;
-            m_peakEnergyReached = false;
+            // m_peakEnergyReached = false;    //Never used
         }
 
         public double Dt
@@ -150,7 +150,7 @@ namespace FormFinding_Engine.Structural
             {
                 double[] vel = nodeData[i].Velocity();
                 double mass = nodeData[i].Mass();
-                scalarvel = VectorUtils.LengthSq(vel);
+                scalarvel = ArrayUtils.LengthSq(vel);
                 enrg += scalarvel * mass;
             }
 
@@ -160,7 +160,7 @@ namespace FormFinding_Engine.Structural
                 {
                     nodeData[i].SetVelocity(new double[nodeData[i].Velocity().Length]);
                 }
-                m_peakEnergyReached = true;
+                // m_peakEnergyReached = true;   //Never used
                 m_prevEnergy = 0;
             }
             else
@@ -185,7 +185,7 @@ namespace FormFinding_Engine.Structural
             for (int i = 0; i < nodeData.Count; i++)
             {
                 double[] vel = nodeData[i].Velocity();
-                scalarvel = VectorUtils.Length(vel);
+                scalarvel = ArrayUtils.Length(vel);
                 maxVel = Math.Max(scalarvel, maxVel);
             }
             

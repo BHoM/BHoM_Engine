@@ -4,7 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BHoM.Geometry;
-using BHoM.Generic;
+using BHoM.Base;
+using BHoM.DataStructure;
 
 namespace ModelLaundry_Engine
 {

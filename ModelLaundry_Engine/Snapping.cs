@@ -16,10 +16,10 @@ namespace ModelLaundry_Engine
         public static object VerticalSnapToHeight(object element, List<double> refHeights, double tolerance)
         {
             // Get the geometry of the element
-            GeometryBase geometry = Util.GetGeometry(element);
+            BHoMGeometry geometry = Util.GetGeometry(element);
 
             // Do the actal snapping
-            GeometryBase output = null;
+            BHoMGeometry output = null;
             if (geometry is Point)
             {
                 output = Snapping.VerticalSnapToHeight((Point)geometry, refHeights, tolerance);
@@ -102,12 +102,12 @@ namespace ModelLaundry_Engine
         public static object VerticalSnapToShape(object element, List<object> refElements, double tolerance)
         {
             // Get the geometry of the elements
-            GeometryBase geometry = Util.GetGeometry(element);
+            BHoMGeometry geometry = Util.GetGeometry(element);
             BoundingBox ROI = geometry.Bounds().Inflate(tolerance);
             List<Curve> refGeom = Util.GetGeometries(refElements, ROI);
 
             // Do the actal snapping
-            GeometryBase output = null;
+            BHoMGeometry output = null;
             if (geometry is Point)
             {
                 output = Snapping.VerticalSnapToShape((Point)geometry, refGeom, tolerance);
@@ -191,13 +191,13 @@ namespace ModelLaundry_Engine
         public static object HorizontalSnapToShape(object element, List<object> refElements, double tolerance, bool anyHeight = false)
         {
             // Get the geometry of the element
-            GeometryBase geometry = Util.GetGeometry(element);
+            BHoMGeometry geometry = Util.GetGeometry(element);
             BoundingBox ROI = geometry.Bounds().Inflate(tolerance);
             if (anyHeight) ROI.Extents.Z = 1e12;
             List<Curve> refGeom = Util.GetGeometries(refElements, ROI);
 
             // Do the actal snapping
-            GeometryBase output = null;
+            BHoMGeometry output = null;
             if (geometry is Point)
             {
                 output = Snapping.HorizontalSnapToShape((Point)geometry, refGeom, tolerance, anyHeight);
@@ -252,13 +252,18 @@ namespace ModelLaundry_Engine
             List<Curve> nearContours = Util.GetNearContours(contour, refContours, tolerance, anyHeight);
 
             // Get all reference lines
+            Plane ground = Plane.XY();
             List<Line> refLines = new List<Line>();
             foreach (Curve refC in nearContours)
             {
                 foreach (Line refL in refC.Explode())
                 {
                     if (Math.Abs(refL.Direction.Z) < 1e-3)
-                        refLines.Add(refL.ProjectToGround());
+                    {
+                        XCurve.Project(refL, ground);  // This only works because refL is a new line. Project should create a new line, not modify the existing one
+                        refLines.Add(refL);
+                    }
+                        
                 }
 
             }
@@ -276,29 +281,29 @@ namespace ModelLaundry_Engine
             {
                 // Only work with horizontal lines
                 if (Math.Abs(cLine.Direction.Z) > 1e-3) continue;
-                Line line = cLine.ProjectToGround();
+                XCurve.Project(cLine, ground);  // This only works because refL is a new line. Project should create a new line, not modify the existing one
 
                 // Get directions of the line
-                Vector hDir = line.Direction;
-                hDir.Unitize();
+                Vector hDir = cLine.Direction;
+                hDir.Normalise();
                 Vector pDir = new Vector(-hDir.Y, hDir.X, 0);
 
                 // Add snap propositions
                 List<Snap> snaps = new List<Snap>();
                 foreach (Line refL in refLines)
                 {
-                    if (line.Direction.IsParallel(refL.Direction, 0.02))
+                    if (cLine.Direction.IsParallel(refL.Direction, 0.02))
                         continue;
-                    Point intersection = Intersect.LineLine(line, refL);
+                    Point intersection = Intersect.LineLine(cLine, refL);
                     if (intersection != null)
                     {
-                        Vector startDir = intersection - line.StartPoint;
+                        Vector startDir = intersection - cLine.StartPoint;
                         if (startDir.Length < tolerance && startDir.Length > 0)
-                            snapDirections[getPointCode(line.StartPoint)].Add(new Snap(startDir, refL));
+                            snapDirections[getPointCode(cLine.StartPoint)].Add(new Snap(startDir, refL));
 
-                        Vector endDir = intersection - line.EndPoint;
+                        Vector endDir = intersection - cLine.EndPoint;
                         if (endDir.Length < tolerance && endDir.Length > 0)
-                            snapDirections[getPointCode(line.EndPoint)].Add(new Snap(endDir, refL));
+                            snapDirections[getPointCode(cLine.EndPoint)].Add(new Snap(endDir, refL));
                     }
                 } 
             }
@@ -312,11 +317,11 @@ namespace ModelLaundry_Engine
                 {
                     Vector finalDir = snaps[0].dir.DuplicateVector();
                     Vector refDir = snaps[0].dir.DuplicateVector();
-                    refDir.Unitize();
+                    refDir.Normalise();
 
                     for (int i = 1; i < snaps.Count; i++)
                     {
-                        double sin = Math.Sin(Vector.VectorAngle(refDir, snaps[i].dir));
+                        double sin = Math.Sin(VectorUtils.VectorAngle(refDir, snaps[i].dir));
                         if (!Double.IsNaN(sin))
                             finalDir += snaps[i].dir * sin;
                     }
@@ -334,7 +339,7 @@ namespace ModelLaundry_Engine
         public static Group<Curve> HorizontalSnapToShape(Group<Curve> group, List<Curve> refContours, double tolerance, bool anyHeight = false)
         {
             Group<Curve> newGroup = new Group<Curve>();
-            foreach (Curve curve in Curve.Join(group))
+            foreach (Curve curve in CurveUtils.Join(group))
             {
                 if (curve is Line)
                     newGroup.Add(HorizontalSnapToShape((Line)curve, refContours, tolerance, anyHeight));
@@ -352,13 +357,13 @@ namespace ModelLaundry_Engine
         public static object HorizontalParallelSnap(object element, List<object> refElements, double tolerance, bool anyHeight = false, double angleTol = 0.035)
         {
             // Get the geometry of the element
-            GeometryBase geometry = Util.GetGeometry(element);
+            BHoMGeometry geometry = Util.GetGeometry(element);
             BoundingBox ROI = geometry.Bounds().Inflate(tolerance);
             if (anyHeight) ROI.Extents.Z = 1e12;
             List<Curve> refGeom = Util.GetGeometries(refElements, ROI);
 
             // Do the actal snapping
-            GeometryBase output = null;
+            BHoMGeometry output = null;
             if (geometry is Curve)
             {
                 output = Snapping.HorizontalParallelSnap((Curve)geometry, refGeom, tolerance, anyHeight, angleTol);
@@ -388,13 +393,17 @@ namespace ModelLaundry_Engine
             }
 
             // Get all reference lines
+            Plane ground = Plane.XY();
             List<Line> refLines = new List<Line>();
             foreach (Curve refC in nearContours)
             {
                 foreach (Line refL in refC.Explode())
                 {
                     if (Math.Abs(refL.Direction.Z) < 1e-3)
-                        refLines.Add(refL.ProjectToGround());
+                    {
+                        XCurve.Project(refL, ground);  // This only works because refL is a new line. Project should create a new line, not modify the existing one
+                        refLines.Add(refL);
+                    }
                 }
                     
             }
@@ -404,21 +413,21 @@ namespace ModelLaundry_Engine
             {
                 // Only work with horizontal lines
                 if (Math.Abs(cLine.Direction.Z) > 1e-3) continue;
-                Line line = cLine.ProjectToGround();
+                XCurve.Project(cLine, ground);  // This only works because refL is a new line. Project should create a new line, not modify the existing one
 
                 // Get directions of the line
-                Vector hDir = line.Direction;
-                hDir.Unitize();
+                Vector hDir = cLine.Direction;
+                hDir.Normalise();
                 Vector pDir = new Vector(-hDir.Y, hDir.X, 0);
 
                 // Add snap propositions
                 List<Snap> snaps = new List<Snap>();
                 foreach (Line refL in refLines)
                 {
-                    if (line.Direction.IsParallel(refL.Direction, angleTol) && line.DistanceTo(refL) < tolerance)
+                    if (cLine.Direction.IsParallel(refL.Direction, angleTol) && cLine.DistanceTo(refL) < tolerance)
                     {
-                        Vector startDir = (pDir * (refL.StartPoint - line.StartPoint)) * pDir;
-                        Vector endDir = (pDir * (refL.EndPoint - line.EndPoint)) * pDir;
+                        Vector startDir = (pDir * (refL.StartPoint - cLine.StartPoint)) * pDir;
+                        Vector endDir = (pDir * (refL.EndPoint - cLine.EndPoint)) * pDir;
                         Vector dir = (startDir.Length < endDir.Length) ? startDir : endDir;
                         if (dir.Length < tolerance)
                             snaps.Add(new Snap(dir, refL));
@@ -434,11 +443,11 @@ namespace ModelLaundry_Engine
                         if (snaps[i].dir.Length < bestSnap.dir.Length)
                             bestSnap = snaps[i];
                     }
-                    Snap startSnap = new Snap(bestSnap.target.ProjectOnInfiniteLine(line.StartPoint) - line.StartPoint, bestSnap.target);
-                    Snap endSnap = new Snap(bestSnap.target.ProjectOnInfiniteLine(line.EndPoint) - line.EndPoint, bestSnap.target);
+                    Snap startSnap = new Snap(bestSnap.target.ProjectOnInfiniteLine(cLine.StartPoint) - cLine.StartPoint, bestSnap.target);
+                    Snap endSnap = new Snap(bestSnap.target.ProjectOnInfiniteLine(cLine.EndPoint) - cLine.EndPoint, bestSnap.target);
 
-                    snapDirections[getPointCode(line.StartPoint)].Add(startSnap);
-                    snapDirections[getPointCode(line.EndPoint)].Add(endSnap);
+                    snapDirections[getPointCode(cLine.StartPoint)].Add(startSnap);
+                    snapDirections[getPointCode(cLine.EndPoint)].Add(endSnap);
                 }
             }
 
@@ -497,7 +506,7 @@ namespace ModelLaundry_Engine
         public static Group<Curve> HorizontalParallelSnap(Group<Curve> group, List<Curve> refContours, double tolerance, bool anyHeight = false, double angleTol = 0.035)
         {
             Group<Curve> newGroup = new Group<Curve>();
-            foreach (Curve curve in Curve.Join(group))
+            foreach (Curve curve in CurveUtils.Join(group))
             {
                 if (curve is Line)
                     newGroup.Add(HorizontalParallelSnap((Line)curve, refContours, tolerance, anyHeight, angleTol));
@@ -515,14 +524,14 @@ namespace ModelLaundry_Engine
         public static object PointToPointSnap(object element, List<object> refElements, double tolerance)
         {
             // Get the geometry of the elements
-            GeometryBase geometry = Util.GetGeometry(element);
+            BHoMGeometry geometry = Util.GetGeometry(element);
             BoundingBox ROI = geometry.Bounds().Inflate(tolerance);
 
             // Get the reference points
             List<Point> refPoints = Util.GetControlPoints(refElements, ROI);
 
             // Do the actal snapping
-            GeometryBase output = null;
+            BHoMGeometry output = null;
             if (geometry is Point)
             {
                 output = Snapping.PointToPointSnap((Point)geometry, refPoints, tolerance);

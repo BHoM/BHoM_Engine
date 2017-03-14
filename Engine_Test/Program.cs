@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using BHoM.Geometry;
-using BHoM.Base;
-using BHoM.Global;
-using BHoM.Generic;
+using BHG = BHoM.Geometry;
+using BHB = BHoM.Base;
 using BHoM.Structural.Elements;
 using BHoM.Structural.Properties;
 using ModelLaundry_Engine;
@@ -17,7 +15,7 @@ namespace Engine_Test
     {
         static void Main(string[] args)
         {
-            TestAudio();
+            //TestAudio();
             Console.Read();
         }
 
@@ -46,7 +44,7 @@ namespace Engine_Test
             Project project2 = Project.FromJSON(json);*/
         }
 
-        static void TestVideo()
+       /* static void TestVideo()
         {
             string videoFile = @"C:\Users\adecler\Documents\Projects\StadiaCrowdAnalysis\InputVideos\Fan Cam- Preston North End_mpeg4.avi";
             MachineLearning_Engine.MotionLevelAnalyser analyser = new MachineLearning_Engine.MotionLevelAnalyser();
@@ -58,9 +56,9 @@ namespace Engine_Test
             config.NbColumns = 1;
 
             Dictionary<int, List<double>> result = analyser.Run(videoFile, config).Result;
-        }
+        }*/
 
-        static void TestAudio()
+        /*static void TestAudio()
         {
             string videoFile = @"C:\Users\adecler\Documents\Projects\StadiaCrowdAnalysis\InputVideos\Fan Cam- Preston North End_mpeg4.wav";
             MachineLearning_Engine.SoundLevelAnalyser analyser = new MachineLearning_Engine.SoundLevelAnalyser();
@@ -69,9 +67,9 @@ namespace Engine_Test
             config.OutFolder = @"C:\Users\adecler\Documents\Projects\StadiaCrowdAnalysis\Results\Video_01";
 
             Dictionary<int, double> result = analyser.Run(videoFile, config).Result;
-        }
+        }*/
 
-        static void TestPanelVSnap()
+        /*static void TestPanelVSnap()
         {
             // Test panel snapping
             string panelJson = "{ \"Type\":\"BHoM.Structural.Panel\",\"Primitive\":\"BHoM.Structural.Panel; BHoM; Version=1.0.0.0; Culture=neutral; PublicKeyToken=null\",\"Properties\":{ \"Edges\":{ \"Primitive\":\"group\",\"groupType\":\"BHoM.Geometry.Curve\",\"group\":[{\"Primitive\":\"line\",\"start\":[24.5778681994532,-2.74803939183246,45.315],\"end\":[29.5556354116369,-9.05481358976734,45.315]},{\"Primitive\":\"line\",\"start\":[29.5556354116369,-9.05481358976734,45.315],\"end\":[29.5556354116369,-9.05481358976734,48.065]},{\"Primitive\":\"line\",\"start\":[29.5556354116369,-9.05481358976734,48.065],\"end\":[24.5778681994532,-2.74803939183246,48.065]},{\"Primitive\":\"line\",\"start\":[24.5778681994532,-2.74803939183246,48.065],\"end\":[24.5778681994532,-2.74803939183246,45.315]}]},\"ThicknessProperty\":\"ab645fdd-b100-4d87-ab16-84ab6e053218\",\"BHoM_Guid\":\"ea18e6ab-1cae-4cbd-9f24-05c9f608f486\",\"CustomData\":{\"RevitId\":804997,\"RevitType\":\"Wall\"}}}";
@@ -92,9 +90,9 @@ namespace Engine_Test
             ModelLaundry_Engine.Snapping.HorizontalSnapToShape(panel, refCurves, 1);
 
             Console.WriteLine("Done");
-        }
+        }*/
 
-        static void TestLineVSnap()
+        /*static void TestLineVSnap()
         { 
             // Test Line and Bar snapping
             Point pt1 = new Point(0 , 0, 0.5);
@@ -113,9 +111,9 @@ namespace Engine_Test
             Console.WriteLine("Line: [{0} - {1}", r2.StartPoint.ToString(), r2.EndPoint.ToString());
 
             Console.WriteLine("Done");
-        }
+        }*/
 
-        static void TestGraph()
+        /*static void TestGraph()
         {
             List<Point> points = new List<Point>();
             points.Add(new Point(0, 0, 0));
@@ -135,11 +133,11 @@ namespace Engine_Test
 
             Graph_Engine.GraphNavigator<Point> navigator = new Graph_Engine.GraphNavigator<Point>(graph);
             List<GraphNode<Point>> path = navigator.GetPath(nodes[0], nodes.Last(), PointDist);
-        }
+        }*/
 
-        static double PointDist(Point pt1, Point pt2)
+        /*static double PointDist(Point pt1, Point pt2)
         {
             return pt1.DistanceTo(pt2);
-        }
+        }*/
     }
 }

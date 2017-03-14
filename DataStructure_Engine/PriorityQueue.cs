@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BHoM.Generic
+namespace BHoM.DataStructure
 {
     public class PriorityQueue<T> where T : IComparable<T>
     {

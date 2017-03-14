@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BHoM.Geometry;
-using BHoM.Generic;
 using FormFinding_Engine.Base;
+using BHoM.DataStructure;
 
 namespace FormFinding_Engine.Structural
 {

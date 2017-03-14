@@ -45,13 +45,13 @@ namespace FormFinding_Engine.Structural.Goals
             double[] newEndPos = nodeData[NodeIndices[1]].NewPosition();
 
 
-            double[] springVector = VectorUtils.Sub(newEndPos, newStPos);
+            double[] springVector = ArrayUtils.Sub(newEndPos, newStPos);
 
-            newLength = VectorUtils.Length(springVector);
+            newLength = ArrayUtils.Length(springVector);
 
             double stretchFactor = (m_initialLength - newLength) / newLength * m_stiffness;
 
-            double[] springForce = VectorUtils.Multiply(springVector, stretchFactor);
+            double[] springForce = ArrayUtils.Multiply(springVector, stretchFactor);
 
 
             //---------------------------------------------------------------------------------------------------------
@@ -79,7 +79,7 @@ namespace FormFinding_Engine.Structural.Goals
 
             // Store result
 
-            m_result = VectorUtils.Length(springForce);
+            m_result = ArrayUtils.Length(springForce);
 
         }
 

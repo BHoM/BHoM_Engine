@@ -49,9 +49,9 @@ namespace BHoM.Project
     {
         private Instance m_Project;
         protected List<T> m_Data;
-        private int m_UniqueNumber;
-        private FilterOption m_Option;
-        private string m_Name;
+        //private int m_UniqueNumber;           //Never used
+        //private FilterOption m_Option;        //Never used
+        //private string m_Name;                //Never used
 
         /// <summary>
         /// 

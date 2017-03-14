@@ -35,6 +35,8 @@ namespace MachineLearning_Engine
             public int NbColumns;
         }
 
+        public delegate void ResultEvent(Dictionary<int, List<double>> result);
+
 
         public MotionLevelAnalyser()
         {
@@ -45,7 +47,7 @@ namespace MachineLearning_Engine
         /****  Public Methods                ****/
         /****************************************/
 
-        public async Task<Dictionary<int, List<double>>> Run(string videoFileName, Config config)
+        public void /*async Task<Dictionary<int, List<double>>>*/ Run(string videoFileName, Config config)
         {
             m_MotionLevel = new Dictionary<int, List<double>>();
             m_Detector = new TwoFramesDifferenceDetector();
@@ -68,10 +70,14 @@ namespace MachineLearning_Engine
             m_FVideoSource.PlayingFinished += PlayingFinished;
             m_FVideoSource.Start();*/
 
-            m_DoneEvent.WaitOne();
+            /*m_DoneEvent.WaitOne();
 
-            return m_MotionLevel;
+            return m_MotionLevel;*/
         }
+
+        /****************************************/
+
+        public ResultEvent ResultReceived;
 
 
         /****************************************/
@@ -115,6 +121,9 @@ namespace MachineLearning_Engine
             }
             
             m_DoneEvent.Set();
+
+            if (ResultReceived != null)
+                ResultReceived.Invoke(m_MotionLevel);
         }
 
         /****************************************/

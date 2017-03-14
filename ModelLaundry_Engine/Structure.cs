@@ -9,14 +9,14 @@ namespace ModelLaundry_Engine
 {
     public class Structure
     {
-        public static List<BHE.Panel> BarsToPanels(List<BHE.Bar> bars, string key = "", BHB.FilterOption option = BHB.FilterOption.Guid)
+        public static List<BHE.Panel> BarsToPanels(List<BHE.Bar> bars, string key = "", BHoM.Project.FilterOption option = BHoM.Project.FilterOption.Guid)
         {
             List<BHE.Panel> panels = new List<BHoM.Structural.Elements.Panel>();
             BHB.ObjectManager<BHP.PanelProperty> thicknessManager = new BHB.ObjectManager<BHP.PanelProperty>();
 
             foreach (BHE.Bar bar in bars)
             {
-                if (bar.SectionProperty != null && bar.Line.Direction.IsParallel(BHG.Vector.ZAxis(), Math.PI / 24))
+                if (bar.SectionProperty != null && BHG.XVector.IsParallel(bar.Line.Direction, BHG.Vector.ZAxis(), Math.PI / 24))
                 {
                     double length = 0;
                     double thickness = 0;
@@ -38,14 +38,14 @@ namespace ModelLaundry_Engine
                     BHG.Vector up = new BHG.Vector(0, 0, 1);
                     BHG.Vector direction = BHG.Vector.CrossProduct(up, normal);
 
-                    direction.Unitize();
+                    direction.Normalise();
                     direction = direction * length / 2;
 
                     BHG.Line line1 = bar.Line.DuplicateCurve() as BHG.Line;
                     BHG.Line line2 = bar.Line.DuplicateCurve() as BHG.Line;
 
-                    line1.Translate(direction);
-                    line2.Translate(BHG.Vector.Zero - direction);
+                    BHG.XCurve.Translate(line1, direction);
+                    BHG.XCurve.Translate(line2, BHG.Vector.Zero - direction);
 
                     BHG.Line line3 = new BHG.Line(line1.StartPoint, line2.StartPoint);
                     BHG.Line line4 = new BHG.Line(line1.EndPoint, line2.EndPoint);
@@ -59,14 +59,14 @@ namespace ModelLaundry_Engine
                         thicknessManager.Add(propertyName, new BHP.ConstantThickness(propertyName, thickness, BHoM.Structural.Properties.PanelType.Wall));
                     }
 
-                    BHE.Panel panel = new BHE.Panel(perimeter);
+                    BHE.Panel panel = new BHE.Panel(BHG.Create.SurfaceFromBoundaryCurves(perimeter));
 
                     BHP.PanelProperty property = thicknessManager[propertyName];
                     property.Material = bar.Material;
                     panel.PanelProperty = property;
                     panels.Add(panel);
 
-                    BHoM.Global.Project.ActiveProject.RemoveObject(bar.BHoM_Guid);
+                    BHoM.Project.Instance.Active.RemoveObject(bar.BHoM_Guid);
                 }
             }
             return panels;

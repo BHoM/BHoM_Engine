@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using BHoM.Geometry;
 
-namespace BHoM.Generic
+namespace BHoM.DataStructure
 {
     public class PointMatrix : PointMatrix<object>
     {

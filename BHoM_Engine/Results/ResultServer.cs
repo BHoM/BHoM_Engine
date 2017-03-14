@@ -19,7 +19,7 @@ namespace BHoM.Base.Results
         string m_TableName;
         string m_ConnectionString;
         List<string> m_ColumnNames;
-        Dictionary<string, int> m_LoadcaseKey;
+        //Dictionary<string, int> m_LoadcaseKey;  //Never used
         private ResultOrder m_ResultOrder;
 
         /// <summary>
@@ -176,7 +176,7 @@ namespace BHoM.Base.Results
                             bulkCopy.WriteToServer(CreateDataSet(values));
                             transaction.Commit();
                         }
-                        catch (Exception ex)
+                        catch (Exception)
                         {
                             transaction.Rollback();
                         }
@@ -392,7 +392,7 @@ namespace BHoM.Base.Results
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }
