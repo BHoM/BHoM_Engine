@@ -74,9 +74,16 @@ namespace BHoM.Geometry
 
         public static Surface SurfaceFromBoundaryCurves(Group<Curve> boundaryCurves)
         {
+            List<Curve> temp = null;
+            return SurfaceFromBoundaryCurves(boundaryCurves, out temp);
+        }
+
+        public static Surface SurfaceFromBoundaryCurves(Group<Curve> boundaryCurves, out List<Curve> unusedCurves)
+        {
             List<Curve> curves = CurveUtils.Join(boundaryCurves);
             Plane plane = null;
             Group<Curve> closedCurves = new Group<Curve>();
+            unusedCurves = new List<Curve>();
             foreach (Curve boundary in boundaryCurves)
             {
                 if (boundary.IsPlanar() && boundary.IsClosed())
@@ -90,6 +97,11 @@ namespace BHoM.Geometry
                     {
                         closedCurves.Add(xY);
                     }
+                    else unusedCurves.Add(xY);
+                }
+                else
+                {
+                    unusedCurves.Add(boundary);
                 }
             }
             if (plane != null)
