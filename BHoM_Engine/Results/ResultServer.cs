@@ -9,6 +9,8 @@ using System.Data.SqlClient;
 using System.Data;
 using System.ComponentModel;
 using BHoM.Structural.Loads;
+using BHoM.Structural.Interface;
+using BHoM.Structural.Results;
 
 namespace BHoM.Base.Results
 {
