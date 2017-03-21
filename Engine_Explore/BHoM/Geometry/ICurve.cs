@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Engine_Explore.Geometry
+namespace Engine_Explore.BHoM.Geometry
 {
-    public class Arc
+    public class ICurve
     {
     }
 }

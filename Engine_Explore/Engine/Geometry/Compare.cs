@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Engine_Explore.Geometry
+namespace Engine_Explore.Engine.Geometry
 {
-    public class Curve
+    public static class Compare
     {
     }
 }

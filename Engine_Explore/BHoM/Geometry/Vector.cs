@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Engine_Explore.Geometry
+namespace Engine_Explore.BHoM.Geometry
 {
-    public class Point : BHoMGeometry
+    public class Vector : BHoMGeometry
     {
         /***************************************************/
         /**** Properties                                ****/
@@ -23,7 +23,7 @@ namespace Engine_Explore.Geometry
         /**** Constructors                              ****/
         /***************************************************/
 
-        public Point(double x = 0, double y = 0, double z = 0)
+        public Vector(double x = 0, double y = 0, double z = 0)
         {
             X = x;
             Y = y;
@@ -32,11 +32,11 @@ namespace Engine_Explore.Geometry
 
         /***************************************************/
 
-        public Point(Vector v)
+        public Vector(Point pt)
         {
-            X = v.X;
-            Y = v.Y;
-            Z = v.Z;
+            X = pt.X;
+            Y = pt.Y;
+            Z = pt.Z;
         }
 
 
@@ -44,65 +44,58 @@ namespace Engine_Explore.Geometry
         /**** Local Methods                             ****/
         /***************************************************/
 
-        public override Type GetGeometryType()
+        public static Vector operator +(Vector a, Vector b)
         {
-            return Type.Point;
+            return new Vector(a.X + b.X, a.Y + b.Y, a.Z + b.Z);
         }
 
         /***************************************************/
 
-        public static Vector operator -(Point a, Point b)
+        public static Vector operator -(Vector a, Vector b)
         {
             return new Vector(a.X - b.X, a.Y - b.Y, a.Z - b.Z);
         }
 
         /***************************************************/
 
-        public static Point operator +(Point a, Point b)
+        public static Vector operator /(Vector a, double b)
         {
-            return new Point(a.X + b.X, a.Y + b.Y, a.Z + b.Z);
+            return new Vector(a.X / b, a.Y / b, a.Z / b);
         }
 
         /***************************************************/
 
-        public static Point operator +(Point a, Vector b)
+        public static Vector operator *(Vector a, double b)
         {
-            return new Point(a.X + b.X, a.Y + b.Y, a.Z + b.Z);
+            return new Vector(a.X * b, a.Y * b, a.Z * b);
         }
 
         /***************************************************/
 
-        public static Point operator -(Point a, Vector b)
+        public static Vector operator *(double b, Vector a)
         {
-            return new Point(a.X - b.X, a.Y - b.Y, a.Z - b.Z);
+            return new Vector(a.X * b, a.Y * b, a.Z * b);
         }
 
         /***************************************************/
 
-        public static Point operator *(Point a, double b)
+        public static double operator *(Vector a, Vector b)
         {
-            return new Point(a.X * b, a.Y * b, a.Z * b);
+            return (a.X * b.X + a.Y * b.Y + a.Z * b.Z);
         }
 
         /***************************************************/
 
-        public static Point operator *(double a, Point b)
+        public static double operator *(Vector a, Point b)
         {
-            return new Point(a * b.X, a * b.Y, a * b.Z);
+            return (a.X * b.X + a.Y * b.Y + a.Z * b.Z);
         }
 
         /***************************************************/
 
-        public static Point operator /(Point a, double b)
+        public static double operator *(Point a, Vector b)
         {
-            return new Point(a.X / b, a.Y / b, a.Z / b);
-        }
-
-        /***************************************************/
-
-        public static Point operator /(double a, Point b)
-        {
-            return new Point(a / b.X, a / b.Y, a / b.Z);
+            return (a.X * b.X + a.Y * b.Y + a.Z * b.Z);
         }
     }
 }

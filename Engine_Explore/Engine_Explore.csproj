@@ -46,23 +46,43 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Engine\Bounds.cs" />
-    <Compile Include="Geometry\Arc.cs" />
-    <Compile Include="Geometry\BHoMGeometry.cs" />
-    <Compile Include="Geometry\BoundingBox.cs" />
-    <Compile Include="Geometry\Circle.cs" />
-    <Compile Include="Geometry\Curve.cs" />
-    <Compile Include="Geometry\Line.cs" />
-    <Compile Include="Geometry\NurbCurve.cs" />
-    <Compile Include="Geometry\Plane.cs" />
-    <Compile Include="Geometry\Point.cs" />
-    <Compile Include="Geometry\Polyline.cs" />
-    <Compile Include="Geometry\Vector.cs" />
+    <Compile Include="BHoM\Geometry\NurbCurveB.cs" />
+    <Compile Include="Engine\Geometry\Compare.cs" />
+    <Compile Include="Engine\Geometry\Join.cs" />
+    <Compile Include="Engine\Geometry\Measure.cs" />
+    <Compile Include="Engine\Geometry\Bound.cs" />
+    <Compile Include="Engine\Geometry\Create.cs" />
+    <Compile Include="Engine\Geometry\Intersect.cs" />
+    <Compile Include="Engine\Geometry\Reduce.cs" />
+    <Compile Include="Engine\Geometry\Split.cs" />
+    <Compile Include="Engine\Geometry\Transform.cs" />
+    <Compile Include="BHoM\Geometry\Arc.cs" />
+    <Compile Include="BHoM\Geometry\BHoMGeometry.cs" />
+    <Compile Include="BHoM\Geometry\BoundingBox.cs" />
+    <Compile Include="BHoM\Geometry\Circle.cs" />
+    <Compile Include="BHoM\Geometry\ICurve.cs" />
+    <Compile Include="BHoM\Geometry\Line.cs" />
+    <Compile Include="BHoM\Geometry\NurbCurve.cs" />
+    <Compile Include="BHoM\Geometry\Plane.cs" />
+    <Compile Include="BHoM\Geometry\Point.cs" />
+    <Compile Include="BHoM\Geometry\Polyline.cs" />
+    <Compile Include="BHoM\Geometry\Vector.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Adapters\Mongo\" />
+    <Folder Include="Adapters\RhinoGeometry\" />
+    <Folder Include="BHoM\Base\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BHoM_Engine\BHoM_Engine.csproj">
+      <Project>{1ad45c88-dd54-48e5-951f-55edfeb70e35}</Project>
+      <Name>BHoM_Engine</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
