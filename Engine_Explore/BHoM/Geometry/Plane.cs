@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Engine_Explore.BHoM.Geometry
 {
-    public class Plane
+    public class Plane : BHoMGeometry
     {
         /***************************************************/
         /**** Properties                                ****/

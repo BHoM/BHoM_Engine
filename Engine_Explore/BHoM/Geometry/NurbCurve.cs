@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Engine_Explore.BHoM.Geometry
 {
-    public class NurbCurve : ICurve
+    public class NurbCurve : BHoMGeometry, ICurve
     {
         /***************************************************/
         /**** Properties                                ****/

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Engine_Explore.BHoM.Geometry
 {
-    public class Polyline : ICurve
+    public class Polyline : BHoMGeometry, ICurve
     {
         /***************************************************/
         /**** Properties                                ****/

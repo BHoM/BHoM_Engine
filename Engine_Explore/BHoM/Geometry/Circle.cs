@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Engine_Explore.BHoM.Geometry
 {
-    public class Circle : ICurve
+    public class Circle : BHoMGeometry, ICurve
     {
         /***************************************************/
         /**** Properties                                ****/

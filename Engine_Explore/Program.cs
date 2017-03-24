@@ -16,21 +16,26 @@ namespace Engine_Explore
     {
         static void Main(string[] args)
         {
-            BHG.Point pt = new BHG.Point();
 
-            Console.WriteLine("\nChanging Curve length to 20 points...");
+            try { Bound.Calculate(new Circle()); }
+            catch (Exception) {
+                throw new NotImplementedException();
+            }
+            
+
+            Console.WriteLine("\nChanging to 20 Curves...");
             ChangeCurveLength(20);
             TestSpeed(new List<IterFunction>() { IntersectOldLines, IntersectNewLines });
 
-            Console.WriteLine("\nChanging Curve length to 100 points...");
+            Console.WriteLine("\nChanging to 100 Curves...");
             ChangeCurveLength(100);
             TestSpeed(new List<IterFunction>() { IntersectOldLines, IntersectNewLines });
 
-            Console.WriteLine("\nChanging Curve length to 500 points...");
+            Console.WriteLine("\nChanging to 500 Curves...");
             ChangeCurveLength(500);
             TestSpeed(new List<IterFunction>() { IntersectOldLines, IntersectNewLines });
 
-            /*
+            
             TestSpeed(new List<IterFunction>() { BoundOldNurbCurve, BoundNewNurbCurve, BoundNewNurbCurveB });
 
             Console.WriteLine("\nChanging Curve length to 20 points...");
@@ -45,7 +50,7 @@ namespace Engine_Explore
             Console.WriteLine("\nChanging Curve length to 600 points...");
             ChangeCurveLength(600);
             TestSpeed(new List<IterFunction>() { BoundOldNurbCurve, BoundNewNurbCurve, BoundNewNurbCurveB });
-            */
+            
 
             Console.Read();
         }
@@ -229,6 +234,7 @@ namespace Engine_Explore
             Intersect.Lines(lines);
         }
 
+
         /***************************************************/
         /**** Speed Test                                ****/
         /***************************************************/
@@ -293,7 +299,7 @@ namespace Engine_Explore
             List<dynamic> stuff = new List<dynamic>();
             BHoMGeometry pt = new Point();
 
-            BoundingBox box = Bound.Calculate(pt);
+            BoundingBox box = Bound.Calculate(pt as dynamic);
 
         }
 

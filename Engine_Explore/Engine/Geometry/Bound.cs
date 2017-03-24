@@ -10,13 +10,6 @@ namespace Engine_Explore.Engine.Geometry
 {
     public static class Bound
     {
-        public static BoundingBox Calculate(BHoMGeometry geometry)
-        {
-            return Calculate(geometry as dynamic);
-        }
-
-        /***************************************************/
-
         public static BoundingBox Calculate(Point pt)
         {
             return new BoundingBox(pt, pt);

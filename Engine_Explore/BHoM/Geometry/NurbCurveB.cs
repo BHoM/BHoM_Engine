@@ -8,7 +8,7 @@ namespace Engine_Explore.BHoM.Geometry
 {
 
     // Test NURBS curve using array of double instead of list of Point
-    public class NurbCurveB : ICurve
+    public class NurbCurveB : BHoMGeometry, ICurve
     {
         /***************************************************/
         /**** Properties                                ****/
