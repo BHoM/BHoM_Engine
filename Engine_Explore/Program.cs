@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Engine_Explore.BHoM.Base;
 using Engine_Explore.BHoM.Geometry;
 using Engine_Explore.Engine.Geometry;
 using BHG = BHoM.Geometry;
 using Engine_Explore.Engine;
 using System.Diagnostics;
 using System.Threading;
+using Engine_Explore.BHoM.Structural.Elements;
+using Engine_Explore.Adapter;
 
 namespace Engine_Explore
 {
@@ -16,13 +19,24 @@ namespace Engine_Explore
     {
         static void Main(string[] args)
         {
+            List<BHoMObject> nodes = new List<BHoMObject>
+            {
+                new Node(new Point(1,2,3)),
+                new Node(new Point(4,5,6))
+            };
 
-            try { Bound.Calculate(new Circle()); }
-            catch (Exception) {
-                throw new NotImplementedException();
-            }
+            BHoMAdapter adapter = new GsaAdapter();
+
+            adapter.Push(nodes);
             
+            Console.Read();
+        }
 
+
+        /***************************************************/
+
+        public void OldVsNew()
+        {
             Console.WriteLine("\nChanging to 20 Curves...");
             ChangeCurveLength(20);
             TestSpeed(new List<IterFunction>() { IntersectOldLines, IntersectNewLines });
@@ -35,7 +49,7 @@ namespace Engine_Explore
             ChangeCurveLength(500);
             TestSpeed(new List<IterFunction>() { IntersectOldLines, IntersectNewLines });
 
-            
+
             TestSpeed(new List<IterFunction>() { BoundOldNurbCurve, BoundNewNurbCurve, BoundNewNurbCurveB });
 
             Console.WriteLine("\nChanging Curve length to 20 points...");
@@ -50,10 +64,8 @@ namespace Engine_Explore
             Console.WriteLine("\nChanging Curve length to 600 points...");
             ChangeCurveLength(600);
             TestSpeed(new List<IterFunction>() { BoundOldNurbCurve, BoundNewNurbCurve, BoundNewNurbCurveB });
-            
-
-            Console.Read();
         }
+
 
         /***************************************************/
         /**** Iter Functions                            ****/
@@ -296,8 +308,8 @@ namespace Engine_Explore
 
         static void TestDynamicPolymorphism()
         {
-            List<dynamic> stuff = new List<dynamic>();
             BHoMGeometry pt = new Point();
+
 
             BoundingBox box = Bound.Calculate(pt as dynamic);
 

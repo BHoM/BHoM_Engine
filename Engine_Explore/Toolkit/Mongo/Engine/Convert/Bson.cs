@@ -21,7 +21,6 @@ namespace Engine_Explore.Engine.Convert
                 document["__Time__"] = timestamp;
             }
 
-
             return document;
         }
 

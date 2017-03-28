@@ -6,16 +6,16 @@ using System.Threading.Tasks;
 
 namespace Engine_Explore.BHoM.Base
 {
-    public interface ILink
+    public interface IAdapter
     {
         bool Push(IEnumerable<object> data, bool overwrite = true, string config = "");
 
-        bool Push(IEnumerable<object> data, out object result, bool overwrite = true, string config = "");
-
-        List<object> Pull(List<string> queries, string config = "");
+        List<object> Pull(string query, string config = "");
 
         bool Delete(string filter = "", string config = "");
 
         bool Execute(string command, string config = "");
+
+        List<string> ErrorLog { get; set; }
     }
 }

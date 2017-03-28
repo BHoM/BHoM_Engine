@@ -71,6 +71,16 @@ namespace Engine_Explore.Engine.Convert
 
         /**************************************/
 
+        public static List<string> ReadStringArray(string json)
+        {
+            if (json == "null" || !json.StartsWith("[") || !json.EndsWith("]"))
+                return null;
+
+            return GetArrayFromJSON(json);
+        }
+
+        /**************************************/
+
         public static object ReadObject(string json)
         {
             char[] toTrim = { ' ', '\"' };
@@ -123,6 +133,7 @@ namespace Engine_Explore.Engine.Convert
 
             return newObject;
         }
+
 
         /**************************************/
         /****  Private Methods             ****/
@@ -209,7 +220,7 @@ namespace Engine_Explore.Engine.Convert
         /****  Utility Stuff               ****/
         /**************************************/
 
-        public static Dictionary<string, string> GetDefinitionFromJSON(string json)
+        private static Dictionary<string, string> GetDefinitionFromJSON(string json)
         {
             int level = 0;
             string key = "";
@@ -249,7 +260,7 @@ namespace Engine_Explore.Engine.Convert
 
         /**************************************/
 
-        public static List<String> GetArrayFromJSON(string json)
+        private static List<String> GetArrayFromJSON(string json)
         {
             int level = 0;
             int i0 = json.IndexOf('[') + 1;

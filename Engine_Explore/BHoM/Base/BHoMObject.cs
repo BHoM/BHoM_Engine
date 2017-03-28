@@ -59,6 +59,8 @@ namespace Engine_Explore.BHoM.Base
         public BHoMObject ShallowClone(bool newGuid = false)
         {
             BHoMObject obj = (BHoMObject)this.MemberwiseClone();
+            obj.CustomData = new Dictionary<string, object>(CustomData);
+
             if (newGuid)
                 obj.BHoM_Guid = Guid.NewGuid();
             return obj;
