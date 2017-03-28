@@ -24,7 +24,7 @@ namespace Engine_Explore.Adapter.Link
 
         public GSALink()
         {
-            //m_Gsa = new ComAuto();
+            m_Gsa = new ComAuto();
             ErrorLog = new List<string>();
         }
 
@@ -32,11 +32,11 @@ namespace Engine_Explore.Adapter.Link
 
         public GSALink(string filePath) : this()
         {
-            /*short result;
+            short result;
             if (filePath != "")
                 result = m_Gsa.Open(filePath);
             else
-                result = m_Gsa.NewFile();*/
+                result = m_Gsa.NewFile();
         }
 
 
@@ -46,13 +46,13 @@ namespace Engine_Explore.Adapter.Link
 
         public bool Execute(string command)
         {
-            /*var result = m_Gsa.GwaCommand(command);
+            var result = m_Gsa.GwaCommand(command);
 
             if ((int)result != 1)
             {
                 ErrorLog.Add("Application of command " + command + " error. Invalid arguments?");
                 return false;
-            }*/
+            }
 
             return true;
         }
@@ -61,8 +61,8 @@ namespace Engine_Explore.Adapter.Link
 
         public List<GsaNode> PullNodes(List<int> indices)
         {
-            GsaNode[] nodes = new GsaNode[0];
-            //m_Gsa.Nodes(indices.ToArray(), out nodes);
+            GsaNode[] nodes;
+            m_Gsa.Nodes(indices.ToArray(), out nodes);
 
             return nodes.ToList();
         }
@@ -71,21 +71,21 @@ namespace Engine_Explore.Adapter.Link
 
         public int PullInt(string query)
         {
-            return 0; // m_Gsa.GwaCommand(query);
+            return m_Gsa.GwaCommand(query);
         }
 
         /***************************************************/
 
         public bool DeleteAll()
         {
-            return false; // m_Gsa.Delete("RESULTS") == 0;
+            return m_Gsa.Delete("RESULTS") == 0;
         }
 
         /*******************************************/
         /****  Private Fields                   ****/
         /*******************************************/
 
-        //private ComAuto m_Gsa;
+        private ComAuto m_Gsa;
     }
 }
 
