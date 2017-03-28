@@ -59,11 +59,10 @@ namespace Engine_Explore.Adapter.Link
 
         /***************************************************/
 
-        public List<GsaNode> PullNodes(List<int> indices)
+        public List<GsaNode> PullNodes(IEnumerable<int> indices)
         {
             GsaNode[] nodes;
             m_Gsa.Nodes(indices.ToArray(), out nodes);
-
             return nodes.ToList();
         }
 

@@ -21,17 +21,33 @@ namespace Engine_Explore
         {
             List<BHoMObject> nodes = new List<BHoMObject>
             {
-                new Node(new Point(1,2,3)),
-                new Node(new Point(4,5,6))
+                new Node {Point = new Point(1, 2, 3), Name = "A"},
+                new Node {Point = new Point(4, 5, 6), Name = "B"},
+                new Node {Point = new Point(7, 8, 9), Name = "C"}
             };
 
-            BHoMAdapter adapter = new GsaAdapter();
+            //IEnumerable<object> test = nodes as IEnumerable<object>;
+            //IEnumerable<Node> n = (IEnumerable<Node>)test;
+
+            CastFunction(nodes);
+
+            //List<object> test = nodes as List<object>;
+            //List<Node> n = (List<Node>)test;
+
+            IAdapter adapter = new GsaAdapter(@"C:\Users\adecler\Documents\My Received Files\Gsa54.gwb");
 
             adapter.Push(nodes);
+
+            List<Node> pulledNodes = (List<Node>)adapter.Pull("Node");
             
             Console.Read();
         }
 
+
+        public static void CastFunction(IEnumerable<object> objects)
+        {
+            List<Node> n = objects as List<Node>;
+        } 
 
         /***************************************************/
 

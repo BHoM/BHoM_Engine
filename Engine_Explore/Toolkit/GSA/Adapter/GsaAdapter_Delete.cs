@@ -10,6 +10,13 @@ namespace Engine_Explore.Adapter
 {
     public partial class GsaAdapter
     {
+        public bool Delete(string filter = "", string config = "")
+        {
+            return DeleteAll(filter, config);
+        }
+
+        /*******************************************/
+
         public bool DeleteAll(string filter = "", string config = "")
         {
             return m_Link.DeleteAll();

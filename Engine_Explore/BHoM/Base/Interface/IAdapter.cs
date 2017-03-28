@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,7 +11,7 @@ namespace Engine_Explore.BHoM.Base
     {
         bool Push(IEnumerable<object> data, bool overwrite = true, string config = "");
 
-        List<object> Pull(string query, string config = "");
+        IList Pull(string query, string config = "");
 
         bool Delete(string filter = "", string config = "");
 

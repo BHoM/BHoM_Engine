@@ -10,9 +10,34 @@ namespace Engine_Explore.Adapter
 {
     public partial class GsaAdapter 
     {
-        public bool PushNodes(IEnumerable<object> nodes, bool overwrite = true, string config = "")
+        public bool Push(IEnumerable<object> data, bool overwrite = true, string config = "")
         {
-            int highestIndex = m_Link.PullInt("HIGHEST, NODE");
+            bool ok = true;
+
+            foreach (var group in Engine.Reflection.Types.GroupByType(data))
+            {
+                string typeName = group.Key.Name;
+
+                switch (typeName)
+                {
+                    case "Node":
+                        ok &= PushNodes(group.Value as List<Node>, overwrite, config);
+                        break;
+                    default:
+                        ok = false;
+                        break;
+                }
+            }
+
+            return ok;
+        }
+
+        /*******************************************/
+
+        public bool PushNodes(IEnumerable<Node> nodes, bool overwrite = true, string config = "")
+        {
+            string CustomKey = Engine.Convert.GsaElement.CustomKey;
+            int highestIndex = m_Link.PullInt("HIGHEST, NODE") + 1;
             bool ok = true;
 
             foreach (Node node in nodes)

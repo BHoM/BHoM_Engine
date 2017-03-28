@@ -10,6 +10,9 @@ namespace Engine_Explore.Adapter
 {
     public partial class GsaAdapter
     {
-
+        public bool Execute(string command, string config = "")
+        {
+            throw new NotImplementedException();
+        }
     }
 }

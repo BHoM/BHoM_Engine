@@ -7,11 +7,11 @@ using MongoDB.Bson;
 using MongoDB.Driver;
 using BHB = Engine_Explore.BHoM.Base;
 using BHE = Engine_Explore.Engine;
-
+using System.Collections;
 
 namespace Engine_Explore.Adapter
 {
-    public class MongoAdapter : BHB.BHoMAdapter
+    public class MongoAdapter : BHB.IAdapter
     {
         /***************************************************/
         /**** Properties                                ****/
@@ -24,6 +24,8 @@ namespace Engine_Explore.Adapter
         public string CollectionName { get { return m_Link.CollectionName; } }
 
         public int HistorySize { get { return m_Link.HistorySize; } set { m_Link.HistorySize = value; } }
+
+        public List<string> ErrorLog { get; set; } = new List<string>();
 
 
         /***************************************************/
@@ -50,7 +52,7 @@ namespace Engine_Explore.Adapter
 
         /*******************************************/
 
-        public override bool Push(IEnumerable<object> objects, bool overwrite = true, string key = "")
+        public bool Push(IEnumerable<object> objects, bool overwrite = true, string key = "")
         {
             DateTime timestamp = DateTime.Now;
             IEnumerable<BsonDocument> documents = objects.Select(x => BHE.Convert.Bson.Write(x, key, timestamp));
@@ -59,28 +61,28 @@ namespace Engine_Explore.Adapter
 
         /*******************************************/
 
-        public override List<object> Pull(string queries, string config = "{keepAsJson: false}")
+        public IList Pull(string queries, string config = "{keepAsJson: false}")
         {
             List<BsonDocument> result = m_Link.Pull(BHE.Convert.Json.ReadStringArray(queries));
        
             var configDic = BHE.Convert.Json.ReadStringDictionary<string>(config);
 
             if (configDic != null && configDic.ContainsKey("keepAsJson") && configDic["KeepAsJson"] != "false")
-                return result.Select(x => x.ToString()).ToList<object>();
+                return result.Select(x => x.ToString()).ToList();
             else
-                return result.Select(x => BHE.Convert.Bson.ReadObject(x)).ToList<object>();
+                return result.Select(x => BHE.Convert.Bson.ReadObject(x)).ToList();
         }
 
         /*******************************************/
 
-        public override bool Delete(string filter = "{}", string config = "")
+        public bool Delete(string filter = "{}", string config = "")
         {
             return m_Link.Delete(filter);
         }
 
         /*******************************************/
 
-        public override bool Execute(string command, string config = "")
+        public bool Execute(string command, string config = "")
         {
             return false;
         }

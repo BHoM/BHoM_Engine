@@ -49,6 +49,25 @@ namespace Engine_Explore.BHoM.Structural.Properties
             Name = name;
         }
 
+        /***************************************************/
+
+        public NodeConstraint(string name, bool[] fixity, double[] values)
+        {
+            Name = name;
+            KX = values[0];
+            KY = values[1];
+            KZ = values[2];
+            HX = values[3];
+            HY = values[4];
+            HZ = values[5];
+            UX = (fixity[0]) ? DOFType.Fixed : (values[0] == 0) ? DOFType.Free : DOFType.Spring;
+            UY = (fixity[1]) ? DOFType.Fixed : (values[1] == 0) ? DOFType.Free : DOFType.Spring;
+            UZ = (fixity[2]) ? DOFType.Fixed : (values[2] == 0) ? DOFType.Free : DOFType.Spring;
+            RX = (fixity[3]) ? DOFType.Fixed : (values[3] == 0) ? DOFType.Free : DOFType.Spring;
+            RY = (fixity[4]) ? DOFType.Fixed : (values[4] == 0) ? DOFType.Free : DOFType.Spring;
+            RZ = (fixity[5]) ? DOFType.Fixed : (values[5] == 0) ? DOFType.Free : DOFType.Spring;
+        }
+
 
         /***************************************************/
         /**** Local Methods                             ****/

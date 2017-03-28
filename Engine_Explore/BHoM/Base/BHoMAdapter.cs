@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,10 +9,10 @@ namespace Engine_Explore.BHoM.Base
 {
     public class BHoMAdapter : IAdapter
     {
-        public delegate List<object> PullFunction(string query = "", string config = "");
-        public delegate bool PushFunction(IEnumerable<object> data, bool overwrite = true, string config = "");
+        public delegate IList PullFunction(string query = "", string config = "");
+        public delegate bool PushFunction(IEnumerable data, bool overwrite = true, string config = "");
         public delegate bool ExecuteFunction(string command, string config = "");
-        public delegate bool DeleteFunction(string command, string config = "");
+        public delegate bool DeleteFunction(string filter, string config = "");
 
 
         /***************************************************/
@@ -40,7 +41,7 @@ namespace Engine_Explore.BHoM.Base
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public virtual List<object> Pull(string query, string config = "")
+        public virtual IList Pull(string query, string config = "")
         {
             if (PullFunctions.ContainsKey(query))
                 return PullFunctions[query](query, config);
@@ -54,7 +55,7 @@ namespace Engine_Explore.BHoM.Base
         {
             bool ok = true;
 
-            foreach (IGrouping<Type, object> group in data.GroupBy(x => x.GetType()))
+            foreach (IGrouping<Type, object> group in ((IEnumerable<object>)data).GroupBy(x => x.GetType()))
             {
                 string typeName = group.Key.Name;
                 if (PushFunctions.ContainsKey(typeName))
