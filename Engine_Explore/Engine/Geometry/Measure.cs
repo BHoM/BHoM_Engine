@@ -24,6 +24,16 @@ namespace Engine_Explore.Engine.Geometry
 
         /***************************************************/
 
+        public static double Distance(Point a, Point b)
+        {
+            double dx = a.X - b.X;
+            double dy = a.Y - b.Y;
+            double dz = a.Z - b.Z;
+            return Math.Sqrt(dx * dx + dy * dy + dz * dz);
+        }
+
+        /***************************************************/
+
         public static double Length(Vector v)
         {
             return Math.Sqrt(v.X * v.X + v.Y * v.Y + v.Z * v.Z);

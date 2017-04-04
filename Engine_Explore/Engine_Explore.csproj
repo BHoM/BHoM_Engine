@@ -67,10 +67,19 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BHoM\Base\BHoMAdapter.cs" />
+    <Compile Include="BHoM\Base\Tolerance.cs" />
+    <Compile Include="BHoM\Materials\Enums.cs" />
+    <Compile Include="BHoM\Materials\Material.cs" />
+    <Compile Include="BHoM\Structural\Elements\Bar.cs" />
     <Compile Include="BHoM\Structural\Elements\Node.cs" />
     <Compile Include="BHoM\Structural\Properties\Constraints\NodeConstraint.cs" />
     <Compile Include="BHoM\Structural\Properties\Enums.cs" />
+    <Compile Include="BHoM\Structural\Properties\Sections\SectionProperty.cs" />
+    <Compile Include="BHoM\DataStructures\Tree.cs" />
     <Compile Include="Engine\Reflection\Types.cs" />
+    <Compile Include="Engine\Sets\Compare.cs" />
+    <Compile Include="Engine\Sets\CompareStructural.cs" />
+    <Compile Include="Engine\Sets\Stitch.cs" />
     <Compile Include="Toolkit\GSA\Adapter\GsaAdapter.cs" />
     <Compile Include="Toolkit\GSA\Adapter\GsaAdapter_Delete.cs" />
     <Compile Include="Toolkit\GSA\Adapter\GsaAdapter_Execute.cs" />
@@ -83,7 +92,6 @@
     <Compile Include="BHoM\Base\BHoMList.cs" />
     <Compile Include="BHoM\Base\BHoMObject.cs" />
     <Compile Include="BHoM\Base\Interface\IAdapter.cs" />
-    <Compile Include="BHoM\Base\Interface\IConverter.cs" />
     <Compile Include="BHoM\Base\Interface\IObject.cs" />
     <Compile Include="BHoM\Geometry\NurbCurveB.cs" />
     <Compile Include="Engine\Convert\JsonRead.cs" />

@@ -12,12 +12,21 @@ namespace Engine_Explore.Adapter
     {
         public bool Delete(string filter = "", string config = "")
         {
-            return DeleteAll(filter, config);
+            if (filter.Count() == 0)
+                return DeleteAll(config);
+            else
+            {
+                // Need to identify that we want to delete tags
+                // Delete Element with tag, Remove tag from element with multiple tags
+
+                //Other types of delete filters
+                return true;
+            }
         }
 
         /*******************************************/
 
-        public bool DeleteAll(string filter = "", string config = "")
+        public bool DeleteAll(string config = "")
         {
             return m_Link.DeleteAll();
         }

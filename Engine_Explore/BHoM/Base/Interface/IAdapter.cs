@@ -9,7 +9,7 @@ namespace Engine_Explore.BHoM.Base
 {
     public interface IAdapter
     {
-        bool Push(IEnumerable<object> data, bool overwrite = true, string config = "");
+        bool Push(IEnumerable<object> data, string tag = "", string config = "");
 
         IList Pull(string query, string config = "");
 

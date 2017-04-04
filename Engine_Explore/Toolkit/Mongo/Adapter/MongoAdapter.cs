@@ -42,21 +42,11 @@ namespace Engine_Explore.Adapter
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public bool Push(IEnumerable<object> objects, out object result, bool overwrite = true, string key = "")
-        {
-            result = null;
-            DateTime timestamp = DateTime.Now;
-            IEnumerable<BsonDocument> documents = objects.Select(x => BHE.Convert.Bson.Write(x, key, timestamp));
-            return m_Link.Push(documents, overwrite, key);           
-        }
-
-        /*******************************************/
-
-        public bool Push(IEnumerable<object> objects, bool overwrite = true, string key = "")
+        public bool Push(IEnumerable<object> objects, string tag = "", string config = "")
         {
             DateTime timestamp = DateTime.Now;
-            IEnumerable<BsonDocument> documents = objects.Select(x => BHE.Convert.Bson.Write(x, key, timestamp));
-            return m_Link.Push(documents, overwrite, key);
+            IEnumerable<BsonDocument> documents = objects.Select(x => BHE.Convert.Bson.Write(x, tag, timestamp));
+            return m_Link.Push(documents, true, tag);
         }
 
         /*******************************************/

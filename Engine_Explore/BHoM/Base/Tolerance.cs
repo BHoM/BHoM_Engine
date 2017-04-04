@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace Engine_Explore.BHoM.Base
 {
-    public interface IConverter<T>
+    public static class Tolerance
     {
-        object Read(T data);
-        T Write(object data);
+        public const double MIN_DIST = 1e-12;
     }
 }

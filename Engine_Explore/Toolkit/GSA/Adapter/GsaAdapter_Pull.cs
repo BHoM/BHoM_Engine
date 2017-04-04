@@ -24,7 +24,7 @@ namespace Engine_Explore.Adapter
 
         /*******************************************/
 
-        public List<Node> PullNodes(string query, string config = "")
+        public List<Node> PullNodes(string query = "", string config = "")
         {
             int highestIndex = m_Link.PullInt("HIGHEST, NODE");
             return m_Link.PullNodes(Enumerable.Range(0, highestIndex+1)).Select(x => BHE.Convert.GsaElement.Read(x)).ToList();

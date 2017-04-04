@@ -21,6 +21,8 @@ namespace Engine_Explore.BHoM.Structural.Properties
         unknown,
     }
 
+    /*******************************************/
+
     /// <summary>Axis direction for any application (loads, results, geometry
     /// all cartesian coordinate systems follow the right hand rule</summary>
     public enum AxisDirection
@@ -38,6 +40,8 @@ namespace Engine_Explore.BHoM.Structural.Properties
         /// <summary>Clockwise rotation about Z-Axis looking in positive Z direction</summary>
         ZZ = 5
     }
+
+    /*******************************************/
 
     /// <summary>
     /// Enumerator of types of degrees of freedom
@@ -74,6 +78,8 @@ namespace Engine_Explore.BHoM.Structural.Properties
         Gap = 13
     }
 
+    /*******************************************/
+
     /// <summary>Constraint type</summary>
     public enum ConstraintType
     {
@@ -85,5 +91,28 @@ namespace Engine_Explore.BHoM.Structural.Properties
         Rigid,
         /// <summary>Compatibility (e.g. compatible nodes)</summary>
         Compatibility
+    }
+
+    /*******************************************/
+
+    public enum ShapeType
+    {
+        Rectangle = 0,
+        Box = 1,
+        Angle = 2,
+        ISection = 3,
+        Tee = 4,
+        Channel = 5,
+        Tube = 6,
+        Circle = 7,
+        Zed = 8,
+        Polygon = 9,
+
+        DoubleAngle = 22,
+        DoubleISection = 23,
+        DoubleChannel = 25,
+
+        //Maybe should move elsewhere
+        Cable = 30,
     }
 }

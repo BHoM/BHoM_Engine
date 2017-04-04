@@ -1,7 +1,9 @@
-﻿using System;
+﻿using Engine_Explore.BHoM.DataStructure;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -24,6 +26,35 @@ namespace Engine_Explore.Engine.Reflection
             }
 
             return groups;
+        }
+
+        /***************************************************/
+
+        public static Tree<Type> GetTypeTree(Type type)
+        {
+            Tree<Type> tree = new Tree<Type>();
+
+            tree.Value = type;
+
+            foreach (PropertyInfo info in type.GetProperties())
+                tree.Childrens.Add(GetTypeTree(info.PropertyType));
+
+            return tree;
+        }
+
+        /***************************************************/
+
+        public static List<Type> GetLinkedTypes(Type type)
+        {
+            HashSet<Type> set = new HashSet<Type>();
+
+            foreach (PropertyInfo info in type.GetProperties())
+            {
+                foreach (Type linkedType in GetLinkedTypes(info.PropertyType))
+                    set.Add(linkedType);
+            }
+
+            return set.ToList();
         }
     }
 }

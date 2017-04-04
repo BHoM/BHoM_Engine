@@ -39,5 +39,6 @@ namespace Engine_Explore.Adapter
         /*******************************************/
 
         private GSALink m_Link;
+        Dictionary<Type, IList> m_PulledObjects;
     }
 }

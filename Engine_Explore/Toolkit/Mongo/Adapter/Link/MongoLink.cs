@@ -74,7 +74,6 @@ namespace Engine_Explore.Adapter.Link
                 return false;
 
             // Create the bulk query for the object to replace/insert
-            DateTime timestamp = DateTime.Now;
             List<WriteModel<BsonDocument>> bulk = new List<WriteModel<BsonDocument>>();
             WriteModel<BsonDocument> deletePrevious = new DeleteManyModel<BsonDocument>(Builders<BsonDocument>.Filter.Eq("__Key__", key));
             if (overwrite)

@@ -10,7 +10,7 @@ namespace Engine_Explore.BHoM.Base
     public class BHoMAdapter : IAdapter
     {
         public delegate IList PullFunction(string query = "", string config = "");
-        public delegate bool PushFunction(IEnumerable data, bool overwrite = true, string config = "");
+        public delegate bool PushFunction(IEnumerable data, string tag = "", string config = "");
         public delegate bool ExecuteFunction(string command, string config = "");
         public delegate bool DeleteFunction(string filter, string config = "");
 
@@ -51,7 +51,7 @@ namespace Engine_Explore.BHoM.Base
 
         /***************************************************/
 
-        public virtual bool Push(IEnumerable<object> data, bool overwrite = true, string config = "")
+        public virtual bool Push(IEnumerable<object> data, string tag = "", string config = "")
         {
             bool ok = true;
 
@@ -59,7 +59,7 @@ namespace Engine_Explore.BHoM.Base
             {
                 string typeName = group.Key.Name;
                 if (PushFunctions.ContainsKey(typeName))
-                    ok &= PushFunctions[typeName](group, overwrite, config);
+                    ok &= PushFunctions[typeName](group, tag, config);
                 else
                     ok = false;
             }
