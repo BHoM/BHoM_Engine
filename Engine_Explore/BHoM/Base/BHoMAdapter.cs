@@ -11,7 +11,7 @@ namespace Engine_Explore.BHoM.Base
     {
         public delegate IList PullFunction(string query = "", string config = "");
         public delegate bool PushFunction(IEnumerable data, string tag = "", string config = "");
-        public delegate bool ExecuteFunction(string command, string config = "");
+        public delegate bool ExecuteFunction(string command, List<string> parameters = null, string config = "");
         public delegate bool DeleteFunction(string filter, string config = "");
 
 
@@ -25,7 +25,7 @@ namespace Engine_Explore.BHoM.Base
 
         public Dictionary<string, ExecuteFunction> ExecuteFunctions { get; set; } = new Dictionary<string, ExecuteFunction>();
 
-        public Dictionary<string, ExecuteFunction> DeleteFunctions { get; set; } = new Dictionary<string, ExecuteFunction>();
+        public Dictionary<string, DeleteFunction> DeleteFunctions { get; set; } = new Dictionary<string, DeleteFunction>();
 
         public List<string> ErrorLog { get; set; } = new List<string>();
 
@@ -79,10 +79,10 @@ namespace Engine_Explore.BHoM.Base
 
         /***************************************************/
 
-        public virtual bool Execute(string command, string config = "")
+        public virtual bool Execute(string command, List<string> parameters = null, string config = "")
         {
             if (ExecuteFunctions.ContainsKey(command))
-                return ExecuteFunctions[command](command, config);
+                return ExecuteFunctions[command](command, parameters, config);
             else
                 return false;
         }

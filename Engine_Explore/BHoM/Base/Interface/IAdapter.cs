@@ -15,7 +15,7 @@ namespace Engine_Explore.BHoM.Base
 
         bool Delete(string filter = "", string config = "");
 
-        bool Execute(string command, string config = "");
+        bool Execute(string command, List<string> parameters = null, string config = "");
 
         List<string> ErrorLog { get; set; }
     }

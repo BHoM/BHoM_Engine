@@ -72,7 +72,7 @@ namespace Engine_Explore.Adapter
 
         /*******************************************/
 
-        public bool Execute(string command, string config = "")
+        public bool Execute(string command, List<string> parameters = null, string config = "")
         {
             return false;
         }

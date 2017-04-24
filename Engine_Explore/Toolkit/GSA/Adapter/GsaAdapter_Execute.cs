@@ -10,7 +10,7 @@ namespace Engine_Explore.Adapter
 {
     public partial class GsaAdapter
     {
-        public bool Execute(string command, string config = "")
+        public bool Execute(string command, List<string> parameters = null, string config = "")
         {
             throw new NotImplementedException();
         }
