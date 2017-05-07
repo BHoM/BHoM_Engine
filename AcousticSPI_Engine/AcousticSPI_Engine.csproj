@@ -44,6 +44,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CheckObstacles.cs" />
+    <Compile Include="DirectSound.cs" />
+    <Compile Include="SPLCalculator.cs" />
     <Compile Include="STICalculator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
