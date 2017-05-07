@@ -29,11 +29,11 @@ namespace AcousticSPI_Engine
                 {
                     List<Point> rayPts = new List<Point>() { sources[i].Position, targets[j].Position };
                     Polyline path = new Polyline(rayPts);
-                    Ray ray = new BHoM.Acoustic.Ray(path, i.ToString(), j.ToString());
+                    Ray ray = new Ray(path, "S"+i.ToString(), "R"+j.ToString());
                     rays.Add(ray);
                 }
             }
-            return CheckObstacles.Check(rays, surfaces);
+            return Generic.CheckObstacles(rays, surfaces);
         }
 
         #endregion

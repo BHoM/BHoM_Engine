@@ -9,7 +9,7 @@ using BHoM.Acoustic;
 
 namespace AcousticSPI_Engine
 {
-    public static class CheckObstacles
+    public static class Generic
     {
 
         /// <summary>
@@ -20,7 +20,7 @@ namespace AcousticSPI_Engine
         /// <param name="ClearRays">Set true to output clear rays, false if blind rays.</param>
         /// <param name="tol">Default tolerance to 0.00001. Beware of global unit setup.</param>
         /// <returns>Returns a new list of filtered rays, either clear or blind ones.</returns>
-        public static List<Ray> Check(List<Ray> rays, List<Panel> surfaces, bool ClearRays = true, double tol = 0.00001)
+        public static List<Ray> CheckObstacles(List<Ray> rays, List<Panel> surfaces, bool ClearRays = true, double tol = 0.00001)
         {
             List<Ray> filteredRays = new List<Ray>();
             for (int i = 0; i<rays.Count; i++)                   //foreach ray
@@ -39,6 +39,11 @@ namespace AcousticSPI_Engine
             } return filteredRays;
         }
 
-
+        public static List<Ray> RayFilter(List<Ray> rays, List<string> filter)
+        {
+            //IEnumerable<Ray> Rays = rays;
+            //return Rays.Where(ray => filter.Contains(ray.Source ));
+            return rays.FindAll(ray => filter.Contains(ray.Source));
+        }
     }
 }
