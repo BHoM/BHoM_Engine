@@ -30,6 +30,7 @@ namespace AcousticSPI_Engine
                     List<Point> rayPts = new List<Point>() { sources[i].Position, targets[j].Position };
                     Polyline path = new Polyline(rayPts);
                     Ray ray = new Ray(path, "S"+i.ToString(), "R"+j.ToString());
+                    //Ray ray = new Ray(path, sources[i].SpeakerID, targets[j].ReceiverID);
                     rays.Add(ray);
                 }
             }

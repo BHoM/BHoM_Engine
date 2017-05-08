@@ -10,12 +10,12 @@ namespace AcousticSPI_Engine
 {
     public class STICalculator
     {
-        public STICalculator(BHA.AcousticParameters param)
+        public STICalculator(BHA.Parameters param)
         {
             Parameters = param;
         }
 
-        private BHA.AcousticParameters Parameters { get; set; }
+        private BHA.Parameters Parameters { get; set; }
 
         public List<double> CalculateRASTI(List<BHA.Speaker> speakers, BHA.Zone zone, List<double> frequencies, List<double> octaves)
         {

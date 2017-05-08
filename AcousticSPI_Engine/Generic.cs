@@ -39,6 +39,13 @@ namespace AcousticSPI_Engine
             } return filteredRays;
         }
 
+
+        /// <summary>
+        /// Filter ray 
+        /// </summary>
+        /// <param name="rays"></param>
+        /// <param name="filter"></param>
+        /// <returns></returns>
         public static List<Ray> RayFilter(List<Ray> rays, List<string> filter)
         {
             //IEnumerable<Ray> Rays = rays;
