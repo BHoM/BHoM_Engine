@@ -41,7 +41,7 @@ namespace AcousticSPI_Engine
                         rays.Add(ray);
                     }
                 });*/
-                
+
             // CPU accelerated ######################################   ##
             Parallel.For(0, sources.Count,
                 i =>
@@ -74,9 +74,9 @@ namespace AcousticSPI_Engine
                     rays.Add(ray);
                 }
             }
-            return Utils.CheckObstacles(rays, surfaces);
-        }*/
-
-            #endregion
+            return Utils.CheckObstacles(rays, surfaces);*/
         }
+
+        #endregion
+    }
 }
