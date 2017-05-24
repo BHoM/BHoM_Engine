@@ -29,7 +29,7 @@ namespace AcousticSPI_Engine
             for (int i = 0; i<rays.Count; i++)                   //foreach ray
             {
                 List<bool> checker = new List<bool>();
-                for (int j = 0; j < surfaces.Count; i++ )       //foreach surface
+                for (int j = 0; j < surfaces.Count; j++ )       //foreach surface
                 {
                     // Write Mesh-Polyline (or Mesh-Curve) Intersection and replace when done, due to performance.
                     if (Intersect.PlaneCurve(surfaces[j].mPlane(), rays[i].Path, tol).Count == 0)       // if ray hits a surface
@@ -60,7 +60,7 @@ namespace AcousticSPI_Engine
                 i =>
                 {
                     List<bool> checker = new List<bool>();
-                    for (int j = 0; j < surfaces.Count; i++)       //foreach surface
+                    for (int j = 0; j < surfaces.Count; j++)       //foreach surface
                     {
                         // Write Mesh-Polyline (or Mesh-Curve) Intersection and replace when done, due to performance.
                         if (Intersect.PlaneCurve(surfaces[j].mPlane(), rays[i].Path, tol).Count == 0)       // if ray hits a surface
@@ -90,7 +90,7 @@ namespace AcousticSPI_Engine
                 i =>
                 {
                     List<bool> checker = new List<bool>();
-                    for (int j = 0; j < surfaces.Count; i++)       //foreach surface
+                    for (int j = 0; j < surfaces.Count; j++)       //foreach surface
                     {
                         // Write Mesh-Polyline (or Mesh-Curve) Intersection and replace when done, due to performance.
                         if (Intersect.PlaneCurve(surfaces[j].mPlane(), rays[i].Path, tol).Count == 0)       // Substitute with MeshCurve
