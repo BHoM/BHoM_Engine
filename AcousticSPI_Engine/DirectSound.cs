@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Collections.Concurrent;
+
+using System.Threading;
 using System.Threading.Tasks;
 
 using Alea;
@@ -24,59 +27,70 @@ namespace AcousticSPI_Engine
         /// <param name="targets">BHoM acoustic Receivers</param>
         /// <param name="surfaces">BHoM acoustic Panel</param>
         /// <returns>Returns a list of BHoM Acoustic Rays</returns>
-        public static List<Ray> Solve(List<Speaker> sources, List<Receiver> targets, List<Panel> surfaces)
+        public static List<Ray> Solve(List<Speaker> sources, List<Receiver> targets, List<Panel> surfaces, int parallel)
         {
             List<Ray> rays = new List<Ray>();
 
-            // GPU accelerated ######################################   ##
-            /*Gpu.Default.For(0, sources.Count,
-                i =>
+            if (parallel == 0)
+            {
+                for (int i = 0; i < sources.Count; i++)
                 {
                     for (int j = 0; j < targets.Count; j++)
                     {
                         List<Point> rayPts = new List<Point>() { sources[i].Position, targets[j].Position };
                         Polyline path = new Polyline(rayPts);
-                        Ray ray = new Ray(path, "S" + i.ToString(), "R" + j.ToString());
-                        //Ray ray = new Ray(path, sources[i].SpeakerID, targets[j].ReceiverID);
-                        rays.Add(ray);
+                        rays.Add(new Ray(path, "S" + i.ToString(), "R" + j.ToString()));
                     }
-                });
-                return Utils.CheckObstacles(rays, surfaces);*/
-
-            // CPU accelerated ######################################   ##
-            /*Parallel.For(0, sources.Count,
-                i =>
-                {
-                    for (int j = 0; j < targets.Count; j++)
-                    {
-                        List<Point> rayPts = new List<Point>();
-                        rayPts.Add(sources[i].Position);
-                        rayPts.Add(targets[j].Position);
-                        Polyline path = new Polyline(rayPts);
-                        Ray ray = new Ray(path, "S" + i.ToString(), "R" + j.ToString());
-                        //Ray ray = new Ray(path, sources[i].SpeakerID, targets[j].ReceiverID);
-                        rays.Add(ray);
-                    }
-                });
-            if (surfaces.Count == 0)
-                return rays;
-            else
-                return Utils.CPUCheckObstacles(rays, surfaces);*/
-
-            
-            for (int i = 0; i < sources.Count; i++)
-            {
-                for (int j = 0; j < targets.Count; j++)
-                {
-                    List<Point> rayPts = new List<Point>() { sources[i].Position, targets[j].Position };
-                    Polyline path = new Polyline(rayPts);
-                    rays.Add(new Ray(path, "S"+i.ToString(), "R"+j.ToString()));
                 }
+                if (surfaces == null || surfaces.Count == 0) { return rays; }
+                else { return Utils.CPUCheckObstacles(rays, surfaces); }
             }
-            if (surfaces.Count == 0)
-                return rays;
+
+            else if (parallel == 1)
+            {
+                for (int i = 0; i < sources.Count; i++)
+                {
+                    Parallel.For(0, targets.Count,
+                        () => new List<Ray>(),                                        // Initialise local variable
+                        (int j, ParallelLoopState loop, List<Ray> subray) =>          // body: The delegate that is invoked once per iteration.
+                        {
+                            Polyline path = new Polyline(new List<Point>() { sources[i].Position, targets[j].Position });
+                            subray.Add(new Ray(path, "S" + i.ToString(), "R" + j.ToString()));
+                            return subray;
+                        },
+                        (subray) =>
+                        {
+                            lock (targets)
+                            {
+                                rays.AddRange(subray);
+                            }
+                        }
+                        );
+                }
+                if (surfaces == null || surfaces.Count == 0) { return rays; }
+                else { return Utils.CheckObstacles(rays, surfaces); }
+            }
+            /*
+            else if (parallel == 2)
+            {
+                // GPU accelerated ######################################   ##
+                Gpu.Default.For(0, sources.Count,
+                    i =>
+                    {
+                        for (int j = 0; j < targets.Count; j++)
+                        {
+                            List<Point> rayPts = new List<Point>() { sources[i].Position, targets[j].Position };
+                            Polyline path = new Polyline(rayPts);
+                            rays.Add(new Ray(path, "S" + i.ToString(), "R" + j.ToString()));
+                        }
+                    });
+                if (surfaces == null || surfaces.Count == 0) { return rays; }
+                else { return Utils.CPUCheckObstacles(rays, surfaces); }
+            }
+            */
+
             else
-                return Utils.CPUCheckObstacles(rays, surfaces);
+                throw new Exception("Parllel parameter cannot be left blank. Please specify calculation method: [0] Serial, [1] CPU Threaded, [2] GPU Threaded");
         }
 
         #endregion

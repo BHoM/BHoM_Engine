@@ -32,14 +32,15 @@ namespace AcousticSPI_Engine
                 for (int j = 0; j < surfaces.Count; j++ )       //foreach surface
                 {
                     // Write Mesh-Polyline (or Mesh-Curve) Intersection and replace when done, due to performance.
-                    if (Intersect.PlaneCurve(surfaces[j].mPlane(), rays[i].Path, tol).Count == 0)       // if ray hits a surface
+                    if (Intersect.MeshSegment(surfaces[j].Mesh, rays[i].Path) == null)       // if ray hits a surface
                         checker.Add(true);
                 }
                 if (ClearRays && checker.Any())     //if rays hits any surface and output is ClearRays
                     filteredRays.Add(rays[i]);
                 else if (!ClearRays && !checker.Any())
                     filteredRays.Add(rays[i]);
-            } return filteredRays;
+            }
+            return filteredRays;
         }
 
 
@@ -63,7 +64,7 @@ namespace AcousticSPI_Engine
                     for (int j = 0; j < surfaces.Count; j++)       //foreach surface
                     {
                         // Write Mesh-Polyline (or Mesh-Curve) Intersection and replace when done, due to performance.
-                        if (Intersect.PlaneCurve(surfaces[j].mPlane(), rays[i].Path, tol).Count == 0)       // if ray hits a surface
+                        if (Intersect.MeshSegment(surfaces[j].Mesh, rays[i].Path) == null)       // if ray hits a surface
                             checker.Add(true);
                     }
                     if (ClearRays && checker.Any())     //if rays hits any surface and output is ClearRays
@@ -82,24 +83,33 @@ namespace AcousticSPI_Engine
         /// <param name="ClearRays"></param>
         /// <param name="tol"></param>
         /// <returns></returns>
-        public static List<Ray> CPUCheckObstacles(List<Ray> rays, List<Panel> surfaces, bool ClearRays = true, double tol = 0.00001)
+        public static List<Ray> CPUCheckObstacles(List<Ray> rays, List<Panel> surfaces, bool ClearRays = true, double tol = 0.00001)    // NOT EFFICIENT for now, since it locks the rays list to be thread safe
         {
             List<Ray> filteredRays = new List<Ray>();
 
             Parallel.For(0, rays.Count,
-                i =>
+                () => new List<Ray>(),
+                (int i, ParallelLoopState loop, List<Ray> localRay) =>
                 {
-                    List<bool> checker = new List<bool>();
+                    List<bool> localCheck = new List<bool>();
                     for (int j = 0; j < surfaces.Count; j++)       //foreach surface
                     {
-                        // Write Mesh-Polyline (or Mesh-Curve) Intersection and replace when done, due to performance.
-                        if (Intersect.PlaneCurve(surfaces[j].mPlane(), rays[i].Path, tol).Count == 0)       // Substitute with MeshCurve
-                            checker.Add(true);
+                        if (Intersect.MeshSegment(surfaces[j].Mesh, rays[i].Path) == null)
+                            localCheck.Add(true);
                     }
-                    if (ClearRays && checker.Any())     //if rays hits any surface and output is ClearRays
-                        filteredRays.Add(rays[i]);
-                    else if (!ClearRays && !checker.Any())
-                        filteredRays.Add(rays[i]);
+                    if (ClearRays && localCheck.Any())     //if rays hits any surface and output is ClearRays
+                        localRay.Add(rays[i]);
+                    else if (!ClearRays && !localCheck.Any())
+                        localRay.Add(rays[i]);
+                    return localRay;
+                },
+                (localRay) =>
+                {
+                    lock (rays)
+                    {
+                        filteredRays.AddRange(localRay);
+                    }
+                    
                 });
             return filteredRays;
         }
