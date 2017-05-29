@@ -10,8 +10,7 @@ namespace AcousticSPI_Engine
 {
     public static class STICalculator
     {
-
-        public static List<double> Solve(BHA.AcousticRASTIParameters param, List<double> speech, List<double> noise, List<double> RT, List<BHA.Speaker> speakers, BHA.Zone zone)
+        public static List<double> Solve(List<double> speech, List<double> noise, List<double> RT, List<BHA.Speaker> speakers, BHA.Zone zone)
         {
             List<double> STI = new List<double>();
             List<double> RASTI = new List<double>();
@@ -20,6 +19,10 @@ namespace AcousticSPI_Engine
 
             List<double> frequencies = new List<double> { 1.0, 2.0, 4.0, 8.0, 0.7, 1.4, 2.8, 5.6, 11.2 };
             List<double> octaves = new List<double> { 500, 2000 };
+
+            speech = speech == null ? new List<double> { 85, 85 } : speech;     //Defaulting speech variable if not instanciated
+            noise = noise == null ? new List<double> { 53.5, 53.5 } : noise;    //Defaulting noise variable if not instanciated
+            RT = RT == null ? new List<double> { 0.001, 0.001 } : RT;           //Defaulting RT variable if not instanciated
 
 
             foreach (double oct in octaves)
@@ -55,13 +58,12 @@ namespace AcousticSPI_Engine
                         foreach (BHA.Speaker speaker in speakers)
                         {
                             // 1. CalcSoundLevel
-                            CalcSoundLevel(param, speech[i], RT[i], Targets[i], speaker, zone, frequency, octave, closestDist, out iterationLevel, out amb_pascals, out revDist, out timeConstant, out closestDist, out gain);
+                            CalcSoundLevel(speech.Count == 2 ? speech[0] : speech[i], RT.Count == 2 ? RT[0] : RT[i], Targets[i], speaker, zone, frequency, octave, closestDist, out iterationLevel, out amb_pascals, out revDist, out timeConstant, out closestDist, out gain);
                             totalLevel += iterationLevel;
-                            levelSum = speech[i] + 10 * Math.Log10(totalLevel);
+                            levelSum = (speech.Count == 2 ? speech[0] : speech[i]) + 10 * Math.Log10(totalLevel);
                         }
-
                         // 2. Calculate SoundToNoise Ratio
-                        CalcSoundToNoiseRatio(noise[i], speech[i], closestDist, amb_pascals, levelSum, revDist, timeConstant, frequency, octave, gain, out snApp);
+                        CalcSoundToNoiseRatio(noise.Count==2?noise[0]:noise[i], speech.Count == 2 ? speech[0] : speech[i], closestDist, amb_pascals, levelSum, revDist, timeConstant, frequency, octave, gain, out snApp);
                         totalSN += snApp;
                         sn.Add(snApp);
                     }
@@ -83,14 +85,16 @@ namespace AcousticSPI_Engine
         }
 
 
-        private static void CalcSoundLevel(BHA.AcousticRASTIParameters param, double speech, double revTime, BHG.Point location, BHA.Speaker speaker, BHA.Zone zone, double frequency, double octave, double closestDist, out double level, out double amb_pascals, out double revDist, out double timeConstant, out double closestdist, out double gain)
+        private static void CalcSoundLevel(double speech, double revTime, BHG.Point location, BHA.Speaker speaker, BHA.Zone zone, double frequency, double octave, double closestDist, out double level, out double amb_pascals, out double revDist, out double timeConstant, out double closestdist, out double gain)
         {
             BHG.Vector deltaPos = location - speaker.Position;
             double recieverAngle = BHG.Vector.VectorAngle(deltaPos, speaker.Direction) * (180 / Math.PI);
             double distance = deltaPos.Length;
 
             double orientationFactor = speaker.GetGainAngleFactor(recieverAngle, octave);  // take out octave, Matlab does some weird thing here where frequency is tied to octave
-            gain = param.GetGain(frequency, octave) * Math.Pow(10, orientationFactor / 10);
+
+            speaker.Gains = new List<double>{ 1.6, 5.3};                                    // Assumptions on the Gain of the source. Can they be specified in the future?
+            gain = speaker.GetGain(frequency, octave) * Math.Pow(10, orientationFactor / 10);
 
             double volume = zone.Volume;
             double sAlpha = (0.163 * volume / revTime) - (4.0 * 2.6 * volume / 1000);  // It would be good to clarify all those constants
