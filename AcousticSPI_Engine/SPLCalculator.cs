@@ -9,21 +9,29 @@ namespace AcousticSPI_Engine
 {
     public static class SPLCalculator
     {
-        
-        public static List<double>  Solve(List<Ray> rays)
+        /// <summary>
+        /// Incoherent sound level signal addition
+        /// </summary>
+        /// <param name="rays"></param>
+        /// <returns></returns>
+        public static double  Solve(List<Ray> rays)
         {
-            List<double> SPL = new List<double>();
+            double SPL = 0;
             for (int i=0; i<rays.Count; i++)
             {
-                SPL.Add(20 * Math.Log10(rays[i].Length()));         // Directivity calculation to be added.
+                SPL += (10 * Math.Log10 (  Math.Pow(10, 10/rays[i].Length()  ) ) );         // Directivity calculation to be added.
             }
             return SPL;
         }
 
-       /*public static List<double> Sum(List<double> spl)
+        public static double Solve(List<double> spl)
         {
-            List<double> SPL = new List<double>();
-                return SPL;
-        }*/
+            double SPL = 0;
+            for (int i = 0; i < spl.Count; i++)
+            {
+                SPL += (10 * Math.Log10(Math.Pow(10, 10 / spl[i])));
+            }
+            return SPL;
+        }
     }
 }
