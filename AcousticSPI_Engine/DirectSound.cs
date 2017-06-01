@@ -45,14 +45,14 @@ namespace AcousticSPI_Engine
                 if (surfaces == null || surfaces.Count == 0) { return rays; }
                 else { return Utils.CPUCheckObstacles(rays, surfaces); }
             }
-
+            
             else if (parallel == 1)
             {
                 for (int i = 0; i < sources.Count; i++)
                 {
                     Parallel.For(0, targets.Count,
                         () => new List<Ray>(),                                        // Initialise local variable
-                        (int j, ParallelLoopState loop, List<Ray> subray) =>          // body: The delegate that is invoked once per iteration.
+                        (int j, ParallelLoopState state, List<Ray> subray) =>          // body: The delegate that is invoked once per iteration.
                         {
                             Polyline path = new Polyline(new List<Point>() { sources[i].Position, targets[j].Position });
                             subray.Add(new Ray(path, "S" + i.ToString(), "R" + j.ToString()));
@@ -60,12 +60,12 @@ namespace AcousticSPI_Engine
                         },
                         (subray) =>
                         {
-                            lock (targets)
+                            lock (sources)
                             {
                                 rays.AddRange(subray);
                             }
                         }
-                        );
+                    );
                 }
                 if (surfaces == null || surfaces.Count == 0) { return rays; }
                 else { return Utils.CheckObstacles(rays, surfaces); }
@@ -90,7 +90,7 @@ namespace AcousticSPI_Engine
             */
 
             else
-                throw new Exception("Parllel parameter cannot be left blank. Please specify calculation method: [0] Serial, [1] CPU Threaded, [2] GPU Threaded");
+                throw new Exception("Parallel parameter cannot be left blank or be higher than 2. Please specify calculation method: [0] Serial, [1] CPU Threaded, [2] GPU Threaded. WIP: GPU not working");
         }
 
         #endregion
