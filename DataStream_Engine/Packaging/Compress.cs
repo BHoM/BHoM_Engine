@@ -3,7 +3,7 @@ using System.Text;
 using System.IO;
 using System;
 
-namespace BHoM.Base
+namespace BHoM_Engine.DataStream.Packaging
 {
     public static class Compress
     {
@@ -25,12 +25,12 @@ namespace BHoM.Base
             byte[] gzBuffer = new byte[compressed.Length + 4];
             System.Buffer.BlockCopy(compressed, 0, gzBuffer, 4, compressed.Length);
             System.Buffer.BlockCopy(BitConverter.GetBytes(buffer.Length), 0, gzBuffer, 0, 4);
-            return Convert.ToBase64String(gzBuffer);
+            return System.Convert.ToBase64String(gzBuffer);
         }
 
         public static string Unzip(string compressedText)
         {
-            byte[] gzBuffer = Convert.FromBase64String(compressedText);
+            byte[] gzBuffer = System.Convert.FromBase64String(compressedText);
             using (MemoryStream ms = new MemoryStream())
             {
                 int msgLength = BitConverter.ToInt32(gzBuffer, 0);

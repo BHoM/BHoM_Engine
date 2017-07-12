@@ -3,60 +3,194 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using BHG = BHoM.Geometry;
-using BHB = BHoM.Base;
-using BHoM.Structural.Elements;
-using BHoM.Structural.Properties;
-using ModelLaundry_Engine;
+using BH.oM.Geometry;
+using BHB = BH.oM.Base;
+using BH.oM.Structural.Elements;
+using BH.oM.Structural.Properties;
+using BH.Engine.Geometry;
+//using ModelLaundry_Engine;
 
 namespace Engine_Test
 {
     class Program
     {
+        //static int nbSamples = 1000;
+        //static List<Vector> testVectors = new List<Vector>();
+        //static List<Line> testLines = new List<Line>();
+        //static List<Polyline> testPoly = new List<Polyline>();
+
+
         static void Main(string[] args)
         {
-            //TestAudio();
+            //TestDynamicExtentionCost();
             Console.Read();
         }
 
-        static void TestProject()
-        {
-            /*Project project = Project.ActiveProject;
+        /***************************************************/
 
-            List<Point> points = new List<Point>();
-            points.Add(new Point(0, 0, 0));
-            points.Add(new Point(0, 1, 0));
-            points.Add(new Point(1, 1, 0));
-            points.Add(new Point(0, 0, 0));
+        //static void TestDynamicExtentionCost()
+        //{
+        //    // Testing for Bounding box of points
+        //    testVectors = new List<Vector>();
+        //    for (int i = 0; i < nbSamples; i++)
+        //        testVectors.Add(new Vector(0, i, 0));
 
-            Group<Curve> edges = new Group<Curve>();
-            for (int i = 1; i < points.Count; i++)
-                edges.Add(new Line(points[i - 1], points[i]));
+        //    Console.WriteLine("Testing for length of vectors...");
+        //    BH.Engine.Testing.Speed.TestSpeed(new List<BH.Engine.Testing.IterFunction>
+        //    {
+        //        InClassLengthCall,
+        //        DirectVectorLengthCall,
+        //        PolymorphVectorLengthCall
+        //    });
 
-            Panel panel = new Panel(edges);
-            panel.PanelProperty = new ConstantThickness("test", 0.25, PanelType.Wall);
+        //    // Testing for length of Lines
+        //    testLines = new List<Line>();
+        //    for (int i = 0; i < nbSamples; i++)
+        //        testLines.Add(new Line(new Point(0, i, 0), new Point(i, 0, 0)));
 
-            project.AddObject(panel);
+        //    Console.WriteLine("\nTesting for length of lines...");
+        //    BH.Engine.Testing.Speed.TestSpeed(new List<BH.Engine.Testing.IterFunction>
+        //    {
+        //        DirectLineLengthCall,
+        //        PolymorphLineLengthCall
+        //    });
 
-            string json = project.ToJSON();
-            project.Clear();
+        //    // Testing for length of Polylines with 20 CP
+        //    int nbCP = 10;
+        //    testPoly = new List<Polyline>();
+        //    for (int i = 0; i < nbSamples; i++)
+        //    {
+        //        List<Point> pts = new List<Point>();
+        //        for (int j = 0; j < nbCP; j++)
+        //            pts.Add(new Point(nbSamples, nbCP, 0));
+        //        testPoly.Add(new Polyline(pts));
+        //    }
 
-            Project project2 = Project.FromJSON(json);*/
-        }
+        //    Console.WriteLine("\nTesting for length of Polylines with " + nbCP + " CP...");
+        //    BH.Engine.Testing.Speed.TestSpeed(new List<BH.Engine.Testing.IterFunction>
+        //    {
+        //        DirectPolyLineLengthCall,
+        //        PolymorphPolyLineLengthCall
+        //    });
 
-       /* static void TestVideo()
-        {
-            string videoFile = @"C:\Users\adecler\Documents\Projects\StadiaCrowdAnalysis\InputVideos\Fan Cam- Preston North End_mpeg4.avi";
-            MachineLearning_Engine.MotionLevelAnalyser analyser = new MachineLearning_Engine.MotionLevelAnalyser();
+        //    // Testing for length of Polylines with 50 CP
+        //    nbCP = 30;
+        //    testPoly = new List<Polyline>();
+        //    for (int i = 0; i < nbSamples; i++)
+        //    {
+        //        List<Point> pts = new List<Point>();
+        //        for (int j = 0; j < nbCP; j++)
+        //            pts.Add(new Point(nbSamples, nbCP, 0));
+        //        testPoly.Add(new Polyline(pts));
+        //    }
 
-            MachineLearning_Engine.MotionLevelAnalyser.Config config = new MachineLearning_Engine.MotionLevelAnalyser.Config();
-            config.FrameStep = 10;
-            config.OutFolder = @"C:\Users\adecler\Documents\Projects\StadiaCrowdAnalysis\Results\Video_01";
-            config.NbRows = 3;
-            config.NbColumns = 1;
+        //    Console.WriteLine("\nTesting for length of Polylines with " + nbCP + " CP...");
+        //    BH.Engine.Testing.Speed.TestSpeed(new List<BH.Engine.Testing.IterFunction>
+        //    {
+        //        DirectPolyLineLengthCall,
+        //        PolymorphPolyLineLengthCall
+        //    });
 
-            Dictionary<int, List<double>> result = analyser.Run(videoFile, config).Result;
-        }*/
+        //    // Testing for bounds of Polylines with X CP
+        //    Console.WriteLine("\nTesting for bounds of Polylines with " + nbCP + " CP...");
+        //    BH.Engine.Testing.Speed.TestSpeed(new List<BH.Engine.Testing.IterFunction>
+        //    {
+        //        DirectPolyLineBoundCall,
+        //        PolymorphPolyLineBoundCall
+        //    });
+        //}
+
+        ///***************************************************/
+
+        //static void InClassLengthCall(int iter)
+        //{
+        //    testVectors[iter % nbSamples].GetLength();
+        //}
+
+        //static void DirectVectorLengthCall(int iter)
+        //{
+        //    Measure._GetLength(testVectors[iter % nbSamples]);
+        //}
+
+        //static void PolymorphVectorLengthCall(int iter)
+        //{
+        //    Measure.GetLength(testVectors[iter % nbSamples]);
+        //}
+
+        ///***************************************************/
+
+        //static void DirectLineLengthCall(int iter)
+        //{
+        //    Measure._GetLength(testLines[iter % nbSamples]);
+        //}
+
+        //static void PolymorphLineLengthCall(int iter)
+        //{
+        //    Measure.GetLength(testLines[iter % nbSamples]);
+        //}
+
+        ///***************************************************/
+
+        //static void DirectPolyLineLengthCall(int iter)
+        //{
+        //    Measure._GetLength(testPoly[iter % nbSamples]);
+        //}
+
+        //static void PolymorphPolyLineLengthCall(int iter)
+        //{
+        //    Measure.GetLength(testPoly[iter % nbSamples]);
+        //}
+
+        ///***************************************************/
+
+        //static void DirectPolyLineBoundCall(int iter)
+        //{
+        //    Bounds._GetBounds(testPoly[iter % nbSamples]);
+        //}
+
+        //static void PolymorphPolyLineBoundCall(int iter)
+        //{
+        //    Bounds.GetBounds(testPoly[iter % nbSamples]);
+        //}
+
+        //static void TestProject()
+        //{
+        //    Project project = Project.ActiveProject;
+
+        //    List<Point> points = new List<Point>();
+        //    points.Add(new Point(0, 0, 0));
+        //    points.Add(new Point(0, 1, 0));
+        //    points.Add(new Point(1, 1, 0));
+        //    points.Add(new Point(0, 0, 0));
+
+        //    Group<Curve> edges = new Group<Curve>();
+        //    for (int i = 1; i < points.Count; i++)
+        //        edges.Add(new Line(points[i - 1], points[i]));
+
+        //    Panel panel = new Panel(edges);
+        //    panel.PanelProperty = new ConstantThickness("test", 0.25, PanelType.Wall);
+
+        //    project.AddObject(panel);
+
+        //    string json = project.ToJSON();
+        //    project.Clear();
+
+        //    Project project2 = Project.FromJSON(json);
+        //}
+
+        /* static void TestVideo()
+         {
+             string videoFile = @"C:\Users\adecler\Documents\Projects\StadiaCrowdAnalysis\InputVideos\Fan Cam- Preston North End_mpeg4.avi";
+             MachineLearning_Engine.MotionLevelAnalyser analyser = new MachineLearning_Engine.MotionLevelAnalyser();
+
+             MachineLearning_Engine.MotionLevelAnalyser.Config config = new MachineLearning_Engine.MotionLevelAnalyser.Config();
+             config.FrameStep = 10;
+             config.OutFolder = @"C:\Users\adecler\Documents\Projects\StadiaCrowdAnalysis\Results\Video_01";
+             config.NbRows = 3;
+             config.NbColumns = 1;
+
+             Dictionary<int, List<double>> result = analyser.Run(videoFile, config).Result;
+         }*/
 
         /*static void TestAudio()
         {
@@ -72,10 +206,10 @@ namespace Engine_Test
         /*static void TestPanelVSnap()
         {
             // Test panel snapping
-            string panelJson = "{ \"Type\":\"BHoM.Structural.Panel\",\"Primitive\":\"BHoM.Structural.Panel; BHoM; Version=1.0.0.0; Culture=neutral; PublicKeyToken=null\",\"Properties\":{ \"Edges\":{ \"Primitive\":\"group\",\"groupType\":\"BHoM.Geometry.Curve\",\"group\":[{\"Primitive\":\"line\",\"start\":[24.5778681994532,-2.74803939183246,45.315],\"end\":[29.5556354116369,-9.05481358976734,45.315]},{\"Primitive\":\"line\",\"start\":[29.5556354116369,-9.05481358976734,45.315],\"end\":[29.5556354116369,-9.05481358976734,48.065]},{\"Primitive\":\"line\",\"start\":[29.5556354116369,-9.05481358976734,48.065],\"end\":[24.5778681994532,-2.74803939183246,48.065]},{\"Primitive\":\"line\",\"start\":[24.5778681994532,-2.74803939183246,48.065],\"end\":[24.5778681994532,-2.74803939183246,45.315]}]},\"ThicknessProperty\":\"ab645fdd-b100-4d87-ab16-84ab6e053218\",\"BHoM_Guid\":\"ea18e6ab-1cae-4cbd-9f24-05c9f608f486\",\"CustomData\":{\"RevitId\":804997,\"RevitType\":\"Wall\"}}}";
+            string panelJson = "{ \"Type\":\"BH.oM.Structural.Panel\",\"Primitive\":\"BH.oM.Structural.Panel; BHoM; Version=1.0.0.0; Culture=neutral; PublicKeyToken=null\",\"Properties\":{ \"Edges\":{ \"Primitive\":\"group\",\"groupType\":\"BH.oM.Geometry.Curve\",\"group\":[{\"Primitive\":\"line\",\"start\":[24.5778681994532,-2.74803939183246,45.315],\"end\":[29.5556354116369,-9.05481358976734,45.315]},{\"Primitive\":\"line\",\"start\":[29.5556354116369,-9.05481358976734,45.315],\"end\":[29.5556354116369,-9.05481358976734,48.065]},{\"Primitive\":\"line\",\"start\":[29.5556354116369,-9.05481358976734,48.065],\"end\":[24.5778681994532,-2.74803939183246,48.065]},{\"Primitive\":\"line\",\"start\":[24.5778681994532,-2.74803939183246,48.065],\"end\":[24.5778681994532,-2.74803939183246,45.315]}]},\"ThicknessProperty\":\"ab645fdd-b100-4d87-ab16-84ab6e053218\",\"BHoM_Guid\":\"ea18e6ab-1cae-4cbd-9f24-05c9f608f486\",\"CustomData\":{\"RevitId\":804997,\"RevitType\":\"Wall\"}}}";
             Panel panel = BHoMObject.FromJSON(panelJson, Project.ActiveProject) as Panel;
 
-            panelJson = "{ \"Type\":\"BHoM.Structural.Panel\",\"Primitive\":\"BHoM.Structural.Panel; BHoM; Version=1.0.0.0; Culture=neutral; PublicKeyToken=null\",\"Properties\":{ \"Edges\":{ \"Primitive\":\"group\",\"groupType\":\"BHoM.Geometry.Curve\",\"group\":[{\"Primitive\":\"line\",\"start\":[28.8385630649439,-7.90417884756682,45.315],\"end\":[31.0639227821543,-6.14776228848485,45.315]},{\"Primitive\":\"line\",\"start\":[31.0639227821543,-6.14776228848485,45.315],\"end\":[31.0639227821543,-6.14776228848485,48.065]},{\"Primitive\":\"line\",\"start\":[31.0639227821543,-6.14776228848485,48.065],\"end\":[28.8385630649439,-7.90417884756682,48.065]},{\"Primitive\":\"line\",\"start\":[28.8385630649439,-7.90417884756682,48.065],\"end\":[28.8385630649439,-7.90417884756682,45.315]}]},\"ThicknessProperty\":\"460c4041-6c21-41cb-9b68-0e34250ee406\",\"BHoM_Guid\":\"6c21eefa-8c84-4256-8979-f232bc3e8917\",\"CustomData\":{\"RevitId\":804999,\"RevitType\":\"Wall\"}}}";
+            panelJson = "{ \"Type\":\"BH.oM.Structural.Panel\",\"Primitive\":\"BH.oM.Structural.Panel; BHoM; Version=1.0.0.0; Culture=neutral; PublicKeyToken=null\",\"Properties\":{ \"Edges\":{ \"Primitive\":\"group\",\"groupType\":\"BH.oM.Geometry.Curve\",\"group\":[{\"Primitive\":\"line\",\"start\":[28.8385630649439,-7.90417884756682,45.315],\"end\":[31.0639227821543,-6.14776228848485,45.315]},{\"Primitive\":\"line\",\"start\":[31.0639227821543,-6.14776228848485,45.315],\"end\":[31.0639227821543,-6.14776228848485,48.065]},{\"Primitive\":\"line\",\"start\":[31.0639227821543,-6.14776228848485,48.065],\"end\":[28.8385630649439,-7.90417884756682,48.065]},{\"Primitive\":\"line\",\"start\":[28.8385630649439,-7.90417884756682,48.065],\"end\":[28.8385630649439,-7.90417884756682,45.315]}]},\"ThicknessProperty\":\"460c4041-6c21-41cb-9b68-0e34250ee406\",\"BHoM_Guid\":\"6c21eefa-8c84-4256-8979-f232bc3e8917\",\"CustomData\":{\"RevitId\":804999,\"RevitType\":\"Wall\"}}}";
             Panel panel2 = BHoMObject.FromJSON(panelJson, Project.ActiveProject) as Panel;
 
             List<double> heights = new List<double>();

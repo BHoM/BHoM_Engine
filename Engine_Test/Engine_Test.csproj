@@ -36,12 +36,6 @@
     <Reference Include="BHoM">
       <HintPath>..\..\BHoM\Build\BHoM.dll</HintPath>
     </Reference>
-    <Reference Include="Databases_Engine">
-      <HintPath>..\Build\Databases_Engine.dll</HintPath>
-    </Reference>
-    <Reference Include="Graph_Engine">
-      <HintPath>..\Build\Graph_Engine.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -59,17 +53,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\FormFinding_Engine\FormFinding_Engine.csproj">
-      <Project>{6112d632-6143-4866-9aba-28cdd1340c6d}</Project>
-      <Name>FormFinding_Engine</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MachineLearning_Engine\MachineLearning_Engine.csproj">
-      <Project>{02f81857-2d83-42ab-a0d7-030dcdd4d49f}</Project>
-      <Name>MachineLearning_Engine</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ModelLaundry_Engine\ModelLaundry_Engine.csproj">
-      <Project>{dd942373-95d4-46c9-aed7-7b58149f5d2e}</Project>
-      <Name>ModelLaundry_Engine</Name>
+    <ProjectReference Include="..\BHoM_Engine\BHoM_Engine.csproj">
+      <Project>{1ad45c88-dd54-48e5-951f-55edfeb70e35}</Project>
+      <Name>BHoM_Engine</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

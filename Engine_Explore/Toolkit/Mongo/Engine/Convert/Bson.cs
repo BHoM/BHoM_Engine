@@ -1,4 +1,5 @@
 ﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,8 +14,11 @@ namespace Engine_Explore.Engine.Convert
     {
         public static BsonDocument Write(object obj, string key, DateTime timestamp)
         {
-            if (obj is string) return Write(obj as string, key, timestamp);
-            var document = BsonDocument.Parse(BHE.Convert.Json.Write(obj));
+            BsonDocument document = obj.ToBsonDocument();
+
+            /*if (obj is string) return Write(obj as string, key, timestamp);
+            var document = BsonDocument.Parse(BHE.Convert.Json.Write(obj));*/
+
             if (key != "")
             {
                 document["__Key__"] = key;
@@ -26,7 +30,7 @@ namespace Engine_Explore.Engine.Convert
 
         /*******************************************/
 
-        public static BsonDocument Write(string obj, string key, DateTime timestamp)
+        /*public static BsonDocument Write(string obj, string key, DateTime timestamp)
         {
             var document = BsonDocument.Parse(obj);
             if (key != "")
@@ -36,19 +40,23 @@ namespace Engine_Explore.Engine.Convert
             }
 
             return document;
-        }
+        }*/
 
-        public static BsonDocument Write<T>(T obj) where T: BHoM.Base.BHoMObject
+        /*******************************************/
+
+        /*public static BsonDocument Write<T>(T obj) where T: BHoM.Base.BHoMObject
         {
             return new BsonDocument();
-        }
+        }*/
 
         /*******************************************/
 
         public static object ReadObject(BsonDocument bson)
         {
-            MongoDB.Bson.IO.JsonWriterSettings writerSettings = new MongoDB.Bson.IO.JsonWriterSettings { OutputMode = MongoDB.Bson.IO.JsonOutputMode.Strict };
-            return BHE.Convert.Json.ReadObject(bson.ToJson(writerSettings));
+            return BsonSerializer.Deserialize(bson, typeof(object));
+
+            /*MongoDB.Bson.IO.JsonWriterSettings writerSettings = new MongoDB.Bson.IO.JsonWriterSettings { OutputMode = MongoDB.Bson.IO.JsonOutputMode.Strict };
+            return BHE.Convert.Json.ReadObject(bson.ToJson(writerSettings));*/
         }
     }
 }
