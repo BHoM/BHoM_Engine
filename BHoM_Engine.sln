@@ -30,6 +30,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Engine_Explore", "Engine_Ex
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BHoM_Engine_Legacy", "BHoM_Engine_Legacy\BHoM_Engine_Legacy.csproj", "{F2E4C764-F380-4C1D-9968-71F47D54E411}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BHoM_Adapter", "BHoM_Adapter\BHoM_Adapter.csproj", "{4894F44F-88A5-4455-B1B3-EECB9FD2614A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -130,6 +132,14 @@ Global
 		{F2E4C764-F380-4C1D-9968-71F47D54E411}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F2E4C764-F380-4C1D-9968-71F47D54E411}.Release|x86.ActiveCfg = Release|Any CPU
 		{F2E4C764-F380-4C1D-9968-71F47D54E411}.Release|x86.Build.0 = Release|Any CPU
+		{4894F44F-88A5-4455-B1B3-EECB9FD2614A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4894F44F-88A5-4455-B1B3-EECB9FD2614A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4894F44F-88A5-4455-B1B3-EECB9FD2614A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{4894F44F-88A5-4455-B1B3-EECB9FD2614A}.Debug|x86.Build.0 = Debug|Any CPU
+		{4894F44F-88A5-4455-B1B3-EECB9FD2614A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4894F44F-88A5-4455-B1B3-EECB9FD2614A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4894F44F-88A5-4455-B1B3-EECB9FD2614A}.Release|x86.ActiveCfg = Release|Any CPU
+		{4894F44F-88A5-4455-B1B3-EECB9FD2614A}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
