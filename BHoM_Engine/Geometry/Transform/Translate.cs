@@ -38,7 +38,7 @@ namespace BH.Engine.Geometry
 
         public static Plane _GetTranslated(Plane plane, Vector transform)
         {
-            return new Plane(plane.Origin + transform, plane.Normal.Clone() as Vector);
+            return new Plane(plane.Origin + transform, plane.Normal.GetClone() as Vector);
         }
 
 
@@ -55,7 +55,7 @@ namespace BH.Engine.Geometry
 
         public static Circle _GetTranslated(Circle circle, Vector transform)
         {
-            return new Circle(circle.Centre + transform, circle.Normal.Clone() as Vector, circle.Radius);
+            return new Circle(circle.Centre + transform, circle.Normal.GetClone() as Vector, circle.Radius);
         }
 
         /***************************************************/

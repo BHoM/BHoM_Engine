@@ -18,22 +18,18 @@ namespace BH.Engine.Geometry
             return _GetBounds(geometry as dynamic);
         }
 
-        /***************************************************/
-
-        
-
 
         /***************************************************/
         /**** Private Methods - Vectors                 ****/
         /***************************************************/
-        public static BoundingBox _GetBounds(Point pt)
+        public static BoundingBox _GetBounds(this Point pt)
         {
             return new BoundingBox(pt, pt);
         }
 
         /***************************************************/
 
-        public static BoundingBox _GetBounds(Vector vector)
+        public static BoundingBox _GetBounds(this Vector vector)
         {
             Point pt = new Point(vector.X, vector.Y, vector.Z);
             return new BoundingBox(pt, pt);
@@ -44,21 +40,21 @@ namespace BH.Engine.Geometry
         /**** Private Computation - Curves              ****/
         /***************************************************/
 
-        public static BoundingBox _GetBounds(Arc arc)
+        private static BoundingBox _GetBounds(this Arc arc)
         {
             throw new NotImplementedException();
         }
 
         /***************************************************/
 
-        public static BoundingBox _GetBounds(Circle circle)
+        private static BoundingBox _GetBounds(this Circle circle)
         {
             throw new NotImplementedException();
         }
 
         /***************************************************/
 
-        public static BoundingBox _GetBounds(Line line)
+        private static BoundingBox _GetBounds(this Line line)
         {
             Point s = line.Start;
             Point e = line.End;
@@ -69,7 +65,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static BoundingBox _GetBounds(NurbCurve curve)
+        private static BoundingBox _GetBounds(this NurbCurve curve)
         {
             Point pt = curve.ControlPoints[0];
             double minX = pt.X;
@@ -95,7 +91,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static BoundingBox _GetBounds(PolyCurve curve)
+        private static BoundingBox _GetBounds(this PolyCurve curve)
         {
             List<ICurve> curves = curve.Curves;
 
@@ -111,7 +107,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static BoundingBox _GetBounds(Polyline line)
+        private static BoundingBox _GetBounds(this Polyline line)
         {
             Point pt = line.ControlPoints[0];
             double minX = pt.X;

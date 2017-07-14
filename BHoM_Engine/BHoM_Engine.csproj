@@ -44,6 +44,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Base\GetGeometry\Common.cs" />
+    <Compile Include="Base\GetGeometry\Structural.cs" />
+    <Compile Include="Geometry\Clone\Geometry.cs" />
+    <Compile Include="Geometry\Measure\BoundingBox.cs" />
     <Compile Include="Geometry\Measure\Bounds.cs" />
     <Compile Include="Geometry\Verify\BoundingBox.cs" />
     <Compile Include="Geometry\Convert\NurbForm.cs" />

@@ -5,10 +5,14 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Reflection;
 
-namespace BHoM.Reflection
+namespace BH.Engine.Reflection
 {
-    public static class TypeDictionary
+    public static partial class Types
     {
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
+
         public static Type GetType(string name)
         {
             if (m_TypeDictionary == null || m_TypeDictionary.Count == 0)
@@ -19,6 +23,10 @@ namespace BHoM.Reflection
             return type;
         }
 
+
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
 
         private static void CreateDictionary()
         {
@@ -48,6 +56,8 @@ namespace BHoM.Reflection
                 }
             }
         }
+
+        /***************************************************/
 
         private static Dictionary<string, Type> m_TypeDictionary;
     }

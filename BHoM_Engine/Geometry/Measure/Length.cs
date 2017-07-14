@@ -20,6 +20,13 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        public static double GetSqaureLength(this Vector vector)
+        {
+            return vector.X * vector.X + vector.Y * vector.Y + vector.Z * vector.Z;
+        }
+
+        /***************************************************/
+
         public static double GetLength(this ICurve curve)
         {
             return _GetLength(curve as dynamic);
@@ -30,42 +37,42 @@ namespace BH.Engine.Geometry
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private static double _GetLength(Arc curve)
+        private static double _GetLength(this Arc curve)
         {
             throw new NotImplementedException();
         }
 
         /***************************************************/
 
-        private static double _GetLength(Circle curve)
+        private static double _GetLength(this Circle curve)
         {
             return 2 * Math.PI * curve.Radius;
         }
 
         /***************************************************/
 
-        public static double _GetLength(Line curve)
+        public static double _GetLength(this Line curve)
         {
             return (curve.Start - curve.End).GetLength();
         }
 
         /***************************************************/
 
-        private static double _GetLength(NurbCurve curve)
+        private static double _GetLength(this NurbCurve curve)
         {
             throw new NotImplementedException();
         }
 
         /***************************************************/
 
-        private static double _GetLength(PolyCurve curve)
+        private static double _GetLength(this PolyCurve curve)
         {
             return curve.Curves.Sum(x => _GetLength(x as Line));
         }
 
         /***************************************************/
 
-        public static double _GetLength(Polyline curve)
+        public static double _GetLength(this Polyline curve)
         {
             double length = 0;
             List<Point> pts = curve.ControlPoints;

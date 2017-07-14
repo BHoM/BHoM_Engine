@@ -47,7 +47,7 @@ namespace BH.Engine.Geometry
 
         private static NurbCurve _ToNurbCurve(this NurbCurve curve)
         {
-            return curve.Clone() as NurbCurve;
+            return curve.GetClone() as NurbCurve;
         }
 
         /***************************************************/
