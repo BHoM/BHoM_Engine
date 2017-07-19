@@ -6,25 +6,22 @@ using System.Threading.Tasks;
 
 namespace BH.Adapter.Queries
 {
-    public class BaseQuery : IQuery
+    public class CustomQuery : IQuery
     {
         /***************************************************/
         /**** Properties                                ****/
         /***************************************************/
 
-        public string Tag { get; set; }
-
-        public Type Type { get; set; }
+        public string Query { get; set; }
 
 
         /***************************************************/
         /**** Constructors                              ****/
         /***************************************************/
 
-        public BaseQuery(Type type, string tag = "")
+        public CustomQuery(string query = "")
         {
-            Type = type;
-            Tag = Tag;
+            Query = query;
         }
     }
 }

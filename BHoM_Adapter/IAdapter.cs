@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BH.Adapter.Queries
+namespace BH.Adapter
 {
-    public class FilterQuery : IQuery
+    public interface IAdapter
     {
-        Dictionary<string, object> Equalities { get; set; }
+
     }
 }

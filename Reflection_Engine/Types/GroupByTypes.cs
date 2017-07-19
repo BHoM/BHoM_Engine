@@ -45,6 +45,23 @@ namespace BH.Engine.Reflection
 
         /***************************************************/
 
+        public static List<Type> GetPropertyTypes(this Type type, bool goDeep = false)
+        {
+            HashSet<Type> properties = new HashSet<Type>();
+            foreach (var prop in type.GetProperties())
+            {
+                if (!prop.CanRead || !prop.CanWrite || prop.GetMethod.GetParameters().Count() > 0) continue;
+                properties.Add(prop.PropertyType);
+                if (goDeep) { 
+                    foreach (Type t in prop.PropertyType.GetPropertyObjects(true))
+                    properties.Add(t);
+                }
+            }
+            return properties.ToList();
+        }
+
+        /***************************************************/
+
         public static Dictionary<Type, List<object>> GetPropertyObjects(this IEnumerable<object> objects, Type type)
         {
             Dictionary<Type, List<object>> propByType = new Dictionary<Type, List<object>>();

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BH.Adapter.Queries;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +14,7 @@ namespace BH.Adapter
 
         bool Update(IEnumerable<object> oldData, IEnumerable<object> newData, Dictionary<string, string> config = null);
 
-        IList Read(IEnumerable<string> query, Dictionary<string, string> config = null);
+        List<object> Read(IEnumerable<IQuery> query, Dictionary<string, string> config = null);
 
         bool Delete(IEnumerable<object> data, Dictionary<string, string> config = null);
 
