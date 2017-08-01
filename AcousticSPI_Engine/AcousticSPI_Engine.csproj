@@ -34,15 +34,15 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Alea, Version=3.0.0.0, Culture=neutral, PublicKeyToken=ba52afc3c2e933d6, processorArchitecture=MSIL">
-      <HintPath>..\packages\Alea.3.0.4-beta2\lib\net45\Alea.dll</HintPath>
+      <HintPath>..\packages\Alea.3.0.4-beta3\lib\net45\Alea.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Alea.IL, Version=3.0.0.0, Culture=neutral, PublicKeyToken=ba52afc3c2e933d6, processorArchitecture=MSIL">
-      <HintPath>..\packages\Alea.3.0.4-beta2\lib\net45\Alea.IL.dll</HintPath>
+      <HintPath>..\packages\Alea.3.0.4-beta3\lib\net45\Alea.IL.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Alea.Parallel, Version=3.0.0.0, Culture=neutral, PublicKeyToken=ba52afc3c2e933d6, processorArchitecture=MSIL">
-      <HintPath>..\packages\Alea.3.0.4-beta2\lib\net45\Alea.Parallel.dll</HintPath>
+      <HintPath>..\packages\Alea.3.0.4-beta3\lib\net45\Alea.Parallel.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="BHoM">
@@ -50,6 +50,14 @@
     </Reference>
     <Reference Include="Cudafy.NET, Version=1.29.5576.13786, Culture=neutral, PublicKeyToken=63a4c9931616906b, processorArchitecture=MSIL">
       <HintPath>..\packages\CUDAfy.NET.1.29.5576.13786\lib\net40\Cudafy.NET.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="DocumentFormat.OpenXml, Version=2.7.2.0, Culture=neutral, PublicKeyToken=8fb06cb64d019a17, processorArchitecture=MSIL">
+      <HintPath>..\packages\DocumentFormat.OpenXml.2.7.2\lib\net40\DocumentFormat.OpenXml.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="FSharp.Core, Version=4.4.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\FSharp.Core.4.2.1\lib\net45\FSharp.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="OpenCL.Net, Version=2.2.9.0, Culture=neutral, processorArchitecture=MSIL">
@@ -64,8 +72,14 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase">
+      <HintPath>..\packages\WindowsBase.4.6.1055.0\lib\WindowsBase.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DirectSoundGPU.cs" />
+    <Compile Include="GpuCompute.cs" />
     <Compile Include="Utils.cs" />
     <Compile Include="DirectSound.cs" />
     <Compile Include="SPLCalculator.cs" />
@@ -73,8 +87,20 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
+    <None Include="Tools\place_these_executables_in_same_folder_as_Cudafy.NET.dll_" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Readme\CUDA.NET.Readme.txt" />
+    <Content Include="Readme\CUDAfy-License.txt" />
+    <Content Include="Readme\example_source_code.cs.txt" />
+    <Content Include="Readme\ILSpy-license.txt" />
+    <Content Include="Readme\README.txt" />
+    <Content Include="Tools\cudafycl.exe" />
+    <Content Include="Tools\CudafyViewer.exe" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
@@ -82,12 +108,10 @@
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\OpenCL.Net.2.2.9.0\build\net40\OpenCL.Net.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\OpenCL.Net.2.2.9.0\build\net40\OpenCL.Net.targets'))" />
-    <Error Condition="!Exists('..\packages\Alea.3.0.3\build\Alea.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Alea.3.0.3\build\Alea.targets'))" />
-    <Error Condition="!Exists('..\packages\Alea.3.0.4-beta2\build\Alea.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Alea.3.0.4-beta2\build\Alea.targets'))" />
+    <Error Condition="!Exists('..\packages\Alea.3.0.4-beta3\build\Alea.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Alea.3.0.4-beta3\build\Alea.targets'))" />
   </Target>
   <Import Project="..\packages\OpenCL.Net.2.2.9.0\build\net40\OpenCL.Net.targets" Condition="Exists('..\packages\OpenCL.Net.2.2.9.0\build\net40\OpenCL.Net.targets')" />
-  <Import Project="..\packages\Alea.3.0.3\build\Alea.targets" Condition="Exists('..\packages\Alea.3.0.3\build\Alea.targets')" />
-  <Import Project="..\packages\Alea.3.0.4-beta2\build\Alea.targets" Condition="Exists('..\packages\Alea.3.0.4-beta2\build\Alea.targets')" />
+  <Import Project="..\packages\Alea.3.0.4-beta3\build\Alea.targets" Condition="Exists('..\packages\Alea.3.0.4-beta3\build\Alea.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

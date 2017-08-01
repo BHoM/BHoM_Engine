@@ -4,13 +4,19 @@ using System.Linq;
 using System.Text;
 using System.Collections.Concurrent;
 
-using System.Threading;
+using System.Windows.Threading;
+
 using System.Threading.Tasks;
+using System.Threading;
+using System.Diagnostics;
 
 using Alea;
 using Alea.Parallel;
-using OpenCL;
+using OpenCL.Net;
+
 using Cudafy;
+using Cudafy.Host;
+using Cudafy.Translator;
 
 using BHoM.Geometry;
 using BHoM.Acoustic;
@@ -21,7 +27,21 @@ namespace AcousticSPI_Engine
     public static class DirectSound
     {
         #region Methods
-
+        /*
+        /// <summary>
+        /// Performs a Direct Sound calculation with sequential CPU calculation
+        /// </summary>
+        /// <param name="source">BHoM acoustic Speaker</param>
+        /// <param name="target">BHoM acoustic Receivers</param>
+        /// <param name="surfaces">BHoM acoustic Panel</param>
+        /// <returns>Returns a list of BHoM Acoustic Rays</returns>
+        public static Ray Solve(Speaker source, Receiver target, List<Panel> surfaces)
+        {
+            Line path = new Line(source.Position, target.Position);
+            Ray ray = new Ray(path, source.SpeakerID, target.ReceiverID);
+            return Utils.CheckObstacles(ray,surfaces);
+        }
+        */
         /// <summary>
         /// Performs a Direct Sound calculation with sequential CPU calculation
         /// </summary>
@@ -37,8 +57,7 @@ namespace AcousticSPI_Engine
                 {
                     for (int j = 0; j < targets.Count; j++)
                     {
-                        List<Point> rayPts = new List<Point>() { sources[i].Position, targets[j].Position };
-                        Polyline path = new Polyline(rayPts);
+                        Line path = new Line(sources[i].Position, targets[j].Position);
                         rays.Add(new Ray(path, i, j));
                     }
                 }
@@ -58,29 +77,56 @@ namespace AcousticSPI_Engine
         /// <returns>Returns a list of BHoM Acoustic Rays</returns>
         public static List<Ray> SolveCpu(List<Speaker> sources, List<Receiver> targets, List<Panel> surfaces)
         {
-            List<Ray> rays = new List<Ray>();
+            /*
+            ConcurrentBag<Ray> rays = new ConcurrentBag<Ray>();
+            //List<Ray> rays = new List<Ray>();
             for (int i = 0; i < sources.Count; i++)
             {
-                Parallel.For(0, targets.Count,
+                Parallel.For(
+                    0,
+                    targets.Count,
+                    new ParallelOptions { MaxDegreeOfParallelism = System.Environment.ProcessorCount },
                     () => new List<Ray>(),                                        // Initialise local variable
                     (int j, ParallelLoopState state, List<Ray> subray) =>          // body: The delegate that is invoked once per iteration.
                     {
-                        Polyline path = new Polyline(new List<Point>() { sources[i].Position, targets[j].Position });
+                        Line path = new Line(sources[i].Position, targets[j].Position);
                         subray.Add(new Ray(path, i, j));
                         return subray;
                     },
                     (subray) =>
-                    {
-                        lock (sources)
                         {
-                            rays.AddRange(subray);
+                            foreach(Ray ray in subray)
+                            rays.Add(ray);
                         }
-                    }
                 );
             }
-            if (surfaces == null || surfaces.Count == 0) { return rays; }
-            else { return Utils.CheckObstacles(rays, surfaces); }
+            */
+
+            //List<Ray> rays = new List<Ray>();
+            List<Ray> rays = new List<Ray>();
+            for (int i = 0; i < sources.Count; i++)
+            {
+                for (int j = 0; j < targets.Count; j++)
+                {
+                    int a = i;
+                    int b = j;
+                    int pLevel = TaskScheduler.Current.MaximumConcurrencyLevel;
+                    Task t = Task.Factory.StartNew(() =>
+                   {
+                       Dispatcher.CurrentDispatcher.Invoke(new Action(() =>
+                       rays.Add(new Ray(new Line(sources[i].Position, targets[j].Position), a, b))
+                       )
+                       );
+                   });
+                    t.Wait();
+                }
+            }
+
+            //if (surfaces == null || surfaces.Count == 0) { return rays.ToList(); }
+            //else { return Utils.CheckObstacles(rays.ToList(), surfaces); }
+            return rays;
         }
+
 
         /// <summary>
         /// Performs a Direct Sound calculation with GPU parallel calculation based on CUDA
@@ -89,23 +135,24 @@ namespace AcousticSPI_Engine
         /// <param name="targets">BHoM acoustic Receivers</param>
         /// <param name="surfaces">BHoM acoustic Panel</param>
         /// <returns>Returns a list of BHoM Acoustic Rays</returns>
+        [GpuManaged]
         public static List<Ray> SolveCuda(List<Speaker> sources, List<Receiver> targets, List<Panel> surfaces)
         {
             List<Ray> rays = new List<Ray>();
             Gpu.Default.For(0, sources.Count,
-                i =>
-                {
-                    for (int j = 0; j < targets.Count; j++)
-                    {
-                        Point[] rayPts = new Point[] { sources[i].Position, targets[j].Position };
-                        Polyline path = new Polyline(rayPts.ToList());
-                        rays.Add(new Ray(path, i, j));
-                    }
-                });
+                   i =>
+                   {
+                       for (int j = 0; j < targets.Count; j++)
+                       {
+                           List<Point> rayPts = new List<Point>() { sources[i].Position, targets[j].Position };
+                           Polyline path = new Polyline(rayPts);
+                           rays.Add(new Ray(path, i, j));
+                       }
+                   });
             if (surfaces == null || surfaces.Count == 0) { return rays; }
             else { return Utils.CheckObstacles(rays, surfaces); }
         }
-        
+
         /// <summary>
         /// Performs a Direct Sound calculation with GPU parallel calculation based on OpenCL
         /// </summary>
@@ -115,15 +162,34 @@ namespace AcousticSPI_Engine
         /// <returns>Returns a list of BHoM Acoustic Rays</returns>
         public static List<Ray> SolveOpenCL(List<Speaker> sources, List<Receiver> targets, List<Panel> surfaces)
         {
-            List<Ray> rays = new List<Ray>();
+            // Formatting inputs
+            Speaker[] _sources = sources.ToArray();
+            Receiver[] _targets = targets.ToArray();
+            Panel[] _surfaces = surfaces.ToArray();
 
-            Cudafy.Host.GPGPU gpu = new Cudafy.Host.OpenCLDevice();
-            CudafyModule km = new CudafyModule();
+            // Defining the context
+            CudafyModes.Target = eGPUType.OpenCL;
+            CudafyModes.DeviceId = 2;
+            //CudafyTranslator.Language = eLanguage.OpenCL;
+
+            // Initialise the computing device
+            GPGPU gpu = CudafyHost.GetDevice(CudafyModes.Target, CudafyModes.DeviceId);
+            CudafyModule km = CudafyTranslator.Cudafy(typeof(Speaker), typeof(Receiver), typeof(Panel), typeof(Ray), typeof(DirectSound));
             gpu.LoadModule(km);
 
-            var gpuLatitudes = gpu.CopyToDevice(sources.ToString());
-            var gpuLongitudes = gpu.CopyToDevice(targets.ToString());
-            //var gpuAnswer = gpu.Allocate<Ray>(10);
+            Speaker[] dev_sources = gpu.Allocate<Speaker>(sources.Count);
+            Receiver[] dev_targets = gpu.Allocate<Receiver>(targets.Count);
+            Panel[] dev_surfaces = gpu.Allocate<Panel>(surfaces.Count);
+
+            gpu.CopyToDevice(_sources, dev_sources);
+            gpu.CopyToDevice(_targets);
+            gpu.CopyToDevice(_surfaces);
+
+            Ray[] dev_rays = gpu.Allocate<Ray>(sources.Count * targets.Count);
+
+            //gpu.Launch(1, sources.Count, ((Action<GThread, >)), dev_sources, dev_targets, dev_surfaces);
+
+
             return new List<Ray>();
         }
                                

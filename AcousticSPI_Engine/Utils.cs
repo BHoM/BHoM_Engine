@@ -15,6 +15,19 @@ namespace AcousticSPI_Engine
 {
     public static class Utils
     {
+        public static bool CheckObstacles(Ray ray, List<Panel> surfaces, bool ClearRays = true, double tol = 0.00001)
+        {
+            for (int i = 0; i < surfaces.Count; i++)       //foreach surface
+            {
+                if (Intersect.MeshSegment(surfaces[i].Mesh, ray.Path) == null)    // if ray hits a surface
+                {
+                    return true;
+                }
+            }
+            return false;
+                
+        }
+
 
         /// <summary>
         /// Checks for obstacles in rays path. 
