@@ -19,7 +19,7 @@ namespace AcousticSPI_Engine
             double SPL = 0;
             for (int i=0; i<rays.Count; i++)
             {
-                SPL += (10 * Math.Log10 (  Math.Pow(10, 10/rays[i].Length()  ) ) );         // Directivity calculation to be added.
+                SPL += (10 * Math.Log10 (  Math.Pow(10, 10/rays[i].Length  ) ) );         // Directivity calculation to be added.
             }
             return SPL;
         }

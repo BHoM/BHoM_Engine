@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
 using Alea;
 using Alea.Parallel;
 
@@ -53,7 +54,7 @@ namespace AcousticSPI_Engine
         /// <param name="ClearRays"></param>
         /// <param name="tol"></param>
         /// <returns></returns>
-        public static List<Ray> GPUCheckObstacles(List<Ray> rays, List<Panel> surfaces, bool ClearRays = true, double tol = 0.00001)
+        public static List<Ray> CheckObstaclesCUDA(List<Ray> rays, List<Panel> surfaces, bool ClearRays = true, double tol = 0.00001)
         {
             List<Ray> filteredRays = new List<Ray>();
 
@@ -63,7 +64,6 @@ namespace AcousticSPI_Engine
                     List<bool> checker = new List<bool>();
                     for (int j = 0; j < surfaces.Count; j++)       //foreach surface
                     {
-                        // Write Mesh-Polyline (or Mesh-Curve) Intersection and replace when done, due to performance.
                         if (Intersect.MeshSegment(surfaces[j].Mesh, rays[i].Path) == null)       // if ray hits a surface
                             checker.Add(true);
                     }
@@ -83,7 +83,7 @@ namespace AcousticSPI_Engine
         /// <param name="ClearRays"></param>
         /// <param name="tol"></param>
         /// <returns></returns>
-        public static List<Ray> CPUCheckObstacles(List<Ray> rays, List<Panel> surfaces, bool ClearRays = true, double tol = 0.00001)    // NOT EFFICIENT for now, since it locks the rays list to be thread safe
+        public static List<Ray> CheckObstaclesCPU(List<Ray> rays, List<Panel> surfaces, bool ClearRays = true, double tol = 0.00001)    // NOT EFFICIENT for now, since it locks the rays list to be thread safe
         {
             List<Ray> filteredRays = new List<Ray>();
 
@@ -121,11 +121,11 @@ namespace AcousticSPI_Engine
         /// <param name="rays"></param>
         /// <param name="filter"></param>
         /// <returns></returns>
-        public static List<Ray> RayFilter(List<Ray> rays, List<string> sourceFilter)
+        public static List<Ray> RayFilter(List<Ray> rays, List<int> sourceFilter)
         {
             //IEnumerable<Ray> Rays = rays;
-            //return Rays.Where(ray => filter.Contains(ray.Source ));
-            return rays.FindAll(ray => sourceFilter.Contains(ray.Source));
+            //return Rays.Where(ray => filter.Contains(ray.SpeakerID ));
+            return rays.FindAll(ray => sourceFilter.Contains(ray.SpeakerID));
         }
     }
 }
