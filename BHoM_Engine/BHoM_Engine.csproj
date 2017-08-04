@@ -7,7 +7,7 @@
     <ProjectGuid>{1AD45C88-DD54-48E5-951F-55EDFEB70E35}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BH.Engine</RootNamespace>
+    <RootNamespace>BHoM_Engine</RootNamespace>
     <AssemblyName>BHoM_Engine</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -45,15 +45,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Base\Comparers\BHoMObjectNameComparer.cs" />
-    <Compile Include="Base\Comparers\BHoMObjectNameOrToStringComparer.cs" />
     <Compile Include="Base\GetGeometry\Common.cs" />
     <Compile Include="Base\GetGeometry\Structural.cs" />
     <Compile Include="Geometry\Clone\Geometry.cs" />
     <Compile Include="Geometry\Create\Plane.cs" />
+    <Compile Include="Geometry\Fix\Mesh.cs" />
     <Compile Include="Geometry\Measure\Average.cs" />
     <Compile Include="Geometry\Measure\BoundingBox.cs" />
     <Compile Include="Geometry\Measure\Bounds.cs" />
+    <Compile Include="Geometry\Measure\Direction.cs" />
     <Compile Include="Geometry\Measure\EndDir.cs" />
     <Compile Include="Geometry\Measure\EndPoint.cs" />
     <Compile Include="Geometry\Measure\ExternalEdges.cs" />
@@ -61,6 +61,7 @@
     <Compile Include="Geometry\Measure\StartDir.cs" />
     <Compile Include="Geometry\Measure\StartPoint.cs" />
     <Compile Include="Geometry\Transform\Exploded.cs" />
+    <Compile Include="Geometry\Transform\Inflate.cs" />
     <Compile Include="Geometry\Verify\BoundingBox.cs" />
     <Compile Include="Geometry\Convert\NurbForm.cs" />
     <Compile Include="Geometry\Measure\Distance.cs" />
@@ -73,13 +74,9 @@
     <Compile Include="Geometry\Verify\Closed.cs" />
     <Compile Include="Geometry\Verify\Validity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Structure\Elements\Comparers\NodeDistanceComparer.cs" />
     <Compile Include="Testing\SpeedTest.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Materials\Comparers\" />
-    <Folder Include="Structure\Properties\Comparers\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
