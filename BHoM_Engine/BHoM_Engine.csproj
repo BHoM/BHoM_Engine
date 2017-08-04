@@ -52,8 +52,13 @@
     <Compile Include="Geometry\Measure\Average.cs" />
     <Compile Include="Geometry\Measure\BoundingBox.cs" />
     <Compile Include="Geometry\Measure\Bounds.cs" />
+    <Compile Include="Geometry\Measure\EndDir.cs" />
     <Compile Include="Geometry\Measure\EndPoint.cs" />
+    <Compile Include="Geometry\Measure\ExternalEdges.cs" />
+    <Compile Include="Geometry\Measure\InternalEdges.cs" />
+    <Compile Include="Geometry\Measure\StartDir.cs" />
     <Compile Include="Geometry\Measure\StartPoint.cs" />
+    <Compile Include="Geometry\Transform\Exploded.cs" />
     <Compile Include="Geometry\Verify\BoundingBox.cs" />
     <Compile Include="Geometry\Convert\NurbForm.cs" />
     <Compile Include="Geometry\Measure\Distance.cs" />

@@ -87,5 +87,53 @@ namespace BH.Engine.Geometry
         {
             return new Polyline(curve.ControlPoints.Select(x => x + transform));
         }
+
+
+        /***************************************************/
+        /**** Private Methods - Surfaces                ****/
+        /***************************************************/
+
+        public static Extrusion _GetTranslated(Extrusion surface, Vector transform)
+        {
+            return new Extrusion(surface.Curve.GetTranslated(transform) as ICurve, surface.Direction.GetClone() as Vector, surface.Capped);
+        }
+
+        /***************************************************/
+
+        public static Loft _GetTranslated(Loft surface, Vector transform)
+        {
+            return new Loft(surface.Curves.Select(x => x.GetTranslated(transform) as ICurve));
+        }
+
+        /***************************************************/
+
+        public static NurbSurface _GetTranslated(NurbSurface surface, Vector transform)
+        {
+            return new NurbSurface(surface.ControlPoints.Select(x => x + transform), surface.Weights, surface.UKnots, surface.VKnots);
+        }
+
+        /***************************************************/
+
+        public static Pipe _GetTranslated(Pipe surface, Vector transform)
+        {
+            return new Pipe(surface.Centreline.GetTranslated(transform) as ICurve, surface.Radius, surface.Capped);
+        }
+
+        /***************************************************/
+
+        public static PolySurface _GetTranslated(PolySurface surface, Vector transform)
+        {
+            return new PolySurface(surface.Surfaces.Select(x => x.GetTranslated(transform) as ISurface));
+        }
+
+
+        /***************************************************/
+        /**** Private Methods - Others                  ****/
+        /***************************************************/
+
+        public static Mesh _GetTranslated(Mesh mesh, Vector transform)
+        {
+            return new Mesh(mesh.Vertices.Select(x => x + transform), mesh.Faces.Select(x => x.GetClone() as Face));
+        }
     }
 }

@@ -125,5 +125,78 @@ namespace BH.Engine.Geometry
             return GetBounds(line.ControlPoints);
         }
 
+
+        /***************************************************/
+        /**** Private Computation - Surfaces            ****/
+        /***************************************************/
+
+        private static BoundingBox _GetBounds(this Extrusion surface)
+        {
+            BoundingBox box = surface.Curve.GetBounds();
+            return box + (box + surface.Direction);
+        }
+
+        /***************************************************/
+
+        private static BoundingBox _GetBounds(this Loft surface)
+        {
+            List<ICurve> curves = surface.Curves;
+
+            if (curves.Count == 0)
+                return null;
+
+            BoundingBox box = curves[0].GetBounds();
+            for (int i = 1; i < curves.Count; i++)
+                box += curves[i].GetBounds();
+
+            return box;
+        }
+
+        /***************************************************/
+
+        private static BoundingBox _GetBounds(this NurbSurface surface)
+        {
+            throw new NotImplementedException();
+        }
+
+        /***************************************************/
+
+        private static BoundingBox _GetBounds(this Pipe surface)
+        {
+            BoundingBox box = surface.Centreline.GetBounds();
+            double radius = surface.Radius;
+
+            box.Min -= new Vector(radius, radius, radius);  // TODO: more accurate bounding box needed
+            box.Max += new Vector(radius, radius, radius);
+
+            return box;
+        }
+
+        /***************************************************/
+
+        private static BoundingBox _GetBounds(this PolySurface surface)
+        {
+            List<ISurface> surfaces = surface.Surfaces;
+
+            if (surfaces.Count == 0)
+                return null;
+
+            BoundingBox box = surfaces[0].GetBounds();
+            for (int i = 1; i < surfaces.Count; i++)
+                box += surfaces[i].GetBounds();
+
+            return box;
+        }
+
+
+        /***************************************************/
+        /**** Private Methods - Others                  ****/
+        /***************************************************/
+
+        private static BoundingBox _GetBounds(this Mesh mesh)
+        {
+            return GetBounds(mesh.Vertices);
+        }
+
     }
 }

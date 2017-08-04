@@ -58,15 +58,18 @@ namespace BH.Engine.Geometry
 
         private static bool _IsClosed(PolyCurve curve)
         {
-            Point start = curve.GetStartPoint();
-            if (start == null)
+            List<ICurve> curves = curve.Curves;
+
+            if (curves[0].GetStartPoint().GetSquareDistance(curves.Last().GetEndPoint()) > Tolerance.SqrtDist)
                 return false;
 
-            Point end = curve.GetEndPoint();
-            if (end == null)
-                return false;
+            for (int i = 1; i < curves.Count; i++)
+            {
+                if (curves[i - 1].GetEndPoint().GetSquareDistance(curves[i].GetStartPoint()) > Tolerance.SqrtDist)
+                    return false;
+            }
 
-            return start.GetSquareDistance(end) < Tolerance.SqrtDist;
+            return true;
         }
 
         /***************************************************/
