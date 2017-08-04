@@ -45,8 +45,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Base\Geometry\Common.cs" />
-    <Compile Include="Base\Geometry\Structural.cs" />
+    <Compile Include="Base\GetGeometry\Common.cs" />
+    <Compile Include="Base\GetGeometry\Structural.cs" />
     <Compile Include="Geometry\Clone\Geometry.cs" />
     <Compile Include="Geometry\Create\Plane.cs" />
     <Compile Include="Geometry\Measure\Average.cs" />
