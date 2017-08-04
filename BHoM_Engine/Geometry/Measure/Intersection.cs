@@ -89,5 +89,7 @@ namespace BH.Engine.Geometry
 
             return intersections;
         }
+
+        /***************************************************/
     }
 }

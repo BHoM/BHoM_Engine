@@ -21,6 +21,16 @@ namespace BH.Engine.Geometry
             return Math.Sqrt(dx*dx + dy*dy * dz*dz);
         }
 
-    
+        /***************************************************/
+
+        public static double GetSquareDistance(this Point a, Point b)
+        {
+            double dx = a.X - b.X;
+            double dy = a.Y - b.Y;
+            double dz = a.Z - b.Z;
+            return dx * dx + dy * dy * dz * dz;
+        }
+
+
     }
 }

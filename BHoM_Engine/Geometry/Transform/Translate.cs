@@ -22,6 +22,7 @@ namespace BH.Engine.Geometry
         /***************************************************/
         /**** Private Methods - Vectors                 ****/
         /***************************************************/
+
         public static Point _GetTranslated(Point pt, Vector transform)
         {
             return pt + transform;

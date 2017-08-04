@@ -18,10 +18,42 @@ namespace BH.Engine.Geometry
             return _GetBounds(geometry as dynamic);
         }
 
+        /***************************************************/
+
+        public static BoundingBox GetBounds(List<Point> pts)
+        {
+            Point pt = pts[0];
+            double minX = pt.X; double minY = pt.Y; double minZ = pt.Z;
+            double maxX = minX; double maxY = minY; double maxZ = minZ;
+
+            for (int i = pts.Count - 1; i > 0; i--)
+            {
+                pt = pts[i];
+                if (pt.X < minX) minX = pt.X;
+                if (pt.Y < minY) minY = pt.Y;
+                if (pt.Z < minZ) minZ = pt.Z;
+                if (pt.X > maxX) maxX = pt.X;
+                if (pt.Y > maxY) maxY = pt.Y;
+                if (pt.Z > maxZ) maxZ = pt.Z;
+            }
+
+            return new BoundingBox(new Point(minX, minY, minZ), new Point(maxX, maxY, maxZ));
+        }
+
 
         /***************************************************/
         /**** Private Methods - Vectors                 ****/
         /***************************************************/
+
+        public static BoundingBox _GetBounds(this Plane plane)
+        {
+            double x = plane.Normal.X == 0 ? 0 : double.MaxValue;
+            double y = plane.Normal.Y == 0 ? 0 : double.MaxValue;
+            double z = plane.Normal.Z == 0 ? 0 : double.MaxValue;
+
+            return new BoundingBox(new Point(-x, -y, -z), new Point(x, y, z));
+        }
+
         public static BoundingBox _GetBounds(this Point pt)
         {
             return new BoundingBox(pt, pt);
@@ -67,26 +99,7 @@ namespace BH.Engine.Geometry
 
         private static BoundingBox _GetBounds(this NurbCurve curve)
         {
-            Point pt = curve.ControlPoints[0];
-            double minX = pt.X;
-            double minY = pt.Y;
-            double minZ = pt.Z;
-            double maxX = minX;
-            double maxY = minY;
-            double maxZ = minZ;
-
-            for (int i = curve.ControlPoints.Count - 1; i > 0; i--)
-            {
-                pt = curve.ControlPoints[i];
-                if (pt.X < minX) minX = pt.X;
-                if (pt.Y < minY) minY = pt.Y;
-                if (pt.Z < minZ) minZ = pt.Z;
-                if (pt.X > maxX) maxX = pt.X;
-                if (pt.Y > maxY) maxY = pt.Y;
-                if (pt.Z > maxZ) maxZ = pt.Z;
-            }
-
-            return new BoundingBox(new Point(minX, minY, minZ), new Point(maxX, maxY, maxZ));
+            return GetBounds(curve.ControlPoints); //TODO: Need a more accurate bounding box
         }
 
         /***************************************************/
@@ -109,26 +122,7 @@ namespace BH.Engine.Geometry
 
         private static BoundingBox _GetBounds(this Polyline line)
         {
-            Point pt = line.ControlPoints[0];
-            double minX = pt.X;
-            double minY = pt.Y;
-            double minZ = pt.Z;
-            double maxX = minX;
-            double maxY = minY;
-            double maxZ = minZ;
-
-            for (int i = line.ControlPoints.Count - 1; i > 0; i--)
-            {
-                pt = line.ControlPoints[i];
-                if (pt.X < minX) minX = pt.X;
-                if (pt.Y < minY) minY = pt.Y;
-                if (pt.Z < minZ) minZ = pt.Z;
-                if (pt.X > maxX) maxX = pt.X;
-                if (pt.Y > maxY) maxY = pt.Y;
-                if (pt.Z > maxZ) maxZ = pt.Z;
-            }
-
-            return new BoundingBox(new Point(minX, minY, minZ), new Point(maxX, maxY, maxZ));
+            return GetBounds(line.ControlPoints);
         }
 
     }

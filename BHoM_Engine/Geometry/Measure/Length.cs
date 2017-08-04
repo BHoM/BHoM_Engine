@@ -20,7 +20,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static double GetSqaureLength(this Vector vector)
+        public static double GetSquareLength(this Vector vector)
         {
             return vector.X * vector.X + vector.Y * vector.Y + vector.Z * vector.Z;
         }
