@@ -9,6 +9,10 @@ namespace BH.Engine.Geometry
 {
     public static partial class Create
     {
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
+
         public static Plane CreatePlane(Point p1, Point p2, Point p3)
         {
             Vector normal = Measure.GetCrossProduct(p2 - p1, p3 - p1).GetNormalised();

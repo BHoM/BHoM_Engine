@@ -198,5 +198,21 @@ namespace BH.Engine.Geometry
             return GetBounds(mesh.Vertices);
         }
 
+        /***************************************************/
+
+        private static BoundingBox _GetBounds(this GeometryGroup group)
+        {
+            List<IBHoMGeometry> elements = group.Elements;
+
+            if (elements.Count == 0)
+                return null;
+
+            BoundingBox box = elements[0].GetBounds();
+            for (int i = 1; i < elements.Count; i++)
+                box += elements[i].GetBounds();
+
+            return box;
+        }
+
     }
 }

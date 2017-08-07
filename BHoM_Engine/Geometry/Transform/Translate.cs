@@ -135,5 +135,12 @@ namespace BH.Engine.Geometry
         {
             return new Mesh(mesh.Vertices.Select(x => x + transform), mesh.Faces.Select(x => x.GetClone() as Face));
         }
+
+        /***************************************************/
+
+        public static GeometryGroup _GetTranslated(this GeometryGroup group, Vector transform)
+        {
+            return new GeometryGroup(group.Elements.Select(x => x.GetTranslated(transform)));
+        }
     }
 }

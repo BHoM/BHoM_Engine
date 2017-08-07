@@ -149,5 +149,12 @@ namespace BH.Engine.Geometry
             return new Mesh(mesh.Vertices.Select(x => x._GetClone()), mesh.Faces.Select(x => x.GetClone()));
         }
 
+        /***************************************************/
+
+        private static GeometryGroup _GetClone(GeometryGroup group)
+        {
+            return new GeometryGroup(group.Elements.Select(x => x.GetClone()));
+        }
+
     }
 }

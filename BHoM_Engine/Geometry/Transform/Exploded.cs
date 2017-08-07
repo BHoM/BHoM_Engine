@@ -67,5 +67,18 @@ namespace BH.Engine.Geometry
 
             return exploded;
         }
+
+        /***************************************************/
+
+        private static List<IBHoMGeometry> _GetExploded(this GeometryGroup group)
+        {
+            List<IBHoMGeometry> exploded = new List<IBHoMGeometry>();
+            List<IBHoMGeometry> elements = group.Elements;
+
+            for (int i = 0; i < elements.Count; i++)
+                exploded.AddRange(elements[i].GetExploded());
+
+            return exploded;
+        }
     }
 }
