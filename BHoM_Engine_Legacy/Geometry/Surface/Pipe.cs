@@ -59,28 +59,28 @@ namespace BH.oM.Geometry
             return pipe.GetEndPerimeters()[0];
         }
 
-        internal static void Mirror(Pipe pipe, Plane p)
-        {
-            XBrep.Mirror(pipe,p);
-            pipe.Centreline.Mirror(p);
-        }
+        //internal static void Mirror(Pipe pipe, Plane p)
+        //{
+        //    XBrep.Mirror(pipe,p);
+        //    pipe.Centreline.Mirror(p);
+        //}
 
-        internal static void Project(Pipe pipe, Plane p)
-        {
-            XBrep.Project(pipe, p);
-            pipe.Centreline.Project(p);
-        }
+        //internal static void Project(Pipe pipe, Plane p)
+        //{
+        //    XBrep.Project(pipe, p);
+        //    pipe.Centreline.Project(p);
+        //}
 
-        internal static void Transform(Pipe pipe, Transform t)
-        {
-            XBrep.Transform(pipe, t);
-            pipe.Centreline.Transform(t);
-        }
+        //internal static void Transform(Pipe pipe, Transform t)
+        //{
+        //    XBrep.Transform(pipe, t);
+        //    pipe.Centreline.Transform(t);
+        //}
 
-        internal static void Translate(Pipe pipe, Vector v)
-        {
-            XBrep.Translate(pipe, v);
-            pipe.Centreline.Translate(v);
-        }
+        //internal static void Translate(Pipe pipe, Vector v)
+        //{
+        //    XBrep.Translate(pipe, v);
+        //    pipe.Centreline.Translate(v);
+        //}
     }
 }

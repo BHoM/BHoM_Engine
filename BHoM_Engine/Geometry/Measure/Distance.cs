@@ -18,7 +18,7 @@ namespace BH.Engine.Geometry
             double dx = a.X - b.X;
             double dy = a.Y - b.Y;
             double dz = a.Z - b.Z;
-            return Math.Sqrt(dx*dx + dy*dy * dz*dz);
+            return Math.Sqrt(dx * dx + dy * dy * dz * dz);
         }
 
         /***************************************************/
@@ -31,6 +31,12 @@ namespace BH.Engine.Geometry
             return dx * dx + dy * dy * dz * dz;
         }
 
+        /***************************************************/
 
+        public static double GetDistance(this Point a, Plane plane)
+        {
+            Vector normal = plane.Normal.GetNormalised();
+            return normal.GetDotProduct(a - plane.Origin);
+        }
     }
 }

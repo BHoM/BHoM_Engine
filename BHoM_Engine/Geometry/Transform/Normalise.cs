@@ -22,5 +22,18 @@ namespace BH.Engine.Geometry
 
             return new Vector(x / d, y / d, z / d);
         }
+
+        /***************************************************/
+
+        public static Quaternion GetNormalised(this Quaternion q)
+        {
+            double x = q.X;
+            double y = q.Y;
+            double z = q.Z;
+            double w = q.W;
+            double d = Math.Sqrt(x * x + y * y + z * z + w * w);
+
+            return new Quaternion(x / d, y / d, z / d, w / d);
+        }
     }
 }
