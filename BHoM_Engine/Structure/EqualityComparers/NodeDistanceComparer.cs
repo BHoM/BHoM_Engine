@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using BH.oM.Structural.Elements;
 using BH.Engine.Geometry;
 
-namespace BH.Engine.Structure.Elements
+namespace BH.Engine.Structure
 {
     public class NodeDistanceComparer : IEqualityComparer<Node>
     {
@@ -23,39 +23,39 @@ namespace BH.Engine.Structure.Elements
             m_multiplier = Math.Pow(10, decimals);
         }
 
-        public bool Equals(Node x, Node y)
+        public bool Equals(Node node1, Node node2)
         {
             //Check whether the compared objects reference the same data.
-            if (Object.ReferenceEquals(x, y)) return true;
+            if (Object.ReferenceEquals(node1, node2)) return true;
 
             //Check whether any of the compared objects is null.
-            if (Object.ReferenceEquals(x, null) || Object.ReferenceEquals(y, null))
+            if (Object.ReferenceEquals(node1, null) || Object.ReferenceEquals(node2, null))
                 return false;
 
             //Check if the GUIDs are the same
-            if (x.BHoM_Guid == y.BHoM_Guid)
+            if (node1.BHoM_Guid == node2.BHoM_Guid)
                 return true;
 
-            if ((int)Math.Round(x.Point.X * m_multiplier) != (int)Math.Round(y.Point.X * m_multiplier))
+            if ((int)Math.Round(node1.Point.X * m_multiplier) != (int)Math.Round(node2.Point.X * m_multiplier))
                 return false;
 
-            if ((int)Math.Round(x.Point.Y * m_multiplier) != (int)Math.Round(y.Point.Y * m_multiplier))
+            if ((int)Math.Round(node1.Point.Y * m_multiplier) != (int)Math.Round(node2.Point.Y * m_multiplier))
                 return false;
 
-            if ((int)Math.Round(x.Point.Z * m_multiplier) != (int)Math.Round(y.Point.Z * m_multiplier))
+            if ((int)Math.Round(node1.Point.Z * m_multiplier) != (int)Math.Round(node2.Point.Z * m_multiplier))
                 return false;
 
             return true;
         }
 
-        public int GetHashCode(Node obj)
+        public int GetHashCode(Node node)
         {
             //Check whether the object is null
-            if (Object.ReferenceEquals(obj, null)) return 0;
+            if (Object.ReferenceEquals(node, null)) return 0;
 
-            int x = ((int)Math.Round(obj.Point.X * m_multiplier)).GetHashCode();
-            int y = ((int)Math.Round(obj.Point.X * m_multiplier)).GetHashCode();
-            int z = ((int)Math.Round(obj.Point.X * m_multiplier)).GetHashCode();
+            int x = ((int)Math.Round(node.Point.X * m_multiplier)).GetHashCode();
+            int y = ((int)Math.Round(node.Point.Y * m_multiplier)).GetHashCode();
+            int z = ((int)Math.Round(node.Point.Z * m_multiplier)).GetHashCode();
             return x ^ y ^ z;
 
         }

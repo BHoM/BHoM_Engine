@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using BHoM.Geometry;
+using BH.oM.Geometry;
+using BH.Engine.Geometry;
 
 namespace BHoM.DataStructure
 {
@@ -49,7 +50,7 @@ namespace BHoM.DataStructure
             List<CompositeValue> result = new List<CompositeValue>();
             foreach (CompositeValue tuple in inCells)
             {
-                if (tuple.Point.DistanceTo(refPt) < maxDist)
+                if (tuple.Point.GetDistance(refPt) < maxDist)
                     result.Add(tuple);
             }
 
@@ -63,7 +64,7 @@ namespace BHoM.DataStructure
         {
             List<CompositeValue> closePts = GetClosePoints(refPt, maxDist);
 
-            return closePts.OrderBy(x => x.Point.DistanceTo(refPt)).FirstOrDefault();
+            return closePts.OrderBy(x => x.Point.GetDistance(refPt)).FirstOrDefault();
         }
 
         /***************************************/
@@ -84,7 +85,7 @@ namespace BHoM.DataStructure
                 {
                     foreach(CompositeValue other in closePoints)
                     {
-                        double dist = value.Point.DistanceTo(other.Point);
+                        double dist = value.Point.GetDistance(other.Point);
                         if (dist < maxDist && dist > minDist)
                             result.Add(new Tuple<CompositeValue, CompositeValue>(value, other));
                     }

@@ -58,6 +58,12 @@
   <ItemGroup>
     <Folder Include="Table\" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BHoM_Engine\BHoM_Engine.csproj">
+      <Project>{1ad45c88-dd54-48e5-951f-55edfeb70e35}</Project>
+      <Name>BHoM_Engine</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
