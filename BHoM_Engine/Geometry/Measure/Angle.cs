@@ -20,5 +20,26 @@ namespace BH.Engine.Geometry
 
             return (Math.Abs(dotProduct) < length) ? Math.Acos(dotProduct / length) : (Math.Abs(dotProduct) < length + 0.0001) ? Math.PI : 0;
         }
+
+        /***************************************************/
+
+        public static double GetSignedAngle(this Vector a, Vector b, Vector normal) // use normal vector to define the sign of the angle
+        {
+            double angle = GetAngle(a, b);
+
+            Vector crossproduct =a.GetCrossProduct(b);
+            if (GetAngle(crossproduct, normal) < (Math.PI / 2.0))
+                return angle;
+            else
+                return -angle;
+        }
+
+        /***************************************************/
+
+        public static double GetAngle(this Arc arc)
+        {
+            Point centre = arc.GetCentre();
+            return GetAngle(arc.Start-centre, arc.End-centre);
+        }
     }
 }

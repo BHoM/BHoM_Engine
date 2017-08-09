@@ -14,7 +14,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static bool IsClosed(ICurve curve)
+        public static bool IsClosed(this ICurve curve)
         {
             return _IsClosed(curve as dynamic);
         }
@@ -24,28 +24,28 @@ namespace BH.Engine.Geometry
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private static bool _IsClosed(Arc arc)
+        private static bool _IsClosed(this Arc arc)
         {
             return arc.Start.GetSquareDistance(arc.End) < Tolerance.SqrtDist;
         }
 
         /***************************************************/
 
-        private static bool _IsClosed(Circle circle)
+        private static bool _IsClosed(this Circle circle)
         {
             return true;
         }
 
         /***************************************************/
 
-        private static bool _IsClosed(Line line)
+        private static bool _IsClosed(this Line line)
         {
             return line.Start.GetSquareDistance(line.End) < Tolerance.SqrtDist;
         }
 
         /***************************************************/
 
-        private static bool _IsClosed(NurbCurve curve)
+        private static bool _IsClosed(this NurbCurve curve)
         {
             List<Point> pts = curve.ControlPoints;
             if (pts.Count == 0)
@@ -56,7 +56,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        private static bool _IsClosed(PolyCurve curve)
+        private static bool _IsClosed(this PolyCurve curve)
         {
             List<ICurve> curves = curve.Curves;
 
@@ -74,7 +74,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        private static bool _IsClosed(Polyline curve)
+        private static bool _IsClosed(this Polyline curve)
         {
             List<Point> pts = curve.ControlPoints;
             if (pts.Count == 0)

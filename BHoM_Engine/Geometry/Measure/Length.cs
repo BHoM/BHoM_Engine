@@ -39,7 +39,7 @@ namespace BH.Engine.Geometry
 
         private static double _GetLength(this Arc curve)
         {
-            throw new NotImplementedException();
+            return curve.GetAngle() * curve.GetRadius();
         }
 
         /***************************************************/
@@ -51,7 +51,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static double _GetLength(this Line curve)
+        private static double _GetLength(this Line curve)
         {
             return (curve.Start - curve.End).GetLength();
         }
@@ -72,7 +72,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static double _GetLength(this Polyline curve)
+        private static double _GetLength(this Polyline curve)
         {
             double length = 0;
             List<Point> pts = curve.ControlPoints;

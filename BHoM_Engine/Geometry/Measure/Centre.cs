@@ -32,5 +32,19 @@ namespace BH.Engine.Geometry
             return new Point((box.Max.X + box.Min.X) / 2, (box.Max.Y + box.Min.Y) / 2, (box.Max.Z + box.Min.Z) / 2);
         }
 
+        /***************************************************/
+
+        public static Point GetCentre(this IEnumerable<Point> points)
+        {
+            int count = points.Count();
+            if (count < 1) return null;
+
+            Point mean = new Point(0, 0, 0);
+
+            foreach (Point pt in points)
+                mean += pt;
+
+            return mean /= count;
+        }
     }
 }

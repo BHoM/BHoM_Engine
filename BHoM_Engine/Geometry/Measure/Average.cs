@@ -13,14 +13,15 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Point GetAverage(this List<Point> pts)
+        public static Point GetAverage(this IList<Point> points)
         {
-            int count = pts.Count;
+            int count = points.Count();
             if (count < 1) return null;
-            Point mean = pts[0].GetClone() as Point;
 
-            for (int i = 1; i < count; i++)
-                mean += pts[i];
+            Point mean = new Point(0, 0, 0);
+
+            foreach (Point pt in points)
+                mean += pt;
 
             return mean /= count;
         }
@@ -29,12 +30,13 @@ namespace BH.Engine.Geometry
 
         public static Vector GetAverage(this List<Vector> vs)
         {
-            int count = vs.Count;
+            int count = vs.Count();
             if (count < 1) return null;
-            Vector mean = vs[0].GetClone() as Vector;
 
-            for (int i = 1; i < count; i++)
-                mean += vs[i];
+            Vector mean = new Vector(0, 0, 0);
+
+            foreach (Vector v in vs)
+                mean += v;
 
             return mean /= count;
         }

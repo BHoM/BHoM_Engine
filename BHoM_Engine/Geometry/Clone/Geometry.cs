@@ -63,7 +63,7 @@ namespace BH.Engine.Geometry
 
         private static Arc _GetClone(this Arc arc)
         {
-            return new Arc(arc.Start._GetClone(), arc.End._GetClone(), arc.Middle._GetClone());
+            return new Arc(arc.Start._GetClone(), arc.Middle._GetClone(), arc.End._GetClone());
         }
 
         /***************************************************/

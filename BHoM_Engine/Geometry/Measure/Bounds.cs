@@ -45,7 +45,7 @@ namespace BH.Engine.Geometry
         /**** Private Methods - Vectors                 ****/
         /***************************************************/
 
-        public static BoundingBox _GetBounds(this Plane plane)
+        private static BoundingBox _GetBounds(this Plane plane)
         {
             double x = plane.Normal.X == 0 ? 0 : double.MaxValue;
             double y = plane.Normal.Y == 0 ? 0 : double.MaxValue;
@@ -54,14 +54,16 @@ namespace BH.Engine.Geometry
             return new BoundingBox(new Point(-x, -y, -z), new Point(x, y, z));
         }
 
-        public static BoundingBox _GetBounds(this Point pt)
+        /***************************************************/
+
+        private static BoundingBox _GetBounds(this Point pt)
         {
             return new BoundingBox(pt, pt);
         }
 
         /***************************************************/
 
-        public static BoundingBox _GetBounds(this Vector vector)
+        private static BoundingBox _GetBounds(this Vector vector)
         {
             Point pt = new Point(vector.X, vector.Y, vector.Z);
             return new BoundingBox(pt, pt);

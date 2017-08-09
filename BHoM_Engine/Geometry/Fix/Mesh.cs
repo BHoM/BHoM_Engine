@@ -14,10 +14,10 @@ namespace BHoM_Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static void RemoveDuplicateVertices(this Mesh mesh, double tolerance = 0.001) //TODO: use the point matrix 
+        public static Mesh GetWithMergedVertices(this Mesh mesh, double tolerance = 0.001) //TODO: use the point matrix 
         {
-            List<Face> faces = mesh.Faces;
-            List<VertexIndex> vertices = mesh.Vertices.Select((x, i) => new VertexIndex(x, i)).ToList();
+            List<Face> faces = mesh.Faces.Select(x => x.GetClone() as Face).ToList();
+            List<VertexIndex> vertices = mesh.Vertices.Select((x, i) => new VertexIndex(x.GetClone() as Point, i)).ToList();
             
             foreach( Face face in faces)
             {
@@ -69,6 +69,8 @@ namespace BHoM_Engine.Geometry
                         faces[i].D--;
                 }
             }
+
+            return new Mesh(vertices.Select(x => x.Location).ToList(), faces);
         }
 
 

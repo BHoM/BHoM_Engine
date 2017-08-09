@@ -11,122 +11,122 @@ namespace BH.oM.Geometry
 
     public static class XCurve
     {
-        public static void CreateNurbForm(this Curve curve)
-        {
-            switch (curve.GeometryType)
-            {
-                case GeometryType.Arc:
-                    XArc.CreateNurbForm(curve as Arc);
-                    break;
-                case GeometryType.Line:
-                    XLine.CreateNurbForm(curve as Line);
-                    break;
-                case GeometryType.PolyCurve:
-                    XPolyCurve.CreateNurbFrom(curve as PolyCurve);
-                    break;
-                case BH.oM.Geometry.GeometryType.Polyline:
-                    XPolyline.CreateNurbForm(curve as Polyline);
-                    break;
-                case GeometryType.Circle:
-                    XCircle.CreateNurbForm(curve as Circle);
-                    break;
-            }
-        }
+        //public static void CreateNurbForm(this Curve curve)
+        //{
+        //    switch (curve.GeometryType)
+        //    {
+        //        case GeometryType.Arc:
+        //            XArc.CreateNurbForm(curve as Arc);
+        //            break;
+        //        case GeometryType.Line:
+        //            XLine.CreateNurbForm(curve as Line);
+        //            break;
+        //        case GeometryType.PolyCurve:
+        //            XPolyCurve.CreateNurbFrom(curve as PolyCurve);
+        //            break;
+        //        case BH.oM.Geometry.GeometryType.Polyline:
+        //            XPolyline.CreateNurbForm(curve as Polyline);
+        //            break;
+        //        case GeometryType.Circle:
+        //            XCircle.CreateNurbForm(curve as Circle);
+        //            break;
+        //    }
+        //}
 
-        internal static double[] ControlPoint(this Curve curve, int i)
-        {
-            return i < (int)(curve.ControlPointVector.Length / (curve.Dimensions + 1)) ?
-                new Point(CollectionUtils.SubArray<double>(curve.ControlPointVector, i * (curve.Dimensions + 1), curve.Dimensions)) : null;
-        }
+        //internal static double[] ControlPoint(this Curve curve, int i)
+        //{
+        //    return i < (int)(curve.ControlPointVector.Length / (curve.Dimensions + 1)) ?
+        //        new Point(CollectionUtils.SubArray<double>(curve.ControlPointVector, i * (curve.Dimensions + 1), curve.Dimensions)) : null;
+        //}
 
-        public static bool ContainsCurve(this Curve curve, Curve other)
-        {
-            Plane p = null;
-            if (!curve.IsNurbForm) curve.CreateNurbForm();
-            if (curve.IsClosed() && curve.TryGetPlane(out p))
-            {
-                if (p.InPlane(other.ControlPointVector, other.Dimensions + 1, 0.001))
-                {
-                    for (int i = 0; i < other.ControlPointVector.Length; i += other.Dimensions + 1)
-                    {
-                        double[] pointArray = CollectionUtils.SubArray(other.ControlPointVector, i, other.Dimensions + 1);
-                        double[] direction = ArrayUtils.Add(ArrayUtils.Sub(pointArray, p.Origin), pointArray);
-                        double[] up = ArrayUtils.Add(pointArray, p.Normal);
-                        Plane cuttingPlane = Create.PlaneFrom3Points(CollectionUtils.Merge(pointArray, direction, up), curve.Dimensions + 1);
-                        Point point = new Point(pointArray);
-                        List<Point> intersects = Intersect.PlaneCurve(cuttingPlane, curve, 0.0001);
+        //public static bool ContainsCurve(this Curve curve, Curve other)
+        //{
+        //    Plane p = null;
+        //    if (!curve.IsNurbForm) curve.CreateNurbForm();
+        //    if (curve.IsClosed() && curve.TryGetPlane(out p))
+        //    {
+        //        if (p.InPlane(other.ControlPointVector, other.Dimensions + 1, 0.001))
+        //        {
+        //            for (int i = 0; i < other.ControlPointVector.Length; i += other.Dimensions + 1)
+        //            {
+        //                double[] pointArray = CollectionUtils.SubArray(other.ControlPointVector, i, other.Dimensions + 1);
+        //                double[] direction = ArrayUtils.Add(ArrayUtils.Sub(pointArray, p.Origin), pointArray);
+        //                double[] up = ArrayUtils.Add(pointArray, p.Normal);
+        //                Plane cuttingPlane = Create.PlaneFrom3Points(CollectionUtils.Merge(pointArray, direction, up), curve.Dimensions + 1);
+        //                Point point = new Point(pointArray);
+        //                List<Point> intersects = Intersect.PlaneCurve(cuttingPlane, curve, 0.0001);
 
-                        if (intersects.Count == 1) return false;
+        //                if (intersects.Count == 1) return false;
 
-                        intersects.Add(point);
-                        //intersects = Point.RemoveDuplicates(intersects, 3);
+        //                intersects.Add(point);
+        //                //intersects = Point.RemoveDuplicates(intersects, 3);
 
-                        intersects.Sort(delegate (Point p1, Point p2)
-                        {
-                            return ArrayUtils.DotProduct(p1, direction).CompareTo(ArrayUtils.DotProduct(p2, direction));
-                        });
+        //                intersects.Sort(delegate (Point p1, Point p2)
+        //                {
+        //                    return ArrayUtils.DotProduct(p1, direction).CompareTo(ArrayUtils.DotProduct(p2, direction));
+        //                });
 
-                        for (int j = 0; j < intersects.Count; j++)
-                        {
-                            if (j % 2 == 0 && intersects[j] == point) return false;
-                        }
-                    }
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            else
-            {
-                return false;
-            }
-            return true;
-        }
+        //                for (int j = 0; j < intersects.Count; j++)
+        //                {
+        //                    if (j % 2 == 0 && intersects[j] == point) return false;
+        //                }
+        //            }
+        //        }
+        //        else
+        //        {
+        //            return false;
+        //        }
+        //    }
+        //    else
+        //    {
+        //        return false;
+        //    }
+        //    return true;
+        //}
 
-        public static bool ContainsPoints(this Curve curve, List<Point> points)
-        {
-            Plane p = null;
-            if (!curve.IsNurbForm) curve.CreateNurbForm();
-            if (curve.IsClosed() && curve.TryGetPlane(out p))
-            {
-                for (int i = 0; i < points.Count; i++)
-                {
-                    if (p.InPlane(points[i], 0.001))
-                    {
-                        Vector direction = points[i] - p.Origin;
-                        Vector up = p.Normal;
-                        Plane cuttingPlane = new Plane(points[i], points[i] + direction, points[i] + up);
-                        List<Point> intersects = Intersect.PlaneCurve(cuttingPlane, curve, 0.001);
-                        intersects.Add(points[i]);
-                        intersects = PointUtils.RemoveDuplicates(intersects, 3);
+        //public static bool ContainsPoints(this Curve curve, List<Point> points)
+        //{
+        //    Plane p = null;
+        //    if (!curve.IsNurbForm) curve.CreateNurbForm();
+        //    if (curve.IsClosed() && curve.TryGetPlane(out p))
+        //    {
+        //        for (int i = 0; i < points.Count; i++)
+        //        {
+        //            if (p.InPlane(points[i], 0.001))
+        //            {
+        //                Vector direction = points[i] - p.Origin;
+        //                Vector up = p.Normal;
+        //                Plane cuttingPlane = new Plane(points[i], points[i] + direction, points[i] + up);
+        //                List<Point> intersects = Intersect.PlaneCurve(cuttingPlane, curve, 0.001);
+        //                intersects.Add(points[i]);
+        //                intersects = PointUtils.RemoveDuplicates(intersects, 3);
 
-                        intersects.Sort(delegate (Point p1, Point p2)
-                        {
-                            return ArrayUtils.DotProduct(p1, direction).CompareTo(ArrayUtils.DotProduct(p2, direction));
-                        });
+        //                intersects.Sort(delegate (Point p1, Point p2)
+        //                {
+        //                    return ArrayUtils.DotProduct(p1, direction).CompareTo(ArrayUtils.DotProduct(p2, direction));
+        //                });
 
-                        for (int j = 0; j < intersects.Count; j++)
-                        {
-                            if (j % 2 == 0 && intersects[j] == points[i]) return false;
-                        }
-                    }
-                    else return false;
-                }
-                return true;
-            }
-            return false;
-        }
+        //                for (int j = 0; j < intersects.Count; j++)
+        //                {
+        //                    if (j % 2 == 0 && intersects[j] == points[i]) return false;
+        //                }
+        //            }
+        //            else return false;
+        //        }
+        //        return true;
+        //    }
+        //    return false;
+        //}
 
-        public static double Length(this Curve curve)
-        {          
-            double length = 0;
-            for (int i = 0; i < curve.ControlPointVector.Length / (curve.Dimensions + 1) - (curve.Dimensions + 1); i++)
-            {
-                length += ArrayUtils.Length(ArrayUtils.Sub(curve.ControlPointVector, i, i + curve.Dimensions + 1, curve.Dimensions + 1));
-            }
-            return length;            
-        }
+        //public static double Length(this Curve curve)
+        //{          
+        //    double length = 0;
+        //    for (int i = 0; i < curve.ControlPointVector.Length / (curve.Dimensions + 1) - (curve.Dimensions + 1); i++)
+        //    {
+        //        length += ArrayUtils.Length(ArrayUtils.Sub(curve.ControlPointVector, i, i + curve.Dimensions + 1, curve.Dimensions + 1));
+        //    }
+        //    return length;            
+        //}
 
         private static double BasisFunction(this Curve curve, int i, int n, double t)
         {
@@ -529,85 +529,85 @@ namespace BH.oM.Geometry
             return false;
         }
 
-        public static Point ClosestPoint(this Curve curve, Point point)
-        {
-            switch (curve.GeometryType)
-            {
-                case GeometryType.Arc:
-                case GeometryType.Circle:
-                    break;
-                case GeometryType.Line:
-                    XLine.ClosestPoint(curve as Line, point);
-                    break;
-                case GeometryType.Polyline:
-                    XPolyline.ClosestPoint(curve as Polyline, point);
-                    break;
-                case GeometryType.PolyCurve:
-                    XPolyCurve.ClosestPoint(curve as PolyCurve, point);
-                    break;
-            }
-            throw new NotImplementedException();
-        }
+        //public static Point ClosestPoint(this Curve curve, Point point)
+        //{
+        //    switch (curve.GeometryType)
+        //    {
+        //        case GeometryType.Arc:
+        //        case GeometryType.Circle:
+        //            break;
+        //        case GeometryType.Line:
+        //            XLine.ClosestPoint(curve as Line, point);
+        //            break;
+        //        case GeometryType.Polyline:
+        //            XPolyline.ClosestPoint(curve as Polyline, point);
+        //            break;
+        //        case GeometryType.PolyCurve:
+        //            XPolyCurve.ClosestPoint(curve as PolyCurve, point);
+        //            break;
+        //    }
+        //    throw new NotImplementedException();
+        //}
 
-        public static bool IsPlanar(this Curve curve)
-        {
-            return PlaneUtils.PointsInSamePlane(curve.ControlPointVector, curve.Dimensions + 1);
-        }
+        //public static bool IsPlanar(this Curve curve)
+        //{
+        //    return PlaneUtils.PointsInSamePlane(curve.ControlPointVector, curve.Dimensions + 1);
+        //}
 
-        public static bool IsClosed(this Curve curve)
-        {
-            return ArrayUtils.Equal(curve.EndPoint, curve.StartPoint, 0.0001);
-        }
+        //public static bool IsClosed(this Curve curve)
+        //{
+        //    return ArrayUtils.Equal(curve.EndPoint, curve.StartPoint, 0.0001);
+        //}
 
-        public static bool TryGetPlane(this Curve curve, out Plane plane)
-        {
-            plane = Create.PlaneFromPointArray(curve.ControlPointVector, curve.Dimensions + 1);
-            return plane != null;
-        }
+        //public static bool TryGetPlane(this Curve curve, out Plane plane)
+        //{
+        //    plane = Create.PlaneFromPointArray(curve.ControlPointVector, curve.Dimensions + 1);
+        //    return plane != null;
+        //}
 
-        public static void Transform(Curve curve, Transform t)
-        {
-            curve.SetControlPoints(ArrayUtils.MultiplyMany(t, curve.ControlPointVector));
-            curve.Update();
-        }
+        //public static void Transform(Curve curve, Transform t)
+        //{
+        //    curve.SetControlPoints(ArrayUtils.MultiplyMany(t, curve.ControlPointVector));
+        //    curve.Update();
+        //}
 
-        public static void Translate(Curve curve, Vector v)
-        {
-            curve.SetControlPoints(ArrayUtils.Add(curve.ControlPointVector, v));
-        }
+        //public static void Translate(Curve curve, Vector v)
+        //{
+        //    curve.SetControlPoints(ArrayUtils.Add(curve.ControlPointVector, v));
+        //}
 
-        public static void Mirror(Curve curve, Plane p)
-        {
-            curve.SetControlPoints(ArrayUtils.Add(ArrayUtils.Multiply(p.ProjectionVectors(curve.ControlPointVector), 2), curve.ControlPointVector));
-            curve.Update();
-        }
+        //public static void Mirror(Curve curve, Plane p)
+        //{
+        //    curve.SetControlPoints(ArrayUtils.Add(ArrayUtils.Multiply(p.ProjectionVectors(curve.ControlPointVector), 2), curve.ControlPointVector));
+        //    curve.Update();
+        //}
 
-        public static void Project(Curve curve, Plane p)
-        {
-            curve.SetControlPoints(ArrayUtils.Add(p.ProjectionVectors(curve.ControlPointVector), curve.ControlPointVector));
-            curve.Update();
-        }
+        //public static void Project(Curve curve, Plane p)
+        //{
+        //    curve.SetControlPoints(ArrayUtils.Add(p.ProjectionVectors(curve.ControlPointVector), curve.ControlPointVector));
+        //    curve.Update();
+        //}
 
-        public static Curve Flip(this Curve curve)
-        {
-            if (curve.GeometryType == BH.oM.Geometry.GeometryType.PolyCurve)
-            {
-                PolyCurve c = curve as PolyCurve;
-                for (int i = 0; i < c.Curves.Count; i++)
-                {
-                    c.Curves[i].Flip();
-                }
-                c.Curves.Reverse();
-            }
-            curve.SetControlPoints(CollectionUtils.Reverse<double>(curve.ControlPointVector, curve.Dimensions + 1));
-            if (curve.IsNurbForm)
-            {
-                double max = curve.Knots.Max();
-                curve.SetKnots(ArrayUtils.Sub(new double[] { max }, curve.Knots));
-                curve.SetWeights(curve.Weights.Reverse().ToArray());
-            }
-            return curve;
-        }
+        //public static Curve Flip(this Curve curve)
+        //{
+        //    if (curve.GeometryType == BH.oM.Geometry.GeometryType.PolyCurve)
+        //    {
+        //        PolyCurve c = curve as PolyCurve;
+        //        for (int i = 0; i < c.Curves.Count; i++)
+        //        {
+        //            c.Curves[i].Flip();
+        //        }
+        //        c.Curves.Reverse();
+        //    }
+        //    curve.SetControlPoints(CollectionUtils.Reverse<double>(curve.ControlPointVector, curve.Dimensions + 1));
+        //    if (curve.IsNurbForm)
+        //    {
+        //        double max = curve.Knots.Max();
+        //        curve.SetKnots(ArrayUtils.Sub(new double[] { max }, curve.Knots));
+        //        curve.SetWeights(curve.Weights.Reverse().ToArray());
+        //    }
+        //    return curve;
+        //}
 
  
 

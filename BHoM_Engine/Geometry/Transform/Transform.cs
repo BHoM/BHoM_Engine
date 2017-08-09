@@ -23,7 +23,7 @@ namespace BH.Engine.Geometry
         /**** Private Methods - Vectors                 ****/
         /***************************************************/
 
-        public static Point _GetTransformed(this Point pt, TransformMatrix transform)
+        private static Point _GetTransformed(this Point pt, TransformMatrix transform)
         {
             double[,] matrix = transform.Matrix;
 
@@ -36,7 +36,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static Vector _GetTransformed(this Vector vector, TransformMatrix transform)
+        private static Vector _GetTransformed(this Vector vector, TransformMatrix transform)
         {
             double[,] matrix = transform.Matrix;
 
@@ -49,7 +49,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static Plane _GetTransformed(this Plane plane, TransformMatrix transform)
+        private static Plane _GetTransformed(this Plane plane, TransformMatrix transform)
         {
             return new Plane(plane.Origin._GetTransformed(transform), plane.Normal._GetTransformed(transform));
         }
@@ -59,28 +59,28 @@ namespace BH.Engine.Geometry
         /**** Private Methods - Curves                  ****/
         /***************************************************/
 
-        public static Arc _GetTransformed(this Arc arc, TransformMatrix transform)
+        private static Arc _GetTransformed(this Arc arc, TransformMatrix transform)
         {
-            return new Arc(arc.Start._GetTransformed(transform), arc.End._GetTransformed(transform), arc.Middle._GetTransformed(transform));
+            return new Arc(arc.Start._GetTransformed(transform), arc.Middle._GetTransformed(transform), arc.End._GetTransformed(transform));
         }
 
         /***************************************************/
 
-        public static Circle _GetTransformed(this Circle circle, TransformMatrix transform)
+        private static Circle _GetTransformed(this Circle circle, TransformMatrix transform)
         {
             return new Circle(circle.Centre._GetTransformed(transform), circle.Normal._GetTransformed(transform), circle.Radius);
         }
 
         /***************************************************/
 
-        public static Line _GetTransformed(this Line line, TransformMatrix transform)
+        private static Line _GetTransformed(this Line line, TransformMatrix transform)
         {
             return new Line(line.Start._GetTransformed(transform), line.End._GetTransformed(transform));
         }
 
         /***************************************************/
 
-        public static NurbCurve _GetTransformed(this NurbCurve curve, TransformMatrix transform)
+        private static NurbCurve _GetTransformed(this NurbCurve curve, TransformMatrix transform)
         {
             return new NurbCurve(curve.ControlPoints.Select(x => x._GetTransformed(transform)), curve.Weights, curve.Knots);
         }
@@ -88,14 +88,14 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static PolyCurve _GetTransformed(this PolyCurve curve, TransformMatrix transform)
+        private static PolyCurve _GetTransformed(this PolyCurve curve, TransformMatrix transform)
         {
             return new PolyCurve(curve.Curves.Select(x => x.GetTransformed(transform) as ICurve));
         }
 
         /***************************************************/
 
-        public static Polyline _GetTransformed(this Polyline curve, TransformMatrix transform)
+        private static Polyline _GetTransformed(this Polyline curve, TransformMatrix transform)
         {
             return new Polyline(curve.ControlPoints.Select(x => x._GetTransformed(transform)));
         }
@@ -105,35 +105,35 @@ namespace BH.Engine.Geometry
         /**** Private Methods - Surfaces                ****/
         /***************************************************/
 
-        public static Extrusion _GetTransformed(this Extrusion surface, TransformMatrix transform)
+        private static Extrusion _GetTransformed(this Extrusion surface, TransformMatrix transform)
         {
             return new Extrusion(surface.Curve.GetTransformed(transform) as ICurve, surface.Direction._GetTransformed(transform), surface.Capped);
         }
 
         /***************************************************/
 
-        public static Loft _GetTransformed(this Loft surface, TransformMatrix transform)
+        private static Loft _GetTransformed(this Loft surface, TransformMatrix transform)
         {
             return new Loft(surface.Curves.Select(x => x.GetTransformed(transform) as ICurve));
         }
 
         /***************************************************/
 
-        public static NurbSurface _GetTransformed(this NurbSurface surface, TransformMatrix transform)
+        private static NurbSurface _GetTransformed(this NurbSurface surface, TransformMatrix transform)
         {
             return new NurbSurface(surface.ControlPoints.Select(x => x._GetTransformed(transform)), surface.Weights, surface.UKnots, surface.VKnots);
         }
 
         /***************************************************/
 
-        public static Pipe _GetTransformed(this Pipe surface, TransformMatrix transform)
+        private static Pipe _GetTransformed(this Pipe surface, TransformMatrix transform)
         {
             return new Pipe(surface.Centreline.GetTransformed(transform) as ICurve, surface.Radius, surface.Capped);
         }
 
         /***************************************************/
 
-        public static PolySurface _GetTransformed(this PolySurface surface, TransformMatrix transform)
+        private static PolySurface _GetTransformed(this PolySurface surface, TransformMatrix transform)
         {
             return new PolySurface(surface.Surfaces.Select(x => x.GetTransformed(transform) as ISurface));
         }
@@ -143,14 +143,14 @@ namespace BH.Engine.Geometry
         /**** Private Methods - Others                  ****/
         /***************************************************/
 
-        public static Mesh _GetTransformed(this Mesh mesh, TransformMatrix transform)
+        private static Mesh _GetTransformed(this Mesh mesh, TransformMatrix transform)
         {
             return new Mesh(mesh.Vertices.Select(x => x._GetTransformed(transform)), mesh.Faces.Select(x => x.GetClone() as Face));
         }
 
         /***************************************************/
 
-        public static GeometryGroup _GetTransformed(this GeometryGroup group, TransformMatrix transform)
+        private static GeometryGroup _GetTransformed(this GeometryGroup group, TransformMatrix transform)
         {
             return new GeometryGroup(group.Elements.Select(x => x.GetTransformed(transform)));
         }

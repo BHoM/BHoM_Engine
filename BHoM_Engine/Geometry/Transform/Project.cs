@@ -18,26 +18,35 @@ namespace BH.Engine.Geometry
             return _GetProjected(geometry as dynamic, p);
         }
 
+        /***************************************************/
+
+        public static Point GetProjected(this Point pt, Line line)
+        {
+            Vector dir = line.GetDirection();
+            double t = dir.GetDotProduct(pt - line.Start);
+            return line.Start + dir * t;
+        }
+
 
         /***************************************************/
         /**** Private Methods - Vectors                 ****/
         /***************************************************/
 
-        public static Point _GetProjected(this Point pt, Plane p)
+        private static Point _GetProjected(this Point pt, Plane p)
         {
             return pt - p.Normal.GetDotProduct(pt-p.Origin) * p.Normal;
         }
 
         /***************************************************/
 
-        public static Vector _GetProjected(this Vector vector, Plane p)
+        private static Vector _GetProjected(this Vector vector, Plane p)
         {
             return vector - vector.GetDotProduct(p.Normal) * p.Normal;
         }
 
         /***************************************************/
 
-        public static Plane _GetProjected(this Plane plane, Plane p)
+        private static Plane _GetProjected(this Plane plane, Plane p)
         {
             throw new NotImplementedException();
         }
@@ -47,14 +56,14 @@ namespace BH.Engine.Geometry
         /**** Private Methods - Curves                  ****/
         /***************************************************/
 
-        public static Arc _GetProjected(this Arc arc, Plane p)
+        private static Arc _GetProjected(this Arc arc, Plane p)
         {
-            return new Arc(arc.Start._GetProjected(p), arc.End._GetProjected(p), arc.Middle._GetProjected(p));
+            return new Arc(arc.Start._GetProjected(p), arc.Middle._GetProjected(p), arc.End._GetProjected(p));
         }
 
         /***************************************************/
 
-        public static Circle _GetProjected(this Circle circle, Plane p)
+        private static Circle _GetProjected(this Circle circle, Plane p)
         {
             if (circle._IsInPlane(p))
                 return new Circle(circle.Centre.GetClone() as Point, p.Normal.GetClone() as Vector, circle.Radius);
@@ -63,14 +72,14 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static Line _GetProjected(this Line line, Plane p)
+        private static Line _GetProjected(this Line line, Plane p)
         {
             return new Line(line.Start._GetProjected(p), line.End._GetProjected(p));
         }
 
         /***************************************************/
 
-        public static NurbCurve _GetProjected(this NurbCurve curve, Plane p)
+        private static NurbCurve _GetProjected(this NurbCurve curve, Plane p)
         {
             return new NurbCurve(curve.ControlPoints.Select(x => x._GetProjected(p)), curve.Weights, curve.Knots);
         }
@@ -78,14 +87,14 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static PolyCurve _GetProjected(this PolyCurve curve, Plane p)
+        private static PolyCurve _GetProjected(this PolyCurve curve, Plane p)
         {
             return new PolyCurve(curve.Curves.Select(x => x.GetProjected(p) as ICurve));
         }
 
         /***************************************************/
 
-        public static Polyline _GetProjected(this Polyline curve, Plane p)
+        private static Polyline _GetProjected(this Polyline curve, Plane p)
         {
             return new Polyline(curve.ControlPoints.Select(x => x._GetProjected(p)));
         }
@@ -95,35 +104,35 @@ namespace BH.Engine.Geometry
         /**** Private Methods - Surfaces                ****/
         /***************************************************/
 
-        public static Extrusion _GetProjected(this Extrusion surface, Plane p)
+        private static Extrusion _GetProjected(this Extrusion surface, Plane p)
         {
             return new Extrusion(surface.Curve.GetProjected(p) as ICurve, surface.Direction._GetProjected(p), surface.Capped);
         }
 
         /***************************************************/
 
-        public static Loft _GetProjected(this Loft surface, Plane p)
+        private static Loft _GetProjected(this Loft surface, Plane p)
         {
             return new Loft(surface.Curves.Select(x => x.GetProjected(p) as ICurve));
         }
 
         /***************************************************/
 
-        public static NurbSurface _GetProjected(this NurbSurface surface, Plane p)
+        private static NurbSurface _GetProjected(this NurbSurface surface, Plane p)
         {
             return new NurbSurface(surface.ControlPoints.Select(x => x._GetProjected(p)), surface.Weights, surface.UKnots, surface.VKnots);
         }
 
         /***************************************************/
 
-        public static Pipe _GetProjected(this Pipe surface, Plane p)
+        private static Pipe _GetProjected(this Pipe surface, Plane p)
         {
             throw new NotImplementedException(); //TODO: implement projection of a pipe on a plane
         }
 
         /***************************************************/
 
-        public static PolySurface _GetProjected(this PolySurface surface, Plane p)
+        private static PolySurface _GetProjected(this PolySurface surface, Plane p)
         {
             return new PolySurface(surface.Surfaces.Select(x => x.GetProjected(p) as ISurface));
         }
@@ -133,14 +142,14 @@ namespace BH.Engine.Geometry
         /**** Private Methods - Others                  ****/
         /***************************************************/
 
-        public static Mesh _GetProjected(this Mesh mesh, Plane p)
+        private static Mesh _GetProjected(this Mesh mesh, Plane p)
         {
             return new Mesh(mesh.Vertices.Select(x => x._GetProjected(p)), mesh.Faces.Select(x => x.GetClone() as Face));
         }
 
         /***************************************************/
 
-        public static GeometryGroup _GetProjected(this GeometryGroup group, Plane p)
+        private static GeometryGroup _GetProjected(this GeometryGroup group, Plane p)
         {
             return new GeometryGroup(group.Elements.Select(x => x.GetProjected(p)));
         }

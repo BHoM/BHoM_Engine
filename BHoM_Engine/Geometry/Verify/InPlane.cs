@@ -75,7 +75,7 @@ namespace BH.Engine.Geometry
 
         public static bool _IsInPlane(this Circle circle, Plane plane, double tolerance = Tolerance.Distance)
         {
-            return Math.Abs(circle.Normal.GetDotProduct(plane.Normal)) < tolerance;
+            return Math.Abs(circle.Normal.GetDotProduct(plane.Normal)) < tolerance && Math.Abs(plane.Normal.GetDotProduct(circle.Centre - plane.Origin)) < tolerance;
         }
 
         /***************************************************/

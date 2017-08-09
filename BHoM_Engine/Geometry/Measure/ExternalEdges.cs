@@ -23,39 +23,65 @@ namespace BH.Engine.Geometry
         /**** Private Methods                           ****/
         /***************************************************/
 
-        public static List<ICurve> _GetExternalEdges(this Extrusion surface)
+        private static List<ICurve> _GetExternalEdges(this Extrusion surface)
         {
-            return new List<ICurve>
+            ICurve curve = surface.Curve;
+            Vector direction = surface.Direction;
+
+            List<ICurve> edges = new List<ICurve>();
+            if (!surface.Capped)
             {
-                surface.Curve.GetClone() as ICurve,
-                surface.Curve.GetTranslated(surface.Direction) as ICurve
-            };
+                edges.Add(curve);
+                ICurve other = curve.GetClone() as ICurve;
+                edges.Add(other.GetTranslated(direction) as ICurve);
+            }
+            if (!curve.IsClosed())
+            {
+                Point start = curve.GetStartPoint();
+                Point end = curve.GetEndPoint();
+                edges.Add(new Line(start, start + direction));
+                edges.Add(new Line(end, end + direction));
+            }
+
+            return edges;
         }
 
         /***************************************************/
 
-        public static List<ICurve> _GetExternalEdges(this Loft surface)
+        private static List<ICurve> _GetExternalEdges(this Loft surface)
         {
             return surface.Curves; //TODO: Is that always correct?
         }
 
         /***************************************************/
 
-        public static List<ICurve> _GetExternalEdges(this NurbSurface surface)
+        private static List<ICurve> _GetExternalEdges(this NurbSurface surface)
         {
             throw new NotImplementedException();
         }
 
         /***************************************************/
 
-        public static List<ICurve> _GetExternalEdges(this Pipe surface)
+        private static List<ICurve> _GetExternalEdges(this Pipe surface)
         {
-            throw new NotImplementedException();
+            if (!surface.Capped)
+            {
+                ICurve curve = surface.Centreline;
+                return new List<ICurve>()
+                {
+                    new Circle(curve.GetStartPoint(), curve.GetStartDir(), surface.Radius),
+                    new Circle(curve.GetEndPoint(), curve.GetEndDir(), surface.Radius)
+                };
+            }
+            else
+            {
+                return new List<ICurve>();
+            }
         }
 
         /***************************************************/
 
-        public static List<ICurve> _GetExternalEdges(this PolySurface surface)
+        private static List<ICurve> _GetExternalEdges(this PolySurface surface)
         {
             return surface.Surfaces.SelectMany(x => x.GetExternalEdges()).ToList();
         }

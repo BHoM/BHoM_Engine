@@ -7,8 +7,8 @@
     <ProjectGuid>{1AD45C88-DD54-48E5-951F-55EDFEB70E35}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BHoM_Engine</RootNamespace>
-    <AssemblyName>BHoM_Engine</AssemblyName>
+    <RootNamespace>BH.Engine</RootNamespace>
+    <AssemblyName>BH.Engine</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -50,13 +50,20 @@
     <Compile Include="Base\GetGeometry\Common.cs" />
     <Compile Include="Base\GetGeometry\Structural.cs" />
     <Compile Include="Geometry\Clone\Geometry.cs" />
+    <Compile Include="Geometry\Create\Arc.cs" />
+    <Compile Include="Geometry\Create\Circle.cs" />
     <Compile Include="Geometry\Create\Plane.cs" />
     <Compile Include="Geometry\Create\Quaternion.cs" />
     <Compile Include="Geometry\Create\Transform.cs" />
     <Compile Include="Geometry\Fix\Mesh.cs" />
+    <Compile Include="Geometry\Fix\Points.cs" />
+    <Compile Include="Geometry\Fix\PolyCurve.cs" />
     <Compile Include="Geometry\Measure\Angle.cs" />
     <Compile Include="Geometry\Measure\Average.cs" />
+    <Compile Include="Geometry\Measure\ClosestPoint.cs" />
+    <Compile Include="Geometry\Measure\ControlPoints.cs" />
     <Compile Include="Geometry\Measure\Determinant.cs" />
+    <Compile Include="Geometry\Measure\DiscontinuityPoints.cs" />
     <Compile Include="Geometry\Measure\Extents.cs" />
     <Compile Include="Geometry\Measure\Bounds.cs" />
     <Compile Include="Geometry\Measure\Direction.cs" />
@@ -64,10 +71,12 @@
     <Compile Include="Geometry\Measure\EndPoint.cs" />
     <Compile Include="Geometry\Measure\ExternalEdges.cs" />
     <Compile Include="Geometry\Measure\InternalEdges.cs" />
+    <Compile Include="Geometry\Measure\Plane.cs" />
     <Compile Include="Geometry\Measure\Radius.cs" />
     <Compile Include="Geometry\Measure\StartDir.cs" />
     <Compile Include="Geometry\Measure\StartPoint.cs" />
     <Compile Include="Geometry\Transform\Exploded.cs" />
+    <Compile Include="Geometry\Transform\Flip.cs" />
     <Compile Include="Geometry\Transform\Inflate.cs" />
     <Compile Include="Geometry\Transform\Invert.cs" />
     <Compile Include="Geometry\Transform\Mirror.cs" />

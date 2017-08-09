@@ -10,35 +10,35 @@ namespace BH.oM.Geometry
     public static class Intersect
     {
 
-        public static Point PlaneLine(Plane p, Line l, bool finiteLineSegment = true, double tolerance = 0.0001)
-        {
-            Vector v = (l.EndPoint - l.StartPoint).Normalise();
+        //public static Point PlaneLine(Plane p, Line l, bool finiteLineSegment = true, double tolerance = 0.0001)
+        //{
+        //    Vector v = (l.EndPoint - l.StartPoint).Normalise();
             
-            //Check if parallell
-            if (Math.Abs(Vector.DotProduct(v, p.Normal)) < tolerance) { return null; }
+        //    //Check if parallell
+        //    if (Math.Abs(Vector.DotProduct(v, p.Normal)) < tolerance) { return null; }
 
-            double s = (Vector.DotProduct(p.Normal, (p.Origin - l.StartPoint))) / (Vector.DotProduct(p.Normal, (v)));
+        //    double s = (Vector.DotProduct(p.Normal, (p.Origin - l.StartPoint))) / (Vector.DotProduct(p.Normal, (v)));
 
-            if (finiteLineSegment && (s < 0 || s > 1))
-                return null;
+        //    if (finiteLineSegment && (s < 0 || s > 1))
+        //        return null;
 
-            return l.StartPoint + s * v;
+        //    return l.StartPoint + s * v;
 
-        }
+        //}
 
 
-        /// <summary>
-        /// Gets the plane curve intersection geometry within the provided tolerance
-        /// </summary>
-        /// <param name="p">Plane</param>
-        /// <param name="c">Curve</param>
-        /// <param name="tolerance"></param>
-        /// <returns></returns>
-        public static List<Point> PlaneCurve(Plane p, Curve c, double tolerance)
-        {
-            List<double> curveParameters;
-            return PlaneCurve(p, c, tolerance, out curveParameters);
-        }
+        ///// <summary>
+        ///// Gets the plane curve intersection geometry within the provided tolerance
+        ///// </summary>
+        ///// <param name="p">Plane</param>
+        ///// <param name="c">Curve</param>
+        ///// <param name="tolerance"></param>
+        ///// <returns></returns>
+        //public static List<Point> PlaneCurve(Plane p, Curve c, double tolerance)
+        //{
+        //    List<double> curveParameters;
+        //    return PlaneCurve(p, c, tolerance, out curveParameters);
+        //}
 
         public static List<Point> PlaneCurve(Plane p, Curve c, double tolerance, out List<double> curveParameters)
         {

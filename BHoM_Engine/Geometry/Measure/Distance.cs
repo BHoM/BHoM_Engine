@@ -38,5 +38,33 @@ namespace BH.Engine.Geometry
             Vector normal = plane.Normal.GetNormalised();
             return normal.GetDotProduct(a - plane.Origin);
         }
+
+        /***************************************************/
+
+        public static double GetDistance(this Point a, Line line)
+        {
+            return a.GetDistance(line._GetClosestPoint(a));
+        }
+
+        /***************************************************/
+
+        public static double GetDistance(this Line line, Line other)
+        {
+            Point intersection = line.GetIntersection(other, false);
+            if (intersection != null)
+            {
+                return 0;
+            }
+            else
+            {
+                List<double> distances = new List<double>();        //TODO: Can we do better than this?
+                distances.Add(line.Start.GetDistance(other));
+                distances.Add(line.End.GetDistance(other));
+                distances.Add(other.Start.GetDistance(line));
+                distances.Add(other.End.GetDistance(line));
+
+                return distances.Min();
+            }
+        }
     }
 }
