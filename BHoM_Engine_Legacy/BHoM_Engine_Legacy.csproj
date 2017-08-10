@@ -53,9 +53,7 @@
     <Compile Include="Geometry\Curve\Curve.cs" />
     <Compile Include="Geometry\Factory\CreateSurface.cs" />
     <Compile Include="Geometry\Factory\ShapeBuilder.cs" />
-    <Compile Include="Geometry\Utils\ArrayUtils.cs" />
     <Compile Include="Geometry\Utils\BrepUtils.cs" />
-    <Compile Include="Geometry\Utils\Intersect.cs" />
     <Compile Include="Math\Integration.cs" />
     <Compile Include="Project\Config\Config.cs" />
     <Compile Include="Project\Config\MEPConfig.cs" />

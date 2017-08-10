@@ -62,6 +62,7 @@
     <Compile Include="Geometry\Measure\Average.cs" />
     <Compile Include="Geometry\Measure\ClosestPoint.cs" />
     <Compile Include="Geometry\Measure\ControlPoints.cs" />
+    <Compile Include="Geometry\Measure\CurveIntersection.cs" />
     <Compile Include="Geometry\Measure\Determinant.cs" />
     <Compile Include="Geometry\Measure\DiscontinuityPoints.cs" />
     <Compile Include="Geometry\Measure\Extents.cs" />
@@ -87,7 +88,7 @@
     <Compile Include="Geometry\Verify\Containing.cs" />
     <Compile Include="Geometry\Convert\NurbForm.cs" />
     <Compile Include="Geometry\Measure\Distance.cs" />
-    <Compile Include="Geometry\Measure\Intersection.cs" />
+    <Compile Include="Geometry\Measure\PlaneIntersection.cs" />
     <Compile Include="Geometry\Measure\Centre.cs" />
     <Compile Include="Geometry\Measure\Length.cs" />
     <Compile Include="Geometry\Measure\Product.cs" />

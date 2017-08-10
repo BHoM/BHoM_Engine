@@ -11,10 +11,17 @@ namespace BH.Engine.Geometry
     public static partial class Measure
     {
         /***************************************************/
-        /**** Public Methods - With Line                ****/
+        /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Point GetIntersection(this Line line, Plane plane,  bool useInfiniteLine = true, double tolerance = Tolerance.Distance)
+        public static List<Point> GetIntersections(this ICurve curve, Plane plane, double tolerance = Tolerance.Distance)
+        {
+            return _GetIntersections(curve as dynamic, plane, tolerance);
+        }
+
+        /***************************************************/
+
+        public static Point GetIntersection(this Line line, Plane plane, bool useInfiniteLine = true, double tolerance = Tolerance.Distance)
         {
             useInfiniteLine &= line.Infinite;
 
@@ -35,75 +42,38 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static Point GetIntersection(this Line line1, Line line2, bool useInfiniteLines = false, double tolerance = Tolerance.Distance)
+        public static Line GetIntersection(this Plane p, Plane plane, double tolerance = Tolerance.Distance)
         {
-            Point pt1 = line1.Start;
-            Point pt2 = line2.Start;
-            Vector dir1 = (line1.End - pt1).GetNormalised();
-            Vector dir2 = (line2.End - pt2).GetNormalised();
+            throw new NotImplementedException();
+        }
 
-            Vector cross = Measure.GetCrossProduct(dir1, dir2);
 
-            // Test for parallel lines
-            if (cross.X < tolerance && cross.X > -tolerance && cross.Y < tolerance && cross.Y > -tolerance && cross.Z < tolerance && cross.Z > -tolerance)
-            {
-                if (useInfiniteLines || line1.Infinite || line2.Infinite)
-                    return null;
-                else if (pt1 == pt2 || pt1 == line2.End)
-                    return pt1;
-                else if (pt2 == line1.End || line2.End == line1.End)
-                    return line1.End;
-                else
-                    return null;
-            }
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
 
-            double t = Measure.GetDotProduct(cross, Measure.GetCrossProduct(pt2 - pt1, dir2)) / Measure.GetLength(cross);
-
-            if (useInfiniteLines)  //TODO: Need to handle the cases where one of the line is Infinite as well
-                return pt1 + t * dir1;
-            else if (t > -tolerance && t < Measure.GetLength(dir1) + tolerance)
-                return pt1 + t * dir1;
-            else return null;
+        private static List<Point> _GetIntersections(this Arc curve, Plane plane, double tolerance = Tolerance.Distance)
+        {
+            throw new NotImplementedException();
         }
 
         /***************************************************/
 
-        public static List<Point> GetIntersections(this List<Line> lines, bool useInfiniteLine = true, double tolerance = Tolerance.Distance)
+        private static List<Point> _GetIntersections(this Circle curve, Plane plane, double tolerance = Tolerance.Distance)
         {
-            // Get the bounding boxes
-            List<BoundingBox> boxes = lines.Select(x => x.GetBounds()).ToList();
-
-            // Get the intersections
-            List<Point> intersections = new List<Point>();
-            for (int i = lines.Count - 1; i >= 0; i--)     // We should use an octoTree/point matrix instead of using bounding boxes
-            {
-                for (int j = lines.Count - 1; j > i; j--)
-                {
-                    if (Verify.IsInRange(boxes[i], boxes[j]))
-                    {
-                        Point result = GetIntersection(lines[i], lines[j], useInfiniteLine, tolerance);
-                        if (result != null)
-                            intersections.Add(result);
-                    }
-                }
-            }
-
-            return intersections;
-        }
-
-        /***************************************************/
-        /**** Public Methods - With Curve               ****/
-        /***************************************************/
-
-        public static List<Point> GetIntersections(this NurbCurve c, Plane p,  double tolerance = Tolerance.Distance)
-        {
-            List<double> curveParameters;
-            return PlaneCurve(c, p, out curveParameters, tolerance);
+            throw new NotImplementedException();
         }
 
         /***************************************************/
 
-        public static List<Point> PlaneCurve(this NurbCurve c, Plane p, out List<double> curveParameters, double tolerance = Tolerance.Distance)
+        private static List<Point> _GetIntersections(this Line curve, Plane plane, double tolerance = Tolerance.Distance)
+        {
+            throw new NotImplementedException();
+        }
+
+        /***************************************************/
+
+        private static List<Point> _GetIntersections(this NurbCurve c, Plane p,  double tolerance = Tolerance.Distance)
         {
             //List<Point> result = new List<Point>();
             //int rounding = (int)Math.Log(1.0 / tolerance, 10);
@@ -148,6 +118,20 @@ namespace BH.Engine.Geometry
 
             //return result;
 
+            throw new NotImplementedException();
+        }
+
+        /***************************************************/
+
+        private static List<Point> _GetIntersections(this PolyCurve curve, Plane plane, double tolerance = Tolerance.Distance)
+        {
+            throw new NotImplementedException();
+        }
+
+        /***************************************************/
+
+        private static List<Point> _GetIntersections(this Polyline curve, Plane plane, double tolerance = Tolerance.Distance)
+        {
             throw new NotImplementedException();
         }
     }
