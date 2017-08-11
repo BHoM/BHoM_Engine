@@ -45,6 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Base\EqualityComparers\BHoMGuidComparer.cs" />
     <Compile Include="Base\EqualityComparers\BHoMObjectNameComparer.cs" />
     <Compile Include="Base\EqualityComparers\BHoMObjectNameOrToStringComparer.cs" />
     <Compile Include="Base\GetGeometry\Common.cs" />
