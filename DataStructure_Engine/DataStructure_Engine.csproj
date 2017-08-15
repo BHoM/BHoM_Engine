@@ -7,7 +7,7 @@
     <ProjectGuid>{8082CA2A-AC5C-4690-9F09-960E0D3E4102}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DataStructure_Engine</RootNamespace>
+    <RootNamespace>BH.Engine.DataStructure</RootNamespace>
     <AssemblyName>DataStructure_Engine</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -47,6 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Create\VennDiagram.cs" />
     <Compile Include="Graph.cs" />
     <Compile Include="GraphLink.cs" />
     <Compile Include="GraphNavigator.cs" />
