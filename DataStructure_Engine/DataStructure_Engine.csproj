@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>BH.Engine.DataStructure</RootNamespace>
     <AssemblyName>DataStructure_Engine</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -63,6 +63,10 @@
     <ProjectReference Include="..\BHoM_Engine\BHoM_Engine.csproj">
       <Project>{1ad45c88-dd54-48e5-951f-55edfeb70e35}</Project>
       <Name>BHoM_Engine</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Geometry_Engine\Geometry_Engine.csproj">
+      <Project>{89ab2dcb-ef87-4cba-b59c-c16a8a71d333}</Project>
+      <Name>Geometry_Engine</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -26,6 +26,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reflection_Engine", "Reflec
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BHoM_Engine_Legacy", "BHoM_Engine_Legacy\BHoM_Engine_Legacy.csproj", "{F2E4C764-F380-4C1D-9968-71F47D54E411}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Geometry_Engine", "Geometry_Engine\Geometry_Engine.csproj", "{89AB2DCB-EF87-4CBA-B59C-C16A8A71D333}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Unit Tests", "Unit Tests", "{1ED57663-90C6-4049-B71A-9457A2240751}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Structure_Engine", "Structure_Engine\Structure_Engine.csproj", "{52A31A0A-E340-4909-AAD6-228045B07BF3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -111,6 +117,22 @@ Global
 		{F2E4C764-F380-4C1D-9968-71F47D54E411}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F2E4C764-F380-4C1D-9968-71F47D54E411}.Release|x86.ActiveCfg = Release|Any CPU
 		{F2E4C764-F380-4C1D-9968-71F47D54E411}.Release|x86.Build.0 = Release|Any CPU
+		{89AB2DCB-EF87-4CBA-B59C-C16A8A71D333}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{89AB2DCB-EF87-4CBA-B59C-C16A8A71D333}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{89AB2DCB-EF87-4CBA-B59C-C16A8A71D333}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{89AB2DCB-EF87-4CBA-B59C-C16A8A71D333}.Debug|x86.Build.0 = Debug|Any CPU
+		{89AB2DCB-EF87-4CBA-B59C-C16A8A71D333}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{89AB2DCB-EF87-4CBA-B59C-C16A8A71D333}.Release|Any CPU.Build.0 = Release|Any CPU
+		{89AB2DCB-EF87-4CBA-B59C-C16A8A71D333}.Release|x86.ActiveCfg = Release|Any CPU
+		{89AB2DCB-EF87-4CBA-B59C-C16A8A71D333}.Release|x86.Build.0 = Release|Any CPU
+		{52A31A0A-E340-4909-AAD6-228045B07BF3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{52A31A0A-E340-4909-AAD6-228045B07BF3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{52A31A0A-E340-4909-AAD6-228045B07BF3}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{52A31A0A-E340-4909-AAD6-228045B07BF3}.Debug|x86.Build.0 = Debug|Any CPU
+		{52A31A0A-E340-4909-AAD6-228045B07BF3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{52A31A0A-E340-4909-AAD6-228045B07BF3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{52A31A0A-E340-4909-AAD6-228045B07BF3}.Release|x86.ActiveCfg = Release|Any CPU
+		{52A31A0A-E340-4909-AAD6-228045B07BF3}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
