@@ -33,6 +33,26 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        public static double GetDistance(this Vector a, Vector b)
+        {
+            double dx = a.X - b.X;
+            double dy = a.Y - b.Y;
+            double dz = a.Z - b.Z;
+            return Math.Sqrt(dx * dx + dy * dy + dz * dz);
+        }
+
+        /***************************************************/
+
+        public static double GetSquareDistance(this Vector a, Vector b)
+        {
+            double dx = a.X - b.X;
+            double dy = a.Y - b.Y;
+            double dz = a.Z - b.Z;
+            return dx * dx + dy * dy + dz * dz;
+        }
+
+        /***************************************************/
+
         public static double GetDistance(this Point a, Plane plane)
         {
             Vector normal = plane.Normal.GetNormalised();

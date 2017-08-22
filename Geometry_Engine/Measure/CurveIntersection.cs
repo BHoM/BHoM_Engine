@@ -20,8 +20,12 @@ namespace BH.Engine.Geometry
             Point pt2 = line2.Start;
             Vector dir1 = (line1.End - pt1).GetNormalised();
             Vector dir2 = (line2.End - pt2).GetNormalised();
+            Vector dir3 = pt2 - pt1;
 
             Vector cross = Measure.GetCrossProduct(dir1, dir2);
+
+            if (Math.Abs(dir3.GetDotProduct(cross)) > Tolerance.Distance)
+                return null; // Lines are not coplanar
 
             // Test for parallel lines
             if (cross.X < tolerance && cross.X > -tolerance && cross.Y < tolerance && cross.Y > -tolerance && cross.Z < tolerance && cross.Z > -tolerance)
@@ -36,7 +40,7 @@ namespace BH.Engine.Geometry
                     return null;
             }
 
-            double t = Measure.GetDotProduct(cross, Measure.GetCrossProduct(pt2 - pt1, dir2)) / Measure.GetLength(cross);
+            double t = Measure.GetDotProduct(Measure.GetCrossProduct(dir3, dir2), cross) / Measure.GetSquareLength(cross);
 
             if (useInfiniteLines)  //TODO: Need to handle the cases where one of the line is Infinite as well
                 return pt1 + t * dir1;

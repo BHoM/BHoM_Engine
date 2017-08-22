@@ -17,11 +17,12 @@ namespace BH.Engine.Geometry
         {
             Vector v1 = pt1 - pt3;
             Vector v2 = pt2 - pt3;
-            Vector normal = v1.GetCrossProduct(v2);
+            Vector normal = v1.GetCrossProduct(v2).GetNormalised();
 
             Point centre = Measure.GetIntersection(
                 new Line(pt3 + v1 / 2, v1.GetCrossProduct(normal)),
-                new Line(pt3 + v2 / 2, v2.GetCrossProduct(normal))
+                new Line(pt3 + v2 / 2, v2.GetCrossProduct(normal)),
+                true
             );
 
             return new Circle(centre, normal, pt1.GetDistance(centre));
