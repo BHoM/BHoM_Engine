@@ -18,7 +18,7 @@ namespace BH.Engine.Geometry
             double dx = a.X - b.X;
             double dy = a.Y - b.Y;
             double dz = a.Z - b.Z;
-            return Math.Sqrt(dx * dx + dy * dy * dz * dz);
+            return Math.Sqrt(dx * dx + dy * dy + dz * dz);
         }
 
         /***************************************************/
@@ -28,7 +28,7 @@ namespace BH.Engine.Geometry
             double dx = a.X - b.X;
             double dy = a.Y - b.Y;
             double dz = a.Z - b.Z;
-            return dx * dx + dy * dy * dz * dz;
+            return dx * dx + dy * dy + dz * dz;
         }
 
         /***************************************************/

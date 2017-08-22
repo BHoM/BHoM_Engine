@@ -13,19 +13,21 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Arc CreateArc(Plane p, Point start, Point end)
+        public static Arc CreateArc(Point centre, Point start, Point end)
         {
-            start = start.GetProjected(p) as Point;
-            end = end.GetProjected(p) as Point;
+            Vector v1 = start - centre;
+            Vector v2 = end - centre;
+            Vector normal = v1.GetCrossProduct(v2).GetNormalised();
 
-            Point centre = p.Origin;
-            Vector midDir = ((start + end) / 2 - centre).GetNormalised();
-            double midRadius = (start.GetDistance(centre) + end.GetDistance(centre));
+            if (double.IsNaN(normal.X))
+                normal = Vector.ZAxis;
 
-            if (Measure.GetCrossProduct(start - centre, end - centre).GetDotProduct(p.Normal) < 0)
-                midDir = -midDir;
+            double angle = v1.GetSignedAngle(v2, normal);
+            Vector midDir = ((Vector)v1.GetRotated(angle / 2, normal)).GetNormalised();
+            double midRadius = (start.GetDistance(centre) + end.GetDistance(centre)) / 2;
 
             return new Arc(start, centre + midRadius * midDir, end);
+             
         }
     }
 }

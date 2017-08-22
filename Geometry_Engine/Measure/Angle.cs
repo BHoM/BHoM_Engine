@@ -28,10 +28,10 @@ namespace BH.Engine.Geometry
             double angle = GetAngle(a, b);
 
             Vector crossproduct =a.GetCrossProduct(b);
-            if (GetAngle(crossproduct, normal) < (Math.PI / 2.0))
-                return angle;
-            else
+            if (crossproduct.GetDotProduct(normal) < 0)
                 return -angle;
+            else
+                return angle;
         }
 
         /***************************************************/

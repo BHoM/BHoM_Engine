@@ -28,8 +28,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BHoM_Engine_Legacy", "BHoM_
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Geometry_Engine", "Geometry_Engine\Geometry_Engine.csproj", "{89AB2DCB-EF87-4CBA-B59C-C16A8A71D333}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Unit Tests", "Unit Tests", "{1ED57663-90C6-4049-B71A-9457A2240751}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Structure_Engine", "Structure_Engine\Structure_Engine.csproj", "{52A31A0A-E340-4909-AAD6-228045B07BF3}"
 EndProject
 Global
