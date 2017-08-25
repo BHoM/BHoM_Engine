@@ -76,7 +76,7 @@
     <Compile Include="Measure\Radius.cs" />
     <Compile Include="Measure\StartDir.cs" />
     <Compile Include="Measure\StartPoint.cs" />
-    <Compile Include="Transform\Exploded.cs" />
+    <Compile Include="Transform\Explode.cs" />
     <Compile Include="Transform\Flip.cs" />
     <Compile Include="Transform\Inflate.cs" />
     <Compile Include="Transform\Invert.cs" />

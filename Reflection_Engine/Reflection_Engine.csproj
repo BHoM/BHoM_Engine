@@ -7,7 +7,7 @@
     <ProjectGuid>{B0154405-9390-472D-9B5C-A2280823B18D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Reflection_Engine</RootNamespace>
+    <RootNamespace>BH.Engine.Reflection</RootNamespace>
     <AssemblyName>Reflection_Engine</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -44,10 +44,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Types\GroupByTypes.cs" />
+    <Compile Include="Create\Type.cs" />
+    <Compile Include="Create\TypeDictionary.cs" />
+    <Compile Include="Measure\PropertyNames.cs" />
+    <Compile Include="Measure\PropertyObjects.cs" />
+    <Compile Include="Measure\PropertyTypes.cs" />
+    <Compile Include="Measure\PropertyValue.cs" />
+    <Compile Include="Transform\GroupByType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Types\TypeDictionary.cs" />
+    <Compile Include="Transform\SetPropertyValue.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

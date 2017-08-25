@@ -1,37 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using System.Reflection;
 
 namespace BH.Engine.Reflection
 {
-    public static partial class Types
+    public static partial class Create
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Type GetType(string name)
+        private static Dictionary<string, Type> CreateTypeDictionary()
         {
-            if (m_TypeDictionary == null || m_TypeDictionary.Count == 0)
-                CreateDictionary();
+            // If the dictionary exists already return it
+            if (m_TypeDictionary != null && m_TypeDictionary.Count > 0)
+                return m_TypeDictionary;
 
-            Type type = null;
-            m_TypeDictionary.TryGetValue(name, out type);
-            return type;
-        }
-
-
-        /***************************************************/
-        /**** Private Methods                           ****/
-        /***************************************************/
-
-        private static void CreateDictionary()
-        {
-            m_TypeDictionary = new Dictionary<string, Type>();
-
+            // Otherwise, create it
             foreach (Assembly asm in AppDomain.CurrentDomain.GetAssemblies())
             {
                 try
@@ -52,13 +40,18 @@ namespace BH.Engine.Reflection
                 }
                 catch (Exception)
                 {
-                    Console.WriteLine("Cannot load types of assembly " + asm.GetName().Name);
+                    Console.WriteLine("Cannot load types from assembly " + asm.GetName().Name);
                 }
             }
+
+            return m_TypeDictionary;
         }
 
         /***************************************************/
+        /**** Private Fields                            ****/
+        /***************************************************/
 
-        private static Dictionary<string, Type> m_TypeDictionary;
+        private static Dictionary<string, Type> m_TypeDictionary = new Dictionary<string, Type>();
+
     }
 }
