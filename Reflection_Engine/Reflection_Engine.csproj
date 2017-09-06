@@ -46,6 +46,7 @@
   <ItemGroup>
     <Compile Include="Create\Type.cs" />
     <Compile Include="Create\TypeDictionary.cs" />
+    <Compile Include="Measure\PropertyDictionary.cs" />
     <Compile Include="Measure\PropertyNames.cs" />
     <Compile Include="Measure\PropertyObjects.cs" />
     <Compile Include="Measure\PropertyTypes.cs" />
