@@ -35,6 +35,8 @@ namespace BH.Engine.Geometry
             return new Point(localX.GetRotated(alfa, curve.GetPlane().Normal) as Vector) + centre;
         }
 
+        /***************************************************/
+
         private static Point _GetPointAtParameter(this Circle curve, double t)
         {
             double alfa = 2 * Math.PI * t;
@@ -42,21 +44,29 @@ namespace BH.Engine.Geometry
             return new Point(localX.GetRotated(alfa, curve.Normal) as Vector);
         }
 
+        /***************************************************/
+
         private static Point _GetPointAtParameter(this Line curve, double t)
         {
             Vector vector = curve.End - curve.Start;
             return (new Point(vector * t) + curve.Start);
         }
 
+        /***************************************************/
+
         private static Point _GetPointAtParameter(this NurbCurve curve, double t)
         {
             throw new NotImplementedException(); // TODO NurbCurve.GetPointAtParameter()
         }
 
+        /***************************************************/
+
         private static Point _GetPointAtParameter(this PolyCurve curve, double t)
         {
             throw new NotImplementedException(); // TODO Polycurve.GetPointAtParameter() Relies on NurbCurve PointAt method
         }
+
+        /***************************************************/
 
         private static Point _GetPointAtParameter(this Polyline curve, double t)
         {
@@ -73,5 +83,7 @@ namespace BH.Engine.Geometry
             }
             return null;
         }
+
+        /***************************************************/
     }
 }

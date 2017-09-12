@@ -18,6 +18,23 @@ namespace BH.Engine.Geometry
             throw new NotImplementedException();
         }
 
+        /***************************************************/
+
+        public static Point GetClosestPoint(this Point point, IEnumerable<Point> cloud)
+        {
+            double minDist = Double.PositiveInfinity;
+            double dist = 0;
+            Point cp = null;
+            foreach (Point pt in cloud)
+            {
+                dist = GetDistance(point, pt);
+                if (dist < minDist)
+                {
+                    cp = pt;
+                }
+            }
+            return cp;
+        }
 
         /***************************************************/
         /**** Private Methods - Vectors                 ****/
@@ -79,7 +96,7 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         private static Point _GetClosestPoint(this PolyCurve curve, Point point)
-        { 
+        {
             double minDist = 1e10;
             Point closest = null;
             List<ICurve> curves = curve.Curves;
@@ -109,7 +126,7 @@ namespace BH.Engine.Geometry
             for (int i = 1; i < points.Count; i++)
             {
                 Vector dir = (points[i] - points[i - 1]).GetNormalised();
-                double t = Math.Min(Math.Max(dir * (point - points[i - 1]), 0), points[i].GetDistance(points[i-1]));
+                double t = Math.Min(Math.Max(dir * (point - points[i - 1]), 0), points[i].GetDistance(points[i - 1]));
                 Point cp = points[i - 1] + t * dir;
 
                 double dist = cp.GetSquareDistance(point);
