@@ -70,6 +70,7 @@
     <Compile Include="Measure\ExternalEdges.cs" />
     <Compile Include="Measure\InternalEdges.cs" />
     <Compile Include="Measure\Length.cs" />
+    <Compile Include="Measure\MeshIntersection.cs" />
     <Compile Include="Measure\Plane.cs" />
     <Compile Include="Measure\PlaneIntersection.cs" />
     <Compile Include="Measure\PointAtLength.cs" />
@@ -78,6 +79,7 @@
     <Compile Include="Measure\Radius.cs" />
     <Compile Include="Measure\StartDir.cs" />
     <Compile Include="Measure\StartPoint.cs" />
+    <Compile Include="Transform\Divide.cs" />
     <Compile Include="Transform\Explode.cs" />
     <Compile Include="Transform\Flip.cs" />
     <Compile Include="Transform\Inflate.cs" />
