@@ -72,6 +72,8 @@
     <Compile Include="Measure\Length.cs" />
     <Compile Include="Measure\Plane.cs" />
     <Compile Include="Measure\PlaneIntersection.cs" />
+    <Compile Include="Measure\PointAtLength.cs" />
+    <Compile Include="Measure\PointAtParameter.cs" />
     <Compile Include="Measure\Product.cs" />
     <Compile Include="Measure\Radius.cs" />
     <Compile Include="Measure\StartDir.cs" />
