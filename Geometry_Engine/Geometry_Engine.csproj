@@ -54,6 +54,7 @@
     <Compile Include="Fix\Points.cs" />
     <Compile Include="Fix\PolyCurve.cs" />
     <Compile Include="Measure\Angle.cs" />
+    <Compile Include="Measure\Area.cs" />
     <Compile Include="Measure\Average.cs" />
     <Compile Include="Measure\Bounds.cs" />
     <Compile Include="Measure\Centre.cs" />
