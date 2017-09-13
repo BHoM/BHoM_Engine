@@ -30,6 +30,7 @@ namespace BH.Engine.Geometry
                 dist = GetDistance(point, pt);
                 if (dist < minDist)
                 {
+                    minDist = dist;
                     cp = pt;
                 }
             }
