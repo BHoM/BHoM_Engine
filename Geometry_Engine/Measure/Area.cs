@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BH.Engine.Geometry.Measure
+namespace BH.Engine.Geometry
 {
     public static partial class Measure
     {
