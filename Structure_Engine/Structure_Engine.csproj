@@ -43,6 +43,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Measure\Centreline.cs" />
+    <Compile Include="Measure\Plane.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Create\NodeConstraint.cs" />
     <Compile Include="EqualityComparers\BarEndNodesDistanceComparer.cs" />
