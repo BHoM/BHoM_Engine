@@ -15,9 +15,9 @@ namespace BH.Engine.Geometry
 
         public static List<Point> GetDivided(this ICurve curve, double length)
         {
-            List<Point> points = null;
+            List<Point> points = new List<Point>();
             double dist = 0;
-            while (length <= curve.GetLength())
+            while (dist <= curve.GetLength())
             {
                 points.Add(curve.GetPointAtLength(dist));
                 dist += length;
@@ -29,7 +29,7 @@ namespace BH.Engine.Geometry
 
         public static List<Point> GetDivided(this ICurve curve, int number)
         {
-            List<Point> points = null;
+            List<Point> points = new List<Point>();
             double iter = curve.GetLength() / number;
             for (double i = 0; i < 1; i += iter)
             {
