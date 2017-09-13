@@ -91,6 +91,7 @@
     <Compile Include="Transform\Transform.cs" />
     <Compile Include="Transform\Translate.cs" />
     <Compile Include="Transform\Transpose.cs" />
+    <Compile Include="Transform\Triangulate.cs" />
     <Compile Include="Verify\Closed.cs" />
     <Compile Include="Verify\Containing.cs" />
     <Compile Include="Verify\InPlane.cs" />
