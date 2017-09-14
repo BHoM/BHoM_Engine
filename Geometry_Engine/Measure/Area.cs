@@ -19,7 +19,9 @@ namespace BH.Engine.Geometry
 
         #region Private Methods
 
-        /*  2D  **************************************************/
+        /***************************************************/
+        /**** 2D                                        ****/
+        /***************************************************/
 
         private static double _GetArea(this Arc curve)
         {
@@ -37,7 +39,7 @@ namespace BH.Engine.Geometry
 
         private static double _GetArea(this Line curve)
         {
-            throw new NotImplementedException();
+            return 0;
         }
 
         /***************************************************/
@@ -61,7 +63,10 @@ namespace BH.Engine.Geometry
             throw new NotImplementedException();
         }
 
-        /*  3D  **************************************************/
+        /***************************************************/
+        /**** 3D                                        ****/
+        /***************************************************/
+
         private static double _GetArea(this Mesh mesh)
         {
             Mesh tMesh = mesh.GetTriangulated();
@@ -80,11 +85,12 @@ namespace BH.Engine.Geometry
             return area / 2;
         }
 
+        /***************************************************/
+
         private static double _GetArea(this NurbSurface nurbs)
         {
             throw new NotImplementedException();
         }
-
         #endregion
     }
 }

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using BH.oM.Geometry;
+using BH.Engine.Geometry;
 
 namespace BH.Engine.Geometry
 {
@@ -29,19 +30,14 @@ namespace BH.Engine.Geometry
 
         private static Point _GetPointAtParameter(this Arc curve, double t)
         {
-            Point centre = curve.GetCentre();
-            double alfa = curve.GetAngle() * t;
-            Vector localX = curve.Start - curve.GetCentre();
-            return new Point(localX.GetRotated(alfa, curve.GetPlane().Normal) as Vector) + centre;
+            return GetPointAtLength(curve, t * curve.GetLength());
         }
 
         /***************************************************/
 
         private static Point _GetPointAtParameter(this Circle curve, double t)
         {
-            double alfa = 2 * Math.PI * t;
-            Vector localX = curve.Normal.GetCrossProduct(Vector.XAxis).GetNormalised() * curve.Radius;
-            return new Point(localX.GetRotated(alfa, curve.Normal) as Vector);
+            return GetPointAtLength(curve, t * curve.GetLength());
         }
 
         /***************************************************/
@@ -70,20 +66,7 @@ namespace BH.Engine.Geometry
 
         private static Point _GetPointAtParameter(this Polyline curve, double t)
         {
-            List<Line> lines = curve.GetExploded() as List<Line>;
-            double length = t * curve.GetLength();
-            double sum = 0;
-            for (int i = 0; i < lines.Count; i++)
-            {
-                sum += lines[i].GetLength();
-                if (length <= sum)
-                {
-                    return lines[i]._GetPointAtLength(length - sum + lines[i].GetLength());
-                }
-            }
-            return null;
+            return GetPointAtLength(curve, t * curve.GetLength());
         }
-
-        /***************************************************/
     }
 }

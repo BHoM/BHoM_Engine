@@ -48,8 +48,7 @@ namespace BH.Engine.Geometry
 
         private static Point _GetPointAtLength(this Line curve, double length)
         {
-            Vector vector = curve.End - curve.Start;
-            return (new Point(vector.GetNormalised() * length) + curve.Start);
+            return GetPointAtParameter(curve, length / curve.GetLength());
         }
 
         /***************************************************/

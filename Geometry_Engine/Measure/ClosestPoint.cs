@@ -15,7 +15,7 @@ namespace BH.Engine.Geometry
 
         public static Point GetClosestPoint(this IBHoMGeometry geometry, Point point)
         {
-            throw new NotImplementedException();
+            return _GetClosestPoint(geometry as dynamic, point);
         }
 
         /***************************************************/
