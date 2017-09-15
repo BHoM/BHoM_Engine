@@ -54,6 +54,7 @@
     <Compile Include="Measure\NodeContraint.cs" />
     <Compile Include="Transform\Flip.cs" />
     <Compile Include="Transform\Geometry.cs" />
+    <Compile Include="Verifiy\Constrained.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BHoM_Engine\BHoM_Engine.csproj">
@@ -68,7 +69,6 @@
   <ItemGroup>
     <Folder Include="Clone\" />
     <Folder Include="Convert\" />
-    <Folder Include="Verifiy\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
