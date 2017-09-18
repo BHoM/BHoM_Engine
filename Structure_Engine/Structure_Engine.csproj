@@ -43,7 +43,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Create\Grid.cs" />
+    <Compile Include="Create\Panel.cs" />
     <Compile Include="Measure\Centreline.cs" />
+    <Compile Include="Measure\Centroid.cs" />
+    <Compile Include="Measure\Edge.cs" />
     <Compile Include="Measure\Geometry.cs" />
     <Compile Include="Measure\OppositeNode.cs" />
     <Compile Include="Measure\Plane.cs" />
@@ -54,6 +58,7 @@
     <Compile Include="Measure\NodeContraint.cs" />
     <Compile Include="Transform\Flip.cs" />
     <Compile Include="Transform\Geometry.cs" />
+    <Compile Include="Transform\Merge.cs" />
     <Compile Include="Verifiy\Constrained.cs" />
   </ItemGroup>
   <ItemGroup>

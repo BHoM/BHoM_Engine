@@ -1,4 +1,5 @@
-﻿using BH.oM.Geometry;
+﻿using BH.Engine.Geometry;
+using BH.oM.Geometry;
 using BH.oM.Structural.Elements;
 using System;
 using System.Collections.Generic;
@@ -8,19 +9,24 @@ using System.Threading.Tasks;
 
 namespace BH.Engine.Structure
 {
-    public static partial class Verify
+    public static partial class Measure
     {
 
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static bool IsConstrained(this Node node)
+        public static List<ICurve> GetEdges(this Panel panel)
         {
-            return node.Constraint != null;
+            if (panel.Surface != null)
+                return panel.Surface.GetExternalEdges();
+            else
+                return new List<ICurve>();
         }
 
         /***************************************************/
 
+
     }
+
 }

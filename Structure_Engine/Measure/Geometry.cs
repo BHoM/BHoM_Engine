@@ -29,6 +29,27 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        public static IBHoMGeometry GetGeometry(this Panel panel)
+        {
+            return panel.Surface;
+        }
 
+        /***************************************************/
+
+        public static IBHoMGeometry GetGeometry(this Storey storey)
+        {
+            return new Plane(new Point(0, 0, storey.Elevation), new Vector(0, 0, 1));
+        }
+
+        /***************************************************/
+
+        //public static IBHoMGeometry GetGeometry(this FEMesh feMesh)
+        //{
+        //    IEnumerable<Point> points = feMesh.Nodes.Select(x => x.Point);
+        //    IEnumerable<BH.oM.Geometry.Face> faces = feMesh.Faces.Select( x => x.
+
+        //    return new Mesh(points, feMesh.Faces);
+        //}
     }
+
 }

@@ -1,4 +1,5 @@
-﻿using BH.oM.Geometry;
+﻿using BH.Engine.Geometry;
+using BH.oM.Geometry;
 using BH.oM.Structural.Elements;
 using System;
 using System.Collections.Generic;
@@ -8,19 +9,25 @@ using System.Threading.Tasks;
 
 namespace BH.Engine.Structure
 {
-    public static partial class Verify
+    public static partial class Measure
     {
 
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static bool IsConstrained(this Node node)
+        public static Point GetCentroid(this oM.Structural.Elements.PanelFace panelFace)
         {
-            return node.Constraint != null;
+            List<Point> pts = new List<Point>(4);
+
+            foreach (Node n in panelFace.Nodes)
+                pts.Add(n.Point);
+
+            return pts.GetAverage();
         }
 
         /***************************************************/
+
 
     }
 }

@@ -28,5 +28,17 @@ namespace BH.Engine.Structure
             node.Point = point;
         }
 
+        /***************************************************/
+
+        public static void SetGeometry(this Panel panel, IBHoMGeometry geometry)
+        {
+            if (typeof(ISurface).IsAssignableFrom(geometry.GetType()))
+            {
+                panel.Surface = geometry as ISurface;
+            }
+        }
+
+        /***************************************************/
+
     }
 }
