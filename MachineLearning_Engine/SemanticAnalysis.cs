@@ -26,6 +26,7 @@ namespace BH.Engine.MachineLearning
 
             string username = System.Security.Principal.WindowsIdentity.GetCurrent().Name.Split('\\')[1];
             string jarRoot = "C:\\Users\\" + username + "\\AppData\\Roaming\\BHoM\\stanford-corenlp-3.8.0";
+            if (!System.IO.Directory.Exists(jarRoot)) { throw new System.IO.FileNotFoundException("Please download stanford-corenlp-3.8.0"); }
             string curDir = Environment.CurrentDirectory;
             Directory.SetCurrentDirectory(jarRoot);
             StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
