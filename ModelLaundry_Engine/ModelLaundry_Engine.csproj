@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ModelLaundry_Engine</RootNamespace>
     <AssemblyName>ModelLaundry_Engine</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -62,6 +62,10 @@
     <ProjectReference Include="..\DataStructure_Engine\DataStructure_Engine.csproj">
       <Project>{8082ca2a-ac5c-4690-9f09-960e0d3e4102}</Project>
       <Name>DataStructure_Engine</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Geometry_Engine\Geometry_Engine.csproj">
+      <Project>{89ab2dcb-ef87-4cba-b59c-c16a8a71d333}</Project>
+      <Name>Geometry_Engine</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -48,8 +48,9 @@
     <Compile Include="Base\EqualityComparers\BHoMGuidComparer.cs" />
     <Compile Include="Base\EqualityComparers\BHoMObjectNameComparer.cs" />
     <Compile Include="Base\EqualityComparers\BHoMObjectNameOrToStringComparer.cs" />
-    <Compile Include="Base\GetGeometry\Common.cs" />
-    <Compile Include="Base\GetGeometry\Structural.cs" />
+    <Compile Include="Base\Query\Geometry.cs" />
+    <Compile Include="Base\Query\Structural.cs" />
+    <Compile Include="Base\Transform\Geometry.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Testing\SpeedTest.cs" />
   </ItemGroup>

@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using BHoM.Geometry;
-using BHoM.DataStructure;
+using BH.oM.Geometry;
+using BH.oM.DataStructure;
+using BH.Engine.DataStructure;
 
 namespace Graph_Engine
 {
-    
-
     /***************************************************************************/
 
     public class GraphNavigator<T>

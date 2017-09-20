@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using BH.oM.Geometry;
 using BH.Engine.Geometry;
 
-namespace BHoM.DataStructure
+namespace BH.oM.DataStructure
 {
     public class PointMatrix : PointMatrix<object>
     {

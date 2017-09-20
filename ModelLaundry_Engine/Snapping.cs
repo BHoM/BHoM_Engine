@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using BHoM.Geometry;
+using BH.oM.Geometry;
+using BH.Engine.Geometry;
 
 namespace ModelLaundry_Engine
 {
@@ -16,10 +17,10 @@ namespace ModelLaundry_Engine
         public static object VerticalSnapToHeight(object element, List<double> refHeights, double tolerance)
         {
             // Get the geometry of the element
-            BHoMGeometry geometry = Util.GetGeometry(element);
+            IBHoMGeometry geometry = Util.GetGeometry(element);
 
             // Do the actal snapping
-            BHoMGeometry output = null;
+            IBHoMGeometry output = null;
             if (geometry is Point)
             {
                 output = Snapping.VerticalSnapToHeight((Point)geometry, refHeights, tolerance);
@@ -28,13 +29,13 @@ namespace ModelLaundry_Engine
             {
                 output = Snapping.VerticalSnapToHeight((Line)geometry, refHeights, tolerance);
             }
-            else if (geometry is Curve)
+            else if (geometry is ICurve)
             {
-                output = Snapping.VerticalSnapToHeight((Curve)geometry, refHeights, tolerance);
+                output = Snapping.VerticalSnapToHeight((ICurve)geometry, refHeights, tolerance);
             }
-            else if (geometry is Group<Curve>)
+            else if (geometry is List<ICurve>)
             {
-                output = Snapping.VerticalSnapToHeight((Group<Curve>)geometry, refHeights, tolerance);
+                output = Snapping.VerticalSnapToHeight((List<ICurve>)geometry, refHeights, tolerance);
             }
 
             // Return the final result
@@ -45,7 +46,7 @@ namespace ModelLaundry_Engine
 
         public static Point VerticalSnapToHeight(Point point, List<double> refHeights, double tolerance)
         {
-            Point newPoint = new Point(point);
+            Point newPoint = new Point(point.X, point.Y, point.Z);
 
             foreach (double height in refHeights)
             {
@@ -62,14 +63,14 @@ namespace ModelLaundry_Engine
 
         public static Line VerticalSnapToHeight(Line line, List<double> refHeights, double tolerance)
         {
-            return new Line(VerticalSnapToHeight(line.StartPoint, refHeights, tolerance), VerticalSnapToHeight(line.EndPoint, refHeights, tolerance));
+            return new Line(VerticalSnapToHeight(line.Start, refHeights, tolerance), VerticalSnapToHeight(line.End, refHeights, tolerance));
         }
 
         /******************************************/
 
-        public static Curve VerticalSnapToHeight(Curve contour, List<double> refHeights, double tolerance)
+        public static ICurve VerticalSnapToHeight(ICurve contour, List<double> refHeights, double tolerance)
         {
-            List<Point> oldPoints = contour.ControlPoints;
+            List<Point> oldPoints = contour.GetControlPoints();
             List<Point> newPoints = new List<Point>();
 
             foreach (Point pt in oldPoints)
@@ -81,10 +82,10 @@ namespace ModelLaundry_Engine
 
         /******************************************/
 
-        public static Group<Curve> VerticalSnapToHeight(Group<Curve> group, List<double> refHeights, double tolerance)
+        public static List<ICurve> VerticalSnapToHeight(List<ICurve> group, List<double> refHeights, double tolerance)
         {
-            Group<Curve> newGroup = new Group<Curve>();
-            foreach (Curve curve in group)
+            List<ICurve> newGroup = new List<ICurve>();
+            foreach (ICurve curve in group)
             {
                 if (curve is Line)
                     newGroup.Add(VerticalSnapToHeight((Line)curve, refHeights, tolerance));
@@ -102,12 +103,12 @@ namespace ModelLaundry_Engine
         public static object VerticalSnapToShape(object element, List<object> refElements, double tolerance)
         {
             // Get the geometry of the elements
-            BHoMGeometry geometry = Util.GetGeometry(element);
-            BoundingBox ROI = geometry.Bounds().Inflate(tolerance);
-            List<Curve> refGeom = Util.GetGeometries(refElements, ROI);
+            IBHoMGeometry geometry = Util.GetGeometry(element);
+            BoundingBox ROI = geometry.GetBounds().GetInflated(tolerance);
+            List<ICurve> refGeom = Util.GetGeometries(refElements, ROI);
 
             // Do the actal snapping
-            BHoMGeometry output = null;
+            IBHoMGeometry output = null;
             if (geometry is Point)
             {
                 output = Snapping.VerticalSnapToShape((Point)geometry, refGeom, tolerance);
@@ -116,13 +117,13 @@ namespace ModelLaundry_Engine
             {
                 output = Snapping.VerticalSnapToShape((Line)geometry, refGeom, tolerance);
             }
-            else if (geometry is Curve)
+            else if (geometry is ICurve)
             {
-                output = Snapping.VerticalSnapToShape((Curve)geometry, refGeom, tolerance);
+                output = Snapping.VerticalSnapToShape((ICurve)geometry, refGeom, tolerance);
             }
-            else if (geometry is Group<Curve>)
+            else if (geometry is List<ICurve>)
             {
-                output = Snapping.VerticalSnapToShape((Group<Curve>)geometry, refGeom, tolerance);
+                output = Snapping.VerticalSnapToShape((List<ICurve>)geometry, refGeom, tolerance);
             }
 
             // Return the final result
@@ -191,7 +192,7 @@ namespace ModelLaundry_Engine
         public static object HorizontalSnapToShape(object element, List<object> refElements, double tolerance, bool anyHeight = false)
         {
             // Get the geometry of the element
-            BHoMGeometry geometry = Util.GetGeometry(element);
+            IBHoMGeometry geometry = Util.GetGeometry(element);
             BoundingBox ROI = geometry.Bounds().Inflate(tolerance);
             if (anyHeight) ROI.Extents.Z = 1e12;
             List<Curve> refGeom = Util.GetGeometries(refElements, ROI);
