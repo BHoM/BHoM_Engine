@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BH.oM.DataStructure;
+using BH.Engine.DataStructure;
 
-namespace BHoM.DataStructure
+namespace BH.oM.DataStructure //TODO: this should either be in the Engine namespace, or moved to BH.oM(?)
 {
     public class GraphNode<T>
     {

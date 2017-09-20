@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BH.Engine.Base
 {
-    public static partial class Geometry
+    public static partial class Query
     {
         /***************************************************/
         /**** Public Methods                            ****/
@@ -16,17 +16,7 @@ namespace BH.Engine.Base
 
         public static IBHoMGeometry GetGeometry(this BHoMObject obj)
         {
-            return _GetGeometry(obj as dynamic);
-        }
-
-
-        /***************************************************/
-        /**** Private Methods                           ****/
-        /***************************************************/
-
-        public static IBHoMGeometry _GetGeometry(this BHoMObject obj)
-        {
             return null;
         }
-    }
+     }
 }

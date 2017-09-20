@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using BHoM.Geometry;
+using BH.oM.Geometry;
+using BH.Engine.Base;
 
 namespace ModelLaundry_Engine
 {
@@ -16,32 +17,32 @@ namespace ModelLaundry_Engine
         public static object HorizontalExtend(object element, double dist)
         {
             // Get the geometry
-            BHoMGeometry geometry = null;
-            if (element is BHoM.Base.BHoMObject)
-                geometry = ((BHoM.Base.BHoMObject)element).GetGeometry();
-            else if (element is BHoMGeometry)
-                geometry = element as BHoMGeometry;
+            IBHoMGeometry geometry = null;
+            if (element is BH.oM.Base.BHoMObject)
+                geometry = ((BH.oM.Base.BHoMObject)element).GetGeometry();
+            else if (element is IBHoMGeometry)
+                geometry = element as IBHoMGeometry;
 
-            BHoMGeometry output = null;
+            IBHoMGeometry output = null;
             if (geometry is Line)
             {
                 output = Util.HorizontalExtend((Line)geometry, dist);
             }
-            else if (geometry is Curve)
+            else if (geometry is ICurve)
             {
-                output = Util.HorizontalExtend((Curve)geometry, dist);
+                output = Util.HorizontalExtend((ICurve)geometry, dist) as ICurve;
             }
-            else if (geometry is Group<Curve>)
+            else if (geometry is List<ICurve>)
             {
-                output = Util.HorizontalExtend((Group<Curve>)geometry, dist);
+                output = Util.HorizontalExtend((List<ICurve>)geometry, dist) as ICurve;
             }
 
             // Prepare the result
             object result = element;
-            if (element is BHoM.Base.BHoMObject)
+            if (element is BH.oM.Base.BHoMObject)
             {
-                result = (BHoM.Base.BHoMObject)((BHoM.Base.BHoMObject)element).ShallowClone();
-                ((BHoM.Base.BHoMObject)result).SetGeometry(output);
+                result = (BH.oM.Base.BHoMObject)((BH.oM.Base.BHoMObject)element).GetShallowClone();
+                ((BH.oM.Base.BHoMObject)result).SetGeometry(output);
             }
             else if (element is BHoMGeometry)
             {
@@ -318,17 +319,17 @@ namespace ModelLaundry_Engine
 
         /******************************************/
 
-        internal static List<Curve> GetGeometries(List<object> elements)
+        internal static List<ICurve> GetGeometries(List<object> elements)
         {
             // Get the geometry of the ref elements
-            List<Curve> geometries = new List<Curve>();
+            List<ICurve> geometries = new List<ICurve>();
             foreach (object element in elements)
             {
-                BHoMGeometry geometry = GetGeometry(element);
+                IBHoMGeometry geometry = GetGeometry(element);
 
                 if (geometry is Curve)
                     geometries.Add((Curve)geometry);
-                else if (geometry is Group<Curve>)
+                else if (geometry is List<ICurve>)
                 {
                     List<Curve> list = CurveUtils.Join((Group<Curve>)geometry);
                     geometries.Add(list[0]);
