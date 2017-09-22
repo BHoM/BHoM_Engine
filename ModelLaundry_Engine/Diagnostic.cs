@@ -17,7 +17,7 @@ namespace ModelLaundry_Engine
 
             // Get the control points in the matrix
             List<Point> refPoints = new List<Point>();
-            List<Curve> refGeom = Util.GetGeometries(elements);
+            List<ICurve> refGeom = Util.GetGeometries(elements);
             foreach (Curve curve in refGeom)
             {
                 foreach (Point pt in curve.ControlPoints)
