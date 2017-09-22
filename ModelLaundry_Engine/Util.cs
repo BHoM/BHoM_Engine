@@ -44,7 +44,7 @@ namespace ModelLaundry_Engine
                 result = (BH.oM.Base.BHoMObject)((BH.oM.Base.BHoMObject)element).GetShallowClone();
                 ((BH.oM.Base.BHoMObject)result).SetGeometry(output);
             }
-            else if (element is BHoMGeometry)
+            else if (element is IBHoMGeometry)
             {
                 result = output;
             }
@@ -56,7 +56,7 @@ namespace ModelLaundry_Engine
 
         /*************************************/
 
-        public static Curve HorizontalExtend(Curve contour, double dist)
+        public static ICurve HorizontalExtend(ICurve contour, double dist)
         {
             List<Point> oldPoints = contour.ControlPoints;
             List<Point> newPoints = new List<Point>();
@@ -114,10 +114,10 @@ namespace ModelLaundry_Engine
 
         /*************************************/
 
-        public static Group<Curve> HorizontalExtend(Group<Curve> group, double dist)
+        public static List<ICurve> HorizontalExtend(List<ICurve> group, double dist)
         {
-            Group<Curve> newGroup = new Group<Curve>();
-            foreach ( Curve curve in CurveUtils.Join(group) )
+            List<ICurve> newGroup = new List<ICurve>();
+            foreach ( ICurve curve in CurveUtils.Join(group) )
             {
                 newGroup.Add(HorizontalExtend(curve, dist));
             }
@@ -136,9 +136,9 @@ namespace ModelLaundry_Engine
             outsiders = new List<object>();
             foreach (object element in elements)
             {
-                if (element is BHoM.Base.BHoMObject && Util.IsInside(((BHoM.Base.BHoMObject)element).GetGeometry(), boxes))
+                if (element is BH.oM.Base.BHoMObject && Util.IsInside(((BH.oM.Base.BHoMObject)element).GetGeometry(), boxes))
                     insiders.Add(element);
-                else if (element is BHoMGeometry && Util.IsInside((BHoMGeometry)element, boxes))
+                else if (element is IBHoMGeometry && Util.IsInside((IBHoMGeometry)element, boxes))
                     insiders.Add(element);
                 else
                     outsiders.Add(element);
@@ -149,11 +149,11 @@ namespace ModelLaundry_Engine
 
         /*************************************/
 
-        public static List<BHoMGeometry> FilterByBoundingBox(List<BHoMGeometry> elements, List<BoundingBox> boxes, out List<BHoMGeometry> outsiders)
+        public static List<IBHoMGeometry> FilterByBoundingBox(List<IBHoMGeometry> elements, List<BoundingBox> boxes, out List<IBHoMGeometry> outsiders)
         {
-            List<BHoMGeometry> insiders = new List<BHoMGeometry>();
-            outsiders = new List<BHoMGeometry>();
-            foreach (BHoMGeometry element in elements)
+            List<IBHoMGeometry> insiders = new List<IBHoMGeometry>();
+            outsiders = new List<IBHoMGeometry>();
+            foreach (IBHoMGeometry element in elements)
             {
                 if (IsInside(element, boxes))
                     insiders.Add(element);
@@ -166,11 +166,11 @@ namespace ModelLaundry_Engine
 
         /*************************************/
 
-        public static List<BHoM.Base.BHoMObject> FilterByBoundingBox(List<BHoM.Base.BHoMObject> elements, List<BoundingBox> boxes, out List<BHoM.Base.BHoMObject> outsiders)
+        public static List<BH.oM.Base.BHoMObject> FilterByBoundingBox(List<BH.oM.Base.BHoMObject> elements, List<BoundingBox> boxes, out List<BH.oM.Base.BHoMObject> outsiders)
         {
-            List<BHoM.Base.BHoMObject> insiders = new List<BHoM.Base.BHoMObject>();
-            outsiders = new List<BHoM.Base.BHoMObject>();
-            foreach (BHoM.Base.BHoMObject element in elements)
+            List<BH.oM.Base.BHoMObject> insiders = new List<BH.oM.Base.BHoMObject>();
+            outsiders = new List<BH.oM.Base.BHoMObject>();
+            foreach (BH.oM.Base.BHoMObject element in elements)
             {
                 if (IsInside(element.GetGeometry(), boxes))
                     insiders.Add(element);
@@ -183,7 +183,7 @@ namespace ModelLaundry_Engine
 
         /*************************************/
 
-        public static bool IsInside(BHoMGeometry geometry, List<BoundingBox> boxes)
+        public static bool IsInside(IBHoMGeometry geometry, List<BoundingBox> boxes)
         {
             bool inside = false;
             BoundingBox eBox = geometry.Bounds();
@@ -205,36 +205,36 @@ namespace ModelLaundry_Engine
         /****  Remove Small Contours      ****/
         /*************************************/
 
-        public static object RemoveSmallContours(object element, double maxLength, out Group<Curve> removed)
+        public static object RemoveSmallContours(object element, double maxLength, out List<ICurve> removed)
         {
             // Get the geometry
-            BHoMGeometry geometry = null;
-            if (element is BHoM.Base.BHoMObject)
-                geometry = ((BHoM.Base.BHoMObject)element).GetGeometry();
-            else if (element is BHoMGeometry)
-                geometry = element as BHoMGeometry;
+            IBHoMGeometry geometry = null;
+            if (element is BH.oM.Base.BHoMObject)
+                geometry = ((BH.oM.Base.BHoMObject)element).GetGeometry();
+            else if (element is IBHoMGeometry)
+                geometry = element as IBHoMGeometry;
 
-            removed = new Group<Curve>();
-            BHoMGeometry output = null;
-            if (geometry is Curve)
+            removed = new List<ICurve>();
+            IBHoMGeometry output = null;
+            if (geometry is ICurve)
             {
-                Group<Curve> group = new Group<Curve>();
-                group.Add((Curve)geometry);
+                List<ICurve> group = new List<ICurve>();
+                group.Add((ICurve)geometry);
                 output = Util.RemoveSmallContours(group, maxLength, out removed);
             }
-            else if (geometry is Group<Curve>)
+            else if (geometry is List<ICurve>)
             {
-                output = Util.RemoveSmallContours((Group<Curve>)geometry, maxLength, out removed);
+                output = Util.RemoveSmallContours((List<ICurve>)geometry, maxLength, out removed);
             }
 
             // Prepare the result
             object result = element;
-            if (element is BHoM.Base.BHoMObject)
+            if (element is BH.oM.Base.BHoMObject)
             {
-                result = (BHoM.Base.BHoMObject)((BHoM.Base.BHoMObject)element).ShallowClone();
-                ((BHoM.Base.BHoMObject)result).SetGeometry(output);
+                result = (BH.oM.Base.BHoMObject)((BH.oM.Base.BHoMObject)element).ShallowClone();
+                ((BH.oM.Base.BHoMObject)result).SetGeometry(output);
             }
-            else if (element is BHoMGeometry)
+            else if (element is IBHoMGeometry)
             {
                 result = output;
             }
@@ -246,12 +246,12 @@ namespace ModelLaundry_Engine
 
         /*************************************/
 
-        public static Group<Curve> RemoveSmallContours(Group<Curve> contours, double maxLength, out Group<Curve> removed)
+        public static List<ICurve> RemoveSmallContours(List<ICurve> contours, double maxLength, out List<ICurve> removed)
         {
-            Group<Curve> remaining = new Group<Curve>();
-            removed = new Group<Curve>();
+            List<ICurve> remaining = new List<ICurve>();
+            removed = new List<ICurve>();
 
-            foreach (Curve contour in contours)
+            foreach (ICurve contour in contours)
             {
                 if (contour.Length() < maxLength)
                     removed.Add(contour);
@@ -267,14 +267,14 @@ namespace ModelLaundry_Engine
         /****  Get Near Contours          ****/
         /*************************************/
 
-        public static List<Curve> GetNearContours(Curve refContour, List<Curve> contours, double tolerance, bool anyHeight = false)
+        public static List<ICurve> GetNearContours(ICurve refContour, List<ICurve> contours, double tolerance, bool anyHeight = false)
         {
             BoundingBox bounds = refContour.Bounds();
             BoundingBox ROI = bounds.Inflate(tolerance);
             if (anyHeight) ROI.Extents.Z = 1e12;
 
-            List<Curve> nearContours = new List<Curve>();
-            foreach (Curve refC in contours)
+            List<ICurve> nearContours = new List<ICurve>();
+            foreach (ICurve refC in contours)
             {
                 BoundingBox cBox = refC.Bounds();
                 if (cBox.Centre.DistanceTo(bounds.Centre) > 1e-5 && BoundingBox.InRange(ROI, cBox))
@@ -289,27 +289,27 @@ namespace ModelLaundry_Engine
         /****  Geometry accessors         ****/
         /*************************************/
 
-        internal static BHoMGeometry GetGeometry(object element)
+        internal static IBHoMGeometry GetGeometry(object element)
         {
-            BHoMGeometry geometry = null;
-            if (element is BHoM.Base.BHoMObject)
-                geometry = ((BHoM.Base.BHoMObject)element).GetGeometry();
-            else if (element is BHoMGeometry)
-                geometry = element as BHoMGeometry;
+            IBHoMGeometry geometry = null;
+            if (element is BH.oM.Base.BHoMObject)
+                geometry = ((BH.oM.Base.BHoMObject)element).GetGeometry();
+            else if (element is IBHoMGeometry)
+                geometry = element as IBHoMGeometry;
             return geometry;
         }
 
         /******************************************/
 
-        internal static object SetGeometry(object element, BHoMGeometry geometry)
+        internal static object SetGeometry(object element, IBHoMGeometry geometry)
         {
             object result = element;
-            if (element is BHoM.Base.BHoMObject)
+            if (element is BH.oM.Base.BHoMObject)
             {
-                result = (BHoM.Base.BHoMObject)((BHoM.Base.BHoMObject)element).ShallowClone();
-                ((BHoM.Base.BHoMObject)result).SetGeometry(geometry);
+                result = (BH.oM.Base.BHoMObject)((BH.oM.Base.BHoMObject)element).ShallowClone();
+                ((BH.oM.Base.BHoMObject)result).SetGeometry(geometry);
             }
-            else if (element is BHoMGeometry)
+            else if (element is IBHoMGeometry)
             {
                 result = geometry;
             }
@@ -327,11 +327,11 @@ namespace ModelLaundry_Engine
             {
                 IBHoMGeometry geometry = GetGeometry(element);
 
-                if (geometry is Curve)
-                    geometries.Add((Curve)geometry);
+                if (geometry is ICurve)
+                    geometries.Add((ICurve)geometry);
                 else if (geometry is List<ICurve>)
                 {
-                    List<Curve> list = CurveUtils.Join((Group<Curve>)geometry);
+                    List<ICurve> list = CurveUtils.Join((List<ICurve>)geometry);
                     geometries.Add(list[0]);
                 }
             }
@@ -341,21 +341,21 @@ namespace ModelLaundry_Engine
 
         /******************************************/
 
-        internal static List<Curve> GetGeometries(List<object> elements, BoundingBox ROI)
+        internal static List<ICurve> GetGeometries(List<object> elements, BoundingBox ROI)
         {
             // Get the geometry of the ref elements
-            List<Curve> geometries = new List<Curve>();
+            List<ICurve> geometries = new List<ICurve>();
             foreach (object element in elements)
             {
-                BHoMGeometry geometry = GetGeometry(element);
+                IBHoMGeometry geometry = GetGeometry(element);
 
                 if (BoundingBox.InRange(ROI, geometry.Bounds()))
                 {
-                    if (geometry is Curve)
-                        geometries.Add((Curve)geometry);
-                    else if (geometry is Group<Curve>)
+                    if (geometry is ICurve)
+                        geometries.Add((ICurve)geometry);
+                    else if (geometry is List<ICurve>)
                     {
-                        foreach (Curve curve in CurveUtils.Join((Group<Curve>)geometry))
+                        foreach (ICurve curve in CurveUtils.Join((List<ICurve>)geometry))
                         {
                             geometries.Add(curve);
                         }
@@ -374,7 +374,7 @@ namespace ModelLaundry_Engine
             List<Point> points = new List<Point>();
             foreach (object element in elements)
             {
-                BHoMGeometry geometry = GetGeometry(element);
+                IBHoMGeometry geometry = GetGeometry(element);
 
                 if (BoundingBox.InRange(ROI, geometry.Bounds()))
                 {
@@ -408,20 +408,20 @@ namespace ModelLaundry_Engine
             // Get the geometry of the ref elements
             List<Point> points = new List<Point>();
 
-            BHoMGeometry geometry = GetGeometry(element);
+            IBHoMGeometry geometry = GetGeometry(element);
 
             if (geometry is Point)
             {
                 points.Add(geometry as Point);
             }
-            else if (geometry is Curve)
+            else if (geometry is ICurve)
             {
-                foreach (Point pt in ((Curve)geometry).ControlPoints)
+                foreach (Point pt in ((ICurve)geometry).ControlPoints)
                     points.Add(pt);
             }
-            else if (geometry is Group<Curve>)
+            else if (geometry is List<ICurve>)
             {
-                foreach (Curve curve in CurveUtils.Join((Group<Curve>)geometry))
+                foreach (ICurve curve in CurveUtils.Join((List<ICurve>)geometry))
                 {
                     foreach (Point pt in curve.ControlPoints)
                         points.Add(pt);

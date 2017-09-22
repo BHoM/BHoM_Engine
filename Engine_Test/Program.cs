@@ -163,7 +163,7 @@ namespace Engine_Test
         //    points.Add(new Point(1, 1, 0));
         //    points.Add(new Point(0, 0, 0));
 
-        //    Group<Curve> edges = new Group<Curve>();
+        //    List<ICurve> edges = new List<ICurve>();
         //    for (int i = 1; i < points.Count; i++)
         //        edges.Add(new Line(points[i - 1], points[i]));
 
