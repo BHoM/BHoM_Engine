@@ -333,7 +333,6 @@ namespace ModelLaundry_Engine
                 // Only work with horizontal lines
                 if (Math.Abs(cLine.GetDirection().Z) > 1e-3) continue;
                 Transform.GetProjected(cLine, ground); // This only works because refL is a new line. Project should create a new line, not modify the existing one
-
                 // Get directions of the line
                 Vector hDir = cLine.GetDirection();
                 hDir.GetNormalised();
@@ -468,7 +467,6 @@ namespace ModelLaundry_Engine
                 // Only work with horizontal lines
                 if (Math.Abs(cLine.GetDirection().Z) > 1e-3) continue;
                 Transform.GetProjected(cLine, ground); // This only works because refL is a new line. Project should create a new line, not modify the existing one
-
                 // Get directions of the line
                 Vector hDir = cLine.GetDirection();
                 hDir.GetNormalised();

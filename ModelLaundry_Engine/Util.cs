@@ -33,6 +33,10 @@ namespace ModelLaundry_Engine
             {
                 output = Util.HorizontalExtend((ICurve)geometry, dist) as ICurve;
             }
+            else if (geometry is List<ICurve>)
+            {
+                output = Util.HorizontalExtend((List<ICurve>)geometry, dist) as ICurve;
+            }
             //else if (geometry is GeometryGroup)
             //{
             //    List<ICurve> curves = geometry.GetExploded();
@@ -231,6 +235,12 @@ namespace ModelLaundry_Engine
 
             // Prepare the result
             object result = element;
+            if (element is BH.oM.Base.BHoMObject)
+            {
+                result = (BH.oM.Base.BHoMObject)((BH.oM.Base.BHoMObject)element).ShallowClone();
+                ((BH.oM.Base.BHoMObject)result).SetGeometry(output);
+            }
+            else if (element is IBHoMGeometry)
             {
                 result = output;
             }
@@ -409,7 +419,7 @@ namespace ModelLaundry_Engine
             }
             else if (geometry is ICurve)
             {
-                foreach (Point pt in ((ICurve)geometry).GetControlPoints())
+              foreach (Point pt in ((ICurve)geometry).GetControlPoints())
                     points.Add(pt);
             }
             else if (geometry is List<ICurve>)
