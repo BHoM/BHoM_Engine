@@ -311,7 +311,7 @@ namespace ModelLaundry_Engine
                 {
                     if (Math.Abs(refL.GetDirection().Z) < 1e-3)
                     {
-                        XCurve.Project(refL, ground);  // This only works because refL is a new line. Project should create a new line, not modify the existing one
+                        Transform.GetProjected(refL, ground); // This only works because refL is a new line. Project should create a new line, not modify the existing one
                         refLines.Add(refL);
                     }
                         
@@ -332,8 +332,7 @@ namespace ModelLaundry_Engine
             {
                 // Only work with horizontal lines
                 if (Math.Abs(cLine.GetDirection().Z) > 1e-3) continue;
-                XCurve.Project(cLine, ground);  // This only works because refL is a new line. Project should create a new line, not modify the existing one
-
+                Transform.GetProjected(cLine, ground); // This only works because refL is a new line. Project should create a new line, not modify the existing one
                 // Get directions of the line
                 Vector hDir = cLine.GetDirection();
                 hDir.GetNormalised();
@@ -447,7 +446,7 @@ namespace ModelLaundry_Engine
             }
 
             // Get all reference lines
-            Plane ground = Plane.XY();
+            Plane ground = new Plane(new Point(0, 0, 0), new Vector(0, 0, 1)); //TODO: Update to XY plane once one a constructor is added to BH.Engine.Geometry
             List<Line> refLines = new List<Line>();
             foreach (ICurve refC in nearContours)
             {
@@ -455,7 +454,7 @@ namespace ModelLaundry_Engine
                 {
                     if (Math.Abs(refL.GetDirection().Z) < 1e-3)
                     {
-                        XCurve.Project(refL, ground);  // This only works because refL is a new line. Project should create a new line, not modify the existing one
+                        Transform.GetProjected(refL, ground);
                         refLines.Add(refL);
                     }
                 }
@@ -467,8 +466,7 @@ namespace ModelLaundry_Engine
             {
                 // Only work with horizontal lines
                 if (Math.Abs(cLine.GetDirection().Z) > 1e-3) continue;
-                XCurve.Project(cLine, ground);  // This only works because refL is a new line. Project should create a new line, not modify the existing one
-
+                Transform.GetProjected(cLine, ground); // This only works because refL is a new line. Project should create a new line, not modify the existing one
                 // Get directions of the line
                 Vector hDir = cLine.GetDirection();
                 hDir.GetNormalised();
@@ -478,11 +476,11 @@ namespace ModelLaundry_Engine
                 List<Snap> snaps = new List<Snap>();
                 foreach (Line refL in refLines)
                 {
-                    if (cLine.GetDirection().IsParallel(refL.GetDirection(), angleTol) && cLine.DistanceTo(refL) < tolerance)
+                    if (cLine.GetDirection().IsParallel(refL.GetDirection(), angleTol) == 1 && cLine.GetDistance(refL) < tolerance)
                     {
                         Vector startDir = (pDir * (refL.Start - cLine.Start)) * pDir;
                         Vector endDir = (pDir * (refL.End - cLine.End)) * pDir;
-                        Vector dir = (startDir.Length < endDir.GetLength()) ? startDir : endDir;
+                        Vector dir = (startDir.GetLength() < endDir.GetLength()) ? startDir : endDir;
                         if (dir.GetLength() < tolerance)
                             snaps.Add(new Snap(dir, refL));
                     }
@@ -494,14 +492,15 @@ namespace ModelLaundry_Engine
                     Snap bestSnap = snaps[0];
                     for (int i = 1; i < snaps.Count; i++)
                     {
-                        if (snaps[i].dir.Length < bestSnap.dir.Length)
+                        if (snaps[i].dir.GetLength() < bestSnap.dir.GetLength())
                             bestSnap = snaps[i];
                     }
-                    Snap startSnap = new Snap(bestSnap.target.ProjectOnInfiniteLine(cLine.StartPoint) - cLine.StartPoint, bestSnap.target);
-                    Snap endSnap = new Snap(bestSnap.target.ProjectOnInfiniteLine(cLine.EndPoint) - cLine.EndPoint, bestSnap.target);
+                        
+                    Snap startSnap = new Snap(Transform.GetProjected(cLine.Start, bestSnap.target) - cLine.Start, bestSnap.target);
+                    Snap endSnap = new Snap(Transform.GetProjected(cLine.End, bestSnap.target) - cLine.End, bestSnap.target);
 
-                    snapDirections[getPointCode(cLine.StartPoint)].Add(startSnap);
-                    snapDirections[getPointCode(cLine.EndPoint)].Add(endSnap);
+                    snapDirections[getPointCode(cLine.Start)].Add(startSnap);
+                    snapDirections[getPointCode(cLine.End)].Add(endSnap);
                 }
             }
 
@@ -542,7 +541,7 @@ namespace ModelLaundry_Engine
                     }
                     else
                     {
-                        cleanSnaps = cleanSnaps.OrderBy(x => x.dir.Length).ToList();
+                        cleanSnaps = cleanSnaps.OrderBy(x => x.dir.GetLength()).ToList();
                         Point target = Measure.GetIntersection(snaps[0].target, snaps[1].target);
                         target.Z = pt.Z;
                         newPoints.Add(target);
@@ -598,9 +597,12 @@ namespace ModelLaundry_Engine
             {
                 output = Snapping.PointToPointSnap((ICurve)geometry, refPoints, tolerance);
             }
-            else if (geometry is List<ICurve>)
+            if (geometry is List<ICurve>)
             {
-                output = Snapping.PointToPointSnap((List<ICurve>)geometry, refPoints, tolerance);
+                foreach (ICurve curve in geometry as List<ICurve>)
+                {
+                    output = Snapping.PointToPointSnap(curve, refPoints, tolerance);
+                }
             }
 
             // Return the final result

@@ -14,7 +14,7 @@ namespace BH.Engine.Base
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static IBHoMGeometry SetGeometry(this BHoMObject obj)
+        public static IBHoMGeometry SetGeometry(this BHoMObject obj, IBHoMGeometry geometry)
         {
             return null;
         }
