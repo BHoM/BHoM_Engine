@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using Accord.Audio;
 
-namespace MachineLearning_Engine
+namespace BH.Engine.MachineLearning
 {
     public class SoundLevelAnalyser
     {

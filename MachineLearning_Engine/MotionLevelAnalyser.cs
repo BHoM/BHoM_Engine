@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Accord.Video;
 using System.Drawing;
 using Accord.Vision.Motion;
@@ -11,7 +8,7 @@ using System.Threading;
 using System.Drawing.Imaging;
 
 
-namespace MachineLearning_Engine
+namespace BH.Engine.MachineLearning
 {
     public class MotionLevelAnalyser
     {
