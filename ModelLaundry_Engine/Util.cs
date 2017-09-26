@@ -236,14 +236,8 @@ namespace ModelLaundry_Engine
             // Prepare the result
             object result = element;
             if (element is BH.oM.Base.BHoMObject)
-            {
-                result = (BH.oM.Base.BHoMObject)((BH.oM.Base.BHoMObject)element).ShallowClone();
-                ((BH.oM.Base.BHoMObject)result).SetGeometry(output);
-            }
-            else if (element is IBHoMGeometry)
-            {
-                result = output;
-            }
+            result = output;
+
             // Return the result
             return result;
 
