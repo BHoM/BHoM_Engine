@@ -8,20 +8,19 @@ using System.Threading.Tasks;
 
 namespace BH.Engine.Structure
 {
-    public static partial class Measure
+    public static partial class Verify
     {
 
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Plane GetPlane(this Storey storey)
+        public static bool IsConstrained(this Node node)
         {
-            return new Plane(new Point(0, 0, storey.Elevation), new Vector(0, 0, 1));
+            return node.Constraint != null;
         }
 
         /***************************************************/
-
 
     }
 }

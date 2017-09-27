@@ -8,20 +8,20 @@ using System.Threading.Tasks;
 
 namespace BH.Engine.Structure
 {
-    public static partial class Measure
+    public static partial class Transform
     {
 
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Plane GetPlane(this Storey storey)
+        public static void FlipNodes(this Bar bar)
         {
-            return new Plane(new Point(0, 0, storey.Elevation), new Vector(0, 0, 1));
+            Node tempNode = bar.StartNode;
+            bar.StartNode = bar.EndNode;
+            bar.EndNode = tempNode;
         }
 
         /***************************************************/
-
-
     }
 }

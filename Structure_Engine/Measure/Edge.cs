@@ -1,4 +1,5 @@
-﻿using BH.oM.Geometry;
+﻿using BH.Engine.Geometry;
+using BH.oM.Geometry;
 using BH.oM.Structural.Elements;
 using System;
 using System.Collections.Generic;
@@ -15,13 +16,17 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Plane GetPlane(this Storey storey)
+        public static List<ICurve> GetEdges(this Panel panel)
         {
-            return new Plane(new Point(0, 0, storey.Elevation), new Vector(0, 0, 1));
+            if (panel.Surface != null)
+                return panel.Surface.GetExternalEdges();
+            else
+                return new List<ICurve>();
         }
 
         /***************************************************/
 
 
     }
+
 }

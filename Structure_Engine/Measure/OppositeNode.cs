@@ -15,13 +15,15 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Plane GetPlane(this Storey storey)
+        public static Node GetOppositeNode(this Bar bar, Node node)
         {
-            return new Plane(new Point(0, 0, storey.Elevation), new Vector(0, 0, 1));
+            if (bar.EndNode.BHoM_Guid == node.BHoM_Guid)
+                return bar.StartNode;
+            else
+                return bar.EndNode;
         }
 
         /***************************************************/
-
-
     }
+
 }

@@ -15,7 +15,7 @@ namespace BH.Engine.Geometry
 
         public static IBHoMGeometry GetClone(this IBHoMGeometry geometry)
         {
-            return _GetClone(geometry as dynamic);
+            return GetClone(geometry as dynamic);
         }
 
         /***************************************************/

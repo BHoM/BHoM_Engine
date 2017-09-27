@@ -1,4 +1,5 @@
-﻿using BH.oM.Geometry;
+﻿using BH.Engine.Geometry;
+using BH.oM.Geometry;
 using BH.oM.Structural.Elements;
 using System;
 using System.Collections.Generic;
@@ -15,9 +16,14 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Plane GetPlane(this Storey storey)
+        public static Point GetCentroid(this oM.Structural.Elements.PanelFace panelFace)
         {
-            return new Plane(new Point(0, 0, storey.Elevation), new Vector(0, 0, 1));
+            List<Point> pts = new List<Point>(4);
+
+            foreach (Node n in panelFace.Nodes)
+                pts.Add(n.Point);
+
+            return pts.GetAverage();
         }
 
         /***************************************************/
