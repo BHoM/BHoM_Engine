@@ -1,5 +1,4 @@
 ﻿using BH.oM.Geometry;
-using BHoM.Geometry;
 using System;
 using System.Collections.Generic;
 using System.Linq;

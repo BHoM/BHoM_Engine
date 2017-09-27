@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using BHG = BHoM.Geometry;
-using BHA = BHoM.Acoustic;
+using BHG = BH.oM.Geometry;
+using BHA = BH.oM.Acoustic;
+using BH.Engine.Geometry;
 
 namespace AcousticSPI_Engine
 {
-    public static class STICalculator
+    public static partial class Measure
     {
         public static List<double> Solve(List<double> speech, List<double> noise, List<double> RT, List<BHA.Speaker> speakers, BHA.Zone zone)
         {
@@ -88,8 +89,8 @@ namespace AcousticSPI_Engine
         private static void CalcSoundLevel(double speech, double revTime, BHG.Point location, BHA.Speaker speaker, BHA.Zone zone, double frequency, double octave, double closestDist, out double level, out double amb_pascals, out double revDist, out double timeConstant, out double closestdist, out double gain)
         {
             BHG.Vector deltaPos = location - speaker.Position;
-            double recieverAngle = BHG.VectorUtils.VectorAngle(deltaPos, speaker.Direction) * (180 / Math.PI);
-            double distance = deltaPos.Length;
+            double recieverAngle = BH.Engine.Geometry.Measure.GetAngle(deltaPos, speaker.Direction) * (180 / Math.PI);
+            double distance = deltaPos.GetLength();
 
             double orientationFactor = speaker.GetGainAngleFactor(recieverAngle, octave);  // take out octave, Matlab does some weird thing here where frequency is tied to octave
 
