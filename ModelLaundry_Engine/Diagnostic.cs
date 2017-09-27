@@ -4,8 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BH.oM.Geometry;
+using BH.oM.DataStructure;
 using BH.oM.Base;
 using BH.Engine.DataStructure;
+using BH.Engine.Geometry;
+
 
 namespace ModelLaundry_Engine
 {
@@ -18,9 +21,9 @@ namespace ModelLaundry_Engine
             // Get the control points in the matrix
             List<Point> refPoints = new List<Point>();
             List<ICurve> refGeom = Util.GetGeometries(elements);
-            foreach (Curve curve in refGeom)
+            foreach (ICurve curve in refGeom)
             {
-                foreach (Point pt in curve.ControlPoints)
+                foreach (Point pt in curve.GetControlPoints())
                     matrix.AddPoint(pt);
             }
 
