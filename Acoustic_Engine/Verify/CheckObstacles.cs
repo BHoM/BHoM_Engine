@@ -12,7 +12,7 @@ using BH.Engine.Geometry;
 
 namespace BH.Engine.Acoustic
 {
-    public static partial class Analyse
+    public static partial class Verify
     {
         public static bool CheckObstacles(Ray ray, List<Panel> surfaces, bool ClearRays = true, double tol = 0.00001)
         {

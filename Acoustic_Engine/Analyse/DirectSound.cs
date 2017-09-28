@@ -31,7 +31,7 @@ namespace BH.Engine.Acoustic
         {
             Line path = new Line(source.Position, target.Position);
             Ray ray = new Ray(path, source.SpeakerID, target.ReceiverID);
-            return CheckObstacles(ray,surfaces) ? ray : default(Ray);
+            return Verify.CheckObstacles(ray,surfaces) ? ray : default(Ray);
         }
         
         /// <summary>
@@ -54,7 +54,7 @@ namespace BH.Engine.Acoustic
                     }
                 }
                 if (surfaces == null || surfaces.Count == 0) { return rays; }
-                else { return CheckObstacles(rays, surfaces); }
+                else { return Verify.CheckObstacles(rays, surfaces); }
             }
             // else
             //     throw new Exception("Parallel parameter cannot be left blank or be higher than 3. Please specify calculation method: [0] Serial, [1] CPU Threaded, [2] CUDA accelerated. WIP: GPU not working, [3] OpenCL accelerated. WIP: Not Working");
@@ -115,7 +115,7 @@ namespace BH.Engine.Acoustic
             }
 
             //if (surfaces == null || surfaces.Count == 0) { return rays.ToList(); }
-            //else { return Utils.CheckObstacles(rays.ToList(), surfaces); }
+            //else { return Verify.CheckObstacles(rays.ToList(), surfaces); }
             return rays;
         }
 
@@ -142,7 +142,7 @@ namespace BH.Engine.Acoustic
                        }
                    });
             if (surfaces == null || surfaces.Count == 0) { return rays; }
-            else { return CheckObstacles(rays, surfaces); }
+            else { return Verify.CheckObstacles(rays, surfaces); }
         }
 
         /// <summary>
