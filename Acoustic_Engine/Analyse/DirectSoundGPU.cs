@@ -23,7 +23,7 @@ namespace BH.Engine.Acoustic
             rays[tId] = new Ray(new Line(sources[tId].Position, targets[tId].Position), tId, tId);
         }
         
-        public static Ray[] Solve(Speaker[] sources, Receiver[] targets)
+        public static Ray[] DirectSoundGPU(Speaker[] sources, Receiver[] targets)
         {
             CudafyModes.Target = eGPUType.OpenCL;
             CudafyModes.DeviceId = 2;

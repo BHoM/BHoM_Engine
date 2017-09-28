@@ -27,7 +27,7 @@ namespace BH.Engine.Acoustic
         /// <param name="target">BHoM acoustic Receivers</param>
         /// <param name="surfaces">BHoM acoustic Panel</param>
         /// <returns>Returns a list of BHoM Acoustic Rays</returns>
-        public static Ray Solve(Speaker source, Receiver target, List<Panel> surfaces)
+        public static Ray DirectSound(Speaker source, Receiver target, List<Panel> surfaces)
         {
             Line path = new Line(source.Position, target.Position);
             Ray ray = new Ray(path, source.SpeakerID, target.ReceiverID);
@@ -41,7 +41,7 @@ namespace BH.Engine.Acoustic
         /// <param name="targets">BHoM acoustic Receivers</param>
         /// <param name="surfaces">BHoM acoustic Panel</param>
         /// <returns>Returns a list of BHoM Acoustic Rays</returns>
-        public static List<Ray> Solve(List<Speaker> sources, List<Receiver> targets, List<Panel> surfaces)
+        public static List<Ray> DirectSound(List<Speaker> sources, List<Receiver> targets, List<Panel> surfaces)
         {
             List<Ray> rays = new List<Ray>();
             {
@@ -67,7 +67,7 @@ namespace BH.Engine.Acoustic
         /// <param name="targets">BHoM acoustic Receivers</param>
         /// <param name="surfaces">BHoM acoustic Panel</param>
         /// <returns>Returns a list of BHoM Acoustic Rays</returns>
-        public static List<Ray> SolveCpu(List<Speaker> sources, List<Receiver> targets, List<Panel> surfaces)
+        public static List<Ray> DirectSoundCPU(List<Speaker> sources, List<Receiver> targets, List<Panel> surfaces)
         {
             /*
             ConcurrentBag<Ray> rays = new ConcurrentBag<Ray>();
@@ -128,7 +128,7 @@ namespace BH.Engine.Acoustic
         /// <param name="surfaces">BHoM acoustic Panel</param>
         /// <returns>Returns a list of BHoM Acoustic Rays</returns>
         [GpuManaged]
-        public static List<Ray> SolveCuda(List<Speaker> sources, List<Receiver> targets, List<Panel> surfaces)
+        public static List<Ray> DirectSoundCuda(List<Speaker> sources, List<Receiver> targets, List<Panel> surfaces)
         {
             List<Ray> rays = new List<Ray>();
             Gpu.Default.For(0, sources.Count,
@@ -152,7 +152,7 @@ namespace BH.Engine.Acoustic
         /// <param name="targets">BHoM acoustic Receivers</param>
         /// <param name="surfaces">BHoM acoustic Panel</param>
         /// <returns>Returns a list of BHoM Acoustic Rays</returns>
-        public static List<Ray> SolveOpenCL(List<Speaker> sources, List<Receiver> targets, List<Panel> surfaces)
+        public static List<Ray> DirectSoundOpenCL(List<Speaker> sources, List<Receiver> targets, List<Panel> surfaces)
         {
             // Formatting inputs
             Speaker[] _sources = sources.ToArray();
