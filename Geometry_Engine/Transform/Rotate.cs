@@ -141,9 +141,9 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        private static GeometryGroup _GetRotated(this GeometryGroup group, double rad, Vector axis)
+        private static CompositeGeometry _GetRotated(this CompositeGeometry group, double rad, Vector axis)
         {
-            return new GeometryGroup(group.Elements.Select(x => x.GetRotated(rad, axis)));
+            return new CompositeGeometry(group.Elements.Select(x => x.GetRotated(rad, axis)));
         }
     }
 }

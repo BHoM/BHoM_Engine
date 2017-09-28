@@ -71,13 +71,13 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        private static IList _GetExploded(this GeometryGroup group)
+        private static IList _GetExploded(this CompositeGeometry group)
         {
-            List<GeometryGroup> exploded = new List<GeometryGroup>();
+            List<CompositeGeometry> exploded = new List<CompositeGeometry>();
             List<IBHoMGeometry> elements = group.Elements;
 
             for (int i = 0; i < elements.Count; i++)
-                exploded.AddRange(elements[i].GetExploded() as List<GeometryGroup>);
+                exploded.AddRange(elements[i].GetExploded() as List<CompositeGeometry>);
 
             return exploded;
         }

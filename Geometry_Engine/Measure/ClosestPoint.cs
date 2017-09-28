@@ -190,7 +190,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        private static Point _GetClosestPoint(this GeometryGroup group, Point point)
+        private static Point _GetClosestPoint(this CompositeGeometry group, Point point)
         {
             throw new NotImplementedException();
         }

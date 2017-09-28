@@ -37,10 +37,10 @@ namespace ModelLaundry_Engine
             {
                 output = Util.HorizontalExtend((List<ICurve>)geometry, dist) as ICurve;
             }
-            //else if (geometry is GeometryGroup)
+            //else if (geometry is CompositeGeometry)
             //{
             //    List<ICurve> curves = geometry.GetExploded();
-            //    output = Util.HorizontalExtend(geometry.GetExploded(), dist) as GeometryGroup;
+            //    output = Util.HorizontalExtend(geometry.GetExploded(), dist) as CompositeGeometry;
             //}
 
             // Prepare the result

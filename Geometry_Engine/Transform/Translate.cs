@@ -138,9 +138,9 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        private static GeometryGroup _GetTranslated(this GeometryGroup group, Vector transform)
+        private static CompositeGeometry _GetTranslated(this CompositeGeometry group, Vector transform)
         {
-            return new GeometryGroup(group.Elements.Select(x => x.GetTranslated(transform)));
+            return new CompositeGeometry(group.Elements.Select(x => x.GetTranslated(transform)));
         }
     }
 }

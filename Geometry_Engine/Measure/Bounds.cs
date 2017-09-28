@@ -202,7 +202,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        private static BoundingBox _GetBounds(this GeometryGroup group)
+        private static BoundingBox _GetBounds(this CompositeGeometry group)
         {
             List<IBHoMGeometry> elements = group.Elements;
 
