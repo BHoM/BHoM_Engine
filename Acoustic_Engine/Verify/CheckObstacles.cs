@@ -18,7 +18,7 @@ namespace BH.Engine.Acoustic
         {
             for (int i = 0; i < surfaces.Count; i++)       //foreach surface
             {
-                if (Geometry.Measure.GetIntersections((Line)ray.Path, surfaces[i].Mesh) == null)    // if ray hits a surface
+                if (Geometry.Query.GetIntersections((Line)ray.Path, surfaces[i].Mesh) == null)    // if ray hits a surface
                 {
                     return true;
                 }
@@ -42,7 +42,7 @@ namespace BH.Engine.Acoustic
                 List<bool> checker = new List<bool>();
                 for (int j = 0; j < surfaces.Count; j++ )       //foreach surface
                 {
-                    if (Geometry.Measure.GetIntersections((Line)(rays[i].Path), surfaces[i].Mesh) == null)       // if ray hits a surface
+                    if (Geometry.Query.GetIntersections((Line)(rays[i].Path), surfaces[i].Mesh) == null)       // if ray hits a surface
                         checker.Add(true);
                 }
                 if (ClearRays && checker.Any())     //if rays hits any surface and output is ClearRays
@@ -73,7 +73,7 @@ namespace BH.Engine.Acoustic
                     List<bool> checker = new List<bool>();
                     for (int j = 0; j < surfaces.Count; j++)       //foreach surface
                     {
-                        if (Geometry.Measure.GetIntersections((Line)(rays[i].Path), surfaces[i].Mesh) == null)       // if ray hits a surface
+                        if (Geometry.Query.GetIntersections((Line)(rays[i].Path), surfaces[i].Mesh) == null)       // if ray hits a surface
                             checker.Add(true);
                     }
                     if (ClearRays && checker.Any())     //if rays hits any surface and output is ClearRays
@@ -103,7 +103,7 @@ namespace BH.Engine.Acoustic
                     List<bool> localCheck = new List<bool>();
                     for (int j = 0; j < surfaces.Count; j++)       //foreach surface
                     {
-                        if (Geometry.Measure.GetIntersections((Line)(rays[i].Path), surfaces[i].Mesh) == null)
+                        if (Geometry.Query.GetIntersections((Line)(rays[i].Path), surfaces[i].Mesh) == null)
                             localCheck.Add(true);
                     }
                     if (ClearRays && localCheck.Any())     //if rays hits any surface and output is ClearRays
