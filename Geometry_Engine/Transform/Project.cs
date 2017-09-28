@@ -149,9 +149,9 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        private static GeometryGroup _GetProjected(this GeometryGroup group, Plane p)
+        private static CompositeGeometry _GetProjected(this CompositeGeometry group, Plane p)
         {
-            return new GeometryGroup(group.Elements.Select(x => x.GetProjected(p)));
+            return new CompositeGeometry(group.Elements.Select(x => x.GetProjected(p)));
         }
     }
 }

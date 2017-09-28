@@ -183,7 +183,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static bool _IsInPlane(this GeometryGroup group, Plane plane, double tolerance = Tolerance.Distance)
+        public static bool _IsInPlane(this CompositeGeometry group, Plane plane, double tolerance = Tolerance.Distance)
         {
             Vector normal = plane.Normal;
             Point origin = plane.Origin;

@@ -151,9 +151,9 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        private static GeometryGroup _GetClone(GeometryGroup group)
+        private static CompositeGeometry _GetClone(CompositeGeometry group)
         {
-            return new GeometryGroup(group.Elements.Select(x => x.GetClone()));
+            return new CompositeGeometry(group.Elements.Select(x => x.GetClone()));
         }
 
     }

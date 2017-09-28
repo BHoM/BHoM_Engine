@@ -150,9 +150,9 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        private static GeometryGroup _GetTransformed(this GeometryGroup group, TransformMatrix transform)
+        private static CompositeGeometry _GetTransformed(this CompositeGeometry group, TransformMatrix transform)
         {
-            return new GeometryGroup(group.Elements.Select(x => x.GetTransformed(transform)));
+            return new CompositeGeometry(group.Elements.Select(x => x.GetTransformed(transform)));
         }
     }
 }

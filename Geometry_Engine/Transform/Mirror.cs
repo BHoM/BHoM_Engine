@@ -138,9 +138,9 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        private static GeometryGroup _GetMirrored(this GeometryGroup group, Plane p)
+        private static CompositeGeometry _GetMirrored(this CompositeGeometry group, Plane p)
         {
-            return new GeometryGroup(group.Elements.Select(x => x.GetMirrored(p)));
+            return new CompositeGeometry(group.Elements.Select(x => x.GetMirrored(p)));
         }
     }
 }
