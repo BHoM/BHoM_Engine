@@ -15,6 +15,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MachineLearning_Engine", "MachineLearning_Engine\MachineLearning_Engine.csproj", "{02F81857-2D83-42AB-A0D7-030DCDD4D49F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Acoustic_Engine", "Acoustic_Engine\Acoustic_Engine.csproj", "{68300030-BC17-49BD-A363-CFCD3828E812}"
+	ProjectSection(ProjectDependencies) = postProject
+		{89AB2DCB-EF87-4CBA-B59C-C16A8A71D333} = {89AB2DCB-EF87-4CBA-B59C-C16A8A71D333}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataStructure_Engine", "DataStructure_Engine\DataStructure_Engine.csproj", "{8082CA2A-AC5C-4690-9F09-960E0D3E4102}"
 EndProject
