@@ -7,7 +7,7 @@ using BHG = BH.oM.Geometry;
 using BHA = BH.oM.Acoustic;
 using BH.Engine.Geometry;
 
-namespace AcousticSPI_Engine
+namespace BH.Engine.Acoustic
 {
     public static partial class Query
     {
