@@ -11,7 +11,7 @@ namespace AcousticSPI_Engine
 {
     public static partial class Query
     {
-        public static List<double> Solve(List<double> speech, List<double> noise, List<double> RT, List<BHA.Speaker> speakers, BHA.Zone zone)
+        public static List<double> GetSTI(List<double> speech, List<double> noise, List<double> RT, List<BHA.Speaker> speakers, BHA.Zone zone)
         {
             List<double> STI = new List<double>();
             List<double> RASTI = new List<double>();

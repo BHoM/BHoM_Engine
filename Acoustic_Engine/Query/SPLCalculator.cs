@@ -14,7 +14,7 @@ namespace BH.Engine.Acoustic
         /// </summary>
         /// <param name="rays"></param>
         /// <returns></returns>
-        public static double  Solve(List<Ray> rays)
+        public static double  GetSoundPressureLevel(List<Ray> rays)
         {
             double SPL = 0;
             for (int i=0; i<rays.Count; i++)
@@ -24,7 +24,7 @@ namespace BH.Engine.Acoustic
             return SPL;
         }
 
-        public static double Solve(List<double> spl)
+        public static double GetSumSPL(List<double> spl)
         {
             double SPL = 0;
             for (int i = 0; i < spl.Count; i++)
