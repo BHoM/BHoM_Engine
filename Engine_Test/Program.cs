@@ -109,36 +109,36 @@ namespace Engine_Test
 
         //static void DirectVectorLengthCall(int iter)
         //{
-        //    Measure._GetLength(testVectors[iter % nbSamples]);
+        //    Query._GetLength(testVectors[iter % nbSamples]);
         //}
 
         //static void PolymorphVectorLengthCall(int iter)
         //{
-        //    Measure.GetLength(testVectors[iter % nbSamples]);
+        //    Query.GetLength(testVectors[iter % nbSamples]);
         //}
 
         ///***************************************************/
 
         //static void DirectLineLengthCall(int iter)
         //{
-        //    Measure._GetLength(testLines[iter % nbSamples]);
+        //    Query._GetLength(testLines[iter % nbSamples]);
         //}
 
         //static void PolymorphLineLengthCall(int iter)
         //{
-        //    Measure.GetLength(testLines[iter % nbSamples]);
+        //    Query.GetLength(testLines[iter % nbSamples]);
         //}
 
         ///***************************************************/
 
         //static void DirectPolyLineLengthCall(int iter)
         //{
-        //    Measure._GetLength(testPoly[iter % nbSamples]);
+        //    Query._GetLength(testPoly[iter % nbSamples]);
         //}
 
         //static void PolymorphPolyLineLengthCall(int iter)
         //{
-        //    Measure.GetLength(testPoly[iter % nbSamples]);
+        //    Query.GetLength(testPoly[iter % nbSamples]);
         //}
 
         ///***************************************************/

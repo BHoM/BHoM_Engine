@@ -7,16 +7,16 @@ using System.Threading.Tasks;
 
 namespace BH.Engine.Geometry
 {
-    public static partial class Create
+    public static partial class Query
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Plane CreatePlane(Point p1, Point p2, Point p3)
+        public static Vector GetExtents(this BoundingBox box)
         {
-            Vector normal = Query.GetCrossProduct(p2 - p1, p3 - p1).GetNormalised();
-            return new Plane(p1.GetClone() as Point, normal);
+            return new Vector(box.Max.X - box.Min.X, box.Max.Y - box.Min.Y, box.Max.Z - box.Min.Z);
         }
+
     }
 }

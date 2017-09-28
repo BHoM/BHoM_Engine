@@ -344,7 +344,7 @@ namespace ModelLaundry_Engine
                 {
                     if (cLine.GetDirection().IsParallel(refL.GetDirection(), 0.02)==1)
                         continue;
-                    Point intersection = Measure.GetIntersection(cLine, refL);
+                    Point intersection = Query.GetIntersection(cLine, refL);
                     if (intersection != null)
                     {
                         Vector startDir = intersection - cLine.Start;
@@ -371,7 +371,7 @@ namespace ModelLaundry_Engine
 
                     for (int i = 1; i < snaps.Count; i++)
                     {
-                        double sin = Math.Sin(Measure.GetAngle(refDir, snaps[i].dir));
+                        double sin = Math.Sin(Query.GetAngle(refDir, snaps[i].dir));
                         if (!Double.IsNaN(sin))
                             finalDir += snaps[i].dir * sin;
                     }
@@ -542,7 +542,7 @@ namespace ModelLaundry_Engine
                     else
                     {
                         cleanSnaps = cleanSnaps.OrderBy(x => x.dir.GetLength()).ToList();
-                        Point target = Measure.GetIntersection(snaps[0].target, snaps[1].target);
+                        Point target = Query.GetIntersection(snaps[0].target, snaps[1].target);
                         target.Z = pt.Z;
                         newPoints.Add(target);
                     }

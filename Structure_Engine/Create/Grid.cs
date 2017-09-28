@@ -18,7 +18,7 @@ namespace BH.Engine.Structure
 
         public static Grid CreateGrid(Line line)
         {
-            Plane plane = new Plane(line.Start, Geometry.Measure.GetCrossProduct(line.End - line.Start, Vector.ZAxis));
+            Plane plane = new Plane(line.Start, Geometry.Query.GetCrossProduct(line.End - line.Start, Vector.ZAxis));
             return new Grid(plane, line);
         }
 
@@ -26,7 +26,7 @@ namespace BH.Engine.Structure
 
         public static Grid CreateGrid(Point origin, Vector direction)
         {
-            Plane plane = new Plane(origin, Geometry.Measure.GetCrossProduct(direction, Vector.ZAxis));
+            Plane plane = new Plane(origin, Geometry.Query.GetCrossProduct(direction, Vector.ZAxis));
             Line line = new Line(origin, origin + direction * 20);
             return new Grid(plane, line);
         }

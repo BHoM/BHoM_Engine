@@ -73,9 +73,9 @@
     <Compile Include="Analyse\DirectSound.cs" />
     <Compile Include="Analyse\DirectSoundGPU.cs" />
     <Compile Include="Analyse\GpuCompute.cs" />
-    <Compile Include="Measure\Length.cs" />
-    <Compile Include="Measure\SPLCalculator.cs" />
-    <Compile Include="Measure\STICalculator.cs" />
+    <Compile Include="Query\Length.cs" />
+    <Compile Include="Query\SPLCalculator.cs" />
+    <Compile Include="Query\STICalculator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Analyse\CheckObstacles.cs" />
   </ItemGroup>

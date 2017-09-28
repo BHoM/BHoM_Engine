@@ -7,16 +7,19 @@ using System.Threading.Tasks;
 
 namespace BH.Engine.Geometry
 {
-    public static partial class Create
+    public static partial class Query
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Plane CreatePlane(Point p1, Point p2, Point p3)
+        public static double GetRadius(this Arc arc)
         {
-            Vector normal = Query.GetCrossProduct(p2 - p1, p3 - p1).GetNormalised();
-            return new Plane(p1.GetClone() as Point, normal);
+            Point centre = arc.GetCentre();
+            if (centre != null)
+                return centre.GetDistance(arc.Start);
+            else
+                return 0;
         }
     }
 }
