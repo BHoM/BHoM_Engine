@@ -98,7 +98,7 @@ namespace BH.Engine.Geometry
         /**** Private Methods                           ****/
         /***************************************************/
 
-        public static List<IBHoMGeometry> GetExploded(this IBHoMGeometry geometry)
+        private static List<IBHoMGeometry> GetExploded(this IBHoMGeometry geometry)
         {
             return new List<IBHoMGeometry> { geometry };
         }
