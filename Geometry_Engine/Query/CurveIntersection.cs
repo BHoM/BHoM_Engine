@@ -10,7 +10,14 @@ namespace BH.Engine.Geometry
     public static partial class Query
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /**** Public Methods - With Line                ****/
+        /***************************************************/
+
+        public static List<Point> GetIntersections(this Line curve1, Line curve2, double tolerance = Tolerance.Distance)
+        {
+            return new List<Point> { curve1.GetIntersection(curve2, false, tolerance) };
+        }
+
         /***************************************************/
 
         public static Point GetIntersection(this Line line1, Line line2, bool useInfiniteLines = false, double tolerance = Tolerance.Distance)
@@ -50,6 +57,20 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        public static List<Point> GetIntersections(this Polyline curve1, Line curve2, double tolerance = Tolerance.Distance)
+        {
+            return GetIntersections(curve2, curve1, tolerance);
+        }
+
+        /***************************************************/
+
+        public static List<Point> GetIntersections(this Line curve1, Polyline curve2, double tolerance = Tolerance.Distance)
+        {
+            throw new NotImplementedException();
+        }
+
+        /***************************************************/
+
         public static List<Point> GetIntersections(this List<Line> lines, bool useInfiniteLine = true, double tolerance = Tolerance.Distance)
         {
             // Get the bounding boxes
@@ -73,129 +94,111 @@ namespace BH.Engine.Geometry
             return intersections;
         }
 
+
+        /***************************************************/
+        /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
-        public static List<Point> GetIntersections(this ICurve curve1, ICurve curve2, double tolerance = Tolerance.Distance)
+        public static List<Point> _GetIntersections(this ICurve curve1, ICurve curve2, double tolerance = Tolerance.Distance)
         {
-            return _GetIntersections(curve1 as dynamic, curve2 as dynamic, tolerance);
+            return GetIntersections(curve1 as dynamic, curve2 as dynamic, tolerance);
         }
 
 
-        /***************************************************/
-        /**** Public Methods                            ****/
-        /***************************************************/
 
-        private static List<Point> _GetIntersections(this ICurve curve1, ICurve curve2, double tolerance = Tolerance.Distance)
-        {
-            //List<Point> result = new List<Point>();
-            //if (BoundingBox.InRange(c1.Bounds(), c2.Bounds()))
-            //{
-            //    t1 = new List<double>();
-            //    t2 = new List<double>();
-            //    tolerance = tolerance * tolerance;
-            //    double[] p11 = c1.ControlPoint(0);
-            //    double knot1 = 0;
-            //    for (int i = c1.Degree; i < c1.Knots.Length; i++)
-            //    {
-            //        if (c1.Knots[i] == knot1) continue;
-            //        knot1 = c1.Knots[i];
 
-            //        double[] p12 = c1.PointAt(knot1);
-            //        double[] p21 = c2.ControlPoint(0);
-            //        double[] v1 = ArrayUtils.Sub(p12, p11);
-            //        double knot2 = 0;
-            //        for (int j = c2.Degree; j < c2.Knots.Length; j++)
-            //        {
-            //            if (c2.Knots[j] == knot2) continue;
-            //            knot2 = c2.Knots[j];
+        //Legacy method
 
-            //            double[] p22 = c2.PointAt(knot2);
-            //            double[] v2 = ArrayUtils.Sub(p22, p21);
-            //            double[] intersectPoint = ArrayUtils.Intersect(p11, v1, p21, v2, true);
+        //private static List<Point> GetIntersections(this ICurve curve1, ICurve curve2, double tolerance = Tolerance.Distance)
+        //{
+        //    //List<Point> result = new List<Point>();
+        //    //if (BoundingBox.InRange(c1.Bounds(), c2.Bounds()))
+        //    //{
+        //    //    t1 = new List<double>();
+        //    //    t2 = new List<double>();
+        //    //    tolerance = tolerance * tolerance;
+        //    //    double[] p11 = c1.ControlPoint(0);
+        //    //    double knot1 = 0;
+        //    //    for (int i = c1.Degree; i < c1.Knots.Length; i++)
+        //    //    {
+        //    //        if (c1.Knots[i] == knot1) continue;
+        //    //        knot1 = c1.Knots[i];
 
-            //            if (intersectPoint != null)
-            //            {
+        //    //        double[] p12 = c1.PointAt(knot1);
+        //    //        double[] p21 = c2.ControlPoint(0);
+        //    //        double[] v1 = ArrayUtils.Sub(p12, p11);
+        //    //        double knot2 = 0;
+        //    //        for (int j = c2.Degree; j < c2.Knots.Length; j++)
+        //    //        {
+        //    //            if (c2.Knots[j] == knot2) continue;
+        //    //            knot2 = c2.Knots[j];
 
-            //                double maxT1 = c1.Knots[i];
-            //                double minT1 = c1.Knots[i - c1.Degree];
+        //    //            double[] p22 = c2.PointAt(knot2);
+        //    //            double[] v2 = ArrayUtils.Sub(p22, p21);
+        //    //            double[] intersectPoint = ArrayUtils.Intersect(p11, v1, p21, v2, true);
 
-            //                double maxT2 = c2.Knots[j];
-            //                double minT2 = c2.Knots[j - c2.Degree];
+        //    //            if (intersectPoint != null)
+        //    //            {
 
-            //                if (c1.Degree > 1 || c2.Degree > 1)
-            //                {
+        //    //                double maxT1 = c1.Knots[i];
+        //    //                double minT1 = c1.Knots[i - c1.Degree];
 
-            //                    double[] p1Max = c1.UnsafePointAt(maxT1);
-            //                    double[] p1Min = c1.UnsafePointAt(minT1);
+        //    //                double maxT2 = c2.Knots[j];
+        //    //                double minT2 = c2.Knots[j - c2.Degree];
 
-            //                    double[] p2Max = c2.UnsafePointAt(maxT2);
-            //                    double[] p2Min = c2.UnsafePointAt(minT2);
+        //    //                if (c1.Degree > 1 || c2.Degree > 1)
+        //    //                {
 
-            //                    int interations = 0;
-            //                    double d1 = double.MaxValue;
-            //                    double d2 = double.MaxValue;
-            //                    while (interations++ < 10)
-            //                    {
-            //                        if (d1 > tolerance)
-            //                        {
-            //                            d1 = UpdateNearestEnd(c1, intersectPoint, ref minT1, ref maxT1, ref p1Min, ref p1Max);
-            //                            v1 = ArrayUtils.Sub(p1Max, p1Min);
-            //                        }
-            //                        if (d2 > tolerance)
-            //                        {
-            //                            d2 = UpdateNearestEnd(c2, intersectPoint, ref minT2, ref maxT2, ref p2Min, ref p2Max);
-            //                            v2 = ArrayUtils.Sub(p2Max, p2Min);
-            //                        }
-            //                        intersectPoint = ArrayUtils.Intersect(p1Min, v1, p2Min, v2, false);
+        //    //                    double[] p1Max = c1.UnsafePointAt(maxT1);
+        //    //                    double[] p1Min = c1.UnsafePointAt(minT1);
 
-            //                        if (d1 < tolerance && d2 < tolerance) break;
-            //                    }
+        //    //                    double[] p2Max = c2.UnsafePointAt(maxT2);
+        //    //                    double[] p2Min = c2.UnsafePointAt(minT2);
 
-            //                    t1.Add((minT1 + maxT1) / 2);
-            //                    t2.Add((minT2 + maxT2) / 2);
-            //                }
-            //                else
-            //                {
-            //                    t1.Add(minT1 + (maxT1 - minT1) * ArrayUtils.Length(ArrayUtils.Sub(intersectPoint, p11)) / ArrayUtils.Length(v1));
-            //                    t1.Add(minT2 + (maxT2 - minT2) * ArrayUtils.Length(ArrayUtils.Sub(intersectPoint, p21)) / ArrayUtils.Length(v2));
-            //                }
+        //    //                    int interations = 0;
+        //    //                    double d1 = double.MaxValue;
+        //    //                    double d2 = double.MaxValue;
+        //    //                    while (interations++ < 10)
+        //    //                    {
+        //    //                        if (d1 > tolerance)
+        //    //                        {
+        //    //                            d1 = UpdateNearestEnd(c1, intersectPoint, ref minT1, ref maxT1, ref p1Min, ref p1Max);
+        //    //                            v1 = ArrayUtils.Sub(p1Max, p1Min);
+        //    //                        }
+        //    //                        if (d2 > tolerance)
+        //    //                        {
+        //    //                            d2 = UpdateNearestEnd(c2, intersectPoint, ref minT2, ref maxT2, ref p2Min, ref p2Max);
+        //    //                            v2 = ArrayUtils.Sub(p2Max, p2Min);
+        //    //                        }
+        //    //                        intersectPoint = ArrayUtils.Intersect(p1Min, v1, p2Min, v2, false);
 
-            //                result.Add(new Point(intersectPoint));
-            //            }
-            //            p21 = p22;
-            //        }
-            //        p11 = p12;
-            //    }
-            //}
-            //else
-            //{
-            //    t1 = null;
-            //    t2 = null;
-            //}
-            //return result;
+        //    //                        if (d1 < tolerance && d2 < tolerance) break;
+        //    //                    }
 
-            throw new NotImplementedException();
-        }
+        //    //                    t1.Add((minT1 + maxT1) / 2);
+        //    //                    t2.Add((minT2 + maxT2) / 2);
+        //    //                }
+        //    //                else
+        //    //                {
+        //    //                    t1.Add(minT1 + (maxT1 - minT1) * ArrayUtils.Length(ArrayUtils.Sub(intersectPoint, p11)) / ArrayUtils.Length(v1));
+        //    //                    t1.Add(minT2 + (maxT2 - minT2) * ArrayUtils.Length(ArrayUtils.Sub(intersectPoint, p21)) / ArrayUtils.Length(v2));
+        //    //                }
 
-        /***************************************************/
+        //    //                result.Add(new Point(intersectPoint));
+        //    //            }
+        //    //            p21 = p22;
+        //    //        }
+        //    //        p11 = p12;
+        //    //    }
+        //    //}
+        //    //else
+        //    //{
+        //    //    t1 = null;
+        //    //    t2 = null;
+        //    //}
+        //    //return result;
 
-        private static List<Point> _GetIntersections(this Line curve1, Line curve2, double tolerance = Tolerance.Distance)
-        {
-            return new List<Point> { curve1.GetIntersection(curve2, false, tolerance) };
-        }
-
-        /***************************************************/
-
-        private static List<Point> _GetIntersections(this Line curve1, Polyline curve2, double tolerance = Tolerance.Distance)
-        {
-            throw new NotImplementedException();
-        }
-
-        /***************************************************/
-
-        private static List<Point> _GetIntersections(this Polyline curve1, Line curve2, double tolerance = Tolerance.Distance)
-        {
-            return _GetIntersections(curve2, curve1, tolerance);
-        }
+        //    throw new NotImplementedException();
+        //}
     }
 }

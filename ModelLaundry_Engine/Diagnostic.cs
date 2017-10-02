@@ -23,7 +23,7 @@ namespace ModelLaundry_Engine
             List<ICurve> refGeom = Util.GetGeometries(elements);
             foreach (ICurve curve in refGeom)
             {
-                foreach (Point pt in curve.GetControlPoints())
+                foreach (Point pt in curve._GetControlPoints())
                     matrix.AddPoint(pt);
             }
 

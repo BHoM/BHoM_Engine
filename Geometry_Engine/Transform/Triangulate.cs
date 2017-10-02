@@ -9,15 +9,11 @@ namespace BH.Engine.Geometry
 {
     public static partial class Transform
     {
-        #region Public Methods
-        public static dynamic GetTriangulated(this IBHoMGeometry geo)   // TODO Verify that <dynamic> type as output type is correct
-        {
-            return _GetTriangulated(geo as dynamic);
-        }
-        #endregion
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
 
-        #region Private Methods
-        private static Mesh _GetTriangulated(this Mesh mesh)
+        public static Mesh GetTriangulated(this Mesh mesh)
         {
             Mesh tMesh = new Mesh();
             List<Point> vertices = mesh.Vertices;
@@ -57,6 +53,5 @@ namespace BH.Engine.Geometry
             }
             return tMesh;
         }
-        #endregion
     }
 }

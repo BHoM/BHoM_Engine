@@ -10,27 +10,17 @@ namespace BH.Engine.Geometry
     public static partial class Query
     {
         /***************************************************/
-        /**** Public Methods                            ****/
-        /***************************************************/
-
-        public static Point GetStartPoint(this ICurve curve)
-        {
-            return _GetStartPoint(curve as dynamic);
-        }
-
-
-        /***************************************************/
-        /**** Private Methods                           ****/
+        /**** Public Methods - Curves                   ****/
         /***************************************************/
         
-        private static Point _GetStartPoint(this Arc arc)
+        public static Point GetStartPoint(this Arc arc)
         {
             return arc.Start;
         }
 
         /***************************************************/
 
-        private static Point _GetStartPoint(this Circle circle)
+        public static Point GetStartPoint(this Circle circle)
         {
             Vector n = circle.Normal;
             Vector startDir = Math.Abs(n.Z) < Math.Abs(n.X) ? new Vector(n.Y, -n.X, 0) : new Vector(0, n.Z, -n.Y);
@@ -39,14 +29,14 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        private static Point _GetStartPoint(this Line line)
+        public static Point GetStartPoint(this Line line)
         {
             return line.Start;
         }
 
         /***************************************************/
 
-        private static Point _GetStartPoint(this NurbCurve curve)
+        public static Point GetStartPoint(this NurbCurve curve)
         {
             List<Point> pts = curve.ControlPoints;
             if (pts.Count == 0)
@@ -57,11 +47,11 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        private static Point _GetStartPoint(this PolyCurve curve)
+        public static Point GetStartPoint(this PolyCurve curve)
         {
             foreach (ICurve c in curve.Curves)
             {
-                Point start = c.GetStartPoint();
+                Point start = c._GetStartPoint();
                 if (start != null)
                     return start;
             }
@@ -71,13 +61,23 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        private static Point _GetStartPoint(this Polyline curve)
+        public static Point GetStartPoint(this Polyline curve)
         {
             List<Point> pts = curve.ControlPoints;
             if (pts.Count == 0)
                 return null;
 
             return pts.First();
+        }
+
+
+        /***************************************************/
+        /**** Public Methods - Interfaces               ****/
+        /***************************************************/
+
+        public static Point _GetStartPoint(this ICurve curve)
+        {
+            return GetStartPoint(curve as dynamic);
         }
     }
 }

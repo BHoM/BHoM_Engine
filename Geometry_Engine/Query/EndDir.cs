@@ -10,27 +10,17 @@ namespace BH.Engine.Geometry
     public static partial class Query
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /**** public Methods - Curves                   ****/
         /***************************************************/
 
-        public static Vector GetEndDir(this ICurve curve)
-        {
-            return _GetEndDir(curve as dynamic);
-        }
-
-
-        /***************************************************/
-        /**** Private Methods                           ****/
-        /***************************************************/
-
-        private static Vector _GetEndDir(this Arc arc)
+        public static Vector GetEndDir(this Arc arc)
         {
             throw new NotImplementedException(); //TODO: get End dir of arc
         }
 
         /***************************************************/
 
-        private static Vector _GetEndDir(this Circle circle)
+        public static Vector GetEndDir(this Circle circle)
         {
             Vector n = circle.Normal;
             Vector endDir = Math.Abs(n.Z) < Math.Abs(n.X) ? new Vector(n.Y, -n.X, 0) : new Vector(0, n.Z, -n.Y);
@@ -39,28 +29,28 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        private static Vector _GetEndDir(this Line line)
+        public static Vector GetEndDir(this Line line)
         {
             return new Vector(line.End.X - line.Start.X, line.End.Y - line.Start.Y, line.End.Z - line.Start.Z).GetNormalised();
         }
 
         /***************************************************/
 
-        private static Vector _GetEndDir(this NurbCurve curve)
+        public static Vector GetEndDir(this NurbCurve curve)
         {
             throw new NotImplementedException(); //TODO: get End dir of nurbcurve
         }
 
         /***************************************************/
 
-        private static Vector _GetEndDir(this PolyCurve curve)
+        public static Vector GetEndDir(this PolyCurve curve)
         {
-            return curve.Curves.Count > 0 ? curve.Curves.Last().GetEndDir() : null;
+            return curve.Curves.Count > 0 ? curve.Curves.Last()._GetEndDir() : null;
         }
 
         /***************************************************/
 
-        private static Vector _GetEndDir(this Polyline curve)
+        public static Vector GetEndDir(this Polyline curve)
         {
             List<Point> pts = curve.ControlPoints;
 
@@ -70,6 +60,16 @@ namespace BH.Engine.Geometry
             Point pt2 = pts[pts.Count - 1];
 
             return new Vector(pt2.X - pt1.X, pt2.Y - pt1.Y, pt2.Z - pt1.Z).GetNormalised();
+        }
+
+
+        /***************************************************/
+        /**** Public Methods = Interfaces               ****/
+        /***************************************************/
+
+        public static Vector _GetEndDir(this ICurve curve)
+        {
+            return GetEndDir(curve as dynamic);
         }
     }
 }

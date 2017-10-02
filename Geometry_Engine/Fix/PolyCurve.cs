@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BH.Engine.Geometry.Fix
+namespace BH.Engine.Geometry
 {
     public static partial class Fix
     {
@@ -18,7 +18,7 @@ namespace BH.Engine.Geometry.Fix
             if (curve.Curves.Count < 2)
                 return curve.GetClone() as PolyCurve;
 
-            List<ICurve> pending = curve.Curves.Select(x => x.GetClone() as ICurve).ToList();
+            List<ICurve> pending = curve.Curves.Select(x => x._GetClone()).ToList();
             PolyCurve result = new PolyCurve(new List<ICurve> { pending[0] });
             pending.RemoveAt(0);
 
@@ -30,8 +30,8 @@ namespace BH.Engine.Geometry.Fix
 
                 for (int i = 0; i < pending.Count; i++)
                 {
-                    Point start2 = pending[i].GetStartPoint();
-                    Point end2 = pending[i].GetEndPoint();
+                    Point start2 = pending[i]._GetStartPoint();
+                    Point end2 = pending[i]._GetEndPoint();
  
                     if (end1.GetSquareDistance(start2) < Tolerance.SqrtDist)
                     {
@@ -42,7 +42,7 @@ namespace BH.Engine.Geometry.Fix
                     }
                     else if (end1.GetSquareDistance(end2) < Tolerance.SqrtDist)
                     {
-                        result.Curves.Add(pending[i].GetFlipped());
+                        result.Curves.Add(pending[i]._GetFlipped());
                         pending.RemoveAt(i);
                         foundNext = true;
                         break;
@@ -56,7 +56,7 @@ namespace BH.Engine.Geometry.Fix
                     }
                     else if (start1.GetSquareDistance(start2) < Tolerance.SqrtDist)
                     {
-                        result.Curves.Insert(0, pending[i].GetFlipped());
+                        result.Curves.Insert(0, pending[i]._GetFlipped());
                         pending.RemoveAt(i);
                         foundNext = true;
                         break;

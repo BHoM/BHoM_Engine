@@ -13,7 +13,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Arc CreateArc(Point centre, Point start, Point end)
+        public static Arc Arc(Point centre, Point start, Point end)
         {
             Vector v1 = start - centre;
             Vector v2 = end - centre;

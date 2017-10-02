@@ -10,41 +10,31 @@ namespace BH.Engine.Geometry
     public static partial class Query
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /**** Public Methods - Curves                   ****/
         /***************************************************/
 
-        public static List<Point> GetDiscontinuityPoints(this ICurve curve)
-        {
-            return _GetDiscontinuityPoints(curve as dynamic);
-        }
-
-
-        /***************************************************/
-        /**** Private Methods                           ****/
-        /***************************************************/
-
-        private static List<Point> _GetDiscontinuityPoints(this Arc curve)
+        public static List<Point> GetDiscontinuityPoints(this Arc curve)
         {
             return new List<Point> { curve.Start, curve.End };
         }
 
         /***************************************************/
 
-        private static List<Point> _GetDiscontinuityPoints(this Circle curve)
+        public static List<Point> GetDiscontinuityPoints(this Circle curve)
         {
             return new List<Point>();
         }
 
         /***************************************************/
 
-        private static List<Point> _GetDiscontinuityPoints(this Line curve)
+        public static List<Point> GetDiscontinuityPoints(this Line curve)
         {
             return new List<Point> { curve.Start, curve.End };
         }
 
         /***************************************************/
 
-        private static List<Point> _GetDiscontinuityPoints(this NurbCurve curve)
+        public static List<Point> GetDiscontinuityPoints(this NurbCurve curve)
         {
             if (curve.GetDegree() == 1)         //TODO: Check that this is correct
                 return curve.ControlPoints;
@@ -54,16 +44,26 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        private static List<Point> _GetDiscontinuityPoints(this PolyCurve curve)
+        public static List<Point> GetDiscontinuityPoints(this PolyCurve curve)
         {
-            return curve.Curves.SelectMany(x => x.GetDiscontinuityPoints()).ToList();
+            return curve.Curves.SelectMany(x => x._GetDiscontinuityPoints()).ToList();
         }
 
         /***************************************************/
 
-        private static List<Point> _GetDiscontinuityPoints(this Polyline curve)
+        public static List<Point> GetDiscontinuityPoints(this Polyline curve)
         {
             return curve.ControlPoints;
+        }
+
+
+        /***************************************************/
+        /**** Public Methods - Interfaces               ****/
+        /***************************************************/
+
+        public static List<Point> _GetDiscontinuityPoints(this ICurve curve)
+        {
+            return GetDiscontinuityPoints(curve as dynamic);
         }
     }
 }

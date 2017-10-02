@@ -10,12 +10,36 @@ namespace BH.Engine.Geometry
     public static partial class Query
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /**** public Methods - Vectors                  ****/
         /***************************************************/
 
-        public static List<Point> GetIntersections(this ICurve curve, Plane plane, double tolerance = Tolerance.Distance)
+        public static Line GetIntersection(this Plane p, Plane plane, double tolerance = Tolerance.Distance)
         {
-            return _GetIntersections(curve as dynamic, plane, tolerance);
+            throw new NotImplementedException();
+        }
+
+
+        /***************************************************/
+        /**** public Methods - Curves                   ****/
+        /***************************************************/
+
+        public static List<Point> GetIntersections(this Arc curve, Plane plane, double tolerance = Tolerance.Distance)
+        {
+            throw new NotImplementedException();
+        }
+
+        /***************************************************/
+
+        public static List<Point> GetIntersections(this Circle curve, Plane plane, double tolerance = Tolerance.Distance)
+        {
+            throw new NotImplementedException();
+        }
+
+        /***************************************************/
+
+        public static List<Point> GetIntersections(this Line curve, Plane plane, double tolerance = Tolerance.Distance)
+        {
+            return new List<Point> { curve.GetIntersection(plane, false, tolerance) };
         }
 
         /***************************************************/
@@ -41,38 +65,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static Line GetIntersection(this Plane p, Plane plane, double tolerance = Tolerance.Distance)
-        {
-            throw new NotImplementedException();
-        }
-
-
-        /***************************************************/
-        /**** Private Methods                           ****/
-        /***************************************************/
-
-        private static List<Point> _GetIntersections(this Arc curve, Plane plane, double tolerance = Tolerance.Distance)
-        {
-            throw new NotImplementedException();
-        }
-
-        /***************************************************/
-
-        private static List<Point> _GetIntersections(this Circle curve, Plane plane, double tolerance = Tolerance.Distance)
-        {
-            throw new NotImplementedException();
-        }
-
-        /***************************************************/
-
-        private static List<Point> _GetIntersections(this Line curve, Plane plane, double tolerance = Tolerance.Distance)
-        {
-            throw new NotImplementedException();
-        }
-
-        /***************************************************/
-
-        private static List<Point> _GetIntersections(this NurbCurve c, Plane p,  double tolerance = Tolerance.Distance)
+        public static List<Point> GetIntersections(this NurbCurve c, Plane p,  double tolerance = Tolerance.Distance)
         {
             //List<Point> result = new List<Point>();
             //int rounding = (int)Math.Log(1.0 / tolerance, 10);
@@ -122,16 +115,26 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        private static List<Point> _GetIntersections(this PolyCurve curve, Plane plane, double tolerance = Tolerance.Distance)
+        public static List<Point> GetIntersections(this PolyCurve curve, Plane plane, double tolerance = Tolerance.Distance)
         {
             throw new NotImplementedException();
         }
 
         /***************************************************/
 
-        private static List<Point> _GetIntersections(this Polyline curve, Plane plane, double tolerance = Tolerance.Distance)
+        public static List<Point> GetIntersections(this Polyline curve, Plane plane, double tolerance = Tolerance.Distance)
         {
             throw new NotImplementedException();
+        }
+
+
+        /***************************************************/
+        /**** Public Methods - Interfaces               ****/
+        /***************************************************/
+
+        public static List<Point> GetIntersections(this ICurve curve, Plane plane, double tolerance = Tolerance.Distance)
+        {
+            return GetIntersections(curve as dynamic, plane, tolerance);
         }
     }
 }

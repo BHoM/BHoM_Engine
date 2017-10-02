@@ -10,7 +10,7 @@ namespace BH.Engine.Geometry
     public static partial class Verify
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /**** Public Methods - BoundingBox              ****/
         /***************************************************/
 
         public static bool IsContaining(this BoundingBox box1, BoundingBox box2)
@@ -20,11 +20,23 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static bool IsContaining(this BoundingBox box1, IBHoMGeometry geometry)
+        public static bool _IsContaining(this BoundingBox box, Point pt)
         {
-            return _IsContaining(box1, geometry as dynamic);
+            Point max = box.Max;
+            Point min = box.Min;
+
+            return (pt.X <= max.X && pt.X >= min.X && pt.Y <= max.Y && pt.Y >= min.Y && pt.Z <= max.Z && pt.Z >= min.Z);
         }
 
+        /***************************************************/
+
+        public static bool IsContaining(this BoundingBox box, IBHoMGeometry geometry)
+        {
+            return box.IsContaining(geometry._GetBounds());
+        }
+
+        /***************************************************/
+        /**** Public Methods - Curve                    ****/
         /***************************************************/
 
         public static bool IsContaining(this ICurve curve, ICurve other)
@@ -96,24 +108,5 @@ namespace BH.Engine.Geometry
             throw new NotImplementedException();
         }
 
-
-        /***************************************************/
-        /**** Private Methods - Bounding Box            ****/
-        /***************************************************/
-
-        private static bool _IsContaining(this BoundingBox box, IBHoMGeometry geometry)
-        {
-            return box.IsContaining(geometry.GetBounds());
-        }
-
-        /***************************************************/
-
-        private static bool _IsContaining(this BoundingBox box, Point pt)
-        {
-            Point max = box.Max;
-            Point min = box.Min;
-
-            return (pt.X <= max.X && pt.X >= min.X && pt.Y <= max.Y && pt.Y >= min.Y && pt.Z <= max.Z && pt.Z >= min.Z);
-        }
     }
 }
