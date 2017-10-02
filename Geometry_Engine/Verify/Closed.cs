@@ -49,12 +49,12 @@ namespace BH.Engine.Geometry
         {
             List<ICurve> curves = curve.Curves;
 
-            if (curves[0]._GetStartPoint().GetSquareDistance(curves.Last()._GetEndPoint()) > Tolerance.SqrtDist)
+            if (curves[0].IGetStartPoint().GetSquareDistance(curves.Last().IGetEndPoint()) > Tolerance.SqrtDist)
                 return false;
 
             for (int i = 1; i < curves.Count; i++)
             {
-                if (curves[i - 1]._GetEndPoint().GetSquareDistance(curves[i]._GetStartPoint()) > Tolerance.SqrtDist)
+                if (curves[i - 1].IGetEndPoint().GetSquareDistance(curves[i].IGetStartPoint()) > Tolerance.SqrtDist)
                     return false;
             }
 
@@ -77,7 +77,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
-        public static bool _IsClosed(this ICurve curve)
+        public static bool IIsClosed(this ICurve curve)
         {
             return IsClosed(curve as dynamic);
         }

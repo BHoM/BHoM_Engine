@@ -104,7 +104,7 @@ namespace BH.Engine.Geometry
 
         public static Plane GetPlane(this PolyCurve curve)
         {
-            return GetPlane(curve.Curves.SelectMany(x => x._GetControlPoints()));
+            return GetPlane(curve.Curves.SelectMany(x => x.IGetControlPoints()));
         }
 
         /***************************************************/
@@ -119,7 +119,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
-        public static Plane _GetPlane(this ICurve curve)
+        public static Plane IGetPlane(this ICurve curve)
         {
             return GetPlane(curve as dynamic);
         }

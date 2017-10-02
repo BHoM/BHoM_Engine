@@ -30,7 +30,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static bool _IsValid(IBHoMGeometry geometry)
+        public static bool IIsValid(IBHoMGeometry geometry)
         {
             return IsValid(geometry as dynamic);
         }

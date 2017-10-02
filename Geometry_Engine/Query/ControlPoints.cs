@@ -43,7 +43,7 @@ namespace BH.Engine.Geometry
 
         public static List<Point> GetControlPoints(this PolyCurve curve)
         {
-            return curve.Curves.SelectMany(x => x._GetControlPoints()).ToList();
+            return curve.Curves.SelectMany(x => x.IGetControlPoints()).ToList();
         }
 
         /***************************************************/
@@ -58,7 +58,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
-        public static List<Point> _GetControlPoints(this ICurve curve)
+        public static List<Point> IGetControlPoints(this ICurve curve)
         {
             return GetControlPoints(curve as dynamic);
         }

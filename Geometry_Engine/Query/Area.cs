@@ -87,7 +87,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
-        public static double _GetArea(this IBHoMGeometry geometry)
+        public static double IGetArea(this IBHoMGeometry geometry)
         {
             return GetArea(geometry as dynamic);
         }

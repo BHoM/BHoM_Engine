@@ -55,7 +55,7 @@ namespace BH.Engine.Geometry
 
         public static Circle GetProjected(this Circle circle, Plane p)
         {
-            if (circle._IsInPlane(p))
+            if (circle.IIsInPlane(p))
                 return new Circle(circle.Centre.GetClone() as Point, p.Normal.GetClone() as Vector, circle.Radius);
             throw new NotImplementedException(); //TODO: sort out project for a circle
         }
@@ -79,7 +79,7 @@ namespace BH.Engine.Geometry
 
         public static PolyCurve GetProjected(this PolyCurve curve, Plane p)
         {
-            return new PolyCurve(curve.Curves.Select(x => x._GetProjected(p)));
+            return new PolyCurve(curve.Curves.Select(x => x.IGetProjected(p)));
         }
 
         /***************************************************/
@@ -96,14 +96,14 @@ namespace BH.Engine.Geometry
 
         public static Extrusion GetProjected(this Extrusion surface, Plane p)
         {
-            return new Extrusion(surface.Curve._GetProjected(p), surface.Direction.GetProjected(p), surface.Capped);
+            return new Extrusion(surface.Curve.IGetProjected(p), surface.Direction.GetProjected(p), surface.Capped);
         }
 
         /***************************************************/
 
         public static Loft GetProjected(this Loft surface, Plane p)
         {
-            return new Loft(surface.Curves.Select(x => x._GetProjected(p)));
+            return new Loft(surface.Curves.Select(x => x.IGetProjected(p)));
         }
 
         /***************************************************/
@@ -124,7 +124,7 @@ namespace BH.Engine.Geometry
 
         public static PolySurface GetProjected(this PolySurface surface, Plane p)
         {
-            return new PolySurface(surface.Surfaces.Select(x => x._GetProjected(p)));
+            return new PolySurface(surface.Surfaces.Select(x => x.IGetProjected(p)));
         }
 
 
@@ -141,7 +141,7 @@ namespace BH.Engine.Geometry
 
         public static CompositeGeometry GetProjected(this CompositeGeometry group, Plane p)
         {
-            return new CompositeGeometry(group.Elements.Select(x => x._GetProjected(p)));
+            return new CompositeGeometry(group.Elements.Select(x => x.IGetProjected(p)));
         }
 
 
@@ -149,21 +149,21 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
-        public static IBHoMGeometry _GetProjected(this IBHoMGeometry geometry, Plane p)
+        public static IBHoMGeometry IGetProjected(this IBHoMGeometry geometry, Plane p)
         {
             return GetProjected(geometry as dynamic, p);
         }
 
         /***************************************************/
 
-        public static ICurve _GetProjected(this ICurve geometry, Plane p)
+        public static ICurve IGetProjected(this ICurve geometry, Plane p)
         {
             return GetProjected(geometry as dynamic, p);
         }
 
         /***************************************************/
 
-        public static ISurface _GetProjected(this ISurface geometry, Plane p)
+        public static ISurface IGetProjected(this ISurface geometry, Plane p)
         {
             return GetProjected(geometry as dynamic, p);
         }

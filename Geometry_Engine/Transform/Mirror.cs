@@ -68,7 +68,7 @@ namespace BH.Engine.Geometry
 
         public static PolyCurve GetMirrored(this PolyCurve curve, Plane p)
         {
-            return new PolyCurve(curve.Curves.Select(x => x._GetMirrored(p)));
+            return new PolyCurve(curve.Curves.Select(x => x.IGetMirrored(p)));
         }
 
         /***************************************************/
@@ -85,14 +85,14 @@ namespace BH.Engine.Geometry
 
         public static Extrusion GetMirrored(this Extrusion surface, Plane p)
         {
-            return new Extrusion(surface.Curve._GetMirrored(p), surface.Direction.GetMirrored(p), surface.Capped);
+            return new Extrusion(surface.Curve.IGetMirrored(p), surface.Direction.GetMirrored(p), surface.Capped);
         }
 
         /***************************************************/
 
         public static Loft GetMirrored(this Loft surface, Plane p)
         {
-            return new Loft(surface.Curves.Select(x => x._GetMirrored(p)));
+            return new Loft(surface.Curves.Select(x => x.IGetMirrored(p)));
         }
 
         /***************************************************/
@@ -106,14 +106,14 @@ namespace BH.Engine.Geometry
 
         public static Pipe GetMirrored(this Pipe surface, Plane p)
         {
-            return new Pipe(surface.Centreline._GetMirrored(p), surface.Radius, surface.Capped);
+            return new Pipe(surface.Centreline.IGetMirrored(p), surface.Radius, surface.Capped);
         }
 
         /***************************************************/
 
         public static PolySurface GetMirrored(this PolySurface surface, Plane p)
         {
-            return new PolySurface(surface.Surfaces.Select(x => x._GetMirrored(p)));
+            return new PolySurface(surface.Surfaces.Select(x => x.IGetMirrored(p)));
         }
 
 
@@ -130,7 +130,7 @@ namespace BH.Engine.Geometry
 
         public static CompositeGeometry GetMirrored(this CompositeGeometry group, Plane p)
         {
-            return new CompositeGeometry(group.Elements.Select(x => x._GetMirrored(p)));
+            return new CompositeGeometry(group.Elements.Select(x => x.IGetMirrored(p)));
         }
 
 
@@ -138,21 +138,21 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
-        public static IBHoMGeometry _GetMirrored(this IBHoMGeometry geometry, Plane p)
+        public static IBHoMGeometry IGetMirrored(this IBHoMGeometry geometry, Plane p)
         {
             return GetMirrored(geometry as dynamic, p);
         }
 
         /***************************************************/
 
-        public static ICurve _GetMirrored(this ICurve geometry, Plane p)
+        public static ICurve IGetMirrored(this ICurve geometry, Plane p)
         {
             return GetMirrored(geometry as dynamic, p);
         }
 
         /***************************************************/
 
-        public static ISurface _GetMirrored(this ISurface geometry, Plane p)
+        public static ISurface IGetMirrored(this ISurface geometry, Plane p)
         {
             return GetMirrored(geometry as dynamic, p);
         }

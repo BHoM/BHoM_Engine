@@ -104,7 +104,7 @@ namespace BH.Engine.Geometry
 
             //if (sameSide[sameSide.Length - 1] == 0 && previousSide != sameSide[sameSide.Length - 1] && result.Count % 2 == 1)
             //{
-            //    result.Add(c._GetEndPoint());
+            //    result.Add(c.IGetEndPoint());
             //    curveParameters.Add(sameSide[sameSide.Length - 1]);
             //}
 

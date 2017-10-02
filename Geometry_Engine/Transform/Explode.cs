@@ -34,7 +34,7 @@ namespace BH.Engine.Geometry
             List<ICurve> curves = curve.Curves;
 
             for (int i = 0; i < curves.Count; i++)
-                exploded.AddRange(curves[i]._GetExploded());
+                exploded.AddRange(curves[i].IGetExploded());
 
             return exploded;
         }
@@ -49,7 +49,7 @@ namespace BH.Engine.Geometry
             List<ISurface> surfaces = surface.Surfaces;
 
             for (int i = 0; i < surfaces.Count; i++)
-                exploded.AddRange(surfaces[i]._GetExploded());
+                exploded.AddRange(surfaces[i].IGetExploded());
 
             return exploded;
         }
@@ -65,7 +65,7 @@ namespace BH.Engine.Geometry
             List<IBHoMGeometry> elements = group.Elements;
 
             for (int i = 0; i < elements.Count; i++)
-                exploded.AddRange(elements[i]._GetExploded());
+                exploded.AddRange(elements[i].IGetExploded());
 
             return exploded;
         }
@@ -75,21 +75,21 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
-        public static List<IBHoMGeometry> _GetExploded(this IBHoMGeometry geometry)
+        public static List<IBHoMGeometry> IGetExploded(this IBHoMGeometry geometry)
         {
             return GetExploded(geometry as dynamic);
         }
 
         /***************************************************/
 
-        public static List<ICurve> _GetExploded(this ICurve geometry)
+        public static List<ICurve> IGetExploded(this ICurve geometry)
         {
             return GetExploded(geometry as dynamic);
         }
 
         /***************************************************/
 
-        public static List<ISurface> _GetExploded(this ISurface geometry)
+        public static List<ISurface> IGetExploded(this ISurface geometry)
         {
             return GetExploded(geometry as dynamic);
         }

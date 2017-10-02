@@ -135,7 +135,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interaces                ****/
         /***************************************************/
 
-        public static NurbCurve _ToNurbCurve(this ICurve geometry)
+        public static NurbCurve IToNurbCurve(this ICurve geometry)
         {
             return ToNurbCurve(geometry as dynamic);
         }

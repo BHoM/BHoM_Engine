@@ -22,13 +22,13 @@ namespace BH.Engine.Geometry
             if (!surface.Capped)
             {
                 edges.Add(curve);
-                ICurve other = curve._GetClone();
-                edges.Add(other._GetTranslated(direction));
+                ICurve other = curve.IGetClone();
+                edges.Add(other.IGetTranslated(direction));
             }
-            if (!curve._IsClosed())
+            if (!curve.IIsClosed())
             {
-                Point start = curve._GetStartPoint();
-                Point end = curve._GetEndPoint();
+                Point start = curve.IGetStartPoint();
+                Point end = curve.IGetEndPoint();
                 edges.Add(new Line(start, start + direction));
                 edges.Add(new Line(end, end + direction));
             }
@@ -59,8 +59,8 @@ namespace BH.Engine.Geometry
                 ICurve curve = surface.Centreline;
                 return new List<ICurve>()
                 {
-                    new Circle(curve._GetStartPoint(), curve._GetStartDir(), surface.Radius),
-                    new Circle(curve._GetEndPoint(), curve._GetEndDir(), surface.Radius)
+                    new Circle(curve.IGetStartPoint(), curve.IGetStartDir(), surface.Radius),
+                    new Circle(curve.IGetEndPoint(), curve.IGetEndDir(), surface.Radius)
                 };
             }
             else
@@ -73,7 +73,7 @@ namespace BH.Engine.Geometry
 
         public static List<ICurve> GetExternalEdges(this PolySurface surface)
         {
-            return surface.Surfaces.SelectMany(x => x._GetExternalEdges()).ToList();
+            return surface.Surfaces.SelectMany(x => x.IGetExternalEdges()).ToList();
         }
 
 
@@ -81,7 +81,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
-        public static List<ICurve> _GetExternalEdges(this ISurface surface)
+        public static List<ICurve> IGetExternalEdges(this ISurface surface)
         {
             return GetExternalEdges(surface as dynamic);
         }

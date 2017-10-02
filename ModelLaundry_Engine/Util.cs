@@ -64,7 +64,7 @@ namespace ModelLaundry_Engine
 
         public static ICurve HorizontalExtend(ICurve contour, double dist)
         {
-            List<Point> oldPoints = contour._GetControlPoints();
+            List<Point> oldPoints = contour.IGetControlPoints();
             List<Point> newPoints = new List<Point>();
 
             int nb = oldPoints.Count();
@@ -192,7 +192,7 @@ namespace ModelLaundry_Engine
         public static bool IsInside(IBHoMGeometry geometry, List<BoundingBox> boxes)
         {
             bool inside = false;
-            BoundingBox eBox = geometry._GetBounds();
+            BoundingBox eBox = geometry.IGetBounds();
             if (eBox != null)
             {
                 foreach (BoundingBox box in boxes)
@@ -252,7 +252,7 @@ namespace ModelLaundry_Engine
 
             foreach (ICurve contour in contours)
             {
-                if (contour._GetLength() < maxLength)
+                if (contour.IGetLength() < maxLength)
                     removed.Add(contour);
                 else
                     remaining.Add(contour);
@@ -268,14 +268,14 @@ namespace ModelLaundry_Engine
 
         public static List<ICurve> GetNearContours(ICurve refContour, List<ICurve> contours, double tolerance, bool anyHeight = false)
         {
-            BoundingBox bounds = refContour._GetBounds();
+            BoundingBox bounds = refContour.IGetBounds();
             BoundingBox ROI = bounds.GetInflated(tolerance);
             if (anyHeight) ROI.GetExtents().Z = 1e12;
 
             List<ICurve> nearContours = new List<ICurve>();
             foreach (ICurve refC in contours)
             {
-                BoundingBox cBox = refC._GetBounds();
+                BoundingBox cBox = refC.IGetBounds();
                 if (cBox.GetCentre().GetDistance(bounds.GetCentre()) > 1e-5 && cBox.IsInRange(ROI))
                     nearContours.Add(refC);
             }
@@ -346,7 +346,7 @@ namespace ModelLaundry_Engine
             foreach (object element in elements)
             {
                 IBHoMGeometry geometry = GetGeometry(element);
-                if (geometry._GetBounds().IsInRange(ROI))
+                if (geometry.IGetBounds().IsInRange(ROI))
                 {
                     if (geometry is ICurve)
                         geometries.Add((ICurve)geometry);
@@ -373,7 +373,7 @@ namespace ModelLaundry_Engine
             {
                 IBHoMGeometry geometry = GetGeometry(element);
 
-                if (geometry._GetBounds().IsInRange(ROI))
+                if (geometry.IGetBounds().IsInRange(ROI))
                 {
                     foreach (Point pt in GetControlPoints(geometry))
                         points.Add(pt);
@@ -413,7 +413,7 @@ namespace ModelLaundry_Engine
             }
             else if (geometry is ICurve)
             {
-              foreach (Point pt in ((ICurve)geometry)._GetControlPoints())
+              foreach (Point pt in ((ICurve)geometry).IGetControlPoints())
                     points.Add(pt);
             }
             else if (geometry is List<ICurve>)
@@ -421,7 +421,7 @@ namespace ModelLaundry_Engine
                 //TODO: There are a lot of instances where a list of curves are passed through 'join' probably to re-order the curve list to be sequential. May need to re-add a sequential function
                 foreach (ICurve curve in ((List<ICurve>)geometry))
                 {
-                    foreach (Point pt in curve._GetControlPoints())
+                    foreach (Point pt in curve.IGetControlPoints())
                         points.Add(pt);
                 }
             }

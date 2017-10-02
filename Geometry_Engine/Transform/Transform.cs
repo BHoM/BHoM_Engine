@@ -80,7 +80,7 @@ namespace BH.Engine.Geometry
 
         public static PolyCurve GetTransformed(this PolyCurve curve, TransformMatrix transform)
         {
-            return new PolyCurve(curve.Curves.Select(x => x._GetTransformed(transform)));
+            return new PolyCurve(curve.Curves.Select(x => x.IGetTransformed(transform)));
         }
 
         /***************************************************/
@@ -97,14 +97,14 @@ namespace BH.Engine.Geometry
 
         public static Extrusion GetTransformed(this Extrusion surface, TransformMatrix transform)
         {
-            return new Extrusion(surface.Curve._GetTransformed(transform), surface.Direction.GetTransformed(transform), surface.Capped);
+            return new Extrusion(surface.Curve.IGetTransformed(transform), surface.Direction.GetTransformed(transform), surface.Capped);
         }
 
         /***************************************************/
 
         public static Loft GetTransformed(this Loft surface, TransformMatrix transform)
         {
-            return new Loft(surface.Curves.Select(x => x._GetTransformed(transform)));
+            return new Loft(surface.Curves.Select(x => x.IGetTransformed(transform)));
         }
 
         /***************************************************/
@@ -118,14 +118,14 @@ namespace BH.Engine.Geometry
 
         public static Pipe GetTransformed(this Pipe surface, TransformMatrix transform)
         {
-            return new Pipe(surface.Centreline._GetTransformed(transform), surface.Radius, surface.Capped);
+            return new Pipe(surface.Centreline.IGetTransformed(transform), surface.Radius, surface.Capped);
         }
 
         /***************************************************/
 
         public static PolySurface GetTransformed(this PolySurface surface, TransformMatrix transform)
         {
-            return new PolySurface(surface.Surfaces.Select(x => x._GetTransformed(transform)));
+            return new PolySurface(surface.Surfaces.Select(x => x.IGetTransformed(transform)));
         }
 
 
@@ -142,7 +142,7 @@ namespace BH.Engine.Geometry
 
         public static CompositeGeometry GetTransformed(this CompositeGeometry group, TransformMatrix transform)
         {
-            return new CompositeGeometry(group.Elements.Select(x => x._GetTransformed(transform)));
+            return new CompositeGeometry(group.Elements.Select(x => x.IGetTransformed(transform)));
         }
 
 
@@ -150,21 +150,21 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
-        public static IBHoMGeometry _GetTransformed(this IBHoMGeometry geometry, TransformMatrix transform)
+        public static IBHoMGeometry IGetTransformed(this IBHoMGeometry geometry, TransformMatrix transform)
         {
             return GetTransformed(geometry as dynamic, transform);
         }
 
         /***************************************************/
 
-        public static ICurve _GetTransformed(this ICurve geometry, TransformMatrix transform)
+        public static ICurve IGetTransformed(this ICurve geometry, TransformMatrix transform)
         {
             return GetTransformed(geometry as dynamic, transform);
         }
 
         /***************************************************/
 
-        public static ISurface _GetTransformed(this ISurface geometry, TransformMatrix transform)
+        public static ISurface IGetTransformed(this ISurface geometry, TransformMatrix transform)
         {
             return GetTransformed(geometry as dynamic, transform);
         }

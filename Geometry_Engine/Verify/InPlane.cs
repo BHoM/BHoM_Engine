@@ -91,7 +91,7 @@ namespace BH.Engine.Geometry
 
             foreach (ICurve c in curve.Curves)
             {
-                if (!c._IsInPlane(plane, tolerance))
+                if (!c.IIsInPlane(plane, tolerance))
                     return false;
             }
 
@@ -112,7 +112,7 @@ namespace BH.Engine.Geometry
 
         public static bool IsInPlane(this Extrusion surface, Plane plane, double tolerance = Tolerance.Distance)
         {
-            return surface.Direction.IsInPlane(plane, tolerance) && surface.Curve._IsInPlane(plane, tolerance);
+            return surface.Direction.IsInPlane(plane, tolerance) && surface.Curve.IIsInPlane(plane, tolerance);
         }
 
         /***************************************************/
@@ -124,7 +124,7 @@ namespace BH.Engine.Geometry
 
             foreach (ICurve c in surface.Curves)
             {
-                if (!c._IsInPlane(plane, tolerance))
+                if (!c.IIsInPlane(plane, tolerance))
                     return false;
             }
 
@@ -154,7 +154,7 @@ namespace BH.Engine.Geometry
 
             foreach (ISurface s in surface.Surfaces)
             {
-                if (!s._IsInPlane(plane, tolerance))
+                if (!s.IIsInPlane(plane, tolerance))
                     return false;
             }
 
@@ -180,7 +180,7 @@ namespace BH.Engine.Geometry
 
             foreach (IBHoMGeometry g in group.Elements)
             {
-                if (!g._IsInPlane(plane, tolerance))
+                if (!g.IIsInPlane(plane, tolerance))
                     return false;
             }
 
@@ -192,7 +192,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
-        public static bool _IsInPlane(this IBHoMGeometry geometry, Plane plane, double tolerance = Tolerance.Distance)
+        public static bool IIsInPlane(this IBHoMGeometry geometry, Plane plane, double tolerance = Tolerance.Distance)
         {
             return IsInPlane(geometry as dynamic, plane, tolerance);
         }

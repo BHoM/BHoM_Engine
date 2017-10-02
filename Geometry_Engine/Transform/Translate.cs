@@ -68,7 +68,7 @@ namespace BH.Engine.Geometry
 
         public static PolyCurve GetTranslated(PolyCurve curve, Vector transform)
         {
-            return new PolyCurve(curve.Curves.Select(x => x._GetTranslated(transform)));
+            return new PolyCurve(curve.Curves.Select(x => x.IGetTranslated(transform)));
         }
 
         /***************************************************/
@@ -85,14 +85,14 @@ namespace BH.Engine.Geometry
 
         public static Extrusion GetTranslated(Extrusion surface, Vector transform)
         {
-            return new Extrusion(surface.Curve._GetTranslated(transform), surface.Direction.GetClone() as Vector, surface.Capped);
+            return new Extrusion(surface.Curve.IGetTranslated(transform), surface.Direction.GetClone() as Vector, surface.Capped);
         }
 
         /***************************************************/
 
         public static Loft GetTranslated(Loft surface, Vector transform)
         {
-            return new Loft(surface.Curves.Select(x => x._GetTranslated(transform)));
+            return new Loft(surface.Curves.Select(x => x.IGetTranslated(transform)));
         }
 
         /***************************************************/
@@ -106,14 +106,14 @@ namespace BH.Engine.Geometry
 
         public static Pipe GetTranslated(Pipe surface, Vector transform)
         {
-            return new Pipe(surface.Centreline._GetTranslated(transform), surface.Radius, surface.Capped);
+            return new Pipe(surface.Centreline.IGetTranslated(transform), surface.Radius, surface.Capped);
         }
 
         /***************************************************/
 
         public static PolySurface GetTranslated(PolySurface surface, Vector transform)
         {
-            return new PolySurface(surface.Surfaces.Select(x => x._GetTranslated(transform)));
+            return new PolySurface(surface.Surfaces.Select(x => x.IGetTranslated(transform)));
         }
 
 
@@ -130,7 +130,7 @@ namespace BH.Engine.Geometry
 
         public static CompositeGeometry GetTranslated(this CompositeGeometry group, Vector transform)
         {
-            return new CompositeGeometry(group.Elements.Select(x => x._GetTranslated(transform)));
+            return new CompositeGeometry(group.Elements.Select(x => x.IGetTranslated(transform)));
         }
 
 
@@ -138,21 +138,21 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
-        public static IBHoMGeometry _GetTranslated(this IBHoMGeometry geometry, Vector transform)
+        public static IBHoMGeometry IGetTranslated(this IBHoMGeometry geometry, Vector transform)
         {
             return GetTranslated(geometry as dynamic, transform);
         }
 
         /***************************************************/
 
-        public static ICurve _GetTranslated(this ICurve geometry, Vector transform)
+        public static ICurve IGetTranslated(this ICurve geometry, Vector transform)
         {
             return GetTranslated(geometry as dynamic, transform);
         }
 
         /***************************************************/
 
-        public static ISurface _GetTranslated(this ISurface geometry, Vector transform)
+        public static ISurface IGetTranslated(this ISurface geometry, Vector transform)
         {
             return GetTranslated(geometry as dynamic, transform);
         }
