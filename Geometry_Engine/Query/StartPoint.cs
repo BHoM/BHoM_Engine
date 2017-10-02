@@ -51,7 +51,7 @@ namespace BH.Engine.Geometry
         {
             foreach (ICurve c in curve.Curves)
             {
-                Point start = c._GetStartPoint();
+                Point start = c.IGetStartPoint();
                 if (start != null)
                     return start;
             }
@@ -75,7 +75,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
-        public static Point _GetStartPoint(this ICurve curve)
+        public static Point IGetStartPoint(this ICurve curve)
         {
             return GetStartPoint(curve as dynamic);
         }

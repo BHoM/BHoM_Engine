@@ -67,7 +67,7 @@ namespace BH.Engine.Geometry
 
         public static PolyCurve GetClone(this PolyCurve curve)
         {
-            return new PolyCurve(curve.Curves.Select(x => x._GetClone()));
+            return new PolyCurve(curve.Curves.Select(x => x.IGetClone()));
         }
 
         /***************************************************/
@@ -84,14 +84,14 @@ namespace BH.Engine.Geometry
 
         public static Extrusion GetClone(this Extrusion surface)
         {
-            return new Extrusion(surface.Curve._GetClone(), surface.Direction.GetClone(), surface.Capped);
+            return new Extrusion(surface.Curve.IGetClone(), surface.Direction.GetClone(), surface.Capped);
         }
 
         /***************************************************/
 
         public static Loft GetClone(this Loft surface)
         {
-            return new Loft(surface.Curves.Select(x => x._GetClone()));
+            return new Loft(surface.Curves.Select(x => x.IGetClone()));
         }
 
         /***************************************************/
@@ -105,14 +105,14 @@ namespace BH.Engine.Geometry
 
         public static Pipe GetClone(this Pipe surface)
         {
-            return new Pipe(surface.Centreline._GetClone(), surface.Radius, surface.Capped);
+            return new Pipe(surface.Centreline.IGetClone(), surface.Radius, surface.Capped);
         }
 
         /***************************************************/
 
         public static PolySurface GetClone(this PolySurface surface)
         {
-            return new PolySurface(surface.Surfaces.Select(x => x._GetClone()));
+            return new PolySurface(surface.Surfaces.Select(x => x.IGetClone()));
         }
 
 
@@ -143,7 +143,7 @@ namespace BH.Engine.Geometry
 
         public static CompositeGeometry GetClone(this CompositeGeometry group)
         {
-            return new CompositeGeometry(group.Elements.Select(x => x._GetClone()));
+            return new CompositeGeometry(group.Elements.Select(x => x.IGetClone()));
         }
 
 
@@ -151,21 +151,21 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
-        public static IBHoMGeometry _GetClone(this IBHoMGeometry geometry)
+        public static IBHoMGeometry IGetClone(this IBHoMGeometry geometry)
         {
             return GetClone(geometry as dynamic);
         }
 
         /***************************************************/
 
-        public static ICurve _GetClone(this ICurve curve)
+        public static ICurve IGetClone(this ICurve curve)
         {
             return GetClone(curve as dynamic);
         }
 
         /***************************************************/
 
-        public static ISurface _GetClone(this ISurface surface)
+        public static ISurface IGetClone(this ISurface surface)
         {
             return GetClone(surface as dynamic);
         }

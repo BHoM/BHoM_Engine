@@ -63,7 +63,7 @@ namespace BH.Engine.Geometry
 
         public static double GetDistance(this Point a, Line line)
         {
-            return a.GetDistance(line._GetClosestPoint(a));
+            return a.GetDistance(line.IGetClosestPoint(a));
         }
 
         /***************************************************/

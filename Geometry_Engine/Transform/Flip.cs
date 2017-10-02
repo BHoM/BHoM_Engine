@@ -43,7 +43,7 @@ namespace BH.Engine.Geometry
 
         public static PolyCurve GetFlipped(this PolyCurve curve)
         {
-            return new PolyCurve(curve.Curves.Select(x => x._GetFlipped()).Reverse());
+            return new PolyCurve(curve.Curves.Select(x => x.IGetFlipped()).Reverse());
         }
 
         /***************************************************/
@@ -58,7 +58,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
-        public static ICurve _GetFlipped(this ICurve curve)
+        public static ICurve IGetFlipped(this ICurve curve)
         {
             return GetFlipped(curve as dynamic);
         }

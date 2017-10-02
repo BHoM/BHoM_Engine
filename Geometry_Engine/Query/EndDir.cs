@@ -45,7 +45,7 @@ namespace BH.Engine.Geometry
 
         public static Vector GetEndDir(this PolyCurve curve)
         {
-            return curve.Curves.Count > 0 ? curve.Curves.Last()._GetEndDir() : null;
+            return curve.Curves.Count > 0 ? curve.Curves.Last().IGetEndDir() : null;
         }
 
         /***************************************************/
@@ -67,7 +67,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods = Interfaces               ****/
         /***************************************************/
 
-        public static Vector _GetEndDir(this ICurve curve)
+        public static Vector IGetEndDir(this ICurve curve)
         {
             return GetEndDir(curve as dynamic);
         }

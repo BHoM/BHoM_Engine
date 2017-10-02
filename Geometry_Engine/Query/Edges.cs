@@ -39,8 +39,8 @@ namespace BH.Engine.Geometry
 
         public static List<ICurve> GetEdges(this ISurface surface)
         {
-            List<ICurve> edges = surface._GetExternalEdges();
-            edges.AddRange(surface._GetInternalEdges());
+            List<ICurve> edges = surface.IGetExternalEdges();
+            edges.AddRange(surface.IGetInternalEdges());
             return edges;
         }
     }

@@ -71,7 +71,7 @@ namespace BH.Engine.Geometry
 
         public static PolyCurve GetRotated(this PolyCurve curve, double rad, Vector axis)
         {
-            return new PolyCurve(curve.Curves.Select(x => x._GetRotated(rad, axis)));
+            return new PolyCurve(curve.Curves.Select(x => x.IGetRotated(rad, axis)));
         }
 
         /***************************************************/
@@ -88,14 +88,14 @@ namespace BH.Engine.Geometry
 
         public static Extrusion GetRotated(this Extrusion surface, double rad, Vector axis)
         {
-            return new Extrusion(surface.Curve._GetRotated(rad, axis), surface.Direction.GetRotated(rad, axis), surface.Capped);
+            return new Extrusion(surface.Curve.IGetRotated(rad, axis), surface.Direction.GetRotated(rad, axis), surface.Capped);
         }
 
         /***************************************************/
 
         public static Loft GetRotated(this Loft surface, double rad, Vector axis)
         {
-            return new Loft(surface.Curves.Select(x => x._GetRotated(rad, axis)));
+            return new Loft(surface.Curves.Select(x => x.IGetRotated(rad, axis)));
         }
 
         /***************************************************/
@@ -109,14 +109,14 @@ namespace BH.Engine.Geometry
 
         public static Pipe GetRotated(this Pipe surface, double rad, Vector axis)
         {
-            return new Pipe(surface.Centreline._GetRotated(rad, axis), surface.Radius, surface.Capped);
+            return new Pipe(surface.Centreline.IGetRotated(rad, axis), surface.Radius, surface.Capped);
         }
 
         /***************************************************/
 
         public static PolySurface GetRotated(this PolySurface surface, double rad, Vector axis)
         {
-            return new PolySurface(surface.Surfaces.Select(x => x._GetRotated(rad, axis)));
+            return new PolySurface(surface.Surfaces.Select(x => x.IGetRotated(rad, axis)));
         }
 
 
@@ -133,7 +133,7 @@ namespace BH.Engine.Geometry
 
         public static CompositeGeometry GetRotated(this CompositeGeometry group, double rad, Vector axis)
         {
-            return new CompositeGeometry(group.Elements.Select(x => x._GetRotated(rad, axis)));
+            return new CompositeGeometry(group.Elements.Select(x => x.IGetRotated(rad, axis)));
         }
 
 
@@ -142,21 +142,21 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
-        public static IBHoMGeometry _GetRotated(this IBHoMGeometry geometry, double rad, Vector axis)
+        public static IBHoMGeometry IGetRotated(this IBHoMGeometry geometry, double rad, Vector axis)
         {
             return GetRotated(geometry as dynamic, rad, axis);
         }
 
         /***************************************************/
 
-        public static ICurve _GetRotated(this ICurve geometry, double rad, Vector axis)
+        public static ICurve IGetRotated(this ICurve geometry, double rad, Vector axis)
         {
             return GetRotated(geometry as dynamic, rad, axis);
         }
 
         /***************************************************/
 
-        public static ISurface _GetRotated(this ISurface geometry, double rad, Vector axis)
+        public static ISurface IGetRotated(this ISurface geometry, double rad, Vector axis)
         {
             return GetRotated(geometry as dynamic, rad, axis);
         }

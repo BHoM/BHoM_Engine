@@ -45,7 +45,7 @@ namespace BH.Engine.Geometry
 
         public static Vector GetStartDir(this PolyCurve curve)
         {
-            return curve.Curves.Count > 0 ? curve.Curves.First()._GetStartDir() : null;
+            return curve.Curves.Count > 0 ? curve.Curves.First().IGetStartDir() : null;
         }
 
         /***************************************************/
@@ -67,7 +67,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
-        public static Vector _GetStartDir(this ICurve curve)
+        public static Vector IGetStartDir(this ICurve curve)
         {
             return GetStartDir(curve as dynamic);
         }

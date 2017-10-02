@@ -74,9 +74,9 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
-        public static Point _GetPointAtLength(this ICurve curve, double length)
+        public static Point IGetPointAtLength(this ICurve curve, double length)
         {
-            if (length > curve._GetLength())
+            if (length > curve.IGetLength())
             {
                 throw new ArgumentOutOfRangeException("Length must be less than the length of the curve"); // Turn into warning
             }

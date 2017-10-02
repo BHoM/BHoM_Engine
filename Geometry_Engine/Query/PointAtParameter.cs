@@ -73,7 +73,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Point _GetPointAtParameter(this ICurve curve, double t)
+        public static Point IGetPointAtParameter(this ICurve curve, double t)
         {
             return GetPointAtParameter(curve as dynamic, t);
         }

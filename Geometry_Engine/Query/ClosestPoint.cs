@@ -76,7 +76,7 @@ namespace BH.Engine.Geometry
 
             for (int i = 0; i < curves.Count; i++)
             {
-                Point cp = curve.Curves[i]._GetClosestPoint(point);
+                Point cp = curve.Curves[i].IGetClosestPoint(point);
                 double dist = cp.GetDistance(point);
                 if (dist < minDist)
                 {
@@ -191,7 +191,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
-        public static Point _GetClosestPoint(this IBHoMGeometry geometry, Point point)
+        public static Point IGetClosestPoint(this IBHoMGeometry geometry, Point point)
         {
             return GetClosestPoint(geometry as dynamic, point);
         }

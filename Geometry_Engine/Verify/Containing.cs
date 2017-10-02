@@ -20,7 +20,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static bool _IsContaining(this BoundingBox box, Point pt)
+        public static bool IIsContaining(this BoundingBox box, Point pt)
         {
             Point max = box.Max;
             Point min = box.Min;
@@ -32,7 +32,7 @@ namespace BH.Engine.Geometry
 
         public static bool IsContaining(this BoundingBox box, IBHoMGeometry geometry)
         {
-            return box.IsContaining(geometry._GetBounds());
+            return box.IsContaining(geometry.IGetBounds());
         }
 
         /***************************************************/

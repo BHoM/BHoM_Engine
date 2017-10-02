@@ -93,7 +93,7 @@ namespace ModelLaundry_Engine
 
         public static ICurve VerticalSnapToHeight(ICurve contour, List<double> refHeights, double tolerance)
         {
-            List<Point> oldPoints = contour._GetControlPoints();
+            List<Point> oldPoints = contour.IGetControlPoints();
             List<Point> newPoints = new List<Point>();
 
             foreach (Point pt in oldPoints)
@@ -127,7 +127,7 @@ namespace ModelLaundry_Engine
         {
             // Get the geometry of the elements
             IBHoMGeometry geometry = Util.GetGeometry(element);
-            BoundingBox ROI = geometry._GetBounds().GetInflated(tolerance);
+            BoundingBox ROI = geometry.IGetBounds().GetInflated(tolerance);
             List<ICurve> refGeom = Util.GetGeometries(refElements, ROI);
 
             IBHoMGeometry output = null;
@@ -185,7 +185,7 @@ namespace ModelLaundry_Engine
 
             foreach (ICurve contour in refContours)
             {
-                double height = contour._GetBounds().GetCentre().Z;
+                double height = contour.IGetBounds().GetCentre().Z;
                 if (Math.Abs(newPoint.Z - height) < tolerance) // Need to add && contour.IsInside(newPoint)
                 {
                     newPoint.Z = height;
@@ -206,7 +206,7 @@ namespace ModelLaundry_Engine
 
         public static ICurve VerticalSnapToShape(ICurve contour, List<ICurve> refContours, double tolerance)
         {
-            List<Point> oldPoints = contour._GetControlPoints();
+            List<Point> oldPoints = contour.IGetControlPoints();
             List<Point> newPoints = new List<Point>();
 
             foreach (Point pt in oldPoints)
@@ -240,7 +240,7 @@ namespace ModelLaundry_Engine
         {
             // Get the geometry of the element
             IBHoMGeometry geometry = Util.GetGeometry(element);
-            BoundingBox ROI = geometry._GetBounds().GetInflated(tolerance);
+            BoundingBox ROI = geometry.IGetBounds().GetInflated(tolerance);
             if (anyHeight) ROI.GetExtents().Z = 1e12;
             List<ICurve> refGeom = Util.GetGeometries(refElements, ROI);
 
@@ -276,7 +276,7 @@ namespace ModelLaundry_Engine
         {
             foreach (ICurve refC in refContours)
             {
-                Vector dir = refC._GetClosestPoint(point) - point;
+                Vector dir = refC.IGetClosestPoint(point) - point;
                 if (anyHeight) dir.Z = 0;
                 if (dir.GetLength() < tolerance)
                 {
@@ -307,7 +307,7 @@ namespace ModelLaundry_Engine
             List<Line> refLines = new List<Line>();
             foreach (ICurve refC in nearContours)
             {
-                foreach (Line refL in refC.GetExploded())
+                foreach (Line refL in refC.IGetExploded())
                 {
                     if (Math.Abs(refL.GetDirection().Z) < 1e-3)
                     {
@@ -320,7 +320,7 @@ namespace ModelLaundry_Engine
             }
 
             // Create snapping proposition list per horizontal position
-            List<Point> oldPoints = contour._GetControlPoints();
+            List<Point> oldPoints = contour.IGetControlPoints();
             Dictionary<string, List<Snap>> snapDirections = new Dictionary<string, List<Snap>>();
             foreach (Point pt in oldPoints)
             {
@@ -328,7 +328,7 @@ namespace ModelLaundry_Engine
             }
 
             // Get the lines to vote for points
-            foreach (Line cLine in contour.GetExploded())
+            foreach (Line cLine in contour.IGetExploded())
             {
                 // Only work with horizontal lines
                 if (Math.Abs(cLine.GetDirection().Z) > 1e-3) continue;
@@ -408,7 +408,7 @@ namespace ModelLaundry_Engine
         {
             // Get the geometry of the element
             IBHoMGeometry geometry = Util.GetGeometry(element);
-            BoundingBox ROI = geometry._GetBounds().GetInflated(tolerance);
+            BoundingBox ROI = geometry.IGetBounds().GetInflated(tolerance);
             if (anyHeight) ROI.GetExtents().Z = 1e12;
             List<ICurve> refGeom = Util.GetGeometries(refElements, ROI);
 
@@ -438,7 +438,7 @@ namespace ModelLaundry_Engine
             List<ICurve> nearContours = Util.GetNearContours(contour, refContours, tolerance, anyHeight);
 
             // Create snapping proposition list per horizontal position
-            List<Point> oldPoints = contour._GetControlPoints();
+            List<Point> oldPoints = contour.IGetControlPoints();
             Dictionary<string, List<Snap>> snapDirections = new Dictionary<string, List<Snap>>();
             foreach (Point pt in oldPoints)
             {
@@ -450,7 +450,7 @@ namespace ModelLaundry_Engine
             List<Line> refLines = new List<Line>();
             foreach (ICurve refC in nearContours)
             {
-                foreach (Line refL in refC.GetExploded())
+                foreach (Line refL in refC.IGetExploded())
                 {
                     if (Math.Abs(refL.GetDirection().Z) < 1e-3)
                     {
@@ -462,7 +462,7 @@ namespace ModelLaundry_Engine
             }
 
             // Get the lines to vote for points
-            foreach (Line cLine in contour.GetExploded())
+            foreach (Line cLine in contour.IGetExploded())
             {
                 // Only work with horizontal lines
                 if (Math.Abs(cLine.GetDirection().Z) > 1e-3) continue;
@@ -578,7 +578,7 @@ namespace ModelLaundry_Engine
         {
             // Get the geometry of the elements
             IBHoMGeometry geometry = Util.GetGeometry(element);
-            BoundingBox ROI = geometry._GetBounds().GetInflated(tolerance);
+            BoundingBox ROI = geometry.IGetBounds().GetInflated(tolerance);
 
             // Get the reference points
             List<Point> refPoints = Util.GetControlPoints(refElements, ROI);
@@ -635,7 +635,7 @@ namespace ModelLaundry_Engine
         public static Polyline PointToPointSnap(ICurve curve, List<Point> refPoints, double tolerance)
         {
             List<Point> points = new List<Point>();
-            foreach(Point pt in curve._GetControlPoints())
+            foreach(Point pt in curve.IGetControlPoints())
             {
                 points.Add(PointToPointSnap(pt, refPoints, tolerance));
             }

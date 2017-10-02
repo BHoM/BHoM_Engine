@@ -99,7 +99,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
-        public static List<Point> _GetIntersections(this ICurve curve1, ICurve curve2, double tolerance = Tolerance.Distance)
+        public static List<Point> IGetIntersections(this ICurve curve1, ICurve curve2, double tolerance = Tolerance.Distance)
         {
             return GetIntersections(curve1 as dynamic, curve2 as dynamic, tolerance);
         }

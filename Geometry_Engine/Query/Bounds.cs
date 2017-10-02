@@ -81,9 +81,9 @@ namespace BH.Engine.Geometry
             if (curves.Count == 0)
                 return null;
 
-            BoundingBox box = curves[0]._GetBounds();
+            BoundingBox box = curves[0].IGetBounds();
             for (int i = 1; i < curves.Count; i++)
-                box += curves[i]._GetBounds();
+                box += curves[i].IGetBounds();
 
             return box;
         }
@@ -102,7 +102,7 @@ namespace BH.Engine.Geometry
 
         public static BoundingBox GetBounds(this Extrusion surface)
         {
-            BoundingBox box = surface.Curve._GetBounds();
+            BoundingBox box = surface.Curve.IGetBounds();
             return box + (box + surface.Direction);
         }
 
@@ -115,9 +115,9 @@ namespace BH.Engine.Geometry
             if (curves.Count == 0)
                 return null;
 
-            BoundingBox box = curves[0]._GetBounds();
+            BoundingBox box = curves[0].IGetBounds();
             for (int i = 1; i < curves.Count; i++)
-                box += curves[i]._GetBounds();
+                box += curves[i].IGetBounds();
 
             return box;
         }
@@ -133,7 +133,7 @@ namespace BH.Engine.Geometry
 
         public static BoundingBox GetBounds(this Pipe surface)
         {
-            BoundingBox box = surface.Centreline._GetBounds();
+            BoundingBox box = surface.Centreline.IGetBounds();
             double radius = surface.Radius;
 
             box.Min -= new Vector(radius, radius, radius);  // TODO: more accurate bounding box needed
@@ -151,9 +151,9 @@ namespace BH.Engine.Geometry
             if (surfaces.Count == 0)
                 return null;
 
-            BoundingBox box = surfaces[0]._GetBounds();
+            BoundingBox box = surfaces[0].IGetBounds();
             for (int i = 1; i < surfaces.Count; i++)
-                box += surfaces[i]._GetBounds();
+                box += surfaces[i].IGetBounds();
 
             return box;
         }
@@ -199,9 +199,9 @@ namespace BH.Engine.Geometry
             if (elements.Count == 0)
                 return null;
 
-            BoundingBox box = elements[0]._GetBounds();
+            BoundingBox box = elements[0].IGetBounds();
             for (int i = 1; i < elements.Count; i++)
-                box += elements[i]._GetBounds();
+                box += elements[i].IGetBounds();
 
             return box;
         }
@@ -211,7 +211,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
-        public static BoundingBox _GetBounds(this IBHoMGeometry geometry)
+        public static BoundingBox IGetBounds(this IBHoMGeometry geometry)
         {
             return GetBounds(geometry as dynamic);
         }

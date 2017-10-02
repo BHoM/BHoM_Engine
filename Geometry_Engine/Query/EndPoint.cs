@@ -53,7 +53,7 @@ namespace BH.Engine.Geometry
 
             for (int i = curves.Count -1; i >= 0; i--)
             {
-                Point End = curves[i]._GetEndPoint();
+                Point End = curves[i].IGetEndPoint();
                 if (End != null)
                     return End;
             }
@@ -77,7 +77,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
-        public static Point _GetEndPoint(this ICurve curve)
+        public static Point IGetEndPoint(this ICurve curve)
         {
             return GetEndPoint(curve as dynamic);
         }

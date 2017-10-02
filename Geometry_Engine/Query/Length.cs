@@ -80,7 +80,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
-        public static double _GetLength(this ICurve curve)
+        public static double IGetLength(this ICurve curve)
         {
             return GetLength(curve as dynamic);
         }

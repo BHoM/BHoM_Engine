@@ -21,19 +21,19 @@ namespace BH.Engine.Geometry
             List<ICurve> edges = new List<ICurve>();
             if (surface.Capped)
             {
-                edges.Add(curve._GetClone());
-                edges.Add(surface.Curve._GetTranslated(surface.Direction));
+                edges.Add(curve.IGetClone());
+                edges.Add(surface.Curve.IGetTranslated(surface.Direction));
             }
 
-            if (curve._IsClosed())
+            if (curve.IIsClosed())
             {
-                Point start = curve._GetStartPoint();
+                Point start = curve.IGetStartPoint();
                 edges.Add(new Line(start, start + direction));
             }
 
-            if (curve._IsClosed())
+            if (curve.IIsClosed())
             {
-                Point end = curve._GetEndPoint();
+                Point end = curve.IGetEndPoint();
                 edges.Add(new Line(end, end + direction));
             }
 
@@ -49,8 +49,8 @@ namespace BH.Engine.Geometry
                 ICurve curve = surface.Centreline;
                 return new List<ICurve>()
                 {
-                    new Circle(curve._GetStartPoint(), curve._GetStartDir(), surface.Radius),
-                    new Circle(curve._GetEndPoint(), curve._GetEndDir(), surface.Radius)
+                    new Circle(curve.IGetStartPoint(), curve.IGetStartDir(), surface.Radius),
+                    new Circle(curve.IGetEndPoint(), curve.IGetEndDir(), surface.Radius)
                 };
             }
             else
@@ -63,7 +63,7 @@ namespace BH.Engine.Geometry
 
         public static List<ICurve> GetInternalEdges(this PolySurface surface)
         {
-            return surface.Surfaces.SelectMany(x => x._GetInternalEdges()).ToList();
+            return surface.Surfaces.SelectMany(x => x.IGetInternalEdges()).ToList();
         }
 
 
@@ -71,7 +71,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
-        public static List<ICurve> _GetInternalEdges(this ISurface surface)
+        public static List<ICurve> IGetInternalEdges(this ISurface surface)
         {
             return GetInternalEdges(surface as dynamic);
         }
