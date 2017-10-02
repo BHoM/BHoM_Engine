@@ -279,10 +279,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MotionLevelAnalyser.cs" />
+    <Compile Include="VideoAnalytics\MotionLevelAnalyser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SemanticAnalysis.cs" />
-    <Compile Include="SoundLevelAnalyser.cs" />
+    <Compile Include="TextAnalytics\SemanticAnalysis.cs" />
+    <Compile Include="AudioAnalytics\SoundLevelAnalyser.cs" />
+    <Compile Include="VideoAnalytics\VideoAnalyser.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
