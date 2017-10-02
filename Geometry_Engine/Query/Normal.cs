@@ -9,6 +9,10 @@ namespace BH.Engine.Geometry
 {
     public static partial class Query
     {
+        /***************************************************/
+        /**** Public Methods - Surfaces                 ****/
+        /***************************************************/
+
         public static Vector GetNormal(this Face face, Mesh mesh)
         {
             List<Point> vertices = mesh.Vertices;
@@ -28,6 +32,9 @@ namespace BH.Engine.Geometry
                 return normal.GetNormalised();
             }
         }
+
+        /***************************************************/
+
         public static List<Vector> GetNormals(this Mesh mesh)
         {
             List<Vector> normals = new List<Vector>(mesh.Faces.Count);
@@ -53,6 +60,9 @@ namespace BH.Engine.Geometry
             }
             return normals.ToList();
         }
+
+        /***************************************************/
+        
         public static List<Vector> GetNormals(this ISurface surface)
         {
             throw new NotImplementedException();

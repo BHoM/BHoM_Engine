@@ -10,76 +10,48 @@ namespace BH.Engine.Geometry
     public static partial class Query
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /**** Public Methods - Vectors                  ****/
         /***************************************************/
 
-        public static Point GetClosestPoint(this IBHoMGeometry geometry, Point point)
-        {
-            return _GetClosestPoint(geometry as dynamic, point);
-        }
-
-        /***************************************************/
-
-        public static Point GetClosestPoint(this Point point, IEnumerable<Point> cloud)
-        {
-            double minDist = Double.PositiveInfinity;
-            double dist = 0;
-            Point cp = null;
-            foreach (Point pt in cloud)
-            {
-                dist = GetDistance(point, pt);
-                if (dist < minDist)
-                {
-                    minDist = dist;
-                    cp = pt;
-                }
-            }
-            return cp;
-        }
-
-        /***************************************************/
-        /**** Private Methods - Vectors                 ****/
-        /***************************************************/
-
-        private static Point _GetClosestPoint(this Point pt, Point point)
+        public static Point GetClosestPoint(this Point pt, Point point)
         {
             return pt;
         }
 
         /***************************************************/
 
-        private static Point _GetClosestPoint(this Vector vector, Point point)
+        public static Point GetClosestPoint(this Vector vector, Point point)
         {
             return null;
         }
 
         /***************************************************/
 
-        private static Point _GetClosestPoint(this Plane plane, Point point)
+        public static Point GetClosestPoint(this Plane plane, Point point)
         {
             throw new NotImplementedException();
         }
 
 
         /***************************************************/
-        /**** Private Methods - Curves                  ****/
+        /**** Public Methods - Curves                   ****/
         /***************************************************/
 
-        private static Point _GetClosestPoint(this Arc arc, Point point)
+        public static Point GetClosestPoint(this Arc arc, Point point)
         {
             throw new NotImplementedException();
         }
 
         /***************************************************/
 
-        private static Point _GetClosestPoint(this Circle circle, Point point)
+        public static Point GetClosestPoint(this Circle circle, Point point)
         {
             throw new NotImplementedException();
         }
 
         /***************************************************/
 
-        private static Point _GetClosestPoint(this Line line, Point point)
+        public static Point GetClosestPoint(this Line line, Point point)
         {
             Vector dir = line.GetDirection();
             double t = Math.Min(Math.Max(dir * (point - line.Start), 0), line.GetLength());
@@ -88,7 +60,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        private static Point _GetClosestPoint(this NurbCurve curve, Point point)
+        public static Point GetClosestPoint(this NurbCurve curve, Point point)
         {
             throw new NotImplementedException();
         }
@@ -96,7 +68,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        private static Point _GetClosestPoint(this PolyCurve curve, Point point)
+        public static Point GetClosestPoint(this PolyCurve curve, Point point)
         {
             double minDist = 1e10;
             Point closest = null;
@@ -104,7 +76,7 @@ namespace BH.Engine.Geometry
 
             for (int i = 0; i < curves.Count; i++)
             {
-                Point cp = curve.Curves[i].GetClosestPoint(point);
+                Point cp = curve.Curves[i]._GetClosestPoint(point);
                 double dist = cp.GetDistance(point);
                 if (dist < minDist)
                 {
@@ -118,7 +90,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        private static Point _GetClosestPoint(this Polyline curve, Point point)
+        public static Point GetClosestPoint(this Polyline curve, Point point)
         {
             List<Point> points = curve.ControlPoints;
 
@@ -142,57 +114,87 @@ namespace BH.Engine.Geometry
 
 
         /***************************************************/
-        /**** Private Methods - Surfaces                ****/
+        /**** Public Methods - Surfaces                 ****/
         /***************************************************/
 
-        private static Point _GetClosestPoint(this Extrusion surface, Point point)
+        public static Point GetClosestPoint(this Extrusion surface, Point point)
         {
             throw new NotImplementedException();
         }
 
         /***************************************************/
 
-        private static Point _GetClosestPoint(this Loft surface, Point point)
+        public static Point GetClosestPoint(this Loft surface, Point point)
         {
             throw new NotImplementedException();
         }
 
         /***************************************************/
 
-        private static Point _GetClosestPoint(this NurbSurface surface, Point point)
+        public static Point GetClosestPoint(this NurbSurface surface, Point point)
         {
             throw new NotImplementedException();
         }
 
         /***************************************************/
 
-        private static Point _GetClosestPoint(this Pipe surface, Point point)
+        public static Point GetClosestPoint(this Pipe surface, Point point)
         {
             throw new NotImplementedException();
         }
 
         /***************************************************/
 
-        private static Point _GetClosestPoint(this PolySurface surface, Point point)
+        public static Point GetClosestPoint(this PolySurface surface, Point point)
         {
             throw new NotImplementedException();
         }
 
 
         /***************************************************/
-        /**** Private Methods - Others                  ****/
+        /**** Public Methods - Others                   ****/
         /***************************************************/
 
-        private static Point _GetClosestPoint(this Mesh mesh, Point point)
+        public static Point GetClosestPoint(this Mesh mesh, Point point)
         {
             throw new NotImplementedException();
         }
 
         /***************************************************/
 
-        private static Point _GetClosestPoint(this CompositeGeometry group, Point point)
+        public static Point GetClosestPoint(this CompositeGeometry group, Point point)
         {
             throw new NotImplementedException();
         }
+
+        /***************************************************/
+
+        public static Point GetClosestPoint(this IEnumerable<Point> cloud, Point point)
+        {
+            double minDist = Double.PositiveInfinity;
+            double dist = 0;
+            Point cp = null;
+            foreach (Point pt in cloud)
+            {
+                dist = GetDistance(point, pt);
+                if (dist < minDist)
+                {
+                    minDist = dist;
+                    cp = pt;
+                }
+            }
+            return cp;
+        }
+
+
+        /***************************************************/
+        /**** Public Methods - Interfaces               ****/
+        /***************************************************/
+
+        public static Point _GetClosestPoint(this IBHoMGeometry geometry, Point point)
+        {
+            return GetClosestPoint(geometry as dynamic, point);
+        }
+
     }
 }

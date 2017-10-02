@@ -9,37 +9,35 @@ namespace BH.Engine.Geometry
 {
     public static partial class Query
     {
-        #region Public Methods
-        public static List<Point> GetIntersections(this ICurve curve, Mesh mesh, double tolerance = Tolerance.Distance)
-        {
-            return _GetIntersections(curve as dynamic, mesh);
-        }
-
+        /***************************************************/
+        /**** Public Methods - Vector                   ****/
         /***************************************************/
 
         public static Line GetIntersection(this Plane p, Mesh mesh, double tolerance = Tolerance.Distance)
         {
             throw new NotImplementedException();
         }
-        #endregion
 
 
-        #region Private Methods
-        private static List<Point> _GetIntersections(this Arc curve, Mesh mesh, double tolerance = Tolerance.Distance)
+        /***************************************************/
+        /**** Public Methods - Curves                   ****/
+        /***************************************************/
+
+        public static List<Point> GetIntersections(this Arc curve, Mesh mesh, double tolerance = Tolerance.Distance)
         {
             throw new NotImplementedException();
         }
 
         /***************************************************/
 
-        private static List<Point> _GetIntersections(this Circle curve, Mesh mesh, double tolerance = Tolerance.Distance)
+        public static List<Point> GetIntersections(this Circle curve, Mesh mesh, double tolerance = Tolerance.Distance)
         {
             throw new NotImplementedException();
         }
 
         /***************************************************/
 
-        private static List<Point> _GetIntersections(this Line curve, Mesh mesh, double tolerance = Tolerance.Distance)
+        public static List<Point> GetIntersections(this Line curve, Mesh mesh, double tolerance = Tolerance.Distance)
         {
             // Outputs
             List<Point> points = new List<Point>();
@@ -107,30 +105,39 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        private static List<Point> _GetIntersections(this NurbCurve c, Mesh mesh, double tolerance = Tolerance.Distance)
+        public static List<Point> GetIntersections(this NurbCurve c, Mesh mesh, double tolerance = Tolerance.Distance)
         {
             throw new NotImplementedException();    // TODO GetIntersections(NurbsCurve, Mesh)
         }
 
         /***************************************************/
 
-        private static List<Point> _GetIntersections(this PolyCurve curve, Mesh mesh, double tolerance = Tolerance.Distance)
+        public static List<Point> GetIntersections(this PolyCurve curve, Mesh mesh, double tolerance = Tolerance.Distance)
         {
             throw new NotImplementedException();    // TODO GetIntersections(PolyCurve, Mesh)
         }
 
         /***************************************************/
 
-        private static List<Point> _GetIntersections(this Polyline curve, Mesh mesh, double tolerance = Tolerance.Distance)
+        public static List<Point> GetIntersections(this Polyline curve, Mesh mesh, double tolerance = Tolerance.Distance)
         {
             List<Line> lines = curve.GetExploded() as List<Line>;
             List<Point> points = new List<Point>();
             for (int i = 0; i < lines.Count; i++)
             {
-                points.AddRange(_GetIntersections(lines[i], mesh));
+                points.AddRange(GetIntersections(lines[i], mesh));
             }
             return points;
         }
-        #endregion
+
+
+        /***************************************************/
+        /**** Public Methods - Interfaces               ****/
+        /***************************************************/
+
+        public static List<Point> _GetIntersections(this ICurve curve, Mesh mesh, double tolerance = Tolerance.Distance)
+        {
+            return GetIntersections(curve as dynamic, mesh);
+        }
     }
 }

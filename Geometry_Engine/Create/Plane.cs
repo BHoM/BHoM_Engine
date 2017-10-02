@@ -13,10 +13,10 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Plane CreatePlane(Point p1, Point p2, Point p3)
+        public static Plane Plane(Point p1, Point p2, Point p3)
         {
             Vector normal = Query.GetCrossProduct(p2 - p1, p3 - p1).GetNormalised();
-            return new Plane(p1.GetClone() as Point, normal);
+            return new Plane(p1.GetClone(), normal);
         }
     }
 }

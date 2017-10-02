@@ -10,41 +10,31 @@ namespace BH.Engine.Geometry
     public static partial class Verify
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /**** Public Methods - Curves                   ****/
         /***************************************************/
 
-        public static bool IsClosed(this ICurve curve)
-        {
-            return _IsClosed(curve as dynamic);
-        }
-
-
-        /***************************************************/
-        /**** Private Methods                           ****/
-        /***************************************************/
-
-        private static bool _IsClosed(this Arc arc)
+        public static bool IsClosed(this Arc arc)
         {
             return arc.Start.GetSquareDistance(arc.End) < Tolerance.SqrtDist;
         }
 
         /***************************************************/
 
-        private static bool _IsClosed(this Circle circle)
+        public static bool IsClosed(this Circle circle)
         {
             return true;
         }
 
         /***************************************************/
 
-        private static bool _IsClosed(this Line line)
+        public static bool IsClosed(this Line line)
         {
             return line.Start.GetSquareDistance(line.End) < Tolerance.SqrtDist;
         }
 
         /***************************************************/
 
-        private static bool _IsClosed(this NurbCurve curve)
+        public static bool IsClosed(this NurbCurve curve)
         {
             List<Point> pts = curve.ControlPoints;
             if (pts.Count == 0)
@@ -55,16 +45,16 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        private static bool _IsClosed(this PolyCurve curve)
+        public static bool IsClosed(this PolyCurve curve)
         {
             List<ICurve> curves = curve.Curves;
 
-            if (curves[0].GetStartPoint().GetSquareDistance(curves.Last().GetEndPoint()) > Tolerance.SqrtDist)
+            if (curves[0]._GetStartPoint().GetSquareDistance(curves.Last()._GetEndPoint()) > Tolerance.SqrtDist)
                 return false;
 
             for (int i = 1; i < curves.Count; i++)
             {
-                if (curves[i - 1].GetEndPoint().GetSquareDistance(curves[i].GetStartPoint()) > Tolerance.SqrtDist)
+                if (curves[i - 1]._GetEndPoint().GetSquareDistance(curves[i]._GetStartPoint()) > Tolerance.SqrtDist)
                     return false;
             }
 
@@ -73,7 +63,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        private static bool _IsClosed(this Polyline curve)
+        public static bool IsClosed(this Polyline curve)
         {
             List<Point> pts = curve.ControlPoints;
             if (pts.Count == 0)
@@ -81,5 +71,17 @@ namespace BH.Engine.Geometry
 
             return pts.First().GetSquareDistance(pts.Last()) < Tolerance.SqrtDist;
         }
+
+
+        /***************************************************/
+        /**** Public Methods - Interfaces               ****/
+        /***************************************************/
+
+        public static bool _IsClosed(this ICurve curve)
+        {
+            return IsClosed(curve as dynamic);
+        }
+
+
     }
 }

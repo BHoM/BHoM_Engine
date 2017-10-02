@@ -11,27 +11,10 @@ namespace BH.Engine.Geometry
     public static partial class Transform
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /**** Public Methods - Curves                   ****/
         /***************************************************/
 
-        public static IList GetExploded(this IBHoMGeometry geometry)
-        {
-            return _GetExploded(geometry as dynamic);
-        }
-
-
-        /***************************************************/
-        /**** Private Methods                           ****/
-        /***************************************************/
-
-        private static IList _GetExploded(this IBHoMGeometry geometry)
-        {
-            return new List<IBHoMGeometry> { geometry };
-        }
-
-        /***************************************************/
-
-        private static List<Line> _GetExploded(this Polyline curve)
+        public static List<Line> GetExploded(this Polyline curve)
         {
             List<Line> result = new List<Line>();
 
@@ -45,41 +28,79 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        private static IList _GetExploded(this PolyCurve curve)
+        public static List<ICurve> GetExploded(this PolyCurve curve)
         {
-            List<PolyCurve> exploded = new List<PolyCurve>();
+            List<ICurve> exploded = new List<ICurve>();
             List<ICurve> curves = curve.Curves;
 
             for (int i = 0; i < curves.Count; i++)
-                exploded.AddRange(curves[i].GetExploded() as List<PolyCurve>);
+                exploded.AddRange(curves[i]._GetExploded());
 
             return exploded;
         }
 
         /***************************************************/
+        /**** Public Methods - Surfaces                 ****/
+        /***************************************************/
 
-        private static IList _GetExploded(this PolySurface surface)
+        public static List<ISurface> GetExploded(this PolySurface surface)
         {
-            List<PolySurface> exploded = new List<PolySurface>();
+            List<ISurface> exploded = new List<ISurface>();
             List<ISurface> surfaces = surface.Surfaces;
 
             for (int i = 0; i < surfaces.Count; i++)
-                exploded.AddRange(surfaces[i].GetExploded() as List<PolySurface>);
+                exploded.AddRange(surfaces[i]._GetExploded());
 
             return exploded;
         }
 
+
+        /***************************************************/
+        /**** Public Methods - Others                   ****/
         /***************************************************/
 
-        private static IList _GetExploded(this CompositeGeometry group)
+        public static List<IBHoMGeometry> GetExploded(this CompositeGeometry group)
         {
-            List<CompositeGeometry> exploded = new List<CompositeGeometry>();
+            List<IBHoMGeometry> exploded = new List<IBHoMGeometry>();
             List<IBHoMGeometry> elements = group.Elements;
 
             for (int i = 0; i < elements.Count; i++)
-                exploded.AddRange(elements[i].GetExploded() as List<CompositeGeometry>);
+                exploded.AddRange(elements[i]._GetExploded());
 
             return exploded;
+        }
+
+
+        /***************************************************/
+        /**** Public Methods - Interfaces               ****/
+        /***************************************************/
+
+        public static List<IBHoMGeometry> _GetExploded(this IBHoMGeometry geometry)
+        {
+            return GetExploded(geometry as dynamic);
+        }
+
+        /***************************************************/
+
+        public static List<ICurve> _GetExploded(this ICurve geometry)
+        {
+            return GetExploded(geometry as dynamic);
+        }
+
+        /***************************************************/
+
+        public static List<ISurface> _GetExploded(this ISurface geometry)
+        {
+            return GetExploded(geometry as dynamic);
+        }
+
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+        public static List<IBHoMGeometry> GetExploded(this IBHoMGeometry geometry)
+        {
+            return new List<IBHoMGeometry> { geometry };
         }
     }
 }

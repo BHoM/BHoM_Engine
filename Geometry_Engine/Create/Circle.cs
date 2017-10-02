@@ -13,7 +13,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Circle CreateCircle(Point pt1, Point pt2, Point pt3)
+        public static Circle Circle(Point pt1, Point pt2, Point pt3)
         {
             Vector v1 = pt1 - pt3;
             Vector v2 = pt2 - pt3;

@@ -13,7 +13,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static TransformMatrix CreateTransformMatrix(Quaternion q)
+        public static TransformMatrix TransformMatrix(Quaternion q)
         {
             return new TransformMatrix (new double[,]
             {
@@ -26,7 +26,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static TransformMatrix CreateTranslationMatrix(Vector vector)
+        public static TransformMatrix TranslationMatrix(Vector vector)
         {
             return new TransformMatrix(new double[,]
             {
@@ -39,7 +39,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static TransformMatrix CreateIdentityMatrix()
+        public static TransformMatrix IdentityMatrix()
         {
             return new TransformMatrix(new double[,]
             {
@@ -52,21 +52,21 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static TransformMatrix CreateRotationMatrix(Point centre, Vector axis, double angle)
+        public static TransformMatrix RotationMatrix(Point centre, Vector axis, double angle)
         {
-            TransformMatrix rotation = CreateTransformMatrix(CreateQuaternionRotationNormal(axis, angle));
-            TransformMatrix t1 = CreateTranslationMatrix(centre - Point.Origin);
-            TransformMatrix t2 = CreateTranslationMatrix(Point.Origin - centre);
+            TransformMatrix rotation = TransformMatrix(QuaternionRotationNormal(axis, angle));
+            TransformMatrix t1 = TranslationMatrix(centre - Point.Origin);
+            TransformMatrix t2 = TranslationMatrix(Point.Origin - centre);
 
             return t1 * rotation * t2;
         }
 
         /***************************************************/
 
-        public static TransformMatrix CreateScaleMatrix(Point refPoint, Vector scaleVector)
+        public static TransformMatrix ScaleMatrix(Point refPoint, Vector scaleVector)
         {
-            TransformMatrix move1 = CreateTranslationMatrix(Point.Origin - refPoint);
-            TransformMatrix move2 = CreateTranslationMatrix(refPoint - Point.Origin);
+            TransformMatrix move1 = TranslationMatrix(Point.Origin - refPoint);
+            TransformMatrix move2 = TranslationMatrix(refPoint - Point.Origin);
             TransformMatrix scale = new TransformMatrix(new double[,]
             {
                 {  scaleVector.X,  0,  0,  0   },

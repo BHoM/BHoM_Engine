@@ -19,7 +19,7 @@ namespace BH.Engine.Structure
         public static List<ICurve> GetEdges(this Panel panel)
         {
             if (panel.Surface != null)
-                return panel.Surface.GetExternalEdges();
+                return panel.Surface._GetExternalEdges();
             else
                 return new List<ICurve>();
         }

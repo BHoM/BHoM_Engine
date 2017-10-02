@@ -10,14 +10,157 @@ namespace BH.Engine.Geometry
     public static partial class Query
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /**** public Methods - Vectors                 ****/
         /***************************************************/
 
-        public static BoundingBox GetBounds(this IBHoMGeometry geometry)
+        public static BoundingBox GetBounds(this Plane plane)
         {
-            return _GetBounds(geometry as dynamic);
+            double x = plane.Normal.X == 0 ? 0 : double.MaxValue;
+            double y = plane.Normal.Y == 0 ? 0 : double.MaxValue;
+            double z = plane.Normal.Z == 0 ? 0 : double.MaxValue;
+
+            return new BoundingBox(new Point(-x, -y, -z), new Point(x, y, z));
         }
 
+        /***************************************************/
+
+        public static BoundingBox GetBounds(this Point pt)
+        {
+            return new BoundingBox(pt, pt);
+        }
+
+        /***************************************************/
+
+        public static BoundingBox GetBounds(this Vector vector)
+        {
+            Point pt = new Point(vector.X, vector.Y, vector.Z);
+            return new BoundingBox(pt, pt);
+        }
+
+
+        /***************************************************/
+        /**** public Computation - Curves              ****/
+        /***************************************************/
+
+        public static BoundingBox GetBounds(this Arc arc)
+        {
+            throw new NotImplementedException();
+        }
+
+        /***************************************************/
+
+        public static BoundingBox GetBounds(this Circle circle)
+        {
+            throw new NotImplementedException();
+        }
+
+        /***************************************************/
+
+        public static BoundingBox GetBounds(this Line line)
+        {
+            Point s = line.Start;
+            Point e = line.End;
+            Point min = new Point(Math.Min(s.X, e.X), Math.Min(s.Y, e.Y), Math.Min(s.Z, e.Z));
+            Point max = new Point(Math.Max(s.X, e.X), Math.Max(s.Y, e.Y), Math.Max(s.Z, e.Z));
+            return new BoundingBox(min, max);
+        }
+
+        /***************************************************/
+
+        public static BoundingBox GetBounds(this NurbCurve curve)
+        {
+            return GetBounds(curve.ControlPoints); //TODO: Need a more accurate bounding box
+        }
+
+        /***************************************************/
+
+        public static BoundingBox GetBounds(this PolyCurve curve)
+        {
+            List<ICurve> curves = curve.Curves;
+
+            if (curves.Count == 0)
+                return null;
+
+            BoundingBox box = curves[0]._GetBounds();
+            for (int i = 1; i < curves.Count; i++)
+                box += curves[i]._GetBounds();
+
+            return box;
+        }
+
+        /***************************************************/
+
+        public static BoundingBox GetBounds(this Polyline line)
+        {
+            return GetBounds(line.ControlPoints);
+        }
+
+
+        /***************************************************/
+        /**** public Computation - Surfaces            ****/
+        /***************************************************/
+
+        public static BoundingBox GetBounds(this Extrusion surface)
+        {
+            BoundingBox box = surface.Curve._GetBounds();
+            return box + (box + surface.Direction);
+        }
+
+        /***************************************************/
+
+        public static BoundingBox GetBounds(this Loft surface)
+        {
+            List<ICurve> curves = surface.Curves;
+
+            if (curves.Count == 0)
+                return null;
+
+            BoundingBox box = curves[0]._GetBounds();
+            for (int i = 1; i < curves.Count; i++)
+                box += curves[i]._GetBounds();
+
+            return box;
+        }
+
+        /***************************************************/
+
+        public static BoundingBox GetBounds(this NurbSurface surface)
+        {
+            throw new NotImplementedException();
+        }
+
+        /***************************************************/
+
+        public static BoundingBox GetBounds(this Pipe surface)
+        {
+            BoundingBox box = surface.Centreline._GetBounds();
+            double radius = surface.Radius;
+
+            box.Min -= new Vector(radius, radius, radius);  // TODO: more accurate bounding box needed
+            box.Max += new Vector(radius, radius, radius);
+
+            return box;
+        }
+
+        /***************************************************/
+
+        public static BoundingBox GetBounds(this PolySurface surface)
+        {
+            List<ISurface> surfaces = surface.Surfaces;
+
+            if (surfaces.Count == 0)
+                return null;
+
+            BoundingBox box = surfaces[0]._GetBounds();
+            for (int i = 1; i < surfaces.Count; i++)
+                box += surfaces[i]._GetBounds();
+
+            return box;
+        }
+
+
+        /***************************************************/
+        /**** public Methods - Others                  ****/
         /***************************************************/
 
         public static BoundingBox GetBounds(List<Point> pts)
@@ -40,180 +183,37 @@ namespace BH.Engine.Geometry
             return new BoundingBox(new Point(minX, minY, minZ), new Point(maxX, maxY, maxZ));
         }
 
-
-        /***************************************************/
-        /**** Private Methods - Vectors                 ****/
         /***************************************************/
 
-        private static BoundingBox _GetBounds(this Plane plane)
-        {
-            double x = plane.Normal.X == 0 ? 0 : double.MaxValue;
-            double y = plane.Normal.Y == 0 ? 0 : double.MaxValue;
-            double z = plane.Normal.Z == 0 ? 0 : double.MaxValue;
-
-            return new BoundingBox(new Point(-x, -y, -z), new Point(x, y, z));
-        }
-
-        /***************************************************/
-
-        private static BoundingBox _GetBounds(this Point pt)
-        {
-            return new BoundingBox(pt, pt);
-        }
-
-        /***************************************************/
-
-        private static BoundingBox _GetBounds(this Vector vector)
-        {
-            Point pt = new Point(vector.X, vector.Y, vector.Z);
-            return new BoundingBox(pt, pt);
-        }
-
-
-        /***************************************************/
-        /**** Private Computation - Curves              ****/
-        /***************************************************/
-
-        private static BoundingBox _GetBounds(this Arc arc)
-        {
-            throw new NotImplementedException();
-        }
-
-        /***************************************************/
-
-        private static BoundingBox _GetBounds(this Circle circle)
-        {
-            throw new NotImplementedException();
-        }
-
-        /***************************************************/
-
-        private static BoundingBox _GetBounds(this Line line)
-        {
-            Point s = line.Start;
-            Point e = line.End;
-            Point min = new Point(Math.Min(s.X, e.X), Math.Min(s.Y, e.Y), Math.Min(s.Z, e.Z));
-            Point max = new Point(Math.Max(s.X, e.X), Math.Max(s.Y, e.Y), Math.Max(s.Z, e.Z));
-            return new BoundingBox(min, max);
-        }
-
-        /***************************************************/
-
-        private static BoundingBox _GetBounds(this NurbCurve curve)
-        {
-            return GetBounds(curve.ControlPoints); //TODO: Need a more accurate bounding box
-        }
-
-        /***************************************************/
-
-        private static BoundingBox _GetBounds(this PolyCurve curve)
-        {
-            List<ICurve> curves = curve.Curves;
-
-            if (curves.Count == 0)
-                return null;
-
-            BoundingBox box = curves[0].GetBounds();
-            for (int i = 1; i < curves.Count; i++)
-                box += curves[i].GetBounds();
-
-            return box;
-        }
-
-        /***************************************************/
-
-        private static BoundingBox _GetBounds(this Polyline line)
-        {
-            return GetBounds(line.ControlPoints);
-        }
-
-
-        /***************************************************/
-        /**** Private Computation - Surfaces            ****/
-        /***************************************************/
-
-        private static BoundingBox _GetBounds(this Extrusion surface)
-        {
-            BoundingBox box = surface.Curve.GetBounds();
-            return box + (box + surface.Direction);
-        }
-
-        /***************************************************/
-
-        private static BoundingBox _GetBounds(this Loft surface)
-        {
-            List<ICurve> curves = surface.Curves;
-
-            if (curves.Count == 0)
-                return null;
-
-            BoundingBox box = curves[0].GetBounds();
-            for (int i = 1; i < curves.Count; i++)
-                box += curves[i].GetBounds();
-
-            return box;
-        }
-
-        /***************************************************/
-
-        private static BoundingBox _GetBounds(this NurbSurface surface)
-        {
-            throw new NotImplementedException();
-        }
-
-        /***************************************************/
-
-        private static BoundingBox _GetBounds(this Pipe surface)
-        {
-            BoundingBox box = surface.Centreline.GetBounds();
-            double radius = surface.Radius;
-
-            box.Min -= new Vector(radius, radius, radius);  // TODO: more accurate bounding box needed
-            box.Max += new Vector(radius, radius, radius);
-
-            return box;
-        }
-
-        /***************************************************/
-
-        private static BoundingBox _GetBounds(this PolySurface surface)
-        {
-            List<ISurface> surfaces = surface.Surfaces;
-
-            if (surfaces.Count == 0)
-                return null;
-
-            BoundingBox box = surfaces[0].GetBounds();
-            for (int i = 1; i < surfaces.Count; i++)
-                box += surfaces[i].GetBounds();
-
-            return box;
-        }
-
-
-        /***************************************************/
-        /**** Private Methods - Others                  ****/
-        /***************************************************/
-
-        private static BoundingBox _GetBounds(this Mesh mesh)
+        public static BoundingBox GetBounds(this Mesh mesh)
         {
             return GetBounds(mesh.Vertices);
         }
 
         /***************************************************/
 
-        private static BoundingBox _GetBounds(this CompositeGeometry group)
+        public static BoundingBox GetBounds(this CompositeGeometry group)
         {
             List<IBHoMGeometry> elements = group.Elements;
 
             if (elements.Count == 0)
                 return null;
 
-            BoundingBox box = elements[0].GetBounds();
+            BoundingBox box = elements[0]._GetBounds();
             for (int i = 1; i < elements.Count; i++)
-                box += elements[i].GetBounds();
+                box += elements[i]._GetBounds();
 
             return box;
+        }
+
+
+        /***************************************************/
+        /**** Public Methods - Interfaces               ****/
+        /***************************************************/
+
+        public static BoundingBox _GetBounds(this IBHoMGeometry geometry)
+        {
+            return GetBounds(geometry as dynamic);
         }
 
     }
