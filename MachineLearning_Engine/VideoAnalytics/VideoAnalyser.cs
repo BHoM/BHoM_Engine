@@ -9,7 +9,7 @@ using Accord.Video.DirectShow;
 using System.Drawing;
 using System.Threading;
 
-namespace StadiaCrowdAnalysis_Engine
+namespace BH.Engine.MachineLearning
 {
     public class VideoAnalyser
     {
