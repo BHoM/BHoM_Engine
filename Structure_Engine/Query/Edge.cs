@@ -19,7 +19,7 @@ namespace BH.Engine.Structure
         public static List<ICurve> GetEdges(this Contour contour)
         {
             if (contour.Surface != null)
-                return contour.Surface.GetExternalEdges();
+                return contour.Surface.IGetExternalEdges();
             else
                 return new List<ICurve>();
         }
