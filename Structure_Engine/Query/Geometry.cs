@@ -29,9 +29,9 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static IBHoMGeometry GetGeometry(this Panel panel)
+        public static IBHoMGeometry GetGeometry(this Contour contour)
         {
-            return panel.Surface;
+            return contour.Surface;
         }
 
         /***************************************************/
