@@ -174,7 +174,7 @@
 //            {
 //                for (int j = 0; j < edges[i].ControlPoints.Count; j++)
 //                {
-//                    cutAt.Add(ArrayUtils.DotProduct(edges[i].ControlPoint(j), p.Normal));
+//                    cutAt.Add(ArrayUtils.DotProduct(edges[i].ControlPoints[j], p.Normal));
 //                }
 //            }
 
@@ -216,14 +216,13 @@
 
 //        /***************************************************/
 
-//        private static Slice GetSliceAt(List<ICurve> edges, double location, double width, Plane p)
+//        private static Slice GetSliceAt(List<NurbCurve> edges, double location, double width, Plane p)
 //        {
 //            List<Point> y = new List<Point>();
 //            double length = 0;
 //            for (int edgeIndex = 0; edgeIndex < edges.Count; edgeIndex++)
 //            {
-//                //y.AddRange(Intersect.PlaneCurve(new Plane(new Point(p.Normal * location), p.Normal), edges[edgeIndex], 0.00001));
-//                y.AddRange(edges[edgeIndex].GetIntersections(new Plane(new Point(p.Normal * location), p.Normal)), 0.00001);
+//                y.AddRange(edges[edgeIndex].GetIntersections(new Plane(new Point(p.Normal * location), p.Normal), 0.00001));
 //            }
 
 //            List<double> isolatedCoords = new List<double>();
