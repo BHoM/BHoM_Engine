@@ -9,6 +9,10 @@ namespace BH.Engine.Geometry
 {
     public static partial class Query
     {
+        /***************************************************/
+        /**** Public Methods - Surfaces                 ****/
+        /***************************************************/
+
         public static List<Polyline> GetEdges(this Mesh mesh)
         {
             List<Face> faces = mesh.Faces;
@@ -30,10 +34,13 @@ namespace BH.Engine.Geometry
             }
             return edges;
         }
+
+        /***************************************************/
+
         public static List<ICurve> GetEdges(this ISurface surface)
         {
-            List<ICurve> edges = surface.GetExternalEdges();
-            edges.AddRange(surface.GetInternalEdges());
+            List<ICurve> edges = surface.IGetExternalEdges();
+            edges.AddRange(surface.IGetInternalEdges());
             return edges;
         }
     }

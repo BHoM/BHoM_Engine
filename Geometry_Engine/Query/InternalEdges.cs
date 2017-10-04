@@ -10,27 +10,10 @@ namespace BH.Engine.Geometry
     public static partial class Query
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /**** Public Methods - Surfaces                 ****/
         /***************************************************/
 
-        public static List<ICurve> GetInternalEdges(this ISurface surface)
-        {
-            return _GetInternalEdges(surface as dynamic);
-        }
-
-
-        /***************************************************/
-        /**** Private Methods                           ****/
-        /***************************************************/
-
-        private static List<ICurve> _GetInternalEdges(this ISurface surface)
-        {
-            return new List<ICurve>();
-        }
-
-        /***************************************************/
-
-        private static List<ICurve> _GetInternalEdges(this Extrusion surface)
+        public static List<ICurve> GetInternalEdges(this Extrusion surface)
         {
             ICurve curve = surface.Curve;
             Vector direction = surface.Direction;
@@ -38,19 +21,19 @@ namespace BH.Engine.Geometry
             List<ICurve> edges = new List<ICurve>();
             if (surface.Capped)
             {
-                edges.Add(curve.GetClone() as ICurve);
-                edges.Add(surface.Curve.GetTranslated(surface.Direction) as ICurve);
+                edges.Add(curve.IGetClone());
+                edges.Add(surface.Curve.IGetTranslated(surface.Direction));
             }
 
-            if (curve.IsClosed())
+            if (curve.IIsClosed())
             {
-                Point start = curve.GetStartPoint();
+                Point start = curve.IGetStartPoint();
                 edges.Add(new Line(start, start + direction));
             }
 
-            if (curve.IsClosed())
+            if (curve.IIsClosed())
             {
-                Point end = curve.GetEndPoint();
+                Point end = curve.IGetEndPoint();
                 edges.Add(new Line(end, end + direction));
             }
 
@@ -59,15 +42,15 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        private static List<ICurve> _GetInternalEdges(this Pipe surface)
+        public static List<ICurve> GetInternalEdges(this Pipe surface)
         {
             if (surface.Capped)
             {
                 ICurve curve = surface.Centreline;
                 return new List<ICurve>()
                 {
-                    new Circle(curve.GetStartPoint(), curve.GetStartDir(), surface.Radius),
-                    new Circle(curve.GetEndPoint(), curve.GetEndDir(), surface.Radius)
+                    new Circle(curve.IGetStartPoint(), curve.IGetStartDir(), surface.Radius),
+                    new Circle(curve.IGetEndPoint(), curve.IGetEndDir(), surface.Radius)
                 };
             }
             else
@@ -78,9 +61,21 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        private static List<ICurve> _GetInternalEdges(this PolySurface surface)
+        public static List<ICurve> GetInternalEdges(this PolySurface surface)
         {
-            return surface.Surfaces.SelectMany(x => x.GetInternalEdges()).ToList();
+            return surface.Surfaces.SelectMany(x => x.IGetInternalEdges()).ToList();
         }
+
+
+        /***************************************************/
+        /**** Public Methods - Interfaces               ****/
+        /***************************************************/
+
+        public static List<ICurve> IGetInternalEdges(this ISurface surface)
+        {
+            return GetInternalEdges(surface as dynamic);
+        }
+
+
     }
 }

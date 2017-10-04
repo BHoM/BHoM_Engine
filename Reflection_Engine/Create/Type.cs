@@ -13,9 +13,9 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Type CreateType(string name)
+        public static Type Type(string name)
         {
-            Dictionary<string, Type> typeDictionary = CreateTypeDictionary();
+            Dictionary<string, Type> typeDictionary = TypeDictionary();
 
             Type type = null;
             typeDictionary.TryGetValue(name, out type);

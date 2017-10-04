@@ -10,27 +10,17 @@ namespace BH.Engine.Geometry
     public static partial class Query
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /**** Public Methods - Curves                   ****/
         /***************************************************/
 
-        public static Vector GetStartDir(this ICurve curve)
-        {
-            return _GetStartDir(curve as dynamic);
-        }
-
-
-        /***************************************************/
-        /**** Private Methods                           ****/
-        /***************************************************/
-
-        private static Vector _GetStartDir(this Arc arc)
+        public static Vector GetStartDir(this Arc arc)
         {
             throw new NotImplementedException(); //TODO: get start dir of arc
         }
 
         /***************************************************/
 
-        private static Vector _GetStartDir(this Circle circle)
+        public static Vector GetStartDir(this Circle circle)
         {
             Vector n = circle.Normal;
             Vector startDir = Math.Abs(n.Z) < Math.Abs(n.X) ? new Vector(n.Y, -n.X, 0) : new Vector(0, n.Z, -n.Y);
@@ -39,28 +29,28 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        private static Vector _GetStartDir(this Line line)
+        public static Vector GetStartDir(this Line line)
         {
             return new Vector(line.End.X - line.Start.X, line.End.Y - line.Start.Y, line.End.Z - line.Start.Z).GetNormalised();
         }
 
         /***************************************************/
 
-        private static Vector _GetStartDir(this NurbCurve curve)
+        public static Vector GetStartDir(this NurbCurve curve)
         {
             throw new NotImplementedException(); //TODO: get start dir of nurbcurve
         }
 
         /***************************************************/
 
-        private static Vector _GetStartDir(this PolyCurve curve)
+        public static Vector GetStartDir(this PolyCurve curve)
         {
-            return curve.Curves.Count > 0 ? curve.Curves.First().GetStartDir() : null;
+            return curve.Curves.Count > 0 ? curve.Curves.First().IGetStartDir() : null;
         }
 
         /***************************************************/
 
-        private static Vector _GetStartDir(this Polyline curve)
+        public static Vector GetStartDir(this Polyline curve)
         {
             List<Point> pts = curve.ControlPoints;
 
@@ -70,6 +60,16 @@ namespace BH.Engine.Geometry
             Point pt2 = pts[1];
 
             return new Vector(pt2.X - pt1.X, pt2.Y - pt1.Y, pt2.Z - pt1.Z).GetNormalised(); 
+        }
+
+
+        /***************************************************/
+        /**** Public Methods - Interfaces               ****/
+        /***************************************************/
+
+        public static Vector IGetStartDir(this ICurve curve)
+        {
+            return GetStartDir(curve as dynamic);
         }
     }
 }

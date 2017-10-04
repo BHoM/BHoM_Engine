@@ -10,20 +10,10 @@ namespace BH.Engine.Geometry
     public static partial class Convert
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /**** Public  Methods - Curves                  ****/
         /***************************************************/
 
-        public static NurbCurve ToNurbCurve(this ICurve geometry)
-        {
-            return _ToNurbCurve(geometry as dynamic);
-        }
-
-
-        /***************************************************/
-        /**** Private  Methods - Curves                 ****/
-        /***************************************************/
-
-        private static NurbCurve _ToNurbCurve(this Arc arc)
+        public static NurbCurve ToNurbCurve(this Arc arc)
         {
             //double[] centre = arc.Centre;
             //double[] P1 = CollectionUtils.SubArray<double>(arc.ControlPointVector, 0, arc.Dimensions + 1);
@@ -54,7 +44,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        private static NurbCurve _ToNurbCurve(this Circle circle)
+        public static NurbCurve ToNurbCurve(this Circle circle)
         {
             //double root2on2 = Math.Sqrt(2) / 2;
             //double radius = circle.Radius;
@@ -92,7 +82,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        private static NurbCurve _ToNurbCurve(this Line line)
+        public static NurbCurve ToNurbCurve(this Line line)
         {
             return new NurbCurve(new List<Point> { line.Start, line.End }, new double[] { 1, 1 }, new double[] { 0, 0, 1, 1 });
 
@@ -100,14 +90,14 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        private static NurbCurve _ToNurbCurve(this NurbCurve curve)
+        public static NurbCurve ToNurbCurve(this NurbCurve curve)
         {
-            return curve.GetClone() as NurbCurve;
+            return curve.GetClone();
         }
 
         /***************************************************/
 
-        private static NurbCurve _ToNurbCurve(this PolyCurve curve)
+        public static NurbCurve ToNurbCurve(this PolyCurve curve)
         {
             //Curve c = curve.Curves[0];
             //for (int i = 1; i < curve.Curves.Count; i++)
@@ -124,7 +114,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        private static NurbCurve _ToNurbCurve(this Polyline curve)
+        public static NurbCurve ToNurbCurve(this Polyline curve)
         {
             //line.SetDegree(1);
             //line.SetKnots(new double[line.ControlPointVector.Length / (line.Dimensions + 1) + line.Order]);
@@ -138,6 +128,16 @@ namespace BH.Engine.Geometry
             //}
 
             throw new NotImplementedException();
+        }
+
+
+        /***************************************************/
+        /**** Public Methods - Interaces                ****/
+        /***************************************************/
+
+        public static NurbCurve IToNurbCurve(this ICurve geometry)
+        {
+            return ToNurbCurve(geometry as dynamic);
         }
 
     }

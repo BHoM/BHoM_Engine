@@ -10,7 +10,7 @@ namespace BH.Engine.Geometry
     public static partial class Query
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /**** Public Methods - Vector                   ****/
         /***************************************************/
 
         public static double GetLength(this Vector vector)
@@ -26,53 +26,45 @@ namespace BH.Engine.Geometry
         }
 
         /***************************************************/
-
-        public static double GetLength(this ICurve curve)
-        {
-            return _GetLength(curve as dynamic);
-        }
-
-
-        /***************************************************/
-        /**** Private Methods                           ****/
+        /**** Public Methods - Curves                   ****/
         /***************************************************/
 
-        private static double _GetLength(this Arc curve)
+        public static double GetLength(this Arc curve)
         {
             return curve.GetAngle() * curve.GetRadius();
         }
 
         /***************************************************/
 
-        private static double _GetLength(this Circle curve)
+        public static double GetLength(this Circle curve)
         {
             return 2 * Math.PI * curve.Radius;
         }
 
         /***************************************************/
 
-        private static double _GetLength(this Line curve)
+        public static double GetLength(this Line curve)
         {
             return (curve.Start - curve.End).GetLength();
         }
 
         /***************************************************/
 
-        private static double _GetLength(this NurbCurve curve)
+        public static double GetLength(this NurbCurve curve)
         {
             throw new NotImplementedException();
         }
 
         /***************************************************/
 
-        private static double _GetLength(this PolyCurve curve)
+        public static double GetLength(this PolyCurve curve)
         {
-            return curve.Curves.Sum(x => _GetLength(x as Line));
+            return curve.Curves.Sum(x => GetLength(x as Line));
         }
 
         /***************************************************/
 
-        private static double _GetLength(this Polyline curve)
+        public static double GetLength(this Polyline curve)
         {
             double length = 0;
             List<Point> pts = curve.ControlPoints;
@@ -81,6 +73,16 @@ namespace BH.Engine.Geometry
                 length += (pts[i] - pts[i-1]).GetLength();
 
             return length;
+        }
+
+
+        /***************************************************/
+        /**** Public Methods - Interfaces               ****/
+        /***************************************************/
+
+        public static double IGetLength(this ICurve curve)
+        {
+            return GetLength(curve as dynamic);
         }
     }
 }

@@ -10,12 +10,29 @@ namespace BH.Engine.Geometry
     public static partial class Verify
     {
         /***************************************************/
+        /**** Public Methods - Vectors                  ****/
+        /***************************************************/
+
+        public static bool IsValid(Point point)
+        {
+            return !(double.IsNaN(point.X) || double.IsNaN(point.Y) || double.IsNaN(point.Z));
+        }
+
+        /***************************************************/
+
+        public static bool IsValid(Vector v)
+        {
+            return !(double.IsNaN(v.X) || double.IsNaN(v.Y) || double.IsNaN(v.Z));
+        }
+
+
+        /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static bool IsValid(IBHoMGeometry geometry)
+        public static bool IIsValid(IBHoMGeometry geometry)
         {
-            return _IsValid(geometry as dynamic);
+            return IsValid(geometry as dynamic);
         }
 
 
@@ -23,23 +40,9 @@ namespace BH.Engine.Geometry
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private static bool _IsValid(IBHoMGeometry geometry)
+        private static bool IsValid(IBHoMGeometry geometry)
         {
             return true;
-        }
-
-        /***************************************************/
-
-        private static bool _IsValid(Point point)
-        {
-            return !(double.IsNaN(point.X) || double.IsNaN(point.Y) || double.IsNaN(point.Z));
-        }
-
-        /***************************************************/
-
-        private static bool _IsValid(Vector v)
-        {
-            return !(double.IsNaN(v.X) || double.IsNaN(v.Y) || double.IsNaN(v.Z));
         }
     }
 }

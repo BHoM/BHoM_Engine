@@ -10,137 +10,151 @@ namespace BH.Engine.Geometry
     public static partial class p
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /**** public Methods - Vectors                  ****/
         /***************************************************/
 
-        public static IBHoMGeometry GetMirrored(this IBHoMGeometry geometry, Plane p)
-        {
-            return _GetMirrored(geometry as dynamic, p);
-        }
-
-
-        /***************************************************/
-        /**** Private Methods - Vectors                 ****/
-        /***************************************************/
-
-        private static Point _GetMirrored(this Point pt, Plane p)
+        public static Point GetMirrored(this Point pt, Plane p)
         {
             return pt - 2 * p.Normal.GetDotProduct(pt-p.Origin) * p.Normal;
         }
 
         /***************************************************/
 
-        private static Vector _GetMirrored(this Vector vector, Plane p)
+        public static Vector GetMirrored(this Vector vector, Plane p)
         {
             return vector - 2 * vector.GetDotProduct(p.Normal) * p.Normal;
         }
 
         /***************************************************/
 
-        private static Plane _GetMirrored(this Plane plane, Plane p)
+        public static Plane GetMirrored(this Plane plane, Plane p)
         {
-            return new Plane(plane.Origin._GetMirrored(p), plane.Normal._GetMirrored(p));
+            return new Plane(plane.Origin.GetMirrored(p), plane.Normal.GetMirrored(p));
         }
 
 
         /***************************************************/
-        /**** Private Methods - Curves                  ****/
+        /**** public Methods - Curves                  ****/
         /***************************************************/
 
-        private static Arc _GetMirrored(this Arc arc, Plane p)
+        public static Arc GetMirrored(this Arc arc, Plane p)
         {
-            return new Arc(arc.Start._GetMirrored(p), arc.Middle._GetMirrored(p), arc.End._GetMirrored(p));
+            return new Arc(arc.Start.GetMirrored(p), arc.Middle.GetMirrored(p), arc.End.GetMirrored(p));
         }
 
         /***************************************************/
 
-        private static Circle _GetMirrored(this Circle circle, Plane p)
+        public static Circle GetMirrored(this Circle circle, Plane p)
         {
-            return new Circle(circle.Centre._GetMirrored(p), circle.Normal._GetMirrored(p), circle.Radius);
+            return new Circle(circle.Centre.GetMirrored(p), circle.Normal.GetMirrored(p), circle.Radius);
         }
 
         /***************************************************/
 
-        private static Line _GetMirrored(this Line line, Plane p)
+        public static Line GetMirrored(this Line line, Plane p)
         {
-            return new Line(line.Start._GetMirrored(p), line.End._GetMirrored(p));
+            return new Line(line.Start.GetMirrored(p), line.End.GetMirrored(p));
         }
 
         /***************************************************/
 
-        private static NurbCurve _GetMirrored(this NurbCurve curve, Plane p)
+        public static NurbCurve GetMirrored(this NurbCurve curve, Plane p)
         {
-            return new NurbCurve(curve.ControlPoints.Select(x => x._GetMirrored(p)), curve.Weights, curve.Knots);
+            return new NurbCurve(curve.ControlPoints.Select(x => x.GetMirrored(p)), curve.Weights, curve.Knots);
         }
 
 
         /***************************************************/
 
-        private static PolyCurve _GetMirrored(this PolyCurve curve, Plane p)
+        public static PolyCurve GetMirrored(this PolyCurve curve, Plane p)
         {
-            return new PolyCurve(curve.Curves.Select(x => x.GetMirrored(p) as ICurve));
+            return new PolyCurve(curve.Curves.Select(x => x.IGetMirrored(p)));
         }
 
         /***************************************************/
 
-        private static Polyline _GetMirrored(this Polyline curve, Plane p)
+        public static Polyline GetMirrored(this Polyline curve, Plane p)
         {
-            return new Polyline(curve.ControlPoints.Select(x => x._GetMirrored(p)));
+            return new Polyline(curve.ControlPoints.Select(x => x.GetMirrored(p)));
         }
 
 
         /***************************************************/
-        /**** Private Methods - Surfaces                ****/
+        /**** public Methods - Surfaces                 ****/
         /***************************************************/
 
-        private static Extrusion _GetMirrored(this Extrusion surface, Plane p)
+        public static Extrusion GetMirrored(this Extrusion surface, Plane p)
         {
-            return new Extrusion(surface.Curve.GetMirrored(p) as ICurve, surface.Direction._GetMirrored(p), surface.Capped);
+            return new Extrusion(surface.Curve.IGetMirrored(p), surface.Direction.GetMirrored(p), surface.Capped);
         }
 
         /***************************************************/
 
-        private static Loft _GetMirrored(this Loft surface, Plane p)
+        public static Loft GetMirrored(this Loft surface, Plane p)
         {
-            return new Loft(surface.Curves.Select(x => x.GetMirrored(p) as ICurve));
+            return new Loft(surface.Curves.Select(x => x.IGetMirrored(p)));
         }
 
         /***************************************************/
 
-        private static NurbSurface _GetMirrored(this NurbSurface surface, Plane p)
+        public static NurbSurface GetMirrored(this NurbSurface surface, Plane p)
         {
-            return new NurbSurface(surface.ControlPoints.Select(x => x._GetMirrored(p)), surface.Weights, surface.UKnots, surface.VKnots);
+            return new NurbSurface(surface.ControlPoints.Select(x => x.GetMirrored(p)), surface.Weights, surface.UKnots, surface.VKnots);
         }
 
         /***************************************************/
 
-        private static Pipe _GetMirrored(this Pipe surface, Plane p)
+        public static Pipe GetMirrored(this Pipe surface, Plane p)
         {
-            return new Pipe(surface.Centreline.GetMirrored(p) as ICurve, surface.Radius, surface.Capped);
+            return new Pipe(surface.Centreline.IGetMirrored(p), surface.Radius, surface.Capped);
         }
 
         /***************************************************/
 
-        private static PolySurface _GetMirrored(this PolySurface surface, Plane p)
+        public static PolySurface GetMirrored(this PolySurface surface, Plane p)
         {
-            return new PolySurface(surface.Surfaces.Select(x => x.GetMirrored(p) as ISurface));
+            return new PolySurface(surface.Surfaces.Select(x => x.IGetMirrored(p)));
         }
 
 
         /***************************************************/
-        /**** Private Methods - Others                  ****/
+        /**** public Methods - Others                   ****/
         /***************************************************/
 
-        private static Mesh _GetMirrored(this Mesh mesh, Plane p)
+        public static Mesh GetMirrored(this Mesh mesh, Plane p)
         {
-            return new Mesh(mesh.Vertices.Select(x => x._GetMirrored(p)), mesh.Faces.Select(x => x.GetClone() as Face));
+            return new Mesh(mesh.Vertices.Select(x => x.GetMirrored(p)), mesh.Faces.Select(x => x.GetClone()));
         }
 
         /***************************************************/
 
-        private static CompositeGeometry _GetMirrored(this CompositeGeometry group, Plane p)
+        public static CompositeGeometry GetMirrored(this CompositeGeometry group, Plane p)
         {
-            return new CompositeGeometry(group.Elements.Select(x => x.GetMirrored(p)));
+            return new CompositeGeometry(group.Elements.Select(x => x.IGetMirrored(p)));
+        }
+
+
+        /***************************************************/
+        /**** Public Methods - Interfaces               ****/
+        /***************************************************/
+
+        public static IBHoMGeometry IGetMirrored(this IBHoMGeometry geometry, Plane p)
+        {
+            return GetMirrored(geometry as dynamic, p);
+        }
+
+        /***************************************************/
+
+        public static ICurve IGetMirrored(this ICurve geometry, Plane p)
+        {
+            return GetMirrored(geometry as dynamic, p);
+        }
+
+        /***************************************************/
+
+        public static ISurface IGetMirrored(this ISurface geometry, Plane p)
+        {
+            return GetMirrored(geometry as dynamic, p);
         }
     }
 }

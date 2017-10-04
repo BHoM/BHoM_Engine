@@ -10,27 +10,17 @@ namespace BH.Engine.Geometry
     public static partial class Transform
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /**** Public Methods - Vectors                  ****/
         /***************************************************/
 
-        public static IBHoMGeometry GetRotated(this IBHoMGeometry geometry, double rad, Vector axis)
-        {
-            return _GetRotated(geometry as dynamic, rad, axis);
-        }
-
-
-        /***************************************************/
-        /**** Private Methods - Vectors                 ****/
-        /***************************************************/
-
-        private static Point _GetRotated(this Point pt, double rad, Vector axis)
+        public static Point GetRotated(this Point pt, double rad, Vector axis)
         {
             throw new NotImplementedException(); //TODO: rotation of a point around arbitrary axis
         }
 
         /***************************************************/
 
-        private static Vector _GetRotated(this Vector vector, double rad, Vector axis)
+        public static Vector GetRotated(this Vector vector, double rad, Vector axis)
         {
             // using Rodrigues' rotation formula
             axis = axis.GetNormalised();
@@ -40,110 +30,137 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        private static Plane _GetRotated(this Plane plane, double rad, Vector axis)
+        public static Plane GetRotated(this Plane plane, double rad, Vector axis)
         {
-            return new Plane(plane.Origin._GetRotated(rad, axis), plane.Normal._GetRotated(rad, axis));
+            return new Plane(plane.Origin.GetRotated(rad, axis), plane.Normal.GetRotated(rad, axis));
         }
 
 
         /***************************************************/
-        /**** Private Methods - Curves                  ****/
+        /**** Public Methods - Curves                   ****/
         /***************************************************/
 
-        private static Arc _GetRotated(this Arc arc, double rad, Vector axis)
+        public static Arc GetRotated(this Arc arc, double rad, Vector axis)
         {
-            return new Arc(arc.Start._GetRotated(rad, axis), arc.Middle._GetRotated(rad, axis), arc.End._GetRotated(rad, axis));
+            return new Arc(arc.Start.GetRotated(rad, axis), arc.Middle.GetRotated(rad, axis), arc.End.GetRotated(rad, axis));
         }
 
         /***************************************************/
 
-        private static Circle _GetRotated(this Circle circle, double rad, Vector axis)
+        public static Circle GetRotated(this Circle circle, double rad, Vector axis)
         {
-            return new Circle(circle.Centre._GetRotated(rad, axis), circle.Normal._GetRotated(rad, axis), circle.Radius);
+            return new Circle(circle.Centre.GetRotated(rad, axis), circle.Normal.GetRotated(rad, axis), circle.Radius);
         }
 
         /***************************************************/
 
-        private static Line _GetRotated(this Line line, double rad, Vector axis)
+        public static Line GetRotated(this Line line, double rad, Vector axis)
         {
-            return new Line(line.Start._GetRotated(rad, axis), line.End._GetRotated(rad, axis));
+            return new Line(line.Start.GetRotated(rad, axis), line.End.GetRotated(rad, axis));
         }
 
         /***************************************************/
 
-        private static NurbCurve _GetRotated(this NurbCurve curve, double rad, Vector axis)
+        public static NurbCurve GetRotated(this NurbCurve curve, double rad, Vector axis)
         {
-            return new NurbCurve(curve.ControlPoints.Select(x => x._GetRotated(rad, axis)), curve.Weights, curve.Knots);
+            return new NurbCurve(curve.ControlPoints.Select(x => x.GetRotated(rad, axis)), curve.Weights, curve.Knots);
         }
 
 
         /***************************************************/
 
-        private static PolyCurve _GetRotated(this PolyCurve curve, double rad, Vector axis)
+        public static PolyCurve GetRotated(this PolyCurve curve, double rad, Vector axis)
         {
-            return new PolyCurve(curve.Curves.Select(x => x.GetRotated(rad, axis) as ICurve));
+            return new PolyCurve(curve.Curves.Select(x => x.IGetRotated(rad, axis)));
         }
 
         /***************************************************/
 
-        private static Polyline _GetRotated(this Polyline curve, double rad, Vector axis)
+        public static Polyline GetRotated(this Polyline curve, double rad, Vector axis)
         {
-            return new Polyline(curve.ControlPoints.Select(x => x._GetRotated(rad, axis)));
+            return new Polyline(curve.ControlPoints.Select(x => x.GetRotated(rad, axis)));
         }
 
 
         /***************************************************/
-        /**** Private Methods - Surfaces                ****/
+        /**** Public Methods - Surfaces                 ****/
         /***************************************************/
 
-        private static Extrusion _GetRotated(this Extrusion surface, double rad, Vector axis)
+        public static Extrusion GetRotated(this Extrusion surface, double rad, Vector axis)
         {
-            return new Extrusion(surface.Curve.GetRotated(rad, axis) as ICurve, surface.Direction._GetRotated(rad, axis), surface.Capped);
+            return new Extrusion(surface.Curve.IGetRotated(rad, axis), surface.Direction.GetRotated(rad, axis), surface.Capped);
         }
 
         /***************************************************/
 
-        private static Loft _GetRotated(this Loft surface, double rad, Vector axis)
+        public static Loft GetRotated(this Loft surface, double rad, Vector axis)
         {
-            return new Loft(surface.Curves.Select(x => x.GetRotated(rad, axis) as ICurve));
+            return new Loft(surface.Curves.Select(x => x.IGetRotated(rad, axis)));
         }
 
         /***************************************************/
 
-        private static NurbSurface _GetRotated(this NurbSurface surface, double rad, Vector axis)
+        public static NurbSurface GetRotated(this NurbSurface surface, double rad, Vector axis)
         {
-            return new NurbSurface(surface.ControlPoints.Select(x => x._GetRotated(rad, axis)), surface.Weights, surface.UKnots, surface.VKnots);
+            return new NurbSurface(surface.ControlPoints.Select(x => x.GetRotated(rad, axis)), surface.Weights, surface.UKnots, surface.VKnots);
         }
 
         /***************************************************/
 
-        private static Pipe _GetRotated(this Pipe surface, double rad, Vector axis)
+        public static Pipe GetRotated(this Pipe surface, double rad, Vector axis)
         {
-            return new Pipe(surface.Centreline.GetRotated(rad, axis) as ICurve, surface.Radius, surface.Capped);
+            return new Pipe(surface.Centreline.IGetRotated(rad, axis), surface.Radius, surface.Capped);
         }
 
         /***************************************************/
 
-        private static PolySurface _GetRotated(this PolySurface surface, double rad, Vector axis)
+        public static PolySurface GetRotated(this PolySurface surface, double rad, Vector axis)
         {
-            return new PolySurface(surface.Surfaces.Select(x => x.GetRotated(rad, axis) as ISurface));
+            return new PolySurface(surface.Surfaces.Select(x => x.IGetRotated(rad, axis)));
         }
 
 
         /***************************************************/
-        /**** Private Methods - Others                  ****/
+        /**** Public Methods - Others                   ****/
         /***************************************************/
 
-        private static Mesh _GetRotated(this Mesh mesh, double rad, Vector axis)
+        public static Mesh GetRotated(this Mesh mesh, double rad, Vector axis)
         {
-            return new Mesh(mesh.Vertices.Select(x => x._GetRotated(rad, axis)), mesh.Faces.Select(x => x.GetClone() as Face));
+            return new Mesh(mesh.Vertices.Select(x => x.GetRotated(rad, axis)), mesh.Faces.Select(x => x.GetClone()));
         }
 
         /***************************************************/
 
-        private static CompositeGeometry _GetRotated(this CompositeGeometry group, double rad, Vector axis)
+        public static CompositeGeometry GetRotated(this CompositeGeometry group, double rad, Vector axis)
         {
-            return new CompositeGeometry(group.Elements.Select(x => x.GetRotated(rad, axis)));
+            return new CompositeGeometry(group.Elements.Select(x => x.IGetRotated(rad, axis)));
         }
+
+
+
+        /***************************************************/
+        /**** Public Methods - Interfaces               ****/
+        /***************************************************/
+
+        public static IBHoMGeometry IGetRotated(this IBHoMGeometry geometry, double rad, Vector axis)
+        {
+            return GetRotated(geometry as dynamic, rad, axis);
+        }
+
+        /***************************************************/
+
+        public static ICurve IGetRotated(this ICurve geometry, double rad, Vector axis)
+        {
+            return GetRotated(geometry as dynamic, rad, axis);
+        }
+
+        /***************************************************/
+
+        public static ISurface IGetRotated(this ISurface geometry, double rad, Vector axis)
+        {
+            return GetRotated(geometry as dynamic, rad, axis);
+        }
+
+
     }
 }

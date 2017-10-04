@@ -10,7 +10,7 @@ namespace BH.Engine.Structure
     public static partial class Create
     {
         /***************************************************/
-        public static NodeConstraint CreateNodeConstraint(string name, bool[] fixity, double[] values)
+        public static NodeConstraint NodeConstraint(string name, bool[] fixity, double[] values)
         {
             NodeConstraint constr = new NodeConstraint(name);
             constr.UX = (fixity[0]) ? DOFType.Fixed : (values[0] == 0) ? DOFType.Free : DOFType.Spring;
@@ -32,7 +32,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static NodeConstraint CreatePinNodeConstraint(string name = "Pin")
+        public static NodeConstraint PinNodeConstraint(string name = "Pin")
         {
             NodeConstraint constr = new NodeConstraint(name);
             constr.UX = DOFType.Fixed;
@@ -43,7 +43,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static NodeConstraint CreateFixNodeConstraint(string name = "Fix")
+        public static NodeConstraint FixNodeConstraint(string name = "Fix")
         {
             NodeConstraint constr = new NodeConstraint(name);
             constr.UX = DOFType.Fixed;
@@ -57,7 +57,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static NodeConstraint CreateFullReleaseNodeConstraint(string name = "Release")
+        public static NodeConstraint FullReleaseNodeConstraint(string name = "Release")
         {
             NodeConstraint constr = new NodeConstraint(name);
             constr.UX = DOFType.Free;

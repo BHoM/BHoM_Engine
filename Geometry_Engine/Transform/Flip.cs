@@ -10,57 +10,57 @@ namespace BH.Engine.Geometry
     public static partial class Transform
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /**** Public Methods - Curves                   ****/
         /***************************************************/
 
-        public static ICurve GetFlipped(this ICurve curve)
-        {
-            return _GetFlipped(curve as dynamic);
-        }
-
-
-        /***************************************************/
-        /**** Private Methods                           ****/
-        /***************************************************/
-
-        private static Arc _GetFlipped(this Arc curve)
+        public static Arc GetFlipped(this Arc curve)
         {
             return new Arc(curve.End, curve.Middle, curve.Start);
         }
 
         /***************************************************/
 
-        private static Circle _GetFlipped(this Circle curve)
+        public static Circle GetFlipped(this Circle curve)
         {
             return new Circle(curve.Centre, -curve.Normal, curve.Radius);
         }
 
         /***************************************************/
 
-        private static Line _GetFlipped(this Line curve)
+        public static Line GetFlipped(this Line curve)
         {
             return new Line(curve.End, curve.Start);
         }
 
         /***************************************************/
 
-        private static NurbCurve _GetFlipped(this NurbCurve curve)
+        public static NurbCurve GetFlipped(this NurbCurve curve)
         {
             return new NurbCurve(curve.ControlPoints.Reverse<Point>(), curve.Weights.Reverse<double>(), curve.Knots.Reverse<double>());
         }
 
         /***************************************************/
 
-        private static PolyCurve _GetFlipped(this PolyCurve curve)
+        public static PolyCurve GetFlipped(this PolyCurve curve)
         {
-            return new PolyCurve(curve.Curves.Select(x => x.GetFlipped()).Reverse<ICurve>());
+            return new PolyCurve(curve.Curves.Select(x => x.IGetFlipped()).Reverse());
         }
 
         /***************************************************/
 
-        private static Polyline _GetFlipped(this Polyline curve)
+        public static Polyline GetFlipped(this Polyline curve)
         {
             return new Polyline(curve.ControlPoints.Reverse<Point>());
+        }
+
+
+        /***************************************************/
+        /**** Public Methods - Interfaces               ****/
+        /***************************************************/
+
+        public static ICurve IGetFlipped(this ICurve curve)
+        {
+            return GetFlipped(curve as dynamic);
         }
     }
 }

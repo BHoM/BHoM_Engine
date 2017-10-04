@@ -43,13 +43,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Clone\Geometry.cs" />
+    <Compile Include="Query\Clone.cs" />
     <Compile Include="Convert\NurbForm.cs" />
     <Compile Include="Create\Arc.cs" />
     <Compile Include="Create\Circle.cs" />
     <Compile Include="Create\Plane.cs" />
     <Compile Include="Create\Quaternion.cs" />
-    <Compile Include="Create\Transform.cs" />
+    <Compile Include="Create\TransformMatrix.cs" />
     <Compile Include="Fix\Mesh.cs" />
     <Compile Include="Fix\Points.cs" />
     <Compile Include="Fix\PolyCurve.cs" />

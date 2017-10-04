@@ -9,65 +9,55 @@ namespace BH.Engine.Geometry
 {
     public static partial class Query
     {
-        #region Public Methods
-        public static double GetArea(this IBHoMGeometry geo)
-        {
-            return _GetArea(geo as dynamic);
-        }
-        #endregion
-
-
-        #region Private Methods
-
         /***************************************************/
-        /**** 2D                                        ****/
+        /**** Public Methods - Curves                   ****/
         /***************************************************/
 
-        private static double _GetArea(this Arc curve)
+        public static double GetArea(this Arc curve)
         {
             return curve.GetAngle() * Math.Pow(curve.GetRadius(), 2);
         }
 
         /***************************************************/
 
-        private static double _GetArea(this Circle curve)
+        public static double GetArea(this Circle curve)
         {
             return Math.PI * Math.Pow(curve.Radius, 2);
         }
 
         /***************************************************/
 
-        private static double _GetArea(this Line curve)
+        public static double GetArea(this Line curve)
         {
             return 0;
         }
 
         /***************************************************/
 
-        private static double _GetArea(this NurbCurve curve)
+        public static double GetArea(this NurbCurve curve)
         {
             throw new NotImplementedException();
         }
 
         /***************************************************/
 
-        private static double _GetArea(this PolyCurve curve)
+        public static double GetArea(this PolyCurve curve)
         {
             throw new NotImplementedException();
         }
 
         /***************************************************/
 
-        private static double _GetArea(this Polyline curve)
+        public static double GetArea(this Polyline curve)
         {
             throw new NotImplementedException();
         }
 
         /***************************************************/
-        /**** 3D                                        ****/
+        /**** Public Methods - Surfaces                 ****/
         /***************************************************/
 
-        private static double _GetArea(this Mesh mesh)
+        public static double GetArea(this Mesh mesh)
         {
             Mesh tMesh = mesh.GetTriangulated();
             double area = 0;
@@ -87,10 +77,20 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        private static double _GetArea(this NurbSurface nurbs)
+        public static double GetArea(this NurbSurface nurbs)
         {
             throw new NotImplementedException();
         }
-        #endregion
+
+
+        /***************************************************/
+        /**** Public Methods - Interfaces               ****/
+        /***************************************************/
+
+        public static double IGetArea(this IBHoMGeometry geometry)
+        {
+            return GetArea(geometry as dynamic);
+        }
+
     }
 }

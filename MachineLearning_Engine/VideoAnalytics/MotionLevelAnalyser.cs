@@ -44,7 +44,7 @@ namespace BH.Engine.MachineLearning
         /****  Public Methods                ****/
         /****************************************/
 
-        public void /*async Task<Dictionary<int, List<double>>>*/ Run(string videoFileName, Config config)
+        public Dictionary<int, List<double>> Run(string videoFileName, Config config)
         {
             m_MotionLevel = new Dictionary<int, List<double>>();
             m_Detector = new TwoFramesDifferenceDetector();
@@ -67,9 +67,9 @@ namespace BH.Engine.MachineLearning
             m_FVideoSource.PlayingFinished += PlayingFinished;
             m_FVideoSource.Start();*/
 
-            /*m_DoneEvent.WaitOne();
+            m_DoneEvent.WaitOne();
 
-            return m_MotionLevel;*/
+            return m_MotionLevel;
         }
 
         /****************************************/

@@ -10,14 +10,7 @@ namespace BH.Engine.Geometry
     public static partial class Query
     {
         /***************************************************/
-        /**** Public Methods                            ****/
-        /***************************************************/
-
-        public static Plane GetPlane(this ICurve curve)
-        {
-            return _GetPlane(curve as dynamic);
-        }
-
+        /**** public Methods - Vectors                 ****/
         /***************************************************/
 
         public static Plane GetPlane(this IEnumerable<Point> points)
@@ -78,47 +71,57 @@ namespace BH.Engine.Geometry
 
 
         /***************************************************/
-        /**** Private Methods                           ****/
+        /**** public Methods - Curves                  ****/
         /***************************************************/
 
-        private static Plane _GetPlane(this Arc curve)
+        public static Plane GetPlane(this Arc curve)
         {
-            return Create.CreatePlane(curve.Start, curve.Middle, curve.End);
+            return Create.Plane(curve.Start, curve.Middle, curve.End);
         }
 
         /***************************************************/
 
-        private static Plane _GetPlane(this Circle curve)
+        public static Plane GetPlane(this Circle curve)
         {
             return new Plane(curve.Centre, curve.Normal);
         }
 
         /***************************************************/
 
-        private static Plane _GetPlane(this Line curve)
+        public static Plane GetPlane(this Line curve)
         {
             return null;
         }
 
         /***************************************************/
 
-        private static Plane _GetPlane(this NurbCurve curve)
+        public static Plane GetPlane(this NurbCurve curve)
         {
             throw new NotImplementedException();
         }
 
         /***************************************************/
 
-        private static Plane _GetPlane(this PolyCurve curve)
+        public static Plane GetPlane(this PolyCurve curve)
         {
-            return GetPlane(curve.Curves.SelectMany(x => x.GetControlPoints()));
+            return GetPlane(curve.Curves.SelectMany(x => x.IGetControlPoints()));
         }
 
         /***************************************************/
 
-        private static Plane _GetPlane(this Polyline curve)
+        public static Plane GetPlane(this Polyline curve)
         {
             return GetPlane(curve.ControlPoints);
+        }
+
+
+        /***************************************************/
+        /**** Public Methods - Interfaces               ****/
+        /***************************************************/
+
+        public static Plane IGetPlane(this ICurve curve)
+        {
+            return GetPlane(curve as dynamic);
         }
     }
 }

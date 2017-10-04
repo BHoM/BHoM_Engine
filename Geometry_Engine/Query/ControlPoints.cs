@@ -10,57 +10,57 @@ namespace BH.Engine.Geometry
     public static partial class Query
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /**** Public Methods - Curves                   ****/
         /***************************************************/
 
-        public static List<Point> GetControlPoints(this ICurve curve)
-        {
-            return _GetControlPoints(curve as dynamic);
-        }
-
-
-        /***************************************************/
-        /**** Private Methods                           ****/
-        /***************************************************/
-
-        private static List<Point> _GetControlPoints(this Arc curve)
+        public static List<Point> GetControlPoints(this Arc curve)
         {
             return new List<Point> { curve.Start, curve.End };
         }
 
         /***************************************************/
 
-        private static List<Point> _GetControlPoints(this Circle curve)
+        public static List<Point> GetControlPoints(this Circle curve)
         {
             return new List<Point>();
         }
 
         /***************************************************/
 
-        private static List<Point> _GetControlPoints(this Line curve)
+        public static List<Point> GetControlPoints(this Line curve)
         {
             return new List<Point> { curve.Start, curve.End };
         }
 
         /***************************************************/
 
-        private static List<Point> _GetControlPoints(this NurbCurve curve)
+        public static List<Point> GetControlPoints(this NurbCurve curve)
         {
             return curve.ControlPoints;
         }
 
         /***************************************************/
 
-        private static List<Point> _GetControlPoints(this PolyCurve curve)
+        public static List<Point> GetControlPoints(this PolyCurve curve)
         {
-            return curve.Curves.SelectMany(x => x.GetControlPoints()).ToList();
+            return curve.Curves.SelectMany(x => x.IGetControlPoints()).ToList();
         }
 
         /***************************************************/
 
-        private static List<Point> _GetControlPoints(this Polyline curve)
+        public static List<Point> GetControlPoints(this Polyline curve)
         {
             return curve.ControlPoints;
+        }
+
+
+        /***************************************************/
+        /**** Public Methods - Interfaces               ****/
+        /***************************************************/
+
+        public static List<Point> IGetControlPoints(this ICurve curve)
+        {
+            return GetControlPoints(curve as dynamic);
         }
     }
 }

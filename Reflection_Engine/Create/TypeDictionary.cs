@@ -13,7 +13,7 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
-        private static Dictionary<string, Type> CreateTypeDictionary()
+        public static Dictionary<string, Type> TypeDictionary()
         {
             // If the dictionary exists already return it
             if (m_TypeDictionary != null && m_TypeDictionary.Count > 0)
