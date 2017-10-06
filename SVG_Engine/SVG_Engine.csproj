@@ -7,7 +7,7 @@
     <ProjectGuid>{D5C7704D-F59A-4FC6-8D1E-356699A174E0}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SVG_Engine</RootNamespace>
+    <RootNamespace>BH.Engine.SVG</RootNamespace>
     <AssemblyName>SVG_Engine</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
