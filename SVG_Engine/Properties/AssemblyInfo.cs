@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("SemanticAnalysis_Engine")]
+[assembly: AssemblyTitle("SVG_Engine")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("BuroHappold")]
-[assembly: AssemblyProduct("SemanticAnalysis_Engine")]
+[assembly: AssemblyProduct("SVG_Engine")]
 [assembly: AssemblyCopyright("Copyright © BuroHappold 2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("92371639-4f15-40b8-9b90-02cfd056017d")]
+[assembly: Guid("d5c7704d-f59a-4fc6-8d1e-356699a174e0")]
 
 // Version information for an assembly consists of the following four values:
 //

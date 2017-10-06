@@ -9,9 +9,9 @@ using Newtonsoft.Json;
 
 namespace BH.Engine.MachineLearning
 {
-    public static class SemanticAnalysis
+    public static partial class Analyse
     {
-        public static string RunAnalysis(string text)
+        public static string Semantics(string text)
         {
             //tokenize == separate
             //sssplit == split into difference sentences
@@ -52,7 +52,7 @@ namespace BH.Engine.MachineLearning
             return value;
         }
 
-        public static List<string> getSentences(string stream)
+        public static List<string> getSentences(this string stream)
         {
             dynamic deJson = JsonConvert.DeserializeObject(stream);
             List<string> values = new List<string>();

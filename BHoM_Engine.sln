@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
+# Visual Studio Express 14 for Windows Desktop
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Engine_Test", "Engine_Test\Engine_Test.csproj", "{178E7641-FB4D-41E9-A250-120A2B834912}"
@@ -32,6 +32,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Geometry_Engine", "Geometry_Engine\Geometry_Engine.csproj", "{89AB2DCB-EF87-4CBA-B59C-C16A8A71D333}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Structure_Engine", "Structure_Engine\Structure_Engine.csproj", "{52A31A0A-E340-4909-AAD6-228045B07BF3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SVG_Engine", "SVG_Engine\SVG_Engine.csproj", "{D5C7704D-F59A-4FC6-8D1E-356699A174E0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -135,6 +137,14 @@ Global
 		{52A31A0A-E340-4909-AAD6-228045B07BF3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{52A31A0A-E340-4909-AAD6-228045B07BF3}.Release|x86.ActiveCfg = Release|Any CPU
 		{52A31A0A-E340-4909-AAD6-228045B07BF3}.Release|x86.Build.0 = Release|Any CPU
+		{D5C7704D-F59A-4FC6-8D1E-356699A174E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D5C7704D-F59A-4FC6-8D1E-356699A174E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D5C7704D-F59A-4FC6-8D1E-356699A174E0}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D5C7704D-F59A-4FC6-8D1E-356699A174E0}.Debug|x86.Build.0 = Debug|Any CPU
+		{D5C7704D-F59A-4FC6-8D1E-356699A174E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D5C7704D-F59A-4FC6-8D1E-356699A174E0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D5C7704D-F59A-4FC6-8D1E-356699A174E0}.Release|x86.ActiveCfg = Release|Any CPU
+		{D5C7704D-F59A-4FC6-8D1E-356699A174E0}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
