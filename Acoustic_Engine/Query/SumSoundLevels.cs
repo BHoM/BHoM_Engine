@@ -1,5 +1,4 @@
-﻿using BH.oM.Acoustic;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,9 +12,14 @@ namespace BH.Engine.Acoustic
         /**** Public  Methods                           ****/
         /***************************************************/
 
-        public static double GetLength(this Ray ray)
+        public static double SumSoundLevels(List<double> spl)
         {
-            return Geometry.Query.IGetLength(ray.Geometry);
+            double SPL = 0;
+            for (int i = 0; i < spl.Count; i++)
+            {
+                SPL += (10 * Math.Log10(Math.Pow(10, 10 / spl[i])));
+            }
+            return SPL;
         }
     }
 }

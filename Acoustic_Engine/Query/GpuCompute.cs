@@ -12,6 +12,10 @@ namespace BH.Engine.Acoustic
 {
     public static partial class Analyse
     {
+        /***************************************************/
+        /**** Public  Methods                           ****/
+        /***************************************************/
+
         [Cudafy]
         public static GPGPU InitialiseOpenCLDevice()
         {
@@ -21,12 +25,13 @@ namespace BH.Engine.Acoustic
             return gpu;
         }
 
+        /***************************************************/
+
         [Cudafy]
         public static void thekernel(GThread thread, object in0, object in1, object out0)
         {
             int threadID = thread.threadIdx.x;
 
         }
-
     }
 }

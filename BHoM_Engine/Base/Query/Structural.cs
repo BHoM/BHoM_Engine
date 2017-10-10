@@ -15,7 +15,7 @@ namespace BH.Engine.Base
         /**** Private Methods - Vectors                 ****/
         /***************************************************/
 
-        private static IBHoMGeometry _GetGeometry(this Bar bar)
+        private static IBHoMGeometry _GetGeometry(this Bar bar) // TODO Duplicated code in Structural_Engine.Query.Geometry.Query
         {
             return new Line(bar.StartNode.Point, bar.EndNode.Point);
         }

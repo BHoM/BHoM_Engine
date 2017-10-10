@@ -13,9 +13,9 @@ namespace BH.Engine.Acoustic
         /**** Public  Methods                           ****/
         /***************************************************/
 
-        public static double GetLength(this Ray ray)
+        public static double GetTime(this Ray ray)
         {
-            return Geometry.Query.IGetLength(ray.Geometry);
+            return ray.GetLength() / 343;
         }
     }
 }
