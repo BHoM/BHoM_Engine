@@ -4,25 +4,30 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.InteropServices;
-
 using BH.oM.Acoustic;
 using BH.oM.Geometry;
-
 using Cudafy;
 using Cudafy.Host;
 using Cudafy.Translator;
+using BH.Engine.Geometry;
 
 namespace BH.Engine.Acoustic
 {
-    public static partial class Analyse
+    public static partial class Query
     {
+        /***************************************************/
+        /**** Public  Methods                           ****/
+        /***************************************************/
+
         [Cudafy]
         public static void thekernel(GThread thread, Speaker[] sources, Receiver[] targets, Ray[] rays)
         {
             int tId = thread.threadIdx.x;
-            rays[tId] = new Ray(new Line(sources[tId].Position, targets[tId].Position), tId, tId);
+            rays[tId] = new Ray(sources[tId].Geometry.Polyline(targets[tId].Geometry), tId, tId);
         }
-        
+
+        /***************************************************/
+
         public static Ray[] DirectSoundGPU(Speaker[] sources, Receiver[] targets)
         {
             CudafyModes.Target = eGPUType.OpenCL;

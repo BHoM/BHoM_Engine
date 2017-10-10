@@ -11,7 +11,7 @@ namespace BH.Engine.Acoustic
 {
     public static partial class Query
     {
-        public static List<double> GetSTI(List<double> speech, List<double> noise, List<double> RT, List<BHA.Speaker> speakers, BHA.Zone zone)
+        public static List<double> ComputeSTI(List<double> speech, List<double> noise, List<double> RT, List<BHA.Speaker> speakers, BHA.Room zone)
         {
             List<double> STI = new List<double>();
             List<double> RASTI = new List<double>();
@@ -31,7 +31,7 @@ namespace BH.Engine.Acoustic
                 STI_OCT[oct] = new List<double>();
             }
 
-            List<BHG.Point> Targets = zone.SamplePoints;
+            List<BHG.Point> Targets = zone.Samples.Select(x=> x.Geometry).ToList();
 
             double freqCount = frequencies.Count;
 
@@ -86,9 +86,9 @@ namespace BH.Engine.Acoustic
         }
 
 
-        private static void CalcSoundLevel(double speech, double revTime, BHG.Point location, BHA.Speaker speaker, BHA.Zone zone, double frequency, double octave, double closestDist, out double level, out double amb_pascals, out double revDist, out double timeConstant, out double closestdist, out double gain)
+        private static void CalcSoundLevel(double speech, double revTime, BHG.Point location, BHA.Speaker speaker, BHA.Room zone, double frequency, double octave, double closestDist, out double level, out double amb_pascals, out double revDist, out double timeConstant, out double closestdist, out double gain)
         {
-            BHG.Vector deltaPos = location - speaker.Position;
+            BHG.Vector deltaPos = location - speaker.Geometry;
             double recieverAngle = BH.Engine.Geometry.Query.GetAngle(deltaPos, speaker.Direction) * (180 / Math.PI);
             double distance = deltaPos.GetLength();
 

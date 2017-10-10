@@ -12,35 +12,26 @@ using Cudafy.Host;
 using Cudafy.Translator;
 using BH.oM.Geometry;
 using BH.oM.Acoustic;
+using BH.Engine.Geometry;
 
 
 namespace BH.Engine.Acoustic
 {
-    public static partial class Analyse
+    public static partial class Query
     {
-        #region Methods
-        
-        /// <summary>
-        /// Performs a Direct Sound calculation with sequential CPU calculation
-        /// </summary>
-        /// <param name="source">BHoM acoustic Speaker</param>
-        /// <param name="target">BHoM acoustic Receivers</param>
-        /// <param name="surfaces">BHoM acoustic Panel</param>
-        /// <returns>Returns a list of BHoM Acoustic Rays</returns>
+        /***************************************************/
+        /**** Public  Methods                           ****/
+        /***************************************************/
+
         public static Ray DirectSound(Speaker source, Receiver target, List<Panel> surfaces)
         {
-            Line path = new Line(source.Position, target.Position);
+            Polyline path = source.Geometry.Polyline(target.Geometry);
             Ray ray = new Ray(path, source.SpeakerID, target.ReceiverID);
-            return Verify.CheckObstacles(ray,surfaces) ? ray : default(Ray);
+            return Verify.IsObstructed(ray, surfaces) ? ray : default(Ray);
         }
-        
-        /// <summary>
-        /// Performs a Direct Sound calculation with sequential CPU calculation
-        /// </summary>
-        /// <param name="sources">BHoM acoustic Speaker</param>
-        /// <param name="targets">BHoM acoustic Receivers</param>
-        /// <param name="surfaces">BHoM acoustic Panel</param>
-        /// <returns>Returns a list of BHoM Acoustic Rays</returns>
+
+        /***************************************************/
+
         public static List<Ray> DirectSound(List<Speaker> sources, List<Receiver> targets, List<Panel> surfaces)
         {
             List<Ray> rays = new List<Ray>();
@@ -49,50 +40,44 @@ namespace BH.Engine.Acoustic
                 {
                     for (int j = 0; j < targets.Count; j++)
                     {
-                        Line path = new Line(sources[i].Position, targets[j].Position);
+                        Polyline path = sources[i].Geometry.Polyline(targets[j].Geometry);
                         rays.Add(new Ray(path, i, j));
                     }
                 }
                 if (surfaces == null || surfaces.Count == 0) { return rays; }
-                else { return Verify.CheckObstacles(rays, surfaces); }
+                else { return Query.CheckObstacles(rays, surfaces); }
             }
             // else
             //     throw new Exception("Parallel parameter cannot be left blank or be higher than 3. Please specify calculation method: [0] Serial, [1] CPU Threaded, [2] CUDA accelerated. WIP: GPU not working, [3] OpenCL accelerated. WIP: Not Working");
         }
 
-        /// <summary>
-        /// Performs a Direct Sound calculation with parallel CPU calculation
-        /// </summary>
-        /// <param name="sources">BHoM acoustic Speaker</param>
-        /// <param name="targets">BHoM acoustic Receivers</param>
-        /// <param name="surfaces">BHoM acoustic Panel</param>
-        /// <returns>Returns a list of BHoM Acoustic Rays</returns>
+        /***************************************************/
+
         public static List<Ray> DirectSoundCPU(List<Speaker> sources, List<Receiver> targets, List<Panel> surfaces)
         {
-            /*
-            ConcurrentBag<Ray> rays = new ConcurrentBag<Ray>();
-            //List<Ray> rays = new List<Ray>();
-            for (int i = 0; i < sources.Count; i++)
-            {
-                Parallel.For(
-                    0,
-                    targets.Count,
-                    new ParallelOptions { MaxDegreeOfParallelism = System.Environment.ProcessorCount },
-                    () => new List<Ray>(),                                        // Initialise local variable
-                    (int j, ParallelLoopState state, List<Ray> subray) =>          // body: The delegate that is invoked once per iteration.
-                    {
-                        Line path = new Line(sources[i].Position, targets[j].Position);
-                        subray.Add(new Ray(path, i, j));
-                        return subray;
-                    },
-                    (subray) =>
-                        {
-                            foreach(Ray ray in subray)
-                            rays.Add(ray);
-                        }
-                );
-            }
-            */
+            
+            //ConcurrentBag<Ray> rays = new ConcurrentBag<Ray>();
+            ////List<Ray> rays = new List<Ray>();
+            //for (int i = 0; i < sources.Count; i++)
+            //{
+            //    Parallel.For(
+            //        0,
+            //        targets.Count,
+            //        new ParallelOptions { MaxDegreeOfParallelism = System.Environment.ProcessorCount },
+            //        () => new List<Ray>(),                                        // Initialise local variable
+            //        (int j, ParallelLoopState state, List<Ray> subray) =>          // body: The delegate that is invoked once per iteration.
+            //        {
+            //            Line path = new Line(sources[i].Geometry, targets[j].Geometry);
+            //            subray.Add(new Ray(path, i, j));
+            //            return subray;
+            //        },
+            //        (subray) =>
+            //            {
+            //                foreach(Ray ray in subray)
+            //                rays.Add(ray);
+            //            }
+            //    );
+            //}
 
             //List<Ray> rays = new List<Ray>();
             List<Ray> rays = new List<Ray>();
@@ -106,7 +91,7 @@ namespace BH.Engine.Acoustic
                     Task t = Task.Factory.StartNew(() =>
                    {
                        Dispatcher.CurrentDispatcher.Invoke(new Action(() =>
-                       rays.Add(new Ray(new Line(sources[i].Position, targets[j].Position), a, b))
+                       rays.Add(new Ray(sources[i].Geometry.Polyline(targets[j].Geometry), a, b))
                        )
                        );
                    });
@@ -119,14 +104,8 @@ namespace BH.Engine.Acoustic
             return rays;
         }
 
+        /***************************************************/
 
-        /// <summary>
-        /// Performs a Direct Sound calculation with GPU parallel calculation based on CUDA
-        /// </summary>
-        /// <param name="sources">BHoM acoustic Speaker</param>
-        /// <param name="targets">BHoM acoustic Receivers</param>
-        /// <param name="surfaces">BHoM acoustic Panel</param>
-        /// <returns>Returns a list of BHoM Acoustic Rays</returns>
         [GpuManaged]
         public static List<Ray> DirectSoundCuda(List<Speaker> sources, List<Receiver> targets, List<Panel> surfaces)
         {
@@ -136,22 +115,17 @@ namespace BH.Engine.Acoustic
                    {
                        for (int j = 0; j < targets.Count; j++)
                        {
-                           List<Point> rayPts = new List<Point>() { sources[i].Position, targets[j].Position };
+                           List<Point> rayPts = new List<Point>() { sources[i].Geometry, targets[j].Geometry };
                            Polyline path = new Polyline(rayPts);
                            rays.Add(new Ray(path, i, j));
                        }
                    });
             if (surfaces == null || surfaces.Count == 0) { return rays; }
-            else { return Verify.CheckObstacles(rays, surfaces); }
+            else { return Query.CheckObstacles(rays, surfaces); }
         }
 
-        /// <summary>
-        /// Performs a Direct Sound calculation with GPU parallel calculation based on OpenCL
-        /// </summary>
-        /// <param name="sources">BHoM acoustic Speaker</param>
-        /// <param name="targets">BHoM acoustic Receivers</param>
-        /// <param name="surfaces">BHoM acoustic Panel</param>
-        /// <returns>Returns a list of BHoM Acoustic Rays</returns>
+        /***************************************************/
+
         public static List<Ray> DirectSoundOpenCL(List<Speaker> sources, List<Receiver> targets, List<Panel> surfaces)
         {
             // Formatting inputs
@@ -181,10 +155,7 @@ namespace BH.Engine.Acoustic
 
             //gpu.Launch(1, sources.Count, ((Action<GThread, >)), dev_sources, dev_targets, dev_surfaces);
 
-
             return new List<Ray>();
         }
-                               
-        #endregion
     }
 }
