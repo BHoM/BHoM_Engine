@@ -13,7 +13,7 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Dictionary<string, Type> TypeDictionary()
+        public static Dictionary<string, List<Type>> TypeDictionary()
         {
             // If the dictionary exists already return it
             if (m_TypeDictionary != null && m_TypeDictionary.Count > 0)
@@ -31,12 +31,12 @@ namespace BH.Engine.Reflection
                     if (name == "BHoM" || name.EndsWith("_oM"))
                     {
                         foreach (Type type in types)
-                            m_TypeDictionary[type.Name] = type;
+                            AddType(type.FullName, type);
                     }
 
-                    // Save full names for all dlls
-                    foreach (Type type in types)
-                        m_TypeDictionary[type.FullName] = type;
+                    //// Save full names for all dlls       // Let's see if we actually need more than the BHoM types
+                    //foreach (Type type in types)
+                    //    m_TypeDictionary[type.FullName] = type;
                 }
                 catch (Exception)
                 {
@@ -47,11 +47,33 @@ namespace BH.Engine.Reflection
             return m_TypeDictionary;
         }
 
+
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+        private static void AddType(string name, Type type)
+        {
+            if (m_TypeDictionary.ContainsKey(name))
+                m_TypeDictionary[name].Add(type);
+            else
+            {
+                List<Type> list = new List<Type>();
+                list.Add(type);
+                m_TypeDictionary[name] = list;
+            }
+
+            int firstDot = name.IndexOf('.');
+            if (firstDot >= 0)
+                AddType(name.Substring(firstDot + 1), type);
+        }
+        
+
         /***************************************************/
         /**** Private Fields                            ****/
         /***************************************************/
 
-        private static Dictionary<string, Type> m_TypeDictionary = new Dictionary<string, Type>();
+        private static Dictionary<string, List<Type>> m_TypeDictionary = new Dictionary<string, List<Type>>();
 
     }
 }
