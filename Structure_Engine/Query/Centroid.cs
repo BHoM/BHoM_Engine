@@ -16,7 +16,7 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Point GetCentroid(this oM.Structural.Elements.PanelFace panelFace)
+        public static Point GetCentroid(this oM.Structural.Elements.Panel panelFace)
         {
             List<Point> pts = new List<Point>(4);
 

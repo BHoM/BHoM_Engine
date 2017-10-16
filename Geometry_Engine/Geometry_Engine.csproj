@@ -70,6 +70,7 @@
     <Compile Include="Query\EndPoint.cs" />
     <Compile Include="Query\Extents.cs" />
     <Compile Include="Query\ExternalEdges.cs" />
+    <Compile Include="Query\Integration.cs" />
     <Compile Include="Query\InternalEdges.cs" />
     <Compile Include="Query\Length.cs" />
     <Compile Include="Query\MeshIntersection.cs" />

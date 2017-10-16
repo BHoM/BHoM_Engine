@@ -16,10 +16,10 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static List<ICurve> GetEdges(this Panel panel)
+        public static List<ICurve> GetEdges(this Contour contour)
         {
-            if (panel.Surface != null)
-                return panel.Surface.IGetExternalEdges();
+            if (contour.Surface != null)
+                return contour.Surface.IGetExternalEdges();
             else
                 return new List<ICurve>();
         }

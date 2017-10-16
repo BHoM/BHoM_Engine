@@ -30,11 +30,11 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static void SetGeometry(this Panel panel, IBHoMGeometry geometry)
+        public static void SetGeometry(this Contour contour, IBHoMGeometry geometry)
         {
             if (typeof(ISurface).IsAssignableFrom(geometry.GetType()))
             {
-                panel.Surface = geometry as ISurface;
+                contour.Surface = geometry as ISurface;
             }
         }
 
