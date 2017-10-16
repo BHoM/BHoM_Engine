@@ -20,7 +20,18 @@ namespace BH.Engine.SVG
 
         public static string ToSVG(this Point point)
         {
-            throw new NotImplementedException();
+            // Creates a small circle with the input point as its centerpoint and converts it into SVG
+
+            string circleString = "<circle cx=\"_cx\" cy=\"_cy\" r=\"radius\" stroke=\"black\" stroke-width=\"\" fill=\"transparent\" />";
+            double Rad = 0.5;
+
+            circleString = circleString.Replace("_cx", point.X.ToString());
+            circleString = circleString.Replace("_cy", point.Y.ToString());
+            circleString = circleString.Replace("radius", Rad.ToString());
+
+            return circleString;
+
+            // throw new NotImplementedException();
         }
 
         public static string ToSVG(this Line line)
@@ -30,25 +41,38 @@ namespace BH.Engine.SVG
             Point startPt = line.Start;
             Point endPt = line.End;
 
-            string lineString = "<line x1=\"_x1\" y1=\"_y1\" z1=\"_z1\" x2=\"_x2\" y2=\"_y2\" z2=\"_z2\" stroke=\"black\" stroke-width=\"\" />" + System.Environment.NewLine;
+            string lineString = "<line x1=\"_x1\" y1=\"_y1\" x2=\"_x2\" y2=\"_y2\" stroke=\"black\" stroke-width=\"\" />" + System.Environment.NewLine;
 
             lineString = lineString.Replace("_x1", startPt.X.ToString());
             lineString = lineString.Replace("_y1", startPt.Y.ToString());
-            lineString = lineString.Replace("_z1", startPt.Z.ToString());
             lineString = lineString.Replace("_x2", endPt.X.ToString());
             lineString = lineString.Replace("_y2", endPt.Y.ToString());
-            lineString = lineString.Replace("_z2", endPt.Z.ToString());
 
             return lineString;
         } 
 
+        public static string ToSVG(this Circle circle)
+        {
+            // Converts a BHoM Circle into SVG
+
+            Point centerPt = circle.Centre;
+
+            string circleString = "<circle cx=\"_cx\" cy=\"_cy\" r=\"radius\" stroke=\"black\" stroke-width=\"\" fill=\"transparent\" />";
+
+            circleString = circleString.Replace("_cx", centerPt.X.ToString());
+            circleString = circleString.Replace("_cy", centerPt.Y.ToString());
+            circleString = circleString.Replace("radius", circle.Radius.ToString());
+
+            return circleString;
+        }
+
         public static string ToSVG(this List<BH.oM.Geometry.Point> ptList, bool closed)
-        { 
+        {
             // Converts a Path into SVG
 
             string pathString = "<path d=\"";
 
-            for (int i = 0; i< ptList.Count; i++)
+            for (int i = 0; i < ptList.Count; i++)
             {
                 if (i == 0)
                 {
@@ -70,39 +94,22 @@ namespace BH.Engine.SVG
             return pathString;
         }
 
-        public static string ToSVG(this Circle circle)
-        {
-            // Converts a BHoM Circle into SVG
-
-            Point centerPt = circle.Centre;
-
-            string circleString = "<circle cx=\"_cx\" cy=\"_cy\" r=\"radius\" stroke=\"black\" stroke-width=\"\" fill=\"transparent\" />";
-
-            circleString = circleString.Replace("_cx", centerPt.X.ToString());
-            circleString = circleString.Replace("_cy", centerPt.Y.ToString());
-            circleString = circleString.Replace("radius", circle.Radius.ToString());
-
-            return circleString;
-        }
-
         public static string ToSVG(this Polyline polyline)
         {
             // Converts a BHoM Polyline into SVG
 
-            //List<Point> controlPts = polyline.ControlPoints;
+            List<Point> controlPts = polyline.ControlPoints;
 
-            //string polylineString = "<polyline d=\"";
+            string polylineString = "<polyline points=\" ";
 
-            //for (int i = 0; i < controlPts.Count; i++)
-            //{
-            //    polylineString += controlPts[i].X.ToString,controlPts[i].Y.ToString " ";
-            //}
+            for (int i = 0; i < controlPts.Count; i++)
+            {
+                polylineString += controlPts[i].X.ToString() + "," + controlPts[i].Y.ToString() + " ";
+            }
 
-            //polylineString += "style="fill:\"\";stroke:\"\";stroke-width:\"\" />";
+            polylineString += "\" style=\"fill:none;stroke:black;stroke-width:\" />";
 
-            //return polylineString;
-
-            throw new NotImplementedException();
+            return polylineString;
         }
 
         public static string ToSVG(this NurbCurve nurbCurve)
@@ -115,18 +122,47 @@ namespace BH.Engine.SVG
 
             string nurbString = "<path d=\"";
 
+            double p = nurbCurve.ControlPoints.Count();
+            bool a = new bool();
+
+            //-----------------------------------------------
+
+            if ( ((p-4)/3) % 1 == 0) // Cubic Curves
+            {
+                a = true;
+            }
+            else if ( ((p-3)/2) % 1 == 0) // Quadratic Curves
+            {
+                a = false;
+            }
+            else // If neither (one control point will not produce any geometry) - Choose Cubic
+            {
+                a = true;
+            }
+
+            //-----------------------------------------------
+
             for (int i = 0; i < controlPts.Count; i++)
             {
                 if (i == 0)
                 {
-                    nurbString += "M" + controlPts[i].X.ToString() + " " + controlPts[i].Y.ToString() + " C";
+                    nurbString += "M" + controlPts[i].X.ToString() + " " + controlPts[i].Y.ToString();
+
+                    if (a == true)
+                    {
+                        nurbString += " C";
+                    }
+                    else
+                    {
+                        nurbString += " Q";
+                    }       
                 }
                 else
                 {
                     nurbString += controlPts[i].X.ToString() + " " + controlPts[i].Y.ToString() + " ";
                 }
             }
-
+           
             nurbString += "\" stroke=\"black\" stroke-width=\"\" fill=\"transparent\" />";
 
             return nurbString;
