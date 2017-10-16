@@ -13,6 +13,11 @@ namespace BH.Engine.SVG
         /**** Public Methods                            ****/
         /***************************************************/
 
+        public static string IToSVG(this IBHoMGeometry geometry)
+        {
+            return ToSVG(geometry as dynamic);
+        }
+
         public static string ToSVG(this Point point)
         {
             throw new NotImplementedException();
@@ -25,7 +30,7 @@ namespace BH.Engine.SVG
             Point startPt = line.Start;
             Point endPt = line.End;
 
-            string lineString = "<line x1=\"_x1\" y1=\"_y1\" z1=\"_z1\" x2=\"_x2\" y2=\"_y2\" z2=\"_z2\" vector-effect=\"non-scaling-stroke\" />" + System.Environment.NewLine;
+            string lineString = "<line x1=\"_x1\" y1=\"_y1\" z1=\"_z1\" x2=\"_x2\" y2=\"_y2\" z2=\"_z2\" stroke=\"black\" stroke-width=\"\" />" + System.Environment.NewLine;
 
             lineString = lineString.Replace("_x1", startPt.X.ToString());
             lineString = lineString.Replace("_y1", startPt.Y.ToString());
@@ -70,17 +75,17 @@ namespace BH.Engine.SVG
             // Converts a BHoM Circle into SVG
 
             Point centerPt = circle.Centre;
-            Double radius = circle.Radius;
 
-            string circleString = "<circle cx=\"_cx\" cy=\"_cy\" r=\"radius\" stroke=\"\" stroke-width=\"\" fill=\"\" />";
+            string circleString = "<circle cx=\"_cx\" cy=\"_cy\" r=\"radius\" stroke=\"black\" stroke-width=\"\" fill=\"transparent\" />";
 
             circleString = circleString.Replace("_cx", centerPt.X.ToString());
             circleString = circleString.Replace("_cy", centerPt.Y.ToString());
+            circleString = circleString.Replace("radius", circle.Radius.ToString());
 
             return circleString;
         }
 
-        public static string ToSVG(Polyline polyline)
+        public static string ToSVG(this Polyline polyline)
         {
             // Converts a BHoM Polyline into SVG
 
@@ -100,15 +105,44 @@ namespace BH.Engine.SVG
             throw new NotImplementedException();
         }
 
+        public static string ToSVG(this NurbCurve nurbCurve)
+            {
+            // Converts a nurbs curve into SVG
+
+            List<Point> controlPts = nurbCurve.ControlPoints;
+            List<Double> weights = nurbCurve.Weights;
+            List<Double> knots = nurbCurve.Knots;
+
+            string nurbString = "<path d=\"";
+
+            for (int i = 0; i < controlPts.Count; i++)
+            {
+                if (i == 0)
+                {
+                    nurbString += "M" + controlPts[i].X.ToString() + " " + controlPts[i].Y.ToString() + " C";
+                }
+                else
+                {
+                    nurbString += controlPts[i].X.ToString() + " " + controlPts[i].Y.ToString() + " ";
+                }
+            }
+
+            nurbString += "\" stroke=\"black\" stroke-width=\"\" fill=\"transparent\" />";
+
+            return nurbString;
+            }
+
         //public static string DrawSVGpath(this IBHoMGeometry geometry)
         //{
-        //    // sopme code
+            
         //}
 
         //public static string ToSvg(this Arc arc)
         //{
         //    DrawSVGpath(arc);
+        //}
 
+        // Points, ellipses, arcs, nurbs (rectangles, polylines)
 
     }
 }
