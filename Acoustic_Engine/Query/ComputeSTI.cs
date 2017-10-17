@@ -11,8 +11,14 @@ namespace BH.Engine.Acoustic
 {
     public static partial class Query
     {
-        public static List<double> ComputeSTI(List<double> speech, List<double> noise, List<double> RT, List<BHA.Speaker> speakers, BHA.Room zone)
+        public static List<double> ComputeSTI(List<double> speech, List<double> noise, List<double> RT, List<Speaker> inputSpeakers, Room zone)
         {
+            List<Speaker> speakers = new List<Speaker>();
+            for (int i = 0; i < inputSpeakers.Count; i++)
+                speakers.Add(new Speaker(inputSpeakers[i].Geometry,inputSpeakers[i].Direction
+                                             inputSpeakers[i].Category,inputSpeakers[i].SpeakerID,
+                                             ))
+
             List<double> STI = new List<double>();
             List<double> RASTI = new List<double>();
             List<double> sn = new List<double>();
@@ -25,17 +31,16 @@ namespace BH.Engine.Acoustic
             noise = noise == null ? new List<double> { 53.5, 53.5 } : noise;    //Defaulting noise variable if not instanciated
             RT = RT == null ? new List<double> { 0.001, 0.001 } : RT;           //Defaulting RT variable if not instanciated
 
-
             foreach (double oct in octaves)
             {
                 STI_OCT[oct] = new List<double>();
             }
 
-            List<BHG.Point> Targets = zone.Samples.Select(x=> x.Geometry).ToList();
+            List<Point> Targets = zone.Samples.Select(x => x.Geometry).ToList();
 
             double freqCount = frequencies.Count;
 
-            for (int i=0; i< Targets.Count; i++)
+            for (int i = 0; i < Targets.Count; i++)
             {
                 foreach (double octave in octaves)
                 {
@@ -56,7 +61,7 @@ namespace BH.Engine.Acoustic
                         double timeConstant = 0;
                         double gain = 0;
 
-                        foreach (BHA.Speaker speaker in speakers)
+                        foreach (Speaker speaker in speakers)
                         {
                             // 1. CalcSoundLevel
                             CalcSoundLevel(speech.Count == 2 ? speech[0] : speech[i], RT.Count == 2 ? RT[0] : RT[i], Targets[i], speaker, zone, frequency, octave, closestDist, out iterationLevel, out amb_pascals, out revDist, out timeConstant, out closestDist, out gain);
@@ -64,7 +69,7 @@ namespace BH.Engine.Acoustic
                             levelSum = (speech.Count == 2 ? speech[0] : speech[i]) + 10 * Math.Log10(totalLevel);
                         }
                         // 2. Calculate SoundToNoise Ratio
-                        CalcSoundToNoiseRatio(noise.Count==2?noise[0]:noise[i], speech.Count == 2 ? speech[0] : speech[i], closestDist, amb_pascals, levelSum, revDist, timeConstant, frequency, octave, gain, out snApp);
+                        CalcSoundToNoiseRatio(noise.Count == 2 ? noise[0] : noise[i], speech.Count == 2 ? speech[0] : speech[i], closestDist, amb_pascals, levelSum, revDist, timeConstant, frequency, octave, gain, out snApp);
                         totalSN += snApp;
                         sn.Add(snApp);
                     }
@@ -86,15 +91,15 @@ namespace BH.Engine.Acoustic
         }
 
 
-        private static void CalcSoundLevel(double speech, double revTime, BHG.Point location, BHA.Speaker speaker, BHA.Room zone, double frequency, double octave, double closestDist, out double level, out double amb_pascals, out double revDist, out double timeConstant, out double closestdist, out double gain)
+        private static void CalcSoundLevel(double speech, double revTime, Point location, Speaker speaker, Room zone, double frequency, double octave, double closestDist, out double level, out double amb_pascals, out double revDist, out double timeConstant, out double closestdist, out double gain)
         {
-            BHG.Vector deltaPos = location - speaker.Geometry;
+            Vector deltaPos = location - speaker.Geometry;
             double recieverAngle = BH.Engine.Geometry.Query.GetAngle(deltaPos, speaker.Direction) * (180 / Math.PI);
             double distance = deltaPos.GetLength();
 
             double orientationFactor = speaker.GetGainAngleFactor(recieverAngle, octave);  // take out octave, Matlab does some weird thing here where frequency is tied to octave
 
-            speaker.Gains = new List<double>{ 1.6, 5.3};                                    // Assumptions on the Gain of the source. Can they be specified in the future?
+            speaker.Gains = new List<double> { 1.6, 5.3 };                                    // Assumptions on the Gain of the source. Can they be specified in the future?
             gain = speaker.GetGain(frequency, octave) * Math.Pow(10, orientationFactor / 10);
 
             double volume = zone.Volume;
