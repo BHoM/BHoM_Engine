@@ -22,7 +22,7 @@ namespace BH.Engine.SVG
         {
             // Creates a small circle with the input point as its centerpoint and converts it into SVG
 
-            string circleString = "<circle cx=\"_cx\" cy=\"_cy\" r=\"radius\" stroke=\"black\" stroke-width=\"\" fill=\"transparent\" />";
+            string circleString = "<circle cx=\"_cx\" cy=\"_cy\" r=\"radius\" stroke=\"black\" stroke-width=\"\" opacity=\"\" />";
             double Rad = 0.5;
 
             circleString = circleString.Replace("_cx", point.X.ToString());
@@ -41,7 +41,7 @@ namespace BH.Engine.SVG
             Point startPt = line.Start;
             Point endPt = line.End;
 
-            string lineString = "<line x1=\"_x1\" y1=\"_y1\" x2=\"_x2\" y2=\"_y2\" stroke=\"black\" stroke-width=\"\" />" + System.Environment.NewLine;
+            string lineString = "<line x1=\"_x1\" y1=\"_y1\" x2=\"_x2\" y2=\"_y2\" stroke=\"black\" stroke-width=\"\" opacity=\"\" />" + System.Environment.NewLine;
 
             lineString = lineString.Replace("_x1", startPt.X.ToString());
             lineString = lineString.Replace("_y1", startPt.Y.ToString());
@@ -57,7 +57,7 @@ namespace BH.Engine.SVG
 
             Point centerPt = circle.Centre;
 
-            string circleString = "<circle cx=\"_cx\" cy=\"_cy\" r=\"radius\" stroke=\"black\" stroke-width=\"\" fill=\"transparent\" />";
+            string circleString = "<circle cx=\"_cx\" cy=\"_cy\" r=\"radius\" stroke=\"black\" stroke-width=\"\" fill=\"transparent\" stroke-opacity=\"\" fill-opacity=\"\" />";
 
             circleString = circleString.Replace("_cx", centerPt.X.ToString());
             circleString = circleString.Replace("_cy", centerPt.Y.ToString());
@@ -72,7 +72,7 @@ namespace BH.Engine.SVG
 
             Point centerPt = ellipse.Centre;
 
-            string ellipseString = "<ellipse cx=\"_cx\" cy=\"_cy\" rx=\"xRadius\" ry=\"yRadius\" stroke=\"black\" stroke-width=\"\" fill=\"transparent\" />";
+            string ellipseString = "<ellipse cx=\"_cx\" cy=\"_cy\" rx=\"xRadius\" ry=\"yRadius\" stroke=\"black\" stroke-width=\"\" fill=\"transparent\" stroke-opacity=\"\" fill-opacity=\"\" />";
 
             ellipseString = ellipseString.Replace("_cx", centerPt.X.ToString());
             ellipseString = ellipseString.Replace("_cy", centerPt.Y.ToString());
@@ -82,7 +82,7 @@ namespace BH.Engine.SVG
             return ellipseString;
         }
 
-        public static string ToSVG(this List<BH.oM.Geometry.Point> ptList, bool closed)
+        public static string ToSVG(this List<BH.oM.Geometry.Point> ptList)
         {
             // Converts a Path into SVG
 
@@ -92,20 +92,22 @@ namespace BH.Engine.SVG
             {
                 if (i == 0)
                 {
-                    pathString += "M " + ptList[i].X.ToString() + " " + ptList[i].Y.ToString() + " ";
+                    pathString += "M" + ptList[i].X.ToString() + " " + ptList[i].Y.ToString() + " L";
                 }
                 else
                 {
-                    pathString += "L " + ptList[i].X.ToString() + " " + ptList[i].Y.ToString() + " ";
+                    pathString += ptList[i].X.ToString() + " " + ptList[i].Y.ToString() + " ";
                 }
             }
 
-            if (closed)
-            {
-                pathString += "Z";
-            }
+            //, bool closed = false
 
-            pathString += "\" vector-effect=\"non-scaling-stroke\" />" + System.Environment.NewLine;
+            //if (closed)
+            //{
+            //    pathString += "Z";
+            //}
+
+            pathString += "\" Stroke=\"black\" Stroke-width=\"\" Fill=\"transparent\" stroke-opacity=\"\" fill-opacity=\"\" />" + System.Environment.NewLine;
 
             return pathString;
         }
@@ -123,7 +125,7 @@ namespace BH.Engine.SVG
                 polylineString += controlPts[i].X.ToString() + "," + controlPts[i].Y.ToString() + " ";
             }
 
-            polylineString += "\" style=\"fill:none;stroke:black;stroke-width:\" />";
+            polylineString += "\" style=\"fill:none;stroke:black;stroke-width:;stroke-opacity:;fill-opacity:\" />";
 
             return polylineString;
         }
@@ -179,10 +181,35 @@ namespace BH.Engine.SVG
                 }
             }
            
-            nurbString += "\" stroke=\"black\" stroke-width=\"\" fill=\"transparent\" />";
+            nurbString += "\" stroke=\"black\" stroke-width=\"\" fill=\"transparent\" stroke-opacity=\"\" fill-opacity=\"\" />";
 
             return nurbString;
             }
+
+        public static string ToSVG(this Arc arc)
+        {
+            // Converts an arc into SVG
+
+            //Point startPt = arc.Start;
+            //Point midPt = arc.Middle;
+            //Point endPt = arc.End;
+
+            //Circle circle = new Circle();
+
+            //String endPtX = arc.End.X.ToString();
+            //String endPtY = arc.End.Y.ToString();
+
+            //string arcString = "< path d=\" ";
+
+            //Ex: < path d = "M50 200 A 30 50 0 0 1 162.55 162.45" />
+
+            throw new NotImplementedException();
+        }
+
+        //public static string ToSVG(this Arc arc)
+        //{
+
+        //}
 
         //public static string DrawSVGpath(this IBHoMGeometry geometry)
         //{
@@ -195,6 +222,5 @@ namespace BH.Engine.SVG
         //}
 
         // Points, ellipses, arcs, nurbs (rectangles, polylines)
-
     }
 }
