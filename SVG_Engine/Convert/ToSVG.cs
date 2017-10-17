@@ -66,6 +66,22 @@ namespace BH.Engine.SVG
             return circleString;
         }
 
+        public static string ToSVG(this Ellipse ellipse)
+        {
+            // Converts a BHoM Ellipse into SVG
+
+            Point centerPt = ellipse.Centre;
+
+            string ellipseString = "<ellipse cx=\"_cx\" cy=\"_cy\" rx=\"xRadius\" ry=\"yRadius\" stroke=\"black\" stroke-width=\"\" fill=\"transparent\" />";
+
+            ellipseString = ellipseString.Replace("_cx", centerPt.X.ToString());
+            ellipseString = ellipseString.Replace("_cy", centerPt.Y.ToString());
+            ellipseString = ellipseString.Replace("xRadius", ellipse.XRadius.ToString());
+            ellipseString = ellipseString.Replace("yRadius", ellipse.YRadius.ToString());
+
+            return ellipseString;
+        }
+
         public static string ToSVG(this List<BH.oM.Geometry.Point> ptList, bool closed)
         {
             // Converts a Path into SVG
