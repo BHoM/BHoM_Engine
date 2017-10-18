@@ -48,6 +48,8 @@ namespace BH.Engine.SVG
             lineString = lineString.Replace("_x2", endPt.X.ToString());
             lineString = lineString.Replace("_y2", endPt.Y.ToString());
 
+            BH.oM.SVG.Object svgObject = new BH.oM.SVG.Object(lineString, boundingbox);
+
             return lineString;
         } 
 
@@ -107,7 +109,7 @@ namespace BH.Engine.SVG
             //    pathString += "Z";
             //}
 
-            pathString += "\" Stroke=\"black\" Stroke-width=\"\" Fill=\"transparent\" stroke-opacity=\"\" fill-opacity=\"\" />" + System.Environment.NewLine;
+            pathString += "\" Stroke=\"black\" Stroke-width=\"\" Fill=\"transparent\" stroke-opacity=\"\" fill-opacity=\"\" />";
 
             return pathString;
         }
@@ -205,11 +207,6 @@ namespace BH.Engine.SVG
 
             throw new NotImplementedException();
         }
-
-        //public static string ToSVG(this Arc arc)
-        //{
-
-        //}
 
         //public static string DrawSVGpath(this IBHoMGeometry geometry)
         //{
