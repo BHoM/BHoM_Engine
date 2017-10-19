@@ -48,7 +48,7 @@ namespace BH.Engine.SVG
             lineString = lineString.Replace("_x2", endPt.X.ToString());
             lineString = lineString.Replace("_y2", endPt.Y.ToString());
 
-            BH.oM.SVG.Object svgObject = new BH.oM.SVG.Object(lineString, boundingbox);
+            //BH.oM.SVG.Object svgObject = new BH.oM.SVG.Object(lineString, boundingbox);
 
             return lineString;
         } 

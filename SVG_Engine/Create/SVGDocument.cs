@@ -1,11 +1,12 @@
-﻿using BH.oM.Geometry;
-using System;
+﻿using System;
+using BH.oM.Graphics;
+using BH.Engine.SVG;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BH.Engine.Geometry
+namespace BH.Engine.SVG
 {
     public static partial class Create
     {
@@ -13,14 +14,9 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Ellipse Ellipse(Plane plane, double xRadius, double yRadius)
+        public static SVGDocument SVGDocument(this List<SVGObject> svg)
         {
-            Vector normal = plane.Normal.GetNormalised();
-
-            Point centre = new Point(plane.Origin.X, plane.Origin.Y, plane.Origin.Z);
-
-            return new Ellipse(centre, normal, xRadius, yRadius);
+            return new SVGDocument(svg, svg.GetBounds());
         }
-
     }
 }
