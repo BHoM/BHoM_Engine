@@ -20,6 +20,35 @@ namespace BH.Engine.Reflection
                 return m_TypeDictionary;
 
             // Otherwise, create it
+            ExtractAllTypes();
+
+            return m_TypeDictionary;
+        }
+
+        /***************************************************/
+
+        public static List<Type> TypeList()
+        {
+            // If the dictionary exists already return it
+            if (m_TypeList != null && m_TypeList.Count > 0)
+                return m_TypeList;
+
+            // Otherwise, create it
+            ExtractAllTypes();
+
+            return m_TypeList;
+        }
+
+
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+        private static void ExtractAllTypes()
+        {
+            m_TypeDictionary = new Dictionary<string, List<Type>>();
+            m_TypeList = new List<System.Type>();
+
             foreach (Assembly asm in AppDomain.CurrentDomain.GetAssemblies())
             {
                 try
@@ -31,28 +60,25 @@ namespace BH.Engine.Reflection
                     if (name == "BHoM" || name.EndsWith("_oM"))
                     {
                         foreach (Type type in types)
-                            AddType(type.FullName, type);
+                        {
+                            if (!type.IsInterface)
+                            {
+                                m_TypeList.Add(type);
+                                AddTypeToDictionary(type.FullName, type);
+                            }
+                        }
                     }
-
-                    //// Save full names for all dlls       // Let's see if we actually need more than the BHoM types
-                    //foreach (Type type in types)
-                    //    m_TypeDictionary[type.FullName] = type;
                 }
                 catch (Exception)
                 {
                     Console.WriteLine("Cannot load types from assembly " + asm.GetName().Name);
                 }
             }
-
-            return m_TypeDictionary;
         }
 
-
-        /***************************************************/
-        /**** Private Methods                           ****/
         /***************************************************/
 
-        private static void AddType(string name, Type type)
+        private static void AddTypeToDictionary(string name, Type type)
         {
             if (m_TypeDictionary.ContainsKey(name))
                 m_TypeDictionary[name].Add(type);
@@ -65,7 +91,7 @@ namespace BH.Engine.Reflection
 
             int firstDot = name.IndexOf('.');
             if (firstDot >= 0)
-                AddType(name.Substring(firstDot + 1), type);
+                AddTypeToDictionary(name.Substring(firstDot + 1), type);
         }
         
 
@@ -74,6 +100,7 @@ namespace BH.Engine.Reflection
         /***************************************************/
 
         private static Dictionary<string, List<Type>> m_TypeDictionary = new Dictionary<string, List<Type>>();
+        private static List<Type> m_TypeList = new List<System.Type>();
 
     }
 }
