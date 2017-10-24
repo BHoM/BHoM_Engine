@@ -20,7 +20,7 @@ namespace ModelLaundry_Engine
             // Get the geometry
             IBHoMGeometry geometry = null;
             if (element is BH.oM.Base.BHoMObject)
-                geometry = ((BH.oM.Base.BHoMObject)element).GetGeometry();
+                geometry = ((BH.oM.Base.BHoMObject)element).IGetGeometry();
             else if (element is IBHoMGeometry)
                 geometry = element as IBHoMGeometry;
 
@@ -48,7 +48,7 @@ namespace ModelLaundry_Engine
             if (element is BH.oM.Base.BHoMObject)
             {
                 result = (BH.oM.Base.BHoMObject)((BH.oM.Base.BHoMObject)element).GetShallowClone();
-                ((BH.oM.Base.BHoMObject)result).SetGeometry(output);
+                ((BH.oM.Base.BHoMObject)result).ISetGeometry(output);
             }
             else if (element is IBHoMGeometry)
             {
@@ -142,7 +142,7 @@ namespace ModelLaundry_Engine
             outsiders = new List<object>();
             foreach (object element in elements)
             {
-                if (element is BH.oM.Base.BHoMObject && Util.IsInside(((BH.oM.Base.BHoMObject)element).GetGeometry(), boxes))
+                if (element is BH.oM.Base.BHoMObject && Util.IsInside(((BH.oM.Base.BHoMObject)element).IGetGeometry(), boxes))
                     insiders.Add(element);
                 else if (element is IBHoMGeometry && Util.IsInside((IBHoMGeometry)element, boxes))
                     insiders.Add(element);
@@ -178,7 +178,7 @@ namespace ModelLaundry_Engine
             outsiders = new List<BH.oM.Base.BHoMObject>();
             foreach (BH.oM.Base.BHoMObject element in elements)
             {
-                if (IsInside(element.GetGeometry(), boxes))
+                if (IsInside(element.IGetGeometry(), boxes))
                     insiders.Add(element);
                 else
                     outsiders.Add(element);
@@ -216,7 +216,7 @@ namespace ModelLaundry_Engine
             // Get the geometry
             IBHoMGeometry geometry = null;
             if (element is BH.oM.Base.BHoMObject)
-                geometry = ((BH.oM.Base.BHoMObject)element).GetGeometry();
+                geometry = ((BH.oM.Base.BHoMObject)element).IGetGeometry();
             else if (element is IBHoMGeometry)
                 geometry = element as IBHoMGeometry;
 
@@ -292,7 +292,7 @@ namespace ModelLaundry_Engine
         {
             IBHoMGeometry geometry = null;
             if (element is BH.oM.Base.BHoMObject)
-                geometry = ((BH.oM.Base.BHoMObject)element).GetGeometry();
+                geometry = ((BH.oM.Base.BHoMObject)element).IGetGeometry();
             else if (element is IBHoMGeometry)
                 geometry = element as IBHoMGeometry;
             return geometry;
@@ -306,7 +306,7 @@ namespace ModelLaundry_Engine
             if (element is BH.oM.Base.BHoMObject)
             {
                 result = (BH.oM.Base.BHoMObject)((BH.oM.Base.BHoMObject)element).GetShallowClone();
-                ((BH.oM.Base.BHoMObject)result).SetGeometry(geometry);
+                ((BH.oM.Base.BHoMObject)result).ISetGeometry(geometry);
             }
             else if (element is IBHoMGeometry)
             {
