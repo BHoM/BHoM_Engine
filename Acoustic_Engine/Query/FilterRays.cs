@@ -18,7 +18,7 @@ namespace BH.Engine.Acoustic
             List<Ray> filteredRays = new List<Ray>();
             if (sourceFilter != null) { filteredRays = rays.FindAll(ray => sourceFilter.Contains(ray.SpeakerID)); }
             if (targetFilter != null) { filteredRays = rays.FindAll(ray => targetFilter.Contains(ray.ReceiverID)); }
-            if (panelFilter  != null) { filteredRays = rays.Where(r => r.PanelsID.Any(x => panelFilter.Contains(x))).ToList(); } // TODO Optimise Acoustic RayFiltering
+            if (panelFilter  != null) { filteredRays = rays.Where(r => r.PanelsID.Any(x => panelFilter.Contains(x))).ToList(); }
             return filteredRays;
         }
     }

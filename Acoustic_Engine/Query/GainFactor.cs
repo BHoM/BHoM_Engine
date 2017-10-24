@@ -13,29 +13,29 @@ namespace BH.Engine.Acoustic
         /**** Public  Methods                           ****/
         /***************************************************/
 
-        public static double GetGain(this Speaker speaker, double angle, Frequency octave)
+        public static double GetGainFactor(this Speaker speaker, double angle, Frequency octave)
         {
             double gains = speaker.Gains[octave];
             switch (octave)
             {
                 case Frequency.Hz63:
-                    return gains * (-2 * angle / 90 - 8);
+                    return (-2 * angle / 90 - 8);
                 case Frequency.Hz125:
-                    return gains * (-2 * angle / 90 - 8);
+                    return (-2 * angle / 90 - 8);
                 case Frequency.Hz250:
-                    return gains * (-2 * angle / 90 - 8);
+                    return (-2 * angle / 90 - 8);
                 case Frequency.Hz500:
-                    return gains * (-2 * angle / 90 - 8);
+                    return (-2 * angle / 90 - 8);
                 case Frequency.Hz1000:
-                    return gains * (-2 * angle / 90 - 8);
+                    return (-2 * angle / 90 - 8);
                 case Frequency.Hz2000:
-                    return gains * (-18 * angle / 150 - 2);
+                    return (-18 * angle / 150 - 2);
                 case Frequency.Hz4000:
-                    return gains * (-18 * angle / 150 - 2);
+                    return (-18 * angle / 150 - 2);
                 case Frequency.Hz8000:
-                    return gains * (-18 * angle / 150 - 2);
+                    return (-18 * angle / 150 - 2);
                 case Frequency.Hz16000:
-                    return gains * (-18 * angle / 150 - 2);
+                    return (-18 * angle / 150 - 2);
                 default:
                     return 0;
             }
