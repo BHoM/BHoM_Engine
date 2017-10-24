@@ -47,39 +47,12 @@ namespace BH.Engine.Acoustic
                 if (surfaces == null || surfaces.Count == 0) { return rays; }
                 else { return Query.CheckObstacles(rays, surfaces); }
             }
-            // else
-            //     throw new Exception("Parallel parameter cannot be left blank or be higher than 3. Please specify calculation method: [0] Serial, [1] CPU Threaded, [2] CUDA accelerated. WIP: GPU not working, [3] OpenCL accelerated. WIP: Not Working");
         }
 
         /***************************************************/
 
         public static List<Ray> DirectSoundCPU(List<Speaker> sources, List<Receiver> targets, List<Panel> surfaces)
         {
-            
-            //ConcurrentBag<Ray> rays = new ConcurrentBag<Ray>();
-            ////List<Ray> rays = new List<Ray>();
-            //for (int i = 0; i < sources.Count; i++)
-            //{
-            //    Parallel.For(
-            //        0,
-            //        targets.Count,
-            //        new ParallelOptions { MaxDegreeOfParallelism = System.Environment.ProcessorCount },
-            //        () => new List<Ray>(),                                        // Initialise local variable
-            //        (int j, ParallelLoopState state, List<Ray> subray) =>          // body: The delegate that is invoked once per iteration.
-            //        {
-            //            Line path = new Line(sources[i].Geometry, targets[j].Geometry);
-            //            subray.Add(new Ray(path, i, j));
-            //            return subray;
-            //        },
-            //        (subray) =>
-            //            {
-            //                foreach(Ray ray in subray)
-            //                rays.Add(ray);
-            //            }
-            //    );
-            //}
-
-            //List<Ray> rays = new List<Ray>();
             List<Ray> rays = new List<Ray>();
             for (int i = 0; i < sources.Count; i++)
             {
@@ -99,9 +72,8 @@ namespace BH.Engine.Acoustic
                 }
             }
 
-            //if (surfaces == null || surfaces.Count == 0) { return rays.ToList(); }
-            //else { return Verify.CheckObstacles(rays.ToList(), surfaces); }
-            return rays;
+            if (surfaces == null || surfaces.Count == 0) { return rays; }
+            else { return CheckObstacles(rays.ToList(), surfaces); }
         }
 
         /***************************************************/

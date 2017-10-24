@@ -3,144 +3,111 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using BHG = BH.oM.Geometry;
-using BHA = BH.oM.Acoustic;
+using BH.oM.Geometry;
+using BH.oM.Acoustic;
 using BH.Engine.Geometry;
 
 namespace BH.Engine.Acoustic
 {
     public static partial class Query
     {
-        public static List<double> ComputeSTI(List<double> speech, List<double> noise, List<double> RT, List<Speaker> inputSpeakers, Room zone)
+        public static List<double> ComputeSTI(this Room room, List<Speaker> _speakers, List<double> speech, List<double> envNoise, List<double> revTime)
         {
+            List<Frequency> octaves = new List<Frequency> { Frequency.Hz500, Frequency.Hz2000 };
+            //speech = new List<double> { 85, 85 };     //Defaulting speech variable if not instanciated
+            //envNoise = new List<double> { 53.5, 53.5 };    //Defaulting noise variable if not instanciated
+            //RT = RT == null ? new List<double> { 0.001, 0.001 } : RT;           //Defaulting RT variable if not instanciated
+
             List<Speaker> speakers = new List<Speaker>();
-            for (int i = 0; i < inputSpeakers.Count; i++)
-                speakers.Add(new Speaker(inputSpeakers[i].Geometry,inputSpeakers[i].Direction
-                                             inputSpeakers[i].Category,inputSpeakers[i].SpeakerID,
-                                             ))
+            for (int i = 0; i < _speakers.Count; i++)
+                speakers.Add(new Speaker(_speakers[i].Geometry, _speakers[i].Direction, _speakers[i].Category, _speakers[i].SpeakerID, _speakers[i].Gains));
+            List<Receiver> receivers = room.Samples;
 
             List<double> STI = new List<double>();
             List<double> RASTI = new List<double>();
-            List<double> sn = new List<double>();
-            Dictionary<double, List<double>> STI_OCT = new Dictionary<double, List<double>>();
+            Dictionary<Frequency, List<double>> STI_OCT = new Dictionary<Frequency, List<double>>();
 
-            List<double> frequencies = new List<double> { 1.0, 2.0, 4.0, 8.0, 0.7, 1.4, 2.8, 5.6, 11.2 };
-            List<double> octaves = new List<double> { 500, 2000 };
 
-            speech = speech == null ? new List<double> { 85, 85 } : speech;     //Defaulting speech variable if not instanciated
-            noise = noise == null ? new List<double> { 53.5, 53.5 } : noise;    //Defaulting noise variable if not instanciated
-            RT = RT == null ? new List<double> { 0.001, 0.001 } : RT;           //Defaulting RT variable if not instanciated
+            double closestDist = speakers.Select(x => x.Geometry).ToList().GetClosestDist(receivers.Select(x => x.Geometry).ToList());
 
-            foreach (double oct in octaves)
+            for (int k = 0; k < octaves.Count; k++)
             {
-                STI_OCT[oct] = new List<double>();
-            }
-
-            List<Point> Targets = zone.Samples.Select(x => x.Geometry).ToList();
-
-            double freqCount = frequencies.Count;
-
-            for (int i = 0; i < Targets.Count; i++)
-            {
-                foreach (double octave in octaves)
+                double STI_oct = 0;
+                double totalSN = 0;
+                for (int j = 0; j < speakers.Count; j++)
                 {
-
-                    double STI_oct = 0;
-                    double snApp = 0;
-                    double totalSN = 0;
-
-                    foreach (double frequency in frequencies)
+                    for (int i = 0; i < receivers.Count; i++)
                     {
-                        double iterationLevel = 0;
+                        double timeConstant = room.GetTimeConstant(revTime[i]);
+                        double revDistance = room.GetReverbDistance(revTime[i]);
+
                         double totalLevel = 0;
                         double amb_pascals = 0;
                         double levelSum = 0;
-                        double closestDist = Double.PositiveInfinity;
 
-                        double revDist = 0;
-                        double timeConstant = 0;
                         double gain = 0;
 
-                        foreach (Speaker speaker in speakers)
                         {
-                            // 1. CalcSoundLevel
-                            CalcSoundLevel(speech.Count == 2 ? speech[0] : speech[i], RT.Count == 2 ? RT[0] : RT[i], Targets[i], speaker, zone, frequency, octave, closestDist, out iterationLevel, out amb_pascals, out revDist, out timeConstant, out closestDist, out gain);
-                            totalLevel += iterationLevel;
+                            totalLevel += CalcSoundLevel(receivers[i], speakers[i], room, speech[i], revTime[i], octaves[k]).Value; // TODO : Acoustic -S witch to Room without receivers as argument
+                            amb_pascals = totalLevel;
                             levelSum = (speech.Count == 2 ? speech[0] : speech[i]) + 10 * Math.Log10(totalLevel);
+                            gain =
                         }
-                        // 2. Calculate SoundToNoise Ratio
-                        CalcSoundToNoiseRatio(noise.Count == 2 ? noise[0] : noise[i], speech.Count == 2 ? speech[0] : speech[i], closestDist, amb_pascals, levelSum, revDist, timeConstant, frequency, octave, gain, out snApp);
-                        totalSN += snApp;
-                        sn.Add(snApp);
+                        totalSN += CalcSoundToNoiseRatio(envNoise[i], speech[i], closestDist, amb_pascals, levelSum, revDistance, timeConstant, octaves[k], gain);
                     }
-
-                    // 3. Calculate STI
-                    CalcSTI(totalSN, freqCount, out STI_oct);
-
-                    STI_OCT[octave].Add(STI_oct);
-                    STI.Add(STI_oct);
                 }
+                STI_oct = CalcSTI(totalSN);
+
+                STI_OCT[octaves[k]].Add(STI_oct);
+                STI.Add(STI_oct);
             }
 
-            for (int i = 0; i < STI_OCT[500].Count; i++)
+            for (int i = 0; i < STI_OCT[Frequency.Hz500].Count; i++)
             {
-                double rasti = ((4d / 9d) * STI_OCT[500][i]) + ((5d / 9d) * STI_OCT[2000][i]);
+                double rasti = ((4d / 9d) * STI_OCT[Frequency.Hz500][i]) + ((5d / 9d) * STI_OCT[Frequency.Hz500][i]);
                 RASTI.Add(rasti);
             }
             return RASTI;
         }
 
 
-        private static void CalcSoundLevel(double speech, double revTime, Point location, Speaker speaker, Room zone, double frequency, double octave, double closestDist, out double level, out double amb_pascals, out double revDist, out double timeConstant, out double closestdist, out double gain)
+        private static SPL CalcSoundLevel(this Receiver receiver, Speaker speaker, Room room, double speech, double revTime, Frequency octave)
         {
-            Vector deltaPos = location - speaker.Geometry;
-            double recieverAngle = BH.Engine.Geometry.Query.GetAngle(deltaPos, speaker.Direction) * (180 / Math.PI);
+            Vector deltaPos = receiver.Geometry - speaker.Geometry;
+            double recieverAngle = deltaPos.GetAngle(speaker.Direction) * (180 / Math.PI);
             double distance = deltaPos.GetLength();
+            double revDist = room.GetReverbDistance(revTime);
 
-            double orientationFactor = speaker.GetGainAngleFactor(recieverAngle, octave);  // take out octave, Matlab does some weird thing here where frequency is tied to octave
+            if (distance < revDist) { return new SPL() { Value = 0, ReceiverID = receiver.ReceiverID, Octave = octave }; }
 
-            speaker.Gains = new List<double> { 1.6, 5.3 };                                    // Assumptions on the Gain of the source. Can they be specified in the future?
-            gain = speaker.GetGain(frequency, octave) * Math.Pow(10, orientationFactor / 10);
+            double orientationFactor = speaker.GetGain(recieverAngle, octave);
+            Dictionary<Frequency, double> gains = new Dictionary<Frequency, double> { { Frequency.Hz500, 1.6 }, { Frequency.Hz2000, 5.3 } };
+            speaker = new Speaker(speaker.Geometry, speaker.Direction, speaker.Category, speaker.SpeakerID, gains);
 
-            double volume = zone.Volume;
-            double sAlpha = (0.163 * volume / revTime) - (4.0 * 2.6 * volume / 1000);  // It would be good to clarify all those constants
-            double alpha = sAlpha / zone.Area;
+            double gain = speaker.GetGain(recieverAngle, octave) * Math.Pow(10, orientationFactor / 10);
 
-            double roomConstant = sAlpha / (1 - alpha);
-            if (revTime < 0.01)
-                roomConstant = Double.PositiveInfinity;
+            double roomConstant = room.GetRoomConstant(revTime);
 
-            revDist = Math.Sqrt(0.0032 * volume / revTime);
-            timeConstant = revTime / 13.8155;    // Only used outside of the loop ... Clearly something wrong here
-
-            level = (gain / (4.0 * Math.PI * distance * distance)) + (4.0 / roomConstant);
-
-            if (distance < closestDist)
-            {
-                //highest_level = speech + 10 * Math.Log10((gain / (4 * Math.PI * distance * distance)) + (4 / roomConstant));
-                closestdist = distance;
-            }
-
-            else
-            {
-                closestdist = closestDist;
-            }
-
-            if (distance > revDist)
-            {
-                amb_pascals = gain / ((4.0 * Math.PI * distance * distance) + (4.0 / roomConstant));
-            }
-
-            else
-            {
-                amb_pascals = 0.0;
-            }
+            double level = (gain / (4.0 * Math.PI * distance * distance)) + (4.0 / roomConstant);
+            return new SPL(level, receiver.ReceiverID, octave);
         }
 
 
-        private static void CalcSoundToNoiseRatio(double noise, double speech, double closestDist, double amb_pascals, double levelSum, double revDist, double timeConstant, double frequency, double octave, double gain, out double snApp)
+        private static double CalcSoundToNoiseRatio(double noise, double speech, double closestDist, double amb_pascals, double levelSum, double revDist, double timeConstant, Frequency octave, double gain)
         {
-            double amb_noise = noise;           // noise is grafted in grasshopper. One branch for one target
+            Dictionary<Frequency, double> frequencies = new Dictionary<Frequency, double> {
+                { Octaves.Hz63, 1.0    },
+                { Octaves.Hz125, 2.0   },
+                { Octaves.Hz250, 4.0   },
+                { Octaves.Hz500, 8.0   },
+                { Octaves.Hz1000, 0.7  },
+                { Octaves.Hz2000, 1.4  },
+                { Octaves.Hz4000, 2.8  },
+                { Octaves.Hz8000, 5.6  },
+                { Octaves.Hz8000, 11.2 },
+            };
+
+            double amb_noise = noise;
 
             if (amb_pascals > 0)
             {
@@ -150,12 +117,10 @@ namespace BH.Engine.Acoustic
 
             double i_n = Math.Pow(10, (amb_noise - levelSum) / 10);
 
-            //double gain = Parameters.GetGain(frequency, octave) * Math.Pow(10, orientationFactor / 10);
-
             double reciever_q = 1.5; // What is reciever_q?
 
-            double cap_a = ((gain * reciever_q) / (closestDist * closestDist)) + ((1.0 / (revDist * revDist)) / (1.0 + Math.Pow(2.0 * Math.PI * timeConstant * frequency, 2.0)));
-            double cap_b = ((2.0 * Math.PI * timeConstant * frequency) / (revDist * revDist)) / (1.0 + Math.Pow(2.0 * Math.PI * timeConstant * frequency, 2.0));
+            double cap_a = ((gain * reciever_q) / (closestDist * closestDist)) + ((1.0 / (revDist * revDist)) / (1.0 + Math.Pow(2.0 * Math.PI * timeConstant * frequencies[octave], 2.0)));
+            double cap_b = ((2.0 * Math.PI * timeConstant * frequencies[octave]) / (revDist * revDist)) / (1.0 + Math.Pow(2.0 * Math.PI * timeConstant * frequencies[octave], 2.0));
             double cap_c = ((gain * reciever_q) / (closestDist * closestDist)) + (1.0 / (revDist * revDist)) + (gain * i_n);
 
 
@@ -163,7 +128,8 @@ namespace BH.Engine.Acoustic
 
             double m_f = m_f1; // ask Mathew H.
 
-            snApp = 10.0 * Math.Log10(m_f / (1.0 - m_f));
+            int freqCount = 2;
+            double snApp = 10.0 * Math.Log10(m_f / (1.0 - m_f));
 
             if (snApp > 15.0)
             {
@@ -173,12 +139,13 @@ namespace BH.Engine.Acoustic
             {
                 snApp = -15.0;
             }
+            return ((snApp / freqCount) + 15.0) / 30.0;
         }
 
-
-        private static void CalcSTI(double totalSN, double freqCount, out double STI_oct) // double highest_level & double amb_noise not included yet + levelSum
+        private static double CalcSTI(this double totalSN) // double highest_level & double amb_noise not included yet + levelSum
         {
-            STI_oct = ((totalSN / freqCount) + 15.0) / 30.0;
+            int freqCount = 2;
+            return ((totalSN / freqCount) + 15.0) / 30.0;
         }
     }
 }

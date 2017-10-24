@@ -27,59 +27,34 @@ namespace BH.Engine.Acoustic
 
         /***************************************************/
 
-        private static double ComputeSPL<Octave>(double speech, double revTime, Receiver receiver, Speaker inputSpeaker, Room zone, double frequency, double octave, double closestDist,
-                                          out double level, out double amb_pascals, out double revDist, out double timeConstant, out double closestdist, out double gain)
-            where Octave : Octaves
+        public static List<SPL> ComputeSPL(this Room room, Speaker speaker, double speech, double revTime, Frequency octave)
         {
-            if (!typeof(Octave).IsAssignableFrom(typeof(Octaves)))
+            List<SPL> results = new List<SPL>();
+
+            List<Receiver> receivers = room.Samples;
+            Dictionary<Frequency, double> gains = new Dictionary<Frequency, double> { { Frequency.Hz500, 1.6 }, { Frequency.Hz2000, 5.3 } };
+            speaker = new Speaker(speaker.Geometry, speaker.Direction, speaker.Category, speaker.SpeakerID, gains);
+            double roomConstant = room.GetRoomConstant(revTime);
+
+            for (int i = 0; i < receivers.Count; i++)
             {
-                throw new ArgumentException("Generic Type Octave must be assignable from BH.oM.Acoustic.Frequency Enumerated Type");
+                Vector deltaPos = receivers[i].Geometry - speaker.Geometry;
+                double distance = deltaPos.GetLength();
+                double revDist = room.GetReverbDistance(revTime);
+
+                if (distance < revDist)
+                {
+                    results.Add(new SPL() { Value = 0, ReceiverID = receivers[i].ReceiverID, Octave = octave });
+                    continue;
+                }
+
+                double recieverAngle = deltaPos.GetAngle(speaker.Direction) * (180 / Math.PI);
+                double orientationFactor = speaker.GetGainFactor(recieverAngle, octave);
+                double gain = speaker.Gains[octave] * Math.Pow(10, orientationFactor / 10);
+                double level = (gain / (4.0 * Math.PI * distance * distance)) + (4.0 / roomConstant);
+                results.Add(new SPL(level, receivers[i].ReceiverID, octave));
             }
-
-            Speaker speaker = new Speaker(inputSpeaker.Geometry, inputSpeaker.Direction, inputSpeaker.Category, inputSpeaker.SpeakerID,
-                                          new Dictionary<Octaves, double> { { Octaves.Hz500, 1.6 }, { Octaves.Hz2000, 5.3 } });
-
-            Vector deltaPos = receiver.Geometry - speaker.Geometry;
-            double recieverAngle = Engine.Geometry.Query.GetAngle(deltaPos, speaker.Direction) * (180 / Math.PI);
-            double distance = deltaPos.GetLength();
-            double orientationFactor = speaker.GetGainAngleFactor(recieverAngle, octave);
-
-            gain = speaker.GetGain(frequency, octave) * Math.Pow(10, orientationFactor / 10);
-
-            double volume = zone.Volume;
-            double sAlpha = (0.163 * volume / revTime) - (4.0 * 2.6 * volume / 1000);  // It would be good to clarify all those constants
-            double alpha = sAlpha / zone.Area;
-
-            double roomConstant = sAlpha / (1 - alpha);
-            if (revTime < 0.01)
-                roomConstant = Double.PositiveInfinity;
-
-            revDist = Math.Sqrt(0.0032 * volume / revTime);
-            timeConstant = revTime / 13.8155;    // Only used outside of the loop ... Clearly something wrong here
-
-            level = (gain / (4.0 * Math.PI * distance * distance)) + (4.0 / roomConstant);
-
-            if (distance < closestDist)
-            {
-                //highest_level = speech + 10 * Math.Log10((gain / (4 * Math.PI * distance * distance)) + (4 / roomConstant));
-                closestdist = distance;
-            }
-
-            else
-            {
-                closestdist = closestDist;
-            }
-
-            if (distance > revDist)
-            {
-                amb_pascals = gain / ((4.0 * Math.PI * distance * distance) + (4.0 / roomConstant));
-            }
-
-            else
-            {
-                amb_pascals = 0.0;
-            }
-            return level;
+            return results;
         }
     }
 }
