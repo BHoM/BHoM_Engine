@@ -8,15 +8,24 @@ using System.Threading.Tasks;
 
 namespace BH.Engine.Base
 {
-    public static partial class Query
+    public static partial class Transform
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static IBHoMGeometry GetGeometry(this BHoMObject obj)
+        public static BHoMObject ISetGeometry(this BHoMObject obj, IBHoMGeometry geometry)
         {
-            return null;
+            return SetGeometry(obj as dynamic, geometry);
         }
-     }
+
+        /***************************************************/
+
+        private static BHoMObject SetGeometry(this BHoMObject obj, IBHoMGeometry geometry)
+        {
+            return obj;
+        }
+
+
+    }
 }
