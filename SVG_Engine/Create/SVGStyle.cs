@@ -18,18 +18,16 @@ namespace BH.Engine.SVG
 
         public static SVGStyle SVGStyle(double strokeWidth, string strokeColor, string fillColor, double strokeOpacity, double fillOpacity, double strokeDash)
         {
-            SVGStyle style = new oM.Graphics.SVGStyle();
+            SVGStyle Style = new oM.Graphics.SVGStyle();
 
-            style.StrokeWidth = strokeWidth;
-            style.StrokeColor = strokeColor;
-            style.FillColor = fillColor;
-            style.StrokeOpacity = strokeOpacity;
-            style.FillOpacity = fillOpacity;
-            style.StrokeDash = strokeDash;
+            Style.StrokeWidth = strokeWidth;
+            Style.StrokeColor = strokeColor;
+            Style.FillColor = fillColor;
+            Style.StrokeOpacity = strokeOpacity;
+            Style.FillOpacity = fillOpacity;
+            Style.StrokeDash = strokeDash;
             
-            return style;
+            return Style;
         }
-
-        //TO DO: List<SVGStyle>
     }
 }

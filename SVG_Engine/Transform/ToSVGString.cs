@@ -63,5 +63,7 @@ namespace BH.Engine.SVG
 
             return styleString;
         }
+
+
     }
 }
