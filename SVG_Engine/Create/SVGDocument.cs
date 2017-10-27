@@ -1,12 +1,11 @@
 ﻿using System;
 using BH.oM.Graphics;
-using BH.Engine.SVG;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BH.Engine.SVG
+namespace BH.Engine.Graphics
 {
     public static partial class Create
     {
@@ -16,7 +15,7 @@ namespace BH.Engine.SVG
 
         public static SVGDocument SVGDocument(this List<SVGObject> svg)
         {
-            return new SVGDocument(svg, svg.GetBounds());
+            return new SVGDocument(svg, Query.GetSvgBounds(svg));
         }
     }
 }

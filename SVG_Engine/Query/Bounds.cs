@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BH.Engine.SVG
+namespace BH.Engine.Graphics
 {
     public static partial class Query
     {
@@ -15,32 +15,36 @@ namespace BH.Engine.SVG
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static BoundingBox GetBounds(this SVGObject svg)
+        public static BoundingBox GetSvgBounds(SVGObject svg)
         {
-            return Geometry.Query.IGetBounds(svg.Geometry);
+            BoundingBox bb = new BoundingBox();
+            List<IBHoMGeometry> geometry = svg.Geometry;
+            for (int i = 0; i < svg.Geometry.Count; i++)
+                bb += Geometry.Query.IGetBounds(svg.Geometry[i]);
+            return bb;
         }
 
-        public static BoundingBox GetBounds(this List<SVGObject> svg)
+        public static BoundingBox GetSvgBounds(List<SVGObject> svg)
         {
-            BoundingBox box = new BoundingBox();
+            BoundingBox bb = new BoundingBox();
             for (int i = 0; i < svg.Count; i++)
-                box += svg[i].GetBounds();
+                bb += GetSvgBounds(svg[i]);
 
-            return box;
+            return bb;
         }
 
-        public static BoundingBox GetBounds(this SVGDocument svg)
+        public static BoundingBox GetSvgBounds(SVGDocument svg)
         {
             return svg.Canvas;
         }
 
-        public static BoundingBox GetBounds(this List<SVGDocument> svg)
+        public static BoundingBox GetSvgBounds(List<SVGDocument> svg)
         {
-            BoundingBox box = new BoundingBox();
+            BoundingBox bb = new BoundingBox();
             for (int i = 0; i < svg.Count; i++)
-                box += svg[i].GetBounds();
+                bb += GetSvgBounds(svg[i]);
 
-            return box;
+            return bb;
         }
     }
 }
