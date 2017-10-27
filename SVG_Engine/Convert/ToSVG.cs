@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BH.Engine.SVG
+namespace BH.Engine.Graphics
 {
     public static partial class Convert
     {
@@ -22,7 +22,7 @@ namespace BH.Engine.SVG
         {
             // Creates a small circle with the input point as its centerpoint and converts it into SVG
 
-            string circleString = "<circle cx=\"_cx\" cy=\"_cy\" r=\"radius\" stroke=\"black\" stroke-width=\"\" opacity=\"\" />";
+            string circleString = "<circle cx=\"_cx\" cy=\"_cy\" r=\"radius\" />";
             double Rad = 0.5;
 
             circleString = circleString.Replace("_cx", point.X.ToString());
@@ -32,6 +32,7 @@ namespace BH.Engine.SVG
             return circleString;
 
             // throw new NotImplementedException();
+            //stroke=\"black\" stroke-width=\"\" opacity=\"\" 
         }
 
         public static string ToSVG(this Line line)
@@ -41,17 +42,18 @@ namespace BH.Engine.SVG
             Point startPt = line.Start;
             Point endPt = line.End;
 
-            string lineString = "<line x1=\"_x1\" y1=\"_y1\" x2=\"_x2\" y2=\"_y2\" stroke=\"black\" stroke-width=\"\" opacity=\"\" />" + System.Environment.NewLine;
+            string lineString = "<line x1=\"_x1\" y1=\"_y1\" x2=\"_x2\" y2=\"_y2\" />" + System.Environment.NewLine;
 
             lineString = lineString.Replace("_x1", startPt.X.ToString());
             lineString = lineString.Replace("_y1", startPt.Y.ToString());
             lineString = lineString.Replace("_x2", endPt.X.ToString());
             lineString = lineString.Replace("_y2", endPt.Y.ToString());
 
-            //BH.oM.SVG.Object svgObject = new BH.oM.SVG.Object(lineString, boundingbox);
-
             return lineString;
-        } 
+
+            //BH.oM.SVG.Object svgObject = new BH.oM.SVG.Object(lineString, boundingbox);
+            //stroke=\"black\" stroke-width=\"\" opacity=\"\" 
+        }
 
         public static string ToSVG(this Circle circle)
         {
@@ -59,13 +61,15 @@ namespace BH.Engine.SVG
 
             Point centerPt = circle.Centre;
 
-            string circleString = "<circle cx=\"_cx\" cy=\"_cy\" r=\"radius\" stroke=\"black\" stroke-width=\"\" fill=\"transparent\" stroke-opacity=\"\" fill-opacity=\"\" />";
+            string circleString = "<circle cx=\"_cx\" cy=\"_cy\" r=\"radius\" />";
 
             circleString = circleString.Replace("_cx", centerPt.X.ToString());
             circleString = circleString.Replace("_cy", centerPt.Y.ToString());
             circleString = circleString.Replace("radius", circle.Radius.ToString());
 
             return circleString;
+
+            //stroke=\"black\" stroke-width=\"\" fill=\"transparent\" stroke-opacity=\"\" fill-opacity=\"\" 
         }
 
         public static string ToSVG(this Ellipse ellipse)
@@ -74,7 +78,7 @@ namespace BH.Engine.SVG
 
             Point centerPt = ellipse.Centre;
 
-            string ellipseString = "<ellipse cx=\"_cx\" cy=\"_cy\" rx=\"xRadius\" ry=\"yRadius\" stroke=\"black\" stroke-width=\"\" fill=\"transparent\" stroke-opacity=\"\" fill-opacity=\"\" />";
+            string ellipseString = "<ellipse cx=\"_cx\" cy=\"_cy\" rx=\"xRadius\" ry=\"yRadius\" />";
 
             ellipseString = ellipseString.Replace("_cx", centerPt.X.ToString());
             ellipseString = ellipseString.Replace("_cy", centerPt.Y.ToString());
@@ -82,6 +86,8 @@ namespace BH.Engine.SVG
             ellipseString = ellipseString.Replace("yRadius", ellipse.YRadius.ToString());
 
             return ellipseString;
+
+            //stroke=\"black\" stroke-width=\"\" fill=\"transparent\" stroke-opacity=\"\" fill-opacity=\"\" 
         }
 
         public static string ToSVG(this List<BH.oM.Geometry.Point> ptList)
@@ -102,6 +108,8 @@ namespace BH.Engine.SVG
                 }
             }
 
+            return pathString;
+
             //, bool closed = false
 
             //if (closed)
@@ -109,9 +117,7 @@ namespace BH.Engine.SVG
             //    pathString += "Z";
             //}
 
-            pathString += "\" Stroke=\"black\" Stroke-width=\"\" Fill=\"transparent\" stroke-opacity=\"\" fill-opacity=\"\" />";
-
-            return pathString;
+            // pathString += "\" Stroke=\"black\" Stroke-width=\"\" Fill=\"transparent\" stroke-opacity=\"\" fill-opacity=\"\" />";
         }
 
         public static string ToSVG(this Polyline polyline)
@@ -127,7 +133,7 @@ namespace BH.Engine.SVG
                 polylineString += controlPts[i].X.ToString() + "," + controlPts[i].Y.ToString() + " ";
             }
 
-            polylineString += "\" style=\"fill:none;stroke:black;stroke-width:;stroke-opacity:;fill-opacity:\" />";
+            //polylineString += "\" style=\"fill:none;stroke:black;stroke-width:;stroke-opacity:;fill-opacity:\" />"; <--- SPECIAL CASE
 
             return polylineString;
         }
@@ -183,7 +189,7 @@ namespace BH.Engine.SVG
                 }
             }
            
-            nurbString += "\" stroke=\"black\" stroke-width=\"\" fill=\"transparent\" stroke-opacity=\"\" fill-opacity=\"\" />";
+            // nurbString += "\" stroke=\"black\" stroke-width=\"\" fill=\"transparent\" stroke-opacity=\"\" fill-opacity=\"\" />";
 
             return nurbString;
             }
