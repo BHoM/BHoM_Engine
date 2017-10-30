@@ -10,7 +10,7 @@ namespace BH.Engine.Acoustic
 {
     public static partial class Query
     {
-        public static double GetClosestDist(this List<Point> ptsA, List<Point> ptsB)
+        public static double ClosestDist(this List<Point> ptsA, List<Point> ptsB)
         {
             double closestDist = Double.PositiveInfinity;
             for (int i = 0; i < ptsB.Count; i++)

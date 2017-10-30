@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BH.oM.Acoustic;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,14 +13,24 @@ namespace BH.Engine.Acoustic
         /**** Public  Methods                           ****/
         /***************************************************/
 
-        public static double SumSoundLevels(List<double> spl)
+        public static double SumSoundLevels(this List<double> spl)
         {
             double SPL = 0;
             for (int i = 0; i < spl.Count; i++)
             {
-                SPL += (10 * Math.Log10(Math.Pow(10, 10 / spl[i])));
+                SPL += (10 * Math.Log10(Math.Pow(10, spl[i] / 10)));
             }
             return SPL;
+        }
+
+        public static SPL SumSoundLevels(this SPL soundA, SPL soundB)    // TODO - Acoustics : Move Addition method into BHoM class as operator "+"
+        {
+            // if (soundA.Octave != soundB.Octave) { throw new Exception("Sound levels refer to different octaves"); }
+            // if (soundA.ReceiverID != soundB.ReceiverID) { throw new Exception("Sound levels refer to differend receivers"); }
+            return new SPL((10 * Math.Log10(Math.Pow(10, soundA.Value / 10))) + (10 * Math.Log10(Math.Pow(10, soundB.Value / 10))),
+                            soundA.ReceiverID,
+                            -1, // -1 Represents a sourceID = Sum of sources
+                            soundA.Octave);
         }
     }
 }
