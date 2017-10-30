@@ -27,32 +27,33 @@ namespace BH.Engine.Acoustic
 
         /***************************************************/
 
-        public static List<SPL> ComputeSPL(this Room room, Speaker speaker, double speech, double revTime, Frequency octave)
+        public static List<SPL> ComputeSPL(this Room room, List<Speaker> speakers, List<double> revTimes, Frequency octave)
         {
             List<SPL> results = new List<SPL>();
 
             List<Receiver> receivers = room.Samples;
-            Dictionary<Frequency, double> gains = new Dictionary<Frequency, double> { { Frequency.Hz500, 1.6 }, { Frequency.Hz2000, 5.3 } };
-            speaker = new Speaker(speaker.Geometry, speaker.Direction, speaker.Category, speaker.SpeakerID, gains);
-            double roomConstant = room.GetRoomConstant(revTime);
 
             for (int i = 0; i < receivers.Count; i++)
             {
-                Vector deltaPos = receivers[i].Geometry - speaker.Geometry;
-                double distance = deltaPos.GetLength();
-                double revDist = room.GetReverbDistance(revTime);
-
-                if (distance < revDist)
+                for (int j = 0; j < receivers.Count; j++)
                 {
-                    results.Add(new SPL() { Value = 0, ReceiverID = receivers[i].ReceiverID, Octave = octave });
-                    continue;
-                }
+                    Vector deltaPos = receivers[i].Geometry - speakers[j].Geometry;
+                    double distance = deltaPos.GetLength();
+                    double roomConstant = room.GetRoomConstant(revTimes[i]);
+                    double revDist = room.ReverbDistance(revTimes[i]);
 
-                double recieverAngle = deltaPos.GetAngle(speaker.Direction) * (180 / Math.PI);
-                double orientationFactor = speaker.GetGainFactor(recieverAngle, octave);
-                double gain = speaker.Gains[octave] * Math.Pow(10, orientationFactor / 10);
-                double level = (gain / (4.0 * Math.PI * distance * distance)) + (4.0 / roomConstant);
-                results.Add(new SPL(level, receivers[i].ReceiverID, octave));
+                    if (distance < revDist)
+                    {
+                        results.Add(new SPL() { Value = 0, ReceiverID = receivers[i].ReceiverID, Octave = octave });
+                        continue;
+                    }
+
+                    double recieverAngle = deltaPos.GetAngle(speakers[j].Direction) * (180 / Math.PI);
+                    double orientationFactor = speakers[j].GetGainFactor(recieverAngle, octave);
+                    double gain = speakers[j].Gains[octave] * Math.Pow(10, orientationFactor / 10);
+                    double level = (gain / (4.0 * Math.PI * distance * distance)) + (4.0 / roomConstant);
+                    results.Add(new SPL(level, receivers[i].ReceiverID, speakers[i].SpeakerID, octave));
+                }
             }
             return results;
         }
