@@ -1,6 +1,6 @@
 ﻿using BH.oM.Geometry;
 using BH.oM.Structural.Elements;
-using BH.oM.Architecture.Elements;
+using BH.oM.Architecture; // TODO: This was BH.oM.Architecture.Element but that was not compiling. Rob, please check this
 using BH.Engine.Geometry;
 using System;
 using System.Collections.Generic;
