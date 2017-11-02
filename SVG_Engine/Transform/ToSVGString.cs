@@ -2,8 +2,10 @@
 using BH.oM.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace BH.Engine.Graphics
@@ -18,162 +20,139 @@ namespace BH.Engine.Graphics
         {
             BoundingBox box = Query.GetSvgBounds(svgDocument);
 
-            string Width = (box.Max.X - box.Min.X).ToString();
-            string Height = (box.Max.Y - box.Min.Y).ToString();
+            double extraMargin = 10;
 
-            string canvasString = "<svg width=\"_width\" height=\"_height\"/>" + Environment.NewLine;
+            string Width = (box.Max.X - box.Min.X + extraMargin).ToString();
+            string Height = (box.Max.Y - box.Min.Y + extraMargin).ToString();
 
-            canvasString = canvasString.Replace("_width", Width);
-            canvasString = canvasString.Replace("_height", Height);
+            string canvasString = "<svg width=\"__width__\" height=\"__height__\">\n";
+
+            canvasString = canvasString.Replace("__width__", Width);
+            canvasString = canvasString.Replace("__height__", Height);
+
+            canvasString += "<g __transformation__>\n";
+
+            double halfMargin = extraMargin / 2;
+            //oM.Geometry.Point boxMin = box.Min;
+            //Vector transVec = new oM.Geometry.Point(0, 0, 0) - boxMin;
+            //BH.oM.Geometry.Point minPt = new oM.Geometry.Point((box.Min.X + extraMargin), (box.Min.Y + extraMargin), 0);
+            //Vector transVec = new oM.Geometry.Point(0, 0, 0) - minPt;
+            //Vector transVec = new Vector(-((box.Min.X) + (extraMargin/2)), -((box.Min.Y) + (extraMargin/2)), 0);
+            double h = (box.Max.Y - box.Min.Y + extraMargin);
+
+            string xTrans = (-(box.Min.X-halfMargin)).ToString();
+            string yTrans = (-(box.Min.Y-halfMargin)).ToString();
+
+            //translate(0,< minY + maxY >) scale(1, -1)   // for flip Y
+
+            canvasString = canvasString.Replace("__transformation__", "transform=\"translate(" + "0," + h + ") scale(1,-1) translate(" + xTrans + "," + yTrans + ")\"");
 
             for (int i = 0; i < svgDocument.SVGObjects.Count; i++)
             {
                 canvasString += ToSVGString((svgDocument.SVGObjects[i]));
             }
 
-            canvasString += "\" </svg>";
+            canvasString += "</g>\n" + "</svg>";
 
             return canvasString;
         }
 
         public static string ToSVGString(SVGObject svgObject)
         {
-            string geometryString = "<g \"__Style__\">" + Environment.NewLine;
+            string geometryString = "<g __Style__>\n";
 
-            geometryString.Replace("__Style__", "");
+            geometryString = geometryString.Replace("__Style__", ToSVGString(svgObject.Style));
 
             for (int i = 0; i < svgObject.Geometry.Count; i++)
             {
-                geometryString += svgObject.Geometry[i].IToSVG() + Environment.NewLine;
+                geometryString += svgObject.Geometry[i].IToSVG();
+
+                if (svgObject.Geometry.Count > 1)
+                {
+                    geometryString += "\n";
+                }
             }
-            geometryString += "</g>" + Environment.NewLine;
+
+            if (svgObject.Geometry.Count == 1)
+            {
+                geometryString += "\n";
+            }
+
+            geometryString += "</g>\n";
 
             return geometryString;
         }
 
         public static string ToSVGString(SVGStyle svgStyle)
         {
-            string StyleString = "stroke-width=\"_stroke-width\" stroke-color=\"_stroke-color\" fill-color=\"_fill-color\" stroke-opacity=\"_stroke-opacity\" fill-opacity=\"_fill-opacity\" stroke-dasharray=\"_stroke-dasharray\" ";
+            string styleString = "stroke-width=\"__stroke-width__\" stroke=\"__stroke-color__\" fill=\"__fill-color__\" stroke-opacity=\"__stroke-opacity__\" fill-opacity=\"__fill-opacity__\" stroke-dasharray=\"__stroke-dasharray__\"";
 
-            StyleString.Replace("_stroke-width", svgStyle.StrokeWidth.ToString());
-            StyleString.Replace("_stroke-color", svgStyle.StrokeColor.ToString());
-            StyleString.Replace("_fill-color", svgStyle.FillColor.ToString());
-            StyleString.Replace("_stroke-opacity", svgStyle.StrokeOpacity.ToString());
-            StyleString.Replace("_fill-opacity", svgStyle.FillOpacity.ToString());
+            styleString = styleString.Replace("__stroke-width__", svgStyle.StrokeWidth.ToString())
+                                     .Replace("__stroke-opacity__", svgStyle.StrokeOpacity.ToString())
+                                     .Replace("__fill-opacity__", svgStyle.FillOpacity.ToString());
+
+            Regex regex = new Regex(@"(\d{1,3}),(\d{1,3}),(\d{1,3})");
+
+            string strokeColor = svgStyle.StrokeColor.ToString();
+            Match matchStroke = regex.Match(strokeColor);
+
+            if (matchStroke.Success)
+            {
+                string rgb1 = "rgb(" + svgStyle.StrokeColor.ToString() + ")";
+
+                styleString = styleString.Replace("__stroke-color__", rgb1);
+            }
+            else
+            {
+                styleString = styleString.Replace("__stroke-color__", svgStyle.StrokeColor.ToString());
+            }
+
+            string fillColor = svgStyle.FillColor.ToString();
+            Match matchFill = regex.Match(fillColor);
+
+            if (matchFill.Success)
+            {
+                string rgb2 = "rgb(" + svgStyle.FillColor.ToString() + ")";
+
+                styleString = styleString.Replace("__fill-color__", rgb2);
+            }
+            else
+            {
+                styleString = styleString.Replace("__fill-color__", svgStyle.FillColor.ToString());
+            }
 
             string DashArray = "";
 
             for (int i = 0; i < svgStyle.StrokeDash.Count; i++)
             {
                 string a = svgStyle.StrokeDash[i].ToString();
-                DashArray += a + " ";
-            }
 
-            StyleString.Replace("_stroke-dasharray", DashArray);
-
-            return StyleString;
-        }
-
-        public static string ToSVGString(List<SVGStyle> svgStyles)
-        {
-            string styleString = "";
-
-            for (int i = 0; i < svgStyles.Count; i++)
-            {
-                string StyleString = "stroke-width=\"_stroke-width\" stroke-color=\"_stroke-color\" fill-color=\"_fill-color\" stroke-opacity=\"_stroke-opacity\" fill-opacity=\"_fill-opacity\" stroke-dasharray=\"_stroke-dasharray\" ";
-
-                styleString = styleString.Replace("_stroke-width", svgStyles[i].StrokeWidth.ToString());
-                styleString = styleString.Replace("_stroke-color", svgStyles[i].StrokeColor.ToString());
-                styleString = styleString.Replace("_fill-color", svgStyles[i].FillColor.ToString());
-                styleString = styleString.Replace("_stroke-opacity", svgStyles[i].StrokeOpacity.ToString());
-                styleString = styleString.Replace("_fill-opacity", svgStyles[i].FillOpacity.ToString());
-
-                string DashArray = "";
-
-                for (int j = 0; i < svgStyles[i].StrokeDash.Count; i++)
+                if (i == 0)
                 {
-                    string a = svgStyles[i].StrokeDash[j].ToString();
-                    DashArray += a + " ";
+                    DashArray += a;
                 }
-
-                styleString = styleString.Replace("_stroke-dasharray", DashArray);
-
-                styleString += StyleString;
+                else
+                {
+                    DashArray += " " + a;
+                }
             }
+
+            styleString = styleString.Replace("__stroke-dasharray__", DashArray);
+
             return styleString;
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        //public static string ToSVGString(this SVGStyle svgStyle)
-        //{
-        //    string StyleString = "stroke-width=\"_stroke-width\" stroke-color=\"_stroke-color\" fill-color=\"_fill-color\" stroke-opacity=\"_stroke-opacity\" fill-opacity=\"_fill-opacity\" stroke-dasharray=\"_stroke-dasharray\" ";
-
-        //    StyleString.Replace("_stroke-width", svgStyle.StrokeWidth.ToString());
-        //    StyleString.Replace("_stroke-color", svgStyle.StrokeColor.ToString());
-        //    StyleString.Replace("_fill-color", svgStyle.FillColor.ToString());
-        //    StyleString.Replace("_stroke-opacity", svgStyle.StrokeOpacity.ToString());
-        //    StyleString.Replace("_fill-opacity", svgStyle.FillOpacity.ToString());
-        //    StyleString.Replace("_stroke-dasharray", svgStyle.StrokeDash.ToString());
-
-        //    return StyleString;
-        //}
-
-        //public static string ToSVGString(this List<SVGStyle> svgStyles)
-        //{
-        //    string styleString = "";
-
-        //    for (int i = 0; i < svgStyles.Count; i++)
-        //    {
-        //        string StyleString = "stroke-width=\"_stroke-width\" stroke-color=\"_stroke-color\" fill-color=\"_fill-color\" stroke-opacity=\"_stroke-opacity\" fill-opacity=\"_fill-opacity\" stroke-dasharray=\"_stroke-dasharray\" ";
-
-        //        styleString = styleString.Replace("_stroke-width", svgStyles[i].StrokeWidth.ToString());
-        //        styleString = styleString.Replace("_stroke-color", svgStyles[i].StrokeColor.ToString());
-        //        styleString = styleString.Replace("_fill-color", svgStyles[i].FillColor.ToString());
-        //        styleString = styleString.Replace("_stroke-opacity", svgStyles[i].StrokeOpacity.ToString());
-        //        styleString = styleString.Replace("_fill-opacity", svgStyles[i].FillOpacity.ToString());
-        //        styleString = styleString.Replace("_stroke-dasharray", svgStyles[i].StrokeDash.ToString());
-
-        //        styleString += StyleString;
-        //    }
-        //    return styleString;
-        //}
-
-        //public static string ToSVGString(this SVGObject svgObject)
-        //{
-        //    string geometryString = "<g __Style__>" + System.Environment.NewLine;
-
-        //    geometryString.Replace("__Style__", BH.Engine.SVG.Create.ToSVGString(svgObject.Style));
-
-        //    for (int i = 0; i < svgObject.Geometry.Count; i++)
-        //    {
-        //        geometryString += Convert.IToSVG(svgObject.Geometry[i]);
-        //    }
-        //    geometryString += "</g>";
-
-        //    return geometryString;
-        //}
-
-
     }
 }
+
+//if (box.Min.X < 0 || box.Min.Y < 0)
+//{
+//    for (int i = 0; i < svgDocument.SVGObjects.Count; i++)
+//    {
+//        Vector vec = new Vector((-box.Min.X), (-box.Min.Y), 0);
+//        //svgDocument.SVGObjects[i].Geometry.Select(x => Geometry.Transform.IGetTranslated(x, vec));
+
+
+//        SVGStyle styleX = svgDocument.SVGObjects[i].Style;
+//        SVGObject newObj = new SVGObject();
+//    }
+//}

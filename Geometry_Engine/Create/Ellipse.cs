@@ -13,14 +13,12 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Ellipse Ellipse(Plane plane, double xRadius, double yRadius)
+        public static Ellipse Ellipse(Point centre, double radius1 = 1, double radius2 = 1, Vector axis1 = null, Vector axis2 = null)
         {
-            Vector normal = plane.Normal.GetNormalised();
+            if (axis1 == null) { axis1 = Vector.XAxis; }
+            if (axis2 == null) { axis2 = Vector.YAxis; }
 
-            Point centre = new Point(plane.Origin.X, plane.Origin.Y, plane.Origin.Z);
-
-            return new Ellipse(centre, normal, xRadius, yRadius);
+            return new Ellipse(centre, axis1, axis2, radius1,radius2);
         }
-
     }
 }
