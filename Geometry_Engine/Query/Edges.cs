@@ -10,7 +10,7 @@ namespace BH.Engine.Geometry
     public static partial class Query
     {
         /***************************************************/
-        /**** Public Methods - Surfaces                 ****/
+        /**** Public Methods - Meshes                   ****/
         /***************************************************/
 
         public static List<Polyline> GetEdges(this Mesh mesh)
@@ -34,6 +34,31 @@ namespace BH.Engine.Geometry
             }
             return edges;
         }
+
+        /***************************************************/
+        /**** Public Methods - Faces                    ****/
+        /***************************************************/
+
+
+        public static Polyline GetEdges(this Face face, Mesh mesh)
+        {
+
+            List<Point> ptList = new List<Point>();
+            ptList.Add(mesh.Vertices[face.A]);
+            ptList.Add(mesh.Vertices[face.B]);
+            ptList.Add(mesh.Vertices[face.C]);
+
+            if (face.IsQuad())
+            {
+                ptList.Add(mesh.Vertices[face.C]);
+            }
+
+            Polyline edge = new Polyline(ptList);
+
+            return edge;
+        }
+
+
 
         /***************************************************/
 

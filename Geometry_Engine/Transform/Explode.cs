@@ -77,9 +77,7 @@ namespace BH.Engine.Geometry
                 {
                     tempPtList.Add(vertices[faces[i].D]);
                 }
-
-                tempFaceList.Add(mesh.Faces[i]);
-
+               
                 Mesh faceMesh = new Mesh(tempPtList, new List<Face>() {faces[i]});
 
                 explodedMesh.Add(faceMesh);
