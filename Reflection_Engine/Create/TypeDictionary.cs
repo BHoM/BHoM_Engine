@@ -39,6 +39,20 @@ namespace BH.Engine.Reflection
             return m_TypeList;
         }
 
+        /***************************************************/
+
+        public static List<Type> AdapterTypeList()
+        {
+            // If the dictionary exists already return it
+            if (m_AdapterTypeList != null && m_AdapterTypeList.Count > 0)
+                return m_AdapterTypeList;
+
+            // Otherwise, create it
+            ExtractAllTypes();
+
+            return m_AdapterTypeList;
+        }
+
 
         /***************************************************/
         /**** Private Methods                           ****/
@@ -47,25 +61,33 @@ namespace BH.Engine.Reflection
         private static void ExtractAllTypes()
         {
             m_TypeDictionary = new Dictionary<string, List<Type>>();
-            m_TypeList = new List<System.Type>();
+            m_TypeList = new List<Type>();
+            m_AdapterTypeList = new List<Type>();
 
             foreach (Assembly asm in AppDomain.CurrentDomain.GetAssemblies())
             {
                 try
                 {
-                    Type[] types = asm.GetTypes();
-
-                    // Save shorter names for BHoM objects only
+                    // Save BHoM objects only
                     string name = asm.GetName().Name;
                     if (name == "BHoM" || name.EndsWith("_oM"))
                     {
-                        foreach (Type type in types)
+                        foreach (Type type in asm.GetTypes())
                         {
                             if (!type.IsInterface)
                             {
                                 m_TypeList.Add(type);
                                 AddTypeToDictionary(type.FullName, type);
                             }
+                        }
+                    }
+                    // Save adapters
+                    else if (name.EndsWith("_Adapter"))
+                    {
+                        foreach (Type type in asm.GetTypes())
+                        {
+                            if (!type.IsInterface)
+                                m_AdapterTypeList.Add(type);
                         }
                     }
                 }
@@ -100,7 +122,8 @@ namespace BH.Engine.Reflection
         /***************************************************/
 
         private static Dictionary<string, List<Type>> m_TypeDictionary = new Dictionary<string, List<Type>>();
-        private static List<Type> m_TypeList = new List<System.Type>();
+        private static List<Type> m_TypeList = new List<Type>();
+        private static List<Type> m_AdapterTypeList = new List<Type>();
 
     }
 }
