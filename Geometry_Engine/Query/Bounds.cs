@@ -51,7 +51,36 @@ namespace BH.Engine.Geometry
 
         public static BoundingBox GetBounds(this Circle circle)
         {
-            throw new NotImplementedException();
+            // SIMPLIFIED: Currently implemented only for XY!! To do: 3D.
+
+            Point c = circle.Centre;
+            double r = circle.Radius;
+                  
+            Point min = new Point(c.X - r, c.Y - r, c.Z);
+            Point max = new Point(c.X + r, c.Y + r, c.Z);
+
+            return new BoundingBox(min, max);
+
+            //throw new NotImplementedException();
+        }
+
+        /***************************************************/
+
+        public static BoundingBox GetBounds(this Ellipse ellipse)
+        {
+            // SIMPLIFIED: Currently implemented only for XY and not rotated!! To do: 3D.
+
+            Point c = ellipse.Centre;
+            double r1 = ellipse.Radius1;
+            double r2 = ellipse.Radius2;
+            //Vector v1 = ellipse.Vector1;
+            //Vector v2 = ellipse.Vector2;
+
+
+            Point min = new Point(c.X - r1, c.Y - r2, c.Z);
+            Point max = new Point(c.X + r1, c.Y + r2, c.Z);
+
+            return new BoundingBox(min, max);
         }
 
         /***************************************************/
