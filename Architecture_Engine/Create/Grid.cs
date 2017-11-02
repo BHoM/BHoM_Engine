@@ -1,6 +1,6 @@
 ﻿using BH.oM.Geometry;
 using BH.oM.Structural.Elements;
-using BH.oM.Architecture; // TODO: This was BH.oM.Architecture.Element but that was not compiling. Rob, please check this
+using BH.oM.Architecture.Elements; // TODO: This was BH.oM.Architecture.Element but that was not compiling. Rob, please check this
 using BH.Engine.Geometry;
 using System;
 using System.Collections.Generic;
@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BH.Engine.Architecture
+namespace BH.Engine.Architecture.Elements
 {
     public static partial class Create
     {
