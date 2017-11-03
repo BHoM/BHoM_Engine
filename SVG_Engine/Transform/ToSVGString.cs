@@ -33,17 +33,10 @@ namespace BH.Engine.Graphics
             canvasString += "<g __transformation__>\n";
 
             double halfMargin = extraMargin / 2;
-            //oM.Geometry.Point boxMin = box.Min;
-            //Vector transVec = new oM.Geometry.Point(0, 0, 0) - boxMin;
-            //BH.oM.Geometry.Point minPt = new oM.Geometry.Point((box.Min.X + extraMargin), (box.Min.Y + extraMargin), 0);
-            //Vector transVec = new oM.Geometry.Point(0, 0, 0) - minPt;
-            //Vector transVec = new Vector(-((box.Min.X) + (extraMargin/2)), -((box.Min.Y) + (extraMargin/2)), 0);
             double h = (box.Max.Y - box.Min.Y + extraMargin);
 
             string xTrans = (-(box.Min.X-halfMargin)).ToString();
             string yTrans = (-(box.Min.Y-halfMargin)).ToString();
-
-            //translate(0,< minY + maxY >) scale(1, -1)   // for flip Y
 
             canvasString = canvasString.Replace("__transformation__", "transform=\"translate(" + "0," + h + ") scale(1,-1) translate(" + xTrans + "," + yTrans + ")\"");
 
@@ -156,3 +149,8 @@ namespace BH.Engine.Graphics
 //        SVGObject newObj = new SVGObject();
 //    }
 //}
+//oM.Geometry.Point boxMin = box.Min;
+//Vector transVec = new oM.Geometry.Point(0, 0, 0) - boxMin;
+//BH.oM.Geometry.Point minPt = new oM.Geometry.Point((box.Min.X + extraMargin), (box.Min.Y + extraMargin), 0);
+//Vector transVec = new oM.Geometry.Point(0, 0, 0) - minPt;
+//Vector transVec = new Vector(-((box.Min.X) + (extraMargin/2)), -((box.Min.Y) + (extraMargin/2)), 0);

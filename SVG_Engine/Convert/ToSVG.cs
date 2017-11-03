@@ -74,7 +74,7 @@ namespace BH.Engine.Graphics
             return ellipseString;
         }
 
-        public static string ToSVG(this List<BH.oM.Geometry.Point> ptList)
+        public static string ToSVG(this List<Point> ptList)
         {
             string pathString = "<path d=\"";
 
@@ -90,6 +90,8 @@ namespace BH.Engine.Graphics
                 }
             }
 
+            pathString += "\"/>";
+
             return pathString;
         }
 
@@ -103,6 +105,8 @@ namespace BH.Engine.Graphics
             {
                 polylineString += controlPts[i].X.ToString() + "," + controlPts[i].Y.ToString() + " ";
             }
+
+            polylineString += "\"/>";
 
             return polylineString;
         }
@@ -151,6 +155,8 @@ namespace BH.Engine.Graphics
                     nurbString += controlPts[i].X.ToString() + " " + controlPts[i].Y.ToString() + " ";
                 }
             }
+
+            nurbString += "\"/>";
 
             return nurbString;
         }
