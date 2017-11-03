@@ -18,6 +18,7 @@ namespace BH.Engine.Geometry
             List<Face> faces = mesh.Faces;
             List<Point> vertices = mesh.Vertices;
             List<Polyline> edges = new List<Polyline>(faces.Count);
+            List<Polyline> edges = new List<Polyline>();
             for (int i = 0; i < faces.Count; i++)
             {
                 List<Point> faceVertices = new List<Point>();
@@ -30,7 +31,7 @@ namespace BH.Engine.Geometry
                 if (faces[i].IsQuad()) { faceVertices.Add(vertices[faces[i].D]); }
                 faceVertices.Add(p1);                               // Closed Polyline
                 Polyline edge = new Polyline(faceVertices);
-                edges[i] = edge;
+                edges.Add(edge);
             }
             return edges;
         }

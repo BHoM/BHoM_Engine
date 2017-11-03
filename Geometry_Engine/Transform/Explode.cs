@@ -68,18 +68,27 @@ namespace BH.Engine.Geometry
                 List<Point> tempPtList = new List<Point>();
                 List<Face> tempFaceList = new List<Face>();
 
-                tempPtList.Add(vertices[faces[i].A]);
+                tempPtList.Add(vertices[faces[i].A]);                
                 tempPtList.Add(vertices[faces[i].B]);
                 tempPtList.Add(vertices[faces[i].C]);
+
+                faces[i].A = 0;
+                faces[i].B = 1;
+                faces[i].C = 2;
 
                 if (mesh.Faces[i].IsQuad())
 
                 {
                     tempPtList.Add(vertices[faces[i].D]);
+                    faces[i].D = 3;
+                }
+                else
+                {
+                    faces[i].D = -1;
                 }
                
                 Mesh faceMesh = new Mesh(tempPtList, new List<Face>() {faces[i]});
-
+                
                 explodedMesh.Add(faceMesh);
             }
             return explodedMesh;
