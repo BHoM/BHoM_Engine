@@ -87,7 +87,10 @@ namespace BH.Engine.Reflection
                         foreach (Type type in asm.GetTypes())
                         {
                             if (!type.IsInterface)
+                            {
                                 m_AdapterTypeList.Add(type);
+                                AddTypeToDictionary(type.FullName, type);
+                            }
                         }
                     }
                 }
