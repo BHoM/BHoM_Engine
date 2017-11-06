@@ -50,12 +50,12 @@ namespace BH.Engine.Geometry
 
             if (face.IsQuad())
             {
-                ptList.Add(mesh.Vertices[face.C]);
+                ptList.Add(mesh.Vertices[face.D]);
             }
 
             for (int i = 0; i < ptList.Count; i++)
             {
-                Line line = new Line(ptList[ptList.Count % i], ptList[ptList.Count % (i + 1)]);
+                Line line = new Line(ptList[i], ptList[(i + ptList.Count + 1) % ptList.Count]);
                 lineList.Add(line);
             }                     
 
