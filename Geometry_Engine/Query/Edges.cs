@@ -40,9 +40,9 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
 
-        public static Polyline GetEdges(this Face face, Mesh mesh)
+        public static List<Line> GetEdges(this Mesh mesh, Face face)
         {
-
+            List<Line> lineList = new List<Line>();
             List<Point> ptList = new List<Point>();
             ptList.Add(mesh.Vertices[face.A]);
             ptList.Add(mesh.Vertices[face.B]);
@@ -53,9 +53,13 @@ namespace BH.Engine.Geometry
                 ptList.Add(mesh.Vertices[face.C]);
             }
 
-            Polyline edge = new Polyline(ptList);
+            for (int i = 0; i < ptList.Count; i++)
+            {
+                Line line = new Line(ptList[ptList.Count % i], ptList[ptList.Count % (i + 1)]);
+                lineList.Add(line);
+            }                     
 
-            return edge;
+            return lineList;
         }
 
 
