@@ -99,7 +99,7 @@ namespace BH.Engine.Graphics
         {
             List<Point> controlPts = polyline.ControlPoints;
 
-            string polylineString = "<polyline points=\" ";
+            string polylineString = "<polyline points=\"";
 
             for (int i = 0; i < controlPts.Count; i++)
             {
@@ -118,6 +118,18 @@ namespace BH.Engine.Graphics
             List<Double> knots = nurbCurve.Knots;
 
             string nurbString = "<path d=\"";
+
+            //    //List<Point> newControlPoints = new List<Point>();
+            //    //if (controlPts.Count > 4)
+            //    //{
+            //    //    List<Point> newControlPts = new List<Point>();
+            //    //    newControlPts = Geometry.Transform.GetDivided(nurbCurve, 2);
+            //    //    newControlPoints = newControlPts;
+            //    //}
+            //    //else
+            //    //{
+            //    //    newControlPoints = controlPts; 
+            //    //}
 
             double p = nurbCurve.ControlPoints.Count();
             bool a = new bool();
