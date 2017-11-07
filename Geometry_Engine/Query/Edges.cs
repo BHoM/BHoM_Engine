@@ -13,27 +13,45 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Meshes                   ****/
         /***************************************************/
 
-        public static List<Polyline> GetEdges(this Mesh mesh)
+        public static List<Line> GetEdges(this Mesh mesh)
         {
+            List<Line> edges = new List<Line>();
+            List<int> hashcodes = new List<int>();
             List<Face> faces = mesh.Faces;
-            List<Point> vertices = mesh.Vertices;
-            List<Polyline> edges = new List<Polyline>(faces.Count);
-            for (int i = 0; i < faces.Count; i++)
+            for (int i = 0; i < mesh.Faces.Count; i++)
             {
-                List<Point> faceVertices = new List<Point>();
-                Point p1 = vertices[faces[i].A];
-                Point p2 = vertices[faces[i].B];
-                Point p3 = vertices[faces[i].C];
-                faceVertices.Add(p1);
-                faceVertices.Add(p2);
-                faceVertices.Add(p3);
-                if (faces[i].IsQuad()) { faceVertices.Add(vertices[faces[i].D]); }
-                faceVertices.Add(p1);                               // Closed Polyline
-                Polyline edge = new Polyline(faceVertices);
-                edges[i] = edge;
+
+                List<Line> faceEdges = (GetEdges(mesh, faces[i]));
+                for (int j = 0; j < faceEdges.Count; j++)
+                {
+                    int faceHash = faceEdges[j].GetPointAtParameter(0.5).GetHashCode();
+                    if (!hashcodes.Contains(faceHash))
+                    {
+                        edges.Add(faceEdges[j]);
+                       // hashcodes.Add(faceEdges[j].GetFlipped().GetHashCode());
+                        hashcodes.Add(faceHash);
+                    }
+                }
             }
             return edges;
         }
+
+        //public static List<Line> GetEdges(this Mesh mesh)
+        //{
+        //    List<Line> edges = new List<Line>();
+        //    List<Line> distinctEdges = new List<Line>();
+        //    List<Face> faces = mesh.Faces;            
+        //    for (int i = 0; i < faces.Count; i++)
+        //    {
+        //        edges.AddRange(mesh.GetEdges(faces[i]));
+        //    }
+        //    IEnumerable<Line> nonDuplicates = edges.Distinct();
+        //    foreach (Line edge in nonDuplicates)
+        //    {
+        //        distinctEdges.Add(edge);
+        //    }
+        //    return edges;
+        //}
 
         /***************************************************/
         /**** Public Methods - Faces                    ****/
@@ -42,24 +60,21 @@ namespace BH.Engine.Geometry
 
         public static List<Line> GetEdges(this Mesh mesh, Face face)
         {
-            List<Line> lineList = new List<Line>();
-            List<Point> ptList = new List<Point>();
-            ptList.Add(mesh.Vertices[face.A]);
-            ptList.Add(mesh.Vertices[face.B]);
-            ptList.Add(mesh.Vertices[face.C]);
+            List<Line> edges = new List<Line>();
+            edges.Add(new Line(mesh.Vertices[face.A], mesh.Vertices[face.B]));
+            edges.Add(new Line(mesh.Vertices[face.B], mesh.Vertices[face.C]));
 
             if (face.IsQuad())
             {
-                ptList.Add(mesh.Vertices[face.D]);
+                edges.Add(new Line(mesh.Vertices[face.C], mesh.Vertices[face.D]));
+                edges.Add(new Line(mesh.Vertices[face.D], mesh.Vertices[face.A]));
+            }
+            else
+            {
+                edges.Add(new Line(mesh.Vertices[face.C], mesh.Vertices[face.A]));
             }
 
-            for (int i = 0; i < ptList.Count; i++)
-            {
-                Line line = new Line(ptList[i], ptList[(i + ptList.Count + 1) % ptList.Count]);
-                lineList.Add(line);
-            }                     
-
-            return lineList;
+            return edges;
         }
 
 
