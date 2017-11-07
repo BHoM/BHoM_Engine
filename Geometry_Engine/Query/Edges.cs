@@ -27,34 +27,14 @@ namespace BH.Engine.Geometry
                     int faceHash = faceEdges[j].GetPointAtParameter(0.5).GetHashCode();
                     if (!hashcodes.Contains(faceHash))
                     {
-                        edges.Add(faceEdges[j]);
-                       // hashcodes.Add(faceEdges[j].GetFlipped().GetHashCode());
+                        edges.Add(faceEdges[j]);                       
                         hashcodes.Add(faceHash);
                     }
                 }
             }
             return edges;
         }
-
-        //public static List<Line> GetEdges(this Mesh mesh)
-        //{
-        //    List<Line> edges = new List<Line>();
-        //    List<Line> distinctEdges = new List<Line>();
-        //    List<Face> faces = mesh.Faces;            
-        //    for (int i = 0; i < faces.Count; i++)
-        //    {
-        //        edges.AddRange(mesh.GetEdges(faces[i]));
-        //    }
-        //    IEnumerable<Line> nonDuplicates = edges.Distinct();
-        //    foreach (Line edge in nonDuplicates)
-        //    {
-        //        distinctEdges.Add(edge);
-        //    }
-        //    return edges;
-        //}
-
-        /***************************************************/
-        /**** Public Methods - Faces                    ****/
+                   
         /***************************************************/
 
 
@@ -77,8 +57,7 @@ namespace BH.Engine.Geometry
             return edges;
         }
 
-
-
+        
         /***************************************************/
 
         public static List<ICurve> GetEdges(this ISurface surface)
