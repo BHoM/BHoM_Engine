@@ -27,8 +27,8 @@ namespace BH.Engine.Graphics
 
             string canvasString = "<svg width=\"__width__\" height=\"__height__\">\n";
 
-            canvasString = canvasString.Replace("__width__", Width);
-            canvasString = canvasString.Replace("__height__", Height);
+            canvasString = canvasString.Replace("__width__", Width)
+                                       .Replace("__height__", Height);
 
             canvasString += "<g __transformation__>\n";
 
@@ -136,21 +136,3 @@ namespace BH.Engine.Graphics
         }
     }
 }
-
-//if (box.Min.X < 0 || box.Min.Y < 0)
-//{
-//    for (int i = 0; i < svgDocument.SVGObjects.Count; i++)
-//    {
-//        Vector vec = new Vector((-box.Min.X), (-box.Min.Y), 0);
-//        //svgDocument.SVGObjects[i].Geometry.Select(x => Geometry.Transform.IGetTranslated(x, vec));
-
-
-//        SVGStyle styleX = svgDocument.SVGObjects[i].Style;
-//        SVGObject newObj = new SVGObject();
-//    }
-//}
-//oM.Geometry.Point boxMin = box.Min;
-//Vector transVec = new oM.Geometry.Point(0, 0, 0) - boxMin;
-//BH.oM.Geometry.Point minPt = new oM.Geometry.Point((box.Min.X + extraMargin), (box.Min.Y + extraMargin), 0);
-//Vector transVec = new oM.Geometry.Point(0, 0, 0) - minPt;
-//Vector transVec = new Vector(-((box.Min.X) + (extraMargin/2)), -((box.Min.Y) + (extraMargin/2)), 0);

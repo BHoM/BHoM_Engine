@@ -19,14 +19,17 @@ namespace BH.Engine.Graphics
         {
             BoundingBox bb = new BoundingBox();
             List<IBHoMGeometry> geometry = svg.Geometry;
+
             for (int i = 0; i < svg.Geometry.Count; i++)
                 bb += Geometry.Query.IGetBounds(svg.Geometry[i]);
+
             return bb;
         }
 
         public static BoundingBox GetSvgBounds(List<SVGObject> svg)
         {
             BoundingBox bb = new BoundingBox();
+
             for (int i = 0; i < svg.Count; i++)
                 bb += GetSvgBounds(svg[i]);
 
@@ -41,6 +44,7 @@ namespace BH.Engine.Graphics
         public static BoundingBox GetSvgBounds(List<SVGDocument> svg)
         {
             BoundingBox bb = new BoundingBox();
+
             for (int i = 0; i < svg.Count; i++)
                 bb += GetSvgBounds(svg[i]);
 
