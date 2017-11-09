@@ -9,32 +9,67 @@ namespace BH.Engine.Geometry
 {
     public static partial class Query
     {
+        private static readonly object indices;
+
         /***************************************************/
         /**** Public Methods - Meshes                   ****/
         /***************************************************/
 
+        //public static List<Line> GetEdges(this Mesh mesh)
+        //{
+        //    List<Line> edges = new List<Line>();
+        //    List<int> hashcodes = new List<int>();
+        //    List<Face> faces = mesh.Faces;
+        //    for (int i = 0; i < mesh.Faces.Count; i++)
+        //    {
+
+        //        List<Line> faceEdges = (GetEdges(mesh, faces[i]));
+        //        for (int j = 0; j < faceEdges.Count; j++)
+        //        {
+        //            int faceHash = faceEdges[j].GetPointAtParameter(0.5).GetHashCode();
+        //            if (!hashcodes.Contains(faceHash))
+        //            {
+        //                edges.Add(faceEdges[j]);                       
+        //                hashcodes.Add(faceHash);
+        //            }
+        //        }
+        //    }
+        //    return edges;
+        //}
+
         public static List<Line> GetEdges(this Mesh mesh)
         {
-            List<Line> edges = new List<Line>();
-            List<int> hashcodes = new List<int>();
             List<Face> faces = mesh.Faces;
-            for (int i = 0; i < mesh.Faces.Count; i++)
+            List<Tuple<int, int>> indices = new List<Tuple<int, int>>();
+            
+            for (int i = 0; i < faces.Count; i++)
             {
+                Face face = faces[i];
+                indices.Add(new Tuple<int, int>(face.A, face.B));
+                indices.Add(new Tuple<int, int>(face.B, face.C));
 
-                List<Line> faceEdges = (GetEdges(mesh, faces[i]));
-                for (int j = 0; j < faceEdges.Count; j++)
+                if (face.IsQuad())
                 {
-                    int faceHash = faceEdges[j].GetPointAtParameter(0.5).GetHashCode();
-                    if (!hashcodes.Contains(faceHash))
-                    {
-                        edges.Add(faceEdges[j]);                       
-                        hashcodes.Add(faceHash);
-                    }
+                    indices.Add(new Tuple<int, int>(face.C, face.D));
+                    indices.Add(new Tuple<int, int>(face.D, face.A));
                 }
+                else
+                {
+                    indices.Add(new Tuple<int, int>(face.C, face.A));
+                }
+                
+            }
+
+            List<Tuple<int, int>> distinctIndices = indices.Select(x => (x.Item1 < x.Item2) ? x : new Tuple<int, int>(x.Item2, x.Item1)).Distinct().ToList();
+            List<Line> edges = new List<Line>();
+            for (int i = 0; i < distinctIndices.Count; i++)
+            {
+                edges.Add(new Line(mesh.Vertices[distinctIndices[i].Item1], mesh.Vertices[distinctIndices[i].Item2]));
             }
             return edges;
+
         }
-                   
+
         /***************************************************/
 
 
@@ -57,7 +92,8 @@ namespace BH.Engine.Geometry
             return edges;
         }
 
-        
+
+
         /***************************************************/
 
         public static List<ICurve> GetEdges(this ISurface surface)
