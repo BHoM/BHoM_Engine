@@ -25,7 +25,8 @@ namespace BH.Engine.Geometry
                 {
                     tMesh.Faces.Add(faces[i]);
                 }
-
+                else
+                { 
                 int i1 = faces[i].A;
                 int i2 = faces[i].B;
                 int i3 = faces[i].C;
@@ -49,6 +50,7 @@ namespace BH.Engine.Geometry
                     Face fB = new Face(i1, i3, i4);
                     tMesh.Faces.Add(fA);
                     tMesh.Faces.Add(fB);
+                }
                 }
             }
             return tMesh;
