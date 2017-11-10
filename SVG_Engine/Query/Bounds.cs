@@ -26,6 +26,8 @@ namespace BH.Engine.Graphics
             return bb;
         }
 
+        /***************************************************/
+
         public static BoundingBox GetSvgBounds(List<SVGObject> svg)
         {
             BoundingBox bb = new BoundingBox();
@@ -36,10 +38,14 @@ namespace BH.Engine.Graphics
             return bb;
         }
 
+        /***************************************************/
+
         public static BoundingBox GetSvgBounds(SVGDocument svg)
         {
             return svg.Canvas;
         }
+
+        /***************************************************/
 
         public static BoundingBox GetSvgBounds(List<SVGDocument> svg)
         {
