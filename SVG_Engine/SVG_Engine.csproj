@@ -49,7 +49,7 @@
     <Compile Include="Create\SVGDocument.cs" />
     <Compile Include="Query\Bounds.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Transform\ToSVGString.cs" />
+    <Compile Include="Convert\ToSVGString.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Geometry_Engine\Geometry_Engine.csproj">

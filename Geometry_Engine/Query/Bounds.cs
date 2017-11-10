@@ -51,36 +51,40 @@ namespace BH.Engine.Geometry
 
         public static BoundingBox GetBounds(this Circle circle)
         {
-            // SIMPLIFIED: Currently implemented only for XY!! To do: 3D.
+            Point centre = circle.Centre;
+            double cx = centre.X, cy = centre.Y, cz = centre.Z;
 
-            Point c = circle.Centre;
-            double r = circle.Radius;
-                  
-            Point min = new Point(c.X - r, c.Y - r, c.Z);
-            Point max = new Point(c.X + r, c.Y + r, c.Z);
+            Vector u = GetCrossProduct(circle.Normal, Vector.ZAxis).GetNormalised() * circle.Radius;
+            double ux = u.X, uy = u.Y, uz = u.Z;
 
-            return new BoundingBox(min, max);
+            Vector v = GetCrossProduct(circle.Normal, u).GetNormalised() * circle.Radius;
+            double vx = v.X, vy = v.Y, vz = v.Z;
 
-            //throw new NotImplementedException();
+            ux *= ux; uy *= uy; uz *= uz;
+            vx *= vx; vy *= vy; vz *= vz;
+
+            return new BoundingBox(new Point((cx - Math.Sqrt(ux + vx)), (cy - Math.Sqrt(uy + vy)), (cz - Math.Sqrt(uz + vz))),
+                                   new Point((cx + Math.Sqrt(ux + vx)), (cy + Math.Sqrt(uy + vy)), (cz + Math.Sqrt(uz + vz))));
         }
 
         /***************************************************/
 
         public static BoundingBox GetBounds(this Ellipse ellipse)
         {
-            // SIMPLIFIED: Currently implemented only for XY and not rotated!! To do: 3D.
+            Point centre = ellipse.Centre;
+            double cx = centre.X, cy = centre.Y, cz = centre.Z;
 
-            Point c = ellipse.Centre;
-            double r1 = ellipse.Radius1;
-            double r2 = ellipse.Radius2;
-            //Vector v1 = ellipse.Vector1;
-            //Vector v2 = ellipse.Vector2;
+            Vector u = ellipse.Axis2.GetNormalised() * ellipse.Radius2;
+            double ux = u.X, uy = u.Y, uz = u.Z;
 
+            Vector v = ellipse.Axis1.GetNormalised() * ellipse.Radius1;
+            double vx = v.X, vy = v.Y, vz = v.Z;
 
-            Point min = new Point(c.X - r1, c.Y - r2, c.Z);
-            Point max = new Point(c.X + r1, c.Y + r2, c.Z);
+            ux *= ux; uy *= uy; uz *= uz;
+            vx *= vx; vy *= vy; vz *= vz;
 
-            return new BoundingBox(min, max);
+            return new BoundingBox(new Point((cx - Math.Sqrt(ux + vx)), (cy - Math.Sqrt(uy + vy)), (cz - Math.Sqrt(uz + vz))),
+                                   new Point((cx + Math.Sqrt(ux + vx)), (cy + Math.Sqrt(uy + vy)), (cz + Math.Sqrt(uz + vz))));
         }
 
         /***************************************************/

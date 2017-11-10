@@ -18,69 +18,66 @@ namespace BH.Engine.Graphics
             return ToSVG(geometry as dynamic);
         }
 
+        /***************************************************/
+
         public static string ToSVG(this Point point)
         {
             // Creates a one pixle wide circle for the point in order for it to be displayable
 
-            string circleString = "<circle cx=\"__cx__\" cy=\"__cy__\" r=\"__radius__\"/>";
             double Rad = 0.5;
-
-            circleString = circleString.Replace("__cx__", point.X.ToString())
-                                       .Replace("__cy__", point.Y.ToString())
-                                       .Replace("__radius__", Rad.ToString());
+            string circleString = "<circle cx=\"" + point.X.ToString() 
+                                  + "\" cy=\"" + point.Y.ToString() 
+                                  + "\" r=\"" + Rad.ToString() + "\"/>";
 
             return circleString;
         }
+
+        /***************************************************/
 
         public static string ToSVG(this Line line)
         {
             Point startPt = line.Start;
             Point endPt = line.End;
 
-            string lineString = "<line x1=\"__x1__\" y1=\"__y1__\" x2=\"__x2__\" y2=\"__y2__\"/>";
-
-            lineString = lineString.Replace("__x1__", startPt.X.ToString())
-                                   .Replace("__y1__", startPt.Y.ToString())
-                                   .Replace("__x2__", endPt.X.ToString())
-                                   .Replace("__y2__", endPt.Y.ToString());
+            string lineString = "<line x1=\"" + startPt.X.ToString() 
+                                + "\" y1=\"" + startPt.Y.ToString() 
+                                + "\" x2=\"" + endPt.X.ToString() 
+                                + "\" y2=\"" + endPt.Y.ToString() + "\"/>";
 
             return lineString;
         }
+
+        /***************************************************/
 
         public static string ToSVG(this Circle circle)
         {
             Point centerPt = circle.Centre;
 
-            string circleString = "<circle cx=\"__cx__\" cy=\"__cy__\" r=\"__radius__\"/>";
-
-            circleString = circleString.Replace("__cx__", centerPt.X.ToString())
-                                       .Replace("__cy__", centerPt.Y.ToString())
-                                       .Replace("__radius__", circle.Radius.ToString());
+            string circleString = "<circle cx=\"" + centerPt.X.ToString() 
+                                  + "\" cy=\"" + centerPt.Y.ToString() 
+                                  + "\" r=\"" + circle.Radius.ToString() +"\"/>";
 
             return circleString;
         }
+
+        /***************************************************/
 
         public static string ToSVG(this Ellipse ellipse)
         {
             Point centerPt = ellipse.Centre;
 
-            string ellipseString = "<ellipse cx=\"__cx__\" cy=\"__cy__\" rx=\"__xRadius__\" ry=\"__yRadius__\"";
-
-            ellipseString = ellipseString.Replace("__cx__", centerPt.X.ToString())
-                                         .Replace("__cy__", centerPt.Y.ToString())
-                                         .Replace("__xRadius__", ellipse.Radius1.ToString())
-                                         .Replace("__yRadius__", ellipse.Radius2.ToString());
-
-            ellipseString += " transform=\"rotate(__angle__ __cX__ __cY__)\"";
-
-            ellipseString = ellipseString.Replace("__angle__", ((Geometry.Query.GetAngle(ellipse.Axis1, Vector.XAxis)) * 180 / Math.PI).ToString())
-                                         .Replace("__cX__", centerPt.X.ToString())
-                                         .Replace("__cY__", centerPt.Y.ToString());
-
-            ellipseString += "/>";
+            string ellipseString = "<ellipse cx=\"" + centerPt.X.ToString() 
+                                   + "\" cy=\"" + centerPt.Y.ToString() 
+                                   + "\" rx=\"" + ellipse.Radius1.ToString() 
+                                   + "\" ry=\"" + ellipse.Radius2.ToString() 
+                                   + "\" transform=\"rotate(" + ((Geometry.Query.GetAngle(ellipse.Axis1, Vector.XAxis)) * 180 / Math.PI).ToString() 
+                                   + " " + centerPt.X.ToString() 
+                                   + " " + centerPt.Y.ToString() + ")\"/>";
 
             return ellipseString;
         }
+
+        /***************************************************/
 
         public static string ToSVG(this Polyline polyline)
         {
@@ -90,7 +87,14 @@ namespace BH.Engine.Graphics
 
             for (int i = 0; i < controlPts.Count; i++)
             {
-                polylineString += controlPts[i].X.ToString() + "," + controlPts[i].Y.ToString() + " ";
+                if (i == 0)
+                {
+                    polylineString += controlPts[i].X.ToString() + " " + controlPts[i].Y.ToString();
+                }
+                else
+                {
+                    polylineString += " " + controlPts[i].X.ToString() + " " + controlPts[i].Y.ToString();
+                }
             }
 
             polylineString += "\"/>";
@@ -98,9 +102,11 @@ namespace BH.Engine.Graphics
             return polylineString;
         }
 
+        /***************************************************/
+
         public static string ToSVG(this NurbCurve nurbCurve)
         {
-            // TODO : SVG_Engine - Simplified method at the moment which needs further development
+            // TODO : SVG_Engine - Further developing of the method for converting NurbCurves to SVG 
 
             List<Point> controlPts = nurbCurve.ControlPoints;
             List<Double> weights = nurbCurve.Weights;
@@ -128,7 +134,7 @@ namespace BH.Engine.Graphics
             {
                 if (i == 0)
                 {
-                    nurbString += "M" + controlPts[i].X.ToString() + " " + controlPts[i].Y.ToString();
+                    nurbString += "M " + controlPts[i].X.ToString() + " " + controlPts[i].Y.ToString();
 
                     if (a == true)
                     {
@@ -141,7 +147,7 @@ namespace BH.Engine.Graphics
                 }
                 else
                 {
-                    nurbString += controlPts[i].X.ToString() + " " + controlPts[i].Y.ToString() + " ";
+                    nurbString += " " + controlPts[i].X.ToString() + " " + controlPts[i].Y.ToString();
                 }
             }
 
@@ -150,26 +156,7 @@ namespace BH.Engine.Graphics
             return nurbString;
         }
 
-        public static string ToSVG(this List<Point> ptList)
-        {
-            string pathString = "<path d=\"";
-
-            for (int i = 0; i < ptList.Count; i++)
-            {
-                if (i == 0)
-                {
-                    pathString += "M" + ptList[i].X.ToString() + " " + ptList[i].Y.ToString() + " L";
-                }
-                else
-                {
-                    pathString += ptList[i].X.ToString() + " " + ptList[i].Y.ToString() + " ";
-                }
-            }
-
-            pathString += "\"/>";
-
-            return pathString;
-        }
+        /***************************************************/
 
         public static string ToSVG(this Arc arc)
         {
