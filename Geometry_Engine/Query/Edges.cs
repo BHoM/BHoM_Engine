@@ -8,35 +8,11 @@ using System.Threading.Tasks;
 namespace BH.Engine.Geometry
 {
     public static partial class Query
-    {
-        private static readonly object indices;
-
+    {       
         /***************************************************/
         /**** Public Methods - Meshes                   ****/
         /***************************************************/
-
-        //public static List<Line> GetEdges(this Mesh mesh)
-        //{
-        //    List<Line> edges = new List<Line>();
-        //    List<int> hashcodes = new List<int>();
-        //    List<Face> faces = mesh.Faces;
-        //    for (int i = 0; i < mesh.Faces.Count; i++)
-        //    {
-
-        //        List<Line> faceEdges = (GetEdges(mesh, faces[i]));
-        //        for (int j = 0; j < faceEdges.Count; j++)
-        //        {
-        //            int faceHash = faceEdges[j].GetPointAtParameter(0.5).GetHashCode();
-        //            if (!hashcodes.Contains(faceHash))
-        //            {
-        //                edges.Add(faceEdges[j]);                       
-        //                hashcodes.Add(faceHash);
-        //            }
-        //        }
-        //    }
-        //    return edges;
-        //}
-
+      
         public static List<Line> GetEdges(this Mesh mesh)
         {
             List<Face> faces = mesh.Faces;
@@ -56,8 +32,7 @@ namespace BH.Engine.Geometry
                 else
                 {
                     indices.Add(new Tuple<int, int>(face.C, face.A));
-                }
-                
+                }                
             }
 
             List<Tuple<int, int>> distinctIndices = indices.Select(x => (x.Item1 < x.Item2) ? x : new Tuple<int, int>(x.Item2, x.Item1)).Distinct().ToList();
@@ -67,13 +42,14 @@ namespace BH.Engine.Geometry
                 edges.Add(new Line(mesh.Vertices[distinctIndices[i].Item1], mesh.Vertices[distinctIndices[i].Item2]));
             }
             return edges;
-
         }
 
         /***************************************************/
+        /**** Public Methods - Faces                    ****/
+        /***************************************************/
 
 
-        public static List<Line> GetEdges(this Mesh mesh, Face face)
+        public static List<Line> GetEdges(this Face face, Mesh mesh)
         {
             List<Line> edges = new List<Line>();
             edges.Add(new Line(mesh.Vertices[face.A], mesh.Vertices[face.B]));
@@ -91,8 +67,6 @@ namespace BH.Engine.Geometry
 
             return edges;
         }
-
-
 
         /***************************************************/
 

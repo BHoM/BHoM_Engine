@@ -58,3 +58,4 @@ bld/
 *.suo
 *.user
 .vs/
+Geometry_Engine/Transform/Join.cs
