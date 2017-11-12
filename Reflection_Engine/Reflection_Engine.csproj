@@ -45,7 +45,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Create\Type.cs" />
-    <Compile Include="Create\TypeDictionary.cs" />
+    <Compile Include="Query\TypeList.cs" />
+    <Compile Include="Query\TypeDictionary.cs" />
     <Compile Include="Query\PropertyDictionary.cs" />
     <Compile Include="Query\PropertyNames.cs" />
     <Compile Include="Query\PropertyObjects.cs" />
