@@ -45,7 +45,7 @@ namespace BH.Engine.Reflection
                         foreach (Type type in asm.GetTypes())
                         {
                             if (!type.IsInterface && type.IsAbstract)
-                                m_BHoMMethodList.AddRange(type.GetMethods().Where(x => x.IsPublic));
+                                m_BHoMMethodList.AddRange(type.GetMethods(BindingFlags.Public | BindingFlags.DeclaredOnly | BindingFlags.Static));
                         }
                     }
                 }
