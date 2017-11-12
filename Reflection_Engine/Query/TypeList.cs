@@ -7,41 +7,27 @@ using System.Threading.Tasks;
 
 namespace BH.Engine.Reflection
 {
-    public static partial class Create
+    public static partial class Query
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Dictionary<string, List<Type>> TypeDictionary()
+        public static List<Type> GetBHoMTypeList()
         {
             // If the dictionary exists already return it
-            if (m_TypeDictionary != null && m_TypeDictionary.Count > 0)
-                return m_TypeDictionary;
+            if (m_BHoMTypeList != null && m_BHoMTypeList.Count > 0)
+                return m_BHoMTypeList;
 
             // Otherwise, create it
             ExtractAllTypes();
 
-            return m_TypeDictionary;
+            return m_BHoMTypeList;
         }
 
         /***************************************************/
 
-        public static List<Type> TypeList()
-        {
-            // If the dictionary exists already return it
-            if (m_TypeList != null && m_TypeList.Count > 0)
-                return m_TypeList;
-
-            // Otherwise, create it
-            ExtractAllTypes();
-
-            return m_TypeList;
-        }
-
-        /***************************************************/
-
-        public static List<Type> AdapterTypeList()
+        public static List<Type> GetAdapterTypeList()
         {
             // If the dictionary exists already return it
             if (m_AdapterTypeList != null && m_AdapterTypeList.Count > 0)
@@ -60,8 +46,7 @@ namespace BH.Engine.Reflection
 
         private static void ExtractAllTypes()
         {
-            m_TypeDictionary = new Dictionary<string, List<Type>>();
-            m_TypeList = new List<Type>();
+            m_BHoMTypeList = new List<Type>();
             m_AdapterTypeList = new List<Type>();
 
             foreach (Assembly asm in AppDomain.CurrentDomain.GetAssemblies())
@@ -76,8 +61,8 @@ namespace BH.Engine.Reflection
                         {
                             if (!type.IsInterface)
                             {
-                                m_TypeList.Add(type);
-                                AddTypeToDictionary(type.FullName, type);
+                                m_BHoMTypeList.Add(type);
+                                AddBHoMTypeToDictionary(type.FullName, type);
                             }
                         }
                     }
@@ -97,32 +82,13 @@ namespace BH.Engine.Reflection
                 }
             }
         }
-
-        /***************************************************/
-
-        private static void AddTypeToDictionary(string name, Type type)
-        {
-            if (m_TypeDictionary.ContainsKey(name))
-                m_TypeDictionary[name].Add(type);
-            else
-            {
-                List<Type> list = new List<Type>();
-                list.Add(type);
-                m_TypeDictionary[name] = list;
-            }
-
-            int firstDot = name.IndexOf('.');
-            if (firstDot >= 0)
-                AddTypeToDictionary(name.Substring(firstDot + 1), type);
-        }
         
 
         /***************************************************/
         /**** Private Fields                            ****/
         /***************************************************/
 
-        private static Dictionary<string, List<Type>> m_TypeDictionary = new Dictionary<string, List<Type>>();
-        private static List<Type> m_TypeList = new List<Type>();
+        private static List<Type> m_BHoMTypeList = new List<Type>();
         private static List<Type> m_AdapterTypeList = new List<Type>();
 
     }
