@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace BH.Engine.Graphics
 {
-    public static partial class Transform
+    public static partial class Convert
     {
         /***************************************************/
         /**** Public Methods                            ****/
