@@ -9,33 +9,9 @@ namespace BH.Engine.Geometry
 {
     public static partial class Query
     {
-        private static readonly object indices;
-
         /***************************************************/
         /**** Public Methods - Meshes                   ****/
         /***************************************************/
-
-        //public static List<Line> GetEdges(this Mesh mesh)
-        //{
-        //    List<Line> edges = new List<Line>();
-        //    List<int> hashcodes = new List<int>();
-        //    List<Face> faces = mesh.Faces;
-        //    for (int i = 0; i < mesh.Faces.Count; i++)
-        //    {
-
-        //        List<Line> faceEdges = (GetEdges(mesh, faces[i]));
-        //        for (int j = 0; j < faceEdges.Count; j++)
-        //        {
-        //            int faceHash = faceEdges[j].GetPointAtParameter(0.5).GetHashCode();
-        //            if (!hashcodes.Contains(faceHash))
-        //            {
-        //                edges.Add(faceEdges[j]);                       
-        //                hashcodes.Add(faceHash);
-        //            }
-        //        }
-        //    }
-        //    return edges;
-        //}
 
         public static List<Line> GetEdges(this Mesh mesh)
         {
@@ -72,7 +48,6 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-
         public static List<Line> GetEdges(this Mesh mesh, Face face)
         {
             List<Line> edges = new List<Line>();
@@ -91,8 +66,6 @@ namespace BH.Engine.Geometry
 
             return edges;
         }
-
-
 
         /***************************************************/
 

@@ -85,9 +85,6 @@ namespace BH.Engine.Geometry
             return explodedMesh;
         }
 
-
-
-
         /***************************************************/
         /**** Public Methods - Others                   ****/
         /***************************************************/
