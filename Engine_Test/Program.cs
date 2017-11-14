@@ -8,6 +8,8 @@ using BHB = BH.oM.Base;
 using BH.oM.Structural.Elements;
 using BH.oM.Structural.Properties;
 using BH.Engine.Geometry;
+using System.Reflection;
+using System.IO;
 //using ModelLaundry_Engine;
 
 namespace Engine_Test
@@ -23,7 +25,30 @@ namespace Engine_Test
         static void Main(string[] args)
         {
             //TestDynamicExtentionCost();
+            TestMethodExtraction();
             Console.Read();
+        }
+
+        /***************************************************/
+
+        static void TestMethodExtraction()
+        {
+            string folder = @"C:\Users\" + Environment.UserName + @"\AppData\Roaming\Grasshopper\Libraries\Alligator\";
+            foreach (string file in Directory.GetFiles(folder))
+            {
+                if (file.EndsWith("_Engine.dll"))
+                    Assembly.LoadFrom(file);
+            }
+
+            List<MethodInfo> methods = BH.Engine.Reflection.Query.GetBHoMMethodList();
+            foreach (MethodInfo method in methods)
+            {
+                string def = method.DeclaringType.FullName + "." + method.Name + "(";
+                if (method.GetParameters().Count() > 0)
+                    def += method.GetParameters().Select(x => x.Name).Aggregate((x, y) => x + ", " + y);
+                def += ")";
+                Console.WriteLine(def);
+            }
         }
 
         /***************************************************/

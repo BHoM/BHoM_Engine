@@ -15,7 +15,7 @@ namespace BH.Engine.Reflection
 
         public static Type Type(string name)
         {
-            Dictionary<string, List<Type>> typeDictionary = TypeDictionary();
+            Dictionary<string, List<Type>> typeDictionary = Query.GetBHoMTypeDictionary();
 
             List<Type> types = null;
             if (!typeDictionary.TryGetValue(name, out types))
