@@ -54,6 +54,36 @@ namespace BH.Engine.Geometry
             return exploded;
         }
 
+        /***************************************************/
+        /**** Public Methods - Meshes                   ****/
+        /***************************************************/
+
+        public static List<Mesh> GetExploded(this Mesh mesh)
+        {
+            List<Mesh> explodedMesh = new List<Mesh>();
+            List<Face> faces = mesh.Faces;
+            List<Point> vertices = mesh.Vertices;
+            for (int i = 0; i < mesh.Faces.Count; i++)
+            {
+                List<Point> tempPtList = new List<Point>();
+                List<Face> tempFaceList = new List<Face>();
+
+                tempPtList.Add(vertices[faces[i].A]);
+                tempPtList.Add(vertices[faces[i].B]);
+                tempPtList.Add(vertices[faces[i].C]);
+
+                if (mesh.Faces[i].IsQuad())
+
+                {
+                    tempPtList.Add(vertices[faces[i].D]);
+                }
+               
+                Mesh faceMesh = new Mesh(tempPtList, new List<Face>() {faces[i]});
+
+                explodedMesh.Add(faceMesh);
+            }
+            return explodedMesh;
+        }
 
         /***************************************************/
         /**** Public Methods - Others                   ****/
