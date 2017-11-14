@@ -7,51 +7,61 @@ using System.Threading.Tasks;
 
 namespace BH.Engine.Reflection
 {
-    public static partial class Create
+    public static partial class Query
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Dictionary<string, Type> TypeDictionary()
+        public static List<MethodInfo> GetBHoMMethodList()
         {
             // If the dictionary exists already return it
-            if (m_TypeDictionary != null && m_TypeDictionary.Count > 0)
-                return m_TypeDictionary;
+            if (m_BHoMMethodList != null && m_BHoMMethodList.Count > 0)
+                return m_BHoMMethodList;
 
             // Otherwise, create it
+            ExtractAllMethods();
+
+            return m_BHoMMethodList;
+        }
+
+
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+        private static void ExtractAllMethods()
+        {
+            m_BHoMMethodList = new List<MethodInfo>();
+
             foreach (Assembly asm in AppDomain.CurrentDomain.GetAssemblies())
             {
                 try
                 {
-                    Type[] types = asm.GetTypes();
-
-                    // Save shorter names for BHoM objects only
+                    // Save BHoM objects only
                     string name = asm.GetName().Name;
-                    if (name == "BHoM" || name.EndsWith("_oM"))
+                    if (name.EndsWith("_Engine"))
                     {
-                        foreach (Type type in types)
-                            m_TypeDictionary[type.Name] = type;
+                        foreach (Type type in asm.GetTypes())
+                        {
+                            if (!type.IsInterface && type.IsAbstract)
+                                m_BHoMMethodList.AddRange(type.GetMethods(BindingFlags.Public | BindingFlags.DeclaredOnly | BindingFlags.Static));
+                        }
                     }
-
-                    // Save full names for all dlls
-                    foreach (Type type in types)
-                        m_TypeDictionary[type.FullName] = type;
                 }
                 catch (Exception)
                 {
                     Console.WriteLine("Cannot load types from assembly " + asm.GetName().Name);
                 }
             }
-
-            return m_TypeDictionary;
         }
+
 
         /***************************************************/
         /**** Private Fields                            ****/
         /***************************************************/
 
-        private static Dictionary<string, Type> m_TypeDictionary = new Dictionary<string, Type>();
+        private static List<MethodInfo> m_BHoMMethodList = new List<MethodInfo>();
 
     }
 }
