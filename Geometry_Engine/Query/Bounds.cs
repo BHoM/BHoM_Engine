@@ -63,8 +63,15 @@ namespace BH.Engine.Geometry
             ux *= ux; uy *= uy; uz *= uz;
             vx *= vx; vy *= vy; vz *= vz;
 
-            return new BoundingBox(new Point((cx - Math.Sqrt(ux + vx)), (cy - Math.Sqrt(uy + vy)), (cz - Math.Sqrt(uz + vz))),
-                                   new Point((cx + Math.Sqrt(ux + vx)), (cy + Math.Sqrt(uy + vy)), (cz + Math.Sqrt(uz + vz))));
+            if (circle.Normal == new Vector(0, 0, 0))
+            {
+                throw new InvalidOperationException("Method trying to operate on an invalid circle");
+            }
+            else
+            {
+                return new BoundingBox(new Point((cx - Math.Sqrt(ux + vx)), (cy - Math.Sqrt(uy + vy)), (cz - Math.Sqrt(uz + vz))),
+                                       new Point((cx + Math.Sqrt(ux + vx)), (cy + Math.Sqrt(uy + vy)), (cz + Math.Sqrt(uz + vz))));
+            }
         }
 
         /***************************************************/
@@ -83,8 +90,15 @@ namespace BH.Engine.Geometry
             ux *= ux; uy *= uy; uz *= uz;
             vx *= vx; vy *= vy; vz *= vz;
 
-            return new BoundingBox(new Point((cx - Math.Sqrt(ux + vx)), (cy - Math.Sqrt(uy + vy)), (cz - Math.Sqrt(uz + vz))),
-                                   new Point((cx + Math.Sqrt(ux + vx)), (cy + Math.Sqrt(uy + vy)), (cz + Math.Sqrt(uz + vz))));
+            if (ellipse.Axis1 == new Vector(0, 0, 0) || ellipse.Axis2 == new Vector(0, 0, 0))
+            {
+                throw new InvalidOperationException("Method trying to operate on an invalid ellipse");
+            }
+            else
+            {
+                return new BoundingBox(new Point((cx - Math.Sqrt(ux + vx)), (cy - Math.Sqrt(uy + vy)), (cz - Math.Sqrt(uz + vz))),
+                                       new Point((cx + Math.Sqrt(ux + vx)), (cy + Math.Sqrt(uy + vy)), (cz + Math.Sqrt(uz + vz))));
+            }        
         }
 
         /***************************************************/
