@@ -9,11 +9,14 @@ namespace BH.Engine.Acoustic
 {
     public static partial class Query
     {
-        public static  double TimeConstant(this Room room, double revTime)
+        public static double TimeConstant(double revTime)
         {
-            // TODO : Acoustics - Investigate Sabine constant
-            const double sabineConstant = 13.8155;
-            return revTime / sabineConstant;
+            return revTime / Constants.SabineConstant;
+        }
+
+        public static double TimeConstant(this RT60 revTime)
+        {
+            return revTime.Value / Constants.SabineConstant;
         }
     }
 }
