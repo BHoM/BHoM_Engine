@@ -17,18 +17,16 @@ namespace BH.Engine.Acoustic
         {
             double SPL = 0;
             for (int i = 0; i < spl.Count; i++)
-            {
                 SPL += (10 * Math.Log10(Math.Pow(10, spl[i] / 10)));
-            }
             return SPL;
         }
 
-        public static SPL SumSoundLevels(this SPL soundA, SPL soundB)
+        public static SoundLevel SumSoundLevels(this List<SoundLevel> spl)
         {
-            return new SPL((10 * Math.Log10(Math.Pow(10, soundA.Value / 10))) + (10 * Math.Log10(Math.Pow(10, soundB.Value / 10))),
-                            soundA.ReceiverID,
-                            -1, // -1 Represents a sourceID = Sum of sources
-                            soundA.Frequency);
+            SoundLevel totalLevel = new SoundLevel();
+            for (int i = 0; i < spl.Count; i++)
+                totalLevel += spl[i];
+            return totalLevel;
         }
     }
 }

@@ -25,7 +25,7 @@ namespace BH.Engine.Acoustic
 
         public static Ray DirectSound(Speaker source, Receiver target, List<Panel> surfaces)
         {
-            Polyline path = source.Geometry.Polyline(target.Geometry);
+            Polyline path = Create.Polyline(source.Geometry, target.Geometry);
             Ray ray = new Ray(path, source.SpeakerID, target.ReceiverID);
             return Verify.IsObstructed(ray, surfaces) ? ray : default(Ray);
         }
@@ -35,99 +35,56 @@ namespace BH.Engine.Acoustic
         public static List<Ray> DirectSound(List<Speaker> sources, List<Receiver> targets, List<Panel> surfaces)
         {
             List<Ray> rays = new List<Ray>();
-            {
-                for (int i = 0; i < sources.Count; i++)
-                {
-                    for (int j = 0; j < targets.Count; j++)
-                    {
-                        Polyline path = sources[i].Geometry.Polyline(targets[j].Geometry);
-                        rays.Add(new Ray(path, i, j));
-                    }
-                }
-                if (surfaces == null || surfaces.Count == 0) { return rays; }
-                else { return Query.CheckObstacles(rays, surfaces); }
-            }
-        }
-
-        /***************************************************/
-
-        public static List<Ray> DirectSoundCPU(List<Speaker> sources, List<Receiver> targets, List<Panel> surfaces)
-        {
-            List<Ray> rays = new List<Ray>();
             for (int i = 0; i < sources.Count; i++)
-            {
                 for (int j = 0; j < targets.Count; j++)
+                    rays.Add(DirectSound(sources[i], targets[j], surfaces));
+            return rays;
+        }
+
+        /***************************************************/
+
+        public static List<Ray> DirectSound(this Room room, List<Speaker> speakers, List<double> revTimes, Frequency frequency)
+        {
+            List<Ray> directRays = new List<Ray>();
+            List<Receiver> receivers = room.Samples;
+            for (int i = 0; i < receivers.Count; i++)
+            {
+                foreach (Speaker speaker in speakers)
                 {
-                    int a = i;
-                    int b = j;
-                    int pLevel = TaskScheduler.Current.MaximumConcurrencyLevel;
-                    Task t = Task.Factory.StartNew(() =>
-                   {
-                       Dispatcher.CurrentDispatcher.Invoke(new Action(() =>
-                       rays.Add(new Ray(sources[i].Geometry.Polyline(targets[j].Geometry), a, b))
-                       )
-                       );
-                   });
-                    t.Wait();
+                    Vector deltaPos = receivers[i].Geometry - speaker.Geometry;
+                    double distance = deltaPos.GetLength();
+                    double roomConstant = room.GetRoomConstant(revTimes.ElementAt(i));
+                    double revDist = room.ReverbDistance(revTimes.ElementAt(i));
+
+                    double recieverAngle = deltaPos.GetAngle(speaker.Direction) * (180 / Math.PI);
+                    double orientationFactor = speaker.GetGainFactor(recieverAngle, frequency);
+                    double gain = speaker.Gains[frequency] * Math.Pow(10, orientationFactor / 10);
+                    double level = (gain / (4.0 * Math.PI * distance * distance)) + (4.0 / roomConstant);
+                    double amb_pascal = level;
+                    directRays.Add(new Ray(Create.Polyline(receivers[i].Geometry, speaker.Geometry), speaker.SpeakerID, receivers[i].ReceiverID));
                 }
             }
-
-            if (surfaces == null || surfaces.Count == 0) { return rays; }
-            else { return CheckObstacles(rays.ToList(), surfaces); }
+            return directRays;
         }
 
         /***************************************************/
 
-        [GpuManaged]
-        public static List<Ray> DirectSoundCuda(List<Speaker> sources, List<Receiver> targets, List<Panel> surfaces)
+        public static SoundLevel DirectSound(this Receiver receiver, Room room, List<Speaker> speakers, double revTime, Frequency frequency)
         {
-            List<Ray> rays = new List<Ray>();
-            Gpu.Default.For(0, sources.Count,
-                   i =>
-                   {
-                       for (int j = 0; j < targets.Count; j++)
-                       {
-                           List<Point> rayPts = new List<Point>() { sources[i].Geometry, targets[j].Geometry };
-                           Polyline path = new Polyline(rayPts);
-                           rays.Add(new Ray(path, i, j));
-                       }
-                   });
-            if (surfaces == null || surfaces.Count == 0) { return rays; }
-            else { return Query.CheckObstacles(rays, surfaces); }
-        }
+            SoundLevel directSound = new SoundLevel();
+            foreach (Speaker speaker in speakers)
+            {
+                Vector deltaPos = receiver.Geometry - speaker.Geometry;
+                double distance = deltaPos.GetLength();
+                double roomConstant = room.GetRoomConstant(revTime);
+                double revDist = room.ReverbDistance(revTime);
 
-        /***************************************************/
-
-        public static List<Ray> DirectSoundOpenCL(List<Speaker> sources, List<Receiver> targets, List<Panel> surfaces)
-        {
-            // Formatting inputs
-            Speaker[] _sources = sources.ToArray();
-            Receiver[] _targets = targets.ToArray();
-            Panel[] _surfaces = surfaces.ToArray();
-
-            // Defining the context
-            CudafyModes.Target = eGPUType.OpenCL;
-            CudafyModes.DeviceId = 2;
-            //CudafyTranslator.Language = eLanguage.OpenCL;
-
-            // Initialise the computing device
-            GPGPU gpu = CudafyHost.GetDevice(CudafyModes.Target, CudafyModes.DeviceId);
-            CudafyModule km = CudafyTranslator.Cudafy(typeof(Speaker), typeof(Receiver), typeof(Panel), typeof(Ray), typeof(Analyse));
-            gpu.LoadModule(km);
-
-            Speaker[] dev_sources = gpu.Allocate<Speaker>(sources.Count);
-            Receiver[] dev_targets = gpu.Allocate<Receiver>(targets.Count);
-            Panel[] dev_surfaces = gpu.Allocate<Panel>(surfaces.Count);
-
-            gpu.CopyToDevice(_sources, dev_sources);
-            gpu.CopyToDevice(_targets);
-            gpu.CopyToDevice(_surfaces);
-
-            Ray[] dev_rays = gpu.Allocate<Ray>(sources.Count * targets.Count);
-
-            //gpu.Launch(1, sources.Count, ((Action<GThread, >)), dev_sources, dev_targets, dev_surfaces);
-
-            return new List<Ray>();
+                double recieverAngle = deltaPos.GetAngle(speaker.Direction) * (180 / Math.PI);
+                double orientationFactor = speaker.GetGainFactor(recieverAngle, frequency);
+                double gain = speaker.Gains[frequency] * Math.Pow(10, orientationFactor / 10);
+                directSound += new SoundLevel((gain / (4.0 * Math.PI * distance * distance)) + (4.0 / roomConstant), receiver.ReceiverID, -1, frequency);
+            }
+            return directSound;
         }
     }
 }

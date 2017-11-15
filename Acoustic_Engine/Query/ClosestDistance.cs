@@ -10,12 +10,12 @@ namespace BH.Engine.Acoustic
 {
     public static partial class Query
     {
-        public static double ClosestDist(this List<Point> ptsA, List<Point> ptsB)
+        public static double ClosestDist(this IEnumerable<Point> ptsA, IEnumerable<Point> ptsB)
         {
             double closestDist = Double.PositiveInfinity;
-            for (int i = 0; i < ptsB.Count; i++)
+            foreach (Point ptB in ptsB)
             {
-                double dist = ptsA.GetClosestPoint(ptsB[i]).GetDistance(ptsB[i]);
+                double dist = ptsA.GetClosestPoint(ptB).GetDistance(ptB);
                 if (dist == Tolerance.Distance) { return dist; }
                 closestDist = dist < closestDist ? dist : closestDist;
             }
