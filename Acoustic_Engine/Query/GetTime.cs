@@ -15,7 +15,7 @@ namespace BH.Engine.Acoustic
 
         public static double GetTime(this Ray ray)
         {
-            return ray.GetLength() / 343;
+            return ray.GetLength() / Constants.SpeedOfSound;
         }
     }
 }

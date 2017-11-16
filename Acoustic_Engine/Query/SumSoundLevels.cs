@@ -20,6 +20,8 @@ namespace BH.Engine.Acoustic
                 SPL += (10 * Math.Log10(Math.Pow(10, spl[i] / 10)));
             return SPL;
         }
+        
+        /***************************************************/
 
         public static SoundLevel SumSoundLevels(this List<SoundLevel> spl)
         {

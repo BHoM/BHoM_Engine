@@ -13,7 +13,7 @@ namespace BH.Engine.Acoustic
         /**** Public  Methods                           ****/
         /***************************************************/
 
-        public static double GetGainFactor(this Speaker speaker, double angle, Frequency octave)
+        public static double GainFactor(this Speaker speaker, double angle, Frequency octave)
         {
             double gains = speaker.Gains[octave];
             switch (octave)

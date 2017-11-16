@@ -14,15 +14,11 @@ namespace BH.Engine.Acoustic
         /**** Public  Methods                           ****/
         /***************************************************/
 
-        public static bool IsObstructed(Ray ray, List<Panel> surfaces, bool ClearRays = true, double tol = Tolerance.Distance)
+        public static bool IsObstructed(this Ray ray, List<Panel> surfaces)
         {
-            for (int i = 0; i < surfaces.Count; i++)       //foreach surface
-            {
-                if (Geometry.Query.GetIntersections(ray.Geometry, surfaces[i].Geometry) == null)    // if ray hits a surface
-                {
+            for (int i = 0; i < surfaces.Count; i++)
+                if (Geometry.Query.GetIntersections(ray.Geometry, surfaces[i].Geometry).Count == 0)
                     return true;
-                }
-            }
             return false;
         }
     }

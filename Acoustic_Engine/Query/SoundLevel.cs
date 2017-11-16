@@ -3,11 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Alea;
-using Alea.Parallel;
-using BH.oM.Base;
-using BH.oM.Geometry;
 using BH.oM.Acoustic;
+using BH.oM.Geometry;
 using BH.Engine.Geometry;
 
 namespace BH.Engine.Acoustic
@@ -18,9 +15,13 @@ namespace BH.Engine.Acoustic
         /**** Public  Methods                           ****/
         /***************************************************/
 
-        public static List<Ray> CheckObstacles(this List<Ray> rays, List<Panel> surfaces)
+        public static SoundLevel SoundLevel(this Ray ray, Frequency frequency = Frequency.Sum)
         {
-            return rays.Where(ray => !ray.IsObstructed(surfaces)).ToList();
+            List<Line> raySegments = ray.Geometry.GetExploded();
+            double spl = 0;
+            for (int i=0; i< raySegments.Count; i++)
+                spl += 10 * Math.Log10(Math.Pow(10, 10 / raySegments[i].GetLength()));
+            return new SoundLevel(spl, ray.ReceiverID, ray.SpeakerID, frequency);
         }
     }
 }

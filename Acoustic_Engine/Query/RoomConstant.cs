@@ -9,7 +9,11 @@ namespace BH.Engine.Acoustic
 {
     public static partial class Query
     {
-        public static double GetRoomConstant(this Room room, double revTime)
+        /***************************************************/
+        /**** Public  Methods                           ****/
+        /***************************************************/
+
+        public static double RoomConstant(this Room room, double revTime)
         {
             if (revTime < 0.01) { return Double.PositiveInfinity; }
 
