@@ -43,7 +43,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Create\Polyline.cs" />
     <Compile Include="Query\Clone.cs" />
     <Compile Include="Convert\NurbForm.cs" />
     <Compile Include="Create\Arc.cs" />
