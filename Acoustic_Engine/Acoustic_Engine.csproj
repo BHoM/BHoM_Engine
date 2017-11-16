@@ -12,6 +12,8 @@
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -31,29 +33,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Alea, Version=3.0.0.0, Culture=neutral, PublicKeyToken=ba52afc3c2e933d6, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Alea.3.0.4-beta3\lib\net45\Alea.dll</HintPath>
-    </Reference>
-    <Reference Include="Alea.IL, Version=3.0.0.0, Culture=neutral, PublicKeyToken=ba52afc3c2e933d6, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Alea.3.0.4-beta3\lib\net45\Alea.IL.dll</HintPath>
-    </Reference>
-    <Reference Include="Alea.Parallel, Version=3.0.0.0, Culture=neutral, PublicKeyToken=ba52afc3c2e933d6, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Alea.3.0.4-beta3\lib\net45\Alea.Parallel.dll</HintPath>
-    </Reference>
     <Reference Include="BHoM, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\BHoM\Build\BHoM.dll</HintPath>
-    </Reference>
-    <Reference Include="Cudafy.NET, Version=1.29.5576.13786, Culture=neutral, PublicKeyToken=63a4c9931616906b, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\CUDAfy.NET.1.29.5576.13786\lib\net40\Cudafy.NET.dll</HintPath>
-    </Reference>
-    <Reference Include="OpenCL.Net, Version=2.2.9.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\OpenCL.Net.2.2.9.0\lib\net40\OpenCL.Net.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -63,7 +45,6 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
-    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Query\ClosestDistance.cs" />
@@ -89,7 +70,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Geometry_Engine\Geometry_Engine.csproj">
