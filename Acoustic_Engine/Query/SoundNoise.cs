@@ -15,7 +15,7 @@ namespace BH.Engine.Acoustic
         /**** Public  Methods                           ****/
         /***************************************************/
 
-        public static List<SNRatio> SNRatio(this Room room, List<Speaker> speakers, List<double> revTimes, double envNoise, List<Frequency> frequencies)
+        public static List<SNRatio> SoundNoise(this Room room, List<Speaker> speakers, List<double> revTimes, double envNoise, List<Frequency> frequencies)
         {
 
             List<Receiver> receivers = room.Samples;

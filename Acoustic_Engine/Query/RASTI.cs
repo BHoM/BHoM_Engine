@@ -25,7 +25,7 @@ namespace BH.Engine.Acoustic
         public static List<Rasti> Rasti(this Room room, List<Speaker> speakers, List<double> revTimes, double envNoise)
         {
             List<Frequency> frequencies = new List<Frequency>() { Frequency.Hz500, Frequency.Hz2000 };
-            List<SNRatio> apparentSnRatio = SNRatio(room, speakers, revTimes, envNoise, frequencies);
+            List<SNRatio> apparentSnRatio = SoundNoise(room, speakers, revTimes, envNoise, frequencies);
             return apparentSnRatio.Select(aSNR => new Rasti((aSNR.Value / 2) + 15.0 / 30.0, aSNR.ReceiverID)).ToList();
         }
     }
