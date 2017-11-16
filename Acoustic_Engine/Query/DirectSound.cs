@@ -2,14 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Windows.Threading;
 using System.Threading.Tasks;
-using Alea;
-using Alea.Parallel;
-using OpenCL.Net;
-using Cudafy;
-using Cudafy.Host;
-using Cudafy.Translator;
 using BH.oM.Geometry;
 using BH.oM.Acoustic;
 using BH.Engine.Geometry;
