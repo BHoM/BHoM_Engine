@@ -10,6 +10,10 @@ namespace BH.Engine.Acoustic
 {
     public static partial class Query
     {
+        /***************************************************/
+        /**** Public  Methods                           ****/
+        /***************************************************/
+
         public static double ClosestDist(this IEnumerable<Point> ptsA, IEnumerable<Point> ptsB)
         {
             double closestDist = Double.PositiveInfinity;

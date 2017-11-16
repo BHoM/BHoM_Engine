@@ -74,9 +74,8 @@
     <Compile Include="Query\GetPlane.cs" />
     <Compile Include="Query\FilterRays.cs" />
     <Compile Include="Query\GainFactor.cs" />
-    <Compile Include="Query\GpuCompute.cs" />
     <Compile Include="Query\GetLength.cs" />
-    <Compile Include="Query\Spl.cs" />
+    <Compile Include="Query\SoundLevel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Query\CheckObstacles.cs" />
     <Compile Include="Query\GetOrder.cs" />

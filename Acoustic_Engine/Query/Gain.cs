@@ -13,10 +13,10 @@ namespace BH.Engine.Acoustic
         /**** Public  Methods                           ****/
         /***************************************************/
 
-        public static double GetGain(this Speaker speaker, double angle, Frequency octave)
+        public static double Gain(this Speaker speaker, double angle, Frequency frequency)
         {
-            double gains = speaker.Gains[octave];
-            switch (octave)
+            double gains = speaker.Gains[frequency];
+            switch (frequency)
             {
                 case Frequency.Hz63:
                     return gains * (-2 * angle / 90 - 8);

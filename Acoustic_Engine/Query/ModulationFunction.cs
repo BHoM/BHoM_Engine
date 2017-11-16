@@ -9,7 +9,11 @@ namespace BH.Engine.Acoustic
 {
     public static partial class Query
     {
-        public static double ModulationFunction(this Room room, Receiver receiver, List<Speaker> speakers, double revTime, double envNoise, Frequency f)
+        /***************************************************/
+        /**** Public  Methods                           ****/
+        /***************************************************/
+
+        public static double ModulationFunction(this Receiver receiver, List<Speaker> speakers, Room room, double revTime, double envNoise, Frequency f)
         {
             Dictionary<Frequency, double> gains = new Dictionary<Frequency, double> { { Frequency.Hz500, 1.6 }, { Frequency.Hz2000, 5.3 } };
             Dictionary<Frequency, double> modFactors = new Dictionary<Frequency, double> { { Frequency.Hz500, 8.0 }, { Frequency.Hz2000, 1.4 } };
@@ -19,7 +23,7 @@ namespace BH.Engine.Acoustic
             double timeConstant = Query.TimeConstant(revTime);
             double closestDist = Engine.Acoustic.Query.ClosestDist(speakers.Select(x => x.Geometry), room.Samples.Select(x => x.Geometry));
 
-            double soundLevel = receiver.DirectSound(room, speakers, revTime, f).Value;
+            double soundLevel = receiver.DirectSound(speakers, room, revTime, f).Value;
             double i_n = Math.Pow(10, (envNoise - soundLevel) / 10);
             double FT = 2.0 * Math.PI * timeConstant * modFactors[f];
             double sqrdRevDist = revDistance * revDistance;
