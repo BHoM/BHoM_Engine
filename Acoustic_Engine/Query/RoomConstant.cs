@@ -13,14 +13,14 @@ namespace BH.Engine.Acoustic
         /**** Public  Methods                           ****/
         /***************************************************/
 
-        public static double RoomConstant(this Room room, double revTime)
+        public static double RoomConstant(this Room room, double sabineTime)
         {
-            if (revTime < 0.01) { return Double.PositiveInfinity; }
+            if (sabineTime < 0.01) { return Double.PositiveInfinity; }
 
             double volume = room.Volume;
-            double sAlpha = (0.163 * volume / revTime) - (4.0 * 2.6 * volume / 1000);  // It would be good to clarify all those constants
-            double alpha = sAlpha / room.Area;
-            return sAlpha / (1 - alpha);
+            double roomAbsorbtion = (Constants.SabineTimeCoefficient * volume / sabineTime) - (4.0 * 2.6 * volume / 1000);  // It would be good to clarify all those constants
+            double avgAbsorbtionCoeff = roomAbsorbtion / room.Area;
+            return roomAbsorbtion / (1 - avgAbsorbtionCoeff);
         }
     }
 }

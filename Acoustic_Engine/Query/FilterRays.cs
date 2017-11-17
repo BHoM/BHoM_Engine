@@ -13,13 +13,12 @@ namespace BH.Engine.Acoustic
         /**** Public  Methods                           ****/
         /***************************************************/
 
-        public static List<Ray> RayFilter(this List<Ray> rays, List<int> sourceFilter = null, List<int> targetFilter = null, List<int> panelFilter = null)
+        public static List<Ray> FilterRays(this List<Ray> rays, List<int> sourceFilter = null, List<int> targetFilter = null, List<int> panelFilter = null)
         {
-            List<Ray> filteredRays = new List<Ray>();
-            if (sourceFilter != null) { filteredRays = rays.FindAll(ray => sourceFilter.Contains(ray.SpeakerID)); }
-            if (targetFilter != null) { filteredRays = rays.FindAll(ray => targetFilter.Contains(ray.ReceiverID)); }
-            if (panelFilter  != null) { filteredRays = rays.Where(r => r.PanelsID.Any(x => panelFilter.Contains(x))).ToList(); }
-            return filteredRays;
+            if (sourceFilter != null) { rays = rays.FindAll(ray => sourceFilter.Contains(ray.SpeakerID)); }
+            if (targetFilter != null) { rays = rays.FindAll(ray => targetFilter.Contains(ray.ReceiverID)); }
+            if (panelFilter  != null) { rays = rays.Where(r => r.PanelsID.Any(x => panelFilter.Contains(x))).ToList(); }
+            return rays;
         }
     }
 }

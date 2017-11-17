@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using BH.Engine.Geometry;
 
-namespace BH.Engine.Acoustic
+namespace BH.Engine.Geometry
 {
     public static partial class Query
     {
@@ -20,7 +20,7 @@ namespace BH.Engine.Acoustic
             foreach (Point ptB in ptsB)
             {
                 double dist = ptsA.GetClosestPoint(ptB).GetDistance(ptB);
-                if (dist == Tolerance.Distance) { return dist; }
+                if (dist <= Tolerance.Distance) { return dist; }
                 closestDist = dist < closestDist ? dist : closestDist;
             }
             return closestDist;
