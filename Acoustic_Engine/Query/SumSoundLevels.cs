@@ -13,7 +13,7 @@ namespace BH.Engine.Acoustic
         /**** Public  Methods                           ****/
         /***************************************************/
 
-        public static double SumSoundLevels(this List<double> spl)
+        public static double SoundLevelsSum(this List<double> spl)
         {
             double SPL = 0;
             for (int i = 0; i < spl.Count; i++)
@@ -23,7 +23,7 @@ namespace BH.Engine.Acoustic
         
         /***************************************************/
 
-        public static SoundLevel SumSoundLevels(this List<SoundLevel> spl)
+        public static SoundLevel SoundLevelsSum(this List<SoundLevel> spl)
         {
             SoundLevel totalLevel = new SoundLevel();
             for (int i = 0; i < spl.Count; i++)

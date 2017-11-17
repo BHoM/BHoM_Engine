@@ -1,24 +1,22 @@
-﻿using System;
+﻿using BH.oM.Acoustic;
+using BH.oM.Geometry;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using BH.oM.Base;
-using BH.oM.Geometry;
-using BH.oM.Acoustic;
-using BH.Engine.Geometry;
 
 namespace BH.Engine.Acoustic
 {
-    public static partial class Query
+    public static partial class Create
     {
         /***************************************************/
         /**** Public  Methods                           ****/
         /***************************************************/
 
-        public static List<Ray> CheckObstacles(this List<Ray> rays, List<Panel> surfaces)
+        public static Ray Ray(Speaker speaker, Receiver receiver)
         {
-            return rays.Where(ray => !ray.IsObstructed(surfaces)).ToList();
+            return new Ray(new Polyline(new List<Point> { speaker.Location, receiver.Location }), speaker.SpeakerID, receiver.ReceiverID);
         }
     }
 }
