@@ -60,29 +60,24 @@ namespace BH.Engine.Geometry
 
         public static List<Mesh> GetExploded(this Mesh mesh)
         {
-            List<Mesh> explodedMesh = new List<Mesh>();
+            List<Mesh> explodedMeshes = new List<Mesh>();
             List<Face> faces = mesh.Faces;
             List<Point> vertices = mesh.Vertices;
-            for (int i = 0; i < mesh.Faces.Count; i++)
+            for (int i = 0; i < faces.Count; i++)
             {
-                List<Point> tempPtList = new List<Point>();
-                List<Face> tempFaceList = new List<Face>();
-
-                tempPtList.Add(vertices[faces[i].A]);
-                tempPtList.Add(vertices[faces[i].B]);
-                tempPtList.Add(vertices[faces[i].C]);
-
-                if (mesh.Faces[i].IsQuad())
-
+                Face localFace = new Face(0, 1, 2);
+                List<Point> localVertices = new List<Point>();
+                localVertices.Add(vertices[faces[i].A]);
+                localVertices.Add(vertices[faces[i].B]);
+                localVertices.Add(vertices[faces[i].C]);
+                if (faces[i].IsQuad())
                 {
-                    tempPtList.Add(vertices[faces[i].D]);
+                    localVertices.Add(vertices[faces[i].D]);
+                    localFace.D = 3;
                 }
-               
-                Mesh faceMesh = new Mesh(tempPtList, new List<Face>() {faces[i]});
-
-                explodedMesh.Add(faceMesh);
+                explodedMeshes.Add(new Mesh(localVertices, new List<Face>() { localFace }));
             }
-            return explodedMesh;
+            return explodedMeshes;
         }
 
 
