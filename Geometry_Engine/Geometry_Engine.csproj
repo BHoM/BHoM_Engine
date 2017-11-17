@@ -61,6 +61,7 @@
     <Compile Include="Query\ClosestPoint.cs" />
     <Compile Include="Query\ControlPoints.cs" />
     <Compile Include="Query\CurveIntersection.cs" />
+    <Compile Include="Query\Degree.cs" />
     <Compile Include="Query\Determinant.cs" />
     <Compile Include="Query\Direction.cs" />
     <Compile Include="Query\DiscontinuityPoints.cs" />
