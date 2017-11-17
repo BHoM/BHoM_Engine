@@ -8,30 +8,63 @@ using System.Threading.Tasks;
 namespace BH.Engine.Geometry
 {
     public static partial class Query
-    {
+    {       
         /***************************************************/
-        /**** Public Methods - Surfaces                 ****/
+        /**** Public Methods - Meshes                   ****/
         /***************************************************/
-
-        public static List<Polyline> GetEdges(this Mesh mesh)
+      
+        public static List<Line> GetEdges(this Mesh mesh)
         {
             List<Face> faces = mesh.Faces;
-            List<Point> vertices = mesh.Vertices;
-            List<Polyline> edges = new List<Polyline>(faces.Count);
+            List<Tuple<int, int>> indices = new List<Tuple<int, int>>();
+            
             for (int i = 0; i < faces.Count; i++)
             {
-                List<Point> faceVertices = new List<Point>();
-                Point p1 = vertices[faces[i].A];
-                Point p2 = vertices[faces[i].B];
-                Point p3 = vertices[faces[i].C];
-                faceVertices.Add(p1);
-                faceVertices.Add(p2);
-                faceVertices.Add(p3);
-                if (faces[i].IsQuad()) { faceVertices.Add(vertices[faces[i].D]); }
-                faceVertices.Add(p1);                               // Closed Polyline
-                Polyline edge = new Polyline(faceVertices);
-                edges[i] = edge;
+                Face face = faces[i];
+                indices.Add(new Tuple<int, int>(face.A, face.B));
+                indices.Add(new Tuple<int, int>(face.B, face.C));
+
+                if (face.IsQuad())
+                {
+                    indices.Add(new Tuple<int, int>(face.C, face.D));
+                    indices.Add(new Tuple<int, int>(face.D, face.A));
+                }
+                else
+                {
+                    indices.Add(new Tuple<int, int>(face.C, face.A));
+                }                
             }
+
+            List<Tuple<int, int>> distinctIndices = indices.Select(x => (x.Item1 < x.Item2) ? x : new Tuple<int, int>(x.Item2, x.Item1)).Distinct().ToList();
+            List<Line> edges = new List<Line>();
+            for (int i = 0; i < distinctIndices.Count; i++)
+            {
+                edges.Add(new Line(mesh.Vertices[distinctIndices[i].Item1], mesh.Vertices[distinctIndices[i].Item2]));
+            }
+            return edges;
+        }
+
+        /***************************************************/
+        /**** Public Methods - Faces                    ****/
+        /***************************************************/
+
+
+        public static List<Line> GetEdges(this Face face, Mesh mesh)
+        {
+            List<Line> edges = new List<Line>();
+            edges.Add(new Line(mesh.Vertices[face.A], mesh.Vertices[face.B]));
+            edges.Add(new Line(mesh.Vertices[face.B], mesh.Vertices[face.C]));
+
+            if (face.IsQuad())
+            {
+                edges.Add(new Line(mesh.Vertices[face.C], mesh.Vertices[face.D]));
+                edges.Add(new Line(mesh.Vertices[face.D], mesh.Vertices[face.A]));
+            }
+            else
+            {
+                edges.Add(new Line(mesh.Vertices[face.C], mesh.Vertices[face.A]));
+            }
+
             return edges;
         }
 
