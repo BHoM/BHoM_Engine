@@ -25,30 +25,32 @@ namespace BH.Engine.Geometry
                 {
                     tMesh.Faces.Add(faces[i]);
                 }
-
-                int i1 = faces[i].A;
-                int i2 = faces[i].B;
-                int i3 = faces[i].C;
-                int i4 = faces[i].D;
-                Point p1 = vertices[i1];
-                Point p2 = vertices[i2];
-                Point p3 = vertices[i3];
-                Point p4 = vertices[i4];
-                double d1 = new Line(p1, p3).GetLength();
-                double d2 = new Line(p2, p4).GetLength();
-                if (d1 > d2)    //Bracing based on shortest diagonal criteria
-                {
-                    Face fA = new Face(i1, i2, i4);
-                    Face fB = new Face(i2, i3, i4);
-                    tMesh.Faces.Add(fA);
-                    tMesh.Faces.Add(fB);
-                }
                 else
                 {
-                    Face fA = new Face(i1, i2, i3);
-                    Face fB = new Face(i1, i3, i4);
-                    tMesh.Faces.Add(fA);
-                    tMesh.Faces.Add(fB);
+                    int i1 = faces[i].A;
+                    int i2 = faces[i].B;
+                    int i3 = faces[i].C;
+                    int i4 = faces[i].D;
+                    Point p1 = vertices[i1];
+                    Point p2 = vertices[i2];
+                    Point p3 = vertices[i3];
+                    Point p4 = vertices[i4];
+                    double d1 = new Line(p1, p3).GetLength();
+                    double d2 = new Line(p2, p4).GetLength();
+                    if (d1 > d2)    //Bracing based on shortest diagonal criteria
+                    {
+                        Face fA = new Face(i1, i2, i4);
+                        Face fB = new Face(i2, i3, i4);
+                        tMesh.Faces.Add(fA);
+                        tMesh.Faces.Add(fB);
+                    }
+                    else
+                    {
+                        Face fA = new Face(i1, i2, i3);
+                        Face fB = new Face(i1, i3, i4);
+                        tMesh.Faces.Add(fA);
+                        tMesh.Faces.Add(fB);
+                    }
                 }
             }
             return tMesh;
