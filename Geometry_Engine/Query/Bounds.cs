@@ -51,23 +51,19 @@ namespace BH.Engine.Geometry
 
         public static BoundingBox GetBounds(this Circle circle)
         {
-            if (circle.Normal == new Vector(0, 0, 0))
+            Vector normal = circle.Normal;
+
+            if (normal == new Vector(0, 0, 0))
                 throw new InvalidOperationException("Method trying to operate on an invalid circle");
 
-            Point centre = circle.Centre;
-            double cx = centre.X, cy = centre.Y, cz = centre.Z;
-           
-            Vector u = GetCrossProduct(circle.Normal, Vector.ZAxis).GetNormalised() * circle.Radius;
-            double ux = u.X, uy = u.Y, uz = u.Z;
+            double ax = GetAngle(normal, new Vector(1, 0, 0));
+            double ay = GetAngle(normal, new Vector(0, 1, 0));
+            double az = GetAngle(normal, new Vector(0, 0, 1));
 
-            Vector v = GetCrossProduct(circle.Normal, u).GetNormalised() * circle.Radius;
-            double vx = v.X, vy = v.Y, vz = v.Z;
+            Vector R = new Vector(Math.Sin(ax), Math.Sin(ay), Math.Sin(az));
+            R *= circle.Radius;
 
-            ux *= ux; uy *= uy; uz *= uz;
-            vx *= vx; vy *= vy; vz *= vz;
-
-            return new BoundingBox(new Point((cx - Math.Sqrt(ux + vx)), (cy - Math.Sqrt(uy + vy)), (cz - Math.Sqrt(uz + vz))),
-                                   new Point((cx + Math.Sqrt(ux + vx)), (cy + Math.Sqrt(uy + vy)), (cz + Math.Sqrt(uz + vz))));
+            return new BoundingBox(circle.Centre - R, circle.Centre + R);
         }
 
         /***************************************************/
