@@ -59,14 +59,14 @@
     <Compile Include="Query\SabineTime.cs" />
     <Compile Include="Query\SoundLevel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Query\FilterBlindRays.cs" />
     <Compile Include="Query\GetOrder.cs" />
+    <Compile Include="Query\SoundLevelsSum.cs" />
     <Compile Include="Query\SoundNoise.cs" />
     <Compile Include="Query\ReverbDistance.cs" />
     <Compile Include="Query\RoomConstant.cs" />
-    <Compile Include="Query\SumSoundLevels.cs" />
     <Compile Include="Query\GetTime.cs" />
     <Compile Include="Query\TimeConstant.cs" />
+    <Compile Include="Query\VisibleRays.cs" />
     <Compile Include="Verify\IsObstructed.cs" />
   </ItemGroup>
   <ItemGroup>
