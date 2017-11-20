@@ -21,7 +21,7 @@ namespace BH.Engine.Acoustic
 
             double revDistance = Query.ReverbDistance(room, revTime);
             double timeConstant = Query.TimeConstant(revTime);
-            double closestDist = Engine.Geometry.Query.ClosestDist(speakers.Select(x => x.Location), room.Samples.Select(x => x.Location));
+            double closestDist = Engine.Geometry.Query.ClosestDistance(speakers.Select(x => x.Location), room.Samples.Select(x => x.Location));
 
             double soundLevel = receiver.DirectSound(speakers, room, revTime, f).Value;
             double i_n = Math.Pow(10, (envNoise - soundLevel) / 10);

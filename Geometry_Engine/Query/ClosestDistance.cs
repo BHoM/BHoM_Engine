@@ -14,7 +14,7 @@ namespace BH.Engine.Geometry
         /**** Public  Methods                           ****/
         /***************************************************/
 
-        public static double ClosestDist(this IEnumerable<Point> ptsA, IEnumerable<Point> ptsB)
+        public static double ClosestDistance(this IEnumerable<Point> ptsA, IEnumerable<Point> ptsB)
         {
             double closestDist = Double.PositiveInfinity;
             foreach (Point ptB in ptsB)
