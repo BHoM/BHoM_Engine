@@ -17,7 +17,6 @@ namespace BH.Engine.Acoustic
 
         public static List<SNRatio> SoundNoise(this Room room, List<Speaker> speakers, List<double> revTimes, double envNoise, List<Frequency> frequencies)
         {
-
             List<Receiver> receivers = room.Samples;
             List<double> timeConstants = revTimes.Select(rt => Query.TimeConstant(rt)).ToList();
             List<double> revDistances = revTimes.Select(rt => Query.ReverbDistance(room, rt)).ToList();
@@ -29,7 +28,7 @@ namespace BH.Engine.Acoustic
                 {
                     double modulationF = receivers[i].ModulationFunction(speakers, room, revTimes[i], envNoise, f);
                     double appSoundNoise = 10.0 * Math.Log10(modulationF / (1.0 - modulationF));
-                    appSoundNoise = appSoundNoise > 15 ? 15 : (appSoundNoise < -15 ? -15 : appSoundNoise); // SNRatio always clipped at [-15, +15]
+                    appSoundNoise = appSoundNoise > 15 ? 15 : (appSoundNoise < -15 ? -15 : appSoundNoise);
                     apparentSN.Add(new SNRatio(appSoundNoise, receivers[i].ReceiverID, -1, f));
                 }
             }
