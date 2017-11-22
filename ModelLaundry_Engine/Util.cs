@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -429,5 +429,50 @@ namespace ModelLaundry_Engine
             return points;
         }
 
+        /******************************************/
+
+        internal static List<Line> GetGrids(List<object> elements)
+        {
+            // Get the geometry of the ref elements
+            List<Line> grids = new List<Line>();
+            foreach (object element in elements)
+            {
+                Line geometry = (Line)GetGeometry(element);
+                grids.Add(geometry.ProjectToGround());
+            }
+
+            return grids;
+        }
+
+        /******************************************/
+
+        internal static Line GetGrid(object element)
+        {
+            // Get the geometry of the ref elements
+            Line geometry = (Line)GetGeometry(element);
+
+            return geometry.ProjectToGround();
+        }
+
+        /******************************************/
+
+        // TODO: This does not work because of malfunctioning GetIntersection method...
+        public static List<Point> GetGridIntersections(List<object> elements)
+        {
+            List<Line> grids = GetGrids(elements);
+            List<Point> intersections = new List<Point>();
+            for (int i = 0; i < grids.Count - 1; i++)
+            {
+                for (int j = i + 1; j < grids.Count; j++)
+                {
+                    Point ipt = grids[i].GetIntersection(grids[j]);
+                    if (ipt != null)
+                    {
+                        intersections.Add(ipt);
+                    }
+                }
+            }
+            return intersections;
+        }
     }
 }
