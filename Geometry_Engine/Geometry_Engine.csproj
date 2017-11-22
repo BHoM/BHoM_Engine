@@ -43,6 +43,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Create\Polyline.cs" />
+    <Compile Include="Fix\Polyline.cs" />
     <Compile Include="Query\Clone.cs" />
     <Compile Include="Convert\NurbForm.cs" />
     <Compile Include="Create\Arc.cs" />
@@ -81,6 +83,7 @@
     <Compile Include="Query\PointAtParameter.cs" />
     <Compile Include="Query\Product.cs" />
     <Compile Include="Query\Radius.cs" />
+    <Compile Include="Query\SelfIntersection.cs" />
     <Compile Include="Query\StartDir.cs" />
     <Compile Include="Query\StartPoint.cs" />
     <Compile Include="Transform\Divide.cs" />
@@ -92,10 +95,13 @@
     <Compile Include="Transform\Normalise.cs" />
     <Compile Include="Transform\Project.cs" />
     <Compile Include="Transform\Rotate.cs" />
+    <Compile Include="Transform\Scale.cs" />
     <Compile Include="Transform\Transform.cs" />
     <Compile Include="Transform\Translate.cs" />
     <Compile Include="Transform\Transpose.cs" />
     <Compile Include="Transform\Triangulate.cs" />
+    <Compile Include="Util\Explode.cs" />
+    <Compile Include="Util\Join.cs" />
     <Compile Include="Verify\Closed.cs" />
     <Compile Include="Verify\Containing.cs" />
     <Compile Include="Verify\InPlane.cs" />
@@ -105,6 +111,7 @@
     <Compile Include="Verify\Valid.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
