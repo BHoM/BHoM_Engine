@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -659,6 +659,732 @@ namespace ModelLaundry_Engine
 
 
         /******************************************/
+        /****     Floor snapping to grids      ****/
+        /******************************************/
+        
+        public static object SnapFloorContourToGrids(object element, List<object> refElements, double tolerance, double angleTol)
+        {
+            // Get the geometry of the element
+            IBHoMGeometry geometry = Util.GetGeometry(element);
+            List<Line> refGeom = Util.GetGrids(refElements);
+
+            // Do the actal snapping
+            IBHoMGeometry output = null;
+            if (geometry is Polyline)
+            {
+                output = Snapping.SnapFloorContourToGrids((Polyline)geometry, refGeom, tolerance, angleTol);
+            }
+            if (geometry is IEnumerable<Polyline>)
+            {
+                foreach (Polyline curve in geometry as IEnumerable<Polyline>)
+                {
+                    output = Snapping.SnapFloorContourToGrids((Polyline)geometry, refGeom, tolerance, angleTol);
+                }
+            }
+
+            // Return the final result
+            return Util.SetGeometry(element, output);
+        }
+
+        /******************************************/
+
+        public static Polyline SnapFloorContourToGrids(Polyline contour, List<Line> grids, double tolerance, double angleTol)
+        {
+            double dottol = Math.Cos(angleTol);
+            List<Line> edges = contour.Explode();
+            Line[] refgrids = new Line[edges.Count];
+            for (int j = 0; j < edges.Count; j++)
+            {
+                double mindist = tolerance;
+                Vector v = edges[j].GetDirection();
+                foreach (Line grid in grids)
+                {
+                    Vector gv = grid.GetDirection();
+                    if (Math.Abs(v.X * gv.X + v.Y * gv.Y) >= dottol)
+                    {
+                        Point startPt = new Point(edges[j].Start.X, edges[j].Start.Y, 0);
+                        Point endPt = new Point(edges[j].End.X, edges[j].End.Y, 0);
+                        double sdist = grid.GetClosestPoint(startPt).GetDistance(startPt);
+                        double edist = grid.GetClosestPoint(endPt).GetDistance(endPt);
+                        if (sdist <= tolerance && edist <= tolerance)
+                        {
+                            double dist = (sdist + edist) * 0.5;
+                            if (dist <= mindist)
+                            {
+                                mindist = dist;
+                                refgrids[j] = grid;
+                            }
+                        }
+                    }
+                }
+            }
+            for (int j = 0; j < refgrids.Length; j++)
+            {
+                if (refgrids[j] != null)
+                {
+                    Line grid = refgrids[j];
+                    edges = SnapFloorEdgeToGrid(edges, j, grid, dottol);
+                }
+            }
+            
+            return Create.Polyline(edges);
+        }
+
+        /******************************************/
+
+        private static List<Line> SnapFloorEdgeToGrid(List<Line> edges, int id, Line grid, double dottol)
+        {
+            int lc = edges.Count;
+            Point[] verts = new Point[4];
+            verts[0] = edges[(id + lc - 1) % lc].Start;
+            verts[1] = IntersectLineGrid(edges[(id + lc - 1) % lc].End, edges[(id + lc - 1) % lc].GetDirection(), grid.Start, grid.GetDirection(), dottol);
+            verts[2] = IntersectLineGrid(edges[(id + 1) % lc].Start, edges[(id + 1) % lc].GetDirection(), grid.Start, grid.GetDirection(), dottol);
+            verts[3] = edges[(id + 1) % lc].End;
+
+            for (int i = -1; i < 2; i++)
+            {
+                edges[(id + i + lc) % lc] = new Line(verts[i + 1], verts[i + 2]);
+            }
+            return edges;
+        }
+
+
+        /******************************************/
+        /****   Wall plane snapping to grids   ****/
+        /******************************************/
+
+        public static object SnapWallPlaneToGrids(object element, List<object> refElements, double tolerance, double angleTol)
+        {
+            // Get the geometry of the element
+            IBHoMGeometry geometry = Util.GetGeometry(element);
+            List<Line> refGeom = Util.GetGrids(refElements);
+
+            // Do the actal snapping
+            IBHoMGeometry output = null;
+            if (geometry is Polyline)
+            {
+                output = Snapping.SnapWallPlaneToGrids((Polyline)geometry, refGeom, tolerance, angleTol);
+            }
+            if (geometry is IEnumerable<Polyline>)
+            {
+                foreach (Polyline curve in geometry as IEnumerable<Polyline>)
+                {
+                    output = Snapping.SnapWallPlaneToGrids((Polyline)geometry, refGeom, tolerance, angleTol);
+                }
+            }
+
+            // Return the final result
+            return Util.SetGeometry(element, output);
+        }
+
+        /******************************************/
+
+        public static Polyline SnapWallPlaneToGrids(Polyline contour, List<Line> grids, double tolerance, double angleTol)
+        {
+            double dottol = Math.Cos(angleTol);
+            List<Point> verts = contour.ControlPoints;
+            Line wline = GetWallLine(verts, tolerance * 0.001);
+            if (wline != null)
+            {
+                Vector v = wline.GetDirection();
+                Point startPt = wline.Start;
+                Point endPt = wline.End;
+
+                Line refgrid = null;
+                double mindist = tolerance;
+                foreach (Line grid in grids)
+                {
+                    Vector gv = grid.GetDirection();
+                    if (Math.Abs(v.X * gv.X + v.Y * gv.Y) >= dottol)
+                    {
+                        double sdist = grid.GetClosestPoint(startPt).GetDistance(startPt);
+                        double edist = grid.GetClosestPoint(endPt).GetDistance(endPt);
+                        if (sdist <= tolerance && edist <= tolerance)
+                        {
+                            double dist = (sdist + edist) * 0.5;
+                            if (dist <= mindist)
+                            {
+                                mindist = dist;
+                                refgrid = grid;
+                            }
+                        }
+                    }
+                }
+
+                if (refgrid != null)
+                {
+                    Vector gv = refgrid.GetDirection();
+                    for (int i = 0; i < verts.Count; i++)
+                    {
+                        verts[i] = IntersectLineGrid(verts[i], v, refgrid.Start, gv, dottol);
+                    }
+                    return new Polyline(verts);
+                }
+                return contour;
+            }
+            return contour;
+        }
+
+
+        /******************************************/
+        /****    Wall end snapping to grids    ****/
+        /******************************************/
+
+        public static object SnapWallEndToGrids(object element, List<object> refElements, double tolerance, double angleTol)
+        {
+            // Get the geometry of the element
+            IBHoMGeometry geometry = Util.GetGeometry(element);
+            List<Line> refGeom = Util.GetGrids(refElements);
+
+            // Do the actal snapping
+            IBHoMGeometry output = null;
+            if (geometry is Polyline)
+            {
+                output = Snapping.SnapWallEndToGrids((Polyline)geometry, refGeom, tolerance, angleTol);
+            }
+            if (geometry is IEnumerable<Polyline>)
+            {
+                foreach (Polyline curve in geometry as IEnumerable<Polyline>)
+                {
+                    output = Snapping.SnapWallEndToGrids((Polyline)geometry, refGeom, tolerance, angleTol);
+                }
+            }
+
+            // Return the final result
+            return Util.SetGeometry(element, output);
+        }
+
+        /******************************************/
+
+        public static Polyline SnapWallEndToGrids(Polyline contour, List<Line> grids, double tolerance, double angleTol)
+        {
+            double dottol = Math.Cos(angleTol);
+            List<Point> verts = contour.ControlPoints;
+            Line wline = GetWallLine(verts, tolerance * 0.001);
+            if (wline != null)
+            {
+                Vector v = wline.GetDirection();
+                Point startPt = wline.Start;
+                Point endPt = wline.End;
+
+                for (int i = 0; i < verts.Count; i++)
+                {
+                    Line refgrid = null;
+                    double mindist = tolerance;
+                    Point fvert = new Point(verts[i].X, verts[i].Y, 0);
+                    foreach (Line grid in grids)
+                    {
+                        Vector gv = grid.GetDirection();
+                        if (Math.Abs(v.X * gv.X + v.Y * gv.Y) < dottol)
+                        {
+                            double dist = grid.GetClosestPoint(fvert).GetDistance(fvert);
+                            if (dist <= mindist)
+                            {
+                                mindist = dist;
+                                refgrid = grid;
+                            }
+                        }
+                    }
+                    if (refgrid != null)
+                    {
+                        Vector gv = refgrid.GetDirection();
+                        verts[i] = IntersectLineGrid(verts[i], v, refgrid.Start, gv, dottol);
+                    }
+                }
+                return new Polyline(verts);
+            }
+            return contour;
+        }
+
+
+        /******************************************/
+        /****    Beam end snapping to grids    ****/
+        /******************************************/
+
+        public static object SnapBeamEndToGrids(object element, List<object> refElements, double tolerance, double angleTol)
+        {
+            // Get the geometry of the element
+            IBHoMGeometry geometry = Util.GetGeometry(element);
+            List<Line> refGeom = Util.GetGrids(refElements);
+
+            // Do the actal snapping
+            IBHoMGeometry output = null;
+            if (geometry is Line)
+            {
+                output = Snapping.SnapBeamEndToGrids((Line)geometry, refGeom, tolerance, angleTol);
+            }
+            if (geometry is IEnumerable<Line>)
+            {
+                foreach (Line curve in geometry as IEnumerable<Line>)
+                {
+                    output = Snapping.SnapBeamEndToGrids((Line)geometry, refGeom, tolerance, angleTol);
+                }
+            }
+
+            // Return the final result
+            return Util.SetGeometry(element, output);
+        }
+
+        /******************************************/
+
+        public static Line SnapBeamEndToGrids(Line beam, List<Line> grids, double tolerance, double angleTol)
+        {
+            if (beam.GetLength() > 0)
+            {
+                double dottol = Math.Cos(angleTol);
+                Point[] ends = new Point[] { beam.Start, beam.End };
+                Vector v = new Vector(ends[1].X - ends[0].X, ends[1].Y - ends[0].Y, 0);
+                v = v.GetNormalised();
+
+                for (int i = 0; i < ends.Length; i++)
+                {
+                    Line refgrid = null;
+                    double mindist = tolerance;
+                    Point fvert = new Point(ends[i].X, ends[i].Y, 0);
+                    foreach (Line grid in grids)
+                    {
+                        Vector gv = grid.GetDirection();
+                        if (Math.Abs(v.X * gv.X + v.Y * gv.Y) < dottol)
+                        {
+                            double dist = grid.GetClosestPoint(fvert).GetDistance(fvert);
+                            if (dist <= mindist)
+                            {
+                                mindist = dist;
+                                refgrid = grid;
+                            }
+                        }
+                    }
+                    if (refgrid != null)
+                    {
+                        Vector gv = refgrid.GetDirection();
+                        ends[i] = IntersectLineGrid(ends[i], v, refgrid.Start, gv, dottol);
+                    }
+                }
+                return new Line(ends[0], ends[1]);
+            }
+            return beam;
+        }
+
+
+        /******************************************/
+        /****   Beam plane snapping to grids   ****/
+        /******************************************/
+
+        public static object SnapBeamPlaneToGrids(object element, List<object> refElements, double tolerance, double angleTol)
+        {
+            // Get the geometry of the element
+            IBHoMGeometry geometry = Util.GetGeometry(element);
+            List<Line> refGeom = Util.GetGrids(refElements);
+
+            // Do the actal snapping
+            IBHoMGeometry output = null;
+            if (geometry is Line)
+            {
+                output = Snapping.SnapBeamPlaneToGrids((Line)geometry, refGeom, tolerance, angleTol);
+            }
+            if (geometry is IEnumerable<Line>)
+            {
+                foreach (Line curve in geometry as IEnumerable<Line>)
+                {
+                    output = Snapping.SnapBeamPlaneToGrids((Line)geometry, refGeom, tolerance, angleTol);
+                }
+            }
+
+            // Return the final result
+            return Util.SetGeometry(element, output);
+        }
+
+        /******************************************/
+
+        public static Line SnapBeamPlaneToGrids(Line beam, List<Line> grids, double tolerance, double angleTol)
+        {
+            if (beam.GetLength() > 0)
+            {
+                double dottol = Math.Cos(angleTol);
+                Point[] ends = new Point[] { beam.Start, beam.End };
+                Point fSPt = new Point(ends[0].X, ends[0].Y, 0);
+                Point fEPt = new Point(ends[1].X, ends[1].Y, 0);
+                Vector v = fEPt - fSPt;
+                v = v.GetNormalised();
+
+                Line refgrid = null;
+                double mindist = tolerance;
+                foreach (Line grid in grids)
+                {
+                    Vector gv = grid.GetDirection();
+                    if (Math.Abs(v.X * gv.X + v.Y * gv.Y) >= dottol)
+                    {
+                        double sdist = grid.GetClosestPoint(fSPt).GetDistance(fSPt);
+                        double edist = grid.GetClosestPoint(fEPt).GetDistance(fEPt);
+                        if (sdist <= tolerance && edist <= tolerance)
+                        {
+                            double dist = (sdist + edist) * 0.5;
+                            if (dist <= mindist)
+                            {
+                                mindist = dist;
+                                refgrid = grid;
+                            }
+                        }
+                    }
+                }
+                if (refgrid != null)
+                {
+                    Vector gv = refgrid.GetDirection();
+                    for (int i = 0; i < ends.Length; i++)
+                    {
+                        ends[i] = IntersectLineGrid(ends[i], v, refgrid.Start, gv, dottol);
+                    }
+                }
+                return new Line(ends[0], ends[1]);
+            }
+            return beam;
+        }
+
+
+        /******************************************/
+        /****     Column snapping to grids     ****/
+        /******************************************/
+
+        public static object SnapColumnToGrids(object element, List<object> refElements, double tolerance)
+        {
+            // Get the geometry of the element
+            IBHoMGeometry geometry = Util.GetGeometry(element);
+            List<Line> refGeom = Util.GetGrids(refElements);
+
+            // Do the actal snapping
+            IBHoMGeometry output = null;
+            if (geometry is Line)
+            {
+                output = Snapping.SnapColumnToGrids((Line)geometry, refGeom, tolerance);
+            }
+            if (geometry is IEnumerable<Line>)
+            {
+                foreach (Line curve in geometry as IEnumerable<Line>)
+                {
+                    output = Snapping.SnapColumnToGrids((Line)geometry, refGeom, tolerance);
+                }
+            }
+
+            // Return the final result
+            return Util.SetGeometry(element, output);
+        }
+
+        /******************************************/
+
+        public static Line SnapColumnToGrids(Line col, List<Line> grids, double tolerance)
+        {
+            Point[] ends = new Point[] { col.Start, col.End };
+
+            for (int i = 0; i < ends.Length; i++)
+            {
+                Point fpt = new Point(ends[i].X, ends[i].Y, 0);
+
+                Line refgrid = null;
+                double mindist = tolerance;
+                foreach (Line grid in grids)
+                {
+                    double dist = grid.GetClosestPoint(fpt).GetDistance(fpt);
+                    if (dist <= mindist)
+                    {
+                        mindist = dist;
+                        refgrid = grid;
+                    }
+                }
+                if (refgrid != null)
+                {
+                    Point rpt = refgrid.GetClosestPoint(fpt);
+                    ends[i] = new Point(rpt.X, rpt.Y, ends[i].Z);
+                }
+            }
+            return new Line(ends[0], ends[1]);
+        }
+
+
+        /******************************************/
+        /*** Bar snapping to grid intersections ***/
+        /******************************************/
+
+        // TODO: Does not work because of the GetIntersection method issue.
+        public static object SnapBarToGridIntersections(object element, List<object> refElements, double tolerance)
+        {
+            // Get the geometry of the element
+            IBHoMGeometry geometry = Util.GetGeometry(element);
+            List<Point> refGeom = Util.GetGridIntersections(refElements);
+
+            // Do the actal snapping
+            IBHoMGeometry output = null;
+            if (geometry is Line)
+            {
+                output = Snapping.SnapBarToGridIntersections((Line)geometry, refGeom, tolerance);
+            }
+            if (geometry is IEnumerable<Line>)
+            {
+                foreach (Line curve in geometry as IEnumerable<Line>)
+                {
+                    output = Snapping.SnapBarToGridIntersections((Line)geometry, refGeom, tolerance);
+                }
+            }
+
+            // Return the final result
+            return Util.SetGeometry(element, output);
+        }
+
+        /******************************************/
+
+        public static Line SnapBarToGridIntersections(Line bar, List<Point> intersections, double tolerance)
+        {
+            Point[] ends = new Point[] { bar.Start, bar.End };
+
+            for (int i = 0; i < ends.Length; i++)
+            {
+                Point pt = new Point(ends[i].X, ends[i].Y, 0);
+                Point refpt = null;
+                double mindist = tolerance;
+
+                foreach (Point ipt in intersections)
+                {
+                    double dist = ipt.GetDistance(pt);
+                    if (dist <= mindist)
+                    {
+                        mindist = dist;
+                        refpt = ipt;
+                    }
+                }
+                if (refpt != null)
+                {
+                    ends[i] = new Point(refpt.X, refpt.Y, ends[i].Z);
+                }
+            }
+            return new Line(ends[0], ends[1]);
+        }
+
+
+        /******************************************/
+        /***      Remove floor protrusions      ***/
+        /******************************************/
+
+        // TODO: Does not work because of the GetIntersection method issue.
+
+        public static object RemoveFloorProtrusions(object element, double minArea)
+        {
+            // Get the geometry of the element
+            IBHoMGeometry geometry = Util.GetGeometry(element);
+
+            // Do the actal snapping
+            IBHoMGeometry output = null;
+            if (geometry is Polyline)
+            {
+                output = Snapping.RemoveFloorProtrusions((Polyline)geometry, minArea);
+            }
+            if (geometry is IEnumerable<Polyline>)
+            {
+                foreach (Polyline curve in geometry as IEnumerable<Polyline>)
+                {
+                    output = Snapping.RemoveFloorProtrusions((Polyline)geometry, minArea);
+                }
+            }
+
+            // Return the final result
+            return Util.SetGeometry(element, output);
+        }
+
+        /******************************************/
+
+        public static Polyline RemoveFloorProtrusions(Polyline contour, double minArea)
+        {
+            Polyline ccontour = contour.RemoveZeroSegments(0.001);
+            ccontour = ccontour.MergeColinearSegments(0.001, false);
+            Polyline output = null;
+            List<Polyline> cntrs = new List<Polyline>();
+            bool running = true;
+
+            while (running)
+            {
+                List<Line> crvs = ccontour.Explode();
+                int lc = crvs.Count;
+                List<SIVertice> mvertices = new List<SIVertice> { new SIVertice(crvs[0].Start, false) };
+                for (int i = 0; i < crvs.Count; i++)
+                {
+                    List<SIVertice> ints = new List<SIVertice>();
+                    for (int j = 0; j < crvs.Count; j++)
+                    {
+                        if (Math.Abs(i - j) % (lc - 1) > 1)
+                        {
+                            Point intpt = crvs[i].GetIntersection(crvs[j]);
+                            if (crvs[i].GetClosestPoint(intpt).GetDistance(intpt) < 0.000001 && crvs[j].GetClosestPoint(intpt).GetDistance(intpt) < 0.000001)
+                            {
+                                ints.Add(new SIVertice(intpt, true));
+                            }
+                        }
+                    }
+                    ints.Sort(delegate (SIVertice v1, SIVertice v2)
+                    {
+                        return crvs[i].Start.GetDistance(v1.Location).CompareTo(crvs[i].Start.GetDistance(v2.Location));
+                    });
+                    mvertices.AddRange(ints);
+                    mvertices.Add(new SIVertice(crvs[i].End, false));
+                }
+                if (mvertices.Count == lc + 1)
+                {
+                    return ccontour;
+                }
+
+                List<List<Point>> plns = new List<List<Point>>();
+                int vc = mvertices.Count;
+                List<Point> pln = new List<Point>();
+                foreach (SIVertice mvert in mvertices)
+                {
+                    pln.Add(mvert.Location);
+                    if (mvert.SelfIntersection && pln.Count != 1)
+                    {
+                        plns.Add(pln);
+                        pln = new List<Point> { mvert.Location };
+                    }
+                }
+
+                if (pln.Count > 1)
+                {
+                    plns.Add(pln);
+                }
+
+                List<Point> remaining = new List<Point>();
+                foreach (List<Point> npln in plns)
+                {
+                    if (npln[0].GetDistance(npln[npln.Count - 1]) < 0.000001)
+                    {
+                        cntrs.Add(new Polyline(npln));
+                    }
+                    else
+                    {
+                        remaining.AddRange(npln);
+                    }
+                }
+                if (remaining.Count == 0)
+                {
+                    running = false;
+                }
+                else
+                {
+                    ccontour = new Polyline(remaining);
+                    ccontour = ccontour.RemoveZeroSegments(0.001);
+                }
+            }
+
+            double maxArea = minArea;
+            foreach (Polyline cntr in cntrs)
+            {
+                double area = cntr.GetFloorSignedArea();
+                if (area >= maxArea)
+                {
+                    maxArea = area;
+                    output = cntr;
+                }
+            }
+
+            return output;
+        }
+
+
+        /******************************************/
+        /***            Scale element           ***/
+        /******************************************/
+
+        public static object ScaleElement(object element, object refElement, double factor)
+        {
+            // Get the geometry of the element
+            IBHoMGeometry geometry = Util.GetGeometry(element);
+            IBHoMGeometry refGeometry = Util.GetGeometry(refElement);
+            Vector factorV = new Vector(factor, factor, factor);
+
+            // Do the actal snapping
+            IBHoMGeometry output = null;
+            if (refGeometry is Point)
+            {
+                output = geometry.IScale((Point)refGeometry, factorV);
+            }
+
+            // Return the final result
+            return Util.SetGeometry(element, output);
+        }
+
+        /******************************************/
+
+        public static object ScaleElement(object element, object refElement, double factorX, double factorY, double factorZ)
+        {
+            // Get the geometry of the element
+            IBHoMGeometry geometry = Util.GetGeometry(element);
+            IBHoMGeometry refGeometry = Util.GetGeometry(refElement);
+            Vector factorV = new Vector(factorX, factorY, factorZ);
+
+            // Do the actal snapping
+            IBHoMGeometry output = null;
+            if (refGeometry is Point)
+            {
+                output = geometry.IScale((Point)refGeometry, factorV);
+            }
+
+            // Return the final result
+            return Util.SetGeometry(element, output);
+        }
+
+
+        /******************************************/
+        /***       Merge colinear segments      ***/
+        /******************************************/
+
+        public static object MergeColinearSegments(object element, double angTol, bool positive)
+        {
+            // Get the geometry of the element
+            IBHoMGeometry geometry = Util.GetGeometry(element);
+
+            // Do the actal snapping
+            IBHoMGeometry output = null;
+            if (geometry is Polyline)
+            {
+                output = ((Polyline)geometry).MergeColinearSegments(angTol, positive);
+            }
+            if (geometry is IEnumerable<Polyline>)
+            {
+                foreach (Polyline curve in geometry as IEnumerable<Polyline>)
+                {
+                    output = ((Polyline)geometry).MergeColinearSegments(angTol, positive);
+                }
+            }
+
+            // Return the final result
+            return Util.SetGeometry(element, output);
+        }
+
+
+        /******************************************/
+        /***        Remove zero segments        ***/
+        /******************************************/
+
+        public static object RemoveZeroSegments(object element, double tolerance)
+        {
+            // Get the geometry of the element
+            IBHoMGeometry geometry = Util.GetGeometry(element);
+
+            // Do the actal snapping
+            IBHoMGeometry output = null;
+            if (geometry is Polyline)
+            {
+                output = ((Polyline)geometry).RemoveZeroSegments(tolerance);
+            }
+            if (geometry is IEnumerable<Polyline>)
+            {
+                foreach (Polyline curve in geometry as IEnumerable<Polyline>)
+                {
+                    output = ((Polyline)geometry).RemoveZeroSegments(tolerance);
+                }
+            }
+
+            // Return the final result
+            return Util.SetGeometry(element, output);
+        }
+
+
+        /******************************************/
         /****  Utility classes and functions   ****/
         /******************************************/
 
@@ -687,6 +1413,105 @@ namespace ModelLaundry_Engine
             return Math.Round(pt.X, 3).ToString() + ';' + Math.Round(pt.Y, 3).ToString();
         }
 
-        
+        /******************************************/
+
+        //It is not the same as Line/Line intersection from BHoM.Geometry.Intersect - it tackles small angles
+        private static Point IntersectLineGrid(Point p1, Vector v1, Point p2, Vector v2, double dottol)
+        {
+            v1 = v1.GetNormalised();
+            v2 = v2.GetNormalised();
+            double a1, b1, a2, b2, x, y;
+            a1 = a2 = b1 = b2 = x = y = double.NaN;
+            if (Math.Abs(v1.X * v2.X + v1.Y * v2.Y) > dottol)
+            {
+                v1 = new Vector(-v2.Y, v2.X, 0);
+            }
+            if (Math.Abs(v1.X) < 0.000001)
+            {
+                x = p1.X;
+                a2 = v2.Y / v2.X;
+                b2 = p2.Y - p2.X * a2;
+                y = a2 * x + b2;
+                return new Point(x, y, p1.Z);
+            }
+            else if (Math.Abs(v2.X) < 0.000001)
+            {
+                x = p2.X;
+                a1 = v1.Y / v1.X;
+                b1 = p1.Y - p1.X * a1;
+                y = a1 * x + b1;
+                return new Point(x, y, p1.Z);
+            }
+            else
+            {
+                a1 = v1.Y / v1.X;
+                b1 = p1.Y - p1.X * a1;
+                a2 = v2.Y / v2.X;
+                b2 = p2.Y - p2.X * a2;
+                x = (b1 - b2) / (a2 - a1);
+                y = b1 + a1 * x;
+                return new Point(x, y, p1.Z);
+            }
+        }
+
+        /******************************************/
+
+        private static Line GetWallLine(List<Point> pts, double tol)
+        {
+            Point pS, pE;
+            List<double> Xs = new List<double>();
+            List<double> Ys = new List<double>();
+            foreach (Point pt in pts)
+            {
+                Xs.Add(pt.X);
+                Ys.Add(pt.Y);
+            }
+            if (Math.Abs(Xs.Max() - Xs.Min()) >= tol)
+            {
+                pS = pts[Xs.IndexOf(Xs.Min())];
+                pE = pts[Xs.IndexOf(Xs.Max())];
+            }
+            else if (Math.Abs(Ys.Max() - Ys.Min()) >= tol)
+            {
+                pS = pts[Ys.IndexOf(Ys.Min())];
+                pE = pts[Ys.IndexOf(Ys.Max())];
+            }
+            else
+            {
+                return null;
+            }
+            pS = new Point(pS.X, pS.Y, 0);
+            pE = new Point(pE.X, pE.Y, 0);
+            return new Line(pS, pE);
+        }
+
+        /******************************************/
+
+        private static double GetFloorSignedArea(this Polyline contour)
+        {
+            double area = 0;
+            List<Line> edges = contour.Explode();
+            List<Point> vertices = new List<Point> { edges[0].Start };
+            for (int i = 0; i < edges.Count; i++)
+            {
+                Line edge = edges[i];
+                vertices.Add(edge.End);
+                area += Math.Abs(vertices[i].X * vertices[i + 1].Y - vertices[i + 1].X * vertices[i].Y) * 0.5;
+            }
+            return area;
+        }
+
+        /******************************************/
+
+        private class SIVertice
+        {
+            public Point Location;
+            public bool SelfIntersection;
+            public SIVertice(Point location, bool SI)
+            {
+                Location = location;
+                SelfIntersection = SI;
+            }
+        }
     }
 }
