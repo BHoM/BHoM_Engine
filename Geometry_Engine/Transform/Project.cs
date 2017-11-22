@@ -167,5 +167,22 @@ namespace BH.Engine.Geometry
         {
             return GetProjected(geometry as dynamic, p);
         }
+
+
+        /***************************************************/
+        /****           Project to XY plane             ****/
+        /***************************************************/
+
+        public static Point ProjectToGround(this Point pt)
+        {
+            return new Point(pt.X, pt.Y, 0);
+        }
+
+        /***************************************************/
+
+        public static Line ProjectToGround(this Line line)
+        {
+            return new Line(line.Start.ProjectToGround(), line.End.ProjectToGround());
+        }
     }
 }
