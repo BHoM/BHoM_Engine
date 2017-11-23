@@ -9,7 +9,11 @@ namespace BH.Engine.Structure
 {
     public static partial class Create
     {
+
         /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
+
         public static NodeConstraint NodeConstraint(string name, bool[] fixity, double[] values)
         {
             NodeConstraint constr = new NodeConstraint(name);

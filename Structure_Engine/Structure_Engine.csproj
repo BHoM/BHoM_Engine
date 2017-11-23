@@ -44,7 +44,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Create\Bar.cs" />
-    <Compile Include="Create\Grid.cs" />
     <Compile Include="Create\LinkConstraints.cs" />
     <Compile Include="Create\Opening.cs" />
     <Compile Include="Create\Panel.cs" />

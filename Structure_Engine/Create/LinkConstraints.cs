@@ -9,6 +9,11 @@ namespace BH.Engine.Structure
 {
     public static partial class Create
     {
+
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
+
         public static LinkConstraint LinkConstraint(string name, bool[] fixity)
         {
             return new LinkConstraint
@@ -28,6 +33,8 @@ namespace BH.Engine.Structure
                 Name = name
             };
         }
+
+        /***************************************************/
 
         public static LinkConstraint LinkConstraintFixed(string name = "Fixed")
         {
@@ -49,6 +56,8 @@ namespace BH.Engine.Structure
             };
         }
 
+        /***************************************************/
+
         public static LinkConstraint LinkConstraintPinned(string name = "Pinned")
         {
 
@@ -61,8 +70,9 @@ namespace BH.Engine.Structure
 
             LinkConstraint constr = LinkConstraint(name, fixities);
             return constr;
-
         }
+
+        /***************************************************/
 
         public static LinkConstraint LinkConstraintXYPlane(string name = "xy-Plane")
         {
@@ -76,6 +86,8 @@ namespace BH.Engine.Structure
                 return constr;
         }
 
+        /***************************************************/
+
         public static LinkConstraint LinkConstraintYZPlane(string name = "yz-Plane")
         {
                 LinkConstraint constr = new LinkConstraint();
@@ -86,8 +98,9 @@ namespace BH.Engine.Structure
                 constr.XXtoXX = true;
                 constr.Name = name;
                 return constr;
-
         }
+
+        /***************************************************/
 
         public static LinkConstraint LinkConstraintZXPlane(string name = "zx-Plane")
         {
@@ -101,6 +114,8 @@ namespace BH.Engine.Structure
                 return constr;
         }
 
+        /***************************************************/
+
         public static LinkConstraint LinkConstraintXYPlanePin(string name = "xy-Plane Pin")
         {
                 LinkConstraint constr = new LinkConstraint();
@@ -111,6 +126,8 @@ namespace BH.Engine.Structure
                 constr.Name = name;
                 return constr;
         }
+
+        /***************************************************/
 
         public static LinkConstraint LinkConstraintYZPlanePin(string name = "yz-Plane Pin")
         {
@@ -123,6 +140,8 @@ namespace BH.Engine.Structure
                 return constr;
         }
 
+        /***************************************************/
+
         public static LinkConstraint LinkConstraintZXPlanePin(string name = "zx-Plane Pin")
         {
                 LinkConstraint constr = new LinkConstraint();
@@ -133,6 +152,8 @@ namespace BH.Engine.Structure
                 constr.Name = name;
                 return constr;
         }
+
+        /***************************************************/
 
         public static LinkConstraint LinkConstraintXPlate(string name = "x-Plate")
         {
@@ -146,6 +167,8 @@ namespace BH.Engine.Structure
                 return constr;
         }
 
+        /***************************************************/
+
         public static LinkConstraint LinkConstraintYPlate(string name = "y-Plate")
         {
                 LinkConstraint constr = new LinkConstraint();
@@ -157,6 +180,8 @@ namespace BH.Engine.Structure
                 constr.Name = name;
                 return constr;
         }
+
+        /***************************************************/
 
         public static LinkConstraint LinkConstraintYPlateZPlate(string name = "z-Plate")
         {
@@ -170,6 +195,8 @@ namespace BH.Engine.Structure
                 return constr;
         }
 
+        /***************************************************/
+
         public static LinkConstraint LinkConstraintXPlatePin(string name = "x-Plate Pin")
         {
                 LinkConstraint constr = new LinkConstraint();
@@ -180,6 +207,8 @@ namespace BH.Engine.Structure
                 return constr;
         }
 
+        /***************************************************/
+
         public static LinkConstraint LinkConstraintYPlatePin(string name = "y-Plate Pin")
         {
                 LinkConstraint constr = new LinkConstraint();
@@ -189,6 +218,8 @@ namespace BH.Engine.Structure
                 constr.Name = name;
                 return constr;
         }
+
+        /***************************************************/
 
         public static LinkConstraint LinkConstraintZPlatePin(string name = "z-Plate Pin")
         {
