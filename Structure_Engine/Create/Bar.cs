@@ -12,16 +12,9 @@ namespace BH.Engine.Structure
 {
     public static partial class Create
     {
-        public static Bar IBar(object elementA, object elementB )
-        {
-            if (elementA == null || elementB == null) { return null; }
-            return Create.Bar(elementA as dynamic, elementB as dynamic);
-        }
-        public static Bar IBar(ICurve curve)
-        {
-            if (curve == null) { return null; }
-            return Create.Bar(curve as dynamic);
-        }
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
 
         public static Bar Bar(Line line)
         {
@@ -31,22 +24,8 @@ namespace BH.Engine.Structure
             bar.SetGeometry(line);
             return bar;
         }
-        public static Bar Bar(Polyline polyline)
-        {
-            Bar bar = new Bar();
-            bar.StartNode = new Node(polyline.ControlPoints[0]);
-            bar.EndNode = new Node(polyline.ControlPoints[1]);
-            bar.SetGeometry(new Line(polyline.ControlPoints[0], polyline.ControlPoints[1]));
-            return bar;
-        }
-        public static Bar Bar(NurbCurve curve)
-        {
-            Bar bar = new Bar();
-            bar.StartNode = new Node(curve.ControlPoints[0]);
-            bar.EndNode = new Node(curve.ControlPoints[1]);
-            bar.SetGeometry(new Line(curve.ControlPoints[0], curve.ControlPoints[1]));
-            return bar;
-        }
+
+        /***************************************************/
 
         public static Bar Bar(Point pointA, Point pointB)
         {
@@ -54,14 +33,6 @@ namespace BH.Engine.Structure
             bar.StartNode = new Node(pointA);
             bar.EndNode = new Node(pointB);
             bar.SetGeometry(new Line(pointA, pointB));
-            return bar;
-        }
-        public static Bar Bar(Node nodeA, Node nodeB)
-        {
-            Bar bar = new Bar();
-            bar.StartNode = nodeA;
-            bar.EndNode = nodeB;
-            bar.SetGeometry(new Line(nodeA.Point, nodeB.Point));
             return bar;
         }
     }
