@@ -15,7 +15,7 @@ namespace BH.Engine.Graphics
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static BoundingBox GetSvgBounds(SVGObject svg)
+        public static BoundingBox GetSVGBounds(SVGObject svg)
         {
             BoundingBox bb = new BoundingBox();
             List<IBHoMGeometry> geometry = svg.Geometry;
@@ -28,31 +28,31 @@ namespace BH.Engine.Graphics
 
         /***************************************************/
 
-        public static BoundingBox GetSvgBounds(List<SVGObject> svg)
+        public static BoundingBox GetSVGBounds(List<SVGObject> svg)
         {
             BoundingBox bb = new BoundingBox();
 
             for (int i = 0; i < svg.Count; i++)
-                bb += GetSvgBounds(svg[i]);
+                bb += GetSVGBounds(svg[i]);
 
             return bb;
         }
 
         /***************************************************/
 
-        public static BoundingBox GetSvgBounds(SVGDocument svg)
+        public static BoundingBox GetSVGBounds(SVGDocument svg)
         {
             return svg.Canvas;
         }
 
         /***************************************************/
 
-        public static BoundingBox GetSvgBounds(List<SVGDocument> svg)
+        public static BoundingBox GetSVGBounds(List<SVGDocument> svg)
         {
             BoundingBox bb = new BoundingBox();
 
             for (int i = 0; i < svg.Count; i++)
-                bb += GetSvgBounds(svg[i]);
+                bb += GetSVGBounds(svg[i]);
 
             return bb;
         }
