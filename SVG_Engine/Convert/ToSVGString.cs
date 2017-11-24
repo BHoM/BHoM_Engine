@@ -77,7 +77,7 @@ namespace BH.Engine.Graphics
 
             for (int i = 0; i < svgObject.Geometry.Count; i++)
             {
-                geometryString += svgObject.Geometry[i].IToSVG();
+                geometryString += svgObject.Geometry[i].IToSVGString();
 
                 if (svgObject.Geometry.Count > 1)
                 {
@@ -99,7 +99,7 @@ namespace BH.Engine.Graphics
 
         public static string ToSVGString(SVGDocument svgDocument)
         {
-            BoundingBox box = Query.GetSvgBounds(svgDocument);
+            BoundingBox box = Query.GetSVGBounds(svgDocument);
 
             double extraMargin = 10;
 

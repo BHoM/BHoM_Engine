@@ -13,14 +13,14 @@ namespace BH.Engine.Graphics
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static string IToSVG(this IBHoMGeometry geometry)
+        public static string IToSVGString(this IBHoMGeometry geometry)
         {
-            return ToSVG(geometry as dynamic);
+            return ToSVGString(geometry as dynamic);
         }
 
         /***************************************************/
 
-        public static string ToSVG(this Point point)
+        public static string ToSVGString(this Point point)
         {
             // Creates a one pixle wide circle for the point in order for it to be displayable
 
@@ -34,7 +34,7 @@ namespace BH.Engine.Graphics
 
         /***************************************************/
 
-        public static string ToSVG(this Line line)
+        public static string ToSVGString(this Line line)
         {
             Point startPt = line.Start;
             Point endPt = line.End;
@@ -49,7 +49,7 @@ namespace BH.Engine.Graphics
 
         /***************************************************/
 
-        public static string ToSVG(this Circle circle)
+        public static string ToSVGString(this Circle circle)
         {
             Point centerPt = circle.Centre;
 
@@ -62,7 +62,7 @@ namespace BH.Engine.Graphics
 
         /***************************************************/
 
-        public static string ToSVG(this Ellipse ellipse)
+        public static string ToSVGString(this Ellipse ellipse)
         {
             Point centerPt = ellipse.Centre;
 
@@ -79,7 +79,7 @@ namespace BH.Engine.Graphics
 
         /***************************************************/
 
-        public static string ToSVG(this Polyline polyline)
+        public static string ToSVGString(this Polyline polyline)
         {
             List<Point> controlPts = polyline.ControlPoints;
 
@@ -104,7 +104,7 @@ namespace BH.Engine.Graphics
 
         /***************************************************/
 
-        public static string ToSVG(this NurbCurve nurbCurve)
+        public static string ToSVGString(this NurbCurve nurbCurve)
         {
             // TODO : SVG_Engine - Further developing of the method for converting NurbCurves to SVG 
 
@@ -158,7 +158,7 @@ namespace BH.Engine.Graphics
 
         /***************************************************/
 
-        public static string ToSVG(this Arc arc)
+        public static string ToSVGString(this Arc arc)
         {
             // TODO : SVG_Engine - Implement conversion method for arc
 
