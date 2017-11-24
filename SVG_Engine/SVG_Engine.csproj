@@ -45,9 +45,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Convert\ToSVG.cs" />
     <Compile Include="Create\SVGDocument.cs" />
-    <Compile Include="Query\Bounds.cs" />
+    <Compile Include="Query\SVGBounds.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Convert\ToSVGString.cs" />
   </ItemGroup>
