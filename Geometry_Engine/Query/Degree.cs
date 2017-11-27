@@ -12,17 +12,9 @@ namespace BH.Engine.Geometry
         public static List<int> GetDegrees(this NurbSurface surf)
         {
             int uDegree = 1;
-            for (int i = 1; i < surf.UKnots.Count; i++)
-            {
-                if (surf.UKnots[i - 1] == surf.UKnots[i]) uDegree++;
-                else break;
-            }
             int vDegree = 1;
-            for (int i = 1; i < surf.VKnots.Count; i++)
-            {
-                if (surf.VKnots[i - 1] == surf.VKnots[i]) vDegree++;
-                else break;
-            }
+            while (surf.UKnots[uDegree - 1] == surf.UKnots[uDegree]) uDegree++;          
+            while (surf.VKnots[vDegree - 1] == surf.VKnots[vDegree]) vDegree++;            
             return new List<int>() { uDegree, vDegree };
         }
     }

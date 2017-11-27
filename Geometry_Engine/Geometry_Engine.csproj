@@ -61,6 +61,7 @@
     <Compile Include="Query\ClosestPoint.cs" />
     <Compile Include="Query\ControlPoints.cs" />
     <Compile Include="Query\CurveIntersection.cs" />
+    <Compile Include="Query\Degree.cs" />
     <Compile Include="Query\Determinant.cs" />
     <Compile Include="Query\Direction.cs" />
     <Compile Include="Query\DiscontinuityPoints.cs" />
@@ -83,6 +84,7 @@
     <Compile Include="Query\Radius.cs" />
     <Compile Include="Query\StartDir.cs" />
     <Compile Include="Query\StartPoint.cs" />
+    <Compile Include="Query\UVCount.cs" />
     <Compile Include="Transform\Divide.cs" />
     <Compile Include="Transform\Explode.cs" />
     <Compile Include="Transform\Flip.cs" />
