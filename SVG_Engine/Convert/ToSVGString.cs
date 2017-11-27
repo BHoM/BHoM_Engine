@@ -98,7 +98,7 @@ namespace BH.Engine.Graphics
 
         public static string ToSVGString(SVGDocument svgDocument)
         {
-            BoundingBox box = Query.GetSVGBounds(svgDocument);
+            BoundingBox box = Query.GetBounds(svgDocument);
 
             double extraMargin = 10;
 
