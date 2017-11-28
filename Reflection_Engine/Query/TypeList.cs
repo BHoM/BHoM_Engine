@@ -59,7 +59,7 @@ namespace BH.Engine.Reflection
                     {
                         foreach (Type type in asm.GetTypes())
                         {
-                            if (!type.IsInterface)
+                            if (!type.IsInterface && type.Namespace != null && type.Namespace.StartsWith("BH.oM"))
                             {
                                 m_BHoMTypeList.Add(type);
                                 AddBHoMTypeToDictionary(type.FullName, type);
