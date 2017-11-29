@@ -30,7 +30,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static void SetGeometry(this Contour contour, IBHoMGeometry geometry)
+        public static void SetGeometry(this PanelFreeForm contour, IBHoMGeometry geometry)
         {
             if (typeof(ISurface).IsAssignableFrom(geometry.GetType()))
             {

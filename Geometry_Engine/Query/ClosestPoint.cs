@@ -51,10 +51,14 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static Point GetClosestPoint(this Line line, Point point)
+        public static Point GetClosestPoint(this Line line, Point point, bool infiniteSegment = false)
         {
             Vector dir = line.GetDirection();
-            double t = Math.Min(Math.Max(dir * (point - line.Start), 0), line.GetLength());
+            //double t = Math.Min(Math.Max(dir * (point - line.Start), 0), line.GetLength());
+            double t = dir * (point - line.Start);
+            if (!infiniteSegment)
+                t = Math.Min(Math.Max(t, 0), line.GetLength());
+
             return line.Start + t * dir;
         }
 

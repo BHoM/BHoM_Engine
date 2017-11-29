@@ -58,6 +58,7 @@
     <Compile Include="EqualityComparers\BarEndNodesDistanceComparer.cs" />
     <Compile Include="EqualityComparers\NodeDistanceComparer.cs" />
     <Compile Include="Query\NodeContraint.cs" />
+    <Compile Include="Query\SectionProperty.cs" />
     <Compile Include="Transform\Flip.cs" />
     <Compile Include="Transform\Geometry.cs" />
     <Compile Include="Transform\Merge.cs" />

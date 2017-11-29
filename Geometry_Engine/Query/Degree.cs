@@ -17,5 +17,14 @@ namespace BH.Engine.Geometry
             while (surf.VKnots[vDegree - 1] == surf.VKnots[vDegree]) vDegree++;            
             return new List<int>() { uDegree, vDegree };
         }
+
+        /***************************************************/
+
+        public static int GetDegree(this NurbCurve curve)
+        {
+            int degree = 1;
+            while (curve.Knots[degree - 1] == curve.Knots[degree]) degree++;
+            return degree;
+        }
     }
 }

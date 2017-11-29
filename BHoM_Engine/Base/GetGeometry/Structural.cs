@@ -29,7 +29,7 @@ namespace BH.Engine.Base
 
         /***************************************************/
 
-        public static IBHoMGeometry GetGeometry(this Contour contour)
+        public static IBHoMGeometry GetGeometry(this PanelFreeForm contour)
         {
             return contour.Surface;
         }

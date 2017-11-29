@@ -14,62 +14,62 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static NodeConstraint NodeConstraint(string name, bool[] fixity, double[] values)
+        public static Constraint6DOF Constraint6DOF(string name, bool[] fixity, double[] values)
         {
-            NodeConstraint constr = new NodeConstraint(name);
-            constr.UX = (fixity[0]) ? DOFType.Fixed : (values[0] == 0) ? DOFType.Free : DOFType.Spring;
-            constr.UY = (fixity[1]) ? DOFType.Fixed : (values[1] == 0) ? DOFType.Free : DOFType.Spring;
-            constr.UZ = (fixity[2]) ? DOFType.Fixed : (values[2] == 0) ? DOFType.Free : DOFType.Spring;
-            constr.RX = (fixity[3]) ? DOFType.Fixed : (values[3] == 0) ? DOFType.Free : DOFType.Spring;
-            constr.RY = (fixity[4]) ? DOFType.Fixed : (values[4] == 0) ? DOFType.Free : DOFType.Spring;
-            constr.RZ = (fixity[5]) ? DOFType.Fixed : (values[5] == 0) ? DOFType.Free : DOFType.Spring;
+            Constraint6DOF constr = new Constraint6DOF(name);
+            constr.TranslationX = (fixity[0]) ? DOFType.Fixed : (values[0] == 0) ? DOFType.Free : DOFType.Spring;
+            constr.TranslationY = (fixity[1]) ? DOFType.Fixed : (values[1] == 0) ? DOFType.Free : DOFType.Spring;
+            constr.TranslationZ = (fixity[2]) ? DOFType.Fixed : (values[2] == 0) ? DOFType.Free : DOFType.Spring;
+            constr.RotationX = (fixity[3]) ? DOFType.Fixed : (values[3] == 0) ? DOFType.Free : DOFType.Spring;
+            constr.RotationY = (fixity[4]) ? DOFType.Fixed : (values[4] == 0) ? DOFType.Free : DOFType.Spring;
+            constr.RotationZ = (fixity[5]) ? DOFType.Fixed : (values[5] == 0) ? DOFType.Free : DOFType.Spring;
 
-            constr.KX = values[0];
-            constr.KY = values[1];
-            constr.KZ = values[2];
-            constr.HX = values[3];
-            constr.HY = values[4];
-            constr.HZ = values[5];
+            constr.TranslationalStiffnessX = values[0];
+            constr.TranslationalStiffnessY = values[1];
+            constr.TranslationalStiffnessZ = values[2];
+            constr.RotationalStiffnessX = values[3];
+            constr.RotationalStiffnessY = values[4];
+            constr.RotationalStiffnessZ = values[5];
 
             return constr;
         }
 
         /***************************************************/
 
-        public static NodeConstraint PinNodeConstraint(string name = "Pin")
+        public static Constraint6DOF PinConstraint6DOF(string name = "Pin")
         {
-            NodeConstraint constr = new NodeConstraint(name);
-            constr.UX = DOFType.Fixed;
-            constr.UY = DOFType.Fixed;
-            constr.UZ = DOFType.Fixed;
+            Constraint6DOF constr = new Constraint6DOF(name);
+            constr.TranslationX = DOFType.Fixed;
+            constr.TranslationY = DOFType.Fixed;
+            constr.TranslationZ = DOFType.Fixed;
             return constr;
         }
 
         /***************************************************/
 
-        public static NodeConstraint FixNodeConstraint(string name = "Fix")
+        public static Constraint6DOF FixConstraint6DOF(string name = "Fix")
         {
-            NodeConstraint constr = new NodeConstraint(name);
-            constr.UX = DOFType.Fixed;
-            constr.UY = DOFType.Fixed;
-            constr.UZ = DOFType.Fixed;
-            constr.RX = DOFType.Fixed;
-            constr.RY = DOFType.Fixed;
-            constr.RZ = DOFType.Fixed;
+            Constraint6DOF constr = new Constraint6DOF(name);
+            constr.TranslationX = DOFType.Fixed;
+            constr.TranslationY = DOFType.Fixed;
+            constr.TranslationZ = DOFType.Fixed;
+            constr.RotationX = DOFType.Fixed;
+            constr.RotationY = DOFType.Fixed;
+            constr.RotationZ = DOFType.Fixed;
             return constr;
         }
 
         /***************************************************/
 
-        public static NodeConstraint FullReleaseNodeConstraint(string name = "Release")
+        public static Constraint6DOF FullReleaseConstraint6DOF(string name = "Release")
         {
-            NodeConstraint constr = new NodeConstraint(name);
-            constr.UX = DOFType.Free;
-            constr.UY = DOFType.Free;
-            constr.UZ = DOFType.Free;
-            constr.RX = DOFType.Free;
-            constr.RY = DOFType.Free;
-            constr.RZ = DOFType.Free;
+            Constraint6DOF constr = new Constraint6DOF(name);
+            constr.TranslationX = DOFType.Free;
+            constr.TranslationY = DOFType.Free;
+            constr.TranslationZ = DOFType.Free;
+            constr.RotationX = DOFType.Free;
+            constr.RotationY = DOFType.Free;
+            constr.RotationZ = DOFType.Free;
             return constr;
         }
 

@@ -14,18 +14,18 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static bool[] GetFixities(this NodeConstraint constraint)
+        public static bool[] GetFixities(this Constraint6DOF constraint)
         {
-            return new bool[] { constraint.UX == DOFType.Fixed, constraint.UY == DOFType.Fixed, constraint.UZ == DOFType.Fixed,
-                        constraint.RX == DOFType.Fixed, constraint.RY == DOFType.Fixed, constraint.RZ == DOFType.Fixed };
+            return new bool[] { constraint.TranslationX == DOFType.Fixed, constraint.TranslationY == DOFType.Fixed, constraint.TranslationZ == DOFType.Fixed,
+                        constraint.RotationX == DOFType.Fixed, constraint.RotationY == DOFType.Fixed, constraint.RotationZ == DOFType.Fixed };
         }
 
         /***************************************************/
 
-        public static double[] GetElasticValues(this NodeConstraint constraint)
+        public static double[] GetElasticValues(this Constraint6DOF constraint)
         {
-            return new double[] { constraint.KX, constraint.KY, constraint.KZ,
-                        constraint.HX, constraint.HY, constraint.HZ };
+            return new double[] { constraint.TranslationalStiffnessX, constraint.TranslationalStiffnessY, constraint.TranslationalStiffnessZ,
+                        constraint.RotationalStiffnessX, constraint.RotationalStiffnessY, constraint.RotationalStiffnessZ };
         }
 
         /***************************************************/

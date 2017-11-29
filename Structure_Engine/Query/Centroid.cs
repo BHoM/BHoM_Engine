@@ -16,11 +16,11 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Point GetCentroid(this oM.Structural.Elements.Panel panelFace)
+        public static Point GetCentroid(this oM.Structural.Elements.MeshFace meshFace)
         {
             List<Point> pts = new List<Point>(4);
 
-            foreach (Node n in panelFace.Nodes)
+            foreach (Node n in meshFace.Nodes)
                 pts.Add(n.Point);
 
             return pts.GetAverage();

@@ -40,5 +40,32 @@ namespace BH.Engine.Geometry
 
             return true;
         }
+
+        /***************************************************/
+
+        public static List<int> GetSide(this Plane plane, List<Point> points, double tolerance = Tolerance.Distance)
+        {
+            List<double> result = points.Select(x => new Vector(x).GetDotProduct(plane.Normal)).ToList();
+            List<int> sameSide = new List<int>();
+
+            double d = -plane.Normal.GetDotProduct(new Vector(plane.Origin));
+
+            for (int i = 0; i < result.Count; i++)
+            {
+                if (result[i] + d > tolerance)
+                {
+                    sameSide[i] = 1;
+                }
+                else if (result[i] + d < -tolerance)
+                {
+                    sameSide[i] = -1;
+                }
+                else
+                {
+                    sameSide[i] = 0;
+                }
+            }
+            return sameSide;
+        }
     }
 }
