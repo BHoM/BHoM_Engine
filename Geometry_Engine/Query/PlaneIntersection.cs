@@ -17,7 +17,7 @@ namespace BH.Engine.Geometry
         public static Line GetIntersection(this Plane plane1, Plane plane2, double tolerance = Tolerance.Distance)
         {
 
-            if (plane1.Normal.IsParallel(plane2.Normal) == 0)
+            if (plane1.Normal.IsParallel(plane2.Normal) != 0)
                 return null;
 
             //Calculate tangent of line perpendicular to the normal of the two planes
@@ -29,25 +29,49 @@ namespace BH.Engine.Geometry
 
             Point orgin;
 
-            //Find one point that is on both planes, assume one of the components = 0
+            Vector n1 = plane1.Normal;
+            Vector n2 = plane2.Normal;
+
             if (tangent.Z != 0)
             {
-                double x0 = (d1 / plane1.Normal.Y - d2) / (plane2.Normal.X - plane1.Normal.X / plane2.Normal.Y);
-                double y0 = (-d1 - plane1.Normal.X * x0) / plane1.Normal.Y;
+                double x0 = (n1.Y * d2 - n2.Y * d1) / (n1.X * n2.Y - n2.X * n1.Y);
+                double y0 = (n2.X * d1 - n1.X * d2) / (n1.X * n2.Y - n2.X * n1.Y);
+
                 orgin = new Point(x0, y0, 0);
             }
             else if (tangent.Y != 0)
             {
-                double x0 = (d1 / plane1.Normal.Z - d2) / (plane2.Normal.X - plane1.Normal.X / plane2.Normal.Z);
-                double z0 = (-d1 - plane1.Normal.X * x0) / plane1.Normal.Z;
+                double x0 = (n1.Z * d2 - n2.Z * d1) / (n1.X * n2.Z - n2.X * n1.Z);
+                double z0 = (n2.X * d1 - n1.X * d2) / (n1.X * n2.Z - n2.X * n1.Z);
                 orgin = new Point(x0, 0, z0);
             }
             else
             {
-                double y0 = (d1 / plane1.Normal.Z - d2) / (plane2.Normal.Y - plane1.Normal.Y / plane2.Normal.Z);
-                double z0 = (-d1 - plane1.Normal.Y * y0) / plane1.Normal.Z;
+                double y0 = (n1.Z * d2 - n2.Z * d1) / (n1.Y * n2.Z - n2.Y * n1.Z);
+                double z0 = (n2.Y * d1 - n1.Y * d2) / (n1.Y * n2.Z - n2.Y * n1.Z);
                 orgin = new Point(0, y0, z0);
             }
+
+
+            //Find one point that is on both planes, assume one of the components = 0
+            //if (tangent.Z != 0)
+            //{
+            //    double x0 = (d1 / plane1.Normal.Y - d2) / (plane2.Normal.X - plane1.Normal.X / plane2.Normal.Y);
+            //    double y0 = (-d1 - plane1.Normal.X * x0) / plane1.Normal.Y;
+            //    orgin = new Point(x0, y0, 0);
+            //}
+            //else if (tangent.Y != 0)
+            //{
+            //    double x0 = (d1 / plane1.Normal.Z - d2) / (plane2.Normal.X - plane1.Normal.X / plane2.Normal.Z);
+            //    double z0 = (-d1 - plane1.Normal.X * x0) / plane1.Normal.Z;
+            //    orgin = new Point(x0, 0, z0);
+            //}
+            //else
+            //{
+            //    double y0 = (d1 / plane1.Normal.Z - d2) / (plane2.Normal.Y - plane1.Normal.Y / plane2.Normal.Z);
+            //    double z0 = (-d1 - plane1.Normal.Y * y0) / plane1.Normal.Z;
+            //    orgin = new Point(0, y0, z0);
+            //}
 
             Line result = new Line(orgin, orgin + tangent);
             result.Infinite = true;
@@ -79,9 +103,9 @@ namespace BH.Engine.Geometry
             //Check if interpoints are on the arc
             for (int i = 0; i < circleInter.Count; i++)
             {
-                if (line1.GetIntersection(new Line(curve.End, circleInter[i]), false, tolerance) != null)
+                if (line1.GetIntersection(new Line(circle.Centre, circleInter[i]), false, tolerance) != null)
                     interPoints.Add(circleInter[i]);
-                else if (line2.GetIntersection(new Line(curve.Start, circleInter[i]), false, tolerance) != null)
+                else if (line2.GetIntersection(new Line(circle.Centre, circleInter[i]), false, tolerance) != null)
                     interPoints.Add(circleInter[i]);
             }
 
@@ -96,7 +120,7 @@ namespace BH.Engine.Geometry
         //TODO: Testing needed!!
         public static List<Point> GetIntersections(this Circle curve, Plane plane, double tolerance = Tolerance.Distance)
         {
-            if (curve.Normal.IsParallel(plane.Normal) == 0)
+            if (curve.Normal.IsParallel(plane.Normal) != 0)
                 return new List<Point>();
 
             Line l = plane.GetIntersection(new Plane(curve.Centre, curve.Normal));
@@ -134,7 +158,7 @@ namespace BH.Engine.Geometry
         {
             useInfiniteLine &= line.Infinite;
 
-            Vector dir = (line.End - line.Start).GetNormalised();
+            Vector dir = (line.End - line.Start);//.GetNormalised();
 
             //Return null if parallel
             if (Math.Abs(dir * plane.Normal) < tolerance)
@@ -171,22 +195,45 @@ namespace BH.Engine.Geometry
             int previousSide = sameSide[0];
             int Length = c.IsClosed() && sameSide[sameSide.Count - 1] == 0 ? sameSide.Count - 1 : sameSide.Count;
 
+            double prevMin = 0;
+
             for (int i = 1; i < Length; i++)
             {
                 if (sameSide[i] != previousSide)
                 {
                     if (previousSide != 0)
                     {
-                        double maxT = c.Knots[i + degree];
-                        double minT = c.Knots[i];
+                        //double maxT = c.Knots[i + degree];
+                        //double minT = c.Knots[i];
+                        double minT = 0;
+                        for (int j = i-1; j <= degree+i-1; j++)
+                        {
+                            minT += c.Knots[j];
+                        }
+                        minT /= (degree);
+                        minT = minT < prevMin ? prevMin : minT;
+
+                        double maxT = 0;
+                        for (int j = i; j <= degree+i+1; j++)
+                        {
+                            maxT += c.Knots[j];
+                        }
+                        maxT /= (degree);
+
                         if (i < Length - 1 && sameSide[i] == 0 && sameSide[i + 1] != 0)
                         {
                             maxT = c.Knots[i + degree + 1];
                             minT = c.Knots[i + degree];
                             i++;
                         }
-                        result.Add(CurveParameterAtPlane(p, c, ref minT, ref maxT, c.GetPointAtParameter(minT), c.GetPointAtParameter(maxT), tolerance));
-                        curveParameters.Add(Math.Round((minT + maxT) / 2, rounding));
+
+                        Point interPt = CurveParameterAtPlane(p, c, ref minT, ref maxT, c.GetPointAtParameter(minT), c.GetPointAtParameter(maxT), tolerance);
+                        if (interPt != null)
+                        {
+                            result.Add(interPt);
+                            curveParameters.Add(Math.Round((minT + maxT) / 2, rounding));
+                        }
+                        prevMin = minT;
                     }
                     else
                     {
@@ -282,7 +329,7 @@ namespace BH.Engine.Geometry
                     }
                     else
                     {
-                        result.Add(curve.ControlPoints[i]);
+                        result.Add(curve.ControlPoints[i-1]);
                     }
                     previousSide = sameSide[i];
                 }
@@ -313,6 +360,7 @@ namespace BH.Engine.Geometry
 
         private static Point CurveParameterAtPlane(Plane p, NurbCurve c, ref double minT, ref double maxT, Point p1, Point p2, double tolerance = Tolerance.Distance)
         {
+              
             double mid = (minT + maxT) / 2;
             if (minT == maxT)
             {
@@ -322,15 +370,37 @@ namespace BH.Engine.Geometry
             Point p3 = c.GetPointAtParameter(mid);
             if (p3.IsInPlane(p, tolerance)) return p3;
 
-            if (p1.IsSameSide(p, p3, tolerance))
+            if (!p1.IsSameSide(p, p3, tolerance))
+            {
+                maxT = mid;
+                return CurveParameterAtPlane(p, c, ref minT, ref maxT, p1, p3, tolerance);
+            }
+            else if (!p2.IsSameSide(p, p3, tolerance))
             {
                 minT = mid;
                 return CurveParameterAtPlane(p, c, ref minT, ref maxT, p3, p2, tolerance);
             }
             else
             {
-                maxT = mid;
-                return CurveParameterAtPlane(p, c, ref minT, ref maxT, p1, p3, tolerance);
+                return null;
+
+                //List<int> side = p.GetSide(new List<Point> { p3 }, tolerance);
+
+                //Vector tangent = c.GetTangentAt(mid);
+                //double dotProd = tangent.GetDotProduct(p.Normal);
+
+                //if (Math.Abs(dotProd) < Tolerance.Angle)
+                //    return null;
+                //else if (dotProd * (double)side[0] > 0)
+                //{
+                //    maxT = mid;
+                //    return CurveParameterAtPlane(p, c, ref minT, ref maxT, p1, p3, tolerance);
+                //}
+                //else
+                //{
+                //    minT = mid;
+                //    return CurveParameterAtPlane(p, c, ref minT, ref maxT, p3, p2, tolerance);
+                //}
             }
         }
     }
