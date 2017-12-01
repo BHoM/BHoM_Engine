@@ -7,15 +7,20 @@ using BH.oM.Geometry;
 using BH.Engine.Geometry;
 using System.Collections;
 
-namespace ModelLaundry_Engine
+namespace BH.Engine.Geometry
 {
-    public static class Snapping
+
+    // GENERAL: SPLIT INTO SEPARATE .cs FILES
+
+        // method for checking if the panel is planar? e.g. after point to point? add to query
+
+    public static partial class Modify
     {
         /******************************************/
         /****  Vertical Snapping to Height     ****/
         /******************************************/
 
-        public static Point VerticalSnapToHeight(Point point, List<double> refHeights, double tolerance)
+        public static Point VerticalSnapToHeight(this Point point, List<double> refHeights, double tolerance)
         {
             Point newPoint = new Point(point.X, point.Y, point.Z);
 
@@ -33,7 +38,7 @@ namespace ModelLaundry_Engine
         /******************************************/
 
             // TODO: Is this one necessary?
-
+        /*
         public static Line VerticalSnapToHeight(Line line, List<double> refHeights, double tolerance)
         {
             return new Line(VerticalSnapToHeight(line.Start, refHeights, tolerance), VerticalSnapToHeight(line.End, refHeights, tolerance));
@@ -41,7 +46,7 @@ namespace ModelLaundry_Engine
 
         /******************************************/
 
-        public static ICurve VerticalSnapToHeight(ICurve contour, List<double> refHeights, double tolerance)
+        public static ICurve VerticalSnapToHeight(this ICurve contour, List<double> refHeights, double tolerance)
         {
             List<Point> oldPoints = contour.IGetControlPoints();
             List<Point> newPoints = new List<Point>();
@@ -57,6 +62,7 @@ namespace ModelLaundry_Engine
 
         // TODO: Is this one necessary?
 
+            /*
         public static List<ICurve> VerticalSnapToHeight(List<ICurve> group, List<double> refHeights, double tolerance)
         {
             List<ICurve> newGroup = new List<ICurve>();
@@ -75,6 +81,8 @@ namespace ModelLaundry_Engine
         /****  Horizontal Snap to Shapes      ****/
         /******************************************/
 
+            // Todo: this one (and all its derivatives) does not correct!
+        /*
         public static Point HorizontalSnapToShape(Point point, List<ICurve> refContours, double tolerance, bool anyHeight = false)
         {
             foreach (ICurve refC in refContours)
@@ -92,14 +100,14 @@ namespace ModelLaundry_Engine
         }
 
         /******************************************/
-
+        /*
         public static Line HorizontalSnapToShape(Line line, List<ICurve> refContours, double tolerance, bool anyHeight = false)
         {
             return new Line(HorizontalSnapToShape(line.Start, refContours, tolerance, anyHeight), HorizontalSnapToShape(line.End, refContours, tolerance, anyHeight));
         }
 
         /******************************************/
-
+        /*
         public static ICurve HorizontalSnapToShape(ICurve contour, List<ICurve> refContours, double tolerance, bool anyHeight = false)
         {
             // Get the refContours that are close enought to matter
@@ -188,7 +196,7 @@ namespace ModelLaundry_Engine
         }
 
         /******************************************/
-
+        /*
         public static List<ICurve> HorizontalSnapToShape(List<ICurve> group, List<ICurve> refContours, double tolerance, bool anyHeight = false)
         {
             List<ICurve> newGroup = new List<ICurve>();
@@ -207,6 +215,9 @@ namespace ModelLaundry_Engine
         /****  Horizontal Parrallel Snapping   ****/
         /******************************************/
 
+            // Todo: SnapFloorToGrid better?
+
+            /*
         public static object HorizontalParallelSnap(object element, List<object> refElements, double tolerance, bool anyHeight = false, double angleTol = 0.035)
         {
             // Get the geometry of the element
@@ -235,6 +246,7 @@ namespace ModelLaundry_Engine
 
         /******************************************/
 
+            /*
         public static ICurve HorizontalParallelSnap(ICurve contour, List<ICurve> refContours, double tolerance, bool anyHeight = false, double angleTol = 0.035)
         {
             // Get the refContours that are close enought to matter
@@ -359,6 +371,7 @@ namespace ModelLaundry_Engine
 
         /******************************************/
 
+            /*
         public static List<ICurve> HorizontalParallelSnap(List<ICurve> group, List<ICurve> refContours, double tolerance, bool anyHeight = false, double angleTol = 0.035)
         {
             List<ICurve> newGroup = new List<ICurve>();
@@ -377,44 +390,7 @@ namespace ModelLaundry_Engine
         /****  Snapping to reference points    ****/
         /******************************************/
 
-        public static object PointToPointSnap(object element, List<object> refElements, double tolerance)
-        {
-            // Get the geometry of the elements
-            IBHoMGeometry geometry = Util.GetGeometry(element);
-            BoundingBox ROI = geometry.IGetBounds().GetInflated(tolerance);
-
-            // Get the reference points
-            List<Point> refPoints = Util.GetControlPoints(refElements, ROI);
-
-            // Do the actal snapping
-            IBHoMGeometry output = null;
-            if (geometry is Point)
-            {
-                output = Snapping.PointToPointSnap((Point)geometry, refPoints, tolerance);
-            }
-            else if (geometry is Line)
-            {
-                output = Snapping.PointToPointSnap((Line)geometry, refPoints, tolerance);
-            }
-            else if (geometry is ICurve)
-            {
-                output = Snapping.PointToPointSnap((ICurve)geometry, refPoints, tolerance);
-            }
-            if (geometry is List<ICurve>)
-            {
-                foreach (ICurve curve in geometry as List<ICurve>)
-                {
-                    output = Snapping.PointToPointSnap(curve, refPoints, tolerance);
-                }
-            }
-
-            // Return the final result
-            return Util.SetGeometry(element, output);
-        }
-
-        /******************************************/
-
-        public static Point PointToPointSnap(Point point, List<Point> refPoints, double tolerance)
+        public static Point PointToPointSnap(this Point point, List<Point> refPoints, double tolerance)
         {
             
             foreach(Point refPt in refPoints)
@@ -428,6 +404,8 @@ namespace ModelLaundry_Engine
 
         /******************************************/
 
+            // Todo: is it needed?
+            /*
         public static Line PointToPointSnap(Line line, List<Point> refPoints, double tolerance)
         {
             return new Line(PointToPointSnap(line.Start, refPoints, tolerance), PointToPointSnap(line.End, refPoints, tolerance));
@@ -435,7 +413,7 @@ namespace ModelLaundry_Engine
 
         /******************************************/
 
-        public static Polyline PointToPointSnap(ICurve curve, List<Point> refPoints, double tolerance)
+        public static Polyline PointToPointSnap(this ICurve curve, List<Point> refPoints, double tolerance)
         {
             List<Point> points = new List<Point>();
             foreach(Point pt in curve.IGetControlPoints())
@@ -446,6 +424,9 @@ namespace ModelLaundry_Engine
         }
 
         /******************************************/
+
+        // Todo: is it needed?
+        /*
 
         public static List<ICurve> PointToPointSnap(List<ICurve> group, List<Point> refPoints, double tolerance)
         {
@@ -465,7 +446,9 @@ namespace ModelLaundry_Engine
         /****     Floor snapping to grids      ****/
         /******************************************/
 
-        public static Polyline SnapFloorContourToGrids(Polyline contour, List<Line> grids, double tolerance, double angleTol)
+            // Todo: check if panel is horizontal, make sure it works with inclined/vertical panels
+
+        public static Polyline SnapFloorContourToGrids(this Polyline contour, List<Line> grids, double tolerance, double angleTol)
         {
             double dottol = Math.Cos(angleTol);
             List<Line> edges = contour.GetExploded();
@@ -530,7 +513,9 @@ namespace ModelLaundry_Engine
         /****   Wall plane snapping to grids   ****/
         /******************************************/
 
-        public static Polyline SnapWallPlaneToGrids(Polyline contour, List<Line> grids, double tolerance, double angleTol)
+        // Todo: check if the wall is vertical and handle inclined ones?
+
+        public static Polyline SnapWallPlaneToGrids(this Polyline contour, List<Line> grids, double tolerance, double angleTol)
         {
             double dottol = Math.Cos(angleTol);
             List<Point> verts = contour.ControlPoints;
@@ -581,7 +566,9 @@ namespace ModelLaundry_Engine
         /****    Wall end snapping to grids    ****/
         /******************************************/
 
-        public static Polyline SnapWallEndToGrids(Polyline contour, List<Line> grids, double tolerance, double angleTol)
+            // Todo: check if the wall is vertical and handle inclined ones?
+
+        public static Polyline SnapWallEndToGrids(this Polyline contour, List<Line> grids, double tolerance, double angleTol)
         {
             double dottol = Math.Cos(angleTol);
             List<Point> verts = contour.ControlPoints;
@@ -626,7 +613,9 @@ namespace ModelLaundry_Engine
         /****    Beam end snapping to grids    ****/
         /******************************************/
 
-        public static Line SnapBeamEndToGrids(Line beam, List<Line> grids, double tolerance, double angleTol)
+            // Todo: make sure it works for inclined elements
+
+        public static Line SnapBeamEndToGrids(this Line beam, List<Line> grids, double tolerance, double angleTol)
         {
             if (beam.GetLength() > 0)
             {
@@ -669,7 +658,7 @@ namespace ModelLaundry_Engine
         /****   Beam plane snapping to grids   ****/
         /******************************************/
 
-        public static Line SnapBeamPlaneToGrids(Line beam, List<Line> grids, double tolerance, double angleTol)
+        public static Line SnapBeamPlaneToGrids(this Line beam, List<Line> grids, double tolerance, double angleTol)
         {
             if (beam.GetLength() > 0)
             {
@@ -718,7 +707,7 @@ namespace ModelLaundry_Engine
         /****     Column snapping to grids     ****/
         /******************************************/
 
-        public static Line SnapColumnToGrids(Line col, List<Line> grids, double tolerance)
+        public static Line SnapColumnToGrids(this Line col, List<Line> grids, double tolerance)
         {
             Point[] ends = new Point[] { col.Start, col.End };
 
@@ -751,7 +740,7 @@ namespace ModelLaundry_Engine
         /*** Bar snapping to grid intersections ***/
         /******************************************/
 
-        public static Line SnapBarToGridIntersections(Line bar, List<Point> intersections, double tolerance)
+        public static Line SnapBarToGridIntersections(this Line bar, List<Point> intersections, double tolerance)
         {
             Point[] ends = new Point[] { bar.Start, bar.End };
 
@@ -785,7 +774,7 @@ namespace ModelLaundry_Engine
 
         // TODO: Does not work because of the GetIntersection method issue.
 
-        public static Polyline RemoveFloorProtrusions(Polyline contour, double minArea)
+        public static Polyline RemoveFloorProtrusions(this Polyline contour, double minArea)
         {
             Polyline ccontour = contour.RemoveZeroSegments(0.001);
             ccontour = ccontour.MergeColinearSegments(0.001, false);
@@ -884,6 +873,7 @@ namespace ModelLaundry_Engine
         /***            Scale element           ***/
         /******************************************/
 
+            /*
         public static object ScaleElement(object element, object refElement, double factorX, double factorY, double factorZ)
         {
             // Get the geometry of the element
@@ -906,6 +896,7 @@ namespace ModelLaundry_Engine
         /****  Utility classes and functions   ****/
         /******************************************/
 
+            /*
         private class Snap
         {
             public Vector dir;
@@ -926,6 +917,7 @@ namespace ModelLaundry_Engine
 
         /******************************************/
 
+            /*
         private static string getPointCode(Point pt)
         {
             return Math.Round(pt.X, 3).ToString() + ';' + Math.Round(pt.Y, 3).ToString();
@@ -1050,5 +1042,101 @@ namespace ModelLaundry_Engine
             }
             return intersections;
         }
+
+
+        /*************************************/
+        /****  Get Near Contours          ****/
+        /*************************************/
+
+            // Todo: check if works and move to the right place
+
+        public static List<ICurve> GetNearContours(ICurve refContour, List<ICurve> contours, double tolerance, bool anyHeight = false)
+        {
+            BoundingBox bounds = refContour.IGetBounds();
+            BoundingBox ROI = bounds.GetInflated(tolerance);
+            if (anyHeight) ROI.GetExtents().Z = 1e12;
+
+            List<ICurve> nearContours = new List<ICurve>();
+            foreach (ICurve refC in contours)
+            {
+                BoundingBox cBox = refC.IGetBounds();
+                if (cBox.GetCentre().GetDistance(bounds.GetCentre()) > 1e-5 && cBox.IsInRange(ROI))
+                    nearContours.Add(refC);
+            }
+
+            return nearContours;
+        }
+
+        /*************************************/
+        /****  Filter By Bounding Box     ****/
+        /*************************************/
+
+        // Todo: check if works and move to the right place
+
+        public static List<IBHoMGeometry> FilterByBoundingBox(List<IBHoMGeometry> elements, List<BoundingBox> boxes, out List<IBHoMGeometry> outsiders)
+        {
+            List<IBHoMGeometry> insiders = new List<IBHoMGeometry>();
+            outsiders = new List<IBHoMGeometry>();
+            foreach (IBHoMGeometry element in elements)
+            {
+                if (IsInside(element, boxes))
+                    insiders.Add(element);
+                else
+                    outsiders.Add(element);
+            }
+
+            return insiders;
+        }
+
+        /*************************************/
+
+        public static bool IsInside(IBHoMGeometry geometry, List<BoundingBox> boxes)
+        {
+            bool inside = false;
+            BoundingBox eBox = geometry.IGetBounds();
+            if (eBox != null)
+            {
+                foreach (BoundingBox box in boxes)
+                {
+                    if (box.IsContaining(eBox))
+                    {
+                        inside = true;
+                        break;
+                    }
+                }
+            }
+            return inside;
+        }
+
+        /*************************************/
+        /****    Check snapped points     ****/
+        /*************************************/
+
+        // Todo: is it still relevant? How to improve it? 
+
+            /*
+        public static List<Point> CheckSnappedPoints(List<object> elements, double tolerance, double minDist = 1e-12) //TODO: do we need to re-add #min dist' in bh.om.base?
+        {
+            PointMatrix matrix = new PointMatrix(tolerance);
+
+            // Get the control points in the matrix
+            List<Point> refPoints = new List<Point>();
+            List<ICurve> refGeom = Util.GetGeometries(elements);
+            foreach (ICurve curve in refGeom)
+            {
+                foreach (Point pt in curve.IGetControlPoints())
+                    matrix.AddPoint(pt);
+            }
+
+            // Get all the errors
+            HashSet<Point> errors = new HashSet<Point>();
+            foreach (Tuple<PointMatrix.CompositeValue, PointMatrix.CompositeValue> tuple in matrix.GetRelatedPairs(minDist, tolerance))
+            {
+                errors.Add(tuple.Item1.Point);
+            }
+
+            return errors.ToList();
+        }
+        */
     }
 }
