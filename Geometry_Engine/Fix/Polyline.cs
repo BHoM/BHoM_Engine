@@ -16,7 +16,7 @@ namespace BH.Engine.Geometry
         public static Polyline MergeColinearSegments(this Polyline curve, double angTol, bool positive)
         {
             double dottol = Math.Cos(angTol);
-            List<Line> segments = curve.Explode();
+            List<Line> segments = curve.GetExploded();
             List<Point> pverts = new List<Point>();
             int lc = segments.Count;
             for (int i = 0; i < lc; i++)
@@ -44,7 +44,7 @@ namespace BH.Engine.Geometry
 
         public static Polyline RemoveZeroSegments(this Polyline contour, double tolerance)
         {
-            List<Line> crvs = contour.Explode();
+            List<Line> crvs = contour.GetExploded();
             List<Point> pverts = new List<Point> { crvs[0].Start };
             foreach (Line crv in crvs)
             {

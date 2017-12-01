@@ -15,58 +15,6 @@ namespace ModelLaundry_Engine
         /****  Vertical Snapping to Height     ****/
         /******************************************/
 
-        public static object VerticalSnapToHeight(object element, List<double> refHeights, double tolerance)
-        {
-            // Get the geometry of the element
-            IBHoMGeometry geometry = Util.GetGeometry(element);
-            IBHoMGeometry output = null;
-
-            if (!typeof(IEnumerable).IsAssignableFrom(element.GetType()))
-            {
-                if (geometry is Point)
-                {
-                    output = Snapping.VerticalSnapToHeight((Point)geometry, refHeights, tolerance);
-                }
-                else if (geometry is Line)
-                {
-                    output = Snapping.VerticalSnapToHeight((Line)geometry, refHeights, tolerance);
-                }
-                else if (geometry is ICurve)
-                {
-                    output = Snapping.VerticalSnapToHeight((ICurve)geometry, refHeights, tolerance);
-                }
-            }
-            else
-            {
-                if (geometry is List<Point>)
-                {
-                    foreach (Point point in geometry as List<Point>)
-                    {
-                        output = Snapping.VerticalSnapToHeight(point, refHeights, tolerance);
-                    }
-                }
-                else if (geometry is List<Line>)
-                {
-                    foreach (Line line in geometry as List<Line>)
-                    {
-                        output = Snapping.VerticalSnapToHeight(line, refHeights, tolerance);
-                    }
-                }
-                else if (geometry is List<ICurve>)
-                {
-                    foreach (ICurve curve in geometry as List<ICurve>)
-                    {
-                        output = Snapping.VerticalSnapToHeight(curve, refHeights, tolerance);
-                    }
-                }                
-            }
-
-            // Return the final result
-            return Util.SetGeometry(element, output);
-        }
-
-        /******************************************/
-
         public static Point VerticalSnapToHeight(Point point, List<double> refHeights, double tolerance)
         {
             Point newPoint = new Point(point.X, point.Y, point.Z);
@@ -83,6 +31,8 @@ namespace ModelLaundry_Engine
         }
 
         /******************************************/
+
+            // TODO: Is this one necessary?
 
         public static Line VerticalSnapToHeight(Line line, List<double> refHeights, double tolerance)
         {
@@ -105,6 +55,8 @@ namespace ModelLaundry_Engine
 
         /******************************************/
 
+        // TODO: Is this one necessary?
+
         public static List<ICurve> VerticalSnapToHeight(List<ICurve> group, List<double> refHeights, double tolerance)
         {
             List<ICurve> newGroup = new List<ICurve>();
@@ -120,156 +72,7 @@ namespace ModelLaundry_Engine
 
 
         /******************************************/
-        /****  Vertical Snapping to Curves     ****/
-        /******************************************/
-
-        public static object VerticalSnapToShape(object element, List<object> refElements, double tolerance)
-        {
-            // Get the geometry of the elements
-            IBHoMGeometry geometry = Util.GetGeometry(element);
-            BoundingBox ROI = geometry.IGetBounds().GetInflated(tolerance);
-            List<ICurve> refGeom = Util.GetGeometries(refElements, ROI);
-
-            IBHoMGeometry output = null;
-
-            if (!typeof(IEnumerable).IsAssignableFrom(element.GetType()))
-            {
-                if (geometry is Point)
-                {
-                    output = Snapping.VerticalSnapToShape((Point)geometry, refGeom, tolerance);
-                }
-                else if (geometry is Line)
-                {
-                    output = Snapping.VerticalSnapToShape((Line)geometry, refGeom, tolerance);
-                }
-                else if (geometry is ICurve)
-                {
-                    output = Snapping.VerticalSnapToShape((ICurve)geometry, refGeom, tolerance);
-                }
-            }
-            else
-            {
-                if (geometry is List<Point>)
-                {
-                    foreach (Point point in geometry as List<Point>)
-                    {
-                        output = Snapping.VerticalSnapToShape(point, refGeom, tolerance);
-                    }
-                }
-                else if (geometry is Line)
-                {
-                    foreach (Line line in geometry as List<Line>)
-                    {
-                        output = Snapping.VerticalSnapToShape(line, refGeom, tolerance);
-                    }
-                }
-                else if (geometry is ICurve)
-                {
-                    foreach (ICurve curve in geometry as List<ICurve>)
-                    {
-                        output = Snapping.VerticalSnapToShape(curve, refGeom, tolerance);
-                    }
-                }
-            }
-
-              
-            // Return the final result
-            return Util.SetGeometry(element, output);
-        }
-
-        /******************************************/
-
-        public static Point VerticalSnapToShape(Point point, List<ICurve> refContours, double tolerance)
-        {
-            Point newPoint = new Point(point.X, point.Y, point.Z);
-
-            foreach (ICurve contour in refContours)
-            {
-                double height = contour.IGetBounds().GetCentre().Z;
-                if (Math.Abs(newPoint.Z - height) < tolerance) // Need to add && contour.IsInside(newPoint)
-                {
-                    newPoint.Z = height;
-                    break;
-                }
-            }
-            return newPoint;
-        }
-
-        /******************************************/
-
-        public static Line VerticalSnapToShape(Line line, List<ICurve> refContours, double tolerance)
-        {
-            return new Line(VerticalSnapToShape(line.Start, refContours, tolerance), VerticalSnapToShape(line.End, refContours, tolerance));
-        }
-
-        /******************************************/
-
-        public static ICurve VerticalSnapToShape(ICurve contour, List<ICurve> refContours, double tolerance)
-        {
-            List<Point> oldPoints = contour.IGetControlPoints();
-            List<Point> newPoints = new List<Point>();
-
-            foreach (Point pt in oldPoints)
-            {
-                newPoints.Add(VerticalSnapToShape(pt, refContours, tolerance));
-            }
-            return new Polyline(newPoints);
-        }
-
-        /******************************************/
-
-        public static List<ICurve> VerticalSnapToShape(List<ICurve> group, List<ICurve> refContours, double tolerance)
-        {
-            List<ICurve> newGroup = new List<ICurve>();
-            foreach (ICurve curve in group)
-            {
-                if (curve is Line)
-                    newGroup.Add(VerticalSnapToShape((Line)curve, refContours, tolerance));
-                else
-                    newGroup.Add(VerticalSnapToShape(curve, refContours, tolerance));
-            }
-            return newGroup;
-        }
-
-
-        /******************************************/
-        /****  Horizontal Spnap to Shapes      ****/
-        /******************************************/
-
-        public static object HorizontalSnapToShape(object element, List<object> refElements, double tolerance, bool anyHeight = false)
-        {
-            // Get the geometry of the element
-            IBHoMGeometry geometry = Util.GetGeometry(element);
-            BoundingBox ROI = geometry.IGetBounds().GetInflated(tolerance);
-            if (anyHeight) ROI.GetExtents().Z = 1e12;
-            List<ICurve> refGeom = Util.GetGeometries(refElements, ROI);
-
-            // Do the actal snapping
-            IBHoMGeometry output = null;
-            if (geometry is Point)
-            {
-                output = Snapping.HorizontalSnapToShape((Point)geometry, refGeom, tolerance, anyHeight);
-            }
-            else if (geometry is Line)
-            {
-                output = Snapping.HorizontalSnapToShape((Line)geometry, refGeom, tolerance, anyHeight);
-            }
-            else if (geometry is ICurve)
-            {
-                output = Snapping.HorizontalSnapToShape((ICurve)geometry, refGeom, tolerance, anyHeight);
-            }
-            if (geometry is List<ICurve>)
-            {
-                foreach (ICurve curve in geometry as List<ICurve>)
-                {
-                    output = Snapping.HorizontalSnapToShape(curve, refGeom, tolerance, anyHeight);
-                }
-            }
-
-            // Return the final result
-            return Util.SetGeometry(element, output);
-        }
-
+        /****  Horizontal Snap to Shapes      ****/
         /******************************************/
 
         public static Point HorizontalSnapToShape(Point point, List<ICurve> refContours, double tolerance, bool anyHeight = false)
@@ -661,37 +464,11 @@ namespace ModelLaundry_Engine
         /******************************************/
         /****     Floor snapping to grids      ****/
         /******************************************/
-        
-        public static object SnapFloorContourToGrids(object element, List<object> refElements, double tolerance, double angleTol)
-        {
-            // Get the geometry of the element
-            IBHoMGeometry geometry = Util.GetGeometry(element);
-            List<Line> refGeom = Util.GetGrids(refElements);
-
-            // Do the actal snapping
-            IBHoMGeometry output = null;
-            if (geometry is Polyline)
-            {
-                output = Snapping.SnapFloorContourToGrids((Polyline)geometry, refGeom, tolerance, angleTol);
-            }
-            if (geometry is IEnumerable<Polyline>)
-            {
-                foreach (Polyline curve in geometry as IEnumerable<Polyline>)
-                {
-                    output = Snapping.SnapFloorContourToGrids((Polyline)geometry, refGeom, tolerance, angleTol);
-                }
-            }
-
-            // Return the final result
-            return Util.SetGeometry(element, output);
-        }
-
-        /******************************************/
 
         public static Polyline SnapFloorContourToGrids(Polyline contour, List<Line> grids, double tolerance, double angleTol)
         {
             double dottol = Math.Cos(angleTol);
-            List<Line> edges = contour.Explode();
+            List<Line> edges = contour.GetExploded();
             Line[] refgrids = new Line[edges.Count];
             for (int j = 0; j < edges.Count; j++)
             {
@@ -753,32 +530,6 @@ namespace ModelLaundry_Engine
         /****   Wall plane snapping to grids   ****/
         /******************************************/
 
-        public static object SnapWallPlaneToGrids(object element, List<object> refElements, double tolerance, double angleTol)
-        {
-            // Get the geometry of the element
-            IBHoMGeometry geometry = Util.GetGeometry(element);
-            List<Line> refGeom = Util.GetGrids(refElements);
-
-            // Do the actal snapping
-            IBHoMGeometry output = null;
-            if (geometry is Polyline)
-            {
-                output = Snapping.SnapWallPlaneToGrids((Polyline)geometry, refGeom, tolerance, angleTol);
-            }
-            if (geometry is IEnumerable<Polyline>)
-            {
-                foreach (Polyline curve in geometry as IEnumerable<Polyline>)
-                {
-                    output = Snapping.SnapWallPlaneToGrids((Polyline)geometry, refGeom, tolerance, angleTol);
-                }
-            }
-
-            // Return the final result
-            return Util.SetGeometry(element, output);
-        }
-
-        /******************************************/
-
         public static Polyline SnapWallPlaneToGrids(Polyline contour, List<Line> grids, double tolerance, double angleTol)
         {
             double dottol = Math.Cos(angleTol);
@@ -830,32 +581,6 @@ namespace ModelLaundry_Engine
         /****    Wall end snapping to grids    ****/
         /******************************************/
 
-        public static object SnapWallEndToGrids(object element, List<object> refElements, double tolerance, double angleTol)
-        {
-            // Get the geometry of the element
-            IBHoMGeometry geometry = Util.GetGeometry(element);
-            List<Line> refGeom = Util.GetGrids(refElements);
-
-            // Do the actal snapping
-            IBHoMGeometry output = null;
-            if (geometry is Polyline)
-            {
-                output = Snapping.SnapWallEndToGrids((Polyline)geometry, refGeom, tolerance, angleTol);
-            }
-            if (geometry is IEnumerable<Polyline>)
-            {
-                foreach (Polyline curve in geometry as IEnumerable<Polyline>)
-                {
-                    output = Snapping.SnapWallEndToGrids((Polyline)geometry, refGeom, tolerance, angleTol);
-                }
-            }
-
-            // Return the final result
-            return Util.SetGeometry(element, output);
-        }
-
-        /******************************************/
-
         public static Polyline SnapWallEndToGrids(Polyline contour, List<Line> grids, double tolerance, double angleTol)
         {
             double dottol = Math.Cos(angleTol);
@@ -901,32 +626,6 @@ namespace ModelLaundry_Engine
         /****    Beam end snapping to grids    ****/
         /******************************************/
 
-        public static object SnapBeamEndToGrids(object element, List<object> refElements, double tolerance, double angleTol)
-        {
-            // Get the geometry of the element
-            IBHoMGeometry geometry = Util.GetGeometry(element);
-            List<Line> refGeom = Util.GetGrids(refElements);
-
-            // Do the actal snapping
-            IBHoMGeometry output = null;
-            if (geometry is Line)
-            {
-                output = Snapping.SnapBeamEndToGrids((Line)geometry, refGeom, tolerance, angleTol);
-            }
-            if (geometry is IEnumerable<Line>)
-            {
-                foreach (Line curve in geometry as IEnumerable<Line>)
-                {
-                    output = Snapping.SnapBeamEndToGrids((Line)geometry, refGeom, tolerance, angleTol);
-                }
-            }
-
-            // Return the final result
-            return Util.SetGeometry(element, output);
-        }
-
-        /******************************************/
-
         public static Line SnapBeamEndToGrids(Line beam, List<Line> grids, double tolerance, double angleTol)
         {
             if (beam.GetLength() > 0)
@@ -968,32 +667,6 @@ namespace ModelLaundry_Engine
 
         /******************************************/
         /****   Beam plane snapping to grids   ****/
-        /******************************************/
-
-        public static object SnapBeamPlaneToGrids(object element, List<object> refElements, double tolerance, double angleTol)
-        {
-            // Get the geometry of the element
-            IBHoMGeometry geometry = Util.GetGeometry(element);
-            List<Line> refGeom = Util.GetGrids(refElements);
-
-            // Do the actal snapping
-            IBHoMGeometry output = null;
-            if (geometry is Line)
-            {
-                output = Snapping.SnapBeamPlaneToGrids((Line)geometry, refGeom, tolerance, angleTol);
-            }
-            if (geometry is IEnumerable<Line>)
-            {
-                foreach (Line curve in geometry as IEnumerable<Line>)
-                {
-                    output = Snapping.SnapBeamPlaneToGrids((Line)geometry, refGeom, tolerance, angleTol);
-                }
-            }
-
-            // Return the final result
-            return Util.SetGeometry(element, output);
-        }
-
         /******************************************/
 
         public static Line SnapBeamPlaneToGrids(Line beam, List<Line> grids, double tolerance, double angleTol)
@@ -1045,32 +718,6 @@ namespace ModelLaundry_Engine
         /****     Column snapping to grids     ****/
         /******************************************/
 
-        public static object SnapColumnToGrids(object element, List<object> refElements, double tolerance)
-        {
-            // Get the geometry of the element
-            IBHoMGeometry geometry = Util.GetGeometry(element);
-            List<Line> refGeom = Util.GetGrids(refElements);
-
-            // Do the actal snapping
-            IBHoMGeometry output = null;
-            if (geometry is Line)
-            {
-                output = Snapping.SnapColumnToGrids((Line)geometry, refGeom, tolerance);
-            }
-            if (geometry is IEnumerable<Line>)
-            {
-                foreach (Line curve in geometry as IEnumerable<Line>)
-                {
-                    output = Snapping.SnapColumnToGrids((Line)geometry, refGeom, tolerance);
-                }
-            }
-
-            // Return the final result
-            return Util.SetGeometry(element, output);
-        }
-
-        /******************************************/
-
         public static Line SnapColumnToGrids(Line col, List<Line> grids, double tolerance)
         {
             Point[] ends = new Point[] { col.Start, col.End };
@@ -1102,33 +749,6 @@ namespace ModelLaundry_Engine
 
         /******************************************/
         /*** Bar snapping to grid intersections ***/
-        /******************************************/
-
-        // TODO: Does not work because of the GetIntersection method issue.
-        public static object SnapBarToGridIntersections(object element, List<object> refElements, double tolerance)
-        {
-            // Get the geometry of the element
-            IBHoMGeometry geometry = Util.GetGeometry(element);
-            List<Point> refGeom = Util.GetGridIntersections(refElements);
-
-            // Do the actal snapping
-            IBHoMGeometry output = null;
-            if (geometry is Line)
-            {
-                output = Snapping.SnapBarToGridIntersections((Line)geometry, refGeom, tolerance);
-            }
-            if (geometry is IEnumerable<Line>)
-            {
-                foreach (Line curve in geometry as IEnumerable<Line>)
-                {
-                    output = Snapping.SnapBarToGridIntersections((Line)geometry, refGeom, tolerance);
-                }
-            }
-
-            // Return the final result
-            return Util.SetGeometry(element, output);
-        }
-
         /******************************************/
 
         public static Line SnapBarToGridIntersections(Line bar, List<Point> intersections, double tolerance)
@@ -1165,31 +785,6 @@ namespace ModelLaundry_Engine
 
         // TODO: Does not work because of the GetIntersection method issue.
 
-        public static object RemoveFloorProtrusions(object element, double minArea)
-        {
-            // Get the geometry of the element
-            IBHoMGeometry geometry = Util.GetGeometry(element);
-
-            // Do the actal snapping
-            IBHoMGeometry output = null;
-            if (geometry is Polyline)
-            {
-                output = Snapping.RemoveFloorProtrusions((Polyline)geometry, minArea);
-            }
-            if (geometry is IEnumerable<Polyline>)
-            {
-                foreach (Polyline curve in geometry as IEnumerable<Polyline>)
-                {
-                    output = Snapping.RemoveFloorProtrusions((Polyline)geometry, minArea);
-                }
-            }
-
-            // Return the final result
-            return Util.SetGeometry(element, output);
-        }
-
-        /******************************************/
-
         public static Polyline RemoveFloorProtrusions(Polyline contour, double minArea)
         {
             Polyline ccontour = contour.RemoveZeroSegments(0.001);
@@ -1200,7 +795,7 @@ namespace ModelLaundry_Engine
 
             while (running)
             {
-                List<Line> crvs = ccontour.Explode();
+                List<Line> crvs = ccontour.GetExploded();
                 int lc = crvs.Count;
                 List<SIVertice> mvertices = new List<SIVertice> { new SIVertice(crvs[0].Start, false) };
                 for (int i = 0; i < crvs.Count; i++)
@@ -1210,10 +805,10 @@ namespace ModelLaundry_Engine
                     {
                         if (Math.Abs(i - j) % (lc - 1) > 1)
                         {
-                            Point intpt = crvs[i].GetIntersection(crvs[j]);
-                            if (crvs[i].GetClosestPoint(intpt).GetDistance(intpt) < 0.000001 && crvs[j].GetClosestPoint(intpt).GetDistance(intpt) < 0.000001)
+                            Point ipt = crvs[i].GetIntersection(crvs[j]);
+                            if (ipt != null)
                             {
-                                ints.Add(new SIVertice(intpt, true));
+                                ints.Add(new SIVertice(ipt, true));
                             }
                         }
                     }
@@ -1289,26 +884,6 @@ namespace ModelLaundry_Engine
         /***            Scale element           ***/
         /******************************************/
 
-        public static object ScaleElement(object element, object refElement, double factor)
-        {
-            // Get the geometry of the element
-            IBHoMGeometry geometry = Util.GetGeometry(element);
-            IBHoMGeometry refGeometry = Util.GetGeometry(refElement);
-            Vector factorV = new Vector(factor, factor, factor);
-
-            // Do the actal snapping
-            IBHoMGeometry output = null;
-            if (refGeometry is Point)
-            {
-                output = geometry.IScale((Point)refGeometry, factorV);
-            }
-
-            // Return the final result
-            return Util.SetGeometry(element, output);
-        }
-
-        /******************************************/
-
         public static object ScaleElement(object element, object refElement, double factorX, double factorY, double factorZ)
         {
             // Get the geometry of the element
@@ -1320,69 +895,12 @@ namespace ModelLaundry_Engine
             IBHoMGeometry output = null;
             if (refGeometry is Point)
             {
-                output = geometry.IScale((Point)refGeometry, factorV);
+                output = geometry.IGetScaled((Point)refGeometry, factorV);
             }
 
             // Return the final result
             return Util.SetGeometry(element, output);
         }
-
-
-        /******************************************/
-        /***       Merge colinear segments      ***/
-        /******************************************/
-
-        public static object MergeColinearSegments(object element, double angTol, bool positive)
-        {
-            // Get the geometry of the element
-            IBHoMGeometry geometry = Util.GetGeometry(element);
-
-            // Do the actal snapping
-            IBHoMGeometry output = null;
-            if (geometry is Polyline)
-            {
-                output = ((Polyline)geometry).MergeColinearSegments(angTol, positive);
-            }
-            if (geometry is IEnumerable<Polyline>)
-            {
-                foreach (Polyline curve in geometry as IEnumerable<Polyline>)
-                {
-                    output = ((Polyline)geometry).MergeColinearSegments(angTol, positive);
-                }
-            }
-
-            // Return the final result
-            return Util.SetGeometry(element, output);
-        }
-
-
-        /******************************************/
-        /***        Remove zero segments        ***/
-        /******************************************/
-
-        public static object RemoveZeroSegments(object element, double tolerance)
-        {
-            // Get the geometry of the element
-            IBHoMGeometry geometry = Util.GetGeometry(element);
-
-            // Do the actal snapping
-            IBHoMGeometry output = null;
-            if (geometry is Polyline)
-            {
-                output = ((Polyline)geometry).RemoveZeroSegments(tolerance);
-            }
-            if (geometry is IEnumerable<Polyline>)
-            {
-                foreach (Polyline curve in geometry as IEnumerable<Polyline>)
-                {
-                    output = ((Polyline)geometry).RemoveZeroSegments(tolerance);
-                }
-            }
-
-            // Return the final result
-            return Util.SetGeometry(element, output);
-        }
-
 
         /******************************************/
         /****  Utility classes and functions   ****/
@@ -1414,8 +932,7 @@ namespace ModelLaundry_Engine
         }
 
         /******************************************/
-
-        //It is not the same as Line/Line intersection from BHoM.Geometry.Intersect - it tackles small angles
+        
         private static Point IntersectLineGrid(Point p1, Vector v1, Point p2, Vector v2, double dottol)
         {
             v1 = v1.GetNormalised();
@@ -1490,7 +1007,7 @@ namespace ModelLaundry_Engine
         private static double GetFloorSignedArea(this Polyline contour)
         {
             double area = 0;
-            List<Line> edges = contour.Explode();
+            List<Line> edges = contour.GetExploded();
             List<Point> vertices = new List<Point> { edges[0].Start };
             for (int i = 0; i < edges.Count; i++)
             {
@@ -1512,6 +1029,26 @@ namespace ModelLaundry_Engine
                 Location = location;
                 SelfIntersection = SI;
             }
+        }
+
+        /******************************************/
+
+        // TODO: This does not work because of malfunctioning GetIntersection method...
+        public static List<Point> GetGridIntersections(List<Line> grids)
+        {
+            List<Point> intersections = new List<Point>();
+            for (int i = 0; i < grids.Count - 1; i++)
+            {
+                for (int j = i + 1; j < grids.Count; j++)
+                {
+                    Point ipt = grids[i].GetIntersection(grids[j]);
+                    if (ipt != null)
+                    {
+                        intersections.Add(ipt);
+                    }
+                }
+            }
+            return intersections;
         }
     }
 }

@@ -13,7 +13,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Vectors                  ****/
         /***************************************************/
 
-        public static Point Scale(this Point pt, Point about, Vector factor)
+        public static Point GetScaled(this Point pt, Point about, Vector factor)
         {
             TransformMatrix t = Create.ScaleMatrix(about, factor);
             return pt.GetTransformed(t);
@@ -21,7 +21,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static Vector Scale(this Vector vector, Point about, Vector factor)
+        public static Vector GetScaled(this Vector vector, Point about, Vector factor)
         {
             TransformMatrix t = Create.ScaleMatrix(about, factor);
             return vector.GetTransformed(t);
@@ -29,7 +29,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static Plane Scale(this Plane plane, Point about, Vector factor)
+        public static Plane GetScaled(this Plane plane, Point about, Vector factor)
         {
             TransformMatrix t = Create.ScaleMatrix(about, factor);
             return plane.GetTransformed(t);
@@ -40,7 +40,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Curves                   ****/
         /***************************************************/
     
-        public static Arc Scale(this Arc arc, Point about, Vector factor)
+        public static Arc GetScaled(this Arc arc, Point about, Vector factor)
         {
             TransformMatrix t = Create.ScaleMatrix(about, factor);
             return arc.GetTransformed(t);
@@ -48,7 +48,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static Circle Scale(this Circle circle, Point about, Vector factor)
+        public static Circle GetScaled(this Circle circle, Point about, Vector factor)
         {
             TransformMatrix t = Create.ScaleMatrix(about, factor);
             return circle.GetTransformed(t);
@@ -56,7 +56,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static Line Scale(this Line line, Point about, Vector factor)
+        public static Line GetScaled(this Line line, Point about, Vector factor)
         {
             TransformMatrix t = Create.ScaleMatrix(about, factor);
             return line.GetTransformed(t);
@@ -64,7 +64,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static NurbCurve Scale(this NurbCurve curve, Point about, Vector factor)
+        public static NurbCurve GetScaled(this NurbCurve curve, Point about, Vector factor)
         {
             TransformMatrix t = Create.ScaleMatrix(about, factor);
             return curve.GetTransformed(t);
@@ -72,7 +72,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static PolyCurve Scale(this PolyCurve curve, Point about, Vector factor)
+        public static PolyCurve GetScaled(this PolyCurve curve, Point about, Vector factor)
         {
             TransformMatrix t = Create.ScaleMatrix(about, factor);
             return curve.GetTransformed(t);
@@ -80,7 +80,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static Polyline Scale(this Polyline curve, Point about, Vector factor)
+        public static Polyline GetScaled(this Polyline curve, Point about, Vector factor)
         {
             TransformMatrix t = Create.ScaleMatrix(about, factor);
             return curve.GetTransformed(t);
@@ -91,7 +91,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Surfaces                 ****/
         /***************************************************/
         
-        public static Extrusion Scale(this Extrusion surface, Point about, Vector factor)
+        public static Extrusion GetScaled(this Extrusion surface, Point about, Vector factor)
         {
             TransformMatrix t = Create.ScaleMatrix(about, factor);
             return surface.GetTransformed(t);
@@ -99,7 +99,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static Loft Scale(this Loft surface, Point about, Vector factor)
+        public static Loft GetScaled(this Loft surface, Point about, Vector factor)
         {
             TransformMatrix t = Create.ScaleMatrix(about, factor);
             return surface.GetTransformed(t);
@@ -107,7 +107,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static NurbSurface Scale(this NurbSurface surface, Point about, Vector factor)
+        public static NurbSurface GetScaled(this NurbSurface surface, Point about, Vector factor)
         {
             TransformMatrix t = Create.ScaleMatrix(about, factor);
             return surface.GetTransformed(t);
@@ -115,7 +115,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static Pipe Scale(this Pipe surface, Point about, Vector factor)
+        public static Pipe GetScaled(this Pipe surface, Point about, Vector factor)
         {
             TransformMatrix t = Create.ScaleMatrix(about, factor);
             return surface.GetTransformed(t);
@@ -123,7 +123,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static PolySurface Scale(this PolySurface surface, Point about, Vector factor)
+        public static PolySurface GetScaled(this PolySurface surface, Point about, Vector factor)
         {
             TransformMatrix t = Create.ScaleMatrix(about, factor);
             return surface.GetTransformed(t);
@@ -134,7 +134,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Others                   ****/
         /***************************************************/
 
-        public static Mesh Scale(this Mesh mesh, Point about, Vector factor)
+        public static Mesh GetScaled(this Mesh mesh, Point about, Vector factor)
         {
             TransformMatrix t = Create.ScaleMatrix(about, factor);
             return mesh.GetTransformed(t);
@@ -142,7 +142,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static CompositeGeometry Scale(this CompositeGeometry group, Point about, Vector factor)
+        public static CompositeGeometry GetScaled(this CompositeGeometry group, Point about, Vector factor)
         {
             TransformMatrix t = Create.ScaleMatrix(about, factor);
             return group.GetTransformed(t);
@@ -150,7 +150,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static IBHoMGeometry IScale(this IBHoMGeometry geometry, Point about, Vector factor)
+        public static IBHoMGeometry IGetScaled(this IBHoMGeometry geometry, Point about, Vector factor)
         {
             TransformMatrix t = Create.ScaleMatrix(about, factor);
             return geometry.IGetTransformed(t);
@@ -158,7 +158,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static ICurve IScale(this ICurve geometry, Point about, Vector factor)
+        public static ICurve IGetScaled(this ICurve geometry, Point about, Vector factor)
         {
             TransformMatrix t = Create.ScaleMatrix(about, factor);
             return geometry.IGetTransformed(t);
@@ -166,7 +166,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static ISurface IScale(this ISurface geometry, Point about, Vector factor)
+        public static ISurface IGetScaled(this ISurface geometry, Point about, Vector factor)
         {
             TransformMatrix t = Create.ScaleMatrix(about, factor);
             return geometry.IGetTransformed(t);

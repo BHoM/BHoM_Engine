@@ -15,12 +15,12 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         // TODO: Does not work because of the GetIntersection method issue.
-        public static bool SelfIntersection(this Polyline contour)
+        public static bool GetSelfIntersections(this Polyline contour)
         {
             // TODO: Better to return point list
 
             //Polyline ccontour = contour.RemoveZeroSegments(0.001);
-            List<Line> crvs = contour.Explode().Cast<Line>().ToList();
+            List<Line> crvs = contour.GetExploded().Cast<Line>().ToList();
 
             int lc = crvs.Count;
             for (int i = 0; i < crvs.Count; i++)

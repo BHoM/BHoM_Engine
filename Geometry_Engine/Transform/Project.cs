@@ -38,7 +38,7 @@ namespace BH.Engine.Geometry
 
         public static Plane GetProjected(this Plane plane, Plane p)
         {
-            throw new NotImplementedException();
+            return new Plane(plane.Origin.GetProjected(p), p.Normal);
         }
 
 
@@ -166,23 +166,6 @@ namespace BH.Engine.Geometry
         public static ISurface IGetProjected(this ISurface geometry, Plane p)
         {
             return GetProjected(geometry as dynamic, p);
-        }
-
-
-        /***************************************************/
-        /****           Project to XY plane             ****/
-        /***************************************************/
-
-        public static Point ProjectToGround(this Point pt)
-        {
-            return new Point(pt.X, pt.Y, 0);
-        }
-
-        /***************************************************/
-
-        public static Line ProjectToGround(this Line line)
-        {
-            return new Line(line.Start.ProjectToGround(), line.End.ProjectToGround());
         }
     }
 }
