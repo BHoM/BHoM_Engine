@@ -47,11 +47,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Diagnostic.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Snapping.cs" />
-    <Compile Include="Structure.cs" />
-    <Compile Include="Util.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BHoM_Engine\BHoM_Engine.csproj">
