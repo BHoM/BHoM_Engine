@@ -31,8 +31,7 @@ namespace BH.Engine.Reflection
             {
                 if (!prop.CanRead || !prop.CanWrite || prop.GetMethod.GetParameters().Count() > 0) continue;
                 var value = prop.GetValue(obj, null);
-                if (value != null && !(value is ValueType))
-                    dic[prop.Name] = value;
+                dic[prop.Name] = value;
             }
             return dic;
         }
