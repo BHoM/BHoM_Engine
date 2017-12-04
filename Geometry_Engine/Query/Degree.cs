@@ -20,11 +20,5 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static int GetDegree(this NurbCurve curve)
-        {
-            int degree = 1;
-            while (curve.Knots[degree - 1] == curve.Knots[degree]) degree++;
-            return degree;
-        }
     }
 }
