@@ -44,10 +44,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Create\Bar.cs" />
+    <Compile Include="Create\ConcreteSection.cs" />
     <Compile Include="Create\LinkConstraints.cs" />
     <Compile Include="Create\Opening.cs" />
     <Compile Include="Create\Panel.cs" />
     <Compile Include="Create\SectionProfile.cs" />
+    <Compile Include="Create\SteelSection.cs" />
     <Compile Include="Query\Centreline.cs" />
     <Compile Include="Query\Centroid.cs" />
     <Compile Include="Query\Edge.cs" />

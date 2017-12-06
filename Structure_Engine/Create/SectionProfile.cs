@@ -14,7 +14,7 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static List<ICurve> ISecction(double tft, double tfw, double bft, double bfw, double wt, double wd, double r1, double r2)
+        public static List<ICurve> ISecctionCurves(double tft, double tfw, double bft, double bfw, double wt, double wd, double r1, double r2)
         {
             List<ICurve> perimeter = new List<ICurve>();
             Point p = new Point(bfw / 2, 0, 0);
@@ -41,7 +41,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static List<ICurve> TeeSection(double tft, double tfw, double wt, double wd, double r1, double r2)
+        public static List<ICurve> TeeSectionCurves(double tft, double tfw, double wt, double wd, double r1, double r2)
         {
             List<ICurve> perimeter = new List<ICurve>();
             Point p = new Point(wt / 2, 0, 0);
@@ -66,7 +66,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static List<ICurve> AngleSection(double width, double depth, double flangeThickness, double webThickness, double innerRadius, double toeRadius)
+        public static List<ICurve> AngleSectionCurves(double width, double depth, double flangeThickness, double webThickness, double innerRadius, double toeRadius)
         {
             List<ICurve> perimeter = new List<ICurve>();
             Point p = new Point(0, 0, 0);
@@ -89,7 +89,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static List<ICurve> RectangleSection(double width, double height, double radius)
+        public static List<ICurve> RectangleSectionCurves(double width, double height, double radius)
         {
             List<ICurve> perimeter = new List<ICurve>();
             Point p = new Point(-width / 2, height / 2 - radius, 0);
@@ -106,27 +106,27 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static List<ICurve> BoxSection(double width, double height, double tw, double tf, double innerRadius, double outerRadius)
+        public static List<ICurve> BoxSectionCurves(double width, double height, double tw, double tf, double innerRadius, double outerRadius)
         {
-            List<ICurve> box = RectangleSection(width, height, outerRadius);
-            box.AddRange(RectangleSection(width - 2 * tw, height - 2 * tf, innerRadius));
+            List<ICurve> box = RectangleSectionCurves(width, height, outerRadius);
+            box.AddRange(RectangleSectionCurves(width - 2 * tw, height - 2 * tf, innerRadius));
             return box;
         }
 
         /***************************************************/
 
-        public static List<ICurve> CircleSection(double radius)
+        public static List<ICurve> CircleSectionCurves(double radius)
         {
             return new List<ICurve> { new Circle(Point.Origin, radius) };
         }
 
         /***************************************************/
 
-        public static List<ICurve> TubeSection(double outerRadius, double thickness)
+        public static List<ICurve> TubeSectionCurves(double outerRadius, double thickness)
         {
             List<ICurve> group = new List<ICurve>();
-            group.AddRange(CircleSection(outerRadius));
-            group.AddRange(CircleSection(outerRadius - thickness));
+            group.AddRange(CircleSectionCurves(outerRadius));
+            group.AddRange(CircleSectionCurves(outerRadius - thickness));
             return group;
         }
 
