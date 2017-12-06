@@ -325,7 +325,9 @@ namespace BH.Engine.Geometry
                     if (previousSide != 0)
                     {
                         Line line = new Line(curve.ControlPoints[i - 1], curve.ControlPoints[i]);
-                        result.Add(GetIntersection(line, plane, false, tolerance));
+                        Point pt = GetIntersection(line, plane, false, tolerance);
+                        if(pt != null)
+                            result.Add(pt);
                     }
                     else
                     {

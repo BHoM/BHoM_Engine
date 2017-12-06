@@ -24,6 +24,8 @@ namespace BH.Engine.Geometry
                 y.AddRange(edges[edgeIndex].GetIntersections(plane, Tolerance.Distance));
             }
 
+            y.RemoveAll(x => x == null);
+
             List<double> isolatedCoords = new List<double>();
 
             for (int point = 0; point < y.Count; point++)

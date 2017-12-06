@@ -44,7 +44,107 @@ namespace BH.Engine.Geometry
 
         public static BoundingBox GetBounds(this Arc arc)
         {
-            throw new NotImplementedException();
+
+            Circle circle = Create.Circle(arc.Start, arc.Middle, arc.End);
+
+
+            double xMax, xMin, yMax, yMin, zMax, zMin;
+
+            //Get m in and max values from start and end points
+            if (arc.Start.X > arc.End.X)
+            {
+                xMax = arc.Start.X;
+                xMin = arc.End.X;
+            }
+            else
+            {
+                xMax = arc.End.X;
+                xMin = arc.Start.X;
+            }
+
+            if (arc.Start.Y > arc.End.Y)
+            {
+                yMax = arc.Start.Y;
+                yMin = arc.End.Y;
+            }
+            else
+            {
+                yMax = arc.End.Y;
+                yMin = arc.Start.Y;
+            }
+
+            if (arc.Start.Z > arc.End.Z)
+            {
+                zMax = arc.Start.Z;
+                zMin = arc.End.Z;
+            }
+            else
+            {
+                zMax = arc.End.Z;
+                zMin = arc.Start.Z;
+            }
+
+
+            Vector x = arc.Start - circle.Centre;
+            Vector y = circle.Normal.GetCrossProduct(x);
+
+            Vector end = arc.End - circle.Centre;
+
+            double angle = x.GetSignedAngle(end, circle.Normal);
+
+            angle = angle < 0 ? angle + Math.PI * 2 : angle;
+
+            double a1, a2, a3, b1, b2, b3;
+
+            a1 = x.X;
+            a2 = x.Y;
+            a3 = x.Z;
+            b1 = y.X;
+            b2 = y.Y;
+            b3 = y.Z;
+
+
+            //Extreme x
+            double theta = Math.Abs(a1) > Tolerance.Distance ? Math.Atan(b1 / a1) : Math.PI/2;
+            while (theta < angle)
+            {
+                if (theta > 0)
+                {
+                    double xTemp = circle.Centre.X + Math.Cos(theta) * a1 + Math.Sin(theta) * b1;
+                    xMax = Math.Max(xMax, xTemp);
+                    xMin = Math.Min(xMin, xTemp);
+                }
+                theta += Math.PI;
+            }
+
+            //Extreme y
+            theta = Math.Abs(a2) > Tolerance.Distance ? Math.Atan(b2 / a2) : Math.PI/2;
+            while (theta < angle)
+            {
+                if (theta > 0)
+                {
+                    double yTemp = circle.Centre.Y + Math.Cos(theta) * a2 + Math.Sin(theta) * b2;
+                    yMax = Math.Max(yMax, yTemp);
+                    yMin = Math.Min(yMin, yTemp);
+                }
+                theta += Math.PI;
+            }
+
+            //Extreme z
+            theta = Math.Abs(a3) > Tolerance.Distance ? Math.Atan(b3 / a3) : Math.PI/2;
+            while (theta < angle)
+            {
+                if (theta > 0)
+                {
+                    double zTemp = circle.Centre.Z + Math.Cos(theta) * a3 + Math.Sin(theta) * b3;
+                    zMax = Math.Max(zMax, zTemp);
+                    zMin = Math.Min(zMin, zTemp);
+                }
+                theta += Math.PI;
+            }
+            
+
+            return new BoundingBox(new Point(xMin, yMin, zMin), new Point(xMax, yMax, zMax));
         }
 
         /***************************************************/

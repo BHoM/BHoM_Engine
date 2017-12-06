@@ -150,7 +150,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static double IntegrateArea(List<IntegrationSlice> solid, List<IntegrationSlice> voids, Vector direction, ICurve curve, double from, double to, ref double centroid)
+        public static double GetAreaIntegration(List<IntegrationSlice> solid, List<IntegrationSlice> voids, Vector direction, ICurve curve, double from, double to, ref double centroid)
         {
             double centroidSolid = 0;
             double centroidVoid = 0;

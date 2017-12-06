@@ -1,5 +1,6 @@
 ﻿using BH.oM.Geometry;
 using BH.oM.Structural.Elements;
+using BH.oM.Structural.Properties;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,6 +43,18 @@ namespace BH.Engine.Base
         }
 
         /***************************************************/
+
+        public static IBHoMGeometry GetGeometry(this SteelSection section)
+        {
+            return new CompositeGeometry(section.Edges);
+        }
+
+        /***************************************************/
+
+        public static IBHoMGeometry GetGeometry(this ConcreteSection section)
+        {
+            return new CompositeGeometry(section.Edges);
+        }
 
         //public static IBHoMGeometry GetGeometry(this FEMesh feMesh)
         //{
