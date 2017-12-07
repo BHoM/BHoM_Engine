@@ -46,16 +46,7 @@ namespace BH.Engine.Geometry
 
         public static Point GetCentre(this Polyline polyline)
         {
-            List<Point> pts = polyline.ControlPoints;
-            int count = pts.Count;
-            double X = 0, Y = 0, Z = 0;
-            for (int i = 0; i < count; i++)
-            {
-                X += pts[i].X;
-                Y += pts[i].Y;
-                Z += pts[i].Z;
-            }
-            return new Point(X / count, Y / count, Z / count);
+            return polyline.ControlPoints.GetCentre();
         }
 
 
