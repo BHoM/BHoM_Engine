@@ -10,7 +10,24 @@ namespace BH.Engine.Geometry
     public static partial class Query
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /**** Vectors                                   ****/
+        /***************************************************/
+
+        public static Point GetCentre(this IEnumerable<Point> points)
+        {
+            int count = points.Count();
+            if (count < 1) return null;
+
+            Point mean = new Point(0, 0, 0);
+
+            foreach (Point pt in points)
+                mean += pt;
+
+            return mean /= count;
+        }
+
+        /***************************************************/
+        /**** Curves                                    ****/
         /***************************************************/
 
         public static Point GetCentre(this Arc arc)
@@ -27,26 +44,33 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        public static Point GetCentre(this Polyline polyline)
+        {
+            List<Point> pts = polyline.ControlPoints;
+            int count = pts.Count;
+            double X = 0, Y = 0, Z = 0;
+            for (int i = 0; i < count; i++)
+            {
+                X += pts[i].X;
+                Y += pts[i].Y;
+                Z += pts[i].Z;
+            }
+            return new Point(X / count, Y / count, Z / count);
+        }
+
+
+        /***************************************************/
+        /**** Surfaces                                    ****/
+        /***************************************************/
+
         public static Point GetCentre(this BoundingBox box)
         {
             return new Point((box.Max.X + box.Min.X) / 2, (box.Max.Y + box.Min.Y) / 2, (box.Max.Z + box.Min.Z) / 2);
         }
 
+
         /***************************************************/
-
-        public static Point GetCentre(this IEnumerable<Point> points)
-        {
-            int count = points.Count();
-            if (count < 1) return null;
-
-            Point mean = new Point(0, 0, 0);
-
-            foreach (Point pt in points)
-                mean += pt;
-
-            return mean /= count;
-        }
-
+        /**** Mesh                                      ****/
         /***************************************************/
 
         public static List<Point> GetCentres(this Mesh mesh)
