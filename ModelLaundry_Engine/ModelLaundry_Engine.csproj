@@ -50,20 +50,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Snapping.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\DataStructure_Engine\DataStructure_Engine.csproj">
-      <Project>{8082ca2a-ac5c-4690-9f09-960e0d3e4102}</Project>
-      <Name>DataStructure_Engine</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Geometry_Engine\Geometry_Engine.csproj">
-      <Project>{89ab2dcb-ef87-4cba-b59c-c16a8a71d333}</Project>
-      <Name>Geometry_Engine</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Structure_Engine\Structure_Engine.csproj">
-      <Project>{52a31a0a-e340-4909-aad6-228045b07bf3}</Project>
-      <Name>Structure_Engine</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
