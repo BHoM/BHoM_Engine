@@ -27,6 +27,13 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        public static Vector GetCrossProduct(this Point a, Point b)
+        {
+            return new Vector(a.Y * b.Z - a.Z * b.Y, a.Z * b.X - a.X * b.Z, a.X * b.Y - a.Y * b.X);
+        }
+
+        /***************************************************/
+
         public static Quaternion GetProduct(this Quaternion q1, Quaternion q2)
         {
             return q1 * q2;

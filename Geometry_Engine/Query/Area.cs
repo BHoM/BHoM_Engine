@@ -43,15 +43,29 @@ namespace BH.Engine.Geometry
 
         public static double GetArea(this PolyCurve curve)
         {
-            throw new NotImplementedException();
+            return curve.Curves.Sum(crv => crv.IGetArea());
         }
 
         /***************************************************/
 
         public static double GetArea(this Polyline curve)
         {
-            throw new NotImplementedException();
+            List<Point> pts = curve.ControlPoints;
+            int ptsCount = pts.Count;
+            if (ptsCount < 3) { return 0.0; }
+            Vector normal = Create.Plane(pts[0], pts[1], pts[2]).Normal; // Replace with PlaneFitFromPoints()
+            double x = 0, y = 0, z = 0;
+            for (int i = 0; i < ptsCount; i++)
+            {
+                int j = (i + 1) % ptsCount;
+                Vector prod = GetCrossProduct(pts[i], pts[j]);
+                x += prod.X;
+                y += prod.Y;
+                z += prod.Z;
+            }
+            return Math.Abs((new Vector(x, y, z) * normal) / 2);
         }
+
 
         /***************************************************/
         /**** Public Methods - Surfaces                 ****/
