@@ -35,7 +35,7 @@
   <ItemGroup>
     <Reference Include="BHoM, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\BHoM\Build\BHoM.dll</HintPath>
+      <HintPath>..\Build\BHoM.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -51,11 +51,6 @@
     <Compile Include="Snapping.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\BHoM_Engine\BHoM_Engine.csproj">
-      <Project>{1ad45c88-dd54-48e5-951f-55edfeb70e35}</Project>
-      <Name>BHoM_Engine</Name>
-      <Private>False</Private>
-    </ProjectReference>
     <ProjectReference Include="..\DataStructure_Engine\DataStructure_Engine.csproj">
       <Project>{8082ca2a-ac5c-4690-9f09-960e0d3e4102}</Project>
       <Name>DataStructure_Engine</Name>
