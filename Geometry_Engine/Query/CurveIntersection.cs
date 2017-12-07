@@ -24,8 +24,8 @@ namespace BH.Engine.Geometry
         {
             Point pt1 = line1.Start;
             Point pt2 = line2.Start;
-            Vector dir1 = (line1.End - pt1).GetNormalised();
-            Vector dir2 = (line2.End - pt2).GetNormalised();
+            Vector dir1 = (line1.End - pt1);//.GetNormalised();
+            Vector dir2 = (line2.End - pt2);//.GetNormalised();
             Vector dir3 = pt2 - pt1;
 
             Vector cross = Query.GetCrossProduct(dir1, dir2);
@@ -50,9 +50,20 @@ namespace BH.Engine.Geometry
 
             if (useInfiniteLines)  //TODO: Need to handle the cases where one of the line is Infinite as well
                 return pt1 + t * dir1;
-            else if (t > -tolerance && t < Query.GetLength(dir1) + tolerance)
-                return pt1 + t * dir1;
-            else return null;
+            else
+            {
+                double s = Query.GetDotProduct(Query.GetCrossProduct(dir3, dir1), cross) / Query.GetSquareLength(cross);
+                if (t > -tolerance && t < 1 + tolerance && s > -tolerance && s < 1 + tolerance)
+                    return pt1 + t * dir1;
+                else
+                    return null;
+            }
+
+            //if (useInfiniteLines)  //TODO: Need to handle the cases where one of the line is Infinite as well
+            //    return pt1 + t * dir1;
+            //else if (t > -tolerance && t < 1 /*Query.GetLength(dir1)*/ + tolerance)
+            //    return pt1 + t * dir1;
+            //else return null;
         }
 
         /***************************************************/

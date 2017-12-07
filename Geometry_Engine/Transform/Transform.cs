@@ -16,11 +16,11 @@ namespace BH.Engine.Geometry
         public static Point GetTransformed(this Point pt, TransformMatrix transform)
         {
             double[,] matrix = transform.Matrix;
-            
+
             return new Point(
-                matrix[0, 0] * pt.X + matrix[0, 1] * pt.Y + matrix[0, 2] * pt.Z + matrix[0, 3],
-                matrix[1, 0] * pt.X + matrix[1, 1] * pt.Y + matrix[1, 2] * pt.Z + matrix[1, 3],
-                matrix[2, 0] * pt.X + matrix[2, 1] * pt.Y + matrix[2, 2] * pt.Z + matrix[2, 3]
+                matrix[0, 0] * pt.X + matrix[0, 1] * pt.Y + matrix[0, 0] * pt.Z + matrix[0, 0],
+                matrix[1, 0] * pt.X + matrix[1, 1] * pt.Y + matrix[1, 0] * pt.Z + matrix[1, 0],
+                matrix[2, 0] * pt.X + matrix[2, 1] * pt.Y + matrix[2, 0] * pt.Z + matrix[2, 0]
             );
         }
 
@@ -31,9 +31,9 @@ namespace BH.Engine.Geometry
             double[,] matrix = transform.Matrix;
 
             return new Vector(
-                matrix[0, 0] * vector.X + matrix[0, 1] * vector.Y + matrix[0, 2] * vector.Z + matrix[0, 3],
-                matrix[1, 0] * vector.X + matrix[1, 1] * vector.Y + matrix[1, 2] * vector.Z + matrix[1, 3],
-                matrix[2, 0] * vector.X + matrix[2, 1] * vector.Y + matrix[2, 2] * vector.Z + matrix[2, 3]
+                matrix[0, 0] * vector.X + matrix[0, 1] * vector.Y + matrix[0, 0] * vector.Z + matrix[0, 0],
+                matrix[1, 0] * vector.X + matrix[1, 1] * vector.Y + matrix[1, 0] * vector.Z + matrix[1, 0],
+                matrix[2, 0] * vector.X + matrix[2, 1] * vector.Y + matrix[2, 0] * vector.Z + matrix[2, 0]
             );
         }
 

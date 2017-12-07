@@ -51,7 +51,42 @@ namespace BH.Engine.Geometry
 
         public static BoundingBox GetBounds(this Circle circle)
         {
-            throw new NotImplementedException();
+            Vector normal = circle.Normal;
+
+            if (normal == new Vector(0, 0, 0))
+                throw new InvalidOperationException("Method trying to operate on an invalid circle");
+
+            double ax = GetAngle(normal, new Vector(1, 0, 0));
+            double ay = GetAngle(normal, new Vector(0, 1, 0));
+            double az = GetAngle(normal, new Vector(0, 0, 1));
+
+            Vector R = new Vector(Math.Sin(ax), Math.Sin(ay), Math.Sin(az));
+            R *= circle.Radius;
+
+            return new BoundingBox(circle.Centre - R, circle.Centre + R);
+        }
+
+        /***************************************************/
+
+        public static BoundingBox GetBounds(this Ellipse ellipse)
+        {
+            if (ellipse.Axis1 == new Vector(0, 0, 0) || ellipse.Axis2 == new Vector(0, 0, 0))
+                throw new InvalidOperationException("Method trying to operate on an invalid ellipse");
+
+            Point centre = ellipse.Centre;
+            double cx = centre.X, cy = centre.Y, cz = centre.Z;
+
+            Vector u = ellipse.Axis2.GetNormalised() * ellipse.Radius2;
+            double ux = u.X, uy = u.Y, uz = u.Z;
+
+            Vector v = ellipse.Axis1.GetNormalised() * ellipse.Radius1;
+            double vx = v.X, vy = v.Y, vz = v.Z;
+
+            ux *= ux; uy *= uy; uz *= uz;
+            vx *= vx; vy *= vy; vz *= vz;
+
+            return new BoundingBox(new Point((cx - Math.Sqrt(ux + vx)), (cy - Math.Sqrt(uy + vy)), (cz - Math.Sqrt(uz + vz))),
+                                   new Point((cx + Math.Sqrt(ux + vx)), (cy + Math.Sqrt(uy + vy)), (cz + Math.Sqrt(uz + vz))));
         }
 
         /***************************************************/

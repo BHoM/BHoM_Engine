@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BH.Engine.Geometry
 {
-    public static partial class p
+    public static partial class Transform
     {
         /***************************************************/
         /**** public Methods - Vectors                  ****/

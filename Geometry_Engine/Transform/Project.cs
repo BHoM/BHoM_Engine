@@ -38,7 +38,7 @@ namespace BH.Engine.Geometry
 
         public static Plane GetProjected(this Plane plane, Plane p)
         {
-            return new Plane(plane.Origin.GetProjected(p), p.Normal);
+            throw new NotImplementedException();
         }
 
 

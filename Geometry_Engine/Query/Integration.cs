@@ -48,16 +48,16 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static double GetAreaIntegration(double curve, double from, double to, ref double centroid)
+        public static double GetAreaIntegration(List<IntegrationSlice> slices, double curve, double from, double to, ref double centroid)
         {
             double result = 0;
             double max = System.Math.Max(from, to);
             double min = System.Math.Min(from, to);
-            List<Slice> slices = new List<Slice>();
+
             double sumAreaLength = 0;
             for (int i = 0; i < slices.Count; i++)
             {
-                Slice slice = slices[i];
+                IntegrationSlice slice = slices[i];
                 if (slice.Centre + slice.Width / 2 > min && slice.Centre - slice.Width / 2 < max)
                 {
                     double botSlice = System.Math.Max(min, slice.Centre - slice.Width / 2);
@@ -75,14 +75,13 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static double GetAreaIntegration(double constant, double xPower, double yPower, double origin = 0)
+        public static double GetAreaIntegration(List<IntegrationSlice> slices, double constant, double xPower, double yPower, double origin = 0)
         {
             double result = 0;
-            List<Slice> slices = new List<Slice>();
 
             for (int i = 0; i < slices.Count; i++)
             {
-                Slice slice = slices[i];
+                IntegrationSlice slice = slices[i];
                 double dx = slice.Width;
                 result += constant * System.Math.Pow(slice.Centre - origin, xPower) * System.Math.Pow(slice.Length, yPower) * dx;
             }
@@ -91,14 +90,13 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static double GetAreaIntegration(double from, double to, double constant, double xPower, double yPower, double origin = 0, double min = double.MinValue, double max = double.MaxValue)
+        public static double GetAreaIntegration(List<IntegrationSlice> slices, double from, double to, double constant, double xPower, double yPower, double origin = 0, double min = double.MinValue, double max = double.MaxValue)
         {
             double result = 0;
-            List<Slice> slices = new List<Slice>();
 
             for (int i = 0; i < slices.Count; i++)
             {
-                Slice slice = slices[i];
+                IntegrationSlice slice = slices[i];
                 if (slice.Centre + slice.Width / 2 > min && slice.Centre - slice.Width / 2 < max)
                 {
                     double botSlice = System.Math.Max(min, slice.Centre - slice.Width / 2);
@@ -113,7 +111,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static double GetAreaIntegration(Vector direction, ICurve curve, double from, double to, ref double centroid)
+        public static double GetAreaIntegration(List<IntegrationSlice> slices, Vector direction, ICurve curve, double from, double to, ref double centroid)
         {
             double result = 0;
             double max = System.Math.Max(from, to);
@@ -121,11 +119,10 @@ namespace BH.Engine.Geometry
             double sumAreaLength = 0;
             Point origin = Point.Origin;
             Plane plane = new Plane(origin, direction);
-            List<Slice> slices = new List<Slice>();
 
             for (int i = 0; i < slices.Count; i++)
             {
-                Slice slice = slices[i];
+                IntegrationSlice slice = slices[i];
                 if (slice.Centre + slice.Width / 2 > min && slice.Centre - slice.Width / 2 < max)
                 {
                     double botSlice = System.Math.Max(min, slice.Centre - slice.Width / 2);
@@ -153,15 +150,13 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static double IntegrateArea(Vector direction, ICurve curve, double from, double to, ref double centroid)
+        public static double IntegrateArea(List<IntegrationSlice> solid, List<IntegrationSlice> voids, Vector direction, ICurve curve, double from, double to, ref double centroid)
         {
             double centroidSolid = 0;
             double centroidVoid = 0;
-            List<Slice> solid = new List<Slice>();
-            List<Slice> coids = new List<Slice>();
 
-            double intSolid = GetAreaIntegration(direction, curve, from, to, ref centroidSolid);
-            double intVoid = GetAreaIntegration(direction, curve, from, to, ref centroidVoid);
+            double intSolid = GetAreaIntegration(solid, direction, curve, from, to, ref centroidSolid);
+            double intVoid = GetAreaIntegration(voids, direction, curve, from, to, ref centroidVoid);
 
             centroid = (intSolid * centroidSolid - intVoid * centroidVoid) / (intSolid - intVoid);
 
@@ -169,124 +164,70 @@ namespace BH.Engine.Geometry
         }
 
         /***************************************************/
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="direction"></param>
+        /// <param name="curve">f(x) -> n (where n is a constant value) integrated in the x direction</param>
+        /// <param name="from"></param>
+        /// <param name="to"></param>
+        /// <param name="centroid"></param>
+        /// <returns></returns>
+        public static double IntegrateArea(List<IntegrationSlice> slices, double constant, double xPower, double yPower, double origin = 0)
+        {
+            double result = 0;
+
+            for (int i = 0; i < slices.Count; i++)
+            {
+                IntegrationSlice slice = slices[i];
+                double dx = slice.Width;
+                result += constant * System.Math.Pow(slice.Centre - origin, xPower) * System.Math.Pow(slice.Length, yPower) * dx;
+            }
+            return result;
+        }
+
+        /***************************************************/
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="direction"></param>
+        /// <param name="curve">f(x) -> n (where n is a constant value) integrated in the x direction</param>
+        /// <param name="from"></param>
+        /// <param name="to"></param>
+        /// <param name="centroid"></param>
+        /// <returns></returns>
+        public static double IntegrateArea(List<IntegrationSlice> slices, double from, double to, double constant, double xPower, double yPower, double origin = 0, double min = double.MinValue, double max = double.MaxValue)
+        {
+            double result = 0;
+
+            for (int i = 0; i < slices.Count; i++)
+            {
+                IntegrationSlice slice = slices[i];
+                if (slice.Centre + slice.Width / 2 > min && slice.Centre - slice.Width / 2 < max)
+                {
+                    double botSlice = System.Math.Max(min, slice.Centre - slice.Width / 2);
+                    double topSlice = System.Math.Min(max, slice.Centre + slice.Width / 2);
+                    double sliceCentre = (topSlice + botSlice) / 2;
+                    double dx = (topSlice - botSlice);
+                    result += constant * System.Math.Pow(sliceCentre - origin, xPower) * System.Math.Pow(slice.Length, yPower) * dx;
+                }
+            }
+            return result;
+        }
+
+        /***************************************************/
+
+        /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private static List<Slice> CreateSlices(List<NurbCurve> edges, Vector direction, double increment = 0.001)
-        {
-            List<Slice> slices = new List<Slice>();
-
-            List<double> cutAt = new List<double>();
-            List<double> sliceSegments = new List<double>();
-            Plane p = new BH.oM.Geometry.Plane(Point.Origin, direction);
-
-            for (int i = 0; i < edges.Count; i++)
-            {
-                for (int j = 0; j < edges[i].ControlPoints.Count; j++)
-                {
-                    cutAt.Add(GetDotProduct(new Vector(edges[i].ControlPoints[j]), p.Normal));
-                }
-            }
-
-            cutAt.Sort();
-            cutAt = cutAt.Distinct<double>().ToList();
-
-            double currentValue = GetDotProduct(new Vector(GetBounds(new PolyCurve(edges)).Min), p.Normal);
-            double max = GetDotProduct(new Vector(GetBounds(new PolyCurve(edges)).Max), p.Normal);
-            int index = 0;
-
-            while (currentValue < max)
-            {
-                if (cutAt.Count > index && currentValue > cutAt[index])
-                {
-                    sliceSegments.Add(cutAt[index]);
-                    index++;
-                }
-                else
-                {
-                    sliceSegments.Add(currentValue);
-                    currentValue += increment;
-                }
-            }
-
-            sliceSegments.Add(max);
-
-            for (int i = 0; i < sliceSegments.Count - 1; i++)
-            {
-                if (sliceSegments[i] == sliceSegments[i + 1])
-                {
-                    continue;
-                }
-
-                currentValue = (sliceSegments[i] + sliceSegments[i + 1]) / 2;
-                slices.Add(GetSliceAt(edges, currentValue, -sliceSegments[i] + sliceSegments[i + 1], p));
-            }
-            return slices;
-        }
-
-        /***************************************************/
-
-        private static Slice GetSliceAt(List<NurbCurve> edges, double location, double width, Plane p)
-        {
-            List<Point> y = new List<Point>();
-            double length = 0;
-            for (int edgeIndex = 0; edgeIndex < edges.Count; edgeIndex++)
-            {
-                y.AddRange(edges[edgeIndex].GetIntersections(new Plane(new Point(p.Normal * location), p.Normal), 0.00001));
-            }
-
-            List<double> isolatedCoords = new List<double>();
-
-            for (int point = 0; point < y.Count; point++)
-            {
-                if (p.Normal.X > 0)
-                {
-                    isolatedCoords.Add(y[point].Y);
-                }
-                else
-                {
-                    isolatedCoords.Add(y[point].X);
-                }
-            }
-
-            isolatedCoords.Sort();
-
-            if (isolatedCoords.Count % 2 != 0)
-            {
-                for (int k = 0; k < isolatedCoords.Count - 1; k++)
-                {
-                    if (isolatedCoords[k] == isolatedCoords[k + 1])
-                    {
-                        isolatedCoords.RemoveAt(k + 1);
-                    }
-                }
-            }
-
-            for (int j = 0; j < isolatedCoords.Count - 1; j += 2)
-            {
-                length = length + isolatedCoords[j + 1] - isolatedCoords[j];
-            }
-            return new Slice(width, length, location, isolatedCoords.ToArray());
-        }
 
         /***************************************************/
         /**** Private Definitions                       ****/
         /***************************************************/
 
-        private struct Slice
-        {
-            public double Width;
-            public double Length;
-            public double Centre;
-            public double[] Placement;
 
-            public Slice(double width, double length, double centre, double[] placement)
-            {
-                Width = width;
-                Length = length;
-                Centre = centre;
-                Placement = placement;
-            }
-        }
     }
 }
