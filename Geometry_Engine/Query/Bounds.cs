@@ -85,6 +85,15 @@ namespace BH.Engine.Geometry
             }
 
 
+            //Circular arc parameterised to
+            //A(theta) = C+r*cos(theta)*xloc+r*sin(theta)*yloc
+            //where: C = centre point
+            //r - radius
+            //xloc - local x-axis unit vector
+            //yloc - local y-axis unit vector
+            //A - point on the circle
+
+
             Vector x = arc.Start - circle.Centre;
             Vector y = circle.Normal.GetCrossProduct(x);
 
@@ -103,6 +112,8 @@ namespace BH.Engine.Geometry
             b2 = y.Y;
             b3 = y.Z;
 
+
+            //Finding potential extreme values for x, y and z. Solving for A' = 0
 
             //Extreme x
             double theta = Math.Abs(a1) > Tolerance.Distance ? Math.Atan(b1 / a1) : Math.PI/2;

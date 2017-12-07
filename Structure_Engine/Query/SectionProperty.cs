@@ -12,39 +12,7 @@ namespace BH.Engine.Structure
 {
     public static partial class Query
     {
-        //public static void Calculate(this SectionProperty property)
-        //{
-        //    List<IntegrationSlice> verticalSlices = Geometry.Create.CreateSlices(property.Edges, Vector.XAxis);
-        //    List<IntegrationSlice> horizontalSlices = Geometry.Create.CreateSlices(property.Edges, Vector.YAxis);
 
-
-
-        //    Point min = property.Edges.GetBounds().Min;
-        //    Point max = property.Edges.Bounds().Max;
-        //    double centreY = 0;
-        //    double centreX = 0;
-        //    property.Area = Geometry.Query.IntegrateArea(horizontalSlices, 1, min.Y, max.Y, ref centreY);
-        //    Geometry.Query.IntegrateArea(verticalSlices, 1, min.X, max.X, ref centreX);
-
-        //    property.TotalWidth = max.X - min.X;
-        //    property.TotalDepth = max.Y - min.Y;
-        //    property.Iy = Geometry.Query.IntegrateArea(verticalSlices, 1, 2, 1, centreX);
-        //    property.Iz = Geometry.Query.IntegrateArea(horizontalSlices, 1, 2, 1, centreY);
-        //    property.Sy = 2 * Geometry.Query.IntegrateArea(verticalSlices, 1, 1, 1, min.X, centreX);
-        //    property.Sz = 2 * Geometry.Query.IntegrateArea(verticalSlices, 1, 1, 1, min.Y, centreY);
-        //    property.Rgy = System.Math.Sqrt(property.Iy / property.Area);
-        //    property.Rgz = System.Math.Sqrt(property.Iz / property.Area);
-        //    property.Vy = max.X - centreX;
-        //    property.Vpy = centreX - min.X;
-        //    property.Vz = max.Y - centreY;
-        //    property.Vpz = centreY - min.Y;
-        //    property.Zz = property.Iz / property.Vy;
-        //    property.Zy = property.Iy / property.Vz;
-        //    property.J = property.TorsionContant();
-        //    property.Iw = property.WarpingConstant();
-        //    property.Asy = ShearArea(verticalSlices, property.Iz, centreX);
-        //    property.Asz = ShearArea(horizontalSlices, property.Iy, centreY);
-        //}
 
         public static Dictionary<string, object> IntegrateCurve(List<ICurve> curves)
         {
@@ -83,8 +51,10 @@ namespace BH.Engine.Structure
             resutlts["TotalDepth"] = totalHeight;
             resutlts["Iy"] = Geometry.Query.GetAreaIntegration(horizontalSlices, 1, 2, 1, centreZ);
             resutlts["Iz"] = Geometry.Query.GetAreaIntegration(verticalSlices, 1, 2, 1, centreY);
-            resutlts["Sy"] = 2 * Geometry.Query.GetAreaIntegration(horizontalSlices, 1, 1, 1, min.Y, centreZ);
-            resutlts["Sz"] = 2 * Geometry.Query.GetAreaIntegration(verticalSlices, 1, 1, 1, min.X, centreY);
+            //resutlts["Sy"] = 2 * Geometry.Query.GetAreaIntegration(horizontalSlices, min.Y, centreZ, 1, 1, 1);
+            resutlts["Sy"] = 2 * Math.Abs(Geometry.Query.GetAreaIntegration(horizontalSlices, 1, 1, 1, min.Y, centreZ));
+            //resutlts["Sz"] = 2 * Geometry.Query.GetAreaIntegration(verticalSlices, min.X, centreY, 1, 1, 1);
+            resutlts["Sz"] = 2 * Math.Abs(Geometry.Query.GetAreaIntegration(verticalSlices, 1, 1, 1, min.X, centreY));
             resutlts["Rgy"] = System.Math.Sqrt((double)resutlts["Iy"] / area);
             resutlts["Rgz"] = System.Math.Sqrt((double)resutlts["Iz"] / area);
             resutlts["Vy"] = max.X - centreY;
@@ -101,51 +71,6 @@ namespace BH.Engine.Structure
 
         }
 
-
-        public static double TorsionalConstant(ShapeType shape, double totalDepth, double totalWidth, double b1, double b2, double tf1, double tf2, double tw)
-        {
-            switch (shape)
-            {
-                case ShapeType.ISection:
-                case ShapeType.Channel:
-                case ShapeType.Zed:
-                    return (b1 * Math.Pow(tf1, 3) + b2 * Math.Pow(tf2, 3) + (totalDepth - tf1) * Math.Pow(tw, 3)) / 3;
-                case ShapeType.Tee:
-                case ShapeType.Angle:
-                    return totalWidth * Math.Pow(tf1, 3) + totalDepth * Math.Pow(tw, 3);
-                case ShapeType.Circle:
-                    return Math.PI * Math.Pow(totalDepth, 4) / 2;
-                case ShapeType.Box:
-                    return 2 * tf1 * tw * Math.Pow(totalWidth - tw, 2) * Math.Pow(totalDepth - tf1, 2) /
-                        (totalWidth * tw + totalDepth * tf1 - Math.Pow(tw, 2) - Math.Pow(tf1, 2));
-                case ShapeType.Tube:
-                    return Math.PI * (Math.Pow(totalDepth, 4) - Math.Pow(totalDepth - tw, 4)) / 2;
-                default:
-                    return 0;
-            }
-        }
-
-        public static double WarpingConstant(ShapeType shape, double totalDepth, double totalWidth, double b1, double b2, double tf1, double tf2, double tw)
-        {
-
-            switch (shape)
-            {
-                case ShapeType.ISection:
-                    if (tf1 == tf2 && b1 == b2)
-                    {
-                        return tf1 * Math.Pow(totalDepth - tf1, 2) * Math.Pow(totalWidth, 3) / 24;
-                    }
-                    else
-                    {
-                        return tf1 * Math.Pow(totalDepth - (tf1 + tf2) / 2, 2) / 12 * (Math.Pow(b1, 3) * Math.Pow(b2, 3) / (Math.Pow(b1, 3) + Math.Pow(b2, 3)));
-                    }
-                case ShapeType.Channel:
-                    return tf1 * Math.Pow(totalDepth, 2) / 12 * (3 * b1 * tf1 + 2 * totalDepth * tw / (6 * b1 * tf1 + totalDepth * tw));
-                default:
-                    return 0;
-
-            }
-        }
 
         /// <summary>
         /// Shear Area in the Y direction

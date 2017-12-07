@@ -61,7 +61,12 @@
     <Compile Include="EqualityComparers\BarEndNodesDistanceComparer.cs" />
     <Compile Include="EqualityComparers\NodeDistanceComparer.cs" />
     <Compile Include="Query\NodeContraint.cs" />
+    <Compile Include="Query\ReinforcementIsLongitudinal.cs" />
+    <Compile Include="Query\ReinforcementLayout.cs" />
     <Compile Include="Query\SectionProperty.cs" />
+    <Compile Include="Query\TieDiameter.cs" />
+    <Compile Include="Query\TorsionalConstant.cs" />
+    <Compile Include="Query\WarpingConstant.cs" />
     <Compile Include="Transform\Flip.cs" />
     <Compile Include="Transform\Geometry.cs" />
     <Compile Include="Transform\Merge.cs" />
