@@ -14,7 +14,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static IntegrationSlice GetSliceAt(List<ICurve> edges, double location, double width, Plane p)
+        public static IntegrationSlice GetSliceAt(IList<ICurve> edges, double location, double width, Plane p)
         {
             List<Point> y = new List<Point>();
             double length = 0;
