@@ -55,6 +55,7 @@
     <Compile Include="Query\Edge.cs" />
     <Compile Include="Query\EdgeCurves.cs" />
     <Compile Include="Query\Geometry.cs" />
+    <Compile Include="Query\Length.cs" />
     <Compile Include="Query\Mass.cs" />
     <Compile Include="Query\OppositeNode.cs" />
     <Compile Include="Query\Plane.cs" />

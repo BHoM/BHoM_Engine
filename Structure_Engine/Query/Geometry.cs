@@ -22,7 +22,7 @@ namespace BH.Engine.Structure
                 return null;
 
             CompositeGeometry geom = new CompositeGeometry(section.Edges);
-            //geom.Elements.AddRange(section.GetReinforcementLayout().Elements);
+            geom.Elements.AddRange(section.GetReinforcementLayout().Elements);
 
             return geom.Elements;
         }
