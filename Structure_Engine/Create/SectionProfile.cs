@@ -14,7 +14,7 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static List<ICurve> ISecctionCurves(double tft, double tfw, double bft, double bfw, double wt, double wd, double r1, double r2)
+        public static List<ICurve> ISectionCurves(double tft, double tfw, double bft, double bfw, double wt, double wd, double r1, double r2)
         {
             List<ICurve> perimeter = new List<ICurve>();
             Point p = new Point(bfw / 2, 0, 0);
