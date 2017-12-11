@@ -51,10 +51,10 @@ namespace BH.Engine.Base
 
         /***************************************************/
 
-        public static IBHoMGeometry GetGeometry(this ConcreteSection section)
-        {
-            return new CompositeGeometry(section.Edges);
-        }
+        //public static IBHoMGeometry GetGeometry(this ConcreteSection section)
+        //{
+        //    return new CompositeGeometry(section.Edges);
+        //}
 
         //public static IBHoMGeometry GetGeometry(this FEMesh feMesh)
         //{

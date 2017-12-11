@@ -53,7 +53,9 @@
     <Compile Include="Query\Centreline.cs" />
     <Compile Include="Query\Centroid.cs" />
     <Compile Include="Query\Edge.cs" />
+    <Compile Include="Query\EdgeCurves.cs" />
     <Compile Include="Query\Geometry.cs" />
+    <Compile Include="Query\Mass.cs" />
     <Compile Include="Query\OppositeNode.cs" />
     <Compile Include="Query\Plane.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -61,6 +63,7 @@
     <Compile Include="EqualityComparers\BarEndNodesDistanceComparer.cs" />
     <Compile Include="EqualityComparers\NodeDistanceComparer.cs" />
     <Compile Include="Query\NodeContraint.cs" />
+    <Compile Include="Query\DimensionAt.cs" />
     <Compile Include="Query\ReinforcementIsLongitudinal.cs" />
     <Compile Include="Query\ReinforcementLayout.cs" />
     <Compile Include="Query\SectionProperty.cs" />
@@ -70,6 +73,7 @@
     <Compile Include="Transform\Flip.cs" />
     <Compile Include="Transform\Geometry.cs" />
     <Compile Include="Transform\Merge.cs" />
+    <Compile Include="Transform\Reinforcement.cs" />
     <Compile Include="Verifiy\Constrained.cs" />
   </ItemGroup>
   <ItemGroup>
