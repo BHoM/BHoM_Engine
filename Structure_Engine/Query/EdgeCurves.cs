@@ -55,14 +55,14 @@ namespace BH.Engine.Structure
 
         public static List<ICurve> GetEdgeCurves(this FabricatedISectionDimensions dimensions)
         {
-            return Create.ISecctionCurves(dimensions.TopFlangeThickness, dimensions.TopFlangeWidth, dimensions.BotFlangeThickness, dimensions.BotFlangeWidth, dimensions.WebThickness, dimensions.Height - dimensions.TopFlangeThickness - dimensions.BotFlangeThickness, 0, 0);
+            return Create.ISectionCurves(dimensions.TopFlangeThickness, dimensions.TopFlangeWidth, dimensions.BotFlangeThickness, dimensions.BotFlangeWidth, dimensions.WebThickness, dimensions.Height - dimensions.TopFlangeThickness - dimensions.BotFlangeThickness, 0, 0);
         }
 
         /***************************************************/
 
         public static List<ICurve> GetEdgeCurves(this StandardISectionDimensions dimensions)
         {
-            return Create.ISecctionCurves(dimensions.FlangeThickness, dimensions.Width, dimensions.FlangeThickness, dimensions.Width, dimensions.WebThickness, dimensions.Height - dimensions.FlangeThickness * 2, dimensions.RootRadius, dimensions.ToeRadius);
+            return Create.ISectionCurves(dimensions.FlangeThickness, dimensions.Width, dimensions.FlangeThickness, dimensions.Width, dimensions.WebThickness, dimensions.Height - dimensions.FlangeThickness * 2, dimensions.RootRadius, dimensions.ToeRadius);
         }
 
         /***************************************************/
