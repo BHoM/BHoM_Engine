@@ -118,11 +118,10 @@ namespace BH.Engine.Structure
             double b1 = dimensions.Width;
             double b2 = dimensions.Width;
             double height = dimensions.Height;
-            double tf1 = dimensions.FlangeThickness;
-            double tf2 = dimensions.FlangeThickness;
+            double tf = dimensions.FlangeThickness;
             double tw = dimensions.WebThickness;
 
-            return (b1 * Math.Pow(tf1, 3) + b2 * Math.Pow(tf2, 3) + (height - tf1) * Math.Pow(tw, 3)) / 3;
+            return (b1 * Math.Pow(tf, 3) + b2 * Math.Pow(tf, 3) + (height - tf) * Math.Pow(tw, 3)) / 3;
         }
 
 
@@ -134,10 +133,9 @@ namespace BH.Engine.Structure
             double b2 = dimensions.FlangeWidth;
             double height = dimensions.Height;
             double tf = dimensions.FlangeThickness;
-            double tf2 = dimensions.FlangeThickness;
             double tw = dimensions.WebThickness;
 
-            return (b1 * Math.Pow(tf, 3) + b2 * Math.Pow(tf2, 3) + (height - tf) * Math.Pow(tw, 3)) / 3;
+            return (b1 * Math.Pow(tf, 3) + b2 * Math.Pow(tf, 3) + (height - tf) * Math.Pow(tw, 3)) / 3;
         }
 
         /***************************************************/

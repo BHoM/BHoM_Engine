@@ -45,6 +45,9 @@ namespace BH.Engine.Geometry
         public static BoundingBox GetBounds(this Arc arc)
         {
 
+            if (!arc.IsValid())
+                throw new Exception("Invalid Arc");
+
             Circle circle = Create.Circle(arc.Start, arc.Middle, arc.End);
 
 
