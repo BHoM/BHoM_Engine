@@ -18,18 +18,11 @@ namespace BH.Engine.Structure
 
         public static double GetMass(this Bar bar)
         {
-            return bar.GetCentreline().GetLength() * bar.SectionProperty.IGetMassPerMetre();
+            return bar.GetLength() * bar.SectionProperty.IGetMassPerMetre();
         }
 
         /***************************************************/
-        public static double GetMassPerMetre(this SteelSection section)
-        {
-            return section.Area * section.Material.Density;
-        }
-
-        /***************************************************/
-
-        public static double GetMassPerMetre(this ExplicitSection section)
+        public static double GetMassPerMetre(this ISectionProperty section)
         {
             return section.Area * section.Material.Density;
         }
