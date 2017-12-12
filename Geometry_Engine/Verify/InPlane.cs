@@ -21,7 +21,7 @@ namespace BH.Engine.Geometry
             foreach (Point pt in points)
             {
                 double d = normal.GetDotProduct(pt - origin);
-                if (d < -tolerance && d > tolerance)
+                if (d < -tolerance || d > tolerance)
                     return false;
             }
 
