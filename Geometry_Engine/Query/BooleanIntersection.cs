@@ -62,5 +62,7 @@ namespace BH.Engine.Geometry
             List<Polyline> polyLineList = new List<Polyline>() { new Polyline(outCtrlPts) };
             return polyLineList;
         }
+
+        //TODO: Add method for List<polyline> that uses bolean union to join the curves first 
     }
 }
