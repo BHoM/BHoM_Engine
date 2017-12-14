@@ -61,7 +61,6 @@
     <Compile Include="Query\Average.cs" />
     <Compile Include="Query\Bounds.cs" />
     <Compile Include="Query\Centre.cs" />
-    <Compile Include="Query\ClosestDistance.cs" />
     <Compile Include="Query\ClosestPoint.cs" />
     <Compile Include="Query\ControlPoints.cs" />
     <Compile Include="Query\CurveIntersection.cs" />
