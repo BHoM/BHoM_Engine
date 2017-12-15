@@ -17,7 +17,7 @@ namespace BH.Engine.Acoustic
         {
             double SPL = 0;
             for (int i = 0; i < spl.Count; i++)
-                SPL += (10 * Math.Log10(Math.Pow(10, spl[i] / 10)));
+                SPL = (10 * Math.Log10(Math.Pow(10, SPL / 10) + Math.Pow(10, spl[i] / 10)));
             return SPL;
         }
         

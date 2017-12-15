@@ -49,7 +49,6 @@
   <ItemGroup>
     <Compile Include="Create\Ray.cs" />
     <Compile Include="Query\DirectRays.cs" />
-    <Compile Include="Query\ModulationFunction.cs" />
     <Compile Include="Query\Rasti.cs" />
     <Compile Include="Query\DirectSound.cs" />
     <Compile Include="Query\GetPlane.cs" />
@@ -61,7 +60,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Query\GetOrder.cs" />
     <Compile Include="Query\SoundLevelsSum.cs" />
-    <Compile Include="Query\SoundNoise.cs" />
+    <Compile Include="Query\SignalToNoise.cs" />
     <Compile Include="Query\ReverbDistance.cs" />
     <Compile Include="Query\RoomConstant.cs" />
     <Compile Include="Query\GetTime.cs" />

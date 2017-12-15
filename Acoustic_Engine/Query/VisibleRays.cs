@@ -16,9 +16,10 @@ namespace BH.Engine.Acoustic
         /**** Public  Methods                           ****/
         /***************************************************/
 
-        public static List<Ray> VisibleRays(this List<Ray> rays, List<Panel> surfaces)
+        public static List<Ray> VisibleRays(this List<Ray> rays, List<Panel> panels)
         {
-            return rays.Where(ray => !ray.IsObstructed(surfaces)).ToList();
+            if (panels == null) { return rays; }
+            return rays.Where(ray => !ray.IsObstructed(panels)).ToList();
         }
     }
 }
