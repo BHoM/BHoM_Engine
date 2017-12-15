@@ -15,7 +15,7 @@ namespace BH.Engine.Geometry
 
         public static List<Point> GetControlPoints(this Arc curve)
         {
-            return new List<Point> { curve.Start, curve.End };
+            return new List<Point> { curve.Start, curve.Middle, curve.End };
         }
 
         /***************************************************/
