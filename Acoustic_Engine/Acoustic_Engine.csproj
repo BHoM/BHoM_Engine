@@ -87,7 +87,6 @@
     <Compile Include="Query\GetOrder.cs" />
     <Compile Include="Query\GetPlane.cs" />
     <Compile Include="Query\GetTime.cs" />
-    <Compile Include="Query\Length.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Query\RASTI.cs" />
     <Compile Include="Query\ReverbDistance.cs" />
