@@ -112,7 +112,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static SteelSection SteelSectionFromDimensions(ISectionDimensions dimensions)
+        public static SteelSection SteelSectionFromDimensions(ISectionDimensions dimensions, string name = "")
         {
 
             List<ICurve> edges = dimensions.IGetEdgeCUrves();
@@ -129,6 +129,7 @@ namespace BH.Engine.Structure
             section.CustomData["VerticalSlices"] = new ReadOnlyCollection<IntegrationSlice>((List<IntegrationSlice>)constants["VerticalSlices"]);
             section.CustomData["HorizontalSlices"] = new ReadOnlyCollection<IntegrationSlice>((List<IntegrationSlice>)constants["HorizontalSlices"]);
 
+            section.Name = name;
             return section;
 
         }

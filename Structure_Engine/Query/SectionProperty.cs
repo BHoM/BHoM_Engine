@@ -17,7 +17,7 @@ namespace BH.Engine.Structure
         public static Dictionary<string, object> IntegrateCurve(List<ICurve> curves)
         {
 
-            Dictionary<string, object> resutlts = new Dictionary<string, object>();
+            Dictionary<string, object> results = new Dictionary<string, object>();
 
             BoundingBox box = new BoundingBox();
 
@@ -34,8 +34,8 @@ namespace BH.Engine.Structure
             List<IntegrationSlice> verticalSlices = Geometry.Create.CreateSlices(curves, Vector.XAxis, totalWidth/1000);
             List<IntegrationSlice> horizontalSlices = Geometry.Create.CreateSlices(curves, Vector.YAxis, totalHeight/1000);
 
-            resutlts["VerticalSlices"] = verticalSlices;
-            resutlts["HorizontalSlices"] = horizontalSlices;
+            results["VerticalSlices"] = verticalSlices;
+            results["HorizontalSlices"] = horizontalSlices;
 
 
             double centreZ = 0;
@@ -43,31 +43,31 @@ namespace BH.Engine.Structure
             double area = Geometry.Query.GetAreaIntegration(horizontalSlices, 1, min.Y, max.Y, ref centreZ);
             Geometry.Query.GetAreaIntegration(verticalSlices, 1, min.X, max.X, ref centreY);
 
-            resutlts["Area"] = area;
-            resutlts["CentreZ"] = centreZ;
-            resutlts["CentreY"] = centreY;
+            results["Area"] = area;
+            results["CentreZ"] = centreZ;
+            results["CentreY"] = centreY;
 
-            resutlts["TotalWidth"] = totalWidth;
-            resutlts["TotalDepth"] = totalHeight;
-            resutlts["Iy"] = Geometry.Query.GetAreaIntegration(horizontalSlices, 1, 2, 1, centreZ);
-            resutlts["Iz"] = Geometry.Query.GetAreaIntegration(verticalSlices, 1, 2, 1, centreY);
+            results["TotalWidth"] = totalWidth;
+            results["TotalDepth"] = totalHeight;
+            results["Iy"] = Geometry.Query.GetAreaIntegration(horizontalSlices, 1, 2, 1, centreZ);
+            results["Iz"] = Geometry.Query.GetAreaIntegration(verticalSlices, 1, 2, 1, centreY);
             //resutlts["Sy"] = 2 * Geometry.Query.GetAreaIntegration(horizontalSlices, min.Y, centreZ, 1, 1, 1);
-            resutlts["Sy"] = 2 * Math.Abs(Geometry.Query.GetAreaIntegration(horizontalSlices, 1, 1, 1, min.Y, centreZ));
+            results["Sy"] = 2 * Math.Abs(Geometry.Query.GetAreaIntegration(horizontalSlices, 1, 1, 1, min.Y, centreZ));
             //resutlts["Sz"] = 2 * Geometry.Query.GetAreaIntegration(verticalSlices, min.X, centreY, 1, 1, 1);
-            resutlts["Sz"] = 2 * Math.Abs(Geometry.Query.GetAreaIntegration(verticalSlices, 1, 1, 1, min.X, centreY));
-            resutlts["Rgy"] = System.Math.Sqrt((double)resutlts["Iy"] / area);
-            resutlts["Rgz"] = System.Math.Sqrt((double)resutlts["Iz"] / area);
-            resutlts["Vy"] = max.X - centreY;
-            resutlts["Vpy"] = centreY - min.X;
-            resutlts["Vz"] = max.Y - centreZ;
-            resutlts["Vpz"] = centreZ - min.Y;
-            resutlts["Zz"] = (double)resutlts["Iz"] / (double)resutlts["Vy"];
-            resutlts["Zy"] = (double)resutlts["Iy"] / (double)resutlts["Vz"];
-            resutlts["Asy"] = ShearArea(verticalSlices, (double)resutlts["Iz"], centreY);
-            resutlts["Asz"] = ShearArea(horizontalSlices, (double)resutlts["Iy"], centreZ);
+            results["Sz"] = 2 * Math.Abs(Geometry.Query.GetAreaIntegration(verticalSlices, 1, 1, 1, min.X, centreY));
+            results["Rgy"] = System.Math.Sqrt((double)results["Iy"] / area);
+            results["Rgz"] = System.Math.Sqrt((double)results["Iz"] / area);
+            results["Vy"] = max.X - centreY;
+            results["Vpy"] = centreY - min.X;
+            results["Vz"] = max.Y - centreZ;
+            results["Vpz"] = centreZ - min.Y;
+            results["Zz"] = (double)results["Iz"] / (double)results["Vy"];
+            results["Zy"] = (double)results["Iy"] / (double)results["Vz"];
+            results["Asy"] = ShearArea(verticalSlices, (double)results["Iz"], centreY);
+            results["Asz"] = ShearArea(horizontalSlices, (double)results["Iy"], centreZ);
 
 
-            return resutlts;
+            return results;
 
         }
 
