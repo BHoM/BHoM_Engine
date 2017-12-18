@@ -88,7 +88,7 @@ namespace BH.Engine.Structure
 
         public static double GetTorsionalConstant(this StandardBoxDimensions dimensions)
         {
-            double tf1 = dimensions.Thickness; //TODO: Allow for varying plate thickness
+            double tf1 = dimensions.Thickness;
             double tw = dimensions.Thickness;
             double width = dimensions.Width;
             double height = dimensions.Height;

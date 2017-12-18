@@ -94,13 +94,13 @@ namespace BH.Engine.Structure
             List<ICurve> perimeter = new List<ICurve>();
             Point p = new Point(-width / 2, height / 2 - radius, 0);
             perimeter.Add(new Line(p, p = p - Vector.YAxis * (height - 2*radius)));
-            perimeter.Add(BH.Engine.Geometry.Create.Arc(p + Vector.XAxis * radius, p, p = p + new Vector(radius, -radius, 0)));
+            if(radius > 0) perimeter.Add(BH.Engine.Geometry.Create.Arc(p + Vector.XAxis * radius, p, p = p + new Vector(radius, -radius, 0)));
             perimeter.Add(new Line(p, p = p + Vector.XAxis * (width - 2 * radius)));
-            perimeter.Add(BH.Engine.Geometry.Create.Arc(p + Vector.YAxis * radius, p, p = p + new Vector(radius, radius, 0)));
+            if (radius > 0) perimeter.Add(BH.Engine.Geometry.Create.Arc(p + Vector.YAxis * radius, p, p = p + new Vector(radius, radius, 0)));
             perimeter.Add(new Line(p, p = p + Vector.YAxis * (height - 2 * radius)));
-            perimeter.Add(BH.Engine.Geometry.Create.Arc(p - Vector.XAxis * radius, p, p = p + new Vector(-radius, radius, 0)));
+            if (radius > 0) perimeter.Add(BH.Engine.Geometry.Create.Arc(p - Vector.XAxis * radius, p, p = p + new Vector(-radius, radius, 0)));
             perimeter.Add(new Line(p, p = p - Vector.XAxis * (width - 2 * radius)));
-            perimeter.Add(BH.Engine.Geometry.Create.Arc(p - Vector.YAxis * radius, p, p = p + new Vector(-radius, -radius, 0)));
+            if (radius > 0) perimeter.Add(BH.Engine.Geometry.Create.Arc(p - Vector.YAxis * radius, p, p = p + new Vector(-radius, -radius, 0)));
             return perimeter;
         }
 
