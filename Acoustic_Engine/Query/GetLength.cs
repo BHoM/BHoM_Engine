@@ -9,9 +9,13 @@ namespace BH.Engine.Acoustic
 {
     public static partial class Query
     {
+        /***************************************************/
+        /**** Public  Methods                           ****/
+        /***************************************************/
+
         public static double GetLength(this Ray ray)
         {
-            return Geometry.Query.GetLength(ray.Geometry as dynamic);
+            return Geometry.Query.GetLength(ray.Geometry);
         }
     }
 }
