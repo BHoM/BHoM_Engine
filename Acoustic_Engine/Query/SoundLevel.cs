@@ -21,7 +21,7 @@ namespace BH.Engine.Acoustic
             double spl = 0;
             for (int i=0; i< raySegments.Count; i++)
                 spl += 10 * Math.Log10(Math.Pow(10, 10 / raySegments[i].GetLength()));
-            return new SoundLevel(spl, ray.ReceiverID, ray.SpeakerID, frequency);
+            return Create.SoundLevel(spl, ray.ReceiverID, ray.SpeakerID, frequency);
         }
     }
 }

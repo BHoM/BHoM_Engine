@@ -28,10 +28,10 @@ namespace BH.Engine.Acoustic
                 double recieverAngle = deltaPos.GetAngle(speaker.Direction) * (180 / Math.PI);
                 double orientationFactor = speaker.GainFactor(recieverAngle, frequency);
                 double gain = speaker.Gains[frequency] * Math.Pow(10, orientationFactor / 10);
-                directSound += new SoundLevel((speaker.EmissiveLevel / (4.0 * Math.PI * distance * distance)) + (4.0 / roomConstant),
+                directSound += Create.SoundLevel((speaker.EmissiveLevel / (4.0 * Math.PI * distance * distance)) + (4.0 / roomConstant),
                                                receiver.ReceiverID, -1, frequency);
             }
-            return new SoundLevel(directSound.Value + speakers.First().EmissiveLevel, receiver.ReceiverID, -1, frequency);
+            return Create.SoundLevel(directSound.Value + speakers.First().EmissiveLevel, receiver.ReceiverID, -1, frequency);
         }
     }
 }

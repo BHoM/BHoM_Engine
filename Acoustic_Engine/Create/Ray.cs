@@ -14,9 +14,22 @@ namespace BH.Engine.Acoustic
         /**** Public  Methods                           ****/
         /***************************************************/
 
+        public static Ray Ray(Polyline path, int source, int target, List<int> bouncingPattern = null)
+        {
+            return new Ray()
+            {
+                Geometry = path,
+                SpeakerID = source,
+                ReceiverID = target,
+                PanelsID = bouncingPattern
+            };
+        }
+
+        /***************************************************/
+
         public static Ray Ray(Speaker speaker, Receiver receiver)
         {
-            return new Ray(new Polyline(new List<Point> { speaker.Location, receiver.Location }), speaker.SpeakerID, receiver.ReceiverID);
+            return Create.Ray(new Polyline(new List<Point> { speaker.Location, receiver.Location }), speaker.SpeakerID, receiver.ReceiverID);
         }
     }
 }

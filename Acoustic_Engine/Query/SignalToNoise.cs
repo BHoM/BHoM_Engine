@@ -15,7 +15,7 @@ namespace BH.Engine.Acoustic
         /**** Public  Methods                           ****/
         /***************************************************/
 
-        public static SNRatio SignalToNoise(this Receiver receiver, List<Speaker> speakers, Room room, double sabineTime, double envNoise, Frequency f)
+        public static SnRatio SignalToNoise(this Receiver receiver, List<Speaker> speakers, Room room, double sabineTime, double envNoise, Frequency f)
         {
             Dictionary<Frequency, double> gains = speakers.Select(x => x.Gains).First();
             Dictionary<Frequency, double> modFactors = new Dictionary<Frequency, double> { { Frequency.Hz500, 8.0 }, { Frequency.Hz2000, 1.4 } };
@@ -38,7 +38,7 @@ namespace BH.Engine.Acoustic
 
             double appSoundNoise = 10.0 * Math.Log10(modulationF / (1.0 - modulationF));
             appSoundNoise = appSoundNoise > 15 ? 15 : (appSoundNoise < -15 ? -15 : appSoundNoise);
-            return new SNRatio(appSoundNoise, receiver.ReceiverID, -1, f);
+            return Create.SnRatio(appSoundNoise, receiver.ReceiverID, -1, f);
         }
     }
 }

@@ -17,11 +17,11 @@ namespace BH.Engine.Acoustic
 
         public static Rasti Rasti(this Receiver receiver, List<Speaker> speakers, Room room, double sabineTime, double envNoise)
         {
-            SNRatio apparentSn500 = receiver.SignalToNoise(speakers, room, sabineTime, envNoise, Frequency.Hz500);
-            SNRatio apparentSn2000 = receiver.SignalToNoise(speakers, room, sabineTime, envNoise, Frequency.Hz2000);
+            SnRatio apparentSn500 = receiver.SignalToNoise(speakers, room, sabineTime, envNoise, Frequency.Hz500);
+            SnRatio apparentSn2000 = receiver.SignalToNoise(speakers, room, sabineTime, envNoise, Frequency.Hz2000);
             double rasti500 = (apparentSn500.Value + 15) / 30;
             double rasti2000 = (apparentSn2000.Value + 15) / 30;
-            return new Rasti((4d / 9d) * rasti500 + (5d / 9d) * rasti2000, receiver.ReceiverID);
+            return Create.Rasti((4d / 9d) * rasti500 + (5d / 9d) * rasti2000, receiver.ReceiverID);
         }
 
     }

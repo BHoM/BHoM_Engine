@@ -47,7 +47,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Create\Panel.cs" />
+    <Compile Include="Create\Rasti.cs" />
     <Compile Include="Create\Ray.cs" />
+    <Compile Include="Create\Receiver.cs" />
+    <Compile Include="Create\Room.cs" />
+    <Compile Include="Create\RT60.cs" />
+    <Compile Include="Create\SnRatio.cs" />
+    <Compile Include="Create\SoundLevel.cs" />
+    <Compile Include="Create\Speaker.cs" />
     <Compile Include="Query\DirectRays.cs" />
     <Compile Include="Query\Rasti.cs" />
     <Compile Include="Query\DirectSound.cs" />
