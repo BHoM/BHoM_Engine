@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BH.Engine.Geometry
 {
-    public static partial class Verify
+    public static partial class Query
     {
         /***************************************************/
         /**** Public Methods - BoundingBox              ****/

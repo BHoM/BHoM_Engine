@@ -12,7 +12,7 @@ namespace BH.Engine.Acoustic
     public static partial class Create
     {
         /***************************************************/
-        /**** Constructors                              ****/
+        /**** Public Methods                            ****/
         /***************************************************/
 
         public static Speaker Speaker(Point location, Vector direction = null, double emissiveLevel = 100, string category = "Omni")
@@ -40,5 +40,7 @@ namespace BH.Engine.Acoustic
                 Directivity = directivity,
             };
         }
+
+        /***************************************************/
     }
 }

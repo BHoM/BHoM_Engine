@@ -18,5 +18,7 @@ namespace BH.Engine.Acoustic
             double q = 0.0032; // directivity factor of the source
             return Math.Sqrt(q * room.Volume / revTime); // using approximated Sabine's reverberation formula
         }
+
+        /***************************************************/
     }
 }

@@ -24,5 +24,7 @@ namespace BH.Engine.Acoustic
         {
             return revTime.Value / Constants.SabineConstant;
         }
+
+        /***************************************************/
     }
 }

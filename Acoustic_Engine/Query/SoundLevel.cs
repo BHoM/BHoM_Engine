@@ -23,5 +23,7 @@ namespace BH.Engine.Acoustic
                 spl += 10 * Math.Log10(Math.Pow(10, 10 / raySegments[i].GetLength()));
             return Create.SoundLevel(spl, ray.ReceiverID, ray.SpeakerID, frequency);
         }
+
+        /***************************************************/
     }
 }

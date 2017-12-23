@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BH.Engine.Structure
 {
-    public static partial class Verify
+    public static partial class Query
     {
 
         /***************************************************/

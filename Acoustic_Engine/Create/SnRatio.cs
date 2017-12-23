@@ -10,7 +10,7 @@ namespace BH.Engine.Acoustic
     public static partial class Create
     {
         /***************************************************/
-        /**** Constructors                              ****/
+        /**** Public Methods                            ****/
         /***************************************************/
 
         public static SnRatio SnRatio(double value, int receiverID, int speakerID, Frequency frequency)
@@ -23,5 +23,7 @@ namespace BH.Engine.Acoustic
                 Frequency = frequency
             };
         }
+
+        /***************************************************/
     }
 }

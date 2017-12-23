@@ -22,5 +22,7 @@ namespace BH.Engine.Acoustic
             double avgAbsorbtionCoeff = roomAbsorbtion / room.Area;
             return roomAbsorbtion / (1 - avgAbsorbtionCoeff);
         }
+
+        /***************************************************/
     }
 }

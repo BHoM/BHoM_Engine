@@ -13,14 +13,15 @@ namespace BH.Engine.Acoustic
         /**** Public  Methods                           ****/
         /***************************************************/
 
-
         public static List<Ray> DirectRays(this List<Receiver> receivers, List<Speaker> speakers, List<Panel> panels = null)
         {
             List<Ray> rays = new List<Ray>();
             for (int i = 0; i < speakers.Count; i++)
                 for (int j = 0; j < receivers.Count; j++)
                     rays.Add(Create.Ray(speakers[i], receivers[i]));
-            return rays.VisibleRays(panels);
+            return rays.FilterVisibleRays(panels);
         }
+
+        /***************************************************/
     }
 }

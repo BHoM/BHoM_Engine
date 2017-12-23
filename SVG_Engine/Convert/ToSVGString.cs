@@ -187,7 +187,7 @@ namespace BH.Engine.Graphics
                                    + "\" cy=\"" + centerPt.Y.ToString()
                                    + "\" rx=\"" + ellipse.Radius1.ToString()
                                    + "\" ry=\"" + ellipse.Radius2.ToString()
-                                   + "\" transform=\"rotate(" + ((Geometry.Query.GetAngle(ellipse.Axis1, Vector.XAxis)) * 180 / Math.PI).ToString()
+                                   + "\" transform=\"rotate(" + ((Engine.Geometry.Query.GetAngle(ellipse.Axis1, Vector.XAxis)) * 180 / Math.PI).ToString()
                                    + " " + centerPt.X.ToString()
                                    + " " + centerPt.Y.ToString() + ")\"/>";
 

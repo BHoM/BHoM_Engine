@@ -57,12 +57,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Clone\" />
     <Folder Include="Convert\" />
-    <Folder Include="EqualityComparers\" />
+    <Folder Include="Modify\" />
     <Folder Include="Query\" />
-    <Folder Include="Transform\" />
-    <Folder Include="Verifiy\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

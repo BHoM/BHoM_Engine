@@ -10,6 +10,8 @@ using BH.oM.Structural.Properties;
 using BH.Engine.Geometry;
 using System.Reflection;
 using System.IO;
+using BH.Engine.Base;
+using BH.Engine.Base.Objects;
 //using ModelLaundry_Engine;
 
 namespace Engine_Test
@@ -24,10 +26,37 @@ namespace Engine_Test
 
         static void Main(string[] args)
         {
+            TestConstructorSpeed();
             //TestDynamicExtentionCost();
-            TestMethodExtraction();
+            //TestMethodExtraction();
             Console.Read();
         }
+
+        /***************************************************/
+
+        static void TestConstructorSpeed()
+        {
+            BH.Engine.Base.Compute.ExecutionSpeed(new List<IterFunction>
+            {
+                UseNodeConstructor,
+                UseNodeCreator
+            });
+        }
+
+        /***************************************************/
+
+        static void UseNodeConstructor(int iter)
+        {
+            new Node(new Point(), "test");
+        }
+
+        /***************************************************/
+
+        static void UseNodeCreator(int iter)
+        {
+            BH.Engine.Structure.Create.Node(new Point(), "test");
+        }
+
 
         /***************************************************/
 

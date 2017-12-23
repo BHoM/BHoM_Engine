@@ -21,7 +21,7 @@ namespace BH.Engine.Graphics
             List<IBHoMGeometry> geometry = svg.Geometry;
 
             for (int i = 0; i < svg.Geometry.Count; i++)
-                bb += Geometry.Query.IGetBounds(svg.Geometry[i]);
+                bb += Engine.Geometry.Query.IGetBounds(svg.Geometry[i]);
 
             return bb;
         }
