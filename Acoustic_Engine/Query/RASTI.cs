@@ -24,5 +24,6 @@ namespace BH.Engine.Acoustic
             return Create.Rasti((4d / 9d) * rasti500 + (5d / 9d) * rasti2000, receiver.ReceiverID);
         }
 
+        /***************************************************/
     }
 }

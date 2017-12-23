@@ -31,5 +31,7 @@ namespace BH.Engine.Acoustic
         {
             return Create.Ray(new Polyline(new List<Point> { speaker.Location, receiver.Location }), speaker.SpeakerID, receiver.ReceiverID);
         }
+
+        /***************************************************/
     }
 }

@@ -17,5 +17,7 @@ namespace BH.Engine.Acoustic
         {
             return Constants.SabineTimeCoefficient * room.Volume  / roomAbsorbtion;
         }
+
+        /***************************************************/
     }
 }

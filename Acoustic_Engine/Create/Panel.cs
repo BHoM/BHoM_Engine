@@ -10,6 +10,9 @@ namespace BH.Engine.Acoustic
 {
     public static partial class Create
     {
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
 
         public static Panel Panel(Mesh geometry)
         {
@@ -29,5 +32,7 @@ namespace BH.Engine.Acoustic
                 R = r
             };
         }
+
+        /***************************************************/
     }
 }

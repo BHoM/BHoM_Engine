@@ -12,7 +12,7 @@ namespace BH.Engine.Acoustic
     public static partial class Create
     {
         /***************************************************/
-        /**** Constructors                              ****/
+        /**** Public Methods                            ****/
         /***************************************************/
 
         public static Receiver Receiver(Point location)
@@ -33,5 +33,7 @@ namespace BH.Engine.Acoustic
                 Category = category,
             };
         }
+
+        /***************************************************/
     }
 }

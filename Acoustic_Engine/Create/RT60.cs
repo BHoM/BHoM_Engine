@@ -10,7 +10,7 @@ namespace BH.Engine.Acoustic
     public static partial class Create
     {
         /***************************************************/
-        /**** Constructors                              ****/
+        /**** Public Methods                            ****/
         /***************************************************/
 
         public static RT60 RT60(double value, int receiverID, int speakerID)
@@ -22,5 +22,7 @@ namespace BH.Engine.Acoustic
                 SpeakerID = speakerID
             };
         }
+
+        /***************************************************/
     }
 }

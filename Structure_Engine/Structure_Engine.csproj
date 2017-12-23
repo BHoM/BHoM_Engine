@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Create\Node.cs" />
     <Compile Include="Create\Bar.cs" />
     <Compile Include="Create\ConcreteSection.cs" />
     <Compile Include="Create\LinkConstraints.cs" />

@@ -12,16 +12,35 @@ namespace BH.Engine.Architecture.Elements
 {
     public static partial class Create
     {
-
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        
+
+        public static Grid Grid(ICurve curve)
+        {
+            return new Grid
+            {
+                Curves = new List<ICurve> { curve }
+            };
+        }
+
+        /***************************************************/
+
+        public static Grid Grid(List<ICurve> curves)
+        {
+            return new Grid
+            {
+                Curves = curves
+            };
+        }
+
+        /***************************************************/
+
         public static Grid Grid(Point origin, Vector direction)
         {
-            Plane plane = new Plane(origin, Geometry.Query.GetCrossProduct(direction, Vector.ZAxis));
+            Plane plane = new Plane(origin, Engine.Geometry.Query.GetCrossProduct(direction, Vector.ZAxis));
             Line line = new Line(origin, origin + direction * 20);
-            return new Grid(line);
+            return new Grid { Curves = new List<ICurve> { line } };
         }
 
         /***************************************************/

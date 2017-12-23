@@ -30,5 +30,7 @@ namespace BH.Engine.Acoustic
                 totalLevel += spl[i];
             return totalLevel;
         }
+
+        /***************************************************/
     }
 }

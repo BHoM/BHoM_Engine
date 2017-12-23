@@ -47,18 +47,34 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Compute\RelatedPairs.cs" />
+    <Compile Include="Compute\Path.cs" />
+    <Compile Include="Create\PointMatrix.cs" />
+    <Compile Include="Create\LocalData.cs" />
+    <Compile Include="Create\DiscreetPoint.cs" />
+    <Compile Include="Create\PriorityQueue.cs" />
+    <Compile Include="Create\Tree.cs" />
     <Compile Include="Create\VennDiagram.cs" />
-    <Compile Include="Graph.cs" />
-    <Compile Include="GraphLink.cs" />
-    <Compile Include="GraphNavigator.cs" />
-    <Compile Include="GraphNode.cs" />
-    <Compile Include="PointMatrix.cs" />
-    <Compile Include="PriorityQueue.cs" />
+    <Compile Include="Create\Graph.cs" />
+    <Compile Include="Create\GraphLink.cs" />
+    <Compile Include="Create\GraphNode.cs" />
+    <Compile Include="Modify\Add.cs" />
+    <Compile Include="Modify\Pop.cs" />
+    <Compile Include="Modify\RemoveLink.cs" />
+    <Compile Include="Modify\AddLink.cs" />
+    <Compile Include="Modify\AddNode.cs" />
+    <Compile Include="Modify\RemoveNode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Query\CloseToPoint.cs" />
+    <Compile Include="Query\ClosestToPoint.cs" />
+    <Compile Include="Query\ClosestNode.cs" />
+    <Compile Include="Query\Count.cs" />
+    <Compile Include="Query\Neighbours.cs" />
+    <Compile Include="Query\OppositeNode.cs" />
+    <Compile Include="Query\Peek.cs" />
+    <Compile Include="Query\SubMatrixData.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Table\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\BHoM_Engine\BHoM_Engine.csproj">
       <Project>{1ad45c88-dd54-48e5-951f-55edfeb70e35}</Project>

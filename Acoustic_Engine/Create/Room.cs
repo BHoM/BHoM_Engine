@@ -11,7 +11,7 @@ namespace BH.Engine.Acoustic
     public static partial class Create
     {
         /***************************************************/
-        /**** Constructors                              ****/
+        /**** Public Methods                            ****/
         /***************************************************/
 
         public static Room Room(List<Point> points, double area, double volume)
@@ -35,5 +35,7 @@ namespace BH.Engine.Acoustic
                 Samples = receivers
             };
         }
+
+        /***************************************************/
     }
 }

@@ -33,5 +33,7 @@ namespace BH.Engine.Acoustic
             }
             return Create.SoundLevel(directSound.Value + speakers.First().EmissiveLevel, receiver.ReceiverID, -1, frequency);
         }
+
+        /***************************************************/
     }
 }

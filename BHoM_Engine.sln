@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Express 14 for Windows Desktop
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 14
+VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Engine_Test", "Engine_Test\Engine_Test.csproj", "{178E7641-FB4D-41E9-A250-120A2B834912}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -26,8 +26,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BHoM_Engine", "BHoM_Engine\BHoM_Engine.csproj", "{1AD45C88-DD54-48E5-951F-55EDFEB70E35}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reflection_Engine", "Reflection_Engine\Reflection_Engine.csproj", "{B0154405-9390-472D-9B5C-A2280823B18D}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BHoM_Engine_Legacy", "BHoM_Engine_Legacy\BHoM_Engine_Legacy.csproj", "{F2E4C764-F380-4C1D-9968-71F47D54E411}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Geometry_Engine", "Geometry_Engine\Geometry_Engine.csproj", "{89AB2DCB-EF87-4CBA-B59C-C16A8A71D333}"
 EndProject
@@ -115,13 +113,6 @@ Global
 		{B0154405-9390-472D-9B5C-A2280823B18D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B0154405-9390-472D-9B5C-A2280823B18D}.Release|x86.ActiveCfg = Release|Any CPU
 		{B0154405-9390-472D-9B5C-A2280823B18D}.Release|x86.Build.0 = Release|Any CPU
-		{F2E4C764-F380-4C1D-9968-71F47D54E411}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F2E4C764-F380-4C1D-9968-71F47D54E411}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{F2E4C764-F380-4C1D-9968-71F47D54E411}.Debug|x86.Build.0 = Debug|Any CPU
-		{F2E4C764-F380-4C1D-9968-71F47D54E411}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F2E4C764-F380-4C1D-9968-71F47D54E411}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F2E4C764-F380-4C1D-9968-71F47D54E411}.Release|x86.ActiveCfg = Release|Any CPU
-		{F2E4C764-F380-4C1D-9968-71F47D54E411}.Release|x86.Build.0 = Release|Any CPU
 		{89AB2DCB-EF87-4CBA-B59C-C16A8A71D333}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{89AB2DCB-EF87-4CBA-B59C-C16A8A71D333}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{89AB2DCB-EF87-4CBA-B59C-C16A8A71D333}.Debug|Any CPU.Deploy.0 = Debug|Any CPU

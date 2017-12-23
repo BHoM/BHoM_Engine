@@ -93,7 +93,7 @@ namespace BH.Engine.Geometry
             {
                 for (int j = lines.Count - 1; j > i; j--)
                 {
-                    if (Verify.IsInRange(boxes[i], boxes[j]))
+                    if (Query.IsInRange(boxes[i], boxes[j]))
                     {
                         Point result = GetIntersection(lines[i], lines[j], useInfiniteLine, tolerance);
                         if (result != null)

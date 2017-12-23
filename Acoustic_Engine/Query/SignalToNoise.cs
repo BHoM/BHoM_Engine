@@ -40,5 +40,7 @@ namespace BH.Engine.Acoustic
             appSoundNoise = appSoundNoise > 15 ? 15 : (appSoundNoise < -15 ? -15 : appSoundNoise);
             return Create.SnRatio(appSoundNoise, receiver.ReceiverID, -1, f);
         }
+
+        /***************************************************/
     }
 }

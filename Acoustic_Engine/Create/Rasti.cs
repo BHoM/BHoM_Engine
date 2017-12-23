@@ -10,7 +10,7 @@ namespace BH.Engine.Acoustic
     public static partial class Create
     {
         /***************************************************/
-        /**** Constructors                              ****/
+        /**** Public Methods                            ****/
         /***************************************************/
 
         public static Rasti Rasti(double value, int receiverID)
@@ -21,5 +21,7 @@ namespace BH.Engine.Acoustic
                 ReceiverID = receiverID,
             };
         }
+
+        /***************************************************/
     }
 }
