@@ -4,7 +4,6 @@ using System.IO;
 using java.util;
 using java.io;
 using edu.stanford.nlp.pipeline;
-using Console = System.Console;
 using Newtonsoft.Json;
 
 namespace BH.Engine.MachineLearning

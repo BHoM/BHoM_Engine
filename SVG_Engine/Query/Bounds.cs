@@ -1,11 +1,6 @@
 ﻿using BH.oM.Geometry;
-using BH.Engine.Geometry;
 using BH.oM.Graphics;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BH.Engine.Graphics
 {
@@ -18,10 +13,10 @@ namespace BH.Engine.Graphics
         public static BoundingBox GetBounds(SVGObject svg)
         {
             BoundingBox bb = new BoundingBox();
-            List<IBHoMGeometry> geometry = svg.Geometry;
+            List<IBHoMGeometry> geometry = svg.Shapes;
 
-            for (int i = 0; i < svg.Geometry.Count; i++)
-                bb += Engine.Geometry.Query.IGetBounds(svg.Geometry[i]);
+            for (int i = 0; i < svg.Shapes.Count; i++)
+                bb += Engine.Geometry.Query.IGetBounds(svg.Shapes[i]);
 
             return bb;
         }

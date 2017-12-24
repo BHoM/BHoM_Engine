@@ -1,12 +1,4 @@
-﻿using BH.oM.Geometry;
-using BH.oM.Structural.Elements;
-using BH.oM.Structural.Properties;
-using BH.Engine.Geometry;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using BH.oM.Structural.Properties;
 
 namespace BH.Engine.Structure
 {

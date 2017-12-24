@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using BH.oM.Geometry;
 using BH.oM.Acoustic;
 using BH.Engine.Geometry;

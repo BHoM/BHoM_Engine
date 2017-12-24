@@ -35,6 +35,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SVG_Engine", "SVG_Engine\SV
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Architecture_Engine", "Architecture_Engine\Architecture_Engine.csproj", "{338E9DA8-8AAF-4F51-B4AD-264B5F329A5F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Environment_Engine", "Environment_Engine\Environment_Engine.csproj", "{3E563667-E18A-4057-B183-6C758B8EF823}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -146,6 +148,14 @@ Global
 		{338E9DA8-8AAF-4F51-B4AD-264B5F329A5F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{338E9DA8-8AAF-4F51-B4AD-264B5F329A5F}.Release|x86.ActiveCfg = Release|Any CPU
 		{338E9DA8-8AAF-4F51-B4AD-264B5F329A5F}.Release|x86.Build.0 = Release|Any CPU
+		{3E563667-E18A-4057-B183-6C758B8EF823}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3E563667-E18A-4057-B183-6C758B8EF823}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3E563667-E18A-4057-B183-6C758B8EF823}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{3E563667-E18A-4057-B183-6C758B8EF823}.Debug|x86.Build.0 = Debug|Any CPU
+		{3E563667-E18A-4057-B183-6C758B8EF823}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3E563667-E18A-4057-B183-6C758B8EF823}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3E563667-E18A-4057-B183-6C758B8EF823}.Release|x86.ActiveCfg = Release|Any CPU
+		{3E563667-E18A-4057-B183-6C758B8EF823}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
