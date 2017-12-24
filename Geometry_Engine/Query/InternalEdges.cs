@@ -18,20 +18,20 @@ namespace BH.Engine.Geometry
             List<ICurve> edges = new List<ICurve>();
             if (surface.Capped)
             {
-                edges.Add(curve.IGetClone());
-                edges.Add(surface.Curve.IGetTranslated(surface.Direction));
+                edges.Add(curve.IClone());
+                edges.Add(surface.Curve.ITranslate(surface.Direction));
             }
 
             if (curve.IIsClosed())
             {
-                Point start = curve.IGetStartPoint();
-                edges.Add(new Line(start, start + direction));
+                Point start = curve.IStartPoint();
+                edges.Add(new Line { Start = start, End = start + direction });
             }
 
             if (curve.IIsClosed())
             {
                 Point end = curve.IGetEndPoint();
-                edges.Add(new Line(end, end + direction));
+                edges.Add(new Line { Start = end, End = end + direction });
             }
 
             return edges;
@@ -46,8 +46,8 @@ namespace BH.Engine.Geometry
                 ICurve curve = surface.Centreline;
                 return new List<ICurve>()
                 {
-                    new Circle(curve.IGetStartPoint(), curve.IGetStartDir(), surface.Radius),
-                    new Circle(curve.IGetEndPoint(), curve.IGetEndDir(), surface.Radius)
+                    new Circle { Centre = curve.IStartPoint(), Normal = curve.IStartDir(), Radius = surface.Radius },
+                    new Circle { Centre = curve.IGetEndPoint(), Normal = curve.IGetEndDir(), Radius = surface.Radius }
                 };
             }
             else

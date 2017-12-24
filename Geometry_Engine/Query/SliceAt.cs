@@ -10,14 +10,14 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static IntegrationSlice GetSliceAt(IList<ICurve> edges, double location, double width, Plane p)
+        public static IntegrationSlice SliceAt(IList<ICurve> edges, double location, double width, Plane p)
         {
             List<Point> y = new List<Point>();
             double length = 0;
             Plane plane = new Plane(new Point(p.Normal * location), p.Normal);
             for (int edgeIndex = 0; edgeIndex < edges.Count; edgeIndex++)
             {
-                y.AddRange(edges[edgeIndex].GetIntersections(plane, Tolerance.Distance));
+                y.AddRange(edges[edgeIndex].IPlaneIntersections(plane, Tolerance.Distance));
             }
 
             y.RemoveAll(x => x == null);
@@ -53,8 +53,9 @@ namespace BH.Engine.Geometry
             {
                 length = length + isolatedCoords[j + 1] - isolatedCoords[j];
             }
-            return new IntegrationSlice(width, length, location, isolatedCoords.ToArray());
+            return Create.IntegrationSlice(width, length, location, isolatedCoords.ToArray());
         }
 
+        /***************************************************/
     }
 }

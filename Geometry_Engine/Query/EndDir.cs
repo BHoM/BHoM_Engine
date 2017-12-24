@@ -22,14 +22,14 @@ namespace BH.Engine.Geometry
         {
             Vector n = circle.Normal;
             Vector endDir = Math.Abs(n.Z) < Math.Abs(n.X) ? new Vector(n.Y, -n.X, 0) : new Vector(0, n.Z, -n.Y);
-            return circle.Normal.GetCrossProduct(endDir).GetNormalised();
+            return circle.Normal.CrossProduct(endDir).Normalise();
         }
 
         /***************************************************/
 
         public static Vector GetEndDir(this Line line)
         {
-            return new Vector(line.End.X - line.Start.X, line.End.Y - line.Start.Y, line.End.Z - line.Start.Z).GetNormalised();
+            return new Vector(line.End.X - line.Start.X, line.End.Y - line.Start.Y, line.End.Z - line.Start.Z).Normalise();
         }
 
         /***************************************************/
@@ -57,7 +57,7 @@ namespace BH.Engine.Geometry
             Point pt1 = pts[pts.Count - 2];
             Point pt2 = pts[pts.Count - 1];
 
-            return new Vector(pt2.X - pt1.X, pt2.Y - pt1.Y, pt2.Z - pt1.Z).GetNormalised();
+            return new Vector(pt2.X - pt1.X, pt2.Y - pt1.Y, pt2.Z - pt1.Z).Normalise();
         }
 
 

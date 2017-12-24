@@ -3,27 +3,27 @@ using System.Linq;
 
 namespace BH.Engine.Geometry
 {
-    public static partial class Clone
+    public static partial class Query
     {
         /***************************************************/
         /**** Public Methods - Vectors                  ****/
         /***************************************************/
 
-        public static Plane GetClone(this Plane plane)
+        public static Plane Clone(this Plane plane)
         {
-            return new Plane(plane.Origin.GetClone(), plane.Normal.GetClone());
+            return new Plane(plane.Origin.Clone(), plane.Normal.Clone());
         }
 
         /***************************************************/
 
-        public static Point GetClone(this Point point)
+        public static Point Clone(this Point point)
         {
             return new Point(point.X, point.Y, point.Z);
         }
 
         /***************************************************/
 
-        public static Vector GetClone(this Vector vector)
+        public static Vector Clone(this Vector vector)
         {
             return new Vector(vector.X, vector.Y, vector.Z);
         }
@@ -33,44 +33,44 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Curves                   ****/
         /***************************************************/
 
-        public static Arc GetClone(this Arc arc)
+        public static Arc Clone(this Arc arc)
         {
-            return new Arc(arc.Start.GetClone(), arc.Middle.GetClone(), arc.End.GetClone());
+            return new Arc { Start = arc.Start.Clone(), Middle = arc.Middle.Clone(), End = arc.End.Clone() };
         }
 
         /***************************************************/
 
-        public static Circle GetClone(this Circle circle)
+        public static Circle Clone(this Circle circle)
         {
-            return new Circle(circle.Centre.GetClone(), circle.Normal.GetClone(), circle.Radius);
+            return new Circle { Centre = circle.Centre.Clone(), Normal = circle.Normal.Clone(), Radius = circle.Radius };
         }
 
         /***************************************************/
 
-        public static Line GetClone(this Line line)
+        public static Line Clone(this Line line)
         {
-            return new Line(line.Start.GetClone(), line.End.GetClone() );
+            return new Line { Start = line.Start.Clone(), End = line.End.Clone() };
         }
 
         /***************************************************/
 
-        public static NurbCurve GetClone(this NurbCurve curve)
+        public static NurbCurve Clone(this NurbCurve curve)
         {
-            return new NurbCurve(curve.ControlPoints.Select(x => x.GetClone()), curve.Weights, curve.Knots);
+            return new NurbCurve { ControlPoints = curve.ControlPoints.Select(x => x.Clone()).ToList(), Weights = curve.Weights.ToList(), Knots = curve.Knots.ToList() };
         }
 
         /***************************************************/
 
-        public static PolyCurve GetClone(this PolyCurve curve)
+        public static PolyCurve Clone(this PolyCurve curve)
         {
-            return new PolyCurve(curve.Curves.Select(x => x.IGetClone()));
+            return new PolyCurve { Curves = curve.Curves.Select(x => x.IClone()).ToList() };
         }
 
         /***************************************************/
 
-        public static Polyline GetClone(this Polyline curve)
+        public static Polyline Clone(this Polyline curve)
         {
-            return new Polyline(curve.ControlPoints.Select(x => x.GetClone()));
+            return new Polyline { ControlPoints = curve.ControlPoints.Select(x => x.Clone()).ToList() };
         }
 
 
@@ -78,37 +78,37 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Surfaces                 ****/
         /***************************************************/
 
-        public static Extrusion GetClone(this Extrusion surface)
+        public static Extrusion Clone(this Extrusion surface)
         {
-            return new Extrusion(surface.Curve.IGetClone(), surface.Direction.GetClone(), surface.Capped);
+            return new Extrusion(surface.Curve.IClone(), surface.Direction.Clone(), surface.Capped);
         }
 
         /***************************************************/
 
-        public static Loft GetClone(this Loft surface)
+        public static Loft Clone(this Loft surface)
         {
-            return new Loft(surface.Curves.Select(x => x.IGetClone()));
+            return new Loft(surface.Curves.Select(x => x.IClone()));
         }
 
         /***************************************************/
 
-        public static NurbSurface GetClone(this NurbSurface surface)
+        public static NurbSurface Clone(this NurbSurface surface)
         {
-            return new NurbSurface(surface.ControlPoints.Select(x => x.GetClone()), surface.Weights.ToList(), surface.UKnots.ToList(), surface.VKnots.ToList());
+            return new NurbSurface(surface.ControlPoints.Select(x => x.Clone()), surface.Weights.ToList(), surface.UKnots.ToList(), surface.VKnots.ToList());
         }
 
         /***************************************************/
 
-        public static Pipe GetClone(this Pipe surface)
+        public static Pipe Clone(this Pipe surface)
         {
-            return new Pipe(surface.Centreline.IGetClone(), surface.Radius, surface.Capped);
+            return new Pipe(surface.Centreline.IClone(), surface.Radius, surface.Capped);
         }
 
         /***************************************************/
 
-        public static PolySurface GetClone(this PolySurface surface)
+        public static PolySurface Clone(this PolySurface surface)
         {
-            return new PolySurface(surface.Surfaces.Select(x => x.IGetClone()));
+            return new PolySurface(surface.Surfaces.Select(x => x.IClone()));
         }
 
 
@@ -116,30 +116,30 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Others                   ****/
         /***************************************************/
 
-        public static Mesh GetClone(this Mesh mesh)
+        public static Mesh Clone(this Mesh mesh)
         {
-            return new Mesh(mesh.Vertices.Select(x => x.GetClone()), mesh.Faces.Select(x => x.GetClone()));
+            return new Mesh { Vertices = mesh.Vertices.Select(x => x.Clone()).ToList(), Faces = mesh.Faces.Select(x => x.Clone()).ToList() };
         }
 
         /***************************************************/
 
-        public static Face GetClone(this Face face)
+        public static Face Clone(this Face face)
         {
-            return new Face(face.A, face.B, face.C, face.D);
+            return new Face { A = face.A, B = face.B, C = face.C, D = face.D };
         }
 
         /***************************************************/
 
-        public static BoundingBox GetClone(this BoundingBox box)
+        public static BoundingBox Clone(this BoundingBox box)
         {
-            return new BoundingBox(box.Min.GetClone(), box.Max.GetClone());
+            return new BoundingBox { Min = box.Min.Clone(), Max = box.Max.Clone() };
         }
 
         /***************************************************/
 
-        public static CompositeGeometry GetClone(this CompositeGeometry group)
+        public static CompositeGeometry Clone(this CompositeGeometry group)
         {
-            return new CompositeGeometry(group.Elements.Select(x => x.IGetClone()));
+            return new CompositeGeometry { Elements = group.Elements.Select(x => x.IClone()).ToList() };
         }
 
 
@@ -147,24 +147,25 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
-        public static IBHoMGeometry IGetClone(this IBHoMGeometry geometry)
+        public static IBHoMGeometry IClone(this IBHoMGeometry geometry)
         {
-            return GetClone(geometry as dynamic);
+            return Clone(geometry as dynamic);
         }
 
         /***************************************************/
 
-        public static ICurve IGetClone(this ICurve curve)
+        public static ICurve IClone(this ICurve curve)
         {
-            return GetClone(curve as dynamic);
+            return Clone(curve as dynamic);
         }
 
         /***************************************************/
 
-        public static ISurface IGetClone(this ISurface surface)
+        public static ISurface IClone(this ISurface surface)
         {
-            return GetClone(surface as dynamic);
+            return Clone(surface as dynamic);
         }
 
+        /***************************************************/
     }
 }

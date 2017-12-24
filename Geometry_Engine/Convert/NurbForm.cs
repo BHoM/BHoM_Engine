@@ -81,7 +81,7 @@ namespace BH.Engine.Geometry
 
         public static NurbCurve ToNurbCurve(this Line line)
         {
-            return new NurbCurve(new List<Point> { line.Start, line.End }, new double[] { 1, 1 }, new double[] { 0, 0, 1, 1 });
+            return Create.NurbCurve(new List<Point> { line.Start, line.End }, new double[] { 1, 1 }, new double[] { 0, 0, 1, 1 });
 
         }
 
@@ -89,7 +89,7 @@ namespace BH.Engine.Geometry
 
         public static NurbCurve ToNurbCurve(this NurbCurve curve)
         {
-            return curve.GetClone();
+            return curve.Clone();
         }
 
         /***************************************************/

@@ -1,6 +1,6 @@
 ﻿namespace BH.Engine.Reflection
 {
-    public static partial class Transform
+    public static partial class Modify
     {
         /***************************************************/
         /**** Public Methods                            ****/

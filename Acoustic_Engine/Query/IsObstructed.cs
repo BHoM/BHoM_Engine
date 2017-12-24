@@ -12,7 +12,7 @@ namespace BH.Engine.Acoustic
         public static bool IsObstructed(this Ray ray, List<Panel> panels)
         {
             for (int i = 0; i < panels.Count; i++)
-                if (Engine.Geometry.Query.GetIntersections(ray.Path, panels[i].Surface).Count == 0)
+                if (Engine.Geometry.Query.MeshIntersections(ray.Path, panels[i].Surface).Count == 0)
                     return true;
             return false;
         }

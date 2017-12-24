@@ -11,7 +11,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Polylines                ****/
         /***************************************************/
 
-        public static List<Polyline> GetBooleanIntersection(this Polyline region, Polyline curve)
+        public static List<Polyline> BooleanIntersection(this Polyline region, Polyline curve)   //TODO: Add method for List<polyline> that uses bolean union to join the curves first 
         {
             List<Point> regionCorners = region.ControlPoints;
             List<Point> outCtrlPts = curve.ControlPoints;
@@ -23,13 +23,13 @@ namespace BH.Engine.Geometry
             if (!regionCorners.IsInPlane(plane) || !outCtrlPts.IsInPlane(plane)) throw new NotImplementedException("The polylines needs to be in the same plane");
 
             List<Plane> regionEdgePlanes = new List<Plane>();
-            Point C = regionCorners.GetAverage();
+            Point C = regionCorners.Average();
             Vector normal = plane.Normal;
 
             for (int i = 1; i < regionCorners.Count; i++)
             {
                 Vector edge = new Vector(new Point(regionCorners[i - 1] - regionCorners[i]));
-                regionEdgePlanes.Add(new Plane(regionCorners[i - 1], edge.GetCrossProduct(normal)));
+                regionEdgePlanes.Add(new Plane(regionCorners[i - 1], edge.CrossProduct(normal)));
             }
             //TODO: Now using planes to find intersection. This is done because finding intersection between one infinite line and one finite 
             //is not inplemented. NEeds to be changed once the method for that has been inplemented. 
@@ -46,20 +46,20 @@ namespace BH.Engine.Geometry
                 {
                     Point E = inCtrlPts[j];
 
-                    if ((new Line(C, E)).GetIntersection(regionEdgePlane) == null)
+                    if ((new Line { Start = C, End = E }).PlaneIntersection(regionEdgePlane) == null)
                     {
-                        if ((new Line(C, S)).GetIntersection(regionEdgePlane) != null) outCtrlPts.Add(new Line(S, E).GetIntersection(regionEdgePlane));
+                        if ((new Line { Start = C, End = S }).PlaneIntersection(regionEdgePlane) != null) outCtrlPts.Add(new Line { Start = S, End = E }.PlaneIntersection(regionEdgePlane));
                         outCtrlPts.Add(E);
                     }
-                    else if ((new Line(C, S)).GetIntersection(regionEdgePlane) == null) outCtrlPts.Add(new Line(S, E).GetIntersection(regionEdgePlane));
+                    else if ((new Line { Start = C, End = S }).PlaneIntersection(regionEdgePlane) == null) outCtrlPts.Add(new Line { Start = S, End = E }.PlaneIntersection(regionEdgePlane));
                     S = E;
                 }
             }
             outCtrlPts.Add(outCtrlPts.First());
-            List<Polyline> polyLineList = new List<Polyline>() { new Polyline(outCtrlPts) };
+            List<Polyline> polyLineList = new List<Polyline>() { new Polyline { ControlPoints = outCtrlPts } };
             return polyLineList;
         }
 
-        //TODO: Add method for List<polyline> that uses bolean union to join the curves first 
+        /***************************************************/  
     }
 }

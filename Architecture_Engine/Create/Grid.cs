@@ -32,8 +32,8 @@ namespace BH.Engine.Architecture.Elements
 
         public static Grid Grid(Point origin, Vector direction)
         {
-            Plane plane = new Plane(origin, Engine.Geometry.Query.GetCrossProduct(direction, Vector.ZAxis));
-            Line line = new Line(origin, origin + direction * 20);
+            Plane plane = new Plane(origin, Engine.Geometry.Query.CrossProduct(direction, Vector.ZAxis));
+            Line line = new Line { Start = origin, End = origin + direction * 20 };
             return new Grid { Curves = new List<ICurve> { line } };
         }
 

@@ -53,22 +53,22 @@ namespace BH.Engine.Geometry
 
         public static double GetDistance(this Point a, Plane plane)
         {
-            Vector normal = plane.Normal.GetNormalised();
-            return normal.GetDotProduct(a - plane.Origin);
+            Vector normal = plane.Normal.Normalise();
+            return normal.DotProduct(a - plane.Origin);
         }
 
         /***************************************************/
 
         public static double GetDistance(this Point a, Line line)
         {
-            return a.GetDistance(line.IGetClosestPoint(a));
+            return a.GetDistance(line.IClosestPoint(a));
         }
 
         /***************************************************/
 
         public static double GetDistance(this Line line, Line other)
         {
-            Point intersection = line.GetIntersection(other, false);
+            Point intersection = line.LineIntersection(other, false);
             if (intersection != null)
             {
                 return 0;

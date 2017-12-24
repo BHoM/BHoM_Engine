@@ -11,42 +11,42 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Curves                   ****/
         /***************************************************/
 
-        public static double GetArea(this Arc curve)
+        public static double Area(this Arc curve)
         {
-            return curve.GetAngle() * Math.Pow(curve.GetRadius(), 2);
+            return curve.Angle() * Math.Pow(curve.Radius(), 2);
         }
 
         /***************************************************/
 
-        public static double GetArea(this Circle curve)
+        public static double Area(this Circle curve)
         {
             return Math.PI * Math.Pow(curve.Radius, 2);
         }
 
         /***************************************************/
 
-        public static double GetArea(this Line curve)
+        public static double Area(this Line curve)
         {
             return 0;
         }
 
         /***************************************************/
 
-        public static double GetArea(this NurbCurve curve)
+        public static double Area(this NurbCurve curve)
         {
             throw new NotImplementedException();
         }
 
         /***************************************************/
 
-        public static double GetArea(this PolyCurve curve)
+        public static double Area(this PolyCurve curve)
         {
-            return curve.Curves.Sum(crv => crv.IGetArea());
+            return curve.Curves.Sum(crv => crv.IArea());
         }
 
         /***************************************************/
 
-        public static double GetArea(this Polyline curve)
+        public static double Area(this Polyline curve)
         {
             List<Point> pts = curve.ControlPoints;
             int ptsCount = pts.Count;
@@ -56,7 +56,7 @@ namespace BH.Engine.Geometry
             for (int i = 0; i < ptsCount; i++)
             {
                 int j = (i + 1) % ptsCount;
-                Vector prod = GetCrossProduct(pts[i], pts[j]);
+                Vector prod = CrossProduct(pts[i], pts[j]);
                 x += prod.X;
                 y += prod.Y;
                 z += prod.Z;
@@ -69,9 +69,9 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Surfaces                 ****/
         /***************************************************/
 
-        public static double GetArea(this Mesh mesh)
+        public static double Area(this Mesh mesh)
         {
-            Mesh tMesh = mesh.GetTriangulated();
+            Mesh tMesh = mesh.Triangulate();
             double area = 0;
             List<Face> faces = tMesh.Faces;
             List<Point> vertices = tMesh.Vertices;
@@ -82,14 +82,14 @@ namespace BH.Engine.Geometry
                 Point pC = vertices[faces[i].C];
                 Vector AB = new Vector(pB.X - pA.X, pB.Y - pA.Y, pB.Z - pA.Z);
                 Vector AC = new Vector(pC.X - pA.X, pC.Y - pA.Y, pC.Z - pA.Z);
-                area += AB.GetCrossProduct(AC).GetLength();
+                area += AB.CrossProduct(AC).Length();
             }
             return area / 2;
         }
 
         /***************************************************/
 
-        public static double GetArea(this NurbSurface nurbs)
+        public static double Area(this NurbSurface nurbs)
         {
             throw new NotImplementedException();
         }
@@ -99,10 +99,11 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
-        public static double IGetArea(this IBHoMGeometry geometry)
+        public static double IArea(this IBHoMGeometry geometry)
         {
-            return GetArea(geometry as dynamic);
+            return Area(geometry as dynamic);
         }
 
+        /***************************************************/
     }
 }

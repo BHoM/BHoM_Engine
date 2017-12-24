@@ -30,7 +30,7 @@ namespace BH.Engine.Base
                     geometries.Add(geometry);
             }
 
-            return new CompositeGeometry(geometries);
+            return new CompositeGeometry { Elements = geometries.ToList() };
         }
 
 
@@ -54,7 +54,7 @@ namespace BH.Engine.Base
                         geometries.Add(geometry);
                 }
                 if (geometries.Count() > 0)
-                    return new CompositeGeometry(geometries);
+                    return new CompositeGeometry { Elements = geometries.ToList() };
                 else
                     return null;
             }

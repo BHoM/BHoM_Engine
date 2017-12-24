@@ -25,7 +25,7 @@ namespace BH.Engine.Geometry
                 double currentCentre = dx + increment / 2;
                 double sliceWidth = (increment);
                 plane.Origin = (origin + plane.Normal * currentCentre);
-                List<Point> points = fx.GetIntersections(plane, 0.001);
+                List<Point> points = fx.IPlaneIntersections(plane, 0.001);
                 double currentValue = 0;
                 if (points.Count == 2)
                 {
@@ -168,7 +168,7 @@ namespace BH.Engine.Geometry
                     double currentCentre = (topSlice + botSlice) / 2;
                     double sliceWidth = (topSlice - botSlice);
                     plane.Origin = (origin + plane.Normal * currentCentre);
-                    List<Point> points = curve.GetIntersections(plane, 0.001);
+                    List<Point> points = curve.IPlaneIntersections(plane, 0.001);
                     double currentValue = 0;
                     if (points.Count == 2)
                     {

@@ -11,7 +11,7 @@ namespace BH.Engine.Structure
 
         public static double GetMass(this Bar bar)
         {
-            return bar.GetLength() * bar.SectionProperty.IGetMassPerMetre();
+            return bar.Length() * bar.SectionProperty.IGetMassPerMetre();
         }
 
         /***************************************************/

@@ -10,7 +10,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Point GetAverage(this IList<Point> points)
+        public static Point Average(this IList<Point> points)
         {
             int count = points.Count();
             if (count < 1) return null;
@@ -25,7 +25,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static Vector GetAverage(this List<Vector> vs)
+        public static Vector Average(this List<Vector> vs)
         {
             int count = vs.Count();
             if (count < 1) return null;
@@ -37,5 +37,7 @@ namespace BH.Engine.Geometry
 
             return mean /= count;
         }
+
+        /***************************************************/
     }
 }

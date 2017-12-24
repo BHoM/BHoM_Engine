@@ -14,11 +14,11 @@ namespace BH.Engine.Geometry
                 double result = 0;
                 if (i + n < curve.Knots.Count && curve.Knots[i + n] - curve.Knots[i] > 0)
                 {
-                    result += GetBasisFunction(curve, i, n - 1, t) * n / (curve.Knots[i + n] - curve.Knots[i]);
+                    result += BasisFunction(curve, i, n - 1, t) * n / (curve.Knots[i + n] - curve.Knots[i]);
                 }
                 if (i + n + 1 < curve.Knots.Count && curve.Knots[i + n + 1] - curve.Knots[i + 1] > 0)
                 {
-                    result -= GetBasisFunction(curve, i + 1, n - 1, t) * n / (curve.Knots[i + n + 1] - curve.Knots[i + 1]);
+                    result -= BasisFunction(curve, i + 1, n - 1, t) * n / (curve.Knots[i + n + 1] - curve.Knots[i + 1]);
                 }
                 return result;
             }

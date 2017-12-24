@@ -19,7 +19,7 @@ namespace BH.Engine.Structure
             foreach (Node n in meshFace.Nodes)
                 pts.Add(n.Point);
 
-            return pts.GetAverage();
+            return pts.Average();
         }
 
         /***************************************************/

@@ -10,42 +10,42 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Curves                   ****/
         /***************************************************/
 
-        public static List<Point> GetControlPoints(this Arc curve)
+        public static List<Point> ControlPoints(this Arc curve)
         {
             return new List<Point> { curve.Start, curve.Middle, curve.End };
         }
 
         /***************************************************/
 
-        public static List<Point> GetControlPoints(this Circle curve)
+        public static List<Point> ControlPoints(this Circle curve)
         {
             return new List<Point>();
         }
 
         /***************************************************/
 
-        public static List<Point> GetControlPoints(this Line curve)
+        public static List<Point> ControlPoints(this Line curve)
         {
             return new List<Point> { curve.Start, curve.End };
         }
 
         /***************************************************/
 
-        public static List<Point> GetControlPoints(this NurbCurve curve)
+        public static List<Point> ControlPoints(this NurbCurve curve)
         {
             return curve.ControlPoints;
         }
 
         /***************************************************/
 
-        public static List<Point> GetControlPoints(this PolyCurve curve)
+        public static List<Point> ControlPoints(this PolyCurve curve)
         {
-            return curve.Curves.SelectMany(x => x.IGetControlPoints()).ToList();
+            return curve.Curves.SelectMany(x => x.IControlPoints()).ToList();
         }
 
         /***************************************************/
 
-        public static List<Point> GetControlPoints(this Polyline curve)
+        public static List<Point> ControlPoints(this Polyline curve)
         {
             return curve.ControlPoints;
         }
@@ -55,9 +55,11 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
-        public static List<Point> IGetControlPoints(this ICurve curve)
+        public static List<Point> IControlPoints(this ICurve curve)
         {
-            return GetControlPoints(curve as dynamic);
+            return ControlPoints(curve as dynamic);
         }
+
+        /***************************************************/
     }
 }

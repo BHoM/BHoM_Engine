@@ -10,25 +10,25 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Curves                   ****/
         /***************************************************/
 
-        public static Point GetPointAtParameter(this Arc curve, double t)
+        public static Point PointAtParameter(this Arc curve, double t)
         {
             if (t < 0) t = 0;
             if (t > 1) t = 1;
-            return GetPointAtLength(curve, t * curve.GetLength());
+            return PointAtLength(curve, t * curve.Length());
         }
 
         /***************************************************/
 
-        public static Point GetPointAtParameter(this Circle curve, double t)
+        public static Point PointAtParameter(this Circle curve, double t)
         {
             if (t < 0) t = 0;
             if (t > 1) t = 1;
-            return GetPointAtLength(curve, t * curve.GetLength());
+            return PointAtLength(curve, t * curve.Length());
         }
 
         /***************************************************/
 
-        public static Point GetPointAtParameter(this Line curve, double t)
+        public static Point PointAtParameter(this Line curve, double t)
         {
             if (t < 0) t = 0;
             if (t > 1) t = 1;
@@ -39,7 +39,7 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         //TODO: Testing needed!!
-        public static Point GetPointAtParameter(this NurbCurve curve, double t)
+        public static Point PointAtParameter(this NurbCurve curve, double t)
         {
 
             Point sumNwP = new Point(0, 0, 0);
@@ -47,10 +47,10 @@ namespace BH.Engine.Geometry
             if (t == 0) return curve.ControlPoints[0];
             else if (t >= curve.Knots[curve.Knots.Count - 1]) return curve.ControlPoints[curve.ControlPoints.Count-1];
 
-            int order = curve.GetDegree() + 1;
+            int order = curve.Degree() + 1;
             for (int i = 0; i < curve.ControlPoints.Count ; i++)
             {
-                double Nt = GetBasisFunction(curve, i, order - 1, t);
+                double Nt = BasisFunction(curve, i, order - 1, t);
                 if (Nt == 0) continue;
                 sumNwP += curve.ControlPoints[i] * Nt * curve.Weights[i];
                 sumNw += Nt * curve.Weights[i];
@@ -73,27 +73,27 @@ namespace BH.Engine.Geometry
 
 
 
-            throw new NotImplementedException(); // TODO NurbCurve.GetPointAtParameter()
+            throw new NotImplementedException(); // TODO NurbCurve.PointAtParameter()
         }
 
 
 
         /***************************************************/
 
-        public static Point GetPointAtParameter(this PolyCurve curve, double t)
+        public static Point PointAtParameter(this PolyCurve curve, double t)
         {
             if (t < 0) t = 0;
             if (t > 1) t = 1;
-            throw new NotImplementedException(); // TODO Polycurve.GetPointAtParameter() Relies on NurbCurve PointAt method
+            throw new NotImplementedException(); // TODO Polycurve.PointAtParameter() Relies on NurbCurve PointAt method
         }
 
         /***************************************************/
 
-        public static Point GetPointAtParameter(this Polyline curve, double t)
+        public static Point PointAtParameter(this Polyline curve, double t)
         {
             if (t < 0) t = 0;
             if (t > 1) t = 1;
-            return GetPointAtLength(curve, t * curve.GetLength());
+            return PointAtLength(curve, t * curve.Length());
         }
 
 
@@ -101,9 +101,11 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Point IGetPointAtParameter(this ICurve curve, double t)
+        public static Point IPointAtParameter(this ICurve curve, double t)
         {
-            return GetPointAtParameter(curve as dynamic, t);
+            return PointAtParameter(curve as dynamic, t);
         }
+
+        /***************************************************/
     }
 }

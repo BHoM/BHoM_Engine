@@ -11,30 +11,30 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Curves                   ****/
         /***************************************************/
         
-        public static Point GetStartPoint(this Arc arc)
+        public static Point StartPoint(this Arc arc)
         {
             return arc.Start;
         }
 
         /***************************************************/
 
-        public static Point GetStartPoint(this Circle circle)
+        public static Point StartPoint(this Circle circle)
         {
             Vector n = circle.Normal;
             Vector startDir = Math.Abs(n.Z) < Math.Abs(n.X) ? new Vector(n.Y, -n.X, 0) : new Vector(0, n.Z, -n.Y);
-            return circle.Centre + circle.Radius * startDir.GetNormalised();
+            return circle.Centre + circle.Radius * startDir.Normalise();
         }
 
         /***************************************************/
 
-        public static Point GetStartPoint(this Line line)
+        public static Point StartPoint(this Line line)
         {
             return line.Start;
         }
 
         /***************************************************/
 
-        public static Point GetStartPoint(this NurbCurve curve)
+        public static Point StartPoint(this NurbCurve curve)
         {
             List<Point> pts = curve.ControlPoints;
             if (pts.Count == 0)
@@ -45,11 +45,11 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static Point GetStartPoint(this PolyCurve curve)
+        public static Point StartPoint(this PolyCurve curve)
         {
             foreach (ICurve c in curve.Curves)
             {
-                Point start = c.IGetStartPoint();
+                Point start = c.IStartPoint();
                 if (start != null)
                     return start;
             }
@@ -59,7 +59,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static Point GetStartPoint(this Polyline curve)
+        public static Point StartPoint(this Polyline curve)
         {
             List<Point> pts = curve.ControlPoints;
             if (pts.Count == 0)
@@ -73,9 +73,11 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
-        public static Point IGetStartPoint(this ICurve curve)
+        public static Point IStartPoint(this ICurve curve)
         {
-            return GetStartPoint(curve as dynamic);
+            return StartPoint(curve as dynamic);
         }
+
+        /***************************************************/
     }
 }

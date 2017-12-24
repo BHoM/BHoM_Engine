@@ -20,10 +20,10 @@ namespace BH.Engine.Acoustic
             foreach (Speaker speaker in speakers)
             {
                 Vector deltaPos = receiver.Location - speaker.Location;
-                double distance = deltaPos.GetLength();
+                double distance = deltaPos.Length();
                 double roomConstant = room.RoomConstant(revTime);
 
-                double recieverAngle = deltaPos.GetAngle(speaker.Direction) * (180 / Math.PI);
+                double recieverAngle = deltaPos.Angle(speaker.Direction) * (180 / Math.PI);
                 double orientationFactor = speaker.GainFactor(recieverAngle, frequency);
                 double gain = speaker.Gains[frequency] * Math.Pow(10, orientationFactor / 10);
                 directSound += Create.SoundLevel((speaker.EmissiveLevel / (4.0 * Math.PI * distance * distance)) + (4.0 / roomConstant),

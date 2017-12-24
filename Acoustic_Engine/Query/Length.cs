@@ -10,7 +10,7 @@ namespace BH.Engine.Acoustic
 
         public static double Length(this Ray ray)
         {
-            return Engine.Geometry.Query.GetLength(ray.Path);
+            return Engine.Geometry.Query.Length(ray.Path);
         }
 
         /***************************************************/

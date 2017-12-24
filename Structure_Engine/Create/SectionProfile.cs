@@ -15,23 +15,23 @@ namespace BH.Engine.Structure
             List<ICurve> perimeter = new List<ICurve>();
             Point p = new Point(bfw / 2, 0, 0);
 
-            perimeter.Add(new Line(p, p = p + Vector.YAxis * (bft - r2)));
+            perimeter.Add(new Line { Start = p, End = p = p + Vector.YAxis * (bft - r2) });
             if (r2 > 0) perimeter.Add(BH.Engine.Geometry.Create.Arc(p - Vector.XAxis * r2, p, p = p + new Vector(-r2, r2, 0)));
-            perimeter.Add(new Line(p, p = p - Vector.XAxis * (bfw / 2 - wt / 2 - r1 - r2)));
+            perimeter.Add(new Line { Start = p, End = p = p - Vector.XAxis * (bfw / 2 - wt / 2 - r1 - r2) });
             if (r1 > 0) perimeter.Add(BH.Engine.Geometry.Create.Arc(p + Vector.YAxis * r1, p, p = p + new Vector(-r1, r1, 0)));
-            perimeter.Add(new Line(p, p = p + Vector.YAxis * (wd - 2 * r1)));
+            perimeter.Add(new Line { Start = p, End = p = p + Vector.YAxis * (wd - 2 * r1) });
             if (r1 > 0) perimeter.Add(BH.Engine.Geometry.Create.Arc(p + Vector.XAxis * r1, p, p = p + new Vector(r1, r1, 0)));
-            perimeter.Add(new Line(p, p = p + Vector.XAxis * (tfw / 2 - wt / 2 - r1 - r2)));
+            perimeter.Add(new Line { Start = p, End = p = p + Vector.XAxis * (tfw / 2 - wt / 2 - r1 - r2) });
             if (r2 > 0) perimeter.Add(BH.Engine.Geometry.Create.Arc(p + Vector.YAxis * r2, p, p = p + new Vector(r2, r2, 0)));
-            perimeter.Add(new Line(p, p = p + Vector.YAxis * (tft - r2)));
+            perimeter.Add(new Line { Start = p, End = p = p + Vector.YAxis * (tft - r2) });
 
             int count = perimeter.Count;
             for (int i = 0; i < count;i++)       
             {
-                perimeter.Add(perimeter[i].IGetMirrored(new Plane(Point.Origin, Vector.XAxis)));
+                perimeter.Add(perimeter[i].IMirror(new Plane(Point.Origin, Vector.XAxis)));
             }
-            perimeter.Add(new Line(p, p - Vector.XAxis * (tfw)));
-            perimeter.Add(new Line(Point.Origin + Vector.XAxis * (-bfw / 2), Point.Origin + Vector.XAxis * (bfw / 2)));
+            perimeter.Add(new Line { Start = p, End = p - Vector.XAxis * (tfw) });
+            perimeter.Add(new Line { Start = Point.Origin + Vector.XAxis * (-bfw / 2), End = Point.Origin + Vector.XAxis * (bfw / 2) });
             return perimeter;
         }
 
@@ -42,20 +42,20 @@ namespace BH.Engine.Structure
             List<ICurve> perimeter = new List<ICurve>();
             Point p = new Point(wt / 2, 0, 0);
 
-            perimeter.Add(new Line(p, p = p + Vector.YAxis*(wd - r1)));
+            perimeter.Add(new Line { Start = p, End = p = p + Vector.YAxis*(wd - r1) });
             if (r1 > 0) perimeter.Add(BH.Engine.Geometry.Create.Arc(p + Vector.XAxis*(r1), p, p = p + new Vector(r1, r1, 0)));
-            perimeter.Add(new Line(p, p = p + Vector.XAxis*(tfw / 2 - wt / 2 - r1 - r2)));
+            perimeter.Add(new Line { Start = p, End = p = p + Vector.XAxis*(tfw / 2 - wt / 2 - r1 - r2) });
             if (r2 > 0) perimeter.Add(BH.Engine.Geometry.Create.Arc(p + Vector.YAxis*(r2), p, p = p + new Vector(r2, r2, 0)));
-            perimeter.Add(new Line(p, p = p + Vector.YAxis*(tft - r2)));
+            perimeter.Add(new Line { Start = p, End = p = p + Vector.YAxis*(tft - r2) });
 
             int count = perimeter.Count;
             for (int i = 0; i < count; i++)
             {
-                perimeter.Add(perimeter[i].IGetMirrored(new Plane(Point.Origin, Vector.XAxis)));
+                perimeter.Add(perimeter[i].IMirror(new Plane(Point.Origin, Vector.XAxis)));
             }
 
-            perimeter.Add(new Line(p, p - Vector.XAxis*(tfw)));
-            perimeter.Add(new Line(Point.Origin + Vector.XAxis*(-wt / 2), Point.Origin + Vector.XAxis*(wt / 2)));
+            perimeter.Add(new Line { Start = p, End = p - Vector.XAxis*(tfw) });
+            perimeter.Add(new Line { Start = Point.Origin + Vector.XAxis*(-wt / 2), End = Point.Origin + Vector.XAxis*(wt / 2) });
 
             return perimeter;
         }
@@ -66,19 +66,19 @@ namespace BH.Engine.Structure
         {
             List<ICurve> perimeter = new List<ICurve>();
             Point p = new Point(0, 0, 0);
-            perimeter.Add(new Line(p, p = p + Vector.XAxis*(width)));
-            perimeter.Add(new Line(p, p = p + Vector.YAxis*(flangeThickness - toeRadius)));
+            perimeter.Add(new Line { Start = p, End = p = p + Vector.XAxis * (width) });
+            perimeter.Add(new Line { Start = p, End = p = p + Vector.YAxis*(flangeThickness - toeRadius) });
             if (toeRadius > 0) perimeter.Add(BH.Engine.Geometry.Create.Arc(p - Vector.XAxis * (toeRadius), p, p = p + new Vector(-toeRadius, toeRadius, 0)));
-            perimeter.Add(new Line(p, p = p - Vector.XAxis*(width - webThickness - innerRadius - toeRadius)));
+            perimeter.Add(new Line { Start = p, End = p = p - Vector.XAxis*(width - webThickness - innerRadius - toeRadius) });
             if (innerRadius > 0) perimeter.Add(BH.Engine.Geometry.Create.Arc(p + Vector.YAxis * (innerRadius), p, p = p + new Vector(-innerRadius, innerRadius, 0)));
-            perimeter.Add(new Line(p, p = p + Vector.YAxis*(depth - flangeThickness - innerRadius - toeRadius)));
+            perimeter.Add(new Line { Start = p, End = p = p + Vector.YAxis*(depth - flangeThickness - innerRadius - toeRadius) });
             if (toeRadius > 0) perimeter.Add(BH.Engine.Geometry.Create.Arc(p - Vector.XAxis * (toeRadius), p, p = p + new Vector(-toeRadius, toeRadius, 0)));
-            perimeter.Add(new Line(p, p = p - Vector.XAxis*(webThickness - toeRadius)));
-            perimeter.Add(new Line(p, p = p - Vector.YAxis*(depth)));
+            perimeter.Add(new Line { Start = p, End = p = p - Vector.XAxis*(webThickness - toeRadius) });
+            perimeter.Add(new Line { Start = p, End = p = p - Vector.YAxis*(depth) });
             List<ICurve> translatedCurves = new List<ICurve>();
 
             foreach (ICurve crv in perimeter)
-                translatedCurves.Add(crv.IGetTranslated(new Vector(-width / 2, -depth / 2, 0)));
+                translatedCurves.Add(crv.ITranslate(new Vector(-width / 2, -depth / 2, 0)));
 
             return translatedCurves;
         }
@@ -89,13 +89,13 @@ namespace BH.Engine.Structure
         {
             List<ICurve> perimeter = new List<ICurve>();
             Point p = new Point(-width / 2, height / 2 - radius, 0);
-            perimeter.Add(new Line(p, p = p - Vector.YAxis * (height - 2*radius)));
+            perimeter.Add(new Line { Start = p, End = p = p - Vector.YAxis * (height - 2*radius) });
             if(radius > 0) perimeter.Add(BH.Engine.Geometry.Create.Arc(p + Vector.XAxis * radius, p, p = p + new Vector(radius, -radius, 0)));
-            perimeter.Add(new Line(p, p = p + Vector.XAxis * (width - 2 * radius)));
+            perimeter.Add(new Line { Start = p, End = p = p + Vector.XAxis * (width - 2 * radius) });
             if (radius > 0) perimeter.Add(BH.Engine.Geometry.Create.Arc(p + Vector.YAxis * radius, p, p = p + new Vector(radius, radius, 0)));
-            perimeter.Add(new Line(p, p = p + Vector.YAxis * (height - 2 * radius)));
+            perimeter.Add(new Line { Start = p, End = p = p + Vector.YAxis * (height - 2 * radius) });
             if (radius > 0) perimeter.Add(BH.Engine.Geometry.Create.Arc(p - Vector.XAxis * radius, p, p = p + new Vector(-radius, radius, 0)));
-            perimeter.Add(new Line(p, p = p - Vector.XAxis * (width - 2 * radius)));
+            perimeter.Add(new Line { Start = p, End = p = p - Vector.XAxis * (width - 2 * radius) });
             if (radius > 0) perimeter.Add(BH.Engine.Geometry.Create.Arc(p - Vector.YAxis * radius, p, p = p + new Vector(-radius, -radius, 0)));
             return perimeter;
         }
@@ -113,7 +113,7 @@ namespace BH.Engine.Structure
 
         public static List<ICurve> CircleSectionCurves(double radius)
         {
-            return new List<ICurve> { new Circle(Point.Origin, radius) };
+            return new List<ICurve> { new Circle { Centre = Point.Origin, Radius = radius } };
         }
 
         /***************************************************/

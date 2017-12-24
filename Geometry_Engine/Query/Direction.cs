@@ -11,19 +11,19 @@ namespace BH.Engine.Geometry
 
         public static Vector GetDirection(this Line line)
         {
-            return new Vector(line.End.X - line.Start.X, line.End.Y - line.Start.Y, line.End.Z - line.Start.Z).GetNormalised();
+            return new Vector(line.End.X - line.Start.X, line.End.Y - line.Start.Y, line.End.Z - line.Start.Z).Normalise();
         }
 
         /***************************************************/
 
-        public static Vector GetNormal(this Mesh mesh, Face face)
+        public static Vector Normal(this Mesh mesh, Face face)
         {
             List<Point> vertices = mesh.Vertices;
 
             Point p1 = vertices[(face.A)];
             Point p2 = vertices[(face.B)];
             Point p3 = vertices[(face.C)];
-            return Query.GetCrossProduct(p2 - p1, p3 - p1);
+            return Query.CrossProduct(p2 - p1, p3 - p1);
         }
 
         /***************************************************/
@@ -35,11 +35,11 @@ namespace BH.Engine.Geometry
             double sumNw = 0;
             double sumNwDer = 0;
 
-            int degree = curve.GetDegree();
+            int degree = curve.Degree();
 
             for (int i = 0; i < curve.ControlPoints.Count; i++)
             {
-                double Nt = curve.GetBasisFunction(i, degree, t);
+                double Nt = curve.BasisFunction(i, degree, t);
                 double Nder = curve.GetDerivativeFunction(i, degree, t);
                 Vector p = new Vector(curve.ControlPoints[i]);
                 sumNwP += p * Nt * curve.Weights[i];
@@ -48,7 +48,7 @@ namespace BH.Engine.Geometry
                 sumNwDer += Nder * curve.Weights[i];
             }
             Vector tangent = sumNwPDer * sumNw - sumNwP * sumNwDer;
-            return tangent.GetNormalised();
+            return tangent.Normalise();
 
         }
 
