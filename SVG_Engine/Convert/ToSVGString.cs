@@ -3,9 +3,7 @@ using BH.oM.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace BH.Engine.Graphics
 {
@@ -74,17 +72,17 @@ namespace BH.Engine.Graphics
         {
             string geometryString = "<g " + ToSVGString(svgObject.Style) + ">\n";
 
-            for (int i = 0; i < svgObject.Geometry.Count; i++)
+            for (int i = 0; i < svgObject.Shapes.Count; i++)
             {
-                geometryString += svgObject.Geometry[i].IToSVGString();
+                geometryString += svgObject.Shapes[i].IToSVGString();
 
-                if (svgObject.Geometry.Count > 1)
+                if (svgObject.Shapes.Count > 1)
                 {
                     geometryString += "\n";
                 }
             }
 
-            if (svgObject.Geometry.Count == 1)
+            if (svgObject.Shapes.Count == 1)
             {
                 geometryString += "\n";
             }

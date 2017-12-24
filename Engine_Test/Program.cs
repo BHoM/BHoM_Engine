@@ -1,16 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using BH.oM.Geometry;
-using BHB = BH.oM.Base;
 using BH.oM.Structural.Elements;
-using BH.oM.Structural.Properties;
-using BH.Engine.Geometry;
 using System.Reflection;
 using System.IO;
-using BH.Engine.Base;
 using BH.Engine.Base.Objects;
 //using ModelLaundry_Engine;
 

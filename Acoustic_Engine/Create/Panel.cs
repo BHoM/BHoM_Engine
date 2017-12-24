@@ -1,10 +1,6 @@
 ﻿using BH.oM.Acoustic;
 using BH.oM.Geometry;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BH.Engine.Acoustic
 {
@@ -14,21 +10,21 @@ namespace BH.Engine.Acoustic
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Panel Panel(Mesh geometry)
+        public static Panel Panel(Mesh surface)
         {
             return new Panel()
             {
-                Geometry = geometry
+                Surface = surface
             };
         }
 
         /***************************************************/
 
-        public static Panel Panel(Mesh geometry, Dictionary<Frequency, double> r)
+        public static Panel Panel(Mesh surface, Dictionary<Frequency, double> r)
         {
             return new Panel()
             {
-                Geometry = geometry,
+                Surface = surface,
                 R = r
             };
         }
