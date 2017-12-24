@@ -2,7 +2,7 @@
 
 namespace BH.Engine.Structure
 {
-    public static partial class Transform
+    public static partial class Modify
     {
 
         /***************************************************/

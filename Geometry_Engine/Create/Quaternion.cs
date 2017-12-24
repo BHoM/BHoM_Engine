@@ -9,10 +9,25 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Quaternion QuaternionRotationNormal(Vector axis, double angle)
+        public static Quaternion Quaternion(double x, double y, double z, double w)
+        {
+            return new Quaternion { X = x, Y = y, Z = z, W = w };
+        }
+
+        /***************************************************/
+
+        public static Quaternion Quaternion(Vector axis, double angle)
         {
             double sin = Math.Sin(angle / 2);
-            return new Quaternion(axis.X * sin, axis.Y * sin, axis.Z * sin, Math.Cos(angle / 2)).GetNormalised();
+            return new Quaternion
+            {
+                X = axis.X * sin,
+                Y = axis.Y * sin,
+                Z = axis.Z * sin,
+                W = Math.Cos(angle / 2)
+            }.Normalise();
         }
+
+        /***************************************************/
     }
 }

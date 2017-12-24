@@ -11,7 +11,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Surfaces                 ****/
         /***************************************************/
 
-        public static Vector GetNormal(this Face face, Mesh mesh)
+        public static Vector Normal(this Face face, Mesh mesh)
         {
             List<Point> vertices = mesh.Vertices;
             Face meshFace = mesh.Faces[mesh.Faces.IndexOf(face)];
@@ -20,20 +20,20 @@ namespace BH.Engine.Geometry
             Point pC = vertices[meshFace.C];
             if (!meshFace.IsQuad())
             {
-                Vector normal = GetCrossProduct(pB - pA, pC - pB);
-                return normal.GetNormalised();
+                Vector normal = CrossProduct(pB - pA, pC - pB);
+                return normal.Normalise();
             }
             else
             {
                 Point pD = vertices[(meshFace.D)];
-                Vector normal = (GetCrossProduct(pA - pD, pB - pA)) + (GetCrossProduct(pC - pB, pD - pC));
-                return normal.GetNormalised();
+                Vector normal = (CrossProduct(pA - pD, pB - pA)) + (CrossProduct(pC - pB, pD - pC));
+                return normal.Normalise();
             }
         }
 
         /***************************************************/
 
-        public static List<Vector> GetNormals(this Mesh mesh)
+        public static List<Vector> Normals(this Mesh mesh)
         {
             List<Vector> normals = new List<Vector>(mesh.Faces.Count);
             List<Point> vertices = mesh.Vertices;
@@ -45,14 +45,14 @@ namespace BH.Engine.Geometry
                 Point pC = vertices[(faces[i].C)];
                 if (!faces[i].IsQuad())
                 {
-                    Vector normal = GetCrossProduct(pB - pA, pC - pB);
-                    normals.Add(normal.GetNormalised());
+                    Vector normal = CrossProduct(pB - pA, pC - pB);
+                    normals.Add(normal.Normalise());
                 }
                 else
                 {
                     Point pD = vertices[(faces[i].D)];
-                    Vector normal = (GetCrossProduct(pA - pD, pB - pA)) + (GetCrossProduct(pC - pB, pD - pC));
-                    normal.GetNormalised();
+                    Vector normal = (CrossProduct(pA - pD, pB - pA)) + (CrossProduct(pC - pB, pD - pC));
+                    normal.Normalise();
                     normals[i] = normal;
                 }
             }
@@ -61,9 +61,11 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
         
-        public static List<Vector> GetNormals(this ISurface surface)
+        public static List<Vector> Normals(this ISurface surface)
         {
             throw new NotImplementedException();
         }
+
+        /***************************************************/
     }
 }

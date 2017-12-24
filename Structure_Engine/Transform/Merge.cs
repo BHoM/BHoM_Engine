@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace BH.Engine.Structure
 {
-    public static partial class Transform 
+    public static partial class Modify 
     {
 
         public static Node Merge(this List<Node> nodes, List<double> weights = null)

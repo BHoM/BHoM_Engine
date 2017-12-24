@@ -33,10 +33,10 @@ namespace BH.Engine.Geometry
 
         public static List<Point> GetDiscontinuityPoints(this NurbCurve curve)
         {
-            if (curve.GetDegree() == 1)         //TODO: Check that this is correct
+            if (curve.Degree() == 1)         //TODO: Check that this is correct
                 return curve.ControlPoints;
             else
-                return new List<Point> { curve.GetStartPoint(), curve.GetEndPoint() };
+                return new List<Point> { curve.StartPoint(), curve.GetEndPoint() };
         }
 
         /***************************************************/

@@ -22,7 +22,7 @@ namespace BH.Engine.Geometry
         {
             Vector n = circle.Normal;
             Vector EndDir = Math.Abs(n.Z) < Math.Abs(n.X) ? new Vector(n.Y, -n.X, 0) : new Vector(0, n.Z, -n.Y);
-            return circle.Centre + circle.Radius * EndDir.GetNormalised();
+            return circle.Centre + circle.Radius * EndDir.Normalise();
         }
 
         /***************************************************/

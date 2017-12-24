@@ -11,7 +11,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Vector                   ****/
         /***************************************************/
 
-        public static double GetLength(this Vector vector)
+        public static double Length(this Vector vector)
         {
             return Math.Sqrt(vector.X * vector.X + vector.Y * vector.Y + vector.Z * vector.Z);
         }
@@ -27,48 +27,48 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Curves                   ****/
         /***************************************************/
 
-        public static double GetLength(this Arc curve)
+        public static double Length(this Arc curve)
         {
-            return curve.GetAngle() * curve.GetRadius();
+            return curve.Angle() * curve.Radius();
         }
 
         /***************************************************/
 
-        public static double GetLength(this Circle curve)
+        public static double Length(this Circle curve)
         {
             return 2 * Math.PI * curve.Radius;
         }
 
         /***************************************************/
 
-        public static double GetLength(this Line curve)
+        public static double Length(this Line curve)
         {
-            return (curve.Start - curve.End).GetLength();
+            return (curve.Start - curve.End).Length();
         }
 
         /***************************************************/
 
-        public static double GetLength(this NurbCurve curve)
+        public static double Length(this NurbCurve curve)
         {
             throw new NotImplementedException();
         }
 
         /***************************************************/
 
-        public static double GetLength(this PolyCurve curve)
+        public static double Length(this PolyCurve curve)
         {
-            return curve.Curves.Sum(x => GetLength(x as Line));
+            return curve.Curves.Sum(x => Length(x as Line));
         }
 
         /***************************************************/
 
-        public static double GetLength(this Polyline curve)
+        public static double Length(this Polyline curve)
         {
             double length = 0;
             List<Point> pts = curve.ControlPoints;
 
             for (int i = 1; i < pts.Count; i++)
-                length += (pts[i] - pts[i-1]).GetLength();
+                length += (pts[i] - pts[i-1]).Length();
 
             return length;
         }
@@ -78,9 +78,11 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
-        public static double IGetLength(this ICurve curve)
+        public static double ILength(this ICurve curve)
         {
-            return GetLength(curve as dynamic);
+            return Length(curve as dynamic);
         }
+
+        /***************************************************/
     }
 }

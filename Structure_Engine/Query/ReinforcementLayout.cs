@@ -3,6 +3,7 @@ using BH.oM.Structural.Properties;
 using BH.Engine.Geometry;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace BH.Engine.Structure
 {
@@ -25,8 +26,7 @@ namespace BH.Engine.Structure
                 {
                     if (obj is Point)
                     {
-
-                        geometry.Elements.Add(new Circle(obj as Point, Vector.ZAxis, reo.Diameter / 2));
+                        geometry.Elements.Add(new Circle { Centre = obj as Point, Normal = Vector.ZAxis, Radius = reo.Diameter / 2 });
                     }
                     else
                     {
@@ -50,7 +50,7 @@ namespace BH.Engine.Structure
 
             foreach (ICurve curve in property.Edges)
             {
-                bounds += curve.IGetBounds();
+                bounds += curve.IBounds();
             }
 
             double relativeDepth = reinforcement.IsVertical ? bounds.Max.X - reinforcement.Depth : bounds.Max.Y - reinforcement.Depth;
@@ -76,7 +76,7 @@ namespace BH.Engine.Structure
                 location.Add(new Point(x, y, 0));
             }
 
-            return new CompositeGeometry(location);
+            return new CompositeGeometry { Elements = location.ToList<IBHoMGeometry>() };
 
 
             //GeometryGroup<Point> location = new GeometryGroup<Point>();
@@ -140,7 +140,7 @@ namespace BH.Engine.Structure
                     location.Add(geom as Point);
                 }
             }
-            return new CompositeGeometry(location);
+            return new CompositeGeometry { Elements = location.ToList<IBHoMGeometry>() };
         }
 
         /***************************************************/
@@ -167,7 +167,7 @@ namespace BH.Engine.Structure
             }
 
 
-            return new CompositeGeometry(location);
+            return new CompositeGeometry { Elements = location.ToList<IBHoMGeometry>() };
         }
 
         /***************************************************/

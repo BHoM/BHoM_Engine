@@ -8,13 +8,15 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static double GetRadius(this Arc arc)
+        public static double Radius(this Arc arc)
         {
-            Point centre = arc.GetCentre();
+            Point centre = arc.Centre();
             if (centre != null)
                 return centre.GetDistance(arc.Start);
             else
                 return 0;
         }
+
+        /***************************************************/
     }
 }

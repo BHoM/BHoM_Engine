@@ -10,7 +10,7 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Plane GetPlane(this Storey storey)
+        public static Plane Plane(this Storey storey)
         {
             return new Plane(new Point(0, 0, storey.Elevation), new Vector(0, 0, 1));
         }

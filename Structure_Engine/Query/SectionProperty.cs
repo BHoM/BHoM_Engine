@@ -18,7 +18,7 @@ namespace BH.Engine.Structure
 
             for (int i = 0; i < curves.Count; i++)
             {
-                box += curves[i].IGetBounds();
+                box += curves[i].IBounds();
             }
 
             Point min = box.Min;
@@ -26,8 +26,8 @@ namespace BH.Engine.Structure
             double totalWidth = max.X - min.X;
             double totalHeight = max.Y - min.Y;
 
-            List<IntegrationSlice> verticalSlices = Engine.Geometry.Create.CreateSlices(curves, Vector.XAxis, totalWidth/1000);
-            List<IntegrationSlice> horizontalSlices = Engine.Geometry.Create.CreateSlices(curves, Vector.YAxis, totalHeight/1000);
+            List<IntegrationSlice> verticalSlices = Engine.Geometry.Create.IntegrationSlices(curves, Vector.XAxis, totalWidth/1000);
+            List<IntegrationSlice> horizontalSlices = Engine.Geometry.Create.IntegrationSlices(curves, Vector.YAxis, totalHeight/1000);
 
             results["VerticalSlices"] = verticalSlices;
             results["HorizontalSlices"] = horizontalSlices;

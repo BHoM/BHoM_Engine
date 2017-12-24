@@ -5,10 +5,16 @@ namespace BH.Engine.Geometry
 {
     public static partial class Query
     {
-        public static List<int> GetUVCount(this NurbSurface surf)
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
+
+        public static List<int> UVCount(this NurbSurface surf)
         {
-            List<int> degrees = surf.GetDegrees();            
+            List<int> degrees = surf.Degrees();            
             return new List<int> { surf.UKnots.Count - degrees[0] + 1, surf.VKnots.Count - degrees[1] + 1 };
         }
+
+        /***************************************************/
     }
 }

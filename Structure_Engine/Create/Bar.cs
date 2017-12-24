@@ -25,7 +25,7 @@ namespace BH.Engine.Structure
             Bar bar = new Bar();
             bar.StartNode = new Node(pointA);
             bar.EndNode = new Node(pointB);
-            bar.SetGeometry(new Line(pointA, pointB));
+            bar.SetGeometry(new Line { Start = pointA, End = pointB });
             return bar;
         }
     }

@@ -12,7 +12,7 @@ namespace BH.Engine.Structure
 
         public static Line GetCentreline(this Bar bar)
         {
-            return new Line(bar.StartNode.Point, bar.EndNode.Point);
+            return new Line { Start = bar.StartNode.Point, End = bar.EndNode.Point };
         }
 
         /***************************************************/

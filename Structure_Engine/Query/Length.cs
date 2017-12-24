@@ -9,7 +9,7 @@ namespace BH.Engine.Structure
         //**** Public Methods                            ****/
         //***************************************************/
 
-        public static double GetLength(this Bar bar)
+        public static double Length(this Bar bar)
         {
             return bar.StartNode.Point.GetDistance(bar.EndNode.Point);
         }

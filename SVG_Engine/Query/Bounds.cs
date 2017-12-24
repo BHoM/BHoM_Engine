@@ -10,44 +10,44 @@ namespace BH.Engine.Graphics
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static BoundingBox GetBounds(SVGObject svg)
+        public static BoundingBox Bounds(SVGObject svg)
         {
             BoundingBox bb = new BoundingBox();
             List<IBHoMGeometry> geometry = svg.Shapes;
 
             for (int i = 0; i < svg.Shapes.Count; i++)
-                bb += Engine.Geometry.Query.IGetBounds(svg.Shapes[i]);
+                bb += Engine.Geometry.Query.IBounds(svg.Shapes[i]);
 
             return bb;
         }
 
         /***************************************************/
 
-        public static BoundingBox GetBounds(List<SVGObject> svg)
+        public static BoundingBox Bounds(List<SVGObject> svg)
         {
             BoundingBox bb = new BoundingBox();
 
             for (int i = 0; i < svg.Count; i++)
-                bb += GetBounds(svg[i]);
+                bb += Bounds(svg[i]);
 
             return bb;
         }
 
         /***************************************************/
 
-        public static BoundingBox GetBounds(SVGDocument svg)
+        public static BoundingBox Bounds(SVGDocument svg)
         {
             return svg.Canvas;
         }
 
         /***************************************************/
 
-        public static BoundingBox GetBounds(List<SVGDocument> svg)
+        public static BoundingBox Bounds(List<SVGDocument> svg)
         {
             BoundingBox bb = new BoundingBox();
 
             for (int i = 0; i < svg.Count; i++)
-                bb += GetBounds(svg[i]);
+                bb += Bounds(svg[i]);
 
             return bb;
         }

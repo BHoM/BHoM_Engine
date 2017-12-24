@@ -10,7 +10,7 @@ namespace BH.Engine.Geometry
         /**** Vectors                                   ****/
         /***************************************************/
 
-        public static Point GetCentre(this IEnumerable<Point> points)
+        public static Point Centre(this IEnumerable<Point> points)
         {
             int count = points.Count();
             if (count < 1) return null;
@@ -27,23 +27,23 @@ namespace BH.Engine.Geometry
         /**** Curves                                    ****/
         /***************************************************/
 
-        public static Point GetCentre(this Arc arc)
+        public static Point Centre(this Arc arc)
         {
             Vector v1 = arc.Start - arc.Middle;
             Vector v2 = arc.End - arc.Middle;
-            Vector normal = v1.GetCrossProduct(v2);
+            Vector normal = v1.CrossProduct(v2);
 
-            return Query.GetIntersection(
-                new Line(arc.Middle + v1 / 2, v1.GetCrossProduct(normal)),
-                new Line(arc.Middle + v2 / 2, v2.GetCrossProduct(normal))
+            return Query.LineIntersection(
+                Create.Line(arc.Middle + v1 / 2, v1.CrossProduct(normal)),
+                Create.Line(arc.Middle + v2 / 2, v2.CrossProduct(normal))
             );
         }
 
         /***************************************************/
 
-        public static Point GetCentre(this Polyline polyline)
+        public static Point Centre(this Polyline polyline)
         {
-            return polyline.ControlPoints.GetCentre();
+            return polyline.ControlPoints.Centre();
         }
 
 
@@ -51,7 +51,7 @@ namespace BH.Engine.Geometry
         /**** Surfaces                                    ****/
         /***************************************************/
 
-        public static Point GetCentre(this BoundingBox box)
+        public static Point Centre(this BoundingBox box)
         {
             return new Point((box.Max.X + box.Min.X) / 2, (box.Max.Y + box.Min.Y) / 2, (box.Max.Z + box.Min.Z) / 2);
         }
@@ -83,5 +83,7 @@ namespace BH.Engine.Geometry
             }
             return centres;
         }
+
+        /***************************************************/
     }
 }

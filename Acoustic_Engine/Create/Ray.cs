@@ -25,7 +25,7 @@ namespace BH.Engine.Acoustic
 
         public static Ray Ray(Speaker speaker, Receiver receiver)
         {
-            return Create.Ray(new Polyline(new List<Point> { speaker.Location, receiver.Location }), speaker.SpeakerID, receiver.ReceiverID);
+            return Create.Ray(new Polyline { ControlPoints = new List<Point> { speaker.Location, receiver.Location } }, speaker.SpeakerID, receiver.ReceiverID);
         }
 
         /***************************************************/

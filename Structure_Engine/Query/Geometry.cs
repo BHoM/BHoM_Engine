@@ -2,6 +2,7 @@
 using BH.oM.Structural.Elements;
 using BH.oM.Structural.Properties;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace BH.Engine.Structure
 {
@@ -17,7 +18,7 @@ namespace BH.Engine.Structure
             if (section.Edges.Count == 0)
                 return null;
 
-            CompositeGeometry geom = new CompositeGeometry(section.Edges);
+            CompositeGeometry geom = Engine.Geometry.Create.CompositeGeometry(section.Edges);
             geom.Elements.AddRange(section.GetReinforcementLayout().Elements);
 
             return geom.Elements;
@@ -25,7 +26,7 @@ namespace BH.Engine.Structure
 
         public static IBHoMGeometry Geometry(this Bar bar)
         {
-            return new Line(bar.StartNode.Point, bar.EndNode.Point);
+            return new Line { Start = bar.StartNode.Point, End = bar.EndNode.Point };
         }
 
         /***************************************************/
@@ -53,7 +54,7 @@ namespace BH.Engine.Structure
 
         public static IBHoMGeometry Geometry(this SteelSection section)
         {
-            return new CompositeGeometry(section.Edges);
+            return new CompositeGeometry { Elements = section.Edges.ToList<IBHoMGeometry>() };
         }
 
 

@@ -96,7 +96,7 @@ namespace BH.Engine.Graphics
 
         public static string ToSVGString(SVGDocument svgDocument)
         {
-            BoundingBox box = Query.GetBounds(svgDocument);
+            BoundingBox box = Query.Bounds(svgDocument);
 
             double extraMargin = 10;
 
@@ -185,7 +185,7 @@ namespace BH.Engine.Graphics
                                    + "\" cy=\"" + centerPt.Y.ToString()
                                    + "\" rx=\"" + ellipse.Radius1.ToString()
                                    + "\" ry=\"" + ellipse.Radius2.ToString()
-                                   + "\" transform=\"rotate(" + ((Engine.Geometry.Query.GetAngle(ellipse.Axis1, Vector.XAxis)) * 180 / Math.PI).ToString()
+                                   + "\" transform=\"rotate(" + ((Engine.Geometry.Query.Angle(ellipse.Axis1, Vector.XAxis)) * 180 / Math.PI).ToString()
                                    + " " + centerPt.X.ToString()
                                    + " " + centerPt.Y.ToString() + ")\"/>";
 

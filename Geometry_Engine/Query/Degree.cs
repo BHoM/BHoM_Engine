@@ -5,7 +5,18 @@ namespace BH.Engine.Geometry
 {
     public static partial class Query
     {
-        public static List<int> GetDegrees(this NurbSurface surf)
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
+
+        public static int Degree(this NurbCurve curve)
+        {
+            return curve.Knots.Count - curve.ControlPoints.Count - 1;
+        }
+
+        /***************************************************/
+
+        public static List<int> Degrees(this NurbSurface surf)
         {
             int uDegree = 1;
             int vDegree = 1;
@@ -15,6 +26,7 @@ namespace BH.Engine.Geometry
         }
 
         /***************************************************/
+
 
     }
 }

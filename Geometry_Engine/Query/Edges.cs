@@ -35,7 +35,7 @@ namespace BH.Engine.Geometry
 
             for (int i = 0; i < distinctIndices.Count; i++)
             {
-                edges.Add(new Line(mesh.Vertices[distinctIndices[i].Item1], mesh.Vertices[distinctIndices[i].Item2]));
+                edges.Add(new Line { Start = mesh.Vertices[distinctIndices[i].Item1], End = mesh.Vertices[distinctIndices[i].Item2] });
             }
             return edges;
         }
@@ -49,17 +49,17 @@ namespace BH.Engine.Geometry
         public static List<Line> GetEdges(this Face face, Mesh mesh)
         {
             List<Line> edges = new List<Line>();
-            edges.Add(new Line(mesh.Vertices[face.A], mesh.Vertices[face.B]));
-            edges.Add(new Line(mesh.Vertices[face.B], mesh.Vertices[face.C]));
+            edges.Add(new Line { Start = mesh.Vertices[face.A], End = mesh.Vertices[face.B] });
+            edges.Add(new Line { Start = mesh.Vertices[face.B], End = mesh.Vertices[face.C] });
 
             if (face.IsQuad())
             {
-                edges.Add(new Line(mesh.Vertices[face.C], mesh.Vertices[face.D]));
-                edges.Add(new Line(mesh.Vertices[face.D], mesh.Vertices[face.A]));
+                edges.Add(new Line { Start = mesh.Vertices[face.C], End = mesh.Vertices[face.D] });
+                edges.Add(new Line { Start = mesh.Vertices[face.D], End = mesh.Vertices[face.A] });
             }
             else
             {
-                edges.Add(new Line(mesh.Vertices[face.C], mesh.Vertices[face.A]));
+                edges.Add(new Line { Start = mesh.Vertices[face.C], End = mesh.Vertices[face.A] });
             }
 
             return edges;

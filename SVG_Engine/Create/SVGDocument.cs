@@ -11,7 +11,7 @@ namespace BH.Engine.Graphics
 
         public static SVGDocument SVGDocument(this List<SVGObject> svg)
         {
-            return new SVGDocument(svg, Query.GetBounds(svg));
+            return new SVGDocument(svg, Query.Bounds(svg));
         }
     }
 }

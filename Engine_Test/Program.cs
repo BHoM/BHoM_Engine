@@ -152,53 +152,53 @@ namespace Engine_Test
 
         //static void InClassLengthCall(int iter)
         //{
-        //    testVectors[iter % nbSamples].GetLength();
+        //    testVectors[iter % nbSamples].Length();
         //}
 
         //static void DirectVectorLengthCall(int iter)
         //{
-        //    Query._GetLength(testVectors[iter % nbSamples]);
+        //    Query._Length(testVectors[iter % nbSamples]);
         //}
 
         //static void PolymorphVectorLengthCall(int iter)
         //{
-        //    Query.GetLength(testVectors[iter % nbSamples]);
+        //    Query.Length(testVectors[iter % nbSamples]);
         //}
 
         ///***************************************************/
 
         //static void DirectLineLengthCall(int iter)
         //{
-        //    Query._GetLength(testLines[iter % nbSamples]);
+        //    Query._Length(testLines[iter % nbSamples]);
         //}
 
         //static void PolymorphLineLengthCall(int iter)
         //{
-        //    Query.GetLength(testLines[iter % nbSamples]);
+        //    Query.Length(testLines[iter % nbSamples]);
         //}
 
         ///***************************************************/
 
         //static void DirectPolyLineLengthCall(int iter)
         //{
-        //    Query._GetLength(testPoly[iter % nbSamples]);
+        //    Query._Length(testPoly[iter % nbSamples]);
         //}
 
         //static void PolymorphPolyLineLengthCall(int iter)
         //{
-        //    Query.GetLength(testPoly[iter % nbSamples]);
+        //    Query.Length(testPoly[iter % nbSamples]);
         //}
 
         ///***************************************************/
 
         //static void DirectPolyLineBoundCall(int iter)
         //{
-        //    Bounds._GetBounds(testPoly[iter % nbSamples]);
+        //    Bounds._Bounds(testPoly[iter % nbSamples]);
         //}
 
         //static void PolymorphPolyLineBoundCall(int iter)
         //{
-        //    Bounds.GetBounds(testPoly[iter % nbSamples]);
+        //    Bounds.Bounds(testPoly[iter % nbSamples]);
         //}
 
         //static void TestProject()

@@ -10,21 +10,21 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Vectors                  ****/
         /***************************************************/
 
-        public static Point GetClosestPoint(this Point pt, Point point)
+        public static Point ClosestPoint(this Point pt, Point point)
         {
             return pt;
         }
 
         /***************************************************/
 
-        public static Point GetClosestPoint(this Vector vector, Point point)
+        public static Point ClosestPoint(this Vector vector, Point point)
         {
             return null;
         }
 
         /***************************************************/
 
-        public static Point GetClosestPoint(this Plane plane, Point point)
+        public static Point ClosestPoint(this Plane plane, Point point)
         {
             throw new NotImplementedException();
         }
@@ -34,34 +34,34 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Curves                   ****/
         /***************************************************/
 
-        public static Point GetClosestPoint(this Arc arc, Point point)
+        public static Point ClosestPoint(this Arc arc, Point point)
         {
             throw new NotImplementedException();
         }
 
         /***************************************************/
 
-        public static Point GetClosestPoint(this Circle circle, Point point)
+        public static Point ClosestPoint(this Circle circle, Point point)
         {
             throw new NotImplementedException();
         }
 
         /***************************************************/
 
-        public static Point GetClosestPoint(this Line line, Point point, bool infiniteSegment = false)
+        public static Point ClosestPoint(this Line line, Point point, bool infiniteSegment = false)
         {
             Vector dir = line.GetDirection();
-            //double t = Math.Min(Math.Max(dir * (point - line.Start), 0), line.GetLength());
+            //double t = Math.Min(Math.Max(dir * (point - line.Start), 0), line.Length());
             double t = dir * (point - line.Start);
             if (!infiniteSegment)
-                t = Math.Min(Math.Max(t, 0), line.GetLength());
+                t = Math.Min(Math.Max(t, 0), line.Length());
 
             return line.Start + t * dir;
         }
 
         /***************************************************/
 
-        public static Point GetClosestPoint(this NurbCurve curve, Point point)
+        public static Point ClosestPoint(this NurbCurve curve, Point point)
         {
             throw new NotImplementedException();
         }
@@ -69,7 +69,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static Point GetClosestPoint(this PolyCurve curve, Point point)
+        public static Point ClosestPoint(this PolyCurve curve, Point point)
         {
             double minDist = 1e10;
             Point closest = null;
@@ -77,7 +77,7 @@ namespace BH.Engine.Geometry
 
             for (int i = 0; i < curves.Count; i++)
             {
-                Point cp = curve.Curves[i].IGetClosestPoint(point);
+                Point cp = curve.Curves[i].IClosestPoint(point);
                 double dist = cp.GetDistance(point);
                 if (dist < minDist)
                 {
@@ -91,7 +91,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static Point GetClosestPoint(this Polyline curve, Point point)
+        public static Point ClosestPoint(this Polyline curve, Point point)
         {
             List<Point> points = curve.ControlPoints;
 
@@ -99,7 +99,7 @@ namespace BH.Engine.Geometry
             Point closest = (points.Count > 0) ? points[0] : new Point(Double.PositiveInfinity, Double.PositiveInfinity, Double.PositiveInfinity);
             for (int i = 1; i < points.Count; i++)
             {
-                Vector dir = (points[i] - points[i - 1]).GetNormalised();
+                Vector dir = (points[i] - points[i - 1]).Normalise();
                 double t = Math.Min(Math.Max(dir * (point - points[i - 1]), 0), points[i].GetDistance(points[i - 1]));
                 Point cp = points[i - 1] + t * dir;
 
@@ -118,35 +118,35 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Surfaces                 ****/
         /***************************************************/
 
-        public static Point GetClosestPoint(this Extrusion surface, Point point)
+        public static Point ClosestPoint(this Extrusion surface, Point point)
         {
             throw new NotImplementedException();
         }
 
         /***************************************************/
 
-        public static Point GetClosestPoint(this Loft surface, Point point)
+        public static Point ClosestPoint(this Loft surface, Point point)
         {
             throw new NotImplementedException();
         }
 
         /***************************************************/
 
-        public static Point GetClosestPoint(this NurbSurface surface, Point point)
+        public static Point ClosestPoint(this NurbSurface surface, Point point)
         {
             throw new NotImplementedException();
         }
 
         /***************************************************/
 
-        public static Point GetClosestPoint(this Pipe surface, Point point)
+        public static Point ClosestPoint(this Pipe surface, Point point)
         {
             throw new NotImplementedException();
         }
 
         /***************************************************/
 
-        public static Point GetClosestPoint(this PolySurface surface, Point point)
+        public static Point ClosestPoint(this PolySurface surface, Point point)
         {
             throw new NotImplementedException();
         }
@@ -156,21 +156,21 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Others                   ****/
         /***************************************************/
 
-        public static Point GetClosestPoint(this Mesh mesh, Point point)
+        public static Point ClosestPoint(this Mesh mesh, Point point)
         {
             throw new NotImplementedException();
         }
 
         /***************************************************/
 
-        public static Point GetClosestPoint(this CompositeGeometry group, Point point)
+        public static Point ClosestPoint(this CompositeGeometry group, Point point)
         {
             throw new NotImplementedException();
         }
 
         /***************************************************/
 
-        public static Point GetClosestPoint(this IEnumerable<Point> cloud, Point point)
+        public static Point ClosestPoint(this IEnumerable<Point> cloud, Point point)
         {
             double minDist = Double.PositiveInfinity;
             double dist = 0;
@@ -192,10 +192,11 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
-        public static Point IGetClosestPoint(this IBHoMGeometry geometry, Point point)
+        public static Point IClosestPoint(this IBHoMGeometry geometry, Point point)
         {
-            return GetClosestPoint(geometry as dynamic, point);
+            return ClosestPoint(geometry as dynamic, point);
         }
 
+        /***************************************************/
     }
 }
