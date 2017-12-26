@@ -43,7 +43,7 @@ namespace BH.Engine.Geometry
                 true
             );
 
-            return new Circle { Centre = centre, Normal = normal, Radius = pt1.GetDistance(centre) };
+            return new Circle { Centre = centre, Normal = normal, Radius = pt1.Distance(centre) };
         }
 
         /***************************************************/

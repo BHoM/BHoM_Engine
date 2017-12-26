@@ -5,13 +5,15 @@ namespace BH.Engine.Structure
 {
     public static partial class Query
     {
-        //***************************************************/
-        //**** Public Methods                            ****/
-        //***************************************************/
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
 
         public static double Length(this Bar bar)
         {
-            return bar.StartNode.Point.GetDistance(bar.EndNode.Point);
+            return bar.StartNode.Position.Distance(bar.EndNode.Position);
         }
+
+        /***************************************************/
     }
 }

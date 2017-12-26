@@ -5,7 +5,6 @@ namespace BH.Engine.Structure
 {
     public static partial class Query
     {
-
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
@@ -16,7 +15,5 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
-
-
     }
 }

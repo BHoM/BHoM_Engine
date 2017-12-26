@@ -27,7 +27,7 @@ namespace BH.Engine.DataStructure
                 {
                     foreach (LocalData<T> other in closePoints)
                     {
-                        double dist = value.Position.GetDistance(other.Position);
+                        double dist = value.Position.Distance(other.Position);
                         if (dist < maxDist && dist > minDist)
                             result.Add(new Tuple<LocalData<T>, LocalData<T>>(value, other));
                     }

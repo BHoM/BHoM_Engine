@@ -15,12 +15,12 @@ namespace BH.Engine.Structure
         /**** Public Methods - ConcreteSEction          ****/
         /***************************************************/
 
-        public static CompositeGeometry GetReinforcementLayout(this ConcreteSection property, double xStart = 0, double xEnd = 1)
+        public static CompositeGeometry Layout(this ConcreteSection property, double xStart = 0, double xEnd = 1)
         {
             CompositeGeometry geometry = new CompositeGeometry();
             foreach (Reinforcement reo in property.Reinforcement)
             {
-                CompositeGeometry layout = reo.IGetLayout(property);
+                CompositeGeometry layout = reo.ILayout(property);
 
                 foreach (IBHoMGeometry obj in layout.Elements)
                 {
@@ -44,7 +44,7 @@ namespace BH.Engine.Structure
         /**** Public Methods - Reinforcement            ****/
         /***************************************************/
 
-        public static CompositeGeometry GetLayout(this LayerReinforcement reinforcement, ConcreteSection property, bool extrude = false)
+        public static CompositeGeometry Layout(this LayerReinforcement reinforcement, ConcreteSection property, bool extrude = false)
         {
             BoundingBox bounds = new BoundingBox();
 
@@ -55,7 +55,7 @@ namespace BH.Engine.Structure
 
             double relativeDepth = reinforcement.IsVertical ? bounds.Max.X - reinforcement.Depth : bounds.Max.Y - reinforcement.Depth;
             double[] range = null;
-            double tieDiameter = property.GetTieDiameter();
+            double tieDiameter = property.TieDiameter();
             if (property.SectionDimension.Shape == ShapeType.Rectangle && tieDiameter > 0)
             {
                 //TODO: Check this part
@@ -91,18 +91,18 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
-        public static CompositeGeometry GetLayout(this PerimeterReinforcement reinforcement, ConcreteSection property, bool extrude = false)
+        public static CompositeGeometry Layout(this PerimeterReinforcement reinforcement, ConcreteSection property, bool extrude = false)
         {
-            return GetLayout(reinforcement, property.SectionDimension as dynamic, property);
+            return Layout(reinforcement, property.SectionDimension as dynamic, property);
         }
 
         /***************************************************/
 
-        public static CompositeGeometry GetLayout(this PerimeterReinforcement reinforcement, RectangleSectionDimensions dimensions, ConcreteSection property)
+        public static CompositeGeometry Layout(this PerimeterReinforcement reinforcement, RectangleSectionDimensions dimensions, ConcreteSection property)
         {
             double h = dimensions.Height;
             double w = dimensions.Width;
-            double tieDiameter = property.GetTieDiameter();
+            double tieDiameter = property.TieDiameter();
             List<Point> location = new List<Point>();
 
             int topCount = 0;
@@ -133,7 +133,7 @@ namespace BH.Engine.Structure
                 {
                     count = 2;
                 }
-                List<IBHoMGeometry> layout = ((CompositeGeometry)new LayerReinforcement(reinforcement.Diameter, currentDepth, count).GetLayout(property)).Elements;
+                List<IBHoMGeometry> layout = ((CompositeGeometry)new LayerReinforcement(reinforcement.Diameter, currentDepth, count).Layout(property)).Elements;
 
                 foreach (IBHoMGeometry geom in layout)
                 {
@@ -145,7 +145,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static CompositeGeometry GetLayout(this PerimeterReinforcement reinforcement, CircleDimensions dimensions, ConcreteSection property)
+        public static CompositeGeometry Layout(this PerimeterReinforcement reinforcement, CircleDimensions dimensions, ConcreteSection property)
         {
             double d = dimensions.Diameter;
             List<Point> location = new List<Point>();
@@ -172,7 +172,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static CompositeGeometry GetLayout(this PerimeterReinforcement reinforcement, ISectionDimensions dimensions, ConcreteSection property)
+        public static CompositeGeometry Layout(this PerimeterReinforcement reinforcement, ISectionDimensions dimensions, ConcreteSection property)
         {
 
             //TODO: Implement for various cross section types
@@ -181,11 +181,11 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        //public static CompositeGeometry GetLayout(this PerimeterReinforcement reinforcement, ConcreteSection property)
+        //public static CompositeGeometry Layout(this PerimeterReinforcement reinforcement, ConcreteSection property)
         //{
         //    double d = property.TotalDepth;
         //    double w = property.TotalWidth;
-        //    double tieDiameter = property.GetTieDiameter();
+        //    double tieDiameter = property.TieDiameter();
         //    List<Point> location = new List<Point>();
         //    if (property.Shape == ShapeType.Rectangle) //Rectangle
         //    {
@@ -217,7 +217,7 @@ namespace BH.Engine.Structure
         //            {
         //                count = 2;
         //            }
-        //            List<IBHoMGeometry> layout = ((CompositeGeometry)new LayerReinforcement(reinforcement.Diameter, currentDepth, count).GetLayout(property)).Elements;
+        //            List<IBHoMGeometry> layout = ((CompositeGeometry)new LayerReinforcement(reinforcement.Diameter, currentDepth, count).Layout(property)).Elements;
 
         //            foreach (IBHoMGeometry geom in layout)
         //            {
@@ -249,10 +249,10 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static CompositeGeometry GetLayout(this TieReinforcement reinforcement, ConcreteSection property, bool extrude = false)
+        public static CompositeGeometry Layout(this TieReinforcement reinforcement, ConcreteSection property, bool extrude = false)
         {
             return new CompositeGeometry();
-            //double tieDiameter = property.GetTieDiameter();
+            //double tieDiameter = property.TieDiameter();
             //switch (property.Shape)
             //{
             //    case ShapeType.Rectangle:
@@ -365,10 +365,11 @@ namespace BH.Engine.Structure
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
-        public static CompositeGeometry IGetLayout(this Reinforcement reinforcement, ConcreteSection property, bool extrude = false)
+        public static CompositeGeometry ILayout(this Reinforcement reinforcement, ConcreteSection property, bool extrude = false)
         {
-            return GetLayout(reinforcement as dynamic, property, extrude);
+            return Layout(reinforcement as dynamic, property, extrude);
         }
 
+        /***************************************************/
     }
 }

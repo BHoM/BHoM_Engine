@@ -12,7 +12,7 @@ namespace BH.Engine.Geometry
 
         public static bool IsClosed(this Arc arc)
         {
-            return arc.Start.GetSquareDistance(arc.End) < Tolerance.SqrtDist;
+            return arc.Start.SquareDistance(arc.End) < Tolerance.SqrtDist;
         }
 
         /***************************************************/
@@ -26,7 +26,7 @@ namespace BH.Engine.Geometry
 
         public static bool IsClosed(this Line line)
         {
-            return line.Start.GetSquareDistance(line.End) < Tolerance.SqrtDist;
+            return line.Start.SquareDistance(line.End) < Tolerance.SqrtDist;
         }
 
         /***************************************************/
@@ -37,7 +37,7 @@ namespace BH.Engine.Geometry
             if (pts.Count == 0)
                 return false;
 
-            return pts.First().GetSquareDistance(pts.Last()) < Tolerance.SqrtDist;
+            return pts.First().SquareDistance(pts.Last()) < Tolerance.SqrtDist;
         }
 
         /***************************************************/
@@ -46,12 +46,12 @@ namespace BH.Engine.Geometry
         {
             List<ICurve> curves = curve.Curves;
 
-            if (curves[0].IStartPoint().GetSquareDistance(curves.Last().IGetEndPoint()) > Tolerance.SqrtDist)
+            if (curves[0].IStartPoint().SquareDistance(curves.Last().IEndPoint()) > Tolerance.SqrtDist)
                 return false;
 
             for (int i = 1; i < curves.Count; i++)
             {
-                if (curves[i - 1].IGetEndPoint().GetSquareDistance(curves[i].IStartPoint()) > Tolerance.SqrtDist)
+                if (curves[i - 1].IEndPoint().SquareDistance(curves[i].IStartPoint()) > Tolerance.SqrtDist)
                     return false;
             }
 
@@ -66,7 +66,7 @@ namespace BH.Engine.Geometry
             if (pts.Count == 0)
                 return false;
 
-            return pts.First().GetSquareDistance(pts.Last()) < Tolerance.SqrtDist;
+            return pts.First().SquareDistance(pts.Last()) < Tolerance.SqrtDist;
         }
 
 

@@ -41,7 +41,7 @@ namespace Engine_Test
 
         static void UseNodeConstructor(int iter)
         {
-            new Node(new Point(), "test");
+            BH.Engine.Structure.Create.Node(new Point(), "test");
         }
 
         /***************************************************/
@@ -63,7 +63,7 @@ namespace Engine_Test
                     Assembly.LoadFrom(file);
             }
 
-            List<MethodInfo> methods = BH.Engine.Reflection.Query.GetBHoMMethodList();
+            List<MethodInfo> methods = BH.Engine.Reflection.Query.BHoMMethodList();
             foreach (MethodInfo method in methods)
             {
                 string def = method.DeclaringType.FullName + "." + method.Name + "(";
@@ -314,7 +314,7 @@ namespace Engine_Test
             graph.AddUndirectedLink(points[2], points[4], points[2].DistanceTo(points[4]));
 
             Graph_Engine.GraphNavigator<Point> navigator = new Graph_Engine.GraphNavigator<Point>(graph);
-            List<GraphNode<Point>> path = navigator.GetPath(nodes[0], nodes.Last(), PointDist);
+            List<GraphNode<Point>> path = navigator.Path(nodes[0], nodes.Last(), PointDist);
         }*/
 
         /*static double PointDist(Point pt1, Point pt2)

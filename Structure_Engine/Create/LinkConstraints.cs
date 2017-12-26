@@ -4,7 +4,6 @@ namespace BH.Engine.Structure
 {
     public static partial class Create
     {
-
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
@@ -226,5 +225,6 @@ namespace BH.Engine.Structure
                 return constr;
         }
 
+        /***************************************************/
     }
 }

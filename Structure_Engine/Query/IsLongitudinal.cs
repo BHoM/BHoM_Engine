@@ -36,5 +36,7 @@ namespace BH.Engine.Structure
         {
             return IsLongitudinal(reinforcement as dynamic);
         }
+
+        /***************************************************/
     }
 }

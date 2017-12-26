@@ -7,22 +7,19 @@ namespace BH.Engine.Structure
 {
     public static partial class Query
     {
-
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static List<ICurve> GetEdges(this PanelFreeForm contour)
+        public static List<ICurve> Edges(this PanelFreeForm contour)
         {
             if (contour.Surface != null)
-                return contour.Surface.IGetExternalEdges();
+                return contour.Surface.IExternalEdges();
             else
                 return new List<ICurve>();
         }
 
         /***************************************************/
-
-
     }
 
 }

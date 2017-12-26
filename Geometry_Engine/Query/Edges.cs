@@ -11,7 +11,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Meshes                   ****/
         /***************************************************/
 
-        public static List<Line> GetEdges(this Mesh mesh)
+        public static List<Line> Edges(this Mesh mesh)
         {
             List<Face> faces = mesh.Faces;
             List<Tuple<int, int>> indices = new List<Tuple<int, int>>();
@@ -46,7 +46,7 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
 
-        public static List<Line> GetEdges(this Face face, Mesh mesh)
+        public static List<Line> Edges(this Face face, Mesh mesh)
         {
             List<Line> edges = new List<Line>();
             edges.Add(new Line { Start = mesh.Vertices[face.A], End = mesh.Vertices[face.B] });
@@ -67,10 +67,10 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static List<ICurve> GetEdges(this ISurface surface)
+        public static List<ICurve> Edges(this ISurface surface)
         {
-            List<ICurve> edges = surface.IGetExternalEdges();
-            edges.AddRange(surface.IGetInternalEdges());
+            List<ICurve> edges = surface.IExternalEdges();
+            edges.AddRange(surface.IInternalEdges());
             return edges;
         }
     }

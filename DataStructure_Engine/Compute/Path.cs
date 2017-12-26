@@ -11,7 +11,7 @@ namespace BH.Engine.DataStructure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static List<GraphNode<T>> GetPath<T>(this Graph<T> graph, GraphNode<T> startNode, GraphNode<T> endNode, Func<T, T, double> costHeuristic)
+        public static List<GraphNode<T>> Path<T>(this Graph<T> graph, GraphNode<T> startNode, GraphNode<T> endNode, Func<T, T, double> costHeuristic)
         {
             // Create the inital close set
             HashSet<GraphNode<T>> closedSet = new HashSet<GraphNode<T>>();

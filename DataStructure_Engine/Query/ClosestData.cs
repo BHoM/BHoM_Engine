@@ -16,7 +16,7 @@ namespace BH.Engine.DataStructure
         {
             List<LocalData<T>> closePts = matrix.CloseToPoint(refPt, maxDist);
 
-            return closePts.OrderBy(x => x.Position.GetDistance(refPt)).FirstOrDefault();
+            return closePts.OrderBy(x => x.Position.Distance(refPt)).FirstOrDefault();
         }
 
         /***************************************************/

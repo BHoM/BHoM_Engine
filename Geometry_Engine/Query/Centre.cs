@@ -61,7 +61,7 @@ namespace BH.Engine.Geometry
         /**** Mesh                                      ****/
         /***************************************************/
 
-        public static List<Point> GetCentres(this Mesh mesh)
+        public static List<Point> Centres(this Mesh mesh)
         {
             List<Face> faces = mesh.Faces;
             List<Point> vertices = mesh.Vertices;

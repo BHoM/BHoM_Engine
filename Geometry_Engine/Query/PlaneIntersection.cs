@@ -125,14 +125,14 @@ namespace BH.Engine.Geometry
 
             Point tempPt = l.ClosestPoint(curve.Centre, true);
 
-            double sqrDist = tempPt.GetSquareDistance(curve.Centre);
+            double sqrDist = tempPt.SquareDistance(curve.Centre);
             double sqrRad = curve.Radius * curve.Radius;
 
             if (Math.Abs(sqrRad - sqrDist) < tolerance*tolerance)
                 return new List<Point> { tempPt };
             else if (sqrDist < sqrRad)
             {
-                Vector v = l.GetDirection();
+                Vector v = l.Direction();
                 double dist = Math.Sqrt(sqrRad - sqrDist);
                 v = v * dist;
                 return new List<Point> { tempPt + v, tempPt - v };
@@ -244,7 +244,7 @@ namespace BH.Engine.Geometry
 
             if (sameSide[sameSide.Count - 1] == 0 && previousSide != sameSide[sameSide.Count - 1] && result.Count % 2 == 1)
             {
-                result.Add(c.IGetEndPoint());
+                result.Add(c.IEndPoint());
                 curveParameters.Add(sameSide[sameSide.Count - 1]);
             }
 
@@ -287,7 +287,7 @@ namespace BH.Engine.Geometry
 
             //if (sameSide[sameSide.Length - 1] == 0 && previousSide != sameSide[sameSide.Length - 1] && result.Count % 2 == 1)
             //{
-            //    result.Add(c.IGetEndPoint());
+            //    result.Add(c.IEndPoint());
             //    curveParameters.Add(sameSide[sameSide.Length - 1]);
             //}
 
@@ -337,7 +337,7 @@ namespace BH.Engine.Geometry
 
             if (sameSide[sameSide.Count - 1] == 0 && previousSide != sameSide[sameSide.Count - 1] && result.Count % 2 == 1)
             {
-                result.Add(curve.IGetEndPoint());
+                result.Add(curve.IEndPoint());
             }
 
             return result;

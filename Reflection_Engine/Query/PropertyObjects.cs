@@ -10,7 +10,7 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static List<object> GetPropertyObjects(this object obj, bool goDeep = false)
+        public static List<object> PropertyObjects(this object obj, bool goDeep = false)
         {
             List<object> properties = new List<object>();
             foreach (var prop in obj.GetType().GetProperties())
@@ -21,7 +21,7 @@ namespace BH.Engine.Reflection
                 {
                     properties.Add(value);
                     if (goDeep)
-                        properties.AddRange(value.GetPropertyObjects(true));
+                        properties.AddRange(value.PropertyObjects(true));
                 }
             }
             return properties;
@@ -29,7 +29,7 @@ namespace BH.Engine.Reflection
 
         /***************************************************/
 
-        public static Dictionary<Type, List<object>> GetPropertyObjects(this IEnumerable<object> objects, Type type)
+        public static Dictionary<Type, List<object>> PropertyObjects(this IEnumerable<object> objects, Type type)
         {
             Dictionary<Type, List<object>> propByType = new Dictionary<Type, List<object>>();
             foreach (var prop in type.GetProperties())

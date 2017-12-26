@@ -9,20 +9,20 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static double GetMass(this Bar bar)
+        public static double Mass(this Bar bar)
         {
-            return bar.Length() * bar.SectionProperty.IGetMassPerMetre();
+            return bar.Length() * bar.SectionProperty.IMassPerMetre();
         }
 
         /***************************************************/
-        public static double GetMassPerMetre(this ISectionProperty section)
+        public static double MassPerMetre(this ISectionProperty section)
         {
             return section.Area * section.Material.Density;
         }
 
         /***************************************************/
 
-        public static double GetMassPerMetre(this ConcreteSection section)
+        public static double MassPerMetre(this ConcreteSection section)
         {
             //TODO: Handle reinforcement
             return section.Area * section.Material.Density;
@@ -30,28 +30,30 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static double GetMassPerMetre(this CompositeSection section)
+        public static double MassPerMetre(this CompositeSection section)
         {
             //TODO: Handle embedment etc..
-            return section.ConcreteSection.GetMassPerMetre() + section.SteelSection.GetMassPerMetre();
+            return section.ConcreteSection.MassPerMetre() + section.SteelSection.MassPerMetre();
         }
 
         /***************************************************/
 
-        public static double GetMassPerMetre(this CableSection section)
+        public static double MassPerMetre(this CableSection section)
         {
             //TODO: Add property for kg/m as part of the cable section?
             return section.Area * section.Material.Density;
         }
 
+
         /***************************************************/
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
-        public static double IGetMassPerMetre(this ISectionProperty section)
+        public static double IMassPerMetre(this ISectionProperty section)
         {
-            return GetMassPerMetre(section as dynamic);
+            return MassPerMetre(section as dynamic);
         }
 
+        /***************************************************/
     }
 }

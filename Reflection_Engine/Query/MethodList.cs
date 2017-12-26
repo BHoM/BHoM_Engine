@@ -10,7 +10,7 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static List<MethodInfo> GetBHoMMethodList()
+        public static List<MethodInfo> BHoMMethodList()
         {
             // If the dictionary exists already return it
             if (m_BHoMMethodList != null && m_BHoMMethodList.Count > 0)

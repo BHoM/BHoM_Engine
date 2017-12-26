@@ -116,6 +116,7 @@ namespace BH.Engine.Geometry
             return SubParts(geometry as dynamic);
         }
 
+
         /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/

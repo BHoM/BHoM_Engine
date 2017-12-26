@@ -23,36 +23,36 @@ namespace BH.Engine.Geometry
             while (pending.Count > 0)
             {
                 Point start1 = result.StartPoint();
-                Point end1 = result.GetEndPoint();
+                Point end1 = result.EndPoint();
                 bool foundNext = false;
 
                 for (int i = 0; i < pending.Count; i++)
                 {
                     Point start2 = pending[i].IStartPoint();
-                    Point end2 = pending[i].IGetEndPoint();
+                    Point end2 = pending[i].IEndPoint();
  
-                    if (end1.GetSquareDistance(start2) < Tolerance.SqrtDist)
+                    if (end1.SquareDistance(start2) < Tolerance.SqrtDist)
                     {
                         result.Curves.Add(pending[i]);
                         pending.RemoveAt(i);
                         foundNext = true;
                         break;
                     }
-                    else if (end1.GetSquareDistance(end2) < Tolerance.SqrtDist)
+                    else if (end1.SquareDistance(end2) < Tolerance.SqrtDist)
                     {
                         result.Curves.Add(pending[i].IFlip());
                         pending.RemoveAt(i);
                         foundNext = true;
                         break;
                     }
-                    else if (start1.GetSquareDistance(end2) < Tolerance.SqrtDist)
+                    else if (start1.SquareDistance(end2) < Tolerance.SqrtDist)
                     {
                         result.Curves.Insert(0, pending[i]);
                         pending.RemoveAt(i);
                         foundNext = true;
                         break;
                     }
-                    else if (start1.GetSquareDistance(start2) < Tolerance.SqrtDist)
+                    else if (start1.SquareDistance(start2) < Tolerance.SqrtDist)
                     {
                         result.Curves.Insert(0, pending[i].IFlip());
                         pending.RemoveAt(i);

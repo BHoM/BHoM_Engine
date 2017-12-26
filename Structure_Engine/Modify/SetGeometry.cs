@@ -12,15 +12,15 @@ namespace BH.Engine.Structure
 
         public static void SetGeometry(this Bar bar, Line line)
         {
-            bar.StartNode.Point = line.Start;
-            bar.EndNode.Point = line.End;
+            bar.StartNode.Position = line.Start;
+            bar.EndNode.Position = line.End;
         }
 
         /***************************************************/
 
         public static void SetGeometry(this Node node, Point point)
         {
-            node.Point = point;
+            node.Position = point;
         }
 
         /***************************************************/

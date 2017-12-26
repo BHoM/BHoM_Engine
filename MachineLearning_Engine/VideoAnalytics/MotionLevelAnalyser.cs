@@ -146,7 +146,7 @@ namespace BH.Engine.MachineLearning
                 if (m_Config.NbRows == 1 && m_Config.NbColumns == 1)
                     m_MotionLevel[m_FrameIndex] = new List<double> { m_Detector.MotionLevel };
                 else
-                    m_MotionLevel[m_FrameIndex] = GetMotionLevel(motionFrame, m_Config.NbRows, m_Config.NbColumns);
+                    m_MotionLevel[m_FrameIndex] = MotionLevel(motionFrame, m_Config.NbRows, m_Config.NbColumns);
 
                 // Save output motion image
                 if (m_OutFolder != "" && (m_FrameIndex - m_Config.StartFrame) % m_Config.FrameStep == 0)
@@ -164,7 +164,7 @@ namespace BH.Engine.MachineLearning
 
         /****************************************/
 
-        private List<double> GetMotionLevel(Bitmap source, int nbRows, int nbColumns)
+        private List<double> MotionLevel(Bitmap source, int nbRows, int nbColumns)
         {
             List<double> motionLevels = new List<double>(new double[nbRows * nbColumns]);
 

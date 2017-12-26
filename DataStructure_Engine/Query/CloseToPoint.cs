@@ -21,7 +21,7 @@ namespace BH.Engine.DataStructure
             List<LocalData<T>> result = new List<LocalData<T>>();
             foreach (LocalData<T> tuple in inCells)
             {
-                if (tuple.Position.GetDistance(refPt) < maxDist)
+                if (tuple.Position.Distance(refPt) < maxDist)
                     result.Add(tuple);
             }
 

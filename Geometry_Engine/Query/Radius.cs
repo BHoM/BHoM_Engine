@@ -12,7 +12,7 @@ namespace BH.Engine.Geometry
         {
             Point centre = arc.Centre();
             if (centre != null)
-                return centre.GetDistance(arc.Start);
+                return centre.Distance(arc.Start);
             else
                 return 0;
         }

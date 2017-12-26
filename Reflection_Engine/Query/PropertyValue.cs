@@ -6,7 +6,7 @@
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static object GetPropertyValue(this object obj, string propName)
+        public static object PropertyValue(this object obj, string propName)
         {
             System.Reflection.PropertyInfo prop = obj.GetType().GetProperty(propName);
             if (prop == null) return null;

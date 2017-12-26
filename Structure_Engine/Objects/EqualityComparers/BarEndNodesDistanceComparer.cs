@@ -6,17 +6,26 @@ namespace BH.Engine.Structure
 {
     public class BarEndNodesDistanceComparer : IEqualityComparer<Bar>
     {
-        private NodeDistanceComparer m_nodeComparer;
+        /***************************************************/
+        /**** Constructors                              ****/
+        /***************************************************/
 
         public BarEndNodesDistanceComparer()
         {
             m_nodeComparer = new NodeDistanceComparer();
         }
 
+        /***************************************************/
+
         public BarEndNodesDistanceComparer(int decimals)
         {
             m_nodeComparer = new NodeDistanceComparer(decimals);
         }
+
+
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
 
         public bool Equals(Bar bar1, Bar bar2)
         {
@@ -43,6 +52,8 @@ namespace BH.Engine.Structure
             return false;
         }
 
+        /***************************************************/
+
         public int GetHashCode(Bar bar)
         {
             //Check whether the object is null
@@ -50,5 +61,15 @@ namespace BH.Engine.Structure
 
             return bar.StartNode.GetHashCode() ^ bar.EndNode.GetHashCode();
         }
+
+
+        /***************************************************/
+        /**** Private Fields                            ****/
+        /***************************************************/
+
+        private NodeDistanceComparer m_nodeComparer;
+
+
+        /***************************************************/
     }
 }

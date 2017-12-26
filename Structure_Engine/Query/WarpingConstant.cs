@@ -10,7 +10,7 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        //public static double GetWarpingConstant(ShapeType shape, double totalDepth, double totalWidth, double b1, double b2, double tf1, double tf2, double tw)
+        //public static double WarpingConstant(ShapeType shape, double totalDepth, double totalWidth, double b1, double b2, double tf1, double tf2, double tw)
         //{
 
         //    switch (shape)
@@ -36,15 +36,15 @@ namespace BH.Engine.Structure
         //TODO: Implement more warping constants
 
         /***************************************************/
-        //Return 0 for not specifically implemented ones
-        public static double GetWarpingConstant(this ISectionDimensions dimensions)
+        
+        public static double WarpingConstant(this ISectionDimensions dimensions)
         {
-            return 0;
+            return 0; // Return 0 for not specifically implemented ones
         }
 
         /***************************************************/
 
-        public static double GetWarpingConstant(this StandardISectionDimensions dimensions)
+        public static double WarpingConstant(this StandardISectionDimensions dimensions)
         {
             double width = dimensions.Width;
             double height = dimensions.Height;
@@ -58,7 +58,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static double GetWarpingConstant(this FabricatedISectionDimensions dimensions)
+        public static double WarpingConstant(this FabricatedISectionDimensions dimensions)
         {
             double b1 = dimensions.TopFlangeWidth;
             double b2 = dimensions.BotFlangeWidth;
@@ -78,10 +78,9 @@ namespace BH.Engine.Structure
             }
         }
 
-
         /***************************************************/
 
-        public static double GetWarpingConstant(this StandardChannelSectionDimensions dimensions)
+        public static double WarpingConstant(this StandardChannelSectionDimensions dimensions)
         {
             double width = dimensions.FlangeWidth;
             double height = dimensions.Height;
@@ -97,10 +96,11 @@ namespace BH.Engine.Structure
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
-        public static double IGetWarpingConstant(this ISectionDimensions dimensions)
+        public static double IWarpingConstant(this ISectionDimensions dimensions)
         {
-            return GetWarpingConstant(dimensions as dynamic);
+            return WarpingConstant(dimensions as dynamic);
         }
 
+        /***************************************************/
     }
 }

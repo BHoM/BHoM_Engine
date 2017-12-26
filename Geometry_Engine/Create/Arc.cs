@@ -31,7 +31,7 @@ namespace BH.Engine.Geometry
 
             double angle = v1.SignedAngle(v2, normal);
             Vector midDir = ((Vector)v1.Rotate(angle / 2, normal)).Normalise();
-            double midRadius = (start.GetDistance(centre) + end.GetDistance(centre)) / 2;
+            double midRadius = (start.Distance(centre) + end.Distance(centre)) / 2;
 
             return new Arc { Start = start, Middle = centre + midRadius * midDir, End = end }; 
         }

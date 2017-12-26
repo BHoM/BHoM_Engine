@@ -10,9 +10,9 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Dictionary<string, object> GetPropertyDictionary(this object obj)
+        public static Dictionary<string, object> PropertyDictionary(this object obj)
         {
-            return _GetPropertyDictionary(obj as dynamic);
+            return _PropertyDictionary(obj as dynamic);
         }
 
 
@@ -20,7 +20,7 @@ namespace BH.Engine.Reflection
         /**** Private Methods                           ****/
         /***************************************************/
 
-        public static Dictionary<string, object> _GetPropertyDictionary(this object obj)
+        public static Dictionary<string, object> _PropertyDictionary(this object obj)
         {
             Dictionary<string, object> dic = new Dictionary<string, object>();
 
@@ -35,7 +35,7 @@ namespace BH.Engine.Reflection
 
         /***************************************************/
 
-        public static Dictionary<string, object> _GetPropertyDictionary(this CustomObject obj)
+        public static Dictionary<string, object> _PropertyDictionary(this CustomObject obj)
         {
             Dictionary<string, object> dic = new Dictionary<string, object>(obj.CustomData);
 

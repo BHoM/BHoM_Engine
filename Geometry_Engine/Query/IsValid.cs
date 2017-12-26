@@ -38,7 +38,7 @@ namespace BH.Engine.Geometry
             if (!arc.Start.IsValid() || !arc.End.IsValid() || !arc.Middle.IsValid())
                 return false;
 
-            if (arc.Start.GetSquareDistance(arc.End) < Tolerance.SqrtDist || arc.Start.GetSquareDistance(arc.Middle) < Tolerance.SqrtDist || arc.Middle.GetSquareDistance(arc.End) < Tolerance.SqrtDist)
+            if (arc.Start.SquareDistance(arc.End) < Tolerance.SqrtDist || arc.Start.SquareDistance(arc.Middle) < Tolerance.SqrtDist || arc.Middle.SquareDistance(arc.End) < Tolerance.SqrtDist)
                 return false;
 
             return true;

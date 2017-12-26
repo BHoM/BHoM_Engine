@@ -43,12 +43,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Create\Storey.cs" />
+    <Compile Include="Create\RigidLink.cs" />
+    <Compile Include="Create\MeshFace.cs" />
+    <Compile Include="Create\Column.cs" />
+    <Compile Include="Create\Beam.cs" />
+    <Compile Include="Create\PanelPlanar.cs" />
+    <Compile Include="Create\Span.cs" />
+    <Compile Include="Create\StructuralLayout.cs" />
     <Compile Include="Create\Node.cs" />
     <Compile Include="Create\Bar.cs" />
     <Compile Include="Create\ConcreteSection.cs" />
     <Compile Include="Create\LinkConstraints.cs" />
     <Compile Include="Create\Opening.cs" />
-    <Compile Include="Create\Panel.cs" />
+    <Compile Include="Create\PanelFreeForm.cs" />
     <Compile Include="Create\SectionProfile.cs" />
     <Compile Include="Create\SteelSection.cs" />
     <Compile Include="Query\Centreline.cs" />
@@ -62,21 +70,21 @@
     <Compile Include="Query\Plane.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Create\NodeConstraint.cs" />
-    <Compile Include="EqualityComparers\BarEndNodesDistanceComparer.cs" />
-    <Compile Include="EqualityComparers\NodeDistanceComparer.cs" />
+    <Compile Include="Objects\EqualityComparers\BarEndNodesDistanceComparer.cs" />
+    <Compile Include="Objects\EqualityComparers\NodeDistanceComparer.cs" />
     <Compile Include="Query\NodeContraint.cs" />
-    <Compile Include="Query\DimensionAt.cs" />
-    <Compile Include="Query\ReinforcementIsLongitudinal.cs" />
-    <Compile Include="Query\ReinforcementLayout.cs" />
-    <Compile Include="Query\SectionProperty.cs" />
+    <Compile Include="Query\DepthAt.cs" />
+    <Compile Include="Query\WidthAt.cs" />
+    <Compile Include="Query\IsLongitudinal.cs" />
+    <Compile Include="Query\Layout.cs" />
     <Compile Include="Query\TieDiameter.cs" />
     <Compile Include="Query\TorsionalConstant.cs" />
     <Compile Include="Query\WarpingConstant.cs" />
-    <Compile Include="Transform\Flip.cs" />
-    <Compile Include="Transform\Geometry.cs" />
-    <Compile Include="Transform\Merge.cs" />
-    <Compile Include="Transform\Reinforcement.cs" />
-    <Compile Include="Verifiy\Constrained.cs" />
+    <Compile Include="Modify\Flip.cs" />
+    <Compile Include="Modify\SetGeometry.cs" />
+    <Compile Include="Query\AverageElement.cs" />
+    <Compile Include="Modify\SetReinforcement.cs" />
+    <Compile Include="Query\IsConstrained.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BHoM_Engine\BHoM_Engine.csproj">
@@ -89,7 +97,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Clone\" />
     <Folder Include="Convert\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

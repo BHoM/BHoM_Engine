@@ -12,21 +12,25 @@ namespace BH.Engine.Structure
         public static Bar Bar(Line line)
         {
             Bar bar = new Bar();
-            bar.StartNode = new Node(line.Start);
-            bar.EndNode = new Node(line.End);
+            bar.StartNode = new Node { Position = line.Start };
+            bar.EndNode = new Node { Position = line.End };
             bar.SetGeometry(line);
             return bar;
         }
 
         /***************************************************/
 
-        public static Bar Bar(Point pointA, Point pointB)
+        public static Bar Bar(Node startNode, Node endNode, string name = "")
         {
-            Bar bar = new Bar();
-            bar.StartNode = new Node(pointA);
-            bar.EndNode = new Node(pointB);
-            bar.SetGeometry(new Line { Start = pointA, End = pointB });
-            return bar;
+            return new Bar
+            {
+                Name = name,
+                StartNode = startNode,
+                EndNode = endNode
+            };
         }
+
+
+        /***************************************************/
     }
 }

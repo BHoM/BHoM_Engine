@@ -11,7 +11,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Surfaces                 ****/
         /***************************************************/
 
-        public static List<ICurve> GetExternalEdges(this Extrusion surface)
+        public static List<ICurve> ExternalEdges(this Extrusion surface)
         {
             ICurve curve = surface.Curve;
             Vector direction = surface.Direction;
@@ -26,7 +26,7 @@ namespace BH.Engine.Geometry
             if (!curve.IIsClosed())
             {
                 Point start = curve.IStartPoint();
-                Point end = curve.IGetEndPoint();
+                Point end = curve.IEndPoint();
                 edges.Add(new Line { Start = start, End = start + direction });
                 edges.Add(new Line { Start = end, End = end + direction });
             }
@@ -36,21 +36,21 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static List<ICurve> GetExternalEdges(this Loft surface)
+        public static List<ICurve> ExternalEdges(this Loft surface)
         {
             return surface.Curves; //TODO: Is that always correct?
         }
 
         /***************************************************/
 
-        public static List<ICurve> GetExternalEdges(this NurbSurface surface)
+        public static List<ICurve> ExternalEdges(this NurbSurface surface)
         {
             throw new NotImplementedException();
         }
 
         /***************************************************/
 
-        public static List<ICurve> GetExternalEdges(this Pipe surface)
+        public static List<ICurve> ExternalEdges(this Pipe surface)
         {
             if (!surface.Capped)
             {
@@ -58,7 +58,7 @@ namespace BH.Engine.Geometry
                 return new List<ICurve>()
                 {
                     new Circle { Centre = curve.IStartPoint(), Normal = curve.IStartDir(), Radius = surface.Radius },
-                    new Circle { Centre = curve.IGetEndPoint(), Normal = curve.IGetEndDir(), Radius = surface.Radius }
+                    new Circle { Centre = curve.IEndPoint(), Normal = curve.IEndDir(), Radius = surface.Radius }
                 };
             }
             else
@@ -69,9 +69,9 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static List<ICurve> GetExternalEdges(this PolySurface surface)
+        public static List<ICurve> ExternalEdges(this PolySurface surface)
         {
-            return surface.Surfaces.SelectMany(x => x.IGetExternalEdges()).ToList();
+            return surface.Surfaces.SelectMany(x => x.IExternalEdges()).ToList();
         }
 
 
@@ -79,9 +79,9 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
-        public static List<ICurve> IGetExternalEdges(this ISurface surface)
+        public static List<ICurve> IExternalEdges(this ISurface surface)
         {
-            return GetExternalEdges(surface as dynamic);
+            return ExternalEdges(surface as dynamic);
         }
     }
 }

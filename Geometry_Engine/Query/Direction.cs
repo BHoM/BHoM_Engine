@@ -9,7 +9,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Vector GetDirection(this Line line)
+        public static Vector Direction(this Line line)
         {
             return new Vector { X = line.End.X - line.Start.X, Y = line.End.Y - line.Start.Y, Z = line.End.Z - line.Start.Z }.Normalise();
         }
@@ -27,7 +27,7 @@ namespace BH.Engine.Geometry
         }
 
         /***************************************************/
-        public static Vector GetTangentAt(this NurbCurve curve, double t)
+        public static Vector TangentAt(this NurbCurve curve, double t)
         {
 
             Vector sumNwP = new Vector { X = 0, Y = 0, Z = 0 };
@@ -40,7 +40,7 @@ namespace BH.Engine.Geometry
             for (int i = 0; i < curve.ControlPoints.Count; i++)
             {
                 double Nt = curve.BasisFunction(i, degree, t);
-                double Nder = curve.GetDerivativeFunction(i, degree, t);
+                double Nder = curve.DerivativeFunction(i, degree, t);
                 Vector p = Create.Vector(curve.ControlPoints[i]);
                 sumNwP += p * Nt * curve.Weights[i];
                 sumNwPDer += p * Nder * curve.Weights[i];
