@@ -13,7 +13,7 @@ namespace BH.Engine.Graphics
         /**** Public Methods - Graphics                 ****/
         /***************************************************/
 
-        public static string ToSVGString(SVGStyle svgStyle)
+        public static string ToSVGString(this SVGStyle svgStyle)
         {
             string styleString = "stroke-width=\"" + svgStyle.StrokeWidth.ToString()
                                  + "\" stroke=\"__stroke-color__\" fill=\"__fill-color__\" stroke-opacity=\""
@@ -68,7 +68,7 @@ namespace BH.Engine.Graphics
 
         /***************************************************/
 
-        public static string ToSVGString(SVGObject svgObject)
+        public static string ToSVGString(this SVGObject svgObject)
         {
             string geometryString = "<g " + ToSVGString(svgObject.Style) + ">\n";
 
@@ -94,7 +94,7 @@ namespace BH.Engine.Graphics
 
         /***************************************************/
 
-        public static string ToSVGString(SVGDocument svgDocument)
+        public static string ToSVGString(this SVGDocument svgDocument)
         {
             BoundingBox box = Query.Bounds(svgDocument);
 
@@ -279,5 +279,7 @@ namespace BH.Engine.Graphics
 
             throw new NotImplementedException();
         }
+
+        /***************************************************/
     }
 }

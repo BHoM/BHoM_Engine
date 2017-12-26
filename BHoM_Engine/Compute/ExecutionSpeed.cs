@@ -7,7 +7,7 @@ using System.Threading;
 
 namespace BH.Engine.Base
 {
-    public static class Compute
+    public static partial class Compute
     {
         /***************************************************/
         /**** Public Methods                            ****/

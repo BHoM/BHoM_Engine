@@ -1,16 +1,18 @@
 ﻿using BH.oM.Geometry;
+using BH.oM.Graphics;
+using System.Collections.Generic;
 
-namespace BH.Engine.Geometry
+namespace BH.Engine.Graphics
 {
-    public static partial class Query
+    public static partial class Create
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static bool IsQuad(this Face face)
+        public static SVGObject SVGObject(List<IBHoMGeometry> shapes, SVGStyle style = null)
         {
-            return face.D != -1;
+            return new SVGObject { Shapes = shapes, Style = style };
         }
 
         /***************************************************/
