@@ -10,7 +10,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Surfaces                 ****/
         /***************************************************/
 
-        public static List<ICurve> GetInternalEdges(this Extrusion surface)
+        public static List<ICurve> InternalEdges(this Extrusion surface)
         {
             ICurve curve = surface.Curve;
             Vector direction = surface.Direction;
@@ -30,7 +30,7 @@ namespace BH.Engine.Geometry
 
             if (curve.IIsClosed())
             {
-                Point end = curve.IGetEndPoint();
+                Point end = curve.IEndPoint();
                 edges.Add(new Line { Start = end, End = end + direction });
             }
 
@@ -39,7 +39,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static List<ICurve> GetInternalEdges(this Pipe surface)
+        public static List<ICurve> InternalEdges(this Pipe surface)
         {
             if (surface.Capped)
             {
@@ -47,7 +47,7 @@ namespace BH.Engine.Geometry
                 return new List<ICurve>()
                 {
                     new Circle { Centre = curve.IStartPoint(), Normal = curve.IStartDir(), Radius = surface.Radius },
-                    new Circle { Centre = curve.IGetEndPoint(), Normal = curve.IGetEndDir(), Radius = surface.Radius }
+                    new Circle { Centre = curve.IEndPoint(), Normal = curve.IEndDir(), Radius = surface.Radius }
                 };
             }
             else
@@ -58,9 +58,9 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static List<ICurve> GetInternalEdges(this PolySurface surface)
+        public static List<ICurve> InternalEdges(this PolySurface surface)
         {
-            return surface.Surfaces.SelectMany(x => x.IGetInternalEdges()).ToList();
+            return surface.Surfaces.SelectMany(x => x.IInternalEdges()).ToList();
         }
 
 
@@ -68,9 +68,9 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
-        public static List<ICurve> IGetInternalEdges(this ISurface surface)
+        public static List<ICurve> IInternalEdges(this ISurface surface)
         {
-            return GetInternalEdges(surface as dynamic);
+            return InternalEdges(surface as dynamic);
         }
 
 

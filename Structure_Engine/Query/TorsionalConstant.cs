@@ -6,12 +6,11 @@ namespace BH.Engine.Structure
 {
     public static partial class Query
     {
-
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        //public static double GetTorsionalConstantThinWalled(ShapeType shape, double totalDepth, double totalWidth, double b1, double b2, double tf1, double tf2, double tw)
+        //public static double TorsionalConstantThinWalled(ShapeType shape, double totalDepth, double totalWidth, double b1, double b2, double tf1, double tf2, double tw)
         //{
         //    switch (shape)
         //    {
@@ -45,29 +44,29 @@ namespace BH.Engine.Structure
 
 
         /***************************************************/
-        //Return 0 for not specifically implemented ones
-        public static double GetTorsionalConstant(this ISectionDimensions dimensions)
+        
+        public static double TorsionalConstant(this ISectionDimensions dimensions) 
         {
-            return 0;
+            return 0; //Return 0 for not specifically implemented ones
         }
 
         /***************************************************/
 
-        public static double GetTorsionalConstant(this CircleDimensions dimensions)
+        public static double TorsionalConstant(this CircleDimensions dimensions)
         {
             return Math.PI * Math.Pow(dimensions.Diameter, 4) / 2;
         }
 
         /***************************************************/
 
-        public static double GetTorsionalConstant(this TubeDimensions dimensions)
+        public static double TorsionalConstant(this TubeDimensions dimensions)
         {
             return Math.PI * (Math.Pow(dimensions.Diameter, 4) - Math.Pow(dimensions.Diameter - dimensions.Thickness, 4)) / 2;
         }
 
         /***************************************************/
 
-        public static double GetTorsionalConstant(this FabricatedBoxDimensions dimensions)
+        public static double TorsionalConstant(this FabricatedBoxDimensions dimensions)
         {
             double tf1 = dimensions.TopFlangeThickness; //TODO: Allow for varying plate thickness
             double tw = dimensions.WebThickness;
@@ -80,7 +79,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static double GetTorsionalConstant(this StandardBoxDimensions dimensions)
+        public static double TorsionalConstant(this StandardBoxDimensions dimensions)
         {
             double tf1 = dimensions.Thickness;
             double tw = dimensions.Thickness;
@@ -93,7 +92,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static double GetTorsionalConstant(this FabricatedISectionDimensions dimensions)
+        public static double TorsionalConstant(this FabricatedISectionDimensions dimensions)
         {
             double b1 = dimensions.TopFlangeWidth;
             double b2 = dimensions.BotFlangeWidth;
@@ -107,7 +106,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static double GetTorsionalConstant(this StandardISectionDimensions dimensions)
+        public static double TorsionalConstant(this StandardISectionDimensions dimensions)
         {
             double b1 = dimensions.Width;
             double b2 = dimensions.Width;
@@ -121,7 +120,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static double GetTorsionalConstant(this StandardChannelSectionDimensions dimensions)
+        public static double TorsionalConstant(this StandardChannelSectionDimensions dimensions)
         {
             double b1 = dimensions.FlangeWidth;
             double b2 = dimensions.FlangeWidth;
@@ -134,7 +133,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static double GetTorsionalConstant(this StandardZedSectionDimensions dimensions)
+        public static double TorsionalConstant(this StandardZedSectionDimensions dimensions)
         {
             double b1 = dimensions.FlangeWidth;
             double b2 = dimensions.FlangeWidth;
@@ -148,7 +147,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static double GetTorsionalConstant(this StandardTeeSectionDimensions dimensions)
+        public static double TorsionalConstant(this StandardTeeSectionDimensions dimensions)
         {
             double totalWidth = dimensions.Width;
             double totalDepth = dimensions.Width;
@@ -161,7 +160,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static double GetTorsionalConstant(this RectangleSectionDimensions dimensions)
+        public static double TorsionalConstant(this RectangleSectionDimensions dimensions)
         {
             if (Math.Abs(dimensions.Height - dimensions.Width) < Tolerance.Distance)
                 return 2.25 * Math.Pow(dimensions.Height, 4);
@@ -177,10 +176,11 @@ namespace BH.Engine.Structure
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
-        public static double IGetTorsionalConstant(this ISectionDimensions dimensions)
+        public static double ITorsionalConstant(this ISectionDimensions dimensions)
         {
-            return GetTorsionalConstant(dimensions as dynamic);
+            return TorsionalConstant(dimensions as dynamic);
         }
 
+        /***************************************************/
     }
 }

@@ -15,7 +15,7 @@ namespace BH.Engine.Geometry
             double closestDist = Double.PositiveInfinity;
             foreach (Point ptB in ptsB)
             {
-                double dist = ptsA.ClosestPoint(ptB).GetDistance(ptB);
+                double dist = ptsA.ClosestPoint(ptB).Distance(ptB);
                 if (dist <= Tolerance.Distance) { return dist; }
                 closestDist = dist < closestDist ? dist : closestDist;
             }

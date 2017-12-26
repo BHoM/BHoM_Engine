@@ -10,9 +10,9 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static List<Type> GetBHoMEnumList()
+        public static List<Type> BHoMEnumList()
         {
-            return GetBHoMTypeList().Where(x => x.IsEnum).ToList();
+            return BHoMTypeList().Where(x => x.IsEnum).ToList();
         }
 
     }

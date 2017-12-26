@@ -6,7 +6,6 @@ namespace BH.Engine.Structure
 {
     public static partial class Modify
     {
-
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
@@ -22,7 +21,6 @@ namespace BH.Engine.Structure
 
         public static ConcreteSection AddReinforcement(this ConcreteSection section, IEnumerable<Reinforcement> reinforcement)
         {
-
             if (section.Reinforcement == null)
                 section.Reinforcement = new List<Reinforcement>();
 
@@ -30,5 +28,7 @@ namespace BH.Engine.Structure
 
             return section;
         }
+
+        /***************************************************/
     }
 }

@@ -8,7 +8,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static double GetDeterminant(this TransformMatrix transform)
+        public static double Determinant(this TransformMatrix transform)
         {
             double[,] m = transform.Matrix;
             return 

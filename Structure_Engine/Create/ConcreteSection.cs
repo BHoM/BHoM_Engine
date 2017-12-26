@@ -8,7 +8,6 @@ namespace BH.Engine.Structure
 {
     public static partial class Create
     {
-
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
@@ -38,7 +37,7 @@ namespace BH.Engine.Structure
         public static ConcreteSection ConcreteFreeFormSection(List<ICurve> edges)
         {
 
-            Dictionary<string, object> constants = Query.IntegrateCurve(edges);
+            Dictionary<string, object> constants = Geometry.Compute.Integrate(edges);
 
             constants["J"] = 0;
             constants["Iw"] = 0;
@@ -58,12 +57,11 @@ namespace BH.Engine.Structure
 
         public static ConcreteSection ConcreteSectionFromDimensions(ISectionDimensions dimensions)
         {
-
             List<ICurve> edges = dimensions.IGetEdgeCUrves();
-            Dictionary<string, object> constants = Query.IntegrateCurve(edges);
+            Dictionary<string, object> constants = Geometry.Compute.Integrate(edges);
 
-            constants["J"] = dimensions.IGetTorsionalConstant();
-            constants["Iw"] = dimensions.IGetWarpingConstant();
+            constants["J"] = dimensions.ITorsionalConstant();
+            constants["Iw"] = dimensions.IWarpingConstant();
 
             ConcreteSection section = new ConcreteSection(edges, dimensions,
                 (double)constants["Area"], (double)constants["Rgy"], (double)constants["Rgz"], (double)constants["J"], (double)constants["Iy"], (double)constants["Iz"], (double)constants["Iw"],
@@ -74,7 +72,8 @@ namespace BH.Engine.Structure
             section.CustomData["HorizontalSlices"] = new ReadOnlyCollection<IntegrationSlice>((List<IntegrationSlice>)constants["HorizontalSlices"]);
 
             return section;
-
         }
+
+        /***************************************************/
     }
 }

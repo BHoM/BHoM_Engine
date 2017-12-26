@@ -9,7 +9,7 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Dictionary<string, List<Type>> GetBHoMTypeDictionary()
+        public static Dictionary<string, List<Type>> BHoMTypeDictionary()
         {
             // If the dictionary exists already return it
             if (m_BHoMTypeDictionary != null && m_BHoMTypeDictionary.Count > 0)

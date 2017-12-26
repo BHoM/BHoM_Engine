@@ -10,7 +10,7 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static List<Type> GetBHoMTypeList()
+        public static List<Type> BHoMTypeList()
         {
             // If the dictionary exists already return it
             if (m_BHoMTypeList != null && m_BHoMTypeList.Count > 0)
@@ -24,7 +24,7 @@ namespace BH.Engine.Reflection
 
         /***************************************************/
 
-        public static List<Type> GetAdapterTypeList()
+        public static List<Type> AdapterTypeList()
         {
             // If the dictionary exists already return it
             if (m_AdapterTypeList != null && m_AdapterTypeList.Count > 0)

@@ -7,7 +7,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
         //TODO: Testing needed!!
-        public static double GetDerivativeFunction(this NurbCurve curve, int i, int n, double t)
+        public static double DerivativeFunction(this NurbCurve curve, int i, int n, double t)
         {
             if (n > 0)
             {

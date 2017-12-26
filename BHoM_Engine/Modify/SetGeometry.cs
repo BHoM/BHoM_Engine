@@ -14,6 +14,9 @@ namespace BH.Engine.Base
             return SetGeometry(obj as dynamic, geometry);
         }
 
+
+        /***************************************************/
+        /**** Private Methods                           ****/
         /***************************************************/
 
         private static BHoMObject SetGeometry(this BHoMObject obj, IBHoMGeometry geometry)

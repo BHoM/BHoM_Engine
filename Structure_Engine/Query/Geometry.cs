@@ -8,10 +8,9 @@ namespace BH.Engine.Structure
 {
     public static partial class Query
     {
-
-        //***************************************************/
-        //**** Public Methods                            ****/
-        //***************************************************/
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
 
         public static List<IBHoMGeometry> Geometry(this ConcreteSection section)
         {
@@ -19,21 +18,23 @@ namespace BH.Engine.Structure
                 return null;
 
             CompositeGeometry geom = Engine.Geometry.Create.CompositeGeometry(section.Edges);
-            geom.Elements.AddRange(section.GetReinforcementLayout().Elements);
+            geom.Elements.AddRange(section.Layout().Elements);
 
             return geom.Elements;
         }
 
+        /***************************************************/
+
         public static IBHoMGeometry Geometry(this Bar bar)
         {
-            return new Line { Start = bar.StartNode.Point, End = bar.EndNode.Point };
+            return new Line { Start = bar.StartNode.Position, End = bar.EndNode.Position };
         }
 
         /***************************************************/
 
         public static IBHoMGeometry Geometry(this Node node)
         {
-            return node.Point;
+            return node.Position;
         }
 
         /***************************************************/
@@ -57,42 +58,7 @@ namespace BH.Engine.Structure
             return new CompositeGeometry { Elements = section.Edges.ToList<IBHoMGeometry>() };
         }
 
-
-        //public static IBHoMGeometry Geometry(this Bar bar)
-        //{
-        //    return new Line(bar.StartNode.Point, bar.EndNode.Point);
-        //}
-
-        ///***************************************************/
-
-        //public static IBHoMGeometry Geometry(this Node node)
-        //{
-        //    return node.Point;
-        //}
-
-        ///***************************************************/
-
-        //public static IBHoMGeometry Geometry(this Contour contour)
-        //{
-        //    return contour.Surface;
-        //}
-
-        ///***************************************************/
-
-        //public static IBHoMGeometry Geometry(this Storey storey)
-        //{
-        //    return new Plane(new Point { X = 0, Y = 0, Z = storey.Elevation }, new Vector { X = 0, Y = 0, Z = 1 });
-        //}
-
         /***************************************************/
-
-        //public static IBHoMGeometry Geometry(this FEMesh feMesh)
-        //{
-        //    IEnumerable<Point> points = feMesh.Nodes.Select(x => x.Point);
-        //    IEnumerable<BH.oM.Geometry.Face> faces = feMesh.Faces.Select( x => x.
-
-        //    return new Mesh(points, feMesh.Faces);
-        //}
     }
 
 }

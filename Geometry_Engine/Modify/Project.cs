@@ -19,7 +19,7 @@ namespace BH.Engine.Geometry
 
         public static Point Project(this Point pt, Line line)
         {
-            Vector dir = line.GetDirection();
+            Vector dir = line.Direction();
             double t = dir.DotProduct(pt - line.Start);
             return line.Start + dir * t;
         }

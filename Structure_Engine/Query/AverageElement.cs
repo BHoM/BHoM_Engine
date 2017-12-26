@@ -1,19 +1,22 @@
 ﻿using BH.oM.Structural.Elements;
+using System.Collections.Generic;
 
 namespace BH.Engine.Structure
 {
-    public static partial class Modify
+    public static partial class Query 
     {
-
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static void FlipNodes(this Bar bar)
+        public static Node AverageElement(this List<Node> nodes, List<double> weights = null)
         {
-            Node tempNode = bar.StartNode;
-            bar.StartNode = bar.EndNode;
-            bar.EndNode = tempNode;
+            if (weights == null)
+                weights = new List<double>(new double[1]);
+
+
+            Node tempNode = nodes[1];
+            return tempNode;        
         }
 
         /***************************************************/

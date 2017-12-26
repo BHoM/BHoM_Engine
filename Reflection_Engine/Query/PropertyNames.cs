@@ -9,14 +9,14 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static List<string> GetPropertyNames(this object obj)
+        public static List<string> PropertyNames(this object obj)
         {
-            return obj.GetType().GetPropertyNames();
+            return obj.GetType().PropertyNames();
         }
 
         /***************************************************/
 
-        public static List<string> GetPropertyNames(this Type type)
+        public static List<string> PropertyNames(this Type type)
         {
             List<string> names = new List<string>();
             foreach (var prop in type.GetProperties())

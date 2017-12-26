@@ -10,7 +10,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods                           ****/
         /***************************************************/
 
-        public static double GetCurveIntegration(this ICurve fx, Vector direction, double from, double to, ref double centroid, double increment = 0.001)
+        public static double CurveIntegration(this ICurve fx, Vector direction, double from, double to, ref double centroid, double increment = 0.001)
         {
             double result = 0;
             double max = System.Math.Max(from, to);
@@ -53,7 +53,7 @@ namespace BH.Engine.Geometry
         /// <param name="to"></param>
         /// <param name="centroid"></param>
         /// <returns></returns>
-        public static double GetAreaIntegration(List<IntegrationSlice> slices, double curve, double from, double to, ref double centroid)
+        public static double AreaIntegration(List<IntegrationSlice> slices, double curve, double from, double to, ref double centroid)
         {
             double result = 0;
             double max = System.Math.Max(from, to);
@@ -91,7 +91,7 @@ namespace BH.Engine.Geometry
         /// <param name="centroid"></param>
         /// <returns></returns>
 
-        public static double GetAreaIntegration(List<IntegrationSlice> slices, double constant, double xPower, double yPower, double origin = 0)
+        public static double AreaIntegration(List<IntegrationSlice> slices, double constant, double xPower, double yPower, double origin = 0)
         {
             double result = 0;
 
@@ -117,7 +117,7 @@ namespace BH.Engine.Geometry
         /// <param name="to"></param>
         /// <param name="centroid"></param>
         /// <returns></returns>
-        public static double GetAreaIntegration(List<IntegrationSlice> slices, double constant, double xPower, double yPower, double from = double.MinValue, double to = double.MaxValue, double origin = 0)
+        public static double AreaIntegration(List<IntegrationSlice> slices, double constant, double xPower, double yPower, double from = double.MinValue, double to = double.MaxValue, double origin = 0)
         {
             double result = 0;
             double max = System.Math.Max(from, to);
@@ -149,7 +149,7 @@ namespace BH.Engine.Geometry
         /// <param name="to"></param>
         /// <param name="centroid"></param>
         /// <returns></returns>
-        public static double GetAreaIntegration(List<IntegrationSlice> slices, Vector direction, ICurve curve, double from, double to, ref double centroid)
+        public static double AreaIntegration(List<IntegrationSlice> slices, Vector direction, ICurve curve, double from, double to, ref double centroid)
         {
             double result = 0;
             double max = System.Math.Max(from, to);
@@ -188,13 +188,13 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static double GetAreaIntegration(List<IntegrationSlice> solid, List<IntegrationSlice> voids, Vector direction, ICurve curve, double from, double to, ref double centroid)
+        public static double AreaIntegration(List<IntegrationSlice> solid, List<IntegrationSlice> voids, Vector direction, ICurve curve, double from, double to, ref double centroid)
         {
             double centroidSolid = 0;
             double centroidVoid = 0;
 
-            double intSolid = GetAreaIntegration(solid, direction, curve, from, to, ref centroidSolid);
-            double intVoid = GetAreaIntegration(voids, direction, curve, from, to, ref centroidVoid);
+            double intSolid = AreaIntegration(solid, direction, curve, from, to, ref centroidSolid);
+            double intVoid = AreaIntegration(voids, direction, curve, from, to, ref centroidVoid);
 
             centroid = (intSolid * centroidSolid - intVoid * centroidVoid) / (intSolid - intVoid);
 

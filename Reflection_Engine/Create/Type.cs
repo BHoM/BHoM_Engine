@@ -12,7 +12,7 @@ namespace BH.Engine.Reflection
 
         public static Type Type(string name)
         {
-            Dictionary<string, List<Type>> typeDictionary = Query.GetBHoMTypeDictionary();
+            Dictionary<string, List<Type>> typeDictionary = Query.BHoMTypeDictionary();
 
             List<Type> types = null;
             if (!typeDictionary.TryGetValue(name, out types))

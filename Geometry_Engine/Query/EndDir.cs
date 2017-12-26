@@ -11,14 +11,14 @@ namespace BH.Engine.Geometry
         /**** public Methods - Curves                   ****/
         /***************************************************/
 
-        public static Vector GetEndDir(this Arc arc)
+        public static Vector EndDir(this Arc arc)
         {
             throw new NotImplementedException(); //TODO: get End dir of arc
         }
 
         /***************************************************/
 
-        public static Vector GetEndDir(this Circle circle)
+        public static Vector EndDir(this Circle circle)
         {
             Vector n = circle.Normal;
             Vector endDir = Math.Abs(n.Z) < Math.Abs(n.X) ? new Vector { X = n.Y, Y = -n.X, Z = 0 } : new Vector { X = 0, Y = n.Z, Z = -n.Y };
@@ -27,28 +27,28 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static Vector GetEndDir(this Line line)
+        public static Vector EndDir(this Line line)
         {
             return new Vector { X = line.End.X - line.Start.X, Y = line.End.Y - line.Start.Y, Z = line.End.Z - line.Start.Z }.Normalise();
         }
 
         /***************************************************/
 
-        public static Vector GetEndDir(this NurbCurve curve)
+        public static Vector EndDir(this NurbCurve curve)
         {
             throw new NotImplementedException(); //TODO: get End dir of nurbcurve
         }
 
         /***************************************************/
 
-        public static Vector GetEndDir(this PolyCurve curve)
+        public static Vector EndDir(this PolyCurve curve)
         {
-            return curve.Curves.Count > 0 ? curve.Curves.Last().IGetEndDir() : null;
+            return curve.Curves.Count > 0 ? curve.Curves.Last().IEndDir() : null;
         }
 
         /***************************************************/
 
-        public static Vector GetEndDir(this Polyline curve)
+        public static Vector EndDir(this Polyline curve)
         {
             List<Point> pts = curve.ControlPoints;
 
@@ -65,9 +65,9 @@ namespace BH.Engine.Geometry
         /**** Public Methods = Interfaces               ****/
         /***************************************************/
 
-        public static Vector IGetEndDir(this ICurve curve)
+        public static Vector IEndDir(this ICurve curve)
         {
-            return GetEndDir(curve as dynamic);
+            return EndDir(curve as dynamic);
         }
     }
 }

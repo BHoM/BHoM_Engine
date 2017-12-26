@@ -50,7 +50,7 @@ namespace BH.Engine.Geometry
 
         public static Point ClosestPoint(this Line line, Point point, bool infiniteSegment = false)
         {
-            Vector dir = line.GetDirection();
+            Vector dir = line.Direction();
             //double t = Math.Min(Math.Max(dir * (point - line.Start), 0), line.Length());
             double t = dir * (point - line.Start);
             if (!infiniteSegment)
@@ -78,7 +78,7 @@ namespace BH.Engine.Geometry
             for (int i = 0; i < curves.Count; i++)
             {
                 Point cp = curve.Curves[i].IClosestPoint(point);
-                double dist = cp.GetDistance(point);
+                double dist = cp.Distance(point);
                 if (dist < minDist)
                 {
                     closest = cp;
@@ -100,10 +100,10 @@ namespace BH.Engine.Geometry
             for (int i = 1; i < points.Count; i++)
             {
                 Vector dir = (points[i] - points[i - 1]).Normalise();
-                double t = Math.Min(Math.Max(dir * (point - points[i - 1]), 0), points[i].GetDistance(points[i - 1]));
+                double t = Math.Min(Math.Max(dir * (point - points[i - 1]), 0), points[i].Distance(points[i - 1]));
                 Point cp = points[i - 1] + t * dir;
 
-                double dist = cp.GetSquareDistance(point);
+                double dist = cp.SquareDistance(point);
                 if (dist < minDist)
                 {
                     closest = cp;
@@ -177,7 +177,7 @@ namespace BH.Engine.Geometry
             Point cp = null;
             foreach (Point pt in cloud)
             {
-                dist = GetDistance(point, pt);
+                dist = Distance(point, pt);
                 if (dist < minDist)
                 {
                     minDist = dist;

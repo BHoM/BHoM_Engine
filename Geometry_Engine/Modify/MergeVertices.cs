@@ -28,7 +28,7 @@ namespace BH.Engine.Geometry
 
             vertices.Sort(delegate (VertexIndex v1, VertexIndex v2)
             {
-                return v1.Location.GetDistance(Point.Origin).CompareTo(v2.Location.GetDistance(Point.Origin));
+                return v1.Location.Distance(Point.Origin).CompareTo(v2.Location.Distance(Point.Origin));
             });
 
 
@@ -36,12 +36,12 @@ namespace BH.Engine.Geometry
 
             for (int i = 0; i < vertices.Count; i++)
             {
-                double distance = vertices[i].Location.GetDistance(Point.Origin);
+                double distance = vertices[i].Location.Distance(Point.Origin);
                 int j = i + 1;
-                while (j < vertices.Count && Math.Abs(vertices[j].Location.GetDistance(Point.Origin) - distance) < tolerance)
+                while (j < vertices.Count && Math.Abs(vertices[j].Location.Distance(Point.Origin) - distance) < tolerance)
                 {
                     VertexIndex v2 = vertices[j];
-                    if (vertices[i].Location.GetDistance(vertices[j].Location) < tolerance)
+                    if (vertices[i].Location.Distance(vertices[j].Location) < tolerance)
                     {
                         SetFaceIndex(v2.Faces, vertices[j].Index, vertices[i].Index);
                         culledIndices.Add(vertices[j].Index);

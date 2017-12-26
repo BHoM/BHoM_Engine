@@ -7,23 +7,20 @@ namespace BH.Engine.Structure
 {
     public static partial class Query
     {
-
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Point GetCentroid(this oM.Structural.Elements.MeshFace meshFace)
+        public static Point Centroid(this MeshFace meshFace)
         {
             List<Point> pts = new List<Point>(4);
 
             foreach (Node n in meshFace.Nodes)
-                pts.Add(n.Point);
+                pts.Add(n.Position);
 
             return pts.Average();
         }
 
         /***************************************************/
-
-
     }
 }

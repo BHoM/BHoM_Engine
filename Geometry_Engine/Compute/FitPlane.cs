@@ -8,7 +8,7 @@ namespace BH.Engine.Geometry
     public static partial class Query
     {
         /***************************************************/
-        /**** public Methods - Vectors                 ****/
+        /**** public Methods - Vectors                  ****/
         /***************************************************/
 
         public static Plane FitPlane(this IEnumerable<Point> points)
@@ -69,7 +69,7 @@ namespace BH.Engine.Geometry
 
 
         /***************************************************/
-        /**** public Methods - Curves                  ****/
+        /**** public Methods - Curves                   ****/
         /***************************************************/
 
         public static Plane FitPlane(this Arc curve)

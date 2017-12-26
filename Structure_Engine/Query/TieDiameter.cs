@@ -8,7 +8,7 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static double GetTieDiameter(this ConcreteSection property)
+        public static double TieDiameter(this ConcreteSection property)
         {
             foreach (Reinforcement reo in property.Reinforcement)
             {
@@ -20,5 +20,6 @@ namespace BH.Engine.Structure
             return 0;
         }
 
+        /***************************************************/
     }
 }

@@ -126,5 +126,6 @@ namespace BH.Engine.Structure
             return group;
         }
 
+        /***************************************************/
     }
 }

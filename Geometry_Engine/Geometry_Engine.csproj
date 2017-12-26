@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Compute\Integrate.cs" />
     <Compile Include="Create\Vector.cs" />
     <Compile Include="Create\Point.cs" />
     <Compile Include="Create\PolySurface.cs" />
@@ -104,6 +105,7 @@
     <Compile Include="Query\PointAtParameter.cs" />
     <Compile Include="Query\Product.cs" />
     <Compile Include="Query\Radius.cs" />
+    <Compile Include="Query\ShearArea.cs" />
     <Compile Include="Query\SliceAt.cs" />
     <Compile Include="Query\StartDir.cs" />
     <Compile Include="Query\StartPoint.cs" />

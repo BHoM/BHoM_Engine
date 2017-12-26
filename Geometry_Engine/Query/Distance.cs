@@ -11,7 +11,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static double GetDistance(this Point a, Point b)
+        public static double Distance(this Point a, Point b)
         {
             double dx = a.X - b.X;
             double dy = a.Y - b.Y;
@@ -21,7 +21,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static double GetSquareDistance(this Point a, Point b)
+        public static double SquareDistance(this Point a, Point b)
         {
             double dx = a.X - b.X;
             double dy = a.Y - b.Y;
@@ -31,7 +31,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static double GetDistance(this Vector a, Vector b)
+        public static double Distance(this Vector a, Vector b)
         {
             double dx = a.X - b.X;
             double dy = a.Y - b.Y;
@@ -41,7 +41,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static double GetSquareDistance(this Vector a, Vector b)
+        public static double SquareDistance(this Vector a, Vector b)
         {
             double dx = a.X - b.X;
             double dy = a.Y - b.Y;
@@ -51,7 +51,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static double GetDistance(this Point a, Plane plane)
+        public static double Distance(this Point a, Plane plane)
         {
             Vector normal = plane.Normal.Normalise();
             return normal.DotProduct(a - plane.Origin);
@@ -59,14 +59,14 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static double GetDistance(this Point a, Line line)
+        public static double Distance(this Point a, Line line)
         {
-            return a.GetDistance(line.IClosestPoint(a));
+            return a.Distance(line.IClosestPoint(a));
         }
 
         /***************************************************/
 
-        public static double GetDistance(this Line line, Line other)
+        public static double Distance(this Line line, Line other)
         {
             Point intersection = line.LineIntersection(other, false);
             if (intersection != null)
@@ -76,10 +76,10 @@ namespace BH.Engine.Geometry
             else
             {
                 List<double> distances = new List<double>();        //TODO: Can we do better than this?
-                distances.Add(line.Start.GetDistance(other));
-                distances.Add(line.End.GetDistance(other));
-                distances.Add(other.Start.GetDistance(line));
-                distances.Add(other.End.GetDistance(line));
+                distances.Add(line.Start.Distance(other));
+                distances.Add(line.End.Distance(other));
+                distances.Add(other.Start.Distance(line));
+                distances.Add(other.End.Distance(line));
 
                 return distances.Min();
             }

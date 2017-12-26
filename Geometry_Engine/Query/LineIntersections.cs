@@ -43,13 +43,13 @@ namespace BH.Engine.Geometry
                     return null;
             }
 
-            double t = Query.DotProduct(Query.CrossProduct(dir3, dir2), cross) / Query.GetSquareLength(cross);
+            double t = Query.DotProduct(Query.CrossProduct(dir3, dir2), cross) / Query.SquareLength(cross);
 
             if (useInfiniteLines)  //TODO: Need to handle the cases where one of the line is Infinite as well
                 return pt1 + t * dir1;
             else
             {
-                double s = Query.DotProduct(Query.CrossProduct(dir3, dir1), cross) / Query.GetSquareLength(cross);
+                double s = Query.DotProduct(Query.CrossProduct(dir3, dir1), cross) / Query.SquareLength(cross);
                 if (t > -tolerance && t < 1 + tolerance && s > -tolerance && s < 1 + tolerance)
                     return pt1 + t * dir1;
                 else
