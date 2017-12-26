@@ -93,21 +93,21 @@ namespace BH.Engine.Geometry
 
         public static Extrusion Project(this Extrusion surface, Plane p)
         {
-            return new Extrusion(surface.Curve.IProject(p), surface.Direction.Project(p), surface.Capped);
+            return new Extrusion { Curve = surface.Curve.IProject(p), Direction = surface.Direction.Project(p), Capped = surface.Capped };
         }
 
         /***************************************************/
 
         public static Loft Project(this Loft surface, Plane p)
         {
-            return new Loft(surface.Curves.Select(x => x.IProject(p)));
+            return new Loft { Curves = surface.Curves.Select(x => x.IProject(p)).ToList() };
         }
 
         /***************************************************/
 
         public static NurbSurface Project(this NurbSurface surface, Plane p)
         {
-            return new NurbSurface(surface.ControlPoints.Select(x => x.Project(p)), surface.Weights, surface.UKnots, surface.VKnots);
+            return new NurbSurface { ControlPoints = surface.ControlPoints.Select(x => x.Project(p)).ToList(), Weights = surface.Weights.ToList(), UKnots = surface.UKnots.ToList(), VKnots = surface.VKnots.ToList() };
         }
 
         /***************************************************/
@@ -121,7 +121,7 @@ namespace BH.Engine.Geometry
 
         public static PolySurface Project(this PolySurface surface, Plane p)
         {
-            return new PolySurface(surface.Surfaces.Select(x => x.IProject(p)));
+            return new PolySurface { Surfaces = surface.Surfaces.Select(x => x.IProject(p)).ToList() };
         }
 
 

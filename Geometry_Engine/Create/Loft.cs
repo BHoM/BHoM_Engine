@@ -1,22 +1,20 @@
 ﻿using BH.oM.Geometry;
-using BH.oM.Structural.Elements;
+using System.Collections.Generic;
+using System.Linq;
 
-namespace BH.Engine.Structure
+namespace BH.Engine.Geometry
 {
-    public static partial class Query
+    public static partial class Create
     {
-
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Plane Plane(this Storey storey)
+        public static Loft Loft(IEnumerable<ICurve> curves)
         {
-            return new Plane { Origin = new Point { X = 0, Y = 0, Z = storey.Elevation }, Normal = new Vector { X = 0, Y = 0, Z = 1 } };
+            return new Loft { Curves = curves.ToList() };
         }
 
         /***************************************************/
-
-
     }
 }

@@ -16,7 +16,7 @@ namespace BH.Engine.Geometry
             double y = plane.Normal.Y == 0 ? 0 : double.MaxValue;
             double z = plane.Normal.Z == 0 ? 0 : double.MaxValue;
 
-            return new BoundingBox { Min = new Point(-x, -y, -z), Max = new Point(x, y, z) };
+            return new BoundingBox { Min = new Point { X = -x, Y = -y, Z = -z }, Max = new Point { X = x, Y = y, Z = z } };
         }
 
         /***************************************************/
@@ -30,7 +30,7 @@ namespace BH.Engine.Geometry
 
         public static BoundingBox Bounds(this Vector vector)
         {
-            Point pt = new Point(vector.X, vector.Y, vector.Z);
+            Point pt = new Point { X = vector.X, Y = vector.Y, Z = vector.Z };
             return new BoundingBox { Min = pt, Max = pt };
         }
 
@@ -155,7 +155,7 @@ namespace BH.Engine.Geometry
             }
             
 
-            return new BoundingBox { Min = new Point(xMin, yMin, zMin), Max = new Point(xMax, yMax, zMax) };
+            return new BoundingBox { Min = new Point { X = xMin, Y = yMin, Z = zMin }, Max = new Point { X = xMax, Y = yMax, Z = zMax } };
         }
 
         /***************************************************/
@@ -164,14 +164,14 @@ namespace BH.Engine.Geometry
         {
             Vector normal = circle.Normal;
 
-            if (normal == new Vector(0, 0, 0))
+            if (normal == new Vector { X = 0, Y = 0, Z = 0 })
                 throw new InvalidOperationException("Method trying to operate on an invalid circle");
 
-            double ax = Angle(normal, new Vector(1, 0, 0));
-            double ay = Angle(normal, new Vector(0, 1, 0));
-            double az = Angle(normal, new Vector(0, 0, 1));
+            double ax = Angle(normal, new Vector { X = 1, Y = 0, Z = 0 });
+            double ay = Angle(normal, new Vector { X = 0, Y = 1, Z = 0 });
+            double az = Angle(normal, new Vector { X = 0, Y = 0, Z = 1 });
 
-            Vector R = new Vector(Math.Sin(ax), Math.Sin(ay), Math.Sin(az));
+            Vector R = new Vector { X = Math.Sin(ax), Y = Math.Sin(ay), Z = Math.Sin(az) };
             R *= circle.Radius;
 
             return new BoundingBox { Min = circle.Centre - R, Max = circle.Centre + R };
@@ -181,7 +181,7 @@ namespace BH.Engine.Geometry
 
         public static BoundingBox Bounds(this Ellipse ellipse)
         {
-            if (ellipse.Axis1 == new Vector(0, 0, 0) || ellipse.Axis2 == new Vector(0, 0, 0))
+            if (ellipse.Axis1 == new Vector { X = 0, Y = 0, Z = 0 } || ellipse.Axis2 == new Vector { X = 0, Y = 0, Z = 0 })
                 throw new InvalidOperationException("Method trying to operate on an invalid ellipse");
 
             Point centre = ellipse.Centre;
@@ -198,8 +198,8 @@ namespace BH.Engine.Geometry
 
             return new BoundingBox
             {
-                Min = new Point((cx - Math.Sqrt(ux + vx)), (cy - Math.Sqrt(uy + vy)), (cz - Math.Sqrt(uz + vz))),
-                Max = new Point((cx + Math.Sqrt(ux + vx)), (cy + Math.Sqrt(uy + vy)), (cz + Math.Sqrt(uz + vz)))
+                Min = new Point { X = (cx - Math.Sqrt(ux + vx)), Y = (cy - Math.Sqrt(uy + vy)), Z = (cz - Math.Sqrt(uz + vz)) },
+                Max = new Point { X = (cx + Math.Sqrt(ux + vx)), Y = (cy + Math.Sqrt(uy + vy)), Z = (cz + Math.Sqrt(uz + vz)) }
             };
         }
 
@@ -209,8 +209,8 @@ namespace BH.Engine.Geometry
         {
             Point s = line.Start;
             Point e = line.End;
-            Point min = new Point(Math.Min(s.X, e.X), Math.Min(s.Y, e.Y), Math.Min(s.Z, e.Z));
-            Point max = new Point(Math.Max(s.X, e.X), Math.Max(s.Y, e.Y), Math.Max(s.Z, e.Z));
+            Point min = new Point { X = Math.Min(s.X, e.X), Y = Math.Min(s.Y, e.Y), Z = Math.Min(s.Z, e.Z) };
+            Point max = new Point { X = Math.Max(s.X, e.X), Y = Math.Max(s.Y, e.Y), Z = Math.Max(s.Z, e.Z) };
             return new BoundingBox { Min = min, Max = max };
         }
 
@@ -285,8 +285,8 @@ namespace BH.Engine.Geometry
             BoundingBox box = surface.Centreline.IBounds();
             double radius = surface.Radius;
 
-            box.Min -= new Vector(radius, radius, radius);  // TODO: more accurate bounding box needed
-            box.Max += new Vector(radius, radius, radius);
+            box.Min -= new Vector { X = radius, Y = radius, Z = radius };  // TODO: more accurate bounding box needed
+            box.Max += new Vector { X = radius, Y = radius, Z = radius };
 
             return box;
         }
@@ -329,7 +329,7 @@ namespace BH.Engine.Geometry
                 if (pt.Z > maxZ) maxZ = pt.Z;
             }
 
-            return new BoundingBox { Min = new Point(minX, minY, minZ), Max = new Point(maxX, maxY, maxZ) };
+            return new BoundingBox { Min = new Point { X = minX, Y = minY, Z = minZ }, Max = new Point { X = maxX, Y = maxY, Z = maxZ } };
         }
 
         /***************************************************/

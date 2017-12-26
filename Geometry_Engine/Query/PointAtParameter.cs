@@ -33,7 +33,7 @@ namespace BH.Engine.Geometry
             if (t < 0) t = 0;
             if (t > 1) t = 1;
             Vector vector = curve.End - curve.Start;
-            return (new Point(vector * t) + curve.Start);
+            return (curve.Start + vector * t);
         }
 
         /***************************************************/
@@ -42,7 +42,7 @@ namespace BH.Engine.Geometry
         public static Point PointAtParameter(this NurbCurve curve, double t)
         {
 
-            Point sumNwP = new Point(0, 0, 0);
+            Point sumNwP = new Point { X = 0, Y = 0, Z = 0 };
             double sumNw = 0;
             if (t == 0) return curve.ControlPoints[0];
             else if (t >= curve.Knots[curve.Knots.Count - 1]) return curve.ControlPoints[curve.ControlPoints.Count-1];

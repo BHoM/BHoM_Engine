@@ -17,14 +17,14 @@ namespace BH.Engine.Geometry
 
         public static Vector CrossProduct(this Vector a, Vector b)
         {
-            return new Vector(a.Y * b.Z - a.Z * b.Y, a.Z * b.X - a.X * b.Z, a.X * b.Y - a.Y * b.X);
+            return new Vector { X = a.Y * b.Z - a.Z * b.Y, Y = a.Z * b.X - a.X * b.Z, Z = a.X * b.Y - a.Y * b.X };
         }
 
         /***************************************************/
 
         public static Vector CrossProduct(this Point a, Point b)
         {
-            return new Vector(a.Y * b.Z - a.Z * b.Y, a.Z * b.X - a.X * b.Z, a.X * b.Y - a.Y * b.X);
+            return new Vector { X = a.Y * b.Z - a.Z * b.Y, Y = a.Z * b.X - a.X * b.Z, Z = a.X * b.Y - a.Y * b.X };
         }
 
         /***************************************************/

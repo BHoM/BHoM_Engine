@@ -47,7 +47,7 @@ namespace BH.Engine.Structure
 
         public static IBHoMGeometry Geometry(this Storey storey)
         {
-            return new Plane(new Point(0, 0, storey.Elevation), new Vector(0, 0, 1));
+            return new Plane { Origin = new Point { X = 0, Y = 0, Z = storey.Elevation }, Normal = new Vector { X = 0, Y = 0, Z = 1 } };
         }
 
         /***************************************************/
@@ -81,7 +81,7 @@ namespace BH.Engine.Structure
 
         //public static IBHoMGeometry Geometry(this Storey storey)
         //{
-        //    return new Plane(new Point(0, 0, storey.Elevation), new Vector(0, 0, 1));
+        //    return new Plane(new Point { X = 0, Y = 0, Z = storey.Elevation }, new Vector { X = 0, Y = 0, Z = 1 });
         //}
 
         /***************************************************/

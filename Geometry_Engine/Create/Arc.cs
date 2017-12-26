@@ -27,7 +27,7 @@ namespace BH.Engine.Geometry
             Vector normal = v1.CrossProduct(v2).Normalise();
 
             if (double.IsNaN(normal.X))
-                normal = Vector.ZAxis;
+                normal = oM.Geometry.Vector.ZAxis;
 
             double angle = v1.SignedAngle(v2, normal);
             Vector midDir = ((Vector)v1.Rotate(angle / 2, normal)).Normalise();

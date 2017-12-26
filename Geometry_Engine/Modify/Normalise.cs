@@ -16,7 +16,7 @@ namespace BH.Engine.Geometry
             double z = vector.Z;
             double d = Math.Sqrt(x * x + y * y + z * z);
 
-            return new Vector(x / d, y / d, z / d);
+            return new Vector { X = x / d, Y = y / d, Z = z / d };
         }
 
         /***************************************************/

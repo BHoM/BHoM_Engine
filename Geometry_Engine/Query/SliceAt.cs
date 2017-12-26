@@ -14,7 +14,7 @@ namespace BH.Engine.Geometry
         {
             List<Point> y = new List<Point>();
             double length = 0;
-            Plane plane = new Plane(new Point(p.Normal * location), p.Normal);
+            Plane plane = new Plane { Origin = Create.Point(p.Normal * location), Normal = p.Normal };
             for (int edgeIndex = 0; edgeIndex < edges.Count; edgeIndex++)
             {
                 y.AddRange(edges[edgeIndex].IPlaneIntersections(plane, Tolerance.Distance));

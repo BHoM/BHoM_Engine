@@ -29,21 +29,21 @@ namespace BH.Engine.Geometry
 
             List<double> cutAt = new List<double>();
             List<double> sliceSegments = new List<double>();
-            Plane p = new BH.oM.Geometry.Plane(Point.Origin, direction);
+            Plane p = new Plane { Origin = oM.Geometry.Point.Origin, Normal = direction };
 
             for (int i = 0; i < edges.Count; i++)
             {
                 for (int j = 0; j < edges[i].IControlPoints().Count; j++)
                 {
-                    cutAt.Add(Query.DotProduct(new Vector(edges[i].IControlPoints()[j]), p.Normal));
+                    cutAt.Add(Query.DotProduct(Create.Vector(edges[i].IControlPoints()[j]), p.Normal));
                 }
             }
 
             cutAt.Sort();
             cutAt = cutAt.Distinct<double>().ToList();
 
-            double currentValue = Query.DotProduct(new Vector(Query.Bounds(new PolyCurve { Curves = edges }).Min), p.Normal);
-            double max = Query.DotProduct(new Vector(Query.Bounds(new PolyCurve { Curves = edges }).Max), p.Normal);
+            double currentValue = Query.DotProduct(Create.Vector(Query.Bounds(new PolyCurve { Curves = edges }).Min), p.Normal);
+            double max = Query.DotProduct(Create.Vector(Query.Bounds(new PolyCurve { Curves = edges }).Max), p.Normal);
             int index = 0;
 
             while (currentValue < max)

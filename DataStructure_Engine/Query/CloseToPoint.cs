@@ -14,7 +14,7 @@ namespace BH.Engine.DataStructure
         public static List<LocalData<T>> CloseToPoint<T>(this PointMatrix<T> matrix, Point refPt, double maxDist)
         {
             // Collect all the points within cells in range
-            Vector range = new Vector(maxDist, maxDist, maxDist);
+            Vector range = new Vector { X = maxDist, Y = maxDist, Z = maxDist };
             List<LocalData<T>> inCells = matrix.SubMatrixData<T>(Create.DiscreetPoint(refPt - range, matrix.CellSize), Create.DiscreetPoint(refPt + range, matrix.CellSize));
 
             // Keep only points within maxDist distance of refPt

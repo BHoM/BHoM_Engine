@@ -96,7 +96,7 @@ namespace BH.Engine.Geometry
             List<Point> points = curve.ControlPoints;
 
             double minDist = 1e10;
-            Point closest = (points.Count > 0) ? points[0] : new Point(Double.PositiveInfinity, Double.PositiveInfinity, Double.PositiveInfinity);
+            Point closest = (points.Count > 0) ? points[0] : new Point { X = Double.PositiveInfinity, Y = Double.PositiveInfinity, Z = Double.PositiveInfinity };
             for (int i = 1; i < points.Count; i++)
             {
                 Vector dir = (points[i] - points[i - 1]).Normalise();
