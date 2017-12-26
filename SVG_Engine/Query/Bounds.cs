@@ -10,7 +10,7 @@ namespace BH.Engine.Graphics
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static BoundingBox Bounds(SVGObject svg)
+        public static BoundingBox Bounds(this SVGObject svg)
         {
             BoundingBox bb = new BoundingBox();
             List<IBHoMGeometry> geometry = svg.Shapes;
@@ -23,7 +23,7 @@ namespace BH.Engine.Graphics
 
         /***************************************************/
 
-        public static BoundingBox Bounds(List<SVGObject> svg)
+        public static BoundingBox Bounds(this List<SVGObject> svg)
         {
             BoundingBox bb = new BoundingBox();
 
@@ -35,14 +35,14 @@ namespace BH.Engine.Graphics
 
         /***************************************************/
 
-        public static BoundingBox Bounds(SVGDocument svg)
+        public static BoundingBox Bounds(this SVGDocument svg)
         {
             return svg.Canvas;
         }
 
         /***************************************************/
 
-        public static BoundingBox Bounds(List<SVGDocument> svg)
+        public static BoundingBox Bounds(this List<SVGDocument> svg)
         {
             BoundingBox bb = new BoundingBox();
 
@@ -51,5 +51,7 @@ namespace BH.Engine.Graphics
 
             return bb;
         }
+
+        /***************************************************/
     }
 }
