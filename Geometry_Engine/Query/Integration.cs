@@ -19,7 +19,7 @@ namespace BH.Engine.Geometry
             int segments = (int)((max - min) / increment);
             increment = (max - min) / (double)(segments + 1);
             Point origin = Point.Origin;
-            Plane plane = new Plane(origin, direction);
+            Plane plane = new Plane { Origin = origin, Normal = direction };
             for (double dx = min; dx < max; dx += increment)
             {
                 double currentCentre = dx + increment / 2;
@@ -156,7 +156,7 @@ namespace BH.Engine.Geometry
             double min = System.Math.Min(from, to);
             double sumAreaLength = 0;
             Point origin = Point.Origin;
-            Plane plane = new Plane(origin, direction);
+            Plane plane = new Plane { Origin = origin, Normal = direction };
 
             for (int i = 0; i < slices.Count; i++)
             {

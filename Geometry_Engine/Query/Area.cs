@@ -61,7 +61,7 @@ namespace BH.Engine.Geometry
                 y += prod.Y;
                 z += prod.Z;
             }
-            return Math.Abs((new Vector(x, y, z) * normal) / 2);
+            return Math.Abs((new Vector { X = x, Y = y, Z = z } * normal) / 2);
         }
 
 
@@ -80,8 +80,8 @@ namespace BH.Engine.Geometry
                 Point pA = vertices[faces[i].A];
                 Point pB = vertices[faces[i].B];
                 Point pC = vertices[faces[i].C];
-                Vector AB = new Vector(pB.X - pA.X, pB.Y - pA.Y, pB.Z - pA.Z);
-                Vector AC = new Vector(pC.X - pA.X, pC.Y - pA.Y, pC.Z - pA.Z);
+                Vector AB = new Vector { X = pB.X - pA.X, Y = pB.Y - pA.Y, Z = pB.Z - pA.Z };
+                Vector AC = new Vector { X = pC.X - pA.X, Y = pC.Y - pA.Y, Z = pC.Z - pA.Z };
                 area += AB.CrossProduct(AC).Length();
             }
             return area / 2;

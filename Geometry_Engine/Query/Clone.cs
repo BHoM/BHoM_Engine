@@ -11,21 +11,21 @@ namespace BH.Engine.Geometry
 
         public static Plane Clone(this Plane plane)
         {
-            return new Plane(plane.Origin.Clone(), plane.Normal.Clone());
+            return new Plane { Origin = plane.Origin.Clone(), Normal = plane.Normal.Clone() };
         }
 
         /***************************************************/
 
         public static Point Clone(this Point point)
         {
-            return new Point(point.X, point.Y, point.Z);
+            return new Point { X = point.X, Y = point.Y, Z = point.Z };
         }
 
         /***************************************************/
 
         public static Vector Clone(this Vector vector)
         {
-            return new Vector(vector.X, vector.Y, vector.Z);
+            return new Vector { X = vector.X, Y = vector.Y, Z = vector.Z };
         }
 
 
@@ -80,35 +80,35 @@ namespace BH.Engine.Geometry
 
         public static Extrusion Clone(this Extrusion surface)
         {
-            return new Extrusion(surface.Curve.IClone(), surface.Direction.Clone(), surface.Capped);
+            return new Extrusion { Curve = surface.Curve.IClone(), Direction = surface.Direction.Clone(), Capped = surface.Capped };
         }
 
         /***************************************************/
 
         public static Loft Clone(this Loft surface)
         {
-            return new Loft(surface.Curves.Select(x => x.IClone()));
+            return new Loft { Curves = surface.Curves.Select(x => x.IClone()).ToList() };
         }
 
         /***************************************************/
 
         public static NurbSurface Clone(this NurbSurface surface)
         {
-            return new NurbSurface(surface.ControlPoints.Select(x => x.Clone()), surface.Weights.ToList(), surface.UKnots.ToList(), surface.VKnots.ToList());
+            return new NurbSurface { ControlPoints = surface.ControlPoints.Select(x => x.Clone()).ToList(), Weights = surface.Weights.ToList(), UKnots = surface.UKnots.ToList(), VKnots = surface.VKnots.ToList() };
         }
 
         /***************************************************/
 
         public static Pipe Clone(this Pipe surface)
         {
-            return new Pipe(surface.Centreline.IClone(), surface.Radius, surface.Capped);
+            return new Pipe { Centreline = surface.Centreline.IClone(), Radius = surface.Radius, Capped = surface.Capped };
         }
 
         /***************************************************/
 
         public static PolySurface Clone(this PolySurface surface)
         {
-            return new PolySurface(surface.Surfaces.Select(x => x.IClone()));
+            return new PolySurface { Surfaces = surface.Surfaces.Select(x => x.IClone()).ToList() };
         }
 
 

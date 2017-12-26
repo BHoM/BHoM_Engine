@@ -15,7 +15,7 @@ namespace BH.Engine.Geometry
             int count = points.Count();
             if (count < 1) return null;
 
-            Point mean = new Point(0, 0, 0);
+            Point mean = new Point { X = 0, Y = 0, Z = 0 };
 
             foreach (Point pt in points)
                 mean += pt;
@@ -30,7 +30,7 @@ namespace BH.Engine.Geometry
             int count = vs.Count();
             if (count < 1) return null;
 
-            Vector mean = new Vector(0, 0, 0);
+            Vector mean = new Vector { X = 0, Y = 0, Z = 0 };
 
             foreach (Vector v in vs)
                 mean += v;

@@ -49,22 +49,22 @@ namespace BH.Engine.Geometry
             {
                 double a = (xz * yz - xy * zz) / det_x;
                 double b = (xy * yz - xz * yy) / det_x;
-                dir = new Vector(1.0, a, b);
+                dir = new Vector { X = 1.0, Y = a, Z = b };
             }
             else if (det_max == det_y)
             {
                 double a = (yz * xz - xy * zz) / det_y;
                 double b = (xy * xz - yz * xx) / det_y;
-                dir = new Vector(a, 1.0, b);
+                dir = new Vector { X = a, Y = 1.0, Z = b };
             }
             else
             {
                 double a = (yz * xy - xz * yy) / det_z;
                 double b = (xz * xy - yz * xx) / det_z;
-                dir = new Vector(a, b, 1.0);
+                dir = new Vector { X = a, Y = b, Z = 1.0 };
             };
 
-            return new Plane(centroid, dir.Normalise());
+            return new Plane { Origin = centroid, Normal = dir.Normalise() };
         }
 
 
@@ -81,7 +81,7 @@ namespace BH.Engine.Geometry
 
         public static Plane FitPlane(this Circle curve)
         {
-            return new Plane(curve.Centre, curve.Normal);
+            return new Plane { Origin = curve.Centre, Normal = curve.Normal };
         }
 
         /***************************************************/

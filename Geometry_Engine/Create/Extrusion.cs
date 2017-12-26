@@ -2,16 +2,20 @@
 
 namespace BH.Engine.Geometry
 {
-    public static partial class Modify
+    public static partial class Create
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static BoundingBox Inflate(this BoundingBox box, double amount)
+        public static Extrusion Extrusion(ICurve curve, Vector direction, bool capped = true)
         {
-            Vector extents = new Vector { X = amount, Y = amount, Z = amount };
-            return new BoundingBox { Min = box.Min - extents, Max = box.Max + extents };
+            return new Extrusion
+            {
+                Curve = curve,
+                Direction = direction,
+                Capped = capped
+            }; 
         }
 
         /***************************************************/

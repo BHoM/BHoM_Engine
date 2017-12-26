@@ -81,7 +81,7 @@ namespace Engine_Test
         //    // Testing for Bounding box of points
         //    testVectors = new List<Vector>();
         //    for (int i = 0; i < nbSamples; i++)
-        //        testVectors.Add(new Vector(0, i, 0));
+        //        testVectors.Add(new Vector { X = 0, Y = i, Z = 0 });
 
         //    Console.WriteLine("Testing for length of vectors...");
         //    BH.Engine.Testing.Speed.TestSpeed(new List<BH.Engine.Testing.IterFunction>
@@ -94,7 +94,7 @@ namespace Engine_Test
         //    // Testing for length of Lines
         //    testLines = new List<Line>();
         //    for (int i = 0; i < nbSamples; i++)
-        //        testLines.Add(new Line(new Point(0, i, 0), new Point(i, 0, 0)));
+        //        testLines.Add(new Line(new Point { X = 0, Y = i, Z = 0 }, new Point { X = i, Y = 0, Z = 0 }));
 
         //    Console.WriteLine("\nTesting for length of lines...");
         //    BH.Engine.Testing.Speed.TestSpeed(new List<BH.Engine.Testing.IterFunction>
@@ -110,7 +110,7 @@ namespace Engine_Test
         //    {
         //        List<Point> pts = new List<Point>();
         //        for (int j = 0; j < nbCP; j++)
-        //            pts.Add(new Point(nbSamples, nbCP, 0));
+        //            pts.Add(new Point { X = nbSamples, Y = nbCP, Z = 0 });
         //        testPoly.Add(new Polyline(pts));
         //    }
 
@@ -128,7 +128,7 @@ namespace Engine_Test
         //    {
         //        List<Point> pts = new List<Point>();
         //        for (int j = 0; j < nbCP; j++)
-        //            pts.Add(new Point(nbSamples, nbCP, 0));
+        //            pts.Add(new Point { X = nbSamples, Y = nbCP, Z = 0 });
         //        testPoly.Add(new Polyline(pts));
         //    }
 
@@ -206,10 +206,10 @@ namespace Engine_Test
         //    Project project = Project.ActiveProject;
 
         //    List<Point> points = new List<Point>();
-        //    points.Add(new Point(0, 0, 0));
-        //    points.Add(new Point(0, 1, 0));
-        //    points.Add(new Point(1, 1, 0));
-        //    points.Add(new Point(0, 0, 0));
+        //    points.Add(new Point { X = 0, Y = 0, Z = 0 });
+        //    points.Add(new Point { X = 0, Y = 1, Z = 0 });
+        //    points.Add(new Point { X = 1, Y = 1, Z = 0 });
+        //    points.Add(new Point { X = 0, Y = 0, Z = 0 });
 
         //    List<ICurve> edges = new List<ICurve>();
         //    for (int i = 1; i < points.Count; i++)
@@ -277,8 +277,8 @@ namespace Engine_Test
         /*static void TestLineVSnap()
         { 
             // Test Line and Bar snapping
-            Point pt1 = new Point(0 , 0, 0.5);
-            Point pt2 = new Point(0, 0, 4.5);
+            Point pt1 = new Point { X = 0, Y = 0, Z = 0.5 };
+            Point pt2 = new Point { X = 0, Y = 0, Z = 4.5 };
 
             List<double> heights = new List<double>();
             heights.Add(0);
@@ -298,11 +298,11 @@ namespace Engine_Test
         /*static void TestGraph()
         {
             List<Point> points = new List<Point>();
-            points.Add(new Point(0, 0, 0));
-            points.Add(new Point(0, 2, 0));
-            points.Add(new Point(0, 6, 0));
-            points.Add(new Point(4, 4, 0));
-            points.Add(new Point(4, 6, 0));
+            points.Add(new Point { X = 0, Y = 0, Z = 0 });
+            points.Add(new Point { X = 0, Y = 2, Z = 0 });
+            points.Add(new Point { X = 0, Y = 6, Z = 0 });
+            points.Add(new Point { X = 4, Y = 4, Z = 0 });
+            points.Add(new Point { X = 4, Y = 6, Z = 0 });
 
             Graph<Point> graph = new Graph<Point>();
             List<GraphNode<Point>> nodes = new List<GraphNode<Point>>();

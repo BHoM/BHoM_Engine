@@ -28,8 +28,8 @@ namespace BH.Engine.Geometry
 
             for (int i = 1; i < regionCorners.Count; i++)
             {
-                Vector edge = new Vector(new Point(regionCorners[i - 1] - regionCorners[i]));
-                regionEdgePlanes.Add(new Plane(regionCorners[i - 1], edge.CrossProduct(normal)));
+                Vector edge = regionCorners[i - 1] - regionCorners[i];
+                regionEdgePlanes.Add(new Plane { Origin = regionCorners[i - 1], Normal = edge.CrossProduct(normal) });
             }
             //TODO: Now using planes to find intersection. This is done because finding intersection between one infinite line and one finite 
             //is not inplemented. NEeds to be changed once the method for that has been inplemented. 

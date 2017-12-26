@@ -8,14 +8,14 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Vectors                  ****/
         /***************************************************/
 
-        public static bool IsValid(Point point)
+        public static bool IsValid(this Point point)
         {
             return !(double.IsNaN(point.X) || double.IsNaN(point.Y) || double.IsNaN(point.Z));
         }
 
         /***************************************************/
 
-        public static bool IsValid(Vector v)
+        public static bool IsValid(this Vector v)
         {
             return !(double.IsNaN(v.X) || double.IsNaN(v.Y) || double.IsNaN(v.Z));
         }

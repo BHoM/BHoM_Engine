@@ -73,7 +73,7 @@ namespace BH.Engine.Structure
                 double x = reinforcement.IsVertical ? relativeDepth : property.MinimumCover + reinforcement.Diameter / 2 + tieDiameter + spacing * i + start;
                 double y = reinforcement.IsVertical ? property.MinimumCover + reinforcement.Diameter / 2 + spacing * i + tieDiameter + start : relativeDepth;
 
-                location.Add(new Point(x, y, 0));
+                location.Add(new Point { X = x, Y = y, Z = 0 });
             }
 
             return new CompositeGeometry { Elements = location.ToList<IBHoMGeometry>() };
@@ -85,7 +85,7 @@ namespace BH.Engine.Structure
             //    double x = IsVertical ? relativeDepth : property.MinimumCover + Diameter / 2 + tieDiameter + spacing * i + start;
             //    double y = IsVertical ? property.MinimumCover + Diameter / 2 + spacing * i + tieDiameter + start : relativeDepth;
 
-            //    location.Add(new Point(x, y, 0));
+            //    location.Add(new Point { X = x, Y = y, Z = 0 });
             //}
             //return location;
         }
@@ -163,7 +163,7 @@ namespace BH.Engine.Structure
             {
                 double x = Math.Cos(startAngle + angle * i) * radius;
                 double y = Math.Sin(startAngle + angle * i) * radius;
-                location.Add(new Point(x, y, 0));
+                location.Add(new Point { X = x, Y = y, Z = 0 });
             }
 
 
@@ -240,7 +240,7 @@ namespace BH.Engine.Structure
         //        {
         //            double x = Math.Cos(startAngle + angle * i) * radius;
         //            double y = Math.Sin(startAngle + angle * i) * radius;
-        //            location.Add(new Point(x, y, 0));
+        //            location.Add(new Point { X = x, Y = y, Z = 0 });
         //        }
 
         //    }
@@ -266,24 +266,24 @@ namespace BH.Engine.Structure
 
             //        /*TEMP****************
             //        Group<Curve> curves = new Group<Curve>();
-            //        curves.Add(new Line(new Point(-X, yIn, 0), new Point(X, yIn, 0)));
-            //        curves.Add(new Line(new Point(-X, -yIn, 0), new Point(X, -yIn, 0)));
-            //        curves.Add(new Line(new Point(xIn, -Y, 0), new Point(xIn, Y, -tieDiameter)));
-            //        curves.Add(new Line(new Point(-xIn, -Y, 0), new Point(-xIn, Y, 0)));
-            //        Plane p = new Plane(new Point(-X, -Y, 0), Vector.ZAxis());
+            //        curves.Add(new Line(new Point { X = -X, Y = yIn, Z = 0 }, new Point { X = X, Y = yIn, Z = 0 }));
+            //        curves.Add(new Line(new Point { X = -X, Y = -yIn, Z = 0 }, new Point { X = X, Y = -yIn, Z = 0 }));
+            //        curves.Add(new Line(new Point { X = xIn, Y = -Y, Z = 0 }, new Point { X = xIn, Y = Y, Z = -tieDiameter }));
+            //        curves.Add(new Line(new Point { X = -xIn, Y = -Y, Z = 0 }, new Point { X = -xIn, Y = Y, Z = 0 }));
+            //        Plane p = new Plane(new Point { X = -X, Y = -Y, Z = 0 }, Vector.ZAxis());
             //        curves.Add(new Arc(Math.PI * 3 / 2, Math.PI, tieDiameter * 2.5, p));
-            //        p = new Plane(new Point(-X, Y, 0), Vector.ZAxis());
+            //        p = new Plane(new Point { X = -X, Y = Y, Z = 0 }, Vector.ZAxis());
             //        curves.Add(new Arc(Math.PI, Math.PI / 2, tieDiameter * 2.5, p));
-            //        p = new Plane(new Point(X, Y, 0), Vector.ZAxis());
-            //        Vector lap = new Vector(-tieDiameter * 3.5, -tieDiameter * 3.5, 0);
+            //        p = new Plane(new Point { X = X, Y = Y, Z = 0 }, Vector.ZAxis());
+            //        Vector lap = new Vector { X = -tieDiameter * 3.5, Y = -tieDiameter * 3.5, Z = 0 };
             //        Arc a1 = new Arc(Math.PI / 2, -Math.PI / 4, tieDiameter * 2.5, p);
             //        curves.Add(a1);
             //        curves.Add(new Line(a1.EndPoint, a1.EndPoint + lap));
-            //        p = new Plane(new Point(X, Y, -tieDiameter), Vector.ZAxis());
+            //        p = new Plane(new Point { X = X, Y = Y, Z = -tieDiameter }, Vector.ZAxis());
             //        Arc a2 = new Arc(0, 3 * Math.PI / 4, tieDiameter * 2.5, p);
             //        curves.Add(a2);
             //        curves.Add(new Line(a2.EndPoint, a2.EndPoint + lap));
-            //        p = new Plane(new Point(X, -Y, 0), Vector.ZAxis());
+            //        p = new Plane(new Point { X = X, Y = -Y, Z = 0 }, Vector.ZAxis());
             //        curves.Add(new Arc(0, -Math.PI / 2, tieDiameter * 2.5, p));
 
             //        Curve c = Curve.Join(curves)[0];
@@ -297,7 +297,7 @@ namespace BH.Engine.Structure
             //            double startAngle = 0;
             //            double endAngle = Math.PI * 3 / 4;                       
             //            Vector lap2 = lap.DuplicateVector();
-            //            p = new Plane(new Point(0, property.TotalDepth / 2 - property.MinimumCover - 3 * tieDiameter, -tieDiameter), Vector.ZAxis());
+            //            p = new Plane(new Point { X = 0, Y = property.TotalDepth / 2 - property.MinimumCover - 3 * tieDiameter, Z = -tieDiameter }, Vector.ZAxis());
             //            a1 = new Arc(startAngle, endAngle, 2.5 * tieDiameter, p);
             //            a2 = a1.DuplicateCurve() as Arc;
             //            a2.Mirror(Plane.XZ());
@@ -334,24 +334,24 @@ namespace BH.Engine.Structure
             //        //double xOut = property.TotalWidth / 2 - property.MinimumCover;
 
             //        //Group<Curve> curves = new Group<Curve>();
-            //        //curves.Add(new Line(new Point(-X, yIn, 0), new Point(X, yIn, 0)));
-            //        //curves.Add(new Line(new Point(-X, -yIn, 0), new Point(X, -yIn, 0)));
-            //        //curves.Add(new Line(new Point(-X, yOut, 0), new Point(X, yOut, 0)));
-            //        //curves.Add(new Line(new Point(-X, -yOut, 0), new Point(X, -yOut, 0)));
-            //        //curves.Add(new Line(new Point(xIn, -Y, 0), new Point(xIn, Y, 0)));
-            //        //curves.Add(new Line(new Point(-xIn, -Y, 0), new Point(-xIn, Y, 0)));
-            //        //curves.Add(new Line(new Point(xOut, -Y, 0), new Point(xOut, Y, 0)));
-            //        //curves.Add(new Line(new Point(-xOut, -Y, 0), new Point(-xOut, Y, 0)));
-            //        //Plane p = new Plane(new Point(-X,-Y,0), Vector.ZAxis());
+            //        //curves.Add(new Line(new Point { X = -X, Y = yIn, Z = 0 }, new Point { X = X, Y = yIn, Z = 0 }));
+            //        //curves.Add(new Line(new Point { X = -X, Y = -yIn, Z = 0 }, new Point { X = X, Y = -yIn, Z = 0 }));
+            //        //curves.Add(new Line(new Point { X = -X, Y = yOut, Z = 0 }, new Point { X = X, Y = yOut, Z = 0 }));
+            //        //curves.Add(new Line(new Point { X = -X, Y = -yOut, Z = 0 }, new Point { X = X, Y = -yOut, Z = 0 }));
+            //        //curves.Add(new Line(new Point { X = xIn, Y = -Y, Z = 0 }, new Point { X = xIn, Y = Y, Z = 0 }));
+            //        //curves.Add(new Line(new Point { X = -xIn, Y = -Y, Z = 0 }, new Point { X = -xIn, Y = Y, Z = 0 }));
+            //        //curves.Add(new Line(new Point { X = xOut, Y = -Y, Z = 0 }, new Point { X = xOut, Y = Y, Z = 0 }));
+            //        //curves.Add(new Line(new Point { X = -xOut, Y = -Y, Z = 0 }, new Point { X = -xOut, Y = Y, Z = 0 }));
+            //        //Plane p = new Plane(new Point { X = -X, Y = -Y, Z = 0 }, Vector.ZAxis());
             //        //curves.Add(new Arc(Math.PI * 3 / 2, Math.PI, tieDiameter * 2, p));
             //        //curves.Add(new Arc(Math.PI * 3 / 2, Math.PI, tieDiameter * 3, p));
-            //        //p = new Plane(new Point(-X, Y, 0), Vector.ZAxis());
+            //        //p = new Plane(new Point { X = -X, Y = Y, Z = 0 }, Vector.ZAxis());
             //        //curves.Add(new Arc(Math.PI, Math.PI / 2, tieDiameter * 2, p));
             //        //curves.Add(new Arc(Math.PI, Math.PI / 2, tieDiameter * 3, p));
-            //        //p = new Plane(new Point(X, Y, 0), Vector.ZAxis());
+            //        //p = new Plane(new Point { X = X, Y = Y, Z = 0 }, Vector.ZAxis());
             //        //curves.Add(new Arc(Math.PI / 2, 0, tieDiameter * 2, p));
             //        //curves.Add(new Arc(Math.PI / 2, 0, tieDiameter * 3, p));
-            //        //p = new Plane(new Point(X, -Y, 0), Vector.ZAxis());
+            //        //p = new Plane(new Point { X = X, Y = -Y, Z = 0 }, Vector.ZAxis());
             //        //curves.Add(new Arc(0, -Math.PI / 2, tieDiameter * 2, p));
             //        //curves.Add(new Arc(0, -Math.PI / 2, tieDiameter * 3, p));
             //        //return new Group<Curve>(Curve.Join(curves));

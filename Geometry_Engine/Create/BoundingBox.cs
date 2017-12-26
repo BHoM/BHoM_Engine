@@ -23,8 +23,8 @@ namespace BH.Engine.Geometry
         {
             return new BoundingBox
             {
-                Min = new Point(centre.X - extent.X, centre.Y - extent.Y, centre.Z - extent.Z),
-                Max = new Point(centre.X + extent.X, centre.Y + extent.Y, centre.Z + extent.Z)
+                Min = new Point { X = centre.X - extent.X, Y = centre.Y - extent.Y, Z = centre.Z - extent.Z },
+                Max = new Point { X = centre.X + extent.X, Y = centre.Y + extent.Y, Z = centre.Z + extent.Z }
             };
         }
 

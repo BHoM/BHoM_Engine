@@ -13,11 +13,11 @@ namespace BH.Engine.Geometry
         {
             double[,] matrix = transform.Matrix;
 
-            return new Point(
-                matrix[0, 0] * pt.X + matrix[0, 1] * pt.Y + matrix[0, 0] * pt.Z + matrix[0, 0],
-                matrix[1, 0] * pt.X + matrix[1, 1] * pt.Y + matrix[1, 0] * pt.Z + matrix[1, 0],
-                matrix[2, 0] * pt.X + matrix[2, 1] * pt.Y + matrix[2, 0] * pt.Z + matrix[2, 0]
-            );
+            return new Point {
+                X = matrix[0, 0] * pt.X + matrix[0, 1] * pt.Y + matrix[0, 0] * pt.Z + matrix[0, 0],
+                Y = matrix[1, 0] * pt.X + matrix[1, 1] * pt.Y + matrix[1, 0] * pt.Z + matrix[1, 0],
+                Z = matrix[2, 0] * pt.X + matrix[2, 1] * pt.Y + matrix[2, 0] * pt.Z + matrix[2, 0]
+            };
         }
 
         /***************************************************/
@@ -26,18 +26,18 @@ namespace BH.Engine.Geometry
         {
             double[,] matrix = transform.Matrix;
 
-            return new Vector(
-                matrix[0, 0] * vector.X + matrix[0, 1] * vector.Y + matrix[0, 0] * vector.Z + matrix[0, 0],
-                matrix[1, 0] * vector.X + matrix[1, 1] * vector.Y + matrix[1, 0] * vector.Z + matrix[1, 0],
-                matrix[2, 0] * vector.X + matrix[2, 1] * vector.Y + matrix[2, 0] * vector.Z + matrix[2, 0]
-            );
+            return new Vector {
+                X = matrix[0, 0] * vector.X + matrix[0, 1] * vector.Y + matrix[0, 0] * vector.Z + matrix[0, 0],
+                Y = matrix[1, 0] * vector.X + matrix[1, 1] * vector.Y + matrix[1, 0] * vector.Z + matrix[1, 0],
+                Z = matrix[2, 0] * vector.X + matrix[2, 1] * vector.Y + matrix[2, 0] * vector.Z + matrix[2, 0]
+            };
         }
 
         /***************************************************/
 
         public static Plane Transform(this Plane plane, TransformMatrix transform)
         {
-            return new Plane(plane.Origin.Transform(transform), plane.Normal.Transform(transform));
+            return new Plane { Origin = plane.Origin.Transform(transform), Normal = plane.Normal.Transform(transform) };
         }
 
 
@@ -93,35 +93,35 @@ namespace BH.Engine.Geometry
 
         public static Extrusion Transform(this Extrusion surface, TransformMatrix transform)
         {
-            return new Extrusion(surface.Curve.ITransform(transform), surface.Direction.Transform(transform), surface.Capped);
+            return new Extrusion { Curve = surface.Curve.ITransform(transform), Direction = surface.Direction.Transform(transform), Capped = surface.Capped };
         }
 
         /***************************************************/
 
         public static Loft Transform(this Loft surface, TransformMatrix transform)
         {
-            return new Loft(surface.Curves.Select(x => x.ITransform(transform)));
+            return new Loft { Curves = surface.Curves.Select(x => x.ITransform(transform)).ToList() };
         }
 
         /***************************************************/
 
         public static NurbSurface Transform(this NurbSurface surface, TransformMatrix transform)
         {
-            return new NurbSurface(surface.ControlPoints.Select(x => x.Transform(transform)), surface.Weights, surface.UKnots, surface.VKnots);
+            return new NurbSurface { ControlPoints = surface.ControlPoints.Select(x => x.Transform(transform)).ToList(), Weights = surface.Weights.ToList(), UKnots = surface.UKnots.ToList(), VKnots = surface.VKnots.ToList() };
         }
 
         /***************************************************/
 
         public static Pipe Transform(this Pipe surface, TransformMatrix transform)
         {
-            return new Pipe(surface.Centreline.ITransform(transform), surface.Radius, surface.Capped);
+            return new Pipe { Centreline = surface.Centreline.ITransform(transform), Radius = surface.Radius, Capped = surface.Capped };
         }
 
         /***************************************************/
 
         public static PolySurface Transform(this PolySurface surface, TransformMatrix transform)
         {
-            return new PolySurface(surface.Surfaces.Select(x => x.ITransform(transform)));
+            return new PolySurface { Surfaces = surface.Surfaces.Select(x => x.ITransform(transform)).ToList() };
         }
 
 

@@ -60,8 +60,8 @@ namespace BH.Engine.Geometry
         public static TransformMatrix RotationMatrix(Point centre, Vector axis, double angle)
         {
             TransformMatrix rotation = TransformMatrix(Quaternion(axis, angle));
-            TransformMatrix t1 = TranslationMatrix(centre - Point.Origin);
-            TransformMatrix t2 = TranslationMatrix(Point.Origin - centre);
+            TransformMatrix t1 = TranslationMatrix(centre - oM.Geometry.Point.Origin);
+            TransformMatrix t2 = TranslationMatrix(oM.Geometry.Point.Origin - centre);
 
             return t1 * rotation * t2;
         }
@@ -70,8 +70,8 @@ namespace BH.Engine.Geometry
 
         public static TransformMatrix ScaleMatrix(Point refPoint, Vector scaleVector)
         {
-            TransformMatrix move1 = TranslationMatrix(Point.Origin - refPoint);
-            TransformMatrix move2 = TranslationMatrix(refPoint - Point.Origin);
+            TransformMatrix move1 = TranslationMatrix(oM.Geometry.Point.Origin - refPoint);
+            TransformMatrix move2 = TranslationMatrix(refPoint - oM.Geometry.Point.Origin);
             TransformMatrix scale = new TransformMatrix
             {
                 Matrix = new double[,]

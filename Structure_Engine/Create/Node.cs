@@ -13,7 +13,7 @@ namespace BH.Engine.Structure
         {
             return new Node
             {
-                Point = new Point(position.X, position.Y, position.Z),
+                Point = new Point { X = position.X, Y = position.Y, Z = position.Z },
                 Name = name
             };
         }

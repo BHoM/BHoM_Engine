@@ -29,7 +29,7 @@ namespace BH.Engine.Geometry
 
         public static Plane Rotate(this Plane plane, double rad, Vector axis)
         {
-            return new Plane(plane.Origin.Rotate(rad, axis), plane.Normal.Rotate(rad, axis));
+            return new Plane { Origin = plane.Origin.Rotate(rad, axis), Normal = plane.Normal.Rotate(rad, axis) };
         }
 
 
@@ -85,35 +85,35 @@ namespace BH.Engine.Geometry
 
         public static Extrusion Rotate(this Extrusion surface, double rad, Vector axis)
         {
-            return new Extrusion(surface.Curve.IRotate(rad, axis), surface.Direction.Rotate(rad, axis), surface.Capped);
+            return new Extrusion { Curve = surface.Curve.IRotate(rad, axis), Direction = surface.Direction.Rotate(rad, axis), Capped = surface.Capped };
         }
 
         /***************************************************/
 
         public static Loft Rotate(this Loft surface, double rad, Vector axis)
         {
-            return new Loft(surface.Curves.Select(x => x.IRotate(rad, axis)));
+            return new Loft { Curves = surface.Curves.Select(x => x.IRotate(rad, axis)).ToList() };
         }
 
         /***************************************************/
 
         public static NurbSurface Rotate(this NurbSurface surface, double rad, Vector axis)
         {
-            return new NurbSurface(surface.ControlPoints.Select(x => x.Rotate(rad, axis)), surface.Weights, surface.UKnots, surface.VKnots);
+            return new NurbSurface { ControlPoints = surface.ControlPoints.Select(x => x.Rotate(rad, axis)).ToList(), Weights = surface.Weights.ToList(), UKnots = surface.UKnots.ToList(), VKnots = surface.VKnots.ToList() };
         }
 
         /***************************************************/
 
         public static Pipe Rotate(this Pipe surface, double rad, Vector axis)
         {
-            return new Pipe(surface.Centreline.IRotate(rad, axis), surface.Radius, surface.Capped);
+            return new Pipe { Centreline = surface.Centreline.IRotate(rad, axis), Radius = surface.Radius, Capped = surface.Capped };
         }
 
         /***************************************************/
 
         public static PolySurface Rotate(this PolySurface surface, double rad, Vector axis)
         {
-            return new PolySurface(surface.Surfaces.Select(x => x.IRotate(rad, axis)));
+            return new PolySurface { Surfaces = surface.Surfaces.Select(x => x.IRotate(rad, axis)).ToList() };
         }
 
 

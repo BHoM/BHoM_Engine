@@ -15,7 +15,7 @@ namespace BH.Engine.Geometry
             int count = points.Count();
             if (count < 1) return null;
 
-            Point mean = new Point(0, 0, 0);
+            Point mean = new Point { X = 0, Y = 0, Z = 0 };
 
             foreach (Point pt in points)
                 mean += pt;
@@ -53,7 +53,7 @@ namespace BH.Engine.Geometry
 
         public static Point Centre(this BoundingBox box)
         {
-            return new Point((box.Max.X + box.Min.X) / 2, (box.Max.Y + box.Min.Y) / 2, (box.Max.Z + box.Min.Z) / 2);
+            return new Point { X = (box.Max.X + box.Min.X) / 2, Y = (box.Max.Y + box.Min.Y) / 2, Z = (box.Max.Z + box.Min.Z) / 2 };
         }
 
 
@@ -73,12 +73,12 @@ namespace BH.Engine.Geometry
                 Point pC = vertices[(faces[i].C)];
                 if (!faces[i].IsQuad())
                 {
-                    centres.Add(new Point((pA.X + pB.X + pC.X) / 3, (pA.Y + pB.Y + pC.Y) / 3, (pA.Z + pB.Z + pC.Z) / 3));
+                    centres.Add(new Point { X = (pA.X + pB.X + pC.X) / 3, Y = (pA.Y + pB.Y + pC.Y) / 3, Z = (pA.Z + pB.Z + pC.Z) / 3 });
                 }
                 else
                 {
                     Point p4 = vertices[(faces[i].D)];
-                    centres.Add(new Point((pA.X + pB.X + pC.X + p4.X) / 4, (pA.X + pB.X + pC.X + p4.Y) / 4, (pA.X + pB.X + pC.X + p4.Z) / 4));  // Assumption that if the face is quad, it is a flat quad.
+                    centres.Add(new Point { X = (pA.X + pB.X + pC.X + p4.X) / 4, Y = (pA.X + pB.X + pC.X + p4.Y) / 4, Z = (pA.X + pB.X + pC.X + p4.Z) / 4 });  // Assumption that if the face is quad, it is a flat quad.
                 }
             }
             return centres;

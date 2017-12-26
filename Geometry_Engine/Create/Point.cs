@@ -8,17 +8,16 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Plane Plane(Point origin, Vector normal)
+        public static Point Point(double x = 0, double y = 0, double z = 0)
         {
-            return new Plane { Origin = origin, Normal = normal };
+            return new Point { X = x, Y = y, Z = z };
         }
 
         /***************************************************/
 
-        public static Plane Plane(Point p1, Point p2, Point p3)
+        public static Point Point(Vector v)
         {
-            Vector normal = Query.CrossProduct(p2 - p1, p3 - p1).Normalise();
-            return new Plane { Origin = p1.Clone(), Normal = normal };
+            return new Point { X = v.X, Y = v.Y, Z = v.Z };
         }
 
         /***************************************************/

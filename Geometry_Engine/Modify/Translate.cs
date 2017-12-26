@@ -18,14 +18,14 @@ namespace BH.Engine.Geometry
 
         public static Vector Translate(Vector vector, Vector transform)
         {
-            return new Vector(vector.X, vector.Y, vector.Z);
+            return new Vector { X = vector.X, Y = vector.Y, Z = vector.Z };
         }
 
         /***************************************************/
 
         public static Plane Translate(Plane plane, Vector transform)
         {
-            return new Plane(plane.Origin + transform, plane.Normal.Clone() as Vector);
+            return new Plane { Origin = plane.Origin + transform, Normal = plane.Normal.Clone() as Vector };
         }
 
 
@@ -81,35 +81,35 @@ namespace BH.Engine.Geometry
 
         public static Extrusion Translate(Extrusion surface, Vector transform)
         {
-            return new Extrusion(surface.Curve.ITranslate(transform), surface.Direction.Clone() as Vector, surface.Capped);
+            return new Extrusion { Curve = surface.Curve.ITranslate(transform), Direction = surface.Direction.Clone() as Vector, Capped = surface.Capped };
         }
 
         /***************************************************/
 
         public static Loft Translate(Loft surface, Vector transform)
         {
-            return new Loft(surface.Curves.Select(x => x.ITranslate(transform)));
+            return new Loft { Curves = surface.Curves.Select(x => x.ITranslate(transform)).ToList() };
         }
 
         /***************************************************/
 
         public static NurbSurface Translate(NurbSurface surface, Vector transform)
         {
-            return new NurbSurface(surface.ControlPoints.Select(x => x + transform), surface.Weights, surface.UKnots, surface.VKnots);
+            return new NurbSurface { ControlPoints = surface.ControlPoints.Select(x => x + transform).ToList(), Weights = surface.Weights.ToList(), UKnots = surface.UKnots.ToList(), VKnots = surface.VKnots.ToList() };
         }
 
         /***************************************************/
 
         public static Pipe Translate(Pipe surface, Vector transform)
         {
-            return new Pipe(surface.Centreline.ITranslate(transform), surface.Radius, surface.Capped);
+            return new Pipe { Centreline = surface.Centreline.ITranslate(transform), Radius = surface.Radius, Capped = surface.Capped };
         }
 
         /***************************************************/
 
         public static PolySurface Translate(PolySurface surface, Vector transform)
         {
-            return new PolySurface(surface.Surfaces.Select(x => x.ITranslate(transform)));
+            return new PolySurface { Surfaces = surface.Surfaces.Select(x => x.ITranslate(transform)).ToList() };
         }
 
 

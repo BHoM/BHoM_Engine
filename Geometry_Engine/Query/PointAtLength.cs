@@ -16,7 +16,7 @@ namespace BH.Engine.Geometry
             Point centre = curve.Centre();
             double alfa = curve.Angle() * length / curve.Length();
             Vector localX = curve.Start - centre;
-            return new Point(localX.Rotate(alfa, curve.FitPlane().Normal) as Vector) + centre;
+            return  centre + localX.Rotate(alfa, curve.FitPlane().Normal);
         }
 
         /***************************************************/
@@ -25,7 +25,7 @@ namespace BH.Engine.Geometry
         {
             double alfa = 2 * Math.PI * length / curve.Length();
             Vector localX = curve.Normal.CrossProduct(Vector.XAxis).Normalise() * curve.Radius;
-            return new Point(localX.Rotate(alfa, curve.Normal) as Vector);
+            return Create.Point(localX.Rotate(alfa, curve.Normal));
         }
 
         /***************************************************/

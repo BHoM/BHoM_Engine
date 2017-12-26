@@ -43,6 +43,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Create\Vector.cs" />
+    <Compile Include="Create\Point.cs" />
+    <Compile Include="Create\PolySurface.cs" />
+    <Compile Include="Create\Pipe.cs" />
+    <Compile Include="Create\NurbSurface.cs" />
+    <Compile Include="Create\Loft.cs" />
+    <Compile Include="Create\Extrusion.cs" />
     <Compile Include="Create\CompositeGeometry.cs" />
     <Compile Include="Create\BoundingBox.cs" />
     <Compile Include="Create\Mesh.cs" />

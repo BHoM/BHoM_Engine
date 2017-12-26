@@ -25,7 +25,7 @@ namespace BH.Engine.Geometry
 
         public static Plane Mirror(this Plane plane, Plane p)
         {
-            return new Plane(plane.Origin.Mirror(p), plane.Normal.Mirror(p));
+            return new Plane { Origin = plane.Origin.Mirror(p), Normal = plane.Normal.Mirror(p) };
         }
 
 
@@ -81,35 +81,35 @@ namespace BH.Engine.Geometry
 
         public static Extrusion Mirror(this Extrusion surface, Plane p)
         {
-            return new Extrusion(surface.Curve.IMirror(p), surface.Direction.Mirror(p), surface.Capped);
+            return new Extrusion { Curve = surface.Curve.IMirror(p), Direction = surface.Direction.Mirror(p), Capped = surface.Capped };
         }
 
         /***************************************************/
 
         public static Loft Mirror(this Loft surface, Plane p)
         {
-            return new Loft(surface.Curves.Select(x => x.IMirror(p)));
+            return new Loft { Curves = surface.Curves.Select(x => x.IMirror(p)).ToList() };
         }
 
         /***************************************************/
 
         public static NurbSurface Mirror(this NurbSurface surface, Plane p)
         {
-            return new NurbSurface(surface.ControlPoints.Select(x => x.Mirror(p)), surface.Weights, surface.UKnots, surface.VKnots);
+            return new NurbSurface { ControlPoints = surface.ControlPoints.Select(x => x.Mirror(p)).ToList(), Weights = surface.Weights.ToList(), UKnots = surface.UKnots.ToList(), VKnots = surface.VKnots.ToList() };
         }
 
         /***************************************************/
 
         public static Pipe Mirror(this Pipe surface, Plane p)
         {
-            return new Pipe(surface.Centreline.IMirror(p), surface.Radius, surface.Capped);
+            return new Pipe { Centreline = surface.Centreline.IMirror(p), Radius = surface.Radius, Capped = surface.Capped };
         }
 
         /***************************************************/
 
         public static PolySurface Mirror(this PolySurface surface, Plane p)
         {
-            return new PolySurface(surface.Surfaces.Select(x => x.IMirror(p)));
+            return new PolySurface { Surfaces = surface.Surfaces.Select(x => x.IMirror(p)).ToList() };
         }
 
 

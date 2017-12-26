@@ -21,7 +21,7 @@ namespace BH.Engine.Geometry
         public static Vector StartDir(this Circle circle)
         {
             Vector n = circle.Normal;
-            Vector startDir = Math.Abs(n.Z) < Math.Abs(n.X) ? new Vector(n.Y, -n.X, 0) : new Vector(0, n.Z, -n.Y);
+            Vector startDir = Math.Abs(n.Z) < Math.Abs(n.X) ? new Vector { X = n.Y, Y = -n.X, Z = 0 } : new Vector { X = 0, Y = n.Z, Z = -n.Y };
             return circle.Normal.CrossProduct(startDir).Normalise();
         }
 
@@ -29,7 +29,7 @@ namespace BH.Engine.Geometry
 
         public static Vector StartDir(this Line line)
         {
-            return new Vector(line.End.X - line.Start.X, line.End.Y - line.Start.Y, line.End.Z - line.Start.Z).Normalise();
+            return new Vector { X = line.End.X - line.Start.X, Y = line.End.Y - line.Start.Y, Z = line.End.Z - line.Start.Z }.Normalise();
         }
 
         /***************************************************/
@@ -57,7 +57,7 @@ namespace BH.Engine.Geometry
             Point pt1 = pts[0];
             Point pt2 = pts[1];
 
-            return new Vector(pt2.X - pt1.X, pt2.Y - pt1.Y, pt2.Z - pt1.Z).Normalise(); 
+            return new Vector { X = pt2.X - pt1.X, Y = pt2.Y - pt1.Y, Z = pt2.Z - pt1.Z }.Normalise(); 
         }
 
 
