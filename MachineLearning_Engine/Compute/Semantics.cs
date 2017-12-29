@@ -1,15 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using java.util;
 using java.io;
 using edu.stanford.nlp.pipeline;
-using Newtonsoft.Json;
 
 namespace BH.Engine.MachineLearning
 {
-    public static partial class Analyse
+    public static partial class Compute
     {
+        /****************************************/
+        /****  Public Methods                ****/
+        /****************************************/
+
         public static string Semantics(string text)
         {
             //tokenize == separate
@@ -40,33 +42,36 @@ namespace BH.Engine.MachineLearning
             return stream.ToString();
         }
 
-        public static List<object> ParseAnnotation(string stream, string key)
-        {
-            dynamic deJson = JsonConvert.DeserializeObject(stream);
-            List<object> value = new List<object>();
-            for (int j = 0; j < deJson["sentences"].Count; j++)
-            {
-                value.Add(deJson["sentences"][j][key]);
-            }
-            return value;
-        }
-
-        public static List<string> getSentences(this string stream)
-        {
-            dynamic deJson = JsonConvert.DeserializeObject(stream);
-            List<string> values = new List<string>();
-            //string key = "sentenceText";
-            for (int j = 0; j < deJson["sentences"].Count; j++)
-            {
-                string value = "";
-                for (int k = 0; k < deJson["sentences"][j]["tokens"].Count; k++)
-                {
-                    value += deJson["sentences"][j]["tokens"][k]["originalText"];
-                    value += ' ';
-                }
-                values.Add(value);
-            }
-            return values;
-        }
+        /****************************************/  
     }
 }
+
+
+//public static List<object> ParseAnnotation(string stream, string key)
+//{
+//    dynamic deJson = JsonConvert.DeserializeObject(stream);
+//    List<object> value = new List<object>();
+//    for (int j = 0; j < deJson["sentences"].Count; j++)
+//    {
+//        value.Add(deJson["sentences"][j][key]);
+//    }
+//    return value;
+//}
+
+//public static List<string> getSentences(this string stream)
+//{
+//    dynamic deJson = JsonConvert.DeserializeObject(stream);
+//    List<string> values = new List<string>();
+//    //string key = "sentenceText";
+//    for (int j = 0; j < deJson["sentences"].Count; j++)
+//    {
+//        string value = "";
+//        for (int k = 0; k < deJson["sentences"][j]["tokens"].Count; k++)
+//        {
+//            value += deJson["sentences"][j]["tokens"][k]["originalText"];
+//            value += ' ';
+//        }
+//        values.Add(value);
+//    }
+//    return values;
+//}

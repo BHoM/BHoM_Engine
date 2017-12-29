@@ -1,7 +1,4 @@
-﻿using BH.oM.Structural.Elements;
-using BH.oM.Geometry;
-using System.Collections.Generic;
-using BH.oM.Structural.Design;
+﻿using BH.oM.Structural.Design;
 
 namespace BH.Engine.Structure
 {

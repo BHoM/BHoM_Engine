@@ -1,7 +1,4 @@
-﻿using BH.oM.Geometry;
-using BH.oM.Structural.Elements;
-
-namespace BH.Engine.Structure
+﻿namespace BH.Engine.Structure
 {
     public static partial class Create 
     {

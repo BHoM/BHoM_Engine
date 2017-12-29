@@ -15,5 +15,6 @@ namespace BH.Engine.Reflection
             return BHoMTypeList().Where(x => x.IsEnum).ToList();
         }
 
+        /***************************************************/
     }
 }

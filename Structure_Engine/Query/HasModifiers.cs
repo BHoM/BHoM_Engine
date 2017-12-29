@@ -1,19 +1,20 @@
-﻿using BH.oM.Structural.Elements;
-using System.Collections.Generic;
-using BH.oM.Structural.Design;
-using System.Linq;
+﻿using BH.oM.Structural.Properties;
 
 namespace BH.Engine.Structure
 {
-    public static partial class Create
+    public static partial class Query 
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static StructuralLayout StructuralLayout(IEnumerable<Bar> bars)
+        public static bool HasModifiers(Property2D property)
         {
-            return new StructuralLayout { AnalyticBars = bars.ToList() };
+            foreach (double modifier in property.Modifiers)
+            {
+                if (modifier != 1) return true;
+            }
+            return false;
         }
 
         /***************************************************/

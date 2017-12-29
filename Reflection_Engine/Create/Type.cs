@@ -26,8 +26,9 @@ namespace BH.Engine.Reflection
                     message += "- " + type.FullName + "\n";
 
                 throw new AmbiguousMatchException(message);
-            }
-                
+            }  
         }
+
+        /***************************************************/
     }
 }

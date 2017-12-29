@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using FormFinding_Engine.Base;
-using BHoM.Geometry;
+using BH.oM.Geometry;
+using BH.Engine.Geometry;
 
 namespace FormFinding_Engine.Structural.Goals
 {
@@ -29,10 +26,10 @@ namespace FormFinding_Engine.Structural.Goals
         {
             Positions = new List<Point> { startPoint, endPoint };
             m_stiffness = stiffness;
-            m_initialLength = startPoint.DistanceTo(endPoint);
+            m_initialLength = startPoint.Distance(endPoint);
         }
 
-        public Spring(Line line, double stiffness) : this(line.StartPoint, line.EndPoint, stiffness)
+        public Spring(Line line, double stiffness) : this(line.Start, line.End, stiffness)
         { }
         
         

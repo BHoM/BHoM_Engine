@@ -1,7 +1,4 @@
-﻿using BH.oM.Structural.Elements;
-using System.Collections.Generic;
-using BH.oM.Structural.Design;
-using System.Linq;
+﻿using BH.oM.Structural.Properties;
 
 namespace BH.Engine.Structure
 {
@@ -11,9 +8,9 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static StructuralLayout StructuralLayout(IEnumerable<Bar> bars)
+        public static BarRelease BarRelease(Constraint6DOF startConstraint, Constraint6DOF endConstraint, string name = "")
         {
-            return new StructuralLayout { AnalyticBars = bars.ToList() };
+            return new BarRelease { StartRelease = startConstraint, EndRelease = endConstraint, Name = name };
         }
 
         /***************************************************/

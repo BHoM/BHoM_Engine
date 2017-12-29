@@ -1,17 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 using FormFinding_Engine.Base;
-using FormFinding_Engine.Structural;
 using FormFinding_Engine.Structural.Goals;
-
-using BHoM.Geometry;
-
-
-
+using BH.oM.Geometry;
 
 namespace FormFinding_Engine.Structural.CableNetFormFinding
 {

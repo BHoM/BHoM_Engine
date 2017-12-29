@@ -1,5 +1,4 @@
 ﻿using BH.oM.Common.Materials;
-using System;
 
 namespace BH.Engine.Common
 {
