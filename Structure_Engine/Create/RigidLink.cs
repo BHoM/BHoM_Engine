@@ -1,5 +1,4 @@
 ﻿using BH.oM.Structural.Elements;
-using BH.oM.Geometry;
 using System.Collections.Generic;
 using BH.oM.Structural.Properties;
 using System.Linq;

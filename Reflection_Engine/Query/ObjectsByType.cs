@@ -10,7 +10,7 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Dictionary<Type, List<object>> GroupedByType(this IEnumerable<object> objects, bool goDeep = false)
+        public static Dictionary<Type, List<object>> ObjectsByType(this IEnumerable<object> objects, bool goDeep = false)
         {
             if (!goDeep)
                 return objects.GroupBy(x => x.GetType()).ToDictionary(x => x.Key, x => x.ToList());

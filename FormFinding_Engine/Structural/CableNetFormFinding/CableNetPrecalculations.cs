@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BHoM.Geometry;
 using FormFinding_Engine.Structural.Goals;
-
+using BH.oM.Geometry;
+using BH.Engine.Geometry;
 
 namespace FormFinding_Engine.Structural.CableNetFormFinding
 {
@@ -34,9 +32,9 @@ namespace FormFinding_Engine.Structural.CableNetFormFinding
 
             basRadVec *= baseRadialForceValue;
 
-            Vector xyRadialForceVec = new Vector(basRadVec.X, basRadVec.Y, 0);
+            Vector xyRadialForceVec = new Vector { X = basRadVec.X, Y = basRadVec.Y, Z = 0 };
 
-            Vector xyLoadForceVec = new Vector(baseLoadVec.X, baseLoadVec.Y, 0);
+            Vector xyLoadForceVec = new Vector { X = baseLoadVec.X, Y = baseLoadVec.Y, Z = 0 };
 
             Vector xyTotalForceVec = xyRadialForceVec + xyLoadForceVec;
 
@@ -71,9 +69,9 @@ namespace FormFinding_Engine.Structural.CableNetFormFinding
 
             xyTotalForceVec /= 2;
 
-            Vector trForceVec = trVec * Vector.DotProduct(xyTotalForceVec, xyTotalForceVec) / Vector.DotProduct(trVec, xyTotalForceVec);
+            Vector trForceVec = trVec * xyTotalForceVec.DotProduct(xyTotalForceVec) / trVec.DotProduct(xyTotalForceVec);
 
-            double trXyPrestressValue = trForceVec.Length;
+            double trXyPrestressValue = trForceVec.Length();
 
 
             //Point trPt = trPts[baseGridIndex];
@@ -121,7 +119,7 @@ namespace FormFinding_Engine.Structural.CableNetFormFinding
 
                 Vector v1 = prevTrPoint - thisTRPt;
                 Vector v2 = nextTRPt - thisTRPt;
-                Vector v3 = new Vector(loadVs[i].X, loadVs[i].Y, 0);
+                Vector v3 = new Vector { X = loadVs[i].X, Y = loadVs[i].Y, Z = 0 };
                 v1.Normalise();
                 v2.Normalise();
                 v1 *= trXyPrestressValue;
@@ -131,7 +129,7 @@ namespace FormFinding_Engine.Structural.CableNetFormFinding
 
                 Vector v4 = v1 + v2 + v3;
 
-                double preStressValue = v4.Length;
+                double preStressValue = v4.Length();
 
                 ConstantHorizontalPrestressGoal radial = new ConstantHorizontalPrestressGoal(thisCRPt, thisTRPt, preStressValue);
                 prestresses.Add(radial);
@@ -209,9 +207,9 @@ namespace FormFinding_Engine.Structural.CableNetFormFinding
 
             Vector trVec = trPt2 - trPt1;
 
-            Vector trForceVec = trVec * Vector.DotProduct(radVec, radVec) / Vector.DotProduct(trVec, radVec);
+            Vector trForceVec = trVec * radVec.DotProduct(radVec) / trVec.DotProduct(radVec);
 
-            double trXyPrestressValue = trForceVec.Length * scaleFactor;
+            double trXyPrestressValue = trForceVec.Length() * scaleFactor;
 
 
             List<ConstantHorizontalPrestressGoal> prestresses = new List<ConstantHorizontalPrestressGoal>();
@@ -265,7 +263,7 @@ namespace FormFinding_Engine.Structural.CableNetFormFinding
 
                 debugVec.Z = 0;
 
-                debug.Add(debugVec.Length);
+                debug.Add(debugVec.Length());
 
                 v1 = v3 * b;
             }
@@ -307,7 +305,7 @@ namespace FormFinding_Engine.Structural.CableNetFormFinding
             //crPrestressForce = CalculateCrPrestressForce2(ref crVecs, outOfBalanceVecs, ref crProjForces);
 
             List<Vector> totCrForce = AddVectors(crVecs, addCrForce);
-            crPrestressForce = totCrForce.Select(x => x.Length).ToList();
+            crPrestressForce = totCrForce.Select(x => x.Length()).ToList();
 
             List<Vector> totRadVecs = AddVectors(radVecs, addRadForce);
 
@@ -344,8 +342,8 @@ namespace FormFinding_Engine.Structural.CableNetFormFinding
 
         private static void CalculateCrForceComponents(List<Vector> crForces, List<Vector> radVecs, List<Vector> crVecs, out List<Vector> addCrForce, out List<Vector> addRadForce)
         {
-            List<Vector> crUnits = crVecs.Select(x => x / x.Length).ToList();
-            List<Vector> radUnits = radVecs.Select(x => x / x.Length).ToList();
+            List<Vector> crUnits = crVecs.Select(x => x / x.Length()).ToList();
+            List<Vector> radUnits = radVecs.Select(x => x / x.Length()).ToList();
             int count = crUnits.Count;
             int quarterCount = count / 4;
             int halfQ = quarterCount / 2;
@@ -361,7 +359,7 @@ namespace FormFinding_Engine.Structural.CableNetFormFinding
             for (int i = 0; i < count; i += quarterCount)
             {
                 int prev = i == 0 ? count - 1 : i-1;
-                Vector force = crForces[i].DuplicateVector();
+                Vector force = crForces[i].Clone();
                 force.Z = 0;
                 addRadForce[i] = addCrForce[i] - addCrForce[prev] + force;
             }
@@ -371,7 +369,7 @@ namespace FormFinding_Engine.Structural.CableNetFormFinding
         private static void CalcCrForceCompQuarter(int start, int quarterCount, List<Vector> crUnits, List<Vector> crForces, List<Vector> radVecs, ref List<Vector> addCrForce, ref List<Vector> addRadForce)
         {
             int mid = quarterCount/2;
-            Vector midForce = crForces[start + mid].DuplicateVector();
+            Vector midForce = crForces[start + mid].Clone();
             midForce.Z = 0;
             Vector radProj = ProjectVector(radVecs[start + mid], midForce);
             Vector rem = midForce - radProj;
@@ -470,12 +468,12 @@ namespace FormFinding_Engine.Structural.CableNetFormFinding
 
 
 
-            return crVecs.Select(x => x.Length).ToList();
+            return crVecs.Select(x => x.Length()).ToList();
         }
 
         private static Vector ProjectVector(Vector target, Vector v)
         {
-            return Vector.DotProduct(target, v) / Vector.DotProduct(target, target) * target;
+            return target.DotProduct(v) / target.DotProduct(target) * target;
         }
         private static List<double> CalculateCrPrestressForce(List<Vector> crVecs, List<Vector> outOfBalanceVecs)
         {
@@ -485,7 +483,7 @@ namespace FormFinding_Engine.Structural.CableNetFormFinding
 
             foreach (Vector v in crVecs)
             {
-                Vector dup = v.DuplicateVector();
+                Vector dup = v.Clone();
                 dup.Normalise();
                 crUnitVectors.Add(dup);
             }
@@ -518,7 +516,7 @@ namespace FormFinding_Engine.Structural.CableNetFormFinding
             for (int i = 0; i < crVecs.Count; i++)
             {
                 Vector res = crVecs[i] + additionalCrForce[i];
-                psForces.Add(res.Length);
+                psForces.Add(res.Length());
             }
 
             return psForces;
@@ -534,8 +532,8 @@ namespace FormFinding_Engine.Structural.CableNetFormFinding
             {
                 int nextIndex = (i == newTrPts.Count - 1) ? 0 : i + 1;
 
-                prestresses.Add(new ConstantHorizontalPrestressGoal(newTrPts[i], crPts[i], radVecs[i].Length));
-                prestresses.Add(new ConstantHorizontalPrestressGoal(newTrPts[i], newTrPts[nextIndex], trVecs[i].Length));
+                prestresses.Add(new ConstantHorizontalPrestressGoal(newTrPts[i], crPts[i], radVecs[i].Length()));
+                prestresses.Add(new ConstantHorizontalPrestressGoal(newTrPts[i], newTrPts[nextIndex], trVecs[i].Length()));
             }
 
             return prestresses;
@@ -550,12 +548,12 @@ namespace FormFinding_Engine.Structural.CableNetFormFinding
 
             foreach (Point p in trPts)
             {
-                newTrPts.Add(p.DuplicatePoint());
+                newTrPts.Add(p.Clone());
             }
 
             //Construct list with default elements for tensionring vector values
             trVecs = FillListWithDefault<Vector>(trPts.Count);
-            Vector adjustment = new Vector(0, 0, 0);
+            Vector adjustment = new Vector();
 
             //While loop setup parameters and bailout
             bool run = true;
@@ -574,11 +572,11 @@ namespace FormFinding_Engine.Structural.CableNetFormFinding
                     int halfCount = newTrPts.Count / 2;
                     Vector dist = newTrPts[halfCount] - trPts[halfCount];
 
-                    if (dist.Length < 0.00000000001)
+                    if (dist.Length() < 0.00000000001)
                         run = false;
 
                     Vector nextNorm = grPlns[1].Normal;
-                    Vector stepAdjustment = dist - Vector.DotProduct(dist, nextNorm) / Vector.DotProduct(nextNorm, nextNorm) * nextNorm;
+                    Vector stepAdjustment = dist - dist.DotProduct(nextNorm) / nextNorm.DotProduct(nextNorm) * nextNorm;
                     stepAdjustment /= 1000;
                     adjustment += stepAdjustment;
                     newTrPts[1] = trPts[1] + adjustment;
@@ -594,7 +592,7 @@ namespace FormFinding_Engine.Structural.CableNetFormFinding
                 Plane p = grPlns[0];
                 Vector n = p.Normal;
 
-                p1 = p3 - 2 * Vector.DotProduct(new Vector(p3), n) / Vector.DotProduct(n, n) * n;
+                p1 = p3 - 2 * Create.Vector(p3).DotProduct(n) / n.DotProduct(n) * n;
 
                 Vector force = totTrForce[0];
 
@@ -630,17 +628,17 @@ namespace FormFinding_Engine.Structural.CableNetFormFinding
 
                     v3 = force + v1;
 
-                    Line ln = new Line(thisPt, thisPt + v3);
+                    Line ln = new Line { Start = thisPt, End = thisPt + v3 };
 
                     Plane nxtPl = grPlns[nextIndex];
 
-                    Point interPt = Intersect.PlaneLine(nxtPl, ln, false);
+                    Point interPt = ln.PlaneIntersection(nxtPl, false);
 
-                    trVecs[i] = v3.DuplicateVector();
+                    trVecs[i] = v3.Clone();
 
                     newTrPts[nextIndex] = interPt;
 
-                    v1 = v3.DuplicateVector();
+                    v1 = v3.Clone();
 
                 }
 
@@ -661,7 +659,7 @@ namespace FormFinding_Engine.Structural.CableNetFormFinding
 
             for (int i = 0; i < radVecs.Count; i++)
             {
-                totForces.Add(new Vector(radVecs[i].X + trProjForces[i].X, radVecs[i].Y + trProjForces[i].Y, 0));
+                totForces.Add(new Vector { X = radVecs[i].X + trProjForces[i].X, Y = radVecs[i].Y + trProjForces[i].Y, Z = 0 });
             }
 
             return totForces;
@@ -678,7 +676,7 @@ namespace FormFinding_Engine.Structural.CableNetFormFinding
             {
                 Vector f = forces[i];
                 Vector n = plns[i].Normal;
-                Vector proj = Vector.DotProduct(f, n) / Vector.DotProduct(n, n) * n;
+                Vector proj = f.DotProduct(n) / n.DotProduct(n) * n;
                 prForces.Add(f- proj);
                 outOfBalanceVectors.Add(proj);
             }
@@ -689,7 +687,7 @@ namespace FormFinding_Engine.Structural.CableNetFormFinding
         private static Vector ProjectToPlane(Vector v, Plane p, out Vector remainder)
         {
             Vector n = p.Normal;
-            remainder = Vector.DotProduct(v, n) / Vector.DotProduct(n, n) * n;
+            remainder = v.DotProduct(n) / n.DotProduct(n) * n;
             return v - remainder;
         }
 
@@ -714,7 +712,7 @@ namespace FormFinding_Engine.Structural.CableNetFormFinding
 
         private static List<Plane> CalcGridLinePLanes(List<Point> crPts, List<Point> trPts)
         {
-            Vector z = new Vector(0, 0, 1);
+            Vector z = new Vector { X = 0, Y = 0, Z = 1 };
 
             List<Plane> grPlns = new List<Plane>();
 
@@ -724,9 +722,9 @@ namespace FormFinding_Engine.Structural.CableNetFormFinding
                 dup.Z = 0;
                 dup.Normalise();
 
-                Vector norm = Vector.CrossProduct(dup, z);
+                Vector norm = dup.CrossProduct(z);
                 
-                grPlns.Add(new Plane(trPts[i], norm));
+                grPlns.Add(Create.Plane(trPts[i], norm));
             }
 
             return grPlns;
@@ -761,7 +759,7 @@ namespace FormFinding_Engine.Structural.CableNetFormFinding
                 Vector v1, v2, v3;
                 v1 = (i == 0) ? crVecs[crVecs.Count - 1] : crVecs[i - 1];
                 v2 = crVecs[i];
-                v3 = crForces[i].DuplicateVector();
+                v3 = crForces[i].Clone();
                 v3.Z = 0;
 
                 radVecs.Add((v2 - v1)+v3);
@@ -845,7 +843,7 @@ namespace FormFinding_Engine.Structural.CableNetFormFinding
 
             for (int i = 0; i < size; i++)
             {
-                list.Add(new Vector(0, 0, 0));
+                list.Add(new Vector());
             }
 
             return list;
@@ -888,7 +886,7 @@ namespace FormFinding_Engine.Structural.CableNetFormFinding
             {
                 Vector l = crForces[i];
                 Vector n = grPlns[i].Normal;
-                prCrForce.Add(l - Vector.DotProduct(l, n) / Vector.DotProduct(n, n) * n);
+                prCrForce.Add(l - l.DotProduct(n) / n.DotProduct(n) * n);
             }
 
 
@@ -904,7 +902,7 @@ namespace FormFinding_Engine.Structural.CableNetFormFinding
             {
                 Vector l = trForces[i];
                 Vector n = grPlns[i].Normal;
-                projForces.Add(l - Vector.DotProduct(l, n) / Vector.DotProduct(n, n) * n);
+                projForces.Add(l - l.DotProduct(n) / n.DotProduct(n) * n);
             }
 
             //Calculate total tensionring forces
@@ -913,7 +911,7 @@ namespace FormFinding_Engine.Structural.CableNetFormFinding
 
             for (int i = 0; i < radVecs.Count; i++)
             {
-                totForces.Add(new Vector(radVecs[i].X + projForces[i].X, radVecs[i].Y + projForces[i].Y, 0));
+                totForces.Add(new Vector { X = radVecs[i].X + projForces[i].X, Y = radVecs[i].Y + projForces[i].Y, Z = 0 });
             }
 
             //Copy Tensionring points
@@ -921,12 +919,12 @@ namespace FormFinding_Engine.Structural.CableNetFormFinding
 
             foreach (Point p in trPts)
             {
-                newTrPts.Add(p.DuplicatePoint());
+                newTrPts.Add(p.Clone());
             }
 
             //Construct list with default elements for tensionring vector values
             List<Vector> trVecs = FillListWithDefault<Vector>(trPts.Count);
-            Vector adjustment = new Vector(0, 0, 0);
+            Vector adjustment = new Vector();
 
             bool run = true;
 
@@ -945,11 +943,11 @@ namespace FormFinding_Engine.Structural.CableNetFormFinding
 
                     //dist *= -1;
 
-                    if (dist.Length < 0.00000000001)
+                    if (dist.Length() < 0.00000000001)
                         run = false;
 
                     Vector nextNorm = grPlns[1].Normal;
-                    Vector stepAdjustment = dist - Vector.DotProduct(dist, nextNorm) / Vector.DotProduct(nextNorm, nextNorm) * nextNorm;
+                    Vector stepAdjustment = dist - dist.DotProduct(nextNorm) / nextNorm.DotProduct(nextNorm) * nextNorm;
                     stepAdjustment /= 1000;
                     adjustment += stepAdjustment;
                     newTrPts[1] = trPts[1] + adjustment;
@@ -963,7 +961,7 @@ namespace FormFinding_Engine.Structural.CableNetFormFinding
                 Plane p = grPlns[0];
                 Vector n = p.Normal;
 
-                p1 = p3 - 2 * Vector.DotProduct(new Vector(p3), n) / Vector.DotProduct(n, n) * n;
+                p1 = p3 - 2 * Create.Vector(p3).DotProduct(n) / n.DotProduct(n) * n;
 
 
 
@@ -1003,11 +1001,11 @@ namespace FormFinding_Engine.Structural.CableNetFormFinding
 
                     v3 = force + v1;
 
-                    Line ln = new Line(thisPt, thisPt + v3);
+                    Line ln = new Line { Start = thisPt, End = thisPt + v3 };
 
                     Plane nxtPl = grPlns[nextIndex];
 
-                    Point interPt = Intersect.PlaneLine(nxtPl, ln, false);
+                    Point interPt = ln.PlaneIntersection(nxtPl, false);
 
                     trVecs[i] = v3;
 
@@ -1031,8 +1029,8 @@ namespace FormFinding_Engine.Structural.CableNetFormFinding
             {
                 int nextIndex = (i == newTrPts.Count - 1) ? 0 : i + 1;
 
-                prestresses.Add(new ConstantHorizontalPrestressGoal(newTrPts[i], crPts[i], radVecs[i].Length));
-                prestresses.Add(new ConstantHorizontalPrestressGoal(newTrPts[i], newTrPts[nextIndex], trVecs[i].Length));
+                prestresses.Add(new ConstantHorizontalPrestressGoal(newTrPts[i], crPts[i], radVecs[i].Length()));
+                prestresses.Add(new ConstantHorizontalPrestressGoal(newTrPts[i], newTrPts[nextIndex], trVecs[i].Length()));
             }
 
             return prestresses;

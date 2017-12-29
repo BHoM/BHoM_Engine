@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using FormFinding_Engine.Base;
-using BHoM.Geometry;
+using BH.oM.Geometry;
 
 namespace FormFinding_Engine.Structural.Goals
 {
@@ -30,7 +27,7 @@ namespace FormFinding_Engine.Structural.Goals
             m_prestressForce = xy_prestressForce;
         }
 
-        public ConstantHorizontalPrestressGoal(Line line, double prestressForce) : this(line.StartPoint, line.EndPoint, prestressForce)
+        public ConstantHorizontalPrestressGoal(Line line, double prestressForce) : this(line.Start, line.End, prestressForce)
         { }
 
 

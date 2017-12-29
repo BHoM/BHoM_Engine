@@ -1,7 +1,4 @@
-﻿using BH.oM.Structural.Elements;
-using System.Collections.Generic;
-using BH.oM.Structural.Design;
-using System.Linq;
+﻿using BH.oM.Structural.Loads;
 
 namespace BH.Engine.Structure
 {
@@ -11,9 +8,9 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static StructuralLayout StructuralLayout(IEnumerable<Bar> bars)
+        public static Loadcase Loadcase(string name, LoadNature nature, double selfWeightMultiplier = 0)
         {
-            return new StructuralLayout { AnalyticBars = bars.ToList() };
+            return new Loadcase { Name = name, Nature = nature };
         }
 
         /***************************************************/

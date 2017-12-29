@@ -9,8 +9,6 @@ namespace BH.Engine.Structure
 {
     public static partial class Query
     {
-
-
         /***************************************************/
         /**** Public Methods - ConcreteSEction          ****/
         /***************************************************/
@@ -133,7 +131,7 @@ namespace BH.Engine.Structure
                 {
                     count = 2;
                 }
-                List<IBHoMGeometry> layout = ((CompositeGeometry)new LayerReinforcement(reinforcement.Diameter, currentDepth, count).Layout(property)).Elements;
+                List<IBHoMGeometry> layout = ((CompositeGeometry)new LayerReinforcement { Diameter = reinforcement.Diameter, Depth = currentDepth, BarCount = count }.Layout(property)).Elements;
 
                 foreach (IBHoMGeometry geom in layout)
                 {

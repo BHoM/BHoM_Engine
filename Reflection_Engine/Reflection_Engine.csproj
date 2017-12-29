@@ -54,9 +54,9 @@
     <Compile Include="Query\PropertyObjects.cs" />
     <Compile Include="Query\PropertyTypes.cs" />
     <Compile Include="Query\PropertyValue.cs" />
-    <Compile Include="Transform\GroupByType.cs" />
+    <Compile Include="Query\ObjectsByType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Transform\SetPropertyValue.cs" />
+    <Compile Include="Modify\SetPropertyValue.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
