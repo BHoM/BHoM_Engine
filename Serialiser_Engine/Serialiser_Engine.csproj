@@ -53,11 +53,13 @@
     <Compile Include="Convert\Encrypted.cs" />
     <Compile Include="Convert\Zip.cs" />
     <Compile Include="Convert\Json.cs" />
+    <Compile Include="Modify\ApplyTaggedName.cs" />
     <Compile Include="Objects\BsonSerializers\ColourSerializer.cs" />
     <Compile Include="Objects\BsonSerializers\CustomObjectSerializer.cs" />
     <Compile Include="Objects\BsonSerializers\ObjectSerializer.cs" />
     <Compile Include="Objects\MemberMapConventions\KeepPropertiesAtTopLevelConvention.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Query\TaggedName.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
