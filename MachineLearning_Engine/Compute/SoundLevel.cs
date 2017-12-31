@@ -53,7 +53,7 @@ namespace BH.Engine.MachineLearning
             public int FrameStep;
             public string OutFolder;
 
-            public SoundResultEvent ResultReceived;
+            public SoundResultEvent ResultReceived = null;
 
             public Accord.DirectSound.WaveFileAudioSource AudioSource;
             public Dictionary<int, double> SoundLevel;

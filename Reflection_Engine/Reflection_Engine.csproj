@@ -45,6 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Create\Type.cs" />
+    <Compile Include="Query\DistinctProperties.cs" />
     <Compile Include="Query\MethodList.cs" />
     <Compile Include="Query\EnumList.cs" />
     <Compile Include="Query\TypeList.cs" />
