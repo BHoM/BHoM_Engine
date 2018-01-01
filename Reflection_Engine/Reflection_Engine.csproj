@@ -44,8 +44,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Compute\RunExtentionMethod.cs" />
     <Compile Include="Create\Type.cs" />
     <Compile Include="Query\DistinctProperties.cs" />
+    <Compile Include="Query\ExtentionMethods.cs" />
     <Compile Include="Query\MethodList.cs" />
     <Compile Include="Query\EnumList.cs" />
     <Compile Include="Query\TypeList.cs" />
