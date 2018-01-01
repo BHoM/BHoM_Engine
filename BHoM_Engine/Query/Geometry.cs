@@ -66,7 +66,7 @@ namespace BH.Engine.Base
 
         private static IBHoMGeometry Geometry(this BHoMObject obj)
         {
-            return null;
+            return Reflection.Compute.RunExtentionMethod(obj, "Geometry") as IBHoMGeometry;
         }
 
         /***************************************************/
