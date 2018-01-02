@@ -26,7 +26,7 @@ namespace BH.Engine.Geometry
 
         public static Point ClosestPoint(this Plane plane, Point point)
         {
-            throw new NotImplementedException();
+            return point.Project(plane);
         }
 
 
