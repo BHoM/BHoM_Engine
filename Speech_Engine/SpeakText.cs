@@ -1,6 +1,6 @@
 ﻿using System.Speech.Synthesis;
 
-namespace SpeechSynthesis_Engine
+namespace BH.Engine.Speech
 {
     public class SpeakText
     {

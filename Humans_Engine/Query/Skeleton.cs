@@ -3,7 +3,7 @@ using BH.oM.Humans;
 using System.Collections.Generic;
 
 
-namespace BH.REngine.Humans
+namespace BH.Engine.Humans
 {
     public static partial class Query
     {
