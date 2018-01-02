@@ -1,7 +1,7 @@
 ﻿using System.Speech.Recognition;
 
 
-namespace SpeechRecognition_Engine
+namespace BH.Engine.Speech
 {
     public class CommandProcessor
     {
