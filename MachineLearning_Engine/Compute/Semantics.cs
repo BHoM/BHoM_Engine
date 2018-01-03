@@ -3,6 +3,8 @@ using System.IO;
 using java.util;
 using java.io;
 using edu.stanford.nlp.pipeline;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace BH.Engine.MachineLearning
 {
@@ -12,22 +14,25 @@ namespace BH.Engine.MachineLearning
         /****  Public Methods                ****/
         /****************************************/
 
-        public static string Semantics(string text)
+        /// <summary>
+        /// Analyse a paragraph of text looking for semantic relationships between words and sentences.
+        /// </summary>
+        /// <param name="text">Paragraph to analyse as string</param>
+        /// <param name="annotators">Annotators to extract from the analysis as list of strings. See <see cref="https://stanfordnlp.github.io/CoreNLP/annotators.html"/> for a complete list.</param>
+        /// <returns>A json string containing annotated text</returns>
+        public static string Semantics(string text, IEnumerable<string> annotators = null)
         {
-            //tokenize == separate
-            //sssplit == split into difference sentences
-            // pos == part of speech identification
-            // lemma == part of lemma identification
-            // ner == name entity recognition
-            // parse == Consituency parsing
             Properties props = new Properties();
-            props.setProperty("annotators", "tokenize, ssplit, pos, lemma, ner, parse, dcoref, sentiment"); // Hard coded for now for lack of proper documentation to provide to the user, 
-            props.setProperty("ner.useSUTime", "0");                                                        // But should be exposed as query
-            props.setProperty("thread", Environment.ProcessorCount.ToString()); // TODO Not working in Gh
+            string finalAnnotators = "";
+            if (annotators != null) { finalAnnotators = String.Join(", ", annotators.ToArray()); }
+            finalAnnotators += "tokenize, ssplit, pos, lemma, ner, parse, dcoref, sentiment";
+            props.setProperty("annotators", "tokenize, ssplit, pos, lemma, ner, parse, dcoref, sentiment"); 
+            props.setProperty("ner.useSUTime", "0");
+            props.setProperty("thread", Environment.ProcessorCount.ToString());
 
             string username = System.Security.Principal.WindowsIdentity.GetCurrent().Name.Split('\\')[1];
             string jarRoot = "C:\\Users\\" + username + "\\AppData\\Roaming\\BHoM\\stanford-corenlp-3.8.0";
-            if (!System.IO.Directory.Exists(jarRoot)) { throw new System.IO.FileNotFoundException("Please download stanford-corenlp-3.8.0 from https://stanfordnlp.github.io/CoreNLP/index.html#download"); }
+            if (!System.IO.Directory.Exists(jarRoot)) { throw new System.IO.FileNotFoundException("Please download stanford-corenlp-3.8.0 from https://stanfordnlp.github.io/CoreNLP/index.html#download and place it in" + jarRoot); }
             string curDir = Environment.CurrentDirectory;
             Directory.SetCurrentDirectory(jarRoot);
             StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
@@ -42,36 +47,7 @@ namespace BH.Engine.MachineLearning
             return stream.ToString();
         }
 
-        /****************************************/  
+
+        /****************************************/
     }
 }
-
-
-//public static List<object> ParseAnnotation(string stream, string key)
-//{
-//    dynamic deJson = JsonConvert.DeserializeObject(stream);
-//    List<object> value = new List<object>();
-//    for (int j = 0; j < deJson["sentences"].Count; j++)
-//    {
-//        value.Add(deJson["sentences"][j][key]);
-//    }
-//    return value;
-//}
-
-//public static List<string> getSentences(this string stream)
-//{
-//    dynamic deJson = JsonConvert.DeserializeObject(stream);
-//    List<string> values = new List<string>();
-//    //string key = "sentenceText";
-//    for (int j = 0; j < deJson["sentences"].Count; j++)
-//    {
-//        string value = "";
-//        for (int k = 0; k < deJson["sentences"][j]["tokens"].Count; k++)
-//        {
-//            value += deJson["sentences"][j]["tokens"][k]["originalText"];
-//            value += ' ';
-//        }
-//        values.Add(value);
-//    }
-//    return values;
-//}
