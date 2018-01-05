@@ -18,13 +18,13 @@ namespace BH.Engine.Serialiser.BsonSerializers
 
             context.Writer.WriteStartDocument();
 
-            if (value.Tags.Count > 0)
+            if (value.Name.Length > 0)
             {
                 context.Writer.WriteName("Name");
                 BsonSerializer.Serialize(context.Writer, value.Name);
             }
 
-            if (value.Name.Length > 0)
+            if (value.Tags.Count > 0)
             {
                 context.Writer.WriteName("Tags");
                 context.Writer.WriteStartArray();
