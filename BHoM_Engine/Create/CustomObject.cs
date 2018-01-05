@@ -29,6 +29,8 @@ namespace BH.Engine.Base
                 for (int i = 0; i < propertyValues.Count; i++)
                     customData.Add(propertyNames[i], propertyValues[i]);
             }
+            else
+                throw new System.Exception("The list of property names must be the same length as the list of property values when creating a Custon object.");
 
             return new CustomObject
             {
