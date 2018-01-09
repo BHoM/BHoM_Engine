@@ -5,6 +5,13 @@ using BH.oM.Geometry;
 using System.Reflection;
 using System.IO;
 using BH.Engine.Base.Objects;
+using BH.oM.Base;
+using MongoDB.Bson.IO;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
+using BH.oM.Structural.Elements;
+using BH.oM.Structural.Properties;
+using BH.oM.Acoustic;
 //using ModelLaundry_Engine;
 
 namespace Engine_Test
@@ -19,10 +26,64 @@ namespace Engine_Test
 
         static void Main(string[] args)
         {
-            TestConstructorSpeed();
+            TestSerialization();
+            //TestConstructorSpeed();
             //TestDynamicExtentionCost();
             //TestMethodExtraction();
             Console.Read();
+        }
+
+        /***************************************************/
+        private static void TestSerialization()
+        {
+            // Trigger the initialisation (need a better way)
+            BH.Engine.Serialiser.Convert.FromJson("{}");
+
+            object input = new CustomObject()
+            {
+                CustomData = new Dictionary<string, object>
+                {
+                    { "X", 1 },
+                    { "Y", 2 },
+                    { "Z", new CustomObject
+                        {
+                            CustomData = new Dictionary<string, object> { {  "A", 3 } }
+                        }
+                    },
+                    { "ListStrings", new List<string> { "1", "2", "3" } },
+                    { "ListPoints", new List<Point> { new Point(), new Point { X = 1 } } },
+                    { "DictString", new Dictionary<string, string> { { "A", "1" }, { "B", "2" } } },
+                    { "ListEnums", new List<Frequency> { Frequency.Hz125, Frequency.Hz250 } },
+                    //{ "DictEnum", new Dictionary<Frequency, string> { { Frequency.Hz250, "1" }, { Frequency.Hz125, "2" } } }
+                },
+                Tags = new HashSet<string> { "A", "B" }
+            };
+
+            var jsonWriterSettings = new JsonWriterSettings { OutputMode = JsonOutputMode.Strict };
+            BsonDocument doc = input.ToBsonDocument();
+            string json = doc.ToJson<BsonDocument>(jsonWriterSettings);
+            object obj = BsonSerializer.Deserialize(doc, typeof(object));
+
+            Node node = new Node { Position = new Point { X = 1, Y = 2, Z = 3 }, Name = "testNode" };
+            BsonDocument doc2 = node.ToBsonDocument();
+            doc2["NewData"] = "ExtraStuff";
+            string json2 = doc2.ToJson<BsonDocument>(jsonWriterSettings);
+            object obj2 = BsonSerializer.Deserialize(doc2, typeof(object));
+
+            CircleDimensions circleDim = new CircleDimensions(43.2);
+            circleDim.Name = "Dim";
+            BsonDocument doc3 = circleDim.ToBsonDocument();
+            string json3 = doc3.ToJson<BsonDocument>(jsonWriterSettings);
+            object obj3 = BsonSerializer.Deserialize(doc3, typeof(object));
+
+            SteelSection section = new SteelSection(
+                new List<ICurve> { new Line { Start = new Point(), End = new Point { X = 1, Y = 1, Z = 1 } } },
+                new CircleDimensions(4.2),
+                2.1, 1.3, .5, 2, 3, 4, 5, 6, 7, 88, 9, 0, 4, 5, 6, 7, 7, 8, 9
+            );
+            BsonDocument doc4 = section.ToBsonDocument();
+            string json4 = doc4.ToJson<BsonDocument>(jsonWriterSettings);
+            object obj4 = BsonSerializer.Deserialize(doc4, typeof(object));
         }
 
         /***************************************************/

@@ -36,6 +36,10 @@
     <Reference Include="BHoM">
       <HintPath>..\..\BHoM\Build\BHoM.dll</HintPath>
     </Reference>
+    <Reference Include="MongoDB.Bson, Version=2.4.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MongoDB.Bson.2.4.4\lib\net45\MongoDB.Bson.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -51,6 +55,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BHoM_Engine\BHoM_Engine.csproj">
@@ -64,6 +69,10 @@
     <ProjectReference Include="..\Reflection_Engine\Reflection_Engine.csproj">
       <Project>{b0154405-9390-472d-9b5c-a2280823b18d}</Project>
       <Name>Reflection_Engine</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Serialiser_Engine\Serialiser_Engine.csproj">
+      <Project>{b013f0da-7d21-4339-85fc-013edd518c6d}</Project>
+      <Name>Serialiser_Engine</Name>
     </ProjectReference>
     <ProjectReference Include="..\Structure_Engine\Structure_Engine.csproj">
       <Project>{52a31a0a-e340-4909-aad6-228045b07bf3}</Project>
