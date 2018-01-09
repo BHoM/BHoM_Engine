@@ -7,6 +7,9 @@ using System.Dynamic;
 using System.Linq;
 using MongoDB.Bson.Serialization.Conventions;
 using BH.Engine.Serialiser.BsonSerializers;
+using BH.Engine.Serialiser.MemberMapConventions;
+using BH.Engine.Serialiser.Conventions;
+using MongoDB.Bson.Serialization.Serializers;
 
 namespace BH.Engine.Serialiser
 {
@@ -18,6 +21,9 @@ namespace BH.Engine.Serialiser
 
         public static BsonDocument ToBson(this object obj)
         {
+            if (!m_TypesRegistered)
+                RegisterTypes();
+
             if (obj is string)
             {
                 BsonDocument document;
@@ -77,23 +83,32 @@ namespace BH.Engine.Serialiser
 
         private static void RegisterTypes()
         {
-            // Define the conventions   //TODO: Try to use conventions to better integrate with Bson
-            //var pack = new ConventionPack();
-            //pack.Add(new KeepPropertiesAtTopLevelConvention());
-            //ConventionRegistry.Register("BHoM Conventions", pack, x => x is object);
+            // Define the conventions   
+            var pack = new ConventionPack();
+            pack.Add(new ImmutableBHoMClassMapConvention());
+            pack.Add(new ImmutableBHoMCreatorMapConvention());
+            pack.Add(new BHoMDictionaryConvention());
+            ConventionRegistry.Register("BHoM Conventions", pack, x => x is object);
 
-            // Register the types
+            var pack2 = new ConventionPack();
+            pack2.Add(new EnumRepresentationConvention(BsonType.String));
+            ConventionRegistry.Register("Enum Conventions", pack2, x => x.GetType().IsEnum);
+
+            // Register additional serialisers
             try
             {
-                BsonSerializer.RegisterSerializer(typeof(System.Drawing.Color), new ColourSerializer());
-                BsonSerializer.RegisterSerializer(typeof(CustomObject), new CustomObjectSerializer());
                 BsonSerializer.RegisterSerializer(typeof(object), new BH_ObjectSerializer());
+                BsonSerializer.RegisterSerializer(typeof(System.Drawing.Color), new ColourSerializer());
+                BsonSerializer.RegisterSerializer(typeof(Guid), new GuidSerializer(BsonType.String));
+                BsonSerializer.RegisterSerializer(typeof(CustomObject), new CustomObjectSerializer());
+                BsonDefaults.DynamicDocumentSerializer = new CustomObjectSerializer();
             }
-            catch(Exception)
+            catch (Exception)
             {
                 Console.WriteLine("Problem with initialisation of the Bson Serializer");
             }
-
+            
+            // Register class maps
             foreach (Type type in BH.Engine.Reflection.Query.BHoMTypeList())
             {
                 if (!type.IsGenericType && !BsonClassMap.IsClassMapRegistered(type))
@@ -111,8 +126,9 @@ namespace BH.Engine.Serialiser
         {
             BsonClassMap cm = new BsonClassMap(type);
             cm.AutoMap();
-            cm.SetDiscriminator(type.ToString());
+            cm.SetDiscriminator(type.FullName);
             cm.SetDiscriminatorIsRequired(true);
+            cm.SetIgnoreExtraElements(true);   // It would have been nice to use cm.MapExtraElementsProperty("CustomData") but it doesn't work for inherited properties
             BsonClassMap.RegisterClassMap(cm);
         }
 
