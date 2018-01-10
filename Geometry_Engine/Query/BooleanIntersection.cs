@@ -55,9 +55,13 @@ namespace BH.Engine.Geometry
                     S = E;
                 }
             }
-            outCtrlPts.Add(outCtrlPts.First());
-            List<Polyline> polyLineList = new List<Polyline>() { new Polyline { ControlPoints = outCtrlPts } };
-            return polyLineList;
+            if (outCtrlPts.Count == 0) return new List<Polyline>() { new Polyline() };
+            else
+            {
+                outCtrlPts.Add(outCtrlPts.First());
+                List<Polyline> polyLineList = new List<Polyline>() { new Polyline { ControlPoints = outCtrlPts } };
+                return polyLineList;
+            }
         }
 
         /***************************************************/  
