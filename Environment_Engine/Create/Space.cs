@@ -10,9 +10,9 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Space Space(List<Polyline> contours)
+        public static Space Space(Panel panels)
         {
-            return new Space { Contours = contours };
+            return new Space { Panels = panels };
         }
 
         /***************************************************/

@@ -1,5 +1,4 @@
 ﻿using BH.oM.Environmental.Elements;
-using BH.oM.Geometry;
 
 namespace BH.Engine.Environment
 {
@@ -9,9 +8,12 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Opening Opening(Polyline contour)
+        public static BuildingElement BuildingElement()
         {
-            return new Opening { Polyline = contour };
+            return new BuildingElement
+            {
+
+            };
         }
 
         /***************************************************/

@@ -1,4 +1,6 @@
 ﻿using BH.oM.Environmental.Elements;
+using BH.oM.Environmental.Properties;
+using System.Collections.Generic;
 using BH.oM.Geometry;
 
 namespace BH.Engine.Environment
@@ -9,12 +11,15 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Panel Panel(ISurface surface, string type = "")
+        public static Panel Panel(Polyline edges, List<Opening> openings, string type, SurfaceDataProperties surfaceData, BuildingElement buildingElements, CFDProperties cdfProperties)
         {
             return new Panel
             {
-                Surface = surface,
-                Type = type
+                Edges = edges,
+                Openings = openings,
+                SurfaceData = surfaceData,
+                BuildingElements = buildingElements,
+                CDFProperties = cdfProperties
             };
         }
 
