@@ -40,6 +40,7 @@ namespace BH.Engine.Geometry
                 List<Point> inCtrlPts = new List<Point>();
                 inCtrlPts.AddRange(outCtrlPts);
                 outCtrlPts.Clear();
+                if (inCtrlPts.Count == 0) return new List<Polyline>() { new Polyline() };
                 Point S = inCtrlPts.Last();
 
                 for (int j = 0; j < inCtrlPts.Count; j++)
