@@ -14,7 +14,7 @@ namespace BH.Engine.Architecture.Elements
         {
             return new Grid
             {
-                Curve = curve
+                Curve = Geometry.Modify.IProject(curve, Plane.XY)
             };
         }
 
@@ -22,8 +22,7 @@ namespace BH.Engine.Architecture.Elements
 
         public static Grid Grid(Point origin, Vector direction)
         {
-            Plane plane = new Plane { Origin = origin, Normal = Engine.Geometry.Query.CrossProduct(direction, Vector.ZAxis) };
-            Line line = new Line { Start = origin, End = origin + direction * 20 };
+            Line line = new Line { Start = new Point { X = origin.X, Y = origin.Y, Z = 0 }, End = origin + direction * 20 };
             return new Grid { Curve = line };
         }
 
