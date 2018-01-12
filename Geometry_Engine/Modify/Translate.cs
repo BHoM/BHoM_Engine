@@ -11,7 +11,7 @@ namespace BH.Engine.Geometry
 
         public static Point Translate(this Point pt, Vector transform)
         {
-            return pt + transform;
+            return new Point { X = pt.X + transform.X, Y = pt.Y + transform.Y, Z = pt.Z + transform.Z };
         }
 
         /***************************************************/

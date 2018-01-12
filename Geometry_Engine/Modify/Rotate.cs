@@ -10,9 +10,10 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Vectors                  ****/
         /***************************************************/
 
-        public static Point Rotate(this Point pt, double rad, Vector axis)
+        public static Point Rotate(this Point pt, Point origin, Vector axis, double rad)
         {
-            throw new NotImplementedException(); //TODO: rotation of a point around arbitrary axis
+            TransformMatrix rotationMatrix = Create.RotationMatrix(origin, axis, rad);
+            return Transform(pt, rotationMatrix);
         }
 
         /***************************************************/
@@ -27,9 +28,10 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static Plane Rotate(this Plane plane, double rad, Vector axis)
+        public static Plane Rotate(this Plane plane, Point origin, Vector axis, double rad)
         {
-            return new Plane { Origin = plane.Origin.Rotate(rad, axis), Normal = plane.Normal.Rotate(rad, axis) };
+            TransformMatrix rotationMatrix = Create.RotationMatrix(origin, axis, rad);
+            return Transform(plane, rotationMatrix);
         }
 
 
@@ -37,45 +39,51 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Curves                   ****/
         /***************************************************/
 
-        public static Arc Rotate(this Arc arc, double rad, Vector axis)
+        public static Arc Rotate(this Arc arc, Point origin, Vector axis, double rad)
         {
-            return new Arc { Start = arc.Start.Rotate(rad, axis), Middle = arc.Middle.Rotate(rad, axis), End = arc.End.Rotate(rad, axis) };
+            TransformMatrix rotationMatrix = Create.RotationMatrix(origin, axis, rad);
+            return Transform(arc, rotationMatrix);
         }
 
         /***************************************************/
 
-        public static Circle Rotate(this Circle circle, double rad, Vector axis)
+        public static Circle Rotate(this Circle circle, Point origin, Vector axis, double rad)
         {
-            return new Circle { Centre = circle.Centre.Rotate(rad, axis), Normal = circle.Normal.Rotate(rad, axis), Radius = circle.Radius };
+            TransformMatrix rotationMatrix = Create.RotationMatrix(origin, axis, rad);
+            return Transform(circle, rotationMatrix);
         }
 
         /***************************************************/
 
-        public static Line Rotate(this Line line, double rad, Vector axis)
+        public static Line Rotate(this Line line, Point origin, Vector axis, double rad)
         {
-            return new Line { Start = line.Start.Rotate(rad, axis), End = line.End.Rotate(rad, axis) };
+            TransformMatrix rotationMatrix = Create.RotationMatrix(origin, axis, rad);
+            return Transform(line, rotationMatrix);
         }
 
         /***************************************************/
 
-        public static NurbCurve Rotate(this NurbCurve curve, double rad, Vector axis)
+        public static NurbCurve Rotate(this NurbCurve curve, Point origin, Vector axis, double rad)
         {
-            return new NurbCurve { ControlPoints = curve.ControlPoints.Select(x => x.Rotate(rad, axis)).ToList(), Weights = curve.Weights.ToList(), Knots = curve.Knots.ToList() };
+            TransformMatrix rotationMatrix = Create.RotationMatrix(origin, axis, rad);
+            return Transform(curve, rotationMatrix);
         }
 
 
         /***************************************************/
 
-        public static PolyCurve Rotate(this PolyCurve curve, double rad, Vector axis)
+        public static PolyCurve Rotate(this PolyCurve curve, Point origin, Vector axis, double rad)
         {
-            return new PolyCurve { Curves = curve.Curves.Select(x => x.IRotate(rad, axis)).ToList() };
+            TransformMatrix rotationMatrix = Create.RotationMatrix(origin, axis, rad);
+            return Transform(curve, rotationMatrix);
         }
 
         /***************************************************/
 
-        public static Polyline Rotate(this Polyline curve, double rad, Vector axis)
+        public static Polyline Rotate(this Polyline curve, Point origin, Vector axis, double rad)
         {
-            return new Polyline { ControlPoints = curve.ControlPoints.Select(x => x.Rotate(rad, axis)).ToList() };
+            TransformMatrix rotationMatrix = Create.RotationMatrix(origin, axis, rad);
+            return Transform(curve, rotationMatrix);
         }
 
 
@@ -83,37 +91,42 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Surfaces                 ****/
         /***************************************************/
 
-        public static Extrusion Rotate(this Extrusion surface, double rad, Vector axis)
+        public static Extrusion Rotate(this Extrusion surface, Point origin, Vector axis, double rad)
         {
-            return new Extrusion { Curve = surface.Curve.IRotate(rad, axis), Direction = surface.Direction.Rotate(rad, axis), Capped = surface.Capped };
+            TransformMatrix rotationMatrix = Create.RotationMatrix(origin, axis, rad);
+            return Transform(surface, rotationMatrix);
         }
 
         /***************************************************/
 
-        public static Loft Rotate(this Loft surface, double rad, Vector axis)
+        public static Loft Rotate(this Loft surface, Point origin, Vector axis, double rad)
         {
-            return new Loft { Curves = surface.Curves.Select(x => x.IRotate(rad, axis)).ToList() };
+            TransformMatrix rotationMatrix = Create.RotationMatrix(origin, axis, rad);
+            return Transform(surface, rotationMatrix);
         }
 
         /***************************************************/
 
-        public static NurbSurface Rotate(this NurbSurface surface, double rad, Vector axis)
+        public static NurbSurface Rotate(this NurbSurface surface, Point origin, Vector axis, double rad)
         {
-            return new NurbSurface { ControlPoints = surface.ControlPoints.Select(x => x.Rotate(rad, axis)).ToList(), Weights = surface.Weights.ToList(), UKnots = surface.UKnots.ToList(), VKnots = surface.VKnots.ToList() };
+            TransformMatrix rotationMatrix = Create.RotationMatrix(origin, axis, rad);
+            return Transform(surface, rotationMatrix);
         }
 
         /***************************************************/
 
-        public static Pipe Rotate(this Pipe surface, double rad, Vector axis)
+        public static Pipe Rotate(this Pipe surface, Point origin, Vector axis, double rad)
         {
-            return new Pipe { Centreline = surface.Centreline.IRotate(rad, axis), Radius = surface.Radius, Capped = surface.Capped };
+            TransformMatrix rotationMatrix = Create.RotationMatrix(origin, axis, rad);
+            return Transform(surface, rotationMatrix);
         }
 
         /***************************************************/
 
-        public static PolySurface Rotate(this PolySurface surface, double rad, Vector axis)
+        public static PolySurface Rotate(this PolySurface surface, Point origin, Vector axis, double rad)
         {
-            return new PolySurface { Surfaces = surface.Surfaces.Select(x => x.IRotate(rad, axis)).ToList() };
+            TransformMatrix rotationMatrix = Create.RotationMatrix(origin, axis, rad);
+            return Transform(surface, rotationMatrix);
         }
 
 
@@ -121,16 +134,18 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Others                   ****/
         /***************************************************/
 
-        public static Mesh Rotate(this Mesh mesh, double rad, Vector axis)
+        public static Mesh Rotate(this Mesh mesh, Point origin, Vector axis, double rad)
         {
-            return new Mesh { Vertices = mesh.Vertices.Select(x => x.Rotate(rad, axis)).ToList(), Faces = mesh.Faces.Select(x => x.Clone()).ToList() };
+            TransformMatrix rotationMatrix = Create.RotationMatrix(origin, axis, rad);
+            return Transform(mesh, rotationMatrix);
         }
 
         /***************************************************/
 
-        public static CompositeGeometry Rotate(this CompositeGeometry group, double rad, Vector axis)
+        public static CompositeGeometry Rotate(this CompositeGeometry group, Point origin, Vector axis, double rad)
         {
-            return new CompositeGeometry { Elements = group.Elements.Select(x => x.IRotate(rad, axis)).ToList() };
+            TransformMatrix rotationMatrix = Create.RotationMatrix(origin, axis, rad);
+            return Transform(group, rotationMatrix);
         }
 
 
@@ -138,25 +153,23 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
-        public static IBHoMGeometry IRotate(this IBHoMGeometry geometry, double rad, Vector axis)
+        public static IBHoMGeometry IRotate(this IBHoMGeometry geometry, Point origin, Vector axis, double rad)
         {
             return Rotate(geometry as dynamic, rad, axis);
         }
 
         /***************************************************/
 
-        public static ICurve IRotate(this ICurve geometry, double rad, Vector axis)
+        public static ICurve IRotate(this ICurve geometry, Point origin, Vector axis, double rad)
         {
             return Rotate(geometry as dynamic, rad, axis);
         }
 
         /***************************************************/
 
-        public static ISurface IRotate(this ISurface geometry, double rad, Vector axis)
+        public static ISurface IRotate(this ISurface geometry, Point origin, Vector axis, double rad)
         {
             return Rotate(geometry as dynamic, rad, axis);
         }
-
-        /***************************************************/
     }
 }

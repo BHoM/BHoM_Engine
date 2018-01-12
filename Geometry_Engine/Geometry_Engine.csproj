@@ -61,6 +61,8 @@
     <Compile Include="Create\Line.cs" />
     <Compile Include="Create\Ellipse.cs" />
     <Compile Include="Create\IntegrationSlice.cs" />
+    <Compile Include="Modify\Orient.cs" />
+    <Compile Include="Modify\Scale.cs" />
     <Compile Include="Query\BasisFunction.cs" />
     <Compile Include="Query\BooleanIntersection.cs" />
     <Compile Include="Query\Clone.cs" />
