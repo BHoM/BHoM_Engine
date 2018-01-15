@@ -11,7 +11,7 @@ namespace BH.Engine.Environment
 
         public static Opening Opening(Polyline contour)
         {
-            return new Opening { Polyline = contour };
+            return new Opening { Contour = contour };
         }
 
         /***************************************************/

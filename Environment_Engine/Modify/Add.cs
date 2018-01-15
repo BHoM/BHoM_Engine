@@ -24,7 +24,7 @@ namespace BH.Engine.Environment
 
             if(Space.Storey == null)
             {
-                BoundingBox
+                // BoundingBox
             }
             else
             {
