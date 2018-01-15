@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Engine_Test", "Engine_Test\Engine_Test.csproj", "{178E7641-FB4D-41E9-A250-120A2B834912}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -36,6 +36,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Architecture_Engine", "Architecture_Engine\Architecture_Engine.csproj", "{338E9DA8-8AAF-4F51-B4AD-264B5F329A5F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Environment_Engine", "Environment_Engine\Environment_Engine.csproj", "{3E563667-E18A-4057-B183-6C758B8EF823}"
+	ProjectSection(ProjectDependencies) = postProject
+		{52A31A0A-E340-4909-AAD6-228045B07BF3} = {52A31A0A-E340-4909-AAD6-228045B07BF3}
+		{89AB2DCB-EF87-4CBA-B59C-C16A8A71D333} = {89AB2DCB-EF87-4CBA-B59C-C16A8A71D333}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Humans_Engine", "Humans_Engine\Humans_Engine.csproj", "{F17DF4D6-D155-4FFA-9917-EF1487FAA978}"
 EndProject

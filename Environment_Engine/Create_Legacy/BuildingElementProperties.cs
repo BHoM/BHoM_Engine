@@ -9,9 +9,9 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static SurfaceDataProperties SurfaceDataProperties()
+        public static BuildingElementProperties BuildingElementProperties()
         {
-            return new SurfaceDataProperties
+            return new BuildingElementProperties
             {
 
             };

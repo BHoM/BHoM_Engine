@@ -1,5 +1,5 @@
-﻿using BH.oM.Environmental.Elements;
-using BH.oM.Environmental.Properties;
+﻿using BH.oM.Environmental.Elements_Legacy;
+using BH.oM.Environmental.Properties_Legacy;
 
 namespace BH.Engine.Environment
 {

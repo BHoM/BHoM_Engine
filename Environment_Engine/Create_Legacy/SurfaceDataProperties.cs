@@ -1,5 +1,5 @@
-﻿using BH.oM.Environmental.Elements;
-using BH.oM.Geometry;
+﻿using BH.oM.Environmental.Elements_Legacy;
+using BH.oM.Environmental.Properties_Legacy;
 
 namespace BH.Engine.Environment
 {
@@ -9,9 +9,12 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Opening Opening(Polyline contour)
+        public static SurfaceDataProperties SurfaceDataProperties()
         {
-            return new Opening { Polyline = contour };
+            return new SurfaceDataProperties
+            {
+
+            };
         }
 
         /***************************************************/

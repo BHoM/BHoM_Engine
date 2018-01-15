@@ -8,14 +8,11 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Location Location(string placename, double latitude, double longitude, double elevation)
+        public static BuildingElement BuildingElement()
         {
-            return new Location
+            return new BuildingElement
             {
-                Name = placename,
-                Latitude = latitude,
-                Longitude = longitude,
-                Elevation = elevation
+
             };
         }
 
