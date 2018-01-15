@@ -1,0 +1,94 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{68300030-BC17-49BD-A363-CFCD3828E812}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Acoustic_Engine</RootNamespace>
+    <AssemblyName>Acoustic_Engine</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\Build\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="BHoM, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\BHoM\Build\BHoM.dll</HintPath>
+    </Reference>
+    <Reference Include="Geometry_Engine, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Build\Geometry_Engine.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Create\Panel.cs" />
+    <Compile Include="Create\Rasti.cs" />
+    <Compile Include="Create\Ray.cs" />
+    <Compile Include="Create\Receiver.cs" />
+    <Compile Include="Create\Room.cs" />
+    <Compile Include="Create\RT60.cs" />
+    <Compile Include="Create\SnRatio.cs" />
+    <Compile Include="Create\SoundLevel.cs" />
+    <Compile Include="Create\Speaker.cs" />
+    <Compile Include="Query\DirectRays.cs" />
+    <Compile Include="Query\DirectSound.cs" />
+    <Compile Include="Modify\FilterRays.cs" />
+    <Compile Include="Query\GainFactor.cs" />
+    <Compile Include="Query\Length.cs" />
+    <Compile Include="Query\Order.cs" />
+    <Compile Include="Query\Plane.cs" />
+    <Compile Include="Query\TravelTime.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Query\RASTI.cs" />
+    <Compile Include="Query\ReverbDistance.cs" />
+    <Compile Include="Query\RoomConstant.cs" />
+    <Compile Include="Query\SabineTime.cs" />
+    <Compile Include="Query\SignalToNoise.cs" />
+    <Compile Include="Query\SoundLevel.cs" />
+    <Compile Include="Query\SoundLevelsSum.cs" />
+    <Compile Include="Query\TimeConstant.cs" />
+    <Compile Include="Modify\FilterVisibleRays.cs" />
+    <Compile Include="Query\IsObstructed.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

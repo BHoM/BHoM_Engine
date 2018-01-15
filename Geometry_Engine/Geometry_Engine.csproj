@@ -1,0 +1,144 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{89AB2DCB-EF87-4CBA-B59C-C16A8A71D333}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>BH.Engine.Geometry</RootNamespace>
+    <AssemblyName>Geometry_Engine</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\Build\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="BHoM">
+      <HintPath>..\..\BHoM\Build\BHoM.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Compute\Integrate.cs" />
+    <Compile Include="Create\Vector.cs" />
+    <Compile Include="Create\Point.cs" />
+    <Compile Include="Create\PolySurface.cs" />
+    <Compile Include="Create\Pipe.cs" />
+    <Compile Include="Create\NurbSurface.cs" />
+    <Compile Include="Create\Loft.cs" />
+    <Compile Include="Create\Extrusion.cs" />
+    <Compile Include="Create\CompositeGeometry.cs" />
+    <Compile Include="Create\BoundingBox.cs" />
+    <Compile Include="Create\Mesh.cs" />
+    <Compile Include="Create\Face.cs" />
+    <Compile Include="Create\Polyline.cs" />
+    <Compile Include="Create\PolyCurve.cs" />
+    <Compile Include="Create\NurbCurve.cs" />
+    <Compile Include="Create\Line.cs" />
+    <Compile Include="Create\Ellipse.cs" />
+    <Compile Include="Create\IntegrationSlice.cs" />
+    <Compile Include="Query\BasisFunction.cs" />
+    <Compile Include="Query\BooleanIntersection.cs" />
+    <Compile Include="Query\Clone.cs" />
+    <Compile Include="Convert\NurbForm.cs" />
+    <Compile Include="Create\Arc.cs" />
+    <Compile Include="Create\Circle.cs" />
+    <Compile Include="Create\Plane.cs" />
+    <Compile Include="Create\Quaternion.cs" />
+    <Compile Include="Create\TransformMatrix.cs" />
+    <Compile Include="Modify\MergeVertices.cs" />
+    <Compile Include="Modify\SortCurves.cs" />
+    <Compile Include="Query\Angle.cs" />
+    <Compile Include="Query\Area.cs" />
+    <Compile Include="Query\Average.cs" />
+    <Compile Include="Query\Bounds.cs" />
+    <Compile Include="Query\Centre.cs" />
+    <Compile Include="Query\ClosestDistance.cs" />
+    <Compile Include="Query\ClosestPoint.cs" />
+    <Compile Include="Query\ControlPoints.cs" />
+    <Compile Include="Query\IsQuad.cs" />
+    <Compile Include="Query\MeshIntersections.cs" />
+    <Compile Include="Query\LineIntersections.cs" />
+    <Compile Include="Query\Intersections.cs" />
+    <Compile Include="Query\Degree.cs" />
+    <Compile Include="Query\DerivativeFunction.cs" />
+    <Compile Include="Query\Determinant.cs" />
+    <Compile Include="Query\Direction.cs" />
+    <Compile Include="Query\DiscontinuityPoints.cs" />
+    <Compile Include="Query\Distance.cs" />
+    <Compile Include="Query\Edges.cs" />
+    <Compile Include="Query\EndDir.cs" />
+    <Compile Include="Query\EndPoint.cs" />
+    <Compile Include="Query\Extents.cs" />
+    <Compile Include="Query\ExternalEdges.cs" />
+    <Compile Include="Query\Integration.cs" />
+    <Compile Include="Query\InternalEdges.cs" />
+    <Compile Include="Query\Length.cs" />
+    <Compile Include="Query\Normal.cs" />
+    <Compile Include="Compute\FitPlane.cs" />
+    <Compile Include="Query\PlaneIntersection.cs" />
+    <Compile Include="Query\PointAtLength.cs" />
+    <Compile Include="Query\PointAtParameter.cs" />
+    <Compile Include="Query\Product.cs" />
+    <Compile Include="Query\Radius.cs" />
+    <Compile Include="Query\ShearArea.cs" />
+    <Compile Include="Query\SliceAt.cs" />
+    <Compile Include="Query\StartDir.cs" />
+    <Compile Include="Query\StartPoint.cs" />
+    <Compile Include="Query\UVCount.cs" />
+    <Compile Include="Query\SamplePoints.cs" />
+    <Compile Include="Query\SubParts.cs" />
+    <Compile Include="Modify\Flip.cs" />
+    <Compile Include="Modify\Inflate.cs" />
+    <Compile Include="Modify\Invert.cs" />
+    <Compile Include="Modify\Mirror.cs" />
+    <Compile Include="Modify\Normalise.cs" />
+    <Compile Include="Modify\Project.cs" />
+    <Compile Include="Modify\Rotate.cs" />
+    <Compile Include="Modify\Transform.cs" />
+    <Compile Include="Modify\Translate.cs" />
+    <Compile Include="Modify\Transpose.cs" />
+    <Compile Include="Modify\Triangulate.cs" />
+    <Compile Include="Query\IsClosed.cs" />
+    <Compile Include="Query\IsContaining.cs" />
+    <Compile Include="Query\IsInPlane.cs" />
+    <Compile Include="Query\IsInRange.cs" />
+    <Compile Include="Query\IsParallel.cs" />
+    <Compile Include="Query\Side.cs" />
+    <Compile Include="Query\IsSameSide.cs" />
+    <Compile Include="Query\IsValid.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

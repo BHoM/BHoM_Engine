@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using FormFinding_Engine.Base;
-using BHoM.Structural.Elements;
-using BHoM.Geometry;
+using BH.oM.Geometry;
 
 namespace FormFinding_Engine.Structural
 {

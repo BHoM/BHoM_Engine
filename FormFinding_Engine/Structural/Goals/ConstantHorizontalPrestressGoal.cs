@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using FormFinding_Engine.Base;
-using BHoM.Geometry;
+using BH.oM.Geometry;
 
 namespace FormFinding_Engine.Structural.Goals
 {
@@ -30,7 +27,7 @@ namespace FormFinding_Engine.Structural.Goals
             m_prestressForce = xy_prestressForce;
         }
 
-        public ConstantHorizontalPrestressGoal(Line line, double prestressForce) : this(line.StartPoint, line.EndPoint, prestressForce)
+        public ConstantHorizontalPrestressGoal(Line line, double prestressForce) : this(line.Start, line.End, prestressForce)
         { }
 
 
@@ -44,13 +41,13 @@ namespace FormFinding_Engine.Structural.Goals
 
             double[] vec = new double[stPos.Length];
 
-            vec = VectorUtils.Sub(endPos, stPos);
+            vec = ArrayUtils.Sub(endPos, stPos);
 
-            double[] unitVec = VectorUtils.Normalise(vec);
+            double[] unitVec = ArrayUtils.Normalise(vec);
 
             double cableForceValue = m_prestressForce / Math.Sqrt(unitVec[0] * unitVec[0] + unitVec[1] * unitVec[1]);
 
-            double[] cableForce = VectorUtils.Multiply(unitVec, cableForceValue);
+            double[] cableForce = ArrayUtils.Multiply(unitVec, cableForceValue);
 
 
             // Calculate force

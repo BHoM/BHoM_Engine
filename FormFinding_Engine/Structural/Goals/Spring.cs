@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using FormFinding_Engine.Base;
-using BHoM.Geometry;
+using BH.oM.Geometry;
+using BH.Engine.Geometry;
 
 namespace FormFinding_Engine.Structural.Goals
 {
@@ -29,10 +26,10 @@ namespace FormFinding_Engine.Structural.Goals
         {
             Positions = new List<Point> { startPoint, endPoint };
             m_stiffness = stiffness;
-            m_initialLength = startPoint.DistanceTo(endPoint);
+            m_initialLength = startPoint.Distance(endPoint);
         }
 
-        public Spring(Line line, double stiffness) : this(line.StartPoint, line.EndPoint, stiffness)
+        public Spring(Line line, double stiffness) : this(line.Start, line.End, stiffness)
         { }
         
         
@@ -45,13 +42,13 @@ namespace FormFinding_Engine.Structural.Goals
             double[] newEndPos = nodeData[NodeIndices[1]].NewPosition();
 
 
-            double[] springVector = VectorUtils.Sub(newEndPos, newStPos);
+            double[] springVector = ArrayUtils.Sub(newEndPos, newStPos);
 
-            newLength = VectorUtils.Length(springVector);
+            newLength = ArrayUtils.Length(springVector);
 
             double stretchFactor = (m_initialLength - newLength) / newLength * m_stiffness;
 
-            double[] springForce = VectorUtils.Multiply(springVector, stretchFactor);
+            double[] springForce = ArrayUtils.Multiply(springVector, stretchFactor);
 
 
             //---------------------------------------------------------------------------------------------------------
@@ -79,7 +76,7 @@ namespace FormFinding_Engine.Structural.Goals
 
             // Store result
 
-            m_result = VectorUtils.Length(springForce);
+            m_result = ArrayUtils.Length(springForce);
 
         }
 

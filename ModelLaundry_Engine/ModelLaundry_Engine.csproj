@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ModelLaundry_Engine</RootNamespace>
     <AssemblyName>ModelLaundry_Engine</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -21,7 +21,8 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>..\Build\ModelLaundry_Engine.XML</DocumentationFile>
+    <DocumentationFile>
+    </DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -51,6 +52,25 @@
     <Compile Include="Snapping.cs" />
     <Compile Include="Structure.cs" />
     <Compile Include="Util.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BHoM_Engine\BHoM_Engine.csproj">
+      <Project>{1ad45c88-dd54-48e5-951f-55edfeb70e35}</Project>
+      <Name>BHoM_Engine</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\DataStructure_Engine\DataStructure_Engine.csproj">
+      <Project>{8082ca2a-ac5c-4690-9f09-960e0d3e4102}</Project>
+      <Name>DataStructure_Engine</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Geometry_Engine\Geometry_Engine.csproj">
+      <Project>{89ab2dcb-ef87-4cba-b59c-c16a8a71d333}</Project>
+      <Name>Geometry_Engine</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Structure_Engine\Structure_Engine.csproj">
+      <Project>{52a31a0a-e340-4909-aad6-228045b07bf3}</Project>
+      <Name>Structure_Engine</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
