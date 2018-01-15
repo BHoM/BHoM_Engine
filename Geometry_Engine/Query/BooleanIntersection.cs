@@ -18,9 +18,9 @@ namespace BH.Engine.Geometry
             outCtrlPts.RemoveAt(outCtrlPts.Count - 1);
             Plane plane = BH.Engine.Geometry.Create.Plane(regionCorners[0], regionCorners[1], regionCorners[2]);
 
-            if (regionCorners.Count < 4 || outCtrlPts.Count < 3) throw new NotImplementedException("The polylines needs to consist of at least 3 lines");
+            if (regionCorners.Count < 4 || outCtrlPts.Count < 3) throw new ArgumentException("The polylines needs to consist of at least 3 lines");
 
-            if (!regionCorners.IsInPlane(plane) || !outCtrlPts.IsInPlane(plane)) throw new NotImplementedException("The polylines needs to be in the same plane");
+            if (!regionCorners.IsInPlane(plane) || !outCtrlPts.IsInPlane(plane)) return new List<Polyline>();
 
             List<Plane> regionEdgePlanes = new List<Plane>();
             Point C = regionCorners.Average();
@@ -40,7 +40,7 @@ namespace BH.Engine.Geometry
                 List<Point> inCtrlPts = new List<Point>();
                 inCtrlPts.AddRange(outCtrlPts);
                 outCtrlPts.Clear();
-                if (inCtrlPts.Count == 0) return new List<Polyline>() { new Polyline() };
+                if (inCtrlPts.Count == 0) return new List<Polyline>();
                 Point S = inCtrlPts.Last();
 
                 for (int j = 0; j < inCtrlPts.Count; j++)
@@ -56,7 +56,7 @@ namespace BH.Engine.Geometry
                     S = E;
                 }
             }
-            if (outCtrlPts.Count == 0) return new List<Polyline>() { new Polyline() };
+            if (outCtrlPts.Count == 0) return new List<Polyline>();
             else
             {
                 outCtrlPts.Add(outCtrlPts.First());
