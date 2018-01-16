@@ -12,13 +12,14 @@ namespace BH.Engine.Environment
 {
     public static partial class Modify
     {
-        public static void Add(this Building Building, Storey Storey)
+        public static Building Add(this Building Building, Storey Storey)
         {
             Building.Storeys.Add(Storey);
             Building.Storeys.Sort((x, y) => x.Elevation.CompareTo(y.Elevation));
+            return Building;
         }
 
-        public static void Add(this Building Building, Space Space)
+        public static Building Add(this Building Building, Space Space)
         {
             Building.Spaces.Add(Space);
 
@@ -30,6 +31,8 @@ namespace BH.Engine.Environment
             {
 
             }
+
+            return Building;
         }
     }
 }
