@@ -121,7 +121,7 @@ namespace BH.Engine.Geometry
             List<int> wrapList = new List<int>();
             for (int i = 0; i < indexListLength; i++) wrapList.Add(crossRegIndicies[i] + vertListLength);            
             crossRegIndicies.AddRange(wrapList);
-            regClipVert.AddRange(regClipVert);
+            regClipVert.AddRange(regClipVert.GetRange(1, vertListLength-1));
                         
             List<int> orderedRegIndicies = new List<int>();
             orderedRegIndicies.AddRange(crossRegIndicies.GetRange(firstIndex, indexListLength));         
