@@ -50,6 +50,7 @@
   <ItemGroup>
     <Compile Include="Create\Building.cs" />
     <Compile Include="Create\BuildingElement.cs" />
+    <Compile Include="Create\BuildingElementCurve.cs" />
     <Compile Include="Create\BuildingElementPanel.cs" />
     <Compile Include="Create\BuildingElementProperties.cs" />
     <Compile Include="Create\Space.cs" />

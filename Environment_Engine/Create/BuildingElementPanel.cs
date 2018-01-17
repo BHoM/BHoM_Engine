@@ -19,6 +19,14 @@ namespace BH.Engine.Environment
             };
         }
 
+        public static BuildingElementPanel BuildingElementPanel(PolyCurve PolyCurve)
+        {
+            return new BuildingElementPanel()
+            {
+                PolyCurve = PolyCurve
+            };
+        }
+
         public static BuildingElementPanel BuildingElementPanel(IEnumerable<Polyline> Polylines)
         {
             return new BuildingElementPanel()

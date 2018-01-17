@@ -31,6 +31,15 @@ namespace BH.Engine.Environment
             };
         }
 
+        public static BuildingElement BuildingElement(BuildingElementProperties BuildingElementProperties, ICurve Curve)
+        {
+            return new BuildingElement()
+            {
+                BuildingElementProperties = BuildingElementProperties,
+                BuildingElementGeometry = Create.BuildingElementPanel(new ICurve[] { Curve })
+            };
+        }
+
         public static BuildingElement BuildingElement(BuildingElementProperties BuildingElementProperties, BuildingElementCurve BuildingElementCurve, Storey Storey)
         {
             return new BuildingElement()
