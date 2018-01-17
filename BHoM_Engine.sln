@@ -1,16 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+# Visual Studio Express 14 for Windows Desktop
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Engine_Test", "Engine_Test\Engine_Test.csproj", "{178E7641-FB4D-41E9-A250-120A2B834912}"
-	ProjectSection(ProjectDependencies) = postProject
-		{DD942373-95D4-46C9-AED7-7B58149F5D2E} = {DD942373-95D4-46C9-AED7-7B58149F5D2E}
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FormFinding_Engine", "FormFinding_Engine\FormFinding_Engine.csproj", "{6112D632-6143-4866-9ABA-28CDD1340C6D}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModelLaundry_Engine", "ModelLaundry_Engine\ModelLaundry_Engine.csproj", "{DD942373-95D4-46C9-AED7-7B58149F5D2E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MachineLearning_Engine", "MachineLearning_Engine\MachineLearning_Engine.csproj", "{02F81857-2D83-42AB-A0D7-030DCDD4D49F}"
 EndProject
@@ -60,19 +55,10 @@ Global
 		{178E7641-FB4D-41E9-A250-120A2B834912}.Release|x86.ActiveCfg = Release|Any CPU
 		{178E7641-FB4D-41E9-A250-120A2B834912}.Release|x86.Build.0 = Release|Any CPU
 		{6112D632-6143-4866-9ABA-28CDD1340C6D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6112D632-6143-4866-9ABA-28CDD1340C6D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6112D632-6143-4866-9ABA-28CDD1340C6D}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{6112D632-6143-4866-9ABA-28CDD1340C6D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6112D632-6143-4866-9ABA-28CDD1340C6D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6112D632-6143-4866-9ABA-28CDD1340C6D}.Release|x86.ActiveCfg = Release|Any CPU
-		{DD942373-95D4-46C9-AED7-7B58149F5D2E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DD942373-95D4-46C9-AED7-7B58149F5D2E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DD942373-95D4-46C9-AED7-7B58149F5D2E}.Debug|x86.ActiveCfg = Release|Any CPU
-		{DD942373-95D4-46C9-AED7-7B58149F5D2E}.Debug|x86.Build.0 = Release|Any CPU
-		{DD942373-95D4-46C9-AED7-7B58149F5D2E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DD942373-95D4-46C9-AED7-7B58149F5D2E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DD942373-95D4-46C9-AED7-7B58149F5D2E}.Release|x86.ActiveCfg = Release|Any CPU
-		{DD942373-95D4-46C9-AED7-7B58149F5D2E}.Release|x86.Build.0 = Release|Any CPU
 		{02F81857-2D83-42AB-A0D7-030DCDD4D49F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{02F81857-2D83-42AB-A0D7-030DCDD4D49F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{02F81857-2D83-42AB-A0D7-030DCDD4D49F}.Debug|x86.ActiveCfg = Release|Any CPU
