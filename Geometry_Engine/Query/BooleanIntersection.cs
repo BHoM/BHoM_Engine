@@ -77,7 +77,7 @@ namespace BH.Engine.Geometry
             List<int> crossCrvIndicies = new List<int>();
             List<Point> crvClipVert = new List<Point> { crvVert[0] };
 
-            int a = 2;
+            int a = 1;
             for (int i = 0; i < crvEdges.Count; i++)
             {                
                 for (int j = 0; j < regEdges.Count; j++)
@@ -93,7 +93,7 @@ namespace BH.Engine.Geometry
                 crvClipVert.Add(crvVert[i+1]);
             }
 
-            a = 2;
+            a = 1;
             List<int> crossRegIndicies = new List<int>();
             List<Point> regClipVert = new List<Point> { regVert[0] };
 
@@ -115,13 +115,13 @@ namespace BH.Engine.Geometry
             int indexListLength = crossCrvIndicies.Count;
 
             Point searchPt = crvClipVert[crossCrvIndicies[1]];
-            int searchIndex = regClipVert.IndexOf(searchPt);
+            int searchIndex = regClipVert.IndexOf(regClipVert.ClosestPoint(searchPt));
             int firstIndex = crossRegIndicies.IndexOf(searchIndex);
             //int firstIndex = crossRegIndicies.IndexOf(regClipVert.IndexOf(crvClipVert[crossCrvIndicies[1]]));
             List<int> wrapList = new List<int>();
-            for (int i = 0; i < vertListLength; i++) wrapList.Add(crossRegIndicies[i] + vertListLength);            
+            for (int i = 0; i < indexListLength; i++) wrapList.Add(crossRegIndicies[i] + vertListLength);            
             crossRegIndicies.AddRange(wrapList);
-            regClipVert.AddRange(crvClipVert);
+            regClipVert.AddRange(regClipVert);
                         
             List<int> orderedRegIndicies = new List<int>();
             orderedRegIndicies.AddRange(crossRegIndicies.GetRange(firstIndex, indexListLength));         
