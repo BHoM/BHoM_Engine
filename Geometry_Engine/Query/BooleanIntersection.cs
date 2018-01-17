@@ -70,14 +70,14 @@ namespace BH.Engine.Geometry
             List<Point> regVert = region.ControlPoints;
             List<Line> regEdges = new List<Line>();
             for (int i = 1; i < regVert.Count; i++) regEdges.Add(Create.Line(regVert[i - 1], regVert[i]));
-            List<Point> crvVert = region.ControlPoints;
+            List<Point> crvVert = curve.ControlPoints;
             List<Line> crvEdges = new List<Line>();
             for (int i = 1; i < crvVert.Count; i++) crvEdges.Add(Create.Line(crvVert[i - 1], crvVert[i]));
 
             List<int> crossCrvIndicies = new List<int>();
             List<Point> crvClipVert = new List<Point> { crvVert[0] };
 
-            int a = 0;
+            int a = 2;
             for (int i = 0; i < crvEdges.Count; i++)
             {                
                 for (int j = 0; j < regEdges.Count; j++)
@@ -93,7 +93,7 @@ namespace BH.Engine.Geometry
                 crvClipVert.Add(crvVert[i+1]);
             }
 
-            a = 0;
+            a = 2;
             List<int> crossRegIndicies = new List<int>();
             List<Point> regClipVert = new List<Point> { regVert[0] };
 
@@ -111,24 +111,28 @@ namespace BH.Engine.Geometry
                 regClipVert.Add(regVert[i+1]);
             }
 
-            int listLength = crossRegIndicies.Count;
+            int vertListLength = regClipVert.Count;
+            int indexListLength = crossCrvIndicies.Count;
 
-            int firstIndex = crossRegIndicies.IndexOf(regClipVert.IndexOf(crvClipVert[1]));
+            Point searchPt = crvClipVert[crossCrvIndicies[1]];
+            int searchIndex = regClipVert.IndexOf(searchPt);
+            int firstIndex = crossRegIndicies.IndexOf(searchIndex);
+            //int firstIndex = crossRegIndicies.IndexOf(regClipVert.IndexOf(crvClipVert[crossCrvIndicies[1]]));
             List<int> wrapList = new List<int>();
-            for (int i = 0; i < listLength; i++) wrapList.Add(crossRegIndicies[i] + listLength);            
+            for (int i = 0; i < vertListLength; i++) wrapList.Add(crossRegIndicies[i] + vertListLength);            
             crossRegIndicies.AddRange(wrapList);
             regClipVert.AddRange(crvClipVert);
                         
             List<int> orderedRegIndicies = new List<int>();
-            orderedRegIndicies.AddRange(crossRegIndicies.GetRange(firstIndex, listLength));         
+            orderedRegIndicies.AddRange(crossRegIndicies.GetRange(firstIndex, indexListLength));         
 
             List<Polyline> outList = new List<Polyline>();
-            for (int i = 0; i < listLength/2; i++)
+            for (int i = 0; i < indexListLength-1; i=+2)
             {
                 List<Point> currPlPts = new List<Point>();
-                currPlPts.AddRange(crvClipVert.Skip(crossCrvIndicies[i]).Take(crossCrvIndicies[2 * 1] - crossCrvIndicies[i]));
-                currPlPts.AddRange(regClipVert.Skip(orderedRegIndicies[i]).Take(orderedRegIndicies[2 * 1] - orderedRegIndicies[i]));
-                currPlPts.Add(currPlPts.First());
+                currPlPts.AddRange(crvClipVert.Skip(crossCrvIndicies[i]).Take(crossCrvIndicies[i+1] - crossCrvIndicies[i]+1));
+                currPlPts.AddRange(regClipVert.Skip(orderedRegIndicies[i]+1).Take(orderedRegIndicies[i+1] - orderedRegIndicies[i]));
+                //currPlPts.Add(currPlPts.First());
                 outList.Add(Create.Polyline(currPlPts));
             }
             return outList;       
