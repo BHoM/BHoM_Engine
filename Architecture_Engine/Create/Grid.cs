@@ -14,17 +14,7 @@ namespace BH.Engine.Architecture.Elements
         {
             return new Grid
             {
-                Curves = new List<ICurve> { curve }
-            };
-        }
-
-        /***************************************************/
-
-        public static Grid Grid(List<ICurve> curves)
-        {
-            return new Grid
-            {
-                Curves = curves
+                Curve = curve
             };
         }
 
@@ -34,7 +24,7 @@ namespace BH.Engine.Architecture.Elements
         {
             Plane plane = new Plane { Origin = origin, Normal = Engine.Geometry.Query.CrossProduct(direction, Vector.ZAxis) };
             Line line = new Line { Start = origin, End = origin + direction * 20 };
-            return new Grid { Curves = new List<ICurve> { line } };
+            return new Grid { Curve = line };
         }
 
         /***************************************************/
