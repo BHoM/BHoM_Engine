@@ -14,7 +14,7 @@ namespace BH.Engine.Geometry
             double dotProduct = v1.DotProduct(v2);
             double length = v1.Length() * v2.Length();
 
-            return (Math.Abs(dotProduct) < length) ? Math.Acos(dotProduct / length) : (Math.Abs(dotProduct) < length + 0.0001) ? Math.PI : 0;
+            return (Math.Abs(dotProduct) < length) ? Math.Acos(dotProduct / length) : (dotProduct < 0) ? Math.PI : 0;
         }
 
         /***************************************************/
