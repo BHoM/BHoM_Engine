@@ -103,7 +103,7 @@ namespace BH.Engine.Geometry
                 {
                     if ((LineIntersection(regEdges[i], crvEdges[j]) != null))
                     {
-                        crvClipVert.Add(LineIntersection(regEdges[i], crvEdges[j]));
+                        regClipVert.Add(LineIntersection(regEdges[i], crvEdges[j]));
                         crossRegIndicies.Add(i+a);
                         a++;
                     }
@@ -111,19 +111,28 @@ namespace BH.Engine.Geometry
                 regClipVert.Add(regVert[i+1]);
             }
 
+            int listLength = crossRegIndicies.Count;
+
+            int firstIndex = crossRegIndicies.IndexOf(regClipVert.IndexOf(crvClipVert[1]));
+            List<int> wrapList = new List<int>();
+            for (int i = 0; i < listLength; i++) wrapList.Add(crossRegIndicies[i] + listLength);            
+            crossRegIndicies.AddRange(wrapList);
+            regClipVert.AddRange(crvClipVert);
+                        
+            List<int> orderedRegIndicies = new List<int>();
+            orderedRegIndicies.AddRange(crossRegIndicies.GetRange(firstIndex, listLength));         
+
             List<Polyline> outList = new List<Polyline>();
-
-            for (int i = 0; i < crossRegIndicies.Count/2; i++)
+            for (int i = 0; i < listLength/2; i++)
             {
-                for (int j = crossCrvIndicies[2*i]; j < crossCrvIndicies[2*(i+1)]- crossCrvIndicies[2*i]; j++)
-                {
-
-                }
+                List<Point> currPlPts = new List<Point>();
+                currPlPts.AddRange(crvClipVert.Skip(crossCrvIndicies[i]).Take(crossCrvIndicies[2 * 1] - crossCrvIndicies[i]));
+                currPlPts.AddRange(regClipVert.Skip(orderedRegIndicies[i]).Take(orderedRegIndicies[2 * 1] - orderedRegIndicies[i]));
+                currPlPts.Add(currPlPts.First());
+                outList.Add(Create.Polyline(currPlPts));
             }
-
-
-
-            /***************************************************/
+            return outList;       
+                       
         }
     }
 }
