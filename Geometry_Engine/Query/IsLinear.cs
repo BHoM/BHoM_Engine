@@ -46,7 +46,7 @@ namespace BH.Engine.Geometry
 
         public static bool IsLinear(this Circle circle)
         {
-            return false;
+            return circle.Radius == 0;
         }
 
         /***************************************************/
