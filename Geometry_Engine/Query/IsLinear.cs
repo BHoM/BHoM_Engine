@@ -11,7 +11,7 @@ namespace BH.Engine.Geometry
         /**** public Methods - Curves                   ****/
         /***************************************************/
 
-        private static bool PointColinearity(this List<Point> pts)
+        private static bool IsColinear(this List<Point> pts)
         {
             if (pts.Count < 3) return true;
 
@@ -39,7 +39,7 @@ namespace BH.Engine.Geometry
 
         public static bool IsLinear(this Arc arc)
         {
-            return arc.ControlPoints().PointColinearity();
+            return arc.ControlPoints().IsColinear();
         }
 
         /***************************************************/
@@ -53,21 +53,21 @@ namespace BH.Engine.Geometry
 
         public static bool IsLinear(this NurbCurve curve)
         {
-            return curve.ControlPoints.PointColinearity();
+            return curve.ControlPoints.IsColinear();
         }
 
         /***************************************************/
 
         public static bool IsLinear(this Polyline curve)
         {
-            return curve.ControlPoints.PointColinearity();
+            return curve.ControlPoints.IsColinear();
         }
 
         /***************************************************/
 
         public static bool IsLinear(this PolyCurve curve)
         {
-            return curve.ControlPoints().PointColinearity();
+            return curve.ControlPoints().IsColinear();
         }
 
 
