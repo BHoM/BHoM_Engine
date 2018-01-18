@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace BH.Engine.Geometry
 {
-    public static partial class Query
+    public static partial class Compute
     {
         /***************************************************/
         /**** public Methods - Vectors                  ****/
@@ -18,7 +18,7 @@ namespace BH.Engine.Geometry
             int n = points.Count();
             if (n < 3) return null;
 
-            Point centroid = points.Centre();
+            Point centroid = points.Average();
 
             // Calc full 3x3 covariance matrix, excluding symmetries:
             double xx = 0.0; double xy = 0.0; double xz = 0.0;

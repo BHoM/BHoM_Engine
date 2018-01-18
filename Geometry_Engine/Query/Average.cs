@@ -10,7 +10,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Point Average(this IList<Point> points)
+        public static Point Average(this IEnumerable<Point> points)
         {
             int count = points.Count();
             if (count < 1) return null;
