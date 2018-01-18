@@ -173,19 +173,5 @@ namespace BH.Engine.Geometry
         {
             return IsPlanar(geometry as dynamic);
         }
-
-        /***************************************************/
-
-        public static bool IIsPlanar(this ICurve geometry)
-        {
-            return IsPlanar(geometry as dynamic);
-        }
-
-        /***************************************************/
-
-        public static bool IIsPlanar(this ISurface geometry)
-        {
-            return IsPlanar(geometry as dynamic);
-        }
     }
 }
