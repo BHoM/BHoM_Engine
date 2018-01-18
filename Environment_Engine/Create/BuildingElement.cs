@@ -15,7 +15,7 @@ namespace BH.Engine.Environment
     {
         public static BuildingElement BuildingElement(BuildingElementProperties BuildingElementProperties, BuildingElementPanel BuildingElementPanel)
         {
-            return new BuildingElement()
+            return new BuildingElement
             {
                 BuildingElementProperties = BuildingElementProperties,
                 BuildingElementGeometry = BuildingElementPanel
@@ -24,7 +24,7 @@ namespace BH.Engine.Environment
 
         public static BuildingElement BuildingElement(BuildingElementProperties BuildingElementProperties, IEnumerable<Polyline> PolyLines)
         {
-            return new BuildingElement()
+            return new BuildingElement
             {
                 BuildingElementProperties = BuildingElementProperties,
                 BuildingElementGeometry = Create.BuildingElementPanel(PolyLines)
@@ -33,7 +33,7 @@ namespace BH.Engine.Environment
 
         public static BuildingElement BuildingElement(BuildingElementProperties BuildingElementProperties, ICurve Curve)
         {
-            return new BuildingElement()
+            return new BuildingElement
             {
                 BuildingElementProperties = BuildingElementProperties,
                 BuildingElementGeometry = Create.BuildingElementPanel(new ICurve[] { Curve })
@@ -42,7 +42,7 @@ namespace BH.Engine.Environment
 
         public static BuildingElement BuildingElement(BuildingElementProperties BuildingElementProperties, BuildingElementCurve BuildingElementCurve, Storey Storey)
         {
-            return new BuildingElement()
+            return new BuildingElement
             {
                 Storey = Storey,
                 BuildingElementProperties = BuildingElementProperties,

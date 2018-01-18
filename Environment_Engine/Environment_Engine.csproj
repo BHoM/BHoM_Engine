@@ -54,19 +54,11 @@
     <Compile Include="Create\BuildingElementPanel.cs" />
     <Compile Include="Create\BuildingElementProperties.cs" />
     <Compile Include="Create\Space.cs" />
-    <Compile Include="Create_Legacy\AirHandlingUnit.cs" />
-    <Compile Include="Create_Legacy\BuildingElement.cs" />
-    <Compile Include="Create_Legacy\BuildingElementProperties.cs" />
-    <Compile Include="Create_Legacy\CFDProperties.cs" />
-    <Compile Include="Create_Legacy\Space.cs" />
-    <Compile Include="Create_Legacy\Panel.cs" />
-    <Compile Include="Create_Legacy\Opening.cs" />
-    <Compile Include="Create_Legacy\Location.cs" />
-    <Compile Include="Create_Legacy\SurfaceDataProperties.cs" />
     <Compile Include="Modify\Add.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Query\Building.cs" />
-    <Compile Include="Query\BuildingElementPanel.cs" />
+    <Compile Include="Query\Storey.cs" />
+    <Compile Include="Query\Bounds.cs" />
+    <Compile Include="Query\EquipmentProprerties.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

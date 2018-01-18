@@ -12,18 +12,13 @@ namespace BH.Engine.Environment
     {
         public static Building Building(string Name, double Latitude, double Longitude, double Elevation)
         {
-            return new Building()
+            return new Building
             {
                 Name = Name,
                 Latitude = Latitude,
                 Longitude = Longitude,
                 Elevation = Elevation,
                 Location = new oM.Geometry.Point()
-                {
-                    X = 0,
-                    Y = 0,
-                    Z = 0,
-                }
             };
         }
     }

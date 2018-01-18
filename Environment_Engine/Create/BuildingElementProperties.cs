@@ -13,7 +13,7 @@ namespace BH.Engine.Environment
     {
         public static BuildingElementProperties BuildingElementProperties(BuidingElementType BuidingElementType, string Name)
         {
-            return new BuildingElementProperties()
+            return new BuildingElementProperties
             {
                 Name = Name,
                 BuildingElementType = BuidingElementType

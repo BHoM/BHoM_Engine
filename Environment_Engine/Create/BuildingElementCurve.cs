@@ -13,9 +13,9 @@ namespace BH.Engine.Environment
     {
         public static BuildingElementCurve BuildingElementCurve(ICurve Curve)
         {
-            return new BuildingElementCurve()
+            return new BuildingElementCurve
             {
-                ICurve = Curve
+                Curve = Curve
             };
         }
     }

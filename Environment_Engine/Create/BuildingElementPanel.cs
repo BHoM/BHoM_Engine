@@ -13,7 +13,7 @@ namespace BH.Engine.Environment
     {
         public static BuildingElementPanel BuildingElementPanel(IEnumerable<ICurve> Curves)
         {
-            return new BuildingElementPanel()
+            return new BuildingElementPanel
             {
                 PolyCurve = Geometry.Create.PolyCurve(Curves)
             };
@@ -21,7 +21,7 @@ namespace BH.Engine.Environment
 
         public static BuildingElementPanel BuildingElementPanel(PolyCurve PolyCurve)
         {
-            return new BuildingElementPanel()
+            return new BuildingElementPanel
             {
                 PolyCurve = PolyCurve
             };
@@ -29,7 +29,7 @@ namespace BH.Engine.Environment
 
         public static BuildingElementPanel BuildingElementPanel(IEnumerable<Polyline> Polylines)
         {
-            return new BuildingElementPanel()
+            return new BuildingElementPanel
             {
                 PolyCurve = Geometry.Create.PolyCurve(Polylines)
             };
