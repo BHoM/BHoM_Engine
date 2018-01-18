@@ -35,7 +35,7 @@ namespace BH.Engine.Geometry
         /**** public Methods - Curves                   ****/
         /***************************************************/
 
-        private static bool PointCoplanarity(this List<Point> pts)
+        private static bool IsCoplanar(this List<Point> pts)
         {
             if (pts.Count < 4) return true;
 
@@ -77,21 +77,21 @@ namespace BH.Engine.Geometry
 
         public static bool IsPlanar(this NurbCurve curve)
         {
-            return curve.ControlPoints.PointCoplanarity();
+            return curve.ControlPoints.IsCoplanar();
         }
 
         /***************************************************/
 
         public static bool IsPlanar(this Polyline curve)
         {
-            return curve.ControlPoints.PointCoplanarity();
+            return curve.ControlPoints.IsCoplanar();
         }
 
         /***************************************************/
 
         public static bool IsPlanar(this PolyCurve curve)
         {
-            return curve.ControlPoints().PointCoplanarity();
+            return curve.ControlPoints().IsCoplanar();
         }
 
 
@@ -113,14 +113,14 @@ namespace BH.Engine.Geometry
             {
                 controlPts.AddRange(curve.IControlPoints());
             }
-            return controlPts.PointCoplanarity();
+            return controlPts.IsCoplanar();
         }
 
         /***************************************************/
 
         public static bool IsPlanar(this NurbSurface surface)
         {
-            return surface.ControlPoints.PointCoplanarity();
+            return surface.ControlPoints.IsCoplanar();
         }
 
         /***************************************************/
@@ -149,7 +149,7 @@ namespace BH.Engine.Geometry
         public static bool IsPlanar(this Mesh mesh)
         {
 
-            return mesh.Vertices.PointCoplanarity();
+            return mesh.Vertices.IsCoplanar();
         }
 
         /***************************************************/
