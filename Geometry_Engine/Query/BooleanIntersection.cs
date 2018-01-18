@@ -119,7 +119,7 @@ namespace BH.Engine.Geometry
             int firstIndex = crossRegIndicies.IndexOf(searchIndex);
             //int firstIndex = crossRegIndicies.IndexOf(regClipVert.IndexOf(crvClipVert[crossCrvIndicies[1]]));
             List<int> wrapList = new List<int>();
-            for (int i = 0; i < indexListLength; i++) wrapList.Add(crossRegIndicies[i] + vertListLength);            
+            for (int i = 0; i < indexListLength; i++) wrapList.Add(crossRegIndicies[i] + vertListLength-1);            
             crossRegIndicies.AddRange(wrapList);
             regClipVert.AddRange(regClipVert.GetRange(1, vertListLength-1));
                         
