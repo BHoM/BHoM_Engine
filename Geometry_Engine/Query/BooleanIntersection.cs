@@ -74,30 +74,30 @@ namespace BH.Engine.Geometry
             List<Line> crvEdges = new List<Line>();
             for (int i = 1; i < crvVert.Count; i++) crvEdges.Add(Create.Line(crvVert[i - 1], crvVert[i]));
 
-            double w = 1;
-            int k = 0;
-            while (w == 1)           
-            {                
-                w = 0;
-                for (int i = 1; i < crvVert.Count; i++)
-                {
-                    Vector v1 = Create.Vector(crvVert[i - 1].X - regVert[k].X, crvVert[i - 1].Y - regVert[k].Y, crvVert[i - 1].Z - regVert[k].Z);
-                    Vector v2 = Create.Vector(crvVert[i].X - regVert[k].X, crvVert[i].Y - regVert[k].Y, crvVert[i].Z - regVert[k].Z);
-                    w += v1.Angle(v2);
-                }
-                k++;
-                w = w / (2 * Math.PI);
-            }
-            k--;
-            if (k!=0)
-            {
-                int vertCount = regVert.Count;
-                int edgeCount = vertCount - 1;
-                regVert.AddRange(regVert.GetRange(1, regVert.Count - 1));
-                regVert = regVert.GetRange(k, vertCount);
-                regEdges.AddRange(regEdges);
-                regEdges = regEdges.GetRange(k, edgeCount);
-            }            
+            //double w = 1;
+            //int k = 0;
+            //while (w == 1)           
+            //{                
+            //    w = 0;
+            //    for (int i = 1; i < crvVert.Count; i++)
+            //    {
+            //        Vector v1 = Create.Vector(crvVert[i - 1].X - regVert[k].X, crvVert[i - 1].Y - regVert[k].Y, crvVert[i - 1].Z - regVert[k].Z);
+            //        Vector v2 = Create.Vector(crvVert[i].X - regVert[k].X, crvVert[i].Y - regVert[k].Y, crvVert[i].Z - regVert[k].Z);
+            //        w += v1.Angle(v2);
+            //    }
+            //    k++;
+            //    w = w / (2 * Math.PI);
+            //}
+            //k--;
+            //if (k!=0)
+            //{
+            //    int vertCount = regVert.Count;
+            //    int edgeCount = vertCount - 1;
+            //    regVert.AddRange(regVert.GetRange(1, regVert.Count - 1));
+            //    regVert = regVert.GetRange(k, vertCount);
+            //    regEdges.AddRange(regEdges);
+            //    regEdges = regEdges.GetRange(k, edgeCount);
+            //}            
 
             List<int> crossCrvIndicies = new List<int>();
             List<Point> crvClipVert = new List<Point> { crvVert[0] };
