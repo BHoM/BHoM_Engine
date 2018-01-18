@@ -13,7 +13,7 @@ namespace BH.Engine.Geometry
 
         private static bool PointColinearity(this List<Point> pts)
         {
-            if (pts.Count < 4) return true;
+            if (pts.Count < 3) return true;
 
             double[,] vMatrix = new double[pts.Count, 3];
             for (int i = 0; i < pts.Count; i++)
