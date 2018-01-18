@@ -7,23 +7,6 @@ namespace BH.Engine.Geometry
     public static partial class Query
     {
         /***************************************************/
-        /**** Vectors                                   ****/
-        /***************************************************/
-
-        public static Point Centre(this IEnumerable<Point> points)
-        {
-            int count = points.Count();
-            if (count < 1) return null;
-
-            Point mean = new Point { X = 0, Y = 0, Z = 0 };
-
-            foreach (Point pt in points)
-                mean += pt;
-
-            return mean /= count;
-        }
-
-        /***************************************************/
         /**** Curves                                    ****/
         /***************************************************/
 
@@ -43,7 +26,7 @@ namespace BH.Engine.Geometry
 
         public static Point Centre(this Polyline polyline)
         {
-            return polyline.ControlPoints.Centre();
+            return polyline.ControlPoints.Average();
         }
 
 

@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Compute\Integrate.cs" />
+    <Compile Include="Compute\RowEchelonForm.cs" />
     <Compile Include="Create\Vector.cs" />
     <Compile Include="Create\Point.cs" />
     <Compile Include="Create\PolySurface.cs" />
@@ -81,6 +82,8 @@
     <Compile Include="Query\ClosestDistance.cs" />
     <Compile Include="Query\ClosestPoint.cs" />
     <Compile Include="Query\ControlPoints.cs" />
+    <Compile Include="Query\IsLinear.cs" />
+    <Compile Include="Query\IsPlanar.cs" />
     <Compile Include="Query\IsQuad.cs" />
     <Compile Include="Query\MeshIntersections.cs" />
     <Compile Include="Query\LineIntersections.cs" />

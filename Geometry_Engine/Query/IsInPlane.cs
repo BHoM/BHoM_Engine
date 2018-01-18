@@ -12,16 +12,10 @@ namespace BH.Engine.Geometry
 
         public static bool IsInPlane(this IEnumerable<Point> points, Plane plane, double tolerance = Tolerance.Distance)
         {
-            Vector normal = plane.Normal;
-            Point origin = plane.Origin;
-
             foreach (Point pt in points)
             {
-                double d = normal.DotProduct(pt - origin);
-                if (d < -tolerance || d > tolerance)
-                    return false;
+                if (Math.Abs(pt.Distance(plane)) > tolerance) return false;
             }
-
             return true;
         }
 
@@ -29,22 +23,21 @@ namespace BH.Engine.Geometry
 
         public static bool IsInPlane(this Point pt, Plane plane, double tolerance = Tolerance.Distance)
         {
-            double d = plane.Normal.DotProduct(pt - plane.Origin);
-            return (d >= -tolerance && d <= tolerance);
+            return (Math.Abs(pt.Distance(plane)) <= tolerance);
         }
 
         /***************************************************/
 
         public static bool IsInPlane(this Vector vector, Plane plane, double tolerance = Tolerance.Distance)
         {
-            return Math.Abs(vector.DotProduct(plane.Normal)) < tolerance;
+            return Math.Abs(vector.DotProduct(plane.Normal)) <= tolerance;
         }
 
         /***************************************************/
 
-        public static bool IsInPlane(this Plane plane1, Plane plane, double tolerance = Tolerance.Distance)
+        public static bool IsInPlane(this Plane plane1, Plane plane, double tolerance = Tolerance.Distance, double angTolerance = Tolerance.Angle)
         {
-            return 1 - Math.Abs(plane1.Normal.Normalise().DotProduct(plane.Normal.Normalise())) < tolerance;
+            return plane1.Normal.IsParallel(plane.Normal, angTolerance) != 0 && Math.Abs(plane1.Origin.Distance(plane)) <= tolerance;
         }
 
 
@@ -59,9 +52,9 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static bool IsInPlane(this Circle circle, Plane plane, double tolerance = Tolerance.Distance)
+        public static bool IsInPlane(this Circle circle, Plane plane, double tolerance = Tolerance.Distance, double angTolerance = Tolerance.Angle)
         {
-            return Math.Abs(circle.Normal.DotProduct(plane.Normal)) < tolerance && Math.Abs(plane.Normal.DotProduct(circle.Centre - plane.Origin)) < tolerance;
+            return circle.Normal.IsParallel(plane.Normal, angTolerance) != 0 && Math.Abs(plane.Normal.DotProduct(circle.Centre - plane.Origin)) <= tolerance;
         }
 
         /***************************************************/
@@ -83,9 +76,6 @@ namespace BH.Engine.Geometry
 
         public static bool IsInPlane(this PolyCurve curve, Plane plane, double tolerance = Tolerance.Distance)
         {
-            Vector normal = plane.Normal;
-            Point origin = plane.Origin;
-
             foreach (ICurve c in curve.Curves)
             {
                 if (!c.IIsInPlane(plane, tolerance))
@@ -116,9 +106,6 @@ namespace BH.Engine.Geometry
 
         public static bool IsInPlane(this Loft surface, Plane plane, double tolerance = Tolerance.Distance)
         {
-            Vector normal = plane.Normal;
-            Point origin = plane.Origin;
-
             foreach (ICurve c in surface.Curves)
             {
                 if (!c.IIsInPlane(plane, tolerance))
@@ -146,9 +133,6 @@ namespace BH.Engine.Geometry
 
         public static bool IsInPlane(this PolySurface surface, Plane plane, double tolerance = Tolerance.Distance)
         {
-            Vector normal = plane.Normal;
-            Point origin = plane.Origin;
-
             foreach (ISurface s in surface.Surfaces)
             {
                 if (!s.IIsInPlane(plane, tolerance))
@@ -172,9 +156,6 @@ namespace BH.Engine.Geometry
 
         public static bool IsInPlane(this CompositeGeometry group, Plane plane, double tolerance = Tolerance.Distance)
         {
-            Vector normal = plane.Normal;
-            Point origin = plane.Origin;
-
             foreach (IBHoMGeometry g in group.Elements)
             {
                 if (!g.IIsInPlane(plane, tolerance))
@@ -193,7 +174,5 @@ namespace BH.Engine.Geometry
         {
             return IsInPlane(geometry as dynamic, plane, tolerance);
         }
-
-        /***************************************************/
     }
 }
