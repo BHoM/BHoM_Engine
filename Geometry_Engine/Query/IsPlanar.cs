@@ -127,7 +127,7 @@ namespace BH.Engine.Geometry
 
         public static bool IsPlanar(this Pipe surface)
         {
-            return surface.Centreline.ILength() <= Tolerance.Distance;
+            return surface.Centreline.ILength() <= Tolerance.Distance || surface.Radius == 0;
         }
 
         /***************************************************/
