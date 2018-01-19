@@ -51,7 +51,6 @@ namespace BH.Engine.Geometry
         public static Point ClosestPoint(this Line line, Point point, bool infiniteSegment = false)
         {
             Vector dir = line.Direction();
-            //double t = Math.Min(Math.Max(dir * (point - line.Start), 0), line.Length());
             double t = dir * (point - line.Start);
             if (!infiniteSegment)
                 t = Math.Min(Math.Max(t, 0), line.Length());
@@ -96,7 +95,7 @@ namespace BH.Engine.Geometry
             List<Point> points = curve.ControlPoints;
 
             double minDist = 1e10;
-            Point closest = (points.Count > 0) ? points[0] : new Point { X = Double.PositiveInfinity, Y = Double.PositiveInfinity, Z = Double.PositiveInfinity };
+            Point closest = (points.Count > 0) ? points[0] : null;
             for (int i = 1; i < points.Count; i++)
             {
                 Vector dir = (points[i] - points[i - 1]).Normalise();

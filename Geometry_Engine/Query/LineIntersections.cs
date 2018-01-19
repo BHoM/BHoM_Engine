@@ -1,6 +1,7 @@
 ﻿using BH.oM.Geometry;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace BH.Engine.Geometry
 {
@@ -10,57 +11,57 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static List<Point> LineIntersections(this Line line1, Line line2, double tolerance = Tolerance.Distance)
-        {
-            return new List<Point> { line1.LineIntersection(line2, false, tolerance) };
-        }
-
-        /***************************************************/
-
         public static Point LineIntersection(this Line line1, Line line2, bool useInfiniteLines = false, double tolerance = Tolerance.Distance)
         {
-            Point pt1 = line1.Start;
-            Point pt2 = line2.Start;
-            Vector dir1 = (line1.End - pt1);//.Normalise();
-            Vector dir2 = (line2.End - pt2);//.Normalise();
-            Vector dir3 = pt2 - pt1;
-
-            Vector cross = Query.CrossProduct(dir1, dir2);
-
-            if (Math.Abs(dir3.DotProduct(cross)) > Tolerance.Distance)
-                return null; // Lines are not coplanar
-
-            // Test for parallel lines
-            if (cross.X < tolerance && cross.X > -tolerance && cross.Y < tolerance && cross.Y > -tolerance && cross.Z < tolerance && cross.Z > -tolerance)
+            Line l1 = line1.Clone();
+            Line l2 = line2.Clone();
+            if (useInfiniteLines)
             {
-                if (useInfiniteLines || line1.Infinite || line2.Infinite)
-                    return null;
-                else if (pt1 == pt2 || pt1 == line2.End)
-                    return pt1;
-                else if (pt2 == line1.End || line2.End == line1.End)
-                    return line1.End;
-                else
-                    return null;
+                l1.Infinite = true;
+                l2.Infinite = true;
             }
 
-            double t = Query.DotProduct(Query.CrossProduct(dir3, dir2), cross) / Query.SquareLength(cross);
+            Point p1 = l1.Start;
+            Point p2 = l2.Start;
+            Vector v1 = l1.End - p1;
+            Vector v2 = l2.End - p2;
 
-            if (useInfiniteLines)  //TODO: Need to handle the cases where one of the line is Infinite as well
-                return pt1 + t * dir1;
-            else
+            double[,] e = new double[3, 3]
             {
-                double s = Query.DotProduct(Query.CrossProduct(dir3, dir1), cross) / Query.SquareLength(cross);
-                if (t > -tolerance && t < 1 + tolerance && s > -tolerance && s < 1 + tolerance)
-                    return pt1 + t * dir1;
-                else
-                    return null;
-            }
+                {v1.X, -v2.X, p2.X-p1.X},
+                {v1.Y, -v2.Y, p2.Y-p1.Y},
+                {v1.Z, -v2.Z, p2.Z-p1.Z},
+            };
 
-            //if (useInfiniteLines)  //TODO: Need to handle the cases where one of the line is Infinite as well
-            //    return pt1 + t * dir1;
-            //else if (t > -tolerance && t < 1 /*Query.Length(dir1)*/ + tolerance)
-            //    return pt1 + t * dir1;
-            //else return null;
+            double[,] eref = e.RowEchelonForm(false);
+            int nonZero = eref.CountNonZeroRows();
+
+            switch (nonZero)
+            {
+                case 3:                                                                     // nonplanar
+                    return null;
+                case 2:
+                    if (eref[1, 1] <= tolerance) return null;                               // parallel, not colinear
+                    else                                                                    // coplanar
+                    {
+                        double t2 = eref[1, 2];
+                        double t1 = eref[0, 2] - t2 * eref[0, 1];
+                        bool i1 = l1.Infinite ? true : t1 >= 0 && t1 <= 1 ? true : false;
+                        bool i2 = l2.Infinite ? true : t2 >= 0 && t2 <= 1 ? true : false;
+                        if (i1 && i2)
+                        {
+                            return p1 + t1 * v1;
+                        }
+                        return null;
+                    }
+                case 1:                                                                     // colinear
+                    if (l1.Infinite || l2.Infinite) return null;
+                    double sqrTol = tolerance * tolerance;
+                    if (p1.SquareDistance(p2) <= sqrTol || p1.SquareDistance(l2.End) <= sqrTol) return p1;
+                    else if (l1.End.SquareDistance(p2) <= sqrTol || l1.End.SquareDistance(l2.End) <= sqrTol) return l1.End;
+                    else return null;
+            }
+            return null;
         }
 
         /***************************************************/

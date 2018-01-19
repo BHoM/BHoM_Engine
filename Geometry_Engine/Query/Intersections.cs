@@ -12,7 +12,10 @@ namespace BH.Engine.Geometry
 
         public static List<Point> Intersections(this List<Line> lines, bool useInfiniteLine = true, double tolerance = Tolerance.Distance)
         {
-            // Get the bounding boxes
+            // TODO: write the equation of each line to a list the first time it is computed?
+            // TODO: if !useInfiniteLine use sweep line algo?
+            
+            // TODO: relevant only if !useInfiniteLine?
             List<BoundingBox> boxes = lines.Select(x => x.Bounds()).ToList();
 
             // Get the intersections

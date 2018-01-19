@@ -11,20 +11,15 @@ namespace BH.Engine.Geometry
 
         public static int IsParallel(this Vector v1, Vector v2, double tolerance = Tolerance.Angle)
         {
-            double angle = v1.Angle(v2);
-
-            return angle > Math.PI / 2 ? Math.PI - angle <= tolerance ? -1 : 0 : angle <= tolerance ? 1 : 0;
+            double dp = v1.DotProduct(v2);
+            return 1 - Math.Abs(dp) <= tolerance ? dp > 0 ? 1 : -1 : 0;
         }
 
         /***************************************************/
 
-        public static int IsParallel(this Line l1, Line l2, double tolerance = Tolerance.Angle)
+        public static int IsParallel(this Line line1, Line line2, double tolerance = Tolerance.Angle)
         {
-            Vector v1 = l1.Direction();
-            Vector v2 = l2.Direction();
-            double angle = v1.Angle(v2);
-
-            return angle > Math.PI / 2 ? Math.PI - angle <= tolerance ? -1 : 0 : angle <= tolerance ? 1 : 0;
+            return line1.Direction().IsParallel(line2.Direction());
         }
 
         /***************************************************/
