@@ -34,8 +34,8 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\BHoM\Build\BHoM.dll</HintPath>
     </Reference>
-    <Reference Include="MongoDB.Bson, Version=2.5.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MongoDB.Bson.2.5.0\lib\net45\MongoDB.Bson.dll</HintPath>
+    <Reference Include="MongoDB.Bson, Version=2.4.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MongoDB.Bson.2.4.4\lib\net45\MongoDB.Bson.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -57,18 +57,21 @@
     <Compile Include="Objects\BsonSerializers\ColourSerializer.cs" />
     <Compile Include="Objects\BsonSerializers\CustomObjectSerializer.cs" />
     <Compile Include="Objects\BsonSerializers\ObjectSerializer.cs" />
+    <Compile Include="Objects\MemberMapConventions\BHoMDictionaryConvention.cs" />
+    <Compile Include="Objects\MemberMapConventions\ImmutableBHoMClassMapConvention.cs" />
+    <Compile Include="Objects\MemberMapConventions\ImmutableBHoMCreatorMapConvention.cs" />
     <Compile Include="Objects\MemberMapConventions\KeepPropertiesAtTopLevelConvention.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Query\TaggedName.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Reflection_Engine\Reflection_Engine.csproj">
       <Project>{b0154405-9390-472d-9b5c-a2280823b18d}</Project>
       <Name>Reflection_Engine</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
