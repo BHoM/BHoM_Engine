@@ -19,9 +19,7 @@ namespace BH.Engine.Geometry
 
         public static Point Project(this Point pt, Line line)
         {
-            Vector dir = line.Direction();
-            double t = dir.DotProduct(pt - line.Start);
-            return line.Start + dir * t;
+            return line.ClosestPoint(pt, true);
         }
 
         /***************************************************/
@@ -35,7 +33,10 @@ namespace BH.Engine.Geometry
 
         public static Plane Project(this Plane plane, Plane p)
         {
-            throw new NotImplementedException();
+            double dp = plane.Normal.DotProduct(p.Normal);
+            if (Math.Abs(dp) <= Tolerance.Angle) return null;
+            Vector normal = dp > 0 ? p.Normal : p.Normal.Reverse();
+            return new Plane { Origin = plane.Origin.Project(p), Normal = normal };
         }
 
 
@@ -50,11 +51,16 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static Circle Project(this Circle circle, Plane p)
+        public static ICurve Project(this Circle circle, Plane p)
         {
-            if (circle.IIsInPlane(p))
-                return new Circle { Centre = circle.Centre.Clone() as Point, Normal = p.Normal.Clone() as Vector, Radius = circle.Radius };
-            throw new NotImplementedException(); //TODO: sort out project for a circle
+            if (circle.Normal.IsParallel(p.Normal) != 0)
+                return new Circle { Centre = circle.Centre.Project(p), Normal = circle.Normal.Clone(), Radius = circle.Radius };
+
+            Vector axis1 = p.Normal.CrossProduct(circle.Normal);
+            Vector axis2 = axis1.CrossProduct(p.Normal);
+            double radius2 = circle.Radius * circle.Normal.DotProduct(p.Normal);
+
+            return new Ellipse { Centre = circle.Centre.Project(p), Axis1 = axis1, Axis2 = axis2, Radius1 = circle.Radius, Radius2 = radius2 };
         }
 
         /***************************************************/
