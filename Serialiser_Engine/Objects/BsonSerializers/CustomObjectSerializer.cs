@@ -26,14 +26,19 @@ namespace BH.Engine.Serialiser.BsonSerializers
         public override void Serialize(BsonSerializationContext context, BsonSerializationArgs args, CustomObject value)
         {
             Dictionary<string, object> data = new Dictionary<string, object>(value.CustomData);
-            data["BHoM_Guid"] = value.BHoM_Guid;
 
             context.Writer.WriteStartDocument();
 
             if (value.Name.Length > 0)
             {
                 context.Writer.WriteName("Name");
-                BsonSerializer.Serialize(context.Writer, value.Name);
+                context.Writer.WriteString(value.Name);
+            }
+
+            foreach (KeyValuePair<string, object> kvp in data)
+            {
+                context.Writer.WriteName(kvp.Key);
+                BsonSerializer.Serialize(context.Writer, kvp.Value);
             }
 
             if (value.Tags.Count > 0)
@@ -45,11 +50,9 @@ namespace BH.Engine.Serialiser.BsonSerializers
                 context.Writer.WriteEndArray();
             }
 
-            foreach (KeyValuePair<string, object> kvp in data)
-            {
-                context.Writer.WriteName(kvp.Key);
-                BsonSerializer.Serialize(context.Writer, kvp.Value);
-            }
+            context.Writer.WriteName("BHoM_Guid");
+            context.Writer.WriteString(value.BHoM_Guid.ToString());
+
             context.Writer.WriteEndDocument();
         }
 
@@ -82,7 +85,7 @@ namespace BH.Engine.Serialiser.BsonSerializers
                                 document.Tags = new HashSet<string>(((List<object>)value).Cast<string>());
                                 break;
                             case "BHoM_Guid":
-                                document.BHoM_Guid = (Guid)value;
+                                document.BHoM_Guid = new Guid(value as string);
                                 break;
                             default:
                                 dic[name] = value;
