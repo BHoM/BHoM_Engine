@@ -12,7 +12,26 @@ namespace BH.Engine.Geometry
 
         public static Point ClosestPoint(this Point pt, Point point)
         {
-            return pt;
+            return point;
+        }
+        /***************************************************/
+
+        public static Point ClosestPoint(this Point pt, List<Point> points)
+        {
+            // Temporary, PointMatrix to be used?!
+            if (points.Count == 0) return null;
+            double minDist = pt.SquareDistance(points[0]);
+            Point cPt = points[0];
+            for (int i = 1; i < points.Count; i++)
+            {
+                double dist = pt.SquareDistance(points[i]);
+                if (dist <= minDist)
+                {
+                    cPt = points[i];
+                    minDist = dist;
+                }
+            }
+            return cPt;
         }
 
         /***************************************************/
@@ -36,14 +55,20 @@ namespace BH.Engine.Geometry
 
         public static Point ClosestPoint(this Arc arc, Point point)
         {
-            throw new NotImplementedException();
+            Point center = arc.Centre();
+            Plane p = arc.FitPlane();
+
+            Point onCircle = center + (point.Project(p) - center).Normalise() * (arc.Start-center).Length();
+            double sqrd = arc.Middle.SquareDistance(arc.Start);
+            return arc.Middle.SquareDistance(onCircle) <= sqrd ? onCircle : onCircle.ClosestPoint(new List<Point> { arc.Start, arc.End });
         }
 
         /***************************************************/
 
         public static Point ClosestPoint(this Circle circle, Point point)
         {
-            throw new NotImplementedException();
+            Plane p = new Plane { Origin = circle.Centre, Normal = circle.Normal };
+            return circle.Centre + (point.Project(p) - circle.Centre).Normalise() * circle.Radius;
         }
 
         /***************************************************/
