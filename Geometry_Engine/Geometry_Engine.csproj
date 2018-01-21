@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Compute\FitLine.cs" />
     <Compile Include="Compute\Integrate.cs" />
     <Compile Include="Compute\RowEchelonForm.cs" />
     <Compile Include="Create\Vector.cs" />
