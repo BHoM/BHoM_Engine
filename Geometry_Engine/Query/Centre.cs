@@ -18,7 +18,8 @@ namespace BH.Engine.Geometry
 
             return Query.LineIntersection(
                 Create.Line(arc.Middle + v1 / 2, v1.CrossProduct(normal)),
-                Create.Line(arc.Middle + v2 / 2, v2.CrossProduct(normal))
+                Create.Line(arc.Middle + v2 / 2, v2.CrossProduct(normal)),
+                true
             );
         }
 

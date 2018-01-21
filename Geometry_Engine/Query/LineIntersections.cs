@@ -15,11 +15,9 @@ namespace BH.Engine.Geometry
         {
             Line l1 = line1.Clone();
             Line l2 = line2.Clone();
-            if (useInfiniteLines)
-            {
-                l1.Infinite = true;
-                l2.Infinite = true;
-            }
+
+            l1.Infinite = useInfiniteLines ? true : line1.Infinite;
+            l2.Infinite = useInfiniteLines ? true : line2.Infinite;
 
             Point p1 = l1.Start;
             Point p2 = l2.Start;
@@ -66,9 +64,99 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static List<Point> LineIntersections(this Polyline curve, Line line, double tolerance = Tolerance.Distance)
+        public static List<Point> LineIntersections(this Arc arc, Line line, double tolerance = Tolerance.Distance)
         {
-            throw new NotImplementedException();
+            List<Point> iPts = new List<Point>();
+
+            Point center = arc.Centre();
+            Plane p = arc.ControlPoints().FitPlane();
+            double sqrRadius = center.SquareDistance(arc.Start);
+
+            if (Math.Abs(p.Normal.DotProduct(line.Direction())) > Tolerance.Angle)
+            {
+                Point pt = line.PlaneIntersection(p);
+                if (pt != null && Math.Abs(pt.SquareDistance(center) - sqrRadius) <= tolerance) iPts.Add(pt);
+            }
+            else
+            {
+                Point pt = line.ClosestPoint(center, true);
+                double sqrDiff = sqrRadius - pt.SquareDistance(center);
+                if (Math.Abs(sqrDiff) <= tolerance) iPts.Add(pt);
+                else if (sqrDiff > 0)
+                {
+                    Vector v = pt - center;
+                    double o = Math.Sqrt(sqrDiff);
+                    Vector vo = v.CrossProduct(p.Normal).Normalise() * o;
+                    iPts.Add(pt + vo);
+                    iPts.Add(pt - vo);
+                }
+            }
+
+            List<Point> output = new List<Point>();
+            double sqrd = arc.Middle.SquareDistance(arc.Start);
+            {
+                foreach (Point pt in iPts)
+                {
+                    if ((line.Infinite || pt.Distance(line) <= tolerance) && arc.Middle.SquareDistance(pt) <= sqrd) output.Add(pt);
+                }
+            }
+            return output;
+        }
+
+        /***************************************************/
+
+        public static List<Point> LineIntersections(this Circle circle, Line line, double tolerance = Tolerance.Distance)
+        {
+            List<Point> iPts = new List<Point>();
+
+            Plane p = new Plane { Origin = circle.Centre, Normal = circle.Normal };
+            if (Math.Abs(circle.Normal.DotProduct(line.Direction())) > Tolerance.Angle)
+            {
+                Point pt = line.PlaneIntersection(p);
+                if (pt!=null && Math.Abs(pt.SquareDistance(circle.Centre) - circle.Radius * circle.Radius) <= tolerance) iPts.Add(pt);
+            }
+            else
+            {
+                Point pt = line.ClosestPoint(circle.Centre, true);
+                double sqrDiff = circle.Radius * circle.Radius - pt.SquareDistance(circle.Centre);
+                if (Math.Abs(sqrDiff) <= tolerance) iPts.Add(pt);
+                else if (sqrDiff > 0)
+                {
+                    Vector v = pt - circle.Centre;
+                    double o = Math.Sqrt(sqrDiff);
+                    Vector vo = v.CrossProduct(circle.Normal).Normalise() * o;
+                    iPts.Add(pt + vo);
+                    iPts.Add(pt - vo);
+                }
+            }
+
+            List<Point> output = new List<Point>();
+            if (line.Infinite) return iPts;
+            else
+            {
+                foreach (Point pt in iPts)
+                {
+                    if (pt.Distance(line) <= tolerance) output.Add(pt);
+                }
+            }
+            return output;
+        }
+
+        /***************************************************/
+
+        public static List<Point> LineIntersections(this Polyline curve, Line line, bool useInfiniteLine = false, double tolerance = Tolerance.Distance)
+        {
+            Line l = line.Clone();
+            l.Infinite = useInfiniteLine ? true : line.Infinite;
+
+            List<Point> iPts = new List<Point>();
+            foreach (Line ln in curve.SubParts())
+            {
+                Point pt = ln.LineIntersection(l);
+                if (pt != null) iPts.Add(pt);
+            }
+
+            return iPts;
         }
 
 
