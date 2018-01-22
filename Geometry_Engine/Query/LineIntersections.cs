@@ -16,8 +16,11 @@ namespace BH.Engine.Geometry
             Line l1 = line1.Clone();
             Line l2 = line2.Clone();
 
-            l1.Infinite = useInfiniteLines ? true : line1.Infinite;
-            l2.Infinite = useInfiniteLines ? true : line2.Infinite;
+            if (useInfiniteLines)
+            {
+                l1.Infinite = true;
+                l2.Infinite = true;
+            }
 
             Point p1 = l1.Start;
             Point p2 = l2.Start;
