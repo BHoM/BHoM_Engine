@@ -43,7 +43,7 @@ namespace BH.Engine.Geometry
 
         public static Arc ProjectAlong(this Arc arc, Plane plane, Vector vector)
         {
-            return new Arc { Start = arc.Start.ProjectAlong(plane, vector), Middle = arc.Middle.ProjectAlong(plane, vector), End = arc.End.ProjectAlong(plane, vector) };
+            throw new NotImplementedException();
         }
 
         /***************************************************/
