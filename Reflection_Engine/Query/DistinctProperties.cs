@@ -12,7 +12,7 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static IEnumerable<object> DistinctProperties<T>(this IEnumerable<T> objects, Type propertyType) where T : BHoMObject
+        public static IEnumerable<object> DistinctProperties<T>(this IEnumerable<T> objects, Type propertyType) where T : IObject
         {
             //MethodInfo method = typeof(Merge).GetMethod("MergePropertyObjects", new Type[] { typeof(List<T>) });
             var method = typeof(Query)
@@ -26,7 +26,7 @@ namespace BH.Engine.Reflection
 
         /***************************************************/
 
-        public static IEnumerable<P> DistinctProperties<T, P>(this IEnumerable<T> objects) where T : BHoMObject where P : IObject
+        public static IEnumerable<P> DistinctProperties<T, P>(this IEnumerable<T> objects) where T : IObject where P : IObject
         {
             // Get the list of properties corresponding to type P
             Dictionary<Type, List<PropertyInfo>> propertyDictionary = typeof(T).GetProperties().GroupBy(x => x.PropertyType).ToDictionary(x => x.Key, x => x.ToList());
@@ -89,7 +89,7 @@ namespace BH.Engine.Reflection
 
             foreach (KeyValuePair<Guid, T> kvp in dict)
             {
-                T obj = (T)((kvp.Value as BHoMObject).GetShallowClone() as IObject);
+                T obj = (T)kvp.Value.GetShallowClone();
                 obj.CustomData = new Dictionary<string, object>(kvp.Value.CustomData);
                 clones.Add(kvp.Key, obj);
             }
