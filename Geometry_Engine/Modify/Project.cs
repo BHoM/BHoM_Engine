@@ -46,7 +46,7 @@ namespace BH.Engine.Geometry
 
         public static Arc Project(this Arc arc, Plane p)
         {
-            return new Arc { Start = arc.Start.Project(p), Middle = arc.Middle.Project(p), End = arc.End.Project(p) };
+            throw new NotImplementedException();
         }
 
         /***************************************************/
