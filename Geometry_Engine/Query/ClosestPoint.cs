@@ -10,12 +10,6 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Vectors                  ****/
         /***************************************************/
 
-        public static Point ClosestPoint(this Point pt, Point point)
-        {
-            return point;
-        }
-        /***************************************************/
-
         public static Point ClosestPoint(this Point pt, List<Point> points)
         {
             // Temporary, PointMatrix to be used?!
