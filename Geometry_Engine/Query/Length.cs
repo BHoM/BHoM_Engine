@@ -29,7 +29,6 @@ namespace BH.Engine.Geometry
 
         public static double Length(this Arc curve)
         {
-            throw new NotImplementedException();        // What if the angle of an arc > Math.PI?
             return curve.Angle() * curve.Radius();
         }
 
