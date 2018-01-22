@@ -66,6 +66,13 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        public static double SquareDistance(this Point a, Line line)
+        {
+            return a.SquareDistance(line.IClosestPoint(a));
+        }
+
+        /***************************************************/
+
         public static double Distance(this Line line, Line other)
         {
             Point intersection = line.LineIntersection(other, false);
