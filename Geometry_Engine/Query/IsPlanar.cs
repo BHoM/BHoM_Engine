@@ -35,7 +35,7 @@ namespace BH.Engine.Geometry
         /**** public Methods - Curves                   ****/
         /***************************************************/
 
-        private static bool IsCoplanar(this List<Point> pts)
+        public static bool IsCoplanar(this List<Point> pts)
         {
             if (pts.Count < 4) return true;
 

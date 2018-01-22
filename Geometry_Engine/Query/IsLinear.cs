@@ -11,7 +11,7 @@ namespace BH.Engine.Geometry
         /**** public Methods - Curves                   ****/
         /***************************************************/
 
-        private static bool IsColinear(this List<Point> pts)
+        public static bool IsColinear(this List<Point> pts)
         {
             if (pts.Count < 3) return true;
 
