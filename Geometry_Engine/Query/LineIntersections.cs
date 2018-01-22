@@ -67,6 +67,7 @@ namespace BH.Engine.Geometry
         public static List<Point> LineIntersections(this Arc arc, Line line, double tolerance = Tolerance.Distance)
         {
             List<Point> iPts = new List<Point>();
+            Point midPoint = arc.PointAtParameter(0.5);
 
             Point center = arc.Centre();
             Plane p = arc.ControlPoints().FitPlane();
@@ -93,11 +94,11 @@ namespace BH.Engine.Geometry
             }
 
             List<Point> output = new List<Point>();
-            double sqrd = arc.Middle.SquareDistance(arc.Start);
+            double sqrd = midPoint.SquareDistance(arc.Start);
             {
                 foreach (Point pt in iPts)
                 {
-                    if ((line.Infinite || pt.Distance(line) <= tolerance) && arc.Middle.SquareDistance(pt) <= sqrd) output.Add(pt);
+                    if ((line.Infinite || pt.Distance(line) <= tolerance) && midPoint.SquareDistance(pt) <= sqrd) output.Add(pt);
                 }
             }
             return output;
