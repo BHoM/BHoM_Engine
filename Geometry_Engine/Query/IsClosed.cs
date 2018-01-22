@@ -33,7 +33,7 @@ namespace BH.Engine.Geometry
 
         public static bool IsClosed(this NurbCurve curve)
         {
-            return curve.IPointAtParameter(0).SquareDistance(curve.IPointAtParameter(1)) < Tolerance.SqrtDist;
+            return curve.PointAtParameter(0).SquareDistance(curve.PointAtParameter(1)) < Tolerance.SqrtDist;
         }
 
         /***************************************************/
