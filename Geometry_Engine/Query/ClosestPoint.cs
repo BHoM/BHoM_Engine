@@ -50,11 +50,12 @@ namespace BH.Engine.Geometry
         public static Point ClosestPoint(this Arc arc, Point point)
         {
             Point center = arc.Centre();
+            Point midPoint = arc.PointAtParameter(0.5);
             Plane p = arc.FitPlane();
 
             Point onCircle = center + (point.Project(p) - center).Normalise() * (arc.Start-center).Length();
-            double sqrd = arc.Middle.SquareDistance(arc.Start);
-            return arc.Middle.SquareDistance(onCircle) <= sqrd ? onCircle : onCircle.ClosestPoint(new List<Point> { arc.Start, arc.End });
+            double sqrd = midPoint.SquareDistance(arc.Start);
+            return midPoint.SquareDistance(onCircle) <= sqrd ? onCircle : onCircle.ClosestPoint(new List<Point> { arc.Start, arc.End });
         }
 
         /***************************************************/

@@ -22,7 +22,7 @@ namespace BH.Engine.Geometry
         public static double Angle(this Arc arc)
         {
             Point centre = arc.Centre();
-            return 2 * Angle(arc.Start - centre, arc.Middle - centre);
+            return 2 * Angle(arc.Start - centre, arc.PointAtParameter(0.5) - centre);
         }
 
         /***************************************************/
