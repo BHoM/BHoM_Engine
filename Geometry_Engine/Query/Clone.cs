@@ -49,7 +49,7 @@ namespace BH.Engine.Geometry
 
         public static Line Clone(this Line line)
         {
-            return new Line { Start = line.Start.Clone(), End = line.End.Clone() };
+            return new Line { Start = line.Start.Clone(), End = line.End.Clone(), Infinite = line.Infinite };
         }
 
         /***************************************************/
