@@ -33,11 +33,7 @@ namespace BH.Engine.Geometry
 
         public static bool IsClosed(this NurbCurve curve)
         {
-            List<Point> pts = curve.ControlPoints;
-            if (pts.Count == 0)
-                return false;
-
-            return pts.First().SquareDistance(pts.Last()) < Tolerance.SqrtDist;
+            return curve.IPointAtParameter(0).SquareDistance(curve.IPointAtParameter(1)) < Tolerance.SqrtDist;
         }
 
         /***************************************************/
