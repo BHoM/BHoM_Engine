@@ -83,17 +83,8 @@ namespace BH.Engine.Geometry
             }
             else
             {
-                Point pt = line.ClosestPoint(center, true);
-                double sqrDiff = sqrRadius - pt.SquareDistance(center);
-                if (Math.Abs(sqrDiff) <= tolerance) iPts.Add(pt);
-                else if (sqrDiff > 0)
-                {
-                    Vector v = pt - center;
-                    double o = Math.Sqrt(sqrDiff);
-                    Vector vo = v.CrossProduct(p.Normal).Normalise() * o;
-                    iPts.Add(pt + vo);
-                    iPts.Add(pt - vo);
-                }
+                Circle c = new Circle { Centre = center, Normal = p.Normal, Radius = Math.Sqrt(sqrRadius) };
+                iPts = c.LineIntersections(line);
             }
 
             List<Point> output = new List<Point>();
@@ -126,11 +117,10 @@ namespace BH.Engine.Geometry
                 if (Math.Abs(sqrDiff) <= tolerance) iPts.Add(pt);
                 else if (sqrDiff > 0)
                 {
-                    Vector v = pt - circle.Centre;
                     double o = Math.Sqrt(sqrDiff);
-                    Vector vo = v.CrossProduct(circle.Normal).Normalise() * o;
-                    iPts.Add(pt + vo);
-                    iPts.Add(pt - vo);
+                    Vector v = line.Direction() * o;
+                    iPts.Add(pt + v);
+                    iPts.Add(pt - v);
                 }
             }
 
