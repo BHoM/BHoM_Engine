@@ -11,7 +11,7 @@ namespace BH.Engine.Geometry
 
         public static int Degree(this NurbCurve curve)
         {
-            return curve.Knots.Count - curve.ControlPoints.Count - 1;
+            return curve.Knots.Count - curve.ControlPoints.Count + 1;
         }
 
         /***************************************************/
