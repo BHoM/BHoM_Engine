@@ -18,10 +18,11 @@ namespace BH.Engine.DataStructure
             List<LocalData<T>> inCells = matrix.SubMatrixData<T>(Create.DiscreetPoint(refPt - range, matrix.CellSize), Create.DiscreetPoint(refPt + range, matrix.CellSize));
 
             // Keep only points within maxDist distance of refPt
+            double maxSqrDist = maxDist * maxDist;
             List<LocalData<T>> result = new List<LocalData<T>>();
             foreach (LocalData<T> tuple in inCells)
             {
-                if (tuple.Position.Distance(refPt) < maxDist)
+                if (tuple.Position.SquareDistance(refPt) < maxSqrDist)
                     result.Add(tuple);
             }
 
