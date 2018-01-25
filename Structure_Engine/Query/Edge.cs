@@ -2,6 +2,7 @@
 using BH.oM.Geometry;
 using BH.oM.Structural.Elements;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace BH.Engine.Structure
 {
@@ -17,6 +18,28 @@ namespace BH.Engine.Structure
                 return contour.Surface.IExternalEdges();
             else
                 return new List<ICurve>();
+        }
+
+        /***************************************************/
+
+        public static List<ICurve> InternalEdges(this PanelPlanar panel)
+        {
+            // Todo:
+            // - return the edges as polycurves -> curve.Join needed
+
+            List<ICurve> edges = new List<ICurve>();
+            foreach (Opening o in panel.Openings)
+            {
+                edges.AddRange(o.Edges.Select(e => e.Curve).ToList());
+            }
+            return edges;
+        }
+
+        /***************************************************/
+
+        public static List<ICurve> ExternalEdges(this PanelPlanar panel)
+        {
+            return panel.ExternalEdges.Select(x => x.Curve).ToList();
         }
 
         /***************************************************/
