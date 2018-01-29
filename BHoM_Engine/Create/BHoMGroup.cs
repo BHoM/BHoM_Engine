@@ -10,9 +10,19 @@ namespace BH.Engine.Base
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static BHoMGroup BHoMGroup(IEnumerable<BHoMObject> elements)
+        public static BHoMGroup<BHoMObject> BHoMGroup(IEnumerable<BHoMObject> elements)
         {
-            return new BHoMGroup
+            return new BHoMGroup<BHoMObject>
+            {
+                Elements = elements.ToList()
+            };
+        }
+
+        /***************************************************/
+
+        public static BHoMGroup<T> BHoMGroup<T>(IEnumerable<T> elements) where T:IObject
+        {
+            return new BHoMGroup<T>
             {
                 Elements = elements.ToList()
             };
