@@ -30,8 +30,8 @@ namespace BH.Engine.Reflection
         {
             // Get the list of properties corresponding to type P
             Dictionary<Type, List<PropertyInfo>> propertyDictionary = typeof(T).GetProperties().GroupBy(x => x.PropertyType).ToDictionary(x => x.Key, x => x.ToList());
-            List<PropertyInfo> properties;
-            if (!propertyDictionary.TryGetValue(typeof(P), out properties))
+            List<PropertyInfo> propertiesValue, propertiesCollection;
+            if (!propertyDictionary.TryGetValue(typeof(P), out propertiesValue) && !propertyDictionary.TryGetValue(typeof(IEnumerable<P>), out propertiesCollection))
                 return new List<P>();
 
             // Collect the property objects
@@ -39,7 +39,7 @@ namespace BH.Engine.Reflection
             Dictionary<PropertyInfo, Action<T, P>> setters = new Dictionary<PropertyInfo, Action<T, P>>();
             Dictionary<PropertyInfo, Func<T, P>> getters = new Dictionary<PropertyInfo, Func<T, P>>();
 
-            foreach (PropertyInfo property in properties)
+            foreach (PropertyInfo property in propertiesValue)
             {
                 // Optimisation using this article: https://blogs.msmvps.com/jonskeet/2008/08/09/making-reflection-fly-and-exploring-delegates/
                 Func<T, P> getProp = (Func<T, P>)Delegate.CreateDelegate(typeof(Func<T, P>), property.GetGetMethod());
@@ -59,7 +59,7 @@ namespace BH.Engine.Reflection
 
 
             //Assign cloned distinct property objects back into input objects
-            foreach (PropertyInfo property in properties)
+            foreach (PropertyInfo property in propertiesValue)
             {
                 Action<T, P> setProp = setters[property];
                 Func<T, P> getProp = getters[property];
