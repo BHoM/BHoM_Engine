@@ -62,7 +62,7 @@ namespace BH.Engine.Reflection
                 gettersSingle.Add(property, getProp);
 
                 // Collect the objects from this property
-                propertyObjects.AddRange(objects.Select(x => getProp(x)));
+                propertyObjects.AddRange(objects.Select(x => getProp(x)).Where(x => x!=null));
             }
 
             Dictionary<PropertyInfo, Action<T, List<P>>> settersList = new Dictionary<PropertyInfo, Action<T, List<P>>>();
@@ -93,7 +93,11 @@ namespace BH.Engine.Reflection
                 Action<T, P> setProp = settersSingle[property];
                 Func<T, P> getProp = gettersSingle[property];
                 foreach (T x in objects)
-                    setProp(x, cloneDictionary[getProp(x).BHoM_Guid]);
+                {
+                    P prop = getProp(x);
+                    if(prop != null)
+                        setProp(x, cloneDictionary[prop.BHoM_Guid]);
+                }
             }
 
             //Assign cloned distinct list property objects back into input objects
