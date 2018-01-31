@@ -13,73 +13,73 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static SteelSection StandardSteelISection(double height, double webThickness, double flangeWidth, double flangeThickness, double rootRadius = 0, double toeRadius = 0)
+        public static SteelSection StandardSteelISection(double height, double webThickness, double flangeWidth, double flangeThickness, double rootRadius = 0, double toeRadius = 0, Material material = null, string name = null)
         {
-            return SteelSectionFromDimensions(new StandardISectionDimensions(height, flangeWidth, webThickness, flangeThickness, rootRadius, toeRadius));
+            return SteelSectionFromDimensions(new StandardISectionDimensions(height, flangeWidth, webThickness, flangeThickness, rootRadius, toeRadius), material, name);
         }
 
         /***************************************************/
 
-        public static SteelSection FabricatedSteelISection(double height, double webThickness, double topFlangeWidth, double topFlangeThickness, double botFlangeWidth, double botFlangeThickness,  double weldSize)
+        public static SteelSection FabricatedSteelISection(double height, double webThickness, double topFlangeWidth, double topFlangeThickness, double botFlangeWidth, double botFlangeThickness,  double weldSize, Material material = null, string name = null)
         {
-            return SteelSectionFromDimensions(new FabricatedISectionDimensions(height, topFlangeWidth, botFlangeWidth, webThickness, topFlangeThickness, botFlangeThickness, weldSize));
+            return SteelSectionFromDimensions(new FabricatedISectionDimensions(height, topFlangeWidth, botFlangeWidth, webThickness, topFlangeThickness, botFlangeThickness, weldSize), material, name);
         }
 
         /***************************************************/
 
-        public static SteelSection StandardSteelBoxSection(double height, double width, double thickness, double innerRadius = 0, double outerRadius = 0)
+        public static SteelSection StandardSteelBoxSection(double height, double width, double thickness, double innerRadius = 0, double outerRadius = 0, Material material = null, string name = null)
         {
-            return SteelSectionFromDimensions(new StandardBoxDimensions(height, width, thickness, innerRadius, outerRadius));
+            return SteelSectionFromDimensions(new StandardBoxDimensions(height, width, thickness, innerRadius, outerRadius), material, name);
         }
 
         /***************************************************/
 
-        public static SteelSection FabricatedSteelBoxSection(double height, double width, double webThickness, double flangeThickness, double weldSize)
+        public static SteelSection FabricatedSteelBoxSection(double height, double width, double webThickness, double flangeThickness, double weldSize, Material material = null, string name = null)
         {
-            return SteelSectionFromDimensions(new FabricatedBoxDimensions(height, width, webThickness, flangeThickness, flangeThickness, weldSize));
+            return SteelSectionFromDimensions(new FabricatedBoxDimensions(height, width, webThickness, flangeThickness, flangeThickness, weldSize), material, name);
 
-
-        }
-
-        /***************************************************/
-
-        public static SteelSection SteelTubeSection(double diameter, double thickness)
-        {
-            return SteelSectionFromDimensions(new TubeDimensions(diameter, thickness));
-        }
-
-        /***************************************************/
-
-        public static SteelSection SteelRectangleSection(double height, double width, double cornerRadius=0)
-        {
-            return SteelSectionFromDimensions(new RectangleSectionDimensions(height, width, cornerRadius));
-        }
-
-        /***************************************************/
-
-        public static SteelSection SteelCircularSection(double diameter)
-        {
-            return SteelSectionFromDimensions(new CircleDimensions(diameter));
-        }
-
-        /***************************************************/
-
-        public static SteelSection SteelTeeSection(double height, double webThickness, double flangeWidth, double flangeThickness,  double rootRadius = 0, double toeRadius = 0)
-        {
-            return SteelSectionFromDimensions(new StandardTeeSectionDimensions(height, flangeWidth, webThickness, flangeThickness, rootRadius, toeRadius));
 
         }
 
         /***************************************************/
 
-        public static SteelSection SteelAngleSection(double height, double webThickness, double width, double flangeThickness, double rootRadius = 0, double toeRadius = 0)
+        public static SteelSection SteelTubeSection(double diameter, double thickness, Material material = null, string name = null)
         {
-            return SteelSectionFromDimensions(new StandardAngleSectionDimensions(height, width, webThickness, flangeThickness, rootRadius, toeRadius));
+            return SteelSectionFromDimensions(new TubeDimensions(diameter, thickness), material, name);
         }
 
         /***************************************************/
 
-        public static SteelSection SteelFreeFormSection(List<ICurve> edges)
+        public static SteelSection SteelRectangleSection(double height, double width, double cornerRadius=0, Material material = null, string name = null)
+        {
+            return SteelSectionFromDimensions(new RectangleSectionDimensions(height, width, cornerRadius), material, name);
+        }
+
+        /***************************************************/
+
+        public static SteelSection SteelCircularSection(double diameter, Material material = null, string name = null)
+        {
+            return SteelSectionFromDimensions(new CircleDimensions(diameter), material, name);
+        }
+
+        /***************************************************/
+
+        public static SteelSection SteelTeeSection(double height, double webThickness, double flangeWidth, double flangeThickness,  double rootRadius = 0, double toeRadius = 0, Material material = null, string name = null)
+        {
+            return SteelSectionFromDimensions(new StandardTeeSectionDimensions(height, flangeWidth, webThickness, flangeThickness, rootRadius, toeRadius), material, name);
+
+        }
+
+        /***************************************************/
+
+        public static SteelSection SteelAngleSection(double height, double webThickness, double width, double flangeThickness, double rootRadius = 0, double toeRadius = 0, Material material = null, string name = null)
+        {
+            return SteelSectionFromDimensions(new StandardAngleSectionDimensions(height, width, webThickness, flangeThickness, rootRadius, toeRadius), material, name);
+        }
+
+        /***************************************************/
+
+        public static SteelSection SteelFreeFormSection(List<ICurve> edges, Material material = null, string name = null)
         {
             Dictionary<string, object> constants = Geometry.Compute.Integrate(edges);
 
@@ -94,6 +94,12 @@ namespace BH.Engine.Structure
 
             //section.CustomData["VerticalSlices"] = new ReadOnlyCollection<IntegrationSlice>((List<IntegrationSlice>)constants["VerticalSlices"]);
             //section.CustomData["HorizontalSlices"] = new ReadOnlyCollection<IntegrationSlice>((List<IntegrationSlice>)constants["HorizontalSlices"]);
+
+            if (material != null)
+                section.Name = name;
+
+            if (material != null)
+                section.Material = material;
 
             return section;
         }
@@ -117,7 +123,9 @@ namespace BH.Engine.Structure
             //section.CustomData["VerticalSlices"] = new ReadOnlyCollection<IntegrationSlice>((List<IntegrationSlice>)constants["VerticalSlices"]);
             //section.CustomData["HorizontalSlices"] = new ReadOnlyCollection<IntegrationSlice>((List<IntegrationSlice>)constants["HorizontalSlices"]);
 
-            section.Name = name;
+            if(material != null)
+                section.Name = name;
+
             if (material != null)
                 section.Material = material;
             return section;
