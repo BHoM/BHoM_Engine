@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using BH.oM.Structural.Properties;
 using BH.oM.Geometry;
+using BH.oM.Common.Materials;
 
 
 namespace BH.Engine.Structure
@@ -91,15 +92,15 @@ namespace BH.Engine.Structure
                 (double)constants["Zy"], (double)constants["Zz"], (double)constants["Sy"], (double)constants["Sz"], (double)constants["CentreZ"], (double)constants["CentreY"], (double)constants["Vz"],
                 (double)constants["Vpz"], (double)constants["Vy"], (double)constants["Vpy"], (double)constants["Asy"], (double)constants["Asz"]);
 
-            section.CustomData["VerticalSlices"] = new ReadOnlyCollection<IntegrationSlice>((List<IntegrationSlice>)constants["VerticalSlices"]);
-            section.CustomData["HorizontalSlices"] = new ReadOnlyCollection<IntegrationSlice>((List<IntegrationSlice>)constants["HorizontalSlices"]);
+            //section.CustomData["VerticalSlices"] = new ReadOnlyCollection<IntegrationSlice>((List<IntegrationSlice>)constants["VerticalSlices"]);
+            //section.CustomData["HorizontalSlices"] = new ReadOnlyCollection<IntegrationSlice>((List<IntegrationSlice>)constants["HorizontalSlices"]);
 
             return section;
         }
 
         /***************************************************/
 
-        public static SteelSection SteelSectionFromDimensions(ISectionDimensions dimensions, string name = "")
+        public static SteelSection SteelSectionFromDimensions(ISectionDimensions dimensions, Material material = null, string name = "")
         {
 
             List<ICurve> edges = dimensions.IGetEdgeCUrves();
@@ -113,10 +114,12 @@ namespace BH.Engine.Structure
                 (double)constants["Zy"], (double)constants["Zz"], (double)constants["Sy"], (double)constants["Sz"], (double)constants["CentreZ"], (double)constants["CentreY"], (double)constants["Vz"],
                 (double)constants["Vpz"], (double)constants["Vy"], (double)constants["Vpy"], (double)constants["Asy"], (double)constants["Asz"]);
 
-            section.CustomData["VerticalSlices"] = new ReadOnlyCollection<IntegrationSlice>((List<IntegrationSlice>)constants["VerticalSlices"]);
-            section.CustomData["HorizontalSlices"] = new ReadOnlyCollection<IntegrationSlice>((List<IntegrationSlice>)constants["HorizontalSlices"]);
+            //section.CustomData["VerticalSlices"] = new ReadOnlyCollection<IntegrationSlice>((List<IntegrationSlice>)constants["VerticalSlices"]);
+            //section.CustomData["HorizontalSlices"] = new ReadOnlyCollection<IntegrationSlice>((List<IntegrationSlice>)constants["HorizontalSlices"]);
 
             section.Name = name;
+            if (material != null)
+                section.Material = material;
             return section;
 
         }
