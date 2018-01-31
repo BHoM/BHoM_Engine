@@ -53,7 +53,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static IBHoMGeometry Geometry(this SteelSection section)
+        public static IBHoMGeometry Geometry(this IGeometricalSection section)
         {
             return new CompositeGeometry { Elements = section.Edges.ToList<IBHoMGeometry>() };
         }

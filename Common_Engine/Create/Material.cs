@@ -8,14 +8,7 @@ namespace BH.Engine.Common
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Material Material(string name)
-        {
-            return new Material { Name = name };
-        }
-
-        /***************************************************/
-
-        public static Material Material(string name, MaterialType type, double E, double v, double tC, double G, double denisty)
+        public static Material Material(string name, MaterialType type = MaterialType.Steel, double E = 210000000000, double v = 0.3, double tC = 0.000012, double denisty = 7850)
         {
             return new Material
             {
@@ -24,7 +17,7 @@ namespace BH.Engine.Common
                 YoungsModulus = E,
                 PoissonsRatio = v,
                 CoeffThermalExpansion = tC,
-                ShearModulus = G,
+                ShearModulus = E/(2*(1+v)),
                 Density = denisty
             };
         }

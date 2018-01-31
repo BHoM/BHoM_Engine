@@ -162,7 +162,7 @@ namespace BH.Engine.Geometry
 
         public static ICurve IRotate(this ICurve geometry, Point origin, Vector axis, double rad)
         {
-            return Rotate(geometry as dynamic, rad, axis);
+            return Rotate(geometry as dynamic, origin,axis, rad);
         }
 
         /***************************************************/
