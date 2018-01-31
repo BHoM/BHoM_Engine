@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Create\LoadingPanelProperty.cs" />
     <Compile Include="Create\Offset.cs" />
     <Compile Include="Create\Reinforcement.cs" />
     <Compile Include="Create\ConstantThickness.cs" />
@@ -71,6 +72,7 @@
     <Compile Include="Create\PanelFreeForm.cs" />
     <Compile Include="Create\SectionProfile.cs" />
     <Compile Include="Create\SteelSection.cs" />
+    <Compile Include="Query\Extrude.cs" />
     <Compile Include="Query\HasModifiers.cs" />
     <Compile Include="Query\CaseType.cs" />
     <Compile Include="Query\Centreline.cs" />
