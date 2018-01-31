@@ -59,6 +59,32 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
+
+        public static IBHoMGeometry Geometry(this MeshFace meshFace)
+        {
+
+            return new Mesh()
+            {
+                Vertices = meshFace.Nodes.Select(x => x.Position).ToList(),
+                Faces = meshFace.Nodes.Count == 3 ? new List<Face>() { new Face() { A = 0, B = 1, C = 2 } } : new List<Face>() { new Face() { A = 0, B = 1, C = 2, D = 3 } }
+            };
+                
+        }
+
+        /***************************************************/
+
+        public static IBHoMGeometry Geometry(this RigidLink link)
+        {
+            List<IBHoMGeometry> lines = new List<IBHoMGeometry>();
+
+            foreach (Node sn in link.SlaveNodes)
+            {
+                lines.Add(new Line() { Start = link.MasterNode.Position, End = sn.Position });
+            }
+            return new CompositeGeometry() { Elements = lines };
+        }
+
+        /***************************************************/
     }
 
 }

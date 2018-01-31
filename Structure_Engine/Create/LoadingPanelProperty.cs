@@ -21,5 +21,7 @@ namespace BH.Engine.Structure
                 LoadApplication = supportCondition,
             };
         }
+
+        /***************************************************/
     }
 }
