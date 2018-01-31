@@ -25,7 +25,7 @@ namespace BH.Engine.Geometry
                     minDist = dist;
                 }
             }
-            return cPt;
+            return cPt.Clone();
         }
 
         /***************************************************/
