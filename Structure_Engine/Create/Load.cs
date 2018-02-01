@@ -61,20 +61,15 @@ namespace BH.Engine.Structure
             if (force == null && moment == null)
                 throw new ArgumentException("Bar point load requires either the force or the moment vector to be defined");
 
-            BarPointLoad bpl = new BarPointLoad {
+            return new BarPointLoad {
                 Loadcase = loadcase,
                 DistanceFromA = distFromA,
+                Force = force == null ? new Vector() : force,
+                Moment = moment == null ? new Vector() : moment,
                 Objects = group,
                 Axis = axis,
                 Name = name
             };
-
-            if (force != null)
-                bpl.Force = force;
-            if (moment != null)
-                bpl.Moment = moment;
-
-            return bpl;
         }
 
         /***************************************************/
@@ -127,31 +122,27 @@ namespace BH.Engine.Structure
         }
         /***************************************************/
 
-        public static BarUniformlyDistributedLoad BarUniformlyDistributedLoad(Loadcase loadcase, BHoMGroup<Bar> group, Vector force, Vector moment, LoadAxis axis = LoadAxis.Global, bool projected = false, string name = "")
+        public static BarUniformlyDistributedLoad BarUniformlyDistributedLoad(Loadcase loadcase, BHoMGroup<Bar> group, Vector force = null, Vector moment = null, LoadAxis axis = LoadAxis.Global, bool projected = false, string name = "")
         {
             if (force == null && moment == null)
                 throw new ArgumentException("Bar uniform load requires either the force or the moment vector to be defined");
 
-            BarUniformlyDistributedLoad bpl = new BarUniformlyDistributedLoad
+            return new BarUniformlyDistributedLoad
             {
                 Loadcase = loadcase,
                 Objects = group,
+                Force = force == null? new Vector(): force,
+                Moment = moment == null? new Vector():moment,
                 Axis = axis,
                 Name = name,
                 Projected = projected
+                
             };
-
-            if (force != null)
-                bpl.Force = force;
-            if (moment != null)
-                bpl.Moment = moment;
-
-            return bpl;
         }
 
         /***************************************************/
 
-        public static BarUniformlyDistributedLoad BarUniformlyDistributedLoad(Loadcase loadcase, IEnumerable<Bar> objects, Vector force, Vector moment, LoadAxis axis = LoadAxis.Global, bool projected = false, string name = "")
+        public static BarUniformlyDistributedLoad BarUniformlyDistributedLoad(Loadcase loadcase, IEnumerable<Bar> objects, Vector force = null, Vector moment = null, LoadAxis axis = LoadAxis.Global, bool projected = false, string name = "")
         {
             return BarUniformlyDistributedLoad(loadcase, new BHoMGroup<Bar>() { Elements = objects.ToList() }, force, moment, axis, projected, name);
         }
@@ -163,29 +154,21 @@ namespace BH.Engine.Structure
             if((forceA == null || forceB == null) && (momentA == null || momentB == null))
                 throw new ArgumentException("Bar varying load requires either the force at A and B OR the moment at A and B to be defined");
 
-            BarVaryingDistributedLoad bvl = new BarVaryingDistributedLoad
+            return new BarVaryingDistributedLoad
             {
                 Loadcase = loadcase,
                 Objects = group,
                 DistanceFromA = distFromA,
                 DistanceFromB = distFromB,
+                ForceA = forceA == null ? new Vector() : forceA,
+                ForceB = forceB == null ? new Vector():forceB,
+                MomentA = momentA == null? new Vector() : momentA,
+                MomentB = momentB == null? new Vector() : momentB,
                 Projected = projected,
                 Axis = axis,
                 Name = name
             };
 
-            if (forceA != null && forceB != null)
-            {
-                bvl.ForceA = forceA;
-                bvl.ForceB = forceB;
-            }
-            if (momentA != null && momentB != null)
-            {
-                bvl.MomentA = momentA;
-                bvl.MomentB = momentB;
-            }
-
-            return bvl;
         }
 
         /***************************************************/
@@ -257,20 +240,17 @@ namespace BH.Engine.Structure
             if (translationAcc == null && rotationAcc == null)
                 throw new ArgumentException("Point acceleration requires either the translation or the rotation vector to be defined");
 
-            PointAcceleration pa = new PointAcceleration
+           return new PointAcceleration
             {
                 Loadcase = loadcase,
                 Objects = group,
+                TranslationalAcceleration = translationAcc == null? new Vector() : translationAcc,
+                RotationalAcceleration = rotationAcc == null? new Vector() : rotationAcc,
                 Axis = axis,
                 Name = name
             };
 
-            if (translationAcc != null)
-                pa.TranslationalAcceleration = translationAcc;
-            if (rotationAcc != null)
-                pa.RotationalAcceleration = rotationAcc;
 
-            return pa;
         }
 
         /***************************************************/
@@ -287,20 +267,16 @@ namespace BH.Engine.Structure
             if (translation == null && rotation == null)
                 throw new ArgumentException("Point displacement requires either the translation or the rotation vector to be defined");
 
-            PointDisplacement pd = new PointDisplacement
+            return new PointDisplacement
             {
                 Loadcase = loadcase,
                 Objects = group,
+                Translation = translation == null? new Vector() : translation,
+                Rotation = rotation == null? new Vector() : rotation,
                 Axis = axis,
                 Name = name
             };
 
-            if (translation != null)
-                pd.Translation = translation;
-            if (rotation != null)
-                pd.Rotation = rotation;
-
-            return pd;
         }
 
         /***************************************************/
@@ -317,20 +293,16 @@ namespace BH.Engine.Structure
             if (force == null && moment == null)
                 throw new ArgumentException("Point force requires either the force or the moment vector to be defined");
 
-            PointForce pf = new PointForce
+            return new PointForce
             {
                 Loadcase = loadcase,
                 Objects = group,
+                Force = force == null ? new Vector() : force,
+                Moment = moment == null ? new Vector() : moment,
                 Axis = axis,
                 Name = name
             };
 
-            if (force != null)
-                pf.Force = force;
-            if (moment != null)
-                pf.Moment = moment;
-
-            return pf;
         }
 
         /***************************************************/
@@ -346,20 +318,16 @@ namespace BH.Engine.Structure
             if (translation == null && rotation == null)
                 throw new ArgumentException("Point velocity requires either the translation or the rotation vector to be defined");
 
-            PointVelocity pv = new PointVelocity
+            return new PointVelocity
             {
                 Loadcase = loadcase,
                 Objects = group,
+                TranslationalVelocity = translation == null ? new Vector() : translation,
+                RotationalVelocity = rotation == null ? new Vector() : rotation,
                 Axis = axis,
                 Name = name
             };
 
-            if (translation != null)
-                pv.TranslationalVelocity = translation;
-            if (rotation != null)
-                pv.RotationalVelocity = rotation;
-
-            return pv;
         }
 
         /***************************************************/

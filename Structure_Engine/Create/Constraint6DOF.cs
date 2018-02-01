@@ -1,4 +1,5 @@
 ﻿using BH.oM.Structural.Properties;
+using System.Collections.Generic;
 
 namespace BH.Engine.Structure
 {
@@ -15,7 +16,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static Constraint6DOF Constraint6DOF(string name, bool[] fixity, double[] values)
+        public static Constraint6DOF Constraint6DOF(string name, List<bool> fixity, List<double> values)
         {
             return new Constraint6DOF
             {
