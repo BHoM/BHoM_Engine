@@ -13,7 +13,12 @@ namespace BH.Engine.Structure
 
         public static RigidLink RigidLink(Node masterNode, IEnumerable<Node> slaveNodes, LinkConstraint constriant = null)
         {
-            return new RigidLink { MasterNode = masterNode, SlaveNodes = slaveNodes.ToList() };
+            RigidLink link = new RigidLink { MasterNode = masterNode, SlaveNodes = slaveNodes.ToList() };
+
+            if (constriant != null)
+                link.Constraint = constriant;
+
+            return link;
         }
 
 
