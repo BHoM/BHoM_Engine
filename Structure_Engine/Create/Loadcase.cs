@@ -8,9 +8,9 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Loadcase Loadcase(string name, LoadNature nature, double selfWeightMultiplier = 0)
+        public static Loadcase Loadcase(string name, int number, LoadNature nature= LoadNature.Other)
         {
-            return new Loadcase { Name = name, Nature = nature };
+            return new Loadcase { Name = name, Number = number, Nature = nature };
         }
 
         /***************************************************/
