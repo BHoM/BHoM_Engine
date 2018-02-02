@@ -86,6 +86,8 @@ namespace BH.Engine.Geometry
             //            intersects.Add(points[i]);
             //            intersects = PointUtils.RemoveDuplicates(intersects, 3);
 
+
+                            // Bug: this does not work if the XYZ origin, plane origin and point are collinear! Use SortCollinear instead.
             //            intersects.Sort(delegate (Point p1, Point p2)
             //            {
             //                return ArrayUtils.DotProduct(p1, direction).CompareTo(ArrayUtils.DotProduct(p2, direction));
@@ -103,6 +105,37 @@ namespace BH.Engine.Geometry
             //return false;
 
             throw new NotImplementedException();
+        }
+
+        /***************************************************/
+
+        public static bool IsContaining(this Polyline curve, List<Point> points)
+        {
+            // Todo:
+            // - to be replaced with a general method for a nurbs curve?
+
+            Plane p = curve.FitPlane();
+            if (curve.IsClosed())
+            {
+                foreach (Point pt in points)
+                {
+                    if (pt.IsInPlane(p))
+                    {
+                        Vector direction = pt - p.Origin;
+                        List<Point> intersects = curve.LineIntersections(Create.Line(pt, direction), true);
+                        intersects.Add(pt);
+                        intersects = intersects.CullDuplicates(Tolerance.Distance);
+                        intersects = intersects.SortCollinear();
+                        for (int j = 0; j < intersects.Count; j++)
+                        {
+                            if (j % 2 == 0 && intersects[j] == pt) return false;
+                        }
+                    }
+                    else return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         /***************************************************/
