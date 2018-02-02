@@ -53,14 +53,13 @@ namespace BH.Engine.Geometry
 
         public static Point PointAtLength(this Polyline curve, double length)
         {
-            List<Line> lines = curve.SubParts() as List<Line>;
             double sum = 0;
-            for (int i = 0; i < lines.Count; i++)
+            foreach (Line line in curve.SubParts())
             {
-                sum += lines[i].Length();
+                sum += line.Length();
                 if (length <= sum)
                 {
-                    return lines[i].PointAtLength(length - sum + lines[i].Length());
+                    return line.PointAtLength(length - sum + line.Length());
                 }
             }
             return null;

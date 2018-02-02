@@ -18,7 +18,7 @@ namespace BH.Engine.Geometry
 
             for (int i = 1; i < pts.Count; i++)
                 result.Add(new Line { Start = pts[i - 1], End = pts[i] });
-
+            
             return result;
         }
 
@@ -31,7 +31,7 @@ namespace BH.Engine.Geometry
 
             for (int i = 0; i < curves.Count; i++)
                 exploded.AddRange(curves[i].ISubParts());
-
+            
             return exploded;
         }
 
@@ -97,21 +97,21 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
-        public static List<IBHoMGeometry> ISubParts(this IBHoMGeometry geometry)
+        public static IEnumerable<IBHoMGeometry> ISubParts(this IBHoMGeometry geometry)
         {
             return SubParts(geometry as dynamic);
         }
 
         /***************************************************/
 
-        public static List<ICurve> ISubParts(this ICurve geometry)
+        public static IEnumerable<ICurve> ISubParts(this ICurve geometry)
         {
             return SubParts(geometry as dynamic);
         }
 
         /***************************************************/
 
-        public static List<ISurface> ISubParts(this ISurface geometry)
+        public static IEnumerable<ISurface> ISubParts(this ISurface geometry)
         {
             return SubParts(geometry as dynamic);
         }
@@ -121,9 +121,23 @@ namespace BH.Engine.Geometry
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private static List<IBHoMGeometry> SubParts(this IBHoMGeometry geometry)
+        private static IEnumerable<IBHoMGeometry> SubParts(this IBHoMGeometry geometry)
         {
             return new List<IBHoMGeometry> { geometry };
+        }
+
+        /***************************************************/
+
+        private static IEnumerable<ICurve> SubParts(this ICurve geometry)
+        {
+            return new List<ICurve> { geometry };
+        }
+
+        /***************************************************/
+
+        private static IEnumerable<ISurface> SubParts(this ISurface geometry)
+        {
+            return new List<ISurface> { geometry };
         }
 
         /***************************************************/

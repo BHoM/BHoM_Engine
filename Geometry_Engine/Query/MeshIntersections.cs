@@ -116,11 +116,10 @@ namespace BH.Engine.Geometry
 
         public static List<Point> MeshIntersections(this Polyline curve, Mesh mesh, double tolerance = Tolerance.Distance)
         {
-            List<Line> lines = curve.SubParts() as List<Line>;
             List<Point> points = new List<Point>();
-            for (int i = 0; i < lines.Count; i++)
+            foreach (Line line in curve.SubParts())
             {
-                points.AddRange(MeshIntersections(lines[i], mesh));
+                points.AddRange(MeshIntersections(line, mesh));
             }
             return points;
         }
