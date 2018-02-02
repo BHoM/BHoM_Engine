@@ -19,14 +19,13 @@ namespace BH.Engine.Structure
 
         public static Bar Bar(Node startNode, Node endNode, ISectionProperty property = null, BarRelease release = null, BarFEAType feaType = BarFEAType.Flexural, string name = "")
         {
-            release = release == null ? new BarRelease() { StartRelease = FixConstraint6DOF(), EndRelease = FixConstraint6DOF() } : release;
             return new Bar
             {
                 Name = name,
                 StartNode = startNode,
                 EndNode = endNode,
                 SectionProperty = property,
-                Release = release,
+                Release = release == null ? BarReleaseFixFix() : release,
                 FEAType = feaType
             };
         }
