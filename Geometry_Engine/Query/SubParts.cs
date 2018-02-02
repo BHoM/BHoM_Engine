@@ -10,7 +10,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Curves                   ****/
         /***************************************************/
 
-        public static IEnumerable<Line> SubParts(this Polyline curve)
+        public static List<Line> SubParts(this Polyline curve)
         {
             List<Line> result = new List<Line>();
 
@@ -24,7 +24,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static IEnumerable<ICurve> SubParts(this PolyCurve curve)
+        public static List<ICurve> SubParts(this PolyCurve curve)
         {
             List<ICurve> exploded = new List<ICurve>();
             List<ICurve> curves = curve.Curves;
@@ -39,7 +39,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Surfaces                 ****/
         /***************************************************/
 
-        public static IEnumerable<ISurface> SubParts(this PolySurface surface)
+        public static List<ISurface> SubParts(this PolySurface surface)
         {
             List<ISurface> exploded = new List<ISurface>();
             List<ISurface> surfaces = surface.Surfaces;
@@ -54,7 +54,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Meshes                   ****/
         /***************************************************/
 
-        public static IEnumerable<Mesh> SubParts(this Mesh mesh)
+        public static List<Mesh> SubParts(this Mesh mesh)
         {
             List<Mesh> explodedMeshes = new List<Mesh>();
             List<Face> faces = mesh.Faces;
@@ -81,7 +81,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Others                   ****/
         /***************************************************/
 
-        public static IEnumerable<IBHoMGeometry> SubParts(this CompositeGeometry group)
+        public static List<IBHoMGeometry> SubParts(this CompositeGeometry group)
         {
             List<IBHoMGeometry> exploded = new List<IBHoMGeometry>();
             List<IBHoMGeometry> elements = group.Elements;
