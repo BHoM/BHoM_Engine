@@ -59,16 +59,16 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static double Distance(this Point a, Line line)
+        public static double Distance(this Point point, Line line, bool infiniteSegment = false)
         {
-            return a.Distance(line.IClosestPoint(a));
+            return point.Distance(line.ClosestPoint(point, infiniteSegment));
         }
 
         /***************************************************/
 
-        public static double SquareDistance(this Point a, Line line)
+        public static double SquareDistance(this Point point, Line line, bool infiniteSegment = false)
         {
-            return a.SquareDistance(line.IClosestPoint(a));
+            return point.SquareDistance(line.ClosestPoint(point, infiniteSegment));
         }
 
         /***************************************************/

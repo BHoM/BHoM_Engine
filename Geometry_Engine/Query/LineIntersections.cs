@@ -153,6 +153,13 @@ namespace BH.Engine.Geometry
             return iPts;
         }
 
+        /***************************************************/
+
+        public static List<Point> LineIntersections(this NurbCurve curve, Line line, bool useInfiniteLine = false, double tolerance = Tolerance.Distance)
+        {
+            throw new NotImplementedException();
+        }
+
 
         /***************************************************/
         /**** Public Methods - Interfaces               ****/

@@ -14,6 +14,8 @@ namespace BH.Engine.DataStructure
         public static List<Tuple<LocalData<T>, LocalData<T>>> RelatedPairs<T>(this PointMatrix<T> matrix, double minDist, double maxDist)
         {
             int range = (int)Math.Ceiling(maxDist / matrix.CellSize);
+            double minSqrDist = minDist * minDist;
+            double maxSqrDist = maxDist * maxDist;
 
             List<Tuple<LocalData<T>, LocalData<T>>> result = new List<Tuple<LocalData<T>, LocalData<T>>>();
             foreach (KeyValuePair<DiscreetPoint, List<LocalData<T>>> kvp in matrix.Data)
@@ -27,8 +29,8 @@ namespace BH.Engine.DataStructure
                 {
                     foreach (LocalData<T> other in closePoints)
                     {
-                        double dist = value.Position.Distance(other.Position);
-                        if (dist < maxDist && dist > minDist)
+                        double sqrDist = value.Position.SquareDistance(other.Position);
+                        if (sqrDist < maxSqrDist && sqrDist > minSqrDist)
                             result.Add(new Tuple<LocalData<T>, LocalData<T>>(value, other));
                     }
                 }
