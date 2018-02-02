@@ -22,7 +22,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static List<ICurve> InternalEdges(this PanelPlanar panel)
+        public static List<ICurve> InternalEdgeCurves(this PanelPlanar panel)
         {
             // Todo:
             // - return the edges as polycurves -> curve.Join needed
@@ -37,9 +37,18 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static List<ICurve> ExternalEdges(this PanelPlanar panel)
+        public static List<ICurve> ExternalEdgeCurves(this PanelPlanar panel)
         {
             return panel.ExternalEdges.Select(x => x.Curve).ToList();
+        }
+
+        /***************************************************/
+
+        public static List<ICurve> AllEdgeCurves(this PanelPlanar panel)
+        {
+            List<ICurve> result = panel.ExternalEdgeCurves();
+            result.AddRange(panel.InternalEdgeCurves());
+            return result;
         }
 
         /***************************************************/
