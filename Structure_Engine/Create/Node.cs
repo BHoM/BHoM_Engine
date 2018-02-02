@@ -12,15 +12,12 @@ namespace BH.Engine.Structure
 
         public static Node Node(Point position, string name = "", Constraint6DOF constraint = null)
         {
-            Node node = new Node
+            return new Node
             {
                 Position = new Point { X = position.X, Y = position.Y, Z = position.Z },
-                Name = name
+                Name = name,
+                Constraint = constraint
             };
-            if (constraint != null)
-                node.Constraint = constraint;
-
-            return node;
         }
 
         /***************************************************/
