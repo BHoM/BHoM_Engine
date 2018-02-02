@@ -1,4 +1,6 @@
 ﻿using BH.oM.Structural.Properties;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace BH.Engine.Structure
 {
@@ -8,7 +10,7 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static LinkConstraint LinkConstraint(string name, bool[] fixity)
+        public static LinkConstraint LinkConstraint(string name, List<bool> fixity)
         {
             return new LinkConstraint
             {
@@ -62,7 +64,7 @@ namespace BH.Engine.Structure
                 fixities[i] = true;
             }
 
-            LinkConstraint constr = LinkConstraint(name, fixities);
+            LinkConstraint constr = LinkConstraint(name, fixities.ToList());
             return constr;
         }
 
