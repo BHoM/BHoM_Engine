@@ -22,6 +22,16 @@ namespace BH.Engine.Environment
             };
         }
 
+        public static Space Space(string Name, string Number, IEnumerable<BuildingElementPanel> BuildingElementsPanel)
+        {
+            return new Space
+            {
+                Name = Name,
+                Number = Number,
+                BuildingElementPanel = BuildingElementsPanel.ToList()
+            };
+        }
+
         public static Space Space(string Name, string Number, Point Location, Storey Storey)
         {
             return new Space
