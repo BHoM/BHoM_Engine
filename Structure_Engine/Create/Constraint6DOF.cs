@@ -83,5 +83,21 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
+
+        public static Constraint6DOF Constraint6DOF(bool x, bool y, bool z, bool xx, bool yy, bool zz, string name = "")
+        {
+            return new Constraint6DOF
+            {
+                Name = name,
+                TranslationX = x ? DOFType.Fixed : DOFType.Free,
+                TranslationY = y ? DOFType.Fixed : DOFType.Free,
+                TranslationZ = z ? DOFType.Fixed : DOFType.Free,
+                RotationX = xx ? DOFType.Fixed : DOFType.Free,
+                RotationY = yy ? DOFType.Fixed : DOFType.Free,
+                RotationZ = zz ? DOFType.Fixed : DOFType.Free,
+            };
+        }
+
+        /***************************************************/
     }
 }
