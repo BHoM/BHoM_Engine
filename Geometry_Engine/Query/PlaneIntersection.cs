@@ -29,15 +29,15 @@ namespace BH.Engine.Geometry
 
             Vector n1 = plane1.Normal;
             Vector n2 = plane2.Normal;
-
-            if (tangent.Z != 0)
+            
+            if (Math.Abs(tangent.Z) >= Tolerance.Angle)
             {
                 double x0 = (n1.Y * d2 - n2.Y * d1) / (n1.X * n2.Y - n2.X * n1.Y);
                 double y0 = (n2.X * d1 - n1.X * d2) / (n1.X * n2.Y - n2.X * n1.Y);
 
                 orgin = new Point { X = x0, Y = y0, Z = 0 };
             }
-            else if (tangent.Y != 0)
+            else if (Math.Abs(tangent.Y) >= Tolerance.Angle)
             {
                 double x0 = (n1.Z * d2 - n2.Z * d1) / (n1.X * n2.Z - n2.X * n1.Z);
                 double z0 = (n2.X * d1 - n1.X * d2) / (n1.X * n2.Z - n2.X * n1.Z);
@@ -49,27 +49,6 @@ namespace BH.Engine.Geometry
                 double z0 = (n2.Y * d1 - n1.Y * d2) / (n1.Y * n2.Z - n2.Y * n1.Z);
                 orgin = new Point { X = 0, Y = y0, Z = z0 };
             }
-
-
-            //Find one point that is on both planes, assume one of the components = 0
-            //if (tangent.Z != 0)
-            //{
-            //    double x0 = (d1 / plane1.Normal.Y - d2) / (plane2.Normal.X - plane1.Normal.X / plane2.Normal.Y);
-            //    double y0 = (-d1 - plane1.Normal.X * x0) / plane1.Normal.Y;
-            //    orgin = new Point { X = x0, Y = y0, Z = 0 };
-            //}
-            //else if (tangent.Y != 0)
-            //{
-            //    double x0 = (d1 / plane1.Normal.Z - d2) / (plane2.Normal.X - plane1.Normal.X / plane2.Normal.Z);
-            //    double z0 = (-d1 - plane1.Normal.X * x0) / plane1.Normal.Z;
-            //    orgin = new Point { X = x0, Y = 0, Z = z0 };
-            //}
-            //else
-            //{
-            //    double y0 = (d1 / plane1.Normal.Z - d2) / (plane2.Normal.Y - plane1.Normal.Y / plane2.Normal.Z);
-            //    double z0 = (-d1 - plane1.Normal.Y * y0) / plane1.Normal.Z;
-            //    orgin = new Point { X = 0, Y = y0, Z = z0 };
-            //}
 
             Line result = new Line { Start = orgin, End = orgin + tangent };
             result.Infinite = true;

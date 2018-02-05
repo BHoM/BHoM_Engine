@@ -1,4 +1,6 @@
 ﻿using BH.oM.Structural.Elements;
+using BH.oM.Geometry;
+using BH.Engine.Geometry;
 
 namespace BH.Engine.Structure
 {
@@ -20,5 +22,13 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
+
+        public static Edge Flip(this Edge edge)
+        {
+            Edge flipped = edge.GetShallowClone() as Edge;
+            flipped.Curve = flipped.Curve.IFlip();
+
+            return flipped;
+        }
     }
 }
