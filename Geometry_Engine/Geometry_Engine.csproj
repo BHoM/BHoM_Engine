@@ -66,6 +66,8 @@
     <Compile Include="Create\Line.cs" />
     <Compile Include="Create\Ellipse.cs" />
     <Compile Include="Create\IntegrationSlice.cs" />
+    <Compile Include="Modify\Extend.cs" />
+    <Compile Include="Modify\Join.cs" />
     <Compile Include="Modify\ProjectAlong.cs" />
     <Compile Include="Modify\Reverse.cs" />
     <Compile Include="Modify\Scale.cs" />
