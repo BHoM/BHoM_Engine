@@ -43,11 +43,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Compute\BooleanDifference.cs" />
+    <Compile Include="Compute\ClusterCollinear.cs" />
     <Compile Include="Compute\CullDuplicates.cs" />
     <Compile Include="Compute\FitLine.cs" />
     <Compile Include="Compute\Integrate.cs" />
     <Compile Include="Compute\PointClusters.cs" />
     <Compile Include="Compute\RowEchelonForm.cs" />
+    <Compile Include="Compute\SortAlongCurve.cs" />
     <Compile Include="Compute\SortCollinear.cs" />
     <Compile Include="Create\Vector.cs" />
     <Compile Include="Create\Point.cs" />
@@ -71,6 +74,7 @@
     <Compile Include="Modify\ProjectAlong.cs" />
     <Compile Include="Modify\Reverse.cs" />
     <Compile Include="Modify\Scale.cs" />
+    <Compile Include="Modify\SplitAtPoints.cs" />
     <Compile Include="Query\BasisFunction.cs" />
     <Compile Include="Query\BooleanIntersection.cs" />
     <Compile Include="Query\Clone.cs" />
@@ -95,7 +99,6 @@
     <Compile Include="Query\IsQuad.cs" />
     <Compile Include="Query\MeshIntersections.cs" />
     <Compile Include="Query\LineIntersections.cs" />
-    <Compile Include="Query\Intersections.cs" />
     <Compile Include="Query\Degree.cs" />
     <Compile Include="Query\DerivativeFunction.cs" />
     <Compile Include="Query\Determinant.cs" />

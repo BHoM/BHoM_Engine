@@ -37,6 +37,8 @@ namespace BH.Engine.Geometry
             double[,] eref = e.RowEchelonForm(false);
             int nonZero = eref.CountNonZeroRows();
 
+            double minT = -tolerance;
+            double maxT = 1 + tolerance;
             switch (nonZero)
             {
                 case 3:                                                                     // nonplanar
@@ -47,8 +49,8 @@ namespace BH.Engine.Geometry
                     {
                         double t2 = eref[1, 2];
                         double t1 = eref[0, 2] - t2 * eref[0, 1];
-                        bool i1 = l1.Infinite ? true : t1 >= 0 && t1 <= 1 ? true : false;
-                        bool i2 = l2.Infinite ? true : t2 >= 0 && t2 <= 1 ? true : false;
+                        bool i1 = l1.Infinite ? true : t1 >= minT && t1 <= maxT ? true : false;
+                        bool i2 = l2.Infinite ? true : t2 >= minT && t2 <= maxT ? true : false;
                         if (i1 && i2)
                         {
                             return p1 + t1 * v1;
@@ -63,6 +65,40 @@ namespace BH.Engine.Geometry
                     else return null;
             }
             return null;
+        }
+
+        /***************************************************/
+
+        public static List<Point> LineIntersections(this List<Line> lines, bool useInfiniteLine = false, double tolerance = Tolerance.Distance)
+        {
+            // TODO: implement PointMatrix for proximity analysis
+            // TODO: write the equation of each line to a list the first time it is computed?
+            // TODO: if !useInfiniteLine use sweep line algo?
+
+            List<BoundingBox> boxes = new List<BoundingBox>();
+            if (!useInfiniteLine)
+            {
+                boxes = lines.Select(x => x.Bounds()).ToList();
+            }
+            
+            List<Point> intersections = new List<Point>();
+            for (int i = 0; i < lines.Count - 1; i++)
+            {
+                for (int j = i + 1; j < lines.Count; j++)
+                {
+                    Point result;
+                    if (!useInfiniteLine && Query.IsInRange(boxes[i], boxes[j]))
+                    {
+                        result = LineIntersection(lines[i], lines[j], useInfiniteLine, tolerance);
+                    }
+                    else
+                    {
+                        result = LineIntersection(lines[i], lines[j], useInfiniteLine, tolerance);
+                    }
+                    if (result != null) intersections.Add(result);
+                }
+            }
+            return intersections;
         }
 
         /***************************************************/

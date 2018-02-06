@@ -109,7 +109,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static bool IsContaining(this Polyline curve, List<Point> points)
+        public static bool IsContaining(this Polyline curve, List<Point> points, bool acceptOnEdge = true)
         {
             // Todo:
             // - to be replaced with a general method for a nurbs curve?
@@ -123,8 +123,13 @@ namespace BH.Engine.Geometry
                     {
                         Vector direction = pt - p.Origin;
                         List<Point> intersects = curve.LineIntersections(Create.Line(pt, direction), true);
+                        if ((pt.ClosestPoint(intersects).SquareDistance(pt) <= Tolerance.SqrtDist))
+                        {
+                            if (acceptOnEdge) continue;
+                            else return false;
+                        }
                         intersects.Add(pt);
-                        intersects = intersects.CullDuplicates(Tolerance.Distance);
+                        //intersects = intersects.CullDuplicates(Tolerance.Distance);
                         intersects = intersects.SortCollinear();
                         for (int j = 0; j < intersects.Count; j++)
                         {
