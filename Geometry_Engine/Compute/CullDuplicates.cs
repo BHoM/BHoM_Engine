@@ -11,7 +11,7 @@ namespace BH.Engine.Geometry
         /**** public Methods - Vectors                  ****/
         /***************************************************/
 
-        public static List<Point> CullDuplicates(this List<Point> points, double maxDist)
+        public static List<Point> CullDuplicates(this List<Point> points, double maxDist = Tolerance.Distance)
         {
             List<List<Point>> clusteredPoints = points.PointClusters(maxDist);
             return clusteredPoints.Select(x => x.Average()).ToList();

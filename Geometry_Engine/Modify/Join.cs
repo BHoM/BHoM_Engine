@@ -8,7 +8,7 @@ namespace BH.Engine.Geometry
     public static partial class Modify
     {
         /***************************************************/
-        /****                Join curves                 ****/
+        /****                Join curves                ****/
         /***************************************************/
 
         public static List<PolyCurve> IJoin(this List<ICurve> curves)
