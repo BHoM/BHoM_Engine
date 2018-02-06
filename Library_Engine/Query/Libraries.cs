@@ -29,12 +29,12 @@ namespace BH.Engine.Library
                     return new List<IObject>();
 
                 string[] entries = libraryString.Split('\n');
-
                 objects = new List<IObject>();
 
+                //Parse the library from json to IObjects
                 foreach (string entry in entries)
                 {
-                    if (!String.IsNullOrWhiteSpace(entry))
+                    if (!string.IsNullOrWhiteSpace(entry))
                     {
                         IObject obj = (IObject)BH.Engine.Serialiser.Convert.FromJson(entry);
                         if(obj != null)
@@ -48,13 +48,13 @@ namespace BH.Engine.Library
             return objects;
         }
 
-
         /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
 
         private static Dictionary<string, string> LibraryStrings()
         {
+            //Check that libraries has been loaded
             if (m_libraryStrings.Count < 1)
                 LoadAllLibraries();
 
@@ -76,6 +76,7 @@ namespace BH.Engine.Library
 
         private static void LoadAllLibraries()
         {
+            //Read in all text files in the resource section to memmory as strings
             ResourceSet set = Properties.Resources.ResourceManager.GetResourceSet(CultureInfo.CurrentUICulture, true, true);
             foreach (DictionaryEntry entry in set)
             {

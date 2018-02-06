@@ -50,12 +50,16 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Query\LibraryNames.cs" />
     <Compile Include="Query\Libraries.cs" />
     <Compile Include="Query\Names.cs" />
-    <Compile Include="Query\Object.cs" />
+    <Compile Include="Query\Match.cs" />
+    <Compile Include="Query\SubSection.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Reflection_Engine\Reflection_Engine.csproj">
+      <Project>{b0154405-9390-472d-9b5c-a2280823b18d}</Project>
+      <Name>Reflection_Engine</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Serialiser_Engine\Serialiser_Engine.csproj">
       <Project>{b013f0da-7d21-4339-85fc-013edd518c6d}</Project>
       <Name>Serialiser_Engine</Name>
@@ -68,13 +72,10 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\MaterialTest.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\MaterialsEurope.txt" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\UK_SteelSections.txt" />
+    <None Include="Resources\UK_SteelSectionDimensions.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
