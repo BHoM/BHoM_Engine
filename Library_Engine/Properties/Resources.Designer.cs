@@ -71,23 +71,13 @@ namespace BH.Engine.Library.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to { &quot;_t&quot; : &quot;BH.oM.Common.Materials.Material&quot;, &quot;BHoM_Guid&quot; : &quot;1c9c0f49-a5be-4cd6-a9dc-cbedd8768caf&quot;, &quot;Name&quot; : &quot;S355&quot;, &quot;Tags&quot; : [], &quot;CustomData&quot; : { }, &quot;Type&quot; : 1, &quot;YoungsModulus&quot; : 210000000000.0, &quot;PoissonsRatio&quot; : 0.29999999999999999, &quot;ShearModulus&quot; : 80769230769.230774, &quot;DryDensity&quot; : 0.0, &quot;CoeffThermalExpansion&quot; : 1.2E-05, &quot;DampingRatio&quot; : 0.0, &quot;Density&quot; : 7850.0, &quot;CompressiveYieldStrength&quot; : 355000000.0, &quot;TensileYieldStrength&quot; : 355000000.0, &quot;StainAtYield&quot; : 0.0 }
-        ///{ &quot;_t&quot; : &quot;BH.oM.Common.Materials.Material [rest of string was truncated]&quot;;.
-        /// </summary>
-        internal static string MaterialTest {
-            get {
-                return ResourceManager.GetString("MaterialTest", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to { &quot;_t&quot; : &quot;BH.oM.Structural.Properties.TubeDimensions&quot;, &quot;BHoM_Guid&quot; : &quot;7a2f38c5-64fb-44d3-9244-71ccfacf0c76&quot;, &quot;Name&quot; : &quot;CHS 21.3x3.2&quot;, &quot;Tags&quot; : [], &quot;CustomData&quot; : { }, &quot;Shape&quot; : 6, &quot;Diameter&quot; : 0.021299999999999999, &quot;Thickness&quot; : 0.0032000000000000002 }
         ///{ &quot;_t&quot; : &quot;BH.oM.Structural.Properties.TubeDimensions&quot;, &quot;BHoM_Guid&quot; : &quot;6d372c5e-866a-40e1-9d6c-d371310b3221&quot;, &quot;Name&quot; : &quot;CHS 26.9x3.2&quot;, &quot;Tags&quot; : [], &quot;CustomData&quot; : { }, &quot;Shape&quot; : 6, &quot;Diameter&quot; : 0.0269, &quot;Thickness&quot; : 0.0032000000000000002 }
         ///{ &quot;_t&quot; : &quot;BH.oM.St [rest of string was truncated]&quot;;.
         /// </summary>
-        internal static string UK_SteelSections {
+        internal static string UK_SteelSectionDimensions {
             get {
-                return ResourceManager.GetString("UK_SteelSections", resourceCulture);
+                return ResourceManager.GetString("UK_SteelSectionDimensions", resourceCulture);
             }
         }
     }
