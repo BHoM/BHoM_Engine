@@ -54,6 +54,14 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        public static bool IsCoplanar(this Line line1, Line line2)
+        {
+            List<Point> cPts = new List<Point> { line1.Start, line1.End, line2.Start, line2.End };
+            return cPts.IsCoplanar();
+        }
+
+        /***************************************************/
+
         public static bool IsPlanar(this Line line)
         {
             return true;
