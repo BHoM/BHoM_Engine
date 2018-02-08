@@ -181,7 +181,7 @@ namespace BH.Engine.Geometry
                 Point pt = ln.LineIntersection(l);
                 if (pt != null) iPts.Add(pt);
             }
-
+            
             return iPts;
         }
 
