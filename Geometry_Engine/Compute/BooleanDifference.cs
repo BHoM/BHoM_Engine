@@ -10,15 +10,12 @@ namespace BH.Engine.Geometry
         /***************************************************/
         /****          public Methods - Lines           ****/
         /***************************************************/
-
         
-
         public static List<Line> BooleanDifference(this Line line, Line refLine)
         {
             if (refLine.Length() <= Tolerance.Distance) return new List<Line> { line.Clone() };
             if (line.IsColinear(refLine))
             {
-                Point aPt = refLine.ControlPoints().Average();
                 List<Line> splitLine = line.SplitAtPoints(refLine.ControlPoints());
                 if (splitLine.Count == 3)
                 {
@@ -26,12 +23,15 @@ namespace BH.Engine.Geometry
                 }
                 else if (splitLine.Count == 2)
                 {
+                    Point aPt = refLine.ControlPoints().Average();
                     if (line.Start.SquareDistance(aPt) < line.End.SquareDistance(aPt)) splitLine.RemoveAt(0);
                     else splitLine.RemoveAt(1);
                 }
                 else
                 {
-                    if (aPt.SquareDistance(splitLine[0]) > Tolerance.Distance) splitLine = new List<Line> { line.Clone() };
+                    Point aPt = splitLine[0].ControlPoints().Average();
+                    Point aRPt = refLine.ControlPoints().Average();
+                    if (aRPt.SquareDistance(splitLine[0]) > Tolerance.SqrtDist && aPt.SquareDistance(refLine) > Tolerance.SqrtDist) splitLine = new List<Line> { line.Clone() };
                     else splitLine = new List<Line>();
                 }
                 return splitLine;
