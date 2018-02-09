@@ -49,6 +49,7 @@ namespace BH.Engine.Geometry
                 Line intersection = line.BooleanIntersection(l);
                 if (intersection != null) result.Add(intersection);
             }
+            result = result.BooleanUnion();
             return result;
         }
 
@@ -61,6 +62,70 @@ namespace BH.Engine.Geometry
             for (int i = 1; i < lines.Count; i++)
             {
                 result = result.BooleanIntersection(lines[i]);
+            }
+            return result;
+        }
+
+
+        /***************************************************/
+        /****         public Methods - Regions          ****/
+        /***************************************************/
+
+        public static List<Polyline> BooleanIntersection(this Polyline region1, Polyline refRegion)
+        {
+            if (region1.IsCoplanar(refRegion))
+            {
+                List<Polyline> result = new List<Polyline>();
+                List<Point> iPts = region1.LineIntersections(refRegion);
+                List<Polyline> splitRegion1 = region1.SplitAtPoints(iPts);
+                List<Polyline> splitRegion2 = refRegion.SplitAtPoints(iPts);
+                foreach (Polyline segment in splitRegion1)
+                {
+                    List<Point> cPts = segment.SubParts().Select(s => s.ControlPoints().Average()).ToList();
+                    cPts.AddRange(segment.ControlPoints);
+                    if (refRegion.IsContaining(cPts, true)) result.Add(segment);
+                }
+                foreach (Polyline segment in splitRegion2)
+                {
+                    List<Point> cPts = segment.SubParts().Select(s => s.ControlPoints().Average()).ToList();
+                    cPts.AddRange(segment.ControlPoints);
+                    if (region1.IsContaining(cPts, true)) result.Add(segment);
+                }
+                return result.Join();
+            }
+
+            return new List<Polyline>();
+        }
+
+        /***************************************************/
+
+        //public static List<Polyline> BooleanIntersection(this Polyline region, List<Polyline> refRegions)
+        //{
+        //    List<Polyline> result = new List<Polyline>();
+        //    if (region.Length() <= Tolerance.Distance) return result;
+        //    foreach (Polyline r in refRegions)
+        //    {
+        //        result.AddRange(region.BooleanIntersection(r));
+        //    }
+        //    result = result.BooleanUnion();
+        //    return result;
+        //}
+
+        /***************************************************/
+
+        public static List<Polyline> BooleanIntersection(this List<Polyline> regions)
+        {
+            List<Polyline> result = new List<Polyline>();
+            if (regions[0].Length() <= Tolerance.Distance) return result;
+            result.Add(regions[0].Clone());
+            for (int i = 1; i < regions.Count; i++)
+            {
+                List<Polyline> newResult = new List<Polyline>();
+                foreach(Polyline r in result)
+                {
+                    newResult.AddRange(r.BooleanIntersection(regions[i]));
+                }
+                result = newResult;
             }
             return result;
         }

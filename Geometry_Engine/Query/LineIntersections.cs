@@ -181,7 +181,25 @@ namespace BH.Engine.Geometry
                 Point pt = ln.LineIntersection(l);
                 if (pt != null) iPts.Add(pt);
             }
-            
+
+            return iPts;
+        }
+
+        /***************************************************/
+
+        public static List<Point> LineIntersections(this Polyline curve1, Polyline curve2, double tolerance = Tolerance.Distance)
+        {
+            List<Point> iPts = new List<Point>();
+            List<Line> subparts = curve2.SubParts();
+            foreach (Line l1 in curve1.SubParts())
+            {
+                foreach(Line l2 in subparts)
+                {
+                    Point pt = l1.LineIntersection(l2);
+                    if (pt != null) iPts.Add(pt);
+                }
+            }
+
             return iPts;
         }
 

@@ -82,5 +82,101 @@ namespace BH.Engine.Geometry
             }
             return result;
         }
+
+
+        /***************************************************/
+        /****         public Methods - Regions          ****/
+        /***************************************************/
+
+        public static List<Polyline> BooleanDifference(this Polyline region, Polyline refRegion)
+        {
+            if (region.IsCoplanar(refRegion))
+            {
+                List<Polyline> result = new List<Polyline>();
+                List<Point> iPts = region.LineIntersections(refRegion);
+                List<Polyline> splitRegion1 = region.SplitAtPoints(iPts);
+                List<Polyline> splitRegion2 = refRegion.SplitAtPoints(iPts);
+                foreach (Polyline segment in splitRegion1)
+                {
+                    List<Point> cPts = segment.SubParts().Select(s => s.ControlPoints().Average()).ToList();
+                    cPts.AddRange(segment.ControlPoints);
+                    if (!refRegion.IsContaining(cPts, false))
+                    {
+                        foreach (Point pt in cPts)
+                        {
+                            if (region.ClosestPoint(pt).SquareDistance(pt) > Tolerance.SqrtDist)
+                            {
+                                continue;
+                            }
+                        }
+                        result.Add(segment);
+                    }
+                }
+                foreach (Polyline segment in splitRegion2)
+                {
+                    List<Point> cPts = segment.SubParts().Select(s => s.ControlPoints().Average()).ToList();
+                    cPts.AddRange(segment.ControlPoints);
+                    if (region.IsContaining(cPts, true))
+                    {
+                        foreach (Point pt in cPts)
+                        {
+                            if (region.ClosestPoint(pt).SquareDistance(pt) > Tolerance.SqrtDist)
+                            {
+                                result.Add(segment);
+                                break;
+                            }
+                        }
+                    }
+
+                }
+                return result.Join();
+            }
+
+            return new List<Polyline> { region };
+        }
+
+        /***************************************************/
+
+        public static List<Polyline> BooleanDifference(this List<Polyline> regions, List<Polyline> refRegions)
+        {
+            List<Polyline> result = new List<Polyline>();
+
+            foreach (Polyline region in regions)
+            {
+                List<Polyline> splitRegion = new List<Polyline> { region.Clone() };
+                int k = 0;
+                bool split = false;
+                do
+                {
+                    split = false;
+                    for (int i = k; i < refRegions.Count; i++)
+                    {
+                        if (split) break;
+                        for (int j = 0; j < splitRegion.Count; j++)
+                        {
+                            Polyline r = splitRegion[j];
+                            List<Polyline> bd = r.BooleanDifference(refRegions[i]);
+                            if (bd.Count == 0)
+                            {
+                                k = refRegions.Count;
+                                splitRegion = new List<Polyline>();
+                                split = true;
+                                break;
+                            }
+                            else if (bd.Count > 1 || bd[0].Area() != r.Area())
+                            {
+                                k = i + 1;
+                                split = true;
+                                splitRegion.RemoveAt(j);
+                                splitRegion.AddRange(bd);
+                                break;
+                            }
+                        }
+                    }
+                } while (split);
+                result.AddRange(splitRegion);
+            }
+            return result;
+        }
     }
 }
