@@ -62,6 +62,15 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        public static bool IsCoplanar(this Polyline curve1, Polyline curve2)
+        {
+            List<Point> cPts = curve1.Clone().ControlPoints;
+            cPts.AddRange(curve2.Clone().ControlPoints);
+            return cPts.IsCoplanar();
+        }
+
+        /***************************************************/
+
         public static bool IsPlanar(this Line line)
         {
             return true;

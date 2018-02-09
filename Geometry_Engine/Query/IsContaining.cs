@@ -1,5 +1,6 @@
 ﻿using BH.oM.Geometry;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 
 namespace BH.Engine.Geometry
@@ -129,7 +130,6 @@ namespace BH.Engine.Geometry
                             else return false;
                         }
                         intersects.Add(pt);
-                        //intersects = intersects.CullDuplicates(Tolerance.Distance);
                         intersects = intersects.SortCollinear();
                         for (int j = 0; j < intersects.Count; j++)
                         {
