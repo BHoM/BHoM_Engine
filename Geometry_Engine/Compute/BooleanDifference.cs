@@ -90,44 +90,54 @@ namespace BH.Engine.Geometry
 
         public static List<Polyline> BooleanDifference(this Polyline region, Polyline refRegion)
         {
+            List<Polyline> cutRegions = region.BooleanIntersection(refRegion);
+            // area method does not work for polylines!
+            // if (cutRegions.Select(cr => cr.Area()).ToList().Sum() <= Tolerance.Distance) return new List<Polyline> { region.Clone() };
+
             if (region.IsCoplanar(refRegion))
             {
                 List<Polyline> result = new List<Polyline>();
-                List<Point> iPts = region.LineIntersections(refRegion);
-                List<Polyline> splitRegion1 = region.SplitAtPoints(iPts);
-                List<Polyline> splitRegion2 = refRegion.SplitAtPoints(iPts);
-                foreach (Polyline segment in splitRegion1)
+                List<Point> iPts = new List<Point>();
+                foreach (Polyline cr in cutRegions)
                 {
-                    List<Point> cPts = segment.SubParts().Select(s => s.ControlPoints().Average()).ToList();
-                    cPts.AddRange(segment.ControlPoints);
-                    if (!refRegion.IsContaining(cPts, false))
-                    {
-                        foreach (Point pt in cPts)
-                        {
-                            if (region.ClosestPoint(pt).SquareDistance(pt) > Tolerance.SqrtDist)
-                            {
-                                continue;
-                            }
-                        }
-                        result.Add(segment);
-                    }
+                    iPts.AddRange(region.LineIntersections(cr));
                 }
-                foreach (Polyline segment in splitRegion2)
+                List<Polyline> splitRegion = region.SplitAtPoints(iPts);
+                foreach (Polyline segment in splitRegion)
                 {
                     List<Point> cPts = segment.SubParts().Select(s => s.ControlPoints().Average()).ToList();
                     cPts.AddRange(segment.ControlPoints);
-                    if (region.IsContaining(cPts, true))
+                    bool isInRegion = false;
+                    foreach (Polyline cr in cutRegions)
                     {
-                        foreach (Point pt in cPts)
+                        if (cr.IsContaining(cPts, true))
                         {
-                            if (region.ClosestPoint(pt).SquareDistance(pt) > Tolerance.SqrtDist)
-                            {
-                                result.Add(segment);
-                                break;
-                            }
+                            isInRegion = true;
+                            break;
                         }
                     }
+                    if (!isInRegion) result.Add(segment);
+                }
+                foreach (Polyline cr in cutRegions)
+                {
+                    splitRegion = cr.SplitAtPoints(iPts);
+                    foreach (Polyline segment in splitRegion)
+                    {
+                        List<Point> cPts = segment.SubParts().Select(s => s.ControlPoints().Average()).ToList();
+                        cPts.AddRange(segment.ControlPoints);
+                        if (region.IsContaining(cPts, true))
+                        {
+                            foreach (Point pt in cPts)
+                            {
+                                if (region.ClosestPoint(pt).SquareDistance(pt) > Tolerance.SqrtDist)
+                                {
+                                    result.Add(segment);
+                                    break;
+                                }
+                            }
+                        }
 
+                    }
                 }
                 return result.Join();
             }

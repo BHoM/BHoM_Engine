@@ -89,27 +89,19 @@ namespace BH.Engine.Geometry
                 {
                     List<Point> cPts = segment.SubParts().Select(s => s.ControlPoints().Average()).ToList();
                     cPts.AddRange(segment.ControlPoints);
-                    if (region1.IsContaining(cPts, true)) result.Add(segment);
+                    if (region1.IsContaining(cPts, true))
+                    {
+                        foreach (Point cPt in cPts)
+                        {
+                            if (cPt.SquareDistance(region1.ClosestPoint(cPt))>Tolerance.SqrtDist) result.Add(segment);
+                        }
+                    }
                 }
                 return result.Join();
             }
 
             return new List<Polyline>();
         }
-
-        /***************************************************/
-
-        //public static List<Polyline> BooleanIntersection(this Polyline region, List<Polyline> refRegions)
-        //{
-        //    List<Polyline> result = new List<Polyline>();
-        //    if (region.Length() <= Tolerance.Distance) return result;
-        //    foreach (Polyline r in refRegions)
-        //    {
-        //        result.AddRange(region.BooleanIntersection(r));
-        //    }
-        //    result = result.BooleanUnion();
-        //    return result;
-        //}
 
         /***************************************************/
 

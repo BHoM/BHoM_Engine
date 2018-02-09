@@ -114,6 +114,7 @@ namespace BH.Engine.Geometry
         {
             // Todo:
             // - to be replaced with a general method for a nurbs curve?
+            // - this is very problematic for edge cases (cutting line going through a sharp corner, to be superseded?
 
             Plane p = curve.FitPlane();
             if (curve.IsClosed())
@@ -122,8 +123,7 @@ namespace BH.Engine.Geometry
                 {
                     if (pt.IsInPlane(p))
                     {
-                        Vector direction = pt - p.Origin;
-                        List<Point> intersects = curve.LineIntersections(Create.Line(pt, direction), true);
+                        List<Point> intersects = curve.LineIntersections(new Line { Start = pt, End = p.Origin }, true); // what if the points are in exactly same spot?
                         if ((pt.ClosestPoint(intersects).SquareDistance(pt) <= Tolerance.SqrtDist))
                         {
                             if (acceptOnEdge) continue;
@@ -131,6 +131,7 @@ namespace BH.Engine.Geometry
                         }
                         intersects.Add(pt);
                         intersects = intersects.SortCollinear();
+                        intersects = intersects.CullDuplicates();
                         for (int j = 0; j < intersects.Count; j++)
                         {
                             if (j % 2 == 0 && intersects[j] == pt) return false;

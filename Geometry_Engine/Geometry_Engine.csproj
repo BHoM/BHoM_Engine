@@ -77,6 +77,7 @@
     <Compile Include="Modify\Reverse.cs" />
     <Compile Include="Modify\Scale.cs" />
     <Compile Include="Modify\SplitAtPoints.cs" />
+    <Compile Include="Modify\SplitWithLines.cs" />
     <Compile Include="Query\BasisFunction.cs" />
     <Compile Include="Query\BooleanIntersection.cs" />
     <Compile Include="Query\Clone.cs" />
@@ -96,6 +97,8 @@
     <Compile Include="Query\ClosestDistance.cs" />
     <Compile Include="Query\ClosestPoint.cs" />
     <Compile Include="Query\ControlPoints.cs" />
+    <Compile Include="Query\IsColinear.cs" />
+    <Compile Include="Query\IsCoplanar.cs" />
     <Compile Include="Query\IsLinear.cs" />
     <Compile Include="Query\IsPlanar.cs" />
     <Compile Include="Query\IsQuad.cs" />
