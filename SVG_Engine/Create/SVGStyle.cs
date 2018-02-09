@@ -9,7 +9,7 @@ namespace BH.Engine.Graphics
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static SVGStyle SVGStyle(double strokeWidth, string strokeColor, string fillColor, double strokeOpacity, double fillOpacity, List<double> strokeDash)
+        public static SVGStyle SVGStyle(double strokeWidth = 1, string strokeColor = "black", string fillColor = "none", double strokeOpacity = 1, double fillOpacity = 1, List<double> strokeDash = null)
         {
             return new SVGStyle
             {
@@ -18,7 +18,7 @@ namespace BH.Engine.Graphics
                 FillColor = fillColor,
                 StrokeOpacity = strokeOpacity,
                 FillOpacity = fillOpacity,
-                StrokeDash = strokeDash
+                StrokeDash = strokeDash == null ? new List<double>() { 0 } : strokeDash
             };
         }
 

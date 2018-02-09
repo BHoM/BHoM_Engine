@@ -12,7 +12,7 @@ namespace BH.Engine.Graphics
 
         public static SVGObject SVGObject(List<IBHoMGeometry> shapes, SVGStyle style = null)
         {
-            return new SVGObject { Shapes = shapes, Style = style };
+            return new SVGObject { Shapes = shapes, Style = style == null ? new SVGStyle() : style };
         }
 
         /***************************************************/
