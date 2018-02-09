@@ -58,19 +58,59 @@ namespace BH.Engine.Geometry
         /****         public Methods - Regions          ****/
         /***************************************************/
 
+        //private static List<Polyline> BooleanUnion(this Polyline region1, Polyline region2)
+        //{
+        //    if (region1.IsCoplanar(region2))
+        //    {
+        //        List<Polyline> result = new List<Polyline>();
+        //        List<Point> iPts = region1.LineIntersections(region2);
+        //        List<Polyline> splitRegion1 = region1.SplitAtPoints(iPts);
+        //        List<Polyline> splitRegion2 = region2.SplitAtPoints(iPts);
+        //        foreach (Polyline segment in splitRegion1)
+        //        {
+        //            List<Point> cPts = segment.SubParts().Select(s => s.ControlPoints().Average()).ToList();
+        //            cPts.AddRange(segment.ControlPoints);
+        //            if (!region2.IsContaining(cPts, true)) result.Add(segment);
+        //        }
+        //        foreach (Polyline segment in splitRegion2)
+        //        {
+        //            List<Point> cPts = segment.SubParts().Select(s => s.ControlPoints().Average()).ToList();
+        //            cPts.AddRange(segment.ControlPoints);
+        //            if (!region1.IsContaining(cPts, true)) result.Add(segment);
+        //        }
+        //        return result.Join();
+        //    }
+
+        //    return new List<Polyline> { region1.Clone(), region2.Clone() };
+        //}
+
+        /***************************************************/
+
         public static List<Polyline> BooleanUnion(this Polyline region1, Polyline region2)
         {
             if (region1.IsCoplanar(region2))
             {
+                if (region1.IsContaining(region2.ControlPoints, true)) return new List<Polyline> { region1 };
                 List<Polyline> result = new List<Polyline>();
                 List<Point> iPts = region1.LineIntersections(region2);
                 List<Polyline> splitRegion1 = region1.SplitAtPoints(iPts);
                 List<Polyline> splitRegion2 = region2.SplitAtPoints(iPts);
+
                 foreach (Polyline segment in splitRegion1)
                 {
                     List<Point> cPts = segment.SubParts().Select(s => s.ControlPoints().Average()).ToList();
                     cPts.AddRange(segment.ControlPoints);
                     if (!region2.IsContaining(cPts, true)) result.Add(segment);
+                    //{
+                    //    foreach (Point cPt in cPts)
+                    //    {
+                    //        if (region2.ClosestPoint(cPt).SquareDistance(cPt) > Tolerance.SqrtDist)
+                    //        {
+                    //            result.Add(segment);
+                    //            break;
+                    //        }
+                    //    }
+                    //}
                 }
                 foreach (Polyline segment in splitRegion2)
                 {
@@ -88,7 +128,27 @@ namespace BH.Engine.Geometry
 
         public static List<Polyline> BooleanUnion(this List<Polyline> regions)
         {
-            List<Polyline> result = regions.Select(l => l.Clone()).ToList();
+            List<Polyline> result = new List<Polyline>();
+            List<Line> cutlines = new List<Line>();
+            List<Point> iPts = new List<Point>();
+            for (int i = 0; i < regions.Count - 1; i++)
+            {
+                for (int j = i + 1; j < regions.Count; j++)
+                {
+                    iPts.AddRange(regions[i].LineIntersections(regions[j]));
+                }
+            }
+            foreach (Polyline r in regions)
+            {
+                foreach (Polyline p in r.SplitAtPoints(iPts))
+                {
+                    cutlines.AddRange(p.SubParts());
+                }
+            }
+            foreach (Polyline r in regions)
+            {
+                result.AddRange(r.Split(cutlines));
+            }
             List<Polyline> openings = new List<Polyline>();
             bool union;
             do
@@ -100,6 +160,20 @@ namespace BH.Engine.Geometry
                     for (int j = i + 1; j < result.Count; j++)
                     {
                         List<Polyline> uRegions = result[i].BooleanUnion(result[j]);
+
+                        bool test = false;
+                        foreach (Point p in result[i].ControlPoints)
+                        {
+                            if (test) break;
+                            foreach (Point pp in uRegions[0].ControlPoints)
+                            {
+                                if (p.SquareDistance(pp) > Tolerance.SqrtDist)
+                                {
+                                    test = true;
+                                    break;
+                                }
+                            }
+                        }
                         if (uRegions.Count == 1)
                         {
                             result.RemoveAt(j);
@@ -108,7 +182,8 @@ namespace BH.Engine.Geometry
                             union = true;
                             break;
                         }
-                        else if (result[i].Area() != uRegions[0].Area()) // this may cause special cases! area comparison is probably wrong
+                        //else if (result[i].Area() != uRegions[0].Area()) // this may cause special cases! area comparison is probably wrong
+                        else if (test)
                         {
                             result.RemoveAt(j);
                             result.RemoveAt(i);
@@ -125,7 +200,7 @@ namespace BH.Engine.Geometry
                     }
                 }
             } while (union);
-
+            
             result.AddRange(openings.BooleanDifference(regions));
             return result;
         }

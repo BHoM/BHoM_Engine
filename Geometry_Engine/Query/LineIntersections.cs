@@ -83,15 +83,11 @@ namespace BH.Engine.Geometry
                 for (int j = i + 1; j < lines.Count; j++)
                 {
                     Point result;
-                    if (!useInfiniteLine && Query.IsInRange(boxes[i], boxes[j]))
+                    if (!useInfiniteLine || Query.IsInRange(boxes[i], boxes[j]))
                     {
                         result = LineIntersection(lines[i], lines[j], useInfiniteLine, tolerance);
+                        if (result != null) intersections.Add(result);
                     }
-                    else
-                    {
-                        result = LineIntersection(lines[i], lines[j], useInfiniteLine, tolerance);
-                    }
-                    if (result != null) intersections.Add(result);
                 }
             }
             return intersections;
