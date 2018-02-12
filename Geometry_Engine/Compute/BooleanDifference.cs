@@ -88,7 +88,45 @@ namespace BH.Engine.Geometry
         /****         public Methods - Regions          ****/
         /***************************************************/
 
-        public static List<Polyline> BooleanDifference(this Polyline region, Polyline refRegion, out bool isOpening)
+        public static List<Polyline> BooleanDifference(this List<Polyline> regions, List<Polyline> refRegions)
+        {
+            List<Polyline> result = new List<Polyline>();
+            List<Polyline> openings = new List<Polyline>();
+
+            bool isOpening;
+            List<Polyline> bDifference;
+            foreach (Polyline region in regions)
+            {
+                List<Polyline> splitRegion = new List<Polyline> { region.Clone() };
+                foreach (Polyline refRegion in refRegions)
+                {
+                    List<Polyline> split = new List<Polyline>();
+                    foreach (Polyline sr in splitRegion)
+                    {
+                        isOpening = false;
+                        bDifference = sr.BooleanDifference(refRegion, out isOpening);
+                        
+                        if (isOpening)
+                        {
+                            split.Add(bDifference[0]);
+                            openings.AddRange(bDifference.Skip(1));
+                        }
+                        else split.AddRange(bDifference);
+                    }
+                    splitRegion = split;
+                }
+                result.AddRange(splitRegion);
+            }
+            result.AddRange(openings);
+            return result;
+        }
+
+
+        /***************************************************/
+        /****              Private methods              ****/
+        /***************************************************/
+
+        private static List<Polyline> BooleanDifference(this Polyline region, Polyline refRegion, out bool isOpening)
         {
             List<Polyline> cutRegions = region.BooleanIntersection(refRegion);
             List<Polyline> result = new List<Polyline>();
@@ -149,41 +187,6 @@ namespace BH.Engine.Geometry
                 return result.Join();
             }
             return new List<Polyline> { region.Clone() };
-        }
-
-        /***************************************************/
-
-        public static List<Polyline> BooleanDifference(this List<Polyline> regions, List<Polyline> refRegions)
-        {
-            List<Polyline> result = new List<Polyline>();
-            List<Polyline> openings = new List<Polyline>();
-
-            bool isOpening;
-            List<Polyline> bDifference;
-            foreach (Polyline region in regions)
-            {
-                List<Polyline> splitRegion = new List<Polyline> { region.Clone() };
-                foreach (Polyline refRegion in refRegions)
-                {
-                    List<Polyline> split = new List<Polyline>();
-                    foreach (Polyline sr in splitRegion)
-                    {
-                        isOpening = false;
-                        bDifference = sr.BooleanDifference(refRegion, out isOpening);
-                        
-                        if (isOpening)
-                        {
-                            split.Add(bDifference[0]);
-                            openings.AddRange(bDifference.Skip(1));
-                        }
-                        else split.AddRange(bDifference);
-                    }
-                    splitRegion = split;
-                }
-                result.AddRange(splitRegion);
-            }
-            result.AddRange(openings);
-            return result;
         }
     }
 }
