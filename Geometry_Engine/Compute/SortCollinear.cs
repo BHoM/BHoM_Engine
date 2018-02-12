@@ -13,35 +13,35 @@ namespace BH.Engine.Geometry
 
         public static List<Point> SortCollinear(this List<Point> points)
         {
-            List<Point> cpoints = points.Select(p => p.Clone()).ToList();
-            for (int i = 1; i < cpoints.Count; i++)
+            List<Point> cPoints = points.Select(p => p.Clone()).ToList();
+            for (int i = 1; i < cPoints.Count; i++)
             {
-                if (Math.Abs(cpoints[0].X - cpoints[i].X) > Tolerance.Distance)
+                if (Math.Abs(cPoints[0].X - cPoints[i].X) > Tolerance.Distance)
                 {
-                    cpoints.Sort(delegate (Point p1, Point p2)
+                    cPoints.Sort(delegate (Point p1, Point p2)
                         {
                             return p1.X.CompareTo(p2.X);
                         });
                     break;
                 }
-                else if (Math.Abs(cpoints[0].Y - cpoints[i].Y) > Tolerance.Distance)
+                else if (Math.Abs(cPoints[0].Y - cPoints[i].Y) > Tolerance.Distance)
                 {
-                    cpoints.Sort(delegate (Point p1, Point p2)
+                    cPoints.Sort(delegate (Point p1, Point p2)
                     {
                         return p1.Y.CompareTo(p2.Y);
                     });
                     break;
                 }
-                else if(Math.Abs(cpoints[0].Z - cpoints[i].Z) > Tolerance.Distance)
+                else if(Math.Abs(cPoints[0].Z - cPoints[i].Z) > Tolerance.Distance)
                 {
-                    cpoints.Sort(delegate (Point p1, Point p2)
+                    cPoints.Sort(delegate (Point p1, Point p2)
                     {
                         return p1.Z.CompareTo(p2.Z);
                     });
                     break;
                 }
             }
-            return cpoints;
+            return cPoints;
         }
     }
 }

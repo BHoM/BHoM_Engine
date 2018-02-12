@@ -35,25 +35,6 @@ namespace BH.Engine.Geometry
         /**** public Methods - Curves                   ****/
         /***************************************************/
 
-        public static bool IsCoplanar(this List<Point> pts)
-        {
-            if (pts.Count < 4) return true;
-
-            double[,] vMatrix = new double[pts.Count - 1, 3];
-            for (int i = 0; i < pts.Count - 1; i++)
-            {
-                vMatrix[i, 0] = pts[i + 1].X - pts[0].X;
-                vMatrix[i, 1] = pts[i + 1].Y - pts[0].Y;
-                vMatrix[i, 2] = pts[i + 1].Z - pts[0].Z;
-            }
-
-            double[,] rref = vMatrix.RowEchelonForm(false);
-            int nonZeroRows = rref.CountNonZeroRows();
-            return nonZeroRows < 3;
-        }
-
-        /***************************************************/
-
         public static bool IsPlanar(this Line line)
         {
             return true;

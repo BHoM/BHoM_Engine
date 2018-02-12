@@ -11,33 +11,6 @@ namespace BH.Engine.Geometry
         /**** public Methods - Curves                   ****/
         /***************************************************/
 
-        public static bool IsColinear(this List<Point> pts)
-        {
-            if (pts.Count < 3) return true;
-            
-            double[,] vMatrix = new double[pts.Count - 1, 3];
-            for (int i = 0; i < pts.Count - 1; i++)
-            {
-                vMatrix[i, 0] = pts[i + 1].X - pts[0].X;
-                vMatrix[i, 1] = pts[i + 1].Y - pts[0].Y;
-                vMatrix[i, 2] = pts[i + 1].Z - pts[0].Z;
-            }
-
-            double[,] rref = vMatrix.RowEchelonForm(false);
-            int nonZeroRows = rref.CountNonZeroRows();
-            return nonZeroRows < 2;
-        }
-
-        /***************************************************/
-
-        public static bool IsColinear(this Line line1, Line line2)
-        {
-            List<Point> cPts = new List<Point> { line1.Start, line1.End, line2.Start, line2.End };
-            return cPts.IsColinear();
-        }
-
-        /***************************************************/
-
         public static bool IsLinear(this Line line)
         {
             return true;
@@ -47,7 +20,7 @@ namespace BH.Engine.Geometry
 
         public static bool IsLinear(this Arc arc)
         {
-            return arc.ControlPoints().IsColinear();
+            return arc.ControlPoints().IsCollinear();
         }
 
         /***************************************************/
@@ -61,21 +34,21 @@ namespace BH.Engine.Geometry
 
         public static bool IsLinear(this NurbCurve curve)
         {
-            return curve.ControlPoints.IsColinear();
+            return curve.ControlPoints.IsCollinear();
         }
 
         /***************************************************/
 
         public static bool IsLinear(this Polyline curve)
         {
-            return curve.ControlPoints.IsColinear();
+            return curve.ControlPoints.IsCollinear();
         }
 
         /***************************************************/
 
         public static bool IsLinear(this PolyCurve curve)
         {
-            return curve.ControlPoints().IsColinear();
+            return curve.ControlPoints().IsCollinear();
         }
 
 
