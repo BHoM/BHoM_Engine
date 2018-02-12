@@ -125,10 +125,7 @@ namespace BH.Engine.Geometry
             for (int i = 1; i < regions.Count; i++)
             {
                 List<Polyline> newResult = new List<Polyline>();
-                foreach(Polyline r in result)
-                {
-                    newResult.AddRange(r.BooleanIntersection(regions[i]));
-                }
+                result.ForEach(r => newResult.AddRange(r.BooleanIntersection(regions[i])));
                 result = newResult;
             }
             return result;

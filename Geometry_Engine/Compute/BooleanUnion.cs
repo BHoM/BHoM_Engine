@@ -58,57 +58,6 @@ namespace BH.Engine.Geometry
         /****         public Methods - Regions          ****/
         /***************************************************/
 
-        private static bool BooleanUnion(this Polyline region1, Polyline region2, out List<Polyline> result)
-        {
-            result = new List<Polyline>();
-            if (region1.IsCoplanar(region2))
-            {
-                List<Point> cPts1 = region1.SubParts().Select(s => s.ControlPoints().Average()).ToList();
-                cPts1.AddRange(region1.ControlPoints);
-                List<Point> cPts2 = region2.SubParts().Select(s => s.ControlPoints().Average()).ToList();
-                cPts2.AddRange(region2.ControlPoints);
-                if (region1.IsContaining(cPts2, true))
-                {
-                    result.Add(region1.Clone());
-                }
-                else if (region2.IsContaining(cPts1, true))
-                {
-                    result.Add(region2.Clone());
-                }
-                else
-                {
-                    List<Point> iPts = region1.LineIntersections(region2);
-                    List<Polyline> splitRegion1 = region1.SplitAtPoints(iPts);
-                    List<Polyline> splitRegion2 = region2.SplitAtPoints(iPts);
-                    if (splitRegion1.Count==1 && splitRegion2.Count == 1)
-                    {
-                        result = new List<Polyline> { region1.Clone(), region2.Clone() };
-                        return false;
-                    }
-
-                    foreach (Polyline segment in splitRegion1)
-                    {
-                        List<Point> cPts = segment.SubParts().Select(s => s.ControlPoints().Average()).ToList();
-                        cPts.AddRange(segment.ControlPoints);
-                        if (!region2.IsContaining(cPts, true)) result.Add(segment);
-                    }
-                    foreach (Polyline segment in splitRegion2)
-                    {
-                        List<Point> cPts = segment.SubParts().Select(s => s.ControlPoints().Average()).ToList();
-                        cPts.AddRange(segment.ControlPoints);
-                        if (!region1.IsContaining(cPts, true)) result.Add(segment);
-                    }
-                    result = result.Join();
-                }
-                return true;
-            }
-            
-            result = new List<Polyline> { region1.Clone(), region2.Clone() };
-            return false;
-        }
-
-        /***************************************************/
-
         public static List<Polyline> BooleanUnion(this List<Polyline> regions)
         {
             List<Polyline> cutRegions = regions.Select(r => r.Clone()).ToList();
@@ -145,6 +94,60 @@ namespace BH.Engine.Geometry
             }
             result.AddRange(openings.BooleanDifference(regions));
             return result;
+        }
+
+
+        /***************************************************/
+        /****              Private methods              ****/
+        /***************************************************/
+
+        private static bool BooleanUnion(this Polyline region1, Polyline region2, out List<Polyline> result)
+        {
+            result = new List<Polyline>();
+            if (region1.IsCoplanar(region2))
+            {
+                List<Point> cPts1 = region1.SubParts().Select(s => s.ControlPoints().Average()).ToList();
+                cPts1.AddRange(region1.ControlPoints);
+                List<Point> cPts2 = region2.SubParts().Select(s => s.ControlPoints().Average()).ToList();
+                cPts2.AddRange(region2.ControlPoints);
+                if (region1.IsContaining(cPts2, true))
+                {
+                    result.Add(region1.Clone());
+                }
+                else if (region2.IsContaining(cPts1, true))
+                {
+                    result.Add(region2.Clone());
+                }
+                else
+                {
+                    List<Point> iPts = region1.LineIntersections(region2);
+                    List<Polyline> splitRegion1 = region1.SplitAtPoints(iPts);
+                    List<Polyline> splitRegion2 = region2.SplitAtPoints(iPts);
+                    if (splitRegion1.Count == 1 && splitRegion2.Count == 1)
+                    {
+                        result = new List<Polyline> { region1.Clone(), region2.Clone() };
+                        return false;
+                    }
+
+                    foreach (Polyline segment in splitRegion1)
+                    {
+                        List<Point> cPts = segment.SubParts().Select(s => s.ControlPoints().Average()).ToList();
+                        cPts.AddRange(segment.ControlPoints);
+                        if (!region2.IsContaining(cPts, true)) result.Add(segment);
+                    }
+                    foreach (Polyline segment in splitRegion2)
+                    {
+                        List<Point> cPts = segment.SubParts().Select(s => s.ControlPoints().Average()).ToList();
+                        cPts.AddRange(segment.ControlPoints);
+                        if (!region1.IsContaining(cPts, true)) result.Add(segment);
+                    }
+                    result = result.Join();
+                }
+                return true;
+            }
+
+            result = new List<Polyline> { region1.Clone(), region2.Clone() };
+            return false;
         }
     }
 }
