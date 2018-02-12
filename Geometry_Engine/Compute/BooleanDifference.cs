@@ -88,31 +88,27 @@ namespace BH.Engine.Geometry
         /****         public Methods - Regions          ****/
         /***************************************************/
 
-        public static bool BooleanDifference(this Polyline region, Polyline refRegion, out List<Polyline> result)
+        public static List<Polyline> BooleanDifference(this Polyline region, Polyline refRegion, out bool isOpening)
         {
             List<Polyline> cutRegions = region.BooleanIntersection(refRegion);
-            result = new List<Polyline>();
+            List<Polyline> result = new List<Polyline>();
+            isOpening = false;
 
             if (region.IsCoplanar(refRegion))
             {
                 List<Point> iPts = new List<Point>();
-                foreach (Polyline cr in cutRegions)
-                {
-                    iPts.AddRange(region.LineIntersections(cr));
-                }
+                cutRegions.ForEach(cr => iPts.AddRange(region.LineIntersections(cr)));
                 List<Polyline> splitRegion = region.SplitAtPoints(iPts);
                 if (splitRegion.Count == 1)
                 {
                     result.Add(region.Clone());
                     foreach (Point cPt in refRegion.ControlPoints)
                     {
-                        if (!region.IsContaining(new List<Point> { cPt }))
-                        {
-                            return false;
-                        }
+                        if (!region.IsContaining(new List<Point> { cPt }, true)) return result;
                     }
                     result.Add(refRegion.Clone());
-                    return false;
+                    isOpening = true;
+                    return result;
                 }
                 foreach (Polyline segment in splitRegion)
                 {
@@ -150,12 +146,9 @@ namespace BH.Engine.Geometry
 
                     }
                 }
-                result = result.Join();
-                return true;
+                return result.Join();
             }
-
-            result.Add(region.Clone());
-            return false;
+            return new List<Polyline> { region.Clone() };
         }
 
         /***************************************************/
@@ -165,42 +158,28 @@ namespace BH.Engine.Geometry
             List<Polyline> result = new List<Polyline>();
             List<Polyline> openings = new List<Polyline>();
 
+            bool isOpening;
+            List<Polyline> bDifference;
             foreach (Polyline region in regions)
             {
                 List<Polyline> splitRegion = new List<Polyline> { region.Clone() };
-                int k = 0;
-                bool split;
-                do
+                foreach (Polyline refRegion in refRegions)
                 {
-                    split = false;
-                    for (int i = k; i < refRegions.Count; i++)
+                    List<Polyline> split = new List<Polyline>();
+                    foreach (Polyline sr in splitRegion)
                     {
-                        if (split) break;
-                        for (int j = 0; j < splitRegion.Count; j++)
+                        isOpening = false;
+                        bDifference = sr.BooleanDifference(refRegion, out isOpening);
+                        
+                        if (isOpening)
                         {
-                            List<Polyline> bd;
-                            split = splitRegion[j].BooleanDifference(refRegions[i], out bd);
-
-                            if (split && bd.Count == 0)
-                            {
-                                k = refRegions.Count;
-                                splitRegion = new List<Polyline>();
-                                break;
-                            }
-                            else if (split)
-                            {
-                                k = i + 1;
-                                splitRegion.RemoveAt(j);
-                                splitRegion.AddRange(bd);
-                                break;
-                            }
-                            else if (!split && bd.Count > 1)
-                            {
-                                openings.AddRange(bd.Skip(1));
-                            }
+                            split.Add(bDifference[0]);
+                            openings.AddRange(bDifference.Skip(1));
                         }
+                        else split.AddRange(bDifference);
                     }
-                } while (split);
+                    splitRegion = split;
+                }
                 result.AddRange(splitRegion);
             }
             result.AddRange(openings);

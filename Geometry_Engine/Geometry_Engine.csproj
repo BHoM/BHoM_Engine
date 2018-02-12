@@ -77,7 +77,6 @@
     <Compile Include="Modify\Reverse.cs" />
     <Compile Include="Modify\Scale.cs" />
     <Compile Include="Modify\SplitAtPoints.cs" />
-    <Compile Include="Modify\SplitWithLines.cs" />
     <Compile Include="Query\BasisFunction.cs" />
     <Compile Include="Query\BooleanIntersection.cs" />
     <Compile Include="Query\Clone.cs" />
