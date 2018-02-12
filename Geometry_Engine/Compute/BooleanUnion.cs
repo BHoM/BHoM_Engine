@@ -163,19 +163,6 @@ namespace BH.Engine.Geometry
                                     break;
                                 }
                             }
-                            /*
-                            Point cPt = subparts[0].ControlPoints().Average();
-                            foreach (Polyline r in splitRegion2)
-                            {
-                                Line rPart = r.SubParts()[0];
-                                Point rPt = rPart.ControlPoints().Average();
-                                if (rPt.SquareDistance(cPt) <= Tolerance.SqrtDist)
-                                {
-                                    if (rPart.Direction().IsParallel(subparts[0].Direction()) == 1) result.Add(segment);
-                                    break;
-                                }
-                            }
-                            */
                         }
                     }
                     foreach (Polyline segment in splitRegion2)
