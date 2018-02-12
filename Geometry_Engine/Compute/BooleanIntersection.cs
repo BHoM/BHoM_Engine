@@ -71,13 +71,13 @@ namespace BH.Engine.Geometry
         /****         public Methods - Regions          ****/
         /***************************************************/
 
-        public static List<Polyline> BooleanIntersection(this Polyline region1, Polyline refRegion)
+        public static List<Polyline> BooleanIntersection(this Polyline region, Polyline refRegion)
         {
-            if (region1.IsCoplanar(refRegion))
+            if (region.IsCoplanar(refRegion))
             {
                 List<Polyline> result = new List<Polyline>();
-                List<Point> iPts = region1.LineIntersections(refRegion);
-                List<Polyline> splitRegion1 = region1.SplitAtPoints(iPts);
+                List<Point> iPts = region.LineIntersections(refRegion);
+                List<Polyline> splitRegion1 = region.SplitAtPoints(iPts);
                 List<Polyline> splitRegion2 = refRegion.SplitAtPoints(iPts);
                 foreach (Polyline segment in splitRegion1)
                 {
@@ -89,11 +89,11 @@ namespace BH.Engine.Geometry
                 {
                     List<Point> cPts = segment.SubParts().Select(s => s.ControlPoints().Average()).ToList();
                     cPts.AddRange(segment.ControlPoints);
-                    if (region1.IsContaining(cPts, true))
+                    if (region.IsContaining(cPts, true))
                     {
                         foreach (Point cPt in cPts)
                         {
-                            if (cPt.SquareDistance(region1.ClosestPoint(cPt)) > Tolerance.SqrtDist)
+                            if (cPt.SquareDistance(region.ClosestPoint(cPt)) > Tolerance.SqrtDist)
                             {
                                 result.Add(segment);
                                 break;
