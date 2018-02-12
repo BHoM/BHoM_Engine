@@ -13,7 +13,7 @@ namespace BH.Engine.Geometry
 
         public static List<Line> BooleanUnion(this Line line, Line refLine)
         {
-            if (line.IsColinear(refLine))
+            if (line.IsCollinear(refLine))
             {
                 List<Point> cPts = line.ControlPoints();
                 cPts.AddRange(refLine.ControlPoints());

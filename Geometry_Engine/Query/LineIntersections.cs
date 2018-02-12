@@ -40,7 +40,7 @@ namespace BH.Engine.Geometry
                 case 3:                                                                     // nonplanar
                     return null;
                 case 2:
-                    if (eref[1, 1] <= tolerance) return null;                               // parallel, not colinear
+                    if (eref[1, 1] <= tolerance) return null;                               // parallel, not collinear
                     else                                                                    // coplanar
                     {
                         double t2 = eref[1, 2];
@@ -53,7 +53,7 @@ namespace BH.Engine.Geometry
                         }
                         return null;
                     }
-                case 1:                                                                     // colinear
+                case 1:                                                                     // collinear
                     if (l1.Infinite || l2.Infinite) return null;
                     double sqrTol = tolerance * tolerance;
                     if (p1.SquareDistance(p2) <= sqrTol || p1.SquareDistance(l2.End) <= sqrTol) return p1;

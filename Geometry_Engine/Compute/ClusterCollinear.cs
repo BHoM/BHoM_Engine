@@ -16,17 +16,17 @@ namespace BH.Engine.Geometry
             List<List<Line>> lineClusters = new List<List<Line>>();
             foreach (Line l in lines)
             {
-                bool colinear = false;
+                bool collinear = false;
                 foreach (List<Line> ll in lineClusters)
                 {
-                    if (l.IsColinear(ll[0]))
+                    if (l.IsCollinear(ll[0]))
                     {
                         ll.Add(l.Clone());
-                        colinear = true;
+                        collinear = true;
                         break;
                     }
                 }
-                if (!colinear) lineClusters.Add(new List<Line> { l.Clone() });
+                if (!collinear) lineClusters.Add(new List<Line> { l.Clone() });
             }
             return lineClusters;
         }
