@@ -14,7 +14,7 @@ namespace BH.Engine.Geometry
         public static Line BooleanIntersection(this Line line, Line refLine)
         {
             if (line == null || line.Length() <= Tolerance.Distance || refLine.Length() <= Tolerance.Distance) return null;
-            if (line.IsColinear(refLine))
+            if (line.IsCollinear(refLine))
             {
                 List<Line> splitLine = line.SplitAtPoints(refLine.ControlPoints());
                 if (splitLine.Count == 3)
