@@ -104,8 +104,13 @@ namespace BH.Engine.Geometry
         private static bool BooleanUnion(this Polyline region1, Polyline region2, out List<Polyline> result)
         {
             result = new List<Polyline>();
+
             if (region1.IsCoplanar(region2))
             {
+                Plane p1 = region1.FitPlane();
+                if (!region1.IsClockwise(p1.Normal)) region1 = region1.Clone().Flip();
+                if (!region2.IsClockwise(p1.Normal)) region2 = region2.Clone().Flip();
+
                 List<Point> cPts1 = region1.SubParts().Select(s => s.ControlPoints().Average()).ToList();
                 cPts1.AddRange(region1.ControlPoints);
                 List<Point> cPts2 = region2.SubParts().Select(s => s.ControlPoints().Average()).ToList();
@@ -131,9 +136,47 @@ namespace BH.Engine.Geometry
 
                     foreach (Polyline segment in splitRegion1)
                     {
-                        List<Point> cPts = segment.SubParts().Select(s => s.ControlPoints().Average()).ToList();
+                        List<Line> subparts = segment.SubParts();
+                        List<Point> cPts = subparts.Select(s => s.ControlPoints().Average()).ToList();
                         cPts.AddRange(segment.ControlPoints);
                         if (!region2.IsContaining(cPts, true)) result.Add(segment);
+                        else if (!region2.IsContaining(cPts, false))
+                        {
+                            foreach (Polyline r in splitRegion2)
+                            {
+                                bool found = false;
+                                if (segment.ControlPoints.Count == r.ControlPoints.Count && segment.ControlPoints[0].SquareDistance(r.ControlPoints[0]) <= Tolerance.SqrtDist)
+                                {
+                                    found = true;
+                                    for (int i = 0; i < segment.ControlPoints.Count; i++)
+                                    {
+                                        if (segment.ControlPoints[i].SquareDistance(r.ControlPoints[i]) > Tolerance.SqrtDist)
+                                        {
+                                            found = false;
+                                            break;
+                                        }
+                                    }
+                                }
+                                if (found)
+                                {
+                                    result.Add(segment);
+                                    break;
+                                }
+                            }
+                            /*
+                            Point cPt = subparts[0].ControlPoints().Average();
+                            foreach (Polyline r in splitRegion2)
+                            {
+                                Line rPart = r.SubParts()[0];
+                                Point rPt = rPart.ControlPoints().Average();
+                                if (rPt.SquareDistance(cPt) <= Tolerance.SqrtDist)
+                                {
+                                    if (rPart.Direction().IsParallel(subparts[0].Direction()) == 1) result.Add(segment);
+                                    break;
+                                }
+                            }
+                            */
+                        }
                     }
                     foreach (Polyline segment in splitRegion2)
                     {
@@ -148,6 +191,23 @@ namespace BH.Engine.Geometry
 
             result = new List<Polyline> { region1.Clone(), region2.Clone() };
             return false;
+        }
+
+        /***************************************************/
+
+        private static bool IsClockwise(this Polyline curve, Vector normal)
+        {
+            List<Point> cc = curve.ControlPoints;
+            Vector dir1 = (cc[0] - cc.Last()).Normalise();
+            Vector dir2;
+            double angleTot = 0;
+            for (int i = 1; i < cc.Count; i++)
+            {
+                dir2 = (cc[i] - cc[i - 1]).Normalise();
+                angleTot += dir1.SignedAngle(dir2, normal);
+                dir1 = dir2.Clone();
+            }
+            return angleTot > 0;
         }
     }
 }
