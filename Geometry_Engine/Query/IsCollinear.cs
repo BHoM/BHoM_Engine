@@ -33,7 +33,7 @@ namespace BH.Engine.Geometry
         /**** public Methods - Curves                   ****/
         /***************************************************/
 
-        public static bool IsColinear(this Line line1, Line line2)
+        public static bool IsCollinear(this Line line1, Line line2)
         {
             List<Point> cPts = new List<Point> { line1.Start, line1.End, line2.Start, line2.End };
             return cPts.IsCollinear();
