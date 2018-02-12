@@ -88,21 +88,24 @@ namespace BH.Engine.Geometry
         /****         public Methods - Regions          ****/
         /***************************************************/
 
-        public static List<Polyline> BooleanDifference(this Polyline region, Polyline refRegion)
+        public static bool BooleanDifference(this Polyline region, Polyline refRegion, out List<Polyline> result)
         {
             List<Polyline> cutRegions = region.BooleanIntersection(refRegion);
-            // area method does not work for polylines!
-            // if (cutRegions.Select(cr => cr.Area()).ToList().Sum() <= Tolerance.Distance) return new List<Polyline> { region.Clone() };
+            result = new List<Polyline>();
 
             if (region.IsCoplanar(refRegion))
             {
-                List<Polyline> result = new List<Polyline>();
                 List<Point> iPts = new List<Point>();
                 foreach (Polyline cr in cutRegions)
                 {
                     iPts.AddRange(region.LineIntersections(cr));
                 }
                 List<Polyline> splitRegion = region.SplitAtPoints(iPts);
+                if (splitRegion.Count == 1)
+                {
+                    result.Add(region.Clone());
+                    return false;
+                }
                 foreach (Polyline segment in splitRegion)
                 {
                     List<Point> cPts = segment.SubParts().Select(s => s.ControlPoints().Average()).ToList();
@@ -139,23 +142,26 @@ namespace BH.Engine.Geometry
 
                     }
                 }
-                return result.Join();
+                result = result.Join();
+                return true;
             }
 
-            return new List<Polyline> { region };
+            result.Add(region.Clone());
+            return false;
         }
 
         /***************************************************/
 
         public static List<Polyline> BooleanDifference(this List<Polyline> regions, List<Polyline> refRegions)
         {
+            //boolean union refregions?
             List<Polyline> result = new List<Polyline>();
 
             foreach (Polyline region in regions)
             {
                 List<Polyline> splitRegion = new List<Polyline> { region.Clone() };
                 int k = 0;
-                bool split = false;
+                bool split;
                 do
                 {
                     split = false;
@@ -164,19 +170,18 @@ namespace BH.Engine.Geometry
                         if (split) break;
                         for (int j = 0; j < splitRegion.Count; j++)
                         {
-                            Polyline r = splitRegion[j];
-                            List<Polyline> bd = r.BooleanDifference(refRegions[i]);
-                            if (bd.Count == 0)
+                            List<Polyline> bd;
+                            split = splitRegion[j].BooleanDifference(refRegions[i], out bd);
+
+                            if (split && bd.Count == 0)
                             {
                                 k = refRegions.Count;
                                 splitRegion = new List<Polyline>();
-                                split = true;
                                 break;
                             }
-                            else if (bd.Count > 1 || bd[0].Area() != r.Area())
+                            else if (split)
                             {
                                 k = i + 1;
-                                split = true;
                                 splitRegion.RemoveAt(j);
                                 splitRegion.AddRange(bd);
                                 break;
