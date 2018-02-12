@@ -104,6 +104,14 @@ namespace BH.Engine.Geometry
                 if (splitRegion.Count == 1)
                 {
                     result.Add(region.Clone());
+                    foreach (Point cPt in refRegion.ControlPoints)
+                    {
+                        if (!region.IsContaining(new List<Point> { cPt }))
+                        {
+                            return false;
+                        }
+                    }
+                    result.Add(refRegion.Clone());
                     return false;
                 }
                 foreach (Polyline segment in splitRegion)
@@ -154,8 +162,8 @@ namespace BH.Engine.Geometry
 
         public static List<Polyline> BooleanDifference(this List<Polyline> regions, List<Polyline> refRegions)
         {
-            //boolean union refregions?
             List<Polyline> result = new List<Polyline>();
+            List<Polyline> openings = new List<Polyline>();
 
             foreach (Polyline region in regions)
             {
@@ -186,11 +194,16 @@ namespace BH.Engine.Geometry
                                 splitRegion.AddRange(bd);
                                 break;
                             }
+                            else if (!split && bd.Count > 1)
+                            {
+                                openings.AddRange(bd.Skip(1));
+                            }
                         }
                     }
                 } while (split);
                 result.AddRange(splitRegion);
             }
+            result.AddRange(openings);
             return result;
         }
     }
