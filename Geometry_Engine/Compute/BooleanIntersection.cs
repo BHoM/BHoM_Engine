@@ -93,11 +93,23 @@ namespace BH.Engine.Geometry
                     {
                         foreach (Point cPt in cPts)
                         {
-                            if (cPt.SquareDistance(region1.ClosestPoint(cPt))>Tolerance.SqrtDist) result.Add(segment);
+                            if (cPt.SquareDistance(region1.ClosestPoint(cPt)) > Tolerance.SqrtDist)
+                            {
+                                result.Add(segment);
+                                break;
+                            }
                         }
                     }
                 }
-                return result.Join();
+                result = result.Join();
+                int i = 0;
+                while (i < result.Count)
+                {
+                    if (result[i].Area() <= Tolerance.SqrtDist) result.RemoveAt(i);
+                    else i++;
+                }
+                return result;
+
             }
 
             return new List<Polyline>();
