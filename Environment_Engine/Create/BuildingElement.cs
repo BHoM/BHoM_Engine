@@ -22,6 +22,15 @@ namespace BH.Engine.Environment
             };
         }
 
+        public static BuildingElement BuildingElement(BuildingElementPanel BuildingElementPanel)
+        {
+            return new BuildingElement
+            {
+                BuildingElementProperties = null,
+                BuildingElementGeometry = BuildingElementPanel
+            };
+        }
+
         public static BuildingElement BuildingElement(BuildingElementProperties BuildingElementProperties, IEnumerable<Polyline> PolyLines)
         {
             return new BuildingElement
