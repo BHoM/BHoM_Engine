@@ -53,6 +53,8 @@ namespace BH.Engine.Geometry
             if (ptsCount < 3) { return 0.0; }
 
             Plane p = pts.FitPlane();
+            if (p == null) return 0.0;              // points are collinear
+
             double x = 0, y = 0, z = 0;
             for (int i = 0; i < ptsCount; i++)
             {
