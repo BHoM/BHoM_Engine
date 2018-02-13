@@ -8,7 +8,7 @@ namespace BH.Engine.Geometry
     public static partial class Modify
     {
         /***************************************************/
-        /****                Join curves                 ****/
+        /****                Join curves                ****/
         /***************************************************/
 
         public static List<PolyCurve> IJoin(this List<ICurve> curves)
@@ -59,6 +59,14 @@ namespace BH.Engine.Geometry
         public static List<Polyline> Join(this List<Line> lines)
         {
             List<Polyline> sections = lines.Select(l => new Polyline { ControlPoints = l.ControlPoints() }).ToList();
+            return sections.Join();
+        }
+
+        /***************************************************/
+
+        public static List<Polyline> Join(this List<Polyline> curves)
+        {
+            List<Polyline> sections = curves.Select(l => new Polyline { ControlPoints = l.ControlPoints }).ToList();
 
             int counter = 0;
             while (counter < sections.Count)
