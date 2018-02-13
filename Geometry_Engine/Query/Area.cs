@@ -53,7 +53,6 @@ namespace BH.Engine.Geometry
             if (ptsCount < 3) { return 0.0; }
 
             Plane p = pts.FitPlane();
-            Vector normal = p.Normal;
             double x = 0, y = 0, z = 0;
             for (int i = 0; i < ptsCount; i++)
             {
@@ -63,7 +62,7 @@ namespace BH.Engine.Geometry
                 y += prod.Y;
                 z += prod.Z;
             }
-            return Math.Abs((new Vector { X = x, Y = y, Z = z } * normal) * 0.5);
+            return Math.Abs((new Vector { X = x, Y = y, Z = z } * p.Normal) * 0.5);
         }
 
 
