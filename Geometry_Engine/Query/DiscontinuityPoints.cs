@@ -50,7 +50,7 @@ namespace BH.Engine.Geometry
 
         public static List<Point> DiscontinuityPoints(this Polyline polyline)
         {
-
+            bool isCloded = polyline.IsClosed();
             List<Point> ctrlPts = polyline.ControlPoints.CullDuplicates();
             if (ctrlPts.Count < 3) return ctrlPts;
             for (int i = 2; i < ctrlPts.Count; i++)
@@ -64,6 +64,7 @@ namespace BH.Engine.Geometry
                     i--;
                 }
             }
+            if (isCloded) ctrlPts.Add(ctrlPts.First());
             return ctrlPts;
         }
 
