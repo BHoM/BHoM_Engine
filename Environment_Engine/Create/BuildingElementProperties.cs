@@ -11,12 +11,12 @@ namespace BH.Engine.Environment
 {
     public static partial class Create
     {
-        public static BuildingElementProperties BuildingElementProperties(BuidingElementType BuidingElementType, string Name)
+        public static BuildingElementProperties BuildingElementProperties(BuildingElementType BuildingElementType, string Name)
         {
             return new BuildingElementProperties
             {
                 Name = Name,
-                BuildingElementType = BuidingElementType
+                BuildingElementType = BuildingElementType
             };
         }
 
