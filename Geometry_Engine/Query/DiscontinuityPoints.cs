@@ -48,11 +48,24 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static List<Point> DiscontinuityPoints(this Polyline curve)
+        public static List<Point> DiscontinuityPoints(this Polyline polyline)
         {
-            return curve.ControlPoints;
-        }
 
+            List<Point> ctrlPts = polyline.ControlPoints.CullDuplicates();
+            if (ctrlPts.Count < 3) return ctrlPts;
+            for (int i = 2; i < ctrlPts.Count; i++)
+            {
+                Vector v1 = ctrlPts[i - 1] - ctrlPts[i - 2];
+                Vector v2 = ctrlPts[i] - ctrlPts[i - 1];
+                double angle = v1.Angle(v2);
+                if (angle < Tolerance.Angle && angle > -Tolerance.Angle) //TODO: Dosn't work with IsColinear for small polylines 
+                {
+                    ctrlPts.RemoveAt(i - 1);
+                    i--;
+                }
+            }
+            return ctrlPts;
+        }
 
         /***************************************************/
         /**** Public Methods - Interfaces               ****/
