@@ -51,17 +51,19 @@ namespace BH.Engine.Geometry
             List<Point> pts = curve.ControlPoints;
             int ptsCount = pts.Count;
             if (ptsCount < 3) { return 0.0; }
-            Vector normal = Create.Plane(pts[0], pts[1], pts[2]).Normal; // Replace with PlaneFitFromPoints()
+
+            Plane p = pts.FitPlane();
+            Vector normal = p.Normal;
             double x = 0, y = 0, z = 0;
             for (int i = 0; i < ptsCount; i++)
             {
                 int j = (i + 1) % ptsCount;
-                Vector prod = CrossProduct(pts[i], pts[j]);
+                Vector prod = CrossProduct(pts[i] - p.Origin, pts[j] - p.Origin);
                 x += prod.X;
                 y += prod.Y;
                 z += prod.Z;
             }
-            return Math.Abs((new Vector { X = x, Y = y, Z = z } * normal) / 2);
+            return Math.Abs((new Vector { X = x, Y = y, Z = z } * normal) * 0.5);
         }
 
 
