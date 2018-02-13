@@ -24,11 +24,15 @@ namespace BH.Engine.Environment
 
         public static Space Space(string Name, string Number, IEnumerable<BuildingElementPanel> BuildingElementsPanel)
         {
+            List<BuildingElement> aBuildingElementList = new List<BuildingElement>();
+            foreach (BuildingElementPanel aBuildingElementPanel in BuildingElementsPanel)
+                aBuildingElementList.Add(BuildingElement(null, aBuildingElementPanel));
+                    
             return new Space
             {
                 Name = Name,
                 Number = Number,
-                BuildingElementPanel = BuildingElementsPanel.ToList()
+                BuildingElements = aBuildingElementList
             };
         }
 

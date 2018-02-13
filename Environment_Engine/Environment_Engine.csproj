@@ -56,6 +56,7 @@
     <Compile Include="Create\Space.cs" />
     <Compile Include="Modify\Add.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Query\Bottom.cs" />
     <Compile Include="Query\Storey.cs" />
     <Compile Include="Query\Bounds.cs" />
     <Compile Include="Query\EquipmentProprerties.cs" />
