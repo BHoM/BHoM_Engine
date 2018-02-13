@@ -98,18 +98,15 @@ namespace BH.Engine.Graphics
         {
             BoundingBox box = Query.Bounds(svgDocument);
 
-            double extraMargin = 10;
-
-            string Width = (box.Max.X - box.Min.X + extraMargin).ToString();
-            string Height = (box.Max.Y - box.Min.Y + extraMargin).ToString();
+            string Width = (box.Max.X - box.Min.X).ToString();
+            string Height = (box.Max.Y - box.Min.Y).ToString();
 
             string canvasString = "<svg width=\"" + Width + "\" height=\"" + Height + "\">\n";
 
-            double halfMargin = extraMargin / 2;
-            double h = (box.Max.Y - box.Min.Y + extraMargin);
+            double h = (box.Max.Y - box.Min.Y);
 
-            string xTrans = (-(box.Min.X - halfMargin)).ToString();
-            string yTrans = (-(box.Min.Y - halfMargin)).ToString();
+            string xTrans = (-box.Min.X).ToString();
+            string yTrans = (-box.Min.Y).ToString();
 
             canvasString += "<g transform=\"translate(" + "0," + h + ") scale(1,-1) translate(" + xTrans + "," + yTrans + ")\">\n";
 
