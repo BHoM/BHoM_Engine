@@ -38,23 +38,22 @@ namespace BH.Engine.Geometry
 
         public static List<List<Polyline>> ClusterCoplanar(this List<Polyline> curves)
         {
-            List<List<Tuple<Polyline, Plane>>> curveClusters = new List<List<Tuple<Polyline, Plane>>>();
-            foreach (Polyline c in curves)
+            List<List<Polyline>> curveClusters = new List<List<Polyline>>();
+            foreach (Polyline p in curves)
             {
                 bool coplanar = false;
-                Tuple<Polyline, Plane> cp = new Tuple<Polyline, Plane>(c.Clone(), c.FitPlane());
-                foreach (List<Tuple<Polyline, Plane>> cc in curveClusters)
+                foreach (List<Polyline> pp in curveClusters)
                 {
-                    if (cp.Item2.IsCoplanar(cc[0].Item2))
+                    if (p.IsCoplanar(pp[0]))
                     {
-                        cc.Add(cp);
+                        pp.Add(p.Clone());
                         coplanar = true;
                         break;
                     }
                 }
-                if (!coplanar) curveClusters.Add(new List<Tuple<Polyline, Plane>> { cp });
+                if (!coplanar) curveClusters.Add(new List<Polyline> { p.Clone() });
             }
-            return curveClusters.Select(cc => cc.Select(c => c.Item1).ToList()).ToList();
+            return curveClusters;
         }
 
         /***************************************************/
