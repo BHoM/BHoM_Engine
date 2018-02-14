@@ -47,6 +47,7 @@
     <Compile Include="Compute\BooleanIntersection.cs" />
     <Compile Include="Compute\BooleanUnion.cs" />
     <Compile Include="Compute\ClusterCollinear.cs" />
+    <Compile Include="Compute\ClusterCoplanar.cs" />
     <Compile Include="Compute\CullDuplicates.cs" />
     <Compile Include="Compute\FitLine.cs" />
     <Compile Include="Compute\Integrate.cs" />

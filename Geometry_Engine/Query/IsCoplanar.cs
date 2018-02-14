@@ -32,7 +32,7 @@ namespace BH.Engine.Geometry
 
         public static bool IsCoplanar(this Plane plane1, Plane plane2)
         {
-            return (plane1.Origin.Distance(plane2) > Tolerance.Distance || plane1.Normal.IsParallel(plane2.Normal) == 0) ? false : true;
+            return (Math.Abs(plane1.Origin.Distance(plane2)) <= Tolerance.Distance && plane1.Normal.IsParallel(plane2.Normal) != 0);
         }
 
         /***************************************************/
