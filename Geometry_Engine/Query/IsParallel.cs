@@ -9,17 +9,18 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static int IsParallel(this Vector v1, Vector v2, double tolerance = Tolerance.Angle)
+        public static int IsParallel(this Vector v1, Vector v2, double angleTolerance = Tolerance.Angle)
         {
+            double dotTolerance = Math.Cos(angleTolerance);
             double dp = v1.DotProduct(v2);
-            return 1 - Math.Abs(dp) <= tolerance ? dp > 0 ? 1 : -1 : 0;
+            return Math.Abs(dp) >= dotTolerance ? dp > 0 ? 1 : -1 : 0;
         }
 
         /***************************************************/
 
-        public static int IsParallel(this Line line1, Line line2, double tolerance = Tolerance.Angle)
+        public static int IsParallel(this Line line1, Line line2, double angleTolerance = Tolerance.Angle)
         {
-            return line1.Direction().IsParallel(line2.Direction());
+            return line1.Direction().IsParallel(line2.Direction(), angleTolerance);
         }
 
         /***************************************************/
