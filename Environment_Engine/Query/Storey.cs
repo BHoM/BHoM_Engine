@@ -12,27 +12,27 @@ namespace BH.Engine.Environment
 {
     public static partial class Query
     {
-        public static Storey Storey(this Building Building, Point Point)
+        public static Storey Storey(this Building building, Point point)
         {
-            if (Building.Storeys == null || Point == null || Building.Storeys.Count < 1)
+            if (building.Storeys == null || point == null || building.Storeys.Count < 1)
                 return null;
 
-            if (Building.Storeys.Count == 1)
-                return Building.Storeys.First();
+            if (building.Storeys.Count == 1)
+                return building.Storeys.First();
 
-            if (Point.Z >= Building.Storeys.Last().Elevation)
-                return Building.Storeys.Last();
+            if (point.Z >= building.Storeys.Last().Elevation)
+                return building.Storeys.Last();
 
-            if (Point.Z <= Building.Storeys.First().Elevation)
-                return Building.Storeys.First();
+            if (point.Z <= building.Storeys.First().Elevation)
+                return building.Storeys.First();
 
-            for(int i = Building.Storeys.Count - 1; i <= 1; i--)
+            for(int i = building.Storeys.Count - 1; i <= 1; i--)
             {
-                if (Building.Storeys[i - 1].Elevation < Point.Z)
-                    return Building.Storeys[i];
+                if (building.Storeys[i - 1].Elevation < point.Z)
+                    return building.Storeys[i];
             }
 
-            return Building.Storeys.First();
+            return building.Storeys.First();
         }
     }
 }

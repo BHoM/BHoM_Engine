@@ -20,29 +20,37 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static BuildingElement Move(this BuildingElement BuildingElement, Storey Storey)
+        public static BuildingElement Move(this BuildingElement buildingElement, Storey storey)
         {
             Vector aVector = Geometry.Create.Vector();
-            if(BuildingElement.Storey != null)
-                aVector = Geometry.Create.Vector(0, 0, Storey.Elevation - BuildingElement.Storey.Elevation);
+            if (buildingElement.Storey != null)
+                aVector = Geometry.Create.Vector(0, 0, storey.Elevation - buildingElement.Storey.Elevation);
 
-            BuildingElement.Move(aVector);
-            BuildingElement.Storey = Storey;
+            BuildingElement aBuildingElement = buildingElement.GetShallowClone() as BuildingElement;
+            aBuildingElement = aBuildingElement.Move(aVector);
+            aBuildingElement.Storey = storey;
 
-            return BuildingElement;
+            return aBuildingElement;
         }
 
-        public static BuildingElement Move(this BuildingElement BuildingElement, Vector Vector)
+        public static BuildingElement Move(this BuildingElement buildingElement, Vector vector)
         {
-            Move(BuildingElement.BuildingElementGeometry, Vector);
-
-            return BuildingElement;
+            BuildingElement aBuildingElement = buildingElement.GetShallowClone() as BuildingElement;
+            aBuildingElement.BuildingElementGeometry = Move(buildingElement.BuildingElementGeometry, vector);
+            return aBuildingElement;
         }
 
-        public static IBuildingElementGeometry Move(this IBuildingElementGeometry BuildingElementGeometry, Vector Vector)
+        public static IBuildingElementGeometry Move(this IBuildingElementGeometry buildingElementGeometry, Vector vector)
         {
-            BuildingElementGeometry.Curve.ITranslate(Vector);
-            return BuildingElementGeometry;
+            return ISetGeometry(buildingElementGeometry, buildingElementGeometry.Curve.ITranslate(vector));
+        }
+
+        public static void TEst()
+        {
+            Building aBuilding;
+
+
+            aBuilding.Spaces[0].BuildingElements[0] = aBuilding.Spaces[0].BuildingElements[0].Move(aBuilding.Storeys[2]);
         }
     }
 }
