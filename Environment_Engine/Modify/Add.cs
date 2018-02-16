@@ -12,34 +12,43 @@ namespace BH.Engine.Environment
 {
     public static partial class Modify
     {
-        public static Building Add(this Building Building, IEnumerable<Storey> Storeys)
+        public static Building Add(this Building building, IEnumerable<Storey> Storeys)
         {
+            Building aBuilding = building.GetShallowClone() as Building;
+            aBuilding.Storeys = new List<Storey>(building.Storeys);
+
             if (Storeys == null)
                 return null;
 
-            Building.Storeys.AddRange(Storeys);
-            Building.Storeys.Sort((x, y) => x.Elevation.CompareTo(y.Elevation));
-            return Building;
+            aBuilding.Storeys.AddRange(Storeys);
+            aBuilding.Storeys.Sort((x, y) => x.Elevation.CompareTo(y.Elevation));
+            return aBuilding;
         }
 
         public static Building Add(this Building Building, Storey Storey)
         {
+            Building aBuilding = Building.GetShallowClone() as Building;
+            aBuilding.Storeys = new List<Storey>(Building.Storeys);
+
             if (Storey == null)
                 return null;
 
-            Building.Storeys.Add(Storey);
-            Building.Storeys.Sort((x, y) => x.Elevation.CompareTo(y.Elevation));
-            return Building;
+            aBuilding.Storeys.Add(Storey);
+            aBuilding.Storeys.Sort((x, y) => x.Elevation.CompareTo(y.Elevation));
+            return aBuilding;
         }
 
         public static Building Add(this Building Building, Space Space)
         {
+            Building aBuilding = Building.GetShallowClone() as Building;
+            aBuilding.Spaces = new List<Space>(Building.Spaces);
+
             if (Space == null)
                 return null;
 
-            Building.Spaces.Add(Space);
+            aBuilding.Spaces.Add(Space);
 
-            if(Space.Storey == null)
+            if (Space.Storey == null)
             {
                 // BoundingBox
             }
@@ -48,7 +57,7 @@ namespace BH.Engine.Environment
 
             }
 
-            return Building;
+            return aBuilding;
         }
     }
 }

@@ -10,14 +10,14 @@ namespace BH.Engine.Environment
 {
     public static partial class Create
     {
-        public static Building Building(string Name, double Latitude, double Longitude, double Elevation)
+        public static Building Building(string name, double latitude, double longitude, double elevation)
         {
             return new Building
             {
-                Name = Name,
-                Latitude = Latitude,
-                Longitude = Longitude,
-                Elevation = Elevation,
+                Name = name,
+                Latitude = latitude,
+                Longitude = longitude,
+                Elevation = elevation,
                 Location = new oM.Geometry.Point()
             };
         }

@@ -58,5 +58,15 @@ namespace BH.Engine.Environment
                 BuildingElementGeometry = BuildingElementCurve
             };
         }
+
+        public static BuildingElement BuildingElement(BuildingElementProperties BuildingElementProperties, BuildingElementPanel BuildingElementPanel, Storey Storey)
+        {
+            return new BuildingElement
+            {
+                Storey = Storey,
+                BuildingElementProperties = BuildingElementProperties,
+                BuildingElementGeometry = BuildingElementPanel
+            };
+        }
     }
 }
