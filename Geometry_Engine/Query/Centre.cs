@@ -27,7 +27,8 @@ namespace BH.Engine.Geometry
 
         public static Point Centre(this Polyline polyline)
         {
-            return polyline.ControlPoints.Average(); // TODO: not true for a self-intersecting polyline?
+            if (!polyline.IsClosed()) return polyline.ControlPoints.Average(); // TODO: not true for a self-intersecting polyline?
+            else return polyline.ControlPoints.GetRange(0, polyline.ControlPoints.Count - 1).Average();
         }
 
 
