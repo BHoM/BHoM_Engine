@@ -1,4 +1,5 @@
 ﻿using BH.oM.Geometry;
+using System.Collections.Generic;
 
 namespace BH.Engine.Geometry
 {
@@ -10,8 +11,8 @@ namespace BH.Engine.Geometry
 
         public static Polyline Simplify(this Polyline polyline)
         {
-            polyline.ControlPoints = polyline.DiscontinuityPoints();
-            return polyline;
+            List<Point> ctrlPts = polyline.ControlPoints;
+            return new Polyline { ControlPoints = ctrlPts };
         }
     }
 }
