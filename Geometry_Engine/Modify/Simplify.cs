@@ -11,7 +11,7 @@ namespace BH.Engine.Geometry
 
         public static Polyline Simplify(this Polyline polyline)
         {
-            List<Point> ctrlPts = polyline.ControlPoints;
+            List<Point> ctrlPts = polyline.DiscontinuityPoints();
             return new Polyline { ControlPoints = ctrlPts };
         }
     }
