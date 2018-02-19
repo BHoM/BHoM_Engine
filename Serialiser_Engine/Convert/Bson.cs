@@ -10,6 +10,8 @@ using BH.Engine.Serialiser.BsonSerializers;
 using BH.Engine.Serialiser.MemberMapConventions;
 using BH.Engine.Serialiser.Conventions;
 using MongoDB.Bson.Serialization.Serializers;
+using System.Diagnostics;
+using BH.Engine.Serialiser.Objects.MemberMapConventions;
 
 namespace BH.Engine.Serialiser
 {
@@ -102,17 +104,25 @@ namespace BH.Engine.Serialiser
                 BsonSerializer.RegisterSerializer(typeof(Guid), new GuidSerializer(BsonType.String));
                 BsonSerializer.RegisterSerializer(typeof(CustomObject), new CustomObjectSerializer());
                 BsonDefaults.DynamicDocumentSerializer = new CustomObjectSerializer();
+
+                BsonSerializer.RegisterDiscriminatorConvention(typeof(object), new GenericDiscriminatorConvention());
             }
             catch (Exception)
             {
-                Console.WriteLine("Problem with initialisation of the Bson Serializer");
+                Debug.WriteLine("Problem with initialisation of the Bson Serializer");
             }
             
             // Register class maps
             foreach (Type type in BH.Engine.Reflection.Query.BHoMTypeList())
             {
-                if (!type.IsGenericType && !BsonClassMap.IsClassMapRegistered(type))
-                    RegisterClassMap(type);
+                if (!BsonClassMap.IsClassMapRegistered(type))
+                {
+                    if (!type.IsGenericType)
+                        RegisterClassMap(type);
+                    /*else
+                        BsonSerializer.RegisterDiscriminatorConvention(type, new GenericDiscriminatorConvention());    */
+                }
+                    
             }
             RegisterClassMap(typeof(System.Drawing.Color));
 
@@ -124,12 +134,21 @@ namespace BH.Engine.Serialiser
 
         private static void RegisterClassMap(Type type)
         {
-            BsonClassMap cm = new BsonClassMap(type);
-            cm.AutoMap();
-            cm.SetDiscriminator(type.FullName);
-            cm.SetDiscriminatorIsRequired(true);
-            cm.SetIgnoreExtraElements(true);   // It would have been nice to use cm.MapExtraElementsProperty("CustomData") but it doesn't work for inherited properties
-            BsonClassMap.RegisterClassMap(cm);
+            try
+            {
+                BsonClassMap cm = new BsonClassMap(type);
+                cm.AutoMap();
+                cm.SetDiscriminator(type.FullName);
+                cm.SetDiscriminatorIsRequired(true);
+                cm.SetIgnoreExtraElements(true);   // It would have been nice to use cm.MapExtraElementsProperty("CustomData") but it doesn't work for inherited properties
+                BsonClassMap.RegisterClassMap(cm);
+
+                BsonSerializer.RegisterDiscriminatorConvention(type, new GenericDiscriminatorConvention());
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.ToString());
+            }
         }
 
 
