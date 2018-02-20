@@ -12,6 +12,7 @@ using BH.Engine.Serialiser.Conventions;
 using MongoDB.Bson.Serialization.Serializers;
 using System.Diagnostics;
 using BH.Engine.Serialiser.Objects.MemberMapConventions;
+using System.Reflection;
 
 namespace BH.Engine.Serialiser
 {
@@ -93,7 +94,7 @@ namespace BH.Engine.Serialiser
             ConventionRegistry.Register("BHoM Conventions", pack, x => x is object);
 
             var pack2 = new ConventionPack();
-            pack2.Add(new EnumRepresentationConvention(BsonType.String));
+            pack2.Add(new BHoMEnumConvention());
             ConventionRegistry.Register("Enum Conventions", pack2, x => x.GetType().IsEnum);
 
             // Register additional serialisers
@@ -111,16 +112,21 @@ namespace BH.Engine.Serialiser
             {
                 Debug.WriteLine("Problem with initialisation of the Bson Serializer");
             }
-            
+
             // Register class maps
+            MethodInfo method = typeof(BH.Engine.Serialiser.Convert).GetMethod("CreateEnumSerializer", BindingFlags.NonPublic | BindingFlags.Static);
             foreach (Type type in BH.Engine.Reflection.Query.BHoMTypeList())
             {
                 if (!BsonClassMap.IsClassMapRegistered(type))
                 {
-                    if (!type.IsGenericType)
+                    if (type.IsEnum)
+                    {
+                        MethodInfo generic = method.MakeGenericMethod(type);
+                        generic.Invoke(null, null);
+                    } 
+                    else if (!type.IsGenericType)
                         RegisterClassMap(type);
-                    /*else
-                        BsonSerializer.RegisterDiscriminatorConvention(type, new GenericDiscriminatorConvention());    */
+                    
                 }
                     
             }
@@ -148,6 +154,20 @@ namespace BH.Engine.Serialiser
             catch (Exception e)
             {
                 Debug.WriteLine(e.ToString());
+            }
+        }
+
+        /*******************************************/
+
+        private static void CreateEnumSerializer<T>() where T : struct
+        {
+            try
+            {
+                BsonSerializer.RegisterSerializer(typeof(T), new EnumSerializer<T>(BsonType.String));
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(e.ToString());
             }
         }
 
