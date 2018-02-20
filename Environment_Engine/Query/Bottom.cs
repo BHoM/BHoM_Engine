@@ -18,7 +18,7 @@ namespace BH.Engine.Environment
         {
             if (IBuildingElementGeometry is BuildingElementCurve)
             {
-                return IBuildingElementGeometry.Curve;
+                return IBuildingElementGeometry.ICurve();
             }
             else if (IBuildingElementGeometry is BuildingElementPanel)
             {
@@ -40,7 +40,7 @@ namespace BH.Engine.Environment
             }
             else
             {
-                return IBuildingElementGeometry.Curve;
+                return IBuildingElementGeometry.ICurve();
             }
         }
     }
