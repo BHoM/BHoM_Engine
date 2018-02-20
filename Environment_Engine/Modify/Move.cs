@@ -42,15 +42,9 @@ namespace BH.Engine.Environment
 
         public static IBuildingElementGeometry Move(this IBuildingElementGeometry buildingElementGeometry, Vector vector)
         {
-            return ISetGeometry(buildingElementGeometry, buildingElementGeometry.Curve.ITranslate(vector));
+           return buildingElementGeometry.ISetGeometry(buildingElementGeometry.ICurve().ITranslate(vector));
         }
 
-        public static void TEst()
-        {
-            Building aBuilding;
-
-
-            aBuilding.Spaces[0].BuildingElements[0] = aBuilding.Spaces[0].BuildingElements[0].Move(aBuilding.Storeys[2]);
-        }
+        /***************************************************/
     }
 }
