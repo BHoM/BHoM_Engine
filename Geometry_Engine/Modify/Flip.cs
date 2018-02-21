@@ -1,5 +1,6 @@
 ﻿using BH.oM.Geometry;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace BH.Engine.Geometry
 {
@@ -32,7 +33,20 @@ namespace BH.Engine.Geometry
 
         public static NurbCurve Flip(this NurbCurve curve)
         {
-            return new NurbCurve { ControlPoints = curve.ControlPoints.Reverse<Point>().ToList(), Weights = curve.Weights.Reverse<double>().ToList(), Knots = curve.Knots.Reverse<double>().ToList() };
+            List<double> oldKnots = curve.Knots;
+            double prevValue = 0;
+            List<double> newKnots = new List<double> { prevValue };
+            for (int i = oldKnots.Count - 1; i > 0; i--)
+            {
+                newKnots.Add(prevValue + oldKnots[i] - oldKnots[i - 1]);
+                prevValue = newKnots.Last();
+            }
+            return new NurbCurve
+            {
+                ControlPoints = curve.ControlPoints.Reverse<Point>().ToList(),
+                Weights = curve.Weights.Reverse<double>().ToList(),
+                Knots = newKnots
+            };
         }
 
         /***************************************************/
