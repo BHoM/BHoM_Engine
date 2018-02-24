@@ -4,13 +4,13 @@ using BH.oM.Base;
 
 namespace BH.Engine.Base.Objects
 {
-    public class BHoMObjectNameOrToStringComparer : IEqualityComparer<IObject>
+    public class BHoMObjectNameOrToStringComparer : IEqualityComparer<IBHoMObject>
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public bool Equals(IObject x, IObject y)
+        public bool Equals(IBHoMObject x, IBHoMObject y)
         {
             //Check whether the compared objects reference the same data.
             if (Object.ReferenceEquals(x, y)) return true;
@@ -31,7 +31,7 @@ namespace BH.Engine.Base.Objects
 
         /***************************************************/
 
-        public int GetHashCode(IObject obj)
+        public int GetHashCode(IBHoMObject obj)
         {
             //Check whether the object is null
             if (Object.ReferenceEquals(obj, null)) return 0;

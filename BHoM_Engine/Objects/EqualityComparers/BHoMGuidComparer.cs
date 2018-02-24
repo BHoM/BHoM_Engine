@@ -4,13 +4,13 @@ using BH.oM.Base;
 
 namespace BH.Engine.Base.Objects
 {
-    public class BHoMGuidComparer : IEqualityComparer<IObject>
+    public class BHoMGuidComparer : IEqualityComparer<IBHoMObject>
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public bool Equals(IObject x, IObject y)
+        public bool Equals(IBHoMObject x, IBHoMObject y)
         {
             //Check if the GUIDs are the same
             return (x.BHoM_Guid == y.BHoM_Guid);
@@ -18,7 +18,7 @@ namespace BH.Engine.Base.Objects
 
         /***************************************************/
 
-        public int GetHashCode(IObject obj)
+        public int GetHashCode(IBHoMObject obj)
         {
             //Check whether the object is null
             if (Object.ReferenceEquals(obj, null)) return 0;

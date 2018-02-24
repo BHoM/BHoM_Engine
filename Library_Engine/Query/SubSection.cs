@@ -21,7 +21,7 @@ namespace BH.Engine.Library
 
         /***************************************************/
 
-        public static List<IObject> SubSection(string libraryName, string subSection)
+        public static List<IBHoMObject> SubSection(string libraryName, string subSection)
         {
             return Library(libraryName).Where(x => x.IObjectSubSection() == subSection).ToList();
         }
@@ -30,13 +30,13 @@ namespace BH.Engine.Library
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private static string IObjectSubSection(this IObject obj)
+        private static string IObjectSubSection(this IBHoMObject obj)
         {
             return ObjectSubSection(obj as dynamic);
         }
 
         /***************************************************/
-        private static string ObjectSubSection(IObject obj)
+        private static string ObjectSubSection(IBHoMObject obj)
         {
             return "Main";
         }

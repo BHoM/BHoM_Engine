@@ -27,7 +27,7 @@ namespace BH.Engine.Reflection
 
         /***************************************************/
 
-        public static bool SetPropertyValue(this List<IObject> objects, Type objectType, string propName, object value)
+        public static bool SetPropertyValue(this List<IBHoMObject> objects, Type objectType, string propName, object value)
         {
             PropertyInfo propInfo = objectType.GetProperty(propName);
             Action<object, object> setProp = (Action<object, object>)Delegate.CreateDelegate(typeof(Action<object, object>), propInfo.GetSetMethod());

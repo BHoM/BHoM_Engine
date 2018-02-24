@@ -14,14 +14,14 @@ namespace BH.Engine.Library
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static IObject Match(string libraryName, string objectName)
+        public static IBHoMObject Match(string libraryName, string objectName)
         {
             return Library(libraryName).Where(x => x.Name == objectName).FirstOrDefault();
         }
 
         /***************************************************/
 
-        public static List<IObject> Match(string libraryName, string propertyName, string value)
+        public static List<IBHoMObject> Match(string libraryName, string propertyName, string value)
         {
             return Library(libraryName).StringMatch(propertyName, value);
         }
@@ -29,7 +29,7 @@ namespace BH.Engine.Library
         /***************************************************/
 
         //TODO: Move this extension method to somewhere else. Reflection_Engine/BHoM_Engine
-        public static List<IObject> StringMatch(this List<IObject> objects, string propertyName, string value)
+        public static List<IBHoMObject> StringMatch(this List<IBHoMObject> objects, string propertyName, string value)
         {
             return objects.Where(x => x.PropertyValue(propertyName).ToString() == value).ToList();
         }

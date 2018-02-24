@@ -8,7 +8,7 @@ namespace BH.Engine.Serialiser
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static string TaggedName(this IObject obj)
+        public static string TaggedName(this IBHoMObject obj)
         {
             string str = string.IsNullOrWhiteSpace(obj.Name) ? "" : obj.Name;
 

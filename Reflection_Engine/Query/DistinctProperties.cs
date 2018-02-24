@@ -12,7 +12,7 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static IEnumerable<object> DistinctProperties<T>(this IEnumerable<T> objects, Type propertyType) where T : IObject
+        public static IEnumerable<object> DistinctProperties<T>(this IEnumerable<T> objects, Type propertyType) where T : IBHoMObject
         {
             //MethodInfo method = typeof(Merge).GetMethod("MergePropertyObjects", new Type[] { typeof(List<T>) });
             var method = typeof(Query)
@@ -26,7 +26,7 @@ namespace BH.Engine.Reflection
 
         /***************************************************/
 
-        public static IEnumerable<P> DistinctProperties<T, P>(this IEnumerable<T> objects) where T : IObject where P : IObject
+        public static IEnumerable<P> DistinctProperties<T, P>(this IEnumerable<T> objects) where T : IBHoMObject where P : IBHoMObject
         {
             // Get the list of properties corresponding to type P
             Dictionary<Type, List<PropertyInfo>> propertyDictionary = typeof(T).GetProperties().GroupBy(x => x.PropertyType).ToDictionary(x => x.Key, x => x.ToList());
@@ -120,14 +120,14 @@ namespace BH.Engine.Reflection
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private static Dictionary<Guid, T> DistinctDictionary<T>(this IEnumerable<T> list) where T : IObject
+        private static Dictionary<Guid, T> DistinctDictionary<T>(this IEnumerable<T> list) where T : IBHoMObject
         {
             return list.GroupBy(x => x.BHoM_Guid).Select(x => x.First()).ToDictionary(x => x.BHoM_Guid);
         }
 
         /***************************************************/
 
-        private static Dictionary<Guid, T> CloneObjects<T>(Dictionary<Guid, T> dict) where T : IObject
+        private static Dictionary<Guid, T> CloneObjects<T>(Dictionary<Guid, T> dict) where T : IBHoMObject
         {
             Dictionary<Guid, T> clones = new Dictionary<Guid, T>();
 

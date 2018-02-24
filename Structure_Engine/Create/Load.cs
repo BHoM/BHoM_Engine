@@ -228,7 +228,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static GravityLoad GravityLoad(Loadcase loadcase, Vector direction, IEnumerable<IObject> objects, string name = "")
+        public static GravityLoad GravityLoad(Loadcase loadcase, Vector direction, IEnumerable<IBHoMObject> objects, string name = "")
         {
             return GravityLoad(loadcase, direction, new BHoMGroup<BHoMObject>() { Elements = objects.Cast<BHoMObject>().ToList() }, name);
         }

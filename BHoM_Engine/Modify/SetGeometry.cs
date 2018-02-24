@@ -9,7 +9,7 @@ namespace BH.Engine.Base
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static IObject ISetGeometry(this IObject obj, IBHoMGeometry geometry)
+        public static IBHoMObject ISetGeometry(this IBHoMObject obj, IBHoMGeometry geometry)
         {
             return SetGeometry(obj as dynamic, geometry);
         }
@@ -19,7 +19,7 @@ namespace BH.Engine.Base
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private static IObject SetGeometry(this IObject obj, IBHoMGeometry geometry)
+        private static IBHoMObject SetGeometry(this IBHoMObject obj, IBHoMGeometry geometry)
         {
             return obj;
         }

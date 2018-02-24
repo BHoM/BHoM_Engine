@@ -12,7 +12,7 @@ namespace BH.Engine.Base
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static IBHoMGeometry IGeometry(this IObject obj)
+        public static IBHoMGeometry IGeometry(this IBHoMObject obj)
         {
             return Geometry(obj as dynamic);
         }
@@ -42,8 +42,8 @@ namespace BH.Engine.Base
         {
             if (obj is IBHoMGeometry)
                 return obj as IBHoMGeometry;
-            else if (obj is IObject)
-                return ((IObject)obj).IGeometry();
+            else if (obj is IBHoMObject)
+                return ((IBHoMObject)obj).IGeometry();
             else if (obj is IEnumerable)
             {
                 List<IBHoMGeometry> geometries = new List<IBHoMGeometry>();
@@ -64,7 +64,7 @@ namespace BH.Engine.Base
 
         /***************************************************/
 
-        private static IBHoMGeometry Geometry(this IObject obj)
+        private static IBHoMGeometry Geometry(this IBHoMObject obj)
         {
             return Reflection.Compute.RunExtentionMethod(obj, "Geometry") as IBHoMGeometry;
         }

@@ -20,7 +20,7 @@ namespace BH.Engine.Base
 
         /***************************************************/
 
-        public static BHoMGroup<T> BHoMGroup<T>(IEnumerable<T> elements) where T:IObject
+        public static BHoMGroup<T> BHoMGroup<T>(IEnumerable<T> elements) where T:IBHoMObject
         {
             return new BHoMGroup<T>
             {

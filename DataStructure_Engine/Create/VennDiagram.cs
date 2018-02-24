@@ -11,7 +11,7 @@ namespace BH.Engine.DataStructure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static VennDiagram<T> VennDiagram<T>(IEnumerable<T> set1, IEnumerable<T> set2, IEqualityComparer<T> comparer) //where T : BH.oM.Base.IObject
+        public static VennDiagram<T> VennDiagram<T>(IEnumerable<T> set1, IEnumerable<T> set2, IEqualityComparer<T> comparer) //where T : BH.oM.Base.IBHoMObject
         {
             VennDiagram<T> diagram = new VennDiagram<T>();
 

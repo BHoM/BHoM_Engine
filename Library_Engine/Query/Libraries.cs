@@ -18,25 +18,25 @@ namespace BH.Engine.Library
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static List<IObject> Library(string name)
+        public static List<IBHoMObject> Library(string name)
         {
-            List<IObject> objects;
+            List<IBHoMObject> objects;
             if (!m_parsedLibrary.TryGetValue(name, out objects))
             {
                 string libraryString = LibraryString(name);
 
                 if (libraryString == null)
-                    return new List<IObject>();
+                    return new List<IBHoMObject>();
 
                 string[] entries = libraryString.Split('\n');
-                objects = new List<IObject>();
+                objects = new List<IBHoMObject>();
 
-                //Parse the library from json to IObjects
+                //Parse the library from json to IBHoMObjects
                 foreach (string entry in entries)
                 {
                     if (!string.IsNullOrWhiteSpace(entry))
                     {
-                        IObject obj = (IObject)BH.Engine.Serialiser.Convert.FromJson(entry);
+                        IBHoMObject obj = (IBHoMObject)BH.Engine.Serialiser.Convert.FromJson(entry);
                         if(obj != null)
                             objects.Add(obj);
                     }
@@ -89,7 +89,7 @@ namespace BH.Engine.Library
         /***************************************************/
 
         private static Dictionary<string, string> m_libraryStrings = new Dictionary<string, string>();
-        private static Dictionary<string, List<IObject>> m_parsedLibrary = new Dictionary<string, List<IObject>>();
+        private static Dictionary<string, List<IBHoMObject>> m_parsedLibrary = new Dictionary<string, List<IBHoMObject>>();
 
         /***************************************************/
     }

@@ -10,7 +10,7 @@ namespace BH.Engine.Serialiser
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static void ApplyTaggedName<T>(this T obj, string str) where T : IObject
+        public static void ApplyTaggedName<T>(this T obj, string str) where T : IBHoMObject
         {
             if (string.IsNullOrWhiteSpace(str))
                 return;
