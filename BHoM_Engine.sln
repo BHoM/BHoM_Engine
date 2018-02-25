@@ -42,7 +42,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Serialiser_Engine", "Serial
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library_Engine", "Library_Engine\Library_Engine.csproj", "{FB4ED5C8-E7CC-44B3-95EB-95C304D54E5D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataManipulation", "DataManipulation\DataManipulation.csproj", "{D343F0DE-5379-4410-98F1-B5E26855527F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataManipulation_Engine", "DataManipulation_Engine\DataManipulation_Engine.csproj", "{D343F0DE-5379-4410-98F1-B5E26855527F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
