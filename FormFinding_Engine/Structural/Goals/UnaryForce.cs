@@ -36,20 +36,20 @@ namespace FormFinding_Engine.Structural.Goals
         public void CalcForces(List<RelaxNode> nodeData)
         {
             
-            double[] force = nodeData[NodeIndices[0]].Force();
+            //double[] force = nodeData[NodeIndices[0]].Force();
 
-            for (int j = 0; j < force.Length; j++)
-            {
-                force[j] += ((double[])ForceVector)[j];
-            }
+            //for (int j = 0; j < force.Length; j++)
+            //{
+            //    force[j] += ((double[])ForceVector)[j];
+            //}
 
-            nodeData[NodeIndices[0]].SetForce(force);
+            //nodeData[NodeIndices[0]].SetForce(force);
 
         }
 
         public double[] Result()
         {
-            return (double[])ForceVector;
+            return new double[] { };// return (double[])ForceVector;
         }
     }
 }

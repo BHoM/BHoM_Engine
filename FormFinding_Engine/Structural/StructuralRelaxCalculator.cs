@@ -139,55 +139,55 @@ namespace FormFinding_Engine.Structural
         public void CalculateEnergy(List<RelaxNode> nodeData)
         {
             
-            double scalarvel;
+            //double scalarvel;
 
-            double enrg = 0;
-            for (int i = 0; i < nodeData.Count; i++)
-            {
-                double[] vel = nodeData[i].Velocity();
-                double mass = nodeData[i].Mass();
-                scalarvel = ArrayUtils.LengthSq(vel);
-                enrg += scalarvel * mass;
-            }
+            //double enrg = 0;
+            //for (int i = 0; i < nodeData.Count; i++)
+            //{
+            //    double[] vel = nodeData[i].Velocity();
+            //    double mass = nodeData[i].Mass();
+            //    scalarvel = ArrayUtils.LengthSq(vel);
+            //    enrg += scalarvel * mass;
+            //}
 
-            if (enrg < m_prevEnergy)
-            {
-                for (int i = 0; i < nodeData.Count; i++)
-                {
-                    nodeData[i].SetVelocity(new double[nodeData[i].Velocity().Length]);
-                }
-                // m_peakEnergyReached = true;   //Never used
-                m_prevEnergy = 0;
-            }
-            else
-                m_prevEnergy = enrg;
+            //if (enrg < m_prevEnergy)
+            //{
+            //    for (int i = 0; i < nodeData.Count; i++)
+            //    {
+            //        nodeData[i].SetVelocity(new double[nodeData[i].Velocity().Length]);
+            //    }
+            //    // m_peakEnergyReached = true;   //Never used
+            //    m_prevEnergy = 0;
+            //}
+            //else
+            //    m_prevEnergy = enrg;
         }
 
 
         public bool CheckConvergence(List<RelaxNode> nodeData, int iterations)
         {
 
-            if (iterations < 1)
-                return false;
+            //if (iterations < 1)
+            //    return false;
 
-            if (iterations > m_maxiterations)
-                return true;
+            //if (iterations > m_maxiterations)
+            //    return true;
 
-            double scalarvel = 0;
-            double maxVel = 0;
+            //double scalarvel = 0;
+            //double maxVel = 0;
             
-            double[] lngts = new double[nodeData.Count];
+            //double[] lngts = new double[nodeData.Count];
 
-            for (int i = 0; i < nodeData.Count; i++)
-            {
-                double[] vel = nodeData[i].Velocity();
-                scalarvel = ArrayUtils.Length(vel);
-                maxVel = Math.Max(scalarvel, maxVel);
-            }
+            //for (int i = 0; i < nodeData.Count; i++)
+            //{
+            //    double[] vel = nodeData[i].Velocity();
+            //    scalarvel = ArrayUtils.Length(vel);
+            //    maxVel = Math.Max(scalarvel, maxVel);
+            //}
             
             
-            if (maxVel < m_ConvergenceThreshold)
-                return true;
+            //if (maxVel < m_ConvergenceThreshold)
+            //    return true;
 
             return false;
         }
