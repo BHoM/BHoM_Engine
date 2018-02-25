@@ -153,7 +153,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
-        public static IBHoMGeometry IRotate(this IBHoMGeometry geometry, Point origin, Vector axis, double rad)
+        public static IGeometry IRotate(this IGeometry geometry, Point origin, Vector axis, double rad)
         {
             return Rotate(geometry as dynamic, rad, axis);
         }

@@ -152,7 +152,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
-        public static IBHoMGeometry IProject(this IBHoMGeometry geometry, Plane p)
+        public static IGeometry IProject(this IGeometry geometry, Plane p)
         {
             return Project(geometry as dynamic, p);
         }

@@ -25,7 +25,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static void SetGeometry(this PanelFreeForm contour, IBHoMGeometry geometry)
+        public static void SetGeometry(this PanelFreeForm contour, IGeometry geometry)
         {
             if (typeof(ISurface).IsAssignableFrom(geometry.GetType()))
             {

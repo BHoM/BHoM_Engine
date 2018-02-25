@@ -147,7 +147,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
-        public static IBHoMGeometry IClone(this IBHoMGeometry geometry)
+        public static IGeometry IClone(this IGeometry geometry)
         {
             return Clone(geometry as dynamic);
         }

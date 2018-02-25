@@ -153,7 +153,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
-        public static IBHoMGeometry IScale(this IBHoMGeometry geometry, Point origin, Vector scaleVector)
+        public static IGeometry IScale(this IGeometry geometry, Point origin, Vector scaleVector)
         {
             return Scale(geometry as dynamic, origin, scaleVector);
         }

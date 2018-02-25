@@ -20,7 +20,7 @@ namespace BH.Engine.Structure
             {
                 CompositeGeometry layout = reo.ILayout(property);
 
-                foreach (IBHoMGeometry obj in layout.Elements)
+                foreach (IGeometry obj in layout.Elements)
                 {
                     if (obj is Point)
                     {
@@ -74,7 +74,7 @@ namespace BH.Engine.Structure
                 location.Add(new Point { X = x, Y = y, Z = 0 });
             }
 
-            return new CompositeGeometry { Elements = location.ToList<IBHoMGeometry>() };
+            return new CompositeGeometry { Elements = location.ToList<IGeometry>() };
 
 
             //GeometryGroup<Point> location = new GeometryGroup<Point>();
@@ -131,14 +131,14 @@ namespace BH.Engine.Structure
                 {
                     count = 2;
                 }
-                List<IBHoMGeometry> layout = ((CompositeGeometry)new LayerReinforcement { Diameter = reinforcement.Diameter, Depth = currentDepth, BarCount = count }.Layout(property)).Elements;
+                List<IGeometry> layout = ((CompositeGeometry)new LayerReinforcement { Diameter = reinforcement.Diameter, Depth = currentDepth, BarCount = count }.Layout(property)).Elements;
 
-                foreach (IBHoMGeometry geom in layout)
+                foreach (IGeometry geom in layout)
                 {
                     location.Add(geom as Point);
                 }
             }
-            return new CompositeGeometry { Elements = location.ToList<IBHoMGeometry>() };
+            return new CompositeGeometry { Elements = location.ToList<IGeometry>() };
         }
 
         /***************************************************/
@@ -165,7 +165,7 @@ namespace BH.Engine.Structure
             }
 
 
-            return new CompositeGeometry { Elements = location.ToList<IBHoMGeometry>() };
+            return new CompositeGeometry { Elements = location.ToList<IGeometry>() };
         }
 
         /***************************************************/
@@ -215,9 +215,9 @@ namespace BH.Engine.Structure
         //            {
         //                count = 2;
         //            }
-        //            List<IBHoMGeometry> layout = ((CompositeGeometry)new LayerReinforcement(reinforcement.Diameter, currentDepth, count).Layout(property)).Elements;
+        //            List<IGeometry> layout = ((CompositeGeometry)new LayerReinforcement(reinforcement.Diameter, currentDepth, count).Layout(property)).Elements;
 
-        //            foreach (IBHoMGeometry geom in layout)
+        //            foreach (IGeometry geom in layout)
         //            {
         //                location.Add(geom as Point);
         //            }

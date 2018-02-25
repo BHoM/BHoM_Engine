@@ -12,20 +12,20 @@ namespace BH.Engine.Base
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static IBHoMGeometry IGeometry(this IBHoMObject obj)
+        public static IGeometry IGeometry(this IBHoMObject obj)
         {
             return Geometry(obj as dynamic);
         }
 
         /***************************************************/
 
-        public static IBHoMGeometry Geometry(this CustomObject obj)
+        public static IGeometry Geometry(this CustomObject obj)
         {
-            List<IBHoMGeometry> geometries = new List<IBHoMGeometry>();
+            List<IGeometry> geometries = new List<IGeometry>();
 
             foreach (object item in obj.CustomData.Values)
             {
-                IBHoMGeometry geometry = item.Geometry();
+                IGeometry geometry = item.Geometry();
                 if (geometry != null)
                     geometries.Add(geometry);
             }
@@ -38,18 +38,18 @@ namespace BH.Engine.Base
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private static IBHoMGeometry Geometry(this object obj)
+        private static IGeometry Geometry(this object obj)
         {
-            if (obj is IBHoMGeometry)
-                return obj as IBHoMGeometry;
+            if (obj is IGeometry)
+                return obj as IGeometry;
             else if (obj is IBHoMObject)
                 return ((IBHoMObject)obj).IGeometry();
             else if (obj is IEnumerable)
             {
-                List<IBHoMGeometry> geometries = new List<IBHoMGeometry>();
+                List<IGeometry> geometries = new List<IGeometry>();
                 foreach (object item in (IEnumerable)obj)
                 {
-                    IBHoMGeometry geometry = item.Geometry();
+                    IGeometry geometry = item.Geometry();
                     if (geometry != null)
                         geometries.Add(geometry);
                 }
@@ -64,9 +64,9 @@ namespace BH.Engine.Base
 
         /***************************************************/
 
-        private static IBHoMGeometry Geometry(this IBHoMObject obj)
+        private static IGeometry Geometry(this IBHoMObject obj)
         {
-            return Reflection.Compute.RunExtentionMethod(obj, "Geometry") as IBHoMGeometry;
+            return Reflection.Compute.RunExtentionMethod(obj, "Geometry") as IGeometry;
         }
 
         /***************************************************/

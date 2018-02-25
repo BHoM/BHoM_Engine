@@ -28,7 +28,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static bool IsContaining(this BoundingBox box, IBHoMGeometry geometry)
+        public static bool IsContaining(this BoundingBox box, IGeometry geometry)
         {
             return box.IsContaining(geometry.IBounds());
         }

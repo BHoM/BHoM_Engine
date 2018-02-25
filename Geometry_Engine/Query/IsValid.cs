@@ -26,7 +26,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static bool IsValid(IBHoMGeometry geometry)
+        public static bool IsValid(IGeometry geometry)
         {
             return true;
         }
@@ -49,7 +49,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interface                ****/
         /***************************************************/
 
-        public static bool IIsValid(IBHoMGeometry geometry)
+        public static bool IIsValid(IGeometry geometry)
         {
             return IsValid(geometry as dynamic);
         }

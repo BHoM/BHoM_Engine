@@ -137,7 +137,7 @@ namespace BH.Engine.Geometry
 
         public static bool IsPlanar(this CompositeGeometry group)
         {
-            foreach (IBHoMGeometry element in group.Elements)
+            foreach (IGeometry element in group.Elements)
             {
                 if (!element.IIsPlanar()) return false;
             }
@@ -150,7 +150,7 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
 
-        public static bool IIsPlanar(this IBHoMGeometry geometry)
+        public static bool IIsPlanar(this IGeometry geometry)
         {
             return IsPlanar(geometry as dynamic);
         }

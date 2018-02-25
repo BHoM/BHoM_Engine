@@ -12,7 +12,7 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static List<IBHoMGeometry> Geometry(this ConcreteSection section)
+        public static List<IGeometry> Geometry(this ConcreteSection section)
         {
             if (section.Edges.Count == 0)
                 return null;
@@ -25,42 +25,42 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static IBHoMGeometry Geometry(this Bar bar)
+        public static IGeometry Geometry(this Bar bar)
         {
             return new Line { Start = bar.StartNode.Position, End = bar.EndNode.Position };
         }
 
         /***************************************************/
 
-        public static IBHoMGeometry Geometry(this Node node)
+        public static IGeometry Geometry(this Node node)
         {
             return node.Position;
         }
 
         /***************************************************/
 
-        public static IBHoMGeometry Geometry(this PanelFreeForm contour)
+        public static IGeometry Geometry(this PanelFreeForm contour)
         {
             return contour.Surface;
         }
 
         /***************************************************/
 
-        public static IBHoMGeometry Geometry(this Storey storey)
+        public static IGeometry Geometry(this Storey storey)
         {
             return new Plane { Origin = new Point { X = 0, Y = 0, Z = storey.Elevation }, Normal = new Vector { X = 0, Y = 0, Z = 1 } };
         }
 
         /***************************************************/
 
-        public static IBHoMGeometry Geometry(this IGeometricalSection section)
+        public static IGeometry Geometry(this IGeometricalSection section)
         {
-            return new CompositeGeometry { Elements = section.Edges.ToList<IBHoMGeometry>() };
+            return new CompositeGeometry { Elements = section.Edges.ToList<IGeometry>() };
         }
 
         /***************************************************/
 
-        public static IBHoMGeometry Geometry(this MeshFace meshFace)
+        public static IGeometry Geometry(this MeshFace meshFace)
         {
 
             return new Mesh()
@@ -73,9 +73,9 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static IBHoMGeometry Geometry(this RigidLink link)
+        public static IGeometry Geometry(this RigidLink link)
         {
-            List<IBHoMGeometry> lines = new List<IBHoMGeometry>();
+            List<IGeometry> lines = new List<IGeometry>();
 
             foreach (Node sn in link.SlaveNodes)
             {

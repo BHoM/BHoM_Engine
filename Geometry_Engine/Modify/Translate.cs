@@ -134,7 +134,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
-        public static IBHoMGeometry ITranslate(this IBHoMGeometry geometry, Vector transform)
+        public static IGeometry ITranslate(this IGeometry geometry, Vector transform)
         {
             return Translate(geometry as dynamic, transform);
         }

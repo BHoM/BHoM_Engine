@@ -343,7 +343,7 @@ namespace BH.Engine.Geometry
 
         public static BoundingBox Bounds(this CompositeGeometry group)
         {
-            List<IBHoMGeometry> elements = group.Elements;
+            List<IGeometry> elements = group.Elements;
 
             if (elements.Count == 0)
                 return null;
@@ -360,7 +360,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
-        public static BoundingBox IBounds(this IBHoMGeometry geometry)
+        public static BoundingBox IBounds(this IGeometry geometry)
         {
             return Bounds(geometry as dynamic);
         }

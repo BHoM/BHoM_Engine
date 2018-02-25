@@ -149,7 +149,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
-        public static IBHoMGeometry IProjectAlong(this IBHoMGeometry geometry, Plane plane, Vector vector)
+        public static IGeometry IProjectAlong(this IGeometry geometry, Plane plane, Vector vector)
         {
             return ProjectAlong(geometry as dynamic, plane, vector);
         }

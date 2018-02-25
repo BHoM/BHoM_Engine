@@ -12,7 +12,7 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static IBHoMGeometry Extrude(this Bar bar)
+        public static IGeometry Extrude(this Bar bar)
         {
 
             if (bar.SectionProperty == null || !(bar.SectionProperty is IGeometricalSection))
@@ -28,7 +28,7 @@ namespace BH.Engine.Structure
             double angle = BH.Engine.Geometry.Query.Angle(z, tan);
 
 
-            List<IBHoMGeometry> extrutions = new List<IBHoMGeometry>();
+            List<IGeometry> extrutions = new List<IGeometry>();
             for (int i = 0; i < secCurves.Count; i++)
             {
                 ICurve curve = secCurves[i];

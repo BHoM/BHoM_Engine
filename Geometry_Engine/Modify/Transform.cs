@@ -146,7 +146,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
-        public static IBHoMGeometry ITransform(this IBHoMGeometry geometry, TransformMatrix transform)
+        public static IGeometry ITransform(this IGeometry geometry, TransformMatrix transform)
         {
             return Transform(geometry as dynamic, transform);
         }

@@ -125,7 +125,7 @@ namespace BH.Engine.Graphics
         /**** Public Methods - Geometry                 ****/
         /***************************************************/
 
-        public static string IToSVGString(this IBHoMGeometry geometry)
+        public static string IToSVGString(this IGeometry geometry)
         {
             return ToSVGString(geometry as dynamic);
         }

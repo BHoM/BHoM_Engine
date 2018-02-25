@@ -102,7 +102,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
-        public static double IArea(this IBHoMGeometry geometry)
+        public static double IArea(this IGeometry geometry)
         {
             return Area(geometry as dynamic);
         }

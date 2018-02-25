@@ -156,7 +156,7 @@ namespace BH.Engine.Geometry
 
         public static bool IsInPlane(this CompositeGeometry group, Plane plane, double tolerance = Tolerance.Distance)
         {
-            foreach (IBHoMGeometry g in group.Elements)
+            foreach (IGeometry g in group.Elements)
             {
                 if (!g.IIsInPlane(plane, tolerance))
                     return false;
@@ -170,7 +170,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
-        public static bool IIsInPlane(this IBHoMGeometry geometry, Plane plane, double tolerance = Tolerance.Distance)
+        public static bool IIsInPlane(this IGeometry geometry, Plane plane, double tolerance = Tolerance.Distance)
         {
             return IsInPlane(geometry as dynamic, plane, tolerance);
         }

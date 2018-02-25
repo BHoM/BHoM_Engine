@@ -81,10 +81,10 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Others                   ****/
         /***************************************************/
 
-        public static List<IBHoMGeometry> SubParts(this CompositeGeometry group)
+        public static List<IGeometry> SubParts(this CompositeGeometry group)
         {
-            List<IBHoMGeometry> exploded = new List<IBHoMGeometry>();
-            List<IBHoMGeometry> elements = group.Elements;
+            List<IGeometry> exploded = new List<IGeometry>();
+            List<IGeometry> elements = group.Elements;
 
             for (int i = 0; i < elements.Count; i++)
                 exploded.AddRange(elements[i].ISubParts());
@@ -97,7 +97,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
-        public static IEnumerable<IBHoMGeometry> ISubParts(this IBHoMGeometry geometry)
+        public static IEnumerable<IGeometry> ISubParts(this IGeometry geometry)
         {
             return SubParts(geometry as dynamic);
         }
@@ -121,9 +121,9 @@ namespace BH.Engine.Geometry
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private static IEnumerable<IBHoMGeometry> SubParts(this IBHoMGeometry geometry)
+        private static IEnumerable<IGeometry> SubParts(this IGeometry geometry)
         {
-            return new List<IBHoMGeometry> { geometry };
+            return new List<IGeometry> { geometry };
         }
 
         /***************************************************/

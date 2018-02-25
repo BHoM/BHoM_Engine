@@ -13,7 +13,7 @@ namespace BH.Engine.Graphics
         public static BoundingBox Bounds(this SVGObject svg)
         {
             BoundingBox bb = new BoundingBox();
-            List<IBHoMGeometry> geometry = svg.Shapes;
+            List<IGeometry> geometry = svg.Shapes;
 
             for (int i = 0; i < svg.Shapes.Count; i++)
                 bb += Engine.Geometry.Query.IBounds(svg.Shapes[i]);

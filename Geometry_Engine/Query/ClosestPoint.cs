@@ -211,7 +211,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
-        public static Point IClosestPoint(this IBHoMGeometry geometry, Point point)
+        public static Point IClosestPoint(this IGeometry geometry, Point point)
         {
             return ClosestPoint(geometry as dynamic, point);
         }

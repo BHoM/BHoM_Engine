@@ -134,7 +134,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
-        public static IBHoMGeometry IMirror(this IBHoMGeometry geometry, Plane p)
+        public static IGeometry IMirror(this IGeometry geometry, Plane p)
         {
             return Mirror(geometry as dynamic, p);
         }

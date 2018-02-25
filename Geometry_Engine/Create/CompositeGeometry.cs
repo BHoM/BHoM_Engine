@@ -10,7 +10,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static CompositeGeometry CompositeGeometry(IEnumerable<IBHoMGeometry> elements)
+        public static CompositeGeometry CompositeGeometry(IEnumerable<IGeometry> elements)
         {
             return new CompositeGeometry { Elements = elements.ToList() };
         }
