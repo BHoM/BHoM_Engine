@@ -1,0 +1,126 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{52A31A0A-E340-4909-AAD6-228045B07BF3}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>BH.Engine.Structure</RootNamespace>
+    <AssemblyName>Structure_Engine</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\Build\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="BHoM">
+      <HintPath>..\..\BHoM\Build\BHoM.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Create\LoadingPanelProperty.cs" />
+    <Compile Include="Create\Offset.cs" />
+    <Compile Include="Create\Reinforcement.cs" />
+    <Compile Include="Create\ConstantThickness.cs" />
+    <Compile Include="Create\Waffle.cs" />
+    <Compile Include="Create\Ribbed.cs" />
+    <Compile Include="Create\BarRelease.cs" />
+    <Compile Include="Create\SurfaceConstraint.cs" />
+    <Compile Include="Create\Constraint6DOF.cs" />
+    <Compile Include="Create\Constraint4DOF.cs" />
+    <Compile Include="Create\Load.cs" />
+    <Compile Include="Create\LoadCombination.cs" />
+    <Compile Include="Create\Loadcase.cs" />
+    <Compile Include="Create\Storey.cs" />
+    <Compile Include="Create\RigidLink.cs" />
+    <Compile Include="Create\MeshFace.cs" />
+    <Compile Include="Create\Column.cs" />
+    <Compile Include="Create\Beam.cs" />
+    <Compile Include="Create\PanelPlanar.cs" />
+    <Compile Include="Create\Span.cs" />
+    <Compile Include="Create\StructuralLayout.cs" />
+    <Compile Include="Create\Node.cs" />
+    <Compile Include="Create\Bar.cs" />
+    <Compile Include="Create\ConcreteSection.cs" />
+    <Compile Include="Create\LinkConstraints.cs" />
+    <Compile Include="Create\Opening.cs" />
+    <Compile Include="Create\PanelFreeForm.cs" />
+    <Compile Include="Create\SectionProfile.cs" />
+    <Compile Include="Create\SteelSection.cs" />
+    <Compile Include="Query\Extrude.cs" />
+    <Compile Include="Query\HasModifiers.cs" />
+    <Compile Include="Query\CaseType.cs" />
+    <Compile Include="Query\Centreline.cs" />
+    <Compile Include="Query\Centroid.cs" />
+    <Compile Include="Query\LoadType.cs" />
+    <Compile Include="Query\Edge.cs" />
+    <Compile Include="Query\EdgeCurves.cs" />
+    <Compile Include="Query\Geometry.cs" />
+    <Compile Include="Query\Length.cs" />
+    <Compile Include="Query\Mass.cs" />
+    <Compile Include="Query\OppositeNode.cs" />
+    <Compile Include="Query\Plane.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Objects\EqualityComparers\BarEndNodesDistanceComparer.cs" />
+    <Compile Include="Objects\EqualityComparers\NodeDistanceComparer.cs" />
+    <Compile Include="Query\NodeContraint.cs" />
+    <Compile Include="Query\DepthAt.cs" />
+    <Compile Include="Query\WidthAt.cs" />
+    <Compile Include="Query\IsLongitudinal.cs" />
+    <Compile Include="Query\Layout.cs" />
+    <Compile Include="Query\TieDiameter.cs" />
+    <Compile Include="Query\TorsionalConstant.cs" />
+    <Compile Include="Query\WarpingConstant.cs" />
+    <Compile Include="Modify\Flip.cs" />
+    <Compile Include="Modify\SetGeometry.cs" />
+    <Compile Include="Query\AverageElement.cs" />
+    <Compile Include="Modify\SetReinforcement.cs" />
+    <Compile Include="Query\IsConstrained.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BHoM_Engine\BHoM_Engine.csproj">
+      <Project>{1ad45c88-dd54-48e5-951f-55edfeb70e35}</Project>
+      <Name>BHoM_Engine</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Geometry_Engine\Geometry_Engine.csproj">
+      <Project>{89ab2dcb-ef87-4cba-b59c-c16a8a71d333}</Project>
+      <Name>Geometry_Engine</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Convert\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

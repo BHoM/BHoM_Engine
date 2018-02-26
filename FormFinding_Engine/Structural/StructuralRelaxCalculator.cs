@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Text;
 using System.Threading.Tasks;
 using FormFinding_Engine.Base;
-using BHoM.Geometry;
 
 namespace FormFinding_Engine.Structural
 {
@@ -17,7 +13,7 @@ namespace FormFinding_Engine.Structural
         private double m_prevEnergy;
         private double m_damping;
         private double m_maxiterations;
-        private bool m_peakEnergyReached;
+        // private bool m_peakEnergyReached;   //Never used
         
 
         public StructuralRelaxCalculator():this(0.1,0.0001,0.1,5000)
@@ -30,7 +26,7 @@ namespace FormFinding_Engine.Structural
             m_ConvergenceThreshold = threshold;
             m_damping = damping;
             m_maxiterations = maxiterations;
-            m_peakEnergyReached = false;
+            // m_peakEnergyReached = false;    //Never used
         }
 
         public double Dt
@@ -143,55 +139,55 @@ namespace FormFinding_Engine.Structural
         public void CalculateEnergy(List<RelaxNode> nodeData)
         {
             
-            double scalarvel;
+            //double scalarvel;
 
-            double enrg = 0;
-            for (int i = 0; i < nodeData.Count; i++)
-            {
-                double[] vel = nodeData[i].Velocity();
-                double mass = nodeData[i].Mass();
-                scalarvel = VectorUtils.LengthSq(vel);
-                enrg += scalarvel * mass;
-            }
+            //double enrg = 0;
+            //for (int i = 0; i < nodeData.Count; i++)
+            //{
+            //    double[] vel = nodeData[i].Velocity();
+            //    double mass = nodeData[i].Mass();
+            //    scalarvel = ArrayUtils.LengthSq(vel);
+            //    enrg += scalarvel * mass;
+            //}
 
-            if (enrg < m_prevEnergy)
-            {
-                for (int i = 0; i < nodeData.Count; i++)
-                {
-                    nodeData[i].SetVelocity(new double[nodeData[i].Velocity().Length]);
-                }
-                m_peakEnergyReached = true;
-                m_prevEnergy = 0;
-            }
-            else
-                m_prevEnergy = enrg;
+            //if (enrg < m_prevEnergy)
+            //{
+            //    for (int i = 0; i < nodeData.Count; i++)
+            //    {
+            //        nodeData[i].SetVelocity(new double[nodeData[i].Velocity().Length]);
+            //    }
+            //    // m_peakEnergyReached = true;   //Never used
+            //    m_prevEnergy = 0;
+            //}
+            //else
+            //    m_prevEnergy = enrg;
         }
 
 
         public bool CheckConvergence(List<RelaxNode> nodeData, int iterations)
         {
 
-            if (iterations < 1)
-                return false;
+            //if (iterations < 1)
+            //    return false;
 
-            if (iterations > m_maxiterations)
-                return true;
+            //if (iterations > m_maxiterations)
+            //    return true;
 
-            double scalarvel = 0;
-            double maxVel = 0;
+            //double scalarvel = 0;
+            //double maxVel = 0;
             
-            double[] lngts = new double[nodeData.Count];
+            //double[] lngts = new double[nodeData.Count];
 
-            for (int i = 0; i < nodeData.Count; i++)
-            {
-                double[] vel = nodeData[i].Velocity();
-                scalarvel = VectorUtils.Length(vel);
-                maxVel = Math.Max(scalarvel, maxVel);
-            }
+            //for (int i = 0; i < nodeData.Count; i++)
+            //{
+            //    double[] vel = nodeData[i].Velocity();
+            //    scalarvel = ArrayUtils.Length(vel);
+            //    maxVel = Math.Max(scalarvel, maxVel);
+            //}
             
             
-            if (maxVel < m_ConvergenceThreshold)
-                return true;
+            //if (maxVel < m_ConvergenceThreshold)
+            //    return true;
 
             return false;
         }

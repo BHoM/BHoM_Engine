@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using FormFinding_Engine.Base;
-using BHG = BHoM.Geometry;
+using BH.oM.Geometry;
 
 namespace FormFinding_Engine.Structural.Goals
 {
@@ -14,24 +10,24 @@ namespace FormFinding_Engine.Structural.Goals
         public UnaryForce()
         { }
 
-        public UnaryForce(BHG.Vector forceVector, BHG.Point position)
+        public UnaryForce(Vector forceVector, Point position)
         {
             ForceVector = forceVector;
-            Positions = new List<BHG.Point> { position };
+            Positions = new List<Point> { position };
         }
 
-        public BHG.Vector ForceVector { get; set; }
+        public Vector ForceVector { get; set; }
         
 
         public UnaryForce(double[] force)
         {
-            ForceVector = new BHG.Vector(force[0], force[1], force[2]);
+            ForceVector = new Vector { X = force[0], Y = force[1], Z = force[2] };
         }
 
 
         public List<int> NodeIndices { get; set; }
 
-        public List<BHG.Point> Positions
+        public List<Point> Positions
         {
             get;
             private set;
@@ -40,20 +36,20 @@ namespace FormFinding_Engine.Structural.Goals
         public void CalcForces(List<RelaxNode> nodeData)
         {
             
-            double[] force = nodeData[NodeIndices[0]].Force();
+            //double[] force = nodeData[NodeIndices[0]].Force();
 
-            for (int j = 0; j < force.Length; j++)
-            {
-                force[j] += ((double[])ForceVector)[j];
-            }
+            //for (int j = 0; j < force.Length; j++)
+            //{
+            //    force[j] += ((double[])ForceVector)[j];
+            //}
 
-            nodeData[NodeIndices[0]].SetForce(force);
+            //nodeData[NodeIndices[0]].SetForce(force);
 
         }
 
         public double[] Result()
         {
-            return (double[])ForceVector;
+            return new double[] { };// return (double[])ForceVector;
         }
     }
 }

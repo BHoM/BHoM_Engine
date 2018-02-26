@@ -36,11 +36,9 @@
     <Reference Include="BHoM">
       <HintPath>..\..\BHoM\Build\BHoM.dll</HintPath>
     </Reference>
-    <Reference Include="Databases_Engine">
-      <HintPath>..\Build\Databases_Engine.dll</HintPath>
-    </Reference>
-    <Reference Include="Graph_Engine">
-      <HintPath>..\Build\Graph_Engine.dll</HintPath>
+    <Reference Include="MongoDB.Bson, Version=2.4.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MongoDB.Bson.2.4.4\lib\net45\MongoDB.Bson.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -57,19 +55,28 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\FormFinding_Engine\FormFinding_Engine.csproj">
-      <Project>{6112d632-6143-4866-9aba-28cdd1340c6d}</Project>
-      <Name>FormFinding_Engine</Name>
+    <ProjectReference Include="..\BHoM_Engine\BHoM_Engine.csproj">
+      <Project>{1ad45c88-dd54-48e5-951f-55edfeb70e35}</Project>
+      <Name>BHoM_Engine</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MachineLearning_Engine\MachineLearning_Engine.csproj">
-      <Project>{02f81857-2d83-42ab-a0d7-030dcdd4d49f}</Project>
-      <Name>MachineLearning_Engine</Name>
+    <ProjectReference Include="..\Geometry_Engine\Geometry_Engine.csproj">
+      <Project>{89ab2dcb-ef87-4cba-b59c-c16a8a71d333}</Project>
+      <Name>Geometry_Engine</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ModelLaundry_Engine\ModelLaundry_Engine.csproj">
-      <Project>{dd942373-95d4-46c9-aed7-7b58149f5d2e}</Project>
-      <Name>ModelLaundry_Engine</Name>
+    <ProjectReference Include="..\Reflection_Engine\Reflection_Engine.csproj">
+      <Project>{b0154405-9390-472d-9b5c-a2280823b18d}</Project>
+      <Name>Reflection_Engine</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Serialiser_Engine\Serialiser_Engine.csproj">
+      <Project>{b013f0da-7d21-4339-85fc-013edd518c6d}</Project>
+      <Name>Serialiser_Engine</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Structure_Engine\Structure_Engine.csproj">
+      <Project>{52a31a0a-e340-4909-aad6-228045b07bf3}</Project>
+      <Name>Structure_Engine</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

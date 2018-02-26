@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using FormFinding_Engine.Base;
-using BHoM.Geometry;
+using BH.oM.Geometry;
+using BH.Engine.Geometry;
 
 namespace FormFinding_Engine.Structural.Goals
 {
@@ -29,57 +26,57 @@ namespace FormFinding_Engine.Structural.Goals
         {
             Positions = new List<Point> { startPoint, endPoint };
             m_stiffness = stiffness;
-            m_initialLength = startPoint.DistanceTo(endPoint);
+            m_initialLength = startPoint.Distance(endPoint);
         }
 
-        public Spring(Line line, double stiffness) : this(line.StartPoint, line.EndPoint, stiffness)
+        public Spring(Line line, double stiffness) : this(line.Start, line.End, stiffness)
         { }
         
         
         public void CalcForces(List<RelaxNode> nodeData)
             
         {
-            double newLength;
+            //double newLength;
 
-            double[] newStPos = nodeData[NodeIndices[0]].NewPosition();
-            double[] newEndPos = nodeData[NodeIndices[1]].NewPosition();
-
-
-            double[] springVector = VectorUtils.Sub(newEndPos, newStPos);
-
-            newLength = VectorUtils.Length(springVector);
-
-            double stretchFactor = (m_initialLength - newLength) / newLength * m_stiffness;
-
-            double[] springForce = VectorUtils.Multiply(springVector, stretchFactor);
+            //double[] newStPos = nodeData[NodeIndices[0]].NewPosition();
+            //double[] newEndPos = nodeData[NodeIndices[1]].NewPosition();
 
 
-            //---------------------------------------------------------------------------------------------------------
-            // force on startnode
+            //double[] springVector = ArrayUtils.Sub(newEndPos, newStPos);
+
+            //newLength = ArrayUtils.Length(springVector);
+
+            //double stretchFactor = (m_initialLength - newLength) / newLength * m_stiffness;
+
+            //double[] springForce = ArrayUtils.Multiply(springVector, stretchFactor);
+
+
+            ////---------------------------------------------------------------------------------------------------------
+            //// force on startnode
            
-            double[] force_0 = nodeData[NodeIndices[0]].Force();
+            //double[] force_0 = nodeData[NodeIndices[0]].Force();
 
-            for (int j = 0; j < force_0.Length; j++)
-            {
-                force_0[j] -= springForce[j];
-            }
+            //for (int j = 0; j < force_0.Length; j++)
+            //{
+            //    force_0[j] -= springForce[j];
+            //}
 
-            nodeData[NodeIndices[0]].SetForce(force_0);
+            //nodeData[NodeIndices[0]].SetForce(force_0);
 
-            //---------------------------------------------------------------------------------------------------------
-            // force on endnode
-            double[] force_1 = nodeData[NodeIndices[1]].Force();
+            ////---------------------------------------------------------------------------------------------------------
+            //// force on endnode
+            //double[] force_1 = nodeData[NodeIndices[1]].Force();
 
-            for (int j = 0; j < force_1.Length; j++)
-            {
-                force_1[j] += springForce[j];
-            }
+            //for (int j = 0; j < force_1.Length; j++)
+            //{
+            //    force_1[j] += springForce[j];
+            //}
 
-            nodeData[NodeIndices[1]].SetForce(force_1);
+            //nodeData[NodeIndices[1]].SetForce(force_1);
 
-            // Store result
+            //// Store result
 
-            m_result = VectorUtils.Length(springForce);
+            //m_result = ArrayUtils.Length(springForce);
 
         }
 

@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BHoM.Geometry;
-using BHoM.Generic;
 using FormFinding_Engine.Base;
+using BH.oM.DataStructure;
+using BH.oM.Geometry;
+using BH.Engine.DataStructure;
 
 namespace FormFinding_Engine.Structural
 {
@@ -22,7 +20,7 @@ namespace FormFinding_Engine.Structural
         public StructuralDynamicRelaxation()
         {
             m_calculator = new StructuralRelaxCalculator();
-            m_positions = new PointMatrix<int>(0.1);
+            m_positions = new PointMatrix<int> { CellSize = 0.1 };
             m_engine = new RelaxSystem(m_calculator);
         }
 
@@ -30,7 +28,7 @@ namespace FormFinding_Engine.Structural
         public StructuralDynamicRelaxation(double dt, double threshold, double damping, double maxiterations)
         {
             m_calculator = new StructuralRelaxCalculator(dt, threshold, damping, maxiterations);
-            m_positions = new PointMatrix<int>(0.1);
+            m_positions = new PointMatrix<int> { CellSize = 0.1 };
             m_engine = new RelaxSystem(m_calculator);
         }
 
@@ -51,11 +49,11 @@ namespace FormFinding_Engine.Structural
             for (int i = 0; i < item.Positions.Count; i++)
             {
                 Point p = item.Positions[i];
-                PointMatrix<int>.CompositeValue val = m_positions.GetClosestPoint(p, m_mergeTolerance);
+                LocalData<int> val = m_positions.ClosestData(p, m_mergeTolerance);
 
-                if (val.Point == null)
+                if (val.Position == null)
                 {
-                    m_positions.AddPoint(p, maxIndex);
+                    m_positions.Add(p, maxIndex);
                     indices.Add( maxIndex);
                     RelaxNode node = new RelaxNode(m_calculator, 3);
                     node.Data[NodeProps.POS] = new double[] { p.X, p.Y, p.Z };
@@ -116,7 +114,7 @@ namespace FormFinding_Engine.Structural
             foreach (RelaxNode n in m_engine.Nodes)
             {
                 double[] newPos = n.NewPosition();
-                pts.Add(new Point(newPos[0], newPos[1], newPos[2]));
+                pts.Add(new Point { X = newPos[0], Y = newPos[1], Z = newPos[2] });
             }
 
             return pts;
