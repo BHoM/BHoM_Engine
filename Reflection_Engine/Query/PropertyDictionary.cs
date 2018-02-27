@@ -19,7 +19,7 @@ namespace BH.Engine.Reflection
 
             foreach (var prop in obj.GetType().GetProperties())
             {
-                if (!prop.CanRead || !prop.CanWrite || prop.GetMethod.GetParameters().Count() > 0) continue;
+                if (!prop.CanRead || prop.GetMethod.GetParameters().Count() > 0) continue;
                 var value = prop.GetValue(obj, null);
                 dic[prop.Name] = value;
             }

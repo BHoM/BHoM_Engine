@@ -22,7 +22,7 @@ namespace BH.Engine.Reflection
             HashSet<Type> properties = new HashSet<Type>();
             foreach (var prop in type.GetProperties())
             {
-                if (!prop.CanRead || !prop.CanWrite || prop.GetMethod.GetParameters().Count() > 0) continue;
+                if (!prop.CanRead || prop.GetMethod.GetParameters().Count() > 0) continue;
                 properties.Add(prop.PropertyType);
                 if (goDeep)
                 {
