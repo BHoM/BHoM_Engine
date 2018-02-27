@@ -21,7 +21,7 @@ namespace BH.Engine.Reflection
             List<string> names = new List<string>();
             foreach (var prop in type.GetProperties())
             {
-                if (!prop.CanRead || !prop.CanWrite) continue;
+                if (!prop.CanRead) continue;
                 names.Add(prop.Name);
             }
             return names;
