@@ -58,6 +58,7 @@
     <Compile Include="Objects\BsonSerializers\ColourSerializer.cs" />
     <Compile Include="Objects\BsonSerializers\CustomObjectSerializer.cs" />
     <Compile Include="Objects\BsonSerializers\ObjectSerializer.cs" />
+    <Compile Include="Objects\BsonSerializers\TypeSerializer.cs" />
     <Compile Include="Objects\MemberMapConventions\BHoMEnumConvention.cs" />
     <Compile Include="Objects\MemberMapConventions\BHoMDictionaryConvention.cs" />
     <Compile Include="Objects\MemberMapConventions\GenericDiscriminatorConvention.cs" />

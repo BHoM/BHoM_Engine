@@ -104,6 +104,11 @@ namespace BH.Engine.Serialiser
                 BsonSerializer.RegisterSerializer(typeof(System.Drawing.Color), new ColourSerializer());
                 BsonSerializer.RegisterSerializer(typeof(Guid), new GuidSerializer(BsonType.String));
                 BsonSerializer.RegisterSerializer(typeof(CustomObject), new CustomObjectSerializer());
+
+                var typeSerializer = new TypeSerializer();
+                BsonSerializer.RegisterSerializer(typeof(Type), typeSerializer);
+                BsonSerializer.RegisterSerializer(Type.GetType("System.RuntimeType"), typeSerializer);
+
                 BsonDefaults.DynamicDocumentSerializer = new CustomObjectSerializer();
 
                 BsonSerializer.RegisterDiscriminatorConvention(typeof(object), new GenericDiscriminatorConvention());
