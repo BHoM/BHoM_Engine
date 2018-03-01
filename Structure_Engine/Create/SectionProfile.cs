@@ -16,13 +16,13 @@ namespace BH.Engine.Structure
             Point p = new Point { X = bfw / 2, Y = 0, Z = 0 };
 
             perimeter.Add(new Line { Start = p, End = p = p + Vector.YAxis * (bft - r2) });
-            if (r2 > 0) perimeter.Add(BH.Engine.Geometry.Create.Arc(p - Vector.XAxis * r2, p, p = p + new Vector { X = -r2, Y = r2, Z = 0 }));
+            if (r2 > 0) perimeter.Add(BH.Engine.Geometry.Create.ArcByCentre(p - Vector.XAxis * r2, p, p = p + new Vector { X = -r2, Y = r2, Z = 0 }));
             perimeter.Add(new Line { Start = p, End = p = p - Vector.XAxis * (bfw / 2 - wt / 2 - r1 - r2) });
-            if (r1 > 0) perimeter.Add(BH.Engine.Geometry.Create.Arc(p + Vector.YAxis * r1, p, p = p + new Vector { X = -r1, Y = r1, Z = 0 }));
+            if (r1 > 0) perimeter.Add(BH.Engine.Geometry.Create.ArcByCentre(p + Vector.YAxis * r1, p, p = p + new Vector { X = -r1, Y = r1, Z = 0 }));
             perimeter.Add(new Line { Start = p, End = p = p + Vector.YAxis * (wd - 2 * r1) });
-            if (r1 > 0) perimeter.Add(BH.Engine.Geometry.Create.Arc(p + Vector.XAxis * r1, p, p = p + new Vector { X = r1, Y = r1, Z = 0 }));
+            if (r1 > 0) perimeter.Add(BH.Engine.Geometry.Create.ArcByCentre(p + Vector.XAxis * r1, p, p = p + new Vector { X = r1, Y = r1, Z = 0 }));
             perimeter.Add(new Line { Start = p, End = p = p + Vector.XAxis * (tfw / 2 - wt / 2 - r1 - r2) });
-            if (r2 > 0) perimeter.Add(BH.Engine.Geometry.Create.Arc(p + Vector.YAxis * r2, p, p = p + new Vector { X = r2, Y = r2, Z = 0 }));
+            if (r2 > 0) perimeter.Add(BH.Engine.Geometry.Create.ArcByCentre(p + Vector.YAxis * r2, p, p = p + new Vector { X = r2, Y = r2, Z = 0 }));
             perimeter.Add(new Line { Start = p, End = p = p + Vector.YAxis * (tft - r2) });
 
             int count = perimeter.Count;
@@ -43,9 +43,9 @@ namespace BH.Engine.Structure
             Point p = new Point { X = wt / 2, Y = 0, Z = 0 };
 
             perimeter.Add(new Line { Start = p, End = p = p + Vector.YAxis*(wd - r1) });
-            if (r1 > 0) perimeter.Add(BH.Engine.Geometry.Create.Arc(p + Vector.XAxis*(r1), p, p = p + new Vector { X = r1, Y = r1, Z = 0 }));
+            if (r1 > 0) perimeter.Add(BH.Engine.Geometry.Create.ArcByCentre(p + Vector.XAxis*(r1), p, p = p + new Vector { X = r1, Y = r1, Z = 0 }));
             perimeter.Add(new Line { Start = p, End = p = p + Vector.XAxis*(tfw / 2 - wt / 2 - r1 - r2) });
-            if (r2 > 0) perimeter.Add(BH.Engine.Geometry.Create.Arc(p + Vector.YAxis*(r2), p, p = p + new Vector { X = r2, Y = r2, Z = 0 }));
+            if (r2 > 0) perimeter.Add(BH.Engine.Geometry.Create.ArcByCentre(p + Vector.YAxis*(r2), p, p = p + new Vector { X = r2, Y = r2, Z = 0 }));
             perimeter.Add(new Line { Start = p, End = p = p + Vector.YAxis*(tft - r2) });
 
             int count = perimeter.Count;
@@ -68,11 +68,11 @@ namespace BH.Engine.Structure
             Point p = new Point { X = 0, Y = 0, Z = 0 };
             perimeter.Add(new Line { Start = p, End = p = p + Vector.XAxis * (width) });
             perimeter.Add(new Line { Start = p, End = p = p + Vector.YAxis*(flangeThickness - toeRadius) });
-            if (toeRadius > 0) perimeter.Add(BH.Engine.Geometry.Create.Arc(p - Vector.XAxis * (toeRadius), p, p = p + new Vector { X = -toeRadius, Y = toeRadius, Z = 0 }));
+            if (toeRadius > 0) perimeter.Add(BH.Engine.Geometry.Create.ArcByCentre(p - Vector.XAxis * (toeRadius), p, p = p + new Vector { X = -toeRadius, Y = toeRadius, Z = 0 }));
             perimeter.Add(new Line { Start = p, End = p = p - Vector.XAxis*(width - webThickness - innerRadius - toeRadius) });
-            if (innerRadius > 0) perimeter.Add(BH.Engine.Geometry.Create.Arc(p + Vector.YAxis * (innerRadius), p, p = p + new Vector { X = -innerRadius, Y = innerRadius, Z = 0 }));
+            if (innerRadius > 0) perimeter.Add(BH.Engine.Geometry.Create.ArcByCentre(p + Vector.YAxis * (innerRadius), p, p = p + new Vector { X = -innerRadius, Y = innerRadius, Z = 0 }));
             perimeter.Add(new Line { Start = p, End = p = p + Vector.YAxis*(depth - flangeThickness - innerRadius - toeRadius) });
-            if (toeRadius > 0) perimeter.Add(BH.Engine.Geometry.Create.Arc(p - Vector.XAxis * (toeRadius), p, p = p + new Vector { X = -toeRadius, Y = toeRadius, Z = 0 }));
+            if (toeRadius > 0) perimeter.Add(BH.Engine.Geometry.Create.ArcByCentre(p - Vector.XAxis * (toeRadius), p, p = p + new Vector { X = -toeRadius, Y = toeRadius, Z = 0 }));
             perimeter.Add(new Line { Start = p, End = p = p - Vector.XAxis*(webThickness - toeRadius) });
             perimeter.Add(new Line { Start = p, End = p = p - Vector.YAxis*(depth) });
             List<ICurve> translatedCurves = new List<ICurve>();
@@ -90,13 +90,13 @@ namespace BH.Engine.Structure
             List<ICurve> perimeter = new List<ICurve>();
             Point p = new Point { X = -width / 2, Y = height / 2 - radius, Z = 0 };
             perimeter.Add(new Line { Start = p, End = p = p - Vector.YAxis * (height - 2*radius) });
-            if(radius > 0) perimeter.Add(BH.Engine.Geometry.Create.Arc(p + Vector.XAxis * radius, p, p = p + new Vector { X = radius, Y = -radius, Z = 0 }));
+            if(radius > 0) perimeter.Add(BH.Engine.Geometry.Create.ArcByCentre(p + Vector.XAxis * radius, p, p = p + new Vector { X = radius, Y = -radius, Z = 0 }));
             perimeter.Add(new Line { Start = p, End = p = p + Vector.XAxis * (width - 2 * radius) });
-            if (radius > 0) perimeter.Add(BH.Engine.Geometry.Create.Arc(p + Vector.YAxis * radius, p, p = p + new Vector { X = radius, Y = radius, Z = 0 }));
+            if (radius > 0) perimeter.Add(BH.Engine.Geometry.Create.ArcByCentre(p + Vector.YAxis * radius, p, p = p + new Vector { X = radius, Y = radius, Z = 0 }));
             perimeter.Add(new Line { Start = p, End = p = p + Vector.YAxis * (height - 2 * radius) });
-            if (radius > 0) perimeter.Add(BH.Engine.Geometry.Create.Arc(p - Vector.XAxis * radius, p, p = p + new Vector { X = -radius, Y = radius, Z = 0 }));
+            if (radius > 0) perimeter.Add(BH.Engine.Geometry.Create.ArcByCentre(p - Vector.XAxis * radius, p, p = p + new Vector { X = -radius, Y = radius, Z = 0 }));
             perimeter.Add(new Line { Start = p, End = p = p - Vector.XAxis * (width - 2 * radius) });
-            if (radius > 0) perimeter.Add(BH.Engine.Geometry.Create.Arc(p - Vector.YAxis * radius, p, p = p + new Vector { X = -radius, Y = -radius, Z = 0 }));
+            if (radius > 0) perimeter.Add(BH.Engine.Geometry.Create.ArcByCentre(p - Vector.YAxis * radius, p, p = p + new Vector { X = -radius, Y = -radius, Z = 0 }));
             return perimeter;
         }
 
