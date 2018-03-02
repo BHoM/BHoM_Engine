@@ -27,20 +27,19 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static bool IsClockwise(PolyCurve plCurve, Point spaceCentrePoint)
+        public static bool IsClockwise(this PolyCurve polyCurve, Point viewPoint)
         {
-            List<Point> controlpoints = IControlPoints(plCurve);
-            List<Point> pts = DiscontinuityPoints(plCurve);
+            List<Point> pts = DiscontinuityPoints(polyCurve);
             Plane plane = Create.Plane(pts[0], pts[1], pts[2]);
 
             /* Dot product of the normal and a vector from the center of the space. Positive dotproduct for clockwise
              * and negative for anticlockwise (but this depends on the handedness of the coordinate system)*/
-            Vector centreVector = (controlpoints[0] - spaceCentrePoint).Normalise();
+            Vector centreVector = (pts[0] - viewPoint).Normalise();
             double dotProduct = plane.Normal * centreVector;
-            if (dotProduct > 0)
-                return true;
+            if (dotProduct < 0)
+                return false;
 
-            return false;
+            return true;
         }
 
         /***************************************************/

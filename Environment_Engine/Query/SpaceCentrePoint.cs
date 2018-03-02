@@ -9,12 +9,15 @@ using BH.oM.Environmental.Interface;
 using BHG = BH.oM.Geometry;
 using BH.Engine.Geometry;
 
-namespace BH.Engine.Environment.Query
+namespace BH.Engine.Environment
 {
     public static partial class Query
     {
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
 
-        public static BHG.Point SpaceCentrePoint(List<BHE.BuildingElementPanel> bHoMPanels) //This does only work for convex spaces. we need to change this method later
+        public static BHG.Point SpaceCentrePoint(this List<BHE.BuildingElementPanel> bHoMPanels) //This does only work for convex spaces. we need to change this method later
         {
             List<BHG.Point> spacePts = new List<BHG.Point>();
             foreach (BHE.BuildingElementPanel panel in bHoMPanels)
@@ -25,5 +28,7 @@ namespace BH.Engine.Environment.Query
 
             return centrePt;
         }
+
+        /***************************************************/
     }
 }
