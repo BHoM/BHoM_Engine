@@ -23,14 +23,7 @@ namespace BH.Engine.Serialiser.BsonSerializers
             {
                 var fullName = context.Reader.ReadString();
 
-                List<Type> types;
-                if (Reflection.Query.BHoMTypeDictionary().TryGetValue(fullName, out types))
-                {
-                    if (types.Count > 0)
-                        return types.First();
-                }
-
-                return Type.GetType(fullName);
+                return Reflection.Create.Type(fullName);
             }
         }
 
