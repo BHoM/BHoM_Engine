@@ -181,20 +181,6 @@ namespace BH.Engine.Geometry
         }
 
         /***************************************************/
-
-        private static bool IsClockwise(this Polyline curve, Vector normal)
-        {
-            List<Point> cc = curve.ControlPoints;
-            Vector dir1 = (cc[0] - cc.Last()).Normalise();
-            Vector dir2;
-            double angleTot = 0;
-            for (int i = 1; i < cc.Count; i++)
-            {
-                dir2 = (cc[i] - cc[i - 1]).Normalise();
-                angleTot += dir1.SignedAngle(dir2, normal);
-                dir1 = dir2.Clone();
-            }
-            return angleTot > 0;
-        }
+        
     }
 }
