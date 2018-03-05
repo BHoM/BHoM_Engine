@@ -17,7 +17,7 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static BHG.Point SpaceCentrePoint(this List<BHE.BuildingElementPanel> bHoMPanels) //This does only work for convex spaces. we need to change this method later
+        public static BHG.Point SpaceCentreFromBuildingElements(this IEnumerable<BHE.BuildingElementPanel> bHoMPanels) //TODO: This does only work for convex spaces. we need to change this method later
         {
             List<BHG.Point> spacePts = new List<BHG.Point>();
             foreach (BHE.BuildingElementPanel panel in bHoMPanels)
