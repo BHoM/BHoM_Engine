@@ -45,7 +45,17 @@ namespace BH.Engine.Serialiser
                 RegisterTypes();
 
             bson.Remove("_id");
-            object obj = BsonSerializer.Deserialize(bson, typeof(object));
+
+            object obj = null;
+            try
+            {
+                obj = BsonSerializer.Deserialize(bson, typeof(object));
+            }
+            catch(Exception e)
+            {
+                return null;
+            }
+            
             if (obj is ExpandoObject)
             {
                 Dictionary<string, object> dic = new Dictionary<string, object>(obj as ExpandoObject);
@@ -57,8 +67,17 @@ namespace BH.Engine.Serialiser
                 }   
                 if (dic.ContainsKey("Tags"))
                 {
-                    co.Tags = new HashSet<string>(((List<object>)dic["Tags"]).Cast<string>());
-                    dic.Remove("Tags");
+                    object tags = dic["Tags"];
+                    if (tags is IEnumerable<string>)
+                    {
+                        co.Tags = new HashSet<string>(tags as IEnumerable<string>);
+                        dic.Remove("Tags");
+                    }
+                    else if (tags is IEnumerable<object>)
+                    {
+                        co.Tags = new HashSet<string>(((IEnumerable<object>)tags).Cast<string>());
+                        dic.Remove("Tags");
+                    }
                 }
                 if (dic.ContainsKey("BHoM_Guid"))
                 {
