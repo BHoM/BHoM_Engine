@@ -9,13 +9,13 @@ using BH.oM.Environmental.Elements;
 
 namespace BH.Engine.Environment
 {
-    public static partial class Query
+    public static partial class Convert
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static PanelPlanar PanelPlanar(this BuildingElementPanel buildingElementPanel)
+        public static PanelPlanar ToPanelPlanar(this BuildingElementPanel buildingElementPanel)
         {
             return Structure.Create.PanelPlanar(buildingElementPanel.PolyCurve, new List<Opening>());
         }
