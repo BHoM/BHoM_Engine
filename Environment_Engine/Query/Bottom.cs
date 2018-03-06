@@ -14,15 +14,19 @@ namespace BH.Engine.Environment
 {
     public static partial class Query
     {
-        public static ICurve Bottom(this IBuildingElementGeometry IBuildingElementGeometry)
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
+
+        public static ICurve Bottom(this IBuildingElementGeometry buildingElementGeometry)
         {
-            if (IBuildingElementGeometry is BuildingElementCurve)
+            if (buildingElementGeometry is BuildingElementCurve)
             {
-                return IBuildingElementGeometry.ICurve();
+                return buildingElementGeometry.ICurve();
             }
-            else if (IBuildingElementGeometry is BuildingElementPanel)
+            else if (buildingElementGeometry is BuildingElementPanel)
             {
-                BuildingElementPanel aBuildingElementPanel = IBuildingElementGeometry as BuildingElementPanel;
+                BuildingElementPanel aBuildingElementPanel = buildingElementGeometry as BuildingElementPanel;
                 double aZ = double.MaxValue;
                 ICurve aResult = null;
                 foreach (ICurve aCurve in aBuildingElementPanel.PolyCurve.Curves)
@@ -40,8 +44,10 @@ namespace BH.Engine.Environment
             }
             else
             {
-                return IBuildingElementGeometry.ICurve();
+                return buildingElementGeometry.ICurve();
             }
         }
+
+        /***************************************************/
     }
 }

@@ -21,10 +21,14 @@ namespace BH.Engine.Environment
             return buildingElementCurve.Curve;
         }
 
+        /***************************************************/
+
         public static ICurve Curve(this BuildingElementPanel buildingElementPanel)
         {
             return buildingElementPanel.PolyCurve;
         }
+
+        /***************************************************/
 
         public static ICurve ICurve(this IBuildingElementGeometry buildingElementGeometry)
         {

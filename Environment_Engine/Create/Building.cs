@@ -10,6 +10,10 @@ namespace BH.Engine.Environment
 {
     public static partial class Create
     {
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
+
         public static Building Building(string name, double latitude, double longitude, double elevation)
         {
             return new Building
@@ -21,5 +25,7 @@ namespace BH.Engine.Environment
                 Location = new oM.Geometry.Point()
             };
         }
+
+        /***************************************************/
     }
 }

@@ -11,14 +11,20 @@ namespace BH.Engine.Environment
 {
     public static partial class Query
     {
-        public static IEquipmentProperties EquipmentProperties(this IEquipment Equipment)
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
+
+        public static IEquipmentProperties EquipmentProperties(this IEquipment equipment)
         {
-            if (Equipment is Emitter)
-                return (Equipment as Emitter).EmitterProperties;
-            if(Equipment is AirHandlingUnit)
-                return (Equipment as AirHandlingUnit).AirHandlingUnitProperties;
+            if (equipment is Emitter)
+                return (equipment as Emitter).EmitterProperties;
+            if(equipment is AirHandlingUnit)
+                return (equipment as AirHandlingUnit).AirHandlingUnitProperties;
 
             return null;
         }
+
+        /***************************************************/
     }
 }

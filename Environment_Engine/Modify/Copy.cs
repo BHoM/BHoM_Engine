@@ -18,68 +18,82 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static BuildingElementCurve Copy(this BuildingElementCurve BuildingElementCurve)
+        public static BuildingElementCurve Copy(this BuildingElementCurve buildingElementCurve)
         {
-            BuildingElementCurve aBuildingElementCurve = BuildingElementCurve.GetShallowClone(true) as BuildingElementCurve;
-            aBuildingElementCurve.Curve = BuildingElementCurve.Curve.IClone();
+            BuildingElementCurve aBuildingElementCurve = buildingElementCurve.GetShallowClone(true) as BuildingElementCurve;
+            aBuildingElementCurve.Curve = buildingElementCurve.Curve.IClone();
             return aBuildingElementCurve;
         }
 
-        public static BuildingElementPanel Copy(this BuildingElementPanel BuildingElementPanel)
+        /***************************************************/
+
+        public static BuildingElementPanel Copy(this BuildingElementPanel buildingElementPanel)
         {
-            BuildingElementPanel aBuildingElementPanel = BuildingElementPanel.GetShallowClone(true) as BuildingElementPanel;
-            aBuildingElementPanel.PolyCurve = BuildingElementPanel.PolyCurve.IClone() as PolyCurve;
+            BuildingElementPanel aBuildingElementPanel = buildingElementPanel.GetShallowClone(true) as BuildingElementPanel;
+            aBuildingElementPanel.PolyCurve = buildingElementPanel.PolyCurve.IClone() as PolyCurve;
             return aBuildingElementPanel;
         }
 
-        public static IBuildingElementGeometry Copy(this IBuildingElementGeometry BuildingElementGeometry)
+        /***************************************************/
+
+        public static IBuildingElementGeometry Copy(this IBuildingElementGeometry buildingElementGeometry)
         {
-            IBuildingElementGeometry aBuildingElementGeometry = Copy(BuildingElementGeometry as dynamic);
+            IBuildingElementGeometry aBuildingElementGeometry = Copy(buildingElementGeometry as dynamic);
             return aBuildingElementGeometry;
         }
 
-        public static Storey Copy(this Storey Storey)
+        /***************************************************/
+
+        public static Storey Copy(this Storey storey)
         {
-            return Storey.GetShallowClone(true) as Storey;
+            return storey.GetShallowClone(true) as Storey;
         }
 
-        public static BuildingElement Copy(this BuildingElement BuildingElement)
+        /***************************************************/
+
+        public static BuildingElement Copy(this BuildingElement buildingElement)
         {
-            BuildingElement aBuildingElement = BuildingElement.GetShallowClone(true) as BuildingElement;
-            if (BuildingElement.BuildingElementGeometry != null)
+            BuildingElement aBuildingElement = buildingElement.GetShallowClone(true) as BuildingElement;
+            if (buildingElement.BuildingElementGeometry != null)
                 aBuildingElement.BuildingElementGeometry = aBuildingElement.BuildingElementGeometry.Copy();
             return aBuildingElement;
         }
 
         /***************************************************/
 
-        public static Storey Copy(this Storey Storey, string Name, double Elevation)
+        public static Storey Copy(this Storey storey, string name, double elevation)
         {
-            Storey aStorey = Storey.Copy();
-            aStorey.Name = Name;
-            aStorey.Elevation = Elevation;
+            Storey aStorey = storey.Copy();
+            aStorey.Name = name;
+            aStorey.Elevation = elevation;
 
             return aStorey;
         }
 
-        public static IBuildingElementGeometry Copy(this IBuildingElementGeometry BuildingElementGeometry, Vector Vector)
+        /***************************************************/
+
+        public static IBuildingElementGeometry Copy(this IBuildingElementGeometry buildingElementGeometry, Vector vector)
         {
-            IBuildingElementGeometry aBuildingElementGeometry = Copy(BuildingElementGeometry);
-            aBuildingElementGeometry.Move(Vector);
+            IBuildingElementGeometry aBuildingElementGeometry = Copy(buildingElementGeometry);
+            aBuildingElementGeometry.Move(vector);
             return aBuildingElementGeometry;
         }
 
-        public static BuildingElement Copy(this BuildingElement BuildingElement, Vector Vector)
+        /***************************************************/
+
+        public static BuildingElement Copy(this BuildingElement buildingElement, Vector vector)
         {
-            BuildingElement aBuildingElement = BuildingElement.Copy();
-            aBuildingElement.Move(Vector);
+            BuildingElement aBuildingElement = buildingElement.Copy();
+            aBuildingElement.Move(vector);
             return aBuildingElement;
         }
 
-        public static BuildingElement Copy(this BuildingElement BuildingElement, Storey Storey)
+        /***************************************************/
+
+        public static BuildingElement Copy(this BuildingElement buildingElement, Storey storey)
         {
-            BuildingElement aBuildingElement = BuildingElement.Copy();
-            aBuildingElement.Move(Storey);
+            BuildingElement aBuildingElement = buildingElement.Copy();
+            aBuildingElement.Move(storey);
             return aBuildingElement;
         }
 

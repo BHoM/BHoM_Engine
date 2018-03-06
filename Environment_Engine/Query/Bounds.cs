@@ -11,9 +11,15 @@ namespace BH.Engine.Environment
 {
     public static partial class Query
     {
-        public static BoundingBox Bounds(this BuildingElementPanel BuildingElementPanel)
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
+
+        public static BoundingBox Bounds(this BuildingElementPanel buildingElementPanel)
         {
-            return Geometry.Query.Bounds(BuildingElementPanel.PolyCurve);
+            return Geometry.Query.Bounds(buildingElementPanel.PolyCurve);
         }
+
+        /***************************************************/
     }
 }

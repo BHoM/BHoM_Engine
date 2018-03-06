@@ -11,12 +11,18 @@ namespace BH.Engine.Environment
 {
     public static partial class Create
     {
-        public static BuildingElementCurve BuildingElementCurve(ICurve Curve)
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
+
+        public static BuildingElementCurve BuildingElementCurve(ICurve curve)
         {
             return new BuildingElementCurve
             {
-                Curve = Curve
+                Curve = curve
             };
         }
+
+        /***************************************************/
     }
 }
