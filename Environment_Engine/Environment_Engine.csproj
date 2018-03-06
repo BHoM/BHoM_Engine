@@ -38,6 +38,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Build\Geometry_Engine.dll</HintPath>
     </Reference>
+    <Reference Include="Structure_Engine, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Build\Structure_Engine.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -62,6 +66,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Query\Bottom.cs" />
     <Compile Include="Query\MaterialType.cs" />
+    <Compile Include="Convert\PanelPlanar.cs" />
     <Compile Include="Query\SpaceCentrePoint.cs" />
     <Compile Include="Query\Storey.cs" />
     <Compile Include="Query\Bounds.cs" />
