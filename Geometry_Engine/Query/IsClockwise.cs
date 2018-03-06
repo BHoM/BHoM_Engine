@@ -29,17 +29,31 @@ namespace BH.Engine.Geometry
 
         public static bool IsClockwise(this PolyCurve polyCurve, Point viewPoint)
         {
-            List<Point> pts = DiscontinuityPoints(polyCurve);
-            Plane plane = Create.Plane(pts[0], pts[1], pts[2]);
+            List<Point> pts = DiscontinuityPoints(polyCurve).CullDuplicates();
+            Vector centreVector = (pts[0] - viewPoint).Normalise();
+
 
             /* Dot product of the normal and a vector from the center of the space. Positive dotproduct for clockwise
-             * and negative for anticlockwise (but this depends on the handedness of the coordinate system)*/
-            Vector centreVector = (pts[0] - viewPoint).Normalise();
-            double dotProduct = plane.Normal * centreVector;
-            if (dotProduct < 0)
-                return false;
+               and negative for anticlockwise (but this depends on the handedness of the coordinate system)*/
+            List<double> dotProducts = new List<double>();
+            for (int i = 0; i < pts.Count - 2; i++)
+            {
+                Plane plane = Create.Plane(pts[i], pts[i + 1], pts[i + 2]);
+                dotProducts.Add(plane.Normal.DotProduct(centreVector));
+            }
 
-            return true;
+            List<double> pos = new List<double>();
+            List<double> neg = new List<double>();
+            pos.AddRange(dotProducts.Where(x => x > 0));
+            neg.AddRange(dotProducts.Where(x => x < 0));
+
+            //Since we can have local concavity in a global convex curve we have to check all the normal vectors.
+            //More positive than negative dotproducts => clockwise curve.
+            if (pos.Count > neg.Count)
+                return true;
+            return false;
+
+
         }
 
         /***************************************************/
