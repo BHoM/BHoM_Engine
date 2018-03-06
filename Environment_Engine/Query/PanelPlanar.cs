@@ -1,0 +1,26 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+using BH.oM.Structural.Elements;
+using BH.oM.Environmental.Elements;
+
+namespace BH.Engine.Environment
+{
+    public static partial class Query
+    {
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
+
+        public static PanelPlanar PanelPlanar(this BuildingElementPanel buildingElementPanel)
+        {
+            return Structure.Create.PanelPlanar(buildingElementPanel.PolyCurve, new List<Opening>());
+        }
+
+        /***************************************************/
+    }
+}
+
