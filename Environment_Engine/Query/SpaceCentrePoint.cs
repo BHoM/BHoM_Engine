@@ -17,15 +17,17 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static BHG.Point SpaceCentreFromBuildingElements(this IEnumerable<BHE.BuildingElementPanel> bHoMPanels) //TODO: This does only work for convex spaces. we need to change this method later
+        public static BHG.Point Centre(this BHE.Space space) //TODO: This does only work for convex spaces. we need to change this method later
         {
-            List<BHG.Point> spacePts = new List<BHG.Point>();
-            foreach (BHE.BuildingElementPanel panel in bHoMPanels)
-            {
-                spacePts.AddRange(panel.PolyCurve.ControlPoints());
-            }
-            BHG.Point centrePt = BH.Engine.Geometry.Query.Bounds(spacePts).Centre();
+            List<BHE.BuildingElement> buildingElements = space.BuildingElements;
+            List<BHG.Point> pts = new List<BHG.Point>();
 
+            foreach (BHE.BuildingElement element in buildingElements)
+            {
+                pts.AddRange(Engine.Geometry.Query.IControlPoints(element.BuildingElementGeometry.ICurve()));
+            }
+
+            BHG.Point centrePt = BH.Engine.Geometry.Query.Bounds(pts).Centre();
             return centrePt;
         }
 
