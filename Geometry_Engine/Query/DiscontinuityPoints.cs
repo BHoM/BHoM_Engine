@@ -53,7 +53,7 @@ namespace BH.Engine.Geometry
 
         public static List<Point> DiscontinuityPoints(this Polyline curve, double angletolerance = Tolerance.Angle)
         {
-            List<Point> ctrlPts = curve.ControlPoints;
+            List<Point> ctrlPts = curve.ControlPoints.Select(p => p.Clone()).ToList();
             if (ctrlPts.Count < 3) return ctrlPts;
             int j = 0;
             if (!curve.IsClosed()) j += 2;
