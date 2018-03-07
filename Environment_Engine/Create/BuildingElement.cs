@@ -13,60 +13,76 @@ namespace BH.Engine.Environment
 {
     public static partial class Create
     {
-        public static BuildingElement BuildingElement(BuildingElementProperties BuildingElementProperties, BuildingElementPanel BuildingElementPanel)
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
+
+        public static BuildingElement BuildingElement(BuildingElementProperties buildingElementProperties, BuildingElementPanel buildingElementPanel)
         {
             return new BuildingElement
             {
-                BuildingElementProperties = BuildingElementProperties,
-                BuildingElementGeometry = BuildingElementPanel
+                BuildingElementProperties = buildingElementProperties,
+                BuildingElementGeometry = buildingElementPanel
             };
         }
 
-        public static BuildingElement BuildingElement(BuildingElementPanel BuildingElementPanel)
+        /***************************************************/
+
+        public static BuildingElement BuildingElement(BuildingElementPanel buildingElementPanel)
         {
             return new BuildingElement
             {
                 BuildingElementProperties = null,
-                BuildingElementGeometry = BuildingElementPanel
+                BuildingElementGeometry = buildingElementPanel
             };
         }
 
-        public static BuildingElement BuildingElement(BuildingElementProperties BuildingElementProperties, IEnumerable<Polyline> PolyLines)
+        /***************************************************/
+
+        public static BuildingElement BuildingElement(BuildingElementProperties buildingElementProperties, IEnumerable<Polyline> polyLines)
         {
             return new BuildingElement
             {
-                BuildingElementProperties = BuildingElementProperties,
-                BuildingElementGeometry = Create.BuildingElementPanel(PolyLines)
+                BuildingElementProperties = buildingElementProperties,
+                BuildingElementGeometry = Create.BuildingElementPanel(polyLines)
             };
         }
 
-        public static BuildingElement BuildingElement(BuildingElementProperties BuildingElementProperties, ICurve Curve)
+        /***************************************************/
+
+        public static BuildingElement BuildingElement(BuildingElementProperties buildingElementProperties, ICurve curve)
         {
             return new BuildingElement
             {
-                BuildingElementProperties = BuildingElementProperties,
-                BuildingElementGeometry = Create.BuildingElementPanel(new ICurve[] { Curve })
+                BuildingElementProperties = buildingElementProperties,
+                BuildingElementGeometry = Create.BuildingElementPanel(new ICurve[] { curve })
             };
         }
 
-        public static BuildingElement BuildingElement(BuildingElementProperties BuildingElementProperties, BuildingElementCurve BuildingElementCurve, Storey Storey)
+        /***************************************************/
+
+        public static BuildingElement BuildingElement(BuildingElementProperties buildingElementProperties, BuildingElementCurve buildingElementCurve, Storey storey)
         {
             return new BuildingElement
             {
-                Storey = Storey,
-                BuildingElementProperties = BuildingElementProperties,
-                BuildingElementGeometry = BuildingElementCurve
+                Storey = storey,
+                BuildingElementProperties = buildingElementProperties,
+                BuildingElementGeometry = buildingElementCurve
             };
         }
 
-        public static BuildingElement BuildingElement(BuildingElementProperties BuildingElementProperties, BuildingElementPanel BuildingElementPanel, Storey Storey)
+        /***************************************************/
+
+        public static BuildingElement BuildingElement(BuildingElementProperties buildingElementProperties, BuildingElementPanel buildingElementPanel, Storey storey)
         {
             return new BuildingElement
             {
-                Storey = Storey,
-                BuildingElementProperties = BuildingElementProperties,
-                BuildingElementGeometry = BuildingElementPanel
+                Storey = storey,
+                BuildingElementProperties = buildingElementProperties,
+                BuildingElementGeometry = buildingElementPanel
             };
         }
+
+        /***************************************************/
     }
 }

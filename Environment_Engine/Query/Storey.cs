@@ -12,6 +12,10 @@ namespace BH.Engine.Environment
 {
     public static partial class Query
     {
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
+
         public static Storey Storey(this Building building, Point point)
         {
             if (building.Storeys == null || point == null || building.Storeys.Count < 1)
@@ -34,5 +38,7 @@ namespace BH.Engine.Environment
 
             return building.Storeys.First();
         }
+
+        /***************************************************/
     }
 }

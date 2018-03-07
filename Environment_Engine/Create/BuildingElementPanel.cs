@@ -11,28 +11,38 @@ namespace BH.Engine.Environment
 {
     public static partial class Create
     {
-        public static BuildingElementPanel BuildingElementPanel(IEnumerable<ICurve> Curves)
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
+
+        public static BuildingElementPanel BuildingElementPanel(IEnumerable<ICurve> curves)
         {
             return new BuildingElementPanel
             {
-                PolyCurve = Geometry.Create.PolyCurve(Curves)
+                PolyCurve = Geometry.Create.PolyCurve(curves)
             };
         }
 
-        public static BuildingElementPanel BuildingElementPanel(PolyCurve PolyCurve)
+        /***************************************************/
+
+        public static BuildingElementPanel BuildingElementPanel(PolyCurve polyCurve)
         {
             return new BuildingElementPanel
             {
-                PolyCurve = PolyCurve
+                PolyCurve = polyCurve
             };
         }
 
-        public static BuildingElementPanel BuildingElementPanel(IEnumerable<Polyline> Polylines)
+        /***************************************************/
+
+        public static BuildingElementPanel BuildingElementPanel(IEnumerable<Polyline> polylines)
         {
             return new BuildingElementPanel
             {
-                PolyCurve = Geometry.Create.PolyCurve(Polylines)
+                PolyCurve = Geometry.Create.PolyCurve(polylines)
             };
         }
+
+        /***************************************************/
     }
 }

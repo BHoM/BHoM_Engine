@@ -11,11 +11,16 @@ namespace BH.Engine.Environment
 {
     public static partial class Modify
     {
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
 
         public static IBuildingElementGeometry ISetGeometry(this IBuildingElementGeometry buildingElementGeometry, ICurve curve)
         {
             return SetGeometry(buildingElementGeometry as dynamic, curve as dynamic);
         }
+
+        /***************************************************/
 
         public static BuildingElementPanel SetGeometry(this BuildingElementPanel buildingElementPanel, PolyCurve polyCurve)
         {
@@ -24,11 +29,15 @@ namespace BH.Engine.Environment
             return aBuildingElementPanel;
         }
 
+        /***************************************************/
+
         public static BuildingElementCurve SetGeometry(this BuildingElementCurve buildingElementCurve, ICurve curve)
         {
             BuildingElementCurve aBuildingElementCurve = buildingElementCurve.GetShallowClone() as BuildingElementCurve;
             aBuildingElementCurve.Curve = curve;
             return aBuildingElementCurve;
         }
+
+        /***************************************************/
     }
 }
