@@ -33,12 +33,16 @@ namespace BH.Engine.Environment
             return aBuildingElement;
         }
 
+        /***************************************************/
+
         public static BuildingElement Move(this BuildingElement buildingElement, Vector vector)
         {
             BuildingElement aBuildingElement = buildingElement.GetShallowClone() as BuildingElement;
             aBuildingElement.BuildingElementGeometry = Move(buildingElement.BuildingElementGeometry, vector);
             return aBuildingElement;
         }
+
+        /***************************************************/
 
         public static IBuildingElementGeometry Move(this IBuildingElementGeometry buildingElementGeometry, Vector vector)
         {

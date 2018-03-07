@@ -4,27 +4,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using BH.oM.Environmental.Interface;
+using BH.oM.Structural.Elements;
 using BH.oM.Environmental.Elements;
 
 namespace BH.Engine.Environment
 {
-    public static partial class Query
+    public static partial class Convert
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static IEquipmentProperties EquipmentProperties(this IEquipment equipment)
+        public static PanelPlanar ToPanelPlanar(this BuildingElementPanel buildingElementPanel)
         {
-            if (equipment is Emitter)
-                return (equipment as Emitter).EmitterProperties;
-            if(equipment is AirHandlingUnit)
-                return (equipment as AirHandlingUnit).AirHandlingUnitProperties;
-
-            return null;
+            return Structure.Create.PanelPlanar(buildingElementPanel.PolyCurve, new List<Opening>());
         }
 
         /***************************************************/
     }
 }
+

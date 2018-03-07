@@ -12,38 +12,48 @@ namespace BH.Engine.Environment
 {
     public static partial class Create
     {
-        public static Space Space(string Name, string Number, IEnumerable<BuildingElement> BuildingElements)
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
+
+        public static Space Space(string name, string number, IEnumerable<BuildingElement> buildingElements)
         {
             return new Space
             {
-                Name = Name,
-                Number = Number,
-                BuildingElements = BuildingElements.ToList()
+                Name = name,
+                Number = number,
+                BuildingElements = buildingElements.ToList()
             };
         }
 
-        public static Space Space(string Name, string Number, IEnumerable<BuildingElementPanel> BuildingElementsPanel)
+        /***************************************************/
+
+        public static Space Space(string name, string number, IEnumerable<BuildingElementPanel> buildingElementsPanel)
         {
             List<BuildingElement> aBuildingElementList = new List<BuildingElement>();
-            foreach (BuildingElementPanel aBuildingElementPanel in BuildingElementsPanel)
+            foreach (BuildingElementPanel aBuildingElementPanel in buildingElementsPanel)
                 aBuildingElementList.Add(BuildingElement(null, aBuildingElementPanel));
                     
             return new Space
             {
-                Name = Name,
-                Number = Number,
+                Name = name,
+                Number = number,
                 BuildingElements = aBuildingElementList
             };
         }
 
-        public static Space Space(string Name, string Number, Point Location, Storey Storey)
+        /***************************************************/
+
+        public static Space Space(string name, string number, Point location, Storey storey)
         {
             return new Space
             {
-                Name = Name,
-                Number = Number,
-                Location = Location
+                Name = name,
+                Number = number,
+                Location = location
             };
         }
+
+        /***************************************************/
     }
 }
