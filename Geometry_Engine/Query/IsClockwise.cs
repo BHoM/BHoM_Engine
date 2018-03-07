@@ -11,10 +11,10 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static bool IsClockwise(this Polyline curve, Vector normal)
+        public static bool IsClockwise(this Polyline polyline, Vector normal)
         {
-            if (!curve.IsClosed()) throw new Exception("The curve is not closed. IsClockwise method is relevant only to closed curves.");
-            List<Point> cc = curve.DiscontinuityPoints().CullDuplicates();
+            if (!polyline.IsClosed()) throw new Exception("The polyline is not closed. IsClockwise method is relevant only to closed curves.");
+            List<Point> cc = polyline.ControlPoints();
             Vector dir1 = (cc[0] - cc.Last()).Normalise();
             Vector dir2;
             double angleTot = 0;
@@ -33,7 +33,7 @@ namespace BH.Engine.Geometry
         {
 
             if (!curve.IsClosed()) throw new Exception("The curve is not closed. IsClockwise method is relevant only to closed curves.");
-            List<Point> cc = curve.DiscontinuityPoints().CullDuplicates();
+            List<Point> cc = curve.ControlPoints();
             Vector dir1 = (cc[0] - cc.Last()).Normalise();
             Vector dir2;
             double angleTot = 0;
@@ -48,14 +48,14 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static bool IsClockwise(this Polyline curve, Point viewPoint)
+        public static bool IsClockwise(this Polyline polyline, Point viewPoint)
         {
-            Plane plane = curve.FitPlane();
+            Plane plane = polyline.FitPlane();
 
             Point projectedPoint = viewPoint.Project(plane);
             Vector vector = (projectedPoint - viewPoint).Normalise();
 
-            return IsClockwise(curve, vector);
+            return IsClockwise(polyline, vector);
         }
 
         /***************************************************/
@@ -69,6 +69,7 @@ namespace BH.Engine.Geometry
 
             return IsClockwise(curve, vector);
         }
+
 
          /***************************************************/
     }
