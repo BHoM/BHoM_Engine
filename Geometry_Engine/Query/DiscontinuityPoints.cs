@@ -44,29 +44,34 @@ namespace BH.Engine.Geometry
 
         public static List<Point> DiscontinuityPoints(this PolyCurve curve)
         {
-            return curve.Curves.SelectMany(x => x.IDiscontinuityPoints()).ToList();
+            //TODO: need to check tangency between each two subsequent curves
+            // return curve.Curves.SelectMany(x => x.IDiscontinuityPoints()).ToList();
+            throw new NotImplementedException();
         }
 
         /***************************************************/
 
         public static List<Point> DiscontinuityPoints(this Polyline curve, double angletolerance = Tolerance.Angle)
         {
-            bool isClosed = curve.IsClosed();
             List<Point> ctrlPts = curve.ControlPoints;
             if (ctrlPts.Count < 3) return ctrlPts;
-            for (int i = 2; i < ctrlPts.Count; i++)
+            int j = 0;
+            if (!curve.IsClosed()) j += 2;
+            for (int i = j; i < ctrlPts.Count; i++)
             {
-                Vector v1 = ctrlPts[i - 1] - ctrlPts[i - 2];
-                Vector v2 = ctrlPts[i] - ctrlPts[i - 1];
-                double angle = v1.Angle(v2);             
-                if (angle <= angletolerance || angle >= (2 * Math.PI) - angletolerance) //TODO: Dosn't work with IsColinear for small polylines              
+                int cc = ctrlPts.Count;
+                int i1 = (i - 1 + cc) % cc;
+                int i2 = (i - 2 + cc) % cc;
+                Vector v1 = ctrlPts[i1] - ctrlPts[i2];
+                Vector v2 = ctrlPts[i] - ctrlPts[i1];
+                double angle = v1.Angle(v2);
+                if (angle <= angletolerance || angle >= (2 * Math.PI) - angletolerance || ctrlPts[i2].SquareDistance(ctrlPts[i1]) <= Tolerance.SqrtDist)
                 {
-                    ctrlPts.RemoveAt(i - 1);
+                    ctrlPts.RemoveAt(i1);
                     i--;
                 }
             }
             return ctrlPts;
-
         }
 
         /***************************************************/

@@ -14,7 +14,7 @@ namespace BH.Engine.Geometry
         public static bool IsClockwise(this Polyline polyline, Vector normal)
         {
             if (!polyline.IsClosed()) throw new Exception("The polyline is not closed. IsClockwise method is relevant only to closed curves.");
-            List<Point> cc = polyline.DiscontinuityPoints().CullDuplicates();
+            List<Point> cc = polyline.DiscontinuityPoints();
             Vector dir1 = (cc[0] - cc.Last()).Normalise();
             Vector dir2;
             double angleTot = 0;
@@ -31,7 +31,6 @@ namespace BH.Engine.Geometry
 
         public static bool IsClockwise(this PolyCurve curve, Vector normal)
         {
-
             if (!curve.IsClosed()) throw new Exception("The curve is not closed. IsClockwise method is relevant only to closed curves.");
             List<Point> cc = curve.ControlPoints().CullDuplicates();
             Vector dir1 = (cc[0] - cc.Last()).Normalise();
