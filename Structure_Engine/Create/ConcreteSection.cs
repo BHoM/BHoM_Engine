@@ -37,13 +37,13 @@ namespace BH.Engine.Structure
 
         public static ConcreteSection ConcreteFreeFormSection(List<ICurve> edges, Material material = null, string name = "", List<Reinforcement> reinforcement = null)
         {
-
             Dictionary<string, object> constants = Geometry.Compute.Integrate(edges);
+            
+            ISectionDimensions dimensions = new PolygonDimensions();
+            constants["J"] = dimensions.ITorsionalConstant();
+            constants["Iw"] = dimensions.IWarpingConstant();
 
-            constants["J"] = 0;
-            constants["Iw"] = 0;
-
-            ConcreteSection section = new ConcreteSection(edges, new PolygonDimensions(),
+            ConcreteSection section = new ConcreteSection(edges, dimensions,
                 (double)constants["Area"], (double)constants["Rgy"], (double)constants["Rgz"], (double)constants["J"], (double)constants["Iy"], (double)constants["Iz"], (double)constants["Iw"],
                 (double)constants["Zy"], (double)constants["Zz"], (double)constants["Sy"], (double)constants["Sz"], (double)constants["CentreZ"], (double)constants["CentreY"], (double)constants["Vz"],
                 (double)constants["Vpz"], (double)constants["Vy"], (double)constants["Vpy"], (double)constants["Asy"], (double)constants["Asz"]);
