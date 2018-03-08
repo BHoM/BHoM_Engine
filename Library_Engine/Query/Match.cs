@@ -14,16 +14,16 @@ namespace BH.Engine.Library
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static IBHoMObject Match(string libraryName, string objectName, bool removeWhiteSpace = false, bool toUpper = false)
+        public static IBHoMObject Match(string libraryName, string objectName, bool removeWhiteSpace = true, bool ignoreCase = true)
         {
             objectName = removeWhiteSpace ? objectName.Replace(" ", "") : objectName;
-            objectName = toUpper ? objectName.ToUpper() : objectName;
+            objectName = ignoreCase ? objectName.ToLower() : objectName;
 
             Func<IBHoMObject, bool> conditionalMatch = delegate (IBHoMObject x)
             {
                 string name = x.Name;
                 name = removeWhiteSpace ? name.Replace(" ", "") : name;
-                name = toUpper ? name.ToUpper() : name;
+                name = ignoreCase ? name.ToLower() : name;
                 return name == objectName;
             };
 
