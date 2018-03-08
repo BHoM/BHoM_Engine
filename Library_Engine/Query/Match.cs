@@ -14,9 +14,20 @@ namespace BH.Engine.Library
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static IBHoMObject Match(string libraryName, string objectName)
+        public static IBHoMObject Match(string libraryName, string objectName, bool removeWhiteSpace = false, bool toUpper = false)
         {
-            return Library(libraryName).Where(x => x.Name == objectName).FirstOrDefault();
+            objectName = removeWhiteSpace ? objectName.Replace(" ", "") : objectName;
+            objectName = toUpper ? objectName.ToUpper() : objectName;
+
+            Func<IBHoMObject, bool> conditionalMatch = delegate (IBHoMObject x)
+            {
+                string name = x.Name;
+                name = removeWhiteSpace ? name.Replace(" ", "") : name;
+                name = toUpper ? name.ToUpper() : name;
+                return name == objectName;
+            };
+
+            return Library(libraryName).Where(conditionalMatch).FirstOrDefault();
         }
 
         /***************************************************/
