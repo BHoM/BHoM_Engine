@@ -38,8 +38,8 @@ namespace BH.Engine.Geometry
                     outlinesByType.Add(new Tuple<Polyline, bool>(o, true));
                 }
             }
-            List<Polyline> panelOutlines = outlinesByType.Where(x => x.Item2 == true).Select(x => x.Item1).ToList();
-            List<Polyline> panelOpenings = outlinesByType.Where(x => x.Item2 == false).Select(x => x.Item1).ToList();
+            List<Polyline> panelOutlines = outlinesByType.Where(x => x.Item2 == true).Select(x => x.Item1.Clone()).ToList();
+            List<Polyline> panelOpenings = outlinesByType.Where(x => x.Item2 == false).Select(x => x.Item1.Clone()).ToList();
             return panelOutlines.DistributeOpenings(panelOpenings);
         }
 
@@ -53,7 +53,7 @@ namespace BH.Engine.Geometry
             List<List<Polyline>> result = new List<List<Polyline>>();
             foreach (Polyline p in panels)
             {
-                result.Add(new List<Polyline> { p.Clone() });
+                result.Add(new List<Polyline> { p });
             }
             result.Reverse();
 

@@ -36,11 +36,10 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static List<PanelPlanar> PanelPlanar(List<ICurve> outlines)
+        public static List<PanelPlanar> PanelPlanar(List<Polyline> outlines)
         {
             List<PanelPlanar> result = new List<PanelPlanar>();
-            List<Polyline> pOutlines = outlines.Select(o => (Polyline)o).ToList();
-            List<List<Polyline>> sortedOutlines = pOutlines.DistributeOutlines();
+            List<List<Polyline>> sortedOutlines = outlines.DistributeOutlines();
             foreach (List<Polyline> panelOutlines in sortedOutlines)
             {
                 List<Edge> externalEdges = panelOutlines[0].SubParts().Select(o => new Edge { Curve = o }).ToList();
