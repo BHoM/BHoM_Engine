@@ -15,12 +15,13 @@ namespace BH.Engine.Structure
         public static List<PanelPlanar> RecomputeEdges(this PanelPlanar panel)
         {
             List<PanelPlanar> result = new List<PanelPlanar>();
-            List<Polyline> panelOutline = new List<Polyline> { panel.Outline() };
-            List<Polyline> openingOutlines = panel.Openings.Select(o => o.Outline()).ToList();
-            openingOutlines = openingOutlines.BooleanUnion();
 
-            List<Polyline> newOutlines = panelOutline.BooleanDifference(openingOutlines);
-            List<List<Polyline>> distributedOutlines = newOutlines.DistributeOutlines();
+            List<Polyline> removedDuplicates = panel.Outline().RemoveDuplicateEdges();
+            foreach (Opening o in panel.Openings)
+            {
+                removedDuplicates.AddRange(o.Outline().RemoveDuplicateEdges());
+            }
+            List<List<Polyline>> distributedOutlines = removedDuplicates.DistributeOutlines();
 
             foreach (List<Polyline> panelOutlines in distributedOutlines)
             {
@@ -47,7 +48,7 @@ namespace BH.Engine.Structure
                 }
                 pp.ExternalEdges = externalEdges;
 
-                foreach (Polyline p in panelOutlines.Skip(1))
+                foreach (Polyline p in panelOutlines.Skip(1).ToList().BooleanUnion())
                 {
                     List<Edge> oEdges = new List<Edge>();
                     Edge edge = null;
@@ -92,6 +93,31 @@ namespace BH.Engine.Structure
                 }
             }
             return null;
+        }
+
+        /***************************************************/
+
+        private static List<Polyline> RemoveDuplicateEdges(this Polyline outline)
+        {
+            List<Line> edgeLines = outline.SubParts();
+            int ec = edgeLines.Count - 1;
+            for (int i = 0; i < ec; i++)
+            {
+                Line l1 = edgeLines[i];
+                for (int j = i + 1; j < edgeLines.Count; j++)
+                {
+                    Line l2 = edgeLines[j];
+                    if (l1.Start.SquareDistance(l2.End) <= Tolerance.SqrtDist && l1.End.SquareDistance(l2.Start) <= Tolerance.SqrtDist)
+                    {
+                        edgeLines.RemoveAt(j);
+                        edgeLines.RemoveAt(i);
+                        i--;
+                        ec -= 2;
+                        break;
+                    }
+                }
+            }
+            return edgeLines.Join();
         }
 
         /******************************************/
