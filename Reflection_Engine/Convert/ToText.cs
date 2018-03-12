@@ -24,7 +24,12 @@ namespace BH.Engine.Reflection.Convert
             text += paramEnd;
 
             if (includePath)
-                text = method.Path() + '.' + text;
+            {
+                string path = method.Path();
+                if (method.DeclaringType.Name == "Create")
+                    path = path.Substring(0, path.LastIndexOf('.'));
+                text = path + '.' + text;
+            }   
 
             return text;
         }
