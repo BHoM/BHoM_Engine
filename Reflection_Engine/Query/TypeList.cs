@@ -68,7 +68,7 @@ namespace BH.Engine.Reflection
                     {
                         foreach (Type type in asm.GetTypes())
                         {
-                            if (!type.IsInterface)
+                            if (!type.IsInterface && type.IsLegal())
                                 m_AdapterTypeList.Add(type);
                         }
                     }
@@ -79,7 +79,7 @@ namespace BH.Engine.Reflection
                 }
             }
         }
-        
+
 
         /***************************************************/
         /**** Private Fields                            ****/
