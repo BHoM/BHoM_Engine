@@ -55,6 +55,7 @@
     <Compile Include="Create\BuildingElementPanel.cs" />
     <Compile Include="Create\BuildingElementProperties.cs" />
     <Compile Include="Create\Space.cs" />
+    <Compile Include="Query\AdjacentSpaces.cs" />
     <Compile Include="Query\Curve.cs" />
     <Compile Include="Modify\Add.cs" />
     <Compile Include="Modify\Copy.cs" />

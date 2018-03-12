@@ -1,16 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using BH.oM.Environmental.Interface;
+﻿using BH.oM.Environmental.Interface;
 using BH.oM.Environmental.Elements;
-using BH.oM.Structural.Elements;
 using BH.oM.Geometry;
-
 using BH.Engine.Geometry;
-
+using BH.oM.Architecture.Elements;
 
 namespace BH.Engine.Environment
 {
@@ -20,15 +12,15 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static BuildingElement Move(this BuildingElement buildingElement, Storey storey)
+        public static BuildingElement Move(this BuildingElement buildingElement, Level level)
         {
             Vector aVector = Geometry.Create.Vector();
-            if (buildingElement.Storey != null)
-                aVector = Geometry.Create.Vector(0, 0, storey.Elevation - buildingElement.Storey.Elevation);
+            if (buildingElement.Level != null)
+                aVector = Geometry.Create.Vector(0, 0, level.Elevation - buildingElement.Level.Elevation);
 
             BuildingElement aBuildingElement = buildingElement.GetShallowClone() as BuildingElement;
             aBuildingElement = aBuildingElement.Move(aVector);
-            aBuildingElement.Storey = storey;
+            aBuildingElement.Level = level;
 
             return aBuildingElement;
         }
