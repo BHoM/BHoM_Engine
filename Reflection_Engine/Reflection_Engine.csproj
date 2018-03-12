@@ -48,6 +48,7 @@
     <Compile Include="Convert\ToText.cs" />
     <Compile Include="Create\Type.cs" />
     <Compile Include="Query\DistinctProperties.cs" />
+    <Compile Include="Query\IsLegal.cs" />
     <Compile Include="Query\Path.cs" />
     <Compile Include="Query\ExtentionMethods.cs" />
     <Compile Include="Query\MethodList.cs" />
