@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using BH.oM.Structural.Elements;
+﻿using BH.oM.Structural.Elements;
 using BH.oM.Geometry;
 using BH.Engine.Geometry;
 using BH.oM.Environmental.Elements;
 using BH.oM.Environmental.Interface;
+using BH.oM.Architecture.Elements;
 
 namespace BH.Engine.Environment
 {
@@ -90,10 +85,10 @@ namespace BH.Engine.Environment
 
         /***************************************************/
 
-        public static BuildingElement Copy(this BuildingElement buildingElement, Storey storey)
+        public static BuildingElement Copy(this BuildingElement buildingElement, Level level)
         {
             BuildingElement aBuildingElement = buildingElement.Copy();
-            aBuildingElement.Move(storey);
+            aBuildingElement.Move(level);
             return aBuildingElement;
         }
 

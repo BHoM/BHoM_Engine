@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 using BH.oM.Environmental.Elements;
 using BH.oM.Structural.Elements;
-using BH.oM.Geometry;
+using BH.oM.Architecture.Elements;
 
 namespace BH.Engine.Environment
 {
@@ -16,31 +12,31 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Building Add(this Building building, IEnumerable<Storey> storeys)
+        public static Building Add(this Building building, IEnumerable<Level> levels)
         {
             Building aBuilding = building.GetShallowClone() as Building;
-            aBuilding.Storeys = new List<Storey>(building.Storeys);
+            aBuilding.Levels = new List<Level>(building.Levels);
 
-            if (storeys == null)
+            if (levels == null)
                 return null;
 
-            aBuilding.Storeys.AddRange(storeys);
-            aBuilding.Storeys.Sort((x, y) => x.Elevation.CompareTo(y.Elevation));
+            aBuilding.Levels.AddRange(levels);
+            aBuilding.Levels.Sort((x, y) => x.Elevation.CompareTo(y.Elevation));
             return aBuilding;
         }
 
         /***************************************************/
 
-        public static Building Add(this Building building, Storey storey)
+        public static Building Add(this Building building, Level level)
         {
             Building aBuilding = building.GetShallowClone() as Building;
-            aBuilding.Storeys = new List<Storey>(building.Storeys);
+            aBuilding.Levels = new List<Level>(building.Levels);
 
-            if (storey == null)
+            if (level == null)
                 return null;
 
-            aBuilding.Storeys.Add(storey);
-            aBuilding.Storeys.Sort((x, y) => x.Elevation.CompareTo(y.Elevation));
+            aBuilding.Levels.Add(level);
+            aBuilding.Levels.Sort((x, y) => x.Elevation.CompareTo(y.Elevation));
             return aBuilding;
         }
 
@@ -56,7 +52,7 @@ namespace BH.Engine.Environment
 
             aBuilding.Spaces.Add(space);
 
-            if (space.Storey == null)
+            if (space.Level == null)
             {
                 // BoundingBox
             }

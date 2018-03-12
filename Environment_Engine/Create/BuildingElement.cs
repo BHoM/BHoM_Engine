@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 using BH.oM.Environmental.Elements;
 using BH.oM.Environmental.Properties;
 using BH.oM.Structural.Elements;
 using BH.oM.Geometry;
+using BH.oM.Architecture.Elements;
 
 namespace BH.Engine.Environment
 {
@@ -61,11 +58,11 @@ namespace BH.Engine.Environment
 
         /***************************************************/
 
-        public static BuildingElement BuildingElement(BuildingElementProperties buildingElementProperties, BuildingElementCurve buildingElementCurve, Storey storey)
+        public static BuildingElement BuildingElement(BuildingElementProperties buildingElementProperties, BuildingElementCurve buildingElementCurve, Level level)
         {
             return new BuildingElement
             {
-                Storey = storey,
+                Level = level,
                 BuildingElementProperties = buildingElementProperties,
                 BuildingElementGeometry = buildingElementCurve
             };
@@ -73,11 +70,11 @@ namespace BH.Engine.Environment
 
         /***************************************************/
 
-        public static BuildingElement BuildingElement(BuildingElementProperties buildingElementProperties, BuildingElementPanel buildingElementPanel, Storey storey)
+        public static BuildingElement BuildingElement(BuildingElementProperties buildingElementProperties, BuildingElementPanel buildingElementPanel, Level level)
         {
             return new BuildingElement
             {
-                Storey = storey,
+                Level = level,
                 BuildingElementProperties = buildingElementProperties,
                 BuildingElementGeometry = buildingElementPanel
             };
