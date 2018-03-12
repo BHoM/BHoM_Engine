@@ -14,12 +14,12 @@ namespace BH.Engine.Structure
 
         public static List<Point> ControlPoints(this PanelPlanar panel, bool externalOnly = false)
         {
-            List<Point> pts = panel.ExternalEdges.Select(e => (e.Curve as Line).Start.Clone()).ToList();
+            List<Point> pts = panel.ExternalEdges.ControlPoints();
             if (!externalOnly)
             {
                 foreach (Opening o in panel.Openings)
                 {
-                    pts.AddRange(o.Edges.Select(e => (e.Curve as Line).Start.Clone()).ToList());
+                    pts.AddRange(o.Edges.ControlPoints());
                 }
             }
             return pts;
@@ -29,7 +29,14 @@ namespace BH.Engine.Structure
 
         public static List<Point> ControlPoints(this Opening opening)
         {
-            List<Point> pts = opening.Edges.Select(e => (e.Curve as Line).Start.Clone()).ToList();
+            return opening.Edges.ControlPoints();
+        }
+
+        /******************************************/
+
+        public static List<Point> ControlPoints(this List<Edge> edges)
+        {
+            List<Point> pts = edges.Select(e => (e.Curve as Line).Start.Clone()).ToList();
             return pts;
         }
 

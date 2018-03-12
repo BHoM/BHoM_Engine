@@ -30,5 +30,14 @@ namespace BH.Engine.Structure
         }
 
         /******************************************/
+
+        public static Polyline Outline(this List<Edge> edges)
+        {
+            List<Point> pPts = edges.ControlPoints();
+            pPts.Add(pPts[0]);
+            return new Polyline { ControlPoints = pPts };
+        }
+
+        /******************************************/
     }
 }
