@@ -10,7 +10,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static double[,] RowEchelonForm(this double[,] imatrix, bool reduced = true)
+        public static double[,] RowEchelonForm(this double[,] imatrix, bool reduced = true, double tolerance = Tolerance.Distance)
         {
             // Strongly inspired by https://rosettacode.org/wiki/Reduced_row_echelon_form
 
@@ -20,7 +20,7 @@ namespace BH.Engine.Geometry
             {
                 if (columnCount == lead) break;
                 int i = r;
-                while (Math.Abs(matrix[i, lead]) < Tolerance.Distance)
+                while (Math.Abs(matrix[i, lead]) < tolerance)
                 {
                     i++;
                     if (i == rowCount)
@@ -41,7 +41,7 @@ namespace BH.Engine.Geometry
                     matrix[i, j] = temp;
                 }
                 double div = matrix[r, lead];
-                if (Math.Abs(div) >= Tolerance.Distance)
+                if (Math.Abs(div) >= tolerance)
                     for (int j = 0; j < columnCount; j++) matrix[r, j] /= div;
 
                 int w;
