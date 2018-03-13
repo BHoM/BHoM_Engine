@@ -54,7 +54,7 @@ namespace BH.Engine.Structure
             double relativeDepth = reinforcement.IsVertical ? bounds.Max.X - reinforcement.Depth : bounds.Max.Y - reinforcement.Depth;
             double[] range = null;
             double tieDiameter = property.TieDiameter();
-            if (property.SectionDimension.Shape == ShapeType.Rectangle && tieDiameter > 0)
+            if (property.SectionDimensions.Shape == ShapeType.Rectangle && tieDiameter > 0)
             {
                 //TODO: Check this part
                 tieDiameter = tieDiameter + Math.Cos(Math.PI / 4) * (2 * tieDiameter * (Math.Sqrt(2) - 1) + reinforcement.Diameter / 2) - reinforcement.Diameter / 2;
@@ -91,7 +91,7 @@ namespace BH.Engine.Structure
         /***************************************************/
         public static CompositeGeometry Layout(this PerimeterReinforcement reinforcement, ConcreteSection property, bool extrude = false)
         {
-            return Layout(reinforcement, property.SectionDimension as dynamic, property);
+            return Layout(reinforcement, property.SectionDimensions as dynamic, property);
         }
 
         /***************************************************/
