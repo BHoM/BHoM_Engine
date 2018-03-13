@@ -22,6 +22,14 @@ namespace BH.Engine.Structure
                 removedDuplicates.AddRange(o.Outline().RemoveDuplicateEdges());
             }
             List<List<Polyline>> distributedOutlines = removedDuplicates.DistributeOutlines();
+            
+            for(int i = distributedOutlines.Count - 1; i >= 0; i--)
+            {
+                List<Polyline> outlines = distributedOutlines[i];
+                List<Polyline> newOutlines = outlines.Take(1).ToList().BooleanDifference(outlines.Skip(1).ToList());
+                distributedOutlines.AddRange(newOutlines.DistributeOutlines());
+                distributedOutlines.RemoveAt(i);
+            }
 
             foreach (List<Polyline> panelOutlines in distributedOutlines)
             {
@@ -99,7 +107,12 @@ namespace BH.Engine.Structure
 
         private static List<Polyline> RemoveDuplicateEdges(this Polyline outline)
         {
-            List<Line> edgeLines = outline.SubParts();
+            List<Point> intpts = outline.SubParts().LineIntersections();
+            List<Line> edgeLines = new List<Line>();
+            foreach (Polyline p in outline.SplitAtPoints(intpts))
+            {
+                edgeLines.AddRange(p.SubParts());
+            }
             int ec = edgeLines.Count - 1;
             for (int i = 0; i < ec; i++)
             {
