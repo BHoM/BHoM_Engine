@@ -12,7 +12,7 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static double Volume(BHEE.Space bHoMSpace)
+        public static double Volume(this BHEE.Space bHoMSpace)
         {
             //TODO: This does only work for a space where all of the building element panels have the same height. Make it work for all spaces
 
@@ -22,9 +22,9 @@ namespace BH.Engine.Environment
             double roomheight = 0;
             foreach (BHEE.BuildingElement element in bHoMBuildingElement)
             {
-                if (Inclination(element.BuildingElementGeometry) == 90) // if wall
+                if (IInclination(element.BuildingElementGeometry) == 90) // if wall
                 {
-                    roomheight = AltitudeRange(element.BuildingElementGeometry);
+                    roomheight = IAltitudeRange(element.BuildingElementGeometry);
                     break;
                 }
             }

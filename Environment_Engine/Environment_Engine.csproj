@@ -63,6 +63,12 @@
     <Compile Include="Modify\SetGeometry.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Query\Bottom.cs" />
+    <Compile Include="Query\AltitudeRange.cs" />
+    <Compile Include="Query\Altitude.cs" />
+    <Compile Include="Query\Volume.cs" />
+    <Compile Include="Query\FloorArea.cs" />
+    <Compile Include="Query\Orientation.cs" />
+    <Compile Include="Query\Inclination.cs" />
     <Compile Include="Query\MaterialType.cs" />
     <Compile Include="Query\SpaceCentrePoint.cs" />
     <Compile Include="Query\Storey.cs" />
