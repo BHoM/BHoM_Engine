@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Linq;
 
 namespace BH.Engine.Reflection
 {
@@ -42,7 +43,11 @@ namespace BH.Engine.Reflection
                         foreach (Type type in asm.GetTypes())
                         {
                             if (!type.IsInterface && type.IsAbstract)
-                                m_BHoMMethodList.AddRange(type.GetMethods(BindingFlags.Public | BindingFlags.DeclaredOnly | BindingFlags.Static));
+                            {
+                                MethodInfo[] typeMethods = type.GetMethods(BindingFlags.Public | BindingFlags.DeclaredOnly | BindingFlags.Static);
+
+                                m_BHoMMethodList.AddRange(typeMethods.Where(x => x.IsLegal()));
+                            }
                         }
                     }
                 }

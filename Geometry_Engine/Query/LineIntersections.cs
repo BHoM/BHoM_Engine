@@ -30,7 +30,7 @@ namespace BH.Engine.Geometry
                 {v1.Z, -v2.Z, p2.Z-p1.Z},
             };
 
-            double[,] eref = e.RowEchelonForm(false);
+            double[,] eref = e.RowEchelonForm(false, tolerance);
             int nonZero = eref.CountNonZeroRows();
 
             double minT = -tolerance;

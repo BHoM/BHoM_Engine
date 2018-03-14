@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace BH.Engine.Reflection
 {
-    public static partial class Modify
+    public static partial class Query
     {
         /***************************************************/
         /**** Public Methods                            ****/
