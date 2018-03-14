@@ -14,9 +14,16 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static double Altitude(BHEI.IBuildingElementGeometry bHoMBuildingElementPanel)
+        public static double IAltitude(this BHEI.IBuildingElementGeometry buildingElementGeometry)
         {
-            BHG.BoundingBox panelBoundingBox = BH.Engine.Geometry.Query.IBounds(bHoMBuildingElementPanel.ICurve());
+            return Altitude(buildingElementGeometry as dynamic);
+        }
+
+        /***************************************************/
+
+        public static double Altitude(this BHEE.BuildingElementPanel panel)
+        {
+            BHG.BoundingBox panelBoundingBox = BH.Engine.Geometry.Query.IBounds(panel.ICurve());
             double altitude = panelBoundingBox.Min.Z;
 
             return altitude;

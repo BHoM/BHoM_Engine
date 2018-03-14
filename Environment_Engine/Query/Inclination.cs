@@ -12,20 +12,23 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static double Inclination(BHEI.IBuildingElementGeometry bHoMBuildingElementPanel)
+        public static double IInclination(this BHEI.IBuildingElementGeometry buildingElementGeometry)
         {
+            return Inclination(buildingElementGeometry as dynamic);
+        }
 
+        /***************************************************/
+
+        public static double Inclination(this BHE.Elements.BuildingElementPanel panel)
+        {
             double inclination;
-
-            BHE.Elements.BuildingElementPanel panel = bHoMBuildingElementPanel as BHE.Elements.BuildingElementPanel;
+          
             BHG.Polyline pline = new BHG.Polyline { ControlPoints = BH.Engine.Geometry.Query.IControlPoints(panel.PolyCurve) };
 
             List<BHG.Point> pts = BH.Engine.Geometry.Query.DiscontinuityPoints(pline);
             BHG.Plane plane = BH.Engine.Geometry.Create.Plane(pts[0], pts[1], pts[2]);
 
-            BHG.Vector xyNormal = BH.Engine.Geometry.Create.Vector(0, 0, 1);
-            inclination = BH.Engine.Geometry.Query.Angle(plane.Normal, xyNormal) * (180 / Math.PI);
-
+            inclination = BH.Engine.Geometry.Query.Angle(plane.Normal, BHG.Plane.XY.Normal) * (180 / Math.PI);
 
             return inclination;
         }
