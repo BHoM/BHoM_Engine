@@ -72,12 +72,27 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="DataSets\MaterialsEurope\Aluminium.json" />
+    <None Include="DataSets\MaterialsEurope\Cable.json" />
+    <None Include="DataSets\MaterialsEurope\Concrete.json" />
+    <None Include="DataSets\MaterialsEurope\Rebar.json" />
+    <None Include="DataSets\MaterialsEurope\Steel.json" />
+    <None Include="DataSets\MaterialsEurope\Timber.json" />
+    <None Include="DataSets\UK_SteelSectionDimensions\Angle.json" />
+    <None Include="DataSets\UK_SteelSectionDimensions\Box.json" />
+    <None Include="DataSets\UK_SteelSectionDimensions\Channel.json" />
+    <None Include="DataSets\UK_SteelSectionDimensions\ISection.json" />
+    <None Include="DataSets\UK_SteelSectionDimensions\Tee.json" />
+    <None Include="DataSets\UK_SteelSectionDimensions\Tube.json" />
     <None Include="Resources\MaterialsEurope.txt" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\UK_SteelSectionDimensions.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>xcopy "$(ProjectDir)DataSets\*.*" "C:\Users\$(Username)\AppData\Roaming\BHoM\DataSets" /Y /I /E</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

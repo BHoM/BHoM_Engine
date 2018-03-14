@@ -36,10 +36,10 @@ namespace BH.Engine.Library
         }
 
         /***************************************************/
-        private static string ObjectSubSection(IBHoMObject obj)
-        {
-            return "Main";
-        }
+        //private static string ObjectSubSection(IBHoMObject obj)
+        //{
+        //    return "Main";
+        //}
 
         /***************************************************/
 
