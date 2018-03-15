@@ -53,9 +53,12 @@
     <Compile Include="Query\Libraries.cs" />
     <Compile Include="Query\Names.cs" />
     <Compile Include="Query\Match.cs" />
-    <Compile Include="Query\SubSection.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\DataStructure_Engine\DataStructure_Engine.csproj">
+      <Project>{8082ca2a-ac5c-4690-9f09-960e0d3e4102}</Project>
+      <Name>DataStructure_Engine</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Reflection_Engine\Reflection_Engine.csproj">
       <Project>{b0154405-9390-472d-9b5c-a2280823b18d}</Project>
       <Name>Reflection_Engine</Name>
@@ -72,22 +75,18 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="DataSets\MaterialsEurope\Aluminium.json" />
-    <None Include="DataSets\MaterialsEurope\Cable.json" />
-    <None Include="DataSets\MaterialsEurope\Concrete.json" />
-    <None Include="DataSets\MaterialsEurope\Rebar.json" />
-    <None Include="DataSets\MaterialsEurope\Steel.json" />
-    <None Include="DataSets\MaterialsEurope\Timber.json" />
-    <None Include="DataSets\UK_SteelSectionDimensions\Angle.json" />
-    <None Include="DataSets\UK_SteelSectionDimensions\Box.json" />
-    <None Include="DataSets\UK_SteelSectionDimensions\Channel.json" />
-    <None Include="DataSets\UK_SteelSectionDimensions\ISection.json" />
-    <None Include="DataSets\UK_SteelSectionDimensions\Tee.json" />
-    <None Include="DataSets\UK_SteelSectionDimensions\Tube.json" />
-    <None Include="Resources\MaterialsEurope.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\UK_SteelSectionDimensions.txt" />
+    <None Include="DataSets\Materials\MaterialsEurope\Aluminium.json" />
+    <None Include="DataSets\Materials\MaterialsEurope\Cable.json" />
+    <None Include="DataSets\Materials\MaterialsEurope\Concrete.json" />
+    <None Include="DataSets\Materials\MaterialsEurope\Rebar.json" />
+    <None Include="DataSets\Materials\MaterialsEurope\Steel.json" />
+    <None Include="DataSets\Materials\MaterialsEurope\Timber.json" />
+    <None Include="DataSets\SectionDimensions\UK_SteelSectionDimensions\Angle.json" />
+    <None Include="DataSets\SectionDimensions\UK_SteelSectionDimensions\Box.json" />
+    <None Include="DataSets\SectionDimensions\UK_SteelSectionDimensions\Channel.json" />
+    <None Include="DataSets\SectionDimensions\UK_SteelSectionDimensions\ISection.json" />
+    <None Include="DataSets\SectionDimensions\UK_SteelSectionDimensions\Tee.json" />
+    <None Include="DataSets\SectionDimensions\UK_SteelSectionDimensions\Tube.json" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
