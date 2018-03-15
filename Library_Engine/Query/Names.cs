@@ -19,16 +19,9 @@ namespace BH.Engine.Library
 
         /***************************************************/
 
-        public static List<string> Names(string libraryName, string subSection)
-        {
-            return SubSection(libraryName, subSection).Select(x => x.Name).ToList();
-        }
-
-        /***************************************************/
-
         public static List<string> LibraryNames()
         {
-            return LibraryStrings().Select(x => x.Key).ToList();
+            return LibraryPaths().Keys.ToList();
         }
 
         /***************************************************/

@@ -9,6 +9,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BH.oM.DataStructure;
+using BH.Engine.DataStructure;
 
 namespace BH.Engine.Library
 {
@@ -19,6 +21,44 @@ namespace BH.Engine.Library
         /***************************************************/
 
         public static List<IBHoMObject> Library(string name)
+        {
+            List<string> keys;
+            if (!LibraryPaths().TryGetValue(name, out keys))
+                return new List<IBHoMObject>();
+
+            return keys.SelectMany(x => ParseLibrary(x)).ToList();
+
+        }
+
+        /***************************************************/
+
+        public static Tree<string> GetLibraryTree()
+        {
+            if (m_dbTree.Count() < 1)
+            {
+                List<string> paths = LibraryStrings().Keys.ToList();
+                m_dbTree = DataStructure.Create.Tree(paths, paths.Select(x => x.Split('\\')));
+            }
+            return m_dbTree;
+        }
+
+        /***************************************************/
+
+        public static void RefreshLibraries()
+        {
+            m_libraryPaths = new Dictionary<string, List<string>>();
+            m_libraryStrings = new Dictionary<string, string[]>();
+            m_parsedLibrary = new Dictionary<string, List<IBHoMObject>>();
+            m_dbTree = new Tree<string>();
+            GetPathsAndLoadLibraries();
+
+        }
+
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+        private static List<IBHoMObject> ParseLibrary(string name)
         {
             List<IBHoMObject> objects;
             if (!m_parsedLibrary.TryGetValue(name, out objects))
@@ -39,7 +79,7 @@ namespace BH.Engine.Library
                     if (!string.IsNullOrWhiteSpace(entry))
                     {
                         IBHoMObject obj = (IBHoMObject)BH.Engine.Serialiser.Convert.FromJson(entry);
-                        if(obj != null)
+                        if (obj != null)
                             objects.Add(obj);
                     }
                 }
@@ -49,18 +89,24 @@ namespace BH.Engine.Library
 
             return objects;
         }
-
+        
         /***************************************************/
-        /**** Private Methods                           ****/
-        /***************************************************/
-
         private static Dictionary<string, string[]> LibraryStrings()
         {
             //Check that libraries has been loaded
             if (m_libraryStrings.Count < 1)
-                LoadAllLibraries();
+                RefreshLibraries();
 
             return m_libraryStrings;
+        }
+
+        /***************************************************/
+
+        private static Dictionary<string, List<string>> LibraryPaths()
+        {
+            if (m_libraryPaths.Count < 1)
+                RefreshLibraries();
+            return m_libraryPaths;
         }
 
         /***************************************************/
@@ -74,34 +120,10 @@ namespace BH.Engine.Library
             }
             return db;
         }
+
         /***************************************************/
 
-        private static void LoadAllLibraries()
-        {
-            //Check for any files straight in the DataSets folder
-            //foreach (string path in Directory.GetFiles(m_sourceFolder))
-            //{
-            //    m_libraryPaths[Path.GetFileNameWithoutExtension(path)] = new List<string>() { path };
-            //}
-
-            //foreach (string path in Directory.GetDirectories(sourceFolder))
-            //{
-            //    string dirName = Path.GetFileName(path);
-
-            //}
-
-            GetPaths();
-
-            ////Read in all text files in the resource section to memmory as strings
-            //ResourceSet set = Properties.Resources.ResourceManager.GetResourceSet(CultureInfo.CurrentUICulture, true, true);
-            //foreach (DictionaryEntry entry in set)
-            //{
-            //    m_libraryStrings[entry.Key.ToString()] = entry.Value.ToString();
-            //}
-        }
-
-
-        private static void GetPaths(string folderPath = "", string basePath = "")
+        private static void GetPathsAndLoadLibraries(string folderPath = "", string basePath = "")
         {
             string internalPath = Path.Combine(basePath, folderPath);
             string folder = Path.Combine(m_sourceFolder, internalPath);
@@ -115,7 +137,7 @@ namespace BH.Engine.Library
 
             foreach (string dictPath in Directory.GetDirectories(folder))
             {
-                GetPaths(Path.GetFileName(dictPath), internalPath);
+                GetPathsAndLoadLibraries(Path.GetFileName(dictPath), internalPath);
             }
         }
 
@@ -123,12 +145,27 @@ namespace BH.Engine.Library
 
         private static void AddToPathDictionary(string path, string dictionaryPath)
         {
-            if (m_libraryPaths.ContainsKey(path))
-                m_libraryPaths[path].Add(dictionaryPath);
+            string folderName = Path.GetFileName(path);
+
+            //Add the path to the folder name
+            if (m_libraryPaths.ContainsKey(folderName))
+                m_libraryPaths[folderName].Add(dictionaryPath);
             else
             {
-                m_libraryPaths[path] = new List<string>();
-                m_libraryPaths[path].Add(dictionaryPath);
+                m_libraryPaths[folderName] = new List<string>();
+                m_libraryPaths[folderName].Add(dictionaryPath);
+            }
+
+            //Add full path name
+            if (folderName != path)
+            {
+                if (m_libraryPaths.ContainsKey(path))
+                    m_libraryPaths[path].Add(dictionaryPath);
+                else
+                {
+                    m_libraryPaths[path] = new List<string>();
+                    m_libraryPaths[path].Add(dictionaryPath);
+                }
             }
 
             string basePath = Path.GetDirectoryName(path);
@@ -143,10 +180,10 @@ namespace BH.Engine.Library
 
         private static readonly string m_sourceFolder = @"C:\Users\" + Environment.UserName + @"\AppData\Roaming\BHoM\DataSets";
 
-        //private static Dictionary<string, string> m_libraryStrings = new Dictionary<string, string>();
         private static Dictionary<string, string[]> m_libraryStrings = new Dictionary<string, string[]>();
         private static Dictionary<string, List<IBHoMObject>> m_parsedLibrary = new Dictionary<string, List<IBHoMObject>>();
         private static Dictionary<string, List<string>> m_libraryPaths = new Dictionary<string, List<string>>();
+        private static Tree<string> m_dbTree = new Tree<string>();
 
         /***************************************************/
     }
