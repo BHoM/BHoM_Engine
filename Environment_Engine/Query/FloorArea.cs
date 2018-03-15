@@ -20,7 +20,7 @@ namespace BH.Engine.Environment
 
             foreach (BHEE.BuildingElement element in bHoMBuildingElement)
             {
-                if (IInclination(element.BuildingElementGeometry) == 180) // if floor
+                if (Inclination(element.BuildingElementGeometry) == 180) // if floor
                 {
                     floorArea = element.BuildingElementGeometry.ICurve().IArea();
                     areaSum.Add(floorArea); //if we have many floor surfaces in the same space we need to calculate the sum
