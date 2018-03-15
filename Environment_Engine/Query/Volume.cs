@@ -22,9 +22,9 @@ namespace BH.Engine.Environment
             double roomheight = 0;
             foreach (BHEE.BuildingElement element in bHoMBuildingElement)
             {
-                if (IInclination(element.BuildingElementGeometry) == 90) // if wall
+                if (Inclination(element.BuildingElementGeometry) == 90) // if wall
                 {
-                    roomheight = IAltitudeRange(element.BuildingElementGeometry);
+                    roomheight = AltitudeRange(element.BuildingElementGeometry);
                     break;
                 }
             }

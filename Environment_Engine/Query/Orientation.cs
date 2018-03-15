@@ -12,18 +12,11 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static double IOrientation(this BHEI.IBuildingElementGeometry buildingElementGeometry)
-        {
-            return Orientation(buildingElementGeometry as dynamic);
-        }
-
-        /***************************************************/
-
-        public static double Orientation(this BHE.Elements.BuildingElementPanel panel)
+        public static double Orientation(this BHEI.IBuildingElementGeometry buildingElementGeometry)
         {
 
             double orientation;
-            BHG.Polyline pline = new BHG.Polyline { ControlPoints = BH.Engine.Geometry.Query.IControlPoints(panel.PolyCurve) };
+            BHG.Polyline pline = new BHG.Polyline { ControlPoints = BH.Engine.Geometry.Query.IControlPoints(buildingElementGeometry.ICurve()) };
 
             List<BHG.Point> pts = BH.Engine.Geometry.Query.DiscontinuityPoints(pline);
             BHG.Plane plane = BH.Engine.Geometry.Create.Plane(pts[0], pts[1], pts[2]);
