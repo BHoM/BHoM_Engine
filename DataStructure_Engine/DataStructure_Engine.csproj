@@ -59,6 +59,7 @@
     <Compile Include="Create\GraphLink.cs" />
     <Compile Include="Create\GraphNode.cs" />
     <Compile Include="Modify\Add.cs" />
+    <Compile Include="Modify\ShortenBranches.cs" />
     <Compile Include="Modify\Pop.cs" />
     <Compile Include="Modify\RemoveLink.cs" />
     <Compile Include="Modify\AddLink.cs" />
@@ -74,7 +75,6 @@
     <Compile Include="Query\Peek.cs" />
     <Compile Include="Query\SubMatrixData.cs" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\BHoM_Engine\BHoM_Engine.csproj">
       <Project>{1ad45c88-dd54-48e5-951f-55edfeb70e35}</Project>

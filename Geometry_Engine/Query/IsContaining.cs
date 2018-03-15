@@ -110,7 +110,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static bool IsContaining(this Polyline curve, List<Point> points, bool acceptOnEdge = true)
+        public static bool IsContaining(this Polyline curve, List<Point> points, bool acceptOnEdge = true, double tolerance = Tolerance.Distance)
         {
             // Todo:
             // - to be replaced with a general method for a nurbs curve?
@@ -123,7 +123,7 @@ namespace BH.Engine.Geometry
                 {
                     if (pt.IsInPlane(p))
                     {
-                        List<Point> intersects = curve.LineIntersections(new Line { Start = pt, End = p.Origin }, true); // what if the points are in exactly same spot?
+                        List<Point> intersects = curve.LineIntersections(new Line { Start = pt, End = p.Origin }, true, tolerance); // what if the points are in exactly same spot?
                         if ((pt.ClosestPoint(intersects).SquareDistance(pt) <= Tolerance.SqrtDist))
                         {
                             if (acceptOnEdge) continue;
