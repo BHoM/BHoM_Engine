@@ -101,7 +101,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static BarTemperatureLoad BarTemperatureLoad(Loadcase loadcase, Vector temperatureChange, BHoMGroup<Bar> group, LoadAxis axis = LoadAxis.Global, bool projected = false, string name = "")
+        public static BarTemperatureLoad BarTemperatureLoad(Loadcase loadcase, double temperatureChange, BHoMGroup<Bar> group, LoadAxis axis = LoadAxis.Global, bool projected = false, string name = "")
         {
             return new BarTemperatureLoad
             {
@@ -116,7 +116,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static BarTemperatureLoad BarTemperatureLoad(Loadcase loadcase, Vector temperatureChange, IEnumerable<Bar> objects, LoadAxis axis = LoadAxis.Global, bool projected = false, string name = "")
+        public static BarTemperatureLoad BarTemperatureLoad(Loadcase loadcase, double temperatureChange, IEnumerable<Bar> objects, LoadAxis axis = LoadAxis.Global, bool projected = false, string name = "")
         {
             return BarTemperatureLoad(loadcase, temperatureChange, new BHoMGroup<Bar>() { Elements = objects.ToList() }, axis, projected, name);
         }

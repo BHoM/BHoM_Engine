@@ -17,7 +17,6 @@ namespace BH.Engine.Common
                 YoungsModulus = E,
                 PoissonsRatio = v,
                 CoeffThermalExpansion = tC,
-                ShearModulus = E/(2*(1+v)),
                 Density = density
             };
         }
