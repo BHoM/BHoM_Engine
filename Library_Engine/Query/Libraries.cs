@@ -32,12 +32,12 @@ namespace BH.Engine.Library
 
         /***************************************************/
 
-        public static Tree<string> GetLibraryTree()
+        public static Tree<string> LibraryTree()
         {
-            if (m_dbTree.Count() < 1)
+            if (m_dbTree == null || m_dbTree.Count() == 0 || m_dbTree.Children.Count == 0)
             {
                 List<string> paths = LibraryStrings().Keys.ToList();
-                m_dbTree = DataStructure.Create.Tree(paths, paths.Select(x => x.Split('\\')));
+                m_dbTree = DataStructure.Create.Tree(paths, paths.Select(x => x.Split('\\')), "Select a data set").ShortenBranches();
             }
             return m_dbTree;
         }
