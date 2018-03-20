@@ -1,5 +1,8 @@
-﻿using BH.oM.Environmental.Elements;
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using BH.oM.Environmental.Elements;
+using BH.Engine.Geometry;
 
 namespace BH.Engine.Environment
 {
@@ -9,25 +12,19 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static List<Space> AdjacentSpaces(this Building building, Space space)
+        public static List<BuildingElement> BuildingElements(this Building building, Space space)
         {
             if (building == null || space == null)
                 return null;
 
-            List<Space> aResult = new List<Space>();
-            foreach (BuildingElement aBuildingElement in building.BuildingElements)
+            List<BuildingElement> aResult = new List<BuildingElement>();
+            foreach(BuildingElement aBuildingElement in building.BuildingElements)
             {
-                if (aBuildingElement.AdjacentSpaces != null && aBuildingElement.AdjacentSpaces.Count > 0)
+                if(aBuildingElement.AdjacentSpaces != null && aBuildingElement.AdjacentSpaces.Count > 0)
                 {
                     Space aSpace = aBuildingElement.AdjacentSpaces.Find(x => x.BHoM_Guid == space.BHoM_Guid);
                     if (aSpace != null)
-                    {
-                        foreach(Space aSpace_Temp in aBuildingElement.AdjacentSpaces)
-                        {
-                            if (aSpace_Temp.BHoM_Guid != aSpace.BHoM_Guid)
-                                aResult.Add(aSpace_Temp);
-                        }
-                    }
+                        aResult.Add(aBuildingElement);
                 }
             }
 
