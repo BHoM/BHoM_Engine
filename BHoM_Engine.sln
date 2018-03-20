@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Engine_Test", "Engine_Test\Engine_Test.csproj", "{178E7641-FB4D-41E9-A250-120A2B834912}"
 EndProject
@@ -43,6 +43,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library_Engine", "Library_Engine\Library_Engine.csproj", "{FB4ED5C8-E7CC-44B3-95EB-95C304D54E5D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataManipulation_Engine", "DataManipulation_Engine\DataManipulation_Engine.csproj", "{D343F0DE-5379-4410-98F1-B5E26855527F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Results_Engine", "Results_Engine\Results_Engine.csproj", "{6E8ACD42-09E9-4660-833B-0143B4316ED7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -186,6 +188,14 @@ Global
 		{D343F0DE-5379-4410-98F1-B5E26855527F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D343F0DE-5379-4410-98F1-B5E26855527F}.Release|x86.ActiveCfg = Release|Any CPU
 		{D343F0DE-5379-4410-98F1-B5E26855527F}.Release|x86.Build.0 = Release|Any CPU
+		{6E8ACD42-09E9-4660-833B-0143B4316ED7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6E8ACD42-09E9-4660-833B-0143B4316ED7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6E8ACD42-09E9-4660-833B-0143B4316ED7}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{6E8ACD42-09E9-4660-833B-0143B4316ED7}.Debug|x86.Build.0 = Debug|Any CPU
+		{6E8ACD42-09E9-4660-833B-0143B4316ED7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6E8ACD42-09E9-4660-833B-0143B4316ED7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6E8ACD42-09E9-4660-833B-0143B4316ED7}.Release|x86.ActiveCfg = Release|Any CPU
+		{6E8ACD42-09E9-4660-833B-0143B4316ED7}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
