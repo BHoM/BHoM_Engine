@@ -56,6 +56,7 @@
     <Compile Include="Create\BuildingElementProperties.cs" />
     <Compile Include="Create\Space.cs" />
     <Compile Include="Query\AdjacentSpaces.cs" />
+    <Compile Include="Query\BuildingElements.cs" />
     <Compile Include="Query\Curve.cs" />
     <Compile Include="Modify\Add.cs" />
     <Compile Include="Modify\Copy.cs" />
@@ -65,13 +66,15 @@
     <Compile Include="Query\Bottom.cs" />
     <Compile Include="Query\AltitudeRange.cs" />
     <Compile Include="Query\Altitude.cs" />
+    <Compile Include="Query\IsExternal.cs" />
+    <Compile Include="Query\IsInternal.cs" />
     <Compile Include="Query\Volume.cs" />
     <Compile Include="Query\FloorArea.cs" />
     <Compile Include="Query\Orientation.cs" />
     <Compile Include="Query\Inclination.cs" />
     <Compile Include="Query\MaterialType.cs" />
     <Compile Include="Query\SpaceCentrePoint.cs" />
-    <Compile Include="Query\Storey.cs" />
+    <Compile Include="Query\Level.cs" />
     <Compile Include="Query\Bounds.cs" />
     <Compile Include="Query\EquipmentProprerties.cs" />
   </ItemGroup>
