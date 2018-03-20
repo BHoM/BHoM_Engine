@@ -21,6 +21,13 @@ namespace BH.Engine.Library
 
         public static List<string> LibraryNames()
         {
+            return LibraryStrings().Keys.ToList();
+        }
+
+        /***************************************************/
+
+        public static List<string> AllLibraryPathNames()
+        {
             return LibraryPaths().Keys.ToList();
         }
 
