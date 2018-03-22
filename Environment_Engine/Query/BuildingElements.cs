@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using BH.oM.Environmental.Elements;
-using BH.Engine.Geometry;
 
 namespace BH.Engine.Environment
 {
@@ -22,9 +20,13 @@ namespace BH.Engine.Environment
             {
                 if(aBuildingElement.AdjacentSpaces != null && aBuildingElement.AdjacentSpaces.Count > 0)
                 {
-                    Space aSpace = aBuildingElement.AdjacentSpaces.Find(x => x.BHoM_Guid == space.BHoM_Guid);
-                    if (aSpace != null)
-                        aResult.Add(aBuildingElement);
+                    Guid aGuid = aBuildingElement.AdjacentSpaces.Find(x => x == space.BHoM_Guid);
+                    if(aGuid != null && aGuid != Guid.Empty)
+                    {
+                        Space aSpace = building.Spaces.Find(x => x.BHoM_Guid == aGuid);
+                        if (aSpace != null)
+                            aResult.Add(aBuildingElement);
+                    }
                 }
             }
 

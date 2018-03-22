@@ -1,4 +1,5 @@
 ﻿using BH.oM.Environmental.Elements;
+using System;
 using System.Collections.Generic;
 
 namespace BH.Engine.Environment
@@ -11,7 +12,14 @@ namespace BH.Engine.Environment
 
         public static List<Space> AdjacentSpaces(this Building building, Space space)
         {
-            if (building == null || space == null)
+            return AdjacentSpaces(building, space.BHoM_Guid);
+        }
+
+        /***************************************************/
+
+        public static List<Space> AdjacentSpaces(this Building building, Guid spaceGuid)
+        {
+            if (building == null || spaceGuid == null || spaceGuid == Guid.Empty)
                 return null;
 
             List<Space> aResult = new List<Space>();
@@ -19,16 +27,50 @@ namespace BH.Engine.Environment
             {
                 if (aBuildingElement.AdjacentSpaces != null && aBuildingElement.AdjacentSpaces.Count > 0)
                 {
-                    Space aSpace = aBuildingElement.AdjacentSpaces.Find(x => x.BHoM_Guid == space.BHoM_Guid);
-                    if (aSpace != null)
+                    Guid aGuid = aBuildingElement.AdjacentSpaces.Find(x => x == spaceGuid);
+                    if (aGuid != null && aGuid != Guid.Empty)
                     {
-                        foreach(Space aSpace_Temp in aBuildingElement.AdjacentSpaces)
+                        Space aSpace = building.Spaces.Find(x => x.BHoM_Guid == aGuid);
+                        if (aSpace != null)
                         {
-                            if (aSpace_Temp.BHoM_Guid != aSpace.BHoM_Guid)
-                                aResult.Add(aSpace_Temp);
+                            foreach (Guid aGuid_Temp in aBuildingElement.AdjacentSpaces)
+                            {
+                                if (aGuid_Temp != aSpace.BHoM_Guid)
+                                {
+                                    Space aSpace_Temp = building.Spaces.Find(x => x.BHoM_Guid == aGuid);
+                                    if (aSpace_Temp != null)
+                                        aResult.Add(aSpace_Temp);
+                                }
+
+                            }
                         }
                     }
                 }
+            }
+
+            return aResult;
+        }
+
+        /***************************************************/
+
+        public static List<Space> AdjacentSpaces(this BuildingElement buildingElement, IEnumerable<Space> spaces)
+        {
+            if (buildingElement == null || spaces == null)
+                return null;
+
+            List<Space> aResult = new List<Space>();
+            foreach (Guid aGuid in buildingElement.AdjacentSpaces)
+            {
+                Space aSpace = null;
+                foreach (Space aSpace_Temp in spaces)
+                {
+                    if(aSpace_Temp.BHoM_Guid == aGuid)
+                    {
+                        aSpace = aSpace_Temp;
+                        break;
+                    }
+                }
+                aResult.Add(aSpace);
             }
 
             return aResult;
