@@ -9,17 +9,9 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static ConstantThickness ConstantThickness(double thickness, Material material = null ,string name = "")
+        public static ConstantThickness ConstantThickness(double thickness, Material material = null ,string name = "", PanelType type = PanelType.Undefined)
         {
-            ConstantThickness ct = new ConstantThickness { Thickness = thickness};
-
-            if (material != null)
-                ct.Material = material;
-
-            if (name != null)
-                ct.Name = name;
-
-            return ct;
+            return new ConstantThickness { Thickness = thickness, PanelType = type, Material = material, Name = name};
         }
 
         /***************************************************/

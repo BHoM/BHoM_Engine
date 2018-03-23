@@ -8,14 +8,7 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Waffle Waffle(string name)
-        {
-            return new Waffle { Name = name };
-        }
-
-        /***************************************************/
-
-        public static Waffle Waffle(string name, double slabDepth, double depthX, double depthY, double stemWidthX, double stemWidthY, double spacingX, double spacingY)
+        public static Waffle Waffle(string name, double slabDepth, double depthX, double depthY, double stemWidthX, double stemWidthY, double spacingX, double spacingY, PanelType type = PanelType.Undefined)
         {
             return new Waffle
             {
@@ -27,6 +20,7 @@ namespace BH.Engine.Structure
                 StemWidthY = stemWidthY,
                 SpacingX = spacingX,
                 SpacingY = spacingY,
+                PanelType = type
             };
         }
 

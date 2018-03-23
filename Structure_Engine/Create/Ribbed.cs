@@ -8,14 +8,7 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Ribbed Ribbed(string name)
-        {
-            return new Ribbed { Name = name };
-        }
-
-        /***************************************************/
-
-        public static Ribbed Ribbed(string name, double slabDepth, double totalDepth, double stemWidth, double spacing, PanelDirection direction)
+        public static Ribbed Ribbed(string name, double slabDepth, double totalDepth, double stemWidth, double spacing, PanelDirection direction, PanelType type = PanelType.Undefined)
         {
             return new Ribbed
             {
@@ -24,7 +17,8 @@ namespace BH.Engine.Structure
                 TotalDepth = totalDepth,
                 StemWidth = stemWidth,
                 Spacing = spacing,
-                Direction = direction
+                Direction = direction,
+                PanelType = type
             };
         }
 
