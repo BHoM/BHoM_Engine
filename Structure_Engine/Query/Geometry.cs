@@ -14,10 +14,10 @@ namespace BH.Engine.Structure
 
         public static List<IGeometry> Geometry(this ConcreteSection section)
         {
-            if (section.Edges.Count == 0)
+            if (section.SectionProfile.Edges.Count == 0)
                 return null;
 
-            CompositeGeometry geom = Engine.Geometry.Create.CompositeGeometry(section.Edges);
+            CompositeGeometry geom = Engine.Geometry.Create.CompositeGeometry(section.SectionProfile.Edges);
             geom.Elements.AddRange(section.Layout().Elements);
 
             return geom.Elements;
@@ -46,16 +46,9 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static IGeometry Geometry(this Storey storey)
+        public static IGeometry Geometry(this SteelSection section)
         {
-            return new Plane { Origin = new Point { X = 0, Y = 0, Z = storey.Elevation }, Normal = new Vector { X = 0, Y = 0, Z = 1 } };
-        }
-
-        /***************************************************/
-
-        public static IGeometry Geometry(this IGeometricalSection section)
-        {
-            return new CompositeGeometry { Elements = section.Edges.ToList<IGeometry>() };
+            return new CompositeGeometry { Elements = section.SectionProfile.Edges.ToList<IGeometry>() };
         }
 
         /***************************************************/

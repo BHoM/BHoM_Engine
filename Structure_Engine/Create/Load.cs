@@ -178,41 +178,7 @@ namespace BH.Engine.Structure
             return BarVaryingDistributedLoad(loadcase, new BHoMGroup<Bar>() { Elements = objects.ToList() }, distFromA, forceA, momentA, distFromB, forceB, momentB, axis, projected, name);
         }
 
-        /***************************************************/
-
-        public static GeometricalAreaLoad GeometricalAreaLoad(ICurve contour, Vector force)
-        {
-            return new GeometricalAreaLoad { Contour = contour, Force = force };
-        }
-
-        /***************************************************/
-
-        public static GeometricalLineLoad GeometricalLineLoad(BH.oM.Geometry.Line line, Vector force, Vector moment = null)
-        {
-            return new GeometricalLineLoad
-            {
-                Location = line,
-                ForceA = force,
-                ForceB = force,
-                MomentA = moment == null ? new Vector { X = 0, Y = 0, Z = 0 } : moment,
-                MomentB = moment == null ? new Vector { X = 0, Y = 0, Z = 0 } : moment
-            };
-            
-        }
-
-        /***************************************************/
-        public static GeometricalLineLoad GeometricalLineLoad(BH.oM.Geometry.Line line, Vector forceA, Vector forceB, Vector momentA = null, Vector momentB = null)
-        {
-            return new GeometricalLineLoad
-            {
-                Location = line,
-                ForceA = forceA,
-                ForceB = forceB,
-                MomentA = momentA == null ? new Vector { X = 0, Y = 0, Z = 0 } : momentA,
-                MomentB = momentB == null ? new Vector { X = 0, Y = 0, Z = 0 } : momentB
-            };
-        }
-
+        
         /***************************************************/
 
         public static GravityLoad GravityLoad(Loadcase loadcase, Vector direction, BHoMGroup<BHoMObject> group, string name = "")

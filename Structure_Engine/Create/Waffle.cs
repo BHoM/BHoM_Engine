@@ -10,7 +10,7 @@ namespace BH.Engine.Structure
 
         public static Waffle Waffle(string name)
         {
-            return new Waffle { Name = name, Type = PanelType.Slab };
+            return new Waffle { Name = name };
         }
 
         /***************************************************/
