@@ -12,12 +12,8 @@ namespace BH.Engine.Structure
         {
             return new Offset
             {
-                StartX = startX,
-                StartY = startY,
-                StartZ = startZ,
-                EndX = endX,
-                EndY = endY,
-                EndZ = endZ
+                Start = new oM.Geometry.Vector() { X = startX, Y = startY, Z = startZ },
+                End = new oM.Geometry.Vector() { X = endX, Y = endY, Z = endZ }
             };
         }
 

@@ -14,7 +14,7 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static MeshFace MeshFace(Node n0, Node n1, Node n2, Node n3 = null, Property2D property = null, string name = null)
+        public static MeshFace MeshFace(Node n0, Node n1, Node n2, Node n3 = null, IProperty2D property = null, string name = null)
         {
             MeshFace mf = new MeshFace { Nodes = new List<Node> { n0, n1, n2 }, Property = property };
 
@@ -29,7 +29,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static MeshFace MeshFace(IEnumerable<Node> nodes, Property2D property = null, string name = null)
+        public static MeshFace MeshFace(IEnumerable<Node> nodes, IProperty2D property = null, string name = null)
         {
             int nodeCount = nodes.Count();
             if (nodeCount != 3 && nodeCount != 4)
@@ -44,7 +44,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static List<MeshFace> MeshFaces(Mesh mesh, Property2D property = null, string name = null)
+        public static List<MeshFace> MeshFaces(Mesh mesh, IProperty2D property = null, string name = null)
         {
             List<MeshFace> meshFaces = new List<MeshFace>();
 

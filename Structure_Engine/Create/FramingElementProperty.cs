@@ -1,4 +1,4 @@
-﻿using BH.oM.Structural.Elements;
+﻿using BH.oM.Structural.Properties;
 using BH.oM.Geometry;
 
 namespace BH.Engine.Structure
@@ -9,11 +9,12 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Beam Beam(ICurve locationCurve)
+        public static ConstantFramingElementProperty FramingElement(ISectionProperty sectionProperty, double orientationAngle, string name = "")
         {
-            return new Beam { LocationCurve = locationCurve };
+            return new ConstantFramingElementProperty { SectionProperty = sectionProperty, OrientationAngle = orientationAngle, Name = name };
         }
 
         /***************************************************/
     }
 }
+

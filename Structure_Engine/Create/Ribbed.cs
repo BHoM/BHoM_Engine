@@ -10,7 +10,7 @@ namespace BH.Engine.Structure
 
         public static Ribbed Ribbed(string name)
         {
-            return new Ribbed { Name = name, Type = PanelType.Slab };
+            return new Ribbed { Name = name };
         }
 
         /***************************************************/

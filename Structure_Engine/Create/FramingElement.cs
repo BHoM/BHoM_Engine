@@ -1,4 +1,6 @@
 ﻿using BH.oM.Structural.Elements;
+using BH.oM.Structural.Properties;
+using BH.oM.Geometry;
 
 namespace BH.Engine.Structure
 {
@@ -8,9 +10,9 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Storey Storey(string name, double elevation, double height)
+        public static FramingElement FramingElement(Line locationCurve, IFramingElementProperty property, StructuralUsage1D structuralUsage= StructuralUsage1D.Beam, string name = "")
         {
-            return new Storey { Name = name, Elevation = elevation, Height = height };
+            return new FramingElement { LocationCurve = locationCurve, Property = property, StructuralUsage = structuralUsage, Name = name };
         }
 
         /***************************************************/

@@ -9,7 +9,7 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static double WidthAt(this IGeometricalSection section, double y)
+        public static double WidthAt(this IProfile section, double y)
         {
             IntegrationSlice slice = Engine.Geometry.Query.SliceAt(section.Edges, y, 1, oM.Geometry.Plane.XZ);
             //Slice slice = SliceAt(y, 1, Plane.XZ());// new Plane(Point.Origin, Vector.YAxis()));
@@ -18,7 +18,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static double WidthAt(this IGeometricalSection section, double y, ref double[] range)
+        public static double WidthAt(this IProfile section, double y, ref double[] range)
         {
             IntegrationSlice slice = Engine.Geometry.Query.SliceAt(section.Edges, y, 1, oM.Geometry.Plane.XZ);
             //Slice slice = SliceAt(y, 1, Plane.XZ());

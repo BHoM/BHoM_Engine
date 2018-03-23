@@ -57,20 +57,6 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static LoadType LoadType(this GeometricalAreaLoad load)
-        {
-            return oM.Structural.Loads.LoadType.Geometrical;
-        }
-
-        /***************************************************/
-
-        public static LoadType LoadType(this GeometricalLineLoad load)
-        {
-            return oM.Structural.Loads.LoadType.Geometrical;
-        }
-
-        /***************************************************/
-
         public static LoadType LoadType(this GravityLoad load)
         {
             return oM.Structural.Loads.LoadType.Selfweight;
