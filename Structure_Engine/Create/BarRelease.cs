@@ -17,7 +17,7 @@ namespace BH.Engine.Structure
 
         public static BarRelease BarReleaseFixFix( string name = "FixFix")
         {
-            return new BarRelease { StartRelease = FullReleaseConstraint6DOF(), EndRelease = FullReleaseConstraint6DOF(), Name = name };
+            return new BarRelease { StartRelease = FixConstraint6DOF(), EndRelease = FixConstraint6DOF(), Name = name };
         }
 
         /***************************************************/
@@ -26,8 +26,8 @@ namespace BH.Engine.Structure
         {
             return new BarRelease
             {
-                StartRelease = Constraint6DOF(false, false, false, true,true,true, "Pin"),
-                EndRelease = Constraint6DOF(false, false, false, true, true, true, "Pin"),
+                StartRelease = PinConstraint6DOF(),
+                EndRelease = PinConstraint6DOF(),
                 Name = name
             };
         }
@@ -38,8 +38,8 @@ namespace BH.Engine.Structure
         {
             return new BarRelease
             {
-                StartRelease = Constraint6DOF(false, false, false, true, true, true, "Pin"),
-                EndRelease = Constraint6DOF(true, false, false, true, true, true, "Slip"),
+                StartRelease = PinConstraint6DOF(),
+                EndRelease = Constraint6DOF(false, true, true, false, false, false, "Slip"),
                 Name = name
             };
         }
