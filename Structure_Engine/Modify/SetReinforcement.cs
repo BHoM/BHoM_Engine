@@ -12,21 +12,23 @@ namespace BH.Engine.Structure
 
         public static ConcreteSection SetReinforcement(this ConcreteSection section, IEnumerable<Reinforcement> reinforcement)
         {
-            section.Reinforcement = reinforcement.ToList();
-
-            return section;
+            ConcreteSection clone = section.GetShallowClone() as ConcreteSection;
+            clone.Reinforcement = reinforcement.ToList();
+            return clone;
         }
 
         /***************************************************/
 
         public static ConcreteSection AddReinforcement(this ConcreteSection section, IEnumerable<Reinforcement> reinforcement)
         {
-            if (section.Reinforcement == null)
-                section.Reinforcement = new List<Reinforcement>();
+            ConcreteSection clone = section.GetShallowClone() as ConcreteSection;
 
-            section.Reinforcement.AddRange(reinforcement);
+            if (clone.Reinforcement == null)
+                clone.Reinforcement = new List<Reinforcement>();
 
-            return section;
+            clone.Reinforcement.AddRange(reinforcement);
+
+            return clone;
         }
 
         /***************************************************/
