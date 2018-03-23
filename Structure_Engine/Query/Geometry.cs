@@ -12,7 +12,7 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static List<IGeometry> Geometry(this ConcreteSection section)
+        public static CompositeGeometry Geometry(this ConcreteSection section)
         {
             if (section.SectionProfile.Edges.Count == 0)
                 return null;
@@ -20,19 +20,19 @@ namespace BH.Engine.Structure
             CompositeGeometry geom = Engine.Geometry.Create.CompositeGeometry(section.SectionProfile.Edges);
             geom.Elements.AddRange(section.Layout().Elements);
 
-            return geom.Elements;
+            return geom;
         }
 
         /***************************************************/
 
-        public static IGeometry Geometry(this Bar bar)
+        public static Line Geometry(this Bar bar)
         {
-            return new Line { Start = bar.StartNode.Position, End = bar.EndNode.Position };
+            return bar.Centreline();
         }
 
         /***************************************************/
 
-        public static IGeometry Geometry(this Node node)
+        public static Point Geometry(this Node node)
         {
             return node.Position;
         }
@@ -53,7 +53,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static IGeometry Geometry(this MeshFace meshFace)
+        public static Mesh Geometry(this MeshFace meshFace)
         {
 
             return new Mesh()
