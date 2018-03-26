@@ -39,9 +39,9 @@ namespace BH.Engine.Environment
 
         /***************************************************/
 
-        public static Storey Copy(this Storey storey)
+        public static Level Copy(this Level level)
         {
-            return storey.GetShallowClone(true) as Storey;
+            return level.GetShallowClone(true) as Level;
         }
 
         /***************************************************/
@@ -56,13 +56,13 @@ namespace BH.Engine.Environment
 
         /***************************************************/
 
-        public static Storey Copy(this Storey storey, string name, double elevation)
+        public static Level Copy(this Level level, string name, double elevation)
         {
-            Storey aStorey = storey.Copy();
-            aStorey.Name = name;
-            aStorey.Elevation = elevation;
+            Level aLevel = level.Copy();
+            aLevel.Name = name;
+            aLevel.Elevation = elevation;
 
-            return aStorey;
+            return aLevel;
         }
 
         /***************************************************/

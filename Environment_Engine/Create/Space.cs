@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using BH.oM.Environmental.Elements;
 using BH.oM.Geometry;
 using BH.oM.Structural.Elements;
+using BH.oM.Architecture.Elements;
 
 namespace BH.Engine.Environment
 {
@@ -44,13 +45,14 @@ namespace BH.Engine.Environment
 
         /***************************************************/
 
-        public static Space Space(string name, string number, Point location, Storey storey)
+        public static Space Space(string name, string number, Point location, Level level)
         {
             return new Space
             {
                 Name = name,
                 Number = number,
-                Location = location
+                Location = location,
+                Level = level
             };
         }
 
