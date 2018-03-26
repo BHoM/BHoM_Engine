@@ -15,14 +15,14 @@ namespace BH.Engine.Structure
 
         public static ConcreteSection ConcreteRectangleSection(double height, double width, Material material = null, string name = "", List<Reinforcement> reinforcement = null)
         {
-            return ConcreteSectionFromDimensions(RectangleProfile(height, width, 0), material, name, reinforcement);
+            return ConcreteSectionFromProfile(RectangleProfile(height, width, 0), material, name, reinforcement);
         }
 
         /***************************************************/
 
         public static ConcreteSection ConcreteTSection(double height, double webThickness, double flangeWidth, double flangeThickness, Material material = null, string name = "", List<Reinforcement> reinforcement = null)
         {
-            return ConcreteSectionFromDimensions(TSectionProfile(height, flangeWidth, webThickness, flangeThickness, 0, 0), material, name, reinforcement);
+            return ConcreteSectionFromProfile(TSectionProfile(height, flangeWidth, webThickness, flangeThickness, 0, 0), material, name, reinforcement);
         }
 
 
@@ -30,19 +30,19 @@ namespace BH.Engine.Structure
 
         public static ConcreteSection ConcreteCircularSection(double diameter, Material material = null, string name = "", List<Reinforcement> reinforcement = null)
         {
-            return ConcreteSectionFromDimensions(CircleProfile(diameter), material, name, reinforcement);
+            return ConcreteSectionFromProfile(CircleProfile(diameter), material, name, reinforcement);
         }
 
         /***************************************************/
 
         public static ConcreteSection ConcreteFreeFormSection(List<ICurve> edges, Material material = null, string name = "", List<Reinforcement> reinforcement = null)
         {
-            return ConcreteSectionFromDimensions(FreeFormProfile(edges), material, name, reinforcement);
+            return ConcreteSectionFromProfile(FreeFormProfile(edges), material, name, reinforcement);
         }
 
         /***************************************************/
 
-        public static ConcreteSection ConcreteSectionFromDimensions(IProfile dimensions, Material material = null, string name = "", List<Reinforcement> reinforcement = null)
+        public static ConcreteSection ConcreteSectionFromProfile(IProfile dimensions, Material material = null, string name = "", List<Reinforcement> reinforcement = null)
         {
             List<ICurve> edges = dimensions.Edges.ToList();
             Dictionary<string, object> constants = Geometry.Compute.Integrate(edges);
