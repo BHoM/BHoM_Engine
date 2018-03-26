@@ -9,7 +9,7 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static ConstantFramingElementProperty FramingElement(ISectionProperty sectionProperty, double orientationAngle, string name = "")
+        public static ConstantFramingElementProperty ConstantFramingElementProperty(ISectionProperty sectionProperty, double orientationAngle, string name = "")
         {
             return new ConstantFramingElementProperty { SectionProperty = sectionProperty, OrientationAngle = orientationAngle, Name = name };
         }

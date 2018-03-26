@@ -78,6 +78,13 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
+
+        public static ICurve Geometry(this FramingElement element)
+        {
+            return element.LocationCurve;
+        }
+
+        /***************************************************/
     }
 
 }
