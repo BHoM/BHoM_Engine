@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Compute\LoadAllAssemblies.cs" />
     <Compile Include="Compute\RunExtentionMethod.cs" />
     <Compile Include="Convert\ToText.cs" />
     <Compile Include="Create\Type.cs" />
