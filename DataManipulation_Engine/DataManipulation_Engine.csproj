@@ -49,7 +49,9 @@
     <Compile Include="Create\BatchQuery.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Compute\FilterData.cs" />
+    <Compile Include="Query\Cases.cs" />
     <Compile Include="Query\Filter.cs" />
+    <Compile Include="Query\ObjectIds.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
