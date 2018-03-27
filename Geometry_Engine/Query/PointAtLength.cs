@@ -25,7 +25,7 @@ namespace BH.Engine.Geometry
         {
             double alfa = 2 * Math.PI * length / curve.Length();
             Vector localX = curve.Normal.CrossProduct(Vector.XAxis).Normalise() * curve.Radius;
-            return Create.Point(localX.Rotate(alfa, curve.Normal));
+            return Create.Point(localX.Rotate(alfa, curve.Normal)) + curve.Centre;
         }
 
         /***************************************************/
@@ -46,23 +46,16 @@ namespace BH.Engine.Geometry
 
         public static Point PointAtLength(this PolyCurve curve, double length)
         {
-            throw new NotImplementedException(); // TODO Relies on NurbCurve PointAt method
+            double parameter = length * curve.Length();
+            return curve.PointAtParameter(parameter);
         }
 
         /***************************************************/
 
         public static Point PointAtLength(this Polyline curve, double length)
         {
-            double sum = 0;
-            foreach (Line line in curve.SubParts())
-            {
-                sum += line.Length();
-                if (length <= sum)
-                {
-                    return line.PointAtLength(length - sum + line.Length());
-                }
-            }
-            return null;
+            double parameter = length * curve.Length();
+            return curve.PointAtParameter(parameter);
         }
 
 
