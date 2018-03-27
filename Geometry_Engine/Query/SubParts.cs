@@ -1,6 +1,7 @@
 ﻿using BH.oM.Geometry;
 using System.Collections.Generic;
 using System.Linq;
+using System;
 
 namespace BH.Engine.Geometry
 {
@@ -8,6 +9,34 @@ namespace BH.Engine.Geometry
     {
         /***************************************************/
         /**** Public Methods - Curves                   ****/
+        /***************************************************/
+
+        public static List<Arc> SubParts(this Arc curve)
+        {
+            return new List<Arc> { curve.Clone() };
+        }
+
+        /***************************************************/
+
+        public static List<Circle> SubParts(this Circle curve)
+        {
+            return new List<Circle> { curve.Clone() };
+        }
+
+        /***************************************************/
+
+        public static List<Line> SubParts(this Line curve)
+        {
+            return new List<Line> { curve.Clone() };
+        }
+
+        /***************************************************/
+
+        public static NurbCurve SubParts(this NurbCurve curve)
+        {
+            throw new NotImplementedException();
+        }
+
         /***************************************************/
 
         public static List<Line> SubParts(this Polyline curve)
@@ -18,7 +47,7 @@ namespace BH.Engine.Geometry
 
             for (int i = 1; i < pts.Count; i++)
                 result.Add(new Line { Start = pts[i - 1], End = pts[i] });
-            
+
             return result;
         }
 
