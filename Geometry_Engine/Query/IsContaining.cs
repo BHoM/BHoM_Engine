@@ -37,79 +37,6 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Curve                    ****/
         /***************************************************/
 
-        public static bool IsContaining(this ICurve curve, ICurve other)
-        {
-            //if (curve.IsClosed())
-            //{
-            //    if (!curve.Bounds().IsContaining(other.Bounds()))
-            //        return false;
-
-            //    Plane p = curve.Plane();
-            //    if (curve.IsInPlane(p) && other.IsInPlane(p))
-            //    {
-            //        List<Point> intersects = curve.Intersections(other);
-
-            //        if (intersects.Count > 0) return false;
-
-            //        Point start = other.StartPoint();
-            //        return curve.Intersection(new Plane(start, start - p.Origin)) % 2 == 0;
-            //    }
-            //    else
-            //    {
-            //        return false;
-            //    }
-            //}
-            //else
-            //{
-            //    return false;
-            //}
-            //return true;
-
-            throw new NotImplementedException();
-        }
-
-        /***************************************************/
-
-        public static bool IsContaining(this ICurve curve, List<Point> points)
-        {
-            //Plane p = null;
-            //if (!curve.IsNurbForm) curve.CreateNurbForm();
-            //if (curve.IsClosed() && curve.TryPlane(out p))
-            //{
-            //    for (int i = 0; i < points.Count; i++)
-            //    {
-            //        if (p.InPlane(points[i], 0.001))
-            //        {
-            //            Vector direction = points[i] - p.Origin;
-            //            Vector up = p.Normal;
-            //            Plane cuttingPlane = new Plane(points[i], points[i] + direction, points[i] + up);
-            //            List<Point> intersects = Intersect.PlaneCurve(cuttingPlane, curve, 0.001);
-            //            intersects.Add(points[i]);
-            //            intersects = PointUtils.RemoveDuplicates(intersects, 3);
-
-
-                            // Bug: this does not work if the XYZ origin, plane origin and point are collinear! Use SortCollinear instead.
-            //            intersects.Sort(delegate (Point p1, Point p2)
-            //            {
-            //                return ArrayUtils.DotProduct(p1, direction).CompareTo(ArrayUtils.DotProduct(p2, direction));
-            //            });
-
-            //            for (int j = 0; j < intersects.Count; j++)
-            //            {
-            //                if (j % 2 == 0 && intersects[j] == points[i]) return false;
-            //            }
-            //        }
-            //        else return false;
-            //    }
-            //    return true;
-            //}
-            //return false;
-
-            throw new NotImplementedException();
-        }
-
-        /***************************************************/
-
         public static bool IsContaining(this Polyline curve, List<Point> points, bool acceptOnEdge = true, double tolerance = Tolerance.Distance)
         {
             // Todo:
@@ -142,6 +69,183 @@ namespace BH.Engine.Geometry
                 return true;
             }
             return false;
+        }
+
+        /***************************************************/
+
+        public static bool IsContaining(this PolyCurve curve, List<Point> points, bool acceptOnEdge = true, double tolerance = Tolerance.Distance)
+        {
+            // Todo:
+            // - to be replaced with a general method for a nurbs curve?
+            // - this is very problematic for edge cases (cutting line going through a sharp corner, to be superseded?
+
+            Plane p = curve.FitPlane();
+            if (curve.IsClosed())
+            {
+                foreach (Point pt in points)
+                {
+                    if (pt.IsInPlane(p))
+                    {
+                        List<Point> intersects = curve.LineIntersections(new Line { Start = pt, End = p.Origin }, true, tolerance); // what if the points are in exactly same spot?
+                        if ((pt.ClosestPoint(intersects).SquareDistance(pt) <= Tolerance.SqrtDist))
+                        {
+                            if (acceptOnEdge) continue;
+                            else return false;
+                        }
+                        intersects.Add(pt);
+                        intersects = intersects.SortCollinear();
+                        intersects = intersects.CullDuplicates();
+                        for (int j = 0; j < intersects.Count; j++)
+                        {
+                            if (j % 2 == 0 && intersects[j] == pt) return false;
+                        }
+                    }
+                    else return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
+        /***************************************************/
+
+        public static bool IsContaining(this Circle curve1, ICurve curve2, bool acceptOnEdge = true, double tolerance = Tolerance.Distance)
+        {
+            if (curve2 is Line || curve2 is Polyline) return curve1.IsContaining(curve2.IControlPoints());
+
+            List<Point> iPts = curve1.ICurvePlanarIntersections(curve2);
+            if (!acceptOnEdge && iPts.Count > 0) return false;
+
+            List<double> cParams = new List<double> { 0, 1 };
+            foreach (Point iPt in iPts)
+            {
+                cParams.Add(curve2.IParameterAtPoint(iPt));
+            }
+            cParams.Sort();
+
+            for (int i = 0; i < cParams.Count - 1; i++)
+            {
+                iPts.Add(curve2.IPointAtParameter((cParams[i] + cParams[i + 1]) * 0.5));
+            }
+            return curve1.IsContaining(iPts, acceptOnEdge, tolerance);
+        }
+
+        /***************************************************/
+
+        public static bool IsContaining(this Circle curve, List<Point> points, bool acceptOnEdge = true, double tolerance = Tolerance.Distance)
+        {
+            double sqrRad = curve.Radius * curve.Radius;
+            foreach (Point pt in points)
+            {
+                if ((acceptOnEdge && pt.SquareDistance(curve.Centre) > sqrRad) || (!acceptOnEdge && pt.SquareDistance(curve.Centre) >= sqrRad)) return false;
+            }
+            return true;
+        }
+
+        /***************************************************/
+
+        public static bool IsContaining(this Arc curve, List<Point> points, bool acceptOnEdge = true, double tolerance = Tolerance.Distance)
+        {
+            if (!curve.IsClosed()) return false;
+            Circle circle = new Circle { Centre = curve.Centre(), Radius = curve.Radius(), Normal = curve.FitPlane().Normal };
+            return circle.IsContaining(points);
+        }
+
+        /***************************************************/
+
+        public static bool IsContaining(this Arc curve1, ICurve curve2, bool acceptOnEdge = true, double tolerance = Tolerance.Distance)
+        {
+            if (!curve1.IsClosed()) return false;
+            Circle circle = new Circle { Centre = curve1.Centre(), Radius = curve1.Radius(), Normal = curve1.FitPlane().Normal };
+            return circle.IsContaining(curve2);
+        }
+
+        /***************************************************/
+
+        public static bool IsContaining(this PolyCurve curve1, ICurve curve2, bool acceptOnEdge = true, double tolerance = Tolerance.Distance)
+        {
+            if (!curve1.IsClosed()) return false;
+
+            List<Point> iPts = curve1.ICurvePlanarIntersections(curve2);
+            if (!acceptOnEdge && iPts.Count > 0) return false;
+
+            List<double> cParams = new List<double> { 0, 1 };
+            foreach (Point iPt in iPts)
+            {
+                cParams.Add(curve2.IParameterAtPoint(iPt));
+            }
+            cParams.Sort();
+
+            for (int i = 0; i < cParams.Count - 1; i++)
+            {
+                iPts.Add(curve2.IPointAtParameter((cParams[i] + cParams[i + 1]) * 0.5));
+            }
+            return curve1.IsContaining(iPts, acceptOnEdge, tolerance);
+        }
+
+        /***************************************************/
+
+        public static bool IsContaining(this Polyline curve1, ICurve curve2, bool acceptOnEdge = true, double tolerance = Tolerance.Distance)
+        {
+            if (!curve1.IsClosed()) return false;
+
+            List<Point> iPts = curve1.ICurvePlanarIntersections(curve2);
+            if (!acceptOnEdge && iPts.Count > 0) return false;
+
+            List<double> cParams = new List<double> { 0, 1 };
+            foreach (Point iPt in iPts)
+            {
+                cParams.Add(curve2.IParameterAtPoint(iPt));
+            }
+            cParams.Sort();
+
+            for (int i = 0; i < cParams.Count - 1; i++)
+            {
+                iPts.Add(curve2.IPointAtParameter((cParams[i] + cParams[i + 1]) * 0.5));
+            }
+            return curve1.IsContaining(iPts, acceptOnEdge, tolerance);
+        }
+
+        /***************************************************/
+
+        public static bool IsContaining(this Line curve1, ICurve curve2, bool acceptOnEdge = true, double tolerance = Tolerance.Distance)
+        {
+            return false;
+        }
+
+        /***************************************************/
+
+        public static bool IsContaining(this Line curve1, List<Point> points, bool acceptOnEdge = true, double tolerance = Tolerance.Distance)
+        {
+            return false;
+        }
+
+        /***************************************************/
+
+        public static bool IsContaining(this NurbCurve curve1, ICurve curve2, bool acceptOnEdge = true, double tolerance = Tolerance.Distance)
+        {
+            throw new NotImplementedException();
+        }
+
+        /***************************************************/
+
+        public static bool IsContaining(this NurbCurve curve1, List<Point> points, bool acceptOnEdge = true, double tolerance = Tolerance.Distance)
+        {
+            throw new NotImplementedException();
+        }
+
+        /***************************************************/
+
+        public static bool IIsContaining(this ICurve curve1, ICurve curve2, bool acceptOnEdge = true, double tolerance = Tolerance.Distance)
+        {
+            return IsContaining(curve1 as dynamic, curve2 as dynamic, acceptOnEdge, tolerance);
+        }
+
+        /***************************************************/
+
+        public static bool IIsContaining(this ICurve curve, List<Point> points, bool acceptOnEdge = true, double tolerance = Tolerance.Distance)
+        {
+            return IsContaining(curve as dynamic, points, acceptOnEdge, tolerance);
         }
 
         /***************************************************/
