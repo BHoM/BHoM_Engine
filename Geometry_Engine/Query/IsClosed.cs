@@ -26,7 +26,7 @@ namespace BH.Engine.Geometry
 
         public static bool IsClosed(this Line line)
         {
-            return line.Start.SquareDistance(line.End) < Tolerance.SqrtDist;
+            return false;
         }
 
         /***************************************************/
