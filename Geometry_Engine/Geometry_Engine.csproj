@@ -53,6 +53,7 @@
     <Compile Include="Compute\FitLine.cs" />
     <Compile Include="Compute\Integrate.cs" />
     <Compile Include="Compute\PointClusters.cs" />
+    <Compile Include="Compute\RecomputeEdges.cs" />
     <Compile Include="Compute\RowEchelonForm.cs" />
     <Compile Include="Compute\SortAlongCurve.cs" />
     <Compile Include="Compute\SortCollinear.cs" />
@@ -73,6 +74,7 @@
     <Compile Include="Create\Line.cs" />
     <Compile Include="Create\Ellipse.cs" />
     <Compile Include="Create\IntegrationSlice.cs" />
+    <Compile Include="Modify\CollapseToPolyline.cs" />
     <Compile Include="Modify\Simplify.cs" />
     <Compile Include="Modify\Extend.cs" />
     <Compile Include="Modify\Join.cs" />
@@ -98,6 +100,7 @@
     <Compile Include="Query\ClosestDistance.cs" />
     <Compile Include="Query\ClosestPoint.cs" />
     <Compile Include="Query\ControlPoints.cs" />
+    <Compile Include="Query\CurvePlanarIntersections.cs" />
     <Compile Include="Query\IsClockwise.cs" />
     <Compile Include="Query\IsCollinear.cs" />
     <Compile Include="Query\IsCoplanar.cs" />
@@ -122,6 +125,7 @@
     <Compile Include="Query\Length.cs" />
     <Compile Include="Query\Normal.cs" />
     <Compile Include="Compute\FitPlane.cs" />
+    <Compile Include="Query\ParameterAtPoint.cs" />
     <Compile Include="Query\PlaneIntersection.cs" />
     <Compile Include="Query\PointAtLength.cs" />
     <Compile Include="Query\PointAtParameter.cs" />
