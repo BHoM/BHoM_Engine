@@ -1,4 +1,5 @@
 ﻿using BH.oM.Geometry;
+using System;
 
 namespace BH.Engine.Geometry
 {
@@ -20,13 +21,17 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static Arc ArcByCentre(Point centre, Point start, Point end)
+        public static Arc ArcByCentre(Point centre, Point start, Point end, double tolerance = Tolerance.Distance)
         {
+            //Check that start and end points are the same distance from the centre point
+            if (Math.Abs(start.SquareDistance(centre) - end.SquareDistance(centre)) > tolerance * tolerance)
+                return null;
+
             Vector v1 = start - centre;
             Vector v2 = end - centre;
             Vector normal = v1.CrossProduct(v2).Normalise();
 
-            if (double.IsNaN(normal.X) || normal.Length() < Tolerance.Distance)
+            if (double.IsNaN(normal.X) || normal.Length() < tolerance)
                 normal = oM.Geometry.Vector.ZAxis;
 
             double angle = v1.SignedAngle(v2, normal);
