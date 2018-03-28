@@ -81,6 +81,9 @@ namespace BH.Engine.Geometry
             return -1;
         }
 
+
+        /***************************************************/
+        /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
         public static double IParameterAtPoint(this ICurve curve, Point point, double tolerance = Tolerance.Distance)

@@ -53,7 +53,6 @@
     <Compile Include="Compute\FitLine.cs" />
     <Compile Include="Compute\Integrate.cs" />
     <Compile Include="Compute\PointClusters.cs" />
-    <Compile Include="Compute\RecomputeEdges.cs" />
     <Compile Include="Compute\RowEchelonForm.cs" />
     <Compile Include="Compute\SortAlongCurve.cs" />
     <Compile Include="Compute\SortCollinear.cs" />
