@@ -46,7 +46,7 @@ namespace BH.Engine.Geometry
 
         public static Point PointAtLength(this PolyCurve curve, double length)
         {
-            double parameter = length * curve.Length();
+            double parameter = length / curve.Length();
             return curve.PointAtParameter(parameter);
         }
 
@@ -54,7 +54,7 @@ namespace BH.Engine.Geometry
 
         public static Point PointAtLength(this Polyline curve, double length)
         {
-            double parameter = length * curve.Length();
+            double parameter = length / curve.Length();
             return curve.PointAtParameter(parameter);
         }
 
