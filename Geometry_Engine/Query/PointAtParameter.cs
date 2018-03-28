@@ -113,7 +113,7 @@ namespace BH.Engine.Geometry
 
 
         /***************************************************/
-        /**** Public Methods                            ****/
+        /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
         public static Point IPointAtParameter(this ICurve curve, double t)

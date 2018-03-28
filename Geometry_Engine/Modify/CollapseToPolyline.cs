@@ -18,6 +18,56 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        public static Polyline CollapseToPolyline(this Circle curve, double angleTolerance, int maxSegmentCount = 100)
+        {
+            return new Polyline { ControlPoints = curve.CollapseToPolylineVertices(angleTolerance, maxSegmentCount) };
+        }
+
+        /***************************************************/
+
+        public static Polyline CollapseToPolyline(this Line curve, double angleTolerance, int maxSegmentCount = 100)
+        {
+            return new Polyline { ControlPoints = curve.CollapseToPolylineVertices(angleTolerance, maxSegmentCount) };
+        }
+
+        /***************************************************/
+
+        public static Polyline CollapseToPolyline(this Polyline curve, double angleTolerance, int maxSegmentCount = 100)
+        {
+            return curve.Clone();
+        }
+
+        /***************************************************/
+
+        public static Polyline CollapseToPolyline(this PolyCurve curve, double angleTolerance, int maxSegmentCount = 100)
+        {
+            List<Point> controlPoints = new List<Point> { curve.StartPoint() };
+            foreach (ICurve c in curve.SubParts()) controlPoints.AddRange(c.ICollapseToPolylineVertices(angleTolerance, maxSegmentCount).Skip(1));
+            return new Polyline { ControlPoints = controlPoints };
+        }
+
+        /***************************************************/
+
+        public static Polyline CollapseToPolyline(this NurbCurve curve, double angleTolerance, int maxSegmentCount = 100)
+        {
+            throw new NotImplementedException();
+        }
+
+
+        /***************************************************/
+        /**** Public Methods - Interfaces               ****/
+        /***************************************************/
+
+        public static Polyline ICollapseToPolyline(this ICurve curve, double angleTolerance, int maxSegmentCount = 100)
+        {
+            return CollapseToPolyline(curve as dynamic, angleTolerance, maxSegmentCount);
+        }
+
+
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+
         private static List<Point> CollapseToPolylineVertices(this Arc curve, double angleTolerance, int maxSegmentCount = 100)
         {
             int segmentCount = curve.CollapseToPolylineCount(angleTolerance, maxSegmentCount);
@@ -39,13 +89,6 @@ namespace BH.Engine.Geometry
             double angle = curve.Angle();
             double factor = Math.Min(Math.PI * 0.25, Math.Max(angle * 0.005, angleTolerance));
             return System.Convert.ToInt32(Math.Ceiling(angle * 0.5 / factor));
-        }
-
-        /***************************************************/
-
-        public static Polyline CollapseToPolyline(this Circle curve, double angleTolerance, int maxSegmentCount = 100)
-        {
-            return new Polyline { ControlPoints = curve.CollapseToPolylineVertices(angleTolerance, maxSegmentCount) };
         }
 
         /***************************************************/
@@ -74,53 +117,16 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static Polyline CollapseToPolyline(this Line curve, double angleTolerance, int maxSegmentCount = 100)
-        {
-            return new Polyline { ControlPoints = curve.CollapseToPolylineVertices(angleTolerance, maxSegmentCount) };
-        }
-
-        /***************************************************/
-
-        public static List<Point> CollapseToPolylineVertices(this Line curve, double angleTolerance, int maxSegmentCount = 100)
+        private static List<Point> CollapseToPolylineVertices(this Line curve, double angleTolerance, int maxSegmentCount = 100)
         {
             return new List<Point> { curve.Start, curve.End };
         }
 
         /***************************************************/
 
-        public static Polyline CollapseToPolyline(this Polyline curve, double angleTolerance, int maxSegmentCount = 100)
-        {
-            return curve.Clone();
-        }
-
-        /***************************************************/
-
-        public static List<Point> CollapseToPolylineVertices(this Polyline curve, double angleTolerance, int maxSegmentCount = 100)
+        private static List<Point> CollapseToPolylineVertices(this Polyline curve, double angleTolerance, int maxSegmentCount = 100)
         {
             return curve.ControlPoints.Select(p => p.Clone()).ToList();
-        }
-
-        /***************************************************/
-
-        public static Polyline CollapseToPolyline(this PolyCurve curve, double angleTolerance, int maxSegmentCount = 100)
-        {
-            List<Point> controlPoints = new List<Point> { curve.StartPoint() };
-            foreach (ICurve c in curve.SubParts()) controlPoints.AddRange(c.ICollapseToPolylineVertices(angleTolerance, maxSegmentCount).Skip(1));
-            return new Polyline { ControlPoints = controlPoints };
-        }
-
-        /***************************************************/
-
-        public static Polyline CollapseToPolyline(this NurbCurve curve, double angleTolerance, int maxSegmentCount = 100)
-        {
-            throw new NotImplementedException();
-        }
-
-        /***************************************************/
-
-        public static Polyline ICollapseToPolyline(this ICurve curve, double angleTolerance, int maxSegmentCount = 100)
-        {
-            return CollapseToPolyline(curve as dynamic, angleTolerance, maxSegmentCount);
         }
 
         /***************************************************/
