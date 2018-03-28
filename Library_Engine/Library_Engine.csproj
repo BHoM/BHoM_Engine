@@ -81,12 +81,19 @@
     <None Include="DataSets\Materials\MaterialsEurope\Rebar.json" />
     <None Include="DataSets\Materials\MaterialsEurope\Steel.json" />
     <None Include="DataSets\Materials\MaterialsEurope\Timber.json" />
-    <None Include="DataSets\SectionDimensions\UK_SteelSectionDimensions\Angle.json" />
-    <None Include="DataSets\SectionDimensions\UK_SteelSectionDimensions\Box.json" />
-    <None Include="DataSets\SectionDimensions\UK_SteelSectionDimensions\Channel.json" />
-    <None Include="DataSets\SectionDimensions\UK_SteelSectionDimensions\ISection.json" />
-    <None Include="DataSets\SectionDimensions\UK_SteelSectionDimensions\Tee.json" />
-    <None Include="DataSets\SectionDimensions\UK_SteelSectionDimensions\Tube.json" />
+    <None Include="DataSets\SectionProfiles\UK_SteelSectionProfiles\C.json" />
+    <None Include="DataSets\SectionProfiles\UK_SteelSectionProfiles\CHS.json" />
+    <None Include="DataSets\SectionProfiles\UK_SteelSectionProfiles\CRSJ.json" />
+    <None Include="DataSets\SectionProfiles\UK_SteelSectionProfiles\L.json" />
+    <None Include="DataSets\SectionProfiles\UK_SteelSectionProfiles\PFC.json" />
+    <None Include="DataSets\SectionProfiles\UK_SteelSectionProfiles\RHS.json" />
+    <None Include="DataSets\SectionProfiles\UK_SteelSectionProfiles\RSJ.json" />
+    <None Include="DataSets\SectionProfiles\UK_SteelSectionProfiles\SHS.json" />
+    <None Include="DataSets\SectionProfiles\UK_SteelSectionProfiles\TUB.json" />
+    <None Include="DataSets\SectionProfiles\UK_SteelSectionProfiles\TUC.json" />
+    <None Include="DataSets\SectionProfiles\UK_SteelSectionProfiles\UB.json" />
+    <None Include="DataSets\SectionProfiles\UK_SteelSectionProfiles\UBP.json" />
+    <None Include="DataSets\SectionProfiles\UK_SteelSectionProfiles\UC.json" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

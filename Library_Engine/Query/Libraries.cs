@@ -78,7 +78,15 @@ namespace BH.Engine.Library
                 {
                     if (!string.IsNullOrWhiteSpace(entry))
                     {
-                        IBHoMObject obj = (IBHoMObject)BH.Engine.Serialiser.Convert.FromJson(entry);
+                        IBHoMObject obj;
+                        try
+                        {
+                            obj = (IBHoMObject)BH.Engine.Serialiser.Convert.FromJson(entry);
+                        }
+                        catch
+                        {
+                            obj = null;
+                        }
                         if (obj != null)
                             objects.Add(obj);
                     }
