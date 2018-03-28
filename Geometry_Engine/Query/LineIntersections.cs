@@ -168,14 +168,12 @@ namespace BH.Engine.Geometry
                 }
             }
 
-            List<Point> output = new List<Point>();
             if (l.Infinite) return iPts;
-            else
+
+            List<Point> output = new List<Point>();
+            foreach (Point pt in iPts)
             {
-                foreach (Point pt in iPts)
-                {
-                    if (pt.Distance(l) <= tolerance) output.Add(pt);
-                }
+                if (pt.Distance(l) <= tolerance) output.Add(pt);
             }
             return output;
         }

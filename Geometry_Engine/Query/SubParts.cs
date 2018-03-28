@@ -157,13 +157,6 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        private static IEnumerable<ICurve> SubParts(this ICurve geometry)
-        {
-            return new List<ICurve> { geometry };
-        }
-
-        /***************************************************/
-
         private static IEnumerable<ISurface> SubParts(this ISurface geometry)
         {
             return new List<ISurface> { geometry };
