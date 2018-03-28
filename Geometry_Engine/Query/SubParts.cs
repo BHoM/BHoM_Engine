@@ -11,34 +11,6 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Curves                   ****/
         /***************************************************/
 
-        public static List<Arc> SubParts(this Arc curve)
-        {
-            return new List<Arc> { curve.Clone() };
-        }
-
-        /***************************************************/
-
-        public static List<Circle> SubParts(this Circle curve)
-        {
-            return new List<Circle> { curve.Clone() };
-        }
-
-        /***************************************************/
-
-        public static List<Line> SubParts(this Line curve)
-        {
-            return new List<Line> { curve.Clone() };
-        }
-
-        /***************************************************/
-
-        public static NurbCurve SubParts(this NurbCurve curve)
-        {
-            throw new NotImplementedException();
-        }
-
-        /***************************************************/
-
         public static List<Line> SubParts(this Polyline curve)
         {
             List<Line> result = new List<Line>();
@@ -153,6 +125,13 @@ namespace BH.Engine.Geometry
         private static IEnumerable<IGeometry> SubParts(this IGeometry geometry)
         {
             return new List<IGeometry> { geometry };
+        }
+
+        /***************************************************/
+
+        private static IEnumerable<ICurve> SubParts(this ICurve geometry)
+        {
+            return new List<ICurve> { geometry };
         }
 
         /***************************************************/
