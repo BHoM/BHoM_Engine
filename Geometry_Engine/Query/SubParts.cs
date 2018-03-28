@@ -1,7 +1,6 @@
 ﻿using BH.oM.Geometry;
 using System.Collections.Generic;
 using System.Linq;
-using System;
 
 namespace BH.Engine.Geometry
 {
@@ -19,7 +18,6 @@ namespace BH.Engine.Geometry
 
             for (int i = 1; i < pts.Count; i++)
                 result.Add(new Line { Start = pts[i - 1], End = pts[i] });
-
             return result;
         }
 
