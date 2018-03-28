@@ -17,9 +17,8 @@ namespace BH.Engine.Geometry
             Point centre = curve.Centre();
             Vector normal = curve.FitPlane().Normal;
             Vector v1 = curve.Start - centre;
-            Vector v2 = curve.End - centre;
-            Vector v = point - centre;
-            return v1.SignedAngle(v, normal) / v1.SignedAngle(v2, normal);
+            Vector v2 = point - centre;
+            return ((v1.SignedAngle(v2, normal) + 2 * Math.PI) % (2 * Math.PI)) / curve.Angle();
         }
 
         /***************************************************/
@@ -29,7 +28,7 @@ namespace BH.Engine.Geometry
             if (curve.ClosestPoint(point).SquareDistance(point) > tolerance * tolerance) return -1;
             Vector v1 = curve.StartPoint() - curve.Centre;
             Vector v2 = point - curve.Centre;
-            return v1.SignedAngle(v2, curve.Normal) / (2 * Math.PI);
+            return ((v1.SignedAngle(v2, curve.Normal) + 2 * Math.PI) % (2 * Math.PI)) / (2 * Math.PI);
         }
 
         /***************************************************/
