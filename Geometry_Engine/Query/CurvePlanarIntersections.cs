@@ -137,6 +137,9 @@ namespace BH.Engine.Geometry
             return curve1.LineIntersections(curve2, false, tolerance);
         }
 
+
+        /***************************************************/
+        /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
         public static List<Point> ICurvePlanarIntersections(this ICurve curve1, ICurve curve2, double tolerance = Tolerance.Distance)
