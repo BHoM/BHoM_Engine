@@ -58,11 +58,10 @@ namespace BH.Engine.Structure
             //section.CustomData["VerticalSlices"] = new ReadOnlyCollection<IntegrationSlice>((List<IntegrationSlice>)constants["VerticalSlices"]);
             //section.CustomData["HorizontalSlices"] = new ReadOnlyCollection<IntegrationSlice>((List<IntegrationSlice>)constants["HorizontalSlices"]);
 
-            if (material != null)
-                section.Name = name;
+            section.Material = material == null ? Query.Default(MaterialType.Concrete) : material;
 
-            if (material != null)
-                section.Material = material;
+            if (name != null)
+                section.Name = name;
 
             if (reinforcement != null)
                 section.Reinforcement = reinforcement;
