@@ -22,7 +22,7 @@ namespace BH.Engine.Geometry
             Circle circle1 = new Circle { Centre = c1, Normal = p1.Normal, Radius = r1 };
             Circle circle2 = new Circle { Centre = c2, Normal = p2.Normal, Radius = r2 };
 
-            List<Point> iPts = circle1.CurvePlanarIntersections(circle2);
+            List<Point> iPts = circle1.CurvePlanarIntersections(circle2, tolerance);
 
             Point midPoint1 = curve1.PointAtParameter(0.5);
             Point midPoint2 = curve2.PointAtParameter(0.5);
@@ -45,7 +45,7 @@ namespace BH.Engine.Geometry
             Plane p1 = curve1.FitPlane();
             Circle circle1 = new Circle { Centre = c1, Normal = p1.Normal, Radius = r1 };
 
-            List<Point> iPts = circle1.CurvePlanarIntersections(curve2);
+            List<Point> iPts = circle1.CurvePlanarIntersections(curve2, tolerance);
 
             Point midPoint1 = curve1.PointAtParameter(0.5);
             double sqrd1 = midPoint1.SquareDistance(curve1.Start);
