@@ -81,6 +81,7 @@
     <Compile Include="Query\CaseType.cs" />
     <Compile Include="Query\Centreline.cs" />
     <Compile Include="Query\Centroid.cs" />
+    <Compile Include="Query\IsVertical.cs" />
     <Compile Include="Query\LoadType.cs" />
     <Compile Include="Query\Edge.cs" />
     <Compile Include="Query\Geometry.cs" />
