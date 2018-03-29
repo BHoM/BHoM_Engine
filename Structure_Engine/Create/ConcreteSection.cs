@@ -42,15 +42,15 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static ConcreteSection ConcreteSectionFromProfile(IProfile dimensions, Material material = null, string name = "", List<Reinforcement> reinforcement = null)
+        public static ConcreteSection ConcreteSectionFromProfile(IProfile profile, Material material = null, string name = "", List<Reinforcement> reinforcement = null)
         {
-            List<ICurve> edges = dimensions.Edges.ToList();
+            List<ICurve> edges = profile.Edges.ToList();
             Dictionary<string, object> constants = Geometry.Compute.Integrate(edges);
 
-            constants["J"] = dimensions.ITorsionalConstant();
-            constants["Iw"] = dimensions.IWarpingConstant();
+            constants["J"] = profile.ITorsionalConstant();
+            constants["Iw"] = profile.IWarpingConstant();
 
-            ConcreteSection section = new ConcreteSection(dimensions,
+            ConcreteSection section = new ConcreteSection(profile,
                 (double)constants["Area"], (double)constants["Rgy"], (double)constants["Rgz"], (double)constants["J"], (double)constants["Iy"], (double)constants["Iz"], (double)constants["Iw"],
                 (double)constants["Wely"], (double)constants["Welz"], (double)constants["Wply"], (double)constants["Wplz"], (double)constants["CentreZ"], (double)constants["CentreY"], (double)constants["Vz"],
                 (double)constants["Vpz"], (double)constants["Vy"], (double)constants["Vpy"], (double)constants["Asy"], (double)constants["Asz"]);
