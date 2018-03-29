@@ -43,6 +43,14 @@ namespace BH.Engine.Environment
             };
         }
 
+        public static BuildingElementPanel BuildingElementPanel(Polyline polyline)
+        {
+            return new BuildingElementPanel
+            {
+                PolyCurve = Geometry.Create.PolyCurve(new Polyline[] { polyline })
+            };
+        }
+
         /***************************************************/
     }
 }

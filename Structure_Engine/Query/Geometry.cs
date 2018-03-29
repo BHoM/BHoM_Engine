@@ -12,27 +12,27 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static List<IGeometry> Geometry(this ConcreteSection section)
+        public static CompositeGeometry Geometry(this ConcreteSection section)
         {
-            if (section.Edges.Count == 0)
+            if (section.SectionProfile.Edges.Count == 0)
                 return null;
 
-            CompositeGeometry geom = Engine.Geometry.Create.CompositeGeometry(section.Edges);
+            CompositeGeometry geom = Engine.Geometry.Create.CompositeGeometry(section.SectionProfile.Edges);
             geom.Elements.AddRange(section.Layout().Elements);
 
-            return geom.Elements;
+            return geom;
         }
 
         /***************************************************/
 
-        public static IGeometry Geometry(this Bar bar)
+        public static Line Geometry(this Bar bar)
         {
-            return new Line { Start = bar.StartNode.Position, End = bar.EndNode.Position };
+            return bar.Centreline();
         }
 
         /***************************************************/
 
-        public static IGeometry Geometry(this Node node)
+        public static Point Geometry(this Node node)
         {
             return node.Position;
         }
@@ -46,21 +46,14 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static IGeometry Geometry(this Storey storey)
+        public static IGeometry Geometry(this SteelSection section)
         {
-            return new Plane { Origin = new Point { X = 0, Y = 0, Z = storey.Elevation }, Normal = new Vector { X = 0, Y = 0, Z = 1 } };
+            return new CompositeGeometry { Elements = section.SectionProfile.Edges.ToList<IGeometry>() };
         }
 
         /***************************************************/
 
-        public static IGeometry Geometry(this IGeometricalSection section)
-        {
-            return new CompositeGeometry { Elements = section.Edges.ToList<IGeometry>() };
-        }
-
-        /***************************************************/
-
-        public static IGeometry Geometry(this MeshFace meshFace)
+        public static Mesh Geometry(this MeshFace meshFace)
         {
 
             return new Mesh()
@@ -82,6 +75,13 @@ namespace BH.Engine.Structure
                 lines.Add(new Line() { Start = link.MasterNode.Position, End = sn.Position });
             }
             return new CompositeGeometry() { Elements = lines };
+        }
+
+        /***************************************************/
+
+        public static ICurve Geometry(this FramingElement element)
+        {
+            return element.LocationCurve;
         }
 
         /***************************************************/

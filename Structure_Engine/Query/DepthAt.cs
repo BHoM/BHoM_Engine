@@ -9,7 +9,7 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static double DepthAt(this IGeometricalSection section, double x)
+        public static double DepthAt(this IProfile section, double x)
         {
             IntegrationSlice slice = Engine.Geometry.Query.SliceAt(section.Edges, x, 1, oM.Geometry.Plane.YZ);
             //Slice slice = SliceAt(x, 1, Plane.YZ());// new Plane(Point.Origin, Vector.XAxis()));
@@ -17,7 +17,7 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
-        public static double DepthAt(this IGeometricalSection section, double x, ref double[] range)
+        public static double DepthAt(this IProfile section, double x, ref double[] range)
         {
             IntegrationSlice slice = Engine.Geometry.Query.SliceAt(section.Edges, x, 1, oM.Geometry.Plane.YZ);
             //Slice slice = SliceAt(x, 1, Plane.YZ());

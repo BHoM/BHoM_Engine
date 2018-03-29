@@ -18,7 +18,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static LoadCombination LoadCombination(string name, int number, List<Loadcase> cases, List<double> factors)
+        public static LoadCombination LoadCombination(string name, int number, List<Loadcase> cases, List<double> factors, bool excludeZeroFactorCases = true)
         {
             if (cases.Count != factors.Count)
                 throw new ArgumentException("Loadcombinations require the same number of cases and factors");
@@ -27,7 +27,8 @@ namespace BH.Engine.Structure
 
             for (int i = 0; i < cases.Count; i++)
             {
-                factoredCases.Add(new Tuple<double, ICase>(factors[i], cases[i]));
+                if (!excludeZeroFactorCases || factors[i] > 0)
+                    factoredCases.Add(new Tuple<double, ICase>(factors[i], cases[i]));
             }
 
             return LoadCombination(name, number, factoredCases);

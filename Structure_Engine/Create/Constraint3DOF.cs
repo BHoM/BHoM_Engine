@@ -1,5 +1,4 @@
-﻿using BH.oM.Structural.Elements;
-using BH.oM.Geometry;
+﻿using BH.oM.Structural.Properties;
 
 namespace BH.Engine.Structure
 {
@@ -9,9 +8,9 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Beam Beam(ICurve locationCurve)
+        public static Constraint3DOF Constraint3DOF(string name = "")
         {
-            return new Beam { LocationCurve = locationCurve };
+            return new Constraint3DOF { Name = name };
         }
 
         /***************************************************/

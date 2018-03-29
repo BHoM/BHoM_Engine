@@ -57,7 +57,7 @@ namespace BH.Engine.Geometry
 
         public static double Length(this PolyCurve curve)
         {
-            return curve.Curves.Sum(x => Length(x as Line));
+            return curve.Curves.Sum(c => c.ILength());
         }
 
         /***************************************************/

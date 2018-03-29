@@ -37,19 +37,19 @@ namespace BH.Engine.Structure
 
         /***************************************************/
         
-        public static double WarpingConstant(this ISectionDimensions dimensions)
+        public static double WarpingConstant(this IProfile profile)
         {
             return 0; // Return 0 for not specifically implemented ones
         }
 
         /***************************************************/
 
-        public static double WarpingConstant(this StandardISectionDimensions dimensions)
+        public static double WarpingConstant(this ISectionProfile profile)
         {
-            double width = dimensions.Width;
-            double height = dimensions.Height;
-            double tf = dimensions.FlangeThickness;
-            double tw = dimensions.WebThickness;
+            double width = profile.Width;
+            double height = profile.Height;
+            double tf = profile.FlangeThickness;
+            double tw = profile.WebThickness;
 
 
             return tf * Math.Pow(height - tf, 2) * Math.Pow(width, 3) / 24;
@@ -58,14 +58,14 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static double WarpingConstant(this FabricatedISectionDimensions dimensions)
+        public static double WarpingConstant(this FabricatedISectionProfile profile)
         {
-            double b1 = dimensions.TopFlangeWidth;
-            double b2 = dimensions.BotFlangeWidth;
-            double height = dimensions.Height;
-            double tf1 = dimensions.TopFlangeThickness;
-            double tf2 = dimensions.BotFlangeThickness;
-            double tw = dimensions.WebThickness;
+            double b1 = profile.TopFlangeWidth;
+            double b2 = profile.BotFlangeWidth;
+            double height = profile.Height;
+            double tf1 = profile.TopFlangeThickness;
+            double tf2 = profile.BotFlangeThickness;
+            double tw = profile.WebThickness;
 
 
             if (tf1 == tf2 && b1 == b2)
@@ -80,12 +80,12 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static double WarpingConstant(this StandardChannelSectionDimensions dimensions)
+        public static double WarpingConstant(this ChannelProfile profile)
         {
-            double width = dimensions.FlangeWidth;
-            double height = dimensions.Height;
-            double tf = dimensions.FlangeThickness;
-            double tw = dimensions.WebThickness;
+            double width = profile.FlangeWidth;
+            double height = profile.Height;
+            double tf = profile.FlangeThickness;
+            double tw = profile.WebThickness;
 
 
             return tf * Math.Pow(height, 2) / 12 * (3 * width * tf + 2 * height * tw / (6 * width * tf + height * tw));
@@ -96,9 +96,9 @@ namespace BH.Engine.Structure
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
-        public static double IWarpingConstant(this ISectionDimensions dimensions)
+        public static double IWarpingConstant(this IProfile profile)
         {
-            return WarpingConstant(dimensions as dynamic);
+            return WarpingConstant(profile as dynamic);
         }
 
         /***************************************************/

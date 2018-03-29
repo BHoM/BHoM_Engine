@@ -21,7 +21,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static PerimeterReinforcement PerimeterReinforcement(double diameter, int count, ReoPattern pattern)
+        public static PerimeterReinforcement PerimeterReinforcement(double diameter, int count, ReinforcementPattern pattern)
         {
             return new PerimeterReinforcement
             {

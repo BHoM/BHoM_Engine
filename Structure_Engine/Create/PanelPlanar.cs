@@ -55,5 +55,25 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
+
+        public static List<PanelPlanar> PanelPlanar(List<ICurve> outlines)
+        {
+            List<PanelPlanar> result = new List<PanelPlanar>();
+            List<List<ICurve>> sortedOutlines = outlines.DistributeOutlines();
+            foreach (List<ICurve> panelOutlines in sortedOutlines)
+            {
+                List<Edge> externalEdges = panelOutlines[0].ISubParts().Select(o => new Edge { Curve = o }).ToList();
+                List<Opening> openings = new List<Opening>();
+                foreach (ICurve p in panelOutlines.Skip(1))
+                {
+                    List<Edge> openingEdges = p.ISubParts().Select(o => new Edge { Curve = o }).ToList();
+                    openings.Add(new Opening { Edges = openingEdges });
+                }
+                result.Add(new PanelPlanar { ExternalEdges = externalEdges, Openings = openings });
+            }
+            return result;
+        }
+
+        /***************************************************/
     }
 }

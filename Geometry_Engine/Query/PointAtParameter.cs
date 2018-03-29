@@ -80,25 +80,40 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static Point PointAtParameter(this PolyCurve curve, double t)
+        public static Point PointAtParameter(this PolyCurve curve, double parameter)
         {
-            if (t < 0) t = 0;
-            if (t > 1) t = 1;
-            throw new NotImplementedException(); // TODO Polycurve.PointAtParameter() Relies on NurbCurve PointAt method
+            if (parameter == 1) return curve.IEndPoint();
+
+            double cLength = parameter * curve.Length();
+            foreach (ICurve c in curve.SubParts())
+            {
+                double l = c.ILength();
+                if (l >= cLength) return c.IPointAtParameter(cLength / l);
+                cLength -= l;
+            }
+            return null;
         }
 
         /***************************************************/
 
-        public static Point PointAtParameter(this Polyline curve, double t)
+        public static Point PointAtParameter(this Polyline curve, double parameter)
         {
-            if (t < 0) t = 0;
-            if (t > 1) t = 1;
-            return PointAtLength(curve, t * curve.Length());
+            double cLength = parameter * curve.Length();
+            double sum = 0;
+            foreach (Line line in curve.SubParts())
+            {
+                sum += line.Length();
+                if (cLength <= sum)
+                {
+                    return line.PointAtParameter((cLength - sum) / line.Length());
+                }
+            }
+            return null;
         }
 
 
         /***************************************************/
-        /**** Public Methods                            ****/
+        /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
         public static Point IPointAtParameter(this ICurve curve, double t)

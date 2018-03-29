@@ -25,5 +25,14 @@ namespace BH.Engine.Environment
         }
 
         /***************************************************/
+
+        public static BuildingElementProperties BuildingElementProperties(string name)
+        {
+            return new BuildingElementProperties
+            {
+                Name = name,
+                BuildingElementType = BuildingElementType.Undefined
+            };
+        }
     }
 }

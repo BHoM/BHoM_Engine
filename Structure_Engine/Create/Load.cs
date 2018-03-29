@@ -14,6 +14,106 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
+
+        public static ILoad Load(LoadType type, Loadcase loadCase, List<double> magnitude, string groupName, LoadAxis axis, bool isProjected, string units = "kN")
+        {
+            units = units.ToUpper();
+            units = units.Replace(" ", "");
+
+            double sFac = 1;
+
+            switch (units)
+            {
+                case "N":
+                case "NEWTON":
+                case "NEWTONS":
+                    sFac = 1;
+                    break;
+                case "KN":
+                case "KILONEWTON":
+                case "KILONEWTONS":
+                    sFac = 1000;
+                    break;
+                case "C":
+                case "CELSIUS":
+                case "K":
+                case "KELVIN":
+                    sFac = 1;
+                    break;
+                default:
+                    throw new ArgumentException("Unrecognised unit type");
+            }
+
+            Vector force = null;
+            Vector moment = null;
+            double mag;
+
+            if (magnitude.Count < 1)
+                throw new ArgumentException("Need at least one maginute value");
+
+            mag = magnitude[0] * sFac;
+
+            if (magnitude.Count > 2)
+                force = new Vector() { X = magnitude[0], Y = magnitude[1], Z = magnitude[2] } * sFac;
+
+            if (magnitude.Count > 5)
+                force = new Vector() { X = magnitude[3], Y = magnitude[4], Z = magnitude[5] } * sFac;
+
+            switch (type)
+            {
+                case LoadType.Selfweight:
+                    {
+                        BHoMGroup<BHoMObject> group = new BHoMGroup<BHoMObject>() { Name = groupName };
+                        return GravityLoad(loadCase, force, group, groupName);
+                    }
+                case LoadType.PointForce:
+                    {
+                        BHoMGroup<Node> group = new BHoMGroup<Node>() { Name = groupName };
+                        return PointForce(loadCase, group, force, moment, axis, groupName);
+                    }
+                case LoadType.PointDisplacement:
+                    {
+                        BHoMGroup<Node> group = new BHoMGroup<Node>() { Name = groupName };
+                        return PointDisplacement(loadCase, group, force, moment, axis, groupName);
+                    }
+                case LoadType.PointVelocity:
+                    {
+                        BHoMGroup<Node> group = new BHoMGroup<Node>() { Name = groupName };
+                        return PointVelocity(loadCase, group, force, moment, axis, groupName);
+                    }
+                case LoadType.PointAcceleration:
+                    {
+                        BHoMGroup<Node> group = new BHoMGroup<Node>() { Name = groupName };
+                        return PointAcceleration(loadCase, group, force, moment, axis, groupName);
+                    }
+                case LoadType.BarUniformLoad:
+                    {
+                        BHoMGroup<Bar> group = new BHoMGroup<Bar>() { Name = groupName };
+                        return BarUniformlyDistributedLoad(loadCase, group, force, moment, axis, isProjected, groupName);
+                    }
+
+                case LoadType.BarTemperature:
+                    {
+                        BHoMGroup<Bar> group = new BHoMGroup<Bar>() { Name = groupName };
+                        return BarTemperatureLoad(loadCase, mag, group, axis, isProjected, groupName);
+                    }
+                case LoadType.AreaUniformLoad:
+                    {
+                        BHoMGroup<IAreaElement> group = new BHoMGroup<IAreaElement>() { Name = groupName };
+                        return AreaUniformalyDistributedLoad(loadCase, force, group, axis, isProjected, groupName);
+                    }
+                case LoadType.BarVaryingLoad:
+                case LoadType.BarPointLoad:
+                case LoadType.AreaTemperature:
+                case LoadType.Pressure:
+                case LoadType.Geometrical:
+                default:
+                    throw new NotImplementedException("Load type not implemented");
+            }
+        }
+
+        /***************************************************/
+
         public static AreaTemperatureLoad AreaTemperatureLoad(Loadcase loadcase, double t, BHoMGroup<IAreaElement> group, LoadAxis axis = LoadAxis.Global, bool projected = false, string name = "")
         {
             return new AreaTemperatureLoad {
@@ -178,41 +278,7 @@ namespace BH.Engine.Structure
             return BarVaryingDistributedLoad(loadcase, new BHoMGroup<Bar>() { Elements = objects.ToList() }, distFromA, forceA, momentA, distFromB, forceB, momentB, axis, projected, name);
         }
 
-        /***************************************************/
-
-        public static GeometricalAreaLoad GeometricalAreaLoad(ICurve contour, Vector force)
-        {
-            return new GeometricalAreaLoad { Contour = contour, Force = force };
-        }
-
-        /***************************************************/
-
-        public static GeometricalLineLoad GeometricalLineLoad(BH.oM.Geometry.Line line, Vector force, Vector moment = null)
-        {
-            return new GeometricalLineLoad
-            {
-                Location = line,
-                ForceA = force,
-                ForceB = force,
-                MomentA = moment == null ? new Vector { X = 0, Y = 0, Z = 0 } : moment,
-                MomentB = moment == null ? new Vector { X = 0, Y = 0, Z = 0 } : moment
-            };
-            
-        }
-
-        /***************************************************/
-        public static GeometricalLineLoad GeometricalLineLoad(BH.oM.Geometry.Line line, Vector forceA, Vector forceB, Vector momentA = null, Vector momentB = null)
-        {
-            return new GeometricalLineLoad
-            {
-                Location = line,
-                ForceA = forceA,
-                ForceB = forceB,
-                MomentA = momentA == null ? new Vector { X = 0, Y = 0, Z = 0 } : momentA,
-                MomentB = momentB == null ? new Vector { X = 0, Y = 0, Z = 0 } : momentB
-            };
-        }
-
+        
         /***************************************************/
 
         public static GravityLoad GravityLoad(Loadcase loadcase, Vector direction, BHoMGroup<BHoMObject> group, string name = "")

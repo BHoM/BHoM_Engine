@@ -46,7 +46,7 @@ namespace BH.Engine.Structure
         {
             BoundingBox bounds = new BoundingBox();
 
-            foreach (ICurve curve in property.Edges)
+            foreach (ICurve curve in property.SectionProfile.Edges)
             {
                 bounds += curve.IBounds();
             }
@@ -54,12 +54,12 @@ namespace BH.Engine.Structure
             double relativeDepth = reinforcement.IsVertical ? bounds.Max.X - reinforcement.Depth : bounds.Max.Y - reinforcement.Depth;
             double[] range = null;
             double tieDiameter = property.TieDiameter();
-            if (property.SectionDimensions.Shape == ShapeType.Rectangle && tieDiameter > 0)
+            if (property.SectionProfile.Shape == ShapeType.Rectangle && tieDiameter > 0)
             {
                 //TODO: Check this part
                 tieDiameter = tieDiameter + Math.Cos(Math.PI / 4) * (2 * tieDiameter * (Math.Sqrt(2) - 1) + reinforcement.Diameter / 2) - reinforcement.Diameter / 2;
             }
-            double width = reinforcement.IsVertical ? property.DepthAt(relativeDepth, ref range) : property.WidthAt(relativeDepth, ref range);
+            double width = reinforcement.IsVertical ? property.SectionProfile.DepthAt(relativeDepth, ref range) : property.SectionProfile.WidthAt(relativeDepth, ref range);
 
             double spacing = (width - 2 * property.MinimumCover - reinforcement.Diameter - 2 * tieDiameter) / (reinforcement.BarCount - 1.0);
             double start = range != null && range.Length > 0 ? range[0] : 0;
@@ -91,12 +91,12 @@ namespace BH.Engine.Structure
         /***************************************************/
         public static CompositeGeometry Layout(this PerimeterReinforcement reinforcement, ConcreteSection property, bool extrude = false)
         {
-            return Layout(reinforcement, property.SectionDimensions as dynamic, property);
+            return Layout(reinforcement, property.SectionProfile as dynamic, property);
         }
 
         /***************************************************/
 
-        public static CompositeGeometry Layout(this PerimeterReinforcement reinforcement, RectangleSectionDimensions dimensions, ConcreteSection property)
+        public static CompositeGeometry Layout(this PerimeterReinforcement reinforcement, RectangleProfile dimensions, ConcreteSection property)
         {
             double h = dimensions.Height;
             double w = dimensions.Width;
@@ -108,15 +108,15 @@ namespace BH.Engine.Structure
             double tieOffset = tieDiameter + Math.Cos(Math.PI / 4) * (2 * tieDiameter * (Math.Sqrt(2) - 1) + reinforcement.Diameter / 2) - reinforcement.Diameter / 2;
             switch (reinforcement.Pattern)
             {
-                case ReoPattern.Equispaced:
+                case ReinforcementPattern.Equispaced:
                     topCount = (int)(reinforcement.BarCount * w / (2 * w + 2 * h) + 1);
                     sideCount = (reinforcement.BarCount - 2 * topCount) / 2 + 2;
                     break;
-                case ReoPattern.Horizontal:
+                case ReinforcementPattern.Horizontal:
                     topCount = reinforcement.BarCount / 2;
                     sideCount = 2;
                     break;
-                case ReoPattern.Vertical:
+                case ReinforcementPattern.Vertical:
                     topCount = 2;
                     sideCount = reinforcement.BarCount / 2;
                     break;
@@ -143,7 +143,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static CompositeGeometry Layout(this PerimeterReinforcement reinforcement, CircleDimensions dimensions, ConcreteSection property)
+        public static CompositeGeometry Layout(this PerimeterReinforcement reinforcement, CircleProfile dimensions, ConcreteSection property)
         {
             double d = dimensions.Diameter;
             List<Point> location = new List<Point>();
@@ -153,7 +153,7 @@ namespace BH.Engine.Structure
             double radius = d / 2 - property.MinimumCover - reinforcement.Diameter / 2;
             switch (reinforcement.Pattern)
             {
-                case ReoPattern.Horizontal:
+                case ReinforcementPattern.Horizontal:
                     startAngle = angle / 2;
                     break;
             }
@@ -170,7 +170,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static CompositeGeometry Layout(this PerimeterReinforcement reinforcement, ISectionDimensions dimensions, ConcreteSection property)
+        public static CompositeGeometry Layout(this PerimeterReinforcement reinforcement, IProfile dimensions, ConcreteSection property)
         {
 
             //TODO: Implement for various cross section types
@@ -192,15 +192,15 @@ namespace BH.Engine.Structure
         //        double tieOffset = tieDiameter + Math.Cos(Math.PI / 4) * (2 * tieDiameter * (Math.Sqrt(2) - 1) + reinforcement.Diameter / 2) - reinforcement.Diameter / 2;
         //        switch (reinforcement.Pattern)
         //        {
-        //            case ReoPattern.Equispaced:
+        //            case ReinforcementPattern.Equispaced:
         //                topCount = (int)(reinforcement.BarCount * w / (2 * w + 2 * d) + 1);
         //                sideCount = (reinforcement.BarCount - 2 * topCount) / 2 + 2;
         //                break;
-        //            case ReoPattern.Horizontal:
+        //            case ReinforcementPattern.Horizontal:
         //                topCount = reinforcement.BarCount / 2;
         //                sideCount = 2;
         //                break;
-        //            case ReoPattern.Vertical:
+        //            case ReinforcementPattern.Vertical:
         //                topCount = 2;
         //                sideCount = reinforcement.BarCount / 2;
         //                break;
@@ -230,7 +230,7 @@ namespace BH.Engine.Structure
         //        double radius = d / 2 - property.MinimumCover - reinforcement.Diameter / 2;
         //        switch (reinforcement.Pattern)
         //        {
-        //            case ReoPattern.Horizontal:
+        //            case ReinforcementPattern.Horizontal:
         //                startAngle = angle / 2;
         //                break;
         //        }

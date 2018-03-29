@@ -10,27 +10,30 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static void SetGeometry(this Bar bar, Line line)
+        public static Bar SetGeometry(this Bar bar, Line line)
         {
-            bar.StartNode.Position = line.Start;
-            bar.EndNode.Position = line.End;
+            Bar clone = bar.GetShallowClone() as Bar;
+            clone.StartNode.Position = line.Start;
+            clone.EndNode.Position = line.End;
+            return clone;
         }
 
         /***************************************************/
 
-        public static void SetGeometry(this Node node, Point point)
+        public static Node SetGeometry(this Node node, Point point)
         {
-            node.Position = point;
+            Node clone = node.GetShallowClone() as Node;
+            clone.Position = point;
+            return clone;
         }
 
         /***************************************************/
 
-        public static void SetGeometry(this PanelFreeForm contour, IGeometry geometry)
+        public static PanelFreeForm SetGeometry(this PanelFreeForm contour, ISurface surface)
         {
-            if (typeof(ISurface).IsAssignableFrom(geometry.GetType()))
-            {
-                contour.Surface = geometry as ISurface;
-            }
+            PanelFreeForm clone = contour.GetShallowClone() as PanelFreeForm;
+            clone.Surface = surface as ISurface;
+            return clone;
         }
 
         /***************************************************/

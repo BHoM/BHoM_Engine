@@ -1,4 +1,5 @@
 ﻿using BH.oM.Structural.Properties;
+using BH.oM.Geometry;
 
 namespace BH.Engine.Structure
 {
@@ -8,11 +9,12 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static SurfaceConstraint SurfaceConstraint(string name = "")
+        public static ConstantFramingElementProperty ConstantFramingElementProperty(ISectionProperty sectionProperty, double orientationAngle, string name = "")
         {
-            return new SurfaceConstraint { Name = name };
+            return new ConstantFramingElementProperty { SectionProperty = sectionProperty, OrientationAngle = orientationAngle, Name = name };
         }
 
         /***************************************************/
     }
 }
+
