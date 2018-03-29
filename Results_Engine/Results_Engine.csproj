@@ -45,13 +45,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Objects\Envelopes\IEnvelope.cs" />
-    <Compile Include="Objects\Envelopes\MaxAbsoluteEnvelope.cs" />
-    <Compile Include="Objects\Envelopes\MaxEnvelope.cs" />
-    <Compile Include="Objects\Envelopes\MinEnvelope.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Query\AbsoluteMax.cs" />
-    <Compile Include="Query\Envelop.cs" />
     <Compile Include="Query\Group.cs" />
     <Compile Include="Query\Max.cs" />
     <Compile Include="Query\Min.cs" />
