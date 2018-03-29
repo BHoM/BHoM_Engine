@@ -40,10 +40,8 @@ namespace BH.Engine.Structure
 
         public static ChannelProfile ChannelProfile(double height, double width, double webthickness, double flangeThickness, double rootRadius, double toeRadius)
         {
-            throw new NotImplementedException();
-            //TODO: Section curves for chanel profile
-            //List<ICurve> curves = ChannelSectionCurves(height, width, webthickness, flangeThickness, rootRadius, toeRadius);
-            //return new ChannelProfile(height, width, webthickness, flangeThickness, rootRadius, toeRadius, curves);
+            List<ICurve> curves = ChannelSectionCurves(height, width, webthickness, flangeThickness, rootRadius, toeRadius);
+            return new ChannelProfile(height, width, webthickness, flangeThickness, rootRadius, toeRadius, curves);
         }
 
         /***************************************************/
