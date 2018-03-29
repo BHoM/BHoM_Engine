@@ -47,17 +47,17 @@ namespace BH.Engine.Geometry
             results["Iy"] = Query.AreaIntegration(horizontalSlices, 1, 2, 1, centreZ);
             results["Iz"] = Query.AreaIntegration(verticalSlices, 1, 2, 1, centreY);
             //resutlts["Sy"] = 2 * Engine.Geometry.Query.AreaIntegration(horizontalSlices, min.Y, centreZ, 1, 1, 1);
-            results["Sy"] = 2 * Math.Abs(Query.AreaIntegration(horizontalSlices, 1, 1, 1, min.Y, centreZ));
+            results["Wply"] = 2*Math.Abs(Query.AreaIntegration(horizontalSlices, 1, 1, 1, min.Y, centreZ, centreZ));// + Math.Abs(Query.AreaIntegration(horizontalSlices, 1, 1, 1, centreZ, max.Y, centreZ));
             //resutlts["Sz"] = 2 * Engine.Geometry.Query.AreaIntegration(verticalSlices, min.X, centreY, 1, 1, 1);
-            results["Sz"] = 2 * Math.Abs(Query.AreaIntegration(verticalSlices, 1, 1, 1, min.X, centreY));
+            results["Wplz"] = 2*Math.Abs(Query.AreaIntegration(verticalSlices, 1, 1, 1, min.X, centreY, centreY));// + Math.Abs(Query.AreaIntegration(verticalSlices, 1, 1, 1, centreY, max.X, centreY));
             results["Rgy"] = Math.Sqrt((double)results["Iy"] / area);
             results["Rgz"] = Math.Sqrt((double)results["Iz"] / area);
             results["Vy"] = max.X - centreY;
             results["Vpy"] = centreY - min.X;
             results["Vz"] = max.Y - centreZ;
             results["Vpz"] = centreZ - min.Y;
-            results["Zz"] = (double)results["Iz"] / (double)results["Vy"];
-            results["Zy"] = (double)results["Iy"] / (double)results["Vz"];
+            results["Welz"] = (double)results["Iz"] / (double)results["Vy"];
+            results["Wely"] = (double)results["Iy"] / (double)results["Vz"];
             results["Asy"] = Query.ShearArea(verticalSlices, (double)results["Iz"], centreY);
             results["Asz"] = Query.ShearArea(horizontalSlices, (double)results["Iy"], centreZ);
 
