@@ -147,5 +147,29 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
+
+        public static List<ICurve> ChannelSectionCurves(double height, double width, double webthickness, double flangeThickness, double rootRadius, double toeRadius)
+        {
+            List<ICurve> edges = new List<ICurve>();
+
+            Point p = new Point() { X = 0, Y = -height / 2 };
+            edges.Add(new Line() { Start = new Point() { X = 0, Y = 0 }, End = new Point() { X = 0, Y = height / 2 } });
+            edges.Add(new Line() { Start = new Point() { X = 0, Y = height / 2 }, End = new Point() { X = width, Y = height / 2 } });
+            edges.Add(new Line() { Start = new Point() { X = width, Y = height / 2 }, End = new Point() { X = width, Y = height / 2 - flangeThickness + toeRadius } });
+            if (toeRadius > 0) edges.Add(Geometry.Create.ArcByCentre(new Point() { X = width - toeRadius, Y = height / 2 - flangeThickness + toeRadius }, new Point() { X = width, Y = height / 2 - flangeThickness + toeRadius }, new Point() { X = width - toeRadius, Y = height / 2 - flangeThickness }));
+            edges.Add(new Line() { Start = new Point() { X = width - toeRadius, Y = height / 2 - flangeThickness }, End = new Point() { X = webthickness + rootRadius, Y = height / 2 - flangeThickness } });
+            if (rootRadius > 0) edges.Add(Geometry.Create.ArcByCentre(new Point() { X = webthickness + rootRadius, Y = height / 2 - flangeThickness - rootRadius }, new Point() { X = webthickness + rootRadius, Y = height / 2 - flangeThickness }, new Point() { X = webthickness, Y = height / 2 - flangeThickness - rootRadius }));
+            edges.Add(new Line() { Start = new Point() { X = webthickness, Y = height / 2 - flangeThickness - rootRadius }, End = new Point() { X = webthickness, Y = 0 } });
+
+            int count = edges.Count;
+            for (int i = 0; i < count; i++)
+            {
+                edges.Add(edges[i].IMirror(new Plane { Origin = Point.Origin, Normal = Vector.YAxis }));
+            }
+
+            return edges;
+        }
+
+        /***************************************************/
     }
 }
