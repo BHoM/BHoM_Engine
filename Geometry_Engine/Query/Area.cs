@@ -41,7 +41,27 @@ namespace BH.Engine.Geometry
 
         public static double Area(this PolyCurve curve)
         {
-            return curve.Curves.Sum(crv => crv.IArea());
+            if (!curve.IsClosed()) return 0;
+            if (curve.IsPolylinear()) return curve.ToPolyline().Area();
+
+            BoundingBox box = new BoundingBox();
+            List<ICurve> curves = curve.SubParts();
+
+            for (int i = 0; i < curves.Count; i++)
+            {
+                box += curves[i].IBounds();
+            }
+
+            Point min = box.Min;
+            Point max = box.Max;
+            double totalWidth = max.X - min.X;
+            double totalHeight = max.Y - min.Y;
+
+            List<IntegrationSlice> verticalSlices = Create.IntegrationSlices(curves, Vector.XAxis, totalWidth / 1000);
+            List<IntegrationSlice> horizontalSlices = Create.IntegrationSlices(curves, Vector.YAxis, totalHeight / 1000);
+
+            double centreZ = 0;
+            return Query.AreaIntegration(horizontalSlices, 1, min.Y, max.Y, ref centreZ);
         }
 
         /***************************************************/
