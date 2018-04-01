@@ -15,7 +15,7 @@ namespace BH.Engine.Geometry
             if (curve.Curves.Count == 0) return new Polyline();
 
             List<Point> controlPoints = new List<Point> { curve.Curves[0].IStartPoint() };
-            foreach (ICurve c in curve.Curves)
+            foreach (ICurve c in curve.SubParts())
             {
                 if (c is Line) controlPoints.Add((c as Line).End);
                 else return null;

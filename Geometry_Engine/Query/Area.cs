@@ -42,32 +42,43 @@ namespace BH.Engine.Geometry
         public static double Area(this PolyCurve curve)
         {
             if (!curve.IsClosed()) return 0;
-            if (curve.IsPolylinear()) return curve.ToPolyline().Area();
+            Plane p = curve.FitPlane();
+            if (p == null) return 0.0;              // points are collinear
 
-            BoundingBox box = new BoundingBox();
-            List<ICurve> curves = curve.SubParts();
-
-            for (int i = 0; i < curves.Count; i++)
+            bool isClockwise = curve.IsClockwise(p.Normal);
+            Point sPt = curve.StartPoint();
+            double area = 0;
+            foreach (ICurve c in curve.SubParts())
             {
-                box += curves[i].IBounds();
+                if (c is NurbCurve) throw new NotImplementedException();
+
+                Point ePt = c.IEndPoint();
+                Vector prod = CrossProduct(sPt - p.Origin, ePt - p.Origin);
+                if (isClockwise) area += prod * p.Normal * 0.5;
+                else area -= prod * p.Normal * 0.5;
+
+                if (c is Arc)
+                {
+                    Arc arc = c as Arc;
+                    double radius = arc.Radius();
+                    double angle = arc.Angle();
+                    double arcArea = (angle - Math.Sin(angle)) * radius * radius * 0.5;
+                    bool isRight = (arc.End - arc.Start).SignedAngle(arc.Middle - arc.Start, p.Normal) >= 0;
+                    if (isClockwise == isRight) area -= arcArea;
+                    else area += arcArea;
+                }
+                else if (c is Circle) area += c.IArea();
+                sPt = ePt.Clone();
             }
-
-            Point min = box.Min;
-            Point max = box.Max;
-            double totalWidth = max.X - min.X;
-            double totalHeight = max.Y - min.Y;
-
-            List<IntegrationSlice> verticalSlices = Create.IntegrationSlices(curves, Vector.XAxis, totalWidth / 1000);
-            List<IntegrationSlice> horizontalSlices = Create.IntegrationSlices(curves, Vector.YAxis, totalHeight / 1000);
-
-            double centreZ = 0;
-            return Query.AreaIntegration(horizontalSlices, 1, min.Y, max.Y, ref centreZ);
+            return area;
         }
 
         /***************************************************/
 
         public static double Area(this Polyline curve)
         {
+            if (!curve.IsClosed()) return 0;
+
             List<Point> pts = curve.ControlPoints;
             int ptsCount = pts.Count;
             if (ptsCount < 3) { return 0.0; }
