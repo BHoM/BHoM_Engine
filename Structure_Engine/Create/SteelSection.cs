@@ -87,28 +87,28 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static SteelSection SteelSectionFromProfile(IProfile dimensions, Material material = null, string name = "")
+        public static SteelSection SteelSectionFromProfile(IProfile profile, Material material = null, string name = "")
         {
 
-            List<ICurve> edges = dimensions.Edges.ToList();
+            List<ICurve> edges = profile.Edges.ToList();
             Dictionary<string, object> constants = Geometry.Compute.Integrate(edges);
 
-            constants["J"] = dimensions.ITorsionalConstant();
-            constants["Iw"] = dimensions.IWarpingConstant();
+            constants["J"] = profile.ITorsionalConstant();
+            constants["Iw"] = profile.IWarpingConstant();
 
-            SteelSection section = new SteelSection(dimensions,
-                (double)constants["Area"], (double)constants["Rgy"], (double)constants["Rgz"], (double)constants["J"], (double)constants["Iy"], (double)constants["Iz"], (double)constants["Iw"],
-                (double)constants["Zy"], (double)constants["Zz"], (double)constants["Sy"], (double)constants["Sz"], (double)constants["CentreZ"], (double)constants["CentreY"], (double)constants["Vz"],
+            SteelSection section = new SteelSection(profile,
+                (double)constants["Area"], (double)constants["Rgy"], (double)constants["Rgz"], (double)constants["J"], (double)constants["Iy"], (double)constants["Iz"], (double)constants["Iw"], (double)constants["Wely"],
+                (double)constants["Welz"], (double)constants["Wply"], (double)constants["Wplz"], (double)constants["CentreZ"], (double)constants["CentreY"], (double)constants["Vz"],
                 (double)constants["Vpz"], (double)constants["Vy"], (double)constants["Vpy"], (double)constants["Asy"], (double)constants["Asz"]);
 
             //section.CustomData["VerticalSlices"] = new ReadOnlyCollection<IntegrationSlice>((List<IntegrationSlice>)constants["VerticalSlices"]);
             //section.CustomData["HorizontalSlices"] = new ReadOnlyCollection<IntegrationSlice>((List<IntegrationSlice>)constants["HorizontalSlices"]);
 
-            if(material != null)
+            section.Material = material == null ? Query.Default(MaterialType.Steel) : material;
+
+            if(name != null)
                 section.Name = name;
 
-            if (material != null)
-                section.Material = material;
             return section;
 
         }
