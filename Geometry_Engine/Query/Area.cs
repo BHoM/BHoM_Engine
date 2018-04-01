@@ -13,6 +13,7 @@ namespace BH.Engine.Geometry
 
         public static double Area(this Arc curve)
         {
+            if (!curve.IsClosed()) return 0;
             return curve.Angle() * Math.Pow(curve.Radius(), 2);
         }
 
