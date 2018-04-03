@@ -20,20 +20,17 @@ namespace BH.Engine.Reflection
 
         /***************************************************/
 
-        public static string Path(this MethodBase method, bool beClever = true) // TODO: beClever probably needs a better name
+        public static string Path(this MethodBase method, bool userReturnTypeForCreate = true, bool useExtentionType = false) 
         {
             Type type = method.DeclaringType;
 
-            if (beClever)
+            if (userReturnTypeForCreate && type.Name == "Create" && method is MethodInfo)
+                type = ((MethodInfo)method).ReturnType;
+            else if (useExtentionType && method.IsDefined(typeof(ExtensionAttribute), false))
             {
-                if (type.Name == "Create" && method is MethodInfo)
-                    type = ((MethodInfo)method).ReturnType;
-                else if (method.IsDefined(typeof(ExtensionAttribute), false))
-                {
-                    ParameterInfo[] parameters = method.GetParameters();
-                    if (parameters.Length > 0)
-                        type = parameters[0].ParameterType;
-                }
+                ParameterInfo[] parameters = method.GetParameters();
+                if (parameters.Length > 0)
+                    type = parameters[0].ParameterType;
             }
 
             return type.ToText(true, true);
