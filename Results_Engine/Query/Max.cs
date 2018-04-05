@@ -29,21 +29,21 @@ namespace BH.Engine.Results
 
         /***************************************************/
 
-        public static List<BarForce> MaxEnvelopByCase(IEnumerable<BarForce> forces)
+        public static List<BarForce> MaxEnvelopeByCase(IEnumerable<BarForce> forces)
         {
-            return forces.GroupByCase().Select(x => x.MaxEnvelop(false, true)).ToList();
+            return forces.GroupByCase().Select(x => x.MaxEnvelope(false, true)).ToList();
         }
 
         /***************************************************/
 
-        public static List<BarForce> MaxEnvelopByObject(IEnumerable<BarForce> forces)
+        public static List<BarForce> MaxEnvelopeByObject(IEnumerable<BarForce> forces)
         {
-            return forces.GroupByObjectId().Select(x => x.MaxEnvelop(true, false)).ToList();
+            return forces.GroupByObjectId().Select(x => x.MaxEnvelope(true, false)).ToList();
         }
 
         /***************************************************/
 
-        public static BarForce MaxEnvelop(this IEnumerable<BarForce> forces, bool idFromFirst = false, bool caseFromFirst = false)
+        public static BarForce MaxEnvelope(this IEnumerable<BarForce> forces, bool idFromFirst = false, bool caseFromFirst = false)
         {
             return new BarForce()
             {

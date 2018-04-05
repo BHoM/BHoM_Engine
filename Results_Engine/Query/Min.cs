@@ -29,21 +29,21 @@ namespace BH.Engine.Results
 
         /***************************************************/
 
-        public static List<BarForce> MinEnvelopByCase(IEnumerable<BarForce> forces)
+        public static List<BarForce> MinEnvelopeByCase(IEnumerable<BarForce> forces)
         {
-            return forces.GroupByCase().Select(x => x.MinEnvelop(false, true)).ToList();
+            return forces.GroupByCase().Select(x => x.MinEnvelope(false, true)).ToList();
         }
 
         /***************************************************/
 
-        public static List<BarForce> MinEnvelopByObject(IEnumerable<BarForce> forces)
+        public static List<BarForce> MinEnvelopeByObject(IEnumerable<BarForce> forces)
         {
-            return forces.GroupByObjectId().Select(x => x.MinEnvelop(true, false)).ToList();
+            return forces.GroupByObjectId().Select(x => x.MinEnvelope(true, false)).ToList();
         }
 
         /***************************************************/
 
-        public static BarForce MinEnvelop(this IEnumerable<BarForce> forces, bool idFromFirst = false, bool caseFromFirst = false)
+        public static BarForce MinEnvelope(this IEnumerable<BarForce> forces, bool idFromFirst = false, bool caseFromFirst = false)
         {
             return new BarForce()
             {

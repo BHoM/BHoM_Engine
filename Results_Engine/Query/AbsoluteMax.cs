@@ -29,21 +29,21 @@ namespace BH.Engine.Results
 
         /***************************************************/
 
-        public static List<BarForce> AbsoluteMaxEnvelopByCase(IEnumerable<BarForce> forces)
+        public static List<BarForce> AbsoluteMaxEnvelopeByCase(IEnumerable<BarForce> forces)
         {
-            return forces.GroupByCase().Select(x => x.AbsoluteMaxEnvelop(false, true)).ToList();
+            return forces.GroupByCase().Select(x => x.AbsoluteMaxEnvelope(false, true)).ToList();
         }
 
         /***************************************************/
 
-        public static List<BarForce> AbsoluteMaxEnvelopByObject(IEnumerable<BarForce> forces)
+        public static List<BarForce> AbsoluteMaxEnvelopeByObject(IEnumerable<BarForce> forces)
         {
-            return forces.GroupByObjectId().Select(x => x.AbsoluteMaxEnvelop(true, false)).ToList();
+            return forces.GroupByObjectId().Select(x => x.AbsoluteMaxEnvelope(true, false)).ToList();
         }
 
         /***************************************************/
 
-        public static BarForce AbsoluteMaxEnvelop(this IEnumerable<BarForce> forces, bool idFromFirst = false, bool caseFromFirst = false)
+        public static BarForce AbsoluteMaxEnvelope(this IEnumerable<BarForce> forces, bool idFromFirst = false, bool caseFromFirst = false)
         {
             return new BarForce()
             {
