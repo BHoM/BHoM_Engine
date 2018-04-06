@@ -62,7 +62,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interface                ****/
         /***************************************************/
 
-        public static Polyline IToPolyline(Line curve)
+        public static Polyline IToPolyline(ICurve curve)
         {
             return ToPolyline(curve as dynamic);
         }
