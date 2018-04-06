@@ -13,7 +13,7 @@ namespace BH.Engine.Geometry
 
         public static double Area(this Arc curve)
         {
-            return curve.Angle() * Math.Pow(curve.Radius(), 2);
+            return curve.IsClosed() ? curve.Angle() * Math.Pow(curve.Radius(), 2) : 0;
         }
 
         /***************************************************/
@@ -41,13 +41,44 @@ namespace BH.Engine.Geometry
 
         public static double Area(this PolyCurve curve)
         {
-            return curve.Curves.Sum(crv => crv.IArea());
+            if (!curve.IsClosed()) return 0;
+            Plane p = curve.FitPlane();
+            if (p == null) return 0.0;              // points are collinear
+
+            bool isClockwise = curve.IsClockwise(p.Normal);
+            Point sPt = curve.StartPoint();
+            double area = 0;
+            foreach (ICurve c in curve.SubParts())
+            {
+                if (c is NurbCurve) throw new NotImplementedException();
+
+                Point ePt = c.IEndPoint();
+                Vector prod = CrossProduct(sPt - p.Origin, ePt - p.Origin);
+                if (isClockwise) area += prod * p.Normal * 0.5;
+                else area -= prod * p.Normal * 0.5;
+
+                if (c is Arc)
+                {
+                    Arc arc = c as Arc;
+                    double radius = arc.Radius();
+                    double angle = arc.Angle();
+                    double arcArea = (angle - Math.Sin(angle)) * radius * radius * 0.5;
+                    bool isRight = (arc.End - arc.Start).SignedAngle(arc.Middle - arc.Start, p.Normal) >= 0;
+                    if (isClockwise == isRight) area -= arcArea;
+                    else area += arcArea;
+                }
+                else if (c is Circle) area += c.IArea();
+                sPt = ePt.Clone();
+            }
+            return area;
         }
 
         /***************************************************/
 
         public static double Area(this Polyline curve)
         {
+            if (!curve.IsClosed()) return 0;
+
             List<Point> pts = curve.ControlPoints;
             int ptsCount = pts.Count;
             if (ptsCount < 3) { return 0.0; }
