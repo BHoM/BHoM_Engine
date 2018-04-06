@@ -13,9 +13,12 @@ namespace BH.Engine.Reflection.Convert
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static string ToText(this MethodBase method, bool includePath = false, string paramStart = "(", string paramSeparator = ", ", string paramEnd = ")")
+        public static string ToText(this MethodBase method, bool includePath = false, string paramStart = "(", string paramSeparator = ", ", string paramEnd = ")", bool removeIForInterface = true)
         {
             string name = (method is ConstructorInfo) ? method.DeclaringType.ToText(false, true) : method.Name;
+            if (removeIForInterface && name.Length > 2 && name[0] == 'I' && char.IsUpper(name[1]))
+                name = name.Substring(1);
+
             ParameterInfo[] parameters = method.GetParameters();
 
             string text = name + paramStart;

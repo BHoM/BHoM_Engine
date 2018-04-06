@@ -42,27 +42,26 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static ConcreteSection ConcreteSectionFromProfile(IProfile dimensions, Material material = null, string name = "", List<Reinforcement> reinforcement = null)
+        public static ConcreteSection ConcreteSectionFromProfile(IProfile profile, Material material = null, string name = "", List<Reinforcement> reinforcement = null)
         {
-            List<ICurve> edges = dimensions.Edges.ToList();
+            List<ICurve> edges = profile.Edges.ToList();
             Dictionary<string, object> constants = Geometry.Compute.Integrate(edges);
 
-            constants["J"] = dimensions.ITorsionalConstant();
-            constants["Iw"] = dimensions.IWarpingConstant();
+            constants["J"] = profile.ITorsionalConstant();
+            constants["Iw"] = profile.IWarpingConstant();
 
-            ConcreteSection section = new ConcreteSection(dimensions,
+            ConcreteSection section = new ConcreteSection(profile,
                 (double)constants["Area"], (double)constants["Rgy"], (double)constants["Rgz"], (double)constants["J"], (double)constants["Iy"], (double)constants["Iz"], (double)constants["Iw"],
-                (double)constants["Zy"], (double)constants["Zz"], (double)constants["Sy"], (double)constants["Sz"], (double)constants["CentreZ"], (double)constants["CentreY"], (double)constants["Vz"],
+                (double)constants["Wely"], (double)constants["Welz"], (double)constants["Wply"], (double)constants["Wplz"], (double)constants["CentreZ"], (double)constants["CentreY"], (double)constants["Vz"],
                 (double)constants["Vpz"], (double)constants["Vy"], (double)constants["Vpy"], (double)constants["Asy"], (double)constants["Asz"]);
 
             //section.CustomData["VerticalSlices"] = new ReadOnlyCollection<IntegrationSlice>((List<IntegrationSlice>)constants["VerticalSlices"]);
             //section.CustomData["HorizontalSlices"] = new ReadOnlyCollection<IntegrationSlice>((List<IntegrationSlice>)constants["HorizontalSlices"]);
 
-            if (material != null)
-                section.Name = name;
+            section.Material = material == null ? Query.Default(MaterialType.Concrete) : material;
 
-            if (material != null)
-                section.Material = material;
+            if (name != null)
+                section.Name = name;
 
             if (reinforcement != null)
                 section.Reinforcement = reinforcement;
