@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Collections.Generic;
 using System;
+using BH.oM.Geometry;
 
 namespace BH.Engine.Geometry
 {
@@ -69,7 +70,18 @@ namespace BH.Engine.Geometry
             return IsClockwise(curve, vector);
         }
 
-
          /***************************************************/
+
+        public static bool IsClockwise(this Arc arc, Vector axis)
+        {
+            Point centre = arc.Centre();
+            Vector a = arc.Start - centre;
+            Vector b = arc.End - centre;
+            Vector crossproduct = a.CrossProduct(b);
+
+            return ((crossproduct.DotProduct(axis) < 0) != (arc.Angle() > Math.PI));       
+        }
+
+        /***************************************************/
     }
 }
