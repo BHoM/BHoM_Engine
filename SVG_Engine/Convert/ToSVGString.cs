@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using BH.Engine.Geometry;
 
 namespace BH.Engine.Graphics
 {
@@ -172,6 +173,25 @@ namespace BH.Engine.Graphics
             return circleString;
         }
 
+
+        /***************************************************/
+
+        public static string ToSVGString(this Arc arc)
+        {
+            int largeArcFlag = System.Convert.ToInt32((arc.Angle() > Math.PI));
+            int sweepFlag = 1;
+            string arcString = "<path d=\"M" + arc.Start.X.ToString()
+                                + "," + arc.Start.Y.ToString()
+                                + " A" + arc.Radius() + "," + arc.Radius()
+                                + " 0"
+                                + " " + largeArcFlag
+                                + "," + sweepFlag
+                                + " " + arc.End.X.ToString()
+                                + "," + arc.End.Y.ToString() + "\"/>";
+
+            return arcString;
+        }
+
         /***************************************************/
 
         public static string ToSVGString(this Ellipse ellipse)
@@ -266,15 +286,6 @@ namespace BH.Engine.Graphics
             nurbString += "\"/>";
 
             return nurbString;
-        }
-
-        /***************************************************/
-
-        public static string ToSVGString(this Arc arc)
-        {
-            // TODO : SVG_Engine - Implement conversion method for arc
-
-            throw new NotImplementedException();
         }
 
         /***************************************************/
