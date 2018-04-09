@@ -179,7 +179,7 @@ namespace BH.Engine.Graphics
         public static string ToSVGString(this Arc arc)
         {
             int largeArcFlag = System.Convert.ToInt32((arc.Angle() > Math.PI));
-            int sweepFlag = 1;
+            int sweepFlag = System.Convert.ToInt32(!arc.IsClockwise(Vector.ZAxis));
             string arcString = "<path d=\"M" + arc.Start.X.ToString()
                                 + "," + arc.Start.Y.ToString()
                                 + " A" + arc.Radius() + "," + arc.Radius()
