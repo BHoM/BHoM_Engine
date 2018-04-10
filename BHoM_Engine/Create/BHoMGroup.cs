@@ -12,53 +12,49 @@ namespace BH.Engine.Base
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static BHoMGroup<BHoMObject> BHoMGroup(IEnumerable<BHoMObject> elements)
+        public static IBHoMGroup BHoMGroup<T>(IEnumerable<T> elements, bool downCast = true, string name = "") where T : IBHoMObject
         {
-            return new BHoMGroup<BHoMObject>
+            if (downCast)
             {
-                Elements = elements.ToList()
-            };
-        }
+                List<T> elementList = elements.ToList();
 
-        /***************************************************/
-
-        public static BHoMGroup<T> BHoMGroup<T>(IEnumerable<T> elements) where T:IBHoMObject
-        {
-            return new BHoMGroup<T>
-            {
-                Elements = elements.ToList()
-            };
-        }
-
-        /***************************************************/
-
-        public static BHoMObject BHoMGroup(List<IBHoMObject> elements, Type typeHint = null, string name = "")
-        {
-            Type type;
-
-            if (typeHint == null)
-            {
-                if(elements.Count == 0)
-                    return new BHoMGroup<IBHoMObject>();
-
-                type = elements[0].GetType();
-
-                for (int i = 1; i < elements.Count; i++)
+                if (elementList.Count > 0)
                 {
-                    if (elements[i].GetType() == type)
-                        continue;
-                    else
+                    Type type = elementList[0].GetType();
+
+                    bool sameType = true;
+
+                    for (int i = 1; i < elementList.Count; i++)
                     {
-                        type = typeof(IBHoMObject);
-                        break;
+                        if (elementList[i].GetType() == type)
+                            continue;
+                        else
+                        {
+                            sameType = false;
+                            break;
+                        }
                     }
+
+                    if (sameType)
+                        return BHoMGroup(elements, type, name);
                 }
             }
-            else
-                type = typeHint;
+
+            return new BHoMGroup<T>
+            {
+                Elements = elements.ToList(),
+                Name = name
+            };
+        
+        }
+
+        /***************************************************/
+
+        public static IBHoMGroup BHoMGroup<T>(IEnumerable<T> elements, Type type, string name = "") where T: IBHoMObject
+        {
 
             var groupType = typeof(BHoMGroup<>).MakeGenericType(new Type[] { type });
-            var group = Activator.CreateInstance(groupType);
+            IBHoMGroup group = Activator.CreateInstance(groupType) as IBHoMGroup;
 
             PropertyInfo info = groupType.GetProperty("Elements");
             var list = info.GetValue(group);
@@ -69,7 +65,9 @@ namespace BH.Engine.Base
                 add.Invoke(list, new object[] { obj });
             }
 
-            return group as BHoMObject;
+            group.Name = name;
+
+            return group as IBHoMGroup;
         }
 
         /***************************************************/
