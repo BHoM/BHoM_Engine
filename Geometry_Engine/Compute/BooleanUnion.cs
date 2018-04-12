@@ -116,19 +116,19 @@ namespace BH.Engine.Geometry
                 cPts1.AddRange(region1.ControlPoints);
                 List<Point> cPts2 = region2.SubParts().Select(s => s.ControlPoints().Average()).ToList();
                 cPts2.AddRange(region2.ControlPoints);
-                if (region1.IsContaining(cPts2, true))
+                if (region1.IsContaining(cPts2, true, tolerance))
                 {
                     result.Add(region1.Clone());
                 }
-                else if (region2.IsContaining(cPts1, true))
+                else if (region2.IsContaining(cPts1, true, tolerance))
                 {
                     result.Add(region2.Clone());
                 }
                 else
                 {
-                    List<Point> iPts = region1.LineIntersections(region2);
-                    List<Polyline> splitRegion1 = region1.SplitAtPoints(iPts);
-                    List<Polyline> splitRegion2 = region2.SplitAtPoints(iPts);
+                    List<Point> iPts = region1.LineIntersections(region2, tolerance);
+                    List<Polyline> splitRegion1 = region1.SplitAtPoints(iPts, tolerance);
+                    List<Polyline> splitRegion2 = region2.SplitAtPoints(iPts, tolerance);
                     if (splitRegion1.Count == 1 && splitRegion2.Count == 1)
                     {
                         result = new List<Polyline> { region1.Clone(), region2.Clone() };
@@ -170,9 +170,9 @@ namespace BH.Engine.Geometry
                     {
                         List<Point> cPts = segment.SubParts().Select(s => s.ControlPoints().Average()).ToList();
                         cPts.AddRange(segment.ControlPoints);
-                        if (!region1.IsContaining(cPts, true)) result.Add(segment);
+                        if (!region1.IsContaining(cPts, true, tolerance)) result.Add(segment);
                     }
-                    result = result.Join();
+                    result = result.Join(tolerance);
                 }
                 return true;
             }

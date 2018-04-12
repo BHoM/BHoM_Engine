@@ -11,12 +11,12 @@ namespace BH.Engine.Geometry
         /**** public Methods - Vectors                  ****/
         /***************************************************/
 
-        public static List<Point> SortCollinear(this List<Point> points)
+        public static List<Point> SortCollinear(this List<Point> points, double tolerance = Tolerance.Distance)
         {
             List<Point> cPoints = points.Select(p => p.Clone()).ToList();
             for (int i = 1; i < cPoints.Count; i++)
             {
-                if (Math.Abs(cPoints[0].X - cPoints[i].X) > Tolerance.Distance)
+                if (Math.Abs(cPoints[0].X - cPoints[i].X) > tolerance)
                 {
                     cPoints.Sort(delegate (Point p1, Point p2)
                         {
@@ -24,7 +24,7 @@ namespace BH.Engine.Geometry
                         });
                     break;
                 }
-                else if (Math.Abs(cPoints[0].Y - cPoints[i].Y) > Tolerance.Distance)
+                else if (Math.Abs(cPoints[0].Y - cPoints[i].Y) > tolerance)
                 {
                     cPoints.Sort(delegate (Point p1, Point p2)
                     {
@@ -32,7 +32,7 @@ namespace BH.Engine.Geometry
                     });
                     break;
                 }
-                else if(Math.Abs(cPoints[0].Z - cPoints[i].Z) > Tolerance.Distance)
+                else if(Math.Abs(cPoints[0].Z - cPoints[i].Z) > tolerance)
                 {
                     cPoints.Sort(delegate (Point p1, Point p2)
                     {

@@ -42,7 +42,7 @@ namespace BH.Engine.Geometry
         {
             if (!curve.IsClosed()) return false;
             Circle circle = new Circle { Centre = curve.Centre(), Radius = curve.Radius(), Normal = curve.FitPlane().Normal };
-            return circle.IsContaining(points);
+            return circle.IsContaining(points, acceptOnEdge, tolerance);
         }
 
         /***************************************************/
@@ -161,9 +161,9 @@ namespace BH.Engine.Geometry
 
         public static bool IsContaining(this Circle curve1, ICurve curve2, bool acceptOnEdge = true, double tolerance = Tolerance.Distance)
         {
-            if (curve2 is Line || curve2 is Polyline) return curve1.IsContaining(curve2.IControlPoints());
+            if (curve2 is Line || curve2 is Polyline) return curve1.IsContaining(curve2.IControlPoints(), acceptOnEdge, tolerance);
 
-            List<Point> iPts = curve1.ICurvePlanarIntersections(curve2);
+            List<Point> iPts = curve1.ICurvePlanarIntersections(curve2, tolerance);
             if (!acceptOnEdge && iPts.Count > 0) return false;
 
             List<double> cParams = new List<double> { 0, 1 };
@@ -198,15 +198,15 @@ namespace BH.Engine.Geometry
 
         public static bool IsContaining(this Polyline curve1, ICurve curve2, bool acceptOnEdge = true, double tolerance = Tolerance.Distance)
         {
-            if (!curve1.IsClosed()) return false;
+            if (!curve1.IsClosed(tolerance)) return false;
 
-            List<Point> iPts = curve1.ICurvePlanarIntersections(curve2);
+            List<Point> iPts = curve1.ICurvePlanarIntersections(curve2, tolerance);
             if (!acceptOnEdge && iPts.Count > 0) return false;
 
             List<double> cParams = new List<double> { 0, 1 };
             foreach (Point iPt in iPts)
             {
-                cParams.Add(curve2.IParameterAtPoint(iPt));
+                cParams.Add(curve2.IParameterAtPoint(iPt, tolerance));
             }
             cParams.Sort();
 
@@ -221,15 +221,15 @@ namespace BH.Engine.Geometry
 
         public static bool IsContaining(this PolyCurve curve1, ICurve curve2, bool acceptOnEdge = true, double tolerance = Tolerance.Distance)
         {
-            if (!curve1.IsClosed()) return false;
+            if (!curve1.IsClosed(tolerance)) return false;
 
-            List<Point> iPts = curve1.ICurvePlanarIntersections(curve2);
+            List<Point> iPts = curve1.ICurvePlanarIntersections(curve2, tolerance);
             if (!acceptOnEdge && iPts.Count > 0) return false;
 
             List<double> cParams = new List<double> { 0, 1 };
             foreach (Point iPt in iPts)
             {
-                cParams.Add(curve2.IParameterAtPoint(iPt));
+                cParams.Add(curve2.IParameterAtPoint(iPt, tolerance));
             }
             cParams.Sort();
 

@@ -63,7 +63,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static int CountNonZeroRows(this double[,] matrix)
+        public static int CountNonZeroRows(this double[,] matrix, double tolerance = Tolerance.Distance)
         {
             int m = matrix.GetLength(0);
             int n = matrix.GetLength(1);
@@ -72,7 +72,7 @@ namespace BH.Engine.Geometry
             {
                 for (int j = 0; j < n; j++)
                 {
-                    if (Math.Abs(matrix[i, j]) >= Tolerance.Distance)
+                    if (Math.Abs(matrix[i, j]) >= tolerance)
                     {
                         c++;
                         break;

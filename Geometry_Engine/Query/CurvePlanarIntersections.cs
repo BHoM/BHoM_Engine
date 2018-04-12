@@ -26,12 +26,12 @@ namespace BH.Engine.Geometry
 
             Point midPoint1 = curve1.PointAtParameter(0.5);
             Point midPoint2 = curve2.PointAtParameter(0.5);
-            double sqrd1 = midPoint1.SquareDistance(curve1.Start);
-            double sqrd2 = midPoint2.SquareDistance(curve2.Start);
+            double dist1 = midPoint1.Distance(curve1.Start);
+            double dist2 = midPoint2.Distance(curve2.Start);
 
             for (int i = iPts.Count - 1; i >= 0; i--)
             {
-                if (midPoint1.SquareDistance(iPts[i]) - sqrd1 > tolerance || midPoint2.SquareDistance(iPts[i]) - sqrd2 > tolerance) iPts.RemoveAt(i);
+                if (midPoint1.Distance(iPts[i]) - dist1 > tolerance || midPoint2.Distance(iPts[i]) - dist2 > tolerance) iPts.RemoveAt(i);
             }
             return iPts;
         }
@@ -48,11 +48,11 @@ namespace BH.Engine.Geometry
             List<Point> iPts = circle1.CurvePlanarIntersections(curve2, tolerance);
 
             Point midPoint1 = curve1.PointAtParameter(0.5);
-            double sqrd1 = midPoint1.SquareDistance(curve1.Start);
+            double dist = midPoint1.Distance(curve1.Start);
 
             for (int i = iPts.Count - 1; i >= 0; i--)
             {
-                if (midPoint1.SquareDistance(iPts[i]) - sqrd1 > tolerance) iPts.RemoveAt(i);
+                if (midPoint1.Distance(iPts[i]) - dist > tolerance) iPts.RemoveAt(i);
             }
             return iPts;
         }
