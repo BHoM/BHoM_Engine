@@ -65,7 +65,7 @@ namespace BH.Engine.Geometry
             if (pts.Count == 0)
                 return false;
 
-            return pts.First().SquareDistance(pts.Last()) < tolerance* tolerance;
+            return pts.First().SquareDistance(pts.Last()) < tolerance * tolerance;
         }
 
 

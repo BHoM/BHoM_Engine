@@ -25,14 +25,14 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static List<Point> SortAlongCurve(this List<Point> points, Line line)
+        public static List<Point> SortAlongCurve(this List<Point> points, Line line, double tolDist = Tolerance.Distance, double tolAngle = Tolerance.Angle)
         {
-            if (line.Length() <= Tolerance.Distance) return points.Select(p => p.Clone()).ToList();
+            if (line.Length() <= tolDist) return points.Select(p => p.Clone()).ToList();
 
             Vector lDir = line.Direction();
             List<Tuple<Point, Point>> cData = points.Select(p => new Tuple<Point, Point>(p.Clone(), (p.Project(line)))).ToList();
             
-            if ((Math.Abs(lDir.X)) > Tolerance.Angle)
+            if ((Math.Abs(lDir.X)) > tolAngle)
             {
                 cData.Sort(delegate (Tuple<Point, Point> d1, Tuple<Point, Point> d2)
                 {
@@ -40,7 +40,7 @@ namespace BH.Engine.Geometry
                 });
                 if (lDir.X < 0) cData.Reverse();
             }
-            else if ((Math.Abs(lDir.Y)) > Tolerance.Angle)
+            else if ((Math.Abs(lDir.Y)) > tolAngle)
             {
                 cData.Sort(delegate (Tuple<Point, Point> d1, Tuple<Point, Point> d2)
                 {
