@@ -10,9 +10,12 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Curves                   ****/
         /***************************************************/
 
-        public static bool IsClosed(this Arc arc)
+        public static bool IsClosed(this Arc arc, double tolerance = Tolerance.Distance)
         {
-            return arc.Start.SquareDistance(arc.End) < Tolerance.SqrtDist;
+            return false;
+            //TODO: Repleacing previous code below with allways returning false.
+            //Start and end the same will lead to an invalid arc with our implementation
+            //return arc.Start.SquareDistance(arc.End) <= tolerance; 
         }
 
         /***************************************************/
@@ -31,23 +34,23 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static bool IsClosed(this NurbCurve curve)
+        public static bool IsClosed(this NurbCurve curve, double tolerance = Tolerance.Distance)
         {
-            return curve.PointAtParameter(0).SquareDistance(curve.PointAtParameter(1)) < Tolerance.SqrtDist;
+            return curve.PointAtParameter(0).SquareDistance(curve.PointAtParameter(1)) < tolerance* tolerance;
         }
 
         /***************************************************/
 
-        public static bool IsClosed(this PolyCurve curve)
+        public static bool IsClosed(this PolyCurve curve, double tolerance = Tolerance.Distance)
         {
             List<ICurve> curves = curve.Curves;
-
-            if (curves[0].IStartPoint().SquareDistance(curves.Last().IEndPoint()) > Tolerance.SqrtDist)
+            double sqTol = tolerance * tolerance;
+            if (curves[0].IStartPoint().SquareDistance(curves.Last().IEndPoint()) > sqTol)
                 return false;
 
             for (int i = 1; i < curves.Count; i++)
             {
-                if (curves[i - 1].IEndPoint().SquareDistance(curves[i].IStartPoint()) > Tolerance.SqrtDist)
+                if (curves[i - 1].IEndPoint().SquareDistance(curves[i].IStartPoint()) > sqTol)
                     return false;
             }
 
@@ -56,13 +59,13 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static bool IsClosed(this Polyline curve)
+        public static bool IsClosed(this Polyline curve, double tolerance = Tolerance.Distance)
         {
             List<Point> pts = curve.ControlPoints;
             if (pts.Count == 0)
                 return false;
 
-            return pts.First().SquareDistance(pts.Last()) < Tolerance.SqrtDist;
+            return pts.First().SquareDistance(pts.Last()) < tolerance* tolerance;
         }
 
 

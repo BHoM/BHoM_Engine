@@ -101,12 +101,13 @@ namespace BH.Engine.Geometry
         /****              Private methods              ****/
         /***************************************************/
 
-        private static bool BooleanUnion(this Polyline region1, Polyline region2, out List<Polyline> result)
+        private static bool BooleanUnion(this Polyline region1, Polyline region2, out List<Polyline> result, double tolerance = Tolerance.Distance)
         {
             result = new List<Polyline>();
 
             if (region1.IsCoplanar(region2))
             {
+                double sqTol = tolerance * tolerance;
                 Plane p1 = region1.FitPlane();
                 if (!region1.IsClockwise(p1.Normal)) region1 = region1.Clone().Flip();
                 if (!region2.IsClockwise(p1.Normal)) region2 = region2.Clone().Flip();
@@ -145,12 +146,12 @@ namespace BH.Engine.Geometry
                             foreach (Polyline r in splitRegion2)
                             {
                                 bool found = false;
-                                if (segment.ControlPoints.Count == r.ControlPoints.Count && segment.ControlPoints[0].SquareDistance(r.ControlPoints[0]) <= Tolerance.SqrtDist)
+                                if (segment.ControlPoints.Count == r.ControlPoints.Count && segment.ControlPoints[0].SquareDistance(r.ControlPoints[0]) <= sqTol)
                                 {
                                     found = true;
                                     for (int i = 0; i < segment.ControlPoints.Count; i++)
                                     {
-                                        if (segment.ControlPoints[i].SquareDistance(r.ControlPoints[i]) > Tolerance.SqrtDist)
+                                        if (segment.ControlPoints[i].SquareDistance(r.ControlPoints[i]) > sqTol)
                                         {
                                             found = false;
                                             break;

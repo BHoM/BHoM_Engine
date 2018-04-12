@@ -82,12 +82,13 @@ namespace BH.Engine.Geometry
             Plane p = curve.FitPlane();
             if (curve.IsClosed())
             {
+                double sqTol = tolerance * tolerance;
                 foreach (Point pt in points)
                 {
                     if (pt.IsInPlane(p))
                     {
                         List<Point> intersects = curve.LineIntersections(new Line { Start = pt, End = p.Origin }, true, tolerance); // what if the points are in exactly same spot?
-                        if ((pt.ClosestPoint(intersects).SquareDistance(pt) <= Tolerance.SqrtDist))
+                        if ((pt.ClosestPoint(intersects).SquareDistance(pt) <= sqTol))
                         {
                             if (acceptOnEdge) continue;
                             else return false;
@@ -118,12 +119,13 @@ namespace BH.Engine.Geometry
             Plane p = curve.FitPlane();
             if (curve.IsClosed())
             {
+                double sqTol = tolerance * tolerance;
                 foreach (Point pt in points)
                 {
                     if (pt.IsInPlane(p))
                     {
                         List<Point> intersects = curve.LineIntersections(new Line { Start = pt, End = p.Origin }, true, tolerance); // what if the points are in exactly same spot?
-                        if ((pt.ClosestPoint(intersects).SquareDistance(pt) <= Tolerance.SqrtDist))
+                        if ((pt.ClosestPoint(intersects).SquareDistance(pt) <= sqTol))
                         {
                             if (acceptOnEdge) continue;
                             else return false;
