@@ -104,15 +104,14 @@ namespace BH.Engine.Geometry
 
             Point tempPt = l.ClosestPoint(curve.Centre, true);
 
-            double sqrDist = tempPt.SquareDistance(curve.Centre);
-            double sqrRad = curve.Radius * curve.Radius;
+            double centreDist = tempPt.Distance(curve.Centre);
 
-            if (Math.Abs(sqrRad - sqrDist) < tolerance*tolerance)
+            if (Math.Abs(curve.Radius - centreDist) < tolerance)
                 return new List<Point> { tempPt };
-            else if (sqrDist < sqrRad)
+            else if (centreDist < curve.Radius)
             {
                 Vector v = l.Direction();
-                double dist = Math.Sqrt(sqrRad - sqrDist);
+                double dist = Math.Sqrt(curve.Radius*curve.Radius - centreDist*centreDist);
                 v = v * dist;
                 return new List<Point> { tempPt + v, tempPt - v };
             }
