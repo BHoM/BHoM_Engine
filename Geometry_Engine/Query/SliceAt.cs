@@ -10,14 +10,14 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static IntegrationSlice SliceAt(IList<ICurve> edges, double location, double width, Plane p)
+        public static IntegrationSlice SliceAt(IList<ICurve> edges, double location, double width, Plane p, double tolerance = Tolerance.Distance)
         {
             List<Point> y = new List<Point>();
             double length = 0;
             Plane plane = new Plane { Origin = Create.Point(p.Normal * location), Normal = p.Normal };
             for (int edgeIndex = 0; edgeIndex < edges.Count; edgeIndex++)
             {
-                y.AddRange(edges[edgeIndex].IPlaneIntersections(plane, Tolerance.Distance));
+                y.AddRange(edges[edgeIndex].IPlaneIntersections(plane, tolerance));
             }
 
             y.RemoveAll(x => x == null);

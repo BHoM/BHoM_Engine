@@ -23,7 +23,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static List<IntegrationSlice> IntegrationSlices(List<ICurve> edges, Vector direction, double increment = 0.001)
+        public static List<IntegrationSlice> IntegrationSlices(List<ICurve> edges, Vector direction, double increment = 0.001, double tolerance = Tolerance.Distance)
         {
             List<IntegrationSlice> slices = new List<IntegrationSlice>();
 
@@ -70,7 +70,7 @@ namespace BH.Engine.Geometry
                 }
 
                 currentValue = (sliceSegments[i] + sliceSegments[i + 1]) / 2;
-                slices.Add(Query.SliceAt(edges, currentValue, -sliceSegments[i] + sliceSegments[i + 1], p));
+                slices.Add(Query.SliceAt(edges, currentValue, -sliceSegments[i] + sliceSegments[i + 1], p, tolerance));
             }
             return slices;
         }
