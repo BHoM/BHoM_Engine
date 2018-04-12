@@ -86,13 +86,14 @@ namespace BH.Engine.Structure
         /***          Private methods           ***/
         /******************************************/
 
-        private static Edge AssignEdgeProperties(this Line line, List<Edge> refEdges, out bool edgeFound)
+        private static Edge AssignEdgeProperties(this Line line, List<Edge> refEdges, out bool edgeFound, double tolerance = Tolerance.Distance)
         {
             edgeFound = false;
+            double sqTol = tolerance * tolerance;
             foreach (Edge e in refEdges)
             {
                 Line el = (Line)e.Curve;
-                if (el.ClosestPoint(line.Start).SquareDistance(line.Start) <= Tolerance.SqrtDist && el.ClosestPoint(line.End).SquareDistance(line.End) <= Tolerance.SqrtDist)
+                if (el.ClosestPoint(line.Start).SquareDistance(line.Start) <= sqTol && el.ClosestPoint(line.End).SquareDistance(line.End) <= sqTol)
                 {
                     Edge ce = (Edge)e.GetShallowClone(true);
                     ce.Curve = line;
@@ -105,10 +106,11 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        private static List<Polyline> RemoveDuplicateEdges(this Polyline outline)
+        private static List<Polyline> RemoveDuplicateEdges(this Polyline outline, double tolerance = Tolerance.Distance)
         {
             List<Point> intpts = outline.SubParts().LineIntersections();
             List<Line> edgeLines = new List<Line>();
+            double sqTol = tolerance* tolerance;
             foreach (Polyline p in outline.SplitAtPoints(intpts))
             {
                 edgeLines.AddRange(p.SubParts());
@@ -120,7 +122,7 @@ namespace BH.Engine.Structure
                 for (int j = i + 1; j < edgeLines.Count; j++)
                 {
                     Line l2 = edgeLines[j];
-                    if (l1.Start.SquareDistance(l2.End) <= Tolerance.SqrtDist && l1.End.SquareDistance(l2.Start) <= Tolerance.SqrtDist)
+                    if (l1.Start.SquareDistance(l2.End) <= sqTol && l1.End.SquareDistance(l2.Start) <= sqTol)
                     {
                         edgeLines.RemoveAt(j);
                         edgeLines.RemoveAt(i);

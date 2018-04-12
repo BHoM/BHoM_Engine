@@ -33,12 +33,12 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static bool IsValid(this Arc arc)
+        public static bool IsValid(this Arc arc, double tolerance = Tolerance.Distance)
         {
             if (!arc.Start.IsValid() || !arc.End.IsValid() || !arc.Middle.IsValid())
                 return false;
-
-            if (arc.Start.SquareDistance(arc.End) < Tolerance.SqrtDist || arc.Start.SquareDistance(arc.Middle) < Tolerance.SqrtDist || arc.Middle.SquareDistance(arc.End) < Tolerance.SqrtDist)
+            double sqTol = tolerance * tolerance;
+            if (arc.Start.SquareDistance(arc.End) < sqTol || arc.Start.SquareDistance(arc.Middle) < sqTol || arc.Middle.SquareDistance(arc.End) < sqTol)
                 return false;
 
             return true;
