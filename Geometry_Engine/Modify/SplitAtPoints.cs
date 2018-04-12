@@ -37,8 +37,8 @@ namespace BH.Engine.Geometry
 
             if (cPts.Count > 2)
             {
-                cPts = cPts.CullDuplicates();
-                cPts = cPts.SortAlongCurve(line);
+                cPts = cPts.CullDuplicates(tolerance);
+                cPts = cPts.SortAlongCurve(line, tolerance);
                 for (int i = 0; i < cPts.Count - 1; i++)
                 {
                     result.Add(new Line { Start = cPts[i], End = cPts[i + 1] });
@@ -70,7 +70,7 @@ namespace BH.Engine.Geometry
             List<Polyline> result = new List<Polyline>();
             List<Line> segments = curve.SubParts();
             Polyline section = new Polyline {ControlPoints = new List<Point>() };
-            bool closed = curve.IsClosed();
+            bool closed = curve.IsClosed(tolerance);
             double sqTol = tolerance * tolerance;
             for (int i = 0; i < segments.Count; i++)
             {
@@ -95,8 +95,8 @@ namespace BH.Engine.Geometry
                 
                 if (iPts.Count > 0)
                 {
-                    iPts = iPts.CullDuplicates();
-                    iPts = iPts.SortAlongCurve(l);
+                    iPts = iPts.CullDuplicates(tolerance);
+                    iPts = iPts.SortAlongCurve(l, tolerance);
                     foreach (Point iPt in iPts)
                     {
                         section.ControlPoints.Add(iPt);

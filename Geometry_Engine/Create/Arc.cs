@@ -24,7 +24,7 @@ namespace BH.Engine.Geometry
         public static Arc ArcByCentre(Point centre, Point start, Point end, double tolerance = Tolerance.Distance)
         {
             //Check that start and end points are the same distance from the centre point
-            if (Math.Abs(start.SquareDistance(centre) - end.SquareDistance(centre)) > tolerance * tolerance)
+            if (Math.Abs(start.Distance(centre) - end.Distance(centre)) > tolerance)
                 return null;
 
             Vector v1 = start - centre;

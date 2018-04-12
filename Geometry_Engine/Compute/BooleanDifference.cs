@@ -13,7 +13,7 @@ namespace BH.Engine.Geometry
         
         public static List<Line> BooleanDifference(this Line line, Line refLine, double tolerance = Tolerance.Distance)
         {
-            if (refLine.Length() <= Tolerance.Distance) return new List<Line> { line.Clone() };
+            if (refLine.Length() <= tolerance) return new List<Line> { line.Clone() };
             if (line.IsCollinear(refLine))
             {
                 List<Line> splitLine = line.SplitAtPoints(refLine.ControlPoints());

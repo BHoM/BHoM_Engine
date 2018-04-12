@@ -12,7 +12,7 @@ namespace BH.Engine.Geometry
         public static Polyline Simplify(this Polyline polyline, double tolerance = Tolerance.Distance, double angletolerance = Tolerance.Angle)
         {
             bool isClosed = polyline.IsClosed();
-            List<Point> ctrlPts = polyline.DiscontinuityPoints(angletolerance);
+            List<Point> ctrlPts = polyline.DiscontinuityPoints(angletolerance, tolerance);
             List<Point> newPts = new List<Point>(ctrlPts);
             for (int i = 1; i < ctrlPts.Count - 1; i++)
             {
