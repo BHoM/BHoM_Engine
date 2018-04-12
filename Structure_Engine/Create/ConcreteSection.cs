@@ -45,7 +45,7 @@ namespace BH.Engine.Structure
         public static ConcreteSection ConcreteSectionFromProfile(IProfile profile, Material material = null, string name = "", List<Reinforcement> reinforcement = null)
         {
             List<ICurve> edges = profile.Edges.ToList();
-            Dictionary<string, object> constants = Geometry.Compute.Integrate(edges);
+            Dictionary<string, object> constants = Geometry.Compute.Integrate(edges, Tolerance.MicroDistance);
 
             constants["J"] = profile.ITorsionalConstant();
             constants["Iw"] = profile.IWarpingConstant();

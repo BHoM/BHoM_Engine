@@ -10,7 +10,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Dictionary<string, object> Integrate(List<ICurve> curves)
+        public static Dictionary<string, object> Integrate(List<ICurve> curves, double tolerance = Tolerance.Distance)
         {
             Dictionary<string, object> results = new Dictionary<string, object>();
 
@@ -26,8 +26,8 @@ namespace BH.Engine.Geometry
             double totalWidth = max.X - min.X;
             double totalHeight = max.Y - min.Y;
 
-            List<IntegrationSlice> verticalSlices = Create.IntegrationSlices(curves, Vector.XAxis, totalWidth/1000);
-            List<IntegrationSlice> horizontalSlices = Create.IntegrationSlices(curves, Vector.YAxis, totalHeight/1000);
+            List<IntegrationSlice> verticalSlices = Create.IntegrationSlices(curves, Vector.XAxis, totalWidth/1000, tolerance);
+            List<IntegrationSlice> horizontalSlices = Create.IntegrationSlices(curves, Vector.YAxis, totalHeight/1000, tolerance);
 
             results["VerticalSlices"] = verticalSlices;
             results["HorizontalSlices"] = horizontalSlices;
