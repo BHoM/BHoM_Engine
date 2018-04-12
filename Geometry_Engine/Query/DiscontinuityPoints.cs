@@ -51,11 +51,13 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static List<Point> DiscontinuityPoints(this Polyline curve, double angletolerance = Tolerance.Angle)
+        public static List<Point> DiscontinuityPoints(this Polyline curve, double angleTolerance = Tolerance.Angle, double distTolerance = Tolerance.Distance)
         {
             List<Point> ctrlPts = new List<Point>(curve.ControlPoints);
 
             if (ctrlPts.Count < 3) return ctrlPts;
+
+            double sqTol = distTolerance * distTolerance;
             int j = 0;
             if (!curve.IsClosed()) j += 2;
             for (int i = j; i < ctrlPts.Count; i++)
@@ -66,7 +68,7 @@ namespace BH.Engine.Geometry
                 Vector v1 = ctrlPts[i1] - ctrlPts[i2];
                 Vector v2 = ctrlPts[i] - ctrlPts[i1];
                 double angle = v1.Angle(v2);
-                if (angle <= angletolerance || angle >= (2 * Math.PI) - angletolerance || ctrlPts[i2].SquareDistance(ctrlPts[i1]) <= Tolerance.SqrtDist)
+                if (angle <= angleTolerance || angle >= (2 * Math.PI) - angleTolerance || ctrlPts[i2].SquareDistance(ctrlPts[i1]) <= sqTol)
                 {
                     ctrlPts.RemoveAt(i1);
                     i--;

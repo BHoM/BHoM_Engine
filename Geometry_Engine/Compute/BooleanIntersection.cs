@@ -11,7 +11,7 @@ namespace BH.Engine.Geometry
         /****          public Methods - Lines           ****/
         /***************************************************/
 
-        public static Line BooleanIntersection(this Line line, Line refLine)
+        public static Line BooleanIntersection(this Line line, Line refLine, double tolerance = Tolerance.Distance)
         {
             if (line == null || line.Length() <= Tolerance.Distance || refLine.Length() <= Tolerance.Distance) return null;
             if (line.IsCollinear(refLine))
@@ -29,9 +29,10 @@ namespace BH.Engine.Geometry
                 }
                 else
                 {
+                    double sqTol = tolerance * tolerance;
                     Point aPt = splitLine[0].ControlPoints().Average();
                     Point aRPt = refLine.ControlPoints().Average();
-                    if (aRPt.SquareDistance(splitLine[0]) > Tolerance.SqrtDist && aPt.SquareDistance(refLine) > Tolerance.SqrtDist) return null;
+                    if (aRPt.SquareDistance(splitLine[0]) > sqTol && aPt.SquareDistance(refLine) > sqTol) return null;
                     return line.Clone();
                 }
             }
@@ -71,10 +72,11 @@ namespace BH.Engine.Geometry
         /****         public Methods - Regions          ****/
         /***************************************************/
 
-        public static List<Polyline> BooleanIntersection(this Polyline region, Polyline refRegion)
+        public static List<Polyline> BooleanIntersection(this Polyline region, Polyline refRegion, double tolerance = Tolerance.Distance)
         {
             if (region.IsCoplanar(refRegion))
             {
+                double sqTol = tolerance * tolerance;
                 List<Polyline> result = new List<Polyline>();
                 List<Point> iPts = region.LineIntersections(refRegion);
                 List<Polyline> splitRegion1 = region.SplitAtPoints(iPts);
@@ -93,7 +95,7 @@ namespace BH.Engine.Geometry
                     {
                         foreach (Point cPt in cPts)
                         {
-                            if (cPt.SquareDistance(region.ClosestPoint(cPt)) > Tolerance.SqrtDist)
+                            if (cPt.SquareDistance(region.ClosestPoint(cPt)) > sqTol)
                             {
                                 result.Add(segment);
                                 break;
@@ -105,7 +107,7 @@ namespace BH.Engine.Geometry
                 int i = 0;
                 while (i < result.Count)
                 {
-                    if (result[i].Area() <= Tolerance.SqrtDist) result.RemoveAt(i);
+                    if (result[i].Area() <= sqTol) result.RemoveAt(i);
                     else i++;
                 }
                 return result;
