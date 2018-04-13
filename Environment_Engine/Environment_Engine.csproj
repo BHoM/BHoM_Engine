@@ -70,8 +70,8 @@
     <Compile Include="Query\IsInternal.cs" />
     <Compile Include="Query\Volume.cs" />
     <Compile Include="Query\FloorArea.cs" />
-    <Compile Include="Query\Orientation.cs" />
-    <Compile Include="Query\Inclination.cs" />
+    <Compile Include="Query\Azimuth.cs" />
+    <Compile Include="Query\Tilt.cs" />
     <Compile Include="Query\MaterialType.cs" />
     <Compile Include="Query\SpaceCentrePoint.cs" />
     <Compile Include="Query\Level.cs" />
