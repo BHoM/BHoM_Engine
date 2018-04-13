@@ -68,7 +68,7 @@ namespace BH.Engine.Base
 
             group.Name = name;
 
-            return group as IBHoMGroup;
+            return group;
         }
 
         /***************************************************/
