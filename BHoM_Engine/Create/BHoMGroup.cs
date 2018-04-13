@@ -1,5 +1,6 @@
 ﻿using BH.oM.Base;
 using System.Collections.Generic;
+using System.Collections;
 using System.Linq;
 using System;
 using System.Reflection;
@@ -22,21 +23,22 @@ namespace BH.Engine.Base
                 {
                     Type type = elementList[0].GetType();
 
-                    bool sameType = true;
-
-                    for (int i = 1; i < elementList.Count; i++)
+                    if (type != typeof(T)) //if type is same as T no downcasting using reflection needed
                     {
-                        if (elementList[i].GetType() == type)
-                            continue;
-                        else
-                        {
-                            sameType = false;
-                            break;
-                        }
-                    }
+                        bool sameType = true;
 
-                    if (sameType)
-                        return BHoMGroup(elements, type, name);
+                        for (int i = 1; i < elementList.Count; i++)
+                        {
+                            if (elementList[i].GetType() != type)
+                            {
+                                sameType = false;
+                                break;
+                            }
+                        }
+
+                        if (sameType)
+                            return BHoMGroup(elements, type, name);
+                    }
                 }
             }
 
@@ -57,12 +59,11 @@ namespace BH.Engine.Base
             IBHoMGroup group = Activator.CreateInstance(groupType) as IBHoMGroup;
 
             PropertyInfo info = groupType.GetProperty("Elements");
-            var list = info.GetValue(group);
-            var add = list.GetType().GetMethod("Add");
+            IList list = info.GetValue(group) as IList;
 
             foreach (IBHoMObject obj in elements)
             {
-                add.Invoke(list, new object[] { obj });
+                list.Add(obj);
             }
 
             group.Name = name;
