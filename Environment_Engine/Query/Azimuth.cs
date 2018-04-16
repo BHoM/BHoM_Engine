@@ -32,7 +32,7 @@ namespace BH.Engine.Environment
 
             //The polyline can be locally concave. Check if the polyline is clockwise.
             if (!BH.Engine.Geometry.Query.IsClockwise(pline, plane.Normal))
-                plane.Normal = -1* Geometry.Create.Vector(plane.Normal.X, plane.Normal.Y, plane.Normal.Z);
+                plane.Normal = -plane.Normal;
             
             if (Geometry.Modify.Normalise(plane.Normal).Z == 1)
                 azimuth = 0;
