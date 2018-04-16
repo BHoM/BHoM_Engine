@@ -27,6 +27,9 @@ namespace BH.Engine.Serialiser.BsonSerializers
         {
             if (value == null)
             {
+                //Using context.Writer.WriteNull() leads to problem in the deserialisation. 
+                //We think that BSON think that the types will always be types to be deserialised rather than properties of objects.
+                //If that type is null bson throws an exception believing that it wont be able to deserialise an object of type null, while for this case it is ment to be used as a property.
                 context.Writer.WriteString("");
             }
             else
