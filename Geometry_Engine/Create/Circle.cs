@@ -31,7 +31,7 @@ namespace BH.Engine.Geometry
         
         /***************************************************/
 
-        public static Circle Circle(Point pt1, Point pt2, Point pt3)
+        public static Circle Circle(Point pt1, Point pt2, Point pt3, double tolerance = Tolerance.Distance)
         {
             Vector v1 = pt1 - pt3;
             Vector v2 = pt2 - pt3;
@@ -40,7 +40,8 @@ namespace BH.Engine.Geometry
             Point centre = Query.LineIntersection(
                 Create.Line(pt3 + v1 / 2, v1.CrossProduct(normal)),
                 Create.Line(pt3 + v2 / 2, v2.CrossProduct(normal)),
-                true
+                true,
+                tolerance
             );
 
             return new Circle { Centre = centre, Normal = normal, Radius = pt1.Distance(centre) };
