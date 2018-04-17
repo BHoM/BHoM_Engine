@@ -107,8 +107,8 @@ namespace BH.Engine.Geometry
             }
             section.ControlPoints.Add(curve.ControlPoints.Last());
             result.Add(section);
-            
-            if(result.Count>1 && closed)
+
+            if (result.Count > 1 && closed)
             {
                 result[0].ControlPoints.RemoveAt(0);
                 result[0].ControlPoints.InsertRange(0, result.Last().ControlPoints);

@@ -9,14 +9,14 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Polyline Simplify(this Polyline polyline, double tolerance = Tolerance.Distance, double angletolerance = Tolerance.Angle)
+        public static Polyline Simplify(this Polyline polyline, double distanceTolerance = Tolerance.Distance, double angleTolerance = Tolerance.Angle)
         {
-            bool isClosed = polyline.IsClosed();
-            List<Point> ctrlPts = polyline.DiscontinuityPoints(angletolerance, tolerance);
+            bool isClosed = polyline.IsClosed(distanceTolerance);
+            List<Point> ctrlPts = polyline.DiscontinuityPoints(angleTolerance, distanceTolerance);
             List<Point> newPts = new List<Point>(ctrlPts);
             for (int i = 1; i < ctrlPts.Count - 1; i++)
             {
-                List<Point> checkPoints = new List<Point>() { ctrlPts[i - 1], ctrlPts[i] }.CullDuplicates(tolerance);
+                List<Point> checkPoints = new List<Point>() { ctrlPts[i - 1], ctrlPts[i] }.CullDuplicates(distanceTolerance);
                 if (checkPoints.Count == 1)
                 {
                     ctrlPts.RemoveRange(i - 1, 2);

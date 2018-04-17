@@ -11,7 +11,7 @@ namespace BH.Engine.Geometry
 
         public static Point Mirror(this Point pt, Plane p)
         {
-            return pt - 2 * p.Normal.DotProduct(pt-p.Origin) * p.Normal;
+            return pt - 2 * p.Normal.DotProduct(pt - p.Origin) * p.Normal;
         }
 
         /***************************************************/
