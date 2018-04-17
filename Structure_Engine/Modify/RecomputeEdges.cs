@@ -110,7 +110,7 @@ namespace BH.Engine.Structure
         {
             List<Point> intpts = outline.SubParts().LineIntersections();
             List<Line> edgeLines = new List<Line>();
-            double sqTol = tolerance* tolerance;
+            double sqTol = tolerance * tolerance;
             foreach (Polyline p in outline.SplitAtPoints(intpts))
             {
                 edgeLines.AddRange(p.SubParts());
