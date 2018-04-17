@@ -11,7 +11,7 @@ namespace BH.Engine.Geometry
         /**** public Methods - Vector                   ****/
         /***************************************************/
 
-        public static bool IsCollinear(this List<Point> pts)
+        public static bool IsCollinear(this List<Point> pts, double tolerance = Tolerance.Distance)
         {
             if (pts.Count < 3) return true;
 
@@ -23,8 +23,8 @@ namespace BH.Engine.Geometry
                 vMatrix[i, 2] = pts[i + 1].Z - pts[0].Z;
             }
 
-            double[,] rref = vMatrix.RowEchelonForm(false);
-            int nonZeroRows = rref.CountNonZeroRows();
+            double[,] rref = vMatrix.RowEchelonForm(false, tolerance);
+            int nonZeroRows = rref.CountNonZeroRows(tolerance);
             return nonZeroRows < 2;
         }
 
