@@ -11,44 +11,44 @@ namespace BH.Engine.Geometry
         /**** public Methods - Curves                   ****/
         /***************************************************/
 
-        public static bool IsLinear(this Line line)
+        public static bool IsLinear(this Line line, double tolerance = Tolerance.Distance)
         {
             return true;
         }
 
         /***************************************************/
 
-        public static bool IsLinear(this Arc arc)
+        public static bool IsLinear(this Arc arc, double tolerance = Tolerance.Distance)
         {
-            return arc.ControlPoints().IsCollinear();
+            return arc.ControlPoints().IsCollinear(tolerance);
         }
 
         /***************************************************/
 
-        public static bool IsLinear(this Circle circle)
+        public static bool IsLinear(this Circle circle, double tolerance = Tolerance.Distance)
         {
-            return circle.Radius == 0;
+            return false;
         }
 
         /***************************************************/
 
-        public static bool IsLinear(this NurbCurve curve)
+        public static bool IsLinear(this NurbCurve curve, double tolerance = Tolerance.Distance)
         {
-            return curve.ControlPoints.IsCollinear();
+            return curve.ControlPoints.IsCollinear(tolerance);
         }
 
         /***************************************************/
 
-        public static bool IsLinear(this Polyline curve)
+        public static bool IsLinear(this Polyline curve, double tolerance = Tolerance.Distance)
         {
-            return curve.ControlPoints.IsCollinear();
+            return curve.ControlPoints.IsCollinear(tolerance);
         }
 
         /***************************************************/
 
-        public static bool IsLinear(this PolyCurve curve)
+        public static bool IsLinear(this PolyCurve curve, double tolerance = Tolerance.Distance)
         {
-            return curve.ControlPoints().IsCollinear();
+            return curve.ControlPoints().IsCollinear(tolerance);
         }
 
 
@@ -56,9 +56,9 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
-        public static bool IIsLinear(this ICurve curve)
+        public static bool IIsLinear(this ICurve curve, double tolerance = Tolerance.Distance)
         {
-            return IsLinear(curve as dynamic);
+            return IsLinear(curve as dynamic, tolerance);
         }
 
         /***************************************************/

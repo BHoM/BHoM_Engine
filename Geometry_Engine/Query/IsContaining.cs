@@ -40,7 +40,7 @@ namespace BH.Engine.Geometry
 
         public static bool IsContaining(this Arc curve, List<Point> points, bool acceptOnEdge = true, double tolerance = Tolerance.Distance)
         {
-            if (!curve.IsClosed()) return false;
+            if (!curve.IsClosed(tolerance)) return false;
             Circle circle = new Circle { Centre = curve.Centre(), Radius = curve.Radius(), Normal = curve.FitPlane().Normal };
             return circle.IsContaining(points, acceptOnEdge, tolerance);
         }
@@ -80,13 +80,13 @@ namespace BH.Engine.Geometry
             // - to be replaced with a general method for a nurbs curve?
             // - this is very problematic for edge cases (cutting line going through a sharp corner, to be superseded?
 
-            Plane p = curve.FitPlane();
-            if (curve.IsClosed())
+            Plane p = curve.FitPlane(tolerance);
+            if (curve.IsClosed(tolerance))
             {
                 double sqTol = tolerance * tolerance;
                 foreach (Point pt in points)
                 {
-                    if (pt.IsInPlane(p))
+                    if (pt.IsInPlane(p, tolerance))
                     {
                         List<Point> intersects = curve.LineIntersections(new Line { Start = pt, End = p.Origin }, true, tolerance); // what if the points are in exactly same spot?
                         if ((pt.ClosestPoint(intersects).SquareDistance(pt) <= sqTol))
@@ -95,8 +95,8 @@ namespace BH.Engine.Geometry
                             else return false;
                         }
                         intersects.Add(pt);
-                        intersects = intersects.SortCollinear();
-                        intersects = intersects.CullDuplicates();
+                        intersects = intersects.SortCollinear(tolerance);
+                        intersects = intersects.CullDuplicates(tolerance);
                         for (int j = 0; j < intersects.Count; j++)
                         {
                             if (j % 2 == 0 && intersects[j] == pt) return false;
@@ -117,13 +117,13 @@ namespace BH.Engine.Geometry
             // - to be replaced with a general method for a nurbs curve?
             // - this is very problematic for edge cases (cutting line going through a sharp corner, to be superseded?
 
-            Plane p = curve.FitPlane();
-            if (curve.IsClosed())
+            Plane p = curve.FitPlane(tolerance);
+            if (curve.IsClosed(tolerance))
             {
                 double sqTol = tolerance * tolerance;
                 foreach (Point pt in points)
                 {
-                    if (pt.IsInPlane(p))
+                    if (pt.IsInPlane(p, tolerance))
                     {
                         List<Point> intersects = curve.LineIntersections(new Line { Start = pt, End = p.Origin }, true, tolerance); // what if the points are in exactly same spot?
                         if ((pt.ClosestPoint(intersects).SquareDistance(pt) <= sqTol))
@@ -132,8 +132,8 @@ namespace BH.Engine.Geometry
                             else return false;
                         }
                         intersects.Add(pt);
-                        intersects = intersects.SortCollinear();
-                        intersects = intersects.CullDuplicates();
+                        intersects = intersects.SortCollinear(tolerance);
+                        intersects = intersects.CullDuplicates(tolerance);
                         for (int j = 0; j < intersects.Count; j++)
                         {
                             if (j % 2 == 0 && intersects[j] == pt) return false;
@@ -153,7 +153,7 @@ namespace BH.Engine.Geometry
 
         public static bool IsContaining(this Arc curve1, ICurve curve2, bool acceptOnEdge = true, double tolerance = Tolerance.Distance)
         {
-            if (!curve1.IsClosed()) return false;
+            if (!curve1.IsClosed(tolerance)) return false;
             Circle circle = new Circle { Centre = curve1.Centre(), Radius = curve1.Radius(), Normal = curve1.FitPlane().Normal };
             return circle.IsContaining(curve2);
         }
@@ -170,7 +170,7 @@ namespace BH.Engine.Geometry
             List<double> cParams = new List<double> { 0, 1 };
             foreach (Point iPt in iPts)
             {
-                cParams.Add(curve2.IParameterAtPoint(iPt));
+                cParams.Add(curve2.IParameterAtPoint(iPt, tolerance));
             }
             cParams.Sort();
 

@@ -10,16 +10,17 @@ namespace BH.Engine.Geometry
         /**** Public  Methods                           ****/
         /***************************************************/
 
-        public static double ClosestDistance(this IEnumerable<Point> ptsA, IEnumerable<Point> ptsB)
+        public static double ClosestDistance(this IEnumerable<Point> ptsA, IEnumerable<Point> ptsB, double tolerance = Tolerance.Distance)
         {
+            double sqTol = tolerance * tolerance;
             double closestDist = Double.PositiveInfinity;
             foreach (Point ptB in ptsB)
             {
-                double dist = ptsA.ClosestPoint(ptB).Distance(ptB);
-                if (dist <= Tolerance.Distance) { return dist; }
-                closestDist = dist < closestDist ? dist : closestDist;
+                double sqDist = ptsA.ClosestPoint(ptB).SquareDistance(ptB);
+                if (sqDist <= sqTol) return Math.Sqrt(sqDist);
+                closestDist = sqDist < closestDist ? sqDist : closestDist;
             }
-            return closestDist;
+            return Math.Sqrt(closestDist);
         }
 
         /***************************************************/

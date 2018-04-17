@@ -68,7 +68,7 @@ namespace BH.Engine.Geometry
                 det = e1 * p;                                                                   /*Call function*/
 
                 //if determinant is near zero, ray lies in plane of triangle otherwise not
-                if (det > -Double.Epsilon && det < Double.Epsilon) { continue; }
+                if (det > -tolerance && det < tolerance) { continue; }
                 invDet = 1.0f / det;
 
                 //calculate distance from p1 to ray origin
@@ -119,7 +119,7 @@ namespace BH.Engine.Geometry
             List<Point> points = new List<Point>();
             foreach (Line line in curve.SubParts())
             {
-                points.AddRange(MeshIntersections(line, mesh));
+                points.AddRange(MeshIntersections(line, mesh, tolerance));
             }
             return points;
         }
