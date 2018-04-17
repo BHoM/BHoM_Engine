@@ -11,7 +11,7 @@ namespace BH.Engine.Geometry
         /**** public Methods - Vectors                  ****/
         /***************************************************/
 
-        public static Plane FitPlane(this IEnumerable<Point> points)
+        public static Plane FitPlane(this IEnumerable<Point> points, double tolerance = Tolerance.Distance)
         {
             // Code from http://www.ilikebigbits.com/blog/2015/3/2/plane-from-points
 
@@ -35,32 +35,32 @@ namespace BH.Engine.Geometry
                 zz += r.Z * r.Z;
             }
 
-            double det_x = yy * zz - yz * yz;
-            double det_y = xx * zz - xz * xz;
-            double det_z = xx * yy - xy * xy;
+            double detX = yy * zz - yz * yz;
+            double detY = xx * zz - xz * xz;
+            double detZ = xx * yy - xy * xy;
 
-            double det_max = Math.Max(Math.Max(det_x, det_y), det_z);
-            if (det_max <= 0.0) //The points don't span a plane
+            double det_max = Math.Max(Math.Max(detX, detY), detZ);
+            if (det_max <= tolerance) //The points don't span a plane
                 return null;
 
             // Pick path with best conditioning:
             Vector dir;
-            if (det_max == det_x)
+            if (det_max == detX)
             {
-                double a = (xz * yz - xy * zz) / det_x;
-                double b = (xy * yz - xz * yy) / det_x;
+                double a = (xz * yz - xy * zz) / detX;
+                double b = (xy * yz - xz * yy) / detX;
                 dir = new Vector { X = 1.0, Y = a, Z = b };
             }
-            else if (det_max == det_y)
+            else if (det_max == detY)
             {
-                double a = (yz * xz - xy * zz) / det_y;
-                double b = (xy * xz - yz * xx) / det_y;
+                double a = (yz * xz - xy * zz) / detY;
+                double b = (xy * xz - yz * xx) / detY;
                 dir = new Vector { X = a, Y = 1.0, Z = b };
             }
             else
             {
-                double a = (yz * xy - xz * yy) / det_z;
-                double b = (xz * xy - yz * xx) / det_z;
+                double a = (yz * xy - xz * yy) / detZ;
+                double b = (xz * xy - yz * xx) / detZ;
                 dir = new Vector { X = a, Y = b, Z = 1.0 };
             };
 
@@ -72,44 +72,44 @@ namespace BH.Engine.Geometry
         /**** public Methods - Curves                   ****/
         /***************************************************/
 
-        public static Plane FitPlane(this Arc curve)
+        public static Plane FitPlane(this Arc curve, double tolerance = Tolerance.Distance)
         {
             return Create.Plane(curve.Start, curve.Middle, curve.End);
         }
 
         /***************************************************/
 
-        public static Plane FitPlane(this Circle curve)
+        public static Plane FitPlane(this Circle curve, double tolerance = Tolerance.Distance)
         {
             return new Plane { Origin = curve.Centre, Normal = curve.Normal };
         }
 
         /***************************************************/
 
-        public static Plane FitPlane(this Line curve)
+        public static Plane FitPlane(this Line curve, double tolerance = Tolerance.Distance)
         {
             return null;
         }
 
         /***************************************************/
 
-        public static Plane FitPlane(this NurbCurve curve)
+        public static Plane FitPlane(this NurbCurve curve, double tolerance = Tolerance.Distance)
         {
             throw new NotImplementedException();
         }
 
         /***************************************************/
 
-        public static Plane FitPlane(this PolyCurve curve)
+        public static Plane FitPlane(this PolyCurve curve, double tolerance = Tolerance.Distance)
         {
-            return FitPlane(curve.Curves.SelectMany(x => x.IControlPoints()));
+            return FitPlane(curve.Curves.SelectMany(x => x.IControlPoints()), tolerance);
         }
 
         /***************************************************/
 
-        public static Plane FitPlane(this Polyline curve)
+        public static Plane FitPlane(this Polyline curve, double tolerance = Tolerance.Distance)
         {
-            return FitPlane(curve.ControlPoints);
+            return FitPlane(curve.ControlPoints, tolerance);
         }
 
 
@@ -117,9 +117,9 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
-        public static Plane IFitPlane(this ICurve curve)
+        public static Plane IFitPlane(this ICurve curve, double tolerance = Tolerance.Distance)
         {
-            return FitPlane(curve as dynamic);
+            return FitPlane(curve as dynamic, tolerance);
         }
 
         /***************************************************/
