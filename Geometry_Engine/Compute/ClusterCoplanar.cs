@@ -11,7 +11,7 @@ namespace BH.Engine.Geometry
         /****         public Methods - Vectors          ****/
         /***************************************************/
 
-        public static List<List<Plane>> ClusterCoplanar(this List<Plane> planes)
+        public static List<List<Plane>> ClusterCoplanar(this List<Plane> planes, double distanceTolerance = Tolerance.Distance, double angleTolerance = Tolerance.Angle)
         {
             List<List<Plane>> planeClusters = new List<List<Plane>>();
             foreach (Plane p in planes)
@@ -19,7 +19,7 @@ namespace BH.Engine.Geometry
                 bool coplanar = false;
                 foreach (List<Plane> pp in planeClusters)
                 {
-                    if (p.IsCoplanar(pp[0]))
+                    if (p.IsCoplanar(pp[0], distanceTolerance, angleTolerance))
                     {
                         pp.Add(p.Clone());
                         coplanar = true;
@@ -36,7 +36,7 @@ namespace BH.Engine.Geometry
         /****          public Methods - Curves          ****/
         /***************************************************/
 
-        public static List<List<Polyline>> ClusterCoplanar(this List<Polyline> curves)
+        public static List<List<Polyline>> ClusterCoplanar(this List<Polyline> curves, double distanceTolerance = Tolerance.Distance)
         {
             List<List<Polyline>> curveClusters = new List<List<Polyline>>();
             foreach (Polyline p in curves)
@@ -44,7 +44,7 @@ namespace BH.Engine.Geometry
                 bool coplanar = false;
                 foreach (List<Polyline> pp in curveClusters)
                 {
-                    if (p.IsCoplanar(pp[0]))
+                    if (p.IsCoplanar(pp[0], distanceTolerance))
                     {
                         pp.Add(p.Clone());
                         coplanar = true;

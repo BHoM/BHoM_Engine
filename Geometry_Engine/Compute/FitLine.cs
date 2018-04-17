@@ -11,7 +11,7 @@ namespace BH.Engine.Geometry
         /**** public Methods - Vectors                  ****/
         /***************************************************/
 
-        public static Line FitLine(this IEnumerable<Point> points)
+        public static Line FitLine(this IEnumerable<Point> points, double tolerance = Tolerance.Distance)
         {
             // Based on https://www.scribd.com/doc/31477970/Regressions-et-trajectoires-3D
 
@@ -61,7 +61,7 @@ namespace BH.Engine.Geometry
             double sqrDeltaM;
             double cc = -c2 / 3;
             
-            if (R > 0)
+            if (R > tolerance)
             {
                 sqrDeltaM = cc + Math.Pow(-q * 0.5 + Math.Sqrt(R), 1.0 / 3.0) + Math.Pow(-q * 0.5 - Math.Sqrt(R), 1.0 / 3.0);
             }

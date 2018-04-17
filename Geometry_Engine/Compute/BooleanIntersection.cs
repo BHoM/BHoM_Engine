@@ -14,9 +14,9 @@ namespace BH.Engine.Geometry
         public static Line BooleanIntersection(this Line line, Line refLine, double tolerance = Tolerance.Distance)
         {
             if (line == null || line.Length() <= tolerance || refLine.Length() <= tolerance) return null;
-            if (line.IsCollinear(refLine))
+            if (line.IsCollinear(refLine, tolerance))
             {
-                List<Line> splitLine = line.SplitAtPoints(refLine.ControlPoints());
+                List<Line> splitLine = line.SplitAtPoints(refLine.ControlPoints(), tolerance);
                 if (splitLine.Count == 3)
                 {
                     return splitLine[1];
@@ -24,16 +24,14 @@ namespace BH.Engine.Geometry
                 else if (splitLine.Count == 2)
                 {
                     Point aPt = refLine.ControlPoints().Average();
-                    if (line.Start.SquareDistance(aPt) < line.End.SquareDistance(aPt)) return splitLine[0];
-                    return splitLine[1];
+                    return line.Start.SquareDistance(aPt) < line.End.SquareDistance(aPt) ? splitLine[0] : splitLine[1];
                 }
                 else
                 {
                     double sqTol = tolerance * tolerance;
                     Point aPt = splitLine[0].ControlPoints().Average();
                     Point aRPt = refLine.ControlPoints().Average();
-                    if (aRPt.SquareDistance(splitLine[0]) > sqTol && aPt.SquareDistance(refLine) > sqTol) return null;
-                    return line.Clone();
+                    return aRPt.SquareDistance(splitLine[0]) > sqTol && aPt.SquareDistance(refLine) > sqTol ? null : line.Clone();
                 }
             }
             return null;
@@ -50,7 +48,7 @@ namespace BH.Engine.Geometry
                 Line intersection = line.BooleanIntersection(l, tolerance);
                 if (intersection != null) result.Add(intersection);
             }
-            result = result.BooleanUnion();
+            result = result.BooleanUnion(tolerance);
             return result;
         }
 
@@ -74,7 +72,7 @@ namespace BH.Engine.Geometry
 
         public static List<Polyline> BooleanIntersection(this Polyline region, Polyline refRegion, double tolerance = Tolerance.Distance)
         {
-            if (region.IsCoplanar(refRegion))
+            if (region.IsCoplanar(refRegion, tolerance))
             {
                 double sqTol = tolerance * tolerance;
                 List<Polyline> result = new List<Polyline>();
@@ -85,7 +83,7 @@ namespace BH.Engine.Geometry
                 {
                     List<Point> cPts = segment.SubParts().Select(s => s.ControlPoints().Average()).ToList();
                     cPts.AddRange(segment.ControlPoints);
-                    if (refRegion.IsContaining(cPts, true)) result.Add(segment);
+                    if (refRegion.IsContaining(cPts, true, tolerance)) result.Add(segment);
                 }
                 foreach (Polyline segment in splitRegion2)
                 {

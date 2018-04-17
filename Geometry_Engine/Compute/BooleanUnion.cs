@@ -11,13 +11,13 @@ namespace BH.Engine.Geometry
         /****          public Methods - Lines           ****/
         /***************************************************/
 
-        public static List<Line> BooleanUnion(this Line line, Line refLine)
+        public static List<Line> BooleanUnion(this Line line, Line refLine, double tolerance = Tolerance.Distance)
         {
             if (line.IsCollinear(refLine))
             {
                 List<Point> cPts = line.ControlPoints();
                 cPts.AddRange(refLine.ControlPoints());
-                cPts = cPts.SortCollinear();
+                cPts = cPts.SortCollinear(tolerance);
                 return new List<Line> { new Line { Start = cPts[0], End = cPts.Last() } };
             }
 
@@ -26,7 +26,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static List<Line> BooleanUnion(this List<Line> lines)
+        public static List<Line> BooleanUnion(this List<Line> lines, double tolerance = Tolerance.Distance)
         {
             List<Line> result = lines.Select(l => l.Clone()).ToList();
             bool union;
@@ -38,7 +38,7 @@ namespace BH.Engine.Geometry
                     if (union) break;
                     for (int j = i + 1; j < result.Count; j++)
                     {
-                        List<Line> uLines = result[i].BooleanUnion(result[j]);
+                        List<Line> uLines = result[i].BooleanUnion(result[j], tolerance);
                         if (uLines.Count == 1)
                         {
                             result.RemoveAt(j);
@@ -58,7 +58,7 @@ namespace BH.Engine.Geometry
         /****         public Methods - Regions          ****/
         /***************************************************/
 
-        public static List<Polyline> BooleanUnion(this List<Polyline> regions)
+        public static List<Polyline> BooleanUnion(this List<Polyline> regions, double tolerance = Tolerance.Distance)
         {
             List<Polyline> cutRegions = regions.Select(r => r.Clone()).ToList();
             List<Polyline> result = new List<Polyline>();
@@ -74,7 +74,7 @@ namespace BH.Engine.Geometry
                     union = false;
                     for (int i = 0; i < cutRegions.Count; i++)
                     {
-                        union = cutRegions[i].BooleanUnion(uRegion, out uRegions);
+                        union = cutRegions[i].BooleanUnion(uRegion, out uRegions, tolerance);
                         if (union)
                         {
                             cutRegions.RemoveAt(i);
@@ -87,12 +87,11 @@ namespace BH.Engine.Geometry
                             openings.AddRange(uRegions.Skip(1));
                             break;
                         }
-
                     }
                 } while (union);
                 result.Add(uRegion);
             }
-            result.AddRange(openings.BooleanDifference(regions));
+            result.AddRange(openings.BooleanDifference(regions, tolerance));
             return result;
         }
 
@@ -105,10 +104,9 @@ namespace BH.Engine.Geometry
         {
             result = new List<Polyline>();
 
-            if (region1.IsCoplanar(region2))
+            if (region1.IsCoplanar(region2, tolerance))
             {
-                double sqTol = tolerance * tolerance;
-                Plane p1 = region1.FitPlane();
+                Plane p1 = region1.FitPlane(tolerance);
                 if (!region1.IsClockwise(p1.Normal)) region1 = region1.Clone().Flip();
                 if (!region2.IsClockwise(p1.Normal)) region2 = region2.Clone().Flip();
 
@@ -126,6 +124,7 @@ namespace BH.Engine.Geometry
                 }
                 else
                 {
+                    double sqTol = tolerance * tolerance;
                     List<Point> iPts = region1.LineIntersections(region2, tolerance);
                     List<Polyline> splitRegion1 = region1.SplitAtPoints(iPts, tolerance);
                     List<Polyline> splitRegion2 = region2.SplitAtPoints(iPts, tolerance);
@@ -140,8 +139,8 @@ namespace BH.Engine.Geometry
                         List<Line> subparts = segment.SubParts();
                         List<Point> cPts = subparts.Select(s => s.ControlPoints().Average()).ToList();
                         cPts.AddRange(segment.ControlPoints);
-                        if (!region2.IsContaining(cPts, true)) result.Add(segment);
-                        else if (!region2.IsContaining(cPts, false))
+                        if (!region2.IsContaining(cPts, true, tolerance)) result.Add(segment);
+                        else if (!region2.IsContaining(cPts, false, tolerance))
                         {
                             foreach (Polyline r in splitRegion2)
                             {

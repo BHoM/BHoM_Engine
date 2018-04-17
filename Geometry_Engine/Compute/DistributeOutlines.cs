@@ -12,11 +12,11 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static List<List<Polyline>> DistributeOutlines(this List<Polyline> outlines)
+        public static List<List<Polyline>> DistributeOutlines(this List<Polyline> outlines, double tolerance = Tolerance.Distance)
         {
             foreach (Polyline p in outlines)
             {
-                if (!p.IsClosed()) throw new Exception("All curves need to be closed to create a panel");
+                if (!p.IsClosed(tolerance)) throw new Exception("All curves need to be closed to create a panel");
             }
 
             outlines.Sort(delegate (Polyline p1, Polyline p2)
@@ -31,7 +31,7 @@ namespace BH.Engine.Geometry
                 bool assigned = false;
                 for (int i = outlinesByType.Count - 1; i >= 0; i--)
                 {
-                    if (outlinesByType[i].Item1.IsContaining(o.ControlPoints, true))
+                    if (outlinesByType[i].Item1.IsContaining(o.ControlPoints, true, tolerance))
                     {
                         outlinesByType.Add(new Tuple<Polyline, bool>(o, !outlinesByType[i].Item2));
                         assigned = true;
@@ -45,16 +45,16 @@ namespace BH.Engine.Geometry
             }
             List<Polyline> panelOutlines = outlinesByType.Where(x => x.Item2 == true).Select(x => x.Item1.Clone()).ToList();
             List<Polyline> panelOpenings = outlinesByType.Where(x => x.Item2 == false).Select(x => x.Item1.Clone()).ToList();
-            return panelOutlines.DistributeOpenings(panelOpenings);
+            return panelOutlines.DistributeOpenings(panelOpenings, tolerance);
         }
 
         /***************************************************/
 
-        public static List<List<ICurve>> DistributeOutlines(this List<ICurve> outlines)
+        public static List<List<ICurve>> DistributeOutlines(this List<ICurve> outlines, double tolerance = Tolerance.Distance)
         {
             foreach (ICurve p in outlines)
             {
-                if (!p.IIsClosed()) throw new Exception("All curves need to be closed to create a panel");
+                if (!p.IIsClosed(tolerance)) throw new Exception("All curves need to be closed to create a panel");
             }
 
             outlines.Sort(delegate (ICurve p1, ICurve p2)
@@ -69,7 +69,7 @@ namespace BH.Engine.Geometry
                 bool assigned = false;
                 for (int i = outlinesByType.Count - 1; i >= 0; i--)
                 {
-                    if (outlinesByType[i].Item1.IIsContaining(o, true))
+                    if (outlinesByType[i].Item1.IIsContaining(o, true, tolerance))
                     {
                         outlinesByType.Add(new Tuple<ICurve, bool>(o, !outlinesByType[i].Item2));
                         assigned = true;
@@ -83,7 +83,7 @@ namespace BH.Engine.Geometry
             }
             List<ICurve> panelOutlines = outlinesByType.Where(x => x.Item2 == true).Select(x => x.Item1.IClone()).ToList();
             List<ICurve> panelOpenings = outlinesByType.Where(x => x.Item2 == false).Select(x => x.Item1.IClone()).ToList();
-            return panelOutlines.DistributeOpenings(panelOpenings);
+            return panelOutlines.DistributeOpenings(panelOpenings, tolerance);
         }
 
 
@@ -91,7 +91,7 @@ namespace BH.Engine.Geometry
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private static List<List<Polyline>> DistributeOpenings(this List<Polyline> panels, List<Polyline> openings)
+        private static List<List<Polyline>> DistributeOpenings(this List<Polyline> panels, List<Polyline> openings, double tolerance = Tolerance.Distance)
         {
             List<List<Polyline>> result = new List<List<Polyline>>();
             foreach (Polyline p in panels)
@@ -104,7 +104,7 @@ namespace BH.Engine.Geometry
             {
                 for (int i = 0; i < result.Count; i++)
                 {
-                    if (result[i][0].IsContaining(o.ControlPoints, true))
+                    if (result[i][0].IsContaining(o.ControlPoints, true, tolerance))
                     {
                         result[i].Add(o);
                         break;
@@ -116,7 +116,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        private static List<List<PolyCurve>> DistributeOpenings(this List<PolyCurve> panels, List<PolyCurve> openings)
+        private static List<List<PolyCurve>> DistributeOpenings(this List<PolyCurve> panels, List<PolyCurve> openings, double tolerance = Tolerance.Distance)
         {
             List<List<PolyCurve>> result = new List<List<PolyCurve>>();
             foreach (PolyCurve p in panels)
@@ -129,7 +129,7 @@ namespace BH.Engine.Geometry
             {
                 for (int i = 0; i < result.Count; i++)
                 {
-                    if (result[i][0].IsContaining(o, true))
+                    if (result[i][0].IsContaining(o, true, tolerance))
                     {
                         result[i].Add(o);
                         break;
@@ -141,7 +141,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        private static List<List<ICurve>> DistributeOpenings(this List<ICurve> panels, List<ICurve> openings)
+        private static List<List<ICurve>> DistributeOpenings(this List<ICurve> panels, List<ICurve> openings, double tolerance = Tolerance.Distance)
         {
             List<List<ICurve>> result = new List<List<ICurve>>();
             foreach (ICurve p in panels)
@@ -154,7 +154,7 @@ namespace BH.Engine.Geometry
             {
                 for (int i = 0; i < result.Count; i++)
                 {
-                    if (result[i][0].IIsContaining(o, true))
+                    if (result[i][0].IIsContaining(o, true, tolerance))
                     {
                         result[i].Add(o);
                         break;

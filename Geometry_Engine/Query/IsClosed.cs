@@ -20,14 +20,14 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static bool IsClosed(this Circle circle)
+        public static bool IsClosed(this Circle circle, double tolerance = Tolerance.Distance)
         {
             return true;
         }
 
         /***************************************************/
 
-        public static bool IsClosed(this Line line)
+        public static bool IsClosed(this Line line, double tolerance = Tolerance.Distance)
         {
             return false;
         }
@@ -73,9 +73,9 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
-        public static bool IIsClosed(this ICurve curve)
+        public static bool IIsClosed(this ICurve curve, double tolerance = Tolerance.Distance)
         {
-            return IsClosed(curve as dynamic);
+            return IsClosed(curve as dynamic, tolerance);
         }
 
         /***************************************************/
