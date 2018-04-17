@@ -12,22 +12,22 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static List<PanelPlanar> RecomputeEdges(this PanelPlanar panel)
+        public static List<PanelPlanar> RecomputeEdges(this PanelPlanar panel, double tolerance = Tolerance.Distance)
         {
             List<PanelPlanar> result = new List<PanelPlanar>();
 
-            List<Polyline> removedDuplicates = panel.Outline().RemoveDuplicateEdges();
+            List<Polyline> removedDuplicates = panel.Outline().RemoveDuplicateEdges(tolerance);
             foreach (Opening o in panel.Openings)
             {
-                removedDuplicates.AddRange(o.Outline().RemoveDuplicateEdges());
+                removedDuplicates.AddRange(o.Outline().RemoveDuplicateEdges(tolerance));
             }
-            List<List<Polyline>> distributedOutlines = removedDuplicates.DistributeOutlines();
+            List<List<Polyline>> distributedOutlines = removedDuplicates.DistributeOutlines(tolerance);
             
             for(int i = distributedOutlines.Count - 1; i >= 0; i--)
             {
                 List<Polyline> outlines = distributedOutlines[i];
-                List<Polyline> newOutlines = outlines.Take(1).ToList().BooleanDifference(outlines.Skip(1).ToList());
-                distributedOutlines.AddRange(newOutlines.DistributeOutlines());
+                List<Polyline> newOutlines = outlines.Take(1).ToList().BooleanDifference(outlines.Skip(1).ToList(), tolerance);
+                distributedOutlines.AddRange(newOutlines.DistributeOutlines(tolerance));
                 distributedOutlines.RemoveAt(i);
             }
 
@@ -44,11 +44,11 @@ namespace BH.Engine.Structure
                     foreach (Opening o in panel.Openings)
                     {
                         if (edgeFound) break;
-                        edge = l.AssignEdgeProperties(o.Edges, out edgeFound);
+                        edge = l.AssignEdgeProperties(o.Edges, out edgeFound, tolerance);
                     }
                     if (!edgeFound)
                     {
-                        edge = l.AssignEdgeProperties(panel.ExternalEdges, out edgeFound);
+                        edge = l.AssignEdgeProperties(panel.ExternalEdges, out edgeFound, tolerance);
                     }
 
                     if (edgeFound) externalEdges.Add(edge);
@@ -56,7 +56,7 @@ namespace BH.Engine.Structure
                 }
                 pp.ExternalEdges = externalEdges;
 
-                foreach (Polyline p in panelOutlines.Skip(1).ToList().BooleanUnion())
+                foreach (Polyline p in panelOutlines.Skip(1).ToList().BooleanUnion(tolerance))
                 {
                     List<Edge> oEdges = new List<Edge>();
                     Edge edge = null;
@@ -66,7 +66,7 @@ namespace BH.Engine.Structure
                         foreach (Opening o in panel.Openings)
                         {
                             if (edgeFound) break;
-                            edge = l.AssignEdgeProperties(o.Edges, out edgeFound);
+                            edge = l.AssignEdgeProperties(o.Edges, out edgeFound, tolerance);
                         }
 
                         if (edgeFound) oEdges.Add(edge);
@@ -108,10 +108,10 @@ namespace BH.Engine.Structure
 
         private static List<Polyline> RemoveDuplicateEdges(this Polyline outline, double tolerance = Tolerance.Distance)
         {
-            List<Point> intpts = outline.SubParts().LineIntersections();
+            List<Point> intpts = outline.SubParts().LineIntersections(false, tolerance);
             List<Line> edgeLines = new List<Line>();
             double sqTol = tolerance * tolerance;
-            foreach (Polyline p in outline.SplitAtPoints(intpts))
+            foreach (Polyline p in outline.SplitAtPoints(intpts, tolerance))
             {
                 edgeLines.AddRange(p.SubParts());
             }
@@ -132,7 +132,7 @@ namespace BH.Engine.Structure
                     }
                 }
             }
-            return edgeLines.Join();
+            return edgeLines.Join(tolerance);
         }
 
         /******************************************/
