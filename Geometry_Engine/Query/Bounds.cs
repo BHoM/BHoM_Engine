@@ -116,7 +116,7 @@ namespace BH.Engine.Geometry
             //Finding potential extreme values for x, y and z. Solving for A' = 0
 
             //Extreme x
-            double theta = Math.Abs(a1) > Tolerance.Angle ? Math.Atan(b1 / a1) : Math.PI/2;
+            double theta = Math.Abs(a1) > Tolerance.Angle ? Math.Atan(b1 / a1) : Math.PI / 2;
             while (theta < angle)
             {
                 if (theta > 0)
@@ -129,7 +129,7 @@ namespace BH.Engine.Geometry
             }
 
             //Extreme y
-            theta = Math.Abs(a2) > Tolerance.Angle ? Math.Atan(b2 / a2) : Math.PI/2;
+            theta = Math.Abs(a2) > Tolerance.Angle ? Math.Atan(b2 / a2) : Math.PI / 2;
             while (theta < angle)
             {
                 if (theta > 0)
@@ -142,7 +142,7 @@ namespace BH.Engine.Geometry
             }
 
             //Extreme z
-            theta = Math.Abs(a3) > Tolerance.Angle ? Math.Atan(b3 / a3) : Math.PI/2;
+            theta = Math.Abs(a3) > Tolerance.Angle ? Math.Atan(b3 / a3) : Math.PI / 2;
             while (theta < angle)
             {
                 if (theta > 0)

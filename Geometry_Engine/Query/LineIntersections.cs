@@ -55,9 +55,9 @@ namespace BH.Engine.Geometry
                     }
                 case 1:                                                                     // collinear
                     if (l1.Infinite || l2.Infinite) return null;
-                    double sqrTol = tolerance * tolerance;
-                    if (p1.SquareDistance(p2) <= sqrTol || p1.SquareDistance(l2.End) <= sqrTol) return p1;
-                    else if (l1.End.SquareDistance(p2) <= sqrTol || l1.End.SquareDistance(l2.End) <= sqrTol) return l1.End;
+                    double sqTol = tolerance * tolerance;
+                    if (p1.SquareDistance(p2) <= sqTol || p1.SquareDistance(l2.End) <= sqTol) return p1;
+                    else if (l1.End.SquareDistance(p2) <= sqTol || l1.End.SquareDistance(l2.End) <= sqTol) return l1.End;
                     else return null;
             }
             return null;
@@ -93,7 +93,7 @@ namespace BH.Engine.Geometry
                 for (int j = i + 1; j < lines.Count; j++)
                 {
                     Point result;
-                    if (useInfiniteLine || Query.IsInRange(boxes[i], boxes[j]))
+                    if (useInfiniteLine || Query.IsInRange(boxes[i], boxes[j], tolerance))
                     {
                         result = LineIntersection(lines[i], lines[j], useInfiniteLine, tolerance);
                         if (result != null) intersections.Add(result);
@@ -119,13 +119,13 @@ namespace BH.Engine.Geometry
 
             if (Math.Abs(p.Normal.DotProduct(l.Direction())) > Tolerance.Angle)
             {
-                Point pt = l.PlaneIntersection(p);
+                Point pt = l.PlaneIntersection(p, tolerance);
                 if (pt != null && Math.Abs(pt.Distance(center) - radius) <= tolerance) iPts.Add(pt);
             }
             else
             {
                 Circle c = new Circle { Centre = center, Normal = p.Normal, Radius = radius };
-                iPts = c.LineIntersections(l, useInfiniteLine);
+                iPts = c.LineIntersections(l, useInfiniteLine, tolerance);
             }
 
             List<Point> output = new List<Point>();
@@ -152,7 +152,7 @@ namespace BH.Engine.Geometry
             Plane p = new Plane { Origin = circle.Centre, Normal = circle.Normal };
             if (Math.Abs(circle.Normal.DotProduct(l.Direction())) > Tolerance.Angle)
             {
-                Point pt = l.PlaneIntersection(p);
+                Point pt = l.PlaneIntersection(p, tolerance);
                 if (pt != null && Math.Abs(pt.Distance(circle.Centre) - circle.Radius) <= tolerance) iPts.Add(pt);
             }
             else
@@ -172,9 +172,10 @@ namespace BH.Engine.Geometry
             if (l.Infinite) return iPts;
 
             List<Point> output = new List<Point>();
+            double sqTol = tolerance * tolerance;
             foreach (Point pt in iPts)
             {
-                if (pt.Distance(l) <= tolerance) output.Add(pt);
+                if (pt.SquareDistance(l) <= sqTol) output.Add(pt);
             }
             return output;
         }
@@ -189,7 +190,7 @@ namespace BH.Engine.Geometry
             List<Point> iPts = new List<Point>();
             foreach (Line ln in curve.SubParts())
             {
-                Point pt = ln.LineIntersection(l);
+                Point pt = ln.LineIntersection(l, tolerance);
                 if (pt != null) iPts.Add(pt);
             }
 
@@ -206,7 +207,7 @@ namespace BH.Engine.Geometry
             List<Point> iPts = new List<Point>();
             foreach (ICurve c in curve.SubParts())
             {
-                iPts.AddRange(c.ILineIntersections(l));
+                iPts.AddRange(c.ILineIntersections(l, tolerance));
             }
 
             return iPts;
@@ -222,7 +223,7 @@ namespace BH.Engine.Geometry
             {
                 foreach(Line l2 in subparts)
                 {
-                    Point pt = l1.LineIntersection(l2);
+                    Point pt = l1.LineIntersection(l2, tolerance);
                     if (pt != null) iPts.Add(pt);
                 }
             }

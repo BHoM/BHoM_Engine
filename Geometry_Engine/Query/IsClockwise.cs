@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Collections.Generic;
 using System;
-using BH.oM.Geometry;
 
 namespace BH.Engine.Geometry
 {
@@ -12,10 +11,10 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static bool IsClockwise(this Polyline polyline, Vector normal)
+        public static bool IsClockwise(this Polyline polyline, Vector normal, double tolerance = Tolerance.Distance)
         {
-            if (!polyline.IsClosed()) throw new Exception("The polyline is not closed. IsClockwise method is relevant only to closed curves.");
-            List<Point> cc = polyline.DiscontinuityPoints();
+            if (!polyline.IsClosed(tolerance)) throw new Exception("The polyline is not closed. IsClockwise method is relevant only to closed curves.");
+            List<Point> cc = polyline.DiscontinuityPoints(tolerance);
             Vector dir1 = (cc[0] - cc.Last()).Normalise();
             Vector dir2;
             double angleTot = 0;
@@ -30,10 +29,10 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static bool IsClockwise(this PolyCurve curve, Vector normal)
+        public static bool IsClockwise(this PolyCurve curve, Vector normal, double tolerance = Tolerance.Distance)
         {
-            if (!curve.IsClosed()) throw new Exception("The curve is not closed. IsClockwise method is relevant only to closed curves.");
-            List<Point> cc = curve.ControlPoints().CullDuplicates();        //TODO: PolyCurve.DiscontinuityPoints() would be more robust
+            if (!curve.IsClosed(tolerance)) throw new Exception("The curve is not closed. IsClockwise method is relevant only to closed curves.");
+            List<Point> cc = curve.ControlPoints().CullDuplicates(tolerance);        //TODO: PolyCurve.DiscontinuityPoints() would be more robust
             Vector dir1 = (cc[0] - cc.Last()).Normalise();
             Vector dir2;
             double angleTot = 0;
@@ -48,9 +47,9 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static bool IsClockwise(this Polyline polyline, Point viewPoint)
+        public static bool IsClockwise(this Polyline polyline, Point viewPoint, double tolerance = Tolerance.Distance)
         {
-            Plane plane = polyline.FitPlane();
+            Plane plane = polyline.FitPlane(tolerance);
 
             Point projectedPoint = viewPoint.Project(plane);
             Vector vector = (projectedPoint - viewPoint).Normalise();
@@ -60,9 +59,9 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static bool IsClockwise(this PolyCurve curve, Point viewPoint)
+        public static bool IsClockwise(this PolyCurve curve, Point viewPoint, double tolerance = Tolerance.Distance)
         {
-            Plane plane = curve.FitPlane();
+            Plane plane = curve.FitPlane(tolerance);
 
             Point projectedPoint = viewPoint.Project(plane);
             Vector vector = (projectedPoint - viewPoint).Normalise();
@@ -72,14 +71,24 @@ namespace BH.Engine.Geometry
 
          /***************************************************/
 
-        public static bool IsClockwise(this Arc arc, Vector axis)
+        public static bool IsClockwise(this Arc arc, Vector axis, double tolerance = Tolerance.Distance)
         {
-            Point centre = arc.Centre();
+            Point centre = arc.Centre(tolerance);
             Vector a = arc.Start - centre;
             Vector b = arc.End - centre;
             Vector crossproduct = a.CrossProduct(b);
 
             return ((crossproduct.DotProduct(axis) < 0) != (arc.Angle() > Math.PI));       
+        }
+
+
+        /***************************************************/
+        /**** Public Methods - Interfaces               ****/
+        /***************************************************/
+        
+        public static bool IIsClockwise(this ICurve curve, Vector axis, double tolerance = Tolerance.Distance)
+        {
+            return IsClockwise(curve as dynamic, axis, tolerance);
         }
 
         /***************************************************/

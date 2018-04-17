@@ -33,7 +33,7 @@ namespace BH.Engine.Geometry
         {
             double angle = Angle(a, b);
 
-            Vector crossproduct =a.CrossProduct(b);
+            Vector crossproduct = a.CrossProduct(b);
             if (crossproduct.DotProduct(normal) < 0)
                 return -angle;
             else

@@ -100,7 +100,7 @@ namespace BH.Engine.Geometry
             if (curve.Normal.IsParallel(plane.Normal) != 0)
                 return new List<Point>();
 
-            Line l = plane.PlaneIntersection(new Plane { Origin = curve.Centre, Normal = curve.Normal });
+            Line l = plane.PlaneIntersection(new Plane { Origin = curve.Centre, Normal = curve.Normal }, tolerance);
 
             Point tempPt = l.ClosestPoint(curve.Centre, true);
 
@@ -111,7 +111,7 @@ namespace BH.Engine.Geometry
             else if (centreDist < curve.Radius)
             {
                 Vector v = l.Direction();
-                double dist = Math.Sqrt(curve.Radius*curve.Radius - centreDist*centreDist);
+                double dist = Math.Sqrt(curve.Radius * curve.Radius - centreDist * centreDist);
                 v = v * dist;
                 return new List<Point> { tempPt + v, tempPt - v };
             }
@@ -292,7 +292,7 @@ namespace BH.Engine.Geometry
             List<int> sameSide = plane.Side(curve.ControlPoints, tolerance);
 
             int previousSide = sameSide[0];
-            int Length = curve.IsClosed() && sameSide[sameSide.Count - 1] == 0 ? sameSide.Count - 1 : sameSide.Count;
+            int Length = curve.IsClosed(tolerance) && sameSide[sameSide.Count - 1] == 0 ? sameSide.Count - 1 : sameSide.Count;
 
             for (int i = 1; i < Length; i++)
             {
@@ -307,7 +307,7 @@ namespace BH.Engine.Geometry
                     }
                     else
                     {
-                        result.Add(curve.ControlPoints[i-1]);
+                        result.Add(curve.ControlPoints[i - 1]);
                     }
                     previousSide = sameSide[i];
                 }
@@ -340,7 +340,7 @@ namespace BH.Engine.Geometry
         {
               
             double mid = (minT + maxT) / 2;
-            if (minT == maxT)
+            if (Math.Abs(minT - maxT) <= tolerance)
             {
                 return p1;
             }

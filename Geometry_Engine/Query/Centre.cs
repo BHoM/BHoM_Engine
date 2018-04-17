@@ -10,7 +10,7 @@ namespace BH.Engine.Geometry
         /**** Curves                                    ****/
         /***************************************************/
 
-        public static Point Centre(this Arc arc)
+        public static Point Centre(this Arc arc, double tolerance = Tolerance.Distance)
         {
             Vector v1 = arc.Start - arc.Middle;
             Vector v2 = arc.End - arc.Middle;
@@ -19,15 +19,18 @@ namespace BH.Engine.Geometry
             return Query.LineIntersection(
                 Create.Line(arc.Middle + v1 / 2, v1.CrossProduct(normal)),
                 Create.Line(arc.Middle + v2 / 2, v2.CrossProduct(normal)),
-                true
+                true,
+                tolerance
             );
         }
 
         /***************************************************/
 
-        public static Point Centre(this Polyline polyline)
+        public static Point Centre(this Polyline polyline, double tolerance = Tolerance.Distance)
         {
-            if (!polyline.IsClosed()) return polyline.ControlPoints.Average(); // TODO: not true for a self-intersecting polyline?
+            //TODO: this is an average point, not centroid - should be distinguished
+
+            if (!polyline.IsClosed(tolerance)) return polyline.ControlPoints.Average(); // TODO: not true for a self-intersecting polyline?
             else return polyline.ControlPoints.GetRange(0, polyline.ControlPoints.Count - 1).Average();
         }
 

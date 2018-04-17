@@ -15,7 +15,7 @@ namespace BH.Engine.Geometry
         {
             if (curve.ClosestPoint(point).SquareDistance(point) > tolerance * tolerance) return -1;
             Point centre = curve.Centre();
-            Vector normal = curve.FitPlane().Normal;
+            Vector normal = curve.FitPlane(tolerance).Normal;
             Vector v1 = curve.Start - centre;
             Vector v2 = point - centre;
             return ((v1.SignedAngle(v2, normal) + 2 * Math.PI) % (2 * Math.PI)) / curve.Angle();
@@ -50,13 +50,13 @@ namespace BH.Engine.Geometry
 
         public static double ParameterAtPoint(this PolyCurve curve, Point point, double tolerance = Tolerance.Distance)
         {
-            double sqrTol = tolerance * tolerance;
+            double sqTol = tolerance * tolerance;
             double length = 0;
             foreach (ICurve c in curve.SubParts())
             {
-                if (c.IClosestPoint(point).SquareDistance(point) <= sqrTol)
+                if (c.IClosestPoint(point).SquareDistance(point) <= sqTol)
                 {
-                    return (length + c.IParameterAtPoint(point) * c.ILength()) / curve.ILength();
+                    return (length + c.IParameterAtPoint(point, tolerance) * c.ILength()) / curve.ILength();
                 }
                 else length += c.ILength();
             }
@@ -67,13 +67,13 @@ namespace BH.Engine.Geometry
 
         public static double ParameterAtPoint(this Polyline curve, Point point, double tolerance = Tolerance.Distance)
         {
-            double sqrTol = tolerance * tolerance;
+            double sqTol = tolerance * tolerance;
             double param = 0;
             foreach (Line l in curve.SubParts())
             {
-                if (l.ClosestPoint(point).SquareDistance(point) <= sqrTol)
+                if (l.ClosestPoint(point).SquareDistance(point) <= sqTol)
                 {
-                    return (param + l.ParameterAtPoint(point)) / curve.Length();
+                    return (param + l.ParameterAtPoint(point, tolerance)) / curve.Length();
                 }
                 else param += l.Length();
             }
