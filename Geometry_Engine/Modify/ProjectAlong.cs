@@ -10,19 +10,19 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Vectors                  ****/
         /***************************************************/
 
-        public static Point ProjectAlong(this Point pt, Plane plane, Vector vector)
+        public static Point ProjectAlong(this Point point, Plane plane, Vector vector)
         {
             if (Math.Abs(vector.DotProduct(plane.Normal)) <= Tolerance.Angle) return null;
 
-            double t = (plane.Normal * (plane.Origin - pt)) / (plane.Normal * vector);
-            return pt + t * vector;
+            double t = (plane.Normal * (plane.Origin - point)) / (plane.Normal * vector);
+            return point + t * vector;
         }
 
         /***************************************************/
 
-        public static Point ProjectAlong(this Point pt, Line line, Vector vector, double tolerance = Tolerance.Distance)
+        public static Point ProjectAlong(this Point point, Line line, Vector vector, double tolerance = Tolerance.Distance)
         {
-            Line l = new Line { Start = pt, End = pt + vector };
+            Line l = new Line { Start = point, End = point + vector };
             return line.LineIntersection(l, true, tolerance);
         }
 
