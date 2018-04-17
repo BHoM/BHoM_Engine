@@ -89,7 +89,7 @@ namespace BH.Engine.Geometry
         /****         public Methods - Regions          ****/
         /***************************************************/
 
-        public static List<Polyline> BooleanDifference(this List<Polyline> regions, List<Polyline> refRegions)
+        public static List<Polyline> BooleanDifference(this List<Polyline> regions, List<Polyline> refRegions, double tolerance = Tolerance.Distance)
         {
             List<Polyline> result = new List<Polyline>();
             List<Polyline> openings = new List<Polyline>();
@@ -105,7 +105,7 @@ namespace BH.Engine.Geometry
                     foreach (Polyline sr in splitRegion)
                     {
                         isOpening = false;
-                        bDifference = sr.BooleanDifference(refRegion, out isOpening);
+                        bDifference = sr.BooleanDifference(refRegion, out isOpening, tolerance);
                         
                         if (isOpening)
                         {
@@ -129,26 +129,27 @@ namespace BH.Engine.Geometry
 
         private static List<Polyline> BooleanDifference(this Polyline region, Polyline refRegion, out bool isOpening, double tolerance = Tolerance.Distance)
         {
-            List<Polyline> cutRegions = region.BooleanIntersection(refRegion);
+            List<Polyline> cutRegions = region.BooleanIntersection(refRegion, tolerance);
             List<Polyline> result = new List<Polyline>();
             isOpening = false;
-            double sqTol = tolerance * tolerance;
-            if (region.IsCoplanar(refRegion))
+            if (region.IsCoplanar(refRegion, tolerance))
             {
                 List<Point> iPts = new List<Point>();
-                cutRegions.ForEach(cr => iPts.AddRange(region.LineIntersections(cr)));
-                List<Polyline> splitRegion = region.SplitAtPoints(iPts);
+                cutRegions.ForEach(cr => iPts.AddRange(region.LineIntersections(cr, tolerance)));
+                List<Polyline> splitRegion = region.SplitAtPoints(iPts, tolerance);
                 if (splitRegion.Count == 1)
                 {
                     result.Add(region.Clone());
                     foreach (Point cPt in refRegion.ControlPoints)
                     {
-                        if (!region.IsContaining(new List<Point> { cPt }, true)) return result;
+                        if (!region.IsContaining(new List<Point> { cPt }, true, tolerance)) return result;
                     }
                     result.Add(refRegion.Clone());
                     isOpening = true;
                     return result;
                 }
+
+                double sqTol = tolerance * tolerance;
                 foreach (Polyline segment in splitRegion)
                 {
                     List<Point> cPts = segment.SubParts().Select(s => s.ControlPoints().Average()).ToList();
@@ -156,7 +157,7 @@ namespace BH.Engine.Geometry
                     bool isInRegion = false;
                     foreach (Polyline cr in cutRegions)
                     {
-                        if (cr.IsContaining(cPts, true))
+                        if (cr.IsContaining(cPts, true, tolerance))
                         {
                             isInRegion = true;
                             break;
@@ -166,12 +167,12 @@ namespace BH.Engine.Geometry
                 }
                 foreach (Polyline cr in cutRegions)
                 {
-                    splitRegion = cr.SplitAtPoints(iPts);
+                    splitRegion = cr.SplitAtPoints(iPts, tolerance);
                     foreach (Polyline segment in splitRegion)
                     {
                         List<Point> cPts = segment.SubParts().Select(s => s.ControlPoints().Average()).ToList();
                         cPts.AddRange(segment.ControlPoints);
-                        if (region.IsContaining(cPts, true))
+                        if (region.IsContaining(cPts, true, tolerance))
                         {
                             foreach (Point pt in cPts)
                             {

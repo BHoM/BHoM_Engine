@@ -44,10 +44,7 @@ namespace BH.Engine.Geometry
                 if (Math.Abs(div) >= tolerance)
                     for (int j = 0; j < columnCount; j++) matrix[r, j] /= div;
 
-                int w;
-                if (reduced) w = 0;
-                else w = r + 1;
-
+                int w = reduced ? 0 : r + 1;
                 for (; w < rowCount; w++)
                 {
                     if (w != r)
