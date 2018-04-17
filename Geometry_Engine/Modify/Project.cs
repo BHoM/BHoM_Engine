@@ -12,7 +12,7 @@ namespace BH.Engine.Geometry
 
         public static Point Project(this Point pt, Plane p)
         {
-            return pt - p.Normal.DotProduct(pt-p.Origin) * p.Normal;
+            return pt - p.Normal.DotProduct(pt - p.Origin) * p.Normal;
         }
 
         /***************************************************/

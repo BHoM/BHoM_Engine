@@ -20,10 +20,10 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static Point ProjectAlong(this Point pt, Line line, Vector vector)
+        public static Point ProjectAlong(this Point pt, Line line, Vector vector, double tolerance = Tolerance.Distance)
         {
             Line l = new Line { Start = pt, End = pt + vector };
-            return line.LineIntersection(l, true);
+            return line.LineIntersection(l, true, tolerance);
         }
 
         /***************************************************/
