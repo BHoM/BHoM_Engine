@@ -10,22 +10,28 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Vectors                  ****/
         /***************************************************/
 
-        public static Point ClosestPoint(this Point pt, List<Point> points)
+        public static Point ClosestPoint(this IEnumerable<Point> cloud, Point point)
         {
-            // Temporary, PointMatrix to be used?!
-            if (points.Count == 0) return null;
-            double minDist = pt.SquareDistance(points[0]);
-            Point cPt = points[0];
-            for (int i = 1; i < points.Count; i++)
+            double minDist = Double.PositiveInfinity;
+            double sqDist = 0;
+            Point cp = null;
+            foreach (Point pt in cloud)
             {
-                double dist = pt.SquareDistance(points[i]);
-                if (dist <= minDist)
+                sqDist = pt.SquareDistance(point);
+                if (sqDist < minDist)
                 {
-                    cPt = points[i];
-                    minDist = dist;
+                    minDist = sqDist;
+                    cp = pt;
                 }
             }
-            return cPt.Clone();
+            return cp;
+        }
+
+        /***************************************************/
+
+        public static Point ClosestPoint(this Point point, IEnumerable<Point> points)
+        {
+            return points.ClosestPoint(point);
         }
 
         /***************************************************/
@@ -90,13 +96,13 @@ namespace BH.Engine.Geometry
 
         public static Point ClosestPoint(this PolyCurve curve, Point point)
         {
-            double minDist = 1e10;
+            double minDist = double.PositiveInfinity;
             Point closest = null;
             List<ICurve> curves = curve.Curves;
 
-            for (int i = 0; i < curves.Count; i++)
+            foreach (ICurve c in curve.SubParts())
             {
-                Point cp = curve.Curves[i].IClosestPoint(point);
+                Point cp = c.IClosestPoint(point);
                 double dist = cp.Distance(point);
                 if (dist < minDist)
                 {
@@ -104,7 +110,6 @@ namespace BH.Engine.Geometry
                     minDist = dist;
                 }
             }
-
             return closest;
         }
 
@@ -112,21 +117,17 @@ namespace BH.Engine.Geometry
 
         public static Point ClosestPoint(this Polyline curve, Point point)
         {
-            List<Point> points = curve.ControlPoints;
-
-            double minDist = 1e10;
-            Point closest = (points.Count > 0) ? points[0] : null;
-            for (int i = 1; i < points.Count; i++)
+            double minDist = double.PositiveInfinity;
+            double sqDist = 0;
+            Point closest = null;
+            foreach (Line l in curve.SubParts())
             {
-                Vector dir = (points[i] - points[i - 1]).Normalise();
-                double t = Math.Min(Math.Max(dir * (point - points[i - 1]), 0), points[i].Distance(points[i - 1]));
-                Point cp = points[i - 1] + t * dir;
-
-                double dist = cp.SquareDistance(point);
-                if (dist < minDist)
+                Point cp = l.ClosestPoint(point);
+                sqDist = cp.SquareDistance(point);
+                if (sqDist < minDist)
                 {
                     closest = cp;
-                    minDist = dist;
+                    minDist = sqDist;
                 }
             }
             return closest;
@@ -185,25 +186,6 @@ namespace BH.Engine.Geometry
         public static Point ClosestPoint(this CompositeGeometry group, Point point)
         {
             throw new NotImplementedException();
-        }
-
-        /***************************************************/
-
-        public static Point ClosestPoint(this IEnumerable<Point> cloud, Point point)
-        {
-            double minDist = Double.PositiveInfinity;
-            double dist = 0;
-            Point cp = null;
-            foreach (Point pt in cloud)
-            {
-                dist = Distance(point, pt);
-                if (dist < minDist)
-                {
-                    minDist = dist;
-                    cp = pt;
-                }
-            }
-            return cp;
         }
 
 

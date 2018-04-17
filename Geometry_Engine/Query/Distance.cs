@@ -78,7 +78,7 @@ namespace BH.Engine.Geometry
             Point intersection = line.LineIntersection(other, false);
             if (intersection != null)
             {
-                return 0;
+                return 0;                                           //TODO: This yields wrong results in case of distance > 0 && distance <= Tolerance.Distance
             }
             else
             {
