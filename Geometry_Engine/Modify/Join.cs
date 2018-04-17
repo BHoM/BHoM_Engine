@@ -57,10 +57,10 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static List<Polyline> Join(this List<Line> lines)
+        public static List<Polyline> Join(this List<Line> lines, double tolerance = Tolerance.Distance)
         {
             List<Polyline> sections = lines.Select(l => new Polyline { ControlPoints = l.ControlPoints() }).ToList();
-            return sections.Join();
+            return sections.Join(tolerance);
         }
 
         /***************************************************/

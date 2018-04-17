@@ -119,7 +119,7 @@ namespace BH.Engine.Geometry
 
             if (Math.Abs(p.Normal.DotProduct(l.Direction())) > Tolerance.Angle)
             {
-                Point pt = l.PlaneIntersection(p, tolerance);
+                Point pt = l.PlaneIntersection(p, true, tolerance);
                 if (pt != null && Math.Abs(pt.Distance(center) - radius) <= tolerance) iPts.Add(pt);
             }
             else
@@ -152,7 +152,7 @@ namespace BH.Engine.Geometry
             Plane p = new Plane { Origin = circle.Centre, Normal = circle.Normal };
             if (Math.Abs(circle.Normal.DotProduct(l.Direction())) > Tolerance.Angle)
             {
-                Point pt = l.PlaneIntersection(p, tolerance);
+                Point pt = l.PlaneIntersection(p, true, tolerance);
                 if (pt != null && Math.Abs(pt.Distance(circle.Centre) - circle.Radius) <= tolerance) iPts.Add(pt);
             }
             else
@@ -190,7 +190,7 @@ namespace BH.Engine.Geometry
             List<Point> iPts = new List<Point>();
             foreach (Line ln in curve.SubParts())
             {
-                Point pt = ln.LineIntersection(l, tolerance);
+                Point pt = ln.LineIntersection(l, false, tolerance);
                 if (pt != null) iPts.Add(pt);
             }
 
@@ -207,7 +207,7 @@ namespace BH.Engine.Geometry
             List<Point> iPts = new List<Point>();
             foreach (ICurve c in curve.SubParts())
             {
-                iPts.AddRange(c.ILineIntersections(l, tolerance));
+                iPts.AddRange(c.ILineIntersections(l, false, tolerance));
             }
 
             return iPts;
@@ -223,7 +223,7 @@ namespace BH.Engine.Geometry
             {
                 foreach(Line l2 in subparts)
                 {
-                    Point pt = l1.LineIntersection(l2, tolerance);
+                    Point pt = l1.LineIntersection(l2, false, tolerance);
                     if (pt != null) iPts.Add(pt);
                 }
             }
