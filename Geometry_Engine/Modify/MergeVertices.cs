@@ -11,7 +11,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Mesh MergedVertices(this Mesh mesh, double tolerance = 0.001) //TODO: use the point matrix 
+        public static Mesh MergedVertices(this Mesh mesh, double tolerance = Tolerance.Distance) //TODO: use the point matrix 
         {
             List<Face> faces = mesh.Faces.Select(x => x.Clone() as Face).ToList();
             List<VertexIndex> vertices = mesh.Vertices.Select((x, i) => new VertexIndex(x.Clone() as Point, i)).ToList();
@@ -28,11 +28,12 @@ namespace BH.Engine.Geometry
 
             vertices.Sort(delegate (VertexIndex v1, VertexIndex v2)
             {
-                return v1.Location.Distance(Point.Origin).CompareTo(v2.Location.Distance(Point.Origin));
+                return v1.Location.SquareDistance(Point.Origin).CompareTo(v2.Location.SquareDistance(Point.Origin));
             });
 
 
             List<int> culledIndices = new List<int>();
+            double sqTol = tolerance * tolerance;
 
             for (int i = 0; i < vertices.Count; i++)
             {
@@ -41,7 +42,7 @@ namespace BH.Engine.Geometry
                 while (j < vertices.Count && Math.Abs(vertices[j].Location.Distance(Point.Origin) - distance) < tolerance)
                 {
                     VertexIndex v2 = vertices[j];
-                    if (vertices[i].Location.Distance(vertices[j].Location) < tolerance)
+                    if (vertices[i].Location.SquareDistance(vertices[j].Location) < sqTol)
                     {
                         SetFaceIndex(v2.Faces, vertices[j].Index, vertices[i].Index);
                         culledIndices.Add(vertices[j].Index);
