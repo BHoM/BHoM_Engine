@@ -69,7 +69,6 @@ namespace BH.Engine.Geometry
         public static List<Point> CurvePlanarIntersections(this Circle curve1, Circle curve2, double tolerance = Tolerance.Distance)
         {
             List<Point> iPts = new List<Point>();
-            double sqrTol = tolerance * tolerance;
             Point c1 = curve1.Centre;
             Point c2 = curve2.Centre;
             double r1 = curve1.Radius;
@@ -81,17 +80,17 @@ namespace BH.Engine.Geometry
             if (!p1.IsCoplanar(p2)) return iPts;
 
             double sqrDist = c1.SquareDistance(c2);
-            if (sqrDist <= sqrTol) return iPts;
+            double dist = Math.Sqrt(sqrDist);
+            if (dist <= tolerance) return iPts;
 
-            double sqrSumRadii = Math.Pow(r1 + r2, 2);
-            double sqrDifRadii = Math.Pow(r1 - r2, 2);
+            double sumRadii = r1 + r2;
+            double difRadii = r1 - r2;
             Vector dir = (c2 - c1).Normalise();
 
-            if (Math.Abs(sqrDist - sqrSumRadii) <= sqrTol) iPts.Add(c1 + dir * r1);
-            else if (Math.Abs(sqrDist - sqrDifRadii) <= sqrTol) iPts.Add(c1 - dir * r1);
-            else if (sqrDist - sqrSumRadii < sqrTol && sqrDist - sqrDifRadii >= sqrTol)
+            if (Math.Abs(dist - sumRadii) <= tolerance) iPts.Add(c1 + dir * r1);
+            else if (Math.Abs(dist - difRadii) <= tolerance) iPts.Add(c1 - dir * r1);
+            else if (dist - sumRadii < tolerance && dist - difRadii >= tolerance)
             {
-                double dist = Math.Sqrt(sqrDist);
                 double a = (r1 * r1 - r2 * r2 + sqrDist) / (2 * dist);
                 Point midPt = (c1 + dir * a);
                 Vector perp = dir.Rotate(Math.PI * 0.5, n1);

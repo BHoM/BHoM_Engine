@@ -31,8 +31,8 @@ namespace BH.Engine.Geometry
             };
 
             double[,] eref = e.RowEchelonForm(false, tolerance);
-            int nonZero = eref.CountNonZeroRows();
-
+            int nonZero = eref.CountNonZeroRows(tolerance);
+            
             double minT = -tolerance;
             double maxT = 1 + tolerance;
             switch (nonZero)
@@ -108,32 +108,33 @@ namespace BH.Engine.Geometry
         public static List<Point> LineIntersections(this Arc arc, Line line, bool useInfiniteLine = false, double tolerance = Tolerance.Distance)
         {
             Line l = line.Clone();
-            l.Infinite = useInfiniteLine ? true : l.Infinite;
+            l.Infinite |= useInfiniteLine;
 
             List<Point> iPts = new List<Point>();
             Point midPoint = arc.PointAtParameter(0.5);
 
             Point center = arc.Centre();
             Plane p = arc.ControlPoints().FitPlane();
-            double sqrRadius = center.SquareDistance(arc.Start);
+            double radius = arc.Radius();
 
             if (Math.Abs(p.Normal.DotProduct(l.Direction())) > Tolerance.Angle)
             {
                 Point pt = l.PlaneIntersection(p);
-                if (pt != null && Math.Abs(pt.SquareDistance(center) - sqrRadius) <= tolerance) iPts.Add(pt);
+                if (pt != null && Math.Abs(pt.Distance(center) - radius) <= tolerance) iPts.Add(pt);
             }
             else
             {
-                Circle c = new Circle { Centre = center, Normal = p.Normal, Radius = Math.Sqrt(sqrRadius) };
-                iPts = c.LineIntersections(l);
+                Circle c = new Circle { Centre = center, Normal = p.Normal, Radius = radius };
+                iPts = c.LineIntersections(l, useInfiniteLine);
             }
 
             List<Point> output = new List<Point>();
-            double sqrd = midPoint.SquareDistance(arc.Start);
+            double sqTol = tolerance * tolerance;
+            double d = midPoint.Distance(arc.Start);
             {
                 foreach (Point pt in iPts)
                 {
-                    if ((l.Infinite || pt.Distance(l) <= tolerance) && midPoint.SquareDistance(pt) <= sqrd) output.Add(pt);
+                    if ((l.Infinite || pt.SquareDistance(l) <= sqTol) && midPoint.Distance(pt) - d - tolerance <= 0) output.Add(pt);
                 }
             }
             return output;
@@ -144,7 +145,7 @@ namespace BH.Engine.Geometry
         public static List<Point> LineIntersections(this Circle circle, Line line, bool useInfiniteLine = false, double tolerance = Tolerance.Distance)
         {
             Line l = line.Clone();
-            l.Infinite = useInfiniteLine ? true : l.Infinite;
+            l.Infinite |= useInfiniteLine;
 
             List<Point> iPts = new List<Point>();
 
@@ -152,17 +153,17 @@ namespace BH.Engine.Geometry
             if (Math.Abs(circle.Normal.DotProduct(l.Direction())) > Tolerance.Angle)
             {
                 Point pt = l.PlaneIntersection(p);
-                if (pt!=null && Math.Abs(pt.SquareDistance(circle.Centre) - circle.Radius * circle.Radius) <= tolerance) iPts.Add(pt);
+                if (pt != null && Math.Abs(pt.Distance(circle.Centre) - circle.Radius) <= tolerance) iPts.Add(pt);
             }
             else
             {
                 Point pt = l.ClosestPoint(circle.Centre, true);
-                double sqrDiff = circle.Radius * circle.Radius - pt.SquareDistance(circle.Centre);
-                if (Math.Abs(sqrDiff) <= tolerance) iPts.Add(pt);
-                else if (sqrDiff > 0)
+                double dist = pt.Distance(circle.Centre);
+                double diff = circle.Radius - dist;
+                if (Math.Abs(diff) <= tolerance) iPts.Add(pt);
+                else if (diff > 0)
                 {
-                    double o = Math.Sqrt(sqrDiff);
-                    Vector v = l.Direction() * o;
+                    Vector v = l.Direction() * Math.Sqrt(circle.Radius * circle.Radius - dist * dist);
                     iPts.Add(pt + v);
                     iPts.Add(pt - v);
                 }
@@ -183,7 +184,7 @@ namespace BH.Engine.Geometry
         public static List<Point> LineIntersections(this Polyline curve, Line line, bool useInfiniteLine = false, double tolerance = Tolerance.Distance)
         {
             Line l = line.Clone();
-            l.Infinite = useInfiniteLine ? true : line.Infinite;
+            l.Infinite |= useInfiniteLine;
 
             List<Point> iPts = new List<Point>();
             foreach (Line ln in curve.SubParts())
@@ -200,7 +201,7 @@ namespace BH.Engine.Geometry
         public static List<Point> LineIntersections(this PolyCurve curve, Line line, bool useInfiniteLine = false, double tolerance = Tolerance.Distance)
         {
             Line l = line.Clone();
-            l.Infinite = useInfiniteLine ? true : line.Infinite;
+            l.Infinite |= useInfiniteLine;
 
             List<Point> iPts = new List<Point>();
             foreach (ICurve c in curve.SubParts())

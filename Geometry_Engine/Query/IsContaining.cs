@@ -49,10 +49,11 @@ namespace BH.Engine.Geometry
 
         public static bool IsContaining(this Circle curve, List<Point> points, bool acceptOnEdge = true, double tolerance = Tolerance.Distance)
         {
-            double sqrRad = curve.Radius * curve.Radius;
+            Plane p = new Plane { Origin = curve.Centre, Normal = curve.Normal };
             foreach (Point pt in points)
             {
-                if ((acceptOnEdge && pt.SquareDistance(curve.Centre) > sqrRad) || (!acceptOnEdge && pt.SquareDistance(curve.Centre) >= sqrRad)) return false;
+                if (Math.Abs(pt.Distance(p)) > tolerance) return false;
+                if ((acceptOnEdge && pt.Distance(curve.Centre) - curve.Radius - tolerance > 0) || (!acceptOnEdge && pt.Distance(curve.Centre) - curve.Radius + tolerance >= 0)) return false;
             }
             return true;
         }
