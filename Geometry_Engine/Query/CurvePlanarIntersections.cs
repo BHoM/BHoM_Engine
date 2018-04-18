@@ -84,7 +84,7 @@ namespace BH.Engine.Geometry
             if (dist <= tolerance) return iPts;
 
             double sumRadii = r1 + r2;
-            double difRadii = r1 - r2;
+            double difRadii = Math.Abs(r1 - r2);
             Vector dir = (c2 - c1).Normalise();
 
             if (Math.Abs(dist - sumRadii) <= tolerance) iPts.Add(c1 + dir * r1);
