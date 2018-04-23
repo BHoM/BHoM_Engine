@@ -83,6 +83,7 @@
     <Compile Include="Modify\Scale.cs" />
     <Compile Include="Modify\SplitAtPoints.cs" />
     <Compile Include="Query\BasisFunction.cs" />
+    <Compile Include="Query\IsEqual.cs" />
     <Compile Include="Query\Clone.cs" />
     <Compile Include="Convert\NurbForm.cs" />
     <Compile Include="Create\Arc.cs" />
