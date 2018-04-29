@@ -1,6 +1,8 @@
-﻿using System;
+﻿using BH.oM.Base.Attributes;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Reflection;
 
 namespace BH.Engine.Reflection
@@ -11,7 +13,7 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Return the custom description of a C# class member")]
+        [Description("Return the custom description of a C# class member (e.g. property, method, field)")]
         public static string Description(this MemberInfo member)
         {
             DescriptionAttribute attribute = member.GetCustomAttribute<DescriptionAttribute>();
@@ -26,9 +28,9 @@ namespace BH.Engine.Reflection
         [Description("Return the custom description of a C# method argument")]
         public static string Description(this ParameterInfo parameter)
         {
-            DescriptionAttribute attribute = parameter.GetCustomAttribute<DescriptionAttribute>();
-            if (attribute != null)
-                return attribute.Description;
+            IEnumerable<Input> inputDesc = parameter.Member.GetCustomAttributes<Input>().Where(x => x.Name == parameter.Name);
+            if (inputDesc.Count() > 0)
+                return inputDesc.First().Description;
             else
                 return "";
         }
@@ -47,10 +49,9 @@ namespace BH.Engine.Reflection
 
         /***************************************************/
 
-        [Description("Return the custom description of a C# element such as Type, MethodInfo, and ParamaterInfo")]
-        public static string IDescription(
-            [Description("This item can either be a Type, a MethodInfo, or a ParamaterInfo")] this object item
-        )
+        [Description("Return the custom description of a C# element such as Type, MemberInfo, and ParamaterInfo")]
+        [Input("item", "This item can either be a Type, a MemberInfo, or a ParamaterInfo")]
+        public static string IDescription(this object item)
         {
             if (item is MemberInfo)
                 return Description(item as MemberInfo);
