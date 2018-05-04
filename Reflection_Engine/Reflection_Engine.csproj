@@ -44,10 +44,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Compute\RecordEvent.cs" />
     <Compile Include="Compute\LoadAllAssemblies.cs" />
     <Compile Include="Compute\RunExtentionMethod.cs" />
     <Compile Include="Convert\ToText.cs" />
+    <Compile Include="Query\Events.cs" />
+    <Compile Include="Query\DebugLog.cs" />
     <Compile Include="Create\Type.cs" />
+    <Compile Include="Compute\ClearCurrentEvents.cs" />
     <Compile Include="Query\OutputDescription.cs" />
     <Compile Include="Query\InputDescriptions.cs" />
     <Compile Include="Query\DistinctProperties.cs" />
