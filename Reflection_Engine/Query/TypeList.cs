@@ -75,7 +75,7 @@ namespace BH.Engine.Reflection
                 }
                 catch (Exception)
                 {
-                    Console.WriteLine("Cannot load types from assembly " + asm.GetName().Name);
+                    Compute.RecordWarning("Cannot load types from assembly " + asm.GetName().Name);
                 }
             }
         }

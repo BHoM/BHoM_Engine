@@ -35,8 +35,14 @@ namespace BH.Engine.Reflection
 
                     if (file.EndsWith("oM.dll") || file.EndsWith("Engine.dll") || file.EndsWith("Adapter.dll"))
                     {
-                        try { Assembly.LoadFrom(file); }
-                        catch { }
+                        try
+                        {
+                            Assembly.LoadFrom(file);
+                        }
+                        catch
+                        {
+                            RecordWarning("Failed to load assembly " + file);
+                        }
                     }
                 }
             }
