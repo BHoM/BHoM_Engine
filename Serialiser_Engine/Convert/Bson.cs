@@ -102,6 +102,7 @@ namespace BH.Engine.Serialiser
             {
                 BsonSerializer.RegisterSerializer(typeof(object), new BH_ObjectSerializer());
                 BsonSerializer.RegisterSerializer(typeof(System.Drawing.Color), new ColourSerializer());
+                BsonSerializer.RegisterSerializer(typeof(MethodBase), new MethodBaseSerializer());
                 BsonSerializer.RegisterSerializer(typeof(Guid), new GuidSerializer(BsonType.String));
                 BsonSerializer.RegisterSerializer(typeof(CustomObject), new CustomObjectSerializer());
 
@@ -136,6 +137,7 @@ namespace BH.Engine.Serialiser
                     
             }
             RegisterClassMap(typeof(System.Drawing.Color));
+            RegisterClassMap(typeof(MethodBase));
 
             m_TypesRegistered = true;
         }
