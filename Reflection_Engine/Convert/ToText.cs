@@ -19,11 +19,18 @@ namespace BH.Engine.Reflection.Convert
             if (removeIForInterface && name.Length > 2 && name[0] == 'I' && char.IsUpper(name[1]))
                 name = name.Substring(1);
 
-            ParameterInfo[] parameters = method.GetParameters();
-
             string text = name + paramStart;
-            if (parameters.Length > 0)
-                text += parameters.Select(x => x.ParameterType.ToText()).Aggregate((x, y) => x + paramSeparator + y);
+            try
+            {
+                ParameterInfo[] parameters = method.GetParameters();
+                if (parameters.Length > 0)
+                    text += parameters.Select(x => x.ParameterType.ToText()).Aggregate((x, y) => x + paramSeparator + y);
+            }
+            catch (Exception e)
+            {
+                Compute.RecordWarning("Method " + name + " failed to load its paramters.\nError: " + e.ToString());
+                text += "?";
+            }
             text += paramEnd;
 
             if (includePath)
