@@ -47,7 +47,7 @@ namespace BH.Engine.Structure
             return new PanelPlanar
             {
                 ExternalEdges = externalEdges,
-                Openings = openings,
+                Openings = openings ?? new List<Opening>(),
                 Property = property,
                 Name = name
             };
@@ -55,7 +55,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static List<PanelPlanar> PanelPlanar(List<Polyline> outlines, IProperty2D property = null)
+        public static List<PanelPlanar> PanelPlanar(List<Polyline> outlines, IProperty2D property = null, string name = "")
         {
             List<PanelPlanar> result = new List<PanelPlanar>();
             List<List<Polyline>> sortedOutlines = outlines.DistributeOutlines();
@@ -68,14 +68,14 @@ namespace BH.Engine.Structure
                     List<Edge> openingEdges = p.SubParts().Select(o => new Edge { Curve = o }).ToList();
                     openings.Add(new Opening { Edges = openingEdges });
                 }
-                result.AddRange((new PanelPlanar { ExternalEdges = externalEdges, Openings = openings, Property = property }).RecomputeEdges());
+                result.AddRange((new PanelPlanar { ExternalEdges = externalEdges, Openings = openings, Property = property, Name = name }).RecomputeEdges());
             }
             return result;
         }
 
         /***************************************************/
 
-        public static List<PanelPlanar> PanelPlanar(List<ICurve> outlines, IProperty2D property = null)
+        public static List<PanelPlanar> PanelPlanar(List<ICurve> outlines, IProperty2D property = null, string name = "")
         {
             List<PanelPlanar> result = new List<PanelPlanar>();
             List<List<ICurve>> sortedOutlines = outlines.DistributeOutlines();
@@ -88,7 +88,7 @@ namespace BH.Engine.Structure
                     List<Edge> openingEdges = p.ISubParts().Select(o => new Edge { Curve = o }).ToList();
                     openings.Add(new Opening { Edges = openingEdges });
                 }
-                result.Add(new PanelPlanar { ExternalEdges = externalEdges, Openings = openings, Property = property });
+                result.Add(new PanelPlanar { ExternalEdges = externalEdges, Openings = openings, Property = property, Name = name });
             }
             return result;
         }
