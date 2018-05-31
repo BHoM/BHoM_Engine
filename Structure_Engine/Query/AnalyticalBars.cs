@@ -23,7 +23,7 @@ namespace BH.Engine.Structure
 
         private static List<Bar> AnalyticalBars(ConstantFramingElementProperty property, Line centreLine, string name)
         {
-            return new List<Bar>() { Create.Bar(centreLine, property.SectionProperty, Create.BarReleaseFixFix(), BarFEAType.Flexural, name) };
+            return new List<Bar>() { Create.Bar(centreLine, property.SectionProperty, property.OrientationAngle, Create.BarReleaseFixFix(), BarFEAType.Flexural, name) };
         }
 
         /***************************************************/
