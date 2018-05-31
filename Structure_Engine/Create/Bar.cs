@@ -10,14 +10,14 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Bar Bar(Line line, ISectionProperty property = null, BarRelease release = null, BarFEAType feaType = BarFEAType.Flexural, string name = "")
+        public static Bar Bar(Line line, ISectionProperty property = null, double orientationAngle = 0, BarRelease release = null, BarFEAType feaType = BarFEAType.Flexural, string name = "")
         {          
-            return Bar(new Node { Position = line.Start }, new Node { Position = line.End }, property, release, feaType, name);
+            return Bar(new Node { Position = line.Start }, new Node { Position = line.End }, property, orientationAngle, release, feaType, name);
         }
 
         /***************************************************/
 
-        public static Bar Bar(Node startNode, Node endNode, ISectionProperty property = null, BarRelease release = null, BarFEAType feaType = BarFEAType.Flexural, string name = "")
+        public static Bar Bar(Node startNode, Node endNode, ISectionProperty property = null, double orientationAngle = 0, BarRelease release = null, BarFEAType feaType = BarFEAType.Flexural,  string name = "")
         {
             return new Bar
             {
@@ -26,7 +26,8 @@ namespace BH.Engine.Structure
                 EndNode = endNode,
                 SectionProperty = property,
                 Release = release == null ? BarReleaseFixFix() : release,
-                FEAType = feaType
+                FEAType = feaType,
+                OrientationAngle = orientationAngle
             };
         }
 
