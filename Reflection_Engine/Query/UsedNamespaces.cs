@@ -16,30 +16,23 @@ namespace BH.Engine.Reflection
 
         public static List<string> UsedNamespaces(this MethodBase method, bool onlyBHoM = false, int maxDepth = 10)
         {
-            IEnumerable<string> namespaces = new List<string>();
-            try
-            {
-                IEnumerable<object> operands = Disassembler.GetInstructions(method).Select(x => x.Operand);
-                IEnumerable<string> methodsNS = operands.OfType<MethodBase>().Select(x => x.DeclaringType.Namespace).Distinct();
+            return method.UsedTypes(onlyBHoM).Select(x => ClipNamespace(x.Namespace, maxDepth)).Distinct().ToList();
+        }
 
-                IEnumerable<string> typesNS = method.UsedTypes(onlyBHoM).Select(x => x.Namespace);
+        /***************************************************/
 
-                string nameSpace = method.DeclaringType.Namespace;
-                namespaces = typesNS.Union(methodsNS)
-                    .Where(x => x != nameSpace)
-                    .Select(x => x.Split('.').Take(maxDepth).Aggregate((a, b) => a + '.' + b))
-                    .Distinct();
-            }
-            catch (Exception e)
-            {
-                Compute.RecordWarning("Failed to get used namespaces for method " + method.ToText() + "/nError: " + e.ToString());
-            }
+        public static List<string> UsedNamespaces(this Type type, bool onlyBHoM = false, int maxDepth = 10)
+        {
+            return type.UsedTypes(onlyBHoM).Select(x => ClipNamespace(x.Namespace, maxDepth)).Distinct().ToList();
+        }
 
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
 
-            if (onlyBHoM)
-                return namespaces.Where(x => x.StartsWith("BH.")).ToList();
-            else
-                return namespaces.ToList();
+        private static string ClipNamespace(string nameSpace, int maxDepth)
+        {
+            return nameSpace.Split('.').Take(maxDepth).Aggregate((a, b) => a + '.' + b);
         }
 
         /***************************************************/
