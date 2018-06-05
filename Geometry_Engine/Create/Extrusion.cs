@@ -1,4 +1,5 @@
 ﻿using BH.oM.Geometry;
+using System;
 
 namespace BH.Engine.Geometry
 {
@@ -16,6 +17,41 @@ namespace BH.Engine.Geometry
                 Direction = direction,
                 Capped = capped
             }; 
+        }
+
+        /***************************************************/
+
+        public static Extrusion RandomExtrusion(int seed = -1, BoundingBox box = null)
+        {
+            if (seed == -1)
+                seed = m_Random.Next();
+            Random rnd = new Random(seed);
+            return RandomExtrusion(rnd, box);
+        }
+
+        /***************************************************/
+
+        public static Extrusion RandomExtrusion(Random rnd, BoundingBox box = null)
+        {
+            if (box == null)
+            {
+                return new Extrusion
+                {
+                    Curve = RandomCurve(rnd),
+                    Direction = RandomVector(rnd),
+                    Capped = rnd.NextDouble() >= 0.5
+                };
+            }
+            else
+            {
+                ICurve curve = RandomCurve(rnd, box);
+                return new Extrusion
+                {
+                    Curve = curve,
+                    Direction = RandomPoint(rnd, box) - curve.IBounds().Centre(),
+                    Capped = rnd.NextDouble() >= 0.5
+                };
+            }  
         }
 
         /***************************************************/

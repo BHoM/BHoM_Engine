@@ -1,4 +1,5 @@
 ﻿using BH.oM.Geometry;
+using System;
 
 namespace BH.Engine.Geometry
 {
@@ -25,6 +26,27 @@ namespace BH.Engine.Geometry
             {
                 Min = new Point { X = centre.X - extent.X, Y = centre.Y - extent.Y, Z = centre.Z - extent.Z },
                 Max = new Point { X = centre.X + extent.X, Y = centre.Y + extent.Y, Z = centre.Z + extent.Z }
+            };
+        }
+
+        /***************************************************/
+
+        public static BoundingBox RandomBoundingBox(int seed = -1, BoundingBox box = null)
+        {
+            if (seed == -1)
+                seed = m_Random.Next();
+            Random rnd = new Random(seed);
+            return RandomBoundingBox(rnd, box);
+        }
+
+        /***************************************************/
+
+        public static BoundingBox RandomBoundingBox(Random rnd, BoundingBox box = null)
+        {
+            return new BoundingBox
+            {
+                Min = RandomPoint(rnd, box),
+                Max = RandomPoint(rnd, box)
             };
         }
 
