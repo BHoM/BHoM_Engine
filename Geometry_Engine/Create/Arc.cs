@@ -42,5 +42,40 @@ namespace BH.Engine.Geometry
         }
 
         /***************************************************/
+
+        public static Arc RandomArc(int seed = -1, BoundingBox box = null)
+        {
+            if (seed == -1)
+                seed = m_Random.Next();
+            Random rnd = new Random(seed);
+            return RandomArc(rnd, box);
+        }
+
+        /***************************************************/
+
+        public static Arc RandomArc(Random rnd, BoundingBox box = null)
+        {
+            Circle circle = RandomCircle(rnd, box);
+            double length = circle.Length();
+            double startLength = length * rnd.NextDouble();
+            double endLength = length * rnd.NextDouble();
+
+            return new Arc
+            {
+                Start = circle.PointAtLength(startLength),
+                End = circle.PointAtLength(endLength),
+                Middle = circle.PointAtLength((startLength+endLength)/2)
+            };
+        }
+
+
+        /***************************************************/
+        /**** Private Fields                            ****/
+        /***************************************************/
+
+        private static Random m_Random = new Random();
+
+
+        /***************************************************/
     }
 }
