@@ -77,26 +77,57 @@ namespace BH.Engine.Geometry
         public static bool IsContaining(this Polyline curve, List<Point> points, bool acceptOnEdge = true, double tolerance = Tolerance.Distance)
         {
             // Todo:
+            // check boundingBox/proximity at the beginning!
+            // project to 2D & rewrite methods to 2D to improve performance
             // - to be replaced with a general method for a nurbs curve?
-            // - this is very problematic for edge cases (cutting line going through a sharp corner, to be superseded?
+            // - could be done with a ray instead of an infinite line!
 
-            Plane p = curve.FitPlane(tolerance);
             if (curve.IsClosed(tolerance))
             {
+                Plane p = curve.FitPlane(tolerance);
                 double sqTol = tolerance * tolerance;
                 foreach (Point pt in points)
                 {
                     if (pt.IsInPlane(p, tolerance))
                     {
-                        List<Point> intersects = curve.LineIntersections(new Line { Start = pt, End = p.Origin }, true, tolerance); // what if the points are in exactly same spot?
-                        if ((pt.ClosestPoint(intersects).SquareDistance(pt) <= sqTol))
+                        Point end = p.Origin;
+                        if (pt.SquareDistance(p.Origin) <= sqTol)
+                        {
+                            end = p.Origin.Translate(new Vector { X = 1, Y = 0, Z = 0 }.Project(p));
+                        }
+                        Line ray = new Line { Start = pt, End = end };
+                        ray.Infinite = true;
+                        Vector rayDir = ray.Direction();
+                        List<Line> subParts = curve.SubParts();
+                        List<Point> intersects = new List<Point>();
+                        List<Point> extraIntersects = new List<Point>();
+                        for (int i = 0; i < subParts.Count; i++)
+                        {
+                            Point iPt = subParts[i].LineIntersection(ray, false, tolerance);
+                            if (iPt != null)
+                            {
+                                if ((subParts[i].Start.SquareDistance(iPt) <= sqTol))
+                                {
+                                    double signedAngle = rayDir.SignedAngle(subParts[i].Direction(), p.Normal);
+                                    if (signedAngle > Tolerance.Angle) intersects.Add(iPt);
+                                    else extraIntersects.Add(iPt);
+                                }
+                                else if ((subParts[i].End.SquareDistance(iPt) <= sqTol))
+                                {
+                                    double signedAngle = rayDir.SignedAngle(subParts[i].Direction(), p.Normal);
+                                    if (signedAngle < Tolerance.Angle) intersects.Add(iPt);
+                                    else extraIntersects.Add(iPt);
+                                }
+                                else intersects.Add(iPt);
+                            }
+                        }
+                        if ((pt.ClosestPoint(intersects.Union(extraIntersects)).SquareDistance(pt) <= sqTol))
                         {
                             if (acceptOnEdge) continue;
                             else return false;
                         }
                         intersects.Add(pt);
                         intersects = intersects.SortCollinear(tolerance);
-                        intersects = intersects.CullDuplicates(tolerance);
                         for (int j = 0; j < intersects.Count; j++)
                         {
                             if (j % 2 == 0 && intersects[j] == pt) return false;
@@ -121,11 +152,17 @@ namespace BH.Engine.Geometry
             if (curve.IsClosed(tolerance))
             {
                 double sqTol = tolerance * tolerance;
+                Vector m = new Vector { X = 1, Y = 0, Z = 0 }.Project(p);
                 foreach (Point pt in points)
                 {
                     if (pt.IsInPlane(p, tolerance))
                     {
-                        List<Point> intersects = curve.LineIntersections(new Line { Start = pt, End = p.Origin }, true, tolerance); // what if the points are in exactly same spot?
+                        Point end = p.Origin;
+                        if (pt.SquareDistance(p.Origin) <= sqTol)
+                        {
+                            end = p.Origin.Translate(m);
+                        }
+                        List<Point> intersects = curve.LineIntersections(new Line { Start = pt, End = end }, true, tolerance);
                         if ((pt.ClosestPoint(intersects).SquareDistance(pt) <= sqTol))
                         {
                             if (acceptOnEdge) continue;
