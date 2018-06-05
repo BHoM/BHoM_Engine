@@ -21,6 +21,14 @@ namespace BH.Engine.Reflection
                 prop.SetValue(obj, value);
                 return true;
             }
+            else if(obj is IBHoMObject)
+            {
+                IBHoMObject cust = obj as IBHoMObject;
+                if (cust == null) return false;
+
+                cust.CustomData[propName] = value;
+                return true;
+            }
 
             return false;
         }
@@ -30,29 +38,41 @@ namespace BH.Engine.Reflection
         public static bool SetPropertyValue(this List<IBHoMObject> objects, Type objectType, string propName, object value)
         {
             PropertyInfo propInfo = objectType.GetProperty(propName);
-            Action<object, object> setProp = (Action<object, object>)Delegate.CreateDelegate(typeof(Action<object, object>), propInfo.GetSetMethod());
 
-            if (value is IList && value.GetType() != propInfo.PropertyType)
+            if (propInfo == null)
             {
-                IList values = ((IList)value);
-
-                // Check that the two lists are of equal length
-                if (objects.Count != values.Count)
-                    return false;
-
-                // Set their property
-                for (int i = 0; i < values.Count; i++)
-                    setProp(objects[i], values[i]);
+                foreach (IBHoMObject obj in objects)
+                    obj.CustomData[propName] = value;
+                return true;
             }
             else
             {
-                // Set the same property to all objects
-                foreach (object obj in objects)
-                    setProp(obj, value);
-            }
+                Action<object, object> setProp = (Action<object, object>)Delegate.CreateDelegate(typeof(Action<object, object>), propInfo.GetSetMethod());
 
-            return true;
+                if (value is IList && value.GetType() != propInfo.PropertyType)
+                {
+                    IList values = ((IList)value);
+
+                    // Check that the two lists are of equal length
+                    if (objects.Count != values.Count)
+                        return false;
+
+                    // Set their property
+                    for (int i = 0; i < values.Count; i++)
+                        setProp(objects[i], values[i]);
+                }
+                else
+                {
+                    // Set the same property to all objects
+                    foreach (object obj in objects)
+                        setProp(obj, value);
+                }
+
+                return true;
+            }
+            
         }
+
 
         /***************************************************/
     }
