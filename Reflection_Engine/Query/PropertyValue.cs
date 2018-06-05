@@ -18,7 +18,10 @@ namespace BH.Engine.Reflection
             {
                 IBHoMObject bhom = obj as IBHoMObject;
                 if (bhom.CustomData.ContainsKey(propName))
+                {
+                    Compute.RecordWarning("The returned value is a custom data of the object, not a property");
                     return bhom.CustomData[propName];
+                }
                 else
                     return null;
             }

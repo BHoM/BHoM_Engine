@@ -23,8 +23,11 @@ namespace BH.Engine.Reflection
             }
             else if(obj is IBHoMObject)
             {
+
                 IBHoMObject cust = obj as IBHoMObject;
                 if (cust == null) return false;
+
+                Compute.RecordWarning("No property with the provided name found. The value is being set as custom data");
 
                 cust.CustomData[propName] = value;
                 return true;
@@ -41,6 +44,7 @@ namespace BH.Engine.Reflection
 
             if (propInfo == null)
             {
+                Compute.RecordWarning("No property with the provided name found. The value is being set as custom data");
                 foreach (IBHoMObject obj in objects)
                     obj.CustomData[propName] = value;
                 return true;
