@@ -87,5 +87,28 @@ namespace BH.Engine.Geometry
         }
 
         /***************************************************/
+
+        public static TransformMatrix RandomMatrix(int seed = -1, double minVal = -1, double maxVal = 1)
+        {
+            if (seed == -1)
+                seed = m_Random.Next();
+            Random rnd = new Random(seed);
+            return RandomMatrix(rnd, minVal, maxVal);
+        }
+
+        /***************************************************/
+
+        public static TransformMatrix RandomMatrix(Random rnd, double minVal = -1, double maxVal = 1)
+        {
+            double[,] matrix = new double[4, 4];
+            for (int i = 0; i < 3; i++)
+                for (int j = 0; j < 4; j++)
+                    matrix[i, j] = minVal + rnd.NextDouble() * (maxVal - minVal);
+            matrix[3, 3] = 1;
+
+            return new TransformMatrix { Matrix = matrix };
+        }
+
+        /***************************************************/
     }
 }
