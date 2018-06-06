@@ -88,7 +88,7 @@ namespace BH.Engine.Geometry
                 {
                     Centre = centre,
                     Normal = RandomVector(rnd).Normalise(),
-                    Radius = maxRadius + rnd.NextDouble()
+                    Radius = maxRadius * rnd.NextDouble()
                 };
             }
             
