@@ -18,7 +18,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static Polyline Polyline(int seed = -1, BoundingBox box = null, int minNbCPs = 3, int maxNbCPs = 20)
+        public static Polyline RandomPolyline(int seed = -1, BoundingBox box = null, int minNbCPs = 3, int maxNbCPs = 20)
         {
             if (seed == -1)
                 seed = m_Random.Next();
