@@ -46,7 +46,7 @@ namespace BH.Engine.Geometry
             }
             else
             {
-                return new Vector { X = rnd.NextDouble(), Y = rnd.NextDouble(), Z = rnd.NextDouble() };
+                return new Vector { X = rnd.NextDouble()*2-1, Y = rnd.NextDouble()*2 - 1, Z = rnd.NextDouble()*2 - 1 };
             }
         }
 

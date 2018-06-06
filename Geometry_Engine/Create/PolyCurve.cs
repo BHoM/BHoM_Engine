@@ -31,8 +31,13 @@ namespace BH.Engine.Geometry
         public static PolyCurve RandomPolyCurve(Random rnd, BoundingBox box = null, int minNbCurves = 2, int maxNbCurves = 10)
         {
             List<ICurve> curves = new List<ICurve>();
+            Point start = RandomPoint(rnd, box);
             for (int i = 0; i < rnd.Next(minNbCurves, maxNbCurves + 1); i++)
-                curves.Add(RandomCurve(rnd, box));
+            {
+                ICurve crv = RandomCurve(start, rnd, box);
+                curves.Add(crv);
+                start = crv.IEndPoint();
+            }
             return new PolyCurve { Curves = curves };
         }
 

@@ -52,5 +52,26 @@ namespace BH.Engine.Geometry
         }
 
         /***************************************************/
+
+        public static Line RandomLine(Point from, int seed = -1, BoundingBox box = null)
+        {
+            if (seed == -1)
+                seed = m_Random.Next();
+            Random rnd = new Random(seed);
+            return RandomLine(from, rnd, box);
+        }
+
+        /***************************************************/
+
+        public static Line RandomLine(Point from, Random rnd, BoundingBox box = null)
+        {
+            return new Line
+            {
+                Start = from,
+                End = RandomPoint(rnd, box)
+            };
+        }
+
+        /***************************************************/
     }
 }
