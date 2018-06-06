@@ -79,8 +79,8 @@ namespace BH.Engine.Geometry
                     Centre = centre,
                     Axis1 = axis1,
                     Axis2 = RandomVector(rnd).Project(new Plane { Normal = axis1 }).Normalise(),
-                    Radius1 = maxRadius + rnd.NextDouble(),
-                    Radius2 = maxRadius + rnd.NextDouble()
+                    Radius1 = maxRadius * rnd.NextDouble(),
+                    Radius2 = maxRadius * rnd.NextDouble()
                 };
             }
 
