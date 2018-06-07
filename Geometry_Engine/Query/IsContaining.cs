@@ -86,59 +86,76 @@ namespace BH.Engine.Geometry
             {
                 Plane p = curve.FitPlane(tolerance);
                 double sqTol = tolerance * tolerance;
-                foreach (Point pt in points)
+
+                if (p == null)
                 {
-                    if (pt.IsInPlane(p, tolerance))
+                    if (acceptOnEdge)
                     {
-                        Point end = p.Origin;
-                        if (pt.SquareDistance(end) <= sqTol)
+                        foreach (Point pt in points)
                         {
-                            end = end.Translate(new Vector { X = 1, Y = 0, Z = 0 }.Project(p));
+                            if (curve.ClosestPoint(pt).SquareDistance(pt) > sqTol) return false;
                         }
-
-                        Line ray = new Line { Start = pt, End = end };
-                        ray.Infinite = true;
-                        Vector rayDir = ray.Direction();
-                        List<Line> subParts = curve.SubParts();
-                        List<Point> intersects = new List<Point>();
-                        List<Point> extraIntersects = new List<Point>();
-
-                        foreach (Line subPart in subParts)
-                        {
-                            Point iPt = subPart.LineIntersection(ray, false, tolerance);
-                            if (iPt != null)
-                            {
-                                double signedAngle = rayDir.SignedAngle(subPart.Direction(), p.Normal);
-                                if ((subPart.Start.SquareDistance(iPt) <= sqTol))
-                                {
-                                    if (signedAngle > Tolerance.Angle) intersects.Add(iPt);
-                                    else extraIntersects.Add(iPt);
-                                }
-                                else if ((subPart.End.SquareDistance(iPt) <= sqTol))
-                                {
-                                    if (signedAngle < Tolerance.Angle) intersects.Add(iPt);
-                                    else extraIntersects.Add(iPt);
-                                }
-                                else intersects.Add(iPt);
-                            }
-                        }
-
-                        if ((pt.ClosestPoint(intersects.Union(extraIntersects)).SquareDistance(pt) <= sqTol))
-                        {
-                            if (acceptOnEdge) continue;
-                            else return false;
-                        }
-
-                        intersects.Add(pt);
-                        intersects = intersects.SortCollinear(tolerance);
-                        for (int j = 0; j < intersects.Count; j++)
-                        {
-                            if (j % 2 == 0 && intersects[j] == pt) return false;
-                        }
+                        return true;
                     }
                     else return false;
                 }
-                return true;
+
+                else
+                {
+                    foreach (Point pt in points)
+                    {
+                        if (pt.IsInPlane(p, tolerance))
+                        {
+                            Point end = p.Origin;
+                            if (pt.SquareDistance(end) <= sqTol)
+                            {
+                                end = end.Translate(new Vector { X = 1, Y = 0, Z = 0 }.Project(p));
+                            }
+
+                            Line ray = new Line { Start = pt, End = end };
+                            ray.Infinite = true;
+                            Vector rayDir = ray.Direction();
+                            List<Line> subParts = curve.SubParts();
+                            List<Point> intersects = new List<Point>();
+                            List<Point> extraIntersects = new List<Point>();
+
+                            foreach (Line subPart in subParts)
+                            {
+                                Point iPt = subPart.LineIntersection(ray, false, tolerance);
+                                if (iPt != null)
+                                {
+                                    double signedAngle = rayDir.SignedAngle(subPart.Direction(), p.Normal);
+                                    if ((subPart.Start.SquareDistance(iPt) <= sqTol))
+                                    {
+                                        if (signedAngle > Tolerance.Angle) intersects.Add(iPt);
+                                        else extraIntersects.Add(iPt);
+                                    }
+                                    else if ((subPart.End.SquareDistance(iPt) <= sqTol))
+                                    {
+                                        if (signedAngle < Tolerance.Angle) intersects.Add(iPt);
+                                        else extraIntersects.Add(iPt);
+                                    }
+                                    else intersects.Add(iPt);
+                                }
+                            }
+
+                            if ((pt.ClosestPoint(intersects.Union(extraIntersects)).SquareDistance(pt) <= sqTol))
+                            {
+                                if (acceptOnEdge) continue;
+                                else return false;
+                            }
+
+                            intersects.Add(pt);
+                            intersects = intersects.SortCollinear(tolerance);
+                            for (int j = 0; j < intersects.Count; j++)
+                            {
+                                if (j % 2 == 0 && intersects[j] == pt) return false;
+                            }
+                        }
+                        else return false;
+                    }
+                    return true;
+                }
             }
             return false;
         }
@@ -151,38 +168,55 @@ namespace BH.Engine.Geometry
             // - to be replaced with a general method for a nurbs curve?
             // - this is very problematic for edge cases (cutting line going through a sharp corner, to be superseded?
 
-            Plane p = curve.FitPlane(tolerance);
             if (curve.IsClosed(tolerance))
             {
+                Plane p = curve.FitPlane(tolerance);
                 double sqTol = tolerance * tolerance;
-                foreach (Point pt in points)
+
+                if (p == null)
                 {
-                    if (pt.IsInPlane(p, tolerance))
+                    if (acceptOnEdge)
                     {
-                        Point end = p.Origin;
-                        if (pt.SquareDistance(end) <= sqTol)
+                        foreach (Point pt in points)
                         {
-                            end = end.Translate(new Vector { X = 1, Y = 0, Z = 0 }.Project(p));
+                            if (curve.ClosestPoint(pt).SquareDistance(pt) > sqTol) return false;
                         }
-
-                        List<Point> intersects = curve.LineIntersections(new Line { Start = pt, End = end }, true, tolerance);
-                        if ((pt.ClosestPoint(intersects).SquareDistance(pt) <= sqTol))
-                        {
-                            if (acceptOnEdge) continue;
-                            else return false;
-                        }
-
-                        intersects.Add(pt);
-                        intersects = intersects.SortCollinear(tolerance);
-                        intersects = intersects.CullDuplicates(tolerance);
-                        for (int j = 0; j < intersects.Count; j++)
-                        {
-                            if (j % 2 == 0 && intersects[j] == pt) return false;
-                        }
+                        return true;
                     }
                     else return false;
                 }
-                return true;
+
+                else
+                {
+                    foreach (Point pt in points)
+                    {
+                        if (pt.IsInPlane(p, tolerance))
+                        {
+                            Point end = p.Origin;
+                            if (pt.SquareDistance(end) <= sqTol)
+                            {
+                                end = end.Translate(new Vector { X = 1, Y = 0, Z = 0 }.Project(p));
+                            }
+
+                            List<Point> intersects = curve.LineIntersections(new Line { Start = pt, End = end }, true, tolerance);
+                            if ((pt.ClosestPoint(intersects).SquareDistance(pt) <= sqTol))
+                            {
+                                if (acceptOnEdge) continue;
+                                else return false;
+                            }
+
+                            intersects.Add(pt);
+                            intersects = intersects.SortCollinear(tolerance);
+                            intersects = intersects.CullDuplicates(tolerance);
+                            for (int j = 0; j < intersects.Count; j++)
+                            {
+                                if (j % 2 == 0 && intersects[j] == pt) return false;
+                            }
+                        }
+                        else return false;
+                    }
+                    return true;
+                }
             }
             return false;
         }
