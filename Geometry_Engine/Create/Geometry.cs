@@ -57,7 +57,65 @@ namespace BH.Engine.Geometry
             }
         }
 
+        /***************************************************/
 
+        public static IGeometry RandomGeometry(Type type, Random rnd, BoundingBox box = null)
+        {
+            if (!typeof(IGeometry).IsAssignableFrom(type))
+                return null;
+
+            switch (type.Name)
+            {
+                case "Arc":
+                    return RandomArc(rnd, box);
+                case "BoundingBox":
+                    return RandomBoundingBox(rnd, box);
+                case "Circle":
+                    return RandomCircle(rnd, box);
+                case "CompositeGeometry":
+                    return RandomCompositeGeometry(rnd, box);
+                case "Ellipse":
+                    return RandomEllipse(rnd, box);
+                case "Extrusion":
+                    return RandomExtrusion(rnd, box);
+                case "ICurve":
+                    return RandomCurve(rnd, box);
+                case "IGeometry":
+                    return RandomGeometry(rnd, box);
+                case "ISurface":
+                    return RandomSurface(rnd, box);
+                case "Line":
+                    return RandomLine(rnd, box);
+                case "Loft":
+                    return RandomLoft(rnd, box);
+                case "Mesh":
+                    return RandomMesh(rnd, box);
+                case "NurbCurve":
+                    return RandomNurbCurve(rnd, box);
+                case "NurbSurface":
+                    return RandomNurbSurface(rnd, box);
+                case "Pipe":
+                    return RandomPipe(rnd, box);
+                case "Plane":
+                    return RandomPlane(rnd, box);
+                case "Point":
+                    return RandomPoint(rnd, box);
+                case "PolyCurve":
+                    return RandomPolyCurve(rnd, box);
+                case "Polyline":
+                    return RandomPolyline(rnd, box);
+                case "Quaternion":
+                    return RandomQuaternion(rnd);
+                case "PolySurface":
+                    return RandomPolySurface(rnd, box);
+                case "TransformMatrix":
+                    return RandomMatrix(rnd);
+                case "Vector":
+                    return RandomVector(rnd, box);
+                default:
+                    return null;
+            }
+        }
         /***************************************************/
         /**** Private Fields                            ****/
         /***************************************************/
