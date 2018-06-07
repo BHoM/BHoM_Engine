@@ -28,7 +28,7 @@ namespace BH.Engine.Geometry
             if (seed == -1)
                 seed = m_Random.Next();
             Random rnd = new Random(seed);
-            return RandomVector(new Random(seed), box);
+            return RandomVector(rnd, box);
         }
 
         /***************************************************/
@@ -48,6 +48,33 @@ namespace BH.Engine.Geometry
             {
                 return new Vector { X = rnd.NextDouble()*2-1, Y = rnd.NextDouble()*2 - 1, Z = rnd.NextDouble()*2 - 1 };
             }
+        }
+
+        /***************************************************/
+
+        public static Vector RandomVectorInPlane(Plane plane, bool normalise = false, int seed = -1)
+        {
+            if (seed == -1)
+                seed = m_Random.Next();
+            Random rnd = new Random(seed);
+            return RandomVectorInPlane(plane, rnd, normalise);
+        }
+
+        /***************************************************/
+
+        public static Vector RandomVectorInPlane(Plane plane, Random rnd, bool normalise = false)
+        {
+            Vector v1 = RandomVector(rnd);
+
+            if (v1.IsParallel(plane.Normal) != 0)
+                return RandomVectorInPlane(plane, rnd, normalise);
+
+            Vector v2 = v1.CrossProduct(plane.Normal);
+
+            if (normalise)
+                v2 = v2.Normalise();
+
+            return v2;
         }
 
         /***************************************************/
