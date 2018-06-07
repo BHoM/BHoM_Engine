@@ -91,16 +91,18 @@ namespace BH.Engine.Geometry
                     if (pt.IsInPlane(p, tolerance))
                     {
                         Point end = p.Origin;
-                        if (pt.SquareDistance(p.Origin) <= sqTol)
+                        if (pt.SquareDistance(end) <= sqTol)
                         {
-                            end = p.Origin.Translate(new Vector { X = 1, Y = 0, Z = 0 }.Project(p));
+                            end = end.Translate(new Vector { X = 1, Y = 0, Z = 0 }.Project(p));
                         }
+
                         Line ray = new Line { Start = pt, End = end };
                         ray.Infinite = true;
                         Vector rayDir = ray.Direction();
                         List<Line> subParts = curve.SubParts();
                         List<Point> intersects = new List<Point>();
                         List<Point> extraIntersects = new List<Point>();
+
                         for (int i = 0; i < subParts.Count; i++)
                         {
                             Point iPt = subParts[i].LineIntersection(ray, false, tolerance);
@@ -121,11 +123,13 @@ namespace BH.Engine.Geometry
                                 else intersects.Add(iPt);
                             }
                         }
+
                         if ((pt.ClosestPoint(intersects.Union(extraIntersects)).SquareDistance(pt) <= sqTol))
                         {
                             if (acceptOnEdge) continue;
                             else return false;
                         }
+
                         intersects.Add(pt);
                         intersects = intersects.SortCollinear(tolerance);
                         for (int j = 0; j < intersects.Count; j++)
@@ -158,16 +162,18 @@ namespace BH.Engine.Geometry
                     if (pt.IsInPlane(p, tolerance))
                     {
                         Point end = p.Origin;
-                        if (pt.SquareDistance(p.Origin) <= sqTol)
+                        if (pt.SquareDistance(end) <= sqTol)
                         {
-                            end = p.Origin.Translate(m);
+                            end = end.Translate(m);
                         }
+
                         List<Point> intersects = curve.LineIntersections(new Line { Start = pt, End = end }, true, tolerance);
                         if ((pt.ClosestPoint(intersects).SquareDistance(pt) <= sqTol))
                         {
                             if (acceptOnEdge) continue;
                             else return false;
                         }
+
                         intersects.Add(pt);
                         intersects = intersects.SortCollinear(tolerance);
                         intersects = intersects.CullDuplicates(tolerance);
