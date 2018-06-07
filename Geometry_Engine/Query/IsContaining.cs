@@ -155,7 +155,6 @@ namespace BH.Engine.Geometry
             if (curve.IsClosed(tolerance))
             {
                 double sqTol = tolerance * tolerance;
-                Vector m = new Vector { X = 1, Y = 0, Z = 0 }.Project(p);
                 foreach (Point pt in points)
                 {
                     if (pt.IsInPlane(p, tolerance))
@@ -163,7 +162,7 @@ namespace BH.Engine.Geometry
                         Point end = p.Origin;
                         if (pt.SquareDistance(end) <= sqTol)
                         {
-                            end = end.Translate(m);
+                            end = end.Translate(new Vector { X = 1, Y = 0, Z = 0 }.Project(p));
                         }
 
                         List<Point> intersects = curve.LineIntersections(new Line { Start = pt, End = end }, true, tolerance);
