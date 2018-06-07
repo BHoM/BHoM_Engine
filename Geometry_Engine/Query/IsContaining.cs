@@ -103,20 +103,19 @@ namespace BH.Engine.Geometry
                         List<Point> intersects = new List<Point>();
                         List<Point> extraIntersects = new List<Point>();
 
-                        for (int i = 0; i < subParts.Count; i++)
+                        foreach (Line subPart in subParts)
                         {
-                            Point iPt = subParts[i].LineIntersection(ray, false, tolerance);
+                            Point iPt = subPart.LineIntersection(ray, false, tolerance);
                             if (iPt != null)
                             {
-                                if ((subParts[i].Start.SquareDistance(iPt) <= sqTol))
+                                double signedAngle = rayDir.SignedAngle(subPart.Direction(), p.Normal);
+                                if ((subPart.Start.SquareDistance(iPt) <= sqTol))
                                 {
-                                    double signedAngle = rayDir.SignedAngle(subParts[i].Direction(), p.Normal);
                                     if (signedAngle > Tolerance.Angle) intersects.Add(iPt);
                                     else extraIntersects.Add(iPt);
                                 }
-                                else if ((subParts[i].End.SquareDistance(iPt) <= sqTol))
+                                else if ((subPart.End.SquareDistance(iPt) <= sqTol))
                                 {
-                                    double signedAngle = rayDir.SignedAngle(subParts[i].Direction(), p.Normal);
                                     if (signedAngle < Tolerance.Angle) intersects.Add(iPt);
                                     else extraIntersects.Add(iPt);
                                 }
