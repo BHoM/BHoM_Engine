@@ -139,6 +139,7 @@ namespace BH.Engine.Geometry
                                 }
                             }
 
+                            if (intersects.Count == 0) return false;
                             if ((pt.ClosestPoint(intersects.Union(extraIntersects)).SquareDistance(pt) <= sqTol))
                             {
                                 if (acceptOnEdge) continue;
@@ -199,6 +200,8 @@ namespace BH.Engine.Geometry
                             }
 
                             List<Point> intersects = curve.LineIntersections(new Line { Start = pt, End = end }, true, tolerance);
+                            if (intersects.Count == 0) return false;
+
                             if ((pt.ClosestPoint(intersects).SquareDistance(pt) <= sqTol))
                             {
                                 if (acceptOnEdge) continue;
