@@ -104,15 +104,16 @@ namespace BH.Engine.Geometry
                 {
                     foreach (Point pt in points)
                     {
-                        if (pt.IsInPlane(p, tolerance))
+                        Point pPt = pt.Project(p);
+                        if (pPt.SquareDistance(pt) <= sqTol)
                         {
                             Point end = p.Origin;
-                            if (pt.SquareDistance(end) <= sqTol)
+                            if (pPt.SquareDistance(end) <= sqTol)
                             {
                                 end = end.Translate(new Vector { X = 1, Y = 0, Z = 0 }.Project(p));
                             }
 
-                            Line ray = new Line { Start = pt, End = end };
+                            Line ray = new Line { Start = pPt, End = end };
                             ray.Infinite = true;
                             Vector rayDir = ray.Direction();
                             List<Line> subParts = curve.SubParts();
@@ -140,17 +141,17 @@ namespace BH.Engine.Geometry
                             }
 
                             if (intersects.Count == 0) return false;
-                            if ((pt.ClosestPoint(intersects.Union(extraIntersects)).SquareDistance(pt) <= sqTol))
+                            if ((pPt.ClosestPoint(intersects.Union(extraIntersects)).SquareDistance(pPt) <= sqTol))
                             {
                                 if (acceptOnEdge) continue;
                                 else return false;
                             }
 
-                            intersects.Add(pt);
+                            intersects.Add(pPt);
                             intersects = intersects.SortCollinear(tolerance);
                             for (int j = 0; j < intersects.Count; j++)
                             {
-                                if (j % 2 == 0 && intersects[j] == pt) return false;
+                                if (j % 2 == 0 && intersects[j] == pPt) return false;
                             }
                         }
                         else return false;
@@ -191,29 +192,30 @@ namespace BH.Engine.Geometry
                 {
                     foreach (Point pt in points)
                     {
-                        if (pt.IsInPlane(p, tolerance))
+                        Point pPt = pt.Project(p);
+                        if (pPt.SquareDistance(pt) <= sqTol)
                         {
                             Point end = p.Origin;
-                            if (pt.SquareDistance(end) <= sqTol)
+                            if (pPt.SquareDistance(end) <= sqTol)
                             {
                                 end = end.Translate(new Vector { X = 1, Y = 0, Z = 0 }.Project(p));
                             }
 
-                            List<Point> intersects = curve.LineIntersections(new Line { Start = pt, End = end }, true, tolerance);
+                            List<Point> intersects = curve.LineIntersections(new Line { Start = pPt, End = end }, true, tolerance);
                             if (intersects.Count == 0) return false;
 
-                            if ((pt.ClosestPoint(intersects).SquareDistance(pt) <= sqTol))
+                            if ((pPt.ClosestPoint(intersects).SquareDistance(pPt) <= sqTol))
                             {
                                 if (acceptOnEdge) continue;
                                 else return false;
                             }
 
-                            intersects.Add(pt);
+                            intersects.Add(pPt);
                             intersects = intersects.SortCollinear(tolerance);
                             intersects = intersects.CullDuplicates(tolerance);
                             for (int j = 0; j < intersects.Count; j++)
                             {
-                                if (j % 2 == 0 && intersects[j] == pt) return false;
+                                if (j % 2 == 0 && intersects[j] == pPt) return false;
                             }
                         }
                         else return false;
