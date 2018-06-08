@@ -29,5 +29,22 @@ namespace BH.Engine.Geometry
         }
 
         /***************************************************/
+
+        public static Quaternion RandomQuaternion(int seed = -1)
+        {
+            if (seed == -1)
+                seed = m_Random.Next();
+            Random rnd = new Random(seed);
+            return RandomQuaternion(new Random(seed));
+        }
+
+        /***************************************************/
+
+        public static Quaternion RandomQuaternion(Random rnd)
+        {
+            return new Quaternion { X = rnd.NextDouble(), Y = rnd.NextDouble(), Z = rnd.NextDouble(), W = rnd.NextDouble() }.Normalise();
+        }
+
+        /***************************************************/
     }
 }

@@ -1,5 +1,6 @@
 ﻿using BH.oM.Geometry;
 using System;
+using System.Linq;
 
 namespace BH.Engine.Geometry
 {
@@ -40,6 +41,93 @@ namespace BH.Engine.Geometry
 
             return new Arc { Start = start, Middle = centre + midRadius * midDir, End = end }; 
         }
+
+        /***************************************************/
+
+        public static Arc RandomArc(int seed = -1, BoundingBox box = null)
+        {
+            if (seed == -1)
+                seed = m_Random.Next();
+            Random rnd = new Random(seed);
+            return RandomArc(rnd, box);
+        }
+
+        /***************************************************/
+
+        public static Arc RandomArc(Random rnd, BoundingBox box = null)
+        {
+            Circle circle = RandomCircle(rnd, box);
+            double length = circle.Length();
+            double startLength = length * rnd.NextDouble();
+            double endLength = length * rnd.NextDouble();
+
+            return new Arc
+            {
+                Start = circle.PointAtLength(startLength),
+                End = circle.PointAtLength(endLength),
+                Middle = circle.PointAtLength((startLength+endLength)/2)
+            };
+        }
+
+        /***************************************************/
+
+        public static Arc RandomArc(Point from, int seed = -1, BoundingBox box = null)
+        {
+            if (seed == -1)
+                seed = m_Random.Next();
+            Random rnd = new Random(seed);
+            return RandomArc(from, rnd, box);
+        }
+
+        /***************************************************/
+
+        public static Arc RandomArc(Point from, Random rnd, BoundingBox box = null)
+        {
+            Point centre;
+            Vector normal;
+            double radius;
+            if (box == null)
+            {
+                centre = RandomPoint(rnd);
+                normal = RandomVector(rnd).CrossProduct(centre - from).Normalise();
+                radius = from.Distance(centre);
+            }
+            else
+            {
+                double maxRadius = new double[]
+                {
+                    box.Max.X - from.X,
+                    box.Max.Y - from.Y,
+                    box.Max.Z - from.Z,
+                    from.X - box.Min.X,
+                    from.Y - box.Min.Y,
+                    from.Z - box.Min.Z
+                }.Min()/2;
+
+                radius = maxRadius * rnd.NextDouble();
+
+                Vector v = RandomVector(rnd).Normalise();
+                centre = from + v * radius;
+                normal = RandomVector(rnd).CrossProduct(v).Normalise();
+
+            }
+
+            Circle circle = Circle(centre, normal, radius);
+
+
+            double length = circle.Length();
+            double endLength = length * rnd.NextDouble();
+
+            return ArcByCentre(centre, from, circle.PointAtLength(endLength));
+
+        }
+
+        /***************************************************/
+        /**** Private Fields                            ****/
+        /***************************************************/
+
+        private static Random m_Random = new Random();
+
 
         /***************************************************/
     }

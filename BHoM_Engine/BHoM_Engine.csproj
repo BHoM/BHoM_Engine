@@ -37,6 +37,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -46,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Create\BHoMGroup.cs" />
+    <Compile Include="Create\RandomObject.cs" />
     <Compile Include="Create\CustomObject.cs" />
     <Compile Include="Objects\EqualityComparers\BHoMGuidComparer.cs" />
     <Compile Include="Objects\EqualityComparers\BHoMObjectNameComparer.cs" />

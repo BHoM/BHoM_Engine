@@ -1,4 +1,5 @@
 ﻿using BH.oM.Geometry;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -48,6 +49,47 @@ namespace BH.Engine.Geometry
                 Weights = weights.ToList(),
                 Knots = knots.ToList()
             };
+        }
+
+        /***************************************************/
+
+        public static NurbCurve RandomNurbCurve(int seed = -1, BoundingBox box = null, int minNbCPs = 5, int maxNbCPs = 20)
+        {
+            if (seed == -1)
+                seed = m_Random.Next();
+            Random rnd = new Random(seed);
+            return RandomNurbCurve(rnd, box, minNbCPs, maxNbCPs);
+        }
+
+        /***************************************************/
+
+        public static NurbCurve RandomNurbCurve(Random rnd, BoundingBox box = null, int minNbCPs = 5, int maxNbCPs = 20)
+        {
+            List<Point> points = new List<Point>();
+            for (int i = 0; i < rnd.Next(minNbCPs, maxNbCPs + 1); i++)
+                points.Add(RandomPoint(rnd, box));
+            return NurbCurve(points);
+        }
+
+        /***************************************************/
+
+        public static NurbCurve RandomNurbCurve(Point from, int seed = -1, BoundingBox box = null, int minNbCPs = 5, int maxNbCPs = 20)
+        {
+            if (seed == -1)
+                seed = m_Random.Next();
+            Random rnd = new Random(seed);
+            return RandomNurbCurve(from, rnd, box, minNbCPs, maxNbCPs);
+        }
+
+        /***************************************************/
+
+        public static NurbCurve RandomNurbCurve(Point from, Random rnd, BoundingBox box = null, int minNbCPs = 5, int maxNbCPs = 20)
+        {
+            List<Point> points = new List<Point>();
+            points.Add(from);
+            for (int i = 0; i < rnd.Next(minNbCPs, maxNbCPs + 1)-1; i++)
+                points.Add(RandomPoint(rnd, box));
+            return NurbCurve(points);
         }
 
         /***************************************************/

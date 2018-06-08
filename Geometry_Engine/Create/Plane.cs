@@ -1,4 +1,5 @@
 ﻿using BH.oM.Geometry;
+using System;
 
 namespace BH.Engine.Geometry
 {
@@ -19,6 +20,27 @@ namespace BH.Engine.Geometry
         {
             Vector normal = Query.CrossProduct(p2 - p1, p3 - p1).Normalise();
             return new Plane { Origin = p1.Clone(), Normal = normal };
+        }
+
+        /***************************************************/
+
+        public static Plane RandomPlane(int seed = -1, BoundingBox box = null)
+        {
+            if (seed == -1)
+                seed = m_Random.Next();
+            Random rnd = new Random(seed);
+            return RandomPlane(rnd, box);
+        }
+
+        /***************************************************/
+
+        public static Plane RandomPlane(Random rnd, BoundingBox box = null)
+        {
+            return new Plane
+            {
+                Origin = RandomPoint(rnd, box),
+                Normal = RandomVector(rnd).Normalise()
+            };
         }
 
         /***************************************************/
