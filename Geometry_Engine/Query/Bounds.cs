@@ -45,7 +45,7 @@ namespace BH.Engine.Geometry
             if (!arc.IsValid())
                 throw new Exception("Invalid Arc");
 
-            Circle circle = new Circle { Centre = arc.CoordinateSystem.Orgin, Normal = arc.CoordinateSystem.Z, Radius = arc.Radius };
+            Circle circle = new Circle { Centre = arc.CoordinateSystem.Origin, Normal = arc.CoordinateSystem.Z, Radius = arc.Radius };
 
 
             Point start = arc.StartPoint();

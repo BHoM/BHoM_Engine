@@ -35,7 +35,7 @@ namespace BH.Engine.Geometry
 
         public static bool IsEqual(this CoordinateSystem coordinateSystem, CoordinateSystem other, double tolerance = Tolerance.Distance)
         {
-            return coordinateSystem.Orgin.IsEqual(other.Orgin, tolerance)
+            return coordinateSystem.Origin.IsEqual(other.Origin, tolerance)
                 && coordinateSystem.X.IsEqual(other.X, tolerance)
                 && coordinateSystem.Y.IsEqual(other.Y, tolerance)
                 && coordinateSystem.Z.IsEqual(other.Z, tolerance);

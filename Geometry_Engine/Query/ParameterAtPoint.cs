@@ -14,7 +14,7 @@ namespace BH.Engine.Geometry
         public static double ParameterAtPoint(this Arc curve, Point point, double tolerance = Tolerance.Distance)
         {
             if (curve.ClosestPoint(point).SquareDistance(point) > tolerance * tolerance) return -1;
-            Point centre = curve.CoordinateSystem.Orgin;
+            Point centre = curve.CoordinateSystem.Origin;
             Vector normal = curve.CoordinateSystem.Z;
             Vector v1 = curve.CoordinateSystem.X;
             Vector v2 = point - centre;
