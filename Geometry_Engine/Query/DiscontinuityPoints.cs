@@ -13,7 +13,7 @@ namespace BH.Engine.Geometry
 
         public static List<Point> DiscontinuityPoints(this Arc curve)
         {
-            return new List<Point> { curve.Start, curve.End };
+            return new List<Point> { curve.StartPoint(), curve.EndPoint() };
         }
 
         /***************************************************/
