@@ -14,9 +14,9 @@ namespace BH.Engine.Geometry
         public static double ParameterAtPoint(this Arc curve, Point point, double tolerance = Tolerance.Distance)
         {
             if (curve.ClosestPoint(point).SquareDistance(point) > tolerance * tolerance) return -1;
-            Point centre = curve.Centre();
-            Vector normal = curve.FitPlane(tolerance).Normal;
-            Vector v1 = curve.Start - centre;
+            Point centre = curve.CoordinateSystem.Orgin;
+            Vector normal = curve.CoordinateSystem.Z;
+            Vector v1 = curve.CoordinateSystem.X;
             Vector v2 = point - centre;
             return ((v1.SignedAngle(v2, normal) + 2 * Math.PI) % (2 * Math.PI)) / curve.Angle();
         }

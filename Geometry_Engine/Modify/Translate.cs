@@ -28,6 +28,12 @@ namespace BH.Engine.Geometry
             return new Plane { Origin = plane.Origin + transform, Normal = plane.Normal.Clone() as Vector };
         }
 
+        /***************************************************/
+
+        public static CoordinateSystem Translate(this CoordinateSystem coordinateSystem, Vector transform)
+        {
+            return new CoordinateSystem(coordinateSystem.X, coordinateSystem.Y, coordinateSystem.Z, coordinateSystem.Orgin + transform);
+        }
 
         /***************************************************/
         /**** Public Methods - Curves                  ****/
@@ -35,7 +41,12 @@ namespace BH.Engine.Geometry
 
         public static Arc Translate(this Arc arc, Vector transform)
         {
-            return new Arc { Start = arc.Start + transform, Middle = arc.Middle + transform, End = arc.End + transform };
+            return new Arc
+            {
+                CoordinateSystem = arc.CoordinateSystem.Translate(transform),
+                Radius = arc.Radius,
+                Angle = arc.Angle
+            };
         }
 
         /***************************************************/
