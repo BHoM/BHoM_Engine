@@ -35,12 +35,7 @@ namespace BH.Engine.Geometry
 
         public static bool IsValid(this Arc arc, double tolerance = Tolerance.Distance)
         {
-            if (!arc.Start.IsValid() || !arc.End.IsValid() || !arc.Middle.IsValid())
-                return false;
-            double sqTol = tolerance * tolerance;
-            if (arc.Start.SquareDistance(arc.End) < sqTol || arc.Start.SquareDistance(arc.Middle) < sqTol || arc.Middle.SquareDistance(arc.End) < sqTol)
-                return false;
-
+            //TODO: Returning true for all for now until method is expanded to all objects
             return true;
         }
 
