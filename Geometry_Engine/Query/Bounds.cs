@@ -45,43 +45,46 @@ namespace BH.Engine.Geometry
             if (!arc.IsValid())
                 throw new Exception("Invalid Arc");
 
-            Circle circle = Create.Circle(arc.Start, arc.Middle, arc.End);
+            Circle circle = new Circle { Centre = arc.CoordinateSystem.Orgin, Normal = arc.CoordinateSystem.Z, Radius = arc.Radius };
 
+
+            Point start = arc.StartPoint();
+            Point end = arc.EndPoint();
 
             double xMax, xMin, yMax, yMin, zMax, zMin;
 
             //Get m in and max values from start and end points
-            if (arc.Start.X > arc.End.X)
+            if (start.X > end.X)
             {
-                xMax = arc.Start.X;
-                xMin = arc.End.X;
+                xMax = start.X;
+                xMin = end.X;
             }
             else
             {
-                xMax = arc.End.X;
-                xMin = arc.Start.X;
+                xMax = end.X;
+                xMin = start.X;
             }
 
-            if (arc.Start.Y > arc.End.Y)
+            if (start.Y > end.Y)
             {
-                yMax = arc.Start.Y;
-                yMin = arc.End.Y;
+                yMax = start.Y;
+                yMin = end.Y;
             }
             else
             {
-                yMax = arc.End.Y;
-                yMin = arc.Start.Y;
+                yMax = end.Y;
+                yMin = start.Y;
             }
 
-            if (arc.Start.Z > arc.End.Z)
+            if (start.Z > end.Z)
             {
-                zMax = arc.Start.Z;
-                zMin = arc.End.Z;
+                zMax = start.Z;
+                zMin = end.Z;
             }
             else
             {
-                zMax = arc.End.Z;
-                zMin = arc.Start.Z;
+                zMax = end.Z;
+                zMin = start.Z;
             }
 
 
@@ -94,12 +97,12 @@ namespace BH.Engine.Geometry
             //A - point on the circle
 
 
-            Vector x = arc.Start - circle.Centre;
+            Vector x = start - circle.Centre;
             Vector y = circle.Normal.CrossProduct(x);
 
-            Vector end = arc.End - circle.Centre;
+            Vector endV = end - circle.Centre;
 
-            double angle = x.SignedAngle(end, circle.Normal);
+            double angle = x.SignedAngle(endV, circle.Normal);
 
             angle = angle < 0 ? angle + Math.PI * 2 : angle;
 

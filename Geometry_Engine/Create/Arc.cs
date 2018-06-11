@@ -105,12 +105,11 @@ namespace BH.Engine.Geometry
             double startLength = length * rnd.NextDouble();
             double endLength = length * rnd.NextDouble();
 
-            return new Arc
-            {
-                Start = circle.PointAtLength(startLength),
-                End = circle.PointAtLength(endLength),
-                Middle = circle.PointAtLength((startLength+endLength)/2)
-            };
+            //TODO: Can be made more efficient with new definition of arc
+            return Arc( circle.PointAtLength(startLength),
+                        circle.PointAtLength((startLength + endLength) / 2),
+                        circle.PointAtLength(endLength)
+            );
         }
 
         /***************************************************/
