@@ -1,6 +1,7 @@
 ﻿using BH.oM.Geometry;
 using System.Collections.Generic;
 using System.Linq;
+using System;
 
 namespace BH.Engine.Geometry
 {
@@ -12,10 +13,7 @@ namespace BH.Engine.Geometry
 
         public static bool IsClosed(this Arc arc, double tolerance = Tolerance.Distance)
         {
-            return false;
-            //TODO: Repleacing previous code below with allways returning false.
-            //Start and end the same will lead to an invalid arc with our implementation
-            //return arc.Start.SquareDistance(arc.End) <= tolerance; 
+            return (arc.Angle - Math.PI * 2)*arc.Radius > -tolerance;
         }
 
         /***************************************************/

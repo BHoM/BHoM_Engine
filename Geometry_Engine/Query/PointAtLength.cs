@@ -13,10 +13,9 @@ namespace BH.Engine.Geometry
 
         public static Point PointAtLength(this Arc curve, double length)
         {
-            Point centre = curve.Centre();
             double alfa = curve.Angle() * length / curve.Length();
-            Vector localX = curve.Start - centre;
-            return  centre + localX.Rotate(alfa, curve.FitPlane().Normal);
+            Vector localX = curve.CoordinateSystem.X;
+            return curve.CoordinateSystem.Orgin + localX.Rotate(alfa, curve.FitPlane().Normal) * curve.Radius;
         }
 
         /***************************************************/
