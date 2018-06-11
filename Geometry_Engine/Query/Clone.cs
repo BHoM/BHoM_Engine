@@ -32,7 +32,7 @@ namespace BH.Engine.Geometry
 
         public static CoordinateSystem Clone(this CoordinateSystem coordinateSystem)
         {
-            return new CoordinateSystem(coordinateSystem.X.Clone(), coordinateSystem.Y.Clone(), coordinateSystem.Z.Clone(), coordinateSystem.Orgin.Clone());
+            return new CoordinateSystem(coordinateSystem.X.Clone(), coordinateSystem.Y.Clone(), coordinateSystem.Z.Clone(), coordinateSystem.Origin.Clone());
         }
 
         /***************************************************/
