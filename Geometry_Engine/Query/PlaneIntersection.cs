@@ -60,20 +60,26 @@ namespace BH.Engine.Geometry
         /**** public Methods - Curves                   ****/
         /***************************************************/
 
-        //TODO: Testing needed!!
         public static List<Point> PlaneIntersections(this Arc curve, Plane plane, double tolerance = Tolerance.Distance)
         {
             //Construct cricle for intersection
-            Circle circle = Create.Circle(curve.Start, curve.Middle, curve.End);
+            Circle circle = new Circle { Centre = curve.CoordinateSystem.Orgin, Normal = curve.CoordinateSystem.Z, Radius = curve.Radius };
             //Get circle intersection points
             List<Point> circleInter = circle.PlaneIntersections(plane, tolerance);
 
             if (circleInter.Count < 0)
                 return new List<Point>();
 
+            //TODO: With the updated definition of the arc, this could probably be improved upon.
+            //Using old methodology for now
+
+            Point st = curve.StartPoint();
+            Point mid = curve.PointAtParameter(0.5);
+            Point end = curve.EndPoint();
+
             //Construct lines for checking
-            Line line1 = new Line { Start = curve.Start, End = curve.Middle };
-            Line line2 = new Line { Start = curve.Middle, End = curve.End };
+            Line line1 = new Line { Start = st, End = mid };
+            Line line2 = new Line { Start = mid, End =end };
 
             List<Point> interPoints = new List<Point>();
 
@@ -88,8 +94,6 @@ namespace BH.Engine.Geometry
 
             return interPoints;
 
-
-            throw new NotImplementedException();
         }
 
         /***************************************************/
