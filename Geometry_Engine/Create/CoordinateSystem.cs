@@ -22,15 +22,13 @@ namespace BH.Engine.Geometry
 
             double dot = x.DotProduct(y);
 
-            double dotTolerance = Math.Cos(Tolerance.Angle);
-
-            if (Math.Abs(1 - dot) < dotTolerance)
+            if (Math.Abs(1 - dot) < Tolerance.Angle)    //Not exactly angle tolerance, but close
                 throw new ArgumentException("Can not create coordinate system from parallell vectors");
 
             Vector z = x.CrossProduct(y);
             z.Normalise();
 
-            if (Math.Abs(dot) > dotTolerance)
+            if (Math.Abs(dot) > Tolerance.Angle)    //Not exactly angle tolerance, but close
             {
                 Reflection.Compute.RecordWarning("x and y are not orthogonal. y will be made othogonal to x and z");
                 y = z.CrossProduct(x).Normalise();
