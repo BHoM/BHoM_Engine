@@ -40,20 +40,27 @@ namespace BH.Engine.Geometry
             return plane1.Normal.IsParallel(plane2.Normal, angTolerance) != 0 && Math.Abs(plane1.Origin.Distance(plane2)) <= tolerance;
         }
 
+        /***************************************************/
+
+        public static bool IsInPlane(this CoordinateSystem coordinateSystem, Plane plane, double tolerance = Tolerance.Distance, double angTolerance = Tolerance.Angle)
+        {
+            return ((Plane)coordinateSystem).IsInPlane(plane, tolerance, angTolerance);
+        }
 
         /***************************************************/
         /**** Public Methods - Curves                   ****/
         /***************************************************/
 
-        public static bool IsInPlane(this Arc arc, Plane plane, double tolerance = Tolerance.Distance)
+        public static bool IsInPlane(this Arc arc, Plane plane, double tolerance = Tolerance.Distance, double angTolerance = Tolerance.Angle)
         {
-            return arc.Start.IsInPlane(plane, tolerance) && arc.Middle.IsInPlane(plane, tolerance) && arc.End.IsInPlane(plane, tolerance);
+            return arc.CoordinateSystem.IsInPlane(plane, tolerance, angTolerance); //TODO: Is this check enough?
         }
 
         /***************************************************/
 
         public static bool IsInPlane(this Circle circle, Plane plane, double tolerance = Tolerance.Distance, double angTolerance = Tolerance.Angle)
         {
+            //TODO: Is this check enough?
             return circle.Normal.IsParallel(plane.Normal, angTolerance) != 0 && Math.Abs(plane.Normal.DotProduct(circle.Centre - plane.Origin)) <= tolerance;
         }
 
