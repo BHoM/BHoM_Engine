@@ -180,14 +180,16 @@ namespace BH.Engine.Graphics
         {
             int largeArcFlag = System.Convert.ToInt32((arc.Angle() > Math.PI));
             int sweepFlag = System.Convert.ToInt32(!arc.IsClockwise(Vector.ZAxis));
-            string arcString = "<path d=\"M" + arc.Start.X.ToString()
-                                + "," + arc.Start.Y.ToString()
+            Point start = arc.StartPoint();
+            Point end = arc.EndPoint();
+            string arcString = "<path d=\"M" + start.X.ToString()
+                                + "," + start.Y.ToString()
                                 + " A" + arc.Radius() + "," + arc.Radius()
                                 + " 0"
                                 + " " + largeArcFlag
                                 + "," + sweepFlag
-                                + " " + arc.End.X.ToString()
-                                + "," + arc.End.Y.ToString() + "\"/>";
+                                + " " + end.X.ToString()
+                                + "," + end.Y.ToString() + "\"/>";
 
             return arcString;
         }
