@@ -28,6 +28,12 @@ namespace BH.Engine.Geometry
             return new Vector { X = vector.X, Y = vector.Y, Z = vector.Z };
         }
 
+        /***************************************************/
+
+        public static CoordinateSystem Clone(this CoordinateSystem coordinateSystem)
+        {
+            return new CoordinateSystem(coordinateSystem.X.Clone(), coordinateSystem.Y.Clone(), coordinateSystem.Z.Clone(), coordinateSystem.Orgin.Clone());
+        }
 
         /***************************************************/
         /**** Public Methods - Curves                   ****/
@@ -35,7 +41,7 @@ namespace BH.Engine.Geometry
 
         public static Arc Clone(this Arc arc)
         {
-            return new Arc { Start = arc.Start.Clone(), Middle = arc.Middle.Clone(), End = arc.End.Clone() };
+            return new Arc { CoordinateSystem = arc.CoordinateSystem.Clone(), Angle = arc.Angle, Radius = arc.Radius };
         }
 
         /***************************************************/
