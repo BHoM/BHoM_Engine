@@ -32,7 +32,7 @@ namespace BH.Engine.Geometry
 
         public static CoordinateSystem Translate(this CoordinateSystem coordinateSystem, Vector transform)
         {
-            return new CoordinateSystem(coordinateSystem.X, coordinateSystem.Y, coordinateSystem.Z, coordinateSystem.Orgin + transform);
+            return new CoordinateSystem(coordinateSystem.X, coordinateSystem.Y, coordinateSystem.Z, coordinateSystem.Origin + transform);
         }
 
         /***************************************************/

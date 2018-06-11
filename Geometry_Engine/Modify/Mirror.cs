@@ -35,7 +35,7 @@ namespace BH.Engine.Geometry
             return new CoordinateSystem(coordinateSystem.X.Mirror(p).Normalise(),
                                         coordinateSystem.Y.Mirror(p).Normalise(),
                                         coordinateSystem.Z.Mirror(p).Normalise(),
-                                        coordinateSystem.Orgin.Mirror(p));
+                                        coordinateSystem.Origin.Mirror(p));
         }
 
 

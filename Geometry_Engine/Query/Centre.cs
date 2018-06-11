@@ -12,7 +12,7 @@ namespace BH.Engine.Geometry
 
         public static Point Centre(this Arc arc, double tolerance = Tolerance.Distance)
         {
-            return arc.CoordinateSystem.Orgin;
+            return arc.CoordinateSystem.Origin;
         }
 
         /***************************************************/

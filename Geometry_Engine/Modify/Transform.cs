@@ -48,7 +48,7 @@ namespace BH.Engine.Geometry
             return new CoordinateSystem(coordinateSystem.X.Transform(transform),
                                         coordinateSystem.Y.Transform(transform),
                                         coordinateSystem.Z.Transform(transform),
-                                        coordinateSystem.Orgin.Transform(transform));
+                                        coordinateSystem.Origin.Transform(transform));
         }
 
         /***************************************************/

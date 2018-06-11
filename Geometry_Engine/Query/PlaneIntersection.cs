@@ -63,7 +63,7 @@ namespace BH.Engine.Geometry
         public static List<Point> PlaneIntersections(this Arc curve, Plane plane, double tolerance = Tolerance.Distance)
         {
             //Construct cricle for intersection
-            Circle circle = new Circle { Centre = curve.CoordinateSystem.Orgin, Normal = curve.CoordinateSystem.Z, Radius = curve.Radius };
+            Circle circle = new Circle { Centre = curve.CoordinateSystem.Origin, Normal = curve.CoordinateSystem.Z, Radius = curve.Radius };
             //Get circle intersection points
             List<Point> circleInter = circle.PlaneIntersections(plane, tolerance);
 

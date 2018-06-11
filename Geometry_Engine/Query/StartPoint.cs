@@ -13,7 +13,7 @@ namespace BH.Engine.Geometry
         
         public static Point StartPoint(this Arc arc)
         {
-            return arc.CoordinateSystem.Orgin + arc.CoordinateSystem.X * arc.Radius;
+            return arc.CoordinateSystem.Origin + arc.CoordinateSystem.X * arc.Radius;
         }
 
         /***************************************************/
