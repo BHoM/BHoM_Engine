@@ -101,22 +101,21 @@ namespace BH.Engine.Geometry
             Point midPoint = arc.PointAtParameter(0.5);
 
             Point center = arc.Centre();
-            Plane p = arc.ControlPoints().FitPlane();
-            double sqrRadius = center.SquareDistance(arc.Start);
+            double sqrRadius = arc.Radius*arc.Radius;
 
-            if (Math.Abs(p.Normal.DotProduct(l.Direction())) > Tolerance.Angle)
+            if (Math.Abs(arc.CoordinateSystem.Z.DotProduct(l.Direction())) > Tolerance.Angle)
             {
-                Point pt = l.PlaneIntersection(p);
+                Point pt = l.PlaneIntersection((Plane)arc.CoordinateSystem);
                 if (pt != null && Math.Abs(pt.SquareDistance(center) - sqrRadius) <= tolerance) iPts.Add(pt);
             }
             else
             {
-                Circle c = new Circle { Centre = center, Normal = p.Normal, Radius = Math.Sqrt(sqrRadius) };
+                Circle c = new Circle { Centre = center, Normal = arc.CoordinateSystem.Z, Radius = arc.Radius };
                 iPts = c.LineIntersections(l);
             }
 
             List<Point> output = new List<Point>();
-            double sqrd = midPoint.SquareDistance(arc.Start);
+            double sqrd = midPoint.SquareDistance(arc.IStartPoint());
             {
                 foreach (Point pt in iPts)
                 {
