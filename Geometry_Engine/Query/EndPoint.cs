@@ -13,7 +13,8 @@ namespace BH.Engine.Geometry
 
         public static Point EndPoint(this Arc arc)
         {
-            return arc.End;
+            Vector locSt = arc.CoordinateSystem.X * arc.Radius;
+            return arc.CoordinateSystem.Orgin + locSt.Rotate(arc.Angle, arc.CoordinateSystem.Z);
         }
 
         /***************************************************/

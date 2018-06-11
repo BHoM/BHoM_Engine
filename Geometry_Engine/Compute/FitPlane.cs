@@ -74,7 +74,7 @@ namespace BH.Engine.Geometry
 
         public static Plane FitPlane(this Arc curve, double tolerance = Tolerance.Distance)
         {
-            return Create.Plane(curve.Start, curve.Middle, curve.End);
+            return (Plane)curve.CoordinateSystem;
         }
 
         /***************************************************/
