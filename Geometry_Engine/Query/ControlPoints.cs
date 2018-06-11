@@ -12,7 +12,7 @@ namespace BH.Engine.Geometry
 
         public static List<Point> ControlPoints(this Arc curve)
         {
-            return new List<Point> { curve.Start, curve.Middle, curve.End };
+            return new List<Point>();
         }
 
         /***************************************************/

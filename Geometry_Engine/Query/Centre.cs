@@ -12,16 +12,7 @@ namespace BH.Engine.Geometry
 
         public static Point Centre(this Arc arc, double tolerance = Tolerance.Distance)
         {
-            Vector v1 = arc.Start - arc.Middle;
-            Vector v2 = arc.End - arc.Middle;
-            Vector normal = v1.CrossProduct(v2);
-
-            return Query.LineIntersection(
-                Create.Line(arc.Middle + v1 / 2, v1.CrossProduct(normal)),
-                Create.Line(arc.Middle + v2 / 2, v2.CrossProduct(normal)),
-                true,
-                tolerance
-            );
+            return arc.CoordinateSystem.Orgin;
         }
 
         /***************************************************/
