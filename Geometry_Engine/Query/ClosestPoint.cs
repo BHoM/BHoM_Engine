@@ -59,9 +59,9 @@ namespace BH.Engine.Geometry
             Point midPoint = arc.PointAtParameter(0.5);
             Plane p = arc.FitPlane();
 
-            Point onCircle = center + (point.Project(p) - center).Normalise() * (arc.Start-center).Length();
-            double sqrd = midPoint.SquareDistance(arc.Start);
-            return midPoint.SquareDistance(onCircle) <= sqrd ? onCircle : onCircle.ClosestPoint(new List<Point> { arc.Start, arc.End });
+            Point onCircle = center + (point.Project(p) - center).Normalise() * arc.Radius;
+            double sqrd = midPoint.SquareDistance(arc.StartPoint());
+            return midPoint.SquareDistance(onCircle) <= sqrd ? onCircle : onCircle.ClosestPoint(new List<Point> { arc.StartPoint(), arc.EndPoint() });
         }
 
         /***************************************************/
