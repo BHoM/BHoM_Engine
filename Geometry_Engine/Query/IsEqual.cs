@@ -31,6 +31,16 @@ namespace BH.Engine.Geometry
             return vector.Distance(other) < tolerance;
         }
 
+        /***************************************************/
+
+        public static bool IsEqual(this CoordinateSystem coordinateSystem, CoordinateSystem other, double tolerance = Tolerance.Distance)
+        {
+            return coordinateSystem.Orgin.IsEqual(other.Orgin, tolerance)
+                && coordinateSystem.X.IsEqual(other.X, tolerance)
+                && coordinateSystem.Y.IsEqual(other.Y, tolerance)
+                && coordinateSystem.Z.IsEqual(other.Z, tolerance);
+        }
+
 
         /***************************************************/
         /**** public Computation - Curves              ****/
@@ -38,9 +48,9 @@ namespace BH.Engine.Geometry
 
         public static bool IsEqual(this Arc arc, Arc other, double tolerance = Tolerance.Distance)
         {
-            return arc.Start.IsEqual(other.Start, tolerance)
-                && arc.End.IsEqual(other.End, tolerance)
-                && arc.Middle.IsEqual(other.Middle, tolerance);
+            return arc.CoordinateSystem.IsEqual(other.CoordinateSystem, tolerance)
+                && Math.Abs(arc.Radius - other.Radius) < tolerance
+                && Math.Abs(arc.Angle - other.Angle) < tolerance; //TODO: Using the distance tolerance here for now.
         }
 
         /***************************************************/
