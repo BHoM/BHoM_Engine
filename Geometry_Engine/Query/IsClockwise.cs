@@ -73,12 +73,9 @@ namespace BH.Engine.Geometry
 
         public static bool IsClockwise(this Arc arc, Vector axis, double tolerance = Tolerance.Distance)
         {
-            Point centre = arc.Centre(tolerance);
-            Vector a = arc.Start - centre;
-            Vector b = arc.End - centre;
-            Vector crossproduct = a.CrossProduct(b);
+            Vector normal = arc.CoordinateSystem.Z;
 
-            return ((crossproduct.DotProduct(axis) < 0) != (arc.Angle() > Math.PI));       
+            return ((normal.DotProduct(axis) < 0) != (arc.Angle > Math.PI));       
         }
 
 

@@ -26,8 +26,8 @@ namespace BH.Engine.Geometry
 
             Point midPoint1 = curve1.PointAtParameter(0.5);
             Point midPoint2 = curve2.PointAtParameter(0.5);
-            double dist1 = midPoint1.Distance(curve1.Start);
-            double dist2 = midPoint2.Distance(curve2.Start);
+            double dist1 = midPoint1.Distance(curve1.StartPoint());
+            double dist2 = midPoint2.Distance(curve2.StartPoint());
 
             for (int i = iPts.Count - 1; i >= 0; i--)
             {
@@ -48,7 +48,7 @@ namespace BH.Engine.Geometry
             List<Point> iPts = circle1.CurvePlanarIntersections(curve2, tolerance);
 
             Point midPoint1 = curve1.PointAtParameter(0.5);
-            double dist = midPoint1.Distance(curve1.Start);
+            double dist = midPoint1.Distance(curve1.StartPoint());
 
             for (int i = iPts.Count - 1; i >= 0; i--)
             {
