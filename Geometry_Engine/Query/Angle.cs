@@ -21,10 +21,7 @@ namespace BH.Engine.Geometry
 
         public static double Angle(this Arc arc)
         {
-            Point centre = arc.Centre();
-            double vAngle = Angle(centre - arc.Start, centre - arc.End);
-            Point aPt = (arc.Start + arc.End) * 0.5;
-            return aPt.SquareDistance(arc.Start) > aPt.SquareDistance(arc.Middle) ? vAngle : 2 * Math.PI - vAngle;
+            return arc.Angle;
         }
 
         /***************************************************/
