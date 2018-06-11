@@ -40,5 +40,30 @@ namespace BH.Engine.Geometry
         }
 
         /***************************************************/
+
+        public static CoordinateSystem RandomCoordinateSystem(int seed = -1, BoundingBox box = null)
+        {
+            if (seed == -1)
+                seed = m_Random.Next();
+            Random rnd = new Random(seed);
+            return RandomCoordinateSystem(rnd, box);
+        }
+
+        /***************************************************/
+
+        public static CoordinateSystem RandomCoordinateSystem(Random rnd, BoundingBox box = null)
+        {
+            Vector x = RandomVector(rnd, box);
+            Vector y = RandomVector(rnd, box);
+
+            if (x.IsParallel(y) != 0)
+                return RandomCoordinateSystem(rnd, box);
+
+            Point orgin = RandomPoint(rnd, box);
+
+            return CoordinateSystem(orgin, x, y);
+        }
+
+        /***************************************************/
     }
 }
