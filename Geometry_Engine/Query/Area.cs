@@ -62,7 +62,7 @@ namespace BH.Engine.Geometry
                     double radius = arc.Radius();
                     double angle = arc.Angle();
                     double arcArea = (angle - Math.Sin(angle)) * radius * radius * 0.5;
-                    bool isRight = (arc.End - arc.Start).SignedAngle(arc.Middle - arc.Start, p.Normal) >= 0;
+                    bool isRight = (arc.EndPoint() - arc.StartPoint()).SignedAngle(arc.PointAtParameter(0.5) - arc.StartPoint(), p.Normal) >= 0;
                     if (isClockwise == isRight) area -= arcArea;
                     else area += arcArea;
                 }

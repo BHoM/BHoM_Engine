@@ -103,13 +103,16 @@ namespace BH.Engine.Geometry
             Point center = arc.Centre();
             double sqrRadius = arc.Radius*arc.Radius;
 
+            //Check if curves are coplanar
             if (Math.Abs(arc.CoordinateSystem.Z.DotProduct(l.Direction())) > Tolerance.Angle)
             {
+                //Curves not coplanar
                 Point pt = l.PlaneIntersection((Plane)arc.CoordinateSystem);
                 if (pt != null && Math.Abs(pt.SquareDistance(center) - sqrRadius) <= tolerance) iPts.Add(pt);
             }
             else
             {
+                //Curves coplanar
                 Circle c = new Circle { Centre = center, Normal = arc.CoordinateSystem.Z, Radius = arc.Radius };
                 iPts = c.LineIntersections(l);
             }
