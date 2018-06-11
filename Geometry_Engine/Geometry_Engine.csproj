@@ -57,6 +57,7 @@
     <Compile Include="Compute\SortAlongCurve.cs" />
     <Compile Include="Compute\SortCollinear.cs" />
     <Compile Include="Convert\Polyline.cs" />
+    <Compile Include="Create\CoordinateSystem.cs" />
     <Compile Include="Create\Geometry.cs" />
     <Compile Include="Create\Surface.cs" />
     <Compile Include="Create\Curve.cs" />
@@ -164,6 +165,12 @@
     <Compile Include="Query\IsSameSide.cs" />
     <Compile Include="Query\IsValid.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Reflection_Engine\Reflection_Engine.csproj">
+      <Project>{b0154405-9390-472d-9b5c-a2280823b18d}</Project>
+      <Name>Reflection_Engine</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
