@@ -28,6 +28,16 @@ namespace BH.Engine.Geometry
             return new Plane { Origin = plane.Origin.Mirror(p), Normal = plane.Normal.Mirror(p) };
         }
 
+        /***************************************************/
+
+        public static CoordinateSystem Mirror(this CoordinateSystem coordinateSystem, Plane p)
+        {
+            return new CoordinateSystem(coordinateSystem.X.Mirror(p).Normalise(),
+                                        coordinateSystem.Y.Mirror(p).Normalise(),
+                                        coordinateSystem.Z.Mirror(p).Normalise(),
+                                        coordinateSystem.Orgin.Mirror(p));
+        }
+
 
         /***************************************************/
         /**** public Methods - Curves                  ****/
@@ -35,7 +45,7 @@ namespace BH.Engine.Geometry
 
         public static Arc Mirror(this Arc arc, Plane p)
         {
-            return new Arc { Start = arc.Start.Mirror(p), Middle = arc.Middle.Mirror(p), End = arc.End.Mirror(p) };
+            return new Arc { CoordinateSystem = arc.CoordinateSystem.Mirror(p), Angle = arc.Angle, Radius = arc.Radius };
         }
 
         /***************************************************/

@@ -40,6 +40,16 @@ namespace BH.Engine.Geometry
             return new Plane { Origin = plane.Origin.Transform(transform), Normal = plane.Normal.Transform(transform) };
         }
 
+        /***************************************************/
+
+        public static CoordinateSystem Transform(this CoordinateSystem coordinateSystem, TransformMatrix transform)
+        {
+            //TODO: This could create a non-cartesian coordinate system. WOuld that be acceptable..?
+            return new CoordinateSystem(coordinateSystem.X.Transform(transform),
+                                        coordinateSystem.Y.Transform(transform),
+                                        coordinateSystem.Z.Transform(transform),
+                                        coordinateSystem.Orgin.Transform(transform));
+        }
 
         /***************************************************/
         /**** Public Methods - Curves                   ****/
@@ -47,7 +57,7 @@ namespace BH.Engine.Geometry
 
         public static Arc Transform(this Arc arc, TransformMatrix transform)
         {
-            return new Arc { Start = arc.Start.Transform(transform), Middle = arc.Middle.Transform(transform), End = arc.End.Transform(transform) };
+            return new Arc { CoordinateSystem = arc.CoordinateSystem.Transform(transform), Angle = arc.Angle, Radius = arc.Radius };
         }
 
         /***************************************************/
