@@ -13,14 +13,8 @@ namespace BH.Engine.Geometry
 
         public static List<Point> CurvePlanarIntersections(this Arc curve1, Arc curve2, double tolerance = Tolerance.Distance)
         {
-            Point c1 = curve1.Centre();
-            Point c2 = curve2.Centre();
-            double r1 = curve1.Radius();
-            double r2 = curve2.Radius();
-            Plane p1 = curve1.FitPlane();
-            Plane p2 = curve2.FitPlane();
-            Circle circle1 = new Circle { Centre = c1, Normal = p1.Normal, Radius = r1 };
-            Circle circle2 = new Circle { Centre = c2, Normal = p2.Normal, Radius = r2 };
+            Circle circle1 = new Circle { Centre = curve1.CoordinateSystem.Origin, Normal = curve1.CoordinateSystem.Z, Radius = curve1.Radius };
+            Circle circle2 = new Circle { Centre = curve2.CoordinateSystem.Origin, Normal = curve2.CoordinateSystem.Z, Radius = curve2.Radius };
 
             List<Point> iPts = circle1.CurvePlanarIntersections(circle2, tolerance);
 
@@ -40,10 +34,7 @@ namespace BH.Engine.Geometry
 
         public static List<Point> CurvePlanarIntersections(this Arc curve1, Circle curve2, double tolerance = Tolerance.Distance)
         {
-            Point c1 = curve1.Centre();
-            double r1 = curve1.Radius();
-            Plane p1 = curve1.FitPlane();
-            Circle circle1 = new Circle { Centre = c1, Normal = p1.Normal, Radius = r1 };
+            Circle circle1 = new Circle { Centre = curve1.CoordinateSystem.Origin, Normal = curve1.CoordinateSystem.Z, Radius = curve1.Radius };
 
             List<Point> iPts = circle1.CurvePlanarIntersections(curve2, tolerance);
 
