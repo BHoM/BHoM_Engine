@@ -1,5 +1,6 @@
 ﻿using BH.oM.Geometry;
 using System;
+using System.ComponentModel;
 
 namespace BH.Engine.Geometry
 {
@@ -19,6 +20,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Calculates the counterclockwise angle between two vectors in a plane")]
         public static double Angle(this Vector v1, Vector v2, Plane p)
         {
             v1 = v1.Project(p).Normalise();
