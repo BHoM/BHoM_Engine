@@ -21,7 +21,7 @@ namespace BH.Engine.Geometry
         public static List<Point> ControlPoints(this Circle curve)
         {
             //TODO: Should this give back the control points of a circle in nurbs form?
-            return new List<Point>() { curve.StartPoint(), curve.PointAtParameter(0.25), curve.PointAtParameter(0.5), curve.PointAtParameter(0.75) };
+            return new List<Point>() { curve.StartPoint(), curve.PointAtParameter(0.25), curve.PointAtParameter(0.5), curve.PointAtParameter(0.75), curve.EndPoint() };
         }
 
         /***************************************************/
