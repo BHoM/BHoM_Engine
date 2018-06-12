@@ -13,7 +13,7 @@ namespace BH.Engine.Geometry
 
         public static Vector EndDir(this Arc arc)
         {
-            throw new NotImplementedException(); //TODO: get End dir of arc
+            return arc.CoordinateSystem.Y.Rotate(arc.Angle, arc.CoordinateSystem.Z);
         }
 
         /***************************************************/
