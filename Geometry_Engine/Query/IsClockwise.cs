@@ -32,31 +32,23 @@ namespace BH.Engine.Geometry
         public static bool IsClockwise(this PolyCurve curve, Vector normal, double tolerance = Tolerance.Distance)
         {
             if (!curve.IsClosed(tolerance)) throw new Exception("The curve is not closed. IsClockwise method is relevant only to closed curves.");
-            List<Point> cc = new List<Point> { curve.StartPoint() };
+
+            double angleTot = 0;
+            Vector dir1 = curve.EndDir();
+            Vector dir2;
             foreach (ICurve c in curve.SubParts())
             {
-                if (c is Line)
+                if (c is Arc)
                 {
-                    cc.Add(c.IEndPoint());
+                    Arc a = c as Arc;
+                    if (a.CoordinateSystem.Z.DotProduct(normal) > 0) angleTot += a.Angle;
+                    else angleTot -= a.Angle;
                 }
-                else if (c is Circle || c is Arc)
-                {
-                    cc.AddRange(c.IControlPoints().Skip(1));
-                }
-                else if (c is NurbCurve)
-                {
-                    throw new NotImplementedException();
-                }
-            }
+                else if (c is NurbCurve) throw new NotImplementedException();
 
-            Vector dir1 = (cc[0] - cc.Last()).Normalise();
-            Vector dir2;
-            double angleTot = 0;
-            for (int i = 1; i < cc.Count; i++)
-            {
-                dir2 = (cc[i] - cc[i - 1]).Normalise();
+                dir2 = c.IStartDir();
                 angleTot += dir1.SignedAngle(dir2, normal);
-                dir1 = dir2.Clone();
+                dir1 = c.IEndDir();
             }
             return angleTot > 0;
         }
