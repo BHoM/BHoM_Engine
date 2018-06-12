@@ -19,6 +19,23 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        public static double Angle(this Vector v1, Vector v2, Plane p)
+        {
+            v1 = v1.Project(p).Normalise();
+            v2 = v2.Project(p).Normalise();
+
+            double dotProduct = v1.DotProduct(v2);
+            Vector n = p.Normal.Normalise();
+           
+            double det = v1.X * v2.Y * n.Z + v2.X * n.Y * v1.Z + n.X * v1.Y * v2.Z - v1.Z * v2.Y * n.X - v2.Z * n.Y * v1.X - n.Z * v1.Y * v2.X;
+
+            double angle = Math.Atan2(det, dotProduct);
+            return angle >= 0 ? angle : Math.PI * 2 + angle;
+
+        }
+
+        /***************************************************/
+
         public static double Angle(this Arc arc)
         {
             return arc.Angle;
