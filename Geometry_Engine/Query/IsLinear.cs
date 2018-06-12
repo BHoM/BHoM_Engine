@@ -20,7 +20,7 @@ namespace BH.Engine.Geometry
 
         public static bool IsLinear(this Arc arc, double tolerance = Tolerance.Distance)
         {
-            return arc.ControlPoints().IsCollinear(tolerance);
+            return false;
         }
 
         /***************************************************/
