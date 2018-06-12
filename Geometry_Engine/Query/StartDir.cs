@@ -13,7 +13,7 @@ namespace BH.Engine.Geometry
 
         public static Vector StartDir(this Arc arc)
         {
-            throw new NotImplementedException(); //TODO: get start dir of arc
+            return arc.CoordinateSystem.Y;
         }
 
         /***************************************************/
