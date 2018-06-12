@@ -1,6 +1,7 @@
 ﻿using BH.oM.Geometry;
 using System;
 using System.Linq;
+using System.ComponentModel;
 
 namespace BH.Engine.Geometry
 {
@@ -26,7 +27,7 @@ namespace BH.Engine.Geometry
         {
             Vector v1 = start - middle;
             Vector v2 = end - middle;
-            Vector normal = v1.CrossProduct(v2);
+            Vector normal = v2.CrossProduct(v1);
 
             Point centre =  Query.LineIntersection(
                 Create.Line(middle + v1 / 2, v1.CrossProduct(normal)),
@@ -39,16 +40,13 @@ namespace BH.Engine.Geometry
             Vector enVec = end - centre;
 
 
-            CoordinateSystem cs = CoordinateSystem(centre, stVec, enVec);
+            CoordinateSystem system = CoordinateSystem(centre, stVec, stVec.Rotate(0.5*Math.PI, normal));
 
-            double angle = stVec.SignedAngle(enVec, cs.Z);
-
-            if (angle < 0)
-                angle = Math.PI * 2 - angle;
+            double angle = stVec.Angle(enVec, (Plane)system);
 
             return new Arc
             {
-                CoordinateSystem = cs,
+                CoordinateSystem = system,
                 Radius = stVec.Length(),
                 Angle = angle
             };
@@ -57,6 +55,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Creates an arc by centre, start and end points. Only able to create arcs with angle < 180 degress")]
         public static Arc ArcByCentre(Point centre, Point start, Point end, double tolerance = Tolerance.Distance)
         {
             double radius = start.Distance(centre);
@@ -73,10 +72,7 @@ namespace BH.Engine.Geometry
 
             CoordinateSystem system = CoordinateSystem(centre, v1, v2);
 
-            double angle = v1.SignedAngle(v2, system.Z);
-
-            if (angle < 0)
-                angle = Math.PI * 2 - angle;
+            double angle = v1.Angle(v2, (Plane)system);
 
             return new Arc
             {
