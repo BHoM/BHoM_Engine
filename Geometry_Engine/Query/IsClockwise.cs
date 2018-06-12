@@ -32,7 +32,23 @@ namespace BH.Engine.Geometry
         public static bool IsClockwise(this PolyCurve curve, Vector normal, double tolerance = Tolerance.Distance)
         {
             if (!curve.IsClosed(tolerance)) throw new Exception("The curve is not closed. IsClockwise method is relevant only to closed curves.");
-            List<Point> cc = curve.ControlPoints().CullDuplicates(tolerance);        //TODO: PolyCurve.DiscontinuityPoints() would be more robust
+            List<Point> cc = new List<Point> { curve.StartPoint() };
+            foreach (ICurve c in curve.SubParts())
+            {
+                if (c is Line)
+                {
+                    cc.Add(c.IEndPoint());
+                }
+                else if (c is Circle || c is Arc)
+                {
+                    cc.AddRange(c.IControlPoints().Skip(1));
+                }
+                else if (c is NurbCurve)
+                {
+                    throw new NotImplementedException();
+                }
+            }
+
             Vector dir1 = (cc[0] - cc.Last()).Normalise();
             Vector dir2;
             double angleTot = 0;
