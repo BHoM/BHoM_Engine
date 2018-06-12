@@ -87,7 +87,7 @@ namespace BH.Engine.Geometry
         private static int CollapseToPolylineCount(this Arc curve, double angleTolerance, int maxSegmentCount = 100)
         {
             double angle = curve.Angle();
-            double factor = Math.Min(Math.PI * 0.25, Math.Max(angle * 0.005, angleTolerance));
+            double factor = Math.Min(Math.PI * 0.25, Math.Max(angle * 0.5 / maxSegmentCount, angleTolerance));
             return System.Convert.ToInt32(Math.Ceiling(angle * 0.5 / factor));
         }
 
@@ -111,7 +111,7 @@ namespace BH.Engine.Geometry
 
         private static int CollapseToPolylineCount(this Circle curve, double angleTolerance, int maxSegmentCount = 100)
         {
-            double factor = Math.Min(Math.PI * 0.25, Math.Max(Math.PI * 0.01, angleTolerance));
+            double factor = Math.Min(Math.PI * 0.25, Math.Max(Math.PI / maxSegmentCount, angleTolerance));
             return System.Convert.ToInt32(Math.Ceiling(Math.PI / factor));
         }
 
