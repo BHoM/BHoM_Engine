@@ -18,7 +18,10 @@ namespace BH.Engine.Geometry
             Vector normal = curve.CoordinateSystem.Z;
             Vector v1 = curve.CoordinateSystem.X;
             Vector v2 = point - centre;
-            return ((v1.SignedAngle(v2, normal) + 2 * Math.PI) % (2 * Math.PI)) / curve.Angle();
+
+            double angle = v1.SignedAngle(v2, normal);
+            angle = Math.Abs(angle) < Tolerance.Angle ? 0 : angle;  //Really small negative angles gives wrong result. This solves that problem.
+            return ((angle + 2 * Math.PI) % (2 * Math.PI)) / curve.Angle;
         }
 
         /***************************************************/
