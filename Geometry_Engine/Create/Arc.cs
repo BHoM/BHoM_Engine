@@ -70,9 +70,18 @@ namespace BH.Engine.Geometry
             Vector v1 = start - centre;
             Vector v2 = end - centre;
 
+            double angle = v1.Angle(v2);
+
+            if (Math.Abs(angle - Math.PI) < Tolerance.Angle)
+            {
+                Reflection.Compute.RecordError("Method does not work for colinear points");
+                return null;
+            }
+
+
             CoordinateSystem system = CoordinateSystem(centre, v1, v2);
 
-            double angle = v1.Angle(v2, (Plane)system);
+
 
             return new Arc
             {
