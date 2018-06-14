@@ -43,6 +43,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Create\CodeAssembly.cs" />
+    <Compile Include="Create\Commit.cs" />
+    <Compile Include="Create\Label.cs" />
+    <Compile Include="Create\Milestone.cs" />
+    <Compile Include="Create\Repository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
