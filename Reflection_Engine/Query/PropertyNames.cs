@@ -1,5 +1,7 @@
-﻿using System;
+﻿using BH.oM.Base;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace BH.Engine.Reflection
 {
@@ -11,7 +13,10 @@ namespace BH.Engine.Reflection
 
         public static List<string> PropertyNames(this object obj)
         {
-            return obj.GetType().PropertyNames();
+            if (obj is CustomObject)
+                return PropertyNames(obj as CustomObject);
+            else
+                return obj.GetType().PropertyNames();
         }
 
         /***************************************************/
@@ -25,6 +30,15 @@ namespace BH.Engine.Reflection
                 names.Add(prop.Name);
             }
             return names;
+        }
+
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+        private static List<string> PropertyNames(this CustomObject obj)
+        {
+            return obj.GetType().PropertyNames().Where(x => x != "CustomData").Concat(obj.CustomData.Keys.ToList()).ToList();
         }
 
         /***************************************************/
