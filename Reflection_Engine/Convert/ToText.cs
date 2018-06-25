@@ -16,7 +16,7 @@ namespace BH.Engine.Reflection.Convert
         public static string ToText(this MethodBase method, bool includePath = false, string paramStart = "(", string paramSeparator = ", ", string paramEnd = ")", bool removeIForInterface = true)
         {
             string name = (method is ConstructorInfo) ? method.DeclaringType.ToText(false, true) : method.Name;
-            if (removeIForInterface && name.Length > 2 && name[0] == 'I' && char.IsUpper(name[1]))
+            if (removeIForInterface && Query.IsInterfaceMethod(method))
                 name = name.Substring(1);
 
             string text = name + paramStart;
@@ -36,8 +36,6 @@ namespace BH.Engine.Reflection.Convert
             if (includePath)
             {
                 string path = method.Path();
-                if (method.DeclaringType.Name == "Create")
-                    path = path.Substring(0, path.LastIndexOf('.'));
                 text = path + '.' + text;
             }   
 
