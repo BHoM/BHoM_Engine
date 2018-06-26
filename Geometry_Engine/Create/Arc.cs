@@ -11,13 +11,14 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Arc Arc(CoordinateSystem coordinateSystem, double radius, double angle)
+        public static Arc Arc(CoordinateSystem coordinateSystem, double radius, double startAngle, double endAngle)
         {
             return new Arc
             {
                 CoordinateSystem = coordinateSystem,
                 Radius = radius,
-                Angle = angle
+                StartAngle = startAngle,
+                EndAngle = endAngle
             };
         }
 
@@ -48,7 +49,8 @@ namespace BH.Engine.Geometry
             {
                 CoordinateSystem = system,
                 Radius = stVec.Length(),
-                Angle = angle
+                StartAngle = 0,
+                EndAngle = angle
             };
 
         }
@@ -86,8 +88,9 @@ namespace BH.Engine.Geometry
             return new Arc
             {
                 CoordinateSystem = system,
-                Angle = angle,
-                Radius = radius
+                Radius = radius,
+                StartAngle = 0,
+                EndAngle = angle
             };
         }
 

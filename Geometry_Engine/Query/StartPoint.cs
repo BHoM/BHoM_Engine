@@ -13,7 +13,8 @@ namespace BH.Engine.Geometry
         
         public static Point StartPoint(this Arc arc)
         {
-            return arc.CoordinateSystem.Origin + arc.CoordinateSystem.X * arc.Radius;
+            Vector locSt = arc.CoordinateSystem.X * arc.Radius;
+            return arc.CoordinateSystem.Origin + locSt.Rotate(arc.StartAngle, arc.CoordinateSystem.Z);
         }
 
         /***************************************************/

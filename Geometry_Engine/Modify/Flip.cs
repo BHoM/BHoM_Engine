@@ -15,7 +15,7 @@ namespace BH.Engine.Geometry
             Vector newX = curve.EndPoint() - curve.CoordinateSystem.Origin;
             Vector newY = -curve.CoordinateSystem.Z.CrossProduct(newX);
             CoordinateSystem system = Create.CoordinateSystem(curve.CoordinateSystem.Origin, newX, newY);
-            return new Arc { CoordinateSystem = system, Angle = curve.Angle, Radius = curve.Radius };
+            return new Arc { CoordinateSystem = system, StartAngle = curve.StartAngle, EndAngle = curve.EndAngle, Radius = curve.Radius };
         }
 
         /***************************************************/

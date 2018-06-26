@@ -40,7 +40,7 @@ namespace BH.Engine.Geometry
 
         public static double Angle(this Arc arc)
         {
-            return arc.Angle;
+            return arc.EndAngle - arc.StartAngle;
         }
 
         /***************************************************/
