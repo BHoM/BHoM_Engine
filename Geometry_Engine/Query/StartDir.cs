@@ -13,7 +13,7 @@ namespace BH.Engine.Geometry
 
         public static Vector StartDir(this Arc arc)
         {
-            return arc.CoordinateSystem.Y;
+            return arc.CoordinateSystem.Y.Rotate(arc.StartAngle, arc.CoordinateSystem.Z);
         }
 
         /***************************************************/

@@ -32,7 +32,13 @@ namespace BH.Engine.Geometry
 
         public static CoordinateSystem Translate(this CoordinateSystem coordinateSystem, Vector transform)
         {
-            return new CoordinateSystem(coordinateSystem.X, coordinateSystem.Y, coordinateSystem.Z, coordinateSystem.Origin + transform);
+            return new CoordinateSystem
+            {
+                X = coordinateSystem.X,
+                Y = coordinateSystem.Y,
+                Z = coordinateSystem.Z,
+                Origin = coordinateSystem.Origin + transform
+            };
         }
 
         /***************************************************/
@@ -45,7 +51,8 @@ namespace BH.Engine.Geometry
             {
                 CoordinateSystem = arc.CoordinateSystem.Translate(transform),
                 Radius = arc.Radius,
-                Angle = arc.Angle
+                StartAngle = arc.StartAngle,
+                EndAngle = arc.EndAngle
             };
         }
 

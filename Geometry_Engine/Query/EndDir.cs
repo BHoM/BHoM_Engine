@@ -13,7 +13,7 @@ namespace BH.Engine.Geometry
 
         public static Vector EndDir(this Arc arc)
         {
-            return arc.CoordinateSystem.Y.Rotate(arc.Angle, arc.CoordinateSystem.Z);
+            return arc.CoordinateSystem.Y.Rotate(arc.EndAngle, arc.CoordinateSystem.Z);
         }
 
         /***************************************************/

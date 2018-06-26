@@ -45,10 +45,13 @@ namespace BH.Engine.Geometry
         public static CoordinateSystem Transform(this CoordinateSystem coordinateSystem, TransformMatrix transform)
         {
             //TODO: This could create a non-cartesian coordinate system. WOuld that be acceptable..?
-            return new CoordinateSystem(coordinateSystem.X.Transform(transform),
-                                        coordinateSystem.Y.Transform(transform),
-                                        coordinateSystem.Z.Transform(transform),
-                                        coordinateSystem.Origin.Transform(transform));
+            return new CoordinateSystem
+            {
+                X = coordinateSystem.X.Transform(transform),
+                Y = coordinateSystem.Y.Transform(transform),
+                Z = coordinateSystem.Z.Transform(transform),
+                Origin = coordinateSystem.Origin.Transform(transform)
+            };
         }
 
         /***************************************************/
@@ -57,7 +60,7 @@ namespace BH.Engine.Geometry
 
         public static Arc Transform(this Arc arc, TransformMatrix transform)
         {
-            return new Arc { CoordinateSystem = arc.CoordinateSystem.Transform(transform), Angle = arc.Angle, Radius = arc.Radius };
+            return new Arc { CoordinateSystem = arc.CoordinateSystem.Transform(transform), StartAngle = arc.StartAngle, EndAngle = arc.EndAngle, Radius = arc.Radius };
         }
 
         /***************************************************/

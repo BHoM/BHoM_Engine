@@ -15,7 +15,7 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [Description("Creates a Cartesian CoordinateSystem. x and y will be unitised. If x and why are non-orthogonal, y will be made orthogonal to x, while x will be kept")]
-        public static CoordinateSystem CoordinateSystem(Point orgin, Vector x, Vector y)
+        public static CoordinateSystem CoordinateSystem(Point origin, Vector x, Vector y)
         {
             x = x.Normalise();
             y = y.Normalise();
@@ -34,7 +34,7 @@ namespace BH.Engine.Geometry
                 y = z.CrossProduct(x).Normalise();
             }
 
-            return new CoordinateSystem(x, y, z, orgin);
+            return new CoordinateSystem { X = x, Y = y, Z = z, Origin = origin };
         }
 
         /***************************************************/
