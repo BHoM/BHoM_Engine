@@ -32,7 +32,13 @@ namespace BH.Engine.Geometry
 
         public static CoordinateSystem Clone(this CoordinateSystem coordinateSystem)
         {
-            return new CoordinateSystem(coordinateSystem.X.Clone(), coordinateSystem.Y.Clone(), coordinateSystem.Z.Clone(), coordinateSystem.Origin.Clone());
+            return new CoordinateSystem
+            {
+                X = coordinateSystem.X.Clone(),
+                Y = coordinateSystem.Y.Clone(),
+                Z = coordinateSystem.Z.Clone(),
+                Origin = coordinateSystem.Origin.Clone()
+            };
         }
 
         /***************************************************/
@@ -41,7 +47,7 @@ namespace BH.Engine.Geometry
 
         public static Arc Clone(this Arc arc)
         {
-            return new Arc { CoordinateSystem = arc.CoordinateSystem.Clone(), Angle = arc.Angle, Radius = arc.Radius };
+            return new Arc { CoordinateSystem = arc.CoordinateSystem.Clone(), StartAngle = arc.StartAngle, EndAngle = arc.EndAngle, Radius = arc.Radius };
         }
 
         /***************************************************/

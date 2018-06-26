@@ -50,7 +50,8 @@ namespace BH.Engine.Geometry
         {
             return arc.CoordinateSystem.IsEqual(other.CoordinateSystem, tolerance)
                 && Math.Abs(arc.Radius - other.Radius) < tolerance
-                && Math.Abs(arc.Angle - other.Angle) < tolerance; //TODO: Using the distance tolerance here for now.
+                && Math.Abs(arc.StartAngle - other.StartAngle) < tolerance //TODO: Using the distance tolerance here for now.
+                && Math.Abs(arc.EndAngle - other.EndAngle) < tolerance;
         }
 
         /***************************************************/

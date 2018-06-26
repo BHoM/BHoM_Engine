@@ -41,8 +41,8 @@ namespace BH.Engine.Geometry
                 if (c is Arc)
                 {
                     Arc a = c as Arc;
-                    if (a.CoordinateSystem.Z.DotProduct(normal) > 0) angleTot += a.Angle;
-                    else angleTot -= a.Angle;
+                    if (a.CoordinateSystem.Z.DotProduct(normal) > 0) angleTot += a.Angle();
+                    else angleTot -= a.Angle();
                 }
                 else if (c is NurbCurve) throw new NotImplementedException();
 
@@ -83,7 +83,7 @@ namespace BH.Engine.Geometry
         {
             Vector normal = arc.CoordinateSystem.Z;
 
-            return ((normal.DotProduct(axis) < 0) != (arc.Angle > Math.PI));       
+            return ((normal.DotProduct(axis) < 0) != (arc.Angle() > Math.PI));       
         }
 
 

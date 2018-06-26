@@ -13,7 +13,7 @@ namespace BH.Engine.Geometry
 
         public static bool IsClosed(this Arc arc, double tolerance = Tolerance.Distance)
         {
-            return (arc.Angle - Math.PI * 2)*arc.Radius > -tolerance;
+            return (arc.Angle() - Math.PI * 2)*arc.Radius > -tolerance;
         }
 
         /***************************************************/

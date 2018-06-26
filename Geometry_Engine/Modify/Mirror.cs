@@ -32,10 +32,13 @@ namespace BH.Engine.Geometry
 
         public static CoordinateSystem Mirror(this CoordinateSystem coordinateSystem, Plane p)
         {
-            return new CoordinateSystem(coordinateSystem.X.Mirror(p).Normalise(),
-                                        coordinateSystem.Y.Mirror(p).Normalise(),
-                                        coordinateSystem.Z.Mirror(p).Normalise(),
-                                        coordinateSystem.Origin.Mirror(p));
+            return new CoordinateSystem
+            {
+                X = coordinateSystem.X.Mirror(p).Normalise(),
+                Y = coordinateSystem.Y.Mirror(p).Normalise(),
+                Z = coordinateSystem.Z.Mirror(p).Normalise(),
+                Origin = coordinateSystem.Origin.Mirror(p)
+            };
         }
 
 
@@ -45,7 +48,7 @@ namespace BH.Engine.Geometry
 
         public static Arc Mirror(this Arc arc, Plane p)
         {
-            return new Arc { CoordinateSystem = arc.CoordinateSystem.Mirror(p), Angle = arc.Angle, Radius = arc.Radius };
+            return new Arc { CoordinateSystem = arc.CoordinateSystem.Mirror(p), StartAngle = arc.StartAngle, EndAngle = arc.EndAngle, Radius = arc.Radius };
         }
 
         /***************************************************/
