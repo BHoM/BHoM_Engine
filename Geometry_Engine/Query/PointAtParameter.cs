@@ -14,7 +14,7 @@ namespace BH.Engine.Geometry
         {
             if (t < 0) t = 0;
             if (t > 1) t = 1;
-            double alfa = curve.Angle() * t;
+            double alfa = curve.Angle() * t + curve.StartAngle;
             Vector localX = curve.CoordinateSystem.X;
             return curve.CoordinateSystem.Origin + localX.Rotate(alfa, curve.FitPlane().Normal) * curve.Radius;
         }

@@ -12,10 +12,11 @@ namespace BH.Engine.Geometry
 
         public static Arc Flip(this Arc curve)
         {
-            Vector newX = curve.EndPoint() - curve.CoordinateSystem.Origin;
-            Vector newY = -curve.CoordinateSystem.Z.CrossProduct(newX);
-            CoordinateSystem system = Create.CoordinateSystem(curve.CoordinateSystem.Origin, newX, newY);
-            return new Arc { CoordinateSystem = system, StartAngle = curve.StartAngle, EndAngle = curve.EndAngle, Radius = curve.Radius };
+            CoordinateSystem system = curve.CoordinateSystem.Clone();
+
+            system.Y = -system.Y;
+            system.Z = -system.Z;
+            return new Arc { CoordinateSystem = system, StartAngle = -curve.EndAngle, EndAngle = -curve.StartAngle, Radius = curve.Radius };
         }
 
         /***************************************************/
