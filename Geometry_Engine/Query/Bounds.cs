@@ -34,6 +34,19 @@ namespace BH.Engine.Geometry
             return new BoundingBox { Min = pt, Max = pt };
         }
 
+        /***************************************************/
+
+        public static BoundingBox Bounds(this CoordinateSystem coordinateSystem)
+        {
+            return ((Plane)coordinateSystem).Bounds();
+        }
+
+        /***************************************************/
+
+        public static BoundingBox Bounds(this BoundingBox boundingBox)
+        {
+            return boundingBox.Clone();
+        }
 
         /***************************************************/
         /**** public Computation - Curves              ****/
