@@ -1,0 +1,10 @@
+{ "_t" : "BH.oM.Planning.Label", "BHoM_Guid" : "f395fea2-9347-4114-8043-a37c8e934140", "Name" : "bug_critical", "Tags" : [], "CustomData" : { }, "Colour" : "aa001e" }
+{ "_t" : "BH.oM.Planning.Label", "BHoM_Guid" : "0ea5e8c5-b8c5-477f-b66c-fde7e8fe5709", "Name" : "bug", "Tags" : [], "CustomData" : { }, "Colour" : "ffbeaa" }
+{ "_t" : "BH.oM.Planning.Label", "BHoM_Guid" : "60a48e61-60ae-4f23-bfbc-111a6334b597", "Name" : "bug_minor", "Tags" : [], "CustomData" : { }, "Colour" : "ffe6e6" }
+{ "_t" : "BH.oM.Planning.Label", "BHoM_Guid" : "8314c210-e634-4abf-b601-c1e6447e3c98", "Name" : "feature_critial", "Tags" : [], "CustomData" : { }, "Colour" : "5014e6" }
+{ "_t" : "BH.oM.Planning.Label", "BHoM_Guid" : "0f1c3801-272a-4ebf-9213-0ebcc2f1148b", "Name" : "feature", "Tags" : [], "CustomData" : { }, "Colour" : "bed2ff" }
+{ "_t" : "BH.oM.Planning.Label", "BHoM_Guid" : "3ea6486e-f1be-4f42-af11-8421ad0cbb34", "Name" : "feature_minor", "Tags" : [], "CustomData" : { }, "Colour" : "e6f0ff" }
+{ "_t" : "BH.oM.Planning.Label", "BHoM_Guid" : "b82e2a52-7f02-4fff-b8a9-1b22823fd815", "Name" : "compliance", "Tags" : [], "CustomData" : { }, "Colour" : "ffff64" }
+{ "_t" : "BH.oM.Planning.Label", "BHoM_Guid" : "560500b8-4707-40eb-904d-56c721109a72", "Name" : "question", "Tags" : [], "CustomData" : { }, "Colour" : "78f078" }
+{ "_t" : "BH.oM.Planning.Label", "BHoM_Guid" : "bcc65c91-f059-4fae-854a-ccc9470554dd", "Name" : "documentation", "Tags" : [], "CustomData" : { }, "Colour" : "dcdcdc" }
+{ "_t" : "BH.oM.Planning.Label", "BHoM_Guid" : "292973db-82bc-4c3f-9491-f76f590585fe", "Name" : "test_script", "Tags" : [], "CustomData" : { }, "Colour" : "dcdcdc" }
