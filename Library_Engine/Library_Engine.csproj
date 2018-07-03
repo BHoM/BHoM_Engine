@@ -81,6 +81,7 @@
     <None Include="DataSets\Materials\MaterialsEurope\Rebar.json" />
     <None Include="DataSets\Materials\MaterialsEurope\Steel.json" />
     <None Include="DataSets\Materials\MaterialsEurope\Timber.json" />
+    <None Include="DataSets\Planning\Labels\IssueLabels.json" />
     <None Include="DataSets\SectionProfiles\UK_SteelSectionProfiles\C.json" />
     <None Include="DataSets\SectionProfiles\UK_SteelSectionProfiles\CHS.json" />
     <None Include="DataSets\SectionProfiles\UK_SteelSectionProfiles\CRSJ.json" />
@@ -95,6 +96,7 @@
     <None Include="DataSets\SectionProfiles\UK_SteelSectionProfiles\UBP.json" />
     <None Include="DataSets\SectionProfiles\UK_SteelSectionProfiles\UC.json" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>C:\Windows\System32\xcopy "$(ProjectDir)DataSets\*.*" "C:\Users\$(Username)\AppData\Roaming\BHoM\DataSets" /Y /I /E</PostBuildEvent>
