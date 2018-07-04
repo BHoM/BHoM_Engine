@@ -51,10 +51,10 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static double Distance(this Point a, Plane plane)
+        public static double Distance(this Point point, Plane plane)
         {
             Vector normal = plane.Normal.Normalise();
-            return Math.Abs(normal.DotProduct(a - plane.Origin));
+            return Math.Abs(normal.DotProduct(point - plane.Origin));
         }
 
         /***************************************************/
