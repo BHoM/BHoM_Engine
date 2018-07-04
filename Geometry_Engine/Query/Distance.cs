@@ -54,7 +54,7 @@ namespace BH.Engine.Geometry
         public static double Distance(this Point a, Plane plane)
         {
             Vector normal = plane.Normal.Normalise();
-            return normal.DotProduct(a - plane.Origin);
+            return Math.Abs(normal.DotProduct(a - plane.Origin));
         }
 
         /***************************************************/
