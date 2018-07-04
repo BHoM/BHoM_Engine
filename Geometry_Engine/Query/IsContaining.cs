@@ -52,7 +52,7 @@ namespace BH.Engine.Geometry
             Plane p = new Plane { Origin = curve.Centre, Normal = curve.Normal };
             foreach (Point pt in points)
             {
-                if (Math.Abs(pt.Distance(p)) > tolerance) return false;
+                if (pt.Distance(p) > tolerance) return false;
                 if ((acceptOnEdge && pt.Distance(curve.Centre) - curve.Radius - tolerance > 0) || (!acceptOnEdge && pt.Distance(curve.Centre) - curve.Radius + tolerance >= 0)) return false;
             }
             return true;
