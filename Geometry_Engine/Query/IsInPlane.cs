@@ -14,7 +14,7 @@ namespace BH.Engine.Geometry
         {
             foreach (Point pt in points)
             {
-                if (Math.Abs(pt.Distance(plane)) > tolerance) return false;
+                if (pt.Distance(plane) > tolerance) return false;
             }
             return true;
         }
@@ -23,7 +23,7 @@ namespace BH.Engine.Geometry
 
         public static bool IsInPlane(this Point point, Plane plane, double tolerance = Tolerance.Distance)
         {
-            return (Math.Abs(point.Distance(plane)) <= tolerance);
+            return (point.Distance(plane) <= tolerance);
         }
 
         /***************************************************/
@@ -37,7 +37,7 @@ namespace BH.Engine.Geometry
 
         public static bool IsInPlane(this Plane plane1, Plane plane2, double tolerance = Tolerance.Distance, double angTolerance = Tolerance.Angle)
         {
-            return plane1.Normal.IsParallel(plane2.Normal, angTolerance) != 0 && Math.Abs(plane1.Origin.Distance(plane2)) <= tolerance;
+            return plane1.Normal.IsParallel(plane2.Normal, angTolerance) != 0 && plane1.Origin.Distance(plane2) <= tolerance;
         }
 
         /***************************************************/
