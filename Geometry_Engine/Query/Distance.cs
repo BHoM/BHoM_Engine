@@ -73,23 +73,32 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static double Distance(this Line line, Line other)
+        public static double Distance(this Point point, Arc arc)
         {
-            Point intersection = line.LineIntersection(other, false);
-            if (intersection != null)
-            {
-                return 0;                                           //TODO: This yields wrong results in case of distance > 0 && distance <= Tolerance.Distance
-            }
-            else
-            {
-                List<double> distances = new List<double>();        //TODO: Can we do better than this?
-                distances.Add(line.Start.Distance(other));
-                distances.Add(line.End.Distance(other));
-                distances.Add(other.Start.Distance(line));
-                distances.Add(other.End.Distance(line));
-
-                return distances.Min();
-            }
+            return point.Distance(arc.ClosestPoint(point));
         }
+
+        /***************************************************/
+
+        public static double Distance(this Point point, Circle circle)
+        {
+            return point.Distance(circle.ClosestPoint(point));
+        }
+
+        /***************************************************/
+
+        public static double Distance(this Point point, Polyline curve)
+        {
+            return point.Distance(curve.ClosestPoint(point));
+        }
+
+        /***************************************************/
+
+        public static double Distance(this Point point, PolyCurve curve)
+        {
+            return point.Distance(curve.ClosestPoint(point));
+        }
+
+        /***************************************************/
     }
 }
