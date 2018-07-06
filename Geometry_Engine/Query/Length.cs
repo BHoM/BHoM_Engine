@@ -48,6 +48,13 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        public static double SquareLength(this Line curve)
+        {
+            return (curve.Start - curve.End).SquareLength();
+        }
+
+        /***************************************************/
+
         public static double Length(this NurbCurve curve)
         {
             throw new NotImplementedException();
@@ -68,7 +75,7 @@ namespace BH.Engine.Geometry
             List<Point> pts = curve.ControlPoints;
 
             for (int i = 1; i < pts.Count; i++)
-                length += (pts[i] - pts[i-1]).Length();
+                length += (pts[i] - pts[i - 1]).Length();
 
             return length;
         }
