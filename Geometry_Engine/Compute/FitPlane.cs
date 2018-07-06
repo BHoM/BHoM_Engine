@@ -40,7 +40,7 @@ namespace BH.Engine.Geometry
             double detZ = xx * yy - xy * xy;
 
             double det_max = Math.Max(Math.Max(detX, detY), detZ);
-            if (det_max <= tolerance) //The points don't span a plane
+            if (det_max <= tolerance * tolerance) //The points don't span a plane
                 return null;
 
             // Pick path with best conditioning:
