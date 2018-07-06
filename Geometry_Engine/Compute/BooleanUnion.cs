@@ -60,7 +60,8 @@ namespace BH.Engine.Geometry
 
         public static List<Polyline> BooleanUnion(this List<Polyline> regions, double tolerance = Tolerance.Distance)
         {
-            List<Polyline> cutRegions = regions.Select(r => r.Clone()).ToList();
+            double sqTol = tolerance * tolerance;
+            List<Polyline> cutRegions = regions.Where(r => r.Area() > sqTol).Select(r => r.Clone()).ToList();
             List<Polyline> result = new List<Polyline>();
             List<Polyline> openings = new List<Polyline>();
             bool union;
