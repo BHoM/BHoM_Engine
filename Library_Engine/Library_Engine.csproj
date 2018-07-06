@@ -96,7 +96,6 @@
     <None Include="DataSets\SectionProfiles\UK_SteelSectionProfiles\UBP.json" />
     <None Include="DataSets\SectionProfiles\UK_SteelSectionProfiles\UC.json" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>C:\Windows\System32\xcopy "$(ProjectDir)DataSets\*.*" "C:\Users\$(Username)\AppData\Roaming\BHoM\DataSets" /Y /I /E</PostBuildEvent>
