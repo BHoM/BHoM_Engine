@@ -29,7 +29,7 @@ namespace BH.Engine.Geometry
 
         public static Vector StartDir(this Line line)
         {
-            return new Vector { X = line.End.X - line.Start.X, Y = line.End.Y - line.Start.Y, Z = line.End.Z - line.Start.Z }.Normalise();
+            return line.Direction();
         }
 
         /***************************************************/
