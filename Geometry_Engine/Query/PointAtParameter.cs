@@ -101,14 +101,11 @@ namespace BH.Engine.Geometry
         public static Point PointAtParameter(this Polyline curve, double parameter)
         {
             double cLength = parameter * curve.Length();
-            double sum = 0;
             foreach (Line line in curve.SubParts())
             {
-                sum += line.Length();
-                if (cLength <= sum)
-                {
-                    return line.PointAtParameter((cLength - sum) / line.Length());
-                }
+                double l = line.Length();
+                if (l >= cLength) return line.IPointAtParameter(cLength / l);
+                cLength -= l;
             }
             return null;
         }
