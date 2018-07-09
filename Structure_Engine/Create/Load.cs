@@ -57,7 +57,7 @@ namespace BH.Engine.Structure
                 force = new Vector() { X = magnitude[0], Y = magnitude[1], Z = magnitude[2] } * sFac;
 
             if (magnitude.Count > 5)
-                force = new Vector() { X = magnitude[3], Y = magnitude[4], Z = magnitude[5] } * sFac;
+                moment = new Vector() { X = magnitude[3], Y = magnitude[4], Z = magnitude[5] } * sFac;
 
             switch (type)
             {
