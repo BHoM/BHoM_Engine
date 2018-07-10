@@ -5,10 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Reflection;
 
-using BH.oM.Reflection.Testing;
+using BH.oM.Testing;
 using BH.oM.Planning;
 
-namespace BH.Engine.Reflection
+namespace BH.Engine.Planning
 {
     public static partial class Create
     {
