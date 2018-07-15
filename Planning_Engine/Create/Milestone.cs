@@ -20,5 +20,15 @@ namespace BH.Engine.Planning
         }
 
         /***************************************************/
+
+        public static Milestone Milestone(string name, int year, int month, int day, ItemState state = ItemState.Open)
+        {
+            DateTimeOffset dto = new DateTimeOffset(year, month, day, 0, 0, 0, TimeSpan.Zero);
+
+            return Create.Milestone(name, dto, state);
+        }
+
+        /***************************************************/
+
     }
 }
