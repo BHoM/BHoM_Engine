@@ -48,6 +48,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Planning_Engine", "Planning
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Testing_Engine", "Testing_Engine\Testing_Engine.csproj", "{51BFF4A9-937A-40E8-AD83-D72025F173E6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Units_Engine", "Units_Engine\Units_Engine.csproj", "{681369AE-61EB-4D44-95CC-E68194A07255}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -209,6 +211,14 @@ Global
 		{51BFF4A9-937A-40E8-AD83-D72025F173E6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{51BFF4A9-937A-40E8-AD83-D72025F173E6}.Release|x86.ActiveCfg = Release|Any CPU
 		{51BFF4A9-937A-40E8-AD83-D72025F173E6}.Release|x86.Build.0 = Release|Any CPU
+		{681369AE-61EB-4D44-95CC-E68194A07255}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{681369AE-61EB-4D44-95CC-E68194A07255}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{681369AE-61EB-4D44-95CC-E68194A07255}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{681369AE-61EB-4D44-95CC-E68194A07255}.Debug|x86.Build.0 = Debug|Any CPU
+		{681369AE-61EB-4D44-95CC-E68194A07255}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{681369AE-61EB-4D44-95CC-E68194A07255}.Release|Any CPU.Build.0 = Release|Any CPU
+		{681369AE-61EB-4D44-95CC-E68194A07255}.Release|x86.ActiveCfg = Release|Any CPU
+		{681369AE-61EB-4D44-95CC-E68194A07255}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
