@@ -21,9 +21,9 @@ namespace BH.Engine.Geometry
 
         public static Point StartPoint(this Circle circle)
         {
-            Vector n = circle.Normal;
-            Vector startDir = Math.Abs(n.Z) < Math.Abs(n.X) ? new Vector { X = n.Y, Y = -n.X, Z = 0 } : new Vector { X = 0, Y = n.Z, Z = -n.Y };
-            return circle.Centre + circle.Radius * startDir.Normalise();
+            Vector refVector = 1 - Math.Abs(circle.Normal.DotProduct(Vector.XAxis)) > Tolerance.Angle ? Vector.XAxis : Vector.ZAxis;
+            Vector localX = circle.Normal.CrossProduct(refVector).Normalise() * circle.Radius;
+            return circle.Centre + circle.Radius * localX.Normalise();
         }
 
         /***************************************************/
