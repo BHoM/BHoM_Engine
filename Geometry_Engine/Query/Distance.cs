@@ -57,6 +57,9 @@ namespace BH.Engine.Geometry
             return Math.Abs(normal.DotProduct(point - plane.Origin));
         }
 
+        
+        /***************************************************/
+        /****       Public Methods - Point/Curve        ****/
         /***************************************************/
 
         public static double Distance(this Point point, Line line, bool infiniteSegment = false)
@@ -97,6 +100,23 @@ namespace BH.Engine.Geometry
         public static double Distance(this Point point, PolyCurve curve)
         {
             return point.Distance(curve.ClosestPoint(point));
+        }
+
+        /***************************************************/
+
+        public static double Distance(this Point point, NurbCurve curve)
+        {
+            return point.Distance(curve.ClosestPoint(point));
+        }
+
+
+        /***************************************************/
+        /**** Public Methods - Interfaces               ****/
+        /***************************************************/
+
+        public static double IDistance(this Point point, ICurve curve)
+        {
+            return Distance(point, curve as dynamic);
         }
 
         /***************************************************/
