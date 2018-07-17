@@ -3,6 +3,7 @@ using BH.oM.Geometry;
 using BH.Engine.Geometry;
 using BH.oM.Structural.Properties;
 using System.Linq;
+using System;
 
 namespace BH.Engine.Structure
 {
@@ -127,6 +128,94 @@ namespace BH.Engine.Structure
 
             box.AddRange(innerBox);
             return box;
+        }
+
+        /***************************************************/
+
+        public static List<ICurve> GeneralisedFabricatedBoxSectionCurves(double height, double width, double webThickness, double topFlangeThickness, double botFlangeThickness, double topLeftCorbelWidth, double topRightCorbelWidth, double botLeftCorbelWidth, double botRightCorbelWidth)
+        {
+            List<ICurve> externalEdges = new List<ICurve>();
+            List<ICurve> internalEdges = new List<ICurve>();
+            List<ICurve> group = new List<ICurve>();
+            Point p1 = new Point { X = 0, Y = 0, Z = 0 };
+            Point p2 = new Point { X = 0, Y = botFlangeThickness, Z = 0 };
+
+            externalEdges.Add(new Line { Start = p1, End = p1 = p1 + Vector.XAxis * ((width / 2) + botRightCorbelWidth) });
+            externalEdges.Add(new Line { Start = p1, End = p1 = p1 + Vector.YAxis * botFlangeThickness });
+            externalEdges.Add(new Line { Start = p1, End = p1 = p1 - Vector.XAxis * botRightCorbelWidth });
+            externalEdges.Add(new Line { Start = p1, End = p1 = p1 + Vector.YAxis * (height - botFlangeThickness - topFlangeThickness) });
+            externalEdges.Add(new Line { Start = p1, End = p1 = p1 + Vector.XAxis * topRightCorbelWidth });
+            externalEdges.Add(new Line { Start = p1, End = p1 = p1 + Vector.YAxis * topFlangeThickness });
+            externalEdges.Add(new Line { Start = p1, End = p1 = p1 - Vector.XAxis * (width + topRightCorbelWidth + topLeftCorbelWidth) });
+            externalEdges.Add(new Line { Start = p1, End = p1 = p1 - Vector.YAxis * topFlangeThickness });
+            externalEdges.Add(new Line { Start = p1, End = p1 = p1 + Vector.XAxis * topLeftCorbelWidth });
+            externalEdges.Add(new Line { Start = p1, End = p1 = p1 - Vector.YAxis * (height - botFlangeThickness - topFlangeThickness) });
+            externalEdges.Add(new Line { Start = p1, End = p1 = p1 - Vector.XAxis * botLeftCorbelWidth });
+            externalEdges.Add(new Line { Start = p1, End = p1 = p1 - Vector.YAxis * botFlangeThickness });
+            externalEdges.Add(new Line { Start = p1, End = p1 = p1 + Vector.XAxis * ((width / 2) + botLeftCorbelWidth) });
+
+            internalEdges.Add(new Line { Start = p2, End = p2 = p2 + Vector.XAxis * ((width / 2) - webThickness) });
+            internalEdges.Add(new Line { Start = p2, End = p2 = p2 + Vector.YAxis * (height - botFlangeThickness - topFlangeThickness) });
+            internalEdges.Add(new Line { Start = p2, End = p2 = p2 - Vector.XAxis * ((width / 2) - webThickness) });
+
+            int intCount = internalEdges.Count;
+            for (int i = 0; i < intCount; i++)
+            {
+                internalEdges.Add(internalEdges[i].IMirror(new Plane { Origin = Point.Origin, Normal = Vector.XAxis }));
+            }
+
+            group.AddRange(externalEdges);
+            group.AddRange(internalEdges);
+
+            return group;
+        }
+
+        /***************************************************/
+
+        public static List<ICurve> KiteSectionCurves(double width1, double angle1, double thickness)
+        {
+            List<ICurve> externalEdges = new List<ICurve>();
+            List<ICurve> internalEdges = new List<ICurve>();
+            List<ICurve> group = new List<ICurve>();
+
+            double width2 = width1 * Math.Tan(angle1 / 2);
+            double angle2 = Math.PI - angle1;
+
+            double tolerance = 1e-3;
+
+            if (angle2 < tolerance || angle2 > Math.PI - tolerance)
+            {
+                throw new NotImplementedException("Angles must be well between 0 and Pi");
+            }
+
+            Point p1 = new Point { X = 0, Y = 0, Z = 0 };
+            Point p2 = p1 + Vector.XAxis * Math.Abs(thickness / Math.Sin(angle1 / 2));
+
+            Vector dirVec1 = Vector.XAxis.Rotate(angle1 / 2, Vector.ZAxis);
+            Vector dirVec2 = dirVec1.Rotate(-(Math.PI / 2), Vector.ZAxis);
+
+            externalEdges.Add(new Line { Start = p1, End = p1 = p1 + dirVec1 * width1 });
+            externalEdges.Add(new Line { Start = p1, End = p1 + dirVec2 * (width1 * Math.Tan(angle1 / 2)) });
+
+            int extCount = externalEdges.Count;
+            for (int i = 0; i < extCount; i++)
+            {
+                externalEdges.Add(externalEdges[i].IMirror(new Plane { Origin = Point.Origin, Normal = Vector.YAxis }));
+            }
+
+            internalEdges.Add(new Line { Start = p2, End = p2 = p2 + dirVec1 * (width1 - thickness - (thickness * Math.Cos(angle1 / 2)) / Math.Sin(angle1 / 2)) });
+            internalEdges.Add(new Line { Start = p2, End = p2 + dirVec2 * (width2 - thickness - (thickness * Math.Cos(angle2 / 2)) / Math.Sin(angle2 / 2)) });
+
+            int intCount = internalEdges.Count;
+            for (int i = 0; i < intCount; i++)
+            {
+                internalEdges.Add(internalEdges[i].IMirror(new Plane { Origin = Point.Origin, Normal = Vector.YAxis }));
+            }
+
+            group.AddRange(externalEdges);
+            group.AddRange(internalEdges);
+
+            return group;
         }
 
         /***************************************************/
