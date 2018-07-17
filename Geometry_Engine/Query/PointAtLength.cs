@@ -20,7 +20,8 @@ namespace BH.Engine.Geometry
         public static Point PointAtLength(this Circle curve, double length)
         {
             double alfa = 2 * Math.PI * length / curve.Length();
-            Vector localX = curve.Normal.CrossProduct(Vector.XAxis).Normalise() * curve.Radius;
+            Vector refVector = 1 - Math.Abs(curve.Normal.DotProduct(Vector.XAxis)) > Tolerance.Angle ? Vector.XAxis : Vector.ZAxis;
+            Vector localX = curve.Normal.CrossProduct(refVector).Normalise() * curve.Radius;
             return Create.Point(localX.Rotate(alfa, curve.Normal)) + curve.Centre;
         }
 
