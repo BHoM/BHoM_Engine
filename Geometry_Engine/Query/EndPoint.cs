@@ -21,9 +21,7 @@ namespace BH.Engine.Geometry
 
         public static Point EndPoint(this Circle circle)
         {
-            Vector n = circle.Normal;
-            Vector EndDir = Math.Abs(n.Z) < Math.Abs(n.X) ? new Vector { X = n.Y, Y = -n.X, Z = 0 } : new Vector { X = 0, Y = n.Z, Z = -n.Y };
-            return circle.Centre + circle.Radius * EndDir.Normalise();
+            return circle.StartPoint();
         }
 
         /***************************************************/
