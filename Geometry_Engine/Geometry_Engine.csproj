@@ -142,6 +142,9 @@
     <Compile Include="Query\SliceAt.cs" />
     <Compile Include="Query\StartDir.cs" />
     <Compile Include="Query\StartPoint.cs" />
+    <Compile Include="Query\TangentAtLength.cs" />
+    <Compile Include="Query\TangentAtParameter.cs" />
+    <Compile Include="Query\TangentAtPoint.cs" />
     <Compile Include="Query\UVCount.cs" />
     <Compile Include="Query\SamplePoints.cs" />
     <Compile Include="Query\SubParts.cs" />
