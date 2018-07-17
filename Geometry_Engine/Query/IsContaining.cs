@@ -110,7 +110,7 @@ namespace BH.Engine.Geometry
                             Point end = p.Origin;
                             if (pPt.SquareDistance(end) <= sqTol)
                             {
-                                end = end.Translate(new Vector { X = 1, Y = 0, Z = 0 }.Project(p));
+                                end = end.Translate(Create.RandomVectorInPlane(p, true));
                             }
 
                             Line ray = new Line { Start = pPt, End = end };
@@ -133,7 +133,7 @@ namespace BH.Engine.Geometry
                                     }
                                     else if ((subPart.End.SquareDistance(iPt) <= sqTol))
                                     {
-                                        if (signedAngle < Tolerance.Angle) intersects.Add(iPt);
+                                        if (signedAngle < -Tolerance.Angle) intersects.Add(iPt);
                                         else extraIntersects.Add(iPt);
                                     }
                                     else intersects.Add(iPt);
@@ -198,13 +198,39 @@ namespace BH.Engine.Geometry
                             Point end = p.Origin;
                             if (pPt.SquareDistance(end) <= sqTol)
                             {
-                                end = end.Translate(new Vector { X = 1, Y = 0, Z = 0 }.Project(p));
+                                end = end.Translate(Create.RandomVectorInPlane(p, true));
                             }
 
-                            List<Point> intersects = curve.LineIntersections(new Line { Start = pPt, End = end }, true, tolerance);
-                            if (intersects.Count == 0) return false;
+                            Line ray = new Line { Start = pPt, End = end };
+                            ray.Infinite = true;
+                            Vector rayDir = ray.Direction();
+                            List<ICurve> subParts = curve.SubParts();
+                            List<Point> intersects = new List<Point>();
+                            List<Point> extraIntersects = new List<Point>();
 
-                            if ((pPt.ClosestPoint(intersects).SquareDistance(pPt) <= sqTol))
+                            foreach (ICurve subPart in subParts)
+                            {
+                                List<Point> iPts = subPart.ILineIntersections(ray, false, tolerance);
+                                foreach (Point iPt in iPts)
+                                {
+                                    double signedAngle = rayDir.SignedAngle(subPart.ITangentAtPoint(iPt), p.Normal);
+                                    if ((subPart.IStartPoint().SquareDistance(iPt) <= sqTol))
+                                    {
+                                        if (signedAngle >= -Tolerance.Angle) intersects.Add(iPt);
+                                        else extraIntersects.Add(iPt);
+                                    }
+                                    else if ((subPart.IEndPoint().SquareDistance(iPt) <= sqTol))
+                                    {
+                                        if (signedAngle <= Tolerance.Angle) intersects.Add(iPt);
+                                        else extraIntersects.Add(iPt);
+                                    }
+                                    else if (Math.Abs(signedAngle) <= Tolerance.Angle) extraIntersects.Add(iPt);
+                                    else intersects.Add(iPt);
+                                }
+                            }
+
+                            if (intersects.Count == 0) return false;
+                            if ((pPt.ClosestPoint(intersects.Union(extraIntersects)).SquareDistance(pPt) <= sqTol))
                             {
                                 if (acceptOnEdge) continue;
                                 else return false;
@@ -212,7 +238,6 @@ namespace BH.Engine.Geometry
 
                             intersects.Add(pPt);
                             intersects = intersects.SortCollinear(tolerance);
-                            intersects = intersects.CullDuplicates(tolerance);
                             for (int j = 0; j < intersects.Count; j++)
                             {
                                 if (j % 2 == 0 && intersects[j] == pPt) return false;
