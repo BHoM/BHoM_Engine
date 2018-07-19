@@ -24,9 +24,6 @@ namespace BH.Engine.Structure
 
         public static List<ICurve> InternalEdgeCurves(this PanelPlanar panel)
         {
-            // Todo:
-            // - return the edges as polycurves -> curve.Join needed
-
             List<ICurve> edges = new List<ICurve>();
             foreach (Opening o in panel.Openings)
             {
@@ -49,6 +46,13 @@ namespace BH.Engine.Structure
             List<ICurve> result = panel.ExternalEdgeCurves();
             result.AddRange(panel.InternalEdgeCurves());
             return result;
+        }
+
+        /***************************************************/
+
+        public static List<ICurve> EdgeCurves(this Opening opening)
+        {
+            return opening.Edges.Select(e => e.Curve).ToList();
         }
 
         /***************************************************/
