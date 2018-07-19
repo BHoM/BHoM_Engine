@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using BH.oM.Geometry;
 using BH.oM.Structural.Elements;
+using System.Linq;
 
 namespace BH.Engine.Structure
 {
@@ -10,11 +11,9 @@ namespace BH.Engine.Structure
         /****          Panel outline           ****/
         /******************************************/
 
-        public static Polyline Outline(this PanelPlanar panel)
+        public static PolyCurve Outline(this PanelPlanar panel)
         {
-            List<Point> pPts = panel.ControlPoints(true);
-            pPts.Add(pPts[0]);
-            return new Polyline { ControlPoints = pPts };
+            return new PolyCurve { Curves = panel.ExternalEdgeCurves() };
         }
 
 
@@ -22,20 +21,16 @@ namespace BH.Engine.Structure
         /****         Opening outline          ****/
         /******************************************/
 
-        public static Polyline Outline(this Opening opening)
+        public static PolyCurve Outline(this Opening opening)
         {
-            List<Point> pPts = opening.ControlPoints();
-            pPts.Add(pPts[0]);
-            return new Polyline { ControlPoints = pPts };
+            return new PolyCurve { Curves = opening.EdgeCurves() };
         }
 
         /******************************************/
 
-        public static Polyline Outline(this List<Edge> edges)
+        public static PolyCurve Outline(this List<Edge> edges)
         {
-            List<Point> pPts = edges.ControlPoints();
-            pPts.Add(pPts[0]);
-            return new Polyline { ControlPoints = pPts };
+            return new PolyCurve { Curves = edges.Select(e => e.Curve).ToList() };
         }
 
         /******************************************/
