@@ -11,14 +11,14 @@ namespace BH.Engine.Geometry
         /****          Split curve at points            ****/
         /***************************************************/
 
-        public static List<Arc> SplitAtPoints(this Arc arc, List<Point> points)
+        public static List<Arc> SplitAtPoints(this Arc arc, List<Point> points, double tolerance = Tolerance.Distance)
         {
             throw new NotImplementedException();
         }
 
         /***************************************************/
 
-        public static List<Circle> SplitAtPoints(this Circle circle, List<Point> points)
+        public static List<Circle> SplitAtPoints(this Circle circle, List<Point> points, double tolerance = Tolerance.Distance)
         {
             throw new NotImplementedException();
         }
@@ -50,14 +50,14 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static List<NurbCurve> SplitAtPoints(this NurbCurve curve, List<Point> points)
+        public static List<NurbCurve> SplitAtPoints(this NurbCurve curve, List<Point> points, double tolerance = Tolerance.Distance)
         {
             throw new NotImplementedException();
         }
 
         /***************************************************/
 
-        public static List<PolyCurve> SplitAtPoints(this PolyCurve curve, List<Point> points)
+        public static List<PolyCurve> SplitAtPoints(this PolyCurve curve, List<Point> points, double tolerance = Tolerance.Distance)
         {
             throw new NotImplementedException();
         }
@@ -122,9 +122,9 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
-        public static bool ISplitAtPoints(this ICurve curve, List<Point> points)
+        public static bool ISplitAtPoints(this ICurve curve, List<Point> points, double tolerance = Tolerance.Distance)
         {
-            return SplitAtPoints(curve as dynamic, points);
+            return SplitAtPoints(curve as dynamic, points, tolerance);
         }
     }
 }
