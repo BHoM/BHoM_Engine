@@ -18,7 +18,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static List<Circle> SplitAtPoints(this Circle circle, List<Point> points, double tolerance = Tolerance.Distance)
+        public static List<Arc> SplitAtPoints(this Circle circle, List<Point> points, double tolerance = Tolerance.Distance)
         {
             throw new NotImplementedException();
         }
@@ -122,7 +122,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
-        public static bool ISplitAtPoints(this ICurve curve, List<Point> points, double tolerance = Tolerance.Distance)
+        public static List<ICurve> ISplitAtPoints(this ICurve curve, List<Point> points, double tolerance = Tolerance.Distance)
         {
             return SplitAtPoints(curve as dynamic, points, tolerance);
         }
