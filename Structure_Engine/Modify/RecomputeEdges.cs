@@ -3,6 +3,7 @@ using System.Linq;
 using BH.oM.Geometry;
 using BH.oM.Structural.Elements;
 using BH.Engine.Geometry;
+using System;
 
 namespace BH.Engine.Structure
 {
@@ -14,12 +15,18 @@ namespace BH.Engine.Structure
 
         public static List<PanelPlanar> RecomputeEdges(this PanelPlanar panel, double tolerance = Tolerance.Distance)
         {
-            List<PanelPlanar> result = new List<PanelPlanar>();
+            //TODO: make this work for PolyCurves
 
-            List<Polyline> removedDuplicates = panel.Outline().RemoveDuplicateEdges(tolerance);
+            List<PanelPlanar> result = new List<PanelPlanar>();
+            Polyline outline = panel.Outline().ToPolyline();
+            if (outline == null) throw new NotImplementedException();
+
+            List<Polyline> removedDuplicates = outline.RemoveDuplicateEdges(tolerance);
             foreach (Opening o in panel.Openings)
             {
-                removedDuplicates.AddRange(o.Outline().RemoveDuplicateEdges(tolerance));
+                outline = o.Outline().ToPolyline();
+                if (outline == null) throw new NotImplementedException();
+                removedDuplicates.AddRange(outline.RemoveDuplicateEdges(tolerance));
             }
             List<List<Polyline>> distributedOutlines = removedDuplicates.DistributeOutlines(tolerance);
             
