@@ -19,7 +19,7 @@ namespace BH.Engine.Structure
             {
                 foreach (Opening o in panel.Openings)
                 {
-                    pts.AddRange(o.Edges.ControlPoints());
+                    pts.AddRange(o.ControlPoints());
                 }
             }
             return pts;
@@ -36,7 +36,7 @@ namespace BH.Engine.Structure
 
         public static List<Point> ControlPoints(this List<Edge> edges)
         {
-            List<Point> pts = edges.Select(e => (e.Curve as Line).Start.Clone()).ToList();
+            List<Point> pts = edges.SelectMany(e => e.Curve.IControlPoints()).ToList();
             return pts;
         }
 
