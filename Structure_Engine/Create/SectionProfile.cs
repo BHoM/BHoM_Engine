@@ -62,6 +62,22 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        public static GeneralisedFabricatedBoxProfile GeneralisedFabricatedBoxProfile(double height, double width, double webThickness, double topFlangeThickness = 0.0, double botFlangeThickness = 0.0, double topCorbelWidth = 0.0, double botCorbelWidth = 0.0)
+        {
+            List<ICurve> curves = GeneralisedFabricatedBoxSectionCurves(height, width, webThickness, topFlangeThickness, botFlangeThickness, topCorbelWidth, topCorbelWidth, botCorbelWidth, botCorbelWidth);
+            return new GeneralisedFabricatedBoxProfile(height, width, webThickness, topFlangeThickness, botFlangeThickness, topCorbelWidth, topCorbelWidth, botCorbelWidth, botCorbelWidth, curves);
+        }
+
+        /***************************************************/
+
+        public static KiteProfile KiteProfile(double width1, double angle1, double thickness)
+        {
+            List<ICurve> curves = KiteSectionCurves(width1, angle1, thickness);
+            return new KiteProfile(width1, angle1, thickness, curves);
+        }
+
+        /***************************************************/
+
         public static FabricatedISectionProfile FabricatedISectionProfile(double height, double topFlangeWidth, double botFlangeWidth, double webThickness, double topFlangeThickness, double botFlangeThickness, double weldSize)
         {
             List<ICurve> curves = ISectionCurves(topFlangeThickness, topFlangeWidth, botFlangeThickness, botFlangeWidth, webThickness, height - botFlangeThickness - topFlangeThickness,0,0);
