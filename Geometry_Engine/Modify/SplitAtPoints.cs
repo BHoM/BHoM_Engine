@@ -124,7 +124,15 @@ namespace BH.Engine.Geometry
 
         public static List<ICurve> ISplitAtPoints(this ICurve curve, List<Point> points, double tolerance = Tolerance.Distance)
         {
-            return SplitAtPoints(curve as dynamic, points, tolerance);
+            List<ICurve> result = new List<ICurve>();
+            System.Collections.IList splitCurves = SplitAtPoints(curve as dynamic, points, tolerance);
+            for (int i = 0; i < splitCurves.Count; i++)
+            {
+                result.Add(splitCurves[i] as ICurve);
+            }
+            return result;
         }
+
+        /***************************************************/
     }
 }
