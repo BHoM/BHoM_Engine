@@ -78,5 +78,24 @@ namespace BH.Engine.Geometry
             }
             return c;
         }
+
+        /***************************************************/
+
+        public static double REFTolerance(this double[,] matrix, double tolerance = Tolerance.Distance)
+        {
+            int d1 = matrix.GetLength(0);
+            int d2 = matrix.GetLength(1);
+            double maxRowSum = 0;
+            for (int i = 0; i < d1; i++)
+            {
+                double rowSum = 0;
+                for (int j = 0; j < d2; j++)
+                {
+                    rowSum += Math.Abs(matrix[i, j]);
+                }
+                maxRowSum = Math.Max(maxRowSum, rowSum);
+            }
+            return tolerance * Math.Max(d1, d2) * maxRowSum;
+        }
     }
 }
