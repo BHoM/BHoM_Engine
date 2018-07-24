@@ -50,6 +50,8 @@
     <Compile Include="Compute\ClusterCoplanar.cs" />
     <Compile Include="Compute\CullDuplicates.cs" />
     <Compile Include="Compute\DistributeOutlines.cs" />
+    <Compile Include="Compute\Eigenvalues.cs" />
+    <Compile Include="Compute\Eigenvectors.cs" />
     <Compile Include="Compute\FitLine.cs" />
     <Compile Include="Compute\Integrate.cs" />
     <Compile Include="Compute\PointClusters.cs" />
