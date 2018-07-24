@@ -39,12 +39,14 @@ namespace BH.Engine.Geometry
                 }
             }
 
-            if (MTM.CountNonZeroRows(tolerance * tolerance) < 3)        // normal is either X or Y or Z
+            int nonZeroRowCount = MTM.CountNonZeroRows(tolerance * tolerance);
+            if (nonZeroRowCount < 2) return null;                                   // points are collinear along X, Y or Z
+            else if (nonZeroRowCount == 2)                                          // normal is either X or Y or Z
             {
                 double sqX = 0;
                 double sqY = 0;
                 double sqZ = 0;
-                for(int i = 0; i < points.Count; i++)
+                for (int i = 0; i < points.Count; i++)
                 {
                     sqX += Math.Pow(normalizedPoints[i, 0], 2);
                     sqY += Math.Pow(normalizedPoints[i, 1], 2);
