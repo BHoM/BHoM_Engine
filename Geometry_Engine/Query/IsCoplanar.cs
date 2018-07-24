@@ -23,8 +23,9 @@ namespace BH.Engine.Geometry
                 vMatrix[i, 2] = points[i + 1].Z - points[0].Z;
             }
 
-            double[,] rref = vMatrix.RowEchelonForm(false, tolerance);
-            int nonZeroRows = rref.CountNonZeroRows(tolerance);
+            double REFTolerance = vMatrix.REFTolerance(tolerance);
+            double[,] rref = vMatrix.RowEchelonForm(false, REFTolerance);
+            int nonZeroRows = rref.CountNonZeroRows(REFTolerance);
             return nonZeroRows < 3;
         }
 
