@@ -38,30 +38,48 @@ namespace BH.Engine.Geometry
                     MTM[i, j] = value;
                 }
             }
-            
-            Vector[] eigenvectors = MTM.Eigenvectors(tolerance);
-            if (eigenvectors == null) return null;
 
-            double leastSquares = double.PositiveInfinity;
-            foreach (Vector eigenvector in eigenvectors)
+            if (MTM.CountNonZeroRows(tolerance * tolerance) < 3)        // normal is either X or Y or Z
             {
-                double a = eigenvector.X / eigenvector.Z;
-                double b = eigenvector.Y / eigenvector.Z;
-                double C = -(1 / (a * origin.X + b * origin.Y + origin.Z));
-                double B = C * b;
-                double A = C * a;
-
-                double squares = 0;
-                double S = 1 / (A * A + B * B + C * C);
-                foreach (Point pt in points)
+                double sqX = 0;
+                double sqY = 0;
+                double sqZ = 0;
+                for(int i = 0; i < points.Count; i++)
                 {
-                    squares += S * (Math.Pow(A * pt.X + B * pt.Y + C * pt.Z + 1, 2));
+                    sqX += Math.Pow(normalizedPoints[i, 0], 2);
+                    sqY += Math.Pow(normalizedPoints[i, 1], 2);
+                    sqZ += Math.Pow(normalizedPoints[i, 2], 2);
                 }
-                
-                if (squares <= leastSquares)
+                Vector normal = sqX < sqY ? (sqX < sqZ ? Vector.XAxis : Vector.ZAxis) : (sqY < sqZ ? Vector.YAxis : Vector.ZAxis);
+                result = new Plane { Origin = origin, Normal = normal };
+            }
+
+            else
+            {
+                Vector[] eigenvectors = MTM.Eigenvectors(tolerance);
+                if (eigenvectors == null) return null;
+
+                double leastSquares = double.PositiveInfinity;
+                foreach (Vector eigenvector in eigenvectors)
                 {
-                    leastSquares = squares;
-                    result = new Plane { Origin = origin, Normal = eigenvector };
+                    double a = eigenvector.X / eigenvector.Z;
+                    double b = eigenvector.Y / eigenvector.Z;
+                    double C = -(1 / (a * origin.X + b * origin.Y + origin.Z));
+                    double B = C * b;
+                    double A = C * a;
+
+                    double squares = 0;
+                    double S = 1 / (A * A + B * B + C * C);
+                    foreach (Point pt in points)
+                    {
+                        squares += S * (Math.Pow(A * pt.X + B * pt.Y + C * pt.Z + 1, 2));
+                    }
+
+                    if (squares <= leastSquares)
+                    {
+                        leastSquares = squares;
+                        result = new Plane { Origin = origin, Normal = eigenvector };
+                    }
                 }
             }
             return result;
