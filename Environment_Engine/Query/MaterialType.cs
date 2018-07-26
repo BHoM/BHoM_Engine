@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using BH.oM.Environmental.Elements;
-using BH.oM.Environmental.Interface;
+using BH.oM.Environment.Elements;
+using BH.oM.Environment.Interface;
 
 namespace BH.Engine.Environment
 {
@@ -17,21 +17,21 @@ namespace BH.Engine.Environment
 
         public static MaterialType MaterialType(this GasMaterial gasMaterial)
         {
-            return BH.oM.Environmental.Elements.MaterialType.Gas;
+            return BH.oM.Environment.Elements.MaterialType.Gas;
         }
 
         /***************************************************/
 
         public static MaterialType MaterialType(this TransparentMaterial transparentMaterial)
         {
-            return BH.oM.Environmental.Elements.MaterialType.Transparent;
+            return BH.oM.Environment.Elements.MaterialType.Transparent;
         }
 
         /***************************************************/
 
         public static MaterialType MaterialType(this OpaqueMaterial opaqueMaterial)
         {
-            return BH.oM.Environmental.Elements.MaterialType.Opaque;
+            return BH.oM.Environment.Elements.MaterialType.Opaque;
         }
 
         /***************************************************/

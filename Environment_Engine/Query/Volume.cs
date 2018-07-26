@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using BHEE = BH.oM.Environmental.Elements;
+using BHEE = BH.oM.Environment.Elements;
 using BH.Engine.Geometry;
 
 namespace BH.Engine.Environment

@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using BH.oM.Environmental.Properties;
-using BH.oM.Environmental.Elements;
+using BH.oM.Environment.Properties;
+using BH.oM.Environment.Elements;
 
 namespace BH.Engine.Environment
 {

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-using BH.oM.Environmental.Elements;
+using BH.oM.Environment.Elements;
 using BH.oM.Structural.Elements;
 using BH.oM.Architecture.Elements;
 

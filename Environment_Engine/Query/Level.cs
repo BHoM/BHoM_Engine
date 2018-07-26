@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 
-using BH.oM.Environmental.Elements;
+using BH.oM.Environment.Elements;
 using BH.oM.Geometry;
 using BH.oM.Architecture.Elements;
 
