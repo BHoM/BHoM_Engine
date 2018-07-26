@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using BHEE = BH.oM.Environmental.Elements;
+using BHEE = BH.oM.Environment.Elements;
 using BH.Engine.Geometry;
-using BHEI = BH.oM.Environmental.Interface;
+using BHEI = BH.oM.Environment.Interface;
 using BHG = BH.oM.Geometry;
 
 namespace BH.Engine.Environment

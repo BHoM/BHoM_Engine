@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using BH.oM.Structural.Elements;
-using BH.oM.Environmental.Elements;
+using BH.oM.Environment.Elements;
 
 namespace BH.Engine.Environment
 {
