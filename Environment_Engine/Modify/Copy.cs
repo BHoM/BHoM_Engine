@@ -1,8 +1,8 @@
 ﻿using BH.oM.Structural.Elements;
 using BH.oM.Geometry;
 using BH.Engine.Geometry;
-using BH.oM.Environmental.Elements;
-using BH.oM.Environmental.Interface;
+using BH.oM.Environment.Elements;
+using BH.oM.Environment.Interface;
 using BH.oM.Architecture.Elements;
 
 namespace BH.Engine.Environment

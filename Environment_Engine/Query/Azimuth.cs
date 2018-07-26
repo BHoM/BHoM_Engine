@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using BHG = BH.oM.Geometry;
-using BHEI = BH.oM.Environmental.Interface;
-using BHE = BH.oM.Environmental;
+using BHEI = BH.oM.Environment.Interface;
+using BHE = BH.oM.Environment;
 
 namespace BH.Engine.Environment
 {
