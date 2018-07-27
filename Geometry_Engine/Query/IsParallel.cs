@@ -11,8 +11,10 @@ namespace BH.Engine.Geometry
 
         public static int IsParallel(this Vector v1, Vector v2, double angleTolerance = Tolerance.Angle)
         {
+            Vector v1N = v1.Normalise();
+            Vector v2N = v2.Normalise();
             double dotTolerance = Math.Cos(angleTolerance);
-            double dp = v1.DotProduct(v2);
+            double dp = v1N.DotProduct(v2N);
             return Math.Abs(dp) >= dotTolerance ? dp > 0 ? 1 : -1 : 0;
         }
 
