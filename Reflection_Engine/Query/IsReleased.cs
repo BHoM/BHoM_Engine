@@ -22,7 +22,7 @@ namespace BH.Engine.Reflection
                 try
                 {
                     Version version = new Version(attribute.FromVersion);
-                    return (version.CompareTo(method.DeclaringType.Assembly.GetName().Version) > 0);
+                    return (version.CompareTo(method.DeclaringType.Assembly.GetName().Version) <= 0);
                 }
                 catch
                 {
