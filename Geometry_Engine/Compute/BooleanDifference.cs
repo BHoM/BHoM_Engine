@@ -42,7 +42,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static List<Line> BooleanDifference(this List<Line> lines, List<Line> refLines)
+        public static List<Line> BooleanDifference(this List<Line> lines, List<Line> refLines, double tolerance = Tolerance.Distance)
         {
             List<Line> result = new List<Line>();
             
@@ -60,7 +60,7 @@ namespace BH.Engine.Geometry
                         for (int j = 0; j < splitLine.Count; j++)
                         {
                             Line l = splitLine[j];
-                            List<Line> bd = l.BooleanDifference(refLines[i]);
+                            List<Line> bd = l.BooleanDifference(refLines[i], tolerance);
                             if (bd.Count == 0)
                             {
                                 k = refLines.Count;
@@ -68,7 +68,7 @@ namespace BH.Engine.Geometry
                                 split = true;
                                 break;
                             }
-                            else if (bd.Count > 1 || bd[0].Length() != l.Length())
+                            else if (bd.Count > 1 || Math.Abs(bd[0].Length() - l.Length()) > tolerance)
                             {
                                 k = i + 1;
                                 split = true;
