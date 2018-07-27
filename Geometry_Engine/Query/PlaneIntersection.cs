@@ -129,7 +129,10 @@ namespace BH.Engine.Geometry
 
         public static List<Point> PlaneIntersections(this Line curve, Plane plane, double tolerance = Tolerance.Distance)
         {
-            return new List<Point> { curve.PlaneIntersection(plane, false, tolerance) };
+            List<Point> result = new List<Point>();
+            Point iPt = curve.PlaneIntersection(plane, false, tolerance);
+            if (iPt != null) result.Add(iPt);
+            return result;
         }
 
         /***************************************************/
