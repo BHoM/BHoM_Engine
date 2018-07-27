@@ -62,11 +62,10 @@ namespace BH.Engine.Geometry
                     double radius = arc.Radius();
                     double angle = arc.Angle();
                     double arcArea = (angle - Math.Sin(angle)) * radius * radius * 0.5;
-                    bool isRight = (arc.EndPoint() - arc.StartPoint()).SignedAngle(arc.PointAtParameter(0.5) - arc.StartPoint(), p.Normal) >= 0;
-                    if (isClockwise == isRight) area -= arcArea;
-                    else area += arcArea;
+                    if (arc.CoordinateSystem.Z.DotProduct(p.Normal) > 0 == isClockwise) area += arcArea;
+                    else area -= arcArea;
                 }
-                else if (c is Circle) area += c.IArea();
+
                 sPt = ePt.Clone();
             }
             return area;
@@ -80,7 +79,7 @@ namespace BH.Engine.Geometry
 
             List<Point> pts = curve.ControlPoints;
             int ptsCount = pts.Count;
-            if (ptsCount < 3) { return 0.0; }
+            if (ptsCount < 4) { return 0.0; }
 
             Plane p = pts.FitPlane();
             if (p == null) return 0.0;              // points are collinear

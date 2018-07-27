@@ -14,6 +14,7 @@ namespace BH.Engine.Geometry
         public static bool IsClockwise(this Polyline polyline, Vector normal, double tolerance = Tolerance.Distance)
         {
             if (!polyline.IsClosed(tolerance)) throw new Exception("The polyline is not closed. IsClockwise method is relevant only to closed curves.");
+
             List<Point> cc = polyline.DiscontinuityPoints(tolerance);
             Vector dir1 = (cc[0] - cc.Last()).Normalise();
             Vector dir2;
@@ -21,8 +22,14 @@ namespace BH.Engine.Geometry
             for (int i = 1; i < cc.Count; i++)
             {
                 dir2 = (cc[i] - cc[i - 1]).Normalise();
-                angleTot += dir1.SignedAngle(dir2, normal);
+                double signedAngle = dir1.SignedAngle(dir2, normal);
                 dir1 = dir2.Clone();
+                if (Math.PI - Math.Abs(signedAngle) <= Tolerance.Angle)
+                {
+                    dir1 *= -1;
+                    continue;
+                }
+                else angleTot += signedAngle;
             }
             return angleTot > 0;
         }
@@ -32,25 +39,19 @@ namespace BH.Engine.Geometry
         public static bool IsClockwise(this PolyCurve curve, Vector normal, double tolerance = Tolerance.Distance)
         {
             if (!curve.IsClosed(tolerance)) throw new Exception("The curve is not closed. IsClockwise method is relevant only to closed curves.");
-
-            double angleTot = 0;
-            Vector dir1 = curve.EndDir();
-            Vector dir2;
+            
+            List<Point> cPts = new List<Point> { curve.IStartPoint() };
             foreach (ICurve c in curve.SubParts())
             {
-                if (c is Arc)
+                if (c is Line) cPts.Add(c.IEndPoint());
+                else if (c is Arc)
                 {
-                    Arc a = c as Arc;
-                    if (a.CoordinateSystem.Z.DotProduct(normal) > 0) angleTot += a.Angle();
-                    else angleTot -= a.Angle();
+                    cPts.Add(c.IPointAtParameter(0.5));
+                    cPts.Add(c.IEndPoint());
                 }
-                else if (c is NurbCurve) throw new NotImplementedException();
-
-                dir2 = c.IStartDir();
-                angleTot += dir1.SignedAngle(dir2, normal);
-                dir1 = c.IEndDir();
+                else throw new NotImplementedException();
             }
-            return angleTot > 0;
+            return IsClockwise(new Polyline { ControlPoints = cPts }, normal, tolerance);
         }
 
         /***************************************************/
