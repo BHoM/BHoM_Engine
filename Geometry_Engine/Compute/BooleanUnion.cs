@@ -13,15 +13,27 @@ namespace BH.Engine.Geometry
 
         public static List<Line> BooleanUnion(this Line line, Line refLine, double tolerance = Tolerance.Distance)
         {
-            if (line.IsCollinear(refLine))
+            if (line.IsCollinear(refLine, tolerance))
             {
                 double sqTol = tolerance * tolerance;
+
                 List<Point> cPts = line.ControlPoints();
                 foreach (Point cPt in cPts)
                 {
                     if (cPt.SquareDistance(refLine) <= sqTol)
                     {
                         cPts.AddRange(refLine.ControlPoints());
+                        cPts = cPts.SortCollinear(tolerance);
+                        return new List<Line> { new Line { Start = cPts[0], End = cPts.Last() } };
+                    }
+                }
+
+                cPts = refLine.ControlPoints();
+                foreach (Point cPt in cPts)
+                {
+                    if (cPt.SquareDistance(line) <= sqTol)
+                    {
+                        cPts.AddRange(line.ControlPoints());
                         cPts = cPts.SortCollinear(tolerance);
                         return new List<Line> { new Line { Start = cPts[0], End = cPts.Last() } };
                     }
@@ -189,6 +201,5 @@ namespace BH.Engine.Geometry
         }
 
         /***************************************************/
-        
     }
 }
