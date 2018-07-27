@@ -43,12 +43,11 @@ namespace BH.Engine.Geometry
         {
             List<Line> result = new List<Line>();
             if (line.Length() <= tolerance) return result;
-            foreach (Line l in refLines)
+            foreach (Line l in refLines.BooleanUnion(tolerance))
             {
                 Line intersection = line.BooleanIntersection(l, tolerance);
                 if (intersection != null) result.Add(intersection);
             }
-            result = result.BooleanUnion(tolerance);
             return result;
         }
 
