@@ -15,10 +15,17 @@ namespace BH.Engine.Geometry
         {
             if (line.IsCollinear(refLine))
             {
+                double sqTol = tolerance * tolerance;
                 List<Point> cPts = line.ControlPoints();
-                cPts.AddRange(refLine.ControlPoints());
-                cPts = cPts.SortCollinear(tolerance);
-                return new List<Line> { new Line { Start = cPts[0], End = cPts.Last() } };
+                foreach (Point cPt in cPts)
+                {
+                    if (cPt.SquareDistance(refLine) <= sqTol)
+                    {
+                        cPts.AddRange(refLine.ControlPoints());
+                        cPts = cPts.SortCollinear(tolerance);
+                        return new List<Line> { new Line { Start = cPts[0], End = cPts.Last() } };
+                    }
+                }
             }
 
             return new List<Line> { line.Clone(), refLine.Clone() };
