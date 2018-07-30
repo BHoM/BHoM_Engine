@@ -75,7 +75,7 @@ namespace BH.Engine.Geometry
 
 
 
-            throw new NotImplementedException(); // TODO NurbCurve.PointAtParameter()
+            //throw new NotImplementedException(); // TODO NurbCurve.PointAtParameter()
         }
 
 

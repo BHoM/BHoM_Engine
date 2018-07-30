@@ -4,6 +4,7 @@ using BH.oM.Structural.Properties;
 using System.Collections.Generic;
 using System.Linq;
 using System;
+using BH.oM.Reflection.Attributes;
 
 namespace BH.Engine.Structure
 {
@@ -13,6 +14,7 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [NotImplemented]
         public static IGeometry Extrude(this Bar bar)
         {
 

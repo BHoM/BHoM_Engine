@@ -1,4 +1,5 @@
 ﻿using BH.oM.Geometry;
+using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -220,6 +221,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [NotImplemented]
         public static List<Point> LineIntersections(this NurbCurve curve, Line line, bool useInfiniteLine = false, double tolerance = Tolerance.Distance)
         {
             throw new NotImplementedException();

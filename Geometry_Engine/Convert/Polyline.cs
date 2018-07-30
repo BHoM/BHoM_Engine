@@ -1,4 +1,5 @@
 ﻿using BH.oM.Geometry;
+using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
 
@@ -25,6 +26,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [NotImplemented]
         public static Polyline ToPolyline(NurbCurve curve)
         {
             throw new NotImplementedException();
@@ -32,16 +34,18 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [NotImplemented]
         public static Polyline ToPolyline(Arc curve)
         {
-            return null;
+            throw new NotImplementedException();
         }
 
         /***************************************************/
 
+        [NotImplemented]
         public static Polyline ToPolyline(Circle curve)
         {
-            return null;
+            throw new NotImplementedException();
         }
 
         /***************************************************/

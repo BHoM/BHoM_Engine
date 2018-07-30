@@ -2,6 +2,7 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using BH.oM.Reflection.Attributes;
 
 namespace BH.Engine.Geometry
 {
@@ -11,6 +12,7 @@ namespace BH.Engine.Geometry
         /****          Split curve at points            ****/
         /***************************************************/
 
+        [NotImplemented]
         public static List<Arc> SplitAtPoints(this Arc arc, List<Point> points, double tolerance = Tolerance.Distance)
         {
             throw new NotImplementedException();
@@ -18,6 +20,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [NotImplemented]
         public static List<Arc> SplitAtPoints(this Circle circle, List<Point> points, double tolerance = Tolerance.Distance)
         {
             throw new NotImplementedException();
@@ -50,6 +53,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [NotImplemented]
         public static List<NurbCurve> SplitAtPoints(this NurbCurve curve, List<Point> points, double tolerance = Tolerance.Distance)
         {
             throw new NotImplementedException();
@@ -57,6 +61,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [NotImplemented]
         public static List<PolyCurve> SplitAtPoints(this PolyCurve curve, List<Point> points, double tolerance = Tolerance.Distance)
         {
             throw new NotImplementedException();

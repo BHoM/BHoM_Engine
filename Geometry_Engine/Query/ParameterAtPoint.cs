@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using BH.Engine.Geometry;
 using BH.oM.Geometry;
+using BH.oM.Reflection.Attributes;
 
 namespace BH.Engine.Geometry
 {
@@ -44,6 +45,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [NotImplemented]
         public static double ParameterAtPoint(this NurbCurve curve, Point point, double tolerance = Tolerance.Distance)
         {
             throw new NotImplementedException();

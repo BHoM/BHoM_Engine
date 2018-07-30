@@ -1,6 +1,7 @@
 ﻿using BH.oM.Geometry;
 using System.Collections.Generic;
 using System;
+using BH.oM.Reflection.Attributes;
 
 namespace BH.Engine.Geometry
 {
@@ -19,26 +20,37 @@ namespace BH.Engine.Geometry
             return true;
         }
 
+        /***************************************************/
+
         public static bool IsPolylinear(this Arc curve)
         {
             return false;
         }
+
+        /***************************************************/
 
         public static bool IsPolylinear(this Circle curve)
         {
             return false;
         }
 
+        /***************************************************/
+
         public static bool IsPolylinear(this Line curve)
         {
             return true;
         }
+
+        /***************************************************/
 
         public static bool IsPolylinear(this Polyline curve)
         {
             return true;
         }
 
+        /***************************************************/
+
+        [NotImplemented]
         public static bool IsPolylinear(this NurbCurve curve)
         {
             throw new NotImplementedException();
