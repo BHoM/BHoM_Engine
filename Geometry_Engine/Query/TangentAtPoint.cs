@@ -1,5 +1,6 @@
 ﻿using System;
 using BH.oM.Geometry;
+using BH.oM.Reflection.Attributes;
 
 namespace BH.Engine.Geometry
 {
@@ -33,6 +34,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [NotImplemented]
         public static Vector TangentAtPoint(this NurbCurve curve, Point point, double tolerance = Tolerance.Distance)
         {
             throw new NotImplementedException();

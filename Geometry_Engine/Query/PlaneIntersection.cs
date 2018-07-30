@@ -278,7 +278,7 @@ namespace BH.Engine.Geometry
 
             //return result;
 
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
         }
 
         /***************************************************/

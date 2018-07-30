@@ -1,4 +1,5 @@
 ﻿using BH.oM.Geometry;
+using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,7 @@ namespace BH.Engine.Geometry
         /**** public Methods - Vectors                  ****/
         /***************************************************/
 
+        [NotImplemented]
         public static List<Point> SortAlongCurve(this List<Point> points, Arc arc)
         {
             throw new NotImplementedException();
@@ -18,6 +20,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [NotImplemented]
         public static List<Point> SortAlongCurve(this List<Point> points, Circle circle)
         {
             throw new NotImplementedException();
@@ -61,6 +64,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [NotImplemented]
         public static List<Point> SortAlongCurve(this List<Point> points, NurbCurve curve)
         {
             throw new NotImplementedException();
@@ -68,6 +72,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [NotImplemented]
         public static List<Point> SortAlongCurve(this List<Point> points, PolyCurve curve)
         {
             throw new NotImplementedException();
@@ -75,6 +80,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [NotImplemented]
         public static List<Point> SortAlongCurve(this List<Point> points, Polyline curve)
         {
             throw new NotImplementedException();

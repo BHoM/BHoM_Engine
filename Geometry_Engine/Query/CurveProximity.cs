@@ -1,5 +1,6 @@
 ﻿using System;
 using BH.oM.Geometry;
+using BH.oM.Reflection.Attributes;
 
 namespace BH.Engine.Geometry
 {
@@ -9,6 +10,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [NotImplemented]
         private static Point[] LineProximity(this Line line1, Line line2, bool useInfiniteLines = false, double tolerance = Tolerance.Distance, double angleTolerance = Tolerance.Angle)
         {
             throw new NotImplementedException();

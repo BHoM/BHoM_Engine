@@ -4,7 +4,7 @@ using BH.oM.Structural.Properties;
 using BH.oM.Geometry;
 using BH.oM.Common.Materials;
 using System;
-
+using BH.oM.Reflection.Attributes;
 
 namespace BH.Engine.Structure
 {
@@ -117,6 +117,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [NotImplemented]
         public static ZSectionProfile ZSectionProfile(double height, double width, double webthickness, double flangeThickness, double rootRadius, double toeRadius)
         {
             throw new NotImplementedException();
