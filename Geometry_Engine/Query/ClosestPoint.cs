@@ -1,4 +1,5 @@
 ﻿using BH.oM.Geometry;
+using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
 
@@ -86,6 +87,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [NotImplemented]
         public static Point ClosestPoint(this NurbCurve curve, Point point)
         {
             throw new NotImplementedException();
@@ -138,6 +140,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Surfaces                 ****/
         /***************************************************/
 
+        [NotImplemented]
         public static Point ClosestPoint(this Extrusion surface, Point point)
         {
             throw new NotImplementedException();
@@ -145,6 +148,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [NotImplemented]
         public static Point ClosestPoint(this Loft surface, Point point)
         {
             throw new NotImplementedException();
@@ -152,6 +156,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [NotImplemented]
         public static Point ClosestPoint(this NurbSurface surface, Point point)
         {
             throw new NotImplementedException();
@@ -159,6 +164,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [NotImplemented]
         public static Point ClosestPoint(this Pipe surface, Point point)
         {
             throw new NotImplementedException();
@@ -166,6 +172,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [NotImplemented]
         public static Point ClosestPoint(this PolySurface surface, Point point)
         {
             throw new NotImplementedException();
@@ -176,6 +183,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Others                   ****/
         /***************************************************/
 
+        [NotImplemented]
         public static Point ClosestPoint(this Mesh mesh, Point point)
         {
             throw new NotImplementedException();
@@ -183,6 +191,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [NotImplemented]
         public static Point ClosestPoint(this CompositeGeometry group, Point point)
         {
             throw new NotImplementedException();

@@ -1,4 +1,5 @@
 ﻿using BH.oM.Geometry;
+using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
 
@@ -10,6 +11,7 @@ namespace BH.Engine.Geometry
         /**** Public  Methods - Curves                  ****/
         /***************************************************/
 
+        [NotImplemented]
         public static NurbCurve ToNurbCurve(this Arc arc)
         {
             //double[] centre = arc.Centre;
@@ -41,6 +43,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [NotImplemented]
         public static NurbCurve ToNurbCurve(this Circle circle)
         {
             //double root2on2 = Math.Sqrt(2) / 2;
@@ -94,6 +97,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [NotImplemented]
         public static NurbCurve ToNurbCurve(this PolyCurve curve)
         {
             //Curve c = curve.Curves[0];
@@ -111,6 +115,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [NotImplemented]
         public static NurbCurve ToNurbCurve(this Polyline curve)
         {
             //line.SetDegree(1);

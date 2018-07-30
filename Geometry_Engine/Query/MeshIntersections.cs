@@ -1,4 +1,5 @@
 ﻿using BH.oM.Geometry;
+using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
 
@@ -10,6 +11,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [NotImplemented]
         public static Line MeshIntersection(this Plane p, Mesh mesh, double tolerance = Tolerance.Distance)
         {
             throw new NotImplementedException();
@@ -18,6 +20,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [NotImplemented]
         public static List<Point> MeshIntersections(this Arc curve, Mesh mesh, double tolerance = Tolerance.Distance)
         {
             throw new NotImplementedException();
@@ -25,6 +28,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [NotImplemented]
         public static List<Point> MeshIntersections(this Circle curve, Mesh mesh, double tolerance = Tolerance.Distance)
         {
             throw new NotImplementedException();
@@ -100,6 +104,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [NotImplemented]
         public static List<Point> MeshIntersections(this NurbCurve c, Mesh mesh, double tolerance = Tolerance.Distance)
         {
             throw new NotImplementedException();    // TODO Intersections(NurbsCurve, Mesh)
@@ -107,6 +112,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [NotImplemented]
         public static List<Point> MeshIntersections(this PolyCurve curve, Mesh mesh, double tolerance = Tolerance.Distance)
         {
             throw new NotImplementedException();    // TODO Intersections(PolyCurve, Mesh)

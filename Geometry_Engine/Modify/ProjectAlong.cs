@@ -1,4 +1,5 @@
 ﻿using BH.oM.Geometry;
+using BH.oM.Reflection.Attributes;
 using System;
 using System.Linq;
 
@@ -41,6 +42,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Curves                   ****/
         /***************************************************/
 
+        [NotImplemented]
         public static Arc ProjectAlong(this Arc arc, Plane plane, Vector vector)
         {
             throw new NotImplementedException();
@@ -115,6 +117,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [NotImplemented]
         public static Pipe ProjectAlong(this Pipe surface, Plane plane, Vector vector)
         {
             throw new NotImplementedException(); //TODO: implement projection of a pipe on a plane
