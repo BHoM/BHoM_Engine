@@ -11,13 +11,6 @@ namespace BH.Engine.Geometry
 
         // Strongly inspired by https://www.geeksforgeeks.org/determinant-of-a-matrix/
 
-        public static double Determinant(this double[,] mat)
-        {
-            return Determinant(mat, 0);
-        }
-
-        /***************************************************/
-        
         public static double Determinant(this TransformMatrix matrix)
         {
             return Determinant(matrix.Matrix, 0);
@@ -26,6 +19,13 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
         /****             Private methods               ****/
+        /***************************************************/
+
+        private static double Determinant(this double[,] mat)
+        {
+            return Determinant(mat, 0);
+        }
+
         /***************************************************/
 
         private static double Determinant(double[,] mat, int n)
