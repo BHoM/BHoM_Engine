@@ -45,8 +45,7 @@ namespace BH.Engine.Geometry
             if (!curve.IsClosed()) return 0;
             Plane p = curve.FitPlane();
             if (p == null) return 0.0;              // points are collinear
-
-            bool isClockwise = curve.IsClockwise(p.Normal);
+            
             Point sPt = curve.StartPoint();
             double area = 0;
             foreach (ICurve c in curve.SubParts())
@@ -55,22 +54,21 @@ namespace BH.Engine.Geometry
 
                 Point ePt = c.IEndPoint();
                 Vector prod = CrossProduct(sPt - p.Origin, ePt - p.Origin);
-                if (isClockwise) area += prod * p.Normal * 0.5;
-                else area -= prod * p.Normal * 0.5;
+                area += prod * p.Normal * 0.5;
 
                 if (c is Arc)
                 {
                     Arc arc = c as Arc;
-                    double radius = arc.Radius();
+                    double radius = arc.Radius;
                     double angle = arc.Angle();
                     double arcArea = (angle - Math.Sin(angle)) * radius * radius * 0.5;
-                    if (arc.CoordinateSystem.Z.DotProduct(p.Normal) > 0 == isClockwise) area += arcArea;
+                    if (arc.CoordinateSystem.Z.DotProduct(p.Normal) > 0) area += arcArea;
                     else area -= arcArea;
                 }
 
                 sPt = ePt.Clone();
             }
-            return area;
+            return Math.Abs(area);
         }
 
         /***************************************************/
