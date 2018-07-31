@@ -18,6 +18,17 @@ namespace BH.Engine.Reflection
 
             if (prop != null)
             {
+                if (value.GetType() != prop.PropertyType  && value.GetType().GenericTypeArguments.Length > 0 && prop.PropertyType.GenericTypeArguments.Length > 0)
+                {
+                    value = Modify.CastGeneric(value as dynamic, prop.PropertyType.GenericTypeArguments[0]);
+                }
+                if (value.GetType() != prop.PropertyType)
+                {
+                    ConstructorInfo constructor = prop.PropertyType.GetConstructor(new Type[] { value.GetType() });
+                    if (constructor != null)
+                        value = constructor.Invoke(new object[] { value });
+                }
+
                 prop.SetValue(obj, value);
                 return true;
             }
@@ -27,7 +38,8 @@ namespace BH.Engine.Reflection
                 IBHoMObject cust = obj as IBHoMObject;
                 if (cust == null) return false;
 
-                Compute.RecordWarning("No property with the provided name found. The value is being set as custom data");
+                // This was more annoying than useful
+                //Compute.RecordWarning("No property with the provided name found. The value is being set as custom data");
 
                 cust.CustomData[propName] = value;
                 return true;
