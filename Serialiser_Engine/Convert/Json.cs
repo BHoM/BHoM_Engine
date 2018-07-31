@@ -26,6 +26,7 @@ namespace BH.Engine.Serialiser
             }
             else
             {
+                Reflection.Compute.RecordError("the string provided is not a valid json format. Are you sure you provided a single Json object ?");
                 return null;
             }
         }
