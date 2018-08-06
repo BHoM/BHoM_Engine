@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace BH.Engine.Geometry
+namespace BH.Engine.Structure
 {
     public static partial class Query
     {

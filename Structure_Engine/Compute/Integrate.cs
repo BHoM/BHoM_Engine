@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using BH.oM.Geometry;
+using BH.Engine.Geometry;
 
-namespace BH.Engine.Geometry
+namespace BH.Engine.Structure
 {
     public static partial class Compute
     {
@@ -26,8 +27,8 @@ namespace BH.Engine.Geometry
             double totalWidth = max.X - min.X;
             double totalHeight = max.Y - min.Y;
 
-            List<IntegrationSlice> verticalSlices = Create.IntegrationSlices(curves, Vector.XAxis, totalWidth/1000, tolerance);
-            List<IntegrationSlice> horizontalSlices = Create.IntegrationSlices(curves, Vector.YAxis, totalHeight/1000, tolerance);
+            List<IntegrationSlice> verticalSlices = Geometry.Create.IntegrationSlices(curves, Vector.XAxis, totalWidth/1000, tolerance);
+            List<IntegrationSlice> horizontalSlices = Geometry.Create.IntegrationSlices(curves, Vector.YAxis, totalHeight/1000, tolerance);
 
             results["VerticalSlices"] = verticalSlices;
             results["HorizontalSlices"] = horizontalSlices;
@@ -44,12 +45,12 @@ namespace BH.Engine.Geometry
 
             results["TotalWidth"] = totalWidth;
             results["TotalDepth"] = totalHeight;
-            results["Iy"] = Query.AreaIntegration(horizontalSlices, 1, 2, 1, centreZ);
-            results["Iz"] = Query.AreaIntegration(verticalSlices, 1, 2, 1, centreY);
+            results["Iy"] = Geometry.Query.AreaIntegration(horizontalSlices, 1, 2, 1, centreZ);
+            results["Iz"] = Geometry.Query.AreaIntegration(verticalSlices, 1, 2, 1, centreY);
             //resutlts["Sy"] = 2 * Engine.Geometry.Query.AreaIntegration(horizontalSlices, min.Y, centreZ, 1, 1, 1);
-            results["Wply"] = 2*Math.Abs(Query.AreaIntegration(horizontalSlices, 1, 1, 1, min.Y, centreZ, centreZ));// + Math.Abs(Query.AreaIntegration(horizontalSlices, 1, 1, 1, centreZ, max.Y, centreZ));
+            results["Wply"] = 2*Math.Abs(Geometry.Query.AreaIntegration(horizontalSlices, 1, 1, 1, min.Y, centreZ, centreZ));// + Math.Abs(Query.AreaIntegration(horizontalSlices, 1, 1, 1, centreZ, max.Y, centreZ));
             //resutlts["Sz"] = 2 * Engine.Geometry.Query.AreaIntegration(verticalSlices, min.X, centreY, 1, 1, 1);
-            results["Wplz"] = 2*Math.Abs(Query.AreaIntegration(verticalSlices, 1, 1, 1, min.X, centreY, centreY));// + Math.Abs(Query.AreaIntegration(verticalSlices, 1, 1, 1, centreY, max.X, centreY));
+            results["Wplz"] = 2*Math.Abs(Geometry.Query.AreaIntegration(verticalSlices, 1, 1, 1, min.X, centreY, centreY));// + Math.Abs(Query.AreaIntegration(verticalSlices, 1, 1, 1, centreY, max.X, centreY));
             results["Rgy"] = Math.Sqrt((double)results["Iy"] / area);
             results["Rgz"] = Math.Sqrt((double)results["Iz"] / area);
             results["Vy"] = max.X - centreY;
