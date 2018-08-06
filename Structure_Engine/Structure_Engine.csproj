@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Compute\Integrate.cs" />
     <Compile Include="Create\FramingElementProperty.cs" />
     <Compile Include="Create\LoadingPanelProperty.cs" />
     <Compile Include="Create\Offset.cs" />
@@ -95,6 +96,7 @@
     <Compile Include="Objects\EqualityComparers\NodeDistanceComparer.cs" />
     <Compile Include="Query\NodeContraint.cs" />
     <Compile Include="Query\DepthAt.cs" />
+    <Compile Include="Query\ShearArea.cs" />
     <Compile Include="Query\WidthAt.cs" />
     <Compile Include="Query\IsLongitudinal.cs" />
     <Compile Include="Query\Layout.cs" />

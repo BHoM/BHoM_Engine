@@ -91,7 +91,7 @@ namespace BH.Engine.Structure
         {
 
             List<ICurve> edges = profile.Edges.ToList();
-            Dictionary<string, object> constants = Geometry.Compute.Integrate(edges, Tolerance.MicroDistance);
+            Dictionary<string, object> constants = Compute.Integrate(edges, Tolerance.MicroDistance);
 
             constants["J"] = profile.ITorsionalConstant();
             constants["Iw"] = profile.IWarpingConstant();
