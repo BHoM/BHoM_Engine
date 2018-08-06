@@ -18,16 +18,6 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static Vector Scale(this Vector vector, double rad, Vector axis)
-        {
-            // using Rodrigues' rotation formula
-            axis = axis.Normalise();
-
-            return vector * Math.Cos(rad) + axis.CrossProduct(vector) * Math.Sin(rad) + axis * (axis * vector) * (1 - Math.Cos(rad));
-        }
-
-        /***************************************************/
-
         public static Plane Scale(this Plane plane, Point origin, Vector scaleVector)
         {
             TransformMatrix scaleMatrix = Create.ScaleMatrix(origin, scaleVector);
