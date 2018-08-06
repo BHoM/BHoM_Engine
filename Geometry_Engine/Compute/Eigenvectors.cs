@@ -8,10 +8,20 @@ namespace BH.Engine.Geometry
     public static partial class Compute
     {
         /***************************************************/
-        /****         Eigenvectors of a matrix          ****/
+        /****   Public Methods                          ****/
         /***************************************************/
 
-        public static Vector[] Eigenvectors(this double[,] matrix, double tolerance = Tolerance.Distance)
+        public static Vector[] Eigenvectors(this TransformMatrix matrix, double tolerance = Tolerance.Distance)
+        {
+            return matrix.Matrix.Eigenvectors(tolerance);
+        }
+
+
+        /***************************************************/
+        /****   Private Methods                         ****/
+        /***************************************************/
+
+        private static Vector[] Eigenvectors(this double[,] matrix, double tolerance = Tolerance.Distance)
         {
             double[] eigenvalues = matrix.Eigenvalues(tolerance);
             if (eigenvalues == null) return null;
@@ -45,11 +55,6 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static Vector[] Eigenvectors(this TransformMatrix matrix, double tolerance = Tolerance.Distance)
-        {
-            return matrix.Matrix.Eigenvectors(tolerance);
-        }
-
-        /***************************************************/
+        
     }
 }
