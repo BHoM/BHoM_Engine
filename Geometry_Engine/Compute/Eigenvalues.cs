@@ -8,7 +8,7 @@ namespace BH.Engine.Geometry
     public static partial class Compute
     {
         /***************************************************/
-        /****         Eigenvalues of a matrix           ****/
+        /****   Public Methods                          ****/
         /***************************************************/
 
         public static double[] Eigenvalues(this TransformMatrix matrix, double tolerance = Tolerance.Distance)
@@ -16,7 +16,12 @@ namespace BH.Engine.Geometry
             return matrix.Matrix.Eigenvalues(tolerance);
         }
 
-        public static double[] Eigenvalues(this double[,] matrix, double tolerance = Tolerance.Distance)
+
+        /***************************************************/
+        /****   Private Methods                         ****/
+        /***************************************************/
+
+        private static double[] Eigenvalues(this double[,] matrix, double tolerance = Tolerance.Distance)
         {
             if (matrix.GetLength(0) != 3 || matrix.GetLength(1) != 3) throw new Exception("Only 3x3 symmetric matrix is implemented.");
             for (int i = 0; i < 3; i++)
@@ -43,8 +48,6 @@ namespace BH.Engine.Geometry
         }
 
 
-        /***************************************************/
-        /****              Private methods              ****/
         /***************************************************/
 
         // Solve Ax^3 + Bx^2 + Cx + D = 0 following http://www.code-kings.com/2013/11/cubic-equation-roots-in-csharp-code.html
