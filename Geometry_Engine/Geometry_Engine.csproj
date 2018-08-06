@@ -53,7 +53,6 @@
     <Compile Include="Compute\Eigenvalues.cs" />
     <Compile Include="Compute\Eigenvectors.cs" />
     <Compile Include="Compute\FitLine.cs" />
-    <Compile Include="Compute\Integrate.cs" />
     <Compile Include="Compute\PointClusters.cs" />
     <Compile Include="Compute\RowEchelonForm.cs" />
     <Compile Include="Compute\SortAlongCurve.cs" />
@@ -140,7 +139,6 @@
     <Compile Include="Query\PointAtParameter.cs" />
     <Compile Include="Query\Product.cs" />
     <Compile Include="Query\Radius.cs" />
-    <Compile Include="Query\ShearArea.cs" />
     <Compile Include="Query\SliceAt.cs" />
     <Compile Include="Query\StartDir.cs" />
     <Compile Include="Query\StartPoint.cs" />
