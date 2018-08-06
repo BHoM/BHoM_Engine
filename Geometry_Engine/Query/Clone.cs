@@ -59,6 +59,13 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        public static Ellipse Clone(this Ellipse ellipse)
+        {
+            return new Ellipse { Axis1 = ellipse.Axis1, Axis2 = ellipse.Axis2, Centre = ellipse.Centre, Radius1 = ellipse.Radius1, Radius2 = ellipse.Radius2 };
+        }
+
+        /***************************************************/
+
         public static Line Clone(this Line line)
         {
             return new Line { Start = line.Start.Clone(), End = line.End.Clone(), Infinite = line.Infinite };
@@ -152,6 +159,20 @@ namespace BH.Engine.Geometry
         public static CompositeGeometry Clone(this CompositeGeometry group)
         {
             return new CompositeGeometry { Elements = group.Elements.Select(x => x.IClone()).ToList() };
+        }
+
+        /***************************************************/
+
+        public static Quaternion Clone(this Quaternion quaternion)
+        {
+            return new Quaternion { W = quaternion.W, X = quaternion.X, Y = quaternion.Y, Z = quaternion.Z };
+        }
+
+        /***************************************************/
+
+        public static TransformMatrix Clone(this TransformMatrix transform)
+        {
+            return new TransformMatrix { Matrix = transform.Matrix };
         }
 
 
