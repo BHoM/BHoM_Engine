@@ -72,6 +72,13 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        public static Ellipse Transform(this Ellipse ellipse, TransformMatrix transform)
+        {
+            return new Ellipse { Centre = ellipse.Centre.Transform(transform), Axis1 = ellipse.Axis1.Transform(transform).Normalise(), Axis2 = ellipse.Axis2.Transform(transform).Normalise(), Radius1 = ellipse.Radius1, Radius2 = ellipse.Radius2 };
+        }
+
+        /***************************************************/
+
         public static Line Transform(this Line line, TransformMatrix transform)
         {
             return new Line { Start = line.Start.Transform(transform), End = line.End.Transform(transform) };
