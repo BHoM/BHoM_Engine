@@ -27,9 +27,9 @@ namespace BH.Engine.Geometry
             double[,] matrix = transform.Matrix;
 
             return new Vector {
-                X = matrix[0, 0] * vector.X + matrix[0, 1] * vector.Y + matrix[0, 2] * vector.Z + matrix[0, 3],
-                Y = matrix[1, 0] * vector.X + matrix[1, 1] * vector.Y + matrix[1, 2] * vector.Z + matrix[1, 3],
-                Z = matrix[2, 0] * vector.X + matrix[2, 1] * vector.Y + matrix[2, 2] * vector.Z + matrix[2, 3]
+                X = matrix[0, 0] * vector.X + matrix[0, 1] * vector.Y + matrix[0, 2] * vector.Z,
+                Y = matrix[1, 0] * vector.X + matrix[1, 1] * vector.Y + matrix[1, 2] * vector.Z,
+                Z = matrix[2, 0] * vector.X + matrix[2, 1] * vector.Y + matrix[2, 2] * vector.Z
             };
         }
 
@@ -37,7 +37,7 @@ namespace BH.Engine.Geometry
 
         public static Plane Transform(this Plane plane, TransformMatrix transform)
         {
-            return new Plane { Origin = plane.Origin.Transform(transform), Normal = plane.Normal.Transform(transform) };
+            return new Plane { Origin = plane.Origin.Transform(transform), Normal = plane.Normal.Transform(transform).Normalise() };
         }
 
         /***************************************************/
@@ -58,23 +58,27 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Curves                   ****/
         /***************************************************/
 
-        public static Arc Transform(this Arc arc, TransformMatrix transform)
+        public static ICurve Transform(this Arc arc, TransformMatrix transform)
         {
-            return new Arc { CoordinateSystem = arc.CoordinateSystem.Transform(transform), StartAngle = arc.StartAngle, EndAngle = arc.EndAngle, Radius = arc.Radius };
+            return arc.ToNurbCurve().Transform(transform);
         }
 
         /***************************************************/
 
-        public static Circle Transform(this Circle circle, TransformMatrix transform)
+        public static Ellipse Transform(this Circle circle, TransformMatrix transform)
         {
-            return new Circle { Centre = circle.Centre.Transform(transform), Normal = circle.Normal.Transform(transform), Radius = circle.Radius };
+            Point centre = circle.Centre.Transform(transform);
+            Vector v1 = circle.StartPoint().Transform(transform) - centre;
+            Vector v2 = circle.PointAtParameter(0.5).Transform(transform) - centre;
+
+            return new Ellipse { Centre = centre, Axis1 = v1.Normalise(), Axis2 = v2.Normalise(), Radius1 = circle.Radius * v1.Length(), Radius2 = circle.Radius * v2.Length() };
         }
 
         /***************************************************/
 
         public static Ellipse Transform(this Ellipse ellipse, TransformMatrix transform)
         {
-            return new Ellipse { Centre = ellipse.Centre.Transform(transform), Axis1 = ellipse.Axis1.Transform(transform).Normalise(), Axis2 = ellipse.Axis2.Transform(transform).Normalise(), Radius1 = ellipse.Radius1, Radius2 = ellipse.Radius2 };
+            return new Ellipse { Centre = ellipse.Centre.Transform(transform), Axis1 = ellipse.Axis1.Transform(transform).Normalise(), Axis2 = ellipse.Axis2.Transform(transform).Normalise(), Radius1 = ellipse.Radius1*ellipse.Axis1.Length(), Radius2 = ellipse.Radius2 * ellipse.Axis2.Length() };
         }
 
         /***************************************************/
