@@ -29,15 +29,30 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Curves                   ****/
         /***************************************************/
 
-        public static Arc Scale(this Arc arc, Point origin, Vector scaleVector)
+        public static ICurve Scale(this Arc arc, Point origin, Vector scaleVector)
         {
-            TransformMatrix scaleMatrix = Create.ScaleMatrix(origin, scaleVector);
-            return Transform(arc, scaleMatrix);
+            CoordinateSystem cs = arc.CoordinateSystem;
+            double scaleX = Math.Abs(scaleVector.DotProduct(cs.X));
+            if (scaleX - scaleVector.DotProduct(cs.Y) < Tolerance.Distance)
+            {
+                return new Arc
+                {
+                    CoordinateSystem = arc.CoordinateSystem.Scale(origin, scaleVector),
+                    Radius = arc.Radius * scaleX,
+                    StartAngle = arc.StartAngle,
+                    EndAngle = arc.EndAngle
+                };
+            }
+            else
+            {
+                TransformMatrix scaleMatrix = Create.ScaleMatrix(origin, scaleVector);
+                return Transform(arc, scaleMatrix);
+            }
         }
 
         /***************************************************/
 
-        public static Circle Scale(this Circle circle, Point origin, Vector scaleVector)
+        public static Ellipse Scale(this Circle circle, Point origin, Vector scaleVector)
         {
             TransformMatrix scaleMatrix = Create.ScaleMatrix(origin, scaleVector);
             return Transform(circle, scaleMatrix);
@@ -129,6 +144,20 @@ namespace BH.Engine.Geometry
             TransformMatrix scaleMatrix = Create.ScaleMatrix(origin, scaleVector);
             return Transform(mesh, scaleMatrix);
         }
+
+        /***************************************************/
+
+        public static CoordinateSystem Scale(this CoordinateSystem coordinate, Point origin, Vector scaleVector)
+        {
+            return new CoordinateSystem
+            {
+                Origin = coordinate.Origin.Scale(origin, scaleVector),
+                X = coordinate.X,
+                Y = coordinate.Y,
+                Z = coordinate.Z
+            };
+        }
+
 
         /***************************************************/
 
