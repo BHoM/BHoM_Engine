@@ -41,16 +41,20 @@ namespace BH.Engine.Geometry
 
         public static Arc Rotate(this Arc arc, Point origin, Vector axis, double rad)
         {
-            TransformMatrix rotationMatrix = Create.RotationMatrix(origin, axis, rad);
-            return Transform(arc, rotationMatrix);
+            return new Arc
+            {
+                CoordinateSystem = arc.CoordinateSystem.Rotate(origin, axis, rad),
+                Radius = arc.Radius,
+                StartAngle = arc.StartAngle,
+                EndAngle = arc.EndAngle
+            };
         }
 
         /***************************************************/
 
         public static Circle Rotate(this Circle circle, Point origin, Vector axis, double rad)
         {
-            TransformMatrix rotationMatrix = Create.RotationMatrix(origin, axis, rad);
-            return Transform(circle, rotationMatrix);
+            return new Circle { Centre = circle.Centre.Rotate(origin, axis, rad), Normal = circle.Normal.Rotate(rad, axis), Radius = circle.Radius };
         }
 
         /***************************************************/
@@ -148,6 +152,18 @@ namespace BH.Engine.Geometry
             return Transform(group, rotationMatrix);
         }
 
+        /***************************************************/
+
+        public static CoordinateSystem Rotate(this CoordinateSystem coordinate, Point origin, Vector axis, double rad)
+        {
+            return new CoordinateSystem
+            {
+                Origin = coordinate.Origin.Rotate(origin, axis, rad),
+                X = coordinate.X.Rotate(rad, axis),
+                Y = coordinate.Y.Rotate(rad, axis),
+                Z = coordinate.Z.Rotate(rad, axis)
+            };
+        }
 
         /***************************************************/
         /**** Public Methods - Interfaces               ****/

@@ -13,7 +13,7 @@ namespace BH.Engine.Geometry
         public static List<Point> ControlPoints(this Arc curve)
         {
             //TODO: Should this give back the control points of an arc in nurbs form?
-            return new List<Point>() { curve.StartPoint(), curve.PointAtParameter(0.5), curve.EndPoint() };
+            return new List<Point>() { curve.StartPoint(), curve.PointAtParameter(0.25), curve.PointAtParameter(0.5), curve.PointAtParameter(0.75), curve.EndPoint() };
         }
 
         /***************************************************/

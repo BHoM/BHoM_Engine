@@ -2,6 +2,7 @@
 using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace BH.Engine.Geometry
 {
@@ -11,80 +12,89 @@ namespace BH.Engine.Geometry
         /**** Public  Methods - Curves                  ****/
         /***************************************************/
 
-        [NotImplemented]
         public static NurbCurve ToNurbCurve(this Arc arc)
         {
-            //double[] centre = arc.Centre;
-            //double[] P1 = CollectionUtils.SubArray<double>(arc.ControlPointVector, 0, arc.Dimensions + 1);
-            //double[] P2 = CollectionUtils.SubArray<double>(arc.ControlPointVector, (arc.Dimensions + 1) * 2, arc.Dimensions + 1);
+            double angle = arc.EndAngle - arc.StartAngle;
+            Point centre = arc.Centre();
+            int nbPts = 1 + 2 * (int)Math.Ceiling(2 * angle / Math.PI);
+            double factor = Math.Cos(angle / (nbPts - 1));
 
-            //double[] V1 = ArrayUtils.Sub(P1, centre);
-            //double[] V2 = ArrayUtils.Sub(P2, centre);
+            // Create the points
+            List<Point> points = new List<Point>();
+            for (int i = 0; i < nbPts; i++)
+            {
+                double t =  i * 1.0 / (nbPts - 1);
+                Point pt = arc.PointAtParameter(t);
+                if (i % 2 == 1)
+                    pt = centre + (pt - centre) / factor;
+                points.Add(pt);
+            }
 
-            //double[] Normal = ArrayUtils.CrossProduct(V1, V2);
+            // Create the knots
+            double knotStep = 2.0 / (nbPts - 1);
+            List<double> knots = new List<double>();
+            for (int i = 0; i < (nbPts + 1) / 2; i++)
+            {
+                knots.Add(i * knotStep);
+                knots.Add(i * knotStep);
+            }
 
-            //double[] T1 = ArrayUtils.CrossProduct(V1, Normal);
-            //double[] T2 = ArrayUtils.CrossProduct(V2, Normal);
+            // Create the weights
+            List<double> weights = new List<double>();
+            for (int i = 0; i < nbPts; i++)
+            {
+                double w = (i % 2 == 0) ? 1.0 : factor;
+                weights.Add(w);
+            }
 
-            //double[] cP2 = ArrayUtils.Intersect(P1, T1, P2, T2);
-
-            //double w2 = arc.Radius() / ArrayUtils.Length(ArrayUtils.Sub(cP2, centre));
-
-            //double arcAngle = ArrayUtils.Angle(V1, V2);
-
-            //arc.SetWeights(new double[] { 1, w2, 1 });
-            //arc.SetKnots(new double[] { 0, 0, 0, arcAngle, arcAngle, arcAngle });
-            //arc.SetDegree(2);
-
-            //Array.Copy(cP2, 0, arc.ControlPointVector, arc.Dimensions + 1, arc.Dimensions + 1);
-
-            throw new NotImplementedException();
+            return new NurbCurve { ControlPoints = points, Knots = knots, Weights = weights };
         }
 
         /***************************************************/
 
-        [NotImplemented]
         public static NurbCurve ToNurbCurve(this Circle circle)
         {
-            //double root2on2 = Math.Sqrt(2) / 2;
-            //double radius = circle.Radius;
-            //circle.SetKnots(new double[] { 0, 0, 0, Math.PI / 2, Math.PI / 2, Math.PI, Math.PI, 3 * Math.PI / 2, 3 * Math.PI / 2, 2 * Math.PI, 2 * Math.PI, 2 * Math.PI });
-            //circle.SetWeights(new double[] { 1, root2on2, 1, root2on2, 1, root2on2, 1, root2on2, 1 });
-            //circle.SetControlPoints(new double[]
-            //{
-            //    radius, 0, 0, 1,
-            //    radius, radius, 0, 1,
-            //    0, radius, 0, 1,
-            //   -radius, radius, 0, 1,
-            //   -radius, 0, 0, 1,
-            //   -radius,-radius, 0, 1,
-            //    0,-radius, 0, 1,
-            //    radius,-radius, 0, 1,
-            //    radius, 0, 0, 1
-            //});
+            double angle = 2 * Math.PI;
+            Point centre = circle.Centre;
+            int nbPts = 9;
+            double factor = Math.Cos(angle / (nbPts - 1));
 
-            //if (circle.Plane.Normal.Z < 1)
-            //{
-            //    Vector axis = new Vector(ArrayUtils.CrossProduct(circle.Plane.Normal, new double[] { 0, 0, 1, 0 }));
-            //    double angle = ArrayUtils.Angle(circle.Plane.Normal, new double[] { 0, 0, 1, 0 });
-            //    Transform t = Transform.Rotation(Point.Origin, axis, angle);
-            //    t = Transform.Translation(circle.Plane.Origin - Point.Origin) * t;
-            //    circle.SetControlPoints(ArrayUtils.MultiplyMany(t, circle.ControlPointVector));
-            //}
-            //else
-            //{
-            //    Transform t = Transform.Translation(circle.Plane.Origin - Point.Origin);
-            //    circle.SetControlPoints(ArrayUtils.MultiplyMany(t, circle.ControlPointVector));
-            //}
+            // Create the points
+            List<Point> points = new List<Point>();
+            for (int i = 0; i < nbPts; i++)
+            {
+                double t = i * 1.0 / (nbPts - 1);
+                Point pt = circle.PointAtParameter(t);
+                if (i % 2 == 1)
+                    pt = centre + (pt - centre) / factor;
+                points.Add(pt);
+            }
 
-            throw new NotImplementedException();
+            // Create the knots
+            double knotStep = 2.0 / (nbPts - 1);
+            List<double> knots = new List<double>();
+            for (int i = 0; i < (nbPts + 1) / 2; i++)
+            {
+                knots.Add(i * knotStep);
+                knots.Add(i * knotStep);
+            }
+
+            // Create the weights
+            List<double> weights = new List<double>();
+            for (int i = 0; i < nbPts; i++)
+            {
+                double w = (i % 2 == 0) ? 1.0 : factor;
+                weights.Add(w);
+            }
+
+            return new NurbCurve { ControlPoints = points, Knots = knots, Weights = weights };
         }
 
         /***************************************************/
 
         public static NurbCurve ToNurbCurve(this Line line)
         {
-            return Create.NurbCurve(new List<Point> { line.Start, line.End }, new double[] { 1, 1 }, new double[] { 0, 0, 1, 1 });
+            return Create.NurbCurve(new List<Point> { line.Start, line.End }, new double[] { 1, 1 }, new double[] { 0, 1 });
 
         }
 
@@ -115,21 +125,21 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [NotImplemented]
         public static NurbCurve ToNurbCurve(this Polyline curve)
         {
-            //line.SetDegree(1);
-            //line.SetKnots(new double[line.ControlPointVector.Length / (line.Dimensions + 1) + line.Order]);
-            //line.SetWeights(new double[line.ControlPointVector.Length / (line.Dimensions + 1)]);
-            //line.Knots[0] = 0;
-            //line.Knots[line.Knots.Length - 1] = line.Weights.Length - 1;
-            //for (int i = 0; i < line.Weights.Length; i++)
-            //{
-            //    line.Knots[i + 1] = i;
-            //    line.Weights[i] = 1;
-            //}
+            List<Point> points = curve.ControlPoints;
+            List<double> weights = curve.ControlPoints.Select(x => 1.0).ToList();
+            List<double> knots = new List<double> { 0 };
 
-            throw new NotImplementedException();
+            double t = 0;
+            for ( int i = 1; i < points.Count; i++)
+            {
+                t += points[i].Distance(points[i - 1]);
+                knots.Add(t);
+            }
+            knots = knots.Select(x => x / t).ToList();
+
+            return new NurbCurve { ControlPoints = points, Weights = weights, Knots = knots };
         }
 
 

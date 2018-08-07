@@ -45,10 +45,26 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Curves                   ****/
         /***************************************************/
 
-        [NotImplemented]
-        public static Arc Project(this Arc arc, Plane p)
+        public static ICurve Project(this Arc arc, Plane p)
         {
-            throw new NotImplementedException();
+            if (arc.CoordinateSystem.Z.IsParallel(p.Normal) != 0)
+            {
+                return new Arc
+                {
+                    CoordinateSystem = new CoordinateSystem
+                    {
+                        Origin = arc.CoordinateSystem.Origin.Project(p),
+                        X = arc.CoordinateSystem.X.Project(p),
+                        Y = arc.CoordinateSystem.Y.Project(p),
+                        Z = p.Normal
+                    },
+                    Radius = arc.Radius,
+                    StartAngle = arc.StartAngle,
+                    EndAngle = arc.EndAngle
+                };
+            }
+            else  
+                return arc.ToNurbCurve().Project(p);
         }
 
         /***************************************************/
