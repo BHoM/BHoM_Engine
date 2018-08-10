@@ -54,40 +54,60 @@ namespace BH.Engine.Geometry
 
         public static NurbCurve ToNurbCurve(this Circle circle)
         {
-            double angle = 2 * Math.PI;
             Point centre = circle.Centre;
-            int nbPts = 9;
-            double factor = Math.Cos(angle / (nbPts - 1));
+            Vector d1 = circle.StartPoint() - centre;
+            Vector d2 = circle.PointAtParameter(0.25) - centre;
+            double factor = Math.Cos(Math.PI / 4);
 
-            // Create the points
-            List<Point> points = new List<Point>();
-            for (int i = 0; i < nbPts; i++)
+            List<Point> points = new List<Point>
             {
-                double t = i * 1.0 / (nbPts - 1);
-                Point pt = circle.PointAtParameter(t);
-                if (i % 2 == 1)
-                    pt = centre + (pt - centre) / factor;
-                points.Add(pt);
-            }
+                centre + d1,
+                centre + d1 + d2,
+                centre + d2,
+                centre - d1 + d2,
+                centre - d1,
+                centre - d1 - d2,
+                centre - d2,
+                centre + d1 - d2,
+                centre + d1
+            };
 
-            // Create the knots
-            double knotStep = 2.0 / (nbPts - 1);
-            List<double> knots = new List<double>();
-            for (int i = 0; i < (nbPts + 1) / 2; i++)
+            return new NurbCurve
             {
-                knots.Add(i * knotStep);
-                knots.Add(i * knotStep);
-            }
+                ControlPoints = points,
+                Knots = new List<double> { 0, 0, 0.25, 0.25, 0.5, 0.5, 0.75, 0.75, 1.0, 1.0 },
+                Weights = new List<double> { 1.0, factor, 1.0, factor, 1.0, factor, 1.0, factor, 1.0 }
+            };
+        }
 
-            // Create the weights
-            List<double> weights = new List<double>();
-            for (int i = 0; i < nbPts; i++)
+        /***************************************************/
+
+        public static NurbCurve ToNurbCurve(this Ellipse ellipse)
+        {
+            Point centre = ellipse.Centre;
+            Vector d1 = ellipse.Radius1 * ellipse.Axis1;
+            Vector d2 = ellipse.Radius2 * ellipse.Axis2;
+            double factor = Math.Cos(Math.PI / 4);
+
+            List<Point> points = new List<Point>
             {
-                double w = (i % 2 == 0) ? 1.0 : factor;
-                weights.Add(w);
-            }
+                centre + d1,
+                centre + d1 + d2,
+                centre + d2,
+                centre - d1 + d2,
+                centre - d1,
+                centre - d1 - d2,
+                centre - d2,
+                centre + d1 - d2,
+                centre + d1
+            };
 
-            return new NurbCurve { ControlPoints = points, Knots = knots, Weights = weights };
+            return new NurbCurve
+            {
+                ControlPoints = points,
+                Knots = new List<double> { 0, 0, 0.25, 0.25, 0.5, 0.5, 0.75, 0.75, 1.0, 1.0 },
+                Weights = new List<double> { 1.0, factor, 1.0, factor, 1.0, factor, 1.0, factor, 1.0 }
+            };
         }
 
         /***************************************************/
