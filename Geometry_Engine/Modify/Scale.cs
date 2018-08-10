@@ -52,7 +52,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static Ellipse Scale(this Circle circle, Point origin, Vector scaleVector)
+        public static ICurve Scale(this Circle circle, Point origin, Vector scaleVector)
         {
             TransformMatrix scaleMatrix = Create.ScaleMatrix(origin, scaleVector);
             return Transform(circle, scaleMatrix);
