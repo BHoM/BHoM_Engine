@@ -65,20 +65,18 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static Ellipse Transform(this Circle circle, TransformMatrix transform)
+        public static ICurve Transform(this Circle circle, TransformMatrix transform)
         {
-            Point centre = circle.Centre.Transform(transform);
-            Vector v1 = circle.StartPoint().Transform(transform) - centre;
-            Vector v2 = circle.PointAtParameter(0.5).Transform(transform) - centre;
-
-            return new Ellipse { Centre = centre, Axis1 = v1.Normalise(), Axis2 = v2.Normalise(), Radius1 = circle.Radius * v1.Length(), Radius2 = circle.Radius * v2.Length() };
+            //TODO: an affine transform of a circle always returns a circle or an ellipse so we should improve on this
+            return circle.ToNurbCurve().Transform(transform);
         }
 
         /***************************************************/
 
-        public static Ellipse Transform(this Ellipse ellipse, TransformMatrix transform)
+        public static ICurve Transform(this Ellipse ellipse, TransformMatrix transform)
         {
-            return new Ellipse { Centre = ellipse.Centre.Transform(transform), Axis1 = ellipse.Axis1.Transform(transform).Normalise(), Axis2 = ellipse.Axis2.Transform(transform).Normalise(), Radius1 = ellipse.Radius1*ellipse.Axis1.Length(), Radius2 = ellipse.Radius2 * ellipse.Axis2.Length() };
+            //TODO: an affine transform of an ellipse always returns an ellipse so we should improve on this
+            return ellipse.ToNurbCurve().Transform(transform); 
         }
 
         /***************************************************/
