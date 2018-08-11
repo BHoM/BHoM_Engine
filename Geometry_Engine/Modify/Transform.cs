@@ -44,14 +44,13 @@ namespace BH.Engine.Geometry
 
         public static CoordinateSystem Transform(this CoordinateSystem coordinateSystem, TransformMatrix transform)
         {
-            //TODO: This could create a non-cartesian coordinate system. WOuld that be acceptable..?
-            return new CoordinateSystem
-            {
-                X = coordinateSystem.X.Transform(transform),
-                Y = coordinateSystem.Y.Transform(transform),
-                Z = coordinateSystem.Z.Transform(transform),
-                Origin = coordinateSystem.Origin.Transform(transform)
-            };
+            Point origin = coordinateSystem.Origin.Transform(transform);
+            Vector x = coordinateSystem.X.Transform(transform).Normalise();
+
+            Plane plane = Create.Plane(origin, x);
+            Vector y = coordinateSystem.Y.Transform(transform).Project(plane).Normalise();
+
+            return new CoordinateSystem { Origin = origin, X = x, Y = y, Z = x.CrossProduct(y) };
         }
 
         /***************************************************/
