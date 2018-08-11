@@ -18,6 +18,13 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        public static Vector Scale(this Vector vector, Point origin, Vector scaleVector)
+        {
+            return new Vector { X = vector.X * scaleVector.X, Y = vector.Y * scaleVector.Y, Z = vector.Z * scaleVector.Z };
+        }
+
+        /***************************************************/
+
         public static Plane Scale(this Plane plane, Point origin, Vector scaleVector)
         {
             TransformMatrix scaleMatrix = Create.ScaleMatrix(origin, scaleVector);
@@ -33,7 +40,7 @@ namespace BH.Engine.Geometry
         {
             CoordinateSystem cs = arc.CoordinateSystem;
             double scaleX = Math.Abs(scaleVector.DotProduct(cs.X));
-            if (scaleX - scaleVector.DotProduct(cs.Y) < Tolerance.Distance)
+            if (Math.Abs(scaleX - scaleVector.DotProduct(cs.Y)) < Tolerance.Distance)
             {
                 return new Arc
                 {
@@ -149,13 +156,8 @@ namespace BH.Engine.Geometry
 
         public static CoordinateSystem Scale(this CoordinateSystem coordinate, Point origin, Vector scaleVector)
         {
-            return new CoordinateSystem
-            {
-                Origin = coordinate.Origin.Scale(origin, scaleVector),
-                X = coordinate.X,
-                Y = coordinate.Y,
-                Z = coordinate.Z
-            };
+            TransformMatrix scaleMatrix = Create.ScaleMatrix(origin, scaleVector);
+            return Transform(coordinate, scaleMatrix);
         }
 
 
