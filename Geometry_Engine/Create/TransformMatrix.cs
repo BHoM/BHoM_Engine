@@ -59,7 +59,7 @@ namespace BH.Engine.Geometry
 
         public static TransformMatrix RotationMatrix(Point centre, Vector axis, double angle)
         {
-            TransformMatrix rotation = TransformMatrix(Quaternion(axis, angle));
+            TransformMatrix rotation = TransformMatrix(Quaternion(axis.Normalise(), angle));
             TransformMatrix t1 = TranslationMatrix(centre - oM.Geometry.Point.Origin);
             TransformMatrix t2 = TranslationMatrix(oM.Geometry.Point.Origin - centre);
 
