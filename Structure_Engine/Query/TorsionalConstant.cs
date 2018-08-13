@@ -54,14 +54,14 @@ namespace BH.Engine.Structure
 
         public static double TorsionalConstant(this CircleProfile profile)
         {
-            return Math.PI * Math.Pow(profile.Diameter, 4) / 2;
+            return Math.PI * Math.Pow(profile.Diameter, 4) / 32;
         }
 
         /***************************************************/
 
         public static double TorsionalConstant(this TubeProfile profile)
         {
-            return Math.PI * (Math.Pow(profile.Diameter, 4) - Math.Pow(profile.Diameter - profile.Thickness, 4)) / 2;
+            return Math.PI * (Math.Pow(profile.Diameter, 4) - Math.Pow(profile.Diameter - 2* profile.Thickness, 4)) / 32;
         }
 
         /***************************************************/
@@ -72,6 +72,7 @@ namespace BH.Engine.Structure
             double tw = profile.WebThickness;
             double width = profile.Width;
             double height = profile.Height;
+
 
             return 2 * tf1 * tw * Math.Pow(width - tw, 2) * Math.Pow(height - tf1, 2) /
                         (width * tw + height * tf1 - Math.Pow(tw, 2) - Math.Pow(tf1, 2));
@@ -85,6 +86,8 @@ namespace BH.Engine.Structure
             double tw = profile.Thickness;
             double width = profile.Width;
             double height = profile.Height;
+
+
 
             return 2 * tf1 * tw * Math.Pow(width - tw, 2) * Math.Pow(height - tf1, 2) /
                         (width * tw + height * tf1 - Math.Pow(tw, 2) - Math.Pow(tf1, 2));
@@ -101,7 +104,7 @@ namespace BH.Engine.Structure
             double tf2 = profile.BotFlangeThickness;
             double tw = profile.WebThickness;
 
-            return (b1 * Math.Pow(tf1, 3) + b2 * Math.Pow(tf2, 3) + (height - tf1) * Math.Pow(tw, 3)) / 3;
+            return (b1 * Math.Pow(tf1, 3) + b2 * Math.Pow(tf2, 3) + (height - (tf1 + tf2) / 2) * Math.Pow(tw, 3)) / 3;
         }
 
         /***************************************************/
@@ -122,13 +125,12 @@ namespace BH.Engine.Structure
 
         public static double TorsionalConstant(this ChannelProfile profile)
         {
-            double b1 = profile.FlangeWidth;
-            double b2 = profile.FlangeWidth;
+            double b = profile.FlangeWidth;
             double height = profile.Height;
             double tf = profile.FlangeThickness;
             double tw = profile.WebThickness;
 
-            return (b1 * Math.Pow(tf, 3) + b2 * Math.Pow(tf, 3) + (height - tf) * Math.Pow(tw, 3)) / 3;
+            return (2 * (b - tw / 2) * Math.Pow(tf, 3) + (height - tf) * Math.Pow(tw, 3)) / 3;
         }
 
         /***************************************************/
@@ -150,12 +152,23 @@ namespace BH.Engine.Structure
         public static double TorsionalConstant(this TSectionProfile profile)
         {
             double totalWidth = profile.Width;
-            double totalDepth = profile.Width;
-            double height = profile.Height;
-            double tf1 = profile.FlangeThickness;
+            double totalDepth = profile.Height;
+            double tf = profile.FlangeThickness;
             double tw = profile.WebThickness;
 
-            return totalWidth * Math.Pow(tf1, 3) + totalDepth * Math.Pow(tw, 3);
+            return (totalWidth * Math.Pow(tf, 3) + (totalDepth - tf / 2) * Math.Pow(tw, 3)) / 3;
+        }
+
+        /***************************************************/
+
+        public static double TorsionalConstant(this AngleProfile profile)
+        {
+            double totalWidth = profile.Width;
+            double totalDepth = profile.Height;
+            double tf = profile.FlangeThickness;
+            double tw = profile.WebThickness;
+
+            return ((totalWidth - tw / 2) * Math.Pow(tf, 3) + (totalDepth - tf / 2) * Math.Pow(tw, 3)) / 3;
         }
 
         /***************************************************/
@@ -163,11 +176,11 @@ namespace BH.Engine.Structure
         public static double TorsionalConstant(this RectangleProfile profile)
         {
             if (Math.Abs(profile.Height - profile.Width) < Tolerance.Distance)
-                return 2.25 * Math.Pow(profile.Height, 4);
+                return 2.25 * Math.Pow(profile.Height/2, 4);
             else
             {
-                double a = Math.Max(profile.Height, profile.Width);
-                double b = Math.Min(profile.Height, profile.Width);
+                double a = Math.Max(profile.Height, profile.Width)/2;
+                double b = Math.Min(profile.Height, profile.Width)/2;
                 return a * Math.Pow(b, 3) * (16 / 3 - 3.36 * b / a * (1 - Math.Pow(b, 4) / (12 * Math.Pow(a, 4))));
             }
         }
