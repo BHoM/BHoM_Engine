@@ -223,7 +223,7 @@ namespace BH.Engine.Structure
                 constr.ZtoZ = true;
                 constr.ZtoXX = true;
                 constr.ZtoYY = true;
-                constr.Name = "name";
+                constr.Name = name;
                 return constr;
         }
 
