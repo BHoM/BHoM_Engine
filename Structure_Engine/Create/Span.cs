@@ -1,4 +1,5 @@
 ﻿using BH.oM.Structural.Design;
+using BH.oM.Reflection.Attributes;
 
 namespace BH.Engine.Structure
 {
@@ -8,6 +9,7 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [NotImplemented]
         public static Span Span(StructuralLayout elem, double effectiveLength = 0)
         {
             Span span = new Span { EffectiveLength = effectiveLength };
