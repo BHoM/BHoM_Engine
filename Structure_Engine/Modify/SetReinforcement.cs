@@ -25,6 +25,9 @@ namespace BH.Engine.Structure
 
             if (clone.Reinforcement == null)
                 clone.Reinforcement = new List<Reinforcement>();
+            else
+                clone.Reinforcement = new List<Reinforcement>(clone.Reinforcement);
+
 
             clone.Reinforcement.AddRange(reinforcement);
 
