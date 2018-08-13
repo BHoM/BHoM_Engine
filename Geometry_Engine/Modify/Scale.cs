@@ -38,23 +38,8 @@ namespace BH.Engine.Geometry
 
         public static ICurve Scale(this Arc arc, Point origin, Vector scaleVector)
         {
-            CoordinateSystem cs = arc.CoordinateSystem;
-            double scaleX = Math.Abs(scaleVector.DotProduct(cs.X));
-            if (Math.Abs(scaleX - scaleVector.DotProduct(cs.Y)) < Tolerance.Distance)
-            {
-                return new Arc
-                {
-                    CoordinateSystem = arc.CoordinateSystem.Scale(origin, scaleVector),
-                    Radius = arc.Radius * scaleX,
-                    StartAngle = arc.StartAngle,
-                    EndAngle = arc.EndAngle
-                };
-            }
-            else
-            {
-                TransformMatrix scaleMatrix = Create.ScaleMatrix(origin, scaleVector);
-                return Transform(arc, scaleMatrix);
-            }
+            TransformMatrix scaleMatrix = Create.ScaleMatrix(origin, scaleVector);
+            return Transform(arc, scaleMatrix);
         }
 
         /***************************************************/
