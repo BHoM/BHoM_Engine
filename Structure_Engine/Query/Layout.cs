@@ -4,6 +4,7 @@ using BH.Engine.Geometry;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using BH.oM.Reflection.Attributes;
 
 namespace BH.Engine.Structure
 {
@@ -13,6 +14,7 @@ namespace BH.Engine.Structure
         /**** Public Methods - ConcreteSEction          ****/
         /***************************************************/
 
+        [NotImplemented]
         public static CompositeGeometry Layout(this ConcreteSection property, double xStart = 0, double xEnd = 1)
         {
             CompositeGeometry geometry = new CompositeGeometry();
@@ -42,6 +44,7 @@ namespace BH.Engine.Structure
         /**** Public Methods - Reinforcement            ****/
         /***************************************************/
 
+        [NotImplemented]
         public static CompositeGeometry Layout(this LayerReinforcement reinforcement, ConcreteSection property, bool extrude = false)
         {
             BoundingBox bounds = new BoundingBox();
@@ -89,6 +92,8 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
+
+        [NotImplemented]
         public static CompositeGeometry Layout(this PerimeterReinforcement reinforcement, ConcreteSection property, bool extrude = false)
         {
             return Layout(reinforcement, property.SectionProfile as dynamic, property);
@@ -96,6 +101,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [NotImplemented]
         public static CompositeGeometry Layout(this PerimeterReinforcement reinforcement, RectangleProfile dimensions, ConcreteSection property)
         {
             double h = dimensions.Height;
@@ -143,6 +149,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [NotImplemented]
         public static CompositeGeometry Layout(this PerimeterReinforcement reinforcement, CircleProfile dimensions, ConcreteSection property)
         {
             double d = dimensions.Diameter;
@@ -170,6 +177,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [NotImplemented]
         public static CompositeGeometry Layout(this PerimeterReinforcement reinforcement, IProfile dimensions, ConcreteSection property)
         {
 
@@ -247,6 +255,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [NotImplemented]
         public static CompositeGeometry Layout(this TieReinforcement reinforcement, ConcreteSection property, bool extrude = false)
         {
             return new CompositeGeometry();
@@ -363,6 +372,7 @@ namespace BH.Engine.Structure
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
+        [NotImplemented]
         public static CompositeGeometry ILayout(this Reinforcement reinforcement, ConcreteSection property, bool extrude = false)
         {
             return Layout(reinforcement as dynamic, property, extrude);

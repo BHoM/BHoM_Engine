@@ -1,5 +1,6 @@
 ﻿using BH.oM.Geometry;
 using BH.oM.Structural.Properties;
+using BH.oM.Reflection.Attributes;
 
 namespace BH.Engine.Structure
 {
@@ -9,6 +10,7 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [NotImplemented]
         public static double DepthAt(this IProfile section, double x)
         {
             IntegrationSlice slice = Engine.Geometry.Query.SliceAt(section.Edges, x, 1, oM.Geometry.Plane.YZ);
@@ -17,6 +19,8 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
+
+        [NotImplemented]
         public static double DepthAt(this IProfile section, double x, ref double[] range)
         {
             IntegrationSlice slice = Engine.Geometry.Query.SliceAt(section.Edges, x, 1, oM.Geometry.Plane.YZ);

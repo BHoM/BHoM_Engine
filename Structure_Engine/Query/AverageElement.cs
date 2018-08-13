@@ -1,5 +1,7 @@
 ﻿using BH.oM.Structural.Elements;
 using System.Collections.Generic;
+using BH.oM.Reflection.Attributes;
+using System;
 
 namespace BH.Engine.Structure
 {
@@ -9,14 +11,19 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [NotImplemented]
         public static Node AverageElement(this List<Node> nodes, List<double> weights = null)
         {
-            if (weights == null)
-                weights = new List<double>(new double[1]);
+            throw new NotImplementedException();
+
+            //Rather throw a not implemented exception then just returning the first node as was done before. Method need complete rewriting
+
+            //if (weights == null)
+            //    weights = new List<double>(new double[1]);
 
 
-            Node tempNode = nodes[1];
-            return tempNode;        
+            //Node tempNode = nodes[1];
+            //return tempNode;        
         }
 
         /***************************************************/
