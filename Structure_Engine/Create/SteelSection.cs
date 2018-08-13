@@ -30,7 +30,7 @@ namespace BH.Engine.Structure
 
         public static SteelSection SteelBoxSection(double height, double width, double thickness, double innerRadius = 0, double outerRadius = 0, Material material = null, string name = null)
         {
-            return SteelSectionFromProfile(BoxProfile(height, width, thickness, innerRadius, outerRadius), material, name);
+            return SteelSectionFromProfile(BoxProfile(height, width, thickness, outerRadius, innerRadius), material, name);
         }
 
         /***************************************************/
