@@ -13,8 +13,8 @@ namespace BH.Engine.Structure
         public static Bar SetGeometry(this Bar bar, Line line)
         {
             Bar clone = bar.GetShallowClone() as Bar;
-            clone.StartNode.Position = line.Start;
-            clone.EndNode.Position = line.End;
+            clone.StartNode = clone.StartNode.SetGeometry(line.Start);
+            clone.EndNode = clone.EndNode.SetGeometry(line.End);
             return clone;
         }
 
