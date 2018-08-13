@@ -10,7 +10,7 @@ namespace BH.Engine.Structure
 
         public static LoadType LoadType(this AreaTemperatureLoad load)
         {
-            return oM.Structural.Loads.LoadType.BarTemperature;
+            return oM.Structural.Loads.LoadType.AreaTemperature;
         }
 
         /***************************************************/
