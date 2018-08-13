@@ -122,8 +122,8 @@ namespace BH.Engine.Structure
 
             if (diff != 0)
             {
-                Vector v = new Vector() { X = 0, Y = diff, Z = 0 };
-                innerBox.Select(x => Geometry.Modify.ITranslate(x, v)).ToList();
+                Vector v = new Vector() { X = 0, Y = diff / 2, Z = 0 };
+                innerBox = innerBox.Select(x => Geometry.Modify.ITranslate(x, v)).ToList();
             }
 
             box.AddRange(innerBox);
