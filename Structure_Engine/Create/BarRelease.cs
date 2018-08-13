@@ -24,10 +24,14 @@ namespace BH.Engine.Structure
 
         public static BarRelease BarReleasePinPin(string name = "PinPin")
         {
+
+            Constraint6DOF endRelease = PinConstraint6DOF();
+            endRelease.RotationX = DOFType.Fixed;
+
             return new BarRelease
             {
                 StartRelease = PinConstraint6DOF(),
-                EndRelease = PinConstraint6DOF(),
+                EndRelease = endRelease,
                 Name = name
             };
         }
