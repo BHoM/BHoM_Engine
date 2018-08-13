@@ -124,7 +124,7 @@ namespace BH.Engine.Geometry
 
         public static Plane FitPlane(this PolyCurve curve, double tolerance = Tolerance.Distance)
         {
-            return FitPlane(curve.Curves.SelectMany(x => x.IControlPoints()).ToList(), tolerance);
+            return FitPlane(curve.ControlPoints(), tolerance);
         }
 
         /***************************************************/
