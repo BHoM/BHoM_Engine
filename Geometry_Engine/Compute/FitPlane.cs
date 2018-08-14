@@ -40,7 +40,7 @@ namespace BH.Engine.Geometry
                 }
             }
 
-            int nonZeroRowCount = MTM.CountNonZeroRows(tolerance * tolerance);
+            int nonZeroRowCount = MTM.CountNonZeroRows(MTM.REFTolerance(tolerance * tolerance));
             if (nonZeroRowCount < 2) return null;                                   // points are collinear along X, Y or Z
             else if (nonZeroRowCount == 2)                                          // normal is either X or Y or Z
             {
