@@ -1,7 +1,5 @@
 ﻿using BH.oM.Geometry;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace BH.Engine.Geometry
 {
@@ -34,6 +32,18 @@ namespace BH.Engine.Geometry
             double f = matrix[2, 2];
 
             Vector[] result = new Vector[3];
+
+            double z = 1;
+            double eigenvalueTolerance = matrix.REFTolerance(tolerance);
+            foreach (double eigenvalue in eigenvalues)
+            {
+                if (Math.Abs(eigenvalue) <= eigenvalueTolerance)
+                {
+                    z = 0;
+                    break;
+                }
+            }
+
             for (int i = 0; i < 3; i++)
             {
                 double k = eigenvalues[i];
@@ -44,7 +54,6 @@ namespace BH.Engine.Geometry
                 double REFTolerance = equations.REFTolerance(tolerance);
                 double[,] REF = equations.RowEchelonForm(true, REFTolerance);
 
-                double z = 1;
                 double y = -REF[1, 2];
                 double x = -REF[0, 2] - y * REF[0, 1];
 
@@ -54,7 +63,5 @@ namespace BH.Engine.Geometry
         }
 
         /***************************************************/
-
-        
     }
 }

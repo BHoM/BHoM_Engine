@@ -2,7 +2,6 @@
 using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace BH.Engine.Geometry
 {
@@ -65,17 +64,10 @@ namespace BH.Engine.Geometry
                 double leastSquares = double.PositiveInfinity;
                 foreach (Vector eigenvector in eigenvectors)
                 {
-                    double a = eigenvector.X / eigenvector.Z;
-                    double b = eigenvector.Y / eigenvector.Z;
-                    double C = -(1 / (a * origin.X + b * origin.Y + origin.Z));
-                    double B = C * b;
-                    double A = C * a;
-
                     double squares = 0;
-                    double S = 1 / (A * A + B * B + C * C);
-                    foreach (Point pt in points)
+                    for (int i = 0; i < points.Count; i++)
                     {
-                        squares += S * (Math.Pow(A * pt.X + B * pt.Y + C * pt.Z + 1, 2));
+                        squares += Math.Pow(eigenvector.X * normalizedPoints[i, 0] + eigenvector.Y * normalizedPoints[i, 1] + eigenvector.Z * normalizedPoints[i, 2], 2);
                     }
 
                     if (squares <= leastSquares)
