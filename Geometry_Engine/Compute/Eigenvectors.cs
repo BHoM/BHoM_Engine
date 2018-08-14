@@ -58,6 +58,7 @@ namespace BH.Engine.Geometry
                 double x = -REF[0, 2] - y * REF[0, 1];
 
                 result[i] = new Vector { X = x, Y = y, Z = z }.Normalise();
+                if (result[i].SquareLength() <= tolerance * tolerance) result[i] = new Vector { X = 0, Y = 0, Z = 1 };
             }
             return result;
         }
