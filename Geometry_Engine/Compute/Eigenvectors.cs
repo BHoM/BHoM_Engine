@@ -1,5 +1,7 @@
 ﻿using BH.oM.Geometry;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace BH.Engine.Geometry
 {
@@ -31,19 +33,8 @@ namespace BH.Engine.Geometry
             double e = matrix[1, 2];
             double f = matrix[2, 2];
 
-            Vector[] result = new Vector[3];
-
-            double z = 1;
-            double eigenvalueTolerance = matrix.REFTolerance(tolerance);
-            foreach (double eigenvalue in eigenvalues)
-            {
-                if (Math.Abs(eigenvalue) <= eigenvalueTolerance)
-                {
-                    z = 0;
-                    break;
-                }
-            }
-
+            double sqTol = tolerance * tolerance;
+            Vector[] result = new Vector[6];
             for (int i = 0; i < 3; i++)
             {
                 double k = eigenvalues[i];
@@ -53,16 +44,18 @@ namespace BH.Engine.Geometry
 
                 double REFTolerance = equations.REFTolerance(tolerance);
                 double[,] REF = equations.RowEchelonForm(true, REFTolerance);
-
+                
                 double y = -REF[1, 2];
                 double x = -REF[0, 2] - y * REF[0, 1];
 
-                result[i] = new Vector { X = x, Y = y, Z = z }.Normalise();
-                if (result[i].SquareLength() <= tolerance * tolerance) result[i] = new Vector { X = 0, Y = 0, Z = 1 };
+                result[2 * i] = x * x + y * y <= sqTol ? new Vector { X = 0, Y = 0, Z = 1 } : new Vector { X = x, Y = y, Z = 0 }.Normalise();
+                result[2 * i + 1] = new Vector { X = x, Y = y, Z = 1 }.Normalise();
             }
             return result;
         }
 
         /***************************************************/
+
+
     }
 }
