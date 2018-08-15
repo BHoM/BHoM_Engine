@@ -82,13 +82,10 @@
     <None Include="DataSets\Materials\MaterialsEurope\Steel.json" />
     <None Include="DataSets\Materials\MaterialsEurope\Timber.json" />
     <None Include="DataSets\Planning\Labels\IssueLabels.json" />
-    <None Include="DataSets\SectionProfiles\UK_SteelSectionProfiles\C.json" />
     <None Include="DataSets\SectionProfiles\UK_SteelSectionProfiles\CHS.json" />
-    <None Include="DataSets\SectionProfiles\UK_SteelSectionProfiles\CRSJ.json" />
     <None Include="DataSets\SectionProfiles\UK_SteelSectionProfiles\L.json" />
     <None Include="DataSets\SectionProfiles\UK_SteelSectionProfiles\PFC.json" />
     <None Include="DataSets\SectionProfiles\UK_SteelSectionProfiles\RHS.json" />
-    <None Include="DataSets\SectionProfiles\UK_SteelSectionProfiles\RSJ.json" />
     <None Include="DataSets\SectionProfiles\UK_SteelSectionProfiles\SHS.json" />
     <None Include="DataSets\SectionProfiles\UK_SteelSectionProfiles\TUB.json" />
     <None Include="DataSets\SectionProfiles\UK_SteelSectionProfiles\TUC.json" />
