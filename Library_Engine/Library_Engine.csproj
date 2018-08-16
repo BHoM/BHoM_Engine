@@ -82,17 +82,19 @@
     <None Include="DataSets\Materials\MaterialsEurope\Steel.json" />
     <None Include="DataSets\Materials\MaterialsEurope\Timber.json" />
     <None Include="DataSets\Planning\Labels\IssueLabels.json" />
-    <None Include="DataSets\SectionProfiles\UK_SteelSectionProfiles\CHS.json" />
-    <None Include="DataSets\SectionProfiles\UK_SteelSectionProfiles\L.json" />
-    <None Include="DataSets\SectionProfiles\UK_SteelSectionProfiles\PFC.json" />
-    <None Include="DataSets\SectionProfiles\UK_SteelSectionProfiles\RHS.json" />
-    <None Include="DataSets\SectionProfiles\UK_SteelSectionProfiles\SHS.json" />
-    <None Include="DataSets\SectionProfiles\UK_SteelSectionProfiles\TUB.json" />
-    <None Include="DataSets\SectionProfiles\UK_SteelSectionProfiles\TUC.json" />
-    <None Include="DataSets\SectionProfiles\UK_SteelSectionProfiles\UB.json" />
-    <None Include="DataSets\SectionProfiles\UK_SteelSectionProfiles\UBP.json" />
-    <None Include="DataSets\SectionProfiles\UK_SteelSectionProfiles\UC.json" />
+    <None Include="DataSets\SectionProperties\UK_SteelSections\CHS.json" />
+    <None Include="DataSets\SectionProperties\UK_SteelSections\L.json" />
+    <None Include="DataSets\SectionProperties\UK_SteelSections\Leq.json" />
+    <None Include="DataSets\SectionProperties\UK_SteelSections\PFC.json" />
+    <None Include="DataSets\SectionProperties\UK_SteelSections\RHS.json" />
+    <None Include="DataSets\SectionProperties\UK_SteelSections\SHS.json" />
+    <None Include="DataSets\SectionProperties\UK_SteelSections\TUB.json" />
+    <None Include="DataSets\SectionProperties\UK_SteelSections\TUC.json" />
+    <None Include="DataSets\SectionProperties\UK_SteelSections\UB.json" />
+    <None Include="DataSets\SectionProperties\UK_SteelSections\UBP.json" />
+    <None Include="DataSets\SectionProperties\UK_SteelSections\UC.json" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>C:\Windows\System32\xcopy "$(ProjectDir)DataSets\*.*" "C:\Users\$(Username)\AppData\Roaming\BHoM\DataSets" /Y /I /E</PostBuildEvent>
