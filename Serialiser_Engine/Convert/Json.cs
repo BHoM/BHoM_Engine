@@ -1,5 +1,6 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.IO;
+using System.Linq;
 
 namespace BH.Engine.Serialiser
 {
@@ -19,16 +20,26 @@ namespace BH.Engine.Serialiser
 
         public static object FromJson(string json)
         {
-            BsonDocument document;
-            if (BsonDocument.TryParse(json, out document))
+            BsonValue document;
+            try
             {
-                return Convert.FromBson(document);
+                document = MongoDB.Bson.Serialization.BsonSerializer.Deserialize<BsonValue>(json);
             }
-            else
+            catch
             {
-                Reflection.Compute.RecordError("the string provided is not a valid json format. Are you sure you provided a single Json object ?");
+                Reflection.Compute.RecordError("the string provided is not a valid json format.");
                 return null;
             }
+
+            if (document.IsBsonDocument)
+                return Convert.FromBson(document.AsBsonDocument);
+
+            else if (document.IsBsonArray)
+                return document.AsBsonArray.ToArray().Select(b => Convert.FromBson(b.AsBsonDocument));
+
+            else
+                Reflection.Compute.RecordError("The string provided is not a supported json format");
+                return null;
         }
 
         /*******************************************/
