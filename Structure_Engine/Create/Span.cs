@@ -1,4 +1,4 @@
-﻿using BH.oM.Structural.Design;
+﻿using BH.oM.Structure.Design;
 using BH.oM.Reflection.Attributes;
 
 namespace BH.Engine.Structure

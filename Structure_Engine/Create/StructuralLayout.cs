@@ -1,6 +1,6 @@
-﻿using BH.oM.Structural.Elements;
+﻿using BH.oM.Structure.Elements;
 using System.Collections.Generic;
-using BH.oM.Structural.Design;
+using BH.oM.Structure.Design;
 using System.Linq;
 using BH.oM.Reflection.Attributes;
 

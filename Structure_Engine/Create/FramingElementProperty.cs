@@ -1,4 +1,4 @@
-﻿using BH.oM.Structural.Properties;
+﻿using BH.oM.Structure.Properties;
 using BH.oM.Geometry;
 
 namespace BH.Engine.Structure
