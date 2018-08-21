@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 using BH.oM.Environment.Elements;
 using BH.oM.Geometry;
-using BH.oM.Structural.Elements;
+using BH.oM.Structure.Elements;
 using BH.oM.Architecture.Elements;
 
 namespace BH.Engine.Environment
