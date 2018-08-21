@@ -2,7 +2,7 @@
 
 using BH.oM.Environment.Elements;
 using BH.oM.Environment.Properties;
-using BH.oM.Structural.Elements;
+using BH.oM.Structure.Elements;
 using BH.oM.Geometry;
 using BH.oM.Architecture.Elements;
 

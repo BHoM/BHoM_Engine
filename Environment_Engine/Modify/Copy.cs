@@ -1,4 +1,4 @@
-﻿using BH.oM.Structural.Elements;
+﻿using BH.oM.Structure.Elements;
 using BH.oM.Geometry;
 using BH.Engine.Geometry;
 using BH.oM.Environment.Elements;

@@ -9,8 +9,8 @@ using BH.oM.Base;
 using MongoDB.Bson.IO;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
-using BH.oM.Structural.Elements;
-using BH.oM.Structural.Properties;
+using BH.oM.Structure.Elements;
+using BH.oM.Structure.Properties;
 using BH.oM.Acoustic;
 //using ModelLaundry_Engine;
 

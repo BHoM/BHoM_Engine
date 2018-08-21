@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using BH.oM.Structural.Elements;
+using BH.oM.Structure.Elements;
 using BH.oM.Environment.Elements;
 
 namespace BH.Engine.Environment
