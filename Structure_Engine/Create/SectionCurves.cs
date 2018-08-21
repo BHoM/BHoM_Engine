@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using BH.oM.Geometry;
 using BH.Engine.Geometry;
-using BH.oM.Structural.Properties;
+using BH.oM.Structure.Properties;
 using System.Linq;
 using System;
 

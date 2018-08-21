@@ -1,4 +1,4 @@
-﻿using BH.oM.Structural.Loads;
+﻿using BH.oM.Structure.Loads;
 
 namespace BH.Engine.Structure
 {

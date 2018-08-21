@@ -1,4 +1,4 @@
-﻿using BH.oM.Structural.Elements;
+﻿using BH.oM.Structure.Elements;
 using BH.oM.Geometry;
 using BHE = BH.Engine.Geometry;
 using System.Collections.Generic;

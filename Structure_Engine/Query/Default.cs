@@ -1,5 +1,5 @@
 ﻿using BH.oM.Geometry;
-using BH.oM.Structural.Properties;
+using BH.oM.Structure.Properties;
 using BH.oM.Common.Materials;
 
 namespace BH.Engine.Structure

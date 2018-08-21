@@ -1,4 +1,4 @@
-﻿using BH.oM.Structural.Loads;
+﻿using BH.oM.Structure.Loads;
 
 namespace BH.Engine.Structure
 {
@@ -10,14 +10,14 @@ namespace BH.Engine.Structure
 
         public static CaseType CaseType(Loadcase loadcase)
         {
-            return oM.Structural.Loads.CaseType.Simple;
+            return oM.Structure.Loads.CaseType.Simple;
         }
 
         /***************************************************/
 
         public static CaseType CaseType(LoadCombination loadCombination)
         {
-            return oM.Structural.Loads.CaseType.Combination;
+            return oM.Structure.Loads.CaseType.Combination;
         }
 
         /***************************************************/

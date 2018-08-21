@@ -1,4 +1,4 @@
-﻿using BH.oM.Structural.Elements;
+﻿using BH.oM.Structure.Elements;
 using System.Collections.Generic;
 using BH.oM.Reflection.Attributes;
 using System;
