@@ -1,6 +1,7 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.IO;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace BH.Engine.Serialiser
 {
@@ -20,26 +21,32 @@ namespace BH.Engine.Serialiser
 
         public static object FromJson(string json)
         {
-            BsonValue document;
-            try
+            if (json == "")
             {
-                document = MongoDB.Bson.Serialization.BsonSerializer.Deserialize<BsonValue>(json);
-            }
-            catch
-            {
-                Reflection.Compute.RecordError("the string provided is not a valid json format.");
                 return null;
             }
+            else if (json.StartsWith("{"))
+            {
+                return Convert.FromBson(BsonDocument.Parse(json));
+            }
+            else if (json.StartsWith("["))
+            {
+                Reflection.Compute.RecordNote("The string provided represents a top-level Json Array instead of a Json object.\nDeserializing to a CustomObject.");
+                BsonArray array = MongoDB.Bson.Serialization.BsonSerializer.Deserialize<BsonArray>(json);
 
-            if (document.IsBsonDocument)
-                return Convert.FromBson(document.AsBsonDocument);
-
-            else if (document.IsBsonArray)
-                return document.AsBsonArray.ToArray().Select(b => Convert.FromBson(b.AsBsonDocument));
-
+                return new BH.oM.Base.CustomObject
+                {
+                    CustomData = new Dictionary<string, object>()
+                    {
+                        { "Objects", array.Select(b => Convert.FromBson(b.AsBsonDocument)) }
+                    }
+                };
+            }
             else
-                Reflection.Compute.RecordError("The string provided is not a supported json format");
+            {
+                Reflection.Compute.RecordError("The string provided is not a valid json format");
                 return null;
+            }
         }
 
         /*******************************************/
