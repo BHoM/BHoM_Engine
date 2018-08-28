@@ -14,7 +14,7 @@ namespace BH.Engine.Serialiser
         public static string ToJson(this object obj)
         {
             var jsonWriterSettings = new JsonWriterSettings { OutputMode = JsonOutputMode.Strict };
-            return Convert.ToBson(obj).ToJson<BsonDocument>(jsonWriterSettings);  
+            return Convert.ToBson(obj).ToJson<BsonDocument>(jsonWriterSettings);
         }
 
         /*******************************************/
@@ -27,7 +27,16 @@ namespace BH.Engine.Serialiser
             }
             else if (json.StartsWith("{"))
             {
-                return Convert.FromBson(BsonDocument.Parse(json));
+                BsonDocument document;
+                if (BsonDocument.TryParse(json, out document))
+                {
+                    return Convert.FromBson(document);
+                }
+                else
+                {
+                    Reflection.Compute.RecordError("The string provided is not a supported json format");
+                    return null;
+                }
             }
             else if (json.StartsWith("["))
             {
@@ -44,6 +53,7 @@ namespace BH.Engine.Serialiser
             }
             else
             {
+                // Could we do something when a string is not a valid json?
                 Reflection.Compute.RecordError("The string provided is not a valid json format");
                 return null;
             }
