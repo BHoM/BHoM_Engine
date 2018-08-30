@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System;
 using BH.oM.Reflection.Attributes;
+using BH.Engine.Geometry;
 
 namespace BH.Engine.Structure
 {
@@ -14,35 +15,51 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [NotImplemented]
-        public static IGeometry Extrude(this Bar bar)
+        //[NotImplemented]
+        public static List<Extrusion> Extrude(this Bar bar)
         {
 
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
 
-            //if (bar.SectionProperty == null || !(bar.SectionProperty is IGeometricalSection))
-            //    return bar.Geometry();
+            System.Reflection.PropertyInfo prop = bar.SectionProperty.GetType().GetProperty("SectionProfile");
 
-            //List<ICurve> secCurves = ((CompositeGeometry)((IGeometricalSection)bar.SectionProperty).Geometry()).Elements.Select(x => (ICurve)x).ToList();
+            IProfile profile;
 
-            //Vector z = Vector.ZAxis;
-            //Point startPos = bar.StartNode.Position;
-            //Vector tan = bar.EndNode.Position- startPos;
-            //Vector rotAxis = BH.Engine.Geometry.Query.CrossProduct(z, tan);
-            //Vector trans = startPos - Point.Origin;
-            //double angle = BH.Engine.Geometry.Query.Angle(z, tan);
+            if (prop != null)
+                profile = prop.GetValue(bar.SectionProperty) as IProfile;
+            else
+                return null;// bar.Geometry();
+
+            List<ICurve> secCurves = profile.Edges.ToList();
+
+            Point orgin = new Point { X = bar.SectionProperty.CentreY, Y = bar.SectionProperty.CentreZ, Z = 0 };
+            Vector z = Vector.ZAxis;
+            Point startPos = bar.StartNode.Position;
+            Vector tan = bar.EndNode.Position - startPos;
+            Vector trans = startPos - orgin;
 
 
-            //List<IGeometry> extrutions = new List<IGeometry>();
-            //for (int i = 0; i < secCurves.Count; i++)
-            //{
-            //    ICurve curve = secCurves[i];
-            //    curve = BH.Engine.Geometry.Modify.ITranslate(curve, trans);
-            //    curve = BH.Engine.Geometry.Modify.IRotate(curve, startPos, rotAxis, angle);
-            //    extrutions.Add(new Extrusion() { Curve = curve, Direction = tan });
+            double anglePerp = BH.Engine.Geometry.Query.Angle(z, tan);
+            TransformMatrix alignmentPerp = Engine.Geometry.Create.RotationMatrix(orgin, BH.Engine.Geometry.Query.CrossProduct(z, tan), anglePerp);
+            Vector localX = Vector.XAxis.Transform(alignmentPerp);
 
-            //}
+            double angleAxisAlign = localX.Angle(z.CrossProduct(tan));
+            if (localX.DotProduct(Vector.ZAxis) > 0) angleAxisAlign = -angleAxisAlign;
 
+            TransformMatrix axisAlign = Engine.Geometry.Create.RotationMatrix(orgin, tan, angleAxisAlign);
+
+            TransformMatrix totalTransform = Engine.Geometry.Create.TranslationMatrix(trans) * axisAlign * alignmentPerp;
+
+            List<Extrusion> extrutions = new List<Extrusion>();
+            for (int i = 0; i < secCurves.Count; i++)
+            {
+                ICurve curve = secCurves[i];
+                curve = BH.Engine.Geometry.Modify.IRotate(curve, orgin, Vector.ZAxis, bar.OrientationAngle);
+                curve = BH.Engine.Geometry.Modify.ITransform(curve, totalTransform);
+                extrutions.Add(new Extrusion() { Curve = curve, Direction = tan });
+            }
+
+            return extrutions;
             //return new CompositeGeometry() { Elements = extrutions };
         }
 

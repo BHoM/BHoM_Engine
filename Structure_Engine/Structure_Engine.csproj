@@ -33,6 +33,10 @@
     <Reference Include="BHoM">
       <HintPath>..\..\BHoM\Build\BHoM.dll</HintPath>
     </Reference>
+    <Reference Include="Reflection_Engine, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Build\Reflection_Engine.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -44,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Compute\Integrate.cs" />
+    <Compile Include="Create\Edge.cs" />
     <Compile Include="Create\FramingElementProperty.cs" />
     <Compile Include="Create\LoadingPanelProperty.cs" />
     <Compile Include="Create\Offset.cs" />
@@ -89,6 +94,7 @@
     <Compile Include="Query\Length.cs" />
     <Compile Include="Query\Mass.cs" />
     <Compile Include="Query\Modifiers.cs" />
+    <Compile Include="Query\Normal.cs" />
     <Compile Include="Query\OppositeNode.cs" />
     <Compile Include="Query\Outline.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -96,7 +102,9 @@
     <Compile Include="Objects\EqualityComparers\NodeDistanceComparer.cs" />
     <Compile Include="Query\NodeContraint.cs" />
     <Compile Include="Query\DepthAt.cs" />
+    <Compile Include="Query\PointGrid.cs" />
     <Compile Include="Query\ShearArea.cs" />
+    <Compile Include="Query\Visualize.cs" />
     <Compile Include="Query\WidthAt.cs" />
     <Compile Include="Query\IsLongitudinal.cs" />
     <Compile Include="Query\Layout.cs" />

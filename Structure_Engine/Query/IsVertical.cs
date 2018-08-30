@@ -24,7 +24,14 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
-        /**** Private Methods                            ****/
+
+        public static bool IsVertical(this Line line)
+        {
+            return IsVertical(line.Start, line.End);
+        }
+
+        /***************************************************/
+        /**** Private Methods                           ****/
         /***************************************************/
 
         private static bool IsVertical(Point p1, Point p2)

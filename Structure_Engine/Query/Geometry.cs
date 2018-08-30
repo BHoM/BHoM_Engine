@@ -85,6 +85,15 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
+        /**** Public Methods - Interface                ****/
+        /***************************************************/
+
+        public static IGeometry Geometry(this ISectionProperty section)
+        {
+            return Geometry(section as dynamic);
+        }
+
+        /***************************************************/
     }
 
 }
