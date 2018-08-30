@@ -1,8 +1,8 @@
 ﻿using BH.oM.Geometry;
 using BH.oM.Structure.Elements;
-using BH.oM.Structure.Properties;
 using BH.oM.Structure.Loads;
 using BH.Engine.Geometry;
+using BH.oM.Reflection.Attributes;
 
 using System.Collections.Generic;
 using System.Linq;
@@ -16,45 +16,62 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static List<Line> Visualize(this PointForce pointForce, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true)
+        [NotImplemented]
+        public static List<Line> Visualize(this AreaTemperatureLoad areaTempLoad, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true)
         {
-            List<Line> arrows = new List<Line>();
-
-            Vector forceVec = pointForce.Force * scaleFactor;
-            Vector momentVec = pointForce.Moment * scaleFactor;
-
-            foreach (Node node in pointForce.Objects.Elements)
-            {
-                if (displayForces) arrows.AddRange(Arrow(node.Position, forceVec));
-                if (displayMoments) arrows.AddRange(Arrow(node.Position, momentVec, 2));
-            }
-
-            return arrows;
+            throw new NotImplementedException();
         }
 
         /***************************************************/
 
-        public static List<Line> Visualize(this BarUniformlyDistributedLoad barUDL, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true)
+        public static List<Line> Visualize(this AreaUniformalyDistributedLoad areaUDL, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true)
         {
+            if (!displayForces)
+                return new List<Line>();
+
+
             List<Line> arrows = new List<Line>();
 
-            Vector forceVec = barUDL.Force * scaleFactor;
-            Vector momentVec = barUDL.Moment * scaleFactor;
+            Vector globalForceVec = areaUDL.Pressure * scaleFactor;
 
-            int divisions = 5;
 
-            foreach (Bar bar in barUDL.Objects.Elements)
+            if (areaUDL.Axis == LoadAxis.Global)
             {
-                Point startPos = bar.StartNode.Position;
-                Vector tan = (bar.EndNode.Position - bar.StartNode.Position) / (double)divisions;
-
-                for (int i = 0; i <= divisions; i++)
+                if (areaUDL.Projected)
                 {
-                    if (displayForces) arrows.AddRange(Arrow(startPos + tan * i, forceVec));
-                    if (displayMoments) arrows.AddRange(Arrow(startPos + tan * i, momentVec, 2));
+                    foreach (IAreaElement element in areaUDL.Objects.Elements)
+                    {
+                        Vector normal = element.INormal().Normalise();
+                        double scale = Math.Abs(normal.DotProduct(globalForceVec.Normalise()));
+
+                        arrows.AddRange(ConnectedArrows(element.IEdgePoints(), globalForceVec * scale));
+
+                    }
+                }
+                else
+                {
+                    foreach (IAreaElement element in areaUDL.Objects.Elements)
+                    {
+                        Vector normal = element.INormal().Normalise();
+                        arrows.AddRange(ConnectedArrows(element.IEdgePoints(), globalForceVec));
+
+                    }
                 }
             }
+            else
+            {
+                Vector globalZ = Vector.ZAxis;
+                foreach (IAreaElement element in areaUDL.Objects.Elements)
+                {
+                    Vector normal = element.INormal();
+                    double angle = normal.Angle(globalZ);
+                    Vector rotAxis = globalZ.CrossProduct(normal);
+                    Vector localForceVec = globalForceVec.Rotate(angle, rotAxis);
 
+                    arrows.AddRange(ConnectedArrows(element.IEdgePoints(), localForceVec));
+
+                }
+            }
             return arrows;
         }
 
@@ -82,68 +99,180 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static List<Line> Visualize(this AreaUniformalyDistributedLoad areaUDL, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true)
+        [NotImplemented]
+        public static List<Line> Visualize(this BarPrestressLoad barPrestressLoad, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true)
         {
-            if (!displayForces)
-                return new List<Line>();
+            throw new NotImplementedException();
+        }
 
-            
+        /***************************************************/
+
+        [NotImplemented]
+        public static List<Line> Visualize(this BarTemperatureLoad barTempLoad, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true)
+        {
+            throw new NotImplementedException();
+        }
+
+        /***************************************************/
+
+        public static List<Line> Visualize(this BarUniformlyDistributedLoad barUDL, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true)
+        {
             List<Line> arrows = new List<Line>();
 
-            Vector globalForceVec = areaUDL.Pressure * scaleFactor;
+            Vector forceVec = barUDL.Force * scaleFactor;
+            Vector momentVec = barUDL.Moment * scaleFactor;
 
+            int divisions = 5;
 
-            if (areaUDL.Axis == LoadAxis.Global)
+            if (barUDL.Axis == LoadAxis.Global)
             {
-                if (areaUDL.Projected)
+                if (barUDL.Projected)
                 {
-                    foreach (IAreaElement element in areaUDL.Objects.Elements)
+                    foreach (Bar bar in barUDL.Objects.Elements)
                     {
-                        Vector normal = element.INormal().Normalise();
-                        double scale = normal.DotProduct(globalForceVec.Normalise());
+                        Point startPos = bar.StartNode.Position;
+                        Vector tan = (bar.EndNode.Position - bar.StartNode.Position) / (double)divisions;
 
-                        List<Line> arrow = Arrow(Point.Origin, globalForceVec * scale);
+                        Vector tanUnit = tan.Normalise();
+                        Vector forceUnit = forceVec.Normalise();
+                        Vector momentUnit = momentVec.Normalise();
 
-                        foreach (Point pt in element.IPointGrid())
-                        {
-                            Vector vec = pt - Point.Origin;
-                            arrows.AddRange(arrow.Select(x => x.Translate(vec)));
-                        }
+                        double scaleFactorForce = (tanUnit - tanUnit.DotProduct(forceUnit)* forceUnit).Length();
+                        double scaleFactorMoment = (tanUnit - tanUnit.DotProduct(momentUnit) * momentUnit).Length();
 
+                        List<Point> pts = DistributedPoints(startPos, tan, divisions);
+
+                        if (displayForces) arrows.AddRange(ConnectedArrows(pts, forceVec * scaleFactorForce, 1, false));
+                        if (displayMoments) arrows.AddRange(ConnectedArrows(pts, momentVec * scaleFactorMoment, 2, false));
                     }
                 }
                 else
                 {
-                    List<Line> arrow = Arrow(Point.Origin, globalForceVec);
-                    List<Point> pts = areaUDL.Objects.Elements.SelectMany(x => x.IPointGrid()).ToList();
-
-                    foreach (Point pt in pts)
+                    foreach (Bar bar in barUDL.Objects.Elements)
                     {
-                        Vector vec = pt - Point.Origin;
-                        arrows.AddRange(arrow.Select(x => x.Translate(vec)));
+                        Point startPos = bar.StartNode.Position;
+                        Vector tan = (bar.EndNode.Position - bar.StartNode.Position) / (double)divisions;
+
+                        List<Point> pts = DistributedPoints(startPos, tan, divisions);
+
+                        if (displayForces) arrows.AddRange(ConnectedArrows(pts, forceVec, 1, false));
+                        if (displayMoments) arrows.AddRange(ConnectedArrows(pts, momentVec, 2, false));
                     }
+
                 }
+
             }
             else
             {
                 Vector globalZ = Vector.ZAxis;
-                foreach (IAreaElement element in areaUDL.Objects.Elements)
+                foreach (Bar bar in barUDL.Objects.Elements)
                 {
-                    Vector normal = element.INormal();
-                    double angle = normal.Angle(globalZ);
-                    Vector rotAxis = globalZ.CrossProduct(normal);
-                    Vector localForceVec = globalForceVec.Rotate(angle, rotAxis);
+                    Vector normal = bar.Normal();
+                    Vector tan = (bar.EndNode.Position - bar.StartNode.Position) / (double)divisions;
+                    Vector tanUnit = tan.Normalise();
+                    Vector y = normal.CrossProduct(tanUnit);
 
-                    List<Line> arrow = Arrow(Point.Origin, localForceVec);
+                    Vector localForceVec = tanUnit * forceVec.X + y * forceVec.Y + normal * forceVec.Z;
+                    Vector localMomentVec = tanUnit * momentVec.X + y * momentVec.Y + normal * momentVec.Z;
 
-                    foreach (Point pt in element.IPointGrid())
-                    {
-                        Vector vec = pt - Point.Origin;
-                        arrows.AddRange(arrow.Select(x => x.Translate(vec)));
-                    }
+                    Point startPos = bar.StartNode.Position;
+
+                    List<Point> pts = DistributedPoints(startPos, tan, divisions);
+
+                    if (displayForces) arrows.AddRange(ConnectedArrows(pts, localForceVec, 1, false));
+                    if (displayMoments) arrows.AddRange(ConnectedArrows(pts, localMomentVec, 2, false));
 
                 }
             }
+
+            return arrows;
+        }
+
+        /***************************************************/
+
+        [NotImplemented]
+        public static List<Line> Visualize(this BarVaryingDistributedLoad barVaryingDistLoad, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true)
+        {
+            throw new NotImplementedException();
+        }
+
+        /***************************************************/
+
+        [NotImplemented]
+        public static List<Line> Visualize(this GravityLoad gravityLoad, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true)
+        {
+            throw new NotImplementedException();
+        }
+
+        /***************************************************/
+
+        public static List<Line> Visualize(this PointAcceleration pointAcceleration, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true)
+        {
+            List<Line> arrows = new List<Line>();
+
+            Vector forceVec = pointAcceleration.TranslationalAcceleration * scaleFactor;
+            Vector momentVec = pointAcceleration.RotationalAcceleration * scaleFactor;
+
+            foreach (Node node in pointAcceleration.Objects.Elements)
+            {
+                if (displayForces) arrows.AddRange(Arrow(node.Position, forceVec));
+                if (displayMoments) arrows.AddRange(Arrow(node.Position, momentVec, 2));
+            }
+
+            return arrows;
+        }
+
+        /***************************************************/
+
+        public static List<Line> Visualize(this PointDisplacement pointDisplacement, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true)
+        {
+            List<Line> arrows = new List<Line>();
+
+            Vector forceVec = pointDisplacement.Translation * scaleFactor;
+            Vector momentVec = pointDisplacement.Rotation * scaleFactor;
+
+            foreach (Node node in pointDisplacement.Objects.Elements)
+            {
+                if (displayForces) arrows.AddRange(Arrow(node.Position, forceVec));
+                if (displayMoments) arrows.AddRange(Arrow(node.Position, momentVec, 2));
+            }
+
+            return arrows;
+        }
+
+        /***************************************************/
+
+        public static List<Line> Visualize(this PointForce pointForce, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true)
+        {
+            List<Line> arrows = new List<Line>();
+
+            Vector forceVec = pointForce.Force * scaleFactor;
+            Vector momentVec = pointForce.Moment * scaleFactor;
+
+            foreach (Node node in pointForce.Objects.Elements)
+            {
+                if (displayForces) arrows.AddRange(Arrow(node.Position, forceVec));
+                if (displayMoments) arrows.AddRange(Arrow(node.Position, momentVec, 2));
+            }
+
+            return arrows;
+        }
+
+        /***************************************************/
+
+        public static List<Line> Visualize(this PointVelocity pointVelocity, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true)
+        {
+            List<Line> arrows = new List<Line>();
+
+            Vector forceVec = pointVelocity.TranslationalVelocity * scaleFactor;
+            Vector momentVec = pointVelocity.RotationalVelocity * scaleFactor;
+
+            foreach (Node node in pointVelocity.Objects.Elements)
+            {
+                if (displayForces) arrows.AddRange(Arrow(node.Position, forceVec));
+                if (displayMoments) arrows.AddRange(Arrow(node.Position, momentVec, 2));
+            }
+
             return arrows;
         }
 
@@ -186,23 +315,107 @@ namespace BH.Engine.Structure
 
             Vector v2 = v1.CrossProduct(tan).Normalise();
 
+            v1 /= 2;
+            v2 /= 2;
+
             double factor = length / 10;
 
             int m = 0;
 
             while (m < nbArrowHeads)
             {
-                arrow.Add(Engine.Geometry.Create.Line(end, (v1 - tan) * factor));
-                arrow.Add(Engine.Geometry.Create.Line(end, (-v1 - tan) * factor));
-                arrow.Add(Engine.Geometry.Create.Line(end, (v2 - tan) * factor));
-                arrow.Add(Engine.Geometry.Create.Line(end, (-v2 - tan) * factor));
+                arrow.Add(Engine.Geometry.Create.Line(pt, (v1 + tan) * factor));
+                arrow.Add(Engine.Geometry.Create.Line(pt, (-v1 + tan) * factor));
+                arrow.Add(Engine.Geometry.Create.Line(pt, (v2 + tan) * factor));
+                arrow.Add(Engine.Geometry.Create.Line(pt, (-v2 + tan) * factor));
 
-                end = end - tan * factor;
+                pt = pt + tan * factor;
                 m++;
             }
 
 
             return arrow;
+        }
+
+        /***************************************************/
+
+        private static List<Line> ConnectedArrows(List<Point> basePoints, Vector vector, int nbArrowHeads = 1, bool loop = true)
+        {
+            List<Line> allLines = new List<Line>();
+
+            List<Line> arrow = Arrow(Point.Origin, vector);
+
+            Point thisPt = null;
+            Point prevPt = null;
+
+            for (int i = 0; i < basePoints.Count; i++)
+            {
+                Vector vec = basePoints[i] - Point.Origin;
+                allLines.AddRange(arrow.Select(x => x.Translate(vec)));
+
+                thisPt = basePoints[i] + vector;
+
+                if (i > 0)
+                {
+                    allLines.Add(new Line { Start = prevPt, End = thisPt});
+                }
+
+                prevPt = thisPt;
+            }
+
+            if (loop)
+            {
+                allLines.Add(new Line { Start = prevPt, End = basePoints[0] + vector });
+            }
+
+            return allLines;
+        }
+
+        /***************************************************/
+
+        private static List<Point> DistributedPoints(Point basePt, Vector step, int divisions)
+        {
+            List<Point> pts = new List<Point>();
+
+            for (int i = 0; i <= divisions; i++)
+            {
+                pts.Add(basePt + step * i);
+            }
+            return pts;
+        }
+
+        /***************************************************/
+
+        private static List<Point> EdgePoints(this PanelPlanar panel)
+        {
+            List<ICurve> edges = panel.ExternalEdgeCurves();
+
+            return edges.SelectMany(x => x.SamplePoints((int)5)).ToList();
+        }
+
+        /***************************************************/
+
+        private static List<Point> EdgePoints(this MeshFace face)
+        {
+            List<Point> pts = new List<Point>();
+
+            for (int i = 0; i < face.Nodes.Count; i++)
+            {
+                pts.Add(face.Nodes[i].Position);
+
+                int nextId = i < face.Nodes.Count - 1 ? i + 1 : 0;
+
+                pts.Add((face.Nodes[i].Position + face.Nodes[nextId].Position) / 2);
+            }
+
+            return pts;
+        }
+
+        /***************************************************/
+
+        private static List<Point> IEdgePoints(this IAreaElement areaElement)
+        {
+            return EdgePoints(areaElement as dynamic);
         }
 
         /***************************************************/
