@@ -77,9 +77,9 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static List<Line> Visualize(this BarPointLoad barPointForce, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true)
+        public static List<ICurve> Visualize(this BarPointLoad barPointForce, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true)
         {
-            List<Line> arrows = new List<Line>();
+            List<ICurve> arrows = new List<ICurve>();
 
             Vector forceVec = barPointForce.Force * scaleFactor;
             Vector momentVec = barPointForce.Moment * scaleFactor;
@@ -91,7 +91,7 @@ namespace BH.Engine.Structure
                 point += tan * barPointForce.DistanceFromA;
 
                 if (displayForces) arrows.AddRange(Arrow(point, forceVec));
-                if (displayMoments) arrows.AddRange(Arrow(point, momentVec, 2));
+                if (displayMoments) arrows.AddRange(ArcArrow(point, momentVec));
             }
 
             return arrows;
@@ -99,91 +99,74 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [NotImplemented]
         public static List<Line> Visualize(this BarPrestressLoad barPrestressLoad, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true)
         {
-            throw new NotImplementedException();
+            List<Line> arrows = new List<Line>();
+
+            int divisions = 5;
+
+            foreach (Bar bar in barPrestressLoad.Objects.Elements)
+            {
+                Point startPos = bar.StartNode.Position;
+                Vector tan = (bar.EndNode.Position - bar.StartNode.Position) / (double)divisions;
+
+                List<Point> pts = DistributedPoints(startPos, tan, divisions);
+
+                if (displayForces) arrows.AddRange(ConnectedArrows(pts, bar.Normal()*barPrestressLoad.Prestress, 0, false));
+
+            }
+
+            return arrows;
         }
 
         /***************************************************/
 
-        [NotImplemented]
         public static List<Line> Visualize(this BarTemperatureLoad barTempLoad, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true)
         {
-            throw new NotImplementedException();
+            List<Line> arrows = new List<Line>();
+
+            int divisions = 5;
+
+            foreach (Bar bar in barTempLoad.Objects.Elements)
+            {
+                Point startPos = bar.StartNode.Position;
+                Vector tan = (bar.EndNode.Position - bar.StartNode.Position) / (double)divisions;
+
+                List<Point> pts = DistributedPoints(startPos, tan, divisions);
+
+                double loadFactor = bar.SectionProperty.Area * bar.SectionProperty.Material.CoeffThermalExpansion * bar.SectionProperty.Material.YoungsModulus * barTempLoad.TemperatureChange;
+
+                if (displayForces) arrows.AddRange(ConnectedArrows(pts, bar.Normal() * loadFactor, 0, false));
+
+            }
+
+            return arrows;
         }
 
         /***************************************************/
 
-        public static List<Line> Visualize(this BarUniformlyDistributedLoad barUDL, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true)
+        public static List<ICurve> Visualize(this BarUniformlyDistributedLoad barUDL, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true)
         {
-            List<Line> arrows = new List<Line>();
+            List<ICurve> arrows = new List<ICurve>();
 
             Vector forceVec = barUDL.Force * scaleFactor;
             Vector momentVec = barUDL.Moment * scaleFactor;
 
             int divisions = 5;
 
-            if (barUDL.Axis == LoadAxis.Global)
+            foreach (Bar bar in barUDL.Objects.Elements)
             {
-                if (barUDL.Projected)
-                {
-                    foreach (Bar bar in barUDL.Objects.Elements)
-                    {
-                        Point startPos = bar.StartNode.Position;
-                        Vector tan = (bar.EndNode.Position - bar.StartNode.Position) / (double)divisions;
+                Point startPos = bar.StartNode.Position;
+                Vector tan = (bar.EndNode.Position - bar.StartNode.Position) / (double)divisions;
 
-                        Vector tanUnit = tan.Normalise();
-                        Vector forceUnit = forceVec.Normalise();
-                        Vector momentUnit = momentVec.Normalise();
+                List<Point> pts = DistributedPoints(startPos, tan, divisions);
 
-                        double scaleFactorForce = (tanUnit - tanUnit.DotProduct(forceUnit)* forceUnit).Length();
-                        double scaleFactorMoment = (tanUnit - tanUnit.DotProduct(momentUnit) * momentUnit).Length();
+                Vector[] forceVectors = BarForceVectors(bar, forceVec, momentVec, barUDL.Axis, barUDL.Projected);
 
-                        List<Point> pts = DistributedPoints(startPos, tan, divisions);
-
-                        if (displayForces) arrows.AddRange(ConnectedArrows(pts, forceVec * scaleFactorForce, 1, false));
-                        if (displayMoments) arrows.AddRange(ConnectedArrows(pts, momentVec * scaleFactorMoment, 2, false));
-                    }
-                }
-                else
-                {
-                    foreach (Bar bar in barUDL.Objects.Elements)
-                    {
-                        Point startPos = bar.StartNode.Position;
-                        Vector tan = (bar.EndNode.Position - bar.StartNode.Position) / (double)divisions;
-
-                        List<Point> pts = DistributedPoints(startPos, tan, divisions);
-
-                        if (displayForces) arrows.AddRange(ConnectedArrows(pts, forceVec, 1, false));
-                        if (displayMoments) arrows.AddRange(ConnectedArrows(pts, momentVec, 2, false));
-                    }
-
-                }
-
+                if (displayForces) arrows.AddRange(ConnectedArrows(pts, forceVectors[0], 1, false));
+                if (displayMoments) arrows.AddRange(ConnectedArcArrows(pts, forceVectors[1], false));
             }
-            else
-            {
-                Vector globalZ = Vector.ZAxis;
-                foreach (Bar bar in barUDL.Objects.Elements)
-                {
-                    Vector normal = bar.Normal();
-                    Vector tan = (bar.EndNode.Position - bar.StartNode.Position) / (double)divisions;
-                    Vector tanUnit = tan.Normalise();
-                    Vector y = normal.CrossProduct(tanUnit);
-
-                    Vector localForceVec = tanUnit * forceVec.X + y * forceVec.Y + normal * forceVec.Z;
-                    Vector localMomentVec = tanUnit * momentVec.X + y * momentVec.Y + normal * momentVec.Z;
-
-                    Point startPos = bar.StartNode.Position;
-
-                    List<Point> pts = DistributedPoints(startPos, tan, divisions);
-
-                    if (displayForces) arrows.AddRange(ConnectedArrows(pts, localForceVec, 1, false));
-                    if (displayMoments) arrows.AddRange(ConnectedArrows(pts, localMomentVec, 2, false));
-
-                }
-            }
+            
 
             return arrows;
         }
@@ -206,9 +189,9 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static List<Line> Visualize(this PointAcceleration pointAcceleration, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true)
+        public static List<ICurve> Visualize(this PointAcceleration pointAcceleration, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true)
         {
-            List<Line> arrows = new List<Line>();
+            List<ICurve> arrows = new List<ICurve>();
 
             Vector forceVec = pointAcceleration.TranslationalAcceleration * scaleFactor;
             Vector momentVec = pointAcceleration.RotationalAcceleration * scaleFactor;
@@ -216,7 +199,7 @@ namespace BH.Engine.Structure
             foreach (Node node in pointAcceleration.Objects.Elements)
             {
                 if (displayForces) arrows.AddRange(Arrow(node.Position, forceVec));
-                if (displayMoments) arrows.AddRange(Arrow(node.Position, momentVec, 2));
+                if (displayMoments) arrows.AddRange(ArcArrow(node.Position, momentVec));
             }
 
             return arrows;
@@ -224,9 +207,9 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static List<Line> Visualize(this PointDisplacement pointDisplacement, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true)
+        public static List<ICurve> Visualize(this PointDisplacement pointDisplacement, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true)
         {
-            List<Line> arrows = new List<Line>();
+            List<ICurve> arrows = new List<ICurve>();
 
             Vector forceVec = pointDisplacement.Translation * scaleFactor;
             Vector momentVec = pointDisplacement.Rotation * scaleFactor;
@@ -234,7 +217,7 @@ namespace BH.Engine.Structure
             foreach (Node node in pointDisplacement.Objects.Elements)
             {
                 if (displayForces) arrows.AddRange(Arrow(node.Position, forceVec));
-                if (displayMoments) arrows.AddRange(Arrow(node.Position, momentVec, 2));
+                if (displayMoments) arrows.AddRange(ArcArrow(node.Position, momentVec));
             }
 
             return arrows;
@@ -242,9 +225,9 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static List<Line> Visualize(this PointForce pointForce, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true)
+        public static List<ICurve> Visualize(this PointForce pointForce, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true)
         {
-            List<Line> arrows = new List<Line>();
+            List<ICurve> arrows = new List<ICurve>();
 
             Vector forceVec = pointForce.Force * scaleFactor;
             Vector momentVec = pointForce.Moment * scaleFactor;
@@ -252,7 +235,7 @@ namespace BH.Engine.Structure
             foreach (Node node in pointForce.Objects.Elements)
             {
                 if (displayForces) arrows.AddRange(Arrow(node.Position, forceVec));
-                if (displayMoments) arrows.AddRange(Arrow(node.Position, momentVec, 2));
+                if (displayMoments) arrows.AddRange(ArcArrow(node.Position, momentVec));
             }
 
             return arrows;
@@ -260,9 +243,9 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static List<Line> Visualize(this PointVelocity pointVelocity, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true)
+        public static List<ICurve> Visualize(this PointVelocity pointVelocity, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true)
         {
-            List<Line> arrows = new List<Line>();
+            List<ICurve> arrows = new List<ICurve>();
 
             Vector forceVec = pointVelocity.TranslationalVelocity * scaleFactor;
             Vector momentVec = pointVelocity.RotationalVelocity * scaleFactor;
@@ -270,7 +253,7 @@ namespace BH.Engine.Structure
             foreach (Node node in pointVelocity.Objects.Elements)
             {
                 if (displayForces) arrows.AddRange(Arrow(node.Position, forceVec));
-                if (displayMoments) arrows.AddRange(Arrow(node.Position, momentVec, 2));
+                if (displayMoments) arrows.AddRange(ArcArrow(node.Position, momentVec));
             }
 
             return arrows;
@@ -282,16 +265,66 @@ namespace BH.Engine.Structure
 
         public static IEnumerable<IGeometry> IVisualize(this ILoad load, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true)
         {
-            return Visualize(load as dynamic, scaleFactor);
+            return Visualize(load as dynamic, scaleFactor, displayForces, displayMoments);
         }
 
         /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
 
+        private static Vector[] BarForceVectors(Bar bar, Vector globalForce, Vector globalMoment, LoadAxis axis, bool isProjected)
+        {
+            if (axis == LoadAxis.Global)
+            {
+                if (isProjected)
+                {
+                    Point startPos = bar.StartNode.Position;
+                    Vector tan = (bar.EndNode.Position - bar.StartNode.Position);
+
+                    Vector tanUnit = tan.Normalise();
+                    Vector forceUnit = globalForce.Normalise();
+                    Vector momentUnit = globalMoment.Normalise();
+
+                    double scaleFactorForce = (tanUnit - tanUnit.DotProduct(forceUnit) * forceUnit).Length();
+                    double scaleFactorMoment = (tanUnit - tanUnit.DotProduct(momentUnit) * momentUnit).Length();
+
+                    return new Vector[] { globalForce * scaleFactorForce, globalMoment * scaleFactorMoment };
+                }
+                else
+                {
+                    return new Vector[] { globalForce, globalMoment };
+                }
+            }
+            else
+            {
+
+                Vector normal = bar.Normal();
+                Vector tan = (bar.EndNode.Position - bar.StartNode.Position);
+                Vector tanUnit = tan.Normalise();
+                Vector y = normal.CrossProduct(tanUnit);
+
+                Vector localForceVec = tanUnit * globalForce.X + y * globalForce.Y + normal * globalForce.Z;
+                Vector localMomentVec = tanUnit * globalMoment.X + y * globalMoment.Y + normal * globalMoment.Z;
+
+                return new Vector[] { localForceVec, localMomentVec };
+            }
+        }
+
+        /***************************************************/
+
         private static List<Line> Arrow(Point pt, Vector v, int nbArrowHeads = 1)
         {
+            Point basePt;
+            return Arrow(pt, v, out basePt, nbArrowHeads);
+        }
+        /***************************************************/
+
+        private static List<Line> Arrow(Point pt, Vector v, out Point basePt,int nbArrowHeads = 1)
+        {
             List<Line> arrow = new List<Line>();
+
+            //scale from N to kN and flip to get correct arrows
+            v /= -1000;
 
             Point end = pt + v;
 
@@ -305,7 +338,7 @@ namespace BH.Engine.Structure
 
             double dot = v1.DotProduct(tan);
 
-            if (Math.Abs(1 - dot) < Tolerance.Angle)
+            if (Math.Abs(1 - Math.Abs(dot)) < Tolerance.Angle)
             {
                 v1 = Vector.YAxis;
                 dot = v1.DotProduct(tan);
@@ -333,6 +366,73 @@ namespace BH.Engine.Structure
                 m++;
             }
 
+            basePt = end;
+
+            return arrow;
+        }
+
+        /***************************************************/
+
+        private static List<ICurve> ArcArrow(Point pt, Vector v)
+        {
+            Point startPt;
+            return ArcArrow(pt, v, out startPt);
+        }
+
+        /***************************************************/
+
+        private static List<ICurve> ArcArrow(Point pt, Vector v, out Point startPt)
+        {
+            List<ICurve> arrow = new List<ICurve>();
+
+            //Scale from Nm to kNm
+            v = v / 1000;
+
+            double length = v.Length();
+
+            Vector cross;
+            if (v.IsParallel(Vector.ZAxis) == 0)
+                cross = Vector.ZAxis;
+            else
+                cross = Vector.YAxis;
+
+            Vector yAxis = v.CrossProduct(cross);
+            Vector xAxis = yAxis.CrossProduct(v);
+
+            Arc arc = Engine.Geometry.Create.Arc(Engine.Geometry.Create.CoordinateSystem(pt, xAxis, yAxis), length / (Math.PI * 2), 0, Math.PI * 4 / 3);
+
+            startPt = arc.StartPoint();
+
+            arrow.Add(arc);
+
+            Vector tan = -arc.EndDir();
+
+            Vector v1 = Vector.XAxis;
+
+            double dot = v1.DotProduct(tan);
+
+            if (Math.Abs(1 - dot) < Tolerance.Angle)
+            {
+                v1 = Vector.YAxis;
+                dot = v1.DotProduct(tan);
+            }
+
+            v1 = (v1 - dot * tan).Normalise();
+
+            Vector v2 = v1.CrossProduct(tan).Normalise();
+
+            v1 /= 2;
+            v2 /= 2;
+
+            double factor = length / 10;
+
+            pt = arc.EndPoint();
+
+            arrow.Add(Engine.Geometry.Create.Line(pt, (v1 + tan) * factor));
+            arrow.Add(Engine.Geometry.Create.Line(pt, (-v1 + tan) * factor));
+            arrow.Add(Engine.Geometry.Create.Line(pt, (v2 + tan) * factor));
+            arrow.Add(Engine.Geometry.Create.Line(pt, (-v2 + tan) * factor));
+
 
             return arrow;
         }
@@ -343,7 +443,10 @@ namespace BH.Engine.Structure
         {
             List<Line> allLines = new List<Line>();
 
-            List<Line> arrow = Arrow(Point.Origin, vector);
+            Point basePt;
+            List<Line> arrow = Arrow(Point.Origin, vector, out basePt, nbArrowHeads);
+
+            Vector baseVec = basePt - Point.Origin;
 
             Point thisPt = null;
             Point prevPt = null;
@@ -353,7 +456,7 @@ namespace BH.Engine.Structure
                 Vector vec = basePoints[i] - Point.Origin;
                 allLines.AddRange(arrow.Select(x => x.Translate(vec)));
 
-                thisPt = basePoints[i] + vector;
+                thisPt = basePoints[i] + baseVec;
 
                 if (i > 0)
                 {
@@ -365,7 +468,45 @@ namespace BH.Engine.Structure
 
             if (loop)
             {
-                allLines.Add(new Line { Start = prevPt, End = basePoints[0] + vector });
+                allLines.Add(new Line { Start = prevPt, End = basePoints[0] + baseVec });
+            }
+
+            return allLines;
+        }
+
+        /***************************************************/
+
+        private static List<ICurve> ConnectedArcArrows(List<Point> basePoints, Vector vector, bool loop = true)
+        {
+            List<ICurve> allLines = new List<ICurve>();
+
+            Point startPt;
+
+            List<ICurve> arrow = ArcArrow(Point.Origin, vector, out startPt);
+
+            Vector arcVector = startPt - Point.Origin;
+
+            Point thisPt = null;
+            Point prevPt = null;
+
+            for (int i = 0; i < basePoints.Count; i++)
+            {
+                Vector vec = basePoints[i] - Point.Origin;
+                allLines.AddRange(arrow.Select(x => x.ITranslate(vec)));
+
+                thisPt = basePoints[i] + arcVector;
+
+                if (i > 0)
+                {
+                    allLines.Add(new Line { Start = prevPt, End = thisPt });
+                }
+
+                prevPt = thisPt;
+            }
+
+            if (loop)
+            {
+                allLines.Add(new Line { Start = prevPt, End = basePoints[0] + arcVector });
             }
 
             return allLines;
