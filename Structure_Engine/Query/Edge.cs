@@ -56,6 +56,32 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
+
+        public static List<Line> Edges(this MeshFace face)
+        {
+            List<Line> edges = new List<Line>();
+
+            for (int i = 0; i < face.Nodes.Count -1; i++)
+            {
+                edges.Add(new Line { Start = face.Nodes[i].Position, End = face.Nodes[i + 1].Position });
+            }
+            edges.Add(new Line { Start = face.Nodes.Last().Position, End = face.Nodes.First().Position });
+            return edges;
+        }
+
+        /***************************************************/
+        /**** Public Methods - Interfaces               ****/
+        /***************************************************/
+
+        public static IEnumerable<ICurve> IEdges(this IAreaElement element)
+        {
+            if (element is PanelPlanar)
+                return (AllEdgeCurves(element as PanelPlanar));
+            else
+                return Edges(element as dynamic);
+        }
+
+        /***************************************************/
     }
 
 }
