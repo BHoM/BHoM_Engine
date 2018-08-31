@@ -68,6 +68,18 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        public static bool IsContaining(this Line line, Point pt)
+        {
+            double distToStart = BH.Engine.Geometry.Query.Distance(pt, line.Start);
+            double distToEnd = BH.Engine.Geometry.Query.Distance(line.End, pt);
+
+            if (line.Length() == (distToStart + distToEnd))
+                return true;
+            return false;
+        }
+
+        /***************************************************/
+
         [NotImplemented]
         public static bool IsContaining(this NurbCurve curve1, List<Point> points, bool acceptOnEdge = true, double tolerance = Tolerance.Distance)
         {
