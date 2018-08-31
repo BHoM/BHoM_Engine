@@ -29,7 +29,7 @@ namespace BH.Engine.Environment
             //We need to check one line that starts in the point and end outside the bounding box
             BHG.Vector vector = new BHG.Vector() { X = 1, Y = 0, Z = 0 };
             //Use a length longer than the longest side in the bounding box. Change to infinite line?
-            BHG.Line line = new oM.Geometry.Line() { Start = point, End = point.Translate(vector * (((boundingBox.Max - boundingBox.Min).Length()) * 10)) };
+            BHG.Line line = new BHG.Line() { Start = point, End = point.Translate(vector * (((boundingBox.Max - boundingBox.Min).Length()) * 10)) };
 
             //Check intersections
             int counter = 0;
