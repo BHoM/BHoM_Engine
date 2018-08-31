@@ -85,6 +85,7 @@
     <Compile Include="Query\Level.cs" />
     <Compile Include="Query\Bounds.cs" />
     <Compile Include="Query\EquipmentProprerties.cs" />
+    <Compile Include="Query\Width.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Structure_Engine\Structure_Engine.csproj">
