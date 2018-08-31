@@ -1,6 +1,7 @@
 ﻿using BH.oM.Geometry;
 using System.Collections.Generic;
 using System.Linq;
+using System;
 
 namespace BH.Engine.Geometry
 {
@@ -25,7 +26,6 @@ namespace BH.Engine.Geometry
             else return polyline.ControlPoints.GetRange(0, polyline.ControlPoints.Count - 1).Average();
         }
 
-
         /***************************************************/
         /**** Surfaces                                    ****/
         /***************************************************/
@@ -34,7 +34,6 @@ namespace BH.Engine.Geometry
         {
             return new Point { X = (box.Max.X + box.Min.X) / 2, Y = (box.Max.Y + box.Min.Y) / 2, Z = (box.Max.Z + box.Min.Z) / 2 };
         }
-
 
         /***************************************************/
         /**** Mesh                                      ****/
