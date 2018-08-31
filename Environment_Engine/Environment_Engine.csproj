@@ -69,6 +69,7 @@
     <Compile Include="Query\AltitudeRange.cs" />
     <Compile Include="Query\Altitude.cs" />
     <Compile Include="Query\ExposedToSun.cs" />
+    <Compile Include="Query\FloorGeometry.cs" />
     <Compile Include="Query\IsExternal.cs" />
     <Compile Include="Query\IsInternal.cs" />
     <Compile Include="Query\Volume.cs" />
