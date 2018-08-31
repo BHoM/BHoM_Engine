@@ -52,20 +52,20 @@ namespace BH.Engine.Structure
 
             TransformMatrix matrix = Engine.Geometry.Create.RotationMatrix(Point.Origin, axis, angle);
 
-            List<PolyCurve> rotated = joined.Select(x => x.Rotate(Point.Origin, axis,angle)).ToList();
+            List<PolyCurve> rotated = curves.Select(x => x.IRotate(Point.Origin, axis,angle)).ToList().IJoin();
 
-            BoundingBox bounds = new BoundingBox();
+            BoundingBox bounds = rotated.First().Bounds();
 
-            foreach (PolyCurve crv in rotated)
-            {
-                bounds += crv.Bounds();
+            for (int i = 1; i < rotated.Count; i++)
+            { 
+                bounds += rotated[i].Bounds();
             }
 
             double xMin = bounds.Min.X;
             double yMin = bounds.Min.Y;
             double zVal = bounds.Min.Z;
 
-            int steps = 4;
+            int steps = 9;
 
             double xStep = (bounds.Max.X - xMin) / steps;
             double yStep = (bounds.Max.Y - yMin) / steps;
@@ -85,7 +85,7 @@ namespace BH.Engine.Structure
 
                     foreach (PolyCurve crv in joined)
                     {
-                        if (isInside = crv.IsContaining(new List<Point> { pt }))
+                        if (isInside = crv.IsContaining(new List<Point> { pt }, true, 1E-3))
                             break;
                     }
                     if (isInside)
