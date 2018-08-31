@@ -19,7 +19,8 @@ namespace BH.Engine.Structure
         [NotImplemented]
         public static List<Line> Visualize(this AreaTemperatureLoad areaTempLoad, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true)
         {
-            throw new NotImplementedException();
+            Reflection.Compute.RecordWarning("No visualization implemented for AreaTempratureLoads");
+            return new List<Line>();
         }
 
         /***************************************************/
@@ -29,9 +30,7 @@ namespace BH.Engine.Structure
             if (!displayForces)
                 return new List<Line>();
 
-
             List<Line> arrows = new List<Line>();
-
             Vector globalForceVec = areaUDL.Pressure * scaleFactor;
 
 
@@ -107,11 +106,7 @@ namespace BH.Engine.Structure
 
             foreach (Bar bar in barPrestressLoad.Objects.Elements)
             {
-                Point startPos = bar.StartNode.Position;
-                Vector tan = (bar.EndNode.Position - bar.StartNode.Position) / (double)divisions;
-
-                List<Point> pts = DistributedPoints(startPos, tan, divisions);
-
+                List<Point> pts = DistributedPoints(bar, divisions);
                 if (displayForces) arrows.AddRange(ConnectedArrows(pts, bar.Normal()*barPrestressLoad.Prestress, 0, false));
 
             }
@@ -129,10 +124,7 @@ namespace BH.Engine.Structure
 
             foreach (Bar bar in barTempLoad.Objects.Elements)
             {
-                Point startPos = bar.StartNode.Position;
-                Vector tan = (bar.EndNode.Position - bar.StartNode.Position) / (double)divisions;
-
-                List<Point> pts = DistributedPoints(startPos, tan, divisions);
+                List<Point> pts = DistributedPoints(bar, divisions);
 
                 double loadFactor = bar.SectionProperty.Area * bar.SectionProperty.Material.CoeffThermalExpansion * bar.SectionProperty.Material.YoungsModulus * barTempLoad.TemperatureChange;
 
@@ -153,18 +145,18 @@ namespace BH.Engine.Structure
             Vector momentVec = barUDL.Moment * scaleFactor;
 
             int divisions = 5;
+            double sqTol = Tolerance.Distance * Tolerance.Distance;
 
             foreach (Bar bar in barUDL.Objects.Elements)
             {
-                Point startPos = bar.StartNode.Position;
-                Vector tan = (bar.EndNode.Position - bar.StartNode.Position) / (double)divisions;
-
-                List<Point> pts = DistributedPoints(startPos, tan, divisions);
+                List<Point> pts = DistributedPoints(bar, divisions);
 
                 Vector[] forceVectors = BarForceVectors(bar, forceVec, momentVec, barUDL.Axis, barUDL.Projected);
 
-                if (displayForces) arrows.AddRange(ConnectedArrows(pts, forceVectors[0], 1, false));
-                if (displayMoments) arrows.AddRange(ConnectedArcArrows(pts, forceVectors[1], false));
+                if (displayForces && forceVectors[0].SquareLength() > sqTol)
+                    arrows.AddRange(ConnectedArrows(pts, forceVectors[0], 1, false));
+                if (displayMoments && forceVectors[1].SquareLength() > sqTol)
+                    arrows.AddRange(ConnectedArcArrows(pts, forceVectors[1], false));
             }
             
 
@@ -173,18 +165,99 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [NotImplemented]
-        public static List<Line> Visualize(this BarVaryingDistributedLoad barVaryingDistLoad, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true)
+        public static List<ICurve> Visualize(this BarVaryingDistributedLoad barVaryingDistLoad, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true)
         {
-            throw new NotImplementedException();
+            List<ICurve> arrows = new List<ICurve>();
+
+            Vector forceA = barVaryingDistLoad.ForceA * scaleFactor;
+            Vector forceB = barVaryingDistLoad.ForceB * scaleFactor;
+            Vector momentA = barVaryingDistLoad.MomentA * scaleFactor;
+            Vector momentB = barVaryingDistLoad.MomentB * scaleFactor;
+
+            int divisions = 5;
+            double sqTol = Tolerance.Distance * Tolerance.Distance;
+
+            foreach (Bar bar in barVaryingDistLoad.Objects.Elements)
+            {
+                List<Point> pts = DistributedPoints(bar, divisions, barVaryingDistLoad.DistanceFromA, barVaryingDistLoad.DistanceFromB);
+
+                Vector[] forcesA = BarForceVectors(bar, forceA, momentA, barVaryingDistLoad.Axis, barVaryingDistLoad.Projected);
+                Vector[] forcesB = BarForceVectors(bar, forceB, momentB, barVaryingDistLoad.Axis, barVaryingDistLoad.Projected);
+
+                if (displayForces && (forcesA[0].SquareLength() > sqTol || forcesB[0].SquareLength() > sqTol))
+                {
+                    Point prevPt = null;
+                    for (int i = 0; i < pts.Count; i++)
+                    {
+                        double factor = (double)i / (double)divisions;
+                        Point basePt;
+                        Vector v = (1 - factor) * forcesA[0] + factor * forcesB[0];
+                        arrows.AddRange(Arrow(pts[i], v, out basePt, 1));
+
+                        if (i > 0)
+                        {
+                            arrows.Add(new Line { Start = prevPt, End = basePt });
+                        }
+                        prevPt = basePt;
+                    }
+                }
+                if (displayMoments && (forcesA[1].SquareLength() > sqTol || forcesB[1].SquareLength() > sqTol))
+                {
+                    Point prevPt = null;
+                    for (int i = 0; i < pts.Count; i++)
+                    {
+                        double factor = (double)i / (double)divisions;
+                        Point basePt;
+                        Vector v = (1 - factor) * forcesA[1] + factor * forcesB[1];
+                        arrows.AddRange(ArcArrow(pts[i], v, out basePt));
+
+                        if (i > 0)
+                        {
+                            arrows.Add(new Line { Start = prevPt, End = basePt });
+                        }
+                        prevPt = basePt;
+                    }
+                }
+            }
+
+
+            return arrows;
         }
 
         /***************************************************/
 
-        [NotImplemented]
         public static List<Line> Visualize(this GravityLoad gravityLoad, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true)
         {
-            throw new NotImplementedException();
+            List<Line> arrows = new List<Line>();
+
+            Vector gravityDir = gravityLoad.GravityDirection * scaleFactor;
+            int barDivisions = 5;
+
+            foreach (BH.oM.Base.BHoMObject obj in gravityLoad.Objects.Elements)
+            {
+                if (obj is Bar)
+                {
+                    Bar bar = obj as Bar;
+
+                    if (bar.SectionProperty == null || bar.SectionProperty.Material == null)
+                    {
+                        Reflection.Compute.RecordWarning("Bar needs a valid sectionproperty and material to display gravity loading");
+                        continue;
+                    }
+
+                    Vector loadVector = bar.SectionProperty.MassPerMetre() * gravityDir;
+
+                    List<Point> pts = DistributedPoints(bar, barDivisions);
+
+                    if (displayForces) arrows.AddRange(ConnectedArrows(pts, loadVector, 1, false));
+                }
+                else
+                {
+                    Reflection.Compute.RecordWarning("Display for gravity loads only implemented for Bars. No area elements will be displayed");
+                }
+            }
+
+            return arrows;
         }
 
         /***************************************************/
@@ -514,13 +587,29 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        private static List<Point> DistributedPoints(Point basePt, Vector step, int divisions)
+        private static List<Point> DistributedPoints(Bar bar, int divisions, double startLength = 0, double endLength = 0)
         {
+            Point startPos;
+            Vector tan;
+            if (startLength == 0 && endLength == 0)
+            {
+                startPos = bar.StartNode.Position;
+                tan = (bar.EndNode.Position - bar.StartNode.Position) / (double)divisions;
+            }
+            else
+            {
+                double length = bar.Length();
+                tan = (bar.EndNode.Position - bar.StartNode.Position) / length;
+                startPos = bar.StartNode.Position + tan * startLength;
+
+                tan *= (length - endLength - startLength) / (double)divisions;
+            }
+
             List<Point> pts = new List<Point>();
 
             for (int i = 0; i <= divisions; i++)
             {
-                pts.Add(basePt + step * i);
+                pts.Add(startPos + tan * i);
             }
             return pts;
         }
