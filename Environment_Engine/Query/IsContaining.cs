@@ -19,8 +19,6 @@ namespace BH.Engine.Environment
 
         public static bool IsContaining(this BHE.Space space, BHG.Point point)
         {
-            bool result = false;
-
             List<BHE.BuildingElement> buildingElements = space.BuildingElements;
             List<BHG.Plane> planes = buildingElements.Select(x => x.BuildingElementGeometry.ICurve().IControlPoints().FitPlane()).ToList();
             List<BHG.Point> ctrPoints = buildingElements.SelectMany(x => x.BuildingElementGeometry.ICurve().IControlPoints()).ToList();
