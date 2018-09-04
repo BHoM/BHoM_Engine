@@ -16,11 +16,19 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [NotImplemented]
-        public static List<Line> Visualize(this AreaTemperatureLoad areaTempLoad, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true)
+        public static List<ICurve> Visualize(this AreaTemperatureLoad areaTempLoad, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true, bool asResultants = true, bool edgeDisplay = true, bool gridDisplay = false)
         {
-            Reflection.Compute.RecordWarning("No visualization implemented for AreaTempratureLoads");
-            return new List<Line>();
+            List<ICurve> arrows = new List<ICurve>();
+            double loadFactor = areaTempLoad.TemperatureChange * 1000; //Arrow methods are scaling down force to 1/1000
+
+            foreach (IAreaElement element in areaTempLoad.Objects.Elements)
+            {
+                Vector vector = element.INormal() * loadFactor;
+                if (edgeDisplay) arrows.AddRange(ConnectedArrows(element.IEdges(), vector, asResultants, null, 0, true));
+                if (gridDisplay) arrows.AddRange(MultipleArrows(element.IPointGrid(), vector, asResultants, null, 0, true));
+            }
+
+            return arrows;
         }
 
         /***************************************************/
@@ -111,10 +119,11 @@ namespace BH.Engine.Structure
         public static List<ICurve> Visualize(this BarTemperatureLoad barTempLoad, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true, bool asResultants = true)
         {
             List<ICurve> arrows = new List<ICurve>();
+            double loadFactor = barTempLoad.TemperatureChange * 1000; //Arrow methods are scaling down force to 1/1000
+
 
             foreach (Bar bar in barTempLoad.Objects.Elements)
             {
-                double loadFactor = barTempLoad.TemperatureChange *  1000; //Arrow methods are scaling down force to 1/1000
 
                 if (displayForces) arrows.AddRange(ConnectedArrows(new List<ICurve> { bar.Centreline() }, bar.Normal() * loadFactor, false, null, 0, true));
             }
@@ -251,11 +260,13 @@ namespace BH.Engine.Structure
                 {
                     IAreaElement element = obj as IAreaElement;
 
-                  
+                    Vector loadVector = element.Property.IMassPerArea() * gravityDir;
+
+                    if (displayForces) arrows.AddRange(ConnectedArrows(element.IEdges(), loadVector, true));
                 }
                 else
                 {
-                    Reflection.Compute.RecordWarning("Display for gravity loads only implemented for Bars. No area elements will be displayed");
+                    Reflection.Compute.RecordWarning("Display for gravity loads only implemented for Bars and IAreaElements. No area elements will be displayed");
                 }
             }
 
@@ -523,7 +534,8 @@ namespace BH.Engine.Structure
             Vector yAxis = v.CrossProduct(cross);
             Vector xAxis = yAxis.CrossProduct(v);
 
-            Arc arc = Engine.Geometry.Create.Arc(Engine.Geometry.Create.CoordinateSystem(pt, xAxis, yAxis), length / (Math.PI * 2), 0, Math.PI * 4 / 3);
+            double pi4over3 = Math.PI * 4 / 3;
+            Arc arc = Engine.Geometry.Create.Arc(Engine.Geometry.Create.CoordinateSystem(pt, xAxis, yAxis), length / pi4over3, 0, pi4over3);
 
             startPt = arc.StartPoint();
 
