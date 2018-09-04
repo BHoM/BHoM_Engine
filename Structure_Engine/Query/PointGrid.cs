@@ -41,6 +41,7 @@ namespace BH.Engine.Structure
             List<ICurve> curves = panel.ExternalEdgeCurves();
 
             List<PolyCurve> joined = curves.IJoin();
+            List<PolyCurve> joinedOpeningCurves = panel.InternalEdgeCurves().IJoin();
 
             Plane plane = joined.First().FitPlane();
 
@@ -85,16 +86,21 @@ namespace BH.Engine.Structure
 
                     foreach (PolyCurve crv in joined)
                     {
-                        if (isInside = crv.IsContaining(new List<Point> { pt }, true, 1E-3))
-                            break;
+                        List<Point> list = new List<Point> { pt };
+                        if (crv.IsContaining(list, true, 1E-3))
+                        {
+                            if (!joinedOpeningCurves.Any(c => c.IsContaining(list, false)))
+                            {
+                                isInside = true;
+                                break;
+                            }
+                        }
+
                     }
                     if (isInside)
                         pts.Add(pt);
                 }
             }
-
-
-            //pts = pts.Select(x => x.Transform(transpose)).ToList();
 
             return pts;
         }
