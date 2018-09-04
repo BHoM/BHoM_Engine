@@ -93,6 +93,8 @@
     <Compile Include="Query\Geometry.cs" />
     <Compile Include="Query\Length.cs" />
     <Compile Include="Query\Mass.cs" />
+    <Compile Include="Query\MassPerArea.cs" />
+    <Compile Include="Query\MassPerMetre.cs" />
     <Compile Include="Query\Modifiers.cs" />
     <Compile Include="Query\Normal.cs" />
     <Compile Include="Query\OppositeNode.cs" />

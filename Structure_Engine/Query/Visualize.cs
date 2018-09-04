@@ -33,7 +33,6 @@ namespace BH.Engine.Structure
             List<ICurve> arrows = new List<ICurve>();
             Vector globalForceVec = areaUDL.Pressure * scaleFactor;
 
-
             foreach (IAreaElement element in areaUDL.Objects.Elements)
             {
                 Vector forceVec;
@@ -68,45 +67,6 @@ namespace BH.Engine.Structure
 
             }
 
-            //    if (areaUDL.Axis == LoadAxis.Global)
-            //{
-            //    if (areaUDL.Projected)
-            //    {
-            //        foreach (IAreaElement element in areaUDL.Objects.Elements)
-            //        {
-            //            Vector normal = element.INormal().Normalise();
-            //            double scale = Math.Abs(normal.DotProduct(globalForceVec.Normalise()));
-
-            //            if (edgeDisplay) arrows.AddRange(ConnectedArrows(element.IEdges(), globalForceVec * scale));
-            //            if (gridDisplay) arrows.AddRange(MultipleArrows(element.IPointGrid(), globalForceVec * scale));
-            //        }
-            //    }
-            //    else
-            //    {
-            //        foreach (IAreaElement element in areaUDL.Objects.Elements)
-            //        {
-            //            Vector normal = element.INormal().Normalise();
-            //            if (edgeDisplay) arrows.AddRange(ConnectedArrows(element.IEdges(), globalForceVec));
-            //            if (gridDisplay) arrows.AddRange(MultipleArrows(element.IPointGrid(), globalForceVec));
-
-            //        }
-            //    }
-            //}
-            //else
-            //{
-            //    Vector globalZ = Vector.ZAxis;
-            //    foreach (IAreaElement element in areaUDL.Objects.Elements)
-            //    {
-            //        Vector normal = element.INormal();
-            //        double angle = normal.Angle(globalZ);
-            //        Vector rotAxis = globalZ.CrossProduct(normal);
-            //        Vector localForceVec = globalForceVec.Rotate(angle, rotAxis);
-
-            //        if (edgeDisplay) arrows.AddRange(ConnectedArrows(element.IEdges(), localForceVec));
-            //        if (gridDisplay) arrows.AddRange(MultipleArrows(element.IPointGrid(), localForceVec));
-
-            //    }
-            //}
             return arrows;
         }
 
@@ -157,7 +117,6 @@ namespace BH.Engine.Structure
                 double loadFactor = barTempLoad.TemperatureChange *  1000; //Arrow methods are scaling down force to 1/1000
 
                 if (displayForces) arrows.AddRange(ConnectedArrows(new List<ICurve> { bar.Centreline() }, bar.Normal() * loadFactor, false, null, 0, true));
-
             }
 
             return arrows;
@@ -172,13 +131,10 @@ namespace BH.Engine.Structure
             Vector forceVec = barUDL.Force * scaleFactor;
             Vector momentVec = barUDL.Moment * scaleFactor;
 
-            int divisions = 5;
             double sqTol = Tolerance.Distance * Tolerance.Distance;
 
             foreach (Bar bar in barUDL.Objects.Elements)
             {
-                List<Point> pts = DistributedPoints(bar, divisions);
-
                 CoordinateSystem system;
 
                 Vector[] forceVectors = BarForceVectors(bar, forceVec, momentVec, barUDL.Axis, barUDL.Projected, out system);
@@ -290,6 +246,12 @@ namespace BH.Engine.Structure
                     List<Point> pts = DistributedPoints(bar, barDivisions);
 
                     if (displayForces) arrows.AddRange(ConnectedArrows(new List<ICurve> { bar.Centreline() }, loadVector, true, null, 1, true));
+                }
+                else if (obj is IAreaElement)
+                {
+                    IAreaElement element = obj as IAreaElement;
+
+                  
                 }
                 else
                 {
@@ -423,48 +385,6 @@ namespace BH.Engine.Structure
             }
         }
 
-
-        /***************************************************/
-
-        private static Vector[] BarForceVectors(Bar bar, Vector globalForce, Vector globalMoment, LoadAxis axis, bool isProjected)
-        {
-            if (axis == LoadAxis.Global)
-            {
-                if (isProjected)
-                {
-                    Point startPos = bar.StartNode.Position;
-                    Vector tan = (bar.EndNode.Position - bar.StartNode.Position);
-
-                    Vector tanUnit = tan.Normalise();
-                    Vector forceUnit = globalForce.Normalise();
-                    Vector momentUnit = globalMoment.Normalise();
-
-                    double scaleFactorForce = (tanUnit - tanUnit.DotProduct(forceUnit) * forceUnit).Length();
-                    double scaleFactorMoment = (tanUnit - tanUnit.DotProduct(momentUnit) * momentUnit).Length();
-
-                    return new Vector[] { globalForce * scaleFactorForce, globalMoment * scaleFactorMoment };
-                }
-                else
-                {
-                    return new Vector[] { globalForce, globalMoment };
-                }
-            }
-            else
-            {
-
-                Vector normal = bar.Normal();
-                Vector tan = (bar.EndNode.Position - bar.StartNode.Position);
-                Vector tanUnit = tan.Normalise();
-                Vector y = normal.CrossProduct(tanUnit);
-
-                Vector localForceVec = tanUnit * globalForce.X + y * globalForce.Y + normal * globalForce.Z;
-                Vector localMomentVec = tanUnit * globalMoment.X + y * globalMoment.Y + normal * globalMoment.Z;
-
-                return new Vector[] { localForceVec, localMomentVec };
-            }
-        }
-
-
         /***************************************************/
 
         private static List<ICurve> Arrows(Point pt, Vector load, bool straightArrow, bool asResultant, CoordinateSystem coordinateSystem = null, int nbArrowHeads = 1)
@@ -496,14 +416,11 @@ namespace BH.Engine.Structure
                 List<ICurve> arrows = new List<ICurve>();
                 basePoints = new Point[3];
                 Vector[] vectors;
+
                 if (coordinateSystem == null)
-                {
                     vectors = new Vector[] { new Vector { X = load.X }, new Vector { Y = load.Y }, new Vector { Z = load.Z } };
-                }
                 else
-                {
                     vectors = new Vector[] { coordinateSystem.X * load.X, coordinateSystem.Y * load.Y, coordinateSystem.Z * load.Z };
-                }
 
                 for (int i = 0; i < 3; i++)
                 {
