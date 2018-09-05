@@ -89,12 +89,14 @@ namespace BH.Engine.Structure
 
             foreach (Bar bar in barPointForce.Objects.Elements)
             {
+                CoordinateSystem system;
+                Vector[] loads = BarForceVectors(bar, forceVec, momentVec, barPointForce.Axis, barPointForce.Projected, out system);
                 Point point = bar.StartNode.Position;
                 Vector tan = (bar.EndNode.Position - bar.StartNode.Position).Normalise();
                 point += tan * barPointForce.DistanceFromA;
 
-                if (displayForces) arrows.AddRange(Arrows(point, forceVec, true, asResultants));
-                if (displayMoments) arrows.AddRange(Arrows(point, momentVec, false, asResultants));
+                if (displayForces) arrows.AddRange(Arrows(point, loads[0], true, asResultants, system));
+                if (displayMoments) arrows.AddRange(Arrows(point, loads[1], false, asResultants, system));
             }
 
             return arrows;
@@ -106,9 +108,11 @@ namespace BH.Engine.Structure
         {
             List<ICurve> arrows = new List<ICurve>();
 
+            double scaledForce = barPrestressLoad.Prestress * scaleFactor;
+
             foreach (Bar bar in barPrestressLoad.Objects.Elements)
             {
-                if (displayForces) arrows.AddRange(ConnectedArrows(new List<ICurve> { bar.Centreline() }, bar.Normal()*barPrestressLoad.Prestress, false, null, 0, true));
+                if (displayForces) arrows.AddRange(ConnectedArrows(new List<ICurve> { bar.Centreline() }, bar.Normal()* scaledForce, true, null, 0, true));
             }
 
             return arrows;
@@ -125,7 +129,7 @@ namespace BH.Engine.Structure
             foreach (Bar bar in barTempLoad.Objects.Elements)
             {
 
-                if (displayForces) arrows.AddRange(ConnectedArrows(new List<ICurve> { bar.Centreline() }, bar.Normal() * loadFactor, false, null, 0, true));
+                if (displayForces) arrows.AddRange(ConnectedArrows(new List<ICurve> { bar.Centreline() }, bar.Normal() * loadFactor, true, null, 0, true));
             }
 
             return arrows;
@@ -210,16 +214,16 @@ namespace BH.Engine.Structure
                         double factor = (double)i / (double)divisions;
                         Point[] basePt;
                         Vector v = (1 - factor) * forcesA[1] + factor * forcesB[1];
-                        arrows.AddRange(Arrows(pts[i], v, true, asResultants, out basePt, system, 1));
+                        arrows.AddRange(Arrows(pts[i], v, false, asResultants, out basePt, system, 1));
 
-                        if (i > 0)
-                        {
-                            for (int j = 0; j < basePt.Length; j++)
-                            {
-                                arrows.Add(new Line { Start = prevPt[j], End = basePt[j] });
-                            }
+                        //if (i > 0)
+                        //{
+                        //    for (int j = 0; j < basePt.Length; j++)
+                        //    {
+                        //        arrows.Add(new Line { Start = prevPt[j], End = basePt[j] });
+                        //    }
 
-                        }
+                        //}
                         prevPt = basePt;
                     }
                 }
