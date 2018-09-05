@@ -30,11 +30,14 @@ namespace BH.Engine.Geometry
             if (number <= 0) { throw new ArgumentException("number value must be greater than 0"); }
             List<Point> points = new List<Point>();
             double length = curve.ILength();
-            double iter = curve.ILength() / number;
-            for (double i = 0; i <= length; i += iter)
+            double step = length / number;
+            points.Add(curve.IStartPoint());
+
+            for (int i = 1; i < number; i++)
             {
-                points.Add(curve.IPointAtLength(i));
+                points.Add(curve.IPointAtLength(i * step));
             }
+            points.Add(curve.IEndPoint());
             return points;
         }
 
