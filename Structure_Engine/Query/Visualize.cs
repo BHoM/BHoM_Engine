@@ -283,8 +283,8 @@ namespace BH.Engine.Structure
         {
             List<ICurve> arrows = new List<ICurve>();
 
-            Vector forceVec = pointAcceleration.TranslationalAcceleration * scaleFactor;
-            Vector momentVec = pointAcceleration.RotationalAcceleration * scaleFactor;
+            Vector forceVec = pointAcceleration.TranslationalAcceleration * scaleFactor * 1000;
+            Vector momentVec = pointAcceleration.RotationalAcceleration * scaleFactor * 1000;
 
             foreach (Node node in pointAcceleration.Objects.Elements)
             {
@@ -301,8 +301,8 @@ namespace BH.Engine.Structure
         {
             List<ICurve> arrows = new List<ICurve>();
 
-            Vector forceVec = pointDisplacement.Translation * scaleFactor;
-            Vector momentVec = pointDisplacement.Rotation * scaleFactor;
+            Vector forceVec = pointDisplacement.Translation * scaleFactor * 1000;
+            Vector momentVec = pointDisplacement.Rotation * scaleFactor * 1000;
 
             foreach (Node node in pointDisplacement.Objects.Elements)
             {
@@ -337,8 +337,8 @@ namespace BH.Engine.Structure
         {
             List<ICurve> arrows = new List<ICurve>();
 
-            Vector forceVec = pointVelocity.TranslationalVelocity * scaleFactor;
-            Vector momentVec = pointVelocity.RotationalVelocity * scaleFactor;
+            Vector forceVec = pointVelocity.TranslationalVelocity * scaleFactor * 1000;
+            Vector momentVec = pointVelocity.RotationalVelocity * scaleFactor * 1000;
 
             foreach (Node node in pointVelocity.Objects.Elements)
             {
