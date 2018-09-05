@@ -58,6 +58,7 @@
     <Compile Include="Compute\SortAlongCurve.cs" />
     <Compile Include="Compute\SortCollinear.cs" />
     <Compile Include="Convert\Polyline.cs" />
+    <Compile Include="Create\ConvexHull.cs" />
     <Compile Include="Create\CoordinateSystem.cs" />
     <Compile Include="Create\Geometry.cs" />
     <Compile Include="Create\Surface.cs" />
@@ -89,6 +90,7 @@
     <Compile Include="Modify\SplitAtPoints.cs" />
     <Compile Include="Query\BasisFunction.cs" />
     <Compile Include="Query\CurveProximity.cs" />
+    <Compile Include="Query\GetLineSegment.cs" />
     <Compile Include="Query\IsEqual.cs" />
     <Compile Include="Query\Clone.cs" />
     <Compile Include="Convert\NurbForm.cs" />

@@ -59,6 +59,7 @@
     <Compile Include="Query\AdjacentSpaces.cs" />
     <Compile Include="Query\BuildingArea.cs" />
     <Compile Include="Query\BuildingElements.cs" />
+    <Compile Include="Query\ClosedShellGeometry.cs" />
     <Compile Include="Query\Curve.cs" />
     <Compile Include="Modify\Add.cs" />
     <Compile Include="Modify\Copy.cs" />
@@ -75,6 +76,8 @@
     <Compile Include="Query\IsExternal.cs" />
     <Compile Include="Query\IsInternal.cs" />
     <Compile Include="Query\LongestSegment.cs" />
+    <Compile Include="Query\NormalAwayFromSpace.cs" />
+    <Compile Include="Query\StoreyGeometry.cs" />
     <Compile Include="Query\UnmatchedPoints.cs" />
     <Compile Include="Query\Volume.cs" />
     <Compile Include="Query\FloorArea.cs" />
