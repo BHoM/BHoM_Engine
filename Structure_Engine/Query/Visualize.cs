@@ -19,13 +19,13 @@ namespace BH.Engine.Structure
         public static List<ICurve> Visualize(this AreaTemperatureLoad areaTempLoad, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true, bool asResultants = true, bool edgeDisplay = true, bool gridDisplay = false)
         {
             List<ICurve> arrows = new List<ICurve>();
-            double loadFactor = areaTempLoad.TemperatureChange * 1000; //Arrow methods are scaling down force to 1/1000
+            double loadFactor = areaTempLoad.TemperatureChange * 1000 * scaleFactor; //Arrow methods are scaling down force to 1/1000
 
             foreach (IAreaElement element in areaTempLoad.Objects.Elements)
             {
                 Vector vector = element.INormal() * loadFactor;
-                if (edgeDisplay) arrows.AddRange(ConnectedArrows(element.IEdges(), vector, asResultants, null, 0, true));
-                if (gridDisplay) arrows.AddRange(MultipleArrows(element.IPointGrid(), vector, asResultants, null, 0, true));
+                if (edgeDisplay) arrows.AddRange(ConnectedArrows(element.IEdges(), vector, true, null, 0, true));
+                if (gridDisplay) arrows.AddRange(MultipleArrows(element.IPointGrid(), vector, true, null, 0, true));
             }
 
             return arrows;
@@ -119,7 +119,7 @@ namespace BH.Engine.Structure
         public static List<ICurve> Visualize(this BarTemperatureLoad barTempLoad, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true, bool asResultants = true)
         {
             List<ICurve> arrows = new List<ICurve>();
-            double loadFactor = barTempLoad.TemperatureChange * 1000; //Arrow methods are scaling down force to 1/1000
+            double loadFactor = barTempLoad.TemperatureChange * 1000 * scaleFactor; //Arrow methods are scaling down force to 1/1000
 
 
             foreach (Bar bar in barTempLoad.Objects.Elements)
