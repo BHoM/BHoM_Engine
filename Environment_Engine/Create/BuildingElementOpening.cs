@@ -17,7 +17,7 @@ namespace BH.Engine.Environment
 
         public static BHE.BuildingElementOpening BuildingElementOpening(BHG.ICurve curve)
         {
-            return BuildingElementOpening(curve);
+            return BuildingElementOpening(curve as dynamic);
         }
 
         /***************************************************/
