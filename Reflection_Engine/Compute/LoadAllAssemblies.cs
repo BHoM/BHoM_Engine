@@ -22,7 +22,7 @@ namespace BH.Engine.Reflection
                 HashSet<string> loaded = new HashSet<string>(AppDomain.CurrentDomain.GetAssemblies().Select(x => x.FullName.Split(',').First()));
 
                 if (folder.Length == 0)
-                    folder = @"C:\Users\" + Environment.UserName + @"\AppData\Roaming\BHoM\Assemblies\";
+                    folder = Query.BHoMFolder();
                 foreach (string file in Directory.GetFiles(folder))
                 {
                     string[] parts = file.Split(new char[] { '.', '\\' });
