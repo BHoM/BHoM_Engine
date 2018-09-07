@@ -2,6 +2,8 @@
 using MongoDB.Bson.IO;
 using System.Linq;
 using System.Collections.Generic;
+using System.ComponentModel;
+using BH.oM.Reflection.Attributes;
 
 namespace BH.Engine.Serialiser
 {
@@ -11,6 +13,9 @@ namespace BH.Engine.Serialiser
         /**** Public Methods                    ****/
         /*******************************************/
 
+        [Description("Convert a BHoM object To a Json string")]
+        [Input("obj", "Object to be converted")]
+        [Output("json", "String representing the object in json")]
         public static string ToJson(this object obj)
         {
             var jsonWriterSettings = new JsonWriterSettings { OutputMode = JsonOutputMode.Strict };
@@ -19,6 +24,9 @@ namespace BH.Engine.Serialiser
 
         /*******************************************/
 
+        [Description("Convert a Json string to a BHoMObject")]
+        [Input("json", "String representing the object in json")]
+        [Output("obj", "Object recovered from the Json string")]
         public static object FromJson(string json)
         {
             if (json == "")
