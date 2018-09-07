@@ -17,7 +17,7 @@ namespace BH.Engine.Reflection
         [Output("Dictionary where the keys are the names of the inputs, and the values their descriptions")]
         public static Dictionary<string,string> InputDescriptions(this MethodBase method)
         {
-            return method.GetCustomAttributes<Input>().ToDictionary(x => x.Name, x => x.Description);
+            return method.GetCustomAttributes<InputAttribute>().ToDictionary(x => x.Name, x => x.Description);
         }
 
         /***************************************************/

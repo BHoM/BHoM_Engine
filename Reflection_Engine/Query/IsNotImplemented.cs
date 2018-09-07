@@ -16,7 +16,7 @@ namespace BH.Engine.Reflection
 
         public static bool IsNotImplemented(this MethodBase method)
         {
-            NotImplemented attribute = method.GetCustomAttribute<NotImplemented>();
+            NotImplementedAttribute attribute = method.GetCustomAttribute<NotImplementedAttribute>();
             return (attribute != null);
         }
 
@@ -25,7 +25,7 @@ namespace BH.Engine.Reflection
 
         public static bool IsNotImplemented(this Type type) 
         {
-            NotImplemented attribute = type.GetCustomAttribute<NotImplemented>();
+            NotImplementedAttribute attribute = type.GetCustomAttribute<NotImplementedAttribute>();
             return (attribute != null);
         }
 
