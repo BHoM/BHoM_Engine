@@ -13,7 +13,7 @@ namespace BH.Engine.Reflection
 
         public static string BHoMFolder()
         {
-            return @"C:\Users\" + Environment.UserName + @"\AppData\Roaming\BHoM\";
+            return System.IO.Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.ApplicationData), @"BHoM\Assemblies\");
         }
 
 
