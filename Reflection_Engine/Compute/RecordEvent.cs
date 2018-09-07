@@ -49,7 +49,7 @@ namespace BH.Engine.Reflection
 
         private static bool RecordEvent(Event newEvent)
         {
-            string trace = Environment.StackTrace;
+            string trace = System.Environment.StackTrace;
             newEvent.StackTrace = string.Join("\n", trace.Split('\n').Skip(4).ToArray());
 
             Log log = Query.DebugLog();
