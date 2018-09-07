@@ -1,4 +1,6 @@
 ﻿using BH.oM.Base;
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Reflection
 {
@@ -8,6 +10,10 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Get the value of a property with a given name from an object")]
+        [Input("obj", "object to get the value from")]
+        [Input("propName", "name of the property to get the value from")]
+        [Output("value", "value of the property")]
         public static object PropertyValue(this object obj, string propName)
         {
             System.Reflection.PropertyInfo prop = obj.GetType().GetProperty(propName);

@@ -1,7 +1,9 @@
 ﻿using BH.oM.Base;
+using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Reflection;
 
 namespace BH.Engine.Reflection
@@ -10,6 +12,20 @@ namespace BH.Engine.Reflection
     {
         /***************************************************/
         /**** Public Methods                            ****/
+        /***************************************************/
+
+        [Description("Set the value of a property with a given name for an object")]
+        [Input("obj", "object to set the value for")]
+        [Input("propName", "name of the property to set the value of")]
+        [Input("value", "new value of the property")]
+        [Output("result", "New object with its property changed to the new value")]
+        public static BHoMObject PropertyValue(this BHoMObject obj, string propName, object value)
+        {
+            BHoMObject newObject = obj.GetShallowClone() as BHoMObject;
+            newObject.SetPropertyValue(propName, value);
+            return newObject;
+        }
+
         /***************************************************/
 
         public static bool SetPropertyValue(this object obj, string propName, object value)
