@@ -89,7 +89,7 @@
     <Compile Include="Query\Centroid.cs" />
     <Compile Include="Query\IsVertical.cs" />
     <Compile Include="Query\LoadType.cs" />
-    <Compile Include="Query\Edge.cs" />
+    <Compile Include="Query\Edges.cs" />
     <Compile Include="Query\Geometry.cs" />
     <Compile Include="Query\Length.cs" />
     <Compile Include="Query\Mass.cs" />
