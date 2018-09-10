@@ -83,6 +83,7 @@
     <Compile Include="Query\AnalyticalBars.cs" />
     <Compile Include="Query\ControlPoints.cs" />
     <Compile Include="Query\Default.cs" />
+    <Compile Include="Query\DistributedPoints.cs" />
     <Compile Include="Query\Extrude.cs" />
     <Compile Include="Query\CaseType.cs" />
     <Compile Include="Query\Centreline.cs" />
