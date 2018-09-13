@@ -44,7 +44,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static List<MeshFace> MeshFaces(Mesh mesh, IProperty2D property = null, string name = null)
+        public static List<MeshFace> MeshFaces(BH.oM.Geometry.Mesh mesh, IProperty2D property = null, string name = null)
         {
             List<MeshFace> meshFaces = new List<MeshFace>();
 
