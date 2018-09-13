@@ -17,7 +17,6 @@ namespace BH.Engine.Environment
             //TODO: This does only work for a space where all of the building element panels have the same height. Make it work for all spaces
 
             List<BHEE.BuildingElement> bHoMBuildingElement = bHoMSpace.BuildingElements;
-            List<BHEE.BuildingElementPanel> verticalPanels = new List<BHEE.BuildingElementPanel>();
 
             double roomheight = 0;
             foreach (BHEE.BuildingElement element in bHoMBuildingElement)
