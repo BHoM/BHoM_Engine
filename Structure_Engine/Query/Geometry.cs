@@ -53,10 +53,10 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static Mesh Geometry(this MeshFace meshFace)
+        public static BH.oM.Geometry.Mesh Geometry(this MeshFace meshFace)
         {
 
-            return new Mesh()
+            return new BH.oM.Geometry.Mesh()
             {
                 Vertices = meshFace.Nodes.Select(x => x.Position).ToList(),
                 Faces = meshFace.Nodes.Count == 3 ? new List<Face>() { new Face() { A = 0, B = 1, C = 2 } } : new List<Face>() { new Face() { A = 0, B = 1, C = 2, D = 3 } }
