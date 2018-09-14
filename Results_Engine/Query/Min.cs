@@ -48,7 +48,7 @@ namespace BH.Engine.Results
             return new BarForce()
             {
                 ObjectId = idFromFirst ? forces.First().ObjectId : "",
-                Case = caseFromFirst ? forces.First().Case : "",
+                ResultCase = caseFromFirst ? forces.First().ResultCase : "",
                 FX = forces.Min(x => x.FX),
                 FY = forces.Min(x => x.FY),
                 FZ = forces.Min(x => x.FZ),
