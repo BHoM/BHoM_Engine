@@ -15,7 +15,7 @@ namespace BH.Engine.Results
 
         public static List<List<T>> GroupByCase<T>(this IEnumerable<T> results) where T : IResult
         {
-            return results.GroupBy(x => x.Case).Select(x => x.ToList()).ToList();
+            return results.GroupBy(x => x.ResultCase).Select(x => x.ToList()).ToList();
         }
 
         /***************************************************/
