@@ -44,6 +44,8 @@ namespace BH.Engine.Reflection
 
         private static void ExtractAllMethods()
         {
+            Compute.LoadAllAssemblies();
+
             m_BHoMMethodList = new List<MethodInfo>();
             m_AllMethodList = new List<MethodBase>();
 
