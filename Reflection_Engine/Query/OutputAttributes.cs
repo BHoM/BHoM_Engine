@@ -14,12 +14,12 @@ namespace BH.Engine.Reflection
         /***************************************************/
 
         [Description("Return names and descriptions of the multiple outputs of a C# method")]
-        public static List<OutputAttribute> OutputAttributes(this MethodInfo method)
+        public static List<OutputAttribute> OutputAttributes(this MethodBase method)
         {
-            if (typeof(oM.Reflection.Interface.IOutput).IsAssignableFrom(method.ReturnType))
+            if (method.IsMultipleOutputs())
             {
                 Dictionary<int, MultiOutputAttribute> outputDefs = method.GetCustomAttributes<MultiOutputAttribute>().ToDictionary(x => x.Index);
-                Type[] types = method.ReturnType.GetGenericArguments();
+                Type[] types = method.OutputType().GetGenericArguments();
 
                 List<OutputAttribute> outputs = new List<OutputAttribute>();
                 for (int i = 0; i < types.Length; i++)
