@@ -4,7 +4,7 @@ using System.Reflection;
 using System.Linq;
 using Mono.Cecil;
 using Mono.Reflection;
-using BH.Engine.Reflection.Convert;
+using BH.Engine.Reflection;
 
 namespace BH.Engine.Reflection
 {
