@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BH.Engine.Reflection
+namespace BH.Engine.Reflection.Convert
 {
     public static partial class Convert
     {
