@@ -26,7 +26,7 @@ namespace BH.Engine.Environment
         {
             return new BHE.BuildingElementOpening
             {
-                PolyCurve = pCurve
+                Opening = pCurve
             };
         }
 
@@ -36,7 +36,7 @@ namespace BH.Engine.Environment
         {
             return new BHE.BuildingElementOpening
             {
-                PolyCurve = Geometry.Create.PolyCurve(pLines)
+                Opening = Geometry.Create.PolyCurve(pLines)
             };
         }
 
@@ -46,7 +46,7 @@ namespace BH.Engine.Environment
         {
             return new BHE.BuildingElementOpening
             {
-                PolyCurve = Geometry.Create.PolyCurve(new BHG.Polyline[] { pLine })
+                Opening = Geometry.Create.PolyCurve(new BHG.Polyline[] { pLine })
             };
         }
 
@@ -64,9 +64,6 @@ namespace BH.Engine.Environment
             if (be == null || be.BuildingElementProperties == null || !be.BuildingElementProperties.CustomData.ContainsKey("Revit_elementId"))
                 return be;
 
-            BHE.BuildingElementPanel panel = be.BuildingElementGeometry as BHE.BuildingElementPanel;
-            if (panel == null) return be; //Geometry isn't of type BuildingElementPanel
-
             foreach(BHG.ICurve bound in bounds)
             {
                 string revitElementID = (be.BuildingElementProperties.CustomData["Revit_elementId"]).ToString();
@@ -77,10 +74,8 @@ namespace BH.Engine.Environment
                 opening.Name = be.Name;
                 opening.CustomData.Add("Revit_elementId", revitElementID);
 
-                panel.Openings.Add(opening);
+                be.Openings.Add(opening);
             }
-
-            be.BuildingElementGeometry = panel;
 
             return be;
         }
