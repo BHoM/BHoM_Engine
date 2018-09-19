@@ -15,9 +15,9 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static PanelPlanar ToPanelPlanar(this BuildingElementPanel buildingElementPanel)
+        public static PanelPlanar ToPanelPlanar(this BuildingElement buildingElement)
         {
-            return Structure.Create.PanelPlanar(buildingElementPanel.PolyCurve, new List<Opening>());
+            return Structure.Create.PanelPlanar(buildingElement.PanelCurve, new List<Opening>());
         }
 
         /***************************************************/
