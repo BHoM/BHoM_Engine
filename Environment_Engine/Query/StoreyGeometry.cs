@@ -19,7 +19,7 @@ namespace BH.Engine.Environment
 
         public static BHG.Polyline StoreyGeometry(this BH.oM.Architecture.Elements.Level level, List<BHE.Space> spaces)
         {
-            List<BHE.Space> spacesAtLevel = spaces.FindAll(x => x.Level.Elevation == level.Elevation).ToList();
+            /*List<BHE.Space> spacesAtLevel = spaces.FindAll(x => x.Level.Elevation == level.Elevation).ToList();
 
             if (spacesAtLevel.Count == 0)
                 return null;
@@ -37,7 +37,9 @@ namespace BH.Engine.Environment
                 }
             }
 
-            return BH.Engine.Geometry.Create.ConvexHull(ctrlPoints.CullDuplicates());
+            return BH.Engine.Geometry.Create.ConvexHull(ctrlPoints.CullDuplicates());*/
+
+            return new oM.Geometry.Polyline();
         }
     }
 }
