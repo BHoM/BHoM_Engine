@@ -19,7 +19,7 @@ namespace BH.Engine.Environment
 
         public static bool NormalAwayFromSpace(this BHE.BuildingElement buildingElement, BHE.Space space)
         {
-            BHG.Polyline bound = new BHG.Polyline() { ControlPoints = buildingElement.BuildingElementGeometry.ICurve().IControlPoints() };
+            BHG.Polyline bound = new BHG.Polyline() { ControlPoints = buildingElement.PanelCurve.IControlPoints() };
 
             return NormalAwayFromSpace(bound, space);
         }
