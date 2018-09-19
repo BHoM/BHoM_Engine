@@ -14,6 +14,18 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
+        public static Building Building(string name, double latitude, double longitude, double elevation, BH.oM.Geometry.Point location)
+        {
+            return new Building
+            {
+                Name = name,
+                Latitude = latitude,
+                Longitude = longitude,
+                Elevation = elevation,
+                Location = location,
+            };
+        }
+
         public static Building Building(string name, double latitude, double longitude, double elevation)
         {
             return new Building
@@ -22,7 +34,39 @@ namespace BH.Engine.Environment
                 Latitude = latitude,
                 Longitude = longitude,
                 Elevation = elevation,
-                Location = new oM.Geometry.Point()
+            };
+        }
+
+        public static Building Building(string name)
+        {
+            return new Building
+            {
+                Name = name,
+            };
+        }
+
+        public static Building Building(double latitude, double longitude)
+        {
+            return new Building
+            {
+                Latitude = latitude,
+                Longitude = longitude,
+            };
+        }
+
+        public static Building Building(double elevation)
+        {
+            return new Building
+            {
+                Elevation = elevation,
+            };
+        }
+
+        public static Building Building(BH.oM.Geometry.Point location)
+        {
+            return new Building
+            {
+                Location = location,
             };
         }
 
