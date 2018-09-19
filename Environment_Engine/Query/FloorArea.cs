@@ -14,19 +14,7 @@ namespace BH.Engine.Environment
 
         public static double FloorArea(this BHEE.Space bHoMSpace)
         {
-            double floorArea;
-            List<BHEE.BuildingElement> bHoMBuildingElement = bHoMSpace.BuildingElements;
-            List<double> areaSum = new List<double>();
-
-            foreach (BHEE.BuildingElement element in bHoMBuildingElement)
-            {
-                if (Tilt(element.BuildingElementGeometry) == 180) // if floor
-                {
-                    floorArea = element.BuildingElementGeometry.ICurve().IArea();
-                    areaSum.Add(floorArea); //if we have many floor surfaces in the same space we need to calculate the sum
-                }
-            }
-            return areaSum.Sum();
+            throw new NotImplementedException("Calculating the area in the space has not been implemented");
         }
 
         /***************************************************/
