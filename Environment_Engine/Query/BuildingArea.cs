@@ -16,11 +16,7 @@ namespace BH.Engine.Environment
 
         public static double BuildingArea(BHE.Building building)
         {
-            List<double> area = new List<double>();
-            foreach (BHE.Space s in building.Spaces)
-                area.Add(Environment.Query.FloorArea(s));
-
-            return area.Sum();
+            throw new NotImplementedException("Calculating the area in the building has not been implemented");
         }
     }
 }
