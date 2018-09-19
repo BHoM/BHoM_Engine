@@ -18,34 +18,35 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static ICurve Bottom(this IBuildingElementGeometry buildingElementGeometry)
+        public static ICurve Bottom(this IBuildingObject buildingElementGeometry)
         {
-            if (buildingElementGeometry is BuildingElementCurve)
-            {
-                return buildingElementGeometry.ICurve();
-            }
-            else if (buildingElementGeometry is BuildingElementPanel)
-            {
-                BuildingElementPanel aBuildingElementPanel = buildingElementGeometry as BuildingElementPanel;
-                double aZ = double.MaxValue;
-                ICurve aResult = null;
-                foreach (ICurve aCurve in aBuildingElementPanel.PolyCurve.Curves)
-                {
-                    Point aPoint_Start = aCurve.IStartPoint();
-                    Point aPoint_End = aCurve.IEndPoint();
+            if (buildingElementGeometry == null) return null;
 
-                    if (aPoint_End.Z <= aZ && aPoint_Start.Z <= aZ)
-                    {
-                        aZ = Math.Max(aPoint_End.Z, aPoint_Start.Z);
-                        aResult = aCurve;
-                    }
-                }
-                return aResult;
-            }
-            else
+            PolyCurve workingCurves = null;
+
+            if (buildingElementGeometry is Panel)
+                workingCurves = (buildingElementGeometry as Panel).PanelCurve as PolyCurve;
+            else if (buildingElementGeometry is BuildingElement)
+                workingCurves = (buildingElementGeometry as BuildingElement).PanelCurve as PolyCurve;
+            else if (buildingElementGeometry is Opening)
+                workingCurves = (buildingElementGeometry as Opening).OpeningCurve as PolyCurve;
+
+            if (workingCurves == null) return null;
+
+            double aZ = double.MaxValue;
+            ICurve aResult = null;
+            foreach (ICurve aCurve in workingCurves.Curves)
             {
-                return buildingElementGeometry.ICurve();
+                Point aPoint_Start = aCurve.IStartPoint();
+                Point aPoint_End = aCurve.IEndPoint();
+
+                if (aPoint_End.Z <= aZ && aPoint_Start.Z <= aZ)
+                {
+                    aZ = Math.Max(aPoint_End.Z, aPoint_Start.Z);
+                    aResult = aCurve;
+                }
             }
+            return aResult;
         }
 
         /***************************************************/
