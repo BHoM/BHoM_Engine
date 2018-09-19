@@ -17,45 +17,23 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Space Space(string name, string number, IEnumerable<BuildingElement> buildingElements)
+        public static Space Space(string name, string number)
         {
             return new Space
             {
                 Name = name,
                 Number = number,
-                BuildingElements = buildingElements.ToList()
             };
         }
 
         /***************************************************/
 
-        public static Space Space(string name, string number, IEnumerable<BuildingElementPanel> buildingElementsPanel)
-        {
-            List<BuildingElement> aBuildingElementList = new List<BuildingElement>();
-            foreach (BuildingElementPanel aBuildingElementPanel in buildingElementsPanel)
-                aBuildingElementList.Add(BuildingElement(null, aBuildingElementPanel));
-                    
-            return new Space
-            {
-                Name = name,
-                Number = number,
-                BuildingElements = aBuildingElementList
-            };
-        }
-
-        /***************************************************/
-
-        public static Space Space(string name, string number, Point location, Level level)
+        public static Space Space(string number)
         {
             return new Space
             {
-                Name = name,
                 Number = number,
-                Location = location,
-                Level = level
             };
         }
-
-        /***************************************************/
     }
 }
