@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 using BHG = BH.oM.Geometry;
 using BH.Engine.Geometry;
-using BHE = BH.oM.Environment.Elements;
+using BH.oM.Environment.Elements;
 
 namespace BH.Engine.Environment
 {
@@ -16,16 +16,16 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static List<BHG.Polyline> ClosedShellGeometry(this BHE.Space space)
+        public static List<BHG.Polyline> ClosedShellGeometry(this List<BuildingElement> buildingElements)
         {
             List<BHG.Polyline> pLinesCurtainWall = new List<BHG.Polyline>();
             List<BHG.Polyline> pLinesOther = new List<BHG.Polyline>();
 
             //Merge curtain panels
-            foreach (BHE.BuildingElement element in space.BuildingElements)
+            foreach (BuildingElement element in buildingElements)
             {
                 BH.oM.Environment.Properties.BuildingElementProperties beProperty = element.BuildingElementProperties;
-                BHG.Polyline pline = new BHG.Polyline() { ControlPoints = element.BuildingElementGeometry.ICurve().IControlPoints() };
+                BHG.Polyline pline = new BHG.Polyline() { ControlPoints = element.PanelCurve.IControlPoints() };
 
                 if (beProperty != null && beProperty.CustomData.ContainsKey("Family Name") && (beProperty.CustomData["Family Name"].ToString() == "Curtain Wall"))
                     pLinesCurtainWall.Add(pline);
