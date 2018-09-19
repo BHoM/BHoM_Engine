@@ -59,31 +59,6 @@ namespace BH.Engine.Environment
 
         /***************************************************/
 
-        public static IBuildingElementGeometry Copy(this IBuildingElementGeometry buildingElementGeometry, Vector vector)
-        {
-            IBuildingElementGeometry aBuildingElementGeometry = Copy(buildingElementGeometry);
-            aBuildingElementGeometry.Move(vector);
-            return aBuildingElementGeometry;
-        }
-
-        /***************************************************/
-
-        public static BuildingElement Copy(this BuildingElement buildingElement, Vector vector)
-        {
-            BuildingElement aBuildingElement = buildingElement.Copy();
-            aBuildingElement.Move(vector);
-            return aBuildingElement;
-        }
-
-        /***************************************************/
-
-        public static BuildingElement Copy(this BuildingElement buildingElement, Level level)
-        {
-            BuildingElement aBuildingElement = buildingElement.Copy();
-            aBuildingElement.Move(level);
-            return aBuildingElement;
-        }
-
         /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
