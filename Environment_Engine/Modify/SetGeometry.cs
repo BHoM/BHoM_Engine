@@ -15,29 +15,36 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static IBuildingElementGeometry ISetGeometry(this IBuildingElementGeometry buildingElementGeometry, ICurve curve)
+        public static IBuildingElementGeometry ISetGeometry(this IBuildingObject buildingObject, ICurve curve)
         {
-            return SetGeometry(buildingElementGeometry as dynamic, curve as dynamic);
+            return SetGeometry(buildingObject as dynamic, curve as dynamic);
         }
 
         /***************************************************/
 
-        public static BuildingElementPanel SetGeometry(this BuildingElementPanel buildingElementPanel, PolyCurve polyCurve)
+        public static Panel SetGeometry(this Panel buildingElementPanel, PolyCurve polyCurve)
         {
-            BuildingElementPanel aBuildingElementPanel = buildingElementPanel.GetShallowClone() as BuildingElementPanel;
-            aBuildingElementPanel.PolyCurve = polyCurve;
+            Panel aBuildingElementPanel = buildingElementPanel.GetShallowClone() as Panel;
+            aBuildingElementPanel.PanelCurve = polyCurve;
             return aBuildingElementPanel;
         }
 
         /***************************************************/
 
-        public static BuildingElementCurve SetGeometry(this BuildingElementCurve buildingElementCurve, ICurve curve)
+        public static Opening SetGeometry(this Opening opening, PolyCurve polyCurve)
         {
-            BuildingElementCurve aBuildingElementCurve = buildingElementCurve.GetShallowClone() as BuildingElementCurve;
-            aBuildingElementCurve.Curve = curve;
-            return aBuildingElementCurve;
+            Opening aOpening = opening.GetShallowClone() as Opening;
+            aOpening.OpeningCurve = polyCurve;
+            return aOpening;
         }
 
         /***************************************************/
+
+        public static BuildingElement SetGeometry(this BuildingElement element, PolyCurve polyCurve)
+        {
+            BuildingElement aElement = element.GetShallowClone() as BuildingElement;
+            aElement.PanelCurve = polyCurve;
+            return aElement;
+        }
     }
 }

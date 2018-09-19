@@ -1,4 +1,5 @@
-﻿using BH.oM.Structure.Elements;
+﻿using System.Collections.Generic;
+
 using BH.oM.Geometry;
 using BH.Engine.Geometry;
 using BH.oM.Environment.Elements;
@@ -13,19 +14,10 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static BuildingElementCurve Copy(this BuildingElementCurve buildingElementCurve)
+        public static Panel Copy(this Panel buildingElementPanel)
         {
-            BuildingElementCurve aBuildingElementCurve = buildingElementCurve.GetShallowClone(true) as BuildingElementCurve;
-            aBuildingElementCurve.Curve = buildingElementCurve.Curve.IClone();
-            return aBuildingElementCurve;
-        }
-
-        /***************************************************/
-
-        public static BuildingElementPanel Copy(this BuildingElementPanel buildingElementPanel)
-        {
-            BuildingElementPanel aBuildingElementPanel = buildingElementPanel.GetShallowClone(true) as BuildingElementPanel;
-            aBuildingElementPanel.PolyCurve = buildingElementPanel.PolyCurve.IClone() as PolyCurve;
+            Panel aBuildingElementPanel = buildingElementPanel.GetShallowClone(true) as Panel;
+            aBuildingElementPanel.PanelCurve = buildingElementPanel.PanelCurve.IClone() as PolyCurve;
             return aBuildingElementPanel;
         }
 
@@ -49,8 +41,8 @@ namespace BH.Engine.Environment
         public static BuildingElement Copy(this BuildingElement buildingElement)
         {
             BuildingElement aBuildingElement = buildingElement.GetShallowClone(true) as BuildingElement;
-            if (buildingElement.BuildingElementGeometry != null)
-                aBuildingElement.BuildingElementGeometry = aBuildingElement.BuildingElementGeometry.Copy();
+            aBuildingElement.BuildingElementProperties = buildingElement.BuildingElementProperties;
+            aBuildingElement.Openings = new List<Opening>(buildingElement.Openings);
             return aBuildingElement;
         }
 
