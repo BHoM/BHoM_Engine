@@ -21,7 +21,7 @@ namespace BH.Engine.Environment
         {
             List<BHG.Point> nonMatchingPoints = new List<oM.Geometry.Point>();
 
-            foreach(BHE.BuildingElement be in space.BuildingElements)
+            /*foreach(BHE.BuildingElement be in space.BuildingElements)
             {
                 if (be == null) continue;
 
@@ -34,7 +34,7 @@ namespace BH.Engine.Environment
                     if (matchingBE == null)
                         nonMatchingPoints.Add(pt);
                 }
-            }
+            }*/
 
             return nonMatchingPoints;
         }
