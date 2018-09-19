@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using BHEE = BH.oM.Environment.Elements;
+using BH.oM.Environment.Elements;
 using BH.Engine.Geometry;
-using BHEI = BH.oM.Environment.Interface;
+using BH.oM.Environment.Interface;
 using BHG = BH.oM.Geometry;
 
 namespace BH.Engine.Environment
@@ -14,10 +14,10 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static double Orientation(BHEI.IBuildingElementGeometry buildingPanel)
+        public static double Orientation(IBuildingObject buildingPanel)
         {
-            BHEE.BuildingElementPanel panel = buildingPanel as BHEE.BuildingElementPanel;
-            BHG.Polyline pLine = new BHG.Polyline { ControlPoints = panel.PolyCurve.IControlPoints() };
+            Panel panel = buildingPanel as Panel;
+            BHG.Polyline pLine = new BHG.Polyline { ControlPoints = panel.PanelCurve.IControlPoints() };
 
             List<BHG.Point> pts = pLine.DiscontinuityPoints();
             BHG.Plane plane = BH.Engine.Geometry.Create.Plane(pts[0], pts[1], pts[2]); //Some protection on this needed maybe?
