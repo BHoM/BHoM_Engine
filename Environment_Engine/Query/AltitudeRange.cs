@@ -14,13 +14,12 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static double AltitudeRange(this BHEI.IBuildingElementGeometry buildingElementGeometry)
+        public static double AltitudeRange(this BHEI.IBuildingObject buildingElementGeometry)
         {
             BHG.BoundingBox panelBoundingBox = BH.Engine.Geometry.Query.IBounds(buildingElementGeometry.ICurve());
             double altitudeRange = panelBoundingBox.Max.Z - panelBoundingBox.Min.Z;
 
             return altitudeRange;
-
         }
 
         /***************************************************/
