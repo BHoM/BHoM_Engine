@@ -19,7 +19,7 @@ namespace BH.Engine.Environment
 
         public static BHG.Point Centre(this BHE.Space space) //TODO: This does only work for convex spaces. we need to change this method later
         {
-            List<BHE.BuildingElement> buildingElements = space.BuildingElements;
+            /*List<BHE.BuildingElement> buildingElements = space.BuildingElements;
             List<BHG.Point> pts = new List<BHG.Point>();
 
             foreach (BHE.BuildingElement element in buildingElements)
@@ -28,7 +28,9 @@ namespace BH.Engine.Environment
             }
 
             BHG.Point centrePt = BH.Engine.Geometry.Query.Bounds(pts).Centre();
-            return centrePt;
+            return centrePt;*/
+
+            return new oM.Geometry.Point();
         }
 
         /***************************************************/
