@@ -12,7 +12,7 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static double Tilt(this BHEI.IBuildingElementGeometry buildingElementGeometry)
+        public static double Tilt(this BHEI.IBuildingObject buildingElementGeometry)
         {
             double tilt;
             BHG.Polyline pline = new BHG.Polyline { ControlPoints = BH.Engine.Geometry.Query.IControlPoints(buildingElementGeometry.ICurve()) };
