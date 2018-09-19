@@ -11,10 +11,10 @@ namespace BH.Engine.Environment
 
         public static bool IsInternal(this BuildingElement buildingElement)
         {
-            if (buildingElement == null || buildingElement.AdjacentSpaces == null)
+            if (buildingElement == null)
                 return false;
 
-            return (buildingElement.AdjacentSpaces.Count > 1);
+            return buildingElement.BuildingElementProperties.BuildingElementType != BuildingElementType.Window && buildingElement.BuildingElementProperties.BuildingElementType != BuildingElementType.Roof; //TODO: Put a more robust check of whether the element is internal or not in...
         }
 
         /***************************************************/
