@@ -16,7 +16,7 @@ namespace BH.Engine.Environment
         {
             //TODO: This does only work for a space where all of the building element panels have the same height. Make it work for all spaces
 
-            List<BHEE.BuildingElement> bHoMBuildingElement = bHoMSpace.BuildingElements;
+            /*List<BHEE.BuildingElement> bHoMBuildingElement = bHoMSpace.BuildingElements;
 
             double roomheight = 0;
             foreach (BHEE.BuildingElement element in bHoMBuildingElement)
@@ -28,7 +28,9 @@ namespace BH.Engine.Environment
                 }
             }
 
-            return FloorArea(bHoMSpace) * roomheight;
+            return FloorArea(bHoMSpace) * roomheight;*/
+
+            throw new NotImplementedException("Calculating the volume of a space has not been implemented yet");
         }
 
         /***************************************************/
