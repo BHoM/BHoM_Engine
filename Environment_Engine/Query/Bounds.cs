@@ -17,7 +17,7 @@ namespace BH.Engine.Environment
 
         public static BoundingBox Bounds(this Panel buildingElementPanel)
         {
-            return Geometry.Query.Bounds(buildingElementPanel.PolyCurve);
+            return Geometry.Query.Bounds(buildingElementPanel.PanelCurve as PolyCurve);
         }
 
         /***************************************************/
