@@ -14,23 +14,62 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static BuildingElement BuildingElement(BuildingElementProperties buildingElementProperties, BuildingElementPanel buildingElementPanel)
+        public static BuildingElement BuildingElement(BuildingElementProperties properties)
         {
             return new BuildingElement
             {
-                BuildingElementProperties = buildingElementProperties,
-                BuildingElementGeometry = buildingElementPanel
+                BuildingElementProperties = properties,
             };
         }
 
         /***************************************************/
 
-        public static BuildingElement BuildingElement(BuildingElementPanel buildingElementPanel)
+        public static BuildingElement BuildingElement(ICurve panelCurve)
         {
             return new BuildingElement
             {
-                BuildingElementProperties = null,
-                BuildingElementGeometry = buildingElementPanel
+                PanelCurve = panelCurve,
+            };
+        }
+
+        /***************************************************/
+
+        public static BuildingElement BuildingElement(BuildingElementPanel analyticalPanel)
+        {
+            return new BuildingElement
+            {
+                AnalyticalBuildingElementPanel = analyticalPanel,
+            };
+        }
+
+        /***************************************************/
+
+        public static BuildingElement BuildingElement(BuildingElementOpening opening)
+        {
+            List<BuildingElementOpening> openings = new List<oM.Environment.Elements.BuildingElementOpening>();
+            openings.Add(opening);
+
+            return BuildingElement(openings);
+        }
+
+        /***************************************************/
+
+        public static BuildingElement BuildingElement(List<BuildingElementOpening> openings)
+        {
+            return new BuildingElement
+            {
+                Openings = openings,
+            };
+        }
+
+        /***************************************************/
+
+        public static BuildingElement BuildingElement(BuildingElementProperties buildingElementProperties, BuildingElementPanel buildingElementPanel)
+        {
+            return new BuildingElement
+            {
+                BuildingElementProperties = buildingElementProperties,
+                AnalyticalBuildingElementPanel = buildingElementPanel
             };
         }
 
@@ -41,7 +80,7 @@ namespace BH.Engine.Environment
             return new BuildingElement
             {
                 BuildingElementProperties = buildingElementProperties,
-                BuildingElementGeometry = Create.BuildingElementPanel(polyLines)
+                PanelCurve = Geometry.Create.PolyCurve(polyLines),
             };
         }
 
@@ -52,31 +91,7 @@ namespace BH.Engine.Environment
             return new BuildingElement
             {
                 BuildingElementProperties = buildingElementProperties,
-                BuildingElementGeometry = Create.BuildingElementPanel(new ICurve[] { curve })
-            };
-        }
-
-        /***************************************************/
-
-        public static BuildingElement BuildingElement(BuildingElementProperties buildingElementProperties, BuildingElementCurve buildingElementCurve, Level level)
-        {
-            return new BuildingElement
-            {
-                Level = level,
-                BuildingElementProperties = buildingElementProperties,
-                BuildingElementGeometry = buildingElementCurve
-            };
-        }
-
-        /***************************************************/
-
-        public static BuildingElement BuildingElement(BuildingElementProperties buildingElementProperties, BuildingElementPanel buildingElementPanel, Level level)
-        {
-            return new BuildingElement
-            {
-                Level = level,
-                BuildingElementProperties = buildingElementProperties,
-                BuildingElementGeometry = buildingElementPanel
+                PanelCurve = curve,
             };
         }
 
