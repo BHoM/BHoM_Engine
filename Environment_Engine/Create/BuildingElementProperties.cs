@@ -15,7 +15,7 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static BuildingElementProperties BuildingElementProperties(BuildingElementType buildingElementType, string name)
+        public static BuildingElementProperties BuildingElementProperties(string name, BuildingElementType buildingElementType)
         {
             return new BuildingElementProperties
             {
@@ -32,6 +32,16 @@ namespace BH.Engine.Environment
             {
                 Name = name,
                 BuildingElementType = BuildingElementType.Undefined
+            };
+        }
+
+        /***************************************************/
+
+        public static BuildingElementProperties BuildingElementProperties(BuildingElementType type)
+        {
+            return new BuildingElementProperties
+            {
+                BuildingElementType = type,
             };
         }
     }
