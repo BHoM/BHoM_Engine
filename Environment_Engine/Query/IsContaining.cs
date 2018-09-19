@@ -19,7 +19,7 @@ namespace BH.Engine.Environment
 
         public static bool IsContaining(this BHE.Space space, BHG.Point point)
         {
-            List<BHE.BuildingElement> buildingElements = space.BuildingElements;
+            /*List<BHE.BuildingElement> buildingElements = space.BuildingElements;
             List<BHG.Plane> planes = buildingElements.Select(x => x.BuildingElementGeometry.ICurve().IControlPoints().FitPlane()).ToList();
             List<BHG.Point> ctrPoints = buildingElements.SelectMany(x => x.BuildingElementGeometry.ICurve().IControlPoints()).ToList();
             BHG.BoundingBox boundingBox = BH.Engine.Geometry.Query.Bounds(ctrPoints);
@@ -51,7 +51,7 @@ namespace BH.Engine.Environment
                 }
             }
 
-            return ((counter % 2) == 0); //If the number of intersections is odd the point is outsde the space
+            return ((counter % 2) == 0); //If the number of intersections is odd the point is outsde the space*/
         }
     }
 }
