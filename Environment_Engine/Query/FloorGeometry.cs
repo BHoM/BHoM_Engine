@@ -19,22 +19,7 @@ namespace BH.Engine.Environment
 
         public static BHG.Polyline FloorGeometry(this BHE.Space space)
         {
-            List<BHE.BuildingElement> buildingElements = space.BuildingElements;
-            BHG.PolyCurve curve = new oM.Geometry.PolyCurve();
-
-            foreach(BHE.BuildingElement be in buildingElements)
-            {
-                if (BH.Engine.Environment.Query.Tilt(be.BuildingElementGeometry) == 180)
-                    curve = be.BuildingElementGeometry.ICurve() as BHG.PolyCurve; //Is a floor
-                //TODO: What if we have more than one floor?
-            }
-
-            BHG.Polyline floorBoundary = new BHG.Polyline() { ControlPoints = curve.ControlPoints() };
-
-            if (floorBoundary.ControlPoints.Count < 3)
-                return null;
-
-            return floorBoundary;
+            throw new NotImplementedException("Calculating the floor geometry in the space has not been implemented");
         }
     }
 }
