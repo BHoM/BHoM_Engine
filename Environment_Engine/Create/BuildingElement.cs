@@ -96,5 +96,43 @@ namespace BH.Engine.Environment
         }
 
         /***************************************************/
+
+        public static BuildingElement BuildingElement(IEnumerable<ICurve> curves)
+        {
+            return new BuildingElement
+            {
+                PanelCurve = Geometry.Create.PolyCurve(curves),
+            };
+        }
+
+        /***************************************************/
+
+        public static BuildingElement BuildingElement(PolyCurve curve)
+        {
+            return new BuildingElement
+            {
+                PanelCurve = curve,
+            };
+        }
+
+        /***************************************************/
+
+        public static BuildingElement BuildingElement(IEnumerable<Polyline> polylines)
+        {
+            return new BuildingElement
+            {
+                PanelCurve = Geometry.Create.PolyCurve(polylines),
+            };
+        }
+
+        /***************************************************/
+
+        public static BuildingElement BuildingElement(Polyline polyline)
+        {
+            return new BuildingElement
+            {
+                PanelCurve = polyline,
+            };
+        }
     }
 }
