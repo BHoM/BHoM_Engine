@@ -12,7 +12,7 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static double Azimuth(this BHEI.IBuildingElementGeometry buildingElementGeometry, BHG.Vector refVector)
+        public static double Azimuth(this BHEI.IBuildingObject buildingElementGeometry, BHG.Vector refVector)
         {
             BHG.Polyline pline = new BHG.Polyline { ControlPoints = BH.Engine.Geometry.Query.IControlPoints(buildingElementGeometry.ICurve()) };
 
