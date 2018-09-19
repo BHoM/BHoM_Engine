@@ -2,7 +2,6 @@
 
 using BH.oM.Environment.Elements;
 using BH.oM.Environment.Properties;
-using BH.oM.Structure.Elements;
 using BH.oM.Geometry;
 using BH.oM.Architecture.Elements;
 
@@ -34,42 +33,18 @@ namespace BH.Engine.Environment
 
         /***************************************************/
 
-        public static BuildingElement BuildingElement(BuildingElementPanel analyticalPanel)
+        public static BuildingElement BuildingElement(Opening opening)
         {
-            return new BuildingElement
-            {
-                AnalyticalBuildingElementPanel = analyticalPanel,
-            };
+            return BuildingElement(new List<Opening> { opening });
         }
 
         /***************************************************/
 
-        public static BuildingElement BuildingElement(BuildingElementOpening opening)
-        {
-            List<BuildingElementOpening> openings = new List<oM.Environment.Elements.BuildingElementOpening>();
-            openings.Add(opening);
-
-            return BuildingElement(openings);
-        }
-
-        /***************************************************/
-
-        public static BuildingElement BuildingElement(List<BuildingElementOpening> openings)
+        public static BuildingElement BuildingElement(List<Opening> openings)
         {
             return new BuildingElement
             {
                 Openings = openings,
-            };
-        }
-
-        /***************************************************/
-
-        public static BuildingElement BuildingElement(BuildingElementProperties buildingElementProperties, BuildingElementPanel buildingElementPanel)
-        {
-            return new BuildingElement
-            {
-                BuildingElementProperties = buildingElementProperties,
-                AnalyticalBuildingElementPanel = buildingElementPanel
             };
         }
 

@@ -52,7 +52,7 @@
     <Compile Include="Create\Building.cs" />
     <Compile Include="Create\BuildingElement.cs" />
     <Compile Include="Create\BuildingElementOpening.cs" />
-    <Compile Include="Create\BuildingElementPanel.cs" />
+    <Compile Include="Create\Panel.cs" />
     <Compile Include="Create\BuildingElementProperties.cs" />
     <Compile Include="Create\Space.cs" />
     <Compile Include="Query\AdjacentSpaces.cs" />

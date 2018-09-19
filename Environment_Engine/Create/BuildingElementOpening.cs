@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using BHE = BH.oM.Environment.Elements;
+using BH.oM.Environment.Elements;
 using BHG = BH.oM.Geometry;
 
 namespace BH.Engine.Environment
@@ -15,51 +15,51 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static BHE.BuildingElementOpening BuildingElementOpening(BHG.ICurve curve)
+        public static Opening BuildingElementOpening(BHG.ICurve curve)
         {
             return BuildingElementOpening(curve as dynamic);
         }
 
         /***************************************************/
 
-        public static BHE.BuildingElementOpening BuildingElementOpening(BHG.PolyCurve pCurve)
+        public static Opening BuildingElementOpening(BHG.PolyCurve pCurve)
         {
-            return new BHE.BuildingElementOpening
+            return new Opening
             {
-                Opening = pCurve
+                OpeningCurve = pCurve
             };
         }
 
         /***************************************************/
 
-        public static BHE.BuildingElementOpening BuildingElementOpening(IEnumerable<BHG.Polyline> pLines)
+        public static Opening BuildingElementOpening(IEnumerable<BHG.Polyline> pLines)
         {
-            return new BHE.BuildingElementOpening
+            return new Opening
             {
-                Opening = Geometry.Create.PolyCurve(pLines)
+                OpeningCurve = Geometry.Create.PolyCurve(pLines)
             };
         }
 
         /***************************************************/
 
-        public static BHE.BuildingElementOpening BuildingElementOpening(BHG.Polyline pLine)
+        public static Opening BuildingElementOpening(BHG.Polyline pLine)
         {
-            return new BHE.BuildingElementOpening
+            return new Opening
             {
-                Opening = Geometry.Create.PolyCurve(new BHG.Polyline[] { pLine })
+                OpeningCurve = Geometry.Create.PolyCurve(new BHG.Polyline[] { pLine })
             };
         }
 
         /***************************************************/
         
-        public static BHE.BuildingElement BuildingElementOpening(this BHE.BuildingElement be, BHG.ICurve bound)
+        public static BuildingElement BuildingElementOpening(this BuildingElement be, BHG.ICurve bound)
         {
             return be.BuildingElementOpening(new List<BHG.ICurve> { bound });
         }
 
         /***************************************************/
 
-        public static BHE.BuildingElement BuildingElementOpening(this BHE.BuildingElement be, List<BHG.ICurve> bounds)
+        public static BuildingElement BuildingElementOpening(this BuildingElement be, List<BHG.ICurve> bounds)
         {
             if (be == null || be.BuildingElementProperties == null || !be.BuildingElementProperties.CustomData.ContainsKey("Revit_elementId"))
                 return be;
@@ -68,7 +68,7 @@ namespace BH.Engine.Environment
             {
                 string revitElementID = (be.BuildingElementProperties.CustomData["Revit_elementId"]).ToString();
 
-                BHE.BuildingElementOpening opening = BuildingElementOpening(bound);
+                Opening opening = BuildingElementOpening(bound);
 
                 //Assign the properties from the Element to the Opening
                 opening.Name = be.Name;
