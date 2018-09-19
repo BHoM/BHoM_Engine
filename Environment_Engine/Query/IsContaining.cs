@@ -52,6 +52,8 @@ namespace BH.Engine.Environment
             }
 
             return ((counter % 2) == 0); //If the number of intersections is odd the point is outsde the space*/
+
+            return false;
         }
     }
 }
