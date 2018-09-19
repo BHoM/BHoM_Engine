@@ -10,19 +10,24 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static ICurve Curve(this BuildingElementCurve buildingElementCurve)
+        public static ICurve Curve(this Panel buildingElementPanel)
         {
-            return buildingElementCurve.Curve;
+            return buildingElementPanel.PanelCurve;
         }
 
-        public static ICurve Curve(this BuildingElementPanel buildingElementPanel)
+        public static ICurve Curve(this BuildingElement buildingElement)
         {
-            return buildingElementPanel.PolyCurve;
+            return buildingElement.PanelCurve;
         }
 
-        public static ICurve ICurve(this IBuildingElementGeometry buildingElementGeometry)
+        public static ICurve Curve(this Opening opening)
         {
-            return Curve(buildingElementGeometry as dynamic);
+            return opening.OpeningCurve;
+        }
+
+        public static ICurve ICurve(this IBuildingObject buildingObject)
+        {
+            return Curve(buildingObject as dynamic);
         }
 
         /***************************************************/
