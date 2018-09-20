@@ -109,5 +109,17 @@ namespace BH.Engine.Environment
                 PanelCurve = polyline,
             };
         }
+
+        /***************************************************/
+
+        public static BuildingElement BuildingElement(string name, ICurve crv, BuildingElementProperties properties)
+        {
+            return new BuildingElement
+            {
+                Name = name,
+                PanelCurve = crv,
+                BuildingElementProperties = properties,
+            };
+        }
     }
 }
