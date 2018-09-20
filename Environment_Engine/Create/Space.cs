@@ -35,5 +35,38 @@ namespace BH.Engine.Environment
                 Number = number,
             };
         }
+
+        /***************************************************/
+
+        public static Space Space(Point location)
+        {
+            return new Space
+            {
+                Location = location,
+            };
+        }
+
+        /***************************************************/
+
+        public static Space Space(string name, Point location)
+        {
+            return new Space
+            {
+                Name = name,
+                Location = location,
+            };
+        }
+
+        /***************************************************/
+
+        public static Space Space(string name, string number, Point location)
+        {
+            return new Space
+            {
+                Name = name,
+                Number = number,
+                Location = location,
+            };
+        }
     }
 }
