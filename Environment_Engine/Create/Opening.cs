@@ -15,14 +15,14 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Opening BuildingElementOpening(BHG.ICurve curve)
+        public static Opening Opening(BHG.ICurve curve)
         {
-            return BuildingElementOpening(curve as dynamic);
+            return Opening(curve as dynamic);
         }
 
         /***************************************************/
 
-        public static Opening BuildingElementOpening(BHG.PolyCurve pCurve)
+        public static Opening Opening(BHG.PolyCurve pCurve)
         {
             return new Opening
             {
@@ -32,7 +32,7 @@ namespace BH.Engine.Environment
 
         /***************************************************/
 
-        public static Opening BuildingElementOpening(IEnumerable<BHG.Polyline> pLines)
+        public static Opening Opening(IEnumerable<BHG.Polyline> pLines)
         {
             return new Opening
             {
@@ -42,7 +42,7 @@ namespace BH.Engine.Environment
 
         /***************************************************/
 
-        public static Opening BuildingElementOpening(BHG.Polyline pLine)
+        public static Opening Opening(BHG.Polyline pLine)
         {
             return new Opening
             {
@@ -68,7 +68,7 @@ namespace BH.Engine.Environment
             {
                 string revitElementID = (be.BuildingElementProperties.CustomData["Revit_elementId"]).ToString();
 
-                Opening opening = BuildingElementOpening(bound);
+                Opening opening = Opening(bound);
 
                 //Assign the properties from the Element to the Opening
                 opening.Name = be.Name;
