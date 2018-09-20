@@ -70,6 +70,17 @@ namespace BH.Engine.Environment
             };
         }
 
+        public static Building Building(double elevation, double latitude, double longitude, BH.oM.Geometry.Point location)
+        {
+            return new Building
+            {
+                Elevation = elevation,
+                Latitude = latitude,
+                Longitude = longitude,
+                Location = location,
+            };
+        }
+
         /***************************************************/
     }
 }
