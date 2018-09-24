@@ -79,6 +79,7 @@
     <Compile Include="Query\LongestSegment.cs" />
     <Compile Include="Query\NormalAwayFromSpace.cs" />
     <Compile Include="Query\Orientation.cs" />
+    <Compile Include="Query\Spaces.cs" />
     <Compile Include="Query\StoreyGeometry.cs" />
     <Compile Include="Query\UnmatchedPoints.cs" />
     <Compile Include="Query\Volume.cs" />

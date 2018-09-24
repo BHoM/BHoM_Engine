@@ -1,6 +1,9 @@
-﻿using System;
+﻿using System.Linq;
 using System.Collections.Generic;
+
 using BH.oM.Environment.Elements;
+using BH.oM.Geometry;
+using BH.oM.Architecture.Elements;
 
 using BH.oM.Base;
 
@@ -12,18 +15,18 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static List<BuildingElement> BuildingElements(this List<IBHoMObject> bhomObjects)
+        public static List<Space> Spaces(this List<IBHoMObject> bhomObjects)
         {
-            List<BuildingElement> bes = new List<BuildingElement>();
+            List<Space> spaces = new List<Space>();
 
             foreach(IBHoMObject obj in bhomObjects)
             {
-                if (obj is BuildingElement)
-                    bes.Add(obj as BuildingElement);
+                if (obj is Space)
+                    spaces.Add(obj as Space);
             }
 
-            return bes;
+            return spaces;
         }
+
     }
 }
-
