@@ -16,6 +16,17 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
+        public static Panel Panel(ICurve curve, IEnumerable<Opening> openings)
+        {
+            return new Panel
+            {
+                PanelCurve = curve,
+                Openings = openings.ToList(),
+            };
+        }
+
+        /***************************************************/
+
         public static Panel Panel(ICurve curve, PanelProperties properties)
         {
             return new Panel
