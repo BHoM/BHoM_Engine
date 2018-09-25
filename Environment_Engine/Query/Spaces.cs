@@ -28,5 +28,16 @@ namespace BH.Engine.Environment
             return spaces;
         }
 
+        /***************************************************/
+
+        public static List<List<BuildingElement>> Spaces(this List<BuildingElement> buildingElements)
+        {
+            //Create a collection of building elements that enclose a space
+            List<List<BuildingElement>> rtn = new List<List<BuildingElement>>();
+
+            //Find the building elements 
+
+            return rtn;
+        }
     }
 }
