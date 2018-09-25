@@ -46,5 +46,10 @@ namespace BH.Engine.Environment
 
             return levels.Where(x => x.Elevation >= min && x.Elevation <= max).FirstOrDefault();
         }
+
+        public static Level Level(this Space space, IEnumerable<Level> levels)
+        {
+            return levels.Where(x => x.Elevation >= space.Location.Z && x.Elevation <= space.Location.Z).FirstOrDefault();
+        }
     }
 }
