@@ -30,6 +30,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="BHoM, Version=2.0.6843.29432, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\BH.oM.2.0.0\lib\net45\BHoM.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Speech" />
@@ -44,6 +47,9 @@
     <Compile Include="CommandProcessor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SpeakText.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

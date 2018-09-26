@@ -9,6 +9,11 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>BH.Engine.Reflection</RootNamespace>
     <AssemblyName>Reflection_Engine</AssemblyName>
+    <PackageId>BH.Engine.Reflection</PackageId>
+    <PackageVersion>10.0.0</PackageVersion>
+    <Author>BuroHappold</Author>
+    <Description>BHoM Engine - Reflection Engine</Description>
+    <ProjectUrl>https://github.com/BuroHappoldEngineering/BHoM_Engine</ProjectUrl>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -30,9 +35,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="BHoM, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\BHoM\Build\BHoM.dll</HintPath>
+    <Reference Include="BHoM, Version=2.0.6843.29432, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\BH.oM.2.0.0\lib\net45\BHoM.dll</HintPath>
     </Reference>
     <Reference Include="Humanizer, Version=2.2.0.0, Culture=neutral, PublicKeyToken=979442b78dfc278e, processorArchitecture=MSIL">
       <HintPath>..\packages\Humanizer.Core.2.2.0\lib\netstandard1.0\Humanizer.dll</HintPath>
@@ -40,14 +44,6 @@
     </Reference>
     <Reference Include="ICSharpCode.Decompiler, Version=3.1.0.3652, Culture=neutral, PublicKeyToken=d4bfe873e7598c49, processorArchitecture=MSIL">
       <HintPath>..\packages\ICSharpCode.Decompiler.3.1.0.3652\lib\net45\ICSharpCode.Decompiler.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Microsoft.CodeAnalysis, Version=2.8.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.CodeAnalysis.Common.2.8.0\lib\netstandard1.3\Microsoft.CodeAnalysis.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Microsoft.CodeAnalysis.CSharp, Version=2.8.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.CodeAnalysis.CSharp.2.8.0\lib\netstandard1.3\Microsoft.CodeAnalysis.CSharp.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Mono.Cecil, Version=0.10.0.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e, processorArchitecture=MSIL">

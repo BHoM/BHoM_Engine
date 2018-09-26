@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("AcousticSPI_Engine")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("BHoM Acoustic Engine")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("BuroHappold")]
 [assembly: AssemblyProduct("AcousticSPI_Engine")]
@@ -31,5 +31,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.0.0")]
+[assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
