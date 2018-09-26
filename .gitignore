@@ -20,6 +20,7 @@
 *.rar
 *.tar
 *.zip
+*.nupkg
 
 # Logs and databases #
 ######################
