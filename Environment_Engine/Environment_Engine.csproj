@@ -58,6 +58,7 @@
     <Compile Include="Query\AdjacentSpaces.cs" />
     <Compile Include="Query\AdjacentSurface.cs" />
     <Compile Include="Query\AnalyticalPanel.cs" />
+    <Compile Include="Query\Building.cs" />
     <Compile Include="Query\BuildingArea.cs" />
     <Compile Include="Query\BuildingElements.cs" />
     <Compile Include="Query\ClosedShellGeometry.cs" />
