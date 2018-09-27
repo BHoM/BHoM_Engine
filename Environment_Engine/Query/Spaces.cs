@@ -30,14 +30,6 @@ namespace BH.Engine.Environment
 
         /***************************************************/
 
-        public static List<List<BuildingElement>> Spaces(this List<BuildingElement> buildingElements, List<Space> spaces)
-        {
-            //Create a collection of building elements that enclose a space
-            List<List<BuildingElement>> rtn = new List<List<BuildingElement>>();
-
-            //Find the building elements that map around a space
-
-            return rtn;
-        }
+        
     }
 }

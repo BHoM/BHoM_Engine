@@ -34,7 +34,7 @@ namespace BH.Engine.Environment
             }
 
             //Add the rest of the geometries
-            List<BHG.Polyline> mergedPolyLines = Compute.BooleanUnion(pLinesCurtainWall);
+            List<BHG.Polyline> mergedPolyLines = BH.Engine.Geometry.Compute.BooleanUnion(pLinesCurtainWall);
             mergedPolyLines.AddRange(pLinesOther);
 
             return mergedPolyLines;
