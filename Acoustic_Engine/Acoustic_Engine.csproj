@@ -35,7 +35,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="BHoM, Version=2.0.6843.29432, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="BHoM, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\BH.oM.2.0.0\lib\net45\BHoM.dll</HintPath>
     </Reference>
     <Reference Include="Geometry_Engine, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
