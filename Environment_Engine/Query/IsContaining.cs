@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using BHE = BH.oM.Environment.Elements;
-using BHG = BH.oM.Geometry;
+using BH.oM.Environment.Elements;
+using BH.oM.Geometry;
 using BH.Engine.Geometry;
 using BH.Engine.Environment;
 
@@ -17,7 +17,23 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static bool IsContaining(this BHE.Space space, BHG.Point point)
+        public static bool IsContaining(this List<List<BuildingElement>> containers, BuildingElement element)
+        {
+            foreach(List<BuildingElement> lst in containers)
+                if (lst.Where(x => x.BHoM_Guid == element.BHoM_Guid).FirstOrDefault() != null) return true;
+
+            return false;
+        }
+
+        public static bool IsContaining(this List<Point> pts, Point pt)
+        {
+            Point p = pts.Where(point => point.X == pt.X && point.Y == pt.Y && point.Z == pt.Z).FirstOrDefault();
+
+            return (p != null);
+        }
+
+
+        public static bool IsContaining(this Space space, Point point)
         {
             /*List<BHE.BuildingElement> buildingElements = space.BuildingElements;
             List<BHG.Plane> planes = buildingElements.Select(x => x.BuildingElementGeometry.ICurve().IControlPoints().FitPlane()).ToList();

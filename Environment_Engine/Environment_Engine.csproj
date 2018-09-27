@@ -50,6 +50,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Compute\BooleanIntersection.cs" />
     <Compile Include="Convert\PanelPlanar.cs" />
     <Compile Include="Create\Building.cs" />
     <Compile Include="Create\BuildingElement.cs" />
@@ -57,6 +58,7 @@
     <Compile Include="Create\Panel.cs" />
     <Compile Include="Create\BuildingElementProperties.cs" />
     <Compile Include="Create\Space.cs" />
+    <Compile Include="Modify\SplitBuildingElements.cs" />
     <Compile Include="Query\AdjacentSpaces.cs" />
     <Compile Include="Query\AdjacentSurface.cs" />
     <Compile Include="Query\AnalyticalPanel.cs" />
@@ -64,6 +66,7 @@
     <Compile Include="Query\BuildingArea.cs" />
     <Compile Include="Query\BuildingElements.cs" />
     <Compile Include="Query\ClosedShellGeometry.cs" />
+    <Compile Include="Query\CullDuplicates.cs" />
     <Compile Include="Query\Curve.cs" />
     <Compile Include="Modify\Add.cs" />
     <Compile Include="Modify\Copy.cs" />
@@ -73,12 +76,15 @@
     <Compile Include="Query\Bottom.cs" />
     <Compile Include="Query\AltitudeRange.cs" />
     <Compile Include="Query\Altitude.cs" />
+    <Compile Include="Query\ElementsNotMatched.cs" />
     <Compile Include="Query\ExposedToSun.cs" />
     <Compile Include="Query\FloorGeometry.cs" />
+    <Compile Include="Query\IdentifyOverlaps.cs" />
     <Compile Include="Query\Inclination.cs" />
     <Compile Include="Query\IsClosed.cs" />
     <Compile Include="Query\IsContaining.cs" />
     <Compile Include="Query\IsExternal.cs" />
+    <Compile Include="Query\IsIdentical.cs" />
     <Compile Include="Query\IsInternal.cs" />
     <Compile Include="Query\LongestSegment.cs" />
     <Compile Include="Query\NormalAwayFromSpace.cs" />
