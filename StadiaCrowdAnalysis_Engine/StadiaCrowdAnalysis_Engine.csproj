@@ -2,6 +2,8 @@
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
+    <!-- Fallback to using BHoM.dll from locally cloned repository -->
+    <ReferencePath>..\..\BHoM\Build\</ReferencePath>
     <StartAction>Program</StartAction>
     <StartProgram>C:\Program Files\Rhinoceros 5 (64-bit)\System\Rhino.exe</StartProgram>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -112,6 +114,8 @@
   <Import Project="..\packages\Accord.3.5.0\build\Accord.targets" Condition="Exists('..\packages\Accord.3.5.0\build\Accord.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
+    <!-- Fallback to using BHoM.dll from locally cloned repository -->
+    <ReferencePath>..\..\BHoM\Build\</ReferencePath>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\Accord.3.5.0\build\Accord.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Accord.3.5.0\build\Accord.targets'))" />
