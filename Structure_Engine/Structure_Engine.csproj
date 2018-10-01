@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Compute\Integrate.cs" />
+    <Compile Include="Create\FEMesh.cs" />
     <Compile Include="Create\QueryMeshResult.cs" />
     <Compile Include="Create\Edge.cs" />
     <Compile Include="Create\FramingElementProperty.cs" />
