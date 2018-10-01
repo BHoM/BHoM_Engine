@@ -31,34 +31,7 @@ namespace BH.Engine.Structure
 
         public static double Area(this MeshFace face)
         {
-
-            if (face.Nodes.Count == 3)
-            {
-                Point pA = face.Nodes[0].Position;
-                Point pB = face.Nodes[1].Position;
-                Point pC = face.Nodes[2].Position;
-                Vector ab = pB - pA;
-                Vector ac = pC - pA;
-                return ab.CrossProduct(ac).Length() / 2;
-            }
-            else if (face.Nodes.Count == 4)
-            {
-                Point pA = face.Nodes[0].Position;
-                Point pB = face.Nodes[1].Position;
-                Point pC = face.Nodes[2].Position;
-                Point pD = face.Nodes[3].Position;
-                Vector ab = pB - pA;
-                Vector ac = pC - pA;
-
-                Vector cb = pB - pC;
-                Vector cd = pD - pC;
-                return (ab.CrossProduct(ac).Length() + cb.CrossProduct(cd).Length()) / 2;
-            }
-            else
-            {
-                Reflection.Compute.RecordError("Can only calculate area for triangles and quads");
-                return 0;
-            }
+            return face.Geometry().Area();
         }
 
         /***************************************************/
