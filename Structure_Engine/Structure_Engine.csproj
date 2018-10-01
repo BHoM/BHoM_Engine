@@ -85,8 +85,10 @@
     <Compile Include="Modify\ApplyModifiers.cs" />
     <Compile Include="Modify\RecomputeEdges.cs" />
     <Compile Include="Query\AnalyticalBars.cs" />
+    <Compile Include="Query\Area.cs" />
     <Compile Include="Query\ControlPoints.cs" />
     <Compile Include="Query\Default.cs" />
+    <Compile Include="Query\DeformedShape.cs" />
     <Compile Include="Query\DistributedPoints.cs" />
     <Compile Include="Query\Extrude.cs" />
     <Compile Include="Query\CaseType.cs" />
@@ -109,7 +111,9 @@
     <Compile Include="Objects\EqualityComparers\NodeDistanceComparer.cs" />
     <Compile Include="Query\NodeContraint.cs" />
     <Compile Include="Query\DepthAt.cs" />
+    <Compile Include="Query\PlotForce.cs" />
     <Compile Include="Query\PointGrid.cs" />
+    <Compile Include="Query\SelectCase.cs" />
     <Compile Include="Query\ShearArea.cs" />
     <Compile Include="Query\Visualize.cs" />
     <Compile Include="Query\WidthAt.cs" />
