@@ -85,6 +85,42 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
+
+        public static Mesh Geometry(this FEMesh feMesh)
+        {
+            Mesh mesh = new Mesh();
+
+            mesh.Vertices = feMesh.Nodes.Select(x => x.Position).ToList();
+
+            foreach (FEMeshFace feFace in feMesh.MeshFaces)
+            {
+                if (feFace.NodeListIndices.Count < 3)
+                {
+                    Reflection.Compute.RecordError("Insuffiecient node indices");
+                    continue;
+                }
+                if (feFace.NodeListIndices.Count > 4)
+                {
+                    Reflection.Compute.RecordError("To high number of node indices. Can only handle triangular and quads");
+                    continue;
+                }
+
+                Face face = new Face();
+
+                face.A = feFace.NodeListIndices[0];
+                face.B = feFace.NodeListIndices[1];
+                face.C = feFace.NodeListIndices[2];
+
+                if (feFace.NodeListIndices.Count == 4)
+                    face.D = feFace.NodeListIndices[3];
+
+                mesh.Faces.Add(face);
+            }
+
+            return mesh;
+        }
+
+        /***************************************************/
         /**** Public Methods - Interface                ****/
         /***************************************************/
 

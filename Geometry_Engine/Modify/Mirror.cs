@@ -32,11 +32,13 @@ namespace BH.Engine.Geometry
 
         public static CoordinateSystem Mirror(this CoordinateSystem coordinateSystem, Plane p)
         {
+            Vector x = coordinateSystem.X.Mirror(p).Normalise();
+            Vector y = coordinateSystem.Y.Mirror(p).Normalise();
             return new CoordinateSystem
             {
-                X = coordinateSystem.X.Mirror(p).Normalise(),
-                Y = coordinateSystem.Y.Mirror(p).Normalise(),
-                Z = coordinateSystem.Z.Mirror(p).Normalise(),
+                X = x,
+                Y = y,
+                Z = x.CrossProduct(y),
                 Origin = coordinateSystem.Origin.Mirror(p)
             };
         }
