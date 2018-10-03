@@ -29,7 +29,7 @@ namespace BH.Engine.Structure
             foreach (Bar bar in bars)
             {
                 string id = bar.CustomData[adapterId].ToString();
-                List<BarDeformation> deformations = barDeformations.Where(x => x.ObjectId == id).ToList();
+                List<BarDeformation> deformations = barDeformations.Where(x => x.ObjectId.ToString() == id).ToList();
                 deformations.Sort();
                 if (drawSections)
                     geom.AddRange(DeformedShapeSection(bar, deformations, scaleFactor));
@@ -39,6 +39,27 @@ namespace BH.Engine.Structure
             }
 
             return geom;
+        }
+
+        /***************************************************/
+
+
+        public static List<Mesh> DeformedShape(List<FEMesh> meshes, List<MeshResults> meshDeformations, string adapterId, object loadCase, double scaleFactor = 1.0)
+        {
+            //TODO: Filter by case
+            //meshDeformations = meshDeformations.SelectCase(loadCase);
+
+            List<Mesh> defMeshes = new List<Mesh>();
+
+            foreach (FEMesh feMesh in meshes)
+            {
+                string id = feMesh.CustomData[adapterId].ToString();
+                MeshResults deformations = meshDeformations.Where(x => x.ObjectId.ToString() == id && x.MeshResultCollection.First() is MeshDisplacement).First();
+
+                defMeshes.Add(DeformedMesh(feMesh, deformations.MeshResultCollection.Cast<MeshDisplacement>(), adapterId, scaleFactor));
+            }
+
+            return defMeshes;
         }
 
         /***************************************************/
@@ -98,6 +119,58 @@ namespace BH.Engine.Structure
 
 
             return lofts;
+        }
+
+
+        /***************************************************/
+
+        private static Mesh DeformedMesh(FEMesh feMesh, IEnumerable<MeshDisplacement> disps, string adapterId, double scaleFactor)
+        {
+            Mesh mesh = new Mesh();
+
+            foreach (Node node in feMesh.Nodes)
+            {
+                MeshDisplacement disp = disps.FirstOrDefault(x => x.NodeId.ToString() == node.CustomData[adapterId].ToString());
+
+                if (disp == null)
+                {
+                    Reflection.Compute.RecordError("Could not find displacement for node with adapter Id: " + node.CustomData[adapterId].ToString() + ", from mesh with Id: " + feMesh.CustomData[adapterId].ToString());
+                    return new Mesh();
+                }
+
+                Vector dispVector = disp.CoordinateSystem.X * disp.UXX * scaleFactor + disp.CoordinateSystem.Y * disp.UYY * scaleFactor + disp.CoordinateSystem.Z * disp.UZZ * scaleFactor;
+
+                mesh.Vertices.Add(node.Position + dispVector);
+
+            }
+
+            foreach (FEMeshFace feFace in feMesh.MeshFaces)
+            {
+                if (feFace.NodeListIndices.Count < 3)
+                {
+                    Reflection.Compute.RecordError("Insuffiecient node indices");
+                    continue;
+                }
+                if (feFace.NodeListIndices.Count > 4)
+                {
+                    Reflection.Compute.RecordError("To high number of node indices. Can only handle triangular and quads");
+                    continue;
+                }
+
+                Face face = new Face();
+
+                face.A = feFace.NodeListIndices[0];
+                face.B = feFace.NodeListIndices[1];
+                face.C = feFace.NodeListIndices[2];
+
+                if (feFace.NodeListIndices.Count == 4)
+                    face.D = feFace.NodeListIndices[3];
+
+                mesh.Faces.Add(face);
+            }
+
+            return mesh;
+
         }
 
 
