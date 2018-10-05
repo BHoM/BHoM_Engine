@@ -11,8 +11,5 @@
     <description>$description$</description>
     <copyright>$copyright$</copyright>
     <tags>BHoM Engine Reflection</tags>
-    <dependencies>
-      <dependency id="BH.oM" version="[1.0,2.0)" />
-    </dependencies>
   </metadata>
 </package>
