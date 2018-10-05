@@ -35,8 +35,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="BHoM, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\BH.oM.2.0.0\lib\net45\BHoM.dll</HintPath>
+    <Reference Include="BHoM, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\BH.oM.1.0.0\lib\net45\BHoM.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="MongoDB.Bson, Version=2.4.4.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MongoDB.Bson.2.4.4\lib\net45\MongoDB.Bson.dll</HintPath>
