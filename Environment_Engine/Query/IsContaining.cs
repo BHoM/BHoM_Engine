@@ -32,6 +32,41 @@ namespace BH.Engine.Environment
             return (p != null);
         }
 
+        public static bool IsContaining(this List<BuildingElement> space, Point point)
+        {
+            List<Plane> planes = space.Select(x => x.PanelCurve.IControlPoints().FitPlane()).ToList();
+            List<Point> ctrPoints = space.SelectMany(x => x.PanelCurve.IControlPoints()).ToList();
+            BoundingBox boundingBox = BH.Engine.Geometry.Query.Bounds(ctrPoints);
+
+            if (!BH.Engine.Geometry.Query.IsContaining(boundingBox, point)) return false;
+
+            //We need to check one line that starts in the point and end outside the bounding box
+            Vector vector = new Vector() { X = 1, Y = 0, Z = 0 };
+            //Use a length longer than the longest side in the bounding box. Change to infinite line?
+            Line line = new Line() { Start = point, End = point.Translate(vector * (((boundingBox.Max - boundingBox.Min).Length()) * 10)) };
+
+            //Check intersections
+            int counter = 0;
+            List<Point> intersectPoints = new List<Point>();
+
+            for (int x = 0; x < planes.Count; x++)
+            {
+                if ((BH.Engine.Geometry.Query.PlaneIntersection(line, planes[x], false)) == null) continue;
+
+                List<Point> intersectingPoints = new List<oM.Geometry.Point>();
+                intersectingPoints.Add(BH.Engine.Geometry.Query.PlaneIntersection(line, planes[x]));
+                Polyline pLine = new Polyline() { ControlPoints = space[x].PanelCurve.IControlPoints() };
+
+                if (intersectingPoints != null && BH.Engine.Geometry.Query.IsContaining(pLine, intersectingPoints, true, 1e-05))
+                {
+                    intersectPoints.AddRange(intersectingPoints);
+                    if (intersectPoints.CullDuplicates().Count == intersectPoints.Count()) //Check if the point already has been added to the list
+                        counter++;
+                }
+            }
+
+            return ((counter % 2) == 0); //If the number of intersections is odd the point is outsde the space
+        }
 
         public static bool IsContaining(this Space space, Point point)
         {

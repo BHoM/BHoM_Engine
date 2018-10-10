@@ -50,6 +50,24 @@ namespace BH.Engine.Environment
 
         /***************************************************/
 
+        public static BuildingElement BuildingElement(ICurve crv, Opening opening)
+        {
+            return BuildingElement(new List<ICurve> { crv }, new List<Opening> { opening });
+        }
+
+        /***************************************************/
+
+        public static BuildingElement BuildingElement(IEnumerable<ICurve> curves, List<Opening> openings)
+        {
+            return new BuildingElement
+            {
+                PanelCurve = BH.Engine.Geometry.Create.PolyCurve(curves),
+                Openings = openings,
+            };
+        }
+        
+        /***************************************************/
+
         public static BuildingElement BuildingElement(BuildingElementProperties buildingElementProperties, IEnumerable<Polyline> polyLines)
         {
             return new BuildingElement

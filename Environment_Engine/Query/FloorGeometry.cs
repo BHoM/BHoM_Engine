@@ -21,5 +21,34 @@ namespace BH.Engine.Environment
         {
             throw new NotImplementedException("Calculating the floor geometry in the space has not been implemented");
         }
+
+        public static BHG.Polyline FloorGeometry(this List<BHE.BuildingElement> space)
+        {
+            BHE.BuildingElement floor = null;
+
+            foreach(BHE.BuildingElement be in space)
+            {
+                if (BH.Engine.Environment.Query.Tilt(be) == 0)
+                {
+                    if(floor == null)
+                        floor = be;
+                    else
+                    {
+                        //Multiple elements could be a floor - assign the one with the lowest Z
+                        if (floor.MinimumLevel() > be.MinimumLevel())
+                            floor = be;
+                    }
+                }
+            }
+
+            if (floor == null) return null;
+
+            BHG.Polyline floorGeometry = floor.PanelCurve as BHG.Polyline;
+
+            if (floorGeometry.ControlPoints.Count < 3)
+                return null;
+
+            return floorGeometry;
+        }
     }
 }

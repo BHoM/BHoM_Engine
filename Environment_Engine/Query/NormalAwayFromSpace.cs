@@ -17,7 +17,7 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static bool NormalAwayFromSpace(this BHE.BuildingElement buildingElement, BHE.Space space)
+        public static bool NormalAwayFromSpace(this BHE.BuildingElement buildingElement, List<BHE.BuildingElement> space)
         {
             BHG.Polyline bound = new BHG.Polyline() { ControlPoints = buildingElement.PanelCurve.IControlPoints() };
 
@@ -26,7 +26,7 @@ namespace BH.Engine.Environment
 
         /***************************************************/
 
-        public static bool NormalAwayFromSpace(this BHG.Polyline pline, BHE.Space space)
+        public static bool NormalAwayFromSpace(this BHG.Polyline pline, List<BHE.BuildingElement> space)
         {
             List<BHG.Point> centrePtList = new List<BHG.Point>();
             BHG.Point centrePt = pline.Centre();
