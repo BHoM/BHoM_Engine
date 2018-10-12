@@ -137,7 +137,8 @@ namespace BH.Engine.Serialiser
                     
             }
             RegisterClassMap(typeof(System.Drawing.Color));
-            RegisterClassMap(typeof(MethodBase));
+            RegisterClassMap(typeof(MethodInfo));
+            RegisterClassMap(typeof(ConstructorInfo));
 
             m_TypesRegistered = true;
         }
