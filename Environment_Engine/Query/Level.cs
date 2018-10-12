@@ -51,5 +51,29 @@ namespace BH.Engine.Environment
         {
             return levels.Where(x => x.Elevation >= space.Location.Z && x.Elevation <= space.Location.Z).FirstOrDefault();
         }
+
+        public static Level Level(this List<BuildingElement> space, Level level)
+        {
+            Polyline floor = space.FloorGeometry();
+            List<Point> floorPts = floor.IControlPoints();
+
+            bool allPointsOnLevel = true;
+            foreach(Point pt in floorPts)
+                allPointsOnLevel &= (pt.Z > (level.Elevation - BH.oM.Geometry.Tolerance.Distance) && pt.Z < (level.Elevation + BH.oM.Geometry.Tolerance.Distance));
+
+            if (!allPointsOnLevel) return null;
+            return level;
+        }
+
+        public static Level Level(this List<BuildingElement> space, List<Level> levels)
+        {
+            foreach(Level l in levels)
+            {
+                Level match = space.Level(l);
+                if (match != null) return match;
+            }
+
+            return null;
+        }
     }
 }

@@ -139,5 +139,24 @@ namespace BH.Engine.Environment
                 BuildingElementProperties = properties,
             };
         }
+
+        /***************************************************/
+
+        public static BuildingElement BuildingElement(ICurve crv, Opening opening, BuildingElementProperties properties)
+        {
+            return BuildingElement(crv, new List<Opening> { opening }, properties);
+        }
+
+        /***************************************************/
+
+        public static BuildingElement BuildingElement(ICurve crv, List<Opening> openings, BuildingElementProperties properties)
+        {
+            return new BuildingElement
+            {
+                PanelCurve = crv,
+                Openings = openings,
+                BuildingElementProperties = properties,
+            };
+        }
     }
 }
