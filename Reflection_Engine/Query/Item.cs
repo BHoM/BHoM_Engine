@@ -10,10 +10,26 @@ namespace BH.Engine.Reflection
     public static partial class Query
     {
         /***************************************************/
+        /**** Interface Methods                         ****/
+        /***************************************************/
+
+        public static object IItem(this object obj, int index)
+        {
+            return Item(obj as dynamic, index);
+        }
+
+        /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static object Item<T>(Output<T> output, int index)
+        public static object Item<T>(this List<T> list, int index)
+        {
+            return list[index];
+        }
+
+        /***************************************************/
+
+        public static object Item<T>(this Output<T> output, int index)
         {
             if (index == 0)
                 return output.Item1;
