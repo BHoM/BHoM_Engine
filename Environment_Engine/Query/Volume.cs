@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using BHEE = BH.oM.Environment.Elements;
+using BH.oM.Environment.Elements;
 using BH.Engine.Geometry;
 
 namespace BH.Engine.Environment
@@ -12,7 +12,7 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static double Volume(this BHEE.Space bHoMSpace)
+        public static double Volume(this Space bHoMSpace)
         {
             //TODO: This does only work for a space where all of the building element panels have the same height. Make it work for all spaces
 
@@ -34,5 +34,17 @@ namespace BH.Engine.Environment
         }
 
         /***************************************************/
+
+        public static double Volume(this List<BuildingElement> space)
+        {
+            //TODO: Make this more accurate for irregular spaces
+            double maxHeight = 0;
+            foreach (BuildingElement be in space)
+                maxHeight = Math.Max(maxHeight, (be.MaximumLevel() - be.MinimumLevel()));
+
+            double area = space.Area();
+
+            return area * maxHeight;
+        }
     }
 }

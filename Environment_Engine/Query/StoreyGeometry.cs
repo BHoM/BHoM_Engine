@@ -41,5 +41,28 @@ namespace BH.Engine.Environment
 
             return new oM.Geometry.Polyline();
         }
+
+        public static BHG.Polyline StoreyGeometry(this BH.oM.Architecture.Elements.Level level, List<List<BHE.BuildingElement>> spaces)
+        {
+            List<List<BHE.BuildingElement>> spacesAtLevel = spaces.FindAll(x => x.Level(level) != null).ToList();
+
+            if (spacesAtLevel.Count == 0) return null;
+
+            List<BHG.Point> ctrlPoints = new List<BHG.Point>();
+
+            foreach (List<BHE.BuildingElement> space in spacesAtLevel)
+            {
+                foreach (BHE.BuildingElement element in space)
+                {
+                    foreach (BHG.Point pt in element.PanelCurve.IControlPoints())
+                    {
+                        if (pt.Z > (level.Elevation - BH.oM.Geometry.Tolerance.Distance) && pt.Z < (level.Elevation + BH.oM.Geometry.Tolerance.Distance))
+                            ctrlPoints.Add(pt);
+                    }
+                }
+            }
+
+            return BH.Engine.Geometry.Create.ConvexHull(ctrlPoints.CullDuplicates());
+        }
     }
 }

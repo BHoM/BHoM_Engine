@@ -34,8 +34,8 @@ namespace BH.Engine.Environment
         {
             List<Space> spaces = new List<Space>();
 
-            foreach (List<BuildingElement> space in besAsSpace)
-                spaces.Add(space.Space());
+            for (int x = 0; x < besAsSpace.Count; x++)
+                spaces.Add(besAsSpace[x].Space(x.ToString(), x.ToString()));
 
             return spaces;
         }
@@ -50,6 +50,20 @@ namespace BH.Engine.Environment
             string zName = spaceCentre.Z.ToString().Length > 3 ? spaceCentre.Z.ToString().Substring(0, 3) : spaceCentre.Z.ToString();
             string spaceName = xName + "-" + yName + "-" + zName;
             return Create.Space(spaceName, spaceName, space.SpaceCentre());
+        }
+
+        /***************************************************/
+
+        public static Space Space(this List<BuildingElement> space, string spaceNumber, string spaceName)
+        {
+            return Create.Space(spaceName, spaceNumber, space.SpaceCentre());
+        }
+
+        /***************************************************/
+
+        public static Space Space(this List<BuildingElement> space, int spaceNumber, string spaceName)
+        {
+            return Space(space, spaceNumber.ToString(), spaceName);
         }
     }
 }
