@@ -1,6 +1,7 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.IO;
 using MongoDB.Bson.Serialization;
+using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Bson.Serialization.Serializers;
 using System;
 using System.Collections.Generic;
@@ -10,8 +11,15 @@ using System.Reflection;
 
 namespace BH.Engine.Serialiser.BsonSerializers
 {
-    public class MethodBaseSerializer : SerializerBase<MethodBase>
+    public class MethodBaseSerializer : SerializerBase<MethodBase>, IBsonPolymorphicSerializer
     {
+        /*******************************************/
+        /**** Properties                        ****/
+        /*******************************************/
+
+        public bool IsDiscriminatorCompatibleWithObjectSerializer { get; } = true;
+
+
         /*******************************************/
         /**** Public Methods                    ****/
         /*******************************************/
@@ -20,6 +28,10 @@ namespace BH.Engine.Serialiser.BsonSerializers
         {
             var bsonWriter = context.Writer;
             bsonWriter.WriteStartDocument();
+
+            var discriminator = m_DiscriminatorConvention.GetDiscriminator(typeof(object), typeof(MethodBase));
+            bsonWriter.WriteName(m_DiscriminatorConvention.ElementName);
+            BsonValueSerializer.Instance.Serialize(context, discriminator);
 
             bsonWriter.WriteName("TypeName");
             bsonWriter.WriteString(value.DeclaringType.AssemblyQualifiedName);
@@ -43,6 +55,10 @@ namespace BH.Engine.Serialiser.BsonSerializers
         {
             var bsonReader = context.Reader;
             bsonReader.ReadStartDocument();
+
+            string text = bsonReader.ReadName();
+            if (text == m_DiscriminatorConvention.ElementName)
+                bsonReader.SkipValue();
 
             bsonReader.ReadName();
             string typeName = bsonReader.ReadString();
@@ -130,5 +146,7 @@ namespace BH.Engine.Serialiser.BsonSerializers
         }
 
         /*******************************************/
+
+        private IDiscriminatorConvention m_DiscriminatorConvention = BsonSerializer.LookupDiscriminatorConvention(typeof(object));
     }
 }

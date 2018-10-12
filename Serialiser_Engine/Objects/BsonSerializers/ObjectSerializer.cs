@@ -5,6 +5,7 @@ using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Bson.Serialization.Serializers;
 using System;
+using System.Reflection;
 
 namespace BH.Engine.Serialiser.BsonSerializers
 {
@@ -108,6 +109,55 @@ namespace BH.Engine.Serialiser.BsonSerializers
             }
         }
 
+        /***************************************************/
+
+        public override object Deserialize(BsonDeserializationContext context, BsonDeserializationArgs args)
+        {
+            IBsonReader reader = context.Reader;
+            BsonType currentBsonType = reader.GetCurrentBsonType();
+            switch (currentBsonType)
+            {
+                case BsonType.Array:
+                    if (context.DynamicArraySerializer != null)
+                    {
+                        return context.DynamicArraySerializer.Deserialize(context);
+                    }
+                    break;
+                case BsonType.Binary:
+                    {
+                        BsonBinaryData bsonBinaryData = reader.ReadBinaryData();
+                        BsonBinarySubType subType = bsonBinaryData.SubType;
+                        if (subType == BsonBinarySubType.UuidStandard || subType == BsonBinarySubType.UuidLegacy)
+                        {
+                            return bsonBinaryData.ToGuid();
+                        }
+                        break;
+                    }
+                case BsonType.Boolean:
+                    return reader.ReadBoolean();
+                case BsonType.DateTime:
+                    return new BsonDateTime(reader.ReadDateTime()).ToUniversalTime();
+                case BsonType.Decimal128:
+                    return reader.ReadDecimal128();
+                case BsonType.Document:
+                    return DeserializeDiscriminatedValue(context, args);
+                case BsonType.Double:
+                    return reader.ReadDouble();
+                case BsonType.Int32:
+                    return reader.ReadInt32();
+                case BsonType.Int64:
+                    return reader.ReadInt64();
+                case BsonType.Null:
+                    reader.ReadNull();
+                    return null;
+                case BsonType.ObjectId:
+                    return reader.ReadObjectId();
+                case BsonType.String:
+                    return reader.ReadString();
+            }
+            throw new FormatException($"ObjectSerializer does not support BSON type '{currentBsonType}'.");
+        }
+
 
         /***************************************************/
         /**** Private Helper Methods                    ****/
@@ -115,6 +165,8 @@ namespace BH.Engine.Serialiser.BsonSerializers
 
         private void SerializeDiscriminatedValue(BsonSerializationContext context, BsonSerializationArgs args, object value, Type actualType)
         {
+            if (actualType.Name == "RuntimeMethodInfo")
+                actualType = typeof(MethodBase);
             var serializer = BsonSerializer.LookupSerializer(actualType);
 
             var polymorphicSerializer = serializer as IBsonPolymorphicSerializer;
@@ -155,6 +207,57 @@ namespace BH.Engine.Serialiser.BsonSerializers
                     
                 }
             }
+        }
+
+        /***************************************************/
+
+        private object DeserializeDiscriminatedValue(BsonDeserializationContext context, BsonDeserializationArgs args)
+        {
+            IBsonReader reader = context.Reader;
+            Type actualType = _discriminatorConvention.GetActualType(reader, typeof(object));
+            if (actualType == typeof(object))
+            {
+                BsonType currentBsonType = reader.GetCurrentBsonType();
+                if (currentBsonType == BsonType.Document && context.DynamicDocumentSerializer != null)
+                {
+                    return context.DynamicDocumentSerializer.Deserialize(context, args);
+                }
+                reader.ReadStartDocument();
+                reader.ReadEndDocument();
+                return new object();
+            }
+            IBsonSerializer bsonSerializer = BsonSerializer.LookupSerializer(actualType);
+            IBsonPolymorphicSerializer bsonPolymorphicSerializer = bsonSerializer as IBsonPolymorphicSerializer;
+            if (bsonPolymorphicSerializer != null && bsonPolymorphicSerializer.IsDiscriminatorCompatibleWithObjectSerializer)
+            {
+                return bsonSerializer.Deserialize(context, args);
+            }
+            object result = null;
+            bool flag = false;
+            reader.ReadStartDocument();
+            while (reader.ReadBsonType() != 0)
+            {
+                string text = reader.ReadName();
+                if (text == _discriminatorConvention.ElementName)
+                {
+                    reader.SkipValue();
+                }
+                else
+                {
+                    if (!(text == "_v"))
+                    {
+                        throw new FormatException($"Unexpected element name: '{text}'.");
+                    }
+                    result = bsonSerializer.Deserialize(context);
+                    flag = true;
+                }
+            }
+            reader.ReadEndDocument();
+            if (!flag)
+            {
+                throw new FormatException("_v element missing.");
+            }
+            return result;
         }
 
 
