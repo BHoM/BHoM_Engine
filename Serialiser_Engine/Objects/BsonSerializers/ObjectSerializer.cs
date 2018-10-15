@@ -165,8 +165,10 @@ namespace BH.Engine.Serialiser.BsonSerializers
 
         private void SerializeDiscriminatedValue(BsonSerializationContext context, BsonSerializationArgs args, object value, Type actualType)
         {
-            if (actualType.Name == "RuntimeMethodInfo")
+            if (actualType.Name == "RuntimeMethodInfo" || actualType.Name == "RuntimeConstructorInfo")
                 actualType = typeof(MethodBase);
+            else if (actualType.Name == "RuntimeType")
+                    actualType = typeof(Type);
             var serializer = BsonSerializer.LookupSerializer(actualType);
 
             var polymorphicSerializer = serializer as IBsonPolymorphicSerializer;
