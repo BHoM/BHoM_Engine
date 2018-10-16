@@ -34,7 +34,7 @@ namespace BH.Engine.Serialiser.BsonSerializers
             BsonValueSerializer.Instance.Serialize(context, discriminator);
 
             bsonWriter.WriteName("TypeName");
-            bsonWriter.WriteString(value.DeclaringType.AssemblyQualifiedName);
+            bsonWriter.WriteString(value.DeclaringType.ToJson());
 
             bsonWriter.WriteName("MethodName");
             bsonWriter.WriteString(value.Name);
@@ -43,7 +43,7 @@ namespace BH.Engine.Serialiser.BsonSerializers
             bsonWriter.WriteName("Parameters");
             bsonWriter.WriteStartArray();
             foreach (ParameterInfo info in parameters)
-                bsonWriter.WriteString(info.ParameterType.AssemblyQualifiedName);
+                bsonWriter.WriteString(info.ParameterType.ToJson());
             bsonWriter.WriteEndArray();
 
             bsonWriter.WriteEndDocument();
@@ -77,7 +77,7 @@ namespace BH.Engine.Serialiser.BsonSerializers
 
             try
             {
-                MethodBase method = RestoreMethod(Type.GetType(typeName), methodName, paramTypes.Select(x => Type.GetType(x)).ToList());
+                MethodBase method = RestoreMethod((Type)Convert.FromJson(typeName), methodName, paramTypes/*.Select(x => (Type)Convert.FromJson(x)).ToList()*/);
                 if (method == null)
                     Reflection.Compute.RecordError("Method " + methodName + " from " + typeName + " failed to deserialise.");
                 return method;
@@ -94,7 +94,7 @@ namespace BH.Engine.Serialiser.BsonSerializers
         /**** Private Methods                   ****/
         /*******************************************/
 
-        private static MethodBase RestoreMethod(Type type, string methodName, List<Type> paramTypes)
+        private static MethodBase RestoreMethod(Type type, string methodName, List<string> paramTypes)
         {
             List<MethodBase> methods;
             if (methodName == ".ctor")
@@ -111,7 +111,7 @@ namespace BH.Engine.Serialiser.BsonSerializers
                     ParameterInfo[] parameters = method.GetParameters();
                     if (parameters.Length == paramTypes.Count)
                     {
-                        if (method.ContainsGenericParameters && method is MethodInfo)
+                        /*if (method.ContainsGenericParameters && method is MethodInfo)
                         {
                             Type[] generics = method.GetGenericArguments().Select(x => GetTypeFromGenericParameters(x)).ToArray();
                             method = ((MethodInfo)method).MakeGenericMethod(generics);
@@ -122,7 +122,13 @@ namespace BH.Engine.Serialiser.BsonSerializers
                         for (int i = 0; i < paramTypes.Count; i++)
                         {
                             matching &= (paramTypes[i] == null || parameters[i].ParameterType == paramTypes[i]);
-                        }
+                        }*/
+
+                        bool matching = true;
+                        List<string> names = parameters.Select(x => Convert.ToJson(x.ParameterType)).ToList();
+                        for (int i = 0; i < paramTypes.Count; i++)
+                            matching &= names[i] == paramTypes[i];
+
                         if (matching)
                         {
                             return method;

@@ -44,7 +44,18 @@ namespace BH.Engine.Serialiser.BsonSerializers
             }
             else
             {
-                bsonWriter.WriteString(value.FullName);
+                if (value.Namespace.StartsWith("BH.oM"))
+                    bsonWriter.WriteString(value.FullName);
+                else if (value.AssemblyQualifiedName != null)
+                    bsonWriter.WriteString(value.AssemblyQualifiedName);
+                else
+                {
+                    Type generic = value.GetGenericTypeDefinition();
+                    if (generic.AssemblyQualifiedName != null)
+                        bsonWriter.WriteString(generic.AssemblyQualifiedName);
+                    else
+                        bsonWriter.WriteString(""); //TODO: is that even possible?
+                }
             }
 
             bsonWriter.WriteEndDocument();
@@ -71,7 +82,13 @@ namespace BH.Engine.Serialiser.BsonSerializers
                 if (string.IsNullOrEmpty(fullName))
                     return null;
 
-                Type type = Reflection.Create.Type(fullName);
+                Type type = null;
+                if (fullName.StartsWith("BH.oM"))
+                    type = Reflection.Create.Type(fullName);
+                else
+                    type = Type.GetType(fullName);
+
+
                 if (type == null)
                     Reflection.Compute.RecordError("Type " + fullName + " failed to deserialise.");
                 return type;
