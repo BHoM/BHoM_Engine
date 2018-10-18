@@ -15,35 +15,35 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static IBuildingElementGeometry ISetGeometry(this IBuildingObject buildingObject, ICurve curve)
-        {
+        public static IBuildingObject ISetGeometry(this IBuildingObject buildingObject, ICurve curve)
+        { 
             return SetGeometry(buildingObject as dynamic, curve as dynamic);
         }
 
         /***************************************************/
 
-        public static Panel SetGeometry(this Panel buildingElementPanel, PolyCurve polyCurve)
+        public static Panel SetGeometry(this Panel buildingElementPanel, ICurve curve)
         {
             Panel aBuildingElementPanel = buildingElementPanel.GetShallowClone() as Panel;
-            aBuildingElementPanel.PanelCurve = polyCurve;
+            aBuildingElementPanel.PanelCurve = curve;
             return aBuildingElementPanel;
         }
 
         /***************************************************/
 
-        public static Opening SetGeometry(this Opening opening, PolyCurve polyCurve)
+        public static Opening SetGeometry(this Opening opening, ICurve curve)
         {
             Opening aOpening = opening.GetShallowClone() as Opening;
-            aOpening.OpeningCurve = polyCurve;
+            aOpening.OpeningCurve = curve;
             return aOpening;
         }
 
         /***************************************************/
 
-        public static BuildingElement SetGeometry(this BuildingElement element, PolyCurve polyCurve)
+        public static BuildingElement SetGeometry(this BuildingElement element, ICurve curve)
         {
             BuildingElement aElement = element.GetShallowClone() as BuildingElement;
-            aElement.PanelCurve = polyCurve;
+            aElement.PanelCurve = curve;
             return aElement;
         }
     }

@@ -17,16 +17,16 @@ namespace BH.Engine.Environment
         public static Panel Copy(this Panel buildingElementPanel)
         {
             Panel aBuildingElementPanel = buildingElementPanel.GetShallowClone(true) as Panel;
-            aBuildingElementPanel.PanelCurve = buildingElementPanel.PanelCurve.IClone() as PolyCurve;
+            aBuildingElementPanel.PanelCurve = buildingElementPanel.PanelCurve.IClone();
             return aBuildingElementPanel;
         }
 
         /***************************************************/
 
-        public static IBuildingElementGeometry Copy(this IBuildingElementGeometry buildingElementGeometry)
+        public static IBuildingObject Copy(this IBuildingObject buildingObject)
         {
-            IBuildingElementGeometry aBuildingElementGeometry = Copy(buildingElementGeometry as dynamic);
-            return aBuildingElementGeometry;
+            IBuildingObject aBuildingObject = Copy(buildingObject as dynamic);
+            return aBuildingObject;
         }
 
         /***************************************************/
