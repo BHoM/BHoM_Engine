@@ -65,7 +65,7 @@ namespace BH.Engine.Environment
                 }
             }
 
-            return ((counter % 2) == 0); //If the number of intersections is odd the point is outsde the space
+            return !((counter % 2) == 0); //If the number of intersections is odd the point is outsde the space
         }
 
         public static bool IsContaining(this Space space, Point point)
