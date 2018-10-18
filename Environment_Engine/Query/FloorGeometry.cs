@@ -28,7 +28,8 @@ namespace BH.Engine.Environment
 
             foreach(BHE.BuildingElement be in space)
             {
-                if (BH.Engine.Environment.Query.Tilt(be) == 0)
+                double tilt = Tilt(be);
+                if (tilt == 0 || tilt == 180)
                 {
                     if(floor == null)
                         floor = be;

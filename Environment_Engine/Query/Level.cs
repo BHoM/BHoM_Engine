@@ -9,6 +9,8 @@ using System.Collections.Generic;
 
 using BH.Engine.Geometry;
 
+using BH.oM.Base;
+
 namespace BH.Engine.Environment
 {
     public static partial class Query
@@ -16,6 +18,19 @@ namespace BH.Engine.Environment
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
+
+        public static List<Level> Levels(this List<BHoMObject> bhomObjects)
+        {
+            List<Level> levels = new List<Level>();
+
+            foreach (IBHoMObject obj in bhomObjects)
+            {
+                if (obj is Level)
+                    levels.Add(obj as Level);
+            }
+
+            return levels;
+        }
 
         public static double MinimumLevel(this BuildingElement bElement)
         {
@@ -55,6 +70,8 @@ namespace BH.Engine.Environment
         public static Level Level(this List<BuildingElement> space, Level level)
         {
             Polyline floor = space.FloorGeometry();
+            if (floor == null) return null;
+
             List<Point> floorPts = floor.IControlPoints();
 
             bool allPointsOnLevel = true;
