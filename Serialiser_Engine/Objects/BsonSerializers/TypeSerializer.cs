@@ -34,27 +34,44 @@ namespace BH.Engine.Serialiser.BsonSerializers
             bsonWriter.WriteName(m_DiscriminatorConvention.ElementName);
             BsonValueSerializer.Instance.Serialize(context, discriminator);
 
-            bsonWriter.WriteName("Name");
             if (value == null)
             {
                 //Using context.Writer.WriteNull() leads to problem in the deserialisation. 
                 //We think that BSON think that the types will always be types to be deserialised rather than properties of objects.
                 //If that type is null bson throws an exception believing that it wont be able to deserialise an object of type null, while for this case it is ment to be used as a property.
+                bsonWriter.WriteName("Name");
                 bsonWriter.WriteString("");
             }
             else
             {
-                if (value.Namespace.StartsWith("BH.oM"))
+                // Handle the case of generic types
+                Type[] generics = new Type[] { };
+                if (value.IsGenericType)
+                {
+                    generics = value.GetGenericArguments();
+                    value = value.GetGenericTypeDefinition();
+                }
+
+                // Write the name of the type
+                bsonWriter.WriteName("Name");
+                if (value.IsGenericParameter)
+                    bsonWriter.WriteString("T");
+                else if (value.Namespace.StartsWith("BH.oM"))
                     bsonWriter.WriteString(value.FullName);
                 else if (value.AssemblyQualifiedName != null)
                     bsonWriter.WriteString(value.AssemblyQualifiedName);
                 else
+                    bsonWriter.WriteString(""); //TODO: is that even possible?
+
+
+                // Add additional information for generic types
+                if (generics.Length > 0)
                 {
-                    Type generic = value.GetGenericTypeDefinition();
-                    if (generic.AssemblyQualifiedName != null)
-                        bsonWriter.WriteString(generic.AssemblyQualifiedName);
-                    else
-                        bsonWriter.WriteString(""); //TODO: is that even possible?
+                    bsonWriter.WriteName("GenericArguments");
+                    bsonWriter.WriteStartArray();
+                    foreach (Type arg in value.GetGenericArguments())
+                        BsonSerializer.Serialize(bsonWriter, arg);
+                    bsonWriter.WriteEndArray();
                 }
             }
 
@@ -75,6 +92,15 @@ namespace BH.Engine.Serialiser.BsonSerializers
             bsonReader.ReadName();
             var fullName = context.Reader.ReadString();
 
+            List<Type> genericTypes = new List<Type>();
+            if (context.Reader.FindElement("GenericArguments"))
+            {
+                bsonReader.ReadStartArray();
+                while (bsonReader.ReadBsonType() != BsonType.EndOfDocument)
+                    genericTypes.Add(BsonSerializer.Deserialize(bsonReader, typeof(Type)) as Type);
+                bsonReader.ReadEndArray();
+            }
+
             context.Reader.ReadEndDocument();
 
             try
@@ -83,6 +109,8 @@ namespace BH.Engine.Serialiser.BsonSerializers
                     return null;
 
                 Type type = null;
+                if (fullName == "T")
+                    return null;
                 if (fullName.StartsWith("BH.oM"))
                     type = Reflection.Create.Type(fullName);
                 else
