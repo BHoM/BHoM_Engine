@@ -168,7 +168,10 @@ namespace BH.Engine.Serialiser.BsonSerializers
             if (actualType.Name == "RuntimeMethodInfo" || actualType.Name == "RuntimeConstructorInfo")
                 actualType = typeof(MethodBase);
             else if (actualType.Name == "RuntimeType")
-                    actualType = typeof(Type);
+                actualType = typeof(Type);
+            else if (value is Enum)
+                actualType = typeof(Enum);
+
             var serializer = BsonSerializer.LookupSerializer(actualType);
 
             var polymorphicSerializer = serializer as IBsonPolymorphicSerializer;
