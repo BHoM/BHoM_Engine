@@ -28,7 +28,7 @@ namespace BH.Engine.Structure
             foreach (Bar bar in bars)
             {
                 string barId = bar.CustomData[adapterId].ToString();
-                List<BarForce> elementForces = forces.Where(x => x.ObjectId == barId).ToList();
+                List<BarForce> elementForces = forces.Where(x => x.ObjectId.ToString() == barId).ToList();
                 elementForces.Sort();
                 plots.AddRange(PlotBarForce(bar, elementForces, scaleFactor, fx,fy,fz,mx,my,mz));
             }
