@@ -28,7 +28,7 @@ namespace BH.Engine.Structure
                     loadCaseId = loadCase.ToString();
 
                 if (!string.IsNullOrWhiteSpace(loadCaseId))
-                    return results.Where(x => x.ResultCase == loadCaseId).ToList();
+                    return results.Where(x => x.ResultCase.ToString() == loadCaseId).ToList();
             }
 
             return results;
