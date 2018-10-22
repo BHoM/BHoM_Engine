@@ -1,5 +1,6 @@
 ﻿using BH.oM.Base;
 using BH.oM.Reflection.Attributes;
+using System.Collections;
 using System.ComponentModel;
 
 namespace BH.Engine.Reflection
@@ -33,6 +34,14 @@ namespace BH.Engine.Reflection
                     return null;
                 }
                     
+            }
+            else if (obj is IDictionary)
+            {
+                IDictionary dic = obj as IDictionary;
+                if (dic.Contains(propName))
+                    return dic[propName];
+                else
+                    return null;
             }
             else
                 return null;
