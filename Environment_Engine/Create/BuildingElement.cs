@@ -50,74 +50,74 @@ namespace BH.Engine.Environment
 
         /***************************************************/
 
-        public static BuildingElement BuildingElement(BuildingElementProperties buildingElementProperties, IEnumerable<Polyline> polyLines)
+        public static BuildingElement BuildingElement(BuildingElementProperties buildingElementProperties, IEnumerable<Polyline> panelPolyLines)
         {
             return new BuildingElement
             {
                 BuildingElementProperties = buildingElementProperties,
-                PanelCurve = Geometry.Create.PolyCurve(polyLines),
+                PanelCurve = Geometry.Create.PolyCurve(panelPolyLines),
             };
         }
 
         /***************************************************/
 
-        public static BuildingElement BuildingElement(BuildingElementProperties buildingElementProperties, ICurve curve)
+        public static BuildingElement BuildingElement(BuildingElementProperties buildingElementProperties, ICurve panelCurve)
         {
             return new BuildingElement
             {
                 BuildingElementProperties = buildingElementProperties,
-                PanelCurve = curve,
+                PanelCurve = panelCurve,
             };
         }
 
         /***************************************************/
 
-        public static BuildingElement BuildingElement(IEnumerable<ICurve> curves)
+        public static BuildingElement BuildingElement(IEnumerable<ICurve> panelCurves)
         {
             return new BuildingElement
             {
-                PanelCurve = Geometry.Create.PolyCurve(curves),
+                PanelCurve = Geometry.Create.PolyCurve(panelCurves),
             };
         }
 
         /***************************************************/
 
-        public static BuildingElement BuildingElement(PolyCurve curve)
+        public static BuildingElement BuildingElement(PolyCurve panelCurve)
         {
             return new BuildingElement
             {
-                PanelCurve = curve,
+                PanelCurve = panelCurve,
             };
         }
 
         /***************************************************/
 
-        public static BuildingElement BuildingElement(IEnumerable<Polyline> polylines)
+        public static BuildingElement BuildingElement(IEnumerable<Polyline> panelPolyLines)
         {
             return new BuildingElement
             {
-                PanelCurve = Geometry.Create.PolyCurve(polylines),
+                PanelCurve = Geometry.Create.PolyCurve(panelPolyLines),
             };
         }
 
         /***************************************************/
 
-        public static BuildingElement BuildingElement(Polyline polyline)
+        public static BuildingElement BuildingElement(Polyline panelPolyLine)
         {
             return new BuildingElement
             {
-                PanelCurve = polyline,
+                PanelCurve = panelPolyLine,
             };
         }
 
         /***************************************************/
 
-        public static BuildingElement BuildingElement(string name, ICurve crv, BuildingElementProperties properties)
+        public static BuildingElement BuildingElement(string name, ICurve panelCurve, BuildingElementProperties properties)
         {
             return new BuildingElement
             {
                 Name = name,
-                PanelCurve = crv,
+                PanelCurve = panelCurve,
                 BuildingElementProperties = properties,
             };
         }
