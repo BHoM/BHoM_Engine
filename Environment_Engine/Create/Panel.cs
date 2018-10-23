@@ -16,40 +16,40 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Panel Panel(ICurve curve, IEnumerable<Opening> openings)
+        public static Panel Panel(ICurve panelCurve, IEnumerable<Opening> openings)
         {
             return new Panel
             {
-                PanelCurve = curve,
+                PanelCurve = panelCurve,
                 Openings = openings.ToList(),
             };
         }
 
         /***************************************************/
 
-        public static Panel Panel(ICurve curve, PanelProperties properties)
+        public static Panel Panel(ICurve panelCurve, PanelProperties properties)
         {
             return new Panel
             {
-                PanelCurve = curve,
+                PanelCurve = panelCurve,
                 PanelProperties = properties,
             };
         }
 
         /***************************************************/
 
-        public static Panel Panel(ICurve curve, PanelProperties properties, Opening opening)
+        public static Panel Panel(ICurve panelCurve, PanelProperties properties, Opening opening)
         {
-            return Panel(curve, properties, new List<Opening> { opening });
+            return Panel(panelCurve, properties, new List<Opening> { opening });
         }
 
         /***************************************************/
 
-        public static Panel Panel(ICurve curve, PanelProperties properties, IEnumerable<Opening> openings)
+        public static Panel Panel(ICurve panelCurve, PanelProperties properties, IEnumerable<Opening> openings)
         {
             return new Panel
             {
-                PanelCurve = curve,
+                PanelCurve = panelCurve,
                 PanelProperties = properties,
                 Openings = openings as List<Opening>,
             };
@@ -94,41 +94,41 @@ namespace BH.Engine.Environment
 
         /***************************************************/
 
-        public static Panel Panel(IEnumerable<ICurve> curves)
+        public static Panel Panel(IEnumerable<ICurve> panelCurves)
         {
             return new Panel
             {
-                PanelCurve = Geometry.Create.PolyCurve(curves),
+                PanelCurve = Geometry.Create.PolyCurve(panelCurves),
             };
         }
 
         /***************************************************/
 
-        public static Panel Panel(PolyCurve curve)
+        public static Panel Panel(PolyCurve panelCurve)
         {
             return new Panel
             {
-                PanelCurve = curve,
+                PanelCurve = panelCurve,
             };
         }
 
         /***************************************************/
 
-        public static Panel Panel(IEnumerable<Polyline> polylines)
+        public static Panel Panel(IEnumerable<Polyline> panelPolylines)
         {
             return new Panel
             {
-                PanelCurve = Geometry.Create.PolyCurve(polylines),
+                PanelCurve = Geometry.Create.PolyCurve(panelPolylines),
             };
         }
 
         /***************************************************/
 
-        public static Panel Panel(Polyline polyline)
+        public static Panel Panel(Polyline panelPolyline)
         {
             return new Panel
             {
-                PanelCurve = polyline,
+                PanelCurve = panelPolyline,
             };
         }
 
