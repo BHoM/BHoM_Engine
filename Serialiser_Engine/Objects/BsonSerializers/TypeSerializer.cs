@@ -69,7 +69,7 @@ namespace BH.Engine.Serialiser.BsonSerializers
                 {
                     bsonWriter.WriteName("GenericArguments");
                     bsonWriter.WriteStartArray();
-                    foreach (Type arg in value.GetGenericArguments())
+                    foreach (Type arg in generics)
                         BsonSerializer.Serialize(bsonWriter, arg);
                     bsonWriter.WriteEndArray();
                 }
