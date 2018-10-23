@@ -6,6 +6,9 @@ using BH.oM.Base;
 
 using System.Linq;
 
+using BH.oM.Geometry;
+using BH.Engine.Geometry;
+
 namespace BH.Engine.Environment
 {
     public static partial class Query
@@ -42,6 +45,32 @@ namespace BH.Engine.Environment
             }
 
             return rtn;
+        }
+
+        public static List<BuildingElement> ConnectedElements(this BuildingElement element, List<BuildingElement> elements)
+        {
+            List<BuildingElement> connectedElement = new List<BuildingElement>();
+
+            List<Point> vertexPts = element.PanelCurve.IControlPoints();
+
+            foreach(BuildingElement be in elements)
+            {
+                if (be.BHoM_Guid == element.BHoM_Guid) continue; //Don't check the same element...
+
+                List<Point> vPts = be.PanelCurve.IControlPoints();
+
+                //Check if at least one point matches in some manner
+                bool ptMatches = false;
+                foreach(Point pt in vPts)
+                {
+                    ptMatches = vertexPts.Contains(pt);
+                    if (ptMatches) break; //Have found a match so no need to check the rest
+                }
+
+                if (ptMatches) connectedElement.Add(be);
+            }
+                
+            return connectedElement;
         }
     }
 }
