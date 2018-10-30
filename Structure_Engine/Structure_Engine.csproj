@@ -86,6 +86,7 @@
     <Compile Include="Create\SteelSection.cs" />
     <Compile Include="Modify\ApplyModifiers.cs" />
     <Compile Include="Modify\RecomputeEdges.cs" />
+    <Compile Include="Modify\Scale.cs" />
     <Compile Include="Query\AnalyticalBars.cs" />
     <Compile Include="Query\Area.cs" />
     <Compile Include="Query\ControlPoints.cs" />
