@@ -51,6 +51,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Compute\Integrate.cs" />
+    <Compile Include="Convert\ToFramingElement.cs" />
     <Compile Include="Create\FEMesh.cs" />
     <Compile Include="Create\QueryMeshResult.cs" />
     <Compile Include="Create\Edge.cs" />
@@ -143,9 +144,7 @@
       <Name>Library_Engine</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Convert\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
