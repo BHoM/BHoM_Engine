@@ -8,9 +8,61 @@ namespace BH.Engine.Geometry
         /****               Public Methods              ****/
         /***************************************************/
 
-        public static ICurve GetGeometry(this ICurve curve)
+        public static ICurve GetGeometry(this Line curve)
         {
-            return curve.IClone();
+            return curve.Clone();
+        }
+
+        /***************************************************/
+
+        public static ICurve GetGeometry(this Arc curve)
+        {
+            return curve.Clone();
+        }
+
+        /***************************************************/
+
+        public static ICurve GetGeometry(this Circle curve)
+        {
+            return curve.Clone();
+        }
+
+        /***************************************************/
+
+        public static ICurve GetGeometry(this Ellipse curve)
+        {
+            return curve.Clone();
+        }
+
+        /***************************************************/
+
+        public static ICurve GetGeometry(this NurbCurve curve)
+        {
+            return curve.Clone();
+        }
+
+        /***************************************************/
+
+        public static ICurve GetGeometry(this Polyline curve)
+        {
+            return curve.Clone();
+        }
+
+        /***************************************************/
+
+        public static ICurve GetGeometry(this PolyCurve curve)
+        {
+            return curve.Clone();
+        }
+
+
+        /***************************************************/
+        /****              Interface Methods            ****/
+        /***************************************************/
+
+        public static ICurve IGetGeometry(this ICurve curve)
+        {
+            return GetGeometry(curve as dynamic);
         }
 
         /***************************************************/
