@@ -18,6 +18,21 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        public static Polyline Polyline(List<Line> lines)
+        {
+            if (lines.Count == 0)
+                return null;
+
+            List<Point> controlPoints = new List<Point> { lines[0].Start };
+            foreach (Line l in lines)
+            {
+                controlPoints.Add(l.End);
+            }
+            return new Polyline { ControlPoints = controlPoints };
+        }
+
+        /***************************************************/
+
         public static Polyline RandomPolyline(int seed = -1, BoundingBox box = null, int minNbCPs = 3, int maxNbCPs = 20)
         {
             if (seed == -1)
