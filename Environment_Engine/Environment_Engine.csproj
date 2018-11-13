@@ -40,6 +40,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Build\Geometry_Engine.dll</HintPath>
     </Reference>
+    <Reference Include="Reflection_Engine, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Build\Reflection_Engine.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -59,6 +63,8 @@
     <Compile Include="Create\Panel.cs" />
     <Compile Include="Create\BuildingElementProperties.cs" />
     <Compile Include="Create\Space.cs" />
+    <Compile Include="Modify\SetInternal2DElements.cs" />
+    <Compile Include="Modify\SetOutline.cs" />
     <Compile Include="Modify\SplitBuildingElements.cs" />
     <Compile Include="Query\AdjacentSpaces.cs" />
     <Compile Include="Query\AdjacentSurface.cs" />
@@ -85,6 +91,8 @@
     <Compile Include="Query\FloorGeometry.cs" />
     <Compile Include="Query\StripOpenings.cs" />
     <Compile Include="Query\Vertices.cs" />
+    <Compile Include="Query\GetInternal2DElements.cs" />
+    <Compile Include="Query\GetOutline.cs" />
     <Compile Include="Query\IdentifyOverlaps.cs" />
     <Compile Include="Query\Inclination.cs" />
     <Compile Include="Query\IsClosed.cs" />
