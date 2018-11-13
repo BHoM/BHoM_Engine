@@ -1,9 +1,9 @@
-﻿using BH.oM.Structure.Elements;
+﻿using BH.oM.Environment.Elements;
 using System.Collections.Generic;
 using BH.oM.Base;
 using System.Linq;
 
-namespace BH.Engine.Structure
+namespace BH.Engine.Environment
 {
     public static partial class Query
     {
@@ -11,16 +11,16 @@ namespace BH.Engine.Structure
         /****               Public Methods              ****/
         /***************************************************/
 
-        public static List<IElement1D> GetOutline(this Opening opening)
+        public static List<IElement2D> GetInternal2DElements(this Opening opening)
         {
-            return opening.Edges.Select(e => e as IElement1D).ToList();
+            return new List<IElement2D>();
         }
 
         /***************************************************/
 
-        public static List<IElement1D> GetOutline(this PanelPlanar panelPlanar)
+        public static List<IElement2D> GetInternal2DElements(this Panel panel)
         {
-            return panelPlanar.ExternalEdges.Select(e => e as IElement1D).ToList();
+            return panel.Openings.Select(o => o as IElement2D).ToList();
         }
 
         /***************************************************/
