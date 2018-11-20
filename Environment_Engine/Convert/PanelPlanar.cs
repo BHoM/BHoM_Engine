@@ -21,6 +21,11 @@ namespace BH.Engine.Environment
         }
 
         /***************************************************/
+
+        public static PanelPlanar ToPanelPlanar(this BuildingElement element)
+        {
+            return Structure.Create.PanelPlanar(element.PanelCurve, new List<oM.Structure.Elements.Opening>());
+        }
     }
 }
 

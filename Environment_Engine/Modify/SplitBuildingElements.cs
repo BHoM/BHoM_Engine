@@ -14,6 +14,148 @@ namespace BH.Engine.Environment
         /**** Public Methods - Curves                   ****/
         /***************************************************/
 
+        public static List<BuildingElement> SplitBuildingElementsByOverlap(this List<BuildingElement> elementsToSplit)
+        {
+            List<BuildingElement> rtnElements = new List<BuildingElement>();
+            List<BuildingElement> oriElements = new List<BuildingElement>(elementsToSplit);
+
+            while (elementsToSplit.Count > 0)
+            {
+                BuildingElement currentElement = elementsToSplit[0];
+                List<BuildingElement> overlaps = currentElement.IdentifyOverlaps(elementsToSplit);
+                overlaps.AddRange(currentElement.IdentifyOverlaps(rtnElements));
+
+                if (overlaps.Count == 0)
+                    rtnElements.Add(currentElement);
+                else
+                {
+                    //Cut the smaller building element out of the bigger one as an opening
+                    List<Line> cuttingLines = new List<Line>();
+                    foreach(BuildingElement be in overlaps)
+                        cuttingLines.AddRange(be.PanelCurve.ICollapseToPolyline(BH.oM.Geometry.Tolerance.Angle).SubParts());
+
+
+                    rtnElements.AddRange(currentElement.Split(cuttingLines));
+                }
+
+                elementsToSplit.RemoveAt(0);
+            }
+
+            return rtnElements;
+        }
+
+        public static List<BuildingElement> SplitBuildingElementsByPoints(this List<BuildingElement> elementsToSplit)
+        {
+            List<BuildingElement> rtnElements = new List<BuildingElement>();
+            List<BuildingElement> oriElements = new List<BuildingElement>(elementsToSplit);
+
+            while(elementsToSplit.Count > 0)
+            {
+                BuildingElement currentElement = elementsToSplit[0];
+
+                bool wasSplit = false;
+                List<BuildingElement> elementSplitResult = new List<BuildingElement>();
+                for(int x = 0; x < oriElements.Count; x++)
+                {
+                    if (oriElements[x].BHoM_Guid == currentElement.BHoM_Guid) continue; //Don't split by the same element
+
+                    //Split this element by each other element in the list
+                    elementSplitResult = currentElement.Split(oriElements[x]);
+
+                    if (elementSplitResult.Count > 1)
+                    {
+                        elementsToSplit.AddRange(elementSplitResult);
+                        wasSplit = true;
+                        break; //Don't attempt to split this element any further, wait to split its new parts later in the loop...
+                    }
+                }
+
+                elementsToSplit.RemoveAt(0); //Remove the element we have just worked with, regardless of whether we split it or not
+                if (!wasSplit) rtnElements.Add(currentElement); //We have a pure element ready to use
+                else
+                {
+                    //Add the new elements to the list of cutting objects
+                    oriElements.RemoveAt(oriElements.IndexOf(oriElements.Where(x => x.BHoM_Guid == currentElement.BHoM_Guid).FirstOrDefault()));
+                    oriElements.AddRange(elementSplitResult);
+                }
+            }
+
+            return rtnElements;
+        }
+
+        public static List<BuildingElement> Split(this BuildingElement elementToSplit, List<Line> cuttingLines)
+        {
+            if (elementToSplit == null || cuttingLines.Count == 0) return new List<BuildingElement> { elementToSplit };
+
+            List<BuildingElement> splitElements = new List<BuildingElement> { elementToSplit };
+
+            foreach (Line l in cuttingLines)
+            {
+                List<BuildingElement> elementsToSplit = new List<BuildingElement>(splitElements);
+
+                foreach (BuildingElement be in elementsToSplit)
+                {
+                    Polyline elementToSplitCrv = be.PanelCurve.ICollapseToPolyline(BH.oM.Geometry.Tolerance.Angle);
+                    List<Point> cuttingPnts = elementToSplitCrv.LineIntersections(l, true);
+                    List<Polyline> cutLines = elementToSplitCrv.SplitAtPoints(cuttingPnts);
+                    if (cutLines.Count == 1) continue;
+
+                    splitElements.Remove(be);
+                    foreach (Polyline pLine in cutLines)
+                    {
+                        if (!pLine.IsLinear())
+                        {
+                            //Only do this for non-straight line cuts
+                            List<Point> ctrlPts = pLine.IControlPoints();
+                            ctrlPts.Add(ctrlPts[0]); //Close the polyline
+                            Polyline completeCrv = BH.Engine.Geometry.Create.Polyline(ctrlPts);
+
+                            BuildingElement cpy = elementToSplit.Copy();
+                            cpy.PanelCurve = completeCrv;
+                            cpy.CustomData = new Dictionary<string, object>(elementToSplit.CustomData);
+                            splitElements.Add(cpy);
+                        }
+                    }
+                }
+            }
+
+            return splitElements;
+        }
+
+        public static List<BuildingElement> Split(this BuildingElement elementToSplit, BuildingElement cuttingElement)
+        {
+            if (elementToSplit == null || cuttingElement == null) return new List<BuildingElement> { elementToSplit };
+
+            Polyline elementToSplitCrv = elementToSplit.PanelCurve.ICollapseToPolyline(BH.oM.Geometry.Tolerance.Angle);
+            Polyline cuttingCrv = cuttingElement.PanelCurve.ICollapseToPolyline(BH.oM.Geometry.Tolerance.Angle);
+
+            List<Point> cuttingPts = elementToSplitCrv.LineIntersections(cuttingCrv);
+
+            List<Polyline> cutLines = elementToSplitCrv.SplitAtPoints(cuttingPts);
+
+            if (cutLines.Count == 1) return new List<BuildingElement> { elementToSplit };
+
+            List<BuildingElement> splitElements = new List<BuildingElement>();
+
+            foreach(Polyline pLine in cutLines)
+            {
+                if(!pLine.IsLinear())
+                {
+                    //Only do this for non-straight line cuts
+                    List<Point> ctrlPts = pLine.IControlPoints();
+                    ctrlPts.Add(ctrlPts[0]); //Close the polyline
+                    Polyline completeCrv = BH.Engine.Geometry.Create.Polyline(ctrlPts);
+
+                    BuildingElement cpy = elementToSplit.Copy();
+                    cpy.PanelCurve = completeCrv;
+                    cpy.CustomData = new Dictionary<string, object>(elementToSplit.CustomData);
+                    splitElements.Add(cpy);
+                }
+            }
+
+            return splitElements;
+        }
+
         public static List<BuildingElement> SplitBuildingElements(this List<BuildingElement> elementsToSplit)
         {
             //Go through all building elements and compare to see if any should be split into smaller building elements

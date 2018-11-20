@@ -32,7 +32,13 @@ namespace BH.Engine.Environment
             return (p != null);
         }
 
-        public static bool IsContaining(this List<BuildingElement> space, Point point)
+        public static bool IsContaining(this BuildingElement element, Point pt, bool acceptOnEdges = false)
+        {
+            if (pt == null) return false;
+            return new List<BuildingElement> { element }.IsContaining(pt, acceptOnEdges);
+        }
+
+        public static bool IsContaining(this List<BuildingElement> space, Point point, bool acceptOnEdges = false)
         {
             List<Plane> planes = space.Select(x => x.PanelCurve.IControlPoints().FitPlane()).ToList();
             List<Point> ctrPoints = space.SelectMany(x => x.PanelCurve.IControlPoints()).ToList();
@@ -65,7 +71,22 @@ namespace BH.Engine.Environment
                 }
             }
 
-            return !((counter % 2) == 0); //If the number of intersections is odd the point is outsde the space
+            bool isContained = !((counter % 2) == 0);
+
+            if(!isContained && acceptOnEdges)
+            {
+                //Check the edges in case the point is on the edge of the BE
+                foreach(BuildingElement be in space)
+                {
+                    List<Line> subParts = be.PanelCurve.ISubParts() as List<Line>;
+                    foreach(Line l in subParts)
+                    {
+                        if (l.IsOnCurve(point)) isContained = true;
+                    }
+                }
+            }
+
+            return isContained; //If the number of intersections is odd the point is outsde the space
         }
 
         public static bool IsContaining(this Space space, Point point)

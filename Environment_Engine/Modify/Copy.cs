@@ -43,6 +43,7 @@ namespace BH.Engine.Environment
             BuildingElement aBuildingElement = buildingElement.GetShallowClone(true) as BuildingElement;
             aBuildingElement.BuildingElementProperties = buildingElement.BuildingElementProperties;
             aBuildingElement.Openings = new List<Opening>(buildingElement.Openings);
+            aBuildingElement.CustomData = buildingElement.CustomData;
             return aBuildingElement;
         }
 
