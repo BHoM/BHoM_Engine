@@ -34,5 +34,18 @@ namespace BH.Engine.Environment
 
             return rtn;
         }
+
+        public static bool MatchAdjacencies(this BuildingElement element, BuildingElement compare)
+        {
+            if (element.CustomData.ContainsKey("Revit_spaceId") && compare.CustomData.ContainsKey("Revit_spaceId"))
+            {
+                if ((element.CustomData.ContainsKey("Revit_adjacentSpaceId") && compare.CustomData.ContainsKey("Revit_adjacentSpaceId")))
+                    return element.CustomData["Revit_spaceId"].ToString().Equals(compare.CustomData["Revit_spaceId"].ToString()) &&
+                        element.CustomData["Revit_adjacentSpaceId"].ToString().Equals(compare.CustomData["Revit_adjacentSpaceId"].ToString());
+                else
+                    return element.CustomData["Revit_spaceId"].ToString().Equals(compare.CustomData["Revit_spaceId"].ToString());
+            }
+            else return false;
+        }
     }
 }
