@@ -164,10 +164,19 @@ namespace BH.Engine.Environment
             //Isolate all of the shading elements in the list - shading elements are ones connected only along one edge
             List<BuildingElement> shadingElements = new List<BuildingElement>();
 
-            foreach(BuildingElement be in elements)
+            foreach (BuildingElement be in elements)
             {
-                if (be.ConnectedElementsByEdge(elements).Count == 2)
-                    shadingElements.Add(be); //Elements only connected to themselves and one other
+                if (be.BuildingElementProperties != null)
+                {
+                    if (be.BuildingElementProperties.CustomData.ContainsKey("SAM_BuildingElementType"))
+                    {
+                        object aObject = be.BuildingElementProperties.CustomData["SAM_BuildingElementType"];
+
+                        if (aObject != null && aObject.ToString().ToLower().Contains("shade"))
+                            shadingElements.Add(be);
+                            
+                    }
+                }
             }
 
             return shadingElements;
