@@ -35,7 +35,7 @@ namespace BH.Engine.Environment
             List<BHG.Point> pts = BH.Engine.Geometry.Query.DiscontinuityPoints(pline);
             BHG.Plane plane = BH.Engine.Geometry.Create.Plane(pts[0], pts[1], pts[2]);
 
-            if (!pline.IsClosed()) return false; //Prevnet failures of the clockwise check
+            if (!pline.IsClosed()) return false; //Prevent failures of the clockwise check
 
             //The polyline can be locally concave. Check if the polyline is clockwise.
             if (!BH.Engine.Geometry.Query.IsClockwise(pline, plane.Normal))
