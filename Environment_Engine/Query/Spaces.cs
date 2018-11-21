@@ -98,47 +98,7 @@ namespace BH.Engine.Environment
 
         /***************************************************/
 
-        public static List<Point> SpacesNotBuilt(this List<List<BuildingElement>> spaces, List<Point> spacePoints)
-        {
-            List<Point> notBuilt = new List<Point>();
-
-            foreach(Point p in spacePoints)
-            {
-                bool built = false;
-                foreach(List<BuildingElement> space in spaces)
-                {
-                    if (space.IsClosed() && space.IsContaining(p))
-                        built = true;
-                }
-
-                if (!built)
-                    notBuilt.Add(p);
-            }
-
-            return notBuilt;
-        }
-
-        /***************************************************/
-
-        public static List<Space> SpacesNotBuilt(this List<List<BuildingElement>> spaces, List<Space> oriSpaces)
-        {
-            List<Space> notBuilt = new List<oM.Environment.Elements.Space>();
-
-            foreach(Space s in oriSpaces)
-            {
-                bool built = false;
-                foreach(List<BuildingElement> space in spaces)
-                {
-                    if (space.IsClosed() && space.IsContaining(s.Location))
-                        built = true;
-                }
-
-                if (!built)
-                    notBuilt.Add(s);
-            }
-
-            return notBuilt;
-        }
+       
 
         /***************************************************/
 
