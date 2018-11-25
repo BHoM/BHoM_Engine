@@ -8,6 +8,13 @@ namespace BH.Engine.Geometry
         /****               Public Methods              ****/
         /***************************************************/
 
+        public static Point GetGeometry(this Point point)
+        {
+            return point.Clone();
+        }
+
+        /***************************************************/
+
         public static ICurve GetGeometry(this Line curve)
         {
             return curve.Clone();
