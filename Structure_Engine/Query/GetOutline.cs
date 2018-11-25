@@ -1,7 +1,6 @@
-﻿using BH.oM.Structure.Elements;
+﻿using BH.oM.Common;
+using BH.oM.Structure.Elements;
 using System.Collections.Generic;
-using BH.oM.Base;
-using System.Linq;
 
 namespace BH.Engine.Structure
 {
@@ -13,14 +12,14 @@ namespace BH.Engine.Structure
 
         public static List<IElement1D> GetOutline(this Opening opening)
         {
-            return opening.Edges.Select(e => e as IElement1D).ToList();
+            return new List<IElement1D>(opening.Edges);
         }
 
         /***************************************************/
 
         public static List<IElement1D> GetOutline(this PanelPlanar panelPlanar)
         {
-            return panelPlanar.ExternalEdges.Select(e => e as IElement1D).ToList();
+            return new List<IElement1D>(panelPlanar.ExternalEdges);
         }
 
         /***************************************************/

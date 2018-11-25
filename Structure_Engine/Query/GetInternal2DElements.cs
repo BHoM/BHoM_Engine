@@ -1,6 +1,6 @@
-﻿using BH.oM.Structure.Elements;
+﻿using BH.oM.Common;
+using BH.oM.Structure.Elements;
 using System.Collections.Generic;
-using BH.oM.Base;
 using System.Linq;
 
 namespace BH.Engine.Structure
