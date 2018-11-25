@@ -106,6 +106,7 @@
     <Compile Include="Query\IsDeprecated.cs" />
     <Compile Include="Query\IsMultipleOutputs.cs" />
     <Compile Include="Query\OutputName.cs" />
+    <Compile Include="Query\PropertyAbbreviation.cs" />
     <Compile Include="Query\UnderlyingType.cs" />
     <Compile Include="Query\UsedAssemblies.cs" />
     <Compile Include="Query\UsedNamespaces.cs" />
