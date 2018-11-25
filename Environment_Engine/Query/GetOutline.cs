@@ -1,8 +1,8 @@
-﻿using BH.oM.Environment.Elements;
+﻿using BH.Engine.Geometry;
+using BH.oM.Common;
+using BH.oM.Environment.Elements;
 using System.Collections.Generic;
-using BH.oM.Base;
 using System.Linq;
-using BH.Engine.Geometry;
 
 namespace BH.Engine.Environment
 {
