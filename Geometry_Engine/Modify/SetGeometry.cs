@@ -8,6 +8,13 @@ namespace BH.Engine.Geometry
         /****               Public Methods              ****/
         /***************************************************/
 
+        public static Point SetGeometry(this Point point, Point newPoint)
+        {
+            return newPoint;
+        }
+
+        /***************************************************/
+
         public static ICurve SetGeometry(this Line curve, ICurve newCurve)
         {
             return newCurve;
