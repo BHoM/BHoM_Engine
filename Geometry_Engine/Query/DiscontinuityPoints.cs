@@ -46,9 +46,7 @@ namespace BH.Engine.Geometry
         [NotImplemented]
         public static List<Point> DiscontinuityPoints(this PolyCurve curve)
         {
-            //TODO: need to check tangency between each two subsequent curves
-            // return curve.Curves.SelectMany(x => x.IDiscontinuityPoints()).ToList();
-            throw new NotImplementedException();
+            return curve.Curves.SelectMany((x, i) => x.IDiscontinuityPoints().Skip((i > 0) ? 1 : 0)).ToList();
         }
 
         /***************************************************/
