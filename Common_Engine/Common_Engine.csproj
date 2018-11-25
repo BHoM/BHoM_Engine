@@ -36,6 +36,14 @@
       <HintPath>..\packages\BH.oM.1.0.0\lib\net45\BHoM.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Geometry_Engine, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Build\Geometry_Engine.dll</HintPath>
+    </Reference>
+    <Reference Include="Reflection_Engine, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Build\Reflection_Engine.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -48,7 +56,21 @@
   <ItemGroup>
     <Compile Include="Create\ConstructionPhase.cs" />
     <Compile Include="Create\Material.cs" />
+    <Compile Include="Create\NewInstance.cs" />
+    <Compile Include="Modify\SetGeometry.cs" />
+    <Compile Include="Modify\SetInternal2DElements.cs" />
+    <Compile Include="Modify\SetOutline.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Query\Area.cs" />
+    <Compile Include="Query\Centroid.cs" />
+    <Compile Include="Query\ControlPoints.cs" />
+    <Compile Include="Query\ElementCurves.cs" />
+    <Compile Include="Query\ElementVertices.cs" />
+    <Compile Include="Query\GetGeometry.cs" />
+    <Compile Include="Query\GetInternal2DElements.cs" />
+    <Compile Include="Query\GetOutline.cs" />
+    <Compile Include="Query\GetOutlineCurve.cs" />
+    <Compile Include="Query\GetShallowClone.cs" />
     <Compile Include="Query\ShearModulus.cs" />
   </ItemGroup>
   <ItemGroup>
