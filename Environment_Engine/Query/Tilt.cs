@@ -29,6 +29,8 @@ namespace BH.Engine.Environment
 
             List<BHG.Point> pts = BH.Engine.Geometry.Query.DiscontinuityPoints(pline);
 
+            if (pts.Count < 3) return -1; //Error protection on pts having less than 3 elements to create a plane
+
             BHG.Plane plane = BH.Engine.Geometry.Create.Plane(pts[0], pts[1], pts[2]);
 
             //The polyline can be locally concave. Check if the polyline is clockwise.
