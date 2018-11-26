@@ -54,7 +54,12 @@ namespace BH.Engine.Environment
                 if (foundSp != null)
                 {
                     foreach (BuildingElement be in bes)
-                        be.CustomData.Add("Space_Custom_Data", foundSp.CustomData);
+                    {
+                        if (be.CustomData.ContainsKey("Space_Custom_Data"))
+                            be.CustomData["Space_Custom_Data"] = foundSp.CustomData;
+                        else
+                            be.CustomData.Add("Space_Custom_Data", foundSp.CustomData);
+                    }
                 }
             }
 
