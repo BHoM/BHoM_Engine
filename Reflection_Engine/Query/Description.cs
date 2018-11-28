@@ -1,4 +1,5 @@
-﻿using BH.oM.Reflection.Attributes;
+﻿using BH.Engine.Reflection.Convert;
+using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -20,7 +21,7 @@ namespace BH.Engine.Reflection
             if (attribute != null)
                 return attribute.Description;
             else
-                return "";
+                return member.Name + " is a " + member.MemberType.ToString() + " of " + member.ReflectedType.ToText(true);
         }
 
         /***************************************************/
@@ -32,7 +33,7 @@ namespace BH.Engine.Reflection
             if (inputDesc.Count() > 0)
                 return inputDesc.First().Description;
             else
-                return "";
+                return parameter.Name + " is a " + parameter.ParameterType.ToText();
         }
 
         /***************************************************/
@@ -44,7 +45,7 @@ namespace BH.Engine.Reflection
             if (attribute != null)
                 return attribute.Description;
             else
-                return "";
+                return "This is a " + type.ToText();
         }
 
         /***************************************************/
