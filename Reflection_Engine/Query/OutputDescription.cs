@@ -1,4 +1,5 @@
-﻿using BH.oM.Reflection.Attributes;
+﻿using BH.Engine.Reflection.Convert;
+using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -20,7 +21,7 @@ namespace BH.Engine.Reflection
             if (attribute != null)
                 return attribute.Description;
             else
-                return "";
+                return "The result is a " + method.OutputType().ToText(); ;
         }
 
         /***************************************************/
