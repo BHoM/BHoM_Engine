@@ -20,7 +20,7 @@ namespace BH.Engine.Environment
 
         public static List<IElement2D> GetInternal2DElements(this Panel panel)
         {
-            return panel.Openings.Select(o => o as IElement2D).ToList();
+            return panel.Openings.Cast<IElement2D>().ToList();
         }
 
         /***************************************************/

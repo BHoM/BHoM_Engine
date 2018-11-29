@@ -1,5 +1,6 @@
-﻿using BH.oM.Geometry;
+﻿using BH.Engine.Geometry;
 using BH.oM.Architecture.Elements;
+using BH.oM.Geometry;
 
 namespace BH.Engine.Architecture
 {
@@ -12,7 +13,7 @@ namespace BH.Engine.Architecture
         public static Grid SetGeometry(this Grid grid, ICurve curve)
         {
             Grid clone = grid.GetShallowClone() as Grid;
-            clone.Curve = curve;
+            clone.Curve = curve.IClone();
             return clone;
         }
 
