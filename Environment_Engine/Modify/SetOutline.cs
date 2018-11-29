@@ -15,34 +15,17 @@ namespace BH.Engine.Environment
         public static Opening SetOutline(this Opening opening, List<IElement1D> outline)
         {
             Opening o = opening.GetShallowClone() as Opening;
-            o.OpeningCurve = new PolyCurve { Curves = outline.Select(e => e as ICurve).ToList() };
+            o.OpeningCurve = new PolyCurve { Curves = outline.Cast<ICurve>().ToList() };
             return o;
-        }
-
-        /***************************************************/
-
-        public static Panel SetOutline(this Panel panel, List<IElement1D> outline, bool cloneOpenings = true)
-        {
-            Panel pp = panel.GetShallowClone() as Panel;
-            pp.PanelCurve = new PolyCurve { Curves = outline.Select(e => e as ICurve).ToList() };
-
-            if (cloneOpenings)
-            {
-                pp.Openings = new List<Opening>(pp.Openings);
-                for (int i = 0; i < pp.Openings.Count; i++)
-                {
-                    pp.Openings[i] = pp.Openings[i].GetShallowClone() as Opening;
-                }
-            }
-
-            return pp;
         }
 
         /***************************************************/
 
         public static Panel SetOutline(this Panel panel, List<IElement1D> outline)
         {
-            return panel.SetOutline(outline, false);
+            Panel pp = panel.GetShallowClone() as Panel;
+            pp.PanelCurve = new PolyCurve { Curves = outline.Cast<ICurve>().ToList() };
+            return pp;
         }
 
         /***************************************************/

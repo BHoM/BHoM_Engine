@@ -1,7 +1,6 @@
 ﻿using BH.oM.Common;
 using BH.oM.Structure.Elements;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace BH.Engine.Structure
 {
@@ -20,7 +19,7 @@ namespace BH.Engine.Structure
 
         public static List<IElement2D> GetInternal2DElements(this PanelPlanar panelPlanar)
         {
-            return panelPlanar.Openings.Select(o => o as IElement2D).ToList();
+            return new List<IElement2D>(panelPlanar.Openings);
         }
 
         /***************************************************/

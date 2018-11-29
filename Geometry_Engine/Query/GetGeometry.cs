@@ -10,56 +10,56 @@ namespace BH.Engine.Geometry
 
         public static Point GetGeometry(this Point point)
         {
-            return point.Clone();
+            return point;
         }
 
         /***************************************************/
 
         public static ICurve GetGeometry(this Line curve)
         {
-            return curve.Clone();
+            return curve;
         }
 
         /***************************************************/
 
         public static ICurve GetGeometry(this Arc curve)
         {
-            return curve.Clone();
+            return curve;
         }
 
         /***************************************************/
 
         public static ICurve GetGeometry(this Circle curve)
         {
-            return curve.Clone();
+            return curve;
         }
 
         /***************************************************/
 
         public static ICurve GetGeometry(this Ellipse curve)
         {
-            return curve.Clone();
+            return curve;
         }
 
         /***************************************************/
 
         public static ICurve GetGeometry(this NurbCurve curve)
         {
-            return curve.Clone();
+            return curve;
         }
 
         /***************************************************/
 
         public static ICurve GetGeometry(this Polyline curve)
         {
-            return curve.Clone();
+            return curve;
         }
 
         /***************************************************/
 
         public static ICurve GetGeometry(this PolyCurve curve)
         {
-            return curve.Clone();
+            return curve;
         }
 
 
