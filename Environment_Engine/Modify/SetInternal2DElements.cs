@@ -27,8 +27,7 @@ namespace BH.Engine.Environment
         public static Panel SetInternal2DElements(this Panel panel, List<IElement2D> internal2DElements)
         {
             Panel pp = panel.GetShallowClone() as Panel;
-            pp.Openings = new List<Opening>(internal2DElements.Select(o => o as Opening).ToList());
-
+            pp.Openings = new List<Opening>(internal2DElements.Cast<Opening>().ToList());
             return pp;
         }
 

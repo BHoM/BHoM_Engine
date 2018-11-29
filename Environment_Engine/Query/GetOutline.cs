@@ -14,14 +14,14 @@ namespace BH.Engine.Environment
 
         public static List<IElement1D> GetOutline(this Opening opening)
         {
-            return opening.OpeningCurve.ISubParts().Select(e => e as IElement1D).ToList();
+            return opening.OpeningCurve.ISubParts().Cast<IElement1D>().ToList();
         }
 
         /***************************************************/
 
         public static List<IElement1D> GetOutline(this Panel panel)
         {
-            return panel.PanelCurve.ISubParts().Select(e => e as IElement1D).ToList();
+            return panel.PanelCurve.ISubParts().Cast<IElement1D>().ToList();
         }
 
         /***************************************************/
