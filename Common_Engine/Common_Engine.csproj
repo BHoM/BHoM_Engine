@@ -62,7 +62,6 @@
     <Compile Include="Query\GetInternal2DElements.cs" />
     <Compile Include="Query\GetOutline.cs" />
     <Compile Include="Query\GetOutlineCurve.cs" />
-    <Compile Include="Query\GetShallowClone.cs" />
     <Compile Include="Query\ShearModulus.cs" />
   </ItemGroup>
   <ItemGroup>
