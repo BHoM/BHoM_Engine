@@ -18,6 +18,9 @@ namespace BH.Engine.Serialiser
         [Output("json", "String representing the object in json")]
         public static string ToJson(this object obj)
         {
+            if (obj is string)
+                return "{ \"_t\": \"System.String\", \"_v\": " + BsonExtensionMethods.ToJson<string>(obj as string) + "}";
+                
             var jsonWriterSettings = new JsonWriterSettings { OutputMode = JsonOutputMode.Strict };
             return Convert.ToBson(obj).ToJson<BsonDocument>(jsonWriterSettings);
         }
