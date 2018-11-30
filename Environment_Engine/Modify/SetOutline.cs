@@ -29,5 +29,14 @@ namespace BH.Engine.Environment
         }
 
         /***************************************************/
+
+        public static BuildingElement SetOutline(this BuildingElement element, List<IElement1D> outline)
+        {
+            BuildingElement be = element.GetShallowClone() as BuildingElement;
+            element.PanelCurve = new PolyCurve { Curves = outline.Cast<ICurve>().ToList() };
+            return be;
+        }
+
+        /***************************************************/
     }
 }

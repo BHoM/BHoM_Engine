@@ -24,5 +24,12 @@ namespace BH.Engine.Environment
         }
 
         /***************************************************/
+
+        public static List<IElement2D> GetInternal2DElements(this BuildingElement element)
+        {
+            return element.Openings.Cast<IElement2D>().ToList();
+        }
+
+        /***************************************************/
     }
 }
