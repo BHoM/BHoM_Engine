@@ -25,5 +25,12 @@ namespace BH.Engine.Environment
         }
 
         /***************************************************/
+
+        public static List<IElement1D> GetOutline(this BuildingElement element)
+        {
+            return element.PanelCurve.ISubParts().Cast<IElement1D>().ToList();
+        }
+
+        /***************************************************/
     }
 }

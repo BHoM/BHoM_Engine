@@ -32,5 +32,14 @@ namespace BH.Engine.Environment
         }
 
         /***************************************************/
+
+        public static BuildingElement SetInternal2DElements(this BuildingElement panel, List<IElement2D> internal2DElements)
+        {
+            BuildingElement pp = panel.GetShallowClone() as BuildingElement;
+            pp.Openings = new List<Opening>(internal2DElements.Cast<Opening>().ToList());
+            return pp;
+        }
+
+        /***************************************************/
     }
 }
