@@ -48,7 +48,10 @@
   <ItemGroup>
     <Compile Include="Create\ConstructionPhase.cs" />
     <Compile Include="Create\Material.cs" />
-    <Compile Include="Create\NewInstance.cs" />
+    <Compile Include="Create\NewElement0D.cs" />
+    <Compile Include="Create\NewElement1D.cs" />
+    <Compile Include="Create\NewInternalElement2D.cs" />
+    <Compile Include="Modify\Set0DElements.cs" />
     <Compile Include="Modify\SetGeometry.cs" />
     <Compile Include="Modify\SetInternal2DElements.cs" />
     <Compile Include="Modify\SetOutline.cs" />
@@ -58,6 +61,7 @@
     <Compile Include="Query\ControlPoints.cs" />
     <Compile Include="Query\ElementCurves.cs" />
     <Compile Include="Query\ElementVertices.cs" />
+    <Compile Include="Query\Get0DElements.cs" />
     <Compile Include="Query\GetGeometry.cs" />
     <Compile Include="Query\GetInternal2DElements.cs" />
     <Compile Include="Query\GetOutline.cs" />

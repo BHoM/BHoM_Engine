@@ -53,7 +53,9 @@
     <Compile Include="Compute\Integrate.cs" />
     <Compile Include="Convert\ToFramingElement.cs" />
     <Compile Include="Create\FEMesh.cs" />
-    <Compile Include="Create\NewInstance.cs" />
+    <Compile Include="Create\NewElement0D.cs" />
+    <Compile Include="Create\NewElement1D.cs" />
+    <Compile Include="Create\NewInternalElement2D.cs" />
     <Compile Include="Create\QueryMeshResult.cs" />
     <Compile Include="Create\Edge.cs" />
     <Compile Include="Create\FramingElementProperty.cs" />
@@ -87,6 +89,7 @@
     <Compile Include="Create\SteelSection.cs" />
     <Compile Include="Modify\ApplyModifiers.cs" />
     <Compile Include="Modify\RecomputeEdges.cs" />
+    <Compile Include="Modify\Set0DElements.cs" />
     <Compile Include="Modify\SetInternal2DElements.cs" />
     <Compile Include="Modify\SetOutline.cs" />
     <Compile Include="Query\AnalyticalBars.cs" />
@@ -99,6 +102,7 @@
     <Compile Include="Query\CaseType.cs" />
     <Compile Include="Query\Centreline.cs" />
     <Compile Include="Query\Centroid.cs" />
+    <Compile Include="Query\Get0DElements.cs" />
     <Compile Include="Query\GetGeometry.cs" />
     <Compile Include="Query\GetInternal2DElements.cs" />
     <Compile Include="Query\GetOutline.cs" />
