@@ -1,4 +1,5 @@
 ﻿using BH.oM.Environment.Elements;
+using BH.oM.Common;
 
 namespace BH.Engine.Environment
 {
@@ -8,16 +9,9 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Opening NewInstance(this Opening opening)
+        public static IElement2D NewInternalElement2D(this Panel panel)
         {
             return new Opening();
-        }
-
-        /***************************************************/
-
-        public static Panel NewInstance(this Panel panel)
-        {
-            return new Panel();
         }
 
         /***************************************************/
