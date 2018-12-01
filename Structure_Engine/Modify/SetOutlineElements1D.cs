@@ -11,19 +11,19 @@ namespace BH.Engine.Structure
         /****               Public Methods              ****/
         /***************************************************/
 
-        public static Opening SetOutline(this Opening opening, List<IElement1D> outline)
+        public static Opening SetOutlineElements1D(this Opening opening, List<IElement1D> outlineElements1D)
         {
             Opening o = opening.GetShallowClone() as Opening;
-            o.Edges = new List<Edge>(outline.Cast<Edge>());
+            o.Edges = new List<Edge>(outlineElements1D.Cast<Edge>());
             return o;
         }
 
         /***************************************************/
 
-        public static PanelPlanar SetOutline(this PanelPlanar panelPlanar, List<IElement1D> outline)
+        public static PanelPlanar SetOutlineElements1D(this PanelPlanar panelPlanar, List<IElement1D> outlineElements1D)
         {
             PanelPlanar pp = panelPlanar.GetShallowClone() as PanelPlanar;
-            pp.ExternalEdges = new List<Edge>(outline.Cast<Edge>());
+            pp.ExternalEdges = new List<Edge>(outlineElements1D.Cast<Edge>());
             return pp;
         }
 

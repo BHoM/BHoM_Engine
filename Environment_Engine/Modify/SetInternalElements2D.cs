@@ -11,9 +11,9 @@ namespace BH.Engine.Environment
         /****               Public Methods              ****/
         /***************************************************/
 
-        public static Opening SetInternal2DElements(this Opening opening, List<IElement2D> internal2DElements)
+        public static Opening SetInternalElements2D(this Opening opening, List<IElement2D> internalElements2D)
         {
-            if (internal2DElements.Count != 0)
+            if (internalElements2D.Count != 0)
             {
                 Reflection.Compute.RecordError("Cannot set internal 2D elements to an opening.");
                 return null;
@@ -24,19 +24,19 @@ namespace BH.Engine.Environment
 
         /***************************************************/
 
-        public static Panel SetInternal2DElements(this Panel panel, List<IElement2D> internal2DElements)
+        public static Panel SetInternalElements2D(this Panel panel, List<IElement2D> internalElements2D)
         {
             Panel pp = panel.GetShallowClone() as Panel;
-            pp.Openings = new List<Opening>(internal2DElements.Cast<Opening>().ToList());
+            pp.Openings = new List<Opening>(internalElements2D.Cast<Opening>().ToList());
             return pp;
         }
 
         /***************************************************/
 
-        public static BuildingElement SetInternal2DElements(this BuildingElement panel, List<IElement2D> internal2DElements)
+        public static BuildingElement SetInternalElements2D(this BuildingElement panel, List<IElement2D> internalElements2D)
         {
             BuildingElement pp = panel.GetShallowClone() as BuildingElement;
-            pp.Openings = new List<Opening>(internal2DElements.Cast<Opening>().ToList());
+            pp.Openings = new List<Opening>(internalElements2D.Cast<Opening>().ToList());
             return pp;
         }
 
