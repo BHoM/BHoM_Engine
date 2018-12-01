@@ -8,56 +8,56 @@ namespace BH.Engine.Geometry
         /****               Public Methods              ****/
         /***************************************************/
 
-        public static Point GetGeometry(this Point point)
+        public static Point Geometry(this Point point)
         {
             return point;
         }
 
         /***************************************************/
 
-        public static ICurve GetGeometry(this Line curve)
+        public static ICurve Geometry(this Line curve)
         {
             return curve;
         }
 
         /***************************************************/
 
-        public static ICurve GetGeometry(this Arc curve)
+        public static ICurve Geometry(this Arc curve)
         {
             return curve;
         }
 
         /***************************************************/
 
-        public static ICurve GetGeometry(this Circle curve)
+        public static ICurve Geometry(this Circle curve)
         {
             return curve;
         }
 
         /***************************************************/
 
-        public static ICurve GetGeometry(this Ellipse curve)
+        public static ICurve Geometry(this Ellipse curve)
         {
             return curve;
         }
 
         /***************************************************/
 
-        public static ICurve GetGeometry(this NurbCurve curve)
+        public static ICurve Geometry(this NurbCurve curve)
         {
             return curve;
         }
 
         /***************************************************/
 
-        public static ICurve GetGeometry(this Polyline curve)
+        public static ICurve Geometry(this Polyline curve)
         {
             return curve;
         }
 
         /***************************************************/
 
-        public static ICurve GetGeometry(this PolyCurve curve)
+        public static ICurve Geometry(this PolyCurve curve)
         {
             return curve;
         }
@@ -67,9 +67,9 @@ namespace BH.Engine.Geometry
         /****              Interface Methods            ****/
         /***************************************************/
 
-        public static ICurve IGetGeometry(this ICurve curve)
+        public static ICurve IGeometry(this ICurve curve)
         {
-            return GetGeometry(curve as dynamic);
+            return Geometry(curve as dynamic);
         }
 
         /***************************************************/
