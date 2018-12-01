@@ -1,17 +1,18 @@
 ﻿using BH.oM.Common;
+using BH.oM.Structure.Elements;
 using System.Collections.Generic;
 
-namespace BH.Engine.Common
+namespace BH.Engine.Structure
 {
-    public static partial class Modify
+    public static partial class Query
     {
         /******************************************/
         /****            IElement1D            ****/
         /******************************************/
 
-        public static IElement1D ISet0DElements(this IElement1D element1D, List<IElement0D> new0DElements)
+        public static List<IElement0D> Elements0D(this Bar bar)
         {
-            return Reflection.Compute.RunExtentionMethod(element1D, "Set0DElements", new object[] { new0DElements }) as IElement1D;
+            return new List<IElement0D> { bar.StartNode, bar.EndNode };
         }
 
         /******************************************/

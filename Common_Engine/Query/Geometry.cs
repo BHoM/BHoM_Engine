@@ -9,9 +9,9 @@ namespace BH.Engine.Common
         /****            IElement0D            ****/
         /******************************************/
 
-        public static Point IGetGeometry(this IElement0D element0D)
+        public static Point IGeometry(this IElement0D element0D)
         {
-            return Reflection.Compute.RunExtentionMethod(element0D, "GetGeometry") as Point;
+            return Reflection.Compute.RunExtentionMethod(element0D, "Geometry") as Point;
         }
 
 
@@ -19,9 +19,9 @@ namespace BH.Engine.Common
         /****            IElement1D            ****/
         /******************************************/
 
-        public static ICurve IGetGeometry(this IElement1D element1D)
+        public static ICurve IGeometry(this IElement1D element1D)
         {
-            return Reflection.Compute.RunExtentionMethod(element1D, "GetGeometry") as ICurve;
+            return Reflection.Compute.RunExtentionMethod(element1D, "Geometry") as ICurve;
         }
 
         /******************************************/

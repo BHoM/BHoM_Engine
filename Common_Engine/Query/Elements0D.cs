@@ -6,12 +6,12 @@ namespace BH.Engine.Common
     public static partial class Query
     {
         /******************************************/
-        /****            IElement2D            ****/
+        /****            IElement1D            ****/
         /******************************************/
 
-        public static List<IElement2D> IGetInternal2DElements(this IElement2D element2D)
+        public static List<IElement0D> IElements0D(this IElement1D element1D)
         {
-            return Reflection.Compute.RunExtentionMethod(element2D, "GetInternal2DElements") as List<IElement2D>;
+            return Reflection.Compute.RunExtentionMethod(element1D, "Elements0D") as List<IElement0D>;
         }
 
         /******************************************/

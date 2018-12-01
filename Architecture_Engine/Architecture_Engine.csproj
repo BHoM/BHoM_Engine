@@ -48,10 +48,9 @@
   <ItemGroup>
     <Compile Include="Create\Grid.cs" />
     <Compile Include="Create\Level.cs" />
-    <Compile Include="Create\NewInstance.cs" />
     <Compile Include="Modify\SetGeometry.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Query\GetGeometry.cs" />
+    <Compile Include="Query\Geometry.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BHoM_Engine\BHoM_Engine.csproj">

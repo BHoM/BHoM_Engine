@@ -12,15 +12,9 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static CompositeGeometry Geometry(this ConcreteSection section)
+        public static Point Geometry(this Node node)
         {
-            if (section.SectionProfile.Edges.Count == 0)
-                return null;
-
-            CompositeGeometry geom = Engine.Geometry.Create.CompositeGeometry(section.SectionProfile.Edges);
-            geom.Elements.AddRange(section.Layout().Elements);
-
-            return geom;
+            return node.Position;
         }
 
         /***************************************************/
@@ -32,9 +26,9 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static Point Geometry(this Node node)
+        public static ICurve Geometry(this Edge edge)
         {
-            return node.Position;
+            return edge.Curve;
         }
 
         /***************************************************/
@@ -42,6 +36,19 @@ namespace BH.Engine.Structure
         public static IGeometry Geometry(this PanelFreeForm contour)
         {
             return contour.Surface;
+        }
+
+        /***************************************************/
+
+        public static CompositeGeometry Geometry(this ConcreteSection section)
+        {
+            if (section.SectionProfile.Edges.Count == 0)
+                return null;
+
+            CompositeGeometry geom = Engine.Geometry.Create.CompositeGeometry(section.SectionProfile.Edges);
+            geom.Elements.AddRange(section.Layout().Elements);
+
+            return geom;
         }
 
         /***************************************************/

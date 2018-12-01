@@ -16,10 +16,10 @@ namespace BH.Engine.Common
         {
             //TODO: make this work for PolyCurves (Booleans needed)
 
-            double result = element2D.IGetOutlineCurve().Area();
+            double result = element2D.IOutlineCurve().Area();
 
             List<Polyline> openings = new List<Polyline>();
-            foreach (PolyCurve o in element2D.IGetInternalOutlineCurves())
+            foreach (PolyCurve o in element2D.IInternalOutlineCurves())
             {
                 Polyline p = o.ToPolyline();
                 if (p == null)

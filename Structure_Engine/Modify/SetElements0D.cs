@@ -9,17 +9,17 @@ namespace BH.Engine.Structure
         /****            IElement1D            ****/
         /******************************************/
 
-        public static Bar Set0DElements(this Bar bar, List<Node> new0DElements)
+        public static Bar SetElements0D(this Bar bar, List<Node> newElements0D)
         {
-            if (new0DElements.Count != 2)
+            if (newElements0D.Count != 2)
             {
                 Reflection.Compute.RecordError("A bar is defined by 2 nodes.");
                 return null;
             }
 
             Bar clone = bar.GetShallowClone() as Bar;
-            clone.StartNode = new0DElements[0];
-            clone.EndNode = new0DElements[1];
+            clone.StartNode = newElements0D[0];
+            clone.EndNode = newElements0D[1];
             return clone;
         }
 
