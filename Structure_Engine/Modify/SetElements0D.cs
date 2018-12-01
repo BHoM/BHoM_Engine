@@ -1,4 +1,5 @@
-﻿using BH.oM.Structure.Elements;
+﻿using BH.oM.Common;
+using BH.oM.Structure.Elements;
 using System.Collections.Generic;
 
 namespace BH.Engine.Structure
@@ -9,7 +10,7 @@ namespace BH.Engine.Structure
         /****            IElement1D            ****/
         /******************************************/
 
-        public static Bar SetElements0D(this Bar bar, List<Node> newElements0D)
+        public static Bar SetElements0D(this Bar bar, List<IElement0D> newElements0D)
         {
             if (newElements0D.Count != 2)
             {
@@ -18,8 +19,8 @@ namespace BH.Engine.Structure
             }
 
             Bar clone = bar.GetShallowClone() as Bar;
-            clone.StartNode = newElements0D[0];
-            clone.EndNode = newElements0D[1];
+            clone.StartNode = newElements0D[0] as Node;
+            clone.EndNode = newElements0D[1] as Node;
             return clone;
         }
 
