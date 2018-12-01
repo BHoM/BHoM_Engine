@@ -25,7 +25,11 @@ namespace BH.Engine.Reflection
             Type type = method.DeclaringType;
 
             if (userReturnTypeForCreate && type.Name == "Create" && method is MethodInfo)
-                type = ((MethodInfo)method).ReturnType;
+            {
+                Type returnType = ((MethodInfo)method).ReturnType.UnderlyingType().Type;
+                if (returnType.Namespace.StartsWith("BH."))
+                    type = returnType;
+            }
             else if (useExtentionType && method.IsDefined(typeof(ExtensionAttribute), false))
             {
                 ParameterInfo[] parameters = method.GetParameters();
