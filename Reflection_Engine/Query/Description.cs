@@ -20,7 +20,7 @@ namespace BH.Engine.Reflection
             DescriptionAttribute attribute = member.GetCustomAttribute<DescriptionAttribute>();
             if (attribute != null)
                 return attribute.Description;
-            else if (member.MemberType != null && member.ReflectedType != null)
+            else if (member.ReflectedType != null)
                 return member.Name + " is a " + member.MemberType.ToString() + " of " + member.ReflectedType.ToText(true);
             else
                 return "";
