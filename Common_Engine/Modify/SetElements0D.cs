@@ -6,12 +6,12 @@ namespace BH.Engine.Common
     public static partial class Modify
     {
         /******************************************/
-        /****            IElement2D            ****/
+        /****            IElement1D            ****/
         /******************************************/
 
-        public static IElement2D ISetInternal2DElements(this IElement2D element2D, List<IElement2D> new2DElements)
+        public static IElement1D ISetElements0D(this IElement1D element1D, List<IElement0D> newElements0D)
         {
-            return Reflection.Compute.RunExtentionMethod(element2D, "SetInternal2DElements", new object[] { new2DElements }) as IElement2D;
+            return Reflection.Compute.RunExtentionMethod(element1D, "SetElements0D", new object[] { newElements0D }) as IElement1D;
         }
 
         /******************************************/

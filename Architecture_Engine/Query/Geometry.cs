@@ -9,7 +9,7 @@ namespace BH.Engine.Architecture
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static ICurve GetGeometry(this Grid grid)
+        public static ICurve Geometry(this Grid grid)
         {
             return grid.Curve;
         }

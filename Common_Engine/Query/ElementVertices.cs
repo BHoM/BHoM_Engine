@@ -14,7 +14,7 @@ namespace BH.Engine.Common
 
         public static List<Point> ElementVertices(this IElement1D element1D)
         {
-            ICurve curve = element1D.IGetGeometry();
+            ICurve curve = element1D.IGeometry();
             List<Point> vertices = curve.IDiscontinuityPoints();
 
             if (curve.IIsClosed())
@@ -31,8 +31,8 @@ namespace BH.Engine.Common
         public static List<Point> ElementVertices(this IElement2D element2D)
         {
             List<Point> result = new List<Point>();
-            result.AddRange(element2D.IGetOutlineCurve().ElementVertices());
-            foreach (IElement2D e in element2D.IGetInternal2DElements())
+            result.AddRange(element2D.IOutlineCurve().ElementVertices());
+            foreach (IElement2D e in element2D.IInternalElements2D())
             {
                 result.AddRange(e.ElementVertices());
             }

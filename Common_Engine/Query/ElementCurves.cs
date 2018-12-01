@@ -14,7 +14,7 @@ namespace BH.Engine.Common
 
         public static List<ICurve> ElementCurves(this IElement1D element1D, bool recursive = true)
         {
-            return new List<ICurve> { element1D.IGetGeometry() };
+            return new List<ICurve> { element1D.IGeometry() };
         }
 
 
@@ -26,7 +26,7 @@ namespace BH.Engine.Common
         {
             List<ICurve> result = new List<ICurve>();
 
-            PolyCurve outline = element2D.IGetOutlineCurve();
+            PolyCurve outline = element2D.IOutlineCurve();
             foreach (ICurve curve in outline.Curves)
             {
                 if (recursive)
@@ -35,7 +35,7 @@ namespace BH.Engine.Common
                     result.Add(curve);
             }
 
-            foreach (IElement2D e in element2D.IGetInternal2DElements())
+            foreach (IElement2D e in element2D.IInternalElements2D())
             {
                 result.AddRange(e.ElementCurves(recursive));
             }

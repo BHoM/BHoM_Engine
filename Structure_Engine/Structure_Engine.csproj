@@ -89,9 +89,9 @@
     <Compile Include="Create\SteelSection.cs" />
     <Compile Include="Modify\ApplyModifiers.cs" />
     <Compile Include="Modify\RecomputeEdges.cs" />
-    <Compile Include="Modify\Set0DElements.cs" />
-    <Compile Include="Modify\SetInternal2DElements.cs" />
-    <Compile Include="Modify\SetOutline.cs" />
+    <Compile Include="Modify\SetElements0D.cs" />
+    <Compile Include="Modify\SetInternalElements2D.cs" />
+    <Compile Include="Modify\SetOutlineElements1D.cs" />
     <Compile Include="Query\AnalyticalBars.cs" />
     <Compile Include="Query\Area.cs" />
     <Compile Include="Query\ControlPoints.cs" />
@@ -102,10 +102,9 @@
     <Compile Include="Query\CaseType.cs" />
     <Compile Include="Query\Centreline.cs" />
     <Compile Include="Query\Centroid.cs" />
-    <Compile Include="Query\Get0DElements.cs" />
-    <Compile Include="Query\GetGeometry.cs" />
-    <Compile Include="Query\GetInternal2DElements.cs" />
-    <Compile Include="Query\GetOutline.cs" />
+    <Compile Include="Query\Elements0D.cs" />
+    <Compile Include="Query\InternalElements2D.cs" />
+    <Compile Include="Query\OutlineElements1D.cs" />
     <Compile Include="Query\IsVertical.cs" />
     <Compile Include="Query\LoadType.cs" />
     <Compile Include="Query\Edges.cs" />

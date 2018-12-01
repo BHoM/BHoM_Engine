@@ -12,21 +12,21 @@ namespace BH.Engine.Environment
         /****               Public Methods              ****/
         /***************************************************/
 
-        public static List<IElement1D> GetOutline(this Opening opening)
+        public static List<IElement1D> OutlineElements1D(this Opening opening)
         {
             return opening.OpeningCurve.ISubParts().Cast<IElement1D>().ToList();
         }
 
         /***************************************************/
 
-        public static List<IElement1D> GetOutline(this Panel panel)
+        public static List<IElement1D> OutlineElements1D(this Panel panel)
         {
             return panel.PanelCurve.ISubParts().Cast<IElement1D>().ToList();
         }
 
         /***************************************************/
 
-        public static List<IElement1D> GetOutline(this BuildingElement element)
+        public static List<IElement1D> OutlineElements1D(this BuildingElement element)
         {
             return element.PanelCurve.ISubParts().Cast<IElement1D>().ToList();
         }

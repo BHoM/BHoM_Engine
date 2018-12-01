@@ -10,16 +10,16 @@ namespace BH.Engine.Structure
         /****               Public Methods              ****/
         /***************************************************/
 
-        public static List<IElement2D> GetInternal2DElements(this Opening opening)
+        public static List<IElement1D> OutlineElements1D(this Opening opening)
         {
-            return new List<IElement2D>();
+            return new List<IElement1D>(opening.Edges);
         }
 
         /***************************************************/
 
-        public static List<IElement2D> GetInternal2DElements(this PanelPlanar panelPlanar)
+        public static List<IElement1D> OutlineElements1D(this PanelPlanar panelPlanar)
         {
-            return new List<IElement2D>(panelPlanar.Openings);
+            return new List<IElement1D>(panelPlanar.ExternalEdges);
         }
 
         /***************************************************/

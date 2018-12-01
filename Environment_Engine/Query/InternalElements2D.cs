@@ -11,21 +11,21 @@ namespace BH.Engine.Environment
         /****               Public Methods              ****/
         /***************************************************/
 
-        public static List<IElement2D> GetInternal2DElements(this Opening opening)
+        public static List<IElement2D> InternalElements2D(this Opening opening)
         {
             return new List<IElement2D>();
         }
 
         /***************************************************/
 
-        public static List<IElement2D> GetInternal2DElements(this Panel panel)
+        public static List<IElement2D> InternalElements2D(this Panel panel)
         {
             return panel.Openings.Cast<IElement2D>().ToList();
         }
 
         /***************************************************/
 
-        public static List<IElement2D> GetInternal2DElements(this BuildingElement element)
+        public static List<IElement2D> InternalElements2D(this BuildingElement element)
         {
             return element.Openings.Cast<IElement2D>().ToList();
         }
