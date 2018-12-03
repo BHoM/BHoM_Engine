@@ -27,7 +27,7 @@ namespace BH.Engine.Reflection
                     if (outputDefs.ContainsKey(i))
                         outputs.Add(new OutputAttribute(outputDefs[i].Name, outputDefs[i].Description));
                     else
-                        outputs.Add(new OutputAttribute(types[i].UnderlyingType().Name.Substring(0, 1), ""));
+                        outputs.Add(new OutputAttribute(types[i].UnderlyingType().Type.Name.Substring(0, 1), ""));
                 }
                 return outputs;
             }

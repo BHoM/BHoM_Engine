@@ -29,5 +29,41 @@ namespace BH.Engine.Environment
 
             return s;
         }
+
+        public static List<List<BuildingElement>> MatchSpaces(this List<List<BuildingElement>> elementsAsSpaces, List<Space> spaces)
+        {
+            foreach (List<BuildingElement> bes in elementsAsSpaces)
+            {
+                Space foundSp = null;
+
+                foreach (Space s in spaces)
+                {
+                    if (s.Location == null)
+                    {
+                        foundSp = s; break;
+                    }
+                    if (!bes.IsContaining(s.Location))
+                        continue;
+                    else
+                    {
+                        foundSp = s;
+                        break;
+                    }
+                }
+
+                if (foundSp != null)
+                {
+                    foreach (BuildingElement be in bes)
+                    {
+                        if (be.CustomData.ContainsKey("Space_Custom_Data"))
+                            be.CustomData["Space_Custom_Data"] = foundSp.CustomData;
+                        else
+                            be.CustomData.Add("Space_Custom_Data", foundSp.CustomData);
+                    }
+                }
+            }
+
+            return elementsAsSpaces;
+        }
     }
 }

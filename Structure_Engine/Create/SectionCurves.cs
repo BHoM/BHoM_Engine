@@ -65,6 +65,25 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        public static List<ICurve> GeneralisedTeeSectionCurves(double height, double webThickness, double leftOutstandWidth, double leftOutstandThickness, double rightOutstandWidth, double rightOutstandThickness)
+        {
+            List<ICurve> perimeter = new List<ICurve>();
+            Point p = new Point { X = -webThickness / 2, Y = 0, Z = 0 };
+
+            perimeter.Add(new Line { Start = p, End = p = p + Vector.YAxis * (height-leftOutstandThickness) });
+            perimeter.Add(new Line { Start = p, End = p = p + Vector.XAxis * (-leftOutstandWidth) });
+            perimeter.Add(new Line { Start = p, End = p = p + Vector.YAxis * (leftOutstandThickness) });
+            perimeter.Add(new Line { Start = p, End = p = p + Vector.XAxis * (leftOutstandWidth + webThickness + rightOutstandWidth) });
+            perimeter.Add(new Line { Start = p, End = p = p + Vector.YAxis * (-rightOutstandThickness) });
+            perimeter.Add(new Line { Start = p, End = p = p + Vector.XAxis * (-rightOutstandWidth) });
+            perimeter.Add(new Line { Start = p, End = p = p + Vector.YAxis * (-height + rightOutstandThickness) });
+            perimeter.Add(new Line { Start = p, End = p = p + Vector.XAxis * (-webThickness) });
+
+            return perimeter;
+        }
+
+        /***************************************************/
+
         public static List<ICurve> AngleSectionCurves(double width, double depth, double flangeThickness, double webThickness, double innerRadius, double toeRadius)
         {
             List<ICurve> perimeter = new List<ICurve>();

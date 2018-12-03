@@ -161,6 +161,53 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        public static double TorsionalConstant(this GeneralisedTSectionProfile profile)
+        {
+
+            bool leftOutstand = profile.LeftOutstandWidth > 0 && profile.LeftOutstandThickness > 0;
+            bool rightOustand = profile.RightOutstandWidth > 0 && profile.RightOutstandThickness > 0;
+
+            if (!leftOutstand && !rightOustand)
+            {
+                //No outstands => Rectangle
+
+                double a = Math.Max(profile.Height, profile.WebThickness) / 2;
+                double b = Math.Min(profile.Height, profile.WebThickness) / 2;
+                return a * Math.Pow(b, 3) * (16 / 3 - 3.36 * b / a * (1 - Math.Pow(b, 4) / (12 * Math.Pow(a, 4))));
+            }
+
+            if (Math.Abs(profile.RightOutstandThickness - profile.LeftOutstandThickness) < Tolerance.Distance
+                && Math.Abs(profile.RightOutstandWidth - profile.LeftOutstandWidth) < Tolerance.Distance)
+            {
+                //Symmetric T
+                double totalWidth = profile.RightOutstandWidth * 2 + profile.WebThickness;
+                double totalDepth = profile.Height;
+                double tf = profile.RightOutstandThickness;
+                double tw = profile.WebThickness;
+
+                return (totalWidth * Math.Pow(tf, 3) + (totalDepth - tf / 2) * Math.Pow(tw, 3)) / 3;
+            }
+
+
+            if (leftOutstand && !rightOustand || !leftOutstand && rightOustand)
+            {
+                //One outstand => angle
+                double totalWidth = (leftOutstand ? profile.LeftOutstandWidth : profile.RightOutstandWidth) + profile.WebThickness;
+                double totalDepth = profile.Height;
+                double tf = leftOutstand ? profile.LeftOutstandThickness : profile.RightOutstandThickness;
+                double tw = profile.WebThickness;
+
+                return ((totalWidth - tw / 2) * Math.Pow(tf, 3) + (totalDepth - tf / 2) * Math.Pow(tw, 3)) / 3;
+            }
+
+
+            Reflection.Compute.RecordWarning("Can only calculate torsional constant of symmetric T sections or angles");
+            return 0;
+            
+        }
+
+        /***************************************************/
+
         public static double TorsionalConstant(this AngleProfile profile)
         {
             double totalWidth = profile.Width;

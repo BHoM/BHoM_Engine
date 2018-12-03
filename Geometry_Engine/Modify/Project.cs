@@ -54,9 +54,9 @@ namespace BH.Engine.Geometry
                     CoordinateSystem = new CoordinateSystem
                     {
                         Origin = arc.CoordinateSystem.Origin.Project(p),
-                        X = arc.CoordinateSystem.X.Project(p),
-                        Y = arc.CoordinateSystem.Y.Project(p),
-                        Z = p.Normal
+                        X = arc.CoordinateSystem.X,
+                        Y = arc.CoordinateSystem.Y,
+                        Z = arc.CoordinateSystem.Z
                     },
                     Radius = arc.Radius,
                     StartAngle = arc.StartAngle,
