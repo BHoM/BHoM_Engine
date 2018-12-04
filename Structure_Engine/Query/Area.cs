@@ -22,6 +22,15 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        public static double Area(this Opening opening)
+        {
+            List<PolyCurve> edges = opening.EdgeCurves().IJoin();
+
+            return edges.Select(x => x.Area()).Sum();
+        }
+
+        /***************************************************/
+
         public static double Area(this FEMesh mesh)
         {
             return mesh.Geometry().Area();
