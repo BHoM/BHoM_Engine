@@ -50,6 +50,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Create\IsEqualConfig.cs" />
     <Compile Include="Create\TestResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Query\IsEqual.cs" />
