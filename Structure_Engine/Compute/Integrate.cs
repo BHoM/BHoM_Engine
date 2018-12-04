@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using BH.oM.Geometry;
 using BH.Engine.Geometry;
@@ -48,21 +49,64 @@ namespace BH.Engine.Structure
             results["Iy"] = Geometry.Query.AreaIntegration(horizontalSlices, 1, 2, 1, centreZ);
             results["Iz"] = Geometry.Query.AreaIntegration(verticalSlices, 1, 2, 1, centreY);
             //resutlts["Sy"] = 2 * Engine.Geometry.Query.AreaIntegration(horizontalSlices, min.Y, centreZ, 1, 1, 1);
-            results["Wply"] = 2*Math.Abs(Geometry.Query.AreaIntegration(horizontalSlices, 1, 1, 1, min.Y, centreZ, centreZ));// + Math.Abs(Query.AreaIntegration(horizontalSlices, 1, 1, 1, centreZ, max.Y, centreZ));
+            //results["Wply"] = 2 * Math.Abs(Geometry.Query.AreaIntegration(horizontalSlices, 1, 1, 1, min.Y, centreZ, centreZ));// + Math.Abs(Geometry.Query.AreaIntegration(horizontalSlices, 1, 1, 1, centreZ, max.Y, centreZ));
+            results["Wply"] = PlasticModulus(horizontalSlices, area, max.Y, min.Y);
             //resutlts["Sz"] = 2 * Engine.Geometry.Query.AreaIntegration(verticalSlices, min.X, centreY, 1, 1, 1);
-            results["Wplz"] = 2*Math.Abs(Geometry.Query.AreaIntegration(verticalSlices, 1, 1, 1, min.X, centreY, centreY));// + Math.Abs(Query.AreaIntegration(verticalSlices, 1, 1, 1, centreY, max.X, centreY));
+            //results["Wplz"] = Math.Abs(Geometry.Query.AreaIntegration(verticalSlices, 1, 1, 1, min.X, centreY, centreY)) + Math.Abs(Geometry.Query.AreaIntegration(verticalSlices, 1, 1, 1, centreY, max.X, centreY));
+            results["Wplz"] = PlasticModulus(verticalSlices, area, min.X, max.X);
             results["Rgy"] = Math.Sqrt((double)results["Iy"] / area);
             results["Rgz"] = Math.Sqrt((double)results["Iz"] / area);
             results["Vy"] = max.X - centreY;
             results["Vpy"] = centreY - min.X;
             results["Vz"] = max.Y - centreZ;
             results["Vpz"] = centreZ - min.Y;
-            results["Welz"] = (double)results["Iz"] / (double)results["Vy"];
-            results["Wely"] = (double)results["Iy"] / (double)results["Vz"];
+            results["Welz"] = (double)results["Iz"] / Math.Max((double)results["Vy"], (double)results["Vpy"]);
+            results["Wely"] = (double)results["Iy"] / Math.Max((double)results["Vz"], (double)results["Vpz"]);
             results["Asy"] = Query.ShearArea(verticalSlices, (double)results["Iz"], centreY);
             results["Asz"] = Query.ShearArea(horizontalSlices, (double)results["Iy"], centreZ);
 
             return results;
+        }
+
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+
+        public static double PlasticModulus(List<IntegrationSlice> slices, double area, double max, double min)
+        {
+            double result = 0;
+            slices = slices.OrderBy(x => x.Centre).ToList();
+
+            double plasticNeutralAxis = 0;
+            for (int i = 0; i < slices.Count; i++)
+            {
+                IntegrationSlice slice = slices[i];
+                double sliceArea = slice.Length * slice.Width;
+                if (result + sliceArea < area / 2)
+                {
+                    result += sliceArea;                   
+                }
+                else
+                {
+                    plasticNeutralAxis = slices[i - 1].Centre + slices[i - 1].Width / 2;
+                    double diff = area / 2 - result;
+                    double ratio = diff / sliceArea;
+                    plasticNeutralAxis += ratio * slice.Width;
+
+
+                    break;
+                }
+            }
+
+            double centreTop = 0;
+            double centreBot = 0;
+
+            double areaTop = Geometry.Query.AreaIntegration(slices, 1, max, plasticNeutralAxis, ref centreTop);
+            double areaBot = Geometry.Query.AreaIntegration(slices, 1, min, plasticNeutralAxis, ref centreBot);
+
+            return areaTop * Math.Abs(centreTop - plasticNeutralAxis) + areaBot * Math.Abs(centreBot - plasticNeutralAxis);
+
         }
 
         /***************************************************/
