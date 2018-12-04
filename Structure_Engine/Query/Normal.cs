@@ -18,17 +18,21 @@ namespace BH.Engine.Structure
             Point p1 = bar.StartNode.Position;
             Point p2 = bar.EndNode.Position;
 
+            Vector tan = (p2 - p1).Normalise();
             Vector normal;
 
             if (!IsVertical(p1, p2))
-                normal = Vector.ZAxis;
+            {
+                normal = Vector.ZAxis;              
+                normal = (normal - tan.DotProduct(normal) * tan).Normalise();
+            }
             else
-                normal = Vector.YAxis;
+            {
+                Vector locY = Vector.YAxis;
+                locY = (locY - tan.DotProduct(locY) * tan).Normalise();
+                normal = tan.CrossProduct(locY);
+            }
 
-
-            Vector tan = (p2 - p1).Normalise();
-
-            normal = (normal - tan.DotProduct(normal) * tan).Normalise();
 
             return normal.Rotate(bar.OrientationAngle, tan);
         }
