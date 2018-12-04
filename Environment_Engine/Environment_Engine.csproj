@@ -67,6 +67,7 @@
     <Compile Include="Create\Space.cs" />
     <Compile Include="Modify\SetInternalElements2D.cs" />
     <Compile Include="Modify\SetOutlineElements1D.cs" />
+    <Compile Include="Modify\JoinBuildingElements.cs" />
     <Compile Include="Modify\SplitBuildingElements.cs" />
     <Compile Include="Query\AdjacentSpaces.cs" />
     <Compile Include="Query\AdjacentSurface.cs" />
@@ -91,6 +92,7 @@
     <Compile Include="Query\ElementsNotMatched.cs" />
     <Compile Include="Query\ExposedToSun.cs" />
     <Compile Include="Query\FloorGeometry.cs" />
+    <Compile Include="Query\IsCoPlanar.cs" />
     <Compile Include="Query\StripOpenings.cs" />
     <Compile Include="Query\Vertices.cs" />
     <Compile Include="Query\InternalElements2D.cs" />
