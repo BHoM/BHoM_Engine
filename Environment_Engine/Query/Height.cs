@@ -19,7 +19,17 @@ namespace BH.Engine.Environment
 
         public static double Height(this BuildingElement element)
         {
-            BoundingBox bBox = element.PanelCurve.IBounds();
+            return element.PanelCurve.Height();
+        }
+
+        public static double Height(this Opening opening)
+        {
+            return opening.OpeningCurve.Height();
+        }
+
+        public static double Height(this ICurve panelCurve)
+        {
+            BoundingBox bBox = panelCurve.IBounds();
 
             return (bBox.Max.Z - bBox.Min.Z);
         }
