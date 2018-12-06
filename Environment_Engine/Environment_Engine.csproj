@@ -92,6 +92,7 @@
     <Compile Include="Query\ElementsNotMatched.cs" />
     <Compile Include="Query\ExposedToSun.cs" />
     <Compile Include="Query\FloorGeometry.cs" />
+    <Compile Include="Query\Height.cs" />
     <Compile Include="Query\IsCoPlanar.cs" />
     <Compile Include="Query\StripOpenings.cs" />
     <Compile Include="Query\Vertices.cs" />

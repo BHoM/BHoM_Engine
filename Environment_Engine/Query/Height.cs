@@ -17,14 +17,11 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static double Width(this BuildingElement element)
+        public static double Height(this BuildingElement element)
         {
             BoundingBox bBox = element.PanelCurve.IBounds();
 
-            double diffX = Math.Abs(bBox.Max.X - bBox.Min.X);
-            double diffY = Math.Abs(bBox.Max.Y - bBox.Min.Y);
-
-            return Math.Sqrt((diffX * diffX) + (diffY * diffY));
+            return (bBox.Max.Z - bBox.Min.Z);
         }
     }
 }
