@@ -19,7 +19,17 @@ namespace BH.Engine.Environment
 
         public static double Width(this BuildingElement element)
         {
-            BoundingBox bBox = element.PanelCurve.IBounds();
+            return element.PanelCurve.Width();
+        }
+
+        public static double Width(this Opening opening)
+        {
+            return opening.OpeningCurve.Width();
+        }
+
+        public static double Width(this ICurve panelCurve)
+        {
+            BoundingBox bBox = panelCurve.IBounds();
 
             double diffX = Math.Abs(bBox.Max.X - bBox.Min.X);
             double diffY = Math.Abs(bBox.Max.Y - bBox.Min.Y);
