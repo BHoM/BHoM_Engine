@@ -8,6 +8,7 @@ using BH.oM.Geometry;
 using BH.Engine.Geometry;
 
 using BH.oM.Environment.Elements;
+using BH.oM.Environment.Interface;
 
 namespace BH.Engine.Environment
 {
@@ -16,6 +17,16 @@ namespace BH.Engine.Environment
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
+
+        public static double Height(this IBuildingObject buildingObject)
+        {
+            return Height(buildingObject as dynamic);
+        }
+
+        public static double Height(this Panel panel)
+        {
+            return panel.PanelCurve.Height();
+        }
 
         public static double Height(this BuildingElement element)
         {
