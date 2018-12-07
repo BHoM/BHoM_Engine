@@ -38,7 +38,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static bool HasModifiers(ISectionProperty property)
+        public static bool HasModifiers(this ISectionProperty property)
         {
             double[] modifiers = property.Modifiers();
 

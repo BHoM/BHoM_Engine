@@ -4,8 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using BHG = BH.oM.Geometry;
+using BH.oM.Geometry;
 using BH.Engine.Geometry;
+
+using BH.oM.Environment.Elements;
+using BH.oM.Environment.Interface;
 
 namespace BH.Engine.Environment
 {
@@ -15,10 +18,34 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static double Width(BHG.Polyline pLine, double length)
+        public static double Width(this IBuildingObject buildingObject)
         {
-            //Not convinced this is the best way of doing this - but this is being ported over from the XML Toolkit where it appears to be working so far so I'm not going to fiddle with it at this stage...
-            return (pLine.Area() / length);
+            return Width(buildingObject as dynamic);
+        }
+
+        public static double Width(this Panel panel)
+        {
+            return panel.PanelCurve.Width();
+        }
+
+        public static double Width(this BuildingElement element)
+        {
+            return element.PanelCurve.Width();
+        }
+
+        public static double Width(this Opening opening)
+        {
+            return opening.OpeningCurve.Width();
+        }
+
+        public static double Width(this ICurve panelCurve)
+        {
+            BoundingBox bBox = panelCurve.IBounds();
+
+            double diffX = Math.Abs(bBox.Max.X - bBox.Min.X);
+            double diffY = Math.Abs(bBox.Max.Y - bBox.Min.Y);
+
+            return Math.Sqrt((diffX * diffX) + (diffY * diffY));
         }
     }
 }

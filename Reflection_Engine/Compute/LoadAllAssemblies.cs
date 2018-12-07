@@ -21,8 +21,15 @@ namespace BH.Engine.Reflection
                 m_AssemblyAlreadyLoaded = true;
                 HashSet<string> loaded = new HashSet<string>(AppDomain.CurrentDomain.GetAssemblies().Select(x => x.FullName.Split(',').First()));
 
-                if (folder.Length == 0)
+                if (string.IsNullOrEmpty(folder))
                     folder = Query.BHoMFolder();
+
+                if (!Directory.Exists(folder))
+                {
+                    RecordWarning("The folder provided to load the assemblies from does not exist: " + folder);
+                    return;
+                }
+
                 foreach (string file in Directory.GetFiles(folder))
                 {
                     string[] parts = file.Split(new char[] { '.', '\\' });

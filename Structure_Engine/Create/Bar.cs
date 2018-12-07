@@ -66,8 +66,9 @@ namespace BH.Engine.Structure
                 if (!line.IsVertical())
                     reference = Vector.ZAxis;
                 else
-                    reference = Vector.YAxis;
-
+                {
+                    reference = tan.CrossProduct(Vector.YAxis);
+                }
 
                 orientationAngle = reference.Angle(normal, new Plane { Normal = tan });
 

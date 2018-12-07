@@ -149,8 +149,10 @@ namespace BH.Engine.Geometry
 
             double t = (plane.Normal * (plane.Origin - line.Start)) / (plane.Normal * dir);
 
+            double tTol = tolerance / dir.Length();
+
             // Return null if intersection out of segment limits
-            if (!useInfiniteLine && (t < 0 || t > 1))
+            if (!useInfiniteLine && (t < -tTol || t > 1 + tTol))
                 return null;
 
             return line.Start + t * dir;

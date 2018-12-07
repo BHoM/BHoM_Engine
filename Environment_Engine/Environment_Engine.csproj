@@ -38,6 +38,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Build\Geometry_Engine.dll</HintPath>
     </Reference>
+    <Reference Include="Reflection_Engine, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Build\Reflection_Engine.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -53,10 +57,15 @@
     <Compile Include="Convert\PanelPlanar.cs" />
     <Compile Include="Create\Building.cs" />
     <Compile Include="Create\BuildingElement.cs" />
+    <Compile Include="Create\NewElement1D.cs" />
+    <Compile Include="Create\NewInternalElement2D.cs" />
     <Compile Include="Create\Opening.cs" />
     <Compile Include="Create\Panel.cs" />
     <Compile Include="Create\BuildingElementProperties.cs" />
     <Compile Include="Create\Space.cs" />
+    <Compile Include="Modify\SetInternalElements2D.cs" />
+    <Compile Include="Modify\SetOutlineElements1D.cs" />
+    <Compile Include="Modify\JoinBuildingElements.cs" />
     <Compile Include="Modify\SplitBuildingElements.cs" />
     <Compile Include="Query\AdjacentSpaces.cs" />
     <Compile Include="Query\AdjacentSurface.cs" />
@@ -81,8 +90,12 @@
     <Compile Include="Query\ElementsNotMatched.cs" />
     <Compile Include="Query\ExposedToSun.cs" />
     <Compile Include="Query\FloorGeometry.cs" />
+    <Compile Include="Query\Height.cs" />
+    <Compile Include="Query\IsCoPlanar.cs" />
     <Compile Include="Query\StripOpenings.cs" />
     <Compile Include="Query\Vertices.cs" />
+    <Compile Include="Query\InternalElements2D.cs" />
+    <Compile Include="Query\OutlineElements1D.cs" />
     <Compile Include="Query\IdentifyOverlaps.cs" />
     <Compile Include="Query\Inclination.cs" />
     <Compile Include="Query\IsClosed.cs" />

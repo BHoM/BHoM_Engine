@@ -215,7 +215,7 @@ namespace BH.Engine.Geometry
                                 List<Point> iPts = subPart.ILineIntersections(ray, false, tolerance);
                                 foreach (Point iPt in iPts)
                                 {
-                                    double signedAngle = rayDir.SignedAngle(subPart.ITangentAtPoint(iPt), p.Normal);
+                                    double signedAngle = rayDir.SignedAngle(subPart.ITangentAtPoint(iPt, tolerance), p.Normal);
                                     if ((subPart.IStartPoint().SquareDistance(iPt) <= sqTol))
                                     {
                                         if (signedAngle >= -Tolerance.Angle) intersects.Add(iPt);

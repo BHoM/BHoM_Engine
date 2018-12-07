@@ -1,4 +1,5 @@
-﻿using BH.oM.Reflection.Attributes;
+﻿using BH.Engine.Reflection.Convert;
+using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -19,6 +20,8 @@ namespace BH.Engine.Reflection
             DescriptionAttribute attribute = member.GetCustomAttribute<DescriptionAttribute>();
             if (attribute != null)
                 return attribute.Description;
+            else if (member.ReflectedType != null)
+                return member.Name + " is a " + member.MemberType.ToString() + " of " + member.ReflectedType.ToText(true);
             else
                 return "";
         }
@@ -31,6 +34,8 @@ namespace BH.Engine.Reflection
             IEnumerable<InputAttribute> inputDesc = parameter.Member.GetCustomAttributes<InputAttribute>().Where(x => x.Name == parameter.Name);
             if (inputDesc.Count() > 0)
                 return inputDesc.First().Description;
+            else if (parameter.ParameterType != null)
+                return parameter.Name + " is a " + parameter.ParameterType.ToText();
             else
                 return "";
         }
@@ -44,7 +49,7 @@ namespace BH.Engine.Reflection
             if (attribute != null)
                 return attribute.Description;
             else
-                return "";
+                return "This is a " + type.ToText();
         }
 
         /***************************************************/
@@ -53,12 +58,12 @@ namespace BH.Engine.Reflection
         [Input("item", "This item can either be a Type, a MemberInfo, or a ParamaterInfo")]
         public static string IDescription(this object item)
         {
-            if (item is MemberInfo)
-                return Description(item as MemberInfo);
-            else if (item is ParameterInfo)
+            if (item is ParameterInfo)
                 return Description(item as ParameterInfo);
             else if (item is Type)
                 return Description(item as Type);
+            else if (item is MemberInfo)
+                return Description(item as MemberInfo);
             else
                 return "";
         }

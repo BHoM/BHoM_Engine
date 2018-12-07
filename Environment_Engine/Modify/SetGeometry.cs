@@ -1,10 +1,6 @@
-﻿using BH.oM.Environment.Elements;
+﻿using BH.Engine.Geometry;
+using BH.oM.Environment.Elements;
 using BH.oM.Environment.Interface;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using BH.oM.Geometry;
 
 namespace BH.Engine.Environment
@@ -25,7 +21,7 @@ namespace BH.Engine.Environment
         public static Panel SetGeometry(this Panel buildingElementPanel, ICurve curve)
         {
             Panel aBuildingElementPanel = buildingElementPanel.GetShallowClone() as Panel;
-            aBuildingElementPanel.PanelCurve = curve;
+            aBuildingElementPanel.PanelCurve = curve.IClone();
             return aBuildingElementPanel;
         }
 
@@ -34,7 +30,7 @@ namespace BH.Engine.Environment
         public static Opening SetGeometry(this Opening opening, ICurve curve)
         {
             Opening aOpening = opening.GetShallowClone() as Opening;
-            aOpening.OpeningCurve = curve;
+            aOpening.OpeningCurve = curve.IClone();
             return aOpening;
         }
 
@@ -43,8 +39,10 @@ namespace BH.Engine.Environment
         public static BuildingElement SetGeometry(this BuildingElement element, ICurve curve)
         {
             BuildingElement aElement = element.GetShallowClone() as BuildingElement;
-            aElement.PanelCurve = curve;
+            aElement.PanelCurve = curve.IClone();
             return aElement;
         }
+
+        /***************************************************/
     }
 }

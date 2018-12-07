@@ -82,6 +82,7 @@
     <Compile Include="Create\Ellipse.cs" />
     <Compile Include="Create\IntegrationSlice.cs" />
     <Compile Include="Modify\CollapseToPolyline.cs" />
+    <Compile Include="Modify\SetGeometry.cs" />
     <Compile Include="Modify\Simplify.cs" />
     <Compile Include="Modify\Extend.cs" />
     <Compile Include="Modify\Join.cs" />
@@ -91,6 +92,7 @@
     <Compile Include="Modify\SplitAtPoints.cs" />
     <Compile Include="Query\BasisFunction.cs" />
     <Compile Include="Query\CurveProximity.cs" />
+    <Compile Include="Query\Geometry.cs" />
     <Compile Include="Query\GetLineSegment.cs" />
     <Compile Include="Query\IsEqual.cs" />
     <Compile Include="Query\Clone.cs" />
