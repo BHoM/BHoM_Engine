@@ -54,7 +54,6 @@
   <ItemGroup>
     <Compile Include="Compute\BooleanIntersection.cs" />
     <Compile Include="Compute\BuildSpace.cs" />
-    <Compile Include="Convert\PanelPlanar.cs" />
     <Compile Include="Create\Building.cs" />
     <Compile Include="Create\BuildingElement.cs" />
     <Compile Include="Create\NewElement1D.cs" />
@@ -129,13 +128,12 @@
       <Project>{8d8cd66f-76f3-4750-936d-380d51bc67d6}</Project>
       <Name>Common_Engine</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Structure_Engine\Structure_Engine.csproj">
-      <Project>{52a31a0a-e340-4909-aad6-228045b07bf3}</Project>
-      <Name>Structure_Engine</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Convert\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
