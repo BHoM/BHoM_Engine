@@ -7,6 +7,8 @@ using BH.oM.Geometry;
 
 using BH.Engine.Geometry;
 
+using BH.Engine.Common;
+
 namespace BH.Engine.Environment
 {
     public static partial class Query
@@ -17,7 +19,7 @@ namespace BH.Engine.Environment
 
         public static double Area(this BuildingElement element)
         {
-            return element.PanelCurve.IArea();
+            return BH.Engine.Common.Query.Area(element);
         }
 
         public static double Area(this List<BuildingElement> space)
