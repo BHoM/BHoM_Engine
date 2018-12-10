@@ -125,6 +125,10 @@
     <Compile Include="Query\Width.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Common_Engine\Common_Engine.csproj">
+      <Project>{8d8cd66f-76f3-4750-936d-380d51bc67d6}</Project>
+      <Name>Common_Engine</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Structure_Engine\Structure_Engine.csproj">
       <Project>{52a31a0a-e340-4909-aad6-228045b07bf3}</Project>
       <Name>Structure_Engine</Name>
