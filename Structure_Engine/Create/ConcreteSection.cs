@@ -60,8 +60,10 @@ namespace BH.Engine.Structure
 
             section.Material = material == null ? Query.Default(MaterialType.Concrete) : material;
 
-            if (name != null)
+            if (!string.IsNullOrWhiteSpace(name))
                 section.Name = name;
+            else if (!string.IsNullOrWhiteSpace(profile.Name))
+                section.Name = profile.Name;
 
             if (reinforcement != null)
                 section.Reinforcement = reinforcement;
