@@ -16,14 +16,15 @@ namespace BH.Engine.Geometry
         {
             ICurve curve = surface.Curve;
             Vector direction = surface.Direction;
-
             List<ICurve> edges = new List<ICurve>();
+
             if (!surface.Capped)
             {
                 edges.Add(curve);
                 ICurve other = curve.IClone();
                 edges.Add(other.ITranslate(direction));
             }
+
             if (!curve.IIsClosed())
             {
                 Point start = curve.IStartPoint();
@@ -64,9 +65,7 @@ namespace BH.Engine.Geometry
                 };
             }
             else
-            {
                 return new List<ICurve>();
-            }
         }
 
         /***************************************************/
@@ -85,6 +84,7 @@ namespace BH.Engine.Geometry
         {
             if (mesh == null)
                 return null;
+
             if (mesh.Faces.Count < 1)
                 return null;
             
@@ -116,5 +116,7 @@ namespace BH.Engine.Geometry
         {
             return ExternalEdges(surface as dynamic);
         }
+
+        /***************************************************/
     }
 }

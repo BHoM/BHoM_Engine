@@ -54,7 +54,8 @@ namespace BH.Engine.Geometry
         {
             List<Point> pts = curve.ControlPoints;
 
-            if (pts.Count < 2) return null;
+            if (pts.Count < 2)
+                return null;
 
             Point pt1 = pts[0];
             Point pt2 = pts[1];

@@ -42,15 +42,20 @@ namespace BH.Engine.Geometry
 
         public static double Area(this PolyCurve curve)
         {
-            if (!curve.IsClosed()) return 0;
+            if (!curve.IsClosed())
+                return 0;
             Plane p = curve.FitPlane();
-            if (p == null) return 0.0;              // points are collinear
+
+            if (p == null)
+                return 0.0;              // points are collinear
             
             Point sPt = curve.StartPoint();
             double area = 0;
+
             foreach (ICurve c in curve.SubParts())
             {
-                if (c is NurbCurve) throw new NotImplementedException("Area of NurbCurve is not imlemented yet so the area of this PolyCurve cannot be calculated");
+                if (c is NurbCurve)
+                    throw new NotImplementedException("Area of NurbCurve is not imlemented yet so the area of this PolyCurve cannot be calculated");
 
                 Point ePt = c.IEndPoint();
                 Vector prod = CrossProduct(sPt - p.Origin, ePt - p.Origin);
@@ -62,12 +67,16 @@ namespace BH.Engine.Geometry
                     double radius = arc.Radius;
                     double angle = arc.Angle();
                     double arcArea = (angle - Math.Sin(angle)) * radius * radius * 0.5;
-                    if (arc.CoordinateSystem.Z.DotProduct(p.Normal) > 0) area += arcArea;
-                    else area -= arcArea;
+
+                    if (arc.CoordinateSystem.Z.DotProduct(p.Normal) > 0)
+                        area += arcArea;
+                    else
+                        area -= arcArea;
                 }
 
                 sPt = ePt.Clone();
             }
+
             return Math.Abs(area);
         }
 
@@ -75,14 +84,17 @@ namespace BH.Engine.Geometry
 
         public static double Area(this Polyline curve)
         {
-            if (!curve.IsClosed()) return 0;
+            if (!curve.IsClosed())
+                return 0;
 
             List<Point> pts = curve.ControlPoints;
             int ptsCount = pts.Count;
-            if (ptsCount < 4) { return 0.0; }
+            if (ptsCount < 4)
+                return 0.0;
 
             Plane p = pts.FitPlane();
-            if (p == null) return 0.0;              // points are collinear
+            if (p == null)
+                return 0.0;              // points are collinear
 
             double x = 0, y = 0, z = 0;
             for (int i = 0; i < ptsCount; i++)
@@ -93,6 +105,7 @@ namespace BH.Engine.Geometry
                 y += prod.Y;
                 z += prod.Z;
             }
+
             return Math.Abs((new Vector { X = x, Y = y, Z = z } * p.Normal) * 0.5);
         }
 
@@ -107,6 +120,7 @@ namespace BH.Engine.Geometry
             double area = 0;
             List<Face> faces = tMesh.Faces;
             List<Point> vertices = tMesh.Vertices;
+
             for (int i = 0; i < faces.Count; i++)
             {
                 Point pA = vertices[faces[i].A];
@@ -116,6 +130,7 @@ namespace BH.Engine.Geometry
                 Vector AC = new Vector { X = pC.X - pA.X, Y = pC.Y - pA.Y, Z = pC.Z - pA.Z };
                 area += AB.CrossProduct(AC).Length();
             }
+
             return area / 2;
         }
 

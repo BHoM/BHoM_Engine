@@ -73,6 +73,6 @@ namespace BH.Engine.Geometry
             return InternalEdges(surface as dynamic);
         }
 
-
+        /***************************************************/
     }
 }

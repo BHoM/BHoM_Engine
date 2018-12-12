@@ -13,12 +13,14 @@ namespace BH.Engine.Geometry
 
         public static Plane FitPlane(this List<Point> points, double tolerance = Tolerance.Distance)
         {
-            if (points.Count < 3) return null;
-            Plane result = null;
+            if (points.Count < 3)
+                return null;
 
+            Plane result = null;
             Point origin = points.Average();
             double[,] MTM = new double[3, 3];
             double[,] normalizedPoints = new double[points.Count, 3];
+
             for (int i = 0; i < points.Count; i++)
             {
                 normalizedPoints[i, 0] = points[i].X - origin.X;
@@ -40,7 +42,9 @@ namespace BH.Engine.Geometry
             }
 
             int nonZeroRowCount = MTM.CountNonZeroRows(MTM.REFTolerance(tolerance * tolerance));
-            if (nonZeroRowCount < 2) return null;                                   // points are collinear along X, Y or Z
+
+            if (nonZeroRowCount < 2)
+                return null;                                                        // points are collinear along X, Y or Z
             else if (nonZeroRowCount == 2)                                          // normal is either X or Y or Z
             {
                 double sqX = 0;
@@ -52,14 +56,15 @@ namespace BH.Engine.Geometry
                     sqY += Math.Pow(normalizedPoints[i, 1], 2);
                     sqZ += Math.Pow(normalizedPoints[i, 2], 2);
                 }
+
                 Vector normal = sqX < sqY ? (sqX < sqZ ? Vector.XAxis : Vector.ZAxis) : (sqY < sqZ ? Vector.YAxis : Vector.ZAxis);
                 result = new Plane { Origin = origin, Normal = normal };
             }
-
             else
             {
                 Vector[] eigenvectors = MTM.Eigenvectors(tolerance);
-                if (eigenvectors == null) return null;
+                if (eigenvectors == null)
+                    return null;
 
                 double leastSquares = double.PositiveInfinity;
                 foreach (Vector eigenvector in eigenvectors)
@@ -77,6 +82,7 @@ namespace BH.Engine.Geometry
                     }
                 }
             }
+
             return result;
         }
 

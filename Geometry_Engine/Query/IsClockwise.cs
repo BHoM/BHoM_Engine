@@ -13,24 +13,29 @@ namespace BH.Engine.Geometry
 
         public static bool IsClockwise(this Polyline polyline, Vector normal, double tolerance = Tolerance.Distance)
         {
-            if (!polyline.IsClosed(tolerance)) throw new Exception("The polyline is not closed. IsClockwise method is relevant only to closed curves.");
+            if (!polyline.IsClosed(tolerance))
+                throw new Exception("The polyline is not closed. IsClockwise method is relevant only to closed curves.");
 
             List<Point> cc = polyline.DiscontinuityPoints(tolerance);
             Vector dir1 = (cc[0] - cc.Last()).Normalise();
             Vector dir2;
             double angleTot = 0;
+
             for (int i = 1; i < cc.Count; i++)
             {
                 dir2 = (cc[i] - cc[i - 1]).Normalise();
                 double signedAngle = dir1.SignedAngle(dir2, normal);
                 dir1 = dir2.Clone();
+
                 if (Math.PI - Math.Abs(signedAngle) <= Tolerance.Angle)
                 {
                     dir1 *= -1;
                     continue;
                 }
-                else angleTot += signedAngle;
+                else
+                    angleTot += signedAngle;
             }
+
             return angleTot > 0;
         }
 
@@ -38,19 +43,23 @@ namespace BH.Engine.Geometry
 
         public static bool IsClockwise(this PolyCurve curve, Vector normal, double tolerance = Tolerance.Distance)
         {
-            if (!curve.IsClosed(tolerance)) throw new Exception("The curve is not closed. IsClockwise method is relevant only to closed curves.");
+            if (!curve.IsClosed(tolerance))
+                throw new Exception("The curve is not closed. IsClockwise method is relevant only to closed curves.");
             
             List<Point> cPts = new List<Point> { curve.IStartPoint() };
             foreach (ICurve c in curve.SubParts())
             {
-                if (c is Line) cPts.Add(c.IEndPoint());
+                if (c is Line)
+                    cPts.Add(c.IEndPoint());
                 else if (c is Arc)
                 {
                     cPts.Add(c.IPointAtParameter(0.5));
                     cPts.Add(c.IEndPoint());
                 }
-                else throw new NotImplementedException();
+                else
+                    throw new NotImplementedException();
             }
+
             return IsClockwise(new Polyline { ControlPoints = cPts }, normal, tolerance);
         }
 
@@ -59,7 +68,6 @@ namespace BH.Engine.Geometry
         public static bool IsClockwise(this Polyline polyline, Point viewPoint, double tolerance = Tolerance.Distance)
         {
             Plane plane = polyline.FitPlane(tolerance);
-
             Point projectedPoint = viewPoint.Project(plane);
             Vector vector = (projectedPoint - viewPoint).Normalise();
 
@@ -71,7 +79,6 @@ namespace BH.Engine.Geometry
         public static bool IsClockwise(this PolyCurve curve, Point viewPoint, double tolerance = Tolerance.Distance)
         {
             Plane plane = curve.FitPlane(tolerance);
-
             Point projectedPoint = viewPoint.Project(plane);
             Vector vector = (projectedPoint - viewPoint).Normalise();
 
@@ -83,7 +90,6 @@ namespace BH.Engine.Geometry
         public static bool IsClockwise(this Arc arc, Vector axis, double tolerance = Tolerance.Distance)
         {
             Vector normal = arc.CoordinateSystem.Z;
-
             return ((normal.DotProduct(axis) < 0) != (arc.Angle() > Math.PI));       
         }
 

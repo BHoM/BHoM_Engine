@@ -75,12 +75,14 @@ namespace BH.Engine.Geometry
             int segmentCount = curve.CollapseToPolylineCount(angleTolerance, maxSegmentCount);
             double step = 1.0 / segmentCount;
             double param = step;
+
             List<Point> result = new List<Point> { curve.StartPoint() };
             for (int i = 0; i < segmentCount; i++)
             {
                 result.Add(curve.PointAtParameter(param));
                 param += step;
             }
+
             return result;
         }
 
@@ -100,12 +102,14 @@ namespace BH.Engine.Geometry
             int segmentCount = curve.CollapseToPolylineCount(angleTolerance, maxSegmentCount);
             double step = 1.0 / segmentCount;
             double param = step;
+
             List<Point> result = new List<Point> { curve.StartPoint() };
             for (int i = 0; i < segmentCount; i++)
             {
                 result.Add(curve.PointAtParameter(param));
                 param += step;
             }
+
             return result;
         }
 

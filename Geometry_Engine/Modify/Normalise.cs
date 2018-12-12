@@ -16,7 +16,9 @@ namespace BH.Engine.Geometry
             double z = vector.Z;
             double d = Math.Sqrt(x * x + y * y + z * z);
 
-            if (d == 0) return vector.Clone();
+            if (d == 0)
+                return vector.Clone();
+
             return new Vector { X = x / d, Y = y / d, Z = z / d };
         }
 

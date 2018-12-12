@@ -14,6 +14,7 @@ namespace BH.Engine.Geometry
             Mesh tMesh = new Mesh();
             List<Point> vertices = mesh.Vertices;
             List<Face> faces = mesh.Faces;
+
             tMesh.Vertices.AddRange(vertices);
             for (int i = 0; i < faces.Count; i++)
             {
@@ -33,6 +34,7 @@ namespace BH.Engine.Geometry
                     Point p4 = vertices[i4];
                     double d1 = (p1 - p3).Length();
                     double d2 = (p2 - p4).Length();
+
                     if (d1 > d2)    //Bracing based on shortest diagonal criteria
                     {
                         Face fA = new Face { A = i1, B = i2, C = i4 };
@@ -49,7 +51,10 @@ namespace BH.Engine.Geometry
                     }
                 }
             }
+
             return tMesh;
         }
+
+        /***************************************************/
     }
 }

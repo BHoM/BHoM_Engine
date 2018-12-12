@@ -27,7 +27,9 @@ namespace BH.Engine.Geometry
             Vector v2 = line2.End - line2.Start;
             Vector v1N = v1.Normalise();
             Vector v2N = v2.Normalise();
-            if (v1N == null || v2N == null || 1 - Math.Abs(v1N.DotProduct(v2N)) <= angleTolerance) return null;
+
+            if (v1N == null || v2N == null || 1 - Math.Abs(v1N.DotProduct(v2N)) <= angleTolerance)
+                return null;
 
             Point p1 = line1.Start;
             Point p2 = line2.Start;
@@ -41,5 +43,7 @@ namespace BH.Engine.Geometry
 
             return new double[] { t1, t2 };
         }
+
+        /***************************************************/
     }
 }

@@ -40,11 +40,13 @@ namespace BH.Engine.Geometry
             List<double> oldKnots = curve.Knots;
             double prevValue = 0;
             List<double> newKnots = new List<double> { prevValue };
+
             for (int i = oldKnots.Count - 1; i > 0; i--)
             {
                 newKnots.Add(prevValue + oldKnots[i] - oldKnots[i - 1]);
                 prevValue = newKnots.Last();
             }
+
             return new NurbCurve
             {
                 ControlPoints = curve.ControlPoints.Reverse<Point>().ToList(),

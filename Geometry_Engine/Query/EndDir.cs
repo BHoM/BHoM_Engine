@@ -54,7 +54,8 @@ namespace BH.Engine.Geometry
         {
             List<Point> pts = curve.ControlPoints;
 
-            if (pts.Count < 2) return null;
+            if (pts.Count < 2)
+                return null;
 
             Point pt1 = pts[pts.Count - 2];
             Point pt2 = pts[pts.Count - 1];
@@ -71,5 +72,7 @@ namespace BH.Engine.Geometry
         {
             return EndDir(curve as dynamic);
         }
+
+        /***************************************************/
     }
 }

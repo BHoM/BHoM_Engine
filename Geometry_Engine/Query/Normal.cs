@@ -19,17 +19,17 @@ namespace BH.Engine.Geometry
             Point pA = vertices[meshFace.A];
             Point pB = vertices[meshFace.B];
             Point pC = vertices[meshFace.C];
+
+            Vector normal;
             if (!meshFace.IsQuad())
-            {
-                Vector normal = CrossProduct(pB - pA, pC - pB);
-                return normal.Normalise();
-            }
+                normal = CrossProduct(pB - pA, pC - pB);
             else
             {
                 Point pD = vertices[(meshFace.D)];
-                Vector normal = (CrossProduct(pA - pD, pB - pA)) + (CrossProduct(pC - pB, pD - pC));
-                return normal.Normalise();
+                normal = (CrossProduct(pA - pD, pB - pA)) + (CrossProduct(pC - pB, pD - pC));
             }
+
+            return normal.Normalise();
         }
 
         /***************************************************/
@@ -39,11 +39,13 @@ namespace BH.Engine.Geometry
             List<Vector> normals = new List<Vector>(mesh.Faces.Count);
             List<Point> vertices = mesh.Vertices;
             List<Face> faces = mesh.Faces;
+
             for (int i = 0; i < mesh.Faces.Count; i++)
             {
                 Point pA = vertices[(faces[i].A)];
                 Point pB = vertices[(faces[i].B)];
                 Point pC = vertices[(faces[i].C)];
+
                 if (!faces[i].IsQuad())
                 {
                     Vector normal = CrossProduct(pB - pA, pC - pB);
@@ -57,6 +59,7 @@ namespace BH.Engine.Geometry
                     normals[i] = normal;
                 }
             }
+
             return normals.ToList();
         }
 

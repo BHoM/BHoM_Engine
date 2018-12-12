@@ -13,7 +13,8 @@ namespace BH.Engine.Geometry
         public static Point Average(this IEnumerable<Point> points)
         {
             int count = points.Count();
-            if (count < 1) return null;
+            if (count < 1)
+                return null;
 
             Point mean = new Point { X = 0, Y = 0, Z = 0 };
 
@@ -28,7 +29,8 @@ namespace BH.Engine.Geometry
         public static Vector Average(this List<Vector> vs)
         {
             int count = vs.Count();
-            if (count < 1) return null;
+            if (count < 1)
+                return null;
 
             Vector mean = new Vector { X = 0, Y = 0, Z = 0 };
 

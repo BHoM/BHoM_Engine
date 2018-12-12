@@ -33,9 +33,11 @@ namespace BH.Engine.Geometry
             List<Line> result = new List<Line>();
             List<Point> cPts = new List<Point> { line.Start, line.End };
             double sqTol = tolerance * tolerance;
+
             foreach (Point point in points)
             {
-                if (point.SquareDistance(line.Start) > sqTol && point.SquareDistance(line.End) > sqTol && point.SquareDistance(line) <= sqTol) cPts.Add(point);
+                if (point.SquareDistance(line.Start) > sqTol && point.SquareDistance(line.End) > sqTol && point.SquareDistance(line) <= sqTol)
+                    cPts.Add(point);
             }
 
             if (cPts.Count > 2)
@@ -47,7 +49,9 @@ namespace BH.Engine.Geometry
                     result.Add(new Line { Start = cPts[i], End = cPts[i + 1] });
                 }
             }
-            else result.Add(line.Clone());
+            else
+                result.Add(line.Clone());
+
             return result;
         }
 
@@ -71,17 +75,21 @@ namespace BH.Engine.Geometry
 
         public static List<Polyline> SplitAtPoints(this Polyline curve, List<Point> points, double tolerance = Tolerance.Distance)
         {
-            if (points.Count == 0) return new List<Polyline> { curve.Clone() };
+            if (points.Count == 0)
+                return new List<Polyline> { curve.Clone() };
+
             List<Polyline> result = new List<Polyline>();
             List<Line> segments = curve.SubParts();
             Polyline section = new Polyline {ControlPoints = new List<Point>() };
             bool closed = curve.IsClosed(tolerance);
             double sqTol = tolerance * tolerance;
+
             for (int i = 0; i < segments.Count; i++)
             {
                 Line l = segments[i];
                 bool intStart = false;
                 List<Point> iPts = new List<Point>();
+
                 foreach (Point point in points)
                 {
                     if (point.SquareDistance(l.Start) <= sqTol)
@@ -89,8 +97,10 @@ namespace BH.Engine.Geometry
                         intStart = true;
                         if (i == 0) closed = false;
                     }
-                    else if (point.SquareDistance(l.End) > sqTol && point.SquareDistance(l) <= sqTol) iPts.Add(point);
+                    else if (point.SquareDistance(l.End) > sqTol && point.SquareDistance(l) <= sqTol)
+                        iPts.Add(point);
                 }
+
                 section.ControlPoints.Add(l.Start);
                 if (intStart && section.ControlPoints.Count > 1)
                 {
@@ -119,6 +129,7 @@ namespace BH.Engine.Geometry
                 result[0].ControlPoints.InsertRange(0, result.Last().ControlPoints);
                 result.RemoveAt(result.Count - 1);
             }
+
             return result;
         }
 
@@ -135,6 +146,7 @@ namespace BH.Engine.Geometry
             {
                 result.Add(splitCurves[i] as ICurve);
             }
+
             return result;
         }
 

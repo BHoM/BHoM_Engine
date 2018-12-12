@@ -22,7 +22,8 @@ namespace BH.Engine.Geometry
 
         public static bool IsSameSide(this IList<Point> points, Plane plane, double tolerance = Tolerance.Distance)
         {
-            if (points.Count() < 2) return true;
+            if (points.Count() < 2)
+                return true;
 
             double d1 = plane.Normal.DotProduct(points[0] - plane.Origin);
             if (d1 >= -tolerance && d1 <= tolerance)

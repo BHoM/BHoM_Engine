@@ -26,9 +26,14 @@ namespace BH.Engine.Geometry
                         break;
                     }
                 }
-                if (!collinear) lineClusters.Add(new List<Line> { l.Clone() });
+
+                if (!collinear)
+                    lineClusters.Add(new List<Line> { l.Clone() });
             }
+
             return lineClusters;
         }
+
+        /***************************************************/
     }
 }

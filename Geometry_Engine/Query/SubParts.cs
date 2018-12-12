@@ -13,11 +13,11 @@ namespace BH.Engine.Geometry
         public static List<Line> SubParts(this Polyline curve)
         {
             List<Line> result = new List<Line>();
-
             List<Point> pts = curve.ControlPoints;
 
             for (int i = 1; i < pts.Count; i++)
                 result.Add(new Line { Start = pts[i - 1], End = pts[i] });
+
             return result;
         }
 
@@ -33,6 +33,7 @@ namespace BH.Engine.Geometry
             
             return exploded;
         }
+
 
         /***************************************************/
         /**** Public Methods - Surfaces                 ****/
@@ -58,6 +59,7 @@ namespace BH.Engine.Geometry
             List<Mesh> explodedMeshes = new List<Mesh>();
             List<Face> faces = mesh.Faces;
             List<Point> vertices = mesh.Vertices;
+
             for (int i = 0; i < faces.Count; i++)
             {
                 Face localFace = new Face { A = 0, B = 1, C = 2 };
@@ -65,6 +67,7 @@ namespace BH.Engine.Geometry
                 localVertices.Add(vertices[faces[i].A]);
                 localVertices.Add(vertices[faces[i].B]);
                 localVertices.Add(vertices[faces[i].C]);
+
                 if (faces[i].IsQuad())
                 {
                     localVertices.Add(vertices[faces[i].D]);
@@ -72,6 +75,7 @@ namespace BH.Engine.Geometry
                 }
                 explodedMeshes.Add(new Mesh { Vertices = localVertices.ToList(), Faces = new List<Face>() { localFace } });
             }
+
             return explodedMeshes;
         }
 

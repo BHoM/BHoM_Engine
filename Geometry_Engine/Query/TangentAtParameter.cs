@@ -13,7 +13,8 @@ namespace BH.Engine.Geometry
         public static Vector TangentAtParameter(this Arc curve, double parameter, double tolerance = Tolerance.Distance)
         {
             double paramTol = tolerance / curve.Length();
-            if (parameter > 1 + paramTol || parameter < 0 - paramTol) return null;
+            if (parameter > 1 + paramTol || parameter < 0 - paramTol)
+                return null;
             
             return curve.CoordinateSystem.Y.Rotate(curve.StartAngle + (curve.EndAngle - curve.StartAngle) * parameter, curve.CoordinateSystem.Z);
         }
@@ -23,7 +24,8 @@ namespace BH.Engine.Geometry
         public static Vector TangentAtParameter(this Circle curve, double parameter, double tolerance = Tolerance.Distance)
         {
             double paramTol = tolerance / curve.Length();
-            if (parameter > 1 + paramTol || parameter < 0 - paramTol) return null;
+            if (parameter > 1 + paramTol || parameter < 0 - paramTol)
+                return null;
 
             Vector n = curve.Normal;
             Vector refVector = 1 - Math.Abs(n.DotProduct(Vector.XAxis)) > Tolerance.Angle ? Vector.XAxis : Vector.ZAxis;
@@ -36,7 +38,8 @@ namespace BH.Engine.Geometry
         public static Vector TangentAtParameter(this Line curve, double parameter, double tolerance = Tolerance.Distance)
         {
             double paramTol = tolerance / curve.Length();
-            if (parameter > 1 + paramTol || parameter < 0 - paramTol) return null;
+            if (parameter > 1 + paramTol || parameter < 0 - paramTol)
+                return null;
 
             return curve.Direction();
         }
@@ -76,7 +79,8 @@ namespace BH.Engine.Geometry
         {
             double length = curve.Length();
             double paramTol = tolerance / length;
-            if (parameter > 1 + paramTol || parameter < 0 - paramTol) return null;
+            if (parameter > 1 + paramTol || parameter < 0 - paramTol)
+                return null;
 
             double cLength = parameter * length;
             foreach (ICurve c in curve.SubParts())
@@ -85,6 +89,7 @@ namespace BH.Engine.Geometry
                 if (l >= cLength) return c.ITangentAtParameter(cLength / l);
                 cLength -= l;
             }
+
             return curve.EndDir();
         }
 
@@ -94,7 +99,8 @@ namespace BH.Engine.Geometry
         {
             double length = curve.Length();
             double paramTol = tolerance / length;
-            if (parameter > 1 + paramTol || parameter < 0 - paramTol) return null;
+            if (parameter > 1 + paramTol || parameter < 0 - paramTol)
+                return null;
 
             double cLength = parameter * length;
             double sum = 0;
@@ -102,10 +108,9 @@ namespace BH.Engine.Geometry
             {
                 sum += line.Length();
                 if (cLength <= sum)
-                {
                     return line.Direction();
-                }
             }
+
             return curve.EndDir();
         }
 

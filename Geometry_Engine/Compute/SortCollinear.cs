@@ -41,7 +41,10 @@ namespace BH.Engine.Geometry
                     break;
                 }
             }
+
             return cPoints;
         }
+
+        /***************************************************/
     }
 }

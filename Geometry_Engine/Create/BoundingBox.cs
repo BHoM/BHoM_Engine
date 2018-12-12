@@ -29,6 +29,9 @@ namespace BH.Engine.Geometry
             };
         }
 
+
+        /***************************************************/
+        /**** Random Geometry                           ****/
         /***************************************************/
 
         public static BoundingBox RandomBoundingBox(int seed = -1, BoundingBox box = null)

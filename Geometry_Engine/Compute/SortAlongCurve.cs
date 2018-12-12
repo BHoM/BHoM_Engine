@@ -30,7 +30,8 @@ namespace BH.Engine.Geometry
 
         public static List<Point> SortAlongCurve(this List<Point> points, Line line, double distanceTolerance = Tolerance.Distance, double angleTolerance = Tolerance.Angle)
         {
-            if (line.Length() <= distanceTolerance) return points.Select(p => p.Clone()).ToList();
+            if (line.Length() <= distanceTolerance)
+                return points.Select(p => p.Clone()).ToList();
 
             Vector lDir = line.Direction();
             List<Tuple<Point, Point>> cData = points.Select(p => new Tuple<Point, Point>(p.Clone(), (p.Project(line)))).ToList();
@@ -41,7 +42,9 @@ namespace BH.Engine.Geometry
                 {
                     return d1.Item2.X.CompareTo(d2.Item2.X);
                 });
-                if (lDir.X < 0) cData.Reverse();
+
+                if (lDir.X < 0)
+                    cData.Reverse();
             }
             else if ((Math.Abs(lDir.Y)) > angleTolerance)
             {
@@ -49,7 +52,9 @@ namespace BH.Engine.Geometry
                 {
                     return d1.Item2.Y.CompareTo(d2.Item2.Y);
                 });
-                if (lDir.Y < 0) cData.Reverse();
+
+                if (lDir.Y < 0)
+                    cData.Reverse();
             }
             else
             {
@@ -57,8 +62,11 @@ namespace BH.Engine.Geometry
                 {
                     return d1.Item2.Z.CompareTo(d2.Item2.Z);
                 });
-                if (lDir.Z < 0) cData.Reverse();
+
+                if (lDir.Z < 0)
+                    cData.Reverse();
             }
+
             return cData.Select(d => d.Item1).ToList();
         }
 
@@ -95,5 +103,7 @@ namespace BH.Engine.Geometry
         {
             return SortAlongCurve(points, curve as dynamic);
         }
+
+        /***************************************************/
     }
 }

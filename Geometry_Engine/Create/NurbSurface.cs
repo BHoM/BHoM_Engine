@@ -54,6 +54,9 @@ namespace BH.Engine.Geometry
             };
         }
 
+
+        /***************************************************/
+        /**** Random Geometry                           ****/
         /***************************************************/
 
         public static NurbSurface RandomNurbSurface(int seed = -1, BoundingBox box = null, int minNbCPs = 4, int maxNbCPs = 20)

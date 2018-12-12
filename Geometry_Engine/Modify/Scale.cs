@@ -177,5 +177,7 @@ namespace BH.Engine.Geometry
         {
             return Scale(geometry as dynamic, origin, scaleVector);
         }
+
+        /***************************************************/
     }
 }

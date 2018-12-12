@@ -22,6 +22,9 @@ namespace BH.Engine.Geometry
             return new Plane { Origin = p1.Clone(), Normal = normal };
         }
 
+
+        /***************************************************/
+        /**** Random Geometry                           ****/
         /***************************************************/
 
         public static Plane RandomPlane(int seed = -1, BoundingBox box = null)

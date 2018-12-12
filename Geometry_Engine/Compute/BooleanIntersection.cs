@@ -13,14 +13,14 @@ namespace BH.Engine.Geometry
 
         public static Line BooleanIntersection(this Line line, Line refLine, double tolerance = Tolerance.Distance)
         {
-            if (line == null || line.Length() <= tolerance || refLine.Length() <= tolerance) return null;
+            if (line == null || line.Length() <= tolerance || refLine.Length() <= tolerance)
+                return null;
+
             if (line.IsCollinear(refLine, tolerance))
             {
                 List<Line> splitLine = line.SplitAtPoints(refLine.ControlPoints(), tolerance);
                 if (splitLine.Count == 3)
-                {
                     return splitLine[1];
-                }
                 else if (splitLine.Count == 2)
                 {
                     Point aPt = refLine.ControlPoints().Average();
@@ -34,6 +34,7 @@ namespace BH.Engine.Geometry
                     return aRPt.SquareDistance(splitLine[0]) > sqTol && aPt.SquareDistance(refLine) > sqTol ? null : line.Clone();
                 }
             }
+
             return null;
         }
 
@@ -42,12 +43,16 @@ namespace BH.Engine.Geometry
         public static List<Line> BooleanIntersection(this Line line, List<Line> refLines, double tolerance = Tolerance.Distance)
         {
             List<Line> result = new List<Line>();
-            if (line.Length() <= tolerance) return result;
+            if (line.Length() <= tolerance)
+                return result;
+
             foreach (Line l in refLines.BooleanUnion(tolerance))
             {
                 Line intersection = line.BooleanIntersection(l, tolerance);
-                if (intersection != null) result.Add(intersection);
+                if (intersection != null)
+                    result.Add(intersection);
             }
+
             return result;
         }
 
@@ -55,12 +60,15 @@ namespace BH.Engine.Geometry
 
         public static Line BooleanIntersection(this List<Line> lines, double tolerance = Tolerance.Distance)
         {
-            if (lines[0].Length() <= tolerance) return null;
+            if (lines[0].Length() <= tolerance)
+                return null;
+
             Line result = lines[0].Clone();
             for (int i = 1; i < lines.Count; i++)
             {
                 result = result.BooleanIntersection(lines[i], tolerance);
             }
+
             return result;
         }
 
@@ -78,16 +86,21 @@ namespace BH.Engine.Geometry
                 List<Point> iPts = region.LineIntersections(refRegion, tolerance);
                 List<Polyline> splitRegion1 = region.SplitAtPoints(iPts, tolerance);
                 List<Polyline> splitRegion2 = refRegion.SplitAtPoints(iPts, tolerance);
+
                 foreach (Polyline segment in splitRegion1)
                 {
                     List<Point> cPts = segment.SubParts().Select(s => s.ControlPoints().Average()).ToList();
                     cPts.AddRange(segment.ControlPoints);
-                    if (refRegion.IsContaining(cPts, true, tolerance)) result.Add(segment);
+
+                    if (refRegion.IsContaining(cPts, true, tolerance))
+                        result.Add(segment);
                 }
+
                 foreach (Polyline segment in splitRegion2)
                 {
                     List<Point> cPts = segment.SubParts().Select(s => s.ControlPoints().Average()).ToList();
                     cPts.AddRange(segment.ControlPoints);
+
                     if (region.IsContaining(cPts, true, tolerance))
                     {
                         foreach (Point cPt in cPts)
@@ -100,13 +113,17 @@ namespace BH.Engine.Geometry
                         }
                     }
                 }
+
                 result = result.Join(tolerance);
                 int i = 0;
                 while (i < result.Count)
                 {
-                    if (result[i].Area() <= sqTol) result.RemoveAt(i);
-                    else i++;
+                    if (result[i].Area() <= sqTol)
+                        result.RemoveAt(i);
+                    else
+                        i++;
                 }
+
                 return result;
 
             }
@@ -119,7 +136,9 @@ namespace BH.Engine.Geometry
         public static List<Polyline> BooleanIntersection(this List<Polyline> regions, double tolerance = Tolerance.Distance)
         {
             List<Polyline> result = new List<Polyline>();
-            if (regions[0].Length() <= tolerance) return result;
+            if (regions[0].Length() <= tolerance)
+                return result;
+
             result.Add(regions[0].Clone());
             for (int i = 1; i < regions.Count; i++)
             {
@@ -127,7 +146,10 @@ namespace BH.Engine.Geometry
                 result.ForEach(r => newResult.AddRange(r.BooleanIntersection(regions[i], tolerance)));
                 result = newResult;
             }
+
             return result;
         }
+
+        /***************************************************/
     }
 }

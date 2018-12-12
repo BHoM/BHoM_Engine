@@ -30,6 +30,9 @@ namespace BH.Engine.Geometry
             };
         }
 
+
+        /***************************************************/
+        /**** Random Geometry                           ****/
         /***************************************************/
 
         public static Line RandomLine(int seed = -1, BoundingBox box = null)

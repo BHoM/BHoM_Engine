@@ -34,6 +34,9 @@ namespace BH.Engine.Geometry
             };
         }
 
+
+        /***************************************************/
+        /**** Random Geometry                           ****/
         /***************************************************/
 
         public static Ellipse RandomEllipse(int seed = -1, BoundingBox box = null)
@@ -83,7 +86,6 @@ namespace BH.Engine.Geometry
                     Radius2 = maxRadius * rnd.NextDouble()
                 };
             }
-
         }
 
         /***************************************************/

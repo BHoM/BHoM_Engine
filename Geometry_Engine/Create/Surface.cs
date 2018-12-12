@@ -17,6 +17,9 @@ namespace BH.Engine.Geometry
             return RandomSurface(rnd, box);
         }
 
+
+        /***************************************************/
+        /**** Random Geometry                           ****/
         /***************************************************/
 
         public static ISurface RandomSurface(Random rnd, BoundingBox box = null)
@@ -36,14 +39,7 @@ namespace BH.Engine.Geometry
                     return RandomPolySurface(rnd, box);
             }
         }
-
-
-        /***************************************************/
-        /**** Private Fields                            ****/
-        /***************************************************/
-
-
-
+        
         /***************************************************/
     }
 }

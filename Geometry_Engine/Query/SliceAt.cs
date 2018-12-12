@@ -21,19 +21,14 @@ namespace BH.Engine.Geometry
             }
 
             y.RemoveAll(x => x == null);
-
             List<double> isolatedCoords = new List<double>();
 
             for (int point = 0; point < y.Count; point++)
             {
                 if (p.Normal.X > 0)
-                {
                     isolatedCoords.Add(y[point].Y);
-                }
                 else
-                {
                     isolatedCoords.Add(y[point].X);
-                }
             }
 
             isolatedCoords.Sort();
@@ -43,9 +38,7 @@ namespace BH.Engine.Geometry
                 for (int k = 0; k < isolatedCoords.Count - 1; k++)
                 {
                     if (isolatedCoords[k] == isolatedCoords[k + 1])
-                    {
                         isolatedCoords.RemoveAt(k + 1);
-                    }
                 }
             }
 
@@ -53,6 +46,7 @@ namespace BH.Engine.Geometry
             {
                 length = length + isolatedCoords[j + 1] - isolatedCoords[j];
             }
+
             return Create.IntegrationSlice(width, length, location, isolatedCoords.ToArray());
         }
 

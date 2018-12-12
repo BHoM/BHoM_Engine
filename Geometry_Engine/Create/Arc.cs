@@ -39,10 +39,8 @@ namespace BH.Engine.Geometry
 
             Vector stVec = start - centre;
             Vector enVec = end - centre;
-
-
+            
             CoordinateSystem system = CoordinateSystem(centre, stVec, stVec.Rotate(0.5*Math.PI, normal));
-
             double angle = stVec.Angle(enVec, (Plane)system);
 
             return new Arc
@@ -52,9 +50,11 @@ namespace BH.Engine.Geometry
                 StartAngle = 0,
                 EndAngle = angle
             };
-
         }
 
+
+        /***************************************************/
+        /**** Arc by Centre - Special Case              ****/
         /***************************************************/
 
         [Description("Creates an arc by centre, start and end points. Only able to create arcs with angle < 180 degress")]
@@ -79,12 +79,9 @@ namespace BH.Engine.Geometry
                 Reflection.Compute.RecordError("Method does not work for colinear points");
                 return null;
             }
-
-
+            
             CoordinateSystem system = CoordinateSystem(centre, v1, v2);
-
-
-
+            
             return new Arc
             {
                 CoordinateSystem = system,
@@ -94,6 +91,9 @@ namespace BH.Engine.Geometry
             };
         }
 
+
+        /***************************************************/
+        /**** Random Geometry                           ****/
         /***************************************************/
 
         public static Arc RandomArc(int seed = -1, BoundingBox box = null)
@@ -114,9 +114,10 @@ namespace BH.Engine.Geometry
             double endLength = length * rnd.NextDouble();
 
             //TODO: Can be made more efficient with new definition of arc
-            return Arc( circle.PointAtLength(startLength),
-                        circle.PointAtLength((startLength + endLength) / 2),
-                        circle.PointAtLength(endLength)
+            return Arc(
+                circle.PointAtLength(startLength),
+                circle.PointAtLength((startLength + endLength) / 2),
+                circle.PointAtLength(endLength)
             );
         }
 
@@ -156,16 +157,12 @@ namespace BH.Engine.Geometry
                 }.Min()/2;
 
                 radius = maxRadius * rnd.NextDouble();
-
                 Vector v = RandomVector(rnd).Normalise();
                 centre = from + v * radius;
                 normal = RandomVector(rnd).CrossProduct(v).Normalise();
-
             }
 
             Circle circle = Circle(centre, normal, radius);
-
-
             double length = circle.Length();
             double endLength = length * rnd.NextDouble();
 
@@ -173,13 +170,13 @@ namespace BH.Engine.Geometry
 
         }
 
+
         /***************************************************/
         /**** Private Fields                            ****/
         /***************************************************/
 
         private static Random m_Random = new Random();
-
-
+        
         /***************************************************/
     }
 }

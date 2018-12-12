@@ -15,8 +15,10 @@ namespace BH.Engine.Geometry
         {
             foreach (ICurve c in curve.SubParts())
             {
-                if (!(c is Line)) return false;
+                if (!(c is Line))
+                    return false;
             }
+
             return true;
         }
 
@@ -64,8 +66,10 @@ namespace BH.Engine.Geometry
         {
             foreach (ICurve c in curve.ISubParts())
             {
-                if (!(c is Line)) return false;
+                if (!(c is Line))
+                    return false;
             }
+
             return true;
         }
 

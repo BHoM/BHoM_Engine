@@ -23,7 +23,9 @@ namespace BH.Engine.Geometry
 
         private static double[] Eigenvalues(this double[,] matrix, double tolerance = Tolerance.Distance)
         {
-            if (matrix.GetLength(0) != 3 || matrix.GetLength(1) != 3) throw new Exception("Only 3x3 symmetric matrix is implemented.");
+            if (matrix.GetLength(0) != 3 || matrix.GetLength(1) != 3)
+                throw new Exception("Only 3x3 symmetric matrix is implemented.");
+
             for (int i = 0; i < 3; i++)
             {
                 for (int j = 0; j < 3; j++)
@@ -46,8 +48,7 @@ namespace BH.Engine.Geometry
 
             return RealCubicRoots(A, B, C, D);
         }
-
-
+        
         /***************************************************/
 
         // Solve Ax^3 + Bx^2 + Cx + D = 0 following http://www.code-kings.com/2013/11/cubic-equation-roots-in-csharp-code.html
@@ -71,7 +72,8 @@ namespace BH.Engine.Geometry
                 double z = l * (m - n) + p;
                 return new double[] { x, y, z };
             }
-            else return null;
+            else
+                return null;
         }
 
         /***************************************************/

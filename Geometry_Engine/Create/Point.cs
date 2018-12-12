@@ -22,6 +22,9 @@ namespace BH.Engine.Geometry
             return new Point { X = v.X, Y = v.Y, Z = v.Z };
         }
 
+
+        /***************************************************/
+        /**** Random Geometry                           ****/
         /***************************************************/
 
         public static Point RandomPoint(int seed = -1, BoundingBox box = null)
@@ -46,9 +49,7 @@ namespace BH.Engine.Geometry
                 };
             }
             else
-            {
                 return new Point { X = rnd.NextDouble(), Y = rnd.NextDouble(), Z = rnd.NextDouble() };
-            }
         }
 
         /***************************************************/
@@ -56,18 +57,19 @@ namespace BH.Engine.Geometry
         public static List<List<Point>> PointGrid(Point start, Vector dir1, Vector dir2, int nbPts1, int nbPts2)
         {
             List<List<Point>> pts = new List<List<Point>>();
-
             for (int i = 0; i < nbPts1; i++)
             {
                 List<Point> row = new List<Point>();
                 for (int j = 0; j < nbPts2; j++)
+                {
                     row.Add(start + i * dir1 + j * dir2);
+                }
                 pts.Add(row);
             }
+
             return pts;
         }
-
-
+        
         /***************************************************/
     }
 }

@@ -14,12 +14,16 @@ namespace BH.Engine.Geometry
         {
             double sqTol = tolerance * tolerance;
             double closestDist = Double.PositiveInfinity;
+
             foreach (Point ptB in ptsB)
             {
                 double sqDist = ptsA.ClosestPoint(ptB).SquareDistance(ptB);
-                if (sqDist <= sqTol) return Math.Sqrt(sqDist);
+                if (sqDist <= sqTol)
+                    return Math.Sqrt(sqDist);
+
                 closestDist = sqDist < closestDist ? sqDist : closestDist;
             }
+
             return Math.Sqrt(closestDist);
         }
 

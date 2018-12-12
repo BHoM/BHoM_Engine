@@ -14,5 +14,7 @@ namespace BH.Engine.Geometry
             Vector dir = curve.Direction();
             return new Line { Start = curve.Start - dir * start, End = curve.End + dir * end };
         }
+
+        /***************************************************/
     }
 }

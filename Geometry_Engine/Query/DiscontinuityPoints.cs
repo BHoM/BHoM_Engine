@@ -55,11 +55,14 @@ namespace BH.Engine.Geometry
         {
             List<Point> ctrlPts = new List<Point>(curve.ControlPoints);
 
-            if (ctrlPts.Count < 3) return ctrlPts;
+            if (ctrlPts.Count < 3)
+                return ctrlPts;
 
             double sqTol = distanceTolerance * distanceTolerance;
             int j = 0;
-            if (!curve.IsClosed(distanceTolerance)) j += 2;
+            if (!curve.IsClosed(distanceTolerance))
+                j += 2;
+
             for (int i = j; i < ctrlPts.Count; i++)
             {
                 int cc = ctrlPts.Count;
@@ -68,14 +71,17 @@ namespace BH.Engine.Geometry
                 Vector v1 = ctrlPts[i1] - ctrlPts[i2];
                 Vector v2 = ctrlPts[i] - ctrlPts[i1];
                 double angle = v1.Angle(v2);
+
                 if (angle <= angleTolerance || angle >= (2 * Math.PI) - angleTolerance || ctrlPts[i2].SquareDistance(ctrlPts[i1]) <= sqTol)
                 {
                     ctrlPts.RemoveAt(i1);
                     i--;
                 }
             }
+
             return ctrlPts;
         }
+
 
         /***************************************************/
         /**** Public Methods - Interfaces               ****/
@@ -85,5 +91,7 @@ namespace BH.Engine.Geometry
         {
             return DiscontinuityPoints(curve as dynamic);
         }
+
+        /***************************************************/
     }
 }

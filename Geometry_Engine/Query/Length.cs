@@ -24,6 +24,7 @@ namespace BH.Engine.Geometry
             return vector.X * vector.X + vector.Y * vector.Y + vector.Z * vector.Z;
         }
 
+
         /***************************************************/
         /**** Public Methods - Curves                   ****/
         /***************************************************/

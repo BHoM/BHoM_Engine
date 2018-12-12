@@ -20,8 +20,7 @@ namespace BH.Engine.Geometry
             return !(double.IsNaN(v.X) || double.IsNaN(v.Y) || double.IsNaN(v.Z));
         }
 
-
-
+        
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/

@@ -24,7 +24,8 @@ namespace BH.Engine.Geometry
         private static Vector[] Eigenvectors(this double[,] matrix, double tolerance = Tolerance.Distance)
         {
             double[] eigenvalues = matrix.Eigenvalues(tolerance);
-            if (eigenvalues == null) return null;
+            if (eigenvalues == null)
+                return null;
 
             double a = matrix[0, 0];
             double b = matrix[0, 1];
@@ -55,7 +56,5 @@ namespace BH.Engine.Geometry
         }
 
         /***************************************************/
-
-
     }
 }
