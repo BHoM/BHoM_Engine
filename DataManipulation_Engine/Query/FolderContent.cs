@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using BH.oM.DataStructure;
 
 namespace BH.Engine.DataManipulation
 {

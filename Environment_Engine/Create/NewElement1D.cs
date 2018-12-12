@@ -1,6 +1,5 @@
 ﻿using BH.oM.Environment.Elements;
 using BH.oM.Geometry;
-using BH.oM.Common;
 using BH.Engine.Geometry;
 
 namespace BH.Engine.Environment

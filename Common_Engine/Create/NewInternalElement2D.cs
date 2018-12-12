@@ -1,4 +1,4 @@
-﻿using BH.oM.Common;
+﻿using BH.oM.Geometry;
 
 namespace BH.Engine.Common
 {
