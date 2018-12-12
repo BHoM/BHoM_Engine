@@ -13,28 +13,36 @@ namespace BH.Engine.Geometry
         
         public static List<Line> BooleanDifference(this Line line, Line refLine, double tolerance = Tolerance.Distance)
         {
-            if (refLine.Length() <= tolerance) return new List<Line> { line.Clone() };
+            if (refLine.Length() <= tolerance)
+                return new List<Line> { line.Clone() };
+
             if (line.IsCollinear(refLine, tolerance))
             {
                 List<Line> splitLine = line.SplitAtPoints(refLine.ControlPoints());
+
                 if (splitLine.Count == 3)
-                {
                     splitLine.RemoveAt(1);
-                }
                 else if (splitLine.Count == 2)
                 {
                     Point aPt = refLine.ControlPoints().Average();
-                    if (line.Start.SquareDistance(aPt) < line.End.SquareDistance(aPt)) splitLine.RemoveAt(0);
-                    else splitLine.RemoveAt(1);
+
+                    if (line.Start.SquareDistance(aPt) < line.End.SquareDistance(aPt))
+                        splitLine.RemoveAt(0);
+                    else
+                        splitLine.RemoveAt(1);
                 }
                 else
                 {
                     double sqTol = tolerance * tolerance;
                     Point aPt = splitLine[0].ControlPoints().Average();
                     Point aRPt = refLine.ControlPoints().Average();
-                    if (aRPt.SquareDistance(splitLine[0]) > sqTol && aPt.SquareDistance(refLine) > sqTol) splitLine = new List<Line> { line.Clone() };
-                    else splitLine = new List<Line>();
+
+                    if (aRPt.SquareDistance(splitLine[0]) > sqTol && aPt.SquareDistance(refLine) > sqTol)
+                        splitLine = new List<Line> { line.Clone() };
+                    else
+                        splitLine = new List<Line>();
                 }
+
                 return splitLine;
             }
             return new List<Line> { line.Clone() };
@@ -56,11 +64,14 @@ namespace BH.Engine.Geometry
                     split = false;
                     for (int i = k; i < refLines.Count; i++)
                     {
-                        if (split) break;
+                        if (split)
+                            break;
+
                         for (int j = 0; j < splitLine.Count; j++)
                         {
                             Line l = splitLine[j];
                             List<Line> bd = l.BooleanDifference(refLines[i], tolerance);
+
                             if (bd.Count == 0)
                             {
                                 k = refLines.Count;
@@ -79,6 +90,7 @@ namespace BH.Engine.Geometry
                         }
                     }
                 } while (split);
+
                 result.AddRange(splitLine);
             }
             return result;
@@ -112,12 +124,15 @@ namespace BH.Engine.Geometry
                             split.Add(bDifference[0]);
                             openings.AddRange(bDifference.Skip(1));
                         }
-                        else split.AddRange(bDifference);
+                        else
+                            split.AddRange(bDifference);
                     }
                     splitRegion = split;
                 }
+
                 result.AddRange(splitRegion);
             }
+
             result.AddRange(openings);
             return result;
         }
@@ -131,19 +146,23 @@ namespace BH.Engine.Geometry
         {
             List<Polyline> cutRegions = region.BooleanIntersection(refRegion, tolerance);
             List<Polyline> result = new List<Polyline>();
+
             isOpening = false;
             if (region.IsCoplanar(refRegion, tolerance))
             {
                 List<Point> iPts = new List<Point>();
                 cutRegions.ForEach(cr => iPts.AddRange(region.LineIntersections(cr, tolerance)));
                 List<Polyline> splitRegion = region.SplitAtPoints(iPts, tolerance);
+
                 if (splitRegion.Count == 1)
                 {
                     result.Add(region.Clone());
                     foreach (Point cPt in refRegion.ControlPoints)
                     {
-                        if (!region.IsContaining(new List<Point> { cPt }, true, tolerance)) return result;
+                        if (!region.IsContaining(new List<Point> { cPt }, true, tolerance))
+                            return result;
                     }
+
                     result.Add(refRegion.Clone());
                     isOpening = true;
                     return result;
@@ -154,6 +173,7 @@ namespace BH.Engine.Geometry
                 {
                     List<Point> cPts = segment.SubParts().Select(s => s.ControlPoints().Average()).ToList();
                     cPts.AddRange(segment.ControlPoints);
+
                     bool isInRegion = false;
                     foreach (Polyline cr in cutRegions)
                     {
@@ -163,8 +183,11 @@ namespace BH.Engine.Geometry
                             break;
                         }
                     }
-                    if (!isInRegion) result.Add(segment);
+
+                    if (!isInRegion)
+                        result.Add(segment);
                 }
+
                 foreach (Polyline cr in cutRegions)
                 {
                     splitRegion = cr.SplitAtPoints(iPts, tolerance);
@@ -172,6 +195,7 @@ namespace BH.Engine.Geometry
                     {
                         List<Point> cPts = segment.SubParts().Select(s => s.ControlPoints().Average()).ToList();
                         cPts.AddRange(segment.ControlPoints);
+
                         if (region.IsContaining(cPts, true, tolerance))
                         {
                             foreach (Point pt in cPts)
@@ -183,12 +207,15 @@ namespace BH.Engine.Geometry
                                 }
                             }
                         }
-
                     }
                 }
+
                 return result.Join();
             }
+
             return new List<Polyline> { region.Clone() };
         }
+
+        /***************************************************/
     }
 }

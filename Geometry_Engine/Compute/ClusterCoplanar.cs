@@ -26,8 +26,11 @@ namespace BH.Engine.Geometry
                         break;
                     }
                 }
-                if (!coplanar) planeClusters.Add(new List<Plane> { p.Clone() });
+
+                if (!coplanar)
+                    planeClusters.Add(new List<Plane> { p.Clone() });
             }
+
             return planeClusters;
         }
 
@@ -51,8 +54,11 @@ namespace BH.Engine.Geometry
                         break;
                     }
                 }
-                if (!coplanar) curveClusters.Add(new List<Polyline> { p.Clone() });
+
+                if (!coplanar)
+                    curveClusters.Add(new List<Polyline> { p.Clone() });
             }
+
             return curveClusters;
         }
 

@@ -6,7 +6,7 @@ namespace BH.Engine.Geometry
     public static partial class Create
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /**** Random Geometry                           ****/
         /***************************************************/
 
         public static IGeometry RandomGeometry(int seed = -1, BoundingBox box = null)
@@ -116,12 +116,7 @@ namespace BH.Engine.Geometry
                     return null;
             }
         }
-        /***************************************************/
-        /**** Private Fields                            ****/
-        /***************************************************/
-
-
-
+        
         /***************************************************/
     }
 }

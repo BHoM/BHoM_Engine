@@ -16,9 +16,12 @@ namespace BH.Engine.Geometry
                 Curve = curve,
                 Direction = direction,
                 Capped = capped
-            }; 
+            };
         }
 
+
+        /***************************************************/
+        /**** Random Geometry                           ****/
         /***************************************************/
 
         public static Extrusion RandomExtrusion(int seed = -1, BoundingBox box = null)

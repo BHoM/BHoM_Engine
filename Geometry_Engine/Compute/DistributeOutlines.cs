@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using BH.oM.Geometry;
-using BHE = BH.Engine.Geometry;
 using System;
 using System.Linq;
 
@@ -16,7 +15,8 @@ namespace BH.Engine.Geometry
         {
             foreach (Polyline p in outlines)
             {
-                if (!p.IsClosed(tolerance)) throw new Exception("All curves need to be closed to create a panel");
+                if (!p.IsClosed(tolerance))
+                    throw new Exception("All curves need to be closed to create a panel");
             }
 
             outlines.Sort(delegate (Polyline p1, Polyline p2)
@@ -38,11 +38,11 @@ namespace BH.Engine.Geometry
                         break;
                     }
                 }
+
                 if (!assigned)
-                {
                     outlinesByType.Add(new Tuple<Polyline, bool>(o, true));
-                }
             }
+
             List<Polyline> panelOutlines = outlinesByType.Where(x => x.Item2 == true).Select(x => x.Item1.Clone()).ToList();
             List<Polyline> panelOpenings = outlinesByType.Where(x => x.Item2 == false).Select(x => x.Item1.Clone()).ToList();
             return panelOutlines.DistributeOpenings(panelOpenings, tolerance);
@@ -54,7 +54,8 @@ namespace BH.Engine.Geometry
         {
             foreach (ICurve p in outlines)
             {
-                if (!p.IIsClosed(tolerance)) throw new Exception("All curves need to be closed to create a panel");
+                if (!p.IIsClosed(tolerance))
+                    throw new Exception("All curves need to be closed to create a panel");
             }
 
             outlines.Sort(delegate (ICurve p1, ICurve p2)
@@ -76,10 +77,9 @@ namespace BH.Engine.Geometry
                         break;
                     }
                 }
+
                 if (!assigned)
-                {
                     outlinesByType.Add(new Tuple<ICurve, bool>(o, true));
-                }
             }
             List<ICurve> panelOutlines = outlinesByType.Where(x => x.Item2 == true).Select(x => x.Item1.IClone()).ToList();
             List<ICurve> panelOpenings = outlinesByType.Where(x => x.Item2 == false).Select(x => x.Item1.IClone()).ToList();
@@ -111,6 +111,7 @@ namespace BH.Engine.Geometry
                     }
                 }
             }
+
             return result;
         }
 
@@ -136,6 +137,7 @@ namespace BH.Engine.Geometry
                     }
                 }
             }
+
             return result;
         }
 
@@ -161,7 +163,10 @@ namespace BH.Engine.Geometry
                     }
                 }
             }
+
             return result;
         }
+
+        /***************************************************/
     }
 }

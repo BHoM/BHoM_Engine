@@ -35,7 +35,9 @@ namespace BH.Engine.Geometry
         public static Plane Project(this Plane plane, Plane p)
         {
             double dp = plane.Normal.DotProduct(p.Normal);
-            if (Math.Abs(dp) <= Tolerance.Angle) return null;
+            if (Math.Abs(dp) <= Tolerance.Angle)
+                return null;
+
             Vector normal = dp > 0 ? p.Normal : p.Normal.Reverse();
             return new Plane { Origin = plane.Origin.Project(p), Normal = normal };
         }

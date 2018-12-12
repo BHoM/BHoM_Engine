@@ -49,6 +49,9 @@ namespace BH.Engine.Geometry
             return new Circle { Centre = centre, Normal = normal, Radius = pt1.Distance(centre) };
         }
 
+
+        /***************************************************/
+        /**** Random Geometry                           ****/
         /***************************************************/
 
         public static Circle RandomCircle(int seed = -1, BoundingBox box = null)
@@ -84,6 +87,7 @@ namespace BH.Engine.Geometry
                     centre.Y - box.Min.Y,
                     centre.Z - box.Min.Z
                 }.Min();
+
                 return new Circle
                 {
                     Centre = centre,
@@ -91,7 +95,6 @@ namespace BH.Engine.Geometry
                     Radius = maxRadius * rnd.NextDouble()
                 };
             }
-            
         }
 
         /***************************************************/

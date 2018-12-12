@@ -28,6 +28,9 @@ namespace BH.Engine.Geometry
             }.Normalise();
         }
 
+
+        /***************************************************/
+        /**** Random Geometry                           ****/
         /***************************************************/
 
         public static Quaternion RandomQuaternion(int seed = -1)

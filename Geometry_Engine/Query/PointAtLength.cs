@@ -1,5 +1,4 @@
 ﻿using System;
-
 using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
 
@@ -65,9 +64,8 @@ namespace BH.Engine.Geometry
         public static Point IPointAtLength(this ICurve curve, double length)
         {
             if (length > curve.ILength())
-            {
                 throw new ArgumentOutOfRangeException("Length must be less than the length of the curve"); // Turn into warning
-            }
+
             return PointAtLength(curve as dynamic, length);
         }
 

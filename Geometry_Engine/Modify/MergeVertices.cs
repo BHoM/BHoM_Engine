@@ -80,10 +80,14 @@ namespace BH.Engine.Geometry
         {
             foreach (Face f in faces)
             {
-                if (f.A == from) f.A = to;
-                else if (f.B == from) f.B = to;
-                else if (f.C == from) f.C = to;
-                else if (f.D == from) f.D = to;
+                if (f.A == from)
+                    f.A = to;
+                else if (f.B == from)
+                    f.B = to;
+                else if (f.C == from)
+                    f.C = to;
+                else if (f.D == from)
+                    f.D = to;
             }
         }
 
@@ -104,5 +108,7 @@ namespace BH.Engine.Geometry
             public Point Location;
             public int Index;
         }
+
+        /***************************************************/
     }
 }

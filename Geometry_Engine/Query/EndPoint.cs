@@ -78,5 +78,7 @@ namespace BH.Engine.Geometry
         {
             return EndPoint(curve as dynamic);
         }
+
+        /***************************************************/
     }
 }

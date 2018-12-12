@@ -18,6 +18,7 @@ namespace BH.Engine.Geometry
                 for (int j = 0; j < 4; j++)
                     transpose[i,j] = matrix[j,i];
             }
+
             return new TransformMatrix { Matrix = transpose };
         }
 

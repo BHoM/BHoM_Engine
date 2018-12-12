@@ -13,5 +13,6 @@ namespace BH.Engine.Geometry
             return new Vector { X = box.Max.X - box.Min.X, Y = box.Max.Y - box.Min.Y, Z = box.Max.Z - box.Min.Z };
         }
 
+        /***************************************************/
     }
 }

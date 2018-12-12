@@ -16,7 +16,8 @@ namespace BH.Engine.Geometry
             // Based on https://www.scribd.com/doc/31477970/Regressions-et-trajectoires-3D
 
             int n = points.Count();
-            if (n < 2) return null;
+            if (n < 2)
+                return null;
 
             Point C = points.Average();
 
@@ -62,9 +63,7 @@ namespace BH.Engine.Geometry
             double cc = -c2 / 3;
             
             if (R > tolerance)
-            {
                 sqrDeltaM = cc + Math.Pow(-q * 0.5 + Math.Sqrt(R), 1.0 / 3.0) + Math.Pow(-q * 0.5 - Math.Sqrt(R), 1.0 / 3.0);
-            }
             else
             {
                 double rho = Math.Sqrt(-p * p * p / 27);
@@ -84,5 +83,7 @@ namespace BH.Engine.Geometry
 
             return new Line { Start = C + (C - H), End = H };
         }
+
+        /***************************************************/
     }
 }

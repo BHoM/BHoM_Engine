@@ -13,7 +13,8 @@ namespace BH.Engine.Geometry
 
         public static bool IsCoplanar(this List<Point> points, double tolerance = Tolerance.Distance)
         {
-            if (points.Count < 4) return true;
+            if (points.Count < 4)
+                return true;
 
             double[,] vMatrix = new double[points.Count - 1, 3];
             for (int i = 0; i < points.Count - 1; i++)
@@ -42,8 +43,10 @@ namespace BH.Engine.Geometry
         {
             for (int i = 1; i < planes.Count; i++)
             {
-                if (!planes[0].IsCoplanar(planes[i], distanceTolerance, angleTolerance)) return false;
+                if (!planes[0].IsCoplanar(planes[i], distanceTolerance, angleTolerance))
+                    return false;
             }
+
             return true;
         }
 

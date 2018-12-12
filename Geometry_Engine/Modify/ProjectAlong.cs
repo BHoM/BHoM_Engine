@@ -13,7 +13,8 @@ namespace BH.Engine.Geometry
 
         public static Point ProjectAlong(this Point point, Plane plane, Vector vector)
         {
-            if (Math.Abs(vector.DotProduct(plane.Normal)) <= Tolerance.Angle) return null;
+            if (Math.Abs(vector.DotProduct(plane.Normal)) <= Tolerance.Angle)
+                return null;
 
             double t = (plane.Normal * (plane.Origin - point)) / (plane.Normal * vector);
             return point + t * vector;
@@ -32,7 +33,9 @@ namespace BH.Engine.Geometry
         public static Plane Project(this Plane plane, Plane ToPlane, Vector vector)
         {
             double dp = plane.Normal.DotProduct(ToPlane.Normal);
-            if (Math.Abs(dp) <= Tolerance.Angle) return null;
+            if (Math.Abs(dp) <= Tolerance.Angle)
+                return null;
+
             Vector normal = dp > 0 ? ToPlane.Normal : ToPlane.Normal.Reverse();
             return new Plane { Origin = plane.Origin.ProjectAlong(ToPlane, vector), Normal = normal };
         }
@@ -75,8 +78,7 @@ namespace BH.Engine.Geometry
         {
             return new NurbCurve { ControlPoints = curve.ControlPoints.Select(x => x.ProjectAlong(plane, vector)).ToList(), Weights = curve.Weights.ToList(), Knots = curve.Knots.ToList() };
         }
-
-
+        
         /***************************************************/
 
         public static PolyCurve ProjectAlong(this PolyCurve curve, Plane plane, Vector vector)
@@ -170,5 +172,7 @@ namespace BH.Engine.Geometry
         {
             return ProjectAlong(geometry as dynamic, plane, vector);
         }
+
+        /***************************************************/
     }
 }

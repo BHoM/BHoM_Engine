@@ -12,8 +12,11 @@ namespace BH.Engine.Geometry
 
         public static Point PointAtParameter(this Arc curve, double t)
         {
-            if (t < 0) t = 0;
-            if (t > 1) t = 1;
+            if (t < 0)
+                t = 0;
+            if (t > 1)
+                t = 1;
+
             double alfa = curve.Angle() * t + curve.StartAngle;
             Vector localX = curve.CoordinateSystem.X;
             return curve.CoordinateSystem.Origin + localX.Rotate(alfa, curve.FitPlane().Normal) * curve.Radius;
@@ -23,8 +26,11 @@ namespace BH.Engine.Geometry
 
         public static Point PointAtParameter(this Circle curve, double t)
         {
-            if (t < 0) t = 0;
-            if (t > 1) t = 1;
+            if (t < 0)
+                t = 0;
+            if (t > 1)
+                t = 1;
+
             return PointAtLength(curve, t * curve.Length());
         }
 
@@ -32,8 +38,11 @@ namespace BH.Engine.Geometry
 
         public static Point PointAtParameter(this Line curve, double t)
         {
-            if (t < 0) t = 0;
-            if (t > 1) t = 1;
+            if (t < 0)
+                t = 0;
+            if (t > 1)
+                t = 1;
+
             Vector vector = curve.End - curve.Start;
             return (curve.Start + vector * t);
         }
@@ -43,23 +52,27 @@ namespace BH.Engine.Geometry
         //TODO: Testing needed!!
         public static Point PointAtParameter(this NurbCurve curve, double t)
         {
+            if (t == 0)
+                return curve.ControlPoints[0];
+            else if (t >= curve.Knots[curve.Knots.Count - 1])
+                return curve.ControlPoints[curve.ControlPoints.Count - 1];
 
             Point sumNwP = new Point { X = 0, Y = 0, Z = 0 };
             double sumNw = 0;
-            if (t == 0) return curve.ControlPoints[0];
-            else if (t >= curve.Knots[curve.Knots.Count - 1]) return curve.ControlPoints[curve.ControlPoints.Count-1];
-
+            
             int order = curve.Degree() + 1;
             for (int i = 0; i < curve.ControlPoints.Count ; i++)
             {
                 double Nt = BasisFunction(curve, i, order - 1, t);
-                if (Nt == 0) continue;
+                if (Nt == 0)
+                    continue;
+
                 sumNwP += curve.ControlPoints[i] * Nt * curve.Weights[i];
                 sumNw += Nt * curve.Weights[i];
             }
+
             return sumNwP / sumNw;
            
-
             //double[] sumNwP = new double[m_Dimensions];
             //double sumNw = 0;
             //if (t == 0) return Common.Utils.SubArray<double>(m_ControlPoints, 0, 3);
@@ -72,27 +85,25 @@ namespace BH.Engine.Geometry
             //    sumNw += Nt * m_Weights[i];
             //}
             //return VectorUtils.Divide(sumNwP, sumNw);
-
-
-
-            //throw new NotImplementedException(); // TODO NurbCurve.PointAtParameter()
         }
-
-
 
         /***************************************************/
 
         public static Point PointAtParameter(this PolyCurve curve, double parameter)
         {
-            if (parameter == 1) return curve.IEndPoint();
+            if (parameter == 1)
+                return curve.IEndPoint();
 
             double cLength = parameter * curve.Length();
             foreach (ICurve c in curve.SubParts())
             {
                 double l = c.ILength();
-                if (l >= cLength) return c.IPointAtParameter(cLength / l);
+                if (l >= cLength)
+                    return c.IPointAtParameter(cLength / l);
+
                 cLength -= l;
             }
+
             return null;
         }
 
@@ -104,9 +115,12 @@ namespace BH.Engine.Geometry
             foreach (Line line in curve.SubParts())
             {
                 double l = line.Length();
-                if (l >= cLength) return line.IPointAtParameter(cLength / l);
+                if (l >= cLength)
+                    return line.IPointAtParameter(cLength / l);
+
                 cLength -= l;
             }
+
             return null;
         }
 

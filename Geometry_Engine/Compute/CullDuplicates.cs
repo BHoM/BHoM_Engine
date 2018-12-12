@@ -16,5 +16,7 @@ namespace BH.Engine.Geometry
             List<List<Point>> clusteredPoints = points.PointClusters(maxDist);
             return clusteredPoints.Select(x => x.Average()).ToList();
         }
+
+        /***************************************************/
     }
 }

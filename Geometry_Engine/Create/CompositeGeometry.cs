@@ -16,6 +16,9 @@ namespace BH.Engine.Geometry
             return new CompositeGeometry { Elements = elements.ToList() };
         }
 
+
+        /***************************************************/
+        /**** Random Geometry                           ****/
         /***************************************************/
 
         public static CompositeGeometry RandomCompositeGeometry(int seed = -1, BoundingBox box = null, int minNbParts = 1, int maxNbParts = 10)

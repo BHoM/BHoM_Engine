@@ -20,6 +20,9 @@ namespace BH.Engine.Geometry
             };
         }
 
+
+        /***************************************************/
+        /**** Random Geometry                           ****/
         /***************************************************/
 
         public static Pipe RandomPipe(int seed = -1, BoundingBox box = null)

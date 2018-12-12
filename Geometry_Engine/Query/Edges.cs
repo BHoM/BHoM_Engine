@@ -27,9 +27,11 @@ namespace BH.Engine.Geometry
                     indices.Add(new Tuple<int, int>(face.C, face.D));
                     indices.Add(new Tuple<int, int>(face.D, face.A));
                 }
-                else indices.Add(new Tuple<int, int>(face.C, face.A));               
+                else
+                    indices.Add(new Tuple<int, int>(face.C, face.A));               
                                    
             }
+
             List<Tuple<int, int>> distinctIndices = indices.Select(x => (x.Item1 < x.Item2) ? x : new Tuple<int, int>(x.Item2, x.Item1)).Distinct().ToList();
             List<Line> edges = new List<Line>();
 
@@ -37,6 +39,7 @@ namespace BH.Engine.Geometry
             {
                 edges.Add(new Line { Start = mesh.Vertices[distinctIndices[i].Item1], End = mesh.Vertices[distinctIndices[i].Item2] });
             }
+
             return edges;
         }
 
@@ -44,8 +47,7 @@ namespace BH.Engine.Geometry
         /***************************************************/
         /**** Public Methods - Faces                    ****/
         /***************************************************/
-
-
+        
         public static List<Line> Edges(this Face face, Mesh mesh)
         {
             List<Line> edges = new List<Line>();
@@ -58,9 +60,7 @@ namespace BH.Engine.Geometry
                 edges.Add(new Line { Start = mesh.Vertices[face.D], End = mesh.Vertices[face.A] });
             }
             else
-            {
                 edges.Add(new Line { Start = mesh.Vertices[face.C], End = mesh.Vertices[face.A] });
-            }
 
             return edges;
         }
@@ -73,5 +73,7 @@ namespace BH.Engine.Geometry
             edges.AddRange(surface.IInternalEdges());
             return edges;
         }
+
+        /***************************************************/
     }
 }

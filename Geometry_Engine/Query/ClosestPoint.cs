@@ -16,6 +16,7 @@ namespace BH.Engine.Geometry
             double minDist = Double.PositiveInfinity;
             double sqDist = 0;
             Point cp = null;
+
             foreach (Point pt in cloud)
             {
                 sqDist = pt.SquareDistance(point);
@@ -25,6 +26,7 @@ namespace BH.Engine.Geometry
                     cp = pt;
                 }
             }
+
             return cp;
         }
 
@@ -79,6 +81,7 @@ namespace BH.Engine.Geometry
         {
             Vector dir = line.Direction();
             double t = dir * (point - line.Start);
+
             if (!infiniteSegment)
                 t = Math.Min(Math.Max(t, 0), line.Length());
 
@@ -112,6 +115,7 @@ namespace BH.Engine.Geometry
                     minDist = dist;
                 }
             }
+
             return closest;
         }
 
@@ -122,6 +126,7 @@ namespace BH.Engine.Geometry
             double minDist = double.PositiveInfinity;
             double sqDist = 0;
             Point closest = null;
+
             foreach (Line l in curve.SubParts())
             {
                 Point cp = l.ClosestPoint(point);
@@ -132,6 +137,7 @@ namespace BH.Engine.Geometry
                     minDist = sqDist;
                 }
             }
+
             return closest;
         }
 

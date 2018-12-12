@@ -14,7 +14,8 @@ namespace BH.Engine.Geometry
         {
             foreach (Point pt in points)
             {
-                if (pt.Distance(plane) > tolerance) return false;
+                if (pt.Distance(plane) > tolerance)
+                    return false;
             }
             return true;
         }
@@ -47,6 +48,7 @@ namespace BH.Engine.Geometry
             return ((Plane)coordinateSystem).IsInPlane(plane, tolerance, angTolerance);
         }
 
+
         /***************************************************/
         /**** Public Methods - Curves                   ****/
         /***************************************************/
@@ -77,8 +79,7 @@ namespace BH.Engine.Geometry
         {
             return curve.ControlPoints.IsInPlane(plane, tolerance); //TODO: probably incorrect
         }
-
-
+        
         /***************************************************/
 
         public static bool IsInPlane(this PolyCurve curve, Plane plane, double tolerance = Tolerance.Distance)
@@ -181,5 +182,7 @@ namespace BH.Engine.Geometry
         {
             return IsInPlane(geometry as dynamic, plane, tolerance);
         }
+
+        /***************************************************/
     }
 }

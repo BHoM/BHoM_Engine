@@ -13,7 +13,8 @@ namespace BH.Engine.Geometry
 
         public static bool IsCollinear(this List<Point> pts, double tolerance = Tolerance.Distance)
         {
-            if (pts.Count < 3) return true;
+            if (pts.Count < 3)
+                return true;
 
             double[,] vMatrix = new double[pts.Count - 1, 3];
             for (int i = 0; i < pts.Count - 1; i++)

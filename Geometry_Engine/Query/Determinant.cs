@@ -31,13 +31,12 @@ namespace BH.Engine.Geometry
         private static double Determinant(double[,] mat, int n)
         {
             int N = mat.GetLength(0);
-            if (N != mat.GetLength(1)) throw new Exception("The matrix needs to be square to find its determinant.");
+            if (N != mat.GetLength(1))
+                throw new Exception("The matrix needs to be square to find its determinant.");
 
             // Initial step of the recursive code
             if (n == 0)
-            {
                 n = N;
-            }
 
             double D = 0; // Initialize result
 
@@ -55,11 +54,9 @@ namespace BH.Engine.Geometry
             // of first row
             for (int f = 0; f < n; f++)
             {
-
                 // Getting Cofactor of mat[0][f]
                 getCofactor(mat, temp, 0, f, n);
-                D += sign * mat[0, f]
-                * Determinant(temp, n - 1);
+                D += sign * mat[0, f] * Determinant(temp, n - 1);
 
                 // terms are to be added with 
                 // alternate sign

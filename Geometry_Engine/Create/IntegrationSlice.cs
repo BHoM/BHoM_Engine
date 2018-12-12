@@ -72,6 +72,7 @@ namespace BH.Engine.Geometry
                 currentValue = (sliceSegments[i] + sliceSegments[i + 1]) / 2;
                 slices.Add(Query.SliceAt(edges, currentValue, -sliceSegments[i] + sliceSegments[i + 1], p, tolerance));
             }
+
             return slices;
         }
 

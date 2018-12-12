@@ -16,9 +16,12 @@ namespace BH.Engine.Geometry
 
             double[,] matrix = (double[,])imatrix.Clone();
             int lead = 0, rowCount = matrix.GetLength(0), columnCount = matrix.GetLength(1);
+
             for (int r = 0; r < rowCount; r++)
             {
-                if (columnCount == lead) break;
+                if (columnCount == lead)
+                    break;
+
                 int i = r;
                 while (Math.Abs(matrix[i, lead]) < tolerance)
                 {
@@ -34,12 +37,14 @@ namespace BH.Engine.Geometry
                         }
                     }
                 }
+
                 for (int j = 0; j < columnCount; j++)
                 {
                     double temp = matrix[r, j];
                     matrix[r, j] = matrix[i, j];
                     matrix[i, j] = temp;
                 }
+
                 double div = matrix[r, lead];
                 if (Math.Abs(div) >= tolerance)
                     for (int j = 0; j < columnCount; j++) matrix[r, j] /= div;
@@ -50,11 +55,16 @@ namespace BH.Engine.Geometry
                     if (w != r)
                     {
                         double sub = matrix[w, lead];
-                        for (int k = 0; k < columnCount; k++) matrix[w, k] -= (sub * matrix[r, k]);
+                        for (int k = 0; k < columnCount; k++)
+                        {
+                            matrix[w, k] -= (sub * matrix[r, k]);
+                        }
                     }
                 }
+
                 lead++;
             }
+
             return matrix;
         }
 
@@ -65,6 +75,7 @@ namespace BH.Engine.Geometry
             int m = matrix.GetLength(0);
             int n = matrix.GetLength(1);
             int c = 0;
+
             for (int i = 0; i < m; i++)
             {
                 for (int j = 0; j < n; j++)
@@ -76,6 +87,7 @@ namespace BH.Engine.Geometry
                     }
                 }
             }
+
             return c;
         }
 
@@ -86,6 +98,7 @@ namespace BH.Engine.Geometry
             int d1 = matrix.GetLength(0);
             int d2 = matrix.GetLength(1);
             double maxRowSum = 0;
+
             for (int i = 0; i < d1; i++)
             {
                 double rowSum = 0;
@@ -95,7 +108,10 @@ namespace BH.Engine.Geometry
                 }
                 maxRowSum = Math.Max(maxRowSum, rowSum);
             }
+
             return tolerance * Math.Max(d1, d2) * maxRowSum;
         }
+
+        /***************************************************/
     }
 }

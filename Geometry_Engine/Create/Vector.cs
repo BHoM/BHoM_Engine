@@ -21,6 +21,9 @@ namespace BH.Engine.Geometry
             return new Vector { X = v.X, Y = v.Y, Z = v.Z };
         }
 
+
+        /***************************************************/
+        /**** Random Geometry                           ****/
         /***************************************************/
 
         public static Vector RandomVector(int seed = -1, BoundingBox box = null)
@@ -45,9 +48,7 @@ namespace BH.Engine.Geometry
                 };
             }
             else
-            {
                 return new Vector { X = rnd.NextDouble()*2-1, Y = rnd.NextDouble()*2 - 1, Z = rnd.NextDouble()*2 - 1 };
-            }
         }
 
         /***************************************************/

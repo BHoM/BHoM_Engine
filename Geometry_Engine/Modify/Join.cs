@@ -109,5 +109,7 @@ namespace BH.Engine.Geometry
             }
             return sections;
         }
+
+        /***************************************************/
     }
 }

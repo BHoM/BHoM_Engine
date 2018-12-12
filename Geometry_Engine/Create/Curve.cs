@@ -6,7 +6,7 @@ namespace BH.Engine.Geometry
     public static partial class Create
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /**** Random Geometry                           ****/
         /***************************************************/
 
         public static ICurve RandomCurve(int seed = -1, BoundingBox box = null, bool closed = false)
@@ -66,12 +66,6 @@ namespace BH.Engine.Geometry
                     return RandomPolyline(from, rnd, box);
             }
         }
-
-        /***************************************************/
-        /**** Private Fields                            ****/
-        /***************************************************/
-
-
 
         /***************************************************/
     }

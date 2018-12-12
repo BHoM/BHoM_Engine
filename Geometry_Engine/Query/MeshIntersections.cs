@@ -16,8 +16,7 @@ namespace BH.Engine.Geometry
         {
             throw new NotImplementedException();
         }
-
-
+        
         /***************************************************/
 
         [NotImplemented]
@@ -42,18 +41,19 @@ namespace BH.Engine.Geometry
             List<Point> points = new List<Point>();
 
             // Preprocessing Mesh
-            Mesh tMesh = mesh.Triangulate();                                                /*Call function*/
-            List<Face> faces = tMesh.Faces;                                                     /*Call function*/
-            List<Point> meshPts = tMesh.Vertices;                                               /*Call function*/
+            Mesh tMesh = mesh.Triangulate();
+            List<Face> faces = tMesh.Faces;
+            List<Point> meshPts = tMesh.Vertices;
+
             for (int i = 0; i < faces.Count; i++)
             {
                 // Mesh Points
-                Point p1 = meshPts[faces[i].A];                                                 /*Call function*/
-                Point p2 = meshPts[faces[i].B];                                                 /*Call function*/
-                Point p3 = meshPts[faces[i].C];                                                 /*Call function*/
+                Point p1 = meshPts[faces[i].A];
+                Point p2 = meshPts[faces[i].B];
+                Point p3 = meshPts[faces[i].C];
 
                 // Ray direction
-                Vector d = curve.PointAtParameter(1) - curve.PointAtParameter(0);         /*Call function*/
+                Vector d = curve.PointAtParameter(1) - curve.PointAtParameter(0);
 
                 // Vectors from p1 to p2/p3 (edges)
                 Vector e1, e2;
@@ -66,38 +66,39 @@ namespace BH.Engine.Geometry
                 e2 = p3 - p1;
 
                 // calculating determinant 
-                p = Query.CrossProduct(d, e2);                                             /*Call function*/
+                p = Query.CrossProduct(d, e2);
 
                 //Calculate determinat
-                det = e1 * p;                                                                   /*Call function*/
+                det = e1 * p;
 
                 //if determinant is near zero, ray lies in plane of triangle otherwise not
-                if (det > -tolerance && det < tolerance) { continue; }
+                if (det > -tolerance && det < tolerance)
+                    continue;
+
                 invDet = 1.0f / det;
 
                 //calculate distance from p1 to ray origin
-                t = curve.PointAtParameter(0) - p1;                                          /*Call function*/
+                t = curve.PointAtParameter(0) - p1;
 
                 //Calculate u parameter
-                u = t * p * invDet;                                                             /*Call function*/
+                u = t * p * invDet;
 
                 //Check for ray hit
-                if (u < 0 || u > 1) { continue; }
+                if (u < 0 || u > 1)
+                    continue;
 
                 //Prepare to test v parameter
-                q = Query.CrossProduct(t, e1);                                             /*Call function*/
+                q = Query.CrossProduct(t, e1);
 
                 //Calculate v parameter
-                v = d * q * invDet;                                                             /*Call function*/
+                v = d * q * invDet;
 
                 //Check for ray hit
-                if (v < 0 || u + v > 1) { continue; }
+                if (v < 0 || u + v > 1)
+                    continue;
 
-                if ((e2 * q * invDet) > Double.Epsilon)                                         /*Call function*/
-                {
-                    //ray does intersect
-                    points.Add((1 - u - v) * p1 + u * p2 + v * p3);
-                }
+                if ((e2 * q * invDet) > Double.Epsilon)
+                    points.Add((1 - u - v) * p1 + u * p2 + v * p3);                             //ray does intersect
             }
             return points;
         }
@@ -139,5 +140,7 @@ namespace BH.Engine.Geometry
         {
             return MeshIntersections(curve as dynamic, mesh);
         }
+
+        /***************************************************/
     }
 }

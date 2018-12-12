@@ -20,18 +20,13 @@ namespace BH.Engine.Geometry
             for (int i = 0; i < result.Count; i++)
             {
                 if (result[i] + d > tolerance)
-                {
                     sameSide[i] = 1;
-                }
                 else if (result[i] + d < -tolerance)
-                {
                     sameSide[i] = -1;
-                }
                 else
-                {
                     sameSide[i] = 0;
-                }
             }
+
             return sameSide.ToList();
         }
 

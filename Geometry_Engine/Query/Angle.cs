@@ -33,7 +33,6 @@ namespace BH.Engine.Geometry
 
             double angle = Math.Atan2(det, dotProduct);
             return angle >= 0 ? angle : Math.PI * 2 + angle;
-
         }
 
         /***************************************************/

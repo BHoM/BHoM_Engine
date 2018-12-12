@@ -25,14 +25,19 @@ namespace BH.Engine.Geometry
 
             if (intParams == null)
             {
-                if (l1.Infinite || l2.Infinite) return null;
-                if (l1.Start.SquareDistance(l2.Start) <= sqTol) return (l1.Start + l2.Start) * 0.5;
-                else if (l1.Start.SquareDistance(l2.End) <= sqTol) return (l1.Start + l2.End) * 0.5;
-                else if (l1.End.SquareDistance(l2.Start) <= sqTol) return (l1.End + l2.Start) * 0.5;
-                else if (l1.End.SquareDistance(l2.End) <= sqTol) return (l1.End + l2.End) * 0.5;
-                else return null;
+                if (l1.Infinite || l2.Infinite)
+                    return null;
+                if (l1.Start.SquareDistance(l2.Start) <= sqTol)
+                    return (l1.Start + l2.Start) * 0.5;
+                else if (l1.Start.SquareDistance(l2.End) <= sqTol)
+                    return (l1.Start + l2.End) * 0.5;
+                else if (l1.End.SquareDistance(l2.Start) <= sqTol)
+                    return (l1.End + l2.Start) * 0.5;
+                else if (l1.End.SquareDistance(l2.End) <= sqTol)
+                    return (l1.End + l2.End) * 0.5;
+                else
+                    return null;
             }
-
             else
             {
                 double t1 = intParams[0];
@@ -40,13 +45,18 @@ namespace BH.Engine.Geometry
                 
                 Point intPt1 = l1.Start + t1 * (l1.End - l1.Start);
                 Point intPt2 = l2.Start + t2 * (l2.End - l2.Start);
+
                 if (intPt1.SquareDistance(intPt2) <= sqTol)
                 {
                     Point intPt = (intPt1 + intPt2) * 0.5;
-                    if (!l1.Infinite && ((t1 < 0 && l1.Start.SquareDistance(intPt) > sqTol) || (t1 > 1 && l1.End.SquareDistance(intPt) > sqTol))) return null;
-                    if (!l2.Infinite && ((t2 < 0 && l2.Start.SquareDistance(intPt) > sqTol) || (t2 > 1 && l2.End.SquareDistance(intPt) > sqTol))) return null;
+                    if (!l1.Infinite && ((t1 < 0 && l1.Start.SquareDistance(intPt) > sqTol) || (t1 > 1 && l1.End.SquareDistance(intPt) > sqTol)))
+                        return null;
+                    if (!l2.Infinite && ((t2 < 0 && l2.Start.SquareDistance(intPt) > sqTol) || (t2 > 1 && l2.End.SquareDistance(intPt) > sqTol)))
+                        return null;
+
                     return intPt;
                 }
+
                 return null;
             }
         }
@@ -57,7 +67,10 @@ namespace BH.Engine.Geometry
         {
             List<Point> result = new List<Point>();
             Point iPt = line1.LineIntersection(line2, useInfiniteLines, tolerance);
-            if (iPt != null) result.Add(iPt);
+
+            if (iPt != null)
+                result.Add(iPt);
+
             return result;            
         }
 
@@ -71,10 +84,8 @@ namespace BH.Engine.Geometry
 
             List<BoundingBox> boxes = new List<BoundingBox>();
             if (!useInfiniteLine)
-            {
                 boxes = lines.Select(x => x.Bounds()).ToList();
-            }
-            
+
             List<Point> intersections = new List<Point>();
             for (int i = 0; i < lines.Count - 1; i++)
             {
@@ -84,10 +95,12 @@ namespace BH.Engine.Geometry
                     if (useInfiniteLine || Query.IsInRange(boxes[i], boxes[j]))
                     {
                         result = LineIntersection(lines[i], lines[j], useInfiniteLine, tolerance);
-                        if (result != null) intersections.Add(result);
+                        if (result != null)
+                            intersections.Add(result);
                     }
                 }
             }
+
             return intersections;
         }
 
@@ -102,14 +115,15 @@ namespace BH.Engine.Geometry
             Point midPoint = arc.PointAtParameter(0.5);
 
             Point center = arc.Centre();
-            double sqrRadius = arc.Radius*arc.Radius;
+            double sqrRadius = arc.Radius * arc.Radius;
 
             //Check if curves are coplanar
             if (Math.Abs(arc.CoordinateSystem.Z.DotProduct(l.Direction())) > Tolerance.Angle)
             {
                 //Curves not coplanar
                 Point pt = l.PlaneIntersection((Plane)arc.CoordinateSystem);
-                if (pt != null && Math.Abs(pt.SquareDistance(center) - sqrRadius) <= tolerance) iPts.Add(pt);
+                if (pt != null && Math.Abs(pt.SquareDistance(center) - sqrRadius) <= tolerance)
+                    iPts.Add(pt);
             }
             else
             {
@@ -123,9 +137,11 @@ namespace BH.Engine.Geometry
             {
                 foreach (Point pt in iPts)
                 {
-                    if ((l.Infinite || pt.Distance(l) <= tolerance) && midPoint.SquareDistance(pt) <= sqrd) output.Add(pt);
+                    if ((l.Infinite || pt.Distance(l) <= tolerance) && midPoint.SquareDistance(pt) <= sqrd)
+                        output.Add(pt);
                 }
             }
+
             return output;
         }
 
@@ -142,13 +158,16 @@ namespace BH.Engine.Geometry
             if (Math.Abs(circle.Normal.DotProduct(l.Direction())) > Tolerance.Angle)
             {
                 Point pt = l.PlaneIntersection(p);
-                if (pt!=null && Math.Abs(pt.SquareDistance(circle.Centre) - circle.Radius * circle.Radius) <= tolerance) iPts.Add(pt);
+                if (pt!=null && Math.Abs(pt.SquareDistance(circle.Centre) - circle.Radius * circle.Radius) <= tolerance)
+                    iPts.Add(pt);
             }
             else
             {
                 Point pt = l.ClosestPoint(circle.Centre, true);
                 double sqrDiff = circle.Radius * circle.Radius - pt.SquareDistance(circle.Centre);
-                if (Math.Abs(sqrDiff) <= tolerance) iPts.Add(pt);
+
+                if (Math.Abs(sqrDiff) <= tolerance)
+                    iPts.Add(pt);
                 else if (sqrDiff > 0)
                 {
                     double o = Math.Sqrt(sqrDiff);
@@ -158,13 +177,16 @@ namespace BH.Engine.Geometry
                 }
             }
 
-            if (l.Infinite) return iPts;
+            if (l.Infinite)
+                return iPts;
 
             List<Point> output = new List<Point>();
             foreach (Point pt in iPts)
             {
-                if (pt.Distance(l) <= tolerance) output.Add(pt);
+                if (pt.Distance(l) <= tolerance)
+                    output.Add(pt);
             }
+
             return output;
         }
 
@@ -179,7 +201,8 @@ namespace BH.Engine.Geometry
             foreach (Line ln in curve.SubParts())
             {
                 Point pt = ln.LineIntersection(l);
-                if (pt != null) iPts.Add(pt);
+                if (pt != null)
+                    iPts.Add(pt);
             }
 
             return iPts;
@@ -212,7 +235,8 @@ namespace BH.Engine.Geometry
                 foreach(Line l2 in subparts)
                 {
                     Point pt = l1.LineIntersection(l2);
-                    if (pt != null) iPts.Add(pt);
+                    if (pt != null)
+                        iPts.Add(pt);
                 }
             }
 

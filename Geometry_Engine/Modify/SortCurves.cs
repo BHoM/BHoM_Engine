@@ -66,6 +66,7 @@ namespace BH.Engine.Geometry
                 if (!foundNext)
                     throw new Exception("PolyCurve with unconnected subcurves cannot have them sorted");
             }
+
             return result;
         }
 

@@ -16,6 +16,9 @@ namespace BH.Engine.Geometry
             return new Loft { Curves = curves.ToList() };
         }
 
+
+        /***************************************************/
+        /**** Random Geometry                           ****/
         /***************************************************/
 
         public static Loft RandomLoft(int seed = -1, BoundingBox box = null, int minNbCurves = 2, int maxNbCurves = 10)
@@ -32,7 +35,10 @@ namespace BH.Engine.Geometry
         {
             List<ICurve> curves = new List<ICurve>();
             for (int i = 0; i < rnd.Next(minNbCurves, maxNbCurves + 1); i++)
+            {
                 curves.Add(RandomCurve(rnd, box));
+            }
+
             return new Loft { Curves = curves };
         }
 

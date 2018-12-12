@@ -11,7 +11,9 @@ namespace BH.Engine.Geometry
 
         public static Vector Direction(this Line line, double tolerance = Tolerance.Distance)
         {
-            if (line.Start.SquareDistance(line.End) <= tolerance * tolerance) return new Vector { X = 0, Y = 0, Z = 0 };
+            if (line.Start.SquareDistance(line.End) <= tolerance * tolerance)
+                return new Vector { X = 0, Y = 0, Z = 0 };
+
             return new Vector { X = line.End.X - line.Start.X, Y = line.End.Y - line.Start.Y, Z = line.End.Z - line.Start.Z }.Normalise();
         }
 

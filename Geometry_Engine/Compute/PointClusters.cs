@@ -48,7 +48,7 @@ namespace BH.Engine.Geometry
 
             public DbscanAlgorithm(Func<Point, Point, double> metricFunc)
             {
-                _metricFunc = metricFunc;
+                this._metricFunc = metricFunc;
             }
 
             public List<List<Point>> ComputeClusterDbscan(Point[] allPoints, double epsilon, int minPts)
@@ -63,6 +63,7 @@ namespace BH.Engine.Geometry
 
                     DbscanPoint[] neighborPts = null;
                     RegionQuery(allPointsDbscan, p.ClusterPoint, epsilon, out neighborPts);
+
                     if (neighborPts.Length < minPts)
                         p.ClusterId = -1;               // noise
                     else
@@ -88,17 +89,18 @@ namespace BH.Engine.Geometry
                 for (int i = 0; i < neighborPts.Length; i++)
                 {
                     DbscanPoint pn = neighborPts[i];
+
                     if (!pn.IsVisited)
                     {
                         pn.IsVisited = true;
                         DbscanPoint[] neighborPts2 = null;
                         RegionQuery(allPoints, pn.ClusterPoint, epsilon, out neighborPts2);
                         if (neighborPts2.Length >= minPts)
-                        {
                             neighborPts = neighborPts.Union(neighborPts2).ToArray();
-                        }
                     }
-                    if (pn.ClusterId == 0) pn.ClusterId = c;
+
+                    if (pn.ClusterId == 0)
+                        pn.ClusterId = c;
                 }
             }
 
@@ -107,5 +109,7 @@ namespace BH.Engine.Geometry
                 neighborPts = allPoints.Where(x => _metricFunc(p, x.ClusterPoint) <= epsilon).ToArray();
             }
         }
+
+        /***************************************************/
     }
 }

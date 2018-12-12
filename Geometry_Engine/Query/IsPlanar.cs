@@ -117,7 +117,8 @@ namespace BH.Engine.Geometry
         {
             foreach (ISurface s in surface.Surfaces)
             {
-                if (!s.IIsPlanar(tolerance)) return false;
+                if (!s.IIsPlanar(tolerance))
+                    return false;
             }
             return true;
         }
@@ -139,7 +140,8 @@ namespace BH.Engine.Geometry
         {
             foreach (IGeometry element in group.Elements)
             {
-                if (!element.IIsPlanar(tolerance)) return false;
+                if (!element.IIsPlanar(tolerance))
+                    return false;
             }
             return true;
         }
@@ -148,11 +150,12 @@ namespace BH.Engine.Geometry
         /***************************************************/
         /**** Public Methods = Interfaces               ****/
         /***************************************************/
-
-
+        
         public static bool IIsPlanar(this IGeometry geometry, double tolerance = Tolerance.Distance)
         {
             return IsPlanar(geometry as dynamic, tolerance);
         }
+
+        /***************************************************/
     }
 }

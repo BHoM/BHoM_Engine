@@ -53,6 +53,7 @@ namespace BH.Engine.Geometry
             return new CoordinateSystem { Origin = origin, X = x, Y = y, Z = x.CrossProduct(y) };
         }
 
+
         /***************************************************/
         /**** Public Methods - Curves                   ****/
         /***************************************************/

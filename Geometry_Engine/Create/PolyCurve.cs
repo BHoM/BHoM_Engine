@@ -16,6 +16,9 @@ namespace BH.Engine.Geometry
             return new PolyCurve { Curves = curves.ToList() };
         }
 
+
+        /***************************************************/
+        /**** Random Geometry                           ****/
         /***************************************************/
 
         public static PolyCurve RandomPolyCurve(int seed = -1, BoundingBox box = null, int minNbCurves = 2, int maxNbCurves = 10)

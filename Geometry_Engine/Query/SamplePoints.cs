@@ -12,14 +12,18 @@ namespace BH.Engine.Geometry
 
         public static List<Point> SamplePoints(this ICurve curve, double step)
         {
-            if (step <= 0) { throw new ArgumentException("step value must be greater than 0"); }
+            if (step <= 0)
+                throw new ArgumentException("step value must be greater than 0");
+
             List<Point> points = new List<Point>();
             double dist = 0;
+
             while (dist <= curve.ILength())
             {
                 points.Add(curve.IPointAtLength(dist));
                 dist += step;
             }
+
             return points;
         }
 
@@ -27,7 +31,9 @@ namespace BH.Engine.Geometry
 
         public static List<Point> SamplePoints(this ICurve curve, int number)
         {
-            if (number <= 0) { throw new ArgumentException("number value must be greater than 0"); }
+            if (number <= 0)
+                throw new ArgumentException("number value must be greater than 0");
+
             List<Point> points = new List<Point>();
             double length = curve.ILength();
             double step = length / number;
@@ -37,6 +43,7 @@ namespace BH.Engine.Geometry
             {
                 points.Add(curve.IPointAtLength(i * step));
             }
+
             points.Add(curve.IEndPoint());
             return points;
         }

@@ -172,5 +172,6 @@ namespace BH.Engine.Geometry
             return ToNurbCurve(geometry as dynamic);
         }
 
+        /***************************************************/
     }
 }

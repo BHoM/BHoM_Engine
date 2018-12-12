@@ -16,6 +16,9 @@ namespace BH.Engine.Geometry
             return new PolySurface { Surfaces = surfaces.ToList() };
         }
 
+
+        /***************************************************/
+        /**** Random Geometry                           ****/
         /***************************************************/
 
         public static PolySurface RandomPolySurface(int seed = -1, BoundingBox box = null, int minNbSurfaces = 2, int maxNbSurfaces = 10)
@@ -32,7 +35,10 @@ namespace BH.Engine.Geometry
         {
             List<ISurface> surfaces = new List<ISurface>();
             for (int i = 0; i < rnd.Next(minNbSurfaces, maxNbSurfaces + 1); i++)
+            {
                 surfaces.Add(RandomSurface(rnd, box));
+            }
+
             return new PolySurface { Surfaces = surfaces };
         }
 

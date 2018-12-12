@@ -20,8 +20,10 @@ namespace BH.Engine.Geometry
         {
             int uDegree = 1;
             int vDegree = 1;
+
             while (surf.UKnots[uDegree - 1] == surf.UKnots[uDegree]) uDegree++;          
-            while (surf.VKnots[vDegree - 1] == surf.VKnots[vDegree]) vDegree++;            
+            while (surf.VKnots[vDegree - 1] == surf.VKnots[vDegree]) vDegree++;   
+                     
             return new List<int>() { uDegree, vDegree };
         }
 

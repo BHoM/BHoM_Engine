@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using BH.Engine.Geometry;
 using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
 
@@ -14,7 +13,9 @@ namespace BH.Engine.Geometry
 
         public static double ParameterAtPoint(this Arc curve, Point point, double tolerance = Tolerance.Distance)
         {
-            if (curve.ClosestPoint(point).SquareDistance(point) > tolerance * tolerance) return -1;
+            if (curve.ClosestPoint(point).SquareDistance(point) > tolerance * tolerance)
+                return -1;
+
             Point centre = curve.CoordinateSystem.Origin;
             Vector normal = curve.CoordinateSystem.Z;
             Vector v1 = curve.CoordinateSystem.X;
@@ -29,7 +30,9 @@ namespace BH.Engine.Geometry
 
         public static double ParameterAtPoint(this Circle curve, Point point, double tolerance = Tolerance.Distance)
         {
-            if (curve.ClosestPoint(point).SquareDistance(point) > tolerance * tolerance) return -1;
+            if (curve.ClosestPoint(point).SquareDistance(point) > tolerance * tolerance)
+                return -1;
+
             Vector v1 = curve.StartPoint() - curve.Centre;
             Vector v2 = point - curve.Centre;
             return ((v1.SignedAngle(v2, curve.Normal) + 2 * Math.PI) % (2 * Math.PI)) / (2 * Math.PI);
@@ -39,7 +42,9 @@ namespace BH.Engine.Geometry
 
         public static double ParameterAtPoint(this Line curve, Point point, double tolerance = Tolerance.Distance)
         {
-            if (curve.ClosestPoint(point).SquareDistance(point) > tolerance * tolerance) return -1;
+            if (curve.ClosestPoint(point).SquareDistance(point) > tolerance * tolerance)
+                return -1;
+
             return point.Distance(curve.Start) / curve.Length();
         }
 
@@ -57,14 +62,15 @@ namespace BH.Engine.Geometry
         {
             double sqTol = tolerance * tolerance;
             double length = 0;
+
             foreach (ICurve c in curve.SubParts())
             {
                 if (c.IClosestPoint(point).SquareDistance(point) <= sqTol)
-                {
                     return (length + c.IParameterAtPoint(point, tolerance) * c.ILength()) / curve.ILength();
-                }
-                else length += c.ILength();
+                else
+                    length += c.ILength();
             }
+
             return -1;
         }
 
@@ -74,14 +80,15 @@ namespace BH.Engine.Geometry
         {
             double sqTol = tolerance * tolerance;
             double param = 0;
+
             foreach (Line l in curve.SubParts())
             {
                 if (l.ClosestPoint(point).SquareDistance(point) <= sqTol)
-                {
                     return (param + l.ParameterAtPoint(point, tolerance)) / curve.Length();
-                }
-                else param += l.Length();
+                else
+                    param += l.Length();
             }
+
             return -1;
         }
 

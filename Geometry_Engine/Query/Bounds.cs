@@ -171,7 +171,6 @@ namespace BH.Engine.Geometry
                 theta += Math.PI;
             }
             
-
             return new BoundingBox { Min = new Point { X = xMin, Y = yMin, Z = zMin }, Max = new Point { X = xMax, Y = yMax, Z = zMax } };
         }
 

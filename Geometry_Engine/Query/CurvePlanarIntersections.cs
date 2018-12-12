@@ -25,8 +25,10 @@ namespace BH.Engine.Geometry
 
             for (int i = iPts.Count - 1; i >= 0; i--)
             {
-                if (midPoint1.Distance(iPts[i]) - dist1 > tolerance || midPoint2.Distance(iPts[i]) - dist2 > tolerance) iPts.RemoveAt(i);
+                if (midPoint1.Distance(iPts[i]) - dist1 > tolerance || midPoint2.Distance(iPts[i]) - dist2 > tolerance)
+                    iPts.RemoveAt(i);
             }
+
             return iPts;
         }
 
@@ -43,8 +45,10 @@ namespace BH.Engine.Geometry
 
             for (int i = iPts.Count - 1; i >= 0; i--)
             {
-                if (midPoint1.Distance(iPts[i]) - dist > tolerance) iPts.RemoveAt(i);
+                if (midPoint1.Distance(iPts[i]) - dist > tolerance)
+                    iPts.RemoveAt(i);
             }
+
             return iPts;
         }
 
@@ -68,18 +72,24 @@ namespace BH.Engine.Geometry
             Vector n2 = curve2.Normal;
             Plane p1 = new Plane { Origin = c1, Normal = n1 };
             Plane p2 = new Plane { Origin = c2, Normal = n2 };
-            if (!p1.IsCoplanar(p2)) return iPts;
+
+            if (!p1.IsCoplanar(p2))
+                return iPts;
 
             double sqrDist = c1.SquareDistance(c2);
             double dist = Math.Sqrt(sqrDist);
-            if (dist <= tolerance) return iPts;
+
+            if (dist <= tolerance)
+                return iPts;
 
             double sumRadii = r1 + r2;
             double difRadii = Math.Abs(r1 - r2);
             Vector dir = (c2 - c1).Normalise();
 
-            if (Math.Abs(dist - sumRadii) <= tolerance) iPts.Add(c1 + dir * r1);
-            else if (Math.Abs(dist - difRadii) <= tolerance) iPts.Add(c1 - dir * r1);
+            if (Math.Abs(dist - sumRadii) <= tolerance)
+                iPts.Add(c1 + dir * r1);
+            else if (Math.Abs(dist - difRadii) <= tolerance)
+                iPts.Add(c1 - dir * r1);
             else if (dist - sumRadii < tolerance && dist - difRadii >= tolerance)
             {
                 double a = (r1 * r1 - r2 * r2 + sqrDist) / (2 * dist);
@@ -89,6 +99,7 @@ namespace BH.Engine.Geometry
                 iPts.Add(midPt + perp * shift);
                 iPts.Add(midPt - perp * shift);
             }
+
             return iPts;
         }
 
