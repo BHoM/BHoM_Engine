@@ -1,4 +1,4 @@
-﻿using BH.oM.Structure.Properties;
+﻿using BH.oM.Structure.Properties.Surface;
 using BH.oM.Common.Materials;
 
 namespace BH.Engine.Structure

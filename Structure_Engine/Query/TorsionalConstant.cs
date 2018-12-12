@@ -1,5 +1,5 @@
 ﻿using System;
-using BH.oM.Structure.Properties;
+using BH.oM.Structure.Properties.Section.ShapeProfiles;
 using BH.oM.Geometry;
 
 namespace BH.Engine.Structure

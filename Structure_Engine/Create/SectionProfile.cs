@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Collections.ObjectModel;
-using BH.oM.Structure.Properties;
+using BH.oM.Structure.Properties.Section.ShapeProfiles;
 using BH.oM.Geometry;
 using System;
 using BH.oM.Reflection.Attributes;

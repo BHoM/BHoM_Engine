@@ -1,4 +1,4 @@
-﻿using BH.oM.Structure.Properties;
+﻿using BH.oM.Structure.Properties.Surface;
 using BH.oM.Reflection.Attributes;
 using System;
 
@@ -43,7 +43,7 @@ namespace BH.Engine.Structure
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
-        public static double IMassPerArea(this IProperty2D property)
+        public static double IMassPerArea(this ISurfaceProperty property)
         {
             return MassPerArea(property as dynamic);
         }

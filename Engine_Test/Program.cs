@@ -10,7 +10,9 @@ using MongoDB.Bson.IO;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using BH.oM.Structure.Elements;
-using BH.oM.Structure.Properties;
+using BH.oM.Structure.Properties.Constraint;
+using BH.oM.Structure.Properties.Section;
+using BH.oM.Structure.Properties.Section.ShapeProfiles;
 using BH.oM.Acoustic;
 //using ModelLaundry_Engine;
 

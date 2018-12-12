@@ -2,7 +2,8 @@
 
 using BH.oM.Structure.Elements;
 using BH.oM.Geometry;
-using BH.oM.Structure.Properties;
+using BH.oM.Structure.Properties.Section;
+using BH.oM.Structure.Properties.Constraint;
 using BH.Engine.Geometry;
 using BH.Engine.Reflection;
 

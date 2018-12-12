@@ -1,4 +1,5 @@
-﻿using BH.oM.Structure.Properties;
+﻿using BH.oM.Structure.Properties.Framing;
+using BH.oM.Structure.Properties.Section;
 using BH.oM.Geometry;
 
 namespace BH.Engine.Structure

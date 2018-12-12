@@ -1,5 +1,5 @@
 ﻿using BH.oM.Geometry;
-using BH.oM.Structure.Properties;
+using BH.oM.Structure.Properties.Section.ShapeProfiles;
 using BH.oM.Reflection.Attributes;
 
 namespace BH.Engine.Structure
