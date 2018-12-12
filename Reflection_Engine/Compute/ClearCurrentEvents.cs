@@ -1,5 +1,5 @@
 ﻿using BH.oM.Base;
-using BH.oM.Reflection.Debuging;
+using BH.oM.Reflection.Debugging;
 using System;
 using System.Collections;
 using System.Collections.Generic;

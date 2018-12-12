@@ -1,4 +1,4 @@
-﻿using BH.oM.Reflection.Debuging;
+﻿using BH.oM.Reflection.Debugging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
