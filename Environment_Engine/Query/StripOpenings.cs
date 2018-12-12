@@ -4,12 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BH.oM.Geometry;
-
 using BH.oM.Environment.Elements;
 using BH.Engine.Environment;
-
 using BH.Engine.Geometry;
-using BH.oM.Geometry;
 
 namespace BH.Engine.Environment
 {

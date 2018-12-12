@@ -1,5 +1,5 @@
 ﻿using BH.oM.Structure.Elements;
-using BH.oM.Common;
+using BH.oM.Geometry;
 
 namespace BH.Engine.Structure
 {

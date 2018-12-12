@@ -4,8 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Reflection;
-
-using BH.oM.Testing;
 using BH.oM.Planning;
 
 namespace BH.Engine.Planning

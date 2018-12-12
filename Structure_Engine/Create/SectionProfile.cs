@@ -3,7 +3,6 @@ using System.Linq;
 using System.Collections.ObjectModel;
 using BH.oM.Structure.Properties;
 using BH.oM.Geometry;
-using BH.oM.Common.Materials;
 using System;
 using BH.oM.Reflection.Attributes;
 using BH.Engine.Geometry;

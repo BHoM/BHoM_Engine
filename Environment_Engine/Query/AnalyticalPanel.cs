@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Linq;
-
 using BH.oM.Environment.Elements;
 using BH.oM.Geometry;
-using BH.oM.Architecture.Elements;
 
 using System.Collections.Generic;
 

@@ -38,6 +38,12 @@
       <HintPath>..\packages\CompareNETObjects.4.57.0\lib\net452\KellermanSoftware.Compare-NET-Objects.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Planning_oM">
+      <HintPath>..\..\BHoM\Build\Planning_oM.dll</HintPath>
+    </Reference>
+    <Reference Include="Reflection_oM">
+      <HintPath>..\..\BHoM\Build\Reflection_oM.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -46,6 +52,9 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
+    <Reference Include="Testing_oM">
+      <HintPath>..\..\BHoM\Build\Testing_oM.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Create\IsEqualConfig.cs" />
