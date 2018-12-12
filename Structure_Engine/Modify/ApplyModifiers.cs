@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using BH.oM.Structure.Properties;
+using BH.oM.Structure.Properties.Surface;
+using BH.oM.Structure.Properties.Section;
 
 namespace BH.Engine.Structure
 {
@@ -13,9 +14,9 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static IProperty2D ApplyModifiers(this IProperty2D prop, double f11 =1, double f12=1, double f22=1, double m11=1, double m12=1, double m22=1, double v13=1, double v23=1, double mass=1, double weight=1)
+        public static ISurfaceProperty ApplyModifiers(this ISurfaceProperty prop, double f11 =1, double f12=1, double f22=1, double m11=1, double m12=1, double m22=1, double v13=1, double v23=1, double mass=1, double weight=1)
         {
-            IProperty2D clone = prop.GetShallowClone() as IProperty2D;
+            ISurfaceProperty clone = prop.GetShallowClone() as ISurfaceProperty;
 
             double[] modifiers = new double[] { f11, f12, f22, m11, m12, m22, v13, v23, mass, weight };
 

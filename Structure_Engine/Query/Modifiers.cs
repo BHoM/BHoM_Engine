@@ -1,4 +1,5 @@
-﻿using BH.oM.Structure.Properties;
+﻿using BH.oM.Structure.Properties.Surface;
+using BH.oM.Structure.Properties.Section;
 
 namespace BH.Engine.Structure
 {
@@ -8,7 +9,7 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static bool HasModifiers(this IProperty2D property)
+        public static bool HasModifiers(this ISurfaceProperty property)
         {
             double[] modifiers = property.Modifiers();
 
@@ -24,7 +25,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static double[] Modifiers(this IProperty2D property)
+        public static double[] Modifiers(this ISurfaceProperty property)
         {
             object modifersObj;
 

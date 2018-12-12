@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using BH.oM.Structure.Properties;
+using BH.oM.Structure.Properties.Section;
+using BH.oM.Structure.Properties.Section.ShapeProfiles;
+using BH.oM.Structure.Properties.Section.Reinforcement;
 using BH.oM.Geometry;
 using BH.oM.Common.Materials;
 using System.Linq;

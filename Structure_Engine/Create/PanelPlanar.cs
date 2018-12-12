@@ -1,5 +1,5 @@
 ﻿using BH.oM.Structure.Elements;
-using BH.oM.Structure.Properties;
+using BH.oM.Structure.Properties.Surface;
 using BH.oM.Geometry;
 using System;
 using System.Collections.Generic;
@@ -14,7 +14,7 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static PanelPlanar PanelPlanar(ICurve outline, List<Opening> openings = null, IProperty2D property = null, string name = "")
+        public static PanelPlanar PanelPlanar(ICurve outline, List<Opening> openings = null, ISurfaceProperty property = null, string name = "")
         {
             if (!outline.IIsClosed()) return null;
             List<Edge> externalEdges = outline.ISubParts().Select(x => new Edge { Curve = x }).ToList();
@@ -24,7 +24,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static PanelPlanar PanelPlanar(ICurve outline, List<ICurve> openings = null, IProperty2D property = null, string name = "")
+        public static PanelPlanar PanelPlanar(ICurve outline, List<ICurve> openings = null, ISurfaceProperty property = null, string name = "")
         {
             if (!outline.IIsClosed()) return null;
             List<Opening> pOpenings = openings != null ? openings.Select(o => Create.Opening(o)).ToList() : new List<Opening>();
@@ -34,7 +34,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static PanelPlanar PanelPlanar(List<Edge> externalEdges, List<ICurve> openings = null, IProperty2D property = null, string name = "")
+        public static PanelPlanar PanelPlanar(List<Edge> externalEdges, List<ICurve> openings = null, ISurfaceProperty property = null, string name = "")
         {
             List<Opening> pOpenings = openings != null ? openings.Select(o => Create.Opening(o)).ToList() : new List<Opening>();
             return PanelPlanar(externalEdges, pOpenings, property, name);
@@ -42,7 +42,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static PanelPlanar PanelPlanar(List<Edge> externalEdges, List<Opening> openings = null, IProperty2D property = null, string name = "")
+        public static PanelPlanar PanelPlanar(List<Edge> externalEdges, List<Opening> openings = null, ISurfaceProperty property = null, string name = "")
         {
             return new PanelPlanar
             {
@@ -55,7 +55,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static List<PanelPlanar> PanelPlanar(List<Polyline> outlines, IProperty2D property = null, string name = "")
+        public static List<PanelPlanar> PanelPlanar(List<Polyline> outlines, ISurfaceProperty property = null, string name = "")
         {
             List<PanelPlanar> result = new List<PanelPlanar>();
             List<List<Polyline>> sortedOutlines = outlines.DistributeOutlines();
@@ -75,7 +75,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static List<PanelPlanar> PanelPlanar(List<ICurve> outlines, IProperty2D property = null, string name = "")
+        public static List<PanelPlanar> PanelPlanar(List<ICurve> outlines, ISurfaceProperty property = null, string name = "")
         {
             List<PanelPlanar> result = new List<PanelPlanar>();
             List<List<ICurve>> sortedOutlines = outlines.DistributeOutlines();

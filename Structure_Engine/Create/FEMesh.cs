@@ -1,5 +1,5 @@
 ﻿using BH.oM.Structure.Elements;
-using BH.oM.Structure.Properties;
+using BH.oM.Structure.Properties.Surface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +15,7 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static FEMesh FEMesh(BH.oM.Geometry.Mesh mesh, IProperty2D property = null, string name = null)
+        public static FEMesh FEMesh(BH.oM.Geometry.Mesh mesh, ISurfaceProperty property = null, string name = null)
         {
             FEMesh feMesh = new FEMesh();
             feMesh.Nodes = mesh.Vertices.Select(x => Node(x)).ToList();

@@ -1,4 +1,4 @@
-﻿using BH.oM.Structure.Properties;
+﻿using BH.oM.Structure.Properties.Constraint;
 using System.Collections.Generic;
 using System.Linq;
 
