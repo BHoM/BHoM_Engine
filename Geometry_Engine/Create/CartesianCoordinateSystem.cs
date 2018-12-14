@@ -1,4 +1,5 @@
 ﻿using BH.oM.Geometry;
+using BH.oM.Geometry.CoordinateSystem;
 using System;
 using System.ComponentModel;
 
@@ -11,8 +12,9 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [Description("Creates a Cartesian CoordinateSystem. x and y will be unitised. If x and why are non-orthogonal, y will be made orthogonal to x, while x will be kept")]
-        public static CoordinateSystem CoordinateSystem(Point origin, Vector x, Vector y)
+        public static Cartesian CartesianCoordinateSystem(Point origin, Vector x, Vector y)
         {
+
             x = x.Normalise();
             y = y.Normalise();
 
@@ -30,7 +32,7 @@ namespace BH.Engine.Geometry
                 y = z.CrossProduct(x).Normalise();
             }
 
-            return new CoordinateSystem { X = x, Y = y, Z = z, Origin = origin };
+            return new Cartesian(origin, x, y, z);
         }
 
 
@@ -38,27 +40,27 @@ namespace BH.Engine.Geometry
         /**** Random Geometry                           ****/
         /***************************************************/
 
-        public static CoordinateSystem RandomCoordinateSystem(int seed = -1, BoundingBox box = null)
+        public static Cartesian RandomCartesianCoordinateSystem(int seed = -1, BoundingBox box = null)
         {
             if (seed == -1)
                 seed = m_Random.Next();
             Random rnd = new Random(seed);
-            return RandomCoordinateSystem(rnd, box);
+            return RandomCartesianCoordinateSystem(rnd, box);
         }
 
         /***************************************************/
 
-        public static CoordinateSystem RandomCoordinateSystem(Random rnd, BoundingBox box = null)
+        public static Cartesian RandomCartesianCoordinateSystem(Random rnd, BoundingBox box = null)
         {
             Vector x = RandomVector(rnd, box);
             Vector y = RandomVector(rnd, box);
 
             if (x.IsParallel(y) != 0)
-                return RandomCoordinateSystem(rnd, box);
+                return RandomCartesianCoordinateSystem(rnd, box);
 
             Point orgin = RandomPoint(rnd, box);
 
-            return CoordinateSystem(orgin, x, y);
+            return CartesianCoordinateSystem(orgin, x, y);
         }
 
         /***************************************************/

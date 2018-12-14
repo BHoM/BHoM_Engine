@@ -1,4 +1,5 @@
 ﻿using BH.oM.Geometry;
+using BH.oM.Geometry.CoordinateSystem;
 using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
@@ -37,7 +38,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static BoundingBox Bounds(this CoordinateSystem coordinateSystem)
+        public static BoundingBox Bounds(this Cartesian coordinateSystem)
         {
             return ((Plane)coordinateSystem).Bounds();
         }

@@ -1,4 +1,5 @@
 ﻿using BH.oM.Geometry;
+using BH.oM.Geometry.CoordinateSystem;
 using System.Linq;
 
 namespace BH.Engine.Geometry
@@ -30,15 +31,9 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static CoordinateSystem Translate(this CoordinateSystem coordinateSystem, Vector transform)
+        public static Cartesian Translate(this Cartesian coordinateSystem, Vector transform)
         {
-            return new CoordinateSystem
-            {
-                X = coordinateSystem.X,
-                Y = coordinateSystem.Y,
-                Z = coordinateSystem.Z,
-                Origin = coordinateSystem.Origin + transform
-            };
+            return new Cartesian(coordinateSystem.Origin + transform, coordinateSystem.Y, coordinateSystem.Y, coordinateSystem.Z);
         }
 
         /***************************************************/

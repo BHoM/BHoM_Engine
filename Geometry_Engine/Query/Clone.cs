@@ -1,4 +1,5 @@
 ﻿using BH.oM.Geometry;
+using BH.oM.Geometry.CoordinateSystem;
 using System.Linq;
 
 namespace BH.Engine.Geometry
@@ -30,15 +31,9 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static CoordinateSystem Clone(this CoordinateSystem coordinateSystem)
+        public static Cartesian Clone(this Cartesian coordinateSystem)
         {
-            return new CoordinateSystem
-            {
-                X = coordinateSystem.X.Clone(),
-                Y = coordinateSystem.Y.Clone(),
-                Z = coordinateSystem.Z.Clone(),
-                Origin = coordinateSystem.Origin.Clone()
-            };
+            return new Cartesian(coordinateSystem.Origin.Clone(), coordinateSystem.X.Clone(), coordinateSystem.Y.Clone(), coordinateSystem.Z.Clone());
         }
 
         /***************************************************/

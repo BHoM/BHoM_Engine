@@ -1,4 +1,5 @@
 ﻿using BH.oM.Geometry;
+using BH.oM.Geometry.CoordinateSystem;
 using System;
 using System.Linq;
 
@@ -154,15 +155,9 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static CoordinateSystem Rotate(this CoordinateSystem coordinate, Point origin, Vector axis, double rad)
+        public static Cartesian Rotate(this Cartesian coordinate, Point origin, Vector axis, double rad)
         {
-            return new CoordinateSystem
-            {
-                Origin = coordinate.Origin.Rotate(origin, axis, rad),
-                X = coordinate.X.Rotate(rad, axis),
-                Y = coordinate.Y.Rotate(rad, axis),
-                Z = coordinate.Z.Rotate(rad, axis)
-            };
+            return new Cartesian(coordinate.Origin.Rotate(origin, axis, rad), coordinate.X.Rotate(rad, axis), coordinate.Y.Rotate(rad, axis), coordinate.Z.Rotate(rad, axis));
         }
 
         /***************************************************/

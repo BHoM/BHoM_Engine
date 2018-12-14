@@ -1,4 +1,5 @@
 ﻿using BH.oM.Geometry;
+using BH.oM.Geometry.CoordinateSystem;
 using BH.oM.Structure.Elements;
 using BH.oM.Structure.Loads;
 using BH.Engine.Geometry;
@@ -44,7 +45,7 @@ namespace BH.Engine.Structure
             foreach (IAreaElement element in areaUDL.Objects.Elements)
             {
                 Vector forceVec;
-                CoordinateSystem system = null;
+                Cartesian system = null;
 
                 IEnumerable<ICurve> edges = element.IEdges();
 
@@ -66,7 +67,7 @@ namespace BH.Engine.Structure
                     Vector normal = element.INormal();
                     Vector x = edges.First().IStartDir();
                     Vector y = normal.CrossProduct(x);
-                    system = new CoordinateSystem { Z = normal, X = x, Y = y };
+                    system = new Cartesian(new Point(), x, y, normal);
                     forceVec = globalForceVec;
                 }
 
@@ -89,7 +90,7 @@ namespace BH.Engine.Structure
 
             foreach (Bar bar in barPointForce.Objects.Elements)
             {
-                CoordinateSystem system;
+                Cartesian system;
                 Vector[] loads = BarForceVectors(bar, forceVec, momentVec, barPointForce.Axis, barPointForce.Projected, out system);
                 Point point = bar.StartNode.Position;
                 Vector tan = (bar.EndNode.Position - bar.StartNode.Position).Normalise();
@@ -148,7 +149,7 @@ namespace BH.Engine.Structure
 
             foreach (Bar bar in barUDL.Objects.Elements)
             {
-                CoordinateSystem system;
+                Cartesian system;
 
                 Vector[] forceVectors = BarForceVectors(bar, forceVec, momentVec, barUDL.Axis, barUDL.Projected, out system);
 
@@ -180,7 +181,7 @@ namespace BH.Engine.Structure
             {
                 List<Point> pts = DistributedPoints(bar, divisions, barVaryingDistLoad.DistanceFromA, barVaryingDistLoad.DistanceFromB);
 
-                CoordinateSystem system;
+                Cartesian system;
 
                 Vector[] forcesA = BarForceVectors(bar, forceA, momentA, barVaryingDistLoad.Axis, barVaryingDistLoad.Projected, out system);
                 Vector[] forcesB = BarForceVectors(bar, forceB, momentB, barVaryingDistLoad.Axis, barVaryingDistLoad.Projected, out system);
@@ -362,7 +363,7 @@ namespace BH.Engine.Structure
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private static Vector[] BarForceVectors(Bar bar, Vector globalForce, Vector globalMoment, LoadAxis axis, bool isProjected, out CoordinateSystem system)
+        private static Vector[] BarForceVectors(Bar bar, Vector globalForce, Vector globalMoment, LoadAxis axis, bool isProjected, out Cartesian system)
         {
             if (axis == LoadAxis.Global)
             {
@@ -394,7 +395,7 @@ namespace BH.Engine.Structure
                 Vector tanUnit = tan.Normalise();
                 Vector y = normal.CrossProduct(tanUnit);
 
-                system = new CoordinateSystem() { X = tanUnit, Y = y, Z = normal };
+                system = new Cartesian(new Point(), tanUnit, y, normal);
 
                 return new Vector[] { globalForce, globalMoment };
             }
@@ -402,7 +403,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        private static List<ICurve> Arrows(Point pt, Vector load, bool straightArrow, bool asResultant, CoordinateSystem coordinateSystem = null, int nbArrowHeads = 1)
+        private static List<ICurve> Arrows(Point pt, Vector load, bool straightArrow, bool asResultant, Cartesian coordinateSystem = null, int nbArrowHeads = 1)
         {
             Point[] basePoints;
             return Arrows(pt, load, straightArrow, asResultant, out basePoints, coordinateSystem, nbArrowHeads);
@@ -410,7 +411,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        private static List<ICurve> Arrows(Point pt, Vector load, bool straightArrow, bool asResultant, out Point[] basePoints, CoordinateSystem coordinateSystem = null, int nbArrowHeads = 1)
+        private static List<ICurve> Arrows(Point pt, Vector load, bool straightArrow, bool asResultant, out Point[] basePoints, Cartesian coordinateSystem = null, int nbArrowHeads = 1)
         {
             if (asResultant)
             {
@@ -539,7 +540,7 @@ namespace BH.Engine.Structure
             Vector xAxis = yAxis.CrossProduct(v);
 
             double pi4over3 = Math.PI * 4 / 3;
-            Arc arc = Engine.Geometry.Create.Arc(Engine.Geometry.Create.CoordinateSystem(pt, xAxis, yAxis), length / pi4over3, 0, pi4over3);
+            Arc arc = Engine.Geometry.Create.Arc(Engine.Geometry.Create.CartesianCoordinateSystem(pt, xAxis, yAxis), length / pi4over3, 0, pi4over3);
 
             startPt = arc.StartPoint();
 
@@ -579,7 +580,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        private static List<ICurve> ConnectedArrows(IEnumerable<ICurve> curves, Vector vector, bool asResultant, CoordinateSystem coordinateSystem = null, int nbArrowHeads = 1, bool straightArrow = true)
+        private static List<ICurve> ConnectedArrows(IEnumerable<ICurve> curves, Vector vector, bool asResultant, Cartesian coordinateSystem = null, int nbArrowHeads = 1, bool straightArrow = true)
         {
             List<ICurve> allCurves = new List<ICurve>();
             Vector[] baseVec;
@@ -594,7 +595,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        private static List<ICurve> MultipleArrows(IEnumerable<Point> basePoints, Vector vector, bool asResultant, CoordinateSystem coordinateSYstem = null, int nbArrowHeads = 1, bool straightArrow = true)
+        private static List<ICurve> MultipleArrows(IEnumerable<Point> basePoints, Vector vector, bool asResultant, Cartesian coordinateSYstem = null, int nbArrowHeads = 1, bool straightArrow = true)
         {
             Vector[] baseVec;
             return MultipleArrows(basePoints, vector, asResultant, out baseVec, coordinateSYstem, nbArrowHeads, straightArrow);
@@ -602,7 +603,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        private static List<ICurve> MultipleArrows(IEnumerable<Point> basePoints, Vector vector, bool asResultant, out Vector[] baseVec, CoordinateSystem coordinateSystem = null, int nbArrowHeads = 1, bool straightArrow = true)
+        private static List<ICurve> MultipleArrows(IEnumerable<Point> basePoints, Vector vector, bool asResultant, out Vector[] baseVec, Cartesian coordinateSystem = null, int nbArrowHeads = 1, bool straightArrow = true)
         {
             List<ICurve> allCurves = new List<ICurve>();
             List<ICurve> arrow = new List<ICurve>();
