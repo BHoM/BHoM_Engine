@@ -1,4 +1,5 @@
 ﻿using BH.oM.Geometry;
+using BH.oM.Geometry.CoordinateSystem;
 using System;
 using System.Collections.Generic;
 
@@ -43,7 +44,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static bool IsInPlane(this CoordinateSystem coordinateSystem, Plane plane, double tolerance = Tolerance.Distance, double angTolerance = Tolerance.Angle)
+        public static bool IsInPlane(this Cartesian coordinateSystem, Plane plane, double tolerance = Tolerance.Distance, double angTolerance = Tolerance.Angle)
         {
             return ((Plane)coordinateSystem).IsInPlane(plane, tolerance, angTolerance);
         }

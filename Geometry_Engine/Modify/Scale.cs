@@ -1,4 +1,5 @@
 ﻿using BH.oM.Geometry;
+using BH.oM.Geometry.CoordinateSystem;
 using System;
 using System.Linq;
 
@@ -139,12 +140,10 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static CoordinateSystem Scale(this CoordinateSystem coordinate, Point origin, Vector scaleVector)
+        public static Cartesian Scale(this Cartesian coordinate, Point origin, Vector scaleVector)
         {
-            TransformMatrix scaleMatrix = Create.ScaleMatrix(origin, scaleVector);
-            return Transform(coordinate, scaleMatrix);
+            return new Cartesian(coordinate.Origin.Scale(origin, scaleVector), coordinate.X, coordinate.Y, coordinate.Z);
         }
-
 
         /***************************************************/
 

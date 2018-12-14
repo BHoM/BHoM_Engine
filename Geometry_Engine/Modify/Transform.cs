@@ -1,4 +1,5 @@
 ﻿using BH.oM.Geometry;
+using BH.oM.Geometry.CoordinateSystem;
 using System.Linq;
 
 namespace BH.Engine.Geometry
@@ -42,15 +43,15 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static CoordinateSystem Transform(this CoordinateSystem coordinateSystem, TransformMatrix transform)
+        public static Cartesian Transform(this Cartesian coordinateSystem, TransformMatrix transform)
         {
             Point origin = coordinateSystem.Origin.Transform(transform);
-            Vector x = coordinateSystem.X.Transform(transform).Normalise();
+            Vector x = coordinateSystem.X.Transform(transform);
 
             Plane plane = Create.Plane(origin, x);
-            Vector y = coordinateSystem.Y.Transform(transform).Project(plane).Normalise();
+            Vector y = coordinateSystem.Y.Transform(transform).Project(plane);
 
-            return new CoordinateSystem { Origin = origin, X = x, Y = y, Z = x.CrossProduct(y) };
+            return Create.CartesianCoordinateSystem(origin, x, y);
         }
 
 

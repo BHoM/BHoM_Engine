@@ -68,7 +68,7 @@
     <Compile Include="Compute\SortCollinear.cs" />
     <Compile Include="Convert\Polyline.cs" />
     <Compile Include="Create\ConvexHull.cs" />
-    <Compile Include="Create\CoordinateSystem.cs" />
+    <Compile Include="Create\CartesianCoordinateSystem.cs" />
     <Compile Include="Create\Geometry.cs" />
     <Compile Include="Create\Surface.cs" />
     <Compile Include="Create\Curve.cs" />

@@ -53,13 +53,7 @@ namespace BH.Engine.Geometry
             {
                 return new Arc
                 {
-                    CoordinateSystem = new CoordinateSystem
-                    {
-                        Origin = arc.CoordinateSystem.Origin.Project(p),
-                        X = arc.CoordinateSystem.X,
-                        Y = arc.CoordinateSystem.Y,
-                        Z = arc.CoordinateSystem.Z
-                    },
+                    CoordinateSystem = new oM.Geometry.CoordinateSystem.Cartesian(arc.CoordinateSystem.Origin.Project(p), arc.CoordinateSystem.X, arc.CoordinateSystem.Y, arc.CoordinateSystem.Z),
                     Radius = arc.Radius,
                     StartAngle = arc.StartAngle,
                     EndAngle = arc.EndAngle
