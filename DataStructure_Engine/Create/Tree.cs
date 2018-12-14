@@ -32,24 +32,25 @@ namespace BH.Engine.DataStructure
 
         /***************************************************/
 
-        public static Tree<T> Tree<T>(IEnumerable<T> items, IEnumerable<IEnumerable<string>> paths, string name = "")
+        public static Tree<T> Tree<T>(List<T> items, List<List<string>> paths, string name = "")
         {
             Tree<T> tree = new Tree<T> { Name = name };
 
-            if (items.Count() != paths.Count())
+            if (items.Count != paths.Count)
                 return tree;
 
-            for (int i = 0; i < items.Count(); i++)
+            for (int i = 0; i < items.Count; i++)
             {
                 Tree<T> subTree = tree;
+                List<string> path = paths[i];
 
-                foreach (string part in paths.ElementAt(i))
+                foreach (string part in path)
                 {
                     if (!subTree.Children.ContainsKey(part))
                         subTree.Children.Add(part, new Tree<T> { Name = part });
                     subTree = subTree.Children[part];
                 }
-                subTree.Value = items.ElementAt(i);
+                subTree.Value = items[i];
             }
 
             return tree;
