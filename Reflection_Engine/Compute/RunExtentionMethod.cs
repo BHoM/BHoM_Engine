@@ -27,7 +27,10 @@ namespace BH.Engine.Reflection
             foreach (MethodInfo method in type.ExtentionMethods(methodName))
             {
                 if (method.GetParameters().Length == 1)
+                {
+                    m_PreviousInvokedMethods[key] = method;
                     return method.Invoke(null, new object[] { target });
+                }
             }
 
             // Return null if nothing found
