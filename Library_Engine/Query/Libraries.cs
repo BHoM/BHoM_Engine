@@ -37,7 +37,7 @@ namespace BH.Engine.Library
             if (m_dbTree == null || m_dbTree.Count() == 0 || m_dbTree.Children.Count == 0)
             {
                 List<string> paths = LibraryStrings().Keys.ToList();
-                m_dbTree = DataStructure.Create.Tree(paths, paths.Select(x => x.Split('\\')), "Select a data set").ShortenBranches();
+                m_dbTree = DataStructure.Create.Tree(paths, paths.Select(x => x.Split('\\').ToList()).ToList(), "Select a data set").ShortenBranches();
             }
             return m_dbTree;
         }
