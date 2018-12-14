@@ -1,4 +1,5 @@
 ﻿using BH.oM.Geometry;
+using BH.oM.Geometry.CoordinateSystem;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,7 +34,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static bool IsEqual(this CoordinateSystem coordinateSystem, CoordinateSystem other, double tolerance = Tolerance.Distance)
+        public static bool IsEqual(this Cartesian coordinateSystem, Cartesian other, double tolerance = Tolerance.Distance)
         {
             return coordinateSystem.Origin.IsEqual(other.Origin, tolerance)
                 && coordinateSystem.X.IsEqual(other.X, tolerance)

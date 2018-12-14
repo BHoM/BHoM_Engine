@@ -1,4 +1,5 @@
 ﻿using BH.oM.Geometry;
+using BH.oM.Geometry.CoordinateSystem;
 using System;
 using System.Linq;
 using System.ComponentModel;
@@ -11,7 +12,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Arc Arc(CoordinateSystem coordinateSystem, double radius, double startAngle, double endAngle)
+        public static Arc Arc(Cartesian coordinateSystem, double radius, double startAngle, double endAngle)
         {
             return new Arc
             {
@@ -39,8 +40,8 @@ namespace BH.Engine.Geometry
 
             Vector stVec = start - centre;
             Vector enVec = end - centre;
-            
-            CoordinateSystem system = CoordinateSystem(centre, stVec, stVec.Rotate(0.5*Math.PI, normal));
+
+            Cartesian system = CartesianCoordinateSystem(centre, stVec, stVec.Rotate(0.5*Math.PI, normal));
             double angle = stVec.Angle(enVec, (Plane)system);
 
             return new Arc
@@ -79,8 +80,8 @@ namespace BH.Engine.Geometry
                 Reflection.Compute.RecordError("Method does not work for colinear points");
                 return null;
             }
-            
-            CoordinateSystem system = CoordinateSystem(centre, v1, v2);
+
+            Cartesian system = CartesianCoordinateSystem(centre, v1, v2);
             
             return new Arc
             {

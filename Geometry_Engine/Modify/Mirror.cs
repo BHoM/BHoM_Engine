@@ -1,4 +1,5 @@
 ﻿using BH.oM.Geometry;
+using BH.oM.Geometry.CoordinateSystem;
 using System.Linq;
 
 namespace BH.Engine.Geometry
@@ -30,17 +31,9 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static CoordinateSystem Mirror(this CoordinateSystem coordinateSystem, Plane p)
+        public static Cartesian Mirror(this Cartesian coordinateSystem, Plane p)
         {
-            Vector x = coordinateSystem.X.Mirror(p).Normalise();
-            Vector y = coordinateSystem.Y.Mirror(p).Normalise();
-            return new CoordinateSystem
-            {
-                X = x,
-                Y = y,
-                Z = x.CrossProduct(y),
-                Origin = coordinateSystem.Origin.Mirror(p)
-            };
+            return Create.CartesianCoordinateSystem(coordinateSystem.Origin.Mirror(p), coordinateSystem.X.Mirror(p), coordinateSystem.Y.Mirror(p));
         }
 
 

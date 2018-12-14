@@ -4,7 +4,7 @@ using System.Linq;
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
 using BH.oM.Structure.Results;
-using BH.oM.Geometry;
+using BH.oM.Geometry.CoordinateSystem;
 
 namespace BH.Engine.Structure.Results
 {
@@ -20,7 +20,7 @@ namespace BH.Engine.Structure.Results
                                                 MeshResultLayer layer,
                                                 double layerPosition,
                                                 MeshResultType resultType, 
-                                                CoordinateSystem coordinateSystem = null,                                           
+                                                Cartesian coordinateSystem = null,                                           
                                                 IEnumerable<object> cases = null, 
                                                 IEnumerable<object> objectIds = null)
         {

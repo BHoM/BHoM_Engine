@@ -1,4 +1,5 @@
 ﻿using BH.oM.Geometry;
+using BH.oM.Geometry.CoordinateSystem;
 using System.Linq;
 using System.Collections.Generic;
 
@@ -12,10 +13,8 @@ namespace BH.Engine.Geometry
 
         public static Arc Flip(this Arc curve)
         {
-            CoordinateSystem system = curve.CoordinateSystem.Clone();
+            Cartesian system = Create.CartesianCoordinateSystem(curve.CoordinateSystem.Origin, curve.CoordinateSystem.X, -curve.CoordinateSystem.Y);
 
-            system.Y = -system.Y;
-            system.Z = -system.Z;
             return new Arc { CoordinateSystem = system, StartAngle = -curve.EndAngle, EndAngle = -curve.StartAngle, Radius = curve.Radius };
         }
 
