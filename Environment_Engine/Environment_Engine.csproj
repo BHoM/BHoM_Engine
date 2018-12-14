@@ -103,6 +103,7 @@
     <Compile Include="Query\Height.cs" />
     <Compile Include="Query\IsCoPlanar.cs" />
     <Compile Include="Query\StripOpenings.cs" />
+    <Compile Include="Query\UValue.cs" />
     <Compile Include="Query\Vertices.cs" />
     <Compile Include="Query\InternalElements2D.cs" />
     <Compile Include="Query\OutlineElements1D.cs" />
