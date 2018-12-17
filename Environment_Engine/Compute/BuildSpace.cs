@@ -14,17 +14,17 @@ namespace BH.Engine.Environment
         /****          public Methods - Lines           ****/
         /***************************************************/
 
-        public static List<BuildingElement> BuildSpace_Revit(this List<BuildingElement> elements, string revitSpaceName)
+        public static List<BuildingElement> BuildSpace(this List<BuildingElement> elements, string spaceName)
         {
-            return elements.Where(x => x.CustomData["Revit_spaceId"].ToString() == revitSpaceName || x.CustomData["Revit_adjacentSpaceId"].ToString() == revitSpaceName).ToList();
+            return elements.Where(x => x.CustomData["SpaceID"].ToString() == spaceName || x.CustomData["AdjacentSpaceID"].ToString() == spaceName).ToList();
         }
 
-        public static List<List<BuildingElement>> BuildSpaces_Revit(this List<BuildingElement> elements, List<string> revitSpaceNames)
+        public static List<List<BuildingElement>> BuildSpaces_Revit(this List<BuildingElement> elements, List<string> spaceNames)
         {
             List<List<BuildingElement>> spaces = new List<List<BuildingElement>>();
 
-            foreach (String s in revitSpaceNames)
-                spaces.Add(elements.BuildSpace_Revit(s));
+            foreach (String s in spaceNames)
+                spaces.Add(elements.BuildSpace(s));
 
             return spaces;
         }

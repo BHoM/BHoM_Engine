@@ -119,10 +119,10 @@ namespace BH.Engine.Environment
 
             foreach (BuildingElement be in elements)
             {
-                if (be.CustomData.ContainsKey("Revit_spaceId"))
-                    spaceNames.Add(be.CustomData["Revit_spaceId"].ToString());
-                if(be.CustomData.ContainsKey("Revit_adjacentSpaceId"))
-                    spaceNames.Add(be.CustomData["Revit_adjacentSpaceId"].ToString());
+                if (be.CustomData.ContainsKey("SpaceID"))
+                    spaceNames.Add(be.CustomData["SpaceID"].ToString());
+                if(be.CustomData.ContainsKey("AdjacentSpaceID"))
+                    spaceNames.Add(be.CustomData["AdjacentSpaceID"].ToString());
             }
 
             return spaceNames.Where(x => !x.Equals("-1")).Distinct().ToList();
