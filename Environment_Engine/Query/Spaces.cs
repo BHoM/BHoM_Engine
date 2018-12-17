@@ -119,9 +119,9 @@ namespace BH.Engine.Environment
 
             foreach (BuildingElement be in elements)
             {
-                if (be.CustomData.ContainsKey("SpaceID"))
+                if (be.CustomData.ContainsKey("SpaceID") && be.CustomData["SpaceID"] != null)
                     spaceNames.Add(be.CustomData["SpaceID"].ToString());
-                if(be.CustomData.ContainsKey("AdjacentSpaceID"))
+                if(be.CustomData.ContainsKey("AdjacentSpaceID") && be.CustomData["AdjacentSpaceID"] != null)
                     spaceNames.Add(be.CustomData["AdjacentSpaceID"].ToString());
             }
 
