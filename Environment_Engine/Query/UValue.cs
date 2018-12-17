@@ -53,6 +53,12 @@ namespace BH.Engine.Environment
                 case BuildingElementType.Window:
                     if (element.BuildingElementProperties.Construction.UValues.Count < 1) return -1;
                     return element.BuildingElementProperties.Construction.UValues[0]; //Not sure if correct...
+                case BuildingElementType.RooflightWithFrame:
+                    if (element.BuildingElementProperties.Construction.UValues.Count < 7) return -1;
+                    return element.BuildingElementProperties.Construction.UValues[6];
+                case BuildingElementType.WindowWithFrame:
+                    if (element.BuildingElementProperties.Construction.UValues.Count < 1) return -1;
+                    return element.BuildingElementProperties.Construction.UValues[0]; //Not sure if correct...
                 default:
                     return -1;
             }
