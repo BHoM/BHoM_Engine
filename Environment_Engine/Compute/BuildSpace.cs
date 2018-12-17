@@ -19,7 +19,7 @@ namespace BH.Engine.Environment
             return elements.Where(x => x.CustomData["SpaceID"].ToString() == spaceName || x.CustomData["AdjacentSpaceID"].ToString() == spaceName).ToList();
         }
 
-        public static List<List<BuildingElement>> BuildSpaces_Revit(this List<BuildingElement> elements, List<string> spaceNames)
+        public static List<List<BuildingElement>> BuildSpaces(this List<BuildingElement> elements, List<string> spaceNames)
         {
             List<List<BuildingElement>> spaces = new List<List<BuildingElement>>();
 
