@@ -28,7 +28,7 @@ namespace BH.Engine.Environment
 
             List<BHG.Point> pts = BH.Engine.Geometry.Query.DiscontinuityPoints(pline);
 
-            if (pts.Count < 3) return -1; //Protection in case there aren't enough points to make a plane
+            if (pts.Count < 3 || !BH.Engine.Geometry.Query.IsClosed(pline)) return -1; //Protection in case there aren't enough points to make a plane
 
             BHG.Plane plane = BH.Engine.Geometry.Create.Plane(pts[0], pts[1], pts[2]);
 

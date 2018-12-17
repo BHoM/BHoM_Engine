@@ -63,7 +63,7 @@ namespace BH.Engine.Environment
             return rtnElements;
         }
 
-        public static List<BuildingElement> GetOpenings(this List<BuildingElement> elements)
+       /* public static List<BuildingElement> GetOpenings(this List<BuildingElement> elements)
         {
             List<BuildingElement> rtnElements = new List<BuildingElement>();
 
@@ -98,6 +98,6 @@ namespace BH.Engine.Environment
             }
 
             return rtnElements;
-        }
+        }*/
     }
 }
