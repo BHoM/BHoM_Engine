@@ -104,7 +104,7 @@
     <Compile Include="Query\GetLineSegment.cs" />
     <Compile Include="Query\IsEqual.cs" />
     <Compile Include="Query\Clone.cs" />
-    <Compile Include="Convert\NurbForm.cs" />
+    <Compile Include="Convert\NurbsForm.cs" />
     <Compile Include="Create\Arc.cs" />
     <Compile Include="Create\Circle.cs" />
     <Compile Include="Create\Plane.cs" />
