@@ -68,7 +68,7 @@ namespace BH.Engine.Structure
                     List<Edge> openingEdges = p.SubParts().Select(o => new Edge { Curve = o }).ToList();
                     openings.Add(new Opening { Edges = openingEdges });
                 }
-                result.AddRange((new PanelPlanar { ExternalEdges = externalEdges, Openings = openings, Property = property, Name = name }).RecomputeEdges());
+                result.Add(new PanelPlanar { ExternalEdges = externalEdges, Openings = openings, Property = property, Name = name });
             }
             return result;
         }
