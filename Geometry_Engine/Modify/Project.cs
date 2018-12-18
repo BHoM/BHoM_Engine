@@ -86,9 +86,10 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [NotImplemented]
         public static NurbsCurve Project(this NurbsCurve curve, Plane p)
         {
-            return new NurbsCurve { ControlPoints = curve.ControlPoints.Select(x => x.Project(p)).ToList(), Weights = curve.Weights.ToList(), Knots = curve.Knots.ToList() };
+            throw new NotImplementedException();
         }
 
 
@@ -125,9 +126,10 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [NotImplemented]
         public static NurbsSurface Project(this NurbsSurface surface, Plane p)
         {
-            return new NurbsSurface { ControlPoints = surface.ControlPoints.Select(x => x.Project(p)).ToList(), Weights = surface.Weights.ToList(), UKnots = surface.UKnots.ToList(), VKnots = surface.VKnots.ToList() };
+            throw new NotImplementedException();
         }
 
         /***************************************************/

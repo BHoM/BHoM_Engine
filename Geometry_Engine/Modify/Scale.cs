@@ -1,5 +1,6 @@
 ﻿using BH.oM.Geometry;
 using BH.oM.Geometry.CoordinateSystem;
+using BH.oM.Reflection.Attributes;
 using System;
 using System.Linq;
 
@@ -61,10 +62,10 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [NotImplemented]
         public static NurbsCurve Scale(this NurbsCurve curve, Point origin, Vector scaleVector)
         {
-            TransformMatrix scaleMatrix = Create.ScaleMatrix(origin, scaleVector);
-            return Transform(curve, scaleMatrix);
+            throw new NotImplementedException();
         }
 
 
@@ -105,10 +106,10 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [NotImplemented]
         public static NurbsSurface Scale(this NurbsSurface surface, Point origin, Vector scaleVector)
         {
-            TransformMatrix scaleMatrix = Create.ScaleMatrix(origin, scaleVector);
-            return Transform(surface, scaleMatrix);
+            throw new NotImplementedException();
         }
 
         /***************************************************/

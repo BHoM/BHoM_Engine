@@ -1,5 +1,6 @@
 ﻿using BH.oM.Geometry;
 using BH.oM.Geometry.CoordinateSystem;
+using BH.oM.Reflection.Attributes;
 using System;
 using System.Linq;
 
@@ -68,10 +69,10 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [NotImplemented]
         public static NurbsCurve Rotate(this NurbsCurve curve, Point origin, Vector axis, double rad)
         {
-            TransformMatrix rotationMatrix = Create.RotationMatrix(origin, axis, rad);
-            return Transform(curve, rotationMatrix);
+            throw new NotImplementedException();
         }
 
 
@@ -112,10 +113,10 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [NotImplemented]
         public static NurbsSurface Rotate(this NurbsSurface surface, Point origin, Vector axis, double rad)
         {
-            TransformMatrix rotationMatrix = Create.RotationMatrix(origin, axis, rad);
-            return Transform(surface, rotationMatrix);
+            throw new NotImplementedException();
         }
 
         /***************************************************/
