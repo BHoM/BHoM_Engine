@@ -33,12 +33,10 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [NotImplemented]
         public static List<Point> DiscontinuityPoints(this NurbsCurve curve)
         {
-            if (curve.Degree() == 1)         //TODO: Check that this is correct
-                return curve.ControlPoints;
-            else
-                return new List<Point> { curve.StartPoint(), curve.EndPoint() };
+            throw new NotImplementedException();
         }
 
         /***************************************************/

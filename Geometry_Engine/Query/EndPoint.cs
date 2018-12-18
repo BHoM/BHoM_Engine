@@ -1,4 +1,5 @@
 ﻿using BH.oM.Geometry;
+using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,13 +34,10 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [NotImplemented]
         public static Point EndPoint(this NurbsCurve curve)
         {
-            List<Point> pts = curve.ControlPoints;
-            if (pts.Count == 0)
-                return null;
-
-            return pts.Last();
+            throw new NotImplementedException();
         }
 
         /***************************************************/

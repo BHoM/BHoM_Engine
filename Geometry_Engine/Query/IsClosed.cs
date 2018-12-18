@@ -1,4 +1,5 @@
 ﻿using BH.oM.Geometry;
+using BH.oM.Reflection.Attributes;
 using System.Collections.Generic;
 using System.Linq;
 using System;
@@ -32,9 +33,10 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [NotImplemented]
         public static bool IsClosed(this NurbsCurve curve, double tolerance = Tolerance.Distance)
         {
-            return curve.PointAtParameter(0).SquareDistance(curve.PointAtParameter(1)) < tolerance* tolerance;
+            throw new NotImplementedException();
         }
 
         /***************************************************/

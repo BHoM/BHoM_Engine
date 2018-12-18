@@ -1,4 +1,6 @@
 ﻿using BH.oM.Geometry;
+using BH.oM.Reflection.Attributes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -48,9 +50,10 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [NotImplemented]
         public static List<Point> ControlPoints(this NurbsCurve curve)
         {
-            return curve.ControlPoints;
+            throw new NotImplementedException();
         }
 
         /***************************************************/

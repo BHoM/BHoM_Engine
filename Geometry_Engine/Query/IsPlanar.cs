@@ -1,4 +1,5 @@
 ﻿using BH.oM.Geometry;
+using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -56,9 +57,10 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [NotImplemented]
         public static bool IsPlanar(this NurbsCurve curve, double tolerance = Tolerance.Distance)
         {
-            return curve.ControlPoints.IsCoplanar(tolerance);
+            throw new NotImplementedException();
         }
 
         /***************************************************/
@@ -99,9 +101,10 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [NotImplemented]
         public static bool IsPlanar(this NurbsSurface surface, double tolerance = Tolerance.Distance)
         {
-            return surface.ControlPoints.IsCoplanar(tolerance);
+            throw new NotImplementedException();
         }
 
         /***************************************************/

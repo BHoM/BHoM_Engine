@@ -1,4 +1,5 @@
 ﻿using BH.oM.Geometry;
+using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -159,128 +160,19 @@ namespace BH.Engine.Geometry
         }
 
         /***************************************************/
+
+        [NotImplemented]
         public static List<Point> PlaneIntersections(this NurbsCurve c, Plane p, double tolerance = Tolerance.Distance)
         {
-            List<double> curveParameters;
-            return PlaneIntersections(c, p, out curveParameters, tolerance);
+            throw new NotImplementedException();
         }
 
         /***************************************************/
 
-        //TODO: Testing needed!!
+        [NotImplemented]
         public static List<Point> PlaneIntersections(this NurbsCurve c, Plane p, out List<double> curveParameters, double tolerance = Tolerance.Distance)
         {
-
-            List<Point> result = new List<Point>();
-            int rounding = (int)Math.Log(1.0 / tolerance, 10);
-            curveParameters = new List<double>();
-            List<int> sameSide = p.Side(c.ControlPoints, tolerance);
-
-            int degree = c.Degree();
-            int previousSide = sameSide[0];
-            int Length = c.IsClosed() && sameSide[sameSide.Count - 1] == 0 ? sameSide.Count - 1 : sameSide.Count;
-
-            double prevMin = 0;
-
-            for (int i = 1; i < Length; i++)
-            {
-                if (sameSide[i] != previousSide)
-                {
-                    if (previousSide != 0)
-                    {
-                        //double maxT = c.Knots[i + degree];
-                        //double minT = c.Knots[i];
-                        double minT = 0;
-                        for (int j = i-1; j <= degree+i-1; j++)
-                        {
-                            minT += c.Knots[j];
-                        }
-                        minT /= (degree);
-                        minT = minT < prevMin ? prevMin : minT;
-
-                        double maxT = 0;
-                        for (int j = i; j <= degree+i+1; j++)
-                        {
-                            maxT += c.Knots[j];
-                        }
-                        maxT /= (degree);
-
-                        if (i < Length - 1 && sameSide[i] == 0 && sameSide[i + 1] != 0)
-                        {
-                            maxT = c.Knots[i + degree + 1];
-                            minT = c.Knots[i + degree];
-                            i++;
-                        }
-
-                        Point interPt = CurveParameterAtPlane(p, c, ref minT, ref maxT, c.PointAtParameter(minT), c.PointAtParameter(maxT), tolerance);
-                        if (interPt != null)
-                        {
-                            result.Add(interPt);
-                            curveParameters.Add(Math.Round((minT + maxT) / 2, rounding));
-                        }
-                        prevMin = minT;
-                    }
-                    else
-                    {
-                        result.Add(c.PointAtParameter(c.Knots[i - 1]));
-                        curveParameters.Add(c.Knots[i - 1]);
-                    }
-                    previousSide = sameSide[i];
-                }
-            }
-
-            if (sameSide[sameSide.Count - 1] == 0 && previousSide != sameSide[sameSide.Count - 1] && result.Count % 2 == 1)
-            {
-                result.Add(c.IEndPoint());
-                curveParameters.Add(sameSide[sameSide.Count - 1]);
-            }
-
-            return result;
-
-            //List<Point> result = new List<Point>();
-            //int rounding = (int)Math.Log(1.0 / tolerance, 10);
-            //curveParameters = new List<double>();
-            //int[] sameSide = p.Side(c.ControlPointVector, tolerance);
-
-            //int degree = c.Degree();
-            //int previousSide = sameSide[0];
-            //int Length = c.IsClosed() && sameSide[sameSide.Length - 1] == 0 ? sameSide.Length - 1 : sameSide.Length;
-
-            //for (int i = 1; i < Length; i++)
-            //{
-            //    if (sameSide[i] != previousSide)
-            //    {
-            //        if (previousSide != 0)
-            //        {
-            //            double maxT = c.Knots[i + degree];
-            //            double minT = c.Knots[i];
-            //            if (i < Length - 1 && sameSide[i] == 0 && sameSide[i + 1] != 0)
-            //            {
-            //                maxT = c.Knots[i + degree + 1];
-            //                minT = c.Knots[i + degree];
-            //                i++;
-            //            }
-            //            result.Add(new Point(CurveParameterAtPlane(p, c, tolerance, ref minT, ref maxT, c.UnsafePointAt(minT), c.UnsafePointAt(maxT))));
-            //            curveParameters.Add(Math.Round((minT + maxT) / 2, rounding));
-            //        }
-            //        else
-            //        {
-            //            result.Add(c.PointAt(c.Knots[i - 1]));
-            //            curveParameters.Add(c.Knots[i - 1]);
-            //        }
-            //        previousSide = sameSide[i];
-            //    }
-            //}
-
-            //if (sameSide[sameSide.Length - 1] == 0 && previousSide != sameSide[sameSide.Length - 1] && result.Count % 2 == 1)
-            //{
-            //    result.Add(c.IEndPoint());
-            //    curveParameters.Add(sameSide[sameSide.Length - 1]);
-            //}
-
-            //return result;
-
-            //throw new NotImplementedException();
+            throw new NotImplementedException();
         }
 
         /***************************************************/
@@ -338,57 +230,6 @@ namespace BH.Engine.Geometry
         public static List<Point> IPlaneIntersections(this ICurve curve, Plane plane, double tolerance = Tolerance.Distance)
         {
             return PlaneIntersections(curve as dynamic, plane, tolerance);
-        }
-
-
-        /***************************************************/
-        /**** Private Methods - Support methods         ****/   //TODO: To be moved?
-        /***************************************************/
-
-        private static Point CurveParameterAtPlane(Plane p, NurbsCurve c, ref double minT, ref double maxT, Point p1, Point p2, double tolerance = Tolerance.Distance)
-        {
-              
-            double mid = (minT + maxT) / 2;
-            if (Math.Abs(minT - maxT) <= tolerance)
-            {
-                return p1;
-            }
-
-            Point p3 = c.PointAtParameter(mid);
-            if (p3.IsInPlane(p, tolerance)) return p3;
-
-            if (!p1.IsSameSide(p, p3, tolerance))
-            {
-                maxT = mid;
-                return CurveParameterAtPlane(p, c, ref minT, ref maxT, p1, p3, tolerance);
-            }
-            else if (!p2.IsSameSide(p, p3, tolerance))
-            {
-                minT = mid;
-                return CurveParameterAtPlane(p, c, ref minT, ref maxT, p3, p2, tolerance);
-            }
-            else
-            {
-                return null;
-
-                //List<int> side = p.Side(new List<Point> { p3 }, tolerance);
-
-                //Vector tangent = c.GetTangentAt(mid);
-                //double dotProd = tangent.DotProduct(p.Normal);
-
-                //if (Math.Abs(dotProd) < Tolerance.Angle)
-                //    return null;
-                //else if (dotProd * (double)side[0] > 0)
-                //{
-                //    maxT = mid;
-                //    return CurveParameterAtPlane(p, c, ref minT, ref maxT, p1, p3, tolerance);
-                //}
-                //else
-                //{
-                //    minT = mid;
-                //    return CurveParameterAtPlane(p, c, ref minT, ref maxT, p3, p2, tolerance);
-                //}
-            }
         }
 
         /***************************************************/

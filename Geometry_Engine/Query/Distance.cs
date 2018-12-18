@@ -1,4 +1,5 @@
 ﻿using BH.oM.Geometry;
+using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -104,9 +105,10 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [NotImplemented]
         public static double Distance(this Point point, NurbsCurve curve)
         {
-            return point.Distance(curve.ClosestPoint(point));
+            throw new NotImplementedException();
         }
 
 
