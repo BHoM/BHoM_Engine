@@ -74,9 +74,9 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static NurbCurve ProjectAlong(this NurbCurve curve, Plane plane, Vector vector)
+        public static NurbsCurve ProjectAlong(this NurbsCurve curve, Plane plane, Vector vector)
         {
-            return new NurbCurve { ControlPoints = curve.ControlPoints.Select(x => x.ProjectAlong(plane, vector)).ToList(), Weights = curve.Weights.ToList(), Knots = curve.Knots.ToList() };
+            return new NurbsCurve { ControlPoints = curve.ControlPoints.Select(x => x.ProjectAlong(plane, vector)).ToList(), Weights = curve.Weights.ToList(), Knots = curve.Knots.ToList() };
         }
         
         /***************************************************/
@@ -112,9 +112,9 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static NurbSurface ProjectAlong(this NurbSurface surface, Plane plane, Vector vector)
+        public static NurbsSurface ProjectAlong(this NurbsSurface surface, Plane plane, Vector vector)
         {
-            return new NurbSurface { ControlPoints = surface.ControlPoints.Select(x => x.ProjectAlong(plane, vector)).ToList(), Weights = surface.Weights.ToList(), UKnots = surface.UKnots.ToList(), VKnots = surface.VKnots.ToList() };
+            return new NurbsSurface { ControlPoints = surface.ControlPoints.Select(x => x.ProjectAlong(plane, vector)).ToList(), Weights = surface.Weights.ToList(), UKnots = surface.UKnots.ToList(), VKnots = surface.VKnots.ToList() };
         }
 
         /***************************************************/

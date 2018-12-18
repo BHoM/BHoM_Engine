@@ -73,7 +73,7 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [NotImplemented]
-        public static List<Point> SortAlongCurve(this List<Point> points, NurbCurve curve)
+        public static List<Point> SortAlongCurve(this List<Point> points, NurbsCurve curve)
         {
             throw new NotImplementedException();
         }

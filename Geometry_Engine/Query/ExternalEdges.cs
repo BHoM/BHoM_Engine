@@ -46,7 +46,7 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [NotImplemented]
-        public static List<ICurve> ExternalEdges(this NurbSurface surface)
+        public static List<ICurve> ExternalEdges(this NurbsSurface surface)
         {
             throw new NotImplementedException();
         }

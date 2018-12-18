@@ -31,7 +31,7 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [NotImplemented]
-        public static Polyline ToPolyline(NurbCurve curve)
+        public static Polyline ToPolyline(NurbsCurve curve)
         {
             throw new NotImplementedException();
         }

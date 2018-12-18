@@ -68,9 +68,9 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static NurbCurve Clone(this NurbCurve curve)
+        public static NurbsCurve Clone(this NurbsCurve curve)
         {
-            return new NurbCurve { ControlPoints = curve.ControlPoints.Select(x => x.Clone()).ToList(), Weights = curve.Weights.ToList(), Knots = curve.Knots.ToList() };
+            return new NurbsCurve { ControlPoints = curve.ControlPoints.Select(x => x.Clone()).ToList(), Weights = curve.Weights.ToList(), Knots = curve.Knots.ToList() };
         }
 
         /***************************************************/
@@ -106,9 +106,9 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static NurbSurface Clone(this NurbSurface surface)
+        public static NurbsSurface Clone(this NurbsSurface surface)
         {
-            return new NurbSurface { ControlPoints = surface.ControlPoints.Select(x => x.Clone()).ToList(), Weights = surface.Weights.ToList(), UKnots = surface.UKnots.ToList(), VKnots = surface.VKnots.ToList() };
+            return new NurbsSurface { ControlPoints = surface.ControlPoints.Select(x => x.Clone()).ToList(), Weights = surface.Weights.ToList(), UKnots = surface.UKnots.ToList(), VKnots = surface.VKnots.ToList() };
         }
 
         /***************************************************/

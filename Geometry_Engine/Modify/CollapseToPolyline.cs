@@ -50,7 +50,7 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [NotImplemented]
-        public static Polyline CollapseToPolyline(this NurbCurve curve, double angleTolerance, int maxSegmentCount = 100)
+        public static Polyline CollapseToPolyline(this NurbsCurve curve, double angleTolerance, int maxSegmentCount = 100)
         {
             throw new NotImplementedException();
         }

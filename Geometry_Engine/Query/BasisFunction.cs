@@ -8,7 +8,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
         
-        public static double BasisFunction(this NurbCurve curve, int i, int n, double t)  //TODO: Testing needed!!
+        public static double BasisFunction(this NurbsCurve curve, int i, int n, double t)  //TODO: Testing needed!!
         {
             if (n > 0 && t >= curve.Knots[i] && t < curve.Knots[i + n + 1])
             {

@@ -32,7 +32,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static bool IsClosed(this NurbCurve curve, double tolerance = Tolerance.Distance)
+        public static bool IsClosed(this NurbsCurve curve, double tolerance = Tolerance.Distance)
         {
             return curve.PointAtParameter(0).SquareDistance(curve.PointAtParameter(1)) < tolerance* tolerance;
         }

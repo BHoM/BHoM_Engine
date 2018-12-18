@@ -106,7 +106,7 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [NotImplemented]
-        public static List<Point> MeshIntersections(this NurbCurve c, Mesh mesh, double tolerance = Tolerance.Distance)
+        public static List<Point> MeshIntersections(this NurbsCurve c, Mesh mesh, double tolerance = Tolerance.Distance)
         {
             throw new NotImplementedException();    // TODO Intersections(NurbsCurve, Mesh)
         }

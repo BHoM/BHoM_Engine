@@ -85,7 +85,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static bool IsEqual(this NurbCurve curve, NurbCurve other, double tolerance = Tolerance.Distance)
+        public static bool IsEqual(this NurbsCurve curve, NurbsCurve other, double tolerance = Tolerance.Distance)
         {
             return curve.ControlPoints.Count == other.ControlPoints.Count
                 && curve.Weights.Count == other.Weights.Count
@@ -133,7 +133,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static bool IsEqual(this NurbSurface surface, NurbSurface other, double tolerance = Tolerance.Distance)
+        public static bool IsEqual(this NurbsSurface surface, NurbsSurface other, double tolerance = Tolerance.Distance)
         {
             return surface.ControlPoints.Count == other.ControlPoints.Count
                 && surface.Weights.Count == other.Weights.Count

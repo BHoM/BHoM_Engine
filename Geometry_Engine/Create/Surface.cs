@@ -32,7 +32,7 @@ namespace BH.Engine.Geometry
                 case 1:
                     return RandomLoft(rnd, box);
                 case 2:
-                    return RandomNurbSurface(rnd, box);
+                    return RandomNurbsSurface(rnd, box);
                 case 3:
                     return RandomPipe(rnd, box);
                 default:

@@ -159,7 +159,7 @@ namespace BH.Engine.Geometry
         }
 
         /***************************************************/
-        public static List<Point> PlaneIntersections(this NurbCurve c, Plane p, double tolerance = Tolerance.Distance)
+        public static List<Point> PlaneIntersections(this NurbsCurve c, Plane p, double tolerance = Tolerance.Distance)
         {
             List<double> curveParameters;
             return PlaneIntersections(c, p, out curveParameters, tolerance);
@@ -168,7 +168,7 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         //TODO: Testing needed!!
-        public static List<Point> PlaneIntersections(this NurbCurve c, Plane p, out List<double> curveParameters, double tolerance = Tolerance.Distance)
+        public static List<Point> PlaneIntersections(this NurbsCurve c, Plane p, out List<double> curveParameters, double tolerance = Tolerance.Distance)
         {
 
             List<Point> result = new List<Point>();
@@ -345,7 +345,7 @@ namespace BH.Engine.Geometry
         /**** Private Methods - Support methods         ****/   //TODO: To be moved?
         /***************************************************/
 
-        private static Point CurveParameterAtPlane(Plane p, NurbCurve c, ref double minT, ref double maxT, Point p1, Point p2, double tolerance = Tolerance.Distance)
+        private static Point CurveParameterAtPlane(Plane p, NurbsCurve c, ref double minT, ref double maxT, Point p1, Point p2, double tolerance = Tolerance.Distance)
         {
               
             double mid = (minT + maxT) / 2;

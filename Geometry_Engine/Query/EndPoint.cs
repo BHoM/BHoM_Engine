@@ -33,7 +33,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static Point EndPoint(this NurbCurve curve)
+        public static Point EndPoint(this NurbsCurve curve)
         {
             List<Point> pts = curve.ControlPoints;
             if (pts.Count == 0)

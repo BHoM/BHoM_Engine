@@ -58,7 +58,7 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [NotImplemented]
-        public static double Length(this NurbCurve curve)
+        public static double Length(this NurbsCurve curve)
         {
             throw new NotImplementedException();
         }

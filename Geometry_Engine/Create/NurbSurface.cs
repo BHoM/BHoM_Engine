@@ -11,12 +11,12 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static NurbSurface NurbSurface(IEnumerable<Point> controlPoints, int degree = 3)
+        public static NurbsSurface NurbsSurface(IEnumerable<Point> controlPoints, int degree = 3)
         {
             int n = controlPoints.Count();
             int d = degree - 1;
 
-            return new NurbSurface
+            return new NurbsSurface
             {
                 ControlPoints = controlPoints.ToList(),
                 Weights = Enumerable.Repeat(1.0, n).ToList()
@@ -27,12 +27,12 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static NurbSurface NurbSurface(IEnumerable<Point> controlPoints, IEnumerable<double> weights, int degree = 3)
+        public static NurbsSurface NurbsSurface(IEnumerable<Point> controlPoints, IEnumerable<double> weights, int degree = 3)
         {
             int n = controlPoints.Count();
             int d = degree - 1;
 
-            return new NurbSurface
+            return new NurbsSurface
             {
                 ControlPoints = controlPoints.ToList(),
                 Weights = weights.ToList()
@@ -43,9 +43,9 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static NurbSurface NurbSurface(IEnumerable<Point> controlPoints, IEnumerable<double> weights, IEnumerable<double> uKnots, IEnumerable<double> vKnots)
+        public static NurbsSurface NurbsSurface(IEnumerable<Point> controlPoints, IEnumerable<double> weights, IEnumerable<double> uKnots, IEnumerable<double> vKnots)
         {
-            return new NurbSurface
+            return new NurbsSurface
             {
                 ControlPoints = controlPoints.ToList(),
                 Weights = weights.ToList(),
@@ -59,17 +59,17 @@ namespace BH.Engine.Geometry
         /**** Random Geometry                           ****/
         /***************************************************/
 
-        public static NurbSurface RandomNurbSurface(int seed = -1, BoundingBox box = null, int minNbCPs = 4, int maxNbCPs = 20)
+        public static NurbsSurface RandomNurbsSurface(int seed = -1, BoundingBox box = null, int minNbCPs = 4, int maxNbCPs = 20)
         {
             if (seed == -1)
                 seed = m_Random.Next();
             Random rnd = new Random(seed);
-            return RandomNurbSurface(rnd, box, minNbCPs, maxNbCPs);
+            return RandomNurbsSurface(rnd, box, minNbCPs, maxNbCPs);
         }
 
         /***************************************************/
 
-        public static NurbSurface RandomNurbSurface(Random rnd, BoundingBox box = null, int minNbCPs = 4, int maxNbCPs = 20)
+        public static NurbsSurface RandomNurbsSurface(Random rnd, BoundingBox box = null, int minNbCPs = 4, int maxNbCPs = 20)
         {
             if (box == null)
                 box = new BoundingBox { Min = Point(0,0,0), Max = Point(1, 1, 1) };
@@ -85,7 +85,7 @@ namespace BH.Engine.Geometry
                 .Select(x => x + 2*maxNoise*(rnd.NextDouble()-0.5)*normal)
                 .ToList();
 
-            return NurbSurface(points);
+            return NurbsSurface(points);
         }
 
         /***************************************************/

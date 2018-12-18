@@ -33,7 +33,7 @@ namespace BH.Engine.Geometry
                 case 3:
                     return RandomLine(rnd, box);
                 case 4:
-                    return RandomNurbCurve(rnd, box);
+                    return RandomNurbsCurve(rnd, box);
                 case 5:
                     return RandomPolyline(rnd, box);
                 case 6:
@@ -41,7 +41,7 @@ namespace BH.Engine.Geometry
                 case 7:
                     return RandomLoft(rnd, box);
                 case 8:
-                    return RandomNurbSurface(rnd, box);
+                    return RandomNurbsSurface(rnd, box);
                 case 9:
                     return RandomPipe(rnd, box);
                 case 10:
@@ -90,10 +90,10 @@ namespace BH.Engine.Geometry
                     return RandomLoft(rnd, box);
                 case "Mesh":
                     return RandomMesh(rnd, box);
-                case "NurbCurve":
-                    return RandomNurbCurve(rnd, box);
-                case "NurbSurface":
-                    return RandomNurbSurface(rnd, box);
+                case "NurbsCurve":
+                    return RandomNurbsCurve(rnd, box);
+                case "NurbsSurface":
+                    return RandomNurbsSurface(rnd, box);
                 case "Pipe":
                     return RandomPipe(rnd, box);
                 case "Plane":

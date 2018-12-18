@@ -32,7 +32,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static bool IsLinear(this NurbCurve curve, double tolerance = Tolerance.Distance)
+        public static bool IsLinear(this NurbsCurve curve, double tolerance = Tolerance.Distance)
         {
             return curve.ControlPoints.IsCollinear(tolerance);
         }
