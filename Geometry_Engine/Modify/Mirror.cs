@@ -1,5 +1,7 @@
 ﻿using BH.oM.Geometry;
 using BH.oM.Geometry.CoordinateSystem;
+using BH.oM.Reflection.Attributes;
+using System;
 using System.Linq;
 
 namespace BH.Engine.Geometry
@@ -62,9 +64,10 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [NotImplemented]
         public static NurbsCurve Mirror(this NurbsCurve curve, Plane p)
         {
-            return new NurbsCurve { ControlPoints = curve.ControlPoints.Select(x => x.Mirror(p)).ToList(), Weights = curve.Weights.ToList(), Knots = curve.Knots.ToList() };
+            throw new NotImplementedException();
         }
 
 
@@ -101,9 +104,10 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [NotImplemented]
         public static NurbsSurface Mirror(this NurbsSurface surface, Plane p)
         {
-            return new NurbsSurface { ControlPoints = surface.ControlPoints.Select(x => x.Mirror(p)).ToList(), Weights = surface.Weights.ToList(), UKnots = surface.UKnots.ToList(), VKnots = surface.VKnots.ToList() };
+            throw new NotImplementedException();
         }
 
         /***************************************************/

@@ -1,5 +1,7 @@
 ﻿using BH.oM.Geometry;
 using BH.oM.Geometry.CoordinateSystem;
+using BH.oM.Reflection.Attributes;
+using System;
 using System.Linq;
 
 namespace BH.Engine.Geometry
@@ -67,9 +69,10 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [NotImplemented]
         public static NurbsCurve Translate(this NurbsCurve curve, Vector transform)
         {
-            return new NurbsCurve { ControlPoints = curve.ControlPoints.Select(x => x + transform).ToList(), Weights = curve.Weights.ToList(), Knots = curve.Knots.ToList() };
+            throw new NotImplementedException();
         }
 
 
@@ -106,9 +109,10 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [NotImplemented]
         public static NurbsSurface Translate(this NurbsSurface surface, Vector transform)
         {
-            return new NurbsSurface { ControlPoints = surface.ControlPoints.Select(x => x + transform).ToList(), Weights = surface.Weights.ToList(), UKnots = surface.UKnots.ToList(), VKnots = surface.VKnots.ToList() };
+            throw new NotImplementedException();
         }
 
         /***************************************************/
