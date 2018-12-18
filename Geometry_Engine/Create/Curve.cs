@@ -21,7 +21,7 @@ namespace BH.Engine.Geometry
 
         public static ICurve RandomCurve(Random rnd, BoundingBox box = null, bool closed = false)
         {
-            int nb = rnd.Next(6);
+            int nb = rnd.Next(5);
             switch (nb)
             {
                 case 0:
@@ -32,8 +32,6 @@ namespace BH.Engine.Geometry
                     return RandomEllipse(rnd, box);
                 case 3:
                     return RandomLine(rnd, box);
-                case 4:
-                    return RandomNurbsCurve(rnd, box);
                 default:
                     return RandomPolyline(rnd, box);
             }
@@ -53,15 +51,13 @@ namespace BH.Engine.Geometry
 
         public static ICurve RandomCurve(Point from, Random rnd, BoundingBox box = null, bool closed = false)
         {
-            int nb = rnd.Next(4);
+            int nb = rnd.Next(3);
             switch (nb)
             {
                 case 0:
                     return RandomArc(from, rnd, box);
                 case 1:
                     return RandomLine(from, rnd, box);
-                case 2:
-                    return RandomNurbsCurve(from, rnd, box);
                 default:
                     return RandomPolyline(from, rnd, box);
             }
