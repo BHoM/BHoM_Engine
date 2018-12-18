@@ -72,6 +72,7 @@
     <Compile Include="Create\Opening.cs" />
     <Compile Include="Create\Panel.cs" />
     <Compile Include="Create\BuildingElementProperties.cs" />
+    <Compile Include="Create\SimulationResult.cs" />
     <Compile Include="Create\Space.cs" />
     <Compile Include="Modify\SetInternalElements2D.cs" />
     <Compile Include="Modify\SetOutlineElements1D.cs" />
@@ -102,6 +103,7 @@
     <Compile Include="Query\FloorGeometry.cs" />
     <Compile Include="Query\Height.cs" />
     <Compile Include="Query\IsCoPlanar.cs" />
+    <Compile Include="Query\SimulationResult.cs" />
     <Compile Include="Query\StripOpenings.cs" />
     <Compile Include="Query\UValue.cs" />
     <Compile Include="Query\Vertices.cs" />
