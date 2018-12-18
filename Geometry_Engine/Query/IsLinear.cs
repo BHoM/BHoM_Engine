@@ -1,4 +1,5 @@
 ﻿using BH.oM.Geometry;
+using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,9 +33,10 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [NotImplemented]
         public static bool IsLinear(this NurbsCurve curve, double tolerance = Tolerance.Distance)
         {
-            return curve.ControlPoints.IsCollinear(tolerance);
+            throw new NotImplementedException();
         }
 
         /***************************************************/

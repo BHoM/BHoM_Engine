@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
-using BH.oM.Geometry;
+﻿using BH.oM.Geometry;
+using BH.oM.Reflection.Attributes;
+using System;
+using System.Collections.Generic;
 
 namespace BH.Engine.Geometry
 {
@@ -9,10 +11,10 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [NotImplemented]
         public static List<int> UVCount(this NurbsSurface surf)
         {
-            List<int> degrees = surf.Degrees();            
-            return new List<int> { surf.UKnots.Count - degrees[0] + 1, surf.VKnots.Count - degrees[1] + 1 };
+            throw new NotImplementedException();
         }
 
         /***************************************************/

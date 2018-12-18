@@ -1,5 +1,6 @@
 ﻿using BH.oM.Geometry;
 using BH.oM.Geometry.CoordinateSystem;
+using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
 
@@ -76,9 +77,10 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [NotImplemented]
         public static bool IsInPlane(this NurbsCurve curve, Plane plane, double tolerance = Tolerance.Distance)
         {
-            return curve.ControlPoints.IsInPlane(plane, tolerance); //TODO: probably incorrect
+            throw new NotImplementedException();
         }
         
         /***************************************************/
@@ -126,9 +128,10 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [NotImplemented]
         public static bool IsInPlane(this NurbsSurface surface, Plane plane, double tolerance = Tolerance.Distance)
         {
-            return surface.ControlPoints.IsInPlane(plane, tolerance); //TODO: probably incorrect
+            throw new NotImplementedException();
         }
 
         /***************************************************/

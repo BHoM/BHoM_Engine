@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using BH.oM.Geometry;
+using BH.oM.Reflection.Attributes;
+using System;
 
 namespace BH.Engine.Geometry
 {
@@ -9,22 +11,18 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [NotImplemented]
         public static int Degree(this NurbsCurve curve)
         {
-            return curve.Knots.Count - curve.ControlPoints.Count + 1;
+            throw new NotImplementedException();
         }
 
         /***************************************************/
 
+        [NotImplemented]
         public static List<int> Degrees(this NurbsSurface surf)
         {
-            int uDegree = 1;
-            int vDegree = 1;
-
-            while (surf.UKnots[uDegree - 1] == surf.UKnots[uDegree]) uDegree++;          
-            while (surf.VKnots[vDegree - 1] == surf.VKnots[vDegree]) vDegree++;   
-                     
-            return new List<int>() { uDegree, vDegree };
+            throw new NotImplementedException();
         }
 
         /***************************************************/

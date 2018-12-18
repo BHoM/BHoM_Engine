@@ -1,5 +1,6 @@
 ﻿using BH.oM.Geometry;
 using BH.oM.Geometry.CoordinateSystem;
+using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -85,14 +86,10 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [NotImplemented]
         public static bool IsEqual(this NurbsCurve curve, NurbsCurve other, double tolerance = Tolerance.Distance)
         {
-            return curve.ControlPoints.Count == other.ControlPoints.Count
-                && curve.Weights.Count == other.Weights.Count
-                && curve.Knots.Count == other.Knots.Count
-                && curve.ControlPoints.Zip(other.ControlPoints, (a, b) => a.IsEqual(b, tolerance)).All(x => x)
-                && curve.Weights.Zip(other.Weights, (a, b) => Math.Abs(a - b) < tolerance).All(x => x)
-                && curve.Knots.Zip(other.Knots, (a, b) => Math.Abs(a - b) < tolerance).All(x => x);
+            throw new NotImplementedException();
         }
 
         /***************************************************/
@@ -133,16 +130,10 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [NotImplemented]
         public static bool IsEqual(this NurbsSurface surface, NurbsSurface other, double tolerance = Tolerance.Distance)
         {
-            return surface.ControlPoints.Count == other.ControlPoints.Count
-                && surface.Weights.Count == other.Weights.Count
-                && surface.UKnots.Count == other.UKnots.Count
-                && surface.VKnots.Count == other.VKnots.Count
-                && surface.ControlPoints.Zip(other.ControlPoints, (a, b) => a.IsEqual(b, tolerance)).All(x => x)
-                && surface.Weights.Zip(other.Weights, (a, b) => Math.Abs(a - b) < tolerance).All(x => x)
-                && surface.UKnots.Zip(other.UKnots, (a, b) => Math.Abs(a - b) < tolerance).All(x => x)
-                && surface.VKnots.Zip(other.VKnots, (a, b) => Math.Abs(a - b) < tolerance).All(x => x);
+            throw new NotImplementedException();
         }
 
         /***************************************************/

@@ -108,7 +108,7 @@ namespace BH.Engine.Geometry
         [NotImplemented]
         public static List<Point> MeshIntersections(this NurbsCurve c, Mesh mesh, double tolerance = Tolerance.Distance)
         {
-            throw new NotImplementedException();    // TODO Intersections(NurbsCurve, Mesh)
+            throw new NotImplementedException();
         }
 
         /***************************************************/
@@ -116,7 +116,7 @@ namespace BH.Engine.Geometry
         [NotImplemented]
         public static List<Point> MeshIntersections(this PolyCurve curve, Mesh mesh, double tolerance = Tolerance.Distance)
         {
-            throw new NotImplementedException();    // TODO Intersections(PolyCurve, Mesh)
+            throw new NotImplementedException();
         }
 
         /***************************************************/
