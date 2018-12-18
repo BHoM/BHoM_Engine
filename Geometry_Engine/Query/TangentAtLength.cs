@@ -35,7 +35,7 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [NotImplemented]
-        public static Vector TangentAtLength(this NurbCurve curve, double length, double tolerance = Tolerance.Distance)
+        public static Vector TangentAtLength(this NurbsCurve curve, double length, double tolerance = Tolerance.Distance)
         {
             throw new NotImplementedException();
         }

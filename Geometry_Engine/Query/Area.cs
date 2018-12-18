@@ -33,7 +33,7 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [NotImplemented]
-        public static double Area(this NurbCurve curve)
+        public static double Area(this NurbsCurve curve)
         {
             throw new NotImplementedException();
         }
@@ -54,8 +54,8 @@ namespace BH.Engine.Geometry
 
             foreach (ICurve c in curve.SubParts())
             {
-                if (c is NurbCurve)
-                    throw new NotImplementedException("Area of NurbCurve is not imlemented yet so the area of this PolyCurve cannot be calculated");
+                if (c is NurbsCurve)
+                    throw new NotImplementedException("Area of NurbsCurve is not imlemented yet so the area of this PolyCurve cannot be calculated");
 
                 Point ePt = c.IEndPoint();
                 Vector prod = CrossProduct(sPt - p.Origin, ePt - p.Origin);
@@ -137,7 +137,7 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [NotImplemented]
-        public static double Area(this NurbSurface nurbs)
+        public static double Area(this NurbsSurface nurbs)
         {
             throw new NotImplementedException();
         }

@@ -47,7 +47,7 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [NotImplemented]
-        public static Vector TangentAtParameter(this NurbCurve curve, double parameter, double tolerance = Tolerance.Distance)
+        public static Vector TangentAtParameter(this NurbsCurve curve, double parameter, double tolerance = Tolerance.Distance)
         {
             //Vector sumNwP = new Vector { X = 0, Y = 0, Z = 0 };
             //Vector sumNwPDer = new Vector { X = 0, Y = 0, Z = 0 };

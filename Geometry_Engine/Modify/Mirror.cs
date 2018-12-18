@@ -62,9 +62,9 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static NurbCurve Mirror(this NurbCurve curve, Plane p)
+        public static NurbsCurve Mirror(this NurbsCurve curve, Plane p)
         {
-            return new NurbCurve { ControlPoints = curve.ControlPoints.Select(x => x.Mirror(p)).ToList(), Weights = curve.Weights.ToList(), Knots = curve.Knots.ToList() };
+            return new NurbsCurve { ControlPoints = curve.ControlPoints.Select(x => x.Mirror(p)).ToList(), Weights = curve.Weights.ToList(), Knots = curve.Knots.ToList() };
         }
 
 
@@ -101,9 +101,9 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static NurbSurface Mirror(this NurbSurface surface, Plane p)
+        public static NurbsSurface Mirror(this NurbsSurface surface, Plane p)
         {
-            return new NurbSurface { ControlPoints = surface.ControlPoints.Select(x => x.Mirror(p)).ToList(), Weights = surface.Weights.ToList(), UKnots = surface.UKnots.ToList(), VKnots = surface.VKnots.ToList() };
+            return new NurbsSurface { ControlPoints = surface.ControlPoints.Select(x => x.Mirror(p)).ToList(), Weights = surface.Weights.ToList(), UKnots = surface.UKnots.ToList(), VKnots = surface.VKnots.ToList() };
         }
 
         /***************************************************/

@@ -61,7 +61,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static NurbCurve Scale(this NurbCurve curve, Point origin, Vector scaleVector)
+        public static NurbsCurve Scale(this NurbsCurve curve, Point origin, Vector scaleVector)
         {
             TransformMatrix scaleMatrix = Create.ScaleMatrix(origin, scaleVector);
             return Transform(curve, scaleMatrix);
@@ -105,7 +105,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static NurbSurface Scale(this NurbSurface surface, Point origin, Vector scaleVector)
+        public static NurbsSurface Scale(this NurbsSurface surface, Point origin, Vector scaleVector)
         {
             TransformMatrix scaleMatrix = Create.ScaleMatrix(origin, scaleVector);
             return Transform(surface, scaleMatrix);

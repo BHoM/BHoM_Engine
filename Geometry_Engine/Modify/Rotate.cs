@@ -68,7 +68,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static NurbCurve Rotate(this NurbCurve curve, Point origin, Vector axis, double rad)
+        public static NurbsCurve Rotate(this NurbsCurve curve, Point origin, Vector axis, double rad)
         {
             TransformMatrix rotationMatrix = Create.RotationMatrix(origin, axis, rad);
             return Transform(curve, rotationMatrix);
@@ -112,7 +112,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static NurbSurface Rotate(this NurbSurface surface, Point origin, Vector axis, double rad)
+        public static NurbsSurface Rotate(this NurbsSurface surface, Point origin, Vector axis, double rad)
         {
             TransformMatrix rotationMatrix = Create.RotationMatrix(origin, axis, rad);
             return Transform(surface, rotationMatrix);

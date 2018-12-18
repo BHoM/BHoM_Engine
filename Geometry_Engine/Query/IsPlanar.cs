@@ -56,7 +56,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static bool IsPlanar(this NurbCurve curve, double tolerance = Tolerance.Distance)
+        public static bool IsPlanar(this NurbsCurve curve, double tolerance = Tolerance.Distance)
         {
             return curve.ControlPoints.IsCoplanar(tolerance);
         }
@@ -99,7 +99,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static bool IsPlanar(this NurbSurface surface, double tolerance = Tolerance.Distance)
+        public static bool IsPlanar(this NurbsSurface surface, double tolerance = Tolerance.Distance)
         {
             return surface.ControlPoints.IsCoplanar(tolerance);
         }

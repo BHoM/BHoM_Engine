@@ -76,7 +76,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static bool IsInPlane(this NurbCurve curve, Plane plane, double tolerance = Tolerance.Distance)
+        public static bool IsInPlane(this NurbsCurve curve, Plane plane, double tolerance = Tolerance.Distance)
         {
             return curve.ControlPoints.IsInPlane(plane, tolerance); //TODO: probably incorrect
         }
@@ -126,7 +126,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static bool IsInPlane(this NurbSurface surface, Plane plane, double tolerance = Tolerance.Distance)
+        public static bool IsInPlane(this NurbsSurface surface, Plane plane, double tolerance = Tolerance.Distance)
         {
             return surface.ControlPoints.IsInPlane(plane, tolerance); //TODO: probably incorrect
         }

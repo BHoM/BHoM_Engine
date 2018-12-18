@@ -246,7 +246,7 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [NotImplemented]
-        public static List<Point> LineIntersections(this NurbCurve curve, Line line, bool useInfiniteLine = false, double tolerance = Tolerance.Distance)
+        public static List<Point> LineIntersections(this NurbsCurve curve, Line line, bool useInfiniteLine = false, double tolerance = Tolerance.Distance)
         {
             throw new NotImplementedException();
         }

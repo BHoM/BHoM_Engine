@@ -51,7 +51,7 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [NotImplemented]
-        public static double ParameterAtPoint(this NurbCurve curve, Point point, double tolerance = Tolerance.Distance)
+        public static double ParameterAtPoint(this NurbsCurve curve, Point point, double tolerance = Tolerance.Distance)
         {
             throw new NotImplementedException();
         }

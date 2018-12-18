@@ -9,14 +9,14 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static int Degree(this NurbCurve curve)
+        public static int Degree(this NurbsCurve curve)
         {
             return curve.Knots.Count - curve.ControlPoints.Count + 1;
         }
 
         /***************************************************/
 
-        public static List<int> Degrees(this NurbSurface surf)
+        public static List<int> Degrees(this NurbsSurface surf)
         {
             int uDegree = 1;
             int vDegree = 1;

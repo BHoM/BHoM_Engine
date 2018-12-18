@@ -69,7 +69,7 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [NotImplemented]
-        public static bool IsContaining(this NurbCurve curve1, List<Point> points, bool acceptOnEdge = true, double tolerance = Tolerance.Distance)
+        public static bool IsContaining(this NurbsCurve curve1, List<Point> points, bool acceptOnEdge = true, double tolerance = Tolerance.Distance)
         {
             throw new NotImplementedException();
         }
@@ -298,7 +298,7 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [NotImplemented]
-        public static bool IsContaining(this NurbCurve curve1, ICurve curve2, bool acceptOnEdge = true, double tolerance = Tolerance.Distance)
+        public static bool IsContaining(this NurbsCurve curve1, ICurve curve2, bool acceptOnEdge = true, double tolerance = Tolerance.Distance)
         {
             throw new NotImplementedException();
         }

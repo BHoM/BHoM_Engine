@@ -9,7 +9,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static List<int> UVCount(this NurbSurface surf)
+        public static List<int> UVCount(this NurbsSurface surf)
         {
             List<int> degrees = surf.Degrees();            
             return new List<int> { surf.UKnots.Count - degrees[0] + 1, surf.VKnots.Count - degrees[1] + 1 };

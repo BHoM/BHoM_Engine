@@ -36,7 +36,7 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [NotImplemented]
-        public static Vector StartDir(this NurbCurve curve)
+        public static Vector StartDir(this NurbsCurve curve)
         {
             throw new NotImplementedException(); //TODO: get start dir of nurbcurve
         }

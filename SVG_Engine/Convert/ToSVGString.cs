@@ -238,9 +238,9 @@ namespace BH.Engine.Graphics
 
         /***************************************************/
 
-        public static string ToSVGString(this NurbCurve nurbCurve)
+        public static string ToSVGString(this NurbsCurve nurbCurve)
         {
-            // TODO : SVG_Engine - Further developing of the method for converting NurbCurves to SVG 
+            // TODO : SVG_Engine - Further developing of the method for converting NurbsCurves to SVG 
 
             List<Point> controlPts = nurbCurve.ControlPoints;
             List<Double> weights = nurbCurve.Weights;

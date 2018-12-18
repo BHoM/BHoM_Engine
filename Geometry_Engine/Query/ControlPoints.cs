@@ -48,7 +48,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static List<Point> ControlPoints(this NurbCurve curve)
+        public static List<Point> ControlPoints(this NurbsCurve curve)
         {
             return curve.ControlPoints;
         }

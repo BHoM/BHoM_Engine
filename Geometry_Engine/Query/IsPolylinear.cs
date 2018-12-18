@@ -53,7 +53,7 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [NotImplemented]
-        public static bool IsPolylinear(this NurbCurve curve)
+        public static bool IsPolylinear(this NurbsCurve curve)
         {
             throw new NotImplementedException();
         }

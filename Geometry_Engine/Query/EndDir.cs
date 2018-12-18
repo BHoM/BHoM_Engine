@@ -36,7 +36,7 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [NotImplemented]
-        public static Vector EndDir(this NurbCurve curve)
+        public static Vector EndDir(this NurbsCurve curve)
         {
             throw new NotImplementedException(); //TODO: get End dir of nurbcurve
         }

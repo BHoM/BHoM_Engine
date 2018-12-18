@@ -61,7 +61,7 @@ namespace BH.Engine.Geometry
 
         public static ICurve Transform(this Arc arc, TransformMatrix transform)
         {
-            return arc.ToNurbCurve().Transform(transform);
+            return arc.ToNurbsCurve().Transform(transform);
         }
 
         /***************************************************/
@@ -69,7 +69,7 @@ namespace BH.Engine.Geometry
         public static ICurve Transform(this Circle circle, TransformMatrix transform)
         {
             //TODO: an affine transform of a circle always returns a circle or an ellipse so we should improve on this
-            return circle.ToNurbCurve().Transform(transform);
+            return circle.ToNurbsCurve().Transform(transform);
         }
 
         /***************************************************/
@@ -77,7 +77,7 @@ namespace BH.Engine.Geometry
         public static ICurve Transform(this Ellipse ellipse, TransformMatrix transform)
         {
             //TODO: an affine transform of an ellipse always returns an ellipse so we should improve on this
-            return ellipse.ToNurbCurve().Transform(transform); 
+            return ellipse.ToNurbsCurve().Transform(transform); 
         }
 
         /***************************************************/
@@ -89,9 +89,9 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static NurbCurve Transform(this NurbCurve curve, TransformMatrix transform)
+        public static NurbsCurve Transform(this NurbsCurve curve, TransformMatrix transform)
         {
-            return new NurbCurve { ControlPoints = curve.ControlPoints.Select(x => x.Transform(transform)).ToList(), Weights = curve.Weights.ToList(), Knots = curve.Knots.ToList() };
+            return new NurbsCurve { ControlPoints = curve.ControlPoints.Select(x => x.Transform(transform)).ToList(), Weights = curve.Weights.ToList(), Knots = curve.Knots.ToList() };
         }
 
 
@@ -128,9 +128,9 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static NurbSurface Transform(this NurbSurface surface, TransformMatrix transform)
+        public static NurbsSurface Transform(this NurbsSurface surface, TransformMatrix transform)
         {
-            return new NurbSurface { ControlPoints = surface.ControlPoints.Select(x => x.Transform(transform)).ToList(), Weights = surface.Weights.ToList(), UKnots = surface.UKnots.ToList(), VKnots = surface.VKnots.ToList() };
+            return new NurbsSurface { ControlPoints = surface.ControlPoints.Select(x => x.Transform(transform)).ToList(), Weights = surface.Weights.ToList(), UKnots = surface.UKnots.ToList(), VKnots = surface.VKnots.ToList() };
         }
 
         /***************************************************/

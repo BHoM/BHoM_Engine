@@ -34,7 +34,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static NurbCurve Flip(this NurbCurve curve)
+        public static NurbsCurve Flip(this NurbsCurve curve)
         {
             List<double> oldKnots = curve.Knots;
             double prevValue = 0;
@@ -46,7 +46,7 @@ namespace BH.Engine.Geometry
                 prevValue = newKnots.Last();
             }
 
-            return new NurbCurve
+            return new NurbsCurve
             {
                 ControlPoints = curve.ControlPoints.Reverse<Point>().ToList(),
                 Weights = curve.Weights.Reverse<double>().ToList(),

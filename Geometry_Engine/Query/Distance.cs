@@ -104,7 +104,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static double Distance(this Point point, NurbCurve curve)
+        public static double Distance(this Point point, NurbsCurve curve)
         {
             return point.Distance(curve.ClosestPoint(point));
         }

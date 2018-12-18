@@ -33,7 +33,7 @@ namespace BH.Engine.Geometry
                 case 3:
                     return RandomLine(rnd, box);
                 case 4:
-                    return RandomNurbCurve(rnd, box);
+                    return RandomNurbsCurve(rnd, box);
                 default:
                     return RandomPolyline(rnd, box);
             }
@@ -61,7 +61,7 @@ namespace BH.Engine.Geometry
                 case 1:
                     return RandomLine(from, rnd, box);
                 case 2:
-                    return RandomNurbCurve(from, rnd, box);
+                    return RandomNurbsCurve(from, rnd, box);
                 default:
                     return RandomPolyline(from, rnd, box);
             }

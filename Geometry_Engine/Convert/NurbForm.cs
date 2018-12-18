@@ -12,7 +12,7 @@ namespace BH.Engine.Geometry
         /**** Public  Methods - Curves                  ****/
         /***************************************************/
 
-        public static NurbCurve ToNurbCurve(this Arc arc)
+        public static NurbsCurve ToNurbsCurve(this Arc arc)
         {
             double angle = arc.EndAngle - arc.StartAngle;
             Point centre = arc.Centre();
@@ -47,12 +47,12 @@ namespace BH.Engine.Geometry
                 weights.Add(w);
             }
 
-            return new NurbCurve { ControlPoints = points, Knots = knots, Weights = weights };
+            return new NurbsCurve { ControlPoints = points, Knots = knots, Weights = weights };
         }
 
         /***************************************************/
 
-        public static NurbCurve ToNurbCurve(this Circle circle)
+        public static NurbsCurve ToNurbsCurve(this Circle circle)
         {
             Point centre = circle.Centre;
             Vector d1 = circle.StartPoint() - centre;
@@ -72,7 +72,7 @@ namespace BH.Engine.Geometry
                 centre + d1
             };
 
-            return new NurbCurve
+            return new NurbsCurve
             {
                 ControlPoints = points,
                 Knots = new List<double> { 0, 0, 0.25, 0.25, 0.5, 0.5, 0.75, 0.75, 1.0, 1.0 },
@@ -82,7 +82,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static NurbCurve ToNurbCurve(this Ellipse ellipse)
+        public static NurbsCurve ToNurbsCurve(this Ellipse ellipse)
         {
             Point centre = ellipse.Centre;
             Vector d1 = ellipse.Radius1 * ellipse.Axis1;
@@ -102,7 +102,7 @@ namespace BH.Engine.Geometry
                 centre + d1
             };
 
-            return new NurbCurve
+            return new NurbsCurve
             {
                 ControlPoints = points,
                 Knots = new List<double> { 0, 0, 0.25, 0.25, 0.5, 0.5, 0.75, 0.75, 1.0, 1.0 },
@@ -112,15 +112,15 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static NurbCurve ToNurbCurve(this Line line)
+        public static NurbsCurve ToNurbsCurve(this Line line)
         {
-            return Create.NurbCurve(new List<Point> { line.Start, line.End }, new double[] { 1, 1 }, new double[] { 0, 1 });
+            return Create.NurbsCurve(new List<Point> { line.Start, line.End }, new double[] { 1, 1 }, new double[] { 0, 1 });
 
         }
 
         /***************************************************/
 
-        public static NurbCurve ToNurbCurve(this NurbCurve curve)
+        public static NurbsCurve ToNurbsCurve(this NurbsCurve curve)
         {
             return curve.Clone();
         }
@@ -128,7 +128,7 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [NotImplemented]
-        public static NurbCurve ToNurbCurve(this PolyCurve curve)
+        public static NurbsCurve ToNurbsCurve(this PolyCurve curve)
         {
             //Curve c = curve.Curves[0];
             //for (int i = 1; i < curve.Curves.Count; i++)
@@ -145,7 +145,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static NurbCurve ToNurbCurve(this Polyline curve)
+        public static NurbsCurve ToNurbsCurve(this Polyline curve)
         {
             List<Point> points = curve.ControlPoints;
             List<double> weights = curve.ControlPoints.Select(x => 1.0).ToList();
@@ -159,7 +159,7 @@ namespace BH.Engine.Geometry
             }
             knots = knots.Select(x => x / t).ToList();
 
-            return new NurbCurve { ControlPoints = points, Weights = weights, Knots = knots };
+            return new NurbsCurve { ControlPoints = points, Weights = weights, Knots = knots };
         }
 
 
@@ -167,9 +167,9 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interaces                ****/
         /***************************************************/
 
-        public static NurbCurve IToNurbCurve(this ICurve geometry)
+        public static NurbsCurve IToNurbsCurve(this ICurve geometry)
         {
-            return ToNurbCurve(geometry as dynamic);
+            return ToNurbsCurve(geometry as dynamic);
         }
 
         /***************************************************/

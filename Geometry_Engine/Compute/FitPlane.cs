@@ -113,7 +113,7 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [NotImplemented]
-        public static Plane FitPlane(this NurbCurve curve, double tolerance = Tolerance.Distance)
+        public static Plane FitPlane(this NurbsCurve curve, double tolerance = Tolerance.Distance)
         {
             throw new NotImplementedException();
         }

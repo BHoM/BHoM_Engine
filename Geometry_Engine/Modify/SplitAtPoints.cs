@@ -58,7 +58,7 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [NotImplemented]
-        public static List<NurbCurve> SplitAtPoints(this NurbCurve curve, List<Point> points, double tolerance = Tolerance.Distance)
+        public static List<NurbsCurve> SplitAtPoints(this NurbsCurve curve, List<Point> points, double tolerance = Tolerance.Distance)
         {
             throw new NotImplementedException();
         }

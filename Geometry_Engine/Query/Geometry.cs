@@ -43,7 +43,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static ICurve Geometry(this NurbCurve curve)
+        public static ICurve Geometry(this NurbsCurve curve)
         {
             return curve;
         }

@@ -35,9 +35,9 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [NotImplemented]
-        public static Point PointAtLength(this NurbCurve curve, double length)
+        public static Point PointAtLength(this NurbsCurve curve, double length)
         {
-            throw new NotImplementedException(); // TODO Add NurbCurve PointAt method
+            throw new NotImplementedException(); // TODO Add NurbsCurve PointAt method
         }
 
         /***************************************************/

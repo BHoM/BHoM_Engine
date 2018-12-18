@@ -233,7 +233,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static BoundingBox Bounds(this NurbCurve curve)
+        public static BoundingBox Bounds(this NurbsCurve curve)
         {
             return Bounds(curve.ControlPoints); //TODO: Need a more accurate bounding box
         }
@@ -291,7 +291,7 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [NotImplemented]
-        public static BoundingBox Bounds(this NurbSurface surface)
+        public static BoundingBox Bounds(this NurbsSurface surface)
         {
             throw new NotImplementedException();
         }

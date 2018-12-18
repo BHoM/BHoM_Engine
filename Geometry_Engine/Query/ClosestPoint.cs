@@ -91,7 +91,7 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [NotImplemented]
-        public static Point ClosestPoint(this NurbCurve curve, Point point)
+        public static Point ClosestPoint(this NurbsCurve curve, Point point)
         {
             throw new NotImplementedException();
         }
@@ -163,7 +163,7 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [NotImplemented]
-        public static Point ClosestPoint(this NurbSurface surface, Point point)
+        public static Point ClosestPoint(this NurbsSurface surface, Point point)
         {
             throw new NotImplementedException();
         }

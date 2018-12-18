@@ -67,9 +67,9 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static NurbCurve Translate(this NurbCurve curve, Vector transform)
+        public static NurbsCurve Translate(this NurbsCurve curve, Vector transform)
         {
-            return new NurbCurve { ControlPoints = curve.ControlPoints.Select(x => x + transform).ToList(), Weights = curve.Weights.ToList(), Knots = curve.Knots.ToList() };
+            return new NurbsCurve { ControlPoints = curve.ControlPoints.Select(x => x + transform).ToList(), Weights = curve.Weights.ToList(), Knots = curve.Knots.ToList() };
         }
 
 
@@ -106,9 +106,9 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static NurbSurface Translate(this NurbSurface surface, Vector transform)
+        public static NurbsSurface Translate(this NurbsSurface surface, Vector transform)
         {
-            return new NurbSurface { ControlPoints = surface.ControlPoints.Select(x => x + transform).ToList(), Weights = surface.Weights.ToList(), UKnots = surface.UKnots.ToList(), VKnots = surface.VKnots.ToList() };
+            return new NurbsSurface { ControlPoints = surface.ControlPoints.Select(x => x + transform).ToList(), Weights = surface.Weights.ToList(), UKnots = surface.UKnots.ToList(), VKnots = surface.VKnots.ToList() };
         }
 
         /***************************************************/

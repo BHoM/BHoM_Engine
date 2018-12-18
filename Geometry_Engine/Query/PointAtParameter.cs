@@ -50,7 +50,7 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         //TODO: Testing needed!!
-        public static Point PointAtParameter(this NurbCurve curve, double t)
+        public static Point PointAtParameter(this NurbsCurve curve, double t)
         {
             if (t == 0)
                 return curve.ControlPoints[0];
