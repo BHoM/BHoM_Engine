@@ -24,7 +24,7 @@ namespace BH.Engine.Geometry
 
         public static ISurface RandomSurface(Random rnd, BoundingBox box = null)
         {
-            int nb = rnd.Next(5);
+            int nb = rnd.Next(4);
             switch (nb)
             {
                 case 0:
@@ -32,8 +32,6 @@ namespace BH.Engine.Geometry
                 case 1:
                     return RandomLoft(rnd, box);
                 case 2:
-                    return RandomNurbsSurface(rnd, box);
-                case 3:
                     return RandomPipe(rnd, box);
                 default:
                     return RandomPolySurface(rnd, box);

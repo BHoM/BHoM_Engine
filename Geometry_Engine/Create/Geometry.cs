@@ -21,7 +21,7 @@ namespace BH.Engine.Geometry
 
         public static IGeometry RandomGeometry(Random rnd, BoundingBox box = null)
         {
-            int nb = rnd.Next(15);
+            int nb = rnd.Next(14);
             switch(nb)
             {
                 case 0:
@@ -33,24 +33,22 @@ namespace BH.Engine.Geometry
                 case 3:
                     return RandomLine(rnd, box);
                 case 4:
-                    return RandomNurbsCurve(rnd, box);
-                case 5:
                     return RandomPolyline(rnd, box);
-                case 6:
+                case 5:
                     return RandomExtrusion(rnd, box);
-                case 7:
+                case 6:
                     return RandomLoft(rnd, box);
-                case 8:
+                case 7:
                     return RandomNurbsSurface(rnd, box);
-                case 9:
+                case 8:
                     return RandomPipe(rnd, box);
-                case 10:
+                case 9:
                     return RandomPolySurface(rnd, box);
-                case 11:
+                case 10:
                     return RandomMesh(rnd, box);
-                case 12:
+                case 11:
                     return RandomCompositeGeometry(rnd, box);
-                case 13:
+                case 12:
                     return RandomPlane(rnd, box);
                 default:
                     return RandomPoint(rnd, box);
