@@ -119,6 +119,9 @@ namespace BH.Engine.Serialiser.BsonSerializers
 
                 if (type == null)
                     Reflection.Compute.RecordError("Type " + fullName + " failed to deserialise.");
+                else if (type.IsGenericType && type.GetGenericArguments().Length == genericTypes.Count)
+                    type = type.MakeGenericType(genericTypes.ToArray()); 
+
                 return type;
             }
             catch
