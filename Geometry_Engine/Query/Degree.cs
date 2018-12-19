@@ -10,8 +10,7 @@ namespace BH.Engine.Geometry
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-
-        [NotImplemented]
+        
         public static int Degree(this NurbsCurve curve)
         {
             return curve.Knots.Count - curve.ControlPoints.Count + 1;
