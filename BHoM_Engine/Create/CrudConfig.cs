@@ -18,7 +18,7 @@ namespace BH.Engine.Base
         {
             return new CrudConfig
             {
-                ActionType = actionType
+                PushActionType = actionType
             };
         }
 
