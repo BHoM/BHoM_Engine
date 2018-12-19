@@ -14,7 +14,7 @@ namespace BH.Engine.Geometry
         [NotImplemented]
         public static int Degree(this NurbsCurve curve)
         {
-            throw new NotImplementedException();
+            return curve.Knots.Count - curve.ControlPoints.Count + 1;
         }
 
         /***************************************************/
