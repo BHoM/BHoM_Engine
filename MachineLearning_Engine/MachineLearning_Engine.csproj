@@ -109,7 +109,7 @@
       <HintPath>..\packages\Accord.Vision.3.2.0\lib\net45\Accord.Vision.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="BHoM, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="BHoM">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\BHoM\Build\BHoM.dll</HintPath>
     </Reference>
