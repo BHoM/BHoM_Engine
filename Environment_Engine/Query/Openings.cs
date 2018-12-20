@@ -53,7 +53,7 @@ namespace BH.Engine.Environment
             return openings;
         }
 
-        public static List<Opening> Openings(this List<BuildingElement> elements)
+        public static List<Opening> OpeningsFromElements(this List<BuildingElement> elements)
         {
             List<Opening> openings = new List<Opening>();
 
@@ -69,6 +69,11 @@ namespace BH.Engine.Environment
             }
 
             return openings;
+        }
+
+        public static List<BuildingElement> Openings(this List<BuildingElement> elements)
+        {
+            return elements.Where(x => x.BuildingElementProperties.BuildingElementType == BuildingElementType.Window || x.BuildingElementProperties.BuildingElementType == BuildingElementType.Door).ToList();
         }
     }
 }

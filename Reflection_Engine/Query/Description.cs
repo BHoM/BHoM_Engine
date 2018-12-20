@@ -52,7 +52,7 @@ namespace BH.Engine.Reflection
         [Description("Return the custom description of a C# method argument")]
         public static string Description(this ParameterInfo parameter)
         {
-            IEnumerable<InputAttribute> inputDesc = parameter.Member.GetCustomAttributes<InputAttribute>().Where(x => x.Name == parameter.Name);
+            IEnumerable<Input> inputDesc = parameter.Member.GetCustomAttributes<Input>().Where(x => x.Name == parameter.Name);
             if (inputDesc.Count() > 0)
                 return inputDesc.First().Description;
             else if (parameter.ParameterType != null)
