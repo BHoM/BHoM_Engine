@@ -52,7 +52,7 @@ namespace BH.Engine.Environment
         {
             List<BuildingElement> rtnElements = new List<BuildingElement>();
 
-            List<Opening> openings = elements.Openings();
+            List<Opening> openings = elements.OpeningsFromElements();
 
             foreach (BuildingElement be in elements)
             {
