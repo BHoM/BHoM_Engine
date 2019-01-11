@@ -95,6 +95,7 @@
     <Compile Include="Convert\ToText.cs" />
     <Compile Include="Create\Output.cs" />
     <Compile Include="Modify\Cast.cs" />
+    <Compile Include="Query\CurrentAssemblyFolder.cs" />
     <Compile Include="Query\BHoMFolder.cs" />
     <Compile Include="Query\Item.cs" />
     <Compile Include="Query\OutputType.cs" />
