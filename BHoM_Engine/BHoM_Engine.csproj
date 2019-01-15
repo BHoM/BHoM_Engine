@@ -35,6 +35,10 @@
       <HintPath>..\..\BHoM\Build\BHoM.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="DeepCloner, Version=0.10.0.0, Culture=neutral, PublicKeyToken=dc0b95cf99bf4e99, processorArchitecture=MSIL">
+      <HintPath>..\packages\DeepCloner.0.10.2\lib\net40\DeepCloner.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Geometry_oM">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\BHoM\Build\Geometry_oM.dll</HintPath>
@@ -58,10 +62,13 @@
     <Compile Include="Objects\EqualityComparers\BHoMObjectNameComparer.cs" />
     <Compile Include="Objects\EqualityComparers\BHoMObjectNameOrToStringComparer.cs" />
     <Compile Include="Objects\IterFunction.cs" />
+    <Compile Include="Query\BaseClone.cs" />
+    <Compile Include="Query\DeepClone.cs" />
     <Compile Include="Query\Geometry.cs" />
     <Compile Include="Modify\SetGeometry.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Compute\ExecutionSpeed.cs" />
+    <Compile Include="Query\ShallowClone.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Convert\" />
