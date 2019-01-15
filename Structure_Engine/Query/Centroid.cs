@@ -38,7 +38,7 @@ namespace BH.Engine.Structure
             List<Point> pts = new List<Point>(4);
 
             foreach (Node n in meshFace.Nodes)
-                pts.Add(n.Position);
+                pts.Add(n.Position());
 
             return pts.Average();
         }

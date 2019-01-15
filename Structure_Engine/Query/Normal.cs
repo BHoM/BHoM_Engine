@@ -37,8 +37,8 @@ namespace BH.Engine.Structure
         public static Vector Normal(this Bar bar)
         {
 
-            Point p1 = bar.StartNode.Position;
-            Point p2 = bar.EndNode.Position;
+            Point p1 = bar.StartNode.Position();
+            Point p2 = bar.EndNode.Position();
 
             Vector tan = (p2 - p1).Normalise();
             Vector normal;
@@ -70,7 +70,7 @@ namespace BH.Engine.Structure
 
         public static Vector Normal(this MeshFace face)
         {
-            return face.Nodes.Select(x => x.Position).ToList().FitPlane().Normal;
+            return face.Nodes.Select(x => x.Position()).ToList().FitPlane().Normal;
         }
 
         /***************************************************/

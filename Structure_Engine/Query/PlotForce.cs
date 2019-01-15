@@ -62,14 +62,14 @@ namespace BH.Engine.Structure
 
         private static List<ICurve> PlotBarForce(Bar bar, List<BarForce> forces, double scaleFactor = 1.0, bool fx = true, bool fy = true, bool fz = true, bool mx = true, bool my = true, bool mz = true)
         {
-            Vector tan = (bar.EndNode.Position - bar.StartNode.Position);
+            Vector tan = bar.Tangent();
             Vector unitTan = tan.Normalise();
             Vector normal = bar.Normal();
             Vector yAxis = normal.CrossProduct(unitTan);
 
             scaleFactor /= 1000;
 
-            List<Point> basePoints = forces.Select(x => bar.StartNode.Position + tan * x.Position).ToList();
+            List<Point> basePoints = forces.Select(x => bar.StartNode.Position() + tan * x.Position).ToList();
 
             List<ICurve> plots = new List<ICurve>();
 

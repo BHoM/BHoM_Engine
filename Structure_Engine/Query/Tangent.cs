@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
  *
@@ -20,6 +20,7 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.Engine.Geometry;
 using BH.oM.Geometry;
 using BH.oM.Structure.Elements;
 
@@ -31,9 +32,10 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Line Centreline(this Bar bar)
+        public static Vector Tangent(this Bar bar, bool normalise = false)
         {
-            return new Line { Start = bar.StartNode.Position(), End = bar.EndNode.Position() };
+            Vector tan = bar.EndNode.Position() - bar.StartNode.Position();
+            return normalise ? tan.Normalise() : tan;
         }
 
         /***************************************************/

@@ -35,7 +35,7 @@ namespace BH.Engine.Structure
 
         public static IElement0D NewElement0D(this Bar bar, Point point)
         {
-            return new Node { Position = point.Clone() };
+            return Create.Node(point);
         }
 
         /***************************************************/

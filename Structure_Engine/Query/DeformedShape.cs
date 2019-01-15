@@ -90,7 +90,7 @@ namespace BH.Engine.Structure
 
         private static Polyline DeformedShapeCentreLine(Bar bar, List<BarDeformation> deformations, double scaleFactor = 1.0)
         {
-            Vector tan = (bar.EndNode.Position - bar.StartNode.Position);
+            Vector tan = (bar.EndNode.Position() - bar.StartNode.Position());
             Vector unitTan = tan.Normalise();
             Vector normal = bar.Normal();
             Vector yAxis = normal.CrossProduct(unitTan);
@@ -102,7 +102,7 @@ namespace BH.Engine.Structure
             {
                 //Vector disp = new Vector { X = defo.UX * scaleFactor, Y = defo.UY * scaleFactor, Z = defo.UZ * scaleFactor };
                 Vector disp = unitTan * defo.UX * scaleFactor + yAxis * defo.UY * scaleFactor + normal * defo.UZ * scaleFactor;
-                Point pt = bar.StartNode.Position + tan * defo.Position + disp;
+                Point pt = bar.StartNode.Position() + tan * defo.Position + disp;
                 pts.Add(pt);
             }
 
@@ -115,7 +115,7 @@ namespace BH.Engine.Structure
 
         private static List<Loft> DeformedShapeSection(Bar bar, List<BarDeformation> deformations, double scaleFactor = 1.0)
         {
-            Vector tan = (bar.EndNode.Position - bar.StartNode.Position);
+            Vector tan = bar.Tangent();
             Vector unitTan = tan.Normalise();
             Vector normal = bar.Normal();
             Vector yAxis = normal.CrossProduct(unitTan);
@@ -131,7 +131,7 @@ namespace BH.Engine.Structure
                 Loft loft = new Loft();
                 foreach (BarDeformation defo in deformations)
                 {
-                    ICurve curve = sectionCurve.IRotate(bar.StartNode.Position, unitTan, defo.RX * scaleFactor);
+                    ICurve curve = sectionCurve.IRotate(bar.StartNode.Position(), unitTan, defo.RX * scaleFactor);
                     Vector disp = unitTan * defo.UX * scaleFactor + yAxis * defo.UY * scaleFactor + normal * defo.UZ * scaleFactor;
                     disp += tan * defo.Position;
                     loft.Curves.Add(curve.ITranslate(disp));
@@ -162,7 +162,7 @@ namespace BH.Engine.Structure
 
                 Vector dispVector = disp.CoordinateSystem.X * disp.UXX * scaleFactor + disp.CoordinateSystem.Y * disp.UYY * scaleFactor + disp.CoordinateSystem.Z * disp.UZZ * scaleFactor;
 
-                mesh.Vertices.Add(node.Position + dispVector);
+                mesh.Vertices.Add(node.Position() + dispVector);
 
             }
 

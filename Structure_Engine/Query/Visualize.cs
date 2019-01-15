@@ -114,8 +114,8 @@ namespace BH.Engine.Structure
             {
                 Cartesian system;
                 Vector[] loads = BarForceVectors(bar, forceVec, momentVec, barPointForce.Axis, barPointForce.Projected, out system);
-                Point point = bar.StartNode.Position;
-                Vector tan = (bar.EndNode.Position - bar.StartNode.Position).Normalise();
+                Point point = bar.StartNode.Position();
+                Vector tan = bar.Tangent(true);
                 point += tan * barPointForce.DistanceFromA;
 
                 if (displayForces) arrows.AddRange(Arrows(point, loads[0], true, asResultants, system));
@@ -311,8 +311,8 @@ namespace BH.Engine.Structure
 
             foreach (Node node in pointAcceleration.Objects.Elements)
             {
-                if (displayForces) arrows.AddRange(Arrows(node.Position, forceVec, true, asResultants));
-                if (displayMoments) arrows.AddRange(Arrows(node.Position, momentVec, false, asResultants));
+                if (displayForces) arrows.AddRange(Arrows(node.Position(), forceVec, true, asResultants));
+                if (displayMoments) arrows.AddRange(Arrows(node.Position(), momentVec, false, asResultants));
             }
 
             return arrows;
@@ -329,8 +329,8 @@ namespace BH.Engine.Structure
 
             foreach (Node node in pointDisplacement.Objects.Elements)
             {
-                if (displayForces) arrows.AddRange(Arrows(node.Position, forceVec, true, asResultants));
-                if (displayMoments) arrows.AddRange(Arrows(node.Position, momentVec, false, asResultants));
+                if (displayForces) arrows.AddRange(Arrows(node.Position(), forceVec, true, asResultants));
+                if (displayMoments) arrows.AddRange(Arrows(node.Position(), momentVec, false, asResultants));
             }
 
             return arrows;
@@ -347,8 +347,8 @@ namespace BH.Engine.Structure
 
             foreach (Node node in pointForce.Objects.Elements)
             {
-                if (displayForces) arrows.AddRange(Arrows(node.Position, forceVec, true, asResultants));
-                if (displayMoments) arrows.AddRange(Arrows(node.Position, momentVec, false, asResultants));
+                if (displayForces) arrows.AddRange(Arrows(node.Position(), forceVec, true, asResultants));
+                if (displayMoments) arrows.AddRange(Arrows(node.Position(), momentVec, false, asResultants));
             }
 
             return arrows;
@@ -365,8 +365,8 @@ namespace BH.Engine.Structure
 
             foreach (Node node in pointVelocity.Objects.Elements)
             {
-                if (displayForces) arrows.AddRange(Arrows(node.Position, forceVec, true, asResultants));
-                if (displayMoments) arrows.AddRange(Arrows(node.Position, momentVec, false, asResultants));
+                if (displayForces) arrows.AddRange(Arrows(node.Position(), forceVec, true, asResultants));
+                if (displayMoments) arrows.AddRange(Arrows(node.Position(), momentVec, false, asResultants));
             }
 
             return arrows;
@@ -392,8 +392,8 @@ namespace BH.Engine.Structure
                 system = null;
                 if (isProjected)
                 {
-                    Point startPos = bar.StartNode.Position;
-                    Vector tan = (bar.EndNode.Position - bar.StartNode.Position);
+                    Point startPos = bar.StartNode.Position();
+                    Vector tan = bar.Tangent();
 
                     Vector tanUnit = tan.Normalise();
                     Vector forceUnit = globalForce.Normalise();
@@ -413,7 +413,7 @@ namespace BH.Engine.Structure
             {
 
                 Vector normal = bar.Normal();
-                Vector tan = (bar.EndNode.Position - bar.StartNode.Position);
+                Vector tan = bar.Tangent();
                 Vector tanUnit = tan.Normalise();
                 Vector y = normal.CrossProduct(tanUnit);
 

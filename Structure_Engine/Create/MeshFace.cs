@@ -73,12 +73,12 @@ namespace BH.Engine.Structure
             foreach (Face face in mesh.Faces)
             {
                 List<Node> nodes = new List<Node>();
-                nodes.Add(new Node() { Position = mesh.Vertices[face.A] });
-                nodes.Add(new Node() { Position = mesh.Vertices[face.B] });
-                nodes.Add(new Node() { Position = mesh.Vertices[face.C] });
+                nodes.Add(Create.Node(mesh.Vertices[face.A]));
+                nodes.Add(Create.Node(mesh.Vertices[face.B] ));
+                nodes.Add(Create.Node(mesh.Vertices[face.C] ));
 
                 if (BH.Engine.Geometry.Query.IsQuad(face))
-                    nodes.Add(new Node() { Position = mesh.Vertices[face.D] });
+                    nodes.Add(Create.Node(mesh.Vertices[face.D] ));
                 MeshFace mf = new MeshFace() { Property = property, Nodes = nodes };
 
                 if (name != null)

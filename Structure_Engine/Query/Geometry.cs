@@ -36,7 +36,7 @@ namespace BH.Engine.Structure
 
         public static Point Geometry(this Node node)
         {
-            return node.Position;
+            return node.Position();
         }
 
         /***************************************************/
@@ -88,7 +88,7 @@ namespace BH.Engine.Structure
 
             return new BH.oM.Geometry.Mesh()
             {
-                Vertices = meshFace.Nodes.Select(x => x.Position).ToList(),
+                Vertices = meshFace.Nodes.Select(x => x.Position()).ToList(),
                 Faces = meshFace.Nodes.Count == 3 ? new List<Face>() { new Face() { A = 0, B = 1, C = 2 } } : new List<Face>() { new Face() { A = 0, B = 1, C = 2, D = 3 } }
             };
                 
@@ -102,7 +102,7 @@ namespace BH.Engine.Structure
 
             foreach (Node sn in link.SlaveNodes)
             {
-                lines.Add(new Line() { Start = link.MasterNode.Position, End = sn.Position });
+                lines.Add(new Line() { Start = link.MasterNode.Position(), End = sn.Position() });
             }
             return new CompositeGeometry() { Elements = lines };
         }
@@ -120,7 +120,7 @@ namespace BH.Engine.Structure
         {
             Mesh mesh = new Mesh();
 
-            mesh.Vertices = feMesh.Nodes.Select(x => x.Position).ToList();
+            mesh.Vertices = feMesh.Nodes.Select(x => x.Position()).ToList();
 
             foreach (FEMeshFace feFace in feMesh.MeshFaces)
             {

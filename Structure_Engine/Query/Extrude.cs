@@ -53,8 +53,8 @@ namespace BH.Engine.Structure
 
             Point orgin = new Point { X = bar.SectionProperty.CentreY, Y = bar.SectionProperty.CentreZ, Z = 0 };
             Vector z = Vector.ZAxis;
-            Point startPos = bar.StartNode.Position;
-            Vector tan = bar.EndNode.Position - startPos;
+            Point startPos = bar.StartNode.Position();
+            Vector tan = bar.Tangent();
             Vector trans = startPos - orgin;
 
             double anglePerp = BH.Engine.Geometry.Query.Angle(z, tan);

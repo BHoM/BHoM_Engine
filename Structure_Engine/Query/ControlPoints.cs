@@ -66,7 +66,7 @@ namespace BH.Engine.Structure
 
         public static List<Point> ControlPoints(this Bar bar)
         {
-            return new List<Point> { bar.StartNode.Position.Clone(), bar.EndNode.Position.Clone() };
+            return new List<Point> { bar.StartNode.Position().Clone(), bar.EndNode.Position().Clone() };
         }
 
         /******************************************/

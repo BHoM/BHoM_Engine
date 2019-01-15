@@ -33,7 +33,7 @@ namespace BH.Engine.Structure
 
         public static double Length(this Bar bar)
         {
-            return bar.StartNode.Position.Distance(bar.EndNode.Position);
+            return bar.StartNode.Position().Distance(bar.EndNode.Position());
         }
 
         /***************************************************/

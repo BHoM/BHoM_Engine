@@ -88,7 +88,8 @@ namespace Engine_Test
             string json = doc.ToJson<BsonDocument>(jsonWriterSettings);
             object obj = BsonSerializer.Deserialize(doc, typeof(object));
 
-            Node node = new Node { Position = new Point { X = 1, Y = 2, Z = 3 }, Name = "testNode" };
+            Node node =  (Node)new Point { X = 1, Y = 2, Z = 3 };
+            node.Name = "testNode";
             BsonDocument doc2 = node.ToBsonDocument();
             doc2["NewData"] = "ExtraStuff";
             string json2 = doc2.ToJson<BsonDocument>(jsonWriterSettings);

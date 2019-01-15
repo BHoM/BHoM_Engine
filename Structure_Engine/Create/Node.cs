@@ -22,7 +22,9 @@
 
 using BH.oM.Structure.Elements;
 using BH.oM.Structure.Properties.Constraint;
+using BH.Engine.Geometry;
 using BH.oM.Geometry;
+using BH.oM.Geometry.CoordinateSystem;
 
 namespace BH.Engine.Structure
 {
@@ -32,14 +34,21 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Node Node(Point position, string name = "", Constraint6DOF constraint = null)
+        public static Node Node(Cartesian coordinates, string name = "", Constraint6DOF constraint = null)
         {
             return new Node
             {
-                Position = new Point { X = position.X, Y = position.Y, Z = position.Z },
+                Coordinates = coordinates.Clone(),
                 Name = name,
                 Constraint = constraint
             };
+        }
+
+        /***************************************************/
+
+        public static Node Node(Point position, string name = "", Constraint6DOF constraint = null)
+        {
+            return Node((Cartesian)position, name, constraint);
         }
 
         /***************************************************/

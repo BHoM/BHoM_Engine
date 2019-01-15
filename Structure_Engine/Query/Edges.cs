@@ -85,9 +85,9 @@ namespace BH.Engine.Structure
 
             for (int i = 0; i < face.Nodes.Count -1; i++)
             {
-                edges.Add(new Line { Start = face.Nodes[i].Position, End = face.Nodes[i + 1].Position });
+                edges.Add(new Line { Start = face.Nodes[i].Position(), End = face.Nodes[i + 1].Position() });
             }
-            edges.Add(new Line { Start = face.Nodes.Last().Position, End = face.Nodes.First().Position });
+            edges.Add(new Line { Start = face.Nodes.Last().Position(), End = face.Nodes.First().Position() });
             return edges;
         }
 
