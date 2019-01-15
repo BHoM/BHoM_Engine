@@ -39,14 +39,14 @@ namespace BH.Engine.Structure
             Vector tan;
             if (startLength == 0 && endLength == 0)
             {
-                startPos = bar.StartNode.Position;
-                tan = (bar.EndNode.Position - bar.StartNode.Position) / (double)divisions;
+                startPos = bar.StartNode.Position();
+                tan = bar.Tangent() / (double)divisions;
             }
             else
             {
                 double length = bar.Length();
-                tan = (bar.EndNode.Position - bar.StartNode.Position) / length;
-                startPos = bar.StartNode.Position + tan * startLength;
+                tan = bar.Tangent() / length;
+                startPos = bar.StartNode.Position() + tan * startLength;
 
                 tan *= (length - endLength - startLength) / (double)divisions;
             }

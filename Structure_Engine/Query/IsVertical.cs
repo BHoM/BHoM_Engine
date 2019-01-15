@@ -35,7 +35,7 @@ namespace BH.Engine.Structure
 
         public static bool IsVertical(this Bar bar)
         {
-            return IsVertical(bar.StartNode.Position, bar.EndNode.Position);
+            return IsVertical(bar.StartNode.Position(), bar.EndNode.Position());
         }
 
         /***************************************************/

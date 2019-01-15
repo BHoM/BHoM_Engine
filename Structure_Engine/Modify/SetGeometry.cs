@@ -22,6 +22,7 @@
 
 using BH.Engine.Geometry;
 using BH.oM.Geometry;
+using BH.oM.Geometry.CoordinateSystem;
 using BH.oM.Structure.Elements;
 
 namespace BH.Engine.Structure
@@ -35,7 +36,9 @@ namespace BH.Engine.Structure
         public static Node SetGeometry(this Node node, Point point)
         {
             Node clone = node.GetShallowClone() as Node;
-            clone.Position = point.Clone();
+            Cartesian cartesian = clone.Coordinates.Clone();
+            cartesian.Origin = point;
+            clone.Coordinates = cartesian;
             return clone;
         }
 

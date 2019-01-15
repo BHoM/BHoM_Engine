@@ -44,11 +44,11 @@ namespace BH.Engine.Structure
 
             for (int i = 0; i < face.Nodes.Count; i++)
             {
-                pts.Add(face.Nodes[i].Position);
+                pts.Add(face.Nodes[i].Position());
 
                 int nextId = i < face.Nodes.Count - 1 ? i + 1 : 0;
 
-                pts.Add((face.Nodes[i].Position + face.Nodes[nextId].Position) / 2);
+                pts.Add((face.Nodes[i].Position() + face.Nodes[nextId].Position()) / 2);
             }
 
             pts.Add(pts.Average());
