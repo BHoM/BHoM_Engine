@@ -39,7 +39,7 @@ namespace BH.Engine.Structure
 
         public static Bar Bar(Line line, ISectionProperty property = null, double orientationAngle = 0, BarRelease release = null, BarFEAType feaType = BarFEAType.Flexural, string name = "")
         {          
-            return Bar((Node)line.Start, (Node)line.End, property, orientationAngle, release, feaType, name);
+            return Bar(Node(line.Start), Node(line.End), property, orientationAngle, release, feaType, name);
         }
 
         /***************************************************/
@@ -98,7 +98,7 @@ namespace BH.Engine.Structure
             }
                 
 
-            return Bar((Node)line.Start, (Node)line.End, property, orientationAngle, release, feaType, name);
+            return Bar(Node(line.Start), Node(line.End), property, orientationAngle, release, feaType, name);
         }
 
         /***************************************************/
