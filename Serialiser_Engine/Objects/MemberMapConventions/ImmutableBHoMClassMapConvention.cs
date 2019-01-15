@@ -41,11 +41,6 @@ namespace BH.Engine.Serialiser.MemberMapConventions
                 return;
             }
 
-            if (typeInfo.GetConstructor(Type.EmptyTypes) != null)
-            {
-                return;
-            }
-
             if (typeInfo.GetInterface("IImmutable") == null)
             {
                 return; // only applies to classes that inherit from IImutable
