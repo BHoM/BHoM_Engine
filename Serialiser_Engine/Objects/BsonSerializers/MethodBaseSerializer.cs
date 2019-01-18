@@ -61,7 +61,7 @@ namespace BH.Engine.Serialiser.BsonSerializers
             bsonWriter.WriteName("MethodName");
             bsonWriter.WriteString(value.Name);
 
-            ParameterInfo[] parameters = value.GetParameters();
+            ParameterInfo[] parameters = value.ParametersWithConstraints();
             bsonWriter.WriteName("Parameters");
             bsonWriter.WriteStartArray();
             foreach (ParameterInfo info in parameters)
@@ -99,7 +99,7 @@ namespace BH.Engine.Serialiser.BsonSerializers
 
             try
             {
-                MethodBase method = RestoreMethod((Type)Convert.FromJson(typeName), methodName, paramTypes);
+                MethodBase method = Create.MethodBase((Type)Convert.FromJson(typeName), methodName, paramTypes);
                 if (method == null)
                     Reflection.Compute.RecordError("Method " + methodName + " from " + typeName + " failed to deserialise.");
                 return method;
@@ -109,55 +109,6 @@ namespace BH.Engine.Serialiser.BsonSerializers
                 Reflection.Compute.RecordError("Method " + methodName + " from " + typeName + " failed to deserialise.");
                 return null;
             }
-        }
-
-
-        /*******************************************/
-        /**** Private Methods                   ****/
-        /*******************************************/
-
-        private static MethodBase RestoreMethod(Type type, string methodName, List<string> paramTypes)
-        {
-            List<MethodBase> methods;
-            if (methodName == ".ctor")
-                methods = type.GetConstructors().ToList<MethodBase>();
-            else
-                methods = type.GetMethods(BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly).ToList<MethodBase>();
-
-            for (int k = 0; k < methods.Count; k++)
-            {
-                MethodBase method = methods[k];
-
-                if (method.Name == methodName)
-                {
-                    ParameterInfo[] parameters = method.GetParameters();
-                    if (parameters.Length == paramTypes.Count)
-                    {
-                        bool matching = true;
-                        List<string> names = parameters.Select(x => Convert.ToJson(x.ParameterType)).ToList();
-                        for (int i = 0; i < paramTypes.Count; i++)
-                            matching &= names[i] == paramTypes[i];
-
-                        if (matching)
-                        {
-                            return method;
-                        }
-                    }
-                }
-            }
-
-            return null;
-        }
-
-        /*******************************************/
-
-        private static Type GetTypeFromGenericParameters(Type type)
-        {
-            Type[] constrains = type.GetGenericParameterConstraints();
-            if (constrains.Length == 0)
-                return typeof(object);
-            else
-                return constrains[0];
         }
 
         /*******************************************/
