@@ -62,7 +62,6 @@
     <Compile Include="Objects\EqualityComparers\BHoMObjectNameComparer.cs" />
     <Compile Include="Objects\EqualityComparers\BHoMObjectNameOrToStringComparer.cs" />
     <Compile Include="Objects\IterFunction.cs" />
-    <Compile Include="Query\BaseClone.cs" />
     <Compile Include="Query\DeepClone.cs" />
     <Compile Include="Query\Geometry.cs" />
     <Compile Include="Modify\SetGeometry.cs" />
