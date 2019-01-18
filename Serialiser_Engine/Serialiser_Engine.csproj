@@ -57,6 +57,7 @@
     <Compile Include="Convert\Encrypted.cs" />
     <Compile Include="Convert\Zip.cs" />
     <Compile Include="Convert\Json.cs" />
+    <Compile Include="Create\MethodBase.cs" />
     <Compile Include="Modify\ApplyTaggedName.cs" />
     <Compile Include="Objects\BsonSerializers\EnumSerializer.cs" />
     <Compile Include="Objects\BsonSerializers\MethodBaseSerializer.cs" />
@@ -71,6 +72,8 @@
     <Compile Include="Objects\MemberMapConventions\ImmutableBHoMClassMapConvention.cs" />
     <Compile Include="Objects\MemberMapConventions\ImmutableBHoMCreatorMapConvention.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Query\GenericTypeConstraint.cs" />
+    <Compile Include="Query\Parameters.cs" />
     <Compile Include="Query\TaggedName.cs" />
   </ItemGroup>
   <ItemGroup>
