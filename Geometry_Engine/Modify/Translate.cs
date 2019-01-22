@@ -57,7 +57,7 @@ namespace BH.Engine.Geometry
 
         public static Cartesian Translate(this Cartesian coordinateSystem, Vector transform)
         {
-            return new Cartesian(coordinateSystem.Origin + transform, coordinateSystem.Y, coordinateSystem.Y, coordinateSystem.Z);
+            return new Cartesian(coordinateSystem.Origin + transform, coordinateSystem.X, coordinateSystem.Y, coordinateSystem.Z);
         }
 
         /***************************************************/
