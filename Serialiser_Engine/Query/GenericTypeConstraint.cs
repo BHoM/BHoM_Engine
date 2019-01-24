@@ -21,6 +21,7 @@
  */
 
 using System;
+using System.Linq;
 
 namespace BH.Engine.Serialiser
 {
@@ -32,11 +33,19 @@ namespace BH.Engine.Serialiser
 
         public static Type GenericTypeConstraint(this Type type)
         {
-            Type[] constrains = type.GetGenericParameterConstraints();
-            if (constrains.Length == 0)
+            Type constraint = type.GetGenericParameterConstraints().FirstOrDefault();
+
+            if (constraint == null)
                 return typeof(object);
+            else if (constraint.ContainsGenericParameters)
+            {
+                Type[] generics = type.GetGenericArguments().Select(x => GenericTypeConstraint(x)).ToArray();
+                if (generics.Length == 0)
+                    generics = new Type[] { typeof(object) };
+                return constraint.GetGenericTypeDefinition().MakeGenericType(generics);
+            }
             else
-                return constrains[0];
+                return constraint;
         }
 
         /*******************************************/
