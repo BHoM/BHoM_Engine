@@ -34,6 +34,9 @@ namespace BH.Engine.Reflection
 
         public static List<Type> ClassHierarchy(this Type type)
         {
+            if (type == null)
+                return new List<Type>();
+
             List<Type> classHierarchy = new List<Type>();
             for (Type current = type; current != null; current = current.GetInterfaces().FirstOrDefault() ?? current.BaseType)
                 classHierarchy.Add(current);
