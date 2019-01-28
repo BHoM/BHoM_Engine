@@ -34,10 +34,13 @@ namespace BH.Engine.Reflection
 
         public static Type CommonBaseType(this List<Type> types)
         {
-            if (types.Count == 0)
+            if (types == null)
                 return typeof(object);
 
             types = types.Where(t => t != null).ToList();
+            if (types.Count == 0)
+                return typeof(object);
+
             List<List<Type>> inheritanceChain = new List<List<Type>>();
 
             foreach (Type type in types.Distinct())
