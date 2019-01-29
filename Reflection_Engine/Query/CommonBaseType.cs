@@ -44,7 +44,7 @@ namespace BH.Engine.Reflection
             List<List<Type>> inheritanceChain = new List<List<Type>>();
 
             foreach (Type type in types.Distinct())
-                inheritanceChain.Add(type.ClassHierarchy());
+                inheritanceChain.Add(type.InheritedTypes());
 
             HashSet<Type> table = new HashSet<Type>(inheritanceChain.FirstOrDefault());
             for (int i = 1; i < inheritanceChain.Count; i++)
