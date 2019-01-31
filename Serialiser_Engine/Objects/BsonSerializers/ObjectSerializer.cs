@@ -240,8 +240,27 @@ namespace BH.Engine.Serialiser.BsonSerializers
 
         private object DeserializeDiscriminatedValue(BsonDeserializationContext context, BsonDeserializationArgs args)
         {
+            // First try to recover the object type
             IBsonReader reader = context.Reader;
-            Type actualType = _discriminatorConvention.GetActualType(reader, typeof(object));
+            BsonReaderBookmark bookmark = reader.GetBookmark();
+            Type actualType = typeof(CustomObject);
+            try
+            {
+                actualType = _discriminatorConvention.GetActualType(reader, typeof(object));
+            }
+            catch
+            {
+                // This is were we can call the Version_Engine to return the new type string from the old one if exists
+                string recordedType = GetCurrentTypeValue(reader);
+
+                // If failed, return Custom object
+                context.Reader.ReturnToBookmark(bookmark);
+                Engine.Reflection.Compute.RecordWarning("The type " + recordedType + " is unknown -> data returned as custom objects.");
+                IBsonSerializer customSerializer = BsonSerializer.LookupSerializer(typeof(CustomObject));
+                return customSerializer.Deserialize(context, args);
+            }
+
+            // Handle the special case where the type is object
             if (actualType == typeof(object))
             {
                 BsonType currentBsonType = reader.GetCurrentBsonType();
@@ -253,12 +272,31 @@ namespace BH.Engine.Serialiser.BsonSerializers
                 reader.ReadEndDocument();
                 return new object();
             }
+
+            // Handle the genral case of finding the correct deserialiser and calling it
             IBsonSerializer bsonSerializer = BsonSerializer.LookupSerializer(actualType);
             IBsonPolymorphicSerializer bsonPolymorphicSerializer = bsonSerializer as IBsonPolymorphicSerializer;
             if (bsonPolymorphicSerializer != null && bsonPolymorphicSerializer.IsDiscriminatorCompatibleWithObjectSerializer)
             {
-                return bsonSerializer.Deserialize(context, args);
+                bookmark = context.Reader.GetBookmark();
+                try
+                {
+                    return bsonSerializer.Deserialize(context, args);
+                }
+                catch
+                {
+                    context.Reader.ReturnToBookmark(bookmark);
+                    Engine.Reflection.Compute.RecordWarning("Cannot find a definition of type " + actualType.FullName + " that matches the object to deserialise -> data returned as custom objects.");
+                    IBsonSerializer customSerializer = BsonSerializer.LookupSerializer(typeof(CustomObject));
+                    CustomObject fallback = customSerializer.Deserialize(context, args) as CustomObject;
+
+                    //This is where we will try to get the correct object type from the custom object using the versionning engine
+
+                    // If failed, just return the custom object 
+                    return fallback;
+                }
             }
+
             object result = null;
             bool flag = false;
             reader.ReadStartDocument();
@@ -285,6 +323,25 @@ namespace BH.Engine.Serialiser.BsonSerializers
                 throw new FormatException("_v element missing.");
             }
             return result;
+        }
+
+        /*******************************************/
+
+        protected string GetCurrentTypeValue(IBsonReader reader)
+        {
+            // You gotta do what you gotta do. I couldn't really find an easy way to get the type as a string without spending time in the source code of Mongo
+            BindingFlags bindFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static;
+            Type type = reader.GetType();
+
+            FieldInfo field = type.GetField("_currentValue", bindFlags);
+            if (field == null)
+                return "";
+
+            BsonValue value = field.GetValue(reader) as BsonValue;
+            if (value == null)
+                return "";
+
+            return value.AsString;
         }
 
 

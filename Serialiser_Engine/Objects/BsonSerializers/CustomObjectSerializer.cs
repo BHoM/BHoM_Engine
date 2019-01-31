@@ -29,6 +29,7 @@ using System.Dynamic;
 using System.Linq;
 using MongoDB.Bson;
 using MongoDB.Bson.IO;
+using System.Reflection;
 
 namespace BH.Engine.Serialiser.BsonSerializers
 {
@@ -85,7 +86,10 @@ namespace BH.Engine.Serialiser.BsonSerializers
         {
             var bsonReader = context.Reader;
 
-            var bsonType = bsonReader.GetCurrentBsonType();
+            var bsonType = bsonReader.CurrentBsonType;
+            if (bsonReader.State != BsonReaderState.Type)
+                bsonType = bsonReader.GetCurrentBsonType();
+
             string message;
             switch (bsonType)
             {
@@ -109,6 +113,16 @@ namespace BH.Engine.Serialiser.BsonSerializers
                             case "BHoM_Guid":
                                 document.BHoM_Guid = new Guid(value as string);
                                 break;
+                            case "CustomData":
+                                while (value is CustomObject)
+                                    value = ((CustomObject)value).CustomData;
+                                if (value is Dictionary<string, object>)
+                                {
+                                    Dictionary<string, object> customData = value as Dictionary<string, object>;
+                                    if (customData.Count > 0)
+                                        dic["AdditionalData"] = value;
+                                }
+                                break;
                             default:
                                 dic[name] = value;
                                 break;
@@ -124,14 +138,15 @@ namespace BH.Engine.Serialiser.BsonSerializers
         }
 
         /*******************************************/
+        /**** Private Methods                   ****/
+        /*******************************************/
 
         protected void ConfigureDeserializationContext(BsonDeserializationContext.Builder builder)
         {
             builder.DynamicDocumentSerializer = this;
             builder.DynamicArraySerializer = m_ListSerializer;
         }
-
-
+ 
         /*******************************************/
         /**** Private Fields                    ****/
         /*******************************************/

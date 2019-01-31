@@ -177,7 +177,7 @@ namespace BH.Engine.Serialiser
                 cm.AutoMap();
                 cm.SetDiscriminator(type.FullName);
                 cm.SetDiscriminatorIsRequired(true);
-                cm.SetIgnoreExtraElements(true);   // It would have been nice to use cm.MapExtraElementsProperty("CustomData") but it doesn't work for inherited properties
+                cm.SetIgnoreExtraElements(false);   // It would have been nice to use cm.MapExtraElementsProperty("CustomData") but it doesn't work for inherited properties
                 BsonClassMap.RegisterClassMap(cm);
 
                 BsonSerializer.RegisterDiscriminatorConvention(type, new GenericDiscriminatorConvention());
