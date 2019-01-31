@@ -1,0 +1,25 @@
+# BHoM_Engine REPO CODEOWNERS
+
+# default global
+* @al-fisher @rwemay
+
+
+# project owners 
+
+#NEED OWNER: /Acoustic_Engine
+#NEED OWNER: /Architecture_Engine
+/BHoM_Engine @adecler
+/Engine_Test @adecler
+/Common_Engine @al-fisher @rwemay
+/DataManipulation_Engine @adecler
+/DataStructure_Engine @adecler
+/Environment_Engine @michaldengusiak @FraserGreenroyd
+/Geometry_Engine @pawelbaran
+/Humans_Engine @al-fisher
+/MachineLearning_Engine @epignatelli
+/Planning_Engine @rwemay
+/Reflection_Engine @adecler
+/Serialiser_Engine @adecler
+/Structure_Engine @IsakNaslundBh
+/Testing_Engine @adecler
+#NEED OWNER: /Units_Engine
