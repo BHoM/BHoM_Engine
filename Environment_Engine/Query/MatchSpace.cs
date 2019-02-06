@@ -54,11 +54,46 @@ namespace BH.Engine.Environment
 
         public static List<List<BuildingElement>> MatchSpaces(this List<List<BuildingElement>> elementsAsSpaces, List<Space> spaces)
         {
+            spaces = new List<oM.Environment.Elements.Space>(spaces);
+
             foreach (List<BuildingElement> bes in elementsAsSpaces)
             {
                 Space foundSp = null;
 
-                foreach (Space s in spaces)
+                var be1 = bes.Where(x => x.CustomData["AdjacentSpaceID"].ToString() == "-1").FirstOrDefault();
+                if (be1 != null)
+                    foundSp = spaces.Where(x => x.CustomData["Revit_elementId"].ToString() == be1.CustomData["SpaceID"].ToString()).FirstOrDefault();
+                else
+                {
+                    Dictionary<String, int> spaceNames = new Dictionary<string, int>();
+                    foreach(BuildingElement be in bes)
+                    {
+                        if (spaceNames.ContainsKey(be.CustomData["SpaceID"].ToString()))
+                            spaceNames[be.CustomData["SpaceID"].ToString()]++;
+                        else
+                            spaceNames.Add(be.CustomData["SpaceID"].ToString(), 1);
+
+                        if (be.CustomData["AdjacentSpaceID"].ToString() != "-1")
+                        {
+                            if (spaceNames.ContainsKey(be.CustomData["AdjacentSpaceID"].ToString()))
+                                spaceNames[be.CustomData["AdjacentSpaceID"].ToString()]++;
+                            else
+                                spaceNames.Add(be.CustomData["AdjacentSpaceID"].ToString(), 1);
+                        }
+                    }
+
+                    string spaceID = spaceNames.Where(x => x.Value == bes.Count).FirstOrDefault().Key;
+                    foundSp = spaces.Where(x => x.CustomData["Revit_elementId"].ToString() == spaceID).FirstOrDefault();
+                }
+
+                /*int count = 0;
+                while(foundSp == null && count < bes.Count)
+                {
+                    foundSp = spaces.Where(x => x.CustomData["Revit_elementId"].ToString() == bes[count].CustomData["SpaceID"].ToString() || x.CustomData["Revit_elementId"].ToString() == bes[count].CustomData["AdjacentSpaceID"].ToString()).FirstOrDefault();
+                    count++;
+                }
+
+                /*foreach (Space s in spaces)
                 {
                     if (s.Location == null)
                     {
@@ -71,7 +106,8 @@ namespace BH.Engine.Environment
                         foundSp = s;
                         break;
                     }
-                }
+                }*/
+                
 
                 if (foundSp != null)
                 {
@@ -81,7 +117,14 @@ namespace BH.Engine.Environment
                             be.CustomData["Space_Custom_Data"] = foundSp.CustomData;
                         else
                             be.CustomData.Add("Space_Custom_Data", foundSp.CustomData);
+
+                        if (be.CustomData.ContainsKey("SAM_SPACE_NAME_TEST"))
+                            be.CustomData["SAM_SPACE_NAME_TEST"] = foundSp.CustomData["SAM_SpaceName"];
+                        else
+                            be.CustomData.Add("SAM_SPACE_NAME_TEST", foundSp.CustomData["SAM_SpaceName"]);
                     }
+
+                    spaces.Remove(foundSp);
                 }
             }
 
