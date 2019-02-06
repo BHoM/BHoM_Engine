@@ -33,12 +33,13 @@ namespace BH.Engine.Environment
 {
     public static partial class Create
     {
-        public static EnvironmentContextProperties EnvironmentContextProperties(string elementID = "", string description = "")
+        public static EnvironmentContextProperties EnvironmentContextProperties(string elementID = "", string description = "", string typeName = "")
         {
             return new EnvironmentContextProperties
             {
                 ElementID = elementID,
                 Description = description,
+                TypeName = typeName,
             };
         }
     }

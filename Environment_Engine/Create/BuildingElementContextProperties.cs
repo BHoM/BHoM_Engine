@@ -32,7 +32,7 @@ namespace BH.Engine.Environment
 {
     public static partial class Create
     {
-        public static BuildingElementContextProperties BuildingElementContextProperties(List<string> connectedSpaces = null, bool isAir = false, bool isGround = false, string colour = "", bool reversed = false, string familyName = "")
+        public static BuildingElementContextProperties BuildingElementContextProperties(List<string> connectedSpaces = null, bool isAir = false, bool isGround = false, string colour = "", bool reversed = false)
         {
             if (connectedSpaces == null) connectedSpaces = new List<string>();
 
@@ -43,7 +43,6 @@ namespace BH.Engine.Environment
                 IsGround = isGround,
                 Colour = colour,
                 Reversed = reversed,
-                FamilyName = familyName,
             };
         }
     }
