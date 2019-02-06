@@ -53,6 +53,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Build\Reflection_Engine.dll</HintPath>
     </Reference>
+    <Reference Include="Reflection_oM, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\BHoM\Build\Reflection_oM.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -66,7 +70,19 @@
     <Compile Include="Compute\BooleanIntersection.cs" />
     <Compile Include="Compute\BuildSpace.cs" />
     <Compile Include="Create\Building.cs" />
+    <Compile Include="Create\BuildingAnalyticalProperties.cs" />
+    <Compile Include="Create\BuildingContextProperties.cs" />
     <Compile Include="Create\BuildingElement.cs" />
+    <Compile Include="Create\BuildingElementAnalyticalProperties.cs" />
+    <Compile Include="Create\BuildingElementContextProperties.cs" />
+    <Compile Include="Create\BuildingResultsProperties.cs" />
+    <Compile Include="Create\Construction.cs" />
+    <Compile Include="Create\ElementProperties.cs" />
+    <Compile Include="Create\EnvironmentContextProperties.cs" />
+    <Compile Include="Create\Material.cs" />
+    <Compile Include="Create\MaterialPropertiesGas.cs" />
+    <Compile Include="Create\MaterialPropertiesOpaque.cs" />
+    <Compile Include="Create\MaterialPropertiesTransparent.cs" />
     <Compile Include="Create\NewElement1D.cs" />
     <Compile Include="Create\NewInternalElement2D.cs" />
     <Compile Include="Create\Opening.cs" />
@@ -74,7 +90,12 @@
     <Compile Include="Create\BuildingElementProperties.cs" />
     <Compile Include="Create\SimulationResult.cs" />
     <Compile Include="Create\Space.cs" />
+    <Compile Include="Create\SpaceAnalyticalProperties.cs" />
+    <Compile Include="Modify\AddMaterial.cs" />
+    <Compile Include="Modify\RemoveMaterial.cs" />
+    <Compile Include="Modify\SetExtendedProperties.cs" />
     <Compile Include="Modify\SetInternalElements2D.cs" />
+    <Compile Include="Modify\SetMaterialProperties.cs" />
     <Compile Include="Modify\SetOutlineElements1D.cs" />
     <Compile Include="Modify\JoinBuildingElements.cs" />
     <Compile Include="Modify\SplitBuildingElements.cs" />
@@ -100,6 +121,7 @@
     <Compile Include="Query\Edges.cs" />
     <Compile Include="Query\ElementsNotMatched.cs" />
     <Compile Include="Query\ExposedToSun.cs" />
+    <Compile Include="Query\ExtendedProperties.cs" />
     <Compile Include="Query\FloorGeometry.cs" />
     <Compile Include="Query\Height.cs" />
     <Compile Include="Query\IsCoPlanar.cs" />
