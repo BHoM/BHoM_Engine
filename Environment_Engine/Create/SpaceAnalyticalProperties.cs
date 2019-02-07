@@ -33,7 +33,7 @@ namespace BH.Engine.Environment
 {
     public static partial class Create
     {
-        public static SpaceAnalyticalProperties SpaceAnalyticalProperties(double internalDomesticHotWater = 0.0, double daylightFactor = 0.0, double facadeLength = 0.0, double fixedConvectionCoefficient = 0.0, int sizeCooling = 0, int sizeHeating = 0, double radiantProportion = 0.0)
+        public static SpaceAnalyticalProperties SpaceAnalyticalProperties(double internalDomesticHotWater = 0.0, double daylightFactor = 0.0, double facadeLength = 0.0, double fixedConvectionCoefficient = 0.0, int sizeCooling = 0, int sizeHeating = 0)
         {
             return new SpaceAnalyticalProperties
             {
@@ -43,7 +43,6 @@ namespace BH.Engine.Environment
                 FixedConvectionCoefficient = fixedConvectionCoefficient,
                 SizeCooling = sizeCooling,
                 SizeHeating = sizeHeating,
-                RadiantProportion = radiantProportion,
             };
         }
     }
