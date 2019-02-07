@@ -75,11 +75,6 @@ namespace BH.Engine.Environment
                             be.CustomData["Space_Custom_Data"] = foundSp.CustomData;
                         else
                             be.CustomData.Add("Space_Custom_Data", foundSp.CustomData);
-
-                        if (be.CustomData.ContainsKey("SAM_SPACE_NAME_TEST"))
-                            be.CustomData["SAM_SPACE_NAME_TEST"] = foundSp.CustomData["SAM_SpaceName"];
-                        else
-                            be.CustomData.Add("SAM_SPACE_NAME_TEST", foundSp.CustomData["SAM_SpaceName"]);
                     }
 
                     spaces.Remove(foundSp);
