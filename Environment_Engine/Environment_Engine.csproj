@@ -109,6 +109,7 @@
     <Compile Include="Query\BuildingObject.cs" />
     <Compile Include="Query\CleanSpace.cs" />
     <Compile Include="Query\ClosedShellGeometry.cs" />
+    <Compile Include="Query\Construction.cs" />
     <Compile Include="Query\CullDuplicates.cs" />
     <Compile Include="Query\Curve.cs" />
     <Compile Include="Modify\Add.cs" />
