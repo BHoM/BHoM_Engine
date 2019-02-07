@@ -98,6 +98,18 @@ namespace BH.Engine.Environment
             List<IBuildingObject> objs = elements.ConvertAll(x => (IBuildingObject)x).ToList();
             return objs.ObjectsByElementType(BuildingElementType.Wall).ConvertAll(x => (BuildingElement)x).ToList();
         }
+
+        public static List<BuildingElement> ElementsWithoutType(this List<BuildingElement> elements, BuildingElementType type)
+        {
+            List<IBuildingObject> objs = elements.ConvertAll(x => (IBuildingObject)x).ToList();
+            return objs.ObjectsWithoutElementType(type).ConvertAll(x => (BuildingElement)x).ToList();
+        }
+
+        public static List<BuildingElement> ElementsByName(this List<BuildingElement> elements, string name)
+        {
+            List<IBuildingObject> objs = elements.ConvertAll(x => (IBuildingObject)x).ToList();
+            return objs.ObjectsByName(name).ConvertAll(x => (BuildingElement)x).ToList();
+        }
     }
 }
 
