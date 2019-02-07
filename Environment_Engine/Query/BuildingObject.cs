@@ -44,9 +44,19 @@ namespace BH.Engine.Environment
             return objs.Where(x => x.EnvironmentContextProperties() != null && (x.EnvironmentContextProperties() as EnvironmentContextProperties).TypeName == typeName).ToList();
         }
 
+        public static List<IBuildingObject> ObjectsByName(this List<IBuildingObject> objs, string name)
+        {
+            return objs.Where(x => x.Name == name).ToList();
+        }
+
         public static List<IBuildingObject> ObjectsByElementType(this List<IBuildingObject> elements, BuildingElementType type)
         {
             return elements.Where(x => x.ElementProperties() != null && (x.ElementProperties() as ElementProperties).BuildingElementType == type).ToList();
+        }
+
+        public static List<IBuildingObject> ObjectsWithoutElementType(this List<IBuildingObject> elements, BuildingElementType type)
+        {
+            return elements.Where(x => x.ElementProperties() != null && (x.ElementProperties() as ElementProperties).BuildingElementType != type).ToList();
         }
     }
 }
