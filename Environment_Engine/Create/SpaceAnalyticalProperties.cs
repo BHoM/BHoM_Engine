@@ -41,8 +41,8 @@ namespace BH.Engine.Environment
                 DaylightFactor = daylightFactor,
                 FacadeLength = facadeLength,
                 FixedConvectionCoefficient = fixedConvectionCoefficient,
-                SizeCooling = sizeCooling,
-                SizeHeating = sizeHeating,
+                SizeCoolingMethod = sizeCooling,
+                SizeHeatingMethod = sizeHeating,
             };
         }
     }
