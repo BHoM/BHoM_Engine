@@ -69,6 +69,7 @@ namespace BH.Engine.Environment
 
                 if (foundSp != null)
                 {
+                    foundSp.CustomData.Add("SAM_SpaceName", foundSp.Name);
                     foreach (BuildingElement be in bes)
                     {
                         if (be.CustomData.ContainsKey("Space_Custom_Data"))
