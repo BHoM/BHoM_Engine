@@ -106,6 +106,7 @@
     <Compile Include="Query\Building.cs" />
     <Compile Include="Query\BuildingArea.cs" />
     <Compile Include="Query\BuildingElements.cs" />
+    <Compile Include="Query\BuildingObject.cs" />
     <Compile Include="Query\CleanSpace.cs" />
     <Compile Include="Query\ClosedShellGeometry.cs" />
     <Compile Include="Query\CullDuplicates.cs" />
