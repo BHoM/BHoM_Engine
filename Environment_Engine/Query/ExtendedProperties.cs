@@ -78,6 +78,14 @@ namespace BH.Engine.Environment
             return ElementProperties(obj as dynamic);
         }
 
+        [Description("BH.Engine.Environment.Query.EnvironmentContextProperties => gets a set of environment context properties for a building object")]
+        [Input("obj", "IBuildingObject - an environmental building object")]
+        [Output("BHoM Extended Properties - null if property type is not on the object")]
+        public static IBHoMExtendedProperties EnvironmentContextProperties(this IBuildingObject obj)
+        {
+            return EnvironmentContextProperties(obj as dynamic);
+        }
+
         //Context properties
         private static IBHoMExtendedProperties ContextProperties(this Building building)
         {
@@ -160,6 +168,27 @@ namespace BH.Engine.Environment
         private static IBHoMExtendedProperties ElementProperties(this Space space)
         {
             return space.PropertiesByType(typeof(ElementProperties));
+        }
+
+        //Environment context properties
+        private static IBHoMExtendedProperties EnvironmentContextProperties(this Building building)
+        {
+            return building.PropertiesByType(typeof(EnvironmentContextProperties));
+        }
+
+        private static IBHoMExtendedProperties EnvironmentContextProperties(this BuildingElement element)
+        {
+            return element.PropertiesByType(typeof(EnvironmentContextProperties));
+        }
+
+        private static IBHoMExtendedProperties EnvironmentContextProperties(this Opening opening)
+        {
+            return opening.PropertiesByType(typeof(EnvironmentContextProperties));
+        }
+
+        private static IBHoMExtendedProperties EnvironmentContextProperties(this Space space)
+        {
+            return space.PropertiesByType(typeof(EnvironmentContextProperties));
         }
     }
 }
