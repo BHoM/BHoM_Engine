@@ -43,5 +43,10 @@ namespace BH.Engine.Environment
         {
             return objs.Where(x => x.EnvironmentContextProperties() != null && (x.EnvironmentContextProperties() as EnvironmentContextProperties).TypeName == typeName).ToList();
         }
+
+        public static List<IBuildingObject> ObjectsByElementType(this List<IBuildingObject> elements, BuildingElementType type)
+        {
+            return elements.Where(x => x.ElementProperties() != null && (x.ElementProperties() as ElementProperties).BuildingElementType == type).ToList();
+        }
     }
 }

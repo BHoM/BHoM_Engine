@@ -30,6 +30,7 @@ using System.Linq;
 
 using BH.oM.Geometry;
 using BH.Engine.Geometry;
+using BH.oM.Environment.Interface;
 
 namespace BH.Engine.Environment
 {
@@ -92,16 +93,11 @@ namespace BH.Engine.Environment
             return shadingElements;
         }
 
-        public static List<BuildingElement> ElementsByType(this List<BuildingElement> elements, BuildingElementType type)
-        {
-            return elements.Where(x => x.BuildingElementProperties.BuildingElementType == type).ToList();
-        }
-
         public static List<BuildingElement> ElementsByWallType(this List<BuildingElement> elements)
         {
-            return elements.ElementsByType(BuildingElementType.Wall);
+            List<IBuildingObject> objs = elements.ConvertAll(x => (IBuildingObject)x).ToList();
+            return objs.ObjectsByElementType(BuildingElementType.Wall).ConvertAll(x => (BuildingElement)x).ToList();
         }
-
     }
 }
 
