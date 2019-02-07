@@ -25,6 +25,7 @@ using System.Collections.Generic;
 using BH.oM.Environment.Elements;
 using BH.oM.Geometry;
 using BH.oM.Base;
+using BH.oM.Environment.Properties;
 
 namespace BH.Engine.Environment
 {
@@ -146,10 +147,11 @@ namespace BH.Engine.Environment
 
             foreach (BuildingElement be in elements)
             {
-                if (be.CustomData.ContainsKey("SpaceID") && be.CustomData["SpaceID"] != null)
-                    spaceNames.Add(be.CustomData["SpaceID"].ToString());
-                if(be.CustomData.ContainsKey("AdjacentSpaceID") && be.CustomData["AdjacentSpaceID"] != null)
-                    spaceNames.Add(be.CustomData["AdjacentSpaceID"].ToString());
+                if(be.ContextProperties() != null && (be.ContextProperties() as BuildingElementContextProperties) != null)
+                {
+                    BuildingElementContextProperties props = be.ContextProperties() as BuildingElementContextProperties;
+                    spaceNames.AddRange(props.ConnectedSpaces);
+                }
             }
 
             return spaceNames.Where(x => !x.Equals("-1")).Distinct().ToList();
