@@ -79,17 +79,20 @@ namespace BH.Engine.Environment
 
             for (int x = 0; x < planes.Count; x++)
             {
-                if ((BH.Engine.Geometry.Query.PlaneIntersection(line, planes[x], false)) == null) continue;
-
-                List<Point> intersectingPoints = new List<oM.Geometry.Point>();
-                intersectingPoints.Add(BH.Engine.Geometry.Query.PlaneIntersection(line, planes[x]));
-                Polyline pLine = new Polyline() { ControlPoints = space[x].PanelCurve.IControlPoints() };
-
-                if (intersectingPoints != null && BH.Engine.Geometry.Query.IsContaining(pLine, intersectingPoints, true, 1e-05))
+                if (planes[x] != null)
                 {
-                    intersectPoints.AddRange(intersectingPoints);
-                    if (intersectPoints.CullDuplicates().Count == intersectPoints.Count()) //Check if the point already has been added to the list
-                        counter++;
+                    if ((BH.Engine.Geometry.Query.PlaneIntersection(line, planes[x], false)) == null) continue;
+
+                    List<Point> intersectingPoints = new List<oM.Geometry.Point>();
+                    intersectingPoints.Add(BH.Engine.Geometry.Query.PlaneIntersection(line, planes[x]));
+                    Polyline pLine = new Polyline() { ControlPoints = space[x].PanelCurve.IControlPoints() };
+
+                    if (intersectingPoints != null && BH.Engine.Geometry.Query.IsContaining(pLine, intersectingPoints, true, 1e-05))
+                    {
+                        intersectPoints.AddRange(intersectingPoints);
+                        if (intersectPoints.CullDuplicates().Count == intersectPoints.Count()) //Check if the point already has been added to the list
+                            counter++;
+                    }
                 }
             }
 
