@@ -34,9 +34,14 @@ namespace BH.Engine.Environment
 {
     public static partial class Query
     {
-        public static List<IBuildingObject> ObjectByElementID(this List<IBuildingObject> objs, string elementID)
+        public static List<IBuildingObject> ObjectsByElementID(this List<IBuildingObject> objs, string elementID)
         {
             return objs.Where(x => x.EnvironmentContextProperties() != null && (x.EnvironmentContextProperties() as EnvironmentContextProperties).ElementID == elementID).ToList();
+        }
+
+        public static List<IBuildingObject> ObjectsByTypeName(this List<IBuildingObject> objs, string typeName)
+        {
+            return objs.Where(x => x.EnvironmentContextProperties() != null && (x.EnvironmentContextProperties() as EnvironmentContextProperties).TypeName == typeName).ToList();
         }
     }
 }
