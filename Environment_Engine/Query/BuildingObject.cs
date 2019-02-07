@@ -36,8 +36,7 @@ namespace BH.Engine.Environment
     {
         public static List<IBuildingObject> ObjectByElementID(this List<IBuildingObject> objs, string elementID)
         {
-            return null;
-            //return objs.Where
+            return objs.Where(x => x.EnvironmentContextProperties() != null && (x.EnvironmentContextProperties() as EnvironmentContextProperties).ElementID == elementID).ToList();
         }
     }
 }
