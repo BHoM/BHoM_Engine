@@ -75,6 +75,7 @@
     <Compile Include="Create\BuildingElement.cs" />
     <Compile Include="Create\BuildingElementAnalyticalProperties.cs" />
     <Compile Include="Create\BuildingElementContextProperties.cs" />
+    <Compile Include="Create\BuildingElementProperties.cs" />
     <Compile Include="Create\BuildingResultsProperties.cs" />
     <Compile Include="Create\Construction.cs" />
     <Compile Include="Create\ElementProperties.cs" />
