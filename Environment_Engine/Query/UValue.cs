@@ -30,6 +30,7 @@ using BHG = BH.oM.Geometry;
 using BH.Engine.Geometry;
 
 using BH.oM.Environment.Elements;
+using BH.oM.Environment.Properties;
 
 namespace BH.Engine.Environment
 {
@@ -42,45 +43,47 @@ namespace BH.Engine.Environment
         public static double UValue(this BuildingElement element)
         {
             if (element == null) return 0;
-            if (element.BuildingElementProperties == null) return -1;
-            if (element.BuildingElementProperties.Construction == null) return -1;
+            if (element.ElementProperties() == null) return -1;
+            if ((element.ElementProperties() as ElementProperties) == null) return -1;
 
-            if (element.BuildingElementProperties.Construction.UValues.Count == 0) return -1;
+            ElementProperties props = element.ElementProperties() as ElementProperties;
 
-            if (element.BuildingElementProperties.Construction.UValues.Count == 1) return element.BuildingElementProperties.Construction.UValues[0];
+            if (props.Construction.UValues.Count == 0) return -1;
 
-            switch(element.BuildingElementProperties.BuildingElementType)
+            if (props.Construction.UValues.Count == 1) return props.Construction.UValues[0];
+
+            switch(props.BuildingElementType)
             {
                 case BuildingElementType.Ceiling:
-                    if (element.BuildingElementProperties.Construction.UValues.Count < 5) return -1;
-                    return element.BuildingElementProperties.Construction.UValues[4];
+                    if (props.Construction.UValues.Count < 5) return -1;
+                    return props.Construction.UValues[4];
                 case BuildingElementType.CurtainWall:
-                    if (element.BuildingElementProperties.Construction.UValues.Count < 7) return -1;
-                    return element.BuildingElementProperties.Construction.UValues[6];
+                    if (props.Construction.UValues.Count < 7) return -1;
+                    return props.Construction.UValues[6];
                 case BuildingElementType.Door:
-                    if (element.BuildingElementProperties.Construction.UValues.Count < 1) return -1;
-                    return element.BuildingElementProperties.Construction.UValues[0];
+                    if (props.Construction.UValues.Count < 1) return -1;
+                    return props.Construction.UValues[0];
                 case BuildingElementType.Floor:
-                    if (element.BuildingElementProperties.Construction.UValues.Count < 6) return -1;
-                    return element.BuildingElementProperties.Construction.UValues[5]; //Exposed floor would be 2...
+                    if (props.Construction.UValues.Count < 6) return -1;
+                    return props.Construction.UValues[5]; //Exposed floor would be 2...
                 case BuildingElementType.Roof:
-                    if (element.BuildingElementProperties.Construction.UValues.Count < 2) return -1;
-                    return element.BuildingElementProperties.Construction.UValues[1];
+                    if (props.Construction.UValues.Count < 2) return -1;
+                    return props.Construction.UValues[1];
                 case BuildingElementType.Rooflight:
-                    if (element.BuildingElementProperties.Construction.UValues.Count < 7) return -1;
-                    return element.BuildingElementProperties.Construction.UValues[6];
+                    if (props.Construction.UValues.Count < 7) return -1;
+                    return props.Construction.UValues[6];
                 case BuildingElementType.Wall:
-                    if (element.BuildingElementProperties.Construction.UValues.Count < 4) return -1;
-                    return element.BuildingElementProperties.Construction.UValues[3];
+                    if (props.Construction.UValues.Count < 4) return -1;
+                    return props.Construction.UValues[3];
                 case BuildingElementType.Window:
-                    if (element.BuildingElementProperties.Construction.UValues.Count < 1) return -1;
-                    return element.BuildingElementProperties.Construction.UValues[0]; //Not sure if correct...
+                    if (props.Construction.UValues.Count < 1) return -1;
+                    return props.Construction.UValues[0]; //Not sure if correct...
                 case BuildingElementType.RooflightWithFrame:
-                    if (element.BuildingElementProperties.Construction.UValues.Count < 7) return -1;
-                    return element.BuildingElementProperties.Construction.UValues[6];
+                    if (props.Construction.UValues.Count < 7) return -1;
+                    return props.Construction.UValues[6];
                 case BuildingElementType.WindowWithFrame:
-                    if (element.BuildingElementProperties.Construction.UValues.Count < 1) return -1;
-                    return element.BuildingElementProperties.Construction.UValues[0]; //Not sure if correct...
+                    if (props.Construction.UValues.Count < 1) return -1;
+                    return props.Construction.UValues[0]; //Not sure if correct...
                 default:
                     return -1;
             }

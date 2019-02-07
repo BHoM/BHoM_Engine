@@ -29,6 +29,7 @@ using System.Threading.Tasks;
 using BHG = BH.oM.Geometry;
 using BH.Engine.Geometry;
 using BH.oM.Environment.Elements;
+using BH.oM.Environment.Properties;
 
 using BH.oM.Base;
 
@@ -73,7 +74,7 @@ namespace BH.Engine.Environment
 
         public static List<BuildingElement> Openings(this List<BuildingElement> elements)
         {
-            return elements.Where(x => x.BuildingElementProperties.BuildingElementType == BuildingElementType.Window || x.BuildingElementProperties.BuildingElementType == BuildingElementType.Door).ToList();
+            return elements.Where(x => x.ElementProperties() != null && (x.ElementProperties() as ElementProperties) != null && ((x.ElementProperties() as ElementProperties).BuildingElementType == BuildingElementType.Window || (x.ElementProperties() as ElementProperties).BuildingElementType == BuildingElementType.Door)).ToList();
         }
     }
 }

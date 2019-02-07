@@ -27,6 +27,7 @@ using System.Linq;
 
 using BH.oM.Environment.Elements;
 using BH.Engine.Geometry;
+using BH.oM.Environment.Properties;
 
 namespace BH.Engine.Environment
 {
@@ -38,7 +39,7 @@ namespace BH.Engine.Environment
 
         public static List<BuildingElement> BuildSpace(this List<BuildingElement> elements, string spaceName)
         {
-            return elements.Where(x => x.CustomData["SpaceID"].ToString() == spaceName || x.CustomData["AdjacentSpaceID"].ToString() == spaceName).ToList();
+            return elements.Where(x => x.ContextProperties() != null && (x.ContextProperties() as BuildingElementContextProperties) != null && ((x.ContextProperties() as BuildingElementContextProperties).ConnectedSpaces[0] == spaceName || (x.ContextProperties() as BuildingElementContextProperties).ConnectedSpaces[1] == spaceName)).ToList();
         }
 
         public static List<List<BuildingElement>> BuildSpaces(this List<BuildingElement> elements, List<string> spaceNames)
