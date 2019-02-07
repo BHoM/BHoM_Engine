@@ -34,6 +34,11 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
+        public static List<Space> SpaceByName(this List<Space> spaces, string name)
+        {
+            return spaces.Where(x => x.Name == name).ToList();
+        }
+
         public static List<Space> Spaces(this List<IBHoMObject> bhomObjects)
         {
             List<Space> spaces = new List<Space>();
