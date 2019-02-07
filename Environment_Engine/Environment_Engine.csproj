@@ -87,7 +87,6 @@
     <Compile Include="Create\NewInternalElement2D.cs" />
     <Compile Include="Create\Opening.cs" />
     <Compile Include="Create\Panel.cs" />
-    <Compile Include="Create\BuildingElementProperties.cs" />
     <Compile Include="Create\SimulationResult.cs" />
     <Compile Include="Create\Space.cs" />
     <Compile Include="Create\SpaceAnalyticalProperties.cs" />

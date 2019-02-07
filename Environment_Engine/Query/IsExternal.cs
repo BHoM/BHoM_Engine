@@ -22,6 +22,7 @@
 
 using BH.oM.Environment.Elements;
 using System.Collections.Generic;
+using BH.oM.Environment.Properties;
 
 namespace BH.Engine.Environment
 {
@@ -33,10 +34,10 @@ namespace BH.Engine.Environment
 
         public static bool IsExternal(this BuildingElement buildingElement)
         {
-            if (buildingElement == null)
+            if (buildingElement == null || buildingElement.ElementProperties() == null || (buildingElement.ElementProperties() as ElementProperties) == null)
                 return false;
 
-            return buildingElement.BuildingElementProperties.BuildingElementType == BuildingElementType.Roof; //TODO: Put a more robust check of whether the element is external or not in...
+            return (buildingElement.ElementProperties() as ElementProperties).BuildingElementType == BuildingElementType.Roof; //TODO: Put a more robust check of whether the element is external or not in...
         }
 
         /***************************************************/

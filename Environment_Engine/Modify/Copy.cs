@@ -63,9 +63,9 @@ namespace BH.Engine.Environment
         public static BuildingElement Copy(this BuildingElement buildingElement)
         {
             BuildingElement aBuildingElement = buildingElement.GetShallowClone(true) as BuildingElement;
-            aBuildingElement.BuildingElementProperties = buildingElement.BuildingElementProperties;
             aBuildingElement.Openings = new List<Opening>(buildingElement.Openings);
             aBuildingElement.CustomData = buildingElement.CustomData;
+            aBuildingElement.ExtendedProperties = new List<IBHoMExtendedProperties>(buildingElement.ExtendedProperties);
             return aBuildingElement;
         }
 
