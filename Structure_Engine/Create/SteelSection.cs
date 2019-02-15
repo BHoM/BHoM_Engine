@@ -26,6 +26,7 @@ using BH.oM.Structure.Properties.Section;
 using BH.oM.Structure.Properties.Section.ShapeProfiles;
 using BH.oM.Geometry;
 using BH.oM.Common.Materials;
+using BH.oM.Reflection;
 using System.Linq;
 
 
@@ -112,9 +113,10 @@ namespace BH.Engine.Structure
 
         public static SteelSection SteelSectionFromProfile(IProfile profile, Material material = null, string name = "")
         {
+            Output<IProfile, Dictionary<string, object>> result = Compute.Integrate(profile, Tolerance.MicroDistance);
 
-            List<ICurve> edges = profile.Edges.ToList();
-            Dictionary<string, object> constants = Compute.Integrate(edges, Tolerance.MicroDistance);
+            profile = result.Item1;
+            Dictionary<string, object> constants = result.Item2;
 
             constants["J"] = profile.ITorsionalConstant();
             constants["Iw"] = profile.IWarpingConstant();
