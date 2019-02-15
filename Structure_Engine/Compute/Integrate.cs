@@ -25,6 +25,9 @@ using System.Linq;
 using System.Collections.Generic;
 using BH.oM.Geometry;
 using BH.Engine.Geometry;
+using BH.oM.Structure.Properties.Section.ShapeProfiles;
+using BH.oM.Reflection;
+using BH.Engine.Base;
 
 namespace BH.Engine.Structure
 {
@@ -50,8 +53,8 @@ namespace BH.Engine.Structure
             double totalWidth = max.X - min.X;
             double totalHeight = max.Y - min.Y;
 
-            List<IntegrationSlice> verticalSlices = Geometry.Create.IntegrationSlices(curves, Vector.XAxis, totalWidth/1000, tolerance);
-            List<IntegrationSlice> horizontalSlices = Geometry.Create.IntegrationSlices(curves, Vector.YAxis, totalHeight/1000, tolerance);
+            List<IntegrationSlice> verticalSlices = Geometry.Create.IntegrationSlices(curves, Vector.XAxis, totalWidth / 1000, tolerance);
+            List<IntegrationSlice> horizontalSlices = Geometry.Create.IntegrationSlices(curves, Vector.YAxis, totalHeight / 1000, tolerance);
 
             results["VerticalSlices"] = verticalSlices;
             results["HorizontalSlices"] = horizontalSlices;
@@ -91,9 +94,82 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
+
+        public static Output<IProfile, Dictionary<string, object>> Integrate(IProfile profile, double tolerance = Tolerance.Distance)
+        {
+            Dictionary<string, object> results = Integrate(profile.Edges.ToList(), tolerance);
+
+            Vector adjustment = new Vector() { X = -(double)results["CentreY"], Y = -(double)results["CentreZ"], Z = 0 };
+
+            results["CentreY"] = 0.0d;
+            results["CentreZ"] = 0.0d;
+
+            return new Output<IProfile, Dictionary<string, object>> { Item1 = AdjustCurves(profile, adjustment), Item2 = results };
+        }
+
+        /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
 
+        private static IProfile AdjustCurves(IProfile profile, Vector adjustment)
+        {
+            //Moving all curves to ensure the global origin sits in the centroid of the section.
+            IProfile clone = profile.DeepClone();
+
+            foreach (ICurve crv in clone.Edges)
+            {
+                AdjustCurve(crv, adjustment);
+            }
+
+            return clone;
+        }
+
+        /***************************************************/
+
+        private static void AdjustCurve(ICurve crv, Vector adjustment)
+        {
+
+            if (crv is Line)
+            {
+                Line line = crv as Line;
+                line.Start = line.Start.Translate(adjustment);
+                line.End = line.End.Translate(adjustment);
+            }
+            else if (crv is Arc)
+            {
+                Arc arc = crv as Arc;
+                arc.CoordinateSystem.Origin = arc.CoordinateSystem.Origin.Translate(adjustment);
+            }
+            else if (crv is Circle)
+            {
+                Circle circ = crv as Circle;
+                circ.Centre = circ.Centre.Translate(adjustment);
+            }
+            else if (crv is Ellipse)
+            {
+                Ellipse ellipse = crv as Ellipse;
+                ellipse.Centre = ellipse.Centre.Translate(adjustment);
+            }
+            else if (crv is PolyCurve)
+            {
+                PolyCurve poly = crv as PolyCurve;
+                foreach (ICurve innerCrv in poly.Curves)
+                {
+                    AdjustCurve(innerCrv, adjustment);
+                }
+            }
+            else
+            {
+                List<Point> pts = crv.IControlPoints();
+
+                for (int i = 0; i < pts.Count; i++)
+                {
+                    pts[i] = pts[i].Translate(adjustment);
+                }
+            }
+        }
+
+        /***************************************************/
 
         public static double PlasticModulus(List<IntegrationSlice> slices, double area, double max, double min)
         {
@@ -107,7 +183,7 @@ namespace BH.Engine.Structure
                 double sliceArea = slice.Length * slice.Width;
                 if (result + sliceArea < area / 2)
                 {
-                    result += sliceArea;                   
+                    result += sliceArea;
                 }
                 else
                 {
