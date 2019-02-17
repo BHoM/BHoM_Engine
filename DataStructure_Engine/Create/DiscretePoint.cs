@@ -32,16 +32,17 @@ namespace BH.Engine.DataStructure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static DiscreetPoint DiscreetPoint(int x, int y, int z)
+        public static DiscretePoint DiscretePoint(int x, int y, int z)
         {
-            return new DiscreetPoint { X = x, Y = y, Z = z };
+            return new DiscretePoint { X = x, Y = y, Z = z };
         }
 
         /***************************************************/
 
-        public static DiscreetPoint DiscreetPoint(Point point, double step = 1.0)
+        public static DiscretePoint DiscretePoint(Point point, double step = 1.0)
         {
-            return new DiscreetPoint {
+            return new DiscretePoint
+            {
                 X = (int)Math.Floor(point.X / step),
                 Y = (int)Math.Floor(point.Y / step),
                 Z = (int)Math.Floor(point.Z / step)

@@ -51,9 +51,9 @@ namespace BH.Engine.DataStructure
 
         public static void Add<T>(this PointMatrix<T> matrix, Point position, T data = default(T))
         {
-            Dictionary<DiscreetPoint, List<LocalData<T>>> cells = matrix.Data;
+            Dictionary<DiscretePoint, List<LocalData<T>>> cells = matrix.Data;
 
-            DiscreetPoint key = Create.DiscreetPoint(position, matrix.CellSize);
+            DiscretePoint key = Create.DiscretePoint(position, matrix.CellSize);
             if (!cells.ContainsKey(key))
                 cells[key] = new List<LocalData<T>>();
             cells[key].Add(new LocalData<T> { Position = position, Data = data });
