@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
  *
@@ -20,9 +20,8 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
  
-using BH.oM.DataStructure;
 using BH.oM.Geometry;
-using System.Collections.Generic;
+using System;
 using System.Linq;
 
 namespace BH.Engine.DataStructure
@@ -33,11 +32,12 @@ namespace BH.Engine.DataStructure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static LocalData<T> ClosestData<T>(this PointMatrix<T> matrix, Point refPt, double maxDist)
+        internal static double PMSquareDistance(this Point point1, Point point2)
         {
-            List<LocalData<T>> closePts = matrix.CloseToPoint(refPt, maxDist);
-
-            return closePts.OrderBy(x => x.Position.PMSquareDistance(refPt)).FirstOrDefault();
+            double dx = point1.X - point2.X;
+            double dy = point1.Y - point2.Y;
+            double dz = point1.Z - point2.Z;
+            return dx * dx + dy * dy + dz * dz;
         }
 
         /***************************************************/
