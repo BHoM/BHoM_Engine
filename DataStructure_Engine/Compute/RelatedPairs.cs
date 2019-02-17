@@ -19,8 +19,7 @@
  * You should have received a copy of the GNU Lesser General Public License     
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
-
-using BH.Engine.Geometry;
+ 
 using BH.oM.DataStructure;
 using System;
 using System.Collections.Generic;
@@ -40,18 +39,18 @@ namespace BH.Engine.DataStructure
             double maxSqrDist = maxDist * maxDist;
 
             List<Tuple<LocalData<T>, LocalData<T>>> result = new List<Tuple<LocalData<T>, LocalData<T>>>();
-            foreach (KeyValuePair<DiscreetPoint, List<LocalData<T>>> kvp in matrix.Data)
+            foreach (KeyValuePair<DiscretePoint, List<LocalData<T>>> kvp in matrix.Data)
             {
-                DiscreetPoint k = kvp.Key;
+                DiscretePoint k = kvp.Key;
                 List<LocalData<T>> closePoints = matrix.SubMatrixData<T>(
-                    new DiscreetPoint { X = k.X - range, Y = k.Y - range, Z = k.Z - range },
-                    new DiscreetPoint { X = k.X + range, Y = k.Y + range, Z = k.Z + range });
+                    new DiscretePoint { X = k.X - range, Y = k.Y - range, Z = k.Z - range },
+                    new DiscretePoint { X = k.X + range, Y = k.Y + range, Z = k.Z + range });
 
                 foreach (LocalData<T> value in kvp.Value)
                 {
                     foreach (LocalData<T> other in closePoints)
                     {
-                        double sqrDist = value.Position.SquareDistance(other.Position);
+                        double sqrDist = value.Position.PMSquareDistance(other.Position);
                         if (sqrDist < maxSqrDist && sqrDist > minSqrDist)
                             result.Add(new Tuple<LocalData<T>, LocalData<T>>(value, other));
                     }

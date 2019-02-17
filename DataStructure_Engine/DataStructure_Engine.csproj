@@ -54,11 +54,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Compute\ClusterDBSCAN.cs" />
     <Compile Include="Compute\RelatedPairs.cs" />
     <Compile Include="Compute\Path.cs" />
     <Compile Include="Create\PointMatrix.cs" />
     <Compile Include="Create\LocalData.cs" />
-    <Compile Include="Create\DiscreetPoint.cs" />
+    <Compile Include="Create\DiscretePoint.cs" />
     <Compile Include="Create\PriorityQueue.cs" />
     <Compile Include="Create\Tree.cs" />
     <Compile Include="Create\VennDiagram.cs" />
@@ -80,16 +81,13 @@
     <Compile Include="Query\Neighbours.cs" />
     <Compile Include="Query\OppositeNode.cs" />
     <Compile Include="Query\Peek.cs" />
+    <Compile Include="Query\SquareDistance.cs" />
     <Compile Include="Query\SubMatrixData.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BHoM_Engine\BHoM_Engine.csproj">
       <Project>{1ad45c88-dd54-48e5-951f-55edfeb70e35}</Project>
       <Name>BHoM_Engine</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Geometry_Engine\Geometry_Engine.csproj">
-      <Project>{89ab2dcb-ef87-4cba-b59c-c16a8a71d333}</Project>
-      <Name>Geometry_Engine</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

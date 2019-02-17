@@ -19,8 +19,7 @@
  * You should have received a copy of the GNU Lesser General Public License     
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
-
-using BH.Engine.Geometry;
+ 
 using BH.oM.DataStructure;
 using BH.oM.Geometry;
 using System.Collections.Generic;
@@ -37,14 +36,14 @@ namespace BH.Engine.DataStructure
         {
             // Collect all the points within cells in range
             Vector range = new Vector { X = maxDist, Y = maxDist, Z = maxDist };
-            List<LocalData<T>> inCells = matrix.SubMatrixData<T>(Create.DiscreetPoint(refPt - range, matrix.CellSize), Create.DiscreetPoint(refPt + range, matrix.CellSize));
+            List<LocalData<T>> inCells = matrix.SubMatrixData<T>(Create.DiscretePoint(refPt - range, matrix.CellSize), Create.DiscretePoint(refPt + range, matrix.CellSize));
 
             // Keep only points within maxDist distance of refPt
             double maxSqrDist = maxDist * maxDist;
             List<LocalData<T>> result = new List<LocalData<T>>();
             foreach (LocalData<T> tuple in inCells)
             {
-                if (tuple.Position.SquareDistance(refPt) < maxSqrDist)
+                if (tuple.Position.PMSquareDistance(refPt) < maxSqrDist)
                     result.Add(tuple);
             }
 
