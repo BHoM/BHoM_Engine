@@ -60,25 +60,25 @@ namespace BH.Engine.Environment
 
             foreach (List<BuildingElement> bes in elementsAsSpaces)
             {
-                BuildingElementContextProperties props = bes.Where(x => x.ContextProperties() != null && (x.ContextProperties() as BuildingElementContextProperties) != null).FirstOrDefault().ContextProperties() as BuildingElementContextProperties;
-
-                Space foundSp = null;
-
-                if (props != null && props.ConnectedSpaces.Count > 0)
-                    foundSp = spaces.Where(x => x.Name == props.ConnectedSpaces[0]).FirstOrDefault();
-
-                if (foundSp != null)
+                foreach(BuildingElement be in bes)
                 {
-                    foundSp.CustomData.Add("SAM_SpaceName", foundSp.Name);
-                    foreach (BuildingElement be in bes)
+                    BuildingElementContextProperties props = be.ContextProperties() as BuildingElementContextProperties;
+                    if(props != null && props.ConnectedSpaces.Count > 0)
                     {
-                        if (be.CustomData.ContainsKey("Space_Custom_Data"))
-                            be.CustomData["Space_Custom_Data"] = foundSp.CustomData;
-                        else
-                            be.CustomData.Add("Space_Custom_Data", foundSp.CustomData);
-                    }
+                        Space foundSpace = spaces.Where(x => x.Name == props.ConnectedSpaces[0]).FirstOrDefault();
 
-                    spaces.Remove(foundSp);
+                        if(foundSpace != null)
+                        {
+                            if(!foundSpace.CustomData.ContainsKey("SAM_SpaceName"))
+                                foundSpace.CustomData.Add("SAM_SpaceName", foundSpace.Name);
+
+                            if (be.CustomData.ContainsKey("Space_Custom_Data"))
+                                be.CustomData["Space_Custom_Data"] = foundSpace.CustomData;
+                            else
+                                be.CustomData.Add("Space_Custom_Data", foundSpace.CustomData);
+                        }
+
+                    }
                 }
             }
 
