@@ -156,5 +156,38 @@ namespace BH.Engine.Environment
 
             return spaceNames.Where(x => !x.Equals("-1")).Distinct().ToList();
         }
+
+        public static string CommonSpaceName(this List<BuildingElement> elements)
+        {
+            //Gets the single space name which most commonly unites these elements
+            List<string> uniqueNames = elements.UniqueSpaceNames();
+
+            Dictionary<string, int> nameCount = new Dictionary<string, int>();
+
+            foreach (string s in uniqueNames)
+                nameCount.Add(s, 0);
+
+            foreach (BuildingElement be in elements)
+            {
+                if (be.ContextProperties() != null && (be.ContextProperties() as BuildingElementContextProperties) != null)
+                {
+                    BuildingElementContextProperties props = be.ContextProperties() as BuildingElementContextProperties;
+                    foreach (string name in props.ConnectedSpaces)
+                    {
+                        if(name != "-1")
+                            nameCount[name]++;
+                    }
+                }
+            }
+
+            KeyValuePair<string, int> mostCommon = nameCount.First();
+            foreach(KeyValuePair<string, int> kvp in nameCount)
+            {
+                if (kvp.Value > mostCommon.Value)
+                    mostCommon = kvp;
+            }
+
+            return mostCommon.Key;
+        }
     }
 }
