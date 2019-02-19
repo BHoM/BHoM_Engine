@@ -130,6 +130,7 @@
     <Compile Include="Query\SimulationResult.cs" />
     <Compile Include="Query\StripOpenings.cs" />
     <Compile Include="Query\UniqueConstructions.cs" />
+    <Compile Include="Query\UniqueMaterials..cs" />
     <Compile Include="Query\UValue.cs" />
     <Compile Include="Query\Vertices.cs" />
     <Compile Include="Query\InternalElements2D.cs" />
