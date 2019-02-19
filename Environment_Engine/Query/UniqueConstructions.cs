@@ -65,7 +65,7 @@ namespace BH.Engine.Environment
             return elementsAsSpaces.UniqueBuildingElements().UniqueConstructions();
         }
 
-        private static string UniqueConstructionName(this Construction construction)
+        public static string UniqueConstructionName(this Construction construction)
         {
             string name = "construction-";
             foreach (Material m in construction.Materials)
