@@ -30,6 +30,8 @@ using BH.Engine.Geometry;
 
 using BH.oM.Environment.Properties;
 
+using BH.oM.Reflection.Attributes;
+
 namespace BH.Engine.Environment
 {
     public static partial class Query
@@ -54,6 +56,7 @@ namespace BH.Engine.Environment
             return s;
         }
 
+        [Deprecated("2.2.b.0", "Custom Data is not required for marrying space data to Bulding Elements now that ExtendedProperties are in place")]
         public static List<List<BuildingElement>> MatchSpaces(this List<List<BuildingElement>> elementsAsSpaces, List<Space> spaces)
         {
             spaces = new List<oM.Environment.Elements.Space>(spaces);
@@ -69,9 +72,6 @@ namespace BH.Engine.Environment
 
                         if(foundSpace != null)
                         {
-                            if(!foundSpace.CustomData.ContainsKey("SAM_SpaceName"))
-                                foundSpace.CustomData.Add("SAM_SpaceName", foundSpace.Name);
-
                             if (be.CustomData.ContainsKey("Space_Custom_Data"))
                                 be.CustomData["Space_Custom_Data"] = foundSpace.CustomData;
                             else
