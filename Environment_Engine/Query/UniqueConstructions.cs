@@ -55,6 +55,17 @@ namespace BH.Engine.Environment
                     if (t == null)
                         unique.Add(props.Construction);
                 }
+
+                foreach(Opening o in be.Openings)
+                {
+                    ElementProperties openingProps = o.ElementProperties() as ElementProperties;
+                    if(openingProps != null)
+                    {
+                        Construction t2 = unique.Where(x => x.UniqueConstructionName() == openingProps.Construction.UniqueConstructionName()).FirstOrDefault();
+                        if (t2 == null)
+                            unique.Add(openingProps.Construction);
+                    }
+                }
             }
 
             return unique;
@@ -62,7 +73,11 @@ namespace BH.Engine.Environment
 
         public static List<Construction> UniqueConstructions(this List<List<BuildingElement>> elementsAsSpaces)
         {
-            return elementsAsSpaces.UniqueBuildingElements().UniqueConstructions();
+            List<BuildingElement> elements = new List<BuildingElement>();
+            foreach (List<BuildingElement> e in elementsAsSpaces)
+                elements.AddRange(e);
+
+            return elements.UniqueConstructions();
         }
 
         public static string UniqueConstructionName(this Construction construction)
