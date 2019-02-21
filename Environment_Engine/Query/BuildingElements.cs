@@ -116,6 +116,16 @@ namespace BH.Engine.Environment
             List<IBuildingObject> objs = elements.ConvertAll(x => (IBuildingObject)x).ToList();
             return objs.ObjectsByName(name).ConvertAll(x => (BuildingElement)x).ToList();
         }
+
+        public static List<BuildingElement> ElementsByTilt(this List<BuildingElement> elements, double tilt)
+        {
+            return elements.Where(x => x.Tilt() == tilt).ToList();
+        }
+
+        public static List<BuildingElement> ElementsByTiltRange(this List<BuildingElement> elements, double minTilt, double maxTilt)
+        {
+            return elements.Where(x => x.Tilt() >= minTilt && x.Tilt() <= maxTilt).ToList();
+        }
     }
 }
 
