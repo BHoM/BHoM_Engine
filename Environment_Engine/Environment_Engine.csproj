@@ -92,6 +92,7 @@
     <Compile Include="Create\Space.cs" />
     <Compile Include="Create\SpaceAnalyticalProperties.cs" />
     <Compile Include="Modify\AddMaterial.cs" />
+    <Compile Include="Modify\AddOpening.cs" />
     <Compile Include="Modify\RemoveMaterial.cs" />
     <Compile Include="Modify\SetExtendedProperties.cs" />
     <Compile Include="Modify\SetInternalElements2D.cs" />
