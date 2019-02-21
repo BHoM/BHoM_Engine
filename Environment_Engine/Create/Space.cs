@@ -28,6 +28,8 @@ using System.Threading.Tasks;
 using BH.oM.Environment.Elements;
 using BH.oM.Geometry;
 
+using BH.oM.Environment.Properties;
+
 namespace BH.Engine.Environment
 {
     public static partial class Create
@@ -86,6 +88,23 @@ namespace BH.Engine.Environment
                 Number = number,
                 Location = location,
             };
+        }
+
+        public static List<BuildingElement> Space(List<BuildingElement> elements, string name)
+        {
+            foreach(BuildingElement be in elements)
+            {
+                BuildingElementContextProperties props = be.ContextProperties() as BuildingElementContextProperties;
+                if (props == null)
+                {
+                    props = new BuildingElementContextProperties();
+                    be.ExtendedProperties.Add(props);
+                }
+
+                props.ConnectedSpaces = new List<string> { name };
+            }
+
+            return elements;
         }
     }
 }
