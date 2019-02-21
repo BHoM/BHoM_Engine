@@ -126,6 +126,11 @@ namespace BH.Engine.Environment
         {
             return elements.Where(x => x.Tilt() >= minTilt && x.Tilt() <= maxTilt).ToList();
         }
+
+        public static List<BuildingElement> ElementsByPoint(this List<BuildingElement> elements, Point pt)
+        {
+            return elements.Where(x => x.PanelCurve.IIsContaining(new List<Point> { pt }, true)).ToList();
+        }
     }
 }
 
