@@ -131,6 +131,11 @@ namespace BH.Engine.Environment
         {
             return elements.Where(x => x.PanelCurve.IIsContaining(new List<Point> { pt }, true)).ToList();
         }
+
+        public static List<BuildingElement> ElementsByGeometry(this List<BuildingElement> elements, ICurve geometry)
+        {
+            return elements.Where(x => x.PanelCurve.IDiscontinuityPoints().PointsMatch(geometry.IDiscontinuityPoints())).ToList();
+        }
     }
 }
 
