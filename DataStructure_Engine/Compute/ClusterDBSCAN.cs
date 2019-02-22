@@ -35,15 +35,7 @@ namespace BH.Engine.DataStructure
 
         public static List<List<T>> ClusterDBSCAN<T>(this List<T> items, Func<T, T, bool> metricFunction, int minCount = 1)
         {
-            DBSCANAlgorithm<T> DBSCAN = Create.DBSCANAlgorithm<T>(metricFunction);
-            return DBSCAN.ComputeClustersDBSCAN(items, minCount);
-        }
-
-        /***************************************************/
-
-        public static List<List<T>> ComputeClustersDBSCAN<T>(this DBSCANAlgorithm<T> dbscan, List<T> allItems, int minCount)
-        {
-            DBSCANObject<T>[] DBSCANItems = allItems.Select(x => Create.DBSCANObject<T>(x)).ToArray();
+            DBSCANObject<T>[] DBSCANItems = items.Select(x => Create.DBSCANObject<T>(x)).ToArray();
             int c = 0;
             for (int i = 0; i < DBSCANItems.Length; i++)
             {
@@ -53,14 +45,14 @@ namespace BH.Engine.DataStructure
                 p.IsVisited = true;
 
                 DBSCANObject<T>[] neighbourItems = null;
-                dbscan.RegionQuery(DBSCANItems, p.ClusterItem, out neighbourItems);
+                RegionQuery(DBSCANItems, p.ClusterItem, metricFunction, out neighbourItems);
 
                 if (neighbourItems.Length < minCount)
                     p.ClusterId = -1;
                 else
                 {
                     c++;
-                    dbscan.ExpandCluster(DBSCANItems, p, neighbourItems, c, minCount);
+                    ExpandCluster(DBSCANItems, p, neighbourItems, metricFunction, c, minCount);
                 }
             }
 
@@ -79,7 +71,7 @@ namespace BH.Engine.DataStructure
         /**** Private methods                           ****/
         /***************************************************/
 
-        private static void ExpandCluster<T>(this DBSCANAlgorithm<T> dbscan, DBSCANObject<T>[] allItems, DBSCANObject<T> item, DBSCANObject<T>[] neighbourItems, int c, int minCount)
+        private static void ExpandCluster<T>(DBSCANObject<T>[] allItems, DBSCANObject<T> item, DBSCANObject<T>[] neighbourItems, Func<T, T, bool> metricFunction, int c, int minCount)
         {
             item.ClusterId = c;
             for (int i = 0; i < neighbourItems.Length; i++)
@@ -90,7 +82,7 @@ namespace BH.Engine.DataStructure
                 {
                     neighbourItem.IsVisited = true;
                     DBSCANObject<T>[] neighbourItems2 = null;
-                    dbscan.RegionQuery(allItems, neighbourItem.ClusterItem, out neighbourItems2);
+                    RegionQuery(allItems, neighbourItem.ClusterItem, metricFunction, out neighbourItems2);
                     if (neighbourItems2.Length >= minCount)
                         neighbourItems = neighbourItems.Union(neighbourItems2).ToArray();
                 }
@@ -102,9 +94,9 @@ namespace BH.Engine.DataStructure
 
         /***************************************************/
 
-        private static void RegionQuery<T>(this DBSCANAlgorithm<T> dbscan, DBSCANObject<T>[] allItems, T queryObject, out DBSCANObject<T>[] neighbourItems)
+        private static void RegionQuery<T>(DBSCANObject<T>[] allItems, T queryObject, Func<T, T, bool> metricFunction, out DBSCANObject<T>[] neighbourItems)
         {
-            neighbourItems = allItems.Where(x => dbscan.MetricFunction(queryObject, x.ClusterItem)).ToArray();
+            neighbourItems = allItems.Where(x => metricFunction(queryObject, x.ClusterItem)).ToArray();
         }
 
         /***************************************************/
