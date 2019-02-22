@@ -57,7 +57,6 @@
     <Compile Include="Compute\ClusterDBSCAN.cs" />
     <Compile Include="Compute\RelatedPairs.cs" />
     <Compile Include="Compute\Path.cs" />
-    <Compile Include="Create\DBSCANAlgorithm.cs" />
     <Compile Include="Create\DBSCANObject.cs" />
     <Compile Include="Create\PointMatrix.cs" />
     <Compile Include="Create\LocalData.cs" />
