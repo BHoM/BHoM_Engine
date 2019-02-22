@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
  *
@@ -25,7 +25,6 @@ using BH.oM.Geometry;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using BH.oM.Reflection.Attributes;
 
 namespace BH.Engine.Geometry
 {
@@ -34,13 +33,14 @@ namespace BH.Engine.Geometry
         /***************************************************/
         /**** public Methods - Vectors                  ****/
         /***************************************************/
-        
-        [DeprecatedAttribute("PointClustersDBSCAN")]
-        public static List<List<Point>> PointClusters(this List<Point> points, double maxDist, int minPointCount = 1)
+
+        public static List<List<Point>> PointClustersDBSCAN(this List<Point> points, double maxDist, int minPointCount = 1)
         {
-            return points.PointClustersDBSCAN(maxDist, minPointCount);
+            double maxSqrDist = maxDist * maxDist;
+            Func<Point, Point, bool> metricFunction = (x, y) => x.SquareDistance(y) <= maxSqrDist;
+            return points.ClusterDBSCAN(metricFunction, minPointCount);
         }
-        
+
         /***************************************************/
     }
 }
