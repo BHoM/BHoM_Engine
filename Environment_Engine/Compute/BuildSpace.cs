@@ -39,7 +39,24 @@ namespace BH.Engine.Environment
 
         public static List<BuildingElement> BuildSpace(this List<BuildingElement> elements, string spaceName)
         {
-            return elements.Where(x => x.ContextProperties() != null && (x.ContextProperties() as BuildingElementContextProperties) != null && ((x.ContextProperties() as BuildingElementContextProperties).ConnectedSpaces[0] == spaceName || (x.ContextProperties() as BuildingElementContextProperties).ConnectedSpaces[1] == spaceName)).ToList();
+            List<BuildingElement> rtnElements = new List<BuildingElement>();
+
+            foreach(BuildingElement be in elements)
+            {
+                BuildingElementContextProperties contextProps = be.ContextProperties() as BuildingElementContextProperties;
+                if(contextProps != null)
+                {
+                    if (contextProps.ConnectedSpaces.Count == 1 && contextProps.ConnectedSpaces[0] == spaceName)
+                        rtnElements.Add(be);
+                    else if (contextProps.ConnectedSpaces.Count == 2)
+                    {
+                        if (contextProps.ConnectedSpaces[0] == spaceName || contextProps.ConnectedSpaces[1] == spaceName)
+                            rtnElements.Add(be);
+                    }
+                }
+            }
+
+            return rtnElements;
         }
 
         public static List<List<BuildingElement>> BuildSpaces(this List<BuildingElement> elements, List<string> spaceNames)
