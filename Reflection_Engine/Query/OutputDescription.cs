@@ -39,7 +39,7 @@ namespace BH.Engine.Reflection
         public static string OutputDescription(this MethodBase method)
         {
             OutputAttribute attribute = method.GetCustomAttribute<OutputAttribute>();
-            if (attribute != null)
+            if (attribute != null && !string.IsNullOrWhiteSpace(attribute.Description))
                 return attribute.Description;
             else
                 return "The result is a " + method.OutputType().ToText(); ;
