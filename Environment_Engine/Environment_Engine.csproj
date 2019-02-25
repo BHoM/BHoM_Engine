@@ -94,7 +94,9 @@
     <Compile Include="Modify\AddAdjacentSpace.cs" />
     <Compile Include="Modify\AddMaterial.cs" />
     <Compile Include="Modify\AddOpening.cs" />
+    <Compile Include="Modify\MergeBuildingElements.cs" />
     <Compile Include="Modify\RemoveMaterial.cs" />
+    <Compile Include="Modify\SetBuildingElementType.cs" />
     <Compile Include="Modify\SetExtendedProperties.cs" />
     <Compile Include="Modify\SetInternalElements2D.cs" />
     <Compile Include="Modify\SetMaterialProperties.cs" />

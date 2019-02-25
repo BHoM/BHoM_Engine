@@ -20,8 +20,11 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using System.Linq;
 using System.Collections.Generic;
 using BH.oM.Environment.Elements;
+using BH.oM.Geometry;
+using BH.Engine.Geometry;
 
 namespace BH.Engine.Environment
 {
@@ -35,6 +38,22 @@ namespace BH.Engine.Environment
         {
             element.Openings.Add(opening);
             return element;
+        }
+
+        public static List<BuildingElement> AddOpenings(this List<BuildingElement> elements, List<Opening> openings)
+        {
+            foreach(Opening o in openings)
+            {
+                Point centre = o.OpeningCurve.ICollapseToPolyline(Tolerance.Angle).Centre();
+                if(centre != null)
+                {
+                    BuildingElement be = elements.ElementsByPoint(centre).First();
+                    if(be != null)
+                        be.Openings.Add(o);
+                }
+            }
+
+            return elements;
         }
     }
 }

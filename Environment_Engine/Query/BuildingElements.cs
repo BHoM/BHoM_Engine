@@ -136,6 +136,25 @@ namespace BH.Engine.Environment
         {
             return elements.Where(x => x.PanelCurve.IDiscontinuityPoints().PointsMatch(geometry.IDiscontinuityPoints())).ToList();
         }
+
+        public static List<BuildingElement> RemoveBuildingElement(this List<BuildingElement> elements, BuildingElement elementToRemove)
+        {
+            List<BuildingElement> rtnElements = new List<BuildingElement>(elements);
+            rtnElements.Remove(elementToRemove);
+
+            if (rtnElements.Count == elements.Count)
+                rtnElements = elements.Where(x => x.BHoM_Guid != elementToRemove.BHoM_Guid).ToList(); //Back up in case the element isn't removed the first time
+
+            return rtnElements;
+        }
+
+        public static List<BuildingElement> RemoveBuildingElements(this List<BuildingElement> elements, List<BuildingElement> elementsToRemove)
+        {
+            foreach(BuildingElement be in elementsToRemove)
+                elements = elements.RemoveBuildingElement(be);
+
+            return elements;
+        }
     }
 }
 
