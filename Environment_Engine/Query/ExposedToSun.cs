@@ -26,6 +26,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using BH.oM.Environment.Elements;
+using BH.oM.Environment.Properties;
+
 namespace BH.Engine.Environment
 {
     public static partial class Query
@@ -36,7 +39,19 @@ namespace BH.Engine.Environment
 
             surfaceType = surfaceType.Replace(" ", String.Empty).ToLower();
 
-            return surfaceType == "raisedFloor" || surfaceType == "exteriorwall" || surfaceType == "roof";
+            return surfaceType == "raisedfloor" || surfaceType == "exteriorwall" || surfaceType == "roof";
+        }
+
+        public static bool ExposedToSun(this BuildingElement element)
+        {
+            if((element.ElementProperties() as ElementProperties) != null)
+            {
+                BuildingElementType elementType = (element.ElementProperties() as ElementProperties).BuildingElementType;
+                if (elementType == BuildingElementType.Roof || elementType == BuildingElementType.Rooflight || elementType == BuildingElementType.RooflightWithFrame || elementType == BuildingElementType.WallExternal)
+                    return true;
+            }
+
+            return false;
         }
     }
 }
