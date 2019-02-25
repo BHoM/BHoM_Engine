@@ -39,7 +39,7 @@ namespace BH.Engine.Reflection
         public static string Description(this MemberInfo member)
         {
             DescriptionAttribute attribute = member.GetCustomAttribute<DescriptionAttribute>();
-            if (attribute != null)
+            if (attribute != null && !string.IsNullOrWhiteSpace(attribute.Description))
                 return attribute.Description;
             else if (member.ReflectedType != null)
                 return member.Name + " is a " + member.MemberType.ToString() + " of " + member.ReflectedType.ToText(true);
