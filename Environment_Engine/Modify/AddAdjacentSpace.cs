@@ -41,7 +41,12 @@ namespace BH.Engine.Environment
                 if (props == null)
                     BH.Engine.Reflection.Compute.RecordError("Element " + be.BHoM_Guid.ToString() + " could not have adjacent space set");
                 else
-                    props.ConnectedSpaces.Add(spaceName);
+                {
+                    if (props.ConnectedSpaces.Count == 1)
+                        props.ConnectedSpaces.Add(spaceName);
+                    else
+                        props.ConnectedSpaces[1] = spaceName;
+                }
             }
 
             return elements;

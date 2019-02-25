@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
  *
@@ -20,88 +20,45 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Collections.Generic;
 using BH.oM.Environment.Elements;
 using BH.oM.Geometry;
-
+using BH.Engine.Geometry;
 using BH.oM.Environment.Properties;
 
 namespace BH.Engine.Environment
 {
-    public static partial class Create
+    public static partial class Modify
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Space Space(string name, string number)
-        {
-            return new Space
-            {
-                Name = name,
-                Number = number,
-            };
-        }
-
-        /***************************************************/
-
-        public static Space Space(string number)
-        {
-            return new Space
-            {
-                Number = number,
-            };
-        }
-
-        /***************************************************/
-
-        public static Space Space(Point location)
-        {
-            return new Space
-            {
-                Location = location,
-            };
-        }
-
-        /***************************************************/
-
-        public static Space Space(string name, Point location)
-        {
-            return new Space
-            {
-                Name = name,
-                Location = location,
-            };
-        }
-
-        /***************************************************/
-
-        public static Space Space(string name, string number, Point location)
-        {
-            return new Space
-            {
-                Name = name,
-                Number = number,
-                Location = location,
-            };
-        }
-
-        public static List<BuildingElement> Space(List<BuildingElement> elements, string name)
+        public static List<BuildingElement> SetBuildingElementTypeByAdjacencies(this List<BuildingElement> elements)
         {
             foreach(BuildingElement be in elements)
             {
-                BuildingElementContextProperties props = be.ContextProperties() as BuildingElementContextProperties;
-                if (props == null)
+                ElementProperties elementProps = be.ElementProperties() as ElementProperties;
+                if(elementProps == null)
                 {
-                    props = new BuildingElementContextProperties();
-                    be.ExtendedProperties.Add(props);
+                    elementProps = new ElementProperties();
+                    be.ExtendedProperties.Add(elementProps);
                 }
 
-                props.ConnectedSpaces = new List<string> { name, "-1" }; //Default everyone to have an adjacent space of -1
+                BuildingElementContextProperties contextProps = be.ContextProperties() as BuildingElementContextProperties;
+                if(contextProps == null)
+                {
+                    contextProps = new BuildingElementContextProperties();
+                    be.ExtendedProperties.Add(contextProps);
+                }
+
+                if (contextProps.ConnectedSpaces.Count == 0)
+                    elementProps.BuildingElementType = BuildingElementType.Shade;
+                else if (contextProps.ConnectedSpaces.Count == 1)
+                    elementProps.BuildingElementType = BuildingElementType.WallExternal;
+                else if (contextProps.ConnectedSpaces.Count == 2)
+                    elementProps.BuildingElementType = BuildingElementType.WallInternal;                
             }
 
             return elements;
