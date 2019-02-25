@@ -63,5 +63,62 @@ namespace BH.Engine.Environment
 
             return elements;
         }
+
+        public static List<BuildingElement> UpdateBuildingElementTypeByCustomData(this List<BuildingElement> elements)
+        {
+            //Temporary fix for Revit...
+            foreach(BuildingElement be in elements)
+            {
+                if(be.CustomData.ContainsKey("Type SAM_BuildingElementType"))
+                {
+                    BuildingElementType bType = BuildingElementType.Undefined;
+                    string type = be.CustomData["Type SAM_BuildingElementType"] as string;
+                    type = type.ToLower();
+
+                    if (type == "underground wall")
+                        bType = BuildingElementType.UndergroundWall;
+                    else if (type == "curtain wall")
+                        bType = BuildingElementType.CurtainWall;
+                    else if (type == "external wall")
+                        bType = BuildingElementType.WallExternal;
+                    else if (type == "internal wall")
+                        bType = BuildingElementType.WallInternal;
+                    else if (type == "no type")
+                        bType = BuildingElementType.Undefined;
+                    else if (type == "shade")
+                        bType = BuildingElementType.Shade;
+                    else if (type == "solar/pv panel")
+                        bType = BuildingElementType.SolarPanel;
+                    else if (type == "glazing")
+                        bType = BuildingElementType.Glazing;
+                    else if (type == "rooflight")
+                        bType = BuildingElementType.Rooflight;
+                    else if (type == "door")
+                        bType = BuildingElementType.Door;
+                    else if (type == "vehicle door")
+                        bType = BuildingElementType.VehicleDoor;
+                    else if (type == "roof")
+                        bType = BuildingElementType.Roof;
+                    else if (type == "underground ceiling")
+                        bType = BuildingElementType.UndergroundCeiling;
+                    else if (type == "internal floor")
+                        bType = BuildingElementType.FloorInternal;
+                    else if (type == "exposed floor")
+                        bType = BuildingElementType.FloorExposed;
+                    else if (type == "slab on grade")
+                        bType = BuildingElementType.SlabOnGrade;
+
+                    if (bType != BuildingElementType.Undefined)
+                    {
+                        if ((be.ElementProperties() as ElementProperties) == null)
+                            be.ExtendedProperties.Add(new ElementProperties());
+
+                        (be.ElementProperties() as ElementProperties).BuildingElementType = bType;
+                    }
+                }
+            }
+
+            return elements;
+        }
     }
 }
