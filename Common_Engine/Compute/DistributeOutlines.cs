@@ -78,8 +78,9 @@ namespace BH.Engine.Common
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private static List<List<List<IElement1D>>> DistributeOpenings(this List<Tuple<PolyCurve, List<IElement1D>>> panels, List<Tuple<PolyCurve, List<IElement1D>>> openings, double tolerance = Tolerance.Distance)
+        private static List<List<List<IElement1D>>> DistributeOpenings(this List<Tuple<PolyCurve, List<IElement1D>>> panels, List<Tuple<PolyCurve, List<IElement1D>>> openings, double tolerance)
         {
+            double sqTolerance = tolerance * tolerance;
             List<List<Tuple<PolyCurve, List<IElement1D>>>> result = new List<List<Tuple<PolyCurve, List<IElement1D>>>>();
             foreach (Tuple<PolyCurve, List<IElement1D>> panel in panels)
             {
@@ -91,7 +92,7 @@ namespace BH.Engine.Common
             {
                 for (int i = 0; i < result.Count; i++)
                 {
-                    if (result[i][0].Item1.IsContaining(opening.Item1, true, tolerance))
+                    if (result[i][0].Item1.IsContaining(opening.Item1, true, tolerance) && result[i][0].Item1.Area() - opening.Item1.Area() > sqTolerance)
                     {
                         result[i].Add(opening);
                         break;
