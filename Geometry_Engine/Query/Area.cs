@@ -64,10 +64,13 @@ namespace BH.Engine.Geometry
 
         public static double Area(this PolyCurve curve)
         {
+            if (curve.Curves.Count == 1 && curve.Curves[0] is Circle)
+                return (curve.Curves[0] as Circle).Area();
+
             if (!curve.IsClosed())
                 return 0;
-            Plane p = curve.FitPlane();
 
+            Plane p = curve.FitPlane();
             if (p == null)
                 return 0.0;              // points are collinear
             
