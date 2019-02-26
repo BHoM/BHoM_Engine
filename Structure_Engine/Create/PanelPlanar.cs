@@ -97,13 +97,13 @@ namespace BH.Engine.Structure
             {
                 PanelPlanar panel = new PanelPlanar();
                 panel = panel.SetOutlineElements1D(panelOutlines[0]);
-                List<IElement2D> openings = new List<IElement2D>();
+                List<Opening> openings = new List<Opening>();
                 foreach (List<IElement1D> p in panelOutlines.Skip(1))
                 {
-                    IElement2D opening = (panel.NewInternalElement2D() as Opening).SetOutlineElements1D(p);
+                    Opening opening = (new Opening()).SetOutlineElements1D(p);
                     openings.Add(opening);
                 }
-                panel = panel.SetInternalElements2D(openings);
+                panel.Openings = openings;
                 panel.Property = property;
                 panel.Name = name;
                 result.Add(panel);
