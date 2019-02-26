@@ -120,5 +120,10 @@ namespace BH.Engine.Environment
 
             return elements;
         }
+
+        public static BuildingElement UpdateBuildingElementTypeByCustomData(this BuildingElement element)
+        {
+            return (new List<BuildingElement> { element }).UpdateBuildingElementTypeByCustomData()[0];
+        }
     }
 }
