@@ -108,13 +108,10 @@ namespace BH.Engine.Environment
                     else if (type == "slab on grade")
                         bType = BuildingElementType.SlabOnGrade;
 
-                    if (bType != BuildingElementType.Undefined)
-                    {
-                        if ((be.ElementProperties() as ElementProperties) == null)
-                            be.ExtendedProperties.Add(new ElementProperties());
+                    if ((be.ElementProperties() as ElementProperties) == null)
+                        be.ExtendedProperties.Add(new ElementProperties());
 
-                        (be.ElementProperties() as ElementProperties).BuildingElementType = bType;
-                    }
+                    (be.ElementProperties() as ElementProperties).BuildingElementType = bType;
                 }
             }
 
