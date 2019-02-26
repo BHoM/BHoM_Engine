@@ -163,6 +163,10 @@
       <Project>{1ad45c88-dd54-48e5-951f-55edfeb70e35}</Project>
       <Name>BHoM_Engine</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Common_Engine\Common_Engine.csproj">
+      <Project>{8d8cd66f-76f3-4750-936d-380d51bc67d6}</Project>
+      <Name>Common_Engine</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Geometry_Engine\Geometry_Engine.csproj">
       <Project>{89ab2dcb-ef87-4cba-b59c-c16a8a71d333}</Project>
       <Name>Geometry_Engine</Name>
