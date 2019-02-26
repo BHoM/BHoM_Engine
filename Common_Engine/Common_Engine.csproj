@@ -52,6 +52,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Compute\DistributeOutlines.cs" />
     <Compile Include="Create\ConstructionPhase.cs" />
     <Compile Include="Create\Material.cs" />
     <Compile Include="Create\NewElement0D.cs" />

@@ -21,6 +21,7 @@
  */
 
 using System.Collections.Generic;
+using BH.oM.Reflection.Attributes;
 using BH.oM.Geometry;
 using System;
 using System.Linq;
@@ -33,6 +34,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [DeprecatedAttribute("Moved to Common_Engine")]
         public static List<List<Polyline>> DistributeOutlines(this List<Polyline> outlines, double tolerance = Tolerance.Distance)
         {
             foreach (Polyline p in outlines)
@@ -72,6 +74,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [DeprecatedAttribute("Moved to Common_Engine")]
         public static List<List<ICurve>> DistributeOutlines(this List<ICurve> outlines, double tolerance = Tolerance.Distance)
         {
             foreach (ICurve p in outlines)
@@ -113,6 +116,7 @@ namespace BH.Engine.Geometry
         /**** Private Methods                           ****/
         /***************************************************/
 
+        [DeprecatedAttribute("Moved to Common_Engine")]
         private static List<List<Polyline>> DistributeOpenings(this List<Polyline> panels, List<Polyline> openings, double tolerance = Tolerance.Distance)
         {
             List<List<Polyline>> result = new List<List<Polyline>>();
@@ -139,6 +143,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [DeprecatedAttribute("Moved to Common_Engine")]
         private static List<List<PolyCurve>> DistributeOpenings(this List<PolyCurve> panels, List<PolyCurve> openings, double tolerance = Tolerance.Distance)
         {
             List<List<PolyCurve>> result = new List<List<PolyCurve>>();
@@ -165,6 +170,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [DeprecatedAttribute("Moved to Common_Engine")]
         private static List<List<ICurve>> DistributeOpenings(this List<ICurve> panels, List<ICurve> openings, double tolerance = Tolerance.Distance)
         {
             List<List<ICurve>> result = new List<List<ICurve>>();
