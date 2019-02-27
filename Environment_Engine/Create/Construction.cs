@@ -38,16 +38,16 @@ namespace BH.Engine.Environment
             return new Construction();
         }
 
-        public static Construction Construction(IMaterial material = null, double thickness = 0.0, double uValue = 0.0, ConstructionType constructionType = ConstructionType.Undefined, double additionalHeatTransfer = 0.0, double fFactor = 0.0, ConstructionRoughness roughness = ConstructionRoughness.Undefined, double absorptanceValue = 0.0, AbsorptanceUnit absorptanceUnit = AbsorptanceUnit.Undefined, AbsorptanceType absorptanceType = AbsorptanceType.Undefined)
+        public static Construction Construction(string name, IMaterial material = null, double thickness = 0.0, double uValue = 0.0, ConstructionType constructionType = ConstructionType.Undefined, double additionalHeatTransfer = 0.0, double fFactor = 0.0, ConstructionRoughness roughness = ConstructionRoughness.Undefined, double absorptanceValue = 0.0, AbsorptanceUnit absorptanceUnit = AbsorptanceUnit.Undefined, AbsorptanceType absorptanceType = AbsorptanceType.Undefined)
         {
             List<IMaterial> materials = new List<IMaterial>();
             if (material != null)
                 materials.Add(material);
 
-            return Construction(materials, thickness, new List<double> { uValue }, constructionType, additionalHeatTransfer, fFactor, roughness, absorptanceValue, absorptanceUnit, absorptanceType);
+            return Construction(name, materials, thickness, new List<double> { uValue }, constructionType, additionalHeatTransfer, fFactor, roughness, absorptanceValue, absorptanceUnit, absorptanceType);
         }
 
-        public static Construction Construction(IMaterial material = null, double thickness = 0.0, List<double> uValues = null, ConstructionType constructionType = ConstructionType.Undefined, double additionalHeatTransfer = 0.0, double fFactor = 0.0, ConstructionRoughness roughness = ConstructionRoughness.Undefined, double absorptanceValue = 0.0, AbsorptanceUnit absorptanceUnit = AbsorptanceUnit.Undefined, AbsorptanceType absorptanceType = AbsorptanceType.Undefined)
+        public static Construction Construction(string name, IMaterial material = null, double thickness = 0.0, List<double> uValues = null, ConstructionType constructionType = ConstructionType.Undefined, double additionalHeatTransfer = 0.0, double fFactor = 0.0, ConstructionRoughness roughness = ConstructionRoughness.Undefined, double absorptanceValue = 0.0, AbsorptanceUnit absorptanceUnit = AbsorptanceUnit.Undefined, AbsorptanceType absorptanceType = AbsorptanceType.Undefined)
         {
             if (uValues == null) uValues = new List<double>();
 
@@ -55,16 +55,17 @@ namespace BH.Engine.Environment
             if (material != null)
                 materials.Add(material);
 
-            return Construction(materials, thickness, uValues, constructionType, additionalHeatTransfer, fFactor, roughness, absorptanceValue, absorptanceUnit, absorptanceType);
+            return Construction(name, materials, thickness, uValues, constructionType, additionalHeatTransfer, fFactor, roughness, absorptanceValue, absorptanceUnit, absorptanceType);
         }
 
-        public static Construction Construction(List<IMaterial> materials = null, double thickness = 0.0, List<double> uValues = null, ConstructionType constructionType = ConstructionType.Undefined, double additionalHeatTransfer = 0.0, double fFactor = 0.0, ConstructionRoughness roughness = ConstructionRoughness.Undefined, double absorptanceValue = 0.0, AbsorptanceUnit absorptanceUnit = AbsorptanceUnit.Undefined, AbsorptanceType absorptanceType = AbsorptanceType.Undefined)
+        public static Construction Construction(string name, List<IMaterial> materials = null, double thickness = 0.0, List<double> uValues = null, ConstructionType constructionType = ConstructionType.Undefined, double additionalHeatTransfer = 0.0, double fFactor = 0.0, ConstructionRoughness roughness = ConstructionRoughness.Undefined, double absorptanceValue = 0.0, AbsorptanceUnit absorptanceUnit = AbsorptanceUnit.Undefined, AbsorptanceType absorptanceType = AbsorptanceType.Undefined)
         {
             if (materials == null) materials = new List<IMaterial>();
             if (uValues == null) uValues = new List<double>();
 
             return new Construction
             {
+                Name = name,
                 Materials = materials,
                 Thickness = thickness,
                 UValues = uValues,
