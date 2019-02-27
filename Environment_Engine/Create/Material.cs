@@ -35,10 +35,11 @@ namespace BH.Engine.Environment
 {
     public static partial class Create
     {
-        public static Material Material(MaterialType materialType = MaterialType.Undefined, double thickness = 0.0, IMaterialProperties materialProperties = null)
+        public static Material Material(string name, MaterialType materialType = MaterialType.Undefined, double thickness = 0.0, IMaterialProperties materialProperties = null)
         {
             return new Material
             {
+                Name = name,
                 MaterialType = materialType,
                 Thickness = thickness,
                 MaterialProperties = materialProperties,
