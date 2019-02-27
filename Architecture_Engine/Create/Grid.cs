@@ -50,5 +50,22 @@ namespace BH.Engine.Architecture.Elements
         }
 
         /***************************************************/
+
+        public static Grid Grid(ICurve curve, string name)
+        {
+            return new Grid
+            {
+                Curve = Geometry.Modify.IProject(curve, Plane.XY),
+                Name = name,
+            };
+        }
+
+        /***************************************************/
+
+        public static Grid Grid(Point origin, Vector direction, string name, double length = 20)
+        {
+            Line line = new Line { Start = new Point { X = origin.X, Y = origin.Y, Z = 0 }, End = origin + new Vector { X = direction.X, Y = direction.Y, Z = 0 }.Normalise() * length };
+            return new Grid { Curve = line, Name = name };
+        }
     }
 }

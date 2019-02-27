@@ -39,5 +39,14 @@ namespace BH.Engine.Architecture.Elements
         }
 
         /***************************************************/
+
+        public static Level Level(double elevation, string name)
+        {
+            return new Level
+            {
+                Elevation = elevation,
+                Name = name,
+            };
+        }
     }
 }
