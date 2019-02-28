@@ -72,14 +72,13 @@ namespace BH.Engine.Reflection
             }
             else if(obj is IBHoMObject)
             {
+                IBHoMObject bhomObj = obj as IBHoMObject;
+                if (bhomObj == null) return false;
 
-                IBHoMObject cust = obj as IBHoMObject;
-                if (cust == null) return false;
+                if(!(bhomObj is CustomObject))
+                    Compute.RecordWarning("The objects does not contain any property with the name " + propName +". The value is being set as custom data");
 
-                // This was more annoying than useful
-                //Compute.RecordWarning("No property with the provided name found. The value is being set as custom data");
-
-                cust.CustomData[propName] = value;
+                bhomObj.CustomData[propName] = value;
                 return true;
             }
 
