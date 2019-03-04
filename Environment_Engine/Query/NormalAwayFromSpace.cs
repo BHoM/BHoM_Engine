@@ -82,7 +82,7 @@ namespace BH.Engine.Environment
             }
 
             //Move centrepoint along the normal.
-            if (BH.Engine.Environment.Query.IsContaining(space, centrePt.Translate(plane.Normal * 0.01)))
+            if (BH.Engine.Environment.Query.IsContaining(space, centrePt.Translate(plane.Normal * 0.01), pline))
                 return false;
             else
                 return true;
