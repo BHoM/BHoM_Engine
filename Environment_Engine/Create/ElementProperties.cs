@@ -41,5 +41,15 @@ namespace BH.Engine.Environment
                 Construction = construction,
             };
         }
+
+        /***************************************************/
+
+        public static ElementProperties BuildingElementProperties(BuildingElementType buildingElementType)
+        {
+            return new ElementProperties
+            {
+                BuildingElementType = buildingElementType
+            };
+        }
     }
 }
