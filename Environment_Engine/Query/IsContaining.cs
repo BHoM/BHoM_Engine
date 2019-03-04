@@ -60,6 +60,24 @@ namespace BH.Engine.Environment
             return new List<BuildingElement> { element }.IsContaining(pt, acceptOnEdges);
         }
 
+        public static bool IsContaining(this List<BuildingElement> elementsAsSpace, Point point, BuildingElement refElement)
+        {
+            Polyline floorGeom = elementsAsSpace.FloorGeometry();
+            double zTranslation = elementsAsSpace.Max(x => x.Height()) / 2;
+            Point floorCentre = floorGeom.Centre();
+            Point spaceCentre = floorCentre.Translate(new Vector() { X = 0, Y = 0, Z = zTranslation });
+
+            Point refCentre = refElement.PanelCurve.ICollapseToPolyline(BH.oM.Geometry.Tolerance.Angle).Centre();
+
+            Line baseLine = new Line() { Start = spaceCentre, End = refCentre };
+            Line measureLine = new Line() { Start = spaceCentre, End = point };
+
+            if (baseLine.Length() >= measureLine.Length())
+                return true; //If the length of the base line is greater than the measure line, the measure point *should* be inside the space...
+            else
+                return false;
+        }
+
         public static bool IsContaining(this List<BuildingElement> space, Point point, bool acceptOnEdges = false)
         {
             List<Plane> planes = space.Select(x => x.PanelCurve.IControlPoints().FitPlane()).ToList();
