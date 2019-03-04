@@ -39,16 +39,16 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static bool NormalAwayFromSpace(this BHE.BuildingElement buildingElement, List<BHE.BuildingElement> space)
+        public static bool NormalAwayFromSpace(this BHE.BuildingElement buildingElement, List<BHE.BuildingElement> elementsAsSpace)
         {
             BHG.Polyline bound = new BHG.Polyline() { ControlPoints = buildingElement.PanelCurve.IControlPoints() };
 
-            return NormalAwayFromSpace(bound, space);
+            return NormalAwayFromSpace(bound, elementsAsSpace);
         }
 
         /***************************************************/
 
-        public static bool NormalAwayFromSpace(this BHG.Polyline pline, List<BHE.BuildingElement> space)
+        public static bool NormalAwayFromSpace(this BHG.Polyline pline, List<BHE.BuildingElement> elementsAsSpace)
         {
             List<BHG.Point> centrePtList = new List<BHG.Point>();
             BHG.Point centrePt = pline.Centre();
@@ -82,7 +82,7 @@ namespace BH.Engine.Environment
             }
 
             //Move centrepoint along the normal.
-            if (BH.Engine.Environment.Query.IsContaining(space, centrePt.Translate(plane.Normal * 0.01), pline))
+            if (BH.Engine.Environment.Query.IsContaining(elementsAsSpace, centrePt.Translate(plane.Normal * 0.01), pline))
                 return false;
             else
                 return true;
