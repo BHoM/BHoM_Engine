@@ -44,7 +44,7 @@ namespace BH.Engine.Environment
 
         /***************************************************/
 
-        public static ElementProperties BuildingElementProperties(BuildingElementType buildingElementType)
+        public static ElementProperties ElementProperties(BuildingElementType buildingElementType)
         {
             return new ElementProperties
             {
