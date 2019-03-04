@@ -25,6 +25,7 @@ using System.Collections.Generic;
 using BH.oM.Environment.Elements;
 using BH.oM.Environment.Properties;
 using BH.oM.Geometry;
+using BH.oM.Environment.Interface;
 
 namespace BH.Engine.Environment
 {
@@ -34,13 +35,13 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static BuildingElement BuildingElement(BuildingElementProperties properties)
+        /*public static BuildingElement BuildingElement(BuildingElementProperties properties)
         {
             return new BuildingElement
             {
                 BuildingElementProperties = properties,
             };
-        }
+        }*/
 
         /***************************************************/
 
@@ -89,22 +90,22 @@ namespace BH.Engine.Environment
 
         /***************************************************/
 
-        public static BuildingElement BuildingElement(BuildingElementProperties buildingElementProperties, IEnumerable<Polyline> panelPolyLines)
+        public static BuildingElement BuildingElement(ElementProperties elementProperties, IEnumerable<Polyline> panelPolyLines)
         {
             return new BuildingElement
             {
-                BuildingElementProperties = buildingElementProperties,
                 PanelCurve = Geometry.Create.PolyCurve(panelPolyLines),
+                ExtendedProperties = new List<IBHoMExtendedProperties> { elementProperties },
             };
         }
 
         /***************************************************/
 
-        public static BuildingElement BuildingElement(BuildingElementProperties buildingElementProperties, ICurve panelCurve)
+        public static BuildingElement BuildingElement(ElementProperties elementProperties, ICurve panelCurve)
         {
             return new BuildingElement
             {
-                BuildingElementProperties = buildingElementProperties,
+                ExtendedProperties = new List<IBHoMExtendedProperties> { elementProperties },
                 PanelCurve = panelCurve,
             };
         }
@@ -151,32 +152,32 @@ namespace BH.Engine.Environment
 
         /***************************************************/
 
-        public static BuildingElement BuildingElement(string name, ICurve panelCurve, BuildingElementProperties properties)
+        public static BuildingElement BuildingElement(string name, ICurve panelCurve, ElementProperties properties)
         {
             return new BuildingElement
             {
                 Name = name,
                 PanelCurve = panelCurve,
-                BuildingElementProperties = properties,
+                ExtendedProperties = new List<IBHoMExtendedProperties> { properties },
             };
         }
 
         /***************************************************/
 
-        public static BuildingElement BuildingElement(ICurve crv, Opening opening, BuildingElementProperties properties)
+        public static BuildingElement BuildingElement(ICurve crv, Opening opening, ElementProperties properties)
         {
             return BuildingElement(crv, new List<Opening> { opening }, properties);
         }
 
         /***************************************************/
 
-        public static BuildingElement BuildingElement(ICurve crv, List<Opening> openings, BuildingElementProperties properties)
+        public static BuildingElement BuildingElement(ICurve crv, List<Opening> openings, ElementProperties properties)
         {
             return new BuildingElement
             {
                 PanelCurve = crv,
                 Openings = openings,
-                BuildingElementProperties = properties,
+                ExtendedProperties = new List<IBHoMExtendedProperties> { properties },
             };
         }
     }

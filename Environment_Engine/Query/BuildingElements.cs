@@ -77,16 +77,11 @@ namespace BH.Engine.Environment
 
             foreach (BuildingElement be in elements)
             {
-                if (be.BuildingElementProperties != null)
+                BH.oM.Environment.Properties.ElementProperties props = be.ElementProperties() as BH.oM.Environment.Properties.ElementProperties;
+                if (props != null)
                 {
-                    if (be.BuildingElementProperties.CustomData.ContainsKey("SAM_BuildingElementType"))
-                    {
-                        object aObject = be.BuildingElementProperties.CustomData["SAM_BuildingElementType"];
-
-                        if (aObject != null && aObject.ToString().ToLower().Contains("shade"))
+                    if(props.BuildingElementType == BuildingElementType.Shade)
                             shadingElements.Add(be);
-                            
-                    }
                 }
             }
 

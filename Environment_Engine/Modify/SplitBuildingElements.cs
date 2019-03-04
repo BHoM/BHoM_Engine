@@ -277,8 +277,6 @@ namespace BH.Engine.Environment
                             BuildingElement newBE = ori.GetShallowClone() as BuildingElement;
                             if (newBE.PanelCurve == null)
                                 newBE.PanelCurve = ori.PanelCurve;
-                            if (newBE.BuildingElementProperties == null)
-                                newBE.BuildingElementProperties = ori.BuildingElementProperties.GetShallowClone() as BH.oM.Environment.Properties.BuildingElementProperties;
 
                             newBE.PanelCurve = p;
 
