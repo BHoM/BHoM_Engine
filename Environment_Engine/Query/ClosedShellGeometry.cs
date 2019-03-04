@@ -46,10 +46,10 @@ namespace BH.Engine.Environment
             //Merge curtain panels
             foreach (BuildingElement element in buildingElements)
             {
-                BH.oM.Environment.Properties.BuildingElementProperties beProperty = element.BuildingElementProperties;
+                BH.oM.Environment.Properties.ElementProperties beProperty = element.ElementProperties() as BH.oM.Environment.Properties.ElementProperties;
                 BHG.Polyline pline = new BHG.Polyline() { ControlPoints = element.PanelCurve.IControlPoints() };
 
-                if (beProperty != null && beProperty.CustomData.ContainsKey("Family Name") && (beProperty.CustomData["Family Name"].ToString() == "Curtain Wall"))
+                if (beProperty != null && beProperty.BuildingElementType == BuildingElementType.CurtainWall)
                     pLinesCurtainWall.Add(pline);
                 else
                     pLinesOther.Add(pline);

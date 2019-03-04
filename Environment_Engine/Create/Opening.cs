@@ -83,18 +83,15 @@ namespace BH.Engine.Environment
 
         public static BuildingElement BuildingElementOpening(this BuildingElement be, List<BHG.ICurve> bounds)
         {
-            if (be == null || be.BuildingElementProperties == null || !be.BuildingElementProperties.CustomData.ContainsKey("Revit_elementId"))
+            if (be == null)
                 return be;
 
             foreach(BHG.ICurve bound in bounds)
             {
-                string revitElementID = (be.BuildingElementProperties.CustomData["Revit_elementId"]).ToString();
-
                 Opening opening = Opening(bound);
 
                 //Assign the properties from the Element to the Opening
                 opening.Name = be.Name;
-                opening.CustomData.Add("Revit_elementId", revitElementID);
 
                 be.Openings.Add(opening);
             }
