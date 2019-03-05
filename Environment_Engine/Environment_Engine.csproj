@@ -124,6 +124,7 @@
     <Compile Include="Query\AltitudeRange.cs" />
     <Compile Include="Query\Altitude.cs" />
     <Compile Include="Query\Edges.cs" />
+    <Compile Include="Query\ElementID.cs" />
     <Compile Include="Query\ElementsNotMatched.cs" />
     <Compile Include="Query\ExposedToSun.cs" />
     <Compile Include="Query\ExtendedProperties.cs" />
