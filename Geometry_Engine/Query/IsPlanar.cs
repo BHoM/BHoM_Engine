@@ -79,6 +79,13 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        public static bool IsPlanar(this Ellipse ellipse, double tolerance = Tolerance.Distance)
+        {
+            return true;
+        }
+
+        /***************************************************/
+
         [NotImplemented]
         public static bool IsPlanar(this NurbsCurve curve, double tolerance = Tolerance.Distance)
         {
