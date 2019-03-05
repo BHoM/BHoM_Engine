@@ -348,6 +348,19 @@ namespace BH.Engine.Geometry
             return box;
         }
 
+        /***************************************************/
+
+        public static BoundingBox Bounds(this PlanarSurface surface)
+        {
+            BoundingBox box = surface.ExternalEdge.IBounds();
+            if (surface.InternalEdges != null)
+            {
+                for (int i = 1; i < surface.InternalEdges.Count; i++)
+                    box += surface.InternalEdges[i].IBounds();
+            }
+            return box;
+        }
+
 
         /***************************************************/
         /**** public Methods - Others                  ****/
