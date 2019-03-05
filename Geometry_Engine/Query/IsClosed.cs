@@ -55,6 +55,13 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        public static bool IsClosed(this Ellipse ellipse, double tolerance = Tolerance.Distance)
+        {
+            return true;
+        }
+
+        /***************************************************/
+
         [NotImplemented]
         public static bool IsClosed(this NurbsCurve curve, double tolerance = Tolerance.Distance)
         {
