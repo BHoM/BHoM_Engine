@@ -92,6 +92,13 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        public static List<ICurve> ExternalEdges(this PlanarSurface surface)
+        {
+            return new List<ICurve> { surface.ExternalEdge };
+        }
+
+        /***************************************************/
+
         public static List<ICurve> ExternalEdges(this PolySurface surface)
         {
             return surface.Surfaces.SelectMany(x => x.IExternalEdges()).ToList();

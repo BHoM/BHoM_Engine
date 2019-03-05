@@ -80,6 +80,13 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        public static List<ICurve> InternalEdges(this PlanarSurface surface)
+        {
+            return surface.InternalEdges;
+        }
+
+        /***************************************************/
+
         public static List<ICurve> InternalEdges(this PolySurface surface)
         {
             return surface.Surfaces.SelectMany(x => x.IInternalEdges()).ToList();
