@@ -86,10 +86,9 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [NotImplemented]
         public static bool IsPlanar(this NurbsCurve curve, double tolerance = Tolerance.Distance)
         {
-            throw new NotImplementedException();
+            return curve.ControlPoints.IsCoplanar(tolerance);
         }
 
         /***************************************************/

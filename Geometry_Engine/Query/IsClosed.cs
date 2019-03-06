@@ -62,10 +62,13 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [NotImplemented]
         public static bool IsClosed(this NurbsCurve curve, double tolerance = Tolerance.Distance)
         {
-            throw new NotImplementedException();
+            if (curve == null || curve.ControlPoints?.Count < 2)
+                return false;
+
+            // TODO: This does not take into account periodic curves
+            return curve.ControlPoints.First() == curve.ControlPoints.Last();
         }
 
         /***************************************************/
