@@ -26,6 +26,9 @@ using BH.oM.Environment.Elements;
 
 using BH.oM.Environment.Properties;
 
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
+
 namespace BH.Engine.Environment
 {
     public static partial class Modify
@@ -34,15 +37,25 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static BuildingElement MergeBuildingElement(this BuildingElement mergeTo, BuildingElement mergeFrom)
+        [Description("BH.Engine.Environment.Modify MergeBuildingElement => merges the properties two building elements together and returns a copied element with the smallest area")]
+        [Input("element1", "BuildingElement")]
+        [Input("element2", "BuildingElement")]
+        [Output("BHoM Environmental BuildingElement")]
+        public static BuildingElement MergeBuildingElement(this BuildingElement element1, BuildingElement element2)
         {
-            BuildingElement rtnElement = mergeTo.Copy();
+            BuildingElement rtnElement = null;
+
+            if(element1.Area() > element2.Area())
+                rtnElement = element2.Copy();
+            else
+                rtnElement = element1.Copy();
+
             rtnElement.ExtendedProperties.Remove(rtnElement.ContextProperties());
 
             //Move any properties over which need to be merged between the two elements... Currently only adjacent spaces
             BuildingElementContextProperties masterProperties = new BuildingElementContextProperties();
 
-            BuildingElementContextProperties mergeToProps = (mergeTo.ContextProperties() as BuildingElementContextProperties);
+            BuildingElementContextProperties mergeToProps = (element1.ContextProperties() as BuildingElementContextProperties);
             if (mergeToProps != null)
             {
                 masterProperties.Colour = mergeToProps.Colour;
@@ -52,7 +65,7 @@ namespace BH.Engine.Environment
                 masterProperties.Reversed = mergeToProps.Reversed;
             }
 
-            BuildingElementContextProperties mergeProps = (mergeFrom.ContextProperties() as BuildingElementContextProperties);
+            BuildingElementContextProperties mergeProps = (element2.ContextProperties() as BuildingElementContextProperties);
             if (mergeProps == null)
                 mergeProps = new BuildingElementContextProperties(); //Hopefully this will never be needed...
 
