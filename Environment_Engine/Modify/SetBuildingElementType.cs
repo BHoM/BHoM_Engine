@@ -53,11 +53,11 @@ namespace BH.Engine.Environment
                     be.ExtendedProperties.Add(contextProps);
                 }
 
-                if (contextProps.ConnectedSpaces.Count == 0)
+                if (contextProps.ConnectedSpaces.Where(x => x != "-1").ToList().Count == 0)
                     elementProps.BuildingElementType = BuildingElementType.Shade;
-                else if (contextProps.ConnectedSpaces.Count == 1)
+                else if (contextProps.ConnectedSpaces.Where(x => x != "-1").ToList().Count == 1)
                     elementProps.BuildingElementType = BuildingElementType.WallExternal;
-                else if (contextProps.ConnectedSpaces.Count == 2)
+                else if (contextProps.ConnectedSpaces.Where(x => x != "-1").ToList().Count == 2)
                     elementProps.BuildingElementType = BuildingElementType.WallInternal;                
             }
 
