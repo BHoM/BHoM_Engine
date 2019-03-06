@@ -75,7 +75,7 @@ namespace BH.Engine.Geometry
         [NotImplemented]
         public static List<Point> ControlPoints(this NurbsCurve curve)
         {
-            throw new NotImplementedException();
+            return curve.ControlPoints;
         }
 
         /***************************************************/
