@@ -64,7 +64,7 @@ namespace BH.Engine.Geometry
 
         public static bool IsClosed(this NurbsCurve curve, double tolerance = Tolerance.Distance)
         {
-            if (curve == null || curve.ControlPoints?.Count < 2)
+            if (curve == null || curve.ControlPoints == null || curve.ControlPoints.Count < 2)
                 return false;
 
             // TODO: This does not take into account periodic curves
