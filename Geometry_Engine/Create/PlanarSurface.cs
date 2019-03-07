@@ -36,26 +36,26 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [Description("Creates a PlanarSurface based on boundary curves. Only processing done by this method is checking (co)planarity and that the curves are closed. Internal edges will be assumed to be inside the External")]
-        [Input("externalEdge", "The outer boundary curve of the surface. Needs to be closed and planar")]
-        [Input("internalEdges", "Optional internal edgescurves descibing any openings with the external edge. All internal edges need to be closed and co-planar with the external edge")]
+        [Input("externalBoundary", "The outer boundary curve of the surface. Needs to be closed and planar")]
+        [Input("internalBoundaries", "Optional internal boundary curves descibing any openings inside the external. All internal edges need to be closed and co-planar with the external edge")]
         [Output("PlanarSurface", "Planar surface corresponding to the provided edge curves")]
-        public static PlanarSurface PlanarSurface(ICurve externalEdge, List<ICurve> internalEdges = null)
+        public static PlanarSurface PlanarSurface(ICurve externalBoundary, List<ICurve> internalBoundaries = null)
         {
-            if (!externalEdge.IIsPlanar())
+            if (!externalBoundary.IIsPlanar())
             {
                 Reflection.Compute.RecordError("External edge curve is not planar");
                 return null;
             }
 
-            if (!externalEdge.IIsClosed())
+            if (!externalBoundary.IIsClosed())
             {
                 Reflection.Compute.RecordError("External edge curve is not closed");
                 return null;
             }
 
-            internalEdges = internalEdges ?? new List<ICurve>();
+            internalBoundaries = internalBoundaries ?? new List<ICurve>();
 
-            foreach (ICurve crv in internalEdges)
+            foreach (ICurve crv in internalBoundaries)
             {
                 if (!crv.IIsPlanar())
                 {
@@ -70,26 +70,26 @@ namespace BH.Engine.Geometry
                 }
             }
 
-            if (internalEdges.Count > 0)
+            if (internalBoundaries.Count > 0)
             {
-                if (!Query.IsCoplanar(externalEdge.IControlPoints().Concat(internalEdges.SelectMany(x => x.IControlPoints())).ToList()))
+                if (!Query.IsCoplanar(externalBoundary.IControlPoints().Concat(internalBoundaries.SelectMany(x => x.IControlPoints())).ToList()))
                 {
                     Reflection.Compute.RecordError("The provided curves are not co-planar");
                     return null;
                 }
             }
 
-            return new PlanarSurface { ExternalBoundary = externalEdge, InternalBoundaries = internalEdges };
+            return new PlanarSurface { ExternalBoundary = externalBoundary, InternalBoundaries = internalBoundaries };
         }
 
         /***************************************************/
 
         [Description("Distributes the edge curve and creates a set of boundary planar surfaces")]
-        [Input("edges", "Boundary curves to be used. Non-planar and non-closed curves are ignored")]
+        [Input("boundaryCurves", "Boundary curves to be used. Non-planar and non-closed curves are ignored")]
         [Output("PlanarSurface", "List of planar surfaces created")]
-        public static List<PlanarSurface> PlanarSurface(List<ICurve> edges)
+        public static List<PlanarSurface> PlanarSurface(List<ICurve> boundaryCurves)
         {
-            List<ICurve> checkedCurves = edges.Where(x => x.IIsClosed() && x.IIsPlanar()).ToList();
+            List<ICurve> checkedCurves = boundaryCurves.Where(x => x.IIsClosed() && x.IIsPlanar()).ToList();
             List<List<ICurve>> distributed = Compute.DistributeOutlines(checkedCurves);
 
             List<PlanarSurface> surfaces = new List<PlanarSurface>();
