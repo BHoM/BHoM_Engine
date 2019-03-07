@@ -82,7 +82,7 @@ namespace BH.Engine.Geometry
 
         public static List<ICurve> InternalEdges(this PlanarSurface surface)
         {
-            return surface.InternalEdges;
+            return surface.InternalBoundaries;
         }
 
         /***************************************************/
