@@ -94,7 +94,7 @@ namespace BH.Engine.Geometry
 
         public static List<ICurve> ExternalEdges(this PlanarSurface surface)
         {
-            return new List<ICurve> { surface.ExternalEdge };
+            return new List<ICurve> { surface.ExternalBoundary };
         }
 
         /***************************************************/
