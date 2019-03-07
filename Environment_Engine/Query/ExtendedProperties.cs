@@ -104,7 +104,7 @@ namespace BH.Engine.Environment
 
         private static IBHoMExtendedProperties ContextProperties(this Space space)
         {
-            return null; //Spaces do not currently have any context properties
+            return space.PropertiesByType(typeof(SpaceContextProperties));
         }
 
         //Analytical properties
@@ -141,12 +141,12 @@ namespace BH.Engine.Environment
 
         private static IBHoMExtendedProperties ResultProperties(this Opening opening)
         {
-            return null; //Openings do not currently have any analytical properties
+            return null; //Openings do not currently have any result properties
         }
 
         private static IBHoMExtendedProperties ResultProperties(this Space space)
         {
-            return null; //Spaces do not currently have any analytical properties
+            return null; //Spaces do not currently have any result properties
         }
 
         //Element properties
