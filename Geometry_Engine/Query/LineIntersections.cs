@@ -46,20 +46,7 @@ namespace BH.Engine.Geometry
             double[] intParams = l1.SkewLineProximity(l2, angleTolerance);
 
             if (intParams == null)
-            {
-                if (l1.Infinite || l2.Infinite)
-                    return null;
-                if (l1.Start.SquareDistance(l2.Start) <= sqTol)
-                    return (l1.Start + l2.Start) * 0.5;
-                else if (l1.Start.SquareDistance(l2.End) <= sqTol)
-                    return (l1.Start + l2.End) * 0.5;
-                else if (l1.End.SquareDistance(l2.Start) <= sqTol)
-                    return (l1.End + l2.Start) * 0.5;
-                else if (l1.End.SquareDistance(l2.End) <= sqTol)
-                    return (l1.End + l2.End) * 0.5;
-                else
-                    return null;
-            }
+                return null;
             else
             {
                 double t1 = intParams[0];
@@ -88,10 +75,35 @@ namespace BH.Engine.Geometry
         public static List<Point> LineIntersections(this Line line1, Line line2, bool useInfiniteLines = false, double tolerance = Tolerance.Distance)
         {
             List<Point> result = new List<Point>();
-            Point iPt = line1.LineIntersection(line2, useInfiniteLines, tolerance);
 
-            if (iPt != null)
-                result.Add(iPt);
+            if (!line1.IsCollinear(line2))
+            {
+                Point iPt = line1.LineIntersection(line2, useInfiniteLines, tolerance);
+                if (iPt != null)
+                    result.Add(iPt);
+            }
+            else if (!useInfiniteLines)
+            {
+                double sqTolerance = tolerance * tolerance;
+                
+                if (!line1.Infinite)
+                {
+                    if (line1.Start.SquareDistance(line2) <= sqTolerance)
+                        result.Add(line1.Start);
+                    if (line1.End.SquareDistance(line2) <= sqTolerance)
+                        result.Add(line1.End);
+                }
+
+                if (!line2.Infinite)
+                {
+                    if (line2.Start.SquareDistance(line1) <= sqTolerance)
+                        result.Add(line2.Start);
+                    if (line2.End.SquareDistance(line1) <= sqTolerance)
+                        result.Add(line2.End);
+                }
+
+                result = result.CullDuplicates(tolerance);
+            }
 
             return result;            
         }
