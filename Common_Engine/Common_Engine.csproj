@@ -71,6 +71,7 @@
     <Compile Include="Query\Elements0D.cs" />
     <Compile Include="Query\Geometry.cs" />
     <Compile Include="Query\InternalElements2D.cs" />
+    <Compile Include="Query\IsSelfIntersectiong.cs" />
     <Compile Include="Query\OutlineElements1D.cs" />
     <Compile Include="Query\OutlineCurve.cs" />
     <Compile Include="Query\ShearModulus.cs" />
