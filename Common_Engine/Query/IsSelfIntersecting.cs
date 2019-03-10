@@ -46,12 +46,12 @@ namespace BH.Engine.Common
 
         public static bool IsSelfIntersecting(this IElement2D element2D, double tolerance = Tolerance.Distance)
         {
-            if (!Geometry.Query.IIsSelfIntersecting(element2D.IOutlineCurve(), tolerance))
+            if (Geometry.Query.IIsSelfIntersecting(element2D.IOutlineCurve(), tolerance))
                 return true;
 
             foreach (PolyCurve internalOutline in element2D.IInternalOutlineCurves())
             {
-                if (!Geometry.Query.IIsSelfIntersecting(internalOutline, tolerance))
+                if (Geometry.Query.IIsSelfIntersecting(internalOutline, tolerance))
                     return true;
             }
 
