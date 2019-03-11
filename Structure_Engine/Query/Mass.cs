@@ -37,5 +37,13 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
+
+        public static double Mass(this PanelPlanar panel)
+        {
+            return panel.Area() * panel.Property.IMassPerArea();
+        }
+
+        /***************************************************/
+
     }
 }
