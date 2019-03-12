@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -34,7 +34,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [DeprecatedAttribute("CurveIntersections")]
+        [DeprecatedAttribute("BHoM 2.2.alpha.3", "Replaced with CurveIntersections.", null, "CurveIntersections")]
         public static List<Point> CurvePlanarIntersections(this Arc curve1, Arc curve2, double tolerance = Tolerance.Distance)
         {
             return curve1.CurveIntersections(curve2, tolerance);
@@ -42,7 +42,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [DeprecatedAttribute("CurveIntersections")]
+        [DeprecatedAttribute("BHoM 2.2.alpha.3", "Replaced with CurveIntersections.", null, "CurveIntersections")]
         public static List<Point> CurvePlanarIntersections(this Arc curve1, Circle curve2, double tolerance = Tolerance.Distance)
         {
             return curve1.CurveIntersections(curve2, tolerance);
@@ -50,7 +50,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [DeprecatedAttribute("CurveIntersections")]
+        [DeprecatedAttribute("BHoM 2.2.alpha.3", "Replaced with CurveIntersections.", null, "CurveIntersections")]
         public static List<Point> CurvePlanarIntersections(this Circle curve1, Arc curve2, double tolerance = Tolerance.Distance)
         {
             return curve1.CurveIntersections(curve2, tolerance);
@@ -58,7 +58,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [DeprecatedAttribute("CurveIntersections")]
+        [DeprecatedAttribute("BHoM 2.2.alpha.3", "Replaced with CurveIntersections.", null, "CurveIntersections")]
         public static List<Point> CurvePlanarIntersections(this Circle curve1, Circle curve2, double tolerance = Tolerance.Distance)
         {
             return curve1.CurveIntersections(curve2, tolerance);
@@ -66,7 +66,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [DeprecatedAttribute("CurveIntersections")]
+        [DeprecatedAttribute("BHoM 2.2.alpha.3", "Replaced with CurveIntersections.", null, "CurveIntersections")]
         public static List<Point> CurvePlanarIntersections(this Line curve1, Arc curve2, double tolerance = Tolerance.Distance)
         {
             return curve1.CurveIntersections(curve2, tolerance);
@@ -74,7 +74,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [DeprecatedAttribute("CurveIntersections")]
+        [DeprecatedAttribute("BHoM 2.2.alpha.3", "Replaced with CurveIntersections.", null, "CurveIntersections")]
         public static List<Point> CurvePlanarIntersections(this Arc curve1, Line curve2, double tolerance = Tolerance.Distance)
         {
             return curve1.CurveIntersections(curve2, tolerance);
@@ -82,7 +82,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [DeprecatedAttribute("CurveIntersections")]
+        [DeprecatedAttribute("BHoM 2.2.alpha.3", "Replaced with CurveIntersections.", null, "CurveIntersections")]
         public static List<Point> CurvePlanarIntersections(this Circle curve1, Line curve2, double tolerance = Tolerance.Distance)
         {
             return curve1.CurveIntersections(curve2, tolerance);
@@ -90,7 +90,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [DeprecatedAttribute("CurveIntersections")]
+        [DeprecatedAttribute("BHoM 2.2.alpha.3", "Replaced with CurveIntersections.", null, "CurveIntersections")]
         public static List<Point> CurvePlanarIntersections(this Line curve1, Circle curve2, double tolerance = Tolerance.Distance)
         {
             return curve1.CurveIntersections(curve2, tolerance);
@@ -98,7 +98,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [DeprecatedAttribute("CurveIntersections")]
+        [DeprecatedAttribute("BHoM 2.2.alpha.3", "Replaced with CurveIntersections.", null, "CurveIntersections")]
         public static List<Point> CurvePlanarIntersections(this Line curve1, Line curve2, double tolerance = Tolerance.Distance)
         {
             return curve1.CurveIntersections(curve2, tolerance);
@@ -109,7 +109,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
-        [DeprecatedAttribute("CurveIntersections")]
+        [DeprecatedAttribute("BHoM 2.2.alpha.3", "Replaced with CurveIntersections.", null, "CurveIntersections")]
         public static List<Point> ICurvePlanarIntersections(this ICurve curve1, ICurve curve2, double tolerance = Tolerance.Distance)
         {
             return ICurveIntersections(curve1, curve2, tolerance);
