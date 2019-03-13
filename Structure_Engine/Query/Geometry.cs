@@ -23,6 +23,7 @@
 using BH.oM.Geometry;
 using BH.oM.Structure.Elements;
 using BH.oM.Structure.Properties.Section;
+using BH.Engine.Common;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -58,6 +59,16 @@ namespace BH.Engine.Structure
         public static IGeometry Geometry(this PanelFreeForm contour)
         {
             return contour.Surface;
+        }
+
+        /***************************************************/
+
+        public static IGeometry Geometry(this PanelPlanar panel)
+        {
+            return Engine.Geometry.Create.PlanarSurface(
+                Engine.Geometry.Modify.IJoin(panel.ExternalEdges.Select(x => x.Curve).ToList()).FirstOrDefault(),
+                panel.Openings.SelectMany(x => Engine.Geometry.Modify.IJoin(x.Edges.Select(y => y.Curve).ToList())).Cast<ICurve>().ToList()
+            );
         }
 
         /***************************************************/
