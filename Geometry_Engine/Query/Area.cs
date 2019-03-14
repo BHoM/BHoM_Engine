@@ -169,6 +169,20 @@ namespace BH.Engine.Geometry
 
 
         /***************************************************/
+        /**** Public Methods - Vectors                  ****/
+        /***************************************************/
+
+        public static double Area(this Vector v1, Vector v2)
+        {
+            double area = 0;
+            area = Length(CrossProduct(v1, v2)) / 2;
+
+            return area;
+        }
+
+
+
+        /***************************************************/
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
