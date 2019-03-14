@@ -86,6 +86,111 @@ namespace BH.Engine.Geometry
         }
 
         /***************************************************/
+        /**** Public Methods - Curves                   ****/
+        /***************************************************/
+
+
+        public static Vector Normal(this Polyline curve)
+        {
+
+            if (!curve.IsPlanar())
+            {
+                Reflection.Compute.RecordError("Input must be planar.");
+                return null;
+            }
+            else if (!curve.IsClosed())
+            {
+                Reflection.Compute.RecordError("Curve is not closed. Input must be a polygon");
+                return null;
+            }
+            else if (curve.IsSelfIntersecting())
+            {
+                Reflection.Compute.RecordWarning("Curve is self intersecting");
+                return null;
+            }
+
+            Vector normal = new Vector { X = 0, Y = 0, Z = 0 };
+
+            for (int i = 0; i < curve.ControlPoints.Count - 1; i++)
+            {
+                Point pA = curve.ControlPoints[i];
+                Point pB = curve.ControlPoints[i + 1];
+                Point pC = curve.ControlPoints[(i + 2) % curve.ControlPoints.Count];
+
+                normal += CrossProduct(pB - pA, pC - pB);
+            }
+
+            return normal.Normalise();
+        }
+
+        /***************************************************/
+
+        public static Vector Normal(this PolyCurve curve)
+        {
+
+            if (!curve.IsPlanar())
+            {
+                Reflection.Compute.RecordError("Input must be planar.");
+                return null;
+            }
+            else if (!curve.IsClosed())
+            {
+                Reflection.Compute.RecordError("Curve is not closed. Input must be a polygon");
+                return null;
+            }
+            else if (curve.IsSelfIntersecting())
+            {
+                Reflection.Compute.RecordWarning("Curve is self intersecting");
+                return null;
+            }
+
+
+            Vector normal = new Vector { X = 0, Y = 0, Z = 0 };
+
+            List<Point> pts = new List<Point> { curve.Curves[0].IStartPoint() };
+
+            foreach (ICurve crv in curve.Curves)
+            {
+                if (crv is Line)
+                {
+                    pts.Add((crv as Line).End);
+                }
+                else if (crv is Arc)
+                {
+
+                    int numb = 4;
+
+                    List<Point> aPts = crv.SamplePoints(numb);
+
+                    for (int i = 1; i < aPts.Count; i++)
+                    {
+                        pts.Add(aPts[i]);
+
+                    }
+                }
+                else
+                {
+                    throw new NotImplementedException();
+                }
+            }
+
+            Point pA = pts[0];
+
+            for (int i = 1; i < pts.Count - 1; i++)
+            {
+                Point pB = pts[i];
+                Point pC = pts[i + 1];
+
+                normal += CrossProduct((pB - pA).Normalise(), (pC - pB).Normalise());
+                normal += CrossProduct(pB - pA, pC - pA);
+            }
+
+
+            return normal.Normalise();
+        }
+
+
+        /***************************************************/
 
         [NotImplemented]
         public static List<Vector> Normals(this ISurface surface)
@@ -96,3 +201,4 @@ namespace BH.Engine.Geometry
         /***************************************************/
     }
 }
+
