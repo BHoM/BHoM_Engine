@@ -20,6 +20,7 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.oM.Reflection.Attributes;
 using System.Reflection;
 using System.Runtime.InteropServices;
 
@@ -55,3 +56,6 @@ using System.Runtime.InteropServices;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("2.0.0.0")]
 [assembly: AssemblyFileVersion("2.1.0.0")]
+
+// The web address where the code of this project is stored, usually a remote Git repository
+[assembly: AssemblyUrl("https://github.com/BHoM/BHoM_Engine")]
