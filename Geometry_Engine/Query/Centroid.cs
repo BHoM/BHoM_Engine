@@ -61,31 +61,49 @@ namespace BH.Engine.Geometry
             Point pB0 = curve.ControlPoints[1];
             Point pC0 = curve.ControlPoints[2];
 
+            Vector firstNormal;
+
+            firstNormal = CrossProduct(pB0 - pA, pC0 - pA);
+
+            Vector normal = Normal(curve);
+
+            Boolean dir = DotProduct(normal, firstNormal) > 0;
+
             for (int i = 1; i < curve.ControlPoints.Count - 2; i++)
             {
 
                 Point pB = curve.ControlPoints[i];
                 Point pC = curve.ControlPoints[i + 1];
+
                 double triangleArea = Area(pB - pA, pC - pA);
 
-                if (DotProduct(CrossProduct(pB - pA, pC - pA), CrossProduct(pB0 - pA, pC0 - pA)) < 0)
-                {
-                    xc0 -= ((pA.X + pB.X + pC.X) / 3) * triangleArea;
-                    yc0 -= ((pA.Y + pB.Y + pC.Y) / 3) * triangleArea;
-                    zc0 -= ((pA.Z + pB.Z + pC.Z) / 3) * triangleArea;
-                }else
+                if (DotProduct(CrossProduct(pB - pA, pC - pA), firstNormal) > 0)
                 {
                     xc0 += ((pA.X + pB.X + pC.X) / 3) * triangleArea;
                     yc0 += ((pA.Y + pB.Y + pC.Y) / 3) * triangleArea;
                     zc0 += ((pA.Z + pB.Z + pC.Z) / 3) * triangleArea;
                 }
+                else
+                {
+                    xc0 -= ((pA.X + pB.X + pC.X) / 3) * triangleArea;
+                    yc0 -= ((pA.Y + pB.Y + pC.Y) / 3) * triangleArea;
+                    zc0 -= ((pA.Z + pB.Z + pC.Z) / 3) * triangleArea;
+                }
             }
 
 
-            xc = xc0 / Area(curve);
-            yc = yc0 / Area(curve);
-            zc = zc0 / Area(curve);
+            if (!dir)
+            {
+                xc0 = -xc0;
+                yc0 = -yc0;
+                zc0 = -zc0;
+            }
 
+            double curveArea = curve.Area();
+
+            xc = xc0 / curveArea;
+            yc = yc0 / curveArea;
+            zc = zc0 / curveArea;
 
             return new Point { X = xc, Y = yc, Z = zc };
 
@@ -103,7 +121,7 @@ namespace BH.Engine.Geometry
             }
             else if (!curve.IsClosed())
             {
-                Reflection.Compute.RecordError("Curve is not closed. Input must be a polygon");
+                Reflection.Compute.RecordError("Curve is not closed.");
                 return null;
             }
             else if (curve.IsSelfIntersecting())
@@ -112,12 +130,7 @@ namespace BH.Engine.Geometry
                 return null;
             }
             
-            double xc, yc, zc;
-            double xc0 = 0, yc0 = 0, zc0 = 0;
-
-            Vector normal = Normal(curve);
-
-            List<Point> pts = new List<Point> { curve.Curves[0].IStartPoint() };
+           List<Point> pts = new List<Point> { curve.Curves[0].IStartPoint() };
             foreach (ICurve crv in curve.SubParts())
             {
                 if (crv is Line)
@@ -127,6 +140,11 @@ namespace BH.Engine.Geometry
                 else
                     throw new NotImplementedException();
             }
+
+            double xc, yc, zc;
+            double xc0 = 0, yc0 = 0, zc0 = 0;
+
+            Vector normal = Normal(curve);
 
             Point pA = pts[0];
             Point pB0 = pts[1];
