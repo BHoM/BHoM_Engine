@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -149,24 +149,16 @@ namespace BH.Engine.Geometry
 
             List<Point> pts = new List<Point> { curve.Curves[0].IStartPoint() };
 
-            foreach (ICurve crv in curve.Curves)
+            foreach (ICurve crv in curve.ISubParts())
             {
                 if (crv is Line)
-                {
                     pts.Add((crv as Line).End);
-                }
                 else if (crv is Arc)
                 {
-
                     int numb = 4;
-
                     List<Point> aPts = crv.SamplePoints(numb);
-
                     for (int i = 1; i < aPts.Count; i++)
-                    {
                         pts.Add(aPts[i]);
-
-                    }
                 }
                 else
                 {
@@ -196,6 +188,18 @@ namespace BH.Engine.Geometry
         public static List<Vector> Normals(this ISurface surface)
         {
             throw new NotImplementedException();
+        }
+
+        /***************************************************/
+
+
+        /***************************************************/
+        /**** Public Methods - Interfaces               ****/
+        /***************************************************/
+
+        public static Vector INormal(this ICurve curve)
+        {
+            return Normal(curve as dynamic);
         }
 
         /***************************************************/
