@@ -1,6 +1,6 @@
 ﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -129,9 +129,11 @@ namespace BH.Engine.Geometry
                 Reflection.Compute.RecordWarning("Curve is self intersecting");
                 return null;
             }
-            
-           List<Point> pts = new List<Point> { curve.Curves[0].IStartPoint() };
-            foreach (ICurve crv in curve.SubParts())
+
+           List<ICurve> curveSubParts = curve.SubParts();
+        
+           List<Point> pts = new List<Point> { curveSubParts[0].IStartPoint() };
+            foreach (ICurve crv in curveSubParts)
             {
                 if (crv is Line)
                     pts.Add((crv as Line).End);
@@ -178,7 +180,7 @@ namespace BH.Engine.Geometry
                 }
             }
 
-            foreach (ICurve crv in curve.Curves)
+            foreach (ICurve crv in curveSubParts)
             {
                 if (crv is Arc)
                 {
@@ -189,7 +191,7 @@ namespace BH.Engine.Geometry
                     Point p2 = PointAtParameter(crv as Arc, 0.5);
                     Point p3 = crv.IEndPoint();
 
-                    Point arcCentr = circularSegmentCentroid(crv as Arc);
+                    Point arcCentr = CircularSegmentCentroid(crv as Arc);
 
                     if (DotProduct(CrossProduct(p2 - p1, p3 - p1), firstNormal) > 0)
                     {
@@ -229,7 +231,7 @@ namespace BH.Engine.Geometry
         /**** Private methods                           ****/
         /***************************************************/
 
-        private static Point circularSegmentCentroid(this Arc arc)
+        private static Point CircularSegmentCentroid(this Arc arc)
         {
             Point o = arc.CoordinateSystem.Origin;
             double alpha = arc.EndAngle - arc.StartAngle;
@@ -243,5 +245,18 @@ namespace BH.Engine.Geometry
         }
 
         /***************************************************/
+
+
+        /***************************************************/
+        /**** Public Methods - Interfaces               ****/
+        /***************************************************/
+
+        public static Point ICentroid(this ICurve curve)
+        {
+            return Centroid(curve as dynamic);
+        }
+
+        /***************************************************/
+
     }
 }
