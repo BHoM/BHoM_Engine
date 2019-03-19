@@ -184,6 +184,23 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        public static Vector Normal(this Circle circle)
+        {
+            return circle.Normal;
+        }
+
+
+        /***************************************************/
+
+        public static Vector Normal(this Ellipse ellipse)
+        {
+            Vector normal = (ellipse.Axis1).CrossProduct(ellipse.Axis2);
+            return normal;
+        }
+
+
+        /***************************************************/
+
         [NotImplemented]
         public static List<Vector> Normals(this ISurface surface)
         {
@@ -191,37 +208,25 @@ namespace BH.Engine.Geometry
         }
 
         [NotImplemented]
-        public static Point Normal(this Ellipse ellipse)
+        public static Vector Normal(this Arc arc)
+        {
+            throw new NotImplementedException();
+        }
+        
+        [NotImplemented]
+        public static Vector Normal(this Line line)
         {
             throw new NotImplementedException();
         }
 
         [NotImplemented]
-        public static Point Normal(this Arc arc)
+        public static Vector Normal(this NurbsCurve nurbsCurve)
         {
             throw new NotImplementedException();
         }
 
-        [NotImplemented]
-        public static Point Normal(this Circle circle)
-        {
-            throw new NotImplementedException();
-        }
-
-        [NotImplemented]
-        public static Point Normal(this Line line)
-        {
-            throw new NotImplementedException();
-        }
-
-        [NotImplemented]
-        public static Point Normal(this NurbsCurve nurbsCurve)
-        {
-            throw new NotImplementedException();
-        }
 
         /***************************************************/
-
 
         /***************************************************/
         /**** Public Methods - Interfaces               ****/
