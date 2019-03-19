@@ -89,6 +89,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Compute\DeepDependencies.cs" />
+    <Compile Include="Compute\OpenHelpPage.cs" />
     <Compile Include="Compute\RecordEvent.cs" />
     <Compile Include="Compute\LoadAllAssemblies.cs" />
     <Compile Include="Compute\RunExtentionMethod.cs" />

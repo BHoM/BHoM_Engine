@@ -1,6 +1,6 @@
 ﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -31,35 +31,50 @@ namespace BH.Engine.Reflection
     public static partial class Query
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /**** Interface Methods                         ****/
         /***************************************************/
 
         public static string IUrl(this object obj)
         {
             if (obj == null)
-                return "";
-
-            return Url(obj as dynamic);
+            {
+                return null;
+            }
+            else if (obj is Type)
+            {
+                return Url(obj as Type);
+            }
+            else if (obj is MethodBase)
+            {
+                return Url(obj as MethodBase);
+            }
+            else
+            {
+                return null;
+            }
         }
 
+
+        /***************************************************/
+        /**** Public Methods                            ****/
         /***************************************************/
 
         public static string Url(this Type type)
         {
             if (type == null)
-                return "";
+                return null;
 
             Assembly ass = type.Assembly;
             if (ass == null)
-                return "";
+                return null;
 
             AssemblyUrlAttribute att = ass.GetCustomAttribute<AssemblyUrlAttribute>();
             if (att == null)
-                return "";
+                return null;
 
             string url = att.Url;
             if (url == "")
-                return "";
+                return null;
 
             List<string> path = new List<string>() { url, "blob/master/" };
             path.Add(ass.GetName().Name);
@@ -79,19 +94,17 @@ namespace BH.Engine.Reflection
         public static string Url(this MethodBase method)
         {
             if (method == null)
-                return "";
+                return null;
 
             Assembly ass = method.DeclaringType.Assembly;
             if (ass == null)
-                return "";
+                return null;
 
             AssemblyUrlAttribute att = ass.GetCustomAttribute<AssemblyUrlAttribute>();
             if (att == null)
-                return "";
+                return null;
 
             string url = att.Url;
-            if (url == "")
-                return "";
 
             List<string> path = new List<string>() { url, "blob/master/" };
             path.Add(ass.GetName().Name);
