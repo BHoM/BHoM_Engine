@@ -190,6 +190,36 @@ namespace BH.Engine.Geometry
             throw new NotImplementedException();
         }
 
+        [NotImplemented]
+        public static Point Normal(this Ellipse ellipse)
+        {
+            throw new NotImplementedException();
+        }
+
+        [NotImplemented]
+        public static Point Normal(this Arc arc)
+        {
+            throw new NotImplementedException();
+        }
+
+        [NotImplemented]
+        public static Point Normal(this Circle circle)
+        {
+            throw new NotImplementedException();
+        }
+
+        [NotImplemented]
+        public static Point Normal(this Line line)
+        {
+            throw new NotImplementedException();
+        }
+
+        [NotImplemented]
+        public static Point Normal(this NurbsCurve nurbsCurve)
+        {
+            throw new NotImplementedException();
+        }
+
         /***************************************************/
 
 
