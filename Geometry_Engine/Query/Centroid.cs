@@ -25,6 +25,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System;
 using BH.Engine.Reflection;
+using BH.oM.Reflection.Attributes;
 
 namespace BH.Engine.Geometry
 {
@@ -130,9 +131,9 @@ namespace BH.Engine.Geometry
                 return null;
             }
 
-           List<ICurve> curveSubParts = curve.SubParts();
-        
-           List<Point> pts = new List<Point> { curveSubParts[0].IStartPoint() };
+            List<ICurve> curveSubParts = curve.SubParts();
+
+            List<Point> pts = new List<Point> { curveSubParts[0].IStartPoint() };
             foreach (ICurve crv in curveSubParts)
             {
                 if (crv is Line)
@@ -197,13 +198,13 @@ namespace BH.Engine.Geometry
                     {
                         xc0 += arcCentr.X * area;
                         yc0 += arcCentr.Y * area;
-                        zc0 += arcCentr.Z * area;    
+                        zc0 += arcCentr.Z * area;
                     }
                     else
                     {
                         xc0 -= arcCentr.X * area;
                         yc0 -= arcCentr.Y * area;
-                        zc0 -= arcCentr.Z * area;                                        
+                        zc0 -= arcCentr.Z * area;
                     }
                 }
             }
@@ -227,6 +228,37 @@ namespace BH.Engine.Geometry
         }
 
 
+        [NotImplemented]
+        public static Point Centroid(this Ellipse ellipse)
+        {
+            throw new NotImplementedException();
+        }
+
+        [NotImplemented]
+        public static Point Centroid(this Arc arc)
+        {
+            throw new NotImplementedException();
+        }
+
+        [NotImplemented]
+        public static Point Centroid(this Circle circle)
+        {
+            throw new NotImplementedException();
+        }
+
+        [NotImplemented]
+        public static Point Centroid(this Line line)
+        {
+            throw new NotImplementedException();
+        }
+
+        [NotImplemented]
+        public static Point Centroid(this NurbsCurve nurbsCurve)
+        {
+            throw new NotImplementedException();
+        }
+
+
         /***************************************************/
         /**** Private methods                           ****/
         /***************************************************/
@@ -239,24 +271,23 @@ namespace BH.Engine.Geometry
 
             Vector v = mid - o;
 
-            Double length = (4 * arc.Radius * Math.Pow(Math.Sin(alpha / 2),3)) / (3 * (alpha - Math.Sin(alpha)));
+            Double length = (4 * arc.Radius * Math.Pow(Math.Sin(alpha / 2), 3)) / (3 * (alpha - Math.Sin(alpha)));
 
             return o + ((v / arc.Radius) * length);
         }
 
         /***************************************************/
 
-
+        
         /***************************************************/
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
         public static Point ICentroid(this ICurve curve)
-        {
-            return Centroid(curve as dynamic);
-        }
+            {
+                return Centroid(curve as dynamic);
+            }
 
-        /***************************************************/
-
+            /***************************************************/
     }
 }
