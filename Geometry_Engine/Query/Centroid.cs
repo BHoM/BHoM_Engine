@@ -228,36 +228,44 @@ namespace BH.Engine.Geometry
         }
 
 
-        [NotImplemented]
+        /***************************************************/
+
         public static Point Centroid(this Ellipse ellipse)
         {
-            throw new NotImplementedException();
+            return ellipse.Centre;
         }
+
+        
+        /***************************************************/
+
+        public static Point Centroid(this Circle circle)
+        {
+            return circle.Centre;
+        }
+
+
+        /***************************************************/
+
+        public static Point Centroid(this Line line)
+        {
+            return line.PointAtParameter(0.5);
+        }
+
+
+        /***************************************************/
 
         [NotImplemented]
         public static Point Centroid(this Arc arc)
         {
             throw new NotImplementedException();
         }
-
-        [NotImplemented]
-        public static Point Centroid(this Circle circle)
-        {
-            throw new NotImplementedException();
-        }
-
-        [NotImplemented]
-        public static Point Centroid(this Line line)
-        {
-            throw new NotImplementedException();
-        }
-
+                
+       
         [NotImplemented]
         public static Point Centroid(this NurbsCurve nurbsCurve)
         {
             throw new NotImplementedException();
         }
-
 
         /***************************************************/
         /**** Private methods                           ****/
