@@ -110,7 +110,6 @@ namespace BH.Engine.Geometry
 
         }
 
-
         /***************************************************/
 
         public static Point Centroid(this PolyCurve curve)
@@ -226,32 +225,28 @@ namespace BH.Engine.Geometry
             return new Point { X = xc, Y = yc, Z = zc };
 
         }
-
-
+        
         /***************************************************/
 
         public static Point Centroid(this Ellipse ellipse)
         {
             return ellipse.Centre;
         }
-
-        
+                
         /***************************************************/
 
         public static Point Centroid(this Circle circle)
         {
             return circle.Centre;
         }
-
-
+        
         /***************************************************/
 
         public static Point Centroid(this Line line)
         {
             return line.PointAtParameter(0.5);
         }
-
-
+        
         /***************************************************/
 
         [NotImplemented]
@@ -259,14 +254,15 @@ namespace BH.Engine.Geometry
         {
             throw new NotImplementedException();
         }
-                
-       
+        
+        /***************************************************/
+
         [NotImplemented]
         public static Point Centroid(this NurbsCurve nurbsCurve)
         {
             throw new NotImplementedException();
         }
-
+        
         /***************************************************/
         /**** Private methods                           ****/
         /***************************************************/
@@ -283,10 +279,7 @@ namespace BH.Engine.Geometry
 
             return o + ((v / arc.Radius) * length);
         }
-
-        /***************************************************/
-
-        
+                       
         /***************************************************/
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
@@ -296,6 +289,6 @@ namespace BH.Engine.Geometry
                 return Centroid(curve as dynamic);
             }
 
-            /***************************************************/
+        /***************************************************/
     }
 }

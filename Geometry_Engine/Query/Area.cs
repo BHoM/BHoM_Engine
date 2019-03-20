@@ -179,8 +179,7 @@ namespace BH.Engine.Geometry
 
             return area;
         }
-
-
+        
 
         /***************************************************/
         /**** Public Methods - Interfaces               ****/

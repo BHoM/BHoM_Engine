@@ -88,8 +88,7 @@ namespace BH.Engine.Geometry
         /***************************************************/
         /**** Public Methods - Curves                   ****/
         /***************************************************/
-
-
+        
         public static Vector Normal(this Polyline curve)
         {
 
@@ -181,15 +180,13 @@ namespace BH.Engine.Geometry
             return normal.Normalise();
         }
 
-
         /***************************************************/
 
         public static Vector Normal(this Circle circle)
         {
             return circle.Normal;
         }
-
-
+        
         /***************************************************/
 
         public static Vector Normal(this Ellipse ellipse)
@@ -198,7 +195,6 @@ namespace BH.Engine.Geometry
             return normal;
         }
 
-
         /***************************************************/
 
         [NotImplemented]
@@ -206,28 +202,31 @@ namespace BH.Engine.Geometry
         {
             throw new NotImplementedException();
         }
+        
+        /***************************************************/
 
         [NotImplemented]
         public static Vector Normal(this Arc arc)
         {
             throw new NotImplementedException();
         }
-        
+
+        /***************************************************/
+
         [NotImplemented]
         public static Vector Normal(this Line line)
         {
             throw new NotImplementedException();
         }
+        
+        /***************************************************/
 
         [NotImplemented]
         public static Vector Normal(this NurbsCurve nurbsCurve)
         {
             throw new NotImplementedException();
         }
-
-
-        /***************************************************/
-
+        
         /***************************************************/
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
