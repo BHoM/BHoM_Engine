@@ -54,11 +54,38 @@ namespace BH.Engine.Reflection
         {
             IEnumerable<InputAttribute> inputDesc = parameter.Member.GetCustomAttributes<InputAttribute>().Where(x => x.Name == parameter.Name);
             if (inputDesc.Count() > 0)
+            {
                 return inputDesc.First().Description;
+            }
             else if (parameter.ParameterType != null)
-                return parameter.Name + " is a " + parameter.ParameterType.ToText();
+            {
+                if (parameter.ParameterType.IsInterface)
+                {
+                    Type type = parameter.ParameterType;
+                    string echo = $"This is a {type.ToText()}: ";
+
+                    List<Type> t = type.ImplementingTypes();
+                    int m = Math.Min(15, t.Count);
+
+                    for (int i = 0; i < m; i++)
+                        echo += $"{t[i].ToText()}, ";
+
+                    if (t.Count > m)
+                        echo += "and more...";
+                    else
+                        echo.Remove(echo.Length - 2, 2);
+
+                    return echo;
+                }
+                else
+                {
+                    return parameter.Name + " is a " + parameter.ParameterType.ToText();
+                }
+            }
             else
+            {
                 return "";
+            }
         }
 
         /***************************************************/
@@ -68,9 +95,30 @@ namespace BH.Engine.Reflection
         {
             DescriptionAttribute attribute = type.GetCustomAttribute<DescriptionAttribute>();
             if (attribute != null)
+            {
                 return attribute.Description;
+            }
+            else if (type.IsInterface)
+            {
+                string echo = $"This is a {type.ToText()}: ";
+
+                List<Type> t = type.ImplementingTypes();
+                int m = Math.Min(15, t.Count);
+
+                for (int i = 0; i < m; i++)
+                    echo += $"{t[i].ToText()}, ";
+
+                if (t.Count > m)
+                    echo += "and more...";
+                else
+                    echo.Remove(echo.Length - 2, 2);
+
+                return echo;
+            }
             else
+            {
                 return "This is a " + type.ToText();
+            }
         }
 
         /***************************************************/
