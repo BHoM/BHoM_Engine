@@ -57,35 +57,11 @@ namespace BH.Engine.Reflection
             {
                 return inputDesc.First().Description;
             }
-            else if (parameter.ParameterType != null)
-            {
-                if (parameter.ParameterType.IsInterface)
-                {
-                    Type type = parameter.ParameterType;
-                    string echo = $"This is a {type.ToText()}: ";
-
-                    List<Type> t = type.ImplementingTypes();
-                    int m = Math.Min(15, t.Count);
-
-                    for (int i = 0; i < m; i++)
-                        echo += $"{t[i].ToText()}, ";
-
-                    if (t.Count > m)
-                        echo += "and more...";
-                    else
-                        echo.Remove(echo.Length - 2, 2);
-
-                    return echo;
-                }
-                else
-                {
-                    return parameter.Name + " is a " + parameter.ParameterType.ToText();
-                }
-            }
-            else
+            if (parameter.ParameterType == null)
             {
                 return "";
             }
+            return parameter.ParameterType.Description();
         }
 
         /***************************************************/
@@ -93,6 +69,11 @@ namespace BH.Engine.Reflection
         [Description("Return the custom description of a C# class")]
         public static string Description(this Type type)
         {
+            if (type == null)
+            {
+                return "";
+            }
+
             DescriptionAttribute attribute = type.GetCustomAttribute<DescriptionAttribute>();
             if (attribute != null)
             {
@@ -115,10 +96,8 @@ namespace BH.Engine.Reflection
 
                 return echo;
             }
-            else
-            {
-                return "This is a " + type.ToText();
-            }
+
+            return "This is a " + type.ToText();
         }
 
         /***************************************************/
