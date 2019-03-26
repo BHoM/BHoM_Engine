@@ -24,6 +24,7 @@ using BH.oM.Geometry;
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using BH.oM.Reflection.Attributes;
 
 namespace BH.Engine.Geometry
 {
@@ -42,6 +43,69 @@ namespace BH.Engine.Geometry
             double minTol = (distToStart + distToEnd) - tolerance;
 
             return line.Length() >= minTol && line.Length() <= maxTol;
+        }
+
+        /***************************************************/
+        /**** Public Methods - Curves                   ****/
+        /***************************************************/
+
+        public static bool IsOnCurve(this Point point, Arc curve, double tolerance = Tolerance.Distance)
+        {
+            return point.Distance(curve) < tolerance;
+        }
+
+        /***************************************************/
+
+        public static bool IsOnCurve(this Point point, Circle curve, double tolerance = Tolerance.Distance)
+        {
+            return point.Distance(curve) < tolerance;
+        }
+
+        /***************************************************/
+
+        [NotImplemented]
+        public static bool IsOnCurve(this Point point, Ellipse curve, double tolerance = Tolerance.Distance)
+        {
+            throw new NotImplementedException();
+        }
+
+        /***************************************************/
+
+        public static bool IsOnCurve(this Point point, Line curve, double tolerance = Tolerance.Distance)
+        {
+            return point.Distance(curve) < tolerance;
+        }
+
+        /***************************************************/
+
+        [NotImplemented]
+        public static bool IsOnCurve(this Point point, NurbsCurve curve, double tolerance = Tolerance.Distance)
+        {
+            throw new NotImplementedException();
+        }
+
+        /***************************************************/
+
+        public static bool IsOnCurve(this Point point, PolyCurve curve, double tolerance = Tolerance.Distance)
+        {
+            return point.Distance(curve) < tolerance;
+        }
+
+        /***************************************************/
+
+        public static bool IsOnCurve(this Point point, Polyline curve, double tolerance = Tolerance.Distance)
+        {
+            return point.Distance(curve) < tolerance;
+        }
+
+
+        /***************************************************/
+        /**** Public Methods - Interfaces               ****/
+        /***************************************************/
+
+        public static bool IsOnCurve(this Point point, ICurve curve, double tolerance = Tolerance.Distance)
+        {
+            return IsOnCurve(point, curve as dynamic, tolerance);
         }
 
         /***************************************************/
