@@ -202,13 +202,31 @@ namespace BH.Engine.Geometry
         {
             throw new NotImplementedException();
         }
-        
+
         /***************************************************/
 
-        [NotImplemented]
         public static Vector Normal(this Arc arc)
         {
-            throw new NotImplementedException();
+            Vector normal = new Vector { X = 0, Y = 0, Z = 0 };
+
+            List<Point> pts = new List<Point> { arc.IStartPoint() };
+
+            int numb = 4;
+            List<Point> aPts = arc.SamplePoints(numb);
+            for (int i = 1; i < aPts.Count; i++)
+                pts.Add(aPts[i]);
+
+            Point pA = pts[0];
+
+            for (int i = 1; i < pts.Count - 1; i++)
+            {
+                Point pB = pts[i];
+                Point pC = pts[i + 1];
+
+                normal += CrossProduct((pB - pA).Normalise(), (pC - pB).Normalise());
+                normal += CrossProduct(pB - pA, pC - pA);
+            }
+            return normal.Normalise();
         }
 
         /***************************************************/
