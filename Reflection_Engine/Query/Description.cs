@@ -92,7 +92,7 @@ namespace BH.Engine.Reflection
                 if (t.Count > m)
                     echo += "and more...";
                 else
-                    echo.Remove(echo.Length - 2, 2);
+                    echo = echo.Remove(echo.Length - 2, 2);
 
                 return echo;
             }
