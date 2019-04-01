@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -23,6 +23,8 @@
 using BH.oM.Structure.Properties.Framing;
 using BH.oM.Structure.Properties.Section;
 using BH.oM.Geometry;
+using System.ComponentModel;
+using BH.oM.Reflection.Attributes;
 
 namespace BH.Engine.Structure
 {
@@ -32,8 +34,16 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Constructs the simplest type of FramingELementProperty, with constant section proeprty along the element as well as a constant orientation angle along the element")]
+        [Input("sectionProperty", "The section property used by the element. Constant along the whole element")]
+        [Input("orientationAngle", "orientation angle of the element. Constant along the whole element")]
+        [Input("name", "Name of the ConstantFramingElementProeprty. If no name is provided, the name of the provided SectionProeprty will be used")]
         public static ConstantFramingElementProperty ConstantFramingElementProperty(ISectionProperty sectionProperty, double orientationAngle, string name = "")
         {
+            //If no name is provided, use the name of the section proeprty
+            if (string.IsNullOrWhiteSpace(name) && !string.IsNullOrWhiteSpace(sectionProperty.Name))
+                name = sectionProperty.Name;
+
             return new ConstantFramingElementProperty { SectionProperty = sectionProperty, OrientationAngle = orientationAngle, Name = name };
         }
 
