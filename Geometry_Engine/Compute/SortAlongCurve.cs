@@ -34,18 +34,42 @@ namespace BH.Engine.Geometry
         /**** public Methods - Vectors                  ****/
         /***************************************************/
 
-        [NotImplemented]
-        public static List<Point> SortAlongCurve(this List<Point> points, Arc arc)
+        public static List<Point> SortAlongCurve(this List<Point> points, Arc arc, double distanceTolerance = Tolerance.Distance, double angleTolerance = Tolerance.Angle)
         {
-            throw new NotImplementedException();
+            if (arc.Angle() <= angleTolerance)
+                return points.Select(p => p.Clone()).ToList();
+
+            Vector normal = arc.Normal();
+            Vector arcStartVector = arc.StartPoint() - arc.Centre();
+
+            List<Tuple<Point, double>> cData = points.Select(p => new Tuple<Point, double>(p.Clone(), (2 * Math.PI + arcStartVector.SignedAngle(p - arc.Centre(), normal)) % (2 * Math.PI))).ToList();
+
+            cData.Sort(delegate (Tuple<Point, double> d1, Tuple<Point, double> d2)
+            {
+                return d1.Item2.CompareTo(d2.Item2);
+            });
+
+            return cData.Select(d => d.Item1).ToList();
         }
 
         /***************************************************/
 
-        [NotImplemented]
-        public static List<Point> SortAlongCurve(this List<Point> points, Circle circle)
+        public static List<Point> SortAlongCurve(this List<Point> points, Circle circle, double distanceTolerance = Tolerance.Distance, double angleTolerance = Tolerance.Angle)
         {
-            throw new NotImplementedException();
+            if (circle.Radius <= distanceTolerance)
+                return points.Select(p => p.Clone()).ToList();
+
+            Vector normal = circle.Normal();
+            Vector arcStartVector = circle.StartPoint() - circle.Centre;
+
+            List<Tuple<Point, double>> cData = points.Select(p => new Tuple<Point, double>(p.Clone(), (2 * Math.PI + arcStartVector.SignedAngle(p - circle.Centre, normal)) % (2 * Math.PI))).ToList();
+
+            cData.Sort(delegate (Tuple<Point, double> d1, Tuple<Point, double> d2)
+            {
+                return d1.Item2.CompareTo(d2.Item2);
+            });
+
+            return cData.Select(d => d.Item1).ToList();
         }
 
         /***************************************************/
@@ -102,18 +126,111 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [NotImplemented]
-        public static List<Point> SortAlongCurve(this List<Point> points, PolyCurve curve)
+        
+        public static List<Point> SortAlongCurve(this List<Point> points, PolyCurve curve, double tolerance = Tolerance.Distance, double angleTolerance = Tolerance.Angle)
         {
-            throw new NotImplementedException();
+            List<Point> result = new List<Point>();
+            List<Point> tmpResult = new List<Point>();
+
+            foreach (Point pt in points)
+            {
+                if (pt.IsOnCurve(curve, tolerance))
+                    tmpResult.Add(pt);
+            }
+
+            tmpResult = tmpResult.CullDuplicates();
+
+            if (!tmpResult.Any())
+                return result;
+
+
+            List<Point> subPoints = new List<Point>();
+
+            foreach (ICurve subPart in curve.ISubParts())
+            {
+                if (subPart is Arc)
+                {
+                    foreach (Point pt in tmpResult)
+                    {
+                        if (pt.IsOnCurve(subPart, tolerance))
+                            subPoints.Add(pt);
+                    }
+                    subPoints = subPoints.SortAlongCurve(subPart as Arc);
+                    if (result.Any() && subPoints.Any())
+                    {
+                        if (result[result.Count - 1].IsEqual(subPoints[0]))
+                            result.RemoveAt(result.Count - 1);
+                    }
+                    result.AddRange(subPoints);
+                    subPoints.Clear();
+                }
+                else if (subPart is Line)
+                {
+                    foreach (Point pt in tmpResult)
+                    {
+                        if (pt.IsOnCurve(subPart, tolerance))
+                            subPoints.Add(pt);
+                    }
+                    subPoints = subPoints.SortAlongCurve(subPart as Line);
+
+                    if (result.Any() && subPoints.Any())
+                    {
+                        if (result[result.Count - 1].IsEqual(subPoints[0]))
+                            result.RemoveAt(result.Count - 1);
+                    }
+                    result.AddRange(subPoints);
+                    subPoints.Clear();
+                }
+            }
+
+            result = result.CullDuplicates();
+
+            if (result.Count > tmpResult.Count)
+                result.RemoveAt(result.Count - 1);
+
+            return result;
         }
 
         /***************************************************/
 
-        [NotImplemented]
-        public static List<Point> SortAlongCurve(this List<Point> points, Polyline curve)
+        public static List<Point> SortAlongCurve(this List<Point> points, Polyline curve, double tolerance = Tolerance.Distance, double angleTolerance = Tolerance.Angle)
         {
-            throw new NotImplementedException();
+            List<Point> result = new List<Point>();
+            List<Point> tmpResult = new List<Point>();
+
+            foreach (Point pt in points)
+            {
+                if (pt.IsOnCurve(curve, tolerance))
+                    tmpResult.Add(pt);
+            }
+
+            if (!tmpResult.Any())
+                return result;
+            else if (tmpResult.Count == 1)
+                return tmpResult;
+
+
+            List<Point> subPoints = new List<Point>();
+
+            foreach (ICurve subPart in curve.ISubParts())
+            {
+                foreach (Point pt in tmpResult)
+                {
+                    if (pt.IsOnCurve(subPart, tolerance))
+                        subPoints.Add(pt);
+                }
+                subPoints = subPoints.SortAlongCurve(subPart as Line);
+
+                if (result.Any() && subPoints.Any())
+                {
+                    if (result[result.Count - 1].IsEqual(subPoints[0]))
+                        result.RemoveAt(result.Count - 1);
+                }
+                result.AddRange(subPoints);
+                subPoints.Clear();
+            }
+
+            return result;
         }
 
 
@@ -121,9 +238,9 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
-        public static List<Point> ISortAlongCurve(this List<Point> points, ICurve curve)
+        public static List<Point> ISortAlongCurve(this List<Point> points, ICurve curve, double distanceTolerance = Tolerance.Distance, double angleTolerance = Tolerance.Angle)
         {
-            return SortAlongCurve(points, curve as dynamic);
+            return SortAlongCurve(points, curve as dynamic, distanceTolerance, angleTolerance);
         }
 
         /***************************************************/
