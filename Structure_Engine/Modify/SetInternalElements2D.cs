@@ -36,10 +36,7 @@ namespace BH.Engine.Structure
         public static Opening SetInternalElements2D(this Opening opening, List<IElement2D> internalElements2D)
         {
             if (internalElements2D.Count != 0)
-            {
                 Reflection.Compute.RecordError("Cannot set internal 2D elements to an opening.");
-                return null;
-            }
 
             return opening.GetShallowClone() as Opening;
         }
