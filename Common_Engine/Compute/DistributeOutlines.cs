@@ -23,6 +23,7 @@
 using BH.Engine.Geometry;
 using BH.oM.Common;
 using BH.oM.Geometry;
+using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,11 +32,11 @@ namespace BH.Engine.Common
 {
     public static partial class Compute
     {
-        /***************************************************/
-        /**** Public Methods                            ****/
-        /***************************************************/
+        /******************************************/
+        /****            IElement2D            ****/
+        /******************************************/
 
-        public static List<List<List<IElement1D>>> DistributeOutlines(this List<List<IElement1D>> outlines, double tolerance = Tolerance.Distance)
+        public static List<List<List<IElement1D>>> DistributeOutlines(this List<List<IElement1D>> outlines, bool canCutOpenings = true, double tolerance = Tolerance.Distance)
         {
             List<Tuple<PolyCurve, List<IElement1D>>> outlineCurves = new List<Tuple<PolyCurve, List<IElement1D>>>();
             foreach (List<IElement1D> outline in outlines)
@@ -58,7 +59,9 @@ namespace BH.Engine.Common
                 {
                     if (outlinesByType[i].Item1.IsContaining(o.Item1, true, tolerance))
                     {
-                        outlinesByType.Add(new Tuple<PolyCurve, List<IElement1D>, bool>(o.Item1, o.Item2, !outlinesByType[i].Item3));
+                        if (canCutOpenings || i == 0)
+                            outlinesByType.Add(new Tuple<PolyCurve, List<IElement1D>, bool>(o.Item1, o.Item2, !outlinesByType[i].Item3));
+
                         assigned = true;
                         break;
                     }
@@ -71,6 +74,14 @@ namespace BH.Engine.Common
             List<Tuple<PolyCurve, List<IElement1D>>> panelOutlines = outlinesByType.Where(x => x.Item3 == true).Select(x => new Tuple<PolyCurve, List<IElement1D>>(x.Item1, x.Item2)).ToList();
             List<Tuple<PolyCurve, List<IElement1D>>> panelOpenings = outlinesByType.Where(x => x.Item3 == false).Select(x => new Tuple<PolyCurve, List<IElement1D>>(x.Item1, x.Item2)).ToList();
             return panelOutlines.DistributeOpenings(panelOpenings, tolerance);
+        }
+
+        /***************************************************/
+
+        [DeprecatedAttribute("2.3", "Replaced with the same method taking an extra canCutOpenings argument.", null, "DistributeOutlines")]
+        public static List<List<List<IElement1D>>> DistributeOutlines(this List<List<IElement1D>> outlines, double tolerance = Tolerance.Distance)
+        {
+            return outlines.DistributeOutlines(true, tolerance);
         }
 
 
