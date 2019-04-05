@@ -21,6 +21,7 @@
  */
 
 using BH.oM.Geometry;
+using BH.oM.Geometry.CoordinateSystem;
 using System;
 using System.Linq;
 using System.Collections.Generic;
@@ -41,32 +42,32 @@ namespace BH.Engine.Geometry
 
             List<Arc> result = new List<Arc>();
             List<Point> cPts = new List<Point>();
-            List<Point> sPts = new List<Point>();
             Vector normal = arc.Normal();
-            
+
             foreach (Point point in points)
             {
                 if (point.IsOnCurve(arc, tolerance))
                     cPts.Add(point);
             }
 
-            if (cPts.Count > 0)
+            cPts.Add(arc.StartPoint());
+            cPts.Add(arc.EndPoint());
+            cPts = cPts.CullDuplicates(tolerance);
+            cPts = cPts.SortAlongCurve(arc, tolerance);
+
+            if (cPts.Count > 2)
             {
-                sPts.Add(arc.StartPoint());
-                sPts.AddRange(cPts.SortAlongCurve(arc, tolerance));
-                sPts.Add(arc.EndPoint());
-                sPts = sPts.CullDuplicates(tolerance);
                 Double startAng = arc.StartAngle;
                 Double endAng = arc.EndAngle;
                 Double tmpAng = 0;
                 Arc tmpArc;
 
-                for (int i = 1; i < sPts.Count; i++)
+                for (int i = 1; i < cPts.Count; i++)
                 {
                     tmpArc = arc.Clone();
 
                     tmpArc.StartAngle = startAng;
-                    tmpAng = (2 * Math.PI + (sPts[i - 1] - arc.Centre()).SignedAngle(sPts[i] - arc.Centre(), normal)) % (2 * Math.PI);
+                    tmpAng = (2 * Math.PI + (cPts[i - 1] - arc.Centre()).SignedAngle(cPts[i] - arc.Centre(), normal)) % (2 * Math.PI);
                     endAng = startAng + tmpAng;
                     tmpArc.EndAngle = endAng;
                     result.Add(tmpArc);
@@ -83,20 +84,68 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
 
-        //public static List<Arc> SplitAtPoints(this Circle circle, List<Point> points, double tolerance = Tolerance.Distance)
-        //{
-        //    List<Arc> result = new List<Arc>();
-        //    List<Point> cPts = new List<Point>();
-        //    List<Point> sPts = new List<Point>();
-        //    Vector normal = circle.Normal();
+        public static List<Arc> SplitAtPoints(this Circle circle, List<Point> points, double tolerance = Tolerance.Distance)
+        {
 
-        //    foreach (Point point in points)
-        //    {
-        //        if (point.IsOnCurve(circle, tolerance))
-        //            cPts.Add(point);
-        //    }
+            List<Arc> result = new List<Arc>();
+            List<Point> cPts = new List<Point>();
 
-        //}
+            foreach (Point point in points)
+            {
+                if (point.IsOnCurve(circle, tolerance))
+                    cPts.Add(point);
+            }
+
+            cPts = cPts.CullDuplicates(tolerance);
+            cPts = cPts.SortAlongCurve(circle);
+
+            Point cirCen = circle.Centre;
+            Vector startVector = circle.StartPoint() - circle.Centre;
+            Vector normal = circle.Normal;
+            Double rotAng;
+
+            Cartesian system = new Cartesian(circle.Centre, startVector, circle.PointAtParameter(0.25) - cirCen, normal);
+            
+            Arc mainArc = new Arc();
+            Arc tmpArc = new Arc();
+
+            mainArc.CoordinateSystem = system;
+            mainArc.Radius = circle.Radius;
+
+            Vector stVec;
+            Vector enVec;
+            Double enAng;
+
+            if (cPts.Count == 1)
+            {
+                tmpArc = mainArc;
+                stVec = cPts[0] - circle.Centre;
+                rotAng = ((2 * Math.PI + startVector.SignedAngle(stVec, normal)) % (2 * Math.PI));
+                enAng = 2 * Math.PI;
+
+                tmpArc = tmpArc.Rotate(cirCen, normal, rotAng);
+                tmpArc.StartAngle = 0;
+                tmpArc.EndAngle = enAng;
+                result.Add(tmpArc.Clone());
+            }
+            else
+            {
+                for (int i = 0; i < cPts.Count; i++)
+                {
+                    tmpArc = mainArc;
+                    stVec = cPts[i] - circle.Centre;
+                    enVec = cPts[(i + 1) % cPts.Count] - circle.Centre;
+                    rotAng = ((2 * Math.PI + startVector.SignedAngle(stVec, normal)) % (2 * Math.PI));
+                    enAng = ((2 * Math.PI + stVec.SignedAngle(enVec, normal)) % (2 * Math.PI));
+
+                    tmpArc = tmpArc.Rotate(cirCen, normal, rotAng);
+                    tmpArc.StartAngle = 0;
+                    tmpArc.EndAngle = enAng;
+                    result.Add(tmpArc.Clone());
+                }
+            }
+            return result;
+        }
 
         /***************************************************/
 
@@ -147,11 +196,18 @@ namespace BH.Engine.Geometry
             List<Point> subPoints = new List<Point>();
             List<Point> onCurvePoints = new List<Point>();
 
-            onCurvePoints = points.SortAlongCurve(curve);
+            foreach (Point p in points)
+            {
+                if (p.IsOnCurve(curve))
+                    onCurvePoints.Add(p);
+            }
+
+            onCurvePoints = onCurvePoints.CullDuplicates(tolerance);
 
             if (onCurvePoints.Count == 0)
                 return new List<PolyCurve> { curve.Clone() };
 
+            onCurvePoints = onCurvePoints.SortAlongCurve(curve);
 
             foreach (ICurve crv in curve.SubParts())
             {
@@ -201,6 +257,11 @@ namespace BH.Engine.Geometry
                     if (i < onCurvePoints.Count)
                     {
                         if (tmpResult[j].IEndPoint().IsEqual(onCurvePoints[i]))
+                        {
+                            j++;
+                            break;
+                        }
+                        else if (tmpResult[j].IEndPoint().IsEqual(curve.EndPoint()))
                         {
                             j++;
                             break;
@@ -310,66 +371,5 @@ namespace BH.Engine.Geometry
         }
 
         /***************************************************/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        public static List<ICurve> TmpSplit(this PolyCurve curve, List<Point> points, double tolerance = Tolerance.Distance)
-        {
-            if (points.Count == 0)
-                return new List<ICurve> { curve.Clone() };
-
-            List<ICurve> tmpResult = new List<ICurve>();
-            List<Point> subPoints = new List<Point>();
-            List<Point> onCurvePoints = new List<Point>();
-
-            onCurvePoints = points.SortAlongCurve(curve);
-            onCurvePoints = onCurvePoints.CullDuplicates();
-
-            if (onCurvePoints.Count == 0)
-                return new List<ICurve> { curve.Clone() };
-
-
-            foreach (ICurve crv in curve.SubParts())
-            {
-                if (crv is Arc)
-                {
-                    foreach (Point point in onCurvePoints)
-                    {
-                        if (point.IsOnCurve(crv, tolerance))
-                            subPoints.Add(point);
-                    }
-                    tmpResult.AddRange((crv as Arc).SplitAtPoints(subPoints));
-                    subPoints.Clear();
-                }
-                else if (crv is Line)
-                {
-                    foreach (Point point in onCurvePoints)
-                    {
-                        if (point.IsOnCurve(crv, tolerance))
-                            subPoints.Add(point);
-                    }
-                    tmpResult.AddRange((crv as Line).SplitAtPoints(subPoints));
-                    subPoints.Clear();
-                }
-                else
-                {
-                    throw new NotImplementedException();
-                }
-            }
-                return tmpResult;
-            
-        }
     }
 }
