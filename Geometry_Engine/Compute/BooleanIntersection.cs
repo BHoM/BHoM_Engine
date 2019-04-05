@@ -173,5 +173,94 @@ namespace BH.Engine.Geometry
         }
 
         /***************************************************/
+
+        public static List<PolyCurve> BooleanIntersection(this PolyCurve region, PolyCurve refRegion, double tolerance = Tolerance.Distance)
+        {
+            if (region.IsCoplanar(refRegion, tolerance))
+            {
+                double sqTol = tolerance * tolerance;
+                List<ICurve> tmpResult = new List<ICurve>();
+                List<PolyCurve> result = new List<PolyCurve>();
+                List<Point> iPts = new List<Point>();
+
+                foreach (ICurve crv in region.SubParts())
+                {
+                    foreach (ICurve refCrv in refRegion.SubParts())
+                    {
+                        iPts.AddRange(crv.ICurveIntersections(refCrv));
+                    }
+                }
+
+                List<PolyCurve> splitRegion1 = region.SplitAtPoints(iPts, tolerance);
+                List<PolyCurve> splitRegion2 = refRegion.SplitAtPoints(iPts, tolerance);
+
+                foreach (PolyCurve segment in splitRegion1)
+                {
+                    List<Point> cPts = new List<Point>();
+                    cPts.Add(segment.IStartPoint());
+                    cPts.Add(segment.IEndPoint());
+                    cPts.Add(segment.IPointAtParameter(0.5));
+
+                    if (refRegion.IsContaining(cPts, true, tolerance))
+                        tmpResult.Add(segment);
+                }
+
+                foreach (PolyCurve segment in splitRegion2)
+                {
+                    List<Point> cPts = new List<Point>();
+                    cPts.Add(segment.IStartPoint());
+                    cPts.Add(segment.IEndPoint());
+                    cPts.Add(segment.IPointAtParameter(0.5));
+
+                    if (region.IsContaining(cPts, true, tolerance))
+                    {
+                        foreach (Point cPt in cPts)
+                        {
+                            if (cPt.SquareDistance(region.ClosestPoint(cPt)) > sqTol)
+                            {
+                                tmpResult.Add(segment);
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                result = tmpResult.IJoin(tolerance);
+                int i = 0;
+                while (i < result.Count)
+                {
+                    if (result[i].Area() <= sqTol)
+                        result.RemoveAt(i);
+                    else
+                        i++;
+                }
+
+                return result;
+            }
+            return new List<PolyCurve>();
+        }
+
+        /***************************************************/
+
+        public static List<PolyCurve> BooleanIntersection(this List<PolyCurve> regions, double tolerance = Tolerance.Distance)
+        {
+            {
+                List<PolyCurve> result = new List<PolyCurve>();
+
+                foreach (PolyCurve region in regions)
+                    if (region.Length() <= tolerance)
+                        return result;
+
+                result.Add(regions[0].Clone());
+                for (int i = 1; i < regions.Count; i++)
+                {
+                    List<PolyCurve> newResult = new List<PolyCurve>();
+                    result.ForEach(r => newResult.AddRange(r.BooleanIntersection(regions[i], tolerance)));
+                    result = newResult;
+                }
+
+                return result;
+            }
+        }
     }
 }

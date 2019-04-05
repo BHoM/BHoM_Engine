@@ -239,5 +239,68 @@ namespace BH.Engine.Geometry
         }
 
         /***************************************************/
+
+        public static List<PolyCurve> BooleanDifference(this PolyCurve region, PolyCurve refRegion, double tolerance = Tolerance.Distance)
+        {
+            if (region.IsCoplanar(refRegion, tolerance))
+            {
+                double sqTol = tolerance * tolerance;
+                List<ICurve> tmpResult = new List<ICurve>();
+                List<PolyCurve> result = new List<PolyCurve>();
+                List<Point> iPts = new List<Point>();
+
+                foreach (ICurve crv in region.SubParts())
+                {
+                    foreach (ICurve refCrv in refRegion.SubParts())
+                    {
+                        iPts.AddRange(crv.ICurveIntersections(refCrv));
+                    }
+                }
+
+                List<PolyCurve> splitRegion1 = region.SplitAtPoints(iPts, tolerance);
+                List<PolyCurve> splitRegion2 = refRegion.SplitAtPoints(iPts, tolerance);
+
+                foreach (PolyCurve segment in splitRegion1)
+                {
+                    List<Point> cPts = new List<Point>();
+                    cPts.Add(segment.IPointAtParameter(0.5));
+
+                    if (region.IsContaining(cPts, true, tolerance) && !refRegion.IsContaining(cPts, true, tolerance))
+                        tmpResult.Add(segment);
+                }
+
+                foreach (PolyCurve segment in splitRegion2)
+                {
+                    List<Point> cPts = new List<Point>();
+
+                    cPts.Add(segment.IPointAtParameter(0.5));
+
+                    if (region.IsContaining(cPts, true, tolerance))
+                    {
+                        foreach (Point cPt in cPts)
+                        {
+                            if (cPt.SquareDistance(region.ClosestPoint(cPt)) > sqTol)
+                            {
+                                tmpResult.Add(segment);
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                result = tmpResult.IJoin(tolerance);
+                int i = 0;
+                while (i < result.Count)
+                {
+                    if (result[i].Area() <= sqTol)
+                        result.RemoveAt(i);
+                    else
+                        i++;
+                }
+
+                return result;
+            }
+            return new List<PolyCurve>();
+        }
     }
 }

@@ -145,6 +145,126 @@ namespace BH.Engine.Geometry
             return result;
         }
 
+        /***************************************************/
+
+        public static List<PolyCurve> BooleanUnion(this PolyCurve region, PolyCurve refRegion, double tolerance = Tolerance.Distance)
+        {
+            if (region.IsCoplanar(refRegion, tolerance))
+            {
+                double sqTol = tolerance * tolerance;
+                List<ICurve> tmpResult = new List<ICurve>();
+                List<PolyCurve> result = new List<PolyCurve>();
+                List<Point> iPts = new List<Point>();
+
+                foreach (ICurve crv in region.SubParts())
+                {
+                    foreach (ICurve refCrv in refRegion.SubParts())
+                    {
+                        iPts.AddRange(crv.ICurveIntersections(refCrv));
+                    }
+                }
+
+                List<PolyCurve> splitRegion1 = region.SplitAtPoints(iPts, tolerance);
+                List<PolyCurve> splitRegion2 = refRegion.SplitAtPoints(iPts, tolerance);
+
+                foreach (PolyCurve segment in splitRegion1)
+                {
+                    List<Point> cPts = new List<Point>();
+                    cPts.Add(segment.IPointAtParameter(0.5));
+
+                    if (region.IsContaining(cPts, true, tolerance) && !refRegion.IsContaining(cPts, true, tolerance))
+                        tmpResult.Add(segment);
+                }
+
+                foreach (PolyCurve segment in splitRegion2)
+                {
+                    List<Point> cPts = new List<Point>();
+
+                    cPts.Add(segment.IPointAtParameter(0.5));
+
+                    if (refRegion.IsContaining(cPts, true, tolerance) && !region.IsContaining(cPts, true, tolerance))
+                    {
+                        foreach (Point cPt in cPts)
+                        {
+                            if (cPt.SquareDistance(region.ClosestPoint(cPt)) > sqTol)
+                            {
+                                tmpResult.Add(segment);
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                result = tmpResult.IJoin(tolerance);
+                int i = 0;
+                while (i < result.Count)
+                {
+                    if (result[i].Area() <= sqTol)
+                        result.RemoveAt(i);
+                    else
+                        i++;
+                }
+
+                return result;
+            }
+            return new List<PolyCurve>();
+        }
+        /***************************************************/
+
+        //public static List<PolyCurve> BooleanUnion(this List<PolyCurve> regions, double tolerance = Tolerance.Distance)
+        //{
+        //    Boolean coplanar = true;
+        //    for (int i = 0; i < regions.Count - 1; i++)
+        //    {
+        //        if (!regions[i].IsCoplanar(regions[i + 1], tolerance))
+        //            coplanar = false;
+        //    }
+
+        //    if (coplanar)
+        //    {
+        //        double sqTol = tolerance * tolerance;
+        //        List<ICurve> tmpResult = new List<ICurve>();
+        //        List<PolyCurve> result = new List<PolyCurve>();
+        //        List<Point> iPts = new List<Point>();
+        //        List<List<PolyCurve>> splitRegions = new List<List<PolyCurve>>();
+
+        //        for (int i = 0; i < regions.Count; i++)
+        //        {
+        //            for (int j = 0; j < regions.Count; j++)
+        //            {
+        //                if (i != j)
+        //                {
+        //                    foreach (ICurve crv in regions[i].SubParts())
+        //                    {
+        //                        foreach (ICurve refCrv in regions[j].SubParts())
+        //                        {
+        //                            iPts.AddRange(crv.ICurveIntersections(refCrv));
+        //                        }
+
+        //                        splitRegions = region[i].SplitAtPoints(iPts, tolerance);
+        //                        List<PolyCurve> splitRegion2 = refRegion.SplitAtPoints(iPts, tolerance);
+        //                    }
+        //                }
+        //        }
+        //        {
+                    
+
+                
+
+        //        result = tmpResult.IJoin(tolerance);
+        //        int res = 0;
+        //        while (res < result.Count)
+        //        {
+        //            if (result[res].Area() <= sqTol)
+        //                result.RemoveAt(i);
+        //            else
+        //                res++;
+        //        }
+
+        //        return result;
+        //    }
+        //    return new List<PolyCurve>();
+        //}
 
         /***************************************************/
         /****              Private methods              ****/
@@ -239,6 +359,104 @@ namespace BH.Engine.Geometry
             return false;
         }
 
+
         /***************************************************/
+
+        //private static bool BooleanUnion(this PolyCurve region1, PolyCurve region2, out List<PolyCurve> result, double tolerance = Tolerance.Distance)
+        //{
+        //    result = new List<PolyCurve>();
+
+        //    if (region1.IsCoplanar(region2, tolerance))
+        //    {
+        //        Plane p1 = region1.FitPlane(tolerance);
+
+        //        if (!region1.IsClockwise(p1.Normal))
+        //            region1 = region1.Clone().Flip();
+        //        if (!region2.IsClockwise(p1.Normal))
+        //            region2 = region2.Clone().Flip();
+
+        //        List<Point> cPts1 = region1.SubParts().Select(s => s.ControlPoints().Average()).ToList();
+        //        cPts1.AddRange(region1.ControlPoints);
+        //        List<Point> cPts2 = region2.SubParts().Select(s => s.ControlPoints().Average()).ToList();
+        //        cPts2.AddRange(region2.ControlPoints);
+
+        //        if (region1.IsContaining(cPts2, true, tolerance))
+        //            result.Add(region1.Clone());
+        //        else if (region2.IsContaining(cPts1, true, tolerance))
+        //            result.Add(region2.Clone());
+        //        else
+        //        {
+        //            double sqTol = tolerance * tolerance;
+        //            List<Point> iPts = new List<Point>();
+        //            foreach (ICurve crv in region1.SubParts())
+        //            {
+        //                foreach (ICurve refCrv in region2.SubParts())
+        //                {
+        //                    iPts.AddRange(crv.ICurveIntersections(refCrv));
+        //                }
+        //            }
+
+        //            List<PolyCurve> splitRegion1 = region1.SplitAtPoints(iPts, tolerance);
+        //            List<PolyCurve> splitRegion2 = region2.SplitAtPoints(iPts, tolerance);
+
+        //            if (splitRegion1.Count == 1 && splitRegion2.Count == 1)
+        //            {
+        //                result = new List<PolyCurve> { region1.Clone(), region2.Clone() };
+        //                return false;
+        //            }
+
+        //            foreach (PolyCurve segment in splitRegion1)
+        //            {
+        //                List<ICurve> subparts = segment.SubParts();
+        //                List<Point> cPts = subparts.Select(s => s.ControlPoints().Average()).ToList();
+        //                cPts.AddRange(segment.ControlPoints);
+
+        //                if (!region2.IsContaining(cPts, true, tolerance))
+        //                    result.Add(segment);
+        //                else if (!region2.IsContaining(cPts, false, tolerance))
+        //                {
+        //                    foreach (PolyCurve r in splitRegion2)
+        //                    {
+        //                        bool found = false;
+
+        //                        if (segment.ControlPoints.Count == r.ControlPoints.Count && segment.ControlPoints[0].SquareDistance(r.ControlPoints[0]) <= sqTol)
+        //                        {
+        //                            found = true;
+        //                            for (int i = 0; i < segment.ControlPoints.Count; i++)
+        //                            {
+        //                                if (segment.ControlPoints[i].SquareDistance(r.ControlPoints[i]) > sqTol)
+        //                                {
+        //                                    found = false;
+        //                                    break;
+        //                                }
+        //                            }
+        //                        }
+
+        //                        if (found)
+        //                        {
+        //                            result.Add(segment);
+        //                            break;
+        //                        }
+        //                    }
+        //                }
+        //            }
+
+        //            foreach (PolyCurve segment in splitRegion2)
+        //            {
+        //                List<Point> cPts = segment.SubParts().Select(s => s.ControlPoints().Average()).ToList();
+        //                cPts.AddRange(segment.ControlPoints);
+
+        //                if (!region1.IsContaining(cPts, true, tolerance))
+        //                    result.Add(segment);
+        //            }
+
+        //            result = result.Join(tolerance);
+        //        }
+        //        return true;
+        //    }
+
+        //    result = new List<PolyCurve> { region1.Clone(), region2.Clone() };
+        //    return false;
+        //}
     }
 }
