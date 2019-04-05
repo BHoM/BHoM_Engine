@@ -92,7 +92,7 @@ namespace BH.Engine.Structure
             List<PanelPlanar> result = new List<PanelPlanar>();
             List<List<IElement1D>> outlineEdges = outlines.Select(x => x.ISubParts().Select(y => new Edge { Curve = y } as IElement1D).ToList()).ToList();
             
-            List<List<List<IElement1D>>> sortedOutlines = outlineEdges.DistributeOutlines();
+            List<List<List<IElement1D>>> sortedOutlines = outlineEdges.DistributeOutlines(true);
             foreach (List<List<IElement1D>> panelOutlines in sortedOutlines)
             {
                 PanelPlanar panel = new PanelPlanar();
