@@ -106,7 +106,7 @@ namespace BH.Engine.Geometry
             foreach (Line l in curve.SubParts())
             {
                 if (l.ClosestPoint(point).SquareDistance(point) <= sqTol)
-                    return (param + l.ParameterAtPoint(point, tolerance)) / curve.Length();
+                    return (param + l.ParameterAtPoint(point, tolerance) * l.Length()) / curve.Length();
                 else
                     param += l.Length();
             }
