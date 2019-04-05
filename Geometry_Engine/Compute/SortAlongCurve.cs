@@ -38,11 +38,8 @@ namespace BH.Engine.Geometry
         {
             if (arc.Angle() <= angleTolerance)
                 return points.Select(p => p.Clone()).ToList();
-
-            Vector normal = arc.Normal();
-            Vector arcStartVector = arc.StartPoint() - arc.Centre();
-
-            List<Tuple<Point, double>> cData = points.Select(p => new Tuple<Point, double>(p.Clone(), (2 * Math.PI + arcStartVector.SignedAngle(p - arc.Centre(), normal)) % (2 * Math.PI))).ToList();
+                        
+            List<Tuple<Point, double>> cData = points.Select(p => new Tuple<Point, double>(p.Clone(), arc.ParameterAtPoint(arc.ClosestPoint(p)))).ToList();
 
             cData.Sort(delegate (Tuple<Point, double> d1, Tuple<Point, double> d2)
             {
@@ -59,10 +56,7 @@ namespace BH.Engine.Geometry
             if (circle.Radius <= distanceTolerance)
                 return points.Select(p => p.Clone()).ToList();
 
-            Vector normal = circle.Normal();
-            Vector arcStartVector = circle.StartPoint() - circle.Centre;
-
-            List<Tuple<Point, double>> cData = points.Select(p => new Tuple<Point, double>(p.Clone(), (2 * Math.PI + arcStartVector.SignedAngle(p - circle.Centre, normal)) % (2 * Math.PI))).ToList();
+           List<Tuple<Point, double>> cData = points.Select(p => new Tuple<Point, double>(p.Clone(), circle.ParameterAtPoint(circle.ClosestPoint(p)))).ToList();
 
             cData.Sort(delegate (Tuple<Point, double> d1, Tuple<Point, double> d2)
             {
@@ -129,66 +123,15 @@ namespace BH.Engine.Geometry
         
         public static List<Point> SortAlongCurve(this List<Point> points, PolyCurve curve, double tolerance = Tolerance.Distance, double angleTolerance = Tolerance.Angle)
         {
-            List<Point> result = new List<Point>();
-            List<Point> tmpResult = new List<Point>();
 
-            foreach (Point pt in points)
+            List<Tuple<Point, double>> cData = points.Select(p => new Tuple<Point, double>(p.Clone(), curve.ParameterAtPoint(curve.ClosestPoint(p)))).ToList();
+
+            cData.Sort(delegate (Tuple<Point, double> d1, Tuple<Point, double> d2)
             {
-                if (pt.IsOnCurve(curve, tolerance))
-                    tmpResult.Add(pt);
-            }
+                return d1.Item2.CompareTo(d2.Item2);
+            });
 
-            tmpResult = tmpResult.CullDuplicates();
-
-            if (!tmpResult.Any())
-                return result;
-
-
-            List<Point> subPoints = new List<Point>();
-
-            foreach (ICurve subPart in curve.ISubParts())
-            {
-                if (subPart is Arc)
-                {
-                    foreach (Point pt in tmpResult)
-                    {
-                        if (pt.IsOnCurve(subPart, tolerance))
-                            subPoints.Add(pt);
-                    }
-                    subPoints = subPoints.SortAlongCurve(subPart as Arc);
-                    if (result.Any() && subPoints.Any())
-                    {
-                        if (result[result.Count - 1].IsEqual(subPoints[0]))
-                            result.RemoveAt(result.Count - 1);
-                    }
-                    result.AddRange(subPoints);
-                    subPoints.Clear();
-                }
-                else if (subPart is Line)
-                {
-                    foreach (Point pt in tmpResult)
-                    {
-                        if (pt.IsOnCurve(subPart, tolerance))
-                            subPoints.Add(pt);
-                    }
-                    subPoints = subPoints.SortAlongCurve(subPart as Line);
-
-                    if (result.Any() && subPoints.Any())
-                    {
-                        if (result[result.Count - 1].IsEqual(subPoints[0]))
-                            result.RemoveAt(result.Count - 1);
-                    }
-                    result.AddRange(subPoints);
-                    subPoints.Clear();
-                }
-            }
-
-            result = result.CullDuplicates();
-
-            if (result.Count > tmpResult.Count)
-                result.RemoveAt(result.Count - 1);
-
-            return result;
+            return cData.Select(d => d.Item1).ToList();
         }
 
         /***************************************************/
