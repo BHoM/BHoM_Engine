@@ -198,7 +198,7 @@ namespace BH.Engine.Geometry
 
             foreach (Point p in points)
             {
-                if (p.IsOnCurve(curve))
+                if (p.IsOnCurve(curve, tolerance))
                     onCurvePoints.Add(p);
             }
 
