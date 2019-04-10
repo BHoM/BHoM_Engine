@@ -179,6 +179,20 @@ namespace BH.Engine.Geometry
             return curve1.LineIntersections(curve2, false, tolerance);
         }
 
+        /***************************************************/
+
+        public static List<Point> CurveIntersections(this PolyCurve curve1, PolyCurve curve2, double tolerance = Tolerance.Distance)
+        {
+            List<Point> result = new List<Point>();
+            foreach (ICurve c1 in curve1.SubParts())
+            {
+                foreach (ICurve c2 in curve2.SubParts())
+                {
+                    result.AddRange(CurveIntersections(c1 as dynamic, c2 as dynamic, tolerance));
+                }
+            }
+            return result;
+        }
 
         /***************************************************/
         /**** Public Methods - Interfaces               ****/
