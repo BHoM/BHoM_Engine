@@ -84,6 +84,8 @@ namespace BH.Engine.Geometry
             return arc.ClosestPoint(point, Tolerance.Distance);
         }
 
+        /***************************************************/
+
         public static Point ClosestPoint(this Arc curve, Point point, double tolerance = Tolerance.Distance)
         {
             if (point.SquareDistance(curve.Centre()) <= tolerance * tolerance)
@@ -126,8 +128,7 @@ namespace BH.Engine.Geometry
         {
             throw new NotImplementedException();
         }
-
-
+        
         /***************************************************/
 
         public static Point ClosestPoint(this PolyCurve curve, Point point)
