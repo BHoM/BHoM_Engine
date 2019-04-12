@@ -80,7 +80,7 @@ namespace BH.Engine.Serialiser
                 {
                     CustomData = new Dictionary<string, object>()
                     {
-                        { "Objects", array.Select(b => Convert.FromBson(b.AsBsonDocument)) }
+                        { "Objects", array.Select(b => Convert.FromBson(b.AsBsonDocument)).ToList() }
                     }
                 };
             }
