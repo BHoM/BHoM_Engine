@@ -1,10 +1,25 @@
-{ "_t" : "BH.oM.Planning.Label", "BHoM_Guid" : "f395fea2-9347-4114-8043-a37c8e934140", "Name" : "bug_critical", "Tags" : [], "CustomData" : { }, "Colour" : "aa001e" }
-{ "_t" : "BH.oM.Planning.Label", "BHoM_Guid" : "0ea5e8c5-b8c5-477f-b66c-fde7e8fe5709", "Name" : "bug", "Tags" : [], "CustomData" : { }, "Colour" : "ffbeaa" }
-{ "_t" : "BH.oM.Planning.Label", "BHoM_Guid" : "60a48e61-60ae-4f23-bfbc-111a6334b597", "Name" : "bug_minor", "Tags" : [], "CustomData" : { }, "Colour" : "ffe6e6" }
-{ "_t" : "BH.oM.Planning.Label", "BHoM_Guid" : "8314c210-e634-4abf-b601-c1e6447e3c98", "Name" : "feature_critial", "Tags" : [], "CustomData" : { }, "Colour" : "5014e6" }
-{ "_t" : "BH.oM.Planning.Label", "BHoM_Guid" : "0f1c3801-272a-4ebf-9213-0ebcc2f1148b", "Name" : "feature", "Tags" : [], "CustomData" : { }, "Colour" : "bed2ff" }
-{ "_t" : "BH.oM.Planning.Label", "BHoM_Guid" : "3ea6486e-f1be-4f42-af11-8421ad0cbb34", "Name" : "feature_minor", "Tags" : [], "CustomData" : { }, "Colour" : "e6f0ff" }
-{ "_t" : "BH.oM.Planning.Label", "BHoM_Guid" : "b82e2a52-7f02-4fff-b8a9-1b22823fd815", "Name" : "compliance", "Tags" : [], "CustomData" : { }, "Colour" : "ffff64" }
-{ "_t" : "BH.oM.Planning.Label", "BHoM_Guid" : "560500b8-4707-40eb-904d-56c721109a72", "Name" : "question", "Tags" : [], "CustomData" : { }, "Colour" : "78f078" }
-{ "_t" : "BH.oM.Planning.Label", "BHoM_Guid" : "bcc65c91-f059-4fae-854a-ccc9470554dd", "Name" : "documentation", "Tags" : [], "CustomData" : { }, "Colour" : "dcdcdc" }
-{ "_t" : "BH.oM.Planning.Label", "BHoM_Guid" : "292973db-82bc-4c3f-9491-f76f590585fe", "Name" : "test_script", "Tags" : [], "CustomData" : { }, "Colour" : "dcdcdc" }
+{ "_t" : "BH.oM.GitHub.Label", "BHoM_Guid" : "0b7b061f-233a-40e6-bd72-a725ac7820e3", "Name" : "good first issue", "Tags" : [], "CustomData" : { }, "Description" : "Good for newcomers", "Colour" : "7057ff" }
+{ "_t" : "BH.oM.GitHub.Label", "BHoM_Guid" : "7e66be06-771a-46db-afed-7e66513909f9", "Name" : "priority:high", "Tags" : [], "CustomData" : { }, "Description" : "NOT IN USE", "Colour" : "ffcc00" }
+{ "_t" : "BH.oM.GitHub.Label", "BHoM_Guid" : "1316df5c-612f-4c7c-9710-72a5fccbec2b", "Name" : "priority:low", "Tags" : [], "CustomData" : { }, "Description" : "NOT IN USE", "Colour" : "FFFFC9" }
+{ "_t" : "BH.oM.GitHub.Label", "BHoM_Guid" : "3cf49ed0-45f5-4622-aa6a-52ad7dc3c270", "Name" : "priority:medium", "Tags" : [], "CustomData" : { }, "Description" : "NOT IN USE", "Colour" : "ffff7c" }
+{ "_t" : "BH.oM.GitHub.Label", "BHoM_Guid" : "895a3def-9767-4e2f-b975-1ed6328ac36e", "Name" : "severity:critical", "Tags" : [], "CustomData" : { }, "Description" : "No workaround exists. Essential to continue", "Colour" : "D73A4A" }
+{ "_t" : "BH.oM.GitHub.Label", "BHoM_Guid" : "e0bef037-bd0c-44b4-890c-b45ac16116f1", "Name" : "severity:low", "Tags" : [], "CustomData" : { }, "Description" : "Doesn't stop/slow current workflow", "Colour" : "FFFFC9" }
+{ "_t" : "BH.oM.GitHub.Label", "BHoM_Guid" : "328807e6-5c7d-43a4-a8da-8a1485bfa008", "Name" : "severity:medium", "Tags" : [], "CustomData" : { }, "Description" : "Slows progress, but workaround is possible", "Colour" : "ffff7c" }
+{ "_t" : "BH.oM.GitHub.Label", "BHoM_Guid" : "1726a6ae-08fa-4116-886d-502dc3b58ee5", "Name" : "size:L", "Tags" : [], "CustomData" : { }, "Description" : "Measured in days", "Colour" : "D9D9D9" }
+{ "_t" : "BH.oM.GitHub.Label", "BHoM_Guid" : "c7e80af9-a179-42bf-8648-a09a89757cca", "Name" : "size:M", "Tags" : [], "CustomData" : { }, "Description" : "Measured in hours", "Colour" : "D9D9D9" }
+{ "_t" : "BH.oM.GitHub.Label", "BHoM_Guid" : "ad7d7069-b12f-4aa0-acd7-feef8e0f7ddf", "Name" : "size:S", "Tags" : [], "CustomData" : { }, "Description" : "Measured in minutes", "Colour" : "D9D9D9" }
+{ "_t" : "BH.oM.GitHub.Label", "BHoM_Guid" : "a32fb36c-68d9-4580-a062-96806318c2bd", "Name" : "size:XL", "Tags" : [], "CustomData" : { }, "Description" : "Measured in weeks", "Colour" : "D9D9D9" }
+{ "_t" : "BH.oM.GitHub.Label", "BHoM_Guid" : "ca2bf121-9738-49c3-baaa-0d79f05ffa33", "Name" : "size:XS", "Tags" : [], "CustomData" : { }, "Description" : "Measured in seconds", "Colour" : "D9D9D9" }
+{ "_t" : "BH.oM.GitHub.Label", "BHoM_Guid" : "60d968f3-baa8-475a-817d-ce2af3e02816", "Name" : "status:awaiting-review", "Tags" : [], "CustomData" : { }, "Description" : "NOT IN USE", "Colour" : "A3FFA5" }
+{ "_t" : "BH.oM.GitHub.Label", "BHoM_Guid" : "9dbbe33f-6a4b-498c-8fbe-f49878910cca", "Name" : "status:awaiting-testing", "Tags" : [], "CustomData" : { }, "Description" : "NOT IN USE", "Colour" : "A3FFA5" }
+{ "_t" : "BH.oM.GitHub.Label", "BHoM_Guid" : "cdae03b2-def8-4e08-8b02-9c677521db96", "Name" : "status:do-not-merge", "Tags" : [], "CustomData" : { }, "Description" : "For instance, test PR, for discussion, or dependant PRs not ready for merge", "Colour" : "FF5498" }
+{ "_t" : "BH.oM.GitHub.Label", "BHoM_Guid" : "5df83b71-95b1-40b4-9372-42c9dbed9d0b", "Name" : "status:in-progress", "Tags" : [], "CustomData" : { }, "Description" : "NOT IN USE", "Colour" : "14DB71" }
+{ "_t" : "BH.oM.GitHub.Label", "BHoM_Guid" : "31142d59-f298-4b70-9043-57c7fe5068f5", "Name" : "status:parked", "Tags" : [], "CustomData" : { }, "Description" : "PR on hold, requiring further discussion or planning", "Colour" : "000000" }
+{ "_t" : "BH.oM.GitHub.Label", "BHoM_Guid" : "8ffe4165-f407-4edc-bf4f-abd774fe4235", "Name" : "status:ready-to-pull", "Tags" : [], "CustomData" : { }, "Description" : "NOT IN USE", "Colour" : "14DB71" }
+{ "_t" : "BH.oM.GitHub.Label", "BHoM_Guid" : "c666add9-65d0-4680-8d87-17ed9a04a10b", "Name" : "type:bug", "Tags" : [], "CustomData" : { }, "Description" : "Error or unexpected behaviour", "Colour" : "9629ad" }
+{ "_t" : "BH.oM.GitHub.Label", "BHoM_Guid" : "8b233122-da11-4fdc-842a-78f0e9737716", "Name" : "type:compliance", "Tags" : [], "CustomData" : { }, "Description" : "Non-conforming to code guidelines", "Colour" : "BDD7EE" }
+{ "_t" : "BH.oM.GitHub.Label", "BHoM_Guid" : "f70fa7db-df1b-43ce-bcb3-01cb1bbb5be2", "Name" : "type:documentation", "Tags" : [], "CustomData" : { }, "Description" : "Wiki, help or in code attributes", "Colour" : "BDD7EE" }
+{ "_t" : "BH.oM.GitHub.Label", "BHoM_Guid" : "42e1a8e9-c16d-4b65-ad4a-8aeaa0f97354", "Name" : "type:external-api-changes", "Tags" : [], "CustomData" : { }, "Description" : "Imposed changes, including from dependency across other BHoM repos", "Colour" : "2974ad" }
+{ "_t" : "BH.oM.GitHub.Label", "BHoM_Guid" : "6f234f0d-29fc-46f0-a10e-24f091d6437a", "Name" : "type:feature", "Tags" : [], "CustomData" : { }, "Description" : "New capability or enhancement", "Colour" : "2974ad" }
+{ "_t" : "BH.oM.GitHub.Label", "BHoM_Guid" : "7ed88faf-0b0c-4293-9cb4-cf2a582b0fa0", "Name" : "type:question", "Tags" : [], "CustomData" : { }, "Description" : "Ask for further details or start conversation", "Colour" : "A3FFA5" }
+{ "_t" : "BH.oM.GitHub.Label", "BHoM_Guid" : "fa2b9822-4d64-4363-adfd-7415023da77c", "Name" : "type:test-script", "Tags" : [], "CustomData" : { }, "Description" : "Creation of unit test required", "Colour" : "BDD7EE" }
