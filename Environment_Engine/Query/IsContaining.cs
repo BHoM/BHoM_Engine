@@ -73,6 +73,21 @@ namespace BH.Engine.Environment
             //Use a length longer than the longest side in the bounding box. Change to infinite line?
             Line line = new Line() { Start = point, End = point.Translate(vector * (((boundingBox.Max - boundingBox.Min).Length()) * 10)) };
 
+            bool isInPlane = false;
+            do
+            {
+                isInPlane = false;
+                foreach (Plane p in planes)
+                    isInPlane = isInPlane || line.IsInPlane(p);
+
+                if (isInPlane)
+                {
+                    Vector v = new Vector() { X = 0.5, Y = 0.5, Z = 0.5 };
+                    line = new Line() { Start = point, End = point.Translate(v * (((boundingBox.Max - boundingBox.Min).Length()) * 10)) };
+                }
+            }
+            while (isInPlane);
+
             //Check intersections
             int counter = 0;
             List<Point> intersectPoints = new List<Point>();
@@ -90,13 +105,14 @@ namespace BH.Engine.Environment
                     if (intersectingPoints != null && BH.Engine.Geometry.Query.IsContaining(pLine, intersectingPoints, true, 1e-05))
                     {
                         intersectPoints.AddRange(intersectingPoints);
-                        if (intersectPoints.CullDuplicates().Count == intersectPoints.Count()) //Check if the point already has been added to the list
-                            counter++;
+                        /*if (intersectPoints.CullDuplicates().Count == intersectPoints.Count()) //Check if the point already has been added to the list
+                            counter++;*/
                     }
                 }
             }
 
-            bool isContained = !((counter % 2) == 0);
+            //bool isContained = !((counter % 2) == 0);
+            bool isContained = !((intersectPoints.CullDuplicates().Count % 2) == 0);
 
             if(!isContained && acceptOnEdges)
             {
