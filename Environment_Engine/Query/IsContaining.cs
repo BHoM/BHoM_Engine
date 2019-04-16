@@ -62,7 +62,22 @@ namespace BH.Engine.Environment
 
         public static bool IsContaining(this List<BuildingElement> space, Point point, bool acceptOnEdges = false)
         {
-            List<Plane> planes = space.Select(x => x.PanelCurve.IControlPoints().FitPlane()).ToList();
+            List<Plane> planes = new List<Plane>();// space.Select(x => x.PanelCurve.IControlPoints().FitPlane()).ToList();
+            foreach(BuildingElement be in space)
+            {
+                Plane p = be.PanelCurve.IControlPoints().FitPlane();
+                if(!be.PanelCurve.ICollapseToPolyline(BH.oM.Geometry.Tolerance.Angle).IsInPlane(p))
+                {
+                    //Create a different plane...
+                    List<Point> pnts = be.PanelCurve.IDiscontinuityPoints();
+                    if(pnts.Count >= 3)
+                        p = BH.Engine.Geometry.Create.Plane(pnts[0], pnts[1], pnts[2]);
+                }
+
+                planes.Add(p);
+            }
+
+
             List<Point> ctrPoints = space.SelectMany(x => x.PanelCurve.IControlPoints()).ToList();
             BoundingBox boundingBox = BH.Engine.Geometry.Query.Bounds(ctrPoints);
 
