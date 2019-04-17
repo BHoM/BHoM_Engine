@@ -1,6 +1,6 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -27,46 +27,43 @@ using System.Linq;
 
 using BH.oM.Environment.Elements;
 using BH.Engine.Geometry;
-using BH.oM.Environment.Properties;
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Environment
 {
-    public static partial class Compute
+    public static partial class Convert
     {
         /***************************************************/
-        /****          public Methods - Lines           ****/
+        /****          public Methods                   ****/
         /***************************************************/
 
-        public static List<BuildingElement> BuildSpace(this List<BuildingElement> elements, string spaceName)
+        [Description("BH.Engine.Environment.Convert.ToPolyline => Returns a Polyline representation of an Environment Edge")]
+        [Input("edge", "An Environment Edge object")]
+        [Output("BHoM Geometry Polyline")]
+        public static Polyline ToPolyline(this Edge edge)
         {
-            List<BuildingElement> rtnElements = new List<BuildingElement>();
-
-            foreach(BuildingElement be in elements)
-            {
-                BuildingElementContextProperties contextProps = be.ContextProperties() as BuildingElementContextProperties;
-                if(contextProps != null)
-                {
-                    if (contextProps.ConnectedSpaces.Count == 1 && contextProps.ConnectedSpaces[0] == spaceName)
-                        rtnElements.Add(be);
-                    else if (contextProps.ConnectedSpaces.Count == 2)
-                    {
-                        if (contextProps.ConnectedSpaces[0] == spaceName || contextProps.ConnectedSpaces[1] == spaceName)
-                            rtnElements.Add(be);
-                    }
-                }
-            }
-
-            return rtnElements;
+            return edge.Curve.ICollapseToPolyline(BH.oM.Geometry.Tolerance.Angle);
         }
 
-        public static List<List<BuildingElement>> BuildSpaces(this List<BuildingElement> elements, List<string> spaceNames)
+        [Description("BH.Engine.Environment.Convert.ToPolyline => Returns a Polyline representation of a collection of Environment Edges")]
+        [Input("edges", "A collection of Environment Edge objects to convert into a single polyline")]
+        [Output("BHoM Geometry Polyline")]
+        public static Polyline ToPolyline(this List<Edge> edges)
         {
-            List<List<BuildingElement>> spaces = new List<List<BuildingElement>>();
+            List<Point> edgePoints = new List<Point>();
+            foreach (Edge e in edges)
+                edgePoints.AddRange(e.Curve.IDiscontinuityPoints());
 
-            foreach (String s in spaceNames)
-                spaces.Add(elements.BuildSpace(s));
+            return BH.Engine.Geometry.Create.Polyline(edgePoints.CullDuplicates());
+        }
 
-            return spaces;
+        [Description("BH.Engine.Environment.Convert.ToPolyline => Returns the external boundary from an Environment Panel as a BHoM Geometry Polyline")]
+        [Input("panel", "An Environment Panel to obtain the external boundary from")]
+        [Output("BHoM Geometry Polyline")]
+        public static Polyline ToPolyline(this Panel panel)
+        {
+            return panel.ExternalEdges.ToPolyline();
         }
     }
 }

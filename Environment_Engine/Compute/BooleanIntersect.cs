@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -27,21 +27,24 @@ using System.Linq;
 
 using BH.oM.Environment.Elements;
 using BH.Engine.Geometry;
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Environment
 {
     public static partial class Compute
     {
         /***************************************************/
-        /****          public Methods - Lines           ****/
+        /****          public Methods                   ****/
         /***************************************************/
 
-        public static bool DoesBooleanIntersect(this BuildingElement element, BuildingElement elementToCompare)
+        [Description("BH.Engine.Environment.Computer.BooleanIntersect => Returns true if two Environment Panels boolean intersect")]
+        [Input("element", "A single Environment Panel")]
+        [Input("elementToCompare", "An Environment Panel to compare with")]
+        [Output("True if the panels boolean intersect, false if they do not")]
+        public static bool BooleanIntersect(this Panel element, Panel elementToCompare)
         {
-            Polyline be1P = element.PanelCurve.ICollapseToPolyline(Tolerance.Angle);
-            Polyline be2P = elementToCompare.PanelCurve.ICollapseToPolyline(Tolerance.Angle);
-
-            return be1P.BooleanIntersection(be2P).Count > 0;
+            return element.ToPolyline().BooleanIntersection(elementToCompare.ToPolyline()).Count > 0;
         }
     }
 }
