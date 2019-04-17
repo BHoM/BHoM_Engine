@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
@@ -20,31 +20,49 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Geometry;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 using BH.oM.Environment.Elements;
-using BH.Engine.Geometry;
+using BH.oM.Physical.Properties.Construction;
+
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
 
 namespace BH.Engine.Environment
 {
-    public static partial class Compute
+    public static partial class Create
     {
         /***************************************************/
-        /****          public Methods                   ****/
+        /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("BH.Engine.Environment.Compute.BooleanIntersect => Returns true if two Environment Panels boolean intersect")]
-        [Input("element", "A single Environment Panel")]
-        [Input("elementToCompare", "An Environment Panel to compare with")]
-        [Output("True if the panels boolean intersect, false if they do not")]
-        public static bool BooleanIntersect(this Panel element, Panel elementToCompare)
+        [Description("BH.Engine.Environment.Create.Panel => Returns an Environment Panel object")]
+        [Input("name", "The name of the panel, default empty string")]
+        [Input("externalEdges", "A collection of Environment Edge objects which define the external boundary of the panel, default null")]
+        [Input("openings", "A collection of Environment Opening objects, default null")]
+        [Input("construction", "A construction object providing layer and material information for the panel, default null")]
+        [Input("type", "The type of panel from the Panel Type enum, default undefined")]
+        [Input("connectedSpaces", "A collection of the spaces the panel is connected to, default null")]
+        [Output("An Environment Panel object")]
+        public static Panel Panel(string name = "", List<Edge> externalEdges = null, List<Opening> openings = null, IConstruction construction = null, PanelType type = PanelType.Undefined, List<string> connectedSpaces = null)
         {
-            return element.ToPolyline().BooleanIntersection(elementToCompare.ToPolyline()).Count > 0;
+            externalEdges = externalEdges ?? new List<Edge>();
+            openings = openings ?? new List<Opening>();
+            connectedSpaces = connectedSpaces ?? new List<string>();
+
+            return new Panel
+            {
+                Name = name,
+                ExternalEdges = externalEdges,
+                Openings = openings,
+                Construction = construction,
+                Type = type,
+                ConnectedSpaces = connectedSpaces,
+            };
         }
     }
 }

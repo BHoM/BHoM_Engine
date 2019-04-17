@@ -1,6 +1,6 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -27,7 +27,10 @@ using System.Text;
 using System.Threading.Tasks;
 
 using BH.oM.Environment.Elements;
-using BHG = BH.oM.Geometry;
+using BH.oM.Physical.Properties.Construction;
+
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Environment
 {
@@ -37,66 +40,28 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Opening Opening(BHG.ICurve curve)
+        [Description("BH.Engine.Environment.Create.Opening => Returns an Environment Opening object")]
+        [Input("name", "The name of the opening, default empty string")]
+        [Input("externalEdges", "A collection of Environment Edge objects which define the external boundary of the opening, default null")]
+        [Input("innerEdges", "A collection of Environment Edge objects which define the internal boundary of the opening, default null")]
+        [Input("frameConstruction", "A construction object providing construction information about the frame of the opening, default null")]
+        [Input("openingConstruction", "A construction object providing construction information about the opening - typically glazing construction, default null")]
+        [Input("type", "The type of opening from the Opening Type enum, default undefined")]
+        [Output("An Environment Opening object")]
+        public static Opening Opening(string name = "", List<Edge> externalEdges = null, List<Edge> innerEdges = null, IConstruction frameConstruction = null, IConstruction openingConstruction = null, OpeningType type = OpeningType.Undefined)
         {
-            return Opening(curve as dynamic);
-        }
+            externalEdges = externalEdges ?? new List<Edge>();
+            innerEdges = innerEdges ?? new List<Edge>();
 
-        /***************************************************/
-
-        public static Opening Opening(BHG.PolyCurve pCurve)
-        {
             return new Opening
             {
-                OpeningCurve = pCurve
+                Name = name,
+                Edges = externalEdges,
+                InnerEdges = innerEdges,
+                FrameConstruction = frameConstruction,
+                OpeningConstruction = openingConstruction,
+                Type = type,
             };
-        }
-
-        /***************************************************/
-
-        public static Opening Opening(IEnumerable<BHG.Polyline> pLines)
-        {
-            return new Opening
-            {
-                OpeningCurve = Geometry.Create.PolyCurve(pLines)
-            };
-        }
-
-        /***************************************************/
-
-        public static Opening Opening(BHG.Polyline pLine)
-        {
-            return new Opening
-            {
-                OpeningCurve = Geometry.Create.PolyCurve(new BHG.Polyline[] { pLine })
-            };
-        }
-
-        /***************************************************/
-        
-        public static BuildingElement BuildingElementOpening(this BuildingElement be, BHG.ICurve bound)
-        {
-            return be.BuildingElementOpening(new List<BHG.ICurve> { bound });
-        }
-
-        /***************************************************/
-
-        public static BuildingElement BuildingElementOpening(this BuildingElement be, List<BHG.ICurve> bounds)
-        {
-            if (be == null)
-                return be;
-
-            foreach(BHG.ICurve bound in bounds)
-            {
-                Opening opening = Opening(bound);
-
-                //Assign the properties from the Element to the Opening
-                opening.Name = be.Name;
-
-                be.Openings.Add(opening);
-            }
-
-            return be;
         }
     }
 }

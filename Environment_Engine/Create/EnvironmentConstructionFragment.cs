@@ -1,6 +1,6 @@
 ﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -27,22 +27,24 @@ using System.Text;
 using System.Threading.Tasks;
 
 using BH.oM.Environment.Properties;
-using BH.oM.Environment.Elements;
+
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Environment
 {
     public static partial class Create
     {
-        public static SpaceAnalyticalProperties SpaceAnalyticalProperties(double internalDomesticHotWater = 0.0, double daylightFactor = 0.0, double facadeLength = 0.0, double fixedConvectionCoefficient = 0.0, SizingMethod sizeCooling = SizingMethod.Sizing, SizingMethod sizeHeating = SizingMethod.Sizing)
+        [Description("BH.Engine.Environment.Create.EnvironmentConstructionFragment => Returns an Environment Construction Fragment object")]
+        [Input("name", "The name of the fragment property, default empty string")]
+        [Input("fFactor", "The FFactor for the construction, default 0.0")]
+        [Output("An Environment Construction Fragment object - this can be added to a Construction object")]
+        public static EnvironmentConstructionFragment EnvironmentConstructionFragment(string name = "", double fFactor = 0.0)
         {
-            return new SpaceAnalyticalProperties
+            return new EnvironmentConstructionFragment
             {
-                InternalDomesticHotWater = internalDomesticHotWater,
-                DaylightFactor = daylightFactor,
-                FacadeLength = facadeLength,
-                FixedConvectionCoefficient = fixedConvectionCoefficient,
-                SizeCoolingMethod = sizeCooling,
-                SizeHeatingMethod = sizeHeating,
+                Name = name,
+                FFactor = fFactor,
             };
         }
     }

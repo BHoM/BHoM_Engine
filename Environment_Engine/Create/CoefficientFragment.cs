@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
@@ -20,31 +20,36 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Geometry;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-using BH.oM.Environment.Elements;
-using BH.Engine.Geometry;
+using BH.oM.Environment.Properties;
+
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
 
 namespace BH.Engine.Environment
 {
-    public static partial class Compute
+    public static partial class Create
     {
-        /***************************************************/
-        /****          public Methods                   ****/
-        /***************************************************/
-
-        [Description("BH.Engine.Environment.Compute.BooleanIntersect => Returns true if two Environment Panels boolean intersect")]
-        [Input("element", "A single Environment Panel")]
-        [Input("elementToCompare", "An Environment Panel to compare with")]
-        [Output("True if the panels boolean intersect, false if they do not")]
-        public static bool BooleanIntersect(this Panel element, Panel elementToCompare)
+        [Description("BH.Engine.Environment.Create.CoefficientFragment => Returns a Coefficient Fragment object")]
+        [Input("name", "The name of the fragment property, default empty string")]
+        [Input("lightingViewCoefficient", "The lighting view coefficient, default 0.0")]
+        [Input("occupantViewCoefficient", "The occupant view coefficient, default 0.0")]
+        [Input("equipmentViewCoefficient", "The equipment view coefficient, default 0.0")]
+        [Output("An Environment Coefficient Fragment object - this can be added to any Environment object")]
+        public static CoefficientFragment CoefficientFragment(string name = "", double lightingViewCoefficient = 0.0, double occupantViewCoefficient = 0.0, double equipmentViewCoefficient = 0.0)
         {
-            return element.ToPolyline().BooleanIntersection(elementToCompare.ToPolyline()).Count > 0;
+            return new CoefficientFragment
+            {
+                Name = name,
+                LightingViewCoefficient = lightingViewCoefficient,
+                OccupantViewCoefficient = occupantViewCoefficient,
+                EquipmentViewCoefficient = equipmentViewCoefficient,
+            };
         }
     }
 }

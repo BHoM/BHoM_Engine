@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
@@ -20,31 +20,44 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Geometry;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-using BH.oM.Environment.Elements;
-using BH.Engine.Geometry;
+using BH.oM.Environment.Gains;
+
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
 
 namespace BH.Engine.Environment
 {
-    public static partial class Compute
+    public static partial class Create
     {
         /***************************************************/
-        /****          public Methods                   ****/
+        /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("BH.Engine.Environment.Compute.BooleanIntersect => Returns true if two Environment Panels boolean intersect")]
-        [Input("element", "A single Environment Panel")]
-        [Input("elementToCompare", "An Environment Panel to compare with")]
-        [Output("True if the panels boolean intersect, false if they do not")]
-        public static bool BooleanIntersect(this Panel element, Panel elementToCompare)
+        [Description("BH.Engine.Environment.Create.Emitter => Returns an Environment Emitter object")]
+        [Input("name", "The name of the emitter, default empty string")]
+        [Input("radiantProportion", "The radiant proportion of the emitter, default 0.0")]
+        [Input("viewCoefficient", "The view coefficient of the emitter, default 0.0")]
+        [Input("maximumOutsideTemperature", "The maximum temperature outside the space the emitter should be working with, default 0.0")]
+        [Input("switchOffOutsideTemperature", "The amount of temperature to be used outside the emitter when switched off, default 0.0")]
+        [Input("type", "The type of emitter from the Emitter Type enum, default undefined")]
+        [Output("An Environment Emitter object")]
+        public static Emitter Emitter(string name = "", double radiantProportion = 0.0, double viewCoefficient = 0.0, double maximumOutsideTemperature = 0.0, double switchOffOutsideTemperature = 0.0, EmitterType type = EmitterType.Undefined)
         {
-            return element.ToPolyline().BooleanIntersection(elementToCompare.ToPolyline()).Count > 0;
+            return new Emitter
+            {
+                Name = name,
+                RadiantProportion = radiantProportion,
+                ViewCoefficient = viewCoefficient,
+                MaximumOutsideTemperature = maximumOutsideTemperature,
+                SwitchOffOutsideTemperature = switchOffOutsideTemperature,
+                Type = type,
+            };
         }
     }
 }

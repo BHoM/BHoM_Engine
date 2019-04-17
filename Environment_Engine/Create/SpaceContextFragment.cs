@@ -1,6 +1,6 @@
 ﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -27,24 +27,30 @@ using System.Text;
 using System.Threading.Tasks;
 
 using BH.oM.Environment.Properties;
-using BH.oM.Environment.Elements;
+
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Environment
 {
     public static partial class Create
     {
-        public static BuildingElementAnalyticalProperties BuildingElementAnalyticalProperties(double altitude = 0.0, double altitudeRange = 0.0, double inclination = 0.0, double inclinationRange = 0.0, double orientation = 0.0, double gValue = 0.0, double ltValue = 0.0, double uValue = 0.0)
+        [Description("BH.Engine.Environment.Create.SpaceAnalyticalFragment => Returns an Space Context Fragment object")]
+        [Input("name", "The name of the fragment property, default empty string")]
+        [Input("isExternal", "Defines whether the space is externally facing, default false")]
+        [Input("colour", "Defines the colour of the space, default empty string")]
+        [Input("connectedElements", "A collection of the elements which enclose the space described by their name or unique identifer as a string, default null")]
+        [Output("A Space Context Fragment object - this can be added to an Environment Space")]
+        public static SpaceContextFragment SpaceContextFragment(string name = "", bool isExternal = false, string colour = "", List<string> connectedElements = null)
         {
-            return new BuildingElementAnalyticalProperties
+            connectedElements = connectedElements ?? new List<string>();
+
+            return new SpaceContextFragment
             {
-                Altitude = altitude,
-                AltitudeRange = altitudeRange,
-                Inclination = inclination,
-                InclinationRange = inclinationRange,
-                Orientation = orientation,
-                GValue = gValue,
-                LTValue = ltValue,
-                UValue = uValue,
+                Name = name,
+                IsExternal = isExternal,
+                Colour = colour,
+                ConnectedElements = connectedElements,
             };
         }
     }

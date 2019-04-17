@@ -1,6 +1,6 @@
 ﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -26,23 +26,30 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using BH.oM.Environment.Properties;
+using BH.oM.Environment.Elements;
+using BH.oM.Geometry;
+
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Environment
 {
     public static partial class Create
     {
-        public static BuildingElementContextProperties BuildingElementContextProperties(List<string> connectedSpaces = null, bool isAir = false, bool isGround = false, string colour = "", bool reversed = false)
-        {
-            if (connectedSpaces == null) connectedSpaces = new List<string>();
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
 
-            return new BuildingElementContextProperties
+        [Description("BH.Engine.Environment.Create.Edge => Returns an Environment Edge object")]
+        [Input("curve", "A BHoM Geometry Curve object (e.g. polyline, line, etc.)")]
+        [Input("name", "The name of the edge, default empty string")]
+        [Output("An Environment Edge object - used for defining panels and openings")]
+        public static Edge Edge(ICurve curve, string name = "")
+        {
+            return new Edge
             {
-                ConnectedSpaces = connectedSpaces,
-                IsAir = isAir,
-                IsGround = isGround,
-                Colour = colour,
-                Reversed = reversed,
+                Name = name,
+                Curve = curve,
             };
         }
     }

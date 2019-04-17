@@ -1,6 +1,6 @@
 ﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -27,28 +27,26 @@ using System.Text;
 using System.Threading.Tasks;
 
 using BH.oM.Environment.Properties;
-using BH.oM.Environment.Elements;
+
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Environment
 {
     public static partial class Create
     {
-        public static ElementProperties ElementProperties(BuildingElementType elementType = BuildingElementType.Undefined, Construction construction = null)
+        [Description("BH.Engine.Environment.Create.BuildingResultFragment => Returns a Building Result Fragment object")]
+        [Input("name", "The name of the fragment property, default empty string")]
+        [Input("peakCooling", "The peak cooling result for the building, default 0.0")]
+        [Input("peakHeating", "The peak heating result for the building, default 0.0")]
+        [Output("An Environment Building Result Fragment object - this can be added to an Environment Building")]
+        public static BuildingResultFragment BuildingResultFragment(string name = "", double peakCooling = 0.0, double peakHeating = 0.0)
         {
-            return new ElementProperties
+            return new BuildingResultFragment
             {
-                BuildingElementType = elementType,
-                Construction = construction,
-            };
-        }
-
-        /***************************************************/
-
-        public static ElementProperties ElementProperties(BuildingElementType buildingElementType)
-        {
-            return new ElementProperties
-            {
-                BuildingElementType = buildingElementType
+                Name = name,
+                PeakCooling = peakCooling,
+                PeakHeating = peakHeating,
             };
         }
     }
