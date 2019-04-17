@@ -1,6 +1,6 @@
 ﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -19,7 +19,7 @@
  * You should have received a copy of the GNU Lesser General Public License     
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
-
+ 
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,29 +27,28 @@ using System.Text;
 using System.Threading.Tasks;
 
 using BH.oM.Environment.Properties;
-using BH.oM.Environment.Materials;
+
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Environment
 {
     public static partial class Create
     {
-        public static MaterialPropertiesTransparent TransparentMaterialProperties(string description = "", double conductivity = 0.0, double specificHeat = 0.0, double density = 0.0, double vapourDiffusionFactor = 0.0, double solarTransmittance = 0.0, double solarReflectanceExternal = 0.0, double solarReflectanceInternal = 0.0, double lightTransmittance = 0.0, double lightReflectanceExternal = 0.0, double lightReflectanceInternal = 0.0, double emissivityExternal = 0.0, double emissivityInternal = 0.0)
+        [Description("BH.Engine.Environment.Create.BuildingAnalyticalFragment => Returns a Building Analytical Fragment object")]
+        [Input("name", "The name of the fragment property, default empty string")]
+        [Input("northAngle", "The angle to north for the building fragment, default 0.0")]
+        [Input("gmtOffset", "The timezone of the building as an offset to GMT in decimal hours, default 0.0")]
+        [Input("year", "The year of the building to be analysed, default 0")]
+        [Output("An Environment Analytical Building Fragment object - this can be added to an Environment Building")]
+        public static BuildingAnalyticalFragment BuildingAnalyticalFragment(string name = "", double northAngle = 0.0, double gmtOffset = 0.0, int year = 0)
         {
-            return new MaterialPropertiesTransparent
+            return new BuildingAnalyticalFragment
             {
-                Description = description,
-                Conductivity = conductivity,
-                SpecificHeat = specificHeat,
-                Density = density,
-                VapourDiffusionFactor = vapourDiffusionFactor,
-                SolarTransmittance = solarTransmittance,
-                SolarReflectanceExternal = solarReflectanceExternal,
-                SolarReflectanceInternal = solarReflectanceInternal,
-                LightTransmittance = lightTransmittance,
-                LightReflectanceExternal = lightReflectanceExternal,
-                LightReflectanceInternal = lightReflectanceInternal,
-                EmissivityInternal = emissivityInternal,
-                EmissivityExternal = emissivityExternal,
+                Name = name,
+                NorthAngle = northAngle,
+                GMTOffset = gmtOffset,
+                Year = year,
             };
         }
     }

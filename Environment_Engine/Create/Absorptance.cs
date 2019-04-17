@@ -1,6 +1,6 @@
 ﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -26,24 +26,33 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using BH.oM.Environment.Properties;
 using BH.oM.Environment.Materials;
+
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Environment
 {
     public static partial class Create
     {
-        public static MaterialPropertiesGas GasMaterialProperties(GasType gasType = GasType.Undefined, double conductivity = 0.0, string description = "", double specificHeat = 0.0, double density = 0.0, double convectionCoefficient = 0.0, double vapourDiffusionFactor = 0.0)
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
+
+        [Description("BH.Engine.Environment.Create.Absorptance => Returns an Environment Absorptance object")]
+        [Input("name", "The name of the absorptance, default empty string")]
+        [Input("value", "The amount of absorptance the material should have, default 0.0")]
+        [Input("unit", "The unit of absorptance from the Absorptance Unit enum, default undefined")]
+        [Input("type", "The type of absorptance from the Absorptance Type enum, default undefined")]
+        [Output("An Environment Absorptance object")]
+        public static Absorptance Absorptance(string name = "", double value = 0.0, AbsorptanceUnit unit = AbsorptanceUnit.Undefined, AbsorptanceType type = AbsorptanceType.Undefined)
         {
-            return new MaterialPropertiesGas
+            return new Absorptance
             {
-                GasType = gasType,
-                Conductivity = conductivity,
-                Description = description,
-                SpecificHeat = specificHeat,
-                Density = density,
-                ConvectionCoefficient = convectionCoefficient,
-                VapourDiffusionFactor = vapourDiffusionFactor,
+                Name = name,
+                Value = value,
+                AbsorptanceUnit = unit,
+                AbsorptanceType = type,
             };
         }
     }

@@ -1,6 +1,6 @@
 ﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -27,18 +27,26 @@ using System.Text;
 using System.Threading.Tasks;
 
 using BH.oM.Environment.Properties;
-using BH.oM.Environment.Elements;
+
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Environment
 {
     public static partial class Create
     {
-        public static BuildingResultsProperties BuildingResultsProperties(double peakCooling = 0.0, double peakHeating = 0.0)
+        [Description("BH.Engine.Environment.Create.BuildingContextFragment => Returns a Building Context Fragment object")]
+        [Input("name", "The name of the fragment property, default empty string")]
+        [Input("placeName", "The name of the place the building occupies, default empty string")]
+        [Input("weatherStation", "The name of the nearest weather station to the building, default empty string")]
+        [Output("An Environment Building Context Fragment object - this can be added to an Environment Building")]
+        public static BuildingContextFragment BuildingContextFragment(string name = "", string placeName = "", string weatherStation = "")
         {
-            return new BuildingResultsProperties
+            return new BuildingContextFragment
             {
-                PeakCooling = peakCooling,
-                PeakHeating = peakHeating,
+                Name = name,
+                PlaceName = placeName,
+                WeatherStation = weatherStation,
             };
         }
     }

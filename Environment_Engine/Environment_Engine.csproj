@@ -30,6 +30,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Analytical_oM">
+      <HintPath>..\..\BHoM\Build\Analytical_oM.dll</HintPath>
+    </Reference>
     <Reference Include="Architecture_oM">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\BHoM\Build\Architecture_oM.dll</HintPath>
@@ -48,6 +51,9 @@
     <Reference Include="Geometry_oM">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\BHoM\Build\Geometry_oM.dll</HintPath>
+    </Reference>
+    <Reference Include="Physical_oM">
+      <HintPath>..\..\BHoM\Build\Physical_oM.dll</HintPath>
     </Reference>
     <Reference Include="Reflection_Engine">
       <SpecificVersion>False</SpecificVersion>
@@ -70,27 +76,32 @@
     <Compile Include="Compute\BooleanIntersect.cs" />
     <Compile Include="Convert\Polyline.cs" />
     <Compile Include="Convert\Space.cs" />
-    <Compile Include="Create\_Building.cs" />
-    <Compile Include="Create\_BuildingAnalyticalProperties.cs" />
-    <Compile Include="Create\_BuildingContextProperties.cs" />
-    <Compile Include="Create\_BuildingElement.cs" />
-    <Compile Include="Create\_BuildingElementAnalyticalProperties.cs" />
-    <Compile Include="Create\_BuildingElementContextProperties.cs" />
-    <Compile Include="Create\_BuildingResultsProperties.cs" />
+    <Compile Include="Create\Absorptance.cs" />
+    <Compile Include="Create\Building.cs" />
+    <Compile Include="Create\CoefficientFragment.cs" />
+    <Compile Include="Create\Edge.cs" />
+    <Compile Include="Create\Emitter.cs" />
+    <Compile Include="Create\EnvironmentConstructionFragment.cs" />
+    <Compile Include="Create\Gain.cs" />
+    <Compile Include="Create\GasMaterial.cs" />
+    <Compile Include="Create\Opening.cs" />
+    <Compile Include="Create\Panel.cs" />
+    <Compile Include="Create\RadiantFragment.cs" />
+    <Compile Include="Create\SolidMaterial.cs" />
+    <Compile Include="Create\Space.cs" />
+    <Compile Include="Create\BuildingAnalyticalFragment.cs" />
+    <Compile Include="Create\BuildingContextFragment.cs" />
+    <Compile Include="Create\SpaceContextFragment.cs" />
+    <Compile Include="Create\PanelAnalyticalFragment.cs" />
+    <Compile Include="Create\PanelContextFragment.cs" />
+    <Compile Include="Create\BuildingResultFragment.cs" />
     <Compile Include="Create\_Construction.cs" />
-    <Compile Include="Create\_ElementProperties.cs" />
-    <Compile Include="Create\_EnvironmentContextProperties.cs" />
+    <Compile Include="Create\OriginContextFragment.cs" />
     <Compile Include="Create\_Material.cs" />
-    <Compile Include="Create\_MaterialPropertiesGas.cs" />
-    <Compile Include="Create\_MaterialPropertiesOpaque.cs" />
-    <Compile Include="Create\_MaterialPropertiesTransparent.cs" />
     <Compile Include="Create\_NewElement1D.cs" />
     <Compile Include="Create\_NewInternalElement2D.cs" />
-    <Compile Include="Create\_Opening.cs" />
-    <Compile Include="Create\_Panel.cs" />
     <Compile Include="Create\_SimulationResult.cs" />
-    <Compile Include="Create\_Space.cs" />
-    <Compile Include="Create\_SpaceAnalyticalProperties.cs" />
+    <Compile Include="Create\SpaceAnalyticalFragment.cs" />
     <Compile Include="Modify\_AddAdjacentSpace.cs" />
     <Compile Include="Modify\_AddMaterial.cs" />
     <Compile Include="Modify\_AddOpening.cs" />

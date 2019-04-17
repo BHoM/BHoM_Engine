@@ -1,6 +1,6 @@
 ﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -27,19 +27,30 @@ using System.Text;
 using System.Threading.Tasks;
 
 using BH.oM.Environment.Properties;
-using BH.oM.Environment.Elements;
+
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Environment
 {
     public static partial class Create
     {
-        public static EnvironmentContextProperties EnvironmentContextProperties(string elementID = "", string description = "", string typeName = "")
+        [Description("BH.Engine.Environment.Create.PanelContextFragment => Returns an Panel Context Fragment object")]
+        [Input("name", "The name of the fragment property, default empty string")]
+        [Input("isAir", "Defines whether the panel is an air panel, default false")]
+        [Input("isGround", "Defines whether the panel is a ground panel, default false")]
+        [Input("colour", "Defines the colour of the panel, default empty string")]
+        [Input("reversed", "Defines whether the panel is reversed, default false")]
+        [Output("A Panel Context Fragment object - this can be added to an Environment Panel")]
+        public static PanelContextFragment PanelContextFragment(string name = "", bool isAir = false, bool isGround = false, string colour = "", bool reversed = false)
         {
-            return new EnvironmentContextProperties
+            return new PanelContextFragment
             {
-                ElementID = elementID,
-                Description = description,
-                TypeName = typeName,
+                Name = name,
+                IsAir = isAir,
+                IsGround = isGround,
+                Colour = colour,
+                Reversed = reversed,
             };
         }
     }

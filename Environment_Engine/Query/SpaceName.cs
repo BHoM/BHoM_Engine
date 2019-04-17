@@ -34,7 +34,7 @@ namespace BH.Engine.Environment
 {
     public static partial class Query
     {
-        [Description("BH.Engine.Environment.Convert.UniqueSpaceNames => Returns a collection of space names the panels are connected to")]
+        [Description("BH.Engine.Environment.Query.UniqueSpaceNames => Returns a collection of space names the panels are connected to")]
         [Input("panels", "A collection of Environment Panels")]
         [Output("A collection of space names the panels are connected to")]
         public static List<string> UniqueSpaceNames(this List<Panel> panels)
@@ -46,10 +46,10 @@ namespace BH.Engine.Environment
             return spaceNames.Where(x => !x.Equals("-1")).Distinct().ToList();
         }
 
-        [Description("BH.Engine.Environment.Convert.SpaceName => Returns the name of the space the panels are enclosing")]
+        [Description("BH.Engine.Environment.Query.ConnectedSpaceName => Returns the name of the space the panels are enclosing")]
         [Input("panels", "A collection of Environment Panels")]
         [Output("The space name the panels are jointly connected to")]
-        public static string SpaceName(this List<Panel> panels)
+        public static string ConnectedSpaceName(this List<Panel> panels)
         {
             //Gets the single space name which most commonly unites these panels
             List<string> uniqueNames = panels.UniqueSpaceNames();

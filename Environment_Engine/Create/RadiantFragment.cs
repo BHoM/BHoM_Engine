@@ -1,6 +1,6 @@
 ﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -28,16 +28,27 @@ using System.Threading.Tasks;
 
 using BH.oM.Environment.Properties;
 
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
+
 namespace BH.Engine.Environment
 {
     public static partial class Create
     {
-        public static BuildingContextProperties BuildingContextProperties(string placeName = "", string weatherStation = "")
+        [Description("BH.Engine.Environment.Create.CoefficientFragment => Returns a Coefficient Fragment object")]
+        [Input("name", "The name of the fragment property, default empty string")]
+        [Input("lightingRadiation", "The lighting radiation, default 0.0")]
+        [Input("occupantRadiation", "The occupant radiation, default 0.0")]
+        [Input("equipmentRadiation", "The equipment radiation, default 0.0")]
+        [Output("An Environment Coefficient Fragment object - this can be added to any Environment object")]
+        public static RadiationFragment RadiationFragment(string name = "", double lightingRadiation = 0.0, double occupantRadiation = 0.0, double equipmentRadiation = 0.0)
         {
-            return new BuildingContextProperties
+            return new RadiationFragment
             {
-                PlaceName = placeName,
-                WeatherStation = weatherStation,
+                Name = name,
+                LightingRadiation = lightingRadiation,
+                OccupantRadiation = occupantRadiation,
+                EquipmentRadiation = equipmentRadiation,
             };
         }
     }
