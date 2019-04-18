@@ -46,6 +46,24 @@ namespace BH.Engine.Environment
             return edge.Curve.ICollapseToPolyline(BH.oM.Geometry.Tolerance.Angle);
         }
 
+        [Description("BH.Engine.Environment.Convert.ToEdges => Returns a collection of Environment Edges from a BHoM Geomtry Polyline")]
+        [Input("polyline", "A BHoM Geometry Polyline to be split into Environment Edges")]
+        [Output("A collection of Environment Edges")]
+        public static List<Edge> ToEdges(this Polyline polyline)
+        {
+            List<Edge> edges = new List<Edge>();
+
+            List<Polyline> polylines = polyline.SplitAtPoints(polyline.DiscontinuityPoints());
+            foreach(Polyline p in polylines)
+            {
+                Edge e = new Edge();
+                e.Curve = p;
+                edges.Add(e);
+            }
+
+            return edges;
+        }
+
         [Description("BH.Engine.Environment.Convert.ToPolyline => Returns a Polyline representation of a collection of Environment Edges")]
         [Input("edges", "A collection of Environment Edge objects to convert into a single polyline")]
         [Output("BHoM Geometry Polyline")]

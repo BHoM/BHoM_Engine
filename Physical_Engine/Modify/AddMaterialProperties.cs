@@ -1,6 +1,6 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -20,44 +20,33 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Environment.Elements;
-using BH.oM.Geometry;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+using BH.oM.Physical.Properties;
+
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Environment
 {
     public static partial class Modify
     {
-        /***************************************************/
-        /****               Public Methods              ****/
-        /***************************************************/
-
-        public static Opening SetOutlineElements1D(this Opening opening, List<IElement1D> outlineElements1D)
+        [Description("BH.Engine.Physical.Modify.AddMaterialProperties => Assign a new set of material properties to a material")]
+        [Input("material", "A material to add properties to")]
+        [Input("newProperties", "The properties to add to the material")]
+        [Output("The updated Material")]
+        public static Material AddMaterialProperties(this Material material, IMaterialProperties newProperties)
         {
-            Opening o = opening.GetShallowClone() as Opening;
-            o.OpeningCurve = new PolyCurve { Curves = outlineElements1D.Cast<ICurve>().ToList() };
-            return o;
+            if (material.Properties.Where(x => x.GetType() == newProperties.GetType()).FirstOrDefault() != null)
+                BH.Engine.Reflection.Compute.RecordError("Properties of that type already exist on this material - please remove them before adding new properties of that type");
+            else
+                material.Properties.Add(newProperties);
+
+            return material;
         }
-
-        /***************************************************/
-
-        public static Panel SetOutlineElements1D(this Panel panel, List<IElement1D> outlineElements1D)
-        {
-            Panel pp = panel.GetShallowClone() as Panel;
-            pp.PanelCurve = new PolyCurve { Curves = outlineElements1D.Cast<ICurve>().ToList() };
-            return pp;
-        }
-
-        /***************************************************/
-
-        public static BuildingElement SetOutlineElements1D(this BuildingElement element, List<IElement1D> outlineElements1D)
-        {
-            BuildingElement be = element.GetShallowClone() as BuildingElement;
-            element.PanelCurve = new PolyCurve { Curves = outlineElements1D.Cast<ICurve>().ToList() };
-            return be;
-        }
-
-        /***************************************************/
     }
 }

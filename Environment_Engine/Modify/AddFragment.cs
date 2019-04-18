@@ -1,6 +1,6 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -20,45 +20,31 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Geometry;
-using BH.oM.Environment.Elements;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+using BH.oM.Environment;
+using BH.oM.Environment.Properties;
+
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Environment
 {
     public static partial class Modify
     {
-        /***************************************************/
-        /****               Public Methods              ****/
-        /***************************************************/
-
-        public static Opening SetInternalElements2D(this Opening opening, List<IElement2D> internalElements2D)
+        [Description("BH.Engine.Environment.Modify.AddFragment => Appends a Fragment Property to a given Environment Object")]
+        [Input("environmentObject", "Any object implementing the IEnvironmentObject interface that can have fragment properties appended to it")]
+        [Input("fragment", "Any fragment object implementing the IBHoMFragment interface to append to the object")]
+        [Output("The environment object with the added fragment")]
+        public static IEnvironmentObject AddFragment(this IEnvironmentObject environmentObject, IBHoMFragment fragment)
         {
-            if (internalElements2D.Count != 0)
-                Reflection.Compute.RecordError("Cannot set internal 2D elements to an opening.");
-
-            return opening.GetShallowClone() as Opening;
+            if (environmentObject == null) return null;
+            environmentObject.FragmentProperties.Add(fragment);
+            return environmentObject;
         }
-
-        /***************************************************/
-
-        public static Panel SetInternalElements2D(this Panel panel, List<IElement2D> internalElements2D)
-        {
-            Panel pp = panel.GetShallowClone() as Panel;
-            pp.Openings = new List<Opening>(internalElements2D.Cast<Opening>().ToList());
-            return pp;
-        }
-
-        /***************************************************/
-
-        public static BuildingElement SetInternalElements2D(this BuildingElement panel, List<IElement2D> internalElements2D)
-        {
-            BuildingElement pp = panel.GetShallowClone() as BuildingElement;
-            pp.Openings = new List<Opening>(internalElements2D.Cast<Opening>().ToList());
-            return pp;
-        }
-
-        /***************************************************/
     }
 }
