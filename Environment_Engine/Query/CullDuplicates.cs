@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -22,14 +22,15 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
+using System.Linq;
 using BH.oM.Environment.Elements;
-using BH.oM.Geometry;
+
 using BH.Engine.Geometry;
-using BH.Engine.Environment;
+using BH.oM.Geometry;
+
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Environment
 {
@@ -39,17 +40,20 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static List<BuildingElement> CullOverlaps(this List<BuildingElement> elements)
+        [Description("BH.Engine.Environment.Query.CullOverlaps => Removes panels which overlap each other")]
+        [Input("panels", "A collection of Environment Panels")]
+        [Output("A collection of Environment Panels with no overlaps")]
+        public static List<Panel> CullOverlaps(this List<Panel> panels)
         {
-            List<BuildingElement> ori = new List<BuildingElement>(elements);
-            List<BuildingElement> toReturn = new List<BuildingElement>();
+            List<Panel> ori = new List<Panel>(panels);
+            List<Panel> toReturn = new List<Panel>();
             
             while(ori.Count > 0)
             {
-                BuildingElement current = ori[0];
-                List<BuildingElement> overlaps = current.IdentifyOverlaps(elements);
+                Panel current = ori[0];
+                List<Panel> overlaps = current.IdentifyOverlaps(panels);
 
-                foreach (BuildingElement be in overlaps)
+                foreach (Panel be in overlaps)
                     ori.Remove(be);
 
                 toReturn.Add(current);
@@ -59,36 +63,42 @@ namespace BH.Engine.Environment
             return toReturn;
         }
 
-        public static List<BuildingElement> CullDuplicates(this List<BuildingElement> elements)
+        [Description("BH.Engine.Environment.Query.CullDuplicates => Removes panels which are duplicates")]
+        [Input("panels", "A collection of Environment Panels")]
+        [Output("A collection of Environment Panels with no duplicates")]
+        public static List<Panel> CullDuplicates(this List<Panel> panels)
         {
             //Go through each building element and compare vertices and centre points - if there is a matching element, remove it
-            for(int x = 0; x < elements.Count; x++)
+            for(int x = 0; x < panels.Count; x++)
             {
-                if (elements[x] == null) continue;
+                if (panels[x] == null) continue;
 
-                for(int y = x + 1; y < elements.Count; y++)
+                for(int y = x + 1; y < panels.Count; y++)
                 {
-                    if (elements[x].IsIdentical(elements[y]))
-                        elements[y] = null;
+                    if (panels[x].IsIdentical(panels[y]))
+                        panels[y] = null;
                 }
             }
 
-            return elements.Where(x => x != null).ToList();
+            return panels.Where(x => x != null).ToList();
         }
 
-        public static List<List<BuildingElement>> CullDuplicates(this List<List<BuildingElement>> spaces)
+        [Description("BH.Engine.Environment.Query.CullDuplicates => Removes panels which are duplicates from panels representing spaces")]
+        [Input("panelsAsSpaces", "The nested collection of Environment Panels that represent the spaces to cull duplicates from")]
+        [Output("A nested collection of Environment Panels representing spaces with no duplicates")]
+        public static List<List<Panel>> CullDuplicates(this List<List<Panel>> panelsAsSpaces)
         {
             //Go through each set of building elements and find those that match
-            for(int x = 0; x < spaces.Count; x++)
+            for(int x = 0; x < panelsAsSpaces.Count; x++)
             {
-                List<BuildingElement> space = spaces[x];
-                for(int y = x+1; y < spaces.Count; y++)
+                List<Panel> space = panelsAsSpaces[x];
+                for(int y = x+1; y < panelsAsSpaces.Count; y++)
                 {
-                    List<BuildingElement> space2 = spaces[y];
+                    List<Panel> space2 = panelsAsSpaces[y];
                     if (space2.Count != space.Count) continue; //Numbers don't match so no point checking equality
                     bool allMatch = true;
                     
-                    foreach(BuildingElement be in space)
+                    foreach(Panel be in space)
                     {
                         allMatch &= space2.Contains(be);
                         if (!allMatch) break; //No point checking everything if we find a non-match
@@ -97,14 +107,17 @@ namespace BH.Engine.Environment
                     if(allMatch)
                     {
                         //This space matches another space, set all the BEs to null
-                        spaces[y] = new List<BuildingElement>(); //Empty list
+                        panelsAsSpaces[y] = new List<Panel>(); //Empty list
                     }                    
                 }
             }
 
-            return spaces.Where(x => x.Count > 0).ToList();
+            return panelsAsSpaces.Where(x => x.Count > 0).ToList();
         }
 
+        [Description("BH.Engine.Environment.Query.CullDuplicateLines => Removes duplicate lines from the collection")]
+        [Input("lines", "The nested collection of lines to cull duplicates from")]
+        [Output("A collection of lines with no duplicates")]
         public static List<Line> CullDuplicateLines(this List<Line> lines, double tolerance = Tolerance.Distance)
         {
             double sqTol = tolerance * tolerance;

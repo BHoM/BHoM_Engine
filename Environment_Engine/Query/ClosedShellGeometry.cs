@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -20,12 +20,17 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System.Linq;
+using System;
 using System.Collections.Generic;
+
+using System.Linq;
 using BH.oM.Environment.Elements;
-using BH.oM.Geometry;
 
 using BH.Engine.Geometry;
+using BH.oM.Geometry;
+
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Environment
 {
@@ -35,30 +40,28 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static List<BuildingElement> CleanSpace(this List<BuildingElement> space)
+        [Description("BH.Engine.Environment.Query.ClosedShellGeometry => Gets the closed shell geometry for a collection of panels representing a space")]
+        [Input("panelsAsSpace", "A collection of Environment Panels representing a single space")]
+        [Output("A collection of BHoM Geometry Polylines which represent the shell of the space")]
+        public static List<Polyline> ClosedShellGeometry(this List<Panel> panelsAsSpace)
         {
-            //Remove elements which have 1 or less connections with other elements
-            List<BuildingElement> cleanSpace = new List<BuildingElement>();
+            List<Polyline> pLinesCurtainWall = new List<Polyline>();
+            List<Polyline> pLinesOther = new List<Polyline>();
 
-            List<Line> allEdges = space.Edges();
-
-            foreach(BuildingElement be in space)
+            //Merge curtain panels
+            foreach (Panel element in panelsAsSpace)
             {
-                List<Line> edges = be.Edges();
-                bool addSpace = true;
-                foreach (Line l in edges)
-                {
-                    if (allEdges.Where(x => x.BooleanIntersection(l) != null).ToList().Count < 2)
-                        addSpace = false;
-                }
-
-                if(addSpace)
-                    cleanSpace.Add(be);
+                if (element.Type == PanelType.CurtainWall)
+                    pLinesCurtainWall.Add(element.ToPolyline());
+                else
+                    pLinesOther.Add(element.ToPolyline());
             }
 
-            cleanSpace = cleanSpace.CullDuplicates();
+            //Add the rest of the geometries
+            List<Polyline> mergedPolyLines = BH.Engine.Geometry.Compute.BooleanUnion(pLinesCurtainWall);
+            mergedPolyLines.AddRange(pLinesOther);
 
-            return cleanSpace;
+            return mergedPolyLines;
         }
     }
 }
