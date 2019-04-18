@@ -1,6 +1,6 @@
 ﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -27,36 +27,26 @@ using System.Text;
 using System.Threading.Tasks;
 
 using BH.oM.Environment.Elements;
-using BH.oM.Environment.Properties;
-using BH.oM.Environment.Interface;
+using BH.oM.Base;
+
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Environment
 {
     public static partial class Query
     {
-        public static List<IBuildingObject> ObjectsByElementID(this List<IBuildingObject> objs, string elementID)
-        {
-            return objs.Where(x => x.EnvironmentContextProperties() != null && (x.EnvironmentContextProperties() as EnvironmentContextProperties).ElementID == elementID).ToList();
-        }
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
 
-        public static List<IBuildingObject> ObjectsByTypeName(this List<IBuildingObject> objs, string typeName)
+        [Description("BH.Engine.Environment.Query.ObjectsByType => Returns a collection of objects which are of the provided object type")]
+        [Input("objects", "A collection of generic BHoM objects")]
+        [Input("type", "The type of object to be queried and returned")]
+        [Output("A collection of generic BHoM objects matching the provided type")]
+        public static List<IBHoMObject> ObjectsByType(this List<IBHoMObject> objects, Type type)
         {
-            return objs.Where(x => x.EnvironmentContextProperties() != null && (x.EnvironmentContextProperties() as EnvironmentContextProperties).TypeName == typeName).ToList();
-        }
-
-        public static List<IBuildingObject> ObjectsByName(this List<IBuildingObject> objs, string name)
-        {
-            return objs.Where(x => x.Name == name).ToList();
-        }
-
-        public static List<IBuildingObject> ObjectsByElementType(this List<IBuildingObject> elements, BuildingElementType type)
-        {
-            return elements.Where(x => x.ElementProperties() != null && (x.ElementProperties() as ElementProperties).BuildingElementType == type).ToList();
-        }
-
-        public static List<IBuildingObject> ObjectsWithoutElementType(this List<IBuildingObject> elements, BuildingElementType type)
-        {
-            return elements.Where(x => x.ElementProperties() != null && (x.ElementProperties() as ElementProperties).BuildingElementType != type).ToList();
+            return objects.Where(x => x.GetType() == type).ToList();
         }
     }
 }
