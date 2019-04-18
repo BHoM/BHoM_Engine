@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -26,7 +26,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using BHE = BH.oM.Environment.Elements;
+using BH.oM.Environment;
+using BH.oM.Geometry;
+using BH.Engine.Geometry;
+
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Environment
 {
@@ -36,9 +41,34 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static double BuildingArea(BHE.Building building)
+        [Description("BH.Engine.Environment.Query.Tilt => Returns the tilt of an Environment Object")]
+        [Input("environmentObject", "Any object implementing the IEnvironmentObject interface that can have its tilt queried")]
+        [Output("The tilt of the Environment Object")]
+        public static double Tilt(this IEnvironmentObject environmentObject)
         {
-            throw new NotImplementedException("Calculating the area in the building has not been implemented");
+            return environmentObject.ToPolyline().Tilt();
+        }
+
+        [Description("BH.Engine.Environment.Query.Tilt => Returns the tilt of a BHoM Geometry Polyline")]
+        [Input("polyline", "The BHoM Geometry Polyline having its tilt queried")]
+        [Output("The tilt of the polyline")]
+        public static double Tilt(this Polyline polyline)
+        {
+            double tilt;
+
+            List<Point> pts = polyline.DiscontinuityPoints();
+
+            if (pts.Count < 3 || !BH.Engine.Geometry.Query.IsClosed(polyline)) return -1; //Error protection on pts having less than 3 elements to create a plane or pLine not being closed
+
+            Plane plane = BH.Engine.Geometry.Create.Plane(pts[0], pts[1], pts[2]);
+
+            //The polyline can be locally concave. Check if the polyline is clockwise.
+            if (!polyline.IsClockwise(plane.Normal))
+                plane.Normal = -plane.Normal;
+
+            tilt = BH.Engine.Geometry.Query.Angle(plane.Normal, Plane.XY.Normal) * (180 / Math.PI);
+
+            return tilt;
         }
     }
 }

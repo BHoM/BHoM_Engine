@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -20,13 +20,18 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System.Linq;
+using System;
 using System.Collections.Generic;
+
+using System.Linq;
+using BH.oM.Environment;
 using BH.oM.Environment.Elements;
+
+using BH.Engine.Geometry;
 using BH.oM.Geometry;
 
-
-using BH.oM.Base;
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Environment
 {
@@ -36,17 +41,36 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static List<Building> Buildings(this List<IBHoMObject> bhomObjects)
+        [Description("BH.Engine.Environment.Query.Bottom => Returns the bottom of a given environment object")]
+        [Input("environmentObject", "Any object implementing the IEnvironmentObject interface that can have a geometrical bottom")]
+        [Output("An ICurve representation of the bottom of the object")]
+        public static ICurve Bottom(this IEnvironmentObject environmentObject)
         {
-            List<Building> spaces = new List<Building>();
+            if (environmentObject == null) return null;
 
-            foreach (IBHoMObject obj in bhomObjects)
+            Polyline workingCurves = null;
+
+            if (environmentObject is Panel)
+                workingCurves = (environmentObject as Panel).ExternalEdges.ToPolyline();
+            else if (environmentObject is Opening)
+                workingCurves = (environmentObject as Opening).Edges.ToPolyline();
+
+            if (workingCurves == null) return null;
+
+            double aZ = double.MaxValue;
+            ICurve aResult = null;
+            foreach (ICurve aCurve in workingCurves.SplitAtPoints(workingCurves.DiscontinuityPoints()))
             {
-                if (obj is Building)
-                    spaces.Add(obj as Building);
-            }
+                Point aPoint_Start = aCurve.IStartPoint();
+                Point aPoint_End = aCurve.IEndPoint();
 
-            return spaces;
+                if (aPoint_End.Z <= aZ && aPoint_Start.Z <= aZ)
+                {
+                    aZ = Math.Max(aPoint_End.Z, aPoint_Start.Z);
+                    aResult = aCurve;
+                }
+            }
+            return aResult;
         }
     }
 }

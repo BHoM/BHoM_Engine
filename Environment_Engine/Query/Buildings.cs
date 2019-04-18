@@ -1,6 +1,6 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -27,10 +27,10 @@ using System.Text;
 using System.Threading.Tasks;
 
 using BH.oM.Environment.Elements;
-using BH.oM.Geometry;
-using BH.oM.Environment.Interface;
+using BH.oM.Base;
 
-using BH.Engine.Geometry;
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Environment
 {
@@ -40,37 +40,17 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static ICurve Bottom(this IBuildingObject buildingElementGeometry)
+        [Description("BH.Engine.Environment.Query.Buildings => Returns a collection of Environment Buildings from a list of generic BHoM objects")]
+        [Input("objects", "A collection of generic BHoM objects")]
+        [Output("A collection of Environment Building objects")]
+        public static List<Building> Buildings(this List<IBHoMObject> objects)
         {
-            if (buildingElementGeometry == null) return null;
+            objects = objects.ObjectsByType(typeof(Building));
+            List<Building> buildings = new List<Building>();
+            foreach (IBHoMObject o in objects)
+                buildings.Add(o as Building);
 
-            PolyCurve workingCurves = null;
-
-            if (buildingElementGeometry is Panel)
-                workingCurves = (buildingElementGeometry as Panel).PanelCurve as PolyCurve;
-            else if (buildingElementGeometry is BuildingElement)
-                workingCurves = (buildingElementGeometry as BuildingElement).PanelCurve as PolyCurve;
-            else if (buildingElementGeometry is Opening)
-                workingCurves = (buildingElementGeometry as Opening).OpeningCurve as PolyCurve;
-
-            if (workingCurves == null) return null;
-
-            double aZ = double.MaxValue;
-            ICurve aResult = null;
-            foreach (ICurve aCurve in workingCurves.Curves)
-            {
-                Point aPoint_Start = aCurve.IStartPoint();
-                Point aPoint_End = aCurve.IEndPoint();
-
-                if (aPoint_End.Z <= aZ && aPoint_Start.Z <= aZ)
-                {
-                    aZ = Math.Max(aPoint_End.Z, aPoint_Start.Z);
-                    aResult = aCurve;
-                }
-            }
-            return aResult;
+            return buildings;
         }
-
-        /***************************************************/
     }
 }

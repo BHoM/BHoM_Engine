@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -22,9 +22,15 @@
 
 using System;
 using System.Collections.Generic;
-using BHG = BH.oM.Geometry;
-using BHEI = BH.oM.Environment.Interface;
-using BHE = BH.oM.Environment;
+
+using System.Linq;
+using BH.oM.Environment;
+
+using BH.Engine.Geometry;
+using BH.oM.Geometry;
+
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Environment
 {
@@ -34,48 +40,48 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static double Azimuth(this BHEI.IBuildingObject buildingElementGeometry, BHG.Vector refVector)
+        [Description("BH.Engine.Environment.Query.Azimuth => Returns the azimuth of a given environmental object")]
+        [Input("environmentObject", "Any object implementing the IEnvironmentObject interface that can have its azimuth queried")]
+        [Input("referenceVector", "The reference vector for querying the azimuth from the object")]
+        [Output("The azimuth of the Environment Object")]
+        public static double Azimuth(this IEnvironmentObject environmentObject, Vector refVector)
         {
-            BHG.Polyline pline = new BHG.Polyline { ControlPoints = BH.Engine.Geometry.Query.IControlPoints(buildingElementGeometry.ICurve()) };
-
-            double azimuth = Azimuth(pline, refVector);
-            return azimuth;
+            return environmentObject.ToPolyline().Azimuth(refVector);
         }
 
-        /***************************************************/
-
-        public static double Azimuth(this BHG.Polyline pline, BHG.Vector refVector)
+        [Description("BH.Engine.Environment.Query.Azimuth => Returns the azimuth of a BHoM Geometry Polyline")]
+        [Input("polyline", "A BHoM Geometry Polyline")]
+        [Input("referenceVector", "The reference vector for querying the azimuth from the polyline")]
+        [Output("The azimuth of the polyline")]
+        public static double Azimuth(this Polyline polyline, Vector refVector)
         {
-            double azimuth;
+            List<Point> pts = polyline.DiscontinuityPoints();
 
-            List<BHG.Point> pts = BH.Engine.Geometry.Query.DiscontinuityPoints(pline);
+            if (pts.Count < 3 || !polyline.IsClosed()) return -1; //Protection in case there aren't enough points to make a plane
 
-            if (pts.Count < 3 || !BH.Engine.Geometry.Query.IsClosed(pline)) return -1; //Protection in case there aren't enough points to make a plane
-
-            BHG.Plane plane = BH.Engine.Geometry.Create.Plane(pts[0], pts[1], pts[2]);
+            Plane plane = BH.Engine.Geometry.Create.Plane(pts[0], pts[1], pts[2]);
 
             //The polyline can be locally concave. Check if the polyline is clockwise.
-            if (!BH.Engine.Geometry.Query.IsClockwise(pline, plane.Normal))
+            if (!BH.Engine.Geometry.Query.IsClockwise(polyline, plane.Normal))
                 plane.Normal = -plane.Normal;
-            
+
+            double azimuth;
             if (Geometry.Modify.Normalise(plane.Normal).Z == 1)
                 azimuth = 0;
             else if (Geometry.Modify.Normalise(plane.Normal).Z == -1)
                 azimuth = 180;
             else
             {
-                BHG.Vector v1 = Geometry.Modify.Project(plane.Normal, BHG.Plane.XY);
-                BHG.Vector v2 = (Geometry.Modify.Project(refVector, BHG.Plane.XY));
+                Vector v1 = Geometry.Modify.Project(plane.Normal, Plane.XY);
+                Vector v2 = (Geometry.Modify.Project(refVector, Plane.XY));
                
-                azimuth = (BH.Engine.Geometry.Query.SignedAngle(v1, v2, BHG.Vector.ZAxis) * (180 / Math.PI));
+                azimuth = (BH.Engine.Geometry.Query.SignedAngle(v1, v2, Vector.ZAxis) * (180 / Math.PI));
                 if (azimuth < 0)
                     azimuth = 360 + azimuth;
 
             }
             return azimuth;
         }
-
-        /***************************************************/
     }
 
 

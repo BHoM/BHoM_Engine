@@ -1,6 +1,6 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -27,7 +27,10 @@ using System.Text;
 using System.Threading.Tasks;
 
 using BH.oM.Environment.Elements;
-using BH.oM.Geometry;
+using BH.oM.Base;
+
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Environment
 {
@@ -37,11 +40,17 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static BoundingBox Bounds(this Panel buildingElementPanel)
+        [Description("BH.Engine.Environment.Query.Openings => Returns a collection of Environment Openings from a list of generic BHoM objects")]
+        [Input("objects", "A collection of generic BHoM objects")]
+        [Output("A collection of Environment Opening objects")]
+        public static List<Opening> Openings(this List<IBHoMObject> objects)
         {
-            return Geometry.Query.Bounds(buildingElementPanel.PanelCurve as PolyCurve);
-        }
+            objects = objects.ObjectsByType(typeof(Opening));
+            List<Opening> Openings = new List<Opening>();
+            foreach (IBHoMObject o in objects)
+                Openings.Add(o as Opening);
 
-        /***************************************************/
+            return Openings;
+        }
     }
 }

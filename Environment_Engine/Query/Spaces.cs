@@ -1,6 +1,6 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -22,9 +22,15 @@
 
 using System;
 using System.Collections.Generic;
-using BHG = BH.oM.Geometry;
-using BHEI = BH.oM.Environment.Interface;
-using BHE = BH.oM.Environment;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+using BH.oM.Environment.Elements;
+using BH.oM.Base;
+
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Environment
 {
@@ -34,36 +40,17 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static double Tilt(this BHEI.IBuildingObject buildingElementGeometry)
+        [Description("BH.Engine.Environment.Query.Spaces => Returns a collection of Environment Spaces from a list of generic BHoM objects")]
+        [Input("objects", "A collection of generic BHoM objects")]
+        [Output("A collection of Environment Space objects")]
+        public static List<Space> Spaces(this List<IBHoMObject> objects)
         {
-            double tilt;
-            BHG.Polyline pline = new BHG.Polyline { ControlPoints = BH.Engine.Geometry.Query.IControlPoints(buildingElementGeometry.ICurve()) };
+            objects = objects.ObjectsByType(typeof(Space));
+            List<Space> spaces = new List<Space>();
+            foreach (IBHoMObject o in objects)
+                spaces.Add(o as Space);
 
-            tilt = Tilt(pline);
-            return tilt;
+            return spaces;
         }
-
-        /***************************************************/
-
-        public static double Tilt(this BHG.Polyline pline)
-        {
-            double tilt;
-
-            List<BHG.Point> pts = BH.Engine.Geometry.Query.DiscontinuityPoints(pline);
-
-            if (pts.Count < 3 || !BH.Engine.Geometry.Query.IsClosed(pline)) return -1; //Error protection on pts having less than 3 elements to create a plane or pLine not being closed
-
-            BHG.Plane plane = BH.Engine.Geometry.Create.Plane(pts[0], pts[1], pts[2]);
-
-            //The polyline can be locally concave. Check if the polyline is clockwise.
-            if (!BH.Engine.Geometry.Query.IsClockwise(pline, plane.Normal))
-                plane.Normal = -plane.Normal;
-
-            tilt = BH.Engine.Geometry.Query.Angle(plane.Normal, BHG.Plane.XY.Normal) * (180 / Math.PI);
-
-            return tilt;
-        }
-
-        /***************************************************/
     }
 }
