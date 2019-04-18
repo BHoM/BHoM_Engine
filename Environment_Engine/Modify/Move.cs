@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -20,10 +20,9 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.Engine.Geometry;
 using BH.oM.Environment.Elements;
-using BH.oM.Environment.Interface;
 using BH.oM.Geometry;
+using BH.Engine.Geometry;
 
 namespace BH.Engine.Environment
 {
@@ -33,38 +32,5 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static IBuildingObject ISetGeometry(this IBuildingObject buildingObject, ICurve curve)
-        { 
-            return SetGeometry(buildingObject as dynamic, curve as dynamic);
-        }
-
-        /***************************************************/
-
-        public static Panel SetGeometry(this Panel buildingElementPanel, ICurve curve)
-        {
-            Panel aBuildingElementPanel = buildingElementPanel.GetShallowClone() as Panel;
-            aBuildingElementPanel.PanelCurve = curve.IClone();
-            return aBuildingElementPanel;
-        }
-
-        /***************************************************/
-
-        public static Opening SetGeometry(this Opening opening, ICurve curve)
-        {
-            Opening aOpening = opening.GetShallowClone() as Opening;
-            aOpening.OpeningCurve = curve.IClone();
-            return aOpening;
-        }
-
-        /***************************************************/
-
-        public static BuildingElement SetGeometry(this BuildingElement element, ICurve curve)
-        {
-            BuildingElement aElement = element.GetShallowClone() as BuildingElement;
-            aElement.PanelCurve = curve.IClone();
-            return aElement;
-        }
-
-        /***************************************************/
     }
 }
