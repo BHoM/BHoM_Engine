@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -21,8 +21,15 @@
  */
 
 using BH.oM.Environment.Elements;
+using System;
 using System.Collections.Generic;
-using BH.oM.Environment.Properties;
+using System.Linq;
+
+using BH.oM.Geometry;
+using BH.Engine.Geometry;
+
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Environment
 {
@@ -32,16 +39,25 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static bool IsInternal(this BuildingElement buildingElement)
+        [Description("BH.Engine.Environment.Query.IsClosed => Determines whether the space is closed by ensuring all edges are connected to other elements")]
+        [Input("panels", "The collection of Environment Panels that represent the space to check")]
+        [Output("True if the space is closed, false otherwise")]
+        public static bool IsClosed(this List<Panel> panels, double tolerance = Tolerance.Distance)
         {
-            if (buildingElement == null || buildingElement.ElementProperties() == null || (buildingElement.ElementProperties() as ElementProperties) == null)
-                return false;
+            //Check that each edge is connected to at least one other edge
+            List<Line> edgeParts = new List<Line>();
+            foreach (Panel p in panels)
+                edgeParts.AddRange(p.ToLines());
 
-            return (buildingElement.ElementProperties() as ElementProperties).BuildingElementType != BuildingElementType.Window && (buildingElement.ElementProperties() as ElementProperties).BuildingElementType != BuildingElementType.Roof; //TODO: Put a more robust check of whether the element is internal or not in...
+            List<Line> unique = edgeParts.Distinct().ToList();
+
+            foreach(Line l in unique)
+            {
+                if(edgeParts.Where(x => x.BooleanIntersection(l) != null).ToList().Count < 2)
+                    return false;
+            }
+
+            return true;
         }
-
-        /***************************************************/
     }
 }
-
-
