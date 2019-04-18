@@ -1,6 +1,6 @@
 ﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -22,17 +22,25 @@
 
 using System;
 using System.Collections.Generic;
+
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using BH.oM.Physical.Properties.Construction;
 
-using BH.oM.Environment.Elements;
-using BH.oM.Environment.Interface;
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
-namespace BH.Engine.Environment
+namespace BH.Engine.Physical
 {
     public static partial class Query
     {
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
+
+        [Description("BH.Engine.Physical.Query.ConstructionByName => Gets a collection of constructions matching the given name")]
+        [Input("constructions", "A collection of constructions")]
+        [Input("name", "The name to filter by")]
+        [Output("A collection of constructions which match the given name")]
         public static List<Construction> ConstructionByName(this List<Construction> constructions, string name)
         {
             return constructions.Where(x => x.Name == name).ToList();

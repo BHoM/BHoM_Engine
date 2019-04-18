@@ -1,6 +1,6 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -22,14 +22,13 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-using BH.oM.Environment.Elements;
-using BH.oM.Geometry;
-using BH.Engine.Geometry;
-using BH.Engine.Environment;
+using System.Linq;
+using BH.oM.Physical.Properties.Construction;
+using BH.Engine.Physical;
+
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Environment
 {
@@ -39,23 +38,13 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static bool IsIdentical(this BuildingElement element, BuildingElement elementToCompare)
+        [Description("BH.Engine.Environment.Query.ConstructionByName => Gets a collection of constructions matching the given name")]
+        [Input("constructions", "A collection of constructions")]
+        [Input("name", "The name to filter by")]
+        [Output("A collection of constructions which match the given name")]
+        public static List<Construction> ConstructionByName(this List<Construction> constructions, string name)
         {
-            //Go through building elements and compare vertices and centre points
-            if (element == null || elementToCompare == null) return false;
-
-            List<Point> controlPoints = element.PanelCurve.IControlPoints();
-            List<Point> measurePoints = elementToCompare.PanelCurve.IControlPoints();
-
-            if (controlPoints.Count != measurePoints.Count) return false;
-
-            bool allPointsMatch = true;
-            foreach(Point p in controlPoints)
-            {
-                allPointsMatch &= measurePoints.IsContaining(p);
-            }
-
-            return allPointsMatch;  
+            return BH.Engine.Physical.Query.ConstructionByName(constructions, name);
         }
     }
 }

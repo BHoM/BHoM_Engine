@@ -1,0 +1,87 @@
+﻿/*
+ * This file is part of the Buildings and Habitats object Model (BHoM)
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
+ *
+ * Each contributor holds copyright over their respective contributions.
+ * The project versioning (Git) records all such contribution source information.
+ *                                           
+ *                                                                              
+ * The BHoM is free software: you can redistribute it and/or modify         
+ * it under the terms of the GNU Lesser General Public License as published by  
+ * the Free Software Foundation, either version 3.0 of the License, or          
+ * (at your option) any later version.                                          
+ *                                                                              
+ * The BHoM is distributed in the hope that it will be useful,              
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of               
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the                 
+ * GNU Lesser General Public License for more details.                          
+ *                                                                            
+ * You should have received a copy of the GNU Lesser General Public License     
+ * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
+ */
+
+using BH.oM.Geometry;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+using BH.oM.Environment;
+using BH.oM.Environment.Elements;
+using BH.Engine.Geometry;
+
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
+
+namespace BH.Engine.Environment
+{
+    public static partial class Convert
+    {
+        /***************************************************/
+        /****          public Methods                   ****/
+        /***************************************************/
+
+        [Description("BH.Engine.Environment.Convert.ToLines => Returns a collection of Lines representing an Environment Edge")]
+        [Input("edge", "An Environment Edge object")]
+        [Output("A collection of BHoM Geometry Line")]
+        public static List<Line> ToLines(this Edge edge)
+        {
+            return edge.Curve.ICollapseToPolyline(BH.oM.Geometry.Tolerance.Angle).SubParts();
+        }
+
+        [Description("BH.Engine.Environment.Convert.ToLines => Returns a collection of Lines representing a collection of Environment Edges")]
+        [Input("edges", "A collection of Environment Edge objects to convert into a collection of lines")]
+        [Output("A collection of BHoM Geometry Line")]
+        public static List<Line> ToLines(this List<Edge> edges)
+        {
+            List<Line> lines = new List<Line>();
+            foreach (Edge e in edges)
+                lines.AddRange(e.ToLines());
+
+            return lines;
+        }
+
+        [Description("BH.Engine.Environment.Convert.ToLines => Returns the external boundary from an Environment Panel as a collection of BHoM Geometry Lines")]
+        [Input("panel", "An Environment Panel to obtain the external boundary from")]
+        [Output("A collection of BHoM Geometry Line")]
+        public static List<Line> ToLines(this Panel panel)
+        {
+            return panel.ExternalEdges.ToLines();
+        }
+
+        [Description("BH.Engine.Environment.Convert.ToLines => Returns the external boundary from an Environment Opening as a collection of BHoM Geometry Lines")]
+        [Input("opening", "An Environment Opening to obtain the external boundary from")]
+        [Output("A collection of BHoM Geometry Line")]
+        public static List<Line> ToLines(this Opening opening)
+        {
+            return opening.Edges.ToLines();
+        }
+
+        [Description("BH.Engine.Environment.Convert.ToLines => Returns the external boundary from a generic Environment Object")]
+        [Input("environmentObject", "Any object implementing the IEnvironmentObject interface that can have its boundaries extracted")]
+        [Output("A collection of BHoM Geometry Line")]
+        public static List<Line> ToLines(this IEnvironmentObject environmentObject)
+        {
+            return ToLines(environmentObject as dynamic);
+        }
+    }
+}

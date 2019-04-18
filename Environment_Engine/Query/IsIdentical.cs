@@ -40,55 +40,25 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("BH.Engine.Environment.Query.Azimuth => Returns the azimuth of a given environmental object")]
-        [Input("environmentObject", "Any object implementing the IEnvironmentObject interface that can have its azimuth queried")]
-        [Input("referenceVector", "The reference vector for querying the azimuth from the object")]
-        [Output("The azimuth of the Environment Object")]
-        public static List<Edge> Edges(this Panel element)
+        [Description("BH.Engine.Environment.Query.CullOverlaps => Defines whether two panels are geometrically identical")]
+        [Input("panel", "An Environment Panel")]
+        [Input("panelToCompare", "An Environment Panel to compare with the first panel")]
+        [Output("True if the two panels are geometrically identical, false if not")]
+        public static bool IsIdentical(this Panel panel, Panel panelToCompare)
         {
-            return element.PanelCurve.ISubParts() as List<Line>;
-        }
+            //Go through building elements and compare vertices and centre points
+            if (panel == null || panelToCompare == null) return false;
 
-        public static List<Line> Edges(this List<BuildingElement> space)
-        {
-            List<Line> parts = new List<Line>();
+            List<Point> controlPoints = panel.ToPolyline().IControlPoints();
+            List<Point> measurePoints = panelToCompare.ToPolyline().IControlPoints();
 
-            foreach (BuildingElement be in space)
-                parts.AddRange(be.Edges());
+            if (controlPoints.Count != measurePoints.Count) return false;
 
-            return parts;
-        }
+            bool allPointsMatch = true;
+            foreach(Point p in controlPoints)
+                allPointsMatch &= measurePoints.IsContaining(p);
 
-        public static bool EdgeIntersects(this Line edge, List<Line> possibleIntersections)
-        {
-            return possibleIntersections.Where(x => x.BooleanIntersection(edge) != null).ToList().Count > 0;
-        }
-
-        public static bool EdgeIntersects(this List<Line> edges, List<Line> possibleIntersections)
-        {
-            foreach(Line l in edges)
-            {
-                if (l.EdgeIntersects(possibleIntersections)) return true;
-            }
-
-            return false;
-        }
-
-        public static List<Line> UnconnectedEdges(this BuildingElement element, List<BuildingElement> space)
-        {
-            List<Line> edges = element.Edges();
-
-            List<Line> unconnected = new List<Line>();
-
-            List<Line> allEdges = space.Edges();
-
-            foreach(Line l in edges)
-            {
-                if (allEdges.Where(x => x.BooleanIntersection(l) != null).ToList().Count < 2)
-                    unconnected.Add(l);
-            }
-
-            return unconnected;
+            return allPointsMatch;  
         }
     }
 }

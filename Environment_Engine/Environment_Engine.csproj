@@ -75,6 +75,7 @@
   <ItemGroup>
     <Compile Include="Compute\BooleanIntersect.cs" />
     <Compile Include="Convert\ICurve.cs" />
+    <Compile Include="Convert\Line.cs" />
     <Compile Include="Convert\Polyline.cs" />
     <Compile Include="Convert\Space.cs" />
     <Compile Include="Create\Absorptance.cs" />
@@ -121,12 +122,10 @@
     <Compile Include="Query\AdjacentSpaces.cs" />
     <Compile Include="Query\Area.cs" />
     <Compile Include="Query\Spaces.cs" />
-    <Compile Include="Query\_BuildingElements.cs" />
-    <Compile Include="Query\_BuildingObject.cs" />
-    <Compile Include="Query\_CleanSpace.cs" />
-    <Compile Include="Query\_ClosedShellGeometry.cs" />
-    <Compile Include="Query\_Construction.cs" />
-    <Compile Include="Query\_CullDuplicates.cs" />
+    <Compile Include="Query\CleanSpace.cs" />
+    <Compile Include="Query\ClosedShellGeometry.cs" />
+    <Compile Include="Query\Construction.cs" />
+    <Compile Include="Query\CullDuplicates.cs" />
     <Compile Include="Modify\Add.cs" />
     <Compile Include="Modify\Move.cs" />
     <Compile Include="Modify\SetGeometry.cs" />
@@ -155,7 +154,7 @@
     <Compile Include="Query\_IsClosed.cs" />
     <Compile Include="Query\_IsContaining.cs" />
     <Compile Include="Query\_IsExternal.cs" />
-    <Compile Include="Query\_IsIdentical.cs" />
+    <Compile Include="Query\IsIdentical.cs" />
     <Compile Include="Query\_IsInternal.cs" />
     <Compile Include="Query\_LongestSegment.cs" />
     <Compile Include="Query\_MatchSpace.cs" />
