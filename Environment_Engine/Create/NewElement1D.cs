@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -22,6 +22,7 @@
 
 using BH.oM.Environment.Elements;
 using BH.oM.Geometry;
+using BH.Engine.Geometry;
 
 namespace BH.Engine.Environment
 {
@@ -31,9 +32,16 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static IElement2D NewInternalElement2D(this Panel panel)
+        public static IElement1D NewElement1D(this Opening opening, ICurve curve)
         {
-            return new Opening();
+            return curve.IClone();
+        }
+
+        /***************************************************/
+
+        public static IElement1D NewElement1D(this Panel panel, ICurve curve)
+        {
+            return curve.IClone();
         }
 
         /***************************************************/
