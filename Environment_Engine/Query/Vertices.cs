@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -20,13 +20,16 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.oM.Environment.Elements;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using BH.oM.Environment.Elements;
+
+using BH.oM.Geometry;
 using BH.Engine.Geometry;
-using BH.oM.Environment.Interface;
-using BHG = BH.oM.Geometry;
+
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Environment
 {
@@ -36,17 +39,25 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static double Orientation(IBuildingObject buildingPanel)
+        [Description("BH.Engine.Environment.Query.Vertices => Returns a collection of vertices for an Environment Panel")]
+        [Input("panel", "An Environment Panel")]
+        [Output("A collection of BHoM Geometry Points which are the vertices of the panel")]
+        public static List<Point> Vertices(this Panel panel)
         {
-            Panel panel = buildingPanel as Panel;
-            BHG.Polyline pLine = new BHG.Polyline { ControlPoints = panel.PanelCurve.IControlPoints() };
+            return panel.ToPolyline().IControlPoints();
+        }
 
-            List<BHG.Point> pts = pLine.DiscontinuityPoints();
-            BHG.Plane plane = BH.Engine.Geometry.Create.Plane(pts[0], pts[1], pts[2]); //Some protection on this needed maybe?
+        [Description("BH.Engine.Environment.Query.Vertices => Returns a collection of vertices for a collection of Environment Panels representing a space")]
+        [Input("panelsAsSpace", "A collection of Environment Panels representing a space")]
+        [Output("A collection of BHoM Geometry Points which are the vertices of the space")]
+        public static List<Point> Vertices(this List<Panel> panelsAsSpace)
+        {
+            List<Point> vertexPts = new List<Point>();
 
-            BHG.Vector xyNormal = BH.Engine.Geometry.Create.Vector(0, 1, 0);
+            foreach (Panel be in panelsAsSpace)
+                vertexPts.AddRange(be.Vertices());
 
-            return BH.Engine.Geometry.Query.Angle(plane.Normal, xyNormal) * (180 / Math.PI);
+            return vertexPts;
         }
     }
 }

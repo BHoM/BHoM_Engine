@@ -75,5 +75,46 @@ namespace BH.Engine.Environment
 
             return rtnSpaces;
         }
+
+        [Description("BH.Engine.Environment.Query.SpaceByName => Returns a collection of Environment Spaces that match the given name")]
+        [Input("spaces", "A collection of Environment Spaces")]
+        [Input("name", "The name to filter by")]
+        [Output("A collection of Environment Space objects that match the name")]
+        public static List<Space> SpaceByName(this List<Space> spaces, string name)
+        {
+            return spaces.Where(x => x.Name == name).ToList();
+        }
+
+        [Description("BH.Engine.Environment.Query.ClosedSpaces => Returns a nested collection of Environment Panels that represent fully closed spaces")]
+        [Input("panelsAsSpaces", "A nested collection of Environment Panels representing spaces")]
+        [Output("A nested collection of Environment Panels that represent fully closed spaces")]
+        public static List<List<Panel>> ClosedSpaces(this List<List<Panel>> panelsAsSpaces)
+        {
+            List<List<Panel>> closedSpaces = new List<List<Panel>>();
+
+            foreach (List<Panel> space in panelsAsSpaces)
+            {
+                if (space.IsClosed())
+                    closedSpaces.Add(space);
+            }
+
+            return closedSpaces;
+        }
+
+        [Description("BH.Engine.Environment.Query.NotClosedSpaces => Returns a nested collection of Environment Panels that represent spaces which aren't fully closed")]
+        [Input("panelsAsSpaces", "A nested collection of Environment Panels representing spaces")]
+        [Output("A nested collection of Environment Panels that represent spaces which aren't fully closed")]
+        public static List<List<Panel>> NotClosedSpaces(this List<List<Panel>> panelsAsSpaces)
+        {
+            List<List<Panel>> spacesNotClosed = new List<List<Panel>>();
+
+            foreach (List<Panel> space in panelsAsSpaces)
+            {
+                if (!space.IsClosed())
+                    spacesNotClosed.Add(space);
+            }
+
+            return spacesNotClosed;
+        }
     }
 }

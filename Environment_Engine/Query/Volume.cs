@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -20,14 +20,16 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.oM.Environment.Elements;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-using BHG = BH.oM.Geometry;
+using BH.oM.Geometry;
 using BH.Engine.Geometry;
+
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Environment
 {
@@ -37,18 +39,17 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static double LongestSegment(BHG.Polyline pLine)
+        [Description("BH.Engine.Environment.Query.Volume => Returns a volume from a collection of Environment Panels representing a space")]
+        [Input("panelsAsSpace", "A collection of Environment Panels representing a space")]
+        [Output("A volume for the space")]
+        public static double Volume(this List<Panel> panelsAsSpace)
         {
-            List<BHG.Point> pts = pLine.DiscontinuityPoints();
-            double length = pts.Last().Distance(pts.First());
+            //TODO: Make this more accurate for irregular spaces
+            double maxHeight = 0;
+            foreach (Panel be in panelsAsSpace)
+                maxHeight = Math.Max(maxHeight, (be.MaximumLevel() - be.MinimumLevel()));
 
-            for(int x = 0; x < pts.Count - 1; x++)
-            {
-                double dist = pts[x].Distance(pts[x + 1]);
-                length = dist > length ? dist : length;
-            }
-
-            return length;
+            return panelsAsSpace.Area() * maxHeight;
         }
     }
 }

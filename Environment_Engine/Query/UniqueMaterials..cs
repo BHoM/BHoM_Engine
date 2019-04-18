@@ -1,6 +1,6 @@
 ﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -23,16 +23,13 @@
 using BH.oM.Environment.Elements;
 using System;
 using System.Collections.Generic;
-
 using System.Linq;
-using BH.oM.Geometry;
 
-using BH.Engine.Geometry;
+using BH.oM.Physical.Properties;
+using BH.oM.Physical.Properties.Construction;
 
-using BH.Engine.Common;
-
-using BH.oM.Environment.Properties;
-using BH.oM.Environment.Materials;
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Environment
 {
@@ -42,51 +39,40 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static List<Construction> UniqueConstructions(this List<BuildingElement> elements)
+        [Description("BH.Engine.Environment.Query.UniqueMaterials => Returns a collection of unique materials from a collection of constructions")]
+        [Input("constructions", "A collection of Constructions")]
+        [Output("A collection of unique Material objects")]
+        public static List<Material> UniqueMaterials(this List<Construction> constructions)
         {
-            List<Construction> unique = new List<Construction>();
+            List<Material> unique = new List<Material>();
 
-            foreach(BuildingElement be in elements)
+            foreach(Construction c in constructions)
             {
-                ElementProperties props = be.ElementProperties() as ElementProperties;
-                if(props != null)
+                foreach(Layer l in c.Layers)
                 {
-                    Construction t = unique.Where(x => x.UniqueConstructionName() == props.Construction.UniqueConstructionName()).FirstOrDefault();
+                    Material t = unique.Where(x => x.Name == l.Material.Name).FirstOrDefault();
                     if (t == null)
-                        unique.Add(props.Construction);
-                }
-
-                foreach(Opening o in be.Openings)
-                {
-                    ElementProperties openingProps = o.ElementProperties() as ElementProperties;
-                    if(openingProps != null)
-                    {
-                        Construction t2 = unique.Where(x => x.UniqueConstructionName() == openingProps.Construction.UniqueConstructionName()).FirstOrDefault();
-                        if (t2 == null)
-                            unique.Add(openingProps.Construction);
-                    }
+                        unique.Add(t);
                 }
             }
 
             return unique;
         }
 
-        public static List<Construction> UniqueConstructions(this List<List<BuildingElement>> elementsAsSpaces)
+        [Description("BH.Engine.Environment.Query.UniqueMaterials => Returns a collection of unique materials from a collection of Environment Panels")]
+        [Input("panels", "A collection of Environment Panels")]
+        [Output("A collection of unique Material objects")]
+        public static List<Material> UniqueMaterials(this List<Panel> panels)
         {
-            List<BuildingElement> elements = new List<BuildingElement>();
-            foreach (List<BuildingElement> e in elementsAsSpaces)
-                elements.AddRange(e);
-
-            return elements.UniqueConstructions();
+            return panels.UniqueConstructions().UniqueMaterials();
         }
 
-        public static string UniqueConstructionName(this Construction construction)
+        [Description("BH.Engine.Environment.Query.UniqueMaterials => Returns a collection of unique materials from a nested collection of Environment Panels representing spaces")]
+        [Input("panelsAsSpaces", "A nested collection of Environment Panels representing spaces")]
+        [Output("A collection of unique Material objects")]
+        public static List<Material> UniqueMaterials(this List<List<Panel>> panelsAsSpaces)
         {
-            string name = "construction-";
-            foreach (Material m in construction.Materials)
-                name += m.Name + "-";
-
-            return name;
+            return panelsAsSpaces.UniquePanels().UniqueConstructions().UniqueMaterials();
         }
     }
 }

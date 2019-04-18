@@ -45,37 +45,41 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("BH.Engine.Environment.Query.Height => Returns the height of a generic Environment Object")]
-        [Input("environmentObject", "Any object implementing the IEnvironmentObject interface that can have its height queried")]
-        [Output("The height of the environment object")]
-        public static double Height(this IEnvironmentObject environmentObject)
+        [Description("BH.Engine.Environment.Query.Width => Returns the width of a generic Environment Object")]
+        [Input("environmentObject", "Any object implementing the IEnvironmentObject interface that can have its width queried")]
+        [Output("The width of the environment object")]
+        public static double Width(this IEnvironmentObject environmentObject)
         {
-            return Height(environmentObject as dynamic);
+            return Width(environmentObject as dynamic);
         }
 
-        [Description("BH.Engine.Environment.Query.Height => Returns the height of an Environment Panel")]
+        [Description("BH.Engine.Environment.Query.Width => Returns the width of an Environment Panel")]
         [Input("panel", "An Environment Panel")]
-        [Output("The height of the panel")]
-        public static double Height(this Panel panel)
+        [Output("The width of the panel")]
+        public static double Width(this Panel panel)
         {
-            return panel.ToPolyline().Height();
+            return panel.ToPolyline().Width();
         }
 
-        [Description("BH.Engine.Environment.Query.Height => Returns the height of an Environment Opening")]
+        [Description("BH.Engine.Environment.Query.Width => Returns the width of an Environment Opening")]
         [Input("opening", "An Environment Opening")]
-        [Output("The height of the opening")]
-        public static double Height(this Opening opening)
+        [Output("The width of the opening")]
+        public static double Width(this Opening opening)
         {
-            return opening.ToPolyline().Height();
+            return opening.ToPolyline().Width();
         }
 
-        [Description("BH.Engine.Environment.Query.Height => Returns the height of a BHoM Geometry ICurve based on the bounding box of the curve")]
+        [Description("BH.Engine.Environment.Query.Width => Returns the width of a BHoM Geometry ICurve based on the bounding box of the curve")]
         [Input("curve", "BHoM Geometry ICurve")]
-        [Output("The height of the curve based on the difference in z values for its bounding box")]
-        public static double Height(this ICurve curve)
+        [Output("The width of the curve based on the difference in z values for its bounding box")]
+        public static double Width(this ICurve panelCurve)
         {
-            BoundingBox bBox = curve.IBounds();
-            return (bBox.Max.Z - bBox.Min.Z);
+            BoundingBox bBox = panelCurve.IBounds();
+
+            double diffX = Math.Abs(bBox.Max.X - bBox.Min.X);
+            double diffY = Math.Abs(bBox.Max.Y - bBox.Min.Y);
+
+            return Math.Sqrt((diffX * diffX) + (diffY * diffY));
         }
     }
 }

@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -22,15 +22,15 @@
 
 using System;
 using System.Collections.Generic;
+
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using BH.oM.Environment;
 
-using BHG = BH.oM.Geometry;
 using BH.Engine.Geometry;
-using BH.oM.Environment.Elements;
-
 using BH.oM.Geometry;
+
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Environment
 {
@@ -40,17 +40,19 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static bool PointsMatch(this List<Point> ctrlPoints, List<Point> measurePts)
+        [Description("BH.Engine.Environment.Query.Orientation => Returns the orientation of a given environmental object")]
+        [Input("environmentObject", "Any object implementing the IEnvironmentObject interface that can have its orientation queried")]
+        [Output("The orientation of the Environment Object")]
+        public static double Orientation(this IEnvironmentObject environmentObject)
         {
-            if (ctrlPoints.Count != measurePts.Count) return false;
+            Polyline pLine = environmentObject.ToPolyline();
 
-            foreach (Point p in ctrlPoints)
-            {
-                Point ptInMeasure = measurePts.Where(x => x.X == p.X && x.Y == p.Y && x.Z == p.Z).FirstOrDefault();
-                if (ptInMeasure == null) return false; //Point did not have a match
-            }
+            List<Point> pts = pLine.DiscontinuityPoints();
+            Plane plane = BH.Engine.Geometry.Create.Plane(pts[0], pts[1], pts[2]); //Some protection on this needed maybe?
 
-            return true; //No points returned false before now
+            Vector xyNormal = BH.Engine.Geometry.Create.Vector(0, 1, 0);
+
+            return BH.Engine.Geometry.Query.Angle(plane.Normal, xyNormal) * (180 / Math.PI);
         }
     }
 }

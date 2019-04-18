@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -20,39 +20,41 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.Engine.Geometry;
-using BH.oM.Environment.Elements;
-using BH.oM.Geometry;
+using System;
 using System.Collections.Generic;
+
 using System.Linq;
+using BH.oM.Environment;
+
+using BH.Engine.Geometry;
+using BH.oM.Geometry;
+
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Environment
 {
     public static partial class Query
     {
         /***************************************************/
-        /****               Public Methods              ****/
+        /**** Public Methods                            ****/
         /***************************************************/
 
-        public static List<IElement1D> OutlineElements1D(this Opening opening)
+        [Description("BH.Engine.Environment.Query.PointsMatch => Returns whether a list of points contains every point in the second list - order is not relevant")]
+        [Input("controlPoints", "A collection of BHoM Geometry Points as the control list")]
+        [Input("measurePoints", "A collection of BHoM Geometry Points as the measure list")]
+        [Output("True if all of the measurePoints are within the controlPoints list (independent of list order), false otherwise")]
+        public static bool PointsMatch(this List<Point> controlPoints, List<Point> measurePoints)
         {
-            return opening.OpeningCurve.ISubParts().Cast<IElement1D>().ToList();
+            if (controlPoints.Count != measurePoints.Count) return false;
+
+            foreach (Point p in controlPoints)
+            {
+                Point ptInMeasure = measurePoints.Where(x => x.X == p.X && x.Y == p.Y && x.Z == p.Z).FirstOrDefault();
+                if (ptInMeasure == null) return false; //Point did not have a match
+            }
+
+            return true; //No points returned false before now
         }
-
-        /***************************************************/
-
-        public static List<IElement1D> OutlineElements1D(this Panel panel)
-        {
-            return panel.PanelCurve.ISubParts().Cast<IElement1D>().ToList();
-        }
-
-        /***************************************************/
-
-        public static List<IElement1D> OutlineElements1D(this BuildingElement element)
-        {
-            return element.PanelCurve.ISubParts().Cast<IElement1D>().ToList();
-        }
-
-        /***************************************************/
     }
 }

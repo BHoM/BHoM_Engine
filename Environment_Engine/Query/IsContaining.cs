@@ -136,7 +136,7 @@ namespace BH.Engine.Environment
 
                     List<Point> intersectingPoints = new List<oM.Geometry.Point>();
                     intersectingPoints.Add(BH.Engine.Geometry.Query.PlaneIntersection(line, planes[x]));
-                    Polyline pLine = new Polyline() { ControlPoints = panels[x].PanelCurve.IControlPoints() };
+                    Polyline pLine = panels[x].ToPolyline();
 
                     if (intersectingPoints != null && BH.Engine.Geometry.Query.IsContaining(pLine, intersectingPoints, true, 1e-05))
                         intersectPoints.AddRange(intersectingPoints);
