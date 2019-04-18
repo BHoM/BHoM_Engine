@@ -1,6 +1,6 @@
 ﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -26,24 +26,24 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using BH.oM.Environment.Properties;
-using BH.oM.Environment.Materials;
-using BH.oM.Environment.Elements;
-using BH.oM.Environment.Interface;
+using BH.oM.Physical.Properties.Construction;
+using BH.oM.Physical.Properties;
+
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Environment
 {
     public static partial class Create
     {
-        public static Material Material(string name, MaterialType materialType = MaterialType.Undefined, double thickness = 0.0, IMaterialProperties materialProperties = null)
+        [Description("BH.Engine.Environment.Create.Layer => Returns a Layer object")]
+        [Input("name", "The name of the layer, default empty string")]
+        [Input("material", "The material this layer is made up of, default null")]
+        [Input("thickness", "The thickness of this material layer, default 0.0")]
+        [Output("A Layer object providing an instantiated use of a material with a given thickness")]
+        public static Layer Layer(string name = "", Material material = null, double thickness = 0.0)
         {
-            return new Material
-            {
-                Name = name,
-                MaterialType = materialType,
-                Thickness = thickness,
-                MaterialProperties = materialProperties,
-            };
+            return BH.Engine.Physical.Create.Layer(name, material, thickness);
         }
     }
 }
