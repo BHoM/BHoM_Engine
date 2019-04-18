@@ -26,7 +26,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using BH.oM.Environment;
 using BH.oM.Environment.Elements;
+using BH.oM.Environment.Properties;
 using BH.oM.Base;
 
 using BH.oM.Reflection.Attributes;
@@ -51,6 +53,27 @@ namespace BH.Engine.Environment
                 spaces.Add(o as Space);
 
             return spaces;
+        }
+
+        [Description("BH.Engine.Environment.Query.SpacesByElementID => Returns a collection of Environment Spaces that match the given element ID")]
+        [Input("spaces", "A collection of Environment Spaces")]
+        [Input("elementID", "The Element ID to filter by")]
+        [Output("A collection of Environment Space objects that match the element ID")]
+        public static List<Space> SpacesByElementID(this List<Space> spaces, string elementID)
+        {
+            List<IEnvironmentObject> envObjects = new List<IEnvironmentObject>();
+            foreach (Space s in spaces)
+                envObjects.Add(s as IEnvironmentObject);
+
+            envObjects = envObjects.ObjectsByFragment(typeof(OriginContextFragment));
+
+            envObjects = envObjects.Where(x => (x.FragmentProperties.Where(y => y.GetType() == typeof(OriginContextFragment)).FirstOrDefault() as OriginContextFragment).ElementID == elementID).ToList();
+
+            List<Space> rtnSpaces = new List<Space>();
+            foreach (IEnvironmentObject o in envObjects)
+                rtnSpaces.Add(o as Space);
+
+            return rtnSpaces;
         }
     }
 }

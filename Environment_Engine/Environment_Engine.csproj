@@ -115,6 +115,7 @@
     <Compile Include="Modify\SplitPanels.cs" />
     <Compile Include="Query\Buildings.cs" />
     <Compile Include="Query\MatchPoint.cs" />
+    <Compile Include="Query\ObjectsByFragment.cs" />
     <Compile Include="Query\ObjectsByType.cs" />
     <Compile Include="Query\Openings.cs" />
     <Compile Include="Query\Panels.cs" />
@@ -133,13 +134,11 @@
     <Compile Include="Query\Bottom.cs" />
     <Compile Include="Query\AltitudeRange.cs" />
     <Compile Include="Query\Altitude.cs" />
-    <Compile Include="Query\_Edges.cs" />
-    <Compile Include="Query\_ElementID.cs" />
-    <Compile Include="Query\_ElementsNotMatched.cs" />
-    <Compile Include="Query\_ExposedToSun.cs" />
-    <Compile Include="Query\_ExtendedProperties.cs" />
+    <Compile Include="Query\UnconnectedEdges.cs" />
+    <Compile Include="Query\ElementsNotMatched.cs" />
+    <Compile Include="Query\ExposedToSun.cs" />
     <Compile Include="Query\FloorGeometry.cs" />
-    <Compile Include="Query\_Height.cs" />
+    <Compile Include="Query\Height.cs" />
     <Compile Include="Query\_IsCoPlanar.cs" />
     <Compile Include="Query\_SimulationResult.cs" />
     <Compile Include="Query\_StripOpenings.cs" />
@@ -152,7 +151,7 @@
     <Compile Include="Query\IdentifyOverlaps.cs" />
     <Compile Include="Query\_Inclination.cs" />
     <Compile Include="Query\_IsClosed.cs" />
-    <Compile Include="Query\_IsContaining.cs" />
+    <Compile Include="Query\IsContaining.cs" />
     <Compile Include="Query\_IsExternal.cs" />
     <Compile Include="Query\IsIdentical.cs" />
     <Compile Include="Query\_IsInternal.cs" />
@@ -173,7 +172,6 @@
     <Compile Include="Query\_SpaceCentrePoint.cs" />
     <Compile Include="Query\_Level.cs" />
     <Compile Include="Query\Bounds.cs" />
-    <Compile Include="Query\_EquipmentProprerties.cs" />
     <Compile Include="Query\_Width.cs" />
   </ItemGroup>
   <ItemGroup>

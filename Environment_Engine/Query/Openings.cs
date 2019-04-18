@@ -26,7 +26,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using BH.oM.Environment;
 using BH.oM.Environment.Elements;
+using BH.oM.Environment.Properties;
 using BH.oM.Base;
 
 using BH.oM.Reflection.Attributes;
@@ -51,6 +53,40 @@ namespace BH.Engine.Environment
                 Openings.Add(o as Opening);
 
             return Openings;
+        }
+
+        [Description("BH.Engine.Environment.Query.OpeningsByElementID => Returns a collection of Environment Openings that match the given element ID")]
+        [Input("openings", "A collection of Environment Openings")]
+        [Input("elementID", "The Element ID to filter by")]
+        [Output("A collection of Environment Opening objects that match the element ID")]
+        public static List<Opening> OpeningsByElementID(this List<Opening> openings, string elementID)
+        {
+            List<IEnvironmentObject> envObjects = new List<IEnvironmentObject>();
+            foreach (Opening o in openings)
+                envObjects.Add(o as IEnvironmentObject);
+
+            envObjects = envObjects.ObjectsByFragment(typeof(OriginContextFragment));
+
+            envObjects = envObjects.Where(x => (x.FragmentProperties.Where(y => y.GetType() == typeof(OriginContextFragment)).FirstOrDefault() as OriginContextFragment).ElementID == elementID).ToList();
+
+            List<Opening> rtnOpenings = new List<Opening>();
+            foreach (IEnvironmentObject o in envObjects)
+                rtnOpenings.Add(o as Opening);
+
+            return rtnOpenings;            
+        }
+
+        [Description("BH.Engine.Environment.Query.OpeningsByElementID => Returns a collection of Environment Openings that match the given element ID")]
+        [Input("panels", "A collection of Environment Panels to query for openings")]
+        [Input("elementID", "The Element ID to filter by")]
+        [Output("A collection of Environment Opening objects that match the element ID")]
+        public static List<Opening> OpeningsByElementID(this List<Panel> panels, string elementID)
+        {
+            List<Opening> allOpenings = new List<Opening>();
+            foreach (Panel p in panels)
+                allOpenings.AddRange(p.Openings);
+
+            return allOpenings.OpeningsByElementID(elementID);
         }
     }
 }

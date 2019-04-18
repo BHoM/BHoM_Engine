@@ -1,6 +1,6 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -26,10 +26,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using BH.oM.Environment.Elements;
-using BH.oM.Geometry;
-using BH.Engine.Geometry;
-using BH.Engine.Environment;
+using BH.oM.Environment;
+using BH.oM.Base;
+
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Environment
 {
@@ -39,18 +40,13 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static List<BuildingElement> ElementsNotMatched(this List<BuildingElement> buildingElements, List<List<BuildingElement>> matchedToSpaces)
+        [Description("BH.Engine.Environment.Query.ObjectsByFragment => Returns a collection of objects contain the given fragment type")]
+        [Input("objects", "A collection of generic Environment objects")]
+        [Input("fragmentType", "The type of fragment to be queried and returned")]
+        [Output("A collection of generic BHoM objects that contain the provided fragment type")]
+        public static List<IEnvironmentObject> ObjectsByFragment(this List<IEnvironmentObject> objects, Type fragmentType)
         {
-            //Find the building elements that haven't been mapped yet
-            List<BuildingElement> notYetMapped = new List<BuildingElement>();
-
-            foreach (BuildingElement be in buildingElements)
-            {
-                if (!matchedToSpaces.IsContaining(be))
-                    notYetMapped.Add(be);
-            }
-
-            return notYetMapped;
+            return objects.Where(x => x.FragmentProperties.Where(y => y.GetType() == fragmentType).FirstOrDefault() != null).ToList();
         }
     }
 }
