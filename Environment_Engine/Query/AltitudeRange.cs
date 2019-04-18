@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -21,13 +21,14 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
-using BH.oM.Environment.Elements;
+using BH.oM.Environment;
+using BH.Engine.Geometry;
 using BH.oM.Geometry;
 
-using System.Collections.Generic;
-
-using BH.Engine.Geometry;
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Environment
 {
@@ -37,9 +38,17 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Panel AnalyticalPanel(this BuildingElement bElement)
+        [Description("BH.Engine.Environment.Query.Altitude => Returns the range of altitude of an Environment Object taken as the maximum z value minus minimum z value from the bounding box of the geometry")]
+        [Input("environmentObject", "Any object implementing the IEnvironmentObject interface that can have an altitude range")]
+        [Output("The altitude range of the object")]
+        public static double AltitudeRange(this IEnvironmentObject environmentObject)
         {
-            return Create.Panel(bElement.PanelCurve, bElement.Openings);
+            BoundingBox panelBoundingBox = BH.Engine.Geometry.Query.IBounds(environmentObject.ToPolyline());
+            double altitudeRange = panelBoundingBox.Max.Z - panelBoundingBox.Min.Z;
+
+            return altitudeRange;
         }
+
+        /***************************************************/
     }
 }
