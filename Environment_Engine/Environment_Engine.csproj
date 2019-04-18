@@ -114,10 +114,8 @@
     <Compile Include="Modify\SplitPanels.cs" />
     <Compile Include="Query\MatchPoint.cs" />
     <Compile Include="Query\SpaceName.cs" />
-    <Compile Include="Query\_AdjacentSpaces.cs" />
-    <Compile Include="Query\_AdjacentSurface.cs" />
-    <Compile Include="Query\_AnalyticalPanel.cs" />
-    <Compile Include="Query\_Area.cs" />
+    <Compile Include="Query\AdjacentSpaces.cs" />
+    <Compile Include="Query\Area.cs" />
     <Compile Include="Query\_Building.cs" />
     <Compile Include="Query\_BuildingArea.cs" />
     <Compile Include="Query\_BuildingElements.cs" />
@@ -126,14 +124,13 @@
     <Compile Include="Query\_ClosedShellGeometry.cs" />
     <Compile Include="Query\_Construction.cs" />
     <Compile Include="Query\_CullDuplicates.cs" />
-    <Compile Include="Query\_Curve.cs" />
     <Compile Include="Modify\Add.cs" />
     <Compile Include="Modify\Move.cs" />
     <Compile Include="Modify\SetGeometry.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Query\_Bottom.cs" />
-    <Compile Include="Query\_AltitudeRange.cs" />
-    <Compile Include="Query\_Altitude.cs" />
+    <Compile Include="Query\AltitudeRange.cs" />
+    <Compile Include="Query\Altitude.cs" />
     <Compile Include="Query\_Edges.cs" />
     <Compile Include="Query\_ElementID.cs" />
     <Compile Include="Query\_ElementsNotMatched.cs" />
@@ -150,7 +147,7 @@
     <Compile Include="Query\_Vertices.cs" />
     <Compile Include="Query\_InternalElements2D.cs" />
     <Compile Include="Query\_OutlineElements1D.cs" />
-    <Compile Include="Query\_IdentifyOverlaps.cs" />
+    <Compile Include="Query\IdentifyOverlaps.cs" />
     <Compile Include="Query\_Inclination.cs" />
     <Compile Include="Query\_IsClosed.cs" />
     <Compile Include="Query\_IsContaining.cs" />
@@ -163,7 +160,7 @@
     <Compile Include="Query\_Openings.cs" />
     <Compile Include="Query\_Orientation.cs" />
     <Compile Include="Query\_PointsMatch.cs" />
-    <Compile Include="Query\_SpaceCentre.cs" />
+    <Compile Include="Query\SpaceCentre.cs" />
     <Compile Include="Query\_Spaces.cs" />
     <Compile Include="Query\_StoreyGeometry.cs" />
     <Compile Include="Query\_UnmatchedPoints.cs" />

@@ -27,6 +27,11 @@ using System.Collections.Generic;
 using System.Linq;
 using BH.oM.Geometry;
 
+using BH.Engine.Geometry;
+
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
+
 namespace BH.Engine.Environment
 {
     public static partial class Query
@@ -35,39 +40,39 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static List<List<BuildingElement>> AdjacentSpaces(this BuildingElement element, List<List<BuildingElement>> spaces)
+        [Description("BH.Engine.Environment.Query.FloorGeometry => Returns the floor geometry of a space represented by Environment Panels as a BHoM Geometry Polyline")]
+        [Input("panelsAsSpace", "A collection of Environment Panels that represent a closed space")]
+        [Output("BHoM Geometry Polyline representing the floor of the space")]
+        public static Polyline FloorGeometry(this List<Panel> panelsAsSpace)
         {
-            //Get the lists which contain this building element
-            return spaces.Where(x => x.Where(y => y.BHoM_Guid == element.BHoM_Guid).Count() > 0).ToList();
-        }
+            Panel floor = null;
 
-        public static List<Space> AdjacentSpaces(this BuildingElement element, List<List<BuildingElement>> besAsSpace, List<Space> spaces)
-        {
-            List<Space> rtn = new List<oM.Environment.Elements.Space>();
-
-            List<Point> spaces1 = element.AdjacentSpaces(besAsSpace).SpaceCentres();
-
-            foreach(Point p in spaces1)
+            foreach(Panel panel in panelsAsSpace)
             {
-                Space add = spaces.MatchSpace(p);
-                if (add != null)
-                    rtn.Add(add);
+                double tilt = panel.Tilt();
+                if (tilt == 0 || tilt == 180)
+                {
+                    if(floor == null)
+                        floor = panel;
+                    else
+                    {
+                        //Multiple elements could be a floor - assign the one with the lowest Z
+                        if (floor.MinimumLevel() > panel.MinimumLevel()) //TODO: Make this more robust - multiple elements could be a floor with the same z level...
+                            floor = panel;
+                    }
+                }
             }
 
-            return rtn;
-        }
+            if (floor == null) return null;
 
-        public static bool MatchAdjacencies(this BuildingElement element, BuildingElement compare)
-        {
-            if (element.CustomData.ContainsKey("Revit_spaceId") && compare.CustomData.ContainsKey("Revit_spaceId"))
-            {
-                if ((element.CustomData.ContainsKey("Revit_adjacentSpaceId") && compare.CustomData.ContainsKey("Revit_adjacentSpaceId")))
-                    return element.CustomData["Revit_spaceId"].ToString().Equals(compare.CustomData["Revit_spaceId"].ToString()) &&
-                        element.CustomData["Revit_adjacentSpaceId"].ToString().Equals(compare.CustomData["Revit_adjacentSpaceId"].ToString());
-                else
-                    return element.CustomData["Revit_spaceId"].ToString().Equals(compare.CustomData["Revit_spaceId"].ToString());
-            }
-            else return false;
+            Polyline floorGeometry = floor.ToPolyline();
+
+            if (floorGeometry.ControlPoints.Count < 3)
+                return null;
+
+            return floorGeometry;
+
+            COME_BACK_TO_THIS_THIS_IS_NOT_A_COMMENT_TO_FORCE_NON-COMPILE_TO_FORCE_COMING_BACK_TO
         }
     }
 }

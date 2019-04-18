@@ -25,8 +25,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+using BH.oM.Environment;
 using BH.oM.Environment.Elements;
 using BH.Engine.Geometry;
+
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
 
@@ -90,6 +92,14 @@ namespace BH.Engine.Environment
         public static Polyline ToPolyline(this Opening opening)
         {
             return opening.Edges.ToPolyline();
+        }
+
+        [Description("BH.Engine.Environment.Convert.ToPolyline => Returns the external boundary from a generic Environment Object")]
+        [Input("environmentObject", "Any object implementing the IEnvironmentObject interface that can have its boundaries extracted")]
+        [Output("BHoM Geometry Polyline")]
+        public static Polyline ToPolyline(this IEnvironmentObject environmentObject)
+        {
+            return ToPolyline(environmentObject as dynamic);
         }
     }
 }

@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -20,13 +20,17 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.oM.Environment.Elements;
 using System;
 using System.Collections.Generic;
+
 using System.Linq;
-using BHEE = BH.oM.Environment.Elements;
+using BH.oM.Geometry;
+
 using BH.Engine.Geometry;
-using BHEI = BH.oM.Environment.Interface;
-using BHG = BH.oM.Geometry;
+
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Environment
 {
@@ -36,14 +40,21 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static double Altitude(this BHEI.IBuildingObject buildingElementGeometry)
+        [Description("BH.Engine.Environment.Query.Area => Returns the surface area of an Environment Panel")]
+        [Input("panel", "An Environment Panel object")]
+        [Output("The area of the panel")]
+        public static double Area(this Panel panel)
         {
-            BHG.BoundingBox panelBoundingBox = BH.Engine.Geometry.Query.IBounds(buildingElementGeometry.ICurve());
-            double altitude = panelBoundingBox.Min.Z;
-
-            return altitude;
+            return BH.Engine.Common.Query.Area(panel);
         }
 
-        /***************************************************/
+        [Description("BH.Engine.Environment.Query.Area => Returns the floor area of a space represented by Environment Panels")]
+        [Input("panelsAsSpace", "A collection of Environment Panels that represent a closed space")]
+        [Output("The floor area of the space")]
+        public static double Area(this List<Panel> panelsAsSpace)
+        {
+            if (panelsAsSpace.FloorGeometry() == null) return 0;
+            else return panelsAsSpace.FloorGeometry().Area();
+        }
     }
 }
