@@ -30,7 +30,7 @@ using System.ComponentModel;
 
 namespace BH.Engine.Environment
 {
-    public static partial class Modify
+    public static partial class Convert
     {
         /***************************************************/
         /**** Public Methods                            ****/
