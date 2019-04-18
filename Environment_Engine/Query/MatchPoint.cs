@@ -1,6 +1,6 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -20,35 +20,40 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System;
+using BH.oM.Environment.Elements;
+using BH.oM.Geometry;
 using System.Collections.Generic;
 using System.Linq;
-using BHEE = BH.oM.Environment.Elements;
-using BH.Engine.Geometry;
 
-using BH.oM.Environment.Elements;
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Environment
 {
     public static partial class Query
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /****               Public Methods              ****/
         /***************************************************/
 
-        public static List<BuildingElement> IdentifyOverlaps(this BuildingElement element, List<BuildingElement> elementsToCompare)
+        [Description("BH.Engine.Environment.Query.MatchPointOn2Of3 => Returns whether two points match on 2 out of 3 axes")]
+        [Input("point", "A BHoM Geometry Point to compare against")]
+        [Input("comparePoint", "A BHoM Geometry Point to compare with")]
+        [Output("True if the two points match on 2 out of 3 axes, false otherwise")]
+        public static bool MatchPointOn2Of3(this Point point, Point comparePoint)
         {
-            List<BuildingElement> overlappingElements = new List<BuildingElement>();
-
-            foreach(BuildingElement be in elementsToCompare)
+            bool match2 = false;
+            if (point.X == comparePoint.X)
             {
-                if(element.BHoM_Guid != be.BHoM_Guid && element.DoesBooleanIntersect(be))
-                        overlappingElements.Add(be);
+                if (point.Y == comparePoint.Y)
+                    match2 = true;
+                else if (point.Z == comparePoint.Z)
+                    match2 = true;
             }
+            else if (point.Y == comparePoint.Y && point.Z == comparePoint.Z)
+                match2 = true;
 
-            return overlappingElements;
+            return match2;
         }
-
-        /***************************************************/
     }
 }

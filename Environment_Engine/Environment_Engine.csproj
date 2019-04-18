@@ -111,7 +111,8 @@
     <Compile Include="Modify\AddFragment.cs" />
     <Compile Include="Modify\SetInternalElements2D.cs" />
     <Compile Include="Modify\SetOutlineElements1D.cs" />
-    <Compile Include="Modify\_SplitBuildingElements.cs" />
+    <Compile Include="Modify\SplitPanels.cs" />
+    <Compile Include="Query\MatchPoint.cs" />
     <Compile Include="Query\SpaceName.cs" />
     <Compile Include="Query\_AdjacentSpaces.cs" />
     <Compile Include="Query\_AdjacentSurface.cs" />
