@@ -98,8 +98,8 @@
     <Compile Include="Create\BuildingResultFragment.cs" />
     <Compile Include="Create\Construction.cs" />
     <Compile Include="Create\OriginContextFragment.cs" />
-    <Compile Include="Create\_NewElement1D.cs" />
-    <Compile Include="Create\_NewInternalElement2D.cs" />
+    <Compile Include="Create\NewElement1D.cs" />
+    <Compile Include="Create\NewInternalElement2D.cs" />
     <Compile Include="Create\SimulationResult.cs" />
     <Compile Include="Create\SpaceAnalyticalFragment.cs" />
     <Compile Include="Modify\_AddAdjacentSpace.cs" />
