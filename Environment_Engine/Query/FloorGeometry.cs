@@ -71,9 +71,6 @@ namespace BH.Engine.Environment
                 return null;
 
             return floorGeometry;
-
-            COME_BACK_TO_THIS_THIS_IS_NOT_A_COMMENT_TO_FORCE_NON_COMPILE_TO_FORCE_COMING_BACK_TO;
-            //Fix based on comment above
         }
     }
 }

@@ -45,37 +45,20 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("BH.Engine.Environment.Query.Height => Returns the height of a generic Environment Object")]
-        [Input("environmentObject", "Any object implementing the IEnvironmentObject interface that can have its height queried")]
-        [Output("The height of the environment object")]
-        public static double Height(this IEnvironmentObject environmentObject)
-        {
-            return Height(environmentObject as dynamic);
-        }
-
-        [Description("BH.Engine.Environment.Query.Height => Returns the height of an Environment Panel")]
-        [Input("panel", "An Environment Panel")]
-        [Output("The height of the panel")]
-        public static double Height(this Panel panel)
-        {
-            return panel.ToPolyline().Height();
-        }
-
-        [Description("BH.Engine.Environment.Query.Height => Returns the height of an Environment Opening")]
+        [Description("BH.Engine.Environment.Query.OutlineElements1D => Returns the outline 1D elements of an Environment Opening")]
         [Input("opening", "An Environment Opening")]
-        [Output("The height of the opening")]
-        public static double Height(this Opening opening)
+        [Output("A collection of outline 1D elements")]
+        public static List<IElement1D> OutlineElements1D(this Opening opening)
         {
-            return opening.ToPolyline().Height();
+            return opening.ToPolyline().ISubParts().Cast<IElement1D>().ToList();
         }
 
-        [Description("BH.Engine.Environment.Query.Height => Returns the height of a BHoM Geometry ICurve based on the bounding box of the curve")]
-        [Input("curve", "BHoM Geometry ICurve")]
-        [Output("The height of the curve based on the difference in z values for its bounding box")]
-        public static double Height(this ICurve curve)
+        [Description("BH.Engine.Environment.Query.OutlineElements1D => Returns the outline 1D elements of an Environment Panel")]
+        [Input("panel", "An Environment Panel")]
+        [Output("A collection of outline 1D elements")]
+        public static List<IElement1D> OutlineElements1D(this Panel panel)
         {
-            BoundingBox bBox = curve.IBounds();
-            return (bBox.Max.Z - bBox.Min.Z);
+            return panel.ToPolyline().ISubParts().Cast<IElement1D>().ToList();
         }
     }
 }

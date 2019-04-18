@@ -264,7 +264,7 @@ namespace BH.Engine.Environment
                                 bool addedPoint = false;
                                 foreach (Point px in intersections[0].ControlPoints)
                                 {
-                                    if (!p5.ControlPoints.Contains(px) && !kvp3.Key.ToPolyline().ControlPoints.Contains(px) && px.Match2Of3(p5.ControlPoints.Last()))
+                                    if (!p5.ControlPoints.Contains(px) && !kvp3.Key.ToPolyline().ControlPoints.Contains(px) && px.MatchPointOn2Of3(p5.ControlPoints.Last()))
                                     {
                                         p5.ControlPoints.Add(px);
                                         addedPoint = true;

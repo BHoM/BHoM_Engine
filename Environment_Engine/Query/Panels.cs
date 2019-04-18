@@ -127,7 +127,7 @@ namespace BH.Engine.Environment
         [Input("panels", "A collection of Environment Panels")]
         [Input("searchPoint", "The BHoM Geometry Point to search by")]
         [Output("A collection of Environment Panel where the external edges contain the given search point")]
-        public static List<Panel> PanelsByContainingPoint(this List<Panel> panels, Point searchPoint)
+        public static List<Panel> PanelsContainingPoint(this List<Panel> panels, Point searchPoint)
         {
             return panels.Where(x => x.ToPolyline().IsContaining(new List<Point>() { searchPoint })).ToList();
         }

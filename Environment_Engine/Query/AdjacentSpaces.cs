@@ -47,26 +47,5 @@ namespace BH.Engine.Environment
             //Get the lists which contain this building element
             return panelsAsSpaces.Where(x => x.Where(y => y.BHoM_Guid == panel.BHoM_Guid).Count() > 0).ToList();
         }
-
-        [Description("BH.Engine.Environment.Query.AdjacentSpaces => Returns a collection of Environment Space objects which are enclosed by the search panel")]
-        [Input("panel", "An Environment Panel to find within the search panels")]
-        [Input("panelsAsSpaces", "The nested collection of Environment Panels that represent the spaces to search from")]
-        [Input("spaces", "The collection of Environment Spaces to search from")]
-        [Output("A collection of Environment Spaces which contain the search panel")]
-        public static List<Space> AdjacentSpaces(this Panel panel, List<List<Panel>> panelsAsSpaces, List<Space> spaces)
-        {
-            List<Space> rtn = new List<oM.Environment.Elements.Space>();
-
-            List<Point> spaces1 = panel.AdjacentSpaces(panelsAsSpaces).SpaceCentres();
-
-            foreach(Point p in spaces1)
-            {
-                Space add = spaces.MatchSpace(p);
-                if (add != null)
-                    rtn.Add(add);
-            }
-
-            return rtn;
-        }
     }
 }

@@ -88,5 +88,18 @@ namespace BH.Engine.Environment
 
             return allOpenings.OpeningsByElementID(elementID);
         }
+
+        [Description("BH.Engine.Environment.Query.OpeningsFromElements => Returns a collection of Environment Openings from a collection of Environment Panels")]
+        [Input("panels", "A collection of Environment Panels to query for openings")]
+        [Output("A collection of Environment Opening objects that match the element ID")]
+        public static List<Opening> OpeningsFromElements(this List<Panel> panels)
+        {
+            List<Opening> openings = new List<Opening>();
+
+            foreach (Panel p in panels)
+                openings.AddRange(p.Openings);
+
+            return openings;
+        }
     }
 }

@@ -87,7 +87,7 @@ namespace BH.Engine.Environment
         [Input("panel", "An Environment Panel to find the level from")]
         [Input("levels", "A collection of Architecture Levels to search from")]
         [Output("The Architecture Level of the panel")]
-        public static Level Level(this panel panel, IEnumerable<Level> levels)
+        public static Level Level(this Panel panel, IEnumerable<Level> levels)
         {
             double min = panel.MinimumLevel();
             double max = panel.MaximumLevel();

@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -26,10 +26,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using BHG = BH.oM.Geometry;
-using BHE = BH.oM.Environment.Elements;
+using BH.oM.Geometry;
 using BH.Engine.Geometry;
-using BH.Engine.Environment;
+
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Environment
 {
@@ -39,26 +40,21 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static List<BHG.Point> UnmatchedElementPoints(BHE.Space space, double tolerance = BHG.Tolerance.MacroDistance)
+        [Description("BH.Engine.Environment.Query.LongestSegmentLength => Returns the length of the longest segment from a BHoM Geometry Polyline")]
+        [Input("polyline", "A BHoM Geometry Polyline")]
+        [Output("The length of the longest segment")]
+        public static double LongestSegmentLength(Polyline polyline)
         {
-            List<BHG.Point> nonMatchingPoints = new List<oM.Geometry.Point>();
+            List<Point> pts = polyline.DiscontinuityPoints();
+            double length = pts.Last().Distance(pts.First());
 
-            /*foreach(BHE.BuildingElement be in space.BuildingElements)
+            for(int x = 0; x < pts.Count - 1; x++)
             {
-                if (be == null) continue;
+                double dist = pts[x].Distance(pts[x + 1]);
+                length = dist > length ? dist : length;
+            }
 
-                foreach(BHG.Point pt in be.BuildingElementGeometry.ICurve().ICollapseToPolyline(BHG.Tolerance.Angle).IDiscontinuityPoints())
-                {
-                    List<BHE.BuildingElement> elementCompare = space.BuildingElements.Where(x => x != null).ToList().FindAll(x => x.BHoM_Guid != be.BHoM_Guid);
-
-                    BHE.BuildingElement matchingBE = elementCompare.Find(x => x.BuildingElementGeometry.ICurve().ICollapseToPolyline(BHG.Tolerance.Angle).DiscontinuityPoints().ClosestDistance(new List<BHG.Point>() { pt }) < tolerance && (x.BHoM_Guid != be.BHoM_Guid));
-
-                    if (matchingBE == null)
-                        nonMatchingPoints.Add(pt);
-                }
-            }*/
-
-            return nonMatchingPoints;
+            return length;
         }
     }
 }
