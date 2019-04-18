@@ -40,52 +40,26 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("BH.Engine.Environment.Query.Azimuth => Returns the azimuth of a given environmental object")]
-        [Input("environmentObject", "Any object implementing the IEnvironmentObject interface that can have its azimuth queried")]
-        [Input("referenceVector", "The reference vector for querying the azimuth from the object")]
-        [Output("The azimuth of the Environment Object")]
-        public static List<Edge> Edges(this Panel element)
+        [Description("BH.Engine.Environment.Query.UnconnectedEdges => Returns a collection of Environment Edges that are unconnected in a space")]
+        [Input("panel", "An Environment Panel to check if the edges are all connected")]
+        [Input("panelsAsSpace", "A collection of Environment Panels representing a single space")]
+        [Output("A collection of Environment Edges that are not properly connected with the rest of the space")]
+        public static List<Edge> UnconnectedEdges(this Panel panel, List<Panel> panelsAsSpace)
         {
-            return element.PanelCurve.ISubParts() as List<Line>;
-        }
+            List<Edge> edges = panel.ExternalEdges;
+            List<Line> allEdges = new List<Line>();
+            foreach (Panel p in panelsAsSpace)
+                allEdges.AddRange(p.ToLines());
 
-        public static List<Line> Edges(this List<BuildingElement> space)
-        {
-            List<Line> parts = new List<Line>();
-
-            foreach (BuildingElement be in space)
-                parts.AddRange(be.Edges());
-
-            return parts;
-        }
-
-        public static bool EdgeIntersects(this Line edge, List<Line> possibleIntersections)
-        {
-            return possibleIntersections.Where(x => x.BooleanIntersection(edge) != null).ToList().Count > 0;
-        }
-
-        public static bool EdgeIntersects(this List<Line> edges, List<Line> possibleIntersections)
-        {
-            foreach(Line l in edges)
+            List<Edge> unconnected = new List<Edge>();
+            foreach (Edge e in edges)
             {
-                if (l.EdgeIntersects(possibleIntersections)) return true;
-            }
-
-            return false;
-        }
-
-        public static List<Line> UnconnectedEdges(this BuildingElement element, List<BuildingElement> space)
-        {
-            List<Line> edges = element.Edges();
-
-            List<Line> unconnected = new List<Line>();
-
-            List<Line> allEdges = space.Edges();
-
-            foreach(Line l in edges)
-            {
-                if (allEdges.Where(x => x.BooleanIntersection(l) != null).ToList().Count < 2)
-                    unconnected.Add(l);
+                List<Line> lines = e.ToLines();
+                foreach (Line l in lines)
+                {
+                    if (allEdges.Where(x => x.BooleanIntersection(l) != null).ToList().Count < 2)
+                        unconnected.Add(e);
+                }
             }
 
             return unconnected;

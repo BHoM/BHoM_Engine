@@ -26,7 +26,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using BH.oM.Environment;
 using BH.oM.Environment.Elements;
+using BH.oM.Environment.Properties;
 using BH.oM.Base;
 using BH.oM.Geometry;
 using BH.Engine.Geometry;
@@ -138,6 +140,27 @@ namespace BH.Engine.Environment
         {
             List<Point> searchPoints = searchGeomtry.ICollapseToPolyline(BH.oM.Geometry.Tolerance.Angle).DiscontinuityPoints();
             return panels.Where(x => x.ToPolyline().DiscontinuityPoints().PointsMatch(searchPoints)).ToList();
+        }
+
+        [Description("BH.Engine.Environment.Query.PanelsByElementID => Returns a collection of Environment Panels that match the given element ID")]
+        [Input("panels", "A collection of Environment Panels")]
+        [Input("elementID", "The Element ID to filter by")]
+        [Output("A collection of Environment Panel objects that match the element ID")]
+        public static List<Panel> PanelsByElementID(this List<Panel> panels, string elementID)
+        {
+            List<IEnvironmentObject> envObjects = new List<IEnvironmentObject>();
+            foreach (Panel p in panels)
+                envObjects.Add(p as IEnvironmentObject);
+
+            envObjects = envObjects.ObjectsByFragment(typeof(OriginContextFragment));
+
+            envObjects = envObjects.Where(x => (x.FragmentProperties.Where(y => y.GetType() == typeof(OriginContextFragment)).FirstOrDefault() as OriginContextFragment).ElementID == elementID).ToList();
+
+            List<Panel> rtnPanels = new List<Panel>();
+            foreach (IEnvironmentObject o in envObjects)
+                rtnPanels.Add(o as Panel);
+
+            return rtnPanels;
         }
     }
 }

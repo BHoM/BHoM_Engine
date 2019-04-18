@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -26,32 +26,38 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using BH.oM.Environment;
 using BH.oM.Environment.Elements;
 using BH.oM.Environment.Properties;
+using BH.oM.Base;
+
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Environment
 {
     public static partial class Query
     {
-        public static bool ExposedToSun(string surfaceType)
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
+
+        [Description("BH.Engine.Environment.Query.PanelsNotMatched => Returns a collection of Environment Panels which are not yet associated to spaces and are not shading panels")]
+        [Input("panels", "A collection of Environment Panels")]
+        [Input("panelsAsSpaces", "A nested collection of Environment Panels representing spaces currently built")]
+        [Output("A collection of Environment Panel objects which are not associated to a space (shading elements excluded)")]
+        public static List<Panel> ElementsNotMatched(this List<Panel> panels, List<List<Panel>> panelsAsSpaces)
         {
-            if (String.IsNullOrEmpty(surfaceType)) return false;
+            //Find the building elements that haven't been mapped yet
+            List<Panel> notYetMapped = new List<Panel>();
 
-            surfaceType = surfaceType.Replace(" ", String.Empty).ToLower();
-
-            return surfaceType == "raisedfloor" || surfaceType == "exteriorwall" || surfaceType == "roof";
-        }
-
-        public static bool ExposedToSun(this BuildingElement element)
-        {
-            if((element.ElementProperties() as ElementProperties) != null)
+            foreach (Panel p in panels)
             {
-                BuildingElementType elementType = (element.ElementProperties() as ElementProperties).BuildingElementType;
-                if (elementType == BuildingElementType.Roof || elementType == BuildingElementType.Rooflight || elementType == BuildingElementType.RooflightWithFrame || elementType == BuildingElementType.WallExternal)
-                    return true;
+                if (!panelsAsSpaces.IsContaining(p))
+                    notYetMapped.Add(p);
             }
 
-            return false;
+            return notYetMapped;
         }
     }
 }
