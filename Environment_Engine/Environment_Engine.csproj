@@ -103,15 +103,15 @@
     <Compile Include="Create\SimulationResult.cs" />
     <Compile Include="Create\SpaceAnalyticalFragment.cs" />
     <Compile Include="Modify\AddAdjacentSpace.cs" />
-    <Compile Include="Modify\_AddOpening.cs" />
-    <Compile Include="Modify\_MergeBuildingElements.cs" />
+    <Compile Include="Modify\AddOpening.cs" />
+    <Compile Include="Compute\_MergeBuildingElements.cs" />
+    <Compile Include="Modify\Copy.cs" />
     <Compile Include="Modify\_RemoveMaterial.cs" />
     <Compile Include="Modify\_SetBuildingElementType.cs" />
     <Compile Include="Modify\_SetExtendedProperties.cs" />
     <Compile Include="Modify\_SetInternalElements2D.cs" />
     <Compile Include="Modify\_SetMaterialProperties.cs" />
     <Compile Include="Modify\_SetOutlineElements1D.cs" />
-    <Compile Include="Modify\_JoinBuildingElements.cs" />
     <Compile Include="Modify\_SplitBuildingElements.cs" />
     <Compile Include="Query\SpaceName.cs" />
     <Compile Include="Query\_AdjacentSpaces.cs" />
@@ -128,7 +128,6 @@
     <Compile Include="Query\_CullDuplicates.cs" />
     <Compile Include="Query\_Curve.cs" />
     <Compile Include="Modify\Add.cs" />
-    <Compile Include="Modify\_Copy.cs" />
     <Compile Include="Modify\_Move.cs" />
     <Compile Include="Modify\_SetGeometry.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
