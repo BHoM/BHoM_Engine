@@ -1,6 +1,6 @@
 ﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -23,7 +23,8 @@
 using System.Collections.Generic;
 using BH.oM.Environment.Elements;
 
-using BH.oM.Environment.Properties;
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Environment
 {
@@ -33,28 +34,30 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static List<BuildingElement> AddAdjacentSpace(this List<BuildingElement> elements, string spaceName)
+        [Description("BH.Engine.Environment.Modify.AddAdjacentSpace => Returns a list of Environment Panel with the provided space name added as a connected space")]
+        [Input("panels", "A collection of Environment Panels to add the space name to")]
+        [Input("spaceName", "The name of the space the panels are connected to")]
+        [Output("A collection of modified Environment Panels with the provided space name listed as a connecting space")]
+        public static List<Panel> AddAdjacentSpace(this List<Panel> panels, string spaceName)
         {
-            foreach(BuildingElement be in elements)
+            foreach(Panel p in panels)
             {
-                BuildingElementContextProperties props = be.ContextProperties() as BuildingElementContextProperties;
-                if (props == null)
-                    BH.Engine.Reflection.Compute.RecordError("Element " + be.BHoM_Guid.ToString() + " could not have adjacent space set");
+                if(p.ConnectedSpaces.Count < 2)
+                    p.ConnectedSpaces.Add(spaceName);
                 else
-                {
-                    if (props.ConnectedSpaces.Count == 1)
-                        props.ConnectedSpaces.Add(spaceName);
-                    else
-                        props.ConnectedSpaces[1] = spaceName;
-                }
+                    p.ConnectedSpaces[1] = spaceName;
             }
 
-            return elements;
+            return panels;
         }
 
-        public static BuildingElement AddAdjacentSpace(this BuildingElement element, string spaceName)
+        [Description("BH.Engine.Environment.Modify.AddAdjacentSpace => Returns a single Environment Panel with the provided space name added as a connected space")]
+        [Input("panel", "A single Environment Panel to add the space name to")]
+        [Input("spaceName", "The name of the space the panel is connected to")]
+        [Output("A modified Environment Panel with the provided space name listed as a connecting space")]
+        public static Panel AddAdjacentSpace(this Panel panel, string spaceName)
         {
-            return AddAdjacentSpace(new List<BuildingElement> { element }, spaceName)[0];
+            return AddAdjacentSpace(new List<Panel> { panel }, spaceName)[0];
         }
     }
 }

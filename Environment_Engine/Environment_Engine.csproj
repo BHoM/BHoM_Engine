@@ -102,8 +102,7 @@
     <Compile Include="Create\NewInternalElement2D.cs" />
     <Compile Include="Create\SimulationResult.cs" />
     <Compile Include="Create\SpaceAnalyticalFragment.cs" />
-    <Compile Include="Modify\_AddAdjacentSpace.cs" />
-    <Compile Include="Modify\_AddMaterial.cs" />
+    <Compile Include="Modify\AddAdjacentSpace.cs" />
     <Compile Include="Modify\_AddOpening.cs" />
     <Compile Include="Modify\_MergeBuildingElements.cs" />
     <Compile Include="Modify\_RemoveMaterial.cs" />
@@ -128,7 +127,7 @@
     <Compile Include="Query\_Construction.cs" />
     <Compile Include="Query\_CullDuplicates.cs" />
     <Compile Include="Query\_Curve.cs" />
-    <Compile Include="Modify\_Add.cs" />
+    <Compile Include="Modify\Add.cs" />
     <Compile Include="Modify\_Copy.cs" />
     <Compile Include="Modify\_Move.cs" />
     <Compile Include="Modify\_SetGeometry.cs" />

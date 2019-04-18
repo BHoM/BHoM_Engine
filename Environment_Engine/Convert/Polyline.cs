@@ -65,5 +65,13 @@ namespace BH.Engine.Environment
         {
             return panel.ExternalEdges.ToPolyline();
         }
+
+        [Description("BH.Engine.Environment.Convert.ToPolyline => Returns the external boundary from an Environment Opening as a BHoM Geometry Polyline")]
+        [Input("opening", "An Environment Opening to obtain the external boundary from")]
+        [Output("BHoM Geometry Polyline")]
+        public static Polyline ToPolyline(this Opening opening)
+        {
+            return opening.Edges.ToPolyline();
+        }
     }
 }
