@@ -83,11 +83,11 @@
     <Compile Include="Create\Emitter.cs" />
     <Compile Include="Create\EnvironmentConstructionFragment.cs" />
     <Compile Include="Create\Gain.cs" />
-    <Compile Include="Create\GasMaterial.cs" />
+    <Compile Include="Create\Layer.cs" />
+    <Compile Include="Create\Material.cs" />
     <Compile Include="Create\Opening.cs" />
     <Compile Include="Create\Panel.cs" />
     <Compile Include="Create\RadiantFragment.cs" />
-    <Compile Include="Create\SolidMaterial.cs" />
     <Compile Include="Create\Space.cs" />
     <Compile Include="Create\BuildingAnalyticalFragment.cs" />
     <Compile Include="Create\BuildingContextFragment.cs" />
@@ -95,9 +95,8 @@
     <Compile Include="Create\PanelAnalyticalFragment.cs" />
     <Compile Include="Create\PanelContextFragment.cs" />
     <Compile Include="Create\BuildingResultFragment.cs" />
-    <Compile Include="Create\_Construction.cs" />
+    <Compile Include="Create\Construction.cs" />
     <Compile Include="Create\OriginContextFragment.cs" />
-    <Compile Include="Create\_Material.cs" />
     <Compile Include="Create\_NewElement1D.cs" />
     <Compile Include="Create\_NewInternalElement2D.cs" />
     <Compile Include="Create\_SimulationResult.cs" />
@@ -184,6 +183,10 @@
     <ProjectReference Include="..\Common_Engine\Common_Engine.csproj">
       <Project>{8d8cd66f-76f3-4750-936d-380d51bc67d6}</Project>
       <Name>Common_Engine</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Physical_Engine\Physical_Engine.csproj">
+      <Project>{f2073888-9bd8-4d8f-9b3c-27577b388530}</Project>
+      <Name>Physical_Engine</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
