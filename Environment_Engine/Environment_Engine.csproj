@@ -114,6 +114,7 @@
     <Compile Include="Modify\SetOutlineElements1D.cs" />
     <Compile Include="Modify\SplitPanels.cs" />
     <Compile Include="Query\Absorptance.cs" />
+    <Compile Include="Query\AdditionalHeatTransfer.cs" />
     <Compile Include="Query\Buildings.cs" />
     <Compile Include="Query\ConstructionRoughness.cs" />
     <Compile Include="Query\FindFragment.cs" />
@@ -137,6 +138,7 @@
     <Compile Include="Query\Bottom.cs" />
     <Compile Include="Query\AltitudeRange.cs" />
     <Compile Include="Query\Altitude.cs" />
+    <Compile Include="Query\Thickness.cs" />
     <Compile Include="Query\UnconnectedEdges.cs" />
     <Compile Include="Query\ElementsNotMatched.cs" />
     <Compile Include="Query\ExposedToSun.cs" />
