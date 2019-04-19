@@ -31,7 +31,7 @@ using BH.oM.Physical.Properties.Construction;
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
 
-namespace BH.Engine.Environment
+namespace BH.Engine.Physical
 {
     public static partial class Query
     {
