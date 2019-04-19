@@ -113,7 +113,9 @@
     <Compile Include="Modify\SetInternalElements2D.cs" />
     <Compile Include="Modify\SetOutlineElements1D.cs" />
     <Compile Include="Modify\SplitPanels.cs" />
+    <Compile Include="Query\Absorptance.cs" />
     <Compile Include="Query\Buildings.cs" />
+    <Compile Include="Query\ConstructionRoughness.cs" />
     <Compile Include="Query\FindFragment.cs" />
     <Compile Include="Query\MatchPoint.cs" />
     <Compile Include="Query\ObjectsByFragment.cs" />
@@ -144,6 +146,7 @@
     <Compile Include="Query\SimulationResult.cs" />
     <Compile Include="Query\UniqueConstructions.cs" />
     <Compile Include="Query\UniqueMaterials..cs" />
+    <Compile Include="Query\UValue.cs" />
     <Compile Include="Query\Vertices.cs" />
     <Compile Include="Query\InternalElements2D.cs" />
     <Compile Include="Query\OutlineElements1D.cs" />
