@@ -114,6 +114,7 @@
     <Compile Include="Modify\SetOutlineElements1D.cs" />
     <Compile Include="Modify\SplitPanels.cs" />
     <Compile Include="Query\Buildings.cs" />
+    <Compile Include="Query\FindFragment.cs" />
     <Compile Include="Query\MatchPoint.cs" />
     <Compile Include="Query\ObjectsByFragment.cs" />
     <Compile Include="Query\ObjectsByType.cs" />

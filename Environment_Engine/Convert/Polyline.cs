@@ -75,7 +75,7 @@ namespace BH.Engine.Environment
             foreach (Edge e in edges)
                 edgePoints.AddRange(e.Curve.IDiscontinuityPoints());
 
-            return BH.Engine.Geometry.Create.Polyline(edgePoints.CullDuplicates());
+            return BH.Engine.Geometry.Create.Polyline(edgePoints);
         }
 
         [Description("BH.Engine.Environment.Convert.ToPolyline => Returns the external boundary from an Environment Panel as a BHoM Geometry Polyline")]
