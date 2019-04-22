@@ -66,6 +66,19 @@ namespace BH.Engine.Environment
             return edges;
         }
 
+        [Description("BH.Engine.Environment.Convert.ToEdges => Returns a collection of Environment Edges from a collection of BHoM Geomtry Polylines")]
+        [Input("polylines", "A collection of BHoM Geometry Polylines to be split into Environment Edges")]
+        [Output("A collection of Environment Edges")]
+        public static List<Edge> ToEdges(this List<Polyline> polylines)
+        {
+            List<Edge> edges = new List<Edge>();
+
+            foreach (Polyline p in polylines)
+                edges.AddRange(p.ToEdges());
+
+            return edges;
+        }
+
         [Description("BH.Engine.Environment.Convert.ToPolyline => Returns a Polyline representation of a collection of Environment Edges")]
         [Input("edges", "A collection of Environment Edge objects to convert into a single polyline")]
         [Output("BHoM Geometry Polyline")]

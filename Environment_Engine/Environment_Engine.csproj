@@ -119,10 +119,12 @@
     <Compile Include="Query\ConstructionRoughness.cs" />
     <Compile Include="Query\FindFragment.cs" />
     <Compile Include="Query\MatchPoint.cs" />
+    <Compile Include="Query\FindMaterial.cs" />
     <Compile Include="Query\ObjectsByFragment.cs" />
     <Compile Include="Query\ObjectsByType.cs" />
     <Compile Include="Query\Openings.cs" />
     <Compile Include="Query\Panels.cs" />
+    <Compile Include="Query\RValue.cs" />
     <Compile Include="Query\SpaceName.cs" />
     <Compile Include="Query\AdjacentSpaces.cs" />
     <Compile Include="Query\Area.cs" />

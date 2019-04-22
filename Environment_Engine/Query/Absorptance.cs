@@ -49,7 +49,11 @@ namespace BH.Engine.Environment
             List<Absorptance> absorptances = new List<Absorptance>();
 
             foreach(Layer l in construction.Layers)
-                absorptances.Add((l.Material.Properties.Where(x => x.GetType() == typeof(IEnvironmentMaterial)).FirstOrDefault() as IEnvironmentMaterial).Absorptance);
+            {
+                IEnvironmentMaterial envMat = l.Material.Properties.Where(x => x is IEnvironmentMaterial).FirstOrDefault() as IEnvironmentMaterial;
+                if (envMat != null)
+                    absorptances.Add(envMat.Absorptance);
+            }
 
             double value = 0;
             foreach (Absorptance a in absorptances)
