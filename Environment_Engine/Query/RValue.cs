@@ -28,6 +28,7 @@ using System.Threading.Tasks;
 
 using BH.oM.Environment;
 using BH.oM.Environment.Materials;
+using BH.oM.Physical.Properties;
 using BH.oM.Physical.Properties.Construction;
 
 using BH.oM.Reflection.Attributes;
@@ -41,20 +42,16 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("BH.Engine.Environment.Query.UValue => Returns the UValue of a construction")]
-        [Input("construction", "A Construction object")]
-        [Output("uValue", "The uValue of the construction")]
-        public static double UValue(this Construction construction)
+        [Description("BH.Engine.Environment.Query.RValue => Returns the RValue of a construction layer")]
+        [Input("layer", "A Layer object")]
+        [Output("rValue", "The rValue of the layer calculated as the layers thickness divided by the materials conductivity")]
+        public static double RValue(this Layer layer)
         {
-            //UValue is, at its simplest, calculated as 1 / the total rValue of the construction
+            //rValue is calculated as being the thickness of the layer dividied by the materials conductivity
 
-            double rValue = 0;
-
-            foreach (Layer l in construction.Layers)
-                rValue += l.RValue();
-
-
-            return 1 / rValue;
+            IEnvironmentMaterial envMaterial = layer.Material.Properties.Where(x => x is IEnvironmentMaterial).FirstOrDefault() as IEnvironmentMaterial;
+            if (envMaterial == null) return 0.0;
+            return (layer.Thickness / envMaterial.Conductivity);
         }
     }
 }

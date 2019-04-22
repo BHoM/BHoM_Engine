@@ -47,8 +47,8 @@ namespace BH.Engine.Environment
         public static BHM.Roughness Roughness(this Construction construction)
         {
             if (construction.Layers.Count == 0) return BHM.Roughness.Undefined;
-            BHM.IEnvironmentMaterial firstSide = construction.Layers.First().Material.Properties.Where(x => x.GetType() == typeof(BHM.IEnvironmentMaterial)).FirstOrDefault() as BHM.IEnvironmentMaterial;
-            BHM.IEnvironmentMaterial finalSide = construction.Layers.Last().Material.Properties.Where(x => x.GetType() == typeof(BHM.IEnvironmentMaterial)).FirstOrDefault() as BHM.IEnvironmentMaterial;
+            BHM.IEnvironmentMaterial firstSide = construction.Layers.First().Material.Properties.Where(x => x is BHM.IEnvironmentMaterial).FirstOrDefault() as BHM.IEnvironmentMaterial;
+            BHM.IEnvironmentMaterial finalSide = construction.Layers.Last().Material.Properties.Where(x => x is BHM.IEnvironmentMaterial).FirstOrDefault() as BHM.IEnvironmentMaterial;
 
             if (firstSide == null || finalSide == null) return BHM.Roughness.Undefined;
 

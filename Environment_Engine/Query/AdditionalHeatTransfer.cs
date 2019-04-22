@@ -47,8 +47,12 @@ namespace BH.Engine.Environment
         {
             double aht = 0;
 
-            foreach(Layer l in construction.Layers)
-                aht += (l.Material.Properties.Where(x => x.GetType() == typeof(IEnvironmentMaterial)).FirstOrDefault() as IEnvironmentMaterial).AdditionalHeatTransfer;
+            foreach (Layer l in construction.Layers)
+            {
+                IEnvironmentMaterial envMat = l.Material.Properties.Where(x => x is IEnvironmentMaterial).FirstOrDefault() as IEnvironmentMaterial;
+                if (envMat != null)
+                    aht += envMat.AdditionalHeatTransfer;
+            }
 
             return aht;
         }

@@ -27,8 +27,9 @@ using System.Text;
 using System.Threading.Tasks;
 
 using BH.oM.Environment;
-using BH.oM.Environment.Materials;
+using BHM = BH.oM.Environment.Materials;
 using BH.oM.Physical.Properties.Construction;
+using BH.oM.Physical.Properties;
 
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
@@ -41,20 +42,13 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("BH.Engine.Environment.Query.UValue => Returns the UValue of a construction")]
-        [Input("construction", "A Construction object")]
-        [Output("uValue", "The uValue of the construction")]
-        public static double UValue(this Construction construction)
+        [Description("BH.Engine.Environment.Query.SolidMaterial => Returns an instance of a given material type from a layer")]
+        [Input("layer", "A Layer object")]
+        [Input("materialType", "The type of material to get from the layer")]
+        [Output("materialProperties", "The instance of that material type if it exists on the object, null otherwise")]
+        public static T FindMaterial<T>(this Layer layer, Type materialType)
         {
-            //UValue is, at its simplest, calculated as 1 / the total rValue of the construction
-
-            double rValue = 0;
-
-            foreach (Layer l in construction.Layers)
-                rValue += l.RValue();
-
-
-            return 1 / rValue;
+            return (T)System.Convert.ChangeType(layer.Material.Properties.Where(x => x.GetType() == materialType).FirstOrDefault(), materialType);
         }
     }
 }
