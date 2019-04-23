@@ -46,7 +46,7 @@ namespace BH.Engine.Environment
         [Output("thickness", "The total thickness of the panel as a result of the construction placed on it")]
         public static double Thickness(this Panel panel)
         {
-            return panel.Construction.Thickness();
+            return panel.Construction.IThickness();
         }
 
         [Description("BH.Engine.Environment.Query.Thickness => Returns the thickness of an Environment Opening based on its construction")]
@@ -54,7 +54,7 @@ namespace BH.Engine.Environment
         [Output("thickness", "The thickness of the opening as the largest thickness between the frame construction and opening construction")]
         public static double Thickness(this Opening opening)
         {
-            return Math.Max(opening.OpeningConstruction.Thickness(), opening.FrameConstruction.Thickness());
+            return Math.Max(opening.OpeningConstruction.IThickness(), opening.FrameConstruction.IThickness());
         }
 
         [Description("BH.Engine.Environment.Query.Thickness => Returns the thickness of an Environment Opening based on its construction")]
@@ -64,9 +64,9 @@ namespace BH.Engine.Environment
         public static double Thickness(this Opening opening, bool useFrameConstruction = false)
         {
             if (useFrameConstruction)
-                return opening.FrameConstruction.Thickness();
+                return opening.FrameConstruction.IThickness();
             else
-                return opening.OpeningConstruction.Thickness();
+                return opening.OpeningConstruction.IThickness();
         }
     }
 }

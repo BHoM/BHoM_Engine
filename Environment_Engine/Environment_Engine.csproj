@@ -98,7 +98,6 @@
     <Compile Include="Create\PanelAnalyticalFragment.cs" />
     <Compile Include="Create\PanelContextFragment.cs" />
     <Compile Include="Create\BuildingResultFragment.cs" />
-    <Compile Include="Create\Construction.cs" />
     <Compile Include="Create\OriginContextFragment.cs" />
     <Compile Include="Create\NewElement1D.cs" />
     <Compile Include="Create\NewInternalElement2D.cs" />
