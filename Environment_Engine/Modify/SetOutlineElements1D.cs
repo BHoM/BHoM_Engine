@@ -39,7 +39,7 @@ namespace BH.Engine.Environment
         [Description("BH.Engine.Environment.Modify.SetOutlineElements1D => Assign a new collection of external 1D boundaries to an Environment Opening")]
         [Input("opening", "An Environment Opening to update")]
         [Input("outlineElements1D", "A collection of outline 1D elements to assign to the opening")]
-        [Output("The updated Environment Opening")]
+        [Output("opening", "The updated Environment Opening")]
         public static Opening SetOutlineElements1D(this Opening opening, List<IElement1D> outlineElements1D)
         {
             Opening o = opening.GetShallowClone() as Opening;
@@ -50,7 +50,7 @@ namespace BH.Engine.Environment
         [Description("BH.Engine.Environment.Modify.SetOutlineElements1D => Assign a new collection of external 1D boundaries to an Environment Opening")]
         [Input("opening", "An Environment Opening to update")]
         [Input("outlineElements1D", "A collection of outline 1D elements to assign to the opening")]
-        [Output("The updated Environment Opening")]
+        [Output("panel", "The updated Environment Opening")]
         public static Panel SetOutlineElements1D(this Panel panel, List<IElement1D> outlineElements1D)
         {
             Panel pp = panel.GetShallowClone() as Panel;

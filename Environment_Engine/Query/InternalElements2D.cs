@@ -47,7 +47,7 @@ namespace BH.Engine.Environment
 
         [Description("BH.Engine.Environment.Query.InternalElements2D => Returns the internal 2D elements of an Environment Opening")]
         [Input("opening", "An Environment Opening")]
-        [Output("A collection of internal 2D elements")]
+        [Output("element2D", "A collection of internal 2D elements")]
         public static List<IElement2D> InternalElements2D(this Opening opening)
         {
             return new List<IElement2D>();
@@ -55,7 +55,7 @@ namespace BH.Engine.Environment
 
         [Description("BH.Engine.Environment.Query.InternalElements2D => Returns the internal 2D elements of an Environment Panel")]
         [Input("panel", "An Environment Panel")]
-        [Output("A collection of internal 2D elements")]
+        [Output("element2D", "A collection of internal 2D elements")]
         public static List<IElement2D> InternalElements2D(this Panel panel)
         {
             return panel.Openings.Cast<IElement2D>().ToList();

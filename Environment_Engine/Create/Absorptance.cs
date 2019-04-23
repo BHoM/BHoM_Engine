@@ -44,7 +44,7 @@ namespace BH.Engine.Environment
         [Input("value", "The amount of absorptance the material should have, default 0.0")]
         [Input("unit", "The unit of absorptance from the Absorptance Unit enum, default undefined")]
         [Input("type", "The type of absorptance from the Absorptance Type enum, default undefined")]
-        [Output("An Environment Absorptance object")]
+        [Output("absorptance", "An Environment Absorptance object")]
         public static Absorptance Absorptance(string name = "", double value = 0.0, AbsorptanceUnit unit = AbsorptanceUnit.Undefined, AbsorptanceType type = AbsorptanceType.Undefined)
         {
             return new Absorptance

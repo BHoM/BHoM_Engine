@@ -47,7 +47,7 @@ namespace BH.Engine.Environment
 
         [Description("BH.Engine.Environment.Query.ExposedToSun => Defines whether an Environment Panel is exposed to the Sun or not")]
         [Input("panel", "An Environment Panel")]
-        [Output("True if the panel is on the exterior of the model and has the potential to be exposed to the sun, false otherwise")]
+        [Output("isExposedToSun", "True if the panel is on the exterior of the model and has the potential to be exposed to the sun, false otherwise")]
         public static bool ExposedToSun(this Panel panel)
         {
             return (panel.Type == PanelType.Roof || panel.Type == PanelType.WallExternal);

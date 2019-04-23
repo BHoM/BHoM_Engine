@@ -43,7 +43,7 @@ namespace BH.Engine.Environment
         [Description("BH.Engine.Environment.Query.UnconnectedEdges => Returns a collection of Environment Edges that are unconnected in a space")]
         [Input("panel", "An Environment Panel to check if the edges are all connected")]
         [Input("panelsAsSpace", "A collection of Environment Panels representing a single space")]
-        [Output("A collection of Environment Edges that are not properly connected with the rest of the space")]
+        [Output("unconnectedEdges", "A collection of Environment Edges that are not properly connected with the rest of the space")]
         public static List<Edge> UnconnectedEdges(this Panel panel, List<Panel> panelsAsSpace)
         {
             List<Edge> edges = panel.ExternalEdges;

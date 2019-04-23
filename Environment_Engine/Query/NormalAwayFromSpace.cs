@@ -46,7 +46,7 @@ namespace BH.Engine.Environment
         [Description("BH.Engine.Environment.Query.NormalAwayFromSpace => Returns whether the normal of a given Environment Panel is facing away from the containing space")]
         [Input("panel", "An Environment Panel to check")]
         [Input("panelsAsSpace", "A collection of Environment Panels which represent a single space")]
-        [Output("True if the normal of the panel is facing away from the space, false otherwise")]
+        [Output("normalAwayFromSpace", "True if the normal of the panel is facing away from the space, false otherwise")]
         public static bool NormalAwayFromSpace(this Panel panel, List<Panel> panelsAsSpace)
         {
             return NormalAwayFromSpace(panel.ToPolyline(), panelsAsSpace);
@@ -55,7 +55,7 @@ namespace BH.Engine.Environment
         [Description("BH.Engine.Environment.Query.NormalAwayFromSpace => Returns whether the normal of a given polyline is facing away from the containing space")]
         [Input("polyline", "A BHoM Geometry Polyline to check")]
         [Input("panelsAsSpace", "A collection of Environment Panels which represent a single space")]
-        [Output("True if the normal of the polyline is facing away from the space, false otherwise")]
+        [Output("normalAwayFromSpace", "True if the normal of the polyline is facing away from the space, false otherwise")]
         public static bool NormalAwayFromSpace(this Polyline polyline, List<Panel> panelsAsSpace)
         {
             List<Point> centrePtList = new List<Point>();

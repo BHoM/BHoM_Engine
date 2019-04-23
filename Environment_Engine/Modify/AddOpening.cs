@@ -40,7 +40,7 @@ namespace BH.Engine.Environment
         [Description("BH.Engine.Environment.Modify.AddOpening => Returns a single Environment Panel with the provided opening. Opening is added to the provided panel regardless of geometric association")]
         [Input("panel", "A single Environment Panel to add the opening to")]
         [Input("opening", "The Environment Opening to add to the panel")]
-        [Output("A modified Environment Panel with the provided opening added")]
+        [Output("panel", "A modified Environment Panel with the provided opening added")]
         public static Panel AddOpening(this Panel panel, Opening opening)
         {
             panel.Openings.Add(opening);
@@ -50,7 +50,7 @@ namespace BH.Engine.Environment
         [Description("BH.Engine.Environment.Modify.AddOpening => Returns a list of Environment Panel with the provided openings added. Openings are added to the panels which contain them geometrically.")]
         [Input("panels", "A collection of Environment Panels to add the opening to")]
         [Input("openings", "A collection of Environment Openings to add to the panels")]
-        [Output("A collection of modified Environment Panels with the provided openings added")]
+        [Output("panels", "A collection of modified Environment Panels with the provided openings added")]
         public static List<Panel> AddOpenings(this List<Panel> panels, List<Opening> openings)
         {
             foreach(Opening o in openings)

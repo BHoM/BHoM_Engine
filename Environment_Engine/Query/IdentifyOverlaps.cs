@@ -40,7 +40,7 @@ namespace BH.Engine.Environment
         [Description("BH.Engine.Environment.Query.IdentifyOverlaps => Returns a collection of Environment Panels overlap with the given element")]
         [Input("panel", "An Environment Panel to check against")]
         [Input("panelsToCompare", "A collection of Environment Panels to find overlaps from")]
-        [Output("A collection of Environment Panels that overlap with the first panel")]
+        [Output("panels", "A collection of Environment Panels that overlap with the first panel")]
         public static List<Panel> IdentifyOverlaps(this Panel panel, List<Panel> panelsToCompare)
         {
             List<Panel> overlappingElements = new List<Panel>();

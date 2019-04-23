@@ -47,7 +47,7 @@ namespace BH.Engine.Environment
 
         [Description("BH.Engine.Environment.Query.OutlineElements1D => Returns the outline 1D elements of an Environment Opening")]
         [Input("opening", "An Environment Opening")]
-        [Output("A collection of outline 1D elements")]
+        [Output("outlineElements", "A collection of outline 1D elements")]
         public static List<IElement1D> OutlineElements1D(this Opening opening)
         {
             return opening.ToPolyline().ISubParts().Cast<IElement1D>().ToList();
@@ -55,7 +55,7 @@ namespace BH.Engine.Environment
 
         [Description("BH.Engine.Environment.Query.OutlineElements1D => Returns the outline 1D elements of an Environment Panel")]
         [Input("panel", "An Environment Panel")]
-        [Output("A collection of outline 1D elements")]
+        [Output("outlineElements", "A collection of outline 1D elements")]
         public static List<IElement1D> OutlineElements1D(this Panel panel)
         {
             return panel.ToPolyline().ISubParts().Cast<IElement1D>().ToList();

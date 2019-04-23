@@ -47,7 +47,7 @@ namespace BH.Engine.Environment
         [Input("construction", "A construction object providing layer and material information for the panel, default null")]
         [Input("type", "The type of panel from the Panel Type enum, default undefined")]
         [Input("connectedSpaces", "A collection of the spaces the panel is connected to, default null")]
-        [Output("An Environment Panel object")]
+        [Output("panel", "An Environment Panel object")]
         public static Panel Panel(string name = "", List<Edge> externalEdges = null, List<Opening> openings = null, IConstruction construction = null, PanelType type = PanelType.Undefined, List<string> connectedSpaces = null)
         {
             externalEdges = externalEdges ?? new List<Edge>();

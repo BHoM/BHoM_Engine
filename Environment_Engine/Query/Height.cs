@@ -47,7 +47,7 @@ namespace BH.Engine.Environment
 
         [Description("BH.Engine.Environment.Query.Height => Returns the height of a generic Environment Object")]
         [Input("environmentObject", "Any object implementing the IEnvironmentObject interface that can have its height queried")]
-        [Output("The height of the environment object")]
+        [Output("height", "The height of the environment object")]
         public static double Height(this IEnvironmentObject environmentObject)
         {
             return Height(environmentObject as dynamic);
@@ -55,7 +55,7 @@ namespace BH.Engine.Environment
 
         [Description("BH.Engine.Environment.Query.Height => Returns the height of an Environment Panel")]
         [Input("panel", "An Environment Panel")]
-        [Output("The height of the panel")]
+        [Output("height", "The height of the panel")]
         public static double Height(this Panel panel)
         {
             return panel.ToPolyline().Height();
@@ -63,7 +63,7 @@ namespace BH.Engine.Environment
 
         [Description("BH.Engine.Environment.Query.Height => Returns the height of an Environment Opening")]
         [Input("opening", "An Environment Opening")]
-        [Output("The height of the opening")]
+        [Output("height", "The height of the opening")]
         public static double Height(this Opening opening)
         {
             return opening.ToPolyline().Height();
@@ -71,7 +71,7 @@ namespace BH.Engine.Environment
 
         [Description("BH.Engine.Environment.Query.Height => Returns the height of a BHoM Geometry ICurve based on the bounding box of the curve")]
         [Input("curve", "BHoM Geometry ICurve")]
-        [Output("The height of the curve based on the difference in z values for its bounding box")]
+        [Output("height", "The height of the curve based on the difference in z values for its bounding box")]
         public static double Height(this ICurve curve)
         {
             BoundingBox bBox = curve.IBounds();

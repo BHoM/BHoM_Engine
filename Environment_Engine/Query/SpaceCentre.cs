@@ -40,7 +40,7 @@ namespace BH.Engine.Environment
 
         [Description("BH.Engine.Environment.Query.SpaceCentres => Returns a collection of BHoM Geometry Points that are at the centre of each space")]
         [Input("panelsAsSpaces", "The nested collection of Environment Panels that represent the spaces to get the centre of")]
-        [Output("A collection of points at the centre of each space")]
+        [Output("centrePoints", "A collection of points at the centre of each space")]
         public static List<Point> SpaceCentres(this List<List<Panel>> panelsAsSpaces)
         {
             List<Point> centrePts = new List<Point>();
@@ -52,7 +52,7 @@ namespace BH.Engine.Environment
 
         [Description("BH.Engine.Environment.Query.SpaceCentre => Returns a BHoM Geometry Points that is at the centre of the provided space")]
         [Input("panelsAsSpace", "The collection of Environment Panels that represent a single space to get the centre of")]
-        [Output("A point at the centre of the space")]
+        [Output("centrePoint", "A point at the centre of the space")]
         public static Point SpaceCentre(this List<Panel> panelsAsSpace)
         {
             //Calculate the centre point of the space comprised of the building elements

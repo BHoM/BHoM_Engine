@@ -42,7 +42,7 @@ namespace BH.Engine.Environment
 
         [Description("BH.Engine.Environment.Query.FloorGeometry => Returns the floor geometry of a space represented by Environment Panels as a BHoM Geometry Polyline")]
         [Input("panelsAsSpace", "A collection of Environment Panels that represent a closed space")]
-        [Output("BHoM Geometry Polyline representing the floor of the space")]
+        [Output("polyline", "BHoM Geometry Polyline representing the floor of the space")]
         public static Polyline FloorGeometry(this List<Panel> panelsAsSpace)
         {
             Panel floor = null;

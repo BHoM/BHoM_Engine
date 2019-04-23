@@ -43,7 +43,7 @@ namespace BH.Engine.Environment
         [Description("BH.Engine.Environment.Query.ObjectsByType => Returns a collection of objects which are of the provided object type")]
         [Input("objects", "A collection of generic BHoM objects")]
         [Input("type", "The type of object to be queried and returned")]
-        [Output("A collection of generic BHoM objects matching the provided type")]
+        [Output("bhomObjects", "A collection of generic BHoM objects matching the provided type")]
         public static List<IBHoMObject> ObjectsByType(this List<IBHoMObject> objects, Type type)
         {
             return objects.Where(x => x.GetType() == type).ToList();

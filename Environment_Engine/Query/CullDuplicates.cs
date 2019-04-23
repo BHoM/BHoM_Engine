@@ -42,7 +42,7 @@ namespace BH.Engine.Environment
 
         [Description("BH.Engine.Environment.Query.CullOverlaps => Removes panels which overlap each other")]
         [Input("panels", "A collection of Environment Panels")]
-        [Output("A collection of Environment Panels with no overlaps")]
+        [Output("panels", "A collection of Environment Panels with no overlaps")]
         public static List<Panel> CullOverlaps(this List<Panel> panels)
         {
             List<Panel> ori = new List<Panel>(panels);
@@ -65,7 +65,7 @@ namespace BH.Engine.Environment
 
         [Description("BH.Engine.Environment.Query.CullDuplicates => Removes panels which are duplicates")]
         [Input("panels", "A collection of Environment Panels")]
-        [Output("A collection of Environment Panels with no duplicates")]
+        [Output("panels", "A collection of Environment Panels with no duplicates")]
         public static List<Panel> CullDuplicates(this List<Panel> panels)
         {
             //Go through each building element and compare vertices and centre points - if there is a matching element, remove it
@@ -85,7 +85,7 @@ namespace BH.Engine.Environment
 
         [Description("BH.Engine.Environment.Query.CullDuplicates => Removes panels which are duplicates from panels representing spaces")]
         [Input("panelsAsSpaces", "The nested collection of Environment Panels that represent the spaces to cull duplicates from")]
-        [Output("A nested collection of Environment Panels representing spaces with no duplicates")]
+        [Output("panelsAsSpaces", "A nested collection of Environment Panels representing spaces with no duplicates")]
         public static List<List<Panel>> CullDuplicates(this List<List<Panel>> panelsAsSpaces)
         {
             //Go through each set of building elements and find those that match
@@ -117,7 +117,7 @@ namespace BH.Engine.Environment
 
         [Description("BH.Engine.Environment.Query.CullDuplicateLines => Removes duplicate lines from the collection")]
         [Input("lines", "The nested collection of lines to cull duplicates from")]
-        [Output("A collection of lines with no duplicates")]
+        [Output("lines", "A collection of lines with no duplicates")]
         public static List<Line> CullDuplicateLines(this List<Line> lines, double tolerance = Tolerance.Distance)
         {
             double sqTol = tolerance * tolerance;

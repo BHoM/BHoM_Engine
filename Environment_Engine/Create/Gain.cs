@@ -44,7 +44,7 @@ namespace BH.Engine.Environment
         [Input("name", "The name of the gain, default empty string")]
         [Input("type", "The type of gain from the Gain Type enum, default undefined")]
         [Input("gainProperties", "The properties of the gain, for example, occupant gain properties, default null")]
-        [Output("An Environment Gain object")]
+        [Output("gain", "An Environment Gain object")]
         public static Gain Gain(string name = "", GainType type = GainType.Undefined, IGainProperties gainProperties = null)
         {
             switch(type)
@@ -84,7 +84,7 @@ namespace BH.Engine.Environment
         [Input("profile", "The profile to be used for this gain, default null")]
         [Input("unit", "The unit type of the gain from the Gain Unit enum, default undefined")]
         [Input("value", "The value the gain should provide to the space, default 0.0")]
-        [Output("An Environment Gain object")]
+        [Output("infiltrationGain", "An Environment Gain object")]
         public static Gain InfiltrationGain(string name = "", Profile profile = null, GainUnit unit = GainUnit.Undefined, double value = 0.0)
         {
             InfiltrationGain properties = new InfiltrationGain
@@ -103,7 +103,7 @@ namespace BH.Engine.Environment
         [Input("profile", "The profile to be used for this gain, default null")]
         [Input("unit", "The unit type of the gain from the Gain Unit enum, default undefined")]
         [Input("value", "The value the gain should provide to the space, default 0.0")]
-        [Output("An Environment Gain object")]
+        [Output("latentEquipmentGain", "An Environment Gain object")]
         public static Gain LatentEquipmentGain(string name = "", Profile profile = null, GainUnit unit = GainUnit.Undefined, double value = 0.0)
         {
             LatentEquipmentGain properties = new LatentEquipmentGain
@@ -125,7 +125,7 @@ namespace BH.Engine.Environment
         [Input("radiantFraction", "The fraction of radiance from this lighting gain, default 0.0")]
         [Input("viewCoefficient", "The view coefficient of this lighting gain, default 0.0")]
         [Input("luminousEfficacy", "The luminous efficacy of this lighting gain, default 0.0")]
-        [Output("An Environment Gain object")]
+        [Output("lightingGain", "An Environment Gain object")]
         public static Gain LightingGain(string name = "", Profile profile = null, GainUnit unit = GainUnit.Undefined, double value = 0.0, double radiantFraction = 0.0, double viewCoefficient = 0.0, double luminousEfficacy = 0.0)
         {
             LightingGain properties = new LightingGain
@@ -151,7 +151,7 @@ namespace BH.Engine.Environment
         [Input("viewCoefficient", "The view coefficient of this people gain, default 0.0")]
         [Input("sensibleGain", "The sensible gain amount of this people gain, default 0.0")]
         [Input("latentGain", "The latent gain amount of this people gain, default 0.0")]
-        [Output("An Environment Gain object")]
+        [Output("peopleGain", "An Environment Gain object")]
         public static Gain PeopleGain(string name = "", Profile profile = null, GainUnit unit = GainUnit.Undefined, double value = 0.0, double radiantFraction = 0.0, double viewCoefficient = 0.0, double sensibleGain = 0.0, double latentGain = 0.0)
         {
             PeopleGain properties = new PeopleGain
@@ -174,7 +174,7 @@ namespace BH.Engine.Environment
         [Input("profile", "The profile to be used for this gain, default null")]
         [Input("unit", "The unit type of the gain from the Gain Unit enum, default undefined")]
         [Input("value", "The value the gain should provide to the space, default 0.0")]
-        [Output("An Environment Gain object")]
+        [Output("pollutantGain", "An Environment Gain object")]
         public static Gain PollutantGain(string name = "", Profile profile = null, GainUnit unit = GainUnit.Undefined, double value = 0.0)
         {
             PollutantGain properties = new PollutantGain
@@ -195,7 +195,7 @@ namespace BH.Engine.Environment
         [Input("value", "The value the gain should provide to the space, default 0.0")]
         [Input("radiantFraction", "The fraction of radiance from this sensible equipment gain, default 0.0")]
         [Input("viewCoefficient", "The view coefficient of this sensible equipment gain, default 0.0")]
-        [Output("An Environment Gain object")]
+        [Output("sensibleEquipmentGain", "An Environment Gain object")]
         public static Gain SensibleEquipmentGain(string name = "", Profile profile = null, GainUnit unit = GainUnit.Undefined, double value = 0.0, double radiantFraction = 0.0, double viewCoefficient = 0.0)
         {
             SensibleEquipmentGain properties = new SensibleEquipmentGain

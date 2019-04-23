@@ -41,7 +41,7 @@ namespace BH.Engine.Environment
 
         [Description("BH.Engine.Environment.Query.UniqueConstructions => Returns a collection of unique constructions from a collection of Environment Panels")]
         [Input("panels", "A collection of Environment Panels")]
-        [Output("A collection of unique Construction objects")]
+        [Output("uniqueConstructions", "A collection of unique Construction objects")]
         public static List<Construction> UniqueConstructions(this List<Panel> panels)
         {
             List<Construction> unique = new List<Construction>();
@@ -69,7 +69,7 @@ namespace BH.Engine.Environment
 
         [Description("BH.Engine.Environment.Query.UniqueConstructions => Returns a collection of unique constructions from a nested collection of Environment Panels representing spaces")]
         [Input("panelsAsSpaces", "A nested collection of Environment Panels representing spaces")]
-        [Output("A collection of unique Construction objects")]
+        [Output("uniqueConstructions", "A collection of unique Construction objects")]
         public static List<Construction> UniqueConstructions(this List<List<Panel>> panelsAsSpaces)
         {
             List<Panel> elements = new List<Panel>();
@@ -81,7 +81,7 @@ namespace BH.Engine.Environment
 
         [Description("BH.Engine.Environment.Query.UniqueConstructionName => Returns a unique name for a given IConstruction object based on the layer and material names")]
         [Input("construction", "A physical construction object")]
-        [Output("A unique name for the construction")]
+        [Output("constructionName", "A unique name for the construction")]
         public static string UniqueConstructionName(this IConstruction construction)
         {
             string name = "construction-";

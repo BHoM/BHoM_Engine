@@ -42,7 +42,7 @@ namespace BH.Engine.Environment
 
         [Description("BH.Engine.Environment.Convert.ToPolyline => Returns a Polyline representation of an Environment Edge")]
         [Input("edge", "An Environment Edge object")]
-        [Output("BHoM Geometry Polyline")]
+        [Output("polyline", "BHoM Geometry Polyline")]
         public static Polyline ToPolyline(this Edge edge)
         {
             return edge.Curve.ICollapseToPolyline(BH.oM.Geometry.Tolerance.Angle);
@@ -50,7 +50,7 @@ namespace BH.Engine.Environment
 
         [Description("BH.Engine.Environment.Convert.ToEdges => Returns a collection of Environment Edges from a BHoM Geomtry Polyline")]
         [Input("polyline", "A BHoM Geometry Polyline to be split into Environment Edges")]
-        [Output("A collection of Environment Edges")]
+        [Output("edges", "A collection of Environment Edges")]
         public static List<Edge> ToEdges(this Polyline polyline)
         {
             List<Edge> edges = new List<Edge>();
@@ -68,7 +68,7 @@ namespace BH.Engine.Environment
 
         [Description("BH.Engine.Environment.Convert.ToEdges => Returns a collection of Environment Edges from a collection of BHoM Geomtry Polylines")]
         [Input("polylines", "A collection of BHoM Geometry Polylines to be split into Environment Edges")]
-        [Output("A collection of Environment Edges")]
+        [Output("edges", "A collection of Environment Edges")]
         public static List<Edge> ToEdges(this List<Polyline> polylines)
         {
             List<Edge> edges = new List<Edge>();
@@ -81,7 +81,7 @@ namespace BH.Engine.Environment
 
         [Description("BH.Engine.Environment.Convert.ToPolyline => Returns a Polyline representation of a collection of Environment Edges")]
         [Input("edges", "A collection of Environment Edge objects to convert into a single polyline")]
-        [Output("BHoM Geometry Polyline")]
+        [Output("polyline", "BHoM Geometry Polyline")]
         public static Polyline ToPolyline(this List<Edge> edges)
         {
             List<Point> edgePoints = new List<Point>();
@@ -93,7 +93,7 @@ namespace BH.Engine.Environment
 
         [Description("BH.Engine.Environment.Convert.ToPolyline => Returns the external boundary from an Environment Panel as a BHoM Geometry Polyline")]
         [Input("panel", "An Environment Panel to obtain the external boundary from")]
-        [Output("BHoM Geometry Polyline")]
+        [Output("polyline", "BHoM Geometry Polyline")]
         public static Polyline ToPolyline(this Panel panel)
         {
             return panel.ExternalEdges.ToPolyline();
@@ -101,7 +101,7 @@ namespace BH.Engine.Environment
 
         [Description("BH.Engine.Environment.Convert.ToPolyline => Returns the external boundary from an Environment Opening as a BHoM Geometry Polyline")]
         [Input("opening", "An Environment Opening to obtain the external boundary from")]
-        [Output("BHoM Geometry Polyline")]
+        [Output("polyline", "BHoM Geometry Polyline")]
         public static Polyline ToPolyline(this Opening opening)
         {
             return opening.Edges.ToPolyline();
@@ -109,7 +109,7 @@ namespace BH.Engine.Environment
 
         [Description("BH.Engine.Environment.Convert.ToPolyline => Returns the external boundary from a generic Environment Object")]
         [Input("environmentObject", "Any object implementing the IEnvironmentObject interface that can have its boundaries extracted")]
-        [Output("BHoM Geometry Polyline")]
+        [Output("polyline", "BHoM Geometry Polyline")]
         public static Polyline ToPolyline(this IEnvironmentObject environmentObject)
         {
             return ToPolyline(environmentObject as dynamic);

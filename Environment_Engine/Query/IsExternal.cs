@@ -41,7 +41,7 @@ namespace BH.Engine.Environment
 
         [Description("BH.Engine.Environment.Query.IsExternal => Determines whether the Environment Panel is externally facing")]
         [Input("panel", "An Environment Panel")]
-        [Output("True if the panel is externally facing, false otherwise")]
+        [Output("isExternal", "True if the panel is externally facing, false otherwise")]
         public static bool IsExternal(this Panel panel)
         {
             return panel.Type == PanelType.Roof; //TODO: Put a more robust check of whether the element is external or not in...

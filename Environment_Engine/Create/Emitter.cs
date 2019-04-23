@@ -46,7 +46,7 @@ namespace BH.Engine.Environment
         [Input("maximumOutsideTemperature", "The maximum temperature outside the space the emitter should be working with, default 0.0")]
         [Input("switchOffOutsideTemperature", "The amount of temperature to be used outside the emitter when switched off, default 0.0")]
         [Input("type", "The type of emitter from the Emitter Type enum, default undefined")]
-        [Output("An Environment Emitter object")]
+        [Output("emitter", "An Environment Emitter object")]
         public static Emitter Emitter(string name = "", double radiantProportion = 0.0, double viewCoefficient = 0.0, double maximumOutsideTemperature = 0.0, double switchOffOutsideTemperature = 0.0, EmitterType type = EmitterType.Undefined)
         {
             return new Emitter

@@ -42,7 +42,7 @@ namespace BH.Engine.Environment
 
         [Description("BH.Engine.Environment.Query.ClosedShellGeometry => Gets the closed shell geometry for a collection of panels representing a space")]
         [Input("panelsAsSpace", "A collection of Environment Panels representing a single space")]
-        [Output("A collection of BHoM Geometry Polylines which represent the shell of the space")]
+        [Output("polylines", "A collection of BHoM Geometry Polylines which represent the shell of the space")]
         public static List<Polyline> ClosedShellGeometry(this List<Panel> panelsAsSpace)
         {
             List<Polyline> pLinesCurtainWall = new List<Polyline>();

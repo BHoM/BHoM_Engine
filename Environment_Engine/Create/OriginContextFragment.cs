@@ -41,7 +41,7 @@ namespace BH.Engine.Environment
         [Input("elementID", "The original ID of the element from the origin software, default empty string")]
         [Input("description", "A description for the object or its source, default empty string")]
         [Input("typeName", "The family type name of the object to group objects together, default empty string")]
-        [Output("An Origin Context Fragment object - this can be added to any Environment object")]
+        [Output("originContextFragment", "An Origin Context Fragment object - this can be added to any Environment object")]
         public static OriginContextFragment OriginContextFragment(string name = "", string origin = "", string elementID = "", string description = "", string typeName = "")
         {
             return new OriginContextFragment

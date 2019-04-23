@@ -43,7 +43,7 @@ namespace BH.Engine.Environment
         [Description("BH.Engine.Environment.Query.ObjectsByFragment => Returns a collection of objects contain the given fragment type")]
         [Input("objects", "A collection of generic Environment objects")]
         [Input("fragmentType", "The type of fragment to be queried and returned")]
-        [Output("A collection of generic BHoM objects that contain the provided fragment type")]
+        [Output("environmentObjects", "A collection of generic BHoM objects that contain the provided fragment type")]
         public static List<IEnvironmentObject> ObjectsByFragment(this List<IEnvironmentObject> objects, Type fragmentType)
         {
             return objects.Where(x => x.FragmentProperties.Where(y => y.GetType() == fragmentType).FirstOrDefault() != null).ToList();

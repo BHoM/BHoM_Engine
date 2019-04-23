@@ -38,7 +38,7 @@ namespace BH.Engine.Environment
         [Description("BH.Engine.Environment.Create.Construction => Returns a Construction object")]
         [Input("name", "The name of the construction, default empty string")]
         [Input("layers", "The collection of layers the construction is made up of, default null")]
-        [Output("A Construction object containing a collection of layers of materials")]
+        [Output("construction", "A Construction object containing a collection of layers of materials")]
         public static Construction Construction(string name = "", List<Layer> layers = null)
         {
             layers = layers ?? new List<Layer>();

@@ -44,7 +44,7 @@ namespace BH.Engine.Environment
 
         [Description("BH.Engine.Environment.Query.Spaces => Returns a collection of Environment Spaces from a list of generic BHoM objects")]
         [Input("objects", "A collection of generic BHoM objects")]
-        [Output("A collection of Environment Space objects")]
+        [Output("spaces", "A collection of Environment Space objects")]
         public static List<Space> Spaces(this List<IBHoMObject> objects)
         {
             objects = objects.ObjectsByType(typeof(Space));
@@ -58,7 +58,7 @@ namespace BH.Engine.Environment
         [Description("BH.Engine.Environment.Query.SpacesByElementID => Returns a collection of Environment Spaces that match the given element ID")]
         [Input("spaces", "A collection of Environment Spaces")]
         [Input("elementID", "The Element ID to filter by")]
-        [Output("A collection of Environment Space objects that match the element ID")]
+        [Output("spaces", "A collection of Environment Space objects that match the element ID")]
         public static List<Space> SpacesByElementID(this List<Space> spaces, string elementID)
         {
             List<IEnvironmentObject> envObjects = new List<IEnvironmentObject>();
@@ -79,7 +79,7 @@ namespace BH.Engine.Environment
         [Description("BH.Engine.Environment.Query.SpaceByName => Returns a collection of Environment Spaces that match the given name")]
         [Input("spaces", "A collection of Environment Spaces")]
         [Input("name", "The name to filter by")]
-        [Output("A collection of Environment Space objects that match the name")]
+        [Output("spaces", "A collection of Environment Space objects that match the name")]
         public static List<Space> SpaceByName(this List<Space> spaces, string name)
         {
             return spaces.Where(x => x.Name == name).ToList();
@@ -87,7 +87,7 @@ namespace BH.Engine.Environment
 
         [Description("BH.Engine.Environment.Query.ClosedSpaces => Returns a nested collection of Environment Panels that represent fully closed spaces")]
         [Input("panelsAsSpaces", "A nested collection of Environment Panels representing spaces")]
-        [Output("A nested collection of Environment Panels that represent fully closed spaces")]
+        [Output("panelsAsSpaces", "A nested collection of Environment Panels that represent fully closed spaces")]
         public static List<List<Panel>> ClosedSpaces(this List<List<Panel>> panelsAsSpaces)
         {
             List<List<Panel>> closedSpaces = new List<List<Panel>>();
@@ -103,7 +103,7 @@ namespace BH.Engine.Environment
 
         [Description("BH.Engine.Environment.Query.NotClosedSpaces => Returns a nested collection of Environment Panels that represent spaces which aren't fully closed")]
         [Input("panelsAsSpaces", "A nested collection of Environment Panels representing spaces")]
-        [Output("A nested collection of Environment Panels that represent spaces which aren't fully closed")]
+        [Output("panelsAsSpaces", "A nested collection of Environment Panels that represent spaces which aren't fully closed")]
         public static List<List<Panel>> NotClosedSpaces(this List<List<Panel>> panelsAsSpaces)
         {
             List<List<Panel>> spacesNotClosed = new List<List<Panel>>();

@@ -37,7 +37,7 @@ namespace BH.Engine.Environment
 
         [Description("BH.Engine.Environment.Modify.Copy => copies a Panel into a new object")]
         [Input("panel", "An Environment Panel to copy from")]
-        [Output("The copied Environment Panel")]
+        [Output("panel", "The copied Environment Panel")]
         public static Panel Copy(this Panel panel)
         {
             Panel aPanel = panel.GetShallowClone(true) as Panel;

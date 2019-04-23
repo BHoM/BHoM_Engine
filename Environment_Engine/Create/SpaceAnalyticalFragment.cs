@@ -44,7 +44,7 @@ namespace BH.Engine.Environment
         [Input("sizeCooling", "The cooling size method of the space from the Sizing Method enum, default undefined")]
         [Input("sizeHeating", "The heating size method of the space from the Sizing Method enum, default undefined")]
         [Input("radiantProportion", "The radiant proportion of the space, default 0.0")]
-        [Output("A Space Analytical Fragment object - this can be added to an Environment Space")]
+        [Output("spaceAnalyticalFragment", "A Space Analytical Fragment object - this can be added to an Environment Space")]
         public static SpaceAnalyticalFragment SpaceAnalyticalFragment(string name = "", double internalDomesticHotWater = 0.0, double daylightFactor = 0.0, double facadeLength = 0.0, double fixedConvectionCoefficient = 0.0, SizingMethod sizeCooling = SizingMethod.Undefined, SizingMethod sizeHeating = SizingMethod.Undefined, double radiantProportion = 0.0)
         {
             return new SpaceAnalyticalFragment

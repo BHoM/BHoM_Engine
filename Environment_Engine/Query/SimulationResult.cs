@@ -43,7 +43,7 @@ namespace BH.Engine.Environment
         [Description("BH.Engine.Environment.Query.ResultsByType => Returns a collection of Environment Simulation Results by Simulation Result Type")]
         [Input("results", "A collection of Simulation Results")]
         [Input("type", "The Simulation Result Type filter")]
-        [Output("A collection of filtered simulation results")]
+        [Output("simulationResults", "A collection of filtered simulation results")]
         public static List<SimulationResult> ResultsByType(this List<SimulationResult> results, SimulationResultType type)
         {
             return results.Where(x => x.SimulationResultType == type).ToList();
@@ -52,7 +52,7 @@ namespace BH.Engine.Environment
         [Description("BH.Engine.Environment.Query.ResultsByType => Returns a collection of Environment Simulation Results by Profile Result Unit")]
         [Input("results", "A collection of Simulation Results")]
         [Input("unit", "The Profile Result Unit filter")]
-        [Output("A collection of filtered simulation results")]
+        [Output("simulationResults", "A collection of filtered simulation results")]
         public static List<SimulationResult> ResultsByUnit(this List<SimulationResult> results, ProfileResultUnit unit)
         {
             List<SimulationResult> resultList = new List<SimulationResult>();
@@ -70,7 +70,7 @@ namespace BH.Engine.Environment
         [Description("BH.Engine.Environment.Query.ResultsByType => Returns a collection of Environment Simulation Results by Profile Result Type")]
         [Input("results", "A collection of Simulation Results")]
         [Input("resultType", "The Profile Result Type filter")]
-        [Output("A collection of filtered simulation results")]
+        [Output("simulationResults", "A collection of filtered simulation results")]
         public static List<SimulationResult> ResultsByResultType(this List<SimulationResult> results, ProfileResultType resultType)
         {
             List<SimulationResult> resultList = new List<SimulationResult>();
@@ -89,7 +89,7 @@ namespace BH.Engine.Environment
         [Input("results", "A collection of Simulation Results")]
         [Input("simulationType", "The Simulation Result Type filter")]
         [Input("unit", "The Profile Result Unit filter")]
-        [Output("A collection of filtered simulation results")]
+        [Output("simulationResults", "A collection of filtered simulation results")]
         public static List<SimulationResult> ResultsByTypeUnit(this List<SimulationResult> results, SimulationResultType simulationType, ProfileResultUnit unit)
         {
             results = results.ResultsByType(simulationType);
@@ -101,7 +101,7 @@ namespace BH.Engine.Environment
         [Input("simulationType", "The Simulation Result Type filter")]
         [Input("unit", "The Profile Result Unit filter")]
         [Input("resultType", "The Profile Result Type filter")]
-        [Output("A collection of filtered simulation results")]
+        [Output("simulationResults", "A collection of filtered simulation results")]
         public static List<SimulationResult> ResultsByTypeUnitResultType(this List<SimulationResult> results, SimulationResultType simulationType, ProfileResultUnit unit, ProfileResultType resultType)
         {
             results = results.ResultsByTypeUnit(simulationType, unit);

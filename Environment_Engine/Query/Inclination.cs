@@ -47,7 +47,7 @@ namespace BH.Engine.Environment
 
         [Description("BH.Engine.Environment.Query.Inclination => Returns the inclination of a generic Environment Object")]
         [Input("environmentObject", "Any object implementing the IEnvironmentObject interface that can have its inclination queried")]
-        [Output("The inclination of the environment object")]
+        [Output("inclination", "The inclination of the environment object")]
         public static double Inclination(this IEnvironmentObject environmentObject)
         {
             Polyline pLine = environmentObject.ToPolyline();

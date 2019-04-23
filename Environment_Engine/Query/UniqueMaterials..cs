@@ -41,7 +41,7 @@ namespace BH.Engine.Environment
 
         [Description("BH.Engine.Environment.Query.UniqueMaterials => Returns a collection of unique materials from a collection of constructions")]
         [Input("constructions", "A collection of Constructions")]
-        [Output("A collection of unique Material objects")]
+        [Output("uniqueMaterials", "A collection of unique Material objects")]
         public static List<Material> UniqueMaterials(this List<Construction> constructions)
         {
             List<Material> unique = new List<Material>();
@@ -61,7 +61,7 @@ namespace BH.Engine.Environment
 
         [Description("BH.Engine.Environment.Query.UniqueMaterials => Returns a collection of unique materials from a collection of Environment Panels")]
         [Input("panels", "A collection of Environment Panels")]
-        [Output("A collection of unique Material objects")]
+        [Output("uniqueMaterials", "A collection of unique Material objects")]
         public static List<Material> UniqueMaterials(this List<Panel> panels)
         {
             return panels.UniqueConstructions().UniqueMaterials();
@@ -69,7 +69,7 @@ namespace BH.Engine.Environment
 
         [Description("BH.Engine.Environment.Query.UniqueMaterials => Returns a collection of unique materials from a nested collection of Environment Panels representing spaces")]
         [Input("panelsAsSpaces", "A nested collection of Environment Panels representing spaces")]
-        [Output("A collection of unique Material objects")]
+        [Output("uniqueMaterials", "A collection of unique Material objects")]
         public static List<Material> UniqueMaterials(this List<List<Panel>> panelsAsSpaces)
         {
             return panelsAsSpaces.UniquePanels().UniqueConstructions().UniqueMaterials();

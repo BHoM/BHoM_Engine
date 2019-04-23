@@ -40,7 +40,7 @@ namespace BH.Engine.Environment
 
         [Description("BH.Engine.Environment.Query.Altitude => Returns the minimum altitude of an Environment Object as the minimum z value from the bounding box of the geometry")]
         [Input("environmentObject", "Any object implementing the IEnvironmentObject interface that can have an altitude")]
-        [Output("The altitude of the object")]
+        [Output("altitude", "The altitude of the object")]
         public static double Altitude(this IEnvironmentObject environmentObject)
         {
             BoundingBox panelBoundingBox = BH.Engine.Geometry.Query.IBounds(environmentObject.ToPolyline());
