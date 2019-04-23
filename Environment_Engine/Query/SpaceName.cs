@@ -36,7 +36,7 @@ namespace BH.Engine.Environment
     {
         [Description("BH.Engine.Environment.Query.UniqueSpaceNames => Returns a collection of space names the panels are connected to")]
         [Input("panels", "A collection of Environment Panels")]
-        [Output("A collection of space names the panels are connected to")]
+        [Output("spaceNames", "A collection of space names the panels are connected to")]
         public static List<string> UniqueSpaceNames(this List<Panel> panels)
         {
             List<string> spaceNames = new List<string>();
@@ -48,7 +48,7 @@ namespace BH.Engine.Environment
 
         [Description("BH.Engine.Environment.Query.ConnectedSpaceName => Returns the name of the space the panels are enclosing")]
         [Input("panels", "A collection of Environment Panels")]
-        [Output("The space name the panels are jointly connected to")]
+        [Output("spaceName", "The space name the panels are jointly connected to")]
         public static string ConnectedSpaceName(this List<Panel> panels)
         {
             //Gets the single space name which most commonly unites these panels

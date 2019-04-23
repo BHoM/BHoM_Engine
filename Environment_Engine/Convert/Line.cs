@@ -42,7 +42,7 @@ namespace BH.Engine.Environment
 
         [Description("BH.Engine.Environment.Convert.ToLines => Returns a collection of Lines representing an Environment Edge")]
         [Input("edge", "An Environment Edge object")]
-        [Output("A collection of BHoM Geometry Line")]
+        [Output("lines", "A collection of BHoM Geometry Line")]
         public static List<Line> ToLines(this Edge edge)
         {
             return edge.Curve.ICollapseToPolyline(BH.oM.Geometry.Tolerance.Angle).SubParts();
@@ -50,7 +50,7 @@ namespace BH.Engine.Environment
 
         [Description("BH.Engine.Environment.Convert.ToLines => Returns a collection of Lines representing a collection of Environment Edges")]
         [Input("edges", "A collection of Environment Edge objects to convert into a collection of lines")]
-        [Output("A collection of BHoM Geometry Line")]
+        [Output("lines", "A collection of BHoM Geometry Line")]
         public static List<Line> ToLines(this List<Edge> edges)
         {
             List<Line> lines = new List<Line>();
@@ -62,7 +62,7 @@ namespace BH.Engine.Environment
 
         [Description("BH.Engine.Environment.Convert.ToLines => Returns the external boundary from an Environment Panel as a collection of BHoM Geometry Lines")]
         [Input("panel", "An Environment Panel to obtain the external boundary from")]
-        [Output("A collection of BHoM Geometry Line")]
+        [Output("lines", "A collection of BHoM Geometry Line")]
         public static List<Line> ToLines(this Panel panel)
         {
             return panel.ExternalEdges.ToLines();
@@ -70,7 +70,7 @@ namespace BH.Engine.Environment
 
         [Description("BH.Engine.Environment.Convert.ToLines => Returns the external boundary from an Environment Opening as a collection of BHoM Geometry Lines")]
         [Input("opening", "An Environment Opening to obtain the external boundary from")]
-        [Output("A collection of BHoM Geometry Line")]
+        [Output("lines", "A collection of BHoM Geometry Line")]
         public static List<Line> ToLines(this Opening opening)
         {
             return opening.Edges.ToLines();
@@ -78,7 +78,7 @@ namespace BH.Engine.Environment
 
         [Description("BH.Engine.Environment.Convert.ToLines => Returns the external boundary from a generic Environment Object")]
         [Input("environmentObject", "Any object implementing the IEnvironmentObject interface that can have its boundaries extracted")]
-        [Output("A collection of BHoM Geometry Line")]
+        [Output("lines", "A collection of BHoM Geometry Line")]
         public static List<Line> ToLines(this IEnvironmentObject environmentObject)
         {
             return ToLines(environmentObject as dynamic);

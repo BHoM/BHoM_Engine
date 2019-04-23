@@ -39,7 +39,7 @@ namespace BH.Engine.Environment
         [Input("name", "The name of the fragment property, default empty string")]
         [Input("peakCooling", "The peak cooling result for the building, default 0.0")]
         [Input("peakHeating", "The peak heating result for the building, default 0.0")]
-        [Output("An Environment Building Result Fragment object - this can be added to an Environment Building")]
+        [Output("buildingResultFragment", "An Environment Building Result Fragment object - this can be added to an Environment Building")]
         public static BuildingResultFragment BuildingResultFragment(string name = "", double peakCooling = 0.0, double peakHeating = 0.0)
         {
             return new BuildingResultFragment

@@ -45,7 +45,7 @@ namespace BH.Engine.Environment
         [Input("longitude", "The longitude of the building location, default 0.0")]
         [Input("elevation", "The elevation of the building, default 0.0")]
         [Input("type", "The type of building from the BuildingType enum, default undefined")]
-        [Output("An Environment Building object")]
+        [Output("building", "An Environment Building object")]
         public static Building Building(string name = "", double latitude = 0.0, double longitude = 0.0, double elevation = 0.0, BuildingType type = BuildingType.Undefined)
         {
             return new Building

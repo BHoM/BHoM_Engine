@@ -40,7 +40,7 @@ namespace BH.Engine.Environment
         [Input("name", "The name of the layer, default empty string")]
         [Input("material", "The material this layer is made up of, default null")]
         [Input("thickness", "The thickness of this material layer, default 0.0")]
-        [Output("A Layer object providing an instantiated use of a material with a given thickness")]
+        [Output("layer", "A Layer object providing an instantiated use of a material with a given thickness")]
         public static Layer Layer(string name = "", Material material = null, double thickness = 0.0)
         {
             return BH.Engine.Physical.Create.Layer(name, material, thickness);

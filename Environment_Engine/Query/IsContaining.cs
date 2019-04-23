@@ -48,7 +48,7 @@ namespace BH.Engine.Environment
         [Description("BH.Engine.Environment.Query.IsContaining => Defines whether an Environment Panel is contained by at least one group of panels representing spaces")]
         [Input("panelsAsSpaces", "A nested collection of Environment Panels representing spaces")]
         [Input("panel", "The Environment Panel to be checked to see if it is contained by the panelsAsSpaces")]
-        [Output("True if the panel is contained by at least one group of panels, false if it is not")]
+        [Output("isContaining", "True if the panel is contained by at least one group of panels, false if it is not")]
         public static bool IsContaining(this List<List<Panel>> panelsAsSpaces, Panel panel)
         {
             foreach (List<Panel> lst in panelsAsSpaces)
@@ -60,7 +60,7 @@ namespace BH.Engine.Environment
         [Description("BH.Engine.Environment.Query.IsContaining => Defines whether an a BHoM Geometry Point is contained within a list of Points")]
         [Input("points", "A collection of BHoM Geometry Points")]
         [Input("point", "The point being checked to see if it is contained within the list of points")]
-        [Output("True if the point is contained within the list, false if it is not")]
+        [Output("isContaining", "True if the point is contained within the list, false if it is not")]
         public static bool IsContaining(this List<Point> pts, Point pt)
         {
             return (pts.Where(point => point.X == pt.X && point.Y == pt.Y && point.Z == pt.Z).FirstOrDefault() != null);
@@ -70,7 +70,7 @@ namespace BH.Engine.Environment
         [Input("panel", "An Environment Panel to check with")]
         [Input("point", "The point being checked to see if it is contained within the bounds of the panel")]
         [Input("acceptOnEdges", "Decide whether to allow the point to sit on the edge of the panel, default false")]
-        [Output("True if the point is contained within the panel, false if it is not")]
+        [Output("isContaining", "True if the point is contained within the panel, false if it is not")]
         public static bool IsContaining(this Panel panel, Point pt, bool acceptOnEdges = false)
         {
             if (pt == null) return false;
@@ -81,7 +81,7 @@ namespace BH.Engine.Environment
         [Input("panels", "A collection of Environment Panels to check with")]
         [Input("point", "The point being checked to see if it is contained within the bounds of the panels")]
         [Input("acceptOnEdges", "Decide whether to allow the point to sit on the edge of the panel, default false")]
-        [Output("True if the point is contained within at least one of the panels, false if it is not")]
+        [Output("isContaining", "True if the point is contained within at least one of the panels, false if it is not")]
         public static bool IsContaining(this List<Panel> panels, Point point, bool acceptOnEdges = false)
         {
             List<Plane> planes = new List<Plane>();

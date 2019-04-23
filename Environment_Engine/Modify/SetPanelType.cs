@@ -40,7 +40,7 @@ namespace BH.Engine.Environment
 
         [Description("BH.Engine.Environment.Modify.SetPanelTypeByAdjacencies => Calculates the Panel type by the spaces adjacent to it. This is only valid for wall panels and is NOT valid for roof or floor panels")]
         [Input("panels", "A collection of Environment Panels to calculate the type of")]
-        [Output("A collection of Environment Panels with their type set")]
+        [Output("panels", "A collection of Environment Panels with their type set")]
         public static List<Panel> SetPanelTypeByAdjacencies(this List<Panel> panels)
         {
             foreach(Panel panel in panels)
@@ -59,7 +59,7 @@ namespace BH.Engine.Environment
         [Description("BH.Engine.Environment.Modify.UpdatePanelTypeByCustomData => Sets the panel type based on some custom data for the panel")]
         [Input("panels", "A collection of Environment Panels to set the type of")]
         [Input("customDataKey", "The key of the custom data dictionary the algorithm should use to find the custom data information to set the panel type from, default empty string")]
-        [Output("A collection of Environment Panels with their type set")]
+        [Output("panels", "A collection of Environment Panels with their type set")]
         public static List<Panel> UpdatePanelTypeByCustomData(this List<Panel> panels, string customDataKey = "")
         {
             if (customDataKey == "")
@@ -111,7 +111,7 @@ namespace BH.Engine.Environment
         [Description("BH.Engine.Environment.Modify.SetPanelType => Sets the panel type based on the provided type")]
         [Input("panels", "A collection of Environment Panels to set the type of")]
         [Input("type", "The panel type to assign to the panels")]
-        [Output("A collection of Environment Panels with their type set")]
+        [Output("panels", "A collection of Environment Panels with their type set")]
         public static List<Panel> SetPanelType(this List<Panel> panels, PanelType type)
         {
             foreach (Panel p in panels)

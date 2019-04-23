@@ -40,7 +40,7 @@ namespace BH.Engine.Environment
         [Input("northAngle", "The angle to north for the building fragment, default 0.0")]
         [Input("gmtOffset", "The timezone of the building as an offset to GMT in decimal hours, default 0.0")]
         [Input("year", "The year of the building to be analysed, default 0")]
-        [Output("An Environment Analytical Building Fragment object - this can be added to an Environment Building")]
+        [Output("buildingAnalyticalFragment", "An Environment Analytical Building Fragment object - this can be added to an Environment Building")]
         public static BuildingAnalyticalFragment BuildingAnalyticalFragment(string name = "", double northAngle = 0.0, double gmtOffset = 0.0, int year = 0)
         {
             return new BuildingAnalyticalFragment

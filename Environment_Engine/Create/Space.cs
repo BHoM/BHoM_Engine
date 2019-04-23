@@ -45,7 +45,7 @@ namespace BH.Engine.Environment
         [Input("zones", "A collection of zone names the space is to be included in, default null")]
         [Input("gains", "A collection of gains to be applied to the space, default null")]
         [Input("type", "The type of space from the Space Type enum, default undefined")]
-        [Output("An Environment Space object")]
+        [Output("space", "An Environment Space object")]
         public static Space Space(string name = "", List<string> zones = null, List<IGain> gains = null, SpaceType type = SpaceType.Undefined)
         {
             zones = zones ?? new List<string>();

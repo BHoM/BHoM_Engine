@@ -52,7 +52,7 @@ namespace BH.Engine.Environment
         [Input("convectionCoefficient", "The convection coefficient of this gas material, default 0.0")]
         [Input("gas", "The type of gas this material is from the Gas Type enum, default undefined")]
         [Input("density", "The density of the material, default 0.0")]
-        [Output("An Environment Gas Material object")]
+        [Output("gasMaterial", "An Environment Gas Material object")]
         public static Material GasMaterial(string name = "", double conductivity = 0.0, double specificHeat = 0.0, double additionalHeatTransfer = 0.0, double vapourDiffusionFactor = 0.0, string description = "", Absorptance absorptance = null, Roughness roughness = Roughness.Undefined, double convectionCoefficient = 0.0, Gas gas = Gas.Undefined, double density = 0.0)
         {
             GasMaterial gasProperties = new GasMaterial
@@ -92,7 +92,7 @@ namespace BH.Engine.Environment
         [Input("transparency", "The percentage transparancy of this solid material, defined as being between 0 and 1 (0 being no transparancy, 1 being fully transparent), default 0.)")]
         [Input("ignoreInUValudCalculation", "Define whether or not this material should be ignored in any uValue calculations, default false")]
         [Input("density", "The density of the material, default 0.0")]
-        [Output("An Environment Solid Material object")]
+        [Output("solidMaterial", "An Environment Solid Material object")]
         public static Material SolidMaterial(string name = "", double conductivity = 0.0, double specificHeat = 0.0, double additionalHeatTransfer = 0.0, double vapourDiffusionFactor = 0.0, string description = "", Absorptance absorptance = null, Roughness roughness = Roughness.Undefined, double solarReflectanceExternal = 0.0, double solarReflectanceInternal = 0.0, double solarTransmittance = 0.0, double lightReflectanceExternal = 0.0, double lightReflectanceInternal = 0.0, double lightTransmittance = 0.0, double emissivityExternal = 0.0, double emissivityInternal = 0.0, double transparency = 0.0, bool ignoreInUValueCalculation = false, double density = 0.0)
         {
             SolidMaterial solidProperties = new SolidMaterial

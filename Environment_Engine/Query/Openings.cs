@@ -44,7 +44,7 @@ namespace BH.Engine.Environment
 
         [Description("BH.Engine.Environment.Query.Openings => Returns a collection of Environment Openings from a list of generic BHoM objects")]
         [Input("objects", "A collection of generic BHoM objects")]
-        [Output("A collection of Environment Opening objects")]
+        [Output("openings", "A collection of Environment Opening objects")]
         public static List<Opening> Openings(this List<IBHoMObject> objects)
         {
             objects = objects.ObjectsByType(typeof(Opening));
@@ -58,7 +58,7 @@ namespace BH.Engine.Environment
         [Description("BH.Engine.Environment.Query.OpeningsByElementID => Returns a collection of Environment Openings that match the given element ID")]
         [Input("openings", "A collection of Environment Openings")]
         [Input("elementID", "The Element ID to filter by")]
-        [Output("A collection of Environment Opening objects that match the element ID")]
+        [Output("openings", "A collection of Environment Opening objects that match the element ID")]
         public static List<Opening> OpeningsByElementID(this List<Opening> openings, string elementID)
         {
             List<IEnvironmentObject> envObjects = new List<IEnvironmentObject>();
@@ -79,7 +79,7 @@ namespace BH.Engine.Environment
         [Description("BH.Engine.Environment.Query.OpeningsByElementID => Returns a collection of Environment Openings that match the given element ID")]
         [Input("panels", "A collection of Environment Panels to query for openings")]
         [Input("elementID", "The Element ID to filter by")]
-        [Output("A collection of Environment Opening objects that match the element ID")]
+        [Output("openings", "A collection of Environment Opening objects that match the element ID")]
         public static List<Opening> OpeningsByElementID(this List<Panel> panels, string elementID)
         {
             List<Opening> allOpenings = new List<Opening>();
@@ -91,7 +91,7 @@ namespace BH.Engine.Environment
 
         [Description("BH.Engine.Environment.Query.OpeningsFromElements => Returns a collection of Environment Openings from a collection of Environment Panels")]
         [Input("panels", "A collection of Environment Panels to query for openings")]
-        [Output("A collection of Environment Opening objects that match the element ID")]
+        [Output("openings", "A collection of Environment Opening objects that match the element ID")]
         public static List<Opening> OpeningsFromElements(this List<Panel> panels)
         {
             List<Opening> openings = new List<Opening>();

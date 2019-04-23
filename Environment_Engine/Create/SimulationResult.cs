@@ -43,7 +43,7 @@ namespace BH.Engine.Environment
         [Input("name", "The name of the simulation result, default empty string")]
         [Input("type", "The type of simulation result from the Simulation Result Type enum, default undefined")]
         [Input("results", "A collection of profile results that make up this simulation result, default null")]
-        [Output("An Environment Simulation Result object")]
+        [Output("simulationResult", "An Environment Simulation Result object")]
         public static SimulationResult SimulationResult(string name = "", SimulationResultType type = SimulationResultType.Undefined, List<ProfileResult> results = null)
         {
             results = results ?? new List<ProfileResult>();

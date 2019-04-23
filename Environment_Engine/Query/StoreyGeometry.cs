@@ -43,7 +43,7 @@ namespace BH.Engine.Environment
         [Description("BH.Engine.Environment.Query.StoreyGeometry => Returns the storey geometry for a given level")]
         [Input("level", "An Architecture Level to get the geometry for")]
         [Input("panelsAsSpaces", "A nested collection of Environment Panels representing spaces")]
-        [Output("A BHoM Geometry Polyline outlining the geometry of the level")]
+        [Output("polyline", "A BHoM Geometry Polyline outlining the geometry of the level")]
         public static Polyline StoreyGeometry(this Level level, List<List<Panel>> panelsAsSpaces)
         {
             List<List<Panel>> spacesAtLevel = panelsAsSpaces.FindAll(x => x.Level(level) != null).ToList();

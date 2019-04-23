@@ -45,7 +45,7 @@ namespace BH.Engine.Environment
         [Description("BH.Engine.Environment.Query.PanelsNotMatched => Returns a collection of Environment Panels which are not yet associated to spaces and are not shading panels")]
         [Input("panels", "A collection of Environment Panels")]
         [Input("panelsAsSpaces", "A nested collection of Environment Panels representing spaces currently built")]
-        [Output("A collection of Environment Panel objects which are not associated to a space (shading elements excluded)")]
+        [Output("panels", "A collection of Environment Panel objects which are not associated to a space (shading elements excluded)")]
         public static List<Panel> ElementsNotMatched(this List<Panel> panels, List<List<Panel>> panelsAsSpaces)
         {
             //Find the building elements that haven't been mapped yet

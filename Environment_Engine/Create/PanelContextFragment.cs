@@ -41,7 +41,7 @@ namespace BH.Engine.Environment
         [Input("isGround", "Defines whether the panel is a ground panel, default false")]
         [Input("colour", "Defines the colour of the panel, default empty string")]
         [Input("reversed", "Defines whether the panel is reversed, default false")]
-        [Output("A Panel Context Fragment object - this can be added to an Environment Panel")]
+        [Output("panelContextFragment", "A Panel Context Fragment object - this can be added to an Environment Panel")]
         public static PanelContextFragment PanelContextFragment(string name = "", bool isAir = false, bool isGround = false, string colour = "", bool reversed = false)
         {
             return new PanelContextFragment

@@ -42,7 +42,7 @@ namespace BH.Engine.Environment
 
         [Description("BH.Engine.Environment.Query.Buildings => Returns a collection of Environment Buildings from a list of generic BHoM objects")]
         [Input("objects", "A collection of generic BHoM objects")]
-        [Output("A collection of Environment Building objects")]
+        [Output("buildings", "A collection of Environment Building objects")]
         public static List<Building> Buildings(this List<IBHoMObject> objects)
         {
             objects = objects.ObjectsByType(typeof(Building));

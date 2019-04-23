@@ -40,7 +40,7 @@ namespace BH.Engine.Environment
         [Input("lightingViewCoefficient", "The lighting view coefficient, default 0.0")]
         [Input("occupantViewCoefficient", "The occupant view coefficient, default 0.0")]
         [Input("equipmentViewCoefficient", "The equipment view coefficient, default 0.0")]
-        [Output("An Environment Coefficient Fragment object - this can be added to any Environment object")]
+        [Output("coefficientFragment", "An Environment Coefficient Fragment object - this can be added to any Environment object")]
         public static CoefficientFragment CoefficientFragment(string name = "", double lightingViewCoefficient = 0.0, double occupantViewCoefficient = 0.0, double equipmentViewCoefficient = 0.0)
         {
             return new CoefficientFragment

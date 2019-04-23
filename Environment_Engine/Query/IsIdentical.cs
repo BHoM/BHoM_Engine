@@ -43,7 +43,7 @@ namespace BH.Engine.Environment
         [Description("BH.Engine.Environment.Query.CullOverlaps => Defines whether two panels are geometrically identical")]
         [Input("panel", "An Environment Panel")]
         [Input("panelToCompare", "An Environment Panel to compare with the first panel")]
-        [Output("True if the two panels are geometrically identical, false if not")]
+        [Output("isidentical", "True if the two panels are geometrically identical, false if not")]
         public static bool IsIdentical(this Panel panel, Panel panelToCompare)
         {
             //Go through building elements and compare vertices and centre points

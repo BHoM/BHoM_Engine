@@ -41,7 +41,7 @@ namespace BH.Engine.Environment
         [Description("BH.Engine.Environment.Query.ConstructionByName => Gets a collection of constructions matching the given name")]
         [Input("constructions", "A collection of constructions")]
         [Input("name", "The name to filter by")]
-        [Output("A collection of constructions which match the given name")]
+        [Output("constructions", "A collection of constructions which match the given name")]
         public static List<Construction> ConstructionByName(this List<Construction> constructions, string name)
         {
             return BH.Engine.Physical.Query.ConstructionByName(constructions, name);

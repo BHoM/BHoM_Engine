@@ -47,7 +47,7 @@ namespace BH.Engine.Environment
 
         [Description("BH.Engine.Environment.Query.Width => Returns the width of a generic Environment Object")]
         [Input("environmentObject", "Any object implementing the IEnvironmentObject interface that can have its width queried")]
-        [Output("The width of the environment object")]
+        [Output("width", "The width of the environment object")]
         public static double Width(this IEnvironmentObject environmentObject)
         {
             return Width(environmentObject as dynamic);
@@ -55,7 +55,7 @@ namespace BH.Engine.Environment
 
         [Description("BH.Engine.Environment.Query.Width => Returns the width of an Environment Panel")]
         [Input("panel", "An Environment Panel")]
-        [Output("The width of the panel")]
+        [Output("width", "The width of the panel")]
         public static double Width(this Panel panel)
         {
             return panel.ToPolyline().Width();
@@ -63,7 +63,7 @@ namespace BH.Engine.Environment
 
         [Description("BH.Engine.Environment.Query.Width => Returns the width of an Environment Opening")]
         [Input("opening", "An Environment Opening")]
-        [Output("The width of the opening")]
+        [Output("width", "The width of the opening")]
         public static double Width(this Opening opening)
         {
             return opening.ToPolyline().Width();
@@ -71,7 +71,7 @@ namespace BH.Engine.Environment
 
         [Description("BH.Engine.Environment.Query.Width => Returns the width of a BHoM Geometry ICurve based on the bounding box of the curve")]
         [Input("curve", "BHoM Geometry ICurve")]
-        [Output("The width of the curve based on the difference in z values for its bounding box")]
+        [Output("width", "The width of the curve based on the difference in XY values for its bounding box")]
         public static double Width(this ICurve panelCurve)
         {
             BoundingBox bBox = panelCurve.IBounds();

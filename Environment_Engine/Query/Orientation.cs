@@ -42,7 +42,7 @@ namespace BH.Engine.Environment
 
         [Description("BH.Engine.Environment.Query.Orientation => Returns the orientation of a given environmental object")]
         [Input("environmentObject", "Any object implementing the IEnvironmentObject interface that can have its orientation queried")]
-        [Output("The orientation of the Environment Object")]
+        [Output("orientation", "The orientation of the Environment Object")]
         public static double Orientation(this IEnvironmentObject environmentObject)
         {
             Polyline pLine = environmentObject.ToPolyline();

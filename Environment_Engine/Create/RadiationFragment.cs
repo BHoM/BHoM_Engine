@@ -40,7 +40,7 @@ namespace BH.Engine.Environment
         [Input("lightingRadiation", "The lighting radiation, default 0.0")]
         [Input("occupantRadiation", "The occupant radiation, default 0.0")]
         [Input("equipmentRadiation", "The equipment radiation, default 0.0")]
-        [Output("An Environment Coefficient Fragment object - this can be added to any Environment object")]
+        [Output("radiationFragment", "An Environment Coefficient Fragment object - this can be added to any Environment object")]
         public static RadiationFragment RadiationFragment(string name = "", double lightingRadiation = 0.0, double occupantRadiation = 0.0, double equipmentRadiation = 0.0)
         {
             return new RadiationFragment

@@ -41,7 +41,7 @@ namespace BH.Engine.Environment
 
         [Description("BH.Engine.Environment.Query.IsInternal => Determines whether the Environment Panel is internally facing")]
         [Input("panel", "An Environment Panel")]
-        [Output("True if the panel is internally facing, false otherwise")]
+        [Output("isInternal", "True if the panel is internally facing, false otherwise")]
         public static bool IsInternal(this Panel panel)
         {
             return panel.Type != PanelType.Roof; //TODO: Put a more robust check of whether the element is internal or not in...

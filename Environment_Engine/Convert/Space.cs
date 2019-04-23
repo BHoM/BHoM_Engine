@@ -41,7 +41,7 @@ namespace BH.Engine.Environment
         [Description("BH.Engine.Environment.Convert.ToSpace => Returns a collection of Environment Panels which are connected to the space name provided")]
         [Input("panels", "A collection of Environment Panels")]
         [Input("spaceName", "The name of the space the panels should enclose")]
-        [Output("A collection of Environment Panels which have the given space name as a connected space")]
+        [Output("panelsAsSpace", "A collection of Environment Panels which have the given space name as a connected space")]
         public static List<Panel> ToSpace(this List<Panel> panels, string spaceName)
         {
             return panels.Where(x => x.ConnectedSpaces.Contains(spaceName)).ToList();
@@ -49,7 +49,7 @@ namespace BH.Engine.Environment
 
         [Description("BH.Engine.Environment.Convert.ToSpaces => Returns a nested collection of Environment Panels which are grouped by the spaces they are connected to")]
         [Input("panels", "A collection of Environment Panels")]
-        [Output("A nested collection of Environment Panels grouped by the space they enclose")]
+        [Output("panelsAsSpaces", "A nested collection of Environment Panels grouped by the space they enclose")]
         public static List<List<Panel>> ToSpaces(this List<Panel> panels)
         {
             List<List<Panel>> panelsAsSpaces = new List<List<Panel>>();

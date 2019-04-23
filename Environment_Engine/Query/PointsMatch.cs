@@ -43,7 +43,7 @@ namespace BH.Engine.Environment
         [Description("BH.Engine.Environment.Query.PointsMatch => Returns whether a list of points contains every point in the second list - order is not relevant")]
         [Input("controlPoints", "A collection of BHoM Geometry Points as the control list")]
         [Input("measurePoints", "A collection of BHoM Geometry Points as the measure list")]
-        [Output("True if all of the measurePoints are within the controlPoints list (independent of list order), false otherwise")]
+        [Output("doPointsMatch", "True if all of the measurePoints are within the controlPoints list (independent of list order), false otherwise")]
         public static bool PointsMatch(this List<Point> controlPoints, List<Point> measurePoints)
         {
             if (controlPoints.Count != measurePoints.Count) return false;

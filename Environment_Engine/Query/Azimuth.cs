@@ -43,7 +43,7 @@ namespace BH.Engine.Environment
         [Description("BH.Engine.Environment.Query.Azimuth => Returns the azimuth of a given environmental object")]
         [Input("environmentObject", "Any object implementing the IEnvironmentObject interface that can have its azimuth queried")]
         [Input("referenceVector", "The reference vector for querying the azimuth from the object")]
-        [Output("The azimuth of the Environment Object")]
+        [Output("azimuth", "The azimuth of the Environment Object")]
         public static double Azimuth(this IEnvironmentObject environmentObject, Vector refVector)
         {
             return environmentObject.ToPolyline().Azimuth(refVector);
@@ -52,7 +52,7 @@ namespace BH.Engine.Environment
         [Description("BH.Engine.Environment.Query.Azimuth => Returns the azimuth of a BHoM Geometry Polyline")]
         [Input("polyline", "A BHoM Geometry Polyline")]
         [Input("referenceVector", "The reference vector for querying the azimuth from the polyline")]
-        [Output("The azimuth of the polyline")]
+        [Output("azimuth", "The azimuth of the polyline")]
         public static double Azimuth(this Polyline polyline, Vector refVector)
         {
             List<Point> pts = polyline.DiscontinuityPoints();

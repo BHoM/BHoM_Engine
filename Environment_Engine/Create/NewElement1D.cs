@@ -24,6 +24,9 @@ using BH.oM.Environment.Elements;
 using BH.oM.Geometry;
 using BH.Engine.Geometry;
 
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
+
 namespace BH.Engine.Environment
 {
     public static partial class Create
@@ -32,6 +35,10 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("BH.Engine.Environment.Create.NewElement1D => Returns an instance of an IElement1D from the given object")]
+        [Input("opening", "An Environmental Opening object")]
+        [Input("curve", "The curve to clone")]
+        [Output("element", "A 1D element object")]
         public static IElement1D NewElement1D(this Opening opening, ICurve curve)
         {
             return curve.IClone();
@@ -39,6 +46,10 @@ namespace BH.Engine.Environment
 
         /***************************************************/
 
+        [Description("BH.Engine.Environment.Create.NewElement1D => Returns an instance of an IElement1D from the given object")]
+        [Input("panel", "An Environmental Panel object")]
+        [Input("curve", "The curve to clone")]
+        [Output("element", "A 1D element object")]
         public static IElement1D NewElement1D(this Panel panel, ICurve curve)
         {
             return curve.IClone();

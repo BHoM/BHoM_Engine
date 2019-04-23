@@ -41,7 +41,7 @@ namespace BH.Engine.Environment
         [Description("BH.Engine.Environment.Query.AdjacentSpaces => Returns a nested collection of Environment Panels which contain the search panel")]
         [Input("panel", "An Environment Panel to find within the search panels")]
         [Input("panelsAsSpaces", "The nested collection of Environment Panels that represent the spaces to search from")]
-        [Output("A nested collection of Environment Panels which contain the search panel")]
+        [Output("panelsAsSpaces", "A nested collection of Environment Panels which contain the search panel")]
         public static List<List<Panel>> AdjacentSpaces(this Panel panel, List<List<Panel>> panelsAsSpaces)
         {
             //Get the lists which contain this building element

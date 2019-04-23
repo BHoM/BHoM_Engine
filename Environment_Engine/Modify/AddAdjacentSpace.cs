@@ -37,7 +37,7 @@ namespace BH.Engine.Environment
         [Description("BH.Engine.Environment.Modify.AddAdjacentSpace => Returns a list of Environment Panel with the provided space name added as a connected space")]
         [Input("panels", "A collection of Environment Panels to add the space name to")]
         [Input("spaceName", "The name of the space the panels are connected to")]
-        [Output("A collection of modified Environment Panels with the provided space name listed as a connecting space")]
+        [Output("panelsAsSpace", "A collection of modified Environment Panels with the provided space name listed as a connecting space")]
         public static List<Panel> AddAdjacentSpace(this List<Panel> panels, string spaceName)
         {
             foreach(Panel p in panels)
@@ -54,7 +54,7 @@ namespace BH.Engine.Environment
         [Description("BH.Engine.Environment.Modify.AddAdjacentSpace => Returns a single Environment Panel with the provided space name added as a connected space")]
         [Input("panel", "A single Environment Panel to add the space name to")]
         [Input("spaceName", "The name of the space the panel is connected to")]
-        [Output("A modified Environment Panel with the provided space name listed as a connecting space")]
+        [Output("panel", "A modified Environment Panel with the provided space name listed as a connecting space")]
         public static Panel AddAdjacentSpace(this Panel panel, string spaceName)
         {
             return AddAdjacentSpace(new List<Panel> { panel }, spaceName)[0];

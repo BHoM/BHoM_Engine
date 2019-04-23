@@ -39,7 +39,7 @@ namespace BH.Engine.Environment
         [Description("BH.Engine.Environment.Modify.SetInternalElements2D => Assign a new collection of internal 2D elements to an Environment Opening")]
         [Input("opening", "An Environment Opening to update")]
         [Input("internalElements2D", "A collection of internal 2D elements to add to the opening")]
-        [Output("The updated Environment Opening")]
+        [Output("opening", "The updated Environment Opening")]
         public static Opening SetInternalElements2D(this Opening opening, List<IElement2D> internalElements2D)
         {
             if (internalElements2D.Count != 0)
@@ -51,7 +51,7 @@ namespace BH.Engine.Environment
         [Description("BH.Engine.Environment.Modify.SetInternalElements2D => Assign a new collection of internal 2D elements to an Environment Panel")]
         [Input("panel", "An Environment Panel to update")]
         [Input("internalElements2D", "A collection of internal 2D elements to assign to the panel")]
-        [Output("The updated Environment Panel")]
+        [Output("panel", "The updated Environment Panel")]
         public static Panel SetInternalElements2D(this Panel panel, List<IElement2D> internalElements2D)
         {
             Panel pp = panel.GetShallowClone() as Panel;
