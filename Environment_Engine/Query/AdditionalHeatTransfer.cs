@@ -40,7 +40,7 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("BH.Engine.Environment.Query.AdditionalHeatTransfer => Returns the total additional heat transfer of a construction")]
+        [Description("Returns the total additional heat transfer of a construction")]
         [Input("construction", "A Construction Object")]
         [Output("additionalHeatTransfer", "The additional heat transfer of the construction as a sum of all materials additional heat transfer")]
         public static double AdditionalHeatTransfer(this Construction construction)

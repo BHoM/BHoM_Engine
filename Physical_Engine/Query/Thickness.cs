@@ -38,7 +38,7 @@ namespace BH.Engine.Physical
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        [Description("BH.Engine.Physical.Query.Thickness => Returns the thickness of a generic construction")]
+        [Description("Returns the thickness of a generic construction")]
         [Input("construction", "A generic Construction object")]
         [Output("thickness", "The total thickness of the generic construction as a sum of all its layers")]
         public static double IThickness(this IConstruction construction)
@@ -46,7 +46,7 @@ namespace BH.Engine.Physical
             return Thickness(construction as dynamic);
         }
 
-        [Description("BH.Engine.Physical.Query.Thickness => Returns the thickness of a construction")]
+        [Description("Returns the thickness of a construction")]
         [Input("construction", "A Construction object")]
         [Output("thickness", "The total thickness of the construction as a sum of all its layers")]
         public static double Thickness(this Construction construction)

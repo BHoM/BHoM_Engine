@@ -35,7 +35,7 @@ namespace BH.Engine.Physical
 {
     public static partial class Create
     {
-        [Description("BH.Engine.Physical.Create.Material => Returns a Material object")]
+        [Description("Returns a Material object")]
         [Input("name", "The name of the material, default empty string")]
         [Input("density", "The density of the material, default 0.0")]
         [Input("properties", "A collection of the specific properties of the material to be created, default null")]

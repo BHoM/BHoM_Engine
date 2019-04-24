@@ -39,7 +39,7 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("BH.Engine.Environment.Query.IsCoPlanar => Determines whether the two Environment Panels are co-planar")]
+        [Description("Determines whether the two Environment Panels are co-planar")]
         [Input("panel", "An Environment Panel")]
         [Input("panelToCompare", "An Environment Panel to compare against")]
         [Output("isCoPlanar", "True if the two panels are co-planar, false otherwise")]

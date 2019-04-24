@@ -45,7 +45,7 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("BH.Engine.Environment.Query.IsContaining => Defines whether an Environment Panel is contained by at least one group of panels representing spaces")]
+        [Description("Defines whether an Environment Panel is contained by at least one group of panels representing spaces")]
         [Input("panelsAsSpaces", "A nested collection of Environment Panels representing spaces")]
         [Input("panel", "The Environment Panel to be checked to see if it is contained by the panelsAsSpaces")]
         [Output("isContaining", "True if the panel is contained by at least one group of panels, false if it is not")]
@@ -57,7 +57,7 @@ namespace BH.Engine.Environment
             return false;
         }
 
-        [Description("BH.Engine.Environment.Query.IsContaining => Defines whether an a BHoM Geometry Point is contained within a list of Points")]
+        [Description("Defines whether an a BHoM Geometry Point is contained within a list of Points")]
         [Input("points", "A collection of BHoM Geometry Points")]
         [Input("point", "The point being checked to see if it is contained within the list of points")]
         [Output("isContaining", "True if the point is contained within the list, false if it is not")]
@@ -66,7 +66,7 @@ namespace BH.Engine.Environment
             return (pts.Where(point => point.X == pt.X && point.Y == pt.Y && point.Z == pt.Z).FirstOrDefault() != null);
         }
 
-        [Description("BH.Engine.Environment.Query.IsContaining => Defines whether an Environment Panel contains a provided point")]
+        [Description("Defines whether an Environment Panel contains a provided point")]
         [Input("panel", "An Environment Panel to check with")]
         [Input("point", "The point being checked to see if it is contained within the bounds of the panel")]
         [Input("acceptOnEdges", "Decide whether to allow the point to sit on the edge of the panel, default false")]
@@ -77,7 +77,7 @@ namespace BH.Engine.Environment
             return new List<Panel> { panel }.IsContaining(pt, acceptOnEdges);
         }
 
-        [Description("BH.Engine.Environment.Query.IsContaining => Defines whether a collection of Environment Panels contains a provided point")]
+        [Description("Defines whether a collection of Environment Panels contains a provided point")]
         [Input("panels", "A collection of Environment Panels to check with")]
         [Input("point", "The point being checked to see if it is contained within the bounds of the panels")]
         [Input("acceptOnEdges", "Decide whether to allow the point to sit on the edge of the panel, default false")]

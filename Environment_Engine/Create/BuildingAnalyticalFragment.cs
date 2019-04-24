@@ -35,7 +35,7 @@ namespace BH.Engine.Environment
 {
     public static partial class Create
     {
-        [Description("BH.Engine.Environment.Create.BuildingAnalyticalFragment => Returns a Building Analytical Fragment object")]
+        [Description("Returns a Building Analytical Fragment object")]
         [Input("name", "The name of the fragment property, default empty string")]
         [Input("northAngle", "The angle to north for the building fragment, default 0.0")]
         [Input("gmtOffset", "The timezone of the building as an offset to GMT in decimal hours, default 0.0")]

@@ -36,7 +36,7 @@ namespace BH.Engine.Physical
 {
     public static partial class Create
     {
-        [Description("BH.Engine.Physical.Create.Layer => Returns a Layer object")]
+        [Description("Returns a Layer object")]
         [Input("name", "The name of the layer, default empty string")]
         [Input("material", "The material this layer is made up of, default null")]
         [Input("thickness", "The thickness of this material layer, default 0.0")]

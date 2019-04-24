@@ -40,7 +40,7 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("BH.Engine.Environment.Query.PointsMatch => Returns whether a list of points contains every point in the second list - order is not relevant")]
+        [Description("Returns whether a list of points contains every point in the second list - order is not relevant")]
         [Input("controlPoints", "A collection of BHoM Geometry Points as the control list")]
         [Input("measurePoints", "A collection of BHoM Geometry Points as the measure list")]
         [Output("doPointsMatch", "True if all of the measurePoints are within the controlPoints list (independent of list order), false otherwise")]

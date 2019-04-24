@@ -41,7 +41,7 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("BH.Engine.Environment.Query.Thickness => Returns the thickness of an Environment Panel based on its construction")]
+        [Description("Returns the thickness of an Environment Panel based on its construction")]
         [Input("panel", "An Environment Panel")]
         [Output("thickness", "The total thickness of the panel as a result of the construction placed on it")]
         public static double Thickness(this Panel panel)
@@ -49,7 +49,7 @@ namespace BH.Engine.Environment
             return panel.Construction.IThickness();
         }
 
-        [Description("BH.Engine.Environment.Query.Thickness => Returns the thickness of an Environment Opening based on its construction")]
+        [Description("Returns the thickness of an Environment Opening based on its construction")]
         [Input("opening", "An Environment Opening")]
         [Output("thickness", "The thickness of the opening as the largest thickness between the frame construction and opening construction")]
         public static double Thickness(this Opening opening)
@@ -57,7 +57,7 @@ namespace BH.Engine.Environment
             return Math.Max(opening.OpeningConstruction.IThickness(), opening.FrameConstruction.IThickness());
         }
 
-        [Description("BH.Engine.Environment.Query.Thickness => Returns the thickness of an Environment Opening based on its construction")]
+        [Description("Returns the thickness of an Environment Opening based on its construction")]
         [Input("opening", "An Environment Opening")]
         [Input("useFrameConstruction", "Determine whether to use the frame construction for thickness or the glazing construction. Default false - default will be to use the glazing construction")]
         [Output("thickness", "The thickness of the opening")]

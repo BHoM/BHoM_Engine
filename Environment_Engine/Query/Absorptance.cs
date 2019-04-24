@@ -41,7 +41,7 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("BH.Engine.Environment.Query.Absorptance => Returns the total Absorptance of a construction")]
+        [Description("Returns the total Absorptance of a construction")]
         [Input("construction", "A Construction object")]
         [Output("absorptance", "The total absorptance of the construction")]
         public static Absorptance Absorptance(this Construction construction)

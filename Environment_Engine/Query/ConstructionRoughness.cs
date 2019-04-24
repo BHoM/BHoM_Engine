@@ -41,7 +41,7 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("BH.Engine.Environment.Query.Roughness => Returns the average roughness of a construction")]
+        [Description("Returns the average roughness of a construction")]
         [Input("construction", "A Construction object")]
         [Output("roughness", "The average roughness of the construction")]
         public static BHM.Roughness Roughness(this Construction construction)

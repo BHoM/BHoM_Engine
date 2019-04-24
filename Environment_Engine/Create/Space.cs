@@ -40,7 +40,7 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("BH.Engine.Environment.Create.Space => Returns an Environment Space object")]
+        [Description("Returns an Environment Space object")]
         [Input("name", "The name of the space, default empty string")]
         [Input("zones", "A collection of zone names the space is to be included in, default null")]
         [Input("gains", "A collection of gains to be applied to the space, default null")]

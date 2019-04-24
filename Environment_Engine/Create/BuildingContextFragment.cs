@@ -35,7 +35,7 @@ namespace BH.Engine.Environment
 {
     public static partial class Create
     {
-        [Description("BH.Engine.Environment.Create.BuildingContextFragment => Returns a Building Context Fragment object")]
+        [Description("Returns a Building Context Fragment object")]
         [Input("name", "The name of the fragment property, default empty string")]
         [Input("placeName", "The name of the place the building occupies, default empty string")]
         [Input("weatherStation", "The name of the nearest weather station to the building, default empty string")]

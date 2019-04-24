@@ -40,7 +40,7 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("BH.Engine.Environment.Query.ObjectsByType => Returns a collection of objects which are of the provided object type")]
+        [Description("Returns a collection of objects which are of the provided object type")]
         [Input("objects", "A collection of generic BHoM objects")]
         [Input("type", "The type of object to be queried and returned")]
         [Output("bhomObjects", "A collection of generic BHoM objects matching the provided type")]

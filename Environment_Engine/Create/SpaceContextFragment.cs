@@ -35,7 +35,7 @@ namespace BH.Engine.Environment
 {
     public static partial class Create
     {
-        [Description("BH.Engine.Environment.Create.SpaceAnalyticalFragment => Returns an Space Context Fragment object")]
+        [Description("Returns an Space Context Fragment object")]
         [Input("name", "The name of the fragment property, default empty string")]
         [Input("isExternal", "Defines whether the space is externally facing, default false")]
         [Input("colour", "Defines the colour of the space, default empty string")]

@@ -39,7 +39,7 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("BH.Engine.Environment.Create.Absorptance => Returns an Environment Absorptance object")]
+        [Description("Returns an Environment Absorptance object")]
         [Input("name", "The name of the absorptance, default empty string")]
         [Input("value", "The amount of absorptance the material should have, default 0.0")]
         [Input("unit", "The unit of absorptance from the Absorptance Unit enum, default undefined")]

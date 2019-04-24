@@ -44,7 +44,7 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("BH.Engine.Environment.Query.Panels => Returns a collection of Environment Panels from a list of generic BHoM objects")]
+        [Description("Returns a collection of Environment Panels from a list of generic BHoM objects")]
         [Input("objects", "A collection of generic BHoM objects")]
         [Output("panels", "A collection of Environment Panel objects")]
         public static List<Panel> Panels(this List<IBHoMObject> objects)
@@ -57,7 +57,7 @@ namespace BH.Engine.Environment
             return spaces;
         }
 
-        [Description("BH.Engine.Environment.Query.UniquePanels => Returns a collection of unique Environment Panels from a list of panels representing spaces")]
+        [Description("Returns a collection of unique Environment Panels from a list of panels representing spaces")]
         [Input("panelsAsSpaces", "A collection of Environment Panels that represent spaces")]
         [Output("uniquePanels", "A collection of Environment Panel without duplicates")]
         public static List<Panel> UniquePanels(this List<List<Panel>> panelsAsSpaces)
@@ -77,7 +77,7 @@ namespace BH.Engine.Environment
             return rtn;
         }
 
-        [Description("BH.Engine.Environment.Query.PanelsByType => Returns a collection of Environment Panels that match a given Panel Type")]
+        [Description("Returns a collection of Environment Panels that match a given Panel Type")]
         [Input("panels", "A collection of Environment Panels")]
         [Input("type", "A Panel Type to filter by from the Panel Type enum")]
         [Output("panels", "A collection of Environment Panel that match the given type")]
@@ -86,7 +86,7 @@ namespace BH.Engine.Environment
             return panels.Where(x => x.Type == type).ToList();
         }
 
-        [Description("BH.Engine.Environment.Query.PanelsNotByType => Returns a collection of Environment Panels that DO NOT match a given Panel Type")]
+        [Description("Returns a collection of Environment Panels that DO NOT match a given Panel Type")]
         [Input("panels", "A collection of Environment Panels")]
         [Input("type", "A Panel Type to filter by from the Panel Type enum")]
         [Output("panels", "A collection of Environment Panel that DO NOT match the given type")]
@@ -95,7 +95,7 @@ namespace BH.Engine.Environment
             return panels.Where(x => x.Type != type).ToList();
         }
 
-        [Description("BH.Engine.Environment.Query.PanelsByName => Returns a collection of Environment Panels that are match the given name")]
+        [Description("Returns a collection of Environment Panels that are match the given name")]
         [Input("panels", "A collection of Environment Panels")]
         [Input("name", "The name of the panel to filter by")]
         [Output("panels", "A collection of Environment Panel that match the given name")]
@@ -104,7 +104,7 @@ namespace BH.Engine.Environment
             return panels.Where(x => x.Name == name).ToList();
         }
 
-        [Description("BH.Engine.Environment.Query.PanelsByTilt => Returns a collection of Environment Panels that are match the given tilt")]
+        [Description("Returns a collection of Environment Panels that are match the given tilt")]
         [Input("panels", "A collection of Environment Panels")]
         [Input("tilt", "The tilt to filter by")]
         [Output("panels", "A collection of Environment Panel that match the given tilt")]
@@ -113,7 +113,7 @@ namespace BH.Engine.Environment
             return panels.Where(x => x.Tilt() == tilt).ToList();
         }
 
-        [Description("BH.Engine.Environment.Query.PanelsByTilt => Returns a collection of Environment Panels that are tilted between the given tilt range")]
+        [Description("Returns a collection of Environment Panels that are tilted between the given tilt range")]
         [Input("panels", "A collection of Environment Panels")]
         [Input("minTilt", "The minimum tilt to filter by")]
         [Input("maxTilt", "The maximum tilt to filter by")]
@@ -123,7 +123,7 @@ namespace BH.Engine.Environment
             return panels.Where(x => x.Tilt() >= minTilt && x.Tilt() <= maxTilt).ToList();
         }
 
-        [Description("BH.Engine.Environment.Query.PanelsByContainingPoint => Returns a collection of Environment Panels containing the given search point")]
+        [Description("Returns a collection of Environment Panels containing the given search point")]
         [Input("panels", "A collection of Environment Panels")]
         [Input("searchPoint", "The BHoM Geometry Point to search by")]
         [Output("panels", "A collection of Environment Panel where the external edges contain the given search point")]
@@ -132,7 +132,7 @@ namespace BH.Engine.Environment
             return panels.Where(x => x.ToPolyline().IsContaining(new List<Point>() { searchPoint })).ToList();
         }
 
-        [Description("BH.Engine.Environment.Query.PanelsByGeometry => Returns a collection of Environment Panels that match the given geometry")]
+        [Description("Returns a collection of Environment Panels that match the given geometry")]
         [Input("panels", "A collection of Environment Panels")]
         [Input("searchGeometry", "The BHoM Geometry ICurve representation to search by")]
         [Output("panels", "A collection of Environment Panel where the external edges match the given search geometry")]
@@ -142,7 +142,7 @@ namespace BH.Engine.Environment
             return panels.Where(x => x.ToPolyline().DiscontinuityPoints().PointsMatch(searchPoints)).ToList();
         }
 
-        [Description("BH.Engine.Environment.Query.PanelsByElementID => Returns a collection of Environment Panels that match the given element ID")]
+        [Description("Returns a collection of Environment Panels that match the given element ID")]
         [Input("panels", "A collection of Environment Panels")]
         [Input("elementID", "The Element ID to filter by")]
         [Output("panels", "A collection of Environment Panel objects that match the element ID")]

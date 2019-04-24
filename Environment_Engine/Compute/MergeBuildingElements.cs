@@ -37,7 +37,7 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("BH.Engine.Environment.Compute.MergePanels => merges the properties two Environment Panels together and returns a copied panel with the smallest area")]
+        [Description("merges the properties two Environment Panels together and returns a copied panel with the smallest area")]
         [Input("panel1", "An Environment Panel to merge from")]
         [Input("panel2", "A second Environment Panel to merge from")]
         [Output("mergedPanel", "The Environment Panel with the smallest area of the two provided but with the combined properties of both")]

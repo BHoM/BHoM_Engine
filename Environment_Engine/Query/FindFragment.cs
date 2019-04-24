@@ -40,7 +40,7 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("BH.Engine.Environment.Query.FindFragment => Returns an instance of a BHoM Fragment if it exists on the object")]
+        [Description("Returns an instance of a BHoM Fragment if it exists on the object")]
         [Input("environmentObject", "A generic Environment object")]
         [Input("fragmentType", "The type of fragment to be queried and returned")]
         [Output("fragment", "The instance of that Fragment if it exists on the object, null otherwise")]

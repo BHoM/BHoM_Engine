@@ -39,7 +39,7 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("BH.Engine.Environment.Create.ProfileResult => Returns an Environment Profile Result object")]
+        [Description("Returns an Environment Profile Result object")]
         [Input("name", "The name of the profile result, default empty string")]
         [Input("type", "The type of profile result from the Profile Result Type enum, default undefined")]
         [Input("unit", "The unit measurement of the profile result from the Profile Result Unit enum, default undefined")]

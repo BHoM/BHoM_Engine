@@ -38,7 +38,7 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("BH.Engine.Environment.Query.Altitude => Returns the range of altitude of an Environment Object taken as the maximum z value minus minimum z value from the bounding box of the geometry")]
+        [Description("Returns the range of altitude of an Environment Object taken as the maximum z value minus minimum z value from the bounding box of the geometry")]
         [Input("environmentObject", "Any object implementing the IEnvironmentObject interface that can have an altitude range")]
         [Output("altitudeRange", "The altitude range of the object")]
         public static double AltitudeRange(this IEnvironmentObject environmentObject)

@@ -35,7 +35,7 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("BH.Engine.Environment.Modify.Copy => copies a Panel into a new object")]
+        [Description("copies a Panel into a new object")]
         [Input("panel", "An Environment Panel to copy from")]
         [Output("panel", "The copied Environment Panel")]
         public static Panel Copy(this Panel panel)

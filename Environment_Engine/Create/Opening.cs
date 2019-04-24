@@ -40,7 +40,7 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("BH.Engine.Environment.Create.Opening => Returns an Environment Opening object")]
+        [Description("Returns an Environment Opening object")]
         [Input("name", "The name of the opening, default empty string")]
         [Input("externalEdges", "A collection of Environment Edge objects which define the external boundary of the opening, default null")]
         [Input("innerEdges", "A collection of Environment Edge objects which define the internal boundary of the opening, default null")]

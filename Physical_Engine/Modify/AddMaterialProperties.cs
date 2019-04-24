@@ -35,7 +35,7 @@ namespace BH.Engine.Environment
 {
     public static partial class Modify
     {
-        [Description("BH.Engine.Physical.Modify.AddMaterialProperties => Assign a new set of material properties to a material")]
+        [Description("Assign a new set of material properties to a material")]
         [Input("material", "A material to add properties to")]
         [Input("newProperties", "The properties to add to the material")]
         [Output("The updated Material")]

@@ -40,7 +40,7 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("BH.Engine.Environment.Query.Area => Returns the surface area of an Environment Panel")]
+        [Description("Returns the surface area of an Environment Panel")]
         [Input("panel", "An Environment Panel object")]
         [Output("area", "The area of the panel")]
         public static double Area(this Panel panel)
@@ -48,7 +48,7 @@ namespace BH.Engine.Environment
             return BH.Engine.Common.Query.Area(panel);
         }
 
-        [Description("BH.Engine.Environment.Query.Area => Returns the floor area of a space represented by Environment Panels")]
+        [Description("Returns the floor area of a space represented by Environment Panels")]
         [Input("panelsAsSpace", "A collection of Environment Panels that represent a closed space")]
         [Output("floorArea", "The floor area of the space")]
         public static double Area(this List<Panel> panelsAsSpace)

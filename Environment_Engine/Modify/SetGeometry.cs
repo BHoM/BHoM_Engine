@@ -36,7 +36,7 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("BH.Engine.Environment.Modify.ISetGeometry => Assign a new ICurve boundary to a generic Environment Object")]
+        [Description("Assign a new ICurve boundary to a generic Environment Object")]
         [Input("environmentObject", "Any object implementing the IEnvironmentObject interface that can have fragment properties appended to it")]
         [Input("curve", "Any object implementing the ICurve interface from BHoM Geometry Curves")]
         [Output("environmentObject", "The environment object with an updated external boundary")]
@@ -45,7 +45,7 @@ namespace BH.Engine.Environment
             return SetGeometry(environmentObject as dynamic, curve as dynamic);
         }
 
-        [Description("BH.Engine.Environment.Modify.SetGeometry => Assign a new ICurve external boundary to an Environment Panel")]
+        [Description("Assign a new ICurve external boundary to an Environment Panel")]
         [Input("panel", "An Environment Panel to set the external boundary of")]
         [Input("curve", "Any object implementing the ICurve interface from BHoM Geometry Curves")]
         [Output("panel", "An Environment Panel with an updated external boundary")]
@@ -56,7 +56,7 @@ namespace BH.Engine.Environment
             return aPanel;
         }
 
-        [Description("BH.Engine.Environment.Modify.SetGeometry => Assign a new ICurve external boundary to an Environment Opening")]
+        [Description("Assign a new ICurve external boundary to an Environment Opening")]
         [Input("opening", "An Environment Opening to set the external boundary of")]
         [Input("curve", "Any object implementing the ICurve interface from BHoM Geometry Curves")]
         [Output("opening", "An Environment Opening with an updated external boundary")]
@@ -67,7 +67,7 @@ namespace BH.Engine.Environment
             return aOpening;
         }
 
-        [Description("BH.Engine.Environment.Modify.SetGeometry => Assign a new ICurve definition to an Environment Edge")]
+        [Description("Assign a new ICurve definition to an Environment Edge")]
         [Input("edge", "An Environment Edge to set the geometry of")]
         [Input("curve", "Any object implementing the ICurve interface from BHoM Geometry Curves")]
         [Output("edge", "An Environment Edge with an updated geometry")]

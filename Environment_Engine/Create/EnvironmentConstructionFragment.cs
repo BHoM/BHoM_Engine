@@ -35,7 +35,7 @@ namespace BH.Engine.Environment
 {
     public static partial class Create
     {
-        [Description("BH.Engine.Environment.Create.EnvironmentConstructionFragment => Returns an Environment Construction Fragment object")]
+        [Description("Returns an Environment Construction Fragment object")]
         [Input("name", "The name of the fragment property, default empty string")]
         [Input("fFactor", "The FFactor for the construction, default 0.0")]
         [Output("environmentConstructionFragment", "An Environment Construction Fragment object - this can be added to a Construction object")]

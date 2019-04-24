@@ -42,7 +42,7 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("BH.Engine.Environment.Query.SolidMaterial => Returns an instance of a given material type from a layer")]
+        [Description("Returns an instance of a given material type from a layer")]
         [Input("layer", "A Layer object")]
         [Input("materialType", "The type of material to get from the layer")]
         [Output("materialProperties", "The instance of that material type if it exists on the object, null otherwise")]

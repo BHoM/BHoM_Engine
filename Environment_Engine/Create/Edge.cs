@@ -40,7 +40,7 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("BH.Engine.Environment.Create.Edge => Returns an Environment Edge object")]
+        [Description("Returns an Environment Edge object")]
         [Input("curve", "A BHoM Geometry Curve object (e.g. polyline, line, etc.)")]
         [Input("name", "The name of the edge, default empty string")]
         [Output("edge", "An Environment Edge object - used for defining panels and openings")]

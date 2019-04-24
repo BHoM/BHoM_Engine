@@ -38,7 +38,7 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("BH.Engine.Environment.Query.ConstructionByName => Gets a collection of constructions matching the given name")]
+        [Description("Gets a collection of constructions matching the given name")]
         [Input("constructions", "A collection of constructions")]
         [Input("name", "The name to filter by")]
         [Output("constructions", "A collection of constructions which match the given name")]

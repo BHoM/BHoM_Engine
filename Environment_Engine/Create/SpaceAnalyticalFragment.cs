@@ -35,7 +35,7 @@ namespace BH.Engine.Environment
 {
     public static partial class Create
     {
-        [Description("BH.Engine.Environment.Create.SpaceAnalyticalFragment => Returns an Space Analytical Fragment object")]
+        [Description("Returns an Space Analytical Fragment object")]
         [Input("name", "The name of the fragment property, default empty string")]
         [Input("internalDomesticHotWater", "The amount of internal domestic hot water supply for the space, default 0.0")]
         [Input("daylightFactor", "The daylight factor for the space, default 0.0")]

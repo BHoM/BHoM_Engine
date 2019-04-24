@@ -40,7 +40,7 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("BH.Engine.Environment.Query.Orientation => Returns the orientation of a given environmental object")]
+        [Description("Returns the orientation of a given environmental object")]
         [Input("environmentObject", "Any object implementing the IEnvironmentObject interface that can have its orientation queried")]
         [Output("orientation", "The orientation of the Environment Object")]
         public static double Orientation(this IEnvironmentObject environmentObject)

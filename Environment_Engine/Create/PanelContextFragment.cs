@@ -35,7 +35,7 @@ namespace BH.Engine.Environment
 {
     public static partial class Create
     {
-        [Description("BH.Engine.Environment.Create.PanelContextFragment => Returns an Panel Context Fragment object")]
+        [Description("Returns an Panel Context Fragment object")]
         [Input("name", "The name of the fragment property, default empty string")]
         [Input("isAir", "Defines whether the panel is an air panel, default false")]
         [Input("isGround", "Defines whether the panel is a ground panel, default false")]

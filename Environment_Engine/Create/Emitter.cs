@@ -39,7 +39,7 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("BH.Engine.Environment.Create.Emitter => Returns an Environment Emitter object")]
+        [Description("Returns an Environment Emitter object")]
         [Input("name", "The name of the emitter, default empty string")]
         [Input("radiantProportion", "The radiant proportion of the emitter, default 0.0")]
         [Input("viewCoefficient", "The view coefficient of the emitter, default 0.0")]

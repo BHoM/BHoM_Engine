@@ -40,7 +40,7 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("BH.Engine.Environment.Create.Gain => Returns an Environment Gain object")]
+        [Description("Returns an Environment Gain object")]
         [Input("name", "The name of the gain, default empty string")]
         [Input("type", "The type of gain from the Gain Type enum, default undefined")]
         [Input("gainProperties", "The properties of the gain, for example, occupant gain properties, default null")]
@@ -79,7 +79,7 @@ namespace BH.Engine.Environment
             };
         }
 
-        [Description("BH.Engine.Environment.Create.InfiltrationGain => Returns an Environment Gain object with Infiltration Gain properties")]
+        [Description("Returns an Environment Gain object with Infiltration Gain properties")]
         [Input("name", "The name of the infiltration gain, default empty string")]
         [Input("profile", "The profile to be used for this gain, default null")]
         [Input("unit", "The unit type of the gain from the Gain Unit enum, default undefined")]
@@ -98,7 +98,7 @@ namespace BH.Engine.Environment
             return Gain(name, GainType.Infiltration, properties);
         }
 
-        [Description("BH.Engine.Environment.Create.LatentEquipmentGain => Returns an Environment Gain object with Latent Equipment Gain properties")]
+        [Description("Returns an Environment Gain object with Latent Equipment Gain properties")]
         [Input("name", "The name of the latent equipment gain, default empty string")]
         [Input("profile", "The profile to be used for this gain, default null")]
         [Input("unit", "The unit type of the gain from the Gain Unit enum, default undefined")]
@@ -117,7 +117,7 @@ namespace BH.Engine.Environment
             return Gain(name, GainType.Equipment, properties);
         }
 
-        [Description("BH.Engine.Environment.Create.LightingGain => Returns an Environment Gain object with Lighting Gain properties")]
+        [Description("Returns an Environment Gain object with Lighting Gain properties")]
         [Input("name", "The name of the lighting gain, default empty string")]
         [Input("profile", "The profile to be used for this gain, default null")]
         [Input("unit", "The unit type of the gain from the Gain Unit enum, default undefined")]
@@ -142,7 +142,7 @@ namespace BH.Engine.Environment
             return Gain(name, GainType.Lighting, properties);
         }
 
-        [Description("BH.Engine.Environment.Create.PeopleGain => Returns an Environment Gain object with People Gain properties")]
+        [Description("Returns an Environment Gain object with People Gain properties")]
         [Input("name", "The name of the people gain, default empty string")]
         [Input("profile", "The profile to be used for this gain, default null")]
         [Input("unit", "The unit type of the gain from the Gain Unit enum, default undefined")]
@@ -169,7 +169,7 @@ namespace BH.Engine.Environment
             return Gain(name, GainType.People, properties);
         }
 
-        [Description("BH.Engine.Environment.Create.PollutantGain => Returns an Environment Gain object with Pollutant Gain properties")]
+        [Description("Returns an Environment Gain object with Pollutant Gain properties")]
         [Input("name", "The name of the pollutant gain, default empty string")]
         [Input("profile", "The profile to be used for this gain, default null")]
         [Input("unit", "The unit type of the gain from the Gain Unit enum, default undefined")]
@@ -188,7 +188,7 @@ namespace BH.Engine.Environment
             return Gain(name, GainType.Pollutant, properties);
         }
 
-        [Description("BH.Engine.Environment.Create.SensibleEquipmentGain => Returns an Environment Gain object with Sensible Equipment Gain properties")]
+        [Description("Returns an Environment Gain object with Sensible Equipment Gain properties")]
         [Input("name", "The name of the sensible equipment gain, default empty string")]
         [Input("profile", "The profile to be used for this gain, default null")]
         [Input("unit", "The unit type of the gain from the Gain Unit enum, default undefined")]

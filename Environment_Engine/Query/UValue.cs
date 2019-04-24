@@ -41,7 +41,7 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("BH.Engine.Environment.Query.UValue => Returns the UValue of a construction")]
+        [Description("Returns the UValue of a construction")]
         [Input("construction", "A Construction object")]
         [Output("uValue", "The uValue of the construction")]
         public static double UValue(this Construction construction)
