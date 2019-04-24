@@ -40,7 +40,7 @@ namespace BH.Engine.Environment
         /****          public Methods                   ****/
         /***************************************************/
 
-        [Description("BH.Engine.Environment.Convert.ToPolyline => Returns a Polyline representation of an Environment Edge")]
+        [Description("Returns a Polyline representation of an Environment Edge")]
         [Input("edge", "An Environment Edge object")]
         [Output("polyline", "BHoM Geometry Polyline")]
         public static Polyline ToPolyline(this Edge edge)
@@ -48,7 +48,7 @@ namespace BH.Engine.Environment
             return edge.Curve.ICollapseToPolyline(BH.oM.Geometry.Tolerance.Angle);
         }
 
-        [Description("BH.Engine.Environment.Convert.ToEdges => Returns a collection of Environment Edges from a BHoM Geomtry Polyline")]
+        [Description("Returns a collection of Environment Edges from a BHoM Geomtry Polyline")]
         [Input("polyline", "A BHoM Geometry Polyline to be split into Environment Edges")]
         [Output("edges", "A collection of Environment Edges")]
         public static List<Edge> ToEdges(this Polyline polyline)
@@ -66,7 +66,7 @@ namespace BH.Engine.Environment
             return edges;
         }
 
-        [Description("BH.Engine.Environment.Convert.ToEdges => Returns a collection of Environment Edges from a collection of BHoM Geomtry Polylines")]
+        [Description("Returns a collection of Environment Edges from a collection of BHoM Geomtry Polylines")]
         [Input("polylines", "A collection of BHoM Geometry Polylines to be split into Environment Edges")]
         [Output("edges", "A collection of Environment Edges")]
         public static List<Edge> ToEdges(this List<Polyline> polylines)
@@ -79,7 +79,7 @@ namespace BH.Engine.Environment
             return edges;
         }
 
-        [Description("BH.Engine.Environment.Convert.ToPolyline => Returns a Polyline representation of a collection of Environment Edges")]
+        [Description("Returns a Polyline representation of a collection of Environment Edges")]
         [Input("edges", "A collection of Environment Edge objects to convert into a single polyline")]
         [Output("polyline", "BHoM Geometry Polyline")]
         public static Polyline ToPolyline(this List<Edge> edges)
@@ -91,7 +91,7 @@ namespace BH.Engine.Environment
             return BH.Engine.Geometry.Create.Polyline(edgePoints);
         }
 
-        [Description("BH.Engine.Environment.Convert.ToPolyline => Returns the external boundary from an Environment Panel as a BHoM Geometry Polyline")]
+        [Description("Returns the external boundary from an Environment Panel as a BHoM Geometry Polyline")]
         [Input("panel", "An Environment Panel to obtain the external boundary from")]
         [Output("polyline", "BHoM Geometry Polyline")]
         public static Polyline ToPolyline(this Panel panel)
@@ -99,7 +99,7 @@ namespace BH.Engine.Environment
             return panel.ExternalEdges.ToPolyline();
         }
 
-        [Description("BH.Engine.Environment.Convert.ToPolyline => Returns the external boundary from an Environment Opening as a BHoM Geometry Polyline")]
+        [Description("Returns the external boundary from an Environment Opening as a BHoM Geometry Polyline")]
         [Input("opening", "An Environment Opening to obtain the external boundary from")]
         [Output("polyline", "BHoM Geometry Polyline")]
         public static Polyline ToPolyline(this Opening opening)
@@ -107,7 +107,7 @@ namespace BH.Engine.Environment
             return opening.Edges.ToPolyline();
         }
 
-        [Description("BH.Engine.Environment.Convert.ToPolyline => Returns the external boundary from a generic Environment Object")]
+        [Description("Returns the external boundary from a generic Environment Object")]
         [Input("environmentObject", "Any object implementing the IEnvironmentObject interface that can have its boundaries extracted")]
         [Output("polyline", "BHoM Geometry Polyline")]
         public static Polyline ToPolyline(this IEnvironmentObject environmentObject)

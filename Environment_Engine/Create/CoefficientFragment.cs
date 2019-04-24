@@ -35,7 +35,7 @@ namespace BH.Engine.Environment
 {
     public static partial class Create
     {
-        [Description("BH.Engine.Environment.Create.CoefficientFragment => Returns a Coefficient Fragment object")]
+        [Description("Returns a Coefficient Fragment object")]
         [Input("name", "The name of the fragment property, default empty string")]
         [Input("lightingViewCoefficient", "The lighting view coefficient, default 0.0")]
         [Input("occupantViewCoefficient", "The occupant view coefficient, default 0.0")]

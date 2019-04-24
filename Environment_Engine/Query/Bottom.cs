@@ -41,7 +41,7 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("BH.Engine.Environment.Query.Bottom => Returns the bottom of a given environment object")]
+        [Description("Returns the bottom of a given environment object")]
         [Input("environmentObject", "Any object implementing the IEnvironmentObject interface that can have a geometrical bottom")]
         [Output("curve", "An ICurve representation of the bottom of the object")]
         public static ICurve Bottom(this IEnvironmentObject environmentObject)

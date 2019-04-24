@@ -34,7 +34,7 @@ namespace BH.Engine.Environment
 {
     public static partial class Query
     {
-        [Description("BH.Engine.Environment.Query.UniqueSpaceNames => Returns a collection of space names the panels are connected to")]
+        [Description("Returns a collection of space names the panels are connected to")]
         [Input("panels", "A collection of Environment Panels")]
         [Output("spaceNames", "A collection of space names the panels are connected to")]
         public static List<string> UniqueSpaceNames(this List<Panel> panels)
@@ -46,7 +46,7 @@ namespace BH.Engine.Environment
             return spaceNames.Where(x => !x.Equals("-1")).Distinct().ToList();
         }
 
-        [Description("BH.Engine.Environment.Query.ConnectedSpaceName => Returns the name of the space the panels are enclosing")]
+        [Description("Returns the name of the space the panels are enclosing")]
         [Input("panels", "A collection of Environment Panels")]
         [Output("spaceName", "The space name the panels are jointly connected to")]
         public static string ConnectedSpaceName(this List<Panel> panels)

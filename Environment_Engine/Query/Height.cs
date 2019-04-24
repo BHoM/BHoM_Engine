@@ -45,7 +45,7 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("BH.Engine.Environment.Query.Height => Returns the height of a generic Environment Object")]
+        [Description("Returns the height of a generic Environment Object")]
         [Input("environmentObject", "Any object implementing the IEnvironmentObject interface that can have its height queried")]
         [Output("height", "The height of the environment object")]
         public static double Height(this IEnvironmentObject environmentObject)
@@ -53,7 +53,7 @@ namespace BH.Engine.Environment
             return Height(environmentObject as dynamic);
         }
 
-        [Description("BH.Engine.Environment.Query.Height => Returns the height of an Environment Panel")]
+        [Description("Returns the height of an Environment Panel")]
         [Input("panel", "An Environment Panel")]
         [Output("height", "The height of the panel")]
         public static double Height(this Panel panel)
@@ -61,7 +61,7 @@ namespace BH.Engine.Environment
             return panel.ToPolyline().Height();
         }
 
-        [Description("BH.Engine.Environment.Query.Height => Returns the height of an Environment Opening")]
+        [Description("Returns the height of an Environment Opening")]
         [Input("opening", "An Environment Opening")]
         [Output("height", "The height of the opening")]
         public static double Height(this Opening opening)
@@ -69,7 +69,7 @@ namespace BH.Engine.Environment
             return opening.ToPolyline().Height();
         }
 
-        [Description("BH.Engine.Environment.Query.Height => Returns the height of a BHoM Geometry ICurve based on the bounding box of the curve")]
+        [Description("Returns the height of a BHoM Geometry ICurve based on the bounding box of the curve")]
         [Input("curve", "BHoM Geometry ICurve")]
         [Output("height", "The height of the curve based on the difference in z values for its bounding box")]
         public static double Height(this ICurve curve)

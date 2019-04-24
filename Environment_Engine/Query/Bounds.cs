@@ -40,7 +40,7 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("BH.Engine.Environment.Query.Bounds => Returns the bounding box of an Environment Panel")]
+        [Description("Returns the bounding box of an Environment Panel")]
         [Input("panel", "An Environment Panel to get the bounding box of")]
         [Output("boundingBox", "The bounding box of the panel")]
         public static BoundingBox Bounds(this Panel panel)

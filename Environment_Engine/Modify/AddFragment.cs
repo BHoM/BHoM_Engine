@@ -36,7 +36,7 @@ namespace BH.Engine.Environment
 {
     public static partial class Modify
     {
-        [Description("BH.Engine.Environment.Modify.AddFragment => Appends a Fragment Property to a given Environment Object")]
+        [Description("Appends a Fragment Property to a given Environment Object")]
         [Input("environmentObject", "Any object implementing the IEnvironmentObject interface that can have fragment properties appended to it")]
         [Input("fragment", "Any fragment object implementing the IBHoMFragment interface to append to the object")]
         [Output("environmentObject", "The environment object with the added fragment")]

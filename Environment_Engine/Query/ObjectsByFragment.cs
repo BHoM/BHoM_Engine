@@ -40,7 +40,7 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("BH.Engine.Environment.Query.ObjectsByFragment => Returns a collection of objects contain the given fragment type")]
+        [Description("Returns a collection of objects contain the given fragment type")]
         [Input("objects", "A collection of generic Environment objects")]
         [Input("fragmentType", "The type of fragment to be queried and returned")]
         [Output("environmentObjects", "A collection of generic BHoM objects that contain the provided fragment type")]

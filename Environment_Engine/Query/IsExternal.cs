@@ -39,7 +39,7 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("BH.Engine.Environment.Query.IsExternal => Determines whether the Environment Panel is externally facing")]
+        [Description("Determines whether the Environment Panel is externally facing")]
         [Input("panel", "An Environment Panel")]
         [Output("isExternal", "True if the panel is externally facing, false otherwise")]
         public static bool IsExternal(this Panel panel)

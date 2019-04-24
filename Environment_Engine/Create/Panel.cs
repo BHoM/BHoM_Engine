@@ -40,7 +40,7 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("BH.Engine.Environment.Create.Panel => Returns an Environment Panel object")]
+        [Description("Returns an Environment Panel object")]
         [Input("name", "The name of the panel, default empty string")]
         [Input("externalEdges", "A collection of Environment Edge objects which define the external boundary of the panel, default null")]
         [Input("openings", "A collection of Environment Opening objects, default null")]

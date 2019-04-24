@@ -38,7 +38,7 @@ namespace BH.Engine.Environment
         /****          public Methods                   ****/
         /***************************************************/
 
-        [Description("BH.Engine.Environment.Compute.BooleanIntersect => Returns true if two Environment Panels boolean intersect")]
+        [Description("Returns true if two Environment Panels boolean intersect")]
         [Input("element", "A single Environment Panel")]
         [Input("elementToCompare", "An Environment Panel to compare with")]
         [Output("doesIntersect", "True if the panels boolean intersect, false if they do not")]

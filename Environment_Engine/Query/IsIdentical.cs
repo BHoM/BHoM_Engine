@@ -40,7 +40,7 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("BH.Engine.Environment.Query.CullOverlaps => Defines whether two panels are geometrically identical")]
+        [Description("Defines whether two panels are geometrically identical")]
         [Input("panel", "An Environment Panel")]
         [Input("panelToCompare", "An Environment Panel to compare with the first panel")]
         [Output("isidentical", "True if the two panels are geometrically identical, false if not")]

@@ -34,7 +34,7 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("BH.Engine.Environment.Modify.AddAdjacentSpace => Returns a list of Environment Panel with the provided space name added as a connected space")]
+        [Description("Returns a list of Environment Panel with the provided space name added as a connected space")]
         [Input("panels", "A collection of Environment Panels to add the space name to")]
         [Input("spaceName", "The name of the space the panels are connected to")]
         [Output("panelsAsSpace", "A collection of modified Environment Panels with the provided space name listed as a connecting space")]
@@ -51,7 +51,7 @@ namespace BH.Engine.Environment
             return panels;
         }
 
-        [Description("BH.Engine.Environment.Modify.AddAdjacentSpace => Returns a single Environment Panel with the provided space name added as a connected space")]
+        [Description("Returns a single Environment Panel with the provided space name added as a connected space")]
         [Input("panel", "A single Environment Panel to add the space name to")]
         [Input("spaceName", "The name of the space the panel is connected to")]
         [Output("panel", "A modified Environment Panel with the provided space name listed as a connecting space")]

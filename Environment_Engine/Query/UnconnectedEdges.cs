@@ -40,7 +40,7 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("BH.Engine.Environment.Query.UnconnectedEdges => Returns a collection of Environment Edges that are unconnected in a space")]
+        [Description("Returns a collection of Environment Edges that are unconnected in a space")]
         [Input("panel", "An Environment Panel to check if the edges are all connected")]
         [Input("panelsAsSpace", "A collection of Environment Panels representing a single space")]
         [Output("unconnectedEdges", "A collection of Environment Edges that are not properly connected with the rest of the space")]

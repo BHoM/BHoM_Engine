@@ -35,7 +35,7 @@ namespace BH.Engine.Environment
 {
     public static partial class Create
     {
-        [Description("BH.Engine.Environment.Create.BuildingResultFragment => Returns a Building Result Fragment object")]
+        [Description("Returns a Building Result Fragment object")]
         [Input("name", "The name of the fragment property, default empty string")]
         [Input("peakCooling", "The peak cooling result for the building, default 0.0")]
         [Input("peakHeating", "The peak heating result for the building, default 0.0")]

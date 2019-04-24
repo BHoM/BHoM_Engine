@@ -45,7 +45,7 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("BH.Engine.Environment.Query.Width => Returns the width of a generic Environment Object")]
+        [Description("Returns the width of a generic Environment Object")]
         [Input("environmentObject", "Any object implementing the IEnvironmentObject interface that can have its width queried")]
         [Output("width", "The width of the environment object")]
         public static double Width(this IEnvironmentObject environmentObject)
@@ -53,7 +53,7 @@ namespace BH.Engine.Environment
             return Width(environmentObject as dynamic);
         }
 
-        [Description("BH.Engine.Environment.Query.Width => Returns the width of an Environment Panel")]
+        [Description("Returns the width of an Environment Panel")]
         [Input("panel", "An Environment Panel")]
         [Output("width", "The width of the panel")]
         public static double Width(this Panel panel)
@@ -61,7 +61,7 @@ namespace BH.Engine.Environment
             return panel.ToPolyline().Width();
         }
 
-        [Description("BH.Engine.Environment.Query.Width => Returns the width of an Environment Opening")]
+        [Description("Returns the width of an Environment Opening")]
         [Input("opening", "An Environment Opening")]
         [Output("width", "The width of the opening")]
         public static double Width(this Opening opening)
@@ -69,7 +69,7 @@ namespace BH.Engine.Environment
             return opening.ToPolyline().Width();
         }
 
-        [Description("BH.Engine.Environment.Query.Width => Returns the width of a BHoM Geometry ICurve based on the bounding box of the curve")]
+        [Description("Returns the width of a BHoM Geometry ICurve based on the bounding box of the curve")]
         [Input("curve", "BHoM Geometry ICurve")]
         [Output("width", "The width of the curve based on the difference in XY values for its bounding box")]
         public static double Width(this ICurve panelCurve)

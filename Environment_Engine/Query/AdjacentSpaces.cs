@@ -38,7 +38,7 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("BH.Engine.Environment.Query.AdjacentSpaces => Returns a nested collection of Environment Panels which contain the search panel")]
+        [Description("Returns a nested collection of Environment Panels which contain the search panel")]
         [Input("panel", "An Environment Panel to find within the search panels")]
         [Input("panelsAsSpaces", "The nested collection of Environment Panels that represent the spaces to search from")]
         [Output("panelsAsSpaces", "A nested collection of Environment Panels which contain the search panel")]

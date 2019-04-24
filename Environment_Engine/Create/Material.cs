@@ -40,7 +40,7 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("BH.Engine.Environment.Create.GasMaterial => Returns an Environment Gas Material object")]
+        [Description("Returns an Environment Gas Material object")]
         [Input("name", "The name of the gas material, default empty string")]
         [Input("conductivity", "The amount of conductivity the material should have, default 0.0")]
         [Input("specificHeat", "The unit of specific heat the material should have, default 0.0")]
@@ -72,7 +72,7 @@ namespace BH.Engine.Environment
             return BH.Engine.Physical.Create.Material(name, density, new List<IMaterialProperties>() { gasProperties });
         }
 
-        [Description("BH.Engine.Environment.Create.SolidMaterial => Returns an Environment Solid Material object")]
+        [Description("Returns an Environment Solid Material object")]
         [Input("name", "The name of the solid material, default empty string")]
         [Input("conductivity", "The amount of conductivity the material should have, default 0.0")]
         [Input("specificHeat", "The unit of specific heat the material should have, default 0.0")]

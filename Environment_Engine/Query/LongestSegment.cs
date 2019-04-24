@@ -40,7 +40,7 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("BH.Engine.Environment.Query.LongestSegmentLength => Returns the length of the longest segment from a BHoM Geometry Polyline")]
+        [Description("Returns the length of the longest segment from a BHoM Geometry Polyline")]
         [Input("polyline", "A BHoM Geometry Polyline")]
         [Output("segmentLength", "The length of the longest segment")]
         public static double LongestSegmentLength(Polyline polyline)

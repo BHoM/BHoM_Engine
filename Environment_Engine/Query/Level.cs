@@ -42,7 +42,7 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("BH.Engine.Environment.Query.Levels => Returns a collection of Architecture Levels from a list of generic BHoM objects")]
+        [Description("Returns a collection of Architecture Levels from a list of generic BHoM objects")]
         [Input("objects", "A collection of generic BHoM objects")]
         [Output("levels", "A collection of Architecture Level objects")]
         public static List<Level> Levels(this List<IBHoMObject> objects)
@@ -55,7 +55,7 @@ namespace BH.Engine.Environment
             return levels;
         }
 
-        [Description("BH.Engine.Environment.Query.MinimumLevel => Returns the minimum level of the given panel based on the z axis")]
+        [Description("Returns the minimum level of the given panel based on the z axis")]
         [Input("panel", "An Environment Panel to find the minimum level from")]
         [Output("minimumLevel", "The minimum level of the z axis of the panel")]
         public static double MinimumLevel(this Panel panel)
@@ -69,7 +69,7 @@ namespace BH.Engine.Environment
             return min;
         }
 
-        [Description("BH.Engine.Environment.Query.MaximumLevel => Returns the maximum level of the given panel based on the z axis")]
+        [Description("Returns the maximum level of the given panel based on the z axis")]
         [Input("panel", "An Environment Panel to find the maximum level from")]
         [Output("maximumLevel", "The maximum level of the z axis of the panel")]
         public static double MaximumLevel(this Panel panel)
@@ -83,7 +83,7 @@ namespace BH.Engine.Environment
             return max;
         }
 
-        [Description("BH.Engine.Environment.Query.Level => Returns the Architecture Level that the Environment Panel resides on")]
+        [Description("Returns the Architecture Level that the Environment Panel resides on")]
         [Input("panel", "An Environment Panel to find the level from")]
         [Input("levels", "A collection of Architecture Levels to search from")]
         [Output("level", "The Architecture Level of the panel")]
@@ -95,7 +95,7 @@ namespace BH.Engine.Environment
             return levels.Where(x => x.Elevation >= min && x.Elevation <= max).FirstOrDefault();
         }
 
-        [Description("BH.Engine.Environment.Query.Level => Returns the Architecture Level that the space (represented by a collection of Environment Panels) resides on")]
+        [Description("Returns the Architecture Level that the space (represented by a collection of Environment Panels) resides on")]
         [Input("panelsAsSpace", "A collection of Environment Panels that represent a single space to find the level from")]
         [Input("level", "The Architecture Level to check against")]
         [Output("level", "The Architecture Level of the space if the space resides on this level, otherwise returns null if the space does not reside on this level")]
@@ -114,7 +114,7 @@ namespace BH.Engine.Environment
             return level;
         }
 
-        [Description("BH.Engine.Environment.Query.Level => Returns the Architecture Level that the space (represented by a collection of Environment Panels) resides on")]
+        [Description("Returns the Architecture Level that the space (represented by a collection of Environment Panels) resides on")]
         [Input("panelsAsSpace", "A collection of Environment Panels that represent a single space to find the level from")]
         [Input("levels", "A collection of Architecture Levels to search from")]
         [Output("level", "The Architecture Level of the space")]

@@ -40,7 +40,7 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("BH.Engine.Environment.Query.Azimuth => Returns the azimuth of a given environmental object")]
+        [Description("Returns the azimuth of a given environmental object")]
         [Input("environmentObject", "Any object implementing the IEnvironmentObject interface that can have its azimuth queried")]
         [Input("referenceVector", "The reference vector for querying the azimuth from the object")]
         [Output("azimuth", "The azimuth of the Environment Object")]
@@ -49,7 +49,7 @@ namespace BH.Engine.Environment
             return environmentObject.ToPolyline().Azimuth(refVector);
         }
 
-        [Description("BH.Engine.Environment.Query.Azimuth => Returns the azimuth of a BHoM Geometry Polyline")]
+        [Description("Returns the azimuth of a BHoM Geometry Polyline")]
         [Input("polyline", "A BHoM Geometry Polyline")]
         [Input("referenceVector", "The reference vector for querying the azimuth from the polyline")]
         [Output("azimuth", "The azimuth of the polyline")]

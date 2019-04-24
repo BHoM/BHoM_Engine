@@ -39,7 +39,7 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("BH.Engine.Environment.Query.IsClosed => Determines whether the space is closed by ensuring all edges are connected to other elements")]
+        [Description("Determines whether the space is closed by ensuring all edges are connected to other elements")]
         [Input("panels", "The collection of Environment Panels that represent the space to check")]
         [Output("isClosed", "True if the space is closed, false otherwise")]
         public static bool IsClosed(this List<Panel> panels, double tolerance = Tolerance.Distance)

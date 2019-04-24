@@ -35,7 +35,7 @@ namespace BH.Engine.Environment
 {
     public static partial class Create
     {
-        [Description("BH.Engine.Environment.Create.PanelAnalyticalFragment => Returns an Panel Analytical Fragment object")]
+        [Description("Returns an Panel Analytical Fragment object")]
         [Input("name", "The name of the fragment property, default empty string")]
         [Input("altitude", "The altitude of the panel, default 0.0")]
         [Input("altitudeRange", "The altitude range of the panel, default 0.0")]

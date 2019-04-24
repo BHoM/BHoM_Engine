@@ -40,7 +40,7 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("BH.Engine.Environment.Query.ResultsByType => Returns a collection of Environment Simulation Results by Simulation Result Type")]
+        [Description("Returns a collection of Environment Simulation Results by Simulation Result Type")]
         [Input("results", "A collection of Simulation Results")]
         [Input("type", "The Simulation Result Type filter")]
         [Output("simulationResults", "A collection of filtered simulation results")]
@@ -49,7 +49,7 @@ namespace BH.Engine.Environment
             return results.Where(x => x.SimulationResultType == type).ToList();
         }
 
-        [Description("BH.Engine.Environment.Query.ResultsByType => Returns a collection of Environment Simulation Results by Profile Result Unit")]
+        [Description("Returns a collection of Environment Simulation Results by Profile Result Unit")]
         [Input("results", "A collection of Simulation Results")]
         [Input("unit", "The Profile Result Unit filter")]
         [Output("simulationResults", "A collection of filtered simulation results")]
@@ -67,7 +67,7 @@ namespace BH.Engine.Environment
             return resultList;
         }
 
-        [Description("BH.Engine.Environment.Query.ResultsByType => Returns a collection of Environment Simulation Results by Profile Result Type")]
+        [Description("Returns a collection of Environment Simulation Results by Profile Result Type")]
         [Input("results", "A collection of Simulation Results")]
         [Input("resultType", "The Profile Result Type filter")]
         [Output("simulationResults", "A collection of filtered simulation results")]
@@ -85,7 +85,7 @@ namespace BH.Engine.Environment
             return resultList;
         }
 
-        [Description("BH.Engine.Environment.Query.ResultsByTypeUnit => Returns a collection of Environment Simulation Results that match both Simulation Result Type and Profile Result Unit")]
+        [Description("Returns a collection of Environment Simulation Results that match both Simulation Result Type and Profile Result Unit")]
         [Input("results", "A collection of Simulation Results")]
         [Input("simulationType", "The Simulation Result Type filter")]
         [Input("unit", "The Profile Result Unit filter")]
@@ -96,7 +96,7 @@ namespace BH.Engine.Environment
             return results.ResultsByUnit(unit);
         }
 
-        [Description("BH.Engine.Environment.Query.ResultsByTypeUnitResultType => Returns a collection of Environment Simulation Results that match both Simulation Result Type and Profile Result Unit and Profile Result Type")]
+        [Description("Returns a collection of Environment Simulation Results that match both Simulation Result Type and Profile Result Unit and Profile Result Type")]
         [Input("results", "A collection of Simulation Results")]
         [Input("simulationType", "The Simulation Result Type filter")]
         [Input("unit", "The Profile Result Unit filter")]

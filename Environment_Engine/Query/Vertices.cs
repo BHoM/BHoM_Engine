@@ -39,7 +39,7 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("BH.Engine.Environment.Query.Vertices => Returns a collection of vertices for an Environment Panel")]
+        [Description("Returns a collection of vertices for an Environment Panel")]
         [Input("panel", "An Environment Panel")]
         [Output("points", "A collection of BHoM Geometry Points which are the vertices of the panel")]
         public static List<Point> Vertices(this Panel panel)
@@ -47,7 +47,7 @@ namespace BH.Engine.Environment
             return panel.ToPolyline().IControlPoints();
         }
 
-        [Description("BH.Engine.Environment.Query.Vertices => Returns a collection of vertices for a collection of Environment Panels representing a space")]
+        [Description("Returns a collection of vertices for a collection of Environment Panels representing a space")]
         [Input("panelsAsSpace", "A collection of Environment Panels representing a space")]
         [Output("points", "A collection of BHoM Geometry Points which are the vertices of the space")]
         public static List<Point> Vertices(this List<Panel> panelsAsSpace)

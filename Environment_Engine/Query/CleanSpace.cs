@@ -40,7 +40,7 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("BH.Engine.Environment.Query.CleanSpace => Removes panels which do not have a suitable connection to the space (i.e. panels with only 1 connection to the space)")]
+        [Description("Removes panels which do not have a suitable connection to the space (i.e. panels with only 1 connection to the space)")]
         [Input("panelsAsSpace", "A collection of Environment Panels representing a single space")]
         [Output("panelsAsSpace", "A collection of Environment Panels representing a single space with incorrect panels removed")]
         public static List<Panel> CleanSpace(this List<Panel> panelsAsSpace)

@@ -39,7 +39,7 @@ namespace BH.Engine.Environment
         /**** Public Methods - Curves                   ****/
         /***************************************************/
 
-        [Description("BH.Engine.Environment.Modify.SplitPanelsByOverlap => Returns a collection of Environment Panels that have been split if any of them overlap each other to ensure no panels overlap")]
+        [Description("Returns a collection of Environment Panels that have been split if any of them overlap each other to ensure no panels overlap")]
         [Input("panels", "A collection of Environment Panels to split")]
         [Output("panels", "A collection of Environment Panels that do not overlap")]
         public static List<Panel> SplitPanelsByOverlap(this List<Panel> panels)
@@ -72,7 +72,7 @@ namespace BH.Engine.Environment
             return rtnElements;
         }
 
-        [Description("BH.Engine.Environment.Modify.SplitPanelsByPoints => Returns a collection of Environment Panels that are split by their edge points ensuring panels which span multiple spaces are split and have adjacencies assigned correctly")]
+        [Description("Returns a collection of Environment Panels that are split by their edge points ensuring panels which span multiple spaces are split and have adjacencies assigned correctly")]
         [Input("panels", "A collection of Environment Panels to split")]
         [Output("panels", "A collection of Environment Panels that have been split")]
         public static List<Panel> SplitPanelsByPoints(this List<Panel> panels)
@@ -114,7 +114,7 @@ namespace BH.Engine.Environment
             return rtnElements;
         }
 
-        [Description("BH.Engine.Environment.Modify.Split => Returns a collection of Environment Panels that are split by a collection of provided cutting lines")]
+        [Description("Returns a collection of Environment Panels that are split by a collection of provided cutting lines")]
         [Input("panel", "An Environment Panel to split")]
         [Input("cuttingLines", "A collection of BHoM Geometry Lines to split the panels by")]
         [Output("panels", "A collection of Environment Panels that have been split")]
@@ -157,7 +157,7 @@ namespace BH.Engine.Environment
             return splitElements;
         }
 
-        [Description("BH.Engine.Environment.Modify.Split => Returns a collection of Environment Panels that are split")]
+        [Description("Returns a collection of Environment Panels that are split")]
         [Input("panel", "An Environment Panel to split")]
         [Input("cuttingPanel", "An Environment Panel to split the first panel by")]
         [Output("panels", "A collection of Environment Panels that have been split")]
@@ -195,7 +195,7 @@ namespace BH.Engine.Environment
             return splitElements;
         }
 
-        [Description("BH.Engine.Environment.Modify.Split => Returns a collection of Environment Panels that are split by their overlapping elements")]
+        [Description("Returns a collection of Environment Panels that are split by their overlapping elements")]
         [Input("panels", "A collection of Environment Panels to split")]
         [Output("panels", "A collection of Environment Panels that have been split")]
         public static List<Panel> Split(this List<Panel> panels)

@@ -35,7 +35,7 @@ namespace BH.Engine.Environment
 {
     public static partial class Create
     {
-        [Description("BH.Engine.Environment.Create.OriginContextFragment => Returns an Origin Context Fragment object")]
+        [Description("Returns an Origin Context Fragment object")]
         [Input("name", "The name of the fragment property, default empty string")]
         [Input("origin", "The origin of the object this fragment will be added to, default empty string")]
         [Input("elementID", "The original ID of the element from the origin software, default empty string")]

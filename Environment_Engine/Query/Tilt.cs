@@ -41,7 +41,7 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("BH.Engine.Environment.Query.Tilt => Returns the tilt of an Environment Object")]
+        [Description("Returns the tilt of an Environment Object")]
         [Input("environmentObject", "Any object implementing the IEnvironmentObject interface that can have its tilt queried")]
         [Output("tilt", "The tilt of the Environment Object")]
         public static double Tilt(this IEnvironmentObject environmentObject)
@@ -49,7 +49,7 @@ namespace BH.Engine.Environment
             return environmentObject.ToPolyline().Tilt();
         }
 
-        [Description("BH.Engine.Environment.Query.Tilt => Returns the tilt of a BHoM Geometry Polyline")]
+        [Description("Returns the tilt of a BHoM Geometry Polyline")]
         [Input("polyline", "The BHoM Geometry Polyline having its tilt queried")]
         [Output("tilt", "The tilt of the polyline")]
         public static double Tilt(this Polyline polyline)

@@ -37,7 +37,7 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("BH.Engine.Environment.Modify.AddOpening => Returns a single Environment Panel with the provided opening. Opening is added to the provided panel regardless of geometric association")]
+        [Description("Returns a single Environment Panel with the provided opening. Opening is added to the provided panel regardless of geometric association")]
         [Input("panel", "A single Environment Panel to add the opening to")]
         [Input("opening", "The Environment Opening to add to the panel")]
         [Output("panel", "A modified Environment Panel with the provided opening added")]
@@ -47,7 +47,7 @@ namespace BH.Engine.Environment
             return panel;
         }
 
-        [Description("BH.Engine.Environment.Modify.AddOpening => Returns a list of Environment Panel with the provided openings added. Openings are added to the panels which contain them geometrically.")]
+        [Description("Returns a list of Environment Panel with the provided openings added. Openings are added to the panels which contain them geometrically.")]
         [Input("panels", "A collection of Environment Panels to add the opening to")]
         [Input("openings", "A collection of Environment Openings to add to the panels")]
         [Output("panels", "A collection of modified Environment Panels with the provided openings added")]

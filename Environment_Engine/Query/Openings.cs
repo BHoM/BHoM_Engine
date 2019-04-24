@@ -42,7 +42,7 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("BH.Engine.Environment.Query.Openings => Returns a collection of Environment Openings from a list of generic BHoM objects")]
+        [Description("Returns a collection of Environment Openings from a list of generic BHoM objects")]
         [Input("objects", "A collection of generic BHoM objects")]
         [Output("openings", "A collection of Environment Opening objects")]
         public static List<Opening> Openings(this List<IBHoMObject> objects)
@@ -55,7 +55,7 @@ namespace BH.Engine.Environment
             return Openings;
         }
 
-        [Description("BH.Engine.Environment.Query.OpeningsByElementID => Returns a collection of Environment Openings that match the given element ID")]
+        [Description("Returns a collection of Environment Openings that match the given element ID")]
         [Input("openings", "A collection of Environment Openings")]
         [Input("elementID", "The Element ID to filter by")]
         [Output("openings", "A collection of Environment Opening objects that match the element ID")]
@@ -76,7 +76,7 @@ namespace BH.Engine.Environment
             return rtnOpenings;            
         }
 
-        [Description("BH.Engine.Environment.Query.OpeningsByElementID => Returns a collection of Environment Openings that match the given element ID")]
+        [Description("Returns a collection of Environment Openings that match the given element ID")]
         [Input("panels", "A collection of Environment Panels to query for openings")]
         [Input("elementID", "The Element ID to filter by")]
         [Output("openings", "A collection of Environment Opening objects that match the element ID")]
@@ -89,7 +89,7 @@ namespace BH.Engine.Environment
             return allOpenings.OpeningsByElementID(elementID);
         }
 
-        [Description("BH.Engine.Environment.Query.OpeningsFromElements => Returns a collection of Environment Openings from a collection of Environment Panels")]
+        [Description("Returns a collection of Environment Openings from a collection of Environment Panels")]
         [Input("panels", "A collection of Environment Panels to query for openings")]
         [Output("openings", "A collection of Environment Opening objects that match the element ID")]
         public static List<Opening> OpeningsFromElements(this List<Panel> panels)

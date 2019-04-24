@@ -39,7 +39,7 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("BH.Engine.Environment.Create.SimulationResult => Returns an Environment Simulation Result object")]
+        [Description("Returns an Environment Simulation Result object")]
         [Input("name", "The name of the simulation result, default empty string")]
         [Input("type", "The type of simulation result from the Simulation Result Type enum, default undefined")]
         [Input("results", "A collection of profile results that make up this simulation result, default null")]

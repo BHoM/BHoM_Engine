@@ -38,7 +38,7 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("BH.Engine.Environment.Query.Altitude => Returns the minimum altitude of an Environment Object as the minimum z value from the bounding box of the geometry")]
+        [Description("Returns the minimum altitude of an Environment Object as the minimum z value from the bounding box of the geometry")]
         [Input("environmentObject", "Any object implementing the IEnvironmentObject interface that can have an altitude")]
         [Output("altitude", "The altitude of the object")]
         public static double Altitude(this IEnvironmentObject environmentObject)

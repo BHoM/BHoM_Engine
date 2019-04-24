@@ -39,7 +39,7 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("BH.Engine.Environment.Create.Building => Returns an Environment Building object")]
+        [Description("Returns an Environment Building object")]
         [Input("name", "The name of the building, default empty string")]
         [Input("latitude", "The latitude of the building location, default 0.0")]
         [Input("longitude", "The longitude of the building location, default 0.0")]

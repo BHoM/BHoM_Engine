@@ -37,7 +37,7 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("BH.Engine.Environment.Query.IdentifyOverlaps => Returns a collection of Environment Panels overlap with the given element")]
+        [Description("Returns a collection of Environment Panels overlap with the given element")]
         [Input("panel", "An Environment Panel to check against")]
         [Input("panelsToCompare", "A collection of Environment Panels to find overlaps from")]
         [Output("panels", "A collection of Environment Panels that overlap with the first panel")]
