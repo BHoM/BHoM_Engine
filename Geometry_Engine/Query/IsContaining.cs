@@ -34,19 +34,23 @@ namespace BH.Engine.Geometry
         /**** Public Methods - BoundingBox              ****/
         /***************************************************/
 
+        [DeprecatedAttribute("2.3", "Reorganised methods, adding tolerance", null, "IsContaining")]
         public static bool IsContaining(this BoundingBox box1, BoundingBox box2)
         {
-            return (box1.Min.X <= box2.Min.X && box1.Min.Y <= box2.Min.Y && box1.Min.Z <= box2.Min.Z && box1.Max.X >= box2.Max.X && box1.Max.Y >= box2.Max.Y && box1.Max.Z >= box2.Max.Z);
+            //return (box1.Min.X <= box2.Min.X && box1.Min.Y <= box2.Min.Y && box1.Min.Z <= box2.Min.Z && box1.Max.X >= box2.Max.X && box1.Max.Y >= box2.Max.Y && box1.Max.Z >= box2.Max.Z);
+            return box1.IsContaining(box2, true, Tolerance.Distance);
         }
 
         /***************************************************/
 
+        [DeprecatedAttribute("2.3", "Reorganised methods, adding tolerance", null, "IsContaining")]
         public static bool IIsContaining(this BoundingBox box, Point pt)
         {
-            Point max = box.Max;
-            Point min = box.Min;
+            //Point max = box.Max;
+            //Point min = box.Min;
 
-            return (pt.X <= max.X && pt.X >= min.X && pt.Y <= max.Y && pt.Y >= min.Y && pt.Z <= max.Z && pt.Z >= min.Z);
+            //return (pt.X <= max.X && pt.X >= min.X && pt.Y <= max.Y && pt.Y >= min.Y && pt.Z <= max.Z && pt.Z >= min.Z);
+            return box.IsContaining(pt, true, Tolerance.Distance);
         }
 
         /***************************************************/
@@ -56,6 +60,132 @@ namespace BH.Engine.Geometry
             return box.IsContaining(geometry.IBounds());
         }
 
+        /***************************************************/
+
+        //TODO: 2D boxes covered, but what about 1D
+        public static bool IsContaining(this BoundingBox box1, BoundingBox box2, bool acceptOnEdge = true, double tolerance = Tolerance.Distance)
+        {
+            Point max1 = box1.Max;
+            Point min1 = box1.Min;
+            Point max2 = box2.Max;
+            Point min2 = box2.Min;
+
+            if (Math.Abs(max1.X - min1.X) <= tolerance)
+            {
+                if (acceptOnEdge)
+                    return (min2.X >= min1.X - tolerance && max2.X <= max1.X + tolerance &&
+                            min2.Y >= min1.Y - tolerance && max2.Y <= max1.Y + tolerance &&
+                            min2.Z >= min1.Z - tolerance && max2.Z <= max1.Z + tolerance);
+                else
+                    return (min2.X > min1.X - tolerance && max2.X < max1.X + tolerance &&
+                            min2.Y > min1.Y + tolerance && max2.Y < max1.Y - tolerance &&
+                            min2.Z > min1.Z + tolerance && max2.Z < max1.Z - tolerance);
+            }
+            else if ((Math.Abs(max1.Y - min1.Y) <= tolerance))
+            {
+                if (acceptOnEdge)
+                    return (min2.X >= min1.X - tolerance && max2.X <= max1.X + tolerance &&
+                            min2.Y >= min1.Y - tolerance && max2.Y <= max1.Y + tolerance &&
+                            min2.Z >= min1.Z - tolerance && max2.Z <= max1.Z + tolerance);
+                else
+                    return (min2.X > min1.X + tolerance && max2.X < max1.X - tolerance &&
+                            min2.Y > min1.Y - tolerance && max2.Y < max1.Y + tolerance &&
+                            min2.Z > min1.Z + tolerance && max2.Z < max1.Z - tolerance);
+            }
+            else if ((Math.Abs(max1.Z - min1.Z) <= tolerance))
+            {
+                if (acceptOnEdge)
+                    return (min2.X >= min1.X - tolerance && max2.X <= max1.X + tolerance &&
+                            min2.Y >= min1.Y - tolerance && max2.Y <= max1.Y + tolerance &&
+                            min2.Z >= min1.Z - tolerance && max2.Z <= max1.Z + tolerance);
+                else
+                    return (min2.X > min1.X + tolerance && max2.X < max1.X - tolerance &&
+                            min2.Y > min1.Y + tolerance && max2.Y < max1.Y - tolerance &&
+                            min2.Z > min1.Z - tolerance && max2.Z < max1.Z + tolerance);
+            }
+            else
+            {
+                if (acceptOnEdge)
+                    return (min2.X >= min1.X - tolerance && max2.X <= max1.X + tolerance &&
+                            min2.Y >= min1.Y - tolerance && max2.Y <= max1.Y + tolerance &&
+                            min2.Z >= min1.Z - tolerance && max2.Z <= max1.Z + tolerance);
+                else
+                    return (min2.X > min1.X + tolerance && max2.X < max1.X - tolerance &&
+                            min2.Y > min1.Y + tolerance && max2.Y < max1.Y - tolerance &&
+                            min2.Z > min1.Z + tolerance && max2.Z < max1.Z - tolerance);
+            }
+        }
+
+        /***************************************************/
+
+        //TODO: 2D boxes covered, but what about 1D
+        public static bool IsContaining(this BoundingBox box, Point pt, bool acceptOnEdge = true, double tolerance = Tolerance.Distance)
+        {
+            Point max = box.Max;
+            Point min = box.Min;
+
+            if (Math.Abs(max.X - min.X) <= tolerance)
+            {
+                if (acceptOnEdge)
+                    return (pt.X <= max.X + tolerance && pt.X >= min.X - tolerance &&
+                            pt.Y <= max.Y + tolerance && pt.Y >= min.Y - tolerance &&
+                            pt.Z <= max.Z + tolerance && pt.Z >= min.Z - tolerance);
+                else
+                    return (pt.X < max.X + tolerance && pt.X > min.X - tolerance &&
+                            pt.Y < max.Y - tolerance && pt.Y > min.Y + tolerance &&
+                            pt.Z < max.Z - tolerance && pt.Z > min.Z + tolerance);
+            }
+            else if ((Math.Abs(max.Y - min.Y) <= tolerance))
+            {
+                if (acceptOnEdge)
+                    return (pt.X <= max.X + tolerance && pt.X >= min.X - tolerance &&
+                            pt.Y <= max.Y + tolerance && pt.Y >= min.Y - tolerance &&
+                            pt.Z <= max.Z + tolerance && pt.Z >= min.Z - tolerance);
+                else
+                    return (pt.X < max.X - tolerance && pt.X > min.X + tolerance &&
+                            pt.Y < max.Y + tolerance && pt.Y > min.Y - tolerance &&
+                            pt.Z < max.Z - tolerance && pt.Z > min.Z + tolerance);
+            }
+            else if ((Math.Abs(max.Z - min.Z) <= tolerance))
+            {
+                if (acceptOnEdge)
+                    return (pt.X <= max.X + tolerance && pt.X >= min.X - tolerance &&
+                            pt.Y <= max.Y + tolerance && pt.Y >= min.Y - tolerance &&
+                            pt.Z <= max.Z + tolerance && pt.Z >= min.Z - tolerance);
+                else
+                    return (pt.X < max.X - tolerance && pt.X > min.X + tolerance &&
+                            pt.Y < max.Y - tolerance && pt.Y > min.Y + tolerance &&
+                            pt.Z < max.Z + tolerance && pt.Z > min.Z - tolerance);
+            }
+            else
+            {
+                if (acceptOnEdge)
+                    return (pt.X <= max.X + tolerance && pt.X >= min.X - tolerance &&
+                            pt.Y <= max.Y + tolerance && pt.Y >= min.Y - tolerance &&
+                            pt.Z <= max.Z + tolerance && pt.Z >= min.Z - tolerance);
+                else
+                    return (pt.X < max.X - tolerance && pt.X > min.X + tolerance &&
+                            pt.Y < max.Y - tolerance && pt.Y > min.Y + tolerance &&
+                            pt.Z < max.Z - tolerance && pt.Z > min.Z + tolerance);
+            }
+        }
+
+        /***************************************************/
+
+        public static bool IsContaining(this BoundingBox box, List<Point> pts, bool acceptOnEdge = true, double tolerance = Tolerance.Distance)
+        {
+            if (pts.Count == 0)
+                return false;
+
+            bool flag = true;
+            foreach (Point pt in pts)
+                if (!box.IsContaining(pt, acceptOnEdge, tolerance))
+                {
+                    flag = false;
+                }
+
+            return flag;
+        }
 
         /***************************************************/
         /**** Public Methods - Curve / points           ****/
@@ -117,33 +247,30 @@ namespace BH.Engine.Geometry
                     {
                         foreach (Point pt in points)
                         {
-                            if (curve.ClosestPoint(pt).SquareDistance(pt) > sqTol)
-                                return false;
+                            if (curve.ClosestPoint(pt).SquareDistance(pt) > sqTol) return false;
                         }
                         return true;
                     }
-                    else
-                        return false;
+                    else return false;
                 }
+
                 else
                 {
-                    List<Line> subParts = curve.SubParts();
-                    List<Vector> edgeDirections = subParts.Select(c => c.Direction()).ToList();
                     foreach (Point pt in points)
                     {
                         Point pPt = pt.Project(p);
                         if (pPt.SquareDistance(pt) <= sqTol)
                         {
                             Point end = p.Origin;
-                            Vector direction = (end - pPt).Normalise();
-                            while (direction.SquareLength() <= sqTol || edgeDirections.Any(e => 1 - Math.Abs(e.DotProduct(direction)) <= Tolerance.Angle))
+                            if (pPt.SquareDistance(end) <= sqTol)
                             {
                                 end = end.Translate(Create.RandomVectorInPlane(p, true));
-                                direction = (end - pPt).Normalise();
                             }
 
                             Line ray = new Line { Start = pPt, End = end };
                             ray.Infinite = true;
+                            Vector rayDir = ray.Direction();
+                            List<Line> subParts = curve.SubParts();
                             List<Point> intersects = new List<Point>();
                             List<Point> extraIntersects = new List<Point>();
 
@@ -152,47 +279,36 @@ namespace BH.Engine.Geometry
                                 Point iPt = subPart.LineIntersection(ray, false, tolerance);
                                 if (iPt != null)
                                 {
-                                    double signedAngle = direction.SignedAngle(subPart.Direction(), p.Normal);
+                                    double signedAngle = rayDir.SignedAngle(subPart.Direction(), p.Normal);
                                     if ((subPart.Start.SquareDistance(iPt) <= sqTol))
                                     {
-                                        if (signedAngle > Tolerance.Angle)
-                                            intersects.Add(iPt);
-                                        else
-                                            extraIntersects.Add(iPt);
+                                        if (signedAngle > Tolerance.Angle) intersects.Add(iPt);
+                                        else extraIntersects.Add(iPt);
                                     }
                                     else if ((subPart.End.SquareDistance(iPt) <= sqTol))
                                     {
-                                        if (signedAngle < -Tolerance.Angle)
-                                            intersects.Add(iPt);
-                                        else
-                                            extraIntersects.Add(iPt);
+                                        if (signedAngle < -Tolerance.Angle) intersects.Add(iPt);
+                                        else extraIntersects.Add(iPt);
                                     }
-                                    else
-                                        intersects.Add(iPt);
+                                    else intersects.Add(iPt);
                                 }
                             }
 
-                            if (intersects.Count == 0)
-                                return false;
-
+                            if (intersects.Count == 0) return false;
                             if ((pPt.ClosestPoint(intersects.Union(extraIntersects)).SquareDistance(pPt) <= sqTol))
                             {
-                                if (acceptOnEdge)
-                                    continue;
-                                else
-                                    return false;
+                                if (acceptOnEdge) continue;
+                                else return false;
                             }
 
                             intersects.Add(pPt);
                             intersects = intersects.SortCollinear(tolerance);
                             for (int j = 0; j < intersects.Count; j++)
                             {
-                                if (j % 2 == 0 && intersects[j] == pPt)
-                                    return false;
+                                if (j % 2 == 0 && intersects[j] == pPt) return false;
                             }
                         }
-                        else
-                            return false;
+                        else return false;
                     }
                     return true;
                 }
@@ -219,33 +335,30 @@ namespace BH.Engine.Geometry
                     {
                         foreach (Point pt in points)
                         {
-                            if (curve.ClosestPoint(pt).SquareDistance(pt) > sqTol)
-                                return false;
+                            if (curve.ClosestPoint(pt).SquareDistance(pt) > sqTol) return false;
                         }
                         return true;
                     }
-                    else
-                        return false;
+                    else return false;
                 }
+
                 else
                 {
-                    List<ICurve> subParts = curve.SubParts();
-                    List<Vector> edgeDirections = subParts.Where(s => s is Line).Select(c => (c as Line).Direction()).ToList();
                     foreach (Point pt in points)
                     {
                         Point pPt = pt.Project(p);
                         if (pPt.SquareDistance(pt) <= sqTol)
                         {
                             Point end = p.Origin;
-                            Vector direction = (end - pPt).Normalise();
-                            while (direction.SquareLength() <= sqTol || edgeDirections.Any(e => 1 - Math.Abs(e.DotProduct(direction)) <= Tolerance.Angle))
+                            if (pPt.SquareDistance(end) <= sqTol)
                             {
                                 end = end.Translate(Create.RandomVectorInPlane(p, true));
-                                direction = (end - pPt).Normalise();
                             }
 
                             Line ray = new Line { Start = pPt, End = end };
                             ray.Infinite = true;
+                            Vector rayDir = ray.Direction();
+                            List<ICurve> subParts = curve.SubParts();
                             List<Point> intersects = new List<Point>();
                             List<Point> extraIntersects = new List<Point>();
 
@@ -254,49 +367,37 @@ namespace BH.Engine.Geometry
                                 List<Point> iPts = subPart.ILineIntersections(ray, false, tolerance);
                                 foreach (Point iPt in iPts)
                                 {
-                                    double signedAngle = direction.SignedAngle(subPart.ITangentAtPoint(iPt, tolerance), p.Normal);
+                                    double signedAngle = rayDir.SignedAngle(subPart.ITangentAtPoint(iPt, tolerance), p.Normal);
                                     if ((subPart.IStartPoint().SquareDistance(iPt) <= sqTol))
                                     {
-                                        if (signedAngle >= -Tolerance.Angle)
-                                            intersects.Add(iPt);
-                                        else
-                                            extraIntersects.Add(iPt);
+                                        if (signedAngle >= -Tolerance.Angle) intersects.Add(iPt);
+                                        else extraIntersects.Add(iPt);
                                     }
                                     else if ((subPart.IEndPoint().SquareDistance(iPt) <= sqTol))
                                     {
-                                        if (signedAngle <= Tolerance.Angle)
-                                            intersects.Add(iPt);
-                                        else
-                                            extraIntersects.Add(iPt);
+                                        if (signedAngle <= Tolerance.Angle) intersects.Add(iPt);
+                                        else extraIntersects.Add(iPt);
                                     }
-                                    else if (Math.Abs(signedAngle) <= Tolerance.Angle)
-                                        extraIntersects.Add(iPt);
-                                    else
-                                        intersects.Add(iPt);
+                                    else if (Math.Abs(signedAngle) <= Tolerance.Angle) extraIntersects.Add(iPt);
+                                    else intersects.Add(iPt);
                                 }
                             }
 
-                            if (intersects.Count == 0)
-                                return false;
-
+                            if (intersects.Count == 0) return false;
                             if ((pPt.ClosestPoint(intersects.Union(extraIntersects)).SquareDistance(pPt) <= sqTol))
                             {
-                                if (acceptOnEdge)
-                                    continue;
-                                else
-                                    return false;
+                                if (acceptOnEdge) continue;
+                                else return false;
                             }
 
                             intersects.Add(pPt);
                             intersects = intersects.SortCollinear(tolerance);
                             for (int j = 0; j < intersects.Count; j++)
                             {
-                                if (j % 2 == 0 && intersects[j] == pPt)
-                                    return false;
+                                if (j % 2 == 0 && intersects[j] == pPt) return false;
                             }
                         }
-                        else
-                            return false;
+                        else return false;
                     }
                     return true;
                 }
@@ -364,7 +465,6 @@ namespace BH.Engine.Geometry
             if (!acceptOnEdge && iPts.Count > 0) return false;
 
             List<double> cParams = new List<double> { 0, 1 };
-            iPts = iPts.CullDuplicates(tolerance);
             foreach (Point iPt in iPts)
             {
                 cParams.Add(curve2.IParameterAtPoint(iPt, tolerance));
