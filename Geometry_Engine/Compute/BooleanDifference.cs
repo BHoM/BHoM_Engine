@@ -159,6 +159,123 @@ namespace BH.Engine.Geometry
             return result;
         }
 
+        /***************************************************/
+        
+        //difference between two lists of regions. Is it really useful?
+        public static List<List<PolyCurve>> BooleanDifference(this List<PolyCurve> regions, List<PolyCurve> refRegions, double tolerance = Tolerance.Distance)
+        {
+            List<PolyCurve> allRegions = new List<PolyCurve>();
+            allRegions.AddRange(regions);
+            allRegions.AddRange(refRegions);
+            Boolean coPlanarFlag = true;
+
+            for (int i = 0; i < allRegions.Count - 1; i++)
+            {
+                if (!allRegions[i].IsCoplanar(allRegions[i + 1]))
+                    coPlanarFlag = false;
+            }
+
+            if (coPlanarFlag)
+            {
+                List<List<PolyCurve>> result = new List<List<PolyCurve>>();
+                foreach (PolyCurve crv in regions)
+                {
+                    result.Add(crv.BooleanDifference(refRegions));
+                }
+
+                return result;
+            }
+
+            return new List<List<PolyCurve>>();
+        }
+
+        /***************************************************/
+
+        //difference between one region and a list of regions
+        public static List<PolyCurve> BooleanDifference(this PolyCurve region, List<PolyCurve> refRegions, double tolerance = Tolerance.Distance)
+        {
+            List<PolyCurve> allRegions = new List<PolyCurve>();
+            allRegions.Add(region);
+            allRegions.AddRange(refRegions);
+            Boolean coPlanarFlag = true;
+
+            for (int i = 0; i < allRegions.Count - 1; i++)
+            {
+                if (!allRegions[i].IsCoplanar(allRegions[i + 1]))
+                    coPlanarFlag = false;
+            }
+
+            if (coPlanarFlag)
+            {
+                double sqTol = tolerance * tolerance;
+                List<ICurve> tmpResult = new List<ICurve>();
+                List<PolyCurve> result = new List<PolyCurve>();
+                List<Point>[] iPts = new List<Point>[allRegions.Count];
+                for (int k=0; k < iPts.Count();k++)
+                    iPts[k] = new List<Point>();
+
+                for (int j = 0; j < allRegions.Count - 1; j++)
+                {
+                    for (int k = j + 1; k < allRegions.Count; k++)
+                    {
+                        List<Point> tmpPts = new List<Point>();
+                        if (allRegions[j].Bounds().IsInRange(allRegions[k].Bounds()))
+                        {
+                            tmpPts.AddRange(allRegions[j].CurveIntersections(allRegions[k]).CullDuplicates(tolerance));
+                            iPts[j].AddRange(tmpPts);
+                            iPts[k].AddRange(tmpPts);
+                        }
+                    }
+                }
+
+                for (int j = 0; j < allRegions.Count; j++)
+                {
+                    if (j==0 || iPts[j].Count() > 0)
+                    {
+                        List<PolyCurve> splReg = allRegions[j].SplitAtPoints(iPts[j]);
+                        foreach (PolyCurve segment in splReg)
+                        {
+                            List<Point> cPts = new List<Point> { segment.IPointAtParameter(0.5) };
+
+                            Boolean flag = false;
+
+                            if (region.IsContaining(cPts, true, tolerance))
+                                flag = true;
+                            foreach (PolyCurve refReg in refRegions)
+                            {
+                                if (refReg.Bounds().IsContaining(cPts, false, tolerance))
+                                    if (refReg.IsContaining(cPts, false, tolerance))
+                                        flag = false;
+                            }
+                            if (flag)
+                                tmpResult.Add(segment);
+                        }
+                    }
+                }
+
+                for (int k = 0; k < tmpResult.Count; k++)
+                {
+                    for (int j = 0; j < tmpResult.Count; j++)
+                    {
+                        if (k != j && k < tmpResult.Count && (tmpResult[k].IIsEqual(tmpResult[j]) || tmpResult[k].IIsEqual(tmpResult[j].IFlip())))
+                            tmpResult.RemoveAt(j);
+                    }
+                }
+
+                result = tmpResult.IJoin(tolerance);
+                int i = 0;
+                while (i < result.Count)
+                {
+                    if (result[i].Area() <= sqTol)
+                        result.RemoveAt(i);
+                    else
+                        i++;
+                }
+
+                return result;
+            }
+            return new List<PolyCurve>();
+        }
 
         /***************************************************/
         /****              Private methods              ****/
@@ -238,69 +355,5 @@ namespace BH.Engine.Geometry
             return new List<Polyline> { region.Clone() };
         }
 
-        /***************************************************/
-
-        public static List<PolyCurve> BooleanDifference(this PolyCurve region, PolyCurve refRegion, double tolerance = Tolerance.Distance)
-        {
-            if (region.IsCoplanar(refRegion, tolerance))
-            {
-                double sqTol = tolerance * tolerance;
-                List<ICurve> tmpResult = new List<ICurve>();
-                List<PolyCurve> result = new List<PolyCurve>();
-                List<Point> iPts = new List<Point>();
-
-                foreach (ICurve crv in region.SubParts())
-                {
-                    foreach (ICurve refCrv in refRegion.SubParts())
-                    {
-                        iPts.AddRange(crv.ICurveIntersections(refCrv));
-                    }
-                }
-
-                List<PolyCurve> splitRegion1 = region.SplitAtPoints(iPts, tolerance);
-                List<PolyCurve> splitRegion2 = refRegion.SplitAtPoints(iPts, tolerance);
-
-                foreach (PolyCurve segment in splitRegion1)
-                {
-                    List<Point> cPts = new List<Point>();
-                    cPts.Add(segment.IPointAtParameter(0.5));
-
-                    if (region.IsContaining(cPts, true, tolerance) && !refRegion.IsContaining(cPts, true, tolerance))
-                        tmpResult.Add(segment);
-                }
-
-                foreach (PolyCurve segment in splitRegion2)
-                {
-                    List<Point> cPts = new List<Point>();
-
-                    cPts.Add(segment.IPointAtParameter(0.5));
-
-                    if (region.IsContaining(cPts, true, tolerance))
-                    {
-                        foreach (Point cPt in cPts)
-                        {
-                            if (cPt.SquareDistance(region.ClosestPoint(cPt)) > sqTol)
-                            {
-                                tmpResult.Add(segment);
-                                break;
-                            }
-                        }
-                    }
-                }
-
-                result = tmpResult.IJoin(tolerance);
-                int i = 0;
-                while (i < result.Count)
-                {
-                    if (result[i].Area() <= sqTol)
-                        result.RemoveAt(i);
-                    else
-                        i++;
-                }
-
-                return result;
-            }
-            return new List<PolyCurve>();
-        }
     }
 }
