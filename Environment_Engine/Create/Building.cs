@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -28,6 +28,9 @@ using System.Threading.Tasks;
 
 using BH.oM.Environment.Elements;
 
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
+
 namespace BH.Engine.Environment
 {
     public static partial class Create
@@ -36,7 +39,14 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Building Building(string name, double latitude, double longitude, double elevation, BH.oM.Geometry.Point location)
+        [Description("Returns an Environment Building object")]
+        [Input("name", "The name of the building, default empty string")]
+        [Input("latitude", "The latitude of the building location, default 0.0")]
+        [Input("longitude", "The longitude of the building location, default 0.0")]
+        [Input("elevation", "The elevation of the building, default 0.0")]
+        [Input("type", "The type of building from the BuildingType enum, default undefined")]
+        [Output("building", "An Environment Building object")]
+        public static Building Building(string name = "", double latitude = 0.0, double longitude = 0.0, double elevation = 0.0, BuildingType type = BuildingType.Undefined)
         {
             return new Building
             {
@@ -44,65 +54,8 @@ namespace BH.Engine.Environment
                 Latitude = latitude,
                 Longitude = longitude,
                 Elevation = elevation,
-                Location = location,
+                Type = type,
             };
         }
-
-        public static Building Building(string name, double latitude, double longitude, double elevation)
-        {
-            return new Building
-            {
-                Name = name,
-                Latitude = latitude,
-                Longitude = longitude,
-                Elevation = elevation,
-            };
-        }
-
-        public static Building Building(string name)
-        {
-            return new Building
-            {
-                Name = name,
-            };
-        }
-
-        public static Building Building(double latitude, double longitude)
-        {
-            return new Building
-            {
-                Latitude = latitude,
-                Longitude = longitude,
-            };
-        }
-
-        public static Building Building(double elevation)
-        {
-            return new Building
-            {
-                Elevation = elevation,
-            };
-        }
-
-        public static Building Building(BH.oM.Geometry.Point location)
-        {
-            return new Building
-            {
-                Location = location,
-            };
-        }
-
-        public static Building Building(double elevation, double latitude, double longitude, BH.oM.Geometry.Point location)
-        {
-            return new Building
-            {
-                Elevation = elevation,
-                Latitude = latitude,
-                Longitude = longitude,
-                Location = location,
-            };
-        }
-
-        /***************************************************/
     }
 }

@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -22,15 +22,16 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
+using System.Linq;
+using BH.oM.Environment;
 using BH.oM.Environment.Elements;
-using BH.oM.Geometry;
-using BH.oM.Environment.Interface;
 
 using BH.Engine.Geometry;
+using BH.oM.Geometry;
+
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Environment
 {
@@ -40,24 +41,25 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static ICurve Bottom(this IBuildingObject buildingElementGeometry)
+        [Description("Returns the bottom of a given environment object")]
+        [Input("environmentObject", "Any object implementing the IEnvironmentObject interface that can have a geometrical bottom")]
+        [Output("curve", "An ICurve representation of the bottom of the object")]
+        public static ICurve Bottom(this IEnvironmentObject environmentObject)
         {
-            if (buildingElementGeometry == null) return null;
+            if (environmentObject == null) return null;
 
-            PolyCurve workingCurves = null;
+            Polyline workingCurves = null;
 
-            if (buildingElementGeometry is Panel)
-                workingCurves = (buildingElementGeometry as Panel).PanelCurve as PolyCurve;
-            else if (buildingElementGeometry is BuildingElement)
-                workingCurves = (buildingElementGeometry as BuildingElement).PanelCurve as PolyCurve;
-            else if (buildingElementGeometry is Opening)
-                workingCurves = (buildingElementGeometry as Opening).OpeningCurve as PolyCurve;
+            if (environmentObject is Panel)
+                workingCurves = (environmentObject as Panel).ExternalEdges.ToPolyline();
+            else if (environmentObject is Opening)
+                workingCurves = (environmentObject as Opening).Edges.ToPolyline();
 
             if (workingCurves == null) return null;
 
             double aZ = double.MaxValue;
             ICurve aResult = null;
-            foreach (ICurve aCurve in workingCurves.Curves)
+            foreach (ICurve aCurve in workingCurves.SplitAtPoints(workingCurves.DiscontinuityPoints()))
             {
                 Point aPoint_Start = aCurve.IStartPoint();
                 Point aPoint_End = aCurve.IEndPoint();
@@ -70,7 +72,5 @@ namespace BH.Engine.Environment
             }
             return aResult;
         }
-
-        /***************************************************/
     }
 }

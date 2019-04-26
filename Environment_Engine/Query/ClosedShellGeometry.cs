@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -22,13 +22,15 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-using BHG = BH.oM.Geometry;
-using BH.Engine.Geometry;
+using System.Linq;
 using BH.oM.Environment.Elements;
+
+using BH.Engine.Geometry;
+using BH.oM.Geometry;
+
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Environment
 {
@@ -38,25 +40,25 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static List<BHG.Polyline> ClosedShellGeometry(this List<BuildingElement> buildingElements)
+        [Description("Gets the closed shell geometry for a collection of panels representing a space")]
+        [Input("panelsAsSpace", "A collection of Environment Panels representing a single space")]
+        [Output("polylines", "A collection of BHoM Geometry Polylines which represent the shell of the space")]
+        public static List<Polyline> ClosedShellGeometry(this List<Panel> panelsAsSpace)
         {
-            List<BHG.Polyline> pLinesCurtainWall = new List<BHG.Polyline>();
-            List<BHG.Polyline> pLinesOther = new List<BHG.Polyline>();
+            List<Polyline> pLinesCurtainWall = new List<Polyline>();
+            List<Polyline> pLinesOther = new List<Polyline>();
 
             //Merge curtain panels
-            foreach (BuildingElement element in buildingElements)
+            foreach (Panel element in panelsAsSpace)
             {
-                BH.oM.Environment.Properties.ElementProperties beProperty = element.ElementProperties() as BH.oM.Environment.Properties.ElementProperties;
-                BHG.Polyline pline = new BHG.Polyline() { ControlPoints = element.PanelCurve.IControlPoints() };
-
-                if (beProperty != null && beProperty.BuildingElementType == BuildingElementType.CurtainWall)
-                    pLinesCurtainWall.Add(pline);
+                if (element.Type == PanelType.CurtainWall)
+                    pLinesCurtainWall.Add(element.ToPolyline());
                 else
-                    pLinesOther.Add(pline);
+                    pLinesOther.Add(element.ToPolyline());
             }
 
             //Add the rest of the geometries
-            List<BHG.Polyline> mergedPolyLines = BH.Engine.Geometry.Compute.BooleanUnion(pLinesCurtainWall);
+            List<Polyline> mergedPolyLines = BH.Engine.Geometry.Compute.BooleanUnion(pLinesCurtainWall);
             mergedPolyLines.AddRange(pLinesOther);
 
             return mergedPolyLines;

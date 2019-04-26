@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -26,8 +26,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using BH.oM.Environment.Elements;
 using BH.oM.Environment.Results;
+
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Environment
 {
@@ -37,20 +39,20 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static SimulationResult SimulationResult(SimulationResultType type, List<ProfileResult> results)
+        [Description("Returns an Environment Simulation Result object")]
+        [Input("name", "The name of the simulation result, default empty string")]
+        [Input("type", "The type of simulation result from the Simulation Result Type enum, default undefined")]
+        [Input("results", "A collection of profile results that make up this simulation result, default null")]
+        [Output("simulationResult", "An Environment Simulation Result object")]
+        public static SimulationResult SimulationResult(string name = "", SimulationResultType type = SimulationResultType.Undefined, List<ProfileResult> results = null)
         {
-            return new oM.Environment.Results.SimulationResult
+            results = results ?? new List<ProfileResult>();
+            return new SimulationResult
             {
+                Name = name,
                 SimulationResultType = type,
                 SimulationResults = results,
             };
         }
-
-        public static SimulationResult SimulationResult(SimulationResultType type, ProfileResult result)
-        {
-            return SimulationResult(type, new List<ProfileResult> { result });
-        }
-
-        /***************************************************/
     }
 }

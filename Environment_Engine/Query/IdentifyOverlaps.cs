@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -23,10 +23,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using BHEE = BH.oM.Environment.Elements;
-using BH.Engine.Geometry;
 
 using BH.oM.Environment.Elements;
+
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Environment
 {
@@ -36,19 +37,21 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static List<BuildingElement> IdentifyOverlaps(this BuildingElement element, List<BuildingElement> elementsToCompare)
+        [Description("Returns a collection of Environment Panels overlap with the given element")]
+        [Input("panel", "An Environment Panel to check against")]
+        [Input("panelsToCompare", "A collection of Environment Panels to find overlaps from")]
+        [Output("panels", "A collection of Environment Panels that overlap with the first panel")]
+        public static List<Panel> IdentifyOverlaps(this Panel panel, List<Panel> panelsToCompare)
         {
-            List<BuildingElement> overlappingElements = new List<BuildingElement>();
+            List<Panel> overlappingElements = new List<Panel>();
 
-            foreach(BuildingElement be in elementsToCompare)
+            foreach(Panel p in panelsToCompare)
             {
-                if(element.BHoM_Guid != be.BHoM_Guid && element.DoesBooleanIntersect(be))
-                        overlappingElements.Add(be);
+                if(panel.BHoM_Guid != p.BHoM_Guid && panel.BooleanIntersect(p))
+                        overlappingElements.Add(p);
             }
 
             return overlappingElements;
         }
-
-        /***************************************************/
     }
 }

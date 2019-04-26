@@ -1,6 +1,6 @@
 ﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -23,16 +23,13 @@
 using BH.oM.Environment.Elements;
 using System;
 using System.Collections.Generic;
-
 using System.Linq;
-using BH.oM.Geometry;
 
-using BH.Engine.Geometry;
+using BH.oM.Physical.Properties;
+using BH.oM.Physical.Properties.Construction;
 
-using BH.Engine.Common;
-
-using BH.oM.Environment.Properties;
-using BH.oM.Environment.Materials;
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Environment
 {
@@ -42,15 +39,18 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Returns a collection of unique materials from a collection of constructions")]
+        [Input("constructions", "A collection of Constructions")]
+        [Output("uniqueMaterials", "A collection of unique Material objects")]
         public static List<Material> UniqueMaterials(this List<Construction> constructions)
         {
             List<Material> unique = new List<Material>();
 
             foreach(Construction c in constructions)
             {
-                foreach(Material m in c.Materials)
+                foreach(Layer l in c.Layers)
                 {
-                    Material t = unique.Where(x => x.Name == m.Name).FirstOrDefault();
+                    Material t = unique.Where(x => x.Name == l.Material.Name).FirstOrDefault();
                     if (t == null)
                         unique.Add(t);
                 }
@@ -59,14 +59,20 @@ namespace BH.Engine.Environment
             return unique;
         }
 
-        public static List<Material> UniqueMaterials(this List<BuildingElement> elements)
+        [Description("Returns a collection of unique materials from a collection of Environment Panels")]
+        [Input("panels", "A collection of Environment Panels")]
+        [Output("uniqueMaterials", "A collection of unique Material objects")]
+        public static List<Material> UniqueMaterials(this List<Panel> panels)
         {
-            return elements.UniqueConstructions().UniqueMaterials();
+            return panels.UniqueConstructions().UniqueMaterials();
         }
 
-        public static List<Material> UniqueMaterials(this List<List<BuildingElement>> elementsAsSpaces)
+        [Description("Returns a collection of unique materials from a nested collection of Environment Panels representing spaces")]
+        [Input("panelsAsSpaces", "A nested collection of Environment Panels representing spaces")]
+        [Output("uniqueMaterials", "A collection of unique Material objects")]
+        public static List<Material> UniqueMaterials(this List<List<Panel>> panelsAsSpaces)
         {
-            return elementsAsSpaces.UniqueBuildingElements().UniqueConstructions().UniqueMaterials();
+            return panelsAsSpaces.UniquePanels().UniqueConstructions().UniqueMaterials();
         }
     }
 }

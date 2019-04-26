@@ -1,6 +1,6 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -27,8 +27,10 @@ using System.Text;
 using System.Threading.Tasks;
 
 using BH.oM.Environment.Elements;
-using BH.oM.Environment.Properties;
-using BH.oM.Geometry;
+using BH.oM.Physical.Properties.Construction;
+
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Environment
 {
@@ -38,122 +40,29 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Panel Panel(ICurve panelCurve, IEnumerable<Opening> openings)
+        [Description("Returns an Environment Panel object")]
+        [Input("name", "The name of the panel, default empty string")]
+        [Input("externalEdges", "A collection of Environment Edge objects which define the external boundary of the panel, default null")]
+        [Input("openings", "A collection of Environment Opening objects, default null")]
+        [Input("construction", "A construction object providing layer and material information for the panel, default null")]
+        [Input("type", "The type of panel from the Panel Type enum, default undefined")]
+        [Input("connectedSpaces", "A collection of the spaces the panel is connected to, default null")]
+        [Output("panel", "An Environment Panel object")]
+        public static Panel Panel(string name = "", List<Edge> externalEdges = null, List<Opening> openings = null, IConstruction construction = null, PanelType type = PanelType.Undefined, List<string> connectedSpaces = null)
         {
+            externalEdges = externalEdges ?? new List<Edge>();
+            openings = openings ?? new List<Opening>();
+            connectedSpaces = connectedSpaces ?? new List<string>();
+
             return new Panel
             {
-                PanelCurve = panelCurve,
-                Openings = openings.ToList(),
+                Name = name,
+                ExternalEdges = externalEdges,
+                Openings = openings,
+                Construction = construction,
+                Type = type,
+                ConnectedSpaces = connectedSpaces,
             };
         }
-
-        /***************************************************/
-
-        public static Panel Panel(ICurve panelCurve, PanelProperties properties)
-        {
-            return new Panel
-            {
-                PanelCurve = panelCurve,
-                PanelProperties = properties,
-            };
-        }
-
-        /***************************************************/
-
-        public static Panel Panel(ICurve panelCurve, PanelProperties properties, Opening opening)
-        {
-            return Panel(panelCurve, properties, new List<Opening> { opening });
-        }
-
-        /***************************************************/
-
-        public static Panel Panel(ICurve panelCurve, PanelProperties properties, IEnumerable<Opening> openings)
-        {
-            return new Panel
-            {
-                PanelCurve = panelCurve,
-                PanelProperties = properties,
-                Openings = openings as List<Opening>,
-            };
-        }
-
-        /***************************************************/
-
-        public static Panel Panel(PanelProperties properties)
-        {
-            return new Panel
-            {
-                PanelProperties = properties,
-            };
-        }
-
-        /***************************************************/
-
-        public static Panel Panel(Opening opening)
-        {
-            return Panel(new List<Opening> { opening });
-        }
-
-        /***************************************************/
-
-        public static Panel Panel(IEnumerable<Opening> openings)
-        {
-            return new Panel
-            {
-                Openings = openings as List<Opening>,
-            };
-        }
-
-        /***************************************************/
-
-        public static Panel Panel(ICurve panelCurve)
-        {
-            return new Panel
-            {
-                PanelCurve = panelCurve,
-            };
-        }
-
-        /***************************************************/
-
-        public static Panel Panel(IEnumerable<ICurve> panelCurves)
-        {
-            return new Panel
-            {
-                PanelCurve = Geometry.Create.PolyCurve(panelCurves),
-            };
-        }
-
-        /***************************************************/
-
-        public static Panel Panel(PolyCurve panelCurve)
-        {
-            return new Panel
-            {
-                PanelCurve = panelCurve,
-            };
-        }
-
-        /***************************************************/
-
-        public static Panel Panel(IEnumerable<Polyline> panelPolylines)
-        {
-            return new Panel
-            {
-                PanelCurve = Geometry.Create.PolyCurve(panelPolylines),
-            };
-        }
-
-        /***************************************************/
-
-        public static Panel Panel(Polyline panelPolyline)
-        {
-            return new Panel
-            {
-                PanelCurve = panelPolyline,
-            };
-        }
-
-        /***************************************************/
     }
 }

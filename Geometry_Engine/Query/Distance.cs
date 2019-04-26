@@ -113,6 +113,14 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [NotImplemented]
+        public static double Distance(this Point point, Ellipse ellipse)
+        {
+            throw new NotImplementedException();
+        }
+
+        /***************************************************/
+
         public static double Distance(this Point point, Polyline curve)
         {
             return point.Distance(curve.ClosestPoint(point));

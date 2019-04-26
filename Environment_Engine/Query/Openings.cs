@@ -1,6 +1,6 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -26,12 +26,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using BHG = BH.oM.Geometry;
-using BH.Engine.Geometry;
+using BH.oM.Environment;
 using BH.oM.Environment.Elements;
 using BH.oM.Environment.Properties;
-
 using BH.oM.Base;
+
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Environment
 {
@@ -41,40 +42,64 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static List<Opening> Openings(this List<IBHoMObject> bhomObjects)
+        [Description("Returns a collection of Environment Openings from a list of generic BHoM objects")]
+        [Input("objects", "A collection of generic BHoM objects")]
+        [Output("openings", "A collection of Environment Opening objects")]
+        public static List<Opening> Openings(this List<IBHoMObject> objects)
+        {
+            objects = objects.ObjectsByType(typeof(Opening));
+            List<Opening> Openings = new List<Opening>();
+            foreach (IBHoMObject o in objects)
+                Openings.Add(o as Opening);
+
+            return Openings;
+        }
+
+        [Description("Returns a collection of Environment Openings that match the given element ID")]
+        [Input("openings", "A collection of Environment Openings")]
+        [Input("elementID", "The Element ID to filter by")]
+        [Output("openings", "A collection of Environment Opening objects that match the element ID")]
+        public static List<Opening> OpeningsByElementID(this List<Opening> openings, string elementID)
+        {
+            List<IEnvironmentObject> envObjects = new List<IEnvironmentObject>();
+            foreach (Opening o in openings)
+                envObjects.Add(o as IEnvironmentObject);
+
+            envObjects = envObjects.ObjectsByFragment(typeof(OriginContextFragment));
+
+            envObjects = envObjects.Where(x => (x.FragmentProperties.Where(y => y.GetType() == typeof(OriginContextFragment)).FirstOrDefault() as OriginContextFragment).ElementID == elementID).ToList();
+
+            List<Opening> rtnOpenings = new List<Opening>();
+            foreach (IEnvironmentObject o in envObjects)
+                rtnOpenings.Add(o as Opening);
+
+            return rtnOpenings;            
+        }
+
+        [Description("Returns a collection of Environment Openings that match the given element ID")]
+        [Input("panels", "A collection of Environment Panels to query for openings")]
+        [Input("elementID", "The Element ID to filter by")]
+        [Output("openings", "A collection of Environment Opening objects that match the element ID")]
+        public static List<Opening> OpeningsByElementID(this List<Panel> panels, string elementID)
+        {
+            List<Opening> allOpenings = new List<Opening>();
+            foreach (Panel p in panels)
+                allOpenings.AddRange(p.Openings);
+
+            return allOpenings.OpeningsByElementID(elementID);
+        }
+
+        [Description("Returns a collection of Environment Openings from a collection of Environment Panels")]
+        [Input("panels", "A collection of Environment Panels to query for openings")]
+        [Output("openings", "A collection of Environment Opening objects that match the element ID")]
+        public static List<Opening> OpeningsFromElements(this List<Panel> panels)
         {
             List<Opening> openings = new List<Opening>();
 
-            foreach (IBHoMObject obj in bhomObjects)
-            {
-                if (obj is Opening)
-                    openings.Add(obj as Opening);
-            }
+            foreach (Panel p in panels)
+                openings.AddRange(p.Openings);
 
             return openings;
-        }
-
-        public static List<Opening> OpeningsFromElements(this List<BuildingElement> elements)
-        {
-            List<Opening> openings = new List<Opening>();
-
-            foreach(BuildingElement be in elements)
-            {
-                List<Opening> beOpenings = be.Openings;
-                foreach(Opening o in beOpenings)
-                {
-                    Opening opInList = openings.Where(x => x.BHoM_Guid == o.BHoM_Guid).FirstOrDefault();
-                    if (opInList == null)
-                        openings.Add(o);
-                }
-            }
-
-            return openings;
-        }
-
-        public static List<BuildingElement> Openings(this List<BuildingElement> elements)
-        {
-            return elements.Where(x => x.ElementProperties() != null && (x.ElementProperties() as ElementProperties) != null && ((x.ElementProperties() as ElementProperties).BuildingElementType == BuildingElementType.Window || (x.ElementProperties() as ElementProperties).BuildingElementType == BuildingElementType.Door)).ToList();
         }
     }
 }

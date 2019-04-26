@@ -79,6 +79,61 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        public static List<PolyCurve> Join(this List<PolyCurve> curves, double tolerance = Tolerance.Distance)
+        {
+
+            List<PolyCurve> sections = new List<PolyCurve>();
+
+            foreach(PolyCurve crv in curves)
+            {
+                foreach(ICurve icrv in crv.ISubParts())
+                {
+                    sections.Add(new PolyCurve { Curves = new List<ICurve> { icrv } });
+                }
+            }
+
+            double sqTol = tolerance * tolerance;
+            int counter = 0;
+            while (counter < sections.Count)
+            {
+                for (int j = counter + 1; j < sections.Count; j++)
+                {
+                    if (sections[j].IStartPoint().SquareDistance(sections[counter].IStartPoint()) <= sqTol)
+                    {
+                        sections[counter].Curves = sections[counter].Curves.Select(c => c.IFlip()).ToList();
+                        sections[counter].Curves.Reverse();
+                        sections[j].Curves.InsertRange(0, sections[counter].Curves);
+                        sections.RemoveAt(counter--);
+                        break;
+                    }
+                    else if (sections[j].IStartPoint().SquareDistance(sections[counter].IEndPoint()) <= sqTol)
+                    {
+                        sections[j].Curves.InsertRange(0, sections[counter].Curves);
+                        sections.RemoveAt(counter--);
+                        break;
+                    }
+                    else if (sections[j].IEndPoint().SquareDistance(sections[counter].IStartPoint()) <= sqTol)
+                    {
+                        sections[j].Curves.AddRange(sections[counter].Curves);
+                        sections.RemoveAt(counter--);
+                        break;
+                    }
+                    else if (sections[j].IEndPoint().SquareDistance(sections[counter].IEndPoint()) <= sqTol)
+                    {
+                        sections[counter].Curves = sections[counter].Curves.Select(c => c.IFlip()).ToList();
+                        sections[counter].Curves.Reverse();
+                        sections[j].Curves.AddRange(sections[counter].Curves);
+                        sections.RemoveAt(counter--);
+                        break;
+                    }
+                }
+                counter++;
+            }
+            return sections;
+        }
+
+        /***************************************************/
+
         public static List<Polyline> Join(this List<Line> lines, double tolerance = Tolerance.Distance)
         {
             List<Polyline> sections = lines.Select(l => new Polyline { ControlPoints = l.ControlPoints() }).ToList();

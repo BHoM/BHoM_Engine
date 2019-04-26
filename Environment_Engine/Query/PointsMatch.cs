@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -22,15 +22,15 @@
 
 using System;
 using System.Collections.Generic;
+
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using BH.oM.Environment;
 
-using BHG = BH.oM.Geometry;
 using BH.Engine.Geometry;
-using BH.oM.Environment.Elements;
-
 using BH.oM.Geometry;
+
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Environment
 {
@@ -40,13 +40,17 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static bool PointsMatch(this List<Point> ctrlPoints, List<Point> measurePts)
+        [Description("Returns whether a list of points contains every point in the second list - order is not relevant")]
+        [Input("controlPoints", "A collection of BHoM Geometry Points as the control list")]
+        [Input("measurePoints", "A collection of BHoM Geometry Points as the measure list")]
+        [Output("doPointsMatch", "True if all of the measurePoints are within the controlPoints list (independent of list order), false otherwise")]
+        public static bool PointsMatch(this List<Point> controlPoints, List<Point> measurePoints)
         {
-            if (ctrlPoints.Count != measurePts.Count) return false;
+            if (controlPoints.Count != measurePoints.Count) return false;
 
-            foreach (Point p in ctrlPoints)
+            foreach (Point p in controlPoints)
             {
-                Point ptInMeasure = measurePts.Where(x => x.X == p.X && x.Y == p.Y && x.Z == p.Z).FirstOrDefault();
+                Point ptInMeasure = measurePoints.Where(x => x.X == p.X && x.Y == p.Y && x.Z == p.Z).FirstOrDefault();
                 if (ptInMeasure == null) return false; //Point did not have a match
             }
 

@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -27,6 +27,9 @@ using System.Collections.Generic;
 using System.Linq;
 using BH.oM.Geometry;
 
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
+
 namespace BH.Engine.Environment
 {
     public static partial class Query
@@ -35,39 +38,14 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static List<List<BuildingElement>> AdjacentSpaces(this BuildingElement element, List<List<BuildingElement>> spaces)
+        [Description("Returns a nested collection of Environment Panels which contain the search panel")]
+        [Input("panel", "An Environment Panel to find within the search panels")]
+        [Input("panelsAsSpaces", "The nested collection of Environment Panels that represent the spaces to search from")]
+        [Output("panelsAsSpaces", "A nested collection of Environment Panels which contain the search panel")]
+        public static List<List<Panel>> AdjacentSpaces(this Panel panel, List<List<Panel>> panelsAsSpaces)
         {
             //Get the lists which contain this building element
-            return spaces.Where(x => x.Where(y => y.BHoM_Guid == element.BHoM_Guid).Count() > 0).ToList();
-        }
-
-        public static List<Space> AdjacentSpaces(this BuildingElement element, List<List<BuildingElement>> besAsSpace, List<Space> spaces)
-        {
-            List<Space> rtn = new List<oM.Environment.Elements.Space>();
-
-            List<Point> spaces1 = element.AdjacentSpaces(besAsSpace).SpaceCentres();
-
-            foreach(Point p in spaces1)
-            {
-                Space add = spaces.MatchSpace(p);
-                if (add != null)
-                    rtn.Add(add);
-            }
-
-            return rtn;
-        }
-
-        public static bool MatchAdjacencies(this BuildingElement element, BuildingElement compare)
-        {
-            if (element.CustomData.ContainsKey("Revit_spaceId") && compare.CustomData.ContainsKey("Revit_spaceId"))
-            {
-                if ((element.CustomData.ContainsKey("Revit_adjacentSpaceId") && compare.CustomData.ContainsKey("Revit_adjacentSpaceId")))
-                    return element.CustomData["Revit_spaceId"].ToString().Equals(compare.CustomData["Revit_spaceId"].ToString()) &&
-                        element.CustomData["Revit_adjacentSpaceId"].ToString().Equals(compare.CustomData["Revit_adjacentSpaceId"].ToString());
-                else
-                    return element.CustomData["Revit_spaceId"].ToString().Equals(compare.CustomData["Revit_spaceId"].ToString());
-            }
-            else return false;
+            return panelsAsSpaces.Where(x => x.Where(y => y.BHoM_Guid == panel.BHoM_Guid).Count() > 0).ToList();
         }
     }
 }

@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -20,12 +20,17 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System.Linq;
+using System;
 using System.Collections.Generic;
+
+using System.Linq;
 using BH.oM.Environment.Elements;
-using BH.oM.Geometry;
 
 using BH.Engine.Geometry;
+using BH.oM.Geometry;
+
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Environment
 {
@@ -35,16 +40,21 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static List<BuildingElement> CleanSpace(this List<BuildingElement> space)
+        [Description("Removes panels which do not have a suitable connection to the space (i.e. panels with only 1 connection to the space)")]
+        [Input("panelsAsSpace", "A collection of Environment Panels representing a single space")]
+        [Output("panelsAsSpace", "A collection of Environment Panels representing a single space with incorrect panels removed")]
+        public static List<Panel> CleanSpace(this List<Panel> panelsAsSpace)
         {
             //Remove elements which have 1 or less connections with other elements
-            List<BuildingElement> cleanSpace = new List<BuildingElement>();
+            List<Panel> cleanSpace = new List<Panel>();
 
-            List<Line> allEdges = space.Edges();
+            List<Line> allEdges = new List<Line>();
+            foreach (Panel p in panelsAsSpace)
+                allEdges.AddRange(p.ToLines());
 
-            foreach(BuildingElement be in space)
+            foreach(Panel be in panelsAsSpace)
             {
-                List<Line> edges = be.Edges();
+                List<Line> edges = be.ToLines();
                 bool addSpace = true;
                 foreach (Line l in edges)
                 {

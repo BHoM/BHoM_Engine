@@ -93,5 +93,44 @@ namespace BH.Engine.Geometry
         }
 
         /***************************************************/
+
+        public static bool IsCoplanar(this PolyCurve curve1, PolyCurve curve2, double tolerance = Tolerance.Distance)
+        {
+            List<Point> pts = new List<Point> { curve1.Curves[0].IStartPoint() };
+
+            foreach (ICurve crv in curve1.SubParts())
+            {
+                if (crv is Line)
+                    pts.Add((crv as Line).End);
+                else if (crv is Arc)
+                {
+                    pts.Add((crv as Arc).PointAtParameter(0.5));
+                    pts.Add((crv as Arc).EndPoint());
+                }
+                else
+                {
+                    throw new NotImplementedException();
+                }
+            }
+
+            pts.Add(curve2.Curves[0].IStartPoint());
+
+            foreach (ICurve crv in curve2.ISubParts())
+            {
+                if (crv is Line)
+                    pts.Add((crv as Line).End);
+                else if (crv is Arc)
+                {
+                    pts.Add((crv as Arc).PointAtParameter(0.5));
+                    pts.Add((crv as Arc).EndPoint());
+                }
+                else
+                {
+                    throw new NotImplementedException();
+                }
+            }
+            
+            return pts.IsCoplanar(tolerance);
+        }
     }
 }

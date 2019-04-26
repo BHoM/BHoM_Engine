@@ -1,6 +1,6 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -20,12 +20,19 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System.Linq;
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+using BH.oM.Environment;
 using BH.oM.Environment.Elements;
-using BH.oM.Geometry;
-using BH.oM.Base;
 using BH.oM.Environment.Properties;
+using BH.oM.Base;
+
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Environment
 {
@@ -35,84 +42,57 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Returns a collection of Environment Spaces from a list of generic BHoM objects")]
+        [Input("objects", "A collection of generic BHoM objects")]
+        [Output("spaces", "A collection of Environment Space objects")]
+        public static List<Space> Spaces(this List<IBHoMObject> objects)
+        {
+            objects = objects.ObjectsByType(typeof(Space));
+            List<Space> spaces = new List<Space>();
+            foreach (IBHoMObject o in objects)
+                spaces.Add(o as Space);
+
+            return spaces;
+        }
+
+        [Description("Returns a collection of Environment Spaces that match the given element ID")]
+        [Input("spaces", "A collection of Environment Spaces")]
+        [Input("elementID", "The Element ID to filter by")]
+        [Output("spaces", "A collection of Environment Space objects that match the element ID")]
+        public static List<Space> SpacesByElementID(this List<Space> spaces, string elementID)
+        {
+            List<IEnvironmentObject> envObjects = new List<IEnvironmentObject>();
+            foreach (Space s in spaces)
+                envObjects.Add(s as IEnvironmentObject);
+
+            envObjects = envObjects.ObjectsByFragment(typeof(OriginContextFragment));
+
+            envObjects = envObjects.Where(x => (x.FragmentProperties.Where(y => y.GetType() == typeof(OriginContextFragment)).FirstOrDefault() as OriginContextFragment).ElementID == elementID).ToList();
+
+            List<Space> rtnSpaces = new List<Space>();
+            foreach (IEnvironmentObject o in envObjects)
+                rtnSpaces.Add(o as Space);
+
+            return rtnSpaces;
+        }
+
+        [Description("Returns a collection of Environment Spaces that match the given name")]
+        [Input("spaces", "A collection of Environment Spaces")]
+        [Input("name", "The name to filter by")]
+        [Output("spaces", "A collection of Environment Space objects that match the name")]
         public static List<Space> SpaceByName(this List<Space> spaces, string name)
         {
             return spaces.Where(x => x.Name == name).ToList();
         }
 
-        public static List<Space> Spaces(this List<IBHoMObject> bhomObjects)
+        [Description("Returns a nested collection of Environment Panels that represent fully closed spaces")]
+        [Input("panelsAsSpaces", "A nested collection of Environment Panels representing spaces")]
+        [Output("panelsAsSpaces", "A nested collection of Environment Panels that represent fully closed spaces")]
+        public static List<List<Panel>> ClosedSpaces(this List<List<Panel>> panelsAsSpaces)
         {
-            List<Space> spaces = new List<Space>();
+            List<List<Panel>> closedSpaces = new List<List<Panel>>();
 
-            foreach(IBHoMObject obj in bhomObjects)
-            {
-                if (obj is Space)
-                    spaces.Add(obj as Space);
-            }
-
-            return spaces;
-        }
-
-        /***************************************************/
-
-        public static List<Space> Spaces(this List<List<BuildingElement>> besAsSpace)
-        {
-            List<Space> spaces = new List<Space>();
-
-            for (int x = 0; x < besAsSpace.Count; x++)
-                spaces.Add(besAsSpace[x].Space(x.ToString(), x.ToString()));
-
-            return spaces;
-        }
-
-        /***************************************************/
-
-        public static Space Space(this List<BuildingElement> space)
-        {
-            Point spaceCentre = space.SpaceCentre();
-            string xName = spaceCentre.X.ToString().Length > 3 ? spaceCentre.X.ToString().Substring(0, 3) : spaceCentre.X.ToString();
-            string yName = spaceCentre.Y.ToString().Length > 3 ? spaceCentre.Y.ToString().Substring(0, 3) : spaceCentre.Y.ToString();
-            string zName = spaceCentre.Z.ToString().Length > 3 ? spaceCentre.Z.ToString().Substring(0, 3) : spaceCentre.Z.ToString();
-            string spaceName = xName + "-" + yName + "-" + zName;
-            return Create.Space(spaceName, spaceName, space.SpaceCentre());
-        }
-
-        /***************************************************/
-
-        public static Space Space(this List<BuildingElement> space, string spaceNumber, string spaceName)
-        {
-            return Create.Space(spaceName, spaceNumber, space.SpaceCentre());
-        }
-
-        /***************************************************/
-
-        public static Space Space(this List<BuildingElement> space, int spaceNumber, string spaceName)
-        {
-            return Space(space, spaceNumber.ToString(), spaceName);
-        }
-
-        /***************************************************/
-
-        public static List<List<BuildingElement>> SpacesNotClosed(this List<List<BuildingElement>> spaces)
-        {
-            List<List<BuildingElement>> spacesNotClosed = new List<List<BuildingElement>>();
-
-            foreach(List<BuildingElement> space in spaces)
-            {
-                if (!space.IsClosed())
-                    spacesNotClosed.Add(space);
-            }
-
-            return spacesNotClosed;
-        }
-
-        /***************************************************/
-
-        public static List<List<BuildingElement>> ClosedSpaces(this List<List<BuildingElement>> spaces)
-        {
-            List<List<BuildingElement>> closedSpaces = new List<List<BuildingElement>>();
-
-            foreach(List<BuildingElement> space in spaces)
+            foreach (List<Panel> space in panelsAsSpaces)
             {
                 if (space.IsClosed())
                     closedSpaces.Add(space);
@@ -121,73 +101,20 @@ namespace BH.Engine.Environment
             return closedSpaces;
         }
 
-        /***************************************************/
-
-       
-
-        /***************************************************/
-
-        public static List<List<BuildingElement>> JoinSpaces(this List<List<BuildingElement>> spaces, List<List<BuildingElement>> spacesExtra)
+        [Description("Returns a nested collection of Environment Panels that represent spaces which aren't fully closed")]
+        [Input("panelsAsSpaces", "A nested collection of Environment Panels representing spaces")]
+        [Output("panelsAsSpaces", "A nested collection of Environment Panels that represent spaces which aren't fully closed")]
+        public static List<List<Panel>> NotClosedSpaces(this List<List<Panel>> panelsAsSpaces)
         {
-            spaces.AddRange(spacesExtra);
-            return spaces;
-        }
+            List<List<Panel>> spacesNotClosed = new List<List<Panel>>();
 
-        /***************************************************/
-
-        public static List<List<BuildingElement>> AddSpaces(this List<List<BuildingElement>> spaces, List<BuildingElement> space)
-        {
-            spaces.Add(space);
-            return spaces;
-        }
-
-        public static List<string> UniqueSpaceNames(this List<BuildingElement> elements)
-        {
-            List<string> spaceNames = new List<string>();
-
-            foreach (BuildingElement be in elements)
+            foreach (List<Panel> space in panelsAsSpaces)
             {
-                if(be.ContextProperties() != null && (be.ContextProperties() as BuildingElementContextProperties) != null)
-                {
-                    BuildingElementContextProperties props = be.ContextProperties() as BuildingElementContextProperties;
-                    spaceNames.AddRange(props.ConnectedSpaces);
-                }
+                if (!space.IsClosed())
+                    spacesNotClosed.Add(space);
             }
 
-            return spaceNames.Where(x => !x.Equals("-1")).Distinct().ToList();
-        }
-
-        public static string CommonSpaceName(this List<BuildingElement> elements)
-        {
-            //Gets the single space name which most commonly unites these elements
-            List<string> uniqueNames = elements.UniqueSpaceNames();
-
-            Dictionary<string, int> nameCount = new Dictionary<string, int>();
-
-            foreach (string s in uniqueNames)
-                nameCount.Add(s, 0);
-
-            foreach (BuildingElement be in elements)
-            {
-                if (be.ContextProperties() != null && (be.ContextProperties() as BuildingElementContextProperties) != null)
-                {
-                    BuildingElementContextProperties props = be.ContextProperties() as BuildingElementContextProperties;
-                    foreach (string name in props.ConnectedSpaces)
-                    {
-                        if(name != "-1")
-                            nameCount[name]++;
-                    }
-                }
-            }
-
-            KeyValuePair<string, int> mostCommon = nameCount.First();
-            foreach(KeyValuePair<string, int> kvp in nameCount)
-            {
-                if (kvp.Value > mostCommon.Value)
-                    mostCommon = kvp;
-            }
-
-            return mostCommon.Key;
+            return spacesNotClosed;
         }
     }
 }

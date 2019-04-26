@@ -1,6 +1,6 @@
 ﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -26,6 +26,9 @@ using BH.oM.Environment.Elements;
 using BH.oM.Geometry;
 using BH.Engine.Geometry;
 
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
+
 namespace BH.Engine.Environment
 {
     public static partial class Modify
@@ -34,26 +37,34 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static BuildingElement AddOpening(this BuildingElement element, Opening opening)
+        [Description("Returns a single Environment Panel with the provided opening. Opening is added to the provided panel regardless of geometric association")]
+        [Input("panel", "A single Environment Panel to add the opening to")]
+        [Input("opening", "The Environment Opening to add to the panel")]
+        [Output("panel", "A modified Environment Panel with the provided opening added")]
+        public static Panel AddOpening(this Panel panel, Opening opening)
         {
-            element.Openings.Add(opening);
-            return element;
+            panel.Openings.Add(opening);
+            return panel;
         }
 
-        public static List<BuildingElement> AddOpenings(this List<BuildingElement> elements, List<Opening> openings)
+        [Description("Returns a list of Environment Panel with the provided openings added. Openings are added to the panels which contain them geometrically.")]
+        [Input("panels", "A collection of Environment Panels to add the opening to")]
+        [Input("openings", "A collection of Environment Openings to add to the panels")]
+        [Output("panels", "A collection of modified Environment Panels with the provided openings added")]
+        public static List<Panel> AddOpenings(this List<Panel> panels, List<Opening> openings)
         {
             foreach(Opening o in openings)
             {
-                Point centre = o.OpeningCurve.ICollapseToPolyline(Tolerance.Angle).Centre();
+                Point centre = o.ToPolyline().Centre();
                 if(centre != null)
                 {
-                    BuildingElement be = elements.ElementsByPoint(centre).First();
-                    if(be != null)
-                        be.Openings.Add(o);
+                    Panel panel = panels.PanelsContainingPoint(centre).First();
+                    if(panel != null)
+                        panel.Openings.Add(o);
                 }
             }
 
-            return elements;
+            return panels;
         }
     }
 }

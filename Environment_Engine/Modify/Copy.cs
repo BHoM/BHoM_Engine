@@ -1,6 +1,6 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -21,12 +21,11 @@
  */
 
 using System.Collections.Generic;
-
-using BH.oM.Geometry;
-using BH.Engine.Geometry;
 using BH.oM.Environment.Elements;
-using BH.oM.Environment.Interface;
-using BH.oM.Architecture.Elements;
+using BH.oM.Environment.Properties;
+
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Environment
 {
@@ -36,59 +35,20 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Panel Copy(this Panel buildingElementPanel)
+        [Description("copies a Panel into a new object")]
+        [Input("panel", "An Environment Panel to copy from")]
+        [Output("panel", "The copied Environment Panel")]
+        public static Panel Copy(this Panel panel)
         {
-            Panel aBuildingElementPanel = buildingElementPanel.GetShallowClone(true) as Panel;
-            aBuildingElementPanel.PanelCurve = buildingElementPanel.PanelCurve.IClone();
-            return aBuildingElementPanel;
+            Panel aPanel = panel.GetShallowClone(true) as Panel;
+            aPanel.ExternalEdges = new List<Edge>(panel.ExternalEdges);
+            aPanel.Openings = new List<Opening>(panel.Openings);
+            aPanel.CustomData = new Dictionary<string, object>(panel.CustomData);
+            aPanel.FragmentProperties = new List<IBHoMFragment>(panel.FragmentProperties);
+            aPanel.ConnectedSpaces = new List<string>(panel.ConnectedSpaces);
+            aPanel.Construction = panel.Construction;
+            aPanel.Type = panel.Type;
+            return aPanel;
         }
-
-        /***************************************************/
-
-        public static IBuildingObject Copy(this IBuildingObject buildingObject)
-        {
-            IBuildingObject aBuildingObject = Copy(buildingObject as dynamic);
-            return aBuildingObject;
-        }
-
-        /***************************************************/
-
-        public static Level Copy(this Level level)
-        {
-            return level.GetShallowClone(true) as Level;
-        }
-
-        /***************************************************/
-
-        public static BuildingElement Copy(this BuildingElement buildingElement)
-        {
-            BuildingElement aBuildingElement = buildingElement.GetShallowClone(true) as BuildingElement;
-            aBuildingElement.PanelCurve = buildingElement.PanelCurve;
-            aBuildingElement.Openings = new List<Opening>(buildingElement.Openings);
-            aBuildingElement.CustomData = buildingElement.CustomData;
-            aBuildingElement.ExtendedProperties = new List<IBHoMExtendedProperties>(buildingElement.ExtendedProperties);
-            return aBuildingElement;
-        }
-
-        /***************************************************/
-
-        public static Level Copy(this Level level, string name, double elevation)
-        {
-            Level aLevel = level.Copy();
-            aLevel.Name = name;
-            aLevel.Elevation = elevation;
-
-            return aLevel;
-        }
-
-        /***************************************************/
-
-        /***************************************************/
-        /**** Private Methods                           ****/
-        /***************************************************/
-
-
-
-        /***************************************************/
     }
 }

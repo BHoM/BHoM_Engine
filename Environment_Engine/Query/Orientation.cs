@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -22,11 +22,15 @@
 
 using System;
 using System.Collections.Generic;
+
 using System.Linq;
-using BH.oM.Environment.Elements;
+using BH.oM.Environment;
+
 using BH.Engine.Geometry;
-using BH.oM.Environment.Interface;
-using BHG = BH.oM.Geometry;
+using BH.oM.Geometry;
+
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Environment
 {
@@ -36,15 +40,17 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static double Orientation(IBuildingObject buildingPanel)
+        [Description("Returns the orientation of a given environmental object")]
+        [Input("environmentObject", "Any object implementing the IEnvironmentObject interface that can have its orientation queried")]
+        [Output("orientation", "The orientation of the Environment Object")]
+        public static double Orientation(this IEnvironmentObject environmentObject)
         {
-            Panel panel = buildingPanel as Panel;
-            BHG.Polyline pLine = new BHG.Polyline { ControlPoints = panel.PanelCurve.IControlPoints() };
+            Polyline pLine = environmentObject.ToPolyline();
 
-            List<BHG.Point> pts = pLine.DiscontinuityPoints();
-            BHG.Plane plane = BH.Engine.Geometry.Create.Plane(pts[0], pts[1], pts[2]); //Some protection on this needed maybe?
+            List<Point> pts = pLine.DiscontinuityPoints();
+            Plane plane = BH.Engine.Geometry.Create.Plane(pts[0], pts[1], pts[2]); //Some protection on this needed maybe?
 
-            BHG.Vector xyNormal = BH.Engine.Geometry.Create.Vector(0, 1, 0);
+            Vector xyNormal = BH.Engine.Geometry.Create.Vector(0, 1, 0);
 
             return BH.Engine.Geometry.Query.Angle(plane.Normal, xyNormal) * (180 / Math.PI);
         }

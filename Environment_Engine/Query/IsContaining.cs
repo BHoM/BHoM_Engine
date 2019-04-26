@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -26,10 +26,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using BH.oM.Environment;
 using BH.oM.Environment.Elements;
+using BH.oM.Environment.Properties;
+using BH.oM.Base;
+
 using BH.oM.Geometry;
 using BH.Engine.Geometry;
-using BH.Engine.Environment;
+
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Environment
 {
@@ -39,31 +45,61 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static bool IsContaining(this List<List<BuildingElement>> containers, BuildingElement element)
+        [Description("Defines whether an Environment Panel is contained by at least one group of panels representing spaces")]
+        [Input("panelsAsSpaces", "A nested collection of Environment Panels representing spaces")]
+        [Input("panel", "The Environment Panel to be checked to see if it is contained by the panelsAsSpaces")]
+        [Output("isContaining", "True if the panel is contained by at least one group of panels, false if it is not")]
+        public static bool IsContaining(this List<List<Panel>> panelsAsSpaces, Panel panel)
         {
-            foreach(List<BuildingElement> lst in containers)
-                if (lst.Where(x => x.BHoM_Guid == element.BHoM_Guid).FirstOrDefault() != null) return true;
+            foreach (List<Panel> lst in panelsAsSpaces)
+                if (lst.Where(x => x.BHoM_Guid == panel.BHoM_Guid).FirstOrDefault() != null) return true;
 
             return false;
         }
 
+        [Description("Defines whether an a BHoM Geometry Point is contained within a list of Points")]
+        [Input("points", "A collection of BHoM Geometry Points")]
+        [Input("point", "The point being checked to see if it is contained within the list of points")]
+        [Output("isContaining", "True if the point is contained within the list, false if it is not")]
         public static bool IsContaining(this List<Point> pts, Point pt)
         {
-            Point p = pts.Where(point => point.X == pt.X && point.Y == pt.Y && point.Z == pt.Z).FirstOrDefault();
-
-            return (p != null);
+            return (pts.Where(point => point.X == pt.X && point.Y == pt.Y && point.Z == pt.Z).FirstOrDefault() != null);
         }
 
-        public static bool IsContaining(this BuildingElement element, Point pt, bool acceptOnEdges = false)
+        [Description("Defines whether an Environment Panel contains a provided point")]
+        [Input("panel", "An Environment Panel to check with")]
+        [Input("point", "The point being checked to see if it is contained within the bounds of the panel")]
+        [Input("acceptOnEdges", "Decide whether to allow the point to sit on the edge of the panel, default false")]
+        [Output("isContaining", "True if the point is contained within the panel, false if it is not")]
+        public static bool IsContaining(this Panel panel, Point pt, bool acceptOnEdges = false)
         {
             if (pt == null) return false;
-            return new List<BuildingElement> { element }.IsContaining(pt, acceptOnEdges);
+            return new List<Panel> { panel }.IsContaining(pt, acceptOnEdges);
         }
 
-        public static bool IsContaining(this List<BuildingElement> space, Point point, bool acceptOnEdges = false)
+        [Description("Defines whether a collection of Environment Panels contains a provided point")]
+        [Input("panels", "A collection of Environment Panels to check with")]
+        [Input("point", "The point being checked to see if it is contained within the bounds of the panels")]
+        [Input("acceptOnEdges", "Decide whether to allow the point to sit on the edge of the panel, default false")]
+        [Output("isContaining", "True if the point is contained within at least one of the panels, false if it is not")]
+        public static bool IsContaining(this List<Panel> panels, Point point, bool acceptOnEdges = false)
         {
-            List<Plane> planes = space.Select(x => x.PanelCurve.IControlPoints().FitPlane()).ToList();
-            List<Point> ctrPoints = space.SelectMany(x => x.PanelCurve.IControlPoints()).ToList();
+            List<Plane> planes = new List<Plane>();
+            foreach (Panel be in panels)
+            {
+                Plane p = be.ToPolyline().IControlPoints().FitPlane();
+                if (!be.ToPolyline().IsInPlane(p))
+                {
+                    //Create a different plane...
+                    List<Point> pnts = be.ToPolyline().IDiscontinuityPoints();
+                    if (pnts.Count >= 3)
+                        p = BH.Engine.Geometry.Create.Plane(pnts[0], pnts[1], pnts[2]);
+                }
+
+                planes.Add(p);
+            }
+
+            List<Point> ctrPoints = panels.SelectMany(x => x.ToPolyline().IControlPoints()).ToList();
             BoundingBox boundingBox = BH.Engine.Geometry.Query.Bounds(ctrPoints);
 
             if (!BH.Engine.Geometry.Query.IsContaining(boundingBox, point)) return false;
@@ -72,6 +108,21 @@ namespace BH.Engine.Environment
             Vector vector = new Vector() { X = 1, Y = 0, Z = 0 };
             //Use a length longer than the longest side in the bounding box. Change to infinite line?
             Line line = new Line() { Start = point, End = point.Translate(vector * (((boundingBox.Max - boundingBox.Min).Length()) * 10)) };
+
+            bool isInPlane = false;
+            do
+            {
+                isInPlane = false;
+                foreach (Plane p in planes)
+                    isInPlane = isInPlane || line.IsInPlane(p);
+
+                if (isInPlane)
+                {
+                    Vector v = new Vector() { X = 0.5, Y = 0.5, Z = 0.5 };
+                    line = new Line() { Start = point, End = point.Translate(v * (((boundingBox.Max - boundingBox.Min).Length()) * 10)) };
+                }
+            }
+            while (isInPlane);
 
             //Check intersections
             int counter = 0;
@@ -85,26 +136,22 @@ namespace BH.Engine.Environment
 
                     List<Point> intersectingPoints = new List<oM.Geometry.Point>();
                     intersectingPoints.Add(BH.Engine.Geometry.Query.PlaneIntersection(line, planes[x]));
-                    Polyline pLine = new Polyline() { ControlPoints = space[x].PanelCurve.IControlPoints() };
+                    Polyline pLine = panels[x].ToPolyline();
 
                     if (intersectingPoints != null && BH.Engine.Geometry.Query.IsContaining(pLine, intersectingPoints, true, 1e-05))
-                    {
                         intersectPoints.AddRange(intersectingPoints);
-                        if (intersectPoints.CullDuplicates().Count == intersectPoints.Count()) //Check if the point already has been added to the list
-                            counter++;
-                    }
                 }
             }
 
-            bool isContained = !((counter % 2) == 0);
+            bool isContained = !((intersectPoints.CullDuplicates().Count % 2) == 0);
 
-            if(!isContained && acceptOnEdges)
+            if (!isContained && acceptOnEdges)
             {
                 //Check the edges in case the point is on the edge of the BE
-                foreach(BuildingElement be in space)
+                foreach (Panel p in panels)
                 {
-                    List<Line> subParts = be.PanelCurve.ISubParts() as List<Line>;
-                    foreach(Line l in subParts)
+                    List<Line> subParts = p.ToPolyline().ISubParts() as List<Line>;
+                    foreach (Line l in subParts)
                     {
                         if (l.IsOnCurve(point)) isContained = true;
                     }
@@ -112,45 +159,6 @@ namespace BH.Engine.Environment
             }
 
             return isContained; //If the number of intersections is odd the point is outsde the space
-        }
-
-        public static bool IsContaining(this Space space, Point point)
-        {
-            /*List<BHE.BuildingElement> buildingElements = space.BuildingElements;
-            List<BHG.Plane> planes = buildingElements.Select(x => x.BuildingElementGeometry.ICurve().IControlPoints().FitPlane()).ToList();
-            List<BHG.Point> ctrPoints = buildingElements.SelectMany(x => x.BuildingElementGeometry.ICurve().IControlPoints()).ToList();
-            BHG.BoundingBox boundingBox = BH.Engine.Geometry.Query.Bounds(ctrPoints);
-
-            if (!BH.Engine.Geometry.Query.IsContaining(boundingBox, point)) return false;
-
-            //We need to check one line that starts in the point and end outside the bounding box
-            BHG.Vector vector = new BHG.Vector() { X = 1, Y = 0, Z = 0 };
-            //Use a length longer than the longest side in the bounding box. Change to infinite line?
-            BHG.Line line = new BHG.Line() { Start = point, End = point.Translate(vector * (((boundingBox.Max - boundingBox.Min).Length()) * 10)) };
-
-            //Check intersections
-            int counter = 0;
-            List<BHG.Point> intersectPoints = new List<BHG.Point>();
-
-            for(int x = 0; x < planes.Count; x++)
-            {
-                if ((BH.Engine.Geometry.Query.PlaneIntersection(line, planes[x], false)) == null) continue;
-
-                List<BHG.Point> intersectingPoints = new List<oM.Geometry.Point>();
-                intersectingPoints.Add(BH.Engine.Geometry.Query.PlaneIntersection(line, planes[x]));
-                BHG.Polyline pLine = new BHG.Polyline() { ControlPoints = buildingElements[x].BuildingElementGeometry.ICurve().IControlPoints() };
-
-                if(intersectingPoints != null && BH.Engine.Geometry.Query.IsContaining(pLine, intersectingPoints, true, 1e-05))
-                {
-                    intersectPoints.AddRange(intersectingPoints);
-                    if (intersectPoints.CullDuplicates().Count == intersectPoints.Count()) //Check if the point already has been added to the list
-                        counter++;
-                }
-            }
-
-            return ((counter % 2) == 0); //If the number of intersections is odd the point is outsde the space*/
-
-            return false;
         }
     }
 }

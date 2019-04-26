@@ -1,6 +1,6 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -25,10 +25,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using BH.oM.Environment.Elements;
-using BH.oM.Geometry;
 
-using BH.oM.Environment.Properties;
+using BH.oM.Environment.Elements;
+using BH.oM.Environment.Gains;
+
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Environment
 {
@@ -38,73 +40,24 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Space Space(string name, string number)
+        [Description("Returns an Environment Space object")]
+        [Input("name", "The name of the space, default empty string")]
+        [Input("zones", "A collection of zone names the space is to be included in, default null")]
+        [Input("gains", "A collection of gains to be applied to the space, default null")]
+        [Input("type", "The type of space from the Space Type enum, default undefined")]
+        [Output("space", "An Environment Space object")]
+        public static Space Space(string name = "", List<string> zones = null, List<IGain> gains = null, SpaceType type = SpaceType.Undefined)
         {
+            zones = zones ?? new List<string>();
+            gains = gains ?? new List<IGain>();
+
             return new Space
             {
                 Name = name,
-                Number = number,
+                Zones = zones,
+                Gains = gains,
+                Type = type,
             };
-        }
-
-        /***************************************************/
-
-        public static Space Space(string number)
-        {
-            return new Space
-            {
-                Number = number,
-            };
-        }
-
-        /***************************************************/
-
-        public static Space Space(Point location)
-        {
-            return new Space
-            {
-                Location = location,
-            };
-        }
-
-        /***************************************************/
-
-        public static Space Space(string name, Point location)
-        {
-            return new Space
-            {
-                Name = name,
-                Location = location,
-            };
-        }
-
-        /***************************************************/
-
-        public static Space Space(string name, string number, Point location)
-        {
-            return new Space
-            {
-                Name = name,
-                Number = number,
-                Location = location,
-            };
-        }
-
-        public static List<BuildingElement> Space(List<BuildingElement> elements, string name)
-        {
-            foreach(BuildingElement be in elements)
-            {
-                BuildingElementContextProperties props = be.ContextProperties() as BuildingElementContextProperties;
-                if (props == null)
-                {
-                    props = new BuildingElementContextProperties();
-                    be.ExtendedProperties.Add(props);
-                }
-
-                props.ConnectedSpaces = new List<string> { name, "-1" }; //Default everyone to have an adjacent space of -1
-            }
-
-            return elements;
         }
     }
 }

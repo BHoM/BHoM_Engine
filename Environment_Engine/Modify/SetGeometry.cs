@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -22,8 +22,11 @@
 
 using BH.Engine.Geometry;
 using BH.oM.Environment.Elements;
-using BH.oM.Environment.Interface;
+using BH.oM.Environment;
 using BH.oM.Geometry;
+
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Environment
 {
@@ -33,38 +36,46 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static IBuildingObject ISetGeometry(this IBuildingObject buildingObject, ICurve curve)
+        [Description("Assign a new ICurve boundary to a generic Environment Object")]
+        [Input("environmentObject", "Any object implementing the IEnvironmentObject interface that can have fragment properties appended to it")]
+        [Input("curve", "Any object implementing the ICurve interface from BHoM Geometry Curves")]
+        [Output("environmentObject", "The environment object with an updated external boundary")]
+        public static IEnvironmentObject ISetGeometry(this IEnvironmentObject environmentObject, ICurve curve)
         { 
-            return SetGeometry(buildingObject as dynamic, curve as dynamic);
+            return SetGeometry(environmentObject as dynamic, curve as dynamic);
         }
 
-        /***************************************************/
-
-        public static Panel SetGeometry(this Panel buildingElementPanel, ICurve curve)
+        [Description("Assign a new ICurve external boundary to an Environment Panel")]
+        [Input("panel", "An Environment Panel to set the external boundary of")]
+        [Input("curve", "Any object implementing the ICurve interface from BHoM Geometry Curves")]
+        [Output("panel", "An Environment Panel with an updated external boundary")]
+        public static Panel SetGeometry(this Panel panel, ICurve curve)
         {
-            Panel aBuildingElementPanel = buildingElementPanel.GetShallowClone() as Panel;
-            aBuildingElementPanel.PanelCurve = curve.IClone();
-            return aBuildingElementPanel;
+            Panel aPanel = panel.GetShallowClone() as Panel;
+            aPanel.ExternalEdges = curve.IClone().ToEdges();
+            return aPanel;
         }
 
-        /***************************************************/
-
+        [Description("Assign a new ICurve external boundary to an Environment Opening")]
+        [Input("opening", "An Environment Opening to set the external boundary of")]
+        [Input("curve", "Any object implementing the ICurve interface from BHoM Geometry Curves")]
+        [Output("opening", "An Environment Opening with an updated external boundary")]
         public static Opening SetGeometry(this Opening opening, ICurve curve)
         {
             Opening aOpening = opening.GetShallowClone() as Opening;
-            aOpening.OpeningCurve = curve.IClone();
+            aOpening.Edges = curve.IClone().ToEdges();
             return aOpening;
         }
 
-        /***************************************************/
-
-        public static BuildingElement SetGeometry(this BuildingElement element, ICurve curve)
+        [Description("Assign a new ICurve definition to an Environment Edge")]
+        [Input("edge", "An Environment Edge to set the geometry of")]
+        [Input("curve", "Any object implementing the ICurve interface from BHoM Geometry Curves")]
+        [Output("edge", "An Environment Edge with an updated geometry")]
+        public static Edge SetGeometry(this Edge edge, ICurve curve)
         {
-            BuildingElement aElement = element.GetShallowClone() as BuildingElement;
-            aElement.PanelCurve = curve.IClone();
-            return aElement;
+            Edge clone = edge.GetShallowClone() as Edge;
+            clone.Curve = curve.IClone();
+            return clone;
         }
-
-        /***************************************************/
     }
 }

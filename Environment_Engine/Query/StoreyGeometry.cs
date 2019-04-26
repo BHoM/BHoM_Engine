@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -20,16 +20,17 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.oM.Environment.Elements;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-using BHG = BH.oM.Geometry;
+using BH.oM.Geometry;
 using BH.Engine.Geometry;
+using BH.oM.Architecture.Elements;
 
-using BHE = BH.oM.Environment.Elements;
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Environment
 {
@@ -39,44 +40,23 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static BHG.Polyline StoreyGeometry(this BH.oM.Architecture.Elements.Level level, List<BHE.Space> spaces)
+        [Description("Returns the storey geometry for a given level")]
+        [Input("level", "An Architecture Level to get the geometry for")]
+        [Input("panelsAsSpaces", "A nested collection of Environment Panels representing spaces")]
+        [Output("polyline", "A BHoM Geometry Polyline outlining the geometry of the level")]
+        public static Polyline StoreyGeometry(this Level level, List<List<Panel>> panelsAsSpaces)
         {
-            /*List<BHE.Space> spacesAtLevel = spaces.FindAll(x => x.Level.Elevation == level.Elevation).ToList();
-
-            if (spacesAtLevel.Count == 0)
-                return null;
-
-            List<BHE.BuildingElement> bHoMBuildingElement = spacesAtLevel.SelectMany(x => x.BuildingElements).ToList();
-            List<BHG.Point> ctrlPoints = new List<BHG.Point>();
-
-            foreach (BHE.BuildingElement element in bHoMBuildingElement)
-            {
-                foreach (BHG.Point pt in element.BuildingElementGeometry.ICurve().IControlPoints())
-                {
-                    if (pt.Z > (level.Elevation - BH.oM.Geometry.Tolerance.Distance) && pt.Z < (level.Elevation + BH.oM.Geometry.Tolerance.Distance))
-                        ctrlPoints.Add(pt);
-
-                }
-            }
-
-            return BH.Engine.Geometry.Create.ConvexHull(ctrlPoints.CullDuplicates());*/
-
-            return new oM.Geometry.Polyline();
-        }
-
-        public static BHG.Polyline StoreyGeometry(this BH.oM.Architecture.Elements.Level level, List<List<BHE.BuildingElement>> spaces)
-        {
-            List<List<BHE.BuildingElement>> spacesAtLevel = spaces.FindAll(x => x.Level(level) != null).ToList();
+            List<List<Panel>> spacesAtLevel = panelsAsSpaces.FindAll(x => x.Level(level) != null).ToList();
 
             if (spacesAtLevel.Count == 0) return null;
 
-            List<BHG.Point> ctrlPoints = new List<BHG.Point>();
+            List<Point> ctrlPoints = new List<Point>();
 
-            foreach (List<BHE.BuildingElement> space in spacesAtLevel)
+            foreach (List<Panel> space in spacesAtLevel)
             {
-                foreach (BHE.BuildingElement element in space)
+                foreach (Panel element in space)
                 {
-                    foreach (BHG.Point pt in element.PanelCurve.IControlPoints())
+                    foreach (Point pt in element.ToPolyline().IControlPoints())
                     {
                         if (pt.Z > (level.Elevation - BH.oM.Geometry.Tolerance.Distance) && pt.Z < (level.Elevation + BH.oM.Geometry.Tolerance.Distance))
                             ctrlPoints.Add(pt);

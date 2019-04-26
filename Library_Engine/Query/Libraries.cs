@@ -208,7 +208,7 @@ namespace BH.Engine.Library
         /**** Private Fields                            ****/
         /***************************************************/
 
-        private static readonly string m_sourceFolder = @"C:\Users\" + Environment.UserName + @"\AppData\Roaming\BHoM\DataSets";
+        private static readonly string m_sourceFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), @"BHoM\DataSets");
 
         private static Dictionary<string, string[]> m_libraryStrings = new Dictionary<string, string[]>();
         private static Dictionary<string, List<IBHoMObject>> m_parsedLibrary = new Dictionary<string, List<IBHoMObject>>();

@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -26,10 +26,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using BHG = BH.oM.Geometry;
+using BH.oM.Environment;
+using BH.oM.Environment.Elements;
+using BH.oM.Geometry;
 using BH.Engine.Geometry;
+using BH.oM.Base;
 
-using BHE = BH.oM.Environment.Elements;
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Environment
 {
@@ -39,42 +43,44 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static bool NormalAwayFromSpace(this BHE.BuildingElement buildingElement, List<BHE.BuildingElement> elementsAsSpace)
+        [Description("Returns whether the normal of a given Environment Panel is facing away from the containing space")]
+        [Input("panel", "An Environment Panel to check")]
+        [Input("panelsAsSpace", "A collection of Environment Panels which represent a single space")]
+        [Output("normalAwayFromSpace", "True if the normal of the panel is facing away from the space, false otherwise")]
+        public static bool NormalAwayFromSpace(this Panel panel, List<Panel> panelsAsSpace)
         {
-            BHG.Polyline bound = new BHG.Polyline() { ControlPoints = buildingElement.PanelCurve.IControlPoints() };
-
-            return NormalAwayFromSpace(bound, elementsAsSpace);
+            return NormalAwayFromSpace(panel.ToPolyline(), panelsAsSpace);
         }
 
-        /***************************************************/
-
-        public static bool NormalAwayFromSpace(this BHG.Polyline pline, List<BHE.BuildingElement> elementsAsSpace)
+        [Description("Returns whether the normal of a given polyline is facing away from the containing space")]
+        [Input("polyline", "A BHoM Geometry Polyline to check")]
+        [Input("panelsAsSpace", "A collection of Environment Panels which represent a single space")]
+        [Output("normalAwayFromSpace", "True if the normal of the polyline is facing away from the space, false otherwise")]
+        public static bool NormalAwayFromSpace(this Polyline polyline, List<Panel> panelsAsSpace)
         {
-            List<BHG.Point> centrePtList = new List<BHG.Point>();
-            BHG.Point centrePt = pline.Centre();
+            List<Point> centrePtList = new List<Point>();
+            Point centrePt = polyline.Centre();
             centrePtList.Add(centrePt);
 
-            if (!pline.IsClosed()) return false; //Prevent failures of the clockwise check
+            if (!polyline.IsClosed()) return false; //Prevent failures of the clockwise check
 
-            List<BHG.Point> pts = BH.Engine.Geometry.Query.DiscontinuityPoints(pline);
+            List<Point> pts = polyline.DiscontinuityPoints();
             if (pts.Count < 3) return false; //Protection in case there aren't enough points to make a plane
-            BHG.Plane plane = BH.Engine.Geometry.Create.Plane(pts[0], pts[1], pts[2]);
-
-            
+            Plane plane = BH.Engine.Geometry.Create.Plane(pts[0], pts[1], pts[2]);
 
             //The polyline can be locally concave. Check if the polyline is clockwise.
-            if (!BH.Engine.Geometry.Query.IsClockwise(pline, plane.Normal))
+            if (!BH.Engine.Geometry.Query.IsClockwise(polyline, plane.Normal))
                 plane.Normal = -plane.Normal;
 
-            if (!BH.Engine.Geometry.Query.IsContaining(pline, centrePtList, false))
+            if (!BH.Engine.Geometry.Query.IsContaining(polyline, centrePtList, false))
             {
-                BHG.Point pointOnLine = BH.Engine.Geometry.Query.ClosestPoint(pline, centrePt);
-                BHG.Vector vector = new BHG.Vector();
+                Point pointOnLine = polyline.ClosestPoint(centrePt);
+                Vector vector = new Vector();
                 if (BH.Engine.Geometry.Query.Distance(pointOnLine, centrePt) > BH.oM.Geometry.Tolerance.MicroDistance)
                     vector = pointOnLine - centrePt;
                 else
                 {
-                    BHG.Line line = BH.Engine.Geometry.Query.GetLineSegment(pline, pointOnLine);
+                    Line line = BH.Engine.Geometry.Query.GetLineSegment(polyline, pointOnLine);
                     vector = ((line.Start - line.End).Normalise()).CrossProduct(plane.Normal);
                 }
 
@@ -82,7 +88,7 @@ namespace BH.Engine.Environment
             }
 
             //Move centrepoint along the normal.
-            if (BH.Engine.Environment.Query.IsContaining(elementsAsSpace, centrePt.Translate(plane.Normal * 0.01)))
+            if(panelsAsSpace.IsContaining(centrePt.Translate(plane.Normal * 0.01)))
                 return false;
             else
                 return true;

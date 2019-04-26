@@ -78,15 +78,26 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Curves                   ****/
         /***************************************************/
 
+        [DeprecatedAttribute("2.3", "Replaced with method checking if point is arc.centre due to issue 896", null, "ClosestPoint")]
         public static Point ClosestPoint(this Arc arc, Point point)
         {
-            Point center = arc.Centre();
-            Point midPoint = arc.PointAtParameter(0.5);
-            Plane p = arc.FitPlane();
+            return arc.ClosestPoint(point, Tolerance.Distance);
+        }
 
-            Point onCircle = center + (point.Project(p) - center).Normalise() * arc.Radius;
-            double sqrd = midPoint.SquareDistance(arc.StartPoint());
-            return midPoint.SquareDistance(onCircle) <= sqrd ? onCircle : onCircle.ClosestPoint(new List<Point> { arc.StartPoint(), arc.EndPoint() });
+        /***************************************************/
+
+        public static Point ClosestPoint(this Arc curve, Point point, double tolerance = Tolerance.Distance)
+        {
+            if (point.SquareDistance(curve.Centre()) <= tolerance * tolerance)
+                return curve.StartPoint();
+
+            Point center = curve.Centre();
+            Point midPoint = curve.PointAtParameter(0.5);
+            Plane p = curve.FitPlane();
+
+            Point onCircle = center + (point.Project(p) - center).Normalise() * curve.Radius;
+            double sqrd = midPoint.SquareDistance(curve.StartPoint());
+            return midPoint.SquareDistance(onCircle) <= sqrd ? onCircle : onCircle.ClosestPoint(new List<Point> { curve.StartPoint(), curve.EndPoint() });
         }
 
         /***************************************************/
@@ -117,8 +128,7 @@ namespace BH.Engine.Geometry
         {
             throw new NotImplementedException();
         }
-
-
+        
         /***************************************************/
 
         public static Point ClosestPoint(this PolyCurve curve, Point point)

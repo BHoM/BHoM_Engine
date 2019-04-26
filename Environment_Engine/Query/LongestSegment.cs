@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -26,8 +26,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using BHG = BH.oM.Geometry;
+using BH.oM.Geometry;
 using BH.Engine.Geometry;
+
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Environment
 {
@@ -37,9 +40,12 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static double LongestSegment(BHG.Polyline pLine)
+        [Description("Returns the length of the longest segment from a BHoM Geometry Polyline")]
+        [Input("polyline", "A BHoM Geometry Polyline")]
+        [Output("segmentLength", "The length of the longest segment")]
+        public static double LongestSegmentLength(Polyline polyline)
         {
-            List<BHG.Point> pts = pLine.DiscontinuityPoints();
+            List<Point> pts = polyline.DiscontinuityPoints();
             double length = pts.Last().Distance(pts.First());
 
             for(int x = 0; x < pts.Count - 1; x++)

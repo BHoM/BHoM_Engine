@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -29,7 +29,8 @@ using BH.oM.Geometry;
 
 using BH.Engine.Geometry;
 
-using BH.Engine.Common;
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Environment
 {
@@ -39,15 +40,21 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static double Area(this BuildingElement element)
+        [Description("Returns the surface area of an Environment Panel")]
+        [Input("panel", "An Environment Panel object")]
+        [Output("area", "The area of the panel")]
+        public static double Area(this Panel panel)
         {
-            return BH.Engine.Common.Query.Area(element);
+            return BH.Engine.Common.Query.Area(panel);
         }
 
-        public static double Area(this List<BuildingElement> space)
+        [Description("Returns the floor area of a space represented by Environment Panels")]
+        [Input("panelsAsSpace", "A collection of Environment Panels that represent a closed space")]
+        [Output("floorArea", "The floor area of the space")]
+        public static double Area(this List<Panel> panelsAsSpace)
         {
-            if (space.FloorGeometry() == null) return 0;
-            else return space.FloorGeometry().Area();
+            if (panelsAsSpace.FloorGeometry() == null) return 0;
+            else return panelsAsSpace.FloorGeometry().Area();
         }
     }
 }

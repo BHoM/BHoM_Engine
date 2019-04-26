@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -23,10 +23,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using BHEE = BH.oM.Environment.Elements;
+using BH.oM.Environment;
 using BH.Engine.Geometry;
-using BHEI = BH.oM.Environment.Interface;
-using BHG = BH.oM.Geometry;
+using BH.oM.Geometry;
+
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Environment
 {
@@ -36,14 +38,15 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static double Altitude(this BHEI.IBuildingObject buildingElementGeometry)
+        [Description("Returns the minimum altitude of an Environment Object as the minimum z value from the bounding box of the geometry")]
+        [Input("environmentObject", "Any object implementing the IEnvironmentObject interface that can have an altitude")]
+        [Output("altitude", "The altitude of the object")]
+        public static double Altitude(this IEnvironmentObject environmentObject)
         {
-            BHG.BoundingBox panelBoundingBox = BH.Engine.Geometry.Query.IBounds(buildingElementGeometry.ICurve());
+            BoundingBox panelBoundingBox = BH.Engine.Geometry.Query.IBounds(environmentObject.ToPolyline());
             double altitude = panelBoundingBox.Min.Z;
 
             return altitude;
         }
-
-        /***************************************************/
     }
 }

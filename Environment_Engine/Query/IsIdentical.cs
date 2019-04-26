@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -22,14 +22,15 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
+using System.Linq;
 using BH.oM.Environment.Elements;
-using BH.oM.Geometry;
+
 using BH.Engine.Geometry;
-using BH.Engine.Environment;
+using BH.oM.Geometry;
+
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Environment
 {
@@ -39,21 +40,23 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static bool IsIdentical(this BuildingElement element, BuildingElement elementToCompare)
+        [Description("Defines whether two panels are geometrically identical")]
+        [Input("panel", "An Environment Panel")]
+        [Input("panelToCompare", "An Environment Panel to compare with the first panel")]
+        [Output("isidentical", "True if the two panels are geometrically identical, false if not")]
+        public static bool IsIdentical(this Panel panel, Panel panelToCompare)
         {
             //Go through building elements and compare vertices and centre points
-            if (element == null || elementToCompare == null) return false;
+            if (panel == null || panelToCompare == null) return false;
 
-            List<Point> controlPoints = element.PanelCurve.IControlPoints();
-            List<Point> measurePoints = elementToCompare.PanelCurve.IControlPoints();
+            List<Point> controlPoints = panel.ToPolyline().IControlPoints();
+            List<Point> measurePoints = panelToCompare.ToPolyline().IControlPoints();
 
             if (controlPoints.Count != measurePoints.Count) return false;
 
             bool allPointsMatch = true;
             foreach(Point p in controlPoints)
-            {
                 allPointsMatch &= measurePoints.IsContaining(p);
-            }
 
             return allPointsMatch;  
         }

@@ -20,16 +20,17 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.oM.Environment.Elements;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-using BH.Engine.Environment;
-using BHG = BH.oM.Geometry;
+using System.Linq;
+using BH.oM.Geometry;
+
 using BH.Engine.Geometry;
-using BHE = BH.oM.Environment.Elements;
+
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Environment
 {
@@ -39,34 +40,32 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static BHG.Polyline FloorGeometry(this BHE.Space space)
+        [Description("Returns the floor geometry of a space represented by Environment Panels as a BHoM Geometry Polyline")]
+        [Input("panelsAsSpace", "A collection of Environment Panels that represent a closed space")]
+        [Output("polyline", "BHoM Geometry Polyline representing the floor of the space")]
+        public static Polyline FloorGeometry(this List<Panel> panelsAsSpace)
         {
-            throw new NotImplementedException("Calculating the floor geometry in the space has not been implemented");
-        }
+            Panel floor = null;
 
-        public static BHG.Polyline FloorGeometry(this List<BHE.BuildingElement> space)
-        {
-            BHE.BuildingElement floor = null;
-
-            foreach(BHE.BuildingElement be in space)
+            foreach(Panel panel in panelsAsSpace)
             {
-                double tilt = Tilt(be);
+                double tilt = panel.Tilt();
                 if (tilt == 0 || tilt == 180)
                 {
                     if(floor == null)
-                        floor = be;
+                        floor = panel;
                     else
                     {
                         //Multiple elements could be a floor - assign the one with the lowest Z
-                        if (floor.MinimumLevel() > be.MinimumLevel())
-                            floor = be;
+                        if (floor.MinimumLevel() > panel.MinimumLevel()) //TODO: Make this more robust - multiple elements could be a floor with the same z level...
+                            floor = panel;
                     }
                 }
             }
 
             if (floor == null) return null;
 
-            BHG.Polyline floorGeometry = floor.PanelCurve as BHG.Polyline;
+            Polyline floorGeometry = floor.ToPolyline();
 
             if (floorGeometry.ControlPoints.Count < 3)
                 return null;

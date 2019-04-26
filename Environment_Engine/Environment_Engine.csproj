@@ -30,6 +30,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Analytical_oM">
+      <HintPath>..\..\BHoM\Build\Analytical_oM.dll</HintPath>
+    </Reference>
     <Reference Include="Architecture_oM">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\BHoM\Build\Architecture_oM.dll</HintPath>
@@ -49,6 +52,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\BHoM\Build\Geometry_oM.dll</HintPath>
     </Reference>
+    <Reference Include="Physical_oM">
+      <HintPath>..\..\BHoM\Build\Physical_oM.dll</HintPath>
+    </Reference>
     <Reference Include="Reflection_Engine">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Build\Reflection_Engine.dll</HintPath>
@@ -67,72 +73,80 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Compute\BooleanIntersection.cs" />
-    <Compile Include="Compute\BuildSpace.cs" />
+    <Compile Include="Compute\BooleanIntersect.cs" />
+    <Compile Include="Convert\ICurve.cs" />
+    <Compile Include="Convert\Line.cs" />
+    <Compile Include="Convert\Polyline.cs" />
+    <Compile Include="Convert\Space.cs" />
+    <Compile Include="Create\Absorptance.cs" />
     <Compile Include="Create\Building.cs" />
-    <Compile Include="Create\BuildingAnalyticalProperties.cs" />
-    <Compile Include="Create\BuildingContextProperties.cs" />
-    <Compile Include="Create\BuildingElement.cs" />
-    <Compile Include="Create\BuildingElementAnalyticalProperties.cs" />
-    <Compile Include="Create\BuildingElementContextProperties.cs" />
-    <Compile Include="Create\BuildingResultsProperties.cs" />
-    <Compile Include="Create\Construction.cs" />
-    <Compile Include="Create\ElementProperties.cs" />
-    <Compile Include="Create\EnvironmentContextProperties.cs" />
+    <Compile Include="Create\CoefficientFragment.cs" />
+    <Compile Include="Create\Edge.cs" />
+    <Compile Include="Create\Emitter.cs" />
+    <Compile Include="Create\EnvironmentConstructionFragment.cs" />
+    <Compile Include="Create\Gain.cs" />
+    <Compile Include="Create\Layer.cs" />
     <Compile Include="Create\Material.cs" />
-    <Compile Include="Create\MaterialPropertiesGas.cs" />
-    <Compile Include="Create\MaterialPropertiesOpaque.cs" />
-    <Compile Include="Create\MaterialPropertiesTransparent.cs" />
-    <Compile Include="Create\NewElement1D.cs" />
-    <Compile Include="Create\NewInternalElement2D.cs" />
     <Compile Include="Create\Opening.cs" />
     <Compile Include="Create\Panel.cs" />
-    <Compile Include="Create\SimulationResult.cs" />
+    <Compile Include="Create\ProfileResult.cs" />
+    <Compile Include="Create\RadiationFragment.cs" />
     <Compile Include="Create\Space.cs" />
-    <Compile Include="Create\SpaceAnalyticalProperties.cs" />
+    <Compile Include="Create\BuildingAnalyticalFragment.cs" />
+    <Compile Include="Create\BuildingContextFragment.cs" />
+    <Compile Include="Create\SpaceContextFragment.cs" />
+    <Compile Include="Create\PanelAnalyticalFragment.cs" />
+    <Compile Include="Create\PanelContextFragment.cs" />
+    <Compile Include="Create\BuildingResultFragment.cs" />
+    <Compile Include="Create\OriginContextFragment.cs" />
+    <Compile Include="Create\NewElement1D.cs" />
+    <Compile Include="Create\NewInternalElement2D.cs" />
+    <Compile Include="Create\SimulationResult.cs" />
+    <Compile Include="Create\SpaceAnalyticalFragment.cs" />
     <Compile Include="Modify\AddAdjacentSpace.cs" />
-    <Compile Include="Modify\AddMaterial.cs" />
     <Compile Include="Modify\AddOpening.cs" />
-    <Compile Include="Modify\MergeBuildingElements.cs" />
-    <Compile Include="Modify\RemoveMaterial.cs" />
-    <Compile Include="Modify\SetBuildingElementType.cs" />
-    <Compile Include="Modify\SetExtendedProperties.cs" />
+    <Compile Include="Compute\MergeBuildingElements.cs" />
+    <Compile Include="Modify\Copy.cs" />
+    <Compile Include="Modify\SetPanelType.cs" />
+    <Compile Include="Modify\AddFragment.cs" />
     <Compile Include="Modify\SetInternalElements2D.cs" />
-    <Compile Include="Modify\SetMaterialProperties.cs" />
     <Compile Include="Modify\SetOutlineElements1D.cs" />
-    <Compile Include="Modify\JoinBuildingElements.cs" />
-    <Compile Include="Modify\SplitBuildingElements.cs" />
+    <Compile Include="Modify\SplitPanels.cs" />
+    <Compile Include="Query\Absorptance.cs" />
+    <Compile Include="Query\AdditionalHeatTransfer.cs" />
+    <Compile Include="Query\Buildings.cs" />
+    <Compile Include="Query\ConstructionRoughness.cs" />
+    <Compile Include="Query\FindFragment.cs" />
+    <Compile Include="Query\MatchPoint.cs" />
+    <Compile Include="Query\FindMaterial.cs" />
+    <Compile Include="Query\ObjectsByFragment.cs" />
+    <Compile Include="Query\ObjectsByType.cs" />
+    <Compile Include="Query\Openings.cs" />
+    <Compile Include="Query\Panels.cs" />
+    <Compile Include="Query\RValue.cs" />
+    <Compile Include="Query\SpaceName.cs" />
     <Compile Include="Query\AdjacentSpaces.cs" />
-    <Compile Include="Query\AdjacentSurface.cs" />
-    <Compile Include="Query\AnalyticalPanel.cs" />
     <Compile Include="Query\Area.cs" />
-    <Compile Include="Query\Building.cs" />
-    <Compile Include="Query\BuildingArea.cs" />
-    <Compile Include="Query\BuildingElements.cs" />
-    <Compile Include="Query\BuildingObject.cs" />
+    <Compile Include="Query\Spaces.cs" />
     <Compile Include="Query\CleanSpace.cs" />
     <Compile Include="Query\ClosedShellGeometry.cs" />
     <Compile Include="Query\Construction.cs" />
     <Compile Include="Query\CullDuplicates.cs" />
-    <Compile Include="Query\Curve.cs" />
     <Compile Include="Modify\Add.cs" />
-    <Compile Include="Modify\Copy.cs" />
     <Compile Include="Modify\Move.cs" />
     <Compile Include="Modify\SetGeometry.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Query\Bottom.cs" />
     <Compile Include="Query\AltitudeRange.cs" />
     <Compile Include="Query\Altitude.cs" />
-    <Compile Include="Query\Edges.cs" />
-    <Compile Include="Query\ElementID.cs" />
+    <Compile Include="Query\Thickness.cs" />
+    <Compile Include="Query\UnconnectedEdges.cs" />
     <Compile Include="Query\ElementsNotMatched.cs" />
     <Compile Include="Query\ExposedToSun.cs" />
-    <Compile Include="Query\ExtendedProperties.cs" />
     <Compile Include="Query\FloorGeometry.cs" />
     <Compile Include="Query\Height.cs" />
     <Compile Include="Query\IsCoPlanar.cs" />
     <Compile Include="Query\SimulationResult.cs" />
-    <Compile Include="Query\StripOpenings.cs" />
     <Compile Include="Query\UniqueConstructions.cs" />
     <Compile Include="Query\UniqueMaterials..cs" />
     <Compile Include="Query\UValue.cs" />
@@ -147,24 +161,16 @@
     <Compile Include="Query\IsIdentical.cs" />
     <Compile Include="Query\IsInternal.cs" />
     <Compile Include="Query\LongestSegment.cs" />
-    <Compile Include="Query\MatchSpace.cs" />
     <Compile Include="Query\NormalAwayFromSpace.cs" />
-    <Compile Include="Query\Openings.cs" />
     <Compile Include="Query\Orientation.cs" />
     <Compile Include="Query\PointsMatch.cs" />
     <Compile Include="Query\SpaceCentre.cs" />
-    <Compile Include="Query\Spaces.cs" />
     <Compile Include="Query\StoreyGeometry.cs" />
-    <Compile Include="Query\UnmatchedPoints.cs" />
     <Compile Include="Query\Volume.cs" />
-    <Compile Include="Query\FloorArea.cs" />
     <Compile Include="Query\Azimuth.cs" />
     <Compile Include="Query\Tilt.cs" />
-    <Compile Include="Query\MaterialType.cs" />
-    <Compile Include="Query\SpaceCentrePoint.cs" />
     <Compile Include="Query\Level.cs" />
     <Compile Include="Query\Bounds.cs" />
-    <Compile Include="Query\EquipmentProprerties.cs" />
     <Compile Include="Query\Width.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -172,13 +178,15 @@
       <Project>{8d8cd66f-76f3-4750-936d-380d51bc67d6}</Project>
       <Name>Common_Engine</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Physical_Engine\Physical_Engine.csproj">
+      <Project>{f2073888-9bd8-4d8f-9b3c-27577b388530}</Project>
+      <Name>Physical_Engine</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Convert\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

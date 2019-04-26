@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -20,15 +20,16 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.oM.Environment.Elements;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-using BH.oM.Environment.Elements;
 using BH.oM.Geometry;
 using BH.Engine.Geometry;
+
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Environment
 {
@@ -38,16 +39,22 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static List<Point> Vertices(this BuildingElement element)
+        [Description("Returns a collection of vertices for an Environment Panel")]
+        [Input("panel", "An Environment Panel")]
+        [Output("points", "A collection of BHoM Geometry Points which are the vertices of the panel")]
+        public static List<Point> Vertices(this Panel panel)
         {
-            return element.PanelCurve.IControlPoints();
+            return panel.ToPolyline().IControlPoints();
         }
 
-        public static List<Point> Vertices(this List<BuildingElement> space)
+        [Description("Returns a collection of vertices for a collection of Environment Panels representing a space")]
+        [Input("panelsAsSpace", "A collection of Environment Panels representing a space")]
+        [Output("points", "A collection of BHoM Geometry Points which are the vertices of the space")]
+        public static List<Point> Vertices(this List<Panel> panelsAsSpace)
         {
             List<Point> vertexPts = new List<Point>();
 
-            foreach (BuildingElement be in space)
+            foreach (Panel be in panelsAsSpace)
                 vertexPts.AddRange(be.Vertices());
 
             return vertexPts;
