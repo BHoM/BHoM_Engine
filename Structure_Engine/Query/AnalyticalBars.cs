@@ -64,7 +64,7 @@ namespace BH.Engine.Structure
         {
             if (centreLine is NurbsCurve)
             {
-                Engine.Reflection.Compute.RecordError("The analytical bars method is currently not supported for NurbsCurves.");
+                Engine.Reflection.Compute.RecordError("The analytical bars method is currently not supported for NurbsCurves. Please use another method to split up the nurbs to polylines that can be used to construct the bars.");
                 return new List<Bar>();
             }
             return centreLine.ISubParts().SelectMany(x => x.ICollapseToPolyline(angleTolerance, maxNbBars).SubParts()).Select(x => Create.Bar(x, property.SectionProperty, property.OrientationAngle, Create.BarReleaseFixFix(), BarFEAType.Flexural, name)).ToList();
