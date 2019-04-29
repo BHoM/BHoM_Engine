@@ -123,14 +123,10 @@ namespace BH.Engine.Geometry
                 List<BoundingBox> regionBounds = regionCluster.Select(x => x.Bounds()).ToList();
                 List<List<Line>> curveSegments = regionCluster.Select(x => x.SubParts()).ToList();
 
-                List<List<Point>>[] iPts = new List<List<Point>>[regionCluster.Count];
+                List<Point>[] iPts = new List<Point>[regionCluster.Count];
                 for (int i = 0; i < iPts.Length; i++)
                 {
-                    iPts[i] = new List<List<Point>>();
-                    for (int j = 0; j < curveSegments[i].Count; j++)
-                    {
-                        iPts[i].Add(new List<Point>());
-                    }
+                    iPts[i] = new List<Point>();
                 }
                 
                 for (int j = 0; j < regionCluster.Count - 1; j++)
@@ -139,15 +135,9 @@ namespace BH.Engine.Geometry
                     {
                         if (regionBounds[j].IsInRange(regionBounds[k]))
                         {
-                            for (int m = 0; m < curveSegments[j].Count; m++)
-                            {
-                                for (int n = 0; n < curveSegments[k].Count; n++)
-                                {
-                                    List<Point> intPts = curveSegments[j][m].LineIntersections(curveSegments[k][n], false, tolerance);
-                                    iPts[j][m].AddRange(intPts);
-                                    iPts[k][n].AddRange(intPts);
-                                }
-                            }
+                            List<Point> intPts = regionCluster[j].LineIntersections(regionCluster[k], tolerance);
+                            iPts[j].AddRange(intPts);
+                            iPts[k].AddRange(intPts);
                         }
                     }
                 }
@@ -156,7 +146,7 @@ namespace BH.Engine.Geometry
                 {
                     if (iPts[i].Count > 0)
                     {
-                        List<Polyline> splReg = regionCluster[i].SplitClosedAtPoints(iPts[i]);
+                        List<Polyline> splReg = regionCluster[i].SplitAtPoints(iPts[i]);
                         for (int k = 0; k < splReg.Count; k++)
                         {
                             Boolean flag = true;
@@ -437,57 +427,6 @@ namespace BH.Engine.Geometry
             return false;
         }
         
-
-        /***************************************************/
-        /****              Private methods              ****/
-        /***************************************************/
-
-        private static List<Polyline> SplitClosedAtPoints(this Polyline curve, List<List<Point>> points, double tolerance = Tolerance.Distance)
-        {
-            if (points.Count == 0)
-                return new List<Polyline> { curve.Clone() };
-
-            double sqTol = tolerance * tolerance;
-            List<Polyline> result = new List<Polyline>();
-            List<Line> segments = curve.SubParts();
-            if (segments.Count == 0)
-                return result;
-
-            Polyline section = new Polyline { ControlPoints = new List<Point> { segments[0].Start } };
-
-            for (int i = 0; i < segments.Count; i++)
-            {
-                Line line = segments[i];
-                points[i] = points[i].SortAlongCurve(line, tolerance);
-                foreach (Point point in points[i])
-                {
-                    if (section.ControlPoints.Last().SquareDistance(point) > sqTol)
-                        section.ControlPoints.Add(point);
-
-                    if (section.ControlPoints.Count > 1)
-                        result.Add(section);
-
-                    section = new Polyline { ControlPoints = new List<Point>() { point } };
-                }
-
-                if (section.ControlPoints.Last().SquareDistance(line.End) > sqTol)
-                    section.ControlPoints.Add(line.End);
-            }
-
-            if (result.Count == 0)
-                result.Add(section);
-            else
-            {
-                result[0].ControlPoints.RemoveAt(0);
-                result[0].ControlPoints.InsertRange(0, section.ControlPoints);
-
-                if (result[0].ControlPoints.Count < 2)
-                    result.RemoveAt(0);
-            }
-
-            return result;
-        }
-
         /***************************************************/
     }
 }
