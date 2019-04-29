@@ -106,7 +106,7 @@ namespace BH.Engine.Geometry
             {
                 double l = line.Length();
                 if (l >= cLength)
-                    return line.IPointAtParameter(cLength / l);
+                    return line.PointAtParameter(cLength / l);
 
                 cLength -= l;
             }
