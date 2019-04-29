@@ -104,98 +104,105 @@ namespace BH.Engine.Geometry
 
         public static List<Polyline> NewBooleanUnion(this List<Polyline> regions, double tolerance = Tolerance.Distance)
         {
-            Boolean coplanar = true;
-            for (int i = 0; i < regions.Count - 1; i++)
+            foreach (Polyline region in regions)
             {
-                if (!regions[i].IsCoplanar(regions[i + 1], tolerance))
-                    coplanar = false;
+                if (!region.IsClosed(tolerance))
+                {
+                    Reflection.Compute.RecordError("Boolean Union works only on closed curves.");
+                    return regions;
+                }
             }
 
-            if (coplanar)
+            List<Polyline> result = new List<Polyline>();
+            double sqTolerance = tolerance * tolerance;
+            
+            foreach (List<Polyline> regionCluster in regions.ClusterCoplanar(tolerance))
             {
-                double sqTol = tolerance * tolerance;
                 List<Polyline> tmpResult = new List<Polyline>();
-                List<Polyline> result = new List<Polyline>();
-                List<Point>[] iPts = new List<Point>[regions.Count];
-                List<Point> tmpPts = new List<Point>();
+                
+                List<BoundingBox> regionBounds = regionCluster.Select(x => x.Bounds()).ToList();
+                List<List<Line>> curveSegments = regionCluster.Select(x => x.SubParts()).ToList();
 
-                for (int j = 0; j < regions.Count - 1; j++)
+                List<List<Point>>[] iPts = new List<List<Point>>[regionCluster.Count];
+                for (int i = 0; i < iPts.Length; i++)
                 {
-                    for (int k = j + 1; k < regions.Count; k++)
+                    iPts[i] = new List<List<Point>>();
+                    for (int j = 0; j < curveSegments[i].Count; j++)
                     {
-                        if(regions[j].Bounds().IsInRange(regions[k].Bounds()))
-                            tmpPts.AddRange(regions[j].LineIntersections(regions[k]));
-                        if (tmpPts.Count > 0)
-                        {
-                            iPts[j] = tmpPts;
-                            iPts[k] = tmpPts;
-                        }
-                        else
-                        {
-                            iPts[j] = new List<Point>();
-                            iPts[k] = new List<Point>();
-                        }
+                        iPts[i].Add(new List<Point>());
                     }
                 }
                 
-
-                for (int i = 0; i < regions.Count; i++)
+                for (int j = 0; j < regionCluster.Count - 1; j++)
                 {
-                    if (iPts[i].Count() > 0)
+                    for (int k = j + 1; k < regionCluster.Count; k++)
                     {
-                        List<Polyline> splReg = regions[i].SplitAtPoints(iPts[i]);
+                        if (regionBounds[j].IsInRange(regionBounds[k]))
+                        {
+                            for (int m = 0; m < curveSegments[j].Count; m++)
+                            {
+                                for (int n = 0; n < curveSegments[k].Count; n++)
+                                {
+                                    List<Point> intPts = curveSegments[j][m].LineIntersections(curveSegments[k][n], false, tolerance);
+                                    iPts[j][m].AddRange(intPts);
+                                    iPts[k][n].AddRange(intPts);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                for (int i = 0; i < regionCluster.Count; i++) 
+                {
+                    if (iPts[i].Count > 0)
+                    {
+                        List<Polyline> splReg = regionCluster[i].SplitClosedAtPoints(iPts[i]);
                         for (int k = 0; k < splReg.Count; k++)
                         {
                             Boolean flag = true;
                             List<Point> mPts = new List<Point> { splReg[k].PointAtParameter(0.5) };
 
-                            for (int j = 0; j < regions.Count; j++)
+                            for (int j = 0; j < regionCluster.Count; j++)
                             {
 
-                                if (regions[j].Bounds().IsContaining(mPts))
-                                    if (i != j && regions[j].IsContaining(mPts, false, tolerance))
+                                if (i != j && regionBounds[j].IsContaining(mPts) && regionCluster[j].IsContaining(mPts, true, tolerance))
                                     {
                                         flag = false;
                                         break;
                                     }
                             }
                             if (flag)
-                            {
                                 tmpResult.Add(splReg[k]);
-                                k++;
-                            }
                         }
                     }
                     else
-                        tmpResult.Add(regions[i]);
+                        result.Add(regionCluster[i]);
                 }
-
-                for (int i = 0; i < tmpResult.Count-1; i++)
+                
+                for (int i = 0; i < tmpResult.Count - 1; i++)
                 {
-                    for (int j = i+1; j < tmpResult.Count; j++)
+                    for (int j = i + 1; j < tmpResult.Count; j++)
                     {
-                        if (tmpResult[i].IIsEqual(tmpResult[j]) || tmpResult[i].IIsEqual(tmpResult[j].IFlip()))
+                        if (tmpResult[i].IsEqual(tmpResult[j]) || tmpResult[i].IsEqual(tmpResult[j].Flip()))
                             tmpResult.RemoveAt(j);
                     }
                 }
-                
-                result = tmpResult.Join(tolerance);
-                int res = 0;
-                while (res < result.Count)
-                {
-                    if (result[res].Area() <= sqTol)
-                        result.RemoveAt(res);
-                    else
-                        res++;
-                }
 
-
-                return result;
+                result.AddRange(tmpResult.Join(tolerance));
             }
-            return new List<Polyline>();
+
+            int res = 0;
+            while (res < result.Count)
+            {
+                if (result[res].Area() <= sqTolerance)
+                    result.RemoveAt(res);
+                else
+                    res++;
+            }
+
+            return result;
         }
-
-
+        
         /***************************************************/
 
         public static List<Polyline> BooleanUnion(this List<Polyline> regions, double tolerance = Tolerance.Distance)
@@ -432,26 +439,52 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        private static PolyCurve castToPCurve(this Polyline pline)
+        public static List<Polyline> SplitClosedAtPoints(this Polyline curve, List<List<Point>> points, double tolerance = Tolerance.Distance)
         {
-            List<ICurve> crvs = new List<ICurve>();
-            foreach (ICurve crv in pline.SubParts())
-                crvs.Add(crv);
+            if (points.Count == 0)
+                return new List<Polyline> { curve.Clone() };
 
-            return new PolyCurve { Curves = crvs.ToList() };
-        }
+            double sqTol = tolerance * tolerance;
+            List<Polyline> result = new List<Polyline>();
+            List<Line> segments = curve.SubParts();
+            if (segments.Count == 0)
+                return result;
 
-        /***************************************************/
+            Polyline section = new Polyline { ControlPoints = new List<Point> { segments[0].Start } };
 
-        private static List<PolyCurve> castToPCurve(this List<Polyline> plines)
-        {
-            List<PolyCurve> result = new List<PolyCurve>();
-            foreach (Polyline pline in plines)
-                result.Add(pline.castToPCurve());
+            for (int i = 0; i < segments.Count; i++)
+            {
+                Line line = segments[i];
+                points[i] = points[i].SortAlongCurve(line, tolerance);
+                foreach (Point point in points[i])
+                {
+                    if (section.ControlPoints.Last().SquareDistance(point) > sqTol)
+                        section.ControlPoints.Add(point);
+
+                    if (section.ControlPoints.Count > 1)
+                        result.Add(section);
+
+                    section = new Polyline { ControlPoints = new List<Point>() { point } };
+                }
+
+                if (section.ControlPoints.Last().SquareDistance(line.End) > sqTol)
+                    section.ControlPoints.Add(line.End);
+            }
+
+            if (result.Count == 0)
+                result.Add(section);
+            else
+            {
+                result[0].ControlPoints.RemoveAt(0);
+                result[0].ControlPoints.InsertRange(0, section.ControlPoints);
+
+                if (result[0].ControlPoints.Count < 2)
+                    result.RemoveAt(0);
+            }
 
             return result;
         }
 
+        /***************************************************/
     }
-
 }
