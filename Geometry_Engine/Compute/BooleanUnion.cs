@@ -436,10 +436,13 @@ namespace BH.Engine.Geometry
             result = new List<Polyline> { region1.Clone(), region2.Clone() };
             return false;
         }
+        
 
         /***************************************************/
+        /****              Private methods              ****/
+        /***************************************************/
 
-        public static List<Polyline> SplitClosedAtPoints(this Polyline curve, List<List<Point>> points, double tolerance = Tolerance.Distance)
+        private static List<Polyline> SplitClosedAtPoints(this Polyline curve, List<List<Point>> points, double tolerance = Tolerance.Distance)
         {
             if (points.Count == 0)
                 return new List<Polyline> { curve.Clone() };
