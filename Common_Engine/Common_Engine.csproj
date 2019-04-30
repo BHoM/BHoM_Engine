@@ -76,6 +76,7 @@
     <Compile Include="Query\Geometry.cs" />
     <Compile Include="Query\InternalElements2D.cs" />
     <Compile Include="Query\IsSelfIntersecting.cs" />
+    <Compile Include="Query\Length.cs" />
     <Compile Include="Query\Normal.cs" />
     <Compile Include="Query\OutlineElements1D.cs" />
     <Compile Include="Query\OutlineCurve.cs" />
