@@ -62,9 +62,10 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        //TODO: 2D boxes covered, but what about 1D
         public static bool IsContaining(this BoundingBox box1, BoundingBox box2, bool acceptOnEdge = true, double tolerance = Tolerance.Distance)
         {
+            //TODO: 2D boxes covered, but what about 1D
+
             Point max1 = box1.Max;
             Point min1 = box1.Min;
             Point max2 = box2.Max;
@@ -118,9 +119,10 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        //TODO: 2D boxes covered, but what about 1D
         public static bool IsContaining(this BoundingBox box, Point pt, bool acceptOnEdge = true, double tolerance = Tolerance.Distance)
         {
+            //TODO: 2D boxes covered, but what about 1D
+
             Point max = box.Max;
             Point min = box.Min;
 
