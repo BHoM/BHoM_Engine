@@ -43,14 +43,14 @@ namespace BH.Engine.Geometry
                 {
                     if (p.IsCoplanar(pp[0], distanceTolerance, angleTolerance))
                     {
-                        pp.Add(p.Clone());
+                        pp.Add(p);
                         coplanar = true;
                         break;
                     }
                 }
 
                 if (!coplanar)
-                    planeClusters.Add(new List<Plane> { p.Clone() });
+                    planeClusters.Add(new List<Plane> { p });
             }
 
             return planeClusters;
@@ -71,14 +71,39 @@ namespace BH.Engine.Geometry
                 {
                     if (p.IsCoplanar(pp[0], distanceTolerance))
                     {
-                        pp.Add(p.Clone());
+                        pp.Add(p);
                         coplanar = true;
                         break;
                     }
                 }
 
                 if (!coplanar)
-                    curveClusters.Add(new List<Polyline> { p.Clone() });
+                    curveClusters.Add(new List<Polyline> { p });
+            }
+
+            return curveClusters;
+        }
+
+        /***************************************************/
+
+        public static List<List<PolyCurve>> ClusterCoplanar(this List<PolyCurve> curves, double distanceTolerance = Tolerance.Distance)
+        {
+            List<List<PolyCurve>> curveClusters = new List<List<PolyCurve>>();
+            foreach (PolyCurve p in curves)
+            {
+                bool coplanar = false;
+                foreach (List<PolyCurve> pp in curveClusters)
+                {
+                    if (p.IsCoplanar(pp[0], distanceTolerance))
+                    {
+                        pp.Add(p);
+                        coplanar = true;
+                        break;
+                    }
+                }
+
+                if (!coplanar)
+                    curveClusters.Add(new List<PolyCurve> { p });
             }
 
             return curveClusters;
