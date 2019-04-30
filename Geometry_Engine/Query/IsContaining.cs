@@ -187,6 +187,7 @@ namespace BH.Engine.Geometry
             return flag;
         }
 
+
         /***************************************************/
         /**** Public Methods - Curve / points           ****/
         /***************************************************/
@@ -247,30 +248,33 @@ namespace BH.Engine.Geometry
                     {
                         foreach (Point pt in points)
                         {
-                            if (curve.ClosestPoint(pt).SquareDistance(pt) > sqTol) return false;
+                            if (curve.ClosestPoint(pt).SquareDistance(pt) > sqTol)
+                                return false;
                         }
                         return true;
                     }
-                    else return false;
+                    else
+                        return false;
                 }
-
                 else
                 {
+                    List<Line> subParts = curve.SubParts();
+                    List<Vector> edgeDirections = subParts.Select(c => c.Direction()).ToList();
                     foreach (Point pt in points)
                     {
                         Point pPt = pt.Project(p);
                         if (pPt.SquareDistance(pt) <= sqTol)
                         {
                             Point end = p.Origin;
-                            if (pPt.SquareDistance(end) <= sqTol)
+                            Vector direction = (end - pPt).Normalise();
+                            while (direction.SquareLength() <= sqTol || edgeDirections.Any(e => 1 - Math.Abs(e.DotProduct(direction)) <= Tolerance.Angle))
                             {
                                 end = end.Translate(Create.RandomVectorInPlane(p, true));
+                                direction = (end - pPt).Normalise();
                             }
 
                             Line ray = new Line { Start = pPt, End = end };
                             ray.Infinite = true;
-                            Vector rayDir = ray.Direction();
-                            List<Line> subParts = curve.SubParts();
                             List<Point> intersects = new List<Point>();
                             List<Point> extraIntersects = new List<Point>();
 
@@ -279,36 +283,47 @@ namespace BH.Engine.Geometry
                                 Point iPt = subPart.LineIntersection(ray, false, tolerance);
                                 if (iPt != null)
                                 {
-                                    double signedAngle = rayDir.SignedAngle(subPart.Direction(), p.Normal);
+                                    double signedAngle = direction.SignedAngle(subPart.Direction(), p.Normal);
                                     if ((subPart.Start.SquareDistance(iPt) <= sqTol))
                                     {
-                                        if (signedAngle > Tolerance.Angle) intersects.Add(iPt);
-                                        else extraIntersects.Add(iPt);
+                                        if (signedAngle > Tolerance.Angle)
+                                            intersects.Add(iPt);
+                                        else
+                                            extraIntersects.Add(iPt);
                                     }
                                     else if ((subPart.End.SquareDistance(iPt) <= sqTol))
                                     {
-                                        if (signedAngle < -Tolerance.Angle) intersects.Add(iPt);
-                                        else extraIntersects.Add(iPt);
+                                        if (signedAngle < -Tolerance.Angle)
+                                            intersects.Add(iPt);
+                                        else
+                                            extraIntersects.Add(iPt);
                                     }
-                                    else intersects.Add(iPt);
+                                    else
+                                        intersects.Add(iPt);
                                 }
                             }
 
-                            if (intersects.Count == 0) return false;
+                            if (intersects.Count == 0)
+                                return false;
+
                             if ((pPt.ClosestPoint(intersects.Union(extraIntersects)).SquareDistance(pPt) <= sqTol))
                             {
-                                if (acceptOnEdge) continue;
-                                else return false;
+                                if (acceptOnEdge)
+                                    continue;
+                                else
+                                    return false;
                             }
 
                             intersects.Add(pPt);
                             intersects = intersects.SortCollinear(tolerance);
                             for (int j = 0; j < intersects.Count; j++)
                             {
-                                if (j % 2 == 0 && intersects[j] == pPt) return false;
+                                if (j % 2 == 0 && intersects[j] == pPt)
+                                    return false;
                             }
                         }
-                        else return false;
+                        else
+                            return false;
                     }
                     return true;
                 }
@@ -335,30 +350,33 @@ namespace BH.Engine.Geometry
                     {
                         foreach (Point pt in points)
                         {
-                            if (curve.ClosestPoint(pt).SquareDistance(pt) > sqTol) return false;
+                            if (curve.ClosestPoint(pt).SquareDistance(pt) > sqTol)
+                                return false;
                         }
                         return true;
                     }
-                    else return false;
+                    else
+                        return false;
                 }
-
                 else
                 {
+                    List<ICurve> subParts = curve.SubParts();
+                    List<Vector> edgeDirections = subParts.Where(s => s is Line).Select(c => (c as Line).Direction()).ToList();
                     foreach (Point pt in points)
                     {
                         Point pPt = pt.Project(p);
                         if (pPt.SquareDistance(pt) <= sqTol)
                         {
                             Point end = p.Origin;
-                            if (pPt.SquareDistance(end) <= sqTol)
+                            Vector direction = (end - pPt).Normalise();
+                            while (direction.SquareLength() <= sqTol || edgeDirections.Any(e => 1 - Math.Abs(e.DotProduct(direction)) <= Tolerance.Angle))
                             {
                                 end = end.Translate(Create.RandomVectorInPlane(p, true));
+                                direction = (end - pPt).Normalise();
                             }
 
                             Line ray = new Line { Start = pPt, End = end };
                             ray.Infinite = true;
-                            Vector rayDir = ray.Direction();
-                            List<ICurve> subParts = curve.SubParts();
                             List<Point> intersects = new List<Point>();
                             List<Point> extraIntersects = new List<Point>();
 
@@ -367,37 +385,49 @@ namespace BH.Engine.Geometry
                                 List<Point> iPts = subPart.ILineIntersections(ray, false, tolerance);
                                 foreach (Point iPt in iPts)
                                 {
-                                    double signedAngle = rayDir.SignedAngle(subPart.ITangentAtPoint(iPt, tolerance), p.Normal);
+                                    double signedAngle = direction.SignedAngle(subPart.ITangentAtPoint(iPt, tolerance), p.Normal);
                                     if ((subPart.IStartPoint().SquareDistance(iPt) <= sqTol))
                                     {
-                                        if (signedAngle >= -Tolerance.Angle) intersects.Add(iPt);
-                                        else extraIntersects.Add(iPt);
+                                        if (signedAngle >= -Tolerance.Angle)
+                                            intersects.Add(iPt);
+                                        else
+                                            extraIntersects.Add(iPt);
                                     }
                                     else if ((subPart.IEndPoint().SquareDistance(iPt) <= sqTol))
                                     {
-                                        if (signedAngle <= Tolerance.Angle) intersects.Add(iPt);
-                                        else extraIntersects.Add(iPt);
+                                        if (signedAngle <= Tolerance.Angle)
+                                            intersects.Add(iPt);
+                                        else
+                                            extraIntersects.Add(iPt);
                                     }
-                                    else if (Math.Abs(signedAngle) <= Tolerance.Angle) extraIntersects.Add(iPt);
-                                    else intersects.Add(iPt);
+                                    else if (Math.Abs(signedAngle) <= Tolerance.Angle)
+                                        extraIntersects.Add(iPt);
+                                    else
+                                        intersects.Add(iPt);
                                 }
                             }
 
-                            if (intersects.Count == 0) return false;
+                            if (intersects.Count == 0)
+                                return false;
+
                             if ((pPt.ClosestPoint(intersects.Union(extraIntersects)).SquareDistance(pPt) <= sqTol))
                             {
-                                if (acceptOnEdge) continue;
-                                else return false;
+                                if (acceptOnEdge)
+                                    continue;
+                                else
+                                    return false;
                             }
 
                             intersects.Add(pPt);
                             intersects = intersects.SortCollinear(tolerance);
                             for (int j = 0; j < intersects.Count; j++)
                             {
-                                if (j % 2 == 0 && intersects[j] == pPt) return false;
+                                if (j % 2 == 0 && intersects[j] == pPt)
+                                    return false;
                             }
                         }
-                        else return false;
+                        else
+                            return false;
                     }
                     return true;
                 }
@@ -465,6 +495,7 @@ namespace BH.Engine.Geometry
             if (!acceptOnEdge && iPts.Count > 0) return false;
 
             List<double> cParams = new List<double> { 0, 1 };
+            iPts = iPts.CullDuplicates(tolerance);
             foreach (Point iPt in iPts)
             {
                 cParams.Add(curve2.IParameterAtPoint(iPt, tolerance));
