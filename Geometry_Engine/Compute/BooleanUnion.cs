@@ -102,26 +102,23 @@ namespace BH.Engine.Geometry
         /****         public Methods - Regions          ****/
         /***************************************************/
 
-        public static List<Polyline> NewBooleanUnion(this List<Polyline> regions, double tolerance = Tolerance.Distance)
+        public static List<Polyline> BooleanUnion(this List<Polyline> regions, double tolerance = Tolerance.Distance)
         {
-            foreach (Polyline region in regions)
+            if (regions.Count < 2)
+                return regions;
+
+            if (regions.Any(x => !x.IsClosed(tolerance)))
             {
-                if (!region.IsClosed(tolerance))
-                {
-                    Reflection.Compute.RecordError("Boolean Union works only on closed curves.");
-                    return regions;
-                }
+                Reflection.Compute.RecordError("Boolean Union works on closed regions.");
+                return regions;
             }
 
             List<Polyline> result = new List<Polyline>();
             double sqTolerance = tolerance * tolerance;
-            
+
             foreach (List<Polyline> regionCluster in regions.ClusterCoplanar(tolerance))
             {
                 List<Polyline> tmpResult = new List<Polyline>();
-                
-                List<BoundingBox> regionBounds = regionCluster.Select(x => x.Bounds()).ToList();
-                List<List<Line>> curveSegments = regionCluster.Select(x => x.SubParts()).ToList();
 
                 List<Point>[] iPts = new List<Point>[regionCluster.Count];
                 for (int i = 0; i < iPts.Length; i++)
@@ -129,46 +126,47 @@ namespace BH.Engine.Geometry
                     iPts[i] = new List<Point>();
                 }
                 
+                List<BoundingBox> regionBounds = regionCluster.Select(x => x.Bounds()).ToList();
                 for (int j = 0; j < regionCluster.Count - 1; j++)
                 {
                     for (int k = j + 1; k < regionCluster.Count; k++)
                     {
                         if (regionBounds[j].IsInRange(regionBounds[k]))
                         {
-                            List<Point> intPts = regionCluster[j].LineIntersections(regionCluster[k], tolerance);
-                            iPts[j].AddRange(intPts);
-                            iPts[k].AddRange(intPts);
+                            List<Point> tmpPts = regionCluster[j].LineIntersections(regionCluster[k], tolerance);
+                            iPts[j].AddRange(tmpPts);
+                            iPts[k].AddRange(tmpPts);
                         }
                     }
                 }
 
-                for (int i = 0; i < regionCluster.Count; i++) 
+                for (int i = 0; i < regionCluster.Count; i++)
                 {
                     if (iPts[i].Count > 0)
                     {
                         List<Polyline> splReg = regionCluster[i].SplitAtPoints(iPts[i]);
-                        for (int k = 0; k < splReg.Count; k++)
+                        foreach(Polyline segment in splReg)
                         {
-                            Boolean flag = true;
-                            List<Point> mPts = new List<Point> { splReg[k].PointAtParameter(0.5) };
+                            bool flag = true;
+                            List<Point> mPts = new List<Point> { segment.PointAtParameter(0.5) };
 
                             for (int j = 0; j < regionCluster.Count; j++)
                             {
 
                                 if (i != j && regionBounds[j].IsContaining(mPts) && regionCluster[j].IsContaining(mPts, true, tolerance))
-                                    {
-                                        flag = false;
-                                        break;
-                                    }
+                                {
+                                    flag = false;
+                                    break;
+                                }
                             }
                             if (flag)
-                                tmpResult.Add(splReg[k]);
+                                tmpResult.Add(segment);
                         }
                     }
                     else
                         result.Add(regionCluster[i]);
                 }
-                
+
                 for (int i = 0; i < tmpResult.Count - 1; i++)
                 {
                     for (int j = i + 1; j < tmpResult.Count; j++)
@@ -192,120 +190,71 @@ namespace BH.Engine.Geometry
 
             return result;
         }
-        
-        /***************************************************/
-
-        public static List<Polyline> BooleanUnion(this List<Polyline> regions, double tolerance = Tolerance.Distance)
-        {
-            double sqTol = tolerance * tolerance;
-            List<Polyline> cutRegions = regions.Where(r => r.Area() > sqTol).Select(r => r.Clone()).ToList();
-            List<Polyline> result = new List<Polyline>();
-            List<Polyline> openings = new List<Polyline>();
-            bool union;
-
-            while (cutRegions.Count > 0)
-            {
-                Polyline uRegion = cutRegions[0].Clone();
-                cutRegions.RemoveAt(0);
-                do
-                {
-                    List<Polyline> uRegions;
-                    union = false;
-                    for (int i = 0; i < cutRegions.Count; i++)
-                    {
-                        union = cutRegions[i].BooleanUnion(uRegion, out uRegions, tolerance);
-                        if (union)
-                        {
-                            cutRegions.RemoveAt(i);
-
-                            uRegions.Sort(delegate (Polyline p1, Polyline p2)
-                            {
-                                return p1.Area().CompareTo(p2.Area());
-                            });
-                            uRegions.Reverse();
-
-                            uRegion = uRegions[0];
-                            openings.AddRange(uRegions.Skip(1));
-                            break;
-                        }
-                    }
-                } while (union);
-
-                result.Add(uRegion);
-            }
-
-            result.AddRange(openings.BooleanDifference(regions, tolerance));
-            return result;
-        }
 
         /***************************************************/
 
         public static List<PolyCurve> BooleanUnion(this List<PolyCurve> regions, double tolerance = Tolerance.Distance)
         {
-            Boolean coplanar = true;
-            for (int i = 0; i < regions.Count - 1; i++)
+            if (regions.Count < 2)
+                return regions;
+
+            if (regions.Any(x => !x.IsClosed(tolerance)))
             {
-                if (!regions[i].IsCoplanar(regions[i + 1], tolerance))
-                    coplanar = false;
+                Reflection.Compute.RecordError("Boolean Union works on closed regions.");
+                return regions;
             }
 
-            if (coplanar)
-            {
-                double sqTol = tolerance * tolerance;
-                List<PolyCurve> tmpResult = new List<PolyCurve>();
-                List<PolyCurve> result = new List<PolyCurve>();
-                List<Point>[] iPts = new List<Point>[regions.Count];
-                List<Point> tmpPts = new List<Point>();
+            List<PolyCurve> result = new List<PolyCurve>();
+            double sqTolerance = tolerance * tolerance;
 
-                for (int j = 0; j < regions.Count - 1; j++)
+            foreach (List<PolyCurve> regionCluster in regions.ClusterCoplanar(tolerance))
+            {
+                List<PolyCurve> tmpResult = new List<PolyCurve>();
+
+                List<Point>[] iPts = new List<Point>[regionCluster.Count];
+                for (int i = 0; i < iPts.Length; i++)
                 {
-                    for (int k = j + 1; k < regions.Count; k++)
+                    iPts[i] = new List<Point>();
+                }
+
+                List<BoundingBox> regionBounds = regionCluster.Select(x => x.Bounds()).ToList();
+                for (int j = 0; j < regionCluster.Count - 1; j++)
+                {
+                    for (int k = j + 1; k < regionCluster.Count; k++)
                     {
-                        if (regions[j].Bounds().IsInRange(regions[k].Bounds()))
-                            tmpPts.AddRange(regions[j].CurveIntersections(regions[k]));
-                        if (tmpPts.Count > 0)
+                        if (regionBounds[j].IsInRange(regionBounds[k]))
                         {
-                            iPts[j] = tmpPts;
-                            iPts[k] = tmpPts;
-                        }
-                        else
-                        {
-                            iPts[j] = new List<Point>();
-                            iPts[k] = new List<Point>();
+                            List<Point> intPts = regionCluster[j].CurveIntersections(regionCluster[k], tolerance);
+                            iPts[j].AddRange(intPts);
+                            iPts[k].AddRange(intPts);
                         }
                     }
                 }
-
-
-                for (int i = 0; i < regions.Count; i++)
+                
+                for (int i = 0; i < regionCluster.Count; i++)
                 {
                     if (iPts[i].Count() > 0)
                     {
-                        List<PolyCurve> splReg = regions[i].SplitAtPoints(iPts[i]);
-                        for (int k = 0; k < splReg.Count; k++)
+                        List<PolyCurve> splReg = regionCluster[i].SplitAtPoints(iPts[i]);
+                        foreach (PolyCurve segment in splReg)
                         {
-                            Boolean flag = true;
-                            List<Point> mPts = new List<Point> { splReg[k].PointAtParameter(0.5) };
+                            bool flag = true;
+                            List<Point> mPts = new List<Point> { segment.PointAtParameter(0.5) };
 
-                            for (int j = 0; j < regions.Count; j++)
+                            for (int j = 0; j < regionCluster.Count; j++)
                             {
-
-                                if (regions[j].Bounds().IsContaining(mPts))
-                                    if (i != j && regions[j].IsContaining(mPts, false, tolerance))
-                                    {
-                                        flag = false;
-                                        break;
-                                    }
+                                if (i != j && regionBounds[j].IsContaining(mPts) && regionCluster[j].IsContaining(mPts, true, tolerance))
+                                {
+                                    flag = false;
+                                    break;
+                                }
                             }
                             if (flag)
-                            {
-                                tmpResult.Add(splReg[k]);
-                                k++;
-                            }
+                                tmpResult.Add(segment);
                         }
                     }
                     else
-                        tmpResult.Add(regions[i]);
+                        result.Add(regionCluster[i]);
                 }
 
                 for (int i = 0; i < tmpResult.Count - 1; i++)
@@ -317,114 +266,19 @@ namespace BH.Engine.Geometry
                     }
                 }
 
-                result = tmpResult.Join(tolerance);
-                int res = 0;
-                while (res < result.Count)
-                {
-                    if (result[res].Area() <= sqTol)
-                        result.RemoveAt(res);
-                    else
-                        res++;
-                }
-
-
-                return result;
+                result.AddRange(tmpResult.Join(tolerance));
             }
-            return new List<PolyCurve>();
-        }
 
-    
-        /***************************************************/
-        /****              Private methods              ****/
-        /***************************************************/
-
-        private static bool BooleanUnion(this Polyline region1, Polyline region2, out List<Polyline> result, double tolerance = Tolerance.Distance)
-        {
-            result = new List<Polyline>();
-
-            if (region1.IsCoplanar(region2, tolerance))
+            int res = 0;
+            while (res < result.Count)
             {
-                Plane p1 = region1.FitPlane(tolerance);
-
-                if (!region1.IsClockwise(p1.Normal))
-                    region1 = region1.Clone().Flip();
-                if (!region2.IsClockwise(p1.Normal))
-                    region2 = region2.Clone().Flip();
-
-                List<Point> cPts1 = region1.SubParts().Select(s => s.ControlPoints().Average()).ToList();
-                cPts1.AddRange(region1.ControlPoints);
-                List<Point> cPts2 = region2.SubParts().Select(s => s.ControlPoints().Average()).ToList();
-                cPts2.AddRange(region2.ControlPoints);
-
-                if (region1.IsContaining(cPts2, true, tolerance))
-                    result.Add(region1.Clone());
-                else if (region2.IsContaining(cPts1, true, tolerance))
-                    result.Add(region2.Clone());
+                if (result[res].Area() <= sqTolerance)
+                    result.RemoveAt(res);
                 else
-                {
-                    double sqTol = tolerance * tolerance;
-                    List<Point> iPts = region1.LineIntersections(region2, tolerance);
-                    List<Polyline> splitRegion1 = region1.SplitAtPoints(iPts, tolerance);
-                    List<Polyline> splitRegion2 = region2.SplitAtPoints(iPts, tolerance);
-
-                    if (splitRegion1.Count == 1 && splitRegion2.Count == 1)
-                    {
-                        result = new List<Polyline> { region1.Clone(), region2.Clone() };
-                        return false;
-                    }
-
-                    foreach (Polyline segment in splitRegion1)
-                    {
-                        List<Line> subparts = segment.SubParts();
-                        List<Point> cPts = subparts.Select(s => s.ControlPoints().Average()).ToList();
-                        cPts.AddRange(segment.ControlPoints);
-
-                        if (!region2.IsContaining(cPts, true, tolerance))
-                            result.Add(segment);
-                        else if (!region2.IsContaining(cPts, false, tolerance))
-                        {
-                            foreach (Polyline r in splitRegion2)
-                            {
-                                bool found = false;
-
-                                if (segment.ControlPoints.Count == r.ControlPoints.Count && segment.ControlPoints[0].SquareDistance(r.ControlPoints[0]) <= sqTol)
-                                {
-                                    found = true;
-                                    for (int i = 0; i < segment.ControlPoints.Count; i++)
-                                    {
-                                        if (segment.ControlPoints[i].SquareDistance(r.ControlPoints[i]) > sqTol)
-                                        {
-                                            found = false;
-                                            break;
-                                        }
-                                    }
-                                }
-
-                                if (found)
-                                {
-                                    result.Add(segment);
-                                    break;
-                                }
-                            }
-                        }
-                    }
-
-                    foreach (Polyline segment in splitRegion2)
-                    {
-                        List<Point> cPts = segment.SubParts().Select(s => s.ControlPoints().Average()).ToList();
-                        cPts.AddRange(segment.ControlPoints);
-
-                        if (!region1.IsContaining(cPts, true, tolerance))
-                            result.Add(segment);
-                    }
-
-                    result = result.Join(tolerance);
-                }
-                return true;
+                    res++;
             }
 
-            result = new List<Polyline> { region1.Clone(), region2.Clone() };
-            return false;
+            return result;
         }
         
         /***************************************************/
