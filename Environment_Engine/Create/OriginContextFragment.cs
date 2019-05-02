@@ -26,7 +26,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using BH.oM.Environment.Properties;
+using BH.oM.Environment.Fragments;
 
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;

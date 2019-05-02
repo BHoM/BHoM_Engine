@@ -31,7 +31,6 @@ using System.Threading.Tasks;
 
 using BH.oM.Environment;
 using BH.oM.Environment.Elements;
-using BH.oM.Environment.Properties;
 using BH.oM.Base;
 
 using BH.oM.Reflection.Attributes;

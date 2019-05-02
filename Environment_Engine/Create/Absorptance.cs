@@ -26,7 +26,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using BH.oM.Environment.Materials;
+using BH.oM.Environment.MaterialFragments;
 
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;

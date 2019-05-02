@@ -22,7 +22,7 @@
 
 using System.Collections.Generic;
 using BH.oM.Environment.Elements;
-using BH.oM.Environment.Properties;
+using BH.oM.Environment.Fragments;
 
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;

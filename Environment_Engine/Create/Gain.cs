@@ -27,7 +27,6 @@ using System.Text;
 using System.Threading.Tasks;
 
 using BH.oM.Environment.Gains;
-using BH.oM.Environment.Properties;
 
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
