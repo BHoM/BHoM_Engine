@@ -7,7 +7,7 @@
 # project owners 
 
 #NEED OWNER: /Acoustic_Engine
-/Analytical_Engine: @al-fisher @adecler @IsakNaslundBh @FraserGreenroyd
+/Analytical_Engine @al-fisher @adecler @IsakNaslundBh @FraserGreenroyd
 #NEED OWNER: /Architecture_Engine
 /BHoM_Engine @adecler
 /Engine_Test @adecler
@@ -18,7 +18,7 @@
 /Geometry_Engine @pawelbaran
 /Humans_Engine @al-fisher
 /MachineLearning_Engine @epignatelli
-/Physical_Engine: @al-fisher @adecler @IsakNaslundBh @FraserGreenroyd
+/Physical_Engine @al-fisher @adecler @IsakNaslundBh @FraserGreenroyd
 /Planning_Engine @rwemay
 /Reflection_Engine @adecler
 /Serialiser_Engine @adecler
