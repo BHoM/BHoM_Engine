@@ -26,7 +26,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using BH.oM.Physical.Properties;
+using BH.oM.Physical.Materials;
 
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;

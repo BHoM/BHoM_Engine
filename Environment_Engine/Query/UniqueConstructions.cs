@@ -25,8 +25,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-using BH.oM.Physical.Properties;
-using BH.oM.Physical.Properties.Construction;
+using BH.oM.Physical.Materials;
+using BH.oM.Physical.Constructions;
 
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;

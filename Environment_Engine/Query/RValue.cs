@@ -27,9 +27,9 @@ using System.Text;
 using System.Threading.Tasks;
 
 using BH.oM.Environment;
-using BH.oM.Environment.Materials;
-using BH.oM.Physical.Properties;
-using BH.oM.Physical.Properties.Construction;
+using BH.oM.Environment.MaterialFragments;
+using BH.oM.Physical.Materials;
+using BH.oM.Physical.Constructions;
 
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
