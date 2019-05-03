@@ -68,12 +68,17 @@
     <Compile Include="Compute\SortAlongCurve.cs" />
     <Compile Include="Compute\SortCollinear.cs" />
     <Compile Include="Convert\Polyline.cs" />
+    <Compile Include="Create\Cone.cs" />
     <Compile Include="Create\ConvexHull.cs" />
     <Compile Include="Create\CartesianCoordinateSystem.cs" />
+    <Compile Include="Create\Cuboid.cs" />
+    <Compile Include="Create\Cylinder.cs" />
     <Compile Include="Create\Geometry.cs" />
     <Compile Include="Create\PlanarSurface.cs" />
+    <Compile Include="Create\Sphere.cs" />
     <Compile Include="Create\Surface.cs" />
     <Compile Include="Create\Curve.cs" />
+    <Compile Include="Create\Torus.cs" />
     <Compile Include="Create\Vector.cs" />
     <Compile Include="Create\Point.cs" />
     <Compile Include="Create\PolySurface.cs" />
