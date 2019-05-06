@@ -32,9 +32,9 @@ using MongoDB.Bson.IO;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using BH.oM.Structure.Elements;
-using BH.oM.Structure.Properties.Constraint;
-using BH.oM.Structure.Properties.Section;
-using BH.oM.Structure.Properties.Section.ShapeProfiles;
+using BH.oM.Structure.Constraints;
+using BH.oM.Structure.SectionProperties;
+using BH.oM.Geometry.ShapeProfiles;
 using BH.oM.Acoustic;
 //using ModelLaundry_Engine;
 

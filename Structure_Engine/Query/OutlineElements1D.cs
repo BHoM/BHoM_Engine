@@ -39,9 +39,9 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static List<IElement1D> OutlineElements1D(this PanelPlanar panelPlanar)
+        public static List<IElement1D> OutlineElements1D(this Panel Panel)
         {
-            return new List<IElement1D>(panelPlanar.ExternalEdges);
+            return new List<IElement1D>(Panel.ExternalEdges);
         }
 
         /***************************************************/

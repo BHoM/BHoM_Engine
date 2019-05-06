@@ -23,7 +23,7 @@
 using BH.oM.Structure.Elements;
 using System.Linq;
 using System.Collections.Generic;
-using BH.oM.Structure.Properties.Framing;
+using BH.oM.Structure.FramingProperties;
 using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
 using BH.Engine.Geometry;

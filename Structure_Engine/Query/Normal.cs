@@ -61,16 +61,9 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static Vector Normal(this PanelPlanar panel)
+        public static Vector Normal(this Panel panel)
         {
             return panel.AllEdgeCurves().SelectMany(x => x.IControlPoints()).ToList().FitPlane().Normal;
-        }
-
-        /***************************************************/
-
-        public static Vector Normal(this MeshFace face)
-        {
-            return face.Nodes.Select(x => x.Position()).ToList().FitPlane().Normal;
         }
 
         /***************************************************/

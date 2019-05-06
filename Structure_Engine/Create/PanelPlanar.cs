@@ -38,37 +38,37 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static PanelPlanar PanelPlanar(ICurve outline, List<Opening> openings = null, ISurfaceProperty property = null, string name = "")
+        public static Panel Panel(ICurve outline, List<Opening> openings = null, ISurfaceProperty property = null, string name = "")
         {
             if (!outline.IIsClosed()) return null;
             List<Edge> externalEdges = outline.ISubParts().Select(x => new Edge { Curve = x }).ToList();
 
-            return PanelPlanar(externalEdges, openings, property, name);
+            return Panel(externalEdges, openings, property, name);
         }
 
         /***************************************************/
 
-        public static PanelPlanar PanelPlanar(ICurve outline, List<ICurve> openings = null, ISurfaceProperty property = null, string name = "")
+        public static Panel Panel(ICurve outline, List<ICurve> openings = null, ISurfaceProperty property = null, string name = "")
         {
             if (!outline.IIsClosed()) return null;
             List<Opening> pOpenings = openings != null ? openings.Select(o => Create.Opening(o)).ToList() : new List<Opening>();
             List<Edge> externalEdges = outline.ISubParts().Select(x => new Edge { Curve = x }).ToList();
-            return PanelPlanar(externalEdges, pOpenings, property, name);
+            return Panel(externalEdges, pOpenings, property, name);
         }
 
         /***************************************************/
 
-        public static PanelPlanar PanelPlanar(List<Edge> externalEdges, List<ICurve> openings = null, ISurfaceProperty property = null, string name = "")
+        public static Panel Panel(List<Edge> externalEdges, List<ICurve> openings = null, ISurfaceProperty property = null, string name = "")
         {
             List<Opening> pOpenings = openings != null ? openings.Select(o => Create.Opening(o)).ToList() : new List<Opening>();
-            return PanelPlanar(externalEdges, pOpenings, property, name);
+            return Panel(externalEdges, pOpenings, property, name);
         }
 
         /***************************************************/
 
-        public static PanelPlanar PanelPlanar(List<Edge> externalEdges, List<Opening> openings = null, ISurfaceProperty property = null, string name = "")
+        public static Panel Panel(List<Edge> externalEdges, List<Opening> openings = null, ISurfaceProperty property = null, string name = "")
         {
-            return new PanelPlanar
+            return new Panel
             {
                 ExternalEdges = externalEdges,
                 Openings = openings ?? new List<Opening>(),
@@ -80,22 +80,22 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [DeprecatedAttribute("Generic method for ICurve in place")]
-        public static List<PanelPlanar> PanelPlanar(List<Polyline> outlines, ISurfaceProperty property = null, string name = "")
+        public static List<Panel> Panel(List<Polyline> outlines, ISurfaceProperty property = null, string name = "")
         {
-            return PanelPlanar(new List<ICurve>(outlines), property, name);
+            return Panel(new List<ICurve>(outlines), property, name);
         }
 
         /***************************************************/
 
-        public static List<PanelPlanar> PanelPlanar(List<ICurve> outlines, ISurfaceProperty property = null, string name = "")
+        public static List<Panel> Panel(List<ICurve> outlines, ISurfaceProperty property = null, string name = "")
         {
-            List<PanelPlanar> result = new List<PanelPlanar>();
+            List<Panel> result = new List<Panel>();
             List<List<IElement1D>> outlineEdges = outlines.Select(x => x.ISubParts().Select(y => new Edge { Curve = y } as IElement1D).ToList()).ToList();
             
             List<List<List<IElement1D>>> sortedOutlines = outlineEdges.DistributeOutlines(true);
             foreach (List<List<IElement1D>> panelOutlines in sortedOutlines)
             {
-                PanelPlanar panel = new PanelPlanar();
+                Panel panel = new Panel();
                 panel = panel.SetOutlineElements1D(panelOutlines[0]);
                 List<Opening> openings = new List<Opening>();
                 foreach (List<IElement1D> p in panelOutlines.Skip(1))

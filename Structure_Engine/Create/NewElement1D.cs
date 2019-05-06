@@ -40,7 +40,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static IElement1D NewElement1D(this PanelPlanar panel, ICurve curve)
+        public static IElement1D NewElement1D(this Panel panel, ICurve curve)
         {
             return new Edge { Curve = curve.IClone() };
         }
