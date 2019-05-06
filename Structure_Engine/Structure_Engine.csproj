@@ -110,7 +110,6 @@
     <Compile Include="Create\LinkConstraints.cs" />
     <Compile Include="Create\Opening.cs" />
     <Compile Include="Create\Surface.cs" />
-    <Compile Include="Create\SectionCurves.cs" />
     <Compile Include="Create\SteelSection.cs" />
     <Compile Include="Modify\ApplyModifiers.cs" />
     <Compile Include="Modify\SetElements0D.cs" />

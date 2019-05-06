@@ -40,14 +40,14 @@ namespace BH.Engine.Structure
 
         public static ConcreteSection ConcreteRectangleSection(double height, double width, Material material = null, string name = "", List<Reinforcement> reinforcement = null)
         {
-            return ConcreteSectionFromProfile(RectangleProfile(height, width, 0), material, name, reinforcement);
+            return ConcreteSectionFromProfile(Geometry.Create.RectangleProfile(height, width, 0), material, name, reinforcement);
         }
 
         /***************************************************/
 
         public static ConcreteSection ConcreteTSection(double height, double webThickness, double flangeWidth, double flangeThickness, Material material = null, string name = "", List<Reinforcement> reinforcement = null)
         {
-            return ConcreteSectionFromProfile(TSectionProfile(height, flangeWidth, webThickness, flangeThickness, 0, 0), material, name, reinforcement);
+            return ConcreteSectionFromProfile(Geometry.Create.TSectionProfile(height, flangeWidth, webThickness, flangeThickness, 0, 0), material, name, reinforcement);
         }
 
 
@@ -55,14 +55,14 @@ namespace BH.Engine.Structure
 
         public static ConcreteSection ConcreteCircularSection(double diameter, Material material = null, string name = "", List<Reinforcement> reinforcement = null)
         {
-            return ConcreteSectionFromProfile(CircleProfile(diameter), material, name, reinforcement);
+            return ConcreteSectionFromProfile(Geometry.Create.CircleProfile(diameter), material, name, reinforcement);
         }
 
         /***************************************************/
 
         public static ConcreteSection ConcreteFreeFormSection(List<ICurve> edges, Material material = null, string name = "", List<Reinforcement> reinforcement = null)
         {
-            return ConcreteSectionFromProfile(FreeFormProfile(edges), material, name, reinforcement);
+            return ConcreteSectionFromProfile(Geometry.Create.FreeFormProfile(edges), material, name, reinforcement);
         }
 
         /***************************************************/

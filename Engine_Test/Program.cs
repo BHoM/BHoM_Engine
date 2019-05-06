@@ -95,7 +95,7 @@ namespace Engine_Test
             string json2 = doc2.ToJson<BsonDocument>(jsonWriterSettings);
             object obj2 = BsonSerializer.Deserialize(doc2, typeof(object));
 
-            CircleProfile circleDim = BH.Engine.Structure.Create.CircleProfile(43.2);
+            CircleProfile circleDim = BH.Engine.Geometry.Create.CircleProfile(43.2);
             circleDim.Name = "Dim";
             BsonDocument doc3 = circleDim.ToBsonDocument();
             string json3 = doc3.ToJson<BsonDocument>(jsonWriterSettings);
@@ -103,7 +103,7 @@ namespace Engine_Test
 
             SteelSection section = new SteelSection(
                 
-                BH.Engine.Structure.Create.CircleProfile(4.2),
+                BH.Engine.Geometry.Create.CircleProfile(4.2),
                 2.1, 1.3, .5, 2, 3, 4, 5, 6, 7, 88, 9, 0, 4, 5, 6, 7, 7, 8, 9
             );
             BsonDocument doc4 = section.ToBsonDocument();
