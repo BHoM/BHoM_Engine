@@ -39,9 +39,9 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static List<IElement2D> InternalElements2D(this PanelPlanar panelPlanar)
+        public static List<IElement2D> InternalElements2D(this Panel Panel)
         {
-            return new List<IElement2D>(panelPlanar.Openings);
+            return new List<IElement2D>(Panel.Openings);
         }
 
         /***************************************************/

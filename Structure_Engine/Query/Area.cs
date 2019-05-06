@@ -34,7 +34,7 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static double Area(this PanelPlanar panel)
+        public static double Area(this Panel panel)
         {
             List<PolyCurve> externalEdges = panel.ExternalEdgeCurves().IJoin();
             List<PolyCurve> internalEdges = panel.InternalEdgeCurves().IJoin();
@@ -56,13 +56,6 @@ namespace BH.Engine.Structure
         public static double Area(this FEMesh mesh)
         {
             return mesh.Geometry().Area();
-        }
-
-        /***************************************************/
-
-        public static double Area(this MeshFace face)
-        {
-            return face.Geometry().Area();
         }
 
         /***************************************************/

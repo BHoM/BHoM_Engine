@@ -63,7 +63,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static IGeometry Geometry(this PanelPlanar panel)
+        public static IGeometry Geometry(this Panel panel)
         {
             return Engine.Geometry.Create.PlanarSurface(
                 Engine.Geometry.Modify.IJoin(panel.ExternalEdges.Select(x => x.Curve).ToList()).FirstOrDefault(),
@@ -92,18 +92,6 @@ namespace BH.Engine.Structure
             return new CompositeGeometry { Elements = section.SectionProfile.Edges.ToList<IGeometry>() };
         }
 
-        /***************************************************/
-
-        public static BH.oM.Geometry.Mesh Geometry(this MeshFace meshFace)
-        {
-
-            return new BH.oM.Geometry.Mesh()
-            {
-                Vertices = meshFace.Nodes.Select(x => x.Position()).ToList(),
-                Faces = meshFace.Nodes.Count == 3 ? new List<Face>() { new Face() { A = 0, B = 1, C = 2 } } : new List<Face>() { new Face() { A = 0, B = 1, C = 2, D = 3 } }
-            };
-                
-        }
 
         /***************************************************/
 

@@ -42,9 +42,9 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static PanelPlanar SetOutlineElements1D(this PanelPlanar panelPlanar, List<IElement1D> outlineElements1D)
+        public static Panel SetOutlineElements1D(this Panel Panel, List<IElement1D> outlineElements1D)
         {
-            PanelPlanar pp = panelPlanar.GetShallowClone() as PanelPlanar;
+            Panel pp = Panel.GetShallowClone() as Panel;
             pp.ExternalEdges = new List<Edge>(outlineElements1D.Cast<Edge>());
             return pp;
         }

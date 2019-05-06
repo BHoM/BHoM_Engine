@@ -38,27 +38,7 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static List<Point> PointGrid(this MeshFace face)
-        {
-            List<Point> pts = new List<Point>();
-
-            for (int i = 0; i < face.Nodes.Count; i++)
-            {
-                pts.Add(face.Nodes[i].Position());
-
-                int nextId = i < face.Nodes.Count - 1 ? i + 1 : 0;
-
-                pts.Add((face.Nodes[i].Position() + face.Nodes[nextId].Position()) / 2);
-            }
-
-            pts.Add(pts.Average());
-
-            return pts;
-        }
-
-        /***************************************************/
-
-        public static List<Point> PointGrid(this PanelPlanar panel)
+        public static List<Point> PointGrid(this Panel panel)
         {
             List<ICurve> curves = panel.ExternalEdgeCurves();
 

@@ -34,7 +34,7 @@ namespace BH.Engine.Structure
         /****      Element control points      ****/
         /******************************************/
 
-        public static List<Point> ControlPoints(this PanelPlanar panel, bool externalOnly = false)
+        public static List<Point> ControlPoints(this Panel panel, bool externalOnly = false)
         {
             List<Point> pts = panel.ExternalEdges.ControlPoints();
             if (!externalOnly)

@@ -33,7 +33,7 @@ namespace BH.Engine.Structure
         /****          Panel outline           ****/
         /******************************************/
 
-        public static PolyCurve Outline(this PanelPlanar panel)
+        public static PolyCurve Outline(this Panel panel)
         {
             return new PolyCurve { Curves = panel.ExternalEdgeCurves() };
         }
