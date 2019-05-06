@@ -118,6 +118,7 @@
     <Compile Include="Query\AnalyticalBars.cs" />
     <Compile Include="Query\Area.cs" />
     <Compile Include="Query\ControlPoints.cs" />
+    <Compile Include="Query\DampingRatio.cs" />
     <Compile Include="Query\Default.cs" />
     <Compile Include="Query\DeformedShape.cs" />
     <Compile Include="Query\DistributedPoints.cs" />
@@ -126,6 +127,7 @@
     <Compile Include="Query\Centreline.cs" />
     <Compile Include="Query\Elements0D.cs" />
     <Compile Include="Query\InternalElements2D.cs" />
+    <Compile Include="Query\IsStructural.cs" />
     <Compile Include="Query\OutlineElements1D.cs" />
     <Compile Include="Query\IsVertical.cs" />
     <Compile Include="Query\LoadType.cs" />
@@ -146,10 +148,14 @@
     <Compile Include="Query\DepthAt.cs" />
     <Compile Include="Query\PlotForce.cs" />
     <Compile Include="Query\PointGrid.cs" />
+    <Compile Include="Query\PoissonsRatio.cs" />
     <Compile Include="Query\Position.cs" />
     <Compile Include="Query\SelectCase.cs" />
     <Compile Include="Query\ShearArea.cs" />
+    <Compile Include="Query\ShearModulus.cs" />
+    <Compile Include="Query\StructuralMaterialFragment.cs" />
     <Compile Include="Query\Tangent.cs" />
+    <Compile Include="Query\ThermalExpansionCoeff.cs" />
     <Compile Include="Query\Visualize.cs" />
     <Compile Include="Query\WidthAt.cs" />
     <Compile Include="Query\IsLongitudinal.cs" />
@@ -162,6 +168,7 @@
     <Compile Include="Query\AverageElement.cs" />
     <Compile Include="Modify\SetReinforcement.cs" />
     <Compile Include="Query\IsConstrained.cs" />
+    <Compile Include="Query\YoungsModulus.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BHoM_Engine\BHoM_Engine.csproj">
