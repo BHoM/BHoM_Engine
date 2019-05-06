@@ -21,7 +21,7 @@
  */
 
 using BH.oM.Structure.Elements;
-using BH.oM.Structure.Properties.Surface;
+using BH.oM.Structure.SurfaceProperties;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -52,7 +52,7 @@ namespace BH.Engine.Structure
                 if (face.IsQuad())
                     feFace.NodeListIndices.Add(face.D);
 
-                feMesh.MeshFaces.Add(feFace);
+                feMesh.Faces.Add(feFace);
 
             }
 

@@ -20,8 +20,8 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Structure.Properties.Surface;
-using BH.oM.Common.Materials;
+using BH.oM.Structure.SurfaceProperties;
+using BH.oM.Physical.Materials;
 
 namespace BH.Engine.Structure
 {

@@ -34,7 +34,7 @@ namespace BH.Engine.Structure
 
         public static Point Position(this Node node)
         {
-            return node.Coordinates.Origin;
+            return node.Position;
         }
 
         /***************************************************/

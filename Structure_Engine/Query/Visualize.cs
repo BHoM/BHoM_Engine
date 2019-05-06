@@ -56,7 +56,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static List<ICurve> Visualize(this AreaUniformalyDistributedLoad areaUDL, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true, bool asResultants = true, bool edgeDisplay = true, bool gridDisplay = false)
+        public static List<ICurve> Visualize(this AreaUniformlyDistributedLoad areaUDL, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true, bool asResultants = true, bool edgeDisplay = true, bool gridDisplay = false)
         {
             if (!displayForces)
                 return new List<ICurve>();
@@ -338,7 +338,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static List<ICurve> Visualize(this PointForce pointForce, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true, bool asResultants = true)
+        public static List<ICurve> Visualize(this PointLoad pointForce, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true, bool asResultants = true)
         {
             List<ICurve> arrows = new List<ICurve>();
 

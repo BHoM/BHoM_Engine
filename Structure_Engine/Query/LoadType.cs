@@ -37,7 +37,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static LoadType LoadType(this AreaUniformalyDistributedLoad load)
+        public static LoadType LoadType(this AreaUniformlyDistributedLoad load)
         {
             return oM.Structure.Loads.LoadType.AreaUniformLoad;
         }
@@ -100,7 +100,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static LoadType LoadType(this PointForce load)
+        public static LoadType LoadType(this PointLoad load)
         {
             return oM.Structure.Loads.LoadType.PointForce;
         }

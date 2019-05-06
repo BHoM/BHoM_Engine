@@ -21,7 +21,7 @@
  */
 
 using System;
-using BH.oM.Structure.Properties.Section.ShapeProfiles;
+using BH.oM.Geometry.ShapeProfiles;
 
 namespace BH.Engine.Structure
 {

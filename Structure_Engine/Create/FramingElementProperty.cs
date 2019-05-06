@@ -20,8 +20,8 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Structure.Properties.Framing;
-using BH.oM.Structure.Properties.Section;
+using BH.oM.Structure.FramingProperties;
+using BH.oM.Structure.SectionProperties;
 using BH.oM.Geometry;
 using System.ComponentModel;
 using BH.oM.Reflection.Attributes;

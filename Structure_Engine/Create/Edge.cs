@@ -24,7 +24,7 @@ using System;
 
 using BH.oM.Structure.Elements;
 using BH.oM.Geometry;
-using BH.oM.Structure.Properties.Constraint;
+using BH.oM.Structure.Constraints;
 using BH.Engine.Geometry;
 using BH.Engine.Reflection;
 

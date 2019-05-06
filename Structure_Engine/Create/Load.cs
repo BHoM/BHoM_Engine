@@ -27,6 +27,8 @@ using BH.oM.Structure.Elements;
 using System.Collections.Generic;
 using System.Linq;
 using System;
+using System.ComponentModel;
+using BH.oM.Reflection.Attributes;
 
 namespace BH.Engine.Structure
 {
@@ -122,7 +124,7 @@ namespace BH.Engine.Structure
                 case LoadType.AreaUniformLoad:
                     {
                         BHoMGroup<IAreaElement> group = new BHoMGroup<IAreaElement>() { Name = groupName };
-                        return AreaUniformalyDistributedLoad(loadCase, force, group, axis, isProjected, groupName);
+                        return AreaUniformlyDistributedLoad(loadCase, force, group, axis, isProjected, groupName);
                     }
                 case LoadType.BarVaryingLoad:
                 case LoadType.BarPointLoad:
@@ -138,7 +140,8 @@ namespace BH.Engine.Structure
 
         public static AreaTemperatureLoad AreaTemperatureLoad(Loadcase loadcase, double t, BHoMGroup<IAreaElement> group, LoadAxis axis = LoadAxis.Global, bool projected = false, string name = "")
         {
-            return new AreaTemperatureLoad {
+            return new AreaTemperatureLoad
+            {
                 Loadcase = loadcase,
                 TemperatureChange = t,
                 Objects = group,
@@ -156,9 +159,17 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static AreaUniformalyDistributedLoad AreaUniformalyDistributedLoad(Loadcase loadcase, Vector pressure, BHoMGroup<IAreaElement> group, LoadAxis axis = LoadAxis.Global, bool projected = false, string name = "")
+        [Deprecated("2.3", "Method and class spelled incorrectly. Name of both updated", null, "AreaUniformlyDistributedLoad")]
+        public static AreaUniformlyDistributedLoad AreaUniformalyDistributedLoad(Loadcase loadcase, Vector pressure, BHoMGroup<IAreaElement> group, LoadAxis axis = LoadAxis.Global, bool projected = false, string name = "")
         {
-            return new AreaUniformalyDistributedLoad
+            return AreaUniformlyDistributedLoad(loadcase, pressure, group, axis, projected, name);
+        }
+
+        /***************************************************/
+
+        public static AreaUniformlyDistributedLoad AreaUniformlyDistributedLoad(Loadcase loadcase, Vector pressure, BHoMGroup<IAreaElement> group, LoadAxis axis = LoadAxis.Global, bool projected = false, string name = "")
+        {
+            return new AreaUniformlyDistributedLoad
             {
                 Loadcase = loadcase,
                 Pressure = pressure,
@@ -171,19 +182,28 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static AreaUniformalyDistributedLoad AreaUniformalyDistributedLoad(Loadcase loadcase, Vector pressure, IEnumerable<IAreaElement> objects, LoadAxis axis = LoadAxis.Global, bool projected = false, string name = "")
+        [Deprecated("2.3", "Method and class spelled incorrectly. Name of both updated", null, "AreaUniformlyDistributedLoad")]
+        public static AreaUniformlyDistributedLoad AreaUniformalyDistributedLoad(Loadcase loadcase, Vector pressure, IEnumerable<IAreaElement> objects, LoadAxis axis = LoadAxis.Global, bool projected = false, string name = "")
         {
-            return AreaUniformalyDistributedLoad(loadcase, pressure, new BHoMGroup<IAreaElement>() { Elements = objects.ToList() }, axis, projected, name);
+            return AreaUniformlyDistributedLoad(loadcase, pressure, objects, axis, projected, name);
         }
 
         /***************************************************/
 
-        public static BarPointLoad BarPointLoad(Loadcase loadcase, BHoMGroup<Bar> group, double distFromA, Vector force = null, Vector moment = null,  LoadAxis axis = LoadAxis.Global, string name = "")
+        public static AreaUniformlyDistributedLoad AreaUniformlyDistributedLoad(Loadcase loadcase, Vector pressure, IEnumerable<IAreaElement> objects, LoadAxis axis = LoadAxis.Global, bool projected = false, string name = "")
+        {
+            return AreaUniformlyDistributedLoad(loadcase, pressure, new BHoMGroup<IAreaElement>() { Elements = objects.ToList() }, axis, projected, name);
+        }
+
+        /***************************************************/
+
+        public static BarPointLoad BarPointLoad(Loadcase loadcase, BHoMGroup<Bar> group, double distFromA, Vector force = null, Vector moment = null, LoadAxis axis = LoadAxis.Global, string name = "")
         {
             if (force == null && moment == null)
                 throw new ArgumentException("Bar point load requires either the force or the moment vector to be defined");
 
-            return new BarPointLoad {
+            return new BarPointLoad
+            {
                 Loadcase = loadcase,
                 DistanceFromA = distFromA,
                 Force = force == null ? new Vector() : force,
@@ -253,12 +273,12 @@ namespace BH.Engine.Structure
             {
                 Loadcase = loadcase,
                 Objects = group,
-                Force = force == null? new Vector(): force,
-                Moment = moment == null? new Vector():moment,
+                Force = force == null ? new Vector() : force,
+                Moment = moment == null ? new Vector() : moment,
                 Axis = axis,
                 Name = name,
                 Projected = projected
-                
+
             };
         }
 
@@ -273,7 +293,7 @@ namespace BH.Engine.Structure
 
         public static BarVaryingDistributedLoad BarVaryingDistributedLoad(Loadcase loadcase, BHoMGroup<Bar> group, double distFromA = 0, Vector forceA = null, Vector momentA = null, double distFromB = 0, Vector forceB = null, Vector momentB = null, LoadAxis axis = LoadAxis.Global, bool projected = false, string name = "")
         {
-            if((forceA == null || forceB == null) && (momentA == null || momentB == null))
+            if ((forceA == null || forceB == null) && (momentA == null || momentB == null))
                 throw new ArgumentException("Bar varying load requires either the force at A and B OR the moment at A and B to be defined");
 
             return new BarVaryingDistributedLoad
@@ -283,9 +303,9 @@ namespace BH.Engine.Structure
                 DistanceFromA = distFromA,
                 DistanceFromB = distFromB,
                 ForceA = forceA == null ? new Vector() : forceA,
-                ForceB = forceB == null ? new Vector():forceB,
-                MomentA = momentA == null? new Vector() : momentA,
-                MomentB = momentB == null? new Vector() : momentB,
+                ForceB = forceB == null ? new Vector() : forceB,
+                MomentA = momentA == null ? new Vector() : momentA,
+                MomentB = momentB == null ? new Vector() : momentB,
                 Projected = projected,
                 Axis = axis,
                 Name = name
@@ -300,7 +320,7 @@ namespace BH.Engine.Structure
             return BarVaryingDistributedLoad(loadcase, new BHoMGroup<Bar>() { Elements = objects.ToList() }, distFromA, forceA, momentA, distFromB, forceB, momentB, axis, projected, name);
         }
 
-        
+
         /***************************************************/
 
         public static GravityLoad GravityLoad(Loadcase loadcase, Vector direction, BHoMGroup<BHoMObject> group, string name = "")
@@ -328,12 +348,12 @@ namespace BH.Engine.Structure
             if (translationAcc == null && rotationAcc == null)
                 throw new ArgumentException("Point acceleration requires either the translation or the rotation vector to be defined");
 
-           return new PointAcceleration
+            return new PointAcceleration
             {
                 Loadcase = loadcase,
                 Objects = group,
-                TranslationalAcceleration = translationAcc == null? new Vector() : translationAcc,
-                RotationalAcceleration = rotationAcc == null? new Vector() : rotationAcc,
+                TranslationalAcceleration = translationAcc == null ? new Vector() : translationAcc,
+                RotationalAcceleration = rotationAcc == null ? new Vector() : rotationAcc,
                 Axis = axis,
                 Name = name
             };
@@ -359,8 +379,8 @@ namespace BH.Engine.Structure
             {
                 Loadcase = loadcase,
                 Objects = group,
-                Translation = translation == null? new Vector() : translation,
-                Rotation = rotation == null? new Vector() : rotation,
+                Translation = translation == null ? new Vector() : translation,
+                Rotation = rotation == null ? new Vector() : rotation,
                 Axis = axis,
                 Name = name
             };
@@ -369,19 +389,28 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static PointDisplacement PointDisplacement(Loadcase loadcase, IEnumerable<Node> objects, Vector translation= null, Vector rotation = null, LoadAxis axis = LoadAxis.Global, string name = "")
+        public static PointDisplacement PointDisplacement(Loadcase loadcase, IEnumerable<Node> objects, Vector translation = null, Vector rotation = null, LoadAxis axis = LoadAxis.Global, string name = "")
         {
             return PointDisplacement(loadcase, new BHoMGroup<Node>() { Elements = objects.ToList() }, translation, rotation, axis, name);
         }
 
         /***************************************************/
 
-        public static PointForce PointForce(Loadcase loadcase, BHoMGroup<Node> group, Vector force = null, Vector moment = null,  LoadAxis axis = LoadAxis.Global, string name = "")
+        [Deprecated("2.3", "Method and class name updated from PointForce to PointLoad", null, "PointLoad")]
+        public static PointLoad PointForce(Loadcase loadcase, BHoMGroup<Node> group, Vector force = null, Vector moment = null, LoadAxis axis = LoadAxis.Global, string name = "")
+        {
+            return PointLoad(loadcase, group, force, moment, axis, name);
+
+        }
+
+        /***************************************************/
+
+        public static PointLoad PointLoad(Loadcase loadcase, BHoMGroup<Node> group, Vector force = null, Vector moment = null, LoadAxis axis = LoadAxis.Global, string name = "")
         {
             if (force == null && moment == null)
                 throw new ArgumentException("Point force requires either the force or the moment vector to be defined");
 
-            return new PointForce
+            return new PointLoad
             {
                 Loadcase = loadcase,
                 Objects = group,
@@ -394,14 +423,23 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
-        public static PointForce PointForce(Loadcase loadcase, IEnumerable<Node> objects, Vector force = null, Vector moment = null, LoadAxis axis = LoadAxis.Global, string name = "")
+
+        [Deprecated("2.3", "Method and class name updated from PointForce to PointLoad", null, "PointLoad")]
+        public static PointLoad PointForce(Loadcase loadcase, IEnumerable<Node> objects, Vector force = null, Vector moment = null, LoadAxis axis = LoadAxis.Global, string name = "")
         {
-            return PointForce(loadcase, new BHoMGroup<Node>() { Elements = objects.ToList() }, force, moment, axis, name);
+            return PointLoad(loadcase, objects, force, moment, axis, name);
         }
 
         /***************************************************/
 
-        public static PointVelocity PointVelocity(Loadcase loadcase, BHoMGroup<Node> group, Vector translation = null, Vector rotation = null,  LoadAxis axis = LoadAxis.Global, string name = "")
+        public static PointLoad PointLoad(Loadcase loadcase, IEnumerable<Node> objects, Vector force = null, Vector moment = null, LoadAxis axis = LoadAxis.Global, string name = "")
+        {
+            return PointLoad(loadcase, new BHoMGroup<Node>() { Elements = objects.ToList() }, force, moment, axis, name);
+        }
+
+        /***************************************************/
+
+        public static PointVelocity PointVelocity(Loadcase loadcase, BHoMGroup<Node> group, Vector translation = null, Vector rotation = null, LoadAxis axis = LoadAxis.Global, string name = "")
         {
             if (translation == null && rotation == null)
                 throw new ArgumentException("Point velocity requires either the translation or the rotation vector to be defined");

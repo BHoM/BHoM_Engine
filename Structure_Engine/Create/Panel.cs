@@ -23,7 +23,7 @@
 using BH.Engine.Common;
 using BH.oM.Reflection.Attributes;
 using BH.oM.Structure.Elements;
-using BH.oM.Structure.Properties.Surface;
+using BH.oM.Structure.SurfaceProperties;
 using BH.oM.Geometry;
 using System;
 using System.Collections.Generic;
@@ -80,7 +80,7 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [DeprecatedAttribute("Generic method for ICurve in place")]
-        public static List<Panel> Panel(List<Polyline> outlines, ISurfaceProperty property = null, string name = "")
+        public static List<Panel> PanelPlanar(List<Polyline> outlines, ISurfaceProperty property = null, string name = "")
         {
             return Panel(new List<ICurve>(outlines), property, name);
         }
@@ -109,6 +109,46 @@ namespace BH.Engine.Structure
                 result.Add(panel);
             }
             return result;
+        }
+
+        /***************************************************/
+
+        [Deprecated("2.3", "Name of class and method changed from PanelPlanar to Panel", null, "Panel")]
+        public static Panel PanelPlanar(ICurve outline, List<Opening> openings = null, ISurfaceProperty property = null, string name = "")
+        {
+            return Panel(outline, openings, property, name);
+        }
+
+        /***************************************************/
+
+        [Deprecated("2.3", "Name of class and method changed from PanelPlanar to Panel", null, "Panel")]
+        public static Panel PanelPlanar(ICurve outline, List<ICurve> openings = null, ISurfaceProperty property = null, string name = "")
+        {
+            return Panel(outline, openings, property, name);
+        }
+
+        /***************************************************/
+
+        [Deprecated("2.3", "Name of class and method changed from PanelPlanar to Panel", null, "Panel")]
+        public static Panel PanelPlanar(List<Edge> externalEdges, List<ICurve> openings = null, ISurfaceProperty property = null, string name = "")
+        {
+            return Panel(externalEdges, openings, property, name);
+        }
+
+        /***************************************************/
+
+        [Deprecated("2.3", "Name of class and method changed from PanelPlanar to Panel", null, "Panel")]
+        public static Panel PanelPlanar(List<Edge> externalEdges, List<Opening> openings = null, ISurfaceProperty property = null, string name = "")
+        {
+            return Panel(externalEdges, openings, property, name);
+        }
+
+        /***************************************************/
+
+        [Deprecated("2.3", "Name of class and method changed from PanelPlanar to Panel", null, "Panel")]
+        public static List<Panel> PanelPlanar(List<ICurve> outlines, ISurfaceProperty property = null, string name = "")
+        {
+            return Panel(outlines, property, name);
         }
 
         /***************************************************/

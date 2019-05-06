@@ -26,7 +26,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BH.oM.Structure.Elements;
-using BH.oM.Structure.Properties;
 
 namespace BH.Engine.Structure
 {
@@ -47,6 +46,7 @@ namespace BH.Engine.Structure
             };
         }
 
+        /***************************************************/
 
     }
 }

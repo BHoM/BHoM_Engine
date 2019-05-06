@@ -21,7 +21,6 @@
  */
 
 using BH.oM.Structure.Elements;
-using BH.oM.Structure.Properties;
 
 namespace BH.Engine.Structure
 {

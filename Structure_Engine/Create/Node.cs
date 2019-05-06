@@ -21,7 +21,7 @@
  */
 
 using BH.oM.Structure.Elements;
-using BH.oM.Structure.Properties.Constraint;
+using BH.oM.Structure.Constraints;
 using BH.Engine.Geometry;
 using BH.oM.Geometry;
 using BH.oM.Geometry.CoordinateSystem;
@@ -38,7 +38,8 @@ namespace BH.Engine.Structure
         {
             return new Node
             {
-                Coordinates = coordinates.Clone(),
+                Position = coordinates.Origin,
+                Orientation = (Basis)coordinates,
                 Name = name,
                 Constraint = constraint
             };
