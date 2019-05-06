@@ -29,7 +29,7 @@ using System;
 using BH.oM.Reflection.Attributes;
 using BH.Engine.Geometry;
 
-namespace BH.Engine.Structure
+namespace BH.Engine.Geometry
 {
     public static partial class Create
     {
@@ -37,117 +37,162 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Deprecated("2.3", "Class and method moved to Geometry_oM and Geometry_Engine", typeof(BH.Engine.Geometry.Create), "ISectionProfile")]
         public static ISectionProfile ISectionProfile(double height, double width, double webthickness, double flangeThickness, double rootRadius, double toeRadius)
         {
-            return Geometry.Create.ISectionProfile(height, width, webthickness, flangeThickness, rootRadius, toeRadius);
+            List<ICurve> curves = IProfileCurves(flangeThickness, width, flangeThickness, width, webthickness, height - 2 * flangeThickness, rootRadius, toeRadius);
+            return new ISectionProfile(height, width, webthickness, flangeThickness, rootRadius, toeRadius, curves);
         }
 
         /***************************************************/
 
-        [Deprecated("2.3", "Class and method moved to Geometry_oM and Geometry_Engine", typeof(BH.Engine.Geometry.Create), "BoxProfile")]
         public static BoxProfile BoxProfile(double height, double width, double thickness, double outerRadius, double innerRadius)
         {
-            return Geometry.Create.BoxProfile(height, width, thickness, outerRadius, innerRadius);
+            List<ICurve> curves = BoxProfileCurves(width, height, thickness, thickness, innerRadius, outerRadius);
+            return new BoxProfile(height, width, thickness, outerRadius, innerRadius, curves);
         }
 
         /***************************************************/
 
-        [Deprecated("2.3", "Class and method moved to Geometry_oM and Geometry_Engine", typeof(BH.Engine.Geometry.Create), "AngleProfile")]
         public static AngleProfile AngleProfile(double height, double width, double webthickness, double flangeThickness, double rootRadius, double toeRadius, bool mirrorAboutLocalZ = false, bool mirrorAboutLocalY = false)
         {
-            return Geometry.Create.AngleProfile(height, width, webthickness, flangeThickness, rootRadius, toeRadius, mirrorAboutLocalZ, mirrorAboutLocalY);
+            List<ICurve> curves = AngleProfileCurves(width, height, flangeThickness, webthickness, rootRadius, toeRadius);
+
+            if (mirrorAboutLocalZ)
+                curves = curves.MirrorAboutLocalZ();
+            if (mirrorAboutLocalY)
+                curves = curves.MirrorAboutLocalY();
+
+            return new AngleProfile(height, width, webthickness, flangeThickness, rootRadius, toeRadius, mirrorAboutLocalZ, mirrorAboutLocalY, curves);
         }
 
         /***************************************************/
 
-        [Deprecated("2.3", "Class and method moved to Geometry_oM and Geometry_Engine", typeof(BH.Engine.Geometry.Create), "ChannelProfile")]
         public static ChannelProfile ChannelProfile(double height, double width, double webthickness, double flangeThickness, double rootRadius, double toeRadius, bool mirrorAboutLocalZ = false)
         {
-            return Geometry.Create.ChannelProfile(height, width, webthickness, flangeThickness, rootRadius, toeRadius, mirrorAboutLocalZ);
+            List<ICurve> curves = ChannelProfileCurves(height, width, webthickness, flangeThickness, rootRadius, toeRadius);
+
+            if (mirrorAboutLocalZ)
+                curves = curves.MirrorAboutLocalZ();
+
+            return new ChannelProfile(height, width, webthickness, flangeThickness, rootRadius, toeRadius, mirrorAboutLocalZ, curves);
         }
 
         /***************************************************/
 
-        [Deprecated("2.3", "Class and method moved to Geometry_oM and Geometry_Engine", typeof(BH.Engine.Geometry.Create), "CircleProfile")]
         public static CircleProfile CircleProfile(double diameter)
         {
-            return Geometry.Create.CircleProfile(diameter);
+            List<ICurve> curves = CircleProfileCurves(diameter / 2);
+            return new CircleProfile(diameter, curves);
         }
 
         /***************************************************/
 
-        [Deprecated("2.3", "Class and method moved to Geometry_oM and Geometry_Engine", typeof(BH.Engine.Geometry.Create), "FabricatedBoxProfile")]
         public static FabricatedBoxProfile FabricatedBoxProfile(double height, double width, double webThickness, double topFlangeThickness, double botFlangeThickness, double weldSize)
         {
-            return Geometry.Create.FabricatedBoxProfile(height, width, webThickness, topFlangeThickness, botFlangeThickness, weldSize);
+            List<ICurve> curves = FabricatedBoxProfileCurves(width, height, webThickness, topFlangeThickness, botFlangeThickness);
+            return new FabricatedBoxProfile(height, width, webThickness, topFlangeThickness, botFlangeThickness, weldSize, curves);
         }
 
         /***************************************************/
 
-        [Deprecated("2.3", "Class and method moved to Geometry_oM and Geometry_Engine", typeof(BH.Engine.Geometry.Create), "GeneralisedFabricatedBoxProfile")]
         public static GeneralisedFabricatedBoxProfile GeneralisedFabricatedBoxProfile(double height, double width, double webThickness, double topFlangeThickness = 0.0, double botFlangeThickness = 0.0, double topCorbelWidth = 0.0, double botCorbelWidth = 0.0)
         {
-            return Geometry.Create.GeneralisedFabricatedBoxProfile(height, width, webThickness, topFlangeThickness, botFlangeThickness, topCorbelWidth, botCorbelWidth);
+            List<ICurve> curves = GeneralisedFabricatedBoxProfileCurves(height, width, webThickness, topFlangeThickness, botFlangeThickness, topCorbelWidth, topCorbelWidth, botCorbelWidth, botCorbelWidth);
+            return new GeneralisedFabricatedBoxProfile(height, width, webThickness, topFlangeThickness, botFlangeThickness, topCorbelWidth, topCorbelWidth, botCorbelWidth, botCorbelWidth, curves);
         }
 
         /***************************************************/
 
-        [Deprecated("2.3", "Class and method moved to Geometry_oM and Geometry_Engine", typeof(BH.Engine.Geometry.Create), "KiteProfile")]
         public static KiteProfile KiteProfile(double width1, double angle1, double thickness)
         {
-            return Geometry.Create.KiteProfile(width1, angle1, thickness);
+            List<ICurve> curves = KiteProfileCurves(width1, angle1, thickness);
+            return new KiteProfile(width1, angle1, thickness, curves);
         }
 
         /***************************************************/
 
-        [Deprecated("2.3", "Class and method moved to Geometry_oM and Geometry_Engine", typeof(BH.Engine.Geometry.Create), "FabricatedISectionProfile")]
         public static FabricatedISectionProfile FabricatedISectionProfile(double height, double topFlangeWidth, double botFlangeWidth, double webThickness, double topFlangeThickness, double botFlangeThickness, double weldSize)
         {
-            return Geometry.Create.FabricatedISectionProfile(height, topFlangeThickness, botFlangeWidth, webThickness, topFlangeThickness, botFlangeThickness, weldSize);
+            List<ICurve> curves = IProfileCurves(topFlangeThickness, topFlangeWidth, botFlangeThickness, botFlangeWidth, webThickness, height - botFlangeThickness - topFlangeThickness,0,0);
+            return new FabricatedISectionProfile(height, topFlangeWidth, botFlangeWidth, webThickness, topFlangeThickness, botFlangeThickness, weldSize, curves);
         }
 
         /***************************************************/
 
-        [Deprecated("2.3", "Class and method moved to Geometry_oM and Geometry_Engine", typeof(BH.Engine.Geometry.Create), "FreeFormProfile")]
         public static FreeFormProfile FreeFormProfile(IEnumerable<ICurve> edges)
         {
-            return Geometry.Create.FreeFormProfile(edges);
+            return new FreeFormProfile(edges);
         }
 
         /***************************************************/
 
-        [Deprecated("2.3", "Class and method moved to Geometry_oM and Geometry_Engine", typeof(BH.Engine.Geometry.Create), "RectangleProfile")]
         public static RectangleProfile RectangleProfile(double height, double width, double cornerRadius)
         {
-            return Geometry.Create.RectangleProfile(height, width, cornerRadius);
+            List<ICurve> curves = RectangleProfileCurves(width, height, cornerRadius);
+            return new RectangleProfile(height, width, cornerRadius, curves);
         }
 
         /***************************************************/
 
-        [Deprecated("2.3", "Class and method moved to Geometry_oM and Geometry_Engine", typeof(BH.Engine.Geometry.Create), "TSectionProfile")]
         public static TSectionProfile TSectionProfile(double height, double width, double webthickness, double flangeThickness, double rootRadius, double toeRadius, bool mirrorAboutLocalY = false)
         {
-            return Geometry.Create.TSectionProfile(height, width, webthickness, flangeThickness, rootRadius, toeRadius, mirrorAboutLocalY);
+            List<ICurve> curves = TeeProfileCurves(flangeThickness, width, webthickness, height - flangeThickness, rootRadius, toeRadius);
+
+            if (mirrorAboutLocalY)
+                curves = curves.MirrorAboutLocalY();
+
+            return new TSectionProfile(height, width, webthickness, flangeThickness, rootRadius, toeRadius, mirrorAboutLocalY, curves);
         }
 
         /***************************************************/
 
-        [Deprecated("2.3", "Class and method moved to Geometry_oM and Geometry_Engine", typeof(BH.Engine.Geometry.Create), "GeneralisedTSectionProfile")]
         public static GeneralisedTSectionProfile GeneralisedTSectionProfile(double height, double webThickness, double leftOutstandWidth, double leftOutstandThickness, double rightOutstandWidth, double rightOutstandThickness, bool mirrorAboutLocalY = false)
         {
-            return Geometry.Create.GeneralisedTSectionProfile(height, webThickness, leftOutstandWidth, leftOutstandThickness, rightOutstandWidth, rightOutstandThickness, mirrorAboutLocalY);
+            List<ICurve> curves = GeneralisedTeeProfileCurves(height, webThickness, leftOutstandWidth, leftOutstandThickness, rightOutstandWidth, rightOutstandThickness);
+
+            if (mirrorAboutLocalY)
+                curves = curves.MirrorAboutLocalY();
+
+            return new GeneralisedTSectionProfile(height, webThickness, leftOutstandWidth, leftOutstandThickness, rightOutstandWidth, rightOutstandThickness,mirrorAboutLocalY, curves);
         }
 
         /***************************************************/
 
-        [Deprecated("2.3", "Class and method moved to Geometry_oM and Geometry_Engine", typeof(BH.Engine.Geometry.Create), "TubeProfile")]
         public static TubeProfile TubeProfile(double diameter, double thickness)
         {
-            return Geometry.Create.TubeProfile(diameter, thickness);
+            List<ICurve> curves = TubeProfileCurves(diameter / 2, thickness);
+            return new TubeProfile(diameter, thickness, curves);
         }
 
         /***************************************************/
 
+        [NotImplemented]
+        public static ZSectionProfile ZSectionProfile(double height, double width, double webthickness, double flangeThickness, double rootRadius, double toeRadius)
+        {
+            throw new NotImplementedException();
+            //TODO: Section curves for z-profile
+            //List<ICurve> curves = ZProfileCurves(flangeThickness, width, webthickness, height - flangeThickness, rootRadius, toeRadius);
+            //return new ZSectionProfile(height, width, webthickness, flangeThickness, rootRadius, toeRadius, curves);
+        }
+
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+        private static List<ICurve> MirrorAboutLocalY(this List<ICurve> curves)
+        {
+            Plane plane = oM.Geometry.Plane.XZ;
+            return curves.Select(x => x.IMirror(plane)).ToList();
+        }
+
+        /***************************************************/
+
+        private static List<ICurve> MirrorAboutLocalZ(this List<ICurve> curves)
+        {
+            Plane plane = oM.Geometry.Plane.YZ;
+            return curves.Select(x => x.IMirror(plane)).ToList();
+        }
+
+        /***************************************************/
     }
 }
