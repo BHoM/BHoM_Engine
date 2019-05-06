@@ -27,7 +27,7 @@ using BH.oM.Geometry.ShapeProfiles;
 using BH.oM.Structure.SectionProperties.Reinforcement;
 using BH.oM.Geometry;
 using BH.oM.Reflection;
-using BH.oM.Common.Materials;
+using BH.oM.Physical.Materials;
 using System.Linq;
 
 namespace BH.Engine.Structure
