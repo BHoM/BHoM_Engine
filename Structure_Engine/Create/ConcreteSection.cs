@@ -22,9 +22,9 @@
 
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using BH.oM.Structure.Properties.Section;
-using BH.oM.Structure.Properties.Section.ShapeProfiles;
-using BH.oM.Structure.Properties.Section.Reinforcement;
+using BH.oM.Structure.SectionProperties;
+using BH.oM.Geometry.ShapeProfiles;
+using BH.oM.Structure.SectionProperties.Reinforcement;
 using BH.oM.Geometry;
 using BH.oM.Reflection;
 using BH.oM.Common.Materials;
@@ -85,7 +85,7 @@ namespace BH.Engine.Structure
             //section.CustomData["VerticalSlices"] = new ReadOnlyCollection<IntegrationSlice>((List<IntegrationSlice>)constants["VerticalSlices"]);
             //section.CustomData["HorizontalSlices"] = new ReadOnlyCollection<IntegrationSlice>((List<IntegrationSlice>)constants["HorizontalSlices"]);
 
-            section.Material = material == null ? Query.Default(MaterialType.Concrete) : material;
+            //section.Material = material == null ? Query.Default(MaterialType.Concrete) : material;
 
             if (!string.IsNullOrWhiteSpace(name))
                 section.Name = name;

@@ -20,20 +20,29 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Geometry;
+
 using BH.oM.Structure.Elements;
+using BH.oM.Reflection.Attributes;
 
 namespace BH.Engine.Structure
 {
-    public static partial class Create 
+    public static partial class Create
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static PanelFreeForm PanelFreeForm(ISurface surface)
+        [Deprecated("2.3", "Name updated from PanelFreeForm to Surface", null, "Surface")]
+        public static Surface PanelFreeForm(oM.Geometry.ISurface surface)
         {
-            return new PanelFreeForm { Surface = surface };
+            return Surface(surface);
+        }
+
+        /***************************************************/
+
+        public static Surface Surface(oM.Geometry.ISurface surface)
+        {
+            return new Surface { Extents = surface };
         }
 
         /***************************************************/

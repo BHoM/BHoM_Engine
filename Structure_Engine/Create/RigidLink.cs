@@ -22,7 +22,7 @@
 
 using BH.oM.Structure.Elements;
 using System.Collections.Generic;
-using BH.oM.Structure.Properties.Constraint;
+using BH.oM.Structure.Constraints;
 using System.Linq;
 
 namespace BH.Engine.Structure

@@ -34,10 +34,10 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static List<ICurve> Edges(this PanelFreeForm contour)
+        public static List<ICurve> Edges(this Surface surface)
         {
-            if (contour.Surface != null)
-                return contour.Surface.IExternalEdges();
+            if (surface.Extents != null)
+                return surface.Extents.IExternalEdges();
             else
                 return new List<ICurve>();
         }

@@ -36,9 +36,7 @@ namespace BH.Engine.Structure
         public static Node SetGeometry(this Node node, Point point)
         {
             Node clone = node.GetShallowClone() as Node;
-            Cartesian cartesian = clone.Coordinates.Clone();
-            cartesian.Origin = point;
-            clone.Coordinates = cartesian;
+            clone.Position = point;
             return clone;
         }
 
@@ -70,10 +68,10 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static PanelFreeForm SetGeometry(this PanelFreeForm contour, ISurface surface)
+        public static Surface SetGeometry(this Surface contour, ISurface surface)
         {
-            PanelFreeForm clone = contour.GetShallowClone() as PanelFreeForm;
-            clone.Surface = surface.IClone() as ISurface;
+            Surface clone = contour.GetShallowClone() as Surface;
+            clone.Extents = surface.IClone() as ISurface;
             return clone;
         }
 

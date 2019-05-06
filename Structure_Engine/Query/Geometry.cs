@@ -22,7 +22,7 @@
 
 using BH.oM.Geometry;
 using BH.oM.Structure.Elements;
-using BH.oM.Structure.Properties.Section;
+using BH.oM.Structure.SectionProperties;
 using BH.Engine.Common;
 using System.Collections.Generic;
 using System.Linq;
@@ -56,9 +56,9 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static IGeometry Geometry(this PanelFreeForm contour)
+        public static IGeometry Geometry(this Surface surface)
         {
-            return contour.Surface;
+            return surface.Extents;
         }
 
         /***************************************************/
@@ -121,7 +121,7 @@ namespace BH.Engine.Structure
 
             mesh.Vertices = feMesh.Nodes.Select(x => x.Position()).ToList();
 
-            foreach (FEMeshFace feFace in feMesh.MeshFaces)
+            foreach (FEMeshFace feFace in feMesh.Faces)
             {
                 if (feFace.NodeListIndices.Count < 3)
                 {

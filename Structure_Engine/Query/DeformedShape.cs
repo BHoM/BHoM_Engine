@@ -160,13 +160,13 @@ namespace BH.Engine.Structure
                     return new Mesh();
                 }
 
-                Vector dispVector = disp.CoordinateSystem.X * disp.UXX * scaleFactor + disp.CoordinateSystem.Y * disp.UYY * scaleFactor + disp.CoordinateSystem.Z * disp.UZZ * scaleFactor;
+                Vector dispVector = disp.Orientation.X * disp.UXX * scaleFactor + disp.Orientation.Y * disp.UYY * scaleFactor + disp.Orientation.Z * disp.UZZ * scaleFactor;
 
                 mesh.Vertices.Add(node.Position() + dispVector);
 
             }
 
-            foreach (FEMeshFace feFace in feMesh.MeshFaces)
+            foreach (FEMeshFace feFace in feMesh.Faces)
             {
                 if (feFace.NodeListIndices.Count < 3)
                 {
