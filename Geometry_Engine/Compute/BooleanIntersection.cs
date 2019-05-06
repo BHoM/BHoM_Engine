@@ -268,5 +268,32 @@ namespace BH.Engine.Geometry
         }
 
         /***************************************************/
+
+        public static BoundingBox BooleanIntersection(this List<BoundingBox> boxes, double tolerance = Tolerance.Distance)
+        {
+            double minX = double.MinValue;
+            double minY = double.MinValue;
+            double minZ = double.MinValue;
+            double maxX = double.MaxValue;
+            double maxY = double.MaxValue;
+            double maxZ = double.MaxValue;
+
+            foreach (BoundingBox box in boxes)
+            {
+                minX = Math.Max(box.Min.X, minX);
+                minY = Math.Max(box.Min.Y, minY);
+                minZ = Math.Max(box.Min.Z, minZ);
+                maxX = Math.Min(box.Max.X, maxX);
+                maxY = Math.Min(box.Max.Y, maxY);
+                maxZ = Math.Min(box.Max.Z, maxZ);
+
+                if (minX > maxX + tolerance || minY > maxY + tolerance || minZ > maxZ + tolerance)
+                    return null;
+            }
+
+            return new BoundingBox { Min = new Point { X = minX, Y = minY, Z = minZ }, Max = new Point { X = maxX, Y = maxY, Z = maxZ } };
+        }
+
+        /***************************************************/
     }
 }
