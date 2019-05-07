@@ -27,6 +27,7 @@ using System.ComponentModel;
 using BH.oM.Reflection.Attributes;
 using BH.oM.Physical.Materials;
 using BH.oM.Structure.MaterialFragments;
+using BH.oM.Geometry;
 
 namespace BH.Engine.Structure
 {
@@ -36,26 +37,25 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates a concrete material. First constructs a concrete material fragment, then applies it to a new Material class")]
-        [Output("Material", "The created material with a concrete fragment")]
-        public static Material ConcreteMaterial(string name, double E = 33000000000, double v = 0.2, double tC = 0.00001, double density = 2550, double dampingRatio = 0, double cubeStrength = 0, double cylinderStrength = 0)
+        [Description("Creates a timber material. First constructs a timber material fragment, then applies it to a new Material class")]
+        [Output("Material", "The created material with a timber fragment")]
+        public static Material TimberMaterial(string name, Vector E , Vector v, Vector G, Vector tC, double density, double dampingRatio)
         {
-            Concrete concreteFragment = new Concrete()
+            Timber timberFragment = new Timber()
             {
                 Name = name,
                 YoungsModulus = E,
                 PoissonsRatio = v,
+                ShearModulus = G,
                 ThermalExpansionCoeff = tC,
-                CubeStrength = cubeStrength,
                 DampingRatio = dampingRatio,
-                CylinderStrength = cylinderStrength
             };
 
             return new Material()
             {
                 Name = name,
                 Density = density,
-                Properties = new List<IMaterialProperties> { concreteFragment }
+                Properties = new List<IMaterialProperties> { timberFragment }
             };
         }
 

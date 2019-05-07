@@ -78,8 +78,10 @@
   <ItemGroup>
     <Compile Include="Compute\Integrate.cs" />
     <Compile Include="Convert\ToFramingElement.cs" />
+    <Compile Include="Create\AluminiumMaterial.cs" />
     <Compile Include="Create\ConcreteMaterial.cs" />
     <Compile Include="Create\FEMesh.cs" />
+    <Compile Include="Create\TimberMaterial.cs" />
     <Compile Include="Query\MaterialType.cs" />
     <Compile Include="Create\NewElement0D.cs" />
     <Compile Include="Create\NewElement1D.cs" />
