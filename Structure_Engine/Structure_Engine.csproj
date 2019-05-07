@@ -78,10 +78,8 @@
   <ItemGroup>
     <Compile Include="Compute\Integrate.cs" />
     <Compile Include="Convert\ToFramingElement.cs" />
-    <Compile Include="Create\AluminiumMaterial.cs" />
-    <Compile Include="Create\ConcreteMaterial.cs" />
     <Compile Include="Create\FEMesh.cs" />
-    <Compile Include="Create\TimberMaterial.cs" />
+    <Compile Include="Create\Material.cs" />
     <Compile Include="Query\MaterialType.cs" />
     <Compile Include="Create\NewElement0D.cs" />
     <Compile Include="Create\NewElement1D.cs" />
@@ -94,7 +92,6 @@
     <Compile Include="Create\Reinforcement.cs" />
     <Compile Include="Create\ConstantThickness.cs" />
     <Compile Include="Create\SectionProfile.cs" />
-    <Compile Include="Create\SteelMaterial.cs" />
     <Compile Include="Create\Waffle.cs" />
     <Compile Include="Create\Ribbed.cs" />
     <Compile Include="Create\BarRelease.cs" />
@@ -191,6 +188,10 @@
     <ProjectReference Include="..\Library_Engine\Library_Engine.csproj">
       <Project>{fb4ed5c8-e7cc-44b3-95eb-95c304d54e5d}</Project>
       <Name>Library_Engine</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Physical_Engine\Physical_Engine.csproj">
+      <Project>{f2073888-9bd8-4d8f-9b3c-27577b388530}</Project>
+      <Name>Physical_Engine</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />
