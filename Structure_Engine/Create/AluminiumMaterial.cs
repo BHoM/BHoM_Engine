@@ -36,26 +36,24 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates a concrete material. First constructs a concrete material fragment, then applies it to a new Material class")]
-        [Output("Material", "The created material with a concrete fragment")]
-        public static Material ConcreteMaterial(string name, double E = 33000000000, double v = 0.2, double tC = 0.00001, double density = 2550, double dampingRatio = 0, double cubeStrength = 0, double cylinderStrength = 0)
+        [Description("Creates a aluminium material. First constructs a Aluminium material fragment, then applies it to a new Material class")]
+        [Output("Material", "The created material with a aluminium fragment")]
+        public static Material AluminiumMaterial(string name, double E = 70000000000, double v = 0.34, double tC = 0.000023, double density = 2710, double dampingRatio = 0)
         {
-            Concrete concreteFragment = new Concrete()
+            Aluminium alumniniumFragment = new Aluminium()
             {
                 Name = name,
                 YoungsModulus = E,
                 PoissonsRatio = v,
                 ThermalExpansionCoeff = tC,
-                CubeStrength = cubeStrength,
                 DampingRatio = dampingRatio,
-                CylinderStrength = cylinderStrength
             };
 
             return new Material()
             {
                 Name = name,
                 Density = density,
-                Properties = new List<IMaterialProperties> { concreteFragment }
+                Properties = new List<IMaterialProperties> { alumniniumFragment }
             };
         }
 
