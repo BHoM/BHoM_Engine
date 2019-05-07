@@ -56,10 +56,11 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Shear modulus for a isotropic material")]
-        [Output("G", "Shear modulus of the material. 0 if material does not contain any structural material fragments")]
+        [Output("G", "Shear modulus of the material. NaN if material does not contain any structural material fragments")]
         public static double ShearModulusIsotropic(this Material material)
         {
-            return (double)material.IsotropicMaterialFragment()?.ShearModulus();
+            IIsotropic fragment = material.IsotropicMaterialFragment();
+            return fragment != null ? fragment.ShearModulus() : double.NaN;
         }
 
         /***************************************************/

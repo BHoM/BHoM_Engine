@@ -47,10 +47,11 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Youngs modulus for a isotropic material")]
-        [Output("E", "Youngs modulus of the material. 0 if material does not contain any structural material fragments")]
+        [Output("E", "Youngs modulus of the material. NaN if material does not contain any structural material fragments")]
         public static double YoungsModulusIsotropic(this Material material)
         {
-            return (double)material.IsotropicMaterialFragment()?.YoungsModulus;
+            IIsotropic fragment = material.IsotropicMaterialFragment();
+            return fragment != null ? fragment.YoungsModulus : double.NaN;
         }
 
         /***************************************************/
