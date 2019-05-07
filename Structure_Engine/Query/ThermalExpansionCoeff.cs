@@ -47,10 +47,11 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Coefficient of thermal expansion for an isotropic material")]
-        [Output("α", "Coefficient of thermal expansion of the material. 0 if material does not contain any structural material fragments")]
+        [Output("α", "Coefficient of thermal expansion of the material. NaN if material does not contain any structural material fragments")]
         public static double ThermalExpansionCoeffIsotropic(this Material material)
         {
-            return (double)material.IsotropicMaterialFragment()?.ThermalExpansionCoeff;
+            IIsotropic fragment = material.IsotropicMaterialFragment();
+            return fragment != null ? fragment.ThermalExpansionCoeff : double.NaN;
         }
 
         /***************************************************/

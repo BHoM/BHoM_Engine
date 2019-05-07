@@ -41,7 +41,8 @@ namespace BH.Engine.Structure
         [Output("ζ", "Damping ratio of the material. ")]
         public static double DampingRatio(this Material material)
         {
-            return (double)material.StructuralMaterialFragment()?.DampingRatio;
+            IStructuralMaterial fragment = material.StructuralMaterialFragment();
+            return fragment != null ? fragment.DampingRatio : double.NaN;
         }
 
         /***************************************************/
