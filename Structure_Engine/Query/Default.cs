@@ -22,6 +22,7 @@
 
 using BH.oM.Geometry;
 using BH.oM.Physical.Materials;
+using BH.oM.Structure.MaterialFragments;
 
 namespace BH.Engine.Structure
 {
@@ -31,41 +32,36 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        //public static Material Default(this MaterialType materialType)
-        //{
-        //    string libraryName = "Materials";
-        //    string matName = null;
-        //    switch (materialType)
-        //    {
-        //        case MaterialType.Aluminium:
-        //            matName = "ALUM";
-        //            break;
-        //        case MaterialType.Steel:
-        //            matName = "S355";
-        //            break;
-        //        case MaterialType.Concrete:
-        //            matName = "C30/37";
-        //            break;
-        //        case MaterialType.Timber:
-        //            matName = "TIMBER";
-        //            break;
-        //        case MaterialType.Rebar:
-        //            matName = "B500B";
-        //            break;
-        //        case MaterialType.Cable:
-        //            matName = "CaFullLock";
-        //            break;
-        //        case MaterialType.Tendon:
-        //        case MaterialType.Glass:
-        //        default:
-        //            break;
-        //    }
+        public static Material Default(this MaterialType materialType)
+        {
+            string libraryName = "Materials";
+            string matName = null;
+            switch (materialType)
+            {
 
-        //    if (matName != null)
-        //        return (Material)Library.Query.Match(libraryName, matName, true, true);
+                case oM.Structure.MaterialFragments.MaterialType.Steel:
+                    matName = "S355";
+                    break;
+                case oM.Structure.MaterialFragments.MaterialType.Concrete:
+                    matName = "C30/37";
+                    break;
+                case oM.Structure.MaterialFragments.MaterialType.Rebar:
+                    matName = "B500B";
+                    break;
+                case oM.Structure.MaterialFragments.MaterialType.Aluminium:
+                case oM.Structure.MaterialFragments.MaterialType.Timber:
+                case oM.Structure.MaterialFragments.MaterialType.Cable:
+                case oM.Structure.MaterialFragments.MaterialType.Tendon:
+                case oM.Structure.MaterialFragments.MaterialType.Glass:
+                default:
+                    break;
+            }
 
-        //    return null;
-        //}
+            if (matName != null)
+                return (Material)Library.Query.Match(libraryName, matName, true, true);
+
+            return null;
+        }
 
     }
 }

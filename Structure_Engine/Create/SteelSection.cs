@@ -129,7 +129,20 @@ namespace BH.Engine.Structure
             //section.CustomData["VerticalSlices"] = new ReadOnlyCollection<IntegrationSlice>((List<IntegrationSlice>)constants["VerticalSlices"]);
             //section.CustomData["HorizontalSlices"] = new ReadOnlyCollection<IntegrationSlice>((List<IntegrationSlice>)constants["HorizontalSlices"]);
 
-            //section.Material = material == null ? Query.Default(MaterialType.Steel) : material;
+            if (material == null)
+            {
+                material = Query.Default(oM.Structure.MaterialFragments.MaterialType.Steel);
+            }
+            else if (!material.IsStructural())
+            {
+                Reflection.Compute.RecordWarning("The material used for creating the steel section does not contain any structural properties");
+            }
+            else if (!material.IsSteel())
+            {
+                Reflection.Compute.RecordWarning("The material used for creating the steel section is structural but not of steel type");
+            }
+
+            section.Material = material;
 
             if (!string.IsNullOrWhiteSpace(name))
                 section.Name = name;
