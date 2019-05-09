@@ -79,24 +79,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="DataSets\Materials\MaterialsEurope\Aluminium.json" />
-    <None Include="DataSets\Materials\MaterialsEurope\Cable.json" />
-    <None Include="DataSets\Materials\MaterialsEurope\Concrete.json" />
-    <None Include="DataSets\Materials\MaterialsEurope\Rebar.json" />
-    <None Include="DataSets\Materials\MaterialsEurope\Steel.json" />
-    <None Include="DataSets\Materials\MaterialsEurope\Timber.json" />
     <None Include="DataSets\Planning\Labels\IssueLabels.json" />
-    <None Include="DataSets\SectionProperties\UK_SteelSections\CHS.json" />
-    <None Include="DataSets\SectionProperties\UK_SteelSections\L.json" />
-    <None Include="DataSets\SectionProperties\UK_SteelSections\Leq.json" />
-    <None Include="DataSets\SectionProperties\UK_SteelSections\PFC.json" />
-    <None Include="DataSets\SectionProperties\UK_SteelSections\RHS.json" />
-    <None Include="DataSets\SectionProperties\UK_SteelSections\SHS.json" />
-    <None Include="DataSets\SectionProperties\UK_SteelSections\TUB.json" />
-    <None Include="DataSets\SectionProperties\UK_SteelSections\TUC.json" />
-    <None Include="DataSets\SectionProperties\UK_SteelSections\UB.json" />
-    <None Include="DataSets\SectionProperties\UK_SteelSections\UBP.json" />
-    <None Include="DataSets\SectionProperties\UK_SteelSections\UC.json" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />
