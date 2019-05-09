@@ -101,5 +101,26 @@ namespace BH.Engine.Environment
 
             return openings;
         }
+
+        [Description("BH.Engine.Environment Query, Returns a collection of Environment Openings that are unique by their instance data from their origin context fragment")]
+        [Input("openings", "A collection of Environment Opening to filter")]
+        [Output("openings", "A collection of Environment Opening objects with one per instance")]
+        public static List<Opening> UniqueOpeningInstances(this List<Opening> openings)
+        {
+            List<Opening> returnOpenings = new List<Opening>();
+
+            foreach (Opening p in openings)
+            {
+                OriginContextFragment o = p.FindFragment<OriginContextFragment>(typeof(OriginContextFragment));
+                if (o != null)
+                {
+                    Opening testCheck = returnOpenings.Where(x => x.FindFragment<OriginContextFragment>(typeof(OriginContextFragment)) != null && x.FindFragment<OriginContextFragment>(typeof(OriginContextFragment)).TypeName == o.TypeName).FirstOrDefault();
+                    if (testCheck == null)
+                        returnOpenings.Add(p);
+                }
+            }
+
+            return returnOpenings;
+        }
     }
 }

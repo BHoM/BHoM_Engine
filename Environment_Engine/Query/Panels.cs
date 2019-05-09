@@ -170,18 +170,19 @@ namespace BH.Engine.Environment
         {
             List<Panel> returnPanels = new List<Panel>();
 
-            foreach(Panel p in panels)
+            foreach (Panel p in panels)
             {
                 OriginContextFragment o = p.FindFragment<OriginContextFragment>(typeof(OriginContextFragment));
-                if(o != null)
+                if (o != null)
                 {
                     Panel testCheck = returnPanels.Where(x => x.FindFragment<OriginContextFragment>(typeof(OriginContextFragment)) != null && x.FindFragment<OriginContextFragment>(typeof(OriginContextFragment)).TypeName == o.TypeName).FirstOrDefault();
                     if (testCheck == null)
                         returnPanels.Add(p);
                 }
             }
-
             return returnPanels;
         }
+
+
     }
 }
