@@ -50,7 +50,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Gets a structural material fragment from a material class")]
+        [Description("Gets a isotropic structural material fragment from a material class")]
         public static IIsotropic IsotropicMaterialFragment(this Material material)
         {
             if (!material.IsIsotropic())
@@ -63,7 +63,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Gets a structural material fragment from a material class")]
+        [Description("Gets a Orthotropic structural material fragment from a material class")]
         public static IOrthotropic OrthotropicMaterialFragment(this Material material)
         {
             if (!material.IsOrthotropic())
