@@ -78,7 +78,9 @@ namespace BH.Engine.Structure
                 DampingRatio = dampingRatio,
             };
 
-            return SetStructuralFragment(material, alumniniumFragment);
+            Material clone = SetStructuralFragment(material, alumniniumFragment);
+            clone.Density = density;
+            return clone;
         }
 
         /***************************************************/
@@ -105,7 +107,9 @@ namespace BH.Engine.Structure
                 CylinderStrength = cylinderStrength
             };
 
-            return SetStructuralFragment(material, concreteFragment);
+            Material clone = SetStructuralFragment(material, concreteFragment);
+            clone.Density = density;
+            return clone;
         }
 
         /***************************************************/
@@ -132,7 +136,9 @@ namespace BH.Engine.Structure
                 UltimateStress = ultimateStress
             };
 
-            return SetStructuralFragment(material, steelFragment);
+            Material clone = SetStructuralFragment(material, steelFragment);
+            clone.Density = density;
+            return clone;
         }
 
         /***************************************************/
@@ -157,7 +163,9 @@ namespace BH.Engine.Structure
                 DampingRatio = dampingRatio,
             };
 
-            return SetStructuralFragment(material, timberFragment);
+            Material clone = SetStructuralFragment(material, timberFragment);
+            clone.Density = density;
+            return clone;
         }
 
         /***************************************************/
