@@ -162,5 +162,26 @@ namespace BH.Engine.Environment
 
             return rtnPanels;
         }
+
+        [Description("Returns a collection of Environment Panels that are unique by their instance data from their origin context fragment")]
+        [Input("panels", "A collection of Environment Panels to filter")]
+        [Output("panels", "A collection of Environment Panel objects with one per instance")]
+        public static List<Panel> UniquePanelInstances(this List<Panel> panels)
+        {
+            List<Panel> returnPanels = new List<Panel>();
+
+            foreach(Panel p in panels)
+            {
+                OriginContextFragment o = p.FindFragment<OriginContextFragment>(typeof(OriginContextFragment));
+                if(o != null)
+                {
+                    Panel testCheck = returnPanels.Where(x => x.FindFragment<OriginContextFragment>(typeof(OriginContextFragment)) != null && x.FindFragment<OriginContextFragment>(typeof(OriginContextFragment)).TypeName == o.TypeName).FirstOrDefault();
+                    if (testCheck == null)
+                        returnPanels.Add(p);
+                }
+            }
+
+            return returnPanels;
+        }
     }
 }
