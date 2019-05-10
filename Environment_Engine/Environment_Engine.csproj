@@ -107,6 +107,7 @@
     <Compile Include="Modify\AddOpening.cs" />
     <Compile Include="Compute\MergeBuildingElements.cs" />
     <Compile Include="Modify\Copy.cs" />
+    <Compile Include="Modify\SetConstruction.cs" />
     <Compile Include="Modify\SetPanelType.cs" />
     <Compile Include="Modify\AddFragment.cs" />
     <Compile Include="Modify\SetInternalElements2D.cs" />
