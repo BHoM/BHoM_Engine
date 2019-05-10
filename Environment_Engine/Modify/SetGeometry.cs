@@ -37,7 +37,7 @@ namespace BH.Engine.Environment
         /***************************************************/
 
         [Description("Assign a new ICurve boundary to a generic Environment Object")]
-        [Input("environmentObject", "Any object implementing the IEnvironmentObject interface that can have fragment properties appended to it")]
+        [Input("environmentObject", "Any object implementing the IEnvironmentObject interface that can have its geometry changed")]
         [Input("curve", "Any object implementing the ICurve interface from BHoM Geometry Curves")]
         [Output("environmentObject", "The environment object with an updated external boundary")]
         public static IEnvironmentObject ISetGeometry(this IEnvironmentObject environmentObject, ICurve curve)
