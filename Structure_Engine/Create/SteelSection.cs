@@ -25,7 +25,7 @@ using System.Collections.ObjectModel;
 using BH.oM.Structure.SectionProperties;
 using BH.oM.Geometry.ShapeProfiles;
 using BH.oM.Geometry;
-using BH.oM.Physical.Materials;
+using BH.oM.Structure.MaterialFragments;
 using BH.oM.Reflection;
 using System.Linq;
 
@@ -38,28 +38,28 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static SteelSection SteelISection(double height, double webThickness, double flangeWidth, double flangeThickness, double rootRadius = 0, double toeRadius = 0, Material material = null, string name = null)
+        public static SteelSection SteelISection(double height, double webThickness, double flangeWidth, double flangeThickness, double rootRadius = 0, double toeRadius = 0, Steel material = null, string name = null)
         {
             return SteelSectionFromProfile(Geometry.Create.ISectionProfile(height, flangeWidth, webThickness, flangeThickness, rootRadius, toeRadius), material, name);
         }
 
         /***************************************************/
 
-        public static SteelSection SteelFabricatedISection(double height, double webThickness, double topFlangeWidth, double topFlangeThickness, double botFlangeWidth, double botFlangeThickness,  double weldSize, Material material = null, string name = null)
+        public static SteelSection SteelFabricatedISection(double height, double webThickness, double topFlangeWidth, double topFlangeThickness, double botFlangeWidth, double botFlangeThickness,  double weldSize, Steel material = null, string name = null)
         {
             return SteelSectionFromProfile(Geometry.Create.FabricatedISectionProfile(height, topFlangeWidth, botFlangeWidth, webThickness, topFlangeThickness, botFlangeThickness, weldSize), material, name);
         }
 
         /***************************************************/
 
-        public static SteelSection SteelBoxSection(double height, double width, double thickness, double innerRadius = 0, double outerRadius = 0, Material material = null, string name = null)
+        public static SteelSection SteelBoxSection(double height, double width, double thickness, double innerRadius = 0, double outerRadius = 0, Steel material = null, string name = null)
         {
             return SteelSectionFromProfile(Geometry.Create.BoxProfile(height, width, thickness, outerRadius, innerRadius), material, name);
         }
 
         /***************************************************/
 
-        public static SteelSection FabricatedSteelBoxSection(double height, double width, double webThickness, double flangeThickness, double weldSize, Material material = null, string name = null)
+        public static SteelSection FabricatedSteelBoxSection(double height, double width, double webThickness, double flangeThickness, double weldSize, Steel material = null, string name = null)
         {
             return SteelSectionFromProfile(Geometry.Create.FabricatedBoxProfile(height, width, webThickness, flangeThickness, flangeThickness, weldSize), material, name);
 
@@ -68,28 +68,28 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static SteelSection SteelTubeSection(double diameter, double thickness, Material material = null, string name = null)
+        public static SteelSection SteelTubeSection(double diameter, double thickness, Steel material = null, string name = null)
         {
             return SteelSectionFromProfile(Geometry.Create.TubeProfile(diameter, thickness), material, name);
         }
 
         /***************************************************/
 
-        public static SteelSection SteelRectangleSection(double height, double width, double cornerRadius=0, Material material = null, string name = null)
+        public static SteelSection SteelRectangleSection(double height, double width, double cornerRadius=0, Steel material = null, string name = null)
         {
             return SteelSectionFromProfile(Geometry.Create.RectangleProfile(height, width, cornerRadius), material, name);
         }
 
         /***************************************************/
 
-        public static SteelSection SteelCircularSection(double diameter, Material material = null, string name = null)
+        public static SteelSection SteelCircularSection(double diameter, Steel material = null, string name = null)
         {
             return SteelSectionFromProfile(Geometry.Create.CircleProfile(diameter), material, name);
         }
 
         /***************************************************/
 
-        public static SteelSection SteelTSection(double height, double webThickness, double flangeWidth, double flangeThickness,  double rootRadius = 0, double toeRadius = 0, Material material = null, string name = null)
+        public static SteelSection SteelTSection(double height, double webThickness, double flangeWidth, double flangeThickness,  double rootRadius = 0, double toeRadius = 0, Steel material = null, string name = null)
         {
             return SteelSectionFromProfile(Geometry.Create.TSectionProfile(height, flangeWidth, webThickness, flangeThickness, rootRadius, toeRadius), material, name);
 
@@ -97,21 +97,21 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static SteelSection SteelAngleSection(double height, double webThickness, double width, double flangeThickness, double rootRadius = 0, double toeRadius = 0, Material material = null, string name = null)
+        public static SteelSection SteelAngleSection(double height, double webThickness, double width, double flangeThickness, double rootRadius = 0, double toeRadius = 0, Steel material = null, string name = null)
         {
             return SteelSectionFromProfile(Geometry.Create.AngleProfile(height, width, webThickness, flangeThickness, rootRadius, toeRadius), material, name);
         }
 
         /***************************************************/
 
-        public static SteelSection SteelFreeFormSection(List<ICurve> edges, Material material = null, string name = null)
+        public static SteelSection SteelFreeFormSection(List<ICurve> edges, Steel material = null, string name = null)
         {
             return SteelSectionFromProfile(Geometry.Create.FreeFormProfile(edges), material, name);
         }
 
         /***************************************************/
 
-        public static SteelSection SteelSectionFromProfile(IProfile profile, Material material = null, string name = "")
+        public static SteelSection SteelSectionFromProfile(IProfile profile, Steel material = null, string name = "")
         {
             Output<IProfile, Dictionary<string, object>> result = Compute.Integrate(profile, Tolerance.MicroDistance);
 
@@ -131,15 +131,7 @@ namespace BH.Engine.Structure
 
             if (material == null)
             {
-                material = Query.Default(oM.Structure.MaterialFragments.MaterialType.Steel);
-            }
-            else if (!material.IsStructural())
-            {
-                Reflection.Compute.RecordWarning("The material used for creating the steel section does not contain any structural properties");
-            }
-            else if (!material.IsSteel())
-            {
-                Reflection.Compute.RecordWarning("The material used for creating the steel section is structural but not of steel type");
+                material = (Steel)Query.Default(oM.Structure.MaterialFragments.MaterialType.Steel);
             }
 
             section.Material = material;
