@@ -21,7 +21,7 @@
  */
 
 using BH.oM.Structure.SurfaceProperties;
-using BH.oM.Physical.Materials;
+using BH.oM.Structure.MaterialFragments;
 
 namespace BH.Engine.Structure
 {
@@ -31,7 +31,7 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static ConstantThickness ConstantThickness(double thickness, Material material = null ,string name = "", PanelType type = PanelType.Undefined)
+        public static ConstantThickness ConstantThickness(double thickness, IStructuralMaterial material = null ,string name = "", PanelType type = PanelType.Undefined)
         {
             return new ConstantThickness { Thickness = thickness, PanelType = type, Material = material, Name = name};
         }

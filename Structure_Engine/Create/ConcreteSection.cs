@@ -27,7 +27,7 @@ using BH.oM.Geometry.ShapeProfiles;
 using BH.oM.Structure.SectionProperties.Reinforcement;
 using BH.oM.Geometry;
 using BH.oM.Reflection;
-using BH.oM.Physical.Materials;
+using BH.oM.Structure.MaterialFragments;
 using System.Linq;
 
 namespace BH.Engine.Structure
@@ -38,14 +38,14 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static ConcreteSection ConcreteRectangleSection(double height, double width, Material material = null, string name = "", List<Reinforcement> reinforcement = null)
+        public static ConcreteSection ConcreteRectangleSection(double height, double width, Concrete material = null, string name = "", List<Reinforcement> reinforcement = null)
         {
             return ConcreteSectionFromProfile(Geometry.Create.RectangleProfile(height, width, 0), material, name, reinforcement);
         }
 
         /***************************************************/
 
-        public static ConcreteSection ConcreteTSection(double height, double webThickness, double flangeWidth, double flangeThickness, Material material = null, string name = "", List<Reinforcement> reinforcement = null)
+        public static ConcreteSection ConcreteTSection(double height, double webThickness, double flangeWidth, double flangeThickness, Concrete material = null, string name = "", List<Reinforcement> reinforcement = null)
         {
             return ConcreteSectionFromProfile(Geometry.Create.TSectionProfile(height, flangeWidth, webThickness, flangeThickness, 0, 0), material, name, reinforcement);
         }
@@ -53,21 +53,21 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static ConcreteSection ConcreteCircularSection(double diameter, Material material = null, string name = "", List<Reinforcement> reinforcement = null)
+        public static ConcreteSection ConcreteCircularSection(double diameter, Concrete material = null, string name = "", List<Reinforcement> reinforcement = null)
         {
             return ConcreteSectionFromProfile(Geometry.Create.CircleProfile(diameter), material, name, reinforcement);
         }
 
         /***************************************************/
 
-        public static ConcreteSection ConcreteFreeFormSection(List<ICurve> edges, Material material = null, string name = "", List<Reinforcement> reinforcement = null)
+        public static ConcreteSection ConcreteFreeFormSection(List<ICurve> edges, Concrete material = null, string name = "", List<Reinforcement> reinforcement = null)
         {
             return ConcreteSectionFromProfile(Geometry.Create.FreeFormProfile(edges), material, name, reinforcement);
         }
 
         /***************************************************/
 
-        public static ConcreteSection ConcreteSectionFromProfile(IProfile profile, Material material = null, string name = "", List<Reinforcement> reinforcement = null)
+        public static ConcreteSection ConcreteSectionFromProfile(IProfile profile, Concrete material = null, string name = "", List<Reinforcement> reinforcement = null)
         {
             Output<IProfile, Dictionary<string, object>> result = Compute.Integrate(profile, Tolerance.MicroDistance);
 
@@ -87,15 +87,7 @@ namespace BH.Engine.Structure
 
             if (material == null)
             {
-                material = Query.Default(oM.Structure.MaterialFragments.MaterialType.Concrete);
-            }
-            else if (!material.IsStructural())
-            {
-                Reflection.Compute.RecordWarning("The material used for creating the steel section does not contain any structural properties");
-            }
-            else if (!material.IsConcrete())
-            {
-                Reflection.Compute.RecordWarning("The material used for creating the steel section is structural but not of concrete type");
+                material = (Concrete)Query.Default(oM.Structure.MaterialFragments.MaterialType.Concrete);
             }
 
             section.Material = material;
