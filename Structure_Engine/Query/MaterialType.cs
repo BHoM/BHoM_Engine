@@ -36,19 +36,6 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("")]
-        [Input("", "")]
-        [Output("", "")]
-        public static MaterialType MaterialType(this Material material)
-        {
-            if (!material.IsStructural())
-                return oM.Structure.MaterialFragments.MaterialType.Undefined;
-
-            return material.StructuralMaterialFragment().IMaterialType();
-        }
-
-        /***************************************************/
-
         public static MaterialType MaterialType(this Steel materialFragment)
         {
             return oM.Structure.MaterialFragments.MaterialType.Steel;
