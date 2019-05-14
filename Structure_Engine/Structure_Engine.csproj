@@ -79,8 +79,7 @@
     <Compile Include="Compute\Integrate.cs" />
     <Compile Include="Convert\ToFramingElement.cs" />
     <Compile Include="Create\FEMesh.cs" />
-    <Compile Include="Create\Material.cs" />
-    <Compile Include="Create\StructuralMaterialFragment.cs" />
+    <Compile Include="Create\MaterialFragment.cs" />
     <Compile Include="Modify\SetStructuralFragment.cs" />
     <Compile Include="Query\MaterialType.cs" />
     <Compile Include="Create\NewElement0D.cs" />
@@ -152,14 +151,12 @@
     <Compile Include="Query\DepthAt.cs" />
     <Compile Include="Query\PlotForce.cs" />
     <Compile Include="Query\PointGrid.cs" />
-    <Compile Include="Query\PoissonsRatio.cs" />
     <Compile Include="Query\Position.cs" />
     <Compile Include="Query\SelectCase.cs" />
     <Compile Include="Query\ShearArea.cs" />
     <Compile Include="Query\ShearModulus.cs" />
     <Compile Include="Query\StructuralMaterialFragment.cs" />
     <Compile Include="Query\Tangent.cs" />
-    <Compile Include="Query\ThermalExpansionCoeff.cs" />
     <Compile Include="Query\Visualize.cs" />
     <Compile Include="Query\WidthAt.cs" />
     <Compile Include="Query\IsLongitudinal.cs" />
@@ -172,7 +169,6 @@
     <Compile Include="Query\AverageElement.cs" />
     <Compile Include="Modify\SetReinforcement.cs" />
     <Compile Include="Query\IsConstrained.cs" />
-    <Compile Include="Query\YoungsModulus.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BHoM_Engine\BHoM_Engine.csproj">

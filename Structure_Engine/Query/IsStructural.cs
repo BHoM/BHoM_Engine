@@ -37,59 +37,12 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Checks if a material contains a structural material fragment")]
-        public static bool IsStructural(this Material material)
+        public static bool IsValidStructural(this Material material)
         {
             return material.Properties.Where(x => x is IMaterialFragment).Count() == 1;
         }
 
         /***************************************************/
-
-        [Description("Checks if a material contains a isotropic structural material fragment")]
-        public static bool IsIsotropic(this Material material)
-        {
-            return material.Properties.Where(x => x is IIsotropic).Count() == 1;
-        }
-
-        /***************************************************/
-
-        [Description("Checks if a material contains a orthotropic structural material fragment")]
-        public static bool IsOrthotropic(this Material material)
-        {
-            return material.Properties.Where(x => x is IOrthotropic).Count() == 1;
-        }
-
-        /***************************************************/
-
-        [Description("Checks if a material contains a steel material fragment")]
-        public static bool IsSteel(this Material material)
-        {
-            return material.Properties.Where(x => x is Steel).Count() == 1;
-        }
-
-        /***************************************************/
-
-        [Description("Checks if a material contains a soncrete material fragment")]
-        public static bool IsConcrete(this Material material)
-        {
-            return material.Properties.Where(x => x is Concrete).Count() == 1;
-        }
-
-        /***************************************************/
-
-        [Description("Checks if a material contains a aluminium material fragment")]
-        public static bool IsAluminium(this Material material)
-        {
-            return material.Properties.Where(x => x is Aluminium).Count() == 1;
-        }
-
-        /***************************************************/
-
-        [Description("Checks if a material contains a timer material fragment")]
-        public static bool IsTimber(this Material material)
-        {
-            return material.Properties.Where(x => x is Timber).Count() == 1;
-        }
-
-        /***************************************************/
+        
     }
 }

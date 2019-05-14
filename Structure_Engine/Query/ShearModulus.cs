@@ -46,53 +46,6 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Shear modulus of the material. Can be either a double or a vector depending on the material type")]
-        [Output("G", "Shear modulus of the material. Double for Isotropic material, Vector for orthotropic")]
-        public static object ShearModulus(this Material material)
-        {
-            return material.StructuralMaterialFragment()?.IShearModulus();
-        }
-
-        /***************************************************/
-
-        [Description("Shear modulus for a isotropic material")]
-        [Output("G", "Shear modulus of the material. NaN if material does not contain any structural material fragments")]
-        public static double ShearModulusIsotropic(this Material material)
-        {
-            IIsotropic fragment = material.IsotropicMaterialFragment();
-            return fragment != null ? fragment.ShearModulus() : double.NaN;
-        }
-
-        /***************************************************/
-
-        [Description("Shear modulus for a orthotropic material")]
-        [Output("G", "Shear modulus of the material. null if material does not contain any structural material fragments")]
-        public static Vector ShearModulusOrthotropic(this Material material)
-        {
-            return material.OrthotropicMaterialFragment()?.ShearModulus;
-        }
-
-
-        /***************************************************/
-        /**** Public Methods  - Interace                ****/
-        /***************************************************/
-
-        [Description("Gets Shear modulus from the material fragment")]
-        public static object IShearModulus(this IMaterialFragment materialFragment)
-        {
-            return ShearModulus(materialFragment as dynamic);
-        }
-
-        /***************************************************/
-        /**** Private Methods                           ****/
-        /***************************************************/
-
-        [Description("Private extension method added to alow for dynamic casting")]
-        private static Vector ShearModulus(this IOrthotropic materialFragment)
-        {
-            return materialFragment.ShearModulus;
-        }
-
-        /***************************************************/
+        
     }
 }

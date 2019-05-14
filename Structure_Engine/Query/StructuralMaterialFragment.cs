@@ -39,7 +39,7 @@ namespace BH.Engine.Structure
         [Description("Gets a structural material fragment from a material class")]
         public static IMaterialFragment StructuralMaterialFragment(this Material material)
         {
-            if (!material.IsStructural())
+            if (!material.IsValidStructural())
             {
                 Engine.Reflection.Compute.RecordWarning("Material with name " + material.Name + " does not contain an structural material fragment");
                 return null;
@@ -50,30 +50,5 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Gets a isotropic structural material fragment from a material class")]
-        public static IIsotropic IsotropicMaterialFragment(this Material material)
-        {
-            if (!material.IsIsotropic())
-            {
-                Engine.Reflection.Compute.RecordWarning("Material with name " + material.Name + " does not contain an isotropic structural material fragment");
-                return null;
-            }
-            return material.Properties.Where(x => x is IIsotropic).Cast<IIsotropic>().FirstOrDefault();
-        }
-
-        /***************************************************/
-
-        [Description("Gets a Orthotropic structural material fragment from a material class")]
-        public static IOrthotropic OrthotropicMaterialFragment(this Material material)
-        {
-            if (!material.IsOrthotropic())
-            {
-                Engine.Reflection.Compute.RecordWarning("Material with name " + material.Name + " does not contain an orthotropic structural material fragment");
-                return null;
-            }
-            return material.Properties.Where(x => x is IOrthotropic).Cast<IOrthotropic>().FirstOrDefault();
-        }
-
-        /***************************************************/
     }
 }
