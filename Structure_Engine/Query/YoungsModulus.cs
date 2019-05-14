@@ -69,7 +69,7 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Gets youngs modulus from the material fragment")]
-        public static object IYoungsModulus(this IStructuralMaterial materialFragment)
+        public static object IYoungsModulus(this IMaterialFragment materialFragment)
         {
             return _YoungsModulus(materialFragment as dynamic);
         }

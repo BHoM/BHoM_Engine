@@ -78,7 +78,7 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Gets Shear modulus from the material fragment")]
-        public static object IShearModulus(this IStructuralMaterial materialFragment)
+        public static object IShearModulus(this IMaterialFragment materialFragment)
         {
             return ShearModulus(materialFragment as dynamic);
         }

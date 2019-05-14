@@ -69,7 +69,7 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Gets Poissons Ratio from the material fragment")]
-        public static object IPoissonsRatio(this IStructuralMaterial materialFragment)
+        public static object IPoissonsRatio(this IMaterialFragment materialFragment)
         {
             return _PoissonsRatio(materialFragment as dynamic);
         }

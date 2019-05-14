@@ -79,7 +79,7 @@ namespace BH.Engine.Structure
         /**** Public Methods - Interface                ****/
         /***************************************************/
 
-        public static MaterialType IMaterialType(this IStructuralMaterial materialFragment)
+        public static MaterialType IMaterialType(this IMaterialFragment materialFragment)
         {
             return MaterialType(materialFragment as dynamic);
         }

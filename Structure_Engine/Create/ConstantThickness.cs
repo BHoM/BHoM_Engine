@@ -31,7 +31,7 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static ConstantThickness ConstantThickness(double thickness, IStructuralMaterial material = null ,string name = "", PanelType type = PanelType.Undefined)
+        public static ConstantThickness ConstantThickness(double thickness, IMaterialFragment material = null ,string name = "", PanelType type = PanelType.Undefined)
         {
             return new ConstantThickness { Thickness = thickness, PanelType = type, Material = material, Name = name};
         }
