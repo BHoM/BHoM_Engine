@@ -39,7 +39,7 @@ namespace BH.Engine.Structure
         [Description("Checks if a material contains a structural material fragment")]
         public static bool IsStructural(this Material material)
         {
-            return material.Properties.Where(x => x is IStructuralMaterial).Count() == 1;
+            return material.Properties.Where(x => x is IMaterialFragment).Count() == 1;
         }
 
         /***************************************************/

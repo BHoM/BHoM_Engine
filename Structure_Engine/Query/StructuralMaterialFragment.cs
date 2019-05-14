@@ -37,7 +37,7 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Gets a structural material fragment from a material class")]
-        public static IStructuralMaterial StructuralMaterialFragment(this Material material)
+        public static IMaterialFragment StructuralMaterialFragment(this Material material)
         {
             if (!material.IsStructural())
             {
@@ -45,7 +45,7 @@ namespace BH.Engine.Structure
                 return null;
             }
             
-            return material.Properties.Where(x => x is IStructuralMaterial).Cast<IStructuralMaterial>().FirstOrDefault();
+            return material.Properties.Where(x => x is IMaterialFragment).Cast<IMaterialFragment>().FirstOrDefault();
         }
 
         /***************************************************/

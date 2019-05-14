@@ -32,7 +32,7 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static IStructuralMaterial Default(this MaterialType materialType)
+        public static IMaterialFragment Default(this MaterialType materialType)
         {
             string libraryName = "Materials";
             string matName = null;
@@ -58,7 +58,7 @@ namespace BH.Engine.Structure
             }
 
             if (matName != null)
-                return (IStructuralMaterial)Library.Query.Match(libraryName, matName, true, true);
+                return (IMaterialFragment)Library.Query.Match(libraryName, matName, true, true);
 
             return null;
         }

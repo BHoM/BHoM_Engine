@@ -69,7 +69,7 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Gets Coefficient of thermal expansion from the material fragment")]
-        public static object IThermalExpansionCoeff(this IStructuralMaterial materialFragment)
+        public static object IThermalExpansionCoeff(this IMaterialFragment materialFragment)
         {
             return _ThermalExpansionCoeff(materialFragment as dynamic);
         }
