@@ -81,6 +81,7 @@
     <Compile Include="Create\FEMesh.cs" />
     <Compile Include="Create\MaterialFragment.cs" />
     <Compile Include="Modify\SetStructuralFragment.cs" />
+    <Compile Include="Query\CoordinateSystem.cs" />
     <Compile Include="Query\MaterialType.cs" />
     <Compile Include="Create\NewElement0D.cs" />
     <Compile Include="Create\NewElement1D.cs" />
