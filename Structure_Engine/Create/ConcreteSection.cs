@@ -87,7 +87,7 @@ namespace BH.Engine.Structure
 
             if (material == null)
             {
-                material = (Concrete)Query.Default(oM.Structure.MaterialFragments.MaterialType.Concrete);
+                material = Query.Default(oM.Structure.MaterialFragments.MaterialType.Concrete) as Concrete;
             }
 
             section.Material = material;

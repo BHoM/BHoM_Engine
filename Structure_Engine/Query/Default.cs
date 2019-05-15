@@ -58,7 +58,7 @@ namespace BH.Engine.Structure
             }
 
             if (matName != null)
-                return (IMaterialFragment)Library.Query.Match(libraryName, matName, true, true);
+                return Library.Query.Match(libraryName, matName, true, true) as IMaterialFragment;
 
             return null;
         }

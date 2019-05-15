@@ -131,7 +131,7 @@ namespace BH.Engine.Structure
 
             if (material == null)
             {
-                material = (Steel)Query.Default(oM.Structure.MaterialFragments.MaterialType.Steel);
+                material = Query.Default(oM.Structure.MaterialFragments.MaterialType.Steel) as Steel;
             }
 
             section.Material = material;
