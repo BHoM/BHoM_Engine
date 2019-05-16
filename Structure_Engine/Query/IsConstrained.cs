@@ -32,7 +32,7 @@ namespace BH.Engine.Structure
 
         public static bool IsConstrained(this Node node)
         {
-            return node.Constraint != null;
+            return node.Support != null;
         }
 
         /***************************************************/
