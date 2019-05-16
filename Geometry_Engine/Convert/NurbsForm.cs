@@ -34,10 +34,21 @@ namespace BH.Engine.Geometry
         /**** Public  Methods - Curves                  ****/
         /***************************************************/
 
-        [NotImplemented]
         public static NurbsCurve ToNurbsCurve(this Arc arc)
         {
-            throw new NotImplementedException();
+            Point P0 = arc.StartPoint();
+            Point P2 = arc.EndPoint();
+            Point M = Query.Average(new List<Point>() { P0, P2 });
+            Point O = arc.CoordinateSystem.Origin;
+            
+            double a = Math.PI/2 - Query.Angle(P0 - O, M - O);
+            Point P1 = O + (M - O).Normalise() * arc.Radius / Math.Sin(a);
+            
+            return new NurbsCurve() {
+                ControlPoints = new List<Point>() { P0, P1, P2 },
+                Weights = new List<double>() { 1, Math.Sin(a), 1 },
+                Knots = new List<double>() { 0, 0, 1, 1 }
+            };
         }
 
         /***************************************************/

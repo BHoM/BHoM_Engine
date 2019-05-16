@@ -113,10 +113,14 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [NotImplemented]
         public static NurbsCurve Transform(this NurbsCurve curve, TransformMatrix transform)
         {
-            throw new NotImplementedException();
+            return new NurbsCurve()
+            {
+                ControlPoints = curve.ControlPoints.Select(cp => cp.Transform(transform)).ToList(),
+                Weights = curve.Weights,
+                Knots = curve.Knots
+            };
         }
 
 
