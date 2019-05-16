@@ -20,13 +20,11 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System;
 
-using BH.oM.Structure.Elements;
 using BH.oM.Geometry;
+using BH.oM.Reflection.Attributes;
 using BH.oM.Structure.Constraints;
-using BH.Engine.Geometry;
-using BH.Engine.Reflection;
+using BH.oM.Structure.Elements;
 
 namespace BH.Engine.Structure
 {
@@ -36,12 +34,26 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Edge Edge(ICurve curve, Constraint4DOF constraint = null, string name = "")
+        public static Edge Edge(ICurve curve, Constraint6DOF support = null, Constraint4DOF release = null, string name = "")
         {
             return new Edge
             {
                 Curve = curve,
-                Constraint = constraint,
+                Support = support,
+                Release = release,
+                Name = name
+            };
+        }
+
+        /***************************************************/
+
+        [Deprecated("2.3", "Constraint property name updated to Release, and Support property added",null,"Edge")]
+        public static Edge Edge(ICurve curve, Constraint4DOF release = null, string name = "")
+        {
+            return new Edge
+            {
+                Curve = curve,
+                Release = release,
                 Name = name
             };
         }
