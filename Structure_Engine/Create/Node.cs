@@ -34,22 +34,22 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Node Node(Cartesian coordinates, string name = "", Constraint6DOF constraint = null)
+        public static Node Node(Cartesian coordinates, string name = "", Constraint6DOF support = null)
         {
             return new Node
             {
                 Position = coordinates.Origin,
                 Orientation = (Basis)coordinates,
                 Name = name,
-                Constraint = constraint
+                Support = support
             };
         }
 
         /***************************************************/
 
-        public static Node Node(Point position, string name = "", Constraint6DOF constraint = null)
+        public static Node Node(Point position, string name = "", Constraint6DOF support = null)
         {
-            return Node((Cartesian)position, name, constraint);
+            return Node((Cartesian)position, name, support);
         }
 
         /***************************************************/
