@@ -57,7 +57,10 @@ namespace BH.Engine.Environment
 
             double value = 0;
             foreach (Absorptance a in absorptances)
-                value += a.Value;
+            {
+                if(a != null)
+                    value += a.Value;
+            }
 
             Absorptance rtn = new Absorptance();
             rtn.AbsorptanceUnit = AbsorptanceUnit.Percent;
