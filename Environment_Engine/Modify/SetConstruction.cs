@@ -68,7 +68,7 @@ namespace BH.Engine.Environment
 
         [Description("Update a new construction to a collection of openings which match the given type from their Origin Context Fragment")]
         [Input("openings", "A collection of Environment Openings to set the construction of")]
-        [Input("typeNames", "The type names of the panels to update - if any panels type name is contained in the list given it will have its construction updated")]
+        [Input("typeNames", "The type names of the openings to update - if any openings type name is contained in the list given it will have its construction updated")]
         [Input("newConstruction", "The new construction to assign to the openings")]
         [Output("openings", "The collection of Environment Openings with an updated construction")]
         public static List<Opening> SetConstructions(this List<Opening> openings, List<string> typeNames, IConstruction newConstruction)
@@ -88,6 +88,19 @@ namespace BH.Engine.Environment
             }
 
             return returnOpenings;
+        }
+
+        [Description("Update a new construction to a collection of openings which match the given type from their Origin Context Fragment")]
+        [Input("panels", "A collection of Environment Panels to update the hosted openings constructions of")]
+        [Input("typeNames", "The type names of the openings to update - if any openings type name is contained in the list given it will have its construction updated")]
+        [Input("newConstruction", "The new construction to assign to the openings")]
+        [Output("panels", "The collection of Environment Panels with updated construction on the hosted openings")]
+        public static List<Panel> SetOpeningConstruction(this List<Panel> panels, List<string> typeNames, IConstruction newConstruction)
+        {
+            foreach(Panel p in panels)
+                p.Openings = p.Openings.SetConstructions(typeNames, newConstruction);
+
+            return panels;
         }
     }
 }
