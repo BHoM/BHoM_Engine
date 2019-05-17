@@ -158,6 +158,9 @@ namespace BH.Engine.Library
             string internalPath = Path.Combine(basePath, folderPath);
             string folder = Path.Combine(m_sourceFolder, internalPath);
 
+            if (!Directory.Exists(folder))
+                return;
+
             foreach (string path in Directory.GetFiles(folder))
             {
                 string filePathName = Path.Combine(internalPath, Path.GetFileNameWithoutExtension(path));
