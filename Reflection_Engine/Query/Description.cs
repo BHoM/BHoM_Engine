@@ -39,12 +39,15 @@ namespace BH.Engine.Reflection
         public static string Description(this MemberInfo member)
         {
             DescriptionAttribute attribute = member.GetCustomAttribute<DescriptionAttribute>();
+
+            string desc = "";
             if (attribute != null && !string.IsNullOrWhiteSpace(attribute.Description))
-                return attribute.Description;
-            else if (member.ReflectedType != null)
-                return member.Name + " is a " + member.MemberType.ToString() + " of " + member.ReflectedType.ToText(true);
-            else
-                return "";
+                desc = attribute.Description + Environment.NewLine;
+
+            if (member.ReflectedType != null)
+                desc += member.Name + " is a " + member.MemberType.ToString() + " of " + member.ReflectedType.ToText(true);
+
+            return desc;
         }
 
         /***************************************************/
@@ -53,15 +56,17 @@ namespace BH.Engine.Reflection
         public static string Description(this ParameterInfo parameter)
         {
             IEnumerable<InputAttribute> inputDesc = parameter.Member.GetCustomAttributes<InputAttribute>().Where(x => x.Name == parameter.Name);
+
+            string desc = "";
             if (inputDesc.Count() > 0)
             {
-                return inputDesc.First().Description;
+                desc = inputDesc.First().Description + Environment.NewLine;
             }
-            if (parameter.ParameterType == null)
+            if (parameter.ParameterType != null)
             {
-                return "";
+                desc += parameter.ParameterType.Description();
             }
-            return parameter.ParameterType.Description();
+            return desc;
         }
 
         /***************************************************/
