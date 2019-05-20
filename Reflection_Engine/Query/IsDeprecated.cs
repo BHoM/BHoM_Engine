@@ -40,17 +40,7 @@ namespace BH.Engine.Reflection
         {
             DeprecatedAttribute attribute = method.GetCustomAttribute<DeprecatedAttribute>();
             if (attribute != null)
-            {
-                try
-                {
-                    Version version = new Version(attribute.FromVersion);
-                    return (version.CompareTo(method.DeclaringType.Assembly.GetName().Version) <= 0);
-                }
-                catch
-                {
-                    return true;
-                }
-            }
+                return true;
             else
                 return false;
         }
@@ -62,17 +52,7 @@ namespace BH.Engine.Reflection
         {
             DeprecatedAttribute attribute = type.GetCustomAttribute<DeprecatedAttribute>();
             if (attribute != null)
-            {
-                try
-                {
-                    Version version = new Version(attribute.FromVersion);
-                    return (version.CompareTo(type.Assembly.GetName().Version) > 0);
-                }
-                catch
-                {
-                    return true;
-                }
-            }
+                return true;
             else
                 return false;
         }
