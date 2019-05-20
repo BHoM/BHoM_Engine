@@ -55,65 +55,33 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [DeprecatedAttribute("2.3", "Reorganised methods, adding tolerance", null, "IsContaining")]
         public static bool IsContaining(this BoundingBox box, IGeometry geometry)
         {
-            return box.IsContaining(geometry.IBounds());
+            //return box.IsContaining(geometry.IBounds());
+            return box.IIsContaining(geometry, true, Tolerance.Distance);
         }
 
         /***************************************************/
 
         public static bool IsContaining(this BoundingBox box1, BoundingBox box2, bool acceptOnEdge = true, double tolerance = Tolerance.Distance)
         {
-            //TODO: 2D boxes covered, but what about 1D
-
             Point max1 = box1.Max;
             Point min1 = box1.Min;
             Point max2 = box2.Max;
             Point min2 = box2.Min;
 
-            if (Math.Abs(max1.X - min1.X) <= tolerance)
+            if (acceptOnEdge)
             {
-                if (acceptOnEdge)
-                    return (min2.X >= min1.X - tolerance && max2.X <= max1.X + tolerance &&
-                            min2.Y >= min1.Y - tolerance && max2.Y <= max1.Y + tolerance &&
-                            min2.Z >= min1.Z - tolerance && max2.Z <= max1.Z + tolerance);
-                else
-                    return (min2.X > min1.X - tolerance && max2.X < max1.X + tolerance &&
-                            min2.Y > min1.Y + tolerance && max2.Y < max1.Y - tolerance &&
-                            min2.Z > min1.Z + tolerance && max2.Z < max1.Z - tolerance);
-            }
-            else if ((Math.Abs(max1.Y - min1.Y) <= tolerance))
-            {
-                if (acceptOnEdge)
-                    return (min2.X >= min1.X - tolerance && max2.X <= max1.X + tolerance &&
-                            min2.Y >= min1.Y - tolerance && max2.Y <= max1.Y + tolerance &&
-                            min2.Z >= min1.Z - tolerance && max2.Z <= max1.Z + tolerance);
-                else
-                    return (min2.X > min1.X + tolerance && max2.X < max1.X - tolerance &&
-                            min2.Y > min1.Y - tolerance && max2.Y < max1.Y + tolerance &&
-                            min2.Z > min1.Z + tolerance && max2.Z < max1.Z - tolerance);
-            }
-            else if ((Math.Abs(max1.Z - min1.Z) <= tolerance))
-            {
-                if (acceptOnEdge)
-                    return (min2.X >= min1.X - tolerance && max2.X <= max1.X + tolerance &&
-                            min2.Y >= min1.Y - tolerance && max2.Y <= max1.Y + tolerance &&
-                            min2.Z >= min1.Z - tolerance && max2.Z <= max1.Z + tolerance);
-                else
-                    return (min2.X > min1.X + tolerance && max2.X < max1.X - tolerance &&
-                            min2.Y > min1.Y + tolerance && max2.Y < max1.Y - tolerance &&
-                            min2.Z > min1.Z - tolerance && max2.Z < max1.Z + tolerance);
+                return (min2.X >= min1.X - tolerance && max2.X <= max1.X + tolerance &&
+                        min2.Y >= min1.Y - tolerance && max2.Y <= max1.Y + tolerance &&
+                        min2.Z >= min1.Z - tolerance && max2.Z <= max1.Z + tolerance);
             }
             else
             {
-                if (acceptOnEdge)
-                    return (min2.X >= min1.X - tolerance && max2.X <= max1.X + tolerance &&
-                            min2.Y >= min1.Y - tolerance && max2.Y <= max1.Y + tolerance &&
-                            min2.Z >= min1.Z - tolerance && max2.Z <= max1.Z + tolerance);
-                else
-                    return (min2.X > min1.X + tolerance && max2.X < max1.X - tolerance &&
-                            min2.Y > min1.Y + tolerance && max2.Y < max1.Y - tolerance &&
-                            min2.Z > min1.Z + tolerance && max2.Z < max1.Z - tolerance);
+                return (min2.X > min1.X + tolerance && max2.X < max1.X - tolerance &&
+                        min2.Y > min1.Y + tolerance && max2.Y < max1.Y - tolerance &&
+                        min2.Z > min1.Z + tolerance && max2.Z < max1.Z - tolerance);
             }
         }
 
@@ -121,54 +89,20 @@ namespace BH.Engine.Geometry
 
         public static bool IsContaining(this BoundingBox box, Point pt, bool acceptOnEdge = true, double tolerance = Tolerance.Distance)
         {
-            //TODO: 2D boxes covered, but what about 1D
-
             Point max = box.Max;
             Point min = box.Min;
 
-            if (Math.Abs(max.X - min.X) <= tolerance)
+            if (acceptOnEdge)
             {
-                if (acceptOnEdge)
-                    return (pt.X <= max.X + tolerance && pt.X >= min.X - tolerance &&
-                            pt.Y <= max.Y + tolerance && pt.Y >= min.Y - tolerance &&
-                            pt.Z <= max.Z + tolerance && pt.Z >= min.Z - tolerance);
-                else
-                    return (pt.X < max.X + tolerance && pt.X > min.X - tolerance &&
-                            pt.Y < max.Y - tolerance && pt.Y > min.Y + tolerance &&
-                            pt.Z < max.Z - tolerance && pt.Z > min.Z + tolerance);
-            }
-            else if ((Math.Abs(max.Y - min.Y) <= tolerance))
-            {
-                if (acceptOnEdge)
-                    return (pt.X <= max.X + tolerance && pt.X >= min.X - tolerance &&
-                            pt.Y <= max.Y + tolerance && pt.Y >= min.Y - tolerance &&
-                            pt.Z <= max.Z + tolerance && pt.Z >= min.Z - tolerance);
-                else
-                    return (pt.X < max.X - tolerance && pt.X > min.X + tolerance &&
-                            pt.Y < max.Y + tolerance && pt.Y > min.Y - tolerance &&
-                            pt.Z < max.Z - tolerance && pt.Z > min.Z + tolerance);
-            }
-            else if ((Math.Abs(max.Z - min.Z) <= tolerance))
-            {
-                if (acceptOnEdge)
-                    return (pt.X <= max.X + tolerance && pt.X >= min.X - tolerance &&
-                            pt.Y <= max.Y + tolerance && pt.Y >= min.Y - tolerance &&
-                            pt.Z <= max.Z + tolerance && pt.Z >= min.Z - tolerance);
-                else
-                    return (pt.X < max.X - tolerance && pt.X > min.X + tolerance &&
-                            pt.Y < max.Y - tolerance && pt.Y > min.Y + tolerance &&
-                            pt.Z < max.Z + tolerance && pt.Z > min.Z - tolerance);
+                return (pt.X >= min.X - tolerance && pt.X <= max.X + tolerance &&
+                        pt.Y >= min.Y - tolerance && pt.Y <= max.Y + tolerance &&
+                        pt.Z >= min.Z - tolerance && pt.Z <= max.Z + tolerance);
             }
             else
             {
-                if (acceptOnEdge)
-                    return (pt.X <= max.X + tolerance && pt.X >= min.X - tolerance &&
-                            pt.Y <= max.Y + tolerance && pt.Y >= min.Y - tolerance &&
-                            pt.Z <= max.Z + tolerance && pt.Z >= min.Z - tolerance);
-                else
-                    return (pt.X < max.X - tolerance && pt.X > min.X + tolerance &&
-                            pt.Y < max.Y - tolerance && pt.Y > min.Y + tolerance &&
-                            pt.Z < max.Z - tolerance && pt.Z > min.Z + tolerance);
+                return (pt.X > min.X + tolerance && pt.X < max.X - tolerance &&
+                        pt.Y > min.Y + tolerance && pt.Y < max.Y - tolerance &&
+                        pt.Z > min.Z + tolerance && pt.Z < max.Z - tolerance);
             }
         }
 
@@ -187,6 +121,13 @@ namespace BH.Engine.Geometry
                 }
 
             return flag;
+        }
+
+        /***************************************************/
+
+        public static bool IIsContaining(this BoundingBox box, IGeometry geometry, bool acceptOnEdge = true, double tolerance = Tolerance.Distance)
+        {
+            return box.IsContaining(geometry.IBounds(), acceptOnEdge, tolerance);
         }
 
 
