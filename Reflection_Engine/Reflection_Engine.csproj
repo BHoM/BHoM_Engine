@@ -98,6 +98,7 @@
     <Compile Include="Modify\Cast.cs" />
     <Compile Include="Query\CurrentAssemblyFolder.cs" />
     <Compile Include="Query\BHoMFolder.cs" />
+    <Compile Include="Query\DefaultDescription.cs" />
     <Compile Include="Query\ImplementedTypes.cs" />
     <Compile Include="Query\Count.cs" />
     <Compile Include="Query\Item.cs" />

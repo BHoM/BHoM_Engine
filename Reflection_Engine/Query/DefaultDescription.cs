@@ -1,6 +1,6 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -20,32 +20,51 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Reflection.Attributes;
 using System;
+using System.Linq;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Reflection;
+using BH.oM.Reflection.Attributes;
+using BH.oM.Base;
 
 namespace BH.Engine.Reflection
-{
+{ 
     public static partial class Query
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Return the custom description of the output of a C# method")]
-        public static string OutputDescription(this MethodBase method)
+        [Description("Return the default description of a C# class")]
+        public static string DefaultDescription(this Type type)
         {
-            OutputAttribute attribute = method.GetCustomAttribute<OutputAttribute>();
+            if (type == null)
+                return "";
 
-            string desc = "";
+            string desc = "This is a " + type.ToText();
 
-            if (attribute != null && !string.IsNullOrWhiteSpace(attribute.Description))
-                desc = attribute.Description + Environment.NewLine;
+            Type innerType = type;
 
-            desc += method.OutputType().DefaultDescription();
+            while (typeof(IEnumerable).IsAssignableFrom(innerType) && innerType.IsGenericType)
+                innerType = innerType.GenericTypeArguments.First();
+
+            if (innerType.IsInterface)
+            {
+                desc += ":";
+                List<Type> t = innerType.ImplementingTypes();
+                int m = Math.Min(15, t.Count);
+
+                for (int i = 0; i < m; i++)
+                    desc += $"{t[i].ToText()}, ";
+
+                if (t.Count > m)
+                    desc += "and more...";
+                else
+                    desc = desc.Remove(desc.Length - 2, 2);
+
+                return desc;
+            }
 
             return desc;
         }

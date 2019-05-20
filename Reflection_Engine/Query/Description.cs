@@ -22,6 +22,7 @@
 
 using BH.oM.Reflection.Attributes;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -64,7 +65,7 @@ namespace BH.Engine.Reflection
             }
             if (parameter.ParameterType != null)
             {
-                desc += parameter.ParameterType.Description();
+                desc += parameter.ParameterType.DefaultDescription();
             }
             return desc;
         }
@@ -84,25 +85,8 @@ namespace BH.Engine.Reflection
             {
                 return attribute.Description;
             }
-            else if (type.IsInterface)
-            {
-                string echo = $"This is a {type.ToText()}: ";
-
-                List<Type> t = type.ImplementingTypes();
-                int m = Math.Min(15, t.Count);
-
-                for (int i = 0; i < m; i++)
-                    echo += $"{t[i].ToText()}, ";
-
-                if (t.Count > m)
-                    echo += "and more...";
-                else
-                    echo = echo.Remove(echo.Length - 2, 2);
-
-                return echo;
-            }
-
-            return "This is a " + type.ToText();
+            else
+                return type.DefaultDescription();
         }
 
         /***************************************************/
