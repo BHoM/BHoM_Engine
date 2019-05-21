@@ -45,7 +45,7 @@ namespace BH.Engine.Reflection
             if (attribute != null && !string.IsNullOrWhiteSpace(attribute.Description))
                 desc = attribute.Description + Environment.NewLine;
 
-            desc += method.OutputType().DefaultDescription();
+            desc += method.OutputType().Description();
 
             return desc;
         }
