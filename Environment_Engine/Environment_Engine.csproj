@@ -78,7 +78,6 @@
     <Compile Include="Query\Line.cs" />
     <Compile Include="Query\Polyline.cs" />
     <Compile Include="Query\Space.cs" />
-    <Compile Include="Create\Absorptance.cs" />
     <Compile Include="Create\Building.cs" />
     <Compile Include="Create\CoefficientFragment.cs" />
     <Compile Include="Create\Edge.cs" />
@@ -113,8 +112,6 @@
     <Compile Include="Modify\SetInternalElements2D.cs" />
     <Compile Include="Modify\SetOutlineElements1D.cs" />
     <Compile Include="Modify\SplitPanels.cs" />
-    <Compile Include="Query\Absorptance.cs" />
-    <Compile Include="Query\AdditionalHeatTransfer.cs" />
     <Compile Include="Query\Buildings.cs" />
     <Compile Include="Query\ConstructionRoughness.cs" />
     <Compile Include="Query\FindFragment.cs" />

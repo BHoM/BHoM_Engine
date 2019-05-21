@@ -37,17 +37,15 @@ namespace BH.Engine.Physical
     {
         [Description("Returns a Material object")]
         [Input("name", "The name of the material, default empty string")]
-        [Input("density", "The density of the material, default 0.0")]
         [Input("properties", "A collection of the specific properties of the material to be created, default null")]
         [Output("A Material object")]
-        public static Material Material(string name = "", double density = 0.0, List<IMaterialProperties> properties = null)
+        public static Material Material(string name = "", List<IMaterialProperties> properties = null)
         {
             properties = properties ?? new List<IMaterialProperties>();
 
             return new Material
             {
                 Name = name,
-                Density = density,
                 Properties = properties,
             };
         }
