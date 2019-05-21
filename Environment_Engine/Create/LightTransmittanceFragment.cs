@@ -35,18 +35,20 @@ namespace BH.Engine.Environment
 {
     public static partial class Create
     {
-        [Description("Returns an Environment Construction Fragment object")]
+        [Description("Returns an Environment Light Transmittance Fragment object")]
         [Input("name", "The name of the fragment property, default empty string")]
-        [Input("fFactor", "The FFactor for the construction, default 0.0")]
-        [Input("additionalHeatTransfer", "The additional heat transfer through the construction, default 0.0")]
-        [Output("environmentConstructionFragment", "An Environment Construction Fragment object - this can be added to a Construction object")]
-        public static EnvironmentConstructionFragment EnvironmentConstructionFragment(string name = "", double fFactor = 0.0, double additionalHeatTransfer = 0.0)
+        [Input("redTransmittance", "The red transmittance of the light transmittance, default 0.0")]
+        [Input("greenTransmittance", "The green transmittance of the light transmittance, default 0.0")]
+        [Input("blueTransmittance", "The blue transmittance of the light transmittance, default 0.0")]
+        [Output("lightTransmittanceFragment", "A Light Transmittance Fragment object - this can be added to an Environmental Material fragment object")]
+        public static LightTransmittanceFragment LightTransmittanceFragment(string name = "", double redTransmittance = 0.0, double greenTransmittance = 0.0, double blueTransmittance = 0.0)
         {
-            return new EnvironmentConstructionFragment
+            return new LightTransmittanceFragment
             {
                 Name = name,
-                FFactor = fFactor,
-                AdditionalHeatTransfer = additionalHeatTransfer,
+                RedTransmittance = redTransmittance,
+                GreenTransmittance = greenTransmittance,
+                BlueTransmittance = blueTransmittance,
             };
         }
     }

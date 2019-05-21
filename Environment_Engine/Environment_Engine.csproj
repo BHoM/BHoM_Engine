@@ -74,6 +74,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Compute\BooleanIntersect.cs" />
+    <Compile Include="Create\LightReflectanceFragment.cs" />
+    <Compile Include="Create\LightTransmittanceFragment.cs" />
     <Compile Include="Query\ICurve.cs" />
     <Compile Include="Query\Line.cs" />
     <Compile Include="Query\Polyline.cs" />
@@ -85,7 +87,7 @@
     <Compile Include="Create\EnvironmentConstructionFragment.cs" />
     <Compile Include="Create\Gain.cs" />
     <Compile Include="Create\Layer.cs" />
-    <Compile Include="Create\Material.cs" />
+    <Compile Include="Create\MaterialFragment.cs" />
     <Compile Include="Create\Opening.cs" />
     <Compile Include="Create\Panel.cs" />
     <Compile Include="Create\ProfileResult.cs" />
