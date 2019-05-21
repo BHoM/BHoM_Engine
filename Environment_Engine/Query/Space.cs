@@ -20,40 +20,45 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System.Collections.Generic;
-using BH.oM.Environment.Elements;
 using BH.oM.Geometry;
-using BH.Engine.Geometry;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
+using BH.oM.Environment.Elements;
+using BH.Engine.Geometry;
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
 
 namespace BH.Engine.Environment
 {
-    public static partial class Convert
+    public static partial class Query
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /****          public Methods                   ****/
         /***************************************************/
 
-        [Description("Returns a collection of Environment Edges from a BHoM Geomtry Polyline")]
-        [Input("curve", "A BHoM Geometry ICurve to be split into Environment Edges")]
-        [Output("edges", "A collection of Environment Edges")]
-        public static List<Edge> ToEdges(this ICurve curve)
+        [Description("Returns a collection of Environment Panels which are connected to the space name provided")]
+        [Input("panels", "A collection of Environment Panels")]
+        [Input("spaceName", "The name of the space the panels should enclose")]
+        [Output("panelsAsSpace", "A collection of Environment Panels which have the given space name as a connected space")]
+        public static List<Panel> ToSpace(this List<Panel> panels, string spaceName)
         {
-            return curve.ICollapseToPolyline(BH.oM.Geometry.Tolerance.Angle).ToEdges();
+            return panels.Where(x => x.ConnectedSpaces.Contains(spaceName)).ToList();
         }
 
-        [Description("Returns a collection of Environment Edges from a BHoM Geomtry Polyline")]
-        [Input("curves", "A collection of BHoM Geometry ICurve to be split into Environment Edges")]
-        [Output("edges", "A collection of Environment Edges")]
-        public static List<Edge> ToEdges(this List<ICurve> curves)
+        [Description("Returns a nested collection of Environment Panels which are grouped by the spaces they are connected to")]
+        [Input("panels", "A collection of Environment Panels")]
+        [Output("panelsAsSpaces", "A nested collection of Environment Panels grouped by the space they enclose")]
+        public static List<List<Panel>> ToSpaces(this List<Panel> panels)
         {
-            List<Edge> edges = new List<Edge>();
-            foreach (ICurve c in curves)
-                edges.AddRange(c.ToEdges());
+            List<List<Panel>> panelsAsSpaces = new List<List<Panel>>();
 
-            return edges;
+            List<string> uniqueSpaceNames = panels.UniqueSpaceNames();
+            foreach (string s in uniqueSpaceNames)
+                panelsAsSpaces.Add(panels.ToSpace(s));
+
+            return panelsAsSpaces;
         }
     }
 }

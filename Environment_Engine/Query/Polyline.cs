@@ -34,7 +34,7 @@ using System.ComponentModel;
 
 namespace BH.Engine.Environment
 {
-    public static partial class Convert
+    public static partial class Query
     {
         /***************************************************/
         /****          public Methods                   ****/
@@ -88,7 +88,7 @@ namespace BH.Engine.Environment
             foreach (Edge e in edges)
                 edgePoints.AddRange(e.Curve.IDiscontinuityPoints());
 
-            return BH.Engine.Geometry.Create.Polyline(edgePoints);
+            return BH.Engine.Geometry.Create.Polyline(edgePoints.CullDuplicates());
         }
 
         [Description("Returns the external boundary from an Environment Panel as a BHoM Geometry Polyline")]
