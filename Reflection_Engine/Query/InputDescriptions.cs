@@ -43,7 +43,6 @@ namespace BH.Engine.Reflection
             foreach (ParameterInfo info in method.GetParameters())
                 descriptions[info.Name] = info.Description();
 
-
             return descriptions;
         }
 

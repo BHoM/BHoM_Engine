@@ -65,7 +65,7 @@ namespace BH.Engine.Reflection
             }
             if (parameter.ParameterType != null)
             {
-                desc += parameter.ParameterType.DefaultDescription();
+                desc += parameter.ParameterType.Description();
             }
             return desc;
         }
@@ -81,12 +81,39 @@ namespace BH.Engine.Reflection
             }
 
             DescriptionAttribute attribute = type.GetCustomAttribute<DescriptionAttribute>();
+
+            string desc = "";
+
             if (attribute != null)
+                desc = attribute.Description + Environment.NewLine;
+
+            //Add the default description
+            desc += "This is a " + type.ToText();
+
+            Type innerType = type;
+
+            while (typeof(IEnumerable).IsAssignableFrom(innerType) && innerType.IsGenericType)
+                innerType = innerType.GenericTypeArguments.First();
+
+            if (innerType.IsInterface)
             {
-                return attribute.Description;
+                desc += ":";
+                List<Type> t = innerType.ImplementingTypes();
+                int m = Math.Min(15, t.Count);
+
+                for (int i = 0; i < m; i++)
+                    desc += $"{t[i].ToText()}, ";
+
+                if (t.Count > m)
+                    desc += "and more...";
+                else
+                    desc = desc.Remove(desc.Length - 2, 2);
+
+                return desc;
             }
-            else
-                return type.DefaultDescription();
+
+            return desc;
+
         }
 
         /***************************************************/
