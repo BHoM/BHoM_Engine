@@ -59,7 +59,7 @@ namespace BH.Engine.Geometry
         public static bool IsContaining(this BoundingBox box, IGeometry geometry)
         {
             //return box.IsContaining(geometry.IBounds());
-            return box.IIsContaining(geometry, true, Tolerance.Distance);
+            return box.IsContaining(geometry, true, Tolerance.Distance);
         }
 
         /***************************************************/
@@ -125,7 +125,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static bool IIsContaining(this BoundingBox box, IGeometry geometry, bool acceptOnEdge = true, double tolerance = Tolerance.Distance)
+        public static bool IsContaining(this BoundingBox box, IGeometry geometry, bool acceptOnEdge = true, double tolerance = Tolerance.Distance)
         {
             return box.IsContaining(geometry.IBounds(), acceptOnEdge, tolerance);
         }
