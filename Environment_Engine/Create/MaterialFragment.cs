@@ -45,14 +45,14 @@ namespace BH.Engine.Environment
         [Input("name", "The name of the gas material, default empty string")]
         [Input("conductivity", "The amount of conductivity the material should have, default 0.0")]
         [Input("specificHeat", "The unit of specific heat the material should have, default 0.0")]
-        [Input("vapourDiffusionFactor", "The amount of vapour diffusion factor the material should have, default 0.0")]
+        [Input("vapourResistivity", "The amount of vapour resistance the material should have, default 0.0")]
         [Input("description", "A description of this material, default empty string")]
         [Input("roughness", "The roughness of the material from the Material Roughness enum, default undefined")]
         [Input("refraction", "The refraction of the material, default 0.0")]
         [Input("convectionCoefficient", "The convection coefficient of this gas material, default 0.0")]
         [Input("gas", "The type of gas this material is from the Gas Type enum, default undefined")]
         [Output("material", "A material object containing a Gas Material Fragment")]
-        public static Material GasMaterial(string name = "", double density = 0.0, double conductivity = 0.0, double specificHeat = 0.0, double vapourDiffusionFactor = 0.0, string description = "", Roughness roughness = Roughness.Undefined, double refraction = 0.0, double convectionCoefficient = 0.0, Gas gas = Gas.Undefined)
+        public static Material GasMaterial(string name = "", double density = 0.0, double conductivity = 0.0, double specificHeat = 0.0, double vapourResistivity = 0.0, string description = "", Roughness roughness = Roughness.Undefined, double refraction = 0.0, double convectionCoefficient = 0.0, Gas gas = Gas.Undefined)
         {
             GasMaterial gasProperties = new GasMaterial
             {
@@ -60,7 +60,7 @@ namespace BH.Engine.Environment
                 Density = density,
                 Conductivity = conductivity,
                 SpecificHeat = specificHeat,
-                VapourDiffusionFactor = vapourDiffusionFactor,
+                VapourResistivity = vapourResistivity,
                 Description = description,
                 Roughness = roughness,
                 Refraction = refraction,
@@ -76,7 +76,7 @@ namespace BH.Engine.Environment
         [Input("density", "The density of the material, default 0.0")]
         [Input("conductivity", "The amount of conductivity the material should have, default 0.0")]
         [Input("specificHeat", "The unit of specific heat the material should have, default 0.0")]
-        [Input("vapourDiffusionFactor", "The amount of vapour diffusion factor the material should have, default 0.0")]
+        [Input("vapourResistivity", "The amount of vapour resistance the material should have, default 0.0")]
         [Input("description", "A description of this material, default empty string")]
         [Input("roughness", "The roughness of the material from the Material Roughness enum, default undefined")]
         [Input("refraction", "The refraction of the material, default 0.0")]
@@ -93,7 +93,7 @@ namespace BH.Engine.Environment
         [Input("transmittedSpecularity", "The amount of directed light transmitted through the solid material, default 0.0")]
         [Input("ignoreInUValueCalculation", "Define whether or not this material should be ignored in any uValue calculations, default false")]
         [Output("material", "A material object containing a Solid Material Fragment")]
-        public static Material SolidMaterial(string name = "", double density = 0.0, double conductivity = 0.0, double specificHeat = 0.0, double additionalHeatTransfer = 0.0, double vapourDiffusionFactor = 0.0, string description = "", Roughness roughness = Roughness.Undefined, double refraction = 0.0, double solarReflectanceExternal = 0.0, double solarReflectanceInternal = 0.0, double solarTransmittance = 0.0, double lightReflectanceExternal = 0.0, double lightReflectanceInternal = 0.0, double lightTransmittance = 0.0, double emissivityExternal = 0.0, double emissivityInternal = 0.0, double specularity = 0.0, double transmittedDiffusivity = 0.0, double transmittedSpecularity = 0.0, bool ignoreInUValueCalculation = false)
+        public static Material SolidMaterial(string name = "", double density = 0.0, double conductivity = 0.0, double specificHeat = 0.0, double additionalHeatTransfer = 0.0, double vapourResistivity = 0.0, string description = "", Roughness roughness = Roughness.Undefined, double refraction = 0.0, double solarReflectanceExternal = 0.0, double solarReflectanceInternal = 0.0, double solarTransmittance = 0.0, double lightReflectanceExternal = 0.0, double lightReflectanceInternal = 0.0, double lightTransmittance = 0.0, double emissivityExternal = 0.0, double emissivityInternal = 0.0, double specularity = 0.0, double transmittedDiffusivity = 0.0, double transmittedSpecularity = 0.0, bool ignoreInUValueCalculation = false)
         {
             SolidMaterial solidProperties = new SolidMaterial
             {
@@ -101,7 +101,7 @@ namespace BH.Engine.Environment
                 Density = density,
                 Conductivity = conductivity,
                 SpecificHeat = specificHeat,
-                VapourDiffusionFactor = vapourDiffusionFactor,
+                VapourResistivity = vapourResistivity,
                 Description = description,
                 Roughness = roughness,
                 Refraction = refraction,
