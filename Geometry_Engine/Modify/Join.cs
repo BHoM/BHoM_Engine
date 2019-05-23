@@ -144,7 +144,7 @@ namespace BH.Engine.Geometry
 
         public static List<Polyline> Join(this List<Polyline> curves, double tolerance = Tolerance.Distance)
         {
-            List<Polyline> sections = curves.Select(l => new Polyline { ControlPoints = l.ControlPoints }).ToList();
+            List<Polyline> sections = curves.Select(l => new Polyline { ControlPoints = l.ControlPoints.Select(p => p.Clone()).ToList() }).ToList();
 
             double sqTol = tolerance * tolerance;
             int counter = 0;
