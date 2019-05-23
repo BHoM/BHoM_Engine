@@ -143,41 +143,48 @@ namespace BH.Engine.Geometry
                 return null;
             }
 
+            List<ICurve> crvs = new List<ICurve>(curve.ISubParts());
 
             Vector normal = new Vector { X = 0, Y = 0, Z = 0 };
 
             List<Point> pts = new List<Point> { curve.Curves[0].IStartPoint() };
 
-            foreach (ICurve crv in curve.ISubParts())
+            if (crvs.Count() == 0)
+                return null;
+            else if (crvs.Count() == 1)
+                return crvs[0].INormal();
+            else
             {
-                if (crv is Line)
-                    pts.Add((crv as Line).End);
-                else if (crv is Arc)
+                foreach (ICurve crv in crvs)
                 {
-                    int numb = 4;
-                    List<Point> aPts = crv.SamplePoints(numb);
-                    for (int i = 1; i < aPts.Count; i++)
-                        pts.Add(aPts[i]);
+                    if (crv is Line)
+                        pts.Add((crv as Line).End);
+                    else if (crv is Arc)
+                    {
+                        int numb = 4;
+                        List<Point> aPts = crv.SamplePoints(numb);
+                        for (int i = 1; i < aPts.Count; i++)
+                            pts.Add(aPts[i]);
+                    }
+                    else
+                    {
+                        throw new NotImplementedException();
+                    }
                 }
-                else
+
+                Point pA = pts[0];
+
+                for (int i = 1; i < pts.Count - 1; i++)
                 {
-                    throw new NotImplementedException();
+                    Point pB = pts[i];
+                    Point pC = pts[i + 1];
+
+                    normal += CrossProduct((pB - pA).Normalise(), (pC - pB).Normalise());
+                    normal += CrossProduct(pB - pA, pC - pA);
                 }
+
+                return normal.Normalise();
             }
-
-            Point pA = pts[0];
-
-            for (int i = 1; i < pts.Count - 1; i++)
-            {
-                Point pB = pts[i];
-                Point pC = pts[i + 1];
-
-                normal += CrossProduct((pB - pA).Normalise(), (pC - pB).Normalise());
-                normal += CrossProduct(pB - pA, pC - pA);
-            }
-
-
-            return normal.Normalise();
         }
 
         /***************************************************/
