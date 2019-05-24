@@ -62,6 +62,7 @@
     <Compile Include="Compute\Eigenvalues.cs" />
     <Compile Include="Compute\Eigenvectors.cs" />
     <Compile Include="Compute\FitLine.cs" />
+    <Compile Include="Compute\Join.cs" />
     <Compile Include="Compute\PointClusters.cs" />
     <Compile Include="Compute\PointClustersDBSCAN.cs" />
     <Compile Include="Compute\RowEchelonForm.cs" />
