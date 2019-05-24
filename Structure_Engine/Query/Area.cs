@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -36,8 +36,8 @@ namespace BH.Engine.Structure
 
         public static double Area(this Panel panel)
         {
-            List<PolyCurve> externalEdges = panel.ExternalEdgeCurves().IJoin();
-            List<PolyCurve> internalEdges = panel.InternalEdgeCurves().IJoin();
+            List<PolyCurve> externalEdges = BH.Engine.Geometry.Compute.IJoin(panel.ExternalEdgeCurves());
+            List<PolyCurve> internalEdges = BH.Engine.Geometry.Compute.IJoin(panel.InternalEdgeCurves());
 
             return externalEdges.Select(x => x.Area()).Sum() - internalEdges.Select(x => x.Area()).Sum();
         }
@@ -46,7 +46,7 @@ namespace BH.Engine.Structure
 
         public static double Area(this Opening opening)
         {
-            List<PolyCurve> edges = opening.EdgeCurves().IJoin();
+            List<PolyCurve> edges = BH.Engine.Geometry.Compute.IJoin(opening.EdgeCurves());
 
             return edges.Select(x => x.Area()).Sum();
         }

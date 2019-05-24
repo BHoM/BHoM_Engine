@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -41,8 +41,8 @@ namespace BH.Engine.Structure
         {
             List<ICurve> curves = panel.ExternalEdgeCurves();
 
-            List<PolyCurve> joined = curves.IJoin();
-            List<PolyCurve> joinedOpeningCurves = panel.InternalEdgeCurves().IJoin();
+            List<PolyCurve> joined = BH.Engine.Geometry.Compute.IJoin(curves);
+            List<PolyCurve> joinedOpeningCurves = BH.Engine.Geometry.Compute.IJoin(panel.InternalEdgeCurves());
 
             Plane plane = joined.First().FitPlane();
 
@@ -54,7 +54,7 @@ namespace BH.Engine.Structure
 
             TransformMatrix matrix = Engine.Geometry.Create.RotationMatrix(Point.Origin, axis, angle);
 
-            List<PolyCurve> rotated = curves.Select(x => x.IRotate(Point.Origin, axis,angle)).ToList().IJoin();
+            List<PolyCurve> rotated = BH.Engine.Geometry.Compute.IJoin(curves.Select(x => x.IRotate(Point.Origin, axis,angle)).ToList());
 
             BoundingBox bounds = rotated.First().Bounds();
 
