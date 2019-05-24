@@ -38,11 +38,11 @@ namespace BH.Engine.Geometry
 
             List<PolyCurve> sections = new List<PolyCurve>();
 
-            foreach(PolyCurve crv in curves)
+            foreach(PolyCurve curve in curves)
             {
-                foreach(ICurve icrv in crv.ISubParts())
+                foreach(ICurve section in curve.ISubParts())
                 {
-                    sections.Add(new PolyCurve { Curves = new List<ICurve> { icrv } });
+                    sections.Add(new PolyCurve { Curves = new List<ICurve> { section } });
                 }
             }
 
@@ -91,14 +91,14 @@ namespace BH.Engine.Geometry
         public static List<Polyline> Join(this List<Line> lines, double tolerance = Tolerance.Distance)
         {
             List<Polyline> sections = lines.Select(l => new Polyline { ControlPoints = l.ControlPoints() }).ToList();
-            return BH.Engine.Geometry.Compute.Join(sections, tolerance);
+            return Compute.Join(sections, tolerance);
         }
 
         /***************************************************/
 
         public static List<Polyline> Join(this List<Polyline> curves, double tolerance = Tolerance.Distance)
         {
-            List<Polyline> sections = curves.Select(l => new Polyline { ControlPoints = l.ControlPoints.Select(p => p.Clone()).ToList() }).ToList();
+            List<Polyline> sections = curves.Select(l => new Polyline { ControlPoints = new List<Point>(l.ControlPoints) }).ToList();
 
             double sqTol = tolerance * tolerance;
             int counter = 0;
@@ -141,8 +141,9 @@ namespace BH.Engine.Geometry
             return sections;
         }
 
+
         /***************************************************/
-        /***     Interfaces                              ***/
+        /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
         public static List<PolyCurve> IJoin(this List<ICurve> curves, double tolerance = Tolerance.Distance)
