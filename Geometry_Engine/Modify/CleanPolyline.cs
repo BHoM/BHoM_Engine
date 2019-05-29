@@ -35,12 +35,19 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns a polyline defined by the points which result in deviations from a straight line only. For example, if a polyline has 3 points in a straight line, the middle point is removed as part of this cleaning process")]
+        [Description("Returns a polyline defined by the points which result in deviations from a straight line only. For example, if a polyline has 3 points in a straight line, the middle point is removed as part of this cleaning process. This is designed for closed polylines only")]
         [Input("polyline", "The polyline you wish to clean by removing unnecessary points")]
         [Input("tolerance", "The tolerance of the angle that defines a straight line. Default is set to the value defined by BH.oM.Geometry.Tolerance.Angle")]
         [Output("polyline", "The cleaned polyline")]
         public static Polyline CleanPolyline(this Polyline polyline, double tolerance = Tolerance.Angle)
         {
+            //This method is for closed polylines only at the moment
+            if(!polyline.IsClosed())
+            {
+                BH.Engine.Reflection.Compute.RecordError("The CleanPolyline method is only for closed polylines and the input polyline is not closed.");
+                return polyline;
+            }
+
             List<Point> pnts = polyline.DiscontinuityPoints();
 
             if (pnts.Count < 3) return polyline; //If there's only two points here then this method isn't necessary
