@@ -24,6 +24,8 @@ using BH.oM.Geometry;
 using System;
 using System.ComponentModel;
 
+using BH.oM.Reflection.Attributes;
+
 namespace BH.Engine.Geometry
 {
     public static partial class Query
@@ -78,5 +80,31 @@ namespace BH.Engine.Geometry
         }
 
         /***************************************************/
+
+        [Description("Gets the smallest angle between three points between 0 and 180 degrees. Angle is 0 if the three points form a straight line. The order of points is crucial to the calculation, as the points will imagine a line is connecting them in the order provided")]
+        [Input("firstPt", "The first Point of the three to calculate the angle between")]
+        [Input("secondPt", "The second point of the three to calculate the angle between")]
+        [Input("thirdPt", "The third point of the three to calculate the angle between")]
+        [Output("angle", "The smallest angle between the three points in degrees")]
+        public static double Angle(this Point firstPt, Point secondPt, Point thirdPt)
+        {
+            double x1 = firstPt.X - secondPt.X; //Vector 1 - x
+            double y1 = firstPt.Y - secondPt.Y; //Vector 1 - y
+            double z1 = firstPt.Z - secondPt.Z; //Vector 1 - z
+            double sqr1 = (x1 * x1) + (y1 * y1) + (z1 * z1); //Square of vector 1
+            double x2 = thirdPt.X - secondPt.X; //Vector 2 - x
+            double y2 = thirdPt.Y - secondPt.Y; //Vector 2 - y
+            double z2 = thirdPt.Z - secondPt.Z; //Vector 2 - z
+            double sqr2 = (x2 * x2) + (y2 * y2) + (z2 * z2); //Square of vector 2
+
+            double xa = x1 * x2;
+            double ya = y1 * y2;
+            double za = z1 * z2;
+
+            double costr = (xa + ya + za) / Math.Sqrt(Math.Abs(sqr1 * sqr2));
+            double angle = Math.Abs(Math.Acos(costr)); //This produces a result in radians
+            angle = angle * 180 / Math.PI; //This converts the result into degrees
+            return 180 - angle; //Convert so that a flat line is 0 angle through the points
+        }
     }
 }
