@@ -33,6 +33,19 @@ namespace BH.Engine.Reflection
     public static partial class Query
     {
         /***************************************************/
+        /**** Interface Methods                         ****/
+        /***************************************************/
+
+        public static bool IIsDeprecated(this object obj)
+        {
+            if (obj == null)
+                return false;
+
+            return IsDeprecated(obj as dynamic);
+        }
+
+
+        /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
@@ -59,8 +72,16 @@ namespace BH.Engine.Reflection
 
 
         /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
 
+        private static bool IsDeprecated(object obj)
+        {
+            // Fallback case, if the Interface method is called and no overload is found at runtime, it will end up here
+            return false;
+        }
 
+        /***************************************************/
 
     }
 }
