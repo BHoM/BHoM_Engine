@@ -23,6 +23,7 @@
 using BH.oM.Geometry;
 
 using System.Collections.Generic;
+using System.Linq;
 
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
@@ -67,6 +68,9 @@ namespace BH.Engine.Geometry
                 else
                     startIndex++; //Move onto the next point
             }
+
+            if (pnts.First() != pnts.Last())
+                pnts.Add(pnts.First()); //Reclose polyline
 
             Polyline pLine = new Polyline()
             {
