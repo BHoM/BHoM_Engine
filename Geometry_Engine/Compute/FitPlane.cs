@@ -35,11 +35,20 @@ namespace BH.Engine.Geometry
 
         public static Plane FitPlane(this List<Point> points, double tolerance = Tolerance.Distance)
         {
-            if (points.Count < 3)
+            if (points.Count < 3 || points.IsCollinear(tolerance))
                 return null;
 
             Plane result = null;
             Point origin = points.Average();
+            Vector normal = new Vector();
+
+            if (points.IsCoplanar(tolerance))
+            {
+                for (int i = 0; i < points.Count - 1; i++)
+                    normal += (points[i] - origin).CrossProduct(points[i + 1] - origin);
+                return new Plane { Origin = origin, Normal = normal.Normalise() };
+            }
+
             double[,] MTM = new double[3, 3];
             double[,] normalizedPoints = new double[points.Count, 3];
 
@@ -63,45 +72,23 @@ namespace BH.Engine.Geometry
                 }
             }
 
-            int nonZeroRowCount = MTM.CountNonZeroRows(MTM.REFTolerance(tolerance * tolerance));
+            Vector[] eigenvectors = MTM.Eigenvectors(tolerance);
+            if (eigenvectors == null)
+                return null;
 
-            if (nonZeroRowCount < 2)
-                return null;                                                        // points are collinear along X, Y or Z
-            else if (nonZeroRowCount == 2)                                          // normal is either X or Y or Z
+            double leastSquares = double.PositiveInfinity;
+            foreach (Vector eigenvector in eigenvectors)
             {
-                double sqX = 0;
-                double sqY = 0;
-                double sqZ = 0;
+                double squares = 0;
                 for (int i = 0; i < points.Count; i++)
                 {
-                    sqX += Math.Pow(normalizedPoints[i, 0], 2);
-                    sqY += Math.Pow(normalizedPoints[i, 1], 2);
-                    sqZ += Math.Pow(normalizedPoints[i, 2], 2);
+                    squares += Math.Pow(eigenvector.X * normalizedPoints[i, 0] + eigenvector.Y * normalizedPoints[i, 1] + eigenvector.Z * normalizedPoints[i, 2], 2);
                 }
 
-                Vector normal = sqX < sqY ? (sqX < sqZ ? Vector.XAxis : Vector.ZAxis) : (sqY < sqZ ? Vector.YAxis : Vector.ZAxis);
-                result = new Plane { Origin = origin, Normal = normal };
-            }
-            else
-            {
-                Vector[] eigenvectors = MTM.Eigenvectors(tolerance);
-                if (eigenvectors == null)
-                    return null;
-
-                double leastSquares = double.PositiveInfinity;
-                foreach (Vector eigenvector in eigenvectors)
+                if (squares <= leastSquares)
                 {
-                    double squares = 0;
-                    for (int i = 0; i < points.Count; i++)
-                    {
-                        squares += Math.Pow(eigenvector.X * normalizedPoints[i, 0] + eigenvector.Y * normalizedPoints[i, 1] + eigenvector.Z * normalizedPoints[i, 2], 2);
-                    }
-
-                    if (squares <= leastSquares)
-                    {
-                        leastSquares = squares;
-                        result = new Plane { Origin = origin, Normal = eigenvector };
-                    }
+                    leastSquares = squares;
+                    result = new Plane { Origin = origin, Normal = eigenvector.Normalise() };
                 }
             }
 
