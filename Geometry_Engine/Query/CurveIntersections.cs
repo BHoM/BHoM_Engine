@@ -191,7 +191,7 @@ namespace BH.Engine.Geometry
                     result.AddRange(CurveIntersections(c1 as dynamic, c2 as dynamic, tolerance));
                 }
             }
-            return result;
+            return result.CullDuplicates(tolerance);
         }
 
         /***************************************************/
@@ -208,7 +208,7 @@ namespace BH.Engine.Geometry
                     result.AddRange(CurveIntersections(c1 as dynamic, c2 as dynamic, tolerance));
                 }
             }
-            return result;
+            return result.CullDuplicates(tolerance);
         }
 
         /***************************************************/

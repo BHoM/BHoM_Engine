@@ -239,7 +239,7 @@ namespace BH.Engine.Geometry
                     iPts.Add(pt);
             }
 
-            return iPts;
+            return iPts.CullDuplicates(tolerance);
         }
 
         /***************************************************/
@@ -255,7 +255,7 @@ namespace BH.Engine.Geometry
                 iPts.AddRange(c.ILineIntersections(l));
             }
 
-            return iPts;
+            return iPts.CullDuplicates(tolerance);
         }
 
         /***************************************************/
@@ -274,7 +274,7 @@ namespace BH.Engine.Geometry
                 }
             }
 
-            return iPts;
+            return iPts.CullDuplicates(tolerance);
         }
 
         /***************************************************/
