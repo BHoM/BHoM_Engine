@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -130,6 +130,45 @@ namespace BH.Engine.Geometry
                 }
             }
             
+            return pts.IsCoplanar(tolerance);
+        }
+
+        public static bool IIsCoplanar(this ICurve curve1, ICurve curve2, double tolerance = Tolerance.Distance)
+        {
+            List<Point> pts = new List<Point> { curve1.IStartPoint() };
+
+            foreach (ICurve crv in curve1.ISubParts())
+            {
+                if (crv is Line)
+                    pts.Add((crv as Line).End);
+                else if (crv is Arc)
+                {
+                    pts.Add((crv as Arc).PointAtParameter(0.5));
+                    pts.Add((crv as Arc).EndPoint());
+                }
+                else
+                {
+                    throw new NotImplementedException();
+                }
+            }
+
+            pts.Add(curve2.IStartPoint());
+
+            foreach (ICurve crv in curve2.ISubParts())
+            {
+                if (crv is Line)
+                    pts.Add((crv as Line).End);
+                else if (crv is Arc)
+                {
+                    pts.Add((crv as Arc).PointAtParameter(0.5));
+                    pts.Add((crv as Arc).EndPoint());
+                }
+                else
+                {
+                    throw new NotImplementedException();
+                }
+            }
+
             return pts.IsCoplanar(tolerance);
         }
     }
