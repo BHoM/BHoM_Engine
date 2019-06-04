@@ -50,6 +50,7 @@ namespace BH.Engine.Structure
         [Input("element", "The framing element to generate bars from")]
         [Input("angleTolerance", "Angle tolerance to control the splitting up of non-linear curves. Unused for line based FramingElements")]
         [Input("maxNbBarsPerArc", "The maximum number of bars that each arc segement of the element will be split up into. Unused for line based FramingElements")]
+        [Deprecated("2.3", "Methods replaced with methods targeting BH.oM.Physical.Elements.IFramingElement")]
         public static List<Bar> AnalyticalBars(this FramingElement element, double angleTolerance = 0.05 * Math.PI, int maxNbBarsPerArc = 10)
         {
             return AnalyticalBars(element.Property as dynamic, element.LocationCurve, element.Name, angleTolerance, maxNbBarsPerArc);
@@ -59,7 +60,7 @@ namespace BH.Engine.Structure
         /**** Private Methods                           ****/
         /***************************************************/
 
-
+        [Deprecated("2.3", "Methods replaced with methods targeting BH.oM.Physical.FramingProperties.ConstantFramingElementProperty in Physical_oM")]
         private static List<Bar> AnalyticalBars(ConstantFramingElementProperty property, ICurve centreLine, string name, double angleTolerance, int maxNbBars)
         {
             if (centreLine is NurbsCurve)

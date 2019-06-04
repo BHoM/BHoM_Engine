@@ -25,6 +25,8 @@ using BH.oM.Structure.Elements;
 using BH.Engine.Geometry;
 using System;
 
+using BH.oM.Reflection.Attributes;
+
 namespace BH.Engine.Structure
 {
     public static partial class Query
@@ -40,6 +42,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Deprecated("2.3", "Methods replaced with methods targeting BH.oM.Physical.Elements.IFramingElement")]
         public static bool IsVertical(this FramingElement element)
         {
             return IsVertical(element.LocationCurve.IStartPoint(), element.LocationCurve.IEndPoint()); //TODO: is this correct? what is the framing element is curved?
