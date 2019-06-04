@@ -80,6 +80,7 @@
     <Compile Include="Convert\ToFramingElement.cs" />
     <Compile Include="Create\FEMesh.cs" />
     <Compile Include="Create\MaterialFragment.cs" />
+    <Compile Include="Modify\SetMaterial.cs" />
     <Compile Include="Modify\SetStructuralFragment.cs" />
     <Compile Include="Query\CoordinateSystem.cs" />
     <Compile Include="Query\MaterialType.cs" />
