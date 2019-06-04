@@ -39,12 +39,17 @@ namespace BH.Engine.Structure
         public static Bar SetMaterial(this Bar bar, IMaterialFragment material)
         {
             Bar clone = bar.GetShallowClone() as Bar;
+            if (bar.SectionProperty == null)
+            {
+                Engine.Reflection.Compute.RecordError("The section property parameter is null - material has not been assigned");
+                return clone;
+            }
             ISectionProperty Isectionproperty = bar.SectionProperty.GetShallowClone() as ISectionProperty;
             Isectionproperty.Material = material;
             clone.SectionProperty = Isectionproperty;
             return clone;
         }
-
+        
     }
 
 }
