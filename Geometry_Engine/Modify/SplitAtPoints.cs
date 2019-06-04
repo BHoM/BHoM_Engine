@@ -232,10 +232,7 @@ namespace BH.Engine.Geometry
                     subPoints.Clear();
                 }
                 else
-                {
                     throw new NotImplementedException();
-                }
-
             }
 
             int i = 0;
@@ -256,7 +253,7 @@ namespace BH.Engine.Geometry
                     subResultList.Add(tmpResult[j]);
                     if (i < onCurvePoints.Count)
                     {
-                        if (tmpResult[j].IEndPoint().IsEqual(onCurvePoints[i]) || (curve.IIsClosed(tolerance) && !curve.IIsClockwise(curve.INormal(),tolerance)&&tmpResult[j].IStartPoint().IsEqual(onCurvePoints[i])))
+                        if (tmpResult[j].IEndPoint().IsEqual(onCurvePoints[i]) || (curve.IIsClosed(tolerance) && !curve.IIsClockwise(curve.INormal(), tolerance) && tmpResult[j].IStartPoint().IsEqual(onCurvePoints[i])))
                         {
                             j++;
                             break;
@@ -269,8 +266,10 @@ namespace BH.Engine.Geometry
                     }
                     j++;
                 }
+
                 if (subResultList.Count > 0)
                     result.Add(new PolyCurve { Curves = subResultList.ToList() });
+
                 i++;
             }
 
@@ -315,7 +314,8 @@ namespace BH.Engine.Geometry
                     if (point.SquareDistance(l.Start) <= sqTol)
                     {
                         intStart = true;
-                        if (i == 0) closed = false;
+                        if (i == 0)
+                            closed = false;
                     }
                     else if (point.SquareDistance(l.End) > sqTol && point.SquareDistance(l) <= sqTol)
                         iPts.Add(point);
