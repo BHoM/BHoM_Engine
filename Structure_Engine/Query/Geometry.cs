@@ -27,6 +27,8 @@ using BH.Engine.Common;
 using System.Collections.Generic;
 using System.Linq;
 
+using BH.oM.Reflection.Attributes;
+
 namespace BH.Engine.Structure
 {
     public static partial class Query
@@ -108,6 +110,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Deprecated("2.3", "Methods replaced with methods targeting BH.oM.Physical.Elements.IFramingElement")]
         public static ICurve Geometry(this FramingElement element)
         {
             return element.LocationCurve;

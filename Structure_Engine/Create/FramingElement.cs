@@ -46,6 +46,7 @@ namespace BH.Engine.Structure
         [Input("property", "The property to be used on the framing element. The most simple version for this would be the ConstantFramingElementProperty, used for beams with constant section and rotation along the full element")]
         [Input("structuralUsage", "Describes the usage of the element.")]
         [Input("name", "The name of the element.")]
+        [Deprecated("2.3", "Methods replaced with methods targeting BH.oM.Physical.Elements.IFramingElement")]
         public static FramingElement FramingElement(ICurve locationCurve, IFramingElementProperty property, StructuralUsage1D structuralUsage = StructuralUsage1D.Beam, string name = "")
         {
             return new FramingElement { LocationCurve = locationCurve, Property = property, StructuralUsage = structuralUsage, Name = name };

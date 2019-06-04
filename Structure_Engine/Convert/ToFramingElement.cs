@@ -27,6 +27,8 @@ using System.Text;
 using System.Threading.Tasks;
 using BH.oM.Structure.Elements;
 
+using BH.oM.Reflection.Attributes;
+
 namespace BH.Engine.Structure
 {
     public static partial class Convert
@@ -34,7 +36,7 @@ namespace BH.Engine.Structure
         /***************************************************/
         /**** Public  Methods                           ****/
         /***************************************************/
-
+        [Deprecated("2.3", "Methods replaced with methods targeting BH.oM.Physical.Elements.IFramingElement")]
         public static FramingElement ToFramingElement(this Bar bar, StructuralUsage1D usage = StructuralUsage1D.Beam)
         {
             return new FramingElement
