@@ -29,13 +29,121 @@ using BH.oM.Reflection.Attributes;
 using BH.Engine.Geometry;
 using System.ComponentModel;
 using System;
+using BH.oM.Structure.SectionProperties;
+using BH.oM.Structure.MaterialFragments;
+
+using BHP = BH.oM.Physical;
 
 namespace BH.Engine.Structure
 {
     public static partial class Query
     {
+
         /***************************************************/
         /**** Public Methods                            ****/
+        /***************************************************/
+
+
+        [Description("Create a seres of analytical Bar elements from the framing element. Could return any number of bars for each framing element depending on the settings")]
+        [Input("element", "The framing element to generate bars from")]
+        [Input("angleTolerance", "Angle tolerance to control the splitting up of non-linear curves. Unused for line based FramingElements")]
+        [Input("maxNbBarsPerArc", "The maximum number of bars that each arc segement of the element will be split up into. Unused for line based FramingElements")]
+        public static List<List<Bar>> AnalyticalBars(this List<BHP.Elements.IFramingElement> elements, double angleTolerance = 0.05 * Math.PI, int maxNbBarsPerArc = 10)
+        {
+            //Store the converted proeprties as the elements are being converted.
+            Dictionary<BHP.FramingProperties.IFramingElementProperty, object> convertedProps = new Dictionary<BHP.FramingProperties.IFramingElementProperty, object>();
+
+            List<List<Bar>> bars = new List<List<Bar>>();
+
+            foreach (BHP.Elements.IFramingElement element in elements)
+            {
+                bars.AddRange(AnalyticalBars(element.Property as dynamic, element.Location, element.Name, angleTolerance, maxNbBarsPerArc, ref convertedProps));
+            }
+
+            return bars;
+        }
+
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+        private static List<Bar> AnalyticalBars(BHP.FramingProperties.ConstantFramingProperty property, ICurve centreLine, string name, double angleTolerance, int maxNbBars, ref Dictionary<BHP.FramingProperties.IFramingElementProperty, object> convertedProps)
+        {
+            if (centreLine is NurbsCurve)
+            {
+                Engine.Reflection.Compute.RecordError("The analytical bars method is currently not supported for NurbsCurves. Please use another method to split up the nurbs to polylines that can be used to construct the bars.");
+                return new List<Bar>();
+            }
+
+            ISectionProperty section;
+
+            if (convertedProps.ContainsKey(property))
+            {
+                section = convertedProps[property] as ISectionProperty;
+            }
+            else
+            {
+                section = ToSectionProperty(property);
+                convertedProps[property] = section;
+            }
+
+
+            return centreLine.ISubParts().SelectMany(x => x.ICollapseToPolyline(angleTolerance, maxNbBars).SubParts()).Select(x => Create.Bar(x, section , property.OrientationAngle, Create.BarReleaseFixFix(), BarFEAType.Flexural, name)).ToList();
+        }
+
+        /***************************************************/
+
+        private static ISectionProperty ToSectionProperty(BHP.FramingProperties.ConstantFramingProperty property)
+        {
+            ISectionProperty prop = null;
+
+            BHP.Materials.Material material = property.Material;
+
+            IMaterialFragment fragment;
+
+            if (material == null)
+            {
+                Reflection.Compute.RecordError("The FramingElement does not contain any material. An empty steel material has been used");
+                fragment = new Steel();
+            }
+            else if (!material.IsValidStructural())
+            {
+                string matName = material.Name ?? "";
+                Reflection.Compute.RecordWarning("The material with name " + matName + " is not a valid structural material as it does not contain exactly one structural material fragment. An empty steel material has been assumed");
+                fragment = new Steel { Name = matName };
+            }
+            else
+            {
+                fragment = material.StructuralMaterialFragment();
+            }
+
+            switch (fragment.IMaterialType())
+            {
+                case oM.Structure.MaterialFragments.MaterialType.Steel:
+                    prop = Create.SteelSectionFromProfile(property.Profile, fragment as Steel, property.Name);
+                    break;
+                case oM.Structure.MaterialFragments.MaterialType.Concrete:
+                    prop = Create.ConcreteSectionFromProfile(property.Profile, fragment as Concrete, property.Name);
+                    break;
+                case oM.Structure.MaterialFragments.MaterialType.Aluminium:
+                case oM.Structure.MaterialFragments.MaterialType.Timber:
+                case oM.Structure.MaterialFragments.MaterialType.Rebar:
+                case oM.Structure.MaterialFragments.MaterialType.Tendon:
+                case oM.Structure.MaterialFragments.MaterialType.Glass:
+                case oM.Structure.MaterialFragments.MaterialType.Cable:
+                case oM.Structure.MaterialFragments.MaterialType.Undefined:
+                default:
+                    prop = Create.SteelSectionFromProfile(property.Profile, null, property.Name);
+                    prop.Material = fragment;
+                    Reflection.Compute.RecordWarning("The BHoM does not currently support sections of material type " + fragment.IMaterialType() + ". A steel section has been created with the material applied to it");
+                    break;
+            }
+
+            return prop;
+        }
+
+        /***************************************************/
+        /**** Public Methods - Deprecated               ****/
         /***************************************************/
 
         [Deprecated("2.3", "Deprecated to be replaced with method with same name with more settings", null, "AnalyticalBars")]
@@ -57,7 +165,7 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
-        /**** Private Methods                           ****/
+        /**** Private Methods -Deprecated               ****/
         /***************************************************/
 
         [Deprecated("2.3", "Methods replaced with methods targeting BH.oM.Physical.FramingProperties.ConstantFramingElementProperty in Physical_oM")]
