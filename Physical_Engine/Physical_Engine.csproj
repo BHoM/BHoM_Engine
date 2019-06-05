@@ -34,6 +34,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\BHoM\Build\BHoM.dll</HintPath>
     </Reference>
+    <Reference Include="Geometry_oM, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\BHoM\Build\Geometry_oM.dll</HintPath>
+    </Reference>
     <Reference Include="Physical_oM">
       <HintPath>..\..\BHoM\Build\Physical_oM.dll</HintPath>
     </Reference>
@@ -51,12 +55,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Create\FramingElement.cs" />
     <Compile Include="Create\Construction.cs" />
+    <Compile Include="Create\FramingElementProperty.cs" />
     <Compile Include="Create\Layer.cs" />
     <Compile Include="Create\Material.cs" />
+    <Compile Include="Create\Surface.cs" />
     <Compile Include="Modify\AddMaterialProperties.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Query\Construction.cs" />
+    <Compile Include="Query\Geometry.cs" />
     <Compile Include="Query\Thickness.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -64,6 +72,10 @@
     <Folder Include="Convert\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Geometry_Engine\Geometry_Engine.csproj">
+      <Project>{89ab2dcb-ef87-4cba-b59c-c16a8a71d333}</Project>
+      <Name>Geometry_Engine</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Reflection_Engine\Reflection_Engine.csproj">
       <Project>{b0154405-9390-472d-9b5c-a2280823b18d}</Project>
       <Name>Reflection_Engine</Name>
