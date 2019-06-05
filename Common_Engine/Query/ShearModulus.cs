@@ -21,6 +21,7 @@
  */
 
 using BH.oM.Common.Materials;
+using BH.oM.Reflection.Attributes;
 
 namespace BH.Engine.Common
 {
@@ -30,6 +31,7 @@ namespace BH.Engine.Common
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Deprecated("2.3", "Material class superseeded by counterpart in Physical_oM and MaterialFragments in Structure_oM")]
         public static double ShearModulus(this Material material)
         {
             return material.YoungsModulus / (2 * (1 + material.PoissonsRatio));
