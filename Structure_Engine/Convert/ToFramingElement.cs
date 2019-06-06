@@ -36,7 +36,7 @@ namespace BH.Engine.Structure
         /***************************************************/
         /**** Public  Methods                           ****/
         /***************************************************/
-        [Deprecated("2.3", "Methods replaced with methods targeting BH.oM.Physical.Elements.IFramingElement")]
+        [Deprecated("2.3", "Replaced be Create(Bar,StructuralUsage) in Structure_Engine")]
         public static FramingElement ToFramingElement(this Bar bar, StructuralUsage1D usage = StructuralUsage1D.Beam)
         {
             return new FramingElement
