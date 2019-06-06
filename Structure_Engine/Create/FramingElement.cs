@@ -22,9 +22,13 @@
 
 using BH.oM.Structure.Elements;
 using BH.oM.Structure.FramingProperties;
+using BH.oM.Structure.SectionProperties;
 using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
+using BHPE = BH.oM.Physical.Elements;
+using BHPP = BH.oM.Physical.FramingProperties;
+using BH.oM.Geometry.ShapeProfiles;
 
 namespace BH.Engine.Structure
 {
@@ -32,6 +36,68 @@ namespace BH.Engine.Structure
     {
         /***************************************************/
         /**** Public Methods                            ****/
+        /***************************************************/
+
+        [Description("Creates a physical IFramingElement from a bar. The framing element will be assigned a ConstantFramingProperty based on the sectionproeprty of the bar and have a type based on the structural usage")]
+        [Input("bar", "The bar to use as the base for the framing element.")]
+        [Input("structuralUsage", "Used to determine which type of framing element that should be constructed")]
+        public static BHPE.IFramingElement FramingElement(Bar bar, StructuralUsage1D structuralUsage = StructuralUsage1D.Beam)
+        {
+            ISectionProperty prop = bar.SectionProperty;
+            BHPP.ConstantFramingProperty framingProp = null;
+            if (prop == null)
+            {
+                Reflection.Compute.RecordWarning("The bar does not contain a sectionProperty. Can not extract profile or material");
+            }
+            else
+            {
+                IProfile profile = null;
+                if (prop is SteelSection)
+                    profile = (prop as SteelSection).SectionProfile;
+                else if (prop is ConcreteSection)
+                    profile = (prop as ConcreteSection).SectionProfile;
+                else
+                    Reflection.Compute.RecordWarning("Was not able to extract any section profile");
+
+
+                BH.oM.Physical.Materials.Material material = null;
+
+                if (prop.Material != null)
+                {
+                    string matName = prop.Material.Name ?? "";
+                    material = Physical.Create.Material(matName, new System.Collections.Generic.List<oM.Physical.Materials.IMaterialProperties> { prop.Material });
+                }
+                else
+                {
+                    Engine.Reflection.Compute.RecordWarning("Material from sectiion property of the bar is null");
+                }
+
+                framingProp = Physical.Create.ConstantFramingProperty(profile, material, bar.OrientationAngle, prop.Name ?? "");
+            }
+
+            Line location = bar.Centreline();
+            string name = bar.Name ?? "";
+            switch (structuralUsage)
+            {
+                case StructuralUsage1D.Column:
+                    return Physical.Create.Column(location, framingProp, name);
+                case StructuralUsage1D.Brace:
+                    return Physical.Create.Bracing(location, framingProp, name);
+                case StructuralUsage1D.Cable:
+                    return Physical.Create.Cable(location, framingProp, name);
+                case StructuralUsage1D.Pile:
+                    return Physical.Create.Pile(location, framingProp, name);
+                default:
+                case StructuralUsage1D.Undefined:
+                case StructuralUsage1D.Beam:
+                    return Physical.Create.Beam(location, framingProp, name);
+
+            }
+        }
+
+
+        /***************************************************/
+        /**** Public Methods -Deprecated                ****/
         /***************************************************/
 
         [Deprecated("2.3", "Deprecated by method accepting a ICurve", null, "FramingElement")]
