@@ -40,7 +40,7 @@ namespace BH.Engine.Geometry
                 t = 1;
 
             double alfa = curve.Angle() * t + curve.StartAngle;
-            Vector localX = curve.CoordinateSystem.X.Normalise();
+            Vector localX = curve.CoordinateSystem.X;
             return curve.CoordinateSystem.Origin + localX.Rotate(alfa, curve.FitPlane().Normal) * curve.Radius;
         }
 
