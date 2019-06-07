@@ -104,7 +104,7 @@ namespace BH.Engine.Geometry
             Vector normal = circle.Normal;
             Double rotAng;
 
-            Cartesian system = new Cartesian(circle.Centre, startVector, circle.PointAtParameter(0.25) - cirCen, normal);
+            Cartesian system = new Cartesian(circle.Centre, startVector.Normalise(), (circle.PointAtParameter(0.25) - cirCen).Normalise(), normal);
             
             Arc mainArc = new Arc();
             Arc tmpArc = new Arc();
