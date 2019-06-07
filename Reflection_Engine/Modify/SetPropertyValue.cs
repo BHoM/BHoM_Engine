@@ -43,18 +43,30 @@ namespace BH.Engine.Reflection
         [Output("result", "New object with its property changed to the new value")]
         public static BHoMObject PropertyValue(this BHoMObject obj, string propName, object value)
         {
-            BHoMObject newObject = obj.GetShallowClone() as BHoMObject;
-            newObject.SetPropertyValue(propName, value);
-            return newObject;
+            if (obj == null || propName == null || value == null)
+                return null;
+
+            obj = obj.GetShallowClone() as BHoMObject;
+            string[] props = propName.Split('.');
+
+            if (props.Length > 0)
+            {
+                obj.SetPropertyValue(props[0], value);
+                return obj;
+            }
+            return null;
         }
 
         /***************************************************/
 
         public static bool SetPropertyValue(this object obj, string propName, object value)
         {
+            if (obj == null || propName == null || value == null)
+                return true;
+
             System.Reflection.PropertyInfo prop = obj.GetType().GetProperty(propName);
 
-            if (prop != null)
+            if (prop != null && prop.CanWrite)
             {
                 if (value.GetType() != prop.PropertyType  && value.GetType().GenericTypeArguments.Length > 0 && prop.PropertyType.GenericTypeArguments.Length > 0)
                 {
@@ -76,7 +88,8 @@ namespace BH.Engine.Reflection
                 if (bhomObj == null) return false;
 
                 if(!(bhomObj is CustomObject))
-                    Compute.RecordWarning("The objects does not contain any property with the name " + propName +". The value is being set as custom data");
+                    Compute.RecordWarning($"{bhomObj} not contain any property with the name { propName}." +
+                        $"The value is being set as custom data");
 
                 bhomObj.CustomData[propName] = value;
                 return true;
