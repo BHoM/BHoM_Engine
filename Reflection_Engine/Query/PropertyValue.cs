@@ -39,31 +39,57 @@ namespace BH.Engine.Reflection
         [Output("value", "value of the property")]
         public static object PropertyValue(this object obj, string propName)
         {
+            string[] props = propName.Split('.');
+            foreach (string prop in props)
+            {
+                obj = obj.GetPropertyValue(prop);
+                if (obj == null)
+                    break;
+            }
+
+            return obj;
+        }
+
+        /***************************************************/
+
+        public static object GetPropertyValue(this object obj, string propName)
+        {
+            if (obj == null || propName == null)
+                return null;
+
             System.Reflection.PropertyInfo prop = obj.GetType().GetProperty(propName);
 
             if (prop != null)
+            {
                 return prop.GetValue(obj);
+            }
             else if (obj is IBHoMObject)
             {
                 IBHoMObject bhom = obj as IBHoMObject;
                 if (bhom.CustomData.ContainsKey(propName))
                 {
+                    Compute.RecordNote($"{propName} is stored in CustomData");
                     return bhom.CustomData[propName];
                 }
                 else
                 {
-                    Compute.RecordWarning("The object does not contain a property of that name");
+                    Compute.RecordWarning($"{bhom} does not contain a property {propName} or CustomData.{propName}");
                     return null;
                 }
-                    
+
             }
             else if (obj is IDictionary)
             {
                 IDictionary dic = obj as IDictionary;
                 if (dic.Contains(propName))
+                {
                     return dic[propName];
+                }
                 else
+                {
+                    Compute.RecordWarning($"{dic} does not contain the key {propName}");
                     return null;
+                }
             }
             else
                 return null;
