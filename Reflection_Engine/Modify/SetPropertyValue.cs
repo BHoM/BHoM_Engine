@@ -43,32 +43,20 @@ namespace BH.Engine.Reflection
         [Output("result", "New object with its property changed to the new value")]
         public static BHoMObject PropertyValue(this BHoMObject obj, string propName, object value)
         {
-            if (obj == null || propName == null || value == null)
-                return null;
-
-            obj = obj.GetShallowClone() as BHoMObject;
-            string[] props = propName.Split('.');
-
-            if (props.Length > 0)
-            {
-                obj.SetPropertyValue(props[0], value);
-                return obj;
-            }
-            return null;
+            BHoMObject newObject = obj.GetShallowClone() as BHoMObject;
+            newObject.SetPropertyValue(propName, value);
+            return newObject;
         }
 
         /***************************************************/
 
         public static bool SetPropertyValue(this object obj, string propName, object value)
         {
-            if (obj == null || propName == null || value == null)
-                return true;
-
             System.Reflection.PropertyInfo prop = obj.GetType().GetProperty(propName);
 
-            if (prop != null && prop.CanWrite)
+            if (prop != null)
             {
-                if (value.GetType() != prop.PropertyType  && value.GetType().GenericTypeArguments.Length > 0 && prop.PropertyType.GenericTypeArguments.Length > 0)
+                if (value.GetType() != prop.PropertyType && value.GetType().GenericTypeArguments.Length > 0 && prop.PropertyType.GenericTypeArguments.Length > 0)
                 {
                     value = Modify.CastGeneric(value as dynamic, prop.PropertyType.GenericTypeArguments[0]);
                 }
@@ -82,14 +70,13 @@ namespace BH.Engine.Reflection
                 prop.SetValue(obj, value);
                 return true;
             }
-            else if(obj is IBHoMObject)
+            else if (obj is IBHoMObject)
             {
                 IBHoMObject bhomObj = obj as IBHoMObject;
                 if (bhomObj == null) return false;
 
-                if(!(bhomObj is CustomObject))
-                    Compute.RecordWarning($"{bhomObj} not contain any property with the name { propName}." +
-                        $"The value is being set as custom data");
+                if (!(bhomObj is CustomObject))
+                    Compute.RecordWarning("The objects does not contain any property with the name " + propName + ". The value is being set as custom data");
 
                 bhomObj.CustomData[propName] = value;
                 return true;
@@ -136,7 +123,7 @@ namespace BH.Engine.Reflection
 
                 return true;
             }
-            
+
         }
 
 
