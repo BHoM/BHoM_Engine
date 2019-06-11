@@ -49,7 +49,7 @@ namespace BH.Engine.Environment
         [Output("isExposedToSun", "True if the panel is on the exterior of the model and has the potential to be exposed to the sun, false otherwise")]
         public static bool ExposedToSun(this Panel panel)
         {
-            return (panel.Type == PanelType.Roof || panel.Type == PanelType.WallExternal);
+            return (panel.Type == PanelType.Roof || panel.Type == PanelType.WallExternal || panel.Type == PanelType.FloorExposed || panel.Type == PanelType.Shade);
         }
     }
 }
