@@ -57,7 +57,7 @@ namespace BH.Engine.Structure
 
             foreach (BHP.Elements.IFramingElement element in elements)
             {
-                bars.AddRange(AnalyticalBars(element.Property as dynamic, element.Location, element.Name, angleTolerance, maxNbBarsPerArc, ref convertedProps));
+                bars.Add(AnalyticalBars(element.Property as dynamic, element.Location, element.Name, angleTolerance, maxNbBarsPerArc, ref convertedProps));
             }
 
             return bars;
