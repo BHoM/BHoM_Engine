@@ -103,9 +103,7 @@ namespace BH.Engine.Geometry
             Vector startVector = circle.StartPoint() - circle.Centre;
             Vector normal = circle.Normal;
             Double rotAng;
-
             Cartesian system = new Cartesian(circle.Centre, startVector.Normalise(), (circle.PointAtParameter(0.25) - cirCen).Normalise(), normal);
-            
             Arc mainArc = new Arc();
             Arc tmpArc = new Arc();
 
@@ -231,6 +229,13 @@ namespace BH.Engine.Geometry
                     tmpResult.AddRange((crv as Line).SplitAtPoints(subPoints));
                     subPoints.Clear();
                 }
+                else if (crv is Circle)
+                {
+                    List<PolyCurve> tResult = new List<PolyCurve>();
+                    foreach (Arc arc in (crv as Circle).SplitAtPoints(onCurvePoints, tolerance))
+                        tResult.Add(new PolyCurve { Curves = new List<ICurve> { arc } });
+                    result.AddRange(tResult);
+                }
                 else
                     throw new NotImplementedException();
             }
@@ -273,7 +278,7 @@ namespace BH.Engine.Geometry
                 i++;
             }
 
-            if (curve.IsClosed(tolerance))
+            if (curve.IsClosed(tolerance) && !(curve.SubParts()[0] is Circle))
                 if (!curve.StartPoint().IsEqual(onCurvePoints[onCurvePoints.Count - 1]))
                 {
                     List<ICurve> subResultList = new List<ICurve>();
@@ -371,5 +376,24 @@ namespace BH.Engine.Geometry
         }
 
         /***************************************************/
+        /****           TEST METHODS                    ****/
+        /***************************************************/
+        /****     TO BE DELETED BEFORE MERGING!!        ****/
+        /***************************************************/
+
+        public static List<ICurve> ISplitAtPointsTEST(this ICurve curve, List<Point> points, double tolerance = Tolerance.Distance)
+        {
+            if (curve is Circle)
+                curve = new PolyCurve { Curves = { curve } };
+
+            List<ICurve> result = new List<ICurve>();
+            System.Collections.IList splitCurves = SplitAtPoints(curve as dynamic, points, tolerance);
+            for (int i = 0; i < splitCurves.Count; i++)
+            {
+                result.Add(splitCurves[i] as ICurve);
+            }
+
+            return result;
+        }
     }
 }

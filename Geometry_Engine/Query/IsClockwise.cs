@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -75,8 +75,14 @@ namespace BH.Engine.Geometry
                     cPts.Add(c.IEndPoint());
                 else if (c is Arc)
                 {
-                    cPts.Add(c.IPointAtParameter(0.5));
-                    cPts.Add(c.IEndPoint());
+                    cPts.Add((c as Arc).PointAtParameter(0.5));
+                    cPts.Add((c as Arc).EndPoint());
+                }
+                else if (c is Circle)
+                {
+                    cPts.Add((c as Circle).PointAtParameter(0.3));
+                    cPts.Add((c as Circle).PointAtParameter(0.6));
+                    cPts.Add((c as Circle).EndPoint());
                 }
                 else
                     throw new NotImplementedException();
@@ -115,16 +121,38 @@ namespace BH.Engine.Geometry
             return ((normal.DotProduct(axis) < 0) != (arc.Angle() > Math.PI));       
         }
 
+        /***************************************************/
+
+        public static bool IsClockwise(this Circle curve, Vector axis, double tolerance = Tolerance.Distance)
+        {
+            List<Point> cPts = new List<Point> { curve.StartPoint(), curve.PointAtParameter(0.3),
+                                                 curve.PointAtParameter(0.6), curve.EndPoint() };
+            return IsClockwise(new Polyline { ControlPoints = cPts }, axis, tolerance);
+        }
 
         /***************************************************/
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
-        
+
         public static bool IIsClockwise(this ICurve curve, Vector axis, double tolerance = Tolerance.Distance)
         {
             return IsClockwise(curve as dynamic, axis, tolerance);
         }
 
         /***************************************************/
+
+        /***************************************************/
+        /****           TEST METHODS                    ****/
+        /***************************************************/
+        /****     TO BE DELETED BEFORE MERGING!!        ****/
+        /***************************************************/
+
+        public static bool IIsClockwiseTEST(this ICurve curve, Vector axis, double tolerance = Tolerance.Distance)
+        {
+            if (curve is Circle)
+                curve = new PolyCurve { Curves = { curve } };
+
+            return IsClockwise(curve as PolyCurve, axis, tolerance);
+        }
     }
 }
