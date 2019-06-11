@@ -107,6 +107,11 @@ namespace BH.Engine.Geometry
                     pts.Add((crv as Arc).PointAtParameter(0.5));
                     pts.Add((crv as Arc).EndPoint());
                 }
+                else if (crv is Circle)
+                {
+                    pts.Add((crv as Circle).PointAtParameter(0.3));
+                    pts.Add((crv as Circle).PointAtParameter(0.6));
+                }
                 else
                 {
                     throw new NotImplementedException();
@@ -124,6 +129,11 @@ namespace BH.Engine.Geometry
                     pts.Add((crv as Arc).PointAtParameter(0.5));
                     pts.Add((crv as Arc).EndPoint());
                 }
+                else if (crv is Circle)
+                {
+                    pts.Add((crv as Circle).PointAtParameter(0.3));
+                    pts.Add((crv as Circle).PointAtParameter(0.6));
+                }
                 else
                 {
                     throw new NotImplementedException();
@@ -132,6 +142,8 @@ namespace BH.Engine.Geometry
             
             return pts.IsCoplanar(tolerance);
         }
+
+        /***************************************************/
 
         public static bool IIsCoplanar(this ICurve curve1, ICurve curve2, double tolerance = Tolerance.Distance)
         {
@@ -145,6 +157,11 @@ namespace BH.Engine.Geometry
                 {
                     pts.Add((crv as Arc).PointAtParameter(0.5));
                     pts.Add((crv as Arc).EndPoint());
+                }
+                else if (crv is Circle)
+                {
+                    pts.Add((crv as Circle).PointAtParameter(0.3));
+                    pts.Add((crv as Circle).PointAtParameter(0.6));
                 }
                 else
                 {
@@ -162,6 +179,72 @@ namespace BH.Engine.Geometry
                 {
                     pts.Add((crv as Arc).PointAtParameter(0.5));
                     pts.Add((crv as Arc).EndPoint());
+                }
+                else if (crv is Circle)
+                {
+                    pts.Add((crv as Circle).PointAtParameter(0.3));
+                    pts.Add((crv as Circle).PointAtParameter(0.6));
+                }
+                else
+                {
+                    throw new NotImplementedException();
+                }
+            }
+
+            return pts.IsCoplanar(tolerance);
+        }
+
+        /***************************************************/
+        /****           TEST METHODS                    ****/
+        /***************************************************/
+        /****     TO BE DELETED BEFORE MERGING!!        ****/
+        /***************************************************/
+
+        public static bool IsCoplanarTEST(this ICurve curve1, ICurve curve2, double tolerance = Tolerance.Distance)
+        {
+            if (curve1 is Circle)
+                curve1 = new PolyCurve { Curves = { curve1 } };
+
+            if (curve1 is Circle)
+                curve1 = new PolyCurve { Curves = { curve1 } };
+
+            List<Point> pts = new List<Point> { curve1.IStartPoint() };
+
+            foreach (ICurve crv in curve1.ISubParts())
+            {
+                if (crv is Line)
+                    pts.Add((crv as Line).End);
+                else if (crv is Arc)
+                {
+                    pts.Add((crv as Arc).PointAtParameter(0.5));
+                    pts.Add((crv as Arc).EndPoint());
+                }
+                else if (crv is Circle)
+                {
+                    pts.Add((crv as Circle).PointAtParameter(0.3));
+                    pts.Add((crv as Circle).PointAtParameter(0.6));
+                }
+                else
+                {
+                    throw new NotImplementedException();
+                }
+            }
+
+            pts.Add(curve2.IStartPoint());
+
+            foreach (ICurve crv in curve2.ISubParts())
+            {
+                if (crv is Line)
+                    pts.Add((crv as Line).End);
+                else if (crv is Arc)
+                {
+                    pts.Add((crv as Arc).PointAtParameter(0.5));
+                    pts.Add((crv as Arc).EndPoint());
+                }
+                else if (crv is Circle)
+                {
+                    pts.Add((crv as Circle).PointAtParameter(0.3));
+                    pts.Add((crv as Circle).PointAtParameter(0.6));
                 }
                 else
                 {
