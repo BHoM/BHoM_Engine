@@ -51,30 +51,131 @@ namespace BH.Engine.Structure
 
             List<ICurve> secCurves = profile.Edges.ToList();
 
-            Point orgin = new Point { X = bar.SectionProperty.CentreY, Y = bar.SectionProperty.CentreZ, Z = 0 };
-            Vector z = Vector.ZAxis;
-            Point startPos = bar.StartNode.Position();
+            //Point orgin = new Point { X = bar.SectionProperty.CentreY, Y = bar.SectionProperty.CentreZ, Z = 0 };
+            //Vector z = Vector.ZAxis;
+            //Point startPos = bar.StartNode.Position();
+            //Vector tan = bar.Tangent();
+            //Vector trans = startPos - orgin;
+
+            //double anglePerp = BH.Engine.Geometry.Query.Angle(z, tan);
+            //TransformMatrix alignmentPerp = Engine.Geometry.Create.RotationMatrix(orgin, BH.Engine.Geometry.Query.CrossProduct(z, tan), anglePerp);
+            //Vector localX = Vector.XAxis.Transform(alignmentPerp);
+
+            //double angleAxisAlign = localX.Angle(z.CrossProduct(tan));
+            //if (localX.DotProduct(Vector.ZAxis) > 0) angleAxisAlign = -angleAxisAlign;
+
+            //TransformMatrix axisAlign = Engine.Geometry.Create.RotationMatrix(orgin, tan, angleAxisAlign);
+
+            //TransformMatrix orientationAlign = Engine.Geometry.Create.RotationMatrix(orgin, Vector.ZAxis, bar.OrientationAngle);
+
+            //TransformMatrix totalTransform = Engine.Geometry.Create.TranslationMatrix(trans) * axisAlign * alignmentPerp * orientationAlign;
+
+
+            //Point orgin = new Point { X = bar.SectionProperty.CentreY, Y = bar.SectionProperty.CentreZ, Z = 0 };
+            //Vector y = Vector.YAxis;
+            //Point startPos = bar.StartNode.Position();
+            //Vector normal = bar.Normal();
+            //Vector trans = startPos - orgin;
+
+            //double anglePerp = BH.Engine.Geometry.Query.Angle(y, normal);
+            //TransformMatrix alignmentPerp = Engine.Geometry.Create.RotationMatrix(orgin, BH.Engine.Geometry.Query.CrossProduct(y, normal), anglePerp);
+            //Vector localX = Vector.XAxis.Transform(alignmentPerp);
+
+            //double angleAxisAlign = localX.Angle(y.CrossProduct(normal));
+            //if (localX.DotProduct(Vector.ZAxis) > 0) angleAxisAlign = -angleAxisAlign;
+
+            //Vector tan = bar.Tangent();
+
+            //TransformMatrix axisAlign = Engine.Geometry.Create.RotationMatrix(orgin, tan, angleAxisAlign);
+
+            //TransformMatrix orientationAlign = Engine.Geometry.Create.RotationMatrix(orgin, Vector.ZAxis, bar.OrientationAngle);
+
+            //TransformMatrix totalTransform = Engine.Geometry.Create.TranslationMatrix(trans) * axisAlign * alignmentPerp;// * orientationAlign;
+
+
+            //Vector gX = Vector.ZAxis;
+            //Vector gY = Vector.XAxis;
+            //Vector gZ = Vector.YAxis;
+
+            //Vector lX = bar.Tangent(true);
+            //Vector lZ = bar.Normal();
+            //Vector lY = lZ.CrossProduct(lX);
+
+            Vector trans = bar.StartNode.Position - Point.Origin;
             Vector tan = bar.Tangent();
-            Vector trans = startPos - orgin;
 
-            double anglePerp = BH.Engine.Geometry.Query.Angle(z, tan);
-            TransformMatrix alignmentPerp = Engine.Geometry.Create.RotationMatrix(orgin, BH.Engine.Geometry.Query.CrossProduct(z, tan), anglePerp);
-            Vector localX = Vector.XAxis.Transform(alignmentPerp);
 
-            double angleAxisAlign = localX.Angle(z.CrossProduct(tan));
-            if (localX.DotProduct(Vector.ZAxis) > 0) angleAxisAlign = -angleAxisAlign;
+            Vector gX = Vector.XAxis;
+            Vector gY = Vector.YAxis;
+            Vector gZ = Vector.ZAxis;
 
-            TransformMatrix axisAlign = Engine.Geometry.Create.RotationMatrix(orgin, tan, angleAxisAlign);
+            Vector lX = tan.Normalise();
+            Vector lZ = bar.Normal();
+            Vector lY = lZ.CrossProduct(lX);
 
-            TransformMatrix orientationAlign = Engine.Geometry.Create.RotationMatrix(orgin, Vector.ZAxis, bar.OrientationAngle);
 
-            TransformMatrix totalTransform = Engine.Geometry.Create.TranslationMatrix(trans) * axisAlign * alignmentPerp * orientationAlign;
+            TransformMatrix localToGlobal = new TransformMatrix();
+
+            localToGlobal.Matrix[0, 0] = gX.DotProduct(lX);
+            localToGlobal.Matrix[0, 1] = gX.DotProduct(lY);
+            localToGlobal.Matrix[0, 2] = gX.DotProduct(lZ);
+
+            localToGlobal.Matrix[1, 0] = gY.DotProduct(lX);
+            localToGlobal.Matrix[1, 1] = gY.DotProduct(lY);
+            localToGlobal.Matrix[1, 2] = gY.DotProduct(lZ);
+
+            localToGlobal.Matrix[2, 0] = gZ.DotProduct(lX);
+            localToGlobal.Matrix[2, 1] = gZ.DotProduct(lY);
+            localToGlobal.Matrix[2, 2] = gZ.DotProduct(lZ);
+            localToGlobal.Matrix[3, 3] = 1;
+
+            TransformMatrix totalTransform = Engine.Geometry.Create.TranslationMatrix(trans) * localToGlobal * GlobalToSectionAxes;
 
             if (simple)
                 return ExtrudeSimple(secCurves, totalTransform, tan);
             else
                 return ExtrudeFullCurves(secCurves, totalTransform, tan);
 
+        }
+
+        /***************************************************/
+        /**** Private Property                          ****/
+        /***************************************************/
+
+
+       private static TransformMatrix GlobalToSectionAxes
+        {
+            get
+            {
+                Vector gX = Vector.XAxis;
+                Vector gY = Vector.YAxis;
+                Vector gZ = Vector.ZAxis;
+
+                //Global system vectors, Sections are drawn in global XY plane with y relating to the normal
+                Vector lX = Vector.ZAxis;
+                Vector lY = Vector.XAxis;
+                Vector lZ = Vector.YAxis;
+
+                TransformMatrix transform = new TransformMatrix();
+
+
+
+                transform.Matrix[0, 0] = lX.DotProduct(gX);
+                transform.Matrix[0, 1] = lX.DotProduct(gY);
+                transform.Matrix[0, 2] = lX.DotProduct(gZ);
+
+                transform.Matrix[1, 0] = lY.DotProduct(gX);
+                transform.Matrix[1, 1] = lY.DotProduct(gY);
+                transform.Matrix[1, 2] = lY.DotProduct(gZ);
+
+                transform.Matrix[2, 0] = lZ.DotProduct(gX);
+                transform.Matrix[2, 1] = lZ.DotProduct(gY);
+                transform.Matrix[2, 2] = lZ.DotProduct(gZ);
+
+                transform.Matrix[3, 3] = 1;
+
+                return transform;
+            }
         }
 
         /***************************************************/
