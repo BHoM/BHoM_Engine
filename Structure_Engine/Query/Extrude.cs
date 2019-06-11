@@ -51,56 +51,6 @@ namespace BH.Engine.Structure
 
             List<ICurve> secCurves = profile.Edges.ToList();
 
-            //Point orgin = new Point { X = bar.SectionProperty.CentreY, Y = bar.SectionProperty.CentreZ, Z = 0 };
-            //Vector z = Vector.ZAxis;
-            //Point startPos = bar.StartNode.Position();
-            //Vector tan = bar.Tangent();
-            //Vector trans = startPos - orgin;
-
-            //double anglePerp = BH.Engine.Geometry.Query.Angle(z, tan);
-            //TransformMatrix alignmentPerp = Engine.Geometry.Create.RotationMatrix(orgin, BH.Engine.Geometry.Query.CrossProduct(z, tan), anglePerp);
-            //Vector localX = Vector.XAxis.Transform(alignmentPerp);
-
-            //double angleAxisAlign = localX.Angle(z.CrossProduct(tan));
-            //if (localX.DotProduct(Vector.ZAxis) > 0) angleAxisAlign = -angleAxisAlign;
-
-            //TransformMatrix axisAlign = Engine.Geometry.Create.RotationMatrix(orgin, tan, angleAxisAlign);
-
-            //TransformMatrix orientationAlign = Engine.Geometry.Create.RotationMatrix(orgin, Vector.ZAxis, bar.OrientationAngle);
-
-            //TransformMatrix totalTransform = Engine.Geometry.Create.TranslationMatrix(trans) * axisAlign * alignmentPerp * orientationAlign;
-
-
-            //Point orgin = new Point { X = bar.SectionProperty.CentreY, Y = bar.SectionProperty.CentreZ, Z = 0 };
-            //Vector y = Vector.YAxis;
-            //Point startPos = bar.StartNode.Position();
-            //Vector normal = bar.Normal();
-            //Vector trans = startPos - orgin;
-
-            //double anglePerp = BH.Engine.Geometry.Query.Angle(y, normal);
-            //TransformMatrix alignmentPerp = Engine.Geometry.Create.RotationMatrix(orgin, BH.Engine.Geometry.Query.CrossProduct(y, normal), anglePerp);
-            //Vector localX = Vector.XAxis.Transform(alignmentPerp);
-
-            //double angleAxisAlign = localX.Angle(y.CrossProduct(normal));
-            //if (localX.DotProduct(Vector.ZAxis) > 0) angleAxisAlign = -angleAxisAlign;
-
-            //Vector tan = bar.Tangent();
-
-            //TransformMatrix axisAlign = Engine.Geometry.Create.RotationMatrix(orgin, tan, angleAxisAlign);
-
-            //TransformMatrix orientationAlign = Engine.Geometry.Create.RotationMatrix(orgin, Vector.ZAxis, bar.OrientationAngle);
-
-            //TransformMatrix totalTransform = Engine.Geometry.Create.TranslationMatrix(trans) * axisAlign * alignmentPerp;// * orientationAlign;
-
-
-            //Vector gX = Vector.ZAxis;
-            //Vector gY = Vector.XAxis;
-            //Vector gZ = Vector.YAxis;
-
-            //Vector lX = bar.Tangent(true);
-            //Vector lZ = bar.Normal();
-            //Vector lY = lZ.CrossProduct(lX);
-
             Vector trans = bar.StartNode.Position - Point.Origin;
             Vector tan = bar.Tangent();
 
@@ -112,7 +62,6 @@ namespace BH.Engine.Structure
             Vector lX = tan.Normalise();
             Vector lZ = bar.Normal();
             Vector lY = lZ.CrossProduct(lX);
-
 
             TransformMatrix localToGlobal = new TransformMatrix();
 
