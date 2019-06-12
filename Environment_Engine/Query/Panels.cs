@@ -183,6 +183,15 @@ namespace BH.Engine.Environment
             return returnPanels;
         }
 
+        [Description("Returns a sinlge Environment Panel that matches the provided filter GUID")]
+        [Input("panels", "A collection of Environment Panels to filter")]
+        [Input("guid", "The GUID to filter by")]
+        [Output("panel", "A single Environment Panel where the BHoM GUID is matching the provided GUID")]
+        public static Panel PanelByGuid(this List<Panel> panels, Guid guid)
+        {
+            return panels.Where(x => x.BHoM_Guid == guid).FirstOrDefault();
+        }
+
 
     }
 }
