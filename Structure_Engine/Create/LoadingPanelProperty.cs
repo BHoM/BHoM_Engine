@@ -24,7 +24,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using BH.oM.Structure.SurfaceProperties;
 using BH.oM.Geometry;
-using BH.oM.Common.Materials;
+
 
 
 namespace BH.Engine.Structure
