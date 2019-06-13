@@ -75,17 +75,11 @@ namespace BH.Engine.Structure
                 return new List<Bar>();
             }
 
-            bool isLinear = false;
+            bool isLinear = centreLine.IIsLinear();
             Plane curvePlane = null;
 
-            if (centreLine.IIsLinear())
-            {
-                isLinear = true;
-            }
-            else
-            {
+            if (!isLinear)
                 curvePlane = centreLine.IFitPlane();
-            }
 
             ISectionProperty section;
 
