@@ -106,7 +106,7 @@
     <Compile Include="Create\NewInternalElement2D.cs" />
     <Compile Include="Create\SimulationResult.cs" />
     <Compile Include="Create\SpaceAnalyticalFragment.cs" />
-    <Compile Include="Modify\AddAdjacentSpace.cs" />
+    <Compile Include="Modify\AdjacentSpace.cs" />
     <Compile Include="Modify\AddOpening.cs" />
     <Compile Include="Compute\MergeBuildingElements.cs" />
     <Compile Include="Modify\Copy.cs" />
