@@ -75,6 +75,18 @@ namespace BH.Engine.Structure
                 return new List<Bar>();
             }
 
+            bool isLinear = false;
+            Plane curvePlane = null;
+
+            if (centreLine is Line)
+            {
+                isLinear = true;
+            }
+            else
+            {
+                curvePlane = centreLine.IFitPlane();
+            }
+
             ISectionProperty section;
 
             if (convertedProps.ContainsKey(property))
@@ -87,8 +99,25 @@ namespace BH.Engine.Structure
                 convertedProps[property] = section;
             }
 
+            List<Bar> bars = new List<Bar>();
 
-            return centreLine.ISubParts().SelectMany(x => x.ICollapseToPolyline(angleTolerance, maxNbBars).SubParts()).Select(x => Create.Bar(x, section , property.OrientationAngle, Create.BarReleaseFixFix(), BarFEAType.Flexural, name)).ToList();
+            foreach (ICurve part in centreLine.ISubParts())
+            {
+                foreach (Line line in part.ICollapseToPolyline(angleTolerance, maxNbBars).SubParts())
+                {
+                    if (isLinear)
+                    {
+                        bars.Add(Create.Bar(line, section, property.OrientationAngle, Create.BarReleaseFixFix(), BarFEAType.Flexural, name));
+                    }
+                    else
+                    {
+                        Vector nomal = curvePlane.Normal.Rotate(property.OrientationAngle, line.Direction());
+                        bars.Add(Create.Bar(line, section, nomal, Create.BarReleaseFixFix(), BarFEAType.Flexural, name));
+                    }
+                }
+            }
+
+            return bars;
         }
 
         /***************************************************/
