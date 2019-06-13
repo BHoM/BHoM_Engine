@@ -51,35 +51,9 @@ namespace BH.Engine.Structure
 
             List<ICurve> secCurves = profile.Edges.ToList();
 
-            Vector trans = bar.StartNode.Position - Point.Origin;
             Vector tan = bar.Tangent();
 
-
-            Vector gX = Vector.XAxis;
-            Vector gY = Vector.YAxis;
-            Vector gZ = Vector.ZAxis;
-
-            Vector lX = tan.Normalise();
-            Vector lZ = bar.Normal();
-            Vector lY = lZ.CrossProduct(lX);
-
-            TransformMatrix localToGlobal = new TransformMatrix();
-
-            localToGlobal.Matrix[0, 0] = gX.DotProduct(lX);
-            localToGlobal.Matrix[0, 1] = gX.DotProduct(lY);
-            localToGlobal.Matrix[0, 2] = gX.DotProduct(lZ);
-
-            localToGlobal.Matrix[1, 0] = gY.DotProduct(lX);
-            localToGlobal.Matrix[1, 1] = gY.DotProduct(lY);
-            localToGlobal.Matrix[1, 2] = gY.DotProduct(lZ);
-
-            localToGlobal.Matrix[2, 0] = gZ.DotProduct(lX);
-            localToGlobal.Matrix[2, 1] = gZ.DotProduct(lY);
-            localToGlobal.Matrix[2, 2] = gZ.DotProduct(lZ);
-            localToGlobal.Matrix[3, 3] = 1;
-
-            TransformMatrix totalTransform = Engine.Geometry.Create.TranslationMatrix(trans) * localToGlobal * GlobalToSectionAxes;
-
+            TransformMatrix totalTransform = bar.BarSectionTranformation();
             if (simple)
                 return ExtrudeSimple(secCurves, totalTransform, tan);
             else
@@ -87,46 +61,7 @@ namespace BH.Engine.Structure
 
         }
 
-        /***************************************************/
-        /**** Private Property                          ****/
-        /***************************************************/
-
-
-       private static TransformMatrix GlobalToSectionAxes
-        {
-            get
-            {
-                Vector gX = Vector.XAxis;
-                Vector gY = Vector.YAxis;
-                Vector gZ = Vector.ZAxis;
-
-                //Global system vectors, Sections are drawn in global XY plane with y relating to the normal
-                Vector lX = Vector.ZAxis;
-                Vector lY = Vector.XAxis;
-                Vector lZ = Vector.YAxis;
-
-                TransformMatrix transform = new TransformMatrix();
-
-
-
-                transform.Matrix[0, 0] = lX.DotProduct(gX);
-                transform.Matrix[0, 1] = lX.DotProduct(gY);
-                transform.Matrix[0, 2] = lX.DotProduct(gZ);
-
-                transform.Matrix[1, 0] = lY.DotProduct(gX);
-                transform.Matrix[1, 1] = lY.DotProduct(gY);
-                transform.Matrix[1, 2] = lY.DotProduct(gZ);
-
-                transform.Matrix[2, 0] = lZ.DotProduct(gX);
-                transform.Matrix[2, 1] = lZ.DotProduct(gY);
-                transform.Matrix[2, 2] = lZ.DotProduct(gZ);
-
-                transform.Matrix[3, 3] = 1;
-
-                return transform;
-            }
-        }
-
+     
         /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
