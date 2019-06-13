@@ -138,19 +138,5 @@ namespace BH.Engine.Geometry
         }
 
         /***************************************************/
-
-        /***************************************************/
-        /****           TEST METHODS                    ****/
-        /***************************************************/
-        /****     TO BE DELETED BEFORE MERGING!!        ****/
-        /***************************************************/
-
-        public static bool IIsClockwiseTEST(this ICurve curve, Vector axis, double tolerance = Tolerance.Distance)
-        {
-            if (curve is Circle)
-                curve = new PolyCurve { Curves = { curve } };
-
-            return IsClockwise(curve as PolyCurve, axis, tolerance);
-        }
     }
 }

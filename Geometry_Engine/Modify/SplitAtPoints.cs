@@ -375,25 +375,6 @@ namespace BH.Engine.Geometry
             return result;
         }
 
-        /***************************************************/
-        /****           TEST METHODS                    ****/
-        /***************************************************/
-        /****     TO BE DELETED BEFORE MERGING!!        ****/
-        /***************************************************/
-
-        public static List<ICurve> ISplitAtPointsTEST(this ICurve curve, List<Point> points, double tolerance = Tolerance.Distance)
-        {
-            if (curve is Circle)
-                curve = new PolyCurve { Curves = { curve } };
-
-            List<ICurve> result = new List<ICurve>();
-            System.Collections.IList splitCurves = SplitAtPoints(curve as dynamic, points, tolerance);
-            for (int i = 0; i < splitCurves.Count; i++)
-            {
-                result.Add(splitCurves[i] as ICurve);
-            }
-
-            return result;
-        }
+        /***************************************************/        
     }
 }
