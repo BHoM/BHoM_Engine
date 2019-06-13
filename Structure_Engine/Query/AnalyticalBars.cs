@@ -78,7 +78,7 @@ namespace BH.Engine.Structure
             bool isLinear = false;
             Plane curvePlane = null;
 
-            if (centreLine is Line)
+            if (centreLine.IIsLinear())
             {
                 isLinear = true;
             }
