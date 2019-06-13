@@ -80,8 +80,8 @@ namespace BH.Engine.Geometry
                 }
                 else if (c is Circle)
                 {
-                    cPts.Add((c as Circle).PointAtParameter(0.3));
-                    cPts.Add((c as Circle).PointAtParameter(0.6));
+                    cPts.Add((c as Circle).PointAtParameter(1.0 / 3));
+                    cPts.Add((c as Circle).PointAtParameter(2.0 / 3));
                     cPts.Add((c as Circle).EndPoint());
                 }
                 else
@@ -125,9 +125,7 @@ namespace BH.Engine.Geometry
 
         public static bool IsClockwise(this Circle curve, Vector axis, double tolerance = Tolerance.Distance)
         {
-            List<Point> cPts = new List<Point> { curve.StartPoint(), curve.PointAtParameter(0.3),
-                                                 curve.PointAtParameter(0.6), curve.EndPoint() };
-            return IsClockwise(new Polyline { ControlPoints = cPts }, axis, tolerance);
+            return axis.DotProduct(curve.Normal()) > 0;
         }
 
         /***************************************************/
