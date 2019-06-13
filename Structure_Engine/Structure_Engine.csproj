@@ -154,6 +154,7 @@
     <Compile Include="Query\PlotForce.cs" />
     <Compile Include="Query\PointGrid.cs" />
     <Compile Include="Query\Position.cs" />
+    <Compile Include="Query\BarSectionTranformation.cs" />
     <Compile Include="Query\SelectCase.cs" />
     <Compile Include="Query\ShearArea.cs" />
     <Compile Include="Query\ShearModulus.cs" />
