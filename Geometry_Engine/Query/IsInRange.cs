@@ -21,13 +21,14 @@
  */
 
 using BH.oM.Geometry;
+using System.Collections.Generic;
 
 namespace BH.Engine.Geometry
 {
     public static partial class Query
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /**** Public Methods - BoundingBox              ****/
         /***************************************************/
 
         public static bool IsInRange(this BoundingBox box1, BoundingBox box2, double tolerance = Tolerance.Distance)
@@ -35,6 +36,48 @@ namespace BH.Engine.Geometry
             return (box1.Min.X <= box2.Max.X + tolerance && box2.Min.X <= box1.Max.X + tolerance &&
                      box1.Min.Y <= box2.Max.Y + tolerance && box2.Min.Y <= box1.Max.Y + tolerance &&
                      box1.Min.Z <= box2.Max.Z + tolerance && box2.Min.Z <= box1.Max.Z + tolerance);
+        }
+
+
+        /***************************************************/
+        /**** Public Methods - Point                    ****/
+        /***************************************************/
+
+        public static bool IsInRange(this Point point, BoundingBox box, double tolerance = Tolerance.Distance)
+        {
+            return box.IsContaining(point, true, tolerance);
+        }
+
+
+        /***************************************************/
+        /**** Public Methods - Curve                    ****/
+        /***************************************************/
+
+        public static bool IsInRange(this ICurve curve, BoundingBox box, double tolerance = Tolerance.Distance)
+        {
+            if (box.IsContaining(curve.IStartPoint()) || box.IsContaining(curve.IEndPoint()))
+                return true;
+
+            List<Plane> bBoxPlanes = new List<Plane>
+            {
+            new Plane { Origin = box.Min, Normal = Vector.XAxis },
+            new Plane { Origin = box.Min, Normal = Vector.YAxis },
+            new Plane { Origin = box.Min, Normal = Vector.ZAxis },
+            new Plane { Origin = box.Max, Normal = Vector.XAxis },
+            new Plane { Origin = box.Max, Normal = Vector.YAxis },
+            new Plane { Origin = box.Max, Normal = Vector.ZAxis }
+            };
+
+            foreach (Plane plane in bBoxPlanes)
+            {
+                foreach (Point point in curve.IPlaneIntersections(plane, tolerance))
+                {
+                    if (box.IsContaining(point, true, tolerance))
+                        return true;
+                }
+            }
+
+            return false;
         }
 
         /***************************************************/

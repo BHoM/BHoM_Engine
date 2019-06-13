@@ -80,6 +80,33 @@ namespace BH.Engine.Geometry
 
 
         /***************************************************/
+        /**** public Methods - Bounding Box             ****/
+        /***************************************************/
+
+        public static Polyline PlaneIntersection(this BoundingBox boundingBox, Plane plane, double tolerance = Tolerance.Distance)
+        {
+            List<Point> controlPoints = new List<Point>();
+            foreach (Line line in boundingBox.Edges())
+            {
+                Point intPt = line.PlaneIntersection(plane);
+                if (intPt != null)
+                    controlPoints.Add(intPt);
+            }
+
+            controlPoints = controlPoints.CullDuplicates(tolerance);
+            if (controlPoints.Count < 2)
+                return null;
+
+            Point average = controlPoints.Average();
+            Vector firstVector = controlPoints[0] - average;
+            controlPoints.Sort(delegate (Point p1, Point p2) { return firstVector.SignedAngle(p1 - average, plane.Normal).CompareTo(firstVector.SignedAngle(p2 - average, plane.Normal)); });
+            controlPoints.Add(controlPoints.First());
+
+            return new Polyline { ControlPoints = controlPoints };
+        }
+
+
+        /***************************************************/
         /**** public Methods - Curves                   ****/
         /***************************************************/
 

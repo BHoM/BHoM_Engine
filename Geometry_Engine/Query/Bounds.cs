@@ -279,9 +279,9 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static BoundingBox Bounds(this Polyline line)
+        public static BoundingBox Bounds(this Polyline curve)
         {
-            return Bounds(line.ControlPoints);
+            return curve.ControlPoints.Bounds();
         }
 
 
@@ -366,7 +366,7 @@ namespace BH.Engine.Geometry
         /**** public Methods - Others                  ****/
         /***************************************************/
 
-        public static BoundingBox Bounds(List<Point> pts)
+        public static BoundingBox Bounds(this List<Point> pts)
         {
             Point pt = pts[0];
             double minX = pt.X; double minY = pt.Y; double minZ = pt.Z;
