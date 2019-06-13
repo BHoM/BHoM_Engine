@@ -70,7 +70,7 @@ namespace BH.Engine.Reflection
                 }
                 else
                 {
-                    Compute.RecordWarning($"{bhom} does not contain a property {propName} or CustomData.{propName}");
+                    Compute.RecordWarning($"{bhom} does not contain a property: {propName}, or: CustomData[{propName}]");
                     return null;
                 }
 
@@ -84,12 +84,15 @@ namespace BH.Engine.Reflection
                 }
                 else
                 {
-                    Compute.RecordWarning($"{dic} does not contain the key {propName}");
+                    Compute.RecordWarning($"{dic} does not contain the key: {propName}");
                     return null;
                 }
             }
             else
+            {
+                Compute.RecordWarning($"This instance of {obj.GetType()} does not contain the property: {propName}");
                 return null;
+            }
         }
 
         /***************************************************/
