@@ -32,6 +32,8 @@ using BH.oM.Environment.Gains;
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
 
+using BH.oM.Geometry;
+
 namespace BH.Engine.Environment
 {
     public static partial class Create
@@ -45,8 +47,9 @@ namespace BH.Engine.Environment
         [Input("zones", "A collection of zone names the space is to be included in, default null")]
         [Input("gains", "A collection of gains to be applied to the space, default null")]
         [Input("type", "The type of space from the Space Type enum, default undefined")]
+        [Input("location", "A point in 3D space providing a basic location point of the space, default null")]
         [Output("space", "An Environment Space object")]
-        public static Space Space(string name = "", List<string> zones = null, List<IGain> gains = null, SpaceType type = SpaceType.Undefined)
+        public static Space Space(string name = "", List<string> zones = null, List<IGain> gains = null, SpaceType type = SpaceType.Undefined, Point location = null)
         {
             zones = zones ?? new List<string>();
             gains = gains ?? new List<IGain>();
@@ -57,6 +60,7 @@ namespace BH.Engine.Environment
                 Zones = zones,
                 Gains = gains,
                 Type = type,
+                Location = location,
             };
         }
     }
