@@ -68,6 +68,7 @@
     <Compile Include="Modify\SetOutlineElements1D.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Query\Area.cs" />
+    <Compile Include="Query\Bounds.cs" />
     <Compile Include="Query\Centroid.cs" />
     <Compile Include="Query\ControlPoints.cs" />
     <Compile Include="Query\ElementCurves.cs" />
