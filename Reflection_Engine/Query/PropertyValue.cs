@@ -39,23 +39,20 @@ namespace BH.Engine.Reflection
         [Output("value", "value of the property")]
         public static object PropertyValue(this object obj, string propName)
         {
-            string[] props = propName.Split('.');
-            foreach (string prop in props)
-            {
-                obj = obj.GetPropertyValue(prop);
-                if (obj == null)
-                    break;
-            }
-
-            return obj;
-        }
-
-        /***************************************************/
-
-        public static object GetPropertyValue(this object obj, string propName)
-        {
             if (obj == null || propName == null)
                 return null;
+
+            if (propName.Contains("."))
+            {
+                string[] props = propName.Split('.');
+                foreach (string innerProp in props)
+                {
+                    obj = obj.PropertyValue(innerProp);
+                    if (obj == null)
+                        break;
+                }
+                return obj;
+            }
 
             System.Reflection.PropertyInfo prop = obj.GetType().GetProperty(propName);
 
