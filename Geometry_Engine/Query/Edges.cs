@@ -30,6 +30,23 @@ namespace BH.Engine.Geometry
     public static partial class Query
     {
         /***************************************************/
+        /**** Public Methods - Bounding Box             ****/
+        /***************************************************/
+
+        public static List<Line> Edges(this BoundingBox box)
+        {
+            return new List<Line>
+            {
+                new Line {Start=box.Min, End=new Point {X=box.Max.X,Y=box.Min.Y,Z=box.Min.Z } },
+                new Line {Start=box.Min, End=new Point {X=box.Min.X,Y=box.Max.Y,Z=box.Min.Z } },
+                new Line {Start=box.Min, End=new Point {X=box.Min.X,Y=box.Min.Y,Z=box.Max.Z } },
+                new Line {Start=box.Max, End=new Point {X=box.Min.X,Y=box.Max.Y,Z=box.Max.Z } },
+                new Line {Start=box.Max, End=new Point {X=box.Max.X,Y=box.Min.Y,Z=box.Max.Z } },
+                new Line {Start=box.Max, End=new Point {X=box.Max.X,Y=box.Max.Y,Z=box.Min.Z } }
+            };
+        }
+
+        /***************************************************/
         /**** Public Methods - Meshes                   ****/
         /***************************************************/
 
