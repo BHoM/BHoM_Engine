@@ -77,5 +77,16 @@ namespace BH.Engine.Environment
             clone.Curve = curve.IClone();
             return clone;
         }
+
+        [Description("Assign a new locaion point to an Environment Space")]
+        [Input("space", "An Environment Space to set the geometry of")]
+        [Input("locationPoint", "A BHoM Geometry Point defining the location of the space")]
+        [Output("space", "An Environment Space with an updated geometry")]
+        public static Space SetGeometry(this Space space, Point locationPoint)
+        {
+            Space clone = space.GetShallowClone() as Space;
+            clone.Location = locationPoint;
+            return clone;
+        }
     }
 }
