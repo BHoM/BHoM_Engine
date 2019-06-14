@@ -33,7 +33,7 @@ namespace BH.Engine.Geometry
         /***************************************************/
         /****          public Methods - Lines           ****/
         /***************************************************/
-        
+
         public static List<Line> BooleanDifference(this Line line, Line refLine, double tolerance = Tolerance.Distance)
         {
             if (refLine.Length() <= tolerance)
@@ -76,7 +76,7 @@ namespace BH.Engine.Geometry
         public static List<Line> BooleanDifference(this List<Line> lines, List<Line> refLines, double tolerance = Tolerance.Distance)
         {
             List<Line> result = new List<Line>();
-            
+
             foreach (Line line in lines)
             {
                 List<Line> splitLine = new List<Line> { line.Clone() };
@@ -142,7 +142,7 @@ namespace BH.Engine.Geometry
                     {
                         isOpening = false;
                         bDifference = sr.BooleanDifference(refRegion, out isOpening, tolerance);
-                        
+
                         if (isOpening)
                         {
                             split.Add(bDifference[0]);
@@ -179,9 +179,14 @@ namespace BH.Engine.Geometry
                     allRegions.Add(refRegion);
             }
 
-
             if (allRegions.Count == 1)
                 return new List<Polyline> { region };
+
+            Vector normal = region.Normal();
+
+            for (int i = 0; i < allRegions.Count; i++)
+                if (!allRegions[i].IsClockwise(normal))
+                    allRegions[i] = allRegions[i].Flip();
 
             double sqTolerance = tolerance * tolerance;
             List<Polyline> tmpResult = new List<Polyline>();
@@ -209,47 +214,90 @@ namespace BH.Engine.Geometry
                 }
             }
 
-            if (iPts[0].Count == 0)
-                return new List<Polyline> { region };
-
             for (int j = 0; j < allRegions.Count; j++)
             {
-                if (iPts[j].Count > 0)
+                List<Polyline> splReg = new List<Polyline>();
+                if (iPts[j].Count >= 1)
+                    splReg = allRegions[j].SplitAtPoints(iPts[j]);
+                else
+                    splReg.Add(allRegions[j]);
+
+                foreach (Polyline segment in splReg)
                 {
-                    List<Polyline> splReg = allRegions[j].SplitAtPoints(iPts[j]);
-                    foreach (Polyline segment in splReg)
+                    bool flag = false;
+                    List<Point> mPts = new List<Point> { segment.PointAtParameter(0.5) };
+
+                    if (regionBounds[0].IsContaining(mPts) && region.IsContaining(mPts, true, tolerance))
+                        flag = true;
+
+                    for (int k = 1; k < allRegions.Count; k++)
                     {
-                        bool flag = false;
-                        List<Point> mPts = new List<Point> { segment.PointAtParameter(0.5) };
-
-                        if (regionBounds[0].IsContaining(mPts) && region.IsContaining(mPts, true, tolerance))
-                            flag = true;
-
-                        for (int k = 1; k < allRegions.Count; k++)
+                        if (regionBounds[k].IsContaining(mPts, true, tolerance) && allRegions[k].IsContaining(mPts, false, tolerance))
                         {
-                            if (regionBounds[k].IsContaining(mPts, false, tolerance) && allRegions[k].IsContaining(mPts, false, tolerance))
+                            flag = false;
+                            break;
+                        }
+                    }
+
+                    if (flag)
+                        tmpResult.Add(segment);
+                }
+            }
+
+            for (int i = 0; i < tmpResult.Count; i++)
+            {
+                for (int j = 0; j < tmpResult.Count; j++)
+                {
+                    if (i != j && tmpResult[i].IsGeometricallyEqual(tmpResult[j], tolerance))
+                    {
+                        for (int k = i > j ? i + 1 : j + 1; k < tmpResult.Count(); k++)
+                            if (tmpResult[k].IsGeometricallyEqual(tmpResult[j], tolerance))
+                                tmpResult.RemoveAt(k);
+
+                        if (!tmpResult[i].PointAtParameter(0.5).IsOnCurve(region, tolerance) &&
+                            !tmpResult[j].PointAtParameter(0.5).IsOnCurve(region, tolerance))
+                            if (tmpResult[i].TangentAtParameter(0.5).IsEqual(tmpResult[j].TangentAtParameter(0.5)))
                             {
-                                flag = false;
-                                break;
+                                tmpResult.RemoveAt(Math.Min(j, i));
+                                if (i > j)
+                                    i--;
+                                else
+                                    j = 0;
+                            }
+                            else
+                            {
+                                tmpResult.RemoveAt(Math.Max(j, i));
+                                tmpResult.RemoveAt(Math.Min(j, i));
+                                if (i > 0)
+                                    i--;
+                                else
+                                    j = 0;
+                            }
+                        else
+                        {
+                            if (tmpResult[i].TangentAtParameter(0.5).IsEqual(tmpResult[j].TangentAtParameter(0.5)))
+                            {
+                                tmpResult.RemoveAt(Math.Max(j, i));
+                                tmpResult.RemoveAt(Math.Min(j, i));
+                                if (i > 0)
+                                    i--;
+                                else
+                                    j = 0;
+                            }
+                            else
+                            {
+                                tmpResult.RemoveAt(Math.Min(j, i));
+                                if (i > j)
+                                    i--;
+                                else
+                                    j = 0;
                             }
                         }
-
-                        if (flag)
-                            tmpResult.Add(segment);
                     }
                 }
             }
 
-            for (int i = 0; i < tmpResult.Count - 1; i++)
-            {
-                for (int j = i + 1; j < tmpResult.Count; j++)
-                {
-                    if (tmpResult[i].IsEqual(tmpResult[j]) || tmpResult[i].IsEqual(tmpResult[j].Flip()))
-                        tmpResult.RemoveAt(j);
-                }
-            }
-
-            List<Polyline> result = BH.Engine.Geometry.Compute.Join(tmpResult, tolerance);
+            List<Polyline> result = Join(tmpResult, tolerance);
 
             int res = 0;
             while (res < result.Count)
@@ -272,7 +320,7 @@ namespace BH.Engine.Geometry
                 Reflection.Compute.RecordError("Boolean Difference works on closed regions.");
                 return new List<PolyCurve> { region };
             }
-
+          
             List<PolyCurve> allRegions = new List<PolyCurve> { region };
             Plane p = region.FitPlane();
             foreach (PolyCurve refRegion in refRegions)
@@ -283,6 +331,12 @@ namespace BH.Engine.Geometry
 
             if (allRegions.Count == 1)
                 return new List<PolyCurve> { region };
+
+            Vector normal = region.Normal();
+
+            for (int i = 0; i < allRegions.Count; i++)
+                if (!allRegions[i].IsClockwise(normal))
+                    allRegions[i] = allRegions[i].Flip();
 
             double sqTolerance = tolerance * tolerance;
             List<PolyCurve> tmpResult = new List<PolyCurve>();
@@ -310,47 +364,90 @@ namespace BH.Engine.Geometry
                 }
             }
 
-            if (iPts[0].Count == 0)
-                return new List<PolyCurve> { region };
-
             for (int j = 0; j < allRegions.Count; j++)
             {
-                if (iPts[j].Count > 0)
+                List<PolyCurve> splReg = new List<PolyCurve>();
+                if (iPts[j].Count >= 1)
+                    splReg = allRegions[j].SplitAtPoints(iPts[j]);
+                else
+                    splReg.Add(allRegions[j]);
+
+                foreach (PolyCurve segment in splReg)
                 {
-                    List<PolyCurve> splReg = allRegions[j].SplitAtPoints(iPts[j]);
-                    foreach (PolyCurve segment in splReg)
+                    bool flag = false;
+                    List<Point> mPts = new List<Point> { segment.PointAtParameter(0.5) };
+
+                    if (regionBounds[0].IsContaining(mPts) && region.IsContaining(mPts, true, tolerance))
+                        flag = true;
+
+                    for (int k = 1; k < allRegions.Count; k++)
                     {
-                        bool flag = false;
-                        List<Point> mPts = new List<Point> { segment.PointAtParameter(0.5) };
-
-                        if (regionBounds[0].IsContaining(mPts) && region.IsContaining(mPts, true, tolerance))
-                            flag = true;
-
-                        for (int k = 1; k < allRegions.Count; k++)
+                        if (regionBounds[k].IsContaining(mPts, true, tolerance) && allRegions[k].IsContaining(mPts, false, tolerance))
                         {
-                            if (regionBounds[k].IsContaining(mPts, false, tolerance) && allRegions[k].IsContaining(mPts, false, tolerance))
+                            flag = false;
+                            break;
+                        }
+                    }
+
+                    if (flag)
+                        tmpResult.Add(segment);
+                }
+            }
+
+            for (int i = 0; i < tmpResult.Count; i++)
+            {
+                for (int j = 0; j < tmpResult.Count; j++)
+                {
+                    if (i != j && tmpResult[i].IsGeometricallyEqual(tmpResult[j], tolerance))
+                    {
+                        for (int k = i > j ? i + 1 : j + 1; k < tmpResult.Count(); k++)
+                            if (tmpResult[k].IsGeometricallyEqual(tmpResult[j], tolerance))
+                                tmpResult.RemoveAt(k);
+
+                        if (!tmpResult[i].PointAtParameter(0.5).IsOnCurve(region, tolerance) &&
+                            !tmpResult[j].PointAtParameter(0.5).IsOnCurve(region, tolerance))
+                            if (tmpResult[i].TangentAtParameter(0.5).IsEqual(tmpResult[j].TangentAtParameter(0.5)))
                             {
-                                flag = false;
-                                break;
+                                tmpResult.RemoveAt(Math.Min(j, i));
+                                if (i > j)
+                                    i--;
+                                else
+                                    j = 0;
+                            }
+                            else
+                            {
+                                tmpResult.RemoveAt(Math.Max(j, i));
+                                tmpResult.RemoveAt(Math.Min(j, i));
+                                if (i > 0)
+                                    i--;
+                                else
+                                    j = 0;
+                            }
+                        else
+                        {
+                            if (tmpResult[i].TangentAtParameter(0.5).IsEqual(tmpResult[j].TangentAtParameter(0.5)))
+                            {
+                                tmpResult.RemoveAt(Math.Max(j, i));
+                                tmpResult.RemoveAt(Math.Min(j, i));
+                                if (i > 0)
+                                    i--;
+                                else
+                                    j = 0;
+                            }
+                            else
+                            {
+                                tmpResult.RemoveAt(Math.Min(j, i));
+                                if (i > j)
+                                    i--;
+                                else
+                                    j = 0;
                             }
                         }
-
-                        if (flag)
-                            tmpResult.Add(segment);
                     }
                 }
             }
 
-            for (int i = 0; i < tmpResult.Count - 1; i++)
-            {
-                for (int j = i + 1; j < tmpResult.Count; j++)
-                {
-                    if (tmpResult[i].IsEqual(tmpResult[j]) || tmpResult[i].IsEqual(tmpResult[j].Flip()))
-                        tmpResult.RemoveAt(j);
-                }
-            }
-
-            List<PolyCurve> result = BH.Engine.Geometry.Compute.Join(tmpResult, tolerance);
+            List<PolyCurve> result = Join(tmpResult, tolerance);
 
             int res = 0;
             while (res < result.Count)
@@ -364,7 +461,159 @@ namespace BH.Engine.Geometry
             return result;
         }
 
+        /***************************************************/
 
+        public static List<ICurve> IBooleanDifference(this ICurve region, List<ICurve> refRegions, double tolerance = Tolerance.Distance)
+        {
+            if (region is NurbsCurve || region is Ellipse || refRegions.Any(x => x is NurbsCurve || x is Ellipse))
+                throw new NotImplementedException("NurbsCurves and ellipses are not implemented yet.");
+
+            if (!region.IIsClosed(tolerance) || refRegions.Any(x => !x.IIsClosed()))
+            {
+                Reflection.Compute.RecordError("Boolean Difference works on closed regions.");
+                return new List<ICurve> { region };
+            }
+
+            List<ICurve> allRegions = new List<ICurve> { region };
+            Plane p = region.IFitPlane();
+            foreach (ICurve refRegion in refRegions)
+            {
+                if (p.IsCoplanar(refRegion.IFitPlane()))
+                    allRegions.Add(refRegion);
+            }
+            
+            if (allRegions.Count == 1)
+                return new List<ICurve> { region };
+
+            Vector normal = region.INormal();
+
+            for (int i = 0; i < allRegions.Count; i++)
+                if (!allRegions[i].IIsClockwise(normal))
+                    allRegions[i] = allRegions[i].IFlip();
+
+            double sqTolerance = tolerance * tolerance;
+            List<ICurve> tmpResult = new List<ICurve>();
+            List<Point>[] iPts = new List<Point>[allRegions.Count];
+
+            for (int k = 0; k < iPts.Count(); k++)
+            {
+                iPts[k] = new List<Point>();
+            }
+
+            List<BoundingBox> regionBounds = allRegions.Select(x => x.IBounds()).ToList();
+            for (int i = 0; i < allRegions.Count - 1; i++)
+            {
+                if (regionBounds[0].IsInRange(regionBounds[i]))
+                {
+                    for (int j = i + 1; j < allRegions.Count; j++)
+                    {
+                        if (regionBounds[0].IsInRange(regionBounds[j]) && regionBounds[i].IsInRange(regionBounds[j]))
+                        {
+                            List<Point> tmpPts = allRegions[i].ICurveIntersections(allRegions[j]);
+                            iPts[i].AddRange(tmpPts);
+                            iPts[j].AddRange(tmpPts);
+                        }
+                    }
+                }
+            }
+
+            for (int j = 0; j < allRegions.Count; j++)
+            {
+                List<ICurve> splReg = new List<ICurve>();
+                if (iPts[j].Count >= 1)
+                    splReg = allRegions[j].ISplitAtPoints(iPts[j]);
+                else
+                    splReg.Add(allRegions[j]);                
+
+                foreach (ICurve segment in splReg)
+                    {
+                        bool flag = false;
+                        List<Point> mPts = new List<Point> { segment.IPointAtParameter(0.5) };
+
+                        if (regionBounds[0].IsContaining(mPts) && region.IIsContaining(mPts, true, tolerance))
+                            flag = true;
+
+                        for (int k = 1; k < allRegions.Count; k++)
+                        {
+                            if (regionBounds[k].IsContaining(mPts, true, tolerance) && allRegions[k].IIsContaining(mPts, false, tolerance))
+                            {
+                                flag = false;
+                                break;
+                            }
+                        }
+
+                        if (flag)
+                            tmpResult.Add(segment);
+                    }
+             }
+
+            for (int i = 0; i < tmpResult.Count; i++)
+            {
+                for (int j = 0; j < tmpResult.Count; j++)
+                {
+                    if (i != j && tmpResult[i].IsGeometricallyEqual(tmpResult[j], tolerance))
+                    {
+                        for (int k = i > j ? i + 1 : j + 1; k < tmpResult.Count(); k++)
+                            if (tmpResult[k].IsGeometricallyEqual(tmpResult[j], tolerance))
+                                tmpResult.RemoveAt(k);
+                        
+                        if (!tmpResult[i].IPointAtParameter(0.5).IsOnCurve(region,tolerance) &&
+                            !tmpResult[j].IPointAtParameter(0.5).IsOnCurve(region, tolerance))
+                            if (tmpResult[i].ITangentAtParameter(0.5).IsEqual(tmpResult[j].ITangentAtParameter(0.5)))
+                            {
+                                tmpResult.RemoveAt(Math.Min(j, i));
+                                if (i > j)
+                                    i--;
+                                else
+                                    j = 0;
+                            }
+                            else
+                            {
+                                tmpResult.RemoveAt(Math.Max(j, i));
+                                tmpResult.RemoveAt(Math.Min(j, i));
+                                if (i > 0)
+                                    i--;
+                                else
+                                    j = 0;                               
+                            }
+                        else
+                        {
+                            if (tmpResult[i].ITangentAtParameter(0.5).IsEqual(tmpResult[j].ITangentAtParameter(0.5)))
+                            {
+                                tmpResult.RemoveAt(Math.Max(j, i));
+                                tmpResult.RemoveAt(Math.Min(j, i));
+                                if (i > 0)
+                                    i--;
+                                else
+                                    j = 0;
+                            }
+                            else
+                            {
+                                tmpResult.RemoveAt(Math.Min(j, i));
+                                if (i > j)
+                                    i--;
+                                else
+                                    j = 0;
+                            }
+                        }
+                    }
+                }
+            }
+
+            List<ICurve> result = IJoin(tmpResult, tolerance).Cast<ICurve>().ToList(); 
+
+            int res = 0;
+            while (res < result.Count)
+            {
+                if (result[res].IArea() <= sqTolerance)
+                    result.RemoveAt(res);
+                else
+                    res++;
+            }
+
+            return result;
+        }
+    
         /***************************************************/
         /****              Private methods              ****/
         /***************************************************/
@@ -438,7 +687,7 @@ namespace BH.Engine.Geometry
                     }
                 }
 
-                return BH.Engine.Geometry.Compute.Join(result, tolerance);
+                return Join(result, tolerance);
             }
 
             return new List<Polyline> { region.Clone() };

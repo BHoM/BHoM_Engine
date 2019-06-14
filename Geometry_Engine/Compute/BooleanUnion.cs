@@ -113,11 +113,26 @@ namespace BH.Engine.Geometry
                 return regions;
             }
 
+            for (int i = 0; i < regions.Count; i++)
+            {
+                for (int j = 0; j < regions.Count; j++)
+                {
+                    if (i != j && regions[i].IsContaining(regions[j], true, tolerance))
+                        regions.RemoveAt(j);
+                }
+            }
+
             List<Polyline> result = new List<Polyline>();
             double sqTolerance = tolerance * tolerance;
 
             foreach (List<Polyline> regionCluster in regions.ClusterCoplanar(tolerance))
             {
+                Vector normal = regionCluster[0].INormal();
+
+                for (int i = 0; i < regionCluster.Count; i++)
+                    if (!regionCluster[i].IsClockwise(normal))
+                        regionCluster[i] = regionCluster[i].Flip();
+
                 List<Polyline> tmpResult = new List<Polyline>();
 
                 List<Point>[] iPts = new List<Point>[regionCluster.Count];
@@ -125,35 +140,36 @@ namespace BH.Engine.Geometry
                 {
                     iPts[i] = new List<Point>();
                 }
-                
+
                 List<BoundingBox> regionBounds = regionCluster.Select(x => x.Bounds()).ToList();
                 for (int j = 0; j < regionCluster.Count - 1; j++)
                 {
+                    regionCluster[j] = regionCluster[j].CleanPolyline(tolerance);
                     for (int k = j + 1; k < regionCluster.Count; k++)
                     {
+                        regionCluster[k] = regionCluster[k].CleanPolyline(tolerance);
                         if (regionBounds[j].IsInRange(regionBounds[k]))
                         {
-                            List<Point> tmpPts = regionCluster[j].LineIntersections(regionCluster[k], tolerance);
-                            iPts[j].AddRange(tmpPts);
-                            iPts[k].AddRange(tmpPts);
+                            List<Point> intPts = regionCluster[j].LineIntersections(regionCluster[k], tolerance);
+                            iPts[j].AddRange(intPts);
+                            iPts[k].AddRange(intPts);
                         }
                     }
                 }
 
                 for (int i = 0; i < regionCluster.Count; i++)
                 {
-                    if (iPts[i].Count > 0)
+                    if (iPts[i].Count() > 1)
                     {
                         List<Polyline> splReg = regionCluster[i].SplitAtPoints(iPts[i]);
-                        foreach(Polyline segment in splReg)
+                        foreach (Polyline segment in splReg)
                         {
                             bool flag = true;
                             List<Point> mPts = new List<Point> { segment.PointAtParameter(0.5) };
 
                             for (int j = 0; j < regionCluster.Count; j++)
                             {
-
-                                if (i != j && regionBounds[j].IsContaining(mPts) && regionCluster[j].IsContaining(mPts, true, tolerance))
+                                if (i != j && regionBounds[j].IsContaining(mPts) && regionCluster[j].IsContaining(mPts, false, tolerance))
                                 {
                                     flag = false;
                                     break;
@@ -167,16 +183,34 @@ namespace BH.Engine.Geometry
                         result.Add(regionCluster[i]);
                 }
 
-                for (int i = 0; i < tmpResult.Count - 1; i++)
+                for (int i = 0; i < tmpResult.Count; i++)
                 {
-                    for (int j = i + 1; j < tmpResult.Count; j++)
+                    for (int j = 0; j < tmpResult.Count; j++)
                     {
-                        if (tmpResult[i].IsEqual(tmpResult[j]) || tmpResult[i].IsEqual(tmpResult[j].Flip()))
-                            tmpResult.RemoveAt(j);
+                        if (i != j && tmpResult[i].IsGeometricallyEqual(tmpResult[j], tolerance))
+                        {
+                            if (tmpResult[i].TangentAtParameter(0.5).IsEqual(tmpResult[j].TangentAtParameter(0.5)))
+                            {
+                                tmpResult.RemoveAt(Math.Min(j, i));
+                                if (i > j)
+                                    i--;
+                                else
+                                    j = 0;
+                            }
+                            else
+                            {
+                                tmpResult.RemoveAt(Math.Max(j, i));
+                                tmpResult.RemoveAt(Math.Min(j, i));
+                                if (i > 0)
+                                    i--;
+                                else
+                                    j = 0;
+                            }
+                        }
                     }
                 }
 
-                result.AddRange(BH.Engine.Geometry.Compute.Join(tmpResult, tolerance));
+                result.AddRange(Join(tmpResult, tolerance));
             }
 
             int res = 0;
@@ -204,11 +238,26 @@ namespace BH.Engine.Geometry
                 return regions;
             }
 
+            for (int i = 0; i < regions.Count; i++)
+            {
+                for (int j = 0; j < regions.Count; j++)
+                {
+                    if (i != j && regions[i].IsContaining(regions[j], true, tolerance))
+                        regions.RemoveAt(j);
+                }
+            }
+
             List<PolyCurve> result = new List<PolyCurve>();
             double sqTolerance = tolerance * tolerance;
 
             foreach (List<PolyCurve> regionCluster in regions.ClusterCoplanar(tolerance))
             {
+                Vector normal = regionCluster[0].INormal();
+
+                for (int i = 0; i < regionCluster.Count; i++)
+                    if (!regionCluster[i].IsClockwise(normal))
+                        regionCluster[i] = regionCluster[i].Flip();
+
                 List<PolyCurve> tmpResult = new List<PolyCurve>();
 
                 List<Point>[] iPts = new List<Point>[regionCluster.Count];
@@ -230,10 +279,10 @@ namespace BH.Engine.Geometry
                         }
                     }
                 }
-                
+
                 for (int i = 0; i < regionCluster.Count; i++)
                 {
-                    if (iPts[i].Count() > 0)
+                    if (iPts[i].Count() > 1)
                     {
                         List<PolyCurve> splReg = regionCluster[i].SplitAtPoints(iPts[i]);
                         foreach (PolyCurve segment in splReg)
@@ -243,7 +292,7 @@ namespace BH.Engine.Geometry
 
                             for (int j = 0; j < regionCluster.Count; j++)
                             {
-                                if (i != j && regionBounds[j].IsContaining(mPts) && regionCluster[j].IsContaining(mPts, true, tolerance))
+                                if (i != j && regionBounds[j].IsContaining(mPts) && regionCluster[j].IsContaining(mPts, false, tolerance))
                                 {
                                     flag = false;
                                     break;
@@ -257,16 +306,34 @@ namespace BH.Engine.Geometry
                         result.Add(regionCluster[i]);
                 }
 
-                for (int i = 0; i < tmpResult.Count - 1; i++)
+                for (int i = 0; i < tmpResult.Count; i++)
                 {
-                    for (int j = i + 1; j < tmpResult.Count; j++)
+                    for (int j = 0; j < tmpResult.Count; j++)
                     {
-                        if (tmpResult[i].IIsEqual(tmpResult[j]) || tmpResult[i].IIsEqual(tmpResult[j].IFlip()))
-                            tmpResult.RemoveAt(j);
+                        if (i != j && tmpResult[i].IsGeometricallyEqual(tmpResult[j], tolerance))
+                        {
+                            if (tmpResult[i].TangentAtParameter(0.5).IsEqual(tmpResult[j].TangentAtParameter(0.5)))
+                            {
+                                tmpResult.RemoveAt(Math.Min(j, i));
+                                if (i > j)
+                                    i--;
+                                else
+                                    j = 0;
+                            }
+                            else
+                            {
+                                tmpResult.RemoveAt(Math.Max(j, i));
+                                tmpResult.RemoveAt(Math.Min(j, i));
+                                if (i > 0)
+                                    i--;
+                                else
+                                    j = 0;
+                            }
+                        }
                     }
                 }
 
-                result.AddRange(BH.Engine.Geometry.Compute.Join(tmpResult, tolerance));
+                result.AddRange(Join(tmpResult, tolerance));
             }
 
             int res = 0;
@@ -280,7 +347,133 @@ namespace BH.Engine.Geometry
 
             return result;
         }
-        
+
+        /***************************************************/
+
+        public static List<ICurve> IBooleanUnion(this List<ICurve> regions, double tolerance = Tolerance.Distance)
+        {
+            if (regions.Any(x => x is NurbsCurve || x is Ellipse))
+                throw new NotImplementedException("NurbsCurves and ellipses are not implemented yet.");
+
+            if (regions.Count < 2)
+                return regions;
+
+            if (regions.Any(x => !x.IIsClosed(tolerance)))
+            {
+                Reflection.Compute.RecordError("Boolean Union works on closed regions.");
+                return regions;
+            }
+
+            for (int i = 0; i < regions.Count; i++)
+            {
+                for (int j = 0; j < regions.Count; j++)
+                {
+                    if (i != j && regions[i].IIsContaining(regions[j], true, tolerance))
+                        regions.RemoveAt(j);
+                }
+            }
+
+            List<ICurve> result = new List<ICurve>();
+            double sqTolerance = tolerance * tolerance;
+
+            foreach (List<ICurve> regionCluster in regions.IClusterCoplanar(tolerance))
+            {
+                Vector normal = regionCluster[0].INormal();
+
+                for (int i = 0; i < regionCluster.Count; i++)
+                    if (!regionCluster[i].IIsClockwise(normal))
+                        regionCluster[i] = regionCluster[i].IFlip();
+
+                List<ICurve> tmpResult = new List<ICurve>();
+
+                List<Point>[] iPts = new List<Point>[regionCluster.Count];
+                for (int i = 0; i < iPts.Length; i++)
+                {
+                    iPts[i] = new List<Point>();
+                }
+
+                List<BoundingBox> regionBounds = regionCluster.Select(x => x.IBounds()).ToList();
+                for (int j = 0; j < regionCluster.Count - 1; j++)
+                {
+                    for (int k = j + 1; k < regionCluster.Count; k++)
+                    {
+                        if (regionBounds[j].IsInRange(regionBounds[k]))
+                        {
+                            List<Point> intPts = regionCluster[j].ICurveIntersections(regionCluster[k], tolerance);
+                            iPts[j].AddRange(intPts);
+                            iPts[k].AddRange(intPts);
+                        }
+                    }
+                }
+
+                for (int i = 0; i < regionCluster.Count; i++)
+                {
+                    if (iPts[i].Count() > 1)
+                    {
+                        List<ICurve> splReg = regionCluster[i].ISplitAtPoints(iPts[i]);
+                        foreach (ICurve segment in splReg)
+                        {
+                            bool flag = true;
+                            List<Point> mPts = new List<Point> { segment.IPointAtParameter(0.5) };
+
+                            for (int j = 0; j < regionCluster.Count; j++)
+                            {
+                                if (i != j && regionBounds[j].IsContaining(mPts) && regionCluster[j].IIsContaining(mPts, false, tolerance))
+                                {
+                                    flag = false;
+                                    break;
+                                }
+                            }
+                            if (flag)
+                                tmpResult.Add(segment);
+                        }
+                    }
+                    else
+                        result.Add(regionCluster[i]);
+                }
+
+                for (int i = 0; i < tmpResult.Count; i++)
+                {
+                    for (int j = 0; j < tmpResult.Count; j++)
+                    {
+                        if (i != j && tmpResult[i].IsGeometricallyEqual(tmpResult[j], tolerance))
+                        {
+                            if (tmpResult[i].ITangentAtParameter(0.5).IsEqual(tmpResult[j].ITangentAtParameter(0.5)))
+                            {
+                                tmpResult.RemoveAt(Math.Min(j, i));
+                                if (i > j)
+                                    i--;
+                                else
+                                    j = 0;
+                            }
+                            else
+                            {
+                                tmpResult.RemoveAt(Math.Max(j, i));
+                                tmpResult.RemoveAt(Math.Min(j, i));
+                                if (i > 0)
+                                    i--;
+                                else
+                                    j = 0;
+                            }
+                        }
+                    }
+                }
+
+                result.AddRange(IJoin(tmpResult, tolerance));
+            }
+
+            int res = 0;
+            while (res < result.Count)
+            {
+                if (result[res].IArea() <= sqTolerance)
+                    result.RemoveAt(res);
+                else
+                    res++;
+            }
+
+            return result;
+        }
+
         /***************************************************/
     }
 }
