@@ -35,14 +35,29 @@ namespace BH.Engine.Geometry
 
         public static List<Line> Edges(this BoundingBox box)
         {
+            Point corner1 = box.Min;
+            Point corner2 = new Point { X = box.Min.X, Y = box.Min.Y, Z = box.Max.Z };
+            Point corner3 = new Point { X = box.Min.X, Y = box.Max.Y, Z = box.Max.Z };
+            Point corner4 = new Point { X = box.Min.X, Y = box.Max.Y, Z = box.Min.Z };
+            Point corner5 = new Point { X = box.Max.X, Y = box.Min.Y, Z = box.Min.Z };
+            Point corner6 = new Point { X = box.Max.X, Y = box.Max.Y, Z = box.Min.Z };
+            Point corner7 = box.Max;
+            Point corner8 = new Point { X = box.Max.X, Y = box.Min.Y, Z = box.Max.Z };
+
             return new List<Line>
             {
-                new Line {Start=box.Min, End=new Point {X=box.Max.X,Y=box.Min.Y,Z=box.Min.Z } },
-                new Line {Start=box.Min, End=new Point {X=box.Min.X,Y=box.Max.Y,Z=box.Min.Z } },
-                new Line {Start=box.Min, End=new Point {X=box.Min.X,Y=box.Min.Y,Z=box.Max.Z } },
-                new Line {Start=box.Max, End=new Point {X=box.Min.X,Y=box.Max.Y,Z=box.Max.Z } },
-                new Line {Start=box.Max, End=new Point {X=box.Max.X,Y=box.Min.Y,Z=box.Max.Z } },
-                new Line {Start=box.Max, End=new Point {X=box.Max.X,Y=box.Max.Y,Z=box.Min.Z } }
+                new Line { Start=corner1, End=corner2 },
+                new Line { Start=corner2, End=corner3 },
+                new Line { Start=corner3, End=corner4 },
+                new Line { Start=corner4, End=corner1 },
+                new Line { Start=corner5, End=corner6 },
+                new Line { Start=corner6, End=corner7 },
+                new Line { Start=corner7, End=corner8 },
+                new Line { Start=corner8, End=corner5 },
+                new Line { Start=corner5, End=corner1 },
+                new Line { Start=corner2, End=corner8 },
+                new Line { Start=corner7, End=corner3 },
+                new Line { Start=corner4, End=corner6 }
             };
         }
 
