@@ -163,16 +163,39 @@ namespace BH.Engine.Geometry
                     tmpResult.Add(segment);
             }
 
+            bool regSameDir = false;
+            if (Math.Abs(region.Normal().DotProduct(refRegion.Normal()) - 1) <= tolerance)
+                regSameDir = true;
+
             for (int i = 0; i < tmpResult.Count; i++)
             {
                 for (int j = 0; j < tmpResult.Count; j++)
                 {
-                    if (i != j && (tmpResult[i].IsEqual(tmpResult[j]) || tmpResult[i].IsEqual(tmpResult[j].Flip())))
-                        tmpResult.RemoveAt(j);
+                    if (i != j && tmpResult[i].IsGeometricallyEqual(tmpResult[j], tolerance))
+                    {
+                        bool sameDir = tmpResult[i].TangentAtParameter(0.5).IsEqual(tmpResult[j].TangentAtParameter(0.5));
+                        if ((regSameDir && sameDir) || (!regSameDir && !sameDir))
+                        {
+                            tmpResult.RemoveAt(Math.Min(j, i));
+                            if (i > j)
+                                i--;
+                            else
+                                j = 0;
+                        }
+                        else
+                        {
+                            tmpResult.RemoveAt(Math.Max(j, i));
+                            tmpResult.RemoveAt(Math.Min(j, i));
+                            if (i > 0)
+                                i--;
+                            else
+                                j = 0;
+                        }
+                    }
                 }
             }
 
-            List<Polyline> result = BH.Engine.Geometry.Compute.Join(tmpResult, tolerance);
+            List<Polyline> result = Join(tmpResult, tolerance);
 
             int res = 0;
             while (res < result.Count)
@@ -248,16 +271,39 @@ namespace BH.Engine.Geometry
                     tmpResult.Add(segment);
             }
 
+            bool regSameDir = false;
+            if (Math.Abs(region.Normal().DotProduct(refRegion.Normal()) - 1) <= tolerance)
+                regSameDir = true;
+
             for (int i = 0; i < tmpResult.Count; i++)
             {
                 for (int j = 0; j < tmpResult.Count; j++)
                 {
-                    if (i != j && (tmpResult[i].IsEqual(tmpResult[j]) || tmpResult[i].IsEqual(tmpResult[j].Flip())))
-                        tmpResult.RemoveAt(j);
+                    if (i != j && tmpResult[i].IsGeometricallyEqual(tmpResult[j], tolerance))
+                    {
+                        bool sameDir = tmpResult[i].TangentAtParameter(0.5).IsEqual(tmpResult[j].TangentAtParameter(0.5));
+                        if ((regSameDir && sameDir) || (!regSameDir && !sameDir))
+                        {
+                            tmpResult.RemoveAt(Math.Min(j, i));
+                            if (i > j)
+                                i--;
+                            else
+                                j = 0;
+                        }
+                        else
+                        {
+                            tmpResult.RemoveAt(Math.Max(j, i));
+                            tmpResult.RemoveAt(Math.Min(j, i));
+                            if (i > 0)
+                                i--;
+                            else
+                                j = 0;
+                        }
+                    }
                 }
             }
 
-            List<PolyCurve> result = BH.Engine.Geometry.Compute.Join(tmpResult, tolerance);
+            List<PolyCurve> result = Join(tmpResult, tolerance);
 
             int res = 0;
             while (res < result.Count)
@@ -269,6 +315,13 @@ namespace BH.Engine.Geometry
             }
 
             return result;
+        }
+
+        /***************************************************/
+
+        public static List<PolyCurve> BooleanIntersection(this Circle region, PolyCurve refRegion, double tolerance = Tolerance.Distance)
+        {
+            return new PolyCurve { Curves = new List<ICurve> { region } }.BooleanIntersection(refRegion);
         }
 
         /***************************************************/
@@ -285,7 +338,6 @@ namespace BH.Engine.Geometry
                 if (region.Area() <= tolerance)
                     return result;
             }
-
             result.Add(regions[0]);
             for (int i = 1; i < regions.Count; i++)
             {
@@ -298,5 +350,150 @@ namespace BH.Engine.Geometry
         }
 
         /***************************************************/
+
+        public static List<ICurve> IBooleanIntersection(this ICurve region, ICurve refRegion, double tolerance = Tolerance.Distance)
+        {
+            if (region is NurbsCurve || region is Ellipse || refRegion is NurbsCurve || refRegion is Ellipse)
+                throw new NotImplementedException("NurbsCurves and ellipses are not implemented yet.");
+
+            if (!region.IIsClosed(tolerance) || !refRegion.IIsClosed(tolerance))
+            {
+                Reflection.Compute.RecordError("Boolean Intersection works on closed regions.");
+                return new List<ICurve>();
+            }
+
+            if (!region.IIsCoplanar(refRegion, tolerance))
+                return new List<ICurve>();
+
+            double sqTol = tolerance * tolerance;
+            List<ICurve> tmpResult = new List<ICurve>();
+            List<Point> iPts = region.ICurveIntersections(refRegion, tolerance);
+            List<ICurve> splitRegion1 = new List<ICurve>();
+            List<ICurve> splitRegion2 = new List<ICurve>();
+
+            if (iPts.Count == 0)
+            {
+                splitRegion1.Add(region);
+                splitRegion2.Add(refRegion);
+            }
+            else
+            {
+                splitRegion1.AddRange(region.ISplitAtPoints(iPts, tolerance));
+                splitRegion2.AddRange(refRegion.ISplitAtPoints(iPts, tolerance));
+            }
+
+            foreach (ICurve segment in splitRegion1)
+            {
+                List<Point> mPts = new List<Point> { segment.IPointAtParameter(0.5) };
+
+                if (refRegion.IIsContaining(mPts, true, tolerance))
+                    tmpResult.Add(segment);
+            }
+
+            foreach (ICurve segment in splitRegion2)
+            {
+                List<Point> cPts = new List<Point> { segment.IPointAtParameter(0.5) };
+
+                if (region.IIsContaining(cPts, true, tolerance))
+                    tmpResult.Add(segment);
+            }
+             
+            bool regSameDir = false;
+            if (Math.Abs(region.INormal().DotProduct(refRegion.INormal()) - 1) <= tolerance)
+                regSameDir = true;
+
+            for (int i = 0; i < tmpResult.Count; i++)
+            {
+                 for (int j = 0; j < tmpResult.Count; j++)
+                {
+                    if (i != j && tmpResult[i].IsGeometricallyEqual(tmpResult[j], tolerance))
+                    {
+                        bool sameDir = tmpResult[i].ITangentAtParameter(0.5).IsEqual(tmpResult[j].ITangentAtParameter(0.5));
+                        if ((regSameDir && sameDir) || (!regSameDir && !sameDir))
+                        {
+                            tmpResult.RemoveAt(Math.Min(j, i));
+                            if (i > j)
+                                i--;
+                            else
+                                j = 0;
+                        }
+                        else
+                        {
+                            tmpResult.RemoveAt(Math.Max(j, i));
+                            tmpResult.RemoveAt(Math.Min(j, i));
+                            if (i > 0)
+                                i--;
+                            else
+                                j = 0;
+                        }
+                    }                        
+                }
+            }
+
+            List<ICurve> result = IJoin(tmpResult, tolerance).Cast<ICurve>().ToList();
+
+            int res = 0;
+            while (res < result.Count)
+            {
+                if (result[res].IArea() <= sqTol || !result[res].IIsClosed(tolerance))
+                    result.RemoveAt(res);
+                else
+                    res++;
+            }
+
+            return result;
+        }
+
+        /***************************************************/
+
+        public static List<ICurve> IBooleanIntersection(this List<ICurve> regions, double tolerance = Tolerance.Distance)
+        {
+            if (regions.Count < 2)
+            {
+                return regions;
+            }
+
+            List<ICurve> result = new List<ICurve>();
+
+            foreach (ICurve region in regions)
+            {
+                if (region.IArea() <= tolerance)
+                    return result;
+            }
+
+            result.Add(regions[0]);
+            for (int i = 1; i < regions.Count; i++)
+            {
+                List<ICurve> newResult = new List<ICurve>();
+                result.ForEach(r => newResult.AddRange(r.IBooleanIntersection(regions[i], tolerance)));
+                result = newResult;
+            }
+
+            return result;
+        }
+
+        /***************************************************/
+        /***          Private methods                    ***/
+        /***************************************************/
+        
+        private static Boolean IsGeometricallyEqual(this ICurve curve, ICurve refCurve, double tolerance = Tolerance.Distance)
+        {
+            Boolean flag1 = false, flag2 = false;
+
+            if (curve.IStartPoint().IsEqual(refCurve.IStartPoint(), tolerance) &&
+                curve.IPointAtParameter(0.5).IsEqual(refCurve.IPointAtParameter(0.5), tolerance) &&
+                curve.IEndPoint().IsEqual(refCurve.IEndPoint(), tolerance))
+                flag1 = true;
+
+            if (curve.IStartPoint().IsEqual(refCurve.IEndPoint(), tolerance) &&
+                curve.IPointAtParameter(0.5).IsEqual(refCurve.IPointAtParameter(0.5), tolerance) &&
+                curve.IEndPoint().IsEqual(refCurve.IStartPoint(), tolerance))
+                flag2 = true;
+
+            return flag1 || flag2;
+        }
+
+        /***************************************************/      
+
     }
 }
