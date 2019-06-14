@@ -37,7 +37,7 @@ namespace BH.Engine.Common
 
         public static BoundingBox Bounds(this IElement0D element0D)
         {
-            return element0D.IGeometry().IBounds();
+            return Geometry.Query.Bounds(element0D.IGeometry());
         }
 
 
@@ -47,7 +47,7 @@ namespace BH.Engine.Common
 
         public static BoundingBox Bounds(this IElement1D element1D)
         {
-            return element1D.IGeometry().IBounds();
+            return Geometry.Query.IBounds(element1D.IGeometry());
         }
 
 
@@ -62,9 +62,9 @@ namespace BH.Engine.Common
             if (elementCurves.Count == 0)
                 return null;
 
-            BoundingBox box = elementCurves[0].IBounds();
+            BoundingBox box = Geometry.Query.IBounds(elementCurves[0]);
             for (int i = 1; i < elementCurves.Count; i++)
-                box += elementCurves[i].IBounds();
+                box += Geometry.Query.IBounds(elementCurves[i]);
 
             return box;
         }
@@ -74,14 +74,14 @@ namespace BH.Engine.Common
         /****        Interface methods         ****/
         /******************************************/
 
-        public static BoundingBox IBounds(this BHoMObject element)
+        public static BoundingBox IBounds(this IObject element)
         {
             return Bounds(element as dynamic);
         }
 
         /******************************************/
 
-        public static BoundingBox IBounds(this List<BHoMObject> elements)
+        public static BoundingBox IBounds(this List<IObject> elements)
         {
             if (elements.Count == 0)
                 return null;
