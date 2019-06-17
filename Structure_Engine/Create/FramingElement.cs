@@ -21,7 +21,7 @@
  */
 
 using BH.oM.Structure.Elements;
-using BH.oM.Structure.FramingProperties;
+//using BH.oM.Structure.FramingProperties;
 using BH.oM.Structure.SectionProperties;
 using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
@@ -46,34 +46,9 @@ namespace BH.Engine.Structure
             ISectionProperty prop = bar.SectionProperty;
             BHPP.ConstantFramingProperty framingProp = null;
             if (prop == null)
-            {
                 Reflection.Compute.RecordWarning("The bar does not contain a sectionProperty. Can not extract profile or material");
-            }
             else
-            {
-                IProfile profile = null;
-                if (prop is SteelSection)
-                    profile = (prop as SteelSection).SectionProfile;
-                else if (prop is ConcreteSection)
-                    profile = (prop as ConcreteSection).SectionProfile;
-                else
-                    Reflection.Compute.RecordWarning("Was not able to extract any section profile");
-
-
-                BH.oM.Physical.Materials.Material material = null;
-
-                if (prop.Material != null)
-                {
-                    string matName = prop.Material.Name ?? "";
-                    material = Physical.Create.Material(matName, new System.Collections.Generic.List<oM.Physical.Materials.IMaterialProperties> { prop.Material });
-                }
-                else
-                {
-                    Engine.Reflection.Compute.RecordWarning("Material from sectiion property of the bar is null");
-                }
-
-                framingProp = Physical.Create.ConstantFramingProperty(profile, material, bar.OrientationAngle, prop.Name ?? "");
-            }
+                framingProp = Create.ConstantFramingProperty(bar.SectionProperty, bar.OrientationAngle);
 
             Line location = bar.Centreline();
             string name = bar.Name ?? "";
@@ -101,7 +76,7 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Deprecated("2.3", "Deprecated by method accepting a ICurve", null, "FramingElement")]
-        public static FramingElement FramingElement(Line locationCurve, IFramingElementProperty property, StructuralUsage1D structuralUsage= StructuralUsage1D.Beam, string name = "")
+        public static FramingElement FramingElement(Line locationCurve, IFramingElementProperty property, StructuralUsage1D structuralUsage = StructuralUsage1D.Beam, string name = "")
         {
             return new FramingElement { LocationCurve = locationCurve, Property = property, StructuralUsage = structuralUsage, Name = name };
         }
