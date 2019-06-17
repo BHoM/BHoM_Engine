@@ -37,6 +37,8 @@ namespace BH.Engine.Physical
 
         [Description("Creates a physical Beam element. To generate elements compatible with structural packages, have a look at the Bar class")]
         [Input("location", "The centre line geometry of the beam")]
+        [Input("property", "The property of the beam, containing its profile, orientation and materiality")]
+        [Input("name", "The name of the beam, default empty string")]
         [Output("Beam", "The created physical beam")]
         public static Beam Beam(ICurve location, IFramingElementProperty property, string name = "")
         {
@@ -47,6 +49,8 @@ namespace BH.Engine.Physical
 
         [Description("Creates a physical Column element. To generate elements compatible with structural packages, have a look at the Bar class")]
         [Input("location", "The centre line geometry of the Column")]
+        [Input("property", "The property of the column, containing its profile, orientation and materiality")]
+        [Input("name", "The name of the column, default empty string")]
         [Output("Column", "The created physical column")]
         public static Column Column(ICurve location, IFramingElementProperty property, string name = "")
         {
@@ -57,6 +61,8 @@ namespace BH.Engine.Physical
 
         [Description("Creates a physical Column element. To generate elements compatible with structural packages, have a look at the Bar class")]
         [Input("location", "The centre line geometry of the Column")]
+        [Input("property", "The property of the column, containing its profile, orientation and materiality")]
+        [Input("name", "The name of the column, default empty string")]
         [Output("Column", "The created physical column")]
         public static Column Column(Point basePoint, double height, IFramingElementProperty property, string name = "")
         {
@@ -67,6 +73,8 @@ namespace BH.Engine.Physical
 
         [Description("Creates a physical Bracing element. To generate elements compatible with structural packages, have a look at the Bar class")]
         [Input("location", "The centre line geometry of the Bracing")]
+        [Input("property", "The property of the bracing, containing its profile, orientation and materiality")]
+        [Input("name", "The name of the bracing, default empty string")]
         [Output("Bracing", "The created physical Bracing")]
         public static Bracing Bracing(ICurve location, IFramingElementProperty property, string name = "")
         {
@@ -77,6 +85,8 @@ namespace BH.Engine.Physical
 
         [Description("Creates a physical Cable element. To generate elements compatible with structural packages, have a look at the Bar class")]
         [Input("location", "The centre line geometry of the Cable")]
+        [Input("property", "The property of the cable, containing its profile, orientation and materiality")]
+        [Input("name", "The name of the cable, default empty string")]
         [Output("Cable", "The created physical Cable")]
         public static Cable Cable(ICurve location, IFramingElementProperty property, string name = "")
         {
@@ -87,6 +97,8 @@ namespace BH.Engine.Physical
 
         [Description("Creates a physical Pile element. To generate elements compatible with structural packages, have a look at the Bar class")]
         [Input("location", "The centre line geometry of the Pile")]
+        [Input("property", "The property of the pile, containing its profile, orientation and materiality")]
+        [Input("name", "The name of the pile, default empty string")]
         [Output("Pile", "The created physical Pile")]
         public static Pile Pile(ICurve location, IFramingElementProperty property, string name = "")
         {
