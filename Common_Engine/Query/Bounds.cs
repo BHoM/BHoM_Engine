@@ -74,14 +74,14 @@ namespace BH.Engine.Common
         /****        Interface methods         ****/
         /******************************************/
 
-        public static BoundingBox IBounds(this IObject element)
+        public static BoundingBox IBounds(this IElement element)
         {
             return Bounds(element as dynamic);
         }
 
         /******************************************/
 
-        public static BoundingBox IBounds(this List<IObject> elements)
+        public static BoundingBox IBounds(this List<IElement> elements)
         {
             if (elements.Count == 0)
                 return null;
