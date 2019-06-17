@@ -21,7 +21,7 @@
  */
 
 using BH.oM.Structure.Elements;
-//using BH.oM.Structure.FramingProperties;
+using BH.oM.Structure.FramingProperties;
 using BH.oM.Structure.SectionProperties;
 using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
