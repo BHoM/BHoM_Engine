@@ -31,7 +31,7 @@ namespace BH.Engine.Common
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Deprecated("2.3", "Material class superseeded by counterpart in Physical_oM, BH.oM.Phsyical.Materials.Material")]
+        [Deprecated("2.3", "Material class superseded by counterpart in Physical_oM, BH.oM.Phsyical.Materials.Material")]
         public static Material Material(string name, MaterialType type = MaterialType.Steel, double E = 210000000000, double v = 0.3, double tC = 0.000012, double density = 7850)
         {
             return new Material

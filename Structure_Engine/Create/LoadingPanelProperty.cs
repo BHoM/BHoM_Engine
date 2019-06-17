@@ -25,8 +25,6 @@ using System.Collections.ObjectModel;
 using BH.oM.Structure.SurfaceProperties;
 using BH.oM.Geometry;
 
-
-
 namespace BH.Engine.Structure
 {
     public static partial class Create
