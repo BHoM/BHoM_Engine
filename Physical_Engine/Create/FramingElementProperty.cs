@@ -46,6 +46,7 @@ namespace BH.Engine.Physical
         [Input("profile", "Profile of the cross section of the proeprty")]
         [Input("material", "Material of the profile")]
         [Input("orientationAngle", "Defines the rotation of the section around the axis of the element")]
+        [Input("name", "The name of the constant framing property, default empty string")]
         public static ConstantFramingProperty ConstantFramingProperty(IProfile profile, Material material, double orientationAngle = 0, string name = "")
         {
             return new ConstantFramingProperty

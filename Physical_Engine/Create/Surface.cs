@@ -42,6 +42,7 @@ namespace BH.Engine.Physical
         [Input("construction", "Construction representing the thickness and materiality of the floor")]
         [Input("openings", "Openings of the floor. Could be simple voids or more detailed obejcts")]
         [Input("offset", "Represents the positioning of the construction in relation to the location surface of the floor")]
+        [Input("name", "The name of the floor, default empty string")]
         [Output("Floor", "The created physical floor")]
         public static Floor Floor(oM.Geometry.ISurface location, IConstruction construction, List<IOpening> openings = null, Offset offset = Offset.Undefined, string name = "")
         {
@@ -64,6 +65,7 @@ namespace BH.Engine.Physical
         [Input("construction", "Construction representing the thickness and materiality of the Wall")]
         [Input("openings", "Openings of the Wall. Could be simple voids or more detailed obejcts")]
         [Input("offset", "Represents the positioning of the construction in relation to the location surface of the Wall")]
+        [Input("name", "The name of the wall, default empty string")]
         [Output("Wall", "The created physical Wall")]
         public static Wall Wall(oM.Geometry.ISurface location, IConstruction construction, List<IOpening> openings = null, Offset offset = Offset.Undefined, string name = "")
         {
@@ -87,6 +89,7 @@ namespace BH.Engine.Physical
         [Input("construction", "Construction representing the thickness and materiality of the Wall")]
         [Input("openings", "Openings of the Wall. Could be simple voids or more detailed obejcts")]
         [Input("offset", "Represents the positioning of the construction in relation to the location surface of the Wall")]
+        [Input("name", "The name of the wall, default empty string")]
         [Output("Wall", "The created physical Wall")]
         public static Wall Wall(Line line, double height, IConstruction construction, Offset offset = Offset.Undefined, string name = "")
         {
@@ -116,6 +119,7 @@ namespace BH.Engine.Physical
         [Input("construction", "Construction representing the thickness and materiality of the Roof")]
         [Input("openings", "Openings of the Roof. Could be simple voids or more detailed obejcts")]
         [Input("offset", "Represents the positioning of the construction in relation to the location surface of the Roof")]
+        [Input("name", "The name of the roof, default empty string")]
         [Output("Roof", "The created physical Roof")]
         public static Roof Roof(oM.Geometry.ISurface location, IConstruction construction, List<IOpening> openings = null, Offset offset = Offset.Undefined, string name = "")
         {
