@@ -26,6 +26,7 @@ using BH.oM.Common;
 using BH.oM.Geometry;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace BH.Engine.Common
 {
@@ -81,14 +82,16 @@ namespace BH.Engine.Common
 
         /******************************************/
 
-        public static BoundingBox IBounds(this List<IElement> elements)
+        public static BoundingBox IBounds(this IEnumerable<IElement> elements)
         {
-            if (elements.Count == 0)
+            if (elements.Count() == 0)
                 return null;
 
-            BoundingBox box = elements[0].IBounds();
-            for (int i = 1; i < elements.Count; i++)
-                box += elements[i].IBounds();
+            BoundingBox box = elements.First().IBounds();
+            foreach (IElement element in elements.Skip(1))
+            {
+                box += element.IBounds();
+            }
 
             return box;
         }
