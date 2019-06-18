@@ -263,7 +263,7 @@ namespace BH.Engine.Geometry
                             j++;
                             break;
                         }
-                        else if (tmpResult[j].IEndPoint().IsEqual(curve.EndPoint()) || (curve.IIsClosed(tolerance) && !curve.IIsClockwise(curve.INormal(), tolerance) && tmpResult[j].IStartPoint().IsEqual(curve.StartPoint())))
+                        else if (tmpResult[j].IEndPoint().IsEqual(curve.EndPoint()) || (curve.IIsClosed(tolerance) && !curve.IIsClockwise(curve.INormal(), tolerance) && tmpResult[j].IEndPoint().IsEqual(curve.StartPoint())))
                         {
                             j++;
                             break;

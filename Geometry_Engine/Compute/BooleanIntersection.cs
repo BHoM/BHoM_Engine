@@ -171,7 +171,7 @@ namespace BH.Engine.Geometry
             {
                 for (int j = 0; j < tmpResult.Count; j++)
                 {
-                    if (i != j && tmpResult[i].IsGeometricallyEqual(tmpResult[j], tolerance))
+                    if (i != j && tmpResult[i].IsSimilarSegment(tmpResult[j], tolerance))
                     {
                         bool sameDir = tmpResult[i].TangentAtParameter(0.5).IsEqual(tmpResult[j].TangentAtParameter(0.5));
                         if ((regSameDir && sameDir) || (!regSameDir && !sameDir))
@@ -279,7 +279,7 @@ namespace BH.Engine.Geometry
             {
                 for (int j = 0; j < tmpResult.Count; j++)
                 {
-                    if (i != j && tmpResult[i].IsGeometricallyEqual(tmpResult[j], tolerance))
+                    if (i != j && tmpResult[i].IsSimilarSegment(tmpResult[j], tolerance))
                     {
                         bool sameDir = tmpResult[i].TangentAtParameter(0.5).IsEqual(tmpResult[j].TangentAtParameter(0.5));
                         if ((regSameDir && sameDir) || (!regSameDir && !sameDir))
@@ -315,13 +315,6 @@ namespace BH.Engine.Geometry
             }
 
             return result;
-        }
-
-        /***************************************************/
-
-        public static List<PolyCurve> BooleanIntersection(this Circle region, PolyCurve refRegion, double tolerance = Tolerance.Distance)
-        {
-            return new PolyCurve { Curves = new List<ICurve> { region } }.BooleanIntersection(refRegion);
         }
 
         /***************************************************/
@@ -406,7 +399,7 @@ namespace BH.Engine.Geometry
             {
                  for (int j = 0; j < tmpResult.Count; j++)
                 {
-                    if (i != j && tmpResult[i].IsGeometricallyEqual(tmpResult[j], tolerance))
+                    if (i != j && tmpResult[i].IsSimilarSegment(tmpResult[j], tolerance))
                     {
                         bool sameDir = tmpResult[i].ITangentAtParameter(0.5).IsEqual(tmpResult[j].ITangentAtParameter(0.5));
                         if ((regSameDir && sameDir) || (!regSameDir && !sameDir))
@@ -442,6 +435,7 @@ namespace BH.Engine.Geometry
             }
 
             return result;
+
         }
 
         /***************************************************/
@@ -476,21 +470,19 @@ namespace BH.Engine.Geometry
         /***          Private methods                    ***/
         /***************************************************/
         
-        private static Boolean IsGeometricallyEqual(this ICurve curve, ICurve refCurve, double tolerance = Tolerance.Distance)
+        private static Boolean IsSimilarSegment(this ICurve curve, ICurve refCurve, double tolerance = Tolerance.Distance)
         {
-            Boolean flag1 = false, flag2 = false;
+            double sqTol = tolerance * tolerance;
+            Point sp = curve.IStartPoint();
+            Point rsp = refCurve.IStartPoint();
+            Point mp = curve.IPointAtParameter(0.5);
+            Point rmp = refCurve.IPointAtParameter(0.5);
+            Point ep = curve.IEndPoint();
+            Point rep = refCurve.IEndPoint();
 
-            if (curve.IStartPoint().IsEqual(refCurve.IStartPoint(), tolerance) &&
-                curve.IPointAtParameter(0.5).IsEqual(refCurve.IPointAtParameter(0.5), tolerance) &&
-                curve.IEndPoint().IsEqual(refCurve.IEndPoint(), tolerance))
-                flag1 = true;
-
-            if (curve.IStartPoint().IsEqual(refCurve.IEndPoint(), tolerance) &&
-                curve.IPointAtParameter(0.5).IsEqual(refCurve.IPointAtParameter(0.5), tolerance) &&
-                curve.IEndPoint().IsEqual(refCurve.IStartPoint(), tolerance))
-                flag2 = true;
-
-            return flag1 || flag2;
+            return mp.SquareDistance(rmp) <= sqTol && 
+                   ((sp.SquareDistance(rsp) <= sqTol && ep.SquareDistance(rep) <= sqTol) ||
+                   (sp.SquareDistance(rep) <= sqTol && ep.SquareDistance(rsp) <= sqTol));
         }
 
         /***************************************************/      
