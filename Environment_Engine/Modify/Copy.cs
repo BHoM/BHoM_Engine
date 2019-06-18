@@ -21,6 +21,7 @@
  */
 
 using System.Collections.Generic;
+using BH.oM.Base;
 using BH.oM.Environment.Elements;
 using BH.oM.Environment.Fragments;
 
