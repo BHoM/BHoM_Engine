@@ -187,7 +187,7 @@ namespace BH.Engine.Geometry
                 {
                     for (int j = 0; j < tmpResult.Count; j++)
                     {
-                        if (i != j && tmpResult[i].IsGeometricallyEqual(tmpResult[j], tolerance))
+                        if (i != j && tmpResult[i].IsSimilarSegment(tmpResult[j], tolerance))
                         {
                             if (tmpResult[i].TangentAtParameter(0.5).IsEqual(tmpResult[j].TangentAtParameter(0.5)))
                             {
@@ -310,7 +310,7 @@ namespace BH.Engine.Geometry
                 {
                     for (int j = 0; j < tmpResult.Count; j++)
                     {
-                        if (i != j && tmpResult[i].IsGeometricallyEqual(tmpResult[j], tolerance))
+                        if (i != j && tmpResult[i].IsSimilarSegment(tmpResult[j], tolerance))
                         {
                             if (tmpResult[i].TangentAtParameter(0.5).IsEqual(tmpResult[j].TangentAtParameter(0.5)))
                             {
@@ -436,7 +436,7 @@ namespace BH.Engine.Geometry
                 {
                     for (int j = 0; j < tmpResult.Count; j++)
                     {
-                        if (i != j && tmpResult[i].IsGeometricallyEqual(tmpResult[j], tolerance))
+                        if (i != j && tmpResult[i].IsSimilarSegment(tmpResult[j], tolerance))
                         {
                             if (tmpResult[i].ITangentAtParameter(0.5).IsEqual(tmpResult[j].ITangentAtParameter(0.5)))
                             {

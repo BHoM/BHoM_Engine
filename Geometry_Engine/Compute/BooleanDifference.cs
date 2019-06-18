@@ -248,10 +248,10 @@ namespace BH.Engine.Geometry
             {
                 for (int j = 0; j < tmpResult.Count; j++)
                 {
-                    if (i != j && tmpResult[i].IsGeometricallyEqual(tmpResult[j], tolerance))
+                    if (i != j && tmpResult[i].IsSimilarSegment(tmpResult[j], tolerance))
                     {
                         for (int k = i > j ? i + 1 : j + 1; k < tmpResult.Count(); k++)
-                            if (tmpResult[k].IsGeometricallyEqual(tmpResult[j], tolerance))
+                            if (tmpResult[k].IsSimilarSegment(tmpResult[j], tolerance))
                                 tmpResult.RemoveAt(k);
 
                         if (!tmpResult[i].PointAtParameter(0.5).IsOnCurve(region, tolerance) &&
@@ -398,10 +398,10 @@ namespace BH.Engine.Geometry
             {
                 for (int j = 0; j < tmpResult.Count; j++)
                 {
-                    if (i != j && tmpResult[i].IsGeometricallyEqual(tmpResult[j], tolerance))
+                    if (i != j && tmpResult[i].IsSimilarSegment(tmpResult[j], tolerance))
                     {
                         for (int k = i > j ? i + 1 : j + 1; k < tmpResult.Count(); k++)
-                            if (tmpResult[k].IsGeometricallyEqual(tmpResult[j], tolerance))
+                            if (tmpResult[k].IsSimilarSegment(tmpResult[j], tolerance))
                                 tmpResult.RemoveAt(k);
 
                         if (!tmpResult[i].PointAtParameter(0.5).IsOnCurve(region, tolerance) &&
@@ -551,10 +551,10 @@ namespace BH.Engine.Geometry
             {
                 for (int j = 0; j < tmpResult.Count; j++)
                 {
-                    if (i != j && tmpResult[i].IsGeometricallyEqual(tmpResult[j], tolerance))
+                    if (i != j && tmpResult[i].IsSimilarSegment(tmpResult[j], tolerance))
                     {
                         for (int k = i > j ? i + 1 : j + 1; k < tmpResult.Count(); k++)
-                            if (tmpResult[k].IsGeometricallyEqual(tmpResult[j], tolerance))
+                            if (tmpResult[k].IsSimilarSegment(tmpResult[j], tolerance))
                                 tmpResult.RemoveAt(k);
                         
                         if (!tmpResult[i].IPointAtParameter(0.5).IsOnCurve(region,tolerance) &&
