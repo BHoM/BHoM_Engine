@@ -26,6 +26,8 @@ using BH.oM.Environment.Elements;
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
 
+using System.Linq;
+
 namespace BH.Engine.Environment
 {
     public static partial class Modify
@@ -68,6 +70,44 @@ namespace BH.Engine.Environment
         {
             panel.ConnectedSpaces = spaceNames;
             return panel;
+        }
+
+        [Description("Returns a single Environment Panel with an updated connected space name")]
+        [Input("panel", "A single Environment Panel to change the connected space name of")]
+        [Input("spaceNameToChange", "The space name to replace")]
+        [Input("replacementSpaceName", "The new space name to use")]
+        [Output("panel", "A modified Environment Panel with the changed connected space name")]
+        public static Panel ChangeAdjacentSpace(this Panel panel, string spaceNameToChange, string replacementSpaceName)
+        {
+            for(int x = 0; x < panel.ConnectedSpaces.Count; x++)
+            {
+                if (panel.ConnectedSpaces[x] == spaceNameToChange)
+                    panel.ConnectedSpaces[x] = replacementSpaceName;
+            }
+
+            return panel;
+        }
+
+        [Description("Returns a collection of Environment Panels where any connected spaces which are detailed within the spaceNamesToChange are replaced by a replacementSpaceName. The spaceNamesToChange and replacementSpaceNames should match length to provide a 1:1 change")]
+        [Input("panels", "A collection of Environment Panels to update the connected space names of")]
+        [Input("spaceNamesToChange", "A collection of space names which should be updated")]
+        [Input("replacementSpaceNames", "A collection of space names to replace with")]
+        [Output("panels", "A collection of Environment Panels modified so that space names are changed as appropriate")]
+        public static List<Panel> ChangeAdjacentSpaces(this List<Panel> panels, List<string> spaceNamesToChange, List<string> replacementSpaceNames)
+        {
+            if(spaceNamesToChange.Count != replacementSpaceNames.Count)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Please ensure the number of replacement space names matches the number of changing space names. Panels returned without change");
+                return panels;
+            }
+
+            for(int x = 0; x < spaceNamesToChange.Count; x++)
+            {
+                for (int a = 0; a < panels.Count; a++)
+                    panels[a] = ChangeAdjacentSpace(panels[a], spaceNamesToChange[x], replacementSpaceNames[x]);
+            }
+
+            return panels;
         }
     }
 }
