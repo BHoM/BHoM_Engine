@@ -50,7 +50,7 @@ namespace BH.Engine.Environment
             foreach(Panel panel in panelsAsSpace)
             {
                 double tilt = panel.Tilt();
-                if (tilt == 0 || tilt == 180)
+                if (tilt == 180)
                     floorPanels.Add(panel);
             }
 
