@@ -23,9 +23,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using BH.oM.DataStructure;
+using BH.oM.Data.Structures;
 
-namespace BH.Engine.DataStructure
+namespace BH.Engine.Data
 {
     public static partial class Create
     {
