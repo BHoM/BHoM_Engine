@@ -58,7 +58,7 @@ namespace BH.Engine.Environment
 
             List<Polyline> pLines = floorPanels.Select(x => x.ToPolyline()).ToList();
 
-            List<Polyline> floorGeometry = pLines.BooleanUnion();
+            List<Polyline> floorGeometry = pLines.BooleanUnion(0.00001);
 
             if (floorGeometry.Count < 1)
                 return null;
