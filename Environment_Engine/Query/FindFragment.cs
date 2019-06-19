@@ -46,7 +46,7 @@ namespace BH.Engine.Environment
         [Output("fragment", "The instance of that Fragment if it exists on the object, null otherwise")]
         public static T FindFragment<T>(this IEnvironmentObject environmentObject, Type fragmentType)
         {
-            return (T)System.Convert.ChangeType(environmentObject.FragmentProperties.Where(x => x.GetType() == fragmentType).FirstOrDefault(), fragmentType);
+            return (T)System.Convert.ChangeType(environmentObject.Fragments.Where(x => x.GetType() == fragmentType).FirstOrDefault(), fragmentType);
         }
     }
 }

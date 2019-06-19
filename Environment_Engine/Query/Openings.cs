@@ -67,7 +67,7 @@ namespace BH.Engine.Environment
 
             envObjects = envObjects.ObjectsByFragment(typeof(OriginContextFragment));
 
-            envObjects = envObjects.Where(x => (x.FragmentProperties.Where(y => y.GetType() == typeof(OriginContextFragment)).FirstOrDefault() as OriginContextFragment).ElementID == elementID).ToList();
+            envObjects = envObjects.Where(x => (x.Fragments.Where(y => y.GetType() == typeof(OriginContextFragment)).FirstOrDefault() as OriginContextFragment).ElementID == elementID).ToList();
 
             List<Opening> rtnOpenings = new List<Opening>();
             foreach (IEnvironmentObject o in envObjects)
