@@ -24,7 +24,7 @@ using BH.oM.Geometry;
 using System;
 using System.Linq;
 
-namespace BH.Engine.DataStructure
+namespace BH.Engine.Data
 {
     public static partial class Query
     {
