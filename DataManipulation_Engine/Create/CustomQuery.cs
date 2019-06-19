@@ -20,14 +20,9 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.DataManipulation.Queries;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using BH.oM.Data.Requests;
 
-namespace BH.Engine.DataManipulation
+namespace BH.Engine.Data
 {
     public static partial class Create
     {
@@ -35,9 +30,9 @@ namespace BH.Engine.DataManipulation
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static CustomQuery CustomQuery(string query = "")
+        public static CustomRequest CustomRequest(string query = "")
         {
-            return new CustomQuery { Query = query };
+            return new CustomRequest { Query = query };
         }
 
         /***************************************************/

@@ -20,14 +20,11 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.DataManipulation.Queries;
-using System;
+using BH.oM.Data.Requests;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace BH.Engine.DataManipulation
+namespace BH.Engine.Data
 {
     public static partial class Create
     {
@@ -35,9 +32,9 @@ namespace BH.Engine.DataManipulation
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static BatchQuery BatchQuery(IEnumerable<IQuery> queries)
+        public static BatchRequest BatchRequest(IEnumerable<IRequest> queries)
         {
-            return new BatchQuery { Queries = queries.ToList() };
+            return new BatchRequest { Queries = queries.ToList() };
         }
 
         /***************************************************/
