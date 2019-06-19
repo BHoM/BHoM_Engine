@@ -43,7 +43,7 @@ namespace BH.Engine.Environment
         [Description("Returns the floor geometry of a space represented by Environment Panels as a BHoM Geometry Polyline")]
         [Input("panelsAsSpace", "A collection of Environment Panels that represent a closed space")]
         [Output("polyline", "BHoM Geometry Polyline representing the floor of the space")]
-        public static Polyline FloorGeometry(this List<Panel> panelsAsSpace)
+        public static Polyline FloorGeometry(this List<Panel> panelsAsSpace, double tolerance = 0.00001)
         {
             List<Panel> floorPanels = new List<Panel>();
 
@@ -58,7 +58,7 @@ namespace BH.Engine.Environment
 
             List<Polyline> pLines = floorPanels.Select(x => x.ToPolyline()).ToList();
 
-            List<Polyline> floorGeometry = pLines.BooleanUnion(0.00001);
+            List<Polyline> floorGeometry = pLines.BooleanUnion(tolerance);
 
             if (floorGeometry.Count < 1)
                 return null;
