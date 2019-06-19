@@ -23,7 +23,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace BH.Engine.DataManipulation
+namespace BH.Engine.Data
 {
     public static partial class Query
     {

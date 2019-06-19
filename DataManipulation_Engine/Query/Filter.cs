@@ -21,14 +21,10 @@
  */
 
 using BH.oM.Base;
-using BH.oM.DataManipulation.Queries;
-using System;
+using BH.oM.Data.Requests;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace BH.Engine.DataManipulation
+namespace BH.Engine.Data
 {
     public static partial class Query
     {
@@ -36,7 +32,7 @@ namespace BH.Engine.DataManipulation
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static IEnumerable<IBHoMObject> Filter(this IEnumerable<IBHoMObject> objects, FilterQuery query)
+        public static IEnumerable<IBHoMObject> Filter(this IEnumerable<IBHoMObject> objects, FilterRequest query)
         {
             return Compute.FilterData(query, objects);
         }

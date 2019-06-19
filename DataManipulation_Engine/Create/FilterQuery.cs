@@ -20,13 +20,13 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.DataManipulation.Queries;
+using BH.oM.Data.Requests;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 
-namespace BH.Engine.DataManipulation
+namespace BH.Engine.Data
 {
     public static partial class Create
     {
@@ -34,20 +34,20 @@ namespace BH.Engine.DataManipulation
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static FilterQuery FilterQuery(Type type = null, string tag = "")
+        public static FilterRequest FilterRequest(Type type = null, string tag = "")
         {
-            return new FilterQuery { Type = type, Tag = tag };
+            return new FilterRequest { Type = type, Tag = tag };
         }
 
         /***************************************************/
-        public static FilterQuery FilterQuery(Type type, Dictionary<string, object> equalities, string tag = "")
+        public static FilterRequest FilterRequest(Type type, Dictionary<string, object> equalities, string tag = "")
         {
-            return new FilterQuery { Type = type, Tag = tag, Equalities = equalities };
+            return new FilterRequest { Type = type, Tag = tag, Equalities = equalities };
         }
 
         /***************************************************/
 
-        public static FilterQuery FilterQuery(Type type, IEnumerable<object> cases = null, IEnumerable<object> objectIds = null, string tag = "")
+        public static FilterRequest FilterRequest(Type type, IEnumerable<object> cases = null, IEnumerable<object> objectIds = null, string tag = "")
         {
             Dictionary<string, object> equalities = new Dictionary<string, object>();
 
@@ -56,7 +56,7 @@ namespace BH.Engine.DataManipulation
             if (objectIds != null)
                 equalities["ObjectIds"] = objectIds.ToList();
 
-            return FilterQuery(type, equalities, tag);
+            return FilterRequest(type, equalities, tag);
         }
 
         /***************************************************/
