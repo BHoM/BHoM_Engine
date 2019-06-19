@@ -22,17 +22,11 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections;
-using System.Globalization;
-using System.Resources;
 using BH.oM.Base;
-using BH.Engine.Serialiser;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BH.oM.DataStructure;
-using BH.Engine.DataStructure;
+using BH.oM.Data.Structures;
+using BH.Engine.Data;
 
 namespace BH.Engine.Library
 {
@@ -59,7 +53,7 @@ namespace BH.Engine.Library
             if (m_dbTree == null || m_dbTree.Count() == 0 || m_dbTree.Children.Count == 0)
             {
                 List<string> paths = LibraryStrings().Keys.ToList();
-                m_dbTree = DataStructure.Create.Tree(paths, paths.Select(x => x.Split('\\').ToList()).ToList(), "Select a data set").ShortenBranches();
+                m_dbTree = Data.Create.Tree(paths, paths.Select(x => x.Split('\\').ToList()).ToList(), "Select a data set").ShortenBranches();
             }
             return m_dbTree;
         }
