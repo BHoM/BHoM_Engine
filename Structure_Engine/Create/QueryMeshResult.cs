@@ -20,7 +20,7 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.DataManipulation.Queries;
+using BH.oM.Data.Requests;
 using System.Collections.Generic;
 using System.Linq;
 using BH.oM.Reflection.Attributes;
@@ -38,7 +38,7 @@ namespace BH.Engine.Structure.Results
          
         [Description("Specific filter query to retrieve structural mesh results")]
 
-        public static FilterQuery MeshResult(   MeshResultSmoothingType smoothing, 
+        public static FilterRequest MeshResult(   MeshResultSmoothingType smoothing, 
                                                 MeshResultLayer layer,
                                                 double layerPosition,
                                                 MeshResultType resultType, 
@@ -46,7 +46,7 @@ namespace BH.Engine.Structure.Results
                                                 IEnumerable<object> cases = null, 
                                                 IEnumerable<object> objectIds = null)
         {
-            FilterQuery query = new FilterQuery();
+            FilterRequest query = new FilterRequest();
             query.Type = typeof(MeshResults);
 
             query.Equalities["Smoothing"] = smoothing;
