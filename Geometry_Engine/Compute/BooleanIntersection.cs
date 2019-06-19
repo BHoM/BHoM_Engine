@@ -21,6 +21,7 @@
  */
 
 using BH.oM.Geometry;
+using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -237,90 +238,96 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [DeprecatedAttribute("2.3", "Replace with method for ICurve, ICurve", null, "BooleanIntersection")]
         public static List<PolyCurve> BooleanIntersection(this PolyCurve region, PolyCurve refRegion, double tolerance = Tolerance.Distance)
         {
-            if (!region.IsClosed(tolerance) || !refRegion.IsClosed(tolerance))
-            {
-                Reflection.Compute.RecordError("Boolean Union works on closed regions.");
-                return new List<PolyCurve>();
-            }
+            return (region as ICurve).BooleanIntersection(refRegion, tolerance);
 
-            if (!region.IsCoplanar(refRegion, tolerance))
-                return new List<PolyCurve>();
+        //    if (!region.IsClosed(tolerance) || !refRegion.IsClosed(tolerance))
+        //    {
+        //        Reflection.Compute.RecordError("Boolean Union works on closed regions.");
+        //        return new List<PolyCurve>();
+        //    }
 
-            double sqTol = tolerance * tolerance;
-            List<PolyCurve> tmpResult = new List<PolyCurve>();
-            List<Point> iPts = region.CurveIntersections(refRegion, tolerance);
+        //    if (!region.IsCoplanar(refRegion, tolerance))
+        //        return new List<PolyCurve>();
 
-            List<PolyCurve> splitRegion1 = region.SplitAtPoints(iPts, tolerance);
-            List<PolyCurve> splitRegion2 = refRegion.SplitAtPoints(iPts, tolerance);
+        //    double sqTol = tolerance * tolerance;
+        //    List<PolyCurve> tmpResult = new List<PolyCurve>();
+        //    List<Point> iPts = region.CurveIntersections(refRegion, tolerance);
 
-            foreach (PolyCurve segment in splitRegion1)
-            {
-                List<Point> mPts = new List<Point> { segment.IPointAtParameter(0.5) };
+        //    List<PolyCurve> splitRegion1 = region.SplitAtPoints(iPts, tolerance);
+        //    List<PolyCurve> splitRegion2 = refRegion.SplitAtPoints(iPts, tolerance);
 
-                if (refRegion.IsContaining(mPts, true, tolerance))
-                    tmpResult.Add(segment);
-            }
+        //    foreach (PolyCurve segment in splitRegion1)
+        //    {
+        //        List<Point> mPts = new List<Point> { segment.IPointAtParameter(0.5) };
 
-            foreach (PolyCurve segment in splitRegion2)
-            {
-                List<Point> cPts = new List<Point> { segment.IPointAtParameter(0.5) };
+        //        if (refRegion.IsContaining(mPts, true, tolerance))
+        //            tmpResult.Add(segment);
+        //    }
 
-                if (region.IsContaining(cPts, true, tolerance))
-                    tmpResult.Add(segment);
-            }
+        //    foreach (PolyCurve segment in splitRegion2)
+        //    {
+        //        List<Point> cPts = new List<Point> { segment.IPointAtParameter(0.5) };
 
-            bool regSameDir = false;
-            if (Math.Abs(region.Normal().DotProduct(refRegion.Normal()) - 1) <= tolerance)
-                regSameDir = true;
+        //        if (region.IsContaining(cPts, true, tolerance))
+        //            tmpResult.Add(segment);
+        //    }
 
-            for (int i = 0; i < tmpResult.Count; i++)
-            {
-                for (int j = 0; j < tmpResult.Count; j++)
-                {
-                    if (i != j && tmpResult[i].IsSimilarSegment(tmpResult[j], tolerance))
-                    {
-                        bool sameDir = tmpResult[i].TangentAtParameter(0.5).IsEqual(tmpResult[j].TangentAtParameter(0.5));
-                        if ((regSameDir && sameDir) || (!regSameDir && !sameDir))
-                        {
-                            tmpResult.RemoveAt(Math.Min(j, i));
-                            if (i > j)
-                                i--;
-                            else
-                                j = 0;
-                        }
-                        else
-                        {
-                            tmpResult.RemoveAt(Math.Max(j, i));
-                            tmpResult.RemoveAt(Math.Min(j, i));
-                            if (i > 0)
-                                i--;
-                            else
-                                j = 0;
-                        }
-                    }
-                }
-            }
+        //    bool regSameDir = false;
+        //    if (Math.Abs(region.Normal().DotProduct(refRegion.Normal()) - 1) <= tolerance)
+        //        regSameDir = true;
 
-            List<PolyCurve> result = Join(tmpResult, tolerance);
+        //    for (int i = 0; i < tmpResult.Count; i++)
+        //    {
+        //        for (int j = 0; j < tmpResult.Count; j++)
+        //        {
+        //            if (i != j && tmpResult[i].IsSimilarSegment(tmpResult[j], tolerance))
+        //            {
+        //                bool sameDir = tmpResult[i].TangentAtParameter(0.5).IsEqual(tmpResult[j].TangentAtParameter(0.5));
+        //                if ((regSameDir && sameDir) || (!regSameDir && !sameDir))
+        //                {
+        //                    tmpResult.RemoveAt(Math.Min(j, i));
+        //                    if (i > j)
+        //                        i--;
+        //                    else
+        //                        j = 0;
+        //                }
+        //                else
+        //                {
+        //                    tmpResult.RemoveAt(Math.Max(j, i));
+        //                    tmpResult.RemoveAt(Math.Min(j, i));
+        //                    if (i > 0)
+        //                        i--;
+        //                    else
+        //                        j = 0;
+        //                }
+        //            }
+        //        }
+        //    }
 
-            int res = 0;
-            while (res < result.Count)
-            {
-                if (result[res].Area() <= sqTol)
-                    result.RemoveAt(res);
-                else
-                    res++;
-            }
+        //    List<PolyCurve> result = Join(tmpResult, tolerance);
 
-            return result;
+        //    int res = 0;
+        //    while (res < result.Count)
+        //    {
+        //        if (result[res].Area() <= sqTol)
+        //            result.RemoveAt(res);
+        //        else
+        //            res++;
+        //    }
+
+        //    return result;
         }
 
         /***************************************************/
 
+        [DeprecatedAttribute("2.3", "Replace with method for IEnumerable<ICurve>", null, "BooleanIntersection")]
         public static List<PolyCurve> BooleanIntersection(this List<PolyCurve> regions, double tolerance = Tolerance.Distance)
         {
+            return regions.BooleanIntersection(tolerance);
+
             if (regions.Count < 2)
                 return regions;
 
@@ -344,7 +351,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static List<ICurve> IBooleanIntersection(this ICurve region, ICurve refRegion, double tolerance = Tolerance.Distance)
+        public static List<PolyCurve> BooleanIntersection(this ICurve region, ICurve refRegion, double tolerance = Tolerance.Distance)
         {
             if (region is NurbsCurve || region is Ellipse || refRegion is NurbsCurve || refRegion is Ellipse)
                 throw new NotImplementedException("NurbsCurves and ellipses are not implemented yet.");
@@ -352,11 +359,11 @@ namespace BH.Engine.Geometry
             if (!region.IIsClosed(tolerance) || !refRegion.IIsClosed(tolerance))
             {
                 Reflection.Compute.RecordError("Boolean Intersection works on closed regions.");
-                return new List<ICurve>();
+                return new List<PolyCurve>();
             }
 
             if (!region.IIsCoplanar(refRegion, tolerance))
-                return new List<ICurve>();
+                return new List<PolyCurve>();
 
             double sqTol = tolerance * tolerance;
             List<ICurve> tmpResult = new List<ICurve>();
@@ -423,12 +430,12 @@ namespace BH.Engine.Geometry
                 }
             }
 
-            List<ICurve> result = IJoin(tmpResult, tolerance).Cast<ICurve>().ToList();
+            List<PolyCurve> result = IJoin(tmpResult, tolerance).ToList();
 
             int res = 0;
             while (res < result.Count)
             {
-                if (result[res].IArea() <= sqTol || !result[res].IIsClosed(tolerance))
+                if (result[res].Area() <= sqTol || !result[res].IIsClosed(tolerance))
                     result.RemoveAt(res);
                 else
                     res++;
@@ -440,26 +447,36 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static List<ICurve> IBooleanIntersection(this List<ICurve> regions, double tolerance = Tolerance.Distance)
+        public static List<PolyCurve> BooleanIntersection(this IEnumerable<ICurve> regions, double tolerance = Tolerance.Distance)
         {
-            if (regions.Count < 2)
+            List<ICurve> regionsList = regions.ToList();
+            
+            List<PolyCurve> regionListPolyCurve = new List<PolyCurve>();
+
+            foreach (ICurve curve in regionsList)
             {
-                return regions;
+                if (curve is PolyCurve)
+                    regionListPolyCurve.Add(curve as PolyCurve);
+                else
+                    regionListPolyCurve.Add(new PolyCurve { Curves = curve.ISubParts().ToList() });
             }
 
-            List<ICurve> result = new List<ICurve>();
+            if (regionListPolyCurve.Count < 2)            
+                return regionListPolyCurve;
+            
+            List<PolyCurve> result = new List<PolyCurve>();
 
-            foreach (ICurve region in regions)
+            foreach (PolyCurve region in regionListPolyCurve)
             {
-                if (region.IArea() <= tolerance)
+                if (region.Area() <= tolerance)
                     return result;
             }
 
-            result.Add(regions[0]);
-            for (int i = 1; i < regions.Count; i++)
+            result.Add(regionListPolyCurve[0]);
+            for (int i = 1; i < regionListPolyCurve.Count; i++)
             {
-                List<ICurve> newResult = new List<ICurve>();
-                result.ForEach(r => newResult.AddRange(r.IBooleanIntersection(regions[i], tolerance)));
+                List<PolyCurve> newResult = new List<PolyCurve>();
+                result.ForEach(r => newResult.AddRange(r.BooleanIntersection(regionListPolyCurve[i], tolerance)));
                 result = newResult;
             }
 
