@@ -48,19 +48,28 @@ namespace BH.Engine.Environment
 
             foreach(Panel be in panels)
             {
-                Construction t = unique.Where(x => x.UniqueConstructionName() == be.Construction.UniqueConstructionName()).FirstOrDefault();
-                if (t == null)
-                    unique.Add(be.Construction as Construction);
+                if (be.Construction != null)
+                {
+                    Construction t = unique.Where(x =>x.UniqueConstructionName() == be.Construction.UniqueConstructionName()).FirstOrDefault();
+                    if (t == null)
+                        unique.Add(be.Construction as Construction);
+                }
 
                 foreach(Opening o in be.Openings)
                 {
-                    Construction t2 = unique.Where(x => x.UniqueConstructionName() == o.FrameConstruction.UniqueConstructionName()).FirstOrDefault();
-                    if (t2 == null)
-                        unique.Add(o.FrameConstruction as Construction);
+                    if (o.FrameConstruction != null)
+                    {
+                        Construction t2 = unique.Where(x => x.UniqueConstructionName() == o.FrameConstruction.UniqueConstructionName()).FirstOrDefault();
+                        if (t2 == null)
+                            unique.Add(o.FrameConstruction as Construction);
+                    }
 
-                    Construction t3 = unique.Where(x => x.UniqueConstructionName() == o.OpeningConstruction.UniqueConstructionName()).FirstOrDefault();
-                    if (t3 == null)
-                        unique.Add(o.OpeningConstruction as Construction);
+                    if (o.OpeningConstruction != null)
+                    {
+                        Construction t3 = unique.Where(x => x.UniqueConstructionName() == o.OpeningConstruction.UniqueConstructionName()).FirstOrDefault();
+                        if (t3 == null)
+                            unique.Add(o.OpeningConstruction as Construction);
+                    }
                 }
             }
 
