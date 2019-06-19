@@ -45,7 +45,7 @@ namespace BH.Engine.Environment
             aPanel.ExternalEdges = new List<Edge>(panel.ExternalEdges);
             aPanel.Openings = new List<Opening>(panel.Openings);
             aPanel.CustomData = new Dictionary<string, object>(panel.CustomData);
-            aPanel.FragmentProperties = new List<IBHoMFragment>(panel.FragmentProperties);
+            aPanel.Fragments = new List<IBHoMFragment>(panel.Fragments);
             aPanel.ConnectedSpaces = new List<string>(panel.ConnectedSpaces);
             aPanel.Construction = panel.Construction;
             aPanel.Type = panel.Type;

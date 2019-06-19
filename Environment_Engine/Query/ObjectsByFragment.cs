@@ -46,7 +46,7 @@ namespace BH.Engine.Environment
         [Output("environmentObjects", "A collection of generic BHoM objects that contain the provided fragment type")]
         public static List<IEnvironmentObject> ObjectsByFragment(this List<IEnvironmentObject> objects, Type fragmentType)
         {
-            return objects.Where(x => x.FragmentProperties.Where(y => y.GetType() == fragmentType).FirstOrDefault() != null).ToList();
+            return objects.Where(x => x.Fragments.Where(y => y.GetType() == fragmentType).FirstOrDefault() != null).ToList();
         }
     }
 }

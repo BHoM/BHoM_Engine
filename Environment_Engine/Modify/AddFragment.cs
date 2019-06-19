@@ -44,7 +44,7 @@ namespace BH.Engine.Environment
         public static IEnvironmentObject AddFragment(this IEnvironmentObject environmentObject, IBHoMFragment fragment)
         {
             if (environmentObject == null) return null;
-            environmentObject.FragmentProperties.Add(fragment);
+            environmentObject.Fragments.Add(fragment);
             return environmentObject;
         }
     }
