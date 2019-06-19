@@ -45,32 +45,25 @@ namespace BH.Engine.Environment
         [Output("polyline", "BHoM Geometry Polyline representing the floor of the space")]
         public static Polyline FloorGeometry(this List<Panel> panelsAsSpace)
         {
-            Panel floor = null;
+            List<Panel> floorPanels = new List<Panel>();
 
             foreach(Panel panel in panelsAsSpace)
             {
                 double tilt = panel.Tilt();
                 if (tilt == 0 || tilt == 180)
-                {
-                    if(floor == null)
-                        floor = panel;
-                    else
-                    {
-                        //Multiple elements could be a floor - assign the one with the lowest Z
-                        if (floor.MinimumLevel() > panel.MinimumLevel()) //TODO: Make this more robust - multiple elements could be a floor with the same z level...
-                            floor = panel;
-                    }
-                }
+                    floorPanels.Add(panel);
             }
 
-            if (floor == null) return null;
+            if (floorPanels.Count == 0) return null;
 
-            Polyline floorGeometry = floor.ToPolyline();
+            List<Polyline> pLines = floorPanels.Select(x => x.ToPolyline()).ToList();
 
-            if (floorGeometry.ControlPoints.Count < 3)
+            List<Polyline> floorGeometry = pLines.BooleanUnion();
+
+            if (floorGeometry.Count < 1)
                 return null;
 
-            return floorGeometry;
+            return floorGeometry[0];
         }
     }
 }
