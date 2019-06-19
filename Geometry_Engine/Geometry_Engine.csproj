@@ -200,17 +200,14 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DataStructure_Engine\DataStructure_Engine.csproj">
+    <ProjectReference Include="..\Data_Engine\Data_Engine.csproj">
       <Project>{8082ca2a-ac5c-4690-9f09-960e0d3e4102}</Project>
-      <Name>DataStructure_Engine</Name>
+      <Name>Data_Engine</Name>
     </ProjectReference>
     <ProjectReference Include="..\Reflection_Engine\Reflection_Engine.csproj">
       <Project>{b0154405-9390-472d-9b5c-a2280823b18d}</Project>
       <Name>Reflection_Engine</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -21,17 +21,16 @@
  */
 
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("DataManipulation")]
-[assembly: AssemblyDescription("BHoM DataManipulation Engine")]
+[assembly: AssemblyTitle("Data_Engine")]
+[assembly: AssemblyDescription("BHoM Data Engine")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("DataManipulation")]
+[assembly: AssemblyProduct("Data_Engine")]
 [assembly: AssemblyCopyright("Copyright © https://github.com/BHoM")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -42,7 +41,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("d343f0de-5379-4410-98f1-b5e26855527f")]
+[assembly: Guid("8082ca2a-ac5c-4690-9f09-960e0d3e4102")]
 
 // Version information for an assembly consists of the following four values:
 //
