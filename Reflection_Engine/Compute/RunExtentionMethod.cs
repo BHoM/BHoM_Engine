@@ -46,13 +46,12 @@ namespace BH.Engine.Reflection
                 return m_PreviousInvokedMethods[key].Invoke(null, new object[] { target });
 
             // Otherwise, search for the method and call it if found
-            foreach (MethodInfo method in type.ExtentionMethods(methodName))
+            MethodInfo method = type.ExtentionMethods(methodName).Where(x => x.GetParameters().Length == 1).SortExtensionMethods(type).FirstOrDefault();
+
+            if (method != null)
             {
-                if (method.GetParameters().Length == 1)
-                {
-                    m_PreviousInvokedMethods[key] = method;
-                    return method.Invoke(null, new object[] { target });
-                }
+                m_PreviousInvokedMethods[key] = method;
+                return method.Invoke(null, new object[] { target });
             }
 
             // Return null if nothing found
@@ -64,13 +63,19 @@ namespace BH.Engine.Reflection
         public static object RunExtentionMethod(object target, string methodName, object[] parameters)
         {
             object result = null;
+            Type type = target.GetType();
 
-            foreach (MethodInfo method in target.GetType().ExtentionMethods(methodName))
+            // If the method has been called before, just use that
+            string name = methodName + parameters.Select(x => x.GetType().ToString()).Aggregate((a,b) => a+b);
+            Tuple<Type, string> key = new Tuple<Type, string>(type, name);
+            if (m_PreviousInvokedMethods.ContainsKey(key))
+                return m_PreviousInvokedMethods[key].Invoke(null, new object[] { target }.Concat(parameters).ToArray());
+
+
+            foreach (MethodInfo method in target.GetType().ExtentionMethods(methodName).Where(x => x.GetParameters().Length == parameters.Length +1).SortExtensionMethods(type))
             {
-                // Make sure the number of parameters is matching
+
                 ParameterInfo[] paramInfo = method.GetParameters();
-                if (paramInfo.Length != parameters.Length + 1)
-                    continue;
 
                 // Make sure the type of parameters is matching
                 bool matchingTypes = true;
@@ -85,6 +90,7 @@ namespace BH.Engine.Reflection
                 if (!matchingTypes)
                     continue;
 
+                m_PreviousInvokedMethods[key] = method;
                 return method.Invoke(null, new object[] { target }.Concat(parameters).ToArray());
             }
 
