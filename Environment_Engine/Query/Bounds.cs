@@ -45,7 +45,7 @@ namespace BH.Engine.Environment
         [Output("boundingBox", "The bounding box of the panel")]
         public static BoundingBox Bounds(this Panel panel)
         {
-            return Geometry.Query.Bounds(panel.ToPolyline());
+            return Geometry.Query.Bounds(panel.Polyline());
         }
 
         /***************************************************/

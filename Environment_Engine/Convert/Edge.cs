@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
@@ -22,55 +22,55 @@
 
 using System;
 using System.Collections.Generic;
-
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+using BH.oM.Geometry;
 using BH.oM.Environment;
 using BH.oM.Environment.Elements;
-
 using BH.Engine.Geometry;
-using BH.oM.Geometry;
 
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
 
 namespace BH.Engine.Environment
 {
-    public static partial class Query
+    public static partial class Convert
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns the bottom of a given environment object")]
-        [Input("environmentObject", "Any object implementing the IEnvironmentObject interface that can have a geometrical bottom")]
-        [Output("curve", "An ICurve representation of the bottom of the object")]
-        public static ICurve Bottom(this IEnvironmentObject environmentObject)
+        [Description("Returns a collection of Environment Edges from a BHoM Geomtry Polyline")]
+        [Input("polyline", "A BHoM Geometry Polyline to be split into Environment Edges")]
+        [Output("edges", "A collection of Environment Edges")]
+        public static List<Edge> ToEdges(this Polyline polyline)
         {
-            if (environmentObject == null) return null;
+            List<Edge> edges = new List<Edge>();
 
-            Polyline workingCurves = null;
-
-            if (environmentObject is Panel)
-                workingCurves = (environmentObject as Panel).ExternalEdges.Polyline();
-            else if (environmentObject is Opening)
-                workingCurves = (environmentObject as Opening).Edges.Polyline();
-
-            if (workingCurves == null) return null;
-
-            double aZ = double.MaxValue;
-            ICurve aResult = null;
-            foreach (ICurve aCurve in workingCurves.SplitAtPoints(workingCurves.DiscontinuityPoints()))
+            List<Polyline> polylines = polyline.SplitAtPoints(polyline.DiscontinuityPoints());
+            foreach (Polyline p in polylines)
             {
-                Point aPoint_Start = aCurve.IStartPoint();
-                Point aPoint_End = aCurve.IEndPoint();
-
-                if (aPoint_End.Z <= aZ && aPoint_Start.Z <= aZ)
-                {
-                    aZ = Math.Max(aPoint_End.Z, aPoint_Start.Z);
-                    aResult = aCurve;
-                }
+                Edge e = new Edge();
+                e.Curve = p;
+                edges.Add(e);
             }
-            return aResult;
+
+            return edges;
+        }
+
+        [Description("Returns a collection of Environment Edges from a collection of BHoM Geomtry Polylines")]
+        [Input("polylines", "A collection of BHoM Geometry Polylines to be split into Environment Edges")]
+        [Output("edges", "A collection of Environment Edges")]
+        public static List<Edge> ToEdges(this List<Polyline> polylines)
+        {
+            List<Edge> edges = new List<Edge>();
+
+            foreach (Polyline p in polylines)
+                edges.AddRange(p.ToEdges());
+
+            return edges;
         }
     }
 }

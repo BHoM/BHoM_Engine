@@ -56,7 +56,7 @@ namespace BH.Engine.Environment
             {
                 foreach (Panel element in space)
                 {
-                    foreach (Point pt in element.ToPolyline().IControlPoints())
+                    foreach (Point pt in element.Polyline().IControlPoints())
                     {
                         if (pt.Z > (level.Elevation - BH.oM.Geometry.Tolerance.Distance) && pt.Z < (level.Elevation + BH.oM.Geometry.Tolerance.Distance))
                             ctrlPoints.Add(pt);

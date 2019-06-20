@@ -50,7 +50,7 @@ namespace BH.Engine.Environment
         [Output("inclination", "The inclination of the environment object")]
         public static double Inclination(this IEnvironmentObject environmentObject)
         {
-            Polyline pLine = environmentObject.ToPolyline();
+            Polyline pLine = environmentObject.Polyline();
 
             List<Point> pts = pLine.DiscontinuityPoints();
             Plane plane = BH.Engine.Geometry.Create.Plane(pts[0], pts[1], pts[2]); //Some protection on this needed maybe?

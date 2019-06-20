@@ -46,7 +46,7 @@ namespace BH.Engine.Environment
         [Output("tilt", "The tilt of the Environment Object")]
         public static double Tilt(this IEnvironmentObject environmentObject)
         {
-            return environmentObject.ToPolyline().Tilt();
+            return environmentObject.Polyline().Tilt();
         }
 
         [Description("Returns the tilt of a BHoM Geometry Polyline")]

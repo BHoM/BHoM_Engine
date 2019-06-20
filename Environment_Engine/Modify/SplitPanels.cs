@@ -60,7 +60,7 @@ namespace BH.Engine.Environment
                     //Cut the smaller building element out of the bigger one as an opening
                     List<Line> cuttingLines = new List<Line>();
                     foreach(Panel be in overlaps)
-                        cuttingLines.AddRange(be.ToPolyline().SubParts());
+                        cuttingLines.AddRange(be.Polyline().SubParts());
 
 
                     rtnElements.AddRange(currentElement.Split(cuttingLines));
@@ -130,7 +130,7 @@ namespace BH.Engine.Environment
 
                 foreach (Panel be in elementsToSplit)
                 {
-                    Polyline elementToSplitCrv = be.ToPolyline();
+                    Polyline elementToSplitCrv = be.Polyline();
                     List<Point> cuttingPnts = elementToSplitCrv.LineIntersections(l, true);
                     List<Polyline> cutLines = elementToSplitCrv.SplitAtPoints(cuttingPnts);
                     if (cutLines.Count == 1) continue;
@@ -165,8 +165,8 @@ namespace BH.Engine.Environment
         {
             if (panel == null || cuttingPanel == null) return new List<Panel> { panel };
 
-            Polyline elementToSplitCrv = panel.ToPolyline();
-            Polyline cuttingCrv = cuttingPanel.ToPolyline();
+            Polyline elementToSplitCrv = panel.Polyline();
+            Polyline cuttingCrv = cuttingPanel.Polyline();
 
             List<Point> cuttingPts = elementToSplitCrv.LineIntersections(cuttingCrv);
 
@@ -212,11 +212,11 @@ namespace BH.Engine.Environment
             {
                 Dictionary<Panel, List<Panel>> rtn2 = new Dictionary<Panel, List<Panel>>();
                 Dictionary<Panel, List<Polyline>> replacementGeom = new Dictionary<Panel, List<Polyline>>();
-                Polyline be1P = kvp.Key.ToPolyline();
+                Polyline be1P = kvp.Key.Polyline();
 
                 foreach (Panel be2 in kvp.Value)
                 {
-                    Polyline be2p = be2.ToPolyline();
+                    Polyline be2p = be2.Polyline();
 
                     Dictionary<Panel, List<Polyline>> geomBuild = new Dictionary<Panel, List<Polyline>>();
                     geomBuild.Add(kvp.Key, new List<Polyline>());
@@ -264,7 +264,7 @@ namespace BH.Engine.Environment
                                 bool addedPoint = false;
                                 foreach (Point px in intersections[0].ControlPoints)
                                 {
-                                    if (!p5.ControlPoints.Contains(px) && !kvp3.Key.ToPolyline().ControlPoints.Contains(px) && px.MatchPointOn2Of3(p5.ControlPoints.Last()))
+                                    if (!p5.ControlPoints.Contains(px) && !kvp3.Key.Polyline().ControlPoints.Contains(px) && px.MatchPointOn2Of3(p5.ControlPoints.Last()))
                                     {
                                         p5.ControlPoints.Add(px);
                                         addedPoint = true;

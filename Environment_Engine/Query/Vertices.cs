@@ -44,7 +44,7 @@ namespace BH.Engine.Environment
         [Output("points", "A collection of BHoM Geometry Points which are the vertices of the panel")]
         public static List<Point> Vertices(this Panel panel)
         {
-            return panel.ToPolyline().IControlPoints();
+            return panel.Polyline().IControlPoints();
         }
 
         [Description("Returns a collection of vertices for a collection of Environment Panels representing a space")]

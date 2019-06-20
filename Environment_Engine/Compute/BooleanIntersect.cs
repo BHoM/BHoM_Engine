@@ -44,7 +44,7 @@ namespace BH.Engine.Environment
         [Output("doesIntersect", "True if the panels boolean intersect, false if they do not")]
         public static bool BooleanIntersect(this Panel element, Panel elementToCompare)
         {
-            return element.ToPolyline().BooleanIntersection(elementToCompare.ToPolyline()).Count > 0;
+            return element.Polyline().BooleanIntersection(elementToCompare.Polyline()).Count > 0;
         }
     }
 }

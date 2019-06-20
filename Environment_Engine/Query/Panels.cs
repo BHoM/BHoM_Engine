@@ -129,7 +129,7 @@ namespace BH.Engine.Environment
         [Output("panels", "A collection of Environment Panel where the external edges contain the given search point")]
         public static List<Panel> PanelsContainingPoint(this List<Panel> panels, Point searchPoint)
         {
-            return panels.Where(x => x.ToPolyline().IsContaining(new List<Point>() { searchPoint })).ToList();
+            return panels.Where(x => x.Polyline().IsContaining(new List<Point>() { searchPoint })).ToList();
         }
 
         [Description("Returns a collection of Environment Panels that match the given geometry")]
@@ -139,7 +139,7 @@ namespace BH.Engine.Environment
         public static List<Panel> PanelsByGeometry(this List<Panel> panels, ICurve searchGeomtry)
         {
             List<Point> searchPoints = searchGeomtry.ICollapseToPolyline(BH.oM.Geometry.Tolerance.Angle).DiscontinuityPoints();
-            return panels.Where(x => x.ToPolyline().DiscontinuityPoints().PointsMatch(searchPoints)).ToList();
+            return panels.Where(x => x.Polyline().DiscontinuityPoints().PointsMatch(searchPoints)).ToList();
         }
 
         [Description("Returns a collection of Environment Panels that match the given element ID")]

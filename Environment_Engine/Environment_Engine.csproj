@@ -74,6 +74,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Compute\BooleanIntersect.cs" />
+    <Compile Include="Convert\Edge.cs" />
     <Compile Include="Create\LightReflectanceFragment.cs" />
     <Compile Include="Create\LightTransmittanceFragment.cs" />
     <Compile Include="Query\Absorptance.cs" />
@@ -188,9 +189,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Convert\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Compile Include="Query\MaterialRoughness.cs" />
   </ItemGroup>

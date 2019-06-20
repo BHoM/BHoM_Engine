@@ -52,9 +52,9 @@ namespace BH.Engine.Environment
             foreach (Panel element in panelsAsSpace)
             {
                 if (element.Type == PanelType.CurtainWall)
-                    pLinesCurtainWall.Add(element.ToPolyline());
+                    pLinesCurtainWall.Add(element.Polyline());
                 else
-                    pLinesOther.Add(element.ToPolyline());
+                    pLinesOther.Add(element.Polyline());
             }
 
             //Add the rest of the geometries
