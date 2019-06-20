@@ -36,24 +36,12 @@ namespace BH.Engine.Common
 
         public static double Area(this IElement2D element2D)
         {
-            //TODO: make this work for PolyCurves (Booleans needed)
+            double result = element2D.IOutlineCurve().IArea();
 
-            double result = element2D.IOutlineCurve().Area();
+            List<PolyCurve> openings = element2D.IInternalOutlineCurves().BooleanUnion();
 
-            List<Polyline> openings = new List<Polyline>();
-            foreach (PolyCurve o in element2D.IInternalOutlineCurves())
-            {
-                Polyline p = o.ToPolyline();
-                if (p == null)
-                    throw new NotImplementedException();
-
-                openings.Add(p);
-            }
-
-            foreach (Polyline p in openings.BooleanUnion())
-            {
-                result -= p.Area();
-            }
+            foreach (PolyCurve o in openings)
+                result -= o.Area();
 
             return result;
         }

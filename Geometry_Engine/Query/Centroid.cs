@@ -132,6 +132,9 @@ namespace BH.Engine.Geometry
 
             List<ICurve> curveSubParts = curve.SubParts();
 
+            if (curveSubParts.Count == 1 && curveSubParts[0] is Circle)
+                return (curveSubParts[0] as Circle).Centroid();
+
             List<Point> pts = new List<Point> { curveSubParts[0].IStartPoint() };
             foreach (ICurve crv in curveSubParts)
             {
