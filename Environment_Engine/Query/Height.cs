@@ -58,7 +58,7 @@ namespace BH.Engine.Environment
         [Output("height", "The height of the panel")]
         public static double Height(this Panel panel)
         {
-            return panel.ToPolyline().Height();
+            return panel.Polyline().Height();
         }
 
         [Description("Returns the height of an Environment Opening")]
@@ -66,7 +66,7 @@ namespace BH.Engine.Environment
         [Output("height", "The height of the opening")]
         public static double Height(this Opening opening)
         {
-            return opening.ToPolyline().Height();
+            return opening.Polyline().Height();
         }
 
         [Description("Returns the height of a BHoM Geometry ICurve based on the bounding box of the curve")]

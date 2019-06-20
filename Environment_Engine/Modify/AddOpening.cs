@@ -55,7 +55,7 @@ namespace BH.Engine.Environment
         {
             foreach(Opening o in openings)
             {
-                Point centre = o.ToPolyline().Centre();
+                Point centre = o.Polyline().Centre();
                 if(centre != null)
                 {
                     Panel panel = panels.PanelsContainingPoint(centre).First();

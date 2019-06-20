@@ -45,7 +45,7 @@ namespace BH.Engine.Environment
         [Output("isCoPlanar", "True if the two panels are co-planar, false otherwise")]
         public static bool IsCoPlanar(this Panel panel, Panel panelToCompare)
         {
-            return panel.ToPolyline().IsCoplanar(panelToCompare.ToPolyline());
+            return panel.Polyline().IsCoplanar(panelToCompare.Polyline());
         }
     }
 }

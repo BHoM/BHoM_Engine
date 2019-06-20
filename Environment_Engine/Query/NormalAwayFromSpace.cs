@@ -49,7 +49,7 @@ namespace BH.Engine.Environment
         [Output("normalAwayFromSpace", "True if the normal of the panel is facing away from the space, false otherwise")]
         public static bool NormalAwayFromSpace(this Panel panel, List<Panel> panelsAsSpace)
         {
-            return NormalAwayFromSpace(panel.ToPolyline(), panelsAsSpace);
+            return NormalAwayFromSpace(panel.Polyline(), panelsAsSpace);
         }
 
         [Description("Returns whether the normal of a given polyline is facing away from the containing space")]

@@ -46,7 +46,7 @@ namespace BH.Engine.Environment
         [Output("azimuth", "The azimuth of the Environment Object")]
         public static double Azimuth(this IEnvironmentObject environmentObject, Vector refVector)
         {
-            return environmentObject.ToPolyline().Azimuth(refVector);
+            return environmentObject.Polyline().Azimuth(refVector);
         }
 
         [Description("Returns the azimuth of a BHoM Geometry Polyline")]

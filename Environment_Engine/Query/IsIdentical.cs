@@ -49,8 +49,8 @@ namespace BH.Engine.Environment
             //Go through building elements and compare vertices and centre points
             if (panel == null || panelToCompare == null) return false;
 
-            List<Point> controlPoints = panel.ToPolyline().IControlPoints();
-            List<Point> measurePoints = panelToCompare.ToPolyline().IControlPoints();
+            List<Point> controlPoints = panel.Polyline().IControlPoints();
+            List<Point> measurePoints = panelToCompare.Polyline().IControlPoints();
 
             if (controlPoints.Count != measurePoints.Count) return false;
 

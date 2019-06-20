@@ -86,11 +86,11 @@ namespace BH.Engine.Environment
             List<Plane> planes = new List<Plane>();
             foreach (Panel be in panels)
             {
-                Plane p = be.ToPolyline().IControlPoints().FitPlane();
-                if (!be.ToPolyline().IsInPlane(p))
+                Plane p = be.Polyline().IControlPoints().FitPlane();
+                if (!be.Polyline().IsInPlane(p))
                 {
                     //Create a different plane...
-                    List<Point> pnts = be.ToPolyline().IDiscontinuityPoints();
+                    List<Point> pnts = be.Polyline().IDiscontinuityPoints();
                     if (pnts.Count >= 3)
                         p = BH.Engine.Geometry.Create.Plane(pnts[0], pnts[1], pnts[2]);
                 }
@@ -98,7 +98,7 @@ namespace BH.Engine.Environment
                 planes.Add(p);
             }
 
-            List<Point> ctrPoints = panels.SelectMany(x => x.ToPolyline().IControlPoints()).ToList();
+            List<Point> ctrPoints = panels.SelectMany(x => x.Polyline().IControlPoints()).ToList();
             BoundingBox boundingBox = BH.Engine.Geometry.Query.Bounds(ctrPoints);
 
             if (!BH.Engine.Geometry.Query.IsContaining(boundingBox, point)) return false;
@@ -135,7 +135,7 @@ namespace BH.Engine.Environment
 
                     List<Point> intersectingPoints = new List<oM.Geometry.Point>();
                     intersectingPoints.Add(BH.Engine.Geometry.Query.PlaneIntersection(line, planes[x]));
-                    Polyline pLine = panels[x].ToPolyline();
+                    Polyline pLine = panels[x].Polyline();
 
                     if (intersectingPoints != null && BH.Engine.Geometry.Query.IsContaining(pLine, intersectingPoints, true, 1e-05))
                         intersectPoints.AddRange(intersectingPoints);
@@ -149,7 +149,7 @@ namespace BH.Engine.Environment
                 //Check the edges in case the point is on the edge of the BE
                 foreach (Panel p in panels)
                 {
-                    List<Line> subParts = p.ToPolyline().ISubParts() as List<Line>;
+                    List<Line> subParts = p.Polyline().ISubParts() as List<Line>;
                     foreach (Line l in subParts)
                     {
                         if (l.IsOnCurve(point)) isContained = true;

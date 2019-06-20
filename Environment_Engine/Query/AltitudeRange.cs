@@ -43,7 +43,7 @@ namespace BH.Engine.Environment
         [Output("altitudeRange", "The altitude range of the object")]
         public static double AltitudeRange(this IEnvironmentObject environmentObject)
         {
-            BoundingBox panelBoundingBox = BH.Engine.Geometry.Query.IBounds(environmentObject.ToPolyline());
+            BoundingBox panelBoundingBox = BH.Engine.Geometry.Query.IBounds(environmentObject.Polyline());
             double altitudeRange = panelBoundingBox.Max.Z - panelBoundingBox.Min.Z;
 
             return altitudeRange;

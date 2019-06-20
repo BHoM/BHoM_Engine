@@ -58,7 +58,7 @@ namespace BH.Engine.Environment
         [Output("width", "The width of the panel")]
         public static double Width(this Panel panel)
         {
-            return panel.ToPolyline().Width();
+            return panel.Polyline().Width();
         }
 
         [Description("Returns the width of an Environment Opening")]
@@ -66,7 +66,7 @@ namespace BH.Engine.Environment
         [Output("width", "The width of the opening")]
         public static double Width(this Opening opening)
         {
-            return opening.ToPolyline().Width();
+            return opening.Polyline().Width();
         }
 
         [Description("Returns the width of a BHoM Geometry ICurve based on the bounding box of the curve")]

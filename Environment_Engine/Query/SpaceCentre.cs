@@ -60,7 +60,7 @@ namespace BH.Engine.Environment
 
             List<Point> vertexPoints = new List<Point>();
             foreach (Panel be in panelsAsSpace)
-                vertexPoints.AddRange(be.ToPolyline().IControlPoints());
+                vertexPoints.AddRange(be.Polyline().IControlPoints());
 
             double centreX = 0;
             double centreY = 0;
