@@ -416,7 +416,20 @@ namespace BH.Engine.Geometry
 
         public static BoundingBox IBounds(this IGeometry geometry)
         {
+            if (geometry == null)
+                return null;
+
             return Bounds(geometry as dynamic);
+        }
+
+
+        /***************************************************/
+        /**** Private Methods - Fallback                ****/
+        /***************************************************/
+
+        private static BoundingBox Bounds(object value)
+        {
+            return null;
         }
 
         /***************************************************/
