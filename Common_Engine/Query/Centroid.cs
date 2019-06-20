@@ -20,9 +20,11 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.Engine.Geometry;
 using BH.oM.Common;
 using BH.oM.Geometry;
 using System;
+using System.Collections.Generic;
 
 namespace BH.Engine.Common
 {
@@ -45,8 +47,27 @@ namespace BH.Engine.Common
 
         public static Point Centroid(this IElement2D element2D)
         {
-            //TODO: find a proper centre of weight of a panel (not an average of control points)
-            throw new NotImplementedException();
+            Point tmp = Geometry.Query.Centroid(element2D.IOutlineCurve());
+            Double area = Geometry.Query.Area(element2D.IOutlineCurve());
+
+            Double x = tmp.X * area;
+            Double y = tmp.Y * area;
+            Double z = tmp.Z * area;
+
+
+            List<PolyCurve> openings = Geometry.Compute.BooleanUnion(element2D.IInternalOutlineCurves());
+
+            foreach (ICurve o in openings)
+            {
+                Point oTmp = Geometry.Query.ICentroid(o);
+                Double oArea = o.IArea();
+                x -= oTmp.X * oArea;
+                y -= oTmp.Y * oArea;
+                z -= oTmp.Z * oArea;
+                area -= oArea;
+            }
+            area = element2D.Area();
+            return new Point { X = x / area, Y = y / area, Z = z / area };
         }
 
         /******************************************/
