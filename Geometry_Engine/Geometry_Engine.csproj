@@ -166,6 +166,7 @@
     <Compile Include="Query\PlaneIntersection.cs" />
     <Compile Include="Query\PointAtLength.cs" />
     <Compile Include="Query\PointAtParameter.cs" />
+    <Compile Include="Query\PointInRegion.cs" />
     <Compile Include="Query\Product.cs" />
     <Compile Include="Query\Radius.cs" />
     <Compile Include="Query\SliceAt.cs" />
