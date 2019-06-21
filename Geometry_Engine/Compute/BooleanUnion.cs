@@ -245,9 +245,10 @@ namespace BH.Engine.Geometry
                 throw new NotImplementedException("NurbsCurves and ellipses are not implemented yet.");
 
             List<PolyCurve> result = new List<PolyCurve>();
+
             if (regionsList.Count == 0)
                 return result;
-            if (regionsList.Count < 2)
+            else if (regionsList.Count == 1)
             {
                 if (regionsList[0] is PolyCurve)
                 {
