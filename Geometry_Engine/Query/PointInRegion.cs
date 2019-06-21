@@ -33,35 +33,6 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Curves                   ****/
         /***************************************************/
 
-        //public static Point PointInRegion(this Polyline curve, bool acceptOnEdge = false, double tolerance = Tolerance.Distance)
-        //{
-        //    Point point = curve.Centroid();
-        //    if (curve.IsContaining(new List<Point> { point }, acceptOnEdge, tolerance))
-        //        return point;
-
-        //    double maxSqLength = 0;
-        //    for (int i = 0; i < curve.ControlPoints.Count - 1; i++)
-        //    {
-        //        for (int j = i + 2; j < curve.ControlPoints.Count; j++)
-        //        {
-        //            double sqLength = curve.ControlPoints[i].SquareDistance(curve.ControlPoints[j]);
-        //            if (sqLength > maxSqLength)
-        //            {
-        //                Point midPoint = (curve.ControlPoints[i] + curve.ControlPoints[j]) * 0.5;
-        //                if (curve.IsContaining(new List<Point> { midPoint }, acceptOnEdge, tolerance))
-        //                {
-        //                    point = midPoint;
-        //                    maxSqLength = sqLength;
-        //                }
-        //            }
-        //        }
-        //    }
-
-        //    return point;
-        //}
-
-        /***************************************************/
-
         public static Point PointInRegion(this ICurve curve, bool acceptOnEdge = false, double tolerance = Tolerance.Distance)
         {
             Point point = curve.ICentroid();
