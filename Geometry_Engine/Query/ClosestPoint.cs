@@ -102,10 +102,22 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [DeprecatedAttribute("2.3", "Replaced with method that takes tolerance input", null, "ClosestPoint")]
         public static Point ClosestPoint(this Circle circle, Point point)
         {
+            return circle.ClosestPoint(point, Tolerance.Distance);
+        }
+
+        /***************************************************/
+        
+        public static Point ClosestPoint(this Circle circle, Point point, double tolerance = Tolerance.Distance)
+        {
             Plane p = new Plane { Origin = circle.Centre, Normal = circle.Normal };
-            return circle.Centre + (point.Project(p) - circle.Centre).Normalise() * circle.Radius;
+            Vector closestDir = point.Project(p) - circle.Centre;
+            if (closestDir.SquareLength() <= tolerance * tolerance)
+                return circle.StartPoint();
+            else
+                return circle.Centre + (point.Project(p) - circle.Centre).Normalise() * circle.Radius;
         }
 
         /***************************************************/
