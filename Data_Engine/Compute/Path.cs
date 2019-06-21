@@ -20,7 +20,7 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Data.Structures;
+using BH.oM.Data.Collections;
 using System;
 using System.Collections.Generic;
 using System.Linq;

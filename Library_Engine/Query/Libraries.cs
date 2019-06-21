@@ -25,7 +25,7 @@ using System.Collections.Generic;
 using BH.oM.Base;
 using System.IO;
 using System.Linq;
-using BH.oM.Data.Structures;
+using BH.oM.Data.Collections;
 using BH.Engine.Data;
 
 namespace BH.Engine.Library

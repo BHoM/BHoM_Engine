@@ -21,7 +21,7 @@
  */
 
 using System.Collections.Generic;
-using BH.oM.Data.Structures;
+using BH.oM.Data.Collections;
 
 namespace BH.Engine.Data
 {
