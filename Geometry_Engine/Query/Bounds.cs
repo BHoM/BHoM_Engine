@@ -427,7 +427,7 @@ namespace BH.Engine.Geometry
         /**** Private Methods - Fallback                ****/
         /***************************************************/
 
-        private static BoundingBox Bounds(object value)
+        private static BoundingBox Bounds(IGeometry geometry)
         {
             return null;
         }
