@@ -30,9 +30,9 @@ namespace BH.Engine.Data
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static CustomRequest CustomRequest(string query = "")
+        public static CustomRequest CustomRequest(string request = "")
         {
-            return new CustomRequest { Body = query };
+            return new CustomRequest { Body = request };
         }
 
         /***************************************************/

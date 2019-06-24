@@ -32,9 +32,9 @@ namespace BH.Engine.Data
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static BatchRequest BatchRequest(IEnumerable<IRequest> queries)
+        public static BatchRequest BatchRequest(IEnumerable<IRequest> requests)
         {
-            return new BatchRequest { Requests = queries.ToList() };
+            return new BatchRequest { Requests = requests.ToList() };
         }
 
         /***************************************************/

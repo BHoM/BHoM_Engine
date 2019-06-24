@@ -36,7 +36,7 @@ namespace BH.Engine.Structure.Results
         /**** Public Methods                            ****/
         /***************************************************/
          
-        [Description("Specific filter query to retrieve structural mesh results")]
+        [Description("Specific filter request to retrieve structural mesh results")]
 
         public static FilterRequest MeshResult(   MeshResultSmoothingType smoothing, 
                                                 MeshResultLayer layer,
@@ -46,20 +46,20 @@ namespace BH.Engine.Structure.Results
                                                 IEnumerable<object> cases = null, 
                                                 IEnumerable<object> objectIds = null)
         {
-            FilterRequest query = new FilterRequest();
-            query.Type = typeof(MeshResults);
+            FilterRequest request = new FilterRequest();
+            request.Type = typeof(MeshResults);
 
-            query.Equalities["Smoothing"] = smoothing;
-            query.Equalities["Layer"] = layer;
-            query.Equalities["LayerPosition"] = layerPosition;
-            query.Equalities["ResultType"] = resultType;
-            query.Equalities["CoordinateSystem"] = coordinateSystem;
+            request.Equalities["Smoothing"] = smoothing;
+            request.Equalities["Layer"] = layer;
+            request.Equalities["LayerPosition"] = layerPosition;
+            request.Equalities["ResultType"] = resultType;
+            request.Equalities["CoordinateSystem"] = coordinateSystem;
             if (cases != null)
-                query.Equalities["Cases"] = cases.ToList();
+                request.Equalities["Cases"] = cases.ToList();
             if (objectIds != null)
-                query.Equalities["ObjectIds"] = objectIds.ToList();
+                request.Equalities["ObjectIds"] = objectIds.ToList();
 
-            return query;
+            return request;
         }
 
         /***************************************************/
