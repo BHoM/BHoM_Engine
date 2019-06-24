@@ -59,10 +59,10 @@
     <Compile Include="Compute\FilterData.cs" />
     <Compile Include="Compute\RelatedPairs.cs" />
     <Compile Include="Compute\Path.cs" />
-    <Compile Include="Create\BatchQuery.cs" />
-    <Compile Include="Create\CustomQuery.cs" />
+    <Compile Include="Create\BatchRequest.cs" />
+    <Compile Include="Create\CustomRequest.cs" />
     <Compile Include="Create\DBSCANObject.cs" />
-    <Compile Include="Create\FilterQuery.cs" />
+    <Compile Include="Create\FilterRequest.cs" />
     <Compile Include="Create\PointMatrix.cs" />
     <Compile Include="Create\LocalData.cs" />
     <Compile Include="Create\DiscretePoint.cs" />

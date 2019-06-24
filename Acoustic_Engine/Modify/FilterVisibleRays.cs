@@ -26,7 +26,7 @@ using BH.oM.Acoustic;
 
 namespace BH.Engine.Acoustic
 {
-    public static partial class Query
+    public static partial class Modify
     {
         /***************************************************/
         /**** Public  Methods                           ****/
