@@ -34,7 +34,7 @@ namespace BH.Engine.Data
 
         public static BatchRequest BatchRequest(IEnumerable<IRequest> queries)
         {
-            return new BatchRequest { Queries = queries.ToList() };
+            return new BatchRequest { Requests = queries.ToList() };
         }
 
         /***************************************************/
