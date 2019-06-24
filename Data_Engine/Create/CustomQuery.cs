@@ -32,7 +32,7 @@ namespace BH.Engine.Data
 
         public static CustomRequest CustomRequest(string query = "")
         {
-            return new CustomRequest { Query = query };
+            return new CustomRequest { Body = query };
         }
 
         /***************************************************/
