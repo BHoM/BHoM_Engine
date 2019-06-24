@@ -88,7 +88,7 @@
     <Compile Include="Create\NewElement0D.cs" />
     <Compile Include="Create\NewElement1D.cs" />
     <Compile Include="Create\NewInternalElement2D.cs" />
-    <Compile Include="Create\QueryMeshResult.cs" />
+    <Compile Include="Create\MeshResult.cs" />
     <Compile Include="Create\Edge.cs" />
     <Compile Include="Create\FramingElementProperty.cs" />
     <Compile Include="Create\LoadingPanelProperty.cs" />
