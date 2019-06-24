@@ -32,9 +32,9 @@ namespace BH.Engine.Data
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static IEnumerable<IBHoMObject> Filter(this IEnumerable<IBHoMObject> objects, FilterRequest query)
+        public static IEnumerable<IBHoMObject> Filter(this IEnumerable<IBHoMObject> objects, FilterRequest request)
         {
-            return Compute.FilterData(query, objects);
+            return Compute.FilterData(request, objects);
         }
 
         /***************************************************/
