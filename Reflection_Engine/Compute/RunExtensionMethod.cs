@@ -37,7 +37,6 @@ namespace BH.Engine.Reflection
 
         public static object RunExtensionMethod(object target, string methodName)
         {
-            object result = null;
             Type type = target.GetType();
 
             // If the method has been called before, just use that
@@ -55,14 +54,13 @@ namespace BH.Engine.Reflection
             }
 
             // Return null if nothing found
-            return result;
+            return null;
         }
 
         /***************************************************/
 
         public static object RunExtensionMethod(object target, string methodName, object[] parameters)
         {
-            object result = null;
             Type type = target.GetType();
 
             // If the method has been called before, just use that
@@ -71,10 +69,8 @@ namespace BH.Engine.Reflection
             if (m_PreviousInvokedMethods.ContainsKey(key))
                 return m_PreviousInvokedMethods[key].Invoke(null, new object[] { target }.Concat(parameters).ToArray());
 
-
             foreach (MethodInfo method in target.GetType().ExtensionMethods(methodName).Where(x => x.GetParameters().Length == parameters.Length +1).SortExtensionMethods(type))
             {
-
                 ParameterInfo[] paramInfo = method.GetParameters();
 
                 // Make sure the type of parameters is matching
@@ -94,7 +90,8 @@ namespace BH.Engine.Reflection
                 return method.Invoke(null, new object[] { target }.Concat(parameters).ToArray());
             }
 
-            return result;
+            // Return null if nothing found
+            return null;
         }
 
 
