@@ -34,7 +34,7 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static List<MethodInfo> ExtentionMethods(this Type type, string methodName)
+        public static List<MethodInfo> ExtensionMethods(this Type type, string methodName)
         {
             List<MethodInfo> methods = new List<MethodInfo>();
 

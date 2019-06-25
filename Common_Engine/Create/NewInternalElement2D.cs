@@ -32,7 +32,7 @@ namespace BH.Engine.Common
 
         public static IElement2D INewInternalElement2D(this IElement2D element2D)
         {
-            return Reflection.Compute.RunExtentionMethod(element2D, "NewInternalElement2D") as IElement2D;
+            return Reflection.Compute.RunExtensionMethod(element2D, "NewInternalElement2D") as IElement2D;
         }
 
         /******************************************/
