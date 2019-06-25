@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -21,6 +21,7 @@
  */
 
 using BH.oM.Geometry;
+using BH.oM.Reflection.Attributes;
 using System;
 using System.Linq;
 
@@ -32,9 +33,10 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Vectors                  ****/
         /***************************************************/
 
+        [DeprecatedAttribute("2.3", "Merged Reverse with Flip", null, "Flip")]
         public static Vector Reverse(this Vector vector)
         {
-            return new Vector { X = -vector.X, Y = -vector.Y, Z = -vector.Z };
+            return vector.Flip();
         }
 
 
@@ -42,9 +44,10 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Curves                   ****/
         /***************************************************/
 
+        [DeprecatedAttribute("2.3", "Merged Reverse with Flip", null, "Flip")]
         public static Line Reverse(this Line line)
         {
-            return new Line { Start = line.End, End = line.Start, Infinite = line.Infinite };
+            return line.Flip();
         }
 
         /***************************************************/

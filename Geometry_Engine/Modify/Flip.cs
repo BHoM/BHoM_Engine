@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -32,6 +32,15 @@ namespace BH.Engine.Geometry
     public static partial class Modify
     {
         /***************************************************/
+        /**** Public Methods - Vectors                  ****/
+        /***************************************************/
+
+        public static Vector Flip(this Vector vector)
+        {
+            return new Vector { X = -vector.X, Y = -vector.Y, Z = -vector.Z };
+        }
+
+        /***************************************************/
         /**** Public Methods - Curves                   ****/
         /***************************************************/
 
@@ -53,7 +62,7 @@ namespace BH.Engine.Geometry
 
         public static Line Flip(this Line curve)
         {
-            return new Line { Start = curve.End, End = curve.Start };
+            return new Line { Start = curve.End, End = curve.Start, Infinite = curve.Infinite };
         }
 
         /***************************************************/
