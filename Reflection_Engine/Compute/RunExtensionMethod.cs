@@ -35,7 +35,7 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static object RunExtentionMethod(object target, string methodName)
+        public static object RunExtensionMethod(object target, string methodName)
         {
             object result = null;
             Type type = target.GetType();
@@ -46,7 +46,7 @@ namespace BH.Engine.Reflection
                 return m_PreviousInvokedMethods[key].Invoke(null, new object[] { target });
 
             // Otherwise, search for the method and call it if found
-            MethodInfo method = type.ExtentionMethods(methodName).Where(x => x.GetParameters().Length == 1).SortExtensionMethods(type).FirstOrDefault();
+            MethodInfo method = type.ExtensionMethods(methodName).Where(x => x.GetParameters().Length == 1).SortExtensionMethods(type).FirstOrDefault();
 
             if (method != null)
             {
@@ -60,7 +60,7 @@ namespace BH.Engine.Reflection
 
         /***************************************************/
 
-        public static object RunExtentionMethod(object target, string methodName, object[] parameters)
+        public static object RunExtensionMethod(object target, string methodName, object[] parameters)
         {
             object result = null;
             Type type = target.GetType();
@@ -72,7 +72,7 @@ namespace BH.Engine.Reflection
                 return m_PreviousInvokedMethods[key].Invoke(null, new object[] { target }.Concat(parameters).ToArray());
 
 
-            foreach (MethodInfo method in target.GetType().ExtentionMethods(methodName).Where(x => x.GetParameters().Length == parameters.Length +1).SortExtensionMethods(type))
+            foreach (MethodInfo method in target.GetType().ExtensionMethods(methodName).Where(x => x.GetParameters().Length == parameters.Length +1).SortExtensionMethods(type))
             {
 
                 ParameterInfo[] paramInfo = method.GetParameters();

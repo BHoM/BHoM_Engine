@@ -33,7 +33,7 @@ namespace BH.Engine.Common
 
         public static IElement1D ISetElements0D(this IElement1D element1D, List<IElement0D> newElements0D)
         {
-            return Reflection.Compute.RunExtentionMethod(element1D, "SetElements0D", new object[] { newElements0D }) as IElement1D;
+            return Reflection.Compute.RunExtensionMethod(element1D, "SetElements0D", new object[] { newElements0D }) as IElement1D;
         }
 
         /******************************************/

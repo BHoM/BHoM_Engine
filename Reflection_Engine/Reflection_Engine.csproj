@@ -92,7 +92,7 @@
     <Compile Include="Compute\OpenHelpPage.cs" />
     <Compile Include="Compute\RecordEvent.cs" />
     <Compile Include="Compute\LoadAllAssemblies.cs" />
-    <Compile Include="Compute\RunExtentionMethod.cs" />
+    <Compile Include="Compute\RunExtensionMethod.cs" />
     <Compile Include="Convert\ToText.cs" />
     <Compile Include="Create\Output.cs" />
     <Compile Include="Modify\Cast.cs" />
@@ -129,7 +129,7 @@
     <Compile Include="Query\DistinctProperties.cs" />
     <Compile Include="Query\IsLegal.cs" />
     <Compile Include="Query\Path.cs" />
-    <Compile Include="Query\ExtentionMethods.cs" />
+    <Compile Include="Query\ExtensionMethods.cs" />
     <Compile Include="Query\MethodList.cs" />
     <Compile Include="Query\EnumList.cs" />
     <Compile Include="Query\Description.cs" />
