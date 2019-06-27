@@ -61,7 +61,7 @@ namespace BH.Engine.Structure
 
         public static Edge SetGeometry(this Edge edge, ICurve curve)
         {
-            Edge clone = edge.GetShallowClone() as Edge;
+            Edge clone = edge.GetShallowClone(true) as Edge;
             clone.Curve = curve.IClone();
             return clone;
         }
