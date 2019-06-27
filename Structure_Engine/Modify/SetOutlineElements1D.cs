@@ -35,7 +35,7 @@ namespace BH.Engine.Structure
 
         public static Opening SetOutlineElements1D(this Opening opening, List<IElement1D> outlineElements1D)
         {
-            Opening o = opening.GetShallowClone() as Opening;
+            Opening o = opening.GetShallowClone(true) as Opening;
             o.Edges = new List<Edge>(outlineElements1D.Cast<Edge>());
             return o;
         }
@@ -44,7 +44,7 @@ namespace BH.Engine.Structure
 
         public static Panel SetOutlineElements1D(this Panel Panel, List<IElement1D> outlineElements1D)
         {
-            Panel pp = Panel.GetShallowClone() as Panel;
+            Panel pp = Panel.GetShallowClone(true) as Panel;
             pp.ExternalEdges = new List<Edge>(outlineElements1D.Cast<Edge>());
             return pp;
         }

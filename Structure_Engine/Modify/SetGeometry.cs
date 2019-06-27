@@ -35,7 +35,7 @@ namespace BH.Engine.Structure
 
         public static Node SetGeometry(this Node node, Point point)
         {
-            Node clone = node.GetShallowClone() as Node;
+            Node clone = node.GetShallowClone(true) as Node;
             clone.Position = point;
             return clone;
         }
@@ -51,7 +51,7 @@ namespace BH.Engine.Structure
                 return null;
             }
 
-            Bar clone = bar.GetShallowClone() as Bar;
+            Bar clone = bar.GetShallowClone(true) as Bar;
             clone.StartNode = clone.StartNode.SetGeometry(line.Start);
             clone.EndNode = clone.EndNode.SetGeometry(line.End);
             return clone;
@@ -70,7 +70,7 @@ namespace BH.Engine.Structure
 
         public static Surface SetGeometry(this Surface contour, ISurface surface)
         {
-            Surface clone = contour.GetShallowClone() as Surface;
+            Surface clone = contour.GetShallowClone(true) as Surface;
             clone.Extents = surface.IClone() as ISurface;
             return clone;
         }
