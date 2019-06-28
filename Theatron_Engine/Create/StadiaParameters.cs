@@ -21,8 +21,7 @@
  */
 
 using BH.oM.Theatron.Elements;
-using BH.oM.Geometry;
-using System.Collections.Generic;
+using BH.oM.Theatron.Parameters;
 
 namespace BH.Engine.Theatron
 {
@@ -30,6 +29,65 @@ namespace BH.Engine.Theatron
     {
         /***************************************************/
         /**** Public Methods                            ****/
+        /***************************************************/
+
+        public static StadiaParameters StadiaParameters(double scale = 1.0)
+        {
+            return new StadiaParameters
+            {
+                StructBayWidth = 7.5 * scale,
+
+                CornerRadius = 10.0 * scale,
+
+                SideBound = 6.7 * scale,
+
+                EndBound = 7.8 * scale,
+
+                SideRadius = 240.0 * scale,
+
+                EndRadius = 200.0 * scale,
+
+                TheatronRadius = 100.0 * scale,
+
+                NumCornerBays = 7,
+
+                TypeOfBowl = StadiaType.EightArc,
+
+                CornerFraction = 0.5 * scale,
+
+            };
+        }
+
+        /***************************************************/
+
+        public static StadiaParameters StadiaParameters(double structBayWidth = 7.5,double cornerRadius = 10.0,double sideBound = 6.7,
+            double endBound = 7.8,double sideRadius = 240.0,double endRadius = 200.0,double theatronRadius = 100.0,int numCornerBays = 7,
+            StadiaType typeOfBowl = StadiaType.EightArc, double cornerFraction = 0.5,ActivityArea activityArea = null)
+        {
+            return new StadiaParameters
+            {
+                StructBayWidth = structBayWidth,
+
+                CornerRadius = cornerRadius,
+
+                SideBound = sideBound,
+
+                EndBound = endBound,
+
+                SideRadius = sideRadius,
+
+                EndRadius = endRadius,
+
+                TheatronRadius = theatronRadius,
+
+                NumCornerBays = numCornerBays,
+
+                TypeOfBowl = typeOfBowl,
+
+                CornerFraction = cornerFraction,
+            };
+        }
+
         /***************************************************/
     }
 }

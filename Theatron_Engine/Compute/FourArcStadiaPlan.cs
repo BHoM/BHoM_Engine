@@ -1,6 +1,6 @@
 ﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -20,74 +20,26 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.oM.Geometry;
 using BH.oM.Theatron.Elements;
 using BH.oM.Theatron.Parameters;
+using System;
+using System.Collections.Generic;
 
 namespace BH.Engine.Theatron
 {
-    public static partial class Create
+    public static partial class Compute
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-
-        public static TheatronParameters TheatronParameters(double scale = 1.0)
+        public static TheatronPlanGeometry FourArcPlan(StadiaParameters parameters)
         {
-            return new TheatronParameters
-            {
-                StructBayWidth = 7.5 * scale,
-
-                CornerRadius = 10.0 * scale,
-
-                SideBound = 6.7 * scale,
-
-                EndBound = 7.8 * scale,
-
-                SideRadius = 240.0 * scale,
-
-                EndRadius = 200.0 * scale,
-
-                TheatronRadius = 100.0 * scale,
-
-                NumCornerBays = 7,
-
-                TypeOfBowl = BowlType.Radial,
-
-                CornerFraction = 0.5 * scale,
-
-            };
+            throw new NotImplementedException();
+            
         }
-
         /***************************************************/
-
-        public static TheatronParameters TheatronParameters(double structBayWidth = 7.5,double cornerRadius = 10.0,double sideBound = 6.7,
-            double endBound = 7.8,double sideRadius = 240.0,double endRadius = 200.0,double theatronRadius = 100.0,int numCornerBays = 7,
-            BowlType typeOfBowl = BowlType.Radial, double cornerFraction = 0.5,ActivityArea activityArea = null)
-        {
-            return new TheatronParameters
-            {
-                StructBayWidth = structBayWidth,
-
-                CornerRadius = cornerRadius,
-
-                SideBound = sideBound,
-
-                EndBound = endBound,
-
-                SideRadius = sideRadius,
-
-                EndRadius = endRadius,
-
-                TheatronRadius = theatronRadius,
-
-                NumCornerBays = numCornerBays,
-
-                TypeOfBowl = typeOfBowl,
-
-                CornerFraction = cornerFraction,
-            };
-        }
-
+        /**** Private Methods                           ****/
         /***************************************************/
     }
 }
