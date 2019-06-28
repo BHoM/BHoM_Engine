@@ -1,6 +1,6 @@
 ﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -20,16 +20,44 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Theatron.Elements;
 using BH.oM.Geometry;
+using BH.oM.Theatron.Elements;
+using BH.oM.Theatron.Parameters;
+using System;
 using System.Collections.Generic;
+
 
 namespace BH.Engine.Theatron
 {
-    public static partial class Create
+    public static partial class Compute
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
+        public static TheatronPlanGeometry CircularPlan(StadiaParameters parameters)
+        {
+            TheatronPlanGeometry plan = new TheatronPlanGeometry();
+            circularPlaneSetUp(ref plan, parameters.Radius, parameters.StructBayWidth);
+            return plan;
+        }
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+        private static void circularPlaneSetUp(ref TheatronPlanGeometry plan,double radius, double structBayW)
+        {
+            plan.SectionPlanes = new List<Plane>();
+            
+            int numBays = (int)(Math.Floor(Math.PI * radius * 2 / structBayW));
+            double theta = 2 * Math.PI / numBays;
+            bool halfbayStart = false;
+            plan.SectionPlanes = arcSweepBay(0, 0, theta, 0, radius, numBays, halfbayStart, 1.0);
+            BayType bayType = BayType.Side;
+            for (int i = 0; i < plan.SectionPlanes.Count; i++)
+            {
+                plan.StructBayType.Add(bayType);
+                
+            }
+
+        }
     }
 }

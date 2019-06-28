@@ -61,7 +61,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Compute\TheatronPlan.cs" />
+    <Compile Include="Compute\CircularStadiaPlan.cs" />
+    <Compile Include="Compute\EightArcStadiaPlan.cs" />
+    <Compile Include="Compute\FourArcStadiaPlan.cs" />
+    <Compile Include="Compute\NoCornersStadiaPlan.cs" />
+    <Compile Include="Compute\OrthogonalStadiaPlan.cs" />
     <Compile Include="Create\AvalueSettings.cs" />
     <Compile Include="Create\Crowd.cs" />
     <Compile Include="Create\CvalueSettings.cs" />
@@ -72,7 +76,7 @@
     <Compile Include="Create\SeatingBlock.cs" />
     <Compile Include="Create\Spectator.cs" />
     <Compile Include="Create\Theatron.cs" />
-    <Compile Include="Create\TheatronParameters.cs" />
+    <Compile Include="Create\StadiaParameters.cs" />
     <Compile Include="Create\TheatronPlanGeometry.cs" />
     <Compile Include="Create\TheatronProfile.cs" />
     <Compile Include="Create\Tier.cs" />
