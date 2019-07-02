@@ -24,7 +24,9 @@ using BH.Engine.Geometry;
 using BH.oM.Base;
 using BH.oM.Common;
 using BH.oM.Geometry;
+using BH.oM.Reflection.Attributes;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace BH.Engine.Common
 {
@@ -67,18 +69,40 @@ namespace BH.Engine.Common
         /**** Public Methods - Interfaces      ****/
         /******************************************/
 
-        public static List<Point> IElementVertices(this BHoMObject element)
+        public static List<Point> IElementVertices(this IElement element)
         {
             return ElementVertices(element as dynamic);
         }
 
         /******************************************/
 
-        public static List<Point> IElementVertices(this List<BHoMObject> elements)
+        public static List<Point> IElementVertices(this IEnumerable<IElement> elements)
         {
             List<Point> result = new List<Point>();
-            elements.ForEach(e => result.AddRange(e.IElementVertices()));
+            foreach(IElement element in elements)
+            {
+                result.AddRange(element.IElementVertices());
+            }
             return result;
+        }
+
+
+        /******************************************/
+        /****        Deprecated methods        ****/
+        /******************************************/
+
+        [DeprecatedAttribute("2.3", "Input type changed from BHoMObject to IElement", null, "IElementVertices")]
+        public static List<Point> IElementVertices(this BHoMObject element)
+        {
+            return IElementVertices(element as IElement);
+        }
+
+        /******************************************/
+
+        [DeprecatedAttribute("2.3", "Input type changed from List<BHoMObject> to IEnumerable<IElement>", null, "IElementVertices")]
+        public static List<Point> IElementVertices(this List<BHoMObject> elements)
+        {
+            return IElementVertices(elements.Cast<IElement>());
         }
 
         /******************************************/
