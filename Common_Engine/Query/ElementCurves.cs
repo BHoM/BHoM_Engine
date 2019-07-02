@@ -24,7 +24,9 @@ using BH.Engine.Geometry;
 using BH.oM.Base;
 using BH.oM.Common;
 using BH.oM.Geometry;
+using BH.oM.Reflection.Attributes;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace BH.Engine.Common
 {
@@ -70,7 +72,7 @@ namespace BH.Engine.Common
         /**** Public Methods - Interfaces      ****/
         /******************************************/
 
-        public static List<ICurve> IElementCurves(this BHoMObject element, bool recursive = true)
+        public static List<ICurve> IElementCurves(this IElement element, bool recursive = true)
         {
             return ElementCurves(element as dynamic, recursive);
         }
@@ -78,7 +80,7 @@ namespace BH.Engine.Common
 
         /******************************************/
 
-        public static List<ICurve> IElementCurves(this List<BHoMObject> elements, bool recursive = true)
+        public static List<ICurve> IElementCurves(this IEnumerable<IElement> elements, bool recursive = true)
         {
             List<ICurve> result = new List<ICurve>();
             foreach (BHoMObject element in elements)
@@ -86,6 +88,26 @@ namespace BH.Engine.Common
                 result.AddRange(element.IElementCurves(recursive));
             }
             return result;
+        }
+
+
+        /******************************************/
+        /****        Deprecated methods        ****/
+        /******************************************/
+
+        [DeprecatedAttribute("2.3", "Input type changed from BHoMObject to IElement", null, "IElementCurves")]
+        public static List<ICurve> IElementCurves(this BHoMObject element, bool recursive = true)
+        {
+            return IElementCurves(element as IElement, recursive);
+        }
+
+
+        /******************************************/
+
+        [DeprecatedAttribute("2.3", "Input type changed from List<BHoMObject> to IEnumerable<IElement>", null, "IElementCurves")]
+        public static List<ICurve> IElementCurves(this List<BHoMObject> elements, bool recursive = true)
+        {
+            return IElementCurves(elements.Cast<IElement>(), recursive);
         }
 
         /******************************************/
