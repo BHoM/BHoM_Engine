@@ -124,7 +124,6 @@ namespace BH.Engine.Environment
             while (isInPlane);
 
             //Check intersections
-            int counter = 0;
             List<Point> intersectPoints = new List<Point>();
 
             for (int x = 0; x < planes.Count; x++)
