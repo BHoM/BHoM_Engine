@@ -191,7 +191,5 @@ namespace BH.Engine.Environment
         {
             return panels.Where(x => x.BHoM_Guid == guid).FirstOrDefault();
         }
-
-
     }
 }

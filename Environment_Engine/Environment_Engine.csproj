@@ -78,6 +78,7 @@
     <Compile Include="Create\LightReflectanceFragment.cs" />
     <Compile Include="Create\LightTransmittanceFragment.cs" />
     <Compile Include="Modify\FixNormal.cs" />
+    <Compile Include="Modify\Remove.cs" />
     <Compile Include="Query\Absorptance.cs" />
     <Compile Include="Query\ICurve.cs" />
     <Compile Include="Query\IsTransparent.cs" />
