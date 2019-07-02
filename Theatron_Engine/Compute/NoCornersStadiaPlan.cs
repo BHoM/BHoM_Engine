@@ -33,20 +33,20 @@ namespace BH.Engine.Theatron
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        public static TheatronPlanGeometry NoCornersPlan (StadiaParameters parameters)
+        public static TheatronPlan NoCornersPlan (StadiaParameters parameters)
         {
-            TheatronPlanGeometry plan = new TheatronPlanGeometry();
-            noCornerPlanSetUp(ref plan, parameters.PitchWidth, parameters.PitchLength, parameters.EndBound, parameters.StructBayWidth, parameters.SideBound);
+            TheatronPlan plan = new TheatronPlan();
+            noCornerPlanSetUp(ref plan, parameters.ActivityArea, parameters.EndBound, parameters.StructBayWidth, parameters.SideBound);
             return plan;
         }
         
         /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
-        private static void noCornerPlanSetUp(ref TheatronPlanGeometry plan,double playWidth, double playLength, double endBound, double structBayW, double sideBound)
+        private static void noCornerPlanSetUp(ref TheatronPlan plan,ActivityArea activityArea, double endBound, double structBayW, double sideBound)
         {
-            int nSideBays = (int)(Math.Floor(((playLength + endBound) / 2) / structBayW) * 2);
-            int nEndBays = (int)(Math.Floor(((playWidth + sideBound) / 2) / structBayW) * 2);
+            int nSideBays = (int)(Math.Floor(((activityArea.Length + endBound) / 2) / structBayW) * 2);
+            int nEndBays = (int)(Math.Floor(((activityArea.Width + sideBound) / 2) / structBayW) * 2);
             plan.SectionPlanes = new List<Plane>();
             
             double actualBayW;
@@ -65,7 +65,7 @@ namespace BH.Engine.Theatron
                 if (i % 2 == 0)//side bay
                 {
                     bayType = 0;
-                    actualBayW = (playLength + endBound) / nSideBays;
+                    actualBayW = (activityArea.Length + endBound) / nSideBays;
                     for (int d = 0; d <= nSideBays; d++)
                     {
                         plan.StructBayType.Add(bayType);
@@ -73,7 +73,7 @@ namespace BH.Engine.Theatron
                         {
                             yMin = (nSideBays * actualBayW) / -2;
                             //origin xyz 
-                            oX = ((playWidth + sideBound) / 2);
+                            oX = ((activityArea.Width + sideBound) / 2);
                             oY = yMin + (actualBayW * d);
                             dX = 1;
                             dY = 0;
@@ -82,7 +82,7 @@ namespace BH.Engine.Theatron
                         {
                             yMin = (nSideBays * actualBayW) / 2;
                             //origin xyz 
-                            oX = -((playWidth + sideBound) / 2);
+                            oX = -((activityArea.Width + sideBound) / 2);
                             oY = yMin - (actualBayW * d);
                             dX = -1;
                             dY = 0;
@@ -101,7 +101,7 @@ namespace BH.Engine.Theatron
                 else
                 {
                     bayType = BayType.End;
-                    actualBayW = (playWidth + sideBound) / nEndBays;
+                    actualBayW = (activityArea.Width + sideBound) / nEndBays;
                     xMin = (nEndBays * actualBayW) / 2;
                     //                                    
                     for (int d = 0; d <= nEndBays; d++)
@@ -111,7 +111,7 @@ namespace BH.Engine.Theatron
                         {
                             //origin xyz 
                             oX = xMin - (actualBayW * d);
-                            oY = ((playLength + endBound) / 2);
+                            oY = ((activityArea.Length + endBound) / 2);
 
                             dX = 0;
                             dY = 1;// 0;
@@ -120,7 +120,7 @@ namespace BH.Engine.Theatron
                         {
                             //origin xyz 
                             oX = -xMin + (actualBayW * d);
-                            oY = -((playLength + endBound) / 2);
+                            oY = -((activityArea.Length + endBound) / 2);
                             dX = 0;
                             dY = -1;
                         }

@@ -32,10 +32,10 @@ namespace BH.Engine.Theatron
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        public static TheatronPlanGeometry EightArcPlan(StadiaParameters parameters)
+        public static TheatronPlan EightArcPlan(StadiaParameters parameters)
         {
-            TheatronPlanGeometry plan = new TheatronPlanGeometry();
-            radialPlanSetUp(ref plan, parameters.PitchWidth, parameters.PitchLength, parameters.SideBound, parameters.SideRadius,
+            TheatronPlan plan = new TheatronPlan();
+            radialPlanSetUp(ref plan, parameters.ActivityArea, parameters.SideBound, parameters.SideRadius,
                 parameters.EndBound, parameters.EndRadius, parameters.CornerRadius, parameters.NumCornerBays, parameters.StructBayWidth,
                 parameters.CornerFraction);
             return plan;
@@ -43,15 +43,15 @@ namespace BH.Engine.Theatron
         /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
-        private static void radialPlanSetUp(ref TheatronPlanGeometry plan,double playWidth, double playLength, double sideBound, double sideRadius, double endBound, double endRadius, double cornerR, int nCornerBays, double structBayW, double cornerFraction)
+        private static void radialPlanSetUp(ref TheatronPlan plan,ActivityArea activityArea, double sideBound, double sideRadius, double endBound, double endRadius, double cornerR, int nCornerBays, double structBayW, double cornerFraction)
         {
             plan.SectionPlanes = new List<Plane>();
             
             int count = 0;
-            double sidecentreX = playWidth / 2 + sideBound - sideRadius;
+            double sidecentreX = activityArea.Width / 2 + sideBound - sideRadius;
             double sidecentreY = 0;
             double endcentreX = 0;
-            double endcentreY = playLength / 2 + endBound - endRadius;
+            double endcentreY = activityArea.Length / 2 + endBound - endRadius;
             Point intersect = intersectCircles(sidecentreX, sidecentreY, sideRadius - cornerR, endcentreX, endcentreY, endRadius - cornerR);
             double centreX = intersect.X;
             double centreY = intersect.Y;
@@ -214,7 +214,7 @@ namespace BH.Engine.Theatron
                 Point origin = Geometry.Create.Point(xO, yO, 0);
 
                 Point xdir = Geometry.Create.Point(xO + xP,yO + yP, 0);
-                Point ydir = Geometry.Create.Point(xO, yO, 0);
+                Point ydir = Geometry.Create.Point(xO, yO , 1);
                 Plane tempPlane = Geometry.Create.Plane(origin, xdir, ydir);
                 
                 sectionPlane.Add(tempPlane);

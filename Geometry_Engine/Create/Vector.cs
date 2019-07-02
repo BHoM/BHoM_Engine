@@ -43,7 +43,10 @@ namespace BH.Engine.Geometry
             return new Vector { X = v.X, Y = v.Y, Z = v.Z };
         }
 
-
+        public static Vector Vector(Point v,string name)
+        {
+            return new Vector { X = v.X, Y = v.Y, Z = v.Z };
+        }
         /***************************************************/
         /**** Random Geometry                           ****/
         /***************************************************/

@@ -35,9 +35,9 @@ namespace BH.Engine.Theatron
         /**** public Methods                            ****/
         /***************************************************/
 
-        public static TheatronPlanGeometry PlanGeometry(List<Plane> structuralSections, ActivityArea activityArea,ICurve focalCurve)
+        public static TheatronPlan PlanGeometry(List<Plane> structuralSections, ActivityArea activityArea,Polyline focalCurve)
         {
-            var planGeometry = new TheatronPlanGeometry
+            var planGeometry = new TheatronPlan
             {
                 SectionPlanes = structuralSections,
                 ActivityArea = activityArea,
@@ -48,9 +48,11 @@ namespace BH.Engine.Theatron
 
         }
         /***************************************************/
-        public static TheatronPlanGeometry PlanGeometry(StadiaParameters parameters)
+        public static TheatronPlan PlanGeometry(StadiaParameters parameters)
         {
-            var planGeometry = new TheatronPlanGeometry();
+            //assuming its a full stadium
+            var planGeometry = new TheatronPlan();
+            
             switch (parameters.TypeOfBowl)
             {
                 case StadiaType.Circular:
@@ -69,21 +71,23 @@ namespace BH.Engine.Theatron
                     planGeometry = Compute.FourArcPlan(parameters);
                     break;
             }
-            planGeometry.ActivityArea = Create.ActivityArea(parameters.PitchWidth, parameters.PitchLength);
-            setPlanes(ref planGeometry);
+            planGeometry.ActivityArea = parameters.ActivityArea;
             planGeometry.FocalCurve = planGeometry.ActivityArea.PlayingArea;
+            setPlanes(ref planGeometry);
+            
             return planGeometry;
 
         }
         /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
-        private static void setPlanes(ref TheatronPlanGeometry planGeometry)
+        private static void setPlanes(ref TheatronPlan planGeometry)
         {
             planGeometry.TheatronFront = setFront(planGeometry.SectionPlanes);
             planGeometry.VomitoryPlanes = setVomitories(planGeometry.SectionPlanes);
             planGeometry.CombinedPlanes = combinedPlanes(planGeometry.SectionPlanes, planGeometry.VomitoryPlanes);
-            planGeometry.SectionClosestToFocalCurve = findClosestSection(planGeometry.SectionPlanes, Convert.IToPolyline(planGeometry.FocalCurve));
+            findClosestSection(ref planGeometry);
+            
         }
         private static List<Plane> setVomitories(List<Plane> sections)
         {
@@ -93,7 +97,7 @@ namespace BH.Engine.Theatron
             Vector nextUnitXdir = new Vector();
             Vector unitXdir = new Vector();
             //need the conditionals for partial bowl and no corners here.
-            for (var i = 0; i < sections.Count; i++)
+            for (var i = 0; i < sections.Count-1; i++)
             {
 
                 unitXdir = sections[i].Normal.CrossProduct(Vector.ZAxis);
@@ -118,32 +122,38 @@ namespace BH.Engine.Theatron
         private static List<Plane> combinedPlanes(List<Plane> sections, List<Plane> vomitories)
         {
             List<Plane> combined = new List<Plane>();
-            for (int i = 0; i < sections.Count; i++)
+            for (int i = 0; i < sections.Count-1; i++)
             {
                 combined.Add(sections[i]);
                 combined.Add(vomitories[i]);
             }
+            combined.Add(sections[sections.Count - 1]);
             return combined;
         }
         /***************************************************/
-        private static int findClosestSection(List<Plane> sections, Polyline focalCurve)
+        private static void findClosestSection(ref TheatronPlan plan)
         {
             //this needs to be implmented on ICurve as the focal curve
             double shortestDist = double.PositiveInfinity;
 
             List<Point> allFocalPoints = new List<Point>();
             int index = 0;
-            for (int i = 0; i < sections.Count; i++)
+            Point closestP = new Point();
+            for (int i = 0; i < plan.SectionPlanes.Count; i++)
             {
-                var p = Query.ClosestPoint(focalCurve, sections[i].Origin);
-                double dist = Query.Distance(p, sections[i].Origin);
+                var p = Query.ClosestPoint(plan.FocalCurve, plan.SectionPlanes[i].Origin);
+                double dist = Query.Distance(p, plan.SectionPlanes[i].Origin);
                 if(dist< shortestDist)
                 {
+                    closestP = p;
                     shortestDist = dist;
                     index = i;
                 }
             }
-            return index;
+            plan.CValueFocalPoint = closestP;
+            plan.MinDistToFocalCurve = shortestDist;
+            plan.SectionClosestToFocalCurve = plan.SectionPlanes[index];
+
         }
         /***************************************************/
         private static Polyline setFront(List<Plane> sections)

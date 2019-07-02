@@ -21,15 +21,27 @@
  */
 
 using BH.oM.Theatron.Elements;
+using BH.oM.Theatron.Parameters;
 using BH.oM.Geometry;
 using System.Collections.Generic;
 
 namespace BH.Engine.Theatron
 {
-    public static partial class Create
+    public class TheatronTest
     {
-        /***************************************************/
-        /**** Public Methods                            ****/
-        /***************************************************/
+        public void Test()
+        {
+            var sParams = Create.StadiaParameters(1);
+            sParams.TypeOfBowl = StadiaType.Orthogonal;
+            var plan = Create.PlanGeometry(sParams);
+            var pParams1 = Create.ProfileParameters(1);
+            var pParams2 = Create.ProfileParameters(1);
+            pParams2.NumRows = 20;
+            List<ProfileParameters> parameters = new List<ProfileParameters> { pParams1, pParams2 };
+            //SIMPLE profile in XZ plane focal point is the origin
+            var fullProfile = Create.TheatronFullProfile(parameters);
+            //profile in XZ plane focal point is the origin but distance from origin defined by the plan geometry
+            fullProfile = Create.TheatronFullProfile(parameters,plan);
+        }
     }
 }
