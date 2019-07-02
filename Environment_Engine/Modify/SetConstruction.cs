@@ -42,63 +42,67 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Update a new construction to a collection of panels which match the given type from their Origin Context Fragment")]
+        [Description("Update a new construction to a collection of panels. OPTIONAL - filter the panels to receive the new construction by their Origin Context Fragment type name")]
         [Input("panels", "A collection of Environment Panels to set the construction of")]
-        [Input("typeNames", "The type names of the panels to update - if any panels type name is contained in the list given it will have its construction updated")]
         [Input("newConstruction", "The new construction to assign to the panels")]
+        [Input("typeNames", "OPTIONAL: The type names of the panels to update - if any panels type name is contained in the list given it will have its construction updated, default null")]
         [Output("panels", "The collection of Environment Panels with an updated construction")]
-        public static List<Panel> SetConstructions(this List<Panel> panels, List<string> typeNames, IConstruction newConstruction)
+        public static List<Panel> SetConstructions(this List<Panel> panels, IConstruction newConstruction, List<string> typeNames = null)
         {
             List<Panel> returnPanels = new List<Panel>();
 
             foreach (Panel p in panels)
             {
-                OriginContextFragment context = p.FindFragment<OriginContextFragment>(typeof(OriginContextFragment));
-                if (context == null || !typeNames.Contains(context.TypeName))
-                    returnPanels.Add(p);
-                else if (context != null && typeNames.Contains(context.TypeName))
-                {
+                if (typeNames == null)
                     p.Construction = newConstruction;
-                    returnPanels.Add(p);
+                else
+                {
+                    OriginContextFragment context = p.FindFragment<OriginContextFragment>(typeof(OriginContextFragment));
+                    if (context != null && typeNames.Contains(context.TypeName))
+                        p.Construction = newConstruction;
                 }
+
+                returnPanels.Add(p);
             }
 
             return returnPanels;
         }
 
-        [Description("Update a new construction to a collection of openings which match the given type from their Origin Context Fragment")]
+        [Description("Update a new construction to a collection of openings. OPTIONAL - filter the openings to receive the new construction by their Origin Context Fragment type name")]
         [Input("openings", "A collection of Environment Openings to set the construction of")]
-        [Input("typeNames", "The type names of the openings to update - if any openings type name is contained in the list given it will have its construction updated")]
         [Input("newConstruction", "The new construction to assign to the openings")]
+        [Input("typeNames", "OPTIONAL: The type names of the openings to update - if any openings type name is contained in the list given it will have its construction updated, default null")]
         [Output("openings", "The collection of Environment Openings with an updated construction")]
-        public static List<Opening> SetConstructions(this List<Opening> openings, List<string> typeNames, IConstruction newConstruction)
+        public static List<Opening> SetConstructions(this List<Opening> openings, IConstruction newConstruction, List<string> typeNames = null)
         {
             List<Opening> returnOpenings = new List<Opening>();
 
             foreach (Opening o in openings)
             {
-                OriginContextFragment context = o.FindFragment<OriginContextFragment>(typeof(OriginContextFragment));
-                if (context == null || !typeNames.Contains(context.TypeName))
-                    returnOpenings.Add(o);
-                else if (context != null && typeNames.Contains(context.TypeName))
-                {
+                if (typeNames == null)
                     o.OpeningConstruction = newConstruction;
-                    returnOpenings.Add(o);
+                else
+                {
+                    OriginContextFragment context = o.FindFragment<OriginContextFragment>(typeof(OriginContextFragment));
+                    if (context != null && typeNames.Contains(context.TypeName))
+                        o.OpeningConstruction = newConstruction;
                 }
+
+                returnOpenings.Add(o);
             }
 
             return returnOpenings;
         }
 
-        [Description("Update a new construction to a collection of openings which match the given type from their Origin Context Fragment")]
+        [Description("Update a new construction to openings hosted on panels. OPTIONAL - filter the openings to receive the new construction by their Origin Context Fragment type name")]
         [Input("panels", "A collection of Environment Panels to update the hosted openings constructions of")]
-        [Input("typeNames", "The type names of the openings to update - if any openings type name is contained in the list given it will have its construction updated")]
         [Input("newConstruction", "The new construction to assign to the openings")]
+        [Input("typeNames", "OPTIONAL: The type names of the openings to update - if any openings type name is contained in the list given it will have its construction updated, default null")]
         [Output("panels", "The collection of Environment Panels with updated construction on the hosted openings")]
-        public static List<Panel> SetOpeningConstruction(this List<Panel> panels, List<string> typeNames, IConstruction newConstruction)
+        public static List<Panel> SetOpeningConstruction(this List<Panel> panels, IConstruction newConstruction, List<string> typeNames = null)
         {
             foreach(Panel p in panels)
-                p.Openings = p.Openings.SetConstructions(typeNames, newConstruction);
+                p.Openings = p.Openings.SetConstructions(newConstruction, typeNames);
 
             return panels;
         }
