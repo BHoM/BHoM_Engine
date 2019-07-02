@@ -45,26 +45,6 @@ namespace BH.Engine.Environment
         [Output("polyline", "BHoM Geometry Polyline representing the floor of the space")]
         public static Polyline FloorGeometry(this List<Panel> panelsAsSpace, double tolerance = 0.00001)
         {
-            /*List<Panel> floorPanels = new List<Panel>();
-
-            foreach(Panel panel in panelsAsSpace)
-            {
-                double tilt = panel.Tilt();
-                if (tilt == 180)
-                    floorPanels.Add(panel);
-            }
-
-            if (floorPanels.Count == 0) return null;
-
-            List<Polyline> pLines = floorPanels.Select(x => x.Polyline()).ToList();
-
-            List<Polyline> floorGeometry = pLines.BooleanUnion(tolerance);
-
-            if (floorGeometry.Count < 1)
-                return null;
-
-            return floorGeometry[0];*/
-
             //Find the panel(s) that are at the lowest point of the space...
 
             double minZ = 1e10;
