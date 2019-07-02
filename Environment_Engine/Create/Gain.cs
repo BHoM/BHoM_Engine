@@ -39,7 +39,7 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns an Environment Gain object")]
+        /*[Description("Returns an Environment Gain object")]
         [Input("name", "The name of the gain, default empty string")]
         [Input("type", "The type of gain from the Gain Type enum, default undefined")]
         [Input("gainProperties", "The properties of the gain, for example, occupant gain properties, default null")]
@@ -208,6 +208,6 @@ namespace BH.Engine.Environment
             };
 
             return Gain(name, GainType.Equipment, properties);
-        }
+        }*/
     }
 }
