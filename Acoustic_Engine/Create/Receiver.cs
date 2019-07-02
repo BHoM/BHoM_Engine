@@ -35,7 +35,7 @@ namespace BH.Engine.Acoustic
         {
             return new Receiver()
             {
-                Location = location,
+                Location2 = location,
             };
         }
 
@@ -45,7 +45,7 @@ namespace BH.Engine.Acoustic
         {
             return new Receiver()
             {
-                Location = location,
+                Location2 = location,
                 Category = category,
             };
         }

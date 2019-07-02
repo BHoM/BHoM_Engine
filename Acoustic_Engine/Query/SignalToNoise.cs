@@ -41,7 +41,7 @@ namespace BH.Engine.Acoustic
 
             double revDistance = Query.ReverbDistance(room, sabineTime);
             double timeConstant = Query.TimeConstant(sabineTime);
-            double closestDist = Engine.Geometry.Query.ClosestDistance(speakers.Select(x => x.Location), room.Samples.Select(x => x.Location));
+            double closestDist = Engine.Geometry.Query.ClosestDistance(speakers.Select(x => x.Location), room.Samples.Select(x => x.Location2));
 
             double soundLevel = receiver.DirectSound(speakers, room, sabineTime, f).Value;
             double FT = 2.0 * Math.PI * timeConstant * modFactors[f];

@@ -41,7 +41,7 @@ namespace BH.Engine.Acoustic
             SoundLevel directSound = new SoundLevel();
             foreach (Speaker speaker in speakers)
             {
-                Vector deltaPos = receiver.Location - speaker.Location;
+                Vector deltaPos = receiver.Location2 - speaker.Location;
                 double distance = deltaPos.Length();
                 double roomConstant = room.RoomConstant(revTime);
 
