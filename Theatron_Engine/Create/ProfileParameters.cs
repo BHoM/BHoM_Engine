@@ -78,7 +78,7 @@ namespace BH.Engine.Theatron
 
         /***************************************************/
 
-        public static ProfileParameters ProfileParameters(double startX=5.0,double startZ=1.0,double rowWidth=0.8,double targetC =0.9,
+        public static ProfileParameters ProfileParameters(double startX=5.0,double startZ=1.0,double rowWidth=0.8,double targetC =0.09,
             double seatWidth = 0.4,int numRows =20,bool superRiser=false,int superRiserStart = 10, bool vomitory =false,int vomitoryStartRow=10,
             double aisleWidth = 1.2,double superRiserKerbWidth=0.15,double superRiserEyePositionX = 1.1, double superRiserEyePositionZ = 1.1,
             double eyePositionZ = 1.2,double eyePositionX = 0.15,double boardHeight =1.1,double standingEyePositionX =0.4, double standingEyePositionZ=1.4)

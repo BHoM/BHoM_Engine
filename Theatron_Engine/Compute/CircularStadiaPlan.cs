@@ -34,16 +34,16 @@ namespace BH.Engine.Theatron
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        public static TheatronPlanGeometry CircularPlan(StadiaParameters parameters)
+        public static TheatronPlan CircularPlan(StadiaParameters parameters)
         {
-            TheatronPlanGeometry plan = new TheatronPlanGeometry();
-            circularPlaneSetUp(ref plan, parameters.Radius, parameters.StructBayWidth);
+            TheatronPlan plan = new TheatronPlan();
+            circularPlaneSetUp(ref plan, parameters.TheatronRadius, parameters.StructBayWidth);
             return plan;
         }
         /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
-        private static void circularPlaneSetUp(ref TheatronPlanGeometry plan,double radius, double structBayW)
+        private static void circularPlaneSetUp(ref TheatronPlan plan,double radius, double structBayW)
         {
             plan.SectionPlanes = new List<Plane>();
             

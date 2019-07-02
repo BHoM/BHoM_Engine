@@ -55,6 +55,8 @@ namespace BH.Engine.Theatron
 
                 CornerFraction = 0.5 * scale,
 
+                ActivityArea = Create.ActivityArea(1),
+
             };
         }
 
@@ -85,6 +87,8 @@ namespace BH.Engine.Theatron
                 TypeOfBowl = typeOfBowl,
 
                 CornerFraction = cornerFraction,
+
+                ActivityArea = activityArea,
             };
         }
 

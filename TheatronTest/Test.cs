@@ -20,16 +20,13 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Theatron.Elements;
-using BH.oM.Geometry;
+
 using System.Collections.Generic;
 
-namespace BH.Engine.Theatron
+namespace BH.Engine.TheatronTest
 {
-    public static partial class Create
+    public class Test
     {
-        /***************************************************/
-        /**** Public Methods                            ****/
-        /***************************************************/
+        var sParams = Th
     }
 }

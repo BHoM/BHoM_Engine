@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 15.0.28307.572
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Engine_Test", "Engine_Test\Engine_Test.csproj", "{178E7641-FB4D-41E9-A250-120A2B834912}"
+	ProjectSection(ProjectDependencies) = postProject
+		{23BCB2AA-03B3-4C2B-B940-F66E8338D140} = {23BCB2AA-03B3-4C2B-B940-F66E8338D140}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Acoustic_Engine", "Acoustic_Engine\Acoustic_Engine.csproj", "{68300030-BC17-49BD-A363-CFCD3828E812}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -53,6 +56,12 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Physical_Engine", "Physical_Engine\Physical_Engine.csproj", "{F2073888-9BD8-4D8F-9B3C-27577B388530}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Theatron_Engine", "Theatron_Engine\Theatron_Engine.csproj", "{23BCB2AA-03B3-4C2B-B940-F66E8338D140}"
+	ProjectSection(ProjectDependencies) = postProject
+		{6E8ACD42-09E9-4660-833B-0143B4316ED7} = {6E8ACD42-09E9-4660-833B-0143B4316ED7}
+		{1AD45C88-DD54-48E5-951F-55EDFEB70E35} = {1AD45C88-DD54-48E5-951F-55EDFEB70E35}
+		{51BFF4A9-937A-40E8-AD83-D72025F173E6} = {51BFF4A9-937A-40E8-AD83-D72025F173E6}
+		{89AB2DCB-EF87-4CBA-B59C-C16A8A71D333} = {89AB2DCB-EF87-4CBA-B59C-C16A8A71D333}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

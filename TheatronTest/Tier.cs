@@ -1,6 +1,6 @@
 ﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -20,26 +20,16 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Geometry;
 using BH.oM.Theatron.Elements;
-using BH.oM.Theatron.Parameters;
-using System;
+using BH.oM.Geometry;
 using System.Collections.Generic;
 
-namespace BH.Engine.Theatron
+namespace BH.Engine.Theatron 
 {
-    public static partial class Compute
+    public static partial class Create
     {
         /***************************************************/
         /**** Public Methods                            ****/
-        /***************************************************/
-        public static TheatronPlan FourArcPlan(StadiaParameters parameters)
-        {
-            throw new NotImplementedException();
-            
-        }
-        /***************************************************/
-        /**** Private Methods                           ****/
         /***************************************************/
     }
 }
