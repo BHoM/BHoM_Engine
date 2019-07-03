@@ -74,6 +74,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Compute\BooleanIntersect.cs" />
+    <Compile Include="Compute\LightingGain.cs" />
     <Compile Include="Convert\Edge.cs" />
     <Compile Include="Create\LightReflectanceFragment.cs" />
     <Compile Include="Create\LightTransmittanceFragment.cs" />
@@ -90,7 +91,7 @@
     <Compile Include="Create\Edge.cs" />
     <Compile Include="Create\Emitter.cs" />
     <Compile Include="Create\EnvironmentConstructionFragment.cs" />
-    <Compile Include="Create\Gain.cs" />
+    <Compile Include="Create\Gains.cs" />
     <Compile Include="Create\Layer.cs" />
     <Compile Include="Create\MaterialFragment.cs" />
     <Compile Include="Create\Opening.cs" />
