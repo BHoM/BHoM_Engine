@@ -65,7 +65,8 @@ namespace BH.Engine.Reflection
                 IBHoMObject bhom = obj as IBHoMObject;
                 if (bhom.CustomData.ContainsKey(propName))
                 {
-                    Compute.RecordNote($"{propName} is stored in CustomData");
+                    if (!(bhom is CustomObject))
+                        Compute.RecordNote($"{propName} is stored in CustomData");
                     return bhom.CustomData[propName];
                 }
                 else
