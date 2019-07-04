@@ -51,8 +51,26 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Compute\Theatron\CircularStadiaPlan.cs" />
+    <Compile Include="Compute\Theatron\EightArcStadiaPlan.cs" />
+    <Compile Include="Compute\Theatron\FourArcStadiaPlan.cs" />
+    <Compile Include="Compute\Theatron\NoCornersStadiaPlan.cs" />
+    <Compile Include="Compute\Theatron\OrthogonalStadiaPlan.cs" />
     <Compile Include="Create\Grid.cs" />
     <Compile Include="Create\Level.cs" />
+    <Compile Include="Create\Theatron\ActivityArea.cs" />
+    <Compile Include="Create\Theatron\AvalueSettings.cs" />
+    <Compile Include="Create\Theatron\CvalueSettings.cs" />
+    <Compile Include="Create\Theatron\EvalueSettings.cs" />
+    <Compile Include="Create\Theatron\ProfileParameters.cs" />
+    <Compile Include="Create\Theatron\SeatingBlock.cs" />
+    <Compile Include="Create\Theatron\StadiaParameters.cs" />
+    <Compile Include="Create\Theatron\Theatron.cs" />
+    <Compile Include="Create\Theatron\TheatronFullProfile.cs" />
+    <Compile Include="Create\Theatron\TheatronPlan.cs" />
+    <Compile Include="Create\Theatron\TheatronTest.cs" />
+    <Compile Include="Create\Theatron\Tier.cs" />
+    <Compile Include="Create\Theatron\TierProfile.cs" />
     <Compile Include="Modify\SetGeometry.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Query\Geometry.cs" />
