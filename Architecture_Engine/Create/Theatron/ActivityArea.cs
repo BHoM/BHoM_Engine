@@ -20,59 +20,55 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+
 using BH.oM.Geometry;
+using BH.oM.Architecture.Theatron;
 using System.Collections.Generic;
 
-namespace BH.Engine.Theatron
+namespace BH.Engine.Architecture.Theatron
 {
     public static partial class Create
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-
-        public static TheatronFullProfile TheatronFullProfile(List<ProfileParameters> parameters)
+        public static ActivityArea ActivityArea(double scale = 1.0)
         {
-            //this assumes no relation with the plan geometry setting out is from the origin
-            TheatronFullProfile fullProfile = new TheatronFullProfile();
-            Point lastpoint = new Point();
-
-            for (int i = 0; i < parameters.Count; i++)
+            var p1 = Geometry.Create.Point(30*scale, 45 * scale, 0);
+            var p2 = Geometry.Create.Point(30 * scale, -45 * scale, 0);
+            var p3 = Geometry.Create.Point(-30 * scale, -45 * scale, 0);
+            var p4 = Geometry.Create.Point(-30 * scale, 45 * scale, 0);
+            return new ActivityArea
             {
-                if (i == 0 )
-                {
-                    parameters[i].StartX = parameters[i].RowWidth - parameters[i].EyePositionX;
-                }
-                TierProfile tierSection = Create.TierProfile(parameters[i], lastpoint);
-                fullProfile.BaseTierProfiles.Add(tierSection);
+                PlayingArea = Geometry.Create.Polyline(new List<Point> { p1, p2, p3, p4, p1 }),
+                Width = 60 * scale,
+                Length = 90 * scale,
 
-                lastpoint = tierSection.FloorPoints[tierSection.FloorPoints.Count - 1];
-
-            }
-            return fullProfile;
+            };
         }
-
         /***************************************************/
-
-        public static TheatronFullProfile TheatronFullProfile(List<ProfileParameters> parameters, TheatronPlan planGeometry)
+        public static ActivityArea ActivityArea(double width = 60,double length = 90)
         {
-            //this assumes no relation with the plan geometry setting out is from the origin
-            TheatronFullProfile fullProfile = new TheatronFullProfile();
-            Point lastpoint = new Point();
-            fullProfile.FocalPoint = planGeometry.CValueFocalPoint;
-            for (int i = 0; i < parameters.Count; i++)
+            var p1 = Geometry.Create.Point(width/2, length/2, 0);
+            var p2 = Geometry.Create.Point(width / 2, -length / 2, 0);
+            var p3 = Geometry.Create.Point(-width / 2, -length / 2, 0);
+            var p4 = Geometry.Create.Point(-width / 2, length / 2, 0);
+            return new ActivityArea
             {
-                if (i == 0)
-                {
-                    parameters[i].StartX = planGeometry.MinDistToFocalCurve+parameters[i].RowWidth - parameters[i].EyePositionX;
-                }
-                TierProfile tierSection = Create.TierProfile(parameters[i], lastpoint);
-                fullProfile.TierProfiles.Add(tierSection);
-
-                lastpoint = tierSection.FloorPoints[tierSection.FloorPoints.Count - 1];
-
-            }
-            return fullProfile;
+                PlayingArea = Geometry.Create.Polyline(new List<Point> { p1, p2, p3, p4, p1 }),
+                Width = width,
+                Length = length,
+            };
+        }
+        /***************************************************/
+        public static ActivityArea ActivityArea(Polyline activityArea, Point aValueFocalPoint)
+        {
+            
+            return new ActivityArea
+            {
+                PlayingArea = activityArea,
+                AValueFocalPoint = aValueFocalPoint,
+            };
         }
     }
 }

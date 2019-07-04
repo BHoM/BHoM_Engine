@@ -21,9 +21,10 @@
  */
 
 using BH.oM.Geometry;
+using BH.oM.Architecture.Theatron;
 using System.Collections.Generic;
 
-namespace BH.Engine.Theatron
+namespace BH.Engine.Architecture.Theatron
 {
     public static partial class Create
     {
@@ -67,7 +68,7 @@ namespace BH.Engine.Theatron
                     parameters[i].StartX = planGeometry.MinDistToFocalCurve+parameters[i].RowWidth - parameters[i].EyePositionX;
                 }
                 TierProfile tierSection = Create.TierProfile(parameters[i], lastpoint);
-                fullProfile.TierProfiles.Add(tierSection);
+                fullProfile.BaseTierProfiles.Add(tierSection);
 
                 lastpoint = tierSection.FloorPoints[tierSection.FloorPoints.Count - 1];
 

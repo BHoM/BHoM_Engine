@@ -20,10 +20,10 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Geometry;
+using BH.oM.Architecture.Theatron;
 using System.Collections.Generic;
 
-namespace BH.Engine.Theatron
+namespace BH.Engine.Architecture.Theatron
 {
     public static partial class Create
     {
@@ -31,48 +31,67 @@ namespace BH.Engine.Theatron
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static TheatronFullProfile TheatronFullProfile(List<ProfileParameters> parameters)
+        public static StadiaParameters StadiaParameters(double scale = 1.0)
         {
-            //this assumes no relation with the plan geometry setting out is from the origin
-            TheatronFullProfile fullProfile = new TheatronFullProfile();
-            Point lastpoint = new Point();
-
-            for (int i = 0; i < parameters.Count; i++)
+            return new StadiaParameters
             {
-                if (i == 0 )
-                {
-                    parameters[i].StartX = parameters[i].RowWidth - parameters[i].EyePositionX;
-                }
-                TierProfile tierSection = Create.TierProfile(parameters[i], lastpoint);
-                fullProfile.BaseTierProfiles.Add(tierSection);
+                StructBayWidth = 7.5 * scale,
 
-                lastpoint = tierSection.FloorPoints[tierSection.FloorPoints.Count - 1];
+                CornerRadius = 10.0 * scale,
 
-            }
-            return fullProfile;
+                SideBound = 6.7 * scale,
+
+                EndBound = 7.8 * scale,
+
+                SideRadius = 240.0 * scale,
+
+                EndRadius = 200.0 * scale,
+
+                TheatronRadius = 100.0 * scale,
+
+                NumCornerBays = 7,
+
+                TypeOfBowl = StadiaType.EightArc,
+
+                CornerFraction = 0.5 * scale,
+
+                ActivityArea = Create.ActivityArea(1),
+
+            };
         }
 
         /***************************************************/
 
-        public static TheatronFullProfile TheatronFullProfile(List<ProfileParameters> parameters, TheatronPlan planGeometry)
+        public static StadiaParameters StadiaParameters(double structBayWidth = 7.5,double cornerRadius = 10.0,double sideBound = 6.7,
+            double endBound = 7.8,double sideRadius = 240.0,double endRadius = 200.0,double theatronRadius = 100.0,int numCornerBays = 7,
+            StadiaType typeOfBowl = StadiaType.EightArc, double cornerFraction = 0.5,ActivityArea activityArea = null)
         {
-            //this assumes no relation with the plan geometry setting out is from the origin
-            TheatronFullProfile fullProfile = new TheatronFullProfile();
-            Point lastpoint = new Point();
-            fullProfile.FocalPoint = planGeometry.CValueFocalPoint;
-            for (int i = 0; i < parameters.Count; i++)
+            return new StadiaParameters
             {
-                if (i == 0)
-                {
-                    parameters[i].StartX = planGeometry.MinDistToFocalCurve+parameters[i].RowWidth - parameters[i].EyePositionX;
-                }
-                TierProfile tierSection = Create.TierProfile(parameters[i], lastpoint);
-                fullProfile.TierProfiles.Add(tierSection);
+                StructBayWidth = structBayWidth,
 
-                lastpoint = tierSection.FloorPoints[tierSection.FloorPoints.Count - 1];
+                CornerRadius = cornerRadius,
 
-            }
-            return fullProfile;
+                SideBound = sideBound,
+
+                EndBound = endBound,
+
+                SideRadius = sideRadius,
+
+                EndRadius = endRadius,
+
+                TheatronRadius = theatronRadius,
+
+                NumCornerBays = numCornerBays,
+
+                TypeOfBowl = typeOfBowl,
+
+                CornerFraction = cornerFraction,
+
+                ActivityArea = activityArea,
+            };
         }
+
+        /***************************************************/
     }
 }

@@ -51,9 +51,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Create\Audience.cs" />
+    <Compile Include="Create\DynamicViewCone.cs" />
     <Compile Include="Create\Employee.cs" />
+    <Compile Include="Create\Eye.cs" />
     <Compile Include="Create\Human.cs" />
     <Compile Include="Create\Skeleton.cs" />
+    <Compile Include="Create\Spectator.cs" />
+    <Compile Include="Create\StaticViewCone.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Query\Skeleton.cs" />
   </ItemGroup>
