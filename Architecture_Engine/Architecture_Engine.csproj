@@ -65,6 +65,7 @@
     <Compile Include="Create\Theatron\ProfileParameters.cs" />
     <Compile Include="Create\Theatron\SeatingBlock.cs" />
     <Compile Include="Create\Theatron\StadiaParameters.cs" />
+    <Compile Include="Create\Theatron\StadiaType.cs" />
     <Compile Include="Create\Theatron\Theatron.cs" />
     <Compile Include="Create\Theatron\TheatronFullProfile.cs" />
     <Compile Include="Create\Theatron\TheatronPlan.cs" />

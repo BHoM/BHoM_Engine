@@ -22,6 +22,9 @@
 
 
 using BH.oM.Architecture.Theatron;
+using BH.oM.Geometry;
+using BH.Engine.Geometry;
+using System;
 using System.Collections.Generic;
 
 namespace BH.Engine.Architecture.Theatron
@@ -30,7 +33,8 @@ namespace BH.Engine.Architecture.Theatron
     {
         public void Test()
         {
-            var sParams = Create.StadiaParameters(1);
+            var sType = Create.StadiaTypeEnum(10);
+            var sParams = Create.StadiaParameters(7.5,10,typeOfBowl:sType);
             sParams.TypeOfBowl = StadiaType.Orthogonal;
             var plan = Create.PlanGeometry(sParams);
             var pParams1 = Create.ProfileParameters(1);
@@ -41,6 +45,28 @@ namespace BH.Engine.Architecture.Theatron
             var fullProfile = Create.TheatronFullProfile(parameters);
             //profile in XZ plane focal point is the origin but distance from origin defined by the plan geometry
             fullProfile = Create.TheatronFullProfile(parameters,plan);
+        }
+        public void PlaneByPointsTest()
+        {
+            double theta = Math.PI * 2 / 100;
+            List<Plane> planes = new List<Plane>();
+            Plane pln = new Plane();
+            Point xpt = new Point();
+            Point origin = new Point();
+            Point ypt = Geometry.Create.Point(0, 0, 1);
+            double rad = 100;
+            double x, y;
+            for(int i = 0; i< 100; i++)
+            {
+                x = rad * Math.Cos(theta * i);
+                y = rad * Math.Sin(theta * i);
+                origin = Geometry.Create.Point(x, y, 0);
+                x = (rad+10) * Math.Cos(theta * i);
+                y = (rad + 10) * Math.Sin(theta * i);
+                xpt = Geometry.Create.Point(x, y, 0);
+                pln = Geometry.Create.Plane(origin, xpt, ypt);
+
+            }
         }
     }
 }

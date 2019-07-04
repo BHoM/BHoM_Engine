@@ -40,13 +40,8 @@ namespace BH.Engine.Architecture.Theatron
 
             for (int i = 0; i < parameters.Count; i++)
             {
-                if (i == 0 )
-                {
-                    parameters[i].StartX = parameters[i].RowWidth - parameters[i].EyePositionX;
-                }
                 TierProfile tierSection = Create.TierProfile(parameters[i], lastpoint);
                 fullProfile.BaseTierProfiles.Add(tierSection);
-
                 lastpoint = tierSection.FloorPoints[tierSection.FloorPoints.Count - 1];
 
             }
@@ -65,7 +60,7 @@ namespace BH.Engine.Architecture.Theatron
             {
                 if (i == 0)
                 {
-                    parameters[i].StartX = planGeometry.MinDistToFocalCurve+parameters[i].RowWidth - parameters[i].EyePositionX;
+                    parameters[i].StartX = planGeometry.MinDistToFocalCurve + parameters[i].RowWidth - parameters[i].EyePositionX;
                 }
                 TierProfile tierSection = Create.TierProfile(parameters[i], lastpoint);
                 fullProfile.BaseTierProfiles.Add(tierSection);

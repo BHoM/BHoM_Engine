@@ -21,6 +21,7 @@
  */
 
 using BH.oM.Geometry;
+using BH.oM.Geometry.CoordinateSystem;
 using BH.Engine.Geometry;
 using BH.oM.Architecture.Theatron;
 using System.Collections.Generic;
@@ -34,7 +35,7 @@ namespace BH.Engine.Architecture.Theatron
         /**** public Methods                            ****/
         /***************************************************/
 
-        public static TheatronPlan PlanGeometry(List<Plane> structuralSections, ActivityArea activityArea,Polyline focalCurve)
+        public static TheatronPlan PlanGeometry(List<Cartesian> structuralSections, ActivityArea activityArea,Polyline focalCurve)
         {
             var planGeometry = new TheatronPlan
             {
@@ -88,9 +89,9 @@ namespace BH.Engine.Architecture.Theatron
             findClosestSection(ref planGeometry);
             
         }
-        private static List<Plane> setVomitories(List<Plane> sections)
+        private static List<Cartesian> setVomitories(List<Cartesian> sections)
         {
-            List<Plane> vomitoryPlanes = new List<Plane>();
+            List<Cartesian> vomitoryPlanes = new List<Cartesian>();
             double deltaX, deltaY, x, y;
             
             Vector nextUnitXdir = new Vector();
@@ -99,10 +100,10 @@ namespace BH.Engine.Architecture.Theatron
             for (var i = 0; i < sections.Count-1; i++)
             {
 
-                unitXdir = sections[i].Normal.CrossProduct(Vector.ZAxis);
+                unitXdir = sections[i].Z.CrossProduct(Vector.ZAxis);
                 unitXdir.Normalise();
                 
-                nextUnitXdir = sections[i + 1].Normal.CrossProduct(Vector.ZAxis);
+                nextUnitXdir = sections[i + 1].Z.CrossProduct(Vector.ZAxis);
                 nextUnitXdir.Normalise();
                 deltaX = sections[i + 1].Origin.X - sections[i].Origin.X;
                 deltaY = sections[i + 1].Origin.Y - sections[i].Origin.Y;
@@ -111,16 +112,16 @@ namespace BH.Engine.Architecture.Theatron
                 y = (nextUnitXdir.Y + unitXdir.Y) / 2;
                 
                 Point origin = Geometry.Create.Point(sections[i].Origin.X + deltaX / 2, sections[i].Origin.Y + deltaY / 2, 0);
-                Point xdir = Geometry.Create.Point(origin.X + x, origin.Y + y, 0);
-                Point ydir = Geometry.Create.Point(origin.X + x, origin.Y + y, 1);
-                vomitoryPlanes.Add(Geometry.Create.Plane(origin, xdir, ydir));
+                Vector xdir = Geometry.Create.Vector(x, y, 0);
+                Vector ydir = Vector.ZAxis;
+                vomitoryPlanes.Add(Geometry.Create.CartesianCoordinateSystem(origin, xdir, ydir));
             }
             return vomitoryPlanes;
         }
         /***************************************************/
-        private static List<Plane> combinedPlanes(List<Plane> sections, List<Plane> vomitories)
+        private static List<Cartesian> combinedPlanes(List<Cartesian> sections, List<Cartesian> vomitories)
         {
-            List<Plane> combined = new List<Plane>();
+            List<Cartesian> combined = new List<Cartesian>();
             for (int i = 0; i < sections.Count-1; i++)
             {
                 combined.Add(sections[i]);
@@ -155,7 +156,7 @@ namespace BH.Engine.Architecture.Theatron
 
         }
         /***************************************************/
-        private static Polyline setFront(List<Plane> sections)
+        private static Polyline setFront(List<Cartesian> sections)
         {
             List<Point> pts = sections.Select(item => item.Origin).ToList();
             Polyline front = Geometry.Create.Polyline(pts);
