@@ -20,16 +20,30 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Theatron.Elements;
 using BH.oM.Geometry;
+using BH.oM.Architecture.Theatron;
 using System.Collections.Generic;
 
-namespace BH.Engine.Theatron
+namespace BH.Engine.Architecture.Theatron
 {
     public static partial class Create
     {
         /***************************************************/
         /**** Public Methods                            ****/
+        /***************************************************/
+
+        public static StadiaType StadiaTypeEnum(int typeNum)
+        {
+            var enumCount = StadiaType.GetNames(typeof(StadiaType)).Length;
+
+            //last name is undefined so total possible types is enumCount-2
+            if (typeNum > enumCount-2) typeNum = 0;
+
+            StadiaType value = (StadiaType)typeNum;
+            
+            return value;
+        }
+
         /***************************************************/
     }
 }

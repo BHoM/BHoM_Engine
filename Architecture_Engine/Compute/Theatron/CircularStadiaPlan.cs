@@ -23,7 +23,7 @@
 
 using System;
 using System.Collections.Generic;
-using BH.oM.Geometry;
+using BH.oM.Geometry.CoordinateSystem;
 using BH.oM.Architecture.Theatron;
 
 namespace BH.Engine.Architecture.Theatron
@@ -44,7 +44,7 @@ namespace BH.Engine.Architecture.Theatron
         /***************************************************/
         private static void circularPlaneSetUp(ref TheatronPlan plan,double radius, double structBayW)
         {
-            plan.SectionPlanes = new List<Plane>();
+            plan.SectionPlanes = new List<Cartesian>();
             
             int numBays = (int)(Math.Floor(Math.PI * radius * 2 / structBayW));
             double theta = 2 * Math.PI / numBays;

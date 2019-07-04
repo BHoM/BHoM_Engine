@@ -55,7 +55,7 @@ namespace BH.Engine.Architecture.Theatron
 
                 CornerFraction = 0.5 * scale,
 
-                ActivityArea = Create.ActivityArea(1),
+                ActivityArea = Create.ActivityArea(scale),
 
             };
         }
@@ -66,6 +66,8 @@ namespace BH.Engine.Architecture.Theatron
             double endBound = 7.8,double sideRadius = 240.0,double endRadius = 200.0,double theatronRadius = 100.0,int numCornerBays = 7,
             StadiaType typeOfBowl = StadiaType.EightArc, double cornerFraction = 0.5,ActivityArea activityArea = null)
         {
+            if (activityArea == null) activityArea = Create.ActivityArea(1);
+
             return new StadiaParameters
             {
                 StructBayWidth = structBayWidth,

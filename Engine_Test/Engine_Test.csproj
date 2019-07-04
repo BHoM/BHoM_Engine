@@ -75,6 +75,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Architecture_Engine\Architecture_Engine.csproj">
+      <Project>{338e9da8-8aaf-4f51-b4ad-264b5f329a5f}</Project>
+      <Name>Architecture_Engine</Name>
+    </ProjectReference>
     <ProjectReference Include="..\BHoM_Engine\BHoM_Engine.csproj">
       <Project>{1ad45c88-dd54-48e5-951f-55edfeb70e35}</Project>
       <Name>BHoM_Engine</Name>
