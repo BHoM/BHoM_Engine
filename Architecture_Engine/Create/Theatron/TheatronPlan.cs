@@ -26,6 +26,7 @@ using BH.Engine.Geometry;
 using BH.oM.Architecture.Theatron;
 using System.Collections.Generic;
 using System.Linq;
+using System;
 
 namespace BH.Engine.Architecture.Theatron
 {
@@ -35,11 +36,11 @@ namespace BH.Engine.Architecture.Theatron
         /**** public Methods                            ****/
         /***************************************************/
 
-        public static TheatronPlan PlanGeometry(List<Cartesian> structuralSections, ActivityArea activityArea,Polyline focalCurve)
+        public static TheatronPlan PlanGeometry(List<ProfileOrigin> structuralSections, ActivityArea activityArea,Polyline focalCurve)
         {
             var planGeometry = new TheatronPlan
             {
-                SectionPlanes = structuralSections,
+                SectionOrigins = structuralSections,
                 ActivityArea = activityArea,
                 FocalCurve = focalCurve,
             };
@@ -83,15 +84,15 @@ namespace BH.Engine.Architecture.Theatron
         /***************************************************/
         private static void setPlanes(ref TheatronPlan planGeometry)
         {
-            planGeometry.TheatronFront = setFront(planGeometry.SectionPlanes);
-            planGeometry.VomitoryPlanes = setVomitories(planGeometry.SectionPlanes);
-            planGeometry.CombinedPlanes = combinedPlanes(planGeometry.SectionPlanes, planGeometry.VomitoryPlanes);
+            planGeometry.TheatronFront = setFront(planGeometry.SectionOrigins);
+            planGeometry.VomitoryOrigins = setVomitories(planGeometry.SectionOrigins);
+            planGeometry.CombinedOrigins = combinedPlanes(planGeometry.SectionOrigins, planGeometry.VomitoryOrigins);
             findClosestSection(ref planGeometry);
             
         }
-        private static List<Cartesian> setVomitories(List<Cartesian> sections)
+        private static List<ProfileOrigin> setVomitories(List<ProfileOrigin> sections)
         {
-            List<Cartesian> vomitoryPlanes = new List<Cartesian>();
+            List<ProfileOrigin> vomitoryOrigins = new List<ProfileOrigin>();
             double deltaX, deltaY, x, y;
             
             Vector nextUnitXdir = new Vector();
@@ -100,10 +101,10 @@ namespace BH.Engine.Architecture.Theatron
             for (var i = 0; i < sections.Count-1; i++)
             {
 
-                unitXdir = sections[i].Z.CrossProduct(Vector.ZAxis);
+                unitXdir = sections[i].Direction;
                 unitXdir.Normalise();
                 
-                nextUnitXdir = sections[i + 1].Z.CrossProduct(Vector.ZAxis);
+                nextUnitXdir = sections[i + 1].Direction;
                 nextUnitXdir.Normalise();
                 deltaX = sections[i + 1].Origin.X - sections[i].Origin.X;
                 deltaY = sections[i + 1].Origin.Y - sections[i].Origin.Y;
@@ -113,15 +114,15 @@ namespace BH.Engine.Architecture.Theatron
                 
                 Point origin = Geometry.Create.Point(sections[i].Origin.X + deltaX / 2, sections[i].Origin.Y + deltaY / 2, 0);
                 Vector xdir = Geometry.Create.Vector(x, y, 0);
-                Vector ydir = Vector.ZAxis;
-                vomitoryPlanes.Add(Geometry.Create.CartesianCoordinateSystem(origin, xdir, ydir));
+                
+                vomitoryOrigins.Add(Create.ProfileOrigin(origin, xdir));
             }
-            return vomitoryPlanes;
+            return vomitoryOrigins;
         }
         /***************************************************/
-        private static List<Cartesian> combinedPlanes(List<Cartesian> sections, List<Cartesian> vomitories)
+        private static List<ProfileOrigin> combinedPlanes(List<ProfileOrigin> sections, List<ProfileOrigin> vomitories)
         {
-            List<Cartesian> combined = new List<Cartesian>();
+            List<ProfileOrigin> combined = new List<ProfileOrigin>();
             for (int i = 0; i < sections.Count-1; i++)
             {
                 combined.Add(sections[i]);
@@ -139,10 +140,10 @@ namespace BH.Engine.Architecture.Theatron
             List<Point> allFocalPoints = new List<Point>();
             int index = 0;
             Point closestP = new Point();
-            for (int i = 0; i < plan.SectionPlanes.Count; i++)
+            for (int i = 0; i < plan.SectionOrigins.Count; i++)
             {
-                var p = Geometry.Query.ClosestPoint(plan.FocalCurve, plan.SectionPlanes[i].Origin);
-                double dist = Geometry.Query.Distance(p, plan.SectionPlanes[i].Origin);
+                var p = Geometry.Query.ClosestPoint(plan.FocalCurve, plan.SectionOrigins[i].Origin);
+                double dist = Geometry.Query.Distance(p, plan.SectionOrigins[i].Origin);
                 if(dist< shortestDist)
                 {
                     closestP = p;
@@ -152,15 +153,17 @@ namespace BH.Engine.Architecture.Theatron
             }
             plan.CValueFocalPoint = closestP;
             plan.MinDistToFocalCurve = shortestDist;
-            plan.SectionClosestToFocalCurve = plan.SectionPlanes[index];
+            plan.SectionClosestToFocalCurve = plan.SectionOrigins[index];
 
         }
         /***************************************************/
-        private static Polyline setFront(List<Cartesian> sections)
+        private static Polyline setFront(List<ProfileOrigin> sections)
         {
             List<Point> pts = sections.Select(item => item.Origin).ToList();
             Polyline front = Geometry.Create.Polyline(pts);
             return front;
         }
+        
+
     }
 }

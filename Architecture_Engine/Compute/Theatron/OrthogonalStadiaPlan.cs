@@ -47,7 +47,7 @@ namespace BH.Engine.Architecture.Theatron
         {
             int nSideBays = (int)(Math.Floor(((activityArea.Length + endBound) / 2 - cornerR) / structBayW) * 2);
             int nEndBays = (int)(Math.Floor(((activityArea.Width + sideBound) / 2 - cornerR) / structBayW) * 2);
-            plan.SectionPlanes = new List<Cartesian>();
+            plan.SectionOrigins = new List<ProfileOrigin>();
             
             double cornA = Math.PI / 2 / (nCornerBays + 1);
             double trueR = cornerR / Math.Cos(cornA / 2);
@@ -59,7 +59,7 @@ namespace BH.Engine.Architecture.Theatron
             Vector xdir = new Vector();
             Vector ydir =  Vector.ZAxis;
             Vector normal = new Vector();
-            Cartesian tempPlane = new Cartesian();
+            ProfileOrigin tempOrigin = new ProfileOrigin();
             BayType bayType = 0; //0 = side, 1= end, 2 =corner
             for (int i = 0; i < 8; i++)
             {
@@ -89,8 +89,8 @@ namespace BH.Engine.Architecture.Theatron
                         }
                         origin = Geometry.Create.Point(oX, oY, 0);
                         xdir = Geometry.Create.Vector(dX,dY, 0);
-                        tempPlane = Geometry.Create.CartesianCoordinateSystem(origin, xdir,ydir);
-                        plan.SectionPlanes.Add(tempPlane);
+                        tempOrigin = Create.ProfileOrigin(origin, xdir);
+                        plan.SectionOrigins.Add(tempOrigin);
                         count++;
                     }
                 }
@@ -124,8 +124,8 @@ namespace BH.Engine.Architecture.Theatron
                             }
                             origin = Geometry.Create.Point(oX, oY, 0);
                             xdir = Geometry.Create.Vector(dX, dY, 0);
-                            tempPlane = Geometry.Create.CartesianCoordinateSystem(origin, xdir, ydir);
-                            plan.SectionPlanes.Add(tempPlane);
+                            tempOrigin = Create.ProfileOrigin(origin, xdir);
+                            plan.SectionOrigins.Add(tempOrigin);
                             count++;
                         }
                     }
@@ -177,8 +177,8 @@ namespace BH.Engine.Architecture.Theatron
                             }
                             origin = Geometry.Create.Point(oX, oY, 0);
                             xdir = Geometry.Create.Vector(dX, dY, 0);
-                            tempPlane = Geometry.Create.CartesianCoordinateSystem(origin, xdir, ydir);
-                            plan.SectionPlanes.Add(tempPlane);
+                            tempOrigin = Create.ProfileOrigin(origin, xdir);
+                            plan.SectionOrigins.Add(tempOrigin);
                             count++;
                         }
                     }

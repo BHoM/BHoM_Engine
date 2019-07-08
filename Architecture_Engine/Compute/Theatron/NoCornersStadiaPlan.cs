@@ -47,7 +47,7 @@ namespace BH.Engine.Architecture.Theatron
         {
             int nSideBays = (int)(Math.Floor(((activityArea.Length + endBound) / 2) / structBayW) * 2);
             int nEndBays = (int)(Math.Floor(((activityArea.Width + sideBound) / 2) / structBayW) * 2);
-            plan.SectionPlanes = new List<Cartesian>();
+            plan.SectionOrigins = new List<ProfileOrigin>();
             
             double actualBayW;
             double xMin;
@@ -56,8 +56,8 @@ namespace BH.Engine.Architecture.Theatron
             int count = 0;
             Point origin = new Point();
             Vector xdir = new Vector();
-            Vector ydir = Vector.ZAxis;
-            Cartesian tempPlane = new Cartesian();
+            
+            ProfileOrigin tempPlane = new ProfileOrigin();
             BayType bayType = BayType.Side;//0 = side, 1= end, 2 =corner
             for (int i = 0; i < 4; i++)
             {
@@ -89,8 +89,8 @@ namespace BH.Engine.Architecture.Theatron
                         }
                         origin =Geometry.Create.Point(oX, oY, 0);
                         xdir = Geometry.Create.Vector(dX, dY, 0);
-                        tempPlane = Geometry.Create.CartesianCoordinateSystem(origin, xdir, ydir);
-                        plan.SectionPlanes.Add(tempPlane);
+                        tempPlane = Create.ProfileOrigin(origin, xdir);
+                        plan.SectionOrigins.Add(tempPlane);
                         count++;
                     }
                 }
@@ -123,8 +123,8 @@ namespace BH.Engine.Architecture.Theatron
                         }
                         origin = Geometry.Create.Point(oX, oY, 0);
                         xdir = Geometry.Create.Vector(dX, dY, 0);
-                        tempPlane = Geometry.Create.CartesianCoordinateSystem(origin, xdir, ydir);
-                        plan.SectionPlanes.Add(tempPlane);
+                        tempPlane = Create.ProfileOrigin(origin, xdir);
+                        plan.SectionOrigins.Add(tempPlane);
                         count++;
                     }
 

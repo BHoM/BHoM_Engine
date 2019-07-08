@@ -20,43 +20,29 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-
-using System;
-using System.Collections.Generic;
-using BH.oM.Geometry.CoordinateSystem;
+using BH.oM.Geometry;
 using BH.oM.Architecture.Theatron;
+using System.Collections.Generic;
 
 namespace BH.Engine.Architecture.Theatron
 {
-    public static partial class Compute
+    public static partial class Create
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        public static TheatronPlan CircularPlan(StadiaParameters parameters)
+
+        public static ProfileOrigin ProfileOrigin(Point origin,Vector direction)
         {
-            TheatronPlan plan = new TheatronPlan();
-            circularPlaneSetUp(ref plan, parameters.TheatronRadius, parameters.StructBayWidth);
-            return plan;
-        }
-        /***************************************************/
-        /**** Private Methods                           ****/
-        /***************************************************/
-        private static void circularPlaneSetUp(ref TheatronPlan plan,double radius, double structBayW)
-        {
-            plan.SectionOrigins = new List<ProfileOrigin>();
-            
-            int numBays = (int)(Math.Floor(Math.PI * radius * 2 / structBayW));
-            double theta = 2 * Math.PI / numBays;
-            bool halfbayStart = false;
-            plan.SectionOrigins = arcSweepBay(0, 0, theta, 0, radius, numBays, halfbayStart, 1.0);
-            BayType bayType = BayType.Side;
-            for (int i = 0; i < plan.SectionOrigins.Count; i++)
-            {
-                plan.StructBayType.Add(bayType);
-                
-            }
+            return new ProfileOrigin {
+
+                Origin = origin,
+
+                Direction = direction,
+
+            };
 
         }
     }
+
 }
