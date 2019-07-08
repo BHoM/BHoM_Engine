@@ -46,7 +46,7 @@ namespace BH.Engine.Architecture.Theatron
         /***************************************************/
         private static void radialPlanSetUp(ref TheatronPlan plan,ActivityArea activityArea, double sideBound, double sideRadius, double endBound, double endRadius, double cornerR, int nCornerBays, double structBayW, double cornerFraction)
         {
-            plan.SectionPlanes = new List<Cartesian>();
+            plan.SectionOrigins = new List<ProfileOrigin>();
             
             int count = 0;
             double sidecentreX = activityArea.Width / 2 + sideBound - sideRadius;
@@ -163,10 +163,10 @@ namespace BH.Engine.Architecture.Theatron
                         bayType = BayType.Corner;
                         break;
                 }
-                List<Cartesian> partPlanes = arcSweepBay(centreX, centreY, theta, startAngle, radius, numBays, fractionbayStart, cornerFraction);
+                List<ProfileOrigin> partPlanes = arcSweepBay(centreX, centreY, theta, startAngle, radius, numBays, fractionbayStart, cornerFraction);
                 for (int p = 0; p < partPlanes.Count; p++)
                 {
-                    plan.SectionPlanes.Add(partPlanes[p]);
+                    plan.SectionOrigins.Add(partPlanes[p]);
                     
                     plan.StructBayType.Add(bayType);
                     count++;
@@ -176,9 +176,9 @@ namespace BH.Engine.Architecture.Theatron
 
         }
         /***************************************************/
-        private static List<Cartesian> arcSweepBay(double centreX, double centreY, double theta, double startAngle, double radius, int numBays, bool fractionbayStart, double fraction)
+        private static List<ProfileOrigin> arcSweepBay(double centreX, double centreY, double theta, double startAngle, double radius, int numBays, bool fractionbayStart, double fraction)
         {
-            List<Cartesian> sectionPlane = new List<Cartesian>();
+            List<ProfileOrigin> sectionPlane = new List<ProfileOrigin>();
             double xO, yO, xP, yP;
             for (int d = 0; d <= numBays; d++)
             {
@@ -215,8 +215,8 @@ namespace BH.Engine.Architecture.Theatron
                 Point origin = Geometry.Create.Point(xO, yO, 0);
 
                 Vector xdir = Geometry.Create.Vector(xP,yP, 0);
-                Vector ydir = Vector.ZAxis;
-                Cartesian tempPlane = Geometry.Create.CartesianCoordinateSystem(origin, xdir, ydir);
+                
+                ProfileOrigin tempPlane = Create.ProfileOrigin(origin, xdir);
                 
                 sectionPlane.Add(tempPlane);
             }

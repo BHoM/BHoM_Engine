@@ -36,16 +36,21 @@ namespace BH.Engine.Architecture.Theatron
         {
             var sType = Create.StadiaTypeEnum(10);
             var sParams = Create.StadiaParameters(7.5,10,typeOfBowl:sType);
-            sParams.TypeOfBowl = StadiaType.Orthogonal;
+            sParams.TypeOfBowl = StadiaType.EightArc;
             var plan = Create.PlanGeometry(sParams);
             var pParams1 = Create.ProfileParameters(1);
             var pParams2 = Create.ProfileParameters(1);
             pParams2.NumRows = 20;
+            pParams2.Vomitory = true;
+            pParams2.VomitoryStartRow = 5;
+            
             List<ProfileParameters> parameters = new List<ProfileParameters> { pParams1, pParams2 };
             //SIMPLE profile in XZ plane focal point is the origin
-            var fullProfile = Create.TheatronFullProfile(parameters);
+            // fullProfile = Create.TheatronFullProfile(parameters);
             //profile in XZ plane focal point is the origin but distance from origin defined by the plan geometry
-            fullProfile = Create.TheatronFullProfile(parameters,plan);
+            var fullProfile = Create.TheatronFullProfile(parameters,plan);
+
+            var bowl = Create.TheatronGeometry(plan, fullProfile, sParams,parameters);
         }
         public void SutherLandHodgmanTest()
         {
@@ -160,7 +165,7 @@ namespace BH.Engine.Architecture.Theatron
             {
                 foreach (Point p in result.ControlPoints)
                 {
-                    writer.WriteLine(string.Format("{{{0:0.000000},{1:0.000000},{2:0.000000}}}", p.X,p.Y,p.Z));
+                    writer.WriteLine(string.Format("{{{0:0.000000},{1:0.000000},0}}", p.X,p.Y));
                 }
             }
 

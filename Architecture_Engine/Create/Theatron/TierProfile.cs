@@ -23,6 +23,7 @@
 using BH.oM.Geometry;
 using BH.oM.Architecture.Theatron;
 using System;
+using BH.Engine.Base;
 
 namespace BH.Engine.Architecture.Theatron
 {
@@ -39,11 +40,75 @@ namespace BH.Engine.Architecture.Theatron
 
             sectionSurfPoints(ref tierProfile, parameters);
 
+            tierProfile.SectionOrigin = Create.ProfileOrigin(tierProfile.FloorPoints[0], tierProfile.FloorPoints[1] - tierProfile.FloorPoints[0]);
+
             tierProfile.Profile = Geometry.Create.Polyline(tierProfile.FloorPoints);
 
             return tierProfile;
         }
 
+        /***************************************************/
+
+        public static TierProfile mapTierToPlane(TierProfile originalSection, double scale, Point target, double angle)
+        {
+            //need a clone
+            TierProfile theMappedTier = (TierProfile)originalSection.DeepClone();
+            double x, y, z;
+            Vector shift = target - originalSection.SectionOrigin.Origin;
+            for (var p = 0; p < theMappedTier.FloorPoints.Count; p++)
+            {
+
+                x = theMappedTier.FloorPoints[p].X * Math.Cos(angle) * scale + shift.X;
+                y = theMappedTier.FloorPoints[p].X * Math.Sin(angle) * scale + shift.Y;
+                z = theMappedTier.FloorPoints[p].Z;
+                theMappedTier.FloorPoints[p] = Geometry.Create.Point(x, y, z);
+
+            }
+            for (var p = 0; p < theMappedTier.EyePoints.Count; p++)
+            {
+
+                x = theMappedTier.EyePoints[p].X * Math.Cos(angle) * scale + shift.X;
+                y = theMappedTier.EyePoints[p].X * Math.Sin(angle) * scale + shift.Y;
+                z = theMappedTier.EyePoints[p].Z;
+                theMappedTier.EyePoints[p] = Geometry.Create.Point(x, y, z);
+
+            }
+            theMappedTier.Profile.ControlPoints = theMappedTier.FloorPoints;
+            theMappedTier.SectionOrigin = Create.ProfileOrigin(theMappedTier.FloorPoints[0], theMappedTier.FloorPoints[1] - theMappedTier.FloorPoints[0]);
+            return theMappedTier;
+
+        }
+
+        /***************************************************/
+
+        public static TierProfile mirrorTierYZ(TierProfile originalSection)
+        {
+            //need a clone
+            TierProfile theMappedTier = originalSection.DeepClone();
+            double x, y, z;
+            for (var p = 0; p < theMappedTier.FloorPoints.Count; p++)
+            {
+
+                x = theMappedTier.FloorPoints[p].X;
+                y = -theMappedTier.FloorPoints[p].Y;
+                z = theMappedTier.FloorPoints[p].Z;
+                theMappedTier.FloorPoints[p] = Geometry.Create.Point(x, y, z);
+
+            }
+            for (var p = 0; p < theMappedTier.EyePoints.Count; p++)
+            {
+
+                x = theMappedTier.EyePoints[p].X;
+                y = -theMappedTier.EyePoints[p].Y;
+                z = theMappedTier.EyePoints[p].Z;
+                theMappedTier.EyePoints[p] = Geometry.Create.Point(x, y, z);
+
+            }
+            theMappedTier.Profile.ControlPoints = theMappedTier.FloorPoints;
+            theMappedTier.SectionOrigin = Create.ProfileOrigin(theMappedTier.FloorPoints[0], theMappedTier.FloorPoints[1] - theMappedTier.FloorPoints[0]);
+            return theMappedTier;
+
+        }
         /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
@@ -185,5 +250,7 @@ namespace BH.Engine.Architecture.Theatron
             }
 
         }
+
+        /***************************************************/
     }
 }

@@ -63,6 +63,7 @@
     <Compile Include="Create\Theatron\AvalueSettings.cs" />
     <Compile Include="Create\Theatron\CvalueSettings.cs" />
     <Compile Include="Create\Theatron\EvalueSettings.cs" />
+    <Compile Include="Create\Theatron\ProfileOrigin.cs" />
     <Compile Include="Create\Theatron\ProfileParameters.cs" />
     <Compile Include="Create\Theatron\SeatingBlock.cs" />
     <Compile Include="Create\Theatron\StadiaParameters.cs" />
