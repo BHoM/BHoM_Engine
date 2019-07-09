@@ -140,10 +140,10 @@ namespace BH.Engine.Architecture.Theatron
             List<Point> allFocalPoints = new List<Point>();
             int index = 0;
             Point closestP = new Point();
-            for (int i = 0; i < plan.SectionOrigins.Count; i++)
+            for (int i = 0; i < plan.VomitoryOrigins.Count; i++)
             {
-                var p = Geometry.Query.ClosestPoint(plan.FocalCurve, plan.SectionOrigins[i].Origin);
-                double dist = Geometry.Query.Distance(p, plan.SectionOrigins[i].Origin);
+                var p = Geometry.Query.ClosestPoint(plan.FocalCurve, plan.VomitoryOrigins[i].Origin);
+                double dist = Geometry.Query.Distance(p, plan.VomitoryOrigins[i].Origin);
                 if(dist< shortestDist)
                 {
                     closestP = p;
@@ -153,7 +153,7 @@ namespace BH.Engine.Architecture.Theatron
             }
             plan.CValueFocalPoint = closestP;
             plan.MinDistToFocalCurve = shortestDist;
-            plan.SectionClosestToFocalCurve = plan.SectionOrigins[index];
+            plan.SectionClosestToFocalCurve = plan.VomitoryOrigins[index];
 
         }
         /***************************************************/

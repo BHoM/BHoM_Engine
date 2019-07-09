@@ -23,6 +23,7 @@
 using BH.oM.Geometry;
 using BH.oM.Architecture.Theatron;
 using System.Collections.Generic;
+using BH.Engine.Geometry;
 
 namespace BH.Engine.Architecture.Theatron
 {
@@ -36,9 +37,9 @@ namespace BH.Engine.Architecture.Theatron
         {
             return new ProfileOrigin {
 
-                Origin = origin,
+                Origin = origin.Clone(),
 
-                Direction = direction,
+                Direction = direction.Clone(),
 
             };
 

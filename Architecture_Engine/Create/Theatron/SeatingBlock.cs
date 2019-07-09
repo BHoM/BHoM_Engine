@@ -1,5 +1,5 @@
 ﻿/*
- * This file is part of the Buildings and Habitats object Model (BHoM)
+ * block file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
@@ -17,7 +17,7 @@
  * GNU Lesser General Public License for more details.                          
  *                                                                            
  * You should have received a copy of the GNU Lesser General Public License     
- * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
+ * along with block code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
 using BH.oM.Geometry;
@@ -26,6 +26,7 @@ using BH.oM.Architecture.Theatron;
 using System.Collections.Generic;
 using System;
 using BH.Engine.Base;
+using System.Linq;
 
 namespace BH.Engine.Architecture.Theatron
 {
@@ -51,53 +52,86 @@ namespace BH.Engine.Architecture.Theatron
 
                 AisleWidth = aisleWidth,
 
+                FrontRow = Geometry.Create.Line(start.Origin,end.Origin),
+
             };
         }
 
         /***************************************************/
-
-        public static void SetTransitionBlock(ref SeatingBlock block, TierProfile startToMap, TierProfile endToMap, ProfileOrigin origin)
-        {
-            //transition block from neighbours
-            
-            //first section
-            double scalefactor = 1.0;
-            double angle = Geometry.Query.Angle(startToMap.SectionOrigin.Direction, block.Start.Direction, Plane.XY);
-            var s = Create.mapTierToPlane(startToMap, scalefactor, block.Start.Origin, angle);
-            block.Sections.Add(s);
-
-            //last section
-            angle = Geometry.Query.Angle(endToMap.SectionOrigin.Direction, block.End.Direction,  Plane.XY);
-            var e = Create.mapTierToPlane(endToMap, scalefactor, block.End.Origin, angle);
-            block.Sections.Add(e);
-        }
-
+        /**** Private Methods                           ****/
         /***************************************************/
 
-        public static void SetBlockProfiles(ref SeatingBlock block, TierProfile sectionToMap, ProfileOrigin origin)
+        private static void SetBlockProfiles(ref SeatingBlock block, TierProfile sectionToMap, ProfileOrigin origin)
         {
             //first section
-            double scalefactor = setScaleFactor(block.Start, block.Vomitory);
-            double angle = Geometry.Query.Angle(origin.Direction, block.Start.Direction,Plane.XY);
-            var start = Create.mapTierToPlane(sectionToMap, scalefactor, (block.Start.Origin), angle);
+            //always mapping from the full profile base plane
+            Point source = origin.Origin;
+            Vector scaleVector = SetScaleVector(sectionToMap.SectionOrigin.Direction, block.Start, block.Vomitory);
+            double angle = Geometry.Query.Angle(origin.Direction, block.Start.Direction, Plane.XY);
+            var start = Create.TransformProfile(sectionToMap, scaleVector, source , block.Start.Origin, angle);
             block.Sections.Add(start);
 
             //vomitory section no need for scalefactor
-            scalefactor = 1;
+            scaleVector = SetScaleVector(sectionToMap.SectionOrigin.Direction, block.Vomitory, block.Vomitory);
             angle = Geometry.Query.Angle(origin.Direction, block.Vomitory.Direction, Plane.XY);
-            var vom = Create.mapTierToPlane(sectionToMap, scalefactor, (block.Vomitory.Origin), angle);
+            var vom = Create.TransformProfile(sectionToMap, scaleVector, source, block.Vomitory.Origin, angle);
             block.Sections.Add(vom);
 
             //end section
-            scalefactor = setScaleFactor(block.End, block.Vomitory);
+            scaleVector = SetScaleVector(sectionToMap.SectionOrigin.Direction, block.End, block.Vomitory);
             angle = Geometry.Query.Angle(origin.Direction, block.End.Direction, Plane.XY);
-            var end = Create.mapTierToPlane(sectionToMap, scalefactor, (block.End.Origin), angle);
+            var end = Create.TransformProfile(sectionToMap, scaleVector, source, block.End.Origin, angle);
             block.Sections.Add(end);
         }
 
         /***************************************************/
 
-        public static SeatingBlock MirrorSeatingBlock(SeatingBlock original, SeatingBlockType stype)
+        private static void SetEyesBasic(ref SeatingBlock block)
+        {
+            block.Eyes = new List<Point>();
+            block.ViewDirections = new List<Vector>();
+            int rows = block.Sections[0].EyePoints.Count;
+            double rowL = 0;
+            double seatW = block.SeatWidth;
+            int seats = 0;
+            double spacing = 0;
+            int lastSection = block.Sections.Count - 1;
+            Vector rowDir = block.Sections[lastSection].EyePoints[0] - block.Sections[0].EyePoints[0];
+            rowDir = rowDir.Normalise();
+
+            double x, y, z;
+            for (int i = 0; i < rows; i++)
+            {
+                rowL = Geometry.Query.Distance(block.Sections[0].EyePoints[i], block.Sections[lastSection].EyePoints[i]);  
+                seats = (int)Math.Floor(rowL / seatW);
+                spacing = rowL / seats;
+                for (int j = 0; j < seats; j++)
+                {
+                    // startX + rowDir*j*spacing + 0.5 spacing
+                    x = block.Sections[0].EyePoints[i].X + rowDir.X * j * spacing + rowDir.X * 0.5 * spacing;
+                    y = block.Sections[0].EyePoints[i].Y + rowDir.Y * j * spacing + rowDir.Y * 0.5 * spacing;
+                    z = block.Sections[0].EyePoints[i].Z;
+                    block.Eyes.Add(Geometry.Create.Point(x, y, z));
+                }
+            }
+        }
+
+
+        /***************************************************/
+
+        private static Vector SetScaleVector(Vector unscaled, ProfileOrigin current, ProfileOrigin next)
+        {
+            unscaled = unscaled.Normalise();
+            double scaleAngle = Geometry.Query.Angle(current.Direction, next.Direction);
+            double scalefactor = 1 / Math.Cos(scaleAngle);
+            Vector scaleVector = unscaled*scalefactor;
+            scaleVector = scaleVector + Vector.ZAxis;
+            return scaleVector;
+        }
+
+        /***************************************************/
+
+        private static SeatingBlock MirrorSeatingBlock(SeatingBlock original, SeatingBlockType stype)
         {
             SeatingBlock mirrored = original.DeepClone();
             mirrored.TypeOfSeatingBlock = stype;
@@ -121,7 +155,7 @@ namespace BH.Engine.Architecture.Theatron
 
         /***************************************************/
 
-        public static void setBlockFloorBasic(ref SeatingBlock block)
+        private static void SetBlockFloorBasic(ref SeatingBlock block)
         {
             List<Point> vertices = new List<Point>();
             int pointsPerSect = block.Sections[0].FloorPoints.Count;
@@ -137,21 +171,21 @@ namespace BH.Engine.Architecture.Theatron
             List<Face> faces = new List<Face>();
             for (int j = 0; j < block.Sections.Count - 1; j++)//not the last section
             {
-                int firstIndex = j * pointsPerSect;//first point index this section
+                int firstIndex = j * pointsPerSect;//first point index block section
                 int nextFirstIndex = (j + 1) * pointsPerSect;//first point next section
                 for (int i = 0; i < block.Sections[j].FloorPoints.Count - 1; i++)//not the last points
                 {
                     faces.Add(Geometry.Create.Face(firstIndex + i, firstIndex + i + 1, nextFirstIndex + i + 1, nextFirstIndex + i));
                 }
             }
-            block.Floor = Geometry.Create.Mesh(vertices,faces);
+            block.Floor = Geometry.Create.Mesh(vertices, faces);
         }
 
         /***************************************************/
 
-        public static void setBlockFloor(ref SeatingBlock block, ProfileParameters parameters)//include gaps for vomitories
+        private static void SetBlockFloor(ref SeatingBlock block, ProfileParameters parameters)//include gaps for vomitories
         {
-            
+
             bool vomitory = parameters.Vomitory;
             bool superR = parameters.SuperRiser;
             int vomStart = parameters.VomitoryStartRow;
@@ -159,7 +193,7 @@ namespace BH.Engine.Architecture.Theatron
             double aisleW = parameters.AisleWidth;
             if (!vomitory && !superR)
             {
-                setBlockFloorBasic(ref block);
+                SetBlockFloorBasic(ref block);
                 return;
             }
             if (vomitory && superR) vomStart = superStart;
@@ -169,9 +203,9 @@ namespace BH.Engine.Architecture.Theatron
             //half a 1.2 width vom
             rightShift = rightShift * aisleW / 2;
             Vector leftShift = rightShift.DeepClone();
-            
+
             leftShift.Reverse();
-            
+
             List<Point> temp = new List<Point>();
 
             //add the points to the mesh
@@ -183,7 +217,7 @@ namespace BH.Engine.Architecture.Theatron
                 if (j == 1)//on the vom
                 {
                     //transfrom right
-                    for(int p=0;p<temp.Count;p++) temp[p] = temp[p] + rightShift;
+                    for (int p = 0; p < temp.Count; p++) temp[p] = temp[p] + rightShift;
                     vertices.AddRange(temp);
                     temp = new List<Point>(block.Sections[j].FloorPoints);
                     //transfrom left
@@ -198,7 +232,7 @@ namespace BH.Engine.Architecture.Theatron
             List<Face> faces = new List<Face>();
             for (int j = 0; j < block.Sections.Count; j++)//not the last section
             {
-                int firstIndex = j * pointsPerSect;//first point index this section
+                int firstIndex = j * pointsPerSect;//first point index block section
                 int nextFirstIndex = (j + 1) * pointsPerSect;//first point next section
                 for (int i = 0; i < block.Sections[j].FloorPoints.Count - 1; i++)//not the last points
                 {
@@ -214,14 +248,28 @@ namespace BH.Engine.Architecture.Theatron
         }
 
         /***************************************************/
-        /**** Private Methods                           ****/
+
+        private static SeatingBlock TransformSeatingBlock(SeatingBlock originalBlock, Point source, Point target, double angle)
+        {
+            SeatingBlock transformedBlock = originalBlock.DeepClone();
+           
+            var xRotate = Geometry.Create.RotationMatrix(source, Vector.ZAxis, angle);
+            var xTrans = Geometry.Create.TranslationMatrix(target - source);
+
+            TransformBlock(ref transformedBlock, xRotate);
+            TransformBlock(ref transformedBlock, xTrans);
+            return transformedBlock;
+        }
+
         /***************************************************/
 
-        private static double setScaleFactor(ProfileOrigin current, ProfileOrigin next)
+        private static void TransformBlock(ref SeatingBlock transformedBlock, TransformMatrix xTrans)
         {
-            double scaleAngle = Geometry.Query.Angle(current.Direction, next.Direction);
-            double scalefactor = 1 / Math.Cos(scaleAngle);
-            return scalefactor;
+            transformedBlock.Eyes = transformedBlock.Eyes.Select(p => p.Transform(xTrans)).ToList();
+            transformedBlock.ViewDirections = transformedBlock.ViewDirections.Select(p => p.Transform(xTrans)).ToList();
+            transformedBlock.Floor = transformedBlock.Floor.Transform(xTrans);
+            transformedBlock.FrontRow= transformedBlock.FrontRow.Transform(xTrans);
+
         }
     }
 }

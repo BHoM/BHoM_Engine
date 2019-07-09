@@ -39,8 +39,10 @@ namespace BH.Engine.Architecture.Theatron
             var theatron = new TheatronGeometry();
 
             theatron.TotalTiers = profile.MappedProfiles.Count;
-            setGeneratorblocks(ref theatron, profile, plan, sParams.TypeOfBowl,pParams);
+            SetGeneratorblocks(ref theatron, profile, plan, sParams.TypeOfBowl,pParams);
             SetFloorMeshes(ref theatron, pParams);
+            SetGeneratorEyes(ref theatron);
+            CopyGeneratorBlocks(ref theatron, plan, sParams.TypeOfBowl);
             return theatron;
         }
 
@@ -48,7 +50,7 @@ namespace BH.Engine.Architecture.Theatron
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private static void setGeneratorblocks(ref TheatronGeometry theatronGeom, TheatronFullProfile fullprofile, TheatronPlan theatronPlan,StadiaType stadiatype, List<ProfileParameters> profileParameters)
+        private static void SetGeneratorblocks(ref TheatronGeometry theatronGeom, TheatronFullProfile fullprofile, TheatronPlan theatronPlan,StadiaType stadiatype, List<ProfileParameters> profileParameters)
         {
             //this defines the geometry of the seating blocks from which all others are created
             
@@ -57,50 +59,43 @@ namespace BH.Engine.Architecture.Theatron
             {
                 tierToMap = fullprofile.BaseTierProfiles[i];
                 theatronGeom.Tiers3d.Add(new Tier());
-                var SectionBlock = getBlockStartIndexes(theatronPlan, stadiatype);
+                var SectionBlock = GetBlockStartIndexes(theatronPlan, stadiatype);
                 foreach (var pair in SectionBlock)
                 {
                     int index = pair.Key;
                     SeatingBlockType blockType = pair.Value;
 
-                    var block = Create.SeatingBlock(theatronPlan.SectionOrigins[index], theatronPlan.VomitoryOrigins[index],
+                    var block = SeatingBlock(theatronPlan.SectionOrigins[index], theatronPlan.VomitoryOrigins[index],
                         theatronPlan.SectionOrigins[index + 1], blockType, profileParameters[i].SeatWidth, profileParameters[i].AisleWidth);
 
                     theatronGeom.Tiers3d[i].Generatorblocks.Add(block);
-
-                    if(blockType == SeatingBlockType.Side || blockType == SeatingBlockType.End || blockType == SeatingBlockType.Corner)
-                    {
-                        Create.SetBlockProfiles(ref block, tierToMap, fullprofile.FullProfileOrigin);
-                    }
-                    else
-                    {
-                        TierProfile start = new TierProfile();
-                        TierProfile end = new TierProfile();
-                        if (blockType == SeatingBlockType.Transition1)
-                        {
-                            start = theatronGeom.Tiers3d[i].Generatorblocks[0].Sections[2];//next to a side
-                            end = theatronGeom.Tiers3d[i].Generatorblocks[2].Sections[0];//followed by a corner
-                        }
-                        if (blockType == SeatingBlockType.Transition2)
-                        {
-                            start = theatronGeom.Tiers3d[i].Generatorblocks[2].Sections[2];//next to a corner
-                            end = theatronGeom.Tiers3d[i].Generatorblocks[1].Sections[0];// followed by end
-                        }
-                        Create.SetTransitionBlock(ref block, start, end, fullprofile.FullProfileOrigin);
-                    }
-                   
+                    SetBlockProfiles(ref block, tierToMap, fullprofile.FullProfileOrigin);
                 }
                 if (stadiatype == StadiaType.EightArc || stadiatype == StadiaType.Orthogonal)
                 {
-                    //setOtherBlockTypes(ref theatronGeom,i, fullprofile);//only needed for radial and othogonal
+                    SetOtherBlockTypes(ref theatronGeom,i, fullprofile);//only needed for radial and othogonal
                 }
             }
 
         }
-        
+
         /***************************************************/
 
-        private static void setOtherBlockTypes(ref TheatronGeometry theatronGeom, int tierNum, TheatronFullProfile fullprofile)
+        private static void SetGeneratorEyes(ref TheatronGeometry theatronGeom)
+        {
+            for (int i = 0; i < theatronGeom.TotalTiers; i++)
+            {
+                for (int j = 0; j < theatronGeom.Tiers3d[i].Generatorblocks.Count; j++)
+                {
+                    var block = theatronGeom.Tiers3d[i].Generatorblocks[j];
+                    SetEyesBasic(ref block);
+                }
+            }
+        }
+
+        /***************************************************/
+
+        private static void SetOtherBlockTypes(ref TheatronGeometry theatronGeom, int tierNum, TheatronFullProfile fullprofile)
         {
             ////no Vomitory corner block
             var corner = theatronGeom.Tiers3d[tierNum].Generatorblocks.Find(x => x.TypeOfSeatingBlock == SeatingBlockType.Corner);
@@ -121,7 +116,7 @@ namespace BH.Engine.Architecture.Theatron
        
         /***************************************************/
 
-        private static Dictionary<int, SeatingBlockType> getBlockStartIndexes(TheatronPlan bp, StadiaType bowltype)
+        private static Dictionary<int, SeatingBlockType> GetBlockStartIndexes(TheatronPlan bp, StadiaType bowltype)
         {
             //gets a dictionary where key is index of SectionOrigin and value is the SeatingBlockType
             Dictionary<int, SeatingBlockType> dict = new Dictionary<int, SeatingBlockType>();
@@ -185,18 +180,77 @@ namespace BH.Engine.Architecture.Theatron
                 {
                     SeatingBlockType bt = theatron.Tiers3d[i].Generatorblocks[j].TypeOfSeatingBlock;
                     var block = theatron.Tiers3d[i].Generatorblocks[j];
-                    if(bt == SeatingBlockType.Side)//|| bt == SeatingBlockType.Corner|| bt == SeatingBlockType.End)
+                    if(bt == SeatingBlockType.Side || bt == SeatingBlockType.Corner|| bt == SeatingBlockType.End)
                     {
-                        Create.setBlockFloor(ref block, parameters[i]);
+                        SetBlockFloor(ref block, parameters[i]);
                     }
                     else
                     {
-                        //Create.setBlockFloorBasic(ref block);
+                        SetBlockFloorBasic(ref block);
                     }
                         
                 }
             }
             
+        }
+
+        /***************************************************/
+
+        private static void CopyGeneratorBlocks(ref TheatronGeometry theatron, TheatronPlan bp, StadiaType stadiatype)
+        {
+            for (int i = 0; i < theatron.TotalTiers; i++)
+            {
+                BayType current, next;
+                int cornerCount = -1;
+                for (int j = 0; j < bp.SectionOrigins.Count; j++)
+                {
+                    current = bp.StructBayType[j];
+                    if (j == bp.SectionOrigins.Count - 1)
+                    {
+                        next = bp.StructBayType[0];
+                    }
+                    else
+                    {
+                        next = bp.StructBayType[j + 1];
+                    }
+                    if (stadiatype == StadiaType.NoCorners && current != next) continue;//no corner bowl corner position
+                    SeatingBlockType bt = DetermineBlockToCopy(current, next, stadiatype, cornerCount);
+
+                    if (current == BayType.Corner) cornerCount++;
+                    else cornerCount = -1;
+
+                    SeatingBlock blockToCopy = theatron.Tiers3d[i].Generatorblocks.Find(b => b.TypeOfSeatingBlock == bt).DeepClone();
+                    double angle = Geometry.Query.Angle(blockToCopy.Start.Direction, bp.SectionOrigins[j].Direction,Plane.XY);
+                    
+                    theatron.Tiers3d[i].TierBlocks.Add(TransformSeatingBlock(blockToCopy, blockToCopy.Start.Origin, bp.SectionOrigins[j].Origin, angle));
+
+                }
+            }
+        }
+
+        /***************************************************/
+    
+        private static SeatingBlockType DetermineBlockToCopy(BayType current, BayType next, StadiaType bowlType, int cornerCount)
+        {
+            SeatingBlockType bt = SeatingBlockType.Side;
+            if (bowlType == StadiaType.EightArc || bowlType == StadiaType.Orthogonal)
+            {
+                if (current == 0 && next == 0) bt = SeatingBlockType.Side;//side standard
+                if (current == BayType.End && next == BayType.End) bt = SeatingBlockType.End;//end standard
+                if (current == BayType.Corner && next == BayType.Corner) bt = SeatingBlockType.CornerNoVom;//corner standard
+                                                                                    //corner vom or no vom should be determined by number of seats on last row 14 either side of vomitory max
+                if (current == BayType.Corner && cornerCount % 2 == 0) bt = SeatingBlockType.Corner;//corner vomitory standard
+                if (current == 0 && next == BayType.Corner) bt = SeatingBlockType.Transition1;//side to corner transition
+                if (current == BayType.Corner && next == BayType.End) bt = SeatingBlockType.Transition2;//corner to end transition
+                if (current == BayType.End && next == BayType.Corner) bt = SeatingBlockType.Transition2mirrored;//end to corner transition
+                if (current == BayType.Corner && next == 0) bt = SeatingBlockType.Transition1mirrored;//corner to sidetransition
+            }
+            if (bowlType == StadiaType.NoCorners)
+            {
+                if (current == BayType.End) bt = SeatingBlockType.End;//end standard otherwise a side is returned
+            }
+            //if bowlType is circular side is returned
+            return bt;
         }
     }
 }
