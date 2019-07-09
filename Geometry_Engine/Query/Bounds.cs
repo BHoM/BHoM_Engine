@@ -255,10 +255,9 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [NotImplemented]
         public static BoundingBox Bounds(this NurbsCurve curve)
         {
-            throw new NotImplementedException();
+            return curve.ControlPoints.Bounds(); // TODO: Bounds(NurbsCurve) incorrect
         }
 
         /***************************************************/
@@ -313,10 +312,9 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [NotImplemented]
         public static BoundingBox Bounds(this NurbsSurface surface)
         {
-            throw new NotImplementedException();
+            return surface.ControlPoints.Bounds(); // TODO: Bounds(NurbsSurface) incorrect
         }
 
         /***************************************************/
