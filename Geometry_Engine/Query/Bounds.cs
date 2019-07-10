@@ -257,7 +257,7 @@ namespace BH.Engine.Geometry
 
         public static BoundingBox Bounds(this NurbsCurve curve)
         {
-            return curve.ControlPoints.Bounds(); // TODO: Bounds(NurbsCurve) incorrect
+            return curve.ControlPoints.Bounds();
         }
 
         /***************************************************/
@@ -314,7 +314,7 @@ namespace BH.Engine.Geometry
 
         public static BoundingBox Bounds(this NurbsSurface surface)
         {
-            return surface.ControlPoints.Bounds(); // TODO: Bounds(NurbsSurface) incorrect
+            return surface.ControlPoints.Bounds();
         }
 
         /***************************************************/
