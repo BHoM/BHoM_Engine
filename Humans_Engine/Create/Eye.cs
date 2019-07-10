@@ -21,7 +21,8 @@
  */
 
 
-using BH.oM.Humans;
+using BH.oM.Geometry;
+using BH.oM.Humans.BodyParts;
 
 namespace BH.Engine.Humans
 {
@@ -29,6 +30,18 @@ namespace BH.Engine.Humans
     {
         /***************************************************/
         /**** Public Methods                            ****/
+        /***************************************************/
+
+        public static Eye Eye(Point location, Vector viewDirection)
+        {
+            return new Eye
+            {
+                Location = location,
+
+                ViewDirection = viewDirection,
+            };
+        }
+
         /***************************************************/
     }
 }

@@ -43,7 +43,10 @@ namespace BH.Engine.Architecture.Theatron
             pParams2.NumRows = 20;
             pParams2.Vomitory = true;
             pParams2.VomitoryStartRow = 5;
-            
+            pParams1.NumRows = 20;
+            pParams1.Vomitory = true;
+            pParams1.VomitoryStartRow = 5;
+
             List<ProfileParameters> parameters = new List<ProfileParameters> { pParams1, pParams2 };
             //SIMPLE profile in XZ plane focal point is the origin
             // fullProfile = Create.TheatronFullProfile(parameters);

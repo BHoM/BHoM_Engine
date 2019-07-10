@@ -20,7 +20,9 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.oM.Geometry;
 using BH.oM.Humans;
+using BH.oM.Humans.BodyParts;
 
 namespace BH.Engine.Humans
 {
@@ -28,6 +30,16 @@ namespace BH.Engine.Humans
     {
         /***************************************************/
         /**** Public Methods                            ****/
+        /***************************************************/
+
+        public static Spectator Spectator(Point location, Vector viewDirection)
+        {
+            return new Spectator
+            {
+                Eye = Humans.Create.Eye(location,viewDirection),
+            };
+        }
+
         /***************************************************/
     }
 }
