@@ -69,7 +69,16 @@ namespace BH.Engine.Architecture.Theatron
                         theatronPlan.SectionOrigins[index + 1], blockType, profileParameters[i].SeatWidth, profileParameters[i].AisleWidth);
 
                     theatronGeom.Tiers3d[i].Generatorblocks.Add(block);
-                    SetBlockProfiles(ref block, tierToMap, fullprofile.FullProfileOrigin);
+                    if (block.TypeOfSeatingBlock == SeatingBlockType.Transition1 || block.TypeOfSeatingBlock == SeatingBlockType.Transition2)
+                    {
+                        //cannot use vomitory location to define profile scaling 
+                        SetTransitionProfiles(ref block, tierToMap, fullprofile.FullProfileOrigin, theatronPlan.VomitoryOrigins[index-1], theatronPlan.VomitoryOrigins[index + 1]);
+                    }
+                    else
+                    {
+                        SetBlockProfiles(ref block, tierToMap, fullprofile.FullProfileOrigin);
+                    }
+                    
                 }
                 if (stadiatype == StadiaType.EightArc || stadiatype == StadiaType.Orthogonal)
                 {

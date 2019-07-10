@@ -21,6 +21,7 @@
  */
 
 
+using BH.Engine.Base;
 using BH.oM.Humans;
 
 namespace BH.Engine.Humans
@@ -29,6 +30,22 @@ namespace BH.Engine.Humans
     {
         /***************************************************/
         /**** Public Methods                            ****/
+        /***************************************************/
+
+        public static Audience Audience()
+        {
+            return new Audience { };
+        }
+
+        /***************************************************/
+
+        public static Audience Audience(Audience audienceToCopy)
+        {
+            Audience copy = audienceToCopy.DeepClone();
+
+            return copy;
+        }
+
         /***************************************************/
     }
 }

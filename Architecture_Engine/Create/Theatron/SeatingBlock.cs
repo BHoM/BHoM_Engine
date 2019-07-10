@@ -21,6 +21,7 @@
  */
 
 using BH.oM.Geometry;
+using BH.oM.Humans;
 using BH.Engine.Geometry;
 using BH.oM.Architecture.Theatron;
 using System.Collections.Generic;
@@ -63,33 +64,52 @@ namespace BH.Engine.Architecture.Theatron
 
         private static void SetBlockProfiles(ref SeatingBlock block, TierProfile sectionToMap, ProfileOrigin origin)
         {
+            
             //first section
             //always mapping from the full profile base plane
             Point source = origin.Origin;
             Vector scaleVector = SetScaleVector(sectionToMap.SectionOrigin.Direction, block.Start, block.Vomitory);
             double angle = Geometry.Query.Angle(origin.Direction, block.Start.Direction, Plane.XY);
-            var start = Create.TransformProfile(sectionToMap, scaleVector, source , block.Start.Origin, angle);
+            var start = TransformProfile(sectionToMap, scaleVector, source, block.Start.Origin, angle);
             block.Sections.Add(start);
 
             //vomitory section no need for scalefactor
             scaleVector = SetScaleVector(sectionToMap.SectionOrigin.Direction, block.Vomitory, block.Vomitory);
             angle = Geometry.Query.Angle(origin.Direction, block.Vomitory.Direction, Plane.XY);
-            var vom = Create.TransformProfile(sectionToMap, scaleVector, source, block.Vomitory.Origin, angle);
+            var vom = TransformProfile(sectionToMap, scaleVector, source, block.Vomitory.Origin, angle);
             block.Sections.Add(vom);
 
             //end section
             scaleVector = SetScaleVector(sectionToMap.SectionOrigin.Direction, block.End, block.Vomitory);
             angle = Geometry.Query.Angle(origin.Direction, block.End.Direction, Plane.XY);
-            var end = Create.TransformProfile(sectionToMap, scaleVector, source, block.End.Origin, angle);
+            var end = TransformProfile(sectionToMap, scaleVector, source, block.End.Origin, angle);
+            block.Sections.Add(end);
+            
+        }
+        /***************************************************/
+
+        private static void SetTransitionProfiles(ref SeatingBlock block, TierProfile sectionToMap, ProfileOrigin origin, ProfileOrigin prevVomitory, ProfileOrigin nextVomitory)
+        {
+            //first section
+            //always mapping from the full profile base plane
+            Point source = origin.Origin;
+            Vector scaleVector = SetScaleVector(sectionToMap.SectionOrigin.Direction, block.Start, prevVomitory);
+            double angle = Geometry.Query.Angle(origin.Direction, block.Start.Direction, Plane.XY);
+            var start = TransformProfile(sectionToMap, scaleVector, source, block.Start.Origin, angle);
+            block.Sections.Add(start);
+
+            //end section
+            scaleVector = SetScaleVector(sectionToMap.SectionOrigin.Direction, block.End, nextVomitory);
+            angle = Geometry.Query.Angle(origin.Direction, block.End.Direction, Plane.XY);
+            var end = TransformProfile(sectionToMap, scaleVector, source, block.End.Origin, angle);
             block.Sections.Add(end);
         }
 
         /***************************************************/
 
-        private static void SetEyesBasic(ref SeatingBlock block)
+            private static void SetEyesBasic(ref SeatingBlock block)
         {
-            block.Eyes = new List<Point>();
-            block.ViewDirections = new List<Vector>();
+            block.Audience = new Audience();
             int rows = block.Sections[0].EyePoints.Count;
             double rowL = 0;
             double seatW = block.SeatWidth;
@@ -98,7 +118,7 @@ namespace BH.Engine.Architecture.Theatron
             int lastSection = block.Sections.Count - 1;
             Vector rowDir = block.Sections[lastSection].EyePoints[0] - block.Sections[0].EyePoints[0];
             rowDir = rowDir.Normalise();
-
+            Vector viewDirection = Geometry.Query.CrossProduct(Vector.ZAxis, rowDir);
             double x, y, z;
             for (int i = 0; i < rows; i++)
             {
@@ -111,7 +131,7 @@ namespace BH.Engine.Architecture.Theatron
                     x = block.Sections[0].EyePoints[i].X + rowDir.X * j * spacing + rowDir.X * 0.5 * spacing;
                     y = block.Sections[0].EyePoints[i].Y + rowDir.Y * j * spacing + rowDir.Y * 0.5 * spacing;
                     z = block.Sections[0].EyePoints[i].Z;
-                    block.Eyes.Add(Geometry.Create.Point(x, y, z));
+                    block.Audience.Spectators.Add(Humans.Create.Spectator(Geometry.Create.Point(x, y, z), viewDirection));
                 }
             }
         }
@@ -146,10 +166,17 @@ namespace BH.Engine.Architecture.Theatron
             //mirror the points and profile
             foreach (TierProfile profile in mirrored.Sections)
             {
-                var mirroredprofile = Create.mirrorTierYZ(profile);
+                var mirroredprofile = MirrorTierYZ(profile);
                 mirroredProfiles.Add(mirroredprofile);
             }
+            //reverse the sections list
+            mirroredProfiles.Reverse();
             mirrored.Sections = mirroredProfiles;
+            //flip the start and end 
+            var tempstart = mirrored.Start.DeepClone();
+            var tempend = mirrored.End.DeepClone();
+            mirrored.Start = tempend;
+            mirrored.End = tempstart;
             return mirrored;
         }
 
@@ -199,12 +226,12 @@ namespace BH.Engine.Architecture.Theatron
             if (vomitory && superR) vomStart = superStart;
             if (superR) vomStart = superStart;
             Vector rightShift = Geometry.Query.CrossProduct(Vector.ZAxis, block.Vomitory.Direction);
-            rightShift.Normalise();
+            rightShift = rightShift.Normalise();
             //half a 1.2 width vom
-            rightShift = rightShift * aisleW / 2;
+            rightShift = rightShift * -aisleW / 2;
             Vector leftShift = rightShift.DeepClone();
 
-            leftShift.Reverse();
+            leftShift = leftShift.Reverse();
 
             List<Point> temp = new List<Point>();
 
@@ -212,14 +239,14 @@ namespace BH.Engine.Architecture.Theatron
             List<Point> vertices = new List<Point>();
             for (int j = 0; j < block.Sections.Count; j++)
             {
-                temp = new List<Point>(block.Sections[j].FloorPoints);
+                temp = block.Sections[j].FloorPoints.Select(item => item.Clone()).ToList(); 
 
                 if (j == 1)//on the vom
                 {
                     //transfrom right
                     for (int p = 0; p < temp.Count; p++) temp[p] = temp[p] + rightShift;
                     vertices.AddRange(temp);
-                    temp = new List<Point>(block.Sections[j].FloorPoints);
+                    temp = block.Sections[j].FloorPoints.Select(item => item.Clone()).ToList();
                     //transfrom left
                     for (int p = 0; p < temp.Count; p++) temp[p] = temp[p] + leftShift;
                 }
@@ -265,8 +292,8 @@ namespace BH.Engine.Architecture.Theatron
 
         private static void TransformBlock(ref SeatingBlock transformedBlock, TransformMatrix xTrans)
         {
-            transformedBlock.Eyes = transformedBlock.Eyes.Select(p => p.Transform(xTrans)).ToList();
-            transformedBlock.ViewDirections = transformedBlock.ViewDirections.Select(p => p.Transform(xTrans)).ToList();
+            transformedBlock.Audience.Spectators.ForEach(p => p.Eye.Location.Transform(xTrans));
+            transformedBlock.Audience.Spectators.ForEach(p => p.Eye.ViewDirection.Transform(xTrans));
             transformedBlock.Floor = transformedBlock.Floor.Transform(xTrans);
             transformedBlock.FrontRow= transformedBlock.FrontRow.Transform(xTrans);
 

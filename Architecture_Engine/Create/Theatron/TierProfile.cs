@@ -39,11 +39,11 @@ namespace BH.Engine.Architecture.Theatron
         {
             TierProfile tierProfile = new TierProfile();
 
-            setEyePoints(ref tierProfile, parameters, lastPointPrevTier.X, lastPointPrevTier.Z);
+            SetEyePoints(ref tierProfile, parameters, lastPointPrevTier.X, lastPointPrevTier.Z);
 
-            sectionSurfPoints(ref tierProfile, parameters);
+            SectionSurfPoints(ref tierProfile, parameters);
 
-            tierProfile.SectionOrigin = defineTierOrigin(tierProfile.FloorPoints);
+            tierProfile.SectionOrigin = DefineTierOrigin(tierProfile.FloorPoints);
 
             tierProfile.Profile = Geometry.Create.Polyline(tierProfile.FloorPoints);
 
@@ -58,14 +58,14 @@ namespace BH.Engine.Architecture.Theatron
             var xScale = Geometry.Create.ScaleMatrix(source, scale);
             var xRotate = Geometry.Create.RotationMatrix(source, Vector.ZAxis, angle);
             var xTrans = Geometry.Create.TranslationMatrix(target-source);
-            transformTier(ref transformedTier, xScale);
-            transformTier(ref transformedTier, xRotate);
-            transformTier(ref transformedTier, xTrans);
+            TransformTier(ref transformedTier, xScale);
+            TransformTier(ref transformedTier, xRotate);
+            TransformTier(ref transformedTier, xTrans);
             return transformedTier;
         }
         /***************************************************/
 
-        public static TierProfile mirrorTierYZ(TierProfile originalSection)
+        public static TierProfile MirrorTierYZ(TierProfile originalSection)
         {
             //need a clone
             TierProfile theMappedTier = originalSection.DeepClone();
@@ -89,7 +89,7 @@ namespace BH.Engine.Architecture.Theatron
 
             }
             theMappedTier.Profile.ControlPoints = theMappedTier.FloorPoints;
-            theMappedTier.SectionOrigin = defineTierOrigin(theMappedTier.FloorPoints);
+            theMappedTier.SectionOrigin = DefineTierOrigin(theMappedTier.FloorPoints);
             
             return theMappedTier;
 
@@ -97,7 +97,7 @@ namespace BH.Engine.Architecture.Theatron
         /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
-        private static void setEyePoints(ref TierProfile tierProfile, ProfileParameters parameters, double lastX, double lastZ)
+        private static void SetEyePoints(ref TierProfile tierProfile, ProfileParameters parameters, double lastX, double lastZ)
         {
             double prevX, prevZ;
             for (int i = 0; i < parameters.NumRows; i++)
@@ -144,7 +144,7 @@ namespace BH.Engine.Architecture.Theatron
 
                 }
                 if (parameters.RiserHeightRounding > 0) z = Math.Round(z / parameters.RiserHeightRounding) * parameters.RiserHeightRounding;
-                var p = Engine.Geometry.Create.Point(x, y, z);
+                var p = Geometry.Create.Point(x, y, z);
                 tierProfile.EyePoints.Add(p);
 
             }
@@ -152,7 +152,7 @@ namespace BH.Engine.Architecture.Theatron
         }
         /***************************************************/
 
-        private static void sectionSurfPoints(ref TierProfile tierProfile, ProfileParameters parameters)
+        private static void SectionSurfPoints(ref TierProfile tierProfile, ProfileParameters parameters)
         {
 
             double x = 0; double y = 0; double z = 0;
@@ -164,7 +164,7 @@ namespace BH.Engine.Architecture.Theatron
                 {
                     //4 surface points are needed beneath the wheel chair eye point
                     //p1 x is same as previous
-                    z = tierProfile.EyePoints[i - 1].Z - parameters.EyePositionX + 0.1;//z is previous eye - eyeH + something
+                    z = tierProfile.EyePoints[i - 1].Z - parameters.EyePositionZ + 0.1;//z is previous eye - eyeH + something
                     p = Engine.Geometry.Create.Point(x, y, z);
                     tierProfile.FloorPoints.Add(p);
 
@@ -238,7 +238,7 @@ namespace BH.Engine.Architecture.Theatron
 
         /***************************************************/
 
-        private static ProfileOrigin defineTierOrigin(List<Point> flrPoints)
+        private static ProfileOrigin DefineTierOrigin(List<Point> flrPoints)
         {
             ProfileOrigin profOrigin = Create.ProfileOrigin(flrPoints[0], flrPoints[1] - flrPoints[0]);
             return profOrigin;
@@ -246,12 +246,12 @@ namespace BH.Engine.Architecture.Theatron
 
         /***************************************************/
 
-        private static void transformTier(ref TierProfile profile, TransformMatrix xTrans)
+        private static void TransformTier(ref TierProfile profile, TransformMatrix xTrans)
         {
             profile.FloorPoints = profile.FloorPoints.Select(p => p.Transform(xTrans)).ToList();
             profile.EyePoints = profile.EyePoints.Select(p => p.Transform(xTrans)).ToList();
             profile.Profile.ControlPoints = profile.FloorPoints;
-            profile.SectionOrigin = defineTierOrigin(profile.FloorPoints);
+            profile.SectionOrigin = DefineTierOrigin(profile.FloorPoints);
         }
 
         /***************************************************/
