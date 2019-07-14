@@ -157,11 +157,11 @@ namespace BH.Engine.Architecture.Theatron
             var result = Compute.SutherlandHodgman(subject, clip);
             var area = result.Area();
             var areadiff = Math.Abs(area - expectedArea) / expectedArea;
-            bool testresult=false;
+            
             if (areadiff < 0.001)
             {
                 //for the avalue 0.1% is probably good enough
-                testresult = true;
+                throw new Exception("Incorrect result from SutherLandHodgman test");
             }
             //get the points in a file for a visual compare
             using (StreamWriter writer = new StreamWriter("points.txt"))

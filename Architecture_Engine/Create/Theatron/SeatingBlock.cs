@@ -21,7 +21,7 @@
  */
 
 using BH.oM.Geometry;
-using BH.oM.Humans;
+using BH.oM.Humans.ViewQuality;
 using BH.Engine.Geometry;
 using BH.oM.Architecture.Theatron;
 using System.Collections.Generic;
@@ -131,7 +131,7 @@ namespace BH.Engine.Architecture.Theatron
                     x = block.Sections[0].EyePoints[i].X + rowDir.X * j * spacing + rowDir.X * 0.5 * spacing;
                     y = block.Sections[0].EyePoints[i].Y + rowDir.Y * j * spacing + rowDir.Y * 0.5 * spacing;
                     z = block.Sections[0].EyePoints[i].Z;
-                    block.Audience.Spectators.Add(Humans.Create.Spectator(Geometry.Create.Point(x, y, z), viewDirection));
+                    block.Audience.Spectators.Add(Humans.ViewQuality.Create.Spectator(Geometry.Create.Point(x, y, z), viewDirection));
                 }
             }
         }

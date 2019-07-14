@@ -21,15 +21,25 @@
  */
 
 using BH.oM.Geometry;
-using BH.oM.Architecture.Theatron;
+using BH.oM.Humans.ViewQuality;
 using System.Collections.Generic;
 
-namespace BH.Engine.Architecture.Theatron
+namespace BH.Engine.Humans.ViewQuality
 {
     public static partial class Create
     {
         /***************************************************/
         /**** Public Methods                            ****/
+        /***************************************************/
+        public static EvalueSettings EvalueSettings(EvalueViewEnum viewtype)
+        {
+            return new EvalueSettings
+            {
+
+                ViewType = viewtype,
+                
+            };
+        }
         /***************************************************/
     }
 }
