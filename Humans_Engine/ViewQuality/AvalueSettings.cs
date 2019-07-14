@@ -20,15 +20,27 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.oM.Humans.ViewQuality;
 
-using BH.oM.Geometry;
-using System.Collections.Generic;
-namespace BH.Engine.Theatron
+namespace BH.Engine.Humans.ViewQuality
 {
     public static partial class Create
     {
         /***************************************************/
         /**** Public Methods                            ****/
+        /***************************************************/
+
+        public static AvalueSettings AvalueSettings(ViewConeEnum conetype, bool calcOcclusion)
+        {
+            return new AvalueSettings
+            {
+
+                ConeType = conetype,
+
+                CalculateOcclusion = calcOcclusion,
+
+            };
+        }
         /***************************************************/
     }
 }

@@ -21,14 +21,31 @@
  */
 
 
-using BH.oM.Humans;
+using BH.Engine.Base;
+using BH.oM.Humans.ViewQuality;
 
-namespace BH.Engine.Humans
-{
+namespace BH.Engine.Humans.ViewQuality
+{ 
     public static partial class Create
     {
         /***************************************************/
         /**** Public Methods                            ****/
+        /***************************************************/
+
+        public static Audience Audience()
+        {
+            return new Audience { };
+        }
+
+        /***************************************************/
+
+        public static Audience Audience(Audience audienceToCopy)
+        {
+            Audience copy = audienceToCopy.DeepClone();
+
+            return copy;
+        }
+
         /***************************************************/
     }
 }

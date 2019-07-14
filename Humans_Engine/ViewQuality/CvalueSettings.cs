@@ -21,31 +21,27 @@
  */
 
 
-using BH.Engine.Base;
-using BH.oM.Humans;
-
-namespace BH.Engine.Humans
-{ 
+using BH.oM.Humans.ViewQuality;
+using BH.oM.Geometry;
+namespace BH.Engine.Humans.ViewQuality
+{
     public static partial class Create
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-
-        public static Audience Audience()
+        public static CvalueSettings CvalueSettings(CvalueFocalMethodEnum ctype, double defaultC = 0.09,double rowTolerance = Tolerance.Distance)
         {
-            return new Audience { };
+            return new CvalueSettings
+            {
+
+                FocalMethod = ctype,
+
+                DefaultCValue = defaultC,
+
+                RowTolerance = rowTolerance,
+            };
         }
-
-        /***************************************************/
-
-        public static Audience Audience(Audience audienceToCopy)
-        {
-            Audience copy = audienceToCopy.DeepClone();
-
-            return copy;
-        }
-
         /***************************************************/
     }
 }
