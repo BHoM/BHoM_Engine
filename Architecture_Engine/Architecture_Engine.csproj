@@ -60,7 +60,6 @@
     <Compile Include="Compute\Theatron\FourArcStadiaPlan.cs" />
     <Compile Include="Compute\Theatron\NoCornersStadiaPlan.cs" />
     <Compile Include="Compute\Theatron\OrthogonalStadiaPlan.cs" />
-    <Compile Include="Compute\Theatron\SutherlandHodgman.cs" />
     <Compile Include="Create\Grid.cs" />
     <Compile Include="Create\Level.cs" />
     <Compile Include="Create\Theatron\ActivityArea.cs" />
@@ -72,7 +71,6 @@
     <Compile Include="Create\Theatron\Theatron.cs" />
     <Compile Include="Create\Theatron\TheatronFullProfile.cs" />
     <Compile Include="Create\Theatron\TheatronPlan.cs" />
-    <Compile Include="Create\Theatron\TheatronTest.cs" />
     <Compile Include="Create\Theatron\Tier.cs" />
     <Compile Include="Create\Theatron\TierProfile.cs" />
     <Compile Include="Modify\SetGeometry.cs" />

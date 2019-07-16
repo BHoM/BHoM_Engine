@@ -68,10 +68,10 @@ namespace BH.Engine.Humans.ViewQuality
         }
 
         /***************************************************/
-
+        
         private static List<double[]> GetConeCoords(ViewConeEnum conetype)
         {
-            //all coords in mm
+            //all coords in metres
             //coords should be in dataset namespace
             //each coordinate set is later mirrored to create a complete view cone
             double[] coneX;
@@ -80,25 +80,25 @@ namespace BH.Engine.Humans.ViewQuality
             {
                 case ViewConeEnum.DynamicConeArea:
 
-                    coneX = new double[] { 0, 63.19951, 84.72067, 105.844444, 125.471906, 142.374011, 155.985056, 166.052471, 171.920272, 171.582365, 162.540237, 146.857892, 127.820782, 106.97819, 85.478666, 64.005213, 0 };
+                    coneX = new double[] { 0, 0.0632, 0.084721, 0.105844, 0.125472, 0.142374, 0.155985, 0.166052, 0.17192, 0.171582, 0.16254, 0.146858, 0.127821, 0.106978, 0.085479, 0.064005, 0 };
 
-                    coneY  = new double[] { -79.476365, -92.800481, -92.786387, -88.734578, -79.98072, -66.695225, -50.040009, -31.026623, -10.346131, 11.084337, 30.438085, 45.089297, 55.073263, 60.348579, 61.347173, 59.641446, 50.511209 };
+                    coneY  = new double[] { -0.079476, -0.0928, -0.092786, -0.088735, -0.079981, -0.066695, -0.05004, -0.031027, -0.010346, 0.011084, 0.030438, 0.045089, 0.055073, 0.060349, 0.061347, 0.059641, 0.050511 };
 
                     return new List<double[]> { coneX, coneY };
 
                 case ViewConeEnum.StaticConeArea:
 
-                    coneX = new double[] { -0.008136, 7.548412, 16.997918, 27.217361, 34.548925, 41.88076, 48.213106, 52.435109, 56.213162, 57.770071, 56.994269, 54.996491, 51.221881, 46.225199, 40.895078, 34.232081, 27.34661, 19.461345, 9.576501, 3.936608, 0.013036 };
+                    coneX = new double[] { -8.136e-6, 0.007548, 0.016998, 0.027217, 0.034549, 0.041881, 0.048213, 0.052435, 0.056213, 0.05777, 0.056994, 0.054996, 0.051222, 0.046225, 0.040895, 0.034232, 0.027347, 0.019461, 0.009577, 0.003937, 0.000013 };
 
-                    coneY = new double[] { 50.301575, 50.037897, 48.088549, 44.424773, 40.427291, 34.763692, 27.989191, 20.770042, 11.440409, -3.433e-11, -10.552197, -20.104918, -31.879422, -42.099083, -50.985901, -59.984016, -66.982826, -73.204279, -77.982093, -79.265102, -79.476365 };
+                    coneY = new double[] { 0.050302, 0.050038, 0.048089, 0.044425, 0.040427, 0.034764, 0.027989, 0.02077, 0.01144, 0, -0.010552, -0.020105, -0.031879, -0.042099, -0.050986, -0.059984, -0.066983, -0.073204, -0.077982, -0.079265, -0.079476};
 
                     return new List<double[]> { coneX, coneY };
 
                 case ViewConeEnum.ViewFrameArea:
 
-                    coneX = new double[] { 0, 29, 29, 0 };
+                    coneX = new double[] { 0, 0.029, 0.029, 0 };
 
-                    coneY = new double[] { 29, 29, -29, -29};
+                    coneY = new double[] { 0.029, 0.029, -0.029, -0.029 };
 
                     return new List<double[]> { coneX, coneY };
 
@@ -123,21 +123,21 @@ namespace BH.Engine.Humans.ViewQuality
             {
                 for (int i = 0; i < xcoords.Length; i++)
                 {
-                    shiftV = (horiz * xcoords[i] + up * ycoords[i] * -1);
+                    shiftV = (horiz * xcoords[i] + up * ycoords[i]);
                     c1 = origin + shiftV;
                     clipPoly.Add(c1);
                 }
             }
             else
             {
-                for (int i = xcoords.Length - 2; i > 0; i--)
+                for (int i = xcoords.Length - 1; i >= 0; i--)
                 {
-                    shiftV = (horiz * xcoords[i] * -1 + up * ycoords[i] * -1);
+                    shiftV = (horiz * xcoords[i] * -1 + up * ycoords[i]);
                     c1 = origin + shiftV;
                     clipPoly.Add(c1);
                 }
             }
-            
+            clipPoly.Add(clipPoly[0]);
             return clipPoly;
         }
 

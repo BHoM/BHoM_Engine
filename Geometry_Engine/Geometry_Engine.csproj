@@ -68,6 +68,7 @@
     <Compile Include="Compute\RowEchelonForm.cs" />
     <Compile Include="Compute\SortAlongCurve.cs" />
     <Compile Include="Compute\SortCollinear.cs" />
+    <Compile Include="Compute\ClipPolylines.cs" />
     <Compile Include="Convert\Polyline.cs" />
     <Compile Include="Create\Basis.cs" />
     <Compile Include="Create\Cone.cs" />

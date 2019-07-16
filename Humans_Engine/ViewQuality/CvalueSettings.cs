@@ -23,6 +23,7 @@
 
 using BH.oM.Humans.ViewQuality;
 using BH.oM.Geometry;
+
 namespace BH.Engine.Humans.ViewQuality
 {
     public static partial class Create

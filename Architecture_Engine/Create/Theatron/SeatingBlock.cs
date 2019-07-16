@@ -23,6 +23,7 @@
 using BH.oM.Geometry;
 using BH.oM.Humans.ViewQuality;
 using BH.Engine.Geometry;
+using BH.Engine.Humans;
 using BH.oM.Architecture.Theatron;
 using System.Collections.Generic;
 using System;

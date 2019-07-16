@@ -25,19 +25,21 @@ using System;
 using System.Collections.Generic;
 using BH.oM.Geometry;
 using BH.Engine.Geometry;
+using System.IO;
 
-namespace BH.Engine.Architecture.Theatron
+namespace BH.Engine.Geometry
 {
     public static partial class Compute
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        public static Polyline SutherlandHodgman(Polyline subject, Polyline clip)
+        public static Polyline ClipPolylines(Polyline subject, Polyline clip)
         {
             Polyline clippedPolyline = new Polyline();
             var clippedPoints = GetIntersectedPolygon(subject.ControlPoints, clip.ControlPoints);
-            clippedPolyline = Geometry.Create.Polyline(clippedPoints);
+            if(clippedPoints.Count>0) clippedPoints.Add(clippedPoints[0]);
+            clippedPolyline = Create.Polyline(clippedPoints);
             return clippedPolyline;
         }
         /***************************************************/
@@ -54,11 +56,14 @@ namespace BH.Engine.Architecture.Theatron
             {
                 this.From = from;
                 this.To = to;
-
+                this.line = Geometry.Create.Line(from, to);
+                this.length = line.Length();
             }
 
             public readonly Point From;
             public readonly Point To;
+            public readonly Line line;
+            public readonly double length;
         }
 
         #endregion
@@ -77,7 +82,8 @@ namespace BH.Engine.Architecture.Theatron
         {
             if (subjectPoly.Count < 3 || clipPoly.Count < 3)
             {
-                throw new ArgumentException(string.Format("The polygons passed in must have at least 3 points: subject={0}, clip={1}", subjectPoly.Count.ToString(), clipPoly.Count.ToString()));
+                return new List<Point>();
+                //throw new ArgumentException(string.Format("The polygons passed in must have at least 3 points: subject={0}, clip={1}", subjectPoly.Count.ToString(), clipPoly.Count.ToString()));
             }
 
             List<Point> outputList = subjectPoly;
@@ -92,6 +98,7 @@ namespace BH.Engine.Architecture.Theatron
             foreach (Edge clipEdge in IterateEdgesClockwise(clipPoly))
             {
                 List<Point> inputList = new List<Point>(outputList);        //	clone it
+                
                 outputList.Clear();
 
                 if (inputList.Count == 0)
@@ -104,6 +111,7 @@ namespace BH.Engine.Architecture.Theatron
 
                 foreach (Point E in inputList)
                 {
+                    
                     if (IsInside(clipEdge, E))
                     {
                         if (!IsInside(clipEdge, S))
@@ -267,7 +275,7 @@ namespace BH.Engine.Architecture.Theatron
         {
             return Math.Abs(testValue) <= .000000001d;
         }
-
         #endregion
+        
     }
 }

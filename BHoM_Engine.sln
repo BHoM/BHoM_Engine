@@ -25,6 +25,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SVG_Engine", "SVG_Engine\SVG_Engine.csproj", "{D5C7704D-F59A-4FC6-8D1E-356699A174E0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Architecture_Engine", "Architecture_Engine\Architecture_Engine.csproj", "{338E9DA8-8AAF-4F51-B4AD-264B5F329A5F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F17DF4D6-D155-4FFA-9917-EF1487FAA978} = {F17DF4D6-D155-4FFA-9917-EF1487FAA978}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Environment_Engine", "Environment_Engine\Environment_Engine.csproj", "{3E563667-E18A-4057-B183-6C758B8EF823}"
 	ProjectSection(ProjectDependencies) = postProject
