@@ -27,7 +27,6 @@ using BH.oM.Geometry;
 using System.Reflection;
 using System.IO;
 using BH.Engine.Base.Objects;
-using BH.Engine.Architecture.Theatron;
 using BH.oM.Base;
 using MongoDB.Bson.IO;
 using MongoDB.Bson;
@@ -51,7 +50,7 @@ namespace Engine_Test
 
         static void Main(string[] args)
         {
-            
+
             TheatronTest test = new TheatronTest();
             test.Test();
             test.SutherLandHodgmanTest();

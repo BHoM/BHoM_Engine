@@ -22,6 +22,9 @@
 
 using BH.oM.Geometry;
 using BH.oM.Humans.ViewQuality;
+using BH.oM.Humans.BodyParts;
+using System.Collections.Generic;
+using System;
 
 namespace BH.Engine.Humans.ViewQuality
 {
@@ -31,14 +34,38 @@ namespace BH.Engine.Humans.ViewQuality
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Spectator Spectator(Point location, Vector viewDirection)
+        public static Spectator Spectator(Point location, Vector viewDirection,double scale = 1)
         {
+
             return new Spectator
             {
-                Eye = Humans.Create.Eye(location,viewDirection),
+                Eye = Humans.Create.Eye(location, viewDirection),
+
             };
         }
 
         /***************************************************/
+
+        public static Polyline GetHeadOutline(Eye eye,double scale = 1)
+        {
+            //data should be in datasets
+            double[] xcoords = { 0.025198, 0.025841, 0.040367, 0.065967, 0.097698, 0.129429, 0.15503, 0.169555, 0.170198, 0.152041, 0.141581, 0.122141, 0.097698, 0.073255, 0.053815, 0.043355, 0.025198 };
+
+            double[] ycoords = { 0.004467, 0.036987, 0.066089, 0.086153, 0.093301, 0.086153, 0.066089, 0.036987, 0.004467, -0.084287, -0.107096, -0.122963, -0.128638, -0.122963, -0.107096, -0.084287, 0.004467 };
+
+            var scaledX = Array.ConvertAll(xcoords, x => x* scale);
+
+            var scaledY= Array.ConvertAll(ycoords, x => x * scale);
+
+            Vector horiz = Geometry.Query.CrossProduct(Vector.ZAxis,eye.ViewDirection);
+
+            Vector up = Geometry.Query.CrossProduct(horiz, eye.ViewDirection*-1);
+
+            
+
+            List<Point> points = OrientatePoints(up, horiz, eye.Location, scaledX, scaledY, 0);
+
+            return Geometry.Create.Polyline(points);
+        }
     }
 }
