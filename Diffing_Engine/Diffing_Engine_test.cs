@@ -7,6 +7,7 @@ using ProtoBuf;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using System.Security.Cryptography;
 
 namespace Engine_Test
 {
@@ -15,94 +16,81 @@ namespace Engine_Test
         public static void TestDiffing_Main()
         {
             Bar bar = new Bar();
+            Bar bar2 = new Bar();
 
-            bar.GetAllPropertiesObjects();
+            List<object> objs = new List<object>();
+            objs.Add(bar);
+            objs.Add(bar2);
 
+            // Add types whose properties you want to exclude from the fingerprint
+            List<Type> exclusionTypes = new List<Type> { typeof(BH.oM.Base.BHoMObject) };
 
+            // TODO: what happens if you want to specify single properties to be excluded, and those are already included in the exclusionTypes?
+            // Do a Set instead of a List for exclusionsProps.
 
+            foreach (var obj in objs)
+            {
+                byte[] objByte = obj.ToByteArray(exclusionTypes);
+
+                using (MD5 md5Hash = MD5.Create())
+                {
+                    string hash = GetMd5Hash(md5Hash, objByte);
+                    Console.WriteLine(hash);
+                }
+            }
+           
         }
 
-        public static void GetAllPropertiesObjects(this object obj, List<object> allPropertiesObjs = null, List<Type> exclusionTypes = null)
+        static string GetMd5Hash(MD5 md5Hash, byte[] objByte)
         {
+            byte[] data = md5Hash.ComputeHash(objByte);
 
-            if (allPropertiesObjs == null)
-                allPropertiesObjs = new List<object>();
+            StringBuilder sBuilder = new StringBuilder();
 
-            Type type = obj.GetType();
-            //var intfs = type.GetInterfaces().ToList();
-            //intfs.ForEach(i => Console.WriteLine(i));
-
-            var allProps = type.GetProperties().ToList();
-            //pi.ForEach(i => Console.WriteLine(i));
-
-            List<PropertyInfo> exclusionsProps = new List<PropertyInfo>();
-
-            if (exclusionTypes == null)
+            // Loop through each byte of the hashed data and format each one as a hexadecimal string
+            for (int i = 0; i < data.Length; i++)
             {
-                exclusionTypes = new List<Type>();
-
-                // Add types you want their properties to be excluded from the list of the fingerprint
-                exclusionTypes.Add(typeof(BH.oM.Base.BHoMObject));
-
-                var defaultExclusionProps = exclusionTypes.SelectMany(t => t.GetProperties().ToList()).ToList();
-
-                exclusionsProps.AddRange(defaultExclusionProps);
+                sBuilder.Append(data[i].ToString("x2"));
             }
 
-            allProps.RemoveAll(pr => exclusionsProps.Exists(t => t.DeclaringType == pr.DeclaringType && t.Name == pr.Name));
+            return sBuilder.ToString();
+        }
 
+        public static byte[] ToByteArray(this object obj, List<Type> exclusionTypes = null, List<PropertyInfo> exclusionsProps = null)
+        {
+            if (exclusionsProps == null)
+                exclusionsProps = new List<PropertyInfo>();
 
-            foreach (var property in allProps)
+            if (exclusionTypes != null)
             {
-                object propertyObject = property.GetValue(obj);
+                // Extract properties to be excluded from the exclusionTypes
+                var exctractedExclusionProps = exclusionTypes.SelectMany(t => t.GetProperties().ToList()).ToList();
 
-                //Func<object, object> getProp = (Func<object, object>)Delegate.CreateDelegate(typeof(Func<object, object>), property.GetGetMethod());
-
-                //object propertyObject = getProp(obj);
-                if (propertyObject != null)
-                    allPropertiesObjs.Add(propertyObject);
-
+                exclusionsProps.AddRange(exctractedExclusionProps);
             }
 
-            //// Test with protobuf
-
+            // Protobuf-net implementation
             ProtoBuf.Meta.RuntimeTypeModel model = ProtoBuf.Meta.TypeModel.Create();
 
             AddPropsToModel(model, obj.GetType(), exclusionsProps);
 
-            //add all properties you want to serialize. 
-            //in this case we just loop over all the public properties of the class
-            //Order by name so the properties are in a predictable order
-            //var props = obj.GetType().GetProperties().ToList();
-            //props.RemoveAll(pr => exclusionsProps.Exists(t => t.DeclaringType == pr.DeclaringType && t.Name == pr.Name));
-            //var propsNames = props.Select(p => p.Name).OrderBy(name => name).ToList();
-
-            //model.Add(obj.GetType(), true).Add(propsNames.ToArray());
-
-            //props = typeof(BH.oM.Structure.Elements.Node).GetProperties().ToList();
-            //props.RemoveAll(pr => exclusionsProps.Exists(t => t.DeclaringType == pr.DeclaringType && t.Name == pr.Name));
-            //propsNames = props.Select(p => p.Name).OrderBy(name => name).ToList();
-
-            //model.Add(typeof(BH.oM.Structure.Elements.Node), true).Add(propsNames.ToArray());
-
-
             byte[] bytes;
-
             using (var memoryStream = new MemoryStream())
             {
                 model.Serialize(memoryStream, obj);
                 bytes = memoryStream.GetBuffer();
             }
 
+            return bytes;
         }
 
-        public static void AddPropsToModel(ProtoBuf.Meta.RuntimeTypeModel model, Type objType, List<PropertyInfo> exclusionsProps = null, PropertyInfo prInfo = null)
+        public static void AddPropsToModel(ProtoBuf.Meta.RuntimeTypeModel model, Type objType, List<PropertyInfo> exclusionsProps = null)
         {
             List<PropertyInfo> props = new List<PropertyInfo>();
             if (objType != null)
                 props = objType.GetProperties().ToList();
             else
-                props = prInfo.PropertyType.GetProperties().ToList();
+                throw new ArgumentNullException("Object type must be non null for the byte serialization.");
 
             if (exclusionsProps != null)
                 props.RemoveAll(pr => exclusionsProps.Exists(t => t.DeclaringType == pr.DeclaringType && t.Name == pr.Name));
@@ -111,14 +99,13 @@ namespace Engine_Test
                 .Where(prop => prop.PropertyType.IsClass || prop.PropertyType.IsInterface).ToList()
                 .ForEach(prop =>
                     {
-                        AddPropsToModel(model, prop.PropertyType, exclusionsProps, prop); //recursive call
+                        AddPropsToModel(model, prop.PropertyType, exclusionsProps); //recursive call
                     }
                );
 
             var propsNames = props.Select(p => p.Name).OrderBy(name => name).ToList();
 
             model.Add(objType, true).Add(propsNames.ToArray());
-
         }
 
     }
