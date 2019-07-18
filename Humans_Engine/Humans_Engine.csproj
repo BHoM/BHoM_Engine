@@ -68,6 +68,7 @@
     <Compile Include="ViewQuality\Audience.cs" />
     <Compile Include="ViewQuality\AvalueAnalysis.cs" />
     <Compile Include="ViewQuality\AvalueSettings.cs" />
+    <Compile Include="ViewQuality\CvalueAnalysis.cs" />
     <Compile Include="ViewQuality\CvalueSettings.cs" />
     <Compile Include="ViewQuality\EvalueSettings.cs" />
     <Compile Include="ViewQuality\ViewCone.cs" />

@@ -31,7 +31,7 @@ namespace BH.Engine.Humans.ViewQuality
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        public static CvalueSettings CvalueSettings(CvalueFocalMethodEnum ctype, double defaultC = 0.09,double rowTolerance = Tolerance.Distance)
+        public static CvalueSettings CvalueSettings(CvalueFocalMethodEnum ctype, double defaultC = 0.09,double rowTolerance = 2.0)
         {
             return new CvalueSettings
             {
