@@ -54,6 +54,14 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        public static Vector Project(this Vector vector,Vector other)
+        {
+            other = other.Normalise();
+            double dot = vector.DotProduct(other);
+            Vector projected = other * dot;
+            return projected;
+        }
+
         public static Plane Project(this Plane plane, Plane p)
         {
             double dp = plane.Normal.DotProduct(p.Normal);

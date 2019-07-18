@@ -34,12 +34,22 @@ namespace BH.Engine.Humans.ViewQuality
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Spectator Spectator(Point location, Vector viewDirection,double scale = 1)
+        public static Spectator Spectator(Point location, Vector viewDirection,bool createHeadOutline = false, double scale = 1)
         {
+            Eye eye = Humans.Create.Eye(location, viewDirection);
+
+            Polyline outline = new Polyline();
+
+            if (createHeadOutline)
+            {
+                GetHeadOutline(eye, scale);
+            }
 
             return new Spectator
             {
-                Eye = Humans.Create.Eye(location, viewDirection),
+                Eye = eye,
+
+                HeadOutline = outline,
 
             };
         }
@@ -60,8 +70,6 @@ namespace BH.Engine.Humans.ViewQuality
             Vector horiz = Geometry.Query.CrossProduct(Vector.ZAxis,eye.ViewDirection);
 
             Vector up = Geometry.Query.CrossProduct(horiz, eye.ViewDirection*-1);
-
-            
 
             List<Point> points = OrientatePoints(up, horiz, eye.Location, scaledX, scaledY, 0);
 

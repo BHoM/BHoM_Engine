@@ -58,12 +58,18 @@ namespace Engine_Test
             var fullProfile = BH.Engine.Architecture.Theatron.Create.TheatronFullProfile(parameters, plan);
 
             var bowl = BH.Engine.Architecture.Theatron.Create.TheatronGeometry(plan, fullProfile, sParams, parameters);
-            AValueAnalysisTest(bowl, sParams.ActivityArea);
+            //AValueAnalysisTest(bowl, sParams.ActivityArea);
+            CValueAnanlysisTest(bowl, sParams.ActivityArea);
         }
         public void AValueAnalysisTest(TheatronGeometry bowl, ActivityArea activityArea)
         {
             var settings = BH.Engine.Humans.ViewQuality.Create.AvalueSettings(ViewConeEnum.DynamicConeArea, true);
             var results = BH.Engine.Humans.ViewQuality.Query.AvalueAnalysis(bowl.Tiers3d[0].TierBlocks[0].Audience, settings, activityArea);
+        }
+        public void CValueAnanlysisTest(TheatronGeometry bowl, ActivityArea activityArea)
+        {
+            var settings = BH.Engine.Humans.ViewQuality.Create.CvalueSettings(CvalueFocalMethodEnum.Perpendicular);
+            var results = BH.Engine.Humans.ViewQuality.Query.CvalueAnalysis(bowl.Tiers3d[0].TierBlocks[0].Audience, settings, activityArea.PlayingArea);
         }
         public void SutherLandHodgmanTest()
         {
