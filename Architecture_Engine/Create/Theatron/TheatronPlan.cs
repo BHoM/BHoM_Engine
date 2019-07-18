@@ -36,14 +36,15 @@ namespace BH.Engine.Architecture.Theatron
         /**** public Methods                            ****/
         /***************************************************/
 
-        public static TheatronPlan PlanGeometry(List<ProfileOrigin> structuralSections, ActivityArea activityArea,Polyline focalCurve)
+        public static TheatronPlan PlanGeometry(List<ProfileOrigin> structuralSections, Polyline focalPolyline)
         {
             var planGeometry = new TheatronPlan
             {
                 SectionOrigins = structuralSections,
-                ActivityArea = activityArea,
-                FocalCurve = focalCurve,
+
+                FocalCurve = focalPolyline,
             };
+            planGeometry.SectionOrigins.ForEach(x => planGeometry.StructBayType.Add(BayType.Undefined));
             setPlanes(ref planGeometry);
             return planGeometry;
 
@@ -79,6 +80,7 @@ namespace BH.Engine.Architecture.Theatron
             return planGeometry;
 
         }
+
         /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
@@ -87,7 +89,7 @@ namespace BH.Engine.Architecture.Theatron
             planGeometry.TheatronFront = setFront(planGeometry.SectionOrigins);
             planGeometry.VomitoryOrigins = setVomitories(planGeometry.SectionOrigins);
             planGeometry.CombinedOrigins = combinedPlanes(planGeometry.SectionOrigins, planGeometry.VomitoryOrigins);
-            findClosestSection(ref planGeometry);
+            if(planGeometry.FocalCurve!=null)findClosestSection(ref planGeometry);
             
         }
         private static List<ProfileOrigin> setVomitories(List<ProfileOrigin> sections)
@@ -160,6 +162,7 @@ namespace BH.Engine.Architecture.Theatron
         private static Polyline setFront(List<ProfileOrigin> sections)
         {
             List<Point> pts = sections.Select(item => item.Origin).ToList();
+            pts.Add(pts[0]);
             Polyline front = Geometry.Create.Polyline(pts);
             return front;
         }

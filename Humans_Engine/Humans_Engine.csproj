@@ -68,9 +68,13 @@
     <Compile Include="ViewQuality\Audience.cs" />
     <Compile Include="ViewQuality\AvalueAnalysis.cs" />
     <Compile Include="ViewQuality\AvalueSettings.cs" />
+    <Compile Include="ViewQuality\ViewConeEnum.cs" />
     <Compile Include="ViewQuality\CvalueAnalysis.cs" />
     <Compile Include="ViewQuality\CvalueSettings.cs" />
+    <Compile Include="ViewQuality\CvalueFocalMethodEnum.cs" />
+    <Compile Include="ViewQuality\EvalueAnalysis.cs" />
     <Compile Include="ViewQuality\EvalueSettings.cs" />
+    <Compile Include="ViewQuality\EvalueViewEnum.cs" />
     <Compile Include="ViewQuality\ViewCone.cs" />
     <Compile Include="Create\Employee.cs" />
     <Compile Include="Create\Eye.cs" />

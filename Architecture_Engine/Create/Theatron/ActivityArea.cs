@@ -24,6 +24,8 @@
 using BH.oM.Geometry;
 using BH.oM.Architecture.Theatron;
 using System.Collections.Generic;
+using BH.Engine.Geometry;
+using System;
 
 namespace BH.Engine.Architecture.Theatron
 {
@@ -46,7 +48,9 @@ namespace BH.Engine.Architecture.Theatron
 
             };
         }
+
         /***************************************************/
+
         public static ActivityArea ActivityArea(double width = 60,double length = 90)
         {
             var p1 = Geometry.Create.Point(width/2, length/2, 0);
@@ -60,14 +64,19 @@ namespace BH.Engine.Architecture.Theatron
                 Length = length,
             };
         }
+
         /***************************************************/
-        public static ActivityArea ActivityArea(Polyline activityArea, Point aValueFocalPoint)
+
+        public static ActivityArea ActivityArea(Polyline activityArea, Point activityFocalPoint)
         {
-            
+            if (!activityArea.IsClosed())
+            {
+                throw new ArgumentException("activityArea must be closed"); ;
+            }
             return new ActivityArea
             {
                 PlayingArea = activityArea,
-                AValueFocalPoint = aValueFocalPoint,
+                ActivityFocalPoint = activityFocalPoint,
             };
         }
     }

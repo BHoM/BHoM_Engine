@@ -42,6 +42,7 @@ namespace Engine_Test
             var sParams = BH.Engine.Architecture.Theatron.Create.StadiaParameters(7.5, 10, typeOfBowl: sType);
             sParams.TypeOfBowl = StadiaType.EightArc;
             var plan = BH.Engine.Architecture.Theatron.Create.PlanGeometry(sParams);
+            
             var pParams1 = BH.Engine.Architecture.Theatron.Create.ProfileParameters(1);
             var pParams2 = BH.Engine.Architecture.Theatron.Create.ProfileParameters(1);
             pParams2.NumRows = 20;
@@ -52,14 +53,16 @@ namespace Engine_Test
             pParams1.VomitoryStartRow = 5;
 
             List<ProfileParameters> parameters = new List<ProfileParameters> { pParams1, pParams2 };
+            
             //SIMPLE profile in XZ plane focal point is the origin
             // fullProfile = Create.TheatronFullProfile(parameters);
             //profile in XZ plane focal point is the origin but distance from origin defined by the plan geometry
             var fullProfile = BH.Engine.Architecture.Theatron.Create.TheatronFullProfile(parameters, plan);
-
-            var bowl = BH.Engine.Architecture.Theatron.Create.TheatronGeometry(plan, fullProfile, sParams, parameters);
+            TestPartialBowl(plan,fullProfile,parameters);
+            var bowlFull = BH.Engine.Architecture.Theatron.Create.TheatronGeometry(plan, fullProfile, sParams, parameters);
             //AValueAnalysisTest(bowl, sParams.ActivityArea);
-            CValueAnanlysisTest(bowl, sParams.ActivityArea);
+            //CValueAnanlysisTest(bowl, sParams.ActivityArea);
+            //EValueAnanlysisTest(bowl, sParams.ActivityArea);
         }
         public void AValueAnalysisTest(TheatronGeometry bowl, ActivityArea activityArea)
         {
@@ -69,7 +72,18 @@ namespace Engine_Test
         public void CValueAnanlysisTest(TheatronGeometry bowl, ActivityArea activityArea)
         {
             var settings = BH.Engine.Humans.ViewQuality.Create.CvalueSettings(CvalueFocalMethodEnum.Perpendicular);
-            var results = BH.Engine.Humans.ViewQuality.Query.CvalueAnalysis(bowl.Tiers3d[0].TierBlocks[0].Audience, settings, activityArea.PlayingArea);
+            var results = BH.Engine.Humans.ViewQuality.Query.CvalueAnalysis(bowl.Audience, settings, activityArea.PlayingArea);
+        }
+        public void EValueAnanlysisTest(TheatronGeometry bowl, ActivityArea activityArea)
+        {
+            var settings = BH.Engine.Humans.ViewQuality.Create.EvalueSettings(EvalueViewEnum.ToPoint);
+            var results = BH.Engine.Humans.ViewQuality.Query.EvalueAnalysis(bowl.Audience, settings, activityArea);
+        }
+        public void TestPartialBowl(TheatronPlan plan,TheatronFullProfile profile, List<ProfileParameters> pParams)
+        {
+            BH.Engine.Architecture.Theatron.Create.TheatronGeometry(plan.SectionOrigins.GetRange(0, 10), profile, pParams);
+            BH.Engine.Architecture.Theatron.Create.PlanGeometry(plan.SectionOrigins.GetRange(0, 10),null);
+
         }
         public void SutherLandHodgmanTest()
         {
