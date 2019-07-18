@@ -25,6 +25,8 @@ using BH.oM.Architecture.Theatron;
 using System.Collections.Generic;
 using System.Linq;
 using BH.Engine.Base;
+using System.ComponentModel;
+using BH.oM.Reflection.Attributes;
 
 namespace BH.Engine.Architecture.Theatron
 {
@@ -33,19 +35,54 @@ namespace BH.Engine.Architecture.Theatron
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-
-        public static TheatronGeometry TheatronGeometry(TheatronPlan plan, TheatronFullProfile profile,StadiaParameters sParams, List<ProfileParameters> pParams)
+        [Description("Create a full stadium geometry based on predefined plan types")]
+        [Input("planFull", "The theatron plan")]
+        [Input("profile", "The theatron fullprofile used in defining the plan")]
+        [Input("sParams", "The stadia parameters")]
+        [Input("pParams", "A list of the profile parameters")]
+        public static TheatronGeometry TheatronGeometry(TheatronPlan planFull, TheatronFullProfile profile,StadiaParameters sParams, List<ProfileParameters> pParams)
         {
             var theatron = new TheatronGeometry();
 
             theatron.TotalTiers = profile.MappedProfiles.Count;
-            SetGeneratorblocks(ref theatron, profile, plan, sParams.TypeOfBowl,pParams);
+            SetGeneratorblocks(ref theatron, profile, planFull, sParams.TypeOfBowl,pParams);
             SetFloorMeshes(ref theatron, pParams);
             SetGeneratorEyes(ref theatron);
-            CopyGeneratorBlocks(ref theatron, plan, sParams.TypeOfBowl);
+            CopyGeneratorBlocks(ref theatron, planFull, sParams.TypeOfBowl);
+
             return theatron;
         }
 
+        /***************************************************/
+        [Description("Create a partial theatron geometry based on structural locations and a profile, Cvalue is not used")]
+        [Input("structuralOrigins", "The locations of the structural elements")]
+        [Input("profile", "The theatron fullprofile")]
+        [Input("pParams", "A list of the profile parameters")]
+        public static TheatronGeometry TheatronGeometry(List<ProfileOrigin> structuralOrigins, TheatronFullProfile profile, List<ProfileParameters> pParams)
+        {
+            var theatron = new TheatronGeometry();
+            var plan = PlanGeometry(structuralOrigins,null);
+            theatron.TotalTiers = profile.MappedProfiles.Count;
+            SetGeneratorblocks(ref theatron, profile, plan,StadiaType.Undefined, pParams);
+            SetFloorMeshes(ref theatron, pParams);
+            SetGeneratorEyes(ref theatron);
+            theatron.Tiers3d.ForEach(t => t.Generatorblocks.ForEach(g => { t.TierBlocks.Add(g); theatron.Audience.Add(g.Audience); }));
+            
+            return theatron;
+        }
+
+        /***************************************************/
+        [Description("Create a partial theatron geometry based on a partial plan and a profile, Cvalue is used")]
+        [Input("planPart", "The theatron plan ")]
+        [Input("profile", "The theatron fullprofile used in defining the plan")]
+        public static TheatronGeometry TheatronGeometry(TheatronPlan planPart, TheatronFullProfile profile)
+        {
+            var theatron = new TheatronGeometry();
+
+            theatron.TotalTiers = profile.MappedProfiles.Count;
+
+            return theatron;
+        }
         /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
@@ -174,6 +211,13 @@ namespace BH.Engine.Architecture.Theatron
             {
                 dict.Add(0, SeatingBlockType.Side);//side standard
             }
+            if(bowltype == StadiaType.Undefined)
+            {
+                for (int j = 0; j < bp.SectionOrigins.Count-1; j++)
+                {
+                    dict.Add(j, SeatingBlockType.Undefined);
+                }
+            }
             var sortedDict = dict.OrderBy(x => x.Value).ToDictionary(pair => pair.Key, pair => pair.Value); 
             return sortedDict;
         }
@@ -205,6 +249,7 @@ namespace BH.Engine.Architecture.Theatron
 
         /***************************************************/
 
+        
         private static void CopyGeneratorBlocks(ref TheatronGeometry theatron, TheatronPlan bp, StadiaType stadiatype)
         {
             for (int i = 0; i < theatron.TotalTiers; i++)
@@ -230,9 +275,9 @@ namespace BH.Engine.Architecture.Theatron
 
                     SeatingBlock blockToCopy = theatron.Tiers3d[i].Generatorblocks.Find(b => b.TypeOfSeatingBlock == bt).DeepClone();
                     double angle = Geometry.Query.Angle(blockToCopy.Start.Direction, bp.SectionOrigins[j].Direction,Plane.XY);
-                    
-                    theatron.Tiers3d[i].TierBlocks.Add(TransformSeatingBlock(blockToCopy, blockToCopy.Start.Origin, bp.SectionOrigins[j].Origin, angle));
-
+                    SeatingBlock copy = TransformSeatingBlock(blockToCopy, blockToCopy.Start.Origin, bp.SectionOrigins[j].Origin, angle);
+                    theatron.Tiers3d[i].TierBlocks.Add(copy);
+                    theatron.Audience.Add(copy.Audience);
                 }
             }
         }

@@ -37,13 +37,31 @@ namespace BH.Engine.Humans.ViewQuality
         /***************************************************/
         public static List<Cvalue> CvalueAnalysis(Audience audience, CvalueSettings settings, Polyline focalPolyline)
         {
+            List<Cvalue> results = EvaluateCvalue(audience, settings, focalPolyline);
+            return results;
+        }
+        /***************************************************/
+        public static List<List<Cvalue>> CvalueAnalysis(List<Audience> audience, CvalueSettings settings, Polyline focalPolyline)
+        {
+            List<List<Cvalue>> results = new List<List<Cvalue>>();
+            foreach(Audience a in audience)
+            {
+                results.Add(EvaluateCvalue(a, settings, focalPolyline));
+            }
+            return results;
+        }
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+        private static List<Cvalue> EvaluateCvalue(Audience audience, CvalueSettings settings, Polyline focalPolyline)
+        {
             List<Cvalue> results = new List<Cvalue>();
             KDTree<Spectator> spectatorTree = SetKDTree(audience);
             foreach (Spectator s in audience.Spectators)
             {
                 bool cvalueExists = true;
                 Vector rowVector = Geometry.Query.CrossProduct(Vector.ZAxis, s.Eye.ViewDirection);
-                
+
                 Spectator infront = GetSpecInfront(s, spectatorTree);
                 double riserHeight = 0;
                 double rowWidth = 0;
@@ -67,27 +85,23 @@ namespace BH.Engine.Humans.ViewQuality
                     rowWidth = GetRowWidth(s, infront, rowVector);
                     focal = GetFocalPoint(rowVector, s, settings.FocalMethod, focalPolyline);
                 }
-                
+
                 results.Add(CvalueResult(s, focal, riserHeight, rowWidth, cvalueExists, rowVector, settings));
             }
             return results;
         }
-
         /***************************************************/
-        /**** Private Methods                           ****/
-        /***************************************************/
-
         private static double GetRowWidth(Spectator current, Spectator nearest, Vector rowV)
         {
-            double width = 0;
-            Vector row = nearest.Eye.Location - current.Eye.Location;
+        double width = 0;
+        Vector row = nearest.Eye.Location - current.Eye.Location;
 
-            Vector row2d = Geometry.Create.Vector(row.X, row.Y, 0);//horiz vector to spectator row in front
-            Vector projected = row2d.Project(rowV);
+        Vector row2d = Geometry.Create.Vector(row.X, row.Y, 0);//horiz vector to spectator row in front
+        Vector projected = row2d.Project(rowV);
             
-            Vector rowWidth = row2d - projected;
-            width = rowWidth.Length();
-            return width;
+        Vector rowWidth = row2d - projected;
+        width = rowWidth.Length();
+        return width;
         }
         /***************************************************/
         private static Point GetFocalPoint(Vector rowV, Spectator spectator,CvalueFocalMethodEnum focalMethod,Polyline focalPolyline)

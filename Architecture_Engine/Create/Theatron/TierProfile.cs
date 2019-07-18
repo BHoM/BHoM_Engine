@@ -123,7 +123,7 @@ namespace BH.Engine.Architecture.Theatron
                         //also a wider row is required
                         double widthSp = (2 * parameters.RowWidth) + parameters.SuperRiserKerbWidth + parameters.RowWidth - parameters.EyePositionX;
                         x = tierProfile.EyePoints[i - 1].X + widthSp;
-                        //z is with standar c over the wheel chair posiiton but could be over the handrail
+                        //z is with standard c over the wheel chair posiiton but could be over the handrail
                         z = tierProfile.EyePoints[i - 1].Z + parameters.TargetCValue + widthSp * ((tierProfile.EyePoints[i - 1].Z + parameters.TargetCValue) / tierProfile.EyePoints[i - 1].X);
                     }
                     else
@@ -251,6 +251,7 @@ namespace BH.Engine.Architecture.Theatron
             profile.FloorPoints = profile.FloorPoints.Select(p => p.Transform(xTrans)).ToList();
             profile.EyePoints = profile.EyePoints.Select(p => p.Transform(xTrans)).ToList();
             profile.Profile.ControlPoints = profile.FloorPoints;
+            profile.FocalPoint = profile.FocalPoint.Transform(xTrans);
             profile.SectionOrigin = DefineTierOrigin(profile.FloorPoints);
         }
 

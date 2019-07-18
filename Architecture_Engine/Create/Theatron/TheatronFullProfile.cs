@@ -50,7 +50,7 @@ namespace BH.Engine.Architecture.Theatron
             
             TheatronFullProfile fullProfile = new TheatronFullProfile();
             Point lastpoint = new Point();
-            fullProfile.FocalPoint = planGeometry.CValueFocalPoint;
+            //fullProfile.FocalPoint = planGeometry.CValueFocalPoint;
             GenerateMapProfiles(ref fullProfile, parameters, planGeometry.MinDistToFocalCurve, planGeometry.SectionClosestToFocalCurve);
             
             return fullProfile;
@@ -62,7 +62,7 @@ namespace BH.Engine.Architecture.Theatron
             //this assumes no relation with the plan geometry setting out is from the origin
             TheatronFullProfile fullProfile = new TheatronFullProfile();
             Point lastpoint = new Point();
-            fullProfile.FocalPoint = focalPoint;
+            //fullProfile.FocalPoint = focalPoint;
             Vector focalToStart = sectionOrigin.Origin - focalPoint;
             focalToStart.Z = 0;
             GenerateMapProfiles(ref fullProfile, parameters, focalToStart.Length(), sectionOrigin);
@@ -80,7 +80,7 @@ namespace BH.Engine.Architecture.Theatron
 
             for (int i = 0; i < parameters.Count; i++)
             {
-                TierProfile tierSection = Create.TierProfile(parameters[i], lastpoint);
+                TierProfile tierSection = TierProfile(parameters[i], lastpoint);
                 fullProfile.BaseTierProfiles.Add(tierSection);
                 lastpoint = tierSection.FloorPoints[tierSection.FloorPoints.Count - 1];
 
@@ -100,7 +100,7 @@ namespace BH.Engine.Architecture.Theatron
                 {
                     parameters[i].StartX = distToFocalCurve + parameters[i].RowWidth - parameters[i].EyePositionX;
                 }
-                TierProfile tierSection = Create.TierProfile(parameters[i], lastpoint);
+                TierProfile tierSection = TierProfile(parameters[i], lastpoint);
                 fullProfile.BaseTierProfiles.Add(tierSection);
                 
                 if (i == 0)

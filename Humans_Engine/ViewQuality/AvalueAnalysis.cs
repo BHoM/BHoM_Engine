@@ -42,20 +42,36 @@ namespace BH.Engine.Humans.ViewQuality
         /***************************************************/
         public static List<Avalue> AvalueAnalysis(Audience audience, AvalueSettings settings, ActivityArea activityArea)
         {
-            List<Avalue> results = new List<Avalue>();
-            KDTree<Spectator> spectatorTree = null;
-            if (settings.CalculateOcclusion) spectatorTree = SetKDTree(audience);
-
-                foreach (Spectator s in audience.Spectators)
-                {
-                    Vector rowVector = Geometry.Query.CrossProduct(Vector.ZAxis, s.Eye.ViewDirection);
-                    Vector viewVect = activityArea.AValueFocalPoint - s.Eye.Location;
-                    results.Add(ClipView(s, rowVector, viewVect, settings,activityArea, spectatorTree));
-                }
+            List<Avalue> results = EvaluateAvalue(audience, settings, activityArea);
+            return results;
+        }
+        /***************************************************/
+        public static List<List<Avalue>> AvalueAnalysis(List<Audience> audience, AvalueSettings settings, ActivityArea activityArea)
+        {
+            List<List<Avalue>> results = new List<List<Avalue>>();
+            foreach(Audience a in audience)
+            {
+                results.Add(EvaluateAvalue(a, settings, activityArea));
+            }
             return results;
         }
         /***************************************************/
         /**** Private Methods                           ****/
+        /***************************************************/
+        private static List<Avalue> EvaluateAvalue(Audience audience, AvalueSettings settings, ActivityArea activityArea)
+        {
+            List<Avalue> results = new List<Avalue>();
+            KDTree<Spectator> spectatorTree = null;
+            if (settings.CalculateOcclusion) spectatorTree = SetKDTree(audience);
+
+            foreach (Spectator s in audience.Spectators)
+            {
+                Vector rowVector = Geometry.Query.CrossProduct(Vector.ZAxis, s.Eye.ViewDirection);
+                Vector viewVect = activityArea.ActivityFocalPoint - s.Eye.Location;
+                results.Add(ClipView(s, rowVector, viewVect, settings, activityArea, spectatorTree));
+            }
+            return results;
+        }
         /***************************************************/
         private static KDTree<Spectator> SetKDTree(Audience audience)
         {
