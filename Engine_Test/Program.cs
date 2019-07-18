@@ -50,10 +50,11 @@ namespace Engine_Test
 
         static void Main(string[] args)
         {
-            TestSerialization();
+            //TestSerialization();
             //TestConstructorSpeed();
             //TestDynamicExtentionCost();
             //TestMethodExtraction();
+            Diffing_Engine_Test.TestDiffing_Main();
             Console.Read();
         }
 
