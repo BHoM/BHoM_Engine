@@ -66,7 +66,7 @@ namespace BH.Engine.Environment
             foreach (Point p in crvPts)
                 min = Math.Min(min, p.Z);
 
-            return min;
+            return Math.Round(min, 3);
         }
 
         [Description("Returns the maximum level of the given panel based on the z axis")]
@@ -80,7 +80,7 @@ namespace BH.Engine.Environment
             foreach (Point p in crvPts)
                 max = Math.Max(max, p.Z);
 
-            return max;
+            return Math.Round(max, 3);
         }
 
         [Description("Returns the Architecture Level that the Environment Panel resides on")]
