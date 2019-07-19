@@ -42,7 +42,11 @@ namespace BH.Engine.Architecture.Theatron
         {
             //this assumes no relation with the plan geometry setting out is from the origin
             TheatronFullProfile fullProfile = new TheatronFullProfile();
-            GenerateProfiles(ref fullProfile, parameters);
+            double minDist = parameters[0].StartX - parameters[0].EyePositionX;
+            Point origin = Geometry.Create.Point(minDist, 0, parameters[0].StartZ - parameters[0].EyePositionZ);
+            Vector direction = Vector.XAxis;
+            ProfileOrigin sectionOrigin = ProfileOrigin(origin, direction);
+            GenerateMapProfiles(ref fullProfile, parameters, minDist, sectionOrigin);
             return fullProfile;
         }
 
@@ -54,8 +58,7 @@ namespace BH.Engine.Architecture.Theatron
         {
             
             TheatronFullProfile fullProfile = new TheatronFullProfile();
-            Point lastpoint = new Point();
-            //fullProfile.FocalPoint = planGeometry.CValueFocalPoint;
+            
             GenerateMapProfiles(ref fullProfile, parameters, planGeometry.MinDistToFocalCurve, planGeometry.SectionClosestToFocalCurve);
             
             return fullProfile;
@@ -79,22 +82,6 @@ namespace BH.Engine.Architecture.Theatron
 
         /***************************************************/
         /**** Private Methods                           ****/
-        /***************************************************/
-
-        private static void GenerateProfiles(ref TheatronFullProfile fullProfile, List<ProfileParameters> parameters)
-        {
-            Point lastpoint = new Point();
-
-            for (int i = 0; i < parameters.Count; i++)
-            {
-                TierProfile tierSection = TierProfile(parameters[i], lastpoint);
-                fullProfile.BaseTierProfiles.Add(tierSection);
-                lastpoint = tierSection.FloorPoints[tierSection.FloorPoints.Count - 1];
-
-            }
-            fullProfile.FullProfileOrigin = fullProfile.BaseTierProfiles[0].SectionOrigin;
-        }
-
         /***************************************************/
 
         private static void GenerateMapProfiles(ref TheatronFullProfile fullProfile, List<ProfileParameters> parameters,double distToFocalCurve, ProfileOrigin sectionOrigin)

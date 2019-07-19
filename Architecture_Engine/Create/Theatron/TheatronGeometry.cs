@@ -234,7 +234,7 @@ namespace BH.Engine.Architecture.Theatron
                 {
                     SeatingBlockType bt = theatron.Tiers3d[i].Generatorblocks[j].TypeOfSeatingBlock;
                     var block = theatron.Tiers3d[i].Generatorblocks[j];
-                    if(bt == SeatingBlockType.Side || bt == SeatingBlockType.Corner|| bt == SeatingBlockType.End)
+                    if(bt == SeatingBlockType.Side || bt == SeatingBlockType.Corner|| bt == SeatingBlockType.End || bt == SeatingBlockType.Undefined)
                     {
                         SetBlockFloor(ref block, parameters[i]);
                     }
