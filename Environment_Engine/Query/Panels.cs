@@ -36,6 +36,8 @@ using BH.Engine.Geometry;
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
 
+using BH.oM.Architecture.Elements;
+
 namespace BH.Engine.Environment
 {
     public static partial class Query
@@ -190,6 +192,41 @@ namespace BH.Engine.Environment
         public static Panel PanelByGuid(this List<Panel> panels, Guid guid)
         {
             return panels.Where(x => x.BHoM_Guid == guid).FirstOrDefault();
+        }
+
+        [Description("Returns a collection of Environment Panels that sit entirely on a given levels elevation")]
+        [Input("panels", "A collection of Environment Panels to filter")]
+        [Input("searchLevel", "The Architecture level to search by")]
+        [Output("panels", "A collection of Environment Panels which match the given level")]
+        public static List<Panel> PanelsByLevel(this List<Panel> panels, Level searchLevel)
+        {
+            return panels.PanelsByLevel(searchLevel.Elevation);
+        }
+
+        [Description("Returns a collection of Environment Panels that sit entirely on a given levels elevation")]
+        [Input("panels", "A collection of Environment Panels to filter")]
+        [Input("searchLevel", "The level to search by")]
+        [Output("panels", "A collection of Environment Panels which match the given level")]
+        public static List<Panel> PanelsByLevel(this List<Panel> panels, double searchLevel)
+        {
+            return panels.Where(x => x.MinimumLevel() == searchLevel && x.MaximumLevel() == searchLevel).ToList();
+        }
+
+        [Description("Returns a collection of Environment Panels that contain duplicates in the given collection")]
+        [Input("panels", "A collection of Environment Panels to search in")]
+        [Output("panels", "A nested collection of Environment Panels that are duplicates")]
+        public static List<List<Panel>> FindDuplicatePanels(this List<Panel> panels)
+        {
+            List<List<Panel>> duplicates = new List<List<Panel>>();
+
+            foreach (Panel p in panels)
+            {
+                List<Panel> found = panels.Where(x => x.IsIdentical(p)).ToList();
+                if (found.Count > 1)
+                    duplicates.Add(found);
+            }
+
+            return duplicates;
         }
     }
 }
