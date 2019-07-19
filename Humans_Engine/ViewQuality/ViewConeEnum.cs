@@ -20,6 +20,8 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 using BH.oM.Humans.ViewQuality;
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Humans.ViewQuality
 {
@@ -28,7 +30,8 @@ namespace BH.Engine.Humans.ViewQuality
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-
+        [Description("Define the method used to set the ViewConen")]
+        [Input("typeNum", "0 = StaticConeArea,1 = DynamicConeArea,2  = ViewFrameArea,3 = Undefined")]
         public static ViewConeEnum ViewConeType(int typeNum)
         {
             var enumCount = ViewConeEnum.GetNames(typeof(ViewConeEnum)).Length;

@@ -25,6 +25,8 @@ using BH.oM.Humans.ViewQuality;
 using BH.oM.Humans.BodyParts;
 using System.Collections.Generic;
 using System;
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Humans.ViewQuality
 {
@@ -33,7 +35,11 @@ namespace BH.Engine.Humans.ViewQuality
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-
+        [Description("Create a Spectator")]
+        [Input("location", "Point defining the Eye location")]
+        [Input("viewDirection", "Vector defining the Eye view directions")]
+        [Input("createHeadOutline", "Should we generate the 2d head outline for this Spectator")]
+        [Input("scale", "Scaling the head outline if not using metres")]
         public static Spectator Spectator(Point location, Vector viewDirection,bool createHeadOutline = false, double scale = 1)
         {
             Eye eye = Humans.Create.Eye(location, viewDirection);

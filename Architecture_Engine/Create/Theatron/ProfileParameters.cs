@@ -23,6 +23,8 @@
 using BH.oM.Geometry;
 using BH.oM.Architecture.Theatron;
 using System.Collections.Generic;
+using System.ComponentModel;
+using BH.oM.Reflection.Attributes;
 
 namespace BH.Engine.Architecture.Theatron
 {
@@ -31,6 +33,8 @@ namespace BH.Engine.Architecture.Theatron
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
+        [Description("Create a default set of profile parameters")]
+        [Input("scale", "Optional scale if working units are not metres")]
         
         public static ProfileParameters ProfileParameters(double scale = 1.0)
         {
@@ -81,7 +85,26 @@ namespace BH.Engine.Architecture.Theatron
         }
 
         /***************************************************/
-
+        [Description("Create a full set of profile parameters for a single tier, default values in metres")]
+        [Input("startX", "The horizontal postion for the first spectator eye, ignored in the first tier if the profile depends on a plan geometry")]
+        [Input("startZ", "The vertical postion for the first spectator eye")]
+        [Input("rowWidth", "Row width")]
+        [Input("targetC", "Target Cvalue")]
+        [Input("seatWidth", "Seat width")]
+        [Input("numRows", "Number of rows")]
+        [Input("superRiser", "Is there a super riser (accessible row)")]
+        [Input("superRiserStart", "What row does the super riser start?")]
+        [Input("vomitory", "Is there a vomitory")]
+        [Input("vomitoryStartRow", "What row does the vomitory start? (If there is a super riser the vomitory will start at the same row as the super riser)")]
+        [Input("aisleWidth", "Width of aisle at vomitory")]
+        [Input("superRiserKerbWidth", "Optional scale if working units are not metres")]
+        [Input("superRiserEyePositionX", "Horizontal seated eye postion on super riser row")]
+        [Input("superRiserEyePositionZ", "Vertical seated eye postion on super riser row")]
+        [Input("eyePositionZ", "Vertical seated eye postion on standard row")]
+        [Input("eyePositionX", "Horizontal seated eye postion on standard row")]
+        [Input("standingEyePositionX", "Horizontal standing eye postion on standard row")]
+        [Input("standingEyePositionZ", "Vertical standing eye postion on standard row")]
+        [Input("riserRounding", "Round riser heights are rounded to multiples of this value")]
         public static ProfileParameters ProfileParameters(double startX=5.0,double startZ=1.0,double rowWidth=0.8,double targetC =0.09,
             double seatWidth = 0.4,int numRows =20,bool superRiser=false,int superRiserStart = 10, bool vomitory =false,int vomitoryStartRow=10,
             double aisleWidth = 1.2,double superRiserKerbWidth=0.15,double superRiserEyePositionX = 1.1, double superRiserEyePositionZ = 1.1,

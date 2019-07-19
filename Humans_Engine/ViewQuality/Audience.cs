@@ -23,6 +23,8 @@
 
 using BH.Engine.Base;
 using BH.oM.Humans.ViewQuality;
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Humans.ViewQuality
 { 
@@ -31,14 +33,8 @@ namespace BH.Engine.Humans.ViewQuality
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-
-        public static Audience Audience()
-        {
-            return new Audience { };
-        }
-
-        /***************************************************/
-
+        [Description("Copy an audience")]
+        [Input("audienceToCopy", "Audience to copy")]
         public static Audience Audience(Audience audienceToCopy)
         {
             Audience copy = audienceToCopy.DeepClone();

@@ -20,6 +20,8 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 using BH.oM.Humans.ViewQuality;
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Humans.ViewQuality
 {
@@ -28,7 +30,8 @@ namespace BH.Engine.Humans.ViewQuality
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-
+        [Description("Define the method used to set the Spectator view direction")]
+        [Input("typeNum", "0 = ToPoint,1 = PerpendicularToRow,2  = Undefined")]
         public static EvalueViewEnum EvalueViewType(int typeNum)
         {
             var enumCount = EvalueViewEnum.GetNames(typeof(EvalueViewEnum)).Length;

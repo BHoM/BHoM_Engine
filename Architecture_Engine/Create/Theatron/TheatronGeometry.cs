@@ -35,58 +35,59 @@ namespace BH.Engine.Architecture.Theatron
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        [Description("Create a full stadium geometry based on predefined plan types")]
+        [Description("Create a full stadium TheatronGeometry based on predefined plan types, Cvalue is used to define the TheatronFullProfile")]
         [Input("planFull", "The theatron plan")]
-        [Input("profile", "The theatron fullprofile used in defining the plan")]
-        [Input("sParams", "The stadia parameters")]
-        [Input("pParams", "A list of the profile parameters")]
+        [Input("profile", "The TheatronFullProfile used in defining the plan")]
+        [Input("sParams", "The StadiaParameters")]
+        [Input("pParams", "List of the ProfileParameters")]
         public static TheatronGeometry TheatronGeometry(TheatronPlan planFull, TheatronFullProfile profile,StadiaParameters sParams, List<ProfileParameters> pParams)
         {
-            var theatron = new TheatronGeometry();
-
-            theatron.TotalTiers = profile.MappedProfiles.Count;
-            SetGeneratorblocks(ref theatron, profile, planFull, sParams.TypeOfBowl,pParams);
-            SetFloorMeshes(ref theatron, pParams);
-            SetGeneratorEyes(ref theatron);
+            var theatron = CreateGeometry(planFull, profile, pParams,sParams.TypeOfBowl);
             CopyGeneratorBlocks(ref theatron, planFull, sParams.TypeOfBowl);
 
             return theatron;
         }
 
         /***************************************************/
-        [Description("Create a partial theatron geometry based on structural locations and a profile, Cvalue is not used")]
-        [Input("structuralOrigins", "The locations of the structural elements")]
-        [Input("profile", "The theatron fullprofile")]
-        [Input("pParams", "A list of the profile parameters")]
+        [Description("Create a partial TheatronGeometry based on structural locations and a TheatronFullProfile, Cvalue is not used to define the TheatronFullProfile")]
+        [Input("structuralOrigins", "List of ProfileOrigins to orientate of the structural sections")]
+        [Input("profile", "The TheatronFullProfile")]
+        [Input("pParams", "List of the ProfileParameters")]
         public static TheatronGeometry TheatronGeometry(List<ProfileOrigin> structuralOrigins, TheatronFullProfile profile, List<ProfileParameters> pParams)
         {
-            var theatron = new TheatronGeometry();
-            var plan = PlanGeometry(structuralOrigins,null);
-            theatron.TotalTiers = profile.MappedProfiles.Count;
-            SetGeneratorblocks(ref theatron, profile, plan,StadiaType.Undefined, pParams);
-            SetFloorMeshes(ref theatron, pParams);
-            SetGeneratorEyes(ref theatron);
+            var plan = PlanGeometry(structuralOrigins, null);
+            var theatron = CreateGeometry(plan, profile, pParams,StadiaType.Undefined);
+            
             theatron.Tiers3d.ForEach(t => t.Generatorblocks.ForEach(g => { t.TierBlocks.Add(g); theatron.Audience.Add(g.Audience); }));
             
             return theatron;
         }
 
         /***************************************************/
-        [Description("Create a partial theatron geometry based on a partial plan and a profile, Cvalue is used")]
-        [Input("planPart", "The theatron plan ")]
-        [Input("profile", "The theatron fullprofile used in defining the plan")]
-        public static TheatronGeometry TheatronGeometry(TheatronPlan planPart, TheatronFullProfile profile)
+        [Description("Create a partial TheatronGeometry based on a partial plan and a profile, Cvalue is used to define the TheatronFullProfile")]
+        [Input("planPart", "The partial TheatronPlan")]
+        [Input("profile", "The TheatronFullProfile")]
+        [Input("pParams", "List of the ProfileParameters")]
+        public static TheatronGeometry TheatronGeometry(TheatronPlan planPart, TheatronFullProfile profile, List<ProfileParameters> pParams)
         {
-            var theatron = new TheatronGeometry();
-
-            theatron.TotalTiers = profile.MappedProfiles.Count;
-
+            var theatron = CreateGeometry(planPart, profile, pParams, StadiaType.Undefined);
+            theatron.Tiers3d.ForEach(t => t.Generatorblocks.ForEach(g => { t.TierBlocks.Add(g); theatron.Audience.Add(g.Audience); }));
             return theatron;
         }
         /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
-
+        private static TheatronGeometry CreateGeometry(TheatronPlan plan, TheatronFullProfile profile, List<ProfileParameters> pParams, StadiaType stadiaType)
+        {
+            var theatron = new TheatronGeometry();
+            theatron.TotalTiers = profile.MappedProfiles.Count;
+            SetGeneratorblocks(ref theatron, profile, plan, stadiaType, pParams);
+            SetFloorMeshes(ref theatron, pParams);
+            SetGeneratorEyes(ref theatron);
+           
+            return theatron;
+        }
+        /***************************************************/
         private static void SetGeneratorblocks(ref TheatronGeometry theatronGeom, TheatronFullProfile fullprofile, TheatronPlan theatronPlan,StadiaType stadiatype, List<ProfileParameters> profileParameters)
         {
             //this defines the geometry of the seating blocks from which all others are created

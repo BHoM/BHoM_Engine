@@ -26,6 +26,8 @@ using BH.Engine.Geometry;
 using BH.oM.Humans.ViewQuality;
 using System.Collections.Generic;
 using System.Linq;
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Humans.ViewQuality
 {
@@ -34,9 +36,15 @@ namespace BH.Engine.Humans.ViewQuality
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-
+        [Description("Create a ViewCone")]
+        [Input("up", "Vertical Vector for the ViewCone")]
+        [Input("horiz", "Horizontal Vector for the ViewCone")]
+        [Input("origin", "Origin point for the ViewCone")]
+        [Input("scale", "Scaling the head outline if not using metres")]
+        [Input("conetype", "Type of ViewCone to use")]
         public static ViewCone ViewCone(Vector up = null, Vector horiz = null,Point origin =null, double scale = 1.0, ViewConeEnum conetype = ViewConeEnum.ViewFrameArea)
         {
+            //should check up  and horiz are in plane
             if (up == null) up = Vector.YAxis;
             if (horiz == null) horiz = Vector.XAxis;
             if (origin == null) origin = Point.Origin;

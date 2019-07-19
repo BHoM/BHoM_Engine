@@ -24,6 +24,8 @@ using BH.oM.Geometry;
 using BH.oM.Architecture.Theatron;
 using System.Collections.Generic;
 using BH.Engine.Geometry;
+using System.ComponentModel;
+using BH.oM.Reflection.Attributes;
 
 namespace BH.Engine.Architecture.Theatron
 {
@@ -32,9 +34,13 @@ namespace BH.Engine.Architecture.Theatron
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-
+        [Description("Create a ProfileOrigin for a structural section, comprised of origin and section direction")]
+        [Input("origin", "Origin point for the section")]
+        [Input("direction", "Horizontal Vector defining the direction of the section")]
         public static ProfileOrigin ProfileOrigin(Point origin,Vector direction)
         {
+            //enforce a horizontal vector
+            if (direction.Z != 0) direction.Z = 0;
             return new ProfileOrigin {
 
                 Origin = origin.Clone(),
