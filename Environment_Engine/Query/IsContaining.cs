@@ -62,7 +62,7 @@ namespace BH.Engine.Environment
         [Output("isContaining", "True if the point is contained within the list, false if it is not")]
         public static bool IsContaining(this List<Point> pts, Point pt)
         {
-            return (pts.Where(point => point.X == pt.X && point.Y == pt.Y && point.Z == pt.Z).FirstOrDefault() != null);
+            return (pts.Where(point => Math.Round(point.X, 3) == Math.Round(pt.X, 3) && Math.Round(point.Y, 3) == Math.Round(pt.Y, 3) && Math.Round(point.Z, 3) == Math.Round(pt.Z, 3)).FirstOrDefault() != null);
         }
 
         [Description("Defines whether an Environment Panel contains a provided point")]
