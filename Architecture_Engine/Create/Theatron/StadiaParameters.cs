@@ -64,7 +64,7 @@ namespace BH.Engine.Architecture.Theatron
         }
 
         /***************************************************/
-        [Description("Create a full set of stadia parameters for a single tier, default values in metres")]
+        [Description("Create a full set of stadia parameters, default values in metres")]
         [Input("structBayWidth", "Target width for structural bays measure at front of the first row")]
         [Input("cornerRadius", "Radius for the corners if using EightArc or Orthogonal stadia types")]
         [Input("sideBound", "Dimension from the side of the playing area to the front row at the half way line")]

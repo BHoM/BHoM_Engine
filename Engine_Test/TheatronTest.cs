@@ -86,7 +86,7 @@ namespace Engine_Test
         }
         public TheatronGeometry TestPartialBowl(TheatronPlan plan,TheatronFullProfile profile, List<ProfileParameters> pParams)
         {
-            //testing a theatre type configuration based on a straight line
+            
             //profileorigins are taken from a full bowl layout here
             return BH.Engine.Architecture.Theatron.Create.TheatronGeometry(plan.SectionOrigins.GetRange(0, 10), profile, pParams);
             
