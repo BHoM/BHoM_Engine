@@ -23,6 +23,8 @@
 using BH.oM.Geometry;
 using BH.oM.Architecture.Theatron;
 using System.Collections.Generic;
+using System.ComponentModel;
+using BH.oM.Reflection.Attributes;
 
 namespace BH.Engine.Architecture.Theatron
 {
@@ -31,7 +33,8 @@ namespace BH.Engine.Architecture.Theatron
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-
+        [Description("Create an enumerator for predfined stadia types.")]
+        [Input("typeNum", "0 = EightArc, 1 = Orthogonal, 2 = NoCorners, 3 = Circular, 4 = FourArc, 5 = Oblong, 6 = undefined")]
         public static StadiaType StadiaTypeEnum(int typeNum)
         {
             var enumCount = StadiaType.GetNames(typeof(StadiaType)).Length;

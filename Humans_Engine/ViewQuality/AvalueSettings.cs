@@ -20,6 +20,8 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 using BH.oM.Humans.ViewQuality;
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Humans.ViewQuality
 {
@@ -28,7 +30,10 @@ namespace BH.Engine.Humans.ViewQuality
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-
+        [Description("Define the settings for an AvalueAnalysis")]
+        [Input("conetype", "Type of view cone")]
+        [Input("calcOcclusion", "Evalaute occulsion of the playing area by the spectators in front")]
+        
         public static AvalueSettings AvalueSettings(ViewConeEnum conetype, bool calcOcclusion)
         {
             return new AvalueSettings

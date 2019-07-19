@@ -32,6 +32,8 @@ using Accord.Math.Distances;
 using Accord.Collections;
 using System.IO;
 using BH.Engine.Base;
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Humans.ViewQuality
 {
@@ -40,12 +42,20 @@ namespace BH.Engine.Humans.ViewQuality
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
+        [Description("Evaulate Avalues for a single Audience")]
+        [Input("audience", "Audience to evalaute")]
+        [Input("setting", "AvalueSettings to configure the evaluation")]
+        [Input("activityArea", "ActivityArea to use in the evaluation")]
         public static List<Avalue> AvalueAnalysis(Audience audience, AvalueSettings settings, ActivityArea activityArea)
         {
             List<Avalue> results = EvaluateAvalue(audience, settings, activityArea);
             return results;
         }
         /***************************************************/
+        [Description("Evaulate Avalues for a List of Audience")]
+        [Input("audience", "Audience to evalaute")]
+        [Input("setting", "AvalueSettings to configure the evaluation")]
+        [Input("activityArea", "ActivityArea to use in the evaluation")]
         public static List<List<Avalue>> AvalueAnalysis(List<Audience> audience, AvalueSettings settings, ActivityArea activityArea)
         {
             List<List<Avalue>> results = new List<List<Avalue>>();

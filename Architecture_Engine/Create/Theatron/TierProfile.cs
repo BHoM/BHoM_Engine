@@ -27,6 +27,8 @@ using BH.Engine.Base;
 using System.Linq;
 using BH.Engine.Geometry;
 using System.Collections.Generic;
+using System.ComponentModel;
+using BH.oM.Reflection.Attributes;
 
 namespace BH.Engine.Architecture.Theatron
 {
@@ -35,6 +37,9 @@ namespace BH.Engine.Architecture.Theatron
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
+        [Description("Create a single TierProfile from a single ProfileParameters and setting out point. 0,0,0 is used as the focal point.")]
+        [Input("parameters", "ProfileParameters")]
+        [Input("lastPointPrevTier", "Spectator eye point from previous tier or 0,0,0 on first tier")]
         public static TierProfile TierProfile(ProfileParameters parameters, Point lastPointPrevTier)
         {
             TierProfile tierProfile = new TierProfile();
@@ -49,9 +54,16 @@ namespace BH.Engine.Architecture.Theatron
 
             return tierProfile;
         }
-        
+
 
         /***************************************************/
+        [Description("Scale, rotate and translate a TierProfile")]
+        [Input("originalSection", "TierProfile to transform")]
+        [Input("scale", "Scaling amount")]
+        [Input("source", "Origin point for the transform")]
+        [Input("target", "Target point for the transform")]
+        [Input("angle", "Rotation angle")]
+        //this should be a modify method
         public static TierProfile TransformProfile(TierProfile originalSection, Vector scale, Point source, Point target, double angle)
         {
             TierProfile transformedTier = (TierProfile)originalSection.DeepClone();
@@ -64,8 +76,10 @@ namespace BH.Engine.Architecture.Theatron
             return transformedTier;
         }
         /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
 
-        public static TierProfile MirrorTierYZ(TierProfile originalSection)
+        private static TierProfile MirrorTierYZ(TierProfile originalSection)
         {
             //need a clone
             TierProfile theMappedTier = originalSection.DeepClone();
@@ -94,8 +108,6 @@ namespace BH.Engine.Architecture.Theatron
             return theMappedTier;
 
         }
-        /***************************************************/
-        /**** Private Methods                           ****/
         /***************************************************/
         private static void SetEyePoints(ref TierProfile tierProfile, ProfileParameters parameters, double lastX, double lastZ)
         {

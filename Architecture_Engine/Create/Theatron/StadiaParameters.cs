@@ -21,7 +21,9 @@
  */
 
 using BH.oM.Architecture.Theatron;
+using BH.oM.Reflection.Attributes;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace BH.Engine.Architecture.Theatron
 {
@@ -30,7 +32,8 @@ namespace BH.Engine.Architecture.Theatron
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-
+        [Description("Create a default set of stadia parameters")]
+        [Input("scale", "Optional scale if working units are not metres")]
         public static StadiaParameters StadiaParameters(double scale = 1.0)
         {
             return new StadiaParameters
@@ -61,7 +64,18 @@ namespace BH.Engine.Architecture.Theatron
         }
 
         /***************************************************/
-
+        [Description("Create a full set of stadia parameters for a single tier, default values in metres")]
+        [Input("structBayWidth", "Target width for structural bays measure at front of the first row")]
+        [Input("cornerRadius", "Radius for the corners if using EightArc or Orthogonal stadia types")]
+        [Input("sideBound", "Dimension from the side of the playing area to the front row at the half way line")]
+        [Input("endBound", "Dimension from the end of playing area to the front row at the middle of the goal mouth")]
+        [Input("sideRadius", "Side arc radius when using EightArc stadia type")]
+        [Input("endRadius", "End arc radius when using EightArc stadia type")]
+        [Input("theatronRadius", "Radius of bowl for Circular stadia type")]
+        [Input("numCornerBays", "Number of structural bays through corners if using EightArc or Orthogonal stadia types")]
+        [Input("typeOfBowl", "What is the stadia type defined by a StadiaType enum")]
+        [Input("cornerFraction", "Proportional width of the transition bays between corners and sides and corners and ends")]
+        [Input("activityArea", "ActivityArea defines playing area and a focal point")]
         public static StadiaParameters StadiaParameters(double structBayWidth = 7.5,double cornerRadius = 10.0,double sideBound = 6.7,
             double endBound = 7.8,double sideRadius = 240.0,double endRadius = 200.0,double theatronRadius = 100.0,int numCornerBays = 7,
             StadiaType typeOfBowl = StadiaType.EightArc, double cornerFraction = 0.5,ActivityArea activityArea = null)

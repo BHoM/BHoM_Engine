@@ -27,6 +27,8 @@ using BH.oM.Humans.ViewQuality;
 using BH.Engine.Geometry;
 using Accord.Collections;
 using System;
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Humans.ViewQuality
 {
@@ -35,12 +37,20 @@ namespace BH.Engine.Humans.ViewQuality
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
+        [Description("Evaulate Evalues for a single Audience")]
+        [Input("audience", "Audience to evalaute")]
+        [Input("settings", "EvalueSettings to configure the evaluation")]
+        [Input("activityArea", "ActivityArea to use in the evaluation")]
         public static List<Evalue> EvalueAnalysis(Audience audience, EvalueSettings settings, ActivityArea activityArea)
         {
             List<Evalue> results = EvaluateEvalue(audience, settings, activityArea);
             return results;
         }
         /***************************************************/
+        [Description("Evaulate Evalues for a List of Audience")]
+        [Input("audience", "Audience to evalaute")]
+        [Input("settings", "EvalueSettings to configure the evaluation")]
+        [Input("activityArea", "ActivityArea to use in the evaluation")]
         public static List<List<Evalue>> EvalueAnalysis(List<Audience> audience, EvalueSettings settings, ActivityArea activityArea)
         {
             List<List<Evalue>> results = new List<List<Evalue>>();

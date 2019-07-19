@@ -27,6 +27,8 @@ using BH.oM.Humans.ViewQuality;
 using BH.Engine.Geometry;
 using Accord.Collections;
 using System;
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Humans.ViewQuality
 {
@@ -35,12 +37,20 @@ namespace BH.Engine.Humans.ViewQuality
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
+        [Description("Evaulate Cvalues for a single Audience")]
+        [Input("audience", "Audience to evalaute")]
+        [Input("settings", "CvalueSettings to configure the evaluation")]
+        [Input("focalPolyline", "Polyline to be used for defining focal points")]
         public static List<Cvalue> CvalueAnalysis(Audience audience, CvalueSettings settings, Polyline focalPolyline)
         {
             List<Cvalue> results = EvaluateCvalue(audience, settings, focalPolyline);
             return results;
         }
         /***************************************************/
+        [Description("Evaulate Cvalues for a List of Audience")]
+        [Input("audience", "Audience to evalaute")]
+        [Input("settings", "CvalueSettings to configure the evaluation")]
+        [Input("focalPolyline", "Polyline to be used for defining focal points")]
         public static List<List<Cvalue>> CvalueAnalysis(List<Audience> audience, CvalueSettings settings, Polyline focalPolyline)
         {
             List<List<Cvalue>> results = new List<List<Cvalue>>();

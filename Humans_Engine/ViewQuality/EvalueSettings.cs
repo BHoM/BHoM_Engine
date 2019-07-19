@@ -23,6 +23,8 @@
 using BH.oM.Geometry;
 using BH.oM.Humans.ViewQuality;
 using System.Collections.Generic;
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Humans.ViewQuality
 {
@@ -31,6 +33,9 @@ namespace BH.Engine.Humans.ViewQuality
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
+        [Description("Define the settings for an EvalueAnalysis")]
+        [Input("viewtype", "Method type for defining Spectator view direction")]
+        
         public static EvalueSettings EvalueSettings(EvalueViewEnum viewtype)
         {
             return new EvalueSettings

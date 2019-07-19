@@ -26,6 +26,8 @@ using BH.oM.Architecture.Theatron;
 using System.Collections.Generic;
 using System;
 using BH.Engine.Base;
+using System.ComponentModel;
+using BH.oM.Reflection.Attributes;
 
 namespace BH.Engine.Architecture.Theatron
 {
@@ -34,7 +36,8 @@ namespace BH.Engine.Architecture.Theatron
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-
+        [Description("Create a full profile from one or more ProfileParameters")]
+        [Input("parameters", "List of ProfileParameters")]
         public static TheatronFullProfile TheatronFullProfile(List<ProfileParameters> parameters)
         {
             //this assumes no relation with the plan geometry setting out is from the origin
@@ -44,7 +47,9 @@ namespace BH.Engine.Architecture.Theatron
         }
 
         /***************************************************/
-
+        [Description("Create a full profile from one or more ProfileParameters and a TheatronPlan geometry. The worst case section will be found and used to define the profile geometry")]
+        [Input("parameters", "List of ProfileParameters")]
+        [Input("planGeometry", "A TheatronPlan")]
         public static TheatronFullProfile TheatronFullProfile(List<ProfileParameters> parameters, TheatronPlan planGeometry)
         {
             
@@ -56,7 +61,9 @@ namespace BH.Engine.Architecture.Theatron
             return fullProfile;
         }
         /***************************************************/
-
+        [Description("Create a full profile from one or more ProfileParameters and a focal point and ProfileOrigin")]
+        [Input("parameters", "List of ProfileParameters")]
+        [Input("planGeometry", "A TheatronPlan")]
         public static TheatronFullProfile TheatronFullProfile(List<ProfileParameters> parameters, Point focalPoint, ProfileOrigin sectionOrigin)
         {
             //this assumes no relation with the plan geometry setting out is from the origin

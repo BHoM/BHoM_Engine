@@ -20,6 +20,8 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 using BH.oM.Humans.ViewQuality;
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Humans.ViewQuality
 {
@@ -28,7 +30,9 @@ namespace BH.Engine.Humans.ViewQuality
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-
+        [Description("Define the method used to find Cvalue focal points")]
+        [Input("tyepNum", "0 = OffsetThroughCorners,1 = Closest,2 = Perpendicular,3 = Undefined")]
+       
         public static CvalueFocalMethodEnum CvalueFocalMethod(int typeNum)
         {
             var enumCount = CvalueFocalMethodEnum.GetNames(typeof(CvalueFocalMethodEnum)).Length;

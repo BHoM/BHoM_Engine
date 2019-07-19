@@ -27,6 +27,8 @@ using BH.oM.Architecture.Theatron;
 using System.Collections.Generic;
 using System.Linq;
 using System;
+using System.ComponentModel;
+using BH.oM.Reflection.Attributes;
 
 namespace BH.Engine.Architecture.Theatron
 {
@@ -35,7 +37,9 @@ namespace BH.Engine.Architecture.Theatron
         /***************************************************/
         /**** public Methods                            ****/
         /***************************************************/
-
+        [Description("Create a partial TheatronPlan")]
+        [Input("structuralSections", "List of ProfileOrigin to orientate the structural sections")]
+        [Input("focalPolyline", "The polyline used to define focal points for Cvalue profile generation")]
         public static TheatronPlan PlanGeometry(List<ProfileOrigin> structuralSections, Polyline focalPolyline)
         {
             var planGeometry = new TheatronPlan
@@ -50,6 +54,9 @@ namespace BH.Engine.Architecture.Theatron
 
         }
         /***************************************************/
+        [Description("Create a full TheatronPlan from StadiaParameters")]
+        [Input("parameters", "StadiaParameters to define the TheatronPlan")]
+        
         public static TheatronPlan PlanGeometry(StadiaParameters parameters)
         {
             //assuming its a full stadium
@@ -162,7 +169,7 @@ namespace BH.Engine.Architecture.Theatron
         private static Polyline setFront(List<ProfileOrigin> sections)
         {
             List<Point> pts = sections.Select(item => item.Origin).ToList();
-            pts.Add(pts[0]);
+            
             Polyline front = Geometry.Create.Polyline(pts);
             return front;
         }

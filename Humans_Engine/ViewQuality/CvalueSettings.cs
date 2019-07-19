@@ -23,6 +23,8 @@
 
 using BH.oM.Humans.ViewQuality;
 using BH.oM.Geometry;
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Humans.ViewQuality
 {
@@ -31,7 +33,11 @@ namespace BH.Engine.Humans.ViewQuality
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        public static CvalueSettings CvalueSettings(CvalueFocalMethodEnum ctype, double defaultC = 0.09,double rowTolerance = 2.0)
+        [Description("Define the settings for an CvalueAnalysis")]
+        [Input("ctype", "Method type for finding focal points")]
+        [Input("defaultC", "Default Cvalue assigned to points with no spectators in front")]
+        
+        public static CvalueSettings CvalueSettings(CvalueFocalMethodEnum ctype, double defaultC = 0.09)
         {
             return new CvalueSettings
             {
@@ -40,7 +46,6 @@ namespace BH.Engine.Humans.ViewQuality
 
                 DefaultCValue = defaultC,
 
-                RowTolerance = rowTolerance,
             };
         }
         /***************************************************/

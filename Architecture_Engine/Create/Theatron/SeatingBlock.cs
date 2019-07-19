@@ -29,15 +29,23 @@ using System.Collections.Generic;
 using System;
 using BH.Engine.Base;
 using System.Linq;
+using System.ComponentModel;
+using BH.oM.Reflection.Attributes;
 
 namespace BH.Engine.Architecture.Theatron
 {
     public static partial class Create
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /**** Private Methods                           ****/
         /***************************************************/
-
+        [Description("Create a SeatignBlock")]
+        [Input("start", "ProfileOrigin defining the start of the block")]
+        [Input("vom", "ProfileOrigin defining the vomitory position of the block")]
+        [Input("end", "ProfileOrigin defining the end of the block")]
+        [Input("t", "SeatingBlockType")]
+        [Input("seatWidth", "Width of seats")]
+        [Input("aisleWidth", "Width of asile at vomitory")]
         public static SeatingBlock SeatingBlock(ProfileOrigin start, ProfileOrigin vom, ProfileOrigin end, SeatingBlockType t, double seatWidth, double aisleWidth)
         {
             return new SeatingBlock
@@ -59,8 +67,6 @@ namespace BH.Engine.Architecture.Theatron
             };
         }
 
-        /***************************************************/
-        /**** Private Methods                           ****/
         /***************************************************/
 
         private static void SetBlockProfiles(ref SeatingBlock block, TierProfile sectionToMap, ProfileOrigin origin)
