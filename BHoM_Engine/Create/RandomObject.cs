@@ -209,6 +209,7 @@ namespace BH.Engine.Base
             else if (type.IsInterface || type.IsAbstract)
             {
                 if (depth > 50) return null;
+                if (type.Name == "IBHoMFragment") return null;
                 return GetValue(m_ImplementingTypes[type], rnd, depth + 1);
             }
             else

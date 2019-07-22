@@ -1,4 +1,6 @@
 ﻿using BH.oM.Structure.Elements;
+using BH.oM.Geometry;
+using BH.Engine;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,37 +10,71 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.Security.Cryptography;
+using BH.Engine.Serialiser;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
-namespace Engine_Test
+namespace Diffing_Engine
 {
-    public static class Diffing_Engine_Test
+    public static partial class TestDiffing
     {
-        public static void TestDiffing_Main()
+        public static void Main()
         {
-            Bar bar = new Bar();
-            Bar bar2 = new Bar();
-
             List<object> objs = new List<object>();
+            List<string> listStringHashes = new List<string>();
+
+
+            Bar bar = new Bar();
+            Bar bar1 = new Bar();
+
+            bar.Name = "bar";
             objs.Add(bar);
-            objs.Add(bar2);
+            bar1.Name = "bar1";
+            objs.Add(bar1);
 
-            // Add types whose properties you want to exclude from the fingerprint
-            List<Type> exclusionTypes = new List<Type> { typeof(BH.oM.Base.BHoMObject) };
+            TestclassA point = new TestclassA();
+            point.X = 10;
+            point.Y = 10;
+            TestclassB coord = new TestclassB();
+            coord.X = 10;
+            coord.Y = 10;
 
-            // TODO: what happens if you want to specify single properties to be excluded, and those are already included in the exclusionTypes?
-            // Do a Set instead of a List for exclusionsProps.
+            objs.Add(point);
+            objs.Add(coord);
 
-            foreach (var obj in objs)
+            //objs.Add(BH.Engine.Base.Create.RandomObject(typeof(BH.oM.Geometry.Point)));
+
+            //objs.Add(BH.Engine.Base.Create.RandomObject(typeof(Bar)));
+            //objs.Add(BH.Engine.Base.Create.RandomObject(typeof(Bar)));
+
+
+            //TestHashing_Protobuf(objs);
+
+
+            for (int i = 0; i < objs.Count; i++)
             {
-                byte[] objByte = obj.ToByteArray(exclusionTypes);
+                var json = objs[i].PrepareJson(new List<string>() { "BHoM_Guid" });
+                //var json = objs[i].PrepareJson(typeof(BH.oM.Base.BHoMObject).GetProperties());
 
-                using (MD5 md5Hash = MD5.Create())
-                {
-                    string hash = GetMd5Hash(md5Hash, objByte);
-                    Console.WriteLine(hash);
-                }
+                var hashString = GetHashString(json);
+                Console.WriteLine(objs[i].GetType().Name + ": " + hashString);
             }
-               
+
+        }
+
+        public static byte[] GetSHA256Hash(string inputString)
+        {
+            HashAlgorithm algorithm = SHA256.Create();
+            return algorithm.ComputeHash(Encoding.UTF8.GetBytes(inputString));
+        }
+
+        public static string GetHashString(string inputString)
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach (byte b in GetSHA256Hash(inputString))
+                sb.Append(b.ToString("X2"));
+
+            return sb.ToString();
         }
 
         static string GetMd5Hash(MD5 md5Hash, byte[] objByte)
@@ -56,57 +92,32 @@ namespace Engine_Test
             return sBuilder.ToString();
         }
 
-        public static byte[] ToByteArray(this object obj, List<Type> exclusionTypes = null, List<PropertyInfo> exclusionsProps = null)
+        public static string PrepareJson(this object obj, PropertyInfo[] propertiesToRemove = null)
         {
-            if (exclusionsProps == null)
-                exclusionsProps = new List<PropertyInfo>();
+            List<PropertyInfo> propList = propertiesToRemove.ToList();
+            if (propList == null && propList.Count == 0)
+                return obj.ToJson();
 
-            if (exclusionTypes != null)
-            {
-                // Extract properties to be excluded from the exclusionTypes
-                var exctractedExclusionProps = exclusionTypes.SelectMany(t => t.GetProperties().ToList()).ToList();
-
-                exclusionsProps.AddRange(exctractedExclusionProps);
-            }
-
-            // Protobuf-net implementation
-            ProtoBuf.Meta.RuntimeTypeModel model = ProtoBuf.Meta.TypeModel.Create();
-
-            AddPropsToModel(model, obj.GetType(), exclusionsProps);
-
-            byte[] bytes;
-            using (var memoryStream = new MemoryStream())
-            {
-                model.Serialize(memoryStream, obj);
-                bytes = memoryStream.GetBuffer();
-            }
-
-            return bytes;
+            List<string> propNames = new List<string>();
+            propList.ForEach(prop => propNames.Add(prop.Name));
+            return PrepareJson(obj, propNames);
         }
 
-        public static void AddPropsToModel(ProtoBuf.Meta.RuntimeTypeModel model, Type objType, List<PropertyInfo> exclusionsProps = null)
+        public static string PrepareJson(this object obj, List<string> propertiesToRemove = null)
         {
-            List<PropertyInfo> props = new List<PropertyInfo>();
-            if (objType != null)
-                props = objType.GetProperties().ToList();
-            else
-                throw new ArgumentNullException("Object type must be non null for the byte serialization.");
+            if (propertiesToRemove == null && propertiesToRemove.Count == 0)
+                return obj.ToJson();
 
-            if (exclusionsProps != null)
-                props.RemoveAll(pr => exclusionsProps.Exists(t => t.DeclaringType == pr.DeclaringType && t.Name == pr.Name));
+            var jObject = JsonConvert.DeserializeObject<JObject>(obj.ToJson());
 
-            props
-                .Where(prop => prop.PropertyType.IsClass || prop.PropertyType.IsInterface).ToList()
-                .ForEach(prop =>
-                    {
-                        AddPropsToModel(model, prop.PropertyType, exclusionsProps); //recursive call
-                    }
-               );
-
-            var propsNames = props.Select(p => p.Name).OrderBy(name => name).ToList();
-
-            model.Add(objType, true).Add(propsNames.ToArray());
+            // Sets properties to be ignored as null, without altering the tree.
+            propertiesToRemove.ForEach(propName =>
+            jObject.Properties()
+                .Where(attr => attr.Name.StartsWith(propName))
+                .ToList()
+                .ForEach(attr => attr.Value = null)
+            );
+            return jObject.ToString();
         }
-
     }
 }

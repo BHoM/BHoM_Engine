@@ -41,6 +41,13 @@
     <Reference Include="Diffing_oM">
       <HintPath>..\..\BHoM\Build\Diffing_oM.dll</HintPath>
     </Reference>
+    <Reference Include="Geometry_oM, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\BHoM\Build\Geometry_oM.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="protobuf-net, Version=2.4.0.0, Culture=neutral, PublicKeyToken=257b51d87d2e4d67, processorArchitecture=MSIL">
       <HintPath>..\packages\protobuf-net.2.4.0\lib\net40\protobuf-net.dll</HintPath>
     </Reference>
@@ -61,11 +68,27 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Compute\Diffing.cs" />
+    <Compile Include="Compute\ISectionPropertySurrogate.cs" />
     <Compile Include="Diffing_Engine_test.cs" />
+    <Compile Include="Hashing-protobuf.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BHoM_Engine\BHoM_Engine.csproj">
+      <Project>{1ad45c88-dd54-48e5-951f-55edfeb70e35}</Project>
+      <Name>BHoM_Engine</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Serialiser_Engine\Serialiser_Engine.csproj">
+      <Project>{b013f0da-7d21-4339-85fc-013edd518c6d}</Project>
+      <Name>Serialiser_Engine</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Structure_Engine\Structure_Engine.csproj">
+      <Project>{52a31a0a-e340-4909-aad6-228045b07bf3}</Project>
+      <Name>Structure_Engine</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
