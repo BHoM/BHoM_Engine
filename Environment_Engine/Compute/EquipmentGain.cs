@@ -39,13 +39,14 @@ namespace BH.Engine.Environment
         /****          public Methods                   ****/
         /***************************************************/
 
-        [Description("Compute a lighting gain from the watts per square meter and floor area of the space")]
-        [Input("wattsPerMeterSquared", "The watts per meter squared from a standard or set of lights")]
-        [Input("area", "The floor area (in square meters) of the space")]
-        [Output("lightingGain", "The calculated lighting gain with the sensible watts for the space")]
-        public static Lighting LightingGain(double wattsPerMeterSquared, double area)
+        [Description("Compute the sensible or latent equipment gain from the watts per meter squared and the area of the space")]
+        [Input("sensibleWattsPerMeterSquared", "The sensible watts per meter squared from building code")]
+        [Input("latentWattsPerMeterSquared", "The latent watts per meter squared from building code")]
+        [Input("area", "The area of the space")]
+        [Output("equipmentGain", "The calculated sensible or latent equipment gain with the sensible or latent watts for the space")]
+        public static Equipment EquipmentGain(double sensibleWattsPerSquareMeter, double latentWattsPerSquareMeter, double area)
         {
-            return Create.Lighting(wattsPerMeterSquared * area);
+            return Create.Equipment(sensibleWattsPerSquareMeter * area, latentWattsPerSquareMeter * area);
         }
     }
 }
