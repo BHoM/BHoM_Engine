@@ -51,6 +51,10 @@
     <Reference Include="protobuf-net, Version=2.4.0.0, Culture=neutral, PublicKeyToken=257b51d87d2e4d67, processorArchitecture=MSIL">
       <HintPath>..\packages\protobuf-net.2.4.0\lib\net40\protobuf-net.dll</HintPath>
     </Reference>
+    <Reference Include="Reflection_oM, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\BHoM\Build\Reflection_oM.dll</HintPath>
+    </Reference>
     <Reference Include="Structure_oM">
       <HintPath>..\..\BHoM\Build\Structure_oM.dll</HintPath>
     </Reference>
@@ -68,9 +72,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Compute\Diffing.cs" />
-    <Compile Include="Compute\ISectionPropertySurrogate.cs" />
+    <Compile Include="Tests\Hashing-json.cs" />
+    <Compile Include="Compute\Hashing.cs" />
+    <Compile Include="Compute\PrepareJson.cs" />
     <Compile Include="Diffing_Engine_test.cs" />
-    <Compile Include="Hashing-protobuf.cs" />
+    <Compile Include="Tests\Hashing-protobuf.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

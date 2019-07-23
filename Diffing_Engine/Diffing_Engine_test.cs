@@ -1,6 +1,7 @@
 ﻿using BH.oM.Structure.Elements;
 using BH.oM.Geometry;
 using BH.Engine;
+using BH.oM.Base;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,12 +14,75 @@ using System.Security.Cryptography;
 using BH.Engine.Serialiser;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using BH.oM.Diffing;
 
 namespace Diffing_Engine
 {
     public static partial class TestDiffing
     {
         public static void Main()
+        {
+            //Test.TestHashing_Protobuf.Run();
+            //Test.TestHashing_Json.Run();
+
+            // 1. Suppose Alessio is creating 5 bars in Grasshopper, representing a Portal frame structure.
+            // These will be Alessio's "Current" objects.
+            List<IBHoMObject> currentObjs_Alessio = new List<IBHoMObject>();
+
+            for (int i = 0; i < 5; i++)
+            {
+                currentObjs_Alessio.Add(BH.Engine.Base.Create.RandomObject(typeof(Bar)) as IBHoMObject);
+            }
+
+            // 2. Alessio wants these bars to be part of a "Portal frame Project" that will be tracking the objects for future changes.
+            // (The "Project" is what Speckle calls STREAM).
+            // Alessio uses the "Diffing" component to create a new Project.
+            // The "Diffing" component will attach a `Diffing` fragment to the objects, so for next push that is not needed.
+            // Alessio only inputs his current objects in the first input. 
+            // The second input is for the "Read" objects (the existing ones) that do not exist, as the Project is new,
+            // so Alessio does not pass anything as a second argument.
+            Delta delta = Diffing_Engine.Compute.Diffing("Portal frame Project", currentObjs_Alessio);
+
+            // The delta now contains the new objects in the property `delta.ToCreate`.
+            // These objects have an hash memorized in their Diffing Fragment that will be used to track their changes.
+
+            // 3. Imagine that Alessio takes the `delta` 
+            // and PUSHES it to some external platform (a database, Speckle, 3D repo...).
+            // E.g. someAdapter.Push(delta);
+            // (The Push will have to take care of calling the appropriate methods for the delta objs: create, update or delete).
+
+            // 4. Eduardo is now asked to do some changes to the "Portal frame Project" created by Alessio.
+            List<IBHoMObject> currentObjs_Eduardo = new List<IBHoMObject>();
+            List<IBHoMObject> readObjs_Eduardo = new List<IBHoMObject>();
+
+            // 5. On his machine, Eduardo now PULLS the data from the external platform to read the existing objects.
+            // E.g. readObjs = someAdapter.Pull("Portal frame Project");
+            // (For illustration I simply take the `delta.ToCreate` objects and copy them in readObjs_Eduardo)
+            readObjs_Eduardo = delta.ToCreate.Select(obj => obj as IBHoMObject).ToList();
+            
+            // Eduardo will now work on the objects output from the Pull component, 
+            // which will be a deep copy of the readObjs, in order to preserve immutability.
+            currentObjs_Eduardo = readObjs_Eduardo.Select(obj => BH.Engine.Base.Query.DeepClone(obj)).ToList();
+
+            // 6. Eduardo now modifies one of the bars, deletes another one, and creates a new one.
+            currentObjs_Eduardo[0].Name = "newNameForBar"; // modifies this bar
+            currentObjs_Eduardo.RemoveAt(1); //deletes this bar
+            currentObjs_Eduardo.Add(BH.Engine.Base.Create.RandomObject(typeof(Bar)) as IBHoMObject); //adds this bar
+
+            // 7. Eduardo now wants to Push his changes.
+            // He has two choices:
+            //     7a. Use the diffing component to calculate the delta between his objects and the objects he pulled, 
+            //         then input the Delta result in the Push component.
+            //     7b. Just input his `currentObjs_Eduardo` into the Push component.
+            //         The Push component determines automatically that he should be calculating the diffing for those objects
+            //         because those objects have a `Diffing` fragment.
+            // (This choice makes the use of the "Diffing component" required only when creating the project for the first time, or when clashes happen).
+            Delta delta2 = Diffing_Engine.Compute.Diffing(currentObjs_Eduardo, readObjs_Eduardo);
+
+
+        }
+
+        private static List<object> GenerateObjects()
         {
             List<object> objs = new List<object>();
             List<string> listStringHashes = new List<string>();
@@ -32,92 +96,18 @@ namespace Diffing_Engine
             bar1.Name = "bar1";
             objs.Add(bar1);
 
-            TestclassA point = new TestclassA();
-            point.X = 10;
-            point.Y = 10;
-            TestclassB coord = new TestclassB();
-            coord.X = 10;
-            coord.Y = 10;
-
-            objs.Add(point);
-            objs.Add(coord);
 
             //objs.Add(BH.Engine.Base.Create.RandomObject(typeof(BH.oM.Geometry.Point)));
 
             //objs.Add(BH.Engine.Base.Create.RandomObject(typeof(Bar)));
             //objs.Add(BH.Engine.Base.Create.RandomObject(typeof(Bar)));
 
-
-            //TestHashing_Protobuf(objs);
-
-
-            for (int i = 0; i < objs.Count; i++)
-            {
-                var json = objs[i].PrepareJson(new List<string>() { "BHoM_Guid" });
-                //var json = objs[i].PrepareJson(typeof(BH.oM.Base.BHoMObject).GetProperties());
-
-                var hashString = GetHashString(json);
-                Console.WriteLine(objs[i].GetType().Name + ": " + hashString);
-            }
-
+            return objs;
         }
 
-        public static byte[] GetSHA256Hash(string inputString)
+        private static List<IBHoMObject> GenerateIBHoMObjects()
         {
-            HashAlgorithm algorithm = SHA256.Create();
-            return algorithm.ComputeHash(Encoding.UTF8.GetBytes(inputString));
-        }
-
-        public static string GetHashString(string inputString)
-        {
-            StringBuilder sb = new StringBuilder();
-            foreach (byte b in GetSHA256Hash(inputString))
-                sb.Append(b.ToString("X2"));
-
-            return sb.ToString();
-        }
-
-        static string GetMd5Hash(MD5 md5Hash, byte[] objByte)
-        {
-            byte[] data = md5Hash.ComputeHash(objByte);
-
-            StringBuilder sBuilder = new StringBuilder();
-
-            // Loop through each byte of the hashed data and format each one as a hexadecimal string
-            for (int i = 0; i < data.Length; i++)
-            {
-                sBuilder.Append(data[i].ToString("x2"));
-            }
-
-            return sBuilder.ToString();
-        }
-
-        public static string PrepareJson(this object obj, PropertyInfo[] propertiesToRemove = null)
-        {
-            List<PropertyInfo> propList = propertiesToRemove.ToList();
-            if (propList == null && propList.Count == 0)
-                return obj.ToJson();
-
-            List<string> propNames = new List<string>();
-            propList.ForEach(prop => propNames.Add(prop.Name));
-            return PrepareJson(obj, propNames);
-        }
-
-        public static string PrepareJson(this object obj, List<string> propertiesToRemove = null)
-        {
-            if (propertiesToRemove == null && propertiesToRemove.Count == 0)
-                return obj.ToJson();
-
-            var jObject = JsonConvert.DeserializeObject<JObject>(obj.ToJson());
-
-            // Sets properties to be ignored as null, without altering the tree.
-            propertiesToRemove.ForEach(propName =>
-            jObject.Properties()
-                .Where(attr => attr.Name.StartsWith(propName))
-                .ToList()
-                .ForEach(attr => attr.Value = null)
-            );
-            return jObject.ToString();
+            return GenerateObjects().Select(obj => obj as BH.oM.Base.IBHoMObject).Where(obj => obj != null).ToList();
         }
     }
 }

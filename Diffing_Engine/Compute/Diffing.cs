@@ -19,72 +19,118 @@ namespace Diffing_Engine
         ///***************************************************/
         ///**** Public Methods                            ****/
         ///***************************************************/
+        /// Diffing requires to memorize the hash of the object somewhere.
+        /// If using BHoMObjects, we can save the hash inside the objects themselves.
+        /// Otherwise another support is needed (table with | object | Hash | )
 
-        //public static Delta Diffing(List<IBHoMObject> ToPush, List<IBHoMObject> Read)
-        //{
-        //    var groups_ToPush = ToPush.GroupBy(x => x.GetType());
-        //    var groups_Read = Read.GroupBy(x => x.GetType());
+        public static Delta Diffing(string projectName, List<IBHoMObject> CurrentObjs)
+        {
+            // Clone the current objects
+            List<IBHoMObject> CurrentObjs_cloned = CurrentObjs.Select(obj => BH.Engine.Base.Query.DeepClone(obj)).ToList();
 
-        //    Delta delta = new Delta(null, null, null, "", "", 0, "");
-        //    return null;
-        //}
+            // Create project fragment
+            DiffProjFragment diffProj = new DiffProjFragment(projectName);
+
+            // Define exceptions (will be exposed as parameter)
+            List<string> exceptions = new List<string>() { "BHoM_Guid" };
+
+            // Calculate and set the object hashes
+            CurrentObjs_cloned.ForEach(obj => 
+                obj.Fragments.Add(
+                    new DiffHashFragment(Compute.SHA256Hash(obj, exceptions), diffProj)
+                    ));
+
+            //CurrentObjs_cloned.ForEach(obj => obj.CustomData.Add("hash", Compute.SHA256Hash(obj, exceptions))); //- Alternative using customData
+
+            return new Delta(diffProj, CurrentObjs_cloned);
+        }
+
+        public static Delta Diffing(List<IBHoMObject> CurrentObjs, List<IBHoMObject> ReadObjs)
+        {
+            // Clone the current objects
+            List<IBHoMObject> CurrentObjs_cloned = CurrentObjs.Select(obj => BH.Engine.Base.Query.DeepClone(obj)).ToList();
+
+            // Get project fragment from one of the objects
+            DiffProjFragment diffProj = CurrentObjs_cloned[0].Fragments.OfType<DiffHashFragment>().First().DiffingProject;
+
+            // Define exceptions (will be exposed as parameter)
+            List<string> exceptions = new List<string>() { "BHoM_Guid" };
+
+            // Calculate and set the object hashes
+            CurrentObjs_cloned.ForEach(obj =>
+                obj.Fragments.Add(
+                    new DiffHashFragment(Compute.SHA256Hash(obj, exceptions), diffProj)
+                    ));
+
+            List<IBHoMObject> newObjects = new List<IBHoMObject>();
+            List<string> newObjects_hashes = new List<string>();
+
+            List<IBHoMObject> toBeUpdated = new List<IBHoMObject>();
+            List<string> toBeUpdated_hashes = new List<string>();
+
+            List<IBHoMObject> toBeDeleted = new List<IBHoMObject>();
+            List<string> toBeDeleted_hashes = new List<string>();
+
+            List<IBHoMObject> readObjs_cloned = ReadObjs.Select(obj => BH.Engine.Base.Query.DeepClone(obj)).ToList();
+
+            // TODO: here we might have current objects that have been created for the first time.
+            // We need to apply to them the same Project fragment that the others have, and calculate their hashes too.
+
+            CurrentObjs
+                .Where(c => 
+                    !ReadObjs.Any(r => r.Fragments.OfType<DiffHashFragment>().First().Hash == c.Fragments.OfType<DiffHashFragment>().First().Hash)).ToList()
+                .ForEach(obj =>
+                {
+                    newObjects.Add(obj);
+                    newObjects_hashes.Add(obj.Fragments.OfType<DiffHashFragment>().First().Hash);
+                });
+
+            ReadObjs
+                .Where(r => 
+                    !CurrentObjs.Any(c => r.Fragments.OfType<DiffHashFragment>().First().Hash == c.Fragments.OfType<DiffHashFragment>().First().Hash)).ToList()
+                .ForEach(obj =>
+                {
+                    toBeDeleted.Add(obj);
+                    toBeDeleted_hashes.Add(obj.Fragments.OfType<DiffHashFragment>().First().Hash);
+                });
+
+            ReadObjs
+               .Where(r => 
+                    CurrentObjs.Any(c => r.Fragments.OfType<DiffHashFragment>().First().Hash == c.Fragments.OfType<DiffHashFragment>().First().Hash)).ToList()
+               .ForEach(obj =>
+               {
+                   toBeUpdated.Add(obj);
+                   toBeUpdated_hashes.Add(obj.Fragments.OfType<DiffHashFragment>().First().Hash);
+               });
 
 
-        //public static string PrepareJson(this object obj, PropertyInfo[] propertiesToRemove = null)
-        //{
-        //    List<PropertyInfo> propList = propertiesToRemove.ToList();
-        //    if (propList == null && propList.Count == 0)
-        //        return obj.ToJson();
+            // // - CustomData version
+            //CurrentObjs
+            //    .Where(c => !ReadObjs.Any(r => r.CustomData["hash"] == c.CustomData["hash"])).ToList()
+            //    .ForEach(obj =>
+            //    {
+            //        newObjects.Add(obj);
+            //        newObjects_hashes.Add(obj.CustomData["hash"] as string);
+            //    });
 
-        //    List<string> propNames = new List<string>();
-        //    propList.ForEach(prop => propNames.Add(prop.Name));
-        //    return PrepareJson(obj, propNames);
-        //}
+            //ReadObjs
+            //    .Where(r => !CurrentObjs.Any(c => r.CustomData["hash"] == c.CustomData["hash"])).ToList()
+            //    .ForEach(obj =>
+            //    {
+            //        toBeDeleted.Add(obj);
+            //        toBeDeleted_hashes.Add(obj.CustomData["hash"] as string);
+            //    });
 
-        //public static string PrepareJson(this object obj, List<string> propertiesToRemove = null)
-        //{
-        //    if (propertiesToRemove == null && propertiesToRemove.Count == 0)
-        //        return obj.ToJson();
+            //ReadObjs
+            //   .Where(r => CurrentObjs.Any(c => r.CustomData["hash"] == c.CustomData["hash"])).ToList()
+            //   .ForEach(obj =>
+            //   {
+            //       toBeUpdated.Add(obj);
+            //       toBeUpdated_hashes.Add(obj.CustomData["hash"] as string);
+            //   });
 
-        //    var jObject = JsonConvert.DeserializeObject<JObject>(obj.ToJson());
-
-        //    // Sets properties to be ignored as null, without altering the tree.
-        //    propertiesToRemove.ForEach(propName =>
-        //    jObject.Properties()
-        //        .Where(attr => attr.Name.StartsWith(propName))
-        //        .ToList()
-        //        .ForEach(attr => attr.Value = null)
-        //    );
-        //    return jObject.ToString();
-        //}
-
-        ///***************************************************/
-
-        ///***************************************************/
-        ///**** Public Methods                            ****/
-        ///***************************************************/
-
-
-        //private static byte[] SHA256(string inputString)
-        //{
-        //    HashAlgorithm algorithm = System.Security.Cryptography.SHA256.Create();
-        //    return algorithm.ComputeHash(Encoding.UTF8.GetBytes(inputString));
-        //}
-
-        //private static string GetMd5Hash(MD5 md5Hash, byte[] objByte)
-        //{
-        //    byte[] data = md5Hash.ComputeHash(objByte);
-
-        //    StringBuilder sBuilder = new StringBuilder();
-
-        //    // Loop through each byte of the hashed data and format each one as a hexadecimal string
-        //    for (int i = 0; i < data.Length; i++)
-        //    {
-        //        sBuilder.Append(data[i].ToString("x2"));
-        //    }
-
-        //    return sBuilder.ToString();
-        //}
+            return new Delta(diffProj, newObjects, newObjects_hashes, toBeDeleted, toBeDeleted_hashes, toBeUpdated, toBeUpdated_hashes);
+        }
 
         ///***************************************************/
 

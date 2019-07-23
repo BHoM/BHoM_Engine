@@ -12,13 +12,42 @@ using System.IO;
 using System.Security.Cryptography;
 using BH.Engine.Serialiser;
 
-namespace Diffing_Engine
+namespace Diffing_Engine.Test
 {
-    public static partial class TestDiffing
+    public static partial class TestHashing_Protobuf
     {
-        public static void TestHashing_Protobuf(List<object> objs)
+        public static void Run(List<object> objs = null)
         {
+            if (objs == null)
+            {
+                objs = new List<object>();
+                List<string> listStringHashes = new List<string>();
 
+
+                Bar bar = new Bar();
+                Bar bar1 = new Bar();
+
+                bar.Name = "bar";
+                objs.Add(bar);
+                bar1.Name = "bar1";
+                objs.Add(bar1);
+
+                TestclassA point = new TestclassA();
+                point.X = 10;
+                point.Y = 10;
+                TestclassB coord = new TestclassB();
+                coord.X = 10;
+                coord.Y = 10;
+
+                objs.Add(point);
+                objs.Add(coord);
+
+                //objs.Add(BH.Engine.Base.Create.RandomObject(typeof(BH.oM.Geometry.Point)));
+
+                //objs.Add(BH.Engine.Base.Create.RandomObject(typeof(Bar)));
+                //objs.Add(BH.Engine.Base.Create.RandomObject(typeof(Bar)));
+
+            }
 
             // Add types whose properties you want to exclude from the fingerprint
             List<Type> exclusionTypes = new List<Type> { typeof(BH.oM.Base.BHoMObject) };
@@ -85,6 +114,21 @@ namespace Diffing_Engine
             model.Add(objType, true).Add(propsNames.ToArray());
         }
 
+
+        private static string GetMd5Hash(MD5 md5Hash, byte[] objByte)
+        {
+            byte[] data = md5Hash.ComputeHash(objByte);
+
+            StringBuilder sBuilder = new StringBuilder();
+
+            // Loop through each byte of the hashed data and format each one as a hexadecimal string
+            for (int i = 0; i < data.Length; i++)
+            {
+                sBuilder.Append(data[i].ToString("x2"));
+            }
+
+            return sBuilder.ToString();
+        }
     }
 
     public class TestclassA
