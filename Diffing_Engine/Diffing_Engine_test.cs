@@ -22,6 +22,7 @@ namespace Diffing_Engine
     {
         public static void Main()
         {
+            // Old tests
             //Test.TestHashing_Protobuf.Run();
             //Test.TestHashing_Json.Run();
 

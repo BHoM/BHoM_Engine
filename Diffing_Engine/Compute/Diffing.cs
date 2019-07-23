@@ -103,32 +103,6 @@ namespace Diffing_Engine
                    toBeUpdated_hashes.Add(obj.Fragments.OfType<DiffHashFragment>().First().Hash);
                });
 
-
-            // // - CustomData version
-            //CurrentObjs
-            //    .Where(c => !ReadObjs.Any(r => r.CustomData["hash"] == c.CustomData["hash"])).ToList()
-            //    .ForEach(obj =>
-            //    {
-            //        newObjects.Add(obj);
-            //        newObjects_hashes.Add(obj.CustomData["hash"] as string);
-            //    });
-
-            //ReadObjs
-            //    .Where(r => !CurrentObjs.Any(c => r.CustomData["hash"] == c.CustomData["hash"])).ToList()
-            //    .ForEach(obj =>
-            //    {
-            //        toBeDeleted.Add(obj);
-            //        toBeDeleted_hashes.Add(obj.CustomData["hash"] as string);
-            //    });
-
-            //ReadObjs
-            //   .Where(r => CurrentObjs.Any(c => r.CustomData["hash"] == c.CustomData["hash"])).ToList()
-            //   .ForEach(obj =>
-            //   {
-            //       toBeUpdated.Add(obj);
-            //       toBeUpdated_hashes.Add(obj.CustomData["hash"] as string);
-            //   });
-
             return new Delta(diffProj, newObjects, newObjects_hashes, toBeDeleted, toBeDeleted_hashes, toBeUpdated, toBeUpdated_hashes);
         }
 
