@@ -117,6 +117,7 @@ namespace BH.Engine.Environment
                 Name = name,
             };
         }
+
         [Description("Create a Plug Gain object which can be attributed to a space")]
         [Input("sensible", "The sensible gain load for the plug gain, default 0.0")]
         [Input("profile", "The profile for this gain being active, default null")]
@@ -135,6 +136,7 @@ namespace BH.Engine.Environment
                 Name = name,
             };
         }
+
         [Description("Create a Pollutant Gain object which can be attributed to a space")]
         [Input("sensible", "The sensible gain load for the pollutant gain, default 0.0")]
         [Input("latent", "The latent gain load for the pollutant gain, default 0.0")]
