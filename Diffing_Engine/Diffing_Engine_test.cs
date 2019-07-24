@@ -70,7 +70,7 @@ namespace Diffing_Engine
 
             Bar newBar = BH.Engine.Base.Create.RandomObject(typeof(Bar)) as Bar;
             newBar.Name = "newBar";
-            currentObjs_Eduardo.Add(newBar as dynamic); //adds this bar
+            currentObjs_Eduardo.Add(newBar as dynamic); //adds this bar 
 
             // 7. Eduardo now wants to Push his changes.
             // He has two choices:
