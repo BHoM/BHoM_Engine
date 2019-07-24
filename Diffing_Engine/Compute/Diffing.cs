@@ -113,25 +113,32 @@ namespace Diffing_Engine
                         unchanged.Add(obj); // It's NOT been modified
                         unchanged_hashes.Add(hashFragm.Hash);
                         continue;
-                    } else
+                    } 
 
                     if (hashFragm.PreviousHash != hashFragm.Hash)
                     {
                         toBeUpdated.Add(obj); // It's been modified
                         toBeUpdated_hashes.Add(hashFragm.Hash);
                         continue;
-                    } else
+                    } 
 
-                    if (ReadObjs_cloned.Any(rObj => rObj.GetHashFragment().Hash == hashFragm.Hash))
-                    {
-                        toBeDeleted.Add(obj); // It doesn't exist anymore (it's not among the current objects)
-                        toBeDeleted_hashes.Add(hashFragm.Hash);
-                        continue;
-                    }
+                   
 
                     BH.Engine.Reflection.Compute.RecordError("Could not find hash information to perform Diffing on some objects.");
                     return null;
 
+                }
+            }
+
+            foreach (var obj in ReadObjs_cloned)
+            {
+                var hashFragm = obj.GetHashFragment();
+
+                if (!CurrentObjs_cloned.Any(cObj => cObj.GetHashFragment().Hash == hashFragm.Hash))
+                {
+                    toBeDeleted.Add(obj); // It doesn't exist anymore (it's not among the current objects)
+                    toBeDeleted_hashes.Add(hashFragm.Hash);
+                    continue;
                 }
             }
 

@@ -54,7 +54,7 @@ namespace Engine_Test
             //TestConstructorSpeed();
             //TestDynamicExtentionCost();
             //TestMethodExtraction();
-            Diffing_Engine.TestDiffing.Main();
+            Diffing_Engine.TestDiffing.Example();
             Console.Read();
         }
 

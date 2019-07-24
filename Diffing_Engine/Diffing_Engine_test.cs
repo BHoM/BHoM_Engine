@@ -20,12 +20,8 @@ namespace Diffing_Engine
 {
     public static partial class TestDiffing
     {
-        public static void Main()
+        public static void Example()
         {
-            // Old tests
-            //Test.TestHashing_Protobuf.Run();
-            //Test.TestHashing_Json.Run();
-
             // 1. Suppose Alessio is creating 5 bars in Grasshopper, representing a Portal frame structure.
             // These will be Alessio's "Current" objects.
             List<IBHoMObject> currentObjs_Alessio = new List<IBHoMObject>();
@@ -52,7 +48,7 @@ namespace Diffing_Engine
             // 3. Imagine that Alessio takes the `delta` 
             // and PUSHES it to some external platform (a database, Speckle, 3D repo...).
             // E.g. someAdapter.Push(delta);
-            // (The Push will have to take care of calling the appropriate methods for the delta objs: create, update or delete).
+            // (The Push will have to allow a Delta obj as input and take care of calling the appropriate methods for its properties: create, update or delete).
 
             // 4. Eduardo is now asked to do some changes to the "Portal frame Project" created by Alessio.
             List<IBHoMObject> currentObjs_Eduardo = new List<IBHoMObject>();
@@ -67,7 +63,7 @@ namespace Diffing_Engine
             // which will be a deep copy of the readObjs, in order to preserve immutability.
             currentObjs_Eduardo = readObjs_Eduardo.Select(obj => BH.Engine.Base.Query.DeepClone(obj)).ToList();
 
-            // 6. Eduardo now modifies one of the bars, deletes another one, and creates a new one. 
+            // 6. Eduardo now modifies one of the bars, deletes another one, and creates a new one. Left are only 2 unchanged bars.
             currentObjs_Eduardo[0].Name = "modifiedBar"; // modifies this bar
 
             currentObjs_Eduardo.RemoveAt(1); //deletes this bar
@@ -86,7 +82,7 @@ namespace Diffing_Engine
             // (This choice makes the use of the "Diffing component" required only when creating the project for the first time, or when clashes happen).
             Delta delta2 = Diffing_Engine.Compute.Diffing(currentObjs_Eduardo, readObjs_Eduardo);
 
-
+            // 8. Now Eduardo can push his new delta object (like step 3).
         }
 
         private static List<object> GenerateObjects()
