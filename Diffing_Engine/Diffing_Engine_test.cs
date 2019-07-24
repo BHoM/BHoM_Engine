@@ -32,7 +32,9 @@ namespace Diffing_Engine
 
             for (int i = 0; i < 5; i++)
             {
-                currentObjs_Alessio.Add(BH.Engine.Base.Create.RandomObject(typeof(Bar)) as IBHoMObject);
+                Bar obj = BH.Engine.Base.Create.RandomObject(typeof(Bar)) as Bar;
+                obj.Fragments = obj.Fragments.Where(fragm => fragm != null).ToList(); // (RandomObject bug workaround: it generates a random number of null fragments)
+                currentObjs_Alessio.Add(obj as dynamic);
             }
 
             // 2. Alessio wants these bars to be part of a "Portal frame Project" that will be tracking the objects for future changes.
@@ -65,10 +67,14 @@ namespace Diffing_Engine
             // which will be a deep copy of the readObjs, in order to preserve immutability.
             currentObjs_Eduardo = readObjs_Eduardo.Select(obj => BH.Engine.Base.Query.DeepClone(obj)).ToList();
 
-            // 6. Eduardo now modifies one of the bars, deletes another one, and creates a new one.
-            currentObjs_Eduardo[0].Name = "newNameForBar"; // modifies this bar
+            // 6. Eduardo now modifies one of the bars, deletes another one, and creates a new one. 
+            currentObjs_Eduardo[0].Name = "modifiedBar"; // modifies this bar
+
             currentObjs_Eduardo.RemoveAt(1); //deletes this bar
-            currentObjs_Eduardo.Add(BH.Engine.Base.Create.RandomObject(typeof(Bar)) as IBHoMObject); //adds this bar
+
+            Bar newBar = BH.Engine.Base.Create.RandomObject(typeof(Bar)) as Bar;
+            newBar.Name = "newBar";
+            currentObjs_Eduardo.Add(newBar as dynamic); //adds this bar
 
             // 7. Eduardo now wants to Push his changes.
             // He has two choices:
