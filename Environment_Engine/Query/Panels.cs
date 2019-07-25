@@ -283,6 +283,7 @@ namespace BH.Engine.Environment
                 p.Construction = srf.Construction;
                 p.ExternalEdges = srf.Location.IExternalEdges().ToEdges();
                 p.Openings = srf.Openings.OpeningsFromPhysical();
+                p.Type = (srf is BH.oM.Physical.Elements.Wall ? PanelType.Wall : (srf is BH.oM.Physical.Elements.Roof ? PanelType.Roof : PanelType.Floor));
                 panels.Add(p);
             }
 
