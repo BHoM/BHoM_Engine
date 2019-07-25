@@ -41,13 +41,13 @@ namespace BH.Engine.Environment
         /***************************************************/
 
         [Description("Returns a collection of Environment Buildings from a list of generic BHoM objects")]
-        [Input("objects", "A collection of generic BHoM objects")]
+        [Input("bhomObjects", "A collection of generic BHoM objects")]
         [Output("buildings", "A collection of Environment Building objects")]
-        public static List<Building> Buildings(this List<IBHoMObject> objects)
+        public static List<Building> Buildings(this List<IBHoMObject> bhomObjects)
         {
-            objects = objects.ObjectsByType(typeof(Building));
+            bhomObjects = bhomObjects.ObjectsByType(typeof(Building));
             List<Building> buildings = new List<Building>();
-            foreach (IBHoMObject o in objects)
+            foreach (IBHoMObject o in bhomObjects)
                 buildings.Add(o as Building);
 
             return buildings;
