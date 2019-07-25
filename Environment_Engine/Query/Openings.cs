@@ -34,6 +34,8 @@ using BH.oM.Base;
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
 
+using BH.Engine.Base;
+
 namespace BH.Engine.Environment
 {
     public static partial class Query

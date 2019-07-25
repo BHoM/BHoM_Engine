@@ -21,20 +21,18 @@
  */
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using BH.oM.Environment.Elements;
-using BH.oM.Base;
-
-using BH.oM.Reflection.Attributes;
+using System.Collections.Generic;
 using System.ComponentModel;
+using BH.oM.Reflection.Attributes;
+using BH.oM.Physical.Elements;
+using BH.oM.Geometry;
+using BH.oM.Physical;
+using BH.oM.Base;
 
 using BH.Engine.Base;
 
-namespace BH.Engine.Environment
+namespace BH.Engine.Physical
 {
     public static partial class Query
     {
@@ -42,17 +40,17 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns a collection of Environment Buildings from a list of generic BHoM objects")]
+        [Description("Returns a collection of Physical Windows from a list of generic BHoM objects")]
         [Input("bhomObjects", "A collection of generic BHoM objects")]
-        [Output("buildings", "A collection of Environment Building objects")]
-        public static List<Building> Buildings(this List<IBHoMObject> bhomObjects)
+        [Output("windows", "A collection of Physical Window objects")]
+        public static List<Window> Windows(this List<IBHoMObject> bhomObjects)
         {
-            bhomObjects = bhomObjects.ObjectsByType(typeof(Building));
-            List<Building> buildings = new List<Building>();
+            bhomObjects = bhomObjects.ObjectsByType(typeof(Window));
+            List<Window> windows = new List<Window>();
             foreach (IBHoMObject o in bhomObjects)
-                buildings.Add(o as Building);
+                windows.Add(o as Window);
 
-            return buildings;
+            return windows;
         }
     }
 }

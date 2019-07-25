@@ -38,6 +38,8 @@ using System.ComponentModel;
 
 using BH.oM.Architecture.Elements;
 
+using BH.Engine.Base;
+
 namespace BH.Engine.Environment
 {
     public static partial class Query
