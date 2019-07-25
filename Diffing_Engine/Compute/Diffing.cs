@@ -129,7 +129,7 @@ namespace Diffing_Engine
             {
                 var hashFragm = obj.GetHashFragment();
 
-                if (!CurrentObjs_cloned.Any(cObj => cObj.GetHashFragment().Hash == hashFragm.Hash))
+                if (!CurrentObjs_cloned.Any(cObj => cObj.GetHashFragment().PreviousHash == hashFragm.Hash))
                 {
                     toBeDeleted.Add(obj); // It doesn't exist anymore (it's not among the current objects)
                     toBeDeleted_hashes.Add(hashFragm.Hash);

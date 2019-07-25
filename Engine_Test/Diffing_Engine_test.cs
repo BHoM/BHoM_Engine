@@ -27,6 +27,7 @@ namespace Diffing_Engine
             {
                 Bar obj = BH.Engine.Base.Create.RandomObject(typeof(Bar)) as Bar;
                 obj.Fragments = obj.Fragments.Where(fragm => fragm != null).ToList(); // (RandomObject bug workaround: it generates a random number of null fragments)
+                obj.Name = "bar_" + i.ToString();
                 currentObjs_Alessio.Add(obj as dynamic);
             }
 
@@ -61,13 +62,13 @@ namespace Diffing_Engine
             currentObjs_Eduardo = readObjs_Eduardo.Select(obj => BH.Engine.Base.Query.DeepClone(obj)).ToList();
 
             // 6. Eduardo now modifies one of the bars, deletes another one, and creates a new one. Left are only 2 unchanged bars.
-            currentObjs_Eduardo[0].Name = "modifiedBar"; // modifies this bar
+            currentObjs_Eduardo[0].Name = "modifiedBar_0"; // modifies bar_0
 
-            currentObjs_Eduardo.RemoveAt(1); //deletes this bar
+            currentObjs_Eduardo.RemoveAt(1); //deletes bar_1
 
             Bar newBar = BH.Engine.Base.Create.RandomObject(typeof(Bar)) as Bar;
-            newBar.Name = "newBar";
-            currentObjs_Eduardo.Add(newBar as dynamic); //adds this bar 
+            newBar.Name = "newBar_1";
+            currentObjs_Eduardo.Insert(1, newBar as dynamic); //adds this bar 
 
             // 7. Eduardo now wants to Push his changes.
             // He has two choices:
@@ -80,7 +81,7 @@ namespace Diffing_Engine
             Delta delta2 = Diffing_Engine.Compute.Diffing(currentObjs_Eduardo, readObjs_Eduardo);
 
             // 8. Now Eduardo can push his new delta object (like step 3).
-            // `delta.ToCreate` will have 1 object; `delta.ToUpdate` 1 object; `delta.ToDelete` 1 object; `delta.Unchanged` 2 objects.
+            // `delta.ToCreate` will have 1 object; `delta.ToUpdate` 1 object; `delta.ToDelete` 1 object; `delta.Unchanged` 3 objects.
         }
 
         private static List<object> GenerateObjects()
