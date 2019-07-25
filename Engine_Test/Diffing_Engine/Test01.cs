@@ -12,12 +12,13 @@ using System.IO;
 using System.Security.Cryptography;
 using BH.Engine.Serialiser;
 using BH.oM.Diffing;
+using System.Diagnostics;
 
-namespace Diffing_Engine
+namespace Engine_Test
 {
     internal static partial class TestDiffing
     {
-        public static void Example()
+        public static void Test01()
         {
             // 1. Suppose Alessio is creating 5 bars in Grasshopper, representing a Portal frame structure.
             // These will be Alessio's "Current" objects.
@@ -81,35 +82,13 @@ namespace Diffing_Engine
             Delta delta2 = Diffing_Engine.Compute.Diffing(currentObjs_Eduardo, readObjs_Eduardo);
 
             // 8. Now Eduardo can push his new delta object (like step 3).
-            // `delta.ToCreate` will have 1 object; `delta.ToUpdate` 1 object; `delta.ToDelete` 1 object; `delta.Unchanged` 3 objects.
+            // `delta.ToCreate` will have 1 object; `delta.ToUpdate` 1 object; `delta.ToDelete` 1 object; `delta.Unchanged` 2 objects.
+            Debug.Assert(delta2.ToCreate.Count == 1, "Incorrect number of object identified as new.");
+            Debug.Assert(delta2.ToUpdate.Count == 1, "Incorrect number of object identified as modified.");
+            Debug.Assert(delta2.ToDelete.Count == 1, "Incorrect number of object identified as old.");
+            Debug.Assert(delta2.Unchanged.Count == 3, "Incorrect number of object identified as not changed.");
+
         }
 
-        private static List<object> GenerateObjects()
-        {
-            List<object> objs = new List<object>();
-            List<string> listStringHashes = new List<string>();
-
-
-            Bar bar = new Bar();
-            Bar bar1 = new Bar();
-
-            bar.Name = "bar";
-            objs.Add(bar);
-            bar1.Name = "bar1";
-            objs.Add(bar1);
-
-
-            //objs.Add(BH.Engine.Base.Create.RandomObject(typeof(BH.oM.Geometry.Point)));
-
-            //objs.Add(BH.Engine.Base.Create.RandomObject(typeof(Bar)));
-            //objs.Add(BH.Engine.Base.Create.RandomObject(typeof(Bar)));
-
-            return objs;
-        }
-
-        private static List<IBHoMObject> GenerateIBHoMObjects()
-        {
-            return GenerateObjects().Select(obj => obj as BH.oM.Base.IBHoMObject).Where(obj => obj != null).ToList();
-        }
     }
 }

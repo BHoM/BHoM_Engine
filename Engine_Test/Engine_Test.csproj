@@ -64,7 +64,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Diffing_Engine_test.cs" />
+    <Compile Include="Diffing_Engine\Profiling01.cs" />
+    <Compile Include="Diffing_Engine\Test01.cs" />
+    <Compile Include="Diffing_Engine\GenerateRandomObjs.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

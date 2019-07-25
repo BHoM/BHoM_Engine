@@ -38,7 +38,7 @@ namespace Diffing_Engine
 
         public static byte[] ToDiffingByteArray(this object obj, List<string> fieldsToIgnore)
         {
-            if (fieldsToIgnore == null && fieldsToIgnore.Count == 0)
+            if (fieldsToIgnore == null || fieldsToIgnore.Count == 0)
                 return BsonExtensionMethods.ToBson(obj);
 
             var objDoc = obj.ToBsonDocument();

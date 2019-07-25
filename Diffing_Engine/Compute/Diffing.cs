@@ -24,7 +24,7 @@ namespace Diffing_Engine
         /// If using BHoMObjects, we can save the hash inside the objects themselves.
         /// Otherwise another support is needed (table with | object | Hash | )
 
-        public static Delta Diffing(string projectName, List<IBHoMObject> CurrentObjs)
+        public static Delta Diffing(string projectName, List<IBHoMObject> CurrentObjs, List<string> exceptions = null, bool useDefaultExceptions = true)
         {
             // Clone the current objects
             List<IBHoMObject> CurrentObjs_cloned = CurrentObjs.Select(obj => BH.Engine.Base.Query.DeepClone(obj)).ToList();
@@ -32,8 +32,8 @@ namespace Diffing_Engine
             // Create project fragment
             DiffProjFragment diffProj = new DiffProjFragment(projectName);
 
-            // Define exceptions (will be exposed as parameter)
-            List<string> exceptions = new List<string>() { "BHoM_Guid", "Fragments" };
+            if (useDefaultExceptions)
+                SetDefaultExceptions(ref exceptions);
 
             // Calculate and set the object hashes
             CurrentObjs_cloned.ForEach(obj =>
@@ -44,20 +44,20 @@ namespace Diffing_Engine
             return new Delta(diffProj, CurrentObjs_cloned);
         }
 
-        public static Delta Diffing(List<IBHoMObject> CurrentObjs, List<IBHoMObject> ReadObjs)
+        public static Delta Diffing(List<IBHoMObject> CurrentObjs, List<IBHoMObject> ReadObjs, List<string> exceptions = null, bool useDefaultExceptions = true)
         {
             // Clone the objects to assure immutability
             List<IBHoMObject> CurrentObjs_cloned = CurrentObjs.Select(obj => BH.Engine.Base.Query.DeepClone(obj)).ToList();
             List<IBHoMObject> ReadObjs_cloned = ReadObjs.Select(obj => BH.Engine.Base.Query.DeepClone(obj)).ToList();
 
             // Get project fragment from one of the objects and use it as the base
-            DiffProjFragment diffProj = CurrentObjs_cloned
+            DiffProjFragment diffProj = ReadObjs_cloned
                 .Where(obj => obj.Fragments.Exists(fragm => fragm?.GetType() == typeof(DiffHashFragment)))
                 .First()
                 .GetHashFragment().DiffingProject;
 
-            // Define exceptions (will be exposed as parameter)
-            List<string> exceptions = new List<string>() { "BHoM_Guid", "Fragments" };
+            if (useDefaultExceptions)
+                SetDefaultExceptions(ref exceptions);
 
             // Check and process the DiffHashFragment of the objects
             CurrentObjs_cloned.ForEach(obj =>
@@ -111,14 +111,14 @@ namespace Diffing_Engine
                         unchanged.Add(obj); // It's NOT been modified
                         unchanged_hashes.Add(hashFragm.Hash);
                         continue;
-                    } 
+                    }
 
                     if (hashFragm.PreviousHash != hashFragm.Hash)
                     {
                         toBeUpdated.Add(obj); // It's been modified
                         toBeUpdated_hashes.Add(hashFragm.Hash);
                         continue;
-                    } 
+                    }
 
                     BH.Engine.Reflection.Compute.RecordError("Could not find hash information to perform Diffing on some objects.");
                     return null;
@@ -142,5 +142,15 @@ namespace Diffing_Engine
 
         ///***************************************************/
 
+
+        private static void SetDefaultExceptions(ref List<string> exceptions)
+        {
+            List<string> defaultExceptions = new List<string>() { "BHoM_Guid", "CustomData", "Fragments" };
+
+            if (exceptions == null)
+                exceptions = defaultExceptions;
+            else
+                exceptions.AddRange(defaultExceptions);
+        }
     }
 }
