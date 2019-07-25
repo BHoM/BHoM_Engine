@@ -43,13 +43,13 @@ namespace BH.Engine.Environment
         /***************************************************/
 
         [Description("Returns a collection of Environment Openings from a list of generic BHoM objects")]
-        [Input("objects", "A collection of generic BHoM objects")]
+        [Input("bhomObjects", "A collection of generic BHoM objects")]
         [Output("openings", "A collection of Environment Opening objects")]
-        public static List<Opening> Openings(this List<IBHoMObject> objects)
+        public static List<Opening> Openings(this List<IBHoMObject> bhomObjects)
         {
-            objects = objects.ObjectsByType(typeof(Opening));
+            bhomObjects = bhomObjects.ObjectsByType(typeof(Opening));
             List<Opening> Openings = new List<Opening>();
-            foreach (IBHoMObject o in objects)
+            foreach (IBHoMObject o in bhomObjects)
                 Openings.Add(o as Opening);
 
             return Openings;

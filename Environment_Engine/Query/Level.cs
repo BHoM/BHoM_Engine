@@ -43,13 +43,13 @@ namespace BH.Engine.Environment
         /***************************************************/
 
         [Description("Returns a collection of Architecture Levels from a list of generic BHoM objects")]
-        [Input("objects", "A collection of generic BHoM objects")]
+        [Input("bhomObjects", "A collection of generic BHoM objects")]
         [Output("levels", "A collection of Architecture Level objects")]
-        public static List<Level> Levels(this List<IBHoMObject> objects)
+        public static List<Level> Levels(this List<IBHoMObject> bhomObjects)
         {
-            objects = objects.ObjectsByType(typeof(Level));
+            bhomObjects = bhomObjects.ObjectsByType(typeof(Level));
             List<Level> levels = new List<Level>();
-            foreach (IBHoMObject o in objects)
+            foreach (IBHoMObject o in bhomObjects)
                 levels.Add(o as Level);
 
             return levels;

@@ -47,13 +47,13 @@ namespace BH.Engine.Environment
         /***************************************************/
 
         [Description("Returns a collection of Environment Panels from a list of generic BHoM objects")]
-        [Input("objects", "A collection of generic BHoM objects")]
+        [Input("bhomObjects", "A collection of generic BHoM objects")]
         [Output("panels", "A collection of Environment Panel objects")]
-        public static List<Panel> Panels(this List<IBHoMObject> objects)
+        public static List<Panel> Panels(this List<IBHoMObject> bhomObjects)
         {
-            objects = objects.ObjectsByType(typeof(Panel));
+            bhomObjects = bhomObjects.ObjectsByType(typeof(Panel));
             List<Panel> spaces = new List<Panel>();
-            foreach (IBHoMObject o in objects)
+            foreach (IBHoMObject o in bhomObjects)
                 spaces.Add(o as Panel);
 
             return spaces;
