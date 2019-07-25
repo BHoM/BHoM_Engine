@@ -39,6 +39,54 @@ namespace BH.Engine.Physical
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Returns the External Polyline representation of a physical object (e.g. wall or window)")]
+        [Input("physicalObject", "A physical object to query the polyline representation of")]
+        [Output("polyline", "BHoM Geometry Polyline")]
+        public static List<Polyline> ExternalPolyline(IPhysical physicalObject)
+        {
+            return ExternalPolyline(physicalObject as dynamic);
+        }
+
+        [Description("Returns the External Polyline representation of a physical object that represents a solid impassable object (e.g. wall or roof)")]
+        [Input("physicalObject", "A physical object to query the polyline representation of")]
+        [Output("polyline", "BHoM Geometry Polyline")]
+        public static List<Polyline> ExternalPolyline(BH.oM.Physical.Elements.ISurface physicalObject)
+        {
+            return physicalObject.Location.IExternalEdges().Select(x => x.ICollapseToPolyline(Tolerance.Angle)).ToList();
+        }
+
+        [Description("Returns the External Polyline representation of a physical object that represents an opening (e.g. window or door)")]
+        [Input("physicalObject", "A physical object to query the polyline representation of")]
+        [Output("polyline", "BHoM Geometry Polyline")]
+        public static List<Polyline> ExternalPolyline(IOpening physicalOpening)
+        {
+            return physicalOpening.Location.IExternalEdges().Select(x => x.ICollapseToPolyline(Tolerance.Angle)).ToList();
+        }
+
+        [Description("Returns the Internal Polyline representation of a physical object (e.g. wall or window)")]
+        [Input("physicalObject", "A physical object to query the polyline representation of")]
+        [Output("polyline", "BHoM Geometry Polyline")]
+        public static List<Polyline> InternalPolyline(IPhysical physicalObject)
+        {
+            return InternalPolyline(physicalObject as dynamic);
+        }
+
+        [Description("Returns the Internal Polyline representation of a physical object that represents a solid impassable object (e.g. wall or roof)")]
+        [Input("physicalObject", "A physical object to query the polyline representation of")]
+        [Output("polyline", "BHoM Geometry Polyline")]
+        public static List<Polyline> InternalPolyline(BH.oM.Physical.Elements.ISurface physicalObject)
+        {
+            return physicalObject.Location.IInternalEdges().Select(x => x.ICollapseToPolyline(Tolerance.Angle)).ToList();
+        }
+
+        [Description("Returns the Internal Polyline representation of a physical object that represents an opening (e.g. window or door)")]
+        [Input("physicalObject", "A physical object to query the polyline representation of")]
+        [Output("polyline", "BHoM Geometry Polyline")]
+        public static List<Polyline> InternalPolyline(IOpening physicalOpening)
+        {
+            return physicalOpening.Location.IInternalEdges().Select(x => x.ICollapseToPolyline(Tolerance.Angle)).ToList();
+        }
+
         [Description("Returns a Polyline representation of a physical object (e.g. wall or window)")]
         [Input("physicalObject", "A physical object to query the polyline representation of")]
         [Output("polyline", "BHoM Geometry Polyline")]
