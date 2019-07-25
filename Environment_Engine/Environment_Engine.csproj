@@ -130,7 +130,6 @@
     <Compile Include="Query\MatchPoint.cs" />
     <Compile Include="Query\FindMaterial.cs" />
     <Compile Include="Query\ObjectsByFragment.cs" />
-    <Compile Include="Query\ObjectsByType.cs" />
     <Compile Include="Query\Openings.cs" />
     <Compile Include="Query\Panels.cs" />
     <Compile Include="Query\RValue.cs" />
@@ -184,6 +183,10 @@
     <Compile Include="Query\Width.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\BHoM_Engine\BHoM_Engine.csproj">
+      <Project>{1ad45c88-dd54-48e5-951f-55edfeb70e35}</Project>
+      <Name>BHoM_Engine</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Common_Engine\Common_Engine.csproj">
       <Project>{8d8cd66f-76f3-4750-936d-380d51bc67d6}</Project>
       <Name>Common_Engine</Name>

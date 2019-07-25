@@ -20,21 +20,15 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using BH.oM.Environment.Elements;
-using BH.oM.Base;
-
-using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
+using BH.oM.Reflection.Attributes;
+using BH.oM.Physical.Elements;
+using BH.oM.Base;
 
 using BH.Engine.Base;
 
-namespace BH.Engine.Environment
+namespace BH.Engine.Physical
 {
     public static partial class Query
     {
@@ -42,17 +36,17 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns a collection of Environment Buildings from a list of generic BHoM objects")]
+        [Description("Returns a collection of Physical Doors from a list of generic BHoM objects")]
         [Input("bhomObjects", "A collection of generic BHoM objects")]
-        [Output("buildings", "A collection of Environment Building objects")]
-        public static List<Building> Buildings(this List<IBHoMObject> bhomObjects)
+        [Output("doors", "A collection of Physical Door objects")]
+        public static List<Door> Doors(this List<IBHoMObject> bhomObjects)
         {
-            bhomObjects = bhomObjects.ObjectsByType(typeof(Building));
-            List<Building> buildings = new List<Building>();
+            bhomObjects = bhomObjects.ObjectsByType(typeof(Window));
+            List<Door> doors = new List<Door>();
             foreach (IBHoMObject o in bhomObjects)
-                buildings.Add(o as Building);
+                doors.Add(o as Door);
 
-            return buildings;
+            return doors;
         }
     }
 }
