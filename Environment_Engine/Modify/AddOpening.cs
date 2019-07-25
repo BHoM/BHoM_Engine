@@ -43,6 +43,7 @@ namespace BH.Engine.Environment
         [Output("panel", "A modified Environment Panel with the provided opening added")]
         public static Panel AddOpening(this Panel panel, Opening opening)
         {
+            if (panel.Openings == null) panel.Openings = new List<Opening>();
             panel.Openings.Add(opening);
             return panel;
         }
@@ -59,8 +60,11 @@ namespace BH.Engine.Environment
                 if(centre != null)
                 {
                     Panel panel = panels.PanelsContainingPoint(centre).First();
-                    if(panel != null)
+                    if (panel != null)
+                    {
+                        if (panel.Openings == null) panel.Openings = new List<Opening>();
                         panel.Openings.Add(o);
+                    }
                 }
             }
 
