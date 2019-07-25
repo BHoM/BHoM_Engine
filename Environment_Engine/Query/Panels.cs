@@ -40,6 +40,8 @@ using BH.oM.Architecture.Elements;
 
 using BH.Engine.Base;
 
+using BH.oM.Physical.Elements;
+
 namespace BH.Engine.Environment
 {
     public static partial class Query
@@ -265,6 +267,26 @@ namespace BH.Engine.Environment
             }
 
             return duplicates;
+        }
+
+        [Description("Returns a collection of Environment Panels queried from a collection of Physical Objects (walls, floors, etc.)")]
+        [Input("physicalObjects", "A collection of Physical Objects to query Environment Panels from")]
+        [Output("panels", "A collection of Environment Panels from Physical Objects")]
+        public static List<Panel> PanelsFromPhysical(this List<BH.oM.Physical.Elements.ISurface> physicalObjects)
+        {
+            List<Panel> panels = new List<Panel>();
+
+            foreach(BH.oM.Physical.Elements.ISurface srf in physicalObjects)
+            {
+                Panel p = new Panel();
+                p.Name = srf.Name;
+                p.Construction = srf.Construction;
+                p.ExternalEdges = srf.Location.IExternalEdges().ToEdges();
+                p.Openings = srf.Openings.OpeningsFromPhysical();
+                panels.Add(p);
+            }
+
+            return panels;
         }
     }
 }

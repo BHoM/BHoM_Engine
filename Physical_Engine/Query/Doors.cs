@@ -41,7 +41,7 @@ namespace BH.Engine.Physical
         [Output("doors", "A collection of Physical Door objects")]
         public static List<Door> Doors(this List<IBHoMObject> bhomObjects)
         {
-            bhomObjects = bhomObjects.ObjectsByType(typeof(Window));
+            bhomObjects = bhomObjects.ObjectsByType(typeof(Door));
             List<Door> doors = new List<Door>();
             foreach (IBHoMObject o in bhomObjects)
                 doors.Add(o as Door);
