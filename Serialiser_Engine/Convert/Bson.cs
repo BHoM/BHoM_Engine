@@ -48,6 +48,7 @@ namespace BH.Engine.Serialiser
         {
             if (!m_TypesRegistered)
                 RegisterTypes();
+            obj.ToBson();
 
             if (obj is string)
             {

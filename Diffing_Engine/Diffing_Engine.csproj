@@ -45,6 +45,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\BHoM\Build\Geometry_oM.dll</HintPath>
     </Reference>
+    <Reference Include="MongoDB.Bson, Version=2.4.4.0, Culture=neutral, PublicKeyToken=null" />
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -69,9 +70,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Compute\Diffing.cs" />
+    <Compile Include="Compute\ToDiffingByteArray.cs" />
     <Compile Include="Query\GetHash.cs" />
     <Compile Include="Compute\Hashing.cs" />
-    <Compile Include="Compute\PrepareJson.cs" />
+    <Compile Include="Compute\ToDiffingJson.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

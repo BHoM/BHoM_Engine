@@ -23,18 +23,7 @@ namespace Diffing_Engine
         [Input("except", "Name of the fields to be ignored. For example, \"BHoM_Guid\".")]
         public static string SHA256Hash(IBHoMObject obj, List<string> except = null)
         {
-            var json = obj.ToDiffingJson(except);
-
-            return SHA256Hash(json);
-        }
-
-        public static string SHA256Hash(string inputString)
-        {
-            StringBuilder sb = new StringBuilder();
-            foreach (byte b in SHA256_byte(inputString))
-                sb.Append(b.ToString("X2"));
-
-            return sb.ToString();
+            return SHA256Hash(obj.ToDiffingByteArray(except));
         }
 
         ///***************************************************/
@@ -43,11 +32,20 @@ namespace Diffing_Engine
         ///***************************************************/
         ///**** Private Methods                           ****/
         ///***************************************************/
-        ///
-        private static byte[] SHA256_byte(string inputString)
+
+        private static string SHA256Hash(byte[] inputObj)
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach (byte b in SHA256_byte(inputObj))
+                sb.Append(b.ToString("X2"));
+
+            return sb.ToString();
+        }
+
+        private static byte[] SHA256_byte(byte[] inputObj)
         {
             HashAlgorithm algorithm = System.Security.Cryptography.SHA256.Create();
-            return algorithm.ComputeHash(Encoding.UTF8.GetBytes(inputString));
+            return algorithm.ComputeHash(inputObj);
         }
 
 

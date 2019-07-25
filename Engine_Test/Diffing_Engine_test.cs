@@ -80,6 +80,7 @@ namespace Diffing_Engine
             Delta delta2 = Diffing_Engine.Compute.Diffing(currentObjs_Eduardo, readObjs_Eduardo);
 
             // 8. Now Eduardo can push his new delta object (like step 3).
+            // `delta.ToCreate` will have 1 object; `delta.ToUpdate` 1 object; `delta.ToDelete` 1 object; `delta.Unchanged` 2 objects.
         }
 
         private static List<object> GenerateObjects()
