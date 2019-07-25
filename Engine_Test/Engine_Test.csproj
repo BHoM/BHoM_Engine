@@ -41,6 +41,7 @@
       <HintPath>..\..\BHoM\Build\BHoM.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Diffing_oM, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL" />
     <Reference Include="Geometry_oM">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\BHoM\Build\Geometry_oM.dll</HintPath>
@@ -63,6 +64,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Diffing_Engine_test.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

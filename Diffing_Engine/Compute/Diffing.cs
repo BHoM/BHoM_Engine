@@ -10,8 +10,8 @@ using System.Threading.Tasks;
 using System.Security.Cryptography;
 using System.Reflection;
 using BH.Engine.Serialiser;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+using System.ComponentModel;
+using BH.oM.Reflection.Attributes;
 
 namespace Diffing_Engine
 {
@@ -40,8 +40,6 @@ namespace Diffing_Engine
                 obj.Fragments.Add(
                     new DiffHashFragment(Compute.SHA256Hash(obj, exceptions), diffProj)
                     ));
-
-            //CurrentObjs_cloned.ForEach(obj => obj.CustomData.Add("hash", Compute.SHA256Hash(obj, exceptions))); //- Alternative using customData
 
             return new Delta(diffProj, CurrentObjs_cloned);
         }
@@ -122,11 +120,8 @@ namespace Diffing_Engine
                         continue;
                     } 
 
-                   
-
                     BH.Engine.Reflection.Compute.RecordError("Could not find hash information to perform Diffing on some objects.");
                     return null;
-
                 }
             }
 

@@ -6,19 +6,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using ProtoBuf;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.Security.Cryptography;
 using BH.Engine.Serialiser;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using BH.oM.Diffing;
 
 namespace Diffing_Engine
 {
-    public static partial class TestDiffing
+    internal static partial class TestDiffing
     {
         public static void Example()
         {
