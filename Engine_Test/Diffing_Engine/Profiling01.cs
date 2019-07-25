@@ -20,9 +20,31 @@ namespace Engine_Test
     {
         public static void Profiling01()
         {
-            int totalObjs = 100000;
+            string path = @"C:\temp\Diffing_Engine-ProfilingTask01.txt";
+            File.Delete(path);
 
-            Console.WriteLine($"Profiling diffing for {totalObjs} randomly generated and modified objects.");
+            double initialNo = 10;
+            double maxExp = 4;
+
+            for (int i = 1; i <= maxExp; i++)
+            {
+                ProfilingTask((int)Math.Pow(initialNo, i), path);
+            }
+
+            ProfilingTask(12250, path);
+            ProfilingTask(15000, path);
+            ProfilingTask(17250, path);
+            ProfilingTask(20000, path);
+            ProfilingTask(25000, path);
+            ProfilingTask(50000, path);
+            ProfilingTask(75000, path);
+            ProfilingTask(100000, path);
+        }
+
+        public static void ProfilingTask(int totalObjs, string path = null)
+        {
+            string introMessage = $"Profiling diffing for {totalObjs} randomly generated and modified objects.";
+            Console.WriteLine(introMessage);
 
             // Generate random objects
             List<IBHoMObject> currentObjs = GenerateRandomObjects(typeof(Bar), totalObjs);
@@ -50,10 +72,14 @@ namespace Engine_Test
             timer.Stop();
             var ms = timer.ElapsedMilliseconds;
 
-            Console.WriteLine($"Total elapsed milliseconds: {ms}");
+            string endMessage = $"Total elapsed milliseconds: {ms}";
+            Console.WriteLine(endMessage);
 
             Debug.Assert(delta2.ToUpdate.Count == totalObjs / 2, "Diffing didn't work.");
             Debug.Assert(delta2.Unchanged.Count == totalObjs / 2, "Diffing didn't work.");
+
+            if (path != null)
+                System.IO.File.AppendAllText(path, Environment.NewLine + introMessage + Environment.NewLine + endMessage);
         }
 
     }
