@@ -140,6 +140,7 @@ namespace BH.Engine.Environment
                 Opening opening = new Opening();
                 opening.Name = o.Name;
                 opening.Edges = o.Location.IExternalEdges().ToEdges();
+                opening.Type = (o is Door ? OpeningType.Door : OpeningType.Window);
                 openings.Add(opening);
             }
 
