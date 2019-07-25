@@ -59,7 +59,7 @@ namespace BH.Engine.Environment
                 Point centre = o.Polyline().Centre();
                 if(centre != null)
                 {
-                    Panel panel = panels.PanelsContainingPoint(centre).First();
+                    Panel panel = panels.PanelsContainingPoint(centre).FirstOrDefault();
                     if (panel != null)
                     {
                         if (panel.Openings == null) panel.Openings = new List<Opening>();
