@@ -82,12 +82,18 @@ namespace Engine_Test
             Delta delta2 = Diffing_Engine.Compute.Diffing(currentObjs_Eduardo, readObjs_Eduardo);
 
             // 8. Now Eduardo can push his new delta object (like step 3).
-            // `delta.ToCreate` will have 1 object; `delta.ToUpdate` 1 object; `delta.ToDelete` 1 object; `delta.Unchanged` 2 objects.
-            // You can also see which properties have changed for what objects: `delta.
+            // `delta.ToCreate` will have 1 object; `delta2.ToUpdate` 1 object; `delta2.ToDelete` 1 object; `delta2.Unchanged` 2 objects.
+            // You can also see which properties have changed for what objects: check `delta2.ModifiedPropsPerObject`.
             Debug.Assert(delta2.ToCreate.Count == 1, "Incorrect number of object identified as new.");
             Debug.Assert(delta2.ToUpdate.Count == 1, "Incorrect number of object identified as modified.");
             Debug.Assert(delta2.ToDelete.Count == 1, "Incorrect number of object identified as old.");
             Debug.Assert(delta2.Unchanged.Count == 3, "Incorrect number of object identified as not changed.");
+            var modifiedPropsPerObj = delta2.ModifiedPropsPerObject.First();
+            Debug.Assert(modifiedPropsPerObj.Value.Item1.Count() == 1, "Incorrect number of changed properties identified by the property-level diffing.");
+            Debug.Assert(modifiedPropsPerObj.Value.Item1[0] == "Name", "Error in property-level diffing");
+            Debug.Assert(delta2.ModifiedPropsPerObject.First().Value.Item2[0] == "modifiedBar_0", "Error in property-level diffing");
+
+
 
         }
 
