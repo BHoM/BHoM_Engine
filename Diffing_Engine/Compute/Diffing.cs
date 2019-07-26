@@ -79,10 +79,6 @@ namespace Diffing_Engine
                 }
             });
 
-            // Make sure that all the current objs and read objs have 1 and the same DiffHashFragment 
-            bool gna = CurrentObjs_cloned.All(obj => obj.Fragments.OfType<DiffHashFragment>().FirstOrDefault() != null);
-            bool gna1 = ReadObjs_cloned.All(obj => obj.Fragments.OfType<DiffHashFragment>().FirstOrDefault() != null);
-
             // Dispatch the objects: new, modified or old
             List<IBHoMObject> toBeCreated = new List<IBHoMObject>();
             List<string> toBeCreated_hashes = new List<string>();
@@ -97,7 +93,6 @@ namespace Diffing_Engine
             List<string> unchanged_hashes = new List<string>();
 
             var objModifiedProps = new Dictionary<string, Tuple<List<string>,List<string>>>(); 
-
 
             foreach (var obj in CurrentObjs_cloned)
             {

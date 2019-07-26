@@ -18,7 +18,7 @@ namespace Engine_Test
 {
     internal static partial class TestDiffing
     {
-        public static void Test01()
+        public static void Test01(bool propertyLevelDiffing = true)
         {
             Console.WriteLine("Running Diffing_Engine Test01");
 
@@ -81,7 +81,7 @@ namespace Engine_Test
             //         The Push component determines automatically that he should be calculating the diffing for those objects
             //         because those objects have a `Diffing` fragment.
             // (This choice makes the use of the "Diffing component" required only when creating the project for the first time, or when clashes happen).
-            Delta delta2 = Diffing_Engine.Compute.Diffing(currentObjs_Eduardo, readObjs_Eduardo);
+            Delta delta2 = Diffing_Engine.Compute.Diffing(currentObjs_Eduardo, readObjs_Eduardo, propertyLevelDiffing);
 
             // 8. Now Eduardo can push his new delta object (like step 3).
             // `delta.ToCreate` will have 1 object; `delta2.ToUpdate` 1 object; `delta2.ToDelete` 1 object; `delta2.Unchanged` 2 objects.

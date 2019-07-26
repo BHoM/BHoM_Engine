@@ -25,24 +25,16 @@ namespace Engine_Test
             string path = @"C:\temp\Diffing_Engine-ProfilingTask01.txt";
             File.Delete(path);
 
-            int initialNo = 10;
-            int maxExp = 4;
+            List<int> numberOfObjects = new List<int>() { 10, 100, 1000, 5000, 10000 }; //, 12250, 15000, 17250, 20000, 25000, 30000 };
 
             bool propertyLevelDiffing = false;
             for (int b = 0; b < 2; b++)
             {
-                Enumerable.Range(1, maxExp).ToList().ForEach(i =>
-                    ProfilingTask((int)Math.Pow(initialNo, i), propertyLevelDiffing, path));
+                numberOfObjects.ForEach(i =>
+                    ProfilingTask(i, propertyLevelDiffing, path));
 
                 propertyLevelDiffing = !propertyLevelDiffing;
             }
-
-            //ProfilingTask(12250, path);
-            //ProfilingTask(15000, path);
-            //ProfilingTask(17250, path);
-            //ProfilingTask(20000, path);
-            //ProfilingTask(25000, path);
-            //ProfilingTask(50000, path);
 
             Console.WriteLine("Profiling01 concluded.");
         }
@@ -83,7 +75,7 @@ namespace Engine_Test
             var timer = new Stopwatch();
             timer.Start();
 
-            var delta2 = Diffing_Engine.Compute.Diffing(changedList, readObjs);
+            var delta2 = Diffing_Engine.Compute.Diffing(changedList, readObjs, propertyLevelDiffing);
 
             timer.Stop();
             var ms = timer.ElapsedMilliseconds;
@@ -95,7 +87,10 @@ namespace Engine_Test
             Debug.Assert(delta2.Unchanged.Count == totalObjs / 2, "Diffing didn't work.");
 
             if (path != null)
+            {
                 System.IO.File.AppendAllText(path, Environment.NewLine + introMessage + Environment.NewLine + endMessage);
+                Console.WriteLine($"Results appended in {path}");
+            }
         }
 
     }
