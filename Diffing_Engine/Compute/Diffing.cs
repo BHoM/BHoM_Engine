@@ -45,7 +45,7 @@ namespace Diffing_Engine
             return new Delta(diffProj, CurrentObjs_cloned);
         }
 
-        public static Delta Diffing(List<IBHoMObject> CurrentObjs, List<IBHoMObject> ReadObjs, List<string> exceptions = null, bool useDefaultExceptions = true)
+        public static Delta Diffing(List<IBHoMObject> CurrentObjs, List<IBHoMObject> ReadObjs, bool propertyLevelDiffing = true, List<string> exceptions = null, bool useDefaultExceptions = true)
         {
             // Clone the objects to assure immutability
             List<IBHoMObject> CurrentObjs_cloned = CurrentObjs.Select(obj => BH.Engine.Base.Query.DeepClone(obj)).ToList();
@@ -122,16 +122,18 @@ namespace Diffing_Engine
                         toBeUpdated.Add(obj); // It's been modified
                         toBeUpdated_hashes.Add(hashFragm.Hash);
 
-                        var oldObjState = ReadObjs_cloned.Single(rObj => rObj.GetHashFragment().Hash == hashFragm.PreviousHash);
+                        if (propertyLevelDiffing)
+                        {
+                            // Determine changed properties
+                            var oldObjState = ReadObjs_cloned.Single(rObj => rObj.GetHashFragment().Hash == hashFragm.PreviousHash);
 
-                        // Determine changed properties
-                        IsEqualConfig ignoreProps = new IsEqualConfig();
-                        ignoreProps.PropertiesToIgnore = exceptions;
-                        var differentProps = BH.Engine.Testing.Query.IsEqual(obj, oldObjState, ignoreProps);
-                        var changes = new Tuple<List<string>, List<string>>(differentProps.Item2,differentProps.Item3);
+                            IsEqualConfig ignoreProps = new IsEqualConfig();
+                            ignoreProps.PropertiesToIgnore = exceptions;
+                            var differentProps = BH.Engine.Testing.Query.IsEqual(obj, oldObjState, ignoreProps);
+                            var changes = new Tuple<List<string>, List<string>>(differentProps.Item2, differentProps.Item3);
 
-                        objModifiedProps.Add(hashFragm.Hash, changes);
-
+                            objModifiedProps.Add(hashFragm.Hash, changes);
+                        }
                         continue;
                     }
 

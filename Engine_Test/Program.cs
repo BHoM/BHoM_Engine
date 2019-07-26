@@ -60,7 +60,7 @@ namespace Engine_Test
             /// ************************************/
             
             TestDiffing.Test01();
-            //TestDiffing.Profiling01();
+            TestDiffing.Profiling01();
             
             /// ************************************/
 

@@ -20,6 +20,8 @@ namespace Engine_Test
     {
         public static void Test01()
         {
+            Console.WriteLine("Running Diffing_Engine Test01");
+
             // 1. Suppose Alessio is creating 5 bars in Grasshopper, representing a Portal frame structure.
             // These will be Alessio's "Current" objects.
             List<IBHoMObject> currentObjs_Alessio = new List<IBHoMObject>();
@@ -93,8 +95,7 @@ namespace Engine_Test
             Debug.Assert(modifiedPropsPerObj.Value.Item1[0] == "Name", "Error in property-level diffing");
             Debug.Assert(delta2.ModifiedPropsPerObject.First().Value.Item2[0] == "modifiedBar_0", "Error in property-level diffing");
 
-
-
+            Console.WriteLine("Test01 concluded.");
         }
 
     }

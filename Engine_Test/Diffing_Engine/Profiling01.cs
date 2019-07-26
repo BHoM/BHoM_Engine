@@ -20,15 +20,21 @@ namespace Engine_Test
     {
         public static void Profiling01()
         {
+            Console.WriteLine("Running Diffing_Engine Profiling01");
+
             string path = @"C:\temp\Diffing_Engine-ProfilingTask01.txt";
             File.Delete(path);
 
-            double initialNo = 10;
-            double maxExp = 4;
+            int initialNo = 10;
+            int maxExp = 4;
 
-            for (int i = 1; i <= maxExp; i++)
+            bool propertyLevelDiffing = false;
+            for (int b = 0; b < 2; b++)
             {
-                ProfilingTask((int)Math.Pow(initialNo, i), path);
+                Enumerable.Range(1, maxExp).ToList().ForEach(i =>
+                    ProfilingTask((int)Math.Pow(initialNo, i), propertyLevelDiffing, path));
+
+                propertyLevelDiffing = !propertyLevelDiffing;
             }
 
             //ProfilingTask(12250, path);
@@ -37,12 +43,24 @@ namespace Engine_Test
             //ProfilingTask(20000, path);
             //ProfilingTask(25000, path);
             //ProfilingTask(50000, path);
+
+            Console.WriteLine("Profiling01 concluded.");
         }
 
-        public static void ProfilingTask(int totalObjs, string path = null)
+        public static void ProfilingTask(int totalObjs, bool propertyLevelDiffing, string path = null)
         {
             string introMessage = $"Profiling diffing for {totalObjs} randomly generated and modified objects.";
+            introMessage += propertyLevelDiffing ? " Includes collection-level and property-level diffing." : " Only collection-level diffing.";
             Console.WriteLine(introMessage);
+
+            if (path != null)
+            {
+                string fName = Path.GetFileNameWithoutExtension(path);
+                string ext = Path.GetExtension(path);
+                fName += propertyLevelDiffing ? "_propLevel" : "_onlyCollLevel";
+                path = Path.Combine(Path.GetDirectoryName(path), fName + ext);
+            }
+
 
             // Generate random objects
             List<IBHoMObject> currentObjs = GenerateRandomObjects(typeof(Bar), totalObjs);
