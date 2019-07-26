@@ -12,6 +12,7 @@ using System.Reflection;
 using BH.Engine.Serialiser;
 using System.ComponentModel;
 using BH.oM.Reflection.Attributes;
+using BH.oM.Testing;
 
 namespace Diffing_Engine
 {
@@ -95,6 +96,9 @@ namespace Diffing_Engine
             List<IBHoMObject> unchanged = new List<IBHoMObject>();
             List<string> unchanged_hashes = new List<string>();
 
+            var objModifiedProps = new Dictionary<string, Tuple<List<string>,List<string>>>(); 
+
+
             foreach (var obj in CurrentObjs_cloned)
             {
                 var hashFragm = obj.GetHashFragment();
@@ -117,6 +121,17 @@ namespace Diffing_Engine
                     {
                         toBeUpdated.Add(obj); // It's been modified
                         toBeUpdated_hashes.Add(hashFragm.Hash);
+
+                        var oldObjState = ReadObjs_cloned.Single(rObj => rObj.GetHashFragment().Hash == hashFragm.PreviousHash);
+
+                        // Determine changed properties
+                        IsEqualConfig ignoreProps = new IsEqualConfig();
+                        ignoreProps.PropertiesToIgnore = exceptions;
+                        var differentProps = BH.Engine.Testing.Query.IsEqual(obj, oldObjState, ignoreProps);
+                        var changes = new Tuple<List<string>, List<string>>(differentProps.Item2,differentProps.Item3);
+
+                        objModifiedProps.Add(hashFragm.Hash, changes);
+
                         continue;
                     }
 
@@ -137,7 +152,7 @@ namespace Diffing_Engine
                 }
             }
 
-            return new Delta(diffProj, toBeCreated, toBeCreated_hashes, toBeDeleted, toBeDeleted_hashes, toBeUpdated, toBeUpdated_hashes, unchanged, unchanged_hashes);
+            return new Delta(diffProj, toBeCreated, toBeCreated_hashes, toBeDeleted, toBeDeleted_hashes, toBeUpdated, toBeUpdated_hashes, unchanged, unchanged_hashes, objModifiedProps);
         }
 
         ///***************************************************/

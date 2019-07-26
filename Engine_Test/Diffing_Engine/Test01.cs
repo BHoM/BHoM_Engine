@@ -83,6 +83,7 @@ namespace Engine_Test
 
             // 8. Now Eduardo can push his new delta object (like step 3).
             // `delta.ToCreate` will have 1 object; `delta.ToUpdate` 1 object; `delta.ToDelete` 1 object; `delta.Unchanged` 2 objects.
+            // You can also see which properties have changed for what objects: `delta.
             Debug.Assert(delta2.ToCreate.Count == 1, "Incorrect number of object identified as new.");
             Debug.Assert(delta2.ToUpdate.Count == 1, "Incorrect number of object identified as modified.");
             Debug.Assert(delta2.ToDelete.Count == 1, "Incorrect number of object identified as old.");

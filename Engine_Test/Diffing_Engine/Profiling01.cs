@@ -31,14 +31,12 @@ namespace Engine_Test
                 ProfilingTask((int)Math.Pow(initialNo, i), path);
             }
 
-            ProfilingTask(12250, path);
-            ProfilingTask(15000, path);
-            ProfilingTask(17250, path);
-            ProfilingTask(20000, path);
-            ProfilingTask(25000, path);
-            ProfilingTask(50000, path);
-            ProfilingTask(75000, path);
-            ProfilingTask(100000, path);
+            //ProfilingTask(12250, path);
+            //ProfilingTask(15000, path);
+            //ProfilingTask(17250, path);
+            //ProfilingTask(20000, path);
+            //ProfilingTask(25000, path);
+            //ProfilingTask(50000, path);
         }
 
         public static void ProfilingTask(int totalObjs, string path = null)

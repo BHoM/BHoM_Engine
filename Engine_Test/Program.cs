@@ -59,8 +59,8 @@ namespace Engine_Test
             /// Diffing test and profiling methods
             /// ************************************/
             
-            //TestDiffing.Test01();
-            TestDiffing.Profiling01();
+            TestDiffing.Test01();
+            //TestDiffing.Profiling01();
             
             /// ************************************/
 
