@@ -40,11 +40,11 @@ namespace BH.Engine.Environment
         /***************************************************/
 
         [Description("Compute the sensible or latent people gain from the watts per person and occupancy of the space")]
-        [Input("sensibleWattsPerPerson", "The sensible watts per person from building code")]
-        [Input("latentWattsPerPerson", "The latent watts per person from building code")]
-        [Input("occupancy", "The occupancy of the space")]
+        [Input("sensibleWattsPerPerson", "The sensible watts per person from building code, default 0.0")]
+        [Input("latentWattsPerPerson", "The latent watts per person from building code, default 0.0")]
+        [Input("occupancy", "The occupancy of the space, default 0.0")]
         [Output("peopleGain", "The calculated sensible or latent people gain with the sensible or latent watts for the space")]
-        public static People PeopleGain(double sensibleWattsPerPerson, double latentWattsPerPerson, double occupancy)
+        public static People PeopleGain(double sensibleWattsPerPerson = 0.0, double latentWattsPerPerson = 0.0, double occupancy = 0.0)
         {
             return Create.People(sensibleWattsPerPerson * occupancy, latentWattsPerPerson * occupancy);
         }

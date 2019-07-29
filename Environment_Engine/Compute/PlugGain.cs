@@ -40,10 +40,10 @@ namespace BH.Engine.Environment
         /***************************************************/
 
         [Description("Compute a plug gain from the watts per square meter and floor area of the space")]
-        [Input("wattsPerMeterSquared", "The watts per meter squared from plugs/receptacles/outlets")]
-        [Input("area", "The floor area (in square meters) of the space")]
+        [Input("wattsPerMeterSquared", "The watts per meter squared from plugs/receptacles/outlets, default 0.0")]
+        [Input("area", "The floor area (in square meters) of the space, default 0.0")]
         [Output("plugGain", "The calculated plug gain with the sensible watts for the space")]
-        public static Plug PlugGain(double wattsPerMeterSquared, double area)
+        public static Plug PlugGain(double wattsPerMeterSquared = 0.0, double area = 0.0)
         {
             return Create.Plug(wattsPerMeterSquared * area);
         }
