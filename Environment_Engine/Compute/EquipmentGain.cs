@@ -40,11 +40,11 @@ namespace BH.Engine.Environment
         /***************************************************/
 
         [Description("Compute the sensible or latent equipment gain from the watts per meter squared and the area of the space")]
-        [Input("sensibleWattsPerMeterSquared", "The sensible watts per meter squared from building code")]
-        [Input("latentWattsPerMeterSquared", "The latent watts per meter squared from building code")]
-        [Input("area", "The area of the space")]
+        [Input("sensibleWattsPerMeterSquared", "The sensible watts per meter squared from building code, default 0.0")]
+        [Input("latentWattsPerMeterSquared", "The latent watts per meter squared from building code, default 0.0")]
+        [Input("area", "The area of the space, default 0.0")]
         [Output("equipmentGain", "The calculated sensible or latent equipment gain with the sensible or latent watts for the space")]
-        public static Equipment EquipmentGain(double sensibleWattsPerSquareMeter, double latentWattsPerSquareMeter, double area)
+        public static Equipment EquipmentGain(double sensibleWattsPerSquareMeter = 0.0, double latentWattsPerSquareMeter = 0.0, double area = 0.0)
         {
             return Create.Equipment(sensibleWattsPerSquareMeter * area, latentWattsPerSquareMeter * area);
         }
