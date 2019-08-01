@@ -42,18 +42,24 @@ namespace BH.Engine.Physical
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates wall base on given construction, bottom curve and height")]
+        [Description("Creates physical wall based on given construction, bottom curve and height")]
         [Input("construction", "Construction of the wall")]
         [Input("bottomEdge", "Curve representing bottom edge of the wall")]
         [Input("height", "Wall height")]
-        [Output("Physical Wall")]
+        [Output("wall", "A physical wall")]
         public static Wall Wall(Construction construction, ICurve bottomEdge, double height)
         {
             if (construction == null || bottomEdge == null || height <= 0)
+            {
+                Reflection.Compute.RecordError("Physical Wall could not be created because some input data are null");
                 return null;
+            }
 
             if (Geometry.Query.IIsClosed(bottomEdge))
+            {
+                Reflection.Compute.RecordError("Physical Wall could not be created because bottom edge cannot be closed curve");
                 return null;
+            }
 
             Point aPoint_1 = Geometry.Query.IStartPoint(bottomEdge);
             Point aPoint_2 = Geometry.Query.IEndPoint(bottomEdge);
@@ -66,37 +72,51 @@ namespace BH.Engine.Physical
 
             PolyCurve aPolyCurve = Geometry.Create.PolyCurve(new ICurve[] { bottomEdge, aLine_1, aICurve, aLine_2 });
 
-            Wall aWall = new Wall()
+            return new Wall()
             {
                 Construction = construction,
                 Location = Geometry.Create.PlanarSurface(aPolyCurve)
             };
-
-            return aWall;
         }
 
         /***************************************************/
 
-        [Description("Creates Wall object.")]
+        [Description("Creates physical wall object")]
         [Input("construction", "Construction of the wall")]
-        [Input("edges", "Edges of Wall (profile)")]
-        [Output("Physical Wall")]
-        public static Wall Wall(Construction construction, ICurve edges, IEnumerable<ICurve> internalEdges = null)
+        [Input("edges", "External edges of wall (profile)")]
+        [Input("internalEdges", "Internal edges of wall (profile)")]
+        [Output("wall", "A physical wall")]
+        public static Wall Wall(Construction construction, ICurve edges, IEnumerable<ICurve> internalEdges)
         {
             if (construction == null || edges == null)
+            {
+                Reflection.Compute.RecordError("Physical Wall could not be created because some input data are null");
                 return null;
+            }
 
             PlanarSurface aPlanarSurface = Geometry.Create.PlanarSurface(edges);
             if (aPlanarSurface == null)
+            {
+                Reflection.Compute.RecordError("Physical Wall could not be created because invalid geometry of edges");
                 return null;
+            }
 
-            Wall aWall = new Wall()
+            return new Wall()
             {
                 Construction = construction,
                 Location = aPlanarSurface
             };
+        }
 
-            return aWall;
+        /***************************************************/
+
+        [Description("Creates physical wall object")]
+        [Input("construction", "Construction of the wall")]
+        [Input("edges", "Edges of wall (profile)")]
+        [Output("wall", "A physical wall")]
+        public static Wall Wall(Construction construction, ICurve edges)
+        {
+            return Wall(construction, edges, null);
         }
 
         /***************************************************/

@@ -37,39 +37,29 @@ namespace BH.Engine.Physical
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates roof base on given construction and edges")]
+        [Description("Creates physical roof based on given construction and edges")]
         [Input("construction", "Construction of the roof")]
         [Input("edges", "Edges of the roof")]
-        [Output("Physical Roof")]
+        [Output("roof", "A physical roof")]
         public static Roof Roof(Construction construction, ICurve edges)
         {
-            if (construction == null || edges == null)
-                return null;
-
-            PlanarSurface aPlanarSurface = Geometry.Create.PlanarSurface(edges);
-            if (aPlanarSurface == null)
-                return null;
-
-            Roof aRoof = new Roof()
-            {
-                Construction = construction,
-                Location = aPlanarSurface
-            };
-
-            return aRoof;
+            return Roof(construction, edges, null);
         }
 
         /***************************************************/
 
-        [Description("Creates roof base on given construction, edges and internal edges")]
+        [Description("Creates physical roof based on given construction, external and internal edges")]
         [Input("construction", "Construction of the roof")]
         [Input("edges", "Edges of the roof")]
         [Input("internalEdges", "Internal edges of openings etc.")]
-        [Output("Physical Roof")]
-        public static Roof Roof(Construction construction, ICurve edges, IEnumerable<ICurve> internalEdges = null)
+        [Output("roof", "A physical roof")]
+        public static Roof Roof(Construction construction, ICurve edges, IEnumerable<ICurve> internalEdges)
         {
             if (construction == null || edges == null)
+            {
+                Reflection.Compute.RecordError("Physical Roof could not be created because some input data are null");
                 return null;
+            }
 
             List<ICurve> aInternalCurveList = null;
             if (internalEdges != null && internalEdges.Count() > 0)
@@ -77,15 +67,16 @@ namespace BH.Engine.Physical
 
             PlanarSurface aPlanarSurface = Geometry.Create.PlanarSurface(edges, aInternalCurveList);
             if (aPlanarSurface == null)
+            {
+                Reflection.Compute.RecordError("Physical Roof could not be created because invalid geometry of edges");
                 return null;
+            }
 
-            Roof aRoof = new Roof()
+            return new Roof()
             {
                 Construction = construction,
                 Location = aPlanarSurface
             };
-
-            return aRoof;
         }
 
         /***************************************************/
