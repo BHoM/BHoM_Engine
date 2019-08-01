@@ -47,7 +47,7 @@ namespace BH.Engine.Physical
         [Input("bottomEdge", "Curve representing bottom edge of the wall")]
         [Input("height", "Wall height")]
         [Output("wall", "A physical wall")]
-        public static Wall Wall(Construction construction, ICurve bottomEdge, double height)
+        public static Wall Wall(IConstruction construction, ICurve bottomEdge, double height)
         {
             if (construction == null || bottomEdge == null || height <= 0)
             {
@@ -79,14 +79,43 @@ namespace BH.Engine.Physical
             };
         }
 
+        [Description("Creates a physical Wall element. For elements for structral analytical applications look at BH.oM.Structure.Elements.Panel. For elements for environmental analytical applications look at BH.oM.Environments.Elements.Panel")]
+        [Input("line", "Base line of the wall")]
+        [Input("height", "Height of the wall")]
+        [Input("construction", "Construction representing the thickness and materiality of the Wall")]
+        [Input("openings", "Openings of the Wall. Could be simple voids or more detailed obejcts")]
+        [Input("offset", "Represents the positioning of the construction in relation to the location surface of the Wall")]
+        [Input("name", "The name of the wall, default empty string")]
+        [Output("Wall", "The created physical Wall")]
+        public static Wall Wall(Line line, double height, IConstruction construction, Offset offset = Offset.Undefined, string name = "")
+        {
+            Polyline boundary = new Polyline();
+
+            Vector move = Vector.ZAxis * height;
+
+            boundary.ControlPoints.Add(line.Start);
+            boundary.ControlPoints.Add(line.End);
+            boundary.ControlPoints.Add(line.End + move);
+            boundary.ControlPoints.Add(line.Start + move);
+            boundary.ControlPoints.Add(line.Start);
+
+            return new Wall
+            {
+                Location = Geometry.Create.PlanarSurface(boundary),
+                Construction = construction,
+                Offset = offset,
+                Name = name
+            };
+        }
+
         /***************************************************/
 
         [Description("Creates physical wall object")]
         [Input("construction", "Construction of the wall")]
-        [Input("edges", "External edges of wall (profile)")]
+        [Input("edges", "External edges of the wall (Profile - planar closed curve)")]
         [Input("internalEdges", "Internal edges of wall (profile)")]
         [Output("wall", "A physical wall")]
-        public static Wall Wall(Construction construction, ICurve edges, IEnumerable<ICurve> internalEdges)
+        public static Wall Wall(IConstruction construction, ICurve edges, IEnumerable<ICurve> internalEdges)
         {
             if (construction == null || edges == null)
             {
@@ -108,13 +137,34 @@ namespace BH.Engine.Physical
             };
         }
 
+        [Description("Creates a physical Wall element. For elements for structral analytical applications look at BH.oM.Structure.Elements.Panel. For elements for environmental analytical applications look at BH.oM.Environments.Elements.Panel")]
+        [Input("location", "Location surface which represents the outer geometry of the Wall. Should not contain any openings")]
+        [Input("construction", "Construction representing the thickness and materiality of the Wall")]
+        [Input("openings", "Openings of the Wall. Could be simple voids or more detailed obejcts")]
+        [Input("offset", "Represents the positioning of the construction in relation to the location surface of the Wall")]
+        [Input("name", "The name of the wall, default empty string")]
+        [Output("Wall", "The created physical Wall")]
+        public static Wall Wall(oM.Geometry.ISurface location, IConstruction construction, List<IOpening> openings = null, Offset offset = Offset.Undefined, string name = "")
+        {
+            openings = openings ?? new List<IOpening>();
+
+            return new Wall
+            {
+                Location = location,
+                Construction = construction,
+                Openings = openings,
+                Offset = offset,
+                Name = name
+            };
+        }
+
         /***************************************************/
 
         [Description("Creates physical wall object")]
         [Input("construction", "Construction of the wall")]
-        [Input("edges", "Edges of wall (profile)")]
+        [Input("edges", "External edges of the wall (Profile - planar closed curve)")]
         [Output("wall", "A physical wall")]
-        public static Wall Wall(Construction construction, ICurve edges)
+        public static Wall Wall(IConstruction construction, ICurve edges)
         {
             return Wall(construction, edges, null);
         }

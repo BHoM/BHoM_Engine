@@ -39,21 +39,44 @@ namespace BH.Engine.Physical
 
         [Description("Creates physical roof based on given construction and edges")]
         [Input("construction", "Construction of the roof")]
-        [Input("edges", "Edges of the roof")]
+        [Input("edges", "External edges of the roof (Profile - planar closed curve)")]
         [Output("roof", "A physical roof")]
-        public static Roof Roof(Construction construction, ICurve edges)
+        public static Roof Roof(IConstruction construction, ICurve edges)
         {
             return Roof(construction, edges, null);
         }
 
         /***************************************************/
 
+        [Description("Creates a physical Roof element. For elements for structral analytical applications look at BH.oM.Structure.Elements.Panel. For elements for environmental analytical applications look at BH.oM.Environments.Elements.Panel")]
+        [Input("construction", "Construction representing the thickness and materiality of the Roof")]
+        [Input("location", "Location surface which represents the outer geometry of the Roof. Should not contain any openings")]
+        [Input("openings", "Openings of the Roof. Could be simple voids or more detailed obejcts")]
+        [Input("offset", "Represents the positioning of the construction in relation to the location surface of the Roof")]
+        [Input("name", "The name of the roof, default empty string")]
+        [Output("Roof", "The created physical Roof")]
+        public static Roof Roof(IConstruction construction, oM.Geometry.ISurface location, List<IOpening> openings = null, Offset offset = Offset.Undefined, string name = "")
+        {
+            openings = openings ?? new List<IOpening>();
+
+            return new Roof
+            {
+                Location = location,
+                Construction = construction,
+                Openings = openings,
+                Offset = offset,
+                Name = name
+            };
+        }
+
+        /***************************************************/
+
         [Description("Creates physical roof based on given construction, external and internal edges")]
         [Input("construction", "Construction of the roof")]
-        [Input("edges", "Edges of the roof")]
+        [Input("edges", "External edges of the roof (Profile - planar closed curve)")]
         [Input("internalEdges", "Internal edges of openings etc.")]
         [Output("roof", "A physical roof")]
-        public static Roof Roof(Construction construction, ICurve edges, IEnumerable<ICurve> internalEdges)
+        public static Roof Roof(IConstruction construction, ICurve edges, IEnumerable<ICurve> internalEdges)
         {
             if (construction == null || edges == null)
             {
