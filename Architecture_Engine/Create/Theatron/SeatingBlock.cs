@@ -220,11 +220,11 @@ namespace BH.Engine.Architecture.Theatron
         private static void SetBlockFloor(ref SeatingBlock block, ProfileParameters parameters)//include gaps for vomitories
         {
 
-            bool vomitory = parameters.Vomitory;
-            bool superR = parameters.SuperRiser;
-            int vomStart = parameters.VomitoryStartRow;
-            int superStart = parameters.SuperRiserStartRow;
-            double aisleW = parameters.AisleWidth;
+            bool vomitory = parameters.VomitoryParameters.Vomitory;
+            bool superR = parameters.SuperRiserParameters.SuperRiser;
+            int vomStart = parameters.VomitoryParameters.VomitoryStartRow;
+            int superStart = parameters.SuperRiserParameters.SuperRiserStartRow;
+            double aisleW = parameters.VomitoryParameters.VomitoryWidth;
             if (!vomitory && !superR)
             {
                 SetBlockFloorBasic(ref block);
@@ -299,8 +299,8 @@ namespace BH.Engine.Architecture.Theatron
 
         private static void TransformBlock(ref SeatingBlock transformedBlock, TransformMatrix xTrans)
         {
-            transformedBlock.Audience.Spectators.ForEach(p => p.Eye.Location.Transform(xTrans));
-            transformedBlock.Audience.Spectators.ForEach(p => p.Eye.ViewDirection.Transform(xTrans));
+            transformedBlock.Audience.Spectators.ForEach(p => p.Head.PairOfEyes.ReferenceLocation.Transform(xTrans));
+            transformedBlock.Audience.Spectators.ForEach(p => p.Head.PairOfEyes.ViewDirection.Transform(xTrans));
             transformedBlock.Floor = transformedBlock.Floor.Transform(xTrans);
             transformedBlock.FrontRow= transformedBlock.FrontRow.Transform(xTrans);
 

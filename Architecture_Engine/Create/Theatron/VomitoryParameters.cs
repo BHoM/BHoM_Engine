@@ -1,6 +1,6 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -20,36 +20,52 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Architecture.Elements;
-using BH.oM.Geometry;
+using BH.oM.Architecture.Theatron;
+using BH.oM.Reflection.Attributes;
 using System.Collections.Generic;
-using System.Linq;
+using System.ComponentModel;
 
-namespace BH.Engine.Architecture
+namespace BH.Engine.Architecture.Theatron
 {
-    public static partial class Query
+    public static partial class Create
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-
-        public static ICurve Geometry(this Grid grid)
+        [Description("Create a default set of vomitory parameters")]
+        [Input("scale", "Optional input to scale from default values")]
+        public static VomitoryParameters VomitoryParameters(double scale = 1.0)
         {
-            return grid.Curve;
+            return new VomitoryParameters
+            {
+                //values in m below
+                
+                Vomitory = false,
+
+                VomitoryStartRow = 10,
+
+                VomitoryWidth = 1.2 * scale,
+
+            };
         }
-
-        /***************************************************/
-
-        public static CompositeGeometry Geometry(this oM.Architecture.Theatron.TheatronGeometry theatron)
+        [Description("Create a custom set of vomitory parameters")]
+        [Input("vomitory", "Is there a vomitory?")]
+        [Input("vomitoryStartRow", "What row does the vomitory start? (If there is a super riser the vomitory will start at the same row as the super riser)")]
+        [Input("vomitoryWidth", "Width of aisle at vomitory")]
+        
+        public static VomitoryParameters VomitoryParameters(bool vomitory = false, int vomitoryStartRow = 10, double vomitoryWidth = 1.2)
         {
-            return Engine.Geometry.Create.CompositeGeometry(theatron?.Tiers3d?.SelectMany(x => x?.TierBlocks).Select(x => x?.Floor));
-        }
+            return new VomitoryParameters
+            {
+                //values in m below
 
-        /***************************************************/
+                Vomitory = vomitory,
 
-        public static CompositeGeometry Geometry(this oM.Architecture.Theatron.TheatronFullProfile theatronFullProfile)
-        {
-            return Engine.Geometry.Create.CompositeGeometry(theatronFullProfile?.BaseTierProfiles?.Select(x => x?.Profile));
+                VomitoryStartRow = vomitoryStartRow,
+
+                VomitoryWidth = vomitoryWidth,
+
+            };
         }
     }
 }

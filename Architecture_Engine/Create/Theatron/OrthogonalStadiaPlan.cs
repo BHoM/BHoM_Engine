@@ -28,7 +28,7 @@ using BH.oM.Architecture.Theatron;
 
 namespace BH.Engine.Architecture.Theatron
 {
-    public static partial class Compute
+    public static partial class Create
     {
         /***************************************************/
         /**** Public Methods                            ****/
@@ -36,17 +36,17 @@ namespace BH.Engine.Architecture.Theatron
         public static TheatronPlan OrthogonalPlan(StadiaParameters parameters)
         {
             TheatronPlan plan = new TheatronPlan();
-            orthoPlanSetUp(ref plan, parameters.ActivityArea, parameters.EndBound, parameters.SideBound, 
+            orthoPlanSetUp(ref plan, parameters.PitchLength,parameters.PitchWidth, parameters.EndBound, parameters.SideBound, 
                 parameters.CornerRadius, parameters.StructBayWidth, parameters.NumCornerBays);
             return plan;
         }
         /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
-        private static void orthoPlanSetUp(ref TheatronPlan plan, ActivityArea activityArea, double endBound, double sideBound, double cornerR, double structBayW, int nCornerBays)
+        private static void orthoPlanSetUp(ref TheatronPlan plan, double length,double width, double endBound, double sideBound, double cornerR, double structBayW, int nCornerBays)
         {
-            int nSideBays = (int)(Math.Floor(((activityArea.Length + endBound) / 2 - cornerR) / structBayW) * 2);
-            int nEndBays = (int)(Math.Floor(((activityArea.Width + sideBound) / 2 - cornerR) / structBayW) * 2);
+            int nSideBays = (int)(Math.Floor(((length + endBound) / 2 - cornerR) / structBayW) * 2);
+            int nEndBays = (int)(Math.Floor(((width + sideBound) / 2 - cornerR) / structBayW) * 2);
             plan.SectionOrigins = new List<ProfileOrigin>();
             
             double cornA = Math.PI / 2 / (nCornerBays + 1);
@@ -73,7 +73,7 @@ namespace BH.Engine.Architecture.Theatron
                         {
                             yMin = (nSideBays * structBayW) / -2;
                             //origin xyz 
-                            oX = ((activityArea.Width + sideBound) / 2);
+                            oX = ((width + sideBound) / 2);
                             oY = yMin + (structBayW * d);
                             dX = 1;
                             dY = 0;
@@ -82,7 +82,7 @@ namespace BH.Engine.Architecture.Theatron
                         {
                             yMin = (nSideBays * structBayW) / 2;
                             //origin xyz 
-                            oX = -((activityArea.Width + sideBound) / 2);
+                            oX = -((width + sideBound) / 2);
                             oY = yMin - (structBayW * d);
                             dX = -1;
                             dY = 0;
@@ -109,7 +109,7 @@ namespace BH.Engine.Architecture.Theatron
                             {
                                 //origin xyz 
                                 oX = xMin - (structBayW * d);
-                                oY = ((activityArea.Length + endBound) / 2);
+                                oY = ((length + endBound) / 2);
                                 dX = 0;
                                 dY = 1;
                             }
@@ -117,7 +117,7 @@ namespace BH.Engine.Architecture.Theatron
                             {
                                 //origin xyz 
                                 oX = -xMin + (structBayW * d);
-                                oY = -((activityArea.Length + endBound) / 2);
+                                oY = -((length + endBound) / 2);
 
                                 dX = 0;
                                 dY = -1;
@@ -133,8 +133,8 @@ namespace BH.Engine.Architecture.Theatron
                     {
                         //local centres cs at fillets
                         bayType = BayType.Corner;
-                        double centreX = (activityArea.Width + sideBound) / 2 - cornerR;
-                        double centreY = (activityArea.Length + endBound) / 2 - cornerR;
+                        double centreX = (width + sideBound) / 2 - cornerR;
+                        double centreY = (length + endBound) / 2 - cornerR;
                         double startAngle = 0;
                         if (i == 1) //NE++
                         {

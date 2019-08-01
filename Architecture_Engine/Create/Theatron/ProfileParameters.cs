@@ -20,7 +20,8 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Geometry;
+using BH.Engine.Humans.ViewQuality;
+using BH.oM.Humans.ViewQuality;
 using BH.oM.Architecture.Theatron;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -53,33 +54,15 @@ namespace BH.Engine.Architecture.Theatron
 
                 NumRows = 25,
 
-                SuperRiser = false,
-
-                SuperRiserStartRow = 10,
-
-                Vomitory = false,
-
-                VomitoryStartRow = 10,
-
-                AisleWidth = 1.2 * scale,
-
-                SuperRiserKerbWidth = 0.15 * scale,
-
-                SuperRiserEyePositionX = 1 * scale,
-
-                SuperRiserEyePositionZ = 1 * scale,
-
-                EyePositionZ = 1.2 * scale,
-
-                EyePositionX = 0.15 * scale,
-
                 BoardHeight = 1.1 * scale,
 
-                StandingEyePositionX = 0.4 * scale,
-
-                StandingEyePositionZ = 1.4 * scale,
-
                 RiserHeightRounding = 0.0,
+
+                VomitoryParameters = VomitoryParameters(scale),
+
+                EyePositionParameters = BH.Engine.Humans.ViewQuality.Create.EyePositionParameters(scale),
+
+                SuperRiserParameters = SuperRiserParameters(scale)
 
             };
         }
@@ -92,24 +75,19 @@ namespace BH.Engine.Architecture.Theatron
         [Input("targetC", "Target Cvalue")]
         [Input("seatWidth", "Seat width")]
         [Input("numRows", "Number of rows")]
-        [Input("superRiser", "Is there a super riser (accessible row)")]
-        [Input("superRiserStart", "What row does the super riser start?")]
-        [Input("vomitory", "Is there a vomitory")]
-        [Input("vomitoryStartRow", "What row does the vomitory start? (If there is a super riser the vomitory will start at the same row as the super riser)")]
-        [Input("aisleWidth", "Width of aisle at vomitory")]
-        [Input("superRiserKerbWidth", "Optional scale if working units are not metres")]
-        [Input("superRiserEyePositionX", "Horizontal seated eye postion on super riser row")]
-        [Input("superRiserEyePositionZ", "Vertical seated eye postion on super riser row")]
-        [Input("eyePositionZ", "Vertical seated eye postion on standard row")]
-        [Input("eyePositionX", "Horizontal seated eye postion on standard row")]
-        [Input("standingEyePositionX", "Horizontal standing eye postion on standard row")]
-        [Input("standingEyePositionZ", "Vertical standing eye postion on standard row")]
+        [Input("boardHeight", "Height of advertising signage infront of seating")]
         [Input("riserRounding", "Round riser heights are rounded to multiples of this value")]
+        
+       
         public static ProfileParameters ProfileParameters(double startX=5.0,double startZ=1.0,double rowWidth=0.8,double targetC =0.09,
-            double seatWidth = 0.4,int numRows =20,bool superRiser=false,int superRiserStart = 10, bool vomitory =false,int vomitoryStartRow=10,
-            double aisleWidth = 1.2,double superRiserKerbWidth=0.15,double superRiserEyePositionX = 1.1, double superRiserEyePositionZ = 1.1,
-            double eyePositionZ = 1.2,double eyePositionX = 0.15,double boardHeight =1.1,double standingEyePositionX =0.4, double standingEyePositionZ=1.4,double riserRounding =0.0)
+            double seatWidth = 0.4,int numRows =20, double boardHeight = 1.1, double riserRounding = 0.0,
+            EyePositionParameters eyePositionParameters=null, VomitoryParameters vomitoryParameters = null,SuperRiserParameters superRiserParameters =null )
+
         {
+            //generate default parameters if null
+            if (eyePositionParameters == null) eyePositionParameters = BH.Engine.Humans.ViewQuality.Create.EyePositionParameters(1.0);
+            if (vomitoryParameters == null) vomitoryParameters = VomitoryParameters(1.0);
+            if (superRiserParameters == null) superRiserParameters = SuperRiserParameters(1.0);
             return new ProfileParameters
             {
                 //values in m below
@@ -125,33 +103,15 @@ namespace BH.Engine.Architecture.Theatron
 
                 NumRows = numRows,
 
-                SuperRiser = superRiser,
-
-                SuperRiserStartRow = superRiserStart,
-
-                Vomitory = vomitory,
-
-                VomitoryStartRow = vomitoryStartRow,
-
-                AisleWidth = aisleWidth,
-
-                SuperRiserKerbWidth = superRiserKerbWidth,
-
-                SuperRiserEyePositionX = superRiserEyePositionX,
-
-                SuperRiserEyePositionZ = superRiserEyePositionZ,
-
-                EyePositionZ = eyePositionZ,
-
-                EyePositionX = eyePositionX,
-
                 BoardHeight = boardHeight,
 
-                StandingEyePositionX = standingEyePositionX,
-
-                StandingEyePositionZ = standingEyePositionZ,
-
                 RiserHeightRounding = riserRounding,
+
+                EyePositionParameters = eyePositionParameters,
+
+                VomitoryParameters = vomitoryParameters,
+
+                SuperRiserParameters = superRiserParameters,
 
             };
         }

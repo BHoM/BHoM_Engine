@@ -104,7 +104,7 @@ namespace BH.Engine.Architecture.Theatron
                     SeatingBlockType blockType = pair.Value;
 
                     var block = SeatingBlock(theatronPlan.SectionOrigins[index], theatronPlan.VomitoryOrigins[index],
-                        theatronPlan.SectionOrigins[index + 1], blockType, profileParameters[i].SeatWidth, profileParameters[i].AisleWidth);
+                        theatronPlan.SectionOrigins[index + 1], blockType, profileParameters[i].SeatWidth, profileParameters[i].VomitoryParameters.VomitoryWidth);
 
                     theatronGeom.Tiers3d[i].Generatorblocks.Add(block);
                     if (block.TypeOfSeatingBlock == SeatingBlockType.Transition1 || block.TypeOfSeatingBlock == SeatingBlockType.Transition2)

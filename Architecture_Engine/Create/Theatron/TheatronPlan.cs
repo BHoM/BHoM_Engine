@@ -60,24 +60,24 @@ namespace BH.Engine.Architecture.Theatron
         public static TheatronPlan PlanGeometry(StadiaParameters parameters)
         {
             //assuming its a full stadium
-            var planGeometry = new TheatronPlan();
+            TheatronPlan planGeometry = new TheatronPlan();
             
             switch (parameters.TypeOfBowl)
             {
                 case StadiaType.Circular:
-                    planGeometry = Compute.CircularPlan(parameters);
+                    planGeometry = CircularPlan(parameters);
                     break;
                 case StadiaType.NoCorners:
-                    planGeometry = Compute.NoCornersPlan(parameters);
+                    planGeometry = NoCornersPlan(parameters);
                     break;
                 case StadiaType.Orthogonal:
-                    planGeometry = Compute.OrthogonalPlan(parameters);
+                    planGeometry = OrthogonalPlan(parameters);
                     break;
                 case StadiaType.EightArc:
-                    planGeometry = Compute.EightArcPlan(parameters);
+                    planGeometry = EightArcPlan(parameters);
                     break;
                 case StadiaType.FourArc:
-                    planGeometry = Compute.FourArcPlan(parameters);
+                    planGeometry = FourArcPlan(parameters);
                     break;
             }
             planGeometry.ActivityArea = parameters.ActivityArea;

@@ -1,6 +1,6 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -20,36 +20,28 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Architecture.Elements;
-using BH.oM.Geometry;
-using System.Collections.Generic;
-using System.Linq;
 
-namespace BH.Engine.Architecture
+using BH.oM.Geometry;
+using BH.oM.Humans.BodyParts;
+
+namespace BH.Engine.Humans
 {
-    public static partial class Query
+    public static partial class Create
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static ICurve Geometry(this Grid grid)
+        public static PairOfEyes pairOfEyes(Point location, Vector viewDirection)
         {
-            return grid.Curve;
+            return new PairOfEyes
+            {
+                ReferenceLocation = location,
+
+                ViewDirection = viewDirection,
+            };
         }
 
         /***************************************************/
-
-        public static CompositeGeometry Geometry(this oM.Architecture.Theatron.TheatronGeometry theatron)
-        {
-            return Engine.Geometry.Create.CompositeGeometry(theatron?.Tiers3d?.SelectMany(x => x?.TierBlocks).Select(x => x?.Floor));
-        }
-
-        /***************************************************/
-
-        public static CompositeGeometry Geometry(this oM.Architecture.Theatron.TheatronFullProfile theatronFullProfile)
-        {
-            return Engine.Geometry.Create.CompositeGeometry(theatronFullProfile?.BaseTierProfiles?.Select(x => x?.Profile));
-        }
     }
 }

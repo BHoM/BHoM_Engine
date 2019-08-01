@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
  *
@@ -20,36 +20,43 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Architecture.Elements;
-using BH.oM.Geometry;
-using System.Collections.Generic;
-using System.Linq;
 
-namespace BH.Engine.Architecture
+using System;
+using System.Collections.Generic;
+using BH.oM.Geometry.CoordinateSystem;
+using BH.oM.Architecture.Theatron;
+
+namespace BH.Engine.Architecture.Theatron
 {
-    public static partial class Query
+    public static partial class Create
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-
-        public static ICurve Geometry(this Grid grid)
+        public static TheatronPlan CircularPlan(StadiaParameters parameters)
         {
-            return grid.Curve;
+            TheatronPlan plan = new TheatronPlan();
+            circularPlaneSetUp(ref plan, parameters.TheatronRadius, parameters.StructBayWidth);
+            return plan;
         }
-
         /***************************************************/
-
-        public static CompositeGeometry Geometry(this oM.Architecture.Theatron.TheatronGeometry theatron)
-        {
-            return Engine.Geometry.Create.CompositeGeometry(theatron?.Tiers3d?.SelectMany(x => x?.TierBlocks).Select(x => x?.Floor));
-        }
-
+        /**** Private Methods                           ****/
         /***************************************************/
-
-        public static CompositeGeometry Geometry(this oM.Architecture.Theatron.TheatronFullProfile theatronFullProfile)
+        private static void circularPlaneSetUp(ref TheatronPlan plan,double radius, double structBayW)
         {
-            return Engine.Geometry.Create.CompositeGeometry(theatronFullProfile?.BaseTierProfiles?.Select(x => x?.Profile));
+            plan.SectionOrigins = new List<ProfileOrigin>();
+            
+            int numBays = (int)(Math.Floor(Math.PI * radius * 2 / structBayW));
+            double theta = 2 * Math.PI / numBays;
+            bool halfbayStart = false;
+            plan.SectionOrigins = arcSweepBay(0, 0, theta, 0, radius, numBays, halfbayStart, 1.0);
+            BayType bayType = BayType.Side;
+            for (int i = 0; i < plan.SectionOrigins.Count; i++)
+            {
+                plan.StructBayType.Add(bayType);
+                
+            }
+
         }
     }
 }

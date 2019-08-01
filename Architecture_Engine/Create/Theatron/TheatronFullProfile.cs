@@ -42,11 +42,11 @@ namespace BH.Engine.Architecture.Theatron
         {
             //this assumes no relation with the plan geometry setting out is from the origin
             TheatronFullProfile fullProfile = new TheatronFullProfile();
-            double minDist = parameters[0].StartX - parameters[0].EyePositionX;
-            Point origin = Geometry.Create.Point(minDist, 0, parameters[0].StartZ - parameters[0].EyePositionZ);
+            double minDist = parameters[0].StartX - parameters[0].EyePositionParameters.EyePositionX;
+            Point origin = Geometry.Create.Point(minDist, 0, parameters[0].StartZ - parameters[0].EyePositionParameters.EyePositionZ);
             Vector direction = Vector.XAxis;
             ProfileOrigin sectionOrigin = ProfileOrigin(origin, direction);
-            GenerateMapProfiles(ref fullProfile, parameters, minDist, sectionOrigin);
+            GenerateMapProfiles(ref fullProfile, parameters.DeepClone(), minDist, sectionOrigin);
             return fullProfile;
         }
 
@@ -59,7 +59,7 @@ namespace BH.Engine.Architecture.Theatron
             
             TheatronFullProfile fullProfile = new TheatronFullProfile();
             
-            GenerateMapProfiles(ref fullProfile, parameters, planGeometry.MinDistToFocalCurve, planGeometry.SectionClosestToFocalCurve);
+            GenerateMapProfiles(ref fullProfile, parameters.DeepClone(), planGeometry.MinDistToFocalCurve, planGeometry.SectionClosestToFocalCurve);
             
             return fullProfile;
         }
@@ -75,7 +75,7 @@ namespace BH.Engine.Architecture.Theatron
             //fullProfile.FocalPoint = focalPoint;
             Vector focalToStart = sectionOrigin.Origin - focalPoint;
             focalToStart.Z = 0;
-            GenerateMapProfiles(ref fullProfile, parameters, focalToStart.Length(), sectionOrigin);
+            GenerateMapProfiles(ref fullProfile, parameters.DeepClone(), focalToStart.Length(), sectionOrigin);
             
             return fullProfile;
         }
@@ -92,7 +92,7 @@ namespace BH.Engine.Architecture.Theatron
             {
                 if (i == 0)
                 {
-                    parameters[i].StartX = distToFocalCurve + parameters[i].RowWidth - parameters[i].EyePositionX;
+                    parameters[i].StartX = distToFocalCurve + parameters[i].RowWidth - parameters[i].EyePositionParameters.EyePositionX;
                 }
                 TierProfile tierSection = TierProfile(parameters[i], lastpoint);
                 fullProfile.BaseTierProfiles.Add(tierSection);

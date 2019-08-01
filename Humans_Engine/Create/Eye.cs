@@ -32,13 +32,11 @@ namespace BH.Engine.Humans
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Eye Eye(Point location, Vector viewDirection)
+        public static Eye Eye()
         {
             return new Eye
             {
-                Location = location,
-
-                ViewDirection = viewDirection,
+             
             };
         }
 
