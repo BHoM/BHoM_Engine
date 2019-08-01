@@ -37,40 +37,30 @@ namespace BH.Engine.Physical
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates floor base on given construction and edges")]
+        [Description("Creates physical floor based on given construction and external edges")]
         [Input("construction", "Construction of the floor")]
         [Input("edges", "Edges of the floor")]
-        [Output("Physical Floor")]
+        [Output("floor", "A physical floor")]
         public static Floor Floor(Construction construction, ICurve edges)
         {
-            if (construction == null || edges == null)
-                return null;
-
-            PlanarSurface aPlanarSurface = Geometry.Create.PlanarSurface(edges);
-            if (aPlanarSurface == null)
-                return null;
-
-            Floor aFloor = new Floor()
-            {
-                Construction = construction,
-                Location = aPlanarSurface
-            };
-
-            return aFloor;
+            return Floor(construction, edges, null);
         }
 
         /***************************************************/
 
-        [Description("Creates floor base on given construction, edges and internal edges")]
-        [Input("construction", "Construction of the wall")]
+        [Description("Creates physical floor based on given construction, external and internal edges")]
+        [Input("construction", "Construction of the floor")]
         [Input("edges", "Edges of the floor")]
         [Input("internalEdges", "Internal edges of openings etc.")]
-        [Output("Physical Floor")]
-        public static Floor Floor(Construction construction, ICurve edges, IEnumerable<ICurve> internalEdges = null)
+        [Output("floor", "A physical floor")]
+        public static Floor Floor(Construction construction, ICurve edges, IEnumerable<ICurve> internalEdges)
         {
 
             if (construction == null || edges == null)
+            {
+                Reflection.Compute.RecordError("Physical Roof could not be created because some input data are null");
                 return null;
+            }
 
             List<ICurve> aInternalCurveList = null;
             if (internalEdges != null && internalEdges.Count() > 0)
@@ -78,15 +68,16 @@ namespace BH.Engine.Physical
 
             PlanarSurface aPlanarSurface = Geometry.Create.PlanarSurface(edges, aInternalCurveList);
             if (aPlanarSurface == null)
+            {
+                Reflection.Compute.RecordError("Physical Roof could not be created because invalid geometry of edges");
                 return null;
+            }
 
-            Floor aFloor = new Floor()
+            return new Floor()
             {
                 Construction = construction,
                 Location = aPlanarSurface
             };
-
-            return aFloor;
         }
 
         /***************************************************/
