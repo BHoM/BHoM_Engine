@@ -33,7 +33,7 @@ namespace BH.Engine.Architecture.Theatron
         /**** Public Methods                            ****/
         /***************************************************/
         [Description("Create a default set of stadia parameters")]
-        [Input("scale", "Optional scale if working units are not metres")]
+        [Input("scale", "Optional input to scale from default values")]
         public static StadiaParameters StadiaParameters(double scale = 1.0)
         {
             return new StadiaParameters
@@ -58,7 +58,11 @@ namespace BH.Engine.Architecture.Theatron
 
                 CornerFraction = 0.5 * scale,
 
-                ActivityArea = Create.ActivityArea(scale),
+                ActivityArea = ActivityArea(scale),
+
+                PitchLength = 90 *scale,
+
+                PitchWidth = 60 * scale,
 
             };
         }
@@ -76,9 +80,11 @@ namespace BH.Engine.Architecture.Theatron
         [Input("typeOfBowl", "What is the stadia type defined by a StadiaType enum")]
         [Input("cornerFraction", "Proportional width of the transition bays between corners and sides and corners and ends")]
         [Input("activityArea", "ActivityArea defines playing area and a focal point")]
+        [Input("pitchLength", "Length of the pitch")]
+        [Input("pitchWidth", "Width of the pitch")]
         public static StadiaParameters StadiaParameters(double structBayWidth = 7.5,double cornerRadius = 10.0,double sideBound = 6.7,
             double endBound = 7.8,double sideRadius = 240.0,double endRadius = 200.0,double theatronRadius = 100.0,int numCornerBays = 7,
-            StadiaType typeOfBowl = StadiaType.EightArc, double cornerFraction = 0.5,ActivityArea activityArea = null)
+            StadiaType typeOfBowl = StadiaType.EightArc, double cornerFraction = 0.5,ActivityArea activityArea = null, double pitchLength = 90, double pitchWidth =45)
         {
             if (activityArea == null) activityArea = Create.ActivityArea(1);
 
@@ -105,6 +111,10 @@ namespace BH.Engine.Architecture.Theatron
                 CornerFraction = cornerFraction,
 
                 ActivityArea = activityArea,
+
+                PitchLength = pitchLength,
+
+                PitchWidth = pitchWidth,
             };
         }
 

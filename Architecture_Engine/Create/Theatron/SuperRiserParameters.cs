@@ -1,6 +1,6 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -20,36 +20,55 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Architecture.Elements;
-using BH.oM.Geometry;
+using BH.oM.Architecture.Theatron;
+using BH.oM.Reflection.Attributes;
 using System.Collections.Generic;
-using System.Linq;
+using System.ComponentModel;
 
-namespace BH.Engine.Architecture
+namespace BH.Engine.Architecture.Theatron
 {
-    public static partial class Query
+    public static partial class Create
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-
-        public static ICurve Geometry(this Grid grid)
+        [Description("Create a default set of super riser parameters")]
+        [Input("scale", "Optional input to scale from default values")]
+        public static SuperRiserParameters SuperRiserParameters(double scale = 1.0)
         {
-            return grid.Curve;
-        }
+            return new SuperRiserParameters
+            {
+                //values in m below
+                
+                SuperRiser = false,
 
+                SuperRiserStartRow = 10,
+
+                SuperRiserKerbWidth = 0.15 * scale,
+
+            };
+        }
         /***************************************************/
+        [Description("Create a custom set of super riser parameters")]
+        [Input("superRiser", "Is there a super riser (accessible row)")]
+        [Input("superRiserStart", "What row does the super riser start?")]
+        [Input("superRiserKerbWidth", "Optional scale if working units are not metres")]
 
-        public static CompositeGeometry Geometry(this oM.Architecture.Theatron.TheatronGeometry theatron)
+        public static SuperRiserParameters SuperRiserParameters(bool superRiser = false, int superRiserStart = 10, double superRiserKerbWidth = 0.15)
+
         {
-            return Engine.Geometry.Create.CompositeGeometry(theatron?.Tiers3d?.SelectMany(x => x?.TierBlocks).Select(x => x?.Floor));
-        }
+            return new SuperRiserParameters
+            {
+                //values in m below
 
-        /***************************************************/
+                SuperRiser = superRiser,
 
-        public static CompositeGeometry Geometry(this oM.Architecture.Theatron.TheatronFullProfile theatronFullProfile)
-        {
-            return Engine.Geometry.Create.CompositeGeometry(theatronFullProfile?.BaseTierProfiles?.Select(x => x?.Profile));
+                SuperRiserStartRow = superRiserStart,
+
+                SuperRiserKerbWidth = superRiserKerbWidth,
+
+            };
         }
+        
     }
 }

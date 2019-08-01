@@ -117,23 +117,23 @@ namespace BH.Engine.Architecture.Theatron
                 double x = 0;
                 double y = 0;
                 double z = 0;
-                if (parameters.SuperRiser && i == parameters.SuperRiserStartRow)
+                if (parameters.SuperRiserParameters.SuperRiser && i == parameters.SuperRiserParameters.SuperRiserStartRow)
                 {
-                    double deltaSHoriz = parameters.StandingEyePositionX - parameters.EyePositionX;//differences between standing and seated eye posiitons
-                    double deltaSVert = parameters.StandingEyePositionZ - parameters.EyePositionZ;
+                    double deltaSHoriz = parameters.EyePositionParameters.StandingEyePositionX - parameters.EyePositionParameters.EyePositionX;//differences between standing and seated eye posiitons
+                    double deltaSVert = parameters.EyePositionParameters.StandingEyePositionZ - parameters.EyePositionParameters.EyePositionZ;
                     //shift the previous positions to give standing eye position and add in the super riser specific horiznotal	
                     prevX = tierProfile.EyePoints[i - 1].X - (deltaSHoriz);
                     prevZ = tierProfile.EyePoints[i - 1].Z + (deltaSVert);
-                    x = prevX + parameters.StandingEyePositionX + parameters.SuperRiserKerbWidth + parameters.SuperRiserEyePositionX;
+                    x = prevX + parameters.EyePositionParameters.StandingEyePositionX + parameters.SuperRiserParameters.SuperRiserKerbWidth + parameters.EyePositionParameters.WheelChairEyePositionX;
                     z = prevZ + parameters.TargetCValue + parameters.RowWidth * ((prevZ + parameters.TargetCValue) / prevX);
                 }
                 else
                 {
-                    if (parameters.SuperRiser && i == parameters.SuperRiserStartRow + 1)//row after the super riser
+                    if (parameters.SuperRiserParameters.SuperRiser && i == parameters.SuperRiserParameters.SuperRiserStartRow + 1)//row after the super riser
                     {
                         //x shifts to include 3 rows for super platform back nib wall nib and row less horiz position
                         //also a wider row is required
-                        double widthSp = (2 * parameters.RowWidth) + parameters.SuperRiserKerbWidth + parameters.RowWidth - parameters.EyePositionX;
+                        double widthSp = (2 * parameters.RowWidth) + parameters.SuperRiserParameters.SuperRiserKerbWidth + parameters.RowWidth - parameters.EyePositionParameters.EyePositionX;
                         x = tierProfile.EyePoints[i - 1].X + widthSp;
                         //z is with standard c over the wheel chair posiiton but could be over the handrail
                         z = tierProfile.EyePoints[i - 1].Z + parameters.TargetCValue + widthSp * ((tierProfile.EyePoints[i - 1].Z + parameters.TargetCValue) / tierProfile.EyePoints[i - 1].X);
@@ -172,21 +172,21 @@ namespace BH.Engine.Architecture.Theatron
             Point p;
             for (int i = 0; i < tierProfile.EyePoints.Count; i++)
             {
-                if (parameters.SuperRiser && i == parameters.SuperRiserStartRow)
+                if (parameters.SuperRiserParameters.SuperRiser && i == parameters.SuperRiserParameters.SuperRiserStartRow)
                 {
                     //4 surface points are needed beneath the wheel chair eye point
                     //p1 x is same as previous
-                    z = tierProfile.EyePoints[i - 1].Z - parameters.EyePositionZ + 0.1;//z is previous eye - eyeH + something
+                    z = tierProfile.EyePoints[i - 1].Z - parameters.EyePositionParameters.EyePositionZ + 0.1;//z is previous eye - eyeH + something
                     p = Engine.Geometry.Create.Point(x, y, z);
                     tierProfile.FloorPoints.Add(p);
 
                     //p2 z is the same a sprevious
-                    x = x + parameters.SuperRiserKerbWidth;
+                    x = x + parameters.SuperRiserParameters.SuperRiserKerbWidth;
                     p = Geometry.Create.Point(x, y, z);
                     tierProfile.FloorPoints.Add(p);
 
                     //p3 x is unchanged
-                    z = tierProfile.EyePoints[i].Z - parameters.SuperRiserEyePositionZ;
+                    z = tierProfile.EyePoints[i].Z - parameters.EyePositionParameters.WheelChairEyePositionZ;
                     p = Geometry.Create.Point(x, y, z);
                     tierProfile.FloorPoints.Add(p);
 
@@ -198,26 +198,26 @@ namespace BH.Engine.Architecture.Theatron
                 }
                 else
                 {
-                    if (parameters.SuperRiser && i == parameters.SuperRiserStartRow + 1)//row after the super riser
+                    if (parameters.SuperRiserParameters.SuperRiser && i == parameters.SuperRiserParameters.SuperRiserStartRow + 1)//row after the super riser
                     {
                         //4 surface points are needed beneath the wheel chair eye point
                         //p1 x is same as previous
-                        z = tierProfile.EyePoints[i].Z - parameters.EyePositionZ+ parameters.BoardHeight;//boardheight is handrail height
+                        z = tierProfile.EyePoints[i].Z - parameters.EyePositionParameters.EyePositionZ+ parameters.BoardHeight;//boardheight is handrail height
                         p = Geometry.Create.Point(x, y, z);
                         tierProfile.FloorPoints.Add(p);
 
                         //p2 z unchanged
-                        x = x + parameters.SuperRiserKerbWidth;
+                        x = x + parameters.SuperRiserParameters.SuperRiserKerbWidth;
                         p = Geometry.Create.Point(x, y, z);
                         tierProfile.FloorPoints.Add(p);
 
                         //p3 x unchanged
-                        z = tierProfile.EyePoints[i].Z - parameters.EyePositionZ;
+                        z = tierProfile.EyePoints[i].Z - parameters.EyePositionParameters.EyePositionZ;
                         p = Geometry.Create.Point(x, y, z);
                         tierProfile.FloorPoints.Add(p);
 
                         //p4 z unchanged
-                        x = tierProfile.EyePoints[i].X + parameters.EyePositionX;
+                        x = tierProfile.EyePoints[i].X + parameters.EyePositionParameters.EyePositionX;
                         p = Geometry.Create.Point(x, y, z);
                         tierProfile.FloorPoints.Add(p);
 
@@ -229,13 +229,13 @@ namespace BH.Engine.Architecture.Theatron
 
                             if (j == 0)
                             {
-                                z = tierProfile.EyePoints[i].Z - parameters.EyePositionZ;
-                                x = tierProfile.EyePoints[i].X - parameters.RowWidth + parameters.EyePositionX;
+                                z = tierProfile.EyePoints[i].Z - parameters.EyePositionParameters.EyePositionZ;
+                                x = tierProfile.EyePoints[i].X - parameters.RowWidth + parameters.EyePositionParameters.EyePositionX;
 
                             }
                             else
                             {
-                                x = tierProfile.EyePoints[i].X + parameters.EyePositionX;
+                                x = tierProfile.EyePoints[i].X + parameters.EyePositionParameters.EyePositionX;
                             }
                             p = Geometry.Create.Point(x, y, z);
                             tierProfile.FloorPoints.Add(p);

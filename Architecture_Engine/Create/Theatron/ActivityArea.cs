@@ -37,7 +37,7 @@ namespace BH.Engine.Architecture.Theatron
         /**** Public Methods                            ****/
         /***************************************************/
         [Description("Create an activityArea rectangle with width: 60 and length: 90, focal point is at 0,0,0")]
-        [Input("scale", "Optional input to scale default units from metres")]
+        [Input("scale", "Optional input to scale from default values")]
         
         public static ActivityArea ActivityArea(double scale = 1.0)
         {
@@ -48,9 +48,6 @@ namespace BH.Engine.Architecture.Theatron
             return new ActivityArea
             {
                 PlayingArea = Geometry.Create.Polyline(new List<Point> { p1, p2, p3, p4, p1 }),
-                Width = 60 * scale,
-                Length = 90 * scale,
-
             };
         }
 
@@ -67,8 +64,6 @@ namespace BH.Engine.Architecture.Theatron
             return new ActivityArea
             {
                 PlayingArea = Geometry.Create.Polyline(new List<Point> { p1, p2, p3, p4, p1 }),
-                Width = width,
-                Length = length,
             };
         }
 

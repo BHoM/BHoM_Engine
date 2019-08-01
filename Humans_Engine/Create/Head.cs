@@ -1,6 +1,6 @@
 ﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -20,25 +20,26 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System;
-using System.Collections.Generic;
-using BH.oM.Geometry;
-using BH.oM.Architecture.Theatron;
 
-namespace BH.Engine.Architecture.Theatron
+using BH.oM.Geometry;
+using BH.oM.Humans.BodyParts;
+
+namespace BH.Engine.Humans
 {
-    public static partial class Compute
+    public static partial class Create
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        public static TheatronPlan FourArcPlan(StadiaParameters parameters)
+
+        public static Head Head(Point eyeRefLocation, Vector viewDirection)
         {
-            throw new NotImplementedException();
-            
+            return new Head
+            {
+                PairOfEyes = Create.pairOfEyes(eyeRefLocation,viewDirection)
+            };
         }
-        /***************************************************/
-        /**** Private Methods                           ****/
+
         /***************************************************/
     }
 }

@@ -69,11 +69,11 @@ namespace BH.Engine.Humans.ViewQuality
             KDTree<Spectator> spectatorTree = SetKDTree(audience);
             foreach (Spectator s in audience.Spectators)
             {
-                Vector rowVector = Geometry.Query.CrossProduct(Vector.ZAxis, s.Eye.ViewDirection);
-                Vector viewVector = s.Eye.ViewDirection;
+                Vector rowVector = Geometry.Query.CrossProduct(Vector.ZAxis, s.Head.PairOfEyes.ViewDirection);
+                Vector viewVector = s.Head.PairOfEyes.ViewDirection;
                 if (settings.ViewType == EvalueViewEnum.ToPoint)
                 {
-                    viewVector = activityArea.ActivityFocalPoint - s.Eye.Location;
+                    viewVector = activityArea.ActivityFocalPoint - s.Head.PairOfEyes.ReferenceLocation;
                 }
                 results.Add(EvalueResult(s, rowVector, viewVector,activityArea.PlayingArea,settings));
             }
@@ -86,8 +86,8 @@ namespace BH.Engine.Humans.ViewQuality
             Vector viewY =Geometry.Query.CrossProduct(viewVect, rowVector);
             viewY = viewY.Normalise();
             
-            Plane vertPln = Geometry.Create.Plane(s.Eye.Location, rowVector);
-            Plane horizPln = Geometry.Create.Plane(s.Eye.Location, viewY);
+            Plane vertPln = Geometry.Create.Plane(s.Head.PairOfEyes.ReferenceLocation, rowVector);
+            Plane horizPln = Geometry.Create.Plane(s.Head.PairOfEyes.ReferenceLocation, viewY);
 
             double htestAng = 0;
             double vtestAng = 0;
@@ -102,13 +102,13 @@ namespace BH.Engine.Humans.ViewQuality
             {
                 Point controlPi = playingArea.ControlPoints[i];
                 //need to test if points are the same
-                iComp = controlPi - s.Eye.Location;
+                iComp = controlPi - s.Head.PairOfEyes.ReferenceLocation;
                 for (int j = 0; j < playingArea.ControlPoints.Count; j++)
                 {
                     if (i != j)
                     {
                         Point controlPj = playingArea.ControlPoints[j];
-                        jComp = controlPj - s.Eye.Location;
+                        jComp = controlPj - s.Head.PairOfEyes.ReferenceLocation;
                         htestAng = Geometry.Query.Angle(iComp, jComp, horizPln);
                         
                         vtestAng = Geometry.Query.Angle(iComp, jComp, vertPln);
@@ -131,14 +131,14 @@ namespace BH.Engine.Humans.ViewQuality
             }
             result.HorizViewAng = result.HorizViewAng * 57.2958;
             result.VertViewAng = result.VertViewAng * 57.2958;
-            result.VertViewVectors[0] = (Vp0 - s.Eye.Location).Normalise();
-            result.VertViewVectors[1] = (Vp1 - s.Eye.Location).Normalise();
-            result.HorizViewVectors[0] = (Hp0 - s.Eye.Location).Normalise();
-            result.HorizViewVectors[1] = (Hp1 - s.Eye.Location).Normalise();
+            result.VertViewVectors[0] = (Vp0 - s.Head.PairOfEyes.ReferenceLocation).Normalise();
+            result.VertViewVectors[1] = (Vp1 - s.Head.PairOfEyes.ReferenceLocation).Normalise();
+            result.HorizViewVectors[0] = (Hp0 - s.Head.PairOfEyes.ReferenceLocation).Normalise();
+            result.HorizViewVectors[1] = (Hp1 - s.Head.PairOfEyes.ReferenceLocation).Normalise();
 
             if (settings.ViewType == EvalueViewEnum.ToPoint)
             {
-                result.Torsion = Geometry.Query.Angle(s.Eye.ViewDirection, viewVect) * 57.2958;
+                result.Torsion = Geometry.Query.Angle(s.Head.PairOfEyes.ViewDirection, viewVect) * 57.2958;
             }
             
             return result;

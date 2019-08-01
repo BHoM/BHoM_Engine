@@ -28,7 +28,7 @@ using BH.oM.Architecture.Theatron;
 
 namespace BH.Engine.Architecture.Theatron
 {
-    public static partial class Compute
+    public static partial class Create
     {
         /***************************************************/
         /**** Public Methods                            ****/
@@ -36,7 +36,7 @@ namespace BH.Engine.Architecture.Theatron
         public static TheatronPlan EightArcPlan(StadiaParameters parameters)
         {
             TheatronPlan plan = new TheatronPlan();
-            radialPlanSetUp(ref plan, parameters.ActivityArea, parameters.SideBound, parameters.SideRadius,
+            radialPlanSetUp(ref plan,parameters.PitchLength,parameters.PitchWidth, parameters.SideBound, parameters.SideRadius,
                 parameters.EndBound, parameters.EndRadius, parameters.CornerRadius, parameters.NumCornerBays, parameters.StructBayWidth,
                 parameters.CornerFraction);
             return plan;
@@ -44,15 +44,15 @@ namespace BH.Engine.Architecture.Theatron
         /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
-        private static void radialPlanSetUp(ref TheatronPlan plan,ActivityArea activityArea, double sideBound, double sideRadius, double endBound, double endRadius, double cornerR, int nCornerBays, double structBayW, double cornerFraction)
+        private static void radialPlanSetUp(ref TheatronPlan plan,double length, double width, double sideBound, double sideRadius, double endBound, double endRadius, double cornerR, int nCornerBays, double structBayW, double cornerFraction)
         {
             plan.SectionOrigins = new List<ProfileOrigin>();
             
             int count = 0;
-            double sidecentreX = activityArea.Width / 2 + sideBound - sideRadius;
+            double sidecentreX = width / 2 + sideBound - sideRadius;
             double sidecentreY = 0;
             double endcentreX = 0;
-            double endcentreY = activityArea.Length / 2 + endBound - endRadius;
+            double endcentreY = length / 2 + endBound - endRadius;
             Point intersect = intersectCircles(sidecentreX, sidecentreY, sideRadius - cornerR, endcentreX, endcentreY, endRadius - cornerR);
             double centreX = intersect.X;
             double centreY = intersect.Y;

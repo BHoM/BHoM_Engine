@@ -70,7 +70,7 @@ namespace BH.Engine.Humans.ViewQuality
             foreach (Spectator s in audience.Spectators)
             {
                 bool cvalueExists = true;
-                Vector rowVector = Geometry.Query.CrossProduct(Vector.ZAxis, s.Eye.ViewDirection);
+                Vector rowVector = Geometry.Query.CrossProduct(Vector.ZAxis, s.Head.PairOfEyes.ViewDirection);
 
                 Spectator infront = GetSpecInfront(s, spectatorTree);
                 double riserHeight = 0;
@@ -84,14 +84,14 @@ namespace BH.Engine.Humans.ViewQuality
                 else
                 {
                     //check the infront and current are on parallel rows
-                    if (infront.Eye.ViewDirection != s.Eye.ViewDirection)
+                    if (infront.Head.PairOfEyes.ViewDirection != s.Head.PairOfEyes.ViewDirection)
                     {
                         cvalueExists = false;
                     }
                 }
                 if (cvalueExists)
                 {
-                    riserHeight = s.Eye.Location.Z - infront.Eye.Location.Z;
+                    riserHeight = s.Head.PairOfEyes.ReferenceLocation.Z - infront.Head.PairOfEyes.ReferenceLocation.Z;
                     rowWidth = GetRowWidth(s, infront, rowVector);
                     focal = GetFocalPoint(rowVector, s, settings.FocalMethod, focalPolyline);
                 }
@@ -104,7 +104,7 @@ namespace BH.Engine.Humans.ViewQuality
         private static double GetRowWidth(Spectator current, Spectator nearest, Vector rowV)
         {
         double width = 0;
-        Vector row = nearest.Eye.Location - current.Eye.Location;
+        Vector row = nearest.Head.PairOfEyes.ReferenceLocation - current.Head.PairOfEyes.ReferenceLocation;
 
         Vector row2d = Geometry.Create.Vector(row.X, row.Y, 0);//horiz vector to spectator row in front
         Vector projected = row2d.Project(rowV);
@@ -138,11 +138,11 @@ namespace BH.Engine.Humans.ViewQuality
         private static Cvalue CvalueResult(Spectator s, Point focal, double riser, double rowWidth, bool cvalueExists, Vector rowV,CvalueSettings settings)
         {
             Cvalue result = new Cvalue();
-            Vector d = s.Eye.Location-focal;
+            Vector d = s.Head.PairOfEyes.ReferenceLocation - focal;
             result.AbsoluteDist = d.Length();
             result.Focalpoint = focal;
             result.HorizDist = Geometry.Create.Vector(d.X, d.Y, 0).Length();
-            result.HeightAbovePitch = s.Eye.Location.Z - focal.Z;
+            result.HeightAbovePitch = s.Head.PairOfEyes.ReferenceLocation.Z - focal.Z;
             
             if (!cvalueExists|| riser > settings.RowTolerance)//
             {
@@ -161,7 +161,7 @@ namespace BH.Engine.Humans.ViewQuality
 
             Point focal = new Point();
             //plane is perpendicular to row
-            Plane interPlane = Geometry.Create.Plane(spect.Eye.Location, rowV);
+            Plane interPlane = Geometry.Create.Plane(spect.Head.PairOfEyes.ReferenceLocation, rowV);
             double dist = Double.MaxValue;
             Point ipt = new Point();
             //loop the segments in the focalPolyline find the closest perpendicular point
@@ -179,13 +179,13 @@ namespace BH.Engine.Humans.ViewQuality
         }
         private static Point FindFocalClosest(Spectator spect, Polyline focalPolyline)
         {
-            return Geometry.Query.ClosestPoint(focalPolyline, spect.Eye.Location);
+            return Geometry.Query.ClosestPoint(focalPolyline, spect.Head.PairOfEyes.ReferenceLocation);
         }
         private static Point FindFocalOffset(Vector rowVector, Spectator spect, Polyline focalPolyline)
         {
             Point focal = new Point();
             //plane is perpendicular to row
-            Plane interPlane = Geometry.Create.Plane(spect.Eye.Location, rowVector);
+            Plane interPlane = Geometry.Create.Plane(spect.Head.PairOfEyes.ReferenceLocation, rowVector);
             double dist = Double.MaxValue;
             Point ipt = new Point();
             //loop the segments in the focalPolyline 
@@ -209,7 +209,7 @@ namespace BH.Engine.Humans.ViewQuality
         private static Spectator GetSpecInfront(Spectator current, KDTree<Spectator> tree)
         {
             
-            double[] query = { current.Eye.Location.X, current.Eye.Location.Y, current.Eye.Location.Z };
+            double[] query = { current.Head.PairOfEyes.ReferenceLocation.X, current.Head.PairOfEyes.ReferenceLocation.Y, current.Head.PairOfEyes.ReferenceLocation.Z };
             //first get the neighbourhood around the current spec
             var neighbours = tree.Nearest(query, neighbors: 8);
             
@@ -218,7 +218,7 @@ namespace BH.Engine.Humans.ViewQuality
             foreach (var n in neighbours)
             {
                 //only those infront
-                if (n.Node.Value.Eye.Location.Z < current.Eye.Location.Z)
+                if (n.Node.Value.Head.PairOfEyes.ReferenceLocation.Z < current.Head.PairOfEyes.ReferenceLocation.Z)
                 {
                     if (n.Distance < dist)
                     {

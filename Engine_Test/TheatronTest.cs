@@ -46,11 +46,11 @@ namespace Engine_Test
             var pParams1 = BH.Engine.Architecture.Theatron.Create.ProfileParameters(1);
             var pParams2 = BH.Engine.Architecture.Theatron.Create.ProfileParameters(1);
             pParams2.NumRows = 20;
-            pParams2.Vomitory = true;
-            pParams2.VomitoryStartRow = 5;
+            pParams2.VomitoryParameters.Vomitory = true;
+            pParams2.VomitoryParameters.VomitoryStartRow = 5;
             pParams1.NumRows = 20;
-            pParams1.Vomitory = true;
-            pParams1.VomitoryStartRow = 5;
+            pParams1.VomitoryParameters.Vomitory = true;
+            pParams1.VomitoryParameters.VomitoryStartRow = 5;
 
             List<ProfileParameters> parameters = new List<ProfileParameters> { pParams1, pParams2 };
             
@@ -212,7 +212,7 @@ namespace Engine_Test
             var area = result.Area();
             var areadiff = Math.Abs(area - expectedArea) / expectedArea;
 
-            if (areadiff < 0.001)
+            if (areadiff > 0.001)
             {
                 //for the avalue 0.1% is probably good enough
                 throw new Exception("Incorrect result from SutherLandHodgman test");

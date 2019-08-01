@@ -69,9 +69,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Create\Head.cs" />
+    <Compile Include="Create\PairOfEyes.cs" />
     <Compile Include="ViewQuality\Audience.cs" />
     <Compile Include="ViewQuality\AvalueAnalysis.cs" />
     <Compile Include="ViewQuality\AvalueSettings.cs" />
+    <Compile Include="ViewQuality\EyePositionParameters.cs" />
     <Compile Include="ViewQuality\ViewConeEnum.cs" />
     <Compile Include="ViewQuality\CvalueAnalysis.cs" />
     <Compile Include="ViewQuality\CvalueSettings.cs" />

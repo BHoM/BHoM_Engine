@@ -76,8 +76,8 @@ namespace BH.Engine.Humans.ViewQuality
 
             foreach (Spectator s in audience.Spectators)
             {
-                Vector rowVector = Geometry.Query.CrossProduct(Vector.ZAxis, s.Eye.ViewDirection);
-                Vector viewVect = activityArea.ActivityFocalPoint - s.Eye.Location;
+                Vector rowVector = Geometry.Query.CrossProduct(Vector.ZAxis, s.Head.PairOfEyes.ViewDirection);
+                Vector viewVect = activityArea.ActivityFocalPoint - s.Head.PairOfEyes.ReferenceLocation;
                 results.Add(ClipView(s, rowVector, viewVect, settings, activityArea, spectatorTree));
             }
             return results;
@@ -89,7 +89,7 @@ namespace BH.Engine.Humans.ViewQuality
 
             foreach (Spectator s in audience.Spectators)
             {
-                double[] pt = new double[] { s.Eye.Location.X, s.Eye.Location.Y, s.Eye.Location.Z };
+                double[] pt = new double[] { s.Head.PairOfEyes.ReferenceLocation.X, s.Head.PairOfEyes.ReferenceLocation.Y, s.Head.PairOfEyes.ReferenceLocation.Z };
                 points.Add(pt);
             }
             // To create a tree from a set of points, we use
@@ -110,8 +110,8 @@ namespace BH.Engine.Humans.ViewQuality
             viewVect = viewVect.Normalise();
             Vector shift = viewVect * settings.EyeFrameDist;
 
-            Point shiftOrigin = spectator.Eye.Location + shift;
-            Point viewClipOrigin = spectator.Eye.Location + 2 * shift;
+            Point shiftOrigin = spectator.Head.PairOfEyes.ReferenceLocation + shift;
+            Point viewClipOrigin = spectator.Head.PairOfEyes.ReferenceLocation + 2 * shift;
 
             //planes need orientation
             Plane viewPlane = Geometry.Create.Plane(shiftOrigin, viewVect);
@@ -121,7 +121,7 @@ namespace BH.Engine.Humans.ViewQuality
             //find part of activity area to project
             Polyline clippedArea = ClipActivityArea(viewClip, activityArea);
             //project the pitch
-            result.FullActivityArea = ProjectPolylineToPlane(viewPlane, clippedArea, spectator.Eye.Location);
+            result.FullActivityArea = ProjectPolylineToPlane(viewPlane, clippedArea, spectator.Head.PairOfEyes.ReferenceLocation);
             //clip the pitch against the viewcone
             
             result.ClippedActivityArea = ClipActivityArea(result.FullActivityArea, result.ViewCone, spectator, viewPlane);
@@ -168,18 +168,18 @@ namespace BH.Engine.Humans.ViewQuality
 
         private static List<Spectator> GetPotentialOcclusion(Spectator spectator,KDTree<Spectator> tree,double neighborhoodRadius)
         {
-            double[] query = new double[] { spectator.Eye.Location.X, spectator.Eye.Location.Y, spectator.Eye.Location.Z };
+            double[] query = new double[] { spectator.Head.PairOfEyes.ReferenceLocation.X, spectator.Head.PairOfEyes.ReferenceLocation.Y, spectator.Head.PairOfEyes.ReferenceLocation.Z };
             var neighbours = tree.Nearest(query, radius: neighborhoodRadius);
             List<Spectator> infront = new List<Spectator>();
             foreach(var n in neighbours)
             {
                 var nodeZ = n.Node.Position[2];
-                if (nodeZ < spectator.Eye.Location.Z)
+                if (nodeZ < spectator.Head.PairOfEyes.ReferenceLocation.Z)
                 {
                     infront.Add(n.Node.Value);
                 }
             }
-            infront.ForEach(x => x.HeadOutline = Create.GetHeadOutline(x.Eye,3));
+            infront.ForEach(x => x.HeadOutline = Create.GetHeadOutline(x.Head,3));
 
             return infront;
         }
@@ -193,7 +193,7 @@ namespace BH.Engine.Humans.ViewQuality
             {
                 foreach (Polyline pl in ClippedArea)
                 {
-                    Polyline projectedHead = ProjectPolylineToPlane(viewPlane, s.HeadOutline, current.Eye.Location);
+                    Polyline projectedHead = ProjectPolylineToPlane(viewPlane, s.HeadOutline, current.Head.PairOfEyes.ReferenceLocation);
 
                     Polyline subject = projectedHead.DeepClone();
                     int np = subject.ControlPoints.Count;

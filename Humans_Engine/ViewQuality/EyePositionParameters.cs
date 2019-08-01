@@ -22,10 +22,7 @@
 
 using BH.oM.Geometry;
 using BH.oM.Humans.ViewQuality;
-using BH.oM.Humans.BodyParts;
-using BH.Engine.Humans;
 using System.Collections.Generic;
-using System;
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
 
@@ -36,51 +33,55 @@ namespace BH.Engine.Humans.ViewQuality
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        [Description("Create a Spectator")]
-        [Input("location", "Point defining the Eye location")]
-        [Input("viewDirection", "Vector defining the Eye view directions")]
-        [Input("createHeadOutline", "Should we generate the 2d head outline for this Spectator")]
-        [Input("scale", "Scaling the head outline if not using metres")]
-        public static Spectator Spectator(Point location, Vector viewDirection,bool createHeadOutline = false, double scale = 1)
+        [Description("Create a default set of eye position parameters")]
+        [Input("scale", "Optional input to scale from default values")]
+
+        public static EyePositionParameters EyePositionParameters(double scale =1.0)
         {
-            Head head = Humans.Create.Head(location, viewDirection);
-
-            Polyline outline = new Polyline();
-
-            if (createHeadOutline)
+            return new EyePositionParameters
             {
-                GetHeadOutline(head, scale);
-            }
 
-            return new Spectator
-            {
-                Head = head,
+                WheelChairEyePositionX = 1 * scale,
 
-                HeadOutline = outline,
+                WheelChairEyePositionZ = 1 * scale,
+
+                EyePositionZ = 1.2 * scale,
+
+                EyePositionX = 0.15 * scale,
+
+                StandingEyePositionX = 0.4 * scale,
+
+                StandingEyePositionZ = 1.4 * scale,
 
             };
         }
-
         /***************************************************/
-
-        public static Polyline GetHeadOutline(Head head,double scale = 1)
+        [Description("Create a custom set of eye position parameters")]
+        [Input("wheelChairEyePositionX", "Horizontal seated eye postion on super riser row")]
+        [Input("wheelChairEyePositionZ", "Vertical seated eye postion on super riser row")]
+        [Input("eyePositionX", "Horizontal seated eye postion on standard row")]
+        [Input("eyePositionZ", "Vertical seated eye postion on standard row")]
+        [Input("standingEyePositionX", "Horizontal standing eye postion on standard row")]
+        [Input("standingEyePositionZ", "Vertical standing eye postion on standard row")]
+        public static EyePositionParameters EyePositionParameters(double wheelChairEyePositionX = 1.1, double wheelChairEyePositionZ = 1.1,
+            double eyePositionX = 0.15, double eyePositionZ = 1.2, double standingEyePositionX = 0.4, double standingEyePositionZ = 1.4)
         {
-            //data should be in datasets
-            double[] xcoords = { 0.025198, 0.025841, 0.040367, 0.065967, 0.097698, 0.129429, 0.15503, 0.169555, 0.170198, 0.152041, 0.141581, 0.122141, 0.097698, 0.073255, 0.053815, 0.043355, 0.025198 };
+            return new EyePositionParameters
+            {
 
-            double[] ycoords = { 0.004467, 0.036987, 0.066089, 0.086153, 0.093301, 0.086153, 0.066089, 0.036987, 0.004467, -0.084287, -0.107096, -0.122963, -0.128638, -0.122963, -0.107096, -0.084287, 0.004467 };
+                WheelChairEyePositionX = wheelChairEyePositionX,
 
-            var scaledX = Array.ConvertAll(xcoords, x => x* scale);
+                WheelChairEyePositionZ = wheelChairEyePositionZ,
 
-            var scaledY= Array.ConvertAll(ycoords, x => x * scale);
+                EyePositionZ = eyePositionZ,
 
-            Vector horiz = Geometry.Query.CrossProduct(Vector.ZAxis,head.PairOfEyes.ViewDirection);
+                EyePositionX = eyePositionX,
 
-            Vector up = Geometry.Query.CrossProduct(horiz, head.PairOfEyes.ViewDirection * -1);
+                StandingEyePositionX = standingEyePositionX,
 
-            List<Point> points = OrientatePoints(up, horiz, head.PairOfEyes.ReferenceLocation, scaledX, scaledY, 0);
+                StandingEyePositionZ = standingEyePositionZ,
 
-            return Geometry.Create.Polyline(points);
+            };
         }
     }
 }
