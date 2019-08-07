@@ -79,6 +79,7 @@
     <Compile Include="Compute\Occupancy.cs" />
     <Compile Include="Compute\PeopleGain.cs" />
     <Compile Include="Compute\PlugGain.cs" />
+    <Compile Include="Compute\SolarPosition.cs" />
     <Compile Include="Convert\Degrees.cs" />
     <Compile Include="Convert\Edge.cs" />
     <Compile Include="Create\LightReflectanceFragment.cs" />
@@ -90,7 +91,6 @@
     <Compile Include="Query\IsTransparent.cs" />
     <Compile Include="Query\Line.cs" />
     <Compile Include="Query\Polyline.cs" />
-    <Compile Include="Query\SolarPosition.cs" />
     <Compile Include="Query\Space.cs" />
     <Compile Include="Create\Building.cs" />
     <Compile Include="Create\CoefficientFragment.cs" />
