@@ -98,7 +98,7 @@ namespace BH.Engine.Environment
 
             double solarElevationAngle = 90 - SolarZenithAngle(latitude, longitude, dt, utcOffset);
             double atmosphericRefraction = 0;
-            if (solarElevationAngle >= -(0.26667 + 0.5667))
+            if (solarElevationAngle >= -(0.26667 + 0.5667)) //0.26667 is SunRadius, 0.5667 is Atmospheric refraction constant
                 atmosphericRefraction = (pressure * 2.83 * 1.02) / (1010 * temperature * 60 * Math.Tan(Convert.ToRadians(solarElevationAngle + (10.3 / (solarElevationAngle + 5.11)))));
 
             return solarElevationAngle + atmosphericRefraction;
