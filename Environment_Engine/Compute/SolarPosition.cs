@@ -34,7 +34,7 @@ using System.ComponentModel;
 
 namespace BH.Engine.Environment
 {
-    public static partial class Query
+    public static partial class Compute
     {
         /***************************************************/
         /**** Public Methods                            ****/
