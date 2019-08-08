@@ -54,12 +54,10 @@ namespace BH.Engine.Reflection
             object firstArgument = method.IsStatic ? null : method.DeclaringType;
 
             if (method.IsGenericMethod || method.ContainsGenericParameters)
-                return null;
-                //method = method.ConstructGeneric();
+                return null; //method = method.ConstructGeneric();
 
             Type delegateType = Expression.GetDelegateType(parameterTypes.ToArray());
             Delegate @delegate = Delegate.CreateDelegate(delegateType, method);
-
 
             return @delegate.Method;
         }
