@@ -62,7 +62,8 @@ namespace BH.Engine.Reflection
                             continue;
                     }
 
-                    if (file.EndsWith("oM.dll") || file.EndsWith("_Engine.dll") || file.EndsWith("_Adapter.dll") || file.EndsWith("_Test.dll"))
+                    if (file.EndsWith("oM.dll") || file.EndsWith("_Engine.dll") || file.EndsWith("_Adapter.dll") ||
+                        file.EndsWith("_Test.dll") || file.EndsWith("_External.dll"))
                     {
                         try
                         {

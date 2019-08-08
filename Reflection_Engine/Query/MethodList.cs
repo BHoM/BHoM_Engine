@@ -59,6 +59,17 @@ namespace BH.Engine.Reflection
             return m_AllMethodList;
         }
 
+        /***************************************************/
+
+        public static List<Delegate> ExternalMethodList()
+        {
+            // If the dictionary exists already return it
+            if (m_ExternamMethodList == null || m_ExternamMethodList.Count <= 0)
+                ExtractAllMethods();
+
+            return m_ExternamMethodList;
+        }
+
 
         /***************************************************/
         /**** Private Methods                           ****/
@@ -90,6 +101,10 @@ namespace BH.Engine.Reflection
                                 m_BHoMMethodList.AddRange(typeMethods.Where(x => x.IsLegal()));
                             }
 
+                            if (type.Name == "External")
+                            {
+
+                            }
                             // Get everything
                             StoreAllMethods(type);
                         }
@@ -99,6 +114,17 @@ namespace BH.Engine.Reflection
                         foreach (Type type in asm.GetTypes())
                         {
                             StoreAllMethods(type);
+                        }
+                    }
+                    else if (name.EndsWith("_External"))
+                    {
+                        foreach (Type type in asm.GetTypes())
+                        {
+                            if (type is BHoMAddin)
+                                (BHoMAddin)type).ExternalMethods();
+                            List<Delegate> externalDelegates = type.GetMethod("ExternalMethods")?.Invoke(null, null) as List<Delegate>;
+                            if (externalDelegates != null)
+                                m_ExternamMethodList.AddRange(externalDelegates);
                         }
                     }
                 }
@@ -128,6 +154,7 @@ namespace BH.Engine.Reflection
 
         private static List<MethodInfo> m_BHoMMethodList = new List<MethodInfo>();
         private static List<MethodBase> m_AllMethodList = new List<MethodBase>();
+        private static List<Delegate> m_ExternamMethodList = new List<Delegate>();
 
         /***************************************************/
     }
