@@ -88,19 +88,24 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Compute\Compile.cs" />
     <Compile Include="Compute\DeepDependencies.cs" />
     <Compile Include="Compute\OpenHelpPage.cs" />
     <Compile Include="Compute\RecordEvent.cs" />
     <Compile Include="Compute\LoadAllAssemblies.cs" />
     <Compile Include="Compute\RunExtensionMethod.cs" />
     <Compile Include="Convert\ToText.cs" />
+    <Compile Include="Create\MethodInfo.cs" />
     <Compile Include="Create\Output.cs" />
     <Compile Include="Modify\Cast.cs" />
+    <Compile Include="Modify\MakeGeneric.cs" />
+    <Compile Include="Modify\MakeStatic.cs" />
     <Compile Include="Modify\SortExtensionMethods.cs" />
     <Compile Include="Query\CurrentAssemblyFolder.cs" />
     <Compile Include="Query\BHoMFolder.cs" />
     <Compile Include="Query\ImplementedTypes.cs" />
     <Compile Include="Query\Count.cs" />
+    <Compile Include="Query\IsExposed.cs" />
     <Compile Include="Query\Item.cs" />
     <Compile Include="Query\OutputType.cs" />
     <Compile Include="Query\OutputAttributes.cs" />

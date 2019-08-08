@@ -73,6 +73,7 @@
     <Compile Include="Create\GraphLink.cs" />
     <Compile Include="Create\GraphNode.cs" />
     <Compile Include="Modify\Add.cs" />
+    <Compile Include="Modify\GroupByName.cs" />
     <Compile Include="Modify\ShortenBranches.cs" />
     <Compile Include="Modify\Pop.cs" />
     <Compile Include="Modify\RemoveLink.cs" />
