@@ -104,6 +104,7 @@
     <Compile Include="Modify\SortExtensionMethods.cs" />
     <Compile Include="Query\CurrentAssemblyFolder.cs" />
     <Compile Include="Query\BHoMFolder.cs" />
+    <Compile Include="Query\GenericTypeConstraint.cs" />
     <Compile Include="Query\ImplementedTypes.cs" />
     <Compile Include="Query\Count.cs" />
     <Compile Include="Query\IsExposed.cs" />
