@@ -73,7 +73,6 @@
     <Compile Include="Objects\MemberMapConventions\ImmutableBHoMClassMapConvention.cs" />
     <Compile Include="Objects\MemberMapConventions\ImmutableBHoMCreatorMapConvention.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Query\ParametersWithConstraints.cs" />
     <Compile Include="Query\TaggedName.cs" />
   </ItemGroup>
   <ItemGroup>
