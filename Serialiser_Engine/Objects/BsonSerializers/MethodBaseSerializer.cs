@@ -88,18 +88,20 @@ namespace BH.Engine.Serialiser.BsonSerializers
             bsonReader.ReadName();
             string methodName = bsonReader.ReadString();
 
-            List<string> paramTypes = new List<string>();
+            List<string> paramTypesJson = new List<string>();
             bsonReader.ReadName();
             bsonReader.ReadStartArray();
             while (bsonReader.ReadBsonType() != BsonType.EndOfDocument)
-                paramTypes.Add(bsonReader.ReadString());
+                paramTypesJson.Add(bsonReader.ReadString());
             bsonReader.ReadEndArray();
 
             context.Reader.ReadEndDocument();
 
             try
             {
-                MethodBase method = Create.MethodBase((Type)Convert.FromJson(typeName), methodName, paramTypes);
+                List<Type> types = paramTypesJson.Select(x => Convert.FromJson(x)).Cast<Type>().ToList();
+                MethodBase method = Create.MethodBase((Type)Convert.FromJson(typeName), methodName, types); // type overload
+
                 if (method == null)
                     Reflection.Compute.RecordError("Method " + methodName + " from " + typeName + " failed to deserialise.");
                 return method;
