@@ -58,7 +58,6 @@
     <Compile Include="Convert\Zip.cs" />
     <Compile Include="Convert\Json.cs" />
     <Compile Include="Create\Delegate.cs" />
-    <Compile Include="Create\MethodBase.cs" />
     <Compile Include="Modify\ApplyTaggedName.cs" />
     <Compile Include="Objects\BsonSerializers\EnumSerializer.cs" />
     <Compile Include="Objects\BsonSerializers\DelegateSerializser.cs" />
