@@ -95,6 +95,7 @@
     <Compile Include="Compute\LoadAllAssemblies.cs" />
     <Compile Include="Compute\RunExtensionMethod.cs" />
     <Compile Include="Convert\ToText.cs" />
+    <Compile Include="Create\MethodBase.cs" />
     <Compile Include="Create\MethodInfo.cs" />
     <Compile Include="Create\Output.cs" />
     <Compile Include="Modify\Cast.cs" />
