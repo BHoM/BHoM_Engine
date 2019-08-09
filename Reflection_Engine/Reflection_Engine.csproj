@@ -119,6 +119,7 @@
     <Compile Include="Query\IsDeprecated.cs" />
     <Compile Include="Query\IsMultipleOutputs.cs" />
     <Compile Include="Query\OutputName.cs" />
+    <Compile Include="Query\ParametersWithConstraints.cs" />
     <Compile Include="Query\PropertyAbbreviation.cs" />
     <Compile Include="Query\UnderlyingType.cs" />
     <Compile Include="Query\Url.cs" />
