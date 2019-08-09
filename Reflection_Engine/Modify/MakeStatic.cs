@@ -37,10 +37,13 @@ namespace BH.Engine.Reflection
         /***************************************************/
 
         [Description("Returns the specific type from a type that contains generic parameters")]
-        [Input("genericType", "The generic type")]
+        [Input("method", "The generic type")]
         [Output("type", "The specific type constructed from the generic one")]
         public static MethodInfo MakeStatic(this MethodInfo method)
         {
+            // This is not really true, the method will not be static after processing.
+            // This has to be fixed
+
             if (method == null)
                 return null;
 
@@ -54,7 +57,7 @@ namespace BH.Engine.Reflection
             object firstArgument = method.IsStatic ? null : method.DeclaringType;
 
             if (method.IsGenericMethod || method.ContainsGenericParameters)
-                return null; //method = method.ConstructGeneric();
+                return null; //method = method.MakeGeneric();
 
             Type delegateType = Expression.GetDelegateType(parameterTypes.ToArray());
             Delegate @delegate = Delegate.CreateDelegate(delegateType, method);
