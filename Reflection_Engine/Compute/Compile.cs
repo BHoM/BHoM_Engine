@@ -20,11 +20,7 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Base;
-using BH.oM.Reflection.Debugging;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -57,17 +53,31 @@ namespace BH.Engine.Reflection
             if (method.IsStatic)
             {
                 methodExpression = Expression.Call(method, inputs);
-                return Expression.Lambda<Func<object[], object>>(Expression.Convert(methodExpression, typeof(object)), lambdaInput).Compile();
+                if (method.ReturnType == typeof(void))
+                    return Expression.Lambda<Action<object[]>>(Expression.Convert(methodExpression, typeof(void)), lambdaInput).Compile();
+                else
+                    return Expression.Lambda<Func<object[], object>>(Expression.Convert(methodExpression, typeof(object)), lambdaInput).Compile();
             }
             else
             {
                 ParameterExpression instanceParameter = Expression.Parameter(typeof(object), "instance");
                 Expression instanceInput = Expression.Convert(instanceParameter, method.DeclaringType);
                 methodExpression = Expression.Call(instanceInput, method, inputs);
-                return Expression.Lambda<Func<object, object[], object>>(
-                    Expression.Convert(methodExpression, typeof(object)),
-                    new ParameterExpression[] { instanceParameter, lambdaInput }
-                    ).Compile();
+
+                if (method.ReturnType == typeof(void))
+                {
+                    return Expression.Lambda<Action<object, object[]>>(
+                        Expression.Convert(methodExpression, typeof(void)),
+                        new ParameterExpression[] { instanceParameter, lambdaInput }
+                        ).Compile();
+                }
+                else
+                {
+                    return Expression.Lambda<Func<object, object[], object>>(
+                        Expression.Convert(methodExpression, typeof(object)),
+                        new ParameterExpression[] { instanceParameter, lambdaInput }
+                        ).Compile();
+                }
             }
         }
 
