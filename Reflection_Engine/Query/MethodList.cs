@@ -108,7 +108,6 @@ namespace BH.Engine.Reflection
                                 {
                                     List<MethodInfo> externalMethods = method.Invoke(null, null) as List<MethodInfo>;
                                     m_ExternamMethodList.AddRange(externalMethods);
-                                    m_BHoMMethodList.AddRange(externalMethods);
                                 }
                             }
                             // Get everything
