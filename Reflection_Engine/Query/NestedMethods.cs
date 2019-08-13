@@ -33,14 +33,14 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static List<MethodInfo> GetAllMethods(this Type type)
+        public static List<MethodInfo> NestedMethods(this Type type)
         {
             List<MethodInfo> methods = type.GetMethods().ToList();
             Type[] nestedTypes = type.GetNestedTypes();
 
             while (nestedTypes.Length > 0)
             {
-                methods.Concat(nestedTypes.SelectMany(x => x.GetMethods()));
+                methods.AddRange(nestedTypes.SelectMany(x => x.GetMethods()));
                 nestedTypes = nestedTypes.SelectMany(x => x.GetNestedTypes()).ToArray();
             }
 
