@@ -27,24 +27,25 @@ using System.Reflection;
 
 namespace BH.Engine.Reflection
 {
-    public static partial class Create
+    public static partial class Convert
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Delegate Delegate(this MethodBase method)
+
+        public static Func<object[], object> ToFunc(this MethodBase method)
         {
             if (method is MethodInfo)
-                return ((MethodInfo)method).Delegate();
+                return ((MethodInfo)method).ToFunc();
             else if (method is ConstructorInfo)
-                return ((ConstructorInfo)method).Delegate();
+                return ((ConstructorInfo)method).ToFunc();
             return null;
         }
 
         /***************************************************/
 
-        public static Delegate Delegate(this MethodInfo method)
+        public static Func<object[], object> ToFunc(this MethodInfo method)
         {
             ParameterExpression lambdaInput = Expression.Parameter(typeof(object[]), "x");
             Expression[] inputs = method.GetParameters().Select((x, i) => Expression.Convert(Expression.ArrayIndex(lambdaInput, Expression.Constant(i)), x.ParameterType)).ToArray();
@@ -54,7 +55,7 @@ namespace BH.Engine.Reflection
             {
                 methodExpression = Expression.Call(method, inputs);
                 if (method.ReturnType == typeof(void))
-                    return Expression.Lambda<Action<object[]>>(Expression.Convert(methodExpression, typeof(void)), lambdaInput).Compile();
+                    return Expression.Lambda<Action<object[]>>(Expression.Convert(methodExpression, typeof(void)), lambdaInput).Compile().ToFunc();
                 else
                     return Expression.Lambda<Func<object[], object>>(Expression.Convert(methodExpression, typeof(object)), lambdaInput).Compile();
             }
@@ -69,26 +70,49 @@ namespace BH.Engine.Reflection
                     return Expression.Lambda<Action<object, object[]>>(
                         Expression.Convert(methodExpression, typeof(void)),
                         new ParameterExpression[] { instanceParameter, lambdaInput }
-                        ).Compile();
+                        ).Compile().ToFunc();
                 }
                 else
                 {
                     return Expression.Lambda<Func<object, object[], object>>(
                         Expression.Convert(methodExpression, typeof(object)),
                         new ParameterExpression[] { instanceParameter, lambdaInput }
-                        ).Compile();
+                        ).Compile().ToFunc();
                 }
             }
         }
 
         /***************************************************/
 
-        public static Func<object[], object> Delegate(this ConstructorInfo ctor)
+        public static Func<object[], object> ToFunc(this ConstructorInfo ctor)
         {
             ParameterExpression lambdaInput = Expression.Parameter(typeof(object[]), "x");
             Expression[] inputs = ctor.GetParameters().Select((x, i) => Expression.Convert(Expression.ArrayIndex(lambdaInput, Expression.Constant(i)), x.ParameterType)).ToArray();
             NewExpression constructorExpression = Expression.New(ctor as ConstructorInfo, inputs);
             return Expression.Lambda<Func<object[], object>>(Expression.Convert(constructorExpression, typeof(object)), lambdaInput).Compile();
         }
+
+        /***************************************************/
+
+        public static Func<object[], object> ToFunc(this Action<object[]> act)
+        {
+            return inputs => { act(inputs); return true; };
+        }
+
+        /***************************************************/
+
+        public static Func<object[], object> ToFunc(this Func<object, object[], object> func)
+        {
+            return inputs => { return func(inputs[0], inputs); };
+        }
+
+        /***************************************************/
+
+        public static Func<object[], object> ToFunc(this Action<object, object[]> act)
+        {
+            return inputs => { act(inputs[0], inputs); return true; };
+        }
+
+        /***************************************************/
     }
 }
