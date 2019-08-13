@@ -36,9 +36,9 @@ namespace BH.Engine.Reflection
         public static Delegate Delegate(this MethodBase method)
         {
             if (method is MethodInfo)
-                return ((MethodInfo)method).Compile();
+                return ((MethodInfo)method).Delegate();
             else if (method is ConstructorInfo)
-                return ((ConstructorInfo)method).Compile();
+                return ((ConstructorInfo)method).Delegate();
             return null;
         }
 
