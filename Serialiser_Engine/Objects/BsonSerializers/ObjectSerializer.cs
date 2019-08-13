@@ -193,8 +193,6 @@ namespace BH.Engine.Serialiser.BsonSerializers
                 actualType = typeof(Type);
             else if (value is Enum)
                 actualType = typeof(Enum);
-            else if (value is Delegate)
-                actualType = typeof(Delegate);
 
             var serializer = BsonSerializer.LookupSerializer(actualType);
 
