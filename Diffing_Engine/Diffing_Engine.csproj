@@ -85,7 +85,7 @@
     <Compile Include="Compute\Diffing.cs" />
     <Compile Include="Compute\ToDiffingByteArray.cs" />
     <Compile Include="Query\GetHash.cs" />
-    <Compile Include="Compute\Hashing.cs" />
+    <Compile Include="Compute\SHA256Hash.cs" />
     <Compile Include="Compute\ToDiffingJson.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

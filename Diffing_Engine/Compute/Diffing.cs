@@ -18,17 +18,17 @@ namespace Diffing_Engine
 {
     public static partial class Compute
     {
-        ///***************************************************/
-        ///**** Public Methods                            ****/
-        ///***************************************************/
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
         /// Diffing requires to memorize the hash of the object somewhere.
         /// If using BHoMObjects, we can save the hash inside the objects themselves.
         /// Otherwise another support is needed (table with | object | Hash | )
 
-        public static Delta Diffing(string projectName, List<IBHoMObject> CurrentObjs, List<string> exceptions = null, bool useDefaultExceptions = true)
+        public static Delta Diffing(string projectName, List<IBHoMObject> currentObjs, List<string> exceptions = null, bool useDefaultExceptions = true)
         {
             // Clone the current objects
-            List<IBHoMObject> CurrentObjs_cloned = CurrentObjs.Select(obj => BH.Engine.Base.Query.DeepClone(obj)).ToList();
+            List<IBHoMObject> CurrentObjs_cloned = currentObjs.Select(obj => BH.Engine.Base.Query.DeepClone(obj)).ToList();
 
             // Create project fragment
             DiffProjFragment diffProj = new DiffProjFragment(projectName);
@@ -45,11 +45,11 @@ namespace Diffing_Engine
             return new Delta(diffProj, CurrentObjs_cloned);
         }
 
-        public static Delta Diffing(List<IBHoMObject> CurrentObjs, List<IBHoMObject> ReadObjs, bool propertyLevelDiffing = true, List<string> exceptions = null, bool useDefaultExceptions = true)
+        public static Delta Diffing(List<IBHoMObject> currentObjs, List<IBHoMObject> readObjs, bool propertyLevelDiffing = true, List<string> exceptions = null, bool useDefaultExceptions = true)
         {
             // Clone the objects to assure immutability
-            List<IBHoMObject> CurrentObjs_cloned = CurrentObjs.Select(obj => BH.Engine.Base.Query.DeepClone(obj)).ToList();
-            List<IBHoMObject> ReadObjs_cloned = ReadObjs.Select(obj => BH.Engine.Base.Query.DeepClone(obj)).ToList();
+            List<IBHoMObject> CurrentObjs_cloned = currentObjs.Select(obj => BH.Engine.Base.Query.DeepClone(obj)).ToList();
+            List<IBHoMObject> ReadObjs_cloned = readObjs.Select(obj => BH.Engine.Base.Query.DeepClone(obj)).ToList();
 
             // Get project fragment from one of the objects and use it as the base
             DiffProjFragment diffProj = ReadObjs_cloned
@@ -92,7 +92,7 @@ namespace Diffing_Engine
             List<IBHoMObject> unchanged = new List<IBHoMObject>();
             List<string> unchanged_hashes = new List<string>();
 
-            var objModifiedProps = new Dictionary<string, Tuple<List<string>,List<string>>>(); 
+            var objModifiedProps = new Dictionary<string, Tuple<List<string>, List<string>>>();
 
             foreach (var obj in CurrentObjs_cloned)
             {
@@ -101,36 +101,35 @@ namespace Diffing_Engine
                 if (hashFragm?.PreviousHash == null)
                 {
                     toBeCreated.Add(obj); // It's a new object
-                    continue;
                 }
+
+                else if (hashFragm.PreviousHash == hashFragm.Hash)
+                {
+                    unchanged.Add(obj); // It's NOT been modified
+                    unchanged_hashes.Add(hashFragm.Hash);
+                }
+
+                else if (hashFragm.PreviousHash != hashFragm.Hash)
+                {
+                    toBeUpdated.Add(obj); // It's been modified
+                    toBeUpdated_hashes.Add(hashFragm.Hash);
+
+                    if (propertyLevelDiffing)
+                    {
+                        // Determine changed properties
+                        var oldObjState = ReadObjs_cloned.Single(rObj => rObj.GetHashFragment().Hash == hashFragm.PreviousHash);
+
+                        IsEqualConfig ignoreProps = new IsEqualConfig();
+                        ignoreProps.PropertiesToIgnore = exceptions;
+                        var differentProps = BH.Engine.Testing.Query.IsEqual(obj, oldObjState, ignoreProps);
+                        var changes = new Tuple<List<string>, List<string>>(differentProps.Item2, differentProps.Item3);
+
+                        objModifiedProps.Add(hashFragm.Hash, changes);
+                    }
+                }
+
                 else
                 {
-                    if (hashFragm.PreviousHash == hashFragm.Hash)
-                    {
-                        unchanged.Add(obj); // It's NOT been modified
-                        unchanged_hashes.Add(hashFragm.Hash);
-                        continue;
-                    }
-
-                    if (hashFragm.PreviousHash != hashFragm.Hash)
-                    {
-                        toBeUpdated.Add(obj); // It's been modified
-                        toBeUpdated_hashes.Add(hashFragm.Hash);
-
-                        if (propertyLevelDiffing)
-                        {
-                            // Determine changed properties
-                            var oldObjState = ReadObjs_cloned.Single(rObj => rObj.GetHashFragment().Hash == hashFragm.PreviousHash);
-
-                            IsEqualConfig ignoreProps = new IsEqualConfig();
-                            ignoreProps.PropertiesToIgnore = exceptions;
-                            var differentProps = BH.Engine.Testing.Query.IsEqual(obj, oldObjState, ignoreProps);
-                            var changes = new Tuple<List<string>, List<string>>(differentProps.Item2, differentProps.Item3);
-
-                            objModifiedProps.Add(hashFragm.Hash, changes);
-                        }
-                        continue;
-                    }
 
                     BH.Engine.Reflection.Compute.RecordError("Could not find hash information to perform Diffing on some objects.");
                     return null;
@@ -152,7 +151,7 @@ namespace Diffing_Engine
             return new Delta(diffProj, toBeCreated, toBeCreated_hashes, toBeDeleted, toBeDeleted_hashes, toBeUpdated, toBeUpdated_hashes, unchanged, unchanged_hashes, objModifiedProps);
         }
 
-        ///***************************************************/
+        /***************************************************/
 
 
         private static void SetDefaultExceptions(ref List<string> exceptions)
