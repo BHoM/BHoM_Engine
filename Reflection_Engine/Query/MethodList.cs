@@ -101,13 +101,14 @@ namespace BH.Engine.Reflection
                                 m_BHoMMethodList.AddRange(typeMethods.Where(x => x.IsLegal()));
                             }
 
-                            if (type.Name == "External")
+                            if (type.Name == "Query")
                             {
-                                List<MethodInfo> methods = type.GetMethod("ExternalMethods")?.Invoke(null, null) as List<MethodInfo>;
-                                if (methods != null && methods.Count > 0)
+                                MethodInfo method = type.GetMethod("ExternalMethods");
+                                if (method != null)
                                 {
-                                    m_ExternamMethodList.AddRange(methods);
-                                    //m_BHoMMethodList.AddRange(methods);
+                                    List<MethodInfo> externalMethods = method.Invoke(null, null) as List<MethodInfo>;
+                                    m_ExternamMethodList.AddRange(externalMethods);
+                                    m_BHoMMethodList.AddRange(externalMethods);
                                 }
                             }
                             // Get everything
