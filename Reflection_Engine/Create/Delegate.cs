@@ -27,13 +27,13 @@ using System.Reflection;
 
 namespace BH.Engine.Reflection
 {
-    public static partial class Compute
+    public static partial class Create
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Delegate Compile(this MethodBase method)
+        public static Delegate Delegate(this MethodBase method)
         {
             if (method is MethodInfo)
                 return ((MethodInfo)method).Compile();
@@ -44,7 +44,7 @@ namespace BH.Engine.Reflection
 
         /***************************************************/
 
-        public static Delegate Compile(this MethodInfo method)
+        public static Delegate Delegate(this MethodInfo method)
         {
             ParameterExpression lambdaInput = Expression.Parameter(typeof(object[]), "x");
             Expression[] inputs = method.GetParameters().Select((x, i) => Expression.Convert(Expression.ArrayIndex(lambdaInput, Expression.Constant(i)), x.ParameterType)).ToArray();
@@ -83,7 +83,7 @@ namespace BH.Engine.Reflection
 
         /***************************************************/
 
-        public static Func<object[], object> Compile(this ConstructorInfo ctor)
+        public static Func<object[], object> Delegate(this ConstructorInfo ctor)
         {
             ParameterExpression lambdaInput = Expression.Parameter(typeof(object[]), "x");
             Expression[] inputs = ctor.GetParameters().Select((x, i) => Expression.Convert(Expression.ArrayIndex(lambdaInput, Expression.Constant(i)), x.ParameterType)).ToArray();
