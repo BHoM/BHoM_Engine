@@ -33,7 +33,7 @@ namespace BH.Engine.Serialiser
         /**** Public Methods                    ****/
         /*******************************************/
 
-        public static MethodBase MethodBase(Type type, string methodName, List<string> paramTypesJson)
+        public static MethodBase MethodBase(Type type, string methodName, List<string> paramTypeNames)
         {
             List<MethodBase> methods;
             if (methodName == ".ctor")
@@ -48,12 +48,12 @@ namespace BH.Engine.Serialiser
                 if (method.Name == methodName)
                 {
                     ParameterInfo[] parameters = method.ParametersWithConstraints();
-                    if (parameters.Length == paramTypesJson.Count)
+                    if (parameters.Length == paramTypeNames.Count)
                     {
                         bool matching = true;
                         List<string> names = parameters.Select(x => x.ParameterType.Name).ToList();
-                        for (int i = 0; i < paramTypesJson.Count; i++)
-                            matching &= names[i] == paramTypesJson[i];
+                        for (int i = 0; i < paramTypeNames.Count; i++)
+                            matching &= names[i] == paramTypeNames[i];
 
                         if (matching)
                         {
