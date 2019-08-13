@@ -93,8 +93,8 @@
     <Compile Include="Compute\RecordEvent.cs" />
     <Compile Include="Compute\LoadAllAssemblies.cs" />
     <Compile Include="Compute\RunExtensionMethod.cs" />
+    <Compile Include="Convert\ToFunc.cs" />
     <Compile Include="Convert\ToText.cs" />
-    <Compile Include="Create\Delegate.cs" />
     <Compile Include="Create\MethodBase.cs" />
     <Compile Include="Create\MethodInfo.cs" />
     <Compile Include="Create\Output.cs" />
