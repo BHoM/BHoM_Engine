@@ -102,12 +102,13 @@ namespace BH.Engine.Reflection
                                 m_BHoMMethodList.AddRange(typeMethods.Where(x => x.IsLegal()));
                             }
 
-                            if (type.Name == "Query")
+                            if (type.Name == "External")
                             {
-                                MethodInfo getExternalMethods = type.GetMethod("ExternalMethods");
+                                m_ExternalMethodList.AddRange(type.GetMethods());
+                                MethodInfo getExternalMethods = type.GetMethod("Methods");
                                 if (getExternalMethods != null)
                                     m_ExternalMethodList.AddRange((List<MethodInfo>)getExternalMethods.Invoke(null, null));
-                                MethodInfo getExternalCtor = type.GetMethod("ExternalConstructors");
+                                MethodInfo getExternalCtor = type.GetMethod("Constructors");
                                 if (getExternalCtor != null)
                                     m_ExternalMethodList.AddRange((List<ConstructorInfo>)getExternalCtor.Invoke(null, null));
                             }
