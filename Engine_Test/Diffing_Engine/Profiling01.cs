@@ -61,7 +61,7 @@ namespace Engine_Test
             var delta = BH.Engine.Diffing.Compute.Diffing("Profiling01", currentObjs);
 
             // Modify randomly half the total of objects.
-            var readObjs = delta.ToCreate;
+            var readObjs = delta.OnlySetA;
 
             var allIdxs = Enumerable.Range(0, currentObjs.Count).ToList();
             var randIdxs = allIdxs.OrderBy(g => Guid.NewGuid()).Take(currentObjs.Count / 2).ToList();
@@ -83,8 +83,8 @@ namespace Engine_Test
             string endMessage = $"Total elapsed milliseconds: {ms}";
             Console.WriteLine(endMessage);
 
-            Debug.Assert(delta2.ToUpdate.Count == totalObjs / 2, "Diffing didn't work.");
-            Debug.Assert(delta2.Unchanged.Count == totalObjs / 2, "Diffing didn't work.");
+            Debug.Assert(delta2.Modified.Count == totalObjs / 2, "Diffing didn't work.");
+            Debug.Assert(delta2.UnModified.Count == totalObjs / 2, "Diffing didn't work.");
 
             if (path != null)
             {

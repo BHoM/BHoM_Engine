@@ -49,10 +49,6 @@ namespace Engine_Test
 
         static void Main(string[] args)
         {
-            //TheatronTest test = new TheatronTest();
-            //test.Test();
-            //test.SutherLandHodgmanTest();
-
             //TestSerialization();
             //TestConstructorSpeed();
             //TestDynamicExtentionCost();

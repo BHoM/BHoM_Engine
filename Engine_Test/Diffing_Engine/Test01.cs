@@ -59,7 +59,7 @@ namespace Engine_Test
             // 5. On his machine, Eduardo now PULLS the data from the external platform to read the existing objects.
             // E.g. readObjs = someAdapter.Pull("Portal frame Project");
             // (For illustration I simply take the `delta.ToCreate` objects and copy them in readObjs_Eduardo)
-            readObjs_Eduardo = delta.ToCreate.Select(obj => obj as IBHoMObject).ToList();
+            readObjs_Eduardo = delta.OnlySetA.Select(obj => obj as IBHoMObject).ToList();
             
             // Eduardo will now work on the objects output from the Pull component, 
             // which will be a deep copy of the readObjs, in order to preserve immutability.
@@ -87,10 +87,10 @@ namespace Engine_Test
             // 8. Now Eduardo can push his new delta object (like step 3).
             // `delta.ToCreate` will have 1 object; `delta2.ToUpdate` 1 object; `delta2.ToDelete` 1 object; `delta2.Unchanged` 2 objects.
             // You can also see which properties have changed for what objects: check `delta2.ModifiedPropsPerObject`.
-            Debug.Assert(delta2.ToCreate.Count == 1, "Incorrect number of object identified as new.");
-            Debug.Assert(delta2.ToUpdate.Count == 1, "Incorrect number of object identified as modified.");
-            Debug.Assert(delta2.ToDelete.Count == 1, "Incorrect number of object identified as old.");
-            Debug.Assert(delta2.Unchanged.Count == 3, "Incorrect number of object identified as not changed.");
+            Debug.Assert(delta2.OnlySetA.Count == 1, "Incorrect number of object identified as new/ToBeCreated.");
+            Debug.Assert(delta2.Modified.Count == 1, "Incorrect number of object identified as modified/ToBeUpdated.");
+            Debug.Assert(delta2.OnlySetB.Count == 1, "Incorrect number of object identified as old/ToBeDeleted.");
+            Debug.Assert(delta2.UnModified.Count == 3, "Incorrect number of object identified as not changed.");
             var modifiedPropsPerObj = delta2.ModifiedPropsPerObject.First().Value;
             Debug.Assert(modifiedPropsPerObj.Count == 1, "Incorrect number of changed properties identified by the property-level diffing.");
             Debug.Assert(modifiedPropsPerObj.First().Key == "Name", "Error in property-level diffing");

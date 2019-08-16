@@ -42,7 +42,7 @@ namespace BH.Engine.Diffing
                     new DiffHashFragment(Compute.SHA256Hash(obj, exceptions), diffProj)
                     ));
 
-            return new Delta(diffProj, CurrentObjs_cloned);
+            return new Delta(diffProj, CurrentObjs_cloned, null, null, null);
         }
 
         public static Delta Diffing(List<IBHoMObject> currentObjs, List<IBHoMObject> readObjs, bool propertyLevelDiffing = true, List<string> exceptions = null, bool useDefaultExceptions = true)
