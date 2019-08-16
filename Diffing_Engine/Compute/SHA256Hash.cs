@@ -12,7 +12,7 @@ using BH.Engine.Serialiser;
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
 
-namespace Diffing_Engine
+namespace BH.Engine.Diffing
 {
     public static partial class Compute
     {

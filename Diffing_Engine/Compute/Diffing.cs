@@ -14,7 +14,7 @@ using System.ComponentModel;
 using BH.oM.Reflection.Attributes;
 using BH.oM.Testing;
 
-namespace Diffing_Engine
+namespace BH.Engine.Diffing
 {
     public static partial class Compute
     {

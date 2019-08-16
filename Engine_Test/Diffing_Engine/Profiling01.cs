@@ -58,7 +58,7 @@ namespace Engine_Test
             List<IBHoMObject> currentObjs = GenerateRandomObjects(typeof(Bar), totalObjs);
 
             // Assign diffing properties to the original objects
-            var delta = Diffing_Engine.Compute.Diffing("Profiling01", currentObjs);
+            var delta = BH.Engine.Diffing.Compute.Diffing("Profiling01", currentObjs);
 
             // Modify randomly half the total of objects.
             var readObjs = delta.ToCreate;
@@ -75,7 +75,7 @@ namespace Engine_Test
             var timer = new Stopwatch();
             timer.Start();
 
-            var delta2 = Diffing_Engine.Compute.Diffing(changedList, readObjs, propertyLevelDiffing);
+            var delta2 = BH.Engine.Diffing.Compute.Diffing(changedList, readObjs, propertyLevelDiffing);
 
             timer.Stop();
             var ms = timer.ElapsedMilliseconds;

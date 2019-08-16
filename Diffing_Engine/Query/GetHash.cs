@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Diffing_Engine
+namespace BH.Engine.Diffing
 {
     public static partial class Query
     {

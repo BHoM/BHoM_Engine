@@ -15,7 +15,7 @@ using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
 using MongoDB.Bson;
 
-namespace Diffing_Engine
+namespace BH.Engine.Diffing
 {
     public static partial class Compute
     {

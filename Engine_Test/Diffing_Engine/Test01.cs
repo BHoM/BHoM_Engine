@@ -11,8 +11,9 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Security.Cryptography;
 using BH.Engine.Serialiser;
-using BH.oM.Diffing;
+using BH.Engine.Diffing;
 using System.Diagnostics;
+using BH.oM.Diffing;
 
 namespace Engine_Test
 {
@@ -41,7 +42,7 @@ namespace Engine_Test
             // Alessio only inputs his current objects in the first input. 
             // The second input is for the "Read" objects (the existing ones) that do not exist, as the Project is new,
             // so Alessio does not pass anything as a second argument.
-            Delta delta = Diffing_Engine.Compute.Diffing("Portal frame Project", currentObjs_Alessio);
+            Delta delta = Compute.Diffing("Portal frame Project", currentObjs_Alessio);
 
             // The delta now contains the new objects in the property `delta.ToCreate`.
             // These objects have an hash memorized in their Diffing Fragment that will be used to track their changes.
@@ -81,7 +82,7 @@ namespace Engine_Test
             //         The Push component determines automatically that he should be calculating the diffing for those objects
             //         because those objects have a `Diffing` fragment.
             // (This choice makes the use of the "Diffing component" required only when creating the project for the first time, or when clashes happen).
-            Delta delta2 = Diffing_Engine.Compute.Diffing(currentObjs_Eduardo, readObjs_Eduardo, propertyLevelDiffing);
+            Delta delta2 = Compute.Diffing(currentObjs_Eduardo, readObjs_Eduardo, propertyLevelDiffing);
 
             // 8. Now Eduardo can push his new delta object (like step 3).
             // `delta.ToCreate` will have 1 object; `delta2.ToUpdate` 1 object; `delta2.ToDelete` 1 object; `delta2.Unchanged` 2 objects.
