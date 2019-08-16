@@ -176,7 +176,6 @@ namespace BH.Engine.Geometry
             Point binSearch = new Point();
             while ((start - end).Length() > tolerance * tolerance)
             {
-                double check = (end - start).Length();
                 binSearch = start + ((end - start) / 2);
                 if (start.SquareDistance(tmp) > end.SquareDistance(tmp))
                     start = binSearch;
@@ -189,20 +188,54 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static double Distance(this Line curve1, Arc curve2)
+        public static double Distance(this Line curve1, Arc curve2,double tolerance=Tolerance.Distance)
         {
             if (curve1.CurveIntersections(curve2).Count > 0)
                 return 0f;
             double distance1 = Math.Min(curve2.EndPoint().Distance(curve1), curve2.StartPoint().Distance(curve1));
             double distance2 = Math.Min(curve1.End.Distance(curve2), curve1.Start.Distance(curve2));
             double smallestEnd = Math.Min(distance1, distance2);
-            Line temp = Create.Line(curve2.Centre(), curve1.ClosestPoint(curve2.Centre()));
-            if (temp.Length() < curve2.Radius)
-                return Math.Min(Math.Min(curve1.End.Distance(curve2), curve1.Start.Distance(curve2)), smallestEnd);
-            if (curve2.CurveIntersections(temp).Count > 0)
-                return curve2.Centre().Distance(curve1) - curve2.Radius;
+            if (curve1.IIsCoplanar(curve2))
+                return smallestEnd;
+            Point start, end, binSearch;
+            if(distance1<distance2)
+            {
+                Arc temp = curve2;
+                start = curve2.StartPoint();
+                end = curve2.EndPoint();
+                while((start-end).Length()>tolerance*tolerance)
+                {
+                    binSearch = temp.PointAtParameter(0.5);
+                    if (end.Distance(curve1) > start.Distance(curve1))
+                        end = binSearch;
+                    else
+                        start = binSearch;
+                    temp = temp.Trim(start, end);
+                }
+                distance1 = Math.Min(start.Distance(curve1), end.Distance(curve1));
+            }
+            else
+            {
+                start = curve1.Start;
+                end = curve1.End;
+                while ((start - end).Length() > tolerance * tolerance)
+                {
+                    binSearch = start + ((end - start) / 2);
+                    if (start.Distance(curve2) > end.Distance(curve2))
+                        start = binSearch;
+                    else
+                        end = binSearch;
+                }
+                distance1 = Math.Min(start.Distance(curve2), end.Distance(curve2));
+            }
+            return Math.Min(distance1, smallestEnd);
+            //Line temp = Create.Line(curve2.Centre(), curve1.ClosestPoint(curve2.Centre()));
+            //if (temp.Length() < curve2.Radius)
+            //    return Math.Min(Math.Min(curve1.End.Distance(curve2), curve1.Start.Distance(curve2)), smallestEnd);
+            //if (curve2.CurveIntersections(temp).Count > 0)
+            //    return curve2.Centre().Distance(curve1) - curve2.Radius;
 
-            return smallestEnd;
+            //return smallestEnd;
         }
 
         /***************************************************/
