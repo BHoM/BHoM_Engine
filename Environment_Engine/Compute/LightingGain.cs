@@ -40,12 +40,12 @@ namespace BH.Engine.Environment
         /***************************************************/
 
         [Description("Compute a lighting gain from the watts per square meter and floor area of the space")]
-        [Input("wattsMeterSquared", "The watts per meter squared from a standard or set of lights")]
-        [Input("area", "The floor area (in square meters) of the space")]
+        [Input("wattsPerMeterSquared", "The watts per meter squared from a standard or set of lights, default 0.0")]
+        [Input("area", "The floor area (in square meters) of the space, default 0.0")]
         [Output("lightingGain", "The calculated lighting gain with the sensible watts for the space")]
-        public static Lighting LightingGain(double wattsMeterSquared, double area)
+        public static Lighting LightingGain(double wattsPerMeterSquared = 0.0, double area = 0.0)
         {
-            return Create.Lighting(wattsMeterSquared * area);
+            return Create.Lighting(wattsPerMeterSquared * area);
         }
     }
 }

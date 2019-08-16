@@ -34,6 +34,8 @@ using BH.oM.Base;
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
 
+using BH.Engine.Base;
+
 namespace BH.Engine.Environment
 {
     public static partial class Query
@@ -43,13 +45,13 @@ namespace BH.Engine.Environment
         /***************************************************/
 
         [Description("Returns a collection of Environment Spaces from a list of generic BHoM objects")]
-        [Input("objects", "A collection of generic BHoM objects")]
+        [Input("bhomObjects", "A collection of generic BHoM objects")]
         [Output("spaces", "A collection of Environment Space objects")]
-        public static List<Space> Spaces(this List<IBHoMObject> objects)
+        public static List<Space> Spaces(this List<IBHoMObject> bhomObjects)
         {
-            objects = objects.ObjectsByType(typeof(Space));
+            bhomObjects = bhomObjects.ObjectsByType(typeof(Space));
             List<Space> spaces = new List<Space>();
-            foreach (IBHoMObject o in objects)
+            foreach (IBHoMObject o in bhomObjects)
                 spaces.Add(o as Space);
 
             return spaces;

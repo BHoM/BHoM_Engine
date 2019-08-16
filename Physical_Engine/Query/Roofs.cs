@@ -21,18 +21,18 @@
  */
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using BH.oM.Environment.Elements;
+using System.Collections.Generic;
+using System.ComponentModel;
+using BH.oM.Reflection.Attributes;
+using BH.oM.Physical.Elements;
+using BH.oM.Geometry;
+using BH.oM.Physical;
 using BH.oM.Base;
 
-using BH.oM.Reflection.Attributes;
-using System.ComponentModel;
+using BH.Engine.Base;
 
-namespace BH.Engine.Environment
+namespace BH.Engine.Physical
 {
     public static partial class Query
     {
@@ -40,13 +40,17 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns a collection of objects which are of the provided object type")]
-        [Input("objects", "A collection of generic BHoM objects")]
-        [Input("type", "The type of object to be queried and returned")]
-        [Output("bhomObjects", "A collection of generic BHoM objects matching the provided type")]
-        public static List<IBHoMObject> ObjectsByType(this List<IBHoMObject> objects, Type type)
+        [Description("Returns a collection of Physical Roofs from a list of generic BHoM objects")]
+        [Input("bhomObjects", "A collection of generic BHoM objects")]
+        [Output("roofs", "A collection of Physical Roof objects")]
+        public static List<Roof> Roofs(this List<IBHoMObject> bhomObjects)
         {
-            return objects.Where(x => x.GetType() == type).ToList();
+            bhomObjects = bhomObjects.ObjectsByType(typeof(Roof));
+            List<Roof> roofs = new List<Roof>();
+            foreach (IBHoMObject o in bhomObjects)
+                roofs.Add(o as Roof);
+
+            return roofs;
         }
     }
 }

@@ -34,6 +34,8 @@ using BH.oM.Base;
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
 
+using BH.Engine.Base;
+
 namespace BH.Engine.Environment
 {
     public static partial class Query
@@ -43,13 +45,13 @@ namespace BH.Engine.Environment
         /***************************************************/
 
         [Description("Returns a collection of Architecture Levels from a list of generic BHoM objects")]
-        [Input("objects", "A collection of generic BHoM objects")]
+        [Input("bhomObjects", "A collection of generic BHoM objects")]
         [Output("levels", "A collection of Architecture Level objects")]
-        public static List<Level> Levels(this List<IBHoMObject> objects)
+        public static List<Level> Levels(this List<IBHoMObject> bhomObjects)
         {
-            objects = objects.ObjectsByType(typeof(Level));
+            bhomObjects = bhomObjects.ObjectsByType(typeof(Level));
             List<Level> levels = new List<Level>();
-            foreach (IBHoMObject o in objects)
+            foreach (IBHoMObject o in bhomObjects)
                 levels.Add(o as Level);
 
             return levels;
@@ -66,7 +68,7 @@ namespace BH.Engine.Environment
             foreach (Point p in crvPts)
                 min = Math.Min(min, p.Z);
 
-            return min;
+            return Math.Round(min, 3);
         }
 
         [Description("Returns the maximum level of the given panel based on the z axis")]
@@ -80,7 +82,7 @@ namespace BH.Engine.Environment
             foreach (Point p in crvPts)
                 max = Math.Max(max, p.Z);
 
-            return max;
+            return Math.Round(max, 3);
         }
 
         [Description("Returns the Architecture Level that the Environment Panel resides on")]

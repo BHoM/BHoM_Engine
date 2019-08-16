@@ -53,6 +53,9 @@ namespace BH.Engine.Environment
         [Output("polyline", "BHoM Geometry Polyline")]
         public static Polyline Polyline(this List<Edge> edges)
         {
+            if (edges == null || edges.Count == 0)
+                return null; //Cannot get a polyline from 0 edges...
+            
             List<Point> edgePoints = new List<Point>();
             foreach (Edge e in edges)
                 edgePoints.AddRange(e.Curve.IDiscontinuityPoints());

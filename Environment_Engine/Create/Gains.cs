@@ -103,7 +103,7 @@ namespace BH.Engine.Environment
         [Input("profile", "The profile for this gain being active, default null")]
         [Input("radiantFraction", "The fraction of radiance from this people gain, default 0.0")]
         [Input("viewCoefficient", "The view coefficient of this people gain, default 0.0")]
-        [Input("name", "The name of this lighting gain, default empty string")]
+        [Input("name", "The name of this people gain, default empty string")]
         [Output("peopleGain", "The people gain object to associate to a space")]
         public static People People(double sensible = 0.0, double latent = 0.0, Profile profile = null, double radiantFraction = 0.0, double viewCoefficient = 0.0, string name = "")
         {
@@ -118,12 +118,31 @@ namespace BH.Engine.Environment
             };
         }
 
+        [Description("Create a Plug Gain object which can be attributed to a space")]
+        [Input("sensible", "The sensible gain load for the plug gain, default 0.0")]
+        [Input("profile", "The profile for this gain being active, default null")]
+        [Input("radiantFraction", "The fraction of radiance from this people gain, default 0.0")]
+        [Input("viewCoefficient", "The view coefficient of this plug gain, default 0.0")]
+        [Input("name", "The name of this plug gain, default empty string")]
+        [Output("plugGain", "The plug gain object to associate to a space")]
+        public static Plug Plug(double sensible = 0.0, Profile profile = null, double radiantFraction = 0.0, double viewCoefficient = 0.0, string name = "")
+        {
+            return new Plug
+            {
+                Sensible = sensible,
+                Profile = profile,
+                RadiantFraction = radiantFraction,
+                ViewCoefficient = viewCoefficient,
+                Name = name,
+            };
+        }
+
         [Description("Create a Pollutant Gain object which can be attributed to a space")]
         [Input("sensible", "The sensible gain load for the pollutant gain, default 0.0")]
         [Input("latent", "The latent gain load for the pollutant gain, default 0.0")]
         [Input("profile", "The profile for this gain being active, default null")]
         [Input("name", "The name of this pollutant gain, default empty string")]
-        [Output("pollutantGain", "The polutant gain object to associate to a space")]
+        [Output("pollutantGain", "The pollutant gain object to associate to a space")]
         public static Pollutant Pollutant(double sensible = 0.0, double latent = 0.0, Profile profile = null, string name = "")
         {
             return new Pollutant

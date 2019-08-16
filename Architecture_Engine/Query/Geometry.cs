@@ -22,6 +22,8 @@
 
 using BH.oM.Architecture.Elements;
 using BH.oM.Geometry;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace BH.Engine.Architecture
 {
@@ -37,5 +39,17 @@ namespace BH.Engine.Architecture
         }
 
         /***************************************************/
+
+        public static CompositeGeometry Geometry(this oM.Architecture.Theatron.TheatronGeometry theatron)
+        {
+            return Engine.Geometry.Create.CompositeGeometry(theatron?.Tiers3d?.SelectMany(x => x?.TierBlocks).Select(x => x?.Floor));
+        }
+
+        /***************************************************/
+
+        public static CompositeGeometry Geometry(this oM.Architecture.Theatron.TheatronFullProfile theatronFullProfile)
+        {
+            return Engine.Geometry.Create.CompositeGeometry(theatronFullProfile?.BaseTierProfiles?.Select(x => x?.Profile));
+        }
     }
 }

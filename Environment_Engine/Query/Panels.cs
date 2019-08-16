@@ -36,6 +36,12 @@ using BH.Engine.Geometry;
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
 
+using BH.oM.Architecture.Elements;
+
+using BH.Engine.Base;
+
+using BH.oM.Physical.Elements;
+
 namespace BH.Engine.Environment
 {
     public static partial class Query
@@ -45,13 +51,13 @@ namespace BH.Engine.Environment
         /***************************************************/
 
         [Description("Returns a collection of Environment Panels from a list of generic BHoM objects")]
-        [Input("objects", "A collection of generic BHoM objects")]
+        [Input("bhomObjects", "A collection of generic BHoM objects")]
         [Output("panels", "A collection of Environment Panel objects")]
-        public static List<Panel> Panels(this List<IBHoMObject> objects)
+        public static List<Panel> Panels(this List<IBHoMObject> bhomObjects)
         {
-            objects = objects.ObjectsByType(typeof(Panel));
+            bhomObjects = bhomObjects.ObjectsByType(typeof(Panel));
             List<Panel> spaces = new List<Panel>();
-            foreach (IBHoMObject o in objects)
+            foreach (IBHoMObject o in bhomObjects)
                 spaces.Add(o as Panel);
 
             return spaces;
@@ -190,6 +196,99 @@ namespace BH.Engine.Environment
         public static Panel PanelByGuid(this List<Panel> panels, Guid guid)
         {
             return panels.Where(x => x.BHoM_Guid == guid).FirstOrDefault();
+        }
+
+        [Description("Returns a collection of Environment Panels that sit entirely on a given levels elevation")]
+        [Input("panels", "A collection of Environment Panels to filter")]
+        [Input("searchLevel", "The Architecture level to search by")]
+        [Output("panels", "A collection of Environment Panels which match the given level")]
+        public static List<Panel> PanelsByLevel(this List<Panel> panels, Level searchLevel)
+        {
+            return panels.PanelsByLevel(searchLevel.Elevation);
+        }
+
+        [Description("Returns a collection of Environment Panels that sit entirely on a given levels elevation")]
+        [Input("panels", "A collection of Environment Panels to filter")]
+        [Input("searchLevel", "The level to search by")]
+        [Output("panels", "A collection of Environment Panels which match the given level")]
+        public static List<Panel> PanelsByLevel(this List<Panel> panels, double searchLevel)
+        {
+            return panels.Where(x => x.MinimumLevel() == searchLevel && x.MaximumLevel() == searchLevel).ToList();
+        }
+
+        [Description("Returns a collection of Environment Panels where the minimum level of the panel matches the elevation of the given search level")]
+        [Input("panels", "A collection of Environment Panels to filter")]
+        [Input("searchLevel", "The Architecture level to search by")]
+        [Output("panels", "A collection of Environment Panels where the minimum level meets the search level")]
+        public static List<Panel> PanelsByMinimumLevel(this List<Panel> panels, Level searchLevel)
+        {
+            return panels.PanelsByMinimumLevel(searchLevel.Elevation);
+        }
+
+        [Description("Returns a collection of Environment Panels where the minimum level of the panel matches the elevation of the given search level")]
+        [Input("panels", "A collection of Environment Panels to filter")]
+        [Input("searchLevel", "The level to search by")]
+        [Output("panels", "A collection of Environment Panels where the minimum level meets the search level")]
+        public static List<Panel> PanelsByMinimumLevel(this List<Panel> panels, double searchLevel)
+        {
+            return panels.Where(x => x.MinimumLevel() == searchLevel).ToList();
+        }
+
+        [Description("Returns a collection of Environment Panels where the maximum level of the panel matches the elevation of the given search level")]
+        [Input("panels", "A collection of Environment Panels to filter")]
+        [Input("searchLevel", "The Architecture level to search by")]
+        [Output("panels", "A collection of Environment Panels where the maximum level meets the search level")]
+        public static List<Panel> PanelsByMaximumLevel(this List<Panel> panels, Level searchLevel)
+        {
+            return panels.PanelsByMaximumLevel(searchLevel.Elevation);
+        }
+
+        [Description("Returns a collection of Environment Panels where the maximum level of the panel matches the elevation of the given search level")]
+        [Input("panels", "A collection of Environment Panels to filter")]
+        [Input("searchLevel", "The level to search by")]
+        [Output("panels", "A collection of Environment Panels where the maximum level meets the search level")]
+        public static List<Panel> PanelsByMaximumLevel(this List<Panel> panels, double searchLevel)
+        {
+            return panels.Where(x => x.MaximumLevel() == searchLevel).ToList();
+        }
+
+        [Description("Returns a collection of Environment Panels that contain duplicates in the given collection")]
+        [Input("panels", "A collection of Environment Panels to search in")]
+        [Output("panels", "A nested collection of Environment Panels that are duplicates")]
+        public static List<List<Panel>> FindDuplicatePanels(this List<Panel> panels)
+        {
+            List<List<Panel>> duplicates = new List<List<Panel>>();
+
+            foreach (Panel p in panels)
+            {
+                List<Panel> found = panels.Where(x => x.IsIdentical(p)).ToList();
+                if (found.Count > 1)
+                    duplicates.Add(found);
+            }
+
+            return duplicates;
+        }
+
+        [Description("Returns a collection of Environment Panels queried from a collection of Physical Objects (walls, floors, etc.)")]
+        [Input("physicalObjects", "A collection of Physical Objects to query Environment Panels from")]
+        [Output("panels", "A collection of Environment Panels from Physical Objects")]
+        public static List<Panel> PanelsFromPhysical(this List<BH.oM.Physical.Elements.ISurface> physicalObjects)
+        {
+            List<Panel> panels = new List<Panel>();
+
+            foreach(BH.oM.Physical.Elements.ISurface srf in physicalObjects)
+            {
+                Panel p = new Panel();
+                p.Name = srf.Name;
+                p.Construction = srf.Construction;
+                p.ExternalEdges = srf.Location.IExternalEdges().ToEdges();
+                p.Openings = srf.Openings.OpeningsFromPhysical();
+                if (p.Openings == null) p.Openings = new List<Opening>();
+                p.Type = (srf is BH.oM.Physical.Elements.Wall ? PanelType.Wall : (srf is BH.oM.Physical.Elements.Roof ? PanelType.Roof : PanelType.Floor));
+                panels.Add(p);
+            }
+
+            return panels;
         }
     }
 }
