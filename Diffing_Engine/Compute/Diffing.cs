@@ -92,7 +92,7 @@ namespace Diffing_Engine
             List<IBHoMObject> unchanged = new List<IBHoMObject>();
             List<string> unchanged_hashes = new List<string>();
 
-            var objModifiedProps = new Dictionary<string, Tuple<List<string>, List<string>>>();
+            var objModifiedProps = new Dictionary<string, Dictionary<string, Tuple<object, object>>>();
 
             foreach (var obj in CurrentObjs_cloned)
             {
@@ -122,9 +122,10 @@ namespace Diffing_Engine
                         IsEqualConfig ignoreProps = new IsEqualConfig();
                         ignoreProps.PropertiesToIgnore = exceptions;
                         var differentProps = BH.Engine.Testing.Query.IsEqual(obj, oldObjState, ignoreProps);
+                        var differentProps1 = BH.Engine.Testing.Query.DifferentProperties(obj, oldObjState, ignoreProps);
                         var changes = new Tuple<List<string>, List<string>>(differentProps.Item2, differentProps.Item3);
 
-                        objModifiedProps.Add(hashFragm.Hash, changes);
+                        objModifiedProps.Add(hashFragm.Hash, differentProps1);
                     }
                 }
 

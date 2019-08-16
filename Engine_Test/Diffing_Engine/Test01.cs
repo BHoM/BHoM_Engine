@@ -90,10 +90,10 @@ namespace Engine_Test
             Debug.Assert(delta2.ToUpdate.Count == 1, "Incorrect number of object identified as modified.");
             Debug.Assert(delta2.ToDelete.Count == 1, "Incorrect number of object identified as old.");
             Debug.Assert(delta2.Unchanged.Count == 3, "Incorrect number of object identified as not changed.");
-            var modifiedPropsPerObj = delta2.ModifiedPropsPerObject.First();
-            Debug.Assert(modifiedPropsPerObj.Value.Item1.Count() == 1, "Incorrect number of changed properties identified by the property-level diffing.");
-            Debug.Assert(modifiedPropsPerObj.Value.Item1[0] == "Name", "Error in property-level diffing");
-            Debug.Assert(delta2.ModifiedPropsPerObject.First().Value.Item2[0] == "modifiedBar_0", "Error in property-level diffing");
+            var modifiedPropsPerObj = delta2.ModifiedPropsPerObject.First().Value;
+            Debug.Assert(modifiedPropsPerObj.Count == 1, "Incorrect number of changed properties identified by the property-level diffing.");
+            Debug.Assert(modifiedPropsPerObj.First().Key == "Name", "Error in property-level diffing");
+            Debug.Assert(modifiedPropsPerObj.First().Value.Item1 as string == "modifiedBar_0", "Error in property-level diffing");
 
             Console.WriteLine("Test01 concluded.");
         }

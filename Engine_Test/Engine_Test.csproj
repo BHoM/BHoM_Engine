@@ -45,11 +45,10 @@
     <Reference Include="BHoM, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\BHoM\Build\BHoM.dll</HintPath>
-      <Private>False</Private>
     </Reference>
-    <Reference Include="Diffing_oM">
+    <Reference Include="Diffing_oM, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\BHoM\Build\Diffing_oM.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="Geometry_oM">
       <SpecificVersion>False</SpecificVersion>
