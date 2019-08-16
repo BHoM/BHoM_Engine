@@ -84,5 +84,4 @@ namespace BH.Engine.Environment
         }
     }
 
-
 }

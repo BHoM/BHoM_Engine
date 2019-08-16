@@ -51,6 +51,7 @@ namespace BH.Engine.Environment
             List<string> connectedSpaces = panel1.ConnectedSpaces;
             connectedSpaces.AddRange(panel2.ConnectedSpaces);
             connectedSpaces = connectedSpaces.Where(x => !x.Equals("-1")).ToList();
+            connectedSpaces = connectedSpaces.Distinct().ToList();
 
             rtnPanel.ConnectedSpaces = new List<string>(connectedSpaces);
             

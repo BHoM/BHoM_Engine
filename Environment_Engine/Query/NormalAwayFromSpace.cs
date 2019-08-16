@@ -59,7 +59,7 @@ namespace BH.Engine.Environment
         public static bool NormalAwayFromSpace(this Polyline polyline, List<Panel> panelsAsSpace)
         {
             List<Point> centrePtList = new List<Point>();
-            Point centrePt = polyline.Centre();
+            Point centrePt = polyline.PointInRegion(); //Modifed to Centroid to fix special cases Point centrePt = polyline.Centre();
             centrePtList.Add(centrePt);
 
             if (!polyline.IsClosed()) return false; //Prevent failures of the clockwise check

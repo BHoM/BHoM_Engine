@@ -39,10 +39,10 @@ namespace BH.Engine.Reflection
         public static UnderlyingType UnderlyingType(this Type type)
         {
             int depth = 0;
-            while (type.GetGenericArguments().Count() == 1 && typeof(IEnumerable).IsAssignableFrom(type))
+            while ((type.GetGenericArguments().Count() == 1 || type.GetElementType() != null) && typeof(IEnumerable).IsAssignableFrom(type))
             {
                 depth++;
-                type = type.GetGenericArguments().First();
+                type = type.GetElementType() ?? type.GetGenericArguments().First();
             }
 
             return new UnderlyingType { Type = type, Depth = depth };

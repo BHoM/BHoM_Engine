@@ -40,7 +40,7 @@ namespace BH.Engine.Geometry
         [Input("polyline", "The polyline you wish to clean by removing unnecessary points")]
         [Input("tolerance", "The tolerance of the angle that defines a straight line. Default is set to the value defined by BH.oM.Geometry.Tolerance.Angle")]
         [Output("polyline", "The cleaned polyline")]
-        public static Polyline CleanPolyline(this Polyline polyline, double tolerance = Tolerance.Angle)
+        public static Polyline CleanPolyline(this Polyline polyline, double angleTolerance = Tolerance.Angle, double distanceTolerance = Tolerance.Distance)
         {
             //This method is for closed polylines only at the moment
             if(!polyline.IsClosed())
@@ -60,9 +60,14 @@ namespace BH.Engine.Geometry
                 Point second = pnts[(startIndex + 1) % pnts.Count];
                 Point third = pnts[(startIndex + 2) % pnts.Count];
 
-                if (first.Angle(second, third) <= BH.oM.Geometry.Tolerance.Angle)
+                if (first.Angle(second, third) <= angleTolerance)
                 {
                     //Delete the second point from the list, it's not necessary
+                    pnts.RemoveAt((startIndex + 1) % pnts.Count);
+                }
+                else if (first.Distance(second) <= distanceTolerance)
+                {
+                    //Delete the second point as it is too close to the first to produce any meaningful change...
                     pnts.RemoveAt((startIndex + 1) % pnts.Count);
                 }
                 else

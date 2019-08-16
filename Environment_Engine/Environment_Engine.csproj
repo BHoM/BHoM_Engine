@@ -74,7 +74,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Compute\BooleanIntersect.cs" />
+    <Compile Include="Compute\EquipmentGain.cs" />
     <Compile Include="Compute\LightingGain.cs" />
+    <Compile Include="Compute\Occupancy.cs" />
+    <Compile Include="Compute\PeopleGain.cs" />
+    <Compile Include="Compute\PlugGain.cs" />
+    <Compile Include="Compute\SolarPosition.cs" />
+    <Compile Include="Convert\Degrees.cs" />
     <Compile Include="Convert\Edge.cs" />
     <Compile Include="Create\LightReflectanceFragment.cs" />
     <Compile Include="Create\LightTransmittanceFragment.cs" />
@@ -126,7 +132,6 @@
     <Compile Include="Query\MatchPoint.cs" />
     <Compile Include="Query\FindMaterial.cs" />
     <Compile Include="Query\ObjectsByFragment.cs" />
-    <Compile Include="Query\ObjectsByType.cs" />
     <Compile Include="Query\Openings.cs" />
     <Compile Include="Query\Panels.cs" />
     <Compile Include="Query\RValue.cs" />
@@ -180,6 +185,10 @@
     <Compile Include="Query\Width.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\BHoM_Engine\BHoM_Engine.csproj">
+      <Project>{1ad45c88-dd54-48e5-951f-55edfeb70e35}</Project>
+      <Name>BHoM_Engine</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Common_Engine\Common_Engine.csproj">
       <Project>{8d8cd66f-76f3-4750-936d-380d51bc67d6}</Project>
       <Name>Common_Engine</Name>

@@ -64,14 +64,24 @@
     <Compile Include="Modify\AddMaterialProperties.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Query\Construction.cs" />
+    <Compile Include="Query\Doors.cs" />
+    <Compile Include="Query\Floors.cs" />
     <Compile Include="Query\Geometry.cs" />
+    <Compile Include="Query\Polyline.cs" />
+    <Compile Include="Query\Roofs.cs" />
     <Compile Include="Query\Thickness.cs" />
+    <Compile Include="Query\Walls.cs" />
+    <Compile Include="Query\Windows.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Compute\" />
     <Folder Include="Convert\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\BHoM_Engine\BHoM_Engine.csproj">
+      <Project>{1ad45c88-dd54-48e5-951f-55edfeb70e35}</Project>
+      <Name>BHoM_Engine</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Geometry_Engine\Geometry_Engine.csproj">
       <Project>{89ab2dcb-ef87-4cba-b59c-c16a8a71d333}</Project>
       <Name>Geometry_Engine</Name>
