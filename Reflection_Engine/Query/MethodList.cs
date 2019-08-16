@@ -61,13 +61,14 @@ namespace BH.Engine.Reflection
 
         /***************************************************/
 
-        public static List<MethodInfo> ExternalMethodList()
+        public static List<MethodBase> ExternalMethodList()
         {
-            // If the dictionary exists already return it
-            if (m_ExternamMethodList == null || m_ExternamMethodList.Count <= 0)
+            // Checking for an empty list may be dangerous, we should give different meaning to null and empty lists
+            // What if m_ExternalMethodList is empty after calling ExtractAllMethods() ?
+            if (m_ExternalMethodList == null || m_ExternalMethodList.Count <= 0)
                 ExtractAllMethods();
 
-            return m_ExternamMethodList;
+            return m_ExternalMethodList;
         }
 
 
@@ -103,12 +104,12 @@ namespace BH.Engine.Reflection
 
                             if (type.Name == "Query")
                             {
-                                MethodInfo method = type.GetMethod("ExternalMethods");
-                                if (method != null)
-                                {
-                                    List<MethodInfo> externalMethods = method.Invoke(null, null) as List<MethodInfo>;
-                                    m_ExternamMethodList.AddRange(externalMethods);
-                                }
+                                MethodInfo getExternalMethods = type.GetMethod("ExternalMethods");
+                                if (getExternalMethods != null)
+                                    m_ExternalMethodList.AddRange((List<MethodInfo>)getExternalMethods.Invoke(null, null));
+                                MethodInfo getExternalCtor = type.GetMethod("ExternalConstructors");
+                                if (getExternalCtor != null)
+                                    m_ExternalMethodList.AddRange((List<ConstructorInfo>)getExternalCtor.Invoke(null, null));
                             }
                             // Get everything
                             StoreAllMethods(type);
@@ -148,7 +149,7 @@ namespace BH.Engine.Reflection
 
         private static List<MethodInfo> m_BHoMMethodList = new List<MethodInfo>();
         private static List<MethodBase> m_AllMethodList = new List<MethodBase>();
-        private static List<MethodInfo> m_ExternamMethodList = new List<MethodInfo>();
+        private static List<MethodBase> m_ExternalMethodList = new List<MethodBase>();
 
         /***************************************************/
     }
