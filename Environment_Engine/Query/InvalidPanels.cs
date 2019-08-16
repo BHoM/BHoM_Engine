@@ -45,9 +45,53 @@ namespace BH.Engine.Environment
         {
             List<Panel> rtn = new List<Panel>();
 
-            foreach(Panel p in panels)
+            foreach (Panel p in panels)
             {
-                if (p.ConnectedSpaces.Count == 2 && p.ConnectedSpaces[0] == p.ConnectedSpaces[1])
+                //check for external
+                if ((p.Type == PanelType.Roof || p.Type == PanelType.WallExternal || p.Type == PanelType.FloorExposed || p.Type == PanelType.FloorRaised || p.Type == PanelType.SlabOnGrade || p.Type == PanelType.UndergroundSlab || p.Type == PanelType.UndergroundWall) && p.ConnectedSpaces.Count != 1)
+                {
+                    BH.Engine.Reflection.Compute.RecordWarning("external panels must have 1 adj space");
+                    rtn.Add(p);
+                }
+
+                //check for shade
+                if ((p.Type == PanelType.Shade || p.Type == PanelType.SolarPanel) && p.ConnectedSpaces.Count != 0)
+                {
+                    BH.Engine.Reflection.Compute.RecordWarning("shade  must have 0 adj space");
+                    rtn.Add(p);
+                }
+
+                //check for internal
+                if ((p.Type == PanelType.Ceiling || p.Type == PanelType.WallInternal || p.Type == PanelType.FloorInternal || p.Type == PanelType.UndergroundCeiling) && p.ConnectedSpaces.Count != 2 && p.ConnectedSpaces[0] == p.ConnectedSpaces[1])
+                {
+                    BH.Engine.Reflection.Compute.RecordWarning("intenral panel must have 0 adj space");
+                    rtn.Add(p);
+                }
+
+                //check if geometry area is too small
+                if (p.Area() < 0.15)
+                {
+                    BH.Engine.Reflection.Compute.RecordWarning("possibly to small area less than 0.15");
+                    rtn.Add(p);
+                }
+
+                //check if on dimension is to short
+                foreach (Edge e in p.ExternalEdges)
+                {
+                    if (e.Polyline().Length() < 0.15)
+                    {
+                        BH.Engine.Reflection.Compute.RecordWarning("edge is less than 0.15");
+                        rtn.Add(p);
+                        break;
+                    }
+                }
+
+                //check if panel polyline is closed
+                if (Geometry.Query.IsClosed(p.Polyline()) == false)
+                rtn.Add(p);
+
+                //check if self intesect
+                if (Geometry.Query.IsClosed(p.Polyline()) == false)
                     rtn.Add(p);
             }
 
