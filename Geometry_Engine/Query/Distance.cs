@@ -145,13 +145,39 @@ namespace BH.Engine.Geometry
         /****       Public Methods - Curve/Curve        ****/
         /***************************************************/
 
-        public static double Distance(this Line curve1, Line curve2)
+        public static double Distance(this Line curve1, Line curve2, double tolerance = Tolerance.Distance)
         {
             if (curve1.CurveIntersections(curve2).Count > 0)
                 return 0f;
-            double distance1 = Math.Min(curve2.End.Distance(curve1), curve2.Start.Distance(curve1));
-            double distance2 = Math.Min(curve1.End.Distance(curve2), curve1.Start.Distance(curve2));
-            return Math.Min(distance1, distance2);
+            double distance1 = Math.Min(curve2.End.SquareDistance(curve1), curve2.Start.SquareDistance(curve1));
+            double distance2 = Math.Min(curve1.End.SquareDistance(curve2), curve1.Start.SquareDistance(curve2));
+            double min = Math.Min(distance1, distance2);
+            if (curve1.IsCoplanar(curve2))
+            {
+                return min;
+            }
+            Line tmp, tmp2;
+            tmp = curve1;
+            tmp2 = curve2;
+            if (distance2 < distance1)
+            {
+                tmp = curve2;
+                tmp2 = curve1;
+            }
+            Point start = tmp2.Start;
+            Point end = tmp2.End;
+            Point binSearch = new Point();
+            while ((start-end).Length()>tolerance*tolerance)
+            {
+                double check = (end - start).Length();
+                binSearch = start + ((end-start)/2);
+                if (start.SquareDistance(tmp) > end.SquareDistance(tmp))
+                    start = binSearch;
+                else
+                    end = binSearch;
+            }
+            min = Math.Min(start.SquareDistance(tmp), min);
+            return Math.Sqrt(Math.Min(min, end.SquareDistance(tmp)));
         }
 
         /***************************************************/
