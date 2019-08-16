@@ -156,6 +156,13 @@ namespace BH.Engine.Geometry
             {
                 return min;
             }
+
+            //double[] t = curve1.SkewLineProximity(curve2);
+            //double t1 = Math.Max(Math.Min(t[0], 1),0);
+            //double t2 = Math.Max(Math.Min(t[1], 1), 0);
+            //Vector e1 = curve1.End - curve1.Start;
+            //Vector e2 = curve2.End - curve2.Start;
+            //return (curve1.Start + e1 * t1).Distance(curve2.Start + e2 * t2);
             Line tmp, tmp2;
             tmp = curve1;
             tmp2 = curve2;
@@ -167,10 +174,10 @@ namespace BH.Engine.Geometry
             Point start = tmp2.Start;
             Point end = tmp2.End;
             Point binSearch = new Point();
-            while ((start-end).Length()>tolerance*tolerance)
+            while ((start - end).Length() > tolerance * tolerance)
             {
                 double check = (end - start).Length();
-                binSearch = start + ((end-start)/2);
+                binSearch = start + ((end - start) / 2);
                 if (start.SquareDistance(tmp) > end.SquareDistance(tmp))
                     start = binSearch;
                 else
