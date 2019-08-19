@@ -158,7 +158,7 @@ namespace BH.Engine.Geometry
             }
 
             //double[] t = curve1.SkewLineProximity(curve2);
-            //double t1 = Math.Max(Math.Min(t[0], 1),0);
+            //double t1 = Math.Max(Math.Min(t[0], 1), 0);
             //double t2 = Math.Max(Math.Min(t[1], 1), 0);
             //Vector e1 = curve1.End - curve1.Start;
             //Vector e2 = curve2.End - curve2.Start;
@@ -229,156 +229,190 @@ namespace BH.Engine.Geometry
                 distance1 = Math.Min(start.Distance(curve2), end.Distance(curve2));
             }
             return Math.Min(distance1, smallestEnd);
-            //Line temp = Create.Line(curve2.Centre(), curve1.ClosestPoint(curve2.Centre()));
-            //if (temp.Length() < curve2.Radius)
-            //    return Math.Min(Math.Min(curve1.End.Distance(curve2), curve1.Start.Distance(curve2)), smallestEnd);
-            //if (curve2.CurveIntersections(temp).Count > 0)
-            //    return curve2.Centre().Distance(curve1) - curve2.Radius;
-
-            //return smallestEnd;
         }
 
         /***************************************************/
 
-        public static double Distance(this Line curve1, Circle curve2)
+        public static double Distance(this Line curve1, Circle  curve2, double tolerance=Tolerance.Distance)
         {
             if (curve1.CurveIntersections(curve2).Count > 0)
                 return 0f;
-            Line temp = Create.Line(curve2.Centre, curve1.ClosestPoint(curve2.Centre));
-            if (temp.Length() < curve2.Radius)
-                return Math.Min(curve1.End.Distance(curve2), curve1.Start.Distance(curve2));
-            return curve2.Centre.Distance(curve1) - curve2.Radius;
+            List<Point> crclpts = new List<Point>();
+            for (double i = 0; i < 1; i += 0.25)
+                crclpts.Add(curve2.PointAtParameter(i));
+            crclpts.Add(curve1.Start);
+            crclpts.Add(curve1.End);
+            if (crclpts.IsCoplanar())
+            {
+                Line temp = Create.Line(curve2.Centre, curve1.ClosestPoint(curve2.Centre));
+                if (temp.Length() < curve2.Radius)
+                    return Math.Min(curve1.End.Distance(curve2), curve1.Start.Distance(curve2));
+                return curve2.Centre.Distance(curve1) - curve2.Radius;
+            }
+            crclpts.Remove(curve1.Start);
+            crclpts.Remove(curve1.End);
+            Point ptToRmv=crclpts[0];
+            for(int i=1;i<4;i++)
+            {
+                if (ptToRmv.Distance(curve1) < crclpts[i].Distance(curve1))
+                    ptToRmv = crclpts[i];
+            }
+            crclpts.Remove(ptToRmv);
+            Arc closestArc = Create.Arc(crclpts[0], crclpts[1], crclpts[2]);
+            return closestArc.Distance(curve1);
         }
 
         /***************************************************/
 
-        public static double Distance(this Line curve1, PolyCurve curve2)
+        public static double Distance(this Line curve1, PolyCurve curve2, double tolerance=Tolerance.Distance)
         {
             return curve2.Distance(curve1);
         }
 
         /***************************************************/
 
-        public static double Distance(this Line curve1, Polyline curve2)
+        public static double Distance(this Line curve1, Polyline curve2, double tolerance=Tolerance.Distance)
         {
             return curve2.Distance(curve1);
         }
 
         /***************************************************/
 
-        public static double Distance(this Arc curve1, Line curve2)
+        public static double Distance(this Arc curve1, Line curve2, double tolerance=Tolerance.Distance)
         {
             return curve2.Distance(curve1);
         }
 
         /***************************************************/
 
-        public static double Distance(this Arc curve1, Arc curve2)
+        public static double Distance(this Arc curve1, Arc curve2,double tolerance=Tolerance.Distance)
         {
             if (curve1.CurveIntersections(curve2).Count > 0)
                 return 0f;
             double distance1 = Math.Min(curve2.EndPoint().Distance(curve1), curve2.StartPoint().Distance(curve1));
             double distance2 = Math.Min(curve1.EndPoint().Distance(curve2), curve1.StartPoint().Distance(curve2));
-            double smallestEnds = Math.Min(distance1, distance2);
-            if (Math.Min(curve1.Centre().Distance(curve2), curve2.Centre().Distance(curve1)) < Math.Max(curve1.Radius, curve2.Radius))
+            double min = Math.Min(distance1, distance2);
+            Arc tmp, tmp2;
+            tmp = curve1;
+            tmp2 = curve2;
+            if (distance2 < distance1)
             {
-                if (curve1.Centre().Distance(curve2) > curve2.Centre().Distance(curve1))
-                {
-                    Line temp = Create.Line(curve2.Centre(), curve1.ClosestPoint(curve2.Centre()));
-                    if (temp.CurveIntersections(curve2).Count > 0)
-                        return Math.Min(curve2.Centre().Distance(curve1) - curve2.Radius, smallestEnds);
-                    else
-                        return Math.Min(Math.Min(curve2.StartPoint().Distance(curve1), curve2.EndPoint().Distance(curve1)), smallestEnds);
-                }
-                else
-                {
-                    Line temp = Create.Line(curve1.Centre(), curve2.ClosestPoint(curve1.Centre()));
-                    if (temp.CurveIntersections(curve1).Count > 0)
-                        return Math.Min(curve1.Centre().Distance(curve2) - curve1.Radius, smallestEnds);
-                    else
-                        return Math.Min(smallestEnds, Math.Min(curve1.StartPoint().Distance(curve2), curve1.EndPoint().Distance(curve2)));
-                }
+                tmp = curve2;
+                tmp2 = curve1;
             }
-            if (curve1.Centre().Distance(curve2.Centre()) > curve1.Radius + curve2.Radius)
-                return Math.Min(curve1.Centre().Distance(curve2.Centre()) - (curve1.Radius + curve2.Radius), smallestEnds);
-            return smallestEnds;
-
+            Point start = tmp2.StartPoint();
+            Point end=tmp2.EndPoint();
+            Point binSearch = new Point();
+            while ((start - end).Length() > tolerance * tolerance)
+            {
+                binSearch = tmp2.PointAtParameter(0.5);
+                if (start.Distance(tmp) > end.Distance(tmp))
+                    start = binSearch;
+                else
+                    end = binSearch;
+                tmp2 = tmp2.Trim(start, end);
+            }
+            min = Math.Min(start.Distance(tmp), min);
+            return Math.Min(min, end.Distance(tmp));
         }
 
         /***************************************************/
 
-        public static double Distance(this Arc curve1, Circle curve2)
+        public static double Distance(this Arc curve1, Circle curve2, double tolerance=Tolerance.Distance)
         {
             if (curve1.CurveIntersections(curve2).Count > 0)
                 return 0f;
             double distance = Math.Min(curve1.EndPoint().Distance(curve2), curve1.StartPoint().Distance(curve2));
-            return Math.Min(Math.Abs(curve2.Centre.Distance(curve1) - curve2.Radius), distance);
+            if (curve1.IIsCoplanar(curve2))
+            {
+                return Math.Min(Math.Abs(curve2.Centre.Distance(curve1) - curve2.Radius), distance);
+            }
+            List<Point> crclpts=new List<Point>();
+            for(double i=0.1;i<1;i+=0.25)
+            {
+                crclpts.Add(curve2.PointAtParameter(i));
+            }
+            Arc tmp = Create.Arc(crclpts[0], crclpts[1], crclpts[2]);
+            Arc tmp2 = Create.Arc(crclpts[2], crclpts[3], crclpts[0]);
+            distance = Math.Min(tmp2.Distance(curve1), distance);
+            return Math.Min(tmp.Distance(curve1),distance);
         }
 
         /***************************************************/
 
-        public static double Distance(this Arc curve1, PolyCurve curve2)
+        public static double Distance(this Arc curve1, PolyCurve curve2, double tolerance=Tolerance.Distance)
         {
             return curve2.Distance(curve1);
         }
 
         /***************************************************/
 
-        public static double Distance(this Arc curve1, Polyline curve2)
+        public static double Distance(this Arc curve1, Polyline curve2, double tolerance=Tolerance.Distance)
         {
             return curve2.Distance(curve1);
         }
 
         /***************************************************/
 
-        public static double Distance(this Circle curve1, Line curve2)
+        public static double Distance(this Circle curve1, Line curve2, double tolerance=Tolerance.Distance)
         {
             return curve2.Distance(curve1);
         }
 
         /***************************************************/
 
-        public static double Distance(this Circle curve1, Arc curve2)
+        public static double Distance(this Circle curve1, Arc curve2, double tolerance=Tolerance.Distance)
         {
             return curve2.Distance(curve1);
         }
 
         /***************************************************/
 
-        public static double Distance(this Circle curve1, Circle curve2)
+        public static double Distance(this Circle curve1, Circle curve2, double tolerance=Tolerance.Distance)
         {
             if (curve1.CurveIntersections(curve2).Count > 0)
                 return 0f;
-            if (curve1.Centre == curve2.Centre)
-                return Math.Abs(curve2.Radius - curve1.Radius);
-            if (curve1.Centre.Distance(curve2.Centre) < Math.Max(curve2.Radius, curve1.Radius))
+            if (curve1.IIsCoplanar(curve2))
             {
-                if (curve2.Radius < curve1.Radius)
-                    return curve2.Centre.Distance(curve1) - curve2.Radius;
+                if (curve1.Centre == curve2.Centre)
+                    return Math.Abs(curve2.Radius - curve1.Radius);
+                if (curve1.Centre.Distance(curve2.Centre) < Math.Max(curve2.Radius, curve1.Radius))
+                {
+                    if (curve2.Radius < curve1.Radius)
+                        return curve2.Centre.Distance(curve1) - curve2.Radius;
+                    else
+                        return curve1.Centre.Distance(curve2) - curve1.Radius;
+                }
                 else
-                    return curve1.Centre.Distance(curve2) - curve1.Radius;
+                    return curve1.Centre.Distance(curve2.Centre) - (curve2.Radius + curve1.Radius);
             }
-            else
-                return curve1.Centre.Distance(curve2.Centre) - (curve2.Radius + curve1.Radius);
+            List<Point> crclpts=new List<Point>();
+            for(double i=0;i<1;i+=0.25)
+            {
+                crclpts.Add(curve1.PointAtParameter(i));
+            }
+            Arc tmp = Create.Arc(crclpts[0], crclpts[1], crclpts[2]);
+            Arc tmp2 = Create.Arc(crclpts[2], crclpts[3], crclpts[0]);
+            return Math.Min(tmp.Distance(curve2), tmp2.Distance(curve2));
         }
 
         /***************************************************/
 
-        public static double Distance(this Circle curve1, PolyCurve curve2)
+        public static double Distance(this Circle curve1, PolyCurve curve2, double tolerance=Tolerance.Distance)
         {
             return curve2.Distance(curve1);
         }
 
         /***************************************************/
 
-        public static double Distance(this Circle curve1, Polyline curve2)
+        public static double Distance(this Circle curve1, Polyline curve2, double tolerance=Tolerance.Distance)
         {
             return curve2.Distance(curve1);
         }
 
         /***************************************************/
 
-        public static double Distance(this PolyCurve curve1, Line curve2)
+        public static double Distance(this PolyCurve curve1, Line curve2, double tolerance=Tolerance.Distance)
         {
             double distance = curve2.IDistance(curve1.Curves[0]);
             for (int i = 1; i < curve1.Curves.Count; i++)
@@ -388,7 +422,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static double Distance(this PolyCurve curve1, Arc curve2)
+        public static double Distance(this PolyCurve curve1, Arc curve2, double tolerance=Tolerance.Distance)
         {
             double distance = curve2.IDistance(curve1.Curves[0]);
             for (int i = 1; i < curve1.Curves.Count; i++)
@@ -398,7 +432,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static double Distance(this PolyCurve curve1, Circle curve2)
+        public static double Distance(this PolyCurve curve1, Circle curve2, double tolerance=Tolerance.Distance)
         {
             double distance = curve2.IDistance(curve1.Curves[0]);
             for (int i = 1; i < curve1.Curves.Count; i++)
@@ -407,7 +441,7 @@ namespace BH.Engine.Geometry
         }
 
         /***************************************************/
-        public static double Distance(this PolyCurve curve1, Polyline curve2)
+        public static double Distance(this PolyCurve curve1, Polyline curve2, double tolerance=Tolerance.Distance)
         {
             List<Line> temp = new List<Line>();
             for (int i = 0; i < curve2.ControlPoints.Count - 1; i++)
@@ -422,7 +456,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static double Distance(this PolyCurve curve1, PolyCurve curve2)
+        public static double Distance(this PolyCurve curve1, PolyCurve curve2, double tolerance=Tolerance.Distance)
         {
             double distance = curve1.Curves[0].IDistance(curve2.Curves[0]);
             for (int i = 0; i < curve1.Curves.Count; i++)
@@ -435,7 +469,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static double Distance(this Polyline curve1, Line curve2)
+        public static double Distance(this Polyline curve1, Line curve2, double tolerance=Tolerance.Distance)
         {
             List<Line> temp = new List<Line>();
             for (int i = 0; i < curve1.ControlPoints.Count - 1; i++)
@@ -448,7 +482,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static double Distance(this Polyline curve1, Arc curve2)
+        public static double Distance(this Polyline curve1, Arc curve2, double tolerance=Tolerance.Distance)
         {
             List<Line> temp = new List<Line>();
             for (int i = 0; i < curve1.ControlPoints.Count - 1; i++)
@@ -461,7 +495,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static double Distance(this Polyline curve1, Circle curve2)
+        public static double Distance(this Polyline curve1, Circle curve2, double tolerance=Tolerance.Distance)
         {
             List<Line> temp = new List<Line>();
             for (int i = 0; i < curve1.ControlPoints.Count - 1; i++)
@@ -474,14 +508,14 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static double Distance(this Polyline curve1, PolyCurve curve2)
+        public static double Distance(this Polyline curve1, PolyCurve curve2, double tolerance=Tolerance.Distance)
         {
             return curve2.Distance(curve1);
         }
 
         /***************************************************/
 
-        public static double Distance(this Polyline curve1, Polyline curve2)
+        public static double Distance(this Polyline curve1, Polyline curve2, double tolerance=Tolerance.Distance)
         {
             List<Line> temp = new List<Line>();
             for (int i = 0; i < curve1.ControlPoints.Count - 1; i++)
@@ -501,7 +535,7 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [NotImplemented]
-        public static double Distance(this ICurve curve1, Ellipse curve2)
+        public static double Distance(this ICurve curve1, Ellipse curve2, double tolerance=Tolerance.Distance)
         {
             throw new NotImplementedException();
         }
@@ -509,7 +543,7 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [NotImplemented]
-        public static double Distance(this ICurve curve1, NurbsCurve curve2)
+        public static double Distance(this ICurve curve1, NurbsCurve curve2, double tolerance=Tolerance.Distance)
         {
             throw new NotImplementedException();
         }
@@ -523,7 +557,7 @@ namespace BH.Engine.Geometry
             return Distance(point, curve as dynamic);
         }
 
-        public static double IDistance(this ICurve curve1, ICurve curve2)
+        public static double IDistance(this ICurve curve1, ICurve curve2, double tolerance=Tolerance.Distance)
         {
             return Distance(curve1 as dynamic, curve2 as dynamic);
         }
