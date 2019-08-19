@@ -149,41 +149,20 @@ namespace BH.Engine.Geometry
         {
             if (curve1.CurveIntersections(curve2).Count > 0)
                 return 0f;
-            double distance1 = Math.Min(curve2.End.SquareDistance(curve1), curve2.Start.SquareDistance(curve1));
-            double distance2 = Math.Min(curve1.End.SquareDistance(curve2), curve1.Start.SquareDistance(curve2));
+            double distance1 = Math.Sqrt(Math.Min(curve2.End.SquareDistance(curve1), curve2.Start.SquareDistance(curve1)));
+            double distance2 = Math.Sqrt(Math.Min(curve1.End.SquareDistance(curve2), curve1.Start.SquareDistance(curve2)));
             double min = Math.Min(distance1, distance2);
             if (curve1.IsCoplanar(curve2))
             {
                 return min;
             }
 
-            //double[] t = curve1.SkewLineProximity(curve2);
-            //double t1 = Math.Max(Math.Min(t[0], 1), 0);
-            //double t2 = Math.Max(Math.Min(t[1], 1), 0);
-            //Vector e1 = curve1.End - curve1.Start;
-            //Vector e2 = curve2.End - curve2.Start;
-            //return (curve1.Start + e1 * t1).Distance(curve2.Start + e2 * t2);
-            Line tmp, tmp2;
-            tmp = curve1;
-            tmp2 = curve2;
-            if (distance2 < distance1)
-            {
-                tmp = curve2;
-                tmp2 = curve1;
-            }
-            Point start = tmp2.Start;
-            Point end = tmp2.End;
-            Point binSearch = new Point();
-            while ((start - end).Length() > tolerance * tolerance)
-            {
-                binSearch = start + ((end - start) / 2);
-                if (start.SquareDistance(tmp) > end.SquareDistance(tmp))
-                    start = binSearch;
-                else
-                    end = binSearch;
-            }
-            min = Math.Min(start.SquareDistance(tmp), min);
-            return Math.Sqrt(Math.Min(min, end.SquareDistance(tmp)));
+            double[] t = curve1.SkewLineProximity(curve2);
+            double t1 = Math.Max(Math.Min(t[0], 1), 0);
+            double t2 = Math.Max(Math.Min(t[1], 1), 0);
+            Vector e1 = curve1.End - curve1.Start;
+            Vector e2 = curve2.End - curve2.Start;
+            return Math.Min((curve1.Start + e1 * t1).Distance(curve2.Start + e2 * t2),min);
         }
 
         /***************************************************/
