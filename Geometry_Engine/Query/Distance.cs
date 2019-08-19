@@ -216,29 +216,49 @@ namespace BH.Engine.Geometry
         {
             if (curve1.CurveIntersections(curve2).Count > 0)
                 return 0f;
-            List<Point> crclpts = new List<Point>();
-            for (double i = 0; i < 1; i += 0.25)
-                crclpts.Add(curve2.PointAtParameter(i));
-            crclpts.Add(curve1.Start);
-            crclpts.Add(curve1.End);
-            if (crclpts.IsCoplanar())
+            double distance1 = Math.Min(curve1.Start.Distance(curve2), curve1.End.Distance(curve2));
+            Plane pln = curve2.FitPlane();
+            Point closestOnLine;
+            if (curve1.PlaneIntersection(pln, false) == null)
             {
-                Line temp = Create.Line(curve2.Centre, curve1.ClosestPoint(curve2.Centre));
-                if (temp.Length() < curve2.Radius)
-                    return Math.Min(curve1.End.Distance(curve2), curve1.Start.Distance(curve2));
-                return curve2.Centre.Distance(curve1) - curve2.Radius;
+                if (curve1.Start.Distance(pln) < curve1.End.Distance(pln))
+                    closestOnLine = curve1.Start;
+                else
+                    closestOnLine = curve1.End;
             }
-            crclpts.Remove(curve1.Start);
-            crclpts.Remove(curve1.End);
-            Point ptToRmv=crclpts[0];
-            for(int i=1;i<4;i++)
+            else
+                closestOnLine = curve1.PlaneIntersection(pln, false);
+            Point closestOnArc = curve2.ClosestPoint(closestOnLine);
+            Line projectedLine = curve1.Project(pln);
+            Point tmp=closestOnArc.Clone();
+            if(projectedLine.CurveIntersections(curve2).Count>0)
             {
-                if (ptToRmv.Distance(curve1) < crclpts[i].Distance(curve1))
-                    ptToRmv = crclpts[i];
+                tmp = projectedLine.CurveIntersections(curve2)[0];
             }
-            crclpts.Remove(ptToRmv);
-            Arc closestArc = Create.Arc(crclpts[0], crclpts[1], crclpts[2]);
-            return closestArc.Distance(curve1);
+            return Math.Min(distance1,Math.Min(closestOnArc.Distance(curve1),tmp.Distance(curve1)));
+            //List<Point> crclpts = new List<Point>();
+            //for (double i = 0; i < 1; i += 0.25)
+            //    crclpts.Add(curve2.PointAtParameter(i));
+            //crclpts.Add(curve1.Start);
+            //crclpts.Add(curve1.End);
+            //if (crclpts.IsCoplanar())
+            //{
+            //    Line temp = Create.Line(curve2.Centre, curve1.ClosestPoint(curve2.Centre));
+            //    if (temp.Length() < curve2.Radius)
+            //        return Math.Min(curve1.End.Distance(curve2), curve1.Start.Distance(curve2));
+            //    return curve2.Centre.Distance(curve1) - curve2.Radius;
+            //}
+            //crclpts.Remove(curve1.Start);
+            //crclpts.Remove(curve1.End);
+            //Point ptToRmv=crclpts[0];
+            //for(int i=1;i<4;i++)
+            //{
+            //    if (ptToRmv.Distance(curve1) < crclpts[i].Distance(curve1))
+            //        ptToRmv = crclpts[i];
+            //}
+            //crclpts.Remove(ptToRmv);
+            //Arc closestArc = Create.Arc(crclpts[0], crclpts[1], crclpts[2]);
+            //return closestArc.Distance(curve1);
         }
 
         /***************************************************/
