@@ -42,39 +42,41 @@ namespace BH.Engine.Diffing
         ///**** Public Fields                             ****/
         ///***************************************************/
 
-        public static List<string> defaultHashExceptions = new List<string>() { "BHoM_Guid", "CustomData", "Fragments" };
 
         ///***************************************************/
         ///**** Public Methods                            ****/
         ///***************************************************/
 
-
-        [Input("except", "Name of the fields to be ignored. For example, \"BHoM_Guid\".")]
-        public static string SHA256Hash(IBHoMObject obj, List<string> except = null)
+        public static List<IBHoMObject> DiffHash(List<IBHoMObject> objs, List<string> exceptions = null, bool useDefaultExceptions = true, Stream stream = null)
         {
-            return SHA256Hash(obj.ToDiffingByteArray(except));
+            // Clone the current objects
+            List<IBHoMObject> objs_cloned = objs.Select(obj => BH.Engine.Base.Query.DeepClone(obj)).ToList();
+
+            if (useDefaultExceptions)
+                SetDefaultExceptions(ref exceptions);
+
+            // Calculate and set the object hashes
+            objs_cloned.ForEach(obj =>
+                obj.Fragments.Add(
+                    new DiffHashFragment(Compute.SHA256Hash(obj, exceptions), null, stream)
+                    ));
+
+            return objs_cloned;
         }
 
 
+        public static void SetDefaultExceptions(ref List<string> exceptions)
+        {
+            if (exceptions == null)
+                exceptions = defaultHashExceptions;
+            else
+                exceptions.AddRange(defaultHashExceptions);
+        }
 
         ///***************************************************/
         ///**** Private Methods                           ****/
         ///***************************************************/
 
-        private static string SHA256Hash(byte[] inputObj)
-        {
-            StringBuilder sb = new StringBuilder();
-            foreach (byte b in SHA256_byte(inputObj))
-                sb.Append(b.ToString("X2"));
-
-            return sb.ToString();
-        }
-
-        private static byte[] SHA256_byte(byte[] inputObj)
-        {
-            HashAlgorithm algorithm = System.Security.Cryptography.SHA256.Create();
-            return algorithm.ComputeHash(inputObj);
-        }
 
 
     }

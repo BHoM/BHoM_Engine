@@ -1,4 +1,26 @@
-﻿using BH.oM.Base;
+﻿/*
+ * This file is part of the Buildings and Habitats object Model (BHoM)
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
+ *
+ * Each contributor holds copyright over their respective contributions.
+ * The project versioning (Git) records all such contribution source information.
+ *                                           
+ *                                                                              
+ * The BHoM is free software: you can redistribute it and/or modify         
+ * it under the terms of the GNU Lesser General Public License as published by  
+ * the Free Software Foundation, either version 3.0 of the License, or          
+ * (at your option) any later version.                                          
+ *                                                                              
+ * The BHoM is distributed in the hope that it will be useful,              
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of               
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the                 
+ * GNU Lesser General Public License for more details.                          
+ *                                                                            
+ * You should have received a copy of the GNU Lesser General Public License     
+ * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
+ */
+
+using BH.oM.Base;
 using BH.Engine;
 using BH.oM.Data.Collections;
 using BH.oM.Diffing;
@@ -21,41 +43,27 @@ namespace BH.Engine.Diffing
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        /// Diffing requires to memorize the hash of the object somewhere.
-        /// If using BHoMObjects, we can save the hash inside the objects themselves.
-        /// Otherwise another support is needed (table with | object | Hash | )
 
-        public static Delta Diffing(string projectName, List<IBHoMObject> currentObjs, List<string> exceptions = null, bool useDefaultExceptions = true)
+        public static Delta Diffing(List<IBHoMObject> currentObjs, List<IBHoMObject> readObjs = null)
         {
-            // Clone the current objects
-            List<IBHoMObject> CurrentObjs_cloned = currentObjs.Select(obj => BH.Engine.Base.Query.DeepClone(obj)).ToList();
-
-            // Create project fragment
-            DiffProjFragment diffProj = new DiffProjFragment(projectName);
-
-            if (useDefaultExceptions)
-                SetDefaultExceptions(ref exceptions);
-
-            // Calculate and set the object hashes
-            CurrentObjs_cloned.ForEach(obj =>
-                obj.Fragments.Add(
-                    new DiffHashFragment(Compute.SHA256Hash(obj, exceptions), diffProj)
-                    ));
-
-            return new Delta(diffProj, CurrentObjs_cloned, null, null, null);
+            return Diffing(currentObjs, readObjs);
         }
 
-        public static Delta Diffing(List<IBHoMObject> currentObjs, List<IBHoMObject> readObjs, bool propertyLevelDiffing = true, List<string> exceptions = null, bool useDefaultExceptions = true)
+
+        public static Delta Diffing(List<IBHoMObject> currentObjs, List<IBHoMObject> readObjs = null, bool propertyLevelDiffing = true, List<string> exceptions = null, bool useDefaultExceptions = true, BH.oM.Diffing.Stream diffStream = null)
         {
             // Clone the objects to assure immutability
             List<IBHoMObject> CurrentObjs_cloned = currentObjs.Select(obj => BH.Engine.Base.Query.DeepClone(obj)).ToList();
             List<IBHoMObject> ReadObjs_cloned = readObjs.Select(obj => BH.Engine.Base.Query.DeepClone(obj)).ToList();
 
-            // Get project fragment from one of the objects and use it as the base
-            DiffProjFragment diffProj = ReadObjs_cloned
-                .Where(obj => obj.Fragments.Exists(fragm => fragm?.GetType() == typeof(DiffHashFragment)))
-                .First()
-                .GetHashFragment().DiffingProject;
+            if (diffStream == null)
+            {
+                // Get project fragment from one of the objects and use it as the base, if exists
+                diffStream = ReadObjs_cloned
+                    .Where(obj => obj.Fragments.Exists(fragm => fragm?.GetType() == typeof(DiffHashFragment)))
+                    .First()
+                    .GetHashFragment().DiffingStream;
+            }
 
             if (useDefaultExceptions)
                 SetDefaultExceptions(ref exceptions);
@@ -68,29 +76,27 @@ namespace BH.Engine.Diffing
                 if (hashFragment == null)
                     // Current objs may not have any DiffHashFragment if they have been created new, or if their modification was done through reinstantiating them.
                     // We need to calculate their hash for the first time, and add to them a DiffHashFragment with that hash. 
-                    obj.Fragments.Add(new DiffHashFragment(Compute.SHA256Hash(obj, exceptions), diffProj));
+                    obj.Fragments.Add(new DiffHashFragment(Compute.SHA256Hash(obj, exceptions), null, diffStream));
                 else
                 {
                     // Calculate and set the new object hash, keeping track of its old hash
                     string previousHash = hashFragment.Hash;
                     string newHash = Compute.SHA256Hash(obj, exceptions);
 
-                    obj.Fragments[obj.Fragments.IndexOf(hashFragment)] = new DiffHashFragment(newHash, previousHash, diffProj);
+                    obj.Fragments[obj.Fragments.IndexOf(hashFragment)] = new DiffHashFragment(newHash, previousHash, diffStream);
                 }
             });
 
+            Dictionary<string, IBHoMObject> CurrentObjs_cloned_dict = CurrentObjs_cloned.ToDictionary(obj => obj.GetHashFragment().Hash, obj => obj);
+
             // Dispatch the objects: new, modified or old
             List<IBHoMObject> toBeCreated = new List<IBHoMObject>();
-            List<string> toBeCreated_hashes = new List<string>();
 
             List<IBHoMObject> toBeUpdated = new List<IBHoMObject>();
-            List<string> toBeUpdated_hashes = new List<string>();
 
             List<IBHoMObject> toBeDeleted = new List<IBHoMObject>();
-            List<string> toBeDeleted_hashes = new List<string>();
 
             List<IBHoMObject> unchanged = new List<IBHoMObject>();
-            List<string> unchanged_hashes = new List<string>();
 
             var objModifiedProps = new Dictionary<string, Dictionary<string, Tuple<object, object>>>();
 
@@ -106,13 +112,11 @@ namespace BH.Engine.Diffing
                 else if (hashFragm.PreviousHash == hashFragm.Hash)
                 {
                     unchanged.Add(obj); // It's NOT been modified
-                    unchanged_hashes.Add(hashFragm.Hash);
                 }
 
                 else if (hashFragm.PreviousHash != hashFragm.Hash)
                 {
                     toBeUpdated.Add(obj); // It's been modified
-                    toBeUpdated_hashes.Add(hashFragm.Hash);
 
                     if (propertyLevelDiffing)
                     {
@@ -144,25 +148,16 @@ namespace BH.Engine.Diffing
                 if (!CurrentObjs_cloned.Any(cObj => cObj.GetHashFragment().PreviousHash == hashFragm.Hash))
                 {
                     toBeDeleted.Add(obj); // It doesn't exist anymore (it's not among the current objects)
-                    toBeDeleted_hashes.Add(hashFragm.Hash);
                     continue;
                 }
             }
 
-            return new Delta(diffProj, toBeCreated, toBeCreated_hashes, toBeDeleted, toBeDeleted_hashes, toBeUpdated, toBeUpdated_hashes, unchanged, unchanged_hashes, objModifiedProps);
+            return new Delta(toBeCreated, toBeDeleted, toBeUpdated, objModifiedProps, diffStream);
         }
 
         /***************************************************/
 
 
-        private static void SetDefaultExceptions(ref List<string> exceptions)
-        {
-            List<string> defaultExceptions = new List<string>() { "BHoM_Guid", "CustomData", "Fragments" };
 
-            if (exceptions == null)
-                exceptions = defaultExceptions;
-            else
-                exceptions.AddRange(defaultExceptions);
-        }
     }
 }

@@ -58,10 +58,11 @@ namespace Engine_Test
             List<IBHoMObject> currentObjs = GenerateRandomObjects(typeof(Bar), totalObjs);
 
             // Assign diffing properties to the original objects
-            var delta = BH.Engine.Diffing.Compute.Diffing("Profiling01", currentObjs);
+            var currentObjs_withHashes = BH.Engine.Diffing.Compute.DiffHash(currentObjs);
+            //var delta = BH.Engine.Diffing.Compute.StreamCreate("Profiling01", currentObjs);
 
             // Modify randomly half the total of objects.
-            var readObjs = delta.OnlySetA;
+            var readObjs = currentObjs_withHashes;
 
             var allIdxs = Enumerable.Range(0, currentObjs.Count).ToList();
             var randIdxs = allIdxs.OrderBy(g => Guid.NewGuid()).Take(currentObjs.Count / 2).ToList();
@@ -84,7 +85,6 @@ namespace Engine_Test
             Console.WriteLine(endMessage);
 
             Debug.Assert(delta2.Modified.Count == totalObjs / 2, "Diffing didn't work.");
-            Debug.Assert(delta2.UnModified.Count == totalObjs / 2, "Diffing didn't work.");
 
             if (path != null)
             {

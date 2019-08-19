@@ -7,7 +7,7 @@
     <ProjectGuid>{073DFD36-0829-4792-8C32-67BF692A9413}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Diffing_Engine</RootNamespace>
+    <RootNamespace>BH.oM.Diffing</RootNamespace>
     <AssemblyName>Diffing_Engine</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -42,7 +42,6 @@
     </Reference>
     <Reference Include="Diffing_oM">
       <HintPath>..\..\BHoM\Build\Diffing_oM.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="Geometry_oM, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -83,6 +82,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Compute\Diffing.cs" />
+    <Compile Include="Compute\DiffHash.cs" />
     <Compile Include="Compute\ToDiffingByteArray.cs" />
     <Compile Include="Query\GetHash.cs" />
     <Compile Include="Compute\SHA256Hash.cs" />
@@ -118,6 +118,9 @@
       <Name>Testing_Engine</Name>
       <Private>False</Private>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Create\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
