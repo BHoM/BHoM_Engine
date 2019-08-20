@@ -99,12 +99,16 @@ namespace BH.Engine.Environment
 
                 //check if panel polyline is closed
                 if (Geometry.Query.IsClosed(p.Polyline()) == false)
+                {
                     BH.Engine.Reflection.Compute.RecordWarning("Panel polyline is not closed");
+                }
                 rtn.Add(p);
 
                 //check if self intesect
                 if (Geometry.Query.IsClosed(p.Polyline()) == false)
+                {
                     BH.Engine.Reflection.Compute.RecordWarning("Panel polyline intersect");
+                }
                 rtn.Add(p);
             }
 
