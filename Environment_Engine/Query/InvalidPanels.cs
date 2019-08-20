@@ -38,10 +38,12 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Return a collection of panels which have invalid connected spaces")]
+        [Description("Return a collection of panels which have data")]
         [Input("panels", "A collection of environment panels")]
+        [Input("panelArea", "A min panel area to return warning")]
+        [Input("panelEdgeLength", "A min panelEdgeLength to return warning")]
         [Output("invalidPanels", "A collection of panels which are invalid")]
-        public static List<Panel> InvalidPanels(this List<Panel> panels)
+        public static List<Panel> InvalidPanels(this List<Panel> panels, double panelArea = 0.15, double panelEdgeLength = 0.15)
         {
             List<Panel> rtn = new List<Panel>();
 
@@ -80,36 +82,39 @@ namespace BH.Engine.Environment
                 }
 
                 //check if geometry area is too small
-                if (p.Area() < 0.15)
+                if (p.Area() < panelArea)
                 {
-                    BH.Engine.Reflection.Compute.RecordWarning("Panel area is possibly to small, area is less than 0.15");
+                    BH.Engine.Reflection.Compute.RecordWarning("Panel area is possibly to small, area is less than panelArea");
                     rtn.Add(p);
                 }
-
-                //check if on dimension is to short
-                foreach (Edge e in p.ExternalEdges)
+                else
                 {
-                    if (e.Polyline().Length() < 0.15)
+                    //check if on dimension is to short
+                    foreach (Edge e in p.ExternalEdges)
                     {
-                        BH.Engine.Reflection.Compute.RecordWarning("One of panel poluline edge is less than 0.15");
-                        rtn.Add(p);
-                        break;
+                        if (e.Polyline().Length() < panelEdgeLength)
+                        {
+                            BH.Engine.Reflection.Compute.RecordWarning("One of panel poluline edge is less than panelEdgeLength");
+                            rtn.Add(p);
+                            break;
+                        }
                     }
                 }
+
 
                 //check if panel polyline is closed
                 if (Geometry.Query.IsClosed(p.Polyline()) == false)
                 {
                     BH.Engine.Reflection.Compute.RecordWarning("Panel polyline is not closed");
+                    rtn.Add(p);
                 }
-                rtn.Add(p);
 
-                //check if self intesect
+                //check if self intersect
                 if (Geometry.Query.IsClosed(p.Polyline()) == false)
                 {
                     BH.Engine.Reflection.Compute.RecordWarning("Panel polyline intersect");
+                    rtn.Add(p);
                 }
-                rtn.Add(p);
             }
 
             return rtn;
