@@ -33,11 +33,12 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static RigidLink RigidLink(Node masterNode, IEnumerable<Node> slaveNodes, LinkConstraint constraint = null)
+        public static RigidLink RigidLink(string name, Node masterNode, IEnumerable<Node> slaveNodes, LinkConstraint constraint = null)
         {
 
             return new RigidLink
             {
+                Name = name,
                 MasterNode = masterNode,
                 SlaveNodes = slaveNodes.ToList(),
                 Constraint = constraint == null ? LinkConstraintFixed() : constraint
