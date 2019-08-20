@@ -62,16 +62,27 @@ namespace BH.Engine.Environment
                 }
 
                 //check for internal
-                if ((p.Type == PanelType.Ceiling || p.Type == PanelType.WallInternal || p.Type == PanelType.FloorInternal || p.Type == PanelType.UndergroundCeiling) && p.ConnectedSpaces.Count != 2 && p.ConnectedSpaces[0] == p.ConnectedSpaces[1])
+                if ((p.Type == PanelType.Ceiling || p.Type == PanelType.WallInternal || p.Type == PanelType.FloorInternal || p.Type == PanelType.UndergroundCeiling) && p.ConnectedSpaces.Count != 2 )
                 {
-                    BH.Engine.Reflection.Compute.RecordWarning("intenral panel must have 0 adj space");
+                   
+                    BH.Engine.Reflection.Compute.RecordWarning("internal panel must have 2 different adj space");
                     rtn.Add(p);
+
+                }
+
+                //check for internal to make sure we have two different space
+                if ( p.ConnectedSpaces.Count == 2 && p.ConnectedSpaces[0] == p.ConnectedSpaces[1])
+                {
+
+                    BH.Engine.Reflection.Compute.RecordWarning("two the same spaces on both side");
+                    rtn.Add(p);
+
                 }
 
                 //check if geometry area is too small
                 if (p.Area() < 0.15)
                 {
-                    BH.Engine.Reflection.Compute.RecordWarning("possibly to small area less than 0.15");
+                    BH.Engine.Reflection.Compute.RecordWarning("Panel area is possibly to small, area is less than 0.15");
                     rtn.Add(p);
                 }
 
@@ -80,7 +91,7 @@ namespace BH.Engine.Environment
                 {
                     if (e.Polyline().Length() < 0.15)
                     {
-                        BH.Engine.Reflection.Compute.RecordWarning("edge is less than 0.15");
+                        BH.Engine.Reflection.Compute.RecordWarning("One of panel poluline edge is less than 0.15");
                         rtn.Add(p);
                         break;
                     }
@@ -88,11 +99,13 @@ namespace BH.Engine.Environment
 
                 //check if panel polyline is closed
                 if (Geometry.Query.IsClosed(p.Polyline()) == false)
+                    BH.Engine.Reflection.Compute.RecordWarning("Panel polyline is not closed");
                 rtn.Add(p);
 
                 //check if self intesect
                 if (Geometry.Query.IsClosed(p.Polyline()) == false)
-                    rtn.Add(p);
+                    BH.Engine.Reflection.Compute.RecordWarning("Panel polyline intersect");
+                rtn.Add(p);
             }
 
             return rtn;
