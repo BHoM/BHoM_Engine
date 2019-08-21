@@ -99,7 +99,7 @@
     <Compile Include="Create\MethodInfo.cs" />
     <Compile Include="Create\Output.cs" />
     <Compile Include="Modify\Cast.cs" />
-    <Compile Include="Modify\MakeGeneric.cs" />
+    <Compile Include="Modify\MakeFromGeneric.cs" />
     <Compile Include="Modify\MakeStatic.cs" />
     <Compile Include="Modify\SortExtensionMethods.cs" />
     <Compile Include="Query\CurrentAssemblyFolder.cs" />
