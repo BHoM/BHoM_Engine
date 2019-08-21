@@ -34,10 +34,10 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns the specific type from a type that contains generic parameters")]
+        [Description("Returns the constraint type from a generic type")]
         [Input("genericType", "The generic type. Type is generic if Type.IsGenericParameter or Type.ContrainsGenericparameters is true")]
         [Output("type", "The specific type constructed from the generic one")]
-        public static Type MakeGeneric(this Type genericType)
+        public static Type MakeFromGeneric(this Type genericType)
         {
             if (genericType.IsGenericParameter)
             {
@@ -49,7 +49,7 @@ namespace BH.Engine.Reflection
             }
             else if (genericType.ContainsGenericParameters)
             {
-                Type[] constrains = genericType.GetGenericArguments().Select(x => MakeGeneric(x)).ToArray();
+                Type[] constrains = genericType.GetGenericArguments().Select(x => MakeFromGeneric(x)).ToArray();
                 return genericType.GetGenericTypeDefinition().MakeGenericType(constrains);
             }
             else
@@ -58,14 +58,14 @@ namespace BH.Engine.Reflection
 
         /***************************************************/
 
-        [Description("Returns the specific method from a method that contains generic parameters")]
+        [Description("Replaces the generic parameters with parameters whose type is their constraint, and returns a new MethodInfo from those")]
         [Input("genericMethod", "The generic method. Method is generic if MethodInfo.ContainsGenericParameter is true")]
         [Output("method", "The specific method constructed from the generic one")]
-        public static MethodInfo MakeGeneric(this MethodInfo genericMethod)
+        public static MethodInfo MakeFromGeneric(this MethodInfo genericMethod)
         {
             if (genericMethod.ContainsGenericParameters)
             {
-                Type[] types = genericMethod.GetGenericArguments().Select(x => x.MakeGeneric()).ToArray();
+                Type[] types = genericMethod.GetGenericArguments().Select(x => x.MakeFromGeneric()).ToArray();
                 genericMethod = genericMethod.MakeGenericMethod(types);
 
             }
