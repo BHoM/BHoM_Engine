@@ -115,7 +115,7 @@
     <Compile Include="Query\BasisFunction.cs" />
     <Compile Include="Query\Centroid.cs" />
     <Compile Include="Query\CurveIntersections.cs" />
-    <Compile Include="Query\CurveProximity.cs" />
+    <Compile Include="Compute\CurveProximity.cs" />
     <Compile Include="Query\Geometry.cs" />
     <Compile Include="Query\GetLineSegment.cs" />
     <Compile Include="Query\IsEqual.cs" />
