@@ -98,7 +98,7 @@ namespace BH.Engine.Geometry
                 Arc temp = curve2;
                 start = curve2.StartPoint();
                 end = curve2.EndPoint();
-                while ((start - end).Length() > tolerance * tolerance)
+                while ((start - end).Length() > tolerance)
                 {
                     binSearch = temp.PointAtParameter(0.5);
                     if (end.Distance(curve1) > start.Distance(curve1))
@@ -117,7 +117,7 @@ namespace BH.Engine.Geometry
             {
                 start = curve1.Start;
                 end = curve1.End;
-                while ((start - end).Length() > tolerance * tolerance)
+                while ((start - end).Length() > tolerance)
                 {
                     binSearch = start + ((end - start) / 2);
                     if (start.Distance(curve2) > end.Distance(curve2))
@@ -195,40 +195,86 @@ namespace BH.Engine.Geometry
                 min2 = curve2.ClosestPoint(min1);
             else
                 min1 = curve1.ClosestPoint(min2);
-            Arc tmp, tmp2;
-            tmp = curve1;
-            tmp2 = curve2;
-            if (distance2 < distance1)
-            {
-                tmp = curve2;
-                tmp2 = curve1;
-            }
-            Point start = tmp2.StartPoint();
-            Point end = tmp2.EndPoint();
+            Point start1 = curve1.StartPoint();
+            Point start2 = curve2.StartPoint();
+            Point end1 = curve1.EndPoint();
+            Point end2 = curve2.EndPoint();
+            Arc tmp1 = curve1.Clone();
+            Arc tmp2 = curve2.Clone();
             Point binSearch = new Point();
-            while ((start - end).Length() > tolerance * tolerance)
+            while((start1-end1).Length()>tolerance)
+            {
+                binSearch = tmp1.PointAtParameter(0.5);
+                if (start1.Distance(curve2) > end1.Distance(curve2))
+                    start1 = binSearch;
+                else
+                    end1 = binSearch;
+                tmp1=tmp1.Trim(start1, end1);
+            }
+            while ((start2 - end2).Length() > tolerance)
             {
                 binSearch = tmp2.PointAtParameter(0.5);
-                if (start.Distance(tmp) > end.Distance(tmp))
-                    start = binSearch;
+                if (start2.Distance(curve1) > end2.Distance(curve1))
+                    start2 = binSearch;
                 else
-                    end = binSearch;
-                tmp2 = tmp2.Trim(start, end);
+                    end2 = binSearch;
+                tmp2=tmp2.Trim(start2, end2);
             }
-            if (start.Distance(tmp) > end.Distance(tmp))
-                end = tmp.ClosestPoint(start);
+            BH.oM.Reflection.Output<Point, Point> result = new oM.Reflection.Output<Point, Point>();
+            if (start1.Distance(curve2) < end1.Distance(curve2))
+                result.Item1 = start1;
             else
-                start = tmp.ClosestPoint(end);
-            if (start.Distance(end) > min1.Distance(min2))
-                return new BH.oM.Reflection.Output<Point, Point> { Item1=min1, Item2=min2 };
-            else
+                result.Item1 = end1;
+            result.Item2 = curve2.ClosestPoint(result.Item1);
+            if(start2.Distance(curve1)<result.Item2.Distance(result.Item1))
             {
-                if (start.IsOnCurve(curve1))
-                    return new BH.oM.Reflection.Output<Point, Point> { Item1=start, Item2=end };
-                else
-                    return new BH.oM.Reflection.Output<Point, Point> { Item1=end, Item2=start };
-
+                result.Item1 = start2;
+                result.Item2 = curve1.ClosestPoint(start2);
             }
+            if (end2.Distance(curve1) < result.Item2.Distance(result.Item1))
+            {
+                result.Item1 = end2;
+                result.Item2 = curve1.ClosestPoint(end2);
+            }
+            if (result.Item1.Distance(result.Item2) > min1.Distance(min2))
+                return new BH.oM.Reflection.Output<Point, Point> { Item1 = min1, Item2 = min2 };
+            if (result.Item1.IsOnCurve(curve1))
+                return result;
+            return new BH.oM.Reflection.Output<Point, Point> { Item1 = result.Item2, Item2 = result.Item1 };
+            //Arc tmp, tmp2;
+            //tmp = curve1;
+            //tmp2 = curve2;
+            //if (distance2 < distance1)
+            //{
+            //    tmp = curve2;
+            //    tmp2 = curve1;
+            //}
+            //Point start = tmp2.StartPoint();
+            //Point end = tmp2.EndPoint();
+            //Point binSearch = new Point();
+            //while ((start - end).Length() > tolerance)
+            //{
+            //    binSearch = tmp2.PointAtParameter(0.5);
+            //    if (start.Distance(tmp) > end.Distance(tmp))
+            //        start = binSearch;
+            //    else
+            //        end = binSearch;
+            //    tmp2 = tmp2.Trim(start, end);
+            //}
+            //if (start.Distance(tmp) > end.Distance(tmp))
+            //    end = tmp.ClosestPoint(start);
+            //else
+            //    start = tmp.ClosestPoint(end);
+            //if (start.Distance(end) > min1.Distance(min2))
+            //    return new BH.oM.Reflection.Output<Point, Point> { Item1=min1, Item2=min2 };
+            //else
+            //{
+            //    if (start.IsOnCurve(curve1))
+            //        return new BH.oM.Reflection.Output<Point, Point> { Item1=start, Item2=end };
+            //    else
+            //        return new BH.oM.Reflection.Output<Point, Point> { Item1=end, Item2=start };
+
+            //}
         }
 
         /***************************************************/
