@@ -36,17 +36,25 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Set the value of a property with a given name for an object")]
-        [Input("obj", "object to set the value for")]
-        [Input("propName", "name of the property to set the value of")]
-        [Input("value", "new value of the property")]
-        [Output("result", "New object with its property changed to the new value")]
-        public static BHoMObject PropertyValue(this BHoMObject obj, string propName, object value)
-        {
-            BHoMObject newObject = obj.GetShallowClone() as BHoMObject;
-            newObject.SetPropertyValue(propName, value);
-            return newObject;
-        }
+[Description("Set the value of a property with a given name for an object")]
+[Input("obj", "object to set the value for")]
+[Input("propName", "name of the property to set the value of")]
+[Input("value", "new value of the property. Right click on the input to specify if it's of type `item` or `list`.")]
+[Output("result", "New object with its property changed to the new value")]
+public static BHoMObject PropertyValue(this BHoMObject obj, string propName, object value)
+{
+    BHoMObject newObject = obj.GetShallowClone() as BHoMObject;
+    try
+    {
+        newObject.SetPropertyValue(propName, value);
+    }
+    catch (Exception e)
+    {
+        BH.Engine.Reflection.Compute.RecordError("Could not set property. Did you set the correct `value` type? Right click on the input to set it to `item` or `list`."
+            + " Exception message: " + Environment.NewLine + e.Message);
+    }
+    return newObject;
+}
 
         /***************************************************/
 

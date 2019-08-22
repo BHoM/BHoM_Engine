@@ -52,16 +52,24 @@ namespace BH.Engine.Diffing
             // Clone the current objects
             List<IBHoMObject> objs_cloned = objs.Select(obj => BH.Engine.Base.Query.DeepClone(obj)).ToList();
 
-            if (useDefaultExceptions)
-                SetDefaultExceptions(ref exceptions);
-
             // Calculate and set the object hashes
-            objs_cloned.ForEach(obj =>
-                obj.Fragments.Add(
-                    new DiffHashFragment(Compute.SHA256Hash(obj, exceptions), null, stream)
-                    ));
+            objs_cloned.ForEach(obj => obj.DiffHash(exceptions, useDefaultExceptions, stream));
 
             return objs_cloned;
+        }
+
+        public static string DiffHash(this IBHoMObject obj, List<string> exceptions = null, bool useDefaultExceptions = true, Stream stream = null)
+        {
+            if (exceptions == null || exceptions.Count == 0 && useDefaultExceptions)
+                SetDefaultExceptions(ref exceptions);
+
+            string hash = Compute.SHA256Hash(obj, exceptions);
+
+            obj.Fragments.Add(
+                new DiffHashFragment(hash, null, stream)
+                );
+
+            return hash;
         }
 
 
