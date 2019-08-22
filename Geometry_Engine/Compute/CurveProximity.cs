@@ -98,7 +98,7 @@ namespace BH.Engine.Geometry
             Line tmp1 = curve1.Clone();
             Arc tmp2 = curve2.Clone();
             Point binSearch = new Point();
-            while ((start1 - end1).Length() > tolerance)
+            while (start1.Distance(end1) > tolerance)
             {
                 binSearch = tmp1.PointAtParameter(0.5);
                 if (start1.Distance(curve2) > end1.Distance(curve2))
@@ -107,7 +107,7 @@ namespace BH.Engine.Geometry
                     end1 = binSearch;
                 tmp1 = tmp1.Trim(start1, end1);
             }
-            while ((start2 - end2).Length() > tolerance)
+            while (start2.Distance(end2) > tolerance)
             {
                 binSearch = tmp2.PointAtParameter(0.5);
                 if (start2.Distance(curve1) > end2.Distance(curve1))
@@ -131,6 +131,18 @@ namespace BH.Engine.Geometry
             {
                 result.Item1 = end2;
                 result.Item2 = curve1.ClosestPoint(end2);
+            }
+            Line tmp = curve1.Project(curve2.FitPlane());
+            if (tmp.CurveIntersections(curve2).Count > 0)
+            {
+                Point[] help = new Point[2];
+                help[1] = tmp.CurveIntersections(curve2)[0];
+                help[0] = curve1.ClosestPoint(help[1]);
+                if(help[0].Distance(help[1])< result.Item1.Distance(result.Item2))
+                {
+                    result.Item1 = help[0];
+                    result.Item2 = help[1];
+                }
             }
             if (result.Item1.Distance(result.Item2) > min1.Distance(min2))
                 return new BH.oM.Reflection.Output<Point, Point> { Item1 = min1, Item2 = min2 };
@@ -393,7 +405,7 @@ namespace BH.Engine.Geometry
                 cp = curve1.Curves[i].ICurveProximity(curve2);
                 if (cp.Item1.Distance(cp.Item2)< result.Item1.Distance(result.Item2))
                 {
-                    result = curve1.Curves[i].ICurveProximity(curve2);
+                    result = cp;
                 }
             }
             return result;
@@ -410,7 +422,7 @@ namespace BH.Engine.Geometry
                 cp = curve1.Curves[i].ICurveProximity(curve2);
                 if (cp.Item1.Distance(cp.Item2) < result.Item1.Distance(result.Item2))
                 {
-                    result = curve1.Curves[i].ICurveProximity(curve2);
+                    result = cp;
                 }
             }
             return result;
@@ -427,7 +439,7 @@ namespace BH.Engine.Geometry
                 cp = curve1.Curves[i].ICurveProximity(curve2);
                 if (cp.Item1.Distance(cp.Item2) < result.Item1.Distance(result.Item2))
                 {
-                    result = curve1.Curves[i].ICurveProximity(curve2);
+                    result = cp;
                 }
             }
             return result;
@@ -449,7 +461,7 @@ namespace BH.Engine.Geometry
                 cp = curve1.Curves[i].ICurveProximity(curve2);
                 if (cp.Item1.Distance(cp.Item2) < result.Item1.Distance(result.Item2))
                 {
-                    result = curve1.Curves[i].ICurveProximity(curve2);
+                    result = cp;
                 }
             }
             return result;
@@ -466,7 +478,7 @@ namespace BH.Engine.Geometry
                 cp = curve1.Curves[i].ICurveProximity(curve2);
                 if (cp.Item1.Distance(cp.Item2) < result.Item1.Distance(result.Item2))
                 {
-                    result = curve1.Curves[i].ICurveProximity(curve2);
+                    result = cp;
                 }
             }
             return result;
