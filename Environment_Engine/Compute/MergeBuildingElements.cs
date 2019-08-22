@@ -24,6 +24,9 @@ using System.Linq;
 using System.Collections.Generic;
 using BH.oM.Environment.Elements;
 
+using BH.oM.Geometry;
+using BH.Engine.Geometry;
+
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
 
@@ -56,6 +59,61 @@ namespace BH.Engine.Environment
             rtnPanel.ConnectedSpaces = new List<string>(connectedSpaces);
             
             return rtnPanel;
+        }
+
+        [Description("merges the properties two Environment Panels together and returns panel with boolean geometry")]
+        [Input("panel1", "An Environment Panel to merge from")]
+        [Input("panel2", "A second Environment Panel to merge from")]
+        [Output("mergedPanel", "The Environment Panel with the smallest area of the two provided but with the combined properties of both")]
+        public static Panel MergePanelsByGeometryOnly(this Panel panel1, Panel panel2, double tolerance = 0.00001)
+        {
+            Panel rtnPanel = null;
+
+            if (panel1.Area() > panel2.Area())
+                rtnPanel = panel1.Copy();
+            else
+                rtnPanel = panel2.Copy();
+
+            List<string> connectedSpaces = panel1.ConnectedSpaces;
+            connectedSpaces.AddRange(panel2.ConnectedSpaces);
+            connectedSpaces = connectedSpaces.Where(x => !x.Equals("-1")).ToList();
+            connectedSpaces = connectedSpaces.Distinct().ToList();
+
+            var result = connectedSpaces.All(panel2.ConnectedSpaces.Contains) && connectedSpaces.Count == panel2.ConnectedSpaces.Count;
+
+            if (result)
+            {
+                rtnPanel.ConnectedSpaces = new List<string>(connectedSpaces);
+
+                List<Panel> panels = new List<Panel>();
+                panels.Add(panel1);
+                panels.Add(panel2);
+
+                //List<Polyline> pLines = new List<Polyline>();
+                //pLines.Add(panel1.Polyline());
+                //pLines.Add(panel2.Polyline());
+
+                List<Polyline> pLines = panels.Select(x => x.Polyline()).ToList();
+                List<Polyline> newGeometry = pLines.BooleanUnion(tolerance);
+
+                if (newGeometry.Count < 1) return null;
+
+                Polyline max = newGeometry[0];
+                foreach (Polyline pl in newGeometry)
+                {
+                    if (pl.Area() > max.Area())
+                        max = pl;
+                }
+
+                rtnPanel = rtnPanel.SetGeometry(max);
+
+                return rtnPanel;
+
+            }
+
+            return null;
+
+
         }
     }
 }
