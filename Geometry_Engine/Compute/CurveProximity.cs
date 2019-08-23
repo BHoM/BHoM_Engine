@@ -76,141 +76,124 @@ namespace BH.Engine.Geometry
         public static BH.oM.Reflection.Output<Point, Point> CurveProximity(this Line curve1, Arc curve2, double tolerance = Tolerance.Distance)
         {
             if (curve1.CurveIntersections(curve2).Count > 0)
-                return new BH.oM.Reflection.Output<Point, Point> { Item1=curve1.CurveIntersections(curve2)[0], Item2=curve1.CurveIntersections(curve2)[0] };
-            double distance1 = Math.Min(curve2.EndPoint().Distance(curve1), curve2.StartPoint().Distance(curve1));
-            double distance2 = Math.Min(curve1.End.Distance(curve2), curve1.Start.Distance(curve2));
-            Point min1 = curve1.Start;
-            Point min2 = curve2.StartPoint();
-            if (min1.Distance(curve2) > curve1.End.Distance(curve2))
-                min1 = curve1.End;
-            if (min2.Distance(curve1) > curve2.EndPoint().Distance(curve1))
-                min2 = curve2.EndPoint();
-            if (min1.Distance(curve2) < min2.Distance(curve1))
-                min2 = curve2.ClosestPoint(min1);
-            else
-                min1 = curve1.ClosestPoint(min2);
-            if (curve1.IIsCoplanar(curve2))
-                return new BH.oM.Reflection.Output < Point,Point >  {Item1= min1,Item2=min2 };
-            Point start1 = curve1.Start;
-            Point start2 = curve2.StartPoint();
-            Point end1 = curve1.End;
-            Point end2 = curve2.EndPoint();
-            Line tmp1 = curve1.Clone();
-            Arc tmp2 = curve2.Clone();
-            Point binSearch = new Point();
-            while (start1.Distance(end1) > tolerance)
+                return new BH.oM.Reflection.Output<Point, Point> { Item1 = curve1.CurveIntersections(curve2)[0], Item2 = curve1.CurveIntersections(curve2)[0] };
+            List<Point> plnPts = new List<Point>();
+            plnPts.Add(curve1.Start);
+            plnPts.Add(curve1.End);
+            plnPts.Add(curve2.Centre());
+            Plane ftPln = plnPts.FitPlane();
+            List<Point> intersecting = curve2.PlaneIntersections(ftPln);
+            Point tmp = new Point();
+            if (intersecting.Count > 1)
             {
-                binSearch = tmp1.PointAtParameter(0.5);
-                if (start1.Distance(curve2) > end1.Distance(curve2))
-                    start1 = binSearch;
+                if (intersecting[0].Distance(curve1) < intersecting[1].Distance(curve1))
+                    tmp = intersecting[0];
                 else
-                    end1 = binSearch;
-                tmp1 = tmp1.Trim(start1, end1);
+                    tmp = intersecting[1];
             }
-            while (start2.Distance(end2) > tolerance)
-            {
-                binSearch = tmp2.PointAtParameter(0.5);
-                if (start2.Distance(curve1) > end2.Distance(curve1))
-                    start2 = binSearch;
-                else
-                    end2 = binSearch;
-                tmp2 = tmp2.Trim(start2, end2);
-            }
-            BH.oM.Reflection.Output<Point, Point> result = new oM.Reflection.Output<Point, Point>();
-            if (start1.Distance(curve2) < end1.Distance(curve2))
-                result.Item1 = start1;
+            else if (intersecting.Count == 1)
+                tmp = intersecting[0];
             else
-                result.Item1 = end1;
-            result.Item2 = curve2.ClosestPoint(result.Item1);
-            if (start2.Distance(curve1) < result.Item2.Distance(result.Item1))
+                tmp = curve2.StartPoint();
+            if (curve2.StartPoint().Distance(curve1) < tmp.Distance(curve1))
+                tmp = curve2.StartPoint();
+            if (curve2.EndPoint().Distance(curve1) < tmp.Distance(curve1))
+                tmp = curve2.EndPoint();
+            Line prLn = curve1.Project(curve2.FitPlane());
+            List<Point> lnInt = prLn.CurveIntersections(curve2);
+            if (lnInt.Count>0)
             {
-                result.Item1 = start2;
-                result.Item2 = curve1.ClosestPoint(start2);
-            }
-            if (end2.Distance(curve1) < result.Item2.Distance(result.Item1))
-            {
-                result.Item1 = end2;
-                result.Item2 = curve1.ClosestPoint(end2);
-            }
-            Line tmp = curve1.Project(curve2.FitPlane());
-            if (tmp.CurveIntersections(curve2).Count > 0)
-            {
-                Point[] help = new Point[2];
-                help[1] = tmp.CurveIntersections(curve2)[0];
-                help[0] = curve1.ClosestPoint(help[1]);
-                if(help[0].Distance(help[1])< result.Item1.Distance(result.Item2))
+                if (lnInt.Count > 1) 
                 {
-                    result.Item1 = help[0];
-                    result.Item2 = help[1];
+                    if (lnInt[0].Distance(curve1) > lnInt[0].Distance(curve1))
+                        lnInt[0] = lnInt[1];
                 }
+                if (lnInt[0].Distance(curve1) < tmp.Distance(curve1))
+                    tmp = lnInt[0];
             }
-            if (result.Item1.Distance(result.Item2) > min1.Distance(min2))
-                return new BH.oM.Reflection.Output<Point, Point> { Item1 = min1, Item2 = min2 };
-            if (result.Item1.IsOnCurve(curve1))
-                return result;
-            return new BH.oM.Reflection.Output<Point, Point> { Item1 = result.Item2, Item2 = result.Item1 };
-            //Point start, end, binSearch;
-            //Point result1, result2;
-            //if (distance1 < distance2)
-            //{
-            //    Arc temp = curve2;
-            //    start = curve2.StartPoint();
-            //    end = curve2.EndPoint();
-            //    while ((start - end).Length() > tolerance)
-            //    {
-            //        binSearch = temp.PointAtParameter(0.5);
-            //        if (end.Distance(curve1) > start.Distance(curve1))
-            //            end = binSearch;
-            //        else
-            //            start = binSearch;
-            //        temp = temp.Trim(start, end);
-            //    }
-            //    if (start.Distance(curve1) < end.Distance(curve1))
-            //        result2 = start;
-            //    else
-            //        result2 = end;
-            //    result1 = curve1.ClosestPoint(result2);
-            //}
-            //else
-            //{
-            //    start = curve1.Start;
-            //    end = curve1.End;
-            //    while ((start - end).Length() > tolerance)
-            //    {
-            //        binSearch = start + ((end - start) / 2);
-            //        if (start.Distance(curve2) > end.Distance(curve2))
-            //            start = binSearch;
-            //        else
-            //            end = binSearch;
-            //    }
-            //    if (start.Distance(curve2) < end.Distance(curve2))
-            //        result1 = start;
-            //    else
-            //        result1 = end;
-            //    result2 = curve2.ClosestPoint(result1);
-            //}
-            //if (min1.Distance(min2) > result2.Distance(result1))
-            //    return new BH.oM.Reflection.Output<Point, Point> { Item1=result1, Item2=result2 };
-            //return new BH.oM.Reflection.Output<Point, Point> { Item1=min1, Item2=min2 };
+            BH.oM.Reflection.Output<Point, Point> result = new BH.oM.Reflection.Output<Point, Point>();
+            result.Item1 = curve1.ClosestPoint(tmp);
+            result.Item2 = curve2.ClosestPoint(result.Item1);
+            result.Item1 = curve1.ClosestPoint(result.Item2);
+            BH.oM.Reflection.Output<Point, Point> oldfinal = new BH.oM.Reflection.Output<Point, Point>();
+
+            BH.oM.Reflection.Output<Point, Point> result2 = new BH.oM.Reflection.Output<Point, Point>();
+            if (curve1.Start.Distance(curve2) < curve1.End.Distance(curve2))
+                result2.Item1 = curve1.Start;
+            else
+                result2.Item1 = curve1.End;
+            result2.Item2 = curve2.ClosestPoint(result2.Item1);
+            result2.Item1 = curve1.ClosestPoint(result2.Item2); 
+            BH.oM.Reflection.Output<Point, Point> final = new BH.oM.Reflection.Output<Point, Point>();
+            if (result.Item1.Distance(result.Item2) < result2.Item1.Distance(result2.Item2))
+                final= result;
+            else
+                final= result2;
+            do
+            {
+                oldfinal.Item1 = final.Item1.Clone();
+                oldfinal.Item2 = final.Item2.Clone();
+                final.Item2 = curve2.ClosestPoint(final.Item1);
+                final.Item1 = curve1.ClosestPoint(final.Item2);
+            }
+            while (Math.Abs(oldfinal.Item1.Distance(oldfinal.Item2) - final.Item1.Distance(final.Item2)) > tolerance * tolerance);
+            return final;
         }
 
         /***************************************************/
 
         public static BH.oM.Reflection.Output<Point, Point> CurveProximity(this Line curve1, Circle curve2, double tolerance = Tolerance.Distance)
         {
-            Point[] list = new Point[4];
-            for(double i=0;i<1;i+=0.25)
-            {
-                list[(int)(4 * i)] = curve2.PointAtParameter(i);
-            }
-            Arc temp1 = Create.Arc(list[0], list[1], list[2]);
-            Arc temp2 = Create.Arc(list[2], list[3], list[0]);
-            BH.oM.Reflection.Output<Point, Point> result1 = curve1.CurveProximity(temp1);
-            BH.oM.Reflection.Output<Point, Point> result2 = curve1.CurveProximity(temp2);
-            if (result1.Item1.Distance(result1.Item2) < result2.Item1.Distance(result2.Item2))
-                return result1;
+            if (curve1.CurveIntersections(curve2).Count > 0)
+                return new BH.oM.Reflection.Output<Point, Point> { Item1 = curve1.CurveIntersections(curve2)[0], Item2 = curve1.CurveIntersections(curve2)[0] };
+            List<Point> plnPts = new List<Point>();
+            plnPts.Add(curve1.Start);
+            plnPts.Add(curve1.End);
+            plnPts.Add(curve2.Centre);
+            Plane ftPln = plnPts.FitPlane();
+            List<Point> intersecting = curve2.PlaneIntersections(ftPln);
+            Point tmp = new Point();
+            if (intersecting[0].Distance(curve1) < intersecting[1].Distance(curve1))
+                tmp = intersecting[0];
             else
-                return result2;
+                tmp = intersecting[1];
+            Line prLn = curve1.Project(curve2.FitPlane());
+            List<Point> lnInt = prLn.CurveIntersections(curve2);
+            if (lnInt.Count > 0)
+            {
+                if (lnInt.Count > 1)
+                {
+                    if (lnInt[0].Distance(curve1) > lnInt[0].Distance(curve1))
+                        lnInt[0] = lnInt[1];
+                }
+                if (lnInt[0].Distance(curve1) < tmp.Distance(curve1))
+                    tmp = lnInt[0];
+            }
+            BH.oM.Reflection.Output<Point, Point> result = new BH.oM.Reflection.Output<Point, Point>();
+            result.Item1 = curve1.ClosestPoint(tmp);
+            result.Item2 = curve2.ClosestPoint(result.Item1);
+            BH.oM.Reflection.Output<Point, Point> oldresult = new BH.oM.Reflection.Output<Point, Point>();
+            do
+            {
+                oldresult.Item1 = result.Item1.Clone();
+                oldresult.Item2 = result.Item2.Clone();
+                result.Item1 = curve1.ClosestPoint(result.Item2);
+                result.Item2 = curve2.ClosestPoint(result.Item1);
+            } while (Math.Abs(oldresult.Item1.Distance(oldresult.Item2) - result.Item1.Distance(result.Item2)) > tolerance * tolerance);
+            return result;
+            //Point[] list = new Point[4];
+            //for(double i=0;i<1;i+=0.25)
+            //{
+            //    list[(int)(4 * i)] = curve2.PointAtParameter(i);
+            //}
+            //Arc temp1 = Create.Arc(list[0], list[1], list[2]);
+            //Arc temp2 = Create.Arc(list[2], list[3], list[0]);
+            //BH.oM.Reflection.Output<Point, Point> result1 = curve1.CurveProximity(temp1);
+            //BH.oM.Reflection.Output<Point, Point> result2 = curve1.CurveProximity(temp2);
+            //if (result1.Item1.Distance(result1.Item2) < result2.Item1.Distance(result2.Item2))
+            //    return result1;
+            //else
+            //    return result2;
         }
 
         /***************************************************/
