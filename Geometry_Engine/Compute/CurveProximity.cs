@@ -81,18 +81,23 @@ namespace BH.Engine.Geometry
             plnPts.Add(curve1.Start);
             plnPts.Add(curve1.End);
             plnPts.Add(curve2.Centre());
-            Plane ftPln = plnPts.FitPlane();
-            List<Point> intersecting = curve2.PlaneIntersections(ftPln);
             Point tmp = new Point();
-            if (intersecting.Count > 1)
+            Plane ftPln = plnPts.FitPlane();
+            if (ftPln != null)
             {
-                if (intersecting[0].Distance(curve1) < intersecting[1].Distance(curve1))
+                List<Point> intersecting = curve2.PlaneIntersections(ftPln);
+                if (intersecting.Count > 1)
+                {
+                    if (intersecting[0].Distance(curve1) < intersecting[1].Distance(curve1))
+                        tmp = intersecting[0];
+                    else
+                        tmp = intersecting[1];
+                }
+                else if (intersecting.Count == 1)
                     tmp = intersecting[0];
                 else
-                    tmp = intersecting[1];
+                    tmp = curve2.StartPoint();
             }
-            else if (intersecting.Count == 1)
-                tmp = intersecting[0];
             else
                 tmp = curve2.StartPoint();
             if (curve2.StartPoint().Distance(curve1) < tmp.Distance(curve1))
@@ -150,13 +155,19 @@ namespace BH.Engine.Geometry
             plnPts.Add(curve1.Start);
             plnPts.Add(curve1.End);
             plnPts.Add(curve2.Centre);
-            Plane ftPln = plnPts.FitPlane();
-            List<Point> intersecting = curve2.PlaneIntersections(ftPln);
             Point tmp = new Point();
-            if (intersecting[0].Distance(curve1) < intersecting[1].Distance(curve1))
-                tmp = intersecting[0];
+            Plane ftPln = plnPts.FitPlane();
+            if (ftPln != null)
+            {
+                List<Point> intersecting = curve2.PlaneIntersections(ftPln);
+
+                if (intersecting[0].Distance(curve1) < intersecting[1].Distance(curve1))
+                    tmp = intersecting[0];
+                else
+                    tmp = intersecting[1];
+            }
             else
-                tmp = intersecting[1];
+                tmp = curve1.ClosestPoint(curve2.Centre);
             Line prLn = curve1.Project(curve2.FitPlane());
             List<Point> lnInt = prLn.CurveIntersections(curve2);
             if (lnInt.Count > 0)
@@ -346,19 +357,70 @@ namespace BH.Engine.Geometry
         {
             if (curve1.CurveIntersections(curve2).Count > 0)
                 return new BH.oM.Reflection.Output<Point, Point> { Item1=curve1.CurveIntersections(curve2)[0], Item2=curve1.CurveIntersections(curve2)[1] };
-            Point[] crclpts = new Point[4];
-            for (double i = 0; i < 1; i += 0.25)
+            BH.oM.Reflection.Output<Point, Point> result = new BH.oM.Reflection.Output<Point, Point>();
+            if (Math.Abs(curve1.Normal.IsParallel(curve2.Normal))==1)
             {
-                crclpts[(int)(4 * i)] = curve2.PointAtParameter(i);
+                result.Item1 = curve1.PointAtParameter(0);
+                result.Item2 = curve2.ClosestPoint(result.Item1);
+                return result;
             }
-            Arc tmp = Create.Arc(crclpts[0], crclpts[1], crclpts[2]);
-            Arc tmp2 = Create.Arc(crclpts[2], crclpts[3], crclpts[0]);
-            BH.oM.Reflection.Output<Point, Point> result1 = curve1.CurveProximity(tmp);
-            BH.oM.Reflection.Output<Point, Point> result2 = curve1.CurveProximity(tmp2);
-            if (result1.Item1.Distance(result1.Item2) < result2.Item1.Distance(result2.Item2))
-                return result1;
+            Plane ftPln1 = curve1.FitPlane();
+            Plane ftPln2 = curve2.FitPlane();
+            List<Point> intPts = new List<Point>();
+            Point tmp = new Point();
+            if ((intPts = curve1.PlaneIntersections(ftPln2)).Count!=0)
+            {
+                if (intPts.Count == 1)
+                    tmp = intPts[0];
+                else
+                {
+                    if (intPts[0].Distance(curve2) < intPts[1].Distance(curve2))
+                        tmp = intPts[0];
+                    else
+                        tmp = intPts[1];
+                }
+            }
+            else if ((intPts = curve2.PlaneIntersections(ftPln1)).Count != 0)
+            {
+                if (intPts.Count == 1)
+                    tmp = intPts[0];
+                else
+                {
+                    if (intPts[0].Distance(curve1) < intPts[1].Distance(curve1))
+                        tmp = intPts[0];
+                    else
+                        tmp = intPts[1];
+                }
+            }
             else
-                return result2;
+            {
+                Line intersect = Create.Line(curve1.Centre, curve2.Centre);
+                Point tmp1 = intersect.CurveProximity(curve1).Item2;
+                Point tmp2 = intersect.CurveProximity(curve1).Item2;
+                if (tmp1.Distance(curve2) < tmp2.Distance(curve1))
+                    tmp = tmp1;
+                else
+                    tmp = tmp2;
+            }
+            BH.oM.Reflection.Output<Point, Point> oldresult = new BH.oM.Reflection.Output<Point, Point>();
+            if(tmp.IsOnCurve(curve1))
+            {
+                result.Item1 = tmp;
+                result.Item2 = curve2.ClosestPoint(tmp);
+            }
+            else
+            {
+                result.Item2 = tmp;
+                result.Item1 = curve1.ClosestPoint(tmp);
+            }
+            do
+            {
+                oldresult.Item1 = result.Item1.Clone();
+                oldresult.Item2 = result.Item2.Clone();
+                result.Item1 = curve2.ClosestPoint(result.Item2);
+                result.Item2 = curve1.ClosestPoint(result.Item1);
+            } while (Math.Abs(oldresult.Item2.Distance(oldresult.Item1) - result.Item2.Distance(result.Item1)) > tolerance*tolerance);
+            return result;
         }
 
         /***************************************************/

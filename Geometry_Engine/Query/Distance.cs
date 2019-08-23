@@ -163,28 +163,6 @@ namespace BH.Engine.Geometry
 
         public static double Distance(this Line curve1, Circle  curve2, double tolerance=Tolerance.Distance)
         {
-            //if (curve1.CurveIntersections(curve2).Count > 0)
-            //    return 0f;
-            //double distance1 = Math.Min(curve1.Start.Distance(curve2), curve1.End.Distance(curve2));
-            //Plane pln = curve2.FitPlane();
-            //Point closestOnLine;
-            //if (curve1.PlaneIntersection(pln, false) == null)
-            //{
-            //    if (curve1.Start.Distance(pln) < curve1.End.Distance(pln))
-            //        closestOnLine = curve1.Start;
-            //    else
-            //        closestOnLine = curve1.End;
-            //}
-            //else
-            //    closestOnLine = curve1.PlaneIntersection(pln, false);
-            //Point closestOnArc = curve2.ClosestPoint(closestOnLine);
-            //Line projectedLine = curve1.Project(pln);
-            //Point tmp=closestOnArc.Clone();
-            //if(projectedLine.CurveIntersections(curve2).Count>0)
-            //{
-            //    tmp = projectedLine.CurveIntersections(curve2)[0];
-            //}
-            //return Math.Min(distance1,Math.Min(closestOnArc.Distance(curve1),tmp.Distance(curve1)));
             BH.oM.Reflection.Output<Point, Point> results = curve1.CurveProximity(curve2);
             return results.Item1.Distance(results.Item2);
         }
