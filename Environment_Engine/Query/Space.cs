@@ -47,8 +47,8 @@ namespace BH.Engine.Environment
             List<Panel> result= panels.Where(x => x.ConnectedSpaces.Contains(spaceName)).ToList();
             if(result.Count==0)
                 BH.Engine.Reflection.Compute.RecordWarning("Could not find following space: " + spaceName);
-            if(result.Count<6)
-                BH.Engine.Reflection.Compute.RecordWarning("This space have less panels than 6: " + spaceName);
+            if(result.Count > 0 && result.Count<5)
+                BH.Engine.Reflection.Compute.RecordError("This space have less than 5 planar panels " + result.Count +" : "+ spaceName);
 
             return result;
 
