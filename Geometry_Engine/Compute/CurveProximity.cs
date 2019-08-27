@@ -343,16 +343,16 @@ namespace BH.Engine.Geometry
                     result.Item2 = curve1.ClosestPoint(result.Item1);
                 } while (oldresult.Item2.Distance(result.Item2) > tolerance * tolerance && oldresult.Item1.Distance(result.Item1) > tolerance * tolerance);
 
-            if (curve1.Centre().Distance(curve2) < curve2.Centre().Distance(curve1))
+            Line aidLine1 = Create.Line(curve1.Centre(), curve1.PointAtParameter(0.5));
+            Line aidLine2 = Create.Line(curve2.Centre(), curve2.PointAtParameter(0.5));
+            result2.Item1 = curve1.CurveProximity(aidLine2).Item1;
+            result2.Item2 = curve2.CurveProximity(aidLine1).Item1;
+            if (result2.Item1.Distance(curve2) < result2.Item2.Distance(curve1))
             {
-                result2.Item2 = curve2.ClosestPoint(curve1.Centre());
-                result2.Item1 = curve1.ClosestPoint(result2.Item2);
-            }
-            else
-            {
-                result2.Item1 = curve1.ClosestPoint(curve2.Centre());
                 result2.Item2 = curve2.ClosestPoint(result2.Item1);
             }
+            else
+                result2.Item1 = curve1.ClosestPoint(result2.Item2);
             do
             {
                 oldresult2.Item1 = result2.Item1.Clone();
@@ -397,14 +397,14 @@ namespace BH.Engine.Geometry
                     result.Item1 = curve2.ClosestPoint(result.Item2);
                     result.Item2 = curve1.ClosestPoint(result.Item1);
                 } while (oldresult.Item2.Distance(result.Item2) > tolerance * tolerance && oldresult.Item1.Distance(result.Item1) > tolerance * tolerance);
-            if (curve1.PointAtParameter((curve1.ParameterAtPoint(result.Item1) + 0.5) % 1).Distance(curve2) < curve2.PointAtParameter((curve2.ParameterAtPoint(result.Item2) + 0.5) % 1).Distance(curve1))
+            if (curve1.PointAtParameter((curve1.ParameterAtPoint(result.Item1) - 0.5) % 1).Distance(curve2) < curve2.PointAtParameter((curve2.ParameterAtPoint(result.Item2) - 0.5) % 1).Distance(curve1))
             {
-                result2.Item1 = curve1.PointAtParameter((curve1.ParameterAtPoint(result.Item1) + 0.3) % 1);
+                result2.Item1 = curve1.PointAtParameter((curve1.ParameterAtPoint(result.Item1)- 0.5) % 1);
                 result2.Item2 = curve2.ClosestPoint(result2.Item1);
             }
             else
             {
-                result2.Item2 = curve2.PointAtParameter((curve2.ParameterAtPoint(result.Item2) + 0.5) % 1);
+                result2.Item2 = curve2.PointAtParameter((curve2.ParameterAtPoint(result.Item2) - 0.5) % 1);
                 result2.Item1 = curve2.ClosestPoint(result2.Item2);
             }
             do
