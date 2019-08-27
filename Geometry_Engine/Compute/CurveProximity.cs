@@ -36,16 +36,16 @@ namespace BH.Engine.Geometry
         public static BH.oM.Reflection.Output<Point, Point> CurveProximity(this Line curve1, Line curve2, double tolerance = Tolerance.Distance)
         {
             if (curve1.CurveIntersections(curve2).Count > 0)
-                return new BH.oM.Reflection.Output < Point,Point >  { Item1=curve1.CurveIntersections(curve2)[0],Item2=curve1.CurveIntersections(curve2)[0] };
+                return new BH.oM.Reflection.Output<Point, Point> { Item1 = curve1.CurveIntersections(curve2)[0], Item2 = curve1.CurveIntersections(curve2)[0] };
             Point min1 = new Point();
             Point min2 = new Point();
             min1 = curve1.Start;
             min2 = curve2.Start;
-            if(curve1.End.Distance(curve2)<min1.Distance(curve2))
+            if (curve1.End.Distance(curve2) < min1.Distance(curve2))
             {
                 min1 = curve1.End;
             }
-            if(curve2.End.Distance(curve1)<min2.Distance(curve1))
+            if (curve2.End.Distance(curve1) < min2.Distance(curve1))
             {
                 min2 = curve2.End;
             }
@@ -57,7 +57,7 @@ namespace BH.Engine.Geometry
                 min2 = curve2.ClosestPoint(min1);
             if (curve1.IsCoplanar(curve2))
             {
-                return new BH.oM.Reflection.Output<Point, Point> { Item1=min1, Item2=min2 };
+                return new BH.oM.Reflection.Output<Point, Point> { Item1 = min1, Item2 = min2 };
             }
 
             double[] t = curve1.SkewLineProximity(curve2);
@@ -66,9 +66,9 @@ namespace BH.Engine.Geometry
             Vector e1 = curve1.End - curve1.Start;
             Vector e2 = curve2.End - curve2.Start;
             if ((curve1.Start + e1 * t1).Distance(curve2.Start + e2 * t2) < min1.Distance(min2))
-                return new BH.oM.Reflection.Output < Point,Point >  { Item1=curve1.Start + e1 * t1, Item2=curve2.Start + e2 * t2 };
+                return new BH.oM.Reflection.Output<Point, Point> { Item1 = curve1.Start + e1 * t1, Item2 = curve2.Start + e2 * t2 };
             else
-                return new BH.oM.Reflection.Output<Point, Point> { Item1=min1, Item2=min2 };
+                return new BH.oM.Reflection.Output<Point, Point> { Item1 = min1, Item2 = min2 };
         }
 
         /***************************************************/
@@ -106,9 +106,9 @@ namespace BH.Engine.Geometry
                 tmp = curve2.EndPoint();
             Line prLn = curve1.Project(curve2.FitPlane());
             List<Point> lnInt = prLn.CurveIntersections(curve2);
-            if (lnInt.Count>0)
+            if (lnInt.Count > 0)
             {
-                if (lnInt.Count > 1) 
+                if (lnInt.Count > 1)
                 {
                     if (lnInt[0].Distance(curve1) > lnInt[0].Distance(curve1))
                         lnInt[0] = lnInt[1];
@@ -128,12 +128,12 @@ namespace BH.Engine.Geometry
             else
                 result2.Item1 = curve1.End;
             result2.Item2 = curve2.ClosestPoint(result2.Item1);
-            result2.Item1 = curve1.ClosestPoint(result2.Item2); 
+            result2.Item1 = curve1.ClosestPoint(result2.Item2);
             BH.oM.Reflection.Output<Point, Point> final = new BH.oM.Reflection.Output<Point, Point>();
             if (result.Item1.Distance(result.Item2) < result2.Item1.Distance(result2.Item2))
-                final= result;
+                final = result;
             else
-                final= result2;
+                final = result2;
             do
             {
                 oldfinal.Item1 = final.Item1.Clone();
@@ -177,7 +177,7 @@ namespace BH.Engine.Geometry
                     if (lnInt[0].Distance(curve1) > lnInt[1].Distance(curve1))
                         lnInt[0] = lnInt[1];
                 }
-                if (lnInt[0].Distance(curve1) < tmp.Distance(curve1)|| lnInt[0].Distance(curve1) < tmp.Distance(curve2))
+                if (lnInt[0].Distance(curve1) < tmp.Distance(curve1) || lnInt[0].Distance(curve1) < tmp.Distance(curve2))
                     tmp = lnInt[0];
             }
             BH.oM.Reflection.Output<Point, Point> result = new BH.oM.Reflection.Output<Point, Point>();
@@ -361,7 +361,10 @@ namespace BH.Engine.Geometry
                 result2.Item2 = curve1.ClosestPoint(result2.Item1);
             } while (oldresult2.Item2.Distance(result2.Item2) > tolerance * tolerance && oldresult2.Item1.Distance(result2.Item1) > tolerance * tolerance);
             if (result.Item1.Distance(result.Item2) > result2.Item1.Distance(result2.Item2))
-                result = result2;
+            {
+                result.Item1 = result2.Item1.Clone();
+                result.Item2 = result2.Item2.Clone();
+            }
             check = false;
             if (curve1.EndPoint().Distance(curve2.ClosestPoint(curve1.EndPoint())) < result.Item1.Distance(result.Item2))
             {
@@ -387,8 +390,6 @@ namespace BH.Engine.Geometry
                 result.Item1 = curve1.ClosestPoint(result.Item2);
                 check = true;
             }
-            if(check)
-            {
                 do
                 {
                     oldresult.Item1 = result.Item1.Clone();
@@ -396,6 +397,27 @@ namespace BH.Engine.Geometry
                     result.Item1 = curve2.ClosestPoint(result.Item2);
                     result.Item2 = curve1.ClosestPoint(result.Item1);
                 } while (oldresult.Item2.Distance(result.Item2) > tolerance * tolerance && oldresult.Item1.Distance(result.Item1) > tolerance * tolerance);
+            if (curve1.PointAtParameter((curve1.ParameterAtPoint(result.Item1) + 0.5) % 1).Distance(curve2) < curve2.PointAtParameter((curve2.ParameterAtPoint(result.Item2) + 0.5) % 1).Distance(curve1))
+            {
+                result2.Item1 = curve1.PointAtParameter((curve1.ParameterAtPoint(result.Item1) + 0.3) % 1);
+                result2.Item2 = curve2.ClosestPoint(result2.Item1);
+            }
+            else
+            {
+                result2.Item2 = curve2.PointAtParameter((curve2.ParameterAtPoint(result.Item2) + 0.5) % 1);
+                result2.Item1 = curve2.ClosestPoint(result2.Item2);
+            }
+            do
+            {
+                oldresult2.Item1 = result2.Item1.Clone();
+                oldresult2.Item2 = result2.Item2.Clone();
+                result2.Item1 = curve2.ClosestPoint(result2.Item2);
+                result2.Item2 = curve1.ClosestPoint(result2.Item1);
+            } while (oldresult2.Item2.Distance(result2.Item2) > tolerance * tolerance && oldresult2.Item1.Distance(result2.Item1) > tolerance * tolerance);
+            if (result.Item1.Distance(result.Item2) > result2.Item1.Distance(result2.Item2))
+            {
+                result.Item1 = result2.Item1.Clone();
+                result.Item2 = result2.Item2.Clone();
             }
             return result;
         }
@@ -405,69 +427,83 @@ namespace BH.Engine.Geometry
         public static BH.oM.Reflection.Output<Point, Point> CurveProximity(this Arc curve1, Circle curve2, double tolerance = Tolerance.Distance)
         {
             if (curve1.CurveIntersections(curve2).Count > 0)
-                return new BH.oM.Reflection.Output<Point, Point> { Item1=curve1.CurveIntersections(curve2)[0], Item2=curve1.CurveIntersections(curve2)[1] };
+                return new BH.oM.Reflection.Output<Point, Point> { Item1 = curve1.CurveIntersections(curve2)[0], Item2 = curve1.CurveIntersections(curve2)[1] };
             BH.oM.Reflection.Output<Point, Point> result = new BH.oM.Reflection.Output<Point, Point>();
             Plane ftPln1 = curve1.FitPlane();
             Plane ftPln2 = curve2.FitPlane();
             List<Point> intPts = new List<Point>();
-            Point tmp = curve1.Centre()+(curve1.Centre()+curve2.Centre)*10;
+            Point tmp = new Point();
             bool changed = false;
             if ((intPts = curve1.PlaneIntersections(ftPln2)).Count != 0)
             {
-                if (intPts.Count == 1 && intPts[0].Distance(curve2) < tmp.Distance(curve2))
+                if (intPts.Count == 1)
                     tmp = intPts[0];
                 else
                 {
                     if (intPts[0].Distance(curve2) < intPts[1].Distance(curve2))
                     {
-                        if (intPts[0].Distance(curve2) < tmp.Distance(curve2))
-                            tmp = intPts[0];
+                        tmp = intPts[0];
                     }
                     else
                     {
-                        if (intPts[1].Distance(curve2) < tmp.Distance(curve2))
-                            tmp = intPts[1];
+                        tmp = intPts[1];
                     }
                 }
                 changed = true;
             }
             else if ((intPts = curve2.PlaneIntersections(ftPln1)).Count != 0)
             {
-                if (intPts.Count == 1 && intPts[0].Distance(curve1) < tmp.Distance(curve2))
-                    tmp = intPts[0];
-                else
+                if (changed)
                 {
-                    if (intPts[0].Distance(curve1) < intPts[1].Distance(curve1))
-                    {
-                        if (intPts[0].Distance(curve1) < tmp.Distance(curve2))
-                            tmp = intPts[0];
-                    }
+                    if (intPts.Count == 1 && intPts[0].Distance(curve1) < tmp.Distance(curve2))
+                        tmp = intPts[0];
                     else
                     {
-                        if (intPts[1].Distance(curve1) < tmp.Distance(curve2))
-                            tmp = intPts[1];
+                        if (intPts[0].Distance(curve1) < intPts[1].Distance(curve1))
+                        {
+                            if (intPts[0].Distance(curve1) < tmp.Distance(curve2))
+                                tmp = intPts[0];
+                        }
+                        else
+                        {
+                            if (intPts[1].Distance(curve1) < tmp.Distance(curve2))
+                                tmp = intPts[1];
+                        }
                     }
-                }
-                changed = true;
-            }
-            BH.oM.Reflection.Output<Point, Point> oldresult = new BH.oM.Reflection.Output<Point, Point>();
-            if (changed)
-            {
-                BH.oM.Reflection.Output<Point, Point> oldresult2 = new BH.oM.Reflection.Output<Point, Point>();
-                BH.oM.Reflection.Output<Point, Point> result2 = new BH.oM.Reflection.Output<Point, Point>();
-                if (tmp.IsOnCurve(curve1))
-                {
-                    result.Item1 = curve1.PointAtParameter(curve1.ParameterAtPoint(tmp) + 0.25);
-                    result.Item2 = curve2.ClosestPoint(result.Item1);
-                    result2.Item1 = curve1.PointAtParameter((curve1.ParameterAtPoint(tmp) + 0.75) % 1);
-                    result2.Item2 = curve2.ClosestPoint(result2.Item1);
                 }
                 else
                 {
-                    result.Item2 = curve2.PointAtParameter(curve2.ParameterAtPoint(tmp) + 0.25);
+                    if (intPts.Count == 1)
+                        tmp = intPts[0];
+                    else
+                    {
+                        if (intPts[0].Distance(curve1) < intPts[1].Distance(curve1))
+                        {
+                            tmp = intPts[0];
+                        }
+                        else
+                        {
+                            tmp = intPts[1];
+                        }
+                    }
+                    changed = true;
+                }
+            }
+            BH.oM.Reflection.Output<Point, Point> oldresult = new BH.oM.Reflection.Output<Point, Point>();
+            BH.oM.Reflection.Output<Point, Point> oldresult2 = new BH.oM.Reflection.Output<Point, Point>();
+            BH.oM.Reflection.Output<Point, Point> result2 = new BH.oM.Reflection.Output<Point, Point>();
+            if (changed)
+            {
+
+                if (tmp.IsOnCurve(curve1))
+                {
+                    result.Item1 = tmp;
+                    result.Item2 = curve2.ClosestPoint(result.Item1);
+                }
+                else
+                {
+                    result.Item2 = tmp;
                     result.Item1 = curve1.ClosestPoint(result.Item2);
-                    result2.Item2 = curve2.PointAtParameter((curve2.ParameterAtPoint(tmp) + 0.75) % 1);
-                    result2.Item1 = curve1.ClosestPoint(result2.Item2);
                 }
                 do
                 {
@@ -476,15 +512,15 @@ namespace BH.Engine.Geometry
                     result.Item1 = curve2.ClosestPoint(result.Item2);
                     result.Item2 = curve1.ClosestPoint(result.Item1);
                 } while (oldresult.Item2.Distance(result.Item2) > tolerance * tolerance && oldresult.Item1.Distance(result.Item1) > tolerance * tolerance);
-                do
-                {
-                    oldresult2.Item1 = result2.Item1.Clone();
-                    oldresult2.Item2 = result2.Item2.Clone();
-                    result2.Item1 = curve2.ClosestPoint(result2.Item2);
-                    result2.Item2 = curve1.ClosestPoint(result2.Item1);
-                } while (oldresult2.Item2.Distance(result2.Item2) > tolerance * tolerance && oldresult2.Item1.Distance(result2.Item1) > tolerance * tolerance);
-                if (result.Item1.Distance(result.Item2) > result2.Item1.Distance(result2.Item2))
-                    result = result2;
+                //do
+                //{
+                //    oldresult2.Item1 = result2.Item1.Clone();
+                //    oldresult2.Item2 = result2.Item2.Clone();
+                //    result2.Item1 = curve2.ClosestPoint(result2.Item2);
+                //    result2.Item2 = curve1.ClosestPoint(result2.Item1);
+                //} while (oldresult2.Item2.Distance(result2.Item2) > tolerance * tolerance && oldresult2.Item1.Distance(result2.Item1) > tolerance * tolerance);
+                //if (result.Item1.Distance(result.Item2) > result2.Item1.Distance(result2.Item2))
+                //    result = result2;
             }
             else
             {
@@ -513,16 +549,28 @@ namespace BH.Engine.Geometry
                     result.Item2 = curve1.ClosestPoint(result.Item1);
                 } while (oldresult.Item2.Distance(result.Item2) > tolerance * tolerance && oldresult.Item1.Distance(result.Item1) > tolerance * tolerance);
             }
-            if(curve1.EndPoint().Distance(curve2.ClosestPoint(curve1.EndPoint()))<result.Item1.Distance(result.Item2))
-                {
-                    result.Item1 = curve1.EndPoint();
-                    result.Item2 = curve2.ClosestPoint(result.Item1);
-                }
+            if (curve1.EndPoint().Distance(curve2.ClosestPoint(curve1.EndPoint())) < result.Item1.Distance(result.Item2))
+            {
+                result.Item1 = curve1.EndPoint();
+                result.Item2 = curve2.ClosestPoint(result.Item1);
+            }
             if (curve1.StartPoint().Distance(curve2.ClosestPoint(curve1.StartPoint())) < result.Item1.Distance(result.Item2))
             {
                 result.Item1 = curve1.StartPoint();
                 result.Item2 = curve2.ClosestPoint(result.Item1);
             }
+            tmp = curve1.PointAtParameter((curve1.ParameterAtPoint(result.Item1) + 0.6) % 1);
+            result2.Item1 = tmp;
+            result2.Item2 = curve2.ClosestPoint(tmp);
+            do
+            {
+                oldresult2.Item1 = result2.Item1.Clone();
+                oldresult2.Item2 = result2.Item2.Clone();
+                result2.Item1 = curve2.ClosestPoint(result2.Item2);
+                result2.Item2 = curve1.ClosestPoint(result2.Item1);
+            } while (oldresult2.Item2.Distance(result2.Item2) > tolerance * tolerance && oldresult2.Item1.Distance(result2.Item1) > tolerance * tolerance);
+            if (result.Item1.Distance(result.Item2) > result2.Item1.Distance(result2.Item2))
+                result = result2;
             return result;
         }
 
@@ -563,9 +611,9 @@ namespace BH.Engine.Geometry
         public static BH.oM.Reflection.Output<Point, Point> CurveProximity(this Circle curve1, Circle curve2, double tolerance = Tolerance.Distance)
         {
             if (curve1.CurveIntersections(curve2).Count > 0)
-                return new BH.oM.Reflection.Output<Point, Point> { Item1=curve1.CurveIntersections(curve2)[0], Item2=curve1.CurveIntersections(curve2)[1] };
+                return new BH.oM.Reflection.Output<Point, Point> { Item1 = curve1.CurveIntersections(curve2)[0], Item2 = curve1.CurveIntersections(curve2)[1] };
             BH.oM.Reflection.Output<Point, Point> result = new BH.oM.Reflection.Output<Point, Point>();
-            if (Math.Abs(curve1.Normal.IsParallel(curve2.Normal))==1)
+            if (Math.Abs(curve1.Normal.IsParallel(curve2.Normal)) == 1)
             {
                 result.Item1 = curve1.PointAtParameter(0);
                 result.Item2 = curve2.ClosestPoint(result.Item1);
@@ -578,7 +626,7 @@ namespace BH.Engine.Geometry
             bool changed = false;
             if ((intPts = curve1.PlaneIntersections(ftPln2)).Count != 0)
             {
-                if (intPts.Count == 1&& intPts[0].Distance(curve2)<tmp.Distance(curve2))
+                if (intPts.Count == 1 && intPts[0].Distance(curve2) < tmp.Distance(curve2))
                     tmp = intPts[0];
                 else
                 {
@@ -597,7 +645,7 @@ namespace BH.Engine.Geometry
             }
             else if ((intPts = curve2.PlaneIntersections(ftPln1)).Count != 0)
             {
-                if (intPts.Count == 1&&intPts[0].Distance(curve1) < tmp.Distance(curve2))
+                if (intPts.Count == 1 && intPts[0].Distance(curve1) < tmp.Distance(curve2))
                     tmp = intPts[0];
                 else
                 {
@@ -614,11 +662,12 @@ namespace BH.Engine.Geometry
                 }
                 changed = true;
             }
+            BH.oM.Reflection.Output<Point, Point> oldresult2 = new BH.oM.Reflection.Output<Point, Point>();
+            BH.oM.Reflection.Output<Point, Point> result2 = new BH.oM.Reflection.Output<Point, Point>();
             BH.oM.Reflection.Output<Point, Point> oldresult = new BH.oM.Reflection.Output<Point, Point>();
             if (changed)
             {
-                BH.oM.Reflection.Output<Point, Point> oldresult2 = new BH.oM.Reflection.Output<Point, Point>();
-                BH.oM.Reflection.Output<Point, Point> result2 = new BH.oM.Reflection.Output<Point, Point>();
+
                 if (tmp.IsOnCurve(curve1))
                 {
                     result.Item1 = curve1.PointAtParameter(curve1.ParameterAtPoint(tmp) + 0.25);
@@ -630,7 +679,7 @@ namespace BH.Engine.Geometry
                 {
                     result.Item2 = curve2.PointAtParameter(curve2.ParameterAtPoint(tmp) + 0.25);
                     result.Item1 = curve1.ClosestPoint(tmp);
-                    result2.Item2 = curve2.PointAtParameter((curve2.ParameterAtPoint(tmp) +0.75)%1);
+                    result2.Item2 = curve2.PointAtParameter((curve2.ParameterAtPoint(tmp) + 0.75) % 1);
                     result2.Item1 = curve1.ClosestPoint(result2.Item2);
                 }
                 do
@@ -652,31 +701,43 @@ namespace BH.Engine.Geometry
                 else
                     return result2;
             }
-                Line intersect = Create.Line(curve1.Centre, curve2.Centre);
-                Point tmp1 = intersect.CurveProximity(curve1).Item1;
-                Point tmp2 = intersect.CurveProximity(curve2).Item1;
-                if (tmp1.Distance(curve2) < tmp.Distance(curve1) || tmp1.Distance(curve2) < tmp.Distance(curve2))
-                    tmp = tmp1;
-                if (tmp2.Distance(curve1) < tmp.Distance(curve1) || tmp2.Distance(curve1) < tmp.Distance(curve2))
-                    tmp = tmp2;
-                if (tmp.IsOnCurve(curve1))
-                {
+            Line intersect = Create.Line(curve1.Centre, curve2.Centre);
+            Point tmp1 = intersect.CurveProximity(curve1).Item1;
+            Point tmp2 = intersect.CurveProximity(curve2).Item1;
+            if (tmp1.Distance(curve2) < tmp.Distance(curve1) || tmp1.Distance(curve2) < tmp.Distance(curve2))
+                tmp = tmp1;
+            if (tmp2.Distance(curve1) < tmp.Distance(curve1) || tmp2.Distance(curve1) < tmp.Distance(curve2))
+                tmp = tmp2;
+            if (tmp.IsOnCurve(curve1))
+            {
                 result.Item1 = tmp;
                 result.Item2 = curve2.ClosestPoint(tmp);
-                }
-                else
-                {
+            }
+            else
+            {
                 result.Item2 = tmp;
                 result.Item1 = curve1.ClosestPoint(tmp);
-                }
+            }
             do
             {
                 oldresult.Item1 = result.Item1.Clone();
                 oldresult.Item2 = result.Item2.Clone();
                 result.Item1 = curve2.ClosestPoint(result.Item2);
                 result.Item2 = curve1.ClosestPoint(result.Item1);
-            } while (oldresult.Item2.Distance(result.Item2)>tolerance*tolerance&&oldresult.Item1.Distance(result.Item1)>tolerance*tolerance);
-                return result;
+            } while (oldresult.Item2.Distance(result.Item2) > tolerance * tolerance && oldresult.Item1.Distance(result.Item1) > tolerance * tolerance);
+            tmp = curve1.PointAtParameter((curve1.ParameterAtPoint(result.Item1) + 0.6) % 1);
+            result2.Item1 = tmp;
+            result2.Item2 = curve2.ClosestPoint(tmp);
+            do
+            {
+                oldresult2.Item1 = result2.Item1.Clone();
+                oldresult2.Item2 = result2.Item2.Clone();
+                result2.Item1 = curve2.ClosestPoint(result2.Item2);
+                result2.Item2 = curve1.ClosestPoint(result2.Item1);
+            } while (oldresult2.Item2.Distance(result2.Item2) > tolerance * tolerance && oldresult2.Item1.Distance(result2.Item1) > tolerance * tolerance);
+            if (result.Item1.Distance(result.Item2) > result2.Item1.Distance(result2.Item2))
+                result = result2;
+            return result;
         }
 
         /***************************************************/
@@ -704,7 +765,7 @@ namespace BH.Engine.Geometry
             for (int i = 1; i < curve1.Curves.Count; i++)
             {
                 cp = curve1.Curves[i].ICurveProximity(curve2);
-                if (cp.Item1.Distance(cp.Item2)< result.Item1.Distance(result.Item2))
+                if (cp.Item1.Distance(cp.Item2) < result.Item1.Distance(result.Item2))
                 {
                     result = cp;
                 }
@@ -797,7 +858,7 @@ namespace BH.Engine.Geometry
             for (int i = 1; i < temp.Count; i++)
             {
                 cp = curve2.CurveProximity(temp[i]);
-                if (cp.Item1.Distance(cp.Item2)<result.Item1.Distance(result.Item2))
+                if (cp.Item1.Distance(cp.Item2) < result.Item1.Distance(result.Item2))
                 {
                     result = cp;
                 }
@@ -893,7 +954,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
-        public static BH.oM.Reflection.Output<Point,Point> ICurveProximity(this ICurve curve1, ICurve curve2, double tolerance = Tolerance.Distance)
+        public static BH.oM.Reflection.Output<Point, Point> ICurveProximity(this ICurve curve1, ICurve curve2, double tolerance = Tolerance.Distance)
         {
             return CurveProximity(curve1 as dynamic, curve2 as dynamic);
         }
