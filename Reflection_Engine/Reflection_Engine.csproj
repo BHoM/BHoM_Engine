@@ -100,7 +100,6 @@
     <Compile Include="Create\Output.cs" />
     <Compile Include="Modify\Cast.cs" />
     <Compile Include="Modify\MakeFromGeneric.cs" />
-    <Compile Include="Modify\MakeStatic.cs" />
     <Compile Include="Modify\SortExtensionMethods.cs" />
     <Compile Include="Query\CurrentAssemblyFolder.cs" />
     <Compile Include="Query\BHoMFolder.cs" />
