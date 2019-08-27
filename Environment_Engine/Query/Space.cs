@@ -58,11 +58,11 @@ namespace BH.Engine.Environment
         [Input("panels", "A collection of Environment Panels")]
         [Input("spaceNames", " list of space names the panels should enclose")]
         [Output("panelsAsSpace", "A collection of Environment Panels which have the given space name as a connected space")]
-        public static List<List<Panel>> ToSpace(this List<Panel> panels, List<string> spaceName)
+        public static List<List<Panel>> ToSpace(this List<Panel> panels, List<string> spaceNames)
         {
             List<List<Panel>> results = new List<List<Panel>>();
 
-            foreach (string tmp in spaceName)
+            foreach (string tmp in spaceNames)
             {
                 results.Add(panels.ToSpace(tmp));
             }
