@@ -104,7 +104,6 @@ namespace BH.Engine.Reflection
 
                             if (type.Name == "External")
                             {
-                                m_ExternalMethodList.AddRange(type.GetMethods());
                                 MethodInfo getExternalMethods = type.GetMethod("Methods");
                                 if (getExternalMethods != null)
                                     m_ExternalMethodList.AddRange((List<MethodInfo>)getExternalMethods.Invoke(null, null));
