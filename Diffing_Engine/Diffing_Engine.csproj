@@ -48,8 +48,8 @@
       <HintPath>..\..\BHoM\Build\Geometry_oM.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="MongoDB.Bson, Version=2.4.4.0, Culture=neutral, PublicKeyToken=null">
-      <Private>False</Private>
+    <Reference Include="MongoDB.Bson">
+      <HintPath>..\Build\MongoDB.Bson.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -84,6 +84,7 @@
     <Compile Include="Compute\Diffing.cs" />
     <Compile Include="Compute\DiffHash.cs" />
     <Compile Include="Compute\ToDiffingByteArray.cs" />
+    <Compile Include="Create\Stream.cs" />
     <Compile Include="Query\GetHash.cs" />
     <Compile Include="Compute\SHA256Hash.cs" />
     <Compile Include="Compute\ToDiffingJson.cs" />
@@ -119,8 +120,6 @@
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Create\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

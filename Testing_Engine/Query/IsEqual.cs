@@ -96,8 +96,8 @@ namespace BH.Engine.Testing
             CompareLogic comparer = new CompareLogic();
 
             comparer.Config.MaxDifferences = 1000;
-
             comparer.Config.MembersToIgnore = config.PropertiesToIgnore;
+            comparer.Config.DoublePrecision = config.NumericTolerance;
 
             if (config.IgnoreCustomData)
                 comparer.Config.MembersToIgnore.Add("CustomData");
@@ -105,21 +105,11 @@ namespace BH.Engine.Testing
             if (config.IgnoreGuid)
                 comparer.Config.TypesToIgnore.Add(typeof(Guid));
 
-            comparer.Config.DoublePrecision = config.NumericTolerance;
-
             ComparisonResult result = comparer.Compare(obj1, obj2);
+            dict = result.Differences.ToDictionary(diff => diff.PropertyName, diff => new Tuple<object, object>(diff.Object1, diff.Object2));
 
-            List<string> propsDifferent = result.Differences.Select(x => x.PropertyName).ToList();
-            List<object> obj1DiffValues = result.Differences.Select(x => x.Object1).ToList();
-            List<object> obj2DiffValues = result.Differences.Select(x => x.Object2).ToList();
-
-            if (propsDifferent.Count == 0)
+            if (dict.Count == 0)
                 return null;
-
-            for (int i = 0; i < propsDifferent.Count; i++)
-            {
-                dict.Add(propsDifferent[i], new Tuple<object, object>(obj1DiffValues[i], obj2DiffValues[i]));
-            }
 
             return dict;
         }

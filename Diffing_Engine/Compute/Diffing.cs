@@ -58,17 +58,31 @@ namespace BH.Engine.Diffing
 
             if (diffStream == null)
             {
+                if (readObjs == null || readObjs.Count == 0)
+                    throw new ArgumentException("Please specify either a Stream or a list of readObjs that has been pulled from a stream.");
+
                 // Get project fragment from one of the objects and use it as the base, if exists
                 diffStream = ReadObjs_cloned
-                    .Where(obj => obj.Fragments.Exists(fragm => fragm?.GetType() == typeof(DiffHashFragment)))
-                    .First()
-                    .GetHashFragment().DiffingStream;
+                    .Where(obj => obj.Fragments.Exists(fragm => fragm != null ? fragm.GetType() == typeof(DiffHashFragment) : false))
+                    .FirstOrDefault()
+                    ?.GetHashFragment().DiffingStream;
+
+                if (diffStream == null)
+                    throw new ArgumentException("Could not retrieve Stream information from the readObjs. Please input a Stream.");
             }
+
+            // Make sure that ReadObjs have an hash. Calculate it if not.
+            foreach (var obj in ReadObjs_cloned)
+            {
+                if (obj.GetHashFragment() == null)
+                    obj.DiffHash(exceptions, true, diffStream);
+            }
+
 
             if (useDefaultExceptions)
                 SetDefaultExceptions(ref exceptions);
 
-            // Check and process the DiffHashFragment of the objects
+            // Check and process the DiffHashFragment of the current objects
             CurrentObjs_cloned.ForEach(obj =>
             {
                 DiffHashFragment hashFragment = obj.GetHashFragment();
@@ -87,17 +101,27 @@ namespace BH.Engine.Diffing
                 }
             });
 
-            Dictionary<string, IBHoMObject> CurrentObjs_cloned_dict = CurrentObjs_cloned.ToDictionary(obj => obj.GetHashFragment().Hash, obj => obj);
+            // Remove duplicates by hash
+            int numObjs_current = CurrentObjs_cloned.Count();
+            CurrentObjs_cloned = CurrentObjs_cloned.GroupBy(obj => obj.GetHashFragment().Hash).Select(gr => gr.First()).ToList();
+
+            int numObjs_read = ReadObjs_cloned.Count();
+            ReadObjs_cloned = ReadObjs_cloned.GroupBy(obj => obj.GetHashFragment().Hash).Select(gr => gr.First()).ToList();
+
+            if (numObjs_current != CurrentObjs_cloned.Count())
+                BH.Engine.Reflection.Compute.RecordWarning("Some Current Objects were duplicates and therefore removed.");
+
+            if (numObjs_read != ReadObjs_cloned.Count())
+                BH.Engine.Reflection.Compute.RecordWarning("Some Read Objects were duplicates and therefore removed.");
+
+            // Make dictionary of the objects with their hashes to speed up the next lookups
+            Dictionary<string, IBHoMObject> ReadObjs_cloned_dict = ReadObjs_cloned.ToDictionary(obj => obj.GetHashFragment().Hash, obj => obj);
 
             // Dispatch the objects: new, modified or old
             List<IBHoMObject> toBeCreated = new List<IBHoMObject>();
-
             List<IBHoMObject> toBeUpdated = new List<IBHoMObject>();
-
             List<IBHoMObject> toBeDeleted = new List<IBHoMObject>();
-
             List<IBHoMObject> unchanged = new List<IBHoMObject>();
-
             var objModifiedProps = new Dictionary<string, Dictionary<string, Tuple<object, object>>>();
 
             foreach (var obj in CurrentObjs_cloned)
@@ -121,36 +145,37 @@ namespace BH.Engine.Diffing
                     if (propertyLevelDiffing)
                     {
                         // Determine changed properties
-                        var oldObjState = ReadObjs_cloned.Single(rObj => rObj.GetHashFragment().Hash == hashFragm.PreviousHash);
+                        IBHoMObject oldObjState = null;
+                        ReadObjs_cloned_dict.TryGetValue(hashFragm.PreviousHash, out oldObjState);
+
+                        if (oldObjState == null) continue;
 
                         IsEqualConfig ignoreProps = new IsEqualConfig();
                         ignoreProps.PropertiesToIgnore = exceptions;
-                        var differentProps = BH.Engine.Testing.Query.IsEqual(obj, oldObjState, ignoreProps);
-                        var differentProps1 = BH.Engine.Testing.Query.DifferentProperties(obj, oldObjState, ignoreProps);
-                        var changes = new Tuple<List<string>, List<string>>(differentProps.Item2, differentProps.Item3);
 
-                        objModifiedProps.Add(hashFragm.Hash, differentProps1);
+                        var differentProps = BH.Engine.Testing.Query.DifferentProperties(obj, oldObjState, ignoreProps);
+
+                        objModifiedProps.Add(hashFragm.Hash, differentProps);
                     }
                 }
-
                 else
                 {
-
                     BH.Engine.Reflection.Compute.RecordError("Could not find hash information to perform Diffing on some objects.");
                     return null;
                 }
             }
 
-            foreach (var obj in ReadObjs_cloned)
-            {
-                var hashFragm = obj.GetHashFragment();
+            // If no modified property was found, set the field to null (otherwise will get empty list)
+            objModifiedProps = objModifiedProps.Count == 0 ? null : objModifiedProps;
 
-                if (!CurrentObjs_cloned.Any(cObj => cObj.GetHashFragment().PreviousHash == hashFragm.Hash))
-                {
-                    toBeDeleted.Add(obj); // It doesn't exist anymore (it's not among the current objects)
-                    continue;
-                }
-            }
+            // All ReadObjs that cannot be found by hash in the previousHash of the CurrentObjs are toBeDeleted
+            Dictionary<string, IBHoMObject> CurrentObjs_withPreviousHash_dict = CurrentObjs_cloned
+                  .Where(obj => obj.GetHashFragment().PreviousHash != null)
+                  .ToDictionary(obj => obj.GetHashFragment().PreviousHash, obj => obj);
+
+            toBeDeleted = ReadObjs_cloned_dict.Keys.Except(CurrentObjs_withPreviousHash_dict.Keys)
+                .Where(k => ReadObjs_cloned_dict.ContainsKey(k)).Select(k => ReadObjs_cloned_dict[k]).ToList();
+
 
             return new Delta(toBeCreated, toBeDeleted, toBeUpdated, objModifiedProps, diffStream);
         }
