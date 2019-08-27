@@ -81,7 +81,7 @@ namespace BH.Engine.Reflection
             {
                 Type[] types = type.GetGenericArguments();
 
-                if (replaceGeneric && types.Count() == 1 && !type.Namespace.StartsWith("BH"))
+                if (replaceGeneric && types.Count() == 1 && type.Namespace != null && !type.Namespace.StartsWith("BH"))
                     return types[0].ToText(includePath, replaceGeneric);
                 else
                 {
