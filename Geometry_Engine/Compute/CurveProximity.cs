@@ -374,12 +374,12 @@ namespace BH.Engine.Geometry
             if (curve2.EndPoint().Distance(curve1.ClosestPoint(curve2.EndPoint())) < curve2.StartPoint().Distance(curve1.ClosestPoint(curve2.StartPoint())))
             {
                 result4.Item2 = curve2.EndPoint();
-                result4.Item1 = curve1.ClosestPoint(result4.Item1);
+                result4.Item1 = curve1.ClosestPoint(result4.Item2);
             }
             else
             {
                 result4.Item2 = curve2.StartPoint();
-                result4.Item1 = curve1.ClosestPoint(result4.Item1);
+                result4.Item1 = curve1.ClosestPoint(result4.Item2);
             }
                 do
                 {
