@@ -241,61 +241,97 @@ namespace BH.Engine.Geometry
             BH.oM.Reflection.Output<Point, Point> oldresult = new BH.oM.Reflection.Output<Point, Point>();
             BH.oM.Reflection.Output<Point, Point> oldresult2 = new BH.oM.Reflection.Output<Point, Point>();
             BH.oM.Reflection.Output<Point, Point> result2 = new BH.oM.Reflection.Output<Point, Point>();
+            BH.oM.Reflection.Output<Point, Point> oldresult3 = new BH.oM.Reflection.Output<Point, Point>();
+            BH.oM.Reflection.Output<Point, Point> result3 = new BH.oM.Reflection.Output<Point, Point>();
+            BH.oM.Reflection.Output<Point, Point> oldresult4 = new BH.oM.Reflection.Output<Point, Point>();
+            BH.oM.Reflection.Output<Point, Point> result4 = new BH.oM.Reflection.Output<Point, Point>();
+            BH.oM.Reflection.Output<Point, Point> oldresult5 = new BH.oM.Reflection.Output<Point, Point>();
+            BH.oM.Reflection.Output<Point, Point> result5 = new BH.oM.Reflection.Output<Point, Point>();
             Plane ftPln1 = curve1.FitPlane();
             Plane ftPln2 = curve2.FitPlane();
-            Point tmp = new Point();
-            tmp = curve1.StartPoint() + (curve1.StartPoint() + curve2.EndPoint()) * 10;
             List<Point> fitPoints = new List<Point>();
-            bool check=false;
+            bool check = false;
+            bool isSet1, isSet2, isSet3;
             if((fitPoints=curve1.PlaneIntersections(ftPln2)).Count>0)
             {
                 if (fitPoints.Count == 1)
-                    tmp = fitPoints[0];
+                {
+                    result.Item1 = fitPoints[0];
+                    result.Item2 = curve2.ClosestPoint(fitPoints[0]);
+                    check = true;
+                }
                 else if (fitPoints.Count > 1)
                 {
-                    if(fitPoints[0].Distance(curve2)<fitPoints[1].Distance(curve2))
+                    if (fitPoints[0].Distance(curve2) < fitPoints[1].Distance(curve2))
                     {
-                            tmp = fitPoints[0];
+                        result.Item1 = fitPoints[0];
+                        result.Item2 = curve2.ClosestPoint(fitPoints[0]);
+                        check = true;
                     }
                     else
                     {
-                            tmp = fitPoints[1];
+                        result.Item1 = fitPoints[1];
+                        result.Item2 = curve2.ClosestPoint(fitPoints[1]);
+                        check = true;
                     }
                 }
-                check = true;
+               
             }
             if ((fitPoints = curve2.PlaneIntersections(ftPln1)).Count > 0)
             {
-                if (fitPoints.Count == 1 && (fitPoints[0].Distance(curve1) < tmp.Distance(curve2)||fitPoints[0].Distance(curve1) < tmp.Distance(curve1)))
-                    tmp = fitPoints[0];
-                else if(fitPoints.Count>1)
+                if (check)
+                {
+                    if (fitPoints.Count == 1 && (fitPoints[0].Distance(curve1) < result.Item1.Distance(curve2)))
+                    {
+                        result.Item2 = fitPoints[0];
+                        result.Item1 = curve1.ClosestPoint(fitPoints[0]);
+                    }
+                    else if (fitPoints.Count > 1)
+                    {
+                        if (fitPoints[0].Distance(curve1) < fitPoints[1].Distance(curve1))
+                        {
+                            if (fitPoints[0].Distance(curve1) < result.Item1.Distance(curve2))
+                            {
+                                result.Item2 = fitPoints[0];
+                                result.Item1 = curve1.ClosestPoint(fitPoints[0]);
+                            }
+                        }
+                        else
+                        {
+                            if (fitPoints[1].Distance(curve1) < result.Item1.Distance(curve2))
+                            {
+                                result.Item2 = fitPoints[1];
+                                result.Item1 = curve1.ClosestPoint(fitPoints[1]);
+                            }
+                        }
+                    }
+                }
+                else
+                if (fitPoints.Count == 1)
+                {
+                    result.Item2 = fitPoints[0];
+                    result.Item1 = curve1.ClosestPoint(fitPoints[0]);
+                    check = true;
+                }
+                else if (fitPoints.Count > 1)
                 {
                     if (fitPoints[0].Distance(curve1) < fitPoints[1].Distance(curve1))
                     {
-                        if (fitPoints[0].Distance(curve1) < tmp.Distance(curve1) || fitPoints[0].Distance(curve1) < tmp.Distance(curve2))
-                            tmp = fitPoints[0];
+                        
+                            result.Item2 = fitPoints[0];
+                            result.Item1 = curve1.ClosestPoint(fitPoints[0]);
+                            check = true;
                     }
                     else
                     {
-                        if (fitPoints[1].Distance(curve1) < tmp.Distance(curve1) || fitPoints[1].Distance(curve1) < tmp.Distance(curve2))
-                            tmp = fitPoints[1];
+                            result.Item2 = fitPoints[1];
+                            result.Item1 = curve1.ClosestPoint(fitPoints[1]);
+                            check = true;
                     }
                 }
-                check = true;
             }
             if (check)
             {
-                if (tmp.IsOnCurve(curve1))
-                {
-                    result.Item1 = tmp;
-                    result.Item2 = curve2.ClosestPoint(result.Item1);
-
-                }
-                else
-                {
-                    result.Item2 = tmp;
-                    result.Item1 = curve1.ClosestPoint(result.Item2);
-                }
                 do
                 {
                     oldresult.Item1 = result.Item1.Clone();
@@ -303,122 +339,89 @@ namespace BH.Engine.Geometry
                     result.Item1 = curve2.ClosestPoint(result.Item2);
                     result.Item2 = curve1.ClosestPoint(result.Item1);
                 } while (oldresult.Item2.Distance(result.Item2) > tolerance * tolerance && oldresult.Item1.Distance(result.Item1) > tolerance * tolerance);
-                tmp = result.Item1;
-            }
-            else
-            {
-                tmp = curve1.ClosestPoint(curve2.Centre());
             }
             check = false;
             Line intersect = Create.Line(curve1.Centre(), curve2.Centre());
-            Point[] aidPts = new Point[4];
                 Point tmp1 = intersect.CurveProximity(curve1).Item2;
                 Point tmp2 = intersect.CurveProximity(curve2).Item2;
-            if (tmp1.Distance(curve2) < tmp.Distance(curve1) || tmp1.Distance(curve2) < tmp.Distance(curve2))
+            if (tmp1.Distance(curve2) < tmp2.Distance(curve1))
             {
-                tmp = tmp1;
-                check = true;
-            }
-            if (tmp2.Distance(curve1) < tmp.Distance(curve1) || tmp2.Distance(curve1) < tmp.Distance(curve2))
-            {
-                tmp = tmp2;
-                check = true;
-            }
-                if (tmp.IsOnCurve(curve1))
-                {
-                    result.Item1 = tmp;
-                    result.Item2 = curve2.ClosestPoint(tmp);
-                }
-                else
-                {
-                    result.Item2 = tmp;
-                    result.Item1 = curve1.ClosestPoint(tmp);
-                }
-
-                do
-                {
-                    oldresult.Item1 = result.Item1.Clone();
-                    oldresult.Item2 = result.Item2.Clone();
-                    result.Item1 = curve2.ClosestPoint(result.Item2);
-                    result.Item2 = curve1.ClosestPoint(result.Item1);
-                } while (oldresult.Item2.Distance(result.Item2) > tolerance * tolerance && oldresult.Item1.Distance(result.Item1) > tolerance * tolerance);
-
-            Line aidLine1 = Create.Line(curve1.Centre(), curve1.PointAtParameter(0.5));
-            Line aidLine2 = Create.Line(curve2.Centre(), curve2.PointAtParameter(0.5));
-            result2.Item1 = curve1.CurveProximity(aidLine2).Item1;
-            result2.Item2 = curve2.CurveProximity(aidLine1).Item1;
-            if (result2.Item1.Distance(curve2) < result2.Item2.Distance(curve1))
-            {
-                result2.Item2 = curve2.ClosestPoint(result2.Item1);
-            }
-            else
-                result2.Item1 = curve1.ClosestPoint(result2.Item2);
-            do
-            {
-                oldresult2.Item1 = result2.Item1.Clone();
-                oldresult2.Item2 = result2.Item2.Clone();
-                result2.Item1 = curve2.ClosestPoint(result2.Item2);
-                result2.Item2 = curve1.ClosestPoint(result2.Item1);
-            } while (oldresult2.Item2.Distance(result2.Item2) > tolerance * tolerance && oldresult2.Item1.Distance(result2.Item1) > tolerance * tolerance);
-            if (result.Item1.Distance(result.Item2) > result2.Item1.Distance(result2.Item2))
-            {
-                result.Item1 = result2.Item1.Clone();
-                result.Item2 = result2.Item2.Clone();
-            }
-            check = false;
-            if (curve1.EndPoint().Distance(curve2.ClosestPoint(curve1.EndPoint())) < result.Item1.Distance(result.Item2))
-            {
-                result.Item1 = curve1.EndPoint();
-                result.Item2 = curve2.ClosestPoint(result.Item1);
-                check = true;
-            }
-            if (curve1.StartPoint().Distance(curve2.ClosestPoint(curve1.StartPoint())) < result.Item1.Distance(result.Item2))
-            {
-                result.Item1 = curve1.StartPoint();
-                result.Item2 = curve2.ClosestPoint(result.Item1);
-                check = true;
-            }
-            if (curve2.EndPoint().Distance(curve1.ClosestPoint(curve2.EndPoint())) < result.Item1.Distance(result.Item2))
-            {
-                result.Item2 = curve2.EndPoint();
-                result.Item1 = curve1.ClosestPoint(result.Item2);
-                check = true;
-            }
-            if (curve2.StartPoint().Distance(curve1.ClosestPoint(curve2.StartPoint())) < result.Item1.Distance(result.Item2))
-            {
-                result.Item2 = curve2.StartPoint();
-                result.Item1 = curve1.ClosestPoint(result.Item2);
-                check = true;
-            }
-                do
-                {
-                    oldresult.Item1 = result.Item1.Clone();
-                    oldresult.Item2 = result.Item2.Clone();
-                    result.Item1 = curve2.ClosestPoint(result.Item2);
-                    result.Item2 = curve1.ClosestPoint(result.Item1);
-                } while (oldresult.Item2.Distance(result.Item2) > tolerance * tolerance && oldresult.Item1.Distance(result.Item1) > tolerance * tolerance);
-            if (curve1.PointAtParameter((curve1.ParameterAtPoint(result.Item1) - 0.5) % 1).Distance(curve2) < curve2.PointAtParameter((curve2.ParameterAtPoint(result.Item2) - 0.5) % 1).Distance(curve1))
-            {
-                result2.Item1 = curve1.PointAtParameter((curve1.ParameterAtPoint(result.Item1)- 0.5) % 1);
-                result2.Item2 = curve2.ClosestPoint(result2.Item1);
+                result2.Item1 = tmp1;
+                result2.Item2 = curve2.ClosestPoint(tmp1);
             }
             else
             {
-                result2.Item2 = curve2.PointAtParameter((curve2.ParameterAtPoint(result.Item2) - 0.5) % 1);
-                result2.Item1 = curve2.ClosestPoint(result2.Item2);
+                result2.Item2 = tmp2;
+                result2.Item1 = curve1.ClosestPoint(tmp2);
             }
             do
             {
-                oldresult2.Item1 = result2.Item1.Clone();
-                oldresult2.Item2 = result2.Item2.Clone();
+                    oldresult2.Item1 = result2.Item1.Clone();
+                    oldresult2.Item2 = result2.Item2.Clone();
                 result2.Item1 = curve2.ClosestPoint(result2.Item2);
                 result2.Item2 = curve1.ClosestPoint(result2.Item1);
             } while (oldresult2.Item2.Distance(result2.Item2) > tolerance * tolerance && oldresult2.Item1.Distance(result2.Item1) > tolerance * tolerance);
-            if (result.Item1.Distance(result.Item2) > result2.Item1.Distance(result2.Item2))
+            if (curve1.EndPoint().Distance(curve2.ClosestPoint(curve1.EndPoint()))  <curve1.StartPoint().Distance(curve2.ClosestPoint(curve1.StartPoint())))
             {
-                result.Item1 = result2.Item1.Clone();
-                result.Item2 = result2.Item2.Clone();
+                result3.Item1 = curve1.EndPoint();
+                result3.Item2 = curve2.ClosestPoint(result3.Item1);
             }
+            else
+            {
+                result3.Item1 = curve1.StartPoint();
+                result3.Item2 = curve2.ClosestPoint(result3.Item1);
+            }
+            if (curve2.EndPoint().Distance(curve1.ClosestPoint(curve2.EndPoint())) < curve2.StartPoint().Distance(curve1.ClosestPoint(curve2.StartPoint())))
+            {
+                result4.Item2 = curve2.EndPoint();
+                result4.Item1 = curve1.ClosestPoint(result4.Item1);
+            }
+            else
+            {
+                result4.Item2 = curve2.StartPoint();
+                result4.Item1 = curve1.ClosestPoint(result4.Item1);
+            }
+                do
+                {
+                    oldresult3.Item1 = result3.Item1.Clone();
+                oldresult3.Item2 = result3.Item2.Clone();
+                result3.Item1 = curve2.ClosestPoint(result3.Item2);
+                result3.Item2 = curve1.ClosestPoint(result3.Item1);
+                } while (oldresult3.Item2.Distance(result3.Item2) > tolerance * tolerance && oldresult3.Item1.Distance(result3.Item1) > tolerance * tolerance);
+            do
+            {
+                oldresult4.Item1 = result4.Item1.Clone();
+                oldresult4.Item2 = result4.Item2.Clone();
+                result4.Item1 = curve2.ClosestPoint(result4.Item2);
+                result4.Item2 = curve1.ClosestPoint(result4.Item1);
+            } while (oldresult4.Item2.Distance(result4.Item2) > tolerance * tolerance && oldresult4.Item1.Distance(result4.Item1) > tolerance * tolerance);
+            if (curve1.PointAtParameter(0.5).Distance(curve2)<curve2.PointAtParameter(0.5).Distance(curve1))
+            {
+                result5.Item2 = curve2.PointAtParameter(0.5);
+                result5.Item1 = curve1.ClosestPoint(result5.Item2);
+            }
+            else
+            {
+                result5.Item1 = curve1.PointAtParameter(0.5);
+                result5.Item2 = curve2.ClosestPoint(result5.Item1);
+            }
+            do
+            {
+                oldresult5.Item1 = result5.Item1.Clone();
+                oldresult5.Item2 = result5.Item2.Clone();
+                result5.Item1 = curve2.ClosestPoint(result5.Item2);
+                result5.Item2 = curve1.ClosestPoint(result5.Item1);
+            } while (oldresult5.Item2.Distance(result5.Item2) > tolerance * tolerance && oldresult5.Item1.Distance(result5.Item1) > tolerance * tolerance);
+            if (result.Item1 == null || result.Item2 == null)
+                result = result2;
+            if (result2.Item2.Distance(result2.Item1) < result.Item1.Distance(result.Item2))
+                result = result2;
+            if (result3.Item2.Distance(result3.Item1) < result.Item1.Distance(result.Item2))
+                result = result3;
+            if (result4.Item2.Distance(result4.Item1) < result.Item1.Distance(result.Item2))
+                result = result4;
+            if (result5.Item2.Distance(result5.Item1) < result.Item1.Distance(result.Item2))
+                result = result5;
             return result;
         }
 
