@@ -31,30 +31,18 @@ using System.Threading.Tasks;
 
 namespace BH.Engine.Diffing
 {
-    public static partial class Create
+    public static partial class Modify
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates new Diffing Stream")]
-        [Input("objects", "Objects to be included in the Stream")]
-        [Input("streamName", "If not specified, the name will be `UnnamedStream` followed by UTC")]
-        public static BH.oM.Diffing.Stream Stream(IEnumerable<IBHoMObject> objects, string streamName = null)
+        [Description("Returns a new Diffing Stream as an update of a previous Stream")]
+        [Input("stream", "Stream to be updated")]
+        [Input("objects", "Objects to be included in the updated version of the Stream")]
+        public static BH.oM.Diffing.Stream UpdateRevision(BH.oM.Diffing.Stream stream, IEnumerable<IBHoMObject> objects)
         {
-            return new BH.oM.Diffing.Stream(objects, streamName, null, null);
+            return new BH.oM.Diffing.Stream(objects, stream.StreamName, stream.StreamId);
         }
-
-        [Description("Creates new Diffing Stream")]
-        [Input("objects", "Objects to be included in the Stream")]
-        [Input("streamName", "If not specified, the name will be `UnnamedStream` followed by UTC")]
-        [Input("streamId", "If not specified, streamId will be a GUID.Revision is initally 0")]
-        [Input("revision", "If not specified, revision is initially set to 0")]
-        public static BH.oM.Diffing.Stream Stream(IEnumerable<IBHoMObject> objects, string streamName = null, string streamId = null, string revision = null)
-        {
-            return new BH.oM.Diffing.Stream(objects, streamName, streamId, revision);
-        }
-
-
     }
 }
