@@ -239,14 +239,11 @@ namespace BH.Engine.Geometry
                 return new BH.oM.Reflection.Output<Point, Point> { Item1 = curve1.CurveIntersections(curve2)[0], Item2 = curve1.CurveIntersections(curve2)[1] };
             BH.oM.Reflection.Output<Point, Point> result = new BH.oM.Reflection.Output<Point, Point>();
             BH.oM.Reflection.Output<Point, Point> oldresult = new BH.oM.Reflection.Output<Point, Point>();
-            BH.oM.Reflection.Output<Point, Point> oldresult2 = new BH.oM.Reflection.Output<Point, Point>();
             BH.oM.Reflection.Output<Point, Point> result2 = new BH.oM.Reflection.Output<Point, Point>();
-            BH.oM.Reflection.Output<Point, Point> oldresult3 = new BH.oM.Reflection.Output<Point, Point>();
             BH.oM.Reflection.Output<Point, Point> result3 = new BH.oM.Reflection.Output<Point, Point>();
-            BH.oM.Reflection.Output<Point, Point> oldresult4 = new BH.oM.Reflection.Output<Point, Point>();
             BH.oM.Reflection.Output<Point, Point> result4 = new BH.oM.Reflection.Output<Point, Point>();
-            BH.oM.Reflection.Output<Point, Point> oldresult5 = new BH.oM.Reflection.Output<Point, Point>();
             BH.oM.Reflection.Output<Point, Point> result5 = new BH.oM.Reflection.Output<Point, Point>();
+            BH.oM.Reflection.Output<Point, Point> result6 = new BH.oM.Reflection.Output<Point, Point>();
             Plane ftPln1 = curve1.FitPlane();
             Plane ftPln2 = curve2.FitPlane();
             List<Point> fitPoints = new List<Point>();
@@ -356,11 +353,11 @@ namespace BH.Engine.Geometry
             }
             do
             {
-                    oldresult2.Item1 = result2.Item1.Clone();
-                    oldresult2.Item2 = result2.Item2.Clone();
+                    oldresult.Item1 = result2.Item1.Clone();
+                    oldresult.Item2 = result2.Item2.Clone();
                 result2.Item1 = curve2.ClosestPoint(result2.Item2);
                 result2.Item2 = curve1.ClosestPoint(result2.Item1);
-            } while (oldresult2.Item2.Distance(result2.Item2) > tolerance * tolerance && oldresult2.Item1.Distance(result2.Item1) > tolerance * tolerance);
+            } while (oldresult.Item2.Distance(result2.Item2) > tolerance * tolerance && oldresult.Item1.Distance(result2.Item1) > tolerance * tolerance);
             if (curve1.EndPoint().Distance(curve2.ClosestPoint(curve1.EndPoint()))  <curve1.StartPoint().Distance(curve2.ClosestPoint(curve1.StartPoint())))
             {
                 result3.Item1 = curve1.EndPoint();
@@ -383,35 +380,36 @@ namespace BH.Engine.Geometry
             }
                 do
                 {
-                    oldresult3.Item1 = result3.Item1.Clone();
-                oldresult3.Item2 = result3.Item2.Clone();
+                    oldresult.Item1 = result3.Item1.Clone();
+                oldresult.Item2 = result3.Item2.Clone();
                 result3.Item1 = curve2.ClosestPoint(result3.Item2);
                 result3.Item2 = curve1.ClosestPoint(result3.Item1);
-                } while (oldresult3.Item2.Distance(result3.Item2) > tolerance * tolerance && oldresult3.Item1.Distance(result3.Item1) > tolerance * tolerance);
+                } while (oldresult.Item2.Distance(result3.Item2) > tolerance * tolerance && oldresult.Item1.Distance(result3.Item1) > tolerance * tolerance);
             do
             {
-                oldresult4.Item1 = result4.Item1.Clone();
-                oldresult4.Item2 = result4.Item2.Clone();
+                oldresult.Item1 = result4.Item1.Clone();
+                oldresult.Item2 = result4.Item2.Clone();
                 result4.Item1 = curve2.ClosestPoint(result4.Item2);
                 result4.Item2 = curve1.ClosestPoint(result4.Item1);
-            } while (oldresult4.Item2.Distance(result4.Item2) > tolerance * tolerance && oldresult4.Item1.Distance(result4.Item1) > tolerance * tolerance);
-            if (curve1.PointAtParameter(0.5).Distance(curve2)<curve2.PointAtParameter(0.5).Distance(curve1))
-            {
+            } while (oldresult.Item2.Distance(result4.Item2) > tolerance * tolerance && oldresult.Item1.Distance(result4.Item1) > tolerance * tolerance);
                 result5.Item2 = curve2.PointAtParameter(0.5);
                 result5.Item1 = curve1.ClosestPoint(result5.Item2);
-            }
-            else
-            {
-                result5.Item1 = curve1.PointAtParameter(0.5);
-                result5.Item2 = curve2.ClosestPoint(result5.Item1);
-            }
+                result6.Item1 = curve1.PointAtParameter(0.5);
+                result6.Item2 = curve2.ClosestPoint(result6.Item1);
             do
             {
-                oldresult5.Item1 = result5.Item1.Clone();
-                oldresult5.Item2 = result5.Item2.Clone();
+                oldresult.Item1 = result5.Item1.Clone();
+                oldresult.Item2 = result5.Item2.Clone();
                 result5.Item1 = curve2.ClosestPoint(result5.Item2);
                 result5.Item2 = curve1.ClosestPoint(result5.Item1);
-            } while (oldresult5.Item2.Distance(result5.Item2) > tolerance * tolerance && oldresult5.Item1.Distance(result5.Item1) > tolerance * tolerance);
+            } while (oldresult.Item2.Distance(result5.Item2) > tolerance * tolerance && oldresult.Item1.Distance(result5.Item1) > tolerance * tolerance);
+            do
+            {
+                oldresult.Item1 = result6.Item1.Clone();
+                oldresult.Item2 = result6.Item2.Clone();
+                result6.Item1 = curve2.ClosestPoint(result6.Item2);
+                result6.Item2 = curve1.ClosestPoint(result6.Item1);
+            } while (oldresult.Item2.Distance(result6.Item2) > tolerance * tolerance && oldresult.Item1.Distance(result6.Item1) > tolerance * tolerance);
             if (result.Item1 == null || result.Item2 == null)
                 result = result2;
             if (result2.Item2.Distance(result2.Item1) < result.Item1.Distance(result.Item2))
@@ -422,6 +420,8 @@ namespace BH.Engine.Geometry
                 result = result4;
             if (result5.Item2.Distance(result5.Item1) < result.Item1.Distance(result.Item2))
                 result = result5;
+            if (result6.Item2.Distance(result6.Item1) < result.Item1.Distance(result.Item2))
+                result = result6;
             return result;
         }
 
