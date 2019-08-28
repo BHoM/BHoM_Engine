@@ -47,45 +47,38 @@ namespace BH.Engine.Diffing
         ///**** Public Methods                            ****/
         ///***************************************************/
 
-        public static List<IBHoMObject> DiffHash(List<IBHoMObject> objs, List<string> exceptions = null, bool useDefaultExceptions = true, Stream stream = null)
+        public static void DiffHashFragment(List<IBHoMObject> objs, List<string> exceptions = null, bool useDefaultExceptions = true)
         {
-            // Clone the current objects
-            List<IBHoMObject> objs_cloned = objs.Select(obj => BH.Engine.Base.Query.DeepClone(obj)).ToList();
-
             // Calculate and set the object hashes
-            objs_cloned.ForEach(obj => obj.DiffHash(exceptions, useDefaultExceptions, stream));
+            foreach (var obj in objs)
+            {
+                string hash = obj.DiffHash(exceptions, useDefaultExceptions);
 
-            return objs_cloned;
+                obj.Fragments.Add(
+                new DiffHashFragment(hash, null)
+                );
+            }
         }
 
-        public static string DiffHash(this IBHoMObject obj, List<string> exceptions = null, bool useDefaultExceptions = true, Stream stream = null)
+        public static string DiffHash(this IBHoMObject obj, List<string> exceptions = null, bool useDefaultExceptions = true)
         {
             if (exceptions == null || exceptions.Count == 0 && useDefaultExceptions)
                 SetDefaultExceptions(ref exceptions);
 
-            string hash = Compute.SHA256Hash(obj, exceptions);
-
-            obj.Fragments.Add(
-                new DiffHashFragment(hash, null, stream)
-                );
-
-            return hash;
-        }
-
-
-        public static void SetDefaultExceptions(ref List<string> exceptions)
-        {
-            if (exceptions == null)
-                exceptions = defaultHashExceptions;
-            else
-                exceptions.AddRange(defaultHashExceptions);
+            return Compute.SHA256Hash(obj, exceptions);
         }
 
         ///***************************************************/
         ///**** Private Methods                           ****/
         ///***************************************************/
 
-
+        private static void SetDefaultExceptions(ref List<string> exceptions)
+        {
+            if (exceptions == null)
+                exceptions = defaultHashExceptions;
+            else
+                exceptions.AddRange(defaultHashExceptions);
+        }
 
     }
 }

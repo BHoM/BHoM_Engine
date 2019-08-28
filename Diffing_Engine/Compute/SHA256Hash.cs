@@ -55,8 +55,6 @@ namespace BH.Engine.Diffing
             return SHA256Hash(obj.ToDiffingByteArray(except));
         }
 
-
-
         ///***************************************************/
         ///**** Private Methods                           ****/
         ///***************************************************/
