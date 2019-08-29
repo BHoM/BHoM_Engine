@@ -39,36 +39,37 @@ namespace BH.Engine.Diffing
     public static partial class Compute
     {
         ///***************************************************/
+        ///**** Public Fields                             ****/
+        ///***************************************************/
+
+        public static List<string> defaultHashExceptions = new List<string>() { "BHoM_Guid", "CustomData", "Fragments" };
+
+        ///***************************************************/
         ///**** Public Methods                            ****/
         ///***************************************************/
 
-        [Description("Computes the a SHA 256 hash code representing the object.")]
-        [Input("objects", "Object the hash code should be calculated for")]
-        [Input("exceptions", "List of strings specifying the names of the properties that should be ignored in the calculation, e.g. 'BHoM_Guid'")]
-        public static string SHA256Hash(IBHoMObject obj, List<string> exceptions = null)
+        [Description("Computes the hash code required for the Diffing.")]
+        [Input("objects", "Objects the hash code should be calculated for")]
+        [Input("exceptions", "List of strings specifying the names of the properties that should be ignored in the calculation, e.g. BHoM_Guid")]
+        [Input("useDefaultExceptions", "If true, adds a list of default exceptions: 'BHoM_Guid', 'CustomData', 'Fragments'. Defaults to true.")]
+        public static string DiffingHash(this IBHoMObject obj, List<string> exceptions = null, bool useDefaultExceptions = true)
         {
-            return SHA256Hash(obj.ToDiffingByteArray(exceptions));
+            if (exceptions == null || exceptions.Count == 0 && useDefaultExceptions)
+                SetDefaultExceptions(ref exceptions);
+
+            return Compute.SHA256Hash(obj, exceptions);
         }
 
         ///***************************************************/
         ///**** Private Methods                           ****/
         ///***************************************************/
 
-        private static string SHA256Hash(byte[] inputObj)
+        private static void SetDefaultExceptions(ref List<string> exceptions)
         {
-            StringBuilder sb = new StringBuilder();
-            foreach (byte b in SHA256_byte(inputObj))
-                sb.Append(b.ToString("X2"));
-
-            return sb.ToString();
+            if (exceptions == null)
+                exceptions = defaultHashExceptions;
+            else
+                exceptions.AddRange(defaultHashExceptions);
         }
-
-        private static byte[] SHA256_byte(byte[] inputObj)
-        {
-            HashAlgorithm algorithm = System.Security.Cryptography.SHA256.Create();
-            return algorithm.ComputeHash(inputObj);
-        }
-
-
     }
 }

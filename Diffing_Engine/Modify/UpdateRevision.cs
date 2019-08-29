@@ -42,7 +42,20 @@ namespace BH.Engine.Diffing
         [Input("objects", "Objects to be included in the updated version of the Stream")]
         public static BH.oM.Diffing.Stream UpdateRevision(BH.oM.Diffing.Stream stream, IEnumerable<IBHoMObject> objects)
         {
-            return new BH.oM.Diffing.Stream(objects, stream.StreamName, stream.StreamId);
+            // Clone the current objects to preserve immutability
+            List<IBHoMObject> objs_cloned = objects.Select(obj => BH.Engine.Base.Query.DeepClone(obj)).ToList();
+
+            // Calculate and set the hash fragment
+            BH.Engine.Diffing.Modify.SetHashFragment(objs_cloned);
+
+            // Remove duplicates by hash
+            int numObjs = objs_cloned.Count();
+            objs_cloned = objs_cloned.GroupBy(obj => obj.GetHashFragment().Hash).Select(gr => gr.First()).ToList();
+
+            if (numObjs != objs_cloned.Count())
+                BH.Engine.Reflection.Compute.RecordWarning("Some Objects were duplicates (same hash) and therefore have been discarded.");
+
+            return new BH.oM.Diffing.Stream(objs_cloned, stream.StreamName, stream.StreamId);
         }
     }
 }

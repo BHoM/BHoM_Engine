@@ -31,54 +31,49 @@ using System.Threading.Tasks;
 using System.Security.Cryptography;
 using System.Reflection;
 using BH.Engine.Serialiser;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
+using MongoDB.Bson;
 
 namespace BH.Engine.Diffing
 {
-    public static partial class Compute
+    public static partial class Convert
     {
-        ///***************************************************/
-        ///**** Public Fields                             ****/
-        ///***************************************************/
-
-
         ///***************************************************/
         ///**** Public Methods                            ****/
         ///***************************************************/
 
-        public static void DiffHashFragment(List<IBHoMObject> objs, List<string> exceptions = null, bool useDefaultExceptions = true)
+        public static byte[] ToDiffingByteArray(this object obj, PropertyInfo[] fieldsToIgnore = null)
         {
-            // Calculate and set the object hashes
-            foreach (var obj in objs)
-            {
-                string hash = obj.DiffHash(exceptions, useDefaultExceptions);
+            List<PropertyInfo> propList = fieldsToIgnore?.ToList();
 
-                obj.Fragments.Add(
-                new DiffHashFragment(hash, null)
-                );
-            }
+            if (propList == null || propList.Count == 0)
+                return BsonExtensionMethods.ToBson(obj.ToBsonDocument()); // .ToBsonDocument() for consistency with other cases
+
+            List<string> propNames = new List<string>();
+            propList.ForEach(prop => propNames.Add(prop.Name));
+
+            return ToDiffingByteArray(obj, propNames);
         }
 
-        public static string DiffHash(this IBHoMObject obj, List<string> exceptions = null, bool useDefaultExceptions = true)
+        public static byte[] ToDiffingByteArray(this object obj, List<string> fieldsToIgnore)
         {
-            if (exceptions == null || exceptions.Count == 0 && useDefaultExceptions)
-                SetDefaultExceptions(ref exceptions);
+            if (fieldsToIgnore == null || fieldsToIgnore.Count == 0)
+                return BsonExtensionMethods.ToBson(obj);
 
-            return Compute.SHA256Hash(obj, exceptions);
+            var objDoc = obj.ToBsonDocument();
+
+            fieldsToIgnore.ForEach(propName =>
+                objDoc.Remove(propName)
+            );
+
+            return BsonExtensionMethods.ToBson(objDoc);
         }
+
 
         ///***************************************************/
-        ///**** Private Methods                           ****/
-        ///***************************************************/
-
-        private static void SetDefaultExceptions(ref List<string> exceptions)
-        {
-            if (exceptions == null)
-                exceptions = defaultHashExceptions;
-            else
-                exceptions.AddRange(defaultHashExceptions);
-        }
 
     }
 }
