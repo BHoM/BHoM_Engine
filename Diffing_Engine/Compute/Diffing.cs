@@ -45,8 +45,8 @@ namespace BH.Engine.Diffing
         /***************************************************/
 
         [Description("Returns a Delta object with the differences between the Stream objects and the provided object list.")]
-        [Input("stream", "Diffing Stream.")]
-        [Input("currentObjs", "Objects you want to compare the Stream's object against")]
+        [Input("previousStream", "A previous version of a Stream")]
+        [Input("currentStream", "A new version of a Stream")]
         [Input("enablePropertyDiff", "If true, enables the Property-level diffing, which returns the differences down to the individual object properties.")]
         [Input("exceptions", "List of strings specifying the names of the properties that should be ignored in the calculation, e.g. 'BHoM_Guid'")]
         [Input("useDefaultExceptions", "If true, adds a list of default exceptions: 'BHoM_Guid', 'CustomData', 'Fragments'. Defaults to true.")]
