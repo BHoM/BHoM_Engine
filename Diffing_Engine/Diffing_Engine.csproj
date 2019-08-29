@@ -88,6 +88,7 @@
     <Compile Include="Create\Stream.cs" />
     <Compile Include="Modify\SetHashFragment.cs" />
     <Compile Include="Modify\UpdateRevision.cs" />
+    <Compile Include="Query\RemoveDuplicatesByHash.cs" />
     <Compile Include="Query\GetHash.cs" />
     <Compile Include="Compute\SHA256Hash.cs" />
     <Compile Include="Convert\ToDiffingJson.cs" />

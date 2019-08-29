@@ -64,7 +64,7 @@ namespace BH.Engine.Diffing
         ///**** Private Methods                           ****/
         ///***************************************************/
 
-        private static void SetDefaultExceptions(ref List<string> exceptions)
+        internal static void SetDefaultExceptions(ref List<string> exceptions)
         {
             if (exceptions == null)
                 exceptions = defaultHashExceptions;

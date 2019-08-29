@@ -50,64 +50,23 @@ namespace BH.Engine.Diffing
         [Input("enablePropertyDiff", "If true, enables the Property-level diffing, which returns the differences down to the individual object properties.")]
         [Input("exceptions", "List of strings specifying the names of the properties that should be ignored in the calculation, e.g. 'BHoM_Guid'")]
         [Input("useDefaultExceptions", "If true, adds a list of default exceptions: 'BHoM_Guid', 'CustomData', 'Fragments'. Defaults to true.")]
-        public static Delta Diffing(BH.oM.Diffing.Stream stream, List<IBHoMObject> currentObjs, bool enablePropertyDiff = true, List<string> exceptions = null, bool useDefaultExceptions = true)
+        public static Delta Diffing(Stream previousStream, Stream currentStream, bool enablePropertyDiff = true, List<string> exceptions = null, bool useDefaultExceptions = true)
         {
-            List<IBHoMObject> readObjs = stream.Objects.Cast<IBHoMObject>().ToList();
+            // Take the Stream's objects
+            List<IBHoMObject> CurrentObjs_cloned = currentStream.Objects.Cast<IBHoMObject>().ToList();
+            List<IBHoMObject> ReadObjs_cloned = previousStream.Objects.Cast<IBHoMObject>().ToList();
 
-            // Clone the objects to assure immutability
-            List<IBHoMObject> CurrentObjs_cloned = currentObjs.Select(obj => BH.Engine.Base.Query.DeepClone(obj)).ToList();
-            List<IBHoMObject> ReadObjs_cloned = readObjs.Select(obj => BH.Engine.Base.Query.DeepClone(obj)).ToList();
-
-            // Make sure that ReadObjs have an hash. Calculate it if not.
-            foreach (var obj in ReadObjs_cloned)
-            {
-                if (obj.GetHashFragment() == null)
-                    obj.DiffingHash(exceptions, true);
-            }
-
-            if (useDefaultExceptions)
-                SetDefaultExceptions(ref exceptions);
-
-            // Check and process the HashFragment of the current objects
-            CurrentObjs_cloned.ForEach((Action<IBHoMObject>)(obj =>
-            {
-                HashFragment hashFragm = obj.GetHashFragment();
-
-                if (hashFragm == null)
-                    // Current objs may not have any HashFragment if they have been created new, or if their modification was done through reinstantiating them.
-                    // We need to calculate their hash for the first time, and add to them a HashFragment with that hash. 
-                    obj.Fragments.Add(new HashFragment(Compute.SHA256Hash(obj, exceptions), null));
-                else
-                {
-                    // Calculate and set the new object hash, keeping track of its old hash
-                    string previousHash = hashFragm.Hash;
-                    string newHash = Compute.SHA256Hash(obj, exceptions);
-
-                    obj.Fragments[obj.Fragments.IndexOf(hashFragm)] = new HashFragment(newHash, previousHash);
-                }
-            }));
-
-            // Remove duplicates by hash
-            int numObjs_current = CurrentObjs_cloned.Count();
-            CurrentObjs_cloned = CurrentObjs_cloned.GroupBy(obj => obj.GetHashFragment().Hash).Select(gr => gr.First()).ToList();
-
-            int numObjs_read = ReadObjs_cloned.Count();
-            ReadObjs_cloned = ReadObjs_cloned.GroupBy(obj => obj.GetHashFragment().Hash).Select(gr => gr.First()).ToList();
-
-            if (numObjs_current != CurrentObjs_cloned.Count())
-                BH.Engine.Reflection.Compute.RecordWarning("Some Current Objects were duplicates (same hash) and therefore removed.");
-
-            if (numObjs_read != ReadObjs_cloned.Count())
-                BH.Engine.Reflection.Compute.RecordWarning("Some Read Objects were duplicates (same hash) and therefore removed.");
-
-            // Make dictionary of the objects with their hashes to speed up the next lookups
+            // Make dictionary with object hashes to speed up the next lookups
             Dictionary<string, IBHoMObject> ReadObjs_cloned_dict = ReadObjs_cloned.ToDictionary(obj => obj.GetHashFragment().Hash, obj => obj);
+
+            // Set exceptions
+            if (useDefaultExceptions)
+                Compute.SetDefaultExceptions(ref exceptions);
 
             // Dispatch the objects: new, modified or old
             List<IBHoMObject> toBeCreated = new List<IBHoMObject>();
             List<IBHoMObject> toBeUpdated = new List<IBHoMObject>();
             List<IBHoMObject> toBeDeleted = new List<IBHoMObject>();
-            List<IBHoMObject> unchanged = new List<IBHoMObject>();
             var objModifiedProps = new Dictionary<string, Dictionary<string, Tuple<object, object>>>();
 
             foreach (var obj in CurrentObjs_cloned)
@@ -121,7 +80,7 @@ namespace BH.Engine.Diffing
 
                 else if (hashFragm.PreviousHash == hashFragm.Hash)
                 {
-                    unchanged.Add(obj); // It's NOT been modified
+                    // It's NOT been modified
                 }
 
                 else if (hashFragm.PreviousHash != hashFragm.Hash)
@@ -136,10 +95,10 @@ namespace BH.Engine.Diffing
 
                         if (oldObjState == null) continue;
 
-                        IsEqualConfig ignoreProps = new IsEqualConfig();
-                        ignoreProps.PropertiesToIgnore = exceptions;
+                        IsEqualConfig config = new IsEqualConfig();
+                        config.PropertiesToIgnore = exceptions;
 
-                        var differentProps = BH.Engine.Testing.Query.DifferentProperties(obj, oldObjState, ignoreProps);
+                        var differentProps = BH.Engine.Testing.Query.DifferentProperties(obj, oldObjState, config);
 
                         objModifiedProps.Add(hashFragm.Hash, differentProps);
                     }
@@ -161,7 +120,6 @@ namespace BH.Engine.Diffing
 
             toBeDeleted = ReadObjs_cloned_dict.Keys.Except(CurrentObjs_withPreviousHash_dict.Keys)
                 .Where(k => ReadObjs_cloned_dict.ContainsKey(k)).Select(k => ReadObjs_cloned_dict[k]).ToList();
-
 
             return new Delta(toBeCreated, toBeDeleted, toBeUpdated, objModifiedProps);
         }
