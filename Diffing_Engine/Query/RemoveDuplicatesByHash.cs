@@ -31,39 +31,23 @@ using System.Threading.Tasks;
 
 namespace BH.Engine.Diffing
 {
-    public static partial class Create
+    public static partial class Query
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates new Diffing Stream")]
-        [Input("objects", "Objects to be included in the Stream")]
-        [Input("streamName", "If not specified, the name will be `UnnamedStream` followed by UTC")]
-        public static BH.oM.Diffing.Stream Stream(IEnumerable<IBHoMObject> objects, string streamName = null)
+        [Description("Removes duplicates from a collection of objects. The comparison is made through their Diffing Hash.")]
+        [Input("objects", "Collection of objects whose duplicates have to be removed. If they don't already have an Hash assigned, it will be calculated.")]
+        public static bool RemoveDuplicatesByHash(IEnumerable<IBHoMObject> objects)
         {
-            // Clone the current objects to preserve immutability
-            List<IBHoMObject> objs_cloned = objects.Select(obj => BH.Engine.Base.Query.DeepClone(obj)).ToList();
+            int numObjs = objects.Count();
+            objects = objects.GroupBy(obj => obj.GetHashFragment().Hash).Select(gr => gr.First()).ToList();
 
-            // Calculate and set the hash fragment
-            Modify.SetHashFragment(objs_cloned);
+            if (numObjs != objects.Count())
+                return true;
 
-            // Remove duplicates by hash
-            if (Query.RemoveDuplicatesByHash(objs_cloned))
-                Reflection.Compute.RecordWarning("Some Objects were duplicates (same hash) and therefore have been discarded.");
-
-            return new BH.oM.Diffing.Stream(objs_cloned, streamName, null, null);
+            return false;
         }
-
-        [Description("Creates new Diffing Stream")]
-        [Input("objects", "Objects to be included in the Stream")]
-        [Input("streamName", "If not specified, the name will be `UnnamedStream` followed by UTC")]
-        [Input("streamId", "If not specified, streamId will be a GUID.Revision is initally 0")]
-        [Input("revision", "If not specified, revision is initially set to 0")]
-        public static BH.oM.Diffing.Stream Stream(IEnumerable<IBHoMObject> objects, string streamName = null, string streamId = null, string revision = null)
-        {
-            return new BH.oM.Diffing.Stream(objects, streamName, streamId, revision);
-        }
-
     }
 }

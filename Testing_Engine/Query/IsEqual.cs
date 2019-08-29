@@ -100,7 +100,9 @@ namespace BH.Engine.Testing
             comparer.Config.DoublePrecision = config.NumericTolerance;
 
             if (config.IgnoreCustomData)
+            {
                 comparer.Config.MembersToIgnore.Add("CustomData");
+            }
 
             if (config.IgnoreGuid)
                 comparer.Config.TypesToIgnore.Add(typeof(Guid));

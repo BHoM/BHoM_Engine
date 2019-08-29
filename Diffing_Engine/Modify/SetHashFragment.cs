@@ -44,6 +44,9 @@ namespace BH.Engine.Diffing
 
         public static void SetHashFragment(IEnumerable<IBHoMObject> objs, List<string> exceptions = null, bool useDefaultExceptions = true)
         {
+            if (useDefaultExceptions)
+                Compute.SetDefaultExceptions(ref exceptions);
+
             // Calculate and set the object hashes
             foreach (var obj in objs)
             {
@@ -51,9 +54,8 @@ namespace BH.Engine.Diffing
 
                 HashFragment existingFragm = obj.GetHashFragment();
 
-                if (existingFragm != null && existingFragm.Hash != hash)
+                if (existingFragm != null)
                 {
-                    // Replace hash fragment
                     obj.Fragments.RemoveAll(fr => (fr as HashFragment) != null);
                     obj.Fragments.Add(new HashFragment(hash, existingFragm.Hash));
                 }

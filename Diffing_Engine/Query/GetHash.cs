@@ -22,8 +22,7 @@ namespace BH.Engine.Diffing
 
             if (numOfHashFragments > 1)
             {
-                BH.Engine.Reflection.Compute.RecordError("BHoM objects may have only one Hash fragment.");
-                return null;
+                throw new Exception("BHoM objects may have only one Hash fragment.");
             }
 
             return obj.Fragments.OfType<HashFragment>().First();

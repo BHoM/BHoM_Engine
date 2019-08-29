@@ -37,10 +37,10 @@ namespace BH.Engine.Diffing
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns a new Diffing Stream as an update of a previous Stream")]
+        [Description("Returns a new Diffing Stream as a new revision of a previous Stream")]
         [Input("stream", "Stream to be updated")]
         [Input("objects", "Objects to be included in the updated version of the Stream")]
-        public static BH.oM.Diffing.Stream UpdateRevision(BH.oM.Diffing.Stream stream, IEnumerable<IBHoMObject> objects)
+        public static BH.oM.Diffing.Stream StreamRevision(BH.oM.Diffing.Stream stream, IEnumerable<IBHoMObject> objects)
         {
             // Clone the current objects to preserve immutability
             List<IBHoMObject> objs_cloned = objects.Select(obj => BH.Engine.Base.Query.DeepClone(obj)).ToList();
