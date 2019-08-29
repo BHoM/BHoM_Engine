@@ -42,7 +42,20 @@ namespace BH.Engine.Diffing
         [Input("streamName", "If not specified, the name will be `UnnamedStream` followed by UTC")]
         public static BH.oM.Diffing.Stream Stream(IEnumerable<IBHoMObject> objects, string streamName = null)
         {
-            return new BH.oM.Diffing.Stream(objects, streamName, null, null);
+            // Clone the current objects to preserve immutability
+            List<IBHoMObject> objs_cloned = objects.Select(obj => BH.Engine.Base.Query.DeepClone(obj)).ToList();
+
+            // Calculate and set the hash fragment
+            BH.Engine.Diffing.Modify.SetHashFragment(objs_cloned);
+
+            // Remove duplicates by hash
+            int numObjs = objs_cloned.Count();
+            objs_cloned = objs_cloned.GroupBy(obj => obj.GetHashFragment().Hash).Select(gr => gr.First()).ToList();
+
+            if (numObjs != objs_cloned.Count())
+                BH.Engine.Reflection.Compute.RecordWarning("Some Objects were duplicates (same hash) and therefore have been discarded.");
+
+            return new BH.oM.Diffing.Stream(objs_cloned, streamName, null, null);
         }
 
         [Description("Creates new Diffing Stream")]
@@ -54,7 +67,6 @@ namespace BH.Engine.Diffing
         {
             return new BH.oM.Diffing.Stream(objects, streamName, streamId, revision);
         }
-
 
     }
 }

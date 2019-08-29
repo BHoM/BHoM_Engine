@@ -31,49 +31,35 @@ using System.Threading.Tasks;
 using System.Security.Cryptography;
 using System.Reflection;
 using BH.Engine.Serialiser;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
-using MongoDB.Bson;
 
 namespace BH.Engine.Diffing
 {
-    public static partial class Compute
+    public static partial class Modify
     {
         ///***************************************************/
         ///**** Public Methods                            ****/
         ///***************************************************/
 
-        public static byte[] ToDiffingByteArray(this object obj, PropertyInfo[] fieldsToIgnore = null)
+        public static void SetHashFragment(IEnumerable<IBHoMObject> objs, List<string> exceptions = null, bool useDefaultExceptions = true)
         {
-            List<PropertyInfo> propList = fieldsToIgnore?.ToList();
+            // Calculate and set the object hashes
+            foreach (var obj in objs)
+            {
+                string hash = BH.Engine.Diffing.Compute.DiffingHash(obj, exceptions, useDefaultExceptions);
 
-            if (propList == null || propList.Count == 0)
-                return BsonExtensionMethods.ToBson(obj.ToBsonDocument()); // .ToBsonDocument() for consistency with other cases
+                HashFragment existingFragm = obj.GetHashFragment();
 
-            List<string> propNames = new List<string>();
-            propList.ForEach(prop => propNames.Add(prop.Name));
-
-            return ToDiffingByteArray(obj, propNames);
+                if (existingFragm != null && existingFragm.Hash != hash)
+                {
+                    // Replace hash fragment
+                    obj.Fragments.RemoveAll(fr => (fr as HashFragment) != null);
+                    obj.Fragments.Add(new HashFragment(hash, existingFragm.Hash));
+                }
+                else
+                    obj.Fragments.Add(new HashFragment(hash, null));
+            }
         }
-
-        public static byte[] ToDiffingByteArray(this object obj, List<string> fieldsToIgnore)
-        {
-            if (fieldsToIgnore == null || fieldsToIgnore.Count == 0)
-                return BsonExtensionMethods.ToBson(obj);
-
-            var objDoc = obj.ToBsonDocument();
-
-            fieldsToIgnore.ForEach(propName =>
-                objDoc.Remove(propName)
-            );
-
-            return BsonExtensionMethods.ToBson(objDoc);
-        }
-
-
-        ///***************************************************/
-
     }
 }

@@ -7,7 +7,7 @@
     <ProjectGuid>{073DFD36-0829-4792-8C32-67BF692A9413}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BH.oM.Diffing</RootNamespace>
+    <RootNamespace>BH.Engine.Diffing</RootNamespace>
     <AssemblyName>Diffing_Engine</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -17,7 +17,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\Build\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -83,13 +83,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Compute\Diffing.cs" />
-    <Compile Include="Compute\DiffHash.cs" />
-    <Compile Include="Compute\ToDiffingByteArray.cs" />
+    <Compile Include="Compute\DiffingHash.cs" />
+    <Compile Include="Convert\ToDiffingByteArray.cs" />
     <Compile Include="Create\Stream.cs" />
+    <Compile Include="Modify\SetHashFragment.cs" />
     <Compile Include="Modify\UpdateRevision.cs" />
     <Compile Include="Query\GetHash.cs" />
     <Compile Include="Compute\SHA256Hash.cs" />
-    <Compile Include="Compute\ToDiffingJson.cs" />
+    <Compile Include="Convert\ToDiffingJson.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -44,15 +44,15 @@ namespace BH.Engine.Diffing
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Delta Diffing(List<IBHoMObject> currentObjs, List<IBHoMObject> readObjs = null)
+        [Description("Returns a Delta object with the differences between the Stream objects and the provided object list.")]
+        [Input("stream", "Diffing Stream.")]
+        [Input("currentObjs", "Objects you want to compare the Stream's object against")]
+        [Input("enablePropertyDiff", "If true, enables the Property-level diffing, which returns the differences down to the individual object properties.")]
+        [Input("exceptions", "List of strings specifying the names of the properties that should be ignored in the calculation, e.g. 'BHoM_Guid'")]
+        [Input("useDefaultExceptions", "If true, adds a list of default exceptions: 'BHoM_Guid', 'CustomData', 'Fragments'. Defaults to true.")]
+        public static Delta Diffing(BH.oM.Diffing.Stream stream, List<IBHoMObject> currentObjs, bool enablePropertyDiff = true, List<string> exceptions = null, bool useDefaultExceptions = true)
         {
-            return Diffing(currentObjs, readObjs);
-        }
-
-
-        public static Delta Diffing(BH.oM.Diffing.Stream diffStream, List<IBHoMObject> currentObjs, bool propertyLevelDiffing = true, List<string> exceptions = null, bool useDefaultExceptions = true)
-        {
-            List<IBHoMObject> readObjs = diffStream.Objects.Cast<IBHoMObject>().ToList();
+            List<IBHoMObject> readObjs = stream.Objects.Cast<IBHoMObject>().ToList();
 
             // Clone the objects to assure immutability
             List<IBHoMObject> CurrentObjs_cloned = currentObjs.Select(obj => BH.Engine.Base.Query.DeepClone(obj)).ToList();
@@ -62,29 +62,28 @@ namespace BH.Engine.Diffing
             foreach (var obj in ReadObjs_cloned)
             {
                 if (obj.GetHashFragment() == null)
-                    obj.DiffHash(exceptions, true);
+                    obj.DiffingHash(exceptions, true);
             }
-
 
             if (useDefaultExceptions)
                 SetDefaultExceptions(ref exceptions);
 
-            // Check and process the DiffHashFragment of the current objects
+            // Check and process the HashFragment of the current objects
             CurrentObjs_cloned.ForEach((Action<IBHoMObject>)(obj =>
             {
-                DiffHashFragment hashFragment = obj.GetHashFragment();
+                HashFragment hashFragm = obj.GetHashFragment();
 
-                if (hashFragment == null)
-                    // Current objs may not have any DiffHashFragment if they have been created new, or if their modification was done through reinstantiating them.
-                    // We need to calculate their hash for the first time, and add to them a DiffHashFragment with that hash. 
-                    obj.Fragments.Add(new DiffHashFragment(Compute.SHA256Hash(obj, exceptions), null);
+                if (hashFragm == null)
+                    // Current objs may not have any HashFragment if they have been created new, or if their modification was done through reinstantiating them.
+                    // We need to calculate their hash for the first time, and add to them a HashFragment with that hash. 
+                    obj.Fragments.Add(new HashFragment(Compute.SHA256Hash(obj, exceptions), null));
                 else
                 {
                     // Calculate and set the new object hash, keeping track of its old hash
-                    string previousHash = hashFragment.Hash;
+                    string previousHash = hashFragm.Hash;
                     string newHash = Compute.SHA256Hash(obj, exceptions);
 
-                    obj.Fragments[obj.Fragments.IndexOf(hashFragment)] = new DiffHashFragment(newHash, previousHash);
+                    obj.Fragments[obj.Fragments.IndexOf(hashFragm)] = new HashFragment(newHash, previousHash);
                 }
             }));
 
@@ -96,10 +95,10 @@ namespace BH.Engine.Diffing
             ReadObjs_cloned = ReadObjs_cloned.GroupBy(obj => obj.GetHashFragment().Hash).Select(gr => gr.First()).ToList();
 
             if (numObjs_current != CurrentObjs_cloned.Count())
-                BH.Engine.Reflection.Compute.RecordWarning("Some Current Objects were duplicates and therefore removed.");
+                BH.Engine.Reflection.Compute.RecordWarning("Some Current Objects were duplicates (same hash) and therefore removed.");
 
             if (numObjs_read != ReadObjs_cloned.Count())
-                BH.Engine.Reflection.Compute.RecordWarning("Some Read Objects were duplicates and therefore removed.");
+                BH.Engine.Reflection.Compute.RecordWarning("Some Read Objects were duplicates (same hash) and therefore removed.");
 
             // Make dictionary of the objects with their hashes to speed up the next lookups
             Dictionary<string, IBHoMObject> ReadObjs_cloned_dict = ReadObjs_cloned.ToDictionary(obj => obj.GetHashFragment().Hash, obj => obj);
@@ -129,7 +128,7 @@ namespace BH.Engine.Diffing
                 {
                     toBeUpdated.Add(obj); // It's been modified
 
-                    if (propertyLevelDiffing)
+                    if (enablePropertyDiff)
                     {
                         // Determine changed properties
                         IBHoMObject oldObjState = null;
@@ -164,7 +163,7 @@ namespace BH.Engine.Diffing
                 .Where(k => ReadObjs_cloned_dict.ContainsKey(k)).Select(k => ReadObjs_cloned_dict[k]).ToList();
 
 
-            return new Delta(toBeCreated, toBeDeleted, toBeUpdated, objModifiedProps, diffStream);
+            return new Delta(toBeCreated, toBeDeleted, toBeUpdated, objModifiedProps);
         }
 
         /***************************************************/
