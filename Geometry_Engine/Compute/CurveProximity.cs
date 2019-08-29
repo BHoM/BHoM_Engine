@@ -959,7 +959,17 @@ namespace BH.Engine.Geometry
 
         public static BH.oM.Reflection.Output<Point, Point> ICurveProximity(this ICurve curve1, ICurve curve2, double tolerance = Tolerance.Distance)
         {
-            return CurveProximity(curve1 as dynamic, curve2 as dynamic);
+            BH.oM.Reflection.Output<Point, Point> result= CurveProximity(curve1 as dynamic, curve2 as dynamic);
+            if (result.Item1.IsOnCurve(curve1))
+                return result;
+            else
+            {
+                return new BH.oM.Reflection.Output<Point, Point>
+                {
+                    Item1 = result.Item2,
+                    Item2 = result.Item1
+                };
+            }
         }
 
         /***************************************************/
