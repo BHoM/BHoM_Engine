@@ -48,7 +48,7 @@ namespace BH.Engine.Environment
             if(result.Count==0)
                 BH.Engine.Reflection.Compute.RecordWarning("Could not find following space: " + spaceName);
             if(result.Count > 0 && result.Count<5)
-                BH.Engine.Reflection.Compute.RecordError("This space have less than 5 planar panels " + result.Count +" : "+ spaceName);
+                BH.Engine.Reflection.Compute.RecordWarning("This space have less than 5 planar panels " + result.Count +" : "+ spaceName);
 
             return result;
 
