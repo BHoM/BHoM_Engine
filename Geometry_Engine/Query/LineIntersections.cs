@@ -42,13 +42,13 @@ namespace BH.Engine.Geometry
             Line l2 = line2.Clone();
             l1.Infinite |= useInfiniteLines;
             l2.Infinite |= useInfiniteLines;
+            BH.oM.Reflection.Output<double, double> intParamsOutput = l1.SkewLineProximity(l2, angleTolerance);
 
-            double[] intParams = l1.SkewLineProximity(l2, angleTolerance);
-
-            if (intParams == null)
+            if (intParamsOutput == null)
                 return null;
             else
             {
+                double[] intParams = new double[] { intParamsOutput.Item1, intParamsOutput.Item2 };
                 double t1 = intParams[0];
                 double t2 = intParams[1];
                 

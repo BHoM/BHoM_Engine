@@ -111,7 +111,6 @@
     <Compile Include="Modify\Reverse.cs" />
     <Compile Include="Modify\Scale.cs" />
     <Compile Include="Modify\SplitAtPoints.cs" />
-    <Compile Include="Modify\Trim.cs" />
     <Compile Include="Query\BasisFunction.cs" />
     <Compile Include="Query\Centroid.cs" />
     <Compile Include="Query\CurveIntersections.cs" />
