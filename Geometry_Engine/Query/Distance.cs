@@ -147,7 +147,7 @@ namespace BH.Engine.Geometry
 
         public static double Distance(this Line curve1, Line curve2, double tolerance = Tolerance.Distance)
         {
-            BH.oM.Reflection.Output<Point, Point> results = curve1.CurveProximity(curve2);
+            BH.oM.Reflection.Output<Point, Point> results = curve1.CurveProximity(curve2,tolerance);
             return results.Item1.Distance(results.Item2);
         }
 
@@ -155,7 +155,7 @@ namespace BH.Engine.Geometry
 
         public static double Distance(this Line curve1, Arc curve2,double tolerance=Tolerance.Distance)
         {
-            BH.oM.Reflection.Output<Point, Point> results = curve1.CurveProximity(curve2);
+            BH.oM.Reflection.Output<Point, Point> results = curve1.CurveProximity(curve2,tolerance);
             return results.Item1.Distance(results.Item2);
         }
 
@@ -163,7 +163,7 @@ namespace BH.Engine.Geometry
 
         public static double Distance(this Line curve1, Circle  curve2, double tolerance=Tolerance.Distance)
         {
-            BH.oM.Reflection.Output<Point, Point> results = curve1.CurveProximity(curve2);
+            BH.oM.Reflection.Output<Point, Point> results = curve1.CurveProximity(curve2,tolerance);
             return results.Item1.Distance(results.Item2);
         }
 
@@ -192,7 +192,7 @@ namespace BH.Engine.Geometry
 
         public static double Distance(this Arc curve1, Arc curve2,double tolerance=Tolerance.Distance)
         {
-            BH.oM.Reflection.Output<Point, Point> results = curve1.CurveProximity(curve2);
+            BH.oM.Reflection.Output<Point, Point> results = curve1.CurveProximity(curve2,tolerance);
             return results.Item1.Distance(results.Item2);
         }
 
@@ -200,7 +200,7 @@ namespace BH.Engine.Geometry
 
         public static double Distance(this Arc curve1, Circle curve2, double tolerance=Tolerance.Distance)
         {
-            BH.oM.Reflection.Output<Point, Point> results = curve1.CurveProximity(curve2);
+            BH.oM.Reflection.Output<Point, Point> results = curve1.CurveProximity(curve2,tolerance);
             return results.Item1.Distance(results.Item2);
         }
 
@@ -236,7 +236,7 @@ namespace BH.Engine.Geometry
 
         public static double Distance(this Circle curve1, Circle curve2, double tolerance=Tolerance.Distance)
         {
-            BH.oM.Reflection.Output<Point, Point> results = curve1.CurveProximity(curve2);
+            BH.oM.Reflection.Output<Point, Point> results = curve1.CurveProximity(curve2,tolerance);
             return results.Item1.Distance(results.Item2);
         }
 
@@ -258,7 +258,7 @@ namespace BH.Engine.Geometry
 
         public static double Distance(this PolyCurve curve1, Line curve2, double tolerance=Tolerance.Distance)
         {
-            BH.oM.Reflection.Output<Point, Point> results = curve1.CurveProximity(curve2);
+            BH.oM.Reflection.Output<Point, Point> results = curve1.CurveProximity(curve2,tolerance);
             return results.Item1.Distance(results.Item2);
         }
 
@@ -266,7 +266,7 @@ namespace BH.Engine.Geometry
 
         public static double Distance(this PolyCurve curve1, Arc curve2, double tolerance=Tolerance.Distance)
         {
-            BH.oM.Reflection.Output<Point, Point> results = curve1.CurveProximity(curve2);
+            BH.oM.Reflection.Output<Point, Point> results = curve1.CurveProximity(curve2,tolerance);
             return results.Item1.Distance(results.Item2);
         }
 
@@ -274,14 +274,14 @@ namespace BH.Engine.Geometry
 
         public static double Distance(this PolyCurve curve1, Circle curve2, double tolerance=Tolerance.Distance)
         {
-            BH.oM.Reflection.Output<Point, Point> results = curve1.CurveProximity(curve2);
+            BH.oM.Reflection.Output<Point, Point> results = curve1.CurveProximity(curve2,tolerance);
             return results.Item1.Distance(results.Item2);
         }
 
         /***************************************************/
         public static double Distance(this PolyCurve curve1, Polyline curve2, double tolerance=Tolerance.Distance)
         {
-            BH.oM.Reflection.Output<Point, Point> results = curve1.CurveProximity(curve2);
+            BH.oM.Reflection.Output<Point, Point> results = curve1.CurveProximity(curve2,tolerance);
             return results.Item1.Distance(results.Item2);
         }
 
@@ -289,7 +289,7 @@ namespace BH.Engine.Geometry
 
         public static double Distance(this PolyCurve curve1, PolyCurve curve2, double tolerance=Tolerance.Distance)
         {
-            BH.oM.Reflection.Output<Point, Point> results = curve1.CurveProximity(curve2);
+            BH.oM.Reflection.Output<Point, Point> results = curve1.CurveProximity(curve2,tolerance);
             return results.Item1.Distance(results.Item2);
         }
 
@@ -297,7 +297,7 @@ namespace BH.Engine.Geometry
 
         public static double Distance(this Polyline curve1, Line curve2, double tolerance=Tolerance.Distance)
         {
-            BH.oM.Reflection.Output<Point, Point> results = curve1.CurveProximity(curve2);
+            BH.oM.Reflection.Output<Point, Point> results = curve1.CurveProximity(curve2,tolerance);
             return results.Item1.Distance(results.Item2);
         }
 
@@ -305,7 +305,7 @@ namespace BH.Engine.Geometry
 
         public static double Distance(this Polyline curve1, Arc curve2, double tolerance=Tolerance.Distance)
         {
-            BH.oM.Reflection.Output<Point, Point> results = curve1.CurveProximity(curve2);
+            BH.oM.Reflection.Output<Point, Point> results = curve1.CurveProximity(curve2,tolerance);
             return results.Item1.Distance(results.Item2);
         }
 
@@ -313,7 +313,7 @@ namespace BH.Engine.Geometry
 
         public static double Distance(this Polyline curve1, Circle curve2, double tolerance=Tolerance.Distance)
         {
-            BH.oM.Reflection.Output<Point, Point> results = curve1.CurveProximity(curve2);
+            BH.oM.Reflection.Output<Point, Point> results = curve1.CurveProximity(curve2,tolerance);
             return results.Item1.Distance(results.Item2);
         }
 
@@ -328,7 +328,7 @@ namespace BH.Engine.Geometry
 
         public static double Distance(this Polyline curve1, Polyline curve2, double tolerance=Tolerance.Distance)
         {
-            BH.oM.Reflection.Output<Point, Point> results = curve1.CurveProximity(curve2);
+            BH.oM.Reflection.Output<Point, Point> results = curve1.CurveProximity(curve2,tolerance);
             return results.Item1.Distance(results.Item2);
         }
 
