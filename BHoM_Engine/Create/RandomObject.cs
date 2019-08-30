@@ -104,18 +104,12 @@ namespace BH.Engine.Base
             }
             else if (typeof(BH.oM.Base.IBHoMFragment).IsAssignableFrom(type))
             {
-                // Do not attempt to instantiate
+                // Do not instantiate random Fragments to avoid "missing parameterless constructor" exception
                 return null;
             }
             else
-                try
-                {
-                    obj = Activator.CreateInstance(type);
-                }
-                catch (Exception e)
-                {
-                    Reflection.Compute.RecordWarning(e.ToString());
-                }
+                obj = Activator.CreateInstance(type);
+
 
             // Set its public properties
             foreach (PropertyInfo prop in type.GetProperties())
