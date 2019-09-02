@@ -153,6 +153,11 @@ namespace BH.Engine.Diffing
 
         /***************************************************/
 
+
+        /***************************************************/
+        /**** Public Fields                             ****/
+        /***************************************************/
+
         public class HashFragmComparer<T> : IEqualityComparer<T> where T : IBHoMObject
         {
             public bool Equals(T x, T y)
@@ -170,5 +175,6 @@ namespace BH.Engine.Diffing
             }
         }
 
+        /***************************************************/
     }
 }
