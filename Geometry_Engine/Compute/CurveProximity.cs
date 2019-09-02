@@ -549,6 +549,8 @@ namespace BH.Engine.Geometry
                 Line intersect = new Line { Start = curve1.Centre(), End = curve2.Centre };
                 Point tmp1 = intersect.CurveProximity(curve1).Item1;
                 Point tmp2 = intersect.CurveProximity(curve2).Item1;
+                if (tmp == null)
+                    tmp = tmp1;
 
                 if (tmp1.Distance(curve2) < tmp.Distance(curve1) || tmp1.Distance(curve2) < tmp.Distance(curve2))
                     tmp = tmp1;
@@ -753,7 +755,8 @@ namespace BH.Engine.Geometry
             Line intersect = new Line { Start = curve1.Centre, End = curve2.Centre };
             Point tmp1 = intersect.CurveProximity(curve1).Item1;
             Point tmp2 = intersect.CurveProximity(curve2).Item1;
-
+            if (tmp == null)
+                tmp = tmp1;
             if (tmp1.Distance(curve2) < tmp.Distance(curve1) || tmp1.Distance(curve2) < tmp.Distance(curve2))
                 tmp = tmp1;
 
