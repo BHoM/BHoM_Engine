@@ -141,6 +141,7 @@ namespace BH.Engine.Geometry
             throw new NotImplementedException();
         }
 
+
         /***************************************************/
         /****       Public Methods - Curve/Curve        ****/
         /***************************************************/
@@ -348,6 +349,7 @@ namespace BH.Engine.Geometry
             throw new NotImplementedException();
         }
 
+
         /***************************************************/
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
@@ -357,10 +359,13 @@ namespace BH.Engine.Geometry
             return Distance(point, curve as dynamic);
         }
 
+        /***************************************************/
+
         public static double IDistance(this ICurve curve1, ICurve curve2, double tolerance=Tolerance.Distance)
         {
-            return Distance(curve1 as dynamic, curve2 as dynamic);
+            return Distance(curve1 as dynamic, curve2 as dynamic,tolerance);
         }
+
         /***************************************************/
     }
 }
