@@ -472,8 +472,7 @@ namespace BH.Engine.Geometry
             Plane ftPln1 = curve1.FitPlane();
             Plane ftPln2 = curve2.FitPlane();
             List<Point> intPts = new List<Point>();
-            Point tmp=new Point();
-            bool changed = false;
+            Point tmp = null ;
 
             if ((intPts = curve1.PlaneIntersections(ftPln2)).Count != 0)
             {
@@ -482,45 +481,40 @@ namespace BH.Engine.Geometry
                 else
                 {
                     if (intPts[0].Distance(curve2) < intPts[1].Distance(curve2))
+                    {
                         tmp = intPts[0];
+                    }
                     else
+                    {
                         tmp = intPts[1];
+                    }
                 }
-                changed = true;
             }
             else if ((intPts = curve2.PlaneIntersections(ftPln1)).Count != 0)
             {
-                if (changed)
+                if (intPts.Count == 1)
                 {
-                    if (intPts.Count == 1 && intPts[0].Distance(curve1) < tmp.Distance(curve2))
+                    if (tmp == null)
                         tmp = intPts[0];
-                    else
-                    {
-                        if (intPts[0].Distance(curve1) < intPts[1].Distance(curve1))
-                        {
-                            if (intPts[0].Distance(curve1) < tmp.Distance(curve2))
-                                tmp = intPts[0];
-                        }
-                        else
-                        {
-                            if (intPts[1].Distance(curve1) < tmp.Distance(curve2))
-                                tmp = intPts[1];
-                        }
-                    }
+                    else if (tmp.Distance(curve2) > intPts[0].Distance(curve1))
+                        tmp = intPts[0];
                 }
                 else
                 {
-                    if (intPts.Count == 1)
-                        tmp = intPts[0];
+                    if (intPts[0].Distance(curve1) < intPts[1].Distance(curve1))
+                    {
+                        if (tmp == null)
+                            tmp = intPts[0];
+                        else if (tmp.Distance(curve2) > intPts[0].Distance(curve1))
+                            tmp = intPts[0];
+                    }
                     else
                     {
-                        if (intPts[0].Distance(curve1) < intPts[1].Distance(curve1))
-                            tmp = intPts[0];
-                        else
+                        if (tmp == null)
+                            tmp = intPts[1];
+                        else if (tmp.Distance(curve2) > intPts[1].Distance(curve1))
                             tmp = intPts[1];
                     }
-
-                    changed = true;
                 }
             }
 
@@ -528,7 +522,7 @@ namespace BH.Engine.Geometry
             Output<Point, Point> oldresult2 = new Output<Point, Point>();
             Output<Point, Point> result2 = new Output<Point, Point>();
 
-            if (changed)
+            if (tmp!=null)
             {
                 if (tmp.IsOnCurve(curve1))
                 {
@@ -665,55 +659,57 @@ namespace BH.Engine.Geometry
             Plane ftPln1 = curve1.FitPlane();
             Plane ftPln2 = curve2.FitPlane();
             List<Point> intPts = new List<Point>();
-            Point tmp = new Point();
-            bool changed = false;
+            Point tmp = null;
 
             if ((intPts = curve1.PlaneIntersections(ftPln2)).Count != 0)
             {
-                if (intPts.Count == 1 && intPts[0].Distance(curve2) < tmp.Distance(curve2))
+                if (intPts.Count == 1)
                     tmp = intPts[0];
                 else
                 {
                     if (intPts[0].Distance(curve2) < intPts[1].Distance(curve2))
                     {
-                        if (intPts[0].Distance(curve2) < tmp.Distance(curve2))
                             tmp = intPts[0];
                     }
                     else
                     {
-                        if (intPts[1].Distance(curve2) < tmp.Distance(curve2))
                             tmp = intPts[1];
                     }
                 }
-
-                changed = true;
             }
             else if ((intPts = curve2.PlaneIntersections(ftPln1)).Count != 0)
             {
-                if (intPts.Count == 1 && intPts[0].Distance(curve1) < tmp.Distance(curve2))
-                    tmp = intPts[0];
+                if (intPts.Count == 1)
+                {
+                    if (tmp == null)
+                        tmp = intPts[0];
+                    else if (tmp.Distance(curve2) > intPts[0].Distance(curve1))
+                        tmp = intPts[0];
+                }
                 else
                 {
                     if (intPts[0].Distance(curve1) < intPts[1].Distance(curve1))
                     {
-                        if (intPts[0].Distance(curve1) < tmp.Distance(curve2))
+                        if (tmp == null)
+                            tmp = intPts[0];
+                        else if (tmp.Distance(curve2) > intPts[0].Distance(curve1))
                             tmp = intPts[0];
                     }
                     else
                     {
-                        if (intPts[1].Distance(curve1) < tmp.Distance(curve2))
+                        if (tmp == null)
+                            tmp = intPts[1];
+                        else if (tmp.Distance(curve2) > intPts[1].Distance(curve1))
                             tmp = intPts[1];
                     }
                 }
-
-                changed = true;
             }
 
             Output<Point, Point> oldresult2 = new Output<Point, Point>();
             Output<Point, Point> result2 = new Output<Point, Point>();
             Output<Point, Point> oldresult = new Output<Point, Point>();
 
-            if (changed)
+            if (tmp!=null)
             {
                 if (tmp.IsOnCurve(curve1))
                 {
