@@ -58,7 +58,7 @@ namespace Engine_Test
             // adds a new bar 
             Bar newBar = BH.Engine.Base.Create.RandomObject(typeof(Bar)) as Bar;
             newBar.Name = "newBar_1";
-            currentObjs_Eduardo.Insert(1, newBar as dynamic); 
+            currentObjs_Eduardo.Insert(1, newBar as dynamic);
 
             // 6. Eduardo updates the Stream Revision.
             Stream stream_Eduardo = Modify.StreamRevision(stream_Alessio, currentObjs_Eduardo);
@@ -69,7 +69,7 @@ namespace Engine_Test
 
             // Eduardo can also manually check the differences.
 
-            Delta delta = Compute.Diffing(stream_Alessio, stream_Eduardo, propertyLevelDiffing);
+            Delta delta = Compute.Diffing(stream_Alessio, stream_Eduardo, propertyLevelDiffing, null, true);
 
             // 7. Now Eduardo can push his new delta object (like step 3).
             // `delta.ToCreate` will have 1 object; `delta2.ToUpdate` 1 object; `delta2.ToDelete` 1 object; `delta2.Unchanged` 2 objects.

@@ -35,6 +35,7 @@ using BH.Engine.Serialiser;
 using System.ComponentModel;
 using BH.oM.Reflection.Attributes;
 using BH.oM.Testing;
+using BH.oM.Reflection;
 
 namespace BH.Engine.Diffing
 {
@@ -48,16 +49,16 @@ namespace BH.Engine.Diffing
         [Input("previousStream", "A previous version of a Stream")]
         [Input("currentStream", "A new version of a Stream")]
         [Input("enablePropertyDiff", "If true, enables the Property-level diffing, which returns the differences down to the individual object properties.")]
-        [Input("exceptions", "List of strings specifying the names of the properties that should be ignored in the calculation, e.g. 'BHoM_Guid'")]
+        [Input("exceptions", "List of strings specifying the names of the properties that should be ignored in the comparison, e.g. 'BHoM_Guid'")]
         [Input("useDefaultExceptions", "If true, adds a list of default exceptions: 'BHoM_Guid', 'CustomData', 'Fragments'. Defaults to true.")]
         public static Delta Diffing(Stream previousStream, Stream currentStream, bool enablePropertyDiff = true, List<string> exceptions = null, bool useDefaultExceptions = true)
         {
             // Take the Stream's objects
-            List<IBHoMObject> CurrentObjs_cloned = currentStream.Objects.Cast<IBHoMObject>().ToList();
-            List<IBHoMObject> ReadObjs_cloned = previousStream.Objects.Cast<IBHoMObject>().ToList();
+            List<IBHoMObject> currentObjs = currentStream.Objects.ToList();
+            List<IBHoMObject> readObjs = previousStream.Objects.ToList();
 
             // Make dictionary with object hashes to speed up the next lookups
-            Dictionary<string, IBHoMObject> ReadObjs_cloned_dict = ReadObjs_cloned.ToDictionary(obj => obj.GetHashFragment().Hash, obj => obj);
+            Dictionary<string, IBHoMObject> readObjs_dict = readObjs.ToDictionary(obj => obj.GetHashFragment().Hash, obj => obj);
 
             // Set exceptions
             if (useDefaultExceptions)
@@ -69,7 +70,7 @@ namespace BH.Engine.Diffing
             List<IBHoMObject> toBeDeleted = new List<IBHoMObject>();
             var objModifiedProps = new Dictionary<string, Dictionary<string, Tuple<object, object>>>();
 
-            foreach (var obj in CurrentObjs_cloned)
+            foreach (var obj in currentObjs)
             {
                 var hashFragm = obj.GetHashFragment();
 
@@ -91,7 +92,7 @@ namespace BH.Engine.Diffing
                     {
                         // Determine changed properties
                         IBHoMObject oldObjState = null;
-                        ReadObjs_cloned_dict.TryGetValue(hashFragm.PreviousHash, out oldObjState);
+                        readObjs_dict.TryGetValue(hashFragm.PreviousHash, out oldObjState);
 
                         if (oldObjState == null) continue;
 
@@ -105,8 +106,7 @@ namespace BH.Engine.Diffing
                 }
                 else
                 {
-                    BH.Engine.Reflection.Compute.RecordError("Could not find hash information to perform Diffing on some objects.");
-                    return null;
+                    throw new Exception("Could not find hash information to perform Diffing on some objects.");
                 }
             }
 
@@ -114,19 +114,61 @@ namespace BH.Engine.Diffing
             objModifiedProps = objModifiedProps.Count == 0 ? null : objModifiedProps;
 
             // All ReadObjs that cannot be found by hash in the previousHash of the CurrentObjs are toBeDeleted
-            Dictionary<string, IBHoMObject> CurrentObjs_withPreviousHash_dict = CurrentObjs_cloned
+            Dictionary<string, IBHoMObject> CurrentObjs_withPreviousHash_dict = currentObjs
                   .Where(obj => obj.GetHashFragment().PreviousHash != null)
                   .ToDictionary(obj => obj.GetHashFragment().PreviousHash, obj => obj);
 
-            toBeDeleted = ReadObjs_cloned_dict.Keys.Except(CurrentObjs_withPreviousHash_dict.Keys)
-                .Where(k => ReadObjs_cloned_dict.ContainsKey(k)).Select(k => ReadObjs_cloned_dict[k]).ToList();
+            toBeDeleted = readObjs_dict.Keys.Except(CurrentObjs_withPreviousHash_dict.Keys)
+                .Where(k => readObjs_dict.ContainsKey(k)).Select(k => readObjs_dict[k]).ToList();
 
             return new Delta(toBeCreated, toBeDeleted, toBeUpdated, objModifiedProps);
+
         }
+
+        [Description("Dispatch objects in two sets into the ones exclusive to one set, the other, or both.")]
+        [Input("setA", "A previous version of a Stream")]
+        [Input("setB", "A new version of a Stream")]
+        [Input("exceptions", "List of strings specifying the names of the properties that should be ignored in the comparison, e.g. 'BHoM_Guid'")]
+        [Input("useDefaultExceptions", "If true, adds a list of default exceptions: 'BHoM_Guid', 'CustomData', 'Fragments'. Defaults to true.")]
+        [MultiOutputAttribute(0, "OnlySetA", "Object existing exclusively in setA")]
+        [MultiOutputAttribute(1, "Intersection-A", "Objects existing in both sets. Returns objects originally from set A.")]
+        [MultiOutputAttribute(2, "Intersection-B", "Objects existing in both sets. Returns objects originally from set B.")]
+        [MultiOutputAttribute(3, "OnlySetB", "Object existing exclusively in setB")]
+        public static Output<List<IBHoMObject>, List<IBHoMObject>, List<IBHoMObject>, List<IBHoMObject>> Diffing(IEnumerable<IBHoMObject> setA, IEnumerable<IBHoMObject> setB, List<string> exceptions = null, bool useDefaultExceptions = true)
+        {
+            Stream streamA = BH.Engine.Diffing.Create.Stream(setA, null);
+            Stream streamB = BH.Engine.Diffing.Create.Stream(setB, null);
+
+            VennDiagram<IBHoMObject> diagram = Engine.Data.Create.VennDiagram(streamA.Objects, streamB.Objects, new HashFragmComparer<IBHoMObject>());
+
+            return new Output<List<IBHoMObject>, List<IBHoMObject>, List<IBHoMObject>, List<IBHoMObject>>
+            {
+                Item1 = diagram.OnlySet1,
+                Item2 = diagram.Intersection.Select(tuple => tuple.Item1).ToList(),
+                Item3 = diagram.Intersection.Select(tuple => tuple.Item2).ToList(),
+                Item4 = diagram.OnlySet2,
+            };
+        }
+
 
         /***************************************************/
 
-
+        public class HashFragmComparer<T> : IEqualityComparer<T> where T : IBHoMObject
+        {
+            public bool Equals(T x, T y)
+            {
+                string firstHash = x.GetHashFragment().Hash;
+                string secHash = y.GetHashFragment().Hash;
+                if (!string.IsNullOrEmpty(firstHash) && !string.IsNullOrEmpty(secHash) && firstHash == secHash)
+                    return true;
+                else
+                    return false;
+            }
+            public int GetHashCode(T obj)
+            {
+                return obj.GetHashFragment().GetHashCode();
+            }
+        }
 
     }
 }

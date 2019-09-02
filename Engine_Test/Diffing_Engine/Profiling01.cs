@@ -77,7 +77,7 @@ namespace Engine_Test
             var timer = new Stopwatch();
             timer.Start();
 
-            Delta delta = BH.Engine.Diffing.Compute.Diffing(stream, updatedStream, propertyLevelDiffing);
+            Delta delta = BH.Engine.Diffing.Compute.Diffing(stream, updatedStream, propertyLevelDiffing, null, true);
 
             timer.Stop();
 
