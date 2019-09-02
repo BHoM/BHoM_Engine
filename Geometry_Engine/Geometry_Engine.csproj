@@ -66,6 +66,7 @@
     <Compile Include="Compute\PointClusters.cs" />
     <Compile Include="Compute\PointClustersDBSCAN.cs" />
     <Compile Include="Compute\RowEchelonForm.cs" />
+    <Compile Include="Compute\SkewLineProximity.cs" />
     <Compile Include="Compute\SortAlongCurve.cs" />
     <Compile Include="Compute\SortCollinear.cs" />
     <Compile Include="Compute\ClipPolylines.cs" />
