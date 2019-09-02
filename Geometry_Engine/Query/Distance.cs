@@ -171,21 +171,21 @@ namespace BH.Engine.Geometry
 
         public static double Distance(this Line curve1, PolyCurve curve2, double tolerance=Tolerance.Distance)
         {
-            return curve2.Distance(curve1);
+            return curve2.Distance(curve1, tolerance);
         }
 
         /***************************************************/
 
         public static double Distance(this Line curve1, Polyline curve2, double tolerance=Tolerance.Distance)
         {
-            return curve2.Distance(curve1);
+            return curve2.Distance(curve1, tolerance);
         }
 
         /***************************************************/
 
         public static double Distance(this Arc curve1, Line curve2, double tolerance=Tolerance.Distance)
         {
-            return curve2.Distance(curve1);
+            return curve2.Distance(curve1, tolerance);
         }
 
         /***************************************************/
@@ -208,28 +208,28 @@ namespace BH.Engine.Geometry
 
         public static double Distance(this Arc curve1, PolyCurve curve2, double tolerance=Tolerance.Distance)
         {
-            return curve2.Distance(curve1);
+            return curve2.Distance(curve1, tolerance);
         }
 
         /***************************************************/
 
         public static double Distance(this Arc curve1, Polyline curve2, double tolerance=Tolerance.Distance)
         {
-            return curve2.Distance(curve1);
+            return curve2.Distance(curve1, tolerance);
         }
 
         /***************************************************/
 
         public static double Distance(this Circle curve1, Line curve2, double tolerance=Tolerance.Distance)
         {
-            return curve2.Distance(curve1);
+            return curve2.Distance(curve1, tolerance);
         }
 
         /***************************************************/
 
         public static double Distance(this Circle curve1, Arc curve2, double tolerance=Tolerance.Distance)
         {
-            return curve2.Distance(curve1);
+            return curve2.Distance(curve1, tolerance);
         }
 
         /***************************************************/
@@ -244,14 +244,14 @@ namespace BH.Engine.Geometry
 
         public static double Distance(this Circle curve1, PolyCurve curve2, double tolerance=Tolerance.Distance)
         {
-            return curve2.Distance(curve1);
+            return curve2.Distance(curve1, tolerance);
         }
 
         /***************************************************/
 
         public static double Distance(this Circle curve1, Polyline curve2, double tolerance=Tolerance.Distance)
         {
-            return curve2.Distance(curve1);
+            return curve2.Distance(curve1, tolerance);
         }
 
         /***************************************************/
@@ -321,7 +321,7 @@ namespace BH.Engine.Geometry
 
         public static double Distance(this Polyline curve1, PolyCurve curve2, double tolerance=Tolerance.Distance)
         {
-            return curve2.Distance(curve1);
+            return curve2.Distance(curve1, tolerance);
         }
 
         /***************************************************/
