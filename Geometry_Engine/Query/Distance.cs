@@ -280,6 +280,7 @@ namespace BH.Engine.Geometry
         }
 
         /***************************************************/
+
         public static double Distance(this PolyCurve curve1, Polyline curve2, double tolerance=Tolerance.Distance)
         {
             BH.oM.Reflection.Output<Point, Point> results = curve1.CurveProximity(curve2,tolerance);
