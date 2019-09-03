@@ -56,5 +56,7 @@ namespace BH.Engine.Geometry
 
             return new Output<double, double> { Item1 = t1, Item2 = t2 };
         }
+
+        /***************************************************/
     }
 }
