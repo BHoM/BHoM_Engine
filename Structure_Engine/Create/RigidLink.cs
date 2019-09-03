@@ -22,6 +22,7 @@
 
 using BH.oM.Structure.Elements;
 using System.Collections.Generic;
+using BH.oM.Reflection.Attributes;
 using BH.oM.Structure.Constraints;
 using System.Linq;
 
@@ -33,7 +34,7 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static RigidLink RigidLink(string name, Node masterNode, IEnumerable<Node> slaveNodes, LinkConstraint constraint = null)
+        public static RigidLink RigidLink(Node masterNode, IEnumerable<Node> slaveNodes, LinkConstraint constraint = null, string name = "")
         {
 
             return new RigidLink
@@ -46,6 +47,15 @@ namespace BH.Engine.Structure
 
         }
 
+        /***************************************************/
+        /**** Public Methods -Deprecated                ****/
+        /***************************************************/
+
+        [Deprecated("2.4", "Method replace with method to accept name input", null, "RigidLink")]
+        public static RigidLink RigidLink(Node masterNode, IEnumerable<Node> slaveNodes, LinkConstraint constraint = null)
+        {
+            return Engine.Structure.Create.RigidLink(masterNode, slaveNodes, constraint, "");
+        }
 
         /***************************************************/
     }
