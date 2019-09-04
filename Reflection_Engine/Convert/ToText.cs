@@ -46,7 +46,7 @@ namespace BH.Engine.Reflection
             {
                 ParameterInfo[] parameters = method.GetParameters();
                 if (parameters.Length > 0)
-                    text += parameters.Select(x => x.ParameterType.ToText()).Aggregate((x, y) => x + paramSeparator + y);
+                    text += parameters.Select(x => x.ParameterType.ToText() + " " + x.Name).Aggregate((x, y) => x + paramSeparator + y);
             }
             catch (Exception e)
             {
@@ -59,7 +59,7 @@ namespace BH.Engine.Reflection
             {
                 string path = method.Path();
                 text = path + '.' + text;
-            }   
+            }
 
             return text;
         }
