@@ -38,7 +38,7 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("merges the properties two Environment Panels together and returns a copied panel with the smallest area")]
+        [Description("Merges the properties two Environment Panels together and returns a copied panel with the smallest area")]
         [Input("panel1", "An Environment Panel to merge from")]
         [Input("panel2", "A second Environment Panel to merge from")]
         [Output("mergedPanel", "The Environment Panel with the smallest area of the two provided but with the combined properties of both")]
@@ -61,11 +61,11 @@ namespace BH.Engine.Environment
             return rtnPanel;
         }
 
-        [Description("merges the properties two Environment Panels together and returns panel with boolean geometry")]
+        [Description("Merges the geometry of two Environment Panels if they share same connected space together and get panel with bigger area, tries boolean geometry and returns panel with new geometry")]
         [Input("panel1", "An Environment Panel to merge from")]
         [Input("panel2", "A second Environment Panel to merge from")]
-        [Output("mergedPanel", "The Environment Panel with the smallest area of the two provided but with the combined properties of both")]
-        public static Panel MergePanelsByGeometryOnly(this Panel panel1, Panel panel2, double tolerance = 0.00001)
+        [Output("mergedPanel", "The Environment Panel with the  merged area between two panels, but with properties of larger panel")]
+        public static Panel MergePanels(this Panel panel1, Panel panel2, double tolerance = Tolerance.Distance)
         {
             Panel rtnPanel = null;
 
@@ -96,7 +96,11 @@ namespace BH.Engine.Environment
                 List<Polyline> pLines = panels.Select(x => x.Polyline()).ToList();
                 List<Polyline> newGeometry = pLines.BooleanUnion(tolerance);
 
-                if (newGeometry.Count < 1) return null;
+                if (newGeometry.Count < 1)
+                {
+                    Reflection.Compute.RecordError("Could not output geometry for panel");
+                    return null;
+                }
 
                 Polyline max = newGeometry[0];
                 foreach (Polyline pl in newGeometry)
@@ -110,9 +114,8 @@ namespace BH.Engine.Environment
                 return rtnPanel;
 
             }
-
+            Reflection.Compute.RecordError("Panels have different ConnectedSpaces will not merge");
             return null;
-
 
         }
     }
