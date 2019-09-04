@@ -36,8 +36,8 @@ namespace Engine_Test
 
             // 2. Alessio wants these bars to be part of a "Portal frame Stream" that will be tracking the objects for future changes.
             // Alessio creates a stream
-            string streamName = "Portal Frame Stream";
-            Stream stream_Alessio = Create.Stream(currentObjs_Alessio, streamName); // this will add the hash fragments to the objects
+            string comment = "Portal Frame Stream";
+            Stream stream_Alessio = Create.Stream(currentObjs_Alessio, comment); // this will add the hash fragments to the objects
 
             // Alessio can now push the Stream.
 
@@ -74,9 +74,9 @@ namespace Engine_Test
             // 7. Now Eduardo can push his new delta object (like step 3).
             // `delta.ToCreate` will have 1 object; `delta2.ToUpdate` 1 object; `delta2.ToDelete` 1 object; `delta2.Unchanged` 2 objects.
             // You can also see which properties have changed for what objects: check `delta2.ModifiedPropsPerObject`.
-            Debug.Assert(delta.NewObjs.Count == 1, "Incorrect number of object identified as new/ToBeCreated.");
-            Debug.Assert(delta.Modified.Count == 1, "Incorrect number of object identified as modified/ToBeUpdated.");
-            Debug.Assert(delta.OldObjs.Count == 1, "Incorrect number of object identified as old/ToBeDeleted.");
+            Debug.Assert(delta.NewObjects.Count == 1, "Incorrect number of object identified as new/ToBeCreated.");
+            Debug.Assert(delta.ModifiedObjects.Count == 1, "Incorrect number of object identified as modified/ToBeUpdated.");
+            Debug.Assert(delta.OldObjects.Count == 1, "Incorrect number of object identified as old/ToBeDeleted.");
             var modifiedPropsPerObj = delta.ModifiedPropsPerObject.First().Value;
             Debug.Assert(modifiedPropsPerObj.Count == 1, "Incorrect number of changed properties identified by the property-level diffing.");
             Debug.Assert(modifiedPropsPerObj.First().Key == "Name", "Error in property-level diffing");

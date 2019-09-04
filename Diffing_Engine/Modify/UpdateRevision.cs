@@ -55,7 +55,7 @@ namespace BH.Engine.Diffing
             if (numObjs != objs_cloned.Count())
                 BH.Engine.Reflection.Compute.RecordWarning("Some Objects were duplicates (same hash) and therefore have been discarded.");
 
-            return new BH.oM.Diffing.Stream(objs_cloned, stream.StreamName, stream.StreamId);
+            return new BH.oM.Diffing.Stream(objs_cloned, stream.StreamId);
         }
     }
 }

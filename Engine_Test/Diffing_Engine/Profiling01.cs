@@ -86,7 +86,7 @@ namespace Engine_Test
             string endMessage = $"Total elapsed milliseconds: {ms}";
             Console.WriteLine(endMessage);
 
-            Debug.Assert(delta.Modified.Count == totalObjs / 2, "Diffing didn't work.");
+            Debug.Assert(delta.ModifiedObjects.Count == totalObjs / 2, "Diffing didn't work.");
 
             if (path != null)
             {
