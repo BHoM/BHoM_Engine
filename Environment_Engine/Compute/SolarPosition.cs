@@ -32,6 +32,8 @@ using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
 
+using BH.oM.Environment.Climate;
+
 namespace BH.Engine.Environment
 {
     public static partial class Compute
@@ -45,8 +47,8 @@ namespace BH.Engine.Environment
         [Input("longitude", "The longitude of the location to calculate the solar azimuth from. This should be given in degrees. Default 0")]
         [Input("dateTime", "The date and time for the calculation of the solar azimuth. Default null - will default to the 1st January 1900 00:00:00.0")]
         [Input("utcOffset", "The number of hours offset from UTC time, default 0")]
-        [Output("solarAzimuth", "The calculated solar azimuth (degrees clockwise from 0 at North)")]
-        public static double SolarAzimuth(double latitude = 0, double longitude = 0, DateTime? dateTime = null, double utcOffset = 0)
+        [Output("sun", "The sun with calculated position")]
+        public static Sun SolarPosition(double latitude = 0, double longitude = 0, DateTime? dateTime = null, double utcOffset = 0)
         {
             DateTime dt;
             if (dateTime == null)
@@ -433,9 +435,11 @@ namespace BH.Engine.Environment
             };
             int[] b_subcount = { 5, 2 };
 
+            double PI = 3.1415926535897932384626433832795028841971;
+
             double julianDay = JulianDay(dt.Year, dt.Month, dt.Day, dt.Hour, dt.Minute, dt.Second, utcOffset);
             double julianCentury = (julianDay - 2451545.0) / 36525.0;
-            double julianEphemerisDay = julianDay / 86400.0;
+            double julianEphemerisDay = julianDay;// / 86400.0;
             double julianEphemerisCentury = (julianEphemerisDay - 2451545.0) / 36525.0;
             double julianEphemerisMillenium = (julianEphemerisCentury / 10.0);
 
@@ -469,7 +473,7 @@ namespace BH.Engine.Environment
                 double xyTermSummation = 0;
                 for (int y3 = 0; y3 < meanTerms.Length; y3++)
                     xyTermSummation += meanTerms[y3] * Y_TERMS[x4][y3];
-                xyTermSummation = Convert.ToRadians(xyTermSummation);
+                xyTermSummation = Convert.ToRadians(xyTermSummation, PI);
                 delPsi += (PE_TERMS[x4][0] + julianEphemerisCentury * PE_TERMS[x4][1]) * Math.Sin(xyTermSummation);
                 delEpsilon += (PE_TERMS[x4][2] + julianEphemerisCentury * PE_TERMS[x4][3]) * Math.Cos(xyTermSummation);
             }
@@ -487,7 +491,7 @@ namespace BH.Engine.Environment
             if (limit < 0) limit += 360;
             nu0 = limit;
 
-            double nu = nu0 + delPsi * Math.Cos(Convert.ToRadians(epsilon)); //Greenwich Sidereal Time
+            double nu = nu0 + delPsi * Math.Cos(Convert.ToRadians(epsilon, PI)); //Greenwich Sidereal Time
 
             //EarthHeliocentricLongitude
             double l = 0;
@@ -495,12 +499,12 @@ namespace BH.Engine.Environment
             for (int x5 = 0; x5 < sum2.Length; x5++)
             {
                 for (int y5 = 0; y5 < l_subcount[x5]; y5++)
-                    sum2[x5] = L_TERMS[x5][y5][0] * Math.Cos(L_TERMS[x5][y5][1] + L_TERMS[x5][y5][2] * julianEphemerisMillenium);
+                    sum2[x5] += L_TERMS[x5][y5][0] * Math.Cos(L_TERMS[x5][y5][1] + L_TERMS[x5][y5][2] * julianEphemerisMillenium);
             }
             for (int x6 = 0; x6 < sum2.Length; x6++)
                 l += sum2[x6] * Math.Pow(julianEphemerisMillenium, x6);
             l /= 1.0e8;
-            l = Convert.ToDegrees(l);
+            l = Convert.ToDegrees(l, PI);
             l /= 360;
             limit = 360 * (l - Math.Floor(l));
             if (limit < 0) limit += 360;
@@ -512,16 +516,16 @@ namespace BH.Engine.Environment
             for(int x7 = 0; x7 < sum2.Length; x7++)
             {
                 for (int y7 = 0; y7 < b_subcount[x7]; y7++)
-                    sum2[x7] = B_TERMS[x7][y7][0] * Math.Cos(B_TERMS[x7][y7][1] + B_TERMS[x7][y7][2] * julianEphemerisMillenium);
+                    sum2[x7] += B_TERMS[x7][y7][0] * Math.Cos(B_TERMS[x7][y7][1] + B_TERMS[x7][y7][2] * julianEphemerisMillenium);
             }
             for (int x8 = 0; x8 < sum2.Length; x8++)
                 b += sum2[x8] * Math.Pow(julianEphemerisMillenium, x8);
             b /= 1.0e8;
-            b = Convert.ToDegrees(b);
+            b = Convert.ToDegrees(b, PI);
 
             //GeocentricLongitude
             double theta = l + 180;
-            if (theta >= 60) theta -= 360;
+            if (theta >= 360) theta -= 360;
 
             //GeocentricLatitude
             double beta = -b;
@@ -531,13 +535,13 @@ namespace BH.Engine.Environment
             double lamba = theta + delPsi + delTau; //ApparentSunLongitude
 
             //GeocentricRightAscension
-            double alpha = Convert.ToDegrees(Math.Atan2(Math.Sin(Convert.ToRadians(lamba)) * Math.Cos(Convert.ToRadians(epsilon) - Math.Tan(Convert.ToRadians(beta)) * Math.Sin(Convert.ToRadians(epsilon))), Math.Cos(Convert.ToRadians(lamba))));
+            double alpha = Convert.ToDegrees(Math.Atan2(Math.Sin(Convert.ToRadians(lamba, PI)) * Math.Cos(Convert.ToRadians(epsilon, PI) - Math.Tan(Convert.ToRadians(beta, PI)) * Math.Sin(Convert.ToRadians(epsilon, PI))), Math.Cos(Convert.ToRadians(lamba, PI))), PI);
             alpha /= 360;
             limit = 360 * (alpha - Math.Floor(alpha));
             if (limit < 0) limit += 360;
             alpha = limit;
 
-            double delta = Convert.ToDegrees(Math.Asin(Math.Sin(Convert.ToRadians(beta)) * Math.Cos(Convert.ToRadians(epsilon)) + Math.Cos(Convert.ToRadians(beta)) * Math.Sin(Convert.ToRadians(epsilon) * Math.Sin(Convert.ToRadians(lamba))))); //GeocentricDeclination
+            double delta = Convert.ToDegrees(Math.Asin(Math.Sin(Convert.ToRadians(beta, PI)) * Math.Cos(Convert.ToRadians(epsilon, PI)) + Math.Cos(Convert.ToRadians(beta, PI)) * Math.Sin(Convert.ToRadians(epsilon, PI) * Math.Sin(Convert.ToRadians(lamba, PI)))), PI); //GeocentricDeclination
 
             //Observe Hour Angle
             double H = nu + longitude - alpha;
@@ -549,10 +553,10 @@ namespace BH.Engine.Environment
             double xi = 8.794 / (3600.0 * R); //SunEquatorialHorizontalParallax
 
             //RightAscensionParallaxAndTopocentricDec
-            double latRad = Convert.ToRadians(latitude);
-            double xiRad = Convert.ToRadians(xi);
-            double hRad = Convert.ToRadians(H);
-            double deltaRad = Convert.ToRadians(delta);
+            double latRad = Convert.ToRadians(latitude, PI);
+            double xiRad = Convert.ToRadians(xi, PI);
+            double hRad = Convert.ToRadians(H, PI);
+            double deltaRad = Convert.ToRadians(delta, PI);
             double u2 = Math.Atan(0.99664719 * Math.Tan(latRad));
             double y = 0.99664719 * Math.Sin(u2) * Math.Sin(latRad) / 6378140.0;
             double x = Math.Cos(u2) * Math.Cos(latRad) / 6378140.0;
@@ -560,14 +564,13 @@ namespace BH.Engine.Environment
             var deltaAlphaRad = Math.Atan2(-x * Math.Sin(xiRad) * Math.Sin(hRad),
                 Math.Cos(deltaRad) - x * Math.Sin(xiRad) * Math.Cos(hRad));
 
-            double deltaPrime = Convert.ToDegrees(Math.Atan2((Math.Sin(deltaRad) - y * Math.Sin(xiRad)) * Math.Cos(deltaAlphaRad),
-                Math.Cos(deltaRad) - x * Math.Sin(xiRad) * Math.Cos(hRad)));
-            double deltaAlpha = Convert.ToDegrees(deltaAlphaRad);
+            double deltaPrime = Convert.ToDegrees(Math.Atan2((Math.Sin(deltaRad) - y * Math.Sin(xiRad)) * Math.Cos(deltaAlphaRad), Math.Cos(deltaRad) - x * Math.Sin(xiRad) * Math.Cos(hRad)), PI);
+            double deltaAlpha = Convert.ToDegrees(deltaAlphaRad, PI);
 
             double hPrime = H - deltaAlpha; //TopocentricLocalHourAngle
 
             //TopocentricAzimuthAngleAstro
-            double azimuthAstro = Convert.ToDegrees(Math.Atan2(Math.Sin(Convert.ToRadians(hPrime)), Math.Cos(Convert.ToRadians(hPrime)) * Math.Sin(Convert.ToRadians(latitude)) - Math.Tan(Convert.ToRadians(deltaPrime)) * Math.Cos(Convert.ToRadians(latitude))));
+            double azimuthAstro = Convert.ToDegrees(Math.Atan2(Math.Sin(Convert.ToRadians(hPrime, PI)), Math.Cos(Convert.ToRadians(hPrime, PI)) * Math.Sin(Convert.ToRadians(latitude, PI)) - Math.Tan(Convert.ToRadians(deltaPrime, PI)) * Math.Cos(Convert.ToRadians(latitude, PI))), PI);
             azimuthAstro /= 360;
             limit = 360 * (azimuthAstro - Math.Floor(azimuthAstro));
             if (limit < 0) limit += 360;
@@ -580,7 +583,11 @@ namespace BH.Engine.Environment
             if (limit < 0) limit += 360;
             azimuth = limit;
 
-            return azimuth;
+            double e0 = Convert.ToDegrees(Math.Asin(Math.Sin(latRad) * Math.Sin(Convert.ToRadians(deltaPrime, PI)) + Math.Cos(latRad) * Math.Cos(Convert.ToRadians(deltaPrime, PI)) * Math.Cos(Convert.ToRadians(hPrime, PI))), PI); //TopocentricElevationAngle
+
+            double zenith = 90.0 - e0;
+
+            return new Sun { Altitude = (90 - zenith), Azimuth = azimuth };
         }
 
         [Description("Calculate the Third Order Polynominal for the numbers provided. The equation is: ((a * x + b) * x * c) * x + d")]
@@ -608,12 +615,16 @@ namespace BH.Engine.Environment
                 year--;
             }
 
-            double julianDay = ((int)(365.25 * (year + 4716))) + ((int)30.6001 * (month + 1)) + dayDecimal - 1524.5;
+            int y = (int)(365.25 * (year + 4716));
+            int m = (int)(30.6001 * (month + 1));
+            
+            double julianDay = y + m + dayDecimal - 1524.5;
 
             if(julianDay > 2299160)
             {
                 int alteration = ((int)year / 100);
-                julianDay += (2 - alteration + (alteration / 4));
+                int a = (int)(alteration / 4);
+                julianDay += (2 - alteration + a);
             }
 
             return julianDay;
