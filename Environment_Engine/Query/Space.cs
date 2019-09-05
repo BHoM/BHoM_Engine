@@ -54,22 +54,6 @@ namespace BH.Engine.Environment
 
         }
 
-        [Description("Returns a collection of Environment Panels which are connected to the list of space names provided")]
-        [Input("panels", "A collection of Environment Panels")]
-        [Input("spaceNames", " list of space names the panels should enclose")]
-        [Output("panelsAsSpace", "A collection of Environment Panels which have the given space name as a connected space")]
-        public static List<List<Panel>> ToSpace(this List<Panel> panels, List<string> spaceNames)
-        {
-            List<List<Panel>> results = new List<List<Panel>>();
-
-            foreach (string tmp in spaceNames)
-            {
-                results.Add(panels.ToSpace(tmp));
-            }
-            return results;
-
-        }
-
         [Description("Returns a nested collection of Environment Panels which are grouped by the spaces they are connected to")]
         [Input("panels", "A collection of Environment Panels")]
         [Output("panelsAsSpaces", "A nested collection of Environment Panels grouped by the space they enclose")]
