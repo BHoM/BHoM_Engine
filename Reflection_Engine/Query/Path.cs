@@ -41,11 +41,11 @@ namespace BH.Engine.Reflection
 
         /***************************************************/
 
-        public static string Path(this MethodBase method, bool userReturnTypeForCreate = true, bool useExtentionType = false) 
+        public static string Path(this MethodBase method, bool useReturnTypeForCreate = true, bool useExtentionType = false) 
         {
             Type type = method.DeclaringType;
 
-            if (userReturnTypeForCreate && type.Name == "Create" && method is MethodInfo)
+            if (useReturnTypeForCreate && type.Name == "Create" && method is MethodInfo)
             {
                 Type returnType = ((MethodInfo)method).ReturnType.UnderlyingType().Type;
                 if (returnType.Namespace.StartsWith("BH."))

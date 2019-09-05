@@ -35,7 +35,7 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static string ToText(this MethodBase method, bool includePath = false, string paramStart = "(", string paramSeparator = ", ", string paramEnd = ")", bool removeIForInterface = true)
+        public static string ToText(this MethodBase method, bool includePath = false, string paramStart = "(", string paramSeparator = ", ", string paramEnd = ")", bool removeIForInterface = true, bool useReturnTypeForCreate = false)
         {
             string name = (method is ConstructorInfo) ? method.DeclaringType.ToText(false, true) : method.Name;
             if (removeIForInterface && Query.IsInterfaceMethod(method))
@@ -57,7 +57,7 @@ namespace BH.Engine.Reflection
 
             if (includePath)
             {
-                string path = method.Path();
+                string path = method.Path(useReturnTypeForCreate: useReturnTypeForCreate);
                 text = path + '.' + text;
             }
 
