@@ -35,7 +35,7 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static string ToText(this MethodBase method, bool includePath = false, string paramStart = "(", string paramSeparator = ", ", string paramEnd = ")", bool removeIForInterface = true, bool includeParamNames = true, int maxParams = 5)
+        public static string ToText(this MethodBase method, bool includePath = false, string paramStart = "(", string paramSeparator = ", ", string paramEnd = ")", bool removeIForInterface = true, bool includeParamNames = true, int maxParams = 5, int maxChars = 40)
         {
             string name = (method is ConstructorInfo) ? method.DeclaringType.ToText(false, true) : method.Name;
             if (removeIForInterface && Query.IsInterfaceMethod(method))
@@ -45,21 +45,26 @@ namespace BH.Engine.Reflection
             try
             {
                 ParameterInfo[] parameters = method.GetParameters();
+
+                string paramText = "";
                 if (parameters.Length > 0)
                 {
                     // Collect parameters text
-                    string[] paramText = parameters
-                        .Select(x =>
-                        {
-                            return includeParamNames ? x.ParameterType.ToText() + " " + x.Name : x.ParameterType.ToText();
-                        })
-                        .ToArray();
+                    for (int i = 0; i < parameters.Count(); i++)
+                    {
+                        string singleParamText = includeParamNames ?
+                            parameters[i].ParameterType.ToText() + " " + parameters[i].Name : parameters[i].ParameterType.ToText();
 
-                    if (includeParamNames && parameters.Length > maxParams)
-                        text += paramText.Take(maxParams).Aggregate((x, y) => x + paramSeparator + y) + $", and {parameters.Length - maxParams} more inputs";
-                    else
-                        text += paramText.Aggregate((x, y) => x + paramSeparator + y);
+                        if (i > 0 && i > maxParams || string.Join(paramText, singleParamText).Length > maxChars)
+                        {
+                            paramText += $", and {parameters.Length - i} more inputs";
+                            break;
+                        }
+                        paramText += i == 0 ? singleParamText : ", " + singleParamText;
+                    }
                 }
+
+                text += paramText;
             }
             catch (Exception e)
             {
