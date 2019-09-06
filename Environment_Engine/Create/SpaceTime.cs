@@ -22,33 +22,48 @@
 
 using System;
 using System.Collections.Generic;
-
 using System.Linq;
-using BH.oM.Environment;
+using System.Text;
+using System.Threading.Tasks;
 
-using BH.Engine.Geometry;
+using BH.oM.Environment.Climate;
 using BH.oM.Geometry;
 
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
 
-using BH.oM.Environment.Climate;
-
 namespace BH.Engine.Environment
 {
-    public static partial class Query
+    public static partial class Create
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns the date time object from a Space Time")]
-        [Input("spaceTime", "A space time object defining a point in space and time")]
-        [Output("dateTime", "A C# DateTime object with the values from the SpaceTime object")]
-        public static DateTime DateTime(this SpaceTime spaceTime)
+        [Description("Returns an Environment SpaceTime object")]
+        [Input("location", "An Environment Location object specifying the latitude, longitude and other location specifics of the SpaceTime object, default null")]
+        [Input("year", "The year of the time for the space time object, default 2007")]
+        [Input("month", "The month of the time for the space time object, default 1 (January)")]
+        [Input("day", "The day of the time for the space time object, default 1")]
+        [Input("hour", "The hour of the day for the space time object, default 12")]
+        [Input("minute", "The minute of the hour for the space time object, default 0")]
+        [Input("second", "The second of the minute for the space time object, default 0")]
+        [Input("millisecond", "The millisecond of the second for the space time object, default 0")]
+        [Input("name", "The name of the space time, default empty string")]
+        [Output("spaceTime", "An Environment SpaceTime object - used for defining locations in space and time for climate analysis")]
+        public static SpaceTime SpaceTime(Location location = null, int year = 2007, int month = 1, int day = 1, int hour = 12, int minute = 0, int second = 0, int millisecond = 0, string name = "")
         {
-            return new DateTime(spaceTime.Year, spaceTime.Month, spaceTime.Day, spaceTime.Hour, spaceTime.Minute, spaceTime.Second, spaceTime.Millisecond);
+            return new SpaceTime
+            {
+                Name = name,
+                Location = (location ?? new Location()),
+                Year = year,
+                Month = month,
+                Day = day,
+                Minute = minute,
+                Second = second,
+                Millisecond = millisecond,
+            };
         }
     }
-
 }

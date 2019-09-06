@@ -84,6 +84,8 @@
     <Compile Include="Convert\Edge.cs" />
     <Compile Include="Create\LightReflectanceFragment.cs" />
     <Compile Include="Create\LightTransmittanceFragment.cs" />
+    <Compile Include="Create\Location.cs" />
+    <Compile Include="Create\SpaceTime.cs" />
     <Compile Include="Modify\FixNormal.cs" />
     <Compile Include="Modify\Remove.cs" />
     <Compile Include="Query\Absorptance.cs" />
