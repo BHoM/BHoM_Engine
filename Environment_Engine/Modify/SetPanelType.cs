@@ -26,7 +26,7 @@ using BH.oM.Environment.Elements;
 using BH.oM.Geometry;
 using BH.Engine.Geometry;
 using BH.oM.Environment.Fragments;
-
+using System;
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
 
@@ -118,6 +118,112 @@ namespace BH.Engine.Environment
                 p.Type = type;
 
             return panels;
+        }
+
+        [Description("Returns the floor panels of a space represented by Environment Panels")]
+        [Input("panelsAsSpace", "A collection of Environment Panels that represent a closed space")]
+        [Output("floorPanels", "BHoM Environment panel representing the floor of the space")]
+        public static List<Panel> FloorPanels(this List<Panel> panelsAsSpace)
+        {
+            //Find the panel(s) that are at the lowest point of the space...
+            double minZ = 1e10;
+            foreach (Panel panel in panelsAsSpace)
+            {
+                if (panel.MinimumLevel() == panel.MaximumLevel())
+                    minZ = Math.Min(minZ, panel.MinimumLevel());
+            }
+
+            List<Panel> floorPanels = panelsAsSpace.Where(x => x.MinimumLevel() == minZ && x.MaximumLevel() == minZ).ToList();
+
+            if (floorPanels.Count == 0)
+            {
+                BH.Engine.Reflection.Compute.RecordWarning("Could not find floor panel");
+                return null;
+            }
+
+            foreach (Panel panel in floorPanels)
+            {
+                if (panel.ConnectedSpaces.Where(x => x != "-1").ToList().Count == 1)
+                    panel.Type = PanelType.SlabOnGrade;
+                else if (panel.ConnectedSpaces.Where(x => x != "-1").ToList().Count == 2)
+                    panel.Type = PanelType.FloorInternal;
+            }
+
+
+            return floorPanels;
+        }
+
+        [Description("Returns the roof panels of a space represented by Environment Panels")]
+        [Input("panelsAsSpace", "A collection of Environment Panels that represent a closed space")]
+        [Output("roofPanels", "BHoM Environment panel representing the roof of the space")]
+        public static List<Panel> RoofPanels(this List<Panel> panelsAsSpace)
+        {
+            //Find the panel(s) that are at the highest point of the space...
+            double minZ = 1e10;
+            foreach (Panel panel in panelsAsSpace)
+            {
+                if (panel.MinimumLevel() == panel.MaximumLevel())
+                    minZ = Math.Min(minZ, panel.MinimumLevel());
+            }
+
+            List<Panel> roofPanels = panelsAsSpace.Where(x => ((x.MinimumLevel() != minZ && x.MaximumLevel() != minZ) && Math.Round(x.Tilt()) != 90) && x.ConnectedSpaces.ToList().Count == 1).ToList();
+
+            foreach (Panel panel in panelsAsSpace)
+            {
+                if (panel.ConnectedSpaces.Where(x => x != "-1").ToList().Count == 1)
+                    panel.Type = PanelType.Roof;
+            }
+
+            return roofPanels;
+        }
+
+        [Description("Returns the wall panels of a space represented by Environment Panels and fixes PanelType")]
+        [Input("panelsAsSpace", "A collection of Environment Panels that represent a closed space")]
+        [Output("wallPanels", "BHoM Environment panel representing the wall of the space")]
+        public static List<Panel> WallPanels(this List<Panel> panelsAsSpace)
+        {
+            //Find the panel(s) that ... is horizontal
+            double minZ = 1e10;
+            foreach (Panel panel in panelsAsSpace)
+            {
+                if (panel.MinimumLevel() == panel.MaximumLevel())
+                    minZ = Math.Min(minZ, panel.MinimumLevel());
+            }
+
+            List<Panel> wallPanels = panelsAsSpace.Where(x => x.Tilt() < 92 && x.Tilt() > 88).ToList();
+
+            if (wallPanels.Count == 0)
+            {
+                BH.Engine.Reflection.Compute.RecordWarning("Could not find wall panel");
+                return null;
+            }
+
+            foreach (Panel panel in wallPanels)
+            {
+                if (panel.ConnectedSpaces.Where(x => x != "-1").ToList().Count == 1)
+                    panel.Type = PanelType.WallExternal;
+                else if (panel.ConnectedSpaces.Where(x => x != "-1").ToList().Count == 2)
+                    panel.Type = PanelType.WallInternal;
+            }
+
+            return wallPanels;
+        }
+
+        [Description("Returns the shade panels represented by Environment Panels with no adj spaces and fixes PanelType")]
+        [Input("panels", "A collection of Environment Panels")]
+        [Output("shadePanels", "BHoM Environment panel representing the shade")]
+        public static List<Panel> ShadePanels(this List<Panel> panels)
+        {
+            //Find the panel(s) without connected spaces and set as shade
+            List<Panel> shadePanels = panels;
+
+            foreach (Panel panel in shadePanels)
+            {
+                if (panel.ConnectedSpaces.Where(x => x != "-1").ToList().Count == 0)
+                    panel.Type = PanelType.Shade;
+            }
+
+            return shadePanels;
         }
     }
 }

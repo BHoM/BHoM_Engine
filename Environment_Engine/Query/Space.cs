@@ -44,14 +44,13 @@ namespace BH.Engine.Environment
         [Output("panelsAsSpace", "A collection of Environment Panels which have the given space name as a connected space")]
         public static List<Panel> ToSpace(this List<Panel> panels, string spaceName)
         {
-            List<Panel> result= panels.Where(x => x.ConnectedSpaces.Contains(spaceName)).ToList();
-            if(result.Count==0)
+            List<Panel> result = panels.Where(x => x.ConnectedSpaces.Contains(spaceName)).ToList();
+            if (result.Count == 0)
                 BH.Engine.Reflection.Compute.RecordWarning("Could not find following space: " + spaceName);
-            if(result.Count > 0 && result.Count<5)
-                BH.Engine.Reflection.Compute.RecordWarning("This space have less than 5 planar panels " + result.Count +" : "+ spaceName);
+            if (result.Count > 0 && result.Count < 5)
+                BH.Engine.Reflection.Compute.RecordWarning("This space have less than 5 panels, we have " + result.Count + " panels in space: " + spaceName);
 
             return result;
-
         }
 
         [Description("Returns a nested collection of Environment Panels which are grouped by the spaces they are connected to")]
