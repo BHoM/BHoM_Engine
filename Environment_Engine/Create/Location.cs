@@ -63,7 +63,7 @@ namespace BH.Engine.Environment
 
             if (elevation < -413 || elevation > 8848)
             {
-                BH.Engine.Reflection.Compute.RecordError("Invalid Longitude passed. It should be between -180 and 180");
+                BH.Engine.Reflection.Compute.RecordError("Invalid Elevation passed. It should be between -413 and 8848");
                 return null;
             }
 
