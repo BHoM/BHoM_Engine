@@ -88,21 +88,33 @@ namespace BH.Engine.Geometry
         /***************************************************/
         /**** Public Methods - Curves                   ****/
         /***************************************************/
-        
+
+        [Deprecated("2.4", "Deprecated to expose tolerance as optional parameter for greater control", null, "Normal(this Polyline curve, double tolerance = Tolerance.Distance)")]
         public static Vector Normal(this Polyline curve)
         {
+            return curve.Normal(Tolerance.Distance);
+        }
 
-            if (!curve.IsPlanar())
+        [Deprecated("2.4", "Deprecated to expose tolerance as optional parameter for greater control", null, "Normal(this PolyCurve curve, double tolerance = Tolerance.Distance)")]
+        public static Vector Normal(this PolyCurve curve)
+        {
+            return curve.Normal(Tolerance.Distance);
+        }
+
+        public static Vector Normal(this Polyline curve, double tolerance = Tolerance.Distance)
+        {
+
+            if (!curve.IsPlanar(tolerance))
             {
                 Reflection.Compute.RecordError("Input must be planar.");
                 return null;
             }
-            else if (!curve.IsClosed())
+            else if (!curve.IsClosed(tolerance))
             {
                 Reflection.Compute.RecordError("Curve is not closed. Input must be a polygon");
                 return null;
             }
-            else if (curve.IsSelfIntersecting())
+            else if (curve.IsSelfIntersecting(tolerance))
             {
                 Reflection.Compute.RecordWarning("Curve is self intersecting");
                 return null;
@@ -124,20 +136,20 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static Vector Normal(this PolyCurve curve)
+        public static Vector Normal(this PolyCurve curve, double tolerance = Tolerance.Distance)
         {
 
-            if (!curve.IsPlanar())
+            if (!curve.IsPlanar(tolerance))
             {
                 Reflection.Compute.RecordError("Input must be planar.");
                 return null;
             }
-            else if (!curve.IsClosed())
+            else if (!curve.IsClosed(tolerance))
             {
                 Reflection.Compute.RecordError("Curve is not closed. Input must be a polygon");
                 return null;
             }
-            else if (curve.IsSelfIntersecting())
+            else if (curve.IsSelfIntersecting(tolerance))
             {
                 Reflection.Compute.RecordWarning("Curve is self intersecting");
                 return null;
