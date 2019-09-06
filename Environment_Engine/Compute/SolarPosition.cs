@@ -439,7 +439,7 @@ namespace BH.Engine.Environment
 
             double julianDay = JulianDay(dt.Year, dt.Month, dt.Day, dt.Hour, dt.Minute, dt.Second, utcOffset);
             double julianCentury = (julianDay - 2451545.0) / 36525.0;
-            double julianEphemerisDay = julianDay;// / 86400.0;
+            double julianEphemerisDay = julianDay; // / 86400.0;
             double julianEphemerisCentury = (julianEphemerisDay - 2451545.0) / 36525.0;
             double julianEphemerisMillenium = (julianEphemerisCentury / 10.0);
 
