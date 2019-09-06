@@ -56,13 +56,14 @@ namespace BH.Engine.Environment
         {
             double tilt;
 
-            List<Point> pts = polyline.DiscontinuityPoints();
+            List<Point> pts = polyline.DiscontinuityPoints(Tolerance.Distance, 0.01);
 
             if (pts.Count < 3 || !BH.Engine.Geometry.Query.IsClosed(polyline)) return -1; //Error protection on pts having less than 3 elements to create a plane or pLine not being closed
 
             Plane plane = BH.Engine.Geometry.Create.Plane(pts[0], pts[1], pts[2]);
 
             //The polyline can be locally concave. Check if the polyline is clockwise.
+            polyline = Geometry.Modify.CleanPolyline(polyline, 0.01);
             if (!polyline.IsClockwise(plane.Normal))
                 plane.Normal = -plane.Normal;
 
