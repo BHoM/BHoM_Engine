@@ -35,7 +35,7 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static string ToText(this MethodBase method, bool includePath = false, string paramStart = "(", string paramSeparator = ", ", string paramEnd = ")", bool removeIForInterface = true, bool includeParamNames = true, int maxParams = 5)
+        public static string ToText(this MethodBase method, bool includePath = false, string paramStart = "(", string paramSeparator = ", ", string paramEnd = ")", bool removeIForInterface = true, bool includeParamNames = false, int maxParams = 5)
         {
             string name = (method is ConstructorInfo) ? method.DeclaringType.ToText(false, true) : method.Name;
             if (removeIForInterface && Query.IsInterfaceMethod(method))
@@ -49,10 +49,13 @@ namespace BH.Engine.Reflection
                 {
                     // Collect parameters text
                     string[] paramText = parameters
-                        .Select(x => x.ParameterType.ToText() + " " + x.Name)
+                        .Select(x =>
+                        {
+                            return includeParamNames ? x.ParameterType.ToText() + " " + x.Name : x.ParameterType.ToText();
+                        })
                         .ToArray();
 
-                    if (parameters.Length > maxParams)
+                    if (includeParamNames && parameters.Length > maxParams)
                         text += paramText.Take(maxParams).Aggregate((x, y) => x + paramSeparator + y) + $", and {parameters.Length - maxParams} more inputs";
                     else
                         text += paramText.Aggregate((x, y) => x + paramSeparator + y);
