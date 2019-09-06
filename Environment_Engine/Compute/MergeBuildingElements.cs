@@ -89,10 +89,6 @@ namespace BH.Engine.Environment
                 panels.Add(panel1);
                 panels.Add(panel2);
 
-                //List<Polyline> pLines = new List<Polyline>();
-                //pLines.Add(panel1.Polyline());
-                //pLines.Add(panel2.Polyline());
-
                 List<Polyline> pLines = panels.Select(x => x.Polyline()).ToList();
                 List<Polyline> newGeometry = pLines.BooleanUnion(tolerance);
 
@@ -114,7 +110,7 @@ namespace BH.Engine.Environment
                 return rtnPanel;
 
             }
-            Reflection.Compute.RecordError("Panels have different ConnectedSpaces will not merge");
+            Reflection.Compute.RecordError("These panels do not belong to the same space(s) and cannot be merged together");
             return null;
 
         }

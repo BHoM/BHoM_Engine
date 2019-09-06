@@ -63,12 +63,12 @@ namespace BH.Engine.Environment
 
             if (floorGeometry.Count < 1) return null;
 
-                Polyline maxFloorGeometry = floorGeometry[0];
-                foreach(Polyline polyline in floorGeometry)
-                {
-                    if(polyline.Area()> maxFloorGeometry.Area())
+            Polyline maxFloorGeometry = floorGeometry[0];
+            foreach (Polyline polyline in floorGeometry)
+            {
+                if (polyline.Area() > maxFloorGeometry.Area())
                     maxFloorGeometry = polyline;
-                }
+            }
 
             return maxFloorGeometry;
         }
