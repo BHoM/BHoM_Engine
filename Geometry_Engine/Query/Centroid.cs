@@ -35,20 +35,31 @@ namespace BH.Engine.Geometry
         /***************************************************/
         /**** Public Methods - Curves                   ****/
         /***************************************************/
-
+        [Deprecated("2.4", "Deprecated to expose tolerance as optional parameter for greater control", null, "Centroid(this Polyline curve, double tolerance = Tolerance.Distance)")]
         public static Point Centroid(this Polyline curve)
         {
-            if (!curve.IsPlanar())
+            return curve.Centroid(Tolerance.Distance);
+        }
+
+        [Deprecated("2.4", "Deprecated to expose tolerance as optional parameter for greater control", null, "Centroid(this PolyCurve curve, double tolerance = Tolerance.Distance)")]
+        public static Point Centroid(this PolyCurve curve)
+        {
+            return curve.Centroid(Tolerance.Distance);
+        }
+
+        public static Point Centroid(this Polyline curve, double tolerance = Tolerance.Distance)
+        {
+            if (!curve.IsPlanar(tolerance))
             {
                 Reflection.Compute.RecordError("Input must be planar.");
                 return null;
             }
-            else if (!curve.IsClosed())
+            else if (!curve.IsClosed(tolerance))
             {
                 Reflection.Compute.RecordError("Curve is not closed. Input must be a polygon");
                 return null;
             }
-            else if (curve.IsSelfIntersecting())
+            else if (curve.IsSelfIntersecting(tolerance))
             {
                 Reflection.Compute.RecordWarning("Curve is self intersecting");
                 return null;
@@ -112,19 +123,19 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static Point Centroid(this PolyCurve curve)
+        public static Point Centroid(this PolyCurve curve, double tolerance = Tolerance.Distance)
         {
-            if (!curve.IsPlanar())
+            if (!curve.IsPlanar(tolerance))
             {
                 Reflection.Compute.RecordError("Input must be planar.");
                 return null;
             }
-            else if (!curve.IsClosed())
+            else if (!curve.IsClosed(tolerance))
             {
                 Reflection.Compute.RecordError("Curve is not closed.");
                 return null;
             }
-            else if (curve.IsSelfIntersecting())
+            else if (curve.IsSelfIntersecting(tolerance))
             {
                 Reflection.Compute.RecordWarning("Curve is self intersecting");
                 return null;
@@ -288,9 +299,9 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         public static Point ICentroid(this ICurve curve)
-            {
-                return Centroid(curve as dynamic);
-            }
+        {
+            return Centroid(curve as dynamic);
+        }
 
         /***************************************************/
     }
