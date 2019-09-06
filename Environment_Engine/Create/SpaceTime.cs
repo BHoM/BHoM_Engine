@@ -53,6 +53,48 @@ namespace BH.Engine.Environment
         [Output("spaceTime", "An Environment SpaceTime object - used for defining locations in space and time for climate analysis")]
         public static SpaceTime SpaceTime(Location location = null, int year = 2007, int month = 1, int day = 1, int hour = 12, int minute = 0, int second = 0, int millisecond = 0, string name = "")
         {
+            if (year < 1900 || year > 2500)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Invalid Year passed. It should be between 1900 and 2500");
+                return null;
+            }
+
+            if (month < 1 || month > 12)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Invalid Month passed. It should be between 1 and 12");
+                return null;
+            }
+
+            if (day < 1 || day > 31)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Invalid Day passed. It should be between 1 and 31"); // TODO: A more robust method of checking number of days in the Month and Year attribtes to check validity
+                return null;
+            }
+
+            if (hour < 0 || hour > 23)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Invalid Hour passed. It should be between 0 and 23");
+                return null;
+            }
+
+            if (minute < 0 || minute > 59)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Invalid Minute passed. It should be between 0 and 59");
+                return null;
+            }
+
+            if (second < 0 || second > 59)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Invalid Second passed. It should be between 0 and 59");
+                return null;
+            }
+
+            if (millisecond < 0 || millisecond > 999)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Invalid Millisecond passed. It should be between 0 and 999");
+                return null;
+            }
+
             return new SpaceTime
             {
                 Name = name,

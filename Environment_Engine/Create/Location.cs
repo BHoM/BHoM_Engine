@@ -49,6 +49,30 @@ namespace BH.Engine.Environment
         [Output("location", "An Environment location object - used for defining locations in space for climate analysis")]
         public static Location Location(double latitude = 0, double longitude = 0, double elevation = 0, double utcOffset = 0, string name = "")
         {
+            if (latitude < -90 || latitude > 90)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Invalid Latitude passed. It should be between -90 and 90");
+                return null;
+            }
+
+            if (longitude < -180 || longitude > 180)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Invalid Longitude passed. It should be between -180 and 180");
+                return null;
+            }
+
+            if (elevation < -413 || elevation > 8848)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Invalid Longitude passed. It should be between -180 and 180");
+                return null;
+            }
+
+            if (utcOffset < -12 || utcOffset > 12)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Invalid UtcOffset passed. It should be between -12 and 12");
+                return null;
+            }
+
             return new Location
             {
                 Name = name,
