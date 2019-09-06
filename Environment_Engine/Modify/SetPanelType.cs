@@ -123,7 +123,7 @@ namespace BH.Engine.Environment
         [Description("Returns the floor panels of a space represented by Environment Panels")]
         [Input("panelsAsSpace", "A collection of Environment Panels that represent a closed space")]
         [Output("floorPanels", "BHoM Environment panel representing the floor of the space")]
-        public static List<Panel> FloorPanels(this List<Panel> panelsAsSpace)
+        public static List<Panel> SetFloorPanels(this List<Panel> panelsAsSpace)
         {
             //Find the panel(s) that are at the lowest point of the space...
             double minZ = 1e10;
@@ -156,7 +156,7 @@ namespace BH.Engine.Environment
         [Description("Returns the roof panels of a space represented by Environment Panels")]
         [Input("panelsAsSpace", "A collection of Environment Panels that represent a closed space")]
         [Output("roofPanels", "BHoM Environment panel representing the roof of the space")]
-        public static List<Panel> RoofPanels(this List<Panel> panelsAsSpace)
+        public static List<Panel> SetRoofPanels(this List<Panel> panelsAsSpace)
         {
             //Find the panel(s) that are at the highest point of the space...
             double minZ = 1e10;
@@ -180,7 +180,7 @@ namespace BH.Engine.Environment
         [Description("Returns the wall panels of a space represented by Environment Panels and fixes PanelType")]
         [Input("panelsAsSpace", "A collection of Environment Panels that represent a closed space")]
         [Output("wallPanels", "BHoM Environment panel representing the wall of the space")]
-        public static List<Panel> WallPanels(this List<Panel> panelsAsSpace)
+        public static List<Panel> SetWallPanels(this List<Panel> panelsAsSpace)
         {
             //Find the panel(s) that ... is horizontal
             double minZ = 1e10;
@@ -212,7 +212,7 @@ namespace BH.Engine.Environment
         [Description("Returns the shade panels represented by Environment Panels with no adj spaces and fixes PanelType")]
         [Input("panels", "A collection of Environment Panels")]
         [Output("shadePanels", "BHoM Environment panel representing the shade")]
-        public static List<Panel> ShadePanels(this List<Panel> panels)
+        public static List<Panel> SetShadePanels(this List<Panel> panels)
         {
             //Find the panel(s) without connected spaces and set as shade
             List<Panel> shadePanels = panels;
