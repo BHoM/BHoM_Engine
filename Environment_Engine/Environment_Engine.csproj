@@ -87,6 +87,7 @@
     <Compile Include="Modify\FixNormal.cs" />
     <Compile Include="Modify\Remove.cs" />
     <Compile Include="Query\Absorptance.cs" />
+    <Compile Include="Query\DateTime.cs" />
     <Compile Include="Query\ICurve.cs" />
     <Compile Include="Query\IsTransparent.cs" />
     <Compile Include="Query\Line.cs" />

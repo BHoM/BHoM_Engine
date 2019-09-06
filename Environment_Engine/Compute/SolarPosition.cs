@@ -48,13 +48,12 @@ namespace BH.Engine.Environment
         [Input("dateTime", "The date and time for the calculation of the solar azimuth. Default null - will default to the 1st January 1900 00:00:00.0")]
         [Input("utcOffset", "The number of hours offset from UTC time, default 0")]
         [Output("sun", "The sun with calculated position")]
-        public static Sun SolarPosition(double latitude = 0, double longitude = 0, DateTime? dateTime = null, double utcOffset = 0)
+        public static Sun SolarPosition(this SpaceTime spaceTime)
         {
-            DateTime dt;
-            if (dateTime == null)
-                dt = new DateTime(1900, 1, 1, 0, 0, 0);
-            else
-                dt = dateTime.Value;
+            double latitude = spaceTime.Location.Latitude;
+            double longitude = spaceTime.Location.Longitude;
+            double utcOffset = spaceTime.Location.UtcOffset;
+            DateTime dt = spaceTime.DateTime();
 
             double[][][] R_TERMS = new double[][][]
             {
