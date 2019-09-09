@@ -55,12 +55,19 @@ namespace BH.Engine.Reflection
                         string singleParamText = includeParamNames ?
                             parameters[i].ParameterType.ToText() + " " + parameters[i].Name : parameters[i].ParameterType.ToText();
 
-                        if (i > 0 && i > maxParams || string.Join(paramText, singleParamText).Length > maxChars)
+                        if (i == 0)
+                        {
+                            paramText = singleParamText;
+                            continue;
+                        }
+
+                        if (i > maxParams || string.Join(paramText, singleParamText).Length > maxChars)
                         {
                             paramText += $", and {parameters.Length - i} more inputs";
                             break;
                         }
-                        paramText += i == 0 ? singleParamText : ", " + singleParamText;
+
+                        paramText += ", " + singleParamText;
                     }
                 }
 
