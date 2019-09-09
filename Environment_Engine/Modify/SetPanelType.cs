@@ -168,7 +168,7 @@ namespace BH.Engine.Environment
 
             List<Panel> roofPanels = panelsAsSpace.Where(x => ((x.MinimumLevel() != minZ && x.MaximumLevel() != minZ) && Math.Round(x.Tilt()) != 90) && x.ConnectedSpaces.ToList().Count == 1).ToList();
 
-            foreach (Panel panel in panelsAsSpace)
+            foreach (Panel panel in roofPanels)
             {
                 if (panel.ConnectedSpaces.Where(x => x != "-1").ToList().Count == 1)
                     panel.Type = PanelType.Roof;
