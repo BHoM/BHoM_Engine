@@ -47,6 +47,40 @@ namespace BH.Engine.Geometry
             return curve.Centroid(Tolerance.Distance);
         }
 
+        [Deprecated("2.4", "Deprecated to expose tolerance as optional parameter for greater control", null, "Centroid(this Ellipse ellipse, double tolerance = Tolerance.Distance)")]
+        public static Point Centroid(this Ellipse ellipse)
+        {
+            return ellipse.Centre;
+        }
+
+        [Deprecated("2.4", "Deprecated to expose tolerance as optional parameter for greater control", null, "Centroid(this Circle circle, double tolerance = Tolerance.Distance)")]
+        public static Point Centroid(this Circle circle)
+        {
+            return circle.Centre;
+        }
+
+        [Deprecated("2.4", "Deprecated to expose tolerance as optional parameter for greater control", null, "Centroid(this Line line, double tolerance = Tolerance.Distance)")]
+        public static Point Centroid(this Line line)
+        {
+            return line.PointAtParameter(0.5);
+        }
+
+        [NotImplemented]
+        [Deprecated("2.4", "Deprecated to expose tolerance as optional parameter for greater control", null, "Centroid(this Arc arc, double tolerance = Tolerance.Distance)")]
+        public static Point Centroid(this Arc arc)
+        {
+            throw new NotImplementedException();
+        }
+
+        [NotImplemented]
+        [Deprecated("2.4", "Deprecated to expose tolerance as optional parameter for greater control", null, "Centroid(this NurbsCurve nurbsCurve, double tolerance = Tolerance.Distance)")]
+        public static Point Centroid(this NurbsCurve nurbsCurve)
+        {
+            throw new NotImplementedException();
+        }
+
+        /***************************************************/
+
         public static Point Centroid(this Polyline curve, double tolerance = Tolerance.Distance)
         {
             if (!curve.IsPlanar(tolerance))
@@ -242,21 +276,21 @@ namespace BH.Engine.Geometry
         
         /***************************************************/
 
-        public static Point Centroid(this Ellipse ellipse)
+        public static Point Centroid(this Ellipse ellipse, double tolerance = Tolerance.Distance)
         {
             return ellipse.Centre;
         }
                 
         /***************************************************/
 
-        public static Point Centroid(this Circle circle)
+        public static Point Centroid(this Circle circle, double tolerance = Tolerance.Distance)
         {
             return circle.Centre;
         }
         
         /***************************************************/
 
-        public static Point Centroid(this Line line)
+        public static Point Centroid(this Line line, double tolerance = Tolerance.Distance)
         {
             return line.PointAtParameter(0.5);
         }
@@ -264,7 +298,7 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [NotImplemented]
-        public static Point Centroid(this Arc arc)
+        public static Point Centroid(this Arc arc, double tolerance = Tolerance.Distance)
         {
             throw new NotImplementedException();
         }
@@ -272,7 +306,7 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [NotImplemented]
-        public static Point Centroid(this NurbsCurve nurbsCurve)
+        public static Point Centroid(this NurbsCurve nurbsCurve, double tolerance = Tolerance.Distance)
         {
             throw new NotImplementedException();
         }
@@ -298,9 +332,9 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
-        public static Point ICentroid(this ICurve curve)
+        public static Point ICentroid(this ICurve curve, double tolerance = Tolerance.Distance)
         {
-            return Centroid(curve as dynamic);
+            return Centroid(curve as dynamic, tolerance);
         }
 
         /***************************************************/
