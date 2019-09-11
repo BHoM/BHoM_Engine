@@ -51,7 +51,8 @@ namespace BH.Engine.Geometry
 
             List<Point> pnts = polyline.DiscontinuityPoints();
 
-            if (pnts.Count < 3) return polyline; //If there's only two points here then this method isn't necessary
+            if (pnts.Count < 3)
+                return polyline; //If there's only two points here then this method isn't necessary
 
             int startIndex = 0;
             while (startIndex < pnts.Count)
@@ -61,10 +62,7 @@ namespace BH.Engine.Geometry
                 Point third = pnts[(startIndex + 2) % pnts.Count];
 
                 if (first.Angle(second, third) <= angleTolerance)
-                {
-                    //Delete the second point from the list, it's not necessary
-                    pnts.RemoveAt((startIndex + 1) % pnts.Count);
-                }
+                    pnts.RemoveAt((startIndex + 1) % pnts.Count);  //Delete the second point from the list, it's not necessary
                 else
                     startIndex++; //Move onto the next point
             }
@@ -79,5 +77,7 @@ namespace BH.Engine.Geometry
 
             return pLine;
         }
+
+        /***************************************************/
     }
 }
