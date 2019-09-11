@@ -50,33 +50,33 @@ namespace BH.Engine.Geometry
         [Deprecated("2.4", "Deprecated to expose tolerance as optional parameter for greater control", null, "Centroid(this Ellipse ellipse, double tolerance = Tolerance.Distance)")]
         public static Point Centroid(this Ellipse ellipse)
         {
-            return ellipse.Centre;
+            return ellipse.Centroid(Tolerance.Distance);
         }
 
         [Deprecated("2.4", "Deprecated to expose tolerance as optional parameter for greater control", null, "Centroid(this Circle circle, double tolerance = Tolerance.Distance)")]
         public static Point Centroid(this Circle circle)
         {
-            return circle.Centre;
+            return circle.Centroid(Tolerance.Distance);
         }
 
         [Deprecated("2.4", "Deprecated to expose tolerance as optional parameter for greater control", null, "Centroid(this Line line, double tolerance = Tolerance.Distance)")]
         public static Point Centroid(this Line line)
         {
-            return line.PointAtParameter(0.5);
+            return line.Centroid(Tolerance.Distance);
         }
 
         [NotImplemented]
         [Deprecated("2.4", "Deprecated to expose tolerance as optional parameter for greater control", null, "Centroid(this Arc arc, double tolerance = Tolerance.Distance)")]
         public static Point Centroid(this Arc arc)
         {
-            throw new NotImplementedException();
+            return arc.Centroid(Tolerance.Distance);
         }
 
         [NotImplemented]
         [Deprecated("2.4", "Deprecated to expose tolerance as optional parameter for greater control", null, "Centroid(this NurbsCurve nurbsCurve, double tolerance = Tolerance.Distance)")]
         public static Point Centroid(this NurbsCurve nurbsCurve)
         {
-            throw new NotImplementedException();
+            return nurbsCurve.Centroid(Tolerance.Distance);
         }
 
         /***************************************************/
