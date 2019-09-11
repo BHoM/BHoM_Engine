@@ -25,25 +25,25 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
 using BH.oM.Base;
-using BH.oM.Physical;
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
 
-namespace BH.Engine.Physical
+namespace BH.Engine.Base
 {
-    public static partial class Modify
+    public static partial class Query
     {
-        [Description("Appends a Fragment Property to a given Physical Object")]
-        [Input("physicalObject", "Any object implementing the IPhysical interface that can have fragment properties appended to it")]
-        [Input("fragment", "Any fragment object implementing the IBHoMFragment interface to append to the object")]
-        [Output("physicalObject", "The environment object with the added fragment")]
-        public static IPhysical AddFragment(this IPhysical physicalObject, IBHoMFragment fragment)
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
+
+        [Description("Returns an instance of a BHoM Fragment if it exists on the object")]
+        [Input("iBHoMObject", "A generic IBHoMObject object")]
+        [Input("fragmentType", "The type of fragment to be queried and returned")]
+        [Output("fragment", "The instance of that Fragment if it exists on the object, null otherwise")]
+        public static T FindFragment<T>(this IBHoMObject iBHoMObject, Type fragmentType)
         {
-            if (physicalObject == null) return null;
-            physicalObject.Fragments.Add(fragment);
-            return physicalObject;
+            return (T)System.Convert.ChangeType(iBHoMObject.Fragments.Where(x => x.GetType() == fragmentType).FirstOrDefault(), fragmentType);
         }
     }
 }
