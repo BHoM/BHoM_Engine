@@ -43,11 +43,24 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Deprecated("2.4", "Deprecated to expose tolerance as optional parameter for greater control", null, "NormalAwayFromSpace(this Panel panel, List<Panel> panelsAsSpace, double tolerance = Tolerance.Distance)")]
+        public static bool NormalAwayFromSpace(this Panel panel, List<Panel> panelsAsSpace)
+        {
+            return panel.NormalAwayFromSpace(panelsAsSpace, BH.oM.Geometry.Tolerance.Distance);
+        }
+
+        [Deprecated("2.4", "Deprecated to expose tolerance as optional parameter for greater control", null, "NormalAwayFromSpace(this Polyline polyline, List<Panel> panelsAsSpace, double tolerance = Tolerance.Distance)")]
+        public static bool NormalAwayFromSpace(this Polyline polyline, List<Panel> panelsAsSpace)
+        {
+            return polyline.NormalAwayFromSpace(panelsAsSpace, BH.oM.Geometry.Tolerance.Distance);
+        }
+
         [Description("Returns whether the normal of a given Environment Panel is facing away from the containing space")]
         [Input("panel", "An Environment Panel to check")]
         [Input("panelsAsSpace", "A collection of Environment Panels which represent a single space")]
+        [Input("tolerance", "Distance tolerance for planar checks, default set to BH.oM.Geometry.Tolerance.Distance")]
         [Output("normalAwayFromSpace", "True if the normal of the panel is facing away from the space, false otherwise")]
-        public static bool NormalAwayFromSpace(this Panel panel, List<Panel> panelsAsSpace)
+        public static bool NormalAwayFromSpace(this Panel panel, List<Panel> panelsAsSpace, double tolerance = BH.oM.Geometry.Tolerance.Distance)
         {
             return NormalAwayFromSpace(panel.Polyline(), panelsAsSpace);
         }
@@ -55,24 +68,25 @@ namespace BH.Engine.Environment
         [Description("Returns whether the normal of a given polyline is facing away from the containing space")]
         [Input("polyline", "A BHoM Geometry Polyline to check")]
         [Input("panelsAsSpace", "A collection of Environment Panels which represent a single space")]
+        [Input("tolerance", "Distance tolerance for planar checks, default set to BH.oM.Geometry.Tolerance.Distance")]
         [Output("normalAwayFromSpace", "True if the normal of the polyline is facing away from the space, false otherwise")]
-        public static bool NormalAwayFromSpace(this Polyline polyline, List<Panel> panelsAsSpace)
+        public static bool NormalAwayFromSpace(this Polyline polyline, List<Panel> panelsAsSpace, double tolerance = BH.oM.Geometry.Tolerance.Distance)
         {
             List<Point> centrePtList = new List<Point>();
-            Point centrePt = polyline.PointInRegion(); //Modifed to Centroid to fix special cases Point centrePt = polyline.Centre();
+            Point centrePt = polyline.PointInRegion(false, tolerance); //Modifed to Centroid to fix special cases Point centrePt = polyline.Centre();
             centrePtList.Add(centrePt);
 
             if (!polyline.IsClosed()) return false; //Prevent failures of the clockwise check
 
-            List<Point> pts = polyline.DiscontinuityPoints();
+            List<Point> pts = polyline.DiscontinuityPoints(tolerance);
             if (pts.Count < 3) return false; //Protection in case there aren't enough points to make a plane
             Plane plane = BH.Engine.Geometry.Create.Plane(pts[0], pts[1], pts[2]);
 
             //The polyline can be locally concave. Check if the polyline is clockwise.
-            if (!BH.Engine.Geometry.Query.IsClockwise(polyline, plane.Normal))
+            if (!BH.Engine.Geometry.Query.IsClockwise(polyline, plane.Normal, tolerance))
                 plane.Normal = -plane.Normal;
 
-            if (!BH.Engine.Geometry.Query.IsContaining(polyline, centrePtList, false))
+            if (!BH.Engine.Geometry.Query.IsContaining(polyline, centrePtList, false, tolerance))
             {
                 Point pointOnLine = polyline.ClosestPoint(centrePt);
                 Vector vector = new Vector();
