@@ -50,6 +50,12 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Deprecated("2.4", "Deprecated to expose tolerance as optional parameter for greater control", null, "PanelsContainingPoint(this List<Panel> panels, Point searchPoint, bool acceptOnEdge = false, double tolerance = Tolerance.Distance)")]
+        public static List<Panel> PanelsContainingPoint(this List<Panel> panels, Point searchPoint)
+        {
+            return panels.PanelsContainingPoint(searchPoint, false, BH.oM.Geometry.Tolerance.Distance);
+        }
+
         [Description("Returns a collection of Environment Panels from a list of generic BHoM objects")]
         [Input("bhomObjects", "A collection of generic BHoM objects")]
         [Output("panels", "A collection of Environment Panel objects")]
@@ -132,10 +138,12 @@ namespace BH.Engine.Environment
         [Description("Returns a collection of Environment Panels containing the given search point")]
         [Input("panels", "A collection of Environment Panels")]
         [Input("searchPoint", "The BHoM Geometry Point to search by")]
+        [Input("acceptOnEdge", "Set whether or not to accept points on the edge of panels, default false")]
+        [Input("tolerance", "Set the distance tolerance for containing a point, default is equal to that given by BH.oM.Geometry.Tolerance.Distance")]
         [Output("panels", "A collection of Environment Panel where the external edges contain the given search point")]
-        public static List<Panel> PanelsContainingPoint(this List<Panel> panels, Point searchPoint)
+        public static List<Panel> PanelsContainingPoint(this List<Panel> panels, Point searchPoint, bool acceptOnEdge = false, double tolerance = BH.oM.Geometry.Tolerance.Distance)
         {
-            return panels.Where(x => x.Polyline().IsContaining(new List<Point>() { searchPoint })).ToList();
+            return panels.Where(x => x.Polyline().IsContaining(new List<Point>() { searchPoint }, acceptOnEdge, tolerance)).ToList();
         }
 
         [Description("Returns a collection of Environment Panels that match the given geometry")]
