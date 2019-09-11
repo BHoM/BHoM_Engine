@@ -35,7 +35,7 @@ namespace BH.Engine.Geometry
 
         public static Point PointInRegion(this ICurve curve, bool acceptOnEdge = false, double tolerance = Tolerance.Distance)
         {
-            Point point = curve.ICentroid();
+            Point point = curve.ICentroid(tolerance);
             if (curve.IIsContaining(new List<Point> { point }, acceptOnEdge, tolerance))
                 return point;
 

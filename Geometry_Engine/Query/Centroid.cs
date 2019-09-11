@@ -111,7 +111,7 @@ namespace BH.Engine.Geometry
 
             firstNormal = CrossProduct(pB0 - pA, pC0 - pA);
 
-            Vector normal = Normal(curve);
+            Vector normal = Normal(curve, tolerance);
 
             Boolean dir = DotProduct(normal, firstNormal) > 0;
 
@@ -194,7 +194,7 @@ namespace BH.Engine.Geometry
             double xc, yc, zc;
             double xc0 = 0, yc0 = 0, zc0 = 0;
 
-            Vector normal = Normal(curve);
+            Vector normal = Normal(curve, tolerance);
 
             Point pA = pts[0];
             Point pB0 = pts[1];
