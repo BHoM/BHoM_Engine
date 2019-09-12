@@ -41,8 +41,10 @@ namespace BH.Engine.Base
         public static IBHoMObject AddFragment(this IBHoMObject iBHoMObject, IBHoMFragment fragment)
         {
             if (iBHoMObject == null) return null;
-            iBHoMObject.Fragments.Add(fragment);
-            return iBHoMObject;
+            IBHoMObject o = iBHoMObject.DeepClone();
+            o.Fragments = new List<IBHoMFragment>(iBHoMObject.Fragments);
+            o.Fragments.Add(fragment);
+            return o;
         }
     }
 }
