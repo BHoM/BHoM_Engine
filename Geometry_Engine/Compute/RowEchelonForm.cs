@@ -131,7 +131,11 @@ namespace BH.Engine.Geometry
                 maxRowSum = Math.Max(maxRowSum, rowSum);
             }
 
-            return tolerance * Math.Max(d1, d2) * maxRowSum;
+            double result = tolerance * Math.Max(d1, d2) * maxRowSum;
+            if (result >= 1)
+                result = 1 - tolerance;
+
+            return result;
         }
 
         /***************************************************/
