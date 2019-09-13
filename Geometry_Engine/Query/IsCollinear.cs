@@ -47,7 +47,7 @@ namespace BH.Engine.Geometry
             }
 
             double REFTolerance = vMatrix.REFTolerance(tolerance);
-            double[,] rref = vMatrix.RowEchelonForm(false, REFTolerance);
+            double[,] rref = vMatrix.RowEchelonForm(true, REFTolerance);
             int nonZeroRows = rref.CountNonZeroRows(REFTolerance);
             return nonZeroRows < 2;
         }

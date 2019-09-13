@@ -166,7 +166,7 @@ namespace BH.Engine.Environment
                     minZ = Math.Min(minZ, panel.MinimumLevel());
             }
 
-            List<Panel> roofPanels = panelsAsSpace.Where(x => ((x.MinimumLevel() != minZ && x.MaximumLevel() != minZ) && Math.Round(x.Tilt()) != 90) && x.ConnectedSpaces.ToList().Count == 1).ToList();
+            List<Panel> roofPanels = panelsAsSpace.Where(x => ((x.MaximumLevel() != minZ) && (Math.Round(x.Tilt()) >= 92 || Math.Round(x.Tilt()) <= 88)) && x.ConnectedSpaces.ToList().Count == 1).ToList();
 
             foreach (Panel panel in roofPanels)
             {
