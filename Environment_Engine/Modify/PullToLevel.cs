@@ -28,6 +28,7 @@ using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
 using System.Collections.Generic;
+using BH.oM.Architecture.Elements;
 
 namespace BH.Engine.Environment
 {
@@ -37,30 +38,48 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Adjust Environmnet Panel to get planar by adjusting Z-coordiante")]
-        [Input("environmentPanel", " Environment Panel")]
-        [Input("Z", " Z-coordinate elevation for points to adjust")]
-        [Input("tolerance", " tolerance distnace to pick Z coordinates to adjust")]
-        [Output("environmentObject", "Environmnet Panel")]
-        public static IEnvironmentObject PullToLevel(this IEnvironmentObject environmentObject, double Z, double tolerance = 0.05 )
+        [Description("Pull an Environment Object to a given Architectural Level")]
+        [Input("environmentObject", "An Environment Object implementing the IEnvironmentObject interface")]
+        [Input("level", "The Architectural Level to pull to")]
+        [Input("tolerance", "The tolerance distance in which to catch points for adjustment, default is set to BH.oM.Geometry.Tolerance.Distance")]
+        [Output("environmentObject", "Environment Object pulled to the given level")]
+        public static IEnvironmentObject PullToLevel(this IEnvironmentObject environmentObject, Level level, double tolerance = BH.oM.Geometry.Tolerance.Distance)
         {
-            Polyline aPolyline = PullToLevel(environmentObject.Polyline(), tolerance);
-
-            return SetGeometry(environmentObject as dynamic, aPolyline as dynamic);
+            return environmentObject.PullToLevel(level.Elevation, tolerance);
         }
 
-        [Description("Adjust Polyline to get planar, Topologic")]
-        [Input("Polyline", "")]
-        [Input("Z", "Z-coordinate elevation for points to adjust")]
-        [Input("tolerance", " tolerance distnace to pick Z coordinates to adjust")]
-        [Output("Polyline", "Polyline")]
-        public static Polyline PullToLevel(this Polyline polyline, double Z, double tolerance = 0.05)
+        [Description("Pull a BHoM Geometry Polyline to a given Architectural Level")]
+        [Input("polyline", "A BHoM Geometry Polyline to pull to the given level")]
+        [Input("level", "The Architectural Level to pull to")]
+        [Input("tolerance", "The tolerance distance in which to catch points for adjustment, default is set to BH.oM.Geometry.Tolerance.Distance")]
+        [Output("polyline", "Polylinue pulled to the given level")]
+        public static Polyline PullToLevel(this Polyline polyline, Level level, double tolerance = BH.oM.Geometry.Tolerance.Distance)
+        {
+            return polyline.PullToLevel(level.Elevation, tolerance);
+        }
+
+        [Description("Pull an Environment Object to a planar level")]
+        [Input("environmentObject", "An Environment Object implementing the IEnvironmentObject interface")]
+        [Input("level", "The level value (Z-value) to pull to")]
+        [Input("tolerance", "The tolerance distance in which to catch points for adjustment, default is set to BH.oM.Geometry.Tolerance.Distance")]
+        [Output("environmentObject", "Environment Object pulled to the given level")]
+        public static IEnvironmentObject PullToLevel(this IEnvironmentObject environmentObject, double level, double tolerance = BH.oM.Geometry.Tolerance.Distance)
+        {
+            return SetGeometry(environmentObject as dynamic, PullToLevel(environmentObject.Polyline(), level, tolerance) as dynamic);
+        }
+
+        [Description("Pull a BHoM Geometry Polyline to a planar level")]
+        [Input("polyline", "A BHoM Geometry Polyline to pull to the given level")]
+        [Input("level", "The level value (Z-value) to pull to")]
+        [Input("tolerance", "The tolerance distance in which to catch points for adjustment, default is set to BH.oM.Geometry.Tolerance.Distance")]
+        [Output("polyline", "Polylinue pulled to the given level")]
+        public static Polyline PullToLevel(this Polyline polyline, double level, double tolerance = BH.oM.Geometry.Tolerance.Distance)
         {
 
             List<Point> aPointList = new List<Point>();
             foreach (Point aPoint in polyline.IControlPoints())
             {
-                Point aPoint_Temp = Geometry.Create.Point(aPoint.X, aPoint.Y, Z);
+                Point aPoint_Temp = Geometry.Create.Point(aPoint.X, aPoint.Y, level);
                 if (Geometry.Query.Distance(aPoint_Temp, aPoint) <= tolerance)
                     aPointList.Add(aPoint_Temp);
                 else

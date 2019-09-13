@@ -52,7 +52,7 @@ namespace BH.Engine.Environment
         [Deprecated("2.4", "Deprecated to expose tolerance as optional parameter for greater control", null, "NormalAwayFromSpace(this Polyline polyline, List<Panel> panelsAsSpace, double tolerance = Tolerance.Distance)")]
         public static bool NormalAwayFromSpace(this Polyline polyline, List<Panel> panelsAsSpace)
         {
-            return polyline.NormalAwayFromSpace(panelsAsSpace, 0.001);
+            return polyline.NormalAwayFromSpace(panelsAsSpace, BH.oM.Geometry.Tolerance.Distance);
         }
 
         [Description("Returns whether the normal of a given Environment Panel is facing away from the containing space")]
