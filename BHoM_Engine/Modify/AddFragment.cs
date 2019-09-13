@@ -37,13 +37,27 @@ namespace BH.Engine.Base
         [Description("Appends a Fragment Property to a given BHoM Object")]
         [Input("iBHoMObject", "Any object implementing the IBHoMObject interface that can have fragment properties appended to it")]
         [Input("fragment", "Any fragment object implementing the IBHoMFragment interface to append to the object")]
+        [Input("replace", "If true will replace exisiting fragments ")]
         [Output("iBHoMObject", "The BHoM object with the added fragment")]
-        public static IBHoMObject AddFragment(this IBHoMObject iBHoMObject, IBHoMFragment fragment)
+        public static IBHoMObject AddFragment(this IBHoMObject iBHoMObject, IBHoMFragment fragment, bool replace = false)
         {
             if (iBHoMObject == null) return null;
             IBHoMObject o = iBHoMObject.DeepClone();
             o.Fragments = new List<IBHoMFragment>(iBHoMObject.Fragments);
-            o.Fragments.Add(fragment);
+            if(o.Fragments.Contains(fragment))
+            {
+                if(replace)
+                {
+                    o.Fragments[o.Fragments.IndexOf(fragment)] = fragment;
+                }
+                else
+                {
+                    Reflection.Compute.RecordError("Fragment already exists");
+                }
+            }
+            else
+                o.Fragments.Add(fragment);
+
             return o;
         }
     }
