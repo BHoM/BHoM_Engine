@@ -78,6 +78,8 @@
     <Compile Include="Create\Cuboid.cs" />
     <Compile Include="Create\Cylinder.cs" />
     <Compile Include="Create\Geometry.cs" />
+    <Compile Include="Create\SettingOut\Grid.cs" />
+    <Compile Include="Create\SettingOut\Level.cs" />
     <Compile Include="Create\PlanarSurface.cs" />
     <Compile Include="Create\ShapeProfileCurves.cs" />
     <Compile Include="Create\ShapeProfile.cs" />
