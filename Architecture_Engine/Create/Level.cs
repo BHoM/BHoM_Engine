@@ -21,6 +21,7 @@
  */
 
 using BH.oM.Architecture.Elements;
+using BH.oM.Reflection.Attributes;
 
 namespace BH.Engine.Architecture.Elements
 {
@@ -30,6 +31,7 @@ namespace BH.Engine.Architecture.Elements
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Deprecated("2.4", "BH.Engine.Architecture.Elements.Level superseded by BH.oM.Geometry.SettingOut.Level")]
         public static Level Level(double elevation)
         {
             return new Level
@@ -40,6 +42,7 @@ namespace BH.Engine.Architecture.Elements
 
         /***************************************************/
 
+        [Deprecated("2.4", "BH.Engine.Architecture.Elements.Level superseded by BH.oM.Geometry.SettingOut.Level")]
         public static Level Level(double elevation, string name)
         {
             return new Level
