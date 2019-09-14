@@ -21,6 +21,7 @@
  */
 
 using BH.oM.Geometry;
+using BH.oM.Geometry.SettingOut;
 
 namespace BH.Engine.Geometry
 {
@@ -84,6 +85,14 @@ namespace BH.Engine.Geometry
             return newCurve.IClone();
         }
 
+        /***************************************************/
+
+        public static Grid SetGeometry(this Grid grid, ICurve curve)
+        {
+            Grid clone = grid.GetShallowClone() as Grid;
+            clone.Curve = curve.IClone();
+            return clone;
+        }
 
         /***************************************************/
         /****              Interface Methods            ****/
