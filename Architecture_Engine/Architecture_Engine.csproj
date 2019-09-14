@@ -59,6 +59,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Create\SettingOut\Grid.cs" />
+    <Compile Include="Create\SettingOut\Level.cs" />
     <Compile Include="Create\Theatron\CircularStadiaPlan.cs" />
     <Compile Include="Create\Theatron\EightArcStadiaPlan.cs" />
     <Compile Include="Create\Theatron\FourArcStadiaPlan.cs" />

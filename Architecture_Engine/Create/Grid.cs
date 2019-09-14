@@ -19,8 +19,8 @@
  * You should have received a copy of the GNU Lesser General Public License     
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
-
 using BH.oM.Geometry;
+using BH.oM.Reflection.Attributes;
 using BH.oM.Architecture.Elements;
 using System.Collections.Generic;
 using BH.Engine.Geometry;
@@ -33,6 +33,7 @@ namespace BH.Engine.Architecture.Elements
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Deprecated("2.4", "BH.Engine.Architecture.Elements.Grid superseded by BH.oM.Geometry.SettingOut.Grid")]
         public static Grid Grid(ICurve curve)
         {
             return new Grid
@@ -43,6 +44,7 @@ namespace BH.Engine.Architecture.Elements
 
         /***************************************************/
 
+        [Deprecated("2.4", "BH.Engine.Architecture.Elements.Grid superseded by BH.oM.Geometry.SettingOut.Grid")]
         public static Grid Grid(Point origin, Vector direction, double length = 20)
         {
             Line line = new Line { Start = new Point { X = origin.X, Y = origin.Y, Z = 0 }, End = origin + new Vector { X = direction.X, Y = direction.Y, Z = 0 }.Normalise() * length };
@@ -51,6 +53,7 @@ namespace BH.Engine.Architecture.Elements
 
         /***************************************************/
 
+        [Deprecated("2.4", "BH.Engine.Architecture.Elements.Grid superseded by BH.oM.Geometry.SettingOut.Grid")]
         public static Grid Grid(ICurve curve, string name)
         {
             return new Grid
@@ -62,6 +65,7 @@ namespace BH.Engine.Architecture.Elements
 
         /***************************************************/
 
+        [Deprecated("2.4", "BH.Engine.Architecture.Elements.Grid superseded by BH.oM.Geometry.SettingOut.Grid")]
         public static Grid Grid(Point origin, Vector direction, string name, double length = 20)
         {
             Line line = new Line { Start = new Point { X = origin.X, Y = origin.Y, Z = 0 }, End = origin + new Vector { X = direction.X, Y = direction.Y, Z = 0 }.Normalise() * length };
