@@ -23,6 +23,7 @@
 using BH.Engine.Geometry;
 using BH.oM.Architecture.Elements;
 using BH.oM.Geometry;
+using BH.oM.Reflection.Attributes;
 
 namespace BH.Engine.Architecture
 {
@@ -31,7 +32,8 @@ namespace BH.Engine.Architecture
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-
+   
+        [Deprecated("2.4", "BH.Engine.Architecture.Elements.Grid superseded by BH.oM.Geometry.SettingOut.Grid")]
         public static Grid SetGeometry(this Grid grid, ICurve curve)
         {
             Grid clone = grid.GetShallowClone() as Grid;
