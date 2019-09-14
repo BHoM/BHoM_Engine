@@ -36,7 +36,7 @@ using BH.Engine.Geometry;
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
 
-using BH.oM.Architecture.Elements;
+using BH.oM.Geometry.SettingOut;
 
 using BH.Engine.Base;
 
@@ -208,7 +208,7 @@ namespace BH.Engine.Environment
 
         [Description("Returns a collection of Environment Panels that sit entirely on a given levels elevation")]
         [Input("panels", "A collection of Environment Panels to filter")]
-        [Input("searchLevel", "The Architecture level to search by")]
+        [Input("searchLevel", "The Setting Out Level to search by")]
         [Output("panels", "A collection of Environment Panels which match the given level")]
         public static List<Panel> PanelsByLevel(this List<Panel> panels, Level searchLevel)
         {
@@ -226,7 +226,7 @@ namespace BH.Engine.Environment
 
         [Description("Returns a collection of Environment Panels where the minimum level of the panel matches the elevation of the given search level")]
         [Input("panels", "A collection of Environment Panels to filter")]
-        [Input("searchLevel", "The Architecture level to search by")]
+        [Input("searchLevel", "The Setting Out Level to search by")]
         [Output("panels", "A collection of Environment Panels where the minimum level meets the search level")]
         public static List<Panel> PanelsByMinimumLevel(this List<Panel> panels, Level searchLevel)
         {
@@ -244,7 +244,7 @@ namespace BH.Engine.Environment
 
         [Description("Returns a collection of Environment Panels where the maximum level of the panel matches the elevation of the given search level")]
         [Input("panels", "A collection of Environment Panels to filter")]
-        [Input("searchLevel", "The Architecture level to search by")]
+        [Input("searchLevel", "The Setting Level to search by")]
         [Output("panels", "A collection of Environment Panels where the maximum level meets the search level")]
         public static List<Panel> PanelsByMaximumLevel(this List<Panel> panels, Level searchLevel)
         {
@@ -300,5 +300,44 @@ namespace BH.Engine.Environment
         }
 
 
+        /***************************************************/
+        /**** Deprecated Methods                        ****/
+        /***************************************************/
+
+        [Description("Returns a collection of Environment Panels that sit entirely on a given levels elevation")]
+        [Input("panels", "A collection of Environment Panels to filter")]
+        [Input("searchLevel", "The Architecture level to search by")]
+        [Output("panels", "A collection of Environment Panels which match the given level")]
+        [Deprecated("2.4", "BH.oM.Architecture.Elements.Level superseded by BH.oM.Geometry.SettingOut.Level")]
+        public static List<Panel> PanelsByLevel(this List<Panel> panels, BH.oM.Architecture.Elements.Level searchLevel)
+        {
+            return panels.PanelsByLevel(searchLevel.Elevation);
+        }
+
+        /***************************************************/
+
+        [Description("Returns a collection of Environment Panels where the minimum level of the panel matches the elevation of the given search level")]
+        [Input("panels", "A collection of Environment Panels to filter")]
+        [Input("searchLevel", "The Architecture level to search by")]
+        [Output("panels", "A collection of Environment Panels where the minimum level meets the search level")]
+        [Deprecated("2.4", "BH.oM.Architecture.Elements.Level superseded by BH.oM.Geometry.SettingOut.Level")]
+        public static List<Panel> PanelsByMinimumLevel(this List<Panel> panels, BH.oM.Architecture.Elements.Level searchLevel)
+        {
+            return panels.PanelsByMinimumLevel(searchLevel.Elevation);
+        }
+
+        /***************************************************/
+
+        [Description("Returns a collection of Environment Panels where the maximum level of the panel matches the elevation of the given search level")]
+        [Input("panels", "A collection of Environment Panels to filter")]
+        [Input("searchLevel", "The Architecture level to search by")]
+        [Output("panels", "A collection of Environment Panels where the maximum level meets the search level")]
+        [Deprecated("2.4", "BH.oM.Architecture.Elements.Level superseded by BH.oM.Geometry.SettingOut.Level")]
+        public static List<Panel> PanelsByMaximumLevel(this List<Panel> panels, BH.oM.Architecture.Elements.Level searchLevel)
+        {
+            return panels.PanelsByMaximumLevel(searchLevel.Elevation);
+        }
+
+        /***************************************************/
     }
 }
