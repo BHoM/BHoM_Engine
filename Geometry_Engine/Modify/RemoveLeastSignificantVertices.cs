@@ -48,35 +48,17 @@ namespace BH.Engine.Geometry
             if (pnts.Count < 3)
                 return polyline; //If there's only two points here then this method isn't necessary
 
-            int startIndex = 0;
-
-            if (polyline.IsClosed())
+            int startIndex = 0;            
+            while (startIndex < pnts.Count)
             {
-                while (startIndex < pnts.Count)
-                {
-                    Point first = pnts[startIndex];
-                    Point second = pnts[(startIndex + 1) % pnts.Count];
-                    Point third = pnts[(startIndex + 2) % pnts.Count];
+                Point first = pnts[startIndex];
+                Point second = pnts[(startIndex + 1) % pnts.Count];
+                Point third = pnts[(startIndex + 2) % pnts.Count];
 
-                    if (first.Angle(second, third) <= angleTolerance)
-                        pnts.RemoveAt((startIndex + 1) % pnts.Count);  //Delete the second point from the list, it's not necessary
-                    else
-                        startIndex++; //Move onto the next point
-                }
-            }
-            else 
-            {
-                while ((startIndex) < (pnts.Count - 1))
-                {
-                    Point first = pnts[startIndex];
-                    Point second = pnts[(startIndex + 1) % pnts.Count];
-                    Point third = pnts[(startIndex + 2) % pnts.Count];
-
-                    if (first.Angle(second, third) <= angleTolerance)
-                        pnts.RemoveAt((startIndex + 1) % pnts.Count);  //Delete the second point from the list, it's not necessary
-                    else
-                        startIndex++; //Move onto the next point
-                }
+                if (first.Angle(second, third) <= angleTolerance)
+                    pnts.RemoveAt((startIndex + 1) % pnts.Count);  //Delete the second point from the list, it's not necessary
+                else
+                    startIndex++; //Move onto the next point
             }
 
             if (!polyline.IsClosed())
@@ -88,15 +70,11 @@ namespace BH.Engine.Geometry
                 }
             }
 
-            if (polyline.IsClosed()) //Only re-close if original polyline is closed
+            else if (pnts.First() != pnts.Last()) //Only re-close if original polyline is closed
             {
-                if (pnts.First() != pnts.Last())
-                {
-                    pnts.Add(pnts.First());
-                }
-                    
+                pnts.Add(pnts.First());
             }
-            
+
             Polyline pLine = new Polyline()
             {
                 ControlPoints = pnts,
@@ -107,3 +85,5 @@ namespace BH.Engine.Geometry
         /***************************************************/
     }    
 }
+
+

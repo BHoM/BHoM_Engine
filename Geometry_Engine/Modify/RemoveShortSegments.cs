@@ -45,10 +45,8 @@ namespace BH.Engine.Geometry
             List<Point> pnts = polyline.DiscontinuityPoints();
             List<Point> originalPnts = polyline.DiscontinuityPoints();
 
-            if (pnts.Count < 3)
-            {
-                return polyline; //If there's only two points here then this method isn't necessary
-            }
+            if (pnts.Count < 3)            
+                return polyline; //If there's only two points here then this method isn't necessary            
                 
             int startIndex = 0;                       
             while (startIndex < pnts.Count)
@@ -71,11 +69,9 @@ namespace BH.Engine.Geometry
                     pnts.Add(originalPnts.Last()); //Keep the original endpoint of the polyline                   
                 }
             }
-
-            if (polyline.IsClosed())
-            {
-                if (pnts.First() != pnts.Last())
-                    pnts.Add(pnts.First()); //Reclose polyline
+            else if (pnts.First() != pnts.Last())
+            {                
+                pnts.Add(pnts.First()); //Reclose polyline
             }            
 
             Polyline pLine = new Polyline()
