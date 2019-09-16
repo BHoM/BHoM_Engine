@@ -57,16 +57,17 @@ namespace BH.Engine.Environment
         [Description("Returns a list of Environment Panel with the provided openings added. Openings are added to the panels which contain them geometrically.")]
         [Input("panels", "A collection of Environment Panels to add the opening to")]
         [Input("openings", "A collection of Environment Openings to add to the panels")]
-        [Input("tolerance", "Set the tolerance for geometrically associating openings with panels, default is set to BH.oM.Geometry.Tolerance.Distance")]
+        [Input("centroidTolerance", "Set the tolerance for obtaining the centroid of openings, default is set to BH.oM.Geometry.Tolerance.Distance")]
+        [Input("containingTolerance", "Set the tolerance for determining geometric association of openings to panels, default is set to BH.oM.Geometry.Tolerance.Distance")]
         [Output("panels", "A collection of modified Environment Panels with the provided openings added")]
-        public static List<Panel> AddOpenings(this List<Panel> panels, List<Opening> openings, double tolerance = BH.oM.Geometry.Tolerance.Distance)
+        public static List<Panel> AddOpenings(this List<Panel> panels, List<Opening> openings, double centroidTolerance = BH.oM.Geometry.Tolerance.Distance, double containingTolerance = BH.oM.Geometry.Tolerance.Distance)
         {
             foreach(Opening o in openings)
             {
-                Point centre = o.Polyline().Centroid(tolerance);
+                Point centre = o.Polyline().Centroid(centroidTolerance);
                 if(centre != null)
                 {
-                    Panel panel = panels.PanelsContainingPoint(centre, false, tolerance).FirstOrDefault();
+                    Panel panel = panels.PanelsContainingPoint(centre, false, containingTolerance).FirstOrDefault();
                     if (panel != null)
                     {
                         if (panel.Openings == null) panel.Openings = new List<Opening>();
