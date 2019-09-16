@@ -49,6 +49,9 @@ namespace BH.Engine.Geometry
         {
             List<IntegrationSlice> slices = new List<IntegrationSlice>();
 
+            if (edges.Count == 0)
+                return slices;
+
             List<double> cutAt = new List<double>();
             List<double> sliceSegments = new List<double>();
             Plane p = new Plane { Origin = oM.Geometry.Point.Origin, Normal = direction };
