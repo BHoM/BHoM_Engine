@@ -94,7 +94,7 @@ namespace BH.Engine.Base
         private static object InitialiseObject(Type type, Random rnd, int depth = 0)
         {
             // Create object
-            object obj;
+            object obj = null;
             if (type.GetInterface("IImmutable") != null)
                 return CreateImmutable(type, rnd, depth);
             else if (type.IsGenericType)
@@ -102,8 +102,14 @@ namespace BH.Engine.Base
                 type = GetType(type);
                 obj = Activator.CreateInstance(type);
             }
+            else if (typeof(BH.oM.Base.IBHoMFragment).IsAssignableFrom(type))
+            {
+                // Do not instantiate random Fragments to avoid "missing parameterless constructor" exception
+                return null;
+            }
             else
                 obj = Activator.CreateInstance(type);
+
 
             // Set its public properties
             foreach (PropertyInfo prop in type.GetProperties())
