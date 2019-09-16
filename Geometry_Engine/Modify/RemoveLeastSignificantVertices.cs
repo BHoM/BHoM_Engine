@@ -41,35 +41,62 @@ namespace BH.Engine.Geometry
         [Input("angleTolerance", "The tolerance of the angle that defines a straight line. Default is set to the value defined by BH.oM.Geometry.Tolerance.Angle")]
         [Output("polyline", "The cleaned polyline")]
         public static Polyline RemoveLeastSignificantVertices(this Polyline polyline, double angleTolerance = Tolerance.Angle)
-        {
-            //This method is for closed polylines only at the moment
-            if (!polyline.IsClosed())
-            {
-                BH.Engine.Reflection.Compute.RecordError("The RemoveLeastSignificantVertices method is only for closed polylines and the input polyline is not closed.");
-                return polyline;
-            }
-
+        {            
             List<Point> pnts = polyline.DiscontinuityPoints();
+            List<Point> originalPnts = polyline.DiscontinuityPoints();
 
             if (pnts.Count < 3)
                 return polyline; //If there's only two points here then this method isn't necessary
 
             int startIndex = 0;
-            while (startIndex < pnts.Count)
-            {
-                Point first = pnts[startIndex];
-                Point second = pnts[(startIndex + 1) % pnts.Count];
-                Point third = pnts[(startIndex + 2) % pnts.Count];
 
-                if (first.Angle(second, third) <= angleTolerance)
-                    pnts.RemoveAt((startIndex + 1) % pnts.Count);  //Delete the second point from the list, it's not necessary
-                else
-                    startIndex++; //Move onto the next point
+            if (polyline.IsClosed())
+            {
+                while (startIndex < pnts.Count)
+                {
+                    Point first = pnts[startIndex];
+                    Point second = pnts[(startIndex + 1) % pnts.Count];
+                    Point third = pnts[(startIndex + 2) % pnts.Count];
+
+                    if (first.Angle(second, third) <= angleTolerance)
+                        pnts.RemoveAt((startIndex + 1) % pnts.Count);  //Delete the second point from the list, it's not necessary
+                    else
+                        startIndex++; //Move onto the next point
+                }
+            }
+            else 
+            {
+                while ((startIndex) < (pnts.Count - 1))
+                {
+                    Point first = pnts[startIndex];
+                    Point second = pnts[(startIndex + 1) % pnts.Count];
+                    Point third = pnts[(startIndex + 2) % pnts.Count];
+
+                    if (first.Angle(second, third) <= angleTolerance)
+                        pnts.RemoveAt((startIndex + 1) % pnts.Count);  //Delete the second point from the list, it's not necessary
+                    else
+                        startIndex++; //Move onto the next point
+                }
             }
 
-            if (pnts.First() != pnts.Last())
-                pnts.Add(pnts.First()); //Reclose polyline
+            if (!polyline.IsClosed())
+            {
+                if (pnts.Last() != originalPnts.Last())
+                {
+                    pnts.Remove(pnts.Last());
+                    pnts.Add(originalPnts.Last());
+                }
+            }
 
+            if (polyline.IsClosed()) //Only re-close if original polyline is closed
+            {
+                if (pnts.First() != pnts.Last())
+                {
+                    pnts.Add(pnts.First());
+                }
+                    
+            }
+            
             Polyline pLine = new Polyline()
             {
                 ControlPoints = pnts,
@@ -77,7 +104,6 @@ namespace BH.Engine.Geometry
 
             return pLine;
         }
-
         /***************************************************/
-    }
+    }    
 }

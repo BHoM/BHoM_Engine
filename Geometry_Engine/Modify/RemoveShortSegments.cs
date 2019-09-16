@@ -41,20 +41,16 @@ namespace BH.Engine.Geometry
         [Input("minimumSegmentLength", "The tolerance of what a short segment is. Segments greater than this length will be kept, segments shorter will be cleaned (removed). Default is set to the value defined by BH.oM.Geometry.Tolerance.Distance")]
         [Output("polyline", "The cleaned polyline")]
         public static Polyline RemoveShortSegments(this Polyline polyline, double minimumSegmentLength = Tolerance.Distance)
-        {
-            //This method is for closed polylines only at the moment
-            if (!polyline.IsClosed())
-            {
-                BH.Engine.Reflection.Compute.RecordError("The RemoveShortSegments method is only for closed polylines and the input polyline is not closed.");
-                return polyline;
-            }
-
+        {            
             List<Point> pnts = polyline.DiscontinuityPoints();
+            List<Point> originalPnts = polyline.DiscontinuityPoints();
 
             if (pnts.Count < 3)
+            {
                 return polyline; //If there's only two points here then this method isn't necessary
-
-            int startIndex = 0;
+            }
+                
+            int startIndex = 0;                       
             while (startIndex < pnts.Count)
             {
                 Point first = pnts[startIndex];
@@ -67,17 +63,27 @@ namespace BH.Engine.Geometry
                     startIndex++; //Move onto the next point
             }
 
-            if (pnts.First() != pnts.Last())
-                pnts.Add(pnts.First()); //Reclose polyline
+            if (!polyline.IsClosed())
+            {
+                if (pnts.Last() != originalPnts.Last())
+                {
+                    pnts.Remove(pnts.Last());
+                    pnts.Add(originalPnts.Last()); //Keep the original endpoint of the polyline                   
+                }
+            }
+
+            if (polyline.IsClosed())
+            {
+                if (pnts.First() != pnts.Last())
+                    pnts.Add(pnts.First()); //Reclose polyline
+            }            
 
             Polyline pLine = new Polyline()
             {
                 ControlPoints = pnts,
             };
-
             return pLine;
         }
-
         /***************************************************/
     }
 }
