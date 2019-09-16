@@ -113,6 +113,16 @@ namespace BH.Engine.Structure
 
         public static SteelSection SteelSectionFromProfile(IProfile profile, Steel material = null, string name = "")
         {
+            //Check name
+            if (string.IsNullOrWhiteSpace(name) && profile.Name != null)
+                name = profile.Name;
+
+            //Check profile and raise warnings
+            if (profile.Edges.Count == 0)
+            {
+                Engine.Reflection.Compute.RecordWarning("Profile with name " + profile.Name + " does not contain any edges. Section named " + name + " made with this profile will have 0 value sections constants");
+            }
+
             Output<IProfile, Dictionary<string, object>> result = Compute.Integrate(profile, Tolerance.MicroDistance);
 
             profile = result.Item1;
@@ -135,11 +145,8 @@ namespace BH.Engine.Structure
             }
 
             section.Material = material;
+            section.Name = name;
 
-            if (!string.IsNullOrWhiteSpace(name))
-                section.Name = name;
-            else if (!string.IsNullOrWhiteSpace(profile.Name))
-                section.Name = profile.Name;
 
             return section;
 
