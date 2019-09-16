@@ -44,10 +44,14 @@ namespace BH.Engine.Base
             if (iBHoMObject == null) return null;
             IBHoMObject o = iBHoMObject.DeepClone();
             o.Fragments = new List<IBHoMFragment>(iBHoMObject.Fragments);
-            if(o.Fragments.Contains(fragment))
+
+            if(o.Fragments.Where(x => x.GetType() == fragment.GetType()).FirstOrDefault() != null)
             {
                 if(replace)
-                    o.Fragments[o.Fragments.IndexOf(fragment)] = fragment;
+                {
+                    o.Fragments.RemoveAt(o.Fragments.IndexOf(o.Fragments.Where(x => x.GetType() == fragment.GetType()).FirstOrDefault()));
+                    o.Fragments.Add(fragment);
+                }
                 else
                     Reflection.Compute.RecordError("That fragment already exists on this object. If you would like to replace the existing fragment set the 'replace' input to 'true'");
             }
