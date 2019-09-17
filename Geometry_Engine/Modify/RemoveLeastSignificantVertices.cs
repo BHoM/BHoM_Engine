@@ -69,7 +69,6 @@ namespace BH.Engine.Geometry
                     pnts.Add(originalPnts.Last());
                 }
             }
-
             else if (pnts.First() != pnts.Last()) //Only re-close if original polyline is closed
             {
                 pnts.Add(pnts.First());
