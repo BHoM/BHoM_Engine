@@ -52,8 +52,7 @@ namespace BH.Engine.Geometry
             while (startIndex < pnts.Count)
             {
                 Point first = pnts[startIndex];
-                Point second = pnts[(startIndex + 1) % pnts.Count];
-                Point third = pnts[(startIndex + 2) % pnts.Count];
+                Point second = pnts[(startIndex + 1) % pnts.Count];                
 
                 if (first.Distance(second) <= minimumSegmentLength)
                     pnts.RemoveAt((startIndex + 1) % pnts.Count); //Delete the second point as it is too close to the first to produce any meaningful change...
