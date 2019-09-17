@@ -45,13 +45,12 @@ namespace BH.Engine.Base
             IBHoMObject o = iBHoMObject.DeepClone();
             o.Fragments = new List<IBHoMFragment>(iBHoMObject.Fragments);
 
-            if(o.Fragments.Where(x => x.GetType() == fragment.GetType()).FirstOrDefault() != null)
+            int index = o.Fragments.FindIndex(x => x.GetType() == fragment.GetType());
+
+            if(index >= 0)
             {
-                if(replace)
-                {
-                    o.Fragments.RemoveAt(o.Fragments.IndexOf(o.Fragments.Where(x => x.GetType() == fragment.GetType()).FirstOrDefault()));
-                    o.Fragments.Add(fragment);
-                }
+                if (replace)
+                    o.Fragments[index] = fragment;
                 else
                     Reflection.Compute.RecordError("That fragment already exists on this object. If you would like to replace the existing fragment set the 'replace' input to 'true'");
             }
