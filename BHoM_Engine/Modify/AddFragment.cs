@@ -43,7 +43,6 @@ namespace BH.Engine.Base
         {
             if (iBHoMObject == null) return null;
             IBHoMObject o = iBHoMObject.DeepClone();
-            o.Fragments = new List<IBHoMFragment>(iBHoMObject.Fragments);
 
             int index = o.Fragments.FindIndex(x => x.GetType() == fragment.GetType());
 
