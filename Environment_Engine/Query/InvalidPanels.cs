@@ -70,7 +70,7 @@ namespace BH.Engine.Environment
                     listPanels[3].Add(p);
 
                 //check if geometry area is too small
-                if (p.Area() < panelArea)
+                if (BH.Engine.Geometry.Query.Area(p.Polyline()) < panelArea)
                     listPanels[4].Add(p);
                 else
                 {
