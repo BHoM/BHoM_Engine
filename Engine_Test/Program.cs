@@ -47,17 +47,22 @@ namespace Engine_Test
         //static List<Line> testLines = new List<Line>();
         //static List<Polyline> testPoly = new List<Polyline>();
 
-
         static void Main(string[] args)
         {
-
-            TheatronTest test = new TheatronTest();
-            test.Test();
-            test.SutherLandHodgmanTest();
             //TestSerialization();
             //TestConstructorSpeed();
             //TestDynamicExtentionCost();
             //TestMethodExtraction();
+
+            /// ************************************/
+            /// Diffing test and profiling methods
+            /// ************************************/
+
+            TestDiffing.Test01();
+            TestDiffing.Profiling01();
+            
+            /// ************************************/
+
             Console.Read();
         }
 

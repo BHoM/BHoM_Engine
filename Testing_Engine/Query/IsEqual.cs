@@ -41,7 +41,7 @@ namespace BH.Engine.Testing
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Checks two BHoMObjects for equality and returns the differences")]
+        [Description("Checks two BHoMObjects for equality property by property and returns the differences")]
         [Input("config", "Config to be used for the comparison. Can set numeric tolerance, wheter to check the guid, if custom data should be ignored and if any additional properties should be ignored")]
         [MultiOutputAttribute(0, "IsEqual", "Returns true if the two items are deemed to be equal")]
         [MultiOutputAttribute(1, "DiffProperty", "List of the names of the properties found to be different")]
@@ -81,6 +81,39 @@ namespace BH.Engine.Testing
                 Item4 = obj2DiffValues
             };
 
+        }
+
+        [Description("Checks two BHoMObjects property by property and returns the differences")]
+        [Input("config", "Config to be used for the comparison. Can set numeric tolerance, wheter to check the guid, if custom data should be ignored and if any additional properties should be ignored")]
+        [Output("Dictionary whose key is the name of the property, and value is a tuple with its value in obj1 and obj2.")]
+        public static Dictionary<string,Tuple<object,object>> DifferentProperties(this IBHoMObject obj1, IBHoMObject obj2, IsEqualConfig config = null)
+        {
+            var dict = new Dictionary<string, Tuple<object, object>>();
+
+            //Use default config if null
+            config = config ?? new IsEqualConfig();
+
+            CompareLogic comparer = new CompareLogic();
+
+            comparer.Config.MaxDifferences = 1000;
+            comparer.Config.MembersToIgnore = config.PropertiesToIgnore;
+            comparer.Config.DoublePrecision = config.NumericTolerance;
+
+            if (config.IgnoreCustomData)
+            {
+                comparer.Config.MembersToIgnore.Add("CustomData");
+            }
+
+            if (config.IgnoreGuid)
+                comparer.Config.TypesToIgnore.Add(typeof(Guid));
+
+            ComparisonResult result = comparer.Compare(obj1, obj2);
+            dict = result.Differences.ToDictionary(diff => diff.PropertyName, diff => new Tuple<object, object>(diff.Object1, diff.Object2));
+
+            if (dict.Count == 0)
+                return null;
+
+            return dict;
         }
 
         /***************************************************/

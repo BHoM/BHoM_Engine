@@ -1,6 +1,6 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -20,27 +20,30 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.Engine.Geometry;
-using BH.oM.Architecture.Elements;
-using BH.oM.Geometry;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using BH.oM.Base;
 using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
-namespace BH.Engine.Architecture
+namespace BH.Engine.Base
 {
-    public static partial class Modify
+    public static partial class Query
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-   
-        [Deprecated("2.4", "BH.Engine.Architecture.Elements.Grid superseded by BH.oM.Geometry.SettingOut.Grid")]
-        public static Grid SetGeometry(this Grid grid, ICurve curve)
-        {
-            Grid clone = grid.GetShallowClone() as Grid;
-            clone.Curve = curve.IClone();
-            return clone;
-        }
 
-        /***************************************************/
+        [Description("Returns an instance of a BHoM Fragment if it exists on the object")]
+        [Input("iBHoMObject", "A generic IBHoMObject object")]
+        [Input("fragmentType", "The type of fragment to be queried and returned")]
+        [Output("fragment", "The instance of that Fragment if it exists on the object, null otherwise")]
+        public static T FindFragment<T>(this IBHoMObject iBHoMObject, Type fragmentType)
+        {
+            return (T)System.Convert.ChangeType(iBHoMObject.Fragments.Where(x => x.GetType() == fragmentType).FirstOrDefault(), fragmentType);
+        }
     }
 }

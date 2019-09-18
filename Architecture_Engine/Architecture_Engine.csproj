@@ -100,6 +100,7 @@
   <ItemGroup>
     <Folder Include="Compute\" />
     <Folder Include="Convert\" />
+    <Folder Include="Create\SettingOut\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

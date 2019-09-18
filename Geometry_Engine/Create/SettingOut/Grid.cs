@@ -1,6 +1,6 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -20,25 +20,50 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.Engine.Geometry;
-using BH.oM.Architecture.Elements;
 using BH.oM.Geometry;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Geometry.SettingOut;
 
-namespace BH.Engine.Architecture
+namespace BH.Engine.Geometry.SettingOut
 {
-    public static partial class Modify
+    public static partial class Create
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-   
-        [Deprecated("2.4", "BH.Engine.Architecture.Elements.Grid superseded by BH.oM.Geometry.SettingOut.Grid")]
-        public static Grid SetGeometry(this Grid grid, ICurve curve)
+
+        public static Grid Grid(ICurve curve)
         {
-            Grid clone = grid.GetShallowClone() as Grid;
-            clone.Curve = curve.IClone();
-            return clone;
+            return new Grid
+            {
+                Curve = Geometry.Modify.IProject(curve, BH.oM.Geometry.Plane.XY)
+            };
+        }
+
+        /***************************************************/
+
+        public static Grid Grid(Point origin, Vector direction, double length = 20)
+        {
+            Line line = new Line { Start = new Point { X = origin.X, Y = origin.Y, Z = 0 }, End = origin + new Vector { X = direction.X, Y = direction.Y, Z = 0 }.Normalise() * length };
+            return new Grid { Curve = line };
+        }
+
+        /***************************************************/
+
+        public static Grid Grid(ICurve curve, string name)
+        {
+            return new Grid
+            {
+                Curve = Geometry.Modify.IProject(curve, BH.oM.Geometry.Plane.XY),
+                Name = name,
+            };
+        }
+
+        /***************************************************/
+
+        public static Grid Grid(Point origin, Vector direction, string name, double length = 20)
+        {
+            Line line = new Line { Start = new Point { X = origin.X, Y = origin.Y, Z = 0 }, End = origin + new Vector { X = direction.X, Y = direction.Y, Z = 0 }.Normalise() * length };
+            return new Grid { Curve = line, Name = name };
         }
 
         /***************************************************/

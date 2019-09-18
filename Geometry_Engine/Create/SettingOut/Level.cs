@@ -1,6 +1,6 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -20,25 +20,33 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.Engine.Geometry;
-using BH.oM.Architecture.Elements;
-using BH.oM.Geometry;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Geometry.SettingOut;
 
-namespace BH.Engine.Architecture
+namespace BH.Engine.Geometry
 {
-    public static partial class Modify
+    public static partial class Create
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-   
-        [Deprecated("2.4", "BH.Engine.Architecture.Elements.Grid superseded by BH.oM.Geometry.SettingOut.Grid")]
-        public static Grid SetGeometry(this Grid grid, ICurve curve)
+
+        public static Level Level(double elevation)
         {
-            Grid clone = grid.GetShallowClone() as Grid;
-            clone.Curve = curve.IClone();
-            return clone;
+            return new Level
+            {
+                Elevation = elevation
+            };
+        }
+
+        /***************************************************/
+
+        public static Level Level(double elevation, string name)
+        {
+            return new Level
+            {
+                Elevation = elevation,
+                Name = name,
+            };
         }
 
         /***************************************************/

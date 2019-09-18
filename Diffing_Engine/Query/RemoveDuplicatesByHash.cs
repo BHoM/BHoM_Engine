@@ -1,6 +1,6 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -20,27 +20,34 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.Engine.Geometry;
-using BH.oM.Architecture.Elements;
-using BH.oM.Geometry;
+using BH.oM.Base;
 using BH.oM.Reflection.Attributes;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace BH.Engine.Architecture
+namespace BH.Engine.Diffing
 {
-    public static partial class Modify
+    public static partial class Query
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-   
-        [Deprecated("2.4", "BH.Engine.Architecture.Elements.Grid superseded by BH.oM.Geometry.SettingOut.Grid")]
-        public static Grid SetGeometry(this Grid grid, ICurve curve)
-        {
-            Grid clone = grid.GetShallowClone() as Grid;
-            clone.Curve = curve.IClone();
-            return clone;
-        }
 
-        /***************************************************/
+        [Description("Removes duplicates from a collection of objects. The comparison is made through their Diffing Hash.")]
+        [Input("objects", "Collection of objects whose duplicates have to be removed. If they don't already have an Hash assigned, it will be calculated.")]
+        public static bool RemoveDuplicatesByHash(IEnumerable<IBHoMObject> objects)
+        {
+            int numObjs = objects.Count();
+            objects = objects.GroupBy(obj => obj.GetHashFragment().Hash).Select(gr => gr.First()).ToList();
+
+            if (numObjs != objects.Count())
+                return true;
+
+            return false;
+        }
     }
 }
