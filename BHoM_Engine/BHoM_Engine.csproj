@@ -44,7 +44,7 @@
       <HintPath>..\..\BHoM\Build\Geometry_oM.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Reflection_oM, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Reflection_oM">
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
