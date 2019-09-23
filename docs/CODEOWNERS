@@ -8,13 +8,14 @@
 
 #NEED OWNER: /Acoustic_Engine
 /Analytical_Engine @al-fisher @adecler @IsakNaslundBh @FraserGreenroyd
-#NEED OWNER: /Architecture_Engine
+/Architecture_Engine @FraserGreenroyd
 /BHoM_Engine @adecler
 /Engine_Test @adecler
 /Common_Engine @al-fisher @rwemay
 /DataManipulation_Engine @adecler
 /DataStructure_Engine @adecler
-/Environment_Engine @michaldengusiak @FraserGreenroyd
+/Diffing_Engine @alelom @al-fisher @adecler @epignatelli
+/Environment_Engine @FraserGreenroyd
 /Geometry_Engine @pawelbaran
 /Humans_Engine @al-fisher
 /MachineLearning_Engine @epignatelli
