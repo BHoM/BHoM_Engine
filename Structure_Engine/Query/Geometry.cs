@@ -156,9 +156,18 @@ namespace BH.Engine.Structure
         /**** Public Methods - Interface                ****/
         /***************************************************/
 
-        public static IGeometry Geometry(this ISectionProperty section)
+        public static IGeometry IGeometry(this ISectionProperty section)
         {
             return Geometry(section as dynamic);
+        }
+
+        /***************************************************/
+        /**** Private Methods - Fallback                ****/
+        /***************************************************/
+
+        public static IGeometry Geometry(this object section)
+        {
+            return null;
         }
 
         /***************************************************/
