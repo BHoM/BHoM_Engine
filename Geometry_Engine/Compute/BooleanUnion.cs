@@ -119,7 +119,11 @@ namespace BH.Engine.Geometry
                 for (int j = 0; j < regions.Count; j++)
                 {
                     if (i != j && regions[i].IsContaining(regions[j], true, tolerance))
+                    {
                         regions.RemoveAt(j);
+                        i = -1;
+                        break;
+                    }
                 }
             }
 
@@ -280,7 +284,11 @@ namespace BH.Engine.Geometry
                 for (int j = 0; j < regionsList.Count; j++)
                 {
                     if (i != j && regionsList[i].IIsContaining(regionsList[j], true, tolerance))
+                    {
                         regionsList.RemoveAt(j);
+                        i = -1;
+                        break;
+                    }
                 }
             }
 
