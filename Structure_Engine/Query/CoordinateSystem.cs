@@ -46,7 +46,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Get a carteseian coordinate system descibring the position and orientation of the bar in the Global XY system")]
+        [Description("Get a carteseian coordinate system descibring the position and orientation of the bar in the Global XY system where the bars tangent is the local X-axis and the Normal is the local Z-axis")]
         public static Cartesian CoordinateSystem(this Bar bar)
         {
             Vector tan = bar.Tangent(true);
