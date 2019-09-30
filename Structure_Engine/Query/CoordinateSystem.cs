@@ -28,6 +28,7 @@ using BH.oM.Reflection.Attributes;
 using BH.oM.Structure.Elements;
 using BH.oM.Geometry;
 using BH.oM.Geometry.CoordinateSystem;
+using BH.Engine.Geometry;
 
 namespace BH.Engine.Structure
 {
@@ -41,6 +42,16 @@ namespace BH.Engine.Structure
         public static Cartesian CoordinateSystem(this Node node)
         {
             return Engine.Geometry.Create.CartesianCoordinateSystem(node.Position, node.Orientation.X, node.Orientation.Y);
+        }
+
+        /***************************************************/
+
+        [Description("Get a carteseian coordinate system descibring the position and orientation of the bar in the Global XY system")]
+        public static Cartesian CoordinateSystem(this Bar bar)
+        {
+            Vector tan = bar.Tangent(true);
+            Vector ax = bar.Normal().CrossProduct(tan);
+            return Engine.Geometry.Create.CartesianCoordinateSystem(bar.StartNode.Position, tan, ax);
         }
 
         /***************************************************/
