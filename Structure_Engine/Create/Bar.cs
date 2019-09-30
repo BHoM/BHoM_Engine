@@ -54,7 +54,8 @@ namespace BH.Engine.Structure
                 SectionProperty = property,
                 Release = release == null ? BarReleaseFixFix() : release,
                 FEAType = feaType,
-                OrientationAngle = orientationAngle
+                OrientationAngle = orientationAngle,
+                EmbodiedCarbon = property.Material.EmbodiedCarbon * property.Area * startNode.Position.Distance(endNode.Position),
             };
         }
 
@@ -76,7 +77,7 @@ namespace BH.Engine.Structure
 
                 if (Math.Abs(1 - dot) < oM.Geometry.Tolerance.Angle)
                 {
-                    Reflection.Compute.RecordError("The normal is parallell to the centreline of the bar");
+                    Reflection.Compute.RecordError("The normal is parallel to the centreline of the bar");
                     return null;
                 }
                 else if (Math.Abs(dot) > oM.Geometry.Tolerance.Angle)
