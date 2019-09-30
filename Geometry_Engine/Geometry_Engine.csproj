@@ -205,6 +205,10 @@
     <Compile Include="Query\Side.cs" />
     <Compile Include="Query\IsSameSide.cs" />
     <Compile Include="Query\IsValid.cs" />
+	<Compile Include="Modify\Offset.cs" />
+	<Compile Include="Modify\ExtendTangent.cs" />
+	<Compile Include="Modify\Trim.cs" />
+	<Compile Include="Modify\TrimExtend.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
