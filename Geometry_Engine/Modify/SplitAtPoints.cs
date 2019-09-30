@@ -55,6 +55,9 @@ namespace BH.Engine.Geometry
             cPts = cPts.CullDuplicates(tolerance);
             cPts = cPts.SortAlongCurve(arc, tolerance);
 
+            if (arc.EndAngle - 2 * Math.PI < tolerance && arc.EndAngle - 2 * Math.PI > -tolerance)
+                cPts.Add(arc.EndPoint());
+
             if (cPts.Count > 2)
             {
                 Double startAng = arc.StartAngle;
@@ -77,17 +80,16 @@ namespace BH.Engine.Geometry
             }
             else
                 result.Add(arc.Clone());
-
             return result;
         }
 
         /***************************************************/
 
 
-        public static List<Arc> SplitAtPoints(this Circle circle, List<Point> points, double tolerance = Tolerance.Distance)
+        public static List<ICurve> SplitAtPoints(this Circle circle, List<Point> points, double tolerance = Tolerance.Distance)
         {
 
-            List<Arc> result = new List<Arc>();
+            List<ICurve> result = new List<ICurve>();
             List<Point> cPts = new List<Point>();
 
             foreach (Point point in points)
@@ -114,6 +116,11 @@ namespace BH.Engine.Geometry
             Vector enVec;
             Double enAng;
 
+            if (cPts.Count == 0)
+            {
+                result.Add(circle.Clone());
+                return result;
+            }
             if (cPts.Count == 1)
             {
                 tmpArc = mainArc;
