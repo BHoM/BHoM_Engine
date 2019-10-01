@@ -33,11 +33,18 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Curves                   ****/
         /***************************************************/
 
+        public static Line Offset(this Line curve, double offset, Vector normal)
+        {
+            return curve.Translate(normal.CrossProduct(curve.Start - curve.End).Normalise() * offset);
+        }
+
+        /***************************************************/
+
         public static Arc Offset(this Arc curve, double offset, Vector normal)
         {
             if (!curve.IsPlanar())
             {
-                BH.Engine.Reflection.Compute.RecordError("Offset works only on planar curves");
+                Reflection.Compute.RecordError("Offset works only on planar curves");
                 return null;
             }
 
