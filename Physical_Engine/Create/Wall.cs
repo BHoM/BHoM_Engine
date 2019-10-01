@@ -69,7 +69,6 @@ namespace BH.Engine.Physical
             Line aLine_1 = Geometry.Create.Line(Geometry.Query.IEndPoint(bottomEdge), Geometry.Query.IStartPoint(aICurve));
             Line aLine_2 = Geometry.Create.Line(Geometry.Query.IEndPoint(aICurve), Geometry.Query.IStartPoint(bottomEdge));
 
-
             PolyCurve aPolyCurve = Geometry.Create.PolyCurve(new ICurve[] { bottomEdge, aLine_1, aICurve, aLine_2 });
 
             return new Wall()

@@ -72,11 +72,10 @@ namespace BH.Engine.Physical
         [Description("Creates physical floor based on given construction, external and internal edges")]
         [Input("construction", "Construction of the floor")]
         [Input("edges", "External edges of the floor (Profile - planar closed curve)")]
-        [Input("internalEdges", "Internal edges of openings etc.")]
+        [Input("internalEdges", "Internal edges of openings")]
         [Output("floor", "A physical floor")]
         public static Floor Floor(Construction construction, ICurve edges, IEnumerable<ICurve> internalEdges)
         {
-
             if (construction == null || edges == null)
             {
                 Reflection.Compute.RecordError("Physical Roof could not be created because some input data are null");
