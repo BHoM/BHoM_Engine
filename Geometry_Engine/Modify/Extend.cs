@@ -77,7 +77,7 @@ namespace BH.Engine.Geometry
 
         private static Circle Extend(this Circle curve, Point startPoint, Point endPoint)
         {
-            Reflection.Compute.RecordNote("Can't Extend closed models.");
+            Reflection.Compute.RecordNote("Can't Extend closed curves.");
             return curve;
         }
 
@@ -85,7 +85,7 @@ namespace BH.Engine.Geometry
 
         private static Circle Extend(this Circle curve, double startPoint, double endPoint)
         {
-            Reflection.Compute.RecordNote("Can't Extend closed models.");
+            Reflection.Compute.RecordNote("Can't Extend closed curves.");
             return curve;
         }
 
@@ -93,7 +93,7 @@ namespace BH.Engine.Geometry
 
         private static Ellipse Extend(this Ellipse curve, Point startPoint, Point endPoint)
         {
-            Reflection.Compute.RecordNote("Can't Extend closed models.");
+            Reflection.Compute.RecordNote("Can't Extend closed curves.");
             return curve;
         }
 
@@ -101,7 +101,7 @@ namespace BH.Engine.Geometry
 
         private static Ellipse Extend(this Ellipse curve, double startPoint, double endPoint)
         {
-            Reflection.Compute.RecordNote("Can't Extend closed models.");
+            Reflection.Compute.RecordNote("Can't Extend closed curves.");
             return curve;
         }
 
@@ -127,17 +127,14 @@ namespace BH.Engine.Geometry
         {
             if (curve.IsClosed())
             {
-                Reflection.Compute.RecordNote("Can't Extend closed models.");
+                Reflection.Compute.RecordNote("Can't Extend closed curves.");
                 return curve;
             }
             List<Point> result = new List<Point>();
             result = curve.ControlPoints;
             result[0] = startPoint;
             result[result.Count - 1] = endPoint;
-            return new Polyline
-            {
-                ControlPoints = result
-            };
+            return new Polyline { ControlPoints = result };
         }
 
         /***************************************************/
@@ -146,7 +143,7 @@ namespace BH.Engine.Geometry
         {
             if (curve.IsClosed())
             {
-                Reflection.Compute.RecordNote("Can't Extend closed models.");
+                Reflection.Compute.RecordNote("Can't Extend closed curves.");
                 return curve;
             }
             Line first = new Line { Start = curve.ControlPoints[0], End = curve.ControlPoints[1] };
@@ -157,10 +154,7 @@ namespace BH.Engine.Geometry
             result = curve.ControlPoints;
             result[0] = first.Start;
             result[result.Count - 1] = last.End;
-            return new Polyline
-            {
-                ControlPoints = result
-            };
+            return new Polyline { ControlPoints = result };
         }
 
         /***************************************************/
@@ -169,18 +163,14 @@ namespace BH.Engine.Geometry
         {
             if (curve.IsClosed())
             {
-                Reflection.Compute.RecordNote("Can't Extend closed models.");
+                Reflection.Compute.RecordNote("Can't Extend closed curves.");
                 return curve;
             }
             List<ICurve> result = new List<ICurve>();
             result = curve.Curves;
             result[0] = result[0].IExtend(startPoint, result[0].IEndPoint());
             result[result.Count - 1] = result[result.Count - 1].IExtend(result[result.Count - 1].IStartPoint(), endPoint);
-            return new PolyCurve
-            {
-                Curves = result
-            };
-
+            return new PolyCurve { Curves = result };
         }
 
         /***************************************************/
@@ -189,18 +179,14 @@ namespace BH.Engine.Geometry
         {
             if (curve.IsClosed())
             {
-                Reflection.Compute.RecordNote("Can't Extend closed models.");
+                Reflection.Compute.RecordNote("Can't Extend closed curves.");
                 return curve;
             }
             List<ICurve> result = new List<ICurve>();
             result = curve.Curves;
             result[0] = result[0].IExtend(start, 0);
             result[result.Count - 1] = result[result.Count - 1].IExtend(0, end);
-            return new PolyCurve
-            {
-                Curves = result
-            };
-
+            return new PolyCurve { Curves = result };
         }
 
 

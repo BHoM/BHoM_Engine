@@ -41,32 +41,32 @@ namespace BH.Engine.Geometry
         /**** Private Methods - Curves                  ****/
         /***************************************************/
 
-        private static List<ICurve> TrimExtend(this ICurve curve,Point startPoint, Point endPoint,bool isExtend)
+        private static List<ICurve> TrimExtend(this ICurve curve, Point startPoint, Point endPoint, bool isExtend)
         {
             List<ICurve> result = new List<ICurve>();
             bool sP = false;
             bool eP = false;
             if(startPoint.IsOnCurve(curve))
             {
-                curve=curve.ITrim(startPoint, curve.IEndPoint());
+                curve = curve.ITrim(startPoint, curve.IEndPoint());
                 sP = true;
             }
             if(endPoint.IsOnCurve(curve))
             {
-                curve=curve.ITrim(curve.IStartPoint(), endPoint);
+                curve = curve.ITrim(curve.IStartPoint(), endPoint);
                 eP = true;
             }
-            if(sP&&eP)
+            if(sP && eP)
             {
                 result.Add(curve);
                 return result;
             }
-            if(sP&&!eP)
+            if(sP && !eP)
             {
                 if (isExtend)
                     result.Add(curve.IExtend(curve.IStartPoint(), endPoint, isExtend));
                 else
-                    result =((PolyCurve) curve.IExtend(curve.IStartPoint(), endPoint, isExtend)).Curves;
+                    result = ((PolyCurve) curve.IExtend(curve.IStartPoint(), endPoint, isExtend)).Curves;
                 return result;
             }
             if (!sP && !eP)
@@ -87,5 +87,7 @@ namespace BH.Engine.Geometry
             }
             return result;
         }
+
+        /***************************************************/
     }
 }

@@ -41,26 +41,9 @@ namespace BH.Engine.Geometry
 
         private static PolyCurve ExtendTangent(this Line curve, Point startPoint, Point endPoint)
         {
-            List<ICurve> result = new List<ICurve>();
-            //if(curve.ClosestPoint(startPoint)==curve.ClosestPoint(endPoint))
-            //{
-            //    result.Add(new Line { Start = startPoint, End = endPoint });
-            //    return new PolyCurve
-            //    {
-            //        Curves=result
-            //    };
-            //}
-            //if(!startPoint.IsOnCurve(curve))
-            //    result.Add(new Line { Start = startPoint, End = curve.Start });
-            //result.Add(curve);
-            //if(!endPoint.IsOnCurve(curve))
-            //    result.Add(new Line { Start = curve.End, End = endPoint});
+            List<ICurve> result = new List<ICurve>();            
             result.Add(curve.Extend(startPoint, endPoint));
-            return new PolyCurve
-            {
-                Curves = result
-            }
-            ;
+            return new PolyCurve { Curves = result };
         }
 
         /***************************************************/
@@ -68,15 +51,16 @@ namespace BH.Engine.Geometry
         private static PolyCurve ExtendTangent(this Arc curve, Point startPoint, Point endPoint)
         {
             List<ICurve> result = new List<ICurve>();
+
             if(!startPoint.IsOnCurve(curve))
                 result.Add(new Line { Start = startPoint, End = curve.StartPoint() });
+
             result.Add(curve);
+
             if (!endPoint.IsOnCurve(curve))
                 result.Add(new Line { Start = curve.EndPoint(), End = endPoint });
-            return new PolyCurve
-            {
-                Curves = result
-            };
+
+            return new PolyCurve { Curves = result };
         }
         
         /***************************************************/
@@ -113,20 +97,19 @@ namespace BH.Engine.Geometry
                 return curve;
             }
             List<Point> result = new List<Point>();
+
             if(curve.ControlPoints[0]!=startPoint)
                 result.Add(startPoint);
-            foreach(Point a in curve.ControlPoints)
-            {
+
+            foreach (Point a in curve.ControlPoints)
                 result.Add(a);
-            }
+
             if (result[result.Count - 1] != endPoint)
                 result.Add(endPoint);
-            return new Polyline
-            {
-                ControlPoints = result
-            };
+
+            return new Polyline { ControlPoints = result };
         }
-        
+
         /***************************************************/
 
         private static PolyCurve ExtendTangent(this PolyCurve curve, Point startPoint, Point endPoint)
@@ -137,17 +120,17 @@ namespace BH.Engine.Geometry
                 return curve;
             }
             List<ICurve> result = new List<ICurve>();
+
             if (curve.Curves[0].IStartPoint() != startPoint)
                 result.Add(new Line { Start = startPoint, End = curve.Curves[0].IStartPoint() });
+
             foreach (ICurve a in curve.Curves)
                 result.Add(a);
-            if (result[result.Count - 1].IEndPoint() != endPoint)
-                result.Add(new Line { Start=result[result.Count - 1].IEndPoint(), End = endPoint });
-            return new PolyCurve
-            {
-                Curves = result
-            };
 
+            if (result[result.Count - 1].IEndPoint() != endPoint)
+                result.Add(new Line { Start = result[result.Count - 1].IEndPoint(), End = endPoint });
+
+            return new PolyCurve { Curves = result };
         }
 
 
@@ -158,8 +141,8 @@ namespace BH.Engine.Geometry
         private static ICurve IExtendTangent(this ICurve curve, Point startPoint, Point endPoint)
         {
             return ExtendTangent(curve as dynamic, startPoint, endPoint);
-
         }
+
         /***************************************************/
 
     }

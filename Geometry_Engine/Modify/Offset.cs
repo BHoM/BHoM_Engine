@@ -21,8 +21,10 @@
  */
 
 using BH.oM.Geometry;
+using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 
 namespace BH.Engine.Geometry
@@ -33,6 +35,11 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Curves                   ****/
         /***************************************************/
 
+        [Description("Creates an offset of a curve")]
+        [Input("curve", "Curve to offset")]
+        [Input("distance", "Offset distance. Positive value offsets to the right with normal pointing up and direction of a curve pointing forward")]
+        [Input("normal", "Normal of a plane for offset operation")]
+        [Output("curve", "Resulting offset")]
         public static Line Offset(this Line curve, double offset, Vector normal)
         {
             return curve.Translate(normal.CrossProduct(curve.Start - curve.End).Normalise() * offset);
@@ -40,6 +47,11 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Creates an offset of a curve")]
+        [Input("curve", "Curve to offset")]
+        [Input("distance", "Offset distance. Positive value offsets outside of a curve. If normal is given then offsets to the right with normal pointing up and direction of a curve pointing forward")]
+        [Input("normal", "Normal of a plane for offset operation")]
+        [Output("curve", "Resulting offset")]
         public static Arc Offset(this Arc curve, double offset, Vector normal)
         {
             if (!curve.IsPlanar())
@@ -50,9 +62,11 @@ namespace BH.Engine.Geometry
 
             if (offset == 0)
                 return curve.Clone();
-
             double radius = curve.Radius;
             Arc result = curve.Clone();
+
+            if (normal == null)
+                normal = curve.Normal();
 
             if (normal.DotProduct(curve.Normal()) > 0)
                 radius += offset;
@@ -66,14 +80,19 @@ namespace BH.Engine.Geometry
             }
             else
             {
-                BH.Engine.Reflection.Compute.RecordError("Offset value is greater than arc radius");
+                Reflection.Compute.RecordError("Offset value is greater than arc radius");
                 return null;
             }
         }
 
         /***************************************************/
 
-        public static Circle Offset(this Circle curve, double offset, Vector normal)
+        [Description("Creates an offset of a curve")]
+        [Input("curve", "Curve to offset")]
+        [Input("distance", "Offset distance. Positive value offsets outside of a curve. If normal is given then offsets to the right with normal pointing up and direction of a curve pointing forward")]
+        [Input("normal", "Normal of a plane for offset operation")]
+        [Output("curve", "Resulting offset")]
+        public static Circle Offset(this Circle curve, double offset, Vector normal = null)
         {
             if (offset == 0)
                 return curve.Clone();
@@ -81,6 +100,9 @@ namespace BH.Engine.Geometry
             double radius = curve.Radius;
             Circle result = curve.Clone();
 
+            if (normal == null)
+                normal = curve.Normal();
+
             if (normal.DotProduct(curve.Normal()) > 0)
                 radius += offset;
             else
@@ -93,14 +115,18 @@ namespace BH.Engine.Geometry
             }
             else
             {
-                BH.Engine.Reflection.Compute.RecordError("Offset value is greater than circle radius");
+                Reflection.Compute.RecordError("Offset value is greater than circle radius");
                 return null;
             }
-
         }
 
         /***************************************************/
 
+        [Description("Creates an offset of a curve. Works only on planar curves")]
+        [Input("curve", "Curve to offset")]
+        [Input("distance", "Offset distance. Positive value offsets outside of a curve. If normal is given then offsets to the right with normal pointing up and direction of a curve pointing forward")]
+        [Input("normal", "Normal of a plane for offset operation, not needed for closed curves")]
+        [Output("curve", "Resulting offset")]
         public static Polyline Offset(this Polyline curve, double offset, Vector normal = null, double tolerance = Tolerance.Distance)
         {
             if (!curve.IsPlanar())
@@ -136,8 +162,7 @@ namespace BH.Engine.Geometry
                     Vector trans = (tmp[i] - cPts[i]);
                     trans = trans.Normalise() * Math.Abs(offset) / Math.Sin(Math.Abs((cPts[i] - cPts[i - 1]).Angle(cPts[i] - cPts[i + 1])) / 2);
                     tmp[i] = cPts[i] + trans;
-                }
-                //return new Polyline { ControlPoints = tmp };
+                }               
             }
             else
             {
@@ -162,10 +187,13 @@ namespace BH.Engine.Geometry
                 }
                 tmp.Add(tmp[0]);
             }
+
             Polyline result = new Polyline { ControlPoints = tmp };
             List<Line> Lines = result.SubParts();
+
             if (isClosed)
                 tmp.RemoveAt(tmp.Count - 1);
+
             int counter = 0;
             for (int i = 0; i < Lines.Count; i++)
             {
@@ -175,10 +203,13 @@ namespace BH.Engine.Geometry
                 {
                     Line line1 = new Line { Start = tmp[i], End = tmp[(i + tmp.Count - 1) % tmp.Count], Infinite = true };
                     Line line2 = new Line { Start = tmp[(i + 1) % tmp.Count], End = tmp[(i + 2) % tmp.Count], Infinite = true };
-                    if(!(line1.LineIntersection(line2) == null))
-                        tmp[i] = line1.LineIntersection(line2);
+
+                    if (!(line1.LineIntersection(line2, false, tolerance) == null))
+                        tmp[i] = line1.LineIntersection(line2, false, tolerance);
+
                     tmp.RemoveAt((i + 1) % tmp.Count);
-                    if(tmp.Count == 0)
+
+                    if (tmp.Count == 0)
                     {
                         Reflection.Compute.RecordError("Method failed to produce corretct offset. Null has been returned.");
                         return null;
@@ -190,23 +221,32 @@ namespace BH.Engine.Geometry
                     counter++;
                 }
             }
+
             if (isClosed)
                 tmp.Add(tmp[0]);
+
             if (tmp.Count < 3 || (isClosed && tmp.Count < 4))
             {
                 Reflection.Compute.RecordError("Method failed to produce corretct offset. Null has been returned.");
                 return null;
             }
+
             if (counter > 0)
                 Reflection.Compute.RecordWarning("Reduced " + counter as string + " lines. Offset may be wrong. Please inspect the results.");
-            if (result.IsSelfIntersecting(tolerance) || result.LineIntersections(curve).Count != 0)
+
+            if (result.IsSelfIntersecting(tolerance) || result.LineIntersections(curve, tolerance).Count != 0)
                 Reflection.Compute.RecordWarning("Intersections occured. Offset may be wrong. Please inspect the results.");
+
             return result;
         }
-    
 
         /***************************************************/
 
+        [Description("Creates an offset of a curve. Works only on planar curves")]
+        [Input("curve", "Curve to offset")]
+        [Input("distance", "Offset distance. Positive value offsets outside of a curve. If normal is given then offsets to the right with normal pointing up and direction of a curve pointing forward")]
+        [Input("normal", "Normal of a plane for offset operation, not needed for closed curves")]
+        [Output("curve", "Resulting offset")]
         public static PolyCurve Offset(this PolyCurve curve, double offset, Vector normal = null, bool extend = false, double tolerance = Tolerance.Distance)
         {
             if (!curve.IsPlanar(tolerance))
@@ -215,7 +255,7 @@ namespace BH.Engine.Geometry
                 return null;
             }
 
-            if (curve.IsSelfIntersecting())
+            if (curve.IsSelfIntersecting(tolerance))
             {
                 BH.Engine.Reflection.Compute.RecordError("Offset works only on non-self intersecting curves");
                 return null;
@@ -225,7 +265,7 @@ namespace BH.Engine.Geometry
                 return curve.Clone();
 
             List<ICurve> resultList = new List<ICurve>();
-            List<ICurve> ICrvs = new List<ICurve>(curve.Curves);
+            List<ICurve> ICrvs = new List<ICurve>(curve.Clone().Curves);
             PolyCurve result = new PolyCurve();
 
             if (ICrvs[0] is Circle)
@@ -235,9 +275,8 @@ namespace BH.Engine.Geometry
             }
 
             //First - offseting each individual element
-
             List<ICurve> crvs = new List<ICurve>();
-            foreach (ICurve crv in curve.Curves)
+            foreach (ICurve crv in ICrvs)
             {
                 if (crv is Arc)
                 {
@@ -273,29 +312,30 @@ namespace BH.Engine.Geometry
             // Searching for intersections - if 2 curves intersect, trim them to the point of intersection
             Line tmpLn = null;
             bool omitWarning = false;
-            // intersecting lines
+
+            // intersections between lines
             for (int i = 0; i < crvs.Count - 1; i++)
             {
                 if (crvs[i] is Line && crvs[(i + 1) % crvs.Count] is Line)
                 {
                     tmpLn = Create.Line(crvs[i].IStartPoint(), -crvs[i].IStartDir() / crvs[i].IStartDir().Length() * Math.Abs(offset * offset * 5));
                     tmpLn.Infinite = false;
-                    if (!((Line)crvs[i]).LineIntersection((Line)crvs[(i + 1) % crvs.Count], true).IsOnCurve(tmpLn))
+                    if (!((Line)crvs[i]).LineIntersection((Line)crvs[(i + 1) % crvs.Count], true, tolerance).IsOnCurve(tmpLn))
                     {
-                        crvs[i]=crvs[i].IExtend(crvs[i].IStartPoint(), ((Line)crvs[i]).LineIntersection((Line)crvs[(i + 1) % crvs.Count], true));
+                        crvs[i]=crvs[i].IExtend(crvs[i].IStartPoint(), ((Line)crvs[i]).LineIntersection((Line)crvs[(i + 1) % crvs.Count], true, tolerance));
                         crvs[i + 1] = crvs[i + 1].IExtend(crvs[i].IEndPoint(), crvs[i + 1].IEndPoint());
                     }
                     else
                     {
-                        crvs[i] = crvs[i].IExtend(((Line)crvs[i]).LineIntersection((Line)crvs[(i + 1) % crvs.Count], true), crvs[i].IEndPoint());
-                        crvs[i + 1] = crvs[i + 1].IExtend(crvs[i + 1].IStartPoint(), ((Line)crvs[i]).LineIntersection((Line)crvs[(i + 1) % crvs.Count], true));
+                        crvs[i] = crvs[i].IExtend(((Line)crvs[i]).LineIntersection((Line)crvs[(i + 1) % crvs.Count], true, tolerance), crvs[i].IEndPoint());
+                        crvs[i + 1] = crvs[i + 1].IExtend(crvs[i + 1].IStartPoint(), ((Line)crvs[i]).LineIntersection((Line)crvs[(i + 1) % crvs.Count], true, tolerance));
                         crvs.Reverse(i, 2);
                         omitWarning = true;
                     }
                 }
             }
 
-            List<Point> Pts = new List<Point>();
+            List<Point> pts = new List<Point>();
             List<Point[]> intersections = new List<Point[]>();
 
             for (int i = 0; i < crvs.Count; i++)
@@ -304,30 +344,29 @@ namespace BH.Engine.Geometry
                 intersections[i][0] = crvs[i].IStartPoint();
                 intersections[i][1] = crvs[i].IEndPoint();
             }
-            //intersecting arcs with arcs and lines
 
+            //intersections between lines and arcs or lines
             for (int i = lngstIndex; i <lngstIndex+ crvs.Count; i++)
             {
                 for (int j = i + 1; j < i + Math.Min(crvs.Count / 2+2, crvs.Count-1); j++)
                 {
-
-                    if ((Pts = crvs[i % crvs.Count].ICurveIntersections(crvs[j % crvs.Count])).Count > 0)
+                    if ((pts = crvs[i % crvs.Count].ICurveIntersections(crvs[j % crvs.Count],tolerance)).Count > 0)
                     {
-                        if (Pts.Count == 2)
+                        if (pts.Count == 2)
                         {
-                            if (Pts[0].Distance(crvs[i % crvs.Count].IStartPoint()) < Pts[1].Distance(crvs[i % crvs.Count].IStartPoint()))
+                            if (pts[0].Distance(crvs[i % crvs.Count].IStartPoint()) < pts[1].Distance(crvs[i % crvs.Count].IStartPoint()))
                             {
-                                intersections[i%crvs.Count][0] = Pts[0];
-                                intersections[i % crvs.Count][1] = Pts[1];
-                                intersections[j % crvs.Count][0] = Pts[1];
-                                intersections[j % crvs.Count][1] = Pts[0];
+                                intersections[i % crvs.Count][0] = pts[0];
+                                intersections[i % crvs.Count][1] = pts[1];
+                                intersections[j % crvs.Count][0] = pts[1];
+                                intersections[j % crvs.Count][1] = pts[0];
                             }
                             else
                             {
-                                intersections[i % crvs.Count][0] = Pts[1];
-                                intersections[i % crvs.Count][1] = Pts[0];
-                                intersections[j % crvs.Count][0] = Pts[0];
-                                intersections[j % crvs.Count][1] = Pts[1];
+                                intersections[i % crvs.Count][0] = pts[1];
+                                intersections[i % crvs.Count][1] = pts[0];
+                                intersections[j % crvs.Count][0] = pts[0];
+                                intersections[j % crvs.Count][1] = pts[1];
                             }
 
                             if (curve.IsClosed())
@@ -343,21 +382,21 @@ namespace BH.Engine.Geometry
                         {
                             if (i % crvs.Count == lngstIndex)
                             {
-                                if (intersections[i % crvs.Count][0].Distance(Pts[0]) > intersections[i % crvs.Count][1].Distance(Pts[0])&&intersections[i % crvs.Count][0].Distance(crvs[i % crvs.Count].IStartPoint())==0)
-                                    intersections[i % crvs.Count][1] = Pts[0];
+                                if (intersections[i % crvs.Count][0].Distance(pts[0]) > intersections[i % crvs.Count][1].Distance(pts[0])&&intersections[i % crvs.Count][0].Distance(crvs[i % crvs.Count].IStartPoint())==0)
+                                    intersections[i % crvs.Count][1] = pts[0];
                                 else
-                                    intersections[i % crvs.Count][0] = Pts[0];
+                                    intersections[i % crvs.Count][0] = pts[0];
 
-                                if (intersections[j % crvs.Count][1].Distance(Pts[0]) > 0)
-                                    intersections[j % crvs.Count][0] = Pts[0];
+                                if (intersections[j % crvs.Count][1].Distance(pts[0]) > 0)
+                                    intersections[j % crvs.Count][0] = pts[0];
                             }
                             else
                             {
-                                if (intersections[i % crvs.Count][0].Distance(Pts[0]) > 0)
-                                    intersections[i % crvs.Count][1] = Pts[0];
+                                if (intersections[i % crvs.Count][0].Distance(pts[0]) > 0)
+                                    intersections[i % crvs.Count][1] = pts[0];
 
-                                if (intersections[j % crvs.Count][1].Distance(Pts[0]) > 0)
-                                    intersections[j % crvs.Count][0] = Pts[0];
+                                if (intersections[j % crvs.Count][1].Distance(pts[0]) > 0)
+                                    intersections[j % crvs.Count][0] = pts[0];
                             }
                         }
 
@@ -365,7 +404,6 @@ namespace BH.Engine.Geometry
                             break;
                     }
                 }
-
             }
 
             for (int i = 0; i < crvs.Count; i++)
@@ -375,8 +413,9 @@ namespace BH.Engine.Geometry
             }
 
             result.Curves = crvs;
+
             //if this operation was enough to create a curve matching the last one - only appropriate on closed curves - return the result
-            if (result.IsClosed()&&curve.IsClosed())
+            if (result.IsClosed() && curve.IsClosed())
                 return result;
 
             resultList.Add(crvs[lngstIndex]);
@@ -415,57 +454,57 @@ namespace BH.Engine.Geometry
                     }
                 }
 
-                Pts.Clear();
+                pts.Clear();
 
-                if ((tmpPts = crvs[i % crvs.Count].ICurveIntersections(resultList[resultList.Count - 1])).Count > 0)
+                if ((tmpPts = crvs[i % crvs.Count].ICurveIntersections(resultList[resultList.Count - 1], tolerance)).Count > 0)
                 {
                     foreach (Point point in tmpPts)
-                        Pts.Add(point);
+                        pts.Add(point);
                     changed = true;
                 }
                 else
                 {
-                    if ((tmpPts = ln1.ICurveIntersections(crvs[i % crvs.Count])).Count > 0)
+                    if ((tmpPts = ln1.ICurveIntersections(crvs[i % crvs.Count], tolerance)).Count > 0)
                     {
                         foreach (Point point in tmpPts)
-                            Pts.Add(point);
+                            pts.Add(point);
                         changed = true;
                     }
 
-                    if ((tmpPts = ln1.ICurveIntersections(ln2)).Count > 0)
+                    if ((tmpPts = ln1.ICurveIntersections(ln2, tolerance)).Count > 0)
                     {
                         foreach (Point point in tmpPts)
-                            Pts.Add(point);
+                            pts.Add(point);
                         changed = true;
                     }
 
-                    if ((tmpPts = ln2.ICurveIntersections(resultList[resultList.Count - 1])).Count > 0)
+                    if ((tmpPts = ln2.ICurveIntersections(resultList[resultList.Count - 1], tolerance)).Count > 0)
                     {
                         foreach (Point point in tmpPts)
-                            Pts.Add(point);
+                            pts.Add(point);
                         changed = true;
                     }
                 }
 
                 if (changed)
                 {
-                    if (Pts.Count >= 2)
+                    if (pts.Count >= 2)
                     {
-                        for (int a = 0; a < Pts.Count; a++)
+                        for (int a = 0; a < pts.Count; a++)
                         {
-                            if ((Pts[a].IDistance(crvs[i % crvs.Count]) + Pts[a].IDistance(resultList[resultList.Count - 1]) <= Pts[0].IDistance(crvs[i % crvs.Count]) + Pts[0].IDistance(resultList[resultList.Count - 1])))
-                                Pts[0] = Pts[a];
+                            if ((pts[a].IDistance(crvs[i % crvs.Count]) + pts[a].IDistance(resultList[resultList.Count - 1]) <= pts[0].IDistance(crvs[i % crvs.Count]) + pts[0].IDistance(resultList[resultList.Count - 1])))
+                                pts[0] = pts[a];
                         }
                     }
 
                     int oldResNmbr = resultList.Count - 1;
-                    tmp = resultList[resultList.Count - 1].TrimExtend(resultList[resultList.Count - 1].IStartPoint(), Pts[0], extend);
+                    tmp = resultList[resultList.Count - 1].TrimExtend(resultList[resultList.Count - 1].IStartPoint(), pts[0], extend);
                     resultList.RemoveAt(resultList.Count - 1);
                     foreach (ICurve x in tmp)
                     {
                         resultList.Add(x);
                     }
-                    tmp = crvs[i % crvs.Count].TrimExtend(Pts[0], crvs[i % crvs.Count].IEndPoint(), extend);
+                    tmp = crvs[i % crvs.Count].TrimExtend(pts[0], crvs[i % crvs.Count].IEndPoint(), extend);
 
                     foreach (ICurve x in tmp)
                     {
@@ -493,45 +532,47 @@ namespace BH.Engine.Geometry
                 {
                     Line ln1 = null;
                     Line ln2 = null;
-                    ln1 = Create.Line(resultList[resultList.Count - 1].IEndPoint(), resultList[resultList.Count - 1].IEndDir() / resultList[resultList.Count - 1].IEndDir().Length() * Math.Abs(offset * offset * 5));
-                    ln2 = Create.Line(resultList[0].IStartPoint(), -resultList[0].IStartDir() / resultList[0].IStartDir().Length() * Math.Abs(offset * offset * 5));
-                    Pts.Clear();
+                    ln1 = Create.Line(resultList[resultList.Count - 1].IEndPoint(),
+                                      resultList[resultList.Count - 1].IEndDir() / resultList[resultList.Count - 1].IEndDir().Length() * Math.Abs(offset * offset * 5));
+                    ln2 = Create.Line(resultList[0].IStartPoint(),
+                                      -resultList[0].IStartDir() / resultList[0].IStartDir().Length() * Math.Abs(offset * offset * 5));
+                    pts.Clear();
 
-                    if ((tmpPts = ln1.ICurveIntersections(resultList[0])).Count > 0)
+                    if ((tmpPts = ln1.ICurveIntersections(resultList[0], tolerance)).Count > 0)
                     {
                         foreach (Point point in tmpPts)
-                            Pts.Add(point);
+                            pts.Add(point);
                     }
 
-                    if ((tmpPts = ln1.ICurveIntersections(ln2)).Count > 0)
+                    if ((tmpPts = ln1.ICurveIntersections(ln2, tolerance)).Count > 0)
                     {
                         foreach (Point point in tmpPts)
-                            Pts.Add(point);
+                            pts.Add(point);
                     }
 
-                    if ((tmpPts = ln2.ICurveIntersections(resultList[resultList.Count - 1])).Count > 0)
+                    if ((tmpPts = ln2.ICurveIntersections(resultList[resultList.Count - 1], tolerance)).Count > 0)
                     {
                         foreach (Point point in tmpPts)
-                            Pts.Add(point);
+                            pts.Add(point);
                     }
 
-                    if (Pts.Count >= 2)
+                    if (pts.Count >= 2)
                     {
-                        for (int a = 0; a < Pts.Count; a++)
+                        for (int a = 0; a < pts.Count; a++)
                         {
-                            if ((Pts[a].IDistance(resultList[0]) <= Pts[0].IDistance(resultList[0]) || Pts[a].IDistance(resultList[resultList.Count - 1]) <= Pts[0].IDistance(resultList[resultList.Count - 1])))
-                                Pts[0] = Pts[a];
+                            if ((pts[a].IDistance(resultList[0]) <= pts[0].IDistance(resultList[0]) || pts[a].IDistance(resultList[resultList.Count - 1]) <= pts[0].IDistance(resultList[resultList.Count - 1])))
+                                pts[0] = pts[a];
                         }
                     }
 
-                    tmp = resultList[resultList.Count - 1].TrimExtend(resultList[resultList.Count - 1].IStartPoint(), Pts[0], extend);
+                    tmp = resultList[resultList.Count - 1].TrimExtend(resultList[resultList.Count - 1].IStartPoint(), pts[0], extend);
                     resultList.RemoveAt(resultList.Count - 1);
                     foreach (ICurve x in tmp)
                     {
                         resultList.Add(x);
                     }
 
-                    tmp = resultList[0].TrimExtend(Pts[0], resultList[0].IEndPoint(), extend);
+                    tmp = resultList[0].TrimExtend(pts[0], resultList[0].IEndPoint(), extend);
                     if (tmp.Count == 1)
                         resultList[0] = tmp[0];
                     else
@@ -540,40 +581,37 @@ namespace BH.Engine.Geometry
                         resultList[0] = tmp[1];
                     }
                 }
-
                 else
                 {
                     Line ln2 = Create.Line(resultList[0].IStartPoint(), -resultList[0].IStartDir() / resultList[0].IStartDir().Length() * Math.Abs(offset * offset * 3));
                     ln2.Infinite = false;
                     for (int i = 0; i < resultList.Count; i++)
                     {
-                        if ((Pts = ln2.ICurveIntersections(resultList[i])).Count > 0)
+                        if ((pts = ln2.ICurveIntersections(resultList[i], tolerance)).Count > 0)
                         {
-                            resultList[i] = resultList[i].ITrim(resultList[i].IStartPoint(), Pts[0]);
+                            resultList[i] = resultList[i].ITrim(resultList[i].IStartPoint(), pts[0]);
                             for (int j = i + 1; j < resultList.Count; j++)
                                 resultList.RemoveAt(j);
-                            resultList.Add(new Line { Start = Pts[0], End = resultList[0].IStartPoint() });
+                            resultList.Add(new Line { Start = pts[0], End = resultList[0].IStartPoint() });
                             omitWarning = true;
                             break;
                         }
                     }
                 }
-
             }
-
 
             if (!result.IsClosed(tolerance) && curve.IsClosed(tolerance))
             {
-                BH.Engine.Reflection.Compute.RecordError("Offset is incorrect.");
+                Reflection.Compute.RecordError("Offset is incorrect.");
                 return null;
             }
 
-            if (omitWarning||result.CurveIntersections(curve).Count > 0|| result.IsSelfIntersecting())
-            {
-                BH.Engine.Reflection.Compute.RecordWarning("Offset may be wrong. Please inspect the results.");
-            }
+            if (omitWarning || result.CurveIntersections(curve, tolerance).Count > 0 || result.IsSelfIntersecting(tolerance))
+                Reflection.Compute.RecordWarning("Offset may be wrong. Please inspect the results.");            
 
             return result;
         }
+
+        /***************************************************/
     }
 }
