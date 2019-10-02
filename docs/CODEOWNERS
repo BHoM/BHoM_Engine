@@ -7,22 +7,22 @@
 # project owners 
 
 #NEED OWNER: /Acoustic_Engine
-/Analytical_Engine @al-fisher @adecler @IsakNaslundBh @FraserGreenroyd
-/Architecture_Engine @FraserGreenroyd
-/BHoM_Engine @adecler
-/Engine_Test @adecler
+/Analytical_Engine @al-fisher @rwemay @IsakNaslundBh @FraserGreenroyd
+#NEED OWNER: /Architecture_Engine
+/BHoM_Engine @adecler @al-fisher
 /Common_Engine @al-fisher @rwemay
-/DataManipulation_Engine @adecler
-/DataStructure_Engine @adecler
-/Diffing_Engine @alelom @al-fisher @adecler @epignatelli
-/Environment_Engine @FraserGreenroyd
-/Geometry_Engine @pawelbaran
-/Humans_Engine @al-fisher
-/MachineLearning_Engine @epignatelli
-/Physical_Engine @al-fisher @adecler @IsakNaslundBh @FraserGreenroyd
-/Planning_Engine @rwemay
-/Reflection_Engine @adecler
-/Serialiser_Engine @adecler
-/Structure_Engine @IsakNaslundBh
-/Testing_Engine @adecler
-#NEED OWNER: /Units_Engine
+/Data_Engine @adecler @epignatelli
+/Diffing_Engine @alelom @al-fisher @adecler
+/Environment_Engine @FraserGreenroyd @tg359
+/Geometry_Engine @pawelbaran @al-fisher @epignatelli
+/Humans_Engine @al-fisher @rwemay
+/Library_Engine @adecler @IsakNaslundBh
+/Physical_Engine @al-fisher @rwemay @IsakNaslundBh @FraserGreenroyd
+/Planning_Engine @rwemay @al-fisher
+/Reflection_Engine @adecler @FraserGreenroyd @al-fisher
+/Results_Engine @IsakNaslundBh @FraserGreenroyd @rwemay
+#NEED OWNER: /SVG_Engine
+/Serialiser_Engine @adecler @FraserGreenroyd
+#NEED OWNER: /Speech_Engine
+/Structure_Engine @IsakNaslundBh @rwemay
+/Testing_Engine @adecler @FraserGreenroyd
