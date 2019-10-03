@@ -85,7 +85,6 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-
         public static List<ICurve> SplitAtPoints(this Circle circle, List<Point> points, double tolerance = Tolerance.Distance)
         {
 
@@ -118,9 +117,10 @@ namespace BH.Engine.Geometry
 
             if (cPts.Count == 0)
             {
-                result.Add(circle.Clone());
+                result.Add(circle);
                 return result;
             }
+
             if (cPts.Count == 1)
             {
                 tmpArc = mainArc;
