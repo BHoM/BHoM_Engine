@@ -21,6 +21,7 @@
  */
 
 using BH.oM.Geometry;
+using BH.oM.Geometry.CoordinateSystem;
 using System;
 
 namespace BH.Engine.Geometry
@@ -129,6 +130,46 @@ namespace BH.Engine.Geometry
             matrix[3, 3] = 1;
 
             return new TransformMatrix { Matrix = matrix };
+        }
+
+        /***************************************************/
+
+        public static TransformMatrix OrientationMatrixGlobalToLocal(Cartesian csTo)
+        {
+            Vector XWorld = new Vector { X = 1, Y = 0, Z = 0 };
+            Vector YWorld = new Vector { X = 0, Y = 1, Z = 0 };
+            Vector ZWorld = new Vector { X = 0, Y = 0, Z = 1 };
+
+            Vector XTo = csTo.X.Normalise();
+            Vector YTo = csTo.Y.Normalise();
+            Vector ZTo = csTo.Z.Normalise();
+
+            TransformMatrix globalToLocal = new TransformMatrix
+            {
+                Matrix = new double[,]
+                {
+                    { XWorld.DotProduct(XTo), XWorld.DotProduct(YTo), XWorld.DotProduct(ZTo), csTo.Origin.X },
+                    { YWorld.DotProduct(XTo), YWorld.DotProduct(YTo), YWorld.DotProduct(ZTo), csTo.Origin.Y },
+                    { ZWorld.DotProduct(XTo), ZWorld.DotProduct(YTo), ZWorld.DotProduct(ZTo), csTo.Origin.Z },
+                    { 0,                      0,                      0                     , 1  }
+                }
+            };
+
+            return globalToLocal;
+        }
+
+        /***************************************************/
+
+        public static TransformMatrix OrientationMatrixLocalToGlobal(Cartesian csFrom)
+        {
+            return OrientationMatrixGlobalToLocal(csFrom).Invert();
+        }
+    
+        /***************************************************/
+
+        public static TransformMatrix OrientationMatrix(this Cartesian csFrom, Cartesian csTo)
+        {
+            return OrientationMatrixGlobalToLocal(csTo) * OrientationMatrixLocalToGlobal(csFrom);
         }
 
         /***************************************************/
