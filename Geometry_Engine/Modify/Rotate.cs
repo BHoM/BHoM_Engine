@@ -83,6 +83,14 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        public static ICurve Rotate(this Ellipse curve, Point origin, Vector axis, double rad)
+        {
+            TransformMatrix rotationMatrix = Create.RotationMatrix(origin, axis, rad);
+            return Transform(curve, rotationMatrix);
+        }
+
+        /***************************************************/
+
         public static Line Rotate(this Line line, Point origin, Vector axis, double rad)
         {
             TransformMatrix rotationMatrix = Create.RotationMatrix(origin, axis, rad);
