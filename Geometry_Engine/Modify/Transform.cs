@@ -83,32 +83,69 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Curves                   ****/
         /***************************************************/
 
-        public static ICurve Transform(this Arc arc, TransformMatrix transform)
+        public static ICurve Transform(this Arc curve, TransformMatrix transform)
         {
-            return arc.ToNurbsCurve().Transform(transform);
+            if (transform.Determinant() == 1 ||
+                (transform.Matrix[0, 0] == transform.Matrix[1, 1] && transform.Matrix[1, 1] == transform.Matrix[2, 2]))
+                return new Arc
+                {
+                    Radius = (curve.StartPoint() - curve.CoordinateSystem.Origin).Transform(transform).Length(),
+                    StartAngle = curve.StartAngle,
+                    EndAngle = curve.EndAngle,
+                    CoordinateSystem = curve.CoordinateSystem.Transform(transform)
+                };
+            else
+            {
+                Reflection.Compute.RecordNote("Transformation is not rigid. Converting into NurbsCurve. May occure change in shape");
+                return curve.ToNurbsCurve().Transform(transform);
+            }
         }
 
         /***************************************************/
 
-        public static ICurve Transform(this Circle circle, TransformMatrix transform)
+        public static ICurve Transform(this Circle curve, TransformMatrix transform)
         {
-            //TODO: an affine transform of a circle always returns a circle or an ellipse so we should improve on this
-            return circle.ToNurbsCurve().Transform(transform);
+            if (transform.Determinant() == 1 || 
+                (transform.Matrix[0,0] == transform.Matrix[1, 1] && transform.Matrix[1, 1]  == transform.Matrix[2, 2]))
+                return new Circle
+                {
+                    Centre = curve.Centre.Transform(transform),
+                    Radius = (curve.StartPoint() - curve.Centre).Transform(transform).Length(),
+                    Normal = curve.Normal.Transform(transform)
+                };
+            else
+            {
+                Reflection.Compute.RecordNote("Transformation is not rigid. Converting into NurbsCurve. May occure change in shape");
+                return curve.ToNurbsCurve().Transform(transform);
+            }
         }
 
         /***************************************************/
 
-        public static ICurve Transform(this Ellipse ellipse, TransformMatrix transform)
+        public static ICurve Transform(this Ellipse curve, TransformMatrix transform)
         {
-            //TODO: an affine transform of an ellipse always returns an ellipse so we should improve on this
-            return ellipse.ToNurbsCurve().Transform(transform); 
+            if (transform.Determinant() == 1 ||
+                (transform.Matrix[0, 0] == transform.Matrix[1, 1] && transform.Matrix[1, 1] == transform.Matrix[2, 2]))
+                return new Ellipse
+                {
+                    Centre = curve.Centre.Transform(transform),
+                    Axis1 = curve.Axis1.Transform(transform),
+                    Axis2 = curve.Axis2.Transform(transform),
+                    Radius1 = (curve.Axis1.Normalise() * curve.Radius1).Transform(transform).Length(),
+                    Radius2 = (curve.Axis2.Normalise() * curve.Radius2).Transform(transform).Length(),
+                };
+            else
+            {
+                Reflection.Compute.RecordNote("Transformation is not rigid. Converting into NurbsCurve. May occure change in shape");
+                return curve.ToNurbsCurve().Transform(transform);
+            }
         }
 
         /***************************************************/
 
-        public static Line Transform(this Line line, TransformMatrix transform)
+        public static Line Transform(this Line curve, TransformMatrix transform)
         {
-            return new Line { Start = line.Start.Transform(transform), End = line.End.Transform(transform) };
+            return new Line { Start = curve.Start.Transform(transform), End = curve.End.Transform(transform) };
         }
 
         /***************************************************/

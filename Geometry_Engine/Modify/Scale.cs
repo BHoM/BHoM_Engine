@@ -76,6 +76,14 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        public static ICurve Scale(this Ellipse curve, Point origin, Vector scaleVector)
+        {
+            TransformMatrix scaleMatrix = Create.ScaleMatrix(origin, scaleVector);
+            return Transform(curve, scaleMatrix);
+        }
+
+        /***************************************************/
+        
         public static Line Scale(this Line line, Point origin, Vector scaleVector)
         {
             TransformMatrix scaleMatrix = Create.ScaleMatrix(origin, scaleVector);

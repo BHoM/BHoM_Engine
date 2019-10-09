@@ -84,6 +84,14 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        public static ICurve Translate(this Ellipse curve, Vector transform)
+        {
+            TransformMatrix translationMatrix = Create.TranslationMatrix(transform);
+            return Transform(curve, translationMatrix);
+        }
+
+        /***************************************************/
+
         public static Line Translate(this Line line, Vector transform)
         {
             return new Line { Start = line.Start + transform, End = line.End + transform };
