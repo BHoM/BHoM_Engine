@@ -25,6 +25,7 @@ using BH.oM.Geometry.CoordinateSystem;
 using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 
 namespace BH.Engine.Geometry
@@ -34,7 +35,12 @@ namespace BH.Engine.Geometry
         /***************************************************/
         /****         public Generic Interface          ****/
         /***************************************************/
-
+        
+        [Description("Orients geometry from one coordinate sytem to another")]
+        [Input("geometry", "Geometry to be transformed")]
+        [Input("csFrom", "Coordinate system in which geometry is now")]
+        [Input("csTo", "Coordinate system in which we want geometry to be")]
+        [Output("G", "Geometry in new coordinate system")]
         public static T Orient<T>(this T geometry, Cartesian csFrom, Cartesian csTo) where T: IGeometry
         {
             TransformMatrix orientationMatrix = Create.OrientationMatrix(csFrom, csTo);
