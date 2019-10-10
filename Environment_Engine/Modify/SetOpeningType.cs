@@ -30,7 +30,6 @@ using System;
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
 
-
 namespace BH.Engine.Environment
 {
     public static partial class Modify
@@ -43,15 +42,12 @@ namespace BH.Engine.Environment
         [Input("openings", "A collection of Environment Openings to set the type off")]
         [Input("type", "The opening type to assign to the openings")]
         [Output("openings", "A collection of Environment Openings with their type set")]
-
-        public static List<Opening> SetOpeningType (this List<Opening> openings, OpeningType type)
+        public static List<Opening> SetOpeningType(this List<Opening> openings, OpeningType type)
         {
             foreach (Opening o in openings)
                 o.Type = type;
 
             return openings;
-                
         }
-    }
-    
+    } 
 }
