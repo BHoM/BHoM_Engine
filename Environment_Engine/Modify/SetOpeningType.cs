@@ -39,13 +39,13 @@ namespace BH.Engine.Environment
         /***************************************************/
 
         [Description("Set the opening type based on the provided type")]
-        [Input("openings", "A collection of Environment Openings to set the type off")]
-        [Input("type", "The opening type to assign to the openings")]
+        [Input("openings", "A collection of Environment Openings to set the type of")]
+        [Input("openingType", "The opening type to assign to the openings")]
         [Output("openings", "A collection of Environment Openings with their type set")]
-        public static List<Opening> SetOpeningType(this List<Opening> openings, OpeningType type)
+        public static List<Opening> SetOpeningType(this List<Opening> openings, OpeningType openingType)
         {
             foreach (Opening o in openings)
-                o.Type = type;
+                o.Type = openingType;
 
             return openings;
         }
