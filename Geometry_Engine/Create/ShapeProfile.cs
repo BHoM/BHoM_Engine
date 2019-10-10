@@ -28,6 +28,7 @@ using BH.oM.Geometry;
 using System;
 using BH.oM.Reflection.Attributes;
 using BH.Engine.Geometry;
+using System.ComponentModel;
 
 namespace BH.Engine.Geometry
 {
@@ -39,6 +40,16 @@ namespace BH.Engine.Geometry
 
         public static ISectionProfile ISectionProfile(double height, double width, double webthickness, double flangeThickness, double rootRadius, double toeRadius)
         {
+            if (height < flangeThickness * 2 + rootRadius * 2 || width < webthickness + rootRadius * 2 +toeRadius*2 || toeRadius > flangeThickness)
+            {
+                Engine.Reflection.Compute.RecordError("The ratio between inputs makes section inconceivable");
+                return null;
+            }
+            if (height <= 0 || width <= 0 || webthickness <= 0 || flangeThickness<= 0 || rootRadius< 0 ||toeRadius< 0)
+            {
+                Engine.Reflection.Compute.RecordError("Input length less or equal to 0");
+                return null; 
+            }
             List<ICurve> curves = IProfileCurves(flangeThickness, width, flangeThickness, width, webthickness, height - 2 * flangeThickness, rootRadius, toeRadius);
             return new ISectionProfile(height, width, webthickness, flangeThickness, rootRadius, toeRadius, curves);
         }
@@ -55,6 +66,16 @@ namespace BH.Engine.Geometry
 
         public static AngleProfile AngleProfile(double height, double width, double webthickness, double flangeThickness, double rootRadius, double toeRadius, bool mirrorAboutLocalZ = false, bool mirrorAboutLocalY = false)
         {
+            if (height < flangeThickness + rootRadius + toeRadius|| width < webthickness + rootRadius + toeRadius || flangeThickness < toeRadius || webthickness < toeRadius)
+            {
+                Engine.Reflection.Compute.RecordError("The ratio between inputs makes section inconceivable");
+                return null;
+            }
+            if (height <= 0 || width <= 0 || webthickness <= 0 || flangeThickness <= 0 || rootRadius < 0 || toeRadius < 0)
+            {
+                Engine.Reflection.Compute.RecordError("Input length less or equal to 0");
+                return null;
+            }
             List<ICurve> curves = AngleProfileCurves(width, height, flangeThickness, webthickness, rootRadius, toeRadius);
 
             if (mirrorAboutLocalZ)
