@@ -29,6 +29,7 @@ using BH.oM.Environment.Fragments;
 using System;
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
+using BH.Engine.Base;
 
 namespace BH.Engine.Environment
 {
@@ -44,10 +45,10 @@ namespace BH.Engine.Environment
         [Output("openings", "A collection of Environment Openings with their type set")]
         public static List<Opening> SetOpeningType(this List<Opening> openings, OpeningType openingType)
         {
-            foreach (Opening o in openings)
+            List<Opening> cloned = openings.DeepClone<List<Opening>>();
+            foreach (Opening o in cloned)
                 o.Type = openingType;
-
-            return openings;
+            return cloned;
         }
-    } 
-}
+    }
+} 
