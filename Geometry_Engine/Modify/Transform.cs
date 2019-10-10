@@ -51,7 +51,8 @@ namespace BH.Engine.Geometry
         {
             double[,] matrix = transform.Matrix;
 
-            return new Vector {
+            return new Vector
+            {
                 X = matrix[0, 0] * vector.X + matrix[0, 1] * vector.Y + matrix[0, 2] * vector.Z,
                 Y = matrix[1, 0] * vector.X + matrix[1, 1] * vector.Y + matrix[1, 2] * vector.Z,
                 Z = matrix[2, 0] * vector.X + matrix[2, 1] * vector.Y + matrix[2, 2] * vector.Z
@@ -85,8 +86,7 @@ namespace BH.Engine.Geometry
 
         public static ICurve Transform(this Arc curve, TransformMatrix transform)
         {
-            if (transform.Determinant() == 1 ||
-                (transform.Matrix[0, 0] == transform.Matrix[1, 1] && transform.Matrix[1, 1] == transform.Matrix[2, 2]))
+            if (Math.Abs(transform.Determinant() - 1) <= 1e-6 || transform.IsUniformScaling())
                 return new Arc
                 {
                     Radius = (curve.StartPoint() - curve.CoordinateSystem.Origin).Transform(transform).Length(),
@@ -105,8 +105,7 @@ namespace BH.Engine.Geometry
 
         public static ICurve Transform(this Circle curve, TransformMatrix transform)
         {
-            if (transform.Determinant() == 1 || 
-                (transform.Matrix[0,0] == transform.Matrix[1, 1] && transform.Matrix[1, 1]  == transform.Matrix[2, 2]))
+            if (Math.Abs(transform.Determinant() - 1) <= 1e-6 || transform.IsUniformScaling())
                 return new Circle
                 {
                     Centre = curve.Centre.Transform(transform),
@@ -124,8 +123,7 @@ namespace BH.Engine.Geometry
 
         public static ICurve Transform(this Ellipse curve, TransformMatrix transform)
         {
-            if (transform.Determinant() == 1 ||
-                (transform.Matrix[0, 0] == transform.Matrix[1, 1] && transform.Matrix[1, 1] == transform.Matrix[2, 2]))
+            if (Math.Abs(transform.Determinant() - 1) <= 1e-6 || transform.IsUniformScaling())
                 return new Ellipse
                 {
                     Centre = curve.Centre.Transform(transform),
@@ -251,6 +249,26 @@ namespace BH.Engine.Geometry
             return Transform(geometry as dynamic, transform);
         }
 
+
         /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+         private static bool IsUniformScaling(this TransformMatrix transform)
+        {
+            double tol = 1e-6;
+
+            for (int i = 0; i < transform.Matrix.GetLength(0); i++)
+                for (int j = 0; j < transform.Matrix.GetLength(1) - 1; j++)
+                    if (i != j && Math.Abs(transform.Matrix[i, j]) > tol)
+                        return false;
+
+            if (Math.Abs(transform.Matrix[0, 0] - transform.Matrix[1, 1]) <= tol &&
+                Math.Abs(transform.Matrix[1, 1] - transform.Matrix[2, 2]) <= tol &&
+                Math.Abs(transform.Matrix[3, 3] - 1) <= tol)
+                return true;
+
+            return false;
+        }
     }
 }
