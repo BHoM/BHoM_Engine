@@ -63,22 +63,22 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Curves                   ****/
         /***************************************************/
 
-        public static Arc Rotate(this Arc arc, Point origin, Vector axis, double rad)
+        public static Arc Rotate(this Arc curve, Point origin, Vector axis, double rad)
         {
             return new Arc
             {
-                CoordinateSystem = arc.CoordinateSystem.Rotate(origin, axis, rad),
-                Radius = arc.Radius,
-                StartAngle = arc.StartAngle,
-                EndAngle = arc.EndAngle
+                CoordinateSystem = curve.CoordinateSystem.Rotate(origin, axis, rad),
+                Radius = curve.Radius,
+                StartAngle = curve.StartAngle,
+                EndAngle = curve.EndAngle
             };
         }
 
         /***************************************************/
 
-        public static Circle Rotate(this Circle circle, Point origin, Vector axis, double rad)
+        public static Circle Rotate(this Circle curve, Point origin, Vector axis, double rad)
         {
-            return new Circle { Centre = circle.Centre.Rotate(origin, axis, rad), Normal = circle.Normal.Rotate(rad, axis), Radius = circle.Radius };
+            return new Circle { Centre = curve.Centre.Rotate(origin, axis, rad), Normal = curve.Normal.Rotate(rad, axis), Radius = curve.Radius };
         }
 
         /***************************************************/
@@ -91,10 +91,10 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static Line Rotate(this Line line, Point origin, Vector axis, double rad)
+        public static Line Rotate(this Line curve, Point origin, Vector axis, double rad)
         {
             TransformMatrix rotationMatrix = Create.RotationMatrix(origin, axis, rad);
-            return Transform(line, rotationMatrix);
+            return Transform(curve, rotationMatrix);
         }
 
         /***************************************************/

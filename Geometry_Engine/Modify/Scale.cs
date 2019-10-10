@@ -60,18 +60,18 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Curves                   ****/
         /***************************************************/
 
-        public static ICurve Scale(this Arc arc, Point origin, Vector scaleVector)
+        public static ICurve Scale(this Arc curve, Point origin, Vector scaleVector)
         {
             TransformMatrix scaleMatrix = Create.ScaleMatrix(origin, scaleVector);
-            return Transform(arc, scaleMatrix);
+            return Transform(curve, scaleMatrix);
         }
 
         /***************************************************/
 
-        public static ICurve Scale(this Circle circle, Point origin, Vector scaleVector)
+        public static ICurve Scale(this Circle curve, Point origin, Vector scaleVector)
         {
             TransformMatrix scaleMatrix = Create.ScaleMatrix(origin, scaleVector);
-            return Transform(circle, scaleMatrix);
+            return Transform(curve, scaleMatrix);
         }
 
         /***************************************************/
@@ -84,10 +84,10 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
         
-        public static Line Scale(this Line line, Point origin, Vector scaleVector)
+        public static Line Scale(this Line curve, Point origin, Vector scaleVector)
         {
             TransformMatrix scaleMatrix = Create.ScaleMatrix(origin, scaleVector);
-            return Transform(line, scaleMatrix);
+            return Transform(curve, scaleMatrix);
         }
 
         /***************************************************/
