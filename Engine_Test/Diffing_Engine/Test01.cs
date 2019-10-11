@@ -29,7 +29,7 @@ namespace Engine_Test
             for (int i = 0; i < 3; i++)
             {
                 Bar obj = BH.Engine.Base.Create.RandomObject(typeof(Bar)) as Bar;
-                obj.Fragments = obj.Fragments.Where(fragm => fragm != null).ToList(); // (RandomObject bug workaround: it generates a random number of null fragments)
+                //obj.Fragments = obj.Fragments.Where(fragm => fragm != null).ToList(); // (RandomObject bug workaround: it generates a random number of null fragments)
                 obj.Name = "bar_" + i.ToString();
                 currentObjs_Alessio.Add(obj as dynamic);
             }
