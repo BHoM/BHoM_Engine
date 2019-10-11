@@ -39,26 +39,17 @@ namespace BH.Engine.Base
 
         [Description("Returns an instance of a BHoM Fragment if it exists on the object")]
         [Input("iBHoMObject", "A generic IBHoMObject object")]
-        [Input("fragmentType", "The type of fragment to be queried and returned")]
+        [Input("fragmentType", "The type of fragment to be queried and returned. If not specified, the generic type is taken.")]
         [Output("fragment", "The instance of that Fragment if it exists on the object, null otherwise")]
-        public static T FindFragment<T>(this IBHoMObject iBHoMObject, Type fragmentType)
+        public static T FindFragment<T>(this IBHoMObject iBHoMObject, Type fragmentType = null)
         {
+            if (fragmentType == null)
+                fragmentType = typeof(T);
+
             IBHoMFragment fragment;
             iBHoMObject.Fragments.TryGetValue(fragmentType, out fragment);
 
             return (T)System.Convert.ChangeType(fragment, fragmentType);
-        }
-
-        [Description("Returns an instance of a BHoM Fragment if it exists on the object")]
-        [Input("iBHoMObject", "A generic IBHoMObject object")]
-        [Input("fragmentType", "The type of fragment to be queried and returned")]
-        [Output("fragment", "The instance of that Fragment if it exists on the object, null otherwise")]
-        public static IBHoMFragment FindFragment(this IBHoMObject iBHoMObject, Type fragmentType)
-        {
-            IBHoMFragment fragment;
-            iBHoMObject.Fragments.TryGetValue(fragmentType, out fragment);
-
-            return fragment;
         }
 
         public static bool TryGetValue(this FragmentSet fragmentSet, Type fragmentType, out IBHoMFragment fragment)
