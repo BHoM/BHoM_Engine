@@ -43,7 +43,40 @@ namespace BH.Engine.Base
         [Output("fragment", "The instance of that Fragment if it exists on the object, null otherwise")]
         public static T FindFragment<T>(this IBHoMObject iBHoMObject, Type fragmentType)
         {
-            return (T)System.Convert.ChangeType(iBHoMObject.Fragments.Where(x => x.GetType() == fragmentType).FirstOrDefault(), fragmentType);
+            IBHoMFragment fragment;
+            iBHoMObject.Fragments.TryGetValue(fragmentType, out fragment);
+
+            return (T)System.Convert.ChangeType(fragment, fragmentType);
+        }
+
+        [Description("Returns an instance of a BHoM Fragment if it exists on the object")]
+        [Input("iBHoMObject", "A generic IBHoMObject object")]
+        [Input("fragmentType", "The type of fragment to be queried and returned")]
+        [Output("fragment", "The instance of that Fragment if it exists on the object, null otherwise")]
+        public static IBHoMFragment FindFragment(this IBHoMObject iBHoMObject, Type fragmentType)
+        {
+            IBHoMFragment fragment;
+            iBHoMObject.Fragments.TryGetValue(fragmentType, out fragment);
+
+            return fragment;
+        }
+
+        public static bool TryGetValue(this FragmentSet fragmentSet, Type fragmentType, out IBHoMFragment fragment)
+        {
+            if (fragmentType == null)
+                throw new ArgumentNullException($"Passed fragment type is null.");
+
+            if (!typeof(IBHoMFragment).IsAssignableFrom(fragmentType))
+                throw new ArgumentException($"Passed type {fragmentType} is not an IBHoMFragment.");
+
+            if (fragmentSet != null && fragmentSet.Contains(fragmentType))
+            {
+                fragment = fragmentSet[fragmentType];
+                return true;
+            }
+
+            fragment = default(IBHoMFragment);
+            return false;
         }
     }
 }
