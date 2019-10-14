@@ -137,6 +137,16 @@ namespace BH.Engine.Geometry
 
         public static FabricatedBoxProfile FabricatedBoxProfile(double height, double width, double webThickness, double topFlangeThickness, double botFlangeThickness, double weldSize)
         {
+            if (height < topFlangeThickness + botFlangeThickness + 2 * Math.Sqrt(2) * weldSize || width <= webThickness*2 + 2*Math.Sqrt(2)*weldSize)
+            {
+                Engine.Reflection.Compute.RecordError("The ratio between inputs makes section inconceivable");
+                return null;
+            }
+            if (height <= 0 || width <= 0 || webThickness <= 0 || topFlangeThickness <= 0 || botFlangeThickness <= 0 || weldSize < 0)
+            {
+                Engine.Reflection.Compute.RecordError("Input length less or equal to 0");
+                return null;
+            }
             List<ICurve> curves = FabricatedBoxProfileCurves(width, height, webThickness, topFlangeThickness, botFlangeThickness);
             return new FabricatedBoxProfile(height, width, webThickness, topFlangeThickness, botFlangeThickness, weldSize, curves);
         }
