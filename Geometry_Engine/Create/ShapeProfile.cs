@@ -102,6 +102,16 @@ namespace BH.Engine.Geometry
 
         public static ChannelProfile ChannelProfile(double height, double width, double webthickness, double flangeThickness, double rootRadius, double toeRadius, bool mirrorAboutLocalZ = false)
         {
+            if (height < flangeThickness*2 + rootRadius*2 || width < webthickness + rootRadius + toeRadius || flangeThickness < toeRadius)
+            {
+                Engine.Reflection.Compute.RecordError("The ratio between inputs makes section inconceivable");
+                return null;
+            }
+            if (height <= 0 || width <= 0 || webthickness <= 0 || flangeThickness <= 0 || rootRadius < 0 || toeRadius < 0)
+            {
+                Engine.Reflection.Compute.RecordError("Input length less or equal to 0");
+                return null;
+            }
             List<ICurve> curves = ChannelProfileCurves(height, width, webthickness, flangeThickness, rootRadius, toeRadius);
 
             if (mirrorAboutLocalZ)
