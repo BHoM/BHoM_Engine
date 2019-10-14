@@ -196,6 +196,16 @@ namespace BH.Engine.Geometry
 
         public static RectangleProfile RectangleProfile(double height, double width, double cornerRadius)
         {
+            if (cornerRadius > height / 2 || cornerRadius > width /2)
+            {
+                Engine.Reflection.Compute.RecordError("The ratio between inputs makes section inconceivable");
+                return null;
+            }
+            if (height <= 0 || width <= 0 || cornerRadius< 0)
+            {
+                Engine.Reflection.Compute.RecordError("Input length less or equal to 0");
+                return null;
+            }
             List<ICurve> curves = RectangleProfileCurves(width, height, cornerRadius);
             return new RectangleProfile(height, width, cornerRadius, curves);
         }
@@ -204,6 +214,16 @@ namespace BH.Engine.Geometry
 
         public static TSectionProfile TSectionProfile(double height, double width, double webthickness, double flangeThickness, double rootRadius, double toeRadius, bool mirrorAboutLocalY = false)
         {
+            if (height < flangeThickness + rootRadius || width < webthickness + 2 * rootRadius + 2 * toeRadius || toeRadius>flangeThickness)
+            {
+                Engine.Reflection.Compute.RecordError("The ratio between inputs makes section inconceivable");
+                return null;
+            }
+            if (height <= 0 || width <= 0 || webthickness<= 0 || flangeThickness <= 0 || rootRadius < 0 || toeRadius < 0)
+            {
+                Engine.Reflection.Compute.RecordError("Input length less or equal to 0");
+                return null;
+            }
             List<ICurve> curves = TeeProfileCurves(flangeThickness, width, webthickness, height - flangeThickness, rootRadius, toeRadius);
 
             if (mirrorAboutLocalY)
