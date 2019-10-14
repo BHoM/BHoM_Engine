@@ -58,6 +58,8 @@
     <Compile Include="Create\Binary\Multiply.cs" />
     <Compile Include="Create\Binary\Subtract.cs" />
     <Compile Include="Create\Binary\Add.cs" />
+    <Compile Include="Create\GetProperty.cs" />
+    <Compile Include="Create\Common\CompareProperty.cs" />
     <Compile Include="Create\Convert.cs" />
     <Compile Include="Create\Invoke.cs" />
     <Compile Include="Create\Control\ForLoop.cs" />
