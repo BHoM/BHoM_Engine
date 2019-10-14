@@ -58,6 +58,18 @@ namespace BH.Engine.Geometry
 
         public static BoxProfile BoxProfile(double height, double width, double thickness, double outerRadius, double innerRadius)
         {
+            if (thickness > height / 2 || thickness > width / 2 || outerRadius > height / 2 || outerRadius > width / 2 || innerRadius * 2 > width - thickness * 2 || innerRadius * 2 > height - thickness * 2 ||
+                Math.Sqrt(2) * thickness <= Math.Sqrt(2) *outerRadius - outerRadius - Math.Sqrt(2) * innerRadius + innerRadius)
+            {
+                Engine.Reflection.Compute.RecordError("The ratio between inputs makes section inconceivable");
+                return null;
+            }
+            if (height <= 0 || width <= 0 || thickness <= 0 || outerRadius < 0 || innerRadius < 0)
+            {
+                Engine.Reflection.Compute.RecordError("Input length less or equal to 0");
+                return null;
+            }
+
             List<ICurve> curves = BoxProfileCurves(width, height, thickness, thickness, innerRadius, outerRadius);
             return new BoxProfile(height, width, thickness, outerRadius, innerRadius, curves);
         }
