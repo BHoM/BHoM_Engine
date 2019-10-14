@@ -236,6 +236,16 @@ namespace BH.Engine.Geometry
 
         public static GeneralisedTSectionProfile GeneralisedTSectionProfile(double height, double webThickness, double leftOutstandWidth, double leftOutstandThickness, double rightOutstandWidth, double rightOutstandThickness, bool mirrorAboutLocalY = false)
         {
+            if (height <= leftOutstandThickness || height <= rightOutstandThickness)
+            {
+                Engine.Reflection.Compute.RecordError("The ratio between inputs makes section inconceivable");
+                return null;
+            }
+            if (height <= 0 || webThickness <= 0 || leftOutstandThickness <= 0 || leftOutstandThickness <= 0 || rightOutstandThickness < 0 || rightOutstandWidth <= 0)
+            {
+                Engine.Reflection.Compute.RecordError("Input length less or equal to 0");
+                return null;
+            }
             List<ICurve> curves = GeneralisedTeeProfileCurves(height, webThickness, leftOutstandWidth, leftOutstandThickness, rightOutstandWidth, rightOutstandThickness);
 
             if (mirrorAboutLocalY)
