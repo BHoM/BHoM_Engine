@@ -171,6 +171,16 @@ namespace BH.Engine.Geometry
 
         public static FabricatedISectionProfile FabricatedISectionProfile(double height, double topFlangeWidth, double botFlangeWidth, double webThickness, double topFlangeThickness, double botFlangeThickness, double weldSize)
         {
+            if (height <= topFlangeThickness + botFlangeThickness + 2 * Math.Sqrt(2) * weldSize || botFlangeWidth <= webThickness + 2 * Math.Sqrt(2) * weldSize || topFlangeWidth <= webThickness + 2 * Math.Sqrt(2) * weldSize)
+            {
+                Engine.Reflection.Compute.RecordError("The ratio between inputs makes section inconceivable");
+                return null;
+            }
+            if (height <= 0 || topFlangeWidth <= 0 || botFlangeWidth <= 0 || webThickness <= 0 || topFlangeThickness <= 0 || botFlangeThickness <= 0 || weldSize < 0)
+            {
+                Engine.Reflection.Compute.RecordError("Input length less or equal to 0");
+                return null;
+            }
             List<ICurve> curves = IProfileCurves(topFlangeThickness, topFlangeWidth, botFlangeThickness, botFlangeWidth, webThickness, height - botFlangeThickness - topFlangeThickness,0,0);
             return new FabricatedISectionProfile(height, topFlangeWidth, botFlangeWidth, webThickness, topFlangeThickness, botFlangeThickness, weldSize, curves);
         }
