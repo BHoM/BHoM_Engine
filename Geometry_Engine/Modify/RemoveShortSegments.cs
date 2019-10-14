@@ -40,43 +40,47 @@ namespace BH.Engine.Geometry
         [Input("polyline", "The polyline you wish to clean by removing short segments")]
         [Input("minimumSegmentLength", "The tolerance of what a short segment is. Segments greater than this length will be kept, segments shorter will be cleaned (removed). Default is set to the value defined by BH.oM.Geometry.Tolerance.Distance")]
         [Output("polyline", "The cleaned polyline")]
-        public static Polyline RemoveShortSegments(this Polyline polyline, double minimumSegmentLength = Tolerance.Distance)
+        public static Polyline RemoveShortSegments(this Polyline polyline, double minimumSegmentLength = Tolerance.Distance, double distanceTolerance = Tolerance.Distance)
         {            
-            List<Point> pnts = polyline.DiscontinuityPoints();
-            List<Point> originalPnts = polyline.DiscontinuityPoints();
+            List<Point> pnts = new List<Point>(polyline.IControlPoints());
+            Point originalLastPoint = pnts.Last();
 
-            if (pnts.Count < 3)            
-                return polyline; //If there's only two points here then this method isn't necessary            
-                
-            int startIndex = 0;                       
-            while (startIndex < pnts.Count)
+            int startIndex = 0;
+            int maxIndex = polyline.IsClosed(distanceTolerance) ? pnts.Count : pnts.Count - 1;
+            while (startIndex < maxIndex)
             {
                 Point first = pnts[startIndex];
                 Point second = pnts[(startIndex + 1) % pnts.Count];                
 
                 if (first.Distance(second) <= minimumSegmentLength)
+                {
                     pnts.RemoveAt((startIndex + 1) % pnts.Count); //Delete the second point as it is too close to the first to produce any meaningful change...
+                    maxIndex--;
+                }
                 else
                     startIndex++; //Move onto the next point
             }
-
-            if (!polyline.IsClosed())
+            
+            if (!polyline.IsClosed(distanceTolerance))
             {
-                if (pnts.Last() != originalPnts.Last())
-                {
-                    pnts.Remove(pnts.Last());
-                    pnts.Add(originalPnts.Last()); //Keep the original endpoint of the polyline                   
-                }
+                pnts.Remove(pnts.Last());
+                pnts.Add(originalLastPoint);                
             }
-            else if (pnts.First() != pnts.Last())
-            {                
-                pnts.Add(pnts.First()); //Reclose polyline
-            }            
+            else //Only re-close if original polyline is closed
+            {
+                pnts.Add(pnts.First());                
+            }
+
+            while (pnts.Last().Distance(pnts[pnts.Count() - 2]) < minimumSegmentLength)
+            {
+                pnts.RemoveAt(pnts.Count - 2);
+            }
 
             Polyline pLine = new Polyline()
             {
                 ControlPoints = pnts,
             };
+
             return pLine;
         }
         /***************************************************/
