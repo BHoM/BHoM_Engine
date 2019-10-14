@@ -11,7 +11,7 @@ namespace BH.Engine.Expressions.Query
     {
         public static object Run(this LambdaExpression expr, List<object> args = null)
         {
-            return Run(expr.Compile());
+            return Run(expr.Compile(), args);
         }
 
         public static object Run(this Delegate expr, List<object> args = null)
