@@ -124,6 +124,11 @@ namespace BH.Engine.Geometry
 
         public static CircleProfile CircleProfile(double diameter)
         {
+            if (diameter <= 0)
+            {
+                Engine.Reflection.Compute.RecordError("Input length less or equal to 0");
+                return null;
+            }
             List<ICurve> curves = CircleProfileCurves(diameter / 2);
             return new CircleProfile(diameter, curves);
         }
