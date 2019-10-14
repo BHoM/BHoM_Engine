@@ -36,40 +36,33 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns a polyline defined by the points which result in deviations from a straight line only. For example, if a polyline has 3 points in a straight line, the middle point is removed as part of this cleaning process. This is designed for closed polylines only")]
+        [Description("Returns a polyline defined by the points which result in deviations from a straight line only. For example, if a polyline has 3 points in a straight line, the middle point is removed as part of this cleaning process")]
         [Input("polyline", "The polyline you wish to clean by removing unnecessary points")]
-        [Input("angleTolerance", "The tolerance of the angle that defines a straight line. Default is set to the value defined by BH.oM.Geometry.Tolerance.Angle")]
-        [Output("polyline", "The cleaned polyline")]
-        public static Polyline RemoveLeastSignificantVertices(this Polyline polyline, double angleTolerance = Tolerance.Angle)
-        {            
-            List<Point> pnts = polyline.DiscontinuityPoints();
-            List<Point> originalPnts = polyline.DiscontinuityPoints();
+        [Input("smallestAcceptableAngle", "The tolerance of the angle that defines a straight line. Default is set to the value defined by BH.oM.Geometry.Tolerance.Angle")]        
+        [Output("polyline", "The cleaned polyline")]        
+        public static Polyline RemoveLeastSignificantVertices(this Polyline polyline, double smallestAcceptableAngle = Tolerance.Angle, double angleTolerance = Tolerance.Angle, double distanceTolerance = Tolerance.Distance)
+        {           
+            List<Point> pnts = polyline.DiscontinuityPoints(distanceTolerance, angleTolerance);
+            Point originalLastPoint = pnts.Last();
 
-            if (pnts.Count < 3)
-                return polyline; //If there's only two points here then this method isn't necessary
-
-            int startIndex = 0;            
-            while (startIndex < pnts.Count)
+            int startIndex = 0;
+            int maxIndex = polyline.IsClosed(distanceTolerance) ? pnts.Count : pnts.Count - 2;
+            while (startIndex < maxIndex)
             {
                 Point first = pnts[startIndex];
                 Point second = pnts[(startIndex + 1) % pnts.Count];
                 Point third = pnts[(startIndex + 2) % pnts.Count];
 
-                if (first.Angle(second, third) <= angleTolerance)
+                if (first.Angle(second, third) <= smallestAcceptableAngle)
+                {
                     pnts.RemoveAt((startIndex + 1) % pnts.Count);  //Delete the second point from the list, it's not necessary
+                    maxIndex--;
+                }
                 else
                     startIndex++; //Move onto the next point
             }
 
-            if (!polyline.IsClosed())
-            {
-                if (pnts.Last() != originalPnts.Last())
-                {
-                    pnts.Remove(pnts.Last());
-                    pnts.Add(originalPnts.Last());
-                }
-            }
-            else if (pnts.First() != pnts.Last()) //Only re-close if original polyline is closed
+            if (polyline.IsClosed(distanceTolerance)) //Only re-close if original polyline is closed           
             {
                 pnts.Add(pnts.First());
             }
@@ -79,6 +72,20 @@ namespace BH.Engine.Geometry
                 ControlPoints = pnts,
             };
 
+            List<double> angles = new List<double>();
+            foreach (BH.oM.Geometry.Point point in pnts)
+            {
+                double angle = point.Angle(pnts[(pnts.IndexOf(point) + 1) % pnts.Count], pnts[(pnts.IndexOf(point) + 2) % pnts.Count]);
+                angles.Add(angle);
+            }
+            foreach (double angle in angles)
+            {
+                if (angle < smallestAcceptableAngle)
+                {
+                    BH.Engine.Reflection.Compute.RecordWarning("One ore more of the angles of the new polyline is smaller than smallestAcceptableAngle, choose a smaller value for smallestAcceptableAngle or proceed with the created polyline as it is.");
+                }
+            }
+            
             return pLine;
         }
         /***************************************************/
