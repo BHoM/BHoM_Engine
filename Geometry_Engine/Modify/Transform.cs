@@ -38,7 +38,8 @@ namespace BH.Engine.Geometry
         {
             double[,] matrix = transform.Matrix;
 
-            return new Point {
+            return new Point
+            {
                 X = matrix[0, 0] * pt.X + matrix[0, 1] * pt.Y + matrix[0, 2] * pt.Z + matrix[0, 3],
                 Y = matrix[1, 0] * pt.X + matrix[1, 1] * pt.Y + matrix[1, 2] * pt.Z + matrix[1, 3],
                 Z = matrix[2, 0] * pt.X + matrix[2, 1] * pt.Y + matrix[2, 2] * pt.Z + matrix[2, 3]
@@ -254,7 +255,7 @@ namespace BH.Engine.Geometry
         /**** Private Methods                           ****/
         /***************************************************/
 
-         private static bool IsUniformScaling(this TransformMatrix transform)
+        private static bool IsUniformScaling(this TransformMatrix transform)
         {
             double tol = 1e-6;
 
@@ -270,5 +271,7 @@ namespace BH.Engine.Geometry
 
             return false;
         }
+
+        /***************************************************/
     }
 }
