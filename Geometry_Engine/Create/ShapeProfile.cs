@@ -155,6 +155,16 @@ namespace BH.Engine.Geometry
 
         public static GeneralisedFabricatedBoxProfile GeneralisedFabricatedBoxProfile(double height, double width, double webThickness, double topFlangeThickness = 0.0, double botFlangeThickness = 0.0, double topCorbelWidth = 0.0, double botCorbelWidth = 0.0)
         {
+            if (webThickness>=width/2 ||height <= topFlangeThickness+botFlangeThickness)
+            {
+                Engine.Reflection.Compute.RecordError("The ratio between inputs makes section inconceivable");
+                return null;
+            }
+            if (height <= 0 || width <= 0 || webThickness <= 0 || topFlangeThickness <= 0 || botFlangeThickness <= 0 || topCorbelWidth < 0 || botCorbelWidth < 0)
+            {
+                Engine.Reflection.Compute.RecordError("Input length less or equal to 0");
+                return null;
+            }
             List<ICurve> curves = GeneralisedFabricatedBoxProfileCurves(height, width, webThickness, topFlangeThickness, botFlangeThickness, topCorbelWidth, topCorbelWidth, botCorbelWidth, botCorbelWidth);
             return new GeneralisedFabricatedBoxProfile(height, width, webThickness, topFlangeThickness, botFlangeThickness, topCorbelWidth, topCorbelWidth, botCorbelWidth, botCorbelWidth, curves);
         }
@@ -163,6 +173,16 @@ namespace BH.Engine.Geometry
 
         public static KiteProfile KiteProfile(double width1, double angle1, double thickness)
         {
+            if ((width1*Math.Sin(angle1/2)/Math.Sqrt(2)) /(Math.Sin(Math.PI*0.75- (angle1/2)))<thickness)
+            {
+                Engine.Reflection.Compute.RecordError("The ratio between inputs makes section inconceivable");
+                return null;
+            }
+            if (width1 <= 0 || angle1 <= 0 || thickness <= 0)
+            {
+                Engine.Reflection.Compute.RecordError("Input length less or equal to 0");
+                return null;
+            }
             List<ICurve> curves = KiteProfileCurves(width1, angle1, thickness);
             return new KiteProfile(width1, angle1, thickness, curves);
         }
@@ -258,6 +278,16 @@ namespace BH.Engine.Geometry
 
         public static TubeProfile TubeProfile(double diameter, double thickness)
         {
+            if (thickness >= diameter/2)
+            {
+                Engine.Reflection.Compute.RecordError("The ratio between inputs makes section inconceivable");
+                return null;
+            }
+            if (diameter<=0 || thickness<=0)
+            {
+                Engine.Reflection.Compute.RecordError("Input length less or equal to 0");
+                return null;
+            }
             List<ICurve> curves = TubeProfileCurves(diameter / 2, thickness);
             return new TubeProfile(diameter, thickness, curves);
         }
