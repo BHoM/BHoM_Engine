@@ -34,8 +34,7 @@ namespace BH.Engine.Base
 {
     public static partial class Modify
     {
-        [Deprecated("2.4.0.0", "Should be using FragmentSet.AddOrReplace instead.", typeof(FragmentSet), "AddOrReplace")]
-        [Description("Appends a Fragment Property to a given BHoM Object")]
+        [Description("Returns a deep clone of a given BHoM Object and attaches to it the given Fragment.")]
         [Input("iBHoMObject", "Any object implementing the IBHoMObject interface that can have fragment properties appended to it")]
         [Input("fragment", "Any fragment object implementing the IBHoMFragment interface to append to the object")]
         [Input("replace", "If set to true and the object already contains a fragment of the type being added, the fragment will be replaced by this instance")]
