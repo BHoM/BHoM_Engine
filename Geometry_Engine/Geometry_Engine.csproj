@@ -61,6 +61,7 @@
     <Compile Include="Compute\ClusterCoplanar.cs" />
     <Compile Include="Compute\ConvexHull.cs" />
     <Compile Include="Compute\CullDuplicates.cs" />
+    <Compile Include="Compute\IntegrateRegion.cs" />
     <Compile Include="Compute\DistributeOutlines.cs" />
     <Compile Include="Compute\Eigenvalues.cs" />
     <Compile Include="Compute\Eigenvectors.cs" />
