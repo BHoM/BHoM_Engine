@@ -176,10 +176,11 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static List<ICurve> FabricatedBoxProfileCurves(double width, double height, double webThickness, double topFlangeThickness, double botFlangeThickness)
+        public static List<ICurve> FabricatedBoxProfileCurves(double width, double height, double webThickness, double topFlangeThickness, double botFlangeThickness, double weldSize)
         {
             List<ICurve> box = RectangleProfileCurves(width, height, 0);
             List<ICurve> innerBox = RectangleProfileCurves(width - 2 * webThickness, height - (topFlangeThickness + botFlangeThickness), 0);
+            List<ICurve> welds = new List<ICurve>();
             double diff = botFlangeThickness- topFlangeThickness;
 
             if (diff != 0)
@@ -188,7 +189,21 @@ namespace BH.Engine.Geometry
                 innerBox = innerBox.Select(x => Geometry.Modify.ITranslate(x, v)).ToList();
             }
 
+            double weldLength = weldSize * 2 / Math.Sqrt(2);
+            Point q1 = new Point { X = (width / 2) - webThickness, Y = (height / 2) - topFlangeThickness, Z = 0 };
+            Point q2 = new Point { X = -(width / 2) + webThickness, Y = (height / 2) - topFlangeThickness, Z = 0 };
+            Point q3 = new Point { X = -(width / 2) + webThickness, Y = -(height / 2) + topFlangeThickness, Z = 0 };
+            Point q4 = new Point { X = (width / 2) - webThickness, Y = -(height / 2) + topFlangeThickness, Z = 0 };
+            Vector wx = new Vector { X = weldLength, Y = 0, Z = 0 };
+            Vector wy = new Vector { X = 0, Y = weldLength, Z = 0 };
+
+            welds.Add(new Line { Start = q1-wx, End = q1-wy });
+            welds.Add(new Line { Start = q2 + wx, End = q2 - wy });
+            welds.Add(new Line { Start = q3 + wx, End = q3 + wy });
+            welds.Add(new Line { Start = q4 - wx, End = q4 + wy });
+
             box.AddRange(innerBox);
+            box.AddRange(welds);
             return box;
         }
 
