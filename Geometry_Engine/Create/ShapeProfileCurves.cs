@@ -34,7 +34,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static List<ICurve> IProfileCurves(double tft, double tfw, double bft, double bfw, double wt, double wd, double r1, double r2)
+        public static List<ICurve> IProfileCurves(double tft, double tfw, double bft, double bfw, double wt, double wd, double r1, double r2, double weldSize)
         {
             List<ICurve> perimeter = new List<ICurve>();
             Point p = new Point { X = bfw / 2, Y = 0, Z = 0 };
@@ -60,6 +60,25 @@ namespace BH.Engine.Geometry
             }
             perimeter.Add(new Line { Start = p, End = p - xAxis * (tfw) });
             perimeter.Add(new Line { Start = origin + xAxis * (-bfw / 2), End = origin + xAxis * (bfw / 2) });
+
+            //j start
+            //List<ICurve> curves = IProfileCurves(topFlangeThickness, topFlangeWidth, botFlangeThickness, botFlangeWidth, webThickness, height - botFlangeThickness - topFlangeThickness,0,0);
+            List<ICurve> welds = new List<ICurve>();
+            double weldLength = weldSize * 2 / Math.Sqrt(2);
+            Point q1 = new Point { X = wt, Y = ((wd+tft+bft)/2)-tft, Z = 0 };
+            Point q2 = new Point { X = -wt, Y = ((wd + tft + bft) / 2) - tft, Z = 0 };
+            Point q3 = new Point { X = -wt, Y = -((wd + tft + bft) / 2) + bft, Z = 0 };
+            Point q4 = new Point { X = wt, Y = -((wd + tft + bft) / 2) + bft, Z = 0 };
+            Vector wx = new Vector { X = weldLength, Y = 0, Z = 0 };
+            Vector wy = new Vector { X = 0, Y = weldLength, Z = 0 };
+
+            welds.Add(new Line { Start = q1 - wx, End = q1 - wy });
+            welds.Add(new Line { Start = q2 + wx, End = q2 - wy });
+            welds.Add(new Line { Start = q3 + wx, End = q3 + wy });
+            welds.Add(new Line { Start = q4 - wx, End = q4 + wy });
+            perimeter.AddRange(welds);
+            //j end
+
             return perimeter;
         }
 
@@ -180,7 +199,6 @@ namespace BH.Engine.Geometry
         {
             List<ICurve> box = RectangleProfileCurves(width, height, 0);
             List<ICurve> innerBox = RectangleProfileCurves(width - 2 * webThickness, height - (topFlangeThickness + botFlangeThickness), 0);
-            List<ICurve> welds = new List<ICurve>();
             double diff = botFlangeThickness- topFlangeThickness;
 
             if (diff != 0)
@@ -189,6 +207,7 @@ namespace BH.Engine.Geometry
                 innerBox = innerBox.Select(x => Geometry.Modify.ITranslate(x, v)).ToList();
             }
 
+            List<ICurve> welds = new List<ICurve>();
             double weldLength = weldSize * 2 / Math.Sqrt(2);
             Point q1 = new Point { X = (width / 2) - webThickness, Y = (height / 2) - topFlangeThickness, Z = 0 };
             Point q2 = new Point { X = -(width / 2) + webThickness, Y = (height / 2) - topFlangeThickness, Z = 0 };
