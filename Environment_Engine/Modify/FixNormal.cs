@@ -38,9 +38,10 @@ namespace BH.Engine.Environment
 
         public static List<List<Panel>> FixNormal(this List<List<Panel>> panelsAsSpaces)
         {
+            List<List<Panel>> clones = new List<List<Panel>>(panelsAsSpaces.Select(x => x.Select(y => y.DeepClone<Panel>()).ToList()).ToList());
             List<List<Panel>> returnPanels = new List<List<Panel>>();
 
-            foreach(List<Panel> space in panelsAsSpaces)
+            foreach(List<Panel> space in clones)
             {
                 returnPanels.Add(new List<Panel>());
                 foreach(Panel p in space)
