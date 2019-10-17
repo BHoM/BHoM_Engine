@@ -27,6 +27,7 @@ using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
 
 using System.Linq;
+using BH.Engine.Base;
 
 namespace BH.Engine.Environment
 {
@@ -42,7 +43,8 @@ namespace BH.Engine.Environment
         [Output("panelsAsSpace", "A collection of modified Environment Panels with the provided space name listed as a connecting space")]
         public static List<Panel> AddAdjacentSpace(this List<Panel> panels, string spaceName)
         {
-            foreach(Panel p in panels)
+            List<Panel> clonedPanels = new List<Panel>(panels.Select(x => x.DeepClone<Panel>()).ToList());
+            foreach(Panel p in clonedPanels)
             {
                 if(p.ConnectedSpaces.Count < 2)
                     p.ConnectedSpaces.Add(spaceName);
@@ -50,7 +52,7 @@ namespace BH.Engine.Environment
                     p.ConnectedSpaces[1] = spaceName;
             }
 
-            return panels;
+            return clonedPanels;
         }
 
         [Description("Returns a single Environment Panel with the provided space name added as a connected space")]
@@ -59,7 +61,8 @@ namespace BH.Engine.Environment
         [Output("panel", "A modified Environment Panel with the provided space name listed as a connecting space")]
         public static Panel AddAdjacentSpace(this Panel panel, string spaceName)
         {
-            return AddAdjacentSpace(new List<Panel> { panel }, spaceName)[0];
+            Panel clonedPanel = panel.DeepClone<Panel>();
+            return AddAdjacentSpace(new List<Panel> { clonedPanel }, spaceName)[0];
         }
 
         [Description("Returns a single Environment Panel with the provided space names added as the connecting spaces")]
@@ -68,8 +71,9 @@ namespace BH.Engine.Environment
         [Output("panel", "A modified Environment Panel with the provided space names listed as the connecting spaces")]
         public static Panel SetAdjancentSpaces(this Panel panel, List<string> spaceNames)
         {
-            panel.ConnectedSpaces = spaceNames;
-            return panel;
+            Panel clonedPanel = panel.DeepClone<Panel>();
+            clonedPanel.ConnectedSpaces = spaceNames;
+            return clonedPanel;
         }
 
         [Description("Returns a single Environment Panel with an updated connected space name")]
@@ -79,13 +83,14 @@ namespace BH.Engine.Environment
         [Output("panel", "A modified Environment Panel with the changed connected space name")]
         public static Panel ChangeAdjacentSpace(this Panel panel, string spaceNameToChange, string replacementSpaceName)
         {
-            for(int x = 0; x < panel.ConnectedSpaces.Count; x++)
+            Panel clonedPanel = panel.DeepClone<Panel>());
+            for(int x = 0; x < clonedPanel.ConnectedSpaces.Count; x++)
             {
-                if (panel.ConnectedSpaces[x] == spaceNameToChange)
-                    panel.ConnectedSpaces[x] = replacementSpaceName;
+                if (clonedPanel.ConnectedSpaces[x] == spaceNameToChange)
+                    clonedPanel.ConnectedSpaces[x] = replacementSpaceName;
             }
 
-            return panel;
+            return clonedPanel;
         }
 
         [Description("Returns a collection of Environment Panels where any connected spaces which are detailed within the spaceNamesToChange are replaced by a replacementSpaceName. The spaceNamesToChange and replacementSpaceNames should match length to provide a 1:1 change")]
@@ -93,21 +98,22 @@ namespace BH.Engine.Environment
         [Input("spaceNamesToChange", "A collection of space names which should be updated")]
         [Input("replacementSpaceNames", "A collection of space names to replace with")]
         [Output("panels", "A collection of Environment Panels modified so that space names are changed as appropriate")]
-        public static List<Panel> ChangeAdjacentSpaces(this List<Panel> panels, List<string> spaceNamesToChange, List<string> replacementSpaceNames)
+        public static List<Panel> ChangeAdjacentSpaces(this List<Panel> clonedPanels, List<string> spaceNamesToChange, List<string> replacementSpaceNames)
         {
+            List<Panel> clonedPanels
             if(spaceNamesToChange.Count != replacementSpaceNames.Count)
             {
                 BH.Engine.Reflection.Compute.RecordError("Please ensure the number of replacement space names matches the number of changing space names. Panels returned without change");
-                return panels;
+                return clonedPanels;
             }
 
             for(int x = 0; x < spaceNamesToChange.Count; x++)
             {
-                for (int a = 0; a < panels.Count; a++)
-                    panels[a] = ChangeAdjacentSpace(panels[a], spaceNamesToChange[x], replacementSpaceNames[x]);
+                for (int a = 0; a < clonedPanels.Count; a++)
+                    clonedPanels[a] = ChangeAdjacentSpace(clonedPanels[a], spaceNamesToChange[x], replacementSpaceNames[x]);
             }
 
-            return panels;
+            return clonedPanels;
         }
     }
 }
