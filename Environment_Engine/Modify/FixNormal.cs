@@ -27,6 +27,7 @@ using BH.oM.Environment.Elements;
 
 using BH.oM.Geometry;
 using BH.Engine.Geometry;
+using BH.Engine.Base;
 
 namespace BH.Engine.Environment
 {
