@@ -24,6 +24,8 @@ using BH.Engine.Geometry;
 using BH.oM.Architecture.Elements;
 using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
+using BH.Engine.Base; 
 
 namespace BH.Engine.Architecture
 {
@@ -42,5 +44,18 @@ namespace BH.Engine.Architecture
         }
 
         /***************************************************/
+
+        [Description("Assign new geometry to an Architecture Room. If either geometry is null then original geometry is used")]
+        [Input("room", "An Architecture Room to set the location of")]
+        [Input("locationPoint", "A BHoM Geometry Point defining the location of the room, default null")]
+        [Input("perimeterCurve", "A BHoM Geometry ICurve defining the perimeter of the room, default null")]
+        [Output("room", "An Architecture Room with an updated geometry")]
+        public static Room SetGeometry(this Room room, Point locationPoint = null, ICurve perimeterCurve = null)
+        {
+            Room clone = room.DeepClone<Room>();
+            clone.Location = locationPoint == null ? room.Location.DeepClone<Point>() : locationPoint;
+            clone.Perimeter = perimeterCurve == null ? room.Perimeter.DeepClone<ICurve>() : perimeterCurve; 
+            return clone;
+        }
     }
 }
