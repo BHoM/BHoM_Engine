@@ -27,6 +27,7 @@ using BH.oM.Geometry;
 
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
+using BH.Engine.Base;
 
 namespace BH.Engine.Environment
 {
@@ -84,7 +85,7 @@ namespace BH.Engine.Environment
         [Output("space", "An Environment Space with an updated geometry")]
         public static Space SetGeometry(this Space space, Point locationPoint)
         {
-            Space clone = space.GetShallowClone() as Space;
+            Space clone = space.DeepClone<Space>();
             clone.Location = locationPoint;
             return clone;
         }
