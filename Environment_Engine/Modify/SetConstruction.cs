@@ -34,6 +34,8 @@ using BH.oM.Environment.Fragments;
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
 
+using BH.Engine.Base;
+
 namespace BH.Engine.Environment
 {
     public static partial class Modify
@@ -49,9 +51,10 @@ namespace BH.Engine.Environment
         [Output("panels", "The collection of Environment Panels with an updated construction")]
         public static List<Panel> SetConstructions(this List<Panel> panels, IConstruction newConstruction, List<string> typeNames = null)
         {
+            List<Panel> clones = new List<Panel>(panels.Select(x => x.DeepClone<Panel>()).ToList());
             List<Panel> returnPanels = new List<Panel>();
 
-            foreach (Panel p in panels)
+            foreach (Panel p in clones)
             {
                 if (typeNames == null)
                     p.Construction = newConstruction;
@@ -75,9 +78,10 @@ namespace BH.Engine.Environment
         [Output("openings", "The collection of Environment Openings with an updated construction")]
         public static List<Opening> SetConstructions(this List<Opening> openings, IConstruction newConstruction, List<string> typeNames = null)
         {
+            List<Opening> clones = new List<Opening>(openings.Select(x => x.DeepClone<Opening>()).ToList());
             List<Opening> returnOpenings = new List<Opening>();
 
-            foreach (Opening o in openings)
+            foreach (Opening o in clones)
             {
                 if (typeNames == null)
                     o.OpeningConstruction = newConstruction;
@@ -101,10 +105,11 @@ namespace BH.Engine.Environment
         [Output("panels", "The collection of Environment Panels with updated construction on the hosted openings")]
         public static List<Panel> SetOpeningConstruction(this List<Panel> panels, IConstruction newConstruction, List<string> typeNames = null)
         {
-            foreach(Panel p in panels)
+            List<Panel> clones = new List<Panel>(panels.Select(x => x.DeepClone<Panel>()).ToList());
+            foreach(Panel p in clones)
                 p.Openings = p.Openings.SetConstructions(newConstruction, typeNames);
 
-            return panels;
+            return clones;
         }
     }
 }
