@@ -28,7 +28,7 @@ using BH.oM.Reflection.Attributes;
 using BH.oM.Base;
 using BH.oM.Data.Library;
 
-namespace BH.Engine.Library
+namespace BH.Engine.Data
 {
     public static partial class Create
     {
@@ -39,19 +39,18 @@ namespace BH.Engine.Library
         [Description("")]
         [Input("", "")]
         [Output("", "")]
-        public static Dataset Dataset(object data, Source source, string name, DateTime? timeOfCreation = null)
+        public static Dataset Dataset(List<IBHoMObject> data, Source source, string name, DateTime? timeOfCreation = null)
         {
             DateTime time = timeOfCreation == null ? DateTime.UtcNow : (DateTime)timeOfCreation;
- 
+
             return new Dataset
             {
                 SourceInformation = source,
                 Data = data,
                 Name = name,
                 TimeOfCreation = time
-            }
+            };
 
-            throw new NotImplementedException();
         }
 
         /***************************************************/
