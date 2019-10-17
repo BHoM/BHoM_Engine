@@ -30,6 +30,8 @@ using System;
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
 
+using BH.Engine.Base;
+
 namespace BH.Engine.Environment
 {
     public static partial class Modify
@@ -43,7 +45,9 @@ namespace BH.Engine.Environment
         [Output("panels", "A collection of Environment Panels with their type set")]
         public static List<Panel> SetPanelTypeByAdjacencies(this List<Panel> panels)
         {
-            foreach(Panel panel in panels)
+            List<Panel> clones = new List<Panel>(panels.Select(x => x.DeepClone<Panel>()).ToList());
+
+            foreach(Panel panel in clones)
             {
                 if (panel.ConnectedSpaces.Where(x => x != "-1").ToList().Count == 0)
                     panel.Type = PanelType.Shade;
@@ -53,7 +57,7 @@ namespace BH.Engine.Environment
                     panel.Type = PanelType.WallInternal;                
             }
 
-            return panels;
+            return clones;
         }
 
         [Description("Sets the panel type based on some custom data for the panel")]
@@ -62,13 +66,14 @@ namespace BH.Engine.Environment
         [Output("panels", "A collection of Environment Panels with their type set")]
         public static List<Panel> UpdatePanelTypeByCustomData(this List<Panel> panels, string customDataKey = "")
         {
+            List<Panel> clones = new List<Panel>(panels.Select(x => x.DeepClone<Panel>()).ToList());
             if (customDataKey == "")
             {
                 BH.Engine.Reflection.Compute.RecordWarning("You did not set a custom data key and so no modifications were made to these Panels");
-                return panels; //Make no changes if no one has presented a key
+                return clones; //Make no changes if no one has presented a key
             }
 
-            foreach(Panel panel in panels)
+            foreach(Panel panel in clones)
             {
                 if(panel.CustomData.ContainsKey(customDataKey))
                 {
@@ -105,7 +110,7 @@ namespace BH.Engine.Environment
                 }
             }
 
-            return panels;
+            return clones;
         }
 
         [Description("Sets the panel type based on the provided type")]
@@ -114,10 +119,11 @@ namespace BH.Engine.Environment
         [Output("panels", "A collection of Environment Panels with their type set")]
         public static List<Panel> SetPanelType(this List<Panel> panels, PanelType type)
         {
-            foreach (Panel p in panels)
+            List<Panel> clones = new List<Panel>(panels.Select(x => x.DeepClone<Panel>()).ToList());
+            foreach (Panel p in clones)
                 p.Type = type;
 
-            return panels;
+            return clones;
         }
 
         [Description("Returns the floor panels of a space represented by Environment Panels")]
@@ -125,15 +131,17 @@ namespace BH.Engine.Environment
         [Output("floorPanels", "BHoM Environment panel representing the floor of the space")]
         public static List<Panel> SetFloorPanels(this List<Panel> panelsAsSpace)
         {
+            List<Panel> clones = new List<Panel>(panelsAsSpace.Select(x => x.DeepClone<Panel>()).ToList());
+
             //Find the panel(s) that are at the lowest point of the space...
             double minZ = 1e10;
-            foreach (Panel panel in panelsAsSpace)
+            foreach (Panel panel in clones)
             {
                 if (panel.MinimumLevel() == panel.MaximumLevel())
                     minZ = Math.Min(minZ, panel.MinimumLevel());
             }
 
-            List<Panel> floorPanels = panelsAsSpace.Where(x => x.MinimumLevel() == minZ && x.MaximumLevel() == minZ).ToList();
+            List<Panel> floorPanels = clones.Where(x => x.MinimumLevel() == minZ && x.MaximumLevel() == minZ).ToList();
 
             if (floorPanels.Count == 0)
             {
@@ -158,15 +166,17 @@ namespace BH.Engine.Environment
         [Output("roofPanels", "BHoM Environment panel representing the roof of the space")]
         public static List<Panel> SetRoofPanels(this List<Panel> panelsAsSpace)
         {
+            List<Panel> clones = new List<Panel>(panelsAsSpace.Select(x => x.DeepClone<Panel>()).ToList());
+
             //Find the panel(s) that are at the highest point of the space...
             double minZ = 1e10;
-            foreach (Panel panel in panelsAsSpace)
+            foreach (Panel panel in clones)
             {
                 if (panel.MinimumLevel() == panel.MaximumLevel())
                     minZ = Math.Min(minZ, panel.MinimumLevel());
             }
 
-            List<Panel> roofPanels = panelsAsSpace.Where(x => ((x.MaximumLevel() != minZ) && (Math.Round(x.Tilt()) >= 92 || Math.Round(x.Tilt()) <= 88)) && x.ConnectedSpaces.ToList().Count == 1).ToList();
+            List<Panel> roofPanels = clones.Where(x => ((x.MaximumLevel() != minZ) && (Math.Round(x.Tilt()) >= 92 || Math.Round(x.Tilt()) <= 88)) && x.ConnectedSpaces.ToList().Count == 1).ToList();
 
             foreach (Panel panel in roofPanels)
             {
@@ -182,15 +192,17 @@ namespace BH.Engine.Environment
         [Output("wallPanels", "BHoM Environment panel representing the wall of the space")]
         public static List<Panel> SetWallPanels(this List<Panel> panelsAsSpace)
         {
-            //Find the panel(s) that ... is horizontal
+            List<Panel> clones = new List<Panel>(clones.Select(x => x.DeepClone<Panel>()).ToList());
+
+            //Find the panel(s) that are horizontal
             double minZ = 1e10;
-            foreach (Panel panel in panelsAsSpace)
+            foreach (Panel panel in clones)
             {
                 if (panel.MinimumLevel() == panel.MaximumLevel())
                     minZ = Math.Min(minZ, panel.MinimumLevel());
             }
 
-            List<Panel> wallPanels = panelsAsSpace.Where(x => x.Tilt() < 92 && x.Tilt() > 88).ToList();
+            List<Panel> wallPanels = clones.Where(x => x.Tilt() < 92 && x.Tilt() > 88).ToList();
 
             if (wallPanels.Count == 0)
             {
@@ -215,8 +227,7 @@ namespace BH.Engine.Environment
         public static List<Panel> SetShadePanels(this List<Panel> panels)
         {
             //Find the panel(s) without connected spaces and set as shade
-            List<Panel> shadePanels = panels;
-
+            List<Panel> shadePanels = new List<Panel>(panels.Select(x => x.DeepClone<Panel>()).ToList()); 
             foreach (Panel panel in shadePanels)
             {
                 if (panel.ConnectedSpaces.Where(x => x != "-1").ToList().Count == 0)
