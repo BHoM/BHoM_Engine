@@ -83,7 +83,6 @@
     <Compile Include="Create\Theatron\Tier.cs" />
     <Compile Include="Create\Theatron\TierProfile.cs" />
     <Compile Include="Create\Theatron\VomitoryParameters.cs" />
-    <Compile Include="Modify\SetLocationPoint.cs" />
     <Compile Include="Modify\SetGeometry.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Query\Geometry.cs" />
