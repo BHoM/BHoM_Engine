@@ -192,7 +192,7 @@ namespace BH.Engine.Environment
         [Output("wallPanels", "BHoM Environment panel representing the wall of the space")]
         public static List<Panel> SetWallPanels(this List<Panel> panelsAsSpace)
         {
-            List<Panel> clones = new List<Panel>(clones.Select(x => x.DeepClone<Panel>()).ToList());
+            List<Panel> clones = new List<Panel>(panelsAsSpace.Select(x => x.DeepClone<Panel>()).ToList());
 
             //Find the panel(s) that are horizontal
             double minZ = 1e10;

@@ -83,7 +83,7 @@ namespace BH.Engine.Environment
         [Output("panel", "A modified Environment Panel with the changed connected space name")]
         public static Panel ChangeAdjacentSpace(this Panel panel, string spaceNameToChange, string replacementSpaceName)
         {
-            Panel clonedPanel = panel.DeepClone<Panel>());
+            Panel clonedPanel = panel.DeepClone<Panel>();
             for(int x = 0; x < clonedPanel.ConnectedSpaces.Count; x++)
             {
                 if (clonedPanel.ConnectedSpaces[x] == spaceNameToChange)
@@ -98,9 +98,9 @@ namespace BH.Engine.Environment
         [Input("spaceNamesToChange", "A collection of space names which should be updated")]
         [Input("replacementSpaceNames", "A collection of space names to replace with")]
         [Output("panels", "A collection of Environment Panels modified so that space names are changed as appropriate")]
-        public static List<Panel> ChangeAdjacentSpaces(this List<Panel> clonedPanels, List<string> spaceNamesToChange, List<string> replacementSpaceNames)
+        public static List<Panel> ChangeAdjacentSpaces(this List<Panel> panels, List<string> spaceNamesToChange, List<string> replacementSpaceNames)
         {
-            List<Panel> clonedPanels
+            List<Panel> clonedPanels = new List<Panel>(panels.Select(x => x.DeepClone<Panel>()).ToList());
             if(spaceNamesToChange.Count != replacementSpaceNames.Count)
             {
                 BH.Engine.Reflection.Compute.RecordError("Please ensure the number of replacement space names matches the number of changing space names. Panels returned without change");
