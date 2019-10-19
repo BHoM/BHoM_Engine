@@ -35,6 +35,7 @@ using MongoDB.Bson.Serialization.Serializers;
 using System.Diagnostics;
 using BH.Engine.Serialiser.Objects.MemberMapConventions;
 using System.Reflection;
+using BH.Engine.Serialiser.Objects;
 
 namespace BH.Engine.Serialiser
 {
@@ -128,6 +129,7 @@ namespace BH.Engine.Serialiser
                 BsonSerializer.RegisterSerializer(typeof(Guid), new GuidSerializer(BsonType.String));
                 BsonSerializer.RegisterSerializer(typeof(CustomObject), new CustomObjectSerializer());
                 BsonSerializer.RegisterSerializer(typeof(Enum), new EnumSerializer());
+                BsonSerializer.RegisterSerializer(typeof(IDeprecated), new DeprecatedSerializer());
 
                 var typeSerializer = new TypeSerializer();
                 BsonSerializer.RegisterSerializer(typeof(Type), typeSerializer);
