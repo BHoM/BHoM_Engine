@@ -52,9 +52,6 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
-    <Reference Include="Versioning_Engine">
-      <HintPath>..\..\Versioning_Toolkit\Build\Versioning_Engine.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Compute\Compute.cs" />
@@ -86,6 +83,10 @@
       <Project>{b0154405-9390-472d-9b5c-a2280823b18d}</Project>
       <Name>Reflection_Engine</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Versioning_Engine\Versioning_Engine.csproj">
+      <Project>{3a1179aa-695b-40df-8055-aba7acb51d4c}</Project>
+      <Name>Versioning_Engine</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
