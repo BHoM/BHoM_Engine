@@ -40,12 +40,12 @@ namespace BH.Engine.Environment
         [Input("angleTolerance", "The tolerance of the angle that defines a straight line. Default is set to the value defined by BH.oM.Geometry.Tolerance.Angle")]
         [Input("minimumSegmentLength", "The length of the smallest allowed segment. Segments smaller than this will be removed. Default is set to the value defined by BH.oM.Geometry.Tolerance.Distance")]
         [Output("cleanedPanels", "A list of panels that has been cleaned")]
-        public static List<Panel> CleanPanel(this List<Panel> panels, double angleTolerance = Tolerance.Angle, double minimunSegmentLength = Tolerance.Distance)
+        public static List<Panel> CleanPanel(this List<Panel> panels, double angleTolerance = Tolerance.Angle, double minimumSegmentLength = Tolerance.Distance)
         {
             List<Panel> clonedPanels = new List<Panel>(panels.Select(x => x.DeepClone<Panel>()).ToList());
 
             foreach (Panel p in clonedPanels)
-                p.ExternalEdges = p.Polyline().CleanPolyline(angleTolerance, minimunSegmentLength).ToEdges();
+                p.ExternalEdges = p.Polyline().CleanPolyline(angleTolerance, minimumSegmentLength).ToEdges();
             return clonedPanels;
         }
     }
