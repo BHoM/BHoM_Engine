@@ -38,20 +38,18 @@ namespace BH.Engine.Environment
         [Description(" hej")]
         [Input("panels", " ")]
         [Output("cleanedPanels", " ")]
-        public static List<Panel> CleanPanel(this List<Panel> panels, Polyline polyline)
+        public static List<Panel> CleanPanel(this List<Panel> panels, double minimumAcceptableAngle, double minimunSegmentLength)
         {
+            //Two tolerances coming in:
+            //minimumSegmentLength - default to Tolerance.Distance
+            //minimumAcceptableAngle - default to Tolerance.Angle
+
             List<Panel> clonedPanels = new List<Panel>(panels.Select(x => x.DeepClone<Panel>()).ToList());
-            //List<Panel> clonedPolyline = new List<Polyline>(polyline.Select(x => x.DeepClone<Polyline>()).ToList());
 
             foreach (Panel p in clonedPanels)
-            {
-                polyline = polyline.CleanPolyline();
-                p.ExternalEdges = polyline.ToEdges(); 
+                p.ExternalEdges = p.Polyline().CleanPolyline().ToEdges();
 
-               // p.Polyline().CleanPolyline().ToEdges();
-            }
             return clonedPanels;
         }
-        
     }
 }
