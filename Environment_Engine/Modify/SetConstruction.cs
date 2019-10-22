@@ -56,7 +56,7 @@ namespace BH.Engine.Environment
 
             foreach (Panel p in clones)
             {
-                if (typeNames == null)
+                if (typeNames == null || typeNames.Count() == 0)
                     p.Construction = newConstruction;
                 else
                 {
