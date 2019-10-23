@@ -35,6 +35,19 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
+        public static string ToText(this MemberInfo member, bool includePath = false)
+        {
+            if (member is MethodBase)
+                return ToText(member as MethodBase, includePath);
+            else if (member is Type)
+                return ToText(member as Type, includePath);
+            else
+                return member.ToString();
+        }
+
+
+        /***************************************************/
+
         public static string ToText(this MethodBase method, bool includePath = false, string paramStart = "(", string paramSeparator = ", ", string paramEnd = ")", bool removeIForInterface = true, bool includeParamNames = true, int maxParams = 5, int maxChars = 40)
         {
             string name = (method is ConstructorInfo) ? method.DeclaringType.ToText(false, true) : method.Name;
