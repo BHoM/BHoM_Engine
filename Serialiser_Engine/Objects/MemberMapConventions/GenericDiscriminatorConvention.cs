@@ -55,29 +55,23 @@ namespace BH.Engine.Serialiser.Objects.MemberMapConventions
             BsonType bsonType = bsonReader.GetCurrentBsonType();
             if (bsonType == BsonType.Document)
             {
-                // we can skip looking for a discriminator if nominalType has no discriminated sub types
-                if (BsonSerializer.IsTypeDiscriminated(nominalType))
-                {
-                    var bookmark = bsonReader.GetBookmark();
-                    bsonReader.ReadStartDocument();
+                var bookmark = bsonReader.GetBookmark();
+                bsonReader.ReadStartDocument();
                     
-                    if (bsonReader.FindElement(ElementName))
+                if (bsonReader.FindElement(ElementName))
+                {
+                    var context = BsonDeserializationContext.CreateRoot(bsonReader);
+                    var discriminator = BsonValueSerializer.Instance.Deserialize(context);
+                    if (discriminator.IsBsonArray)
                     {
-                        var context = BsonDeserializationContext.CreateRoot(bsonReader);
-                        var discriminator = BsonValueSerializer.Instance.Deserialize(context);
-                        if (discriminator.IsBsonArray)
-                        {
-                            discriminator = discriminator.AsBsonArray.Last(); // last item is leaf class discriminator
-                        }
-                        actualType = BsonSerializer.LookupActualType(nominalType, discriminator);
+                        discriminator = discriminator.AsBsonArray.Last(); // last item is leaf class discriminator
                     }
-                    bsonReader.ReturnToBookmark(bookmark);
-
-                    if (Config.AllowUpgradeFromBson && actualType.IsDeprecated() && !Config.TypesWithoutUpgrade.Contains(actualType))
-                        actualType = typeof(IDeprecated);
+                    actualType = BsonSerializer.LookupActualType(nominalType, discriminator);
                 }
-                else
-                    return typeof(IDeprecated);
+                bsonReader.ReturnToBookmark(bookmark);
+
+                if (Config.AllowUpgradeFromBson && actualType.IsDeprecated() && !Config.TypesWithoutUpgrade.Contains(actualType))
+                    actualType = typeof(IDeprecated);
             }
 
             return actualType;
