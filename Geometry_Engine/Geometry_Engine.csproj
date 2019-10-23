@@ -205,6 +205,7 @@
     <Compile Include="Query\Side.cs" />
     <Compile Include="Query\IsSameSide.cs" />
     <Compile Include="Query\IsValid.cs" />
+    <Compile Include="Modify\Orient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

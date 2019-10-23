@@ -38,7 +38,8 @@ namespace BH.Engine.Geometry
         {
             double[,] matrix = transform.Matrix;
 
-            return new Point {
+            return new Point
+            {
                 X = matrix[0, 0] * pt.X + matrix[0, 1] * pt.Y + matrix[0, 2] * pt.Z + matrix[0, 3],
                 Y = matrix[1, 0] * pt.X + matrix[1, 1] * pt.Y + matrix[1, 2] * pt.Z + matrix[1, 3],
                 Z = matrix[2, 0] * pt.X + matrix[2, 1] * pt.Y + matrix[2, 2] * pt.Z + matrix[2, 3]
@@ -51,7 +52,8 @@ namespace BH.Engine.Geometry
         {
             double[,] matrix = transform.Matrix;
 
-            return new Vector {
+            return new Vector
+            {
                 X = matrix[0, 0] * vector.X + matrix[0, 1] * vector.Y + matrix[0, 2] * vector.Z,
                 Y = matrix[1, 0] * vector.X + matrix[1, 1] * vector.Y + matrix[1, 2] * vector.Z,
                 Z = matrix[2, 0] * vector.X + matrix[2, 1] * vector.Y + matrix[2, 2] * vector.Z
@@ -83,32 +85,66 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Curves                   ****/
         /***************************************************/
 
-        public static ICurve Transform(this Arc arc, TransformMatrix transform)
+        public static ICurve Transform(this Arc curve, TransformMatrix transform)
         {
-            return arc.ToNurbsCurve().Transform(transform);
+            if (Math.Abs(transform.Determinant() - 1) <= 1e-6 || transform.IsUniformScaling())
+                return new Arc
+                {
+                    Radius = (curve.StartPoint() - curve.CoordinateSystem.Origin).Transform(transform).Length(),
+                    StartAngle = curve.StartAngle,
+                    EndAngle = curve.EndAngle,
+                    CoordinateSystem = curve.CoordinateSystem.Transform(transform)
+                };
+            else
+            {
+                Reflection.Compute.RecordNote("Transformation is not rigid. Converting into NurbsCurve. May occure change in shape");
+                return curve.ToNurbsCurve().Transform(transform);
+            }
         }
 
         /***************************************************/
 
-        public static ICurve Transform(this Circle circle, TransformMatrix transform)
+        public static ICurve Transform(this Circle curve, TransformMatrix transform)
         {
-            //TODO: an affine transform of a circle always returns a circle or an ellipse so we should improve on this
-            return circle.ToNurbsCurve().Transform(transform);
+            if (Math.Abs(transform.Determinant() - 1) <= 1e-6 || transform.IsUniformScaling())
+                return new Circle
+                {
+                    Centre = curve.Centre.Transform(transform),
+                    Radius = (curve.StartPoint() - curve.Centre).Transform(transform).Length(),
+                    Normal = curve.Normal.Transform(transform)
+                };
+            else
+            {
+                Reflection.Compute.RecordNote("Transformation is not rigid. Converting into NurbsCurve. May occure change in shape");
+                return curve.ToNurbsCurve().Transform(transform);
+            }
         }
 
         /***************************************************/
 
-        public static ICurve Transform(this Ellipse ellipse, TransformMatrix transform)
+        public static ICurve Transform(this Ellipse curve, TransformMatrix transform)
         {
-            //TODO: an affine transform of an ellipse always returns an ellipse so we should improve on this
-            return ellipse.ToNurbsCurve().Transform(transform); 
+            if (Math.Abs(transform.Determinant() - 1) <= 1e-6 || transform.IsUniformScaling())
+                return new Ellipse
+                {
+                    Centre = curve.Centre.Transform(transform),
+                    Axis1 = curve.Axis1.Transform(transform),
+                    Axis2 = curve.Axis2.Transform(transform),
+                    Radius1 = (curve.Axis1.Normalise() * curve.Radius1).Transform(transform).Length(),
+                    Radius2 = (curve.Axis2.Normalise() * curve.Radius2).Transform(transform).Length(),
+                };
+            else
+            {
+                Reflection.Compute.RecordNote("Transformation is not rigid. Converting into NurbsCurve. May occure change in shape");
+                return curve.ToNurbsCurve().Transform(transform);
+            }
         }
 
         /***************************************************/
 
-        public static Line Transform(this Line line, TransformMatrix transform)
+        public static Line Transform(this Line curve, TransformMatrix transform)
         {
-            return new Line { Start = line.Start.Transform(transform), End = line.End.Transform(transform) };
+            return new Line { Start = curve.Start.Transform(transform), End = curve.End.Transform(transform) };
         }
 
         /***************************************************/
@@ -212,6 +248,28 @@ namespace BH.Engine.Geometry
         public static ISurface ITransform(this ISurface geometry, TransformMatrix transform)
         {
             return Transform(geometry as dynamic, transform);
+        }
+
+
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+        private static bool IsUniformScaling(this TransformMatrix transform)
+        {
+            double tol = 1e-6;
+
+            for (int i = 0; i < transform.Matrix.GetLength(0); i++)
+                for (int j = 0; j < transform.Matrix.GetLength(1) - 1; j++)
+                    if (i != j && Math.Abs(transform.Matrix[i, j]) > tol)
+                        return false;
+
+            if (Math.Abs(transform.Matrix[0, 0] - transform.Matrix[1, 1]) <= tol &&
+                Math.Abs(transform.Matrix[1, 1] - transform.Matrix[2, 2]) <= tol &&
+                Math.Abs(transform.Matrix[3, 3] - 1) <= tol)
+                return true;
+
+            return false;
         }
 
         /***************************************************/

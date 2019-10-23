@@ -81,7 +81,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [Description("Gets the smallest angle between three points between 0 and 180 degrees. Angle is 0 if the three points form a straight line. The order of points is crucial to the calculation, as the points will imagine a line is connecting them in the order provided")]
+        [Description("Gets the smallest angle between three points between 0 and pi radians. Angle is 0 if the three points form a straight line. The order of points is crucial to the calculation, as the points will imagine a line is connecting them in the order provided")]
         [Input("firstPt", "The first Point of the three to calculate the angle between")]
         [Input("secondPt", "The second point of the three to calculate the angle between")]
         [Input("thirdPt", "The third point of the three to calculate the angle between")]
@@ -102,9 +102,8 @@ namespace BH.Engine.Geometry
             double za = z1 * z2;
 
             double costr = (xa + ya + za) / Math.Sqrt(Math.Abs(sqr1 * sqr2));
-            double angle = Math.Abs(Math.Acos(costr)); //This produces a result in radians
-            angle = angle * 180 / Math.PI; //This converts the result into degrees
-            return 180 - angle; //Convert so that a flat line is 0 angle through the points
+            double angle = Math.Abs(Math.Acos(costr)); //This produces a result in radians            
+            return Math.PI - angle; //Convert so that a flat line is 0 angle through the points
         }
     }
 }

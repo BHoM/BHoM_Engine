@@ -20,42 +20,33 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Base;
-using BH.oM.Data.Collections;
-using BH.oM.Diffing;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Security.Cryptography;
-using System.Reflection;
-using BH.Engine.Serialiser;
+using BH.Engine.Geometry;
+using BH.oM.Environment.Elements;
+using BH.oM.Environment;
+using BH.oM.Geometry;
+
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
+using System.Collections.Generic;
+using System.Linq;
+using BH.Engine.Base;
 
-namespace BH.Engine.Diffing
+namespace BH.Engine.Environment
 {
     public static partial class Modify
     {
-        ///***************************************************/
-        ///**** Public Methods                            ****/
-        ///***************************************************/
-
-        public static void SetHashFragment(IEnumerable<IBHoMObject> objs, List<string> exceptions = null, bool useDefaultExceptions = true)
+        [Description("Returns a list of panels that has been cleaned from short segments and insignificant vertices")]
+        [Input("panels", "A list of panels that will be cleaned")]
+        [Input("angleTolerance", "The tolerance of the angle that defines a straight line. Default is set to the value defined by BH.oM.Geometry.Tolerance.Angle")]
+        [Input("minimumSegmentLength", "The length of the smallest allowed segment. Segments smaller than this will be removed. Default is set to the value defined by BH.oM.Geometry.Tolerance.Distance")]
+        [Output("cleanedPanels", "A list of panels that has been cleaned")]
+        public static List<Panel> CleanPanel(this List<Panel> panels, double angleTolerance = Tolerance.Angle, double minimumSegmentLength = Tolerance.Distance)
         {
-            if (useDefaultExceptions)
-                Compute.SetDefaultExceptions(ref exceptions);
+            List<Panel> clonedPanels = new List<Panel>(panels.Select(x => x.DeepClone<Panel>()).ToList());
 
-            // Calculate and set the object hashes
-            foreach (var obj in objs)
-            {
-                string hash = BH.Engine.Diffing.Compute.DiffingHash(obj, exceptions, useDefaultExceptions);
-
-                HashFragment existingFragm = obj.GetHashFragment();
-
-                obj.Fragments.AddOrReplace(new HashFragment(hash, existingFragm?.Hash));
-            }
+            foreach (Panel p in clonedPanels)
+                p.ExternalEdges = p.Polyline().CleanPolyline(angleTolerance, minimumSegmentLength).ToEdges();
+            return clonedPanels;
         }
     }
 }

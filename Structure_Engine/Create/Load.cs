@@ -464,5 +464,49 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
+
+        public static ContourLoad ContourLoad(Polyline contour, Vector loadVector, Loadcase loadcase, LoadAxis axis = LoadAxis.Global, bool projected = false, string name = "")
+        {
+            return new ContourLoad
+            {
+                Contour = contour,
+                Force = loadVector,
+                Loadcase = loadcase,
+                Axis = axis,
+                Projected = projected,
+                Name = name
+            };
+        }
+        /***************************************************/
+
+        public static GeometricalLineLoad GeometricalLineLoad(Line location, Loadcase loadcase, Vector forceAtStart, Vector forceAtEnd, Vector momentAtStart, Vector momentAtEnd, string name = "")
+        {
+            return new GeometricalLineLoad
+            {
+                Location = location,
+                Loadcase = loadcase,
+                ForceA = forceAtStart,
+                ForceB = forceAtEnd,
+                MomentA = momentAtStart,
+                MomentB = momentAtEnd,
+                Name = name
+            };
+        }
+
+        /***************************************************/
+
+        public static GeometricalLineLoad GeometricalLineLoad(Line location, Loadcase loadcase, Vector force, string name = "")
+        {
+            return new GeometricalLineLoad
+            {
+                Location = location,
+                Loadcase = loadcase,
+                ForceA = force,
+                ForceB = force,
+                Name = name
+            };
+        }
+
+        /***************************************************/
     }
 }

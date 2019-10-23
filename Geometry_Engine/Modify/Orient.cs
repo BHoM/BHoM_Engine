@@ -1,6 +1,6 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -20,42 +20,33 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.Engine.Geometry;
-using BH.oM.Architecture.Elements;
 using BH.oM.Geometry;
+using BH.oM.Geometry.CoordinateSystem;
 using BH.oM.Reflection.Attributes;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel;
-using BH.Engine.Base; 
+using System.Linq;
 
-namespace BH.Engine.Architecture
+namespace BH.Engine.Geometry
 {
     public static partial class Modify
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /****         public Generic Interface          ****/
         /***************************************************/
-   
-        [Deprecated("2.4", "BH.Engine.Architecture.Elements.Grid superseded by BH.oM.Geometry.SettingOut.Grid")]
-        public static Grid SetGeometry(this Grid grid, ICurve curve)
+
+        [Description("Orients geometry from one coordinate sytem to another")]
+        [Input("geometry", "Geometry to be transformed")]
+        [Input("csFrom", "Coordinate system in which geometry is now")]
+        [Input("csTo", "Coordinate system in which we want geometry to be")]
+        [Output("G", "Geometry in new coordinate system")]
+        public static T Orient<T>(this T geometry, Cartesian csFrom, Cartesian csTo) where T : IGeometry
         {
-            Grid clone = grid.GetShallowClone() as Grid;
-            clone.Curve = curve.IClone();
-            return clone;
+            TransformMatrix orientationMatrix = Create.OrientationMatrix(csFrom, csTo);
+            return (T)ITransform(geometry, orientationMatrix);
         }
 
         /***************************************************/
-
-        [Description("Assign new geometry to an Architecture Room. If either geometry is null then original geometry is used")]
-        [Input("room", "An Architecture Room to set the location of")]
-        [Input("locationPoint", "A BHoM Geometry Point defining the location of the room, default null")]
-        [Input("perimeterCurve", "A BHoM Geometry ICurve defining the perimeter of the room, default null")]
-        [Output("room", "An Architecture Room with an updated geometry")]
-        public static Room SetGeometry(this Room room, Point locationPoint = null, ICurve perimeterCurve = null)
-        {
-            Room clone = room.DeepClone<Room>();
-            clone.Location = locationPoint == null ? room.Location.DeepClone<Point>() : locationPoint;
-            clone.Perimeter = perimeterCurve == null ? room.Perimeter.DeepClone<ICurve>() : perimeterCurve; 
-            return clone;
-        }
     }
 }

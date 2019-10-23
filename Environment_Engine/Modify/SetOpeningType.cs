@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -20,42 +20,35 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.Engine.Geometry;
-using BH.oM.Architecture.Elements;
+using System.Linq;
+using System.Collections.Generic;
+using BH.oM.Environment.Elements;
 using BH.oM.Geometry;
+using BH.Engine.Geometry;
+using BH.oM.Environment.Fragments;
+using System;
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
-using BH.Engine.Base; 
+using BH.Engine.Base;
 
-namespace BH.Engine.Architecture
+namespace BH.Engine.Environment
 {
     public static partial class Modify
     {
         /***************************************************/
-        /**** Public Methods                            ****/
-        /***************************************************/
-   
-        [Deprecated("2.4", "BH.Engine.Architecture.Elements.Grid superseded by BH.oM.Geometry.SettingOut.Grid")]
-        public static Grid SetGeometry(this Grid grid, ICurve curve)
-        {
-            Grid clone = grid.GetShallowClone() as Grid;
-            clone.Curve = curve.IClone();
-            return clone;
-        }
-
+        /****               Public Methods              ****/
         /***************************************************/
 
-        [Description("Assign new geometry to an Architecture Room. If either geometry is null then original geometry is used")]
-        [Input("room", "An Architecture Room to set the location of")]
-        [Input("locationPoint", "A BHoM Geometry Point defining the location of the room, default null")]
-        [Input("perimeterCurve", "A BHoM Geometry ICurve defining the perimeter of the room, default null")]
-        [Output("room", "An Architecture Room with an updated geometry")]
-        public static Room SetGeometry(this Room room, Point locationPoint = null, ICurve perimeterCurve = null)
+        [Description("Set the opening type based on the provided type")]
+        [Input("openings", "A collection of Environment Openings to set the type of")]
+        [Input("openingType", "The opening type to assign to the openings")]
+        [Output("openings", "A collection of Environment Openings with their type set")]
+        public static List<Opening> SetOpeningType(this List<Opening> openings, OpeningType openingType)
         {
-            Room clone = room.DeepClone<Room>();
-            clone.Location = locationPoint == null ? room.Location.DeepClone<Point>() : locationPoint;
-            clone.Perimeter = perimeterCurve == null ? room.Perimeter.DeepClone<ICurve>() : perimeterCurve; 
-            return clone;
+            List<Opening> cloned = openings.DeepClone<List<Opening>>();
+            foreach (Opening o in cloned)
+                o.Type = openingType;
+            return cloned;
         }
     }
-}
+} 

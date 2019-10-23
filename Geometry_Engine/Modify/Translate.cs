@@ -64,29 +64,37 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Curves                  ****/
         /***************************************************/
 
-        public static Arc Translate(this Arc arc, Vector transform)
+        public static Arc Translate(this Arc curve, Vector transform)
         {
             return new Arc
             {
-                CoordinateSystem = arc.CoordinateSystem.Translate(transform),
-                Radius = arc.Radius,
-                StartAngle = arc.StartAngle,
-                EndAngle = arc.EndAngle
+                CoordinateSystem = curve.CoordinateSystem.Translate(transform),
+                Radius = curve.Radius,
+                StartAngle = curve.StartAngle,
+                EndAngle = curve.EndAngle
             };
         }
 
         /***************************************************/
 
-        public static Circle Translate(this Circle circle, Vector transform)
+        public static Circle Translate(this Circle curve, Vector transform)
         {
-            return new Circle { Centre = circle.Centre + transform, Normal = circle.Normal.Clone() as Vector, Radius = circle.Radius };
+            return new Circle { Centre = curve.Centre + transform, Normal = curve.Normal.Clone() as Vector, Radius = curve.Radius };
         }
 
         /***************************************************/
 
-        public static Line Translate(this Line line, Vector transform)
+        public static ICurve Translate(this Ellipse curve, Vector transform)
         {
-            return new Line { Start = line.Start + transform, End = line.End + transform };
+            TransformMatrix translationMatrix = Create.TranslationMatrix(transform);
+            return Transform(curve, translationMatrix);
+        }
+
+        /***************************************************/
+
+        public static Line Translate(this Line curve, Vector transform)
+        {
+            return new Line { Start = curve.Start + transform, End = curve.End + transform };
         }
 
         /***************************************************/

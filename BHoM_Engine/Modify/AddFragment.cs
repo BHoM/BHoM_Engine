@@ -34,7 +34,7 @@ namespace BH.Engine.Base
 {
     public static partial class Modify
     {
-        [Description("Appends a Fragment Property to a given BHoM Object")]
+        [Description("Returns a deep clone of a given BHoM Object and attaches to it the given Fragment.")]
         [Input("iBHoMObject", "Any object implementing the IBHoMObject interface that can have fragment properties appended to it")]
         [Input("fragment", "Any fragment object implementing the IBHoMFragment interface to append to the object")]
         [Input("replace", "If set to true and the object already contains a fragment of the type being added, the fragment will be replaced by this instance")]
@@ -44,17 +44,10 @@ namespace BH.Engine.Base
             if (iBHoMObject == null) return null;
             IBHoMObject o = iBHoMObject.DeepClone();
 
-            int index = o.Fragments.FindIndex(x => x.GetType() == fragment.GetType());
-
-            if(index >= 0)
-            {
-                if (replace)
-                    o.Fragments[index] = fragment;
-                else
-                    Reflection.Compute.RecordError("That fragment already exists on this object. If you would like to replace the existing fragment set the 'replace' input to 'true'");
-            }
-            else
+            if (!replace)
                 o.Fragments.Add(fragment);
+            else
+                o.Fragments.AddOrReplace(fragment);
 
             return o;
         }

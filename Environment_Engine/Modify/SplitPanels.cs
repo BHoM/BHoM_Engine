@@ -31,6 +31,8 @@ using BH.Engine.Geometry;
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
 
+using BH.Engine.Base;
+
 namespace BH.Engine.Environment
 {
     public static partial class Modify
@@ -45,12 +47,12 @@ namespace BH.Engine.Environment
         public static List<Panel> SplitPanelsByOverlap(this List<Panel> panels)
         {
             List<Panel> rtnElements = new List<Panel>();
-            List<Panel> oriElements = new List<Panel>(panels);
+            List<Panel> oriElements = new List<Panel>(panels.Select(x => x.DeepClone<Panel>()).ToList());
 
-            while (panels.Count > 0)
+            while (oriElements.Count > 0)
             {
-                Panel currentElement = panels[0];
-                List<Panel> overlaps = currentElement.IdentifyOverlaps(panels);
+                Panel currentElement = oriElements[0];
+                List<Panel> overlaps = currentElement.IdentifyOverlaps(oriElements);
                 overlaps.AddRange(currentElement.IdentifyOverlaps(rtnElements));
 
                 if (overlaps.Count == 0)
@@ -66,7 +68,7 @@ namespace BH.Engine.Environment
                     rtnElements.AddRange(currentElement.Split(cuttingLines));
                 }
 
-                panels.RemoveAt(0);
+                oriElements.RemoveAt(0);
             }
 
             return rtnElements;
@@ -78,11 +80,11 @@ namespace BH.Engine.Environment
         public static List<Panel> SplitPanelsByPoints(this List<Panel> panels)
         {
             List<Panel> rtnElements = new List<Panel>();
-            List<Panel> oriElements = new List<Panel>(panels);
+            List<Panel> oriElements = new List<Panel>(panels.Select(x => x.DeepClone<Panel>()).ToList());
 
-            while(panels.Count > 0)
+            while(oriElements.Count > 0)
             {
-                Panel currentElement = panels[0];
+                Panel currentElement = oriElements[0];
 
                 bool wasSplit = false;
                 List<Panel> elementSplitResult = new List<Panel>();
@@ -95,13 +97,13 @@ namespace BH.Engine.Environment
 
                     if (elementSplitResult.Count > 1)
                     {
-                        panels.AddRange(elementSplitResult);
+                        oriElements.AddRange(elementSplitResult);
                         wasSplit = true;
                         break; //Don't attempt to split this element any further, wait to split its new parts later in the loop...
                     }
                 }
 
-                panels.RemoveAt(0); //Remove the element we have just worked with, regardless of whether we split it or not
+                oriElements.RemoveAt(0); //Remove the element we have just worked with, regardless of whether we split it or not
                 if (!wasSplit) rtnElements.Add(currentElement); //We have a pure element ready to use
                 else
                 {
@@ -120,9 +122,10 @@ namespace BH.Engine.Environment
         [Output("panels", "A collection of Environment Panels that have been split")]
         public static List<Panel> Split(this Panel panel, List<Line> cuttingLines)
         {
-            if (panel == null || cuttingLines.Count == 0) return new List<Panel> { panel };
+            Panel clone = panel.DeepClone<Panel>();
+            if (clone == null || cuttingLines.Count == 0) return new List<Panel> { clone };
 
-            List<Panel> splitElements = new List<Panel> { panel };
+            List<Panel> splitElements = new List<Panel> { clone };
 
             foreach (Line l in cuttingLines)
             {
@@ -145,9 +148,9 @@ namespace BH.Engine.Environment
                             ctrlPts.Add(ctrlPts[0]); //Close the polyline
                             Polyline completeCrv = BH.Engine.Geometry.Create.Polyline(ctrlPts);
 
-                            Panel cpy = panel.Copy();
+                            Panel cpy = clone.Copy();
                             cpy.ExternalEdges = completeCrv.ToEdges();
-                            cpy.CustomData = new Dictionary<string, object>(panel.CustomData);
+                            cpy.CustomData = new Dictionary<string, object>(clone.CustomData);
                             splitElements.Add(cpy);
                         }
                     }
@@ -163,16 +166,17 @@ namespace BH.Engine.Environment
         [Output("panels", "A collection of Environment Panels that have been split")]
         public static List<Panel> Split(this Panel panel, Panel cuttingPanel)
         {
-            if (panel == null || cuttingPanel == null) return new List<Panel> { panel };
+            Panel clone = panel.DeepClone<Panel>();
+            if (clone == null || cuttingPanel == null) return new List<Panel> { clone };
 
-            Polyline elementToSplitCrv = panel.Polyline();
+            Polyline elementToSplitCrv = clone.Polyline();
             Polyline cuttingCrv = cuttingPanel.Polyline();
 
             List<Point> cuttingPts = elementToSplitCrv.LineIntersections(cuttingCrv);
 
             List<Polyline> cutLines = elementToSplitCrv.SplitAtPoints(cuttingPts);
 
-            if (cutLines.Count == 1) return new List<Panel> { panel };
+            if (cutLines.Count == 1) return new List<Panel> { clone };
 
             List<Panel> splitElements = new List<Panel>();
 
@@ -185,9 +189,9 @@ namespace BH.Engine.Environment
                     ctrlPts.Add(ctrlPts[0]); //Close the polyline
                     Polyline completeCrv = BH.Engine.Geometry.Create.Polyline(ctrlPts);
 
-                    Panel cpy = panel.Copy();
+                    Panel cpy = clone.Copy();
                     cpy.ExternalEdges = completeCrv.ToEdges();
-                    cpy.CustomData = new Dictionary<string, object>(panel.CustomData);
+                    cpy.CustomData = new Dictionary<string, object>(clone.CustomData);
                     splitElements.Add(cpy);
                 }
             }
@@ -201,12 +205,14 @@ namespace BH.Engine.Environment
         public static List<Panel> Split(this List<Panel> panels)
         {
             //Go through all building elements and compare to see if any should be split into smaller building elements
+            List<Panel> clones = new List<Panel>(panels.Select(x => x.DeepClone<Panel>()).ToList());
+ 
             List<Panel> rtn = new List<Panel>();
 
             Dictionary<Panel, List<Panel>> overlaps = new Dictionary<Panel, List<Panel>>();
 
-            foreach (Panel be in panels)
-                overlaps.Add(be, be.IdentifyOverlaps(panels));
+            foreach (Panel be in clones)
+                overlaps.Add(be, be.IdentifyOverlaps(clones));
 
             foreach (KeyValuePair<Panel, List<Panel>> kvp in overlaps)
             {
