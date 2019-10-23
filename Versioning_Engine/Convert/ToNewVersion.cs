@@ -51,7 +51,7 @@ namespace BH.Engine.Versioning
             // Create a connection with the upgrader
             NamedPipeServerStream pipe = GetPipe(currentVersion.Major + "." + currentVersion.Minor);
             if (pipe == null)
-                return null;
+                return document;
 
             // Send the document
             SendDocument(document, pipe);
@@ -77,9 +77,9 @@ namespace BH.Engine.Versioning
             {
                 pipe = new NamedPipeServerStream(version, PipeDirection.InOut);
             }
-            catch(Exception e)
+            catch
             {
-                BH.Engine.Reflection.Compute.RecordError("Failed to create a connection with BHoM Upgrader version " + version + " Error: " + e.Message);
+                BH.Engine.Reflection.Compute.RecordWarning("Failed to create a connection with BHoM Upgrader version " + version + ". The object will not be upgraded");
                 return null;
             }
 
@@ -93,7 +93,7 @@ namespace BH.Engine.Versioning
 
                 if (!File.Exists(processFile))
                 {
-                    Reflection.Compute.RecordError("Cannot start process " + processFile.Split(new char[] { '\\' }).Last());
+                    Reflection.Compute.RecordWarning(processFile.Split(new char[] { '\\' }).Last() + " is missing. The object will not be upgraded");
                     return null;
                 }
             }
