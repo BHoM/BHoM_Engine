@@ -61,8 +61,6 @@ namespace BH.Engine.Geometry
             perimeter.Add(new Line { Start = p, End = p - xAxis * (tfw) });
             perimeter.Add(new Line { Start = origin + xAxis * (-bfw / 2), End = origin + xAxis * (bfw / 2) });
 
-            //j start
-            //List<ICurve> curves = IProfileCurves(topFlangeThickness, topFlangeWidth, botFlangeThickness, botFlangeWidth, webThickness, height - botFlangeThickness - topFlangeThickness,0,0, weldSize);
             List<ICurve> welds = new List<ICurve>();
             double weldLength = weldSize * 2 / Math.Sqrt(2);
             Point q1 = new Point { X = wt/2, Y = wd + bft, Z = 0 };
@@ -77,8 +75,7 @@ namespace BH.Engine.Geometry
             welds.Add(new Line { Start = q3 - wx, End = q3 + wy });
             welds.Add(new Line { Start = q4 + wx, End = q4 + wy });
             perimeter.AddRange(welds);
-            //j end
-
+            
             return perimeter;
         }
 
