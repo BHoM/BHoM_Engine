@@ -99,10 +99,10 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [NotImplemented]
         public static NurbsCurve Translate(this NurbsCurve curve, Vector transform)
         {
-            throw new NotImplementedException();
+            TransformMatrix translationMatrix = Create.TranslationMatrix(transform);
+            return Transform(curve, translationMatrix);
         }
 
 

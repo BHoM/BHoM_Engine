@@ -98,11 +98,11 @@ namespace BH.Engine.Geometry
         }
 
         /***************************************************/
-
-        [NotImplemented]
+                
         public static NurbsCurve Rotate(this NurbsCurve curve, Point origin, Vector axis, double rad)
         {
-            throw new NotImplementedException();
+            TransformMatrix rotationMatrix = Create.RotationMatrix(origin, axis, rad);
+            return Transform(curve, rotationMatrix);
         }
 
 
