@@ -92,10 +92,10 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [NotImplemented]
         public static NurbsCurve Scale(this NurbsCurve curve, Point origin, Vector scaleVector)
         {
-            throw new NotImplementedException();
+            TransformMatrix scaleMatrix = Create.ScaleMatrix(origin, scaleVector);
+            return Transform(curve, scaleMatrix);
         }
 
 

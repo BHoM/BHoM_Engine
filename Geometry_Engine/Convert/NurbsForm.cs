@@ -154,51 +154,10 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [NotImplemented]
         public static NurbsCurve ToNurbsCurve(this PolyCurve curve)
         {
-            List<Point> cPts = new List<Point>();
-            List<double> knots = new List<double>();
-            List<double> weights = new List<double>();
-            NurbsCurve subNurbCurve = new NurbsCurve();
-            List<ICurve> subCurves = curve.SubParts();
-            Boolean isLine;
-
-            for (int i = subCurves.Count - 1; i >= 0; i--)
-            {
-                subNurbCurve = subCurves[i].IToNurbsCurve();
-                if (subCurves[i] is Arc)
-                    isLine = false;
-                else
-                    isLine = true;
-
-                if (i == subCurves.Count - 1)
-                {
-                    cPts.AddRange(subNurbCurve.ControlPoints);
-                    knots.AddRange(subNurbCurve.Knots);
-                    weights.AddRange(subNurbCurve.Weights);
-                }
-                else
-                {
-                    // Joining based on https://saccade.com/writing/graphics/KnotVectors.pdf (page 7) 
-                    //if (isLine)
-                    //    knots.Insert(0,0);     
-                    for (int j = 0; j < knots.Count; j++)
-                        knots[j] = knots[j] + subNurbCurve.Knots[subNurbCurve.Knots.Count - 1]; // Add the last value in the first curve’s knot vector to all the knots in the second curve.
-                    if (isLine)
-                        knots.RemoveRange(0, 2); // Remove the k first knots from the second curve (k = order) linear -> k = 2
-                    if (!isLine)
-                        knots.RemoveRange(0, 3); // Remove the k first knots from the second curve (k = order) circular -> k = 3
-
-                    subNurbCurve.Knots.RemoveAt(subNurbCurve.Knots.Count - 1); //Remove the last knot from the first curve
-                    knots.InsertRange(0, subNurbCurve.Knots); //Concatenate the second curve’s  knot vector.
-
-                    cPts.RemoveAt(0);
-                    cPts.InsertRange(0, subNurbCurve.ControlPoints);
-                    weights.RemoveAt(0);
-                    weights.InsertRange(0, subNurbCurve.Weights);
-                }
-            }
-            return Create.NurbsCurve(cPts, weights, knots);
+            throw new NotImplementedException();
         }
 
         /***************************************************/
