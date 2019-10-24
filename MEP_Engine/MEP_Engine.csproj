@@ -1,0 +1,99 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{69E79860-3ADE-4279-AEC4-DE336F7F3F23}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>BH.Engine.MEP</RootNamespace>
+    <AssemblyName>MEP_Engine</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\Build\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="BHoM, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\BHoM\Build\BHoM.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Geometry_oM, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\BHoM\Build\Geometry_oM.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="MEP_oM">
+      <HintPath>..\..\BHoM\Build\MEP_oM.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Reflection_oM, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\BHoM\Build\Reflection_oM.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Create\AirHandlingUnit.cs" />
+    <Compile Include="Create\CoolingCoil.cs" />
+    <Compile Include="Create\ElectricalConnector.cs" />
+    <Compile Include="Create\EnergyWheel.cs" />
+    <Compile Include="Create\Fan.cs" />
+    <Compile Include="Create\FanCoilUnit.cs" />
+    <Compile Include="Create\Filter.cs" />
+    <Compile Include="Create\GeometryFragment.cs" />
+    <Compile Include="Create\HeatingCoil.cs" />
+    <Compile Include="Create\IdentityFragment.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BHoM_Engine\BHoM_Engine.csproj">
+      <Project>{1ad45c88-dd54-48e5-951f-55edfeb70e35}</Project>
+      <Name>BHoM_Engine</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Geometry_Engine\Geometry_Engine.csproj">
+      <Project>{89ab2dcb-ef87-4cba-b59c-c16a8a71d333}</Project>
+      <Name>Geometry_Engine</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Reflection_Engine\Reflection_Engine.csproj">
+      <Project>{b0154405-9390-472d-9b5c-a2280823b18d}</Project>
+      <Name>Reflection_Engine</Name>
+      <Private>False</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
