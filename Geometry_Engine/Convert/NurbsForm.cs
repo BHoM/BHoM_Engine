@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -34,59 +34,190 @@ namespace BH.Engine.Geometry
         /**** Public  Methods - Curves                  ****/
         /***************************************************/
 
-        [NotImplemented]
         public static NurbsCurve ToNurbsCurve(this Arc arc)
         {
-            throw new NotImplementedException();
+            {
+                double angle = arc.EndAngle - arc.StartAngle;
+                Point centre = arc.Centre();
+                int nbPts = 1 + 2 * (int)Math.Ceiling(2 * angle / Math.PI);
+                double factor = Math.Cos(angle / (nbPts - 1));
+
+                // Create the points	
+                List<Point> points = new List<Point>();
+                for (int i = 0; i < nbPts; i++)
+                {
+                    double t = i * 1.0 / (nbPts - 1);
+                    Point pt = arc.PointAtParameter(t);
+                    if (i % 2 == 1)
+                        pt = centre + (pt - centre) / factor;
+                    points.Add(pt);
+                }
+
+                // Create the knots	
+                double knotStep = 2.0 / (nbPts - 1);
+                List<double> knots = new List<double>();
+                for (int i = 0; i < (nbPts + 1) / 2; i++)
+                {
+                    knots.Add(i * knotStep);
+                    knots.Add(i * knotStep);
+                }
+
+                // Create the weights	
+                List<double> weights = new List<double>();
+                for (int i = 0; i < nbPts; i++)
+                {
+                    double w = (i % 2 == 0) ? 1.0 : factor;
+                    weights.Add(w);
+                }
+
+                return new NurbsCurve { ControlPoints = points, Knots = knots, Weights = weights };
+            }
         }
 
         /***************************************************/
 
-        [NotImplemented]
         public static NurbsCurve ToNurbsCurve(this Circle circle)
         {
-            throw new NotImplementedException();
+            {
+                Point centre = circle.Centre;
+                Vector d1 = circle.StartPoint() - centre;
+                Vector d2 = circle.PointAtParameter(0.25) - centre;
+                double factor = Math.Cos(Math.PI / 4);
+
+                List<Point> points = new List<Point>
+            {
+                centre + d1,
+                centre + d1 + d2,
+                centre + d2,
+                centre - d1 + d2,
+                centre - d1,
+                centre - d1 - d2,
+                centre - d2,
+                centre + d1 - d2,
+                centre + d1
+            };
+
+                return new NurbsCurve
+                {
+                    ControlPoints = points,
+                    Knots = new List<double> { 0, 0, 0.25, 0.25, 0.5, 0.5, 0.75, 0.75, 1.0, 1.0 },
+                    Weights = new List<double> { 1.0, factor, 1.0, factor, 1.0, factor, 1.0, factor, 1.0 }
+                };
+            }
         }
 
         /***************************************************/
 
-        [NotImplemented]
         public static NurbsCurve ToNurbsCurve(this Ellipse ellipse)
         {
-            throw new NotImplementedException();
+            {
+                Point centre = ellipse.Centre;
+                Vector d1 = ellipse.Radius1 * ellipse.Axis1;
+                Vector d2 = ellipse.Radius2 * ellipse.Axis2;
+                double factor = Math.Cos(Math.PI / 4);
+
+                List<Point> points = new List<Point>
+            {
+                centre + d1,
+                centre + d1 + d2,
+                centre + d2,
+                centre - d1 + d2,
+                centre - d1,
+                centre - d1 - d2,
+                centre - d2,
+                centre + d1 - d2,
+                centre + d1
+            };
+
+                return new NurbsCurve
+                {
+                    ControlPoints = points,
+                    Knots = new List<double> { 0, 0, 0.25, 0.25, 0.5, 0.5, 0.75, 0.75, 1.0, 1.0 },
+                    Weights = new List<double> { 1.0, factor, 1.0, factor, 1.0, factor, 1.0, factor, 1.0 }
+                };
+            }
         }
 
         /***************************************************/
 
-        [NotImplemented]
         public static NurbsCurve ToNurbsCurve(this Line line)
         {
-            throw new NotImplementedException();
-
+            return Create.NurbsCurve(new List<Point> { line.Start, line.End }, new double[] { 1, 1 }, new double[] { 0, 1 });
         }
 
         /***************************************************/
 
-        [NotImplemented]
         public static NurbsCurve ToNurbsCurve(this NurbsCurve curve)
         {
-            throw new NotImplementedException();
+            return curve.Clone();
         }
 
         /***************************************************/
 
-        [NotImplemented]
         public static NurbsCurve ToNurbsCurve(this PolyCurve curve)
         {
-            throw new NotImplementedException();
+            List<Point> cPts = new List<Point>();
+            List<double> knots = new List<double>();
+            List<double> weights = new List<double>();
+            NurbsCurve subNurbCurve = new NurbsCurve();
+            List<ICurve> subCurves = curve.SubParts();
+            Boolean isLine;
+
+            for (int i = subCurves.Count - 1; i >= 0; i--)
+            {
+                subNurbCurve = subCurves[i].IToNurbsCurve();
+                if (subCurves[i] is Arc)
+                    isLine = false;
+                else
+                    isLine = true;
+
+                if (i == subCurves.Count - 1)
+                {
+                    cPts.AddRange(subNurbCurve.ControlPoints);
+                    knots.AddRange(subNurbCurve.Knots);
+                    weights.AddRange(subNurbCurve.Weights);
+                }
+                else
+                {
+                    // Joining based on https://saccade.com/writing/graphics/KnotVectors.pdf (page 7) 
+                    //if (isLine)
+                    //    knots.Insert(0,0);     
+                    for (int j = 0; j < knots.Count; j++)
+                        knots[j] = knots[j] + subNurbCurve.Knots[subNurbCurve.Knots.Count - 1]; // Add the last value in the first curve’s knot vector to all the knots in the second curve.
+                    if (isLine)
+                        knots.RemoveRange(0, 2); // Remove the k first knots from the second curve (k = order) linear -> k = 2
+                    if (!isLine)
+                        knots.RemoveRange(0, 3); // Remove the k first knots from the second curve (k = order) circular -> k = 3
+
+                    subNurbCurve.Knots.RemoveAt(subNurbCurve.Knots.Count - 1); //Remove the last knot from the first curve
+                    knots.InsertRange(0, subNurbCurve.Knots); //Concatenate the second curve’s  knot vector.
+
+                    cPts.RemoveAt(0);
+                    cPts.InsertRange(0, subNurbCurve.ControlPoints);
+                    weights.RemoveAt(0);
+                    weights.InsertRange(0, subNurbCurve.Weights);
+                }
+            }
+            return Create.NurbsCurve(cPts, weights, knots);
         }
 
         /***************************************************/
 
-        [NotImplemented]
         public static NurbsCurve ToNurbsCurve(this Polyline curve)
         {
-            throw new NotImplementedException();
+            List<Point> points = curve.ControlPoints;
+            List<double> weights = curve.ControlPoints.Select(x => 1.0).ToList();
+            List<double> knots = new List<double> { 0 };
+
+            double t = 0;
+            for (int i = 1; i < points.Count; i++)
+            {
+                t += points[i].Distance(points[i - 1]);
+                knots.Add(t);
+            }
+            knots = knots.Select(x => x / t).ToList();
+
+            return new NurbsCurve { ControlPoints = points, Weights = weights, Knots = knots };
         }
 
 
@@ -94,10 +225,9 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interaces                ****/
         /***************************************************/
 
-        [NotImplemented]
-        public static NurbsCurve IToNurbsCurve(this ICurve geometry)
+        public static NurbsCurve IToNurbsCurve(this ICurve curve)
         {
-            throw new NotImplementedException();
+            return ToNurbsCurve(curve as dynamic);
         }
 
         /***************************************************/
