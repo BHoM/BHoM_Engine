@@ -35,8 +35,13 @@ namespace BH.Engine.Environment
 {
     public static partial class Create
     {
+        [Deprecated("3.0", "Deprecated to remove name input", null, "SpaceAnalyticalFragment(internalDomesticHotWater, daylightFactor, facadeLength, fixedConvectionCoefficient, sizeCooling, sizeHeating, radiantProportion)")]
+        public static SpaceAnalyticalFragment SpaceAnalyticalFragment(string name = "", double internalDomesticHotWater = 0.0, double daylightFactor = 0.0, double facadeLength = 0.0, double fixedConvectionCoefficient = 0.0, SizingMethod sizeCooling = SizingMethod.Undefined, SizingMethod sizeHeating = SizingMethod.Undefined, double radiantProportion = 0.0)
+        {
+            return Create.SpaceAnalyticalFragment(internalDomesticHotWater, daylightFactor, facadeLength, fixedConvectionCoefficient, sizeCooling, sizeHeating, radiantProportion);
+        }
+
         [Description("Returns an Space Analytical Fragment object")]
-        [Input("name", "The name of the fragment property, default empty string")]
         [Input("internalDomesticHotWater", "The amount of internal domestic hot water supply for the space, default 0.0")]
         [Input("daylightFactor", "The daylight factor for the space, default 0.0")]
         [Input("facadeLength", "The length of the facade on the space, default 0.0")]
@@ -45,11 +50,10 @@ namespace BH.Engine.Environment
         [Input("sizeHeating", "The heating size method of the space from the Sizing Method enum, default undefined")]
         [Input("radiantProportion", "The radiant proportion of the space, default 0.0")]
         [Output("spaceAnalyticalFragment", "A Space Analytical Fragment object - this can be added to an Environment Space")]
-        public static SpaceAnalyticalFragment SpaceAnalyticalFragment(string name = "", double internalDomesticHotWater = 0.0, double daylightFactor = 0.0, double facadeLength = 0.0, double fixedConvectionCoefficient = 0.0, SizingMethod sizeCooling = SizingMethod.Undefined, SizingMethod sizeHeating = SizingMethod.Undefined, double radiantProportion = 0.0)
+        public static SpaceAnalyticalFragment SpaceAnalyticalFragment(double internalDomesticHotWater = 0.0, double daylightFactor = 0.0, double facadeLength = 0.0, double fixedConvectionCoefficient = 0.0, SizingMethod sizeCooling = SizingMethod.Undefined, SizingMethod sizeHeating = SizingMethod.Undefined, double radiantProportion = 0.0)
         {
             return new SpaceAnalyticalFragment
             {
-                Name = name,
                 InternalDomesticHotWater = internalDomesticHotWater,
                 DaylightFactor = daylightFactor,
                 FacadeLength = facadeLength,

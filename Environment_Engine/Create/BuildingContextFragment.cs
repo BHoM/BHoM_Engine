@@ -35,16 +35,20 @@ namespace BH.Engine.Environment
 {
     public static partial class Create
     {
+        [Deprecated("3.0", "Deprecated to remove name input", null, "BuildingContextFragment(placeName, weatherStation)")]
+        public static BuildingContextFragment BuildingContextFragment(string name = "", string placeName = "", string weatherStation = "")
+        {
+            return Create.BuildingContextFragment(placeName, weatherStation);
+        }
+
         [Description("Returns a Building Context Fragment object")]
-        [Input("name", "The name of the fragment property, default empty string")]
         [Input("placeName", "The name of the place the building occupies, default empty string")]
         [Input("weatherStation", "The name of the nearest weather station to the building, default empty string")]
         [Output("buildingContextFragment", "An Environment Building Context Fragment object - this can be added to an Environment Building")]
-        public static BuildingContextFragment BuildingContextFragment(string name = "", string placeName = "", string weatherStation = "")
+        public static BuildingContextFragment BuildingContextFragment(string placeName = "", string weatherStation = "")
         {
             return new BuildingContextFragment
             {
-                Name = name,
                 PlaceName = placeName,
                 WeatherStation = weatherStation,
             };
