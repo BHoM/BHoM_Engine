@@ -35,16 +35,20 @@ namespace BH.Engine.Environment
 {
     public static partial class Create
     {
+        [Deprecated("3.0", "Deprecated to remove name input", null, "EnvironmentConstructionFragment(fFactor, additionalHeatTransfer)")]
+        public static EnvironmentConstructionFragment EnvironmentConstructionFragment(string name = "", double fFactor = 0.0, double additionalHeatTransfer = 0.0)
+        {
+            return Create.EnvironmentConstructionFragment(fFactor, additionalHeatTransfer);
+        }
+
         [Description("Returns an Environment Construction Fragment object")]
-        [Input("name", "The name of the fragment property, default empty string")]
         [Input("fFactor", "The FFactor for the construction, default 0.0")]
         [Input("additionalHeatTransfer", "The additional heat transfer through the construction, default 0.0")]
         [Output("environmentConstructionFragment", "An Environment Construction Fragment object - this can be added to a Construction object")]
-        public static EnvironmentConstructionFragment EnvironmentConstructionFragment(string name = "", double fFactor = 0.0, double additionalHeatTransfer = 0.0)
+        public static EnvironmentConstructionFragment EnvironmentConstructionFragment(double fFactor = 0.0, double additionalHeatTransfer = 0.0)
         {
             return new EnvironmentConstructionFragment
             {
-                Name = name,
                 FFactor = fFactor,
                 AdditionalHeatTransfer = additionalHeatTransfer,
             };
