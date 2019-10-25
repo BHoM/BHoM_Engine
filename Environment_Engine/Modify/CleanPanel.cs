@@ -20,38 +20,33 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using BH.oM.Environment.Fragments;
+using BH.Engine.Geometry;
+using BH.oM.Environment.Elements;
+using BH.oM.Environment;
+using BH.oM.Geometry;
 
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
+using System.Collections.Generic;
+using System.Linq;
+using BH.Engine.Base;
 
 namespace BH.Engine.Environment
 {
-    public static partial class Create
+    public static partial class Modify
     {
-        [Deprecated("3.0", "Deprecated to remove name input", null, "BuildingContextFragment(placeName, weatherStation)")]
-        public static BuildingContextFragment BuildingContextFragment(string name = "", string placeName = "", string weatherStation = "")
+        [Description("Returns a list of panels that has been cleaned from short segments and insignificant vertices")]
+        [Input("panels", "A list of panels that will be cleaned")]
+        [Input("angleTolerance", "The tolerance of the angle that defines a straight line. Default is set to the value defined by BH.oM.Geometry.Tolerance.Angle")]
+        [Input("minimumSegmentLength", "The length of the smallest allowed segment. Segments smaller than this will be removed. Default is set to the value defined by BH.oM.Geometry.Tolerance.Distance")]
+        [Output("cleanedPanels", "A list of panels that has been cleaned")]
+        public static List<Panel> CleanPanel(this List<Panel> panels, double angleTolerance = Tolerance.Angle, double minimumSegmentLength = Tolerance.Distance)
         {
-            return Create.BuildingContextFragment(placeName, weatherStation);
-        }
+            List<Panel> clonedPanels = new List<Panel>(panels.Select(x => x.DeepClone<Panel>()).ToList());
 
-        [Description("Returns a Building Context Fragment object")]
-        [Input("placeName", "The name of the place the building occupies, default empty string")]
-        [Input("weatherStation", "The name of the nearest weather station to the building, default empty string")]
-        [Output("buildingContextFragment", "An Environment Building Context Fragment object - this can be added to an Environment Building")]
-        public static BuildingContextFragment BuildingContextFragment(string placeName = "", string weatherStation = "")
-        {
-            return new BuildingContextFragment
-            {
-                PlaceName = placeName,
-                WeatherStation = weatherStation,
-            };
+            foreach (Panel p in clonedPanels)
+                p.ExternalEdges = p.Polyline().CleanPolyline(angleTolerance, minimumSegmentLength).ToEdges();
+            return clonedPanels;
         }
     }
 }
