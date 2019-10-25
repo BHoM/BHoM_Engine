@@ -69,5 +69,17 @@ namespace BH.Engine.Base
             fragment = default(IBHoMFragment);
             return false;
         }
+
+
+        [Description("Returns an enumerable with all Fragments of a type that inherits from the specified parentType.")]
+        [Input("iBHoMObject", "A generic IBHoMObject object")]
+        [Input("parentType", "The parent type of fragment. All fragments of a type that inherits from this type will be returned.")]
+        [Output("fragments", "All fragments of a type that inherits from parentType.")]
+        public static IEnumerable<T> FindFragmentsInheriting<T>(this IBHoMObject iBHoMObject, Type parentType)
+        {
+            var allFragms = iBHoMObject.Fragments.Where(f => parentType.IsAssignableFrom(f.GetType()));
+
+            return allFragms.Select(f => (T)System.Convert.ChangeType(f, parentType));
+        }
     }
 }
