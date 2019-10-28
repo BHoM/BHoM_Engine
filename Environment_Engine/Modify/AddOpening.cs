@@ -28,6 +28,7 @@ using BH.Engine.Geometry;
 
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
+using BH.Engine.Base;
 
 namespace BH.Engine.Environment
 {
@@ -49,9 +50,10 @@ namespace BH.Engine.Environment
         [Output("panel", "A modified Environment Panel with the provided opening added")]
         public static Panel AddOpening(this Panel panel, Opening opening)
         {
-            if (panel.Openings == null) panel.Openings = new List<Opening>();
-            panel.Openings.Add(opening);
-            return panel;
+            Panel clone = panel.DeepClone<Panel>();
+            if (clone.Openings == null) clone.Openings = new List<Opening>();
+            clone.Openings.Add(opening);
+            return clone;
         }
 
         [Description("Returns a list of Environment Panel with the provided openings added. Openings are added to the panels which contain them geometrically.")]
@@ -62,12 +64,15 @@ namespace BH.Engine.Environment
         [Output("panels", "A collection of modified Environment Panels with the provided openings added")]
         public static List<Panel> AddOpenings(this List<Panel> panels, List<Opening> openings, double centroidTolerance = BH.oM.Geometry.Tolerance.Distance, double containingTolerance = BH.oM.Geometry.Tolerance.Distance)
         {
-            foreach(Opening o in openings)
+            List<Panel> clonedPanels = new List<Panel>(panels.Select(x => x.DeepClone<Panel>()).ToList());
+            List<Opening> clonedOpenings = new List<Opening>(openings.Select(x => x.DeepClone<Opening>()).ToList());
+
+            foreach(Opening o in clonedOpenings)
             {
                 Point centre = o.Polyline().Centroid(centroidTolerance);
                 if(centre != null)
                 {
-                    Panel panel = panels.PanelsContainingPoint(centre, false, containingTolerance).FirstOrDefault();
+                    Panel panel = clonedPanels.PanelsContainingPoint(centre, false, containingTolerance).FirstOrDefault();
                     if (panel != null)
                     {
                         if (panel.Openings == null) panel.Openings = new List<Opening>();
@@ -76,7 +81,7 @@ namespace BH.Engine.Environment
                 }
             }
 
-            return panels;
+            return clonedPanels;
         }
     }
 }

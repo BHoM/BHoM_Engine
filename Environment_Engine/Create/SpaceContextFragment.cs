@@ -35,19 +35,23 @@ namespace BH.Engine.Environment
 {
     public static partial class Create
     {
+        [Deprecated("3.0", "Deprecated to remove name input", null, "SpaceContextFragment(isExternal, colour, connectedElements)")]
+        public static SpaceContextFragment SpaceContextFragment(string name = "", bool isExternal = false, string colour = "", List<string> connectedElements = null)
+        {
+            return Create.SpaceContextFragment(isExternal, colour, connectedElements);
+        }
+
         [Description("Returns an Space Context Fragment object")]
-        [Input("name", "The name of the fragment property, default empty string")]
         [Input("isExternal", "Defines whether the space is externally facing, default false")]
         [Input("colour", "Defines the colour of the space, default empty string")]
         [Input("connectedElements", "A collection of the elements which enclose the space described by their name or unique identifer as a string, default null")]
         [Output("spaceContextFragment", "A Space Context Fragment object - this can be added to an Environment Space")]
-        public static SpaceContextFragment SpaceContextFragment(string name = "", bool isExternal = false, string colour = "", List<string> connectedElements = null)
+        public static SpaceContextFragment SpaceContextFragment(bool isExternal = false, string colour = "", List<string> connectedElements = null)
         {
             connectedElements = connectedElements ?? new List<string>();
 
             return new SpaceContextFragment
             {
-                Name = name,
                 IsExternal = isExternal,
                 Colour = colour,
                 ConnectedElements = connectedElements,

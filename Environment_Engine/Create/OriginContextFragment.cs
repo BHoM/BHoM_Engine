@@ -35,18 +35,22 @@ namespace BH.Engine.Environment
 {
     public static partial class Create
     {
+        [Deprecated("3.0", "Deprecated to remove name input", null, "OriginContextFragment(origin, elementID, description, typeName)")]
+        public static OriginContextFragment OriginContextFragment(string name = "", string origin = "", string elementID = "", string description = "", string typeName = "")
+        {
+            return Create.OriginContextFragment(origin, elementID, description, typeName);
+        }
+
         [Description("Returns an Origin Context Fragment object")]
-        [Input("name", "The name of the fragment property, default empty string")]
         [Input("origin", "The origin of the object this fragment will be added to, default empty string")]
         [Input("elementID", "The original ID of the element from the origin software, default empty string")]
         [Input("description", "A description for the object or its source, default empty string")]
         [Input("typeName", "The family type name of the object to group objects together, default empty string")]
         [Output("originContextFragment", "An Origin Context Fragment object - this can be added to any Environment object")]
-        public static OriginContextFragment OriginContextFragment(string name = "", string origin = "", string elementID = "", string description = "", string typeName = "")
+        public static OriginContextFragment OriginContextFragment(string origin = "", string elementID = "", string description = "", string typeName = "")
         {
             return new OriginContextFragment
             {
-                Name = name,
                 Origin = origin,
                 ElementID = elementID,
                 Description = description,

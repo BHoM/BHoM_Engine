@@ -35,17 +35,21 @@ namespace BH.Engine.Environment
 {
     public static partial class Create
     {
+        [Deprecated("3.0", "Deprecated to remove name input", null, "LightTransmittanceFragment(redReflectance, greenReflectance, blueReflectance)")]
+        public static LightTransmittanceFragment LightTransmittanceFragment(string name = "", double redTransmittance = 0.0, double greenTransmittance = 0.0, double blueTransmittance = 0.0)
+        {
+            return Create.LightTransmittanceFragment(redTransmittance, greenTransmittance, blueTransmittance);
+        }
+
         [Description("Returns an Environment Light Transmittance Fragment object")]
-        [Input("name", "The name of the fragment property, default empty string")]
         [Input("redTransmittance", "The red transmittance of the light transmittance, default 0.0")]
         [Input("greenTransmittance", "The green transmittance of the light transmittance, default 0.0")]
         [Input("blueTransmittance", "The blue transmittance of the light transmittance, default 0.0")]
         [Output("lightTransmittanceFragment", "A Light Transmittance Fragment object - this can be added to an Environmental Material fragment object")]
-        public static LightTransmittanceFragment LightTransmittanceFragment(string name = "", double redTransmittance = 0.0, double greenTransmittance = 0.0, double blueTransmittance = 0.0)
+        public static LightTransmittanceFragment LightTransmittanceFragment(double redTransmittance = 0.0, double greenTransmittance = 0.0, double blueTransmittance = 0.0)
         {
             return new LightTransmittanceFragment
             {
-                Name = name,
                 RedTransmittance = redTransmittance,
                 GreenTransmittance = greenTransmittance,
                 BlueTransmittance = blueTransmittance,

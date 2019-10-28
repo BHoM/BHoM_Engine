@@ -54,13 +54,7 @@ namespace BH.Engine.Diffing
 
                 HashFragment existingFragm = obj.GetHashFragment();
 
-                if (existingFragm != null)
-                {
-                    obj.Fragments.RemoveAll(fr => (fr as HashFragment) != null);
-                    obj.Fragments.Add(new HashFragment(hash, existingFragm.Hash));
-                }
-                else
-                    obj.Fragments.Add(new HashFragment(hash, null));
+                obj.Fragments.AddOrReplace(new HashFragment(hash, existingFragm?.Hash));
             }
         }
     }

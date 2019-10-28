@@ -35,17 +35,21 @@ namespace BH.Engine.Environment
 {
     public static partial class Create
     {
+        [Deprecated("3.0", "Deprecated to remove name input", null, "CoefficientFragment(lightingViewCoefficient, occupantViewCoefficient, equipmentViewCoefficient)")]
+        public static CoefficientFragment CoefficientFragment(string name = "", double lightingViewCoefficient = 0.0, double occupantViewCoefficient = 0.0, double equipmentViewCoefficient = 0.0)
+        {
+            return Create.CoefficientFragment(lightingViewCoefficient, occupantViewCoefficient, equipmentViewCoefficient);
+        }
+
         [Description("Returns a Coefficient Fragment object")]
-        [Input("name", "The name of the fragment property, default empty string")]
         [Input("lightingViewCoefficient", "The lighting view coefficient, default 0.0")]
         [Input("occupantViewCoefficient", "The occupant view coefficient, default 0.0")]
         [Input("equipmentViewCoefficient", "The equipment view coefficient, default 0.0")]
         [Output("coefficientFragment", "An Environment Coefficient Fragment object - this can be added to any Environment object")]
-        public static CoefficientFragment CoefficientFragment(string name = "", double lightingViewCoefficient = 0.0, double occupantViewCoefficient = 0.0, double equipmentViewCoefficient = 0.0)
+        public static CoefficientFragment CoefficientFragment(double lightingViewCoefficient = 0.0, double occupantViewCoefficient = 0.0, double equipmentViewCoefficient = 0.0)
         {
             return new CoefficientFragment
             {
-                Name = name,
                 LightingViewCoefficient = lightingViewCoefficient,
                 OccupantViewCoefficient = occupantViewCoefficient,
                 EquipmentViewCoefficient = equipmentViewCoefficient,
