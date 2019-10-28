@@ -15,92 +15,113 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("")]
-        [Input("pLine", "defined counter clockwise")]
-        [Output("C", "Polyline")]
-        public static Polyline WetBlanketInterpretation(Polyline pLine)
+        [Description("Takes a List of Polylines and creates a `squished` version with the same area at every X-location, (and hence in total as well). Required for some calculations")]
+        [Input("pLines", "defined counter clockwise for positive area, should be on the XY-plane")]
+        [Output("C", "A single Polyline oriented counter clockwise with the same area as the sum of all the polylines")]
+        public static Polyline WetBlanketInterpretation(List<Polyline> pLines)
         {
             double tol = Tolerance.Distance;
 
+            List<double> xes = new List<double>();
+            foreach (Polyline pLine in pLines)
+                xes.AddRange(pLine.ControlPoints.Select(x => x.X));
+
+
             // sort and cull point x-positions
             // TODO the "6" should be based on Tolerance things
-            List<double> xValues = (new HashSet<double>(pLine.ControlPoints.Select(x => Math.Round(x.X, 6)))).ToList();
+            List<double> xValues = (new HashSet<double>(xes.Select(x => Math.Round(x, 6)))).ToList();
             xValues.Sort();
 
             //foreach linesegment
             // split by x-value
-            Polyline polyLine = new Polyline();
-            double dMin;
-            double dMax;
-            polyLine.ControlPoints.Add(pLine.ControlPoints[0]);
-            for (int i = 0; i < pLine.ControlPoints.Count - 1; i++)
+            List<Polyline> polyLines = new List<Polyline>();
+            for (int k = 0; k < pLines.Count; k++)
             {
-                bool dir = pLine.ControlPoints[i].X < pLine.ControlPoints[i + 1].X;
-                if (dir)
+                polyLines.Add(new Polyline());
+                double dMin;
+                double dMax;
+                polyLines[k].ControlPoints.Add(pLines[k].ControlPoints[0]);
+                for (int i = 0; i < pLines[k].ControlPoints.Count - 1; i++)
                 {
-                    dMin = pLine.ControlPoints[i].X + tol;
-                    dMax = pLine.ControlPoints[i + 1].X - tol;
-                }
-                else
-                {
-                    dMin = pLine.ControlPoints[i + 1].X + tol;
-                    dMax = pLine.ControlPoints[i].X - tol;
-                }
-                List<Point> temp = new List<Point>();
-                for (int j = 0; j < xValues.Count; j++)
-                {
-                    if (xValues[j] < dMin)
-                        continue;
-                    if (xValues[j] > dMax)
-                        break;
+                    bool dir = pLines[k].ControlPoints[i].X < pLines[k].ControlPoints[i + 1].X;
+                    if (dir)
+                    {
+                        dMin = pLines[k].ControlPoints[i].X + tol;
+                        dMax = pLines[k].ControlPoints[i + 1].X - tol;
+                    }
+                    else
+                    {
+                        dMin = pLines[k].ControlPoints[i + 1].X + tol;
+                        dMax = pLines[k].ControlPoints[i].X - tol;
+                    }
+                    List<Point> temp = new List<Point>();
+                    for (int j = 0; j < xValues.Count; j++)
+                    {
+                        if (xValues[j] < dMin)
+                            continue;
+                        if (xValues[j] > dMax)
+                            break;
 
-                    temp.Add(PointAtX(pLine.ControlPoints[i], pLine.ControlPoints[i + 1], xValues[j]));
-                }
-                if (!dir)
-                    temp.Reverse();
+                        temp.Add(PointAtX(pLines[k].ControlPoints[i], pLines[k].ControlPoints[i + 1], xValues[j]));
+                    }
+                    if (!dir)
+                        temp.Reverse();
 
-                polyLine.ControlPoints.AddRange(temp);
-                polyLine.ControlPoints.Add(pLine.ControlPoints[i + 1]);
+                    polyLines[k].ControlPoints.AddRange(temp);
+                    polyLines[k].ControlPoints.Add(pLines[k].ControlPoints[i + 1]);
+                }
             }
 
             Polyline result = new Polyline();
+            // add leftmost point at x-axis
             result.ControlPoints.Add(new Point() { X = xValues[0] });
+
             // foreach x-value
             for (int i = 0; i < xValues.Count; i++)
             {
+                // get all points with the said x-value
                 List<Point> coLinPoints = new List<Point>();
-
-                for (int j = 0; j < polyLine.ControlPoints.Count; j++)
+                for (int k = 0; k < pLines.Count; k++)
                 {
-                    if (polyLine.ControlPoints[j].X < xValues[i] + tol && polyLine.ControlPoints[j].X > xValues[i] - tol)
+                    for (int j = 0; j < polyLines[k].ControlPoints.Count; j++)
                     {
-                        Point pt = polyLine.ControlPoints[j];
-                        pt.Z = j;   // Hide the index in the point
-                        pt.X = xValues[i];  // Line em up (makes sure the sort works later (deafaluts to sort by x))
-                        coLinPoints.Add(pt);
+                        if (polyLines[k].ControlPoints[j].X < xValues[i] + tol && polyLines[k].ControlPoints[j].X > xValues[i] - tol)
+                        {
+                            Point pt = polyLines[k].ControlPoints[j];
+                            pt.Z = j * 100 + k;   // Hide the index in the point (we only care about planar cases)
+                            pt.X = xValues[i];  // Line em up (makes sure the sort works later (deafaluts to sort by x))
+                            coLinPoints.Add(pt);
+                        }
                     }
                 }
-
                 coLinPoints.Sort();
 
+                // how much "area" there is at the imidiate left respectivly the right side of the x-value
                 double LeftAreaLength = 0;
                 double RightAreaLength = 0;
 
                 for (int j = 0; j < coLinPoints.Count - 1; j++)
                 {
                     Point current = coLinPoints[j];
-                    int indexBefore = (int)current.Z - 1 < 0 ? polyLine.ControlPoints.Count - 2 : (int)current.Z - 1;
-                    int indexAfter = (int)current.Z + 1 > polyLine.ControlPoints.Count - 1 ? 1 : (int)current.Z + 1;
-                    Point before = polyLine.ControlPoints[indexBefore];
-                    Point after = polyLine.ControlPoints[indexAfter];
+                    int k = (int)(current.Z % 100);
+                    int index = (int)Math.Floor(current.Z * 0.01);
+                    int indexBefore = index - 1 < 0 ? polyLines[k].ControlPoints.Count - 2 : index - 1;
+                    int indexAfter = index + 1 > polyLines[k].ControlPoints.Count - 1 ? 1 : index + 1;
+                    Point before = polyLines[k].ControlPoints[indexBefore];
+                    Point after = polyLines[k].ControlPoints[indexAfter];
 
                     double d = Math.Abs(coLinPoints[j + 1].Y - current.Y);
+                    // saves the results in a int's first and second number for the switch
                     int cornerCase = 0;
                     cornerCase += Direction(current, after);
                     cornerCase += Direction(current, before) * 10;
+
+                    // cornerCase is a mesure of how the corner is in a way that lets us get if there is "area" at the imidiate left/right "above" it
+
                     if (cornerCase < -1)
                     {
                         // current and one of the point are the same
+                        // TODO handle this?
                         Engine.Reflection.Compute.RecordWarning(xValues[i].ToString());
                     }
                     else
@@ -154,8 +175,8 @@ namespace BH.Engine.Geometry
                 }
             }
 
-            result.ControlPoints.Add(new Point() { X = xValues[xValues.Count - 1] });
-            result.ControlPoints.Add(new Point() { X = xValues[0] });
+            result.ControlPoints.Add(new Point() { X = xValues[xValues.Count - 1] }); // the right most point on the x-axis
+            result.ControlPoints.Add(new Point() { X = xValues[0] }); // closing the curve
 
             return result;
         }
