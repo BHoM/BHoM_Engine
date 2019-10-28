@@ -284,7 +284,6 @@ namespace BH.Engine.Geometry
         {
             //TODO Should do some checks if these are good Tolerances
 
-
             // a.Y & b.Y can't be 0.    (due to some log expresssions, which comes from the expression being divided by the width (can't divide by zero))
 
             double axbx = a.X - b.X;
