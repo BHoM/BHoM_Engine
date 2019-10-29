@@ -21,37 +21,41 @@
  */
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using BH.oM.Environment.Fragments;
-
-using BH.oM.Reflection.Attributes;
+using System.Collections.Generic;
 using System.ComponentModel;
+using BH.oM.Reflection.Attributes;
+using BH.oM.Base;
+using BH.oM.Data.Library;
 
-namespace BH.Engine.Environment
+namespace BH.Engine.Data
 {
     public static partial class Create
     {
-        [Deprecated("3.0", "Deprecated to remove name input", null, "BuildingContextFragment(placeName, weatherStation)")]
-        public static BuildingContextFragment BuildingContextFragment(string name = "", string placeName = "", string weatherStation = "")
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
+
+        [Description("Creates a Dataset. A Dataset contains a list of BHoMObjects as well as metadata such as source information and time of creation. \n The datasets are used together with the serialised datasets accessed with the Library_Engine")]
+        [Input("data", "The list of BHoMObjects to store in the Dataset")]
+        [Input("source", "Citation for the source of the data")]
+        [Input("name", "Name of the dataset")]
+        [Input("timeOfCreation", "The time the Dataset was generated. If no time is provided, the current UTC time will be used.")]
+        [Output("Dataset", "The created Dataset")]
+        public static Dataset Dataset(List<IBHoMObject> data, Source source, string name, DateTime? timeOfCreation = null)
         {
-            return Create.BuildingContextFragment(placeName, weatherStation);
+            DateTime time = timeOfCreation == null ? DateTime.UtcNow : (DateTime)timeOfCreation;
+
+            return new Dataset
+            {
+                SourceInformation = source,
+                Data = data,
+                Name = name,
+                TimeOfCreation = time
+            };
+
         }
 
-        [Description("Returns a Building Context Fragment object")]
-        [Input("placeName", "The name of the place the building occupies, default empty string")]
-        [Input("weatherStation", "The name of the nearest weather station to the building, default empty string")]
-        [Output("buildingContextFragment", "An Environment Building Context Fragment object - this can be added to an Environment Building")]
-        public static BuildingContextFragment BuildingContextFragment(string placeName = "", string weatherStation = "")
-        {
-            return new BuildingContextFragment
-            {
-                PlaceName = placeName,
-                WeatherStation = weatherStation,
-            };
-        }
+        /***************************************************/
     }
 }

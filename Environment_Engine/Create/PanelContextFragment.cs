@@ -35,18 +35,22 @@ namespace BH.Engine.Environment
 {
     public static partial class Create
     {
+        [Deprecated("3.0", "Deprecated to remove name input", null, "PanelContextFragment(isAir, isGround, colour, reversed)")]
+        public static PanelContextFragment PanelContextFragment(string name = "", bool isAir = false, bool isGround = false, string colour = "", bool reversed = false)
+        {
+            return Create.PanelContextFragment(isAir, isGround, colour, reversed);
+        }
+
         [Description("Returns an Panel Context Fragment object")]
-        [Input("name", "The name of the fragment property, default empty string")]
         [Input("isAir", "Defines whether the panel is an air panel, default false")]
         [Input("isGround", "Defines whether the panel is a ground panel, default false")]
         [Input("colour", "Defines the colour of the panel, default empty string")]
         [Input("reversed", "Defines whether the panel is reversed, default false")]
         [Output("panelContextFragment", "A Panel Context Fragment object - this can be added to an Environment Panel")]
-        public static PanelContextFragment PanelContextFragment(string name = "", bool isAir = false, bool isGround = false, string colour = "", bool reversed = false)
+        public static PanelContextFragment PanelContextFragment(bool isAir = false, bool isGround = false, string colour = "", bool reversed = false)
         {
             return new PanelContextFragment
             {
-                Name = name,
                 IsAir = isAir,
                 IsGround = isGround,
                 Colour = colour,

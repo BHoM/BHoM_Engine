@@ -35,16 +35,20 @@ namespace BH.Engine.Environment
 {
     public static partial class Create
     {
+        [Deprecated("3.0", "Deprecated to remove name input", null, "BuildingResultFragment(peakCooling, peakHeating)")]
+        public static BuildingResultFragment BuildingResultFragment(string name = "", double peakCooling = 0.0, double peakHeating = 0.0)
+        {
+            return Create.BuildingResultFragment(peakCooling, peakHeating);
+        }
+
         [Description("Returns a Building Result Fragment object")]
-        [Input("name", "The name of the fragment property, default empty string")]
         [Input("peakCooling", "The peak cooling result for the building, default 0.0")]
         [Input("peakHeating", "The peak heating result for the building, default 0.0")]
         [Output("buildingResultFragment", "An Environment Building Result Fragment object - this can be added to an Environment Building")]
-        public static BuildingResultFragment BuildingResultFragment(string name = "", double peakCooling = 0.0, double peakHeating = 0.0)
+        public static BuildingResultFragment BuildingResultFragment(double peakCooling = 0.0, double peakHeating = 0.0)
         {
             return new BuildingResultFragment
             {
-                Name = name,
                 PeakCooling = peakCooling,
                 PeakHeating = peakHeating,
             };

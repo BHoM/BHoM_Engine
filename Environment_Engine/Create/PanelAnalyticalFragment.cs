@@ -35,8 +35,13 @@ namespace BH.Engine.Environment
 {
     public static partial class Create
     {
+        [Deprecated("3.0", "Deprecated to remove name input", null, "PanelAnalyticalFragment(altitude, altitudeRange, inclination, inclinationRange, orientation, gValue, ltValue, uValue, apertureFlowIn, apertureFlowOut, apertureOpening, externalCondensation, externalConduction, externalConvection, externalLongWave, externalSolar, externalTemperature, internalCondensation, internalConduction, internalConvection, internalLongWave, internalSolar, internalTemperature, interstitialCondensation)")]
+        public static PanelAnalyticalFragment PanelAnalyticalFragment(string name = "", double altitude = 0.0, double altitudeRange = 0.0, double inclination = 0.0, double inclinationRange = 0.0, double orientation = 0.0, double gValue = 0.0, double ltValue = 0.0, double uValue = 0.0, double apertureFlowIn = 0.0, double apertureFlowOut = 0.0, double apertureOpening = 0.0, double externalCondensation = 0.0, double externalConduction = 0.0, double externalConvection = 0.0, double externalLongWave = 0.0, double externalSolar = 0.0, double externalTemperature = 0.0, double internalCondensation = 0.0, double internalConduction = 0.0, double internalConvection = 0.0, double internalLongWave = 0.0, double internalSolar = 0.0, double internalTemperature = 0.0, double interstitialCondensation = 0.0)
+        {
+            return Create.PanelAnalyticalFragment(altitude, altitudeRange, inclination, inclinationRange, orientation, gValue, ltValue, uValue, apertureFlowIn, apertureFlowOut, apertureOpening, externalCondensation, externalConduction, externalConvection, externalLongWave, externalSolar, externalTemperature, internalCondensation, internalConduction, internalConvection, internalLongWave, internalSolar, internalTemperature, interstitialCondensation);
+        }
+
         [Description("Returns an Panel Analytical Fragment object")]
-        [Input("name", "The name of the fragment property, default empty string")]
         [Input("altitude", "The altitude of the panel, default 0.0")]
         [Input("altitudeRange", "The altitude range of the panel, default 0.0")]
         [Input("inclination", "The inclination of the panel, default 0.0")]
@@ -62,11 +67,10 @@ namespace BH.Engine.Environment
         [Input("internalTemperature", "The internal temperature of the panel, default 0.0")]
         [Input("interstitialCondensation", "The interstitial condensation of the panel, default 0.0")]
         [Output("panelAnalyticalFragment", "A Panel Analytical Fragment object - this can be added to an Environment Panel")]
-        public static PanelAnalyticalFragment PanelAnalyticalFragment(string name = "", double altitude = 0.0, double altitudeRange = 0.0, double inclination = 0.0, double inclinationRange = 0.0, double orientation = 0.0, double gValue = 0.0, double ltValue = 0.0, double uValue = 0.0, double apertureFlowIn = 0.0, double apertureFlowOut = 0.0, double apertureOpening = 0.0, double externalCondensation = 0.0, double externalConduction = 0.0, double externalConvection = 0.0, double externalLongWave = 0.0, double externalSolar = 0.0, double externalTemperature = 0.0, double internalCondensation = 0.0, double internalConduction = 0.0, double internalConvection = 0.0, double internalLongWave = 0.0, double internalSolar = 0.0, double internalTemperature = 0.0, double interstitialCondensation = 0.0)
+        public static PanelAnalyticalFragment PanelAnalyticalFragment(double altitude = 0.0, double altitudeRange = 0.0, double inclination = 0.0, double inclinationRange = 0.0, double orientation = 0.0, double gValue = 0.0, double ltValue = 0.0, double uValue = 0.0, double apertureFlowIn = 0.0, double apertureFlowOut = 0.0, double apertureOpening = 0.0, double externalCondensation = 0.0, double externalConduction = 0.0, double externalConvection = 0.0, double externalLongWave = 0.0, double externalSolar = 0.0, double externalTemperature = 0.0, double internalCondensation = 0.0, double internalConduction = 0.0, double internalConvection = 0.0, double internalLongWave = 0.0, double internalSolar = 0.0, double internalTemperature = 0.0, double interstitialCondensation = 0.0)
         {
             return new PanelAnalyticalFragment
             {
-                Name = name,
                 Altitude = altitude,
                 AltitudeRange = altitudeRange,
                 Inclination = inclination,
