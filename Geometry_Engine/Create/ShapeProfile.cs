@@ -42,19 +42,19 @@ namespace BH.Engine.Geometry
         {
             if (height < flangeThickness * 2 + rootRadius * 2)
             {
-                InvalidRatioError2("height","flangeThickness and rootRadius");
+                InvalidRatioError("height","flangeThickness and rootRadius");
                 return null;
             }
 
             if (width < webthickness + rootRadius * 2 + toeRadius * 2)
             {
-                InvalidRatioError2("width", "webthickness, rootRadius and toeRadius");
+                InvalidRatioError("width", "webthickness, rootRadius and toeRadius");
                 return null;
             }
 
             if (toeRadius > flangeThickness)
             {
-                InvalidRatioError("toeRadius and flangeThickness");
+                InvalidRatioError("toeRadius", "flangeThickness");
                 return null;
             }
 
@@ -74,43 +74,43 @@ namespace BH.Engine.Geometry
         {
             if (thickness > height / 2)
             {
-                InvalidRatioError("thickness and height");
+                InvalidRatioError("thickness", "height");
                 return null;
             }
 
             if (thickness > width / 2)
             {
-                InvalidRatioError("thickness and width");
+                InvalidRatioError("thickness", "width");
                 return null;
             }
 
             if (outerRadius > height / 2)
             {
-                InvalidRatioError("outerRadius and height");
+                InvalidRatioError("outerRadius", "height");
                 return null;
             }
 
             if (outerRadius > width / 2)
             {
-                InvalidRatioError("outerRadius and width");
+                InvalidRatioError("outerRadius", "width");
                 return null;
             }
 
             if (innerRadius * 2 > width - thickness * 2)
             {
-                InvalidRatioError2("innerRadius","width and thickness");
+                InvalidRatioError("innerRadius","width and thickness");
                 return null;
             }
 
             if (innerRadius * 2 > height - thickness * 2)
             {
-                InvalidRatioError2("innerRadius", "height and thickness");
+                InvalidRatioError("innerRadius", "height and thickness");
                 return null;
             }
 
             if (Math.Sqrt(2) * thickness <= Math.Sqrt(2) * outerRadius - outerRadius - Math.Sqrt(2) * innerRadius + innerRadius)
             {
-                InvalidRatioError2("thickness", "outerRadius and innerRadius");
+                InvalidRatioError("thickness", "outerRadius and innerRadius");
                 return null;
             }
 
@@ -130,25 +130,25 @@ namespace BH.Engine.Geometry
         {
             if (height < flangeThickness + rootRadius + toeRadius)
             {
-                InvalidRatioError2("height", "flangeThickness, rootRadius and toeRadius");
+                InvalidRatioError("height", "flangeThickness, rootRadius and toeRadius");
                 return null;
             }
 
             if (width < webthickness + rootRadius + toeRadius)
             {
-                InvalidRatioError2("width", "webthickness, rootRadius and toeRadius");
+                InvalidRatioError("width", "webthickness, rootRadius and toeRadius");
                 return null;
             }
 
             if (flangeThickness < toeRadius)
             {
-                InvalidRatioError("flangeThickness and toeRadius");
+                InvalidRatioError("flangeThickness", "toeRadius");
                 return null;
             }
 
             if (webthickness < toeRadius)
             {
-                InvalidRatioError("webthickness and toeRadius");
+                InvalidRatioError("webthickness", "toeRadius");
                 return null;
             }
 
@@ -174,19 +174,19 @@ namespace BH.Engine.Geometry
         {
             if (height < flangeThickness * 2 + rootRadius * 2)
             {
-                InvalidRatioError2("height", "flangeThickness and rootRadius");
+                InvalidRatioError("height", "flangeThickness and rootRadius");
                 return null;
             }
 
             if (width < webthickness + rootRadius + toeRadius)
             {
-                InvalidRatioError2("width", "webthickness, toeRadius and rootRadius");
+                InvalidRatioError("width", "webthickness, toeRadius and rootRadius");
                 return null;
             }
 
             if (flangeThickness < toeRadius)
             {
-                InvalidRatioError("flangeThickness and toeRadius");
+                InvalidRatioError("flangeThickness", "toeRadius");
                 return null;
             }
 
@@ -223,13 +223,13 @@ namespace BH.Engine.Geometry
         {
             if (height <= topFlangeThickness + botFlangeThickness + 2 * Math.Sqrt(2) * weldSize)
             {
-                InvalidRatioError2("height", "topFlangeThickness, botFlangeThickness and weldSize");
+                InvalidRatioError("height", "topFlangeThickness, botFlangeThickness and weldSize");
                 return null;
             }
 
             if (width <= webThickness * 2 + 2 * Math.Sqrt(2) * weldSize)
             {
-                InvalidRatioError2("width", "webThickness and weldSize");
+                InvalidRatioError("width", "webThickness and weldSize");
                 return null;
             }
 
@@ -249,13 +249,13 @@ namespace BH.Engine.Geometry
         {
             if (webThickness >= width / 2)
             {
-                InvalidRatioError("webThickness and width");
+                InvalidRatioError("webThickness", "width");
                 return null;
             }
 
             if (height <= topFlangeThickness + botFlangeThickness)
             {
-                InvalidRatioError2("height","topFlangeThickness and botFlangeThickness");
+                InvalidRatioError("height","topFlangeThickness and botFlangeThickness");
                 return null;
             }
 
@@ -275,7 +275,7 @@ namespace BH.Engine.Geometry
         {
             if ((width1*Math.Sin(angle1/2)/Math.Sqrt(2)) /(Math.Sin(Math.PI*0.75- (angle1/2)))<thickness)
             {
-                InvalidRatioError2("thickness", "width and angle1");
+                InvalidRatioError("thickness", "width and angle1");
                 return null;
             }
 
@@ -295,19 +295,19 @@ namespace BH.Engine.Geometry
         {
             if (height <= topFlangeThickness + botFlangeThickness + 2 * Math.Sqrt(2) * weldSize)
             {
-                InvalidRatioError2("height","topFlangeThickness, botFlangeThickness and weldSize");
+                InvalidRatioError("height","topFlangeThickness, botFlangeThickness and weldSize");
                 return null;
             }
 
             if (botFlangeWidth <= webThickness + 2 * Math.Sqrt(2) * weldSize)
             {
-                InvalidRatioError2("botFlangeWidth", "webThickness and weldSize");
+                InvalidRatioError("botFlangeWidth", "webThickness and weldSize");
                 return null;
             }
 
             if (topFlangeWidth <= webThickness + 2 * Math.Sqrt(2) * weldSize)
             {
-                InvalidRatioError2("topFlangeWidth", "webThickness and weldSize");
+                InvalidRatioError("topFlangeWidth", "webThickness and weldSize");
                 return null;
             }
 
@@ -334,13 +334,13 @@ namespace BH.Engine.Geometry
         {
             if (cornerRadius > height / 2)
             {
-                InvalidRatioError("cornerRadius and height");
+                InvalidRatioError("cornerRadius", "height");
                 return null;
             }
 
             if (cornerRadius > width / 2)
             {
-                InvalidRatioError("cornerRadius and width");
+                InvalidRatioError("cornerRadius", "width");
                 return null;
             }
 
@@ -359,19 +359,19 @@ namespace BH.Engine.Geometry
         {
             if (height < flangeThickness + rootRadius)
             {
-                InvalidRatioError2("height", "flangeThickness and rootRadius");
+                InvalidRatioError("height", "flangeThickness and rootRadius");
                 return null;
             }
 
             if (width < webthickness + 2 * rootRadius + 2 * toeRadius)
             {
-                InvalidRatioError2("width", "webThickess, rootRadius and toeRadius");
+                InvalidRatioError("width", "webThickess, rootRadius and toeRadius");
                 return null;
             }
 
             if (toeRadius > flangeThickness)
             {
-                InvalidRatioError("toeTadius and flangeThickness");
+                InvalidRatioError("toeTadius", "flangeThickness");
                 return null;
             }
 
@@ -395,25 +395,25 @@ namespace BH.Engine.Geometry
         {
             if (height <= leftOutstandThickness)
             {
-                InvalidRatioError("height and leftOutstandThickness");
+                InvalidRatioError("height", "leftOutstandThickness");
                 return null;
             }
 
             if (height <= rightOutstandThickness)
             {
-                InvalidRatioError("height and rightOutstandThickness");
+                InvalidRatioError("height", "rightOutstandThickness");
                 return null;
             }
 
             if (leftOutstandThickness <= 0 && leftOutstandWidth > 0 || leftOutstandWidth <= 0 && leftOutstandThickness > 0)
             {
-                InvalidRatioError("leftOutstandThickness and leftOutstandWidth");
+                InvalidRatioError("leftOutstandThickness","leftOutstandWidth");
                 return null;
             }
 
             if (rightOutstandThickness <= 0 && rightOutstandWidth > 0 || rightOutstandWidth <= 0 && rightOutstandThickness > 0)
             {
-                InvalidRatioError("rightOutstandThickness and rightOutstandWidth");
+                InvalidRatioError("rightOutstandThickness", "rightOutstandWidth");
                 return null;
             }
 
@@ -437,7 +437,7 @@ namespace BH.Engine.Geometry
         {
             if (thickness >= diameter/2)
             {
-                InvalidRatioError("diameter and thickness");
+                InvalidRatioError("diameter", "thickness");
                 return null;
             }
 
@@ -482,16 +482,9 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        private static void InvalidRatioError(string inputs)
+        private static void InvalidRatioError(string first, string second)
         {
-            Engine.Reflection.Compute.RecordError("The ratio between " + inputs + " makes section inconceivable");
-        }
-
-        /***************************************************/
-
-        private static void InvalidRatioError2(string first, string second)
-        {
-            Engine.Reflection.Compute.RecordError("The ratio between " + first + " in relation to " + second + " makes section inconceivable");
+            Engine.Reflection.Compute.RecordError("The ratio of the " + first + " in relation to the " + second + " makes section inconceivable");
         }
 
         /***************************************************/
