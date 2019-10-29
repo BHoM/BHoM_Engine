@@ -46,7 +46,7 @@ namespace BH.Engine.Geometry
 
         public static Ellipse Ellipse(Point centre, Vector axis1, Vector axis2, double radius1, double radius2)
         {
-            if (Math.Abs(axis1.DotProduct(axis2) - 1) > Tolerance.Angle)
+            if (Math.Abs(axis1.DotProduct(axis2)) > Tolerance.Angle)
                 Reflection.Compute.RecordWarning("Axis1 and axis2 are not orthogonal. Result may be wrong.");
 
             return new Ellipse
