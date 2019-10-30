@@ -195,21 +195,13 @@ namespace BH.Engine.Geometry
         public static List<ICurve> FabricatedBoxProfileCurves(double width, double height, double webThickness, double topFlangeThickness, double botFlangeThickness, double weldSize)
         {
             List<ICurve> box = RectangleProfileCurves(width, height, 0);
-            List<ICurve> innerBox = RectangleProfileCurves(width - 2 * webThickness, height - (topFlangeThickness + botFlangeThickness), 0);
-            double diff = botFlangeThickness- topFlangeThickness;
-
-            if (diff != 0)
-            {
-                Vector v = new Vector() { X = 0, Y = diff / 2, Z = 0 };
-                innerBox = innerBox.Select(x => Geometry.Modify.ITranslate(x, v)).ToList();
-            }
-
+            
             List<ICurve> welds = new List<ICurve>();
             double weldLength = weldSize * 2 / Math.Sqrt(2);
             Point q1 = new Point { X = (width / 2) - webThickness, Y = (height / 2) - topFlangeThickness, Z = 0 };
             Point q2 = new Point { X = -(width / 2) + webThickness, Y = (height / 2) - topFlangeThickness, Z = 0 };
-            Point q3 = new Point { X = -(width / 2) + webThickness, Y = -(height / 2) + topFlangeThickness, Z = 0 };
-            Point q4 = new Point { X = (width / 2) - webThickness, Y = -(height / 2) + topFlangeThickness, Z = 0 };
+            Point q3 = new Point { X = -(width / 2) + webThickness, Y = -(height / 2) + botFlangeThickness, Z = 0 };
+            Point q4 = new Point { X = (width / 2) - webThickness, Y = -(height / 2) + botFlangeThickness, Z = 0 };
             Vector wx = new Vector { X = weldLength, Y = 0, Z = 0 };
             Vector wy = new Vector { X = 0, Y = weldLength, Z = 0 };
 
@@ -217,6 +209,12 @@ namespace BH.Engine.Geometry
             welds.Add(new Line { Start = q2 + wx, End = q2 - wy });
             welds.Add(new Line { Start = q3 + wx, End = q3 + wy });
             welds.Add(new Line { Start = q4 - wx, End = q4 + wy });
+
+            List<ICurve> innerBox = new List<ICurve>();
+            innerBox.Add(new Line { Start = q1 - wy, End = q4 + wy });
+            innerBox.Add(new Line { Start = q4 - wx, End = q3 + wx });
+            innerBox.Add(new Line { Start = q3 + wy, End = q2 - wy });
+            innerBox.Add(new Line { Start = q2 + wx, End = q1 - wx });
 
             box.AddRange(innerBox);
             box.AddRange(welds);
