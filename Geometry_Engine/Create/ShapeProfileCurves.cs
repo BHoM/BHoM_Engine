@@ -42,39 +42,27 @@ namespace BH.Engine.Geometry
             Vector xAxis = oM.Geometry.Vector.XAxis;
             Vector yAxis = oM.Geometry.Vector.YAxis;
             Point origin = oM.Geometry.Point.Origin;
+            double weldLength = weldSize * 2 / Math.Sqrt(2);
 
             perimeter.Add(new Line { Start = p, End = p = p + yAxis * (bft - r2) });
             if (r2 > 0) perimeter.Add(BH.Engine.Geometry.Create.ArcByCentre(p - xAxis * r2, p, p = p + new Vector { X = -r2, Y = r2, Z = 0 }));
-            perimeter.Add(new Line { Start = p, End = p = p - xAxis * (bfw / 2 - wt / 2 - r1 - r2) });
+            perimeter.Add(new Line { Start = p, End = p = p - xAxis * (bfw / 2 - wt / 2 - r1 - r2 -weldLength) });
             if (r1 > 0) perimeter.Add(BH.Engine.Geometry.Create.ArcByCentre(p + yAxis * r1, p, p = p + new Vector { X = -r1, Y = r1, Z = 0 }));
-            perimeter.Add(new Line { Start = p, End = p = p + yAxis * (wd - 2 * r1) });
+            if (weldSize > 0) perimeter.Add(new Line { Start = p, End = p = p + new Vector { X = -weldLength, Y = weldLength, Z = 0 } });
+            perimeter.Add(new Line { Start = p, End = p = p + yAxis * (wd - 2 * r1 - 2 * weldLength) });
+            if (weldSize > 0) perimeter.Add(new Line { Start = p, End = p = p + new Vector { X = weldLength, Y = weldLength, Z = 0 } });
             if (r1 > 0) perimeter.Add(BH.Engine.Geometry.Create.ArcByCentre(p + xAxis * r1, p, p = p + new Vector { X = r1, Y = r1, Z = 0 }));
-            perimeter.Add(new Line { Start = p, End = p = p + xAxis * (tfw / 2 - wt / 2 - r1 - r2) });
+            perimeter.Add(new Line { Start = p, End = p = p + xAxis * (tfw / 2 - wt / 2 - r1 - r2 - weldLength) });
             if (r2 > 0) perimeter.Add(BH.Engine.Geometry.Create.ArcByCentre(p + yAxis * r2, p, p = p + new Vector { X = r2, Y = r2, Z = 0 }));
             perimeter.Add(new Line { Start = p, End = p = p + yAxis * (tft - r2) });
 
             int count = perimeter.Count;
-            for (int i = 0; i < count;i++)       
+            for (int i = 0; i < count;i++)
             {
                 perimeter.Add(perimeter[i].IMirror(new Plane { Origin = origin, Normal = xAxis }));
             }
             perimeter.Add(new Line { Start = p, End = p - xAxis * (tfw) });
             perimeter.Add(new Line { Start = origin + xAxis * (-bfw / 2), End = origin + xAxis * (bfw / 2) });
-
-            List<ICurve> welds = new List<ICurve>();
-            double weldLength = weldSize * 2 / Math.Sqrt(2);
-            Point q1 = new Point { X = wt/2, Y = wd + bft, Z = 0 };
-            Point q2 = new Point { X = -wt/2, Y = wd + bft, Z = 0 };
-            Point q3 = new Point { X = -wt/2, Y = bft, Z = 0 };
-            Point q4 = new Point { X = wt/2, Y = bft, Z = 0 };
-            Vector wx = new Vector { X = weldLength, Y = 0, Z = 0 };
-            Vector wy = new Vector { X = 0, Y = weldLength, Z = 0 };
-
-            welds.Add(new Line { Start = q1 + wx, End = q1 - wy });
-            welds.Add(new Line { Start = q2 - wx, End = q2 - wy });
-            welds.Add(new Line { Start = q3 - wx, End = q3 + wy });
-            welds.Add(new Line { Start = q4 + wx, End = q4 + wy });
-            perimeter.AddRange(welds);
             
             return perimeter;
         }
