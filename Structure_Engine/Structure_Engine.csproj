@@ -92,6 +92,7 @@
     <Compile Include="Modify\SetMaterial.cs" />
     <Compile Include="Modify\SetStructuralFragment.cs" />
     <Compile Include="Query\CoordinateSystem.cs" />
+    <Compile Include="Query\Description.cs" />
     <Compile Include="Query\EmbodiedCarbon.cs" />
     <Compile Include="Query\MaterialType.cs" />
     <Compile Include="Create\NewElement0D.cs" />
