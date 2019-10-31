@@ -66,7 +66,11 @@ namespace BH.Engine.Serialiser.Objects.MemberMapConventions
                     {
                         discriminator = discriminator.AsBsonArray.Last(); // last item is leaf class discriminator
                     }
-                    actualType = BsonSerializer.LookupActualType(nominalType, discriminator);
+                    if (BsonSerializer.IsTypeDiscriminated(nominalType))
+                        actualType = BsonSerializer.LookupActualType(nominalType, discriminator);
+                    else if (nominalType.ToString() != discriminator.ToString() && Config.AllowUpgradeFromBson && !Config.TypesWithoutUpgrade.Contains(actualType))
+                        actualType = typeof(IDeprecated);
+
                 }
                 bsonReader.ReturnToBookmark(bookmark);
 

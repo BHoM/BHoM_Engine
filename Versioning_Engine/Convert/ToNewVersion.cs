@@ -51,7 +51,7 @@ namespace BH.Engine.Versioning
             // Create a connection with the upgrader
             NamedPipeServerStream pipe = GetPipe(currentVersion.Major + "." + currentVersion.Minor);
             if (pipe == null)
-                return document;
+                return null;
 
             // Send the document
             SendDocument(document, pipe);
@@ -118,12 +118,15 @@ namespace BH.Engine.Versioning
 
         private static void SendDocument(BsonDocument document, PipeStream pipe)
         {
+            BinaryWriter writer = new BinaryWriter(pipe);
+            if (document == null)
+                writer.Write(0);
+
             MemoryStream memory = new MemoryStream();
             BsonBinaryWriter memoryWriter = new BsonBinaryWriter(memory);
             BsonSerializer.Serialize(memoryWriter, typeof(BsonDocument), document);
-            byte[] content = memory.ToArray();
 
-            BinaryWriter writer = new BinaryWriter(pipe);
+            byte[] content = memory.ToArray();
             writer.Write(content.Length);
 
             writer.Write(content);
@@ -136,6 +139,8 @@ namespace BH.Engine.Versioning
         {
             BinaryReader reader = new BinaryReader(pipe);
             int contentSize = reader.ReadInt32();
+            if (contentSize == 0)
+                return null;
 
             byte[] content = new byte[contentSize];
             reader.Read(content, 0, contentSize);
