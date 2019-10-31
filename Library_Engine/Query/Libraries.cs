@@ -27,6 +27,7 @@ using System.IO;
 using System.Linq;
 using BH.oM.Data.Collections;
 using BH.Engine.Data;
+using BH.oM.Data.Library;
 
 namespace BH.Engine.Library
 {
@@ -42,7 +43,7 @@ namespace BH.Engine.Library
             if (!LibraryPaths().TryGetValue(name, out keys))
                 return new List<IBHoMObject>();
 
-            return keys.SelectMany(x => ParseLibrary(x)).ToList();
+            return keys.SelectMany(x => ParseLibrary(x).Data).ToList();
 
         }
 
@@ -64,7 +65,8 @@ namespace BH.Engine.Library
         {
             m_libraryPaths = new Dictionary<string, List<string>>();
             m_libraryStrings = new Dictionary<string, string[]>();
-            m_parsedLibrary = new Dictionary<string, List<IBHoMObject>>();
+            //m_parsedLibrary = new Dictionary<string, List<IBHoMObject>>();
+            m_datasets = new Dictionary<string, Dataset>();
             m_dbTree = new Tree<string>();
             GetPathsAndLoadLibraries();
 
@@ -74,46 +76,117 @@ namespace BH.Engine.Library
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private static List<IBHoMObject> ParseLibrary(string name)
-        {
-            List<IBHoMObject> objects;
-            if (!m_parsedLibrary.TryGetValue(name, out objects))
-            {
-                //string libraryString = LibraryString(name);
 
+        private static Dataset ParseLibrary(string name)
+        {
+            Dataset dataset;
+
+            if (!m_datasets.TryGetValue(name, out dataset))
+            {
                 string[] entries = LibraryString(name);
 
-                if (entries == null)
-                    return new List<IBHoMObject>();
-
-                //string[] entries = libraryString.Split('\n');
-                objects = new List<IBHoMObject>();
-
-                //Parse the library from json to IBHoMObjects
-                foreach (string entry in entries)
+                if (entries == null || entries.Length == 0)
                 {
-                    if (!string.IsNullOrWhiteSpace(entry))
+                    Reflection.Compute.RecordWarning("No dataset with the name " + name + " could be found.");
+                    return new Dataset();
+                }
+                else if (entries.Length == 1)
+                {
+
+                    IBHoMObject obj;
+                    try
                     {
-                        IBHoMObject obj;
-                        try
-                        {
-                            obj = (IBHoMObject)BH.Engine.Serialiser.Convert.FromJson(entry);
-                        }
-                        catch
-                        {
-                            obj = null;
-                        }
-                        if (obj != null)
-                            objects.Add(obj);
+                        obj = BH.Engine.Serialiser.Convert.FromJson(entries[0]) as IBHoMObject;
+                    }
+                    catch
+                    {
+                        Reflection.Compute.RecordError("Failed to deserialise the dataset with name " + name);
+                        return new Dataset();
+                    }
+
+                    dataset = obj as Dataset;
+
+                    if (dataset == null)
+                    {
+                        dataset = new Dataset() { Data = new List<IBHoMObject> { obj } };
+                        Reflection.Compute.RecordWarning("No Source information is available for the dataset named " + name);
                     }
                 }
+                else
+                {
 
-                m_parsedLibrary[name] = objects;
+                    List<IBHoMObject> objects = new List<IBHoMObject>();
+
+                    //Parse the library from json to IBHoMObjects
+                    foreach (string entry in entries)
+                    {
+                        if (!string.IsNullOrWhiteSpace(entry))
+                        {
+                            IBHoMObject obj;
+                            try
+                            {
+                                obj = (IBHoMObject)BH.Engine.Serialiser.Convert.FromJson(entry);
+                            }
+                            catch
+                            {
+                                Reflection.Compute.RecordWarning("Failed to deserialise at least one item in the dataset named " + name);
+                                obj = null;
+                            }
+                            if (obj != null)
+                                objects.Add(obj);
+                        }
+                    }
+
+                    Reflection.Compute.RecordWarning("No Source information is available for the dataset named " + name);
+                    dataset = new Dataset { Data = objects };
+                }
+
+                m_datasets[name] = dataset;
             }
 
-            return objects;
+            return dataset;
         }
-        
+
+        //private static List<IBHoMObject> ParseLibrary(string name)
+        //{
+        //    List<IBHoMObject> objects;
+        //    if (!m_parsedLibrary.TryGetValue(name, out objects))
+        //    {
+        //        //string libraryString = LibraryString(name);
+
+        //        string[] entries = LibraryString(name);
+
+        //        if (entries == null)
+        //            return new List<IBHoMObject>();
+
+        //        //string[] entries = libraryString.Split('\n');
+        //        objects = new List<IBHoMObject>();
+
+        //        //Parse the library from json to IBHoMObjects
+        //        foreach (string entry in entries)
+        //        {
+        //            if (!string.IsNullOrWhiteSpace(entry))
+        //            {
+        //                IBHoMObject obj;
+        //                try
+        //                {
+        //                    obj = (IBHoMObject)BH.Engine.Serialiser.Convert.FromJson(entry);
+        //                }
+        //                catch
+        //                {
+        //                    obj = null;
+        //                }
+        //                if (obj != null)
+        //                    objects.Add(obj);
+        //            }
+        //        }
+
+        //        m_parsedLibrary[name] = objects;
+        //    }
+
+        //    return objects;
+        //}
+
         /***************************************************/
         private static Dictionary<string, string[]> LibraryStrings()
         {
@@ -207,8 +280,10 @@ namespace BH.Engine.Library
 
         private static readonly string m_sourceFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), @"BHoM\DataSets");
 
+        private static Dictionary<string, Dataset> m_datasets = new Dictionary<string, Dataset>();
+
         private static Dictionary<string, string[]> m_libraryStrings = new Dictionary<string, string[]>();
-        private static Dictionary<string, List<IBHoMObject>> m_parsedLibrary = new Dictionary<string, List<IBHoMObject>>();
+        //private static Dictionary<string, List<IBHoMObject>> m_parsedLibrary = new Dictionary<string, List<IBHoMObject>>();
         private static Dictionary<string, List<string>> m_libraryPaths = new Dictionary<string, List<string>>();
         private static Tree<string> m_dbTree = new Tree<string>();
 
