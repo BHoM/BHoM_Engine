@@ -288,11 +288,19 @@ namespace BH.Engine.Serialiser.BsonSerializers
             }
             catch
             {
-                // If failed, just return the custom object 
+                // If failed, try the deprecated object serialiser
                 context.Reader.ReturnToBookmark(bookmark);
-                Engine.Reflection.Compute.RecordWarning("Cannot find a definition of type " + actualType.FullName + " that matches the object to deserialise -> data returned as custom objects.");
-                IBsonSerializer customSerializer = BsonSerializer.LookupSerializer(typeof(CustomObject));
-                return customSerializer.Deserialize(context, args) as CustomObject;
+                IBsonSerializer customSerializer;
+                if (actualType != typeof(IDeprecated))
+                    customSerializer = BsonSerializer.LookupSerializer(typeof(IDeprecated));
+                else
+                {
+                    // Last resort: just return the custom object 
+                    Engine.Reflection.Compute.RecordWarning("Cannot find a definition of type " + actualType.FullName + " that matches the object to deserialise -> data returned as custom objects.");
+                    customSerializer = BsonSerializer.LookupSerializer(typeof(CustomObject));
+                }
+                    
+                return customSerializer.Deserialize(context, args);
             }
         }
 
