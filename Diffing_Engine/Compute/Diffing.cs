@@ -34,7 +34,6 @@ using System.Reflection;
 using BH.Engine.Serialiser;
 using System.ComponentModel;
 using BH.oM.Reflection.Attributes;
-using BH.oM.Testing;
 using BH.oM.Reflection;
 
 namespace BH.Engine.Diffing
@@ -99,7 +98,7 @@ namespace BH.Engine.Diffing
                         IsEqualConfig config = new IsEqualConfig();
                         config.PropertiesToIgnore = exceptions;
 
-                        var differentProps = BH.Engine.Testing.Query.DifferentProperties(obj, oldObjState, config);
+                        var differentProps = BH.Engine.Diffing.Query.DifferentProperties(obj, oldObjState, config);
 
                         objModifiedProps.Add(hashFragm.Hash, differentProps);
                     }
