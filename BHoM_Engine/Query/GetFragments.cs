@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
@@ -25,40 +25,37 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
 using BH.oM.Base;
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
 
 namespace BH.Engine.Base
 {
-    public static partial class Modify
+    public static partial class Query
     {
-        [Description("Returns a deep clone of a given BHoM Object with the Fragment of the input fragmentType removed.")]
-        [Input("iBHoMObject", "Any object implementing the IBHoMObject interface that can have fragment properties appended to it")]
-        [Input("fragment", "Any fragment object implementing the IBHoMFragment interface to append to the object")]
-        [Input("replace", "If set to true and the object already contains a fragment of the type being added, the fragment will be replaced by this instance")]
-        [Output("iBHoMObject", "The BHoM object with the added fragment")]
-        public static IBHoMObject RemoveFragment(this IBHoMObject iBHoMObject, Type fragmentType)
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
+
+        [Description("Returns the list of a BHoM Fragments that intherits from the given parentType.")]
+        [Input("iBHoMObject", "Any IBHoMObject object.")]
+        [Input("parentType", "All fragments of a type that inherits from this parent type will be returned. If not specified, all fragments are returned.")]
+        [Output("fragmentList", "A deep copy of the fragments is returned for immutability.")]
+        public static List<IBHoMFragment> GetFragments(this IBHoMObject iBHoMObject, Type parentType = null)
         {
-            if (iBHoMObject == null) return null;
-            IBHoMObject o = iBHoMObject.DeepClone();
+            List<IBHoMFragment> fragments = new List<IBHoMFragment>();
 
-            if (!typeof(IBHoMFragment).IsAssignableFrom(fragmentType))
+            if (parentType == null)
+                return iBHoMObject.Fragments.Select(fr => fr.DeepClone()).ToList();
+
+            if (!typeof(IBHoMFragment).IsAssignableFrom(parentType))
             {
-                Reflection.Compute.RecordError("Provided input in fragmentType is not a Fragment type (does not implement IBHoMFragment interface).");
+                Reflection.Compute.RecordError("Provided input in parentType is not a Fragment type (does not implement IBHoMFragment interface).");
                 return null;
             }
 
-            if (!iBHoMObject.Fragments.Contains(fragmentType))
-            {
-                Reflection.Compute.RecordWarning("iBHoMObject does not contain any fragment of the provided fragmentType.");
-                return null;
-            }
-
-            o.Fragments.Remove(fragmentType);
-           
-            return o;
+            return iBHoMObject.Fragments.Where(fr => parentType.IsAssignableFrom(fr.GetType())).Select(fr => fr.DeepClone()).ToList();
         }
+
     }
 }
