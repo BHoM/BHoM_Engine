@@ -55,8 +55,8 @@ namespace BH.Engine.Environment
 
         [Description("Returns the tilt of an Environment Object")]
         [Input("environmentObject", "Any object implementing the IEnvironmentObject interface that can have its tilt queried")]
-        [Input("distanceTolerance", "distanceTolerance, default is set to BH.oM.Geometry.Tolerance.Distanc")]
-        [Input("angleTolerance", "The tolerance of the angle that defines a straight line. Default is set to the value defined by BH.oM.Geometry.Tolerance.Angle")]
+        [Input("distanceTolerance", "Distance tolerance for calculating discontinuity points, default is set to BH.oM.Geometry.Tolerance.Distance")]
+        [Input("angleTolerance", "Angle tolerance for calculating discontinuity points, default is set to the value defined by BH.oM.Geometry.Tolerance.Angle")]
         [Output("tilt", "The tilt of the Environment Object")]
         public static double Tilt(this IEnvironmentObject environmentObject, double distanceTolarance = BH.oM.Geometry.Tolerance.Distance, double angleTolarance = BH.oM.Geometry.Tolerance.Angle)
         {
@@ -65,8 +65,8 @@ namespace BH.Engine.Environment
 
         [Description("Returns the tilt of a BHoM Geometry Polyline")]
         [Input("polyline", "The BHoM Geometry Polyline having its tilt queried")]
-        [Input("distanceTolerance", "distanceTolerance, default is set to BH.oM.Geometry.Tolerance.Distanc")]
-        [Input("angleTolerance", "The tolerance of the angle that defines a straight line. Default is set to the value defined by BH.oM.Geometry.Tolerance.Angle")]
+        [Input("distanceTolerance", "Distance tolerance for calculating discontinuity points, default is set to BH.oM.Geometry.Tolerance.Distance")]
+        [Input("angleTolerance", "Angle tolerance for calculating discontinuity points, default is set to the value defined by BH.oM.Geometry.Tolerance.Angle")]
         [Output("tilt", "The tilt of the polyline")]
         public static double Tilt(this Polyline polyline, double distanceTolarance = BH.oM.Geometry.Tolerance.Distance, double angleTolarance = BH.oM.Geometry.Tolerance.Angle)
         {
