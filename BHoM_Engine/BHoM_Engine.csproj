@@ -64,6 +64,7 @@
     <Compile Include="Create\BHoMGroup.cs" />
     <Compile Include="Create\RandomObject.cs" />
     <Compile Include="Create\CustomObject.cs" />
+    <Compile Include="Modify\RemoveFragment.cs" />
     <Compile Include="Modify\AddFragment.cs" />
     <Compile Include="Objects\EqualityComparers\BHoMGuidComparer.cs" />
     <Compile Include="Objects\EqualityComparers\BHoMObjectNameComparer.cs" />
