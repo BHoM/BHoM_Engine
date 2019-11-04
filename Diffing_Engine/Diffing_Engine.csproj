@@ -90,6 +90,7 @@
     <Compile Include="Compute\Diffing.cs" />
     <Compile Include="Compute\DiffingHash.cs" />
     <Compile Include="Convert\ToDiffingByteArray.cs" />
+    <Compile Include="Create\DiffConfig.cs" />
     <Compile Include="Create\Stream.cs" />
     <Compile Include="Modify\SetHashFragment.cs" />
     <Compile Include="Modify\UpdateRevision.cs" />

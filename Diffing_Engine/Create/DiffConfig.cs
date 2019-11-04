@@ -36,27 +36,27 @@ using System.ComponentModel;
 
 namespace BH.Engine.Diffing
 {
-    public static partial class Modify
+    public static partial class Create
     {
         ///***************************************************/
         ///**** Public Methods                            ****/
         ///***************************************************/
 
-        [Description("Computes and sets the HashFragment for a given IBHoMObject.")]
-        public static void SetHashFragment(IEnumerable<IBHoMObject> objs, DiffConfig diffConfig = null)
+        [Description("Defines a set of configurations of the diffing.")]
+        [Input("enablePropertyDiffing", "Enables or disables the property-by-property diffing. If false, only collection-level diffing will be performed.")]
+        public static DiffConfig DiffConfig(bool enablePropertyDiffing = true)
         {
-            // Set configurations if diffConfig is null
-            diffConfig = diffConfig == null ? new DiffConfig() : diffConfig;
-
-            // Calculate and set the object hashes
-            foreach (var obj in objs)
-            {
-                string hash = BH.Engine.Diffing.Compute.DiffingHash(obj, diffConfig);
-
-                HashFragment existingFragm = obj.GetHashFragment();
-
-                obj.Fragments.AddOrReplace(new HashFragment(hash, existingFragm?.Hash));
-            }
+            return new DiffConfig() { EnablePropertyDiffing = enablePropertyDiffing };
         }
+
+        [Description("Defines a set of configurations of the diffing.")]
+        [Input("propertiesToIgnore", "List of strings specifying the names of the properties that should be ignored in the diffing.\nBy default: 'BHoM_Guid', 'CustomData', 'Fragments`")]
+        [Input("enablePropertyDiffing", "If false, only collection-level diffing will be performed, otherwise property-by-property. Defaults to true.")]
+        public static DiffConfig DiffConfig(List<string> propertiesToIgnore, bool enablePropertyDiffing = true)
+        {
+            return new DiffConfig() { PropertiesToIgnore = propertiesToIgnore, EnablePropertyDiffing = enablePropertyDiffing };
+        }
+
+
     }
 }

@@ -39,37 +39,15 @@ namespace BH.Engine.Diffing
     public static partial class Compute
     {
         ///***************************************************/
-        ///**** Public Fields                             ****/
-        ///***************************************************/
-
-        public static List<string> defaultHashExceptions = new List<string>() { "BHoM_Guid", "CustomData", "Fragments" };
-
-        ///***************************************************/
         ///**** Public Methods                            ****/
         ///***************************************************/
 
         [Description("Computes the hash code required for the Diffing.")]
         [Input("objects", "Objects the hash code should be calculated for")]
-        [Input("exceptions", "List of strings specifying the names of the properties that should be ignored in the calculation, e.g. BHoM_Guid")]
-        [Input("useDefaultExceptions", "If true, adds a list of default exceptions: 'BHoM_Guid', 'CustomData', 'Fragments'. Defaults to true.")]
-        public static string DiffingHash(this IBHoMObject obj, List<string> exceptions = null, bool useDefaultExceptions = true)
+        [Input("diffConfig", "Sets configs for the hash calculation, such as properties to be ignored.")]
+        public static string DiffingHash(this IBHoMObject obj, DiffConfig diffConfig)
         {
-            if (exceptions == null || exceptions.Count == 0 && useDefaultExceptions)
-                SetDefaultExceptions(ref exceptions);
-
-            return Compute.SHA256Hash(obj, exceptions);
-        }
-
-        ///***************************************************/
-        ///**** Private Methods                           ****/
-        ///***************************************************/
-
-        internal static void SetDefaultExceptions(ref List<string> exceptions)
-        {
-            if (exceptions == null)
-                exceptions = defaultHashExceptions;
-            else
-                exceptions.AddRange(defaultHashExceptions);
+            return Compute.SHA256Hash(obj, diffConfig.PropertiesToIgnore);
         }
     }
 }
