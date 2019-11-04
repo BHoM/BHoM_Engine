@@ -39,11 +39,6 @@ namespace BH.Engine.Structure
             return "Box " + profile.Height + "x" + profile.Width + "x" + profile.Thickness;
         }
 
-        public static string Description(this KiteProfile profile)
-        {
-            return "Kite " + profile.Angle1 + "x" + profile.Width1 + "x" + profile.Thickness;
-        }
-
         public static string Description(this AngleProfile profile)
         {
             return "Angle " + profile.Height + "x" + profile.Width + "x" + profile.WebThickness + "x" + profile.FlangeThickness + "x" + profile.RootRadius + "x" + profile.ToeRadius;
@@ -51,7 +46,52 @@ namespace BH.Engine.Structure
 
         public static string Description(this ChannelProfile profile)
         {
-            return "Channel " + profile.Height + "x" + profile.WebThickness "x" + profile.Thickness;
+            return "Channel " + profile.Height + "x" + profile.FlangeWidth + "x" + profile.WebThickness + "x" + profile.FlangeThickness + "x" + profile.RootRadius + "x" + profile.ToeRadius;
+        }
+
+        public static string Description(this CircleProfile profile)
+        {
+            return "Circle " + profile.Diameter;
+        }
+
+        public static string Description(this FabricatedBoxProfile profile)
+        {
+            return "FabBox " + profile.Height + "x" + profile.Width + "x" + profile.WebThickness + "x" + profile.TopFlangeThickness + "x" + profile.BotFlangeThickness;
+        }
+
+        public static string Description(this GeneralisedFabricatedBoxProfile profile)
+        {
+            return "GenFabBox " + profile.Height + "x" + profile.Width + "x" + profile.WebThickness + "x" + profile.TopFlangeThickness + "x" + profile.BotFlangeThickness + "x" + profile.TopLeftCorbelWidth + "x" + profile.TopRightCorbelWidth;
+        }
+
+        public static string Description(this KiteProfile profile)
+        {
+            return "Kite " + profile.Angle1 + "x" + profile.Width1 + "x" + profile.Thickness;
+        }
+
+        public static string Description(this FabricatedISectionProfile profile)
+        {
+            return "FabI " + profile.Height + "x" + profile.TopFlangeWidth + "x" + profile.BotFlangeWidth + "x" + profile.WebThickness + "x" + profile.TopFlangeThickness + "x" + profile.BotFlangeThickness + "x" + profile.WeldSize;
+        }
+
+        public static string Description(this FreeFormProfile profile)
+        {
+            return "FreeForm";
+        }
+
+        public static string Description(this RectangleProfile profile)
+        {
+            return "Rectangle " + profile.Height + "x" + profile.Width + "x" + profile.CornerRadius;
+        }
+
+        public static string Description(this TSectionProfile profile)
+        {
+            return "T " + profile.Height + "x" + profile.Width + "x" + profile.WebThickness + "x" + profile.FlangeThickness + "x" + profile.RootRadius + "x" + profile.ToeRadius;
+        }
+
+        public static string Description(this GeneralisedTSectionProfile profile)
+        {
+            return "GenT " + profile.Height + "x" + profile.WebThickness + "x" + profile.LeftOutstandWidth + "x" + profile.LeftOutstandThickness + "x" + profile.RightOutstandWidth + "x" + profile.RightOutstandThickness;
         }
 
         public static string IDescription(this IProfile profile)
