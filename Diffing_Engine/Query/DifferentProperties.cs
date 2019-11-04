@@ -39,27 +39,27 @@ namespace BH.Engine.Diffing
     public static partial class Query
     {
         [Description("Checks two BHoMObjects property by property and returns the differences")]
-        [Input("config", "Config to be used for the comparison. Can set numeric tolerance, wheter to check the guid, if custom data should be ignored and if any additional properties should be ignored")]
+        [Input("diffConfig", "Config to be used for the comparison. Can set numeric tolerance, wheter to check the guid, if custom data should be ignored and if any additional properties should be ignored")]
         [Output("Dictionary whose key is the name of the property, and value is a tuple with its value in obj1 and obj2.")]
-        public static Dictionary<string, Tuple<object, object>> DifferentProperties(this IBHoMObject obj1, IBHoMObject obj2, IsEqualConfig config = null)
+        public static Dictionary<string, Tuple<object, object>> DifferentProperties(this IBHoMObject obj1, IBHoMObject obj2, DiffConfig diffConfig = null)
         {
             var dict = new Dictionary<string, Tuple<object, object>>();
 
             //Use default config if null
-            config = config ?? new IsEqualConfig();
+            diffConfig = diffConfig ?? new DiffConfig();
 
             CompareLogic comparer = new CompareLogic();
 
             comparer.Config.MaxDifferences = 1000;
-            comparer.Config.MembersToIgnore = config.PropertiesToIgnore;
-            comparer.Config.DoublePrecision = config.NumericTolerance;
+            comparer.Config.MembersToIgnore = diffConfig.PropertiesToIgnore;
+            comparer.Config.DoublePrecision = diffConfig.NumericTolerance;
 
-            if (config.IgnoreCustomData)
+            if (diffConfig.IgnoreCustomData)
             {
                 comparer.Config.MembersToIgnore.Add("CustomData");
             }
 
-            if (config.IgnoreGuid)
+            if (diffConfig.IgnoreGuid)
                 comparer.Config.TypesToIgnore.Add(typeof(Guid));
 
             ComparisonResult result = comparer.Compare(obj1, obj2);

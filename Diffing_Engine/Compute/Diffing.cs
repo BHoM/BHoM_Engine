@@ -95,7 +95,7 @@ namespace BH.Engine.Diffing
 
                         if (oldObjState == null) continue;
 
-                        IsEqualConfig config = new IsEqualConfig();
+                        DiffConfig config = new DiffConfig();
                         config.PropertiesToIgnore = exceptions;
 
                         var differentProps = BH.Engine.Diffing.Query.DifferentProperties(obj, oldObjState, config);
