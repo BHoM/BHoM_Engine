@@ -37,14 +37,22 @@ namespace BH.Engine.Library
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static List<IBHoMObject> Library(string name)
+
+        public static List<Dataset> Datasets(string name)
         {
             List<string> keys;
             if (!LibraryPaths().TryGetValue(name, out keys))
-                return new List<IBHoMObject>();
+                return new List<Dataset>();
 
-            return keys.SelectMany(x => ParseLibrary(x).Data).ToList();
+            return keys.Select(x => ParseLibrary(x)).ToList();
 
+        }
+
+        /***************************************************/
+
+        public static List<IBHoMObject> Library(string name)
+        {
+            return Datasets(name).SelectMany(x => x.Data).ToList();
         }
 
         /***************************************************/
@@ -65,8 +73,8 @@ namespace BH.Engine.Library
         {
             m_libraryPaths = new Dictionary<string, List<string>>();
             m_libraryStrings = new Dictionary<string, string[]>();
-            //m_parsedLibrary = new Dictionary<string, List<IBHoMObject>>();
             m_datasets = new Dictionary<string, Dataset>();
+            m_deserialisationEvents = new Dictionary<string, List<Tuple<oM.Reflection.Debugging.EventType, string>>>();
             m_dbTree = new Tree<string>();
             GetPathsAndLoadLibraries();
 
@@ -83,11 +91,14 @@ namespace BH.Engine.Library
 
             if (!m_datasets.TryGetValue(name, out dataset))
             {
+
+                m_deserialisationEvents[name] = new List<Tuple<oM.Reflection.Debugging.EventType, string>>();
+
                 string[] entries = LibraryString(name);
 
                 if (entries == null || entries.Length == 0)
                 {
-                    Reflection.Compute.RecordWarning("No dataset with the name " + name + " could be found.");
+                    AddDeserialisationEvent(name, oM.Reflection.Debugging.EventType.Warning, "No dataset with the name " + name + " could be found.");
                     return new Dataset();
                 }
                 else if (entries.Length == 1)
@@ -100,7 +111,7 @@ namespace BH.Engine.Library
                     }
                     catch
                     {
-                        Reflection.Compute.RecordError("Failed to deserialise the dataset with name " + name);
+                        AddDeserialisationEvent(name, oM.Reflection.Debugging.EventType.Error, "Failed to deserialise the dataset with name " + name);
                         return new Dataset();
                     }
 
@@ -109,7 +120,7 @@ namespace BH.Engine.Library
                     if (dataset == null)
                     {
                         dataset = new Dataset() { Data = new List<IBHoMObject> { obj } };
-                        Reflection.Compute.RecordWarning("No Source information is available for the dataset named " + name);
+                        AddDeserialisationEvent(name, oM.Reflection.Debugging.EventType.Warning, "No Source information is available for the dataset named " + name);
                     }
                 }
                 else
@@ -129,7 +140,7 @@ namespace BH.Engine.Library
                             }
                             catch
                             {
-                                Reflection.Compute.RecordWarning("Failed to deserialise at least one item in the dataset named " + name);
+                                AddDeserialisationEvent(name, oM.Reflection.Debugging.EventType.Warning, "Failed to deserialise at least one item in the dataset named " + name);
                                 obj = null;
                             }
                             if (obj != null)
@@ -137,57 +148,30 @@ namespace BH.Engine.Library
                         }
                     }
 
-                    Reflection.Compute.RecordWarning("No Source information is available for the dataset named " + name);
+                    AddDeserialisationEvent(name, oM.Reflection.Debugging.EventType.Warning, "No Source information is available for the dataset named " + name);
                     dataset = new Dataset { Data = objects };
                 }
 
                 m_datasets[name] = dataset;
             }
 
+            foreach (var events in m_deserialisationEvents[name])
+            {
+                Reflection.Compute.RecordEvent(events.Item2, events.Item1);
+            }
+
             return dataset;
         }
 
-        //private static List<IBHoMObject> ParseLibrary(string name)
-        //{
-        //    List<IBHoMObject> objects;
-        //    if (!m_parsedLibrary.TryGetValue(name, out objects))
-        //    {
-        //        //string libraryString = LibraryString(name);
+        /***************************************************/
 
-        //        string[] entries = LibraryString(name);
-
-        //        if (entries == null)
-        //            return new List<IBHoMObject>();
-
-        //        //string[] entries = libraryString.Split('\n');
-        //        objects = new List<IBHoMObject>();
-
-        //        //Parse the library from json to IBHoMObjects
-        //        foreach (string entry in entries)
-        //        {
-        //            if (!string.IsNullOrWhiteSpace(entry))
-        //            {
-        //                IBHoMObject obj;
-        //                try
-        //                {
-        //                    obj = (IBHoMObject)BH.Engine.Serialiser.Convert.FromJson(entry);
-        //                }
-        //                catch
-        //                {
-        //                    obj = null;
-        //                }
-        //                if (obj != null)
-        //                    objects.Add(obj);
-        //            }
-        //        }
-
-        //        m_parsedLibrary[name] = objects;
-        //    }
-
-        //    return objects;
-        //}
+        private static void AddDeserialisationEvent(string name, BH.oM.Reflection.Debugging.EventType type, string message)
+        {
+            m_deserialisationEvents[name].Add(new Tuple<oM.Reflection.Debugging.EventType, string>(type, message));
+        }
 
         /***************************************************/
+
         private static Dictionary<string, string[]> LibraryStrings()
         {
             //Check that libraries has been loaded
@@ -281,9 +265,9 @@ namespace BH.Engine.Library
         private static readonly string m_sourceFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), @"BHoM\DataSets");
 
         private static Dictionary<string, Dataset> m_datasets = new Dictionary<string, Dataset>();
+        private static Dictionary<string, List<Tuple<BH.oM.Reflection.Debugging.EventType, string>>> m_deserialisationEvents = new Dictionary<string, List<Tuple<oM.Reflection.Debugging.EventType, string>>>();
 
         private static Dictionary<string, string[]> m_libraryStrings = new Dictionary<string, string[]>();
-        //private static Dictionary<string, List<IBHoMObject>> m_parsedLibrary = new Dictionary<string, List<IBHoMObject>>();
         private static Dictionary<string, List<string>> m_libraryPaths = new Dictionary<string, List<string>>();
         private static Tree<string> m_dbTree = new Tree<string>();
 
