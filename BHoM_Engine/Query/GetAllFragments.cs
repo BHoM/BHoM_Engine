@@ -37,11 +37,11 @@ namespace BH.Engine.Base
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns the list of a BHoM Fragments that intherits from the given parentType.")]
+        [Description("Returns all Fragments of an object that inherit from the given parentType, or all of them if no parentType is provided.")]
         [Input("iBHoMObject", "Any IBHoMObject object.")]
         [Input("parentType", "All fragments of a type that inherits from this parent type will be returned. If not specified, all fragments are returned.")]
         [Output("fragmentList", "A deep copy of the fragments is returned for immutability.")]
-        public static List<IBHoMFragment> GetFragments(this IBHoMObject iBHoMObject, Type parentType = null)
+        public static List<IBHoMFragment> GetAllFragments(this IBHoMObject iBHoMObject, Type parentType = null)
         {
             List<IBHoMFragment> fragments = new List<IBHoMFragment>();
 
