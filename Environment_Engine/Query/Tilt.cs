@@ -41,22 +41,38 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns the tilt of an Environment Object")]
-        [Input("environmentObject", "Any object implementing the IEnvironmentObject interface that can have its tilt queried")]
-        [Output("tilt", "The tilt of the Environment Object")]
+        [Deprecated("3.0", "Deprecated to expose tolerance as optional parameter", null, "Tilt(this IEnvironmentObject environmentObject, double distanceTolarance = BH.oM.Geometry.Tolerance.Distance, double AngleTolarance = BH.oM.Geometry.Tolerance.Angle)")]
         public static double Tilt(this IEnvironmentObject environmentObject)
         {
-            return environmentObject.Polyline().Tilt();
+            return environmentObject.Tilt(BH.oM.Geometry.Tolerance.Distance, BH.oM.Geometry.Tolerance.Angle);
+        }
+
+        [Deprecated("3.0", "Deprecated to expose tolerance as optional parameter", null, "Tilt(this polyline polyline, double distanceTolarance = BH.oM.Geometry.Tolerance.Distance, double angleTolarance = BH.oM.Geometry.Tolerance.Angle")]
+        public static double Tilt(this Polyline polyline)
+        {
+            return polyline.Tilt(BH.oM.Geometry.Tolerance.Distance, BH.oM.Geometry.Tolerance.Angle);
+        }
+
+        [Description("Returns the tilt of an Environment Object")]
+        [Input("environmentObject", "Any object implementing the IEnvironmentObject interface that can have its tilt queried")]
+        [Input("distanceTolerance", "distanceTolerance, default is set to BH.oM.Geometry.Tolerance.Distanc")]
+        [Input("angleTolerance", "The tolerance of the angle that defines a straight line. Default is set to the value defined by BH.oM.Geometry.Tolerance.Angle")]
+        [Output("tilt", "The tilt of the Environment Object")]
+        public static double Tilt(this IEnvironmentObject environmentObject, double distanceTolarance = BH.oM.Geometry.Tolerance.Distance, double angleTolarance = BH.oM.Geometry.Tolerance.Angle)
+        {
+            return environmentObject.Polyline().Tilt(distanceTolarance, angleTolarance);
         }
 
         [Description("Returns the tilt of a BHoM Geometry Polyline")]
         [Input("polyline", "The BHoM Geometry Polyline having its tilt queried")]
+        [Input("distanceTolerance", "distanceTolerance, default is set to BH.oM.Geometry.Tolerance.Distanc")]
+        [Input("angleTolerance", "The tolerance of the angle that defines a straight line. Default is set to the value defined by BH.oM.Geometry.Tolerance.Angle")]
         [Output("tilt", "The tilt of the polyline")]
-        public static double Tilt(this Polyline polyline)
+        public static double Tilt(this Polyline polyline, double distanceTolarance = BH.oM.Geometry.Tolerance.Distance, double angleTolarance = BH.oM.Geometry.Tolerance.Angle)
         {
             double tilt;
 
-            List<Point> pts = polyline.DiscontinuityPoints(Tolerance.Distance, 0.01);
+            List<Point> pts = polyline.DiscontinuityPoints(distanceTolarance, angleTolarance);
 
             if (pts.Count < 3 || !BH.Engine.Geometry.Query.IsClosed(polyline) || !BH.Engine.Geometry.Query.IsPlanar(polyline, 0.001)) return -1; //Error protection on pts having less than 3 elements to create a plane or pLine not being closed
 
