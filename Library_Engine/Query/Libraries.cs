@@ -22,12 +22,14 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using BH.oM.Base;
 using System.IO;
 using System.Linq;
 using BH.oM.Data.Collections;
 using BH.Engine.Data;
 using BH.oM.Data.Library;
+using BH.oM.Reflection.Attributes;
 
 namespace BH.Engine.Library
 {
@@ -37,11 +39,13 @@ namespace BH.Engine.Library
         /**** Public Methods                            ****/
         /***************************************************/
 
-
-        public static List<Dataset> Datasets(string name)
+        [Description("Gets the full Dataset(s) from the library, containing source information and Data")]
+        [Input("libraryName", "The name of the Dataset(s) to extract")]
+        [Output("dataset", "The datasets extracted from the library")]
+        public static List<Dataset> Datasets(string libraryName)
         {
             List<string> keys;
-            if (!LibraryPaths().TryGetValue(name, out keys))
+            if (!LibraryPaths().TryGetValue(libraryName, out keys))
                 return new List<Dataset>();
 
             return keys.Select(x => ParseLibrary(x)).ToList();
@@ -50,9 +54,13 @@ namespace BH.Engine.Library
 
         /***************************************************/
 
-        public static List<IBHoMObject> Library(string name)
+
+        [Description("Gets the content of the Datasets from the library")]
+        [Input("libraryName", "The name of the Dataset(s) to extract")]
+        [Output("libraryData", "The data from the Dataset(s)")]
+        public static List<IBHoMObject> Library(string libraryName)
         {
-            return Datasets(name).SelectMany(x => x.Data).ToList();
+            return Datasets(libraryName).SelectMany(x => x.Data).ToList();
         }
 
         /***************************************************/
