@@ -70,6 +70,7 @@
     <Compile Include="Objects\EqualityComparers\BHoMObjectNameComparer.cs" />
     <Compile Include="Objects\EqualityComparers\BHoMObjectNameOrToStringComparer.cs" />
     <Compile Include="Objects\IterFunction.cs" />
+    <Compile Include="Query\GetFragments.cs" />
     <Compile Include="Query\FindFragment.cs" />
     <Compile Include="Query\DeepClone.cs" />
     <Compile Include="Query\FilterByType.cs" />
