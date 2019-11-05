@@ -55,7 +55,7 @@ namespace BH.Engine.MEP
         [Input("waterEconomiser", "Default 0")]
         [Input("parts", "A collection of MEP Parts which are housed by the air handling unit, default null")]
         [Output("airHandlingUnit", "An MEP Air Handling Unit")]
-        public static AirHandlingUnit AirHandlingUnit(string type = "", double totalSupplyAirFlow = 0, double totalSupplyAirExternalStaticPressure = 0, double totalReturnAirFlow = 0, double totalReturnAirExternalStaticPressure = 0, double totalDesignOutdoorAirFlow = 0, double demandControlledVentilationMinimumOutdoorAirFlow = 0, double totalOutdoorAirFlowExternalStaticPressure = 0, double totalReliefAirFlow = 0, double totalReliefExternalStaticPressure = 0, bool supplyAirEconomiser = false, bool waterEconomiser = false, List<IPart> parts = null)
+        public static AirHandlingUnit AirHandlingUnit(string type = "", double totalSupplyAirFlow = 0.0, double totalSupplyAirExternalStaticPressure = 0.0, double totalReturnAirFlow = 0.0, double totalReturnAirExternalStaticPressure = 0.0, double totalDesignOutdoorAirFlow = 0.0, double demandControlledVentilationMinimumOutdoorAirFlow = 0.0, double totalOutdoorAirFlowExternalStaticPressure = 0.0, double totalReliefAirFlow = 0.0, double totalReliefExternalStaticPressure = 0.0, bool supplyAirEconomiser = false, bool waterEconomiser = false, List<IPart> parts = null)
         {
             parts = parts ?? new List<IPart>();
 

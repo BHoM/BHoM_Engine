@@ -46,7 +46,7 @@ namespace BH.Engine.MEP
         [Input("replacementPressureDrop", "Default 0")]
         [Input("area", "Default 0")]
         [Output("filter", "An MEP Filter part")]
-        public static Filter Filter(string type = "", int mervRating = 0, double initialPressureDrop = 0, double replacementPressureDrop = 0, double area = 0)
+        public static Filter Filter(string type = "", int mervRating = 0, double initialPressureDrop = 0.0, double replacementPressureDrop = 0.0, double area = 0)
         {
             return new Filter
             {

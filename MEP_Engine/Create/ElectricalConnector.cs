@@ -50,7 +50,7 @@ namespace BH.Engine.MEP
         [Input("emergencyPower", "Default false")]
         [Input("standBy", "Default false")]
         [Output("electricalConnector", "An MEP Electrical Connector part")]
-        public static ElectricalConnector ElectricalConnector(double motorHorsePower = 0, double brakeHorsePower = 0, double fullLoadAmps = 0, double maximumOvercurrentProtection = 0, double phase = 0, double frequency = 0, double voltage = 0, bool emergencyPower = false, bool standBy = false)
+        public static ElectricalConnector ElectricalConnector(double motorHorsePower = 0.0, double brakeHorsePower = 0.0, double fullLoadAmps = 0.0, double maximumOvercurrentProtection = 0.0, double phase = 0.0, double frequency = 0.0, double voltage = 0.0, bool emergencyPower = false, bool standBy = false)
         {
             return new ElectricalConnector
             {

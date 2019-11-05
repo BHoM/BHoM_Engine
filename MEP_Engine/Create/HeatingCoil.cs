@@ -48,7 +48,7 @@ namespace BH.Engine.MEP
         [Input("pressureDrop", "Default 0")]
         [Input("numberOfRows", "Default 0")]
         [Output("heatingCoil", "An MEP Heating Coil part")]
-        public static HeatingCoil HeatingCoil(double sensibleCapacity = 0, double enteringDryBulbAirTemperature = 0, double leavingDryBulbAirTemperature = 0, double enteringWaterTemperature = 0, double leavingWaterTemperature = 0, double pressureDrop = 0, int numberOfRows = 0)
+        public static HeatingCoil HeatingCoil(double sensibleCapacity = 0.0, double enteringDryBulbAirTemperature = 0.0, double leavingDryBulbAirTemperature = 0.0, double enteringWaterTemperature = 0.0, double leavingWaterTemperature = 0.0, double pressureDrop = 0.0, int numberOfRows = 0)
         {
             return new HeatingCoil
             {
