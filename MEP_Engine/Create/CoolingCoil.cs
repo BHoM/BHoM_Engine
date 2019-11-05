@@ -51,7 +51,7 @@ namespace BH.Engine.MEP
         [Input("pressureDrop", "Default 0")]
         [Input("numberOfRows", "Default 0")]
         [Output("coolingCoil", "An MEP Cooling Coil part")]
-        public static CoolingCoil CoolingCoil(double totalCapacity = 0, double sensibleCapacity = 0, double enteringDryBulbAirTemperature = 0, double enteringWetBulbAirTemperature = 0, double leavingDryBulbAirTemperature = 0, double leavingWetBulbAirTemperature = 0, double enteringWaterTemperature = 0, double leavingWaterTemperature = 0, double pressureDrop = 0, int numberOfRows = 0)
+        public static CoolingCoil CoolingCoil(double totalCapacity = 0.0, double sensibleCapacity = 0.0, double enteringDryBulbAirTemperature = 0.0, double enteringWetBulbAirTemperature = 0.0, double leavingDryBulbAirTemperature = 0.0, double leavingWetBulbAirTemperature = 0.0, double enteringWaterTemperature = 0.0, double leavingWaterTemperature = 0.0, double pressureDrop = 0.0, int numberOfRows = 0)
         {
             return new CoolingCoil
             {

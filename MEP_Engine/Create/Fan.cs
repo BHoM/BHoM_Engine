@@ -49,7 +49,7 @@ namespace BH.Engine.MEP
         [Input("horsePower", "Default 0")]
         [Input("efficiency", "Default 0")]
         [Output("fan", "An MEP Fan part")]
-        public static Fan Fan(double flowRate = 0, double externalStaticPressure = 0, double speed = 0, string driveType = "", string speedControl = "", double brakeHorsePower = 0, double horsePower = 0, double efficiency = 0)
+        public static Fan Fan(double flowRate = 0.0, double externalStaticPressure = 0.0, double speed = 0.0, string driveType = "", string speedControl = "", double brakeHorsePower = 0.0, double horsePower = 0.0, double efficiency = 0)
         {
             return new Fan
             {
