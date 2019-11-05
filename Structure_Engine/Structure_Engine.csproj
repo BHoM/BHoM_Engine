@@ -84,6 +84,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Compute\IntegrateSection.cs" />
+    <Compile Include="Compute\PlasticModulus.cs" />
+    <Compile Include="Compute\ShearArea.cs" />
     <Compile Include="Compute\Integrate.cs" />
     <Compile Include="Convert\ToFramingElement.cs" />
     <Compile Include="Create\ConstantFramingProperty.cs" />
