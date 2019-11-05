@@ -58,9 +58,9 @@ namespace BH.Engine.Environment
         [Input("distanceTolerance", "Distance tolerance for calculating discontinuity points, default is set to BH.oM.Geometry.Tolerance.Distance")]
         [Input("angleTolerance", "Angle tolerance for calculating discontinuity points, default is set to the value defined by BH.oM.Geometry.Tolerance.Angle")]
         [Output("tilt", "The tilt of the Environment Object")]
-        public static double Tilt(this IEnvironmentObject environmentObject, double distanceTolarance = BH.oM.Geometry.Tolerance.Distance, double angleTolarance = BH.oM.Geometry.Tolerance.Angle)
+        public static double Tilt(this IEnvironmentObject environmentObject, double distanceTolerance = BH.oM.Geometry.Tolerance.Distance, double angleTolerance = BH.oM.Geometry.Tolerance.Angle)
         {
-            return environmentObject.Polyline().Tilt(distanceTolarance, angleTolarance);
+            return environmentObject.Polyline().Tilt(distanceTolerance, angleTolerance);
         }
 
         [Description("Returns the tilt of a BHoM Geometry Polyline")]
@@ -68,20 +68,20 @@ namespace BH.Engine.Environment
         [Input("distanceTolerance", "Distance tolerance for calculating discontinuity points, default is set to BH.oM.Geometry.Tolerance.Distance")]
         [Input("angleTolerance", "Angle tolerance for calculating discontinuity points, default is set to the value defined by BH.oM.Geometry.Tolerance.Angle")]
         [Output("tilt", "The tilt of the polyline")]
-        public static double Tilt(this Polyline polyline, double distanceTolarance = BH.oM.Geometry.Tolerance.Distance, double angleTolarance = BH.oM.Geometry.Tolerance.Angle)
+        public static double Tilt(this Polyline polyline, double distanceTolerance = BH.oM.Geometry.Tolerance.Distance, double angleTolerance = BH.oM.Geometry.Tolerance.Angle)
         {
             double tilt;
 
-            List<Point> pts = polyline.DiscontinuityPoints(distanceTolarance, angleTolarance);
+            List<Point> pts = polyline.DiscontinuityPoints(distanceTolerance, angleTolerance);
 
-            if (pts.Count < 3 || !BH.Engine.Geometry.Query.IsClosed(polyline) || !BH.Engine.Geometry.Query.IsPlanar(polyline, 0.001)) return -1; //Error protection on pts having less than 3 elements to create a plane or pLine not being closed
+            if (pts.Count < 3 || !BH.Engine.Geometry.Query.IsClosed(polyline, distanceTolerance) || !BH.Engine.Geometry.Query.IsPlanar(polyline, distanceTolerance)) return -1; //Error protection on pts having less than 3 elements to create a plane or pLine not being closed
 
 
-            polyline = Geometry.Modify.CleanPolyline(polyline, 0.01);
-            Plane plane = BH.Engine.Geometry.Compute.FitPlane(polyline);
+            polyline = Geometry.Modify.CleanPolyline(polyline, angleTolerance);
+            Plane plane = BH.Engine.Geometry.Compute.FitPlane(polyline, distanceTolerance);
 
             //The polyline can be locally concave. Check if the polyline is clockwise.
-            if (!polyline.IsClockwise(plane.Normal))
+            if (!polyline.IsClockwise(plane.Normal, distanceTolerance))
                 plane.Normal = -plane.Normal;
 
             tilt = BH.Engine.Geometry.Query.Angle(plane.Normal, Plane.XY.Normal) * (180 / Math.PI);
