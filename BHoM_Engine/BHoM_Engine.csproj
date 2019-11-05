@@ -64,11 +64,13 @@
     <Compile Include="Create\BHoMGroup.cs" />
     <Compile Include="Create\RandomObject.cs" />
     <Compile Include="Create\CustomObject.cs" />
+    <Compile Include="Modify\RemoveFragment.cs" />
     <Compile Include="Modify\AddFragment.cs" />
     <Compile Include="Objects\EqualityComparers\BHoMGuidComparer.cs" />
     <Compile Include="Objects\EqualityComparers\BHoMObjectNameComparer.cs" />
     <Compile Include="Objects\EqualityComparers\BHoMObjectNameOrToStringComparer.cs" />
     <Compile Include="Objects\IterFunction.cs" />
+    <Compile Include="Query\GetAllFragments.cs" />
     <Compile Include="Query\FindFragment.cs" />
     <Compile Include="Query\DeepClone.cs" />
     <Compile Include="Query\FilterByType.cs" />

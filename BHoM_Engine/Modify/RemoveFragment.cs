@@ -1,4 +1,4 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
@@ -20,43 +20,45 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Base;
-using BH.oM.Data.Collections;
-using BH.oM.Diffing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Security.Cryptography;
-using System.Reflection;
-using BH.Engine.Serialiser;
+
+using BH.oM.Base;
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
 
-namespace BH.Engine.Diffing
+namespace BH.Engine.Base
 {
     public static partial class Modify
     {
-        ///***************************************************/
-        ///**** Public Methods                            ****/
-        ///***************************************************/
-
-        [Description("Computes and sets the HashFragment for a given IBHoMObject.")]
-        public static void SetHashFragment(IEnumerable<IBHoMObject> objs, DiffConfig diffConfig = null)
+        [Description("Returns a deep clone of a given BHoM Object with the Fragment of the input fragmentType removed.")]
+        [Input("iBHoMObject", "Any object implementing the IBHoMObject interface that can have fragment properties appended to it")]
+        [Input("fragment", "Any fragment object implementing the IBHoMFragment interface to append to the object")]
+        [Input("replace", "If set to true and the object already contains a fragment of the type being added, the fragment will be replaced by this instance")]
+        [Output("iBHoMObject", "The BHoM object with the added fragment")]
+        public static IBHoMObject RemoveFragment(this IBHoMObject iBHoMObject, Type fragmentType)
         {
-            // Set configurations if diffConfig is null
-            diffConfig = diffConfig == null ? new DiffConfig() : diffConfig;
+            if (iBHoMObject == null) return null;
+            IBHoMObject o = iBHoMObject.DeepClone();
 
-            // Calculate and set the object hashes
-            foreach (var obj in objs)
+            if (!typeof(IBHoMFragment).IsAssignableFrom(fragmentType))
             {
-                string hash = BH.Engine.Diffing.Compute.DiffingHash(obj, diffConfig);
-
-                HashFragment existingFragm = obj.GetHashFragment();
-
-                obj.Fragments.AddOrReplace(new HashFragment(hash, existingFragm?.Hash));
+                Reflection.Compute.RecordError("Provided input in fragmentType is not a Fragment type (does not implement IBHoMFragment interface).");
+                return null;
             }
+
+            if (!iBHoMObject.Fragments.Contains(fragmentType))
+            {
+                Reflection.Compute.RecordWarning("iBHoMObject does not contain any fragment of the provided fragmentType.");
+                return null;
+            }
+
+            o.Fragments.Remove(fragmentType);
+           
+            return o;
         }
     }
 }

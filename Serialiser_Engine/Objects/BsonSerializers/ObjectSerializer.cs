@@ -20,14 +20,17 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.Engine.Reflection;
 using BH.oM.Base;
 using MongoDB.Bson;
 using MongoDB.Bson.IO;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Bson.Serialization.Serializers;
+using BH.Engine.Versioning;
 using System;
 using System.Reflection;
+using BH.Engine.Serialiser.Objects;
 
 namespace BH.Engine.Serialiser.BsonSerializers
 {
@@ -258,6 +261,22 @@ namespace BH.Engine.Serialiser.BsonSerializers
                 Engine.Reflection.Compute.RecordWarning("The type " + recordedType + " is unknown -> data returned as custom objects.");
                 IBsonSerializer customSerializer = BsonSerializer.LookupSerializer(typeof(CustomObject));
                 return customSerializer.Deserialize(context, args);
+            }
+
+            if (Config.AllowUpgradeFromBson && actualType.IIsDeprecated() && !Config.TypesWithoutUpgrade.Contains(actualType))
+            {
+                bookmark = reader.GetBookmark();
+
+                // This is where we can call the Version_Engine to return the new type string from the old on if exist
+                BsonDocument doc = BsonDocumentSerializer.Instance.Deserialize(context, args);
+                BsonDocument newDoc = Versioning.Convert.ToNewVersion(doc);
+                if (doc.GetValue("_t").AsString != newDoc.GetValue("_t").AsString) // This feels a bit dodgy tbh but it highlights a bigger issue: a new version of the deprecated object will not compile if it has exactly the same type anyway 
+                    return BH.Engine.Serialiser.Convert.FromBson(newDoc);
+                else
+                {
+                    context.Reader.ReturnToBookmark(bookmark);
+                    Config.TypesWithoutUpgrade.Add(actualType);
+                }
             }
 
             // Handle the special case where the type is object

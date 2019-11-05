@@ -1,6 +1,6 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -25,29 +25,37 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Reflection;
+using BH.oM.Base;
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
-using BH.oM.Testing;
-using BH.oM.Planning;
-
-namespace BH.Engine.Testing
+namespace BH.Engine.Base
 {
-    public static partial class Create
+    public static partial class Query
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static TestResult TestResult(MethodBase method, List<bool> results = null, Issue issue = null)
+        [Description("Returns all Fragments of an object that inherit from the given parentType, or all of them if no parentType is provided.")]
+        [Input("iBHoMObject", "Any IBHoMObject object.")]
+        [Input("parentType", "All fragments of a type that inherits from this parent type will be returned. If not specified, all fragments are returned.")]
+        [Output("fragmentList", "A deep copy of the fragments is returned for immutability.")]
+        public static List<IBHoMFragment> GetAllFragments(this IBHoMObject iBHoMObject, Type parentType = null)
         {
-            return new TestResult
+            List<IBHoMFragment> fragments = new List<IBHoMFragment>();
+
+            if (parentType == null)
+                return iBHoMObject.Fragments.Select(fr => fr.DeepClone()).ToList();
+
+            if (!typeof(IBHoMFragment).IsAssignableFrom(parentType))
             {
-                Method = method,
-                Results = results ?? new List<bool>(),
-                Issue = issue
-            };
+                Reflection.Compute.RecordError("Provided input in parentType is not a Fragment type (does not implement IBHoMFragment interface).");
+                return null;
+            }
+
+            return iBHoMObject.Fragments.Where(fr => parentType.IsAssignableFrom(fr.GetType())).Select(fr => fr.DeepClone()).ToList();
         }
 
-        /***************************************************/
     }
 }

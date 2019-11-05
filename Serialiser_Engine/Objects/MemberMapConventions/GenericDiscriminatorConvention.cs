@@ -30,6 +30,7 @@ using MongoDB.Bson;
 using MongoDB.Bson.IO;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Serializers;
+using BH.Engine.Reflection;
 
 namespace BH.Engine.Serialiser.Objects.MemberMapConventions
 {
@@ -48,35 +49,32 @@ namespace BH.Engine.Serialiser.Objects.MemberMapConventions
 
         public Type GetActualType(IBsonReader bsonReader, Type nominalType)
         {
+            Type actualType = nominalType;
+
             // the BsonReader is sitting at the value whose actual type needs to be found
-            var bsonType = bsonReader.GetCurrentBsonType();
+            BsonType bsonType = bsonReader.GetCurrentBsonType();
             if (bsonType == BsonType.Document)
             {
-                // ensure KnownTypes of nominalType are registered (so IsTypeDiscriminated returns correct answer)
-                //BsonSerializer.EnsureKnownTypesAreRegistered(nominalType);
-
-                // we can skip looking for a discriminator if nominalType has no discriminated sub types
-                if (BsonSerializer.IsTypeDiscriminated(nominalType))
+                var bookmark = bsonReader.GetBookmark();
+                bsonReader.ReadStartDocument();
+                    
+                if (bsonReader.FindElement(ElementName))
                 {
-                    var bookmark = bsonReader.GetBookmark();
-                    bsonReader.ReadStartDocument();
-                    var actualType = nominalType;
-                    if (bsonReader.FindElement(ElementName))
+                    var context = BsonDeserializationContext.CreateRoot(bsonReader);
+                    var discriminator = BsonValueSerializer.Instance.Deserialize(context);
+                    if (discriminator.IsBsonArray)
                     {
-                        var context = BsonDeserializationContext.CreateRoot(bsonReader);
-                        var discriminator = BsonValueSerializer.Instance.Deserialize(context);
-                        if (discriminator.IsBsonArray)
-                        {
-                            discriminator = discriminator.AsBsonArray.Last(); // last item is leaf class discriminator
-                        }
-                        actualType = BsonSerializer.LookupActualType(nominalType, discriminator);
+                        discriminator = discriminator.AsBsonArray.Last(); // last item is leaf class discriminator
                     }
-                    bsonReader.ReturnToBookmark(bookmark);
-                    return actualType;
+                    actualType = BsonSerializer.LookupActualType(nominalType, discriminator);
                 }
+                bsonReader.ReturnToBookmark(bookmark);
+
+                if (Config.AllowUpgradeFromBson && actualType.IsDeprecated() && !Config.TypesWithoutUpgrade.Contains(actualType))
+                    actualType = typeof(IDeprecated);
             }
 
-            return nominalType;
+            return actualType;
         }
 
         /***************************************************/
