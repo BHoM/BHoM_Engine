@@ -81,10 +81,6 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
-    <Reference Include="Testing_oM">
-      <HintPath>..\..\BHoM\Build\Testing_oM.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Compute\Diffing.cs" />
