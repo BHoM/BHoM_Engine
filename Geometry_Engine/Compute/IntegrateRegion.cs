@@ -21,11 +21,10 @@
  */
 
 using System;
-using BH.oM.Geometry;
-using BH.oM.Reflection;
 using System.Collections.Generic;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Geometry;
 using System.ComponentModel;
+using BH.oM.Reflection.Attributes;
 
 namespace BH.Engine.Geometry
 {
@@ -39,7 +38,7 @@ namespace BH.Engine.Geometry
         [Input("pLine", "defined counter clockwise")]
         [Input("powX", "")]
         [Output("V", "Calculated value")]
-        public static double IIntegrateRegion(ICurve curve, int powX)
+        public static double IIntegrateRegion(this ICurve curve, int powX)
         {
             // Add tests (?)
 
@@ -53,37 +52,14 @@ namespace BH.Engine.Geometry
         private static double IntegrateRegion(PolyCurve curve, int powX)
         {
             // Add tests (?)
-            // Are the tests here needed? Think Joined curves already are fixed
             if (curve.Curves.Count == 0)
                 return 0;
 
             double result = 0;
 
-            double sqTol = Tolerance.Distance * Tolerance.Distance;
-
-            Point last = curve.Curves[0].IStartPoint();
-
             foreach (ICurve c in curve.Curves)
             {
-
-                if (c.IStartPoint().SquareDistance(last) > sqTol)
-                {
-                    if (c.IEndPoint().SquareDistance(last) > sqTol)
-                    {
-                        Engine.Reflection.Compute.RecordError("Curve not closed");
-                        return 0;
-                    }
-                    else
-                    {
-                        result += IntegrateRegion(c.IFlip() as dynamic, powX);
-                        last = c.IStartPoint();
-                    }
-                }
-                else
-                {
-                    result += IntegrateRegion(c as dynamic, powX);
-                    last = c.IEndPoint();
-                }
+                result += IntegrateRegion(c as dynamic, powX);
             }
 
             return result;
@@ -104,7 +80,7 @@ namespace BH.Engine.Geometry
         {
             // Add tests (?)
 
-            List<Point> pts = new List<Point>(pLine.ControlPoints);
+            List<Point> pts = pLine.ControlPoints;
 
             double result = 0;
 
@@ -125,26 +101,17 @@ namespace BH.Engine.Geometry
 
         private static double IntegrateRegion(Arc arc, int powX)
         {
-            // TODO clean this
-
             // Add tests (?)
-            Point O = arc.CoordinateSystem.Origin; //--
-            double r = arc.Radius;  //--
-            //double add = Vector.XAxis.Angle(arc.CoordinateSystem.X, Plane.XY);
+            Point O = arc.CoordinateSystem.Origin;
+            double r = arc.Radius;
             Point start = arc.StartPoint();
-            //Point mid = arc.ControlPoints()[2];
             Point end = arc.EndPoint();
 
             double a = Vector.XAxis.Angle(start - O, Plane.XY);
 
-            double k = Math.Abs(arc.Angle()); //--    * factor
+            double k = Math.Abs(arc.Angle()); // * factor
             if ((start - O).Angle(end - O, Plane.XY) - k > Tolerance.Angle)
                 k *= -1;
-
-            //double factor = arc.CoordinateSystem.Z.Normalise().Z;
-
-
-            //double a = (arc.StartAngle + add) * factor;
 
             switch (powX)
             {
@@ -158,34 +125,8 @@ namespace BH.Engine.Geometry
                     return (r * ((Math.Sin(4 * (k + a)) + 8 * Math.Sin(2 * (k + a)) + 12 * k - Math.Sin(4 * a) - 8 * Math.Sin(2 * a)) * r * r * r - 32 * (Math.Sin(k + a) * (Math.Sin(k + a) * Math.Sin(k + a) - 3) + (Math.Cos(a) * Math.Cos(a) + 2) * Math.Sin(a)) * O.X * r * r + 24 * (Math.Sin(2 * (k + a)) + 2 * k - Math.Sin(2 * a)) * O.X * O.X * r + 32 * (Math.Sin(k + a) - Math.Sin(a)) * O.X * O.X * O.X)) / 96;
                 /********************/
                 default:
-                    return 0;
+                    return IntegrateRegion(arc.CollapseToPolyline(0.01), powX); //TODO is this good value??
             }
-
-            /**********/
-            /*
-             * 
-             * 
-             * 
-            (r(12 k r(4 O ^ 2 + r ^ 2) Cos[a] + 16 O(2 O ^ 2 + 3 r ^ 2) Sin[k] + r(24 O r Sin[2 a + k] + 6(4 O ^ 2 + r ^ 2) Sin[a + 2 k] + r(2 r Sin[3 a + 2 k] + 8 O Sin[2 a + 3 k] + r Sin[3 a + 4 k])))) / 32 -
-                (r(24 O r Sin[2 a] + 6(4 O ^ 2 + r ^ 2) Sin[a] + r(2 r Sin[3 a] + 8 O Sin[2 a] + r Sin[3 a])))) / 32;
-
-            (r * (12 * k * r * (4 * O.X*O.X + r*r) * Math.Cos(a) + 16 * O.X * (2 * O.X*O.X + 3 * r*r) * Math.Sin(k) + r * (24 * O.X * r * Math.Sin(2 * a + k) + 6 * (4 * O.X*O.X + r*r) * Math.Sin(a + 2 * k) +r * (2 * r * Math.Sin(3 * a + 2 * k) + 8 * O.X * Math.Sin(2 * a + 3 * k) + r * Math.Sin(3 * a + 4 * k))))) / 32 - 
-                (r * (24 * O.X * r * Math.Sin(2 * a) + 6 * (4 * O.X*O.X + r*r) * Math.Sin(a) + r * (2 * r * Math.Sin(3 * a) + 8 * O.X * Math.Sin(2 * a) + r * Math.Sin(3 * a))))) / 32;
-                */
-            /***********************************/
-            // make into a pLine
-            List<Point> pts = new List<Point>();
-            double res = (10 * arc.Angle());
-            if (res < 1)
-                res = 1;
-            res = Math.Floor(res);
-            for (double i = 0; i <= res; i++)
-                pts.Add(arc.PointAtParameter((i / res)));
-
-            Polyline pLine = new Polyline() { ControlPoints = pts };
-
-            // call IntegrateRegion(pLine);
-            return IntegrateRegion(pLine, powX);
         }
 
         /***************************************************/
@@ -196,17 +137,18 @@ namespace BH.Engine.Geometry
 
             double r = circle.Radius;
             Point O = circle.Centre;
+            int flip = (int)(circle.Normal.Z / Math.Abs(circle.Normal.Z));
 
             switch (powX)
             {
                 case 0:
-                    return Math.PI * r * r;
+                    return Math.PI * r * r * flip;
                 /********************/
                 case 1:
-                    return r * r * Math.PI * O.X;
+                    return r * r * Math.PI * O.X * flip;
                 /********************/
                 case 2:
-                    return 0.25 * r * r * Math.PI * (4 * O.X * O.X + r * r);
+                    return 0.25 * r * r * Math.PI * (4 * O.X * O.X + r * r) * flip;
                 /********************/
                 default:
                     return 0;
@@ -225,17 +167,6 @@ namespace BH.Engine.Geometry
             if (Math.Abs(Y) < Tolerance.Distance)
                 return 0;
             /***************/
-            double X = (a.X - b.X);
-            if (Math.Abs(X) < Tolerance.Distance)
-                return -(Math.Pow(a.X, powX + 1) * Y) / (powX + 1);
-            /***************/
-            double N = (powX + 1) * (powX + 2);
-            double bigX = (Math.Pow(b.X, powX + 2) - Math.Pow(a.X, powX + 2));
-
-            return Y * bigX / (N * X);
-            /***************/
-
-            // Still use these for speed??
             switch (powX)
             {
                 case 0:
@@ -247,208 +178,22 @@ namespace BH.Engine.Geometry
                 case 2:
                     return -((a.X + b.X) * (a.X * a.X + b.X * b.X) * Y) / 12;
                 /********************/
-                default:
+                case -1:
+                case -2:
+                    Engine.Reflection.Compute.RecordError("powX = -1 and -2 is not supported");
                     return 0;
+                default:
+                    double X = (a.X - b.X);
+                    if (Math.Abs(X) < Tolerance.Distance)
+                        return -(Math.Pow(a.X, powX + 1) * Y) / (powX + 1);
+                    /***************/
+                    double N = (powX + 1) * (powX + 2);
+                    double bigX = (Math.Pow(b.X, powX + 2) - Math.Pow(a.X, powX + 2));
+
+                    return Y * bigX / (N * X);
             }
         }
 
         /***************************************************/
-
-        public static double ShearAreaPolyline(Polyline pLine)
-        {
-            // the Polyline should have the upper side along the x-axis and the rest of the lines should be defineble as a function of x apart for veritcal segments
-            // The last LineSegment should be the upper one
-            double Sy = 0;
-            double ShearArea = 0;
-            // Sy = 0
-            List<Point> controllPoints = new List<Point>(pLine.ControlPoints);  // Should the formatting happen here or earlier??
-            // foreach (linesegement) except for the upper one, must begin at the line after the upper one (on the left side)
-            for (int i = 0; i < controllPoints.Count - 2; i++)
-            {
-                ShearArea += ShearAreaLine(controllPoints[i], controllPoints[i + 1], Sy);
-                Sy += IntSurfLine(controllPoints[i], controllPoints[i + 1], 1);
-            }
-            // ShearAreaLine()
-            // Calculate Sy for the linesegment (by IntSurfLine()) and add to Sy +=
-
-            return ShearArea;
-        }
-
-        /***************************************************/
-
-        private static double ShearAreaLine(Point a, Point b, double s)
-        {
-            //TODO Should do some checks if these are good Tolerances
-
-            // a.Y & b.Y can't be 0.    (due to some log expresssions, which comes from the expression being divided by the width (can't divide by zero))
-
-            double axbx = a.X - b.X;
-            if (Math.Abs(axbx) < Tolerance.Distance)  // The solution is zero
-                return 0;
-
-            double byay = b.Y - a.Y;
-            double ax3 = Math.Pow(a.X, 3);
-            double ax2 = Math.Pow(a.X, 2);
-            double ay2 = Math.Pow(a.Y, 2);
-
-            if (Math.Abs(byay) < Tolerance.Distance)  // The solution for a "constant" integral, i.e. horizontal line
-            {
-                //$$ \frac{(x-z)(10 y (x-z)^2 (3 x^2 y-2 s)-30 x y (x-z) (x^2 y-2 s)+15 (x^2 y-2 s)^2+3 y^2 (x-z)^4-15 x y^2 (x-z)^3)}{60 y} $$
-                return (axbx) * (
-                        10 * a.Y * Math.Pow(axbx, 2) * (3 * ax2 * a.Y - 2 * s)
-                        - 30 * a.X * a.Y * axbx * (ax2 * a.Y - 2 * s)
-                        + 15 * Math.Pow(ax2 * a.Y - 2 * s, 2)
-                        + 3 * ay2 * Math.Pow(axbx, 4)
-                        - 15 * a.X * ay2 * Math.Pow(axbx, 3)
-                    ) / (60 * a.Y);
-            }
-
-            double ax4 = Math.Pow(a.X, 4);
-            double bx2 = Math.Pow(b.X, 2);
-            double bx3 = Math.Pow(b.X, 3);
-            double bx4 = Math.Pow(b.X, 4);
-
-            double ay3 = Math.Pow(a.Y, 3);
-            double ay4 = Math.Pow(a.Y, 4);
-            double by2 = Math.Pow(b.Y, 2);
-            double by3 = Math.Pow(b.Y, 3);
-            double by4 = Math.Pow(b.Y, 4);
-
-            //...
-            double byay2 = Math.Pow(byay, 2);
-
-            // WIP below here
-
-            double A =
-                    -(20 * Math.Pow(axbx, 2) * (24 * s * byay2 + a.Y * (-39 * by2 * ax2 + 6 * b.Y * a.X * a.Y * (14 * a.X - b.X) + ay2 * (-44 * ax2 + 4 * a.X * b.X + bx2))))
-                    / (byay2);
-            double B =
-                    -(30 * axbx * (a.Y * (18 * by3 * ax3 + 3 * by2 * ax2 * a.Y * (5 * b.X - 23 * a.X) + 6 * b.Y * a.X * ay2 * (13 * ax2 - 3 * a.X * b.X - bx2) + ay3 * (-28 * ax3 + 6 * ax2 * b.X + 3 * a.X * bx2 + bx3)) - 12 * s * byay2 * (3 * b.Y * a.X + a.Y * (b.X - 4 * a.X))))
-                    / (Math.Pow(byay, 3));
-            double C =
-                    (60 * a.Y * axbx * (a.Y * (2 * a.X + b.X) - 3 * b.Y * a.X) * (a.Y * (6 * by2 * ax2 - 3 * b.Y * a.X * a.Y * (3 * a.X + b.X) + ay2 * (4 * ax2 + a.X * b.X + bx2)) - 12 * s * byay2))
-                    / (Math.Pow(byay, 4));
-            double D =
-                    (60 * Math.Log(b.Y / a.Y) * Math.Pow(a.Y * (3 * by2 * ax2 - 3 * b.Y * a.X * a.Y * (a.X + b.X) + ay2 * (ax2 + a.X * b.X + bx2)) - 6 * s * byay2, 2))
-                    / (Math.Pow(byay, 5));
-            double E =
-                    40 * byay * Math.Pow(axbx, 4) - 48 * Math.Pow(axbx, 3) * (3 * b.Y * a.X - 5 * a.X * a.Y + 2 * a.Y * b.X)
-
-                    + (15 * Math.Pow(axbx, 2) * (9 * by2 * ax2 - 6 * b.Y * a.X * a.Y * (8 * a.X - 5 * b.X) + ay2 * (40 * ax2 - 32 * a.X * b.X + bx2)))
-                    / (byay);
-
-            double factor = (axbx / 2160);
-
-            return (A + B + C + D + E) * factor;
-
-            // (You could perhaps simplyfy this further), think it's as good as it's gonna get apart form spliting it up into varibles
-            //return axbx * (40 * Math.Pow(b.Y - 2 * a.Y, 2) * Math.Pow(axbx, 4) * Math.Pow(byay, 6) - 48 * (b.Y - 2 * a.Y) * Math.Pow(axbx, 2) * (3 * a.X * axbx * by2 - 2 * a.Y * (7 * ax2 - 5 * b.X * a.X + bx2) * b.Y + ay2 * (10 * ax2 - 5 * b.X * a.X + bx2)) * Math.Pow(byay, 5) + 15 * (9 * ax2 * Math.Pow(axbx, 2) * by2 - 6 * a.X * a.Y * (17 * ax3 - (29 * b.X + 4) * ax2 + b.X * (13 * b.X + 8) * a.X - bx2 * (b.X + 4)) * by3 + ay2 * (313 * ax4 - 2 * (227 * b.X + 48) * ax3 + 6 * b.X * (31 * b.X + 32) * ax2 - 2 * bx2 * (5 * b.X + 48) * a.X + bx4) * by2 - 2 * ay3 * (164 * ax4 - (197 * b.X + 60) * ax3 + 3 * b.X * (21 * b.X + 40) * ax2 + bx2 * (7 * b.X - 60) * a.X - bx4) * b.Y + ay4 * (112 * ax4 - 16 * (7 * b.X + 3) * ax3 + 3 * b.X * (11 * b.X + 32) * ax2 + 2 * (b.X - 24) * bx2 * a.X + bx4)) * Math.Pow(byay, 4) + 20 * (a.Y * (3 * ax2 * (17 * ax2 - 2 * (11 * b.X + 6) * a.X + b.X * (5 * b.X + 12)) * by4 - 6 * a.X * a.Y * (45 * ax3 - (47 * b.X + 38) * ax2 + b.X * (13 * b.X + 28) * a.X + (b.X - 2) * bx2) * by3 + ay2 * (443 * ax4 - 2 * (205 * b.X + 222) * ax3 + 6 * b.X * (23 * b.X + 40) * ax2 + 2 * bx2 * (5 * b.X - 6) * a.X - bx4) * by2 - 2 * ay3 * (154 * ax4 - (151 * b.X + 174) * ax3 + 15 * b.X * (5 * b.X + 4) * ax2 + (6 - 7 * b.X) * bx2 * a.X + bx4) * b.Y + ay4 * (80 * ax4 - 4 * (23 * b.X + 24) * ax3 + 3 * b.X * (17 * b.X + 4) * ax2 - 2 * (b.X - 6) * bx2 * a.X - bx4)) - 24 * s * (b.Y - 2 * a.Y) * Math.Pow(byay, 3) * Math.Pow(axbx, 2)) * Math.Pow(byay, 3) - 30 * (-12 * s * (3 * a.X * axbx * by2 - a.Y * (13 * ax2 - 8 * b.X * a.X + bx2) * b.Y + ay2 * (8 * ax2 - b.X * a.X - bx2)) * Math.Pow(byay, 3) - a.Y * (-36 * ax3 * axbx * Math.Pow(b.Y, 5) + 3 * ax2 * a.Y * (91 * ax2 - 2 * (31 * b.X + 6) * a.X + 7 * bx2 - 12 * b.X + 12) * by4 - 6 * a.X * ay2 * (111 * ax3 - (61 * b.X + 10) * ax2 + (11 * bx2 - 28 * b.X + 24) * a.X - (b.X - 2) * bx2) * by3 + ay3 * (781 * ax4 + (12 - 382 * b.X) * ax3 + 6 * (13 * bx2 - 40 * b.X + 36) * ax2 - 2 * bx2 * (5 * b.X - 6) * a.X + bx4) * by2 - 2 * ay4 * (224 * ax4 + (30 - 83 * b.X) * ax3 - 3 * (bx2 + 20 * b.X - 24) * ax2 + bx2 * (7 * b.X - 6) * a.X - bx4) * b.Y + Math.Pow(a.Y, 5) * (100 * ax4 - 8 * (2 * b.X - 3) * ax3 - 3 * (5 * bx2 + 4 * b.X - 12) * ax2 + 2 * (b.X - 6) * bx2 * a.X + bx4))) * Math.Pow(byay, 2) - 60 * a.Y * (3 * a.X * (a.X + b.X - 2) * by2 + a.Y * (ax2 + (12 - 8 * b.X) * a.X + bx2) * b.Y + ay2 * (-2 * ax2 + (b.X - 6) * a.X + bx2)) * (a.Y * (12 * ax2 * by3 + 3 * a.X * a.Y * (-11 * a.X + b.X - 2) * by2 + ay2 * (37 * ax2 + (12 - 8 * b.X) * a.X + bx2) * b.Y + ay3 * (-14 * ax2 + (b.X - 6) * a.X + bx2)) - 12 * s * Math.Pow(byay, 3)) * (byay) + (60 * Math.Pow(6 * s * Math.Pow(byay, 3) + a.Y * (-6 * ax2 * by3 + 3 * a.X * a.Y * (5 * axbx + 2) * by2 - ay2 * (19 * ax2 - 8 * b.X * a.X + 12 * a.X + bx2) * b.Y + ay3 * (8 * ax2 - b.X * a.X + 6 * a.X - bx2)), 2)) * Math.Log(Math.Abs(b.Y/a.Y))) / (60 * Math.Pow(byay, 7));
-            // double check which kind of log to use (99% it is the natural one, and adding the abs might be unnessecary)
-        }
-
-        /***************************************************/
-
-        public static double PlasticModulusX(Polyline pLine, double area)
-        {
-            // the Polyline should have the upper side along the x-axis and the rest of the lines should be defineble as a function of x apart for veritcal segments
-            // The last LineSegment should be the upper one
-            // use WetBlanketInterpertation()
-
-            double partialArea = 0;
-            double halfArea = area * 0.5;
-
-            int index = -1;
-            double neutralAxis = double.NaN;
-
-            for (int i = 0; i < pLine.ControlPoints.Count - 2; i++)
-            {
-                double currentLineArea = IntSurfLine(pLine.ControlPoints[i],
-                                                     pLine.ControlPoints[i + 1],
-                                                     0);
-                double currentCapArea = IntSurfLine(pLine.ControlPoints[i + 1],
-                                                    new Point() { X = pLine.ControlPoints[i + 1].X },
-                                                    0);
-
-                if (partialArea + currentLineArea + currentCapArea > halfArea)
-                {
-                    index = i + 1;
-
-                    double x = pLine.ControlPoints[i].X;
-                    double z = pLine.ControlPoints[i + 1].X;
-
-                    double zx = z - x;
-                    if (Math.Abs(zx) < Tolerance.Distance)
-                    {
-                        neutralAxis = x;
-                        break;
-                    }
-
-                    double y = pLine.ControlPoints[i].Y;
-                    double u = pLine.ControlPoints[i + 1].Y;
-
-                    double uy = u - y;
-                    if (Math.Abs(uy) < Tolerance.Distance)
-                    {
-                        neutralAxis = ((halfArea - partialArea) / -y);
-                        break;
-                    }
-
-                    double a = -(uy) / (2 * (zx));
-                    double b = ((uy) * x - y * (zx)) / (zx);
-                    double c = -Math.Pow(x, 2) * (uy) / (2 * (zx)) - (halfArea - partialArea);
-
-                    // quadratic formula
-                    double sqrt = Math.Sqrt(Math.Pow(b, 2) - 4 * a * c);
-                    double x1 = (-b + sqrt) / (2 * a);
-                    double x2 = (-b - sqrt) / (2 * a);
-
-                    bool between1 = (x1 >= x && x1 < z);
-                    bool between2 = (x2 >= x && x2 < z);
-
-                    if (between1 && between2)
-                    {
-                        Engine.Reflection.Compute.RecordWarning("two solutions: x1 = " + x1 + " x2 = " + x2);
-                        return double.NaN;
-                    }
-                    else if (between1)
-                    {
-                        neutralAxis = x1;
-                        break;
-                    }
-                    else if (between2)
-                    {
-                        neutralAxis = x2;
-                        break;
-                    }
-                    else
-                    {
-                        Engine.Reflection.Compute.RecordWarning("both solutions invalid, x1 = " + x1 + " x2 = " + x2);
-                        return double.NaN;
-                    }
-                }
-                else
-                    partialArea += currentLineArea;
-            }
-
-            // Create the half regions to find their pivot point
-
-            Polyline lower = new Polyline() { ControlPoints = pLine.ControlPoints.GetRange(0, index) };
-            // add capping points
-            lower.ControlPoints.Add(PointAtX(pLine.ControlPoints[index - 1], pLine.ControlPoints[index], neutralAxis));
-            lower.ControlPoints.Add(new Point() { X = neutralAxis });
-
-            Polyline upper = new Polyline() { ControlPoints = pLine.ControlPoints.GetRange(index, pLine.ControlPoints.Count - index) };
-            // add capping points
-            upper.ControlPoints.Insert(0, PointAtX(pLine.ControlPoints[index - 1], pLine.ControlPoints[index], neutralAxis));
-            upper.ControlPoints.Insert(0, new Point() { X = neutralAxis });
-
-            double lowerCenter = IntegrateRegion(lower, 1) / halfArea;
-            double upperCenter = IntegrateRegion(upper, 1) / halfArea;
-
-            return halfArea * Math.Abs(upperCenter - neutralAxis) + halfArea * Math.Abs(lowerCenter - neutralAxis);
-        }
-
-        /***************************************************/
-
     }
 }
