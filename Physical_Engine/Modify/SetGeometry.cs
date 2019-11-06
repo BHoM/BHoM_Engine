@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -21,20 +21,24 @@
  */
 
 using BH.oM.Geometry;
+using BH.oM.Physical.Elements;
 
-namespace BH.Engine.Common
+namespace BH.Engine.Physical
 {
-    public static partial class Create
+    public static partial class Modify
     {
-        /******************************************/
-        /****            IElement2D            ****/
-        /******************************************/
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
 
-        public static IElement1D INewElement1D(this IElement2D element2D, ICurve curve)
+        public static IFramingElement SetGeometry(this IFramingElement framingElement, ICurve curve)
         {
-            return Reflection.Compute.RunExtensionMethod(element2D, "NewElement1D", new object[] { curve }) as IElement1D;
+            IFramingElement clone = framingElement.GetShallowClone(true) as IFramingElement;
+            clone.Location = curve;
+            return clone;
         }
 
-        /******************************************/
+        /***************************************************/
+
     }
 }
