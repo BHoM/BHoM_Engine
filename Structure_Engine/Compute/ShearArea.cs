@@ -53,7 +53,7 @@ namespace BH.Engine.Structure
             for (int i = 0; i < controllPoints.Count - 2; i++)
             {
                 ShearArea += ShearAreaLine(controllPoints[i], controllPoints[i + 1], Sy);
-                Sy += BH.Engine.Geometry.Compute.IIntegrateRegion(new Line() { Start = controllPoints[i], End = controllPoints[i + 1] }, 1);
+                Sy += Geometry.Compute.IntSurfLine(controllPoints[i], controllPoints[i + 1] , 1);
                 //Sy += BH.Engine.Geometry.Compute.IntSurfLine(controllPoints[i], controllPoints[i + 1], 1);
             }
             // ShearAreaLine()
@@ -67,19 +67,22 @@ namespace BH.Engine.Structure
         private static double ShearAreaLine(Point a, Point b, double s)
         {
             //TODO Should do some checks if these are good Tolerances
-
+            double tol = Tolerance.Distance;
 
             // a.Y or b.Y can't be 0.    (due to some log expresssions, which comes from the expression being divided by the width (can't divide by zero))
 
             double axbx = a.X - b.X;
-            if (Math.Abs(axbx) < Tolerance.MicroDistance)  // The solution is zero
+            if (Math.Abs(axbx) < tol)  // The solution is zero
                 return 0;
 
             double byay = b.Y - a.Y;
             double ax2 = Math.Pow(a.X, 2);
             double ay2 = Math.Pow(a.Y, 2);
 
-            if (Math.Abs(byay) < Tolerance.MicroDistance)  // The solution for a "constant" integral, i.e. horizontal line
+            double horizTol = -Math.Min(b.Y, a.Y) * 0.003;   // the bigger function becomes erratic under thease valuse (tested value)
+            horizTol = horizTol < tol ? tol : horizTol;
+
+            if (Math.Abs(byay) < horizTol)  // The solution for a "constant" integral, i.e. horizontal line //0.001
             {
                 //$$ \frac{(x-z)(10 y (x-z)^2 (3 x^2 y-2 s)-30 x y (x-z) (x^2 y-2 s)+15 (x^2 y-2 s)^2+3 y^2 (x-z)^4-15 x y^2 (x-z)^3)}{60 y} $$
                 return (axbx) * (
@@ -91,15 +94,15 @@ namespace BH.Engine.Structure
                     ) / (60 * a.Y);
             }
 
-            if (a.Y > -Tolerance.MicroDistance)  //Everithing should happen below the X-axis
+            if (a.Y > -tol)  //Everithing should happen below the X-axis
             {
-                a.Y = -Tolerance.MicroDistance;
+                a.Y = -tol;
                 ay2 = Math.Pow(a.Y, 2);
                 byay = b.Y - a.Y;
             }
-            if (b.Y > -Tolerance.MicroDistance)  // and these should never be zero
+            if (b.Y > -tol)  // and these should never be zero
             {
-                b.Y = -Tolerance.MicroDistance;
+                b.Y = -tol;
                 byay = b.Y - a.Y;
             }
             // if this change made (Math.Abs(byay) < Tolerance.MicroDistance) = true it is problem
