@@ -79,7 +79,7 @@ namespace BH.Engine.Geometry
         private static Polyline Divide(this Arc arc, double shortestLength)
         {
             Polyline result = new Polyline();
-            double res = Math.Floor(arc.Length() / shortestLength);
+            double res = Math.Floor((shortestLength * 10 + 0.15 * arc.Length()) / shortestLength);
             res = res < 1 ? 1 : res;
             for (double i = 0; i <= res; i++)
                 result.ControlPoints.Add(arc.PointAtParameter((i / res)));
@@ -92,7 +92,7 @@ namespace BH.Engine.Geometry
         private static Polyline Divide(this Circle circle, double shortestLength)
         {
             Polyline result = new Polyline();
-            double res = Math.Floor(circle.Length() / shortestLength);
+            double res = Math.Floor((shortestLength * 10 + 0.15 * circle.Length()) / shortestLength);
             res = res < 4 ? 4 : res;
             for (double i = 0; i <= res; i++)
                 result.ControlPoints.Add(circle.PointAtParameter((i / res)));
