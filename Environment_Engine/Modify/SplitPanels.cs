@@ -331,5 +331,23 @@ namespace BH.Engine.Environment
 
             return rtn;
         }
+
+        [Description("Split an Environment Panel by assigning new geometry with the original core data. Returns one panel per geometry provided")]
+        [Input("panel", "An Environment Panel to split")]
+        [Input("polylines", "Geometry polylines to split the panel by - one panel per polyline will be returned")]
+        [Output("panels", "A collection of Environment Panels split into the geometry parts provided")]
+        public static List<Panel> SplitPanelByGeometry(this Panel panel, List<Polyline> polylines)
+        {
+            List<Panel> panels = new List<Panel>();
+
+            foreach (Polyline p in polylines)
+            {
+                Panel pan = panel.GetShallowClone(true) as Panel;
+                pan.ExternalEdges = p.ToEdges();
+                panels.Add(pan);
+            }
+
+            return panels;
+        }
     }
 }
