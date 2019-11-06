@@ -157,7 +157,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        private static double IntSurfLine(Point a, Point b, int powX)
+        public static double IntSurfLine(Point a, Point b, int powX)
         {
             //TODO Should do some checks if these are good Tolerances
             //TODO powX could be a double, but that might slow thing down somewhat

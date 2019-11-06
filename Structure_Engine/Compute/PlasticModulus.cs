@@ -83,8 +83,8 @@ namespace BH.Engine.Structure
                 Point first = pLine.ControlPoints[i];
                 Point second = pLine.ControlPoints[i + 1];
 
-                double currentLineArea = Engine.Geometry.Compute.IIntegrateRegion(new Line() { Start = first, End = second }, 0);
-                double currentCapArea = Engine.Geometry.Compute.IIntegrateRegion(new Line() { Start = second, End = new Point() { X = second.X } }, 0);
+                double currentLineArea = Engine.Geometry.Compute.IntSurfLine(first, second, 0);
+                double currentCapArea = Engine.Geometry.Compute.IntSurfLine(second, new Point() { X = second.X }, 0);
 
                 if (partialArea + currentLineArea + currentCapArea < halfArea)
                 {

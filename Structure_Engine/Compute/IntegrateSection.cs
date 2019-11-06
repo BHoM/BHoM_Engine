@@ -43,7 +43,7 @@ namespace BH.Engine.Structure
         [Input("curves", "Edge curves that make up the section")]
         [Input("tolerance", "")]
         [Output("V", "Dictionary containing the calculated values")]
-        public static Dictionary<string, object> IntegrateSection(List<ICurve> curves, double tolerance = Tolerance.Distance)
+        public static Dictionary<string, object> IntegrateSection(List<ICurve> curves, double tolerance = 0.01)
         {
             Dictionary<string, object> results = new Dictionary<string, object>();
 
@@ -121,7 +121,7 @@ namespace BH.Engine.Structure
                 // manual arc & circle ---> polyline ?      //would like to have it depend on fraction between arcs length and total width/area
 
                 // ---
-                pLines.Add(curvesZ[i].CollapseToPolyline(tolerance * 10000, 5000));    //TODO better value, Better method??
+                pLines.Add(curvesZ[i].CollapseToPolyline(tolerance));    //TODO better value, Better method??
             }
             Polyline pLineZ = Engine.Geometry.Compute.WetBlanketInterpretation(pLines);
 
