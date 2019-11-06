@@ -286,21 +286,36 @@ namespace BH.Engine.Serialiser.BsonSerializers
                 IBsonSerializer bsonSerializer = BsonSerializer.LookupSerializer(actualType);
                 return bsonSerializer.Deserialize(context, args);
             }
-            catch
+            catch (Exception e)
             {
-                // If failed, try the deprecated object serialiser
                 context.Reader.ReturnToBookmark(bookmark);
-                IBsonSerializer customSerializer;
-                if (actualType != typeof(IDeprecated))
-                    customSerializer = BsonSerializer.LookupSerializer(typeof(IDeprecated));
+
+                if (e is FormatException && e.InnerException != null && e.InnerException is FormatException)
+                {
+                    // A child of the object is causing problems. Try to recover from custom object
+                    IBsonSerializer customSerializer = BsonSerializer.LookupSerializer(typeof(CustomObject));
+                    object customObject = customSerializer.Deserialize(context, args);
+                    object result = Convert.FromBson(customObject.ToBson());
+
+                    if (result is CustomObject)
+                        Engine.Reflection.Compute.RecordWarning("The type " + actualType.FullName + " is unknown -> data returned as custom objects.");
+
+                    return result;
+
+                }
+                else if (actualType != typeof(IDeprecated))
+                {
+                    // Try the deprecated object serialiser
+                    IBsonSerializer deprecatedSerializer = BsonSerializer.LookupSerializer(typeof(IDeprecated));
+                    return deprecatedSerializer.Deserialize(context, args);
+                }
                 else
                 {
                     // Last resort: just return the custom object 
-                    Engine.Reflection.Compute.RecordWarning("Cannot find a definition of type " + actualType.FullName + " that matches the object to deserialise -> data returned as custom objects.");
-                    customSerializer = BsonSerializer.LookupSerializer(typeof(CustomObject));
+                    Engine.Reflection.Compute.RecordWarning("The type " + actualType.FullName + " is unknown -> data returned as custom objects.");
+                    IBsonSerializer customSerializer = BsonSerializer.LookupSerializer(typeof(CustomObject));
+                    return customSerializer.Deserialize(context, args);
                 }
-                    
-                return customSerializer.Deserialize(context, args);
             }
         }
 
