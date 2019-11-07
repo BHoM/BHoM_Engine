@@ -193,8 +193,8 @@ namespace BH.Engine.Structure
             results["Welz"] = (double)results["Iz"] / Math.Max((double)results["Vy"], (double)results["Vpy"]);
             results["Wely"] = (double)results["Iy"] / Math.Max((double)results["Vz"], (double)results["Vpz"]);
 
-            results["Asy"] = Math.Pow((double)results["Iz"], 2) / pLineZ.ShearAreaPolyline();
-            results["Asz"] = Math.Pow((double)results["Iy"], 2) / pLineY.ShearAreaPolyline();
+            results["Asy"] = pLineZ.ShearAreaPolyline((double)results["Iz"]);
+            results["Asz"] = pLineY.ShearAreaPolyline((double)results["Iy"]);
 
             // For testing
             results["pLineY"] = pLineY;

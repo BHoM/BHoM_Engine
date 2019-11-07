@@ -39,7 +39,7 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static double ShearAreaPolyline(this Polyline pLine)
+        public static double ShearAreaPolyline(this Polyline pLine, double momentOfInertia)
         {
             // the Polyline should have the upper side along the x-axis and the rest of the lines should be defineble as a function of x apart for veritcal segments
             // The last LineSegment should be the upper one
@@ -57,7 +57,7 @@ namespace BH.Engine.Structure
                 Sy += Geometry.Compute.IntSurfLine(controllPoints[i], controllPoints[i + 1] , 1);
             }
 
-            return ShearArea;
+            return Math.Pow(momentOfInertia, 2) / ShearArea;
         }
 
         /***************************************************/
