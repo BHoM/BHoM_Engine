@@ -35,10 +35,11 @@ namespace BH.Engine.Data
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Orders a list of objects by a property of the object - e.g. input 'Name' to sort objects by their names. Note that not all object properties have sortable values")]
-        [Input("objects", "List of objects to be sorted. All objects in the list should be of similar type")]
-        [Input("propertyName", "The name of the property to sort the list of objects by. Note that the property must be able to be sorted - e.g. numbers/text")]
-        public static List<T> OrderBy<T>(this List<T> objects, string propertyName)
+        [Description("Filters a list of objects to output only those with a property value matching that input")]
+        [Input("objects", "List of objects to be filtered. All objects in the list should be of similar type")]
+        [Input("propertyName", "The name of the property to filter the objects by")]
+        [Input("value", "The value of the selected property to filter the objects by")]
+        public static List<T> FilterBy<T>(this List<T> objects, string propertyName, object value)
         {
             if (objects == null || objects.Count == 0) return null;
             int groupedObjects = objects.GroupBy(x => x.GetType()).Count();
@@ -48,24 +49,15 @@ namespace BH.Engine.Data
                 BHRE.Compute.RecordError("All objects in the list to be sorted should be of similiar type.");
                 return null;
             }
-            try
+            if (!propertyName.Contains("."))
             {
-                if (!propertyName.Contains("."))
-                {
-                    System.Reflection.PropertyInfo prop = objects[0].GetType().GetProperty(propertyName);
-                    if (prop != null)
-                        return objects.OrderBy(x => prop.GetValue(x)).ToList();
-                }
-                BHRE.Compute.RecordNote("CustomData or nested property is used as the sorting property (using 'Object.Property.Property...') which is slower than a base property.");
-                return objects.OrderBy(x => BHRE.Query.PropertyValue(x, propertyName)).ToList();
+                System.Reflection.PropertyInfo prop = objects[0].GetType().GetProperty(propertyName);
+                if (prop != null)
+                    return objects.Where(x => prop.GetValue(x).Equals(value)).ToList();                
             }
-            catch
-            {
-                BHRE.Compute.RecordWarning("The sorting property does not have a sort function.");
-                return null;
-            }
+            BHRE.Compute.RecordNote("CustomData or nested property is used as the sorting property (using 'Object.Property.Property...') which is slower than a base property.");
+            return objects.Where(x => BHRE.Query.PropertyValue(x, propertyName) == value).ToList();
         }
-
         /***************************************************/
     }
 }
