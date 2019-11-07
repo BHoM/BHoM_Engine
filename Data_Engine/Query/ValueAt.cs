@@ -37,9 +37,11 @@ namespace BH.Engine.Data
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("")]
-        [Input("", "")]
-        [Output("", "")]
+        [Description("Gets all tables rows with an exact match to the values provided. Values returned as CustomObjects")]
+        [Input("table", "The table to extract values from")]
+        [Input("axes", "The axis of the table to match values for")]
+        [Input("values", "The value of the axis to match with")]
+        [Output("Data", "The data matching the provided axes and values as CustomObjects.")]
         public static List<CustomObject> ValuesAt(this Table table, List<string> axes, List<IComparable> values)
         {
             string expression = "";
@@ -57,6 +59,10 @@ namespace BH.Engine.Data
 
         /***************************************************/
 
+        [Description("Gets all tables rows matching the expression string. Values returned as CustomObjects")]
+        [Input("table", "The table to extract values from")]
+        [Input("expression", "Expression string for extracting the values from the table.")]
+        [Output("Data", "The data matching the provided axes and values as CustomObjects.")]
         public static List<CustomObject> ValuesAt(this Table table, string expression)
         {
             return AsCustomObjects(table.Data.Select(expression), table.Data.Columns);
@@ -64,6 +70,11 @@ namespace BH.Engine.Data
 
         /***************************************************/
 
+        [Description("Gets all tables rows matching the expression string sorted by a specified axis. Values returned as CustomObjects")]
+        [Input("table", "The table to extract values from")]
+        [Input("expression", "Expression string for extracting the values from the table.")]
+        [Input("sortOrder", "The axis the values should be sorted by.")]
+        [Output("Data", "The data matching the provided axes and values as CustomObjects.")]
         public static List<CustomObject> ValuesAt(this Table table, string expression, string sortOrder)
         {
             return AsCustomObjects(table.Data.Select(expression, sortOrder), table.Data.Columns);
@@ -71,6 +82,11 @@ namespace BH.Engine.Data
 
         /***************************************************/
 
+        [Description("Gets the first table row matching the expression string sorted by a specified axis. Values returned as CustomObjects")]
+        [Input("table", "The table to extract values from")]
+        [Input("expression", "Expression string for extracting the values from the table.")]
+        [Input("sortOrder", "The axis the values should be sorted by.")]
+        [Output("Data", "The data matching the provided axes and values as CustomObjects.")]
         public static CustomObject FirstValueAt(this Table table, string expression, string sortOrder)
         {
             return AsCustomObject(table.Data.Select(expression, sortOrder).First(), table.Data.Columns);
