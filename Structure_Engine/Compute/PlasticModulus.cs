@@ -95,7 +95,7 @@ namespace BH.Engine.Structure
                     index = i + 1;
 
                     double x = first.X;
-                    double z = pLine.ControlPoints[i + 1].X;
+                    double z = second.X;
 
                     double zx = z - x;
                     if (Math.Abs(zx) < Tolerance.Distance)  //Vertical Line
