@@ -34,19 +34,19 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Collapses a PolyCurve to a polyline where curved segments are split into segments of length shortestLength")]
+        [Description("Collapses a PolyCurve to a polyline where curved segments are split into segments of length tolerance")]
         [Input("curve", "The curve to collapse")]
-        [Input("shortestLength", "the length of a segment the curved parts are broken up into")]
+        [Input("tolerance", "the length of a segment the curved parts are broken up into")]
         [Output("C", "A polyline aproximating the provided curve")]
-        public static Polyline CollapseToPolylineEq(this PolyCurve curve, double shortestLength = 0.1)
+        public static Polyline CollapseToPolylineEq(this PolyCurve curve, double tolerance = 0.001)
         {
-            if (shortestLength < Tolerance.Distance)
+            if (tolerance < Tolerance.Distance)
                 return null;
 
             List<Polyline> list = new List<Polyline>();
             foreach (ICurve c in curve.Curves)
             {
-                list.Add(Divide(c as dynamic, shortestLength));
+                list.Add(Divide(c as dynamic, tolerance));
             }
             return (Geometry.Compute.Join(list))[0];
         }
@@ -55,52 +55,45 @@ namespace BH.Engine.Geometry
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private static Polyline Divide(this Line line, double shortestLength)
+        private static Polyline Divide(this Line line, double tolerance)
         {
             return new Polyline() { ControlPoints = new List<Point>() { line.Start, line.End } };
         }
 
         /***************************************************/
 
-        private static Polyline Divide(this Polyline line, double shortestLength)
+        private static Polyline Divide(this Polyline line, double tolerance)
         {
             return new Polyline() { ControlPoints = line.ControlPoints };
         }
 
         /***************************************************/
 
-        private static Polyline Divide(this PolyCurve line, double shortestLength)
+        private static Polyline Divide(this PolyCurve line, double tolerance)
         {
             return CollapseToPolylineEq(line);          //TODO
         }
 
         /***************************************************/
 
-        private static Polyline Divide(this Arc arc, double shortestLength)
+        private static Polyline Divide(this Arc arc, double tolerance)
         {
-            Polyline result = new Polyline();
-            double res = Math.Floor((shortestLength * 10 + 0.15 * arc.Length()) / shortestLength);
-            res = res < 1 ? 1 : res;
-            for (double i = 0; i <= res; i++)
-                result.ControlPoints.Add(arc.PointAtParameter((i / res)));
-
-            return result;
+            return arc.CollapseToPolyline(Soften(arc.Radius, tolerance),200);
         }
 
         /***************************************************/
 
-        private static Polyline Divide(this Circle circle, double shortestLength)
+        private static Polyline Divide(this Circle circle, double tolerance)
         {
-            Polyline result = new Polyline();
-            double res = Math.Floor((shortestLength * 10 + 0.15 * circle.Length()) / shortestLength);
-            res = res < 4 ? 4 : res;
-            for (double i = 0; i <= res; i++)
-                result.ControlPoints.Add(circle.PointAtParameter((i / res)));
-
-            return result;
+            return circle.CollapseToPolyline(Soften(circle.Radius, tolerance), 200);
         }
 
         /***************************************************/
+
+        private static double Soften(double r, double tolerance)
+        {
+            return (tolerance / r) + 0.038;     
+        }
 
     }
 }

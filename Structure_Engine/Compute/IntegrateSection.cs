@@ -43,7 +43,7 @@ namespace BH.Engine.Structure
         [Input("curves", "Edge curves that make up the section")]
         [Input("tolerance", "")]
         [Output("V", "Dictionary containing the calculated values")]
-        public static Dictionary<string, object> IntegrateSection(List<ICurve> curves, double tolerance = 0.005)
+        public static Dictionary<string, object> IntegrateSection(List<ICurve> curves, double tolerance = 0.0025)
         {
             Dictionary<string, object> results = new Dictionary<string, object>();
 
