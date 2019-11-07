@@ -66,9 +66,7 @@ namespace BH.Engine.Structure
         {
             //TODO Should do some checks if these are good Tolerances
             double tol = Tolerance.Distance;
-
-            // a.Y or b.Y can't be 0.    (due to some log expresssions, which comes from the expression being divided by the width (can't divide by zero))
-
+            
             double axbx = a.X - b.X;
             if (Math.Abs(axbx) < tol)  // The solution is zero
                 return 0;
@@ -80,9 +78,8 @@ namespace BH.Engine.Structure
             double horizTol = -Math.Min(b.Y, a.Y) * 0.003;   // the bigger function becomes erratic under thease valuse (tested value)
             horizTol = horizTol < tol ? tol : horizTol;
 
-            if (Math.Abs(byay) < horizTol)  // The solution for a "constant" integral, i.e. horizontal line //0.001
+            if (Math.Abs(byay) < horizTol)  // The solution for a "constant" integral, i.e. horizontal line
             {
-                //$$ \frac{(x-z)(10 y (x-z)^2 (3 x^2 y-2 s)-30 x y (x-z) (x^2 y-2 s)+15 (x^2 y-2 s)^2+3 y^2 (x-z)^4-15 x y^2 (x-z)^3)}{60 y} $$
                 return (axbx) * (
                         10 * a.Y * Math.Pow(axbx, 2) * (3 * ax2 * a.Y - 2 * s)
                         - 30 * a.X * a.Y * axbx * (ax2 * a.Y - 2 * s)
