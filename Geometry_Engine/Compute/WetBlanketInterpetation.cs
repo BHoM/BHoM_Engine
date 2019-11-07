@@ -40,7 +40,6 @@ namespace BH.Engine.Geometry
         [Output("C", "A single Polyline oriented counter clockwise with the same area as the sum of all the polylines")]
         public static Polyline WetBlanketInterpretation(List<Polyline> pLines, double tol = Tolerance.Distance)
         {
-            double tolHalf = tol * 0.5;
             int digits = (int)Math.Floor(-Math.Log10(tol)); //TODO fix for wider use (?)
 
             List<double> xes = new List<double>();
@@ -62,7 +61,7 @@ namespace BH.Engine.Geometry
             List<Polyline> polyLines = new List<Polyline>();
             for (int k = 0; k < pLines.Count; k++)
             {
-                polyLines.Add(SplitPolylineAtXValues(pLines[k], ref list, xValues, k, tolHalf));
+                polyLines.Add(SplitPolylineAtXValues(pLines[k], ref list, xValues, k, tol * 0.5));
             }
 
             // Orders it primarily by X and secundaryly by Y
