@@ -37,9 +37,9 @@ namespace BH.Engine.Data
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("")]
-        [Input("", "")]
-        [Output("", "")]
+        [Description("Gets the names of all the axes in the table")]
+        [Input("table", "The table to extract the axes from")]
+        [Output("axes", "The table axes names")]
         public static List<string> Axes<T>(this Table table)
         {
             var columnNames = new List<string>();
