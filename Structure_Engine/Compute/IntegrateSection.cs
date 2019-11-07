@@ -68,18 +68,10 @@ namespace BH.Engine.Structure
             {
                 // find which is in which
                 for (int i = 0; i < curvesZ.Count; i++)
-                {
                     for (int j = 0; j < curvesZ.Count; j++)
-                    {
                         if (i != j)
-                        {
                             if (curvesZ[i].IsContaining(curvesZ[j]))
-                            {
                                 depth[j]++;
-                            }
-                        }
-                    }
-                }
             }
             for (int i = 0; i < depth.Length; i++)
             {
@@ -102,12 +94,9 @@ namespace BH.Engine.Structure
             }
 
             BoundingBox box = new BoundingBox();
-
             for (int i = 0; i < curvesZ.Count; i++)
-            {
                 box += curvesZ[i].IBounds();
-            }
-
+            
             Point min = box.Min;
             Point max = box.Max;
             double totalWidth = max.X - min.X;
@@ -116,10 +105,10 @@ namespace BH.Engine.Structure
             //-----
             // To Polyline
             List<Polyline> pLines = new List<Polyline>();
-            double shortestLength = Math.Max(totalHeight, totalWidth) * tolerance;
+            double DimTolerance = Math.Max(totalHeight, totalWidth) * tolerance;
             for (int i = 0; i < curvesZ.Count; i++)
             {
-                pLines.Add(curvesZ[i].CollapseToPolylineEq(shortestLength));
+                pLines.Add(curvesZ[i].CollapseToPolylineEq(DimTolerance));
             }
             Polyline pLineZ = Engine.Geometry.Compute.WetBlanketInterpretation(pLines);
 
@@ -138,15 +127,9 @@ namespace BH.Engine.Structure
             // Centre Point
             for (int i = 0; i < curvesZ.Count; i++)
             {
-                double centerZTemp = curvesZ[i].IIntegrateRegion(1);
-                centreY += centerZTemp;
+                centreY += curvesZ[i].IIntegrateRegion(1);
+                centreZ += curvesY[i].IIntegrateRegion(1);
             }
-            for (int i = 0; i < curvesY.Count; i++)
-            {
-                double centerYTemp = curvesY[i].IIntegrateRegion(1);
-                centreZ += centerYTemp;
-            }
-
             centreZ /= area;
             centreY /= area;
 
@@ -158,13 +141,10 @@ namespace BH.Engine.Structure
             {
                 curvesZ[i] = curvesZ[i].Translate(new Vector() { X = -centreY });
                 momentOfInertiaZ += curvesZ[i].IIntegrateRegion(2);
-            }
-            pLineZ = pLineZ.Translate(new Vector() { X = -centreY });
-            for (int i = 0; i < curvesY.Count; i++)
-            {
                 curvesY[i] = curvesY[i].Translate(new Vector() { X = -centreZ });
                 momentOfInertiaY += curvesY[i].IIntegrateRegion(2);
             }
+            pLineZ = pLineZ.Translate(new Vector() { X = -centreY });
             pLineY = pLineY.Translate(new Vector() { X = -centreZ });
 
             // Assigning Results
