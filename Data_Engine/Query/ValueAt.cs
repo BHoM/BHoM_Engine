@@ -42,7 +42,7 @@ namespace BH.Engine.Data
         [Input("axes", "The axis of the table to match values for")]
         [Input("values", "The value of the axis to match with")]
         [Output("Data", "The data matching the provided axes and values as CustomObjects.")]
-        public static List<CustomObject> ValuesAt(this Table table, List<string> axes, List<IComparable> values)
+        public static List<CustomObject> ValuesAt(this Table table, List<string> axes, List<object> values)
         {
             if (!table.AxisExists(axes))
                 return new List<CustomObject>();

@@ -42,7 +42,7 @@ namespace BH.Engine.Data
         [Input("values", "The value of the axis to match with")]
         [Input("allowEqual", "Sets whether exact matching values are allowed or not")]
         [Output("Data", "The data matching the provided axes and values as CustomObjects.")]
-        public static List<CustomObject> ValuesAbove(this Table table, List<string> axes, List<IComparable> values, bool allowEqual = true)
+        public static List<CustomObject> ValuesAbove(this Table table, List<string> axes, List<object> values, bool allowEqual = true)
         {
             if (!table.AxisExists(axes))
                 return new List<CustomObject>();
@@ -59,7 +59,7 @@ namespace BH.Engine.Data
         [Input("sortAxis", "The axis the values should be sorted by.")]
         [Input("allowEqual", "Sets whether exact matching values are allowed or not")]
         [Output("Data", "The data matching the provided axes and values as CustomObjects.")]
-        public static List<CustomObject> ValuesAbove(this Table table, List<string> axes, List<IComparable> values, string sortAxis, bool allowEqual = true)
+        public static List<CustomObject> ValuesAbove(this Table table, List<string> axes, List<object> values, string sortAxis, bool allowEqual = true)
         {
             if (!table.AxisExists(axes.Concat(new string[] { sortAxis }).ToList()))
                 return new List<CustomObject>();
@@ -76,7 +76,7 @@ namespace BH.Engine.Data
         [Input("sortAxis", "The axis the values should be sorted by.")]
         [Input("allowEqual", "Sets whether exact matching values are allowed or not")]
         [Output("Data", "The data matching the provided axes and values as CustomObjects.")]
-        public static CustomObject FirstValueAbove(this Table table, List<string> axes, List<IComparable> values, string sortAxis, bool allowEqual = true)
+        public static CustomObject FirstValueAbove(this Table table, List<string> axes, List<object> values, string sortAxis, bool allowEqual = true)
         {
             if (!table.AxisExists(axes.Concat(new string[] { sortAxis }).ToList()))
                 return new CustomObject();
@@ -88,7 +88,7 @@ namespace BH.Engine.Data
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private static string AboveExpressionString(List<string> axes, List<IComparable> values, bool allowEqual)
+        private static string AboveExpressionString(List<string> axes, List<object> values, bool allowEqual)
         {
             string expression = "";
 

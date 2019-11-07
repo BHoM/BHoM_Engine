@@ -94,7 +94,7 @@ namespace BH.Engine.Data
         [Description("")]
         [Input("", "")]
         [Output("", "")]
-        public static Table Table<T>(string name, string axis1Name, List<IComparable> axis1Values, string axis2Name, List<IComparable> axis2Values, List<List<T>> values, string valuesName = "Values")
+        public static Table Table<T>(string name, string axis1Name, List<object> axis1Values, string axis2Name, List<object> axis2Values, List<List<T>> values, string valuesName = "Values")
         {
 
             DataTable table = new DataTable();
