@@ -44,6 +44,9 @@ namespace BH.Engine.Data
         [Output("Data", "The data matching the provided axes and values as CustomObjects.")]
         public static List<CustomObject> ValuesAbove(this Table table, List<string> axes, List<IComparable> values, bool allowEqual = true)
         {
+            if (!table.AxisExists(axes))
+                return new List<CustomObject>();
+
             return ValuesAt(table, AboveExpressionString(axes, values, allowEqual));
         }
 
@@ -58,6 +61,9 @@ namespace BH.Engine.Data
         [Output("Data", "The data matching the provided axes and values as CustomObjects.")]
         public static List<CustomObject> ValuesAbove(this Table table, List<string> axes, List<IComparable> values, string sortAxis, bool allowEqual = true)
         {
+            if (!table.AxisExists(axes.Concat(new string[] { sortAxis }).ToList()))
+                return new List<CustomObject>();
+
             return ValuesAt(table, AboveExpressionString(axes, values, allowEqual), sortAxis);
         }
 
@@ -72,6 +78,9 @@ namespace BH.Engine.Data
         [Output("Data", "The data matching the provided axes and values as CustomObjects.")]
         public static CustomObject FirstValueAbove(this Table table, List<string> axes, List<IComparable> values, string sortAxis, bool allowEqual = true)
         {
+            if (!table.AxisExists(axes.Concat(new string[] { sortAxis }).ToList()))
+                return new CustomObject();
+
             return FirstValueAt(table, AboveExpressionString(axes, values, allowEqual), sortAxis);
         }
 

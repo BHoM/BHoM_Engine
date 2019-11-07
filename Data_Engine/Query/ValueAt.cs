@@ -44,6 +44,9 @@ namespace BH.Engine.Data
         [Output("Data", "The data matching the provided axes and values as CustomObjects.")]
         public static List<CustomObject> ValuesAt(this Table table, List<string> axes, List<IComparable> values)
         {
+            if (!table.AxisExists(axes))
+                return new List<CustomObject>();
+
             string expression = "";
 
             for (int i = 0; i < axes.Count; i++)

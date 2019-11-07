@@ -40,11 +40,35 @@ namespace BH.Engine.Data
 
         [Description("Checks if the table contains a specific axis")]
         [Input("table", "The table to check")]
-        [Input("table", "The name of the axis to check for")]
+        [Input("axis", "The name of the axis to check for")]
         [Output("exists", "Returns true if the axis is in the table")]
         public static bool AxisExists(this Table table, string axis)
         {
             return table.Axes().Contains(axis);
+        }
+
+        /***************************************************/
+
+        [Description("Checks if the table contains a specific axis")]
+        [Input("table", "The table to check")]
+        [Input("axes", "The name of the axes to check for")]
+        [Output("exists", "Returns true if the axis is in the table")]
+        public static bool AxisExists(this Table table, List<string> axes)
+        {
+            bool success = true;
+
+            List<string> tableAxes = table.Axes();
+
+            foreach (string axis in axes)
+            {
+                bool exists = tableAxes.Contains(axis);
+                success &= exists;
+
+                if (!exists)
+                    Reflection.Compute.RecordWarning("Table does not contain any axis with the name " + axis);
+            }
+
+            return success;
         }
 
         /***************************************************/
