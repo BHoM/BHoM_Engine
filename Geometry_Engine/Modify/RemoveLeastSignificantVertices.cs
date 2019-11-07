@@ -38,7 +38,7 @@ namespace BH.Engine.Geometry
 
         [Description("Returns a polyline defined by the points which result in deviations from a straight line only. For example, if a polyline has 3 points in a straight line, the middle point is removed as part of this cleaning process")]
         [Input("polyline", "The polyline you wish to clean by removing unnecessary points")]
-        [Input("smallestAcceptableAngle", "The tolerance of the angle that defines a straight line. Default is set to the value defined by BH.oM.Geometry.Tolerance.Angle")]        
+        [Input("smallestAcceptableAngle", "The tolerance of the angle that defines a straight line. Default is set to the value defined by BH.oM.Geometry.Tolerance.Angle")]
         [Output("polyline", "The cleaned polyline")]        
         public static Polyline RemoveLeastSignificantVertices(this Polyline polyline, double smallestAcceptableAngle = Tolerance.Angle, double angleTolerance = Tolerance.Angle, double distanceTolerance = Tolerance.Distance)
         {           
