@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -36,15 +36,12 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [Description("Takes a List of Polylines and creates a `squished` version with the same area at every X-location, (and hence in total as well). Required for some calculations")]
-        [Input("pLines", "defined counter clockwise for positive area, should be on the XY-plane")]
+        [Input("pLines", "the outermost Polyline must be counter-clockwise and clockwise ones are holes wthin it, should be on the XY-plane")]
         [Output("C", "A single Polyline oriented counter clockwise with the same area as the sum of all the polylines")]
-        public static Polyline WetBlanketInterpretation(List<Polyline> pLines)
+        public static Polyline WetBlanketInterpretation(List<Polyline> pLines, double tol = Tolerance.Distance)
         {
-            double tol = Tolerance.Distance;
             double tolHalf = tol * 0.5;
-            double tolDistance = Tolerance.Distance;
-
-            int digits = (int)Math.Floor(-Math.Log10(tol)); //TODO fix for wider use
+            int digits = (int)Math.Floor(-Math.Log10(tol)); //TODO fix for wider use (?)
 
             List<double> xes = new List<double>();
             foreach (Polyline pLine in pLines)
@@ -70,9 +67,20 @@ namespace BH.Engine.Geometry
 
             // Orders it primarily by X and secundaryly by Y
             list.Sort(delegate (Tuple<Point, int, int> t1, Tuple<Point, int, int> t2)
-            { return t1.Item1.CompareTo(t2.Item1); });
+                               { return t1.Item1.CompareTo(t2.Item1); });
 
+            // Draw a new curve based on the area "covered" by the lines that are inside or outside of the region for each X-value
+            return DrawBlanketCurve(list, polyLines, tol);
+        }
+
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+        private static Polyline DrawBlanketCurve(List<Tuple<Point, int, int>> list, List<Polyline> polyLines, double tol = Tolerance.Distance)
+        {
             Polyline result = new Polyline();
+            double tolHalf = tol * 0.5;
 
             // how much "area" there is at the imidiate left respectivly the right side of the x-value
             double leftAreaLength = 0;
@@ -95,7 +103,7 @@ namespace BH.Engine.Geometry
 
                 if ((i + 2) == list.Count || Math.Abs(list[i + 2].Item1.X - list[i].Item1.X) > tolHalf)
                 {
-                    if (Math.Abs(leftAreaLength - rightAreaLength) < tolDistance)
+                    if (Math.Abs(leftAreaLength - rightAreaLength) < tol)
                     {
                         result.ControlPoints.Add(new Point() { X = list[i].Item1.X, Y = -leftAreaLength });
                     }
@@ -107,17 +115,15 @@ namespace BH.Engine.Geometry
                     leftAreaLength = 0;
                     rightAreaLength = 0;
 
-                    i++;
+                    i++;    // skip the last point as there can't be any area above it
                 }
             }
 
-            result.ControlPoints.Add(new Point() { X = xValues[0] }); // closing the curve
+            result.ControlPoints.Add(new Point() { X = list[0].Item1.X }); // closing the curve
 
             return result;
         }
 
-        /***************************************************/
-        /**** Private Methods                           ****/
         /***************************************************/
 
         private static void GetLocationData(List<Tuple<Point, int, int>> list, List<Polyline> polyLines, int i, out Point before, out Point after, out double d)
@@ -146,7 +152,7 @@ namespace BH.Engine.Geometry
                 Point first = pLine.ControlPoints[i];
                 Point last = pLine.ControlPoints[i + 1];
                 bool dir = first.X < last.X;
-                if (dir)
+                if (dir)        // add a point at the curve at each x-value within the segments domain
                 {
                     dMin = first.X + tol;
                     dMax = last.X - tol;
@@ -193,7 +199,6 @@ namespace BH.Engine.Geometry
             int cornerCase = 0;
             cornerCase += Direction(current, after, tol);
             cornerCase += Direction(current, before, tol) * 10;
-
             // cornerCase is a mesure of how the corner is in a way that lets us get if there is "area" at the imidiate left/right "above" it
 
             if (cornerCase < -1)
@@ -264,7 +269,7 @@ namespace BH.Engine.Geometry
 
         public static Point PointAtX(Point a, Point b, double x)    //Public??
         {
-            return new Point()
+            return new Point()  
             {
                 X = x,
                 Y = ((b.Y - a.Y) * (x - a.X)
