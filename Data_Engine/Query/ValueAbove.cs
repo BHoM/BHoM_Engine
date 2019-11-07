@@ -36,7 +36,12 @@ namespace BH.Engine.Data
         /**** Public Methods                            ****/
         /***************************************************/
 
-
+        [Description("Gets all table rows with an exeeding the values provided. Values returned as CustomObjects")]
+        [Input("table", "The table to extract values from")]
+        [Input("axes", "The axis of the table to match values for")]
+        [Input("values", "The value of the axis to match with")]
+        [Input("allowEqual", "Sets whether exact matching values are allowed or not")]
+        [Output("Data", "The data matching the provided axes and values as CustomObjects.")]
         public static List<CustomObject> ValuesAbove(this Table table, List<string> axes, List<IComparable> values, bool allowEqual = true)
         {
             return ValuesAt(table, AboveExpressionString(axes, values, allowEqual));
@@ -44,6 +49,13 @@ namespace BH.Engine.Data
 
         /***************************************************/
 
+        [Description("Gets all table rows with an exeeding the values provided. Values returned as CustomObjects")]
+        [Input("table", "The table to extract values from")]
+        [Input("axes", "The axis of the table to match values for")]
+        [Input("values", "The value of the axis to match with")]
+        [Input("sortAxis", "The axis the values should be sorted by.")]
+        [Input("allowEqual", "Sets whether exact matching values are allowed or not")]
+        [Output("Data", "The data matching the provided axes and values as CustomObjects.")]
         public static List<CustomObject> ValuesAbove(this Table table, List<string> axes, List<IComparable> values, string sortAxis, bool allowEqual = true)
         {
             return ValuesAt(table, AboveExpressionString(axes, values, allowEqual), sortAxis);
@@ -51,6 +63,13 @@ namespace BH.Engine.Data
 
         /***************************************************/
 
+        [Description("Gets the first table row with an exeeding the values provided. Values returned as CustomObjects")]
+        [Input("table", "The table to extract values from")]
+        [Input("axes", "The axis of the table to match values for")]
+        [Input("values", "The value of the axis to match with")]
+        [Input("sortAxis", "The axis the values should be sorted by.")]
+        [Input("allowEqual", "Sets whether exact matching values are allowed or not")]
+        [Output("Data", "The data matching the provided axes and values as CustomObjects.")]
         public static CustomObject FirstValueAbove(this Table table, List<string> axes, List<IComparable> values, string sortAxis, bool allowEqual = true)
         {
             return FirstValueAt(table, AboveExpressionString(axes, values, allowEqual), sortAxis);
