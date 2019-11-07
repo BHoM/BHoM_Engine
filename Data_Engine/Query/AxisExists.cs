@@ -29,6 +29,7 @@ using BH.oM.Reflection.Attributes;
 using BH.oM.Base;
 using BH.oM.Data.Collections;
 
+
 namespace BH.Engine.Data
 {
     public static partial class Query
@@ -37,18 +38,13 @@ namespace BH.Engine.Data
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Gets the names of all the axes in the table")]
-        [Input("table", "The table to extract the axes from")]
-        [Output("axes", "The table axes names")]
-        public static List<string> Axes(this Table table)
+        [Description("Checks if the table contains a specific axis")]
+        [Input("table", "The table to check")]
+        [Input("table", "The name of the axis to check for")]
+        [Output("exists", "Returns true if the axis is in the table")]
+        public static bool AxisExists(this Table table, string axis)
         {
-            var columnNames = new List<string>();
-
-            foreach (DataColumn col in table.Data.Columns)
-            {
-                columnNames.Add(col.ColumnName);
-            }
-            return columnNames;
+            return table.Axes().Contains(axis);
         }
 
         /***************************************************/
