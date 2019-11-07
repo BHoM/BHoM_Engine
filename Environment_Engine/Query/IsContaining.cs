@@ -85,18 +85,7 @@ namespace BH.Engine.Environment
         {
             List<Plane> planes = new List<Plane>();
             foreach (Panel be in panels)
-            {
-                Plane p = be.Polyline().IControlPoints().FitPlane();
-                if (!be.Polyline().IsInPlane(p))
-                {
-                    //Create a different plane...
-                    List<Point> pnts = be.Polyline().IDiscontinuityPoints();
-                    if (pnts.Count >= 3)
-                        p = BH.Engine.Geometry.Create.Plane(pnts[0], pnts[1], pnts[2]);
-                }
-
-                planes.Add(p);
-            }
+                planes.Add(be.Polyline().IControlPoints().FitPlane());
 
             List<Point> ctrPoints = panels.SelectMany(x => x.Polyline().IControlPoints()).ToList();
             BoundingBox boundingBox = BH.Engine.Geometry.Query.Bounds(ctrPoints);
