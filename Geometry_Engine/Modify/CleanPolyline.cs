@@ -43,7 +43,7 @@ namespace BH.Engine.Geometry
         [Output("polyline", "The cleaned polyline")]
         public static Polyline CleanPolyline(this Polyline polyline, double angleTolerance = Tolerance.Angle, double minimumSegmentLength = Tolerance.Distance)
         {
-            return polyline.RemoveLeastSignificantVertices().RemoveShortSegments();
-        }  
+            return polyline.RemoveLeastSignificantVertices(angleTolerance, angleTolerance, minimumSegmentLength).RemoveShortSegments(minimumSegmentLength, minimumSegmentLength);
+        }
     }
 }
