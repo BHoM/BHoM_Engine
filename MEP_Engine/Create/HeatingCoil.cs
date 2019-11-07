@@ -20,43 +20,46 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Base;
-using BH.oM.Data.Collections;
-using BH.oM.Diffing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Security.Cryptography;
-using System.Reflection;
-using BH.Engine.Serialiser;
+
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
 
-namespace BH.Engine.Diffing
+using BH.oM.MEP.Parts;
+
+namespace BH.Engine.MEP
 {
-    public static partial class Modify
+    public static partial class Create
     {
-        ///***************************************************/
-        ///**** Public Methods                            ****/
-        ///***************************************************/
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
 
-        [Description("Computes and sets the HashFragment for a given IBHoMObject.")]
-        public static void SetHashFragment(IEnumerable<IBHoMObject> objs, DiffConfig diffConfig = null)
+        [Description("Returns an MEP Heating Coil part")]
+        [Input("sensibleCapacity", "Default 0")]
+        [Input("enteringDryBulbAirTemperature", "Default 0")]
+        [Input("leavingDryBulbAirTemperature", "Default 0")]
+        [Input("enteringWaterTemperature", "Default 0")]
+        [Input("leavingWaterTemperature", "Default 0")]
+        [Input("pressureDrop", "Default 0")]
+        [Input("numberOfRows", "Default 0")]
+        [Output("heatingCoil", "An MEP Heating Coil part")]
+        public static HeatingCoil HeatingCoil(double sensibleCapacity = 0.0, double enteringDryBulbAirTemperature = 0.0, double leavingDryBulbAirTemperature = 0.0, double enteringWaterTemperature = 0.0, double leavingWaterTemperature = 0.0, double pressureDrop = 0.0, int numberOfRows = 0)
         {
-            // Set configurations if diffConfig is null
-            diffConfig = diffConfig == null ? new DiffConfig() : diffConfig;
-
-            // Calculate and set the object hashes
-            foreach (var obj in objs)
+            return new HeatingCoil
             {
-                string hash = BH.Engine.Diffing.Compute.DiffingHash(obj, diffConfig);
-
-                HashFragment existingFragm = obj.GetHashFragment();
-
-                obj.Fragments.AddOrReplace(new HashFragment(hash, existingFragm?.Hash));
-            }
+                SensibleCapacity = sensibleCapacity,
+                EnteringDryBulbAirTemperature = enteringDryBulbAirTemperature,
+                LeavingDryBulbAirTemperature = leavingDryBulbAirTemperature,
+                EnteringWaterTemperature = enteringWaterTemperature,
+                LeavingWaterTemperature = leavingWaterTemperature,
+                PressureDrop = pressureDrop,
+                NumberOfRows = numberOfRows,
+            };
         }
     }
 }

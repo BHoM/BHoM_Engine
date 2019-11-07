@@ -20,43 +20,37 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Base;
-using BH.oM.Data.Collections;
-using BH.oM.Diffing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Security.Cryptography;
-using System.Reflection;
-using BH.Engine.Serialiser;
+
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
 
-namespace BH.Engine.Diffing
+using BH.oM.MEP.Equipment;
+using BH.oM.MEP.Parts;
+
+namespace BH.Engine.MEP
 {
-    public static partial class Modify
+    public static partial class Create
     {
-        ///***************************************************/
-        ///**** Public Methods                            ****/
-        ///***************************************************/
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
 
-        [Description("Computes and sets the HashFragment for a given IBHoMObject.")]
-        public static void SetHashFragment(IEnumerable<IBHoMObject> objs, DiffConfig diffConfig = null)
+        [Description("Returns an MEP Fan Coil Unit object")]
+        [Input("parts", "A collection of MEP Parts which are housed by the air handling unit, default null")]
+        [Output("airHandlingUnit", "An MEP Fan Coil Unit")]
+        public static FanCoilUnit FanCoilUnit(List<IPart> parts = null)
         {
-            // Set configurations if diffConfig is null
-            diffConfig = diffConfig == null ? new DiffConfig() : diffConfig;
+            parts = parts ?? new List<IPart>();
 
-            // Calculate and set the object hashes
-            foreach (var obj in objs)
+            return new FanCoilUnit
             {
-                string hash = BH.Engine.Diffing.Compute.DiffingHash(obj, diffConfig);
-
-                HashFragment existingFragm = obj.GetHashFragment();
-
-                obj.Fragments.AddOrReplace(new HashFragment(hash, existingFragm?.Hash));
-            }
+                Parts = parts,
+            };
         }
     }
 }

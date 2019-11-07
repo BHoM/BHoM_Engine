@@ -20,43 +20,44 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Base;
-using BH.oM.Data.Collections;
-using BH.oM.Diffing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Security.Cryptography;
-using System.Reflection;
-using BH.Engine.Serialiser;
+
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
 
-namespace BH.Engine.Diffing
+using BH.oM.MEP.Fragments;
+
+namespace BH.Engine.MEP
 {
-    public static partial class Modify
+    public static partial class Create
     {
-        ///***************************************************/
-        ///**** Public Methods                            ****/
-        ///***************************************************/
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
 
-        [Description("Computes and sets the HashFragment for a given IBHoMObject.")]
-        public static void SetHashFragment(IEnumerable<IBHoMObject> objs, DiffConfig diffConfig = null)
+        [Description("Returns an MEP Identity Fragment which can be applied to an MEP object to provide information about an objects origins")]
+        [Input("manufacturer", "The manufacturer of the equipment, default empty string")]
+        [Input("modelNumber", "The model number of the equipment, default empty string")]
+        [Input("location", "The location of the equipment within the model/building, default empty string")]
+        [Input("service", "The service of the equipment, default empty string")]
+        [Input("remarks", "A collection of remarks about the identity of the equipment, default null")]
+        [Output("identityFragment", "An MEP Identity Fragment")]
+        public static IdentityFragment IdentityFragment(string manufacturer = "", string modelNumber = "", string location = "", string service = "", List<string> remarks = null)
         {
-            // Set configurations if diffConfig is null
-            diffConfig = diffConfig == null ? new DiffConfig() : diffConfig;
+            remarks = remarks ?? new List<string>();
 
-            // Calculate and set the object hashes
-            foreach (var obj in objs)
+            return new IdentityFragment
             {
-                string hash = BH.Engine.Diffing.Compute.DiffingHash(obj, diffConfig);
-
-                HashFragment existingFragm = obj.GetHashFragment();
-
-                obj.Fragments.AddOrReplace(new HashFragment(hash, existingFragm?.Hash));
-            }
+                Manufacturer = manufacturer,
+                ModelNumber = modelNumber,
+                Location = location,
+                Service = service,
+                Remarks = remarks,
+            };
         }
     }
 }

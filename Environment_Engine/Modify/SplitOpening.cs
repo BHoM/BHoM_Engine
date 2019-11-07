@@ -20,43 +20,38 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Base;
-using BH.oM.Data.Collections;
-using BH.oM.Diffing;
-using System;
+using System.ComponentModel;
+using BH.oM.Reflection.Attributes;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Security.Cryptography;
-using System.Reflection;
-using BH.Engine.Serialiser;
-using BH.oM.Reflection.Attributes;
-using System.ComponentModel;
 
-namespace BH.Engine.Diffing
+using BH.oM.Environment.Elements;
+
+using BH.oM.Environment.Fragments;
+using System;
+
+using BH.oM.Geometry;
+
+namespace BH.Engine.Environment
 {
     public static partial class Modify
     {
-        ///***************************************************/
-        ///**** Public Methods                            ****/
-        ///***************************************************/
-
-        [Description("Computes and sets the HashFragment for a given IBHoMObject.")]
-        public static void SetHashFragment(IEnumerable<IBHoMObject> objs, DiffConfig diffConfig = null)
+        [Description("Split an Environment Opening by assigning new geometry with the original core data. Returns one opening per geometry provided")]
+        [Input("opening", "An Environment Opening to split")]
+        [Input("polylines", "Geometry polylines to split the opening by - one opening per polyline will be returned")]
+        [Output("openings", "A collection of Environment Openings split into the geometry parts provided")]
+        public static List<Opening> SplitOpeningByGeometry(this Opening opening, List<Polyline> polylines)
         {
-            // Set configurations if diffConfig is null
-            diffConfig = diffConfig == null ? new DiffConfig() : diffConfig;
+            List<Opening> openings = new List<Opening>();
 
-            // Calculate and set the object hashes
-            foreach (var obj in objs)
+            foreach (Polyline p in polylines)
             {
-                string hash = BH.Engine.Diffing.Compute.DiffingHash(obj, diffConfig);
-
-                HashFragment existingFragm = obj.GetHashFragment();
-
-                obj.Fragments.AddOrReplace(new HashFragment(hash, existingFragm?.Hash));
+                Opening pan = opening.GetShallowClone(true) as Opening;
+                pan.Edges = p.ToEdges();
+                openings.Add(pan);
             }
+
+            return openings;
         }
     }
 }

@@ -20,43 +20,50 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Base;
-using BH.oM.Data.Collections;
-using BH.oM.Diffing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Security.Cryptography;
-using System.Reflection;
-using BH.Engine.Serialiser;
+
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
 
-namespace BH.Engine.Diffing
+using BH.oM.MEP.Parts;
+
+namespace BH.Engine.MEP
 {
-    public static partial class Modify
+    public static partial class Create
     {
-        ///***************************************************/
-        ///**** Public Methods                            ****/
-        ///***************************************************/
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
 
-        [Description("Computes and sets the HashFragment for a given IBHoMObject.")]
-        public static void SetHashFragment(IEnumerable<IBHoMObject> objs, DiffConfig diffConfig = null)
+        [Description("Returns an MEP Electrical Connector part")]
+        [Input("motorHorsePower", "Default 0")]
+        [Input("brakeHorsePower", "Default 0")]
+        [Input("fullLoadAmps", "Default 0")]
+        [Input("maximumOvercurrentProtection", "Default 0")]
+        [Input("phase", "Default 0")]
+        [Input("frequency", "Default 0")]
+        [Input("voltage", "Default 0")]
+        [Input("emergencyPower", "Default false")]
+        [Input("standBy", "Default false")]
+        [Output("electricalConnector", "An MEP Electrical Connector part")]
+        public static ElectricalConnector ElectricalConnector(double motorHorsePower = 0.0, double brakeHorsePower = 0.0, double fullLoadAmps = 0.0, double maximumOvercurrentProtection = 0.0, double phase = 0.0, double frequency = 0.0, double voltage = 0.0, bool emergencyPower = false, bool standBy = false)
         {
-            // Set configurations if diffConfig is null
-            diffConfig = diffConfig == null ? new DiffConfig() : diffConfig;
-
-            // Calculate and set the object hashes
-            foreach (var obj in objs)
+            return new ElectricalConnector
             {
-                string hash = BH.Engine.Diffing.Compute.DiffingHash(obj, diffConfig);
-
-                HashFragment existingFragm = obj.GetHashFragment();
-
-                obj.Fragments.AddOrReplace(new HashFragment(hash, existingFragm?.Hash));
-            }
+                MotorHorsePower = motorHorsePower,
+                BrakeHorsePower = brakeHorsePower,
+                FullLoadAmps = fullLoadAmps,
+                MaximumOvercurrentProtection = maximumOvercurrentProtection,
+                Phase = phase,
+                Frequency = frequency,
+                Voltage = voltage,
+                EmergencyPower = emergencyPower,
+                StandBy = standBy,
+            };
         }
     }
 }

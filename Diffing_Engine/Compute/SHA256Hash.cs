@@ -62,6 +62,8 @@ namespace BH.Engine.Diffing
 
             return sb.ToString();
         }
+        
+        ///***************************************************/
 
         private static byte[] SHA256_byte(byte[] inputObj)
         {
@@ -69,6 +71,7 @@ namespace BH.Engine.Diffing
             return algorithm.ComputeHash(inputObj);
         }
 
+        ///***************************************************/
 
     }
 }

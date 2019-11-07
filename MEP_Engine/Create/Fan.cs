@@ -20,43 +20,48 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Base;
-using BH.oM.Data.Collections;
-using BH.oM.Diffing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Security.Cryptography;
-using System.Reflection;
-using BH.Engine.Serialiser;
+
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
 
-namespace BH.Engine.Diffing
+using BH.oM.MEP.Parts;
+
+namespace BH.Engine.MEP
 {
-    public static partial class Modify
+    public static partial class Create
     {
-        ///***************************************************/
-        ///**** Public Methods                            ****/
-        ///***************************************************/
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
 
-        [Description("Computes and sets the HashFragment for a given IBHoMObject.")]
-        public static void SetHashFragment(IEnumerable<IBHoMObject> objs, DiffConfig diffConfig = null)
+        [Description("Returns an MEP Fan part")]
+        [Input("flowRate", "Default 0")]
+        [Input("externalStaticPressure", "Default 0")]
+        [Input("speed", "Default 0")]
+        [Input("driveType", "Default empty string")]
+        [Input("speedControl", "Default empty string")]
+        [Input("brakeHorsePower", "Default 0")]
+        [Input("horsePower", "Default 0")]
+        [Input("efficiency", "Default 0")]
+        [Output("fan", "An MEP Fan part")]
+        public static Fan Fan(double flowRate = 0.0, double externalStaticPressure = 0.0, double speed = 0.0, string driveType = "", string speedControl = "", double brakeHorsePower = 0.0, double horsePower = 0.0, double efficiency = 0)
         {
-            // Set configurations if diffConfig is null
-            diffConfig = diffConfig == null ? new DiffConfig() : diffConfig;
-
-            // Calculate and set the object hashes
-            foreach (var obj in objs)
+            return new Fan
             {
-                string hash = BH.Engine.Diffing.Compute.DiffingHash(obj, diffConfig);
-
-                HashFragment existingFragm = obj.GetHashFragment();
-
-                obj.Fragments.AddOrReplace(new HashFragment(hash, existingFragm?.Hash));
-            }
+                FlowRate = flowRate,
+                ExternalStaticPressure = externalStaticPressure,
+                Speed = speed,
+                DriveType = driveType,
+                SpeedControl = speedControl,
+                BrakeHorsePower = brakeHorsePower,
+                HorsePower = horsePower,
+                Efficiency = efficiency,
+            };
         }
     }
 }
