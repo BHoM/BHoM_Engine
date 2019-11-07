@@ -36,7 +36,7 @@ namespace BH.Engine.Data
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Gets all table rows with an exeeding the values provided. Values returned as CustomObjects")]
+        [Description("Gets all table rows with values exeeding the values provided. Values returned as CustomObjects")]
         [Input("table", "The table to extract values from")]
         [Input("axes", "The axis of the table to match values for")]
         [Input("values", "The value of the axis to match with")]
@@ -52,7 +52,7 @@ namespace BH.Engine.Data
 
         /***************************************************/
 
-        [Description("Gets all table rows with an exeeding the values provided. Values returned as CustomObjects")]
+        [Description("Gets all table rows with values exeeding the values provided sorted by the sortAxis. Values returned as CustomObjects")]
         [Input("table", "The table to extract values from")]
         [Input("axes", "The axis of the table to match values for")]
         [Input("values", "The value of the axis to match with")]
@@ -69,7 +69,7 @@ namespace BH.Engine.Data
 
         /***************************************************/
 
-        [Description("Gets the first table row with an exeeding the values provided. Values returned as CustomObjects")]
+        [Description("Gets the first table row with values exeeding the values provided sorted by the sortAxis. Values returned as CustomObjects")]
         [Input("table", "The table to extract values from")]
         [Input("axes", "The axis of the table to match values for")]
         [Input("values", "The value of the axis to match with")]
