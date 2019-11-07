@@ -47,17 +47,15 @@ namespace BH.Engine.Structure
 
             double Sy = 0;
             double ShearArea = 0;
-            // Sy = 0
-            List<Point> controllPoints = new List<Point>(pLine.ControlPoints);  // Should the formatting happen here or earlier??
-            // foreach (linesegement) except for the upper one, must begin at the line after the upper one (on the left side)
+
+            List<Point> controllPoints = new List<Point>(pLine.ControlPoints);
+
+            // Calculate Sy for the linesegment (by IntSurfLine()) and add to Sy +=
             for (int i = 0; i < controllPoints.Count - 2; i++)
             {
                 ShearArea += ShearAreaLine(controllPoints[i], controllPoints[i + 1], Sy);
                 Sy += Geometry.Compute.IntSurfLine(controllPoints[i], controllPoints[i + 1] , 1);
-                //Sy += BH.Engine.Geometry.Compute.IntSurfLine(controllPoints[i], controllPoints[i + 1], 1);
             }
-            // ShearAreaLine()
-            // Calculate Sy for the linesegment (by IntSurfLine()) and add to Sy +=
 
             return ShearArea;
         }
@@ -122,22 +120,63 @@ namespace BH.Engine.Structure
 
 
             double A =
-                    -(20 * Math.Pow(axbx, 2) * (24 * s * byay2 + a.Y * (-39 * by2 * ax2 + 6 * b.Y * a.X * a.Y * (14 * a.X - b.X) + ay2 * (-44 * ax2 + 4 * a.X * b.X + bx2))))
+                    -(
+                        20 * Math.Pow(axbx, 2) * 
+                            (24 * s * byay2 + a.Y * 
+                                (
+                                    -39 * by2 * ax2 + 6 * b.Y * a.X * a.Y * (14 * a.X - b.X) + 
+                                    ay2 * (-44 * ax2 + 4 * a.X * b.X + bx2)
+                                )
+                            )
+                     )
                     / (byay2);
             double B =
-                    -(30 * axbx * (a.Y * (18 * by3 * ax3 + 3 * by2 * ax2 * a.Y * (5 * b.X - 23 * a.X) + 6 * b.Y * a.X * ay2 * (13 * ax2 - 3 * a.X * b.X - bx2) + ay3 * (-28 * ax3 + 6 * ax2 * b.X + 3 * a.X * bx2 + bx3)) - 12 * s * byay2 * (3 * b.Y * a.X + a.Y * (b.X - 4 * a.X))))
+                    -(
+                        30 * axbx * 
+                            (a.Y * 
+                                (
+                                    18 * by3 * ax3 
+                                    + 3 * by2 * ax2 * a.Y * (5 * b.X - 23 * a.X) 
+                                    + 6 * b.Y * a.X * ay2 * (13 * ax2 - 3 * a.X * b.X - bx2) 
+                                    + ay3 * (-28 * ax3 + 6 * ax2 * b.X + 3 * a.X * bx2 + bx3)
+                                )
+                                - 12 * s * byay2 * (3 * b.Y * a.X + a.Y * (b.X - 4 * a.X))
+                            )
+                     )
                     / (Math.Pow(byay, 3));
             double C =
-                    (60 * a.Y * axbx * (a.Y * (2 * a.X + b.X) - 3 * b.Y * a.X) * (a.Y * (6 * by2 * ax2 - 3 * b.Y * a.X * a.Y * (3 * a.X + b.X) + ay2 * (4 * ax2 + a.X * b.X + bx2)) - 12 * s * byay2))
+                    (
+                    60 * a.Y * axbx * 
+                        (a.Y * (2 * a.X + b.X) - 3 * b.Y * a.X) 
+                        * (a.Y * 
+                            (
+                                6 * by2 * ax2 
+                                - 3 * b.Y * a.X * a.Y * (3 * a.X + b.X) 
+                                + ay2 * (4 * ax2 + a.X * b.X + bx2)
+                            ) 
+                          - 12 * s * byay2
+                          )
+                    )
                     / (Math.Pow(byay, 4));
             double D =
-                    (60 * Math.Log(b.Y / a.Y) * Math.Pow(a.Y * (3 * by2 * ax2 - 3 * b.Y * a.X * a.Y * (a.X + b.X) + ay2 * (ax2 + a.X * b.X + bx2)) - 6 * s * byay2, 2))
+                    (
+                    60 * Math.Log(b.Y / a.Y) 
+                    * Math.Pow(
+                            a.Y * (3 * by2 * ax2 - 3 * b.Y * a.X * a.Y * (a.X + b.X) 
+                            + ay2 * (ax2 + a.X * b.X + bx2)) 
+                            - 6 * s * byay2
+                            , 2)
+                    )
                     / (Math.Pow(byay, 5));
             double E =
-                    40 * byay * Math.Pow(axbx, 4) - 48 * Math.Pow(axbx, 3) * (3 * b.Y * a.X - 5 * a.X * a.Y + 2 * a.Y * b.X)
-
-                    + (15 * Math.Pow(axbx, 2) * (9 * by2 * ax2 - 6 * b.Y * a.X * a.Y * (8 * a.X - 5 * b.X) + ay2 * (40 * ax2 - 32 * a.X * b.X + bx2)))
-                    / (byay);
+                    40 * byay * Math.Pow(axbx, 4) 
+                    - 48 * Math.Pow(axbx, 3) * (3 * b.Y * a.X - 5 * a.X * a.Y + 2 * a.Y * b.X)
+                    + (15 * Math.Pow(axbx, 2) 
+                      * (
+                            9 * by2 * ax2 
+                            - 6 * b.Y * a.X * a.Y * (8 * a.X - 5 * b.X) 
+                            + ay2 * (40 * ax2 - 32 * a.X * b.X + bx2))
+                        ) / (byay);
 
             double factor = (axbx / 2160);
 
