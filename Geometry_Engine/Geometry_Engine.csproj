@@ -113,6 +113,7 @@
     <Compile Include="Modify\SetGeometry.cs" />
     <Compile Include="Modify\Simplify.cs" />
     <Compile Include="Modify\Extend.cs" />
+    <Compile Include="Modify\Offset.cs" />
     <Compile Include="Modify\Join.cs" />
     <Compile Include="Modify\ProjectAlong.cs" />
     <Compile Include="Modify\Reverse.cs" />
