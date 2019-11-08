@@ -95,9 +95,9 @@ namespace BH.Engine.Geometry
                     }
                     X = (a.X - b.X);
                     if (Math.Abs(X) < tol)
-                        return -Y / a.X;
+                        return Y / a.X;
 
-                    return Y * Math.Log(b.X / a.X) / X;
+                    return -Y * Math.Log(b.X / a.X) / X;
                 /********************/
                 default:
                     X = (a.X - b.X);
