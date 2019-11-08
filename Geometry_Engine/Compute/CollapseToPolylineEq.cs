@@ -40,7 +40,7 @@ namespace BH.Engine.Geometry
         [Output("C", "A polyline aproximating the provided curve")]
         public static Polyline CollapseToPolylineEq(this PolyCurve curve, double tolerance = 0.001)
         {
-            if (tolerance < Tolerance.Distance)
+            if (tolerance <= 0)
                 return null;
 
             List<Polyline> list = new List<Polyline>();
