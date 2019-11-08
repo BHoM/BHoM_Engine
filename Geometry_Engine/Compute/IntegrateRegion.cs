@@ -56,10 +56,12 @@ namespace BH.Engine.Geometry
         {
             //TODO Should do some checks if these are good Tolerances
             //TODO powX could be a double, but that might slow thing down somewhat
+            double tol = Tolerance.Distance;
 
+            double X;
             double Y = (a.Y - b.Y);
             /***************/
-            if (Math.Abs(Y) < Tolerance.Distance)
+            if (Math.Abs(Y) < tol)
                 return 0;
             /***************/
             switch (powX)
@@ -74,18 +76,39 @@ namespace BH.Engine.Geometry
                     return -((a.X + b.X) * (a.X * a.X + b.X * b.X) * Y) / 12;
                 /********************/
                 case -1:
+                    if (a.X < tol || b.X < tol)
+                    {
+                        Engine.Reflection.Compute.RecordError("powX = -1 is not defined left of the Y-axis");
+                        return 0;
+                    }
+                    X = (a.X - b.X);
+                    if (Math.Abs(X) < tol)
+                        return -Math.Log(a.X) * Y;
+
+                    return (-Y * (X * Math.Log(b.X)) + a.X * Math.Log(a.X / b.X)) / X;
+                /********************/
                 case -2:
-                    Engine.Reflection.Compute.RecordError("powX = -1 and -2 is not supported");
-                    return 0;
+                    if ((a.X < 0 ^ b.X < 0) || Math.Abs(a.X) < tol || Math.Abs(b.X) < tol)
+                    {
+                        Engine.Reflection.Compute.RecordError("powX = -2 is not defined on the Y-axis");
+                        return 0;
+                    }
+                    X = (a.X - b.X);
+                    if (Math.Abs(X) < tol)
+                        return -Y / a.X;
+
+                    return Y * Math.Log(b.X / a.X) / X;
+                /********************/
                 default:
-                    double X = (a.X - b.X);
-                    if (Math.Abs(X) < Tolerance.Distance)
+                    X = (a.X - b.X);
+                    if (Math.Abs(X) < tol)
                         return -(Math.Pow(a.X, powX + 1) * Y) / (powX + 1);
                     /***************/
                     double N = (powX + 1) * (powX + 2);
                     double bigX = (Math.Pow(b.X, powX + 2) - Math.Pow(a.X, powX + 2));
 
                     return Y * bigX / (N * X);
+                    /********************/
             }
         }
 
