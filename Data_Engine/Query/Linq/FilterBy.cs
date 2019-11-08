@@ -39,11 +39,13 @@ namespace BH.Engine.Data
         [Input("objects", "List of objects to be filtered. All objects in the list should be of similar type")]
         [Input("propertyName", "The name of the property to filter the objects by")]
         [Input("value", "The value of the selected property to filter the objects by")]
-        public static List<T> FilterBy<T>(this List<T> objects, string propertyName, object value)
+        public static List<T> FilterBy<T>(this List<T> objects, string propertyName = null, object value = null, bool ignoreStringCase = false, bool exactStringMatch = false, double rounding = 0.0)
         {
-            if (objects == null || objects.Count == 0) return null;
+            if (objects == null || objects.Count == 0) return new List<T>();
+            if (propertyName == null) return new List<T>();
+            if (value == null) return new List<T>();
+            System.Reflection.PropertyInfo prop = objects.First(x => x != null).GetType().GetProperty(propertyName);
             int groupedObjects = objects.GroupBy(x => x.GetType()).Count();
-            System.Type objectType = objects[0].GetType();
             if (groupedObjects != 1)
             {
                 BHRE.Compute.RecordError("All objects in the list to be sorted should be of similiar type.");
@@ -51,13 +53,23 @@ namespace BH.Engine.Data
             }
             if (!propertyName.Contains("."))
             {
-                System.Reflection.PropertyInfo prop = objects[0].GetType().GetProperty(propertyName);
                 if (prop != null)
-                    return objects.Where(x => prop.GetValue(x).Equals(value)).ToList();                
+                {
+                    if (value.GetType() == typeof(System.String))
+                    {
+                        if (ignoreStringCase)
+                            return objects.Where(x => string.Equals((string)prop.GetValue(x), (string)value, System.StringComparison.CurrentCultureIgnoreCase)).ToList();
+                        if (!exactStringMatch)
+                            return objects.Where(x => (prop.GetValue(x) as string).ToUpper().Contains((value as string).ToUpper())).ToList();
+                        return objects.Where(x => prop.GetValue(x).Equals(value)).ToList();
+                    }
+                return objects.Where(x => prop.GetValue(x) == value).ToList();
+                }
             }
             BHRE.Compute.RecordNote("CustomData or nested property is used as the sorting property (using 'Object.Property.Property...') which is slower than a base property.");
-            return objects.Where(x => BHRE.Query.PropertyValue(x, propertyName) == value).ToList();
+            return objects.Where(x => BHRE.Query.PropertyValue(x, propertyName).Equals(value)).ToList();
         }
         /***************************************************/
+
     }
 }
