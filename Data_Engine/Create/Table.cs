@@ -50,16 +50,15 @@ namespace BH.Engine.Data
         {
             IBHoMObject first = bhomObjects.First();
 
-            Dictionary<string, object> properties = first.PropertyDictionary();
+            Dictionary<string, Type> propertyTypes = first.PropertyTypeDictionary();
 
             List<DataColumn> columns = new List<DataColumn>();
 
-            properties.CleanUnwantedProperties(ignoreName, ignoreGuid, ignoreTags);
+            propertyTypes.CleanUnwantedProperties(ignoreName, ignoreGuid, ignoreTags);
 
-            foreach (var kvp in properties)
+            foreach (var kvp in propertyTypes)
             {
-                
-                columns.Add(new DataColumn(kvp.Key, kvp.Value.GetType()));
+                columns.Add(new DataColumn(kvp.Key, kvp.Value));
             }
 
             DataTable table = new DataTable();
@@ -135,7 +134,7 @@ namespace BH.Engine.Data
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private static void CleanUnwantedProperties(this Dictionary<string, object> dict, bool ignoreName, bool ignoreGuid, bool ignoreTags)
+        private static void CleanUnwantedProperties<T>(this Dictionary<string, T> dict, bool ignoreName, bool ignoreGuid, bool ignoreTags)
         {
             if (ignoreName && dict.ContainsKey("Name"))
                 dict.Remove("Name");
@@ -143,6 +142,49 @@ namespace BH.Engine.Data
                 dict.Remove("BHoM_Guid");
             if (ignoreTags && dict.ContainsKey("Tags"))
                 dict.Remove("Tags");
+
+        }
+
+        /***************************************************/
+
+        private static Dictionary<string, Type> PropertyTypeDictionary(this IBHoMObject obj)
+        {
+            if (obj is CustomObject)
+                return PropertyTypeDictionary(obj as CustomObject);
+
+            Dictionary<string, Type> dic = new Dictionary<string, Type>();
+
+            foreach (var prop in obj.GetType().GetProperties())
+            {
+                if (!prop.CanRead || prop.GetMethod.GetParameters().Count() > 0) continue;
+
+                dic[prop.Name] = prop.PropertyType;
+            }
+            return dic;
+        }
+    
+
+        /***************************************************/
+
+        private static Dictionary<string, Type> PropertyTypeDictionary(this CustomObject obj)
+        {
+            Dictionary<string, Type> dic = new Dictionary<string, Type>();
+
+            foreach (KeyValuePair<string,object> kvp in obj.CustomData)
+            {
+                dic[kvp.Key] = kvp.Value.GetType();
+            }
+
+            if (!dic.ContainsKey("Name"))
+                dic["Name"] = typeof(string);
+
+            if (!dic.ContainsKey("BHoM_Guid"))
+                dic["BHoM_Guid"] = typeof(Guid);
+
+            if (!dic.ContainsKey("Tags"))
+                dic["Tags"] = obj.Tags.GetType();
+
+            return dic;
 
         }
 
