@@ -126,6 +126,22 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [NotImplemented]
+        public static Ellipse Offset(this Ellipse curve, double offset, Vector normal = null, bool tangentExtensions = false, double tolerance = Tolerance.Distance)
+        {
+            throw new NotImplementedException();
+        }
+
+        /***************************************************/
+
+        [NotImplemented]
+        public static NurbsCurve Offset(this NurbsCurve curve, double offset, Vector normal = null, bool tangentExtensions = false, double tolerance = Tolerance.Distance)
+        {
+            throw new NotImplementedException();
+        }
+
+        /***************************************************/
+
         [Description("Creates an offset of a curve. Works only on planar curves")]
         [Input("curve", "Curve to offset")]
         [Input("distance", "Offset distance. Positive value offsets outside of a curve. If normal is given then offsets to the right with normal pointing up and direction of a curve pointing forward")]
@@ -498,7 +514,7 @@ namespace BH.Engine.Geometry
         /***         Private Methods                     ***/
         /***************************************************/
 
-        private static List<ICurve> TrimExtendToPoint(this ICurve curve, Point startPoint, Point endPoint, bool tangentExtension, double tolerance)
+        private static List<ICurve> ExtendToPoint(this ICurve curve, Point startPoint, Point endPoint, bool tangentExtension, double tolerance)
         {
             //TODO:
             //Decide if useful enough to make public. If so, rewrite and test.
@@ -597,26 +613,26 @@ namespace BH.Engine.Geometry
 
                 if (C1SP && C2SP)
                 {
-                    resultCurves.AddRange(curve1.TrimExtendToPoint(curve1.IStartPoint(), intersection, tangentExtensions, tolerance));
-                    resultCurves.AddRange(curve2.TrimExtendToPoint(curve2.IStartPoint(), intersection, tangentExtensions, tolerance));
+                    resultCurves.AddRange(curve1.ExtendToPoint(curve1.IStartPoint(), intersection, tangentExtensions, tolerance));
+                    resultCurves.AddRange(curve2.ExtendToPoint(curve2.IStartPoint(), intersection, tangentExtensions, tolerance));
                     resultCurves[1] = resultCurves[1].IFlip();
                 }
                 else if (C1SP && !C2SP)
                 {
-                    resultCurves.AddRange(curve1.TrimExtendToPoint(curve1.IStartPoint(), intersection, tangentExtensions, tolerance));
-                    resultCurves.AddRange(curve2.TrimExtendToPoint(intersection, curve2.IEndPoint(), tangentExtensions, tolerance));
+                    resultCurves.AddRange(curve1.ExtendToPoint(curve1.IStartPoint(), intersection, tangentExtensions, tolerance));
+                    resultCurves.AddRange(curve2.ExtendToPoint(intersection, curve2.IEndPoint(), tangentExtensions, tolerance));
                 }
                 else if (!C1SP && C2SP)
                 {
-                    resultCurves.AddRange(curve1.TrimExtendToPoint(intersection, curve1.IEndPoint(), tangentExtensions, tolerance));
-                    resultCurves.AddRange(curve2.TrimExtendToPoint(curve2.IStartPoint(), intersection, tangentExtensions, tolerance));
+                    resultCurves.AddRange(curve1.ExtendToPoint(intersection, curve1.IEndPoint(), tangentExtensions, tolerance));
+                    resultCurves.AddRange(curve2.ExtendToPoint(curve2.IStartPoint(), intersection, tangentExtensions, tolerance));
                     resultCurves[0] = resultCurves[0].IFlip();
                     resultCurves[1] = resultCurves[1].IFlip();
                 }
                 else
                 {
-                    resultCurves.AddRange(curve1.TrimExtendToPoint(intersection, curve1.IEndPoint(), tangentExtensions, tolerance));
-                    resultCurves.AddRange(curve2.TrimExtendToPoint(intersection, curve2.IEndPoint(), tangentExtensions, tolerance));
+                    resultCurves.AddRange(curve1.ExtendToPoint(intersection, curve1.IEndPoint(), tangentExtensions, tolerance));
+                    resultCurves.AddRange(curve2.ExtendToPoint(intersection, curve2.IEndPoint(), tangentExtensions, tolerance));
                     resultCurves[0] = resultCurves[0].IFlip();
                 }
             }
@@ -635,8 +651,8 @@ namespace BH.Engine.Geometry
                             Reflection.Compute.RecordWarning("Couldn't provide correct fillet for given input");
                             return null;
                         }
-                        resultCurves.AddRange(curve1.TrimExtendToPoint(curve1.IStartPoint(), intersection, tangentExtensions, tolerance));
-                        resultCurves.AddRange(curve2.TrimExtendToPoint(curve2.IStartPoint(), intersection, tangentExtensions, tolerance));
+                        resultCurves.AddRange(curve1.ExtendToPoint(curve1.IStartPoint(), intersection, tangentExtensions, tolerance));
+                        resultCurves.AddRange(curve2.ExtendToPoint(curve2.IStartPoint(), intersection, tangentExtensions, tolerance));
                         resultCurves[1] = resultCurves[1].IFlip();
                     }
                     else if (C1SP && !C2SP)
@@ -649,8 +665,8 @@ namespace BH.Engine.Geometry
                             Reflection.Compute.RecordWarning("Couldn't provide correct fillet for given input");
                             return null;
                         }
-                        resultCurves.AddRange(curve1.TrimExtendToPoint(curve1.IStartPoint(), intersection, tangentExtensions, tolerance));
-                        resultCurves.AddRange(curve2.TrimExtendToPoint(intersection, curve2.IEndPoint(), tangentExtensions, tolerance));
+                        resultCurves.AddRange(curve1.ExtendToPoint(curve1.IStartPoint(), intersection, tangentExtensions, tolerance));
+                        resultCurves.AddRange(curve2.ExtendToPoint(intersection, curve2.IEndPoint(), tangentExtensions, tolerance));
                     }
                     else if (!C1SP && C2SP)
                     {
@@ -662,8 +678,8 @@ namespace BH.Engine.Geometry
                             Reflection.Compute.RecordWarning("Couldn't provide correct fillet for given input");
                             return null;
                         }
-                        resultCurves.AddRange(curve1.TrimExtendToPoint(intersection, curve1.IEndPoint(), tangentExtensions, tolerance));
-                        resultCurves.AddRange(curve2.TrimExtendToPoint(curve2.IStartPoint(), intersection, tangentExtensions, tolerance));
+                        resultCurves.AddRange(curve1.ExtendToPoint(intersection, curve1.IEndPoint(), tangentExtensions, tolerance));
+                        resultCurves.AddRange(curve2.ExtendToPoint(curve2.IStartPoint(), intersection, tangentExtensions, tolerance));
                         resultCurves[0] = resultCurves[0].IFlip();
                         resultCurves[1] = resultCurves[1].IFlip();
                     }
@@ -677,8 +693,8 @@ namespace BH.Engine.Geometry
                             Reflection.Compute.RecordWarning("Couldn't provide correct fillet for given input");
                             return null;
                         }
-                        resultCurves.AddRange(curve1.TrimExtendToPoint(intersection, curve1.IEndPoint(), tangentExtensions, tolerance));
-                        resultCurves.AddRange(curve2.TrimExtendToPoint(intersection, curve2.IEndPoint(), tangentExtensions, tolerance));
+                        resultCurves.AddRange(curve1.ExtendToPoint(intersection, curve1.IEndPoint(), tangentExtensions, tolerance));
+                        resultCurves.AddRange(curve2.ExtendToPoint(intersection, curve2.IEndPoint(), tangentExtensions, tolerance));
                         resultCurves[0] = resultCurves[0].IFlip();
                     }
                 }
@@ -709,29 +725,29 @@ namespace BH.Engine.Geometry
                         {
                             intersection = curveIntersections.ClosestPoint(curve1.IEndPoint());
 
-                            resultCurves.AddRange(curve1.TrimExtendToPoint(curve1.IStartPoint(), intersection, tangentExtensions, tolerance));
-                            resultCurves.AddRange(curve2.TrimExtendToPoint(curve2.IStartPoint(), intersection, tangentExtensions, tolerance));
+                            resultCurves.AddRange(curve1.ExtendToPoint(curve1.IStartPoint(), intersection, tangentExtensions, tolerance));
+                            resultCurves.AddRange(curve2.ExtendToPoint(curve2.IStartPoint(), intersection, tangentExtensions, tolerance));
                             resultCurves[1] = resultCurves[1].IFlip();
                         }
                         else if (C1SP && !C2SP)
                         {
                             intersection = curveIntersections.ClosestPoint(curve1.IEndPoint());
-                            resultCurves.AddRange(curve1.TrimExtendToPoint(curve1.IStartPoint(), intersection, tangentExtensions, tolerance));
-                            resultCurves.AddRange(curve2.TrimExtendToPoint(intersection, curve2.IEndPoint(), tangentExtensions, tolerance));
+                            resultCurves.AddRange(curve1.ExtendToPoint(curve1.IStartPoint(), intersection, tangentExtensions, tolerance));
+                            resultCurves.AddRange(curve2.ExtendToPoint(intersection, curve2.IEndPoint(), tangentExtensions, tolerance));
                         }
                         else if (!C1SP && C2SP)
                         {
                             intersection = curveIntersections.ClosestPoint(curve1.IStartPoint());
-                            resultCurves.AddRange(curve1.TrimExtendToPoint(intersection, curve1.IEndPoint(), tangentExtensions, tolerance));
-                            resultCurves.AddRange(curve2.TrimExtendToPoint(curve2.IStartPoint(), intersection, tangentExtensions, tolerance));
+                            resultCurves.AddRange(curve1.ExtendToPoint(intersection, curve1.IEndPoint(), tangentExtensions, tolerance));
+                            resultCurves.AddRange(curve2.ExtendToPoint(curve2.IStartPoint(), intersection, tangentExtensions, tolerance));
                             resultCurves[0] = resultCurves[0].IFlip();
                             resultCurves[1] = resultCurves[1].IFlip();
                         }
                         else
                         {
                             intersection = curveIntersections.ClosestPoint(curve1.IStartPoint());
-                            resultCurves.AddRange(curve1.TrimExtendToPoint(intersection, curve1.IEndPoint(), tangentExtensions, tolerance));
-                            resultCurves.AddRange(curve2.TrimExtendToPoint(intersection, curve2.IEndPoint(), tangentExtensions, tolerance));
+                            resultCurves.AddRange(curve1.ExtendToPoint(intersection, curve1.IEndPoint(), tangentExtensions, tolerance));
+                            resultCurves.AddRange(curve2.ExtendToPoint(intersection, curve2.IEndPoint(), tangentExtensions, tolerance));
                             resultCurves[0] = resultCurves[0].IFlip();
                         }
                     }
@@ -756,8 +772,8 @@ namespace BH.Engine.Geometry
                                 Reflection.Compute.RecordWarning("Couldn't create fillet");
                                 return null;
                             }
-                            PolyCurve subResult1 = new PolyCurve { Curves = curve1.TrimExtendToPoint(curve1.IStartPoint(), intersection, tangentExtensions, tolerance).ToList() };
-                            PolyCurve subResult2 = new PolyCurve { Curves = curve2.TrimExtendToPoint(curve2.IStartPoint(), intersection, tangentExtensions, tolerance).ToList() };
+                            PolyCurve subResult1 = new PolyCurve { Curves = curve1.ExtendToPoint(curve1.IStartPoint(), intersection, tangentExtensions, tolerance).ToList() };
+                            PolyCurve subResult2 = new PolyCurve { Curves = curve2.ExtendToPoint(curve2.IStartPoint(), intersection, tangentExtensions, tolerance).ToList() };
                             subResult2 = subResult2.Flip();
                             resultCurves.AddRange(subResult1.Curves);
                             resultCurves.AddRange(subResult2.Curves);                            
@@ -781,8 +797,8 @@ namespace BH.Engine.Geometry
                                 return null;
                             }
                             
-                            resultCurves.AddRange(curve1.TrimExtendToPoint(curve1.IStartPoint(), intersection, tangentExtensions, tolerance));
-                            resultCurves.AddRange(curve2.TrimExtendToPoint(intersection, curve2.IEndPoint(), tangentExtensions, tolerance));
+                            resultCurves.AddRange(curve1.ExtendToPoint(curve1.IStartPoint(), intersection, tangentExtensions, tolerance));
+                            resultCurves.AddRange(curve2.ExtendToPoint(intersection, curve2.IEndPoint(), tangentExtensions, tolerance));
                         }
                         else if (!C1SP && C2SP)
                         {
@@ -802,8 +818,8 @@ namespace BH.Engine.Geometry
                                 Reflection.Compute.RecordWarning("Couldn't create fillet");
                                 return null;
                             }
-                            PolyCurve subResult1 = new PolyCurve { Curves = curve1.TrimExtendToPoint(intersection, curve1.IEndPoint(), tangentExtensions, tolerance).ToList() };
-                            PolyCurve subResult2 = new PolyCurve { Curves = curve2.TrimExtendToPoint(curve2.IStartPoint(), intersection, tangentExtensions, tolerance).ToList() };
+                            PolyCurve subResult1 = new PolyCurve { Curves = curve1.ExtendToPoint(intersection, curve1.IEndPoint(), tangentExtensions, tolerance).ToList() };
+                            PolyCurve subResult2 = new PolyCurve { Curves = curve2.ExtendToPoint(curve2.IStartPoint(), intersection, tangentExtensions, tolerance).ToList() };
                             subResult1 = subResult1.Flip();
                             subResult2 = subResult2.Flip();
                             resultCurves.AddRange(subResult1.Curves);
@@ -827,8 +843,8 @@ namespace BH.Engine.Geometry
                                 Reflection.Compute.RecordWarning("Couldn't create fillet");
                                 return null;
                             }
-                            PolyCurve subResult1 = new PolyCurve { Curves = curve1.TrimExtendToPoint(intersection, curve1.IEndPoint(), tangentExtensions, tolerance).ToList() };
-                            PolyCurve subResult2 = new PolyCurve { Curves = curve2.TrimExtendToPoint(intersection, curve2.IEndPoint(), tangentExtensions, tolerance).ToList() };
+                            PolyCurve subResult1 = new PolyCurve { Curves = curve1.ExtendToPoint(intersection, curve1.IEndPoint(), tangentExtensions, tolerance).ToList() };
+                            PolyCurve subResult2 = new PolyCurve { Curves = curve2.ExtendToPoint(intersection, curve2.IEndPoint(), tangentExtensions, tolerance).ToList() };
                             subResult1 = subResult1.Flip();
                             resultCurves.AddRange(subResult1.Curves);
                             resultCurves.AddRange(subResult2.Curves);
