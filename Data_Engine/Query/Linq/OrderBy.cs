@@ -40,9 +40,8 @@ namespace BH.Engine.Data
         [Input("propertyName", "The name of the property to sort the list of objects by. Note that the property must be able to be sorted - e.g. numbers/text")]
         public static List<T> OrderBy<T>(this List<T> objects, string propertyName)
         {
-            if (objects == null || objects.Count == 0) return null;
+            if (objects == null || objects.Count == 0) return new List<T>();
             int groupedObjects = objects.GroupBy(x => x.GetType()).Count();
-            System.Type objectType = objects[0].GetType();
             if (groupedObjects != 1)
             {
                 BHRE.Compute.RecordError("All objects in the list to be sorted should be of similiar type.");
@@ -52,7 +51,7 @@ namespace BH.Engine.Data
             {
                 if (!propertyName.Contains("."))
                 {
-                    System.Reflection.PropertyInfo prop = objects[0].GetType().GetProperty(propertyName);
+                    System.Reflection.PropertyInfo prop = objects.First(x => x != null).GetType().GetProperty(propertyName);
                     if (prop != null)
                         return objects.OrderBy(x => prop.GetValue(x)).ToList();
                 }
