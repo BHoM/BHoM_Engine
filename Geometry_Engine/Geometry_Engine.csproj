@@ -60,7 +60,7 @@
     <Compile Include="Compute\ClusterCollinear.cs" />
     <Compile Include="Compute\ClusterCoplanar.cs" />
     <Compile Include="Compute\CullDuplicates.cs" />
-    <Compile Include="Compute\CollapseToPolylineEq.cs" />
+    <Compile Include="Compute\CollapseToScaledPolyline.cs" />
     <Compile Include="Compute\WetBlanketInterpetation.cs" />
     <Compile Include="Compute\IntegrateRegion.cs" />
     <Compile Include="Compute\DistributeOutlines.cs" />

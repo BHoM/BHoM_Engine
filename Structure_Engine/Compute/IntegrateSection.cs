@@ -41,9 +41,9 @@ namespace BH.Engine.Structure
 
         [Description("Calculates Section properties for a region")]
         [Input("curves", "Edge curves that make up the section")]
-        [Input("tolerance", "")]
+        [Input("tolerance", "The angleTolerance for dividing the section curves")]
         [Output("V", "Dictionary containing the calculated values")]
-        public static Dictionary<string, object> IntegrateSection(List<ICurve> curves, double tolerance = 0.0025)
+        public static Dictionary<string, object> IntegrateSection(List<ICurve> curves, double tolerance = 0.04)
         {
             Dictionary<string, object> results = new Dictionary<string, object>();
 
@@ -63,7 +63,7 @@ namespace BH.Engine.Structure
             //----- //how much testing is needed?
             // selfintersections, intersections, closed (...?)
 
-            //Engine.Geometry.Compute.DistributeOutlines(curvesZ);
+            //Engine.Geometry.Compute.DistributeOutlines(curvesZ); (?)
             if (curvesZ.Count > 1)
             {
                 // find which is in which
@@ -105,10 +105,9 @@ namespace BH.Engine.Structure
             //-----
             // To Polyline
             List<Polyline> pLines = new List<Polyline>();
-            double DimTolerance = Math.Max(totalHeight, totalWidth) * tolerance;
             for (int i = 0; i < curvesZ.Count; i++)
             {
-                pLines.Add(curvesZ[i].CollapseToPolylineEq(DimTolerance));
+                pLines.Add(curvesZ[i].CollapseToScaledPolyline(tolerance, 0.0025, Math.Max(totalHeight, totalWidth)));
             }
             Polyline pLineZ = Engine.Geometry.Compute.WetBlanketInterpretation(pLines);
 

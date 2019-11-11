@@ -45,19 +45,19 @@ namespace BH.Engine.Structure
             // The last LineSegment should be the upper one
             // use WetBlanketInterpertation()
 
-            double Sy = 0;
-            double ShearArea = 0;
+            double sy = 0;
+            double shearArea = 0;
 
             List<Point> controllPoints = new List<Point>(pLine.ControlPoints);
 
             // Calculate Sy for the linesegment (by IntSurfLine()) and add to Sy +=
             for (int i = 0; i < controllPoints.Count - 2; i++)
             {
-                ShearArea += ShearAreaLine(controllPoints[i], controllPoints[i + 1], Sy);
-                Sy += Geometry.Compute.IntSurfLine(controllPoints[i], controllPoints[i + 1] , 1);
+                shearArea += ShearAreaLine(controllPoints[i], controllPoints[i + 1], sy);
+                sy += Geometry.Compute.IntSurfLine(controllPoints[i], controllPoints[i + 1] , 1);
             }
 
-            return Math.Pow(momentOfInertia, 2) / ShearArea;
+            return Math.Pow(momentOfInertia, 2) / shearArea;
         }
 
         /***************************************************/

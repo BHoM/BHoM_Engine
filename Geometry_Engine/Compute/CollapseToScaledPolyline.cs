@@ -34,19 +34,41 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Collapses a PolyCurve to a polyline where curved segments are split into segments of length tolerance")]
+        [Description("Collapses a PolyCurve to a polyline where curved segments are split into Polyline segments for computations. Where their partitioning is based on both their curvature and size, ergo; shorter segment less partitions, very curved segment more partitions")]
         [Input("curve", "The curve to collapse")]
-        [Input("tolerance", "the length of a segment the curved parts are broken up into")]
+        [Input("tolerance", "tolarance is the angleTolerance for a unit circle, the tolerance value will variy by: toleranceGrowth over curvature")]
+        [Input("toleranceGrowth", "toleranceGrowth is the value that decides how much the angleTolerance varies due to curvature")]
+        [Input("scale", "the radie of a baseline circle for the angle tolerance, smaller circles will have less segments and bigger more. deafalult of 0 will auto-generate for the PolyCurve")]
         [Output("C", "A polyline aproximating the provided curve")]
-        public static Polyline CollapseToPolylineEq(this PolyCurve curve, double tolerance = 0.001)
+        public static Polyline CollapseToScaledPolyline(this PolyCurve curve, double tolerance = 0.04, double toleranceGrowth = 0.001, double scale = 0)
         {
             if (tolerance <= 0)
                 return null;
+            if (tolerance < 0)
+                toleranceGrowth = 0;
+            if (scale <= 0)
+            {
+                BoundingBox box = curve.IBounds();
+
+                Point min = box.Min;
+                Point max = box.Max;
+                double totalWidth = max.X - min.X;
+                double totalHeight = max.Y - min.Y;
+
+                scale = Math.Max(totalHeight, totalWidth) / 2;
+            }
+
+            double scaledTolerance = scale * toleranceGrowth;
+
+            tolerance -= scaledTolerance;
 
             List<Polyline> list = new List<Polyline>();
             foreach (ICurve c in curve.Curves)
             {
-                list.Add(Divide(c as dynamic, tolerance));
+                if (c is PolyCurve)
+                    list.Add(CollapseToScaledPolyline(c as PolyCurve, tolerance, toleranceGrowth, scale));
+
+                list.Add(Divide(c as dynamic, scaledTolerance, tolerance));
             }
             return (Geometry.Compute.Join(list))[0];
         }
@@ -55,45 +77,40 @@ namespace BH.Engine.Geometry
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private static Polyline Divide(this Line line, double tolerance)
+        private static Polyline Divide(this Line line, double tolerance, double baseTolerance)
         {
             return new Polyline() { ControlPoints = new List<Point>() { line.Start, line.End } };
         }
 
         /***************************************************/
 
-        private static Polyline Divide(this Polyline line, double tolerance)
+        private static Polyline Divide(this Polyline line, double tolerance, double baseTolerance)
         {
             return new Polyline() { ControlPoints = line.ControlPoints };
         }
 
         /***************************************************/
 
-        private static Polyline Divide(this PolyCurve line, double tolerance)
+        private static Polyline Divide(this Arc arc, double tolerance, double baseTolerance)
         {
-            return CollapseToPolylineEq(line);          //TODO
+            return arc.CollapseToPolyline(Soften(arc.Radius, tolerance, baseTolerance),200);
         }
 
         /***************************************************/
 
-        private static Polyline Divide(this Arc arc, double tolerance)
+        private static Polyline Divide(this Circle circle, double tolerance, double baseTolerance)
         {
-            return arc.CollapseToPolyline(Soften(arc.Radius, tolerance),200);
+            return circle.CollapseToPolyline(Soften(circle.Radius, tolerance, baseTolerance), 200);
         }
 
         /***************************************************/
 
-        private static Polyline Divide(this Circle circle, double tolerance)
+        private static double Soften(double r, double tolerance, double baseTolerance)
         {
-            return circle.CollapseToPolyline(Soften(circle.Radius, tolerance), 200);
+            return (tolerance / r) + baseTolerance;     
         }
 
         /***************************************************/
-
-        private static double Soften(double r, double tolerance)
-        {
-            return (tolerance / r) + 0.038;     
-        }
 
     }
 }
