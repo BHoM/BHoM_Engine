@@ -39,12 +39,14 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static double PlasticModulus(this Polyline pLine, double area)
+        public static double PlasticModulus(this Polyline pLine)
         {
             // the Polyline should have the upper side along the x-axis and the rest of the lines should be defineble as a function of x apart for veritcal segments
             // The last LineSegment should be the upper one
             // use WetBlanketInterpertation()
 
+            double area = BH.Engine.Geometry.Compute.IIntegrateRegion(pLine, 0);   //Should be calculated here for consistency
+            
             int index;
             double halfArea = area * 0.5;
 
