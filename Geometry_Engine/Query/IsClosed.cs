@@ -117,6 +117,9 @@ namespace BH.Engine.Geometry
 
         public static bool IsClosed(this NurbsSurface surface, double tolerance = Tolerance.Distance)
         {
+            if (surface.IsPeriodic())
+                return true;
+
             double sqTolerance = tolerance * tolerance;
             List<int> uvCount = surface.UVCount();
             return Enumerable.Range(0, uvCount[1]).All(i => surface.ControlPoints[i].SquareDistance(surface.ControlPoints[surface.ControlPoints.Count - uvCount[1] + i]) <= sqTolerance)
