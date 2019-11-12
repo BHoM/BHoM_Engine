@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
  *
@@ -20,8 +20,8 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Geometry;
 using System.Collections.Generic;
+using BH.oM.Geometry;
 
 namespace BH.Engine.Geometry
 {
@@ -31,9 +31,17 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static List<int> UVCount(this NurbsSurface surf)
+        public static bool IsPeriodic(this NurbsSurface surface)
         {
-            return new List<int> { surf.UKnots.Count - surf.UDegree + 1, surf.VKnots.Count - surf.VDegree + 1 };
+            int uMultiplicity = 1;
+            int vMultiplicity = 1;
+
+            while (surface.UKnots[uMultiplicity - 1] == surface.UKnots[uMultiplicity])
+                uMultiplicity++;
+            while (surface.VKnots[vMultiplicity - 1] == surface.VKnots[vMultiplicity])
+                vMultiplicity++;
+
+            return (uMultiplicity != surface.UDegree || vMultiplicity != surface.VDegree);
         }
 
         /***************************************************/
