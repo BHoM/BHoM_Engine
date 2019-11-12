@@ -511,7 +511,7 @@ namespace BH.Engine.Geometry
 
 
         /***************************************************/
-        /***         Private Methods                     ***/
+        /***  Private Methods                            ***/
         /***************************************************/
 
         private static List<ICurve> ExtendToPoint(this ICurve curve, Point startPoint, Point endPoint, bool tangentExtension, double tolerance)
@@ -523,10 +523,10 @@ namespace BH.Engine.Geometry
             double end = endPoint.Distance(curve.IEndPoint());
 
             if (startPoint.IsOnCurve(curve, tolerance))
-                start = -start;            
+                start = -start;
 
             if (endPoint.IsOnCurve(curve, tolerance))
-                end = -end;            
+                end = -end;
 
             List<ICurve> result = new List<ICurve>();
 
@@ -564,9 +564,9 @@ namespace BH.Engine.Geometry
 
             return result;
         }
-        
+
         /***************************************************/
-            
+
         private static PolyCurve Fillet(this ICurve curve1, ICurve curve2, bool tangentExtensions, bool keepCurve1StartPoint, bool keepCurve2StartPoint, double tolerance = Tolerance.Distance)
         {
             //TODO:
@@ -714,8 +714,8 @@ namespace BH.Engine.Geometry
                             pCurve2.Curves.Add(new Circle { Centre = (curve2 as Arc).Centre(), Normal = (curve2 as Arc).Normal(), Radius = (curve2 as Arc).Radius });
                         else
                             pCurve2.Curves.Add(new Line { Start = (curve2 as Line).Start, End = (curve2 as Line).End, Infinite = true });
-                        
-                        List<Point> curveIntersections = pCurve1.CurveIntersections(pCurve2, tolerance);                        
+
+                        List<Point> curveIntersections = pCurve1.CurveIntersections(pCurve2, tolerance);
                         if (curveIntersections.Count == 0)
                         {
                             Reflection.Compute.RecordError("Curves' extensions do not intersect");
@@ -755,11 +755,10 @@ namespace BH.Engine.Geometry
                     {
                         if (C1SP && C2SP)
                         {
-                            
                             Line tanLine1 = Create.Line(curve1.IEndPoint(), curve1.IEndDir() / tolerance);
                             tanLine1.Infinite = false;
                             PolyCurve pCurve1 = new PolyCurve { Curves = { curve1, tanLine1 } };
-                            
+
                             Line tanLine2 = Create.Line(curve2.IEndPoint(), curve2.IEndDir() / tolerance);
                             tanLine2.Infinite = false;
                             PolyCurve pCurve2 = new PolyCurve { Curves = { curve2, tanLine2 } };
@@ -776,7 +775,7 @@ namespace BH.Engine.Geometry
                             PolyCurve subResult2 = new PolyCurve { Curves = curve2.ExtendToPoint(curve2.IStartPoint(), intersection, tangentExtensions, tolerance).ToList() };
                             subResult2 = subResult2.Flip();
                             resultCurves.AddRange(subResult1.Curves);
-                            resultCurves.AddRange(subResult2.Curves);                            
+                            resultCurves.AddRange(subResult2.Curves);
                         }
                         else if (C1SP && !C2SP)
                         {
@@ -786,8 +785,8 @@ namespace BH.Engine.Geometry
 
                             Line tanLine2 = Create.Line(curve2.IStartPoint(), curve2.IStartDir().Reverse() / tolerance);
                             tanLine2.Infinite = false;
-                            PolyCurve pCurve2 = new PolyCurve { Curves = { tanLine2, curve2 } };                            
-                                                        
+                            PolyCurve pCurve2 = new PolyCurve { Curves = { tanLine2, curve2 } };
+
                             List<Point> curveIntersecions = pCurve1.ICurveIntersections(pCurve2, tolerance);
                             if (curveIntersecions.Count > 0)
                                 intersection = curveIntersecions.ClosestPoint(curve1.IEndPoint());
@@ -796,7 +795,7 @@ namespace BH.Engine.Geometry
                                 Reflection.Compute.RecordWarning("Couldn't create fillet");
                                 return null;
                             }
-                            
+
                             resultCurves.AddRange(curve1.ExtendToPoint(curve1.IStartPoint(), intersection, tangentExtensions, tolerance));
                             resultCurves.AddRange(curve2.ExtendToPoint(intersection, curve2.IEndPoint(), tangentExtensions, tolerance));
                         }
@@ -804,7 +803,7 @@ namespace BH.Engine.Geometry
                         {
                             Line tanLine1 = Create.Line(curve1.IStartPoint(), curve1.IStartDir().Reverse() / tolerance);
                             tanLine1.Infinite = false;
-                            PolyCurve pCurve1 = new PolyCurve { Curves = {  tanLine1, curve1 } };
+                            PolyCurve pCurve1 = new PolyCurve { Curves = { tanLine1, curve1 } };
 
                             Line tanLine2 = Create.Line(curve2.IEndPoint(), curve2.IEndDir() / tolerance);
                             tanLine2.Infinite = false;
@@ -860,10 +859,10 @@ namespace BH.Engine.Geometry
                     resultCurves.InsertRange(i, temp.Curves);
                 }
 
-            PolyCurve result =  new PolyCurve { Curves = resultCurves };
+            PolyCurve result = new PolyCurve { Curves = resultCurves };
             return result;
         }
-        
+
         /***************************************************/
     }
 }

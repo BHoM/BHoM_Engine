@@ -36,7 +36,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Curves                  ****/
         /***************************************************/
 
-        [DeprecatedAttribute("2.4", "Replaced with method taking more arguments", null, "Extend")]
+        [DeprecatedAttribute("2.4", "Replaced with a method taking more arguments", null, "Extend")]
         public static Line Extend(this Line curve, double start = 0.0, double end = 0.0)
         {
             return curve.Extend(start, end, false, Tolerance.Distance);
@@ -103,7 +103,6 @@ namespace BH.Engine.Geometry
                 Radius = curve.Radius,
                 StartAngle = 0,
                 EndAngle = curve.EndAngle + startAngleExt + endAngleExt
-
             };
         }
 
@@ -208,7 +207,7 @@ namespace BH.Engine.Geometry
         }
 
         /***************************************************/
-        
+
         [Description("Extends curve by given lengths")]
         [Input("curve", "Curve to extend")]
         [Input("start", "Length of extension on the begining of a curve. Negative value will trim the curve")]
@@ -270,6 +269,9 @@ namespace BH.Engine.Geometry
             return new PolyCurve { Curves = curves };
         }
 
+
+        /***************************************************/
+        /***   Public Methods - Interfaces               ***/
         /***************************************************/
 
         [Description("Extends curve by given lengths")]
@@ -285,7 +287,7 @@ namespace BH.Engine.Geometry
 
 
         /***************************************************/
-        /***   Private Methods - tangent extensions      ***/
+        /***   Private Methods - Tangent extensions      ***/
         /***************************************************/
 
         private static ICurve ExtendTangent(this Arc curve, double start = 0.0, double end = 0.0, double tolerance = Tolerance.Distance)
