@@ -110,6 +110,19 @@ namespace BH.Engine.Geometry
             return IsClosed(curve as dynamic, tolerance);
         }
 
+
+        /***************************************************/
+        /**** Public Methods - Nurbs Surfaces           ****/
+        /***************************************************/
+
+        public static bool IsClosed(this NurbsSurface surface, double tolerance = Tolerance.Distance)
+        {
+            double sqTolerance = tolerance * tolerance;
+            List<int> uvCount = surface.UVCount();
+            return Enumerable.Range(0, uvCount[1]).All(i => surface.ControlPoints[i].SquareDistance(surface.ControlPoints[surface.ControlPoints.Count - uvCount[1] + i]) <= sqTolerance)
+                || Enumerable.Range(0, uvCount[0]).All(i => surface.ControlPoints[i * uvCount[1]].SquareDistance(surface.ControlPoints[(i + 1) * uvCount[1] - 1]) <= sqTolerance);
+        }
+
         /***************************************************/
     }
 }
