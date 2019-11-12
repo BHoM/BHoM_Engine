@@ -141,6 +141,56 @@ namespace BH.Engine.Geometry
             return FitPlane(curve.ControlPoints, tolerance);
         }
 
+        /******************************************/
+        /****            IElement0D            ****/
+        /******************************************/
+
+        public static Plane FitPlane(this IElement0D element0D, double tolerance = Tolerance.Distance)
+        {
+            return null;
+        }
+
+
+        /******************************************/
+        /****            IElement1D            ****/
+        /******************************************/
+
+        public static Plane FitPlane(this IElement1D element1D, double tolerance = Tolerance.Distance)
+        {
+            List<Point> controlPoints = element1D.ControlPoints();
+
+            return controlPoints.FitPlane(tolerance);
+        }
+
+
+        /******************************************/
+        /****            IElement2D            ****/
+        /******************************************/
+
+        public static Plane FitPlane(this IElement2D element2D, bool externalOnly = false, double tolerance = Tolerance.Distance)
+        {
+            List<Point> controlPoints = element2D.IOutlineCurve().ControlPoints();
+
+            if (!externalOnly)
+            {
+                foreach (PolyCurve internalOutline in element2D.IInternalOutlineCurves())
+                {
+                    controlPoints.AddRange(internalOutline.ControlPoints());
+                }
+            }
+
+            return controlPoints.FitPlane(tolerance);
+        }
+
+
+        /******************************************/
+        /****            Interfaces            ****/
+        /******************************************/
+
+        public static Plane IFitPlane(this IElement element, bool externalOnly = false, double tolerance = Tolerance.Distance)
+        {
+            return FitPlane(element as dynamic, externalOnly, tolerance);
+        }
 
         /***************************************************/
         /**** Public Methods - Interfaces               ****/
@@ -151,6 +201,22 @@ namespace BH.Engine.Geometry
             return FitPlane(curve as dynamic, tolerance);
         }
 
-        /***************************************************/
+        /******************************************/
+        /****         Private methods          ****/
+        /******************************************/
+
+        private static Plane FitPlane(this IElement0D element0D, bool externalOnly = false, double tolerance = Tolerance.Distance)
+        {
+            return null;
+        }
+
+        /******************************************/
+
+        private static Plane FitPlane(this IElement1D element1D, bool externalOnly = false, double tolerance = Tolerance.Distance)
+        {
+            return element1D.FitPlane(tolerance);
+        }
+
+        /******************************************/
     }
 }

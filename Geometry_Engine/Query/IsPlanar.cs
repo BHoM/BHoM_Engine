@@ -148,7 +148,7 @@ namespace BH.Engine.Geometry
         {
             foreach (ISurface s in surface.Surfaces)
             {
-                if (!s.IIsPlanar(tolerance))
+                if (!IsPlanar(s as dynamic,tolerance))
                     return false;
             }
             return true;
@@ -171,22 +171,77 @@ namespace BH.Engine.Geometry
         {
             foreach (IGeometry element in group.Elements)
             {
-                if (!element.IIsPlanar(tolerance))
+                if (!IsPlanar(element as dynamic,tolerance))
                     return false;
             }
             return true;
         }
 
+        /******************************************/
+        /****            IElement0D            ****/
+        /******************************************/
+
+        public static bool IsPlanar(this IElement0D element0D, double tolerance = Tolerance.Distance)
+        {
+            return true;
+        }
+
+
+        /******************************************/
+        /****            IElement1D            ****/
+        /******************************************/
+
+        public static bool IsPlanar(this IElement1D element1D, double tolerance = Tolerance.Distance)
+        {
+            return element1D.IGeometry().IsPlanar(tolerance);
+        }
+
+
+        /******************************************/
+        /****            IElement2D            ****/
+        /******************************************/
+
+        public static bool IsPlanar(this IElement2D element2D, bool externalOnly = false, double tolerance = Tolerance.Distance)
+        {
+            return element2D.ControlPoints(externalOnly).IsCoplanar(tolerance);
+        }
+
+
+        /******************************************/
+        /****            Interfaces            ****/
+        /******************************************/
+
+        public static bool IIsPlanar(this IElement element, bool externalOnly = false, double tolerance = Tolerance.Distance)
+        {
+            return IsPlanar(element as dynamic, externalOnly, tolerance);
+        }
 
         /***************************************************/
         /**** Public Methods = Interfaces               ****/
-        /***************************************************/
-        
+        /***************************************************
+
         public static bool IIsPlanar(this IGeometry geometry, double tolerance = Tolerance.Distance)
         {
             return IsPlanar(geometry as dynamic, tolerance);
         }
 
+        /******************************************/
+        /****         Private methods          ****/
+        /******************************************/
+
+        private static bool IsPlanar(this IElement0D element0D, bool externalOnly = false, double tolerance = Tolerance.Distance)
+        {
+            return element0D.IsPlanar(tolerance);
+        }
+
+        /******************************************/
+
+        private static bool IsPlanar(this IElement1D element1D, bool externalOnly = false, double tolerance = Tolerance.Distance)
+        {
+            return element1D.IGeometry().IIsPlanar(false, tolerance);
+        }
+
         /***************************************************/
+
     }
 }
