@@ -59,19 +59,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Compute\DistributeOutlines.cs" />
     <Compile Include="Create\ConstructionPhase.cs" />
     <Compile Include="Create\Material.cs" />
-    <Compile Include="Create\NewElement0D.cs" />
-    <Compile Include="Create\NewElement1D.cs" />
-    <Compile Include="Create\NewInternalElement2D.cs" />
-    <Compile Include="Modify\TranslateIElements.cs" />
-    <Compile Include="Modify\SetElements0D.cs" />
-    <Compile Include="Modify\SetGeometry.cs" />
-    <Compile Include="Modify\SetInternalElements2D.cs" />
-    <Compile Include="Modify\SetOutlineElements1D.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Query\Normal.cs" />
     <Compile Include="Query\ShearModulus.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -88,6 +78,10 @@
       <Name>Reflection_Engine</Name>
       <Private>False</Private>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Compute\" />
+    <Folder Include="Modify\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

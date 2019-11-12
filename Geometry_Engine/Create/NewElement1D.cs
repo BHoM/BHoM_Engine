@@ -19,10 +19,10 @@
  * You should have received a copy of the GNU Lesser General Public License     
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
-
+ 
 using BH.oM.Geometry;
 
-namespace BH.Engine.Common
+namespace BH.Engine.Geometry
 {
     public static partial class Create
     {
@@ -30,9 +30,9 @@ namespace BH.Engine.Common
         /****            IElement2D            ****/
         /******************************************/
 
-        public static IElement2D INewInternalElement2D(this IElement2D element2D)
+        public static IElement1D INewElement1D(this IElement2D element2D, ICurve curve)
         {
-            return Reflection.Compute.RunExtensionMethod(element2D, "NewInternalElement2D") as IElement2D;
+            return Reflection.Compute.RunExtensionMethod(element2D, "NewElement1D", new object[] { curve }) as IElement1D;
         }
 
         /******************************************/

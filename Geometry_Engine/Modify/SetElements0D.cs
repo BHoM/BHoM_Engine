@@ -20,31 +20,20 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.Engine.Geometry;
-using BH.oM.Common;
 using BH.oM.Geometry;
+using System.Collections.Generic;
 
-namespace BH.Engine.Common
+namespace BH.Engine.Geometry
 {
     public static partial class Modify
     {
         /******************************************/
-        /****            IElement0D            ****/
-        /******************************************/
-
-        public static IElement0D ISetGeometry(this IElement0D element0D, Point point)
-        {
-            return Reflection.Compute.RunExtensionMethod(element0D, "SetGeometry", new object[] { point }) as IElement0D;
-        }
-
-
-        /******************************************/
         /****            IElement1D            ****/
         /******************************************/
 
-        public static IElement1D ISetGeometry(this IElement1D element1D, ICurve curve)
+        public static IElement1D ISetElements0D(this IElement1D element1D, List<IElement0D> newElements0D)
         {
-            return Reflection.Compute.RunExtensionMethod(element1D, "SetGeometry", new object[] { curve }) as IElement1D;
+            return Reflection.Compute.RunExtensionMethod(element1D, "SetElements0D", new object[] { newElements0D }) as IElement1D;
         }
 
         /******************************************/

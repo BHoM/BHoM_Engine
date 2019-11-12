@@ -23,17 +23,17 @@
 using BH.oM.Geometry;
 using System.Collections.Generic;
 
-namespace BH.Engine.Common
+namespace BH.Engine.Geometry
 {
     public static partial class Modify
     {
         /******************************************/
-        /****            IElement1D            ****/
+        /****            IElement2D            ****/
         /******************************************/
 
-        public static IElement1D ISetElements0D(this IElement1D element1D, List<IElement0D> newElements0D)
+        public static IElement2D ISetInternalElements2D(this IElement2D element2D, List<IElement2D> newElements2D)
         {
-            return Reflection.Compute.RunExtensionMethod(element1D, "SetElements0D", new object[] { newElements0D }) as IElement1D;
+            return Reflection.Compute.RunExtensionMethod(element2D, "SetInternalElements2D", new object[] { newElements2D }) as IElement2D;
         }
 
         /******************************************/

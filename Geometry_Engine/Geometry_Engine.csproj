@@ -80,6 +80,9 @@
     <Compile Include="Create\Cuboid.cs" />
     <Compile Include="Create\Cylinder.cs" />
     <Compile Include="Create\Geometry.cs" />
+    <Compile Include="Create\NewElement0D.cs" />
+    <Compile Include="Create\NewElement1D.cs" />
+    <Compile Include="Create\NewInternalElement2D.cs" />
     <Compile Include="Create\SettingOut\Grid.cs" />
     <Compile Include="Create\SettingOut\Level.cs" />
     <Compile Include="Create\PlanarSurface.cs" />
@@ -110,7 +113,10 @@
     <Compile Include="Modify\CollapseToPolyline.cs" />
     <Compile Include="Modify\RemoveLeastSignificantVertices.cs" />
     <Compile Include="Modify\RemoveShortSegments.cs" />
+    <Compile Include="Modify\SetElements0D.cs" />
     <Compile Include="Modify\SetGeometry.cs" />
+    <Compile Include="Modify\SetInternalElements2D.cs" />
+    <Compile Include="Modify\SetOutlineElements1D.cs" />
     <Compile Include="Modify\Simplify.cs" />
     <Compile Include="Modify\Extend.cs" />
     <Compile Include="Modify\Join.cs" />

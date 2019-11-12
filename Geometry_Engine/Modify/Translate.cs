@@ -24,6 +24,7 @@ using BH.oM.Geometry;
 using BH.oM.Geometry.CoordinateSystem;
 using BH.oM.Reflection.Attributes;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace BH.Engine.Geometry
@@ -157,6 +158,42 @@ namespace BH.Engine.Geometry
         public static PolySurface Translate(this PolySurface surface, Vector transform)
         {
             return new PolySurface { Surfaces = surface.Surfaces.Select(x => x.ITranslate(transform)).ToList() };
+        }
+
+        /***************************************************/
+        /**** Public Methods - IElements                ****/
+        /***************************************************/
+
+        public static IElement2D Translate(this IElement2D element2D, Vector transform) //todo: move this to analytical along with other IElement methods
+        {
+            List<IElement1D> newOutline = new List<IElement1D>();
+            foreach (IElement1D element1D in element2D.IOutlineElements1D())
+            {
+                newOutline.Add(element1D.Translate(transform));
+            }
+            IElement2D result = element2D.ISetOutlineElements1D(newOutline);
+
+            List<IElement2D> newInternalOutlines = new List<IElement2D>();
+            foreach (IElement2D internalElement2D in result.IInternalElements2D())
+            {
+                newInternalOutlines.Add(internalElement2D.Translate(transform));
+            }
+            result = result.ISetInternalElements2D(newInternalOutlines);
+            return result;
+        }
+
+        /***************************************************/
+
+        public static IElement1D Translate(this IElement1D element1D, Vector transform) //todo: move this to analytical along with other IElement methods
+        {
+            return element1D.ISetGeometry(Geometry.Modify.ITranslate(element1D.IGeometry(), transform));
+        }
+
+        /******************************************/
+
+        public static IElement0D Translate(this IElement0D element0D, Vector transform) //todo: move this to analytical along with other IElement methods
+        {
+            return element0D.ISetGeometry(Geometry.Modify.Translate(element0D.IGeometry(), transform));
         }
 
 
