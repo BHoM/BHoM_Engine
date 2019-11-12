@@ -45,7 +45,7 @@ namespace BH.Engine.Environment
         [Output("area", "The area of the panel")]
         public static double Area(this Panel panel)
         {
-            return BH.Engine.Common.Query.Area(panel);
+            return BH.Engine.Geometry.Query.Area(panel);
         }
 
         [Description("Returns the floor area of a space represented by Environment Panels")]

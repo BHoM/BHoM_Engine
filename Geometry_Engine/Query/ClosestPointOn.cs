@@ -58,7 +58,7 @@ namespace BH.Engine.Geometry
         {
             if (!element2D.IsPlanar())
             {
-                Compute.NonPlanarElementError();
+                Engine.Reflection.Compute.RecordError("Non-Planar element");
                 return null;
             }
 

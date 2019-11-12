@@ -20,6 +20,7 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.oM.Base;
 using BH.oM.Geometry;
 using BH.oM.Geometry.CoordinateSystem;
 using BH.oM.Reflection.Attributes;
@@ -340,9 +341,9 @@ namespace BH.Engine.Geometry
             if (surfaces.Count == 0)
                 return null;
 
-            BoundingBox box = surfaces[0].IBounds();
+            BoundingBox box = Bounds(surfaces[0] as dynamic);
             for (int i = 1; i < surfaces.Count; i++)
-                box += surfaces[i].IBounds();
+                box += Bounds(surfaces[i] as dynamic);
 
             return box;
         }
@@ -401,9 +402,9 @@ namespace BH.Engine.Geometry
             if (elements.Count == 0)
                 return null;
 
-            BoundingBox box = elements[0].IBounds();
+            BoundingBox box = Bounds(elements[0] as dynamic);
             for (int i = 1; i < elements.Count; i++)
-                box += elements[i].IBounds();
+                box += Bounds(elements[i] as dynamic);
 
             return box;
         }
@@ -451,7 +452,29 @@ namespace BH.Engine.Geometry
         /****        Interface methods         ****/
         /******************************************/
 
-        public static BoundingBox IBounds(this IElement element)
+        public static BoundingBox IBounds(this IObject element)
+        {
+            if (element == null)
+                return null;
+
+            if (element is IGeometry || element is IElement)
+                return Bounds(element as dynamic);
+            return null;
+        }
+
+        /******************************************/
+
+        public static BoundingBox Bounds(this IGeometry element)
+        {
+            if (element == null)
+                return null;
+
+            return Bounds(element as dynamic);
+        }
+
+        /******************************************/
+
+        public static BoundingBox Bounds(this IElement element)
         {
             if (element == null)
                 return null;
@@ -478,7 +501,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
         /**** Private Methods - Fallback                ****/
-        /***************************************************/
+        /***************************************************
 
         private static BoundingBox Bounds(IGeometry geometry)
         {
