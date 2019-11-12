@@ -23,17 +23,17 @@
 using BH.oM.Geometry;
 using System.Collections.Generic;
 
-namespace BH.Engine.Common
+namespace BH.Engine.Geometry
 {
     public static partial class Query
     {
         /******************************************/
-        /****            IElement2D            ****/
+        /****            IElement1D            ****/
         /******************************************/
 
-        public static List<IElement1D> IOutlineElements1D(this IElement2D element2D)
+        public static List<IElement0D> IElements0D(this IElement1D element1D)
         {
-            return Reflection.Compute.RunExtensionMethod(element2D, "OutlineElements1D") as List<IElement1D>;
+            return Reflection.Compute.RunExtensionMethod(element1D, "Elements0D") as List<IElement0D>;
         }
 
         /******************************************/

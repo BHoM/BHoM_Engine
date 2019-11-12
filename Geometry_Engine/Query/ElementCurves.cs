@@ -22,13 +22,12 @@
 
 using BH.Engine.Geometry;
 using BH.oM.Base;
-using BH.oM.Common;
 using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace BH.Engine.Common
+namespace BH.Engine.Geometry
 {
     public static partial class Query
     {

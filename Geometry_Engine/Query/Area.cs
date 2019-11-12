@@ -134,6 +134,21 @@ namespace BH.Engine.Geometry
             return Math.Abs((new Vector { X = x, Y = y, Z = z } * p.Normal) * 0.5);
         }
 
+        /***************************************************/
+        /**** Public Methods - IElement2D               ****/
+        /***************************************************/
+
+        public static double Area(this IElement2D element2D)
+        {
+            double result = element2D.IOutlineCurve().IArea();
+
+            List<PolyCurve> openings = element2D.IInternalOutlineCurves().BooleanUnion();
+
+            foreach (PolyCurve o in openings)
+                result -= o.Area();
+
+            return result;
+        }
 
         /***************************************************/
         /**** Public Methods - Surfaces                 ****/

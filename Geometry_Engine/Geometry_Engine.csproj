@@ -120,10 +120,15 @@
     <Compile Include="Modify\SplitAtPoints.cs" />
     <Compile Include="Query\BasisFunction.cs" />
     <Compile Include="Query\Centroid.cs" />
+    <Compile Include="Query\ClosestPointOn.cs" />
     <Compile Include="Query\CurveIntersections.cs" />
     <Compile Include="Compute\CurveProximity.cs" />
+    <Compile Include="Query\ElementCurves.cs" />
+    <Compile Include="Query\Elements0D.cs" />
+    <Compile Include="Query\ElementVertices.cs" />
     <Compile Include="Query\Geometry.cs" />
     <Compile Include="Query\GetLineSegment.cs" />
+    <Compile Include="Query\InternalElements2D.cs" />
     <Compile Include="Query\IsEqual.cs" />
     <Compile Include="Query\Clone.cs" />
     <Compile Include="Convert\NurbsForm.cs" />
@@ -170,6 +175,8 @@
     <Compile Include="Query\Length.cs" />
     <Compile Include="Query\Normal.cs" />
     <Compile Include="Compute\FitPlane.cs" />
+    <Compile Include="Query\OutlineCurve.cs" />
+    <Compile Include="Query\OutlineElements1D.cs" />
     <Compile Include="Query\ParameterAtPoint.cs" />
     <Compile Include="Query\PlaneIntersection.cs" />
     <Compile Include="Query\PointAtLength.cs" />

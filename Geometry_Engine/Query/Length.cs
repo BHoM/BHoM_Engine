@@ -105,7 +105,15 @@ namespace BH.Engine.Geometry
             return length;
         }
 
+        /******************************************/
+        /****            IElement1D            ****/
+        /******************************************/
 
+        public static double Length(this IElement1D element1D)
+        {
+            return element1D.IGeometry().ILength();
+        }
+        
         /***************************************************/
         /**** Public Methods - Interfaces               ****/
         /***************************************************/

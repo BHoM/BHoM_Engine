@@ -1,4 +1,4 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
  *
@@ -20,23 +20,20 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.Engine.Geometry;
-using BH.oM.Common;
 using BH.oM.Geometry;
-using System;
 using System.Collections.Generic;
 
-namespace BH.Engine.Common
+namespace BH.Engine.Geometry
 {
     public static partial class Query
     {
         /******************************************/
-        /****            IElement1D            ****/
+        /****            IElement2D            ****/
         /******************************************/
 
-        public static double Length(this IElement1D element1D)
+        public static List<IElement2D> IInternalElements2D(this IElement2D element2D)
         {
-            return element1D.IGeometry().ILength();
+            return Reflection.Compute.RunExtensionMethod(element2D, "InternalElements2D") as List<IElement2D>;
         }
 
         /******************************************/

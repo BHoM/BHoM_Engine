@@ -25,6 +25,7 @@ using BH.oM.Geometry.CoordinateSystem;
 using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace BH.Engine.Geometry
 {
@@ -407,17 +408,71 @@ namespace BH.Engine.Geometry
             return box;
         }
 
+        /******************************************/
+        /****            IElement0D            ****/
+        /******************************************/
 
-        /***************************************************/
-        /**** Public Methods - Interfaces               ****/
-        /***************************************************/
-
-        public static BoundingBox IBounds(this IGeometry geometry)
+        public static BoundingBox Bounds(this IElement0D element0D)
         {
-            if (geometry == null)
+            return Bounds(element0D.IGeometry());
+        }
+
+
+        /******************************************/
+        /****            IElement1D            ****/
+        /******************************************/
+
+        public static BoundingBox Bounds(this IElement1D element1D)
+        {
+            return IBounds(element1D.IGeometry());
+        }
+
+
+        /******************************************/
+        /****            IElement2D            ****/
+        /******************************************/
+
+        public static BoundingBox Bounds(this IElement2D element2D)
+        {
+            List<ICurve> elementCurves = element2D.ElementCurves(true);
+
+            if (elementCurves.Count == 0)
                 return null;
 
-            return Bounds(geometry as dynamic);
+            BoundingBox box = IBounds(elementCurves[0]);
+            for (int i = 1; i < elementCurves.Count; i++)
+                box += IBounds(elementCurves[i]);
+
+            return box;
+        }
+
+
+        /******************************************/
+        /****        Interface methods         ****/
+        /******************************************/
+
+        public static BoundingBox IBounds(this IElement element)
+        {
+            if (element == null)
+                return null;
+
+            return Bounds(element as dynamic);
+        }
+
+        /******************************************/
+
+        public static BoundingBox IBounds(this IEnumerable<IElement> elements)
+        {
+            if (elements.Count() == 0)
+                return null;
+
+            BoundingBox box = elements.First().IBounds();
+            foreach (IElement element in elements.Skip(1))
+            {
+                box += element.IBounds();
+            }
+
+            return box;
         }
 
 

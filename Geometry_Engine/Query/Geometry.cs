@@ -92,6 +92,27 @@ namespace BH.Engine.Geometry
             return grid.Curve;
         }
 
+        /******************************************/
+        /****            IElement0D            ****/
+        /******************************************/
+
+        public static Point IGeometry(this IElement0D element0D)
+        {
+            return Reflection.Compute.RunExtensionMethod(element0D, "Geometry") as Point;
+        }
+
+
+        /******************************************/
+        /****            IElement1D            ****/
+        /******************************************/
+
+        public static ICurve IGeometry(this IElement1D element1D)
+        {
+            return Reflection.Compute.RunExtensionMethod(element1D, "Geometry") as ICurve;
+        }
+
+        /******************************************/
+
 
         /***************************************************/
         /****              Interface Methods            ****/

@@ -141,6 +141,96 @@ namespace BH.Engine.Geometry
             throw new NotImplementedException();
         }
 
+        /******************************************/
+        /****            IElement              ****/
+        /******************************************/
+
+        /******************************************/
+        /****            IElement0D            ****/
+        /******************************************/
+
+        public static double Distance(this IElement0D element0D, IElement0D refElement)
+        {
+            return Distance(element0D.IGeometry(), refElement.IGeometry());
+        }
+
+        /******************************************/
+
+        public static double Distance(this IElement0D element0D, IElement1D refElement)
+        {
+            Point point = element0D.IGeometry();
+            return Distance(point, refElement.ClosestPointOn(point));
+        }
+
+        /******************************************/
+
+        public static double Distance(this IElement0D element0D, IElement2D refElement)
+        {
+            Point point = element0D.IGeometry();
+            return Distance(point, refElement.ClosestPointOn(point));
+        }
+
+
+        /******************************************/
+        /****            IElement1D            ****/
+        /******************************************/
+
+        public static double Distance(this IElement1D element1D, IElement0D refElement)
+        {
+            return refElement.Distance(element1D);
+        }
+
+        /******************************************/
+
+        [NotImplemented]
+        public static double Distance(this IElement1D element1D, IElement1D refElement)
+        {
+            throw new NotImplementedException();
+        }
+
+        /******************************************/
+
+        [NotImplemented]
+        public static double Distance(this IElement1D element1D, IElement2D refElement)
+        {
+            throw new NotImplementedException();
+        }
+
+
+        /******************************************/
+        /****            IElement2D            ****/
+        /******************************************/
+
+        public static double Distance(this IElement2D element2D, IElement0D refElement)
+        {
+            return refElement.Distance(element2D);
+        }
+
+        /******************************************/
+
+        public static double Distance(this IElement2D element2D, IElement1D refElement)
+        {
+            return refElement.Distance(element2D);
+        }
+
+        /******************************************/
+
+        [NotImplemented]
+        public static double Distance(this IElement2D element2D, IElement2D refElement)
+        {
+            throw new NotImplementedException();
+        }
+
+
+        /******************************************/
+        /****        Interface methods         ****/
+        /******************************************/
+
+        public static double IDistance(this IElement element1, IElement element2)
+        {
+            return Distance(element1 as dynamic, element2 as dynamic);
+        }
+
 
         /***************************************************/
         /****       Public Methods - Curve/Curve        ****/

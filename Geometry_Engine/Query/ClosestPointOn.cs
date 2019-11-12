@@ -1,4 +1,4 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
@@ -20,15 +20,13 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.Engine.Geometry;
 using BH.oM.Base;
-using BH.oM.Common;
 using BH.oM.Geometry;
+using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
-namespace BH.Engine.Common
+namespace BH.Engine.Geometry
 {
     public static partial class Query
     {
@@ -36,9 +34,9 @@ namespace BH.Engine.Common
         /****            IElement0D            ****/
         /******************************************/
 
-        public static BoundingBox Bounds(this IElement0D element0D)
+        public static Point ClosestPointOn(this IElement0D element0D, Point point)
         {
-            return Geometry.Query.Bounds(element0D.IGeometry());
+            return element0D.IGeometry();
         }
 
 
@@ -46,9 +44,9 @@ namespace BH.Engine.Common
         /****            IElement1D            ****/
         /******************************************/
 
-        public static BoundingBox Bounds(this IElement1D element1D)
+        public static Point ClosestPointOn(this IElement1D element1D, Point point)
         {
-            return Geometry.Query.IBounds(element1D.IGeometry());
+            return IClosestPoint(element1D.IGeometry(), point);
         }
 
 
@@ -56,18 +54,25 @@ namespace BH.Engine.Common
         /****            IElement2D            ****/
         /******************************************/
 
-        public static BoundingBox Bounds(this IElement2D element2D)
+        public static Point ClosestPointOn(this IElement2D element2D, Point point)
         {
-            List<ICurve> elementCurves = element2D.ElementCurves(true);
-
-            if (elementCurves.Count == 0)
+            if (!element2D.IsPlanar())
+            {
+                Compute.NonPlanarElementError();
                 return null;
+            }
 
-            BoundingBox box = Geometry.Query.IBounds(elementCurves[0]);
-            for (int i = 1; i < elementCurves.Count; i++)
-                box += Geometry.Query.IBounds(elementCurves[i]);
+            Plane panelPlane = element2D.FitPlane();
+            List<Point> cPt = new List<Point> { point.Project(panelPlane) };
 
-            return box;
+            foreach (PolyCurve outline in element2D.IInternalOutlineCurves())
+            {
+                if (outline.IsContaining(cPt))
+                    return outline.ClosestPointOn(cPt[0]);
+            }
+
+            PolyCurve panelOutline = element2D.IOutlineCurve();
+            return (panelOutline.IsContaining(cPt)) ? cPt[0] : panelOutline.ClosestPointOn(cPt[0]);
         }
 
 
@@ -75,25 +80,20 @@ namespace BH.Engine.Common
         /****        Interface methods         ****/
         /******************************************/
 
-        public static BoundingBox IBounds(this IElement element)
+        public static Point IClosestPointOn(this IElement element, Point point)
         {
-            return Bounds(element as dynamic);
+            return ClosestPointOn(element as dynamic, point);
         }
 
+
+        /******************************************/
+        /****        Deprecated methods        ****/
         /******************************************/
 
-        public static BoundingBox IBounds(this IEnumerable<IElement> elements)
+        [DeprecatedAttribute("2.3", "Input type changed from BHoMObject to IElement", null, "IClosestPointOn")]
+        public static Point IClosestPointOn(this BHoMObject element, Point point)
         {
-            if (elements.Count() == 0)
-                return null;
-
-            BoundingBox box = elements.First().IBounds();
-            foreach (IElement element in elements.Skip(1))
-            {
-                box += element.IBounds();
-            }
-
-            return box;
+            return IClosestPointOn(element as IElement, point);
         }
 
         /******************************************/

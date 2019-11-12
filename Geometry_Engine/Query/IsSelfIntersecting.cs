@@ -122,6 +122,33 @@ namespace BH.Engine.Geometry
             return false;
         }
 
+        /******************************************/
+        /****            IElement1D            ****/
+        /******************************************/
+
+        public static bool IsSelfIntersecting(this IElement1D element1D, double tolerance = Tolerance.Distance)
+        {
+            return IIsSelfIntersecting(element1D.IGeometry(), tolerance);
+        }
+
+
+        /******************************************/
+        /****            IElement2D            ****/
+        /******************************************/
+
+        public static bool IsSelfIntersecting(this IElement2D element2D, double tolerance = Tolerance.Distance)
+        {
+            if (IIsSelfIntersecting(element2D.IOutlineCurve(), tolerance))
+                return true;
+
+            foreach (PolyCurve internalOutline in element2D.IInternalOutlineCurves())
+            {
+                if (IIsSelfIntersecting(internalOutline, tolerance))
+                    return true;
+            }
+
+            return false;
+        }
 
         /***************************************************/
         /**** Public Methods = Interfaces               ****/

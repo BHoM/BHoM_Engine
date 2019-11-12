@@ -19,55 +19,36 @@
  * You should have received a copy of the GNU Lesser General Public License     
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
-
-using BH.Engine.Geometry;
-using BH.oM.Common;
+ 
 using BH.oM.Geometry;
-using System;
 using System.Collections.Generic;
+using System.Linq;
 
-namespace BH.Engine.Common
+namespace BH.Engine.Geometry
 {
     public static partial class Query
     {
         /******************************************/
-        /****            IElement1D            ****/
-        /******************************************/
-
-        public static Point Centroid(this IElement1D element1D)
-        {
-            //TODO: find a proper centre of weight of a curve (not an average of control points)
-            throw new NotImplementedException();
-        }
-
-
-        /******************************************/
         /****            IElement2D            ****/
         /******************************************/
 
-        public static Point Centroid(this IElement2D element2D)
+        public static PolyCurve IOutlineCurve(this IElement2D element2D)
         {
-            Point tmp = Geometry.Query.Centroid(element2D.IOutlineCurve());
-            double area = Geometry.Query.Area(element2D.IOutlineCurve());
+            return new PolyCurve { Curves = element2D.IOutlineElements1D().Select(e => e.IGeometry()).ToList() };
+        }
 
-            double x = tmp.X * area;
-            double y = tmp.Y * area;
-            double z = tmp.Z * area;
+        /******************************************/
 
+        public static PolyCurve IOutlineCurve(this List<IElement1D> elements1D)
+        {
+            return new PolyCurve { Curves = elements1D.Select(e => e.IGeometry()).ToList() };
+        }
 
-            List<PolyCurve> openings = Geometry.Compute.BooleanUnion(element2D.IInternalOutlineCurves());
+        /******************************************/
 
-            foreach (ICurve o in openings)
-            {
-                Point oTmp = Geometry.Query.ICentroid(o);
-                double oArea = o.IArea();
-                x -= oTmp.X * oArea;
-                y -= oTmp.Y * oArea;
-                z -= oTmp.Z * oArea;
-                area -= oArea;
-            }
-            
-            return new Point { X = x / area, Y = y / area, Z = z / area };
+        public static List<PolyCurve> IInternalOutlineCurves(this IElement2D element2D)
+        {
+            return element2D.IInternalElements2D().Select(x => x.IOutlineCurve()).ToList();
         }
 
         /******************************************/

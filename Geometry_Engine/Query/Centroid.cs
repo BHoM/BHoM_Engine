@@ -327,7 +327,49 @@ namespace BH.Engine.Geometry
 
             return o + ((v / arc.Radius) * length);
         }
-                       
+
+        /******************************************/
+        /****            IElement1D            ****/
+        /******************************************/
+
+        public static Point Centroid(this IElement1D element1D)
+        {
+            //TODO: find a proper centre of weight of a curve (not an average of control points)
+            throw new NotImplementedException();
+        }
+
+
+        /******************************************/
+        /****            IElement2D            ****/
+        /******************************************/
+
+        public static Point Centroid(this IElement2D element2D)
+        {
+            Point tmp = Centroid(element2D.IOutlineCurve());
+            double area = Area(element2D.IOutlineCurve());
+
+            double x = tmp.X * area;
+            double y = tmp.Y * area;
+            double z = tmp.Z * area;
+
+
+            List<PolyCurve> openings = Compute.BooleanUnion(element2D.IInternalOutlineCurves());
+
+            foreach (ICurve o in openings)
+            {
+                Point oTmp = ICentroid(o);
+                double oArea = o.IArea();
+                x -= oTmp.X * oArea;
+                y -= oTmp.Y * oArea;
+                z -= oTmp.Z * oArea;
+                area -= oArea;
+            }
+
+            return new Point { X = x / area, Y = y / area, Z = z / area };
+        }
+
+        /******************************************/
+
         /***************************************************/
         /**** Public Methods - Interfaces               ****/
         /***************************************************/

@@ -85,6 +85,15 @@ namespace BH.Engine.Geometry
             return normals.ToList();
         }
 
+        /******************************************/
+        /****            IElement2D            ****/
+        /******************************************/
+
+        public static Vector Normal(this IElement2D element2D)
+        {
+            return element2D.IOutlineCurve().Normal();
+        }
+        
         /***************************************************/
         /**** Public Methods - Curves                   ****/
         /***************************************************/
