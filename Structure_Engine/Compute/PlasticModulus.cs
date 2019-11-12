@@ -119,8 +119,8 @@ namespace BH.Engine.Structure
                     double x1 = (-b + sqrt) / (2 * a);
                     double x2 = (-b - sqrt) / (2 * a);
 
-                    bool between1 = (x1 >= x && x1 < z);
-                    bool between2 = (x2 >= x && x2 < z);
+                    bool between1 = (x1 >= x - Tolerance.MicroDistance && x1 < z + Tolerance.MicroDistance);
+                    bool between2 = (x2 >= x - Tolerance.MicroDistance && x2 < z + Tolerance.MicroDistance);
 
                     if (between1 && between2)           //TODO test if its always x1 or x2 or whatever
                     {
