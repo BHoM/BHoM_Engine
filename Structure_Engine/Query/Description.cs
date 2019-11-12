@@ -27,19 +27,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BH.oM.Base;
+using BH.oM.Structure.SurfaceProperties;
 
 namespace BH.Engine.Structure
 {
     public static partial class Query
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /**** Public Methods - Profiles                 ****/
         /***************************************************/
 
         public static string Description(this ISectionProfile profile)
         {
-            return "Box " + profile.Height + "x" + profile.Width + "x" + profile.WebThickness + "x" + profile.FlangeThickness + "x" + profile.RootRadius + "x" + profile.ToeRadius;
+            return "I " + profile.Height + "x" + profile.Width + "x" + profile.WebThickness + "x" + profile.FlangeThickness;// + "x" + profile.RootRadius + "x" + profile.ToeRadius;
         }
+
+        /***************************************************/
 
         public static string Description(this BoxProfile profile)
         {
@@ -50,14 +54,14 @@ namespace BH.Engine.Structure
 
         public static string Description(this AngleProfile profile)
         {
-            return "Angle " + profile.Height + "x" + profile.Width + "x" + profile.WebThickness + "x" + profile.FlangeThickness + "x" + profile.RootRadius + "x" + profile.ToeRadius;
+            return "Angle " + profile.Height + "x" + profile.Width + "x" + profile.WebThickness + "x" + profile.FlangeThickness;// + "x" + profile.RootRadius + "x" + profile.ToeRadius;
         }
 
         /***************************************************/
 
         public static string Description(this ChannelProfile profile)
         {
-            return "Channel " + profile.Height + "x" + profile.FlangeWidth + "x" + profile.WebThickness + "x" + profile.FlangeThickness + "x" + profile.RootRadius + "x" + profile.ToeRadius;
+            return "Channel " + profile.Height + "x" + profile.FlangeWidth + "x" + profile.WebThickness + "x" + profile.FlangeThickness;// + "x" + profile.RootRadius + "x" + profile.ToeRadius;
         }
 
         /***************************************************/
@@ -71,7 +75,7 @@ namespace BH.Engine.Structure
 
         public static string Description(this FabricatedBoxProfile profile)
         {
-            return "FabBox " + profile.Height + "x" + profile.Width + "x" + profile.WebThickness + "x" + profile.TopFlangeThickness + "x" + profile.BotFlangeThickness;
+            return "FabBox " + profile.Height + "x" + profile.Width + "x" + profile.WebThickness + "x" + profile.TopFlangeThickness + "x" + profile.BotFlangeThickness;// + "x" + profile.WeldSize;
         }
 
         /***************************************************/
@@ -92,7 +96,7 @@ namespace BH.Engine.Structure
 
         public static string Description(this FabricatedISectionProfile profile)
         {
-            return "FabI " + profile.Height + "x" + profile.TopFlangeWidth + "x" + profile.BotFlangeWidth + "x" + profile.WebThickness + "x" + profile.TopFlangeThickness + "x" + profile.BotFlangeThickness + "x" + profile.WeldSize;
+            return "FabI " + profile.Height + "x" + profile.WebThickness + "x" + profile.TopFlangeWidth + "x" + profile.BotFlangeWidth + "x" + profile.TopFlangeThickness + "x" + profile.BotFlangeThickness;// + "x" + profile.WeldSize;
         }
 
         /***************************************************/
@@ -113,7 +117,7 @@ namespace BH.Engine.Structure
 
         public static string Description(this TSectionProfile profile)
         {
-            return "T " + profile.Height + "x" + profile.Width + "x" + profile.WebThickness + "x" + profile.FlangeThickness + "x" + profile.RootRadius + "x" + profile.ToeRadius;
+            return "T " + profile.Height + "x" + profile.Width + "x" + profile.WebThickness + "x" + profile.FlangeThickness; //+ "x" + profile.RootRadius + "x" + profile.ToeRadius;
         }
 
         /***************************************************/
@@ -121,6 +125,56 @@ namespace BH.Engine.Structure
         public static string Description(this GeneralisedTSectionProfile profile)
         {
             return "GenT " + profile.Height + "x" + profile.WebThickness + "x" + profile.LeftOutstandWidth + "x" + profile.LeftOutstandThickness + "x" + profile.RightOutstandWidth + "x" + profile.RightOutstandThickness;
+        }
+
+        /***************************************************/
+        /**** Public Methods - Sections                 ****/
+        /***************************************************/
+
+        public static string Description(this SteelSection section)
+        {
+            return "Steel " + section.SectionProfile.IDescription() + " - " + section.Material.Name;
+        }
+
+        /***************************************************/
+
+        public static string Description(this ConcreteSection section)
+        {
+            return "Concrete " + section.SectionProfile.IDescription() + " - " + section.Material.Name;
+        }
+
+        /***************************************************/
+
+        public static string Description(this CableSection section)
+        {
+            return "Cable " + section.NumberOfCables + "x dia " + section.CableDiameter + " - " + section.Material.Name;
+        }
+
+        /***************************************************/
+
+        public static string Description(this ExplicitSection section)
+        {
+            return "Explicit A: " + section.Area + " Iy: " + section.Iy + " Iz: " + section.Iz + " J: " + section.J + " - " + section.Material.Name;
+        }        
+
+        /***************************************************/
+        /**** Public Methods - Surface Properties       ****/
+        /***************************************************/
+
+        public static string Description(this ConstantThickness property)
+        {
+            return "THK " + property.Thickness + " - " + property.Material.Name;            
+        }
+
+
+
+        /***************************************************/
+        /**** Public Methods - Interfaces               ****/
+        /***************************************************/
+
+        public static string IDescription(this ISectionProperty section)
+        {
+            return Description(section as dynamic);
         }
 
         /***************************************************/
@@ -132,32 +186,22 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static string Description(this SteelSection section)
+        public static string IDescription(this ISurfaceProperty property)
         {
-            return "Steel " + section.SectionProfile.IDescription() + "-" + section.Material.Name;
+            return Description(property as dynamic);
+        }
+
+
+        /***************************************************/
+        /**** Private Methods                            ****/
+        /***************************************************/
+
+        private static string Description(IObject obj)
+        {
+            return "";
         }
 
         /***************************************************/
 
-        public static string Description(this ConcreteSection section)
-        {
-            return "Concrete " + section.SectionProfile.IDescription() + "-" + section.Material.Name;
-        }
-
-        /***************************************************/
-
-        public static string IDescription(this ISectionProperty section)
-        {
-            return Description(section as dynamic);
-        }
-
-        /***************************************************/
-
-        public static string Description()
-        {
-            return "No description found";
-        }
-
-        /***************************************************/
     }
 }
