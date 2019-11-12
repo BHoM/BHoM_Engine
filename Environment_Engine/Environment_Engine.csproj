@@ -47,11 +47,6 @@
       <HintPath>..\..\BHoM\Build\Environment_oM.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Geometry_Engine">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Build\Geometry_Engine.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="Geometry_oM">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\BHoM\Build\Geometry_oM.dll</HintPath>
@@ -211,6 +206,10 @@
       <Project>{8d8cd66f-76f3-4750-936d-380d51bc67d6}</Project>
       <Name>Common_Engine</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Geometry_Engine\Geometry_Engine.csproj">
+      <Project>{89ab2dcb-ef87-4cba-b59c-c16a8a71d333}</Project>
+      <Name>Geometry_Engine</Name>
     </ProjectReference>
     <ProjectReference Include="..\Physical_Engine\Physical_Engine.csproj">
       <Project>{f2073888-9bd8-4d8f-9b3c-27577b388530}</Project>
