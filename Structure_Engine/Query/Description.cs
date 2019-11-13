@@ -147,7 +147,7 @@ namespace BH.Engine.Structure
 
         public static string Description(this CableSection section)
         {
-            return "Cable " + section.NumberOfCables + "x dia " + section.CableDiameter + " - " + section.Material.Name;
+            return "Cable " + section.NumberOfCables + " x dia " + section.CableDiameter + " - " + section.Material.Name;
         }
 
         /***************************************************/
@@ -166,7 +166,26 @@ namespace BH.Engine.Structure
             return "THK " + property.Thickness + " - " + property.Material.Name;            
         }
 
+        /***************************************************/
 
+        public static string Description(this Ribbed property)
+        {
+            return "Ribbed Depth:" + property.TotalDepth + " Spacing: " + property.Spacing + " sWidth: " + property.StemWidth + " - " + property.Material.Name;
+        }
+
+        /***************************************************/
+
+        public static string Description(this Waffle property)
+        {
+            return "Waffle DepthX:" + property.TotalDepthX + " DepthY:" + property.TotalDepthY + " SpacingX: " + property.SpacingX + " SpacingY: " + property.SpacingY + " sWidthX: " + property.StemWidthX + " sWidthY: " + property.StemWidthY + " - " + property.Material.Name;
+        }
+
+        /***************************************************/
+
+        public static string Description(this LoadingPanelProperty property)
+        {
+            return "LoadingPanel LoadApplication: " + property.LoadApplication + " value:" + property.ToString();
+        }
 
         /***************************************************/
         /**** Public Methods - Interfaces               ****/
@@ -193,7 +212,7 @@ namespace BH.Engine.Structure
 
 
         /***************************************************/
-        /**** Private Methods                            ****/
+        /**** Private Methods                           ****/
         /***************************************************/
 
         private static string Description(IObject obj)
