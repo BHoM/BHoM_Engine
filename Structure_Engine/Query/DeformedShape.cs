@@ -68,8 +68,7 @@ namespace BH.Engine.Structure
 
         public static List<Mesh> DeformedShape(List<FEMesh> meshes, List<MeshResult> meshDeformations, string adapterId, object loadCase, double scaleFactor = 1.0)
         {
-            //TODO: Filter by case
-            //meshDeformations = meshDeformations.SelectCase(loadCase);
+            meshDeformations = meshDeformations.SelectCase(loadCase);
 
             List<Mesh> defMeshes = new List<Mesh>();
 
