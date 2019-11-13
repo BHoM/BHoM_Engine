@@ -40,7 +40,7 @@ namespace BH.Engine.Structure
 
         public static string Description(this ISectionProfile profile)
         {
-            return "I " + profile.Height + "x" + profile.Width + "x" + profile.WebThickness + "x" + profile.FlangeThickness;// + "x" + profile.RootRadius + "x" + profile.ToeRadius;
+            return "I " + profile.Height + "x" + profile.Width + "x" + profile.WebThickness + "x" + profile.FlangeThickness;
         }
 
         /***************************************************/
@@ -54,14 +54,14 @@ namespace BH.Engine.Structure
 
         public static string Description(this AngleProfile profile)
         {
-            return "Angle " + profile.Height + "x" + profile.Width + "x" + profile.WebThickness + "x" + profile.FlangeThickness;// + "x" + profile.RootRadius + "x" + profile.ToeRadius;
+            return "Angle " + profile.Height + "x" + profile.Width + "x" + profile.WebThickness + "x" + profile.FlangeThickness;
         }
 
         /***************************************************/
 
         public static string Description(this ChannelProfile profile)
         {
-            return "Channel " + profile.Height + "x" + profile.FlangeWidth + "x" + profile.WebThickness + "x" + profile.FlangeThickness;// + "x" + profile.RootRadius + "x" + profile.ToeRadius;
+            return "Channel " + profile.Height + "x" + profile.FlangeWidth + "x" + profile.WebThickness + "x" + profile.FlangeThickness;
         }
 
         /***************************************************/
@@ -75,7 +75,7 @@ namespace BH.Engine.Structure
 
         public static string Description(this FabricatedBoxProfile profile)
         {
-            return "FabBox " + profile.Height + "x" + profile.Width + "x" + profile.WebThickness + "x" + profile.TopFlangeThickness + "x" + profile.BotFlangeThickness;// + "x" + profile.WeldSize;
+            return "FabBox " + profile.Height + "x" + profile.Width + "x" + profile.WebThickness + "x" + profile.TopFlangeThickness + "x" + profile.BotFlangeThickness;
         }
 
         /***************************************************/
@@ -89,14 +89,14 @@ namespace BH.Engine.Structure
 
         public static string Description(this KiteProfile profile)
         {
-            return "Kite " + profile.Angle1 + "x" + profile.Width1 + "x" + profile.Thickness;
+            return "Kite " + Math.Round(profile.Angle1,2) + "x" + profile.Width1 + "x" + profile.Thickness;
         }
 
         /***************************************************/
 
         public static string Description(this FabricatedISectionProfile profile)
         {
-            return "FabI " + profile.Height + "x" + profile.WebThickness + "x" + profile.TopFlangeWidth + "x" + profile.BotFlangeWidth + "x" + profile.TopFlangeThickness + "x" + profile.BotFlangeThickness;// + "x" + profile.WeldSize;
+            return "FabI " + profile.Height + "x" + profile.WebThickness + "x" + profile.TopFlangeWidth + "x" + profile.BotFlangeWidth + "x" + profile.TopFlangeThickness + "x" + profile.BotFlangeThickness;
         }
 
         /***************************************************/
@@ -117,7 +117,7 @@ namespace BH.Engine.Structure
 
         public static string Description(this TSectionProfile profile)
         {
-            return "T " + profile.Height + "x" + profile.Width + "x" + profile.WebThickness + "x" + profile.FlangeThickness; //+ "x" + profile.RootRadius + "x" + profile.ToeRadius;
+            return "T " + profile.Height + "x" + profile.Width + "x" + profile.WebThickness + "x" + profile.FlangeThickness;
         }
 
         /***************************************************/
@@ -126,6 +126,13 @@ namespace BH.Engine.Structure
         {
             return "GenT " + profile.Height + "x" + profile.WebThickness + "x" + profile.LeftOutstandWidth + "x" + profile.LeftOutstandThickness + "x" + profile.RightOutstandWidth + "x" + profile.RightOutstandThickness;
         }
+
+        /***************************************************/
+
+        public static string Description(this TubeProfile profile)
+        {
+            return "Tube " + profile.Diameter + "x" + profile.Thickness;
+        }        
 
         /***************************************************/
         /**** Public Methods - Sections                 ****/
@@ -184,7 +191,7 @@ namespace BH.Engine.Structure
 
         public static string Description(this LoadingPanelProperty property)
         {
-            return "LoadingPanel LoadApplication: " + property.LoadApplication + " value:" + property.ToString();
+            return "LoadingPanel Application: " + property.LoadApplication + " RefEdge: " + property.ReferenceEdge;
         }
 
         /***************************************************/
