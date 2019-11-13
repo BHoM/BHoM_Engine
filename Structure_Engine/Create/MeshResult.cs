@@ -47,7 +47,7 @@ namespace BH.Engine.Structure.Results
                                                 IEnumerable<object> objectIds = null)
         {
             FilterRequest request = new FilterRequest();
-            request.Type = typeof(MeshResults);
+            request.Type = typeof(MeshResult);
 
             request.Equalities["Smoothing"] = smoothing;
             request.Equalities["Layer"] = layer;
