@@ -20,14 +20,17 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.Engine.Reflection;
 using BH.oM.Base;
 using MongoDB.Bson;
 using MongoDB.Bson.IO;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Bson.Serialization.Serializers;
+using BH.Engine.Versioning;
 using System;
 using System.Reflection;
+using BH.Engine.Serialiser.Objects;
 
 namespace BH.Engine.Serialiser.BsonSerializers
 {
@@ -250,15 +253,19 @@ namespace BH.Engine.Serialiser.BsonSerializers
             }
             catch
             {
-                // This is were we can call the Version_Engine to return the new type string from the old one if exists
-                string recordedType = GetCurrentTypeValue(reader);
-
-                // If failed, return Custom object
-                context.Reader.ReturnToBookmark(bookmark);
-                Engine.Reflection.Compute.RecordWarning("The type " + recordedType + " is unknown -> data returned as custom objects.");
-                IBsonSerializer customSerializer = BsonSerializer.LookupSerializer(typeof(CustomObject));
-                return customSerializer.Deserialize(context, args);
+                actualType = typeof(IDeprecated);
             }
+            finally
+            {
+                context.Reader.ReturnToBookmark(bookmark);
+            }
+
+            if (actualType == null)
+                return null;
+
+            // Make sure the type is not deprecated
+            if (Config.AllowUpgradeFromBson && actualType.IIsDeprecated() && !Config.TypesWithoutUpgrade.Contains(actualType))
+                actualType = typeof(IDeprecated);
 
             // Handle the special case where the type is object
             if (actualType == typeof(object))
@@ -273,75 +280,43 @@ namespace BH.Engine.Serialiser.BsonSerializers
                 return new object();
             }
 
-            // Handle the genral case of finding the correct deserialiser and calling it
-            IBsonSerializer bsonSerializer = BsonSerializer.LookupSerializer(actualType);
-            IBsonPolymorphicSerializer bsonPolymorphicSerializer = bsonSerializer as IBsonPolymorphicSerializer;
-            if (bsonPolymorphicSerializer != null && bsonPolymorphicSerializer.IsDiscriminatorCompatibleWithObjectSerializer)
+            // Handle the general case of finding the correct deserialiser and calling it
+            try
             {
-                bookmark = context.Reader.GetBookmark();
-                try
-                {
-                    return bsonSerializer.Deserialize(context, args);
-                }
-                catch
-                {
-                    context.Reader.ReturnToBookmark(bookmark);
-                    Engine.Reflection.Compute.RecordWarning("Cannot find a definition of type " + actualType.FullName + " that matches the object to deserialise -> data returned as custom objects.");
-                    IBsonSerializer customSerializer = BsonSerializer.LookupSerializer(typeof(CustomObject));
-                    CustomObject fallback = customSerializer.Deserialize(context, args) as CustomObject;
-
-                    //This is where we will try to get the correct object type from the custom object using the versionning engine
-
-                    // If failed, just return the custom object 
-                    return fallback;
-                }
+                IBsonSerializer bsonSerializer = BsonSerializer.LookupSerializer(actualType);
+                return bsonSerializer.Deserialize(context, args);
             }
-
-            object result = null;
-            bool flag = false;
-            reader.ReadStartDocument();
-            while (reader.ReadBsonType() != 0)
+            catch (Exception e)
             {
-                string text = reader.ReadName();
-                if (text == _discriminatorConvention.ElementName)
+                context.Reader.ReturnToBookmark(bookmark);
+
+                if (e is FormatException && e.InnerException != null && e.InnerException is FormatException)
                 {
-                    reader.SkipValue();
+                    // A child of the object is causing problems. Try to recover from custom object
+                    IBsonSerializer customSerializer = BsonSerializer.LookupSerializer(typeof(CustomObject));
+                    object customObject = customSerializer.Deserialize(context, args);
+                    object result = Convert.FromBson(customObject.ToBson());
+
+                    if (result is CustomObject)
+                        Engine.Reflection.Compute.RecordWarning("The type " + actualType.FullName + " is unknown -> data returned as custom objects.");
+
+                    return result;
+
+                }
+                else if (actualType != typeof(IDeprecated))
+                {
+                    // Try the deprecated object serialiser
+                    IBsonSerializer deprecatedSerializer = BsonSerializer.LookupSerializer(typeof(IDeprecated));
+                    return deprecatedSerializer.Deserialize(context, args);
                 }
                 else
                 {
-                    if (!(text == "_v"))
-                    {
-                        throw new FormatException($"Unexpected element name: '{text}'.");
-                    }
-                    result = bsonSerializer.Deserialize(context);
-                    flag = true;
+                    // Last resort: just return the custom object 
+                    Engine.Reflection.Compute.RecordWarning("The type " + actualType.FullName + " is unknown -> data returned as custom objects.");
+                    IBsonSerializer customSerializer = BsonSerializer.LookupSerializer(typeof(CustomObject));
+                    return customSerializer.Deserialize(context, args);
                 }
             }
-            reader.ReadEndDocument();
-            if (!flag)
-            {
-                throw new FormatException("_v element missing.");
-            }
-            return result;
-        }
-
-        /*******************************************/
-
-        protected string GetCurrentTypeValue(IBsonReader reader)
-        {
-            // You gotta do what you gotta do. I couldn't really find an easy way to get the type as a string without spending time in the source code of Mongo
-            BindingFlags bindFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static;
-            Type type = reader.GetType();
-
-            FieldInfo field = type.GetField("_currentValue", bindFlags);
-            if (field == null)
-                return "";
-
-            BsonValue value = field.GetValue(reader) as BsonValue;
-            if (value == null)
-                return "";
-
-            return value.AsString;
         }
 
 

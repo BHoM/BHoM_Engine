@@ -1,6 +1,6 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -25,11 +25,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using BH.oM.Testing;
-using System.ComponentModel;
-using BH.oM.Reflection.Attributes;
 
-namespace BH.Engine.Testing
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
+
+using BH.oM.MEP.Fragments;
+using BH.oM.Geometry;
+
+namespace BH.Engine.MEP
 {
     public static partial class Create
     {
@@ -37,17 +40,15 @@ namespace BH.Engine.Testing
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Config to be used to controll the IsEqual method.")]
-        [Input("numericTolerance", "Tolerance used when compare doubles. Default value set to 1e-6")]
-        [Input("ignoreGuid", "Toggles wheter to check the BHoM_Guid when comparing the objects.  Defaults to true => ignoring")]
-        [Input("ignoreCustomData", "Toggels whether the custom data shouls be compared. Defaults to true => ignoring")]
-        [Input("propertiesToIgnore", "names of any additional proerties to be ignored in the comparison. Case sensitive!")]
-        public static IsEqualConfig IsEqualConfig(double numericTolerance = 1e-6, bool ignoreGuid = true, bool ignoreCustomData = true, List<string> propertiesToIgnore = null)
+        [Description("Returns an MEP Geometry Fragment which can be applied to an MEP object to provide geometric information")]
+        [Input("geometry", "A BHoM Geometry object, any geometry which implements the IGeometry interface, such as Curves, Surfaces, etc. - default null")]
+        [Output("geometryFragment", "An MEP Geometry Fragment")]
+        public static GeometryFragment GeometryFragment(IGeometry geometry = null)
         {
-            propertiesToIgnore = propertiesToIgnore ?? new List<string>();
-            return new IsEqualConfig { NumericTolerance = numericTolerance, IgnoreGuid = ignoreGuid, IgnoreCustomData = ignoreCustomData, PropertiesToIgnore = propertiesToIgnore };
+            return new GeometryFragment
+            {
+                Geometry = geometry,
+            };
         }
-
-        /***************************************************/
     }
 }
