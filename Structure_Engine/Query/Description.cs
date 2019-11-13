@@ -82,7 +82,7 @@ namespace BH.Engine.Structure
 
         public static string Description(this GeneralisedFabricatedBoxProfile profile)
         {
-            return "GenFabBox " + profile.Height + "x" + profile.Width + "x" + profile.WebThickness + "x" + profile.TopFlangeThickness + "x" + profile.BotFlangeThickness + "x" + profile.TopLeftCorbelWidth + "x" + profile.TopRightCorbelWidth;
+            return "GenFabBox " + profile.Height + "x" + profile.Width + "x" + profile.WebThickness + "x" + profile.TopFlangeThickness + "x" + profile.BotFlangeThickness + "x" + profile.TopLeftCorbelWidth + "x" + profile.BotLeftCorbelWidth;
         }
 
         /***************************************************/
