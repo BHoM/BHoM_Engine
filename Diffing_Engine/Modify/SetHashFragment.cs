@@ -42,15 +42,16 @@ namespace BH.Engine.Diffing
         ///**** Public Methods                            ****/
         ///***************************************************/
 
-        public static void SetHashFragment(IEnumerable<IBHoMObject> objs, List<string> exceptions = null, bool useDefaultExceptions = true)
+        [Description("Computes and sets the HashFragment for a given IBHoMObject.")]
+        public static void SetHashFragment(IEnumerable<IBHoMObject> objs, DiffConfig diffConfig = null)
         {
-            if (useDefaultExceptions)
-                Compute.SetDefaultExceptions(ref exceptions);
+            // Set configurations if diffConfig is null
+            diffConfig = diffConfig == null ? new DiffConfig() : diffConfig;
 
             // Calculate and set the object hashes
             foreach (var obj in objs)
             {
-                string hash = BH.Engine.Diffing.Compute.DiffingHash(obj, exceptions, useDefaultExceptions);
+                string hash = BH.Engine.Diffing.Compute.DiffingHash(obj, diffConfig);
 
                 HashFragment existingFragm = obj.GetHashFragment();
 

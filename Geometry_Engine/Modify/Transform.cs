@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -149,12 +149,15 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [NotImplemented]
         public static NurbsCurve Transform(this NurbsCurve curve, TransformMatrix transform)
         {
-            throw new NotImplementedException();
+            return new NurbsCurve()
+            {
+                ControlPoints = curve.ControlPoints.Select(cp => cp.Transform(transform)).ToList(),
+                Weights = curve.Weights,
+                Knots = curve.Knots
+            };
         }
-
 
         /***************************************************/
 

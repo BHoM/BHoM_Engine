@@ -147,5 +147,14 @@ namespace BH.Engine.Environment
 
             return openings;
         }
+
+        [Description("Returns a collection of Environment Openings that match the given opening name")]
+        [Input("openings", "A collection of Environment Openings")]
+        [Input("openingName", "The Opening Name to filter by")]
+        [Output("openings", "A collection of Environment Opening objects that match the name")]
+        public static List<Opening> OpeningsByName(this List<Opening> openings, string openingName)
+        {
+            return openings.Where(x => x.Name == openingName).ToList();
+        }
     }
 }

@@ -102,7 +102,7 @@
     <Compile Include="Create\Face.cs" />
     <Compile Include="Create\Polyline.cs" />
     <Compile Include="Create\PolyCurve.cs" />
-    <Compile Include="Create\NurbCurve.cs" />
+    <Compile Include="Create\NurbsCurve.cs" />
     <Compile Include="Create\Line.cs" />
     <Compile Include="Create\Ellipse.cs" />
     <Compile Include="Create\IntegrationSlice.cs" />

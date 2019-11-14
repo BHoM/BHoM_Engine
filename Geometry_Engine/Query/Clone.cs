@@ -192,6 +192,36 @@ namespace BH.Engine.Geometry
             return new TransformMatrix { Matrix = transform.Matrix };
         }
 
+        /***************************************************/
+
+        public static Basis Clone(this Basis basis)
+        {
+            return new Basis(basis.X, basis.Y, basis.Z);
+        }
+
+
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+        private static object Clone(this object geometry)
+        {
+            return geometry;
+        }
+
+        /***************************************************/
+
+        private static ICurve Clone(this ICurve geometry)
+        {
+            return geometry;
+        }
+
+        /***************************************************/
+
+        private static ISurface Clone(this ISurface geometry)
+        {
+            return geometry;
+        }
 
         /***************************************************/
         /**** Public Methods - Interfaces               ****/
