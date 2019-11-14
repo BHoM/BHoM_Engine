@@ -35,9 +35,16 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static IEnumerable<T> EnumValues<T>(this T enumeration)
+        public static IEnumerable<T> EnumValues<T>(this T enumValue)
         {
-            return Enum.GetValues(enumeration.GetType()).Cast<T>();
+            return Enum.GetValues(enumValue.GetType()).Cast<T>();
+        }
+
+        /***************************************************/
+
+        public static IEnumerable<T> EnumValues<T>(this Type enumType)
+        {
+            return Enum.GetValues(enumType).Cast<T>();
         }
 
         /***************************************************/
