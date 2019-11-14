@@ -658,12 +658,8 @@ namespace BH.Engine.Geometry
 
             Output<Point, Point> result = new Output<Point, Point>();
 
-            if (Math.Abs(curve1.Normal.IsParallel(curve2.Normal)) == 1)
-            {
-                result.Item1 = curve1.PointAtParameter(0);
-                result.Item2 = curve2.ClosestPoint(result.Item1);
-                return result;
-            }
+            //if (Math.Abs(curve1.Normal.IsParallel(curve2.Normal)) == 1) //TODO find solution for special case
+            //{}
 
             Plane ftPln1 = curve1.FitPlane();
             Plane ftPln2 = curve2.FitPlane();
