@@ -36,8 +36,9 @@ namespace BH.Engine.Geometry
 
         public static Output<Point, Point> CurveProximity(this Line curve1, Line curve2, double tolerance = Tolerance.Distance)
         {
-            if (curve1.CurveIntersections(curve2).Count > 0)
-                return new Output<Point, Point> { Item1 = curve1.CurveIntersections(curve2)[0], Item2 = curve1.CurveIntersections(curve2)[0] };
+            List<Point> cIntersections = curve1.CurveIntersections(curve2);
+            if (cIntersections.Count > 0)
+                return new Output<Point, Point> { Item1 = cIntersections[0], Item2 = cIntersections[0] };
 
             Point min1 = new Point();
             Point min2 = new Point();
@@ -75,8 +76,9 @@ namespace BH.Engine.Geometry
 
         public static Output<Point, Point> CurveProximity(this Line curve1, Arc curve2, double tolerance = Tolerance.Distance)
         {
-            if (curve1.CurveIntersections(curve2).Count > 0)
-                return new Output<Point, Point> { Item1 = curve1.CurveIntersections(curve2)[0], Item2 = curve1.CurveIntersections(curve2)[0] };
+            List<Point> cIntersections = curve1.CurveIntersections(curve2);
+            if (cIntersections.Count > 0)
+                return new Output<Point, Point> { Item1 = cIntersections[0], Item2 = cIntersections[0] };
 
             List<Point> plnPts = new List<Point>();
             plnPts.Add(curve1.Start);
@@ -163,8 +165,9 @@ namespace BH.Engine.Geometry
 
         public static Output<Point, Point> CurveProximity(this Line curve1, Circle curve2, double tolerance = Tolerance.Distance)
         {
-            if (curve1.CurveIntersections(curve2).Count > 0)
-                return new Output<Point, Point> { Item1 = curve1.CurveIntersections(curve2)[0], Item2 = curve1.CurveIntersections(curve2)[0] };
+            List<Point> cIntersections = curve1.CurveIntersections(curve2);
+            if (cIntersections.Count > 0)
+                return new Output<Point, Point> { Item1 = cIntersections[0], Item2 = cIntersections[0] };
 
             List<Point> plnPts = new List<Point>();
             plnPts.Add(curve1.Start);
@@ -245,8 +248,9 @@ namespace BH.Engine.Geometry
 
         public static Output<Point, Point> CurveProximity(this Arc curve1, Arc curve2, double tolerance = Tolerance.Distance)
         {
-            if (curve1.CurveIntersections(curve2).Count > 0)
-                return new Output<Point, Point> { Item1 = curve1.CurveIntersections(curve2)[0], Item2 = curve1.CurveIntersections(curve2)[1] };
+            List<Point> cIntersections = curve1.CurveIntersections(curve2);
+            if (cIntersections.Count > 0)
+                return new Output<Point, Point> { Item1 = cIntersections[0], Item2 = cIntersections[0] };
 
             Output<Point, Point> result = new Output<Point, Point>();
             Output<Point, Point> oldresult = new Output<Point, Point>();
@@ -465,8 +469,9 @@ namespace BH.Engine.Geometry
 
         public static Output<Point, Point> CurveProximity(this Arc curve1, Circle curve2, double tolerance = Tolerance.Distance)
         {
-            if (curve1.CurveIntersections(curve2).Count > 0)
-                return new Output<Point, Point> { Item1 = curve1.CurveIntersections(curve2)[0], Item2 = curve1.CurveIntersections(curve2)[1] };
+            List<Point> cIntersections = curve1.CurveIntersections(curve2);
+            if (cIntersections.Count > 0)
+                return new Output<Point, Point> { Item1 = cIntersections[0], Item2 = cIntersections[0] };
 
             Output<Point, Point> result = new Output<Point, Point>();
             Plane ftPln1 = curve1.FitPlane();
@@ -646,8 +651,9 @@ namespace BH.Engine.Geometry
 
         public static Output<Point, Point> CurveProximity(this Circle curve1, Circle curve2, double tolerance = Tolerance.Distance)
         {
-            if (curve1.CurveIntersections(curve2).Count > 0)
-                return new Output<Point, Point> { Item1 = curve1.CurveIntersections(curve2)[0], Item2 = curve1.CurveIntersections(curve2)[1] };
+            List<Point> cIntersections = curve1.CurveIntersections(curve2);
+            if (cIntersections.Count > 0)
+                return new Output<Point, Point> { Item1 = cIntersections[0], Item2 = cIntersections[0] };
 
             Output<Point, Point> result = new Output<Point, Point>();
 
