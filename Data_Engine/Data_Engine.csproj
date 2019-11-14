@@ -105,6 +105,7 @@
     <Compile Include="Query\SubMatrixData.cs" />
     <Compile Include="Query\ValueAbove.cs" />
     <Compile Include="Query\ValueAt.cs" />
+    <Compile Include="Query\Values.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BHoM_Engine\BHoM_Engine.csproj">
