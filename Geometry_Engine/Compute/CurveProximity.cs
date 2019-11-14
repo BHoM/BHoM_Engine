@@ -59,7 +59,8 @@ namespace BH.Engine.Geometry
             if (curve1.IsCoplanar(curve2))
                 return new Output<Point, Point> { Item1 = min1, Item2 = min2 };
 
-            double[] t = new double[] { curve1.SkewLineProximity(curve2).Item1, curve1.SkewLineProximity(curve2).Item2 };
+            Output<double,double> skewLineProximity = curve1.SkewLineProximity(curve2);
+            double[] t = new double[] { skewLineProximity.Item1, skewLineProximity.Item2 };
             double t1 = Math.Max(Math.Min(t[0], 1), 0);
             double t2 = Math.Max(Math.Min(t[1], 1), 0);
             Vector e1 = curve1.End - curve1.Start;
