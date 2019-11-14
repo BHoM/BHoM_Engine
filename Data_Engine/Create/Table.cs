@@ -104,9 +104,7 @@ namespace BH.Engine.Data
                 new DataColumn(valuesName, typeof(T))
             };
 
-
             table.Columns.AddRange(cols);
-
 
             if (axis2Values.Count * axis1Values.Count != values.SelectMany(x => x).Count())
             {
@@ -126,8 +124,6 @@ namespace BH.Engine.Data
             }
 
             return new Table() { Data = table, Name = name };
-            
-
         }
 
         /***************************************************/
@@ -142,7 +138,6 @@ namespace BH.Engine.Data
                 dict.Remove("BHoM_Guid");
             if (ignoreTags && dict.ContainsKey("Tags"))
                 dict.Remove("Tags");
-
         }
 
         /***************************************************/
@@ -162,7 +157,6 @@ namespace BH.Engine.Data
             }
             return dic;
         }
-    
 
         /***************************************************/
 
@@ -185,7 +179,6 @@ namespace BH.Engine.Data
                 dic["Tags"] = obj.Tags.GetType();
 
             return dic;
-
         }
 
         /***************************************************/
