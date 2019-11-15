@@ -38,31 +38,43 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static void DescriptionOrName(this ISectionProperty section)
+        public static string DescriptionOrName(this ISectionProperty section)
         {
             if (String.IsNullOrWhiteSpace(section.Name))
+            {                
+                return IDescription(section);
+            }
+            else
             {
-                section.Name = IDescription(section);
+                return section.Name;
             }
         }
 
         /***************************************************/
 
-        public static void DescriptionOrName(this ISurfaceProperty surface)
+        public static string DescriptionOrName(this ISurfaceProperty surface)
         {
             if (String.IsNullOrWhiteSpace(surface.Name))
             {
-                surface.Name = IDescription(surface);
+                return IDescription(surface);                
+            }
+            else
+            {
+                return surface.Name;
             }
         }
 
         /***************************************************/
 
-        public static void DescriptionOrName(this IProfile profile)
+        public static string DescriptionOrName(this IProfile profile)
         {
             if (String.IsNullOrWhiteSpace(profile.Name))
             {
-                profile.Name = IDescription(profile);
+                return IDescription(profile);
+            }
+            else
+            {
+                return profile.Name;
             }
         }
 
