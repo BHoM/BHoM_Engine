@@ -57,7 +57,7 @@ namespace BH.Engine.Geometry
                 Reflection.Compute.RecordError("Extend values too small");
                 return null;
             }
-            Vector dir = curve.Direction();
+            Vector dir = curve.Direction(tolerance);
             return new Line { Start = curve.Start - dir * start, End = curve.End + dir * end };
         }
 
@@ -89,6 +89,7 @@ namespace BH.Engine.Geometry
                 Reflection.Compute.RecordError("Negative extend values are smaller than curve length.");
                 return null;
             }
+
             if (startAngleExt + endAngleExt + curve.EndAngle - (2 * Math.PI) > tolerance)
             {
                 Reflection.Compute.RecordError("Extension values to great.");
@@ -170,12 +171,15 @@ namespace BH.Engine.Geometry
             if (start < 0 && -start > lines[0].ILength())
             {
                 double startCut = -lines[0].ILength();
+
                 while (startCut > start && lines.Count > 1)
                 {
                     lines.RemoveAt(0);
                     startCut -= lines[0].ILength();
                 }
+
                 startCut += lines[0].ILength();
+
                 if (lines.Count > 1)
                     lines[0] = lines[0].Extend(start - startCut, 0, false, tolerance);
                 else
@@ -240,7 +244,9 @@ namespace BH.Engine.Geometry
                     curves.RemoveAt(0);
                     startCut -= curves[0].ILength();
                 }
+
                 startCut += curves[0].ILength();
+
                 if (curves.Count > 1)
                     curves[0] = curves[0].IExtend(start - startCut, 0, tangentExtensions, tolerance);
                 else
@@ -294,9 +300,10 @@ namespace BH.Engine.Geometry
         {
             if (-start > curve.Length() || -end > curve.Length()) //ExtendTangent allows to trim the curve but only to the limit of it's length. 
             {
-                Reflection.Compute.RecordError("Extension value to small");
+                Reflection.Compute.RecordError("Extension value too small");
                 return null;
             }
+
             if (start < 0 && end < 0)
                 return curve.Extend(start, end, false, tolerance);
 
@@ -316,8 +323,8 @@ namespace BH.Engine.Geometry
 
             Point stPt = curve.StartPoint();
             Point enPt = curve.EndPoint();
-            Vector startTan = curve.TangentAtParameter(0);
-            Vector endTan = curve.TangentAtParameter(1);
+            Vector startTan = curve.TangentAtParameter(0, tolerance);
+            Vector endTan = curve.TangentAtParameter(1, tolerance);
             List<ICurve> resultList = new List<ICurve>();
 
             if (start != 0)
@@ -340,7 +347,7 @@ namespace BH.Engine.Geometry
         {
             if (-start > curve.Length() || -end > curve.Length()) //ExtendTangent allows to trim the curve but only to the limit of it's length. 
             {
-                Reflection.Compute.RecordError("Extension value to small");
+                Reflection.Compute.RecordError("Extension value too small");
                 return null;
             }
 
