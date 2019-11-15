@@ -45,7 +45,7 @@ namespace BH.Engine.Geometry
         [DeprecatedAttribute("3.0", "U and V degrees are currently stored as properties of NurbsSurface")]
         public static List<int> Degrees(this NurbsSurface surf)
         {
-            return new List<int>() { surf.UDegree, surf.VDegree };
+            return new List<int> { surf.UDegree, surf.VDegree };
         }
 
         /***************************************************/
