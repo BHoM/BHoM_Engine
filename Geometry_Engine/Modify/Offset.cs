@@ -57,16 +57,10 @@ namespace BH.Engine.Geometry
         [Output("curve", "Resulting offset")]
         public static Arc Offset(this Arc curve, double offset, Vector normal, bool tangentExtensions = false, double tolerance = Tolerance.Distance)
         {
-            if (!curve.IsPlanar())
-            {
-                Reflection.Compute.RecordError("Offset works only on planar curves");
-                return null;
-            }
-
             if (offset == 0)
-                return curve.Clone();
-            double radius = curve.Radius;
-            Arc result = curve.Clone();
+                return curve;
+
+            double radius = curve.Radius;            
 
             if (normal == null)
                 normal = curve.Normal();
@@ -75,6 +69,8 @@ namespace BH.Engine.Geometry
                 radius += offset;
             else
                 radius -= offset;
+
+            Arc result = curve.Clone();
 
             if (radius > 0)
             {
@@ -99,18 +95,19 @@ namespace BH.Engine.Geometry
         public static Circle Offset(this Circle curve, double offset, Vector normal = null, bool tangentExtensions = false, double tolerance = Tolerance.Distance)
         {
             if (offset == 0)
-                return curve.Clone();
+                return curve;
 
-            double radius = curve.Radius;
-            Circle result = curve.Clone();
+            double radius = curve.Radius;            
 
             if (normal == null)
-                normal = curve.Normal();
+                normal = curve.Normal;
 
-            if (normal.DotProduct(curve.Normal()) > 0)
+            if (normal.DotProduct(curve.Normal) > 0)
                 radius += offset;
             else
                 radius -= offset;
+
+            Circle result = curve.Clone();
 
             if (radius > 0)
             {
@@ -150,12 +147,14 @@ namespace BH.Engine.Geometry
         [Output("curve", "Resulting offset")]
         public static Polyline Offset(this Polyline curve, double offset, Vector normal = null, bool tangentExtensions = false, double tolerance = Tolerance.Distance)
         {
-            if (!curve.IsPlanar())
+            if (!curve.IsPlanar(tolerance))
             {
                 BH.Engine.Reflection.Compute.RecordError("Offset works only on planar curves");
                 return null;
             }
+
             bool isClosed = curve.IsClosed(tolerance);
+
             if (normal == null)
                 if (!isClosed)
                     BH.Engine.Reflection.Compute.RecordError("Normal is missing. Normal vector is not needed only for closed curves");
@@ -165,7 +164,7 @@ namespace BH.Engine.Geometry
                 normal = normal.Normalise();
 
             if (offset == 0)
-                return curve.Clone();
+                return curve;
 
             if (offset > 0.05 * curve.Length())
                 return (curve.Offset(offset / 2, normal, tangentExtensions, tolerance)).Offset(offset / 2, normal, tangentExtensions, tolerance);
@@ -215,18 +214,18 @@ namespace BH.Engine.Geometry
             }
 
             Polyline result = new Polyline { ControlPoints = tmp };
-            List<Line> Lines = result.SubParts();
+            List<Line> lines = result.SubParts();
 
             if (isClosed)
                 tmp.RemoveAt(tmp.Count - 1);
 
             //removing erroneous curves
             int counter = 0;
-            for (int i = 0; i < Lines.Count; i++)
+            for (int i = 0; i < lines.Count; i++)
             {
-                if (Lines[i].PointAtParameter(0.5).Distance(curve) + tolerance < Math.Abs(offset) &&
-                   (Lines[i].Start.Distance(curve) + tolerance < Math.Abs(offset) ||
-                    Lines[i].End.Distance(curve) + tolerance < Math.Abs(offset)))
+                if (lines[i].PointAtParameter(0.5).Distance(curve) + tolerance < Math.Abs(offset) &&
+                   (lines[i].Start.Distance(curve) + tolerance < Math.Abs(offset) ||
+                    lines[i].End.Distance(curve) + tolerance < Math.Abs(offset)))
                 {
                     Line line1 = new Line { Start = tmp[i], End = tmp[(i + tmp.Count - 1) % tmp.Count], Infinite = true };
                     Line line2 = new Line { Start = tmp[(i + 1) % tmp.Count], End = tmp[(i + 2) % tmp.Count], Infinite = true };
@@ -238,11 +237,11 @@ namespace BH.Engine.Geometry
 
                     if (tmp.Count == 0)
                     {
-                        Reflection.Compute.RecordError("Method failed to produce corretct offset. Returning null.");
+                        Reflection.Compute.RecordError("Method failed to produce correct offset. Returning null.");
                         return null;
                     }
                     tmp.Add(tmp[0]);
-                    Lines = result.SubParts();
+                    lines = result.SubParts();
                     tmp.RemoveAt(tmp.Count - 1);
                     i--;
                     counter++;
@@ -254,7 +253,7 @@ namespace BH.Engine.Geometry
 
             if (tmp.Count < 3 || (isClosed && tmp.Count < 4))
             {
-                Reflection.Compute.RecordError("Method failed to produce corretct offset. Returning null.");
+                Reflection.Compute.RecordError("Method failed to produce correct offset. Returning null.");
                 return null;
             }
 
@@ -289,10 +288,11 @@ namespace BH.Engine.Geometry
             }
 
             if (offset == 0)
-                return curve.Clone();
+                return curve;
 
             bool isClosed = curve.IsClosed(tolerance);
             if (normal == null)
+            {
                 if (!isClosed)
                 {
                     BH.Engine.Reflection.Compute.RecordError("Normal is missing. Normal vector is not needed only for closed curves");
@@ -300,6 +300,7 @@ namespace BH.Engine.Geometry
                 }
                 else
                     normal = curve.Normal();
+            }
 
             if (offset > 0.05 * curve.Length())
                 return (curve.Offset(offset / 2, normal, tangentExtensions, tolerance)).Offset(offset / 2, normal, tangentExtensions, tolerance);
@@ -321,15 +322,13 @@ namespace BH.Engine.Geometry
             {
                 result.Curves.Add(Offset((Circle)ICrvs[0], offset, normal));
                 return result;
-            }
-            List<Event> log = Reflection.Query.CurrentEvents();
+            }           
+
             //First - offseting each individual element
             List<ICurve> offsetCurves = new List<ICurve>();
             foreach (ICurve crv in ICrvs)
                 if (crv.IOffset(offset, normal, false, tolerance) != null)
                     offsetCurves.Add(crv.IOffset(offset, normal, false, tolerance));
-                else
-                    log.RemoveAt(log.Count - 1);
 
             int counter = 0;
             //removing curves that are on a wrong side of the main curve
@@ -377,6 +376,7 @@ namespace BH.Engine.Geometry
                 result.Curves.AddRange(polyline.Offset(offset, normal, tangentExtensions, tolerance).SubParts());
                 return result;
             }
+
             bool connectingError = false;
             //Filleting offset curves to create continuous curve
             for (int i = 0; i < offsetCurves.Count; i++)
@@ -385,9 +385,13 @@ namespace BH.Engine.Geometry
                 if (i == offsetCurves.Count - 1)
                 {
                     if (isClosed)
-                    { j = 0; }
+                    {
+                        j = 0;
+                    }
                     else
-                    { break; }
+                    {
+                        break;
+                    }
                 }
                 else
                     j = i + 1;
@@ -396,12 +400,15 @@ namespace BH.Engine.Geometry
                 if (temp == null) //trying to fillet with next curve 
                 {
                     offsetCurves.RemoveAt(j);
+
                     if (j == 0)
                         i--;
+
                     if (j == offsetCurves.Count)
                         j = 0;
                     temp = offsetCurves[i].Fillet(offsetCurves[j], tangentExtensions, true, false, tolerance);
                 }
+
                 if (!(temp == null)) //inserting filetted curves
                 {
                     if (j != 0)
@@ -430,6 +437,7 @@ namespace BH.Engine.Geometry
                 {
                     PolyCurve temp = offsetCurves[((i - 1) + offsetCurves.Count) % offsetCurves.Count].Fillet(offsetCurves[(i + 1) % offsetCurves.Count], tangentExtensions, true, false, tolerance);
                     if (temp != null)
+                    {
                         if (i == 0)
                         {
                             offsetCurves.RemoveRange(0, 2);
@@ -450,24 +458,26 @@ namespace BH.Engine.Geometry
                             offsetCurves.InsertRange(i - 1, temp.Curves);
                             i = i - 3 + temp.Curves.Count;
                         }
+                    }
+
                     if (offsetCurves.Count < 1)
                     {
-                        log.Clear();
-                        Reflection.Compute.RecordError("Method failed to produce corretct offset. Returning null.");
+                        Reflection.Compute.ClearCurrentEvents();
+                        Reflection.Compute.RecordError("Method failed to produce correct offset. Returning null.");
                         return null;
                     }
                     counter++;
                 }
             }
 
-            log.Clear();
+            Reflection.Compute.ClearCurrentEvents();
 
             if (connectingError)
                 Reflection.Compute.RecordWarning("Couldn't connect offset subCurves properly.");
 
             if (offsetCurves.Count == 0 || (isClosed && offsetCurves.Count < 3))
             {
-                Reflection.Compute.RecordError("Method failed to produce corretct offset. Returning null.");
+                Reflection.Compute.RecordError("Method failed to produce correct offset. Returning null.");
                 return null;
             }
 
@@ -555,12 +565,14 @@ namespace BH.Engine.Geometry
             }
 
             for (int i = 0; i < result.Count; i++)
+            {
                 if (result[i] is PolyCurve)
                 {
                     PolyCurve temp = (PolyCurve)result[i];
                     result.RemoveAt(i);
                     result.InsertRange(i, temp.Curves);
                 }
+            }
 
             return result;
         }
@@ -582,7 +594,7 @@ namespace BH.Engine.Geometry
 
             List<Point> intersections = curve1.ICurveIntersections(curve2, tolerance);
             if (intersections.Count > 2)
-                Reflection.Compute.RecordError("How on Earth did you manage to create a pair of Arcs and/or Lines which have more than two intersections??");
+                Reflection.Compute.RecordError("Invalid number of intersections between curves. Two lines/arcs can have no more than two intersections.");
             else if (intersections.Count == 2 || intersections.Count == 1)
             {
                 Point intersection = intersections[0];
@@ -592,19 +604,21 @@ namespace BH.Engine.Geometry
                     if (C1SP)
                         foreach (Point p in intersections)
                         {
-                            if (p.Distance(curve1.IStartPoint()) < maxdist)
+                            double dist = p.SquareDistance(curve1.IStartPoint());
+                            if (dist < maxdist)
                             {
                                 intersection = p;
-                                maxdist = p.Distance(curve1.IStartPoint());
+                                maxdist = dist;
                             }
                         }
                     else
                         foreach (Point p in intersections)
                         {
-                            if (p.Distance(curve1.IEndPoint()) < maxdist)
+                            double dist = p.SquareDistance(curve1.IEndPoint());
+                            if (dist < maxdist)
                             {
                                 intersection = p;
-                                maxdist = p.Distance(curve1.IEndPoint());
+                                maxdist = dist;
                             }
                         }
                 }
@@ -700,7 +714,7 @@ namespace BH.Engine.Geometry
                 }
                 else
                 {
-                    Point intersection = new Point();
+                    Point intersection;
                     if (!tangentExtensions)
                     {
                         PolyCurve pCurve1 = new PolyCurve();
@@ -771,9 +785,19 @@ namespace BH.Engine.Geometry
                                 Reflection.Compute.RecordWarning("Couldn't create fillet");
                                 return null;
                             }
-                            PolyCurve subResult1 = new PolyCurve { Curves = curve1.ExtendToPoint(curve1.IStartPoint(), intersection, tangentExtensions, tolerance).ToList() };
-                            PolyCurve subResult2 = new PolyCurve { Curves = curve2.ExtendToPoint(curve2.IStartPoint(), intersection, tangentExtensions, tolerance).ToList() };
+
+                            PolyCurve subResult1 = new PolyCurve
+                            {
+                                Curves = curve1.ExtendToPoint(curve1.IStartPoint(), intersection, tangentExtensions, tolerance).ToList()
+                            };
+
+                            PolyCurve subResult2 = new PolyCurve
+                            {
+                                Curves = curve2.ExtendToPoint(curve2.IStartPoint(), intersection, tangentExtensions, tolerance).ToList()
+                            };
+
                             subResult2 = subResult2.Flip();
+
                             resultCurves.AddRange(subResult1.Curves);
                             resultCurves.AddRange(subResult2.Curves);
                         }
@@ -788,6 +812,7 @@ namespace BH.Engine.Geometry
                             PolyCurve pCurve2 = new PolyCurve { Curves = { tanLine2, curve2 } };
 
                             List<Point> curveIntersecions = pCurve1.ICurveIntersections(pCurve2, tolerance);
+
                             if (curveIntersecions.Count > 0)
                                 intersection = curveIntersecions.ClosestPoint(curve1.IEndPoint());
                             else
@@ -817,10 +842,18 @@ namespace BH.Engine.Geometry
                                 Reflection.Compute.RecordWarning("Couldn't create fillet");
                                 return null;
                             }
-                            PolyCurve subResult1 = new PolyCurve { Curves = curve1.ExtendToPoint(intersection, curve1.IEndPoint(), tangentExtensions, tolerance).ToList() };
-                            PolyCurve subResult2 = new PolyCurve { Curves = curve2.ExtendToPoint(curve2.IStartPoint(), intersection, tangentExtensions, tolerance).ToList() };
+                            PolyCurve subResult1 = new PolyCurve
+                            {
+                                Curves = curve1.ExtendToPoint(intersection, curve1.IEndPoint(), tangentExtensions, tolerance).ToList()
+                            };
+                            PolyCurve subResult2 = new PolyCurve
+                            {
+                                Curves = curve2.ExtendToPoint(curve2.IStartPoint(), intersection, tangentExtensions, tolerance).ToList()
+                            };
+
                             subResult1 = subResult1.Flip();
                             subResult2 = subResult2.Flip();
+
                             resultCurves.AddRange(subResult1.Curves);
                             resultCurves.AddRange(subResult2.Curves);
                         }
@@ -842,16 +875,25 @@ namespace BH.Engine.Geometry
                                 Reflection.Compute.RecordWarning("Couldn't create fillet");
                                 return null;
                             }
-                            PolyCurve subResult1 = new PolyCurve { Curves = curve1.ExtendToPoint(intersection, curve1.IEndPoint(), tangentExtensions, tolerance).ToList() };
-                            PolyCurve subResult2 = new PolyCurve { Curves = curve2.ExtendToPoint(intersection, curve2.IEndPoint(), tangentExtensions, tolerance).ToList() };
+                            PolyCurve subResult1 = new PolyCurve
+                            {
+                                Curves = curve1.ExtendToPoint(intersection, curve1.IEndPoint(), tangentExtensions, tolerance).ToList()
+                            };
+                            PolyCurve subResult2 = new PolyCurve
+                            {
+                                Curves = curve2.ExtendToPoint(intersection, curve2.IEndPoint(), tangentExtensions, tolerance).ToList()
+                            };
+
                             subResult1 = subResult1.Flip();
+
                             resultCurves.AddRange(subResult1.Curves);
                             resultCurves.AddRange(subResult2.Curves);
                         }
                     }
                 }
             }
-            for (int i = 0; i < resultCurves.Count; i++)
+
+            for (int i = resultCurves.Count - 1; i >= 0; i--)
                 if (resultCurves[i] is PolyCurve)
                 {
                     PolyCurve temp = (PolyCurve)resultCurves[i];
