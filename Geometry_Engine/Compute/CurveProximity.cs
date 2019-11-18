@@ -176,22 +176,15 @@ namespace BH.Engine.Geometry
             plnPts.Add(curve2.Centre);
             Point tmp;
             Plane ftPln = plnPts.FitPlane();
-            Plane circlePlane = curve2.FitPlane();
             Output<Point, Point> result = new Output<Point, Point>();
 
-            if (Math.Abs(circlePlane.Normal.DotProduct(curve1.Direction())) < Tolerance.Angle) // 2D solution
+            if (Math.Abs(curve2.Normal.DotProduct(curve1.Direction())) < Tolerance.Angle) // 2D solution
             {
                 double startSqDist = curve2.Centre.SquareDistance(curve1.Start);
-                double endSqDist = curve2.Centre.SquareDistance(curve1.End);
-                double sqRadius = Math.Pow(curve2.Radius, 2);
-                if (startSqDist < sqRadius) // within circle
-                {
-                    result.Item1 = startSqDist < endSqDist ? curve1.End : curve1.Start;
-                }
+                if (startSqDist < Math.Pow(curve2.Radius, 2)) // within circle
+                    result.Item1 = startSqDist < curve2.Centre.SquareDistance(curve1.End) ? curve1.End : curve1.Start;
                 else      // outside circle
-                {
                     result.Item1 = curve1.ClosestPoint(curve2.Centre);
-                }
                 result.Item2 = curve2.ClosestPoint(result.Item1);
                 return result;
             }
@@ -208,7 +201,7 @@ namespace BH.Engine.Geometry
             else
                 tmp = curve1.ClosestPoint(curve2.Centre);
 
-            Line prLn = curve1.Project(circlePlane);
+            Line prLn = curve1.Project(curve2.FitPlane());
             List<Point> lnInt = prLn.CurveIntersections(curve2);
 
             if (lnInt.Count > 0)
