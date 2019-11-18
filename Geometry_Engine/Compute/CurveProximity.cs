@@ -176,6 +176,25 @@ namespace BH.Engine.Geometry
             plnPts.Add(curve2.Centre);
             Point tmp;
             Plane ftPln = plnPts.FitPlane();
+            Plane circlePlane = curve2.FitPlane();
+            Output<Point, Point> result = new Output<Point, Point>();
+
+            if (Math.Abs(circlePlane.Normal.DotProduct(curve1.Direction())) < Tolerance.Angle) // 2D solution
+            {
+                double startSqDist = curve2.Centre.SquareDistance(curve1.Start);
+                double endSqDist = curve2.Centre.SquareDistance(curve1.End);
+                double sqRadius = Math.Pow(curve2.Radius, 2);
+                if (startSqDist < sqRadius) // within circle
+                {
+                    result.Item1 = startSqDist < endSqDist ? curve1.End : curve1.Start;
+                }
+                else      // outside circle
+                {
+                    result.Item1 = curve1.ClosestPoint(curve2.Centre);
+                }
+                result.Item2 = curve2.ClosestPoint(result.Item1);
+                return result;
+            }
 
             if (ftPln != null)
             {
@@ -189,7 +208,7 @@ namespace BH.Engine.Geometry
             else
                 tmp = curve1.ClosestPoint(curve2.Centre);
 
-            Line prLn = curve1.Project(curve2.FitPlane());
+            Line prLn = curve1.Project(circlePlane);
             List<Point> lnInt = prLn.CurveIntersections(curve2);
 
             if (lnInt.Count > 0)
@@ -204,7 +223,6 @@ namespace BH.Engine.Geometry
                     tmp = lnInt[0];
             }
 
-            Output<Point, Point> result = new Output<Point, Point>();
             result.Item1 = curve1.ClosestPoint(tmp);
             result.Item2 = curve2.ClosestPoint(result.Item1);
             Output<Point, Point> oldresult = new Output<Point, Point>();
@@ -478,7 +496,7 @@ namespace BH.Engine.Geometry
             Plane ftPln1 = curve1.FitPlane();
             Plane ftPln2 = curve2.FitPlane();
             List<Point> intPts = new List<Point>();
-            Point tmp = null ;
+            Point tmp = null;
 
             if ((intPts = curve1.PlaneIntersections(ftPln2)).Count != 0)
             {
