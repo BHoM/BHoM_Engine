@@ -25,23 +25,49 @@ using System;
 using System.Linq;
 using System.ComponentModel;
 using System.Collections.Generic;
-using BH.oM.Reflection.Attributes;
 
 namespace BH.Engine.Geometry
 {
-    public static partial class Create
+    public static partial class Compute
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-
-        [Deprecated("3.0", "Deprecated, method moved to compute file", null, "BH.Engine.Geometry.Compute.ConvexHull(List<Point>")]
+        
         //TODO: Only works for points in the XY plane - add plane as input?
         [Description("Creates a Convex Hull from a list of points. Currently only works for points in the XY plane")]
         public static Polyline ConvexHull(List<Point> points)
         {
-            return BH.Engine.Geometry.Compute.ConvexHull(points);
+            List<Point> hull = new List<Point>();
+            hull.Add(points.First());
+
+            for(int x = 1; x < points.Count; x++)
+            {
+                if (hull[0].X > points[x].X)
+                    hull[0] = points[x];
+                else if (hull[0].X == points[x].X)
+                {
+                    if (hull[0].Y > points[x].Y)
+                        hull[0] = points[x];
+                }
+            }
+
+            Point nextPt = new Point();
+            int counter = 0;
+            while (counter < hull.Count)
+            {
+                nextPt = NextHullPoint(points, hull[counter]);
+                if (nextPt != hull[0])
+                    hull.Add(nextPt);
+                counter++;
+            }
+
+            hull.Add(hull[0]);
+
+            Polyline hullBoundary = new Polyline() { ControlPoints = hull };
+            return hullBoundary;
         }
+
 
         /***************************************************/
         /**** Private Methods                           ****/

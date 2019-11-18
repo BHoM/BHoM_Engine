@@ -59,6 +59,7 @@
     <Compile Include="Compute\BooleanUnion.cs" />
     <Compile Include="Compute\ClusterCollinear.cs" />
     <Compile Include="Compute\ClusterCoplanar.cs" />
+    <Compile Include="Compute\ConvexHull.cs" />
     <Compile Include="Compute\CullDuplicates.cs" />
     <Compile Include="Compute\DistributeOutlines.cs" />
     <Compile Include="Compute\Eigenvalues.cs" />
