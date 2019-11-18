@@ -36,34 +36,11 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [Deprecated("3.0", "Deprecated, method moved to compute file", null, "BH.Engine.Geometry.Compute.ConvexHull(List<Point>")]
-        //TODO: Only works for points in the XY plane - add plane as input?
+        
         [Description("Creates a Convex Hull from a list of points. Currently only works for points in the XY plane")]
         public static Polyline ConvexHull(List<Point> points)
         {
             return BH.Engine.Geometry.Compute.ConvexHull(points);
         }
-
-        /***************************************************/
-        /**** Private Methods                           ****/
-        /***************************************************/
-
-        private static Point NextHullPoint(List<Point> points, Point currentPt)
-        {
-            int right = -1;
-            int none = 0;
-
-            Point nextPt = currentPt;
-            int t;
-            foreach (Point pt in points)
-            {
-                t = ((nextPt.X - currentPt.X) * (pt.Y - currentPt.Y) - (pt.X - currentPt.X) * (nextPt.Y - currentPt.Y)).CompareTo(0);
-                if (t == right || t == none && Geometry.Query.Distance(currentPt, pt) > Geometry.Query.Distance(currentPt, nextPt))
-                    nextPt = pt;
-            }
-
-            return nextPt;
-        }
-
-        /***************************************************/
     }
 }
