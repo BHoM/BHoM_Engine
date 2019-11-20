@@ -295,12 +295,11 @@ namespace BH.Engine.Serialiser.BsonSerializers
                     // A child of the object is causing problems. Try to recover from custom object
                     IBsonSerializer customSerializer = BsonSerializer.LookupSerializer(typeof(CustomObject));
                     object customObject = customSerializer.Deserialize(context, args);
-                    object result = Convert.FromBson(customObject.ToBson());
 
-                    if (result is CustomObject)
+                    if (customObject is CustomObject)
                         Engine.Reflection.Compute.RecordWarning("The type " + actualType.FullName + " is unknown -> data returned as custom objects.");
 
-                    return result;
+                    return customObject;
 
                 }
                 else if (actualType != typeof(IDeprecated))
