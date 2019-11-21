@@ -49,7 +49,7 @@ namespace BH.Engine.Structure
 
             for (int i = 0; i < cases.Count; i++)
             {
-                if (!excludeZeroFactorCases || factors[i] > 0 || cases[i] != null)
+                if (cases[i] != null || !excludeZeroFactorCases || factors[i] > 0)
                     factoredCases.Add(new Tuple<double, ICase>(factors[i], cases[i]));
             }
 
