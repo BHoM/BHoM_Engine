@@ -128,6 +128,7 @@
     <Compile Include="Query\UsedAssemblies.cs" />
     <Compile Include="Query\UsedNamespaces.cs" />
     <Compile Include="Query\InheritedTypes.cs" />
+    <Compile Include="Compute\UnqualifiedName.cs" />
     <Compile Include="Query\UsedTypes.cs" />
     <Compile Include="Query\Events.cs" />
     <Compile Include="Query\DebugLog.cs" />
