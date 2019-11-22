@@ -46,7 +46,7 @@ namespace BH.Engine.Structure
         [Input("cases", "Cases to extract results for")]
         [Input("divisions", "Only used for bar results. Sets how many points should be looked at for the result extraction")]
         [Output("resultRequest", "A resultRequest matching the inputs provided")]
-        public static IResultRequest IResultRequest(Type type, IList ids = null, IList cases = null, int divisions = 5)
+        public static IResultRequest IResultRequest(Type type, IEnumerable<object> ids = null, IEnumerable<object> cases = null, int divisions = 5)
         {
             IResultRequest request = null;
 
@@ -116,10 +116,10 @@ namespace BH.Engine.Structure
 
 
             if (ids != null)
-                request.ObjectIds = ids.Cast<object>().ToList();
+                request.ObjectIds = ids.ToList();
 
             if (cases != null)
-                request.Cases = cases.Cast<object>().ToList();
+                request.Cases = cases.ToList();
 
             return request;
 
