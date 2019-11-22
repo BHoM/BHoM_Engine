@@ -64,6 +64,8 @@ namespace BH.Engine.Structure
                     resType = BarResultType.BarStrain;
                 else if (type == typeof(BarDisplacement))
                     resType = BarResultType.BarDisplacement;
+                else
+                    Reflection.Compute.RecordWarning("Did not find exact type. Assuming " + resType);
 
                 request = new BarResultRequest { Divisions = divisions, DivisionType = DivisionType.EvenlyDistributed, ResultType = resType };
             }
@@ -79,6 +81,8 @@ namespace BH.Engine.Structure
                     resType = MeshResultType.VonMises;
                 else if (type == typeof(MeshDisplacement))
                     resType = MeshResultType.Displacements;
+                else
+                    Reflection.Compute.RecordWarning("Did not find exact type. Assuming " + resType);
 
                 request = new MeshResultRequest { ResultType = resType };
 
@@ -91,6 +95,8 @@ namespace BH.Engine.Structure
                     resType = GlobalResultType.Reactions;
                 else if (type == typeof(ModalDynamics))
                     resType = GlobalResultType.ModalDynamics;
+                else
+                    Reflection.Compute.RecordWarning("Did not find exact type. Assuming " + resType);
 
                 request = new GlobalResultRequest { ResultType = resType };
             }
@@ -106,6 +112,8 @@ namespace BH.Engine.Structure
                     resType = NodeResultType.NodeAcceleration;
                 else if (type == typeof(NodeVelocity))
                     resType = NodeResultType.NodeVelocity;
+                else
+                    Reflection.Compute.RecordWarning("Did not find exact type. Assuming " + resType);
 
                 request = new NodeResultRequest { ResultType = resType };
             }
