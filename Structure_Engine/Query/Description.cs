@@ -185,7 +185,7 @@ namespace BH.Engine.Structure
 
         public static string Description(this Waffle property)
         {
-            return "Waffle DepthX:" + property.TotalDepthX + " DepthY:" + property.TotalDepthY + " SpacingX: " + property.SpacingX + " SpacingY: " + property.SpacingY + " sWidthX: " + property.StemWidthX + " sWidthY: " + property.StemWidthY + " - " + CheckGetMaterialName(property.Material);
+            return "Waffle DepthX: " + property.TotalDepthX + " DepthY: " + property.TotalDepthY + " SpacingX: " + property.SpacingX + " SpacingY: " + property.SpacingY + " sWidthX: " + property.StemWidthX + " sWidthY: " + property.StemWidthY + " - " + CheckGetMaterialName(property.Material);
         }
 
         /***************************************************/
@@ -233,12 +233,12 @@ namespace BH.Engine.Structure
         private static string CheckGetMaterialName(IMaterialFragment material)
         {
             if (material == null)
-                return " - No material";
+                return "No material";
 
             if (string.IsNullOrEmpty(material.Name))
-                return " - Unnamed Material";
+                return "Unnamed Material";
 
-            return " - " + material.Name;
+            return material.Name;
         }
 
         /***************************************************/
