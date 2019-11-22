@@ -1,6 +1,6 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -20,10 +20,17 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Geometry;
+using BH.oM.Geometry.ShapeProfiles;
+using BH.oM.Structure.SectionProperties;
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using BH.oM.Base;
+using BH.oM.Structure.SurfaceProperties;
 
-namespace BH.Engine.Geometry
+namespace BH.Engine.Structure
 {
     public static partial class Query
     {
@@ -31,9 +38,44 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static List<int> UVCount(this NurbsSurface surf)
+        public static string DescriptionOrName(this ISectionProperty section)
         {
-            return new List<int> { surf.UKnots.Count - surf.UDegree + 1, surf.VKnots.Count - surf.VDegree + 1 };
+            if (String.IsNullOrWhiteSpace(section.Name))
+            {                
+                return IDescription(section);
+            }
+            else
+            {
+                return section.Name;
+            }
+        }
+
+        /***************************************************/
+
+        public static string DescriptionOrName(this ISurfaceProperty surface)
+        {
+            if (String.IsNullOrWhiteSpace(surface.Name))
+            {
+                return IDescription(surface);                
+            }
+            else
+            {
+                return surface.Name;
+            }
+        }
+
+        /***************************************************/
+
+        public static string DescriptionOrName(this IProfile profile)
+        {
+            if (String.IsNullOrWhiteSpace(profile.Name))
+            {
+                return IDescription(profile);
+            }
+            else
+            {
+                return profile.Name;
+            }
         }
 
         /***************************************************/

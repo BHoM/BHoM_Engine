@@ -1,6 +1,6 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -20,10 +20,14 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Geometry;
+using BH.oM.Reflection;
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace BH.Engine.Geometry
+namespace BH.Engine.Reflection
 {
     public static partial class Query
     {
@@ -31,9 +35,16 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static List<int> UVCount(this NurbsSurface surf)
+        public static IEnumerable<T> EnumValues<T>(this T enumValue)
         {
-            return new List<int> { surf.UKnots.Count - surf.UDegree + 1, surf.VKnots.Count - surf.VDegree + 1 };
+            return Enum.GetValues(enumValue.GetType()).Cast<T>();
+        }
+
+        /***************************************************/
+
+        public static IEnumerable<T> EnumValues<T>(this Type enumType)
+        {
+            return Enum.GetValues(enumType).Cast<T>();
         }
 
         /***************************************************/
