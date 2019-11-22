@@ -83,6 +83,7 @@
     <Compile Include="Convert\ToFramingElement.cs" />
     <Compile Include="Create\ConstantFramingProperty.cs" />
     <Compile Include="Create\FEMesh.cs" />
+    <Compile Include="Create\IResultRequest.cs" />
     <Compile Include="Create\MaterialFragment.cs" />
     <Compile Include="Modify\SetMaterial.cs" />
     <Compile Include="Modify\SetStructuralFragment.cs" />
