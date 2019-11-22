@@ -29,6 +29,7 @@ using System.Text;
 using System.Threading.Tasks;
 using BH.oM.Base;
 using BH.oM.Structure.SurfaceProperties;
+using BH.oM.Structure.MaterialFragments;
 
 namespace BH.Engine.Structure
 {
@@ -96,7 +97,7 @@ namespace BH.Engine.Structure
 
         public static string Description(this FabricatedISectionProfile profile)
         {
-            return "FabI " + profile.Height + "x" + profile.WebThickness + "x" + profile.TopFlangeWidth + "x" + profile.BotFlangeWidth + "x" + profile.TopFlangeThickness + "x" + profile.BotFlangeThickness;
+            return "FabI " + profile.Height + "x" + profile.TopFlangeWidth + "x" + profile.BotFlangeWidth + "x" + profile.WebThickness + "x" + profile.TopFlangeThickness + "x" + profile.BotFlangeThickness;
         }
 
         /***************************************************/
@@ -140,28 +141,28 @@ namespace BH.Engine.Structure
 
         public static string Description(this SteelSection section)
         {
-            return "Steel " + section.SectionProfile.IDescription() + " - " + section.Material.Name;
+            return "Steel " + section.SectionProfile.IDescription() + " - " + CheckGetMaterialName(section.Material);
         }
 
         /***************************************************/
 
         public static string Description(this ConcreteSection section)
         {
-            return "Concrete " + section.SectionProfile.IDescription() + " - " + section.Material.Name;
+            return "Concrete " + section.SectionProfile.IDescription() + " - " + CheckGetMaterialName(section.Material);
         }
 
         /***************************************************/
 
         public static string Description(this CableSection section)
         {
-            return "Cable " + section.NumberOfCables + " x dia " + section.CableDiameter + " - " + section.Material.Name;
+            return "Cable " + section.NumberOfCables + " x dia " + section.CableDiameter + " - " + CheckGetMaterialName(section.Material);
         }
 
         /***************************************************/
 
         public static string Description(this ExplicitSection section)
         {
-            return "Explicit A: " + section.Area + " Iy: " + section.Iy + " Iz: " + section.Iz + " J: " + section.J + " - " + section.Material.Name;
+            return "Explicit A: " + section.Area + " Iy: " + section.Iy + " Iz: " + section.Iz + " J: " + section.J + " - " + CheckGetMaterialName(section.Material);
         }        
 
         /***************************************************/
@@ -170,21 +171,21 @@ namespace BH.Engine.Structure
 
         public static string Description(this ConstantThickness property)
         {
-            return "THK " + property.Thickness + " - " + property.Material.Name;            
+            return "THK " + property.Thickness + " - " + CheckGetMaterialName(property.Material);            
         }
 
         /***************************************************/
 
         public static string Description(this Ribbed property)
         {
-            return "Ribbed Depth:" + property.TotalDepth + " Spacing: " + property.Spacing + " sWidth: " + property.StemWidth + " - " + property.Material.Name;
+            return "Ribbed Depth:" + property.TotalDepth + " Spacing: " + property.Spacing + " sWidth: " + property.StemWidth + " - " + CheckGetMaterialName(property.Material);
         }
 
         /***************************************************/
 
         public static string Description(this Waffle property)
         {
-            return "Waffle DepthX:" + property.TotalDepthX + " DepthY:" + property.TotalDepthY + " SpacingX: " + property.SpacingX + " SpacingY: " + property.SpacingY + " sWidthX: " + property.StemWidthX + " sWidthY: " + property.StemWidthY + " - " + property.Material.Name;
+            return "Waffle DepthX:" + property.TotalDepthX + " DepthY:" + property.TotalDepthY + " SpacingX: " + property.SpacingX + " SpacingY: " + property.SpacingY + " sWidthX: " + property.StemWidthX + " sWidthY: " + property.StemWidthY + " - " + CheckGetMaterialName(property.Material);
         }
 
         /***************************************************/
@@ -225,6 +226,19 @@ namespace BH.Engine.Structure
         private static string Description(IObject obj)
         {
             return "";
+        }
+
+        /***************************************************/
+
+        private static string CheckGetMaterialName(IMaterialFragment material)
+        {
+            if (material == null)
+                return " - No material";
+
+            if (string.IsNullOrEmpty(material.Name))
+                return " - Unnamed Material";
+
+            return " - " + material.Name;
         }
 
         /***************************************************/
