@@ -40,7 +40,7 @@ namespace BH.Engine.Graphics
         [Description("Gets a color from a gradient at the spacified position")]
         [Input("gradient", "The gradient to Query a Color from")]
         [Input("val", "The number between 0 and 1 to use for interpolation of the markers colors")]
-        [Output("Color", "The Color at the specified position")]
+        [Output("color", "The Color at the specified position")]
         public static Color Color(this Gradient gradient, double val)
         {
             // Find adjacent markers
@@ -64,7 +64,7 @@ namespace BH.Engine.Graphics
         [Input("val", "The number between 'from' and 'to' to use for interpolation of the markers colors")]
         [Input("from", "The lower bound of 'val's rescaling to 0 to 1")]
         [Input("to", "The upper bound of 'val's rescaling to 0 to 1")]
-        [Output("Color", "The Color at the specified position")]
+        [Output("color", "The Color at the specified position")]
         public static Color Color(this Gradient gradient, double val, double from, double to)
         {
             return gradient.Color((val - from) / (to - from));

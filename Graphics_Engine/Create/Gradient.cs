@@ -39,7 +39,7 @@ namespace BH.Engine.Graphics
         [Description("Creates a colour gradient")]
         [Input("colors", "A list of colors for the gradient")]
         [Input("positions", "A corresponding list of positions for the colored markers between 0 and 1")]
-        [Output("Gradient", "A colour Gradient")]
+        [Output("gradient", "A colour Gradient")]
         public static Gradient Gradient(IEnumerable<Color> colors, IEnumerable<decimal> positions)
         {
             return new Gradient()
