@@ -22,6 +22,7 @@
 
 using BH.oM.Geometry;
 using BH.oM.Graphics;
+using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -37,6 +38,9 @@ namespace BH.Engine.Graphics
         /***************************************************/
 
         [Description("Gets a color from a gradient at the spacified position")]
+        [Input("gradient", "The gradient to Query a Color from")]
+        [Input("val", "The number between 0 and 1 to use for interpolation of the markers colors")]
+        [Output("Color", "The Color at the specified position")]
         public static Color Color(this Gradient gradient, double val)
         {
             // Find adjacent markers
@@ -56,6 +60,11 @@ namespace BH.Engine.Graphics
         /***************************************************/
 
         [Description("Gets a color from a gradient at the spacified position scaled between from and to")]
+        [Input("gradient", "The gradient to Query a Color from")]
+        [Input("val", "The number between 'from' and 'to' to use for interpolation of the markers colors")]
+        [Input("from", "The lower bound of 'val's rescaling to 0 to 1")]
+        [Input("from", "The upper bound of 'val's rescaling to 0 to 1")]
+        [Output("Color", "The Color at the specified position")]
         public static Color Color(this Gradient gradient, double val, double from, double to)
         {
             return gradient.Color((val - from) / (to - from));
@@ -67,18 +76,18 @@ namespace BH.Engine.Graphics
 
         private static Color InterpolateColor(KeyValuePair<decimal, Color> lower, KeyValuePair<decimal, Color> upper, decimal val)
         {
-            // safty check
+            // Safety check
             val = val > lower.Key ? val < upper.Key ? val : upper.Key : lower.Key;
 
             decimal diff = upper.Key - lower.Key;
             decimal fraction = (val - lower.Key) / diff;
 
-            int A = (int)Math.Floor(Interpolate(lower.Value.A, upper.Value.A, fraction));
-            int R = (int)Math.Floor(Interpolate(lower.Value.R, upper.Value.R, fraction));
-            int G = (int)Math.Floor(Interpolate(lower.Value.G, upper.Value.G, fraction));
-            int B = (int)Math.Floor(Interpolate(lower.Value.B, upper.Value.B, fraction));
+            int alpha = (int)Math.Floor(Interpolate(lower.Value.A, upper.Value.A, fraction));
+            int red = (int)Math.Floor(Interpolate(lower.Value.R, upper.Value.R, fraction));
+            int green = (int)Math.Floor(Interpolate(lower.Value.G, upper.Value.G, fraction));
+            int blue = (int)Math.Floor(Interpolate(lower.Value.B, upper.Value.B, fraction));
 
-            return System.Drawing.Color.FromArgb(A, R, G, B);
+            return System.Drawing.Color.FromArgb(alpha, red, green, blue);
         }
 
         /***************************************************/
