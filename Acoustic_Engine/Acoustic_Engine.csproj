@@ -41,11 +41,6 @@
       <HintPath>..\..\BHoM\Build\BHoM.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Geometry_Engine">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Build\Geometry_Engine.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="Geometry_oM">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\BHoM\Build\Geometry_oM.dll</HintPath>
@@ -93,6 +88,12 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Geometry_Engine\Geometry_Engine.csproj">
+      <Project>{89ab2dcb-ef87-4cba-b59c-c16a8a71d333}</Project>
+      <Name>Geometry_Engine</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

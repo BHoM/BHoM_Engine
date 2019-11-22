@@ -314,7 +314,7 @@ namespace BH.Engine.Geometry
 
         public static BoundingBox Bounds(this NurbsSurface surface)
         {
-            return surface.ControlPoints.Bounds();
+            return new List<Point>(surface.ControlPoints).Bounds();
         }
 
         /***************************************************/

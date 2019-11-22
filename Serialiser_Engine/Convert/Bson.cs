@@ -27,6 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
+using System.Data;
 using MongoDB.Bson.Serialization.Conventions;
 using BH.Engine.Serialiser.BsonSerializers;
 using BH.Engine.Serialiser.MemberMapConventions;
@@ -130,6 +131,7 @@ namespace BH.Engine.Serialiser
                 BsonSerializer.RegisterSerializer(typeof(CustomObject), new CustomObjectSerializer());
                 BsonSerializer.RegisterSerializer(typeof(Enum), new EnumSerializer());
                 BsonSerializer.RegisterSerializer(typeof(IDeprecated), new DeprecatedSerializer());
+                BsonSerializer.RegisterSerializer(typeof(DataTable), new DataTableSerialiser());
 
                 var typeSerializer = new TypeSerializer();
                 BsonSerializer.RegisterSerializer(typeof(Type), typeSerializer);

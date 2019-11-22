@@ -66,19 +66,18 @@ namespace BH.Engine.Structure
         /***************************************************/
 
 
-        public static List<Mesh> DeformedShape(List<FEMesh> meshes, List<MeshResults> meshDeformations, string adapterId, object loadCase, double scaleFactor = 1.0)
+        public static List<Mesh> DeformedShape(List<FEMesh> meshes, List<MeshResult> meshDeformations, string adapterId, object loadCase, double scaleFactor = 1.0)
         {
-            //TODO: Filter by case
-            //meshDeformations = meshDeformations.SelectCase(loadCase);
+            meshDeformations = meshDeformations.SelectCase(loadCase);
 
             List<Mesh> defMeshes = new List<Mesh>();
 
             foreach (FEMesh feMesh in meshes)
             {
                 string id = feMesh.CustomData[adapterId].ToString();
-                MeshResults deformations = meshDeformations.Where(x => x.ObjectId.ToString() == id && x.MeshResultCollection.First() is MeshDisplacement).First();
+                MeshResult deformations = meshDeformations.Where(x => x.ObjectId.ToString() == id && x.Results.First() is MeshDisplacement).First();
 
-                defMeshes.Add(DeformedMesh(feMesh, deformations.MeshResultCollection.Cast<MeshDisplacement>(), adapterId, scaleFactor));
+                defMeshes.Add(DeformedMesh(feMesh, deformations.Results.Cast<MeshDisplacement>(), adapterId, scaleFactor));
             }
 
             return defMeshes;
