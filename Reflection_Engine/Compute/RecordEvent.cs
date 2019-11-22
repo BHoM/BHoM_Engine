@@ -26,6 +26,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
@@ -47,7 +48,14 @@ namespace BH.Engine.Reflection
 
         public static bool RecordError(string message)
         {
-            return RecordEvent(new Event { Message = message, Type = EventType.Error });
+            string additionalInfo = "";
+            string frame1 = new StackTrace().GetFrame(1).GetMethod().Name;
+            string frame2 = new StackTrace().GetFrame(2).GetMethod().Name;
+
+            if (frame1 != "RecordError")
+                additionalInfo = $"\nHappened in: {frame1} while executing {frame2}.";
+
+            return RecordEvent(new Event { Message = message + additionalInfo, Type = EventType.Error });
         }
 
         /***************************************************/
@@ -80,7 +88,6 @@ namespace BH.Engine.Reflection
 
             return true;
         }
-
 
         /***************************************************/
     }
