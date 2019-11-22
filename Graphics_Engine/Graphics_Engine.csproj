@@ -7,8 +7,8 @@
     <ProjectGuid>{D5C7704D-F59A-4FC6-8D1E-356699A174E0}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BH.Engine.SVG</RootNamespace>
-    <AssemblyName>SVG_Engine</AssemblyName>
+    <RootNamespace>BH.Engine.Graphics</RootNamespace>
+    <AssemblyName>Graphics_Engine</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -44,6 +44,9 @@
       <HintPath>..\..\BHoM\Build\Graphics_oM.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Reflection_oM">
+      <HintPath>..\..\BHoM\Build\Reflection_oM.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -55,9 +58,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Create\Gradient.cs" />
     <Compile Include="Create\SVGStyle.cs" />
     <Compile Include="Create\SVGObject.cs" />
     <Compile Include="Create\SVGDocument.cs" />
+    <Compile Include="Query\Color.cs" />
     <Compile Include="Query\Bounds.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Convert\ToSVGString.cs" />
