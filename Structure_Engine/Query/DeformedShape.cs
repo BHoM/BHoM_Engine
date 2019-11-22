@@ -42,16 +42,26 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static List<IGeometry> DeformedShape(List<Bar> bars, List<BarDeformation> barDeformations, string adapterId, object loadCase, double scaleFactor = 1.0, bool drawSections = false)
+        public static List<IGeometry> DeformedShape(List<Bar> bars, List<BarDisplacement> barDeformations, string adapterId, object loadCase, double scaleFactor = 1.0, bool drawSections = false)
         {
             barDeformations = barDeformations.SelectCase(loadCase);
 
             List<IGeometry> geom = new List<IGeometry>();
 
+            var resGroups = barDeformations.GroupBy(x => x.ObjectId.ToString()).ToDictionary(x => x.Key);
+
             foreach (Bar bar in bars)
             {
                 string id = bar.CustomData[adapterId].ToString();
-                List<BarDeformation> deformations = barDeformations.Where(x => x.ObjectId.ToString() == id).ToList();
+
+                List<BarDisplacement> deformations;
+
+                IGrouping<string, BarDisplacement> outVal;
+                if (resGroups.TryGetValue(id, out outVal))
+                    deformations = outVal.ToList();
+                else
+                    continue;
+
                 deformations.Sort();
                 if (drawSections)
                     geom.AddRange(DeformedShapeSection(bar, deformations, scaleFactor));
@@ -87,7 +97,7 @@ namespace BH.Engine.Structure
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private static Polyline DeformedShapeCentreLine(Bar bar, List<BarDeformation> deformations, double scaleFactor = 1.0)
+        private static Polyline DeformedShapeCentreLine(Bar bar, List<BarDisplacement> deformations, double scaleFactor = 1.0)
         {
             Vector tan = (bar.EndNode.Position() - bar.StartNode.Position());
             Vector unitTan = tan.Normalise();
@@ -95,12 +105,14 @@ namespace BH.Engine.Structure
             Vector yAxis = normal.CrossProduct(unitTan);
 
 
+
+
             List<Point> pts = new List<Point>();
 
-            foreach (BarDeformation defo in deformations)
+            foreach (BarDisplacement defo in deformations)
             {
-                //Vector disp = new Vector { X = defo.UX * scaleFactor, Y = defo.UY * scaleFactor, Z = defo.UZ * scaleFactor };
-                Vector disp = unitTan * defo.UX * scaleFactor + yAxis * defo.UY * scaleFactor + normal * defo.UZ * scaleFactor;
+                Vector disp = new Vector { X = defo.UX * scaleFactor, Y = defo.UY * scaleFactor, Z = defo.UZ * scaleFactor };
+                //Vector disp = unitTan * defo.UX * scaleFactor + yAxis * defo.UY * scaleFactor + normal * defo.UZ * scaleFactor;
                 Point pt = bar.StartNode.Position() + tan * defo.Position + disp;
                 pts.Add(pt);
             }
@@ -112,7 +124,7 @@ namespace BH.Engine.Structure
         /***************************************************/
 
 
-        private static List<Loft> DeformedShapeSection(Bar bar, List<BarDeformation> deformations, double scaleFactor = 1.0)
+        private static List<Loft> DeformedShapeSection(Bar bar, List<BarDisplacement> deformations, double scaleFactor = 1.0)
         {
             Vector tan = bar.Tangent();
             Vector unitTan = tan.Normalise();
@@ -128,7 +140,7 @@ namespace BH.Engine.Structure
             foreach (ICurve sectionCurve in sectionCurves)
             {
                 Loft loft = new Loft();
-                foreach (BarDeformation defo in deformations)
+                foreach (BarDisplacement defo in deformations)
                 {
                     ICurve curve = sectionCurve.IRotate(bar.StartNode.Position(), unitTan, defo.RX * scaleFactor);
                     Vector disp = unitTan * defo.UX * scaleFactor + yAxis * defo.UY * scaleFactor + normal * defo.UZ * scaleFactor;
