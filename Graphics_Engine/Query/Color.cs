@@ -44,8 +44,8 @@ namespace BH.Engine.Graphics
         public static Color Color(this Gradient gradient, double val)
         {
             // Find adjacent markers
-            KeyValuePair<decimal, Color> upper = gradient.Markers.FirstOrDefault(x => x.Key > (decimal)val);
-            KeyValuePair<decimal, Color> lower = gradient.Markers.LastOrDefault(x => x.Key < (decimal)val);
+            KeyValuePair<decimal, Color> upper = gradient.Markers.FirstOrDefault(x => x.Key >= (decimal)val);
+            KeyValuePair<decimal, Color> lower = gradient.Markers.LastOrDefault(x => x.Key <= (decimal)val);
 
             // Check adjacency on both sides
             if (lower.Equals(default(KeyValuePair<decimal, Color>)))
