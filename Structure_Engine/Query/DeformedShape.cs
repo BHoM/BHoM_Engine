@@ -42,13 +42,13 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static List<IGeometry> DeformedShape(List<Bar> bars, List<BarDisplacement> barDeformations, string adapterId, object loadCase, double scaleFactor = 1.0, bool drawSections = false)
+        public static List<IGeometry> DeformedShape(List<Bar> bars, List<BarDisplacement> barDisplacements, string adapterId, object loadCase, double scaleFactor = 1.0, bool drawSections = false)
         {
-            barDeformations = barDeformations.SelectCase(loadCase);
+            barDisplacements = barDisplacements.SelectCase(loadCase);
 
             List<IGeometry> geom = new List<IGeometry>();
 
-            var resGroups = barDeformations.GroupBy(x => x.ObjectId.ToString()).ToDictionary(x => x.Key);
+            var resGroups = barDisplacements.GroupBy(x => x.ObjectId.ToString()).ToDictionary(x => x.Key);
 
             foreach (Bar bar in bars)
             {
@@ -100,9 +100,9 @@ namespace BH.Engine.Structure
         private static Polyline DeformedShapeCentreLine(Bar bar, List<BarDisplacement> deformations, double scaleFactor = 1.0)
         {
             Vector tan = (bar.EndNode.Position() - bar.StartNode.Position());
-            Vector unitTan = tan.Normalise();
-            Vector normal = bar.Normal();
-            Vector yAxis = normal.CrossProduct(unitTan);
+            //Vector unitTan = tan.Normalise();
+            //Vector normal = bar.Normal();
+            //Vector yAxis = normal.CrossProduct(unitTan);
 
 
 
@@ -143,7 +143,8 @@ namespace BH.Engine.Structure
                 foreach (BarDisplacement defo in deformations)
                 {
                     ICurve curve = sectionCurve.IRotate(bar.StartNode.Position(), unitTan, defo.RX * scaleFactor);
-                    Vector disp = unitTan * defo.UX * scaleFactor + yAxis * defo.UY * scaleFactor + normal * defo.UZ * scaleFactor;
+                    //Vector disp = unitTan * defo.UX * scaleFactor + yAxis * defo.UY * scaleFactor + normal * defo.UZ * scaleFactor;
+                    Vector disp = new Vector { X = defo.UX * scaleFactor, Y = defo.UY * scaleFactor, Z = defo.UZ * scaleFactor };
                     disp += tan * defo.Position;
                     loft.Curves.Add(curve.ITranslate(disp));
                 }
