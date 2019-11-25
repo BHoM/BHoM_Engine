@@ -49,11 +49,15 @@ namespace BH.Engine.Reflection
         public static bool RecordError(string message)
         {
             string additionalInfo = "";
-            string frame1 = new StackTrace().GetFrame(1).GetMethod().Name;
-            string frame2 = new StackTrace().GetFrame(2).GetMethod().Name;
+            var frame1 = new StackTrace().GetFrame(1).GetMethod();
+            var frame2 = new StackTrace().GetFrame(2).GetMethod();
 
-            if (frame1 != "RecordError")
-                additionalInfo = $"\nHappened in: {frame1} while executing {frame2}.";
+            if (frame1.Name != "RecordError")
+            {
+                additionalInfo = $"\nHappened in: {frame1.Name}";
+                if (frame2.DeclaringType.FullName.Contains("BH."))
+                    additionalInfo += $" while executing {frame2.Name}.";
+            }
 
             return RecordEvent(new Event { Message = message + additionalInfo, Type = EventType.Error });
         }
