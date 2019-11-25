@@ -104,9 +104,6 @@ namespace BH.Engine.Structure
             //Vector normal = bar.Normal();
             //Vector yAxis = normal.CrossProduct(unitTan);
 
-
-
-
             List<Point> pts = new List<Point>();
 
             foreach (BarDisplacement defo in deformations)
