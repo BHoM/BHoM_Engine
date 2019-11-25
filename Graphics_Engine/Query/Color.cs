@@ -80,6 +80,8 @@ namespace BH.Engine.Graphics
             val = val > lower.Key ? val < upper.Key ? val : upper.Key : lower.Key;
 
             decimal diff = upper.Key - lower.Key;
+            if (diff == 0)
+                return lower.Value;
             decimal fraction = (val - lower.Key) / diff;
 
             int alpha = (int)Math.Floor(Interpolate(lower.Value.A, upper.Value.A, fraction));
