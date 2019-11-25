@@ -82,12 +82,23 @@ namespace BH.Engine.Structure
 
             List<Mesh> defMeshes = new List<Mesh>();
 
+            var resGroups = meshDeformations.GroupBy(x => x.ObjectId.ToString()).ToDictionary(x => x.Key);
+
             foreach (FEMesh feMesh in meshes)
             {
                 string id = feMesh.CustomData[adapterId].ToString();
-                MeshResult deformations = meshDeformations.Where(x => x.ObjectId.ToString() == id && x.Results.First() is MeshDisplacement).First();
 
-                defMeshes.Add(DeformedMesh(feMesh, deformations.Results.Cast<MeshDisplacement>(), adapterId, scaleFactor));
+                List<MeshResult> deformations;
+
+                IGrouping<string, MeshResult> outVal;
+                if (resGroups.TryGetValue(id, out outVal))
+                    deformations = outVal.ToList();
+                else
+                    continue;
+
+                MeshResult singleDisp = deformations.Where(x => x.ObjectId.ToString() == id && x.Results.First() is MeshDisplacement).First();
+
+                defMeshes.Add(DeformedMesh(feMesh, singleDisp.Results.Cast<MeshDisplacement>(), adapterId, scaleFactor));
             }
 
             return defMeshes;
