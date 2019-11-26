@@ -135,9 +135,9 @@ namespace BH.Engine.Structure
         private static List<Loft> DeformedShapeSection(Bar bar, List<BarDisplacement> deformations, double scaleFactor = 1.0)
         {
             Vector tan = bar.Tangent();
-            Vector unitTan = tan.Normalise();
-            Vector normal = bar.Normal();
-            Vector yAxis = normal.CrossProduct(unitTan);
+            //Vector unitTan = tan.Normalise();
+            //Vector normal = bar.Normal();
+            //Vector yAxis = normal.CrossProduct(unitTan);
 
 
             List<Point> pts = new List<Point>();
@@ -150,11 +150,11 @@ namespace BH.Engine.Structure
                 Loft loft = new Loft();
                 foreach (BarDisplacement defo in deformations)
                 {
-                    ICurve curve = sectionCurve.IRotate(bar.StartNode.Position(), unitTan, defo.RX * scaleFactor);
+                    //ICurve curve = sectionCurve.IRotate(bar.StartNode.Position(), tan, defo.RX * scaleFactor);
                     //Vector disp = unitTan * defo.UX * scaleFactor + yAxis * defo.UY * scaleFactor + normal * defo.UZ * scaleFactor;
                     Vector disp = new Vector { X = defo.UX * scaleFactor, Y = defo.UY * scaleFactor, Z = defo.UZ * scaleFactor };
                     disp += tan * defo.Position;
-                    loft.Curves.Add(curve.ITranslate(disp));
+                    loft.Curves.Add(sectionCurve.ITranslate(disp));
                 }
                 lofts.Add(loft);
             }
