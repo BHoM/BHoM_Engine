@@ -111,16 +111,11 @@ namespace BH.Engine.Structure
         private static Polyline DeformedShapeCentreLine(Bar bar, List<BarDisplacement> deformations, double scaleFactor = 1.0)
         {
             Vector tan = (bar.EndNode.Position() - bar.StartNode.Position());
-            //Vector unitTan = tan.Normalise();
-            //Vector normal = bar.Normal();
-            //Vector yAxis = normal.CrossProduct(unitTan);
-
             List<Point> pts = new List<Point>();
 
             foreach (BarDisplacement defo in deformations)
             {
                 Vector disp = new Vector { X = defo.UX * scaleFactor, Y = defo.UY * scaleFactor, Z = defo.UZ * scaleFactor };
-                //Vector disp = unitTan * defo.UX * scaleFactor + yAxis * defo.UY * scaleFactor + normal * defo.UZ * scaleFactor;
                 Point pt = bar.StartNode.Position() + tan * defo.Position + disp;
                 pts.Add(pt);
             }
@@ -135,10 +130,6 @@ namespace BH.Engine.Structure
         private static List<Loft> DeformedShapeSection(Bar bar, List<BarDisplacement> deformations, double scaleFactor = 1.0)
         {
             Vector tan = bar.Tangent();
-            //Vector unitTan = tan.Normalise();
-            //Vector normal = bar.Normal();
-            //Vector yAxis = normal.CrossProduct(unitTan);
-
 
             List<Point> pts = new List<Point>();
 
