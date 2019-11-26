@@ -1,6 +1,6 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -20,10 +20,15 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Geometry;
+using System;
+using System.Linq;
 using System.Collections.Generic;
+using System.ComponentModel;
+using BH.oM.Reflection.Attributes;
+using BH.oM.Base;
+using BH.oM.Data.Library;
 
-namespace BH.Engine.Geometry
+namespace BH.Engine.Library
 {
     public static partial class Query
     {
@@ -31,9 +36,12 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static List<int> UVCount(this NurbsSurface surf)
+        [Description("Gets source informations for Datasets matching the Library name")]
+        [Input("libraryName", "The name of the Dataset(s) to extract source information from")]
+        [Output("source", "The source of the Dataset(s)")]
+        public static List<Source> Source(string libraryName)
         {
-            return new List<int> { surf.UKnots.Count - surf.UDegree + 1, surf.VKnots.Count - surf.VDegree + 1 };
+            return Datasets(libraryName).Select(x => x.SourceInformation).ToList();
         }
 
         /***************************************************/

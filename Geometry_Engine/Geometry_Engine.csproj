@@ -59,6 +59,7 @@
     <Compile Include="Compute\BooleanUnion.cs" />
     <Compile Include="Compute\ClusterCollinear.cs" />
     <Compile Include="Compute\ClusterCoplanar.cs" />
+    <Compile Include="Compute\ConvexHull.cs" />
     <Compile Include="Compute\CullDuplicates.cs" />
     <Compile Include="Compute\DistributeOutlines.cs" />
     <Compile Include="Compute\Eigenvalues.cs" />
@@ -96,7 +97,7 @@
     <Compile Include="Create\Point.cs" />
     <Compile Include="Create\PolySurface.cs" />
     <Compile Include="Create\Pipe.cs" />
-    <Compile Include="Create\NurbSurface.cs" />
+    <Compile Include="Create\NurbsSurface.cs" />
     <Compile Include="Create\Loft.cs" />
     <Compile Include="Create\Extrusion.cs" />
     <Compile Include="Create\CompositeGeometry.cs" />
@@ -119,6 +120,7 @@
     <Compile Include="Modify\SetOutlineElements1D.cs" />
     <Compile Include="Modify\Simplify.cs" />
     <Compile Include="Modify\Extend.cs" />
+    <Compile Include="Modify\Offset.cs" />
     <Compile Include="Modify\Join.cs" />
     <Compile Include="Modify\ProjectAlong.cs" />
     <Compile Include="Modify\Reverse.cs" />
@@ -159,6 +161,7 @@
     <Compile Include="Query\IsCoplanar.cs" />
     <Compile Include="Query\IsLinear.cs" />
     <Compile Include="Query\IsOnCurve.cs" />
+    <Compile Include="Query\IsPeriodic.cs" />
     <Compile Include="Query\IsPlanar.cs" />
     <Compile Include="Query\IsPolylinear.cs" />
     <Compile Include="Query\IsQuad.cs" />

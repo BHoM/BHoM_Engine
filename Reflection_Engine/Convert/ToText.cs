@@ -48,7 +48,7 @@ namespace BH.Engine.Reflection
 
         /***************************************************/
 
-        public static string ToText(this MethodBase method, bool includePath = false, string paramStart = "(", string paramSeparator = ", ", string paramEnd = ")", bool removeIForInterface = true, bool includeParamNames = true, int maxParams = 5, int maxChars = 40)
+        public static string ToText(this MethodBase method, bool includePath = false, string paramStart = "(", string paramSeparator = ", ", string paramEnd = ")", bool removeIForInterface = true, bool includeParamNames = true, int maxParams = 5, int maxChars = 40, bool includeParamPaths = false)
         {
             string name = (method is ConstructorInfo) ? method.DeclaringType.ToText(false, true) : method.Name;
             if (removeIForInterface && Query.IsInterfaceMethod(method))
@@ -66,7 +66,7 @@ namespace BH.Engine.Reflection
                     for (int i = 0; i < parameters.Count(); i++)
                     {
                         string singleParamText = includeParamNames ?
-                            parameters[i].ParameterType.ToText() + " " + parameters[i].Name : parameters[i].ParameterType.ToText();
+                            parameters[i].ParameterType.ToText(includeParamPaths) + " " + parameters[i].Name : parameters[i].ParameterType.ToText(includeParamPaths);
 
                         if (i == 0)
                         {
@@ -125,7 +125,7 @@ namespace BH.Engine.Reflection
                 {
                     string text = type.Name.Substring(0, type.Name.IndexOf('`'))
                         + genericStart
-                        + types.Select(x => x.ToText()).Aggregate((x, y) => x + genericSeparator + y)
+                        + types.Select(x => x.ToText(includePath)).Aggregate((x, y) => x + genericSeparator + y)
                         + genericEnd;
 
                     if (includePath)

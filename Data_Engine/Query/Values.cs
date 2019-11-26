@@ -1,6 +1,6 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -20,10 +20,15 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Geometry;
+using System;
+using System.Linq;
 using System.Collections.Generic;
+using System.ComponentModel;
+using BH.oM.Reflection.Attributes;
+using BH.oM.Base;
+using BH.oM.Data.Collections;
 
-namespace BH.Engine.Geometry
+namespace BH.Engine.Data
 {
     public static partial class Query
     {
@@ -31,9 +36,12 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static List<int> UVCount(this NurbsSurface surf)
+        [Description("Gets all table rows. Values returned as CustomObjects")]
+        [Input("table", "The table to extract values from")]
+        [Output("Data", "All data in the table as CustomObjects.")]
+        public static List<CustomObject> Values(this Table table)
         {
-            return new List<int> { surf.UKnots.Count - surf.UDegree + 1, surf.VKnots.Count - surf.VDegree + 1 };
+            return AsCustomObjects(table.Data.Select(), table.Data.Columns);
         }
 
         /***************************************************/
