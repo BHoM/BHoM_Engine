@@ -85,7 +85,7 @@ namespace BH.Engine.Geometry
         [Input("firstPt", "The first Point of the three to calculate the angle between")]
         [Input("secondPt", "The second point of the three to calculate the angle between")]
         [Input("thirdPt", "The third point of the three to calculate the angle between")]
-        [Output("angle", "The smallest angle between the three points in degrees")]
+        [Output("angle", "The smallest angle between the three points in radians")]
         public static double Angle(this Point firstPt, Point secondPt, Point thirdPt)
         {
             double x1 = firstPt.X - secondPt.X; //Vector 1 - x
