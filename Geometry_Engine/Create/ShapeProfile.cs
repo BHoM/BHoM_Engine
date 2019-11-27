@@ -456,9 +456,19 @@ namespace BH.Engine.Geometry
 
         public static TaperedProfile TaperedProfile(List<decimal> positions, List<IProfile> profiles)
         {
-            if(positions.Count != profiles.Count)
+            if (positions.Count != profiles.Count)
             {
                 Engine.Reflection.Compute.RecordError("Number of positions and profiles provided are not equal");
+                return null;
+            }
+            else if (positions.Exists((decimal d) => { return d > 1; }) || positions.Exists((decimal d) => { return d < 0; }))
+            {
+                Engine.Reflection.Compute.RecordError("Positions must exist between 0 and 1 (inclusive)");
+                return null;
+            }
+            else if (!positions.Contains(0) || !positions.Contains(1))
+            {
+                Engine.Reflection.Compute.RecordError("Start and end profile must be provided");
                 return null;
             }
 
@@ -468,6 +478,19 @@ namespace BH.Engine.Geometry
             {
                 profileDict[positions[i]] = profiles[i];
             }
+
+            return new TaperedProfile(profileDict);
+        }
+
+        /***************************************************/
+
+        public static TaperedProfile TaperedProfile(IProfile startProfile, IProfile endProfile)
+        {
+            SortedDictionary<decimal, IProfile> profileDict = new SortedDictionary<decimal, IProfile>();
+
+            profileDict.Add(0, startProfile);
+            profileDict.Add(1, endProfile);
+
             return new TaperedProfile(profileDict);
         }
 
