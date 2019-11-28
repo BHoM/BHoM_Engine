@@ -43,6 +43,9 @@ namespace BH.Engine.Graphics
         [Output("color", "The Color at the specified position")]
         public static Color Color(this Gradient gradient, double val)
         {
+            // keep val in the domain
+            val = val > 1 ? 1 : val < 0 ? 0 : val;
+
             // Find adjacent markers
             KeyValuePair<decimal, Color> upper = gradient.Markers.FirstOrDefault(x => x.Key >= (decimal)val);
             KeyValuePair<decimal, Color> lower = gradient.Markers.LastOrDefault(x => x.Key <= (decimal)val);
