@@ -27,6 +27,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
+using BH.Engine.Reflection;
 
 namespace BH.Engine.Graphics
 {
@@ -42,6 +43,10 @@ namespace BH.Engine.Graphics
         [Output("gradient", "A colour Gradient")]
         public static Gradient Gradient(IEnumerable<Color> colors, IEnumerable<decimal> positions)
         {
+            if (colors.Count() != positions.Count())
+            {
+                Engine.Reflection.Compute.RecordWarning("Please provide equa-length list for predictible results");
+            }
             return new Gradient()
             {
                 Markers = new SortedDictionary<decimal, Color>(
