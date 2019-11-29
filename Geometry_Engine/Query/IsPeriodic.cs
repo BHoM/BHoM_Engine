@@ -31,6 +31,18 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
+        public static bool IsPeriodic(this NurbsCurve curve)
+        {
+            int multiplicity = 1;
+
+            while (curve.Knots[multiplicity - 1] == curve.Knots[multiplicity])
+                multiplicity++;
+
+            return (multiplicity != curve.Degree());
+        }
+
+        /***************************************************/
+        
         public static bool IsPeriodic(this NurbsSurface surface)
         {
             int uMultiplicity = 1;
