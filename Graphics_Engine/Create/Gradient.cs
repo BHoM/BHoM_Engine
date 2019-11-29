@@ -37,7 +37,7 @@ namespace BH.Engine.Graphics
         /****           Public Methods                  ****/
         /***************************************************/
 
-        [Description("Creates a colour gradient")]
+        [Description("Creates a colour gradient with colour values correspondnig to values between 0 and 1")]
         [Input("colors", "A list of colors for the gradient")]
         [Input("positions", "A corresponding list of positions for the colored markers between 0 and 1")]
         [Output("gradient", "A colour Gradient")]
@@ -46,6 +46,10 @@ namespace BH.Engine.Graphics
             if (colors.Count() != positions.Count())
             {
                 Engine.Reflection.Compute.RecordWarning("Please provide equa-length list for predictible results");
+            }
+            if (positions.Max() > 1 || positions.Min() < 0)
+            {
+                Engine.Reflection.Compute.RecordWarning("Markers with positions outside of 0 and 1 are pointless");
             }
             return new Gradient()
             {
