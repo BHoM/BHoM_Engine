@@ -67,8 +67,7 @@ namespace BH.Engine.Geometry
             if (curve == null || curve.ControlPoints == null || curve.ControlPoints.Count < 2)
                 return false;
 
-            // TODO: This does not take into account periodic curves
-            return curve.ControlPoints.First() == curve.ControlPoints.Last();
+            return curve.ControlPoints.First().SquareDistance(curve.ControlPoints.Last()) <= tolerance * tolerance || curve.IsPeriodic();
         }
 
         /***************************************************/
