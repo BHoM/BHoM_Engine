@@ -87,10 +87,10 @@ namespace BH.Engine.Graphics
                 return lower.Value;
             decimal fraction = (val - lower.Key) / diff;
 
-            int alpha = (int)Math.Floor(Interpolate(lower.Value.A, upper.Value.A, fraction));
-            int red = (int)Math.Floor(Interpolate(lower.Value.R, upper.Value.R, fraction));
-            int green = (int)Math.Floor(Interpolate(lower.Value.G, upper.Value.G, fraction));
-            int blue = (int)Math.Floor(Interpolate(lower.Value.B, upper.Value.B, fraction));
+            int alpha = (int)Math.Round(Interpolate(lower.Value.A, upper.Value.A, fraction));
+            int red = (int)Math.Round(Interpolate(lower.Value.R, upper.Value.R, fraction));
+            int green = (int)Math.Round(Interpolate(lower.Value.G, upper.Value.G, fraction));
+            int blue = (int)Math.Round(Interpolate(lower.Value.B, upper.Value.B, fraction));
 
             return System.Drawing.Color.FromArgb(alpha, red, green, blue);
         }
