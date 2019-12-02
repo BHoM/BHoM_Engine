@@ -52,7 +52,7 @@ namespace BH.Engine.Reflection
             var frame1 = new StackTrace().GetFrame(1).GetMethod();
             var frame2 = new StackTrace().GetFrame(2).GetMethod();
 
-            if (frame1.Name != "RecordError")
+            if (frame1.Name != "RecordError" && frame1.Name != frame2.Name)
             {
                 additionalInfo = $"\nHappened in: {frame1.Name}";
                 if (frame2.DeclaringType.FullName.Contains("BH."))
