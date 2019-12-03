@@ -52,6 +52,10 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
+    <Reference Include="Triangle, Version=0.0.6.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Triangle.0.0.6-Beta3\lib\net45\Triangle.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Compute\BooleanDifference.cs" />
@@ -73,6 +77,7 @@
     <Compile Include="Compute\SortAlongCurve.cs" />
     <Compile Include="Compute\SortCollinear.cs" />
     <Compile Include="Compute\ClipPolylines.cs" />
+    <Compile Include="Compute\Triangulate.cs" />
     <Compile Include="Convert\Polyline.cs" />
     <Compile Include="Create\Basis.cs" />
     <Compile Include="Create\Cone.cs" />
@@ -222,6 +227,9 @@
       <Name>Reflection_Engine</Name>
       <Private>False</Private>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
