@@ -1,6 +1,6 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -20,28 +20,28 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Base;
-using System.Collections.Generic;
-using System.Collections;
-using System.Linq;
 using System;
-using System.Reflection;
-using BH.oM.Base.CRUD;
+using System.Linq;
+using System.Collections.Generic;
+using System.ComponentModel;
+using BH.oM.Reflection.Attributes;
+using BH.oM.Base;
+using BH.oM.Data.Library;
 
-namespace BH.Engine.Base
+namespace BH.Engine.Library
 {
-    public static partial class Create
+    public static partial class Query
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static CrudConfig GenericPushConfig(PushActionType actionType = PushActionType.Replace) 
+        [Description("Gets source informations for Datasets matching the Library name")]
+        [Input("libraryName", "The name of the Dataset(s) to extract source information from")]
+        [Output("source", "The source of the Dataset(s)")]
+        public static List<Source> Source(string libraryName)
         {
-            return new CrudConfig
-            {
-                PushActionType = actionType
-            };
+            return Datasets(libraryName).Select(x => x.SourceInformation).ToList();
         }
 
         /***************************************************/
