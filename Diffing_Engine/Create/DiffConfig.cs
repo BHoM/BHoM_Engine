@@ -43,20 +43,14 @@ namespace BH.Engine.Diffing
         ///***************************************************/
 
         [Description("Defines a set of configurations of the diffing.")]
-        [Input("enablePropertyDiffing", "Enables or disables the property-by-property diffing. If false, only collection-level diffing will be performed.")]
-        public static DiffConfig DiffConfig(bool enablePropertyDiffing = true)
-        {
-            return new DiffConfig() { EnablePropertyDiffing = enablePropertyDiffing };
-        }
-
-        [Description("Defines a set of configurations of the diffing.")]
         [Input("propertiesToIgnore", "List of strings specifying the names of the properties that should be ignored in the diffing.\nBy default: 'BHoM_Guid', 'CustomData', 'Fragments`")]
         [Input("enablePropertyDiffing", "If false, only collection-level diffing will be performed, otherwise property-by-property. Defaults to true.")]
-        public static DiffConfig DiffConfig(List<string> propertiesToIgnore, bool enablePropertyDiffing = true)
+        public static DiffConfig DiffConfig(List<string> propertiesToIgnore = null, bool enablePropertyDiffing = true)
         {
+            if (propertiesToIgnore == null)
+                propertiesToIgnore = new List<string>() { "BHoM_Guid", "CustomData", "Fragments" };
+
             return new DiffConfig() { PropertiesToIgnore = propertiesToIgnore, EnablePropertyDiffing = enablePropertyDiffing };
         }
-
-
     }
 }

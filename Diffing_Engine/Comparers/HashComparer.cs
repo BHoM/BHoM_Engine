@@ -21,43 +21,52 @@
  */
 
 using BH.oM.Base;
+using BH.Engine;
 using BH.oM.Data.Collections;
 using BH.oM.Diffing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Security.Cryptography;
 using System.Reflection;
 using BH.Engine.Serialiser;
-using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
+using BH.oM.Reflection.Attributes;
+using BH.oM.Reflection;
+using BH.Engine.Diffing;
 
-namespace BH.Engine.Diffing
+namespace BH.Engine
 {
-    public static partial class Modify
+    public class HashFragmComparer<T> : IEqualityComparer<T> where T : IBHoMObject
     {
-        ///***************************************************/
-        ///**** Public Methods                            ****/
-        ///***************************************************/
+        /***************************************************/
+        /**** Constructors                              ****/
+        /***************************************************/
+        public List<string> PropertiesToIgnore { get; set; } = null;
 
-        [Description("Computes and sets the HashFragment for a given IBHoMObject. " +
-            "If the object already has a HashFragment, it stores the existing hash aside from the current one.")]
-        public static void SetHashFragment(IEnumerable<IBHoMObject> objs, DiffConfig diffConfig = null)
+        public HashFragmComparer(List<string> propertiesToIgnore = null)
         {
-            // Set configurations if diffConfig is null
-            diffConfig = diffConfig == null ? new DiffConfig() : diffConfig;
+            if (propertiesToIgnore == null)
+                propertiesToIgnore = new List<string>() { "BHoM_Guid", "CustomData", "Fragments" };
 
-            // Calculate and set the object hashes
-            foreach (var obj in objs)
-            {
-                string hash = BH.Engine.Diffing.Compute.DiffingHash(obj, diffConfig);
+            PropertiesToIgnore = propertiesToIgnore;
+        }
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
 
-                HashFragment existingFragm = obj.GetHashFragment();
+        public bool Equals(T x, T y)
+        {
+            if (x.SHA256Hash(PropertiesToIgnore) == y.SHA256Hash(PropertiesToIgnore))
+                return true;
+            else
+                return false;
+        }
 
-                obj.Fragments.AddOrReplace(new HashFragment(hash, existingFragm?.Hash));
-            }
+        /***************************************************/
+
+        public int GetHashCode(T obj)
+        {
+            return obj.GetHashFragment().GetHashCode();
         }
     }
 }
