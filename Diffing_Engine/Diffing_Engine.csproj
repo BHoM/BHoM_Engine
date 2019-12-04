@@ -74,6 +74,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Comparers\HashComparer.cs" />
     <Compile Include="Compute\HashComparing.cs" />
     <Compile Include="Compute\Diffing.cs" />
     <Compile Include="Compute\DiffingHash.cs" />

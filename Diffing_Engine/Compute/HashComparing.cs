@@ -36,14 +36,10 @@ using System.ComponentModel;
 using BH.oM.Reflection.Attributes;
 using BH.oM.Reflection;
 
-namespace BH.Engine.Diffing
+namespace BH.Engine
 {
     public static partial class Compute
     {
-        /***************************************************/
-        /**** Public Methods                            ****/
-        /***************************************************/
-
         [Description("Dispatch objects in two sets into the ones exclusive to one set, the other, or both.")]
         [Input("set1", "A previous version of a list of IBHoMObjects")]
         [Input("set2", "A new version of a list of IBHoMObjects")]
@@ -56,29 +52,5 @@ namespace BH.Engine.Diffing
 
             return Engine.Data.Create.VennDiagram(streamA.Objects.Cast<T>(), streamB.Objects.Cast<T>(), new HashFragmComparer<T>());
         }
-
-
-        /***************************************************/
-        /**** Public Fields                             ****/
-        /***************************************************/
-
-        public class HashFragmComparer<T> : IEqualityComparer<T> where T : IBHoMObject
-        {
-            public bool Equals(T x, T y)
-            {
-                string firstHash = x.GetHashFragment().Hash;
-                string secHash = y.GetHashFragment().Hash;
-                if (!string.IsNullOrEmpty(firstHash) && !string.IsNullOrEmpty(secHash) && firstHash == secHash)
-                    return true;
-                else
-                    return false;
-            }
-            public int GetHashCode(T obj)
-            {
-                return obj.GetHashFragment().GetHashCode();
-            }
-        }
-
-        /***************************************************/
     }
 }
