@@ -54,16 +54,14 @@ namespace BH.Engine.Reflection
             DeprecatedAttribute attribute = method.GetCustomAttribute<DeprecatedAttribute>();
             if (attribute != null)
                 return true;
-
-            if (method.DeclaringType.IsDeprecated())
-                return true;
-
-            return false;
+            else
+                return false;
         }
+
 
         /***************************************************/
 
-        public static bool IsDeprecated(this Type type)
+        public static bool IsDeprecated(this Type type) 
         {
             DeprecatedAttribute attribute = type.GetCustomAttribute<DeprecatedAttribute>();
             if (attribute != null)
