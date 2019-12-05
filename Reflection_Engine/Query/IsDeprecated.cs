@@ -51,34 +51,14 @@ namespace BH.Engine.Reflection
 
         public static bool IsDeprecated(this MethodBase method)
         {
-            if (method is MethodInfo)
-                return IsDeprecated((MethodInfo)method);
-            else if (method is ConstructorInfo)
-                return IsDeprecated((ConstructorInfo)method);
-            return false;
-        }
-
-        /***************************************************/
-
-        public static bool IsDeprecated(this MethodInfo method)
-        {
             DeprecatedAttribute attribute = method.GetCustomAttribute<DeprecatedAttribute>();
             if (attribute != null)
                 return true;
-
-            return false;
-        }
-
-        /***************************************************/
-
-        public static bool IsDeprecated(this ConstructorInfo method)
-        {
-            DeprecatedAttribute attribute = method.GetCustomAttribute<DeprecatedAttribute>();
-            if (attribute != null)
-                return true;
-
-            if (method.DeclaringType.Name.StartsWith("BH.") && method.DeclaringType.IsDeprecated())
-                return true;
+   
+            if (method is ConstructorInfo)
+            {
+                return method.DeclaringType.IsDeprecated();
+            }
 
             return false;
         }
