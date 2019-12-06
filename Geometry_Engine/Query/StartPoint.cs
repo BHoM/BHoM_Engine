@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -21,7 +21,6 @@
  */
 
 using BH.oM.Geometry;
-using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -57,11 +56,14 @@ namespace BH.Engine.Geometry
         }
 
         /***************************************************/
-
-        [NotImplemented]
+        
         public static Point StartPoint(this NurbsCurve curve)
         {
-            throw new NotImplementedException();
+            //TODO: This should be based on the basis function?
+            if (!curve.IsPeriodic())
+                return curve.ControlPoints.FirstOrDefault();
+            else
+                throw new NotImplementedException();
         }
 
         /***************************************************/
