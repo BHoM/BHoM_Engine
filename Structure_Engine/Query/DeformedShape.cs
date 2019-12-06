@@ -50,6 +50,9 @@ namespace BH.Engine.Structure
 
             var resGroups = barDisplacements.GroupBy(x => x.ObjectId.ToString()).ToDictionary(x => x.Key);
 
+            if (drawSections)
+                Reflection.Compute.RecordWarning("Display of rotations of sections is not yet supported for deformed shape");
+
             foreach (Bar bar in bars)
             {
                 string id = bar.CustomData[adapterId].ToString();
