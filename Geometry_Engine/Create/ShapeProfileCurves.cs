@@ -193,10 +193,14 @@ namespace BH.Engine.Geometry
             Vector wx = new Vector { X = weldLength, Y = 0, Z = 0 };
             Vector wy = new Vector { X = 0, Y = weldLength, Z = 0 };
 
+            if (weldSize > 0)
+            {
             welds.Add(new Line { Start = q1 - wx, End = q1 - wy });
             welds.Add(new Line { Start = q2 + wx, End = q2 - wy });
             welds.Add(new Line { Start = q3 + wx, End = q3 + wy });
             welds.Add(new Line { Start = q4 - wx, End = q4 + wy });
+            box.AddRange(welds);
+            }
 
             List<ICurve> innerBox = new List<ICurve>();
             innerBox.Add(new Line { Start = q1 - wy, End = q4 + wy });
@@ -205,7 +209,7 @@ namespace BH.Engine.Geometry
             innerBox.Add(new Line { Start = q2 + wx, End = q1 - wx });
 
             box.AddRange(innerBox);
-            box.AddRange(welds);
+            
             return box;
         }
 
