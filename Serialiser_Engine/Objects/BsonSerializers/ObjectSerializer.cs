@@ -31,6 +31,7 @@ using BH.Engine.Versioning;
 using System;
 using System.Reflection;
 using BH.Engine.Serialiser.Objects;
+using System.Collections.Generic;
 
 namespace BH.Engine.Serialiser.BsonSerializers
 {
@@ -294,12 +295,29 @@ namespace BH.Engine.Serialiser.BsonSerializers
                 {
                     // A child of the object is causing problems. Try to recover from custom object
                     IBsonSerializer customSerializer = BsonSerializer.LookupSerializer(typeof(CustomObject));
-                    object customObject = customSerializer.Deserialize(context, args);
-                    object result = Convert.FromBson(customObject.ToBson());
+                    object result = customSerializer.Deserialize(context, args);
+                    Guid objectId = ((CustomObject)result).BHoM_Guid;
 
+                    if (!Config.TypesWithoutUpgrade.Contains(actualType))
+                    {
+                        if (m_StackCounter.ContainsKey(objectId))
+                            m_StackCounter[objectId] += 1;
+                        else
+                            m_StackCounter[objectId] = 1;
+
+                        if (m_StackCounter[objectId] < 10)
+                        {
+                            result = Convert.FromBson(result.ToBson());
+                            m_StackCounter.Remove(objectId);
+                        }
+                    }
+                    
                     if (result is CustomObject)
+                    {
                         Engine.Reflection.Compute.RecordWarning("The type " + actualType.FullName + " is unknown -> data returned as custom objects.");
-
+                        Config.TypesWithoutUpgrade.Add(actualType);
+                    }
+                        
                     return result;
 
                 }
@@ -325,6 +343,8 @@ namespace BH.Engine.Serialiser.BsonSerializers
         /***************************************************/
 
         private readonly IDiscriminatorConvention _discriminatorConvention;
+
+        private static Dictionary<Guid, int> m_StackCounter = new Dictionary<Guid, int>();
 
 
         /*******************************************/

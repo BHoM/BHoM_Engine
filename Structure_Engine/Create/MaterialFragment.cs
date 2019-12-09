@@ -119,7 +119,7 @@ namespace BH.Engine.Structure
 
         [Description("Creates a timber material. First constructs a timber material fragment, then applies it to a new Material class")]
         [Input("E", "Youngs modulus as Vector. Given in [Pa] or [N/m]. Will be stored on the material fragment")]
-        [Input("G", "Youngs modulus as Vector. Given in [Pa] or [N/m]. Will be stored on the material fragment")]
+        [Input("G", "Shear modulus as Vector. Given in [Pa] or [N/m]. Will be stored on the material fragment")]
         [Input("v", "Poissons Ratio as Vector. Will be stored on the material fragment")]
         [Input("tC", "Modulus of thermal expansion as Vector. Given in [1/°C] or [1/K]. Will be stored on the material fragment")]
         [Input("density", "Given as [kg/m3]. Will be stored on the base material")]

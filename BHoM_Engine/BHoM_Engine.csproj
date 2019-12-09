@@ -60,7 +60,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Create\CrudConfig.cs" />
     <Compile Include="Create\BHoMGroup.cs" />
     <Compile Include="Create\RandomObject.cs" />
     <Compile Include="Create\CustomObject.cs" />

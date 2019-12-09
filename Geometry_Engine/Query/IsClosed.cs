@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -67,8 +67,7 @@ namespace BH.Engine.Geometry
             if (curve == null || curve.ControlPoints == null || curve.ControlPoints.Count < 2)
                 return false;
 
-            // TODO: This does not take into account periodic curves
-            return curve.ControlPoints.First() == curve.ControlPoints.Last();
+            return curve.ControlPoints.First().SquareDistance(curve.ControlPoints.Last()) <= tolerance * tolerance || curve.IsPeriodic();
         }
 
         /***************************************************/
@@ -108,6 +107,22 @@ namespace BH.Engine.Geometry
         public static bool IIsClosed(this ICurve curve, double tolerance = Tolerance.Distance)
         {
             return IsClosed(curve as dynamic, tolerance);
+        }
+
+
+        /***************************************************/
+        /**** Public Methods - Nurbs Surfaces           ****/
+        /***************************************************/
+
+        public static bool IsClosed(this NurbsSurface surface, double tolerance = Tolerance.Distance)
+        {
+            if (surface.IsPeriodic())
+                return true;
+
+            double sqTolerance = tolerance * tolerance;
+            List<int> uvCount = surface.UVCount();
+            return Enumerable.Range(0, uvCount[1]).All(i => surface.ControlPoints[i].SquareDistance(surface.ControlPoints[surface.ControlPoints.Count - uvCount[1] + i]) <= sqTolerance)
+                || Enumerable.Range(0, uvCount[0]).All(i => surface.ControlPoints[i * uvCount[1]].SquareDistance(surface.ControlPoints[(i + 1) * uvCount[1] - 1]) <= sqTolerance);
         }
 
         /***************************************************/
