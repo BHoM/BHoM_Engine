@@ -46,6 +46,7 @@ namespace BH.Engine.Environment
         [Input("elevation", "The elevation of the building, default 0.0")]
         [Input("type", "The type of building from the BuildingType enum, default undefined")]
         [Output("building", "An Environment Building object")]
+        [Deprecated("3.0", "Deprecated in favour of default create components produced by BHoM")]
         public static Building Building(string name = "", double latitude = 0.0, double longitude = 0.0, double elevation = 0.0, BuildingType type = BuildingType.Undefined)
         {
             return new Building
