@@ -45,6 +45,7 @@ namespace BH.Engine.Environment
         [Input("placeName", "The name of the place the building occupies, default empty string")]
         [Input("weatherStation", "The name of the nearest weather station to the building, default empty string")]
         [Output("buildingContextFragment", "An Environment Building Context Fragment object - this can be added to an Environment Building")]
+        [Deprecated("3.0", "Deprecated in favour of default create components produced by BHoM")]
         public static BuildingContextFragment BuildingContextFragment(string placeName = "", string weatherStation = "")
         {
             return new BuildingContextFragment
