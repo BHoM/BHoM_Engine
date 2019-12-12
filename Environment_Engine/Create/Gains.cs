@@ -46,6 +46,7 @@ namespace BH.Engine.Environment
         [Input("viewCoefficient", "The view coefficient of this equipment gain, default 0.0")]
         [Input("name", "The name of this equipment gain, default empty string")]
         [Output("equipmentGain", "The equipment gain object to associate to a space")]
+        [Deprecated("3.0", "Deprecated in favour of default create components produced by BHoM")]
         public static Equipment Equipment(double sensible = 0.0, double latent = 0.0, Profile profile = null, double radiantFraction = 0.0, double viewCoefficient = 0.0, string name = "")
         {
             return new Equipment
