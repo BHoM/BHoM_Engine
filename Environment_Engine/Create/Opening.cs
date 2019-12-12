@@ -48,6 +48,7 @@ namespace BH.Engine.Environment
         [Input("openingConstruction", "A construction object providing construction information about the opening - typically glazing construction, default null")]
         [Input("type", "The type of opening from the Opening Type enum, default undefined")]
         [Output("opening", "An Environment Opening object")]
+        [Deprecated("3.0", "Deprecated in favour of default create components produced by BHoM")]
         public static Opening Opening(string name = "", List<Edge> externalEdges = null, List<Edge> innerEdges = null, IConstruction frameConstruction = null, IConstruction openingConstruction = null, OpeningType type = OpeningType.Undefined)
         {
             externalEdges = externalEdges ?? new List<Edge>();
