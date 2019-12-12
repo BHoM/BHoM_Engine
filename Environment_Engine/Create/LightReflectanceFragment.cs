@@ -46,6 +46,7 @@ namespace BH.Engine.Environment
         [Input("greenReflectance", "The green reflectance of the light reflectance, default 0.0")]
         [Input("blueReflectance", "The blue reflectance of the light reflectance, default 0.0")]
         [Output("lightReflectanceFragment", "A Light Reflectance Fragment object - this can be added to an Environmental Material fragment object")]
+        [Deprecated("3.0", "Deprecated in favour of default create components produced by BHoM")]
         public static LightReflectanceFragment LightReflectanceFragment(double redReflectance = 0.0, double greenReflectance = 0.0, double blueReflectance = 0.0)
         {
             return new LightReflectanceFragment
