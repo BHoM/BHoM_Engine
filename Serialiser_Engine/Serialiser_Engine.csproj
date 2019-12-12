@@ -60,6 +60,7 @@
     <Compile Include="Convert\Zip.cs" />
     <Compile Include="Convert\Json.cs" />
     <Compile Include="Modify\ApplyTaggedName.cs" />
+    <Compile Include="Objects\BHoMBsonClassMap.cs" />
     <Compile Include="Objects\BsonSerializers\DataTableSerialiser.cs" />
     <Compile Include="Objects\BsonSerializers\EnumSerializer.cs" />
     <Compile Include="Objects\BsonSerializers\MethodBaseSerializer.cs" />
