@@ -44,6 +44,7 @@ namespace BH.Engine.Environment
         [Input("curve", "A BHoM Geometry Curve object (e.g. polyline, line, etc.)")]
         [Input("name", "The name of the edge, default empty string")]
         [Output("edge", "An Environment Edge object - used for defining panels and openings")]
+        [Deprecated("3.0", "Deprecated in favour of default create components produced by BHoM")]
         public static Edge Edge(ICurve curve, string name = "")
         {
             return new Edge
