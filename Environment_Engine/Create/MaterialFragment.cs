@@ -52,6 +52,7 @@ namespace BH.Engine.Environment
         [Input("convectionCoefficient", "The convection coefficient of this gas material, default 0.0")]
         [Input("gas", "The type of gas this material is from the Gas Type enum, default undefined")]
         [Output("material", "A material object containing a Gas Material Fragment")]
+        [Deprecated("3.0", "Deprecated in favour of default create components produced by BHoM")]
         public static Material GasMaterial(string name = "", double density = 0.0, double conductivity = 0.0, double specificHeat = 0.0, double vapourResistivity = 0.0, string description = "", Roughness roughness = Roughness.Undefined, double refraction = 0.0, double convectionCoefficient = 0.0, Gas gas = Gas.Undefined)
         {
             GasMaterial gasProperties = new GasMaterial
@@ -93,6 +94,7 @@ namespace BH.Engine.Environment
         [Input("transmittedSpecularity", "The amount of directed light transmitted through the solid material, default 0.0")]
         [Input("ignoreInUValueCalculation", "Define whether or not this material should be ignored in any uValue calculations, default false")]
         [Output("material", "A material object containing a Solid Material Fragment")]
+        [Deprecated("3.0", "Deprecated in favour of default create components produced by BHoM")]
         public static Material SolidMaterial(string name = "", double density = 0.0, double conductivity = 0.0, double specificHeat = 0.0, double additionalHeatTransfer = 0.0, double vapourResistivity = 0.0, string description = "", Roughness roughness = Roughness.Undefined, double refraction = 0.0, double solarReflectanceExternal = 0.0, double solarReflectanceInternal = 0.0, double solarTransmittance = 0.0, double lightReflectanceExternal = 0.0, double lightReflectanceInternal = 0.0, double lightTransmittance = 0.0, double emissivityExternal = 0.0, double emissivityInternal = 0.0, double specularity = 0.0, double transmittedDiffusivity = 0.0, double transmittedSpecularity = 0.0, bool ignoreInUValueCalculation = false)
         {
             SolidMaterial solidProperties = new SolidMaterial
