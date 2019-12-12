@@ -51,6 +51,7 @@ namespace BH.Engine.Environment
         [Input("millisecond", "The millisecond of the second for the space time object, default 0")]
         [Input("name", "The name of the space time, default empty string")]
         [Output("spaceTime", "An Environment SpaceTime object - used for defining locations in space and time for climate analysis")]
+        [Deprecated("3.0", "Deprecated in favour of default create components produced by BHoM")]
         public static SpaceTime SpaceTime(Location location = null, int year = 2007, int month = 1, int day = 1, int hour = 12, int minute = 0, int second = 0, int millisecond = 0, string name = "")
         {
             if (year < 1900 || year > 2500)
