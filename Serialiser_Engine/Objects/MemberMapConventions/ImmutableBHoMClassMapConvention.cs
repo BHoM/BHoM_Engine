@@ -81,6 +81,12 @@ namespace BH.Engine.Serialiser.MemberMapConventions
                 {
                     if (property.DeclaringType == classType)
                         classMap.MapMember(property);
+                    else if (classMap is BH.Engine.Serialiser.Conventions.BHoMBsonClassMap)
+                    {
+                        BH.Engine.Serialiser.Conventions.BHoMBsonClassMap bhClassMap =classMap as BH.Engine.Serialiser.Conventions.BHoMBsonClassMap;
+                        bhClassMap.MapImmutableMember(property);
+                    }
+
                 }
             }
         }
