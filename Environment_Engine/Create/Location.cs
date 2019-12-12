@@ -47,6 +47,7 @@ namespace BH.Engine.Environment
         [Input("utcOffset", "The offset from UTC for the location (positive or negative), default 0")]
         [Input("name", "The name of the location, default empty string")]
         [Output("location", "An Environment location object - used for defining locations in space for climate analysis")]
+        [Deprecated("3.0", "Deprecated in favour of default create components produced by BHoM")]
         public static Location Location(double latitude = 0, double longitude = 0, double elevation = 0, double utcOffset = 0, string name = "")
         {
             if (latitude < -90 || latitude > 90)
