@@ -46,6 +46,7 @@ namespace BH.Engine.Environment
         [Input("colour", "Defines the colour of the space, default empty string")]
         [Input("connectedElements", "A collection of the elements which enclose the space described by their name or unique identifer as a string, default null")]
         [Output("spaceContextFragment", "A Space Context Fragment object - this can be added to an Environment Space")]
+        [Deprecated("3.0", "Deprecated in favour of default create components produced by BHoM")]
         public static SpaceContextFragment SpaceContextFragment(bool isExternal = false, string colour = "", List<string> connectedElements = null)
         {
             connectedElements = connectedElements ?? new List<string>();
