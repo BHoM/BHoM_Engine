@@ -38,36 +38,36 @@ namespace BH.Engine.Environment
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        public static Location Location(this Location location)
+        public static bool IsValidLocation(this Location location)
         {
             double latitude = location.Latitude;
             if (latitude < -90 || latitude > 90)
             {
                 BH.Engine.Reflection.Compute.RecordError("Invalid Latitude passed. It should be between -90 and 90");
-                return null;
+                return false;
             }
 
             double longitude = location.Longitude;
             if (longitude < -180 || longitude > 180)
             {
                 BH.Engine.Reflection.Compute.RecordError("Invalid Longitude passed. It should be between -180 and 180");
-                return null;
+                return false;
             }
 
             double elevation = location.Elevation;
             if (elevation < -413 || elevation > 8848)
             {
                 BH.Engine.Reflection.Compute.RecordError("Invalid Elevation passed. It should be between -413 and 8848");
-                return null;
+                return false;
             }
 
             double utcOffset = location.UtcOffset;
             if (utcOffset < -12 || utcOffset > 12)
             {
                 BH.Engine.Reflection.Compute.RecordError("Invalid UtcOffset passed. It should be between -12 and 12");
-                return null;
+                return false;
             }
-            return location;
+            return true;
         }
     }
 }
