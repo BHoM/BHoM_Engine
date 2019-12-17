@@ -177,7 +177,7 @@ namespace BH.Engine.Serialiser
         {
             try
             {
-                BsonClassMap cm = new BHoMBsonClassMap(type);
+                BsonClassMap cm = new BsonClassMap(type);
                 cm.AutoMap();
                 cm.SetDiscriminator(type.FullName);
                 cm.SetDiscriminatorIsRequired(true);
