@@ -42,7 +42,7 @@ namespace BH.Engine.Environment
 
         [Description("Returns the floor geometry of a space represented by Environment Panels as a BHoM Geometry Polyline")]
         [Input("panelsAsSpace", "A collection of Environment Panels that represent a closed space")]
-        [Input("tolerance", "Distance tolerance for planar checks, default set to BH.oM.Geometry.Tolerance.Distance")]
+        [Input("tolerance", "Distance tolerance for BooleanUnion of the floor lines, default set to BH.oM.Geometry.Tolerance.Distance")]
         [Output("polyline", "BHoM Geometry Polyline representing the floor of the space")]
         public static Polyline FloorGeometry(this List<Panel> panelsAsSpace, double tolerance = BH.oM.Geometry.Tolerance.Distance)
         {
