@@ -90,13 +90,7 @@ namespace BH.Engine.Environment
         [Output("minimumLevel", "The minimum level of the z axis of the panel")]
         public static double MinimumLevel(this Panel panel)
         {
-            List<Point> crvPts = panel.Polyline().IControlPoints();
-
-            double min = 1e10;
-            foreach (Point p in crvPts)
-                min = Math.Min(min, p.Z);
-
-            return Math.Round(min, 3);
+            return panel.Polyline().MinimumLevel();
         }
 
         [Description("Returns the maximum level of the given panel based on the z axis")]
@@ -104,13 +98,7 @@ namespace BH.Engine.Environment
         [Output("maximumLevel", "The maximum level of the z axis of the panel")]
         public static double MaximumLevel(this Panel panel)
         {
-            List<Point> crvPts = panel.Polyline().IControlPoints();
-
-            double max = -1e10;
-            foreach (Point p in crvPts)
-                max = Math.Max(max, p.Z);
-
-            return Math.Round(max, 3);
+            return panel.Polyline().MaximumLevel();
         }
 
         [Description("Returns the Setting Out Level that the Environment Panel resides on")]
