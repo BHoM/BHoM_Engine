@@ -101,6 +101,22 @@ namespace BH.Engine.Environment
             return panel.Polyline().MaximumLevel();
         }
 
+        [Description("Returns the minimum level of the given opening based on the z axis")]
+        [Input("opening", "An Environment Opening to find the minimum level from")]
+        [Output("minimumLevel", "The minimum level of the z axis of the opening")]
+        public static double MinimumLevel(this Opening opening)
+        {
+            return opening.Polyline().MinimumLevel();
+        }
+
+        [Description("Returns the maximum level of the given opening based on the z axis")]
+        [Input("opening", "An Environment Opening to find the maximum level from")]
+        [Output("maximumLevel", "The maximum level of the z axis of the opening")]
+        public static double MaximumLevel(this Opening opening)
+        {
+            return opening.Polyline().MaximumLevel();
+        }
+
         [Description("Returns the Setting Out Level that the Environment Panel resides on")]
         [Input("panel", "An Environment Panel to find the level from")]
         [Input("levels", "A collection of Setting Out Levels to search from")]
