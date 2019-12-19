@@ -78,7 +78,7 @@ namespace BH.Engine.Environment
         {
             List<Point> crvPts = polyline.IControlPoints();
 
-            double max = 1e10;
+            double max = -1e10;
             foreach (Point p in crvPts)
                 max = Math.Max(max, p.Z);
 
