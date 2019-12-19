@@ -57,6 +57,34 @@ namespace BH.Engine.Environment
             return levels;
         }
 
+        [Description("Returns the minimum level of the given polyline based on the z axis")]
+        [Input("polyline", "An Environment polyline to find the minimum level from")]
+        [Output("minimumLevel", "The minimum level of the z axis of the polyline")]
+        public static double MinimumLevel(this Polyline polyline)
+        {
+            List<Point> crvPts = polyline.IControlPoints();
+
+            double min = 1e10;
+            foreach (Point p in crvPts)
+                min = Math.Min(min, p.Z);
+
+            return Math.Round(min, 3);
+        }
+
+        [Description("Returns the maximum level of the given polyline based on the z axis")]
+        [Input("polyline", "An Environment polyline to find the maximum level from")]
+        [Output("maximumLevel", "The maximum level of the z axis of the polyline")]
+        public static double MaximumLevel(this Polyline polyline)
+        {
+            List<Point> crvPts = polyline.IControlPoints();
+
+            double max = 1e10;
+            foreach (Point p in crvPts)
+                max = Math.Max(max, p.Z);
+
+            return Math.Round(max, 3);
+        }
+
         [Description("Returns the minimum level of the given panel based on the z axis")]
         [Input("panel", "An Environment Panel to find the minimum level from")]
         [Output("minimumLevel", "The minimum level of the z axis of the panel")]
