@@ -42,6 +42,14 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Deprecated("3.1", "Moved to Geometry_Engine")]
+        public static bool IsVertical(this Line line)
+        {
+            return Engine.Geometry.Query.IsVertical(line);
+        }
+
+        /***************************************************/
+
         [Deprecated("2.3", "Methods replaced with methods targeting BH.oM.Physical.Elements.IFramingElement")]
         public static bool IsVertical(this FramingElement element)
         {
