@@ -60,9 +60,11 @@ namespace BH.Engine.Geometry
             }
             else if (curve.IIsPlanar())
             {
-                Vector tan = curve.IStartDir();   // Is this how we should define it?
+                Engine.Reflection.Compute.RecordError("The normal for non-linear elements is not implemented");
+                return null;
+                //Vector tan = curve.IStartDir();   // Is this how we should define it?
                 //Vector tan = framingElement.Location.IEndPoint() - framingElement.Location.IStartPoint();
-                return curve.IFitPlane().Normal.Rotate(orientationAngle, tan);    // The normal could potentially flip by moving some control points
+                //return curve.IFitPlane().Normal.Rotate(orientationAngle, tan);    // Warning: The normal can flip by moving some control points
             }
             else
             {

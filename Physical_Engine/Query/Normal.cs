@@ -40,7 +40,7 @@ namespace BH.Engine.Physical
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns the normal of a FramingElement, which would be the Y-axis in the local coordinate syetem")]
+        [Description("Returns the normal of a FramingElement, which would be the Z-axis in the local coordinate syetem")]
         [Input("framingElement", "A FramingElement")]
         [Output("normal", "The FramingElements normal vector")]
         public static Vector Normal(this IFramingElement framingElement)
