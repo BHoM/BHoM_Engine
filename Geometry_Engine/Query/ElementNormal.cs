@@ -73,19 +73,7 @@ namespace BH.Engine.Geometry
             }
 
         }
-
-        /***************************************************/
-        /**** Private Methods                           ****/
-        /***************************************************/
         
-        private static bool IsVertical(Point p1, Point p2)
-        {
-            double dx = p1.X - p2.X;
-            double dy = p1.Y - p2.Y;
-
-            return Math.Sqrt(dx * dx + dy * dy) < 0.0001;
-        }
-
         /***************************************************/
 
     }
