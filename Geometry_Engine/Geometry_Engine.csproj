@@ -171,6 +171,7 @@
     <Compile Include="Query\Integration.cs" />
     <Compile Include="Query\InternalEdges.cs" />
     <Compile Include="Query\Length.cs" />
+    <Compile Include="Query\ElementNormal.cs" />
     <Compile Include="Query\Normal.cs" />
     <Compile Include="Compute\FitPlane.cs" />
     <Compile Include="Query\ParameterAtPoint.cs" />
