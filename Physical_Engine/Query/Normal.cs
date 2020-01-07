@@ -55,7 +55,7 @@ namespace BH.Engine.Physical
                 orientationAngle = (framingElement.Property as ConstantFramingProperty).OrientationAngle;
             }
 
-            return framingElement.Location.Normal(orientationAngle);
+            return framingElement.Location.ElementNormal(orientationAngle);
         }
 
         /***************************************************/

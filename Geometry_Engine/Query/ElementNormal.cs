@@ -24,6 +24,7 @@ using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 
 namespace BH.Engine.Geometry
@@ -34,7 +35,10 @@ namespace BH.Engine.Geometry
         /*** Public Methods -One dimentional Element Normal*/
         /***************************************************/
 
-        public static Vector Normal(this ICurve curve, double orientationAngle)
+        [Description("Gets the Normal/local Z-axis from a element")]
+        [Input("curve","The curve to evaluate the Normal from")]
+        [Input("orientationAngle", "How much the normal is rotated about the curves axis in radians")]
+        public static Vector ElementNormal(this ICurve curve, double orientationAngle)
         {
             if (curve.IIsLinear())
             {
