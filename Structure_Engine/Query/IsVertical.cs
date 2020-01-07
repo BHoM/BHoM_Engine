@@ -37,7 +37,7 @@ namespace BH.Engine.Structure
 
         public static bool IsVertical(this Bar bar)
         {
-            return IsVertical(bar.StartNode.Position(), bar.EndNode.Position());
+            return Engine.Geometry.Query.IsVertical(bar.Centreline());
         }
 
         /***************************************************/
@@ -45,29 +45,10 @@ namespace BH.Engine.Structure
         [Deprecated("2.3", "Methods replaced with methods targeting BH.oM.Physical.Elements.IFramingElement")]
         public static bool IsVertical(this FramingElement element)
         {
-            return IsVertical(element.LocationCurve.IStartPoint(), element.LocationCurve.IEndPoint()); //TODO: is this correct? what is the framing element is curved?
+            return Engine.Geometry.Query.IsVertical(new Line() { Start = element.LocationCurve.IStartPoint(), End = element.LocationCurve.IEndPoint() } ); //TODO: is this correct? what is the framing element is curved?
         }
 
         /***************************************************/
 
-        public static bool IsVertical(this Line line)
-        {
-            return IsVertical(line.Start, line.End);
-        }
-
-        /***************************************************/
-        /**** Private Methods                           ****/
-        /***************************************************/
-
-        private static bool IsVertical(Point p1, Point p2)
-        {
-            double dx = p1.X - p2.X;
-            double dy = p1.Y - p2.Y;
-
-            return Math.Sqrt(dx * dx + dy * dy) < 0.0001;
-        }
-
-
-        /***************************************************/
     }
 }
