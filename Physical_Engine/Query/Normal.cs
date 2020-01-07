@@ -78,7 +78,7 @@ namespace BH.Engine.Physical
                 return normal.Rotate(orientationAngle, tan);
             } else if (framingElement.Location.IIsPlanar())
             {
-                Vector tan = framingElement.Location.IStartDir();
+                Vector tan = framingElement.Location.IStartDir();   // Is this how we should define it?
                 return framingElement.Location.IFitPlane().Normal.Rotate(orientationAngle, tan);
             }
             else
