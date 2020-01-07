@@ -79,7 +79,8 @@ namespace BH.Engine.Physical
             } else if (framingElement.Location.IIsPlanar())
             {
                 Vector tan = framingElement.Location.IStartDir();   // Is this how we should define it?
-                return framingElement.Location.IFitPlane().Normal.Rotate(orientationAngle, tan);
+                //Vector tan = framingElement.Location.IEndPoint() - framingElement.Location.IStartPoint();
+                return framingElement.Location.IFitPlane().Normal.Rotate(orientationAngle, tan);    // The normal could potentially flip by moving some control points
             }
             else
             {
