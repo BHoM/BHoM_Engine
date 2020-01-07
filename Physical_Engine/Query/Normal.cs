@@ -55,50 +55,7 @@ namespace BH.Engine.Physical
                 orientationAngle = (framingElement.Property as ConstantFramingProperty).OrientationAngle;
             }
 
-            if (framingElement.Location.IIsLinear())
-            {
-                Point p1 = framingElement.Location.IStartPoint();
-                Point p2 = framingElement.Location.IEndPoint();
-
-                Vector tan = (p2 - p1).Normalise();
-                Vector normal;
-
-                if (!IsVertical(p1, p2))
-                {
-                    normal = Vector.ZAxis;
-                    normal = (normal - tan.DotProduct(normal) * tan).Normalise();
-                }
-                else
-                {
-                    Vector locY = Vector.YAxis;
-                    locY = (locY - tan.DotProduct(locY) * tan).Normalise();
-                    normal = tan.CrossProduct(locY);
-                }
-
-                return normal.Rotate(orientationAngle, tan);
-            } else if (framingElement.Location.IIsPlanar())
-            {
-                Vector tan = framingElement.Location.IStartDir();   // Is this how we should define it?
-                //Vector tan = framingElement.Location.IEndPoint() - framingElement.Location.IStartPoint();
-                return framingElement.Location.IFitPlane().Normal.Rotate(orientationAngle, tan);    // The normal could potentially flip by moving some control points
-            }
-            else
-            {
-                Engine.Reflection.Compute.RecordError("The normal for non-planar framing elements is not implemented");
-                return null;
-            }
-        }
-
-        /***************************************************/
-        /**** Private Methods                           ****/
-        /***************************************************/
-
-        private static bool IsVertical(Point p1, Point p2)
-        {
-            double dx = p1.X - p2.X;
-            double dy = p1.Y - p2.Y;
-
-            return Math.Sqrt(dx * dx + dy * dy) < 0.0001;
+            return framingElement.Location.Normal(orientationAngle);
         }
 
         /***************************************************/
