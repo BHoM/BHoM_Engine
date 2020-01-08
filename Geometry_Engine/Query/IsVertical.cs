@@ -21,16 +21,21 @@
  */
 
 using BH.oM.Geometry;
+using BH.oM.Reflection.Attributes;
 using System;
+using System.ComponentModel;
 
 namespace BH.Engine.Geometry
 {
     public static partial class Query
     {
         /***************************************************/
-        /**** Private Methods                           ****/
+        /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Evaluates whether a line is vertical from its start- and endpoints projected 2d-distance")]
+        [Input("line", "The line to determine the verticality of")]
+        [Output("isVertical", "If it is vertical")]
         public static bool IsVertical(this Line line)
         {
             return IsVertical(line.Start, line.End);

@@ -41,15 +41,14 @@ namespace BH.Engine.Physical
         /***************************************************/
 
         [Description("Returns the normal of a FramingElement, which would be the Z-axis in the local coordinate syetem")]
-        [Input("framingElement", "A FramingElement")]
+        [Input("framingElement", "The FramingElement to evaluate the normal of")]
         [Output("normal", "The FramingElements normal vector")]
         public static Vector Normal(this IFramingElement framingElement)
         {
-            double orientationAngle;
+            double orientationAngle = 0;
             if (!(framingElement.Property is ConstantFramingProperty))
             {
                 Reflection.Compute.RecordWarning("No ConstantFramingProperty found, OrientationAngle set as 0");
-                orientationAngle = 0;
             } else
             {
                 orientationAngle = (framingElement.Property as ConstantFramingProperty).OrientationAngle;
