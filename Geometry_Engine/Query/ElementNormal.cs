@@ -67,9 +67,6 @@ namespace BH.Engine.Geometry
             {
                 Engine.Reflection.Compute.RecordError("The normal for non-linear elements is not implemented");
                 return null;
-                //Vector tan = curve.IStartDir();   // Is this how we should define it?
-                //Vector tan = framingElement.Location.IEndPoint() - framingElement.Location.IStartPoint();
-                //return curve.IFitPlane().Normal.Rotate(orientationAngle, tan);    // Warning: The normal can flip by moving some control points
             }
             else
             {
