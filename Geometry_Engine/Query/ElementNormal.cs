@@ -36,8 +36,9 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [Description("Gets the Normal/local Z-axis from a element")]
-        [Input("curve","The curve to evaluate the Normal from")]
+        [Input("curve", "The curve to evaluate the Normal from")]
         [Input("orientationAngle", "How much the normal is rotated about the curves axis in radians")]
+        [Output("elementNormal", "The Normal/local Z-axis of a element")]
         public static Vector ElementNormal(this ICurve curve, double orientationAngle)
         {
             if (curve.IIsLinear())
