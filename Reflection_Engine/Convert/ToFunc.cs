@@ -103,14 +103,14 @@ namespace BH.Engine.Reflection
 
         public static Func<object[], object> ToFunc(this Func<object, object[], object> func)
         {
-            return inputs => { return func(inputs[0], inputs); };
+            return inputs => { return func(inputs[0], inputs.Skip(1).ToArray()); };
         }
 
         /***************************************************/
 
         public static Func<object[], object> ToFunc(this Action<object, object[]> act)
         {
-            return inputs => { act(inputs[0], inputs); return true; };
+            return inputs => { act(inputs[0], inputs.Skip(1).ToArray()); return true; };
         }
 
         /***************************************************/

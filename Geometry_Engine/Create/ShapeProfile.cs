@@ -28,6 +28,7 @@ using BH.oM.Geometry;
 using System;
 using BH.oM.Reflection.Attributes;
 using BH.Engine.Geometry;
+using System.ComponentModel;
 
 namespace BH.Engine.Geometry
 {
@@ -39,7 +40,31 @@ namespace BH.Engine.Geometry
 
         public static ISectionProfile ISectionProfile(double height, double width, double webthickness, double flangeThickness, double rootRadius, double toeRadius)
         {
-            List<ICurve> curves = IProfileCurves(flangeThickness, width, flangeThickness, width, webthickness, height - 2 * flangeThickness, rootRadius, toeRadius);
+            if (height < flangeThickness * 2 + rootRadius * 2)
+            {
+                InvalidRatioError("height","flangeThickness and rootRadius");
+                return null;
+            }
+
+            if (width < webthickness + rootRadius * 2 + toeRadius * 2)
+            {
+                InvalidRatioError("width", "webthickness, rootRadius and toeRadius");
+                return null;
+            }
+
+            if (toeRadius > flangeThickness)
+            {
+                InvalidRatioError("toeRadius", "flangeThickness");
+                return null;
+            }
+
+            if (height <= 0 || width <= 0 || webthickness <= 0 || flangeThickness<= 0 || rootRadius< 0 ||toeRadius< 0)
+            {
+                Engine.Reflection.Compute.RecordError("Input length less or equal to 0");
+                return null; 
+            }
+
+            List<ICurve> curves = IProfileCurves(flangeThickness, width, flangeThickness, width, webthickness, height - 2 * flangeThickness, rootRadius, toeRadius,0);
             return new ISectionProfile(height, width, webthickness, flangeThickness, rootRadius, toeRadius, curves);
         }
 
@@ -47,6 +72,54 @@ namespace BH.Engine.Geometry
 
         public static BoxProfile BoxProfile(double height, double width, double thickness, double outerRadius, double innerRadius)
         {
+            if (thickness > height / 2)
+            {
+                InvalidRatioError("thickness", "height");
+                return null;
+            }
+
+            if (thickness > width / 2)
+            {
+                InvalidRatioError("thickness", "width");
+                return null;
+            }
+
+            if (outerRadius > height / 2)
+            {
+                InvalidRatioError("outerRadius", "height");
+                return null;
+            }
+
+            if (outerRadius > width / 2)
+            {
+                InvalidRatioError("outerRadius", "width");
+                return null;
+            }
+
+            if (innerRadius * 2 > width - thickness * 2)
+            {
+                InvalidRatioError("innerRadius","width and thickness");
+                return null;
+            }
+
+            if (innerRadius * 2 > height - thickness * 2)
+            {
+                InvalidRatioError("innerRadius", "height and thickness");
+                return null;
+            }
+
+            if (Math.Sqrt(2) * thickness <= Math.Sqrt(2) * outerRadius - outerRadius - Math.Sqrt(2) * innerRadius + innerRadius)
+            {
+                InvalidRatioError("thickness", "outerRadius and innerRadius");
+                return null;
+            }
+
+            if (height <= 0 || width <= 0 || thickness <= 0 || outerRadius < 0 || innerRadius < 0)
+            {
+                Engine.Reflection.Compute.RecordError("Input length less or equal to 0");
+                return null;
+            }
+
             List<ICurve> curves = BoxProfileCurves(width, height, thickness, thickness, innerRadius, outerRadius);
             return new BoxProfile(height, width, thickness, outerRadius, innerRadius, curves);
         }
@@ -55,6 +128,36 @@ namespace BH.Engine.Geometry
 
         public static AngleProfile AngleProfile(double height, double width, double webthickness, double flangeThickness, double rootRadius, double toeRadius, bool mirrorAboutLocalZ = false, bool mirrorAboutLocalY = false)
         {
+            if (height < flangeThickness + rootRadius + toeRadius)
+            {
+                InvalidRatioError("height", "flangeThickness, rootRadius and toeRadius");
+                return null;
+            }
+
+            if (width < webthickness + rootRadius + toeRadius)
+            {
+                InvalidRatioError("width", "webthickness, rootRadius and toeRadius");
+                return null;
+            }
+
+            if (flangeThickness < toeRadius)
+            {
+                InvalidRatioError("flangeThickness", "toeRadius");
+                return null;
+            }
+
+            if (webthickness < toeRadius)
+            {
+                InvalidRatioError("webthickness", "toeRadius");
+                return null;
+            }
+
+            if (height <= 0 || width <= 0 || webthickness <= 0 || flangeThickness <= 0 || rootRadius < 0 || toeRadius < 0)
+            {
+                Engine.Reflection.Compute.RecordError("Input length less or equal to 0");
+                return null;
+            }
+
             List<ICurve> curves = AngleProfileCurves(width, height, flangeThickness, webthickness, rootRadius, toeRadius);
 
             if (mirrorAboutLocalZ)
@@ -69,6 +172,30 @@ namespace BH.Engine.Geometry
 
         public static ChannelProfile ChannelProfile(double height, double width, double webthickness, double flangeThickness, double rootRadius, double toeRadius, bool mirrorAboutLocalZ = false)
         {
+            if (height < flangeThickness * 2 + rootRadius * 2)
+            {
+                InvalidRatioError("height", "flangeThickness and rootRadius");
+                return null;
+            }
+
+            if (width < webthickness + rootRadius + toeRadius)
+            {
+                InvalidRatioError("width", "webthickness, toeRadius and rootRadius");
+                return null;
+            }
+
+            if (flangeThickness < toeRadius)
+            {
+                InvalidRatioError("flangeThickness", "toeRadius");
+                return null;
+            }
+
+            if (height <= 0 || width <= 0 || webthickness <= 0 || flangeThickness <= 0 || rootRadius < 0 || toeRadius < 0)
+            {
+                Engine.Reflection.Compute.RecordError("Input length less or equal to 0");
+                return null;
+            }
+
             List<ICurve> curves = ChannelProfileCurves(height, width, webthickness, flangeThickness, rootRadius, toeRadius);
 
             if (mirrorAboutLocalZ)
@@ -81,6 +208,11 @@ namespace BH.Engine.Geometry
 
         public static CircleProfile CircleProfile(double diameter)
         {
+            if (diameter <= 0)
+            {
+                Engine.Reflection.Compute.RecordError("Input length less or equal to 0");
+                return null;
+            }
             List<ICurve> curves = CircleProfileCurves(diameter / 2);
             return new CircleProfile(diameter, curves);
         }
@@ -89,7 +221,25 @@ namespace BH.Engine.Geometry
 
         public static FabricatedBoxProfile FabricatedBoxProfile(double height, double width, double webThickness, double topFlangeThickness, double botFlangeThickness, double weldSize)
         {
-            List<ICurve> curves = FabricatedBoxProfileCurves(width, height, webThickness, topFlangeThickness, botFlangeThickness);
+            if (height <= topFlangeThickness + botFlangeThickness + 2 * Math.Sqrt(2) * weldSize)
+            {
+                InvalidRatioError("height", "topFlangeThickness, botFlangeThickness and weldSize");
+                return null;
+            }
+
+            if (width <= webThickness * 2 + 2 * Math.Sqrt(2) * weldSize)
+            {
+                InvalidRatioError("width", "webThickness and weldSize");
+                return null;
+            }
+
+            if (height <= 0 || width <= 0 || webThickness <= 0 || topFlangeThickness <= 0 || botFlangeThickness <= 0 || weldSize < 0)
+            {
+                Engine.Reflection.Compute.RecordError("Input length less or equal to 0");
+                return null;
+            }
+
+            List<ICurve> curves = FabricatedBoxProfileCurves(width, height, webThickness, topFlangeThickness, botFlangeThickness, weldSize);
             return new FabricatedBoxProfile(height, width, webThickness, topFlangeThickness, botFlangeThickness, weldSize, curves);
         }
 
@@ -97,6 +247,24 @@ namespace BH.Engine.Geometry
 
         public static GeneralisedFabricatedBoxProfile GeneralisedFabricatedBoxProfile(double height, double width, double webThickness, double topFlangeThickness = 0.0, double botFlangeThickness = 0.0, double topCorbelWidth = 0.0, double botCorbelWidth = 0.0)
         {
+            if (webThickness >= width / 2)
+            {
+                InvalidRatioError("webThickness", "width");
+                return null;
+            }
+
+            if (height <= topFlangeThickness + botFlangeThickness)
+            {
+                InvalidRatioError("height","topFlangeThickness and botFlangeThickness");
+                return null;
+            }
+
+            if (height <= 0 || width <= 0 || webThickness <= 0 || topFlangeThickness <= 0 || botFlangeThickness <= 0 || topCorbelWidth < 0 || botCorbelWidth < 0)
+            {
+                Engine.Reflection.Compute.RecordError("Input length less or equal to 0");
+                return null;
+            }
+
             List<ICurve> curves = GeneralisedFabricatedBoxProfileCurves(height, width, webThickness, topFlangeThickness, botFlangeThickness, topCorbelWidth, topCorbelWidth, botCorbelWidth, botCorbelWidth);
             return new GeneralisedFabricatedBoxProfile(height, width, webThickness, topFlangeThickness, botFlangeThickness, topCorbelWidth, topCorbelWidth, botCorbelWidth, botCorbelWidth, curves);
         }
@@ -105,6 +273,18 @@ namespace BH.Engine.Geometry
 
         public static KiteProfile KiteProfile(double width1, double angle1, double thickness)
         {
+            if ((width1*Math.Sin(angle1/2)/Math.Sqrt(2)) /(Math.Sin(Math.PI*0.75- (angle1/2)))<thickness)
+            {
+                InvalidRatioError("thickness", "width and angle1");
+                return null;
+            }
+
+            if (width1 <= 0 || angle1 <= 0 || thickness <= 0)
+            {
+                Engine.Reflection.Compute.RecordError("Input length less or equal to 0");
+                return null;
+            }
+
             List<ICurve> curves = KiteProfileCurves(width1, angle1, thickness);
             return new KiteProfile(width1, angle1, thickness, curves);
         }
@@ -113,7 +293,31 @@ namespace BH.Engine.Geometry
 
         public static FabricatedISectionProfile FabricatedISectionProfile(double height, double topFlangeWidth, double botFlangeWidth, double webThickness, double topFlangeThickness, double botFlangeThickness, double weldSize)
         {
-            List<ICurve> curves = IProfileCurves(topFlangeThickness, topFlangeWidth, botFlangeThickness, botFlangeWidth, webThickness, height - botFlangeThickness - topFlangeThickness,0,0);
+            if (height <= topFlangeThickness + botFlangeThickness + 2 * Math.Sqrt(2) * weldSize)
+            {
+                InvalidRatioError("height","topFlangeThickness, botFlangeThickness and weldSize");
+                return null;
+            }
+
+            if (botFlangeWidth <= webThickness + 2 * Math.Sqrt(2) * weldSize)
+            {
+                InvalidRatioError("botFlangeWidth", "webThickness and weldSize");
+                return null;
+            }
+
+            if (topFlangeWidth <= webThickness + 2 * Math.Sqrt(2) * weldSize)
+            {
+                InvalidRatioError("topFlangeWidth", "webThickness and weldSize");
+                return null;
+            }
+
+            if (height <= 0 || topFlangeWidth <= 0 || botFlangeWidth <= 0 || webThickness <= 0 || topFlangeThickness <= 0 || botFlangeThickness <= 0 || weldSize < 0)
+            {
+                Engine.Reflection.Compute.RecordError("Input length less or equal to 0");
+                return null;
+            }
+
+            List<ICurve> curves = IProfileCurves(topFlangeThickness, topFlangeWidth, botFlangeThickness, botFlangeWidth, webThickness, height - botFlangeThickness - topFlangeThickness,0,0,weldSize);
             return new FabricatedISectionProfile(height, topFlangeWidth, botFlangeWidth, webThickness, topFlangeThickness, botFlangeThickness, weldSize, curves);
         }
 
@@ -128,6 +332,23 @@ namespace BH.Engine.Geometry
 
         public static RectangleProfile RectangleProfile(double height, double width, double cornerRadius)
         {
+            if (cornerRadius > height / 2)
+            {
+                InvalidRatioError("cornerRadius", "height");
+                return null;
+            }
+
+            if (cornerRadius > width / 2)
+            {
+                InvalidRatioError("cornerRadius", "width");
+                return null;
+            }
+
+            if (height <= 0 || width <= 0 || cornerRadius< 0)
+            {
+                Engine.Reflection.Compute.RecordError("Input length less or equal to 0");
+                return null;
+            }
             List<ICurve> curves = RectangleProfileCurves(width, height, cornerRadius);
             return new RectangleProfile(height, width, cornerRadius, curves);
         }
@@ -136,6 +357,30 @@ namespace BH.Engine.Geometry
 
         public static TSectionProfile TSectionProfile(double height, double width, double webthickness, double flangeThickness, double rootRadius, double toeRadius, bool mirrorAboutLocalY = false)
         {
+            if (height < flangeThickness + rootRadius)
+            {
+                InvalidRatioError("height", "flangeThickness and rootRadius");
+                return null;
+            }
+
+            if (width < webthickness + 2 * rootRadius + 2 * toeRadius)
+            {
+                InvalidRatioError("width", "webThickess, rootRadius and toeRadius");
+                return null;
+            }
+
+            if (toeRadius > flangeThickness)
+            {
+                InvalidRatioError("toeTadius", "flangeThickness");
+                return null;
+            }
+
+            if (height <= 0 || width <= 0 || webthickness<= 0 || flangeThickness <= 0 || rootRadius < 0 || toeRadius < 0)
+            {
+                Engine.Reflection.Compute.RecordError("Input length less or equal to 0");
+                return null;
+            }
+
             List<ICurve> curves = TeeProfileCurves(flangeThickness, width, webthickness, height - flangeThickness, rootRadius, toeRadius);
 
             if (mirrorAboutLocalY)
@@ -148,6 +393,36 @@ namespace BH.Engine.Geometry
 
         public static GeneralisedTSectionProfile GeneralisedTSectionProfile(double height, double webThickness, double leftOutstandWidth, double leftOutstandThickness, double rightOutstandWidth, double rightOutstandThickness, bool mirrorAboutLocalY = false)
         {
+            if (height <= leftOutstandThickness)
+            {
+                InvalidRatioError("height", "leftOutstandThickness");
+                return null;
+            }
+
+            if (height <= rightOutstandThickness)
+            {
+                InvalidRatioError("height", "rightOutstandThickness");
+                return null;
+            }
+
+            if (leftOutstandThickness <= 0 && leftOutstandWidth > 0 || leftOutstandWidth <= 0 && leftOutstandThickness > 0)
+            {
+                InvalidRatioError("leftOutstandThickness","leftOutstandWidth");
+                return null;
+            }
+
+            if (rightOutstandThickness <= 0 && rightOutstandWidth > 0 || rightOutstandWidth <= 0 && rightOutstandThickness > 0)
+            {
+                InvalidRatioError("rightOutstandThickness", "rightOutstandWidth");
+                return null;
+            }
+
+            if (height <= 0 || webThickness <= 0 || leftOutstandThickness < 0 || leftOutstandWidth < 0 || rightOutstandThickness < 0 || rightOutstandWidth < 0)
+            {
+                Engine.Reflection.Compute.RecordError("Input length less or equal to 0");
+                return null;
+            }
+
             List<ICurve> curves = GeneralisedTeeProfileCurves(height, webThickness, leftOutstandWidth, leftOutstandThickness, rightOutstandWidth, rightOutstandThickness);
 
             if (mirrorAboutLocalY)
@@ -160,6 +435,18 @@ namespace BH.Engine.Geometry
 
         public static TubeProfile TubeProfile(double diameter, double thickness)
         {
+            if (thickness >= diameter/2)
+            {
+                InvalidRatioError("diameter", "thickness");
+                return null;
+            }
+
+            if (diameter<=0 || thickness<=0)
+            {
+                Engine.Reflection.Compute.RecordError("Input length less or equal to 0");
+                return null;
+            }
+
             List<ICurve> curves = TubeProfileCurves(diameter / 2, thickness);
             return new TubeProfile(diameter, thickness, curves);
         }
@@ -191,6 +478,13 @@ namespace BH.Engine.Geometry
         {
             Plane plane = oM.Geometry.Plane.YZ;
             return curves.Select(x => x.IMirror(plane)).ToList();
+        }
+
+        /***************************************************/
+
+        private static void InvalidRatioError(string first, string second)
+        {
+            Engine.Reflection.Compute.RecordError("The ratio of the " + first + " in relation to the " + second + " makes section inconceivable");
         }
 
         /***************************************************/

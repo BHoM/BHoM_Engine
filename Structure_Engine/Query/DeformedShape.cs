@@ -42,16 +42,29 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static List<IGeometry> DeformedShape(List<Bar> bars, List<BarDeformation> barDeformations, string adapterId, object loadCase, double scaleFactor = 1.0, bool drawSections = false)
+        public static List<IGeometry> DeformedShape(List<Bar> bars, List<BarDisplacement> barDisplacements, string adapterId, object loadCase, double scaleFactor = 1.0, bool drawSections = false)
         {
-            barDeformations = barDeformations.SelectCase(loadCase);
+            barDisplacements = barDisplacements.SelectCase(loadCase);
 
             List<IGeometry> geom = new List<IGeometry>();
+
+            var resGroups = barDisplacements.GroupBy(x => x.ObjectId.ToString()).ToDictionary(x => x.Key);
+
+            if (drawSections)
+                Reflection.Compute.RecordWarning("Display of rotations of sections is not yet supported for deformed shape");
 
             foreach (Bar bar in bars)
             {
                 string id = bar.CustomData[adapterId].ToString();
-                List<BarDeformation> deformations = barDeformations.Where(x => x.ObjectId.ToString() == id).ToList();
+
+                List<BarDisplacement> deformations;
+
+                IGrouping<string, BarDisplacement> outVal;
+                if (resGroups.TryGetValue(id, out outVal))
+                    deformations = outVal.ToList();
+                else
+                    continue;
+
                 deformations.Sort();
                 if (drawSections)
                     geom.AddRange(DeformedShapeSection(bar, deformations, scaleFactor));
@@ -66,19 +79,29 @@ namespace BH.Engine.Structure
         /***************************************************/
 
 
-        public static List<Mesh> DeformedShape(List<FEMesh> meshes, List<MeshResults> meshDeformations, string adapterId, object loadCase, double scaleFactor = 1.0)
+        public static List<Mesh> DeformedShape(List<FEMesh> meshes, List<MeshResult> meshDeformations, string adapterId, object loadCase, double scaleFactor = 1.0)
         {
-            //TODO: Filter by case
-            //meshDeformations = meshDeformations.SelectCase(loadCase);
+            meshDeformations = meshDeformations.SelectCase(loadCase);
 
             List<Mesh> defMeshes = new List<Mesh>();
+
+            var resGroups = meshDeformations.GroupBy(x => x.ObjectId.ToString()).ToDictionary(x => x.Key);
 
             foreach (FEMesh feMesh in meshes)
             {
                 string id = feMesh.CustomData[adapterId].ToString();
-                MeshResults deformations = meshDeformations.Where(x => x.ObjectId.ToString() == id && x.MeshResultCollection.First() is MeshDisplacement).First();
 
-                defMeshes.Add(DeformedMesh(feMesh, deformations.MeshResultCollection.Cast<MeshDisplacement>(), adapterId, scaleFactor));
+                List<MeshResult> deformations;
+
+                IGrouping<string, MeshResult> outVal;
+                if (resGroups.TryGetValue(id, out outVal))
+                    deformations = outVal.ToList();
+                else
+                    continue;
+
+                MeshResult singleDisp = deformations.Where(x => x.ObjectId.ToString() == id && x.Results.First() is MeshDisplacement).First();
+
+                defMeshes.Add(DeformedMesh(feMesh, singleDisp.Results.Cast<MeshDisplacement>(), adapterId, scaleFactor));
             }
 
             return defMeshes;
@@ -88,20 +111,14 @@ namespace BH.Engine.Structure
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private static Polyline DeformedShapeCentreLine(Bar bar, List<BarDeformation> deformations, double scaleFactor = 1.0)
+        private static Polyline DeformedShapeCentreLine(Bar bar, List<BarDisplacement> deformations, double scaleFactor = 1.0)
         {
             Vector tan = (bar.EndNode.Position() - bar.StartNode.Position());
-            Vector unitTan = tan.Normalise();
-            Vector normal = bar.Normal();
-            Vector yAxis = normal.CrossProduct(unitTan);
-
-
             List<Point> pts = new List<Point>();
 
-            foreach (BarDeformation defo in deformations)
+            foreach (BarDisplacement defo in deformations)
             {
-                //Vector disp = new Vector { X = defo.UX * scaleFactor, Y = defo.UY * scaleFactor, Z = defo.UZ * scaleFactor };
-                Vector disp = unitTan * defo.UX * scaleFactor + yAxis * defo.UY * scaleFactor + normal * defo.UZ * scaleFactor;
+                Vector disp = new Vector { X = defo.UX * scaleFactor, Y = defo.UY * scaleFactor, Z = defo.UZ * scaleFactor };
                 Point pt = bar.StartNode.Position() + tan * defo.Position + disp;
                 pts.Add(pt);
             }
@@ -113,13 +130,9 @@ namespace BH.Engine.Structure
         /***************************************************/
 
 
-        private static List<Loft> DeformedShapeSection(Bar bar, List<BarDeformation> deformations, double scaleFactor = 1.0)
+        private static List<Loft> DeformedShapeSection(Bar bar, List<BarDisplacement> deformations, double scaleFactor = 1.0)
         {
             Vector tan = bar.Tangent();
-            Vector unitTan = tan.Normalise();
-            Vector normal = bar.Normal();
-            Vector yAxis = normal.CrossProduct(unitTan);
-
 
             List<Point> pts = new List<Point>();
 
@@ -129,12 +142,13 @@ namespace BH.Engine.Structure
             foreach (ICurve sectionCurve in sectionCurves)
             {
                 Loft loft = new Loft();
-                foreach (BarDeformation defo in deformations)
+                foreach (BarDisplacement defo in deformations)
                 {
-                    ICurve curve = sectionCurve.IRotate(bar.StartNode.Position(), unitTan, defo.RX * scaleFactor);
-                    Vector disp = unitTan * defo.UX * scaleFactor + yAxis * defo.UY * scaleFactor + normal * defo.UZ * scaleFactor;
+                    //ICurve curve = sectionCurve.IRotate(bar.StartNode.Position(), tan, defo.RX * scaleFactor);
+                    //Vector disp = unitTan * defo.UX * scaleFactor + yAxis * defo.UY * scaleFactor + normal * defo.UZ * scaleFactor;
+                    Vector disp = new Vector { X = defo.UX * scaleFactor, Y = defo.UY * scaleFactor, Z = defo.UZ * scaleFactor };
                     disp += tan * defo.Position;
-                    loft.Curves.Add(curve.ITranslate(disp));
+                    loft.Curves.Add(sectionCurve.ITranslate(disp));
                 }
                 lofts.Add(loft);
             }

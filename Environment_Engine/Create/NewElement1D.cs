@@ -35,7 +35,7 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("BH.Engine.Environment.Create.NewElement1D => Returns an instance of an IElement1D from the given object")]
+        [Description("Returns an instance of an IElement1D from the given object")]
         [Input("opening", "An Environmental Opening object")]
         [Input("curve", "The curve to clone")]
         [Output("element", "A 1D element object")]
@@ -46,7 +46,7 @@ namespace BH.Engine.Environment
 
         /***************************************************/
 
-        [Description("BH.Engine.Environment.Create.NewElement1D => Returns an instance of an IElement1D from the given object")]
+        [Description("Returns an instance of an IElement1D from the given object")]
         [Input("panel", "An Environmental Panel object")]
         [Input("curve", "The curve to clone")]
         [Output("element", "A 1D element object")]

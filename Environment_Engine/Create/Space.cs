@@ -49,6 +49,7 @@ namespace BH.Engine.Environment
         [Input("type", "The type of space from the Space Type enum, default undefined")]
         [Input("location", "A point in 3D space providing a basic location point of the space, default null")]
         [Output("space", "An Environment Space object")]
+        [Deprecated("3.0", "Deprecated in favour of default create components produced by BHoM")]
         public static Space Space(string name = "", List<string> zones = null, List<IGain> gains = null, SpaceType type = SpaceType.Undefined, Point location = null)
         {
             zones = zones ?? new List<string>();

@@ -22,6 +22,7 @@
 
 using BH.oM.Geometry;
 using BH.oM.Geometry.CoordinateSystem;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace BH.Engine.Geometry
@@ -130,7 +131,7 @@ namespace BH.Engine.Geometry
 
         public static NurbsSurface Clone(this NurbsSurface surface)
         {
-            return new NurbsSurface { ControlPoints = surface.ControlPoints.Select(x => x.Clone()).ToList(), Weights = surface.Weights.ToList(), UKnots = surface.UKnots.ToList(), VKnots = surface.VKnots.ToList() };
+            return new NurbsSurface(surface.ControlPoints.Select(x => x.Clone()), new List<double>(surface.Weights), new List<double>(surface.UKnots), new List<double>(surface.VKnots), surface.UDegree, surface.VDegree, surface.InnerTrims.Select(x => x.Clone()), surface.OuterTrims.Select(x => x.Clone()));
         }
 
         /***************************************************/
@@ -192,6 +193,43 @@ namespace BH.Engine.Geometry
             return new TransformMatrix { Matrix = transform.Matrix };
         }
 
+        /***************************************************/
+
+        public static Basis Clone(this Basis basis)
+        {
+            return new Basis(basis.X, basis.Y, basis.Z);
+        }
+
+        /***************************************************/
+
+        public static SurfaceTrim Clone(this SurfaceTrim trim)
+        {
+            return new SurfaceTrim(trim.Curve3d.Clone(), trim.Curve2d.Clone());
+        }
+
+
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+        private static object Clone(this object geometry)
+        {
+            return geometry;
+        }
+
+        /***************************************************/
+
+        private static ICurve Clone(this ICurve geometry)
+        {
+            return geometry;
+        }
+
+        /***************************************************/
+
+        private static ISurface Clone(this ISurface geometry)
+        {
+            return geometry;
+        }
 
         /***************************************************/
         /**** Public Methods - Interfaces               ****/

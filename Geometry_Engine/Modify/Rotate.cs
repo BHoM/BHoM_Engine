@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -99,10 +99,10 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [NotImplemented]
         public static NurbsCurve Rotate(this NurbsCurve curve, Point origin, Vector axis, double rad)
         {
-            throw new NotImplementedException();
+            TransformMatrix rotationMatrix = Create.RotationMatrix(origin, axis, rad);
+            return Transform(curve, rotationMatrix);
         }
 
 
@@ -204,7 +204,7 @@ namespace BH.Engine.Geometry
 
         public static ICurve IRotate(this ICurve geometry, Point origin, Vector axis, double rad)
         {
-            return Rotate(geometry as dynamic, origin,axis, rad);
+            return Rotate(geometry as dynamic, origin, axis, rad);
         }
 
         /***************************************************/
@@ -213,5 +213,7 @@ namespace BH.Engine.Geometry
         {
             return Rotate(geometry as dynamic, rad, axis);
         }
+
+        /***************************************************/
     }
 }

@@ -47,11 +47,6 @@
       <HintPath>..\..\BHoM\Build\Environment_oM.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Geometry_Engine">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Build\Geometry_Engine.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="Geometry_oM">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\BHoM\Build\Geometry_oM.dll</HintPath>
@@ -59,11 +54,6 @@
     </Reference>
     <Reference Include="Physical_oM">
       <HintPath>..\..\BHoM\Build\Physical_oM.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Reflection_Engine">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Build\Reflection_Engine.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Reflection_oM, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -97,8 +87,11 @@
     <Compile Include="Modify\CleanPanel.cs" />
     <Compile Include="Modify\FixNormal.cs" />
     <Compile Include="Modify\Remove.cs" />
+    <Compile Include="Modify\RemoveOpenings.cs" />
     <Compile Include="Modify\SetOpeningType.cs" />
+    <Compile Include="Modify\SplitOpening.cs" />
     <Compile Include="Query\Absorptance.cs" />
+    <Compile Include="Query\IsValidLocation.cs" />
     <Compile Include="Query\DateTime.cs" />
     <Compile Include="Query\DateTimeList.cs" />
     <Compile Include="Query\ICurve.cs" />
@@ -210,10 +203,18 @@
       <Name>Common_Engine</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\Geometry_Engine\Geometry_Engine.csproj">
+      <Project>{89ab2dcb-ef87-4cba-b59c-c16a8a71d333}</Project>
+      <Name>Geometry_Engine</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Physical_Engine\Physical_Engine.csproj">
       <Project>{f2073888-9bd8-4d8f-9b3c-27577b388530}</Project>
       <Name>Physical_Engine</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Reflection_Engine\Reflection_Engine.csproj">
+      <Project>{b0154405-9390-472d-9b5c-a2280823b18d}</Project>
+      <Name>Reflection_Engine</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

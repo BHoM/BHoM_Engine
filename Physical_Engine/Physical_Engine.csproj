@@ -59,12 +59,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Create\Roof.cs" />
     <Compile Include="Create\FramingElement.cs" />
     <Compile Include="Create\Construction.cs" />
     <Compile Include="Create\FramingElementProperty.cs" />
+    <Compile Include="Create\Floor.cs" />
+    <Compile Include="Create\Wall.cs" />
     <Compile Include="Create\Layer.cs" />
     <Compile Include="Create\Material.cs" />
-    <Compile Include="Create\Surface.cs" />
     <Compile Include="Modify\AddMaterialProperties.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Query\Construction.cs" />

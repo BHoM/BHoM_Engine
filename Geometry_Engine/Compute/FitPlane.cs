@@ -114,17 +114,23 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        public static Plane FitPlane(this Ellipse curve, double tolerance = Tolerance.Distance)
+        {
+            return new Plane { Origin = curve.Centre, Normal = curve.Axis1.CrossProduct(curve.Axis2).Normalise() };
+        }
+
+        /***************************************************/
+
         public static Plane FitPlane(this Line curve, double tolerance = Tolerance.Distance)
         {
             return null;
         }
 
         /***************************************************/
-
-        [NotImplemented]
+        
         public static Plane FitPlane(this NurbsCurve curve, double tolerance = Tolerance.Distance)
         {
-            throw new NotImplementedException();
+            return curve.ControlPoints.FitPlane();
         }
 
         /***************************************************/

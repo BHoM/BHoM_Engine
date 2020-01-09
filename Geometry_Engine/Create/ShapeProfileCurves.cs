@@ -34,7 +34,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static List<ICurve> IProfileCurves(double tft, double tfw, double bft, double bfw, double wt, double wd, double r1, double r2)
+        public static List<ICurve> IProfileCurves(double tft, double tfw, double bft, double bfw, double wt, double wd, double r1, double r2, double weldSize)
         {
             List<ICurve> perimeter = new List<ICurve>();
             Point p = new Point { X = bfw / 2, Y = 0, Z = 0 };
@@ -42,24 +42,28 @@ namespace BH.Engine.Geometry
             Vector xAxis = oM.Geometry.Vector.XAxis;
             Vector yAxis = oM.Geometry.Vector.YAxis;
             Point origin = oM.Geometry.Point.Origin;
+            double weldLength = weldSize * 2 / Math.Sqrt(2);
 
             perimeter.Add(new Line { Start = p, End = p = p + yAxis * (bft - r2) });
             if (r2 > 0) perimeter.Add(BH.Engine.Geometry.Create.ArcByCentre(p - xAxis * r2, p, p = p + new Vector { X = -r2, Y = r2, Z = 0 }));
-            perimeter.Add(new Line { Start = p, End = p = p - xAxis * (bfw / 2 - wt / 2 - r1 - r2) });
+            perimeter.Add(new Line { Start = p, End = p = p - xAxis * (bfw / 2 - wt / 2 - r1 - r2 - weldLength) });
             if (r1 > 0) perimeter.Add(BH.Engine.Geometry.Create.ArcByCentre(p + yAxis * r1, p, p = p + new Vector { X = -r1, Y = r1, Z = 0 }));
-            perimeter.Add(new Line { Start = p, End = p = p + yAxis * (wd - 2 * r1) });
+            if (weldSize > 0) perimeter.Add(new Line { Start = p, End = p = p + new Vector { X = -weldLength, Y = weldLength, Z = 0 } });
+            perimeter.Add(new Line { Start = p, End = p = p + yAxis * (wd - 2 * r1 - 2 * weldLength) });
+            if (weldSize > 0) perimeter.Add(new Line { Start = p, End = p = p + new Vector { X = weldLength, Y = weldLength, Z = 0 } });
             if (r1 > 0) perimeter.Add(BH.Engine.Geometry.Create.ArcByCentre(p + xAxis * r1, p, p = p + new Vector { X = r1, Y = r1, Z = 0 }));
-            perimeter.Add(new Line { Start = p, End = p = p + xAxis * (tfw / 2 - wt / 2 - r1 - r2) });
+            perimeter.Add(new Line { Start = p, End = p = p + xAxis * (tfw / 2 - wt / 2 - r1 - r2 - weldLength) });
             if (r2 > 0) perimeter.Add(BH.Engine.Geometry.Create.ArcByCentre(p + yAxis * r2, p, p = p + new Vector { X = r2, Y = r2, Z = 0 }));
             perimeter.Add(new Line { Start = p, End = p = p + yAxis * (tft - r2) });
 
             int count = perimeter.Count;
-            for (int i = 0; i < count;i++)       
+            for (int i = 0; i < count; i++)
             {
                 perimeter.Add(perimeter[i].IMirror(new Plane { Origin = origin, Normal = xAxis }));
             }
             perimeter.Add(new Line { Start = p, End = p - xAxis * (tfw) });
             perimeter.Add(new Line { Start = origin + xAxis * (-bfw / 2), End = origin + xAxis * (bfw / 2) });
+
             return perimeter;
         }
 
@@ -74,11 +78,11 @@ namespace BH.Engine.Geometry
             Vector yAxis = oM.Geometry.Vector.YAxis;
             Point origin = oM.Geometry.Point.Origin;
 
-            perimeter.Add(new Line { Start = p, End = p = p + yAxis*(wd - r1) });
-            if (r1 > 0) perimeter.Add(BH.Engine.Geometry.Create.ArcByCentre(p + xAxis*(r1), p, p = p + new Vector { X = r1, Y = r1, Z = 0 }));
-            perimeter.Add(new Line { Start = p, End = p = p + xAxis*(tfw / 2 - wt / 2 - r1 - r2) });
-            if (r2 > 0) perimeter.Add(BH.Engine.Geometry.Create.ArcByCentre(p + yAxis*(r2), p, p = p + new Vector { X = r2, Y = r2, Z = 0 }));
-            perimeter.Add(new Line { Start = p, End = p = p + yAxis*(tft - r2) });
+            perimeter.Add(new Line { Start = p, End = p = p + yAxis * (wd - r1) });
+            if (r1 > 0) perimeter.Add(BH.Engine.Geometry.Create.ArcByCentre(p + xAxis * (r1), p, p = p + new Vector { X = r1, Y = r1, Z = 0 }));
+            perimeter.Add(new Line { Start = p, End = p = p + xAxis * (tfw / 2 - wt / 2 - r1 - r2) });
+            if (r2 > 0) perimeter.Add(BH.Engine.Geometry.Create.ArcByCentre(p + yAxis * (r2), p, p = p + new Vector { X = r2, Y = r2, Z = 0 }));
+            perimeter.Add(new Line { Start = p, End = p = p + yAxis * (tft - r2) });
 
             int count = perimeter.Count;
             for (int i = 0; i < count; i++)
@@ -86,8 +90,8 @@ namespace BH.Engine.Geometry
                 perimeter.Add(perimeter[i].IMirror(new Plane { Origin = origin, Normal = xAxis }));
             }
 
-            perimeter.Add(new Line { Start = p, End = p - xAxis*(tfw) });
-            perimeter.Add(new Line { Start = origin + xAxis*(-wt / 2), End = origin + xAxis*(wt / 2) });
+            perimeter.Add(new Line { Start = p, End = p - xAxis * (tfw) });
+            perimeter.Add(new Line { Start = origin + xAxis * (-wt / 2), End = origin + xAxis * (wt / 2) });
 
             return perimeter;
         }
@@ -103,7 +107,7 @@ namespace BH.Engine.Geometry
             Vector yAxis = oM.Geometry.Vector.YAxis;
             Point origin = oM.Geometry.Point.Origin;
 
-            perimeter.Add(new Line { Start = p, End = p = p + yAxis * (height-leftOutstandThickness) });
+            perimeter.Add(new Line { Start = p, End = p = p + yAxis * (height - leftOutstandThickness) });
             perimeter.Add(new Line { Start = p, End = p = p + xAxis * (-leftOutstandWidth) });
             perimeter.Add(new Line { Start = p, End = p = p + yAxis * (leftOutstandThickness) });
             perimeter.Add(new Line { Start = p, End = p = p + xAxis * (leftOutstandWidth + webThickness + rightOutstandWidth) });
@@ -127,14 +131,14 @@ namespace BH.Engine.Geometry
 
             Point p = new Point { X = 0, Y = 0, Z = 0 };
             perimeter.Add(new Line { Start = p, End = p = p + xAxis * (width) });
-            perimeter.Add(new Line { Start = p, End = p = p + yAxis*(flangeThickness - toeRadius) });
+            perimeter.Add(new Line { Start = p, End = p = p + yAxis * (flangeThickness - toeRadius) });
             if (toeRadius > 0) perimeter.Add(BH.Engine.Geometry.Create.ArcByCentre(p - xAxis * (toeRadius), p, p = p + new Vector { X = -toeRadius, Y = toeRadius, Z = 0 }));
-            perimeter.Add(new Line { Start = p, End = p = p - xAxis*(width - webThickness - innerRadius - toeRadius) });
+            perimeter.Add(new Line { Start = p, End = p = p - xAxis * (width - webThickness - innerRadius - toeRadius) });
             if (innerRadius > 0) perimeter.Add(BH.Engine.Geometry.Create.ArcByCentre(p + yAxis * (innerRadius), p, p = p + new Vector { X = -innerRadius, Y = innerRadius, Z = 0 }));
-            perimeter.Add(new Line { Start = p, End = p = p + yAxis*(depth - flangeThickness - innerRadius - toeRadius) });
+            perimeter.Add(new Line { Start = p, End = p = p + yAxis * (depth - flangeThickness - innerRadius - toeRadius) });
             if (toeRadius > 0) perimeter.Add(BH.Engine.Geometry.Create.ArcByCentre(p - xAxis * (toeRadius), p, p = p + new Vector { X = -toeRadius, Y = toeRadius, Z = 0 }));
-            perimeter.Add(new Line { Start = p, End = p = p - xAxis*(webThickness - toeRadius) });
-            perimeter.Add(new Line { Start = p, End = p = p - yAxis*(depth) });
+            perimeter.Add(new Line { Start = p, End = p = p - xAxis * (webThickness - toeRadius) });
+            perimeter.Add(new Line { Start = p, End = p = p - yAxis * (depth) });
             List<ICurve> translatedCurves = new List<ICurve>();
 
             foreach (ICurve crv in perimeter)
@@ -154,8 +158,8 @@ namespace BH.Engine.Geometry
 
             List<ICurve> perimeter = new List<ICurve>();
             Point p = new Point { X = -width / 2, Y = height / 2 - radius, Z = 0 };
-            perimeter.Add(new Line { Start = p, End = p = p - yAxis * (height - 2*radius) });
-            if(radius > 0) perimeter.Add(BH.Engine.Geometry.Create.ArcByCentre(p + xAxis * radius, p, p = p + new Vector { X = radius, Y = -radius, Z = 0 }));
+            perimeter.Add(new Line { Start = p, End = p = p - yAxis * (height - 2 * radius) });
+            if (radius > 0) perimeter.Add(BH.Engine.Geometry.Create.ArcByCentre(p + xAxis * radius, p, p = p + new Vector { X = radius, Y = -radius, Z = 0 }));
             perimeter.Add(new Line { Start = p, End = p = p + xAxis * (width - 2 * radius) });
             if (radius > 0) perimeter.Add(BH.Engine.Geometry.Create.ArcByCentre(p + yAxis * radius, p, p = p + new Vector { X = radius, Y = radius, Z = 0 }));
             perimeter.Add(new Line { Start = p, End = p = p + yAxis * (height - 2 * radius) });
@@ -176,19 +180,36 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static List<ICurve> FabricatedBoxProfileCurves(double width, double height, double webThickness, double topFlangeThickness, double botFlangeThickness)
+        public static List<ICurve> FabricatedBoxProfileCurves(double width, double height, double webThickness, double topFlangeThickness, double botFlangeThickness, double weldSize)
         {
             List<ICurve> box = RectangleProfileCurves(width, height, 0);
-            List<ICurve> innerBox = RectangleProfileCurves(width - 2 * webThickness, height - (topFlangeThickness + botFlangeThickness), 0);
-            double diff = botFlangeThickness- topFlangeThickness;
 
-            if (diff != 0)
+            List<ICurve> welds = new List<ICurve>();
+            double weldLength = weldSize * 2 / Math.Sqrt(2);
+            Point q1 = new Point { X = (width / 2) - webThickness, Y = (height / 2) - topFlangeThickness, Z = 0 };
+            Point q2 = new Point { X = -(width / 2) + webThickness, Y = (height / 2) - topFlangeThickness, Z = 0 };
+            Point q3 = new Point { X = -(width / 2) + webThickness, Y = -(height / 2) + botFlangeThickness, Z = 0 };
+            Point q4 = new Point { X = (width / 2) - webThickness, Y = -(height / 2) + botFlangeThickness, Z = 0 };
+            Vector wx = new Vector { X = weldLength, Y = 0, Z = 0 };
+            Vector wy = new Vector { X = 0, Y = weldLength, Z = 0 };
+
+            if (weldSize > 0)
             {
-                Vector v = new Vector() { X = 0, Y = diff / 2, Z = 0 };
-                innerBox = innerBox.Select(x => Geometry.Modify.ITranslate(x, v)).ToList();
+            welds.Add(new Line { Start = q1 - wx, End = q1 - wy });
+            welds.Add(new Line { Start = q2 + wx, End = q2 - wy });
+            welds.Add(new Line { Start = q3 + wx, End = q3 + wy });
+            welds.Add(new Line { Start = q4 - wx, End = q4 + wy });
+            box.AddRange(welds);
             }
 
+            List<ICurve> innerBox = new List<ICurve>();
+            innerBox.Add(new Line { Start = q1 - wy, End = q4 + wy });
+            innerBox.Add(new Line { Start = q4 - wx, End = q3 + wx });
+            innerBox.Add(new Line { Start = q3 + wy, End = q2 - wy });
+            innerBox.Add(new Line { Start = q2 + wx, End = q1 - wx });
+
             box.AddRange(innerBox);
+            
             return box;
         }
 

@@ -63,6 +63,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Compute\ClusterDBSCAN.cs" />
+    <Compile Include="Compute\Series.cs" />
     <Compile Include="Compute\FilterData.cs" />
     <Compile Include="Compute\RelatedPairs.cs" />
     <Compile Include="Compute\Path.cs" />
@@ -75,6 +76,7 @@
     <Compile Include="Create\LocalData.cs" />
     <Compile Include="Create\DiscretePoint.cs" />
     <Compile Include="Create\PriorityQueue.cs" />
+    <Compile Include="Create\Table.cs" />
     <Compile Include="Create\Tree.cs" />
     <Compile Include="Create\VennDiagram.cs" />
     <Compile Include="Create\Graph.cs" />
@@ -89,6 +91,8 @@
     <Compile Include="Modify\AddNode.cs" />
     <Compile Include="Modify\RemoveNode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Query\Axes.cs" />
+    <Compile Include="Query\AxisExists.cs" />
     <Compile Include="Query\CloseToPoint.cs" />
     <Compile Include="Query\ClosestData.cs" />
     <Compile Include="Query\ClosestNode.cs" />
@@ -100,12 +104,19 @@
     <Compile Include="Query\Peek.cs" />
     <Compile Include="Query\SquareDistance.cs" />
     <Compile Include="Query\SubMatrixData.cs" />
+    <Compile Include="Query\ValueAbove.cs" />
+    <Compile Include="Query\ValueAt.cs" />
+    <Compile Include="Query\Values.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BHoM_Engine\BHoM_Engine.csproj">
       <Project>{1ad45c88-dd54-48e5-951f-55edfeb70e35}</Project>
       <Name>BHoM_Engine</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Reflection_Engine\Reflection_Engine.csproj">
+      <Project>{b0154405-9390-472d-9b5c-a2280823b18d}</Project>
+      <Name>Reflection_Engine</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
