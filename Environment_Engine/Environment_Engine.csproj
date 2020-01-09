@@ -91,6 +91,7 @@
     <Compile Include="Modify\SetOpeningType.cs" />
     <Compile Include="Modify\SplitOpening.cs" />
     <Compile Include="Query\Absorptance.cs" />
+    <Compile Include="Query\IsValidLocation.cs" />
     <Compile Include="Query\DateTime.cs" />
     <Compile Include="Query\DateTimeList.cs" />
     <Compile Include="Query\ICurve.cs" />

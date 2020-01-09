@@ -46,6 +46,7 @@ namespace BH.Engine.Environment
         [Input("viewCoefficient", "The view coefficient of this equipment gain, default 0.0")]
         [Input("name", "The name of this equipment gain, default empty string")]
         [Output("equipmentGain", "The equipment gain object to associate to a space")]
+        [Deprecated("3.0", "Deprecated in favour of default create components produced by BHoM")]
         public static Equipment Equipment(double sensible = 0.0, double latent = 0.0, Profile profile = null, double radiantFraction = 0.0, double viewCoefficient = 0.0, string name = "")
         {
             return new Equipment
@@ -65,6 +66,7 @@ namespace BH.Engine.Environment
         [Input("profile", "The profile for this gain being active, default null")]
         [Input("name", "The name of this infiltration gain, default empty string")]
         [Output("infiltrationGain", "The infiltration gain object to associate to a space")]
+        [Deprecated("3.0", "Deprecated in favour of default create components produced by BHoM")]
         public static Infiltration Infiltration(double sensible = 0.0, double latent = 0.0, Profile profile = null, string name = "")
         {
             return new Infiltration
@@ -84,6 +86,7 @@ namespace BH.Engine.Environment
         [Input("luminousEfficacy", "The luminous efficacy of this lighting gain, default 0.0")]
         [Input("name", "The name of this lighting gain, default empty string")]
         [Output("lightingGain", "The lighting gain object to associate to a space")]
+        [Deprecated("3.0", "Deprecated in favour of default create components produced by BHoM")]
         public static Lighting Lighting(double sensible = 0.0, Profile profile = null, double radiantFraction = 0.0, double viewCoefficient = 0.0, double luminousEfficiacy = 0.0, string name = "")
         {
             return new Lighting
@@ -105,6 +108,7 @@ namespace BH.Engine.Environment
         [Input("viewCoefficient", "The view coefficient of this people gain, default 0.0")]
         [Input("name", "The name of this people gain, default empty string")]
         [Output("peopleGain", "The people gain object to associate to a space")]
+        [Deprecated("3.0", "Deprecated in favour of default create components produced by BHoM")]
         public static People People(double sensible = 0.0, double latent = 0.0, Profile profile = null, double radiantFraction = 0.0, double viewCoefficient = 0.0, string name = "")
         {
             return new People
@@ -125,6 +129,7 @@ namespace BH.Engine.Environment
         [Input("viewCoefficient", "The view coefficient of this plug gain, default 0.0")]
         [Input("name", "The name of this plug gain, default empty string")]
         [Output("plugGain", "The plug gain object to associate to a space")]
+        [Deprecated("3.0", "Deprecated in favour of default create components produced by BHoM")]
         public static Plug Plug(double sensible = 0.0, Profile profile = null, double radiantFraction = 0.0, double viewCoefficient = 0.0, string name = "")
         {
             return new Plug
@@ -143,6 +148,7 @@ namespace BH.Engine.Environment
         [Input("profile", "The profile for this gain being active, default null")]
         [Input("name", "The name of this pollutant gain, default empty string")]
         [Output("pollutantGain", "The pollutant gain object to associate to a space")]
+        [Deprecated("3.0", "Deprecated in favour of default create components produced by BHoM")]
         public static Pollutant Pollutant(double sensible = 0.0, double latent = 0.0, Profile profile = null, string name = "")
         {
             return new Pollutant

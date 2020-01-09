@@ -46,6 +46,7 @@ namespace BH.Engine.Environment
         [Input("occupantViewCoefficient", "The occupant view coefficient, default 0.0")]
         [Input("equipmentViewCoefficient", "The equipment view coefficient, default 0.0")]
         [Output("coefficientFragment", "An Environment Coefficient Fragment object - this can be added to any Environment object")]
+        [Deprecated("3.0", "Deprecated in favour of default create components produced by BHoM")]
         public static CoefficientFragment CoefficientFragment(double lightingViewCoefficient = 0.0, double occupantViewCoefficient = 0.0, double equipmentViewCoefficient = 0.0)
         {
             return new CoefficientFragment

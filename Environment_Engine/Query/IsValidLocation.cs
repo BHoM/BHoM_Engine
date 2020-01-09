@@ -1,4 +1,4 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
@@ -23,46 +23,51 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using BH.oM.Environment.Elements;
-using BH.oM.Physical.Constructions;
+using BH.oM.Environment;
+using BH.Engine.Geometry;
+using BH.oM.Geometry;
 
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
+using BH.oM.Environment.Climate;
 
 namespace BH.Engine.Environment
 {
-    public static partial class Create
+    public static partial class Query
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-
-        [Description("Returns an Environment Opening object")]
-        [Input("name", "The name of the opening, default empty string")]
-        [Input("externalEdges", "A collection of Environment Edge objects which define the external boundary of the opening, default null")]
-        [Input("innerEdges", "A collection of Environment Edge objects which define the internal boundary of the opening, default null")]
-        [Input("frameConstruction", "A construction object providing construction information about the frame of the opening, default null")]
-        [Input("openingConstruction", "A construction object providing construction information about the opening - typically glazing construction, default null")]
-        [Input("type", "The type of opening from the Opening Type enum, default undefined")]
-        [Output("opening", "An Environment Opening object")]
-        [Deprecated("3.0", "Deprecated in favour of default create components produced by BHoM")]
-        public static Opening Opening(string name = "", List<Edge> externalEdges = null, List<Edge> innerEdges = null, IConstruction frameConstruction = null, IConstruction openingConstruction = null, OpeningType type = OpeningType.Undefined)
+        public static bool IsValidLocation(this Location location)
         {
-            externalEdges = externalEdges ?? new List<Edge>();
-            innerEdges = innerEdges ?? new List<Edge>();
-
-            return new Opening
+            double latitude = location.Latitude;
+            if (latitude < -90 || latitude > 90)
             {
-                Name = name,
-                Edges = externalEdges,
-                InnerEdges = innerEdges,
-                FrameConstruction = frameConstruction,
-                OpeningConstruction = openingConstruction,
-                Type = type,
-            };
+                BH.Engine.Reflection.Compute.RecordError("Invalid Latitude passed. It should be between -90 and 90");
+                return false;
+            }
+
+            double longitude = location.Longitude;
+            if (longitude < -180 || longitude > 180)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Invalid Longitude passed. It should be between -180 and 180");
+                return false;
+            }
+
+            double elevation = location.Elevation;
+            if (elevation < -413 || elevation > 8848)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Invalid Elevation passed. It should be between -413 and 8848");
+                return false;
+            }
+
+            double utcOffset = location.UtcOffset;
+            if (utcOffset < -12 || utcOffset > 12)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Invalid UtcOffset passed. It should be between -12 and 12");
+                return false;
+            }
+            return true;
         }
     }
 }

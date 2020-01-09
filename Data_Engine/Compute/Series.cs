@@ -1,6 +1,6 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -20,31 +20,24 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System;
+using BH.oM.Base;
+using BH.oM.Data.Requests;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-using BH.oM.Physical.Constructions;
-using BH.oM.Physical.Materials;
-
-using BH.oM.Reflection.Attributes;
-using System.ComponentModel;
-
-namespace BH.Engine.Environment
+namespace BH.Engine.Data
 {
-    public static partial class Create
+    public static partial class Compute
     {
-        [Description("Returns a Layer object")]
-        [Input("name", "The name of the layer, default empty string")]
-        [Input("material", "The material this layer is made up of, default null")]
-        [Input("thickness", "The thickness of this material layer, default 0.0")]
-        [Output("layer", "A Layer object providing an instantiated use of a material with a given thickness")]
-        [Deprecated("3.0", "Deprecated in favour of default create components produced by BHoM")]
-        public static Layer Layer(string name = "", Material material = null, double thickness = 0.0)
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
+
+        public static List<double> Series(int count, double start = 0, double step = 1)
         {
-            return BH.Engine.Physical.Create.Layer(name, material, thickness);
+            return Enumerable.Range(0, count).Select(x => start + step * x).ToList();
         }
+
+        /***************************************************/
     }
 }

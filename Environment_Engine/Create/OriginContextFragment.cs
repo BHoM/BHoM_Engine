@@ -47,6 +47,7 @@ namespace BH.Engine.Environment
         [Input("description", "A description for the object or its source, default empty string")]
         [Input("typeName", "The family type name of the object to group objects together, default empty string")]
         [Output("originContextFragment", "An Origin Context Fragment object - this can be added to any Environment object")]
+        [Deprecated("3.0", "Deprecated in favour of default create components produced by BHoM")]
         public static OriginContextFragment OriginContextFragment(string origin = "", string elementID = "", string description = "", string typeName = "")
         {
             return new OriginContextFragment
