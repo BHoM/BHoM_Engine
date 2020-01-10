@@ -22,7 +22,6 @@
 
 using MongoDB.Bson.Serialization.Conventions;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using MongoDB.Bson.Serialization;
@@ -30,10 +29,11 @@ using MongoDB.Bson.Serialization;
 namespace BH.Engine.Serialiser.MemberMapConventions
 {
     /// <summary>
-    /// Maps a BHoM IImmutable type. 
+    /// Maps a fully immutable type that is not a IImmutable type. 
     /// </summary>
-    public class ImmutableBHoMClassMapConvention : ConventionBase, IClassMapConvention
+    public class ImmutableTypeClassMapConventionFixed : ConventionBase, IClassMapConvention
     {
+        /// <inheritdoc />
         public void Apply(BsonClassMap classMap)
         {
             var typeInfo = classMap.ClassType.GetTypeInfo();
@@ -42,20 +42,30 @@ namespace BH.Engine.Serialiser.MemberMapConventions
                 return;
             }
 
-            if (typeInfo.GetInterface("IImmutable") == null)
+            if (typeInfo.GetInterface("IImmutable") != null)
             {
-                return; // only applies to classes that inherit from IImutable
+                return; // only applies to classes that do not inherit from IImutable
             }
 
-            var properties = typeInfo.GetProperties();
+            if (typeInfo.GetConstructor(Type.EmptyTypes) != null)
+            {
+                return;
+            }
+
+            var properties = typeInfo.GetProperties(BindingFlags.Instance | BindingFlags.Public);
+            if (properties.Any(p => p.CanWrite))
+            {
+                return; // a type that has any writable properties is not immutable
+            }
 
             var anyConstructorsWereMapped = false;
-            ConstructorInfo[] constructors = typeInfo.GetConstructors();
-            if (constructors.Length > 0)
+            foreach (var ctor in typeInfo.GetConstructors())
             {
-                var ctor = typeInfo.GetConstructors().OrderByDescending(x => x.GetParameters().Count()).First();
-
                 var parameters = ctor.GetParameters();
+                if (parameters.Length != properties.Length)
+                {
+                    continue; // only consider constructors that have sufficient parameters to initialize all properties
+                }
 
                 var matches = parameters
                     .GroupJoin(properties,
@@ -66,7 +76,7 @@ namespace BH.Engine.Serialiser.MemberMapConventions
 
                 if (matches.Any(m => m.Properties.Count() != 1))
                 {
-                    //continue;
+                    continue;
                 }
 
                 classMap.MapConstructor(ctor);
@@ -76,30 +86,15 @@ namespace BH.Engine.Serialiser.MemberMapConventions
 
             if (anyConstructorsWereMapped)
             {
-                var classType = classMap.ClassType;
-                
+                // if any constructors were mapped by this convention then map all the properties also
                 foreach (var property in properties)
                 {
-                    if (property.DeclaringType == classType)
-                        classMap.MapMember(property);
-                    else if(!property.CanWrite)
+                    var memberMap = classMap.MapMember(property);
+                    if (classMap.IsAnonymous)
                     {
-                        //Forcing immutable properties from base class to be added via reflection.
-                        //This is due to BsonClassMap refusing to add members from base class to the class map which is needed
-                        //for IImmutable members withg an abstract immutable base class.
-                        var memberMap = classMap.DeclaredMemberMaps.ToList().Find(m => m.MemberInfo == property);
-                        if (memberMap == null)
-                        {
-                            memberMap = new BsonMemberMap(classMap, property);
-
-                            FieldInfo info = typeof(BsonClassMap).GetField("_declaredMemberMaps", BindingFlags.NonPublic | BindingFlags.Instance);
-                            var declaredMemberMaps = info.GetValue(classMap) as List<BsonMemberMap>;
-
-                            declaredMemberMaps.Add(memberMap);
-                        }
-
+                        var defaultValue = memberMap.DefaultValue;
+                        memberMap.SetDefaultValue(defaultValue);
                     }
-
                 }
             }
         }

@@ -37,6 +37,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 
 namespace MongoDB.Bson.Serialization.Conventions
@@ -144,6 +145,12 @@ namespace MongoDB.Bson.Serialization.Conventions
             if (memberInfos.Length == 1 /*&& GetMemberType(memberInfos[0]) == parameter.ParameterType*/)
             {
                 return memberInfos[0];
+            }
+            else
+            {
+                List<PropertyInfo> propertiesOfType = classType.GetProperties().Where(x => x.PropertyType == parameter.ParameterType).ToList();
+                if (propertiesOfType.Count == 1)
+                    return propertiesOfType[0];
             }
             return null;
         }
