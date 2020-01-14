@@ -1,6 +1,6 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -20,15 +20,19 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Geometry;
-using BH.oM.Structure.Elements;
-using BH.Engine.Geometry;
-using System;
-using System.Linq;
+using System.Collections.Generic;
 using System.ComponentModel;
 using BH.oM.Reflection.Attributes;
+using BH.oM.Physical.Elements;
+using BH.oM.Base;
 
-namespace BH.Engine.Structure
+using BH.Engine.Base;
+using BH.oM.Geometry;
+using BH.Engine.Geometry;
+using BH.oM.Physical.FramingProperties;
+using System;
+
+namespace BH.Engine.Physical
 {
     public static partial class Query
     {
@@ -36,31 +40,23 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns the bars local Z-axis")]
-        [Input("bar", "The Bar to evaluate the normal of")]
-        [Output("normal", "Vector representing the bars local Z-axis")]
-        public static Vector Normal(this Bar bar)
+        [Description("Returns the normal of a FramingElement, which would be the Z-axis in the local coordinate syetem")]
+        [Input("framingElement", "The FramingElement to evaluate the normal of")]
+        [Output("normal", "The FramingElements normal vector")]
+        public static Vector Normal(this IFramingElement framingElement)
         {
-            return bar.Centreline().ElementNormal(bar.OrientationAngle);
+            double orientationAngle = 0;
+            if (!(framingElement.Property is ConstantFramingProperty))
+            {
+                Reflection.Compute.RecordWarning("No ConstantFramingProperty found, OrientationAngle set as 0");
+            } else
+            {
+                orientationAngle = (framingElement.Property as ConstantFramingProperty).OrientationAngle;
+            }
+
+            return framingElement.Location.ElementNormal(orientationAngle);
         }
 
         /***************************************************/
-
-        public static Vector Normal(this Panel panel)
-        {
-            return panel.AllEdgeCurves().SelectMany(x => x.IControlPoints()).ToList().FitPlane().Normal;
-        }
-
-        /***************************************************/
-        /**** Public Methods - Interface methods        ****/
-        /***************************************************/
-
-        public static Vector INormal(this IAreaElement areaElement)
-        {
-            return Normal(areaElement as dynamic);
-        }
-
-        /***************************************************/
-
     }
 }

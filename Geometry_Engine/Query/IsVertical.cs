@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -21,14 +21,11 @@
  */
 
 using BH.oM.Geometry;
-using BH.oM.Structure.Elements;
-using BH.Engine.Geometry;
-using System;
-using System.Linq;
-using System.ComponentModel;
 using BH.oM.Reflection.Attributes;
+using System;
+using System.ComponentModel;
 
-namespace BH.Engine.Structure
+namespace BH.Engine.Geometry
 {
     public static partial class Query
     {
@@ -36,31 +33,27 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns the bars local Z-axis")]
-        [Input("bar", "The Bar to evaluate the normal of")]
-        [Output("normal", "Vector representing the bars local Z-axis")]
-        public static Vector Normal(this Bar bar)
+        [Description("Evaluates whether a line is vertical from its start- and endpoints projected 2d-distance")]
+        [Input("line", "The line to determine the verticality of")]
+        [Output("isVertical", "If it is vertical, as defined in the wiki: https://github.com/BHoM/documentation/wiki/BHoM-Structural-Conventions")]
+        public static bool IsVertical(this Line line)
         {
-            return bar.Centreline().ElementNormal(bar.OrientationAngle);
+            return IsVertical(line.Start, line.End);
         }
 
         /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
 
-        public static Vector Normal(this Panel panel)
+        private static bool IsVertical(Point p1, Point p2)
         {
-            return panel.AllEdgeCurves().SelectMany(x => x.IControlPoints()).ToList().FitPlane().Normal;
+            double dx = p1.X - p2.X;
+            double dy = p1.Y - p2.Y;
+
+            return Math.Sqrt(dx * dx + dy * dy) < 0.0001;
         }
 
-        /***************************************************/
-        /**** Public Methods - Interface methods        ****/
-        /***************************************************/
-
-        public static Vector INormal(this IAreaElement areaElement)
-        {
-            return Normal(areaElement as dynamic);
-        }
 
         /***************************************************/
-
     }
 }

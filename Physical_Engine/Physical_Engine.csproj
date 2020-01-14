@@ -70,6 +70,7 @@
     <Compile Include="Modify\AddMaterialProperties.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Query\Construction.cs" />
+    <Compile Include="Query\Normal.cs" />
     <Compile Include="Query\Doors.cs" />
     <Compile Include="Query\Floors.cs" />
     <Compile Include="Query\Geometry.cs" />
