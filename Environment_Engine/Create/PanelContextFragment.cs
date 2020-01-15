@@ -47,6 +47,7 @@ namespace BH.Engine.Environment
         [Input("colour", "Defines the colour of the panel, default empty string")]
         [Input("reversed", "Defines whether the panel is reversed, default false")]
         [Output("panelContextFragment", "A Panel Context Fragment object - this can be added to an Environment Panel")]
+        [Deprecated("3.0", "Deprecated in favour of default create components produced by BHoM")]
         public static PanelContextFragment PanelContextFragment(bool isAir = false, bool isGround = false, string colour = "", bool reversed = false)
         {
             return new PanelContextFragment

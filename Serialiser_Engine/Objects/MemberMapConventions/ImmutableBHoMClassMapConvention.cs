@@ -22,6 +22,7 @@
 
 using MongoDB.Bson.Serialization.Conventions;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using MongoDB.Bson.Serialization;
@@ -81,6 +82,24 @@ namespace BH.Engine.Serialiser.MemberMapConventions
                 {
                     if (property.DeclaringType == classType)
                         classMap.MapMember(property);
+                    else if(!property.CanWrite)
+                    {
+                        //Forcing immutable properties from base class to be added via reflection.
+                        //This is due to BsonClassMap refusing to add members from base class to the class map which is needed
+                        //for IImmutable members withg an abstract immutable base class.
+                        var memberMap = classMap.DeclaredMemberMaps.ToList().Find(m => m.MemberInfo == property);
+                        if (memberMap == null)
+                        {
+                            memberMap = new BsonMemberMap(classMap, property);
+
+                            FieldInfo info = typeof(BsonClassMap).GetField("_declaredMemberMaps", BindingFlags.NonPublic | BindingFlags.Instance);
+                            var declaredMemberMaps = info.GetValue(classMap) as List<BsonMemberMap>;
+
+                            declaredMemberMaps.Add(memberMap);
+                        }
+
+                    }
+
                 }
             }
         }

@@ -45,6 +45,7 @@ namespace BH.Engine.Environment
         [Input("unit", "The unit measurement of the profile result from the Profile Result Unit enum, default undefined")]
         [Input("results", "A collection of the results of this profile, default null")]
         [Output("profileResult", "An Environment Profile Result object that can be added to a Simulation Result")]
+        [Deprecated("3.0", "Deprecated in favour of default create components produced by BHoM")]
         public static ProfileResult ProfileResult(string name = "", ProfileResultType type = ProfileResultType.Undefined, ProfileResultUnit unit = ProfileResultUnit.Undefined, List<double> results = null)
         {
             results = results ?? new List<double>();

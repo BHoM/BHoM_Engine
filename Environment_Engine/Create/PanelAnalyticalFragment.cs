@@ -67,6 +67,7 @@ namespace BH.Engine.Environment
         [Input("internalTemperature", "The internal temperature of the panel, default 0.0")]
         [Input("interstitialCondensation", "The interstitial condensation of the panel, default 0.0")]
         [Output("panelAnalyticalFragment", "A Panel Analytical Fragment object - this can be added to an Environment Panel")]
+        [Deprecated("3.0", "Deprecated in favour of default create components produced by BHoM")]
         public static PanelAnalyticalFragment PanelAnalyticalFragment(double altitude = 0.0, double altitudeRange = 0.0, double inclination = 0.0, double inclinationRange = 0.0, double orientation = 0.0, double gValue = 0.0, double ltValue = 0.0, double uValue = 0.0, double apertureFlowIn = 0.0, double apertureFlowOut = 0.0, double apertureOpening = 0.0, double externalCondensation = 0.0, double externalConduction = 0.0, double externalConvection = 0.0, double externalLongWave = 0.0, double externalSolar = 0.0, double externalTemperature = 0.0, double internalCondensation = 0.0, double internalConduction = 0.0, double internalConvection = 0.0, double internalLongWave = 0.0, double internalSolar = 0.0, double internalTemperature = 0.0, double interstitialCondensation = 0.0)
         {
             return new PanelAnalyticalFragment

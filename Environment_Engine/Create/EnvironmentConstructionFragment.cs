@@ -45,6 +45,7 @@ namespace BH.Engine.Environment
         [Input("fFactor", "The FFactor for the construction, default 0.0")]
         [Input("additionalHeatTransfer", "The additional heat transfer through the construction, default 0.0")]
         [Output("environmentConstructionFragment", "An Environment Construction Fragment object - this can be added to a Construction object")]
+        [Deprecated("3.0", "Deprecated in favour of default create components produced by BHoM")]
         public static EnvironmentConstructionFragment EnvironmentConstructionFragment(double fFactor = 0.0, double additionalHeatTransfer = 0.0)
         {
             return new EnvironmentConstructionFragment
