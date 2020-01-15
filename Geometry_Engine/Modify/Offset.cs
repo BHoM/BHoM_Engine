@@ -587,8 +587,10 @@ namespace BH.Engine.Geometry
             if (!((curve1 is Line || curve1 is Arc) && (curve2 is Line || curve2 is Arc))) //for now works only with combinations of lines and arcs
                 throw new NotImplementedException();
 
-            if (Compute.IJoin(new List<ICurve> { curve1, curve2 }, tolerance).Count == 1)
-                return Compute.IJoin(new List<ICurve> { curve1, curve2 }, tolerance)[0];
+            List<PolyCurve> joinCurves = Compute.IJoin(new List<ICurve> { curve1, curve2 }, tolerance).ToList();
+
+            if (joinCurves.Count == 1)
+                return joinCurves[0];
 
             List<ICurve> resultCurves = new List<ICurve>();
 
