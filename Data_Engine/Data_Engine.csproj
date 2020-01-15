@@ -63,6 +63,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Compute\ClusterDBSCAN.cs" />
+    <Compile Include="Compute\Series.cs" />
     <Compile Include="Compute\FilterData.cs" />
     <Compile Include="Compute\RelatedPairs.cs" />
     <Compile Include="Compute\Path.cs" />

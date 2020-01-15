@@ -74,6 +74,7 @@
     <Compile Include="Objects\MemberMapConventions\BHoMEnumConvention.cs" />
     <Compile Include="Objects\MemberMapConventions\BHoMDictionaryConvention.cs" />
     <Compile Include="Objects\MemberMapConventions\GenericDiscriminatorConvention.cs" />
+    <Compile Include="Objects\MemberMapConventions\ImmutableTypeClassMapConventionFixed.cs" />
     <Compile Include="Objects\MemberMapConventions\ImmutableBHoMClassMapConvention.cs" />
     <Compile Include="Objects\MemberMapConventions\ImmutableBHoMCreatorMapConvention.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

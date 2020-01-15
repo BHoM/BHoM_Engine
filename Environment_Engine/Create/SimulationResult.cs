@@ -44,6 +44,7 @@ namespace BH.Engine.Environment
         [Input("type", "The type of simulation result from the Simulation Result Type enum, default undefined")]
         [Input("results", "A collection of profile results that make up this simulation result, default null")]
         [Output("simulationResult", "An Environment Simulation Result object")]
+        [Deprecated("3.0", "Deprecated in favour of default create components produced by BHoM")]
         public static SimulationResult SimulationResult(string name = "", SimulationResultType type = SimulationResultType.Undefined, List<ProfileResult> results = null)
         {
             results = results ?? new List<ProfileResult>();

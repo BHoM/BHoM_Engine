@@ -41,6 +41,7 @@ namespace BH.Engine.Environment
         [Input("material", "The material this layer is made up of, default null")]
         [Input("thickness", "The thickness of this material layer, default 0.0")]
         [Output("layer", "A Layer object providing an instantiated use of a material with a given thickness")]
+        [Deprecated("3.0", "Deprecated in favour of default create components produced by BHoM")]
         public static Layer Layer(string name = "", Material material = null, double thickness = 0.0)
         {
             return BH.Engine.Physical.Create.Layer(name, material, thickness);

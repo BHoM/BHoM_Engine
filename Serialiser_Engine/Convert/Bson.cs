@@ -110,6 +110,33 @@ namespace BH.Engine.Serialiser
 
         private static void RegisterTypes()
         {
+            RegisterPacks();
+
+            RegisterSerializers();
+
+            RegisterClassMaps();
+            
+            m_TypesRegistered = true;
+        }
+
+        /*******************************************/
+
+        private static void RegisterPacks()
+        {
+            // Fix the ImmutableTypeClassMapConvention by replacing it with our own version
+            // For the content of the default pack, check https://github.com/mongodb/mongo-csharp-driver/blob/14e046f23640ff9257c4edf53065b9a6768254d4/src/MongoDB.Bson/Serialization/Conventions/DefaultConventionPack.cs
+            ConventionRegistry.Remove("__defaults__");
+            ConventionPack defaultPack = new ConventionPack();
+            defaultPack.Add(new ReadWriteMemberFinderConvention());
+            defaultPack.Add(new NamedIdMemberConvention(new[] { "Id", "id", "_id" }));
+            defaultPack.Add(new NamedExtraElementsMemberConvention(new[] { "ExtraElements" }));
+            defaultPack.Add(new IgnoreExtraElementsConvention(false));
+            defaultPack.Add(new ImmutableTypeClassMapConventionFixed());
+            defaultPack.Add(new NamedParameterCreatorMapConvention());
+            defaultPack.Add(new StringObjectIdIdGeneratorConvention());
+            defaultPack.Add(new LookupIdGeneratorConvention());
+            ConventionRegistry.Register("__defaults__", defaultPack, x => x is object);
+
             // Define the conventions   
             var pack = new ConventionPack();
             pack.Add(new ImmutableBHoMClassMapConvention());
@@ -120,8 +147,12 @@ namespace BH.Engine.Serialiser
             var pack2 = new ConventionPack();
             pack2.Add(new BHoMEnumConvention());
             ConventionRegistry.Register("Enum Conventions", pack2, x => x.GetType().IsEnum);
+        }
 
-            // Register additional serialisers
+        /*******************************************/
+
+        private static void RegisterSerializers()
+        {
             try
             {
                 BsonSerializer.RegisterSerializer(typeof(object), new BH_ObjectSerializer());
@@ -145,8 +176,12 @@ namespace BH.Engine.Serialiser
             {
                 Debug.WriteLine("Problem with initialisation of the Bson Serializer");
             }
+        }
 
-            // Register class maps
+        /*******************************************/
+
+        private static void RegisterClassMaps()
+        {
             MethodInfo method = typeof(BH.Engine.Serialiser.Convert).GetMethod("CreateEnumSerializer", BindingFlags.NonPublic | BindingFlags.Static);
             foreach (Type type in BH.Engine.Reflection.Query.BHoMTypeList())
             {
@@ -156,20 +191,18 @@ namespace BH.Engine.Serialiser
                     {
                         MethodInfo generic = method.MakeGenericMethod(type);
                         generic.Invoke(null, null);
-                    } 
+                    }
                     else if (!type.IsGenericType)
                         RegisterClassMap(type);
-                    
+
                 }
-                    
+
             }
+
             RegisterClassMap(typeof(System.Drawing.Color));
             RegisterClassMap(typeof(MethodInfo));
             RegisterClassMap(typeof(ConstructorInfo));
-
-            m_TypesRegistered = true;
         }
-
 
         /*******************************************/
 
@@ -182,6 +215,7 @@ namespace BH.Engine.Serialiser
                 cm.SetDiscriminator(type.FullName);
                 cm.SetDiscriminatorIsRequired(true);
                 cm.SetIgnoreExtraElements(false);   // It would have been nice to use cm.MapExtraElementsProperty("CustomData") but it doesn't work for inherited properties
+
                 BsonClassMap.RegisterClassMap(cm);
 
                 BsonSerializer.RegisterDiscriminatorConvention(type, new GenericDiscriminatorConvention());

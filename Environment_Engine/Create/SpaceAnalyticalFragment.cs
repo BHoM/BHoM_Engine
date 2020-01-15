@@ -50,6 +50,7 @@ namespace BH.Engine.Environment
         [Input("sizeHeating", "The heating size method of the space from the Sizing Method enum, default undefined")]
         [Input("radiantProportion", "The radiant proportion of the space, default 0.0")]
         [Output("spaceAnalyticalFragment", "A Space Analytical Fragment object - this can be added to an Environment Space")]
+        [Deprecated("3.0", "Deprecated in favour of default create components produced by BHoM")]
         public static SpaceAnalyticalFragment SpaceAnalyticalFragment(double internalDomesticHotWater = 0.0, double daylightFactor = 0.0, double facadeLength = 0.0, double fixedConvectionCoefficient = 0.0, SizingMethod sizeCooling = SizingMethod.Undefined, SizingMethod sizeHeating = SizingMethod.Undefined, double radiantProportion = 0.0)
         {
             return new SpaceAnalyticalFragment

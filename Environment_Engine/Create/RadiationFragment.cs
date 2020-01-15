@@ -46,6 +46,7 @@ namespace BH.Engine.Environment
         [Input("occupantRadiation", "The occupant radiation, default 0.0")]
         [Input("equipmentRadiation", "The equipment radiation, default 0.0")]
         [Output("radiationFragment", "An Environment Coefficient Fragment object - this can be added to any Environment object")]
+        [Deprecated("3.0", "Deprecated in favour of default create components produced by BHoM")]
         public static RadiationFragment RadiationFragment(double lightingRadiation = 0.0, double occupantRadiation = 0.0, double equipmentRadiation = 0.0)
         {
             return new RadiationFragment

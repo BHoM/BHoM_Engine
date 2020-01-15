@@ -45,6 +45,11 @@ namespace BH.Engine.Reflection
             if (attribute != null && !string.IsNullOrWhiteSpace(attribute.Description))
                 desc = attribute.Description + Environment.NewLine;
 
+            if (member is PropertyInfo)
+            {
+                desc += ((PropertyInfo)member).PropertyType.Description() + Environment.NewLine;
+            }
+
             if (member.ReflectedType != null)
                 desc += member.Name + " is a " + member.MemberType.ToString() + " of " + member.ReflectedType.ToText(true);
 
@@ -88,7 +93,7 @@ namespace BH.Engine.Reflection
                 desc = attribute.Description + Environment.NewLine;
 
             //Add the default description
-            desc += "This is a " + type.ToText();
+            desc += "This is a " + type.ToText(type.Namespace.StartsWith("BH."));
 
             Type innerType = type;
 

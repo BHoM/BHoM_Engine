@@ -45,6 +45,7 @@ namespace BH.Engine.Environment
         [Input("peakCooling", "The peak cooling result for the building, default 0.0")]
         [Input("peakHeating", "The peak heating result for the building, default 0.0")]
         [Output("buildingResultFragment", "An Environment Building Result Fragment object - this can be added to an Environment Building")]
+        [Deprecated("3.0", "Deprecated in favour of default create components produced by BHoM")]
         public static BuildingResultFragment BuildingResultFragment(double peakCooling = 0.0, double peakHeating = 0.0)
         {
             return new BuildingResultFragment

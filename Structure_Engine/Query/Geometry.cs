@@ -165,7 +165,7 @@ namespace BH.Engine.Structure
         /**** Private Methods - Fallback                ****/
         /***************************************************/
 
-        public static IGeometry Geometry(this object section)
+        private static IGeometry Geometry(this object section)
         {
             return null;
         }

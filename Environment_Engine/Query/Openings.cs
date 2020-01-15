@@ -39,6 +39,8 @@ using BH.Engine.Base;
 using BH.oM.Physical.Elements;
 using BH.Engine.Geometry;
 
+using BH.oM.Geometry.SettingOut;
+
 namespace BH.Engine.Environment
 {
     public static partial class Query
@@ -155,6 +157,60 @@ namespace BH.Engine.Environment
         public static List<Opening> OpeningsByName(this List<Opening> openings, string openingName)
         {
             return openings.Where(x => x.Name == openingName).ToList();
+        }
+
+        [Description("Returns a collection of Environment Openings where the maximum level of the opening matches the elevation of the given search level")]
+        [Input("openings", "A collection of Environment Openings to filter")]
+        [Input("searchLevel", "The Setting Level to search by")]
+        [Output("openings", "A collection of Environment Openings where the maximum level meets the search level")]
+        public static List<Opening> OpeningsByMaximumLevel(this List<Opening> openings, Level searchLevel)
+        {
+            return openings.OpeningsByMaximumLevel(searchLevel.Elevation);
+        }
+
+        [Description("Returns a collection of Environment Openings where the maximum level of the panel matches the elevation of the given search level")]
+        [Input("openings", "A collection of Environment Openings to filter")]
+        [Input("searchLevel", "The level to search by")]
+        [Output("openings", "A collection of Environment Openings where the maximum level meets the search level")]
+        public static List<Opening> OpeningsByMaximumLevel(this List<Opening> openings, double searchLevel)
+        {
+            return openings.Where(x => x.MaximumLevel() == searchLevel).ToList();
+        }
+
+        [Description("Returns a collection of Environment Openings where the minimum level of the Opening matches the elevation of the given search level")]
+        [Input("openings", "A collection of Environment Openings to filter")]
+        [Input("searchLevel", "The Setting Out Level to search by")]
+        [Output("openings", "A collection of Environment Openings where the minimum level meets the search level")]
+        public static List<Opening> OpeningsByMinimumLevel(this List<Opening> openings, Level searchLevel)
+        {
+            return openings.OpeningsByMinimumLevel(searchLevel.Elevation);
+        }
+
+        [Description("Returns a collection of Environment Openings where the minimum level of the Opening matches the elevation of the given search level")]
+        [Input("openings", "A collection of Environment Opening to filter")]
+        [Input("searchLevel", "The level to search by")]
+        [Output("openings", "A collection of Environment Opening where the minimum level meets the search level")]
+        public static List<Opening> OpeningsByMinimumLevel(this List<Opening> openings, double searchLevel)
+        {
+            return openings.Where(x => x.MinimumLevel() == searchLevel).ToList();
+        }
+
+        [Description("Returns a collection of Environment Opening that sit entirely on a given levels elevation")]
+        [Input("openings", "A collection of Environment Openings to filter")]
+        [Input("searchLevel", "The Setting Out Level to search by")]
+        [Output("openings", "A collection of Environment Openings which match the given level")]
+        public static List<Opening> OpeningsByLevel(this List<Opening> openings, Level searchLevel)
+        {
+            return openings.OpeningsByLevel(searchLevel.Elevation);
+        }
+
+        [Description("Returns a collection of Environment Openings that sit entirely on a given levels elevation")]
+        [Input("openings", "A collection of Environment Openings to filter")]
+        [Input("searchLevel", "The level to search by")]
+        [Output("openings", "A collection of Environment Openings which match the given level")]
+        public static List<Opening> OpeningsByLevel(this List<Opening> openings, double searchLevel)
+        {
+            return openings.Where(x => x.MinimumLevel() == searchLevel && x.MaximumLevel() == searchLevel).ToList();
         }
     }
 }

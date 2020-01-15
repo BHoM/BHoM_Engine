@@ -48,6 +48,7 @@ namespace BH.Engine.Environment
         [Input("type", "The type of panel from the Panel Type enum, default undefined")]
         [Input("connectedSpaces", "A collection of the spaces the panel is connected to, default null")]
         [Output("panel", "An Environment Panel object")]
+        [Deprecated("3.0", "Deprecated in favour of default create components produced by BHoM")]
         public static Panel Panel(string name = "", List<Edge> externalEdges = null, List<Opening> openings = null, IConstruction construction = null, PanelType type = PanelType.Undefined, List<string> connectedSpaces = null)
         {
             externalEdges = externalEdges ?? new List<Edge>();
