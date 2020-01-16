@@ -126,14 +126,14 @@ namespace BH.Engine.Structure
 
             if (material == null)
             {
-                Reflection.Compute.RecordError("The FramingElement does not contain any material. An empty steel material has been used");
-                fragment = new Steel();
+                Reflection.Compute.RecordError("The FramingElement does not contain any material. An empty generic isotropic material has been used");
+                fragment = new GenericIsotropicMaterial();
             }
             else if (!material.IsValidStructural())
             {
                 string matName = material.Name ?? "";
-                Reflection.Compute.RecordWarning("The material with name " + matName + " is not a valid structural material as it does not contain exactly one structural material fragment. An empty steel material has been assumed");
-                fragment = new Steel { Name = matName };
+                Reflection.Compute.RecordWarning("The material with name " + matName + " is not a valid structural material as it does not contain exactly one structural material fragment. An empty generic isotropic material has been assumed");
+                fragment = new GenericIsotropicMaterial { Name = matName };
             }
             else
             {
@@ -160,7 +160,7 @@ namespace BH.Engine.Structure
                 case oM.Structure.MaterialFragments.MaterialType.Cable:
                 case oM.Structure.MaterialFragments.MaterialType.Undefined:
                 default:
-                    prop = Create.GenericSectionFromProfile(property.Profile, prop.Material, property.Name);
+                    prop = Create.GenericSectionFromProfile(property.Profile, fragment, property.Name);
                     Reflection.Compute.RecordWarning("The BHoM does not currently explicitly support sections of material type " + fragment.IMaterialType() + ". A generic section has been created with the material applied to it");
                     break;
             }
