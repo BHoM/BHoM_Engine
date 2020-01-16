@@ -44,7 +44,7 @@ namespace BH.Engine.Structure
         [Input("material", "Material to use on the section")]
         [Input("name", "Name of the section. If no name is provided, the name from the profile will be used")]
         [Output("genericSec", "The created generic section")]
-        public static GenericSection GenericSection(IProfile profile, IMaterialFragment material = null, string name = "")
+        public static GenericSection GenericSectionFromProfile(IProfile profile, IMaterialFragment material = null, string name = "")
         {
             //Check name
             if (string.IsNullOrWhiteSpace(name) && profile.Name != null)
