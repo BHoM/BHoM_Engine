@@ -149,15 +149,18 @@ namespace BH.Engine.Structure
                     prop = Create.ConcreteSectionFromProfile(property.Profile, fragment as Concrete, property.Name);
                     break;
                 case oM.Structure.MaterialFragments.MaterialType.Aluminium:
+                    prop = Create.AluminiumSection(property.Profile, fragment as Aluminium, property.Name);
+                    break;
                 case oM.Structure.MaterialFragments.MaterialType.Timber:
+                    prop = Create.TimberSectionFromProfile(property.Profile, fragment as Timber, property.Name);
+                    break;
                 case oM.Structure.MaterialFragments.MaterialType.Rebar:
                 case oM.Structure.MaterialFragments.MaterialType.Tendon:
                 case oM.Structure.MaterialFragments.MaterialType.Glass:
                 case oM.Structure.MaterialFragments.MaterialType.Cable:
                 case oM.Structure.MaterialFragments.MaterialType.Undefined:
                 default:
-                    prop = Create.SteelSectionFromProfile(property.Profile, null, property.Name);
-                    prop.Material = fragment;
+                    prop = Create.GenericSection(property.Profile, prop.Material, property.Name);
                     Reflection.Compute.RecordWarning("The BHoM does not currently support sections of material type " + fragment.IMaterialType() + ". A steel section has been created with the material applied to it");
                     break;
             }
