@@ -81,8 +81,10 @@
   <ItemGroup>
     <Compile Include="Compute\Integrate.cs" />
     <Compile Include="Convert\ToFramingElement.cs" />
+    <Compile Include="Create\AluminiumSection.cs" />
     <Compile Include="Create\ConstantFramingProperty.cs" />
     <Compile Include="Create\FEMesh.cs" />
+    <Compile Include="Create\GenericSection.cs" />
     <Compile Include="Create\IResultRequest.cs" />
     <Compile Include="Create\MaterialFragment.cs" />
     <Compile Include="Create\TimberSection.cs" />
