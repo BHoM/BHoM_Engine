@@ -27,7 +27,9 @@ using BH.oM.Geometry.ShapeProfiles;
 using BH.oM.Geometry;
 using BH.oM.Structure.MaterialFragments;
 using BH.oM.Reflection;
+using BH.oM.Reflection.Attributes;
 using System.Linq;
+using System.ComponentModel;
 
 
 namespace BH.Engine.Structure
@@ -38,6 +40,25 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Creates a rectangular timber section")]
+        [Input("height", "Height of the section in meters [m]")]
+        [Input("width", "Width of the section in meters [m]")]
+        [Input("cornerRadius", "Optional corner radius of the section in meters [m]")]
+        [Input("material", "Timber material to use on the section")]
+        [Input("name", "Name of the section")]
+        [Output("timerSec","The created rectangular timber section")]
+        public static TimberSection TimberRectangleSection(double height, double width, double cornerRadius = 0, Timber material = null, string name = "")
+        {
+            return TimberSectionFromProfile(Geometry.Create.RectangleProfile(height, width, cornerRadius), material, name);
+        }
+
+        /***************************************************/
+
+        [Description("Creates a timber section from any shape profile")]
+        [Input("profile", "Profile containing the geometric information to be used to create the timber section")]
+        [Input("material", "Timber material to use on the section")]
+        [Input("name", "Name of the section. If no name is provided, the name from the profile will be used")]
+        [Output("timerSec", "The created timber section")]
         public static TimberSection TimberSectionFromProfile(IProfile profile, Timber material = null, string name = "")
         {
             //Check name
