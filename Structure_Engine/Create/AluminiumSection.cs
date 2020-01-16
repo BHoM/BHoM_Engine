@@ -44,7 +44,7 @@ namespace BH.Engine.Structure
         [Input("material", "Aluminium material to use on the section")]
         [Input("name", "Name of the section. If no name is provided, the name from the profile will be used")]
         [Output("alumSec", "The created aluminium section")]
-        public static AluminiumSection AluminiumSection(IProfile profile, Aluminium material = null, string name = "")
+        public static AluminiumSection AluminiumSectionFromProfile(IProfile profile, Aluminium material = null, string name = "")
         {
             //Check name
             if (string.IsNullOrWhiteSpace(name) && profile.Name != null)
