@@ -45,11 +45,10 @@ namespace BH.Engine.Structure
         public static ConstantFramingProperty ConstantFramingProperty(ISectionProperty sectionProperty, double orientationAngle, string name = "")
         {
 
+
             IProfile profile = null;
-            if (sectionProperty is SteelSection)
-                profile = (sectionProperty as SteelSection).SectionProfile;
-            else if (sectionProperty is ConcreteSection)
-                profile = (sectionProperty as ConcreteSection).SectionProfile;
+            if (sectionProperty is IGeometricalSection)
+                profile = (sectionProperty as IGeometricalSection).SectionProfile;
             else
                 Reflection.Compute.RecordWarning("Was not able to extract any section profile");
 
