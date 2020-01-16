@@ -22,6 +22,7 @@
 
 using BH.oM.Geometry;
 using BH.oM.Structure.Elements;
+using BH.oM.Structure.SectionProperties;
 using BH.oM.Geometry.ShapeProfiles;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,15 +40,10 @@ namespace BH.Engine.Structure
 
         public static List<IGeometry> Extrude(this Bar bar, bool simple = false)
         {
+            if (bar.SectionProperty == null || !(bar.SectionProperty is IGeometricalSection))
+                return new List<IGeometry>();
 
-            System.Reflection.PropertyInfo prop = bar.SectionProperty.GetType().GetProperty("SectionProfile");
-
-            IProfile profile;
-
-            if (prop != null)
-                profile = prop.GetValue(bar.SectionProperty) as IProfile;
-            else
-                return null;// bar.Geometry();
+            IProfile profile = (bar.SectionProperty as IGeometricalSection).SectionProfile;
 
             List<ICurve> secCurves = profile.Edges.ToList();
 
