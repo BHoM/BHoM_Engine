@@ -21,6 +21,7 @@
  */
 
 using BH.oM.Reflection.Attributes;
+using BH.oM.Quantities.Attributes;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -39,15 +40,27 @@ namespace BH.Engine.Reflection
         [Description("Return the custom description of a C# class member (e.g. property, method, field)")]
         public static string Description(this MemberInfo member)
         {
-            DescriptionAttribute attribute = member.GetCustomAttribute<DescriptionAttribute>();
+            DescriptionAttribute descriptionAttribute = member.GetCustomAttribute<DescriptionAttribute>();
+            QuantityAttribute quantityAttribute = member.GetCustomAttribute<QuantityAttribute>();
 
             string desc = "";
-            if (attribute != null && !string.IsNullOrWhiteSpace(attribute.Description))
-                desc = attribute.Description + Environment.NewLine;
+            if (descriptionAttribute != null && !string.IsNullOrWhiteSpace(descriptionAttribute.Description))
+                desc = descriptionAttribute.Description + Environment.NewLine;
 
             if (member is PropertyInfo)
             {
-                desc += ((PropertyInfo)member).PropertyType.Description() + Environment.NewLine;
+                if (quantityAttribute != null)
+                {
+                    desc += "This is a " + quantityAttribute.GetType().Name + " in [" + quantityAttribute.SIUnit + "]";
+                    Type type = ((PropertyInfo)member).PropertyType;
+                    desc += " (stored as a " + type.ToText(type.Namespace.StartsWith("BH.")) + ")";
+                    desc += Environment.NewLine;
+                }
+
+                else
+                {
+                    desc += ((PropertyInfo)member).PropertyType.Description() + Environment.NewLine;
+                }
             }
 
             if (member.ReflectedType != null)
