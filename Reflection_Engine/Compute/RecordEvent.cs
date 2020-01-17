@@ -48,18 +48,7 @@ namespace BH.Engine.Reflection
 
         public static bool RecordError(string message)
         {
-            string additionalInfo = "";
-            var frame1 = new StackTrace().GetFrame(1).GetMethod();
-            var frame2 = new StackTrace().GetFrame(2).GetMethod();
-
-            if (frame1.Name != "RecordError" && frame1.Name != frame2.Name)
-            {
-                additionalInfo = $"\nHappened in: {frame1.Name}";
-                if (frame2.DeclaringType.FullName.Contains("BH."))
-                    additionalInfo += $" while executing {frame2.Name}.";
-            }
-
-            return RecordEvent(new Event { Message = message + additionalInfo, Type = EventType.Error });
+            return RecordEvent(new Event { Message = message, Type = EventType.Error });
         }
 
         /***************************************************/
