@@ -34,7 +34,7 @@ namespace BH.Engine.Geometry
 {
     public static partial class Modify
     {
-        [Description("Modifys a BHoM Geometry Point to be rounded to the number of provided decimal places")]
+        [Description("Modifies a BHoM Geometry Point to be rounded to the number of provided decimal places")]
         [Input("point", "The BHoM Geometry Point to modify")]
         [Input("decimalPlaces", "The number of decimal places to round to, default 6")]
         [Output("point", "The modified BHoM Geometry Point")]
