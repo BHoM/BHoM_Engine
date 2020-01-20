@@ -98,14 +98,17 @@ namespace BH.Engine.Architecture.Theatron
                 tierToMap = fullprofile.BaseTierProfiles[i];
                 theatronGeom.Tiers3d.Add(new Tier());
                 var SectionBlock = GetBlockStartIndexes(theatronPlan, stadiatype);
+
+                
                 foreach (var pair in SectionBlock)
                 {
                     int index = pair.Key;
                     SeatingBlockType blockType = pair.Value;
 
-                    var block = SeatingBlock(theatronPlan.SectionOrigins[index], theatronPlan.VomitoryOrigins[index],
-                        theatronPlan.SectionOrigins[index + 1], blockType, profileParameters[i].SeatWidth, profileParameters[i].VomitoryParameters.VomitoryWidth);
+                    SeatingBlock block = SeatingBlock(theatronPlan.SectionOrigins[index], theatronPlan.VomitoryOrigins[index],
+                        theatronPlan.SectionOrigins[index + 1], blockType, profileParameters[i].SeatWidth, profileParameters[i].VomitoryParameters.Width);
 
+                    
                     theatronGeom.Tiers3d[i].Generatorblocks.Add(block);
                     if (block.TypeOfSeatingBlock == SeatingBlockType.Transition1 || block.TypeOfSeatingBlock == SeatingBlockType.Transition2)
                     {
@@ -174,15 +177,10 @@ namespace BH.Engine.Architecture.Theatron
                 for (int j = 0; j < bp.SectionOrigins.Count; j++)
                 {
                     current = bp.StructBayType[j];
-                    if (j == bp.SectionOrigins.Count - 1)
-                    {
-                        next = bp.StructBayType[0];
-                    }
-                    else
-                    {
-                        next = bp.StructBayType[j + 1];
-                    }
-                    if (!dict.ContainsValue(SeatingBlockType.Side)) if (current == 0 && next == 0) dict.Add(j, SeatingBlockType.Side);//side standard
+                    if (j == bp.SectionOrigins.Count - 1) next = bp.StructBayType[0];
+                    else next = bp.StructBayType[j + 1];
+                    if (!dict.ContainsValue(SeatingBlockType.Side)) if (current == 0 && next == 0){ dict.Add(j, SeatingBlockType.Side);//side standard
+                    //if (!dict.ContainsValue(SeatingBlockType.SideNoVom)) if (current == 0 && next == 0) dict.Add(j, SeatingBlockType.SideNoVom);//side standard no vom
                     if (!dict.ContainsValue(SeatingBlockType.End)) if (current == BayType.End && next == BayType.End) dict.Add(j, SeatingBlockType.End);//end standard
                     if (!dict.ContainsValue(SeatingBlockType.Corner)) if (current == BayType.Corner && next == BayType.Corner) dict.Add(j, SeatingBlockType.Corner);//corner standard
                     if (!dict.ContainsValue(SeatingBlockType.Transition1)) if (current == 0 && next == BayType.Corner) dict.Add(j, SeatingBlockType.Transition1);//side to corner transition

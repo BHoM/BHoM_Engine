@@ -222,9 +222,10 @@ namespace BH.Engine.Architecture.Theatron
 
             bool vomitory = parameters.VomitoryParameters.Vomitory;
             bool superR = parameters.SuperRiserParameters.SuperRiser;
-            int vomStart = parameters.VomitoryParameters.VomitoryStartRow;
+            int vomStart = parameters.VomitoryParameters.StartRow;
+            int numVomRows = parameters.VomitoryParameters.NumberOfRows;
             int superStart = parameters.SuperRiserParameters.SuperRiserStartRow;
-            double aisleW = parameters.VomitoryParameters.VomitoryWidth;
+            double aisleW = parameters.VomitoryParameters.Width;
             if (!vomitory && !superR)
             {
                 SetBlockFloorBasic(ref block);
@@ -271,7 +272,7 @@ namespace BH.Engine.Architecture.Theatron
                 for (int i = 0; i < block.Sections[j].FloorPoints.Count - 1; i++)//not the last points
                 {
                     if (j == 1 && i % 2 == 0) row++;
-                    if (row < vomStart || row > vomStart + 8)
+                    if (row < vomStart || row > vomStart + numVomRows)
                     {
 
                         faces.Add(Geometry.Create.Face(firstIndex + i, firstIndex + i + 1, nextFirstIndex + i + 1, nextFirstIndex + i));

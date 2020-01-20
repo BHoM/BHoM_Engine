@@ -42,9 +42,13 @@ namespace BH.Engine.Architecture.Theatron
                 
                 Vomitory = false,
 
-                VomitoryStartRow = 10,
+                StartRow = 10,
 
-                VomitoryWidth = 1.2 * scale,
+                Width = 1.2 * scale,
+
+                Frequency = 2,
+
+                NumberOfRows = 5
 
             };
         }
@@ -53,7 +57,7 @@ namespace BH.Engine.Architecture.Theatron
         [Input("vomitoryStartRow", "What row does the vomitory start? (If there is a super riser the vomitory will start at the same row as the super riser)")]
         [Input("vomitoryWidth", "Width of aisle at vomitory")]
         
-        public static VomitoryParameters VomitoryParameters(bool vomitory = false, int vomitoryStartRow = 10, double vomitoryWidth = 1.2)
+        public static VomitoryParameters VomitoryParameters(bool vomitory = false, int vomitoryStartRow = 10, double vomitoryWidth = 1.2, int numberOfRows = 5, int frequency = 2)
         {
             return new VomitoryParameters
             {
@@ -61,9 +65,13 @@ namespace BH.Engine.Architecture.Theatron
 
                 Vomitory = vomitory,
 
-                VomitoryStartRow = vomitoryStartRow,
+                StartRow = vomitoryStartRow,
 
-                VomitoryWidth = vomitoryWidth,
+                Width = vomitoryWidth,
+
+                NumberOfRows = numberOfRows,
+
+                Frequency = frequency
 
             };
         }
