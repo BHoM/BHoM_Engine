@@ -40,10 +40,10 @@ namespace BH.Engine.Architecture.Theatron
         [Input("profile", "The TheatronFullProfile used in defining the plan")]
         [Input("sParams", "The StadiaParameters")]
         [Input("pParams", "List of the ProfileParameters")]
-        public static TheatronGeometry TheatronGeometry(TheatronPlan planFull, TheatronFullProfile profile,StadiaParameters sParams, List<ProfileParameters> pParams)
+        public static TheatronGeometry TheatronGeometry(TheatronPlan planFull, TheatronFullProfile profile, StadiaParameters sParams, List<ProfileParameters> pParams)
         {
-            var theatron = CreateGeometry(planFull, profile, pParams,sParams.TypeOfBowl);
-            CopyGeneratorBlocks(ref theatron, planFull, sParams.TypeOfBowl);
+            var theatron = CreateGeometry(planFull, profile, pParams, sParams.TypeOfBowl);
+            CopyGeneratorBlocks(ref theatron, planFull, sParams.TypeOfBowl, pParams);
 
             return theatron;
         }
@@ -56,10 +56,10 @@ namespace BH.Engine.Architecture.Theatron
         public static TheatronGeometry TheatronGeometry(List<ProfileOrigin> structuralOrigins, TheatronFullProfile profile, List<ProfileParameters> pParams)
         {
             var plan = PlanGeometry(structuralOrigins, null);
-            var theatron = CreateGeometry(plan, profile, pParams,StadiaType.Undefined);
-            
-            theatron.Tiers3d.ForEach(t => t.Generatorblocks.ForEach(g => { t.TierBlocks.Add(g); theatron.Audience.Add(g.Audience); }));
-            
+            var theatron = CreateGeometry(plan, profile, pParams, StadiaType.Undefined);
+            CopyGeneratorBlocks(ref theatron, plan, StadiaType.Undefined, pParams);
+            //theatron.Tiers3d.ForEach(t => t.Generatorblocks.ForEach(g => { t.TierBlocks.Add(g); theatron.Audience.Add(g.Audience); }));
+
             return theatron;
         }
 
@@ -84,43 +84,46 @@ namespace BH.Engine.Architecture.Theatron
             SetGeneratorblocks(ref theatron, profile, plan, stadiaType, pParams);
             SetFloorMeshes(ref theatron, pParams);
             SetGeneratorEyes(ref theatron);
-           
+
             return theatron;
         }
         /***************************************************/
-        private static void SetGeneratorblocks(ref TheatronGeometry theatronGeom, TheatronFullProfile fullprofile, TheatronPlan theatronPlan,StadiaType stadiatype, List<ProfileParameters> profileParameters)
+        private static void SetGeneratorblocks(ref TheatronGeometry theatronGeom, TheatronFullProfile fullprofile, TheatronPlan theatronPlan, StadiaType stadiatype, List<ProfileParameters> profileParameters)
         {
             //this defines the geometry of the seating blocks from which all others are created
-            
+
             TierProfile tierToMap;
             for (int i = 0; i < theatronGeom.TotalTiers; i++)
             {
                 tierToMap = fullprofile.BaseTierProfiles[i];
                 theatronGeom.Tiers3d.Add(new Tier());
                 var SectionBlock = GetBlockStartIndexes(theatronPlan, stadiatype);
+
+
                 foreach (var pair in SectionBlock)
                 {
                     int index = pair.Key;
                     SeatingBlockType blockType = pair.Value;
 
-                    var block = SeatingBlock(theatronPlan.SectionOrigins[index], theatronPlan.VomitoryOrigins[index],
-                        theatronPlan.SectionOrigins[index + 1], blockType, profileParameters[i].SeatWidth, profileParameters[i].VomitoryParameters.VomitoryWidth);
+                    SeatingBlock block = SeatingBlock(theatronPlan.SectionOrigins[index], theatronPlan.VomitoryOrigins[index],
+                        theatronPlan.SectionOrigins[index + 1], blockType, profileParameters[i].SeatWidth, profileParameters[i].VomitoryParameters.Width);
+
 
                     theatronGeom.Tiers3d[i].Generatorblocks.Add(block);
                     if (block.TypeOfSeatingBlock == SeatingBlockType.Transition1 || block.TypeOfSeatingBlock == SeatingBlockType.Transition2)
                     {
                         //cannot use vomitory location to define profile scaling 
-                        SetTransitionProfiles(ref block, tierToMap, fullprofile.FullProfileOrigin, theatronPlan.VomitoryOrigins[index-1], theatronPlan.VomitoryOrigins[index + 1]);
+                        SetTransitionProfiles(ref block, tierToMap, fullprofile.FullProfileOrigin, theatronPlan.VomitoryOrigins[index - 1], theatronPlan.VomitoryOrigins[index + 1]);
                     }
                     else
                     {
                         SetBlockProfiles(ref block, tierToMap, fullprofile.FullProfileOrigin);
                     }
-                    
+
                 }
                 if (stadiatype == StadiaType.EightArc || stadiatype == StadiaType.Orthogonal)
                 {
-                    SetOtherBlockTypes(ref theatronGeom,i, fullprofile);//only needed for radial and othogonal
+                    SetOtherBlockTypes(ref theatronGeom, i, fullprofile);//only needed for radial and othogonal
                 }
             }
 
@@ -147,7 +150,7 @@ namespace BH.Engine.Architecture.Theatron
             ////no Vomitory corner block
             var corner = theatronGeom.Tiers3d[tierNum].Generatorblocks.Find(x => x.TypeOfSeatingBlock == SeatingBlockType.Corner);
             var cornerNoVom = corner.DeepClone();
-            cornerNoVom.TypeOfSeatingBlock = SeatingBlockType.CornerNoVom;
+            cornerNoVom.TypeOfSeatingBlock = SeatingBlockType.CornerVom;
             theatronGeom.Tiers3d[tierNum].Generatorblocks.Add(cornerNoVom);
 
             //// transition 1 block
@@ -160,7 +163,7 @@ namespace BH.Engine.Architecture.Theatron
             var transMirror2 = Create.MirrorSeatingBlock(toMirror, SeatingBlockType.Transition2mirrored);
             theatronGeom.Tiers3d[tierNum].Generatorblocks.Add(transMirror2);
         }
-       
+
         /***************************************************/
 
         private static Dictionary<int, SeatingBlockType> GetBlockStartIndexes(TheatronPlan bp, StadiaType bowltype)
@@ -174,17 +177,14 @@ namespace BH.Engine.Architecture.Theatron
                 for (int j = 0; j < bp.SectionOrigins.Count; j++)
                 {
                     current = bp.StructBayType[j];
-                    if (j == bp.SectionOrigins.Count - 1)
-                    {
-                        next = bp.StructBayType[0];
-                    }
-                    else
-                    {
-                        next = bp.StructBayType[j + 1];
-                    }
+                    if (j == bp.SectionOrigins.Count - 1) next = bp.StructBayType[0];
+                    else next = bp.StructBayType[j + 1];
                     if (!dict.ContainsValue(SeatingBlockType.Side)) if (current == 0 && next == 0) dict.Add(j, SeatingBlockType.Side);//side standard
+                    if (!dict.ContainsValue(SeatingBlockType.SideVom)) if (current == 0 && next == 0) dict.Add(j, SeatingBlockType.SideVom);//side standard vom
                     if (!dict.ContainsValue(SeatingBlockType.End)) if (current == BayType.End && next == BayType.End) dict.Add(j, SeatingBlockType.End);//end standard
+                    if (!dict.ContainsValue(SeatingBlockType.EndVom)) if (current == BayType.End && next == BayType.End) dict.Add(j, SeatingBlockType.EndVom);//end standard
                     if (!dict.ContainsValue(SeatingBlockType.Corner)) if (current == BayType.Corner && next == BayType.Corner) dict.Add(j, SeatingBlockType.Corner);//corner standard
+                    if (!dict.ContainsValue(SeatingBlockType.CornerVom)) if (current == BayType.Corner && next == BayType.Corner) dict.Add(j, SeatingBlockType.CornerVom);//corner standard
                     if (!dict.ContainsValue(SeatingBlockType.Transition1)) if (current == 0 && next == BayType.Corner) dict.Add(j, SeatingBlockType.Transition1);//side to corner transition
                     if (!dict.ContainsValue(SeatingBlockType.Transition2)) if (current == BayType.Corner && next == BayType.End) dict.Add(j, SeatingBlockType.Transition2);//corner to end transition
 
@@ -212,14 +212,16 @@ namespace BH.Engine.Architecture.Theatron
             {
                 dict.Add(0, SeatingBlockType.Side);//side standard
             }
-            if(bowltype == StadiaType.Undefined)
+            if (bowltype == StadiaType.Undefined)
             {
-                for (int j = 0; j < bp.SectionOrigins.Count-1; j++)
-                {
-                    dict.Add(j, SeatingBlockType.Undefined);
-                }
+                //hackinmg here assuming all we need is one standard and one standard for vom
+
+
+                if (!dict.ContainsValue(SeatingBlockType.Standard)) dict.Add(0, SeatingBlockType.Standard);//side standard
+                if (!dict.ContainsValue(SeatingBlockType.StandardVom)) dict.Add(1, SeatingBlockType.StandardVom);//side standard vom
+
             }
-            var sortedDict = dict.OrderBy(x => x.Value).ToDictionary(pair => pair.Key, pair => pair.Value); 
+            var sortedDict = dict.OrderBy(x => x.Value).ToDictionary(pair => pair.Key, pair => pair.Value);
             return sortedDict;
         }
 
@@ -229,12 +231,12 @@ namespace BH.Engine.Architecture.Theatron
         {
             for (int i = 0; i < theatron.TotalTiers; i++)
             {
-                 
+
                 for (int j = 0; j < theatron.Tiers3d[i].Generatorblocks.Count; j++)
                 {
                     SeatingBlockType bt = theatron.Tiers3d[i].Generatorblocks[j].TypeOfSeatingBlock;
                     var block = theatron.Tiers3d[i].Generatorblocks[j];
-                    if(bt == SeatingBlockType.Side || bt == SeatingBlockType.Corner|| bt == SeatingBlockType.End || bt == SeatingBlockType.Undefined)
+                    if (bt == SeatingBlockType.Side || bt == SeatingBlockType.Corner || bt == SeatingBlockType.End || bt == SeatingBlockType.Undefined || bt == SeatingBlockType.StandardVom)
                     {
                         SetBlockFloor(ref block, parameters[i]);
                     }
@@ -242,16 +244,16 @@ namespace BH.Engine.Architecture.Theatron
                     {
                         SetBlockFloorBasic(ref block);
                     }
-                        
+
                 }
             }
-            
+
         }
 
         /***************************************************/
 
-        
-        private static void CopyGeneratorBlocks(ref TheatronGeometry theatron, TheatronPlan bp, StadiaType stadiatype)
+
+        private static void CopyGeneratorBlocks(ref TheatronGeometry theatron, TheatronPlan bp, StadiaType stadiatype, List<ProfileParameters> pParams)
         {
             for (int i = 0; i < theatron.TotalTiers; i++)
             {
@@ -269,13 +271,14 @@ namespace BH.Engine.Architecture.Theatron
                         next = bp.StructBayType[j + 1];
                     }
                     if (stadiatype == StadiaType.NoCorners && current != next) continue;//no corner bowl corner position
-                    SeatingBlockType bt = DetermineBlockToCopy(current, next, stadiatype, cornerCount);
+
+                    SeatingBlockType bt = DetermineBlockToCopy(current, next, stadiatype, cornerCount, pParams[i].VomitoryParameters.Frequency, j);
 
                     if (current == BayType.Corner) cornerCount++;
                     else cornerCount = -1;
 
                     SeatingBlock blockToCopy = theatron.Tiers3d[i].Generatorblocks.Find(b => b.TypeOfSeatingBlock == bt).DeepClone();
-                    double angle = Geometry.Query.Angle(blockToCopy.Start.Direction, bp.SectionOrigins[j].Direction,Plane.XY);
+                    double angle = Geometry.Query.Angle(blockToCopy.Start.Direction, bp.SectionOrigins[j].Direction, Plane.XY);
                     SeatingBlock copy = TransformSeatingBlock(blockToCopy, blockToCopy.Start.Origin, bp.SectionOrigins[j].Origin, angle);
                     theatron.Tiers3d[i].TierBlocks.Add(copy);
                     theatron.Audience.Add(copy.Audience);
@@ -284,17 +287,26 @@ namespace BH.Engine.Architecture.Theatron
         }
 
         /***************************************************/
-    
-        private static SeatingBlockType DetermineBlockToCopy(BayType current, BayType next, StadiaType bowlType, int cornerCount)
+
+        private static SeatingBlockType DetermineBlockToCopy(BayType current, BayType next, StadiaType bowlType, int cornerCount, int vomFrequency, int bayNum)
         {
             SeatingBlockType bt = SeatingBlockType.Side;
             if (bowlType == StadiaType.EightArc || bowlType == StadiaType.Orthogonal)
             {
-                if (current == 0 && next == 0) bt = SeatingBlockType.Side;//side standard
-                if (current == BayType.End && next == BayType.End) bt = SeatingBlockType.End;//end standard
-                if (current == BayType.Corner && next == BayType.Corner) bt = SeatingBlockType.CornerNoVom;//corner standard
-                                                                                    //corner vom or no vom should be determined by number of seats on last row 14 either side of vomitory max
-                if (current == BayType.Corner && cornerCount % 2 == 0) bt = SeatingBlockType.Corner;//corner vomitory standard
+                if (current == 0 && next == 0)
+                {
+                    bt = SeatingBlockType.Side;//side standard
+                }
+                if (current == BayType.End && next == BayType.End)
+                {
+                    bt = SeatingBlockType.End;//end standard
+                }
+                if (current == BayType.Corner && next == BayType.Corner)
+                {
+                    bt = SeatingBlockType.Corner;//corner standard
+                }
+                //corner vom or no vom should be determined by number of seats on last row 14 either side of vomitory max
+
                 if (current == 0 && next == BayType.Corner) bt = SeatingBlockType.Transition1;//side to corner transition
                 if (current == BayType.Corner && next == BayType.End) bt = SeatingBlockType.Transition2;//corner to end transition
                 if (current == BayType.End && next == BayType.Corner) bt = SeatingBlockType.Transition2mirrored;//end to corner transition
@@ -303,6 +315,11 @@ namespace BH.Engine.Architecture.Theatron
             if (bowlType == StadiaType.NoCorners)
             {
                 if (current == BayType.End) bt = SeatingBlockType.End;//end standard otherwise a side is returned
+            }
+            if (bowlType == StadiaType.Undefined)
+            {
+                bt = SeatingBlockType.Standard;
+                if ((bayNum + 1) % vomFrequency == 0) bt = SeatingBlockType.StandardVom;
             }
             //if bowlType is circular side is returned
             return bt;

@@ -219,12 +219,12 @@ namespace BH.Engine.Architecture.Theatron
 
         private static void SetBlockFloor(ref SeatingBlock block, ProfileParameters parameters)//include gaps for vomitories
         {
-
             bool vomitory = parameters.VomitoryParameters.Vomitory;
             bool superR = parameters.SuperRiserParameters.SuperRiser;
-            int vomStart = parameters.VomitoryParameters.VomitoryStartRow;
+            int vomStart = parameters.VomitoryParameters.StartRow;
+            int numVomRows = parameters.VomitoryParameters.NumberOfRows;
             int superStart = parameters.SuperRiserParameters.SuperRiserStartRow;
-            double aisleW = parameters.VomitoryParameters.VomitoryWidth;
+            double aisleW = parameters.VomitoryParameters.Width;
             if (!vomitory && !superR)
             {
                 SetBlockFloorBasic(ref block);
