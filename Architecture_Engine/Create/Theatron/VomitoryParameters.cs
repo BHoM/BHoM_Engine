@@ -56,7 +56,8 @@ namespace BH.Engine.Architecture.Theatron
         [Input("vomitory", "Is there a vomitory?")]
         [Input("vomitoryStartRow", "What row does the vomitory start? (If there is a super riser the vomitory will start at the same row as the super riser)")]
         [Input("vomitoryWidth", "Width of aisle at vomitory")]
-        
+        [Input("numberOfRows", "Number of rows for length of vomitory")]
+        [Input("frequency", "Frequency of vomitories (every n structural bays)")]
         public static VomitoryParameters VomitoryParameters(bool vomitory = false, int vomitoryStartRow = 10, double vomitoryWidth = 1.2, int numberOfRows = 5, int frequency = 2)
         {
             return new VomitoryParameters
