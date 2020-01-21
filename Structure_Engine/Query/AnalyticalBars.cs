@@ -118,8 +118,6 @@ namespace BH.Engine.Structure
 
         private static ISectionProperty ToSectionProperty(BHP.FramingProperties.ConstantFramingProperty property)
         {
-            ISectionProperty prop = null;
-
             BHP.Materials.Material material = property.Material;
 
             IMaterialFragment fragment;
