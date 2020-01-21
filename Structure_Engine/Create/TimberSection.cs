@@ -54,11 +54,11 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Creates a timber section from any shape profile")]
-        [Input("profile", "Profile containing the geometric information to be used to create the timber section")]
-        [Input("material", "Timber material to use on the section")]
-        [Input("name", "Name of the section. If no name is provided, the name from the profile will be used")]
-        [Output("timerSec", "The created timber section")]
+        [Description("Generates a timber section based on a Profile and a material. \n This is the main create method for timber sections, responsible for calculating section constants etc. and is being called from all other create methods for timber sections")]
+        [Input("profile", "The section profile the timber section. All section constants are derived based on the dimensions of this")]
+        [Input("material", "timber material to be used on the section.")]
+        [Input("name", "Name of the timber section. If null or empty the name of the profile will be used")]
+        [Output("section", "The created timber section")]
         public static TimberSection TimberSectionFromProfile(IProfile profile, Timber material = null, string name = "")
         {
             //Check name
