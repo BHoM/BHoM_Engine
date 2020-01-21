@@ -87,6 +87,7 @@
     <Compile Include="Create\GenericSection.cs" />
     <Compile Include="Create\IResultRequest.cs" />
     <Compile Include="Create\MaterialFragment.cs" />
+    <Compile Include="Create\SectionProperty.cs" />
     <Compile Include="Create\TimberSection.cs" />
     <Compile Include="Modify\SetMaterial.cs" />
     <Compile Include="Modify\SetStructuralFragment.cs" />
