@@ -20,6 +20,7 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.oM.Reflection.Attributes;
 using System;
 using System.Reflection;
 
@@ -46,6 +47,15 @@ namespace BH.Engine.Reflection
 
         public static bool IsExposed(this MethodBase method)
         {
+            NotExposedAttribute attribute = method.GetCustomAttribute<NotExposedAttribute>();
+            if (attribute != null)
+                return false;
+
+            if (method is ConstructorInfo)
+            {
+                return method.DeclaringType.IsExposed();
+            }
+
             return !method.IsNotImplemented() && !method.IsDeprecated();
         }
 
@@ -53,6 +63,10 @@ namespace BH.Engine.Reflection
 
         public static bool IsExposed(this Type type)
         {
+            NotExposedAttribute attribute = type.GetCustomAttribute<NotExposedAttribute>();
+            if (attribute != null)
+                return false;
+
             return !type.IsNotImplemented() && !type.IsDeprecated();
         }
 
