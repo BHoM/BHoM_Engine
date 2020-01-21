@@ -22,11 +22,13 @@
 
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using BH.oM.Structure.SectionProperties;
 using BH.oM.Geometry.ShapeProfiles;
 using BH.oM.Structure.SectionProperties.Reinforcement;
 using BH.oM.Geometry;
 using BH.oM.Reflection;
+using BH.oM.Reflection.Attributes;
 using BH.oM.Structure.MaterialFragments;
 using System.Linq;
 
@@ -67,6 +69,11 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Description("Generates a concrete section based on a Profile and a material. \n This is the main create method for concrete sections, responsible for calculating section constants etc. and is being called from all other create methods for concrete sections")]
+        [Input("profile", "The section profile the concrete section. All section constants are derived based on the dimensions of this")]
+        [Input("material", "concrete material to be used on the section. If null a default material will be extracted from the database")]
+        [Input("name", "Name of the concrete section. If null or empty the name of the profile will be used")]
+        [Output("section", "The created concrete section")]
         public static ConcreteSection ConcreteSectionFromProfile(IProfile profile, Concrete material = null, string name = "", List<Reinforcement> reinforcement = null)
         {
 
