@@ -61,39 +61,18 @@ namespace BH.Engine.Structure
         [Output("section", "The created timber section")]
         public static TimberSection TimberSectionFromProfile(IProfile profile, Timber material = null, string name = "")
         {
-            //Check name
-            if (string.IsNullOrWhiteSpace(name) && profile.Name != null)
-                name = profile.Name;
-
-            //Check profile and raise warnings
-            if (profile.Edges.Count == 0)
-            {
-                Engine.Reflection.Compute.RecordWarning("Profile with name " + profile.Name + " does not contain any edges. Section named " + name + " made with this profile will have 0 value sections constants");
-            }
-
-            Output<IProfile, Dictionary<string, object>> result = Compute.Integrate(profile, Tolerance.MicroDistance);
-
-            profile = result.Item1;
-            Dictionary<string, object> constants = result.Item2;
-
-            constants["J"] = profile.ITorsionalConstant();
-            constants["Iw"] = profile.IWarpingConstant();
+            //Run pre-process for section create. Calculates all section constants and checks name of profile
+            var preProcessValues = PreProcessSectionCreate(name, profile);
+            name = preProcessValues.Item1;
+            profile = preProcessValues.Item2;
+            Dictionary<string, object> constants = preProcessValues.Item3;
 
             TimberSection section = new TimberSection(profile,
                 (double)constants["Area"], (double)constants["Rgy"], (double)constants["Rgz"], (double)constants["J"], (double)constants["Iy"], (double)constants["Iz"], (double)constants["Iw"], (double)constants["Wely"],
                 (double)constants["Welz"], (double)constants["Wply"], (double)constants["Wplz"], (double)constants["CentreZ"], (double)constants["CentreY"], (double)constants["Vz"],
                 (double)constants["Vpz"], (double)constants["Vy"], (double)constants["Vpy"], (double)constants["Asy"], (double)constants["Asz"]);
 
-            if (material == null)
-            {
-                material = Query.Default(oM.Structure.MaterialFragments.MaterialType.Timber) as Timber;
-            }
-
-            section.Material = material;
-            section.Name = name;
-
-
-            return section;
+            return PostProcessSectionCreate(section, name, material, MaterialType.Timber);
 
         }
 
