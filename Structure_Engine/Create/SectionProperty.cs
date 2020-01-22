@@ -24,10 +24,12 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel;
+using BH.oM.Reflection;
 using BH.oM.Reflection.Attributes;
 using BH.oM.Structure.SectionProperties;
 using BH.oM.Geometry.ShapeProfiles;
 using BH.oM.Structure.MaterialFragments;
+using BH.oM.Geometry;
 
 namespace BH.Engine.Structure
 {
@@ -66,6 +68,52 @@ namespace BH.Engine.Structure
                     return GenericSectionFromProfile(profile, material, name);
             }
 
+        }
+
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+        [Description("Run standard pre-processing needed for all section creates. Checks name and grabs value from profile if nothing provided and calculates all section constants")]
+        private static Output<string, IProfile, Dictionary<string, object>> PreProcessSectionCreate(string name, IProfile profile)
+        {
+            //Check name, if nothing provided, try grabbing name from profile
+            if (string.IsNullOrWhiteSpace(name) && profile.Name != null)
+                name = profile.Name;
+
+            //Check profile and raise warnings
+            if (profile.Edges.Count == 0)
+            {
+                Engine.Reflection.Compute.RecordWarning("Profile with name " + profile.Name + " does not contain any edges. Section named " + name + " made with this profile will have 0 value sections constants");
+            }
+
+            Output<IProfile, Dictionary<string, object>> result = Compute.Integrate(profile, Tolerance.MicroDistance);
+
+            profile = result.Item1;
+            Dictionary<string, object> constants = result.Item2;
+
+            constants["J"] = profile.ITorsionalConstant();
+            constants["Iw"] = profile.IWarpingConstant();
+
+            return new Output<string, IProfile, Dictionary<string, object>> { Item1 = name, Item2 = profile, Item3 = constants };
+        }
+
+        /***************************************************/
+
+        [Description("PostProcess needed for all section creates. Null checks the material and sets to empty if nothing provided and tries to grab material from Library")]
+        private static T PostProcessSectionCreate<T>(T section, string name, IMaterialFragment material, MaterialType materialType) where T: ISectionProperty
+        {
+            name = name ?? "";
+            section.Name = name;
+
+            if (material == null)
+            {
+                material = Query.Default(materialType);
+            }
+
+            section.Material = material;
+
+            return section;
         }
 
         /***************************************************/

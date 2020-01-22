@@ -76,42 +76,22 @@ namespace BH.Engine.Structure
         [Output("section", "The created concrete section")]
         public static ConcreteSection ConcreteSectionFromProfile(IProfile profile, Concrete material = null, string name = "", List<Reinforcement> reinforcement = null)
         {
-
-            //Check name
-            if (string.IsNullOrWhiteSpace(name) && profile.Name != null)
-                name = profile.Name;
-
-            //Check profile and raise warnings
-            if (profile.Edges.Count == 0)
-            {
-                Engine.Reflection.Compute.RecordWarning("Profile with name " + profile.Name + " does not contain any edges. Section named " + name + " made with this profile will have 0 value sections constants");
-            }
-
-            Output<IProfile, Dictionary<string, object>> result = Compute.Integrate(profile, Tolerance.MicroDistance);
-
-            profile = result.Item1;
-            Dictionary<string, object> constants = result.Item2;
-
-            constants["J"] = profile.ITorsionalConstant();
-            constants["Iw"] = profile.IWarpingConstant();
+            //Run pre-process for section create. Calculates all section constants and checks name of profile
+            var preProcessValues = PreProcessSectionCreate(name, profile);
+            name = preProcessValues.Item1;
+            profile = preProcessValues.Item2;
+            Dictionary<string, object> constants = preProcessValues.Item3;
 
             ConcreteSection section = new ConcreteSection(profile,
                 (double)constants["Area"], (double)constants["Rgy"], (double)constants["Rgz"], (double)constants["J"], (double)constants["Iy"], (double)constants["Iz"], (double)constants["Iw"],
                 (double)constants["Wely"], (double)constants["Welz"], (double)constants["Wply"], (double)constants["Wplz"], (double)constants["CentreZ"], (double)constants["CentreY"], (double)constants["Vz"],
                 (double)constants["Vpz"], (double)constants["Vy"], (double)constants["Vpy"], (double)constants["Asy"], (double)constants["Asz"]);
 
-            if (material == null)
-            {
-                material = Query.Default(oM.Structure.MaterialFragments.MaterialType.Concrete) as Concrete;
-            }
-
-            section.Material = material;
-            section.Name = name;
-
+            //Set reinforcement if any provided
             if (reinforcement != null)
                 section.Reinforcement = reinforcement;
 
-            return section;
+            return PostProcessSectionCreate(section, name, material, MaterialType.Concrete);
         }
 
         /***************************************************/
