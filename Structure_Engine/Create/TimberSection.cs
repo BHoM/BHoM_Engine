@@ -40,13 +40,13 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates a rectangular timber section")]
-        [Input("height", "Height of the section in meters [m]")]
-        [Input("width", "Width of the section in meters [m]")]
-        [Input("cornerRadius", "Optional corner radius of the section in meters [m]")]
-        [Input("material", "Timber material to use on the section")]
-        [Input("name", "Name of the section")]
-        [Output("timerSec","The created rectangular timber section")]
+        [Description("Creates a rectangular solid timber section from input dimensions. Please note that all units are in S.I., that is meters [m]")]
+        [Input("height", "Height of the section [m]")]
+        [Input("width", "Width of the section [m]")]
+        [Input("cornerRadius", "Optional corner radius for the section [m]")]
+        [Input("material", "Timber material to be used on the section. If null a default material will be extracted from the database")]
+        [Input("name", "Name of the timber section.")]
+        [Output("section", "The created rectangular solid timber section")]
         public static TimberSection TimberRectangleSection(double height, double width, double cornerRadius = 0, Timber material = null, string name = "")
         {
             return TimberSectionFromProfile(Geometry.Create.RectangleProfile(height, width, cornerRadius), material, name);
