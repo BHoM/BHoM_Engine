@@ -181,7 +181,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Creates a steel freeform section based on edge curves. Please note that this type of section generally will have less support in adapters. If the type of section being created can be achieved by any other profile, aim use them that instead.")]
+        [Description("Creates a steel freeform section based on edge curves. Please note that this type of section generally will have less support in adapters. If the type of section being created can be achieved by any other profile, aim use them instead.")]
         [Input("edges", "Edges defining the section. Should consist of closed curve(s) in the global xy-plane")]
         [Input("material", "Steel material to be used on the section. If null a default material will be extracted from the database")]
         [Input("name", "Name of the steel section.")]
