@@ -41,68 +41,111 @@ namespace BH.Engine.Data
         [Input("objects", "List of objects to be filtered. All objects in the list should be of similar type")]
         [Input("propertyName", "The name of the property to filter the objects by")]
         [Input("value", "The value of the selected property to filter the objects by")]
-        [Input("ignoreStringCase", "Ignorse upper/lower case letters if the property filtered by is a text/string.")]
+        [Input("ignoreStringCase", "Ignore upper/lower case letters if the property filtered by is a text/string.")]
         [Input("exactStringMatch", "If true checks if the property filtered by contains the text value (filtering must be a string/text)")]
         public static List<T> FilterBy<T>(this List<T> objects, string propertyName = null, object value = null, bool ignoreStringCase = false, bool exactStringMatch = true)
         {
-            if (objects == null || objects.Count == 0) return new List<T>();
-            if (propertyName == null) return new List<T>();
-            if (value == null) return new List<T>();
+            if (objects == null || objects.Count == 0)
+            {
+                BH.Engine.Reflection.Compute.RecordWarning("No objects submitted to filter");
+                return new List<T>();
+            }
+
+            if (propertyName == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("propertyName cannot be null in order to filter the objects");
+                return new List<T>();
+            }
+
+            if (value == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("value cannot be null to filter the objects");
+                return new List<T>();
+            }
+
             object firstObject = objects.First(x => x != null);
             bool isNested = propertyName.Contains(".");
             bool isCustomData = false;
+
             System.Reflection.PropertyInfo prop = firstObject.GetType().GetProperty(propertyName);
             if (prop == null && firstObject is IBHoMObject)
-                if ((firstObject as IBHoMObject).CustomData.ContainsKey(propertyName)) isCustomData = true;
+            {
+                if ((firstObject as IBHoMObject).CustomData.ContainsKey(propertyName))
+                    isCustomData = true;
+            }
+
             System.Type type = PropertyType(firstObject, propertyName);
+
             int groupedObjects = objects.GroupBy(x => x.GetType()).Count();
             if (groupedObjects != 1)
             {
                 BHRE.Compute.RecordError("All objects in the list to be sorted should be of similiar type.");
                 return null;
             }
+
             if (type == typeof(System.String))
             {
                 string stringValue = value.ToString();
                 if (ignoreStringCase && exactStringMatch)
+                {
                     if (!isNested)
                         return objects.Where(x => string.Equals((string)prop.GetValue(x), stringValue, System.StringComparison.CurrentCultureIgnoreCase)).ToList();
                     else
                         return objects.Where(x => string.Equals((string)BHRE.Query.PropertyValue(x, propertyName), stringValue, System.StringComparison.CurrentCultureIgnoreCase)).ToList();
+                }
                 if (!exactStringMatch)
+                {
                     if (!isNested)
+                    {
                         if (ignoreStringCase)
                             return objects.Where(x => (prop.GetValue(x) as string).ToUpper().Contains(stringValue.ToUpper())).ToList();
                         else
                             return objects.Where(x => (prop.GetValue(x) as string).Contains(stringValue)).ToList();
+                    }
                     else
+                    {
                         if (ignoreStringCase)
-                        return objects.Where(x => (BHRE.Query.PropertyValue(x, propertyName) as string).ToUpper().Contains(stringValue.ToUpper())).ToList();
-                    else
-                        return objects.Where(x => (BHRE.Query.PropertyValue(x, propertyName) as string).Contains(stringValue)).ToList();
+                            return objects.Where(x => (BHRE.Query.PropertyValue(x, propertyName) as string).ToUpper().Contains(stringValue.ToUpper())).ToList();
+                        else
+                            return objects.Where(x => (BHRE.Query.PropertyValue(x, propertyName) as string).Contains(stringValue)).ToList();
+                    }
+                }
                 if (!isNested)
                     return objects.Where(x => prop.GetValue(x).Equals(stringValue)).ToList();
                 else
                     return objects.Where(x => BHRE.Query.PropertyValue(x, propertyName).Equals(stringValue)).ToList();
             }
+
             if (type == typeof(System.Double))
             {
                 double doubleValue = 0.0;
                 string searchValue = value.ToString();
-                int rounding = searchValue.Contains('.')? searchValue.Split('.').Last().Length : 0;
+                int rounding = searchValue.Contains('.') ? searchValue.Split('.').Last().Length : 0;
+
                 try
-                { double.TryParse(searchValue, out doubleValue); }
+                { 
+                    double.TryParse(searchValue, out doubleValue); 
+                }
                 catch
-                { BHRE.Compute.RecordError("Property value to search for cannot be converted to a number"); }
+                { 
+                    BHRE.Compute.RecordError("Property value to search for cannot be converted to a number");
+                }
+
                 if (!isNested && !isCustomData)
                     return objects.Where(x => System.Math.Round((double)prop.GetValue(x), rounding) == doubleValue).ToList();
                 else
                     return objects.Where(x => System.Math.Round((double)BHRE.Query.PropertyValue(x, propertyName), rounding) == doubleValue).ToList();
             }
+
             if (prop != null && !isNested)
-                return objects.Where(x => prop.GetValue(x) == value).ToList();
+            {
+                dynamic val = System.Convert.ChangeType(value, prop.PropertyType);
+                return objects.Where(x => (System.Convert.ChangeType(prop.GetValue(x), type) as dynamic) == val).ToList();
+            }
+
             return objects.Where(x => BHRE.Query.PropertyValue(x, propertyName) == value).ToList();
         }
+
         /***************************************************/
 
         /***************************************************/
@@ -130,7 +173,7 @@ namespace BH.Engine.Data
 
             if (prop != null) return prop.PropertyType;
 
-            else if (obj is IBHoMObject)
+            if (obj is IBHoMObject)
             {
                 IBHoMObject bhom = obj as IBHoMObject;
                 if (bhom.CustomData.ContainsKey(propName))
