@@ -57,11 +57,7 @@ namespace BH.Engine.Structure
                 (double)constants["Welz"], (double)constants["Wply"], (double)constants["Wplz"], (double)constants["CentreZ"], (double)constants["CentreY"], (double)constants["Vz"],
                 (double)constants["Vpz"], (double)constants["Vy"], (double)constants["Vpy"], (double)constants["Asy"], (double)constants["Asz"]);
 
-            section.Material = material;
-            section.Name = name;
-
-
-            return section;
+            return PostProcessSectionCreate(section, name, material, MaterialType.Undefined);
 
         }
 
