@@ -40,6 +40,13 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Creates a rectangular solid concrete section from input dimensions. Please note that all units are in S.I., that is meters [m]")]
+        [Input("height", "Height of the section [m]")]
+        [Input("width", "Width of the section [m]")]
+        [Input("material", "Concrete material to be used on the section. If null a default material will be extracted from the database")]
+        [Input("name", "Name of the concrete section.")]
+        [Input("reinforcement", "Optional list of reinforcement to be applied to the section")]
+        [Output("section", "The created rectangular concrete section")]
         public static ConcreteSection ConcreteRectangleSection(double height, double width, Concrete material = null, string name = "", List<Reinforcement> reinforcement = null)
         {
             return ConcreteSectionFromProfile(Geometry.Create.RectangleProfile(height, width, 0), material, name, reinforcement);
@@ -47,6 +54,15 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Description("Creates a rectangular solid concrete section from input dimensions. Please note that all units are in S.I., that is meters [m]")]
+        [Input("height", "Full height of the section [m]")]
+        [Input("webThickness", "Thickness of the web [m]")]
+        [Input("flangeWidth", "Width of the flange [m]")]
+        [Input("flangeThickness", "Thickness of the flange [m]")]
+        [Input("material", "Concrete material to be used on the section. If null a default material will be extracted from the database")]
+        [Input("name", "Name of the concrete section.")]
+        [Input("reinforcement", "Optional list of reinforcement to be applied to the section")]
+        [Output("section", "The created concrete T-section")]
         public static ConcreteSection ConcreteTSection(double height, double webThickness, double flangeWidth, double flangeThickness, Concrete material = null, string name = "", List<Reinforcement> reinforcement = null)
         {
             return ConcreteSectionFromProfile(Geometry.Create.TSectionProfile(height, flangeWidth, webThickness, flangeThickness, 0, 0), material, name, reinforcement);
@@ -55,6 +71,12 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Description("Creates a circular solid concrete section from input dimensions. Please note that all units are in S.I., that is meters [m]")]
+        [Input("diameter", "Diameter of the section [m]")]
+        [Input("material", "Concrete material to be used on the section. If null a default material will be extracted from the database")]
+        [Input("name", "Name of the concrete section.")]
+        [Input("reinforcement", "Optional list of reinforcement to be applied to the section")]
+        [Output("section", "The created circular concrete section")]
         public static ConcreteSection ConcreteCircularSection(double diameter, Concrete material = null, string name = "", List<Reinforcement> reinforcement = null)
         {
             return ConcreteSectionFromProfile(Geometry.Create.CircleProfile(diameter), material, name, reinforcement);
@@ -62,6 +84,11 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Description("Creates a concrete freeform section based on edge curves. Please note that this type of section generally will have less support in adapters. If the type of section being created can be achieved by any other profile, aim use them instead.")]
+        [Input("edges", "Edges defining the section. Should consist of closed curve(s) in the global xy-plane")]
+        [Input("material", "Concrete material to be used on the section. If null a default material will be extracted from the database")]
+        [Input("name", "Name of the concrete section.")]
+        [Output("section", "The created free form concrete section")]
         public static ConcreteSection ConcreteFreeFormSection(List<ICurve> edges, Concrete material = null, string name = "", List<Reinforcement> reinforcement = null)
         {
             return ConcreteSectionFromProfile(Geometry.Create.FreeFormProfile(edges), material, name, reinforcement);
