@@ -106,7 +106,7 @@ namespace BH.Engine.Structure
             name = name ?? "";
             section.Name = name;
 
-            if (material == null)
+            if (material == null && materialType != MaterialType.Undefined)
             {
                 material = Query.Default(materialType);
             }
