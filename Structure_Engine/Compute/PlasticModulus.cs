@@ -39,7 +39,7 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static double PlasticModulus(this Polyline pLine)
+        public static double PlasticModulus(this Polyline pLine, double trueArea)
         {
             // the Polyline should have the upper side along the x-axis and the rest of the lines should be defineble as a function of x apart for veritcal segments
             // The last LineSegment should be the upper one
@@ -49,6 +49,7 @@ namespace BH.Engine.Structure
             
             int index;
             double halfArea = area * 0.5;
+            double halfTrueArea = trueArea * 0.5;
 
             double neutralAxis = PlasticNeutralAxis(pLine, halfArea, out index);
 
@@ -71,7 +72,7 @@ namespace BH.Engine.Structure
             double lowerCenter = Engine.Geometry.Compute.IIntegrateRegion(lower, 1) / halfArea;
             double upperCenter = Engine.Geometry.Compute.IIntegrateRegion(upper, 1) / halfArea;
 
-            return halfArea * Math.Abs(upperCenter - neutralAxis) + halfArea * Math.Abs(lowerCenter - neutralAxis);
+            return halfTrueArea * Math.Abs(upperCenter - neutralAxis) + halfTrueArea * Math.Abs(lowerCenter - neutralAxis);
         }
 
         /***************************************************/
