@@ -149,6 +149,16 @@ namespace BH.Engine.Geometry
 
 
         /***************************************************/
+        /**** Public Methods - Surfaces                 ****/
+        /***************************************************/
+
+        public static Plane FitPlane(this PlanarSurface surface, double tolerance = Tolerance.Distance)
+        {
+            return IFitPlane(surface.ExternalBoundary, tolerance);
+        }
+
+
+        /***************************************************/
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 

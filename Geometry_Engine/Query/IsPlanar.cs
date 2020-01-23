@@ -107,7 +107,14 @@ namespace BH.Engine.Geometry
 
 
         /***************************************************/
-        /**** Public Methods - Surfaces                ****/
+        /**** Public Methods - Surfaces                 ****/
+        /***************************************************/
+
+        public static bool IsPlanar(this PlanarSurface surface, double tolerance = Tolerance.Distance)
+        {
+            return true;
+        }
+
         /***************************************************/
 
         public static bool IsPlanar(this Extrusion surface, double tolerance = Tolerance.Distance)
