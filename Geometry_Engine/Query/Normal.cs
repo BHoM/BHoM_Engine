@@ -258,6 +258,7 @@ namespace BH.Engine.Geometry
             return surface.ExternalBoundary.INormal();
         }
 
+
         /***************************************************/
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
