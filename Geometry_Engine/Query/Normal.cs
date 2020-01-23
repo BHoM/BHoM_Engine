@@ -247,7 +247,17 @@ namespace BH.Engine.Geometry
         {
             throw new NotImplementedException();
         }
-        
+
+
+        /***************************************************/
+        /**** Public Methods - Surfaces                 ****/
+        /***************************************************/
+
+        public static Vector Normal(this PlanarSurface surface)
+        {
+            return surface.ExternalBoundary.INormal();
+        }
+
         /***************************************************/
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
