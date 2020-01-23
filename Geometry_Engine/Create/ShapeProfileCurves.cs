@@ -195,11 +195,11 @@ namespace BH.Engine.Geometry
 
             if (weldSize > 0)
             {
-            welds.Add(new Line { Start = q1 - wx, End = q1 - wy });
-            welds.Add(new Line { Start = q2 + wx, End = q2 - wy });
-            welds.Add(new Line { Start = q3 + wx, End = q3 + wy });
-            welds.Add(new Line { Start = q4 - wx, End = q4 + wy });
-            box.AddRange(welds);
+                welds.Add(new Line { Start = q1 - wx, End = q1 - wy });
+                welds.Add(new Line { Start = q2 + wx, End = q2 - wy });
+                welds.Add(new Line { Start = q3 + wx, End = q3 + wy });
+                welds.Add(new Line { Start = q4 - wx, End = q4 + wy });
+                box.AddRange(welds);
             }
 
             List<ICurve> innerBox = new List<ICurve>();

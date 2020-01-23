@@ -63,6 +63,11 @@ namespace BH.Engine.Base
             else
                 clone.Tags = new HashSet<string>();
 
+            if (bhomObject.Fragments != null && bhomObject.Fragments.Count > 0)
+                clone.Fragments = new FragmentSet(bhomObject.Fragments);
+            else
+                clone.Fragments = new FragmentSet();
+
             if (newGuid)
                 clone.BHoM_Guid = Guid.NewGuid();
 

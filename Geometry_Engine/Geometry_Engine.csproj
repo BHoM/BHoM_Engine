@@ -114,6 +114,7 @@
     <Compile Include="Modify\CollapseToPolyline.cs" />
     <Compile Include="Modify\RemoveLeastSignificantVertices.cs" />
     <Compile Include="Modify\RemoveShortSegments.cs" />
+    <Compile Include="Modify\RoundPoint.cs" />
     <Compile Include="Modify\SetGeometry.cs" />
     <Compile Include="Modify\Simplify.cs" />
     <Compile Include="Modify\Extend.cs" />
@@ -158,6 +159,7 @@
     <Compile Include="Query\IsPolylinear.cs" />
     <Compile Include="Query\IsQuad.cs" />
     <Compile Include="Query\IsSelfIntersecting.cs" />
+    <Compile Include="Query\IsVertical.cs" />
     <Compile Include="Query\MeshIntersections.cs" />
     <Compile Include="Query\LineIntersections.cs" />
     <Compile Include="Query\Degree.cs" />
@@ -174,6 +176,7 @@
     <Compile Include="Query\Integration.cs" />
     <Compile Include="Query\InternalEdges.cs" />
     <Compile Include="Query\Length.cs" />
+    <Compile Include="Query\ElementNormal.cs" />
     <Compile Include="Query\Normal.cs" />
     <Compile Include="Compute\FitPlane.cs" />
     <Compile Include="Query\ParameterAtPoint.cs" />

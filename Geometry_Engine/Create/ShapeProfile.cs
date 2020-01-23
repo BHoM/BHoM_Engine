@@ -26,6 +26,7 @@ using System.Collections.ObjectModel;
 using BH.oM.Geometry.ShapeProfiles;
 using BH.oM.Geometry;
 using System;
+using BH.Engine.Reflection;
 using BH.oM.Reflection.Attributes;
 using BH.Engine.Geometry;
 using System.ComponentModel;
@@ -449,6 +450,48 @@ namespace BH.Engine.Geometry
 
             List<ICurve> curves = TubeProfileCurves(diameter / 2, thickness);
             return new TubeProfile(diameter, thickness, curves);
+        }
+
+        /***************************************************/
+
+        public static TaperedProfile TaperedProfile(List<decimal> positions, List<IProfile> profiles)
+        {
+            if (positions.Count != profiles.Count)
+            {
+                Engine.Reflection.Compute.RecordError("Number of positions and profiles provided are not equal");
+                return null;
+            }
+            else if (positions.Exists((decimal d) => { return d > 1; }) || positions.Exists((decimal d) => { return d < 0; }))
+            {
+                Engine.Reflection.Compute.RecordError("Positions must exist between 0 and 1 (inclusive)");
+                return null;
+            }
+            else if (!positions.Contains(0) || !positions.Contains(1))
+            {
+                Engine.Reflection.Compute.RecordError("Start and end profile must be provided");
+                return null;
+            }
+
+            SortedDictionary<decimal, IProfile> profileDict = new SortedDictionary<decimal, IProfile>();
+
+            for (int i = 0; i < positions.Count; i++)
+            {
+                profileDict[positions[i]] = profiles[i];
+            }
+
+            return new TaperedProfile(profileDict);
+        }
+
+        /***************************************************/
+
+        public static TaperedProfile TaperedProfile(IProfile startProfile, IProfile endProfile)
+        {
+            SortedDictionary<decimal, IProfile> profileDict = new SortedDictionary<decimal, IProfile>();
+
+            profileDict.Add(0, startProfile);
+            profileDict.Add(1, endProfile);
+
+            return new TaperedProfile(profileDict);
         }
 
         /***************************************************/

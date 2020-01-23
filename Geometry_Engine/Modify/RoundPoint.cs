@@ -1,6 +1,6 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -20,47 +20,32 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Geometry;
-using BH.oM.Structure.Elements;
-using BH.Engine.Geometry;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+using BH.oM.Geometry;
 using System.ComponentModel;
 using BH.oM.Reflection.Attributes;
 
-namespace BH.Engine.Structure
+namespace BH.Engine.Geometry
 {
-    public static partial class Query
+    public static partial class Modify
     {
-        /***************************************************/
-        /**** Public Methods                            ****/
-        /***************************************************/
-
-        [Description("Returns the bars local Z-axis")]
-        [Input("bar", "The Bar to evaluate the normal of")]
-        [Output("normal", "Vector representing the bars local Z-axis")]
-        public static Vector Normal(this Bar bar)
+        [Description("Modifies a BHoM Geometry Point to be rounded to the number of provided decimal places")]
+        [Input("point", "The BHoM Geometry Point to modify")]
+        [Input("decimalPlaces", "The number of decimal places to round to, default 6")]
+        [Output("point", "The modified BHoM Geometry Point")]
+        public static Point RoundPoint(this Point point, int decimalPlaces = 6)
         {
-            return bar.Centreline().ElementNormal(bar.OrientationAngle);
+            return new Point
+            {
+                X = Math.Round(point.X, decimalPlaces),
+                Y = Math.Round(point.Y, decimalPlaces),
+                Z = Math.Round(point.Z, decimalPlaces),
+            };
         }
-
-        /***************************************************/
-
-        public static Vector Normal(this Panel panel)
-        {
-            return panel.AllEdgeCurves().SelectMany(x => x.IControlPoints()).ToList().FitPlane().Normal;
-        }
-
-        /***************************************************/
-        /**** Public Methods - Interface methods        ****/
-        /***************************************************/
-
-        public static Vector INormal(this IAreaElement areaElement)
-        {
-            return Normal(areaElement as dynamic);
-        }
-
-        /***************************************************/
-
     }
 }

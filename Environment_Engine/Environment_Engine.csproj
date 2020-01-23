@@ -86,6 +86,7 @@
     <Compile Include="Create\SpaceTime.cs" />
     <Compile Include="Modify\CleanPanel.cs" />
     <Compile Include="Modify\FixNormal.cs" />
+    <Compile Include="Modify\OffsetOpenings.cs" />
     <Compile Include="Modify\Remove.cs" />
     <Compile Include="Modify\RemoveOpenings.cs" />
     <Compile Include="Modify\SetOpeningType.cs" />
