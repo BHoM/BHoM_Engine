@@ -63,7 +63,13 @@ namespace BH.Engine.Data
                 return new List<T>();
             }
 
-            object firstObject = objects.First(x => x != null);
+            object firstObject = objects.Where(x => x != null).FirstOrDefault();
+            if(firstObject == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("All objects in the list to filter are null, please try with valid objects");
+                return new List<T>();
+            }
+
             bool isNested = propertyName.Contains(".");
             bool isCustomData = false;
 
