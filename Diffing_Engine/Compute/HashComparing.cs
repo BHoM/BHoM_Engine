@@ -21,6 +21,7 @@
  */
 
 using BH.oM.Base;
+using BH.Engine;
 using BH.oM.Data.Collections;
 using BH.oM.Diffing;
 using System;
@@ -31,33 +32,25 @@ using System.Threading.Tasks;
 using System.Security.Cryptography;
 using System.Reflection;
 using BH.Engine.Serialiser;
-using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
+using BH.oM.Reflection.Attributes;
+using BH.oM.Reflection;
 
-namespace BH.Engine.Diffing
+namespace BH.Engine
 {
-    public static partial class Modify
+    public static partial class Compute
     {
-        ///***************************************************/
-        ///**** Public Methods                            ****/
-        ///***************************************************/
-
-        [Description("Computes and sets the HashFragment for a given IBHoMObject. " +
-            "If the object already has a HashFragment, it stores the existing hash aside from the current one.")]
-        public static void SetHashFragment(IEnumerable<IBHoMObject> objs, DiffConfig diffConfig = null)
+        [Description("Dispatch objects in two sets into the ones exclusive to one set, the other, or both.")]
+        [Input("set1", "A previous version of a list of IBHoMObjects")]
+        [Input("set2", "A new version of a list of IBHoMObjects")]
+        [Input("diffConfig", "Sets configs such as properties to be ignored in the comparison.")]
+        [Output("VennDiagram", "Venn diagram containing: objects existing exclusively in set1/set2 or their intersection.")]
+        public static VennDiagram<T> HashComparing<T>(IEnumerable<T> set1, IEnumerable<T> set2, DiffConfig diffConfig = null) where T : class, IBHoMObject
         {
-            // Set configurations if diffConfig is null
-            diffConfig = diffConfig == null ? new DiffConfig() : diffConfig;
+            Stream streamA = BH.Engine.Diffing.Create.Stream(set1, diffConfig, "");
+            Stream streamB = BH.Engine.Diffing.Create.Stream(set2, diffConfig, "");
 
-            // Calculate and set the object hashes
-            foreach (var obj in objs)
-            {
-                string hash = BH.Engine.Diffing.Compute.DiffingHash(obj, diffConfig);
-
-                HashFragment existingFragm = obj.GetHashFragment();
-
-                obj.Fragments.AddOrReplace(new HashFragment(hash, existingFragm?.Hash));
-            }
+            return Engine.Data.Create.VennDiagram(streamA.Objects.Cast<T>(), streamB.Objects.Cast<T>(), new HashFragmComparer<T>());
         }
     }
 }
