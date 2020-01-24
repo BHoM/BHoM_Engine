@@ -61,11 +61,8 @@ namespace BH.Engine.Library
 
         /***************************************************/
 
-        public static List<IBHoMObject> Match(string libraryName, string objectName, bool removeWhiteSpace = true, bool ignoreCase = true, bool partialMatch = true)
+        public static List<IBHoMObject> PartialMatch(string libraryName, string objectName, bool removeWhiteSpace = true, bool ignoreCase = true)
         {
-
-            if (partialMatch)
-            {
                 objectName = removeWhiteSpace ? objectName.Replace(" ", "") : objectName;
                 objectName = ignoreCase ? objectName.ToLower() : objectName;
 
@@ -78,22 +75,6 @@ namespace BH.Engine.Library
                 };
 
                 return Library(libraryName).Where(conditionalMatch).ToList();
-            }
-            else
-            {
-                objectName = removeWhiteSpace ? objectName.Replace(" ", "") : objectName;
-                objectName = ignoreCase ? objectName.ToLower() : objectName;
-
-                Func<IBHoMObject, bool> conditionalMatch = delegate (IBHoMObject x)
-                {
-                    string name = x.Name;
-                    name = removeWhiteSpace ? name.Replace(" ", "") : name;
-                    name = ignoreCase ? name.ToLower() : name;
-                    return name == objectName;
-                };
-
-                return Library(libraryName).Where(conditionalMatch).ToList();
-            }
         }
 
         /***************************************************/
