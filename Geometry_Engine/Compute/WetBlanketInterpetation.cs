@@ -40,6 +40,8 @@ namespace BH.Engine.Geometry
         [Output("C", "A single Polyline oriented counter clockwise with the same area as the sum of all the polylines")]
         public static Polyline WetBlanketInterpretation(List<Polyline> pLines, double tol = Tolerance.Distance)
         {
+            List<Polyline> clones = pLines.Select(x => x.Clone()).ToList();
+
             int digits = (int)Math.Floor(-Math.Log10(tol));
 
             List<double> xes = new List<double>();
