@@ -62,7 +62,7 @@ namespace BH.Engine.Structure
             Line splitLine = new Line() { Start = new Point() { X = neutralAxis }, End = new Point() { X = neutralAxis, Y = 1 } };
             List<ICurve> splitCurve = new List<ICurve>();
             foreach (ICurve curve in curves)
-                splitCurve.AddRange(curve.ISplitAtPoints(curve.ILineIntersections(splitLine, true)));
+                splitCurve.AddRange(curve.ISplitAtPoints(curve.ILineIntersections(splitLine, true, Tolerance.MicroDistance), Tolerance.Distance));
 
             double lowerCenter = 0;
             double upperCenter = 0;
