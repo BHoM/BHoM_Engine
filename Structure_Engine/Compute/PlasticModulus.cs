@@ -39,7 +39,7 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static double PlasticModulus(this Polyline pLine, double trueArea)
+        public static double PlasticModulus(this Polyline pLine, IEnumerable<ICurve> curves, double trueArea)
         {
             // the Polyline should have the upper side along the x-axis and the rest of the lines should be defineble as a function of x apart for veritcal segments
             // The last LineSegment should be the upper one
@@ -47,37 +47,55 @@ namespace BH.Engine.Structure
 
             double area = BH.Engine.Geometry.Compute.IIntegrateRegion(pLine, 0);   //Should be calculated here for consistency
             
-            int index;
             double halfArea = area * 0.5;
             double halfTrueArea = trueArea * 0.5;
 
-            double neutralAxis = PlasticNeutralAxis(pLine, halfArea, out index);
+            double neutralAxis = PlasticNeutralAxis(pLine, halfArea);
 
-            // Create the half regions to find their pivot point
-            if (index == -1)
+            if (double.IsNaN(neutralAxis))
             {
-                Engine.Reflection.Compute.RecordError("Index out of range, PlasticModulus set to 0");
+                Engine.Reflection.Compute.RecordError("NeutralAxis not found, PlasticModulus set to 0");
                 return 0;
             }
-            Polyline lower = new Polyline() { ControlPoints = pLine.ControlPoints.GetRange(0, index) };
-            // add capping points
-            lower.ControlPoints.Add(Engine.Geometry.Compute.PointAtX(pLine.ControlPoints[index - 1], pLine.ControlPoints[index], neutralAxis));
-            lower.ControlPoints.Add(new Point() { X = neutralAxis });
 
-            Polyline upper = new Polyline() { ControlPoints = pLine.ControlPoints.GetRange(index, pLine.ControlPoints.Count - index) };
-            // add capping points
-            upper.ControlPoints.Insert(0, Engine.Geometry.Compute.PointAtX(pLine.ControlPoints[index - 1], pLine.ControlPoints[index], neutralAxis));
-            upper.ControlPoints.Insert(0, new Point() { X = neutralAxis });
+            // Create the half regions to find their pivot point
+            Line splitLine = new Line() { Start = new Point() { X = neutralAxis }, End = new Point() { X = neutralAxis, Y = 1 } };
+            List<ICurve> splitCurve = new List<ICurve>();
+            foreach (ICurve curve in curves)
+                splitCurve.AddRange(curve.ISplitAtPoints(curve.ILineIntersections(splitLine, true)));
 
-            double lowerCenter = Engine.Geometry.Compute.IIntegrateRegion(lower, 1) / halfArea;
-            double upperCenter = Engine.Geometry.Compute.IIntegrateRegion(upper, 1) / halfArea;
+            double lowerCenter = 0;
+            double upperCenter = 0;
+            foreach (ICurve curve in splitCurve)
+            {
+                if (curve.IPointAtParameter(0.5).X < neutralAxis)
+                    lowerCenter += curve.Close().IIntegrateRegion(1);
+                else
+                    upperCenter += curve.Close().IIntegrateRegion(1);
+            }
+
+            lowerCenter /= halfTrueArea;
+            upperCenter /= halfTrueArea;
 
             return halfTrueArea * Math.Abs(upperCenter - neutralAxis) + halfTrueArea * Math.Abs(lowerCenter - neutralAxis);
         }
 
         /***************************************************/
 
-        private static double PlasticNeutralAxis(this Polyline pLine, double halfArea, out int index)
+        private static ICurve Close(this ICurve curve, double tol = Tolerance.Distance)
+        {
+            Point start = curve.IStartPoint();
+            Point end = curve.IEndPoint();
+
+            if (start.SquareDistance(end) > tol * tol)
+                return new PolyCurve() { Curves = new List<ICurve>() { curve, new Line() { Start = end, End = start } } };
+
+            return curve.IClone();
+        }
+
+        /***************************************************/
+
+        private static double PlasticNeutralAxis(this Polyline pLine, double halfArea)
         {
             double partialArea = 0;
 
@@ -95,8 +113,6 @@ namespace BH.Engine.Structure
                 }
                 else
                 {
-                    index = i + 1;
-
                     double x = first.X;
                     double z = second.X;
 
@@ -123,7 +139,7 @@ namespace BH.Engine.Structure
                     bool between1 = (x1 >= x - Tolerance.MicroDistance && x1 < z + Tolerance.MicroDistance);
                     bool between2 = (x2 >= x - Tolerance.MicroDistance && x2 < z + Tolerance.MicroDistance);
 
-                    if (between1 && between2)           //TODO test if its always x1 or x2 or whatever
+                    if (between1 && between2)           //TODO test if its always x1 or x2 or whatever (99% that it's x1)
                     {
                         Engine.Reflection.Compute.RecordWarning("two solutions: x1 = " + x1 + " x2 = " + x2);
                         return double.NaN;
@@ -139,7 +155,6 @@ namespace BH.Engine.Structure
                     }
                 }
             }
-            index = -1;
             return double.NaN;
         }
 
