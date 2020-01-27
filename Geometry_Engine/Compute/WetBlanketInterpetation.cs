@@ -44,26 +44,26 @@ namespace BH.Engine.Geometry
 
             int digits = (int)Math.Floor(-Math.Log10(tol));
 
-            List<double> xes = new List<double>();
-            foreach (Polyline pLine in pLines)
+            List<decimal> xes = new List<decimal>();
+            foreach (Polyline pLine in clones)
             {
                 foreach (Point pt in pLine.ControlPoints)
-                    pt.X = Math.Round(pt.X, digits);
+                    pt.X = System.Convert.ToDouble(Math.Round(System.Convert.ToDecimal(pt.X), digits));
 
-                xes.AddRange(pLine.ControlPoints.Select(x => x.X));
+                xes.AddRange(pLine.ControlPoints.Select(x => System.Convert.ToDecimal(x.X)));
             }
 
             // sort and cull point x-positions
-            List<double> xValues = (new HashSet<double>(xes)).ToList();
+            List<double> xValues = xes.Distinct().Select(x => System.Convert.ToDouble(x)).ToList();
             xValues.Sort();
 
             List<Tuple<Point, int, int>> list = new List<Tuple<Point, int, int>>();
             //the Point, which Polyline, which index on the polyline
 
             List<Polyline> polyLines = new List<Polyline>();
-            for (int k = 0; k < pLines.Count; k++)
+            for (int k = 0; k < clones.Count; k++)
             {
-                polyLines.Add(SplitPolylineAtXValues(pLines[k], ref list, xValues, k, tol * 0.5));
+                polyLines.Add(SplitPolylineAtXValues(clones[k], ref list, xValues, k, tol * 0.5));
             }
 
             // Orders it primarily by X and secundaryly by Y
