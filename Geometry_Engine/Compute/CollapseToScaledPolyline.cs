@@ -100,7 +100,10 @@ namespace BH.Engine.Geometry
 
         private static Polyline Divide(this Circle circle, double tolerance, double baseTolerance)
         {
-            return circle.CollapseToPolyline(Soften(circle.Radius, tolerance, baseTolerance), 200);
+            double factor = Math.Min(Math.PI * 0.25, Math.Max(Math.PI / 200, Soften(circle.Radius, tolerance, baseTolerance)));
+            int result = System.Convert.ToInt32(Math.Ceiling(Math.PI / factor));
+            result += result < 4 ? 4 : 0;
+            return circle.CollapseToPolyline(0, result - (result % 4));
         }
 
         /***************************************************/
