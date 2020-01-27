@@ -158,8 +158,8 @@ namespace BH.Engine.Structure
             results["Iy"] = momentOfInertiaY;
             results["Iz"] = momentOfInertiaZ;
 
-            results["Wply"] = pLineY.PlasticModulus(area);
-            results["Wplz"] = pLineZ.PlasticModulus(area);
+            results["Wply"] = pLineY.PlasticModulus(curvesY, area);
+            results["Wplz"] = pLineZ.PlasticModulus(curvesZ, area);
 
             results["Rgy"] = Math.Sqrt((double)results["Iy"] / area);
             results["Rgz"] = Math.Sqrt((double)results["Iz"] / area);
