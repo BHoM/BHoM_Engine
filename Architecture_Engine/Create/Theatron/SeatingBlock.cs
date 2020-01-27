@@ -299,8 +299,8 @@ namespace BH.Engine.Architecture.Theatron
 
         private static void TransformBlock(ref SeatingBlock transformedBlock, TransformMatrix xTrans)
         {
-            transformedBlock.Audience.Spectators.ForEach(p => p.Head.PairOfEyes.ReferenceLocation.Transform(xTrans));
-            transformedBlock.Audience.Spectators.ForEach(p => p.Head.PairOfEyes.ViewDirection.Transform(xTrans));
+            transformedBlock.Audience.Spectators.ForEach(p => p.Head.PairOfEyes.ReferenceLocation = p.Head.PairOfEyes.ReferenceLocation.Transform(xTrans));
+            transformedBlock.Audience.Spectators.ForEach(p => p.Head.PairOfEyes.ViewDirection = p.Head.PairOfEyes.ViewDirection.Transform(xTrans));
             transformedBlock.Floor = transformedBlock.Floor.Transform(xTrans);
             transformedBlock.FrontRow= transformedBlock.FrontRow.Transform(xTrans);
 
