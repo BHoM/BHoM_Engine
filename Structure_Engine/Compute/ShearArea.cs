@@ -48,7 +48,8 @@ namespace BH.Engine.Structure
             double sy = 0;
             double shearArea = 0;
 
-            List<Point> controllPoints = new List<Point>(pLine.ControlPoints);
+            Polyline clone = pLine.Clone();
+            List<Point> controllPoints = new List<Point>(clone.ControlPoints);
 
             // Calculate Sy for the linesegment (by IntSurfLine()) and add to Sy +=
             for (int i = 0; i < controllPoints.Count - 2; i++)
