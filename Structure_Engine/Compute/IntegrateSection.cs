@@ -109,7 +109,7 @@ namespace BH.Engine.Structure
             {
                 pLines.Add(curvesZ[i].CollapseToScaledPolyline(tolerance, 0.0025, Math.Max(totalHeight, totalWidth)));
             }
-            Polyline pLineZ = Engine.Geometry.Compute.WetBlanketInterpretation(pLines);
+            Polyline pLineZ = Engine.Geometry.Compute.WetBlanketInterpretation(pLines, Tolerance.MicroDistance);
 
             // Rotate
             List<PolyCurve> curvesY = new List<PolyCurve>();
@@ -118,7 +118,7 @@ namespace BH.Engine.Structure
                 curvesY.Add(curvesZ[i].Rotate(Point.Origin, Vector.ZAxis, -Math.PI / 2));
                 pLines[i] = pLines[i].Rotate(Point.Origin, Vector.ZAxis, -Math.PI / 2);
             }
-            Polyline pLineY = Engine.Geometry.Compute.WetBlanketInterpretation(pLines);
+            Polyline pLineY = Engine.Geometry.Compute.WetBlanketInterpretation(pLines, Tolerance.MicroDistance);
 
             double centreZ = 0;
             double centreY = 0;
