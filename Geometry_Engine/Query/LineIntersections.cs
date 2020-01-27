@@ -163,7 +163,7 @@ namespace BH.Engine.Geometry
             {
                 //Curves coplanar
                 Circle c = new Circle { Centre = center, Normal = arc.CoordinateSystem.Z, Radius = arc.Radius };
-                iPts = c.LineIntersections(l);
+                iPts = c.LineIntersections(l, l.Infinite, tolerance);
             }
 
             List<Point> output = new List<Point>();
@@ -252,7 +252,7 @@ namespace BH.Engine.Geometry
             List<Point> iPts = new List<Point>();
             foreach (ICurve c in curve.SubParts())
             {
-                iPts.AddRange(c.ILineIntersections(l));
+                iPts.AddRange(c.ILineIntersections(l, false, tolerance));
             }
 
             return iPts.CullDuplicates(tolerance);
