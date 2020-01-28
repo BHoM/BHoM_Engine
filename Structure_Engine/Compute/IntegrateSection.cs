@@ -120,17 +120,9 @@ namespace BH.Engine.Structure
             }
             Polyline pLineY = Engine.Geometry.Compute.WetBlanketInterpretation(pLines, Tolerance.MicroDistance);
 
-            double centreZ = 0;
-            double centreY = 0;
-
             // Centre Point
-            for (int i = 0; i < curvesZ.Count; i++)
-            {
-                centreY += curvesZ[i].IIntegrateRegion(1);
-                centreZ += curvesY[i].IIntegrateRegion(1);
-            }
-            centreZ /= area;
-            centreY /= area;
+            double centreZ = curvesY.Sum(x => x.IIntegrateRegion(1)) / area;
+            double centreY = curvesZ.Sum(x => x.IIntegrateRegion(1)) / area;
 
             // Moment of Inertia
             double momentOfInertiaZ = 0;
