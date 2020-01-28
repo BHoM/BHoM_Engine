@@ -76,16 +76,18 @@ namespace BH.Engine.Geometry
                     return -((a.X + b.X) * (a.X * a.X + b.X * b.X) * diffY) / 12;
                 /********************/
                 case -1:
-                    if (a.X < tol || b.X < tol)
-                    {
-                        Engine.Reflection.Compute.RecordError("powX = -1 is not defined left of the Y-axis");
-                        return 0;
-                    }
-                    diffX = (a.X - b.X);
-                    if (Math.Abs(diffX) < tol)
-                        return -Math.Log(a.X) * diffY;
+                    Engine.Reflection.Compute.RecordError("powX = -1 is not implemented");
+                    return 0;
+                    //if (a.X < tol || b.X < tol)
+                    //{
+                    //    Engine.Reflection.Compute.RecordError("powX = -1 is not defined left of the Y-axis");
+                    //    return 0;
+                    //}
+                    //diffX = (a.X - b.X);
+                    //if (Math.Abs(diffX) < tol)
+                    //    return -Math.Log(a.X) * diffY;
 
-                    return (-diffY * (diffX * Math.Log(b.X)) + a.X * Math.Log(a.X / b.X)) / diffX;
+                    //return (-diffY * (diffX * Math.Log(b.X)) + a.X * Math.Log(a.X / b.X)) / diffX;
                 /********************/
                 case -2:
                     if ((a.X < 0 ^ b.X < 0) || Math.Abs(a.X) < tol || Math.Abs(b.X) < tol)
