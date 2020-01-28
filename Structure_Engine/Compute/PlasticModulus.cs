@@ -30,6 +30,8 @@ using BH.oM.Geometry;
 using BH.Engine.Geometry;
 using System.ComponentModel;
 using BH.oM.Reflection.Attributes;
+using BH.oM.Geometry.CoordinateSystem;
+using BH.oM.Reflection;
 
 namespace BH.Engine.Structure
 {
@@ -59,10 +61,7 @@ namespace BH.Engine.Structure
             }
 
             // Create the half regions to find their pivot point
-            Line splitLine = new Line() { Start = new Point() { X = neutralAxis }, End = new Point() { X = neutralAxis, Y = 1 } };
-            List<ICurve> splitCurve = new List<ICurve>();
-            foreach (ICurve curve in curves)
-                splitCurve.AddRange(curve.ISplitAtPoints(curve.ILineIntersections(splitLine, true, Tolerance.MicroDistance), Tolerance.Distance));
+            List<ICurve> splitCurve = ISplitAtX(curves, neutralAxis).ToList();
 
             double lowerCenter = 0;
             double upperCenter = 0;
@@ -159,6 +158,308 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
+        /****     Private SplitAtX                       ***/
+        /***************************************************/
+
+        private static IEnumerable<ICurve> ISplitAtX(IEnumerable<ICurve> curves, double x, double tol = Tolerance.Distance)
+        {
+            // Assumes 2D
+            List<ICurve> results = new List<ICurve>();
+            foreach (ICurve curve in curves)
+            {
+                results.AddRange(SplitAtX(curve as dynamic, x, tol));
+            }
+            return results;
+        }
+
+        /***************************************************/
+
+        private static IEnumerable<ICurve> SplitAtX(PolyCurve polyCurve, double x, double tol = Tolerance.Distance)
+        {
+            // Assumes 2D
+            List<ICurve> results = new List<ICurve>();
+
+            List<ICurve> temp;
+            PolyCurve current = new PolyCurve();
+            for (int i = 0; i < polyCurve.Curves.Count; i++)
+            {
+                temp = SplitAtX(polyCurve.Curves[i] as dynamic, x, tol);
+                if (temp.Count > 1)
+                {
+                    current.Curves.Add(temp[0]);
+                    results.Add(current);
+                    if (temp.Count != 2)
+                        results.AddRange(temp.GetRange(1, temp.Count - 2));
+                    current = new PolyCurve();
+                    current.Curves.Add(temp.Last());
+                }
+                else
+                    current.Curves.AddRange(temp);
+
+            }
+            results.Add(current);
+            if (results.Count > 1 && polyCurve.IsClosed() && Math.Abs(polyCurve.StartPoint().X - x) > tol)
+            {
+                results.Add(new PolyCurve() { Curves = results.Last().ISubParts().Concat(results.First().ISubParts()).ToList() });
+                results.RemoveAt(results.Count - 2);
+                results.RemoveAt(0);
+            }
+            return results;
+        }
+
+        /***************************************************/
+
+        private static IEnumerable<ICurve> SplitAtX(Polyline polyline, double x, double tol = Tolerance.Distance)
+        {
+            // Assumes 2D
+            List<ICurve> results = new List<ICurve>();
+
+            int lastSplit = 0;
+            Point ptOn = null;
+            for (int i = 0; i < polyline.ControlPoints.Count - 1; i++)
+            {
+                Point one = polyline.ControlPoints[i];
+                Point two = polyline.ControlPoints[i + 1];
+
+                if (Math.Abs(two.X - x) < tol ) //On Point
+                {
+                    List<Point> control = new List<Point>(polyline.ControlPoints.GetRange(lastSplit, i + 2 - lastSplit));
+                    if (ptOn != null)
+                        control[0] = ptOn;
+                    results.Add(new Polyline() { ControlPoints = control });
+                    ptOn = null;
+                    lastSplit = i + 1;
+                }
+                else if (one.X < x - tol && two.X > x ||    // On Line
+                           one.X > x + tol && two.X < x)
+                {
+                    List<Point> control = new List<Point>(polyline.ControlPoints.GetRange(lastSplit, i + 1 - lastSplit));
+                    if (ptOn != null)
+                        control[0] = ptOn;
+                    
+                    ptOn = Geometry.Compute.PointAtX(one, two, x);
+                    control.Add(ptOn);
+                    results.Add(new Polyline() { ControlPoints = control });
+                    lastSplit = i;
+                }
+            }
+
+            if (ptOn != null || lastSplit != polyline.ControlPoints.Count - 2) // Finish Curve
+            {
+                List<Point> control = new List<Point>(polyline.ControlPoints.GetRange(lastSplit, polyline.ControlPoints.Count - lastSplit));
+                if (ptOn != null)
+                    control[0] = ptOn;
+                results.Add(new Polyline() { ControlPoints = control });
+
+                if (polyline.IsClosed(tol))     // Close curve
+                {
+                    (results[0] as Polyline).ControlPoints.RemoveAt(0);
+                    results.Add(new Polyline() { ControlPoints = results.Last().IControlPoints().Concat(results.First().IControlPoints()).ToList() });
+                    results.RemoveAt(results.Count - 2);
+                    results.RemoveAt(0);
+                }
+            }
+
+            return results;
+        }
+
+        /***************************************************/
+
+        private static IEnumerable<ICurve> SplitAtX(Arc arc, double x, double tol = Tolerance.Distance)
+        {
+            // Assumes 2D
+            List<ICurve> results = new List<ICurve>();
+            Output<double, double> boundsX = BoundsX(arc, x);
+
+            if (boundsX.Item2 > x &&
+                boundsX.Item1 < x)
+            {
+                Point centre = arc.CoordinateSystem.Origin;
+                results.AddRange(SplitAtX(new Circle() { Centre = centre, Radius = arc.Radius }, x, tol));
+                Point start = arc.StartPoint();
+                Point end = arc.EndPoint();
+                double startAngle = Vector.XAxis.SignedAngle(start - centre, Vector.ZAxis);
+                double endAngle = Vector.XAxis.SignedAngle(end - centre, Vector.ZAxis);
+                bool flip = false;
+
+                if ((start - centre).CrossProduct(arc.StartDir()).Z < 0)
+                {
+                    double temp = startAngle;
+                    startAngle = endAngle;
+                    endAngle = temp;
+                    Point tempPt = start;
+                    start = end;
+                    end = tempPt;
+
+                    flip = true;
+                }
+                double pi2 = Math.PI * 2;
+                if (start.X > x)
+                {
+                    Arc toSplit = (Arc)results[1];
+                    results.RemoveAt(1);
+                    if (end.X > x)
+                    {
+                        // Both to the right
+                        results.Insert(0, Geometry.Create.Arc(toSplit.CoordinateSystem, arc.Radius, startAngle, toSplit.EndAngle < startAngle ? toSplit.EndAngle + pi2 : toSplit.EndAngle));
+                        results.Add(Geometry.Create.Arc(toSplit.CoordinateSystem, arc.Radius, toSplit.StartAngle, endAngle < toSplit.StartAngle ? endAngle + pi2 : endAngle));
+                    } else
+                    {
+                        results.RemoveAt(0);
+                        // start right, end left
+                        results.Add(Geometry.Create.Arc(toSplit.CoordinateSystem, arc.Radius, startAngle, toSplit.EndAngle < startAngle ? toSplit.EndAngle + pi2 : toSplit.EndAngle));
+                        results.Add(Geometry.Create.Arc(toSplit.CoordinateSystem, arc.Radius, toSplit.EndAngle, endAngle < toSplit.EndAngle ? endAngle + pi2 : endAngle));
+                    }
+                } else
+                {
+                    Arc toSplit = (Arc)results[0];
+                    results.RemoveAt(0);
+                    if (end.X > x)
+                    {
+                        results.RemoveAt(0);
+                        // start left, end right 
+                        results.Add(Geometry.Create.Arc(toSplit.CoordinateSystem, arc.Radius, startAngle + pi2 < toSplit.EndAngle ? startAngle + pi2 : startAngle, toSplit.EndAngle));
+                        results.Add(Geometry.Create.Arc(toSplit.CoordinateSystem, arc.Radius, toSplit.EndAngle, endAngle < toSplit.EndAngle ? endAngle + pi2 : endAngle));
+                    }
+                    else
+                    {
+                        // both left
+                        results.Insert(0, Geometry.Create.Arc(toSplit.CoordinateSystem, arc.Radius, startAngle + pi2 < toSplit.EndAngle ? startAngle + pi2 : startAngle, toSplit.EndAngle));
+                        results.Add(Geometry.Create.Arc(toSplit.CoordinateSystem, arc.Radius, toSplit.StartAngle, endAngle < toSplit.StartAngle ? endAngle + pi2 : endAngle));
+                    }
+                }
+
+                // Flip test
+                if (flip)
+                    results = results.Select(y => y.IFlip()).Reverse().ToList();
+            }
+            else
+                results.Add(arc.Clone());
+
+                return results;
+        }
+
+        /***************************************************/
+
+        private static IEnumerable<ICurve> SplitAtX(Circle circle, double x, double tol = Tolerance.Distance)
+        {
+            // Assumes 2D
+            List<ICurve> results = new List<ICurve>();
+
+            if (circle.Centre.X + circle.Radius > x &&
+                circle.Centre.X - circle.Radius < x)
+            {
+                Cartesian mid = new Cartesian() { Origin = circle.Centre };
+                double startAngle = Math.Asin((circle.Centre.X - x) / circle.Radius) + Math.PI * 0.5;
+                double endAngle = -startAngle;
+                results.Add(Geometry.Create.Arc(mid, circle.Radius, startAngle, endAngle + 2 * Math.PI)); //Left
+                results.Add(Geometry.Create.Arc(mid, circle.Radius, endAngle, startAngle)); // Rigth
+
+                if (circle.Normal.Z < 0)
+                    results = results.Select(y => y.IFlip()).ToList();
+            }
+            else
+                results.Add(circle.Clone());
+
+            return results;
+        }
+
+        /***************************************************/
+
+        private static IEnumerable<ICurve> SplitAtX(Line line, double x, double tol = Tolerance.Distance)
+        {
+            // Assumes 2D
+            List<ICurve> results = new List<ICurve>();
+
+            if (line.Start.X < x && line.End.X > x ||
+                line.Start.X > x && line.End.X < x)
+            {
+                Point ptOn = Geometry.Compute.PointAtX(line.Start, line.End, x);
+                results.Add(new Line() { Start = line.Start, End = ptOn });
+                results.Add(new Line() { Start = ptOn, End = line.End });
+            }
+            else
+                results.Add(line.Clone());
+
+            return results;
+        }
+
+        /***************************************************/
+
+        private static Output<double, double> BoundsX(this Arc arc, double xValue)
+        {
+
+            if (!arc.IsValid())
+                throw new Exception("Invalid Arc");
+
+            Circle circle = new Circle { Centre = arc.CoordinateSystem.Origin, Normal = arc.CoordinateSystem.Z, Radius = arc.Radius };
+
+            if (circle.Centre.X + circle.Radius < xValue &&
+                circle.Centre.X - circle.Radius > xValue)
+            {
+                return new Output<double, double>() { Item1 = double.PositiveInfinity, Item2 = double.NegativeInfinity };
+            }
+
+                Point start = arc.StartPoint();
+            Point end = arc.EndPoint();
+
+            double xMax, xMin;
+
+            //Get m in and max values from start and end points
+            if (start.X > end.X)
+            {
+                xMax = start.X;
+                xMin = end.X;
+            }
+            else
+            {
+                xMax = end.X;
+                xMin = start.X;
+            }
+
+            //Circular arc parameterised to
+            //A(theta) = C+r*cos(theta)*xloc+r*sin(theta)*yloc
+            //where: C = centre point
+            //r - radius
+            //xloc - local x-axis unit vector
+            //yloc - local y-axis unit vector
+            //A - point on the circle
+
+            Vector x = start - circle.Centre;
+            Vector y = circle.Normal.CrossProduct(x);
+
+            Vector endV = end - circle.Centre;
+
+            double angle = x.SignedAngle(endV, circle.Normal);
+
+            angle = angle < 0 ? angle + Math.PI * 2 : angle;
+
+            double a1, b1;
+
+            a1 = x.X;
+            b1 = y.X;
+
+
+            //Finding potential extreme values for x, y and z. Solving for A' = 0
+
+            //Extreme x
+            double theta = Math.Abs(a1) > Tolerance.Angle ? Math.Atan(b1 / a1) : Math.PI / 2;
+            while (theta < angle)
+            {
+                if (theta > 0)
+                {
+                    double xTemp = circle.Centre.X + Math.Cos(theta) * a1 + Math.Sin(theta) * b1;
+                    xMax = Math.Max(xMax, xTemp);
+                    xMin = Math.Min(xMin, xTemp);
+                }
+                theta += Math.PI;
+            }
+
+            return new Output<double, double>() { Item1 = xMin, Item2 = xMax };
+        }
+
+        /***************************************************/
+
 
     }
 }
