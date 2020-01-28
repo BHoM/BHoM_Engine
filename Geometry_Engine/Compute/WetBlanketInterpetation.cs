@@ -91,8 +91,8 @@ namespace BH.Engine.Geometry
 
             for (int i = 0; i < list.Count; i++)
             {
-                // the last in a x "tier" should be ignored"
-                if (i == list.Count - 1 || Math.Abs(list[i + 1].Item1.X - list[i].Item1.X) > tolHalf)
+                // the last in a x "tier" should be ignored.
+                if (i == list.Count - 1 || Math.Abs(list[i + 1].Item1.X - list[i].Item1.X) > tolHalf)   // last in list and single || single in tier
                 {
                     result.ControlPoints.Add(new Point() { X = list[i].Item1.X });
                     continue;
@@ -102,7 +102,7 @@ namespace BH.Engine.Geometry
 
                 AreaLengthFromPoints(list[i].Item1, before, after, d, tolHalf, ref leftAreaLength, ref rightAreaLength);
 
-                if ((i + 2) == list.Count || Math.Abs(list[i + 2].Item1.X - list[i].Item1.X) > tolHalf)
+                if ((i + 2) == list.Count || Math.Abs(list[i + 2].Item1.X - list[i].Item1.X) > tolHalf) // Is i + 2 on an other X-tier
                 {
                     if (Math.Abs(leftAreaLength - rightAreaLength) < tol)
                     {
@@ -141,6 +141,8 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Modifies a Polyline to have verticies at every xValue, i.e. lineIntersections at every x in xValues. \n" + 
+                     "But also creates a separate list of every point which also stores its index on the Polyline and k")]
         private static Polyline SplitPolylineAtXValues(Polyline pLine, ref List<Tuple<Point, int, int>> list, List<double> xValues, int k, double tol)
         {
             Polyline polyline = new Polyline();
@@ -211,35 +213,35 @@ namespace BH.Engine.Geometry
                     "WetBlanketInterpretation issue, points ontop of eachother");
             }
             else
-            {
+            {           // All curves with positive area are oriented counter-clockwise, hence we can know which side of the curve is area
                 switch (cornerCase)
                 {
-                    case 20:
-                    case 23:
-                    case 30:
+                    case 20:    // incoming left,   outgoing rigth
+                    case 23:    // incoming left,   outgoing down
+                    case 30:    // incoming below,  outgoing rigth
                         leftAreaLength += d;
                         rightAreaLength += d;
                         break;
-                    case 21:
-                    case 1:
-                    case 31:
+                    case 21:    // incoming left,   outgoing up
+                    case 1:     // incoming rigth,  outgoing up
+                    case 31:    // incoming below,  outgoing up
                         leftAreaLength += d;
                         break;
-                    case 12:
-                    case 10:
-                    case 13:
+                    case 12:    // incoming top,    outgoing left
+                    case 10:    // incoming top,    outgoing rigth
+                    case 13:    // incoming top,    outgoing down
                         rightAreaLength += d;
                         break;
 
-                    case 22:
-                        if (before.Y > after.Y)
+                    case 22:    // incoming left,   outgoing left
+                        if (before.Y > after.Y) // Going down?
                         {
                             leftAreaLength += d;
                             rightAreaLength += d;
                         }
                         break;
-                    case 0:
-                        if (after.Y > before.Y)
+                    case 0:     // incoming rigth,  outgoing rigth
+                        if (after.Y > before.Y) // Going up?
                         {
                             leftAreaLength += d;
                             rightAreaLength += d;
