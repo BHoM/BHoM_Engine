@@ -41,18 +41,27 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static double PlasticModulus(this Polyline pLine, IEnumerable<ICurve> curves, double trueArea)
+        [Description("Calculates the PlasticModulus [Wpl] for a enclosed region")]
+        [Input("pLine", "Polyline, should have the upper side along the x-axis and the rest of the lines should be defineble as a function of x apart for veritcal segments \n" +
+                        "The last LineSegment should be the upper one, use WetBlanketInterpertation() to convert a collection of regions to compliant form")]
+        [Input("curves", "The true curves of the section where counter-clockwise curves are positive area and clockwise ones are negative")]
+        [Input("trueArea", "The true area of the region")]
+        [Output("plasticModulus", "The plasticModulus for the region")]
+        public static double PlasticModulus(this Polyline pLine, IEnumerable<ICurve> curves = null, double trueArea = double.NaN)
         {
-            // the Polyline should have the upper side along the x-axis and the rest of the lines should be defineble as a function of x apart for veritcal segments
-            // The last LineSegment should be the upper one
-            // use WetBlanketInterpertation()
-
             double area = BH.Engine.Geometry.Compute.IIntegrateRegion(pLine, 0);   //Should be calculated here for consistency
-            
-            double halfArea = area * 0.5;
+
+            if (curves == null)
+            {
+                curves = new List<ICurve>() { pLine };
+                if (double.IsNaN(trueArea))
+                    trueArea = area;
+            } else if (double.IsNaN(trueArea))
+                trueArea = curves.Sum(x => x.IIntegrateRegion(0));
+
             double halfTrueArea = trueArea * 0.5;
 
-            double neutralAxis = PlasticNeutralAxis(pLine, halfArea);
+            double neutralAxis = PlasticNeutralAxis(pLine, area * 0.5);
 
             if (double.IsNaN(neutralAxis))
             {
@@ -65,7 +74,7 @@ namespace BH.Engine.Structure
 
             double lowerCenter = 0;
             double upperCenter = 0;
-            foreach (ICurve curve in splitCurve)
+            foreach (ICurve curve in splitCurve)    // ISplitAtX maintains the curve direction, and hence holes remain holes and areas remain areas
             {
                 if (curve.IPointAtParameter(0.5).X < neutralAxis)
                     lowerCenter += curve.Close().IIntegrateRegion(1);
@@ -81,6 +90,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Description("Closes a curve with a line if open")]
         private static ICurve Close(this ICurve curve, double tol = Tolerance.Distance)
         {
             Point start = curve.IStartPoint();
