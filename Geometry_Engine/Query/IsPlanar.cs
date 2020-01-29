@@ -112,7 +112,18 @@ namespace BH.Engine.Geometry
 
         public static bool IsPlanar(this PlanarSurface surface, double tolerance = Tolerance.Distance)
         {
-            return true;
+            if (tolerance == Tolerance.Distance)
+                return true;
+            else
+            {
+                List<Point> controlPoints = surface.ExternalBoundary.IControlPoints();
+                foreach (ICurve outline in surface.InternalBoundaries)
+                {
+                    controlPoints.AddRange(outline.IControlPoints());
+                }
+
+                return controlPoints.IsCoplanar(tolerance);
+            }
         }
 
         /***************************************************/
