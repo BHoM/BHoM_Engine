@@ -176,12 +176,14 @@ namespace BH.Engine.Environment
                     minZ = Math.Min(minZ, panel.MinimumLevel());
             }
 
-            List<Panel> roofPanels = clones.Where(x => ((x.MaximumLevel() != minZ) && (Math.Round(x.Tilt()) >= 92 || Math.Round(x.Tilt()) <= 88)) && x.ConnectedSpaces.ToList().Count == 1).ToList();
+            List<Panel> roofPanels = clones.Where(x => ((x.MaximumLevel() != minZ) && (Math.Round(x.Tilt()) >= 92 || Math.Round(x.Tilt()) <= 88))).ToList(); //&& x.ConnectedSpaces.ToList().Count == 1).ToList();
 
             foreach (Panel panel in roofPanels)
             {
                 if (panel.ConnectedSpaces.Where(x => x != "-1").ToList().Count == 1)
                     panel.Type = PanelType.Roof;
+                else if (panel.ConnectedSpaces.Where(x => x != "-1").ToList().Count == 2)
+                    panel.Type = PanelType.Ceiling;
             }
 
             return roofPanels;
