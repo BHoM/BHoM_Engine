@@ -38,6 +38,9 @@ namespace BH.Engine.Reflection
 
         public static UnderlyingType UnderlyingType(this Type type)
         {
+            if (type == null)
+                return null;
+
             int depth = 0;
             while ((type.GetGenericArguments().Count() == 1 || type.GetElementType() != null) && typeof(IEnumerable).IsAssignableFrom(type))
             {
