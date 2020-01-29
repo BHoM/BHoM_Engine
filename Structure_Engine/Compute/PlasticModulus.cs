@@ -74,31 +74,51 @@ namespace BH.Engine.Structure
 
             double lowerCenter = 0;
             double upperCenter = 0;
+            double upperArea = 0;
+            double temp, d = 0;
             foreach (ICurve curve in splitCurve)    // ISplitAtX maintains the curve direction, and hence holes remain holes and areas remain areas
             {
                 if (curve.IPointAtParameter(0.5).X < neutralAxis)
-                    lowerCenter += curve.Close().IIntegrateRegion(1);
+                    lowerCenter += curve.Close(out temp).IIntegrateRegion(1);
                 else
-                    upperCenter += curve.Close().IIntegrateRegion(1);
+                {
+                    ICurve closed = curve.Close(out temp);
+                    upperArea += closed.IIntegrateRegion(0);
+                    upperCenter += closed.IIntegrateRegion(1);
+                    d += temp;
+                }
+            }
+
+            if (Math.Abs(1 - halfTrueArea / upperArea) > Tolerance.Distance)
+            {
+                double diff = (halfTrueArea - upperArea) / d;   // missing area divided by sectionthickness = width of the missing area
+                diff = halfTrueArea / diff > 100 ? diff : halfTrueArea / 100; // migth be unnecessary
+                double add = (d * 3 * (Math.Pow(neutralAxis + diff, 2) - Math.Pow(neutralAxis, 2)) / 6); //SpecialCase of IntegrateRegion(1)
+                upperCenter += add;
+                lowerCenter -= add;
             }
 
             lowerCenter /= halfTrueArea;
             upperCenter /= halfTrueArea;
 
-            return halfTrueArea * Math.Abs(upperCenter - neutralAxis) + halfTrueArea * Math.Abs(lowerCenter - neutralAxis);
+            return halfTrueArea * Math.Abs(upperCenter - lowerCenter);
         }
 
         /***************************************************/
 
         [Description("Closes a curve with a line if open")]
-        private static ICurve Close(this ICurve curve, double tol = Tolerance.Distance)
+        private static ICurve Close(this ICurve curve, out double d, double tol = Tolerance.Distance)
         {
             Point start = curve.IStartPoint();
             Point end = curve.IEndPoint();
 
             if (start.SquareDistance(end) > tol * tol)
+            {
+                d = end.Y - start.Y;    // This should be able to be negative
                 return new PolyCurve() { Curves = new List<ICurve>() { curve, new Line() { Start = end, End = start } } };
+            }
 
+            d = 0;
             return curve.IClone();
         }
 
