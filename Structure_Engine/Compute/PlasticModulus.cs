@@ -92,7 +92,9 @@ namespace BH.Engine.Structure
             if (Math.Abs(1 - halfTrueArea / upperArea) > Tolerance.Distance)
             {
                 double diff = (halfTrueArea - upperArea) / d;   // missing area divided by sectionthickness = width of the missing area
-                diff = halfTrueArea / diff > 100 ? diff : halfTrueArea / 100; // migth be unnecessary
+                double secondD = -SplitAtX(pLine, neutralAxis - diff).Select(x => x.IEndPoint().Y).Single(x => x < - Tolerance.Distance);
+                diff = (halfTrueArea - upperArea) * 2 / (d + secondD);
+                diff = Math.Abs(halfTrueArea / diff) > 100 ? diff : halfTrueArea / 100; // migth be unnecessary
                 double add = (d * 3 * (Math.Pow(neutralAxis + diff, 2) - Math.Pow(neutralAxis, 2)) / 6); //SpecialCase of IntegrateRegion(1)
                 upperCenter += add;
                 lowerCenter -= add;
