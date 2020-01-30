@@ -91,7 +91,7 @@ namespace BH.Engine.Serialiser
                 {
                     CustomData = new Dictionary<string, object>()
                     {
-                        {"Objects", objects}
+                        { "Objects", array.Select(b => b.IsBsonDocument ? Convert.FromBson(b.AsBsonDocument) : Convert.FromJson(b.ToString())).ToList() }
                     }
                 };
             }
