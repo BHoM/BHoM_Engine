@@ -95,12 +95,8 @@ namespace BH.Engine.Structure
                 double add = (3 * d * ( Math.Pow(neutralAxis - diff, 2) -  Math.Pow(neutralAxis, 2)) / 6); //SpecialCase of IntegrateRegion(1)
                 upperCenter -= add;
                 lowerCenter += add;
-            }
-
-            lowerCenter /= halfTrueArea;
-            upperCenter /= halfTrueArea;
-
-            return halfTrueArea * Math.Abs(upperCenter - lowerCenter);
+            }            
+            return Math.Abs(upperCenter - lowerCenter);
         }
 
         /***************************************************/
