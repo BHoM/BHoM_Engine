@@ -61,7 +61,7 @@ namespace BH.Engine.Geometry
             double diffX;
             double diffY = (a.Y - b.Y);
             /***************/
-            if (Math.Abs(diffY) < tol)
+            if (Math.Abs(diffY) < tol)  // The answer is zero
                 return 0;
             /***************/
             switch (powX)
@@ -173,7 +173,7 @@ namespace BH.Engine.Geometry
             double a = Vector.XAxis.Angle(start - centre, Plane.XY);
 
             double k = Math.Abs(arc.Angle());
-            if ((start - centre).Angle(end - centre, Plane.XY) - k > Tolerance.Angle)
+            if ((start - centre).CrossProduct(arc.StartDir()).Z < 0)
                 k *= -1;
 
             switch (powX)
