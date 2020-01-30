@@ -84,10 +84,14 @@
     <Compile Include="Compute\ShearArea.cs" />
     <Compile Include="Compute\Integrate.cs" />
     <Compile Include="Convert\ToFramingElement.cs" />
+    <Compile Include="Create\AluminiumSection.cs" />
     <Compile Include="Create\ConstantFramingProperty.cs" />
     <Compile Include="Create\FEMesh.cs" />
+    <Compile Include="Create\GenericSection.cs" />
     <Compile Include="Create\IResultRequest.cs" />
     <Compile Include="Create\MaterialFragment.cs" />
+    <Compile Include="Create\SectionProperty.cs" />
+    <Compile Include="Create\TimberSection.cs" />
     <Compile Include="Modify\SetMaterial.cs" />
     <Compile Include="Modify\SetStructuralFragment.cs" />
     <Compile Include="Query\CoordinateSystem.cs" />

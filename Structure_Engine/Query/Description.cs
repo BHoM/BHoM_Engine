@@ -153,6 +153,27 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        public static string Description(this TimberSection section)
+        {
+            return "Timber  " + section.SectionProfile.IDescription() + " - " + CheckGetMaterialName(section.Material);
+        }
+
+        /***************************************************/
+
+        public static string Description(this AluminiumSection section)
+        {
+            return "Aluminium " + section.SectionProfile.IDescription() + " - " + CheckGetMaterialName(section.Material);
+        }
+
+        /***************************************************/
+
+        public static string Description(this GenericSection section)
+        {
+            return "Generic " + section.SectionProfile.IDescription() + " - " + CheckGetMaterialName(section.Material);
+        }
+
+        /***************************************************/
+
         public static string Description(this CableSection section)
         {
             return "Cable " + section.NumberOfCables + " x dia " + section.CableDiameter + " - " + CheckGetMaterialName(section.Material);

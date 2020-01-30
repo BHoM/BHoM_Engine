@@ -118,51 +118,27 @@ namespace BH.Engine.Structure
 
         private static ISectionProperty ToSectionProperty(BHP.FramingProperties.ConstantFramingProperty property)
         {
-            ISectionProperty prop = null;
-
             BHP.Materials.Material material = property.Material;
 
             IMaterialFragment fragment;
 
             if (material == null)
             {
-                Reflection.Compute.RecordError("The FramingElement does not contain any material. An empty steel material has been used");
-                fragment = new Steel();
+                Reflection.Compute.RecordError("The FramingElement does not contain any material. An empty generic isotropic material has been used");
+                fragment = new GenericIsotropicMaterial();
             }
             else if (!material.IsValidStructural())
             {
                 string matName = material.Name ?? "";
-                Reflection.Compute.RecordWarning("The material with name " + matName + " is not a valid structural material as it does not contain exactly one structural material fragment. An empty steel material has been assumed");
-                fragment = new Steel { Name = matName };
+                Reflection.Compute.RecordWarning("The material with name " + matName + " is not a valid structural material as it does not contain exactly one structural material fragment. An empty generic isotropic material has been assumed");
+                fragment = new GenericIsotropicMaterial { Name = matName };
             }
             else
             {
                 fragment = material.StructuralMaterialFragment();
             }
 
-            switch (fragment.IMaterialType())
-            {
-                case oM.Structure.MaterialFragments.MaterialType.Steel:
-                    prop = Create.SteelSectionFromProfile(property.Profile, fragment as Steel, property.Name);
-                    break;
-                case oM.Structure.MaterialFragments.MaterialType.Concrete:
-                    prop = Create.ConcreteSectionFromProfile(property.Profile, fragment as Concrete, property.Name);
-                    break;
-                case oM.Structure.MaterialFragments.MaterialType.Aluminium:
-                case oM.Structure.MaterialFragments.MaterialType.Timber:
-                case oM.Structure.MaterialFragments.MaterialType.Rebar:
-                case oM.Structure.MaterialFragments.MaterialType.Tendon:
-                case oM.Structure.MaterialFragments.MaterialType.Glass:
-                case oM.Structure.MaterialFragments.MaterialType.Cable:
-                case oM.Structure.MaterialFragments.MaterialType.Undefined:
-                default:
-                    prop = Create.SteelSectionFromProfile(property.Profile, null, property.Name);
-                    prop.Material = fragment;
-                    Reflection.Compute.RecordWarning("The BHoM does not currently support sections of material type " + fragment.IMaterialType() + ". A steel section has been created with the material applied to it");
-                    break;
-            }
-
-            return prop;
+            return Create.SectionPropertyFromProfile(property.Profile, fragment, property.Name);
         }
 
         /***************************************************/

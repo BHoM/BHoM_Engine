@@ -63,6 +63,20 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
+
+        public static MaterialType MaterialType(this GenericIsotropicMaterial materialFragment)
+        {
+            return oM.Structure.MaterialFragments.MaterialType.Undefined;
+        }
+
+        /***************************************************/
+
+        public static MaterialType MaterialType(this GenericOrthotropicMaterial materialFragment)
+        {
+            return oM.Structure.MaterialFragments.MaterialType.Undefined;
+        }
+
+        /***************************************************/
         /**** Public Methods - Interface                ****/
         /***************************************************/
 
@@ -71,6 +85,14 @@ namespace BH.Engine.Structure
             return MaterialType(materialFragment as dynamic);
         }
 
+        /***************************************************/
+        /**** Private Methods - Fallback                ****/
+        /***************************************************/
+
+        private static MaterialType MaterialType(this IMaterialFragment materialFragment)
+        {
+            return oM.Structure.MaterialFragments.MaterialType.Undefined;
+        }
         /***************************************************/
     }
 }

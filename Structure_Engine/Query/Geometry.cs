@@ -89,11 +89,18 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Deprecated("3.1", "Replaced with method for base interface IGeometricalSection", typeof(Query), "Geometry(this IGeometricalSection section)")]
         public static IGeometry Geometry(this SteelSection section)
         {
             return new CompositeGeometry { Elements = section.SectionProfile.Edges.ToList<IGeometry>() };
         }
 
+        /***************************************************/
+
+        public static IGeometry Geometry(this IGeometricalSection section)
+        {
+            return new CompositeGeometry { Elements = section.SectionProfile.Edges.ToList<IGeometry>() };
+        }
 
         /***************************************************/
 
