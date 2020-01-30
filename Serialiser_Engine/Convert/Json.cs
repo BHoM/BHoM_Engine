@@ -80,13 +80,6 @@ namespace BH.Engine.Serialiser
 
                 BsonArray array = MongoDB.Bson.Serialization.BsonSerializer.Deserialize<BsonArray>(json);
 
-                List<object> objects = new List<object>();
-
-                for (int i=0; i<array.Count; i++)
-                {
-                    object obj = FromJson(array[i].ToString());
-                    objects.Add(obj);
-                }
                 return new BH.oM.Base.CustomObject()
                 {
                     CustomData = new Dictionary<string, object>()
