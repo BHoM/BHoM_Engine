@@ -170,10 +170,12 @@ namespace BH.Engine.Environment
 
             //Find the panel(s) that are at the highest point of the space...
             double minZ = 1e10;
+            double maxZ = -1e10;
             foreach (Panel panel in clones)
             {
                 if (panel.MinimumLevel() == panel.MaximumLevel())
                     minZ = Math.Min(minZ, panel.MinimumLevel());
+                    maxZ = Math.Max(maxZ, panel.MaximumLevel());
             }
 
             List<Panel> roofPanels = clones.Where(x => ((x.MaximumLevel() != minZ) && (Math.Round(x.Tilt()) >= 92 || Math.Round(x.Tilt()) <= 88))).ToList(); //&& x.ConnectedSpaces.ToList().Count == 1).ToList();
@@ -184,6 +186,12 @@ namespace BH.Engine.Environment
                     panel.Type = PanelType.Roof;
                 else if (panel.ConnectedSpaces.Where(x => x != "-1").ToList().Count == 2)
                     panel.Type = PanelType.Ceiling;
+            }
+
+            foreach (Panel panel in roofPanels)
+            {
+                if (panel.Type == PanelType.Ceiling && panel.MaximumLevel() != maxZ)
+                    panel.Type = PanelType.FloorInternal;
             }
 
             return roofPanels;
