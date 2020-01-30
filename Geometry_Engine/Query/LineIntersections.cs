@@ -145,6 +145,7 @@ namespace BH.Engine.Geometry
             Line l = line.Clone();
             l.Infinite = useInfiniteLine ? true : l.Infinite;
 
+            double sqtol = tolerance * tolerance;
             List<Point> iPts = new List<Point>();
             Point midPoint = arc.PointAtParameter(0.5);
 
@@ -156,7 +157,7 @@ namespace BH.Engine.Geometry
             {
                 //Curves not coplanar
                 Point pt = l.PlaneIntersection((Plane)arc.CoordinateSystem);
-                if (pt != null && Math.Abs(pt.SquareDistance(center) - sqrRadius) <= tolerance)
+                if (pt != null && Math.Abs(pt.SquareDistance(center) - sqrRadius) <= sqtol)
                     iPts.Add(pt);
             }
             else
@@ -171,7 +172,7 @@ namespace BH.Engine.Geometry
             {
                 foreach (Point pt in iPts)
                 {
-                    if ((l.Infinite || pt.Distance(l) <= tolerance) && midPoint.SquareDistance(pt) <= sqrd)
+                    if ((l.Infinite || pt.Distance(l) <= tolerance) && midPoint.SquareDistance(pt) <= sqrd + sqtol)
                         output.Add(pt);
                 }
             }
@@ -186,23 +187,24 @@ namespace BH.Engine.Geometry
             Line l = line.Clone();
             l.Infinite = useInfiniteLine ? true : l.Infinite;
 
+            double sqtol = tolerance * tolerance;
             List<Point> iPts = new List<Point>();
 
             Plane p = new Plane { Origin = circle.Centre, Normal = circle.Normal };
             if (Math.Abs(circle.Normal.DotProduct(l.Direction())) > Tolerance.Angle)
-            {
+            {   // Not Coplanar
                 Point pt = l.PlaneIntersection(p);
-                if (pt!=null && Math.Abs(pt.SquareDistance(circle.Centre) - circle.Radius * circle.Radius) <= tolerance)
+                if (pt!=null && Math.Abs(pt.SquareDistance(circle.Centre) - circle.Radius * circle.Radius) <= sqtol)    // On Curve
                     iPts.Add(pt);
             }
             else
-            {
+            {   // Coplanar
                 Point pt = l.ClosestPoint(circle.Centre, true);
                 double sqrDiff = circle.Radius * circle.Radius - pt.SquareDistance(circle.Centre);
 
-                if (Math.Abs(sqrDiff) <= tolerance)
+                if (Math.Abs(sqrDiff) <= sqtol) // On Curve
                     iPts.Add(pt);
-                else if (sqrDiff > 0)
+                else if (sqrDiff > 0)   // In Curve
                 {
                     double o = Math.Sqrt(sqrDiff);
                     Vector v = l.Direction() * o;
