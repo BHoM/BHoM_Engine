@@ -116,7 +116,7 @@ namespace BH.Engine.Structure
 
             double byay2 = Math.Pow(byay, 2);
 
-
+            // Formula derivation outlined in https://github.com/BHoM/documentation/wiki/Shear-Area-Derivation
             double A =
                     -(
                         20 * Math.Pow(axbx, 2) * 
