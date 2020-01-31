@@ -70,7 +70,7 @@ namespace BH.Engine.Structure
                 for (int i = 0; i < curvesZ.Count; i++)
                     for (int j = 0; j < curvesZ.Count; j++)
                         if (i != j)
-                            if (curvesZ[i].IsContaining(curvesZ[j]))
+                            if (curvesZ[i].IsContaining(new List<Point>() { curvesZ[j].IStartPoint() }))
                                 depth[j]++;
             }
             for (int i = 0; i < depth.Length; i++)
