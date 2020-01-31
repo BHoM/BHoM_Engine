@@ -72,19 +72,18 @@ namespace BH.Engine.Structure
             // Create the half regions to find their pivot point
             List<ICurve> splitCurve = ISplitAtX(curves, neutralAxis).ToList();
 
-            double lowerCenter = 0;
-            double upperCenter = 0;
+            double plasticModulus = 0;
             double upperArea = 0;
             double temp, d = 0;
             foreach (ICurve curve in splitCurve)    // ISplitAtX maintains the curve direction, and hence holes remain holes and areas remain areas
             {
                 if (curve.IPointAtParameter(0.5).X < neutralAxis)
-                    lowerCenter += curve.Close(out temp).IIntegrateRegion(1);
+                    plasticModulus -= curve.Close(out temp).IIntegrateRegion(1);
                 else
                 {
                     ICurve closed = curve.Close(out temp);
                     upperArea += closed.IIntegrateRegion(0);
-                    upperCenter += closed.IIntegrateRegion(1);
+                    plasticModulus += closed.IIntegrateRegion(1);
                     d += temp;
                 }
             }
@@ -93,10 +92,9 @@ namespace BH.Engine.Structure
             {
                 double diff = (halfTrueArea - upperArea) / d;   // missing area divided by sectionthickness = width of the missing area
                 double add = (3 * d * ( Math.Pow(neutralAxis - diff, 2) -  Math.Pow(neutralAxis, 2)) / 6); //SpecialCase of IntegrateRegion(1)
-                upperCenter -= add;
-                lowerCenter += add;
+                plasticModulus -= 2 * add;
             }            
-            return Math.Abs(upperCenter - lowerCenter);
+            return Math.Abs(plasticModulus);
         }
 
         /***************************************************/
