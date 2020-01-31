@@ -202,6 +202,9 @@ namespace BH.Engine.Structure
             // Assumes 2D
             List<ICurve> results = new List<ICurve>();
 
+            if (polyCurve.Curves.Count == 1 && polyCurve.Curves[0] is Circle)
+                return SplitAtX(polyCurve.Curves[0] as Circle, x, tol);
+
             List<ICurve> temp;
             PolyCurve current = new PolyCurve();
             for (int i = 0; i < polyCurve.Curves.Count; i++)
