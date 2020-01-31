@@ -45,10 +45,15 @@ namespace BH.Engine.Environment
             aPanel.ExternalEdges = new List<Edge>(panel.ExternalEdges);
             aPanel.Openings = new List<Opening>(panel.Openings);
             aPanel.CustomData = new Dictionary<string, object>(panel.CustomData);
-            aPanel.Fragments = new FragmentSet(panel.Fragments);
             aPanel.ConnectedSpaces = new List<string>(panel.ConnectedSpaces);
             aPanel.Construction = panel.Construction;
             aPanel.Type = panel.Type;
+
+            if (panel.Fragments != null && panel.Fragments.Count > 0)
+                aPanel.Fragments = new FragmentSet(panel.Fragments);
+            else
+                aPanel.Fragments = new FragmentSet();
+
             return aPanel;
         }
     }
