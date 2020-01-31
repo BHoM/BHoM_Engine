@@ -63,10 +63,12 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        private static double ShearAreaLine(Point a, Point b, double s)
+        private static double ShearAreaLine(Point ptA, Point ptB, double s)
         {
             //TODO Should do some checks if these are good Tolerances
             double tol = Tolerance.Distance;
+            Point a = ptA.Clone();
+            Point b = ptB.Clone();
             
             double axbx = a.X - b.X;
             if (Math.Abs(axbx) < tol)  // The solution is zero
