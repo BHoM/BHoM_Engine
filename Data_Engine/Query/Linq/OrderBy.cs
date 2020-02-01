@@ -38,9 +38,23 @@ namespace BH.Engine.Data
         [Description("Orders a list of objects by a property of the object - e.g. input 'Name' to sort objects by their names. Note that not all object properties have sortable values")]
         [Input("objects", "List of objects to be sorted. All objects in the list should be of similar type")]
         [Input("propertyName", "The name of the property to sort the list of objects by. Note that the property must be able to be sorted - e.g. numbers/text")]
+        [Output("orderedObjects", "The collection of objects ordered by the given parameters")]
         public static List<T> OrderBy<T>(this List<T> objects, string propertyName)
         {
-            if (objects == null || objects.Count == 0) return new List<T>();
+            if (objects == null || objects.Count == 0)
+            {
+                BH.Engine.Reflection.Compute.RecordWarning("No objects submitted to order");
+                return new List<T>();
+            }
+
+            objects = objects.Where(x => x != null).ToList();
+
+            if(objects.Count == 0)
+            {
+                BH.Engine.Reflection.Compute.RecordError("All objects in the list to order are null, please try with valid objects");
+                return new List<T>();
+            }
+
             int groupedObjects = objects.GroupBy(x => x.GetType()).Count();
             if (groupedObjects != 1)
             {
