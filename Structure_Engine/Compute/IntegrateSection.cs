@@ -53,7 +53,7 @@ namespace BH.Engine.Structure
             {
                 if (!c.IsClosed())
                 {
-                    Engine.Reflection.Compute.RecordError(c.ToString() + "is not closed");
+                    Engine.Reflection.Compute.RecordError(c.ToString() + " is not closed");
                 }
             }
 
@@ -63,7 +63,6 @@ namespace BH.Engine.Structure
             //----- //how much testing is needed?
             // selfintersections, intersections, closed (...?)
 
-            //Engine.Geometry.Compute.DistributeOutlines(curvesZ); (?)
             if (curvesZ.Count > 1)
             {
                 // find which is in which
@@ -73,6 +72,7 @@ namespace BH.Engine.Structure
                             if (curvesZ[i].IsContaining(new List<Point>() { curvesZ[j].IStartPoint() }))
                                 depth[j]++;
             }
+            bool discontinius = depth.Where(x => x == 0).Count() > 1;
             for (int i = 0; i < depth.Length; i++)
             {
                 if (depth[i] % 2 == 0)
@@ -164,8 +164,17 @@ namespace BH.Engine.Structure
             results["Welz"] = (double)results["Iz"] / Math.Max((double)results["Vy"], (double)results["Vpy"]);
             results["Wely"] = (double)results["Iy"] / Math.Max((double)results["Vz"], (double)results["Vpz"]);
 
-            results["Asy"] = pLineZ.ShearAreaPolyline((double)results["Iz"]);
-            results["Asz"] = pLineY.ShearAreaPolyline((double)results["Iy"]);
+            if (discontinius)
+            {
+                Engine.Reflection.Compute.RecordWarning("Asy and Asz are not calculated for discontinius sections. They have ben set to 0");
+                results["Asy"] = 0;
+                results["Asz"] = 0;
+            }
+            else
+            {
+                results["Asy"] = pLineZ.ShearAreaPolyline((double)results["Iz"]);
+                results["Asz"] = pLineY.ShearAreaPolyline((double)results["Iy"]);
+            }
 
             // For testing
             results["pLineY"] = pLineY;
