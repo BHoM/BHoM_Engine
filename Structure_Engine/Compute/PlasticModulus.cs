@@ -90,10 +90,12 @@ namespace BH.Engine.Structure
 
             if (Math.Abs(1 - halfTrueArea / upperArea) > Tolerance.Distance)
             {
+                // Nudges the solution to be correct, will give exact result if the neutralAxis and the diff is somewhere with constant thickness, 
+                // otherwise very close to it.
                 double diff = (halfTrueArea - upperArea) / d;   // missing area divided by sectionthickness = width of the missing area
                 double add = (3 * d * ( Math.Pow(neutralAxis - diff, 2) -  Math.Pow(neutralAxis, 2)) / 6); //SpecialCase of IntegrateRegion(1)
                 plasticModulus -= 2 * add;
-            }            
+            }
             return Math.Abs(plasticModulus);
         }
 
