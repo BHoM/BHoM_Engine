@@ -297,10 +297,8 @@ namespace BH.Engine.Structure
         {
             // Assumes 2D
             List<ICurve> results = new List<ICurve>();
-            Output<double, double> boundsX = BoundsX(arc, x);
 
-            if (boundsX.Item2 > x &&
-                boundsX.Item1 < x)
+            if (IntersectsArc(arc, x))
             {
                 Point centre = arc.CoordinateSystem.Origin;
                 results.AddRange(SplitAtX(new Circle() { Centre = centre, Radius = arc.Radius }, x, tol));
@@ -414,7 +412,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        private static Output<double, double> BoundsX(this Arc arc, double xValue)
+        private static bool IntersectsArc(this Arc arc, double xValue)
         {
 
             if (!arc.IsValid())
@@ -425,10 +423,10 @@ namespace BH.Engine.Structure
             if (circle.Centre.X + circle.Radius < xValue &&
                 circle.Centre.X - circle.Radius > xValue)
             {
-                return new Output<double, double>() { Item1 = double.PositiveInfinity, Item2 = double.NegativeInfinity };
+                return false;
             }
 
-                Point start = arc.StartPoint();
+            Point start = arc.StartPoint();
             Point end = arc.EndPoint();
 
             double xMax, xMin;
@@ -483,7 +481,7 @@ namespace BH.Engine.Structure
                 theta += Math.PI;
             }
 
-            return new Output<double, double>() { Item1 = xMin, Item2 = xMax };
+            return (xMax > xValue && xMin < xValue);
         }
 
         /***************************************************/
