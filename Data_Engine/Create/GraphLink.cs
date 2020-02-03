@@ -21,6 +21,7 @@
  */
 
 using BH.oM.Data.Collections;
+using System.Collections.Generic;
 
 namespace BH.Engine.Data
 {
@@ -30,13 +31,14 @@ namespace BH.Engine.Data
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static GraphLink<T> GraphLink<T>(GraphNode<T> from, GraphNode<T> to, double weight = 1.0) 
+        public static GraphLink<T> GraphLink<T>(GraphNode<T> from, GraphNode<T> to, double weight = 1.0, Dictionary<string,object> attributes = null) 
         {
             return new GraphLink<T>
             {
                 StartNode = from,
                 EndNode = to,
-                Weight = weight
+                Weight = weight,
+                Attributes = attributes
             };
         }
 

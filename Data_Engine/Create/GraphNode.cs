@@ -21,6 +21,7 @@
  */
 
 using BH.oM.Data.Collections;
+using System.Collections.Generic;
 
 namespace BH.Engine.Data
 {
@@ -30,11 +31,12 @@ namespace BH.Engine.Data
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static GraphNode<T> GraphNode<T>(T value = default(T))
+        public static GraphNode<T> GraphNode<T>(T value = default(T), Dictionary<string,object> attributes = null)
         {
             return new GraphNode<T>
             {
-                Value = value
+                Value = value,
+                Attributes = attributes
             };
         }
 
