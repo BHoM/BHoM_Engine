@@ -12,17 +12,17 @@ $slnPath = "$ENV:BUILD_SOURCESDIRECTORY\$repo\$repo.sln"
 
 # **** Cloning Repo ****
 Write-Output ("BHoM Cloning " + $repo + " to " + $ENV:BUILD_SOURCESDIRECTORY + "\" + $repo)
+git clone -q --branch=master https://github.com/BHoM/$repo.git  $ENV:BUILD_SOURCESDIRECTORY\$repo
+$cwd = Get-Location
+Set-Location $ENV:BUILD_SOURCESDIRECTORY\$repo
 
 If((git rev-parse --verify --quiet ("origin/"+$ENV:SYSTEM_PULLREQUEST_SOURCEBRANCH)).length -gt 0)
 {
 	Write-Output("Changing branch in repo " + $repo + " to " + $ENV:SYSTEM_PULLREQUEST_SOURCEBRANCH)
 	git clone -q --branch=$ENV:SYSTEM_PULLREQUEST_SOURCEBRANCH https://github.com/BHoM/$repo.git  $ENV:BUILD_SOURCESDIRECTORY\$repo
 }
-Else
-{
-	git clone -q --branch=master https://github.com/BHoM/$repo.git  $ENV:BUILD_SOURCESDIRECTORY\$repo
-}
 
+Set-Location $cwd
 
 # **** Restore BHoM NuGet ****
 Write-Output ("Restoring NuGet packages for " + $repo)
