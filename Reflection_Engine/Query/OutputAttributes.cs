@@ -26,6 +26,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
+using BH.oM.Quantities.Attributes;
 
 namespace BH.Engine.Reflection
 {
@@ -47,7 +48,17 @@ namespace BH.Engine.Reflection
                 for (int i = 0; i < types.Length; i++)
                 {
                     if (outputDefs.ContainsKey(i))
-                        outputs.Add(new OutputAttribute(outputDefs[i].Name, outputDefs[i].Description));
+                    {
+                        string desc = outputDefs[i].Description;
+
+                        if (types[i] != null)
+                        {
+                            desc += Environment.NewLine;
+                            QuantityAttribute quantityAttribute = outputDefs[i].Quantity;
+                            desc += types[i].UnderlyingType().Type.Description(quantityAttribute);
+                        }
+                        outputs.Add(new OutputAttribute(outputDefs[i].Name, desc));
+                    }
                     else
                         outputs.Add(new OutputAttribute(types[i].UnderlyingType().Type.Name.Substring(0, 1), ""));
                 }
