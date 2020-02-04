@@ -12,7 +12,12 @@ $slnPath = "$ENV:BUILD_SOURCESDIRECTORY\$repo\$repo.sln"
 
 # **** Cloning Repo ****
 Write-Output ("BHoM Cloning " + $repo + " to " + $ENV:BUILD_SOURCESDIRECTORY + "\" + $repo)
-git clone -q --branch=master https://github.com/BHoM/$repo.git  $ENV:BUILD_SOURCESDIRECTORY\$repo
+
+If(!(test-path $ENV:BUILD_SOURCESDIRECTORY\$repo))
+{
+	git clone -q --branch=master https://github.com/BHoM/$repo.git  $ENV:BUILD_SOURCESDIRECTORY\$repo
+}
+
 $cwd = Get-Location
 Set-Location $ENV:BUILD_SOURCESDIRECTORY\$repo
 
