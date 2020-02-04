@@ -105,7 +105,7 @@ namespace BH.Engine.Reflection
             //If a quantity attribute is present, this is used to generate the default description
             if (quantityAttribute != null)
             {
-                desc += "This is a " + quantityAttribute.GetType().Name + " in [" + quantityAttribute.SIUnit + "]";
+                desc += "This is a " + quantityAttribute.GetType().Name + " [" + quantityAttribute.SIUnit + "]";
                 desc += " (as a " + type.ToText(type.Namespace.StartsWith("BH.")) + ")";
                 return desc;
             }
@@ -120,7 +120,7 @@ namespace BH.Engine.Reflection
 
             if (innerType.IsInterface)
             {
-                desc += ":";
+                desc += ": ";
                 List<Type> t = innerType.ImplementingTypes();
                 int m = Math.Min(15, t.Count);
 
