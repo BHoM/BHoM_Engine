@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -107,7 +107,25 @@ namespace BH.Engine.Geometry
 
 
         /***************************************************/
-        /**** Public Methods - Surfaces                ****/
+        /**** Public Methods - Surfaces                 ****/
+        /***************************************************/
+
+        public static bool IsPlanar(this PlanarSurface surface, double tolerance = Tolerance.Distance)
+        {
+            if (tolerance == Tolerance.Distance)
+                return true;
+            else
+            {
+                List<Point> controlPoints = surface.ExternalBoundary.IControlPoints();
+                foreach (ICurve outline in surface.InternalBoundaries)
+                {
+                    controlPoints.AddRange(outline.IControlPoints());
+                }
+
+                return controlPoints.IsCoplanar(tolerance);
+            }
+        }
+
         /***************************************************/
 
         public static bool IsPlanar(this Extrusion surface, double tolerance = Tolerance.Distance)
@@ -190,3 +208,4 @@ namespace BH.Engine.Geometry
         /***************************************************/
     }
 }
+

@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -38,6 +38,9 @@ namespace BH.Engine.Reflection
 
         public static UnderlyingType UnderlyingType(this Type type)
         {
+            if (type == null)
+                return null;
+
             int depth = 0;
             while ((type.GetGenericArguments().Count() == 1 || type.GetElementType() != null) && typeof(IEnumerable).IsAssignableFrom(type))
             {
@@ -51,3 +54,4 @@ namespace BH.Engine.Reflection
         /***************************************************/
     }
 }
+

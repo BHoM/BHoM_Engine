@@ -1,6 +1,6 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -153,6 +153,27 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        public static string Description(this TimberSection section)
+        {
+            return "Timber  " + section.SectionProfile.IDescription() + " - " + CheckGetMaterialName(section.Material);
+        }
+
+        /***************************************************/
+
+        public static string Description(this AluminiumSection section)
+        {
+            return "Aluminium " + section.SectionProfile.IDescription() + " - " + CheckGetMaterialName(section.Material);
+        }
+
+        /***************************************************/
+
+        public static string Description(this GenericSection section)
+        {
+            return "Generic " + section.SectionProfile.IDescription() + " - " + CheckGetMaterialName(section.Material);
+        }
+
+        /***************************************************/
+
         public static string Description(this CableSection section)
         {
             return "Cable " + section.NumberOfCables + " x dia " + section.CableDiameter + " - " + CheckGetMaterialName(section.Material);
@@ -244,3 +265,4 @@ namespace BH.Engine.Structure
         /***************************************************/
     }
 }
+

@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -58,19 +58,24 @@ namespace BH.Engine.Reflection
         {
             // Get the list of properties corresponding to type P
             Dictionary<Type, List<PropertyInfo>> propertyDictionary = typeof(T).GetProperties().GroupBy(x => x.PropertyType).ToDictionary(x => x.Key, x => x.ToList());
-            List<PropertyInfo> propertiesSingle, propertiesList;
-            bool singleExist;
+            List<PropertyInfo> propertiesSingle, propertiesList, propertiesGroups;
+            bool singleExist, listExists;
             if (!(singleExist = propertyDictionary.TryGetValue(typeof(P), out propertiesSingle)))
             {
                 singleExist = false;
                 propertiesSingle = new List<PropertyInfo>();
             }
-            if (!propertyDictionary.TryGetValue(typeof(List<P>), out propertiesList))
+            if (!(listExists = propertyDictionary.TryGetValue(typeof(List<P>), out propertiesList)))
             {
-                if (!singleExist)
+                listExists = false;
+                propertiesList = new List<PropertyInfo>();
+            }
+            if (!propertyDictionary.TryGetValue(typeof(BH.oM.Base.BHoMGroup<P>), out propertiesGroups))
+            {
+                if (!singleExist && !listExists)
                     return new List<P>();
 
-                propertiesList = new List<PropertyInfo>();
+                propertiesGroups = new List<PropertyInfo>();
             }
 
             // Collect the property objects
@@ -86,7 +91,7 @@ namespace BH.Engine.Reflection
                 propertyObjects.AddRange(objects.Select(x => getProp(x)).Where(x => x!=null));
             }
 
-            //Get the distinct properties for the single value properties
+            //Get the distinct properties for the list value properties
             foreach (PropertyInfo property in propertiesList)
             {
                 // Optimisation using this article: https://blogs.msmvps.com/jonskeet/2008/08/09/making-reflection-fly-and-exploring-delegates/
@@ -94,6 +99,16 @@ namespace BH.Engine.Reflection
 
                 // Collect the objects from this property
                 propertyObjects.AddRange(objects.SelectMany(x => getProp(x)));
+            }
+
+            //Get the distinct properties for the group value properties
+            foreach (PropertyInfo property in propertiesGroups)
+            {
+                // Optimisation using this article: https://blogs.msmvps.com/jonskeet/2008/08/09/making-reflection-fly-and-exploring-delegates/
+                Func<T, BH.oM.Base.BHoMGroup<P>> getProp = (Func<T, BHoMGroup<P>>)Delegate.CreateDelegate(typeof(Func<T, BHoMGroup<P>>), property.GetGetMethod());
+
+                // Collect the objects from this property
+                propertyObjects.AddRange(objects.SelectMany(x => getProp(x).Elements));
             }
 
             //Return the disticnt property objects
@@ -104,3 +119,4 @@ namespace BH.Engine.Reflection
         /***************************************************/
     }
 }
+

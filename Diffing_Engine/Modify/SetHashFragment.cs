@@ -1,6 +1,6 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -42,7 +42,8 @@ namespace BH.Engine.Diffing
         ///**** Public Methods                            ****/
         ///***************************************************/
 
-        [Description("Computes and sets the HashFragment for a given IBHoMObject.")]
+        [Description("Computes and sets the HashFragment for a given IBHoMObject. " +
+            "If the object already has a HashFragment, it stores the existing hash aside from the current one.")]
         public static void SetHashFragment(IEnumerable<IBHoMObject> objs, DiffConfig diffConfig = null)
         {
             // Set configurations if diffConfig is null
@@ -60,3 +61,4 @@ namespace BH.Engine.Diffing
         }
     }
 }
+

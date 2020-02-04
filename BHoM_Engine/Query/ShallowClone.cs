@@ -1,6 +1,6 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -63,6 +63,11 @@ namespace BH.Engine.Base
             else
                 clone.Tags = new HashSet<string>();
 
+            if (bhomObject.Fragments != null && bhomObject.Fragments.Count > 0)
+                clone.Fragments = new FragmentSet(bhomObject.Fragments);
+            else
+                clone.Fragments = new FragmentSet();
+
             if (newGuid)
                 clone.BHoM_Guid = Guid.NewGuid();
 
@@ -79,3 +84,4 @@ namespace BH.Engine.Base
         /***************************************************/
     }
 }
+

@@ -1,6 +1,6 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -45,11 +45,10 @@ namespace BH.Engine.Structure
         public static ConstantFramingProperty ConstantFramingProperty(ISectionProperty sectionProperty, double orientationAngle, string name = "")
         {
 
+
             IProfile profile = null;
-            if (sectionProperty is SteelSection)
-                profile = (sectionProperty as SteelSection).SectionProfile;
-            else if (sectionProperty is ConcreteSection)
-                profile = (sectionProperty as ConcreteSection).SectionProfile;
+            if (sectionProperty is IGeometricalSection)
+                profile = (sectionProperty as IGeometricalSection).SectionProfile;
             else
                 Reflection.Compute.RecordWarning("Was not able to extract any section profile");
 
@@ -75,3 +74,4 @@ namespace BH.Engine.Structure
         /***************************************************/
     }
 }
+

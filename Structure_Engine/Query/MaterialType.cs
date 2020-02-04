@@ -1,6 +1,6 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -63,6 +63,20 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
+
+        public static MaterialType MaterialType(this GenericIsotropicMaterial materialFragment)
+        {
+            return oM.Structure.MaterialFragments.MaterialType.Undefined;
+        }
+
+        /***************************************************/
+
+        public static MaterialType MaterialType(this GenericOrthotropicMaterial materialFragment)
+        {
+            return oM.Structure.MaterialFragments.MaterialType.Undefined;
+        }
+
+        /***************************************************/
         /**** Public Methods - Interface                ****/
         /***************************************************/
 
@@ -72,5 +86,14 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
+        /**** Private Methods - Fallback                ****/
+        /***************************************************/
+
+        private static MaterialType MaterialType(this IMaterialFragment materialFragment)
+        {
+            return oM.Structure.MaterialFragments.MaterialType.Undefined;
+        }
+        /***************************************************/
     }
 }
+

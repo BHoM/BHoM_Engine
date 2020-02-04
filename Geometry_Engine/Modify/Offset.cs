@@ -1,6 +1,6 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -60,7 +60,7 @@ namespace BH.Engine.Geometry
             if (offset == 0)
                 return curve;
 
-            double radius = curve.Radius;            
+            double radius = curve.Radius;
 
             if (normal == null)
                 normal = curve.Normal();
@@ -97,7 +97,7 @@ namespace BH.Engine.Geometry
             if (offset == 0)
                 return curve;
 
-            double radius = curve.Radius;            
+            double radius = curve.Radius;
 
             if (normal == null)
                 normal = curve.Normal;
@@ -322,7 +322,7 @@ namespace BH.Engine.Geometry
             {
                 result.Curves.Add(Offset((Circle)ICrvs[0], offset, normal));
                 return result;
-            }           
+            }
 
             //First - offseting each individual element
             List<ICurve> offsetCurves = new List<ICurve>();
@@ -475,7 +475,7 @@ namespace BH.Engine.Geometry
             if (connectingError)
                 Reflection.Compute.RecordWarning("Couldn't connect offset subCurves properly.");
 
-            if (offsetCurves.Count == 0 || (isClosed && offsetCurves.Count < 3))
+            if (offsetCurves.Count == 0)
             {
                 Reflection.Compute.RecordError("Method failed to produce correct offset. Returning null.");
                 return null;
@@ -586,6 +586,11 @@ namespace BH.Engine.Geometry
 
             if (!((curve1 is Line || curve1 is Arc) && (curve2 is Line || curve2 is Arc))) //for now works only with combinations of lines and arcs
                 throw new NotImplementedException();
+
+            List<PolyCurve> joinCurves = Compute.IJoin(new List<ICurve> { curve1, curve2 }, tolerance).ToList();
+
+            if (joinCurves.Count == 1)
+                return joinCurves[0];
 
             List<ICurve> resultCurves = new List<ICurve>();
 
