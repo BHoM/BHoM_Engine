@@ -26,6 +26,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
+using BH.oM.Quantities.Attributes;
 
 namespace BH.Engine.Reflection
 {
@@ -39,13 +40,17 @@ namespace BH.Engine.Reflection
         public static string OutputDescription(this MethodBase method)
         {
             OutputAttribute attribute = method.GetCustomAttribute<OutputAttribute>();
+            QuantityAttribute quantityAttribute = null;
 
             string desc = "";
 
             if (attribute != null && !string.IsNullOrWhiteSpace(attribute.Description))
                 desc = attribute.Description + Environment.NewLine;
 
-            desc += method.OutputType().Description();
+            if (attribute != null)
+                quantityAttribute = attribute.Quantity;
+
+            desc += method.OutputType().Description(quantityAttribute);
 
             return desc;
         }
