@@ -49,18 +49,7 @@ namespace BH.Engine.Reflection
 
             if (member is PropertyInfo)
             {
-                if (quantityAttribute != null)
-                {
-                    desc += "This is a " + quantityAttribute.GetType().Name + " in [" + quantityAttribute.SIUnit + "]";
-                    Type type = ((PropertyInfo)member).PropertyType;
-                    desc += " (stored as a " + type.ToText(type.Namespace.StartsWith("BH.")) + ")";
-                    desc += Environment.NewLine;
-                }
-
-                else
-                {
-                    desc += ((PropertyInfo)member).PropertyType.Description() + Environment.NewLine;
-                }
+                desc += ((PropertyInfo)member).PropertyType.Description(quantityAttribute) + Environment.NewLine;
             }
 
             if (member.ReflectedType != null)
@@ -75,15 +64,16 @@ namespace BH.Engine.Reflection
         public static string Description(this ParameterInfo parameter)
         {
             IEnumerable<InputAttribute> inputDesc = parameter.Member.GetCustomAttributes<InputAttribute>().Where(x => x.Name == parameter.Name);
-
+            QuantityAttribute quantityAttribute = null;
             string desc = "";
             if (inputDesc.Count() > 0)
             {
                 desc = inputDesc.First().Description + Environment.NewLine;
+                quantityAttribute = inputDesc.First().Quantity;
             }
             if (parameter.ParameterType != null)
             {
-                desc += parameter.ParameterType.Description();
+                desc += parameter.ParameterType.Description(quantityAttribute);
             }
             return desc;
         }
@@ -92,6 +82,13 @@ namespace BH.Engine.Reflection
 
         [Description("Return the custom description of a C# class")]
         public static string Description(this Type type)
+        {
+            return Description(type, null);
+        }
+
+        /***************************************************/
+        [Description("Return the custom description of a C# class")]
+        public static string Description(this Type type, QuantityAttribute quantityAttribute)
         {
             if (type == null)
             {
@@ -104,6 +101,14 @@ namespace BH.Engine.Reflection
 
             if (attribute != null)
                 desc = attribute.Description + Environment.NewLine;
+
+            //If a quantity attribute is present, this is used to generate the default description
+            if (quantityAttribute != null)
+            {
+                desc += "This is a " + quantityAttribute.GetType().Name + " in [" + quantityAttribute.SIUnit + "]";
+                desc += " (as a " + type.ToText(type.Namespace.StartsWith("BH.")) + ")";
+                return desc;
+            }
 
             //Add the default description
             desc += "This is a " + type.ToText(type.Namespace.StartsWith("BH."));
