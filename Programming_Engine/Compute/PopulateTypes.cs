@@ -1,6 +1,30 @@
-﻿using BH.oM.Programming;
+﻿/*
+ * This file is part of the Buildings and Habitats object Model (BHoM)
+ * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
+ *
+ * Each contributor holds copyright over their respective contributions.
+ * The project versioning (Git) records all such contribution source information.
+ *                                           
+ *                                                                              
+ * The BHoM is free software: you can redistribute it and/or modify         
+ * it under the terms of the GNU Lesser General Public License as published by  
+ * the Free Software Foundation, either version 3.0 of the License, or          
+ * (at your option) any later version.                                          
+ *                                                                              
+ * The BHoM is distributed in the hope that it will be useful,              
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of               
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the                 
+ * GNU Lesser General Public License for more details.                          
+ *                                                                            
+ * You should have received a copy of the GNU Lesser General Public License     
+ * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
+ */
+
+using BH.oM.Programming;
+using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -14,6 +38,9 @@ namespace BH.Engine.Programming
         /**** Interface Methods                         ****/
         /***************************************************/
 
+        [Description("Automatically set the DataType and default value of all parameters of the input syntax node.")]
+        [Input("node", "syntax node to modify")]
+        [Output("Modified node")]
         public static INode IPopulateTypes(this INode node)
         {
             return PopulateTypes(node as dynamic);
@@ -24,6 +51,9 @@ namespace BH.Engine.Programming
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Automatically set the DataType and default value of all parameters of the syntax nodes inside the cluster.")]
+        [Input("content", "cluster content to modify")]
+        [Output("Modified node")]
         public static ClusterContent PopulateTypes(this ClusterContent content)
         {
             if (content == null)
@@ -53,6 +83,9 @@ namespace BH.Engine.Programming
 
         /***************************************************/
 
+        [Description("Automatically set the DataType and default value of all parameters of the input method node.")]
+        [Input("node", "method node to modify")]
+        [Output("Modified node")]
         public static MethodNode PopulateTypes(this MethodNode node)
         {
             if (node == null || node.Method == null)
@@ -87,6 +120,9 @@ namespace BH.Engine.Programming
 
         /***************************************************/
 
+        [Description("Automatically set the DataType and default value of all parameters of the input constructor node.")]
+        [Input("node", "constructor node to modify")]
+        [Output("Modified node")]
         public static ConstructorNode PopulateTypes(this ConstructorNode node)
         {
             if (node == null || node.Constructor == null)
@@ -112,6 +148,9 @@ namespace BH.Engine.Programming
 
         /***************************************************/
 
+        [Description("Automatically set the DataType and default value of all parameters of the input initialiser node.")]
+        [Input("node", "initialiser node to modify")]
+        [Output("Modified node")]
         public static InitialiserNode PopulateTypes(this InitialiserNode node)
         {
             if (node == null || node.ObjectType == null)
@@ -138,6 +177,9 @@ namespace BH.Engine.Programming
 
         /***************************************************/
 
+        [Description("Automatically set the DataType and default value of all parameters of the input type node.")]
+        [Input("node", "type node to modify")]
+        [Output("Modified node")]
         public static TypeNode PopulateTypes(this TypeNode node)
         {
             if (node == null || node.Type == null)
@@ -153,7 +195,7 @@ namespace BH.Engine.Programming
         /**** Private Methods                           ****/
         /***************************************************/
 
-        public static INode PopulateTypes(this INode node)
+        private static INode PopulateTypes(this INode node)
         {
             return node;
         }
