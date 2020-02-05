@@ -6,7 +6,7 @@ $msbuildPath = "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\M
 $repo = "Test_Toolkit"
 
 # **** Defining Paths ****
-$slnPath = "$ENV:BUILD_SOURCESDIRECTORY\$repo\$repo.sln"
+$slnPath = "$ENV:BUILD_SOURCESDIRECTORY\Test_Toolkit_Corner\$repo\$repo.sln"
 
 # **** Building .sln ****
 write-Output ("Building " + $repo + ".sln")
