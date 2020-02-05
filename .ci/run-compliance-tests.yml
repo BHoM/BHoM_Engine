@@ -47,7 +47,7 @@ steps:
 - task: PowerShell@2
   displayName: 'Build Test Toolkit'
   inputs:
-    filePath: '$(Build.SourcesDirectory)/Test_Toolkit/BuildTest.ps1'
+    filePath: '$(Build.SourcesDirectory)/$(projectName)/.ci/BuildTest.ps1'
 
 - task: NuGetCommand@2
   displayName: 'Restore NuGets for Primary Solution'
