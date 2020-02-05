@@ -23,8 +23,10 @@ Set-Location $ENV:BUILD_SOURCESDIRECTORY\$repo
 
 If((git rev-parse --verify --quiet ("origin/"+$ENV:SYSTEM_PULLREQUEST_SOURCEBRANCH)).length -gt 0)
 {
-	Write-Output("Changing branch in repo " + $repo + " to " + $ENV:SYSTEM_PULLREQUEST_SOURCEBRANCH)
-	git checkout --quiet $ENV:SYSTEM_PULLREQUEST_SOURCEBRANCH
+	# *** Because the PR checkout attempts the merge to master on the files by default, any dependent PR must also be merged against master just in case there are breaking changes upstream ***
+	
+	Write-Output("Merging branch " + $ENV:SYSTEM_PULLREQUEST_SOURCEBRANCH + " in repo " + $repo + " to master")
+	git merge origin/$ENV:SYSTEM_PULLREQUEST_SOURCEBRANCH
 }
 
 Set-Location $cwd
