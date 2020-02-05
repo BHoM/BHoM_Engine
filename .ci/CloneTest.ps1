@@ -8,28 +8,15 @@ $msbuildPath = "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\M
 $repo = "BHoM"
 
 # **** Defining BHoM Paths ****
-$slnPath = "$ENV:BUILD_SOURCESDIRECTORY\$repo\$repo.sln"
+$slnPath = "$ENV:BUILD_SOURCESDIRECTORY\Test_Toolkit_Corner\$repo\$repo.sln"
 
-# **** Cloning Repo ****
-Write-Output ("BHoM Cloning " + $repo + " to " + $ENV:BUILD_SOURCESDIRECTORY + "\" + $repo)
+# **** Cloning BHoM Repo ****
+Write-Output ("BHoM Cloning " + $repo + " to " + $ENV:BUILD_SOURCESDIRECTORY + "\Test_Toolkit_Corner\" + $repo)
 
-If(!(test-path $ENV:BUILD_SOURCESDIRECTORY\$repo))
+If(!(test-path $ENV:BUILD_SOURCESDIRECTORY\Test_Toolkit_Corner\$repo))
 {
-	git clone -q --branch=master https://github.com/BHoM/$repo.git  $ENV:BUILD_SOURCESDIRECTORY\$repo
+	git clone -q --branch=master https://github.com/BHoM/$repo.git  $ENV:BUILD_SOURCESDIRECTORY\Test_Toolkit_Corner\$repo
 }
-
-$cwd = Get-Location
-Set-Location $ENV:BUILD_SOURCESDIRECTORY\$repo
-
-If((git rev-parse --verify --quiet ("origin/"+$ENV:SYSTEM_PULLREQUEST_SOURCEBRANCH)).length -gt 0)
-{
-	# *** Because the PR checkout attempts the merge to master on the files by default, any dependent PR must also be merged against master just in case there are breaking changes upstream ***
-	
-	Write-Output("Merging branch " + $ENV:SYSTEM_PULLREQUEST_SOURCEBRANCH + " in repo " + $repo + " to master")
-	git merge origin/$ENV:SYSTEM_PULLREQUEST_SOURCEBRANCH
-}
-
-Set-Location $cwd
 
 # **** Restore BHoM NuGet ****
 Write-Output ("Restoring NuGet packages for " + $repo)
@@ -39,7 +26,15 @@ Write-Output ("Restoring NuGet packages for " + $repo)
 $repo = "BHoM_Engine"
 
 # **** Defining BHoM_Engine Paths ****
-$slnPath = "$ENV:BUILD_SOURCESDIRECTORY\$repo\$repo.sln"
+$slnPath = "$ENV:BUILD_SOURCESDIRECTORY\Test_Toolkit_Corner\$repo\$repo.sln"
+
+# **** Cloning BHoM_Engine Repo ****
+Write-Output ("BHoM_Engine Cloning " + $repo + " to " + $ENV:BUILD_SOURCESDIRECTORY + "\Test_Toolkit_Corner\" + $repo)
+
+If(!(test-path $ENV:BUILD_SOURCESDIRECTORY\Test_Toolkit_Corner\$repo))
+{
+	git clone -q --branch=master https://github.com/BHoM/$repo.git  $ENV:BUILD_SOURCESDIRECTORY\Test_Toolkit_Corner\$repo
+}
 
 # **** Restore BHoM_Engine NuGet ****
 Write-Output ("Restoring NuGet packages for " + $repo)
@@ -48,19 +43,23 @@ Write-Output ("Restoring NuGet packages for " + $repo)
 # **** Cloning BHoM Test_Toolkit ****
 $repo = "Test_Toolkit"
 
-# **** Defining Paths ****
-$slnPath = "$ENV:BUILD_SOURCESDIRECTORY\$repo\$repo.sln"
+# **** Defining BHoM Test_Toolkit Paths ****
+$slnPath = "$ENV:BUILD_SOURCESDIRECTORY\Test_Toolkit_Corner\$repo\$repo.sln"
 
-# **** Cloning Repo ****
+# **** Cloning BHoM Test_Toolkit Repo - this one to its default location for access PS scripts ****
 Write-Output ("Cloning " + $repo + " to " + $ENV:BUILD_SOURCESDIRECTORY + "\" + $repo)
 git clone -q --branch=master https://github.com/BHoM/$repo.git  $ENV:BUILD_SOURCESDIRECTORY\$repo
+
+# **** Cloning BHoM Test_Toolkit Repo - this one quarantined for building as necessary ****
+Write-Output ("Cloning " + $repo + " to " + $ENV:BUILD_SOURCESDIRECTORY + "\" + $repo)
+git clone -q --branch=master https://github.com/BHoM/$repo.git  $ENV:BUILD_SOURCESDIRECTORY\Test_Toolkit_Corner\$repo
 
 # **** Restore NuGet ****
 Write-Output ("Restoring NuGet packages for " + $repo)
 & NuGet.exe restore $slnPath
 
 write-Output ("Building BHoM.sln")
-& $msbuildPath -nologo "$ENV:BUILD_SOURCESDIRECTORY\BHoM\BHoM.sln" /verbosity:minimal
+& $msbuildPath -nologo "$ENV:BUILD_SOURCESDIRECTORY\Test_Toolkit_Corner\BHoM\BHoM.sln" /verbosity:minimal
 
 write-Output ("Building BHoM_Engine.sln")
-& $msbuildPath -nologo "$ENV:BUILD_SOURCESDIRECTORY\BHoM_Engine\BHoM_Engine.sln" /verbosity:minimal
+& $msbuildPath -nologo "$ENV:BUILD_SOURCESDIRECTORY\Test_Toolkit_Corner\BHoM_Engine\BHoM_Engine.sln" /verbosity:minimal
