@@ -72,6 +72,8 @@
     <Compile Include="Create\Dataset.cs" />
     <Compile Include="Create\DBSCANObject.cs" />
     <Compile Include="Create\FilterRequest.cs" />
+    <Compile Include="Create\LogicalAndRequest.cs" />
+    <Compile Include="Create\LogicalOrRequest.cs" />
     <Compile Include="Create\PointMatrix.cs" />
     <Compile Include="Create\LocalData.cs" />
     <Compile Include="Create\DiscretePoint.cs" />
