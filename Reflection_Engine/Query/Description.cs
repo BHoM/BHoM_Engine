@@ -125,8 +125,6 @@ namespace BH.Engine.Reflection
 
             string desc = "";
 
-            if (attribute != null)
-                desc = attribute.Description + Environment.NewLine;
 
             //If a quantity attribute is present, this is used to generate the default description
             if (quantityAttribute != null)
@@ -139,6 +137,11 @@ namespace BH.Engine.Reflection
             //Add the default description
             desc += "This is a " + type.ToText(type.Namespace.StartsWith("BH."));
 
+            if (attribute != null)
+            {
+                desc += ":" + Environment.NewLine;
+                desc += attribute.Description;
+            }
             Type innerType = type;
 
             while (typeof(IEnumerable).IsAssignableFrom(innerType) && innerType.IsGenericType)
@@ -146,7 +149,8 @@ namespace BH.Engine.Reflection
 
             if (innerType.IsInterface)
             {
-                desc += ": ";
+                desc += Environment.NewLine;
+                desc += "This can be of the following types: ";
                 List<Type> t = innerType.ImplementingTypes();
                 int m = Math.Min(15, t.Count);
 
