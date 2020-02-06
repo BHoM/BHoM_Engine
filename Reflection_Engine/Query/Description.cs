@@ -71,6 +71,32 @@ namespace BH.Engine.Reflection
                 desc = inputDesc.First().Description + Environment.NewLine;
                 quantityAttribute = inputDesc.First().Quantity;
             }
+            else
+            {
+                //If no inputs are provided, try to grab description from object for Create methods
+                MethodInfo methodInfo = parameter.Member as MethodInfo;
+                if (methodInfo != null && methodInfo.DeclaringType != null && methodInfo.DeclaringType.Name == "Create")
+                {
+                    Type returnType = methodInfo.ReturnType.UnderlyingType().Type;
+                    if (returnType != null)
+                    {
+                        string name = parameter.Name;
+
+                        //Make sure the first character in the name is upper case to find properties
+                        if (name.Length == 1)
+                            name = char.ToUpper(name[0]).ToString();
+                        else if (name.Length > 1)
+                            name = char.ToUpper(name[0]) + name.Substring(1);
+
+                        //Try to find matching proeprty type, matching both name and type
+                        PropertyInfo prop = returnType.GetProperty(name, parameter.ParameterType);
+
+                        //If found return description of property
+                        if (prop != null)
+                            return prop.Description();
+                    }
+                }
+            }
             if (parameter.ParameterType != null)
             {
                 desc += parameter.ParameterType.Description(quantityAttribute);
