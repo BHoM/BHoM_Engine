@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -52,6 +52,14 @@ namespace BH.Engine.Data
                 return new List<T>();
             }
 
+            objects = objects.Where(x => x != null).ToList();
+
+            if (objects.Count == 0)
+            {
+                BH.Engine.Reflection.Compute.RecordError("All objects in the list to filter are null, please try with valid objects");
+                return new List<T>();
+            }
+
             if (propertyName == null)
             {
                 BH.Engine.Reflection.Compute.RecordError("propertyName cannot be null in order to filter the objects");
@@ -64,26 +72,33 @@ namespace BH.Engine.Data
                 return new List<T>();
             }
 
-            object firstObject = objects.Where(x => x != null).FirstOrDefault();
-            if(firstObject == null)
-            {
-                BH.Engine.Reflection.Compute.RecordError("All objects in the list to filter are null, please try with valid objects");
-                return new List<T>();
-            }
+            object firstObject = objects.First();
 
             System.Type type = PropertyType(firstObject, propertyName);
+            if(type == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("That property name could not be resolved to a specific object type. Please check the property name and try again");
+                return new List<T>();
+            }
 
             List<T> filteredObjects = new List<T>();
 
             if (type == typeof(System.String))
             {
-                if (ignoreStringCase)
-                    filteredObjects.AddRange(objects.Where(x => x.PropertyValue(propertyName).ToString().Equals(value.ToString(), System.StringComparison.CurrentCultureIgnoreCase)).ToList());
-                else
-                    filteredObjects.AddRange(objects.Where(x => x.PropertyValue(propertyName).ToString().Equals(value.ToString())).ToList());
-
                 if (!exactStringMatch)
-                    filteredObjects.AddRange(objects.Where(x => x.PropertyValue(propertyName).ToString().Contains(value.ToString())).ToList());
+                {
+                    if(ignoreStringCase) //Convert property and value to lower case and check if it's contained
+                        filteredObjects.AddRange(objects.Where(x => x.PropertyValue(propertyName) != null && x.PropertyValue(propertyName).ToString().ToLower().Contains(value.ToString().ToLower())).ToList());
+                    else
+                        filteredObjects.AddRange(objects.Where(x => x.PropertyValue(propertyName) != null && x.PropertyValue(propertyName).ToString().Contains(value.ToString())).ToList());
+                }
+                else
+                {
+                    if (ignoreStringCase)
+                        filteredObjects.AddRange(objects.Where(x => x.PropertyValue(propertyName) != null && x.PropertyValue(propertyName).ToString().Equals(value.ToString(), System.StringComparison.CurrentCultureIgnoreCase)).ToList());
+                    else
+                        filteredObjects.AddRange(objects.Where(x => x.PropertyValue(propertyName) != null && x.PropertyValue(propertyName).ToString().Equals(value.ToString())).ToList());
+                }
             }
             else
             {

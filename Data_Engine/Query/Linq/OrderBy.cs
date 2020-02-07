@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -58,14 +58,14 @@ namespace BH.Engine.Data
             int groupedObjects = objects.GroupBy(x => x.GetType()).Count();
             if (groupedObjects != 1)
             {
-                BHRE.Compute.RecordError("All objects in the list to be sorted should be of similiar type.");
+                BHRE.Compute.RecordError("All objects in the list to be sorted should be of the exact same type.");
                 return null;
             }
             try
             {
                 if (!propertyName.Contains("."))
                 {
-                    System.Reflection.PropertyInfo prop = objects.First(x => x != null).GetType().GetProperty(propertyName);
+                    System.Reflection.PropertyInfo prop = objects.First().GetType().GetProperty(propertyName);
                     if (prop != null)
                         return objects.OrderBy(x => prop.GetValue(x)).ToList();
                 }
