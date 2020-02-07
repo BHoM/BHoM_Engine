@@ -45,7 +45,7 @@ namespace BH.Engine.Diffing
         [Description("Computes the hash code required for the Diffing.")]
         [Input("objects", "Objects the hash code should be calculated for")]
         [Input("diffConfig", "Sets configs for the hash calculation, such as properties to be ignored.")]
-        public static string DiffingHash(this IBHoMObject obj, DiffConfig diffConfig)
+        public static string DiffingHash(this IObject obj, DiffConfig diffConfig)
         {
             return Compute.SHA256Hash(obj, diffConfig.PropertiesToIgnore);
         }
