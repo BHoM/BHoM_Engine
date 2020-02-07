@@ -45,7 +45,7 @@ namespace BH.Engine.Diffing
         [Description("Computes the a SHA 256 hash code representing the object.")]
         [Input("objects", "Object the hash code should be calculated for")]
         [Input("exceptions", "List of strings specifying the names of the properties that should be ignored in the calculation, e.g. 'BHoM_Guid'")]
-        public static string SHA256Hash(this IBHoMObject obj, List<string> exceptions = null)
+        public static string SHA256Hash(this object obj, List<string> exceptions = null)
         {
             return SHA256Hash(obj.ToDiffingByteArray(exceptions));
         }
