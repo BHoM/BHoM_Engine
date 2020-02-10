@@ -21,8 +21,9 @@
  */
 
 using BH.oM.Data.Requests;
+using BH.oM.Reflection.Attributes;
 using System.Collections.Generic;
-using System.Linq;
+using System.ComponentModel;
 
 namespace BH.Engine.Data
 {
@@ -32,6 +33,10 @@ namespace BH.Engine.Data
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Creates an IRequest that combines a couple of requests into a logical OR statement.")]
+        [Input("request1", "First request in logical statement")]
+        [Input("request2", "Second request in logical statement")]
+        [Output("LogicalOrRequest")]
         public static LogicalOrRequest LogicalOrRequest(IRequest request1, IRequest request2)
         {
             return new LogicalOrRequest { Requests = new List<IRequest> { request1, request2 } };
