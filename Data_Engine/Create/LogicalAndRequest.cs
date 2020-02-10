@@ -36,7 +36,7 @@ namespace BH.Engine.Data
         [Description("Creates an IRequest that combines a couple of requests into a logical AND statement.")]
         [Input("request1", "First request in logical statement")]
         [Input("request2", "Second request in logical statement")]
-        [Output("LogicalOrRequest")]
+        [Output("LogicalAndRequest")]
         public static LogicalAndRequest LogicalAndRequest(IRequest request1, IRequest request2)
         {
             return new LogicalAndRequest { Requests = new List<IRequest> { request1, request2 } };
