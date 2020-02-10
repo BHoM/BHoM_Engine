@@ -32,13 +32,6 @@ namespace BH.Engine.Data
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static LogicalOrRequest LogicalOrRequest(IEnumerable<IRequest> requests)
-        {
-            return new LogicalOrRequest { Requests = requests.ToList() };
-        }
-
-        /***************************************************/
-
         public static LogicalOrRequest LogicalOrRequest(IRequest request1, IRequest request2)
         {
             return new LogicalOrRequest { Requests = new List<IRequest> { request1, request2 } };
