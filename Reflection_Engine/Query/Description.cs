@@ -73,23 +73,18 @@ namespace BH.Engine.Reflection
             }
             else
             {
-                //If no inputs are provided, try to grab description from object for Create methods
+                //If no input descs are found, check if inputFromProperty descs can be found
+                IEnumerable<InputFromProperty> inputFromPropDesc = parameter.Member.GetCustomAttributes<InputFromProperty>().Where(x => x.InputName == parameter.Name);
+
+                //Only valid for engine type methods
                 MethodInfo methodInfo = parameter.Member as MethodInfo;
-                if (methodInfo != null && methodInfo.DeclaringType != null && methodInfo.DeclaringType.Name == "Create")
+                if (inputFromPropDesc.Count() > 0 && methodInfo != null && methodInfo.DeclaringType != null)
                 {
                     Type returnType = methodInfo.ReturnType.UnderlyingType().Type;
                     if (returnType != null)
                     {
-                        string name = parameter.Name;
-
-                        //Make sure the first character in the name is upper case to find properties
-                        if (name.Length == 1)
-                            name = char.ToUpper(name[0]).ToString();
-                        else if (name.Length > 1)
-                            name = char.ToUpper(name[0]) + name.Substring(1);
-
                         //Try to find matching proeprty type, matching both name and type
-                        PropertyInfo prop = returnType.GetProperty(name, parameter.ParameterType);
+                        PropertyInfo prop = returnType.GetProperty(inputFromPropDesc.First().PropertyName, parameter.ParameterType);
 
                         //If found return description of property
                         if (prop != null)
