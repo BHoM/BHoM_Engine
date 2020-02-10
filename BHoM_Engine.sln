@@ -57,6 +57,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Graphics_Engine", "Graphics
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Programming_Engine", "Programming_Engine\Programming_Engine.csproj", "{BDE4A84F-5672-41B6-834B-6139C32C3560}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spatial_Engine", "Spatial_Engine\Spatial_Engine.csproj", "{A84FDFE5-C267-430E-8FEC-AF4F4BF5B745}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -242,6 +244,14 @@ Global
 		{BDE4A84F-5672-41B6-834B-6139C32C3560}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BDE4A84F-5672-41B6-834B-6139C32C3560}.Release|x86.ActiveCfg = Release|Any CPU
 		{BDE4A84F-5672-41B6-834B-6139C32C3560}.Release|x86.Build.0 = Release|Any CPU
+		{A84FDFE5-C267-430E-8FEC-AF4F4BF5B745}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A84FDFE5-C267-430E-8FEC-AF4F4BF5B745}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A84FDFE5-C267-430E-8FEC-AF4F4BF5B745}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A84FDFE5-C267-430E-8FEC-AF4F4BF5B745}.Debug|x86.Build.0 = Debug|Any CPU
+		{A84FDFE5-C267-430E-8FEC-AF4F4BF5B745}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A84FDFE5-C267-430E-8FEC-AF4F4BF5B745}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A84FDFE5-C267-430E-8FEC-AF4F4BF5B745}.Release|x86.ActiveCfg = Release|Any CPU
+		{A84FDFE5-C267-430E-8FEC-AF4F4BF5B745}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
