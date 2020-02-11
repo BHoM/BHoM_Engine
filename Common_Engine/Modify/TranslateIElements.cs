@@ -21,6 +21,7 @@
  */
 
 using System.Collections.Generic;
+using BH.oM.Dimensional;
 using BH.oM.Geometry;
 
 namespace BH.Engine.Common

@@ -22,7 +22,7 @@
 
 using BH.Engine.Geometry;
 using BH.oM.Base;
-using BH.oM.Common;
+using BH.oM.Dimensional;
 using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
 using System.Collections.Generic;

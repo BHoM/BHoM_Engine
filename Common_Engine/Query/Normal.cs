@@ -22,6 +22,7 @@
 
 using BH.Engine.Geometry;
 using BH.oM.Geometry;
+using BH.oM.Dimensional;
 using System;
 
 namespace BH.Engine.Common
