@@ -39,12 +39,16 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static double ShearAreaPolyline(this Polyline pLine, double momentOfInertia)
+        [Description("Calculates the the exact shear area of an simplified boundery of an section.")]
+        [Input("pLine", "The Polyline should have the upper side along the x-axis and the rest of the lines should be defineble as /n" +
+                        "a function of x apart for veritcal segments. The last linesegment should be the upper one /n" +
+                        "use WetBlanketInterpertation()")]
+        [Input("momentOfInertia", "The true moment of inertia of the section")]
+        [Input("tol", "The tolerance for considering a linesegment horisontal or vertical. /n" +
+                      "i.e. (value at endpoint - value at startpoint) < tol")]
+        [Output("shearArea", "The shear area of the section")]
+        public static double ShearAreaPolyline(this Polyline pLine, double momentOfInertia, double tol = Tolerance.Distance)
         {
-            // the Polyline should have the upper side along the x-axis and the rest of the lines should be defineble as a function of x apart for veritcal segments
-            // The last LineSegment should be the upper one
-            // use WetBlanketInterpertation()
-
             double sy = 0;
             double shearArea = 0;
 
@@ -54,8 +58,8 @@ namespace BH.Engine.Structure
             // Calculate Sy for the linesegment (by IntSurfLine()) and add to Sy +=
             for (int i = 0; i < controllPoints.Count - 2; i++)
             {
-                shearArea += ShearAreaLine(controllPoints[i], controllPoints[i + 1], sy);
-                sy += Geometry.Compute.IntSurfLine(controllPoints[i], controllPoints[i + 1] , 1);
+                shearArea += ShearAreaLine(controllPoints[i], controllPoints[i + 1], sy, tol);
+                sy += Geometry.Compute.IntSurfLine(controllPoints[i], controllPoints[i + 1] , 1, tol);
             }
 
             return Math.Pow(momentOfInertia, 2) / shearArea;
@@ -63,10 +67,9 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        private static double ShearAreaLine(Point ptA, Point ptB, double s)
+        private static double ShearAreaLine(Point ptA, Point ptB, double s, double tol = Tolerance.Distance)
         {
             //TODO Should do some checks if these are good Tolerances
-            double tol = Tolerance.Distance;
             Point a = ptA.Clone();
             Point b = ptB.Clone();
             
