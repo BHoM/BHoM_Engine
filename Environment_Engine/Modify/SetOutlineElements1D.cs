@@ -21,6 +21,7 @@
  */
 
 using BH.oM.Environment.Elements;
+using BH.oM.Dimensional;
 using BH.oM.Geometry;
 using System.Collections.Generic;
 using System.Linq;

@@ -31,6 +31,7 @@ using System.Threading.Tasks;
 
 using BH.oM.Environment;
 using BH.oM.Environment.Elements;
+using BH.oM.Dimensional;
 using BH.oM.Geometry;
 using BH.Engine.Geometry;
 
