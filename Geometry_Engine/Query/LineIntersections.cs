@@ -166,8 +166,10 @@ namespace BH.Engine.Geometry
             }
 
             List<Point> output = new List<Point>();
-            double sqrd = midPoint.SquareDistance(arc.IStartPoint());
-            sqrd = sqrd + 2 * Math.Sqrt(sqrd) * tolerance + tolerance * tolerance;  // needed to maintain the tolerance for square comparisons
+            
+            double halfAngle = arc.Angle() / 2;
+            double tolAngle = tolerance / arc.Radius;
+            double sqrd = 2 * Math.Pow(arc.Radius, 2) * (1 - Math.Cos(Math.Abs(halfAngle + tolAngle))); // Cosine rule
             {
                 foreach (Point pt in iPts)
                 {
