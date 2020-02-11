@@ -38,13 +38,14 @@ namespace BH.Engine.Geometry
         [Input("curve", "The curve to collapse")]
         [Input("tolerance", "tolarance is the angleTolerance for a unit circle, the tolerance value will variy by: toleranceGrowth over curvature")]
         [Input("toleranceGrowth", "toleranceGrowth is the value that decides how much the angleTolerance varies due to curvature")]
+        [Input("maxDivisionsPerSegment", "The maximum number of segment each sub-curve can be broken into")]
         [Input("scale", "the radie of a baseline circle for the angle tolerance, smaller circles will have less segments and bigger more. deafalult of 0 will auto-generate for the PolyCurve")]
         [Output("C", "A polyline aproximating the provided curve")]
-        public static Polyline CollapseToScaledPolyline(this PolyCurve curve, double tolerance = 0.04, double toleranceGrowth = 0.001, double scale = 0)
+        public static Polyline CollapseToScaledPolyline(this PolyCurve curve, double tolerance = 0.04, double toleranceGrowth = 0.001, int maxDivisionsPerSegment = 200, double scale = 0)
         {
             if (tolerance <= 0)
                 return null;
-            if (tolerance < 0)
+            if (toleranceGrowth < 0)
                 toleranceGrowth = 0;
             if (scale <= 0)
             {
@@ -66,9 +67,9 @@ namespace BH.Engine.Geometry
             foreach (ICurve c in curve.Curves)
             {
                 if (c is PolyCurve)
-                    list.Add(CollapseToScaledPolyline(c as PolyCurve, tolerance, toleranceGrowth, scale));
+                    list.Add(CollapseToScaledPolyline(c as PolyCurve, tolerance, toleranceGrowth, maxDivisionsPerSegment, scale));
 
-                list.Add(Divide(c as dynamic, scaledTolerance, tolerance));
+                list.Add(Divide(c as dynamic, scaledTolerance, tolerance, maxDivisionsPerSegment));
             }
             return (Geometry.Compute.Join(list))[0];
         }
@@ -77,30 +78,30 @@ namespace BH.Engine.Geometry
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private static Polyline Divide(this Line line, double tolerance, double baseTolerance)
+        private static Polyline Divide(this Line line, double tolerance, double baseTolerance, int maxDivisionsPerSegment = 200)
         {
             return new Polyline() { ControlPoints = new List<Point>() { line.Start, line.End } };
         }
 
         /***************************************************/
 
-        private static Polyline Divide(this Polyline line, double tolerance, double baseTolerance)
+        private static Polyline Divide(this Polyline line, double tolerance, double baseTolerance, int maxDivisionsPerSegment = 200)
         {
             return new Polyline() { ControlPoints = line.ControlPoints };
         }
 
         /***************************************************/
 
-        private static Polyline Divide(this Arc arc, double tolerance, double baseTolerance)
+        private static Polyline Divide(this Arc arc, double tolerance, double baseTolerance, int maxDivisionsPerSegment = 200)
         {
-            return arc.CollapseToPolyline(Soften(arc.Radius, tolerance, baseTolerance),200);
+            return arc.CollapseToPolyline(Soften(arc.Radius, tolerance, baseTolerance), maxDivisionsPerSegment);
         }
 
         /***************************************************/
 
-        private static Polyline Divide(this Circle circle, double tolerance, double baseTolerance)
+        private static Polyline Divide(this Circle circle, double tolerance, double baseTolerance, int maxDivisionsPerSegment = 200)
         {
-            double factor = Math.Min(Math.PI * 0.25, Math.Max(Math.PI / 200, Soften(circle.Radius, tolerance, baseTolerance)));
+            double factor = Math.Min(Math.PI * 0.25, Math.Max(Math.PI / maxDivisionsPerSegment, Soften(circle.Radius, tolerance, baseTolerance)));
             int result = System.Convert.ToInt32(Math.Ceiling(Math.PI / factor));
             result += result < 4 ? 4 : 0;
             return circle.CollapseToPolyline(0, result - (result % 4));

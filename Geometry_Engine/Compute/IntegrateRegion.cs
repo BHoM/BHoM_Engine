@@ -35,14 +35,16 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [Description("Integrates a closed region with x to the specified power on the XY-Plane")]
-        [Input("curve", "defined counter clockwise on the XY-Plane")]
-        [Input("powX", "the region will be evaluated under the function: x^(powX)")]
+        [Input("curve", "Defined counter clockwise on the XY-Plane")]
+        [Input("powX", "The region will be evaluated under the function: x^(powX)")]
+        [Input("tol", "The tolerance for considering a linesegment horisontal or vertical. /n" + 
+                      "i.e. (value at endpoint - value at startpoint) < tol")]
         [Output("V", "Calculated value")]
-        public static double IIntegrateRegion(this ICurve curve, int powX)
+        public static double IIntegrateRegion(this ICurve curve, int powX, double tol = Tolerance.Distance)
         {
             // Add tests (?)
 
-            return IntegrateRegion(curve as dynamic, powX);
+            return IntegrateRegion(curve as dynamic, powX, tol);
         }
 
         /***************************************************/
@@ -52,11 +54,9 @@ namespace BH.Engine.Geometry
         [Input("b", "the point to end at")]
         [Input("powX", "the region will be evaluated under the function: x^(powX)")]
         [Output("V", "Calculated value, a 'meningless' value unless combined with other values to enclose a region")]
-        public static double IntSurfLine(Point a, Point b, int powX)
+        public static double IntSurfLine(Point a, Point b, int powX, double tol = Tolerance.Distance)
         {
-            //TODO Should do some checks if these are good Tolerances
             //TODO powX could be a double, but that might slow thing down somewhat
-            double tol = Tolerance.Distance;
 
             double diffX;
             double diffY = (a.Y - b.Y);
@@ -118,7 +118,7 @@ namespace BH.Engine.Geometry
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private static double IntegrateRegion(PolyCurve curve, int powX)
+        private static double IntegrateRegion(PolyCurve curve, int powX, double tol = Tolerance.Distance)
         {
             if (curve.Curves.Count == 0)
                 return 0;
@@ -127,7 +127,7 @@ namespace BH.Engine.Geometry
 
             foreach (ICurve c in curve.Curves)
             {
-                result += IntegrateRegion(c as dynamic, powX);
+                result += IntegrateRegion(c as dynamic, powX, tol);
             }
 
             return result;
@@ -135,35 +135,35 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        private static double IntegrateRegion(Line line, int powX)
+        private static double IntegrateRegion(Line line, int powX, double tol = Tolerance.Distance)
         {
-            return IntSurfLine(line.Start, line.End, powX);
+            return IntSurfLine(line.Start, line.End, powX, tol);
         }
 
         /***************************************************/
 
-        private static double IntegrateRegion(Polyline pLine, int powX)
+        private static double IntegrateRegion(Polyline pLine, int powX, double tol = Tolerance.Distance)
         {
             List<Point> pts = pLine.ControlPoints;
 
             double result = 0;
 
             for (int i = 0; i < pts.Count - 1; i++)
-                result += IntSurfLine(pts[i], pts[i + 1], powX);
+                result += IntSurfLine(pts[i], pts[i + 1], powX, tol);
 
             return result;
         }
 
         /***************************************************/
 
-        private static double IntegrateRegion(NurbsCurve pLine, int powX)
+        private static double IntegrateRegion(NurbsCurve pLine, int powX, double tol = Tolerance.Distance)
         {
             throw new NotImplementedException("NurbsCurve is not imlemented yet so this cannot be calculated");
         }
 
         /***************************************************/
 
-        private static double IntegrateRegion(Arc arc, int powX)
+        private static double IntegrateRegion(Arc arc, int powX, double tol = Tolerance.Distance)
         {
             Point centre = arc.CoordinateSystem.Origin;
             double r = arc.Radius;
@@ -203,13 +203,13 @@ namespace BH.Engine.Geometry
                             )) / 96;
                 /********************/
                 default:
-                    return IntegrateRegion(arc.CollapseToPolyline(0.01), powX); //TODO is this good value??
+                    return IntegrateRegion(arc.CollapseToPolyline(0.01), powX, tol); //TODO is this good value??
             }
         }
 
         /***************************************************/
 
-        private static double IntegrateRegion(Circle circle, int powX)
+        private static double IntegrateRegion(Circle circle, int powX, double tol = Tolerance.Distance)
         {
             double r = circle.Radius;
             Point centre = circle.Centre;
@@ -227,7 +227,7 @@ namespace BH.Engine.Geometry
                     return 0.25 * r * r * Math.PI * (4 * centre.X * centre.X + r * r) * flip;
                 /********************/
                 default:
-                    return IntegrateRegion(circle.CollapseToPolyline(0.01), powX); //TODO is this good value??
+                    return IntegrateRegion(circle.CollapseToPolyline(0.01), powX, tol); //TODO is this good value??
             }
         }
 

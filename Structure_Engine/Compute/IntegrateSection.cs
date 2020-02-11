@@ -39,10 +39,11 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Calculates Section properties for a region")]
-        [Input("curves", "Edge curves that make up the section")]
+        [Description("Calculates Section properties for a region on the XY-Plane. /n" +
+                     "The resulting properties are in relation to the orientation on the plane")]
+        [Input("curves", "Non-intersecting edge curves that make up the section")]
         [Input("tolerance", "The angleTolerance for dividing the section curves")]
-        [Output("V", "Dictionary containing the calculated values")]
+        [Output("V", "Dictionary containing the section properties for the X- and Y-axis")]
         public static Dictionary<string, object> IntegrateSection(List<ICurve> curves, double tolerance = 0.04)
         {
             Dictionary<string, object> results = new Dictionary<string, object>();
@@ -107,7 +108,7 @@ namespace BH.Engine.Structure
             List<Polyline> pLines = new List<Polyline>();
             for (int i = 0; i < curvesZ.Count; i++)
             {
-                pLines.Add(curvesZ[i].CollapseToScaledPolyline(tolerance, 0.0025, Math.Max(totalHeight, totalWidth)));
+                pLines.Add(curvesZ[i].CollapseToScaledPolyline(tolerance, 0.0025, 200, Math.Max(totalHeight, totalWidth)));
             }
             Polyline pLineZ = Engine.Geometry.Compute.WetBlanketInterpretation(pLines, Tolerance.MicroDistance);
 

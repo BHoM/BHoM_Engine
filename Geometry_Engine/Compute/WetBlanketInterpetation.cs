@@ -35,7 +35,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Takes a List of Polylines and creates a `squished` version with the same area at every X-location, (and hence in total as well). Required for some calculations")]
+        [Description("Takes a List of Polylines and creates a `squished` version with the same area at every X-location, and hence the same total area as well. Required for some calculations")]
         [Input("pLines", "the outermost Polyline must be counter-clockwise and clockwise ones are holes wthin it, should be on the XY-plane")]
         [Output("C", "A single Polyline oriented counter clockwise with the same area as the sum of all the polylines")]
         public static Polyline WetBlanketInterpretation(List<Polyline> pLines, double tol = Tolerance.Distance)
