@@ -45,7 +45,8 @@ namespace BH.Engine.Geometry
 
             double angle = v1.SignedAngle(v2, normal) - curve.StartAngle;
             angle = (Math.Abs(angle) < Tolerance.Angle) || Math.Abs(angle - 2 * Math.PI) < Tolerance.Angle ? 0 : angle;  //Really small negative angles gives wrong result. This solves that problem.
-            return ((angle + 2 * Math.PI) % (2 * Math.PI)) / curve.Angle();
+            double parameter = ((angle + 2 * Math.PI) % (2 * Math.PI)) / curve.Angle();
+            return parameter > 1 ? 1 : parameter < 0 ? 0 : parameter;
         }
 
         /***************************************************/
@@ -67,7 +68,10 @@ namespace BH.Engine.Geometry
             if (curve.ClosestPoint(point).SquareDistance(point) > tolerance * tolerance)
                 return -1;
 
-            return point.Distance(curve.Start) / curve.Length();
+            double parameter = point.Distance(curve.Start) / curve.Length();
+            if (curve.Infinite)
+                return parameter;
+            return parameter > 1 ? 1 : parameter < 0 ? 0 : parameter;
         }
 
         /***************************************************/
@@ -88,7 +92,10 @@ namespace BH.Engine.Geometry
             foreach (ICurve c in curve.SubParts())
             {
                 if (c.IClosestPoint(point).SquareDistance(point) <= sqTol)
-                    return (length + c.IParameterAtPoint(point, tolerance) * c.ILength()) / curve.ILength();
+                {
+                    double parameter = (length + c.IParameterAtPoint(point, tolerance) * c.ILength()) / curve.ILength();
+                    return parameter > 1 ? 1 : parameter < 0 ? 0 : parameter;
+                }
                 else
                     length += c.ILength();
             }
@@ -106,7 +113,10 @@ namespace BH.Engine.Geometry
             foreach (Line l in curve.SubParts())
             {
                 if (l.ClosestPoint(point).SquareDistance(point) <= sqTol)
-                    return (param + l.ParameterAtPoint(point, tolerance) * l.Length()) / curve.Length();
+                {
+                    double parameter = (param + l.ParameterAtPoint(point, tolerance) * l.Length()) / curve.Length();
+                    return parameter > 1 ? 1 : parameter < 0 ? 0 : parameter;
+                }
                 else
                     param += l.Length();
             }
