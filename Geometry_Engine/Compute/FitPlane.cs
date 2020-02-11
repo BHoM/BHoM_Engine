@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -149,6 +149,16 @@ namespace BH.Engine.Geometry
 
 
         /***************************************************/
+        /**** Public Methods - Surfaces                 ****/
+        /***************************************************/
+
+        public static Plane FitPlane(this PlanarSurface surface, double tolerance = Tolerance.Distance)
+        {
+            return IFitPlane(surface.ExternalBoundary, tolerance);
+        }
+
+
+        /***************************************************/
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
@@ -160,3 +170,4 @@ namespace BH.Engine.Geometry
         /***************************************************/
     }
 }
+

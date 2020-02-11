@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -21,6 +21,7 @@
  */
 
 using BH.oM.Reflection.Attributes;
+using BH.oM.Quantities.Attributes;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -39,15 +40,16 @@ namespace BH.Engine.Reflection
         [Description("Return the custom description of a C# class member (e.g. property, method, field)")]
         public static string Description(this MemberInfo member)
         {
-            DescriptionAttribute attribute = member.GetCustomAttribute<DescriptionAttribute>();
+            DescriptionAttribute descriptionAttribute = member.GetCustomAttribute<DescriptionAttribute>();
+            QuantityAttribute quantityAttribute = member.GetCustomAttribute<QuantityAttribute>();
 
             string desc = "";
-            if (attribute != null && !string.IsNullOrWhiteSpace(attribute.Description))
-                desc = attribute.Description + Environment.NewLine;
+            if (descriptionAttribute != null && !string.IsNullOrWhiteSpace(descriptionAttribute.Description))
+                desc = descriptionAttribute.Description + Environment.NewLine;
 
             if (member is PropertyInfo)
             {
-                desc += ((PropertyInfo)member).PropertyType.Description() + Environment.NewLine;
+                desc += ((PropertyInfo)member).PropertyType.Description(quantityAttribute) + Environment.NewLine;
             }
 
             if (member.ReflectedType != null)
@@ -62,15 +64,16 @@ namespace BH.Engine.Reflection
         public static string Description(this ParameterInfo parameter)
         {
             IEnumerable<InputAttribute> inputDesc = parameter.Member.GetCustomAttributes<InputAttribute>().Where(x => x.Name == parameter.Name);
-
+            QuantityAttribute quantityAttribute = null;
             string desc = "";
             if (inputDesc.Count() > 0)
             {
                 desc = inputDesc.First().Description + Environment.NewLine;
+                quantityAttribute = inputDesc.First().Quantity;
             }
             if (parameter.ParameterType != null)
             {
-                desc += parameter.ParameterType.Description();
+                desc += parameter.ParameterType.Description(quantityAttribute);
             }
             return desc;
         }
@@ -79,6 +82,13 @@ namespace BH.Engine.Reflection
 
         [Description("Return the custom description of a C# class")]
         public static string Description(this Type type)
+        {
+            return Description(type, null);
+        }
+
+        /***************************************************/
+        [Description("Return the custom description of a C# class")]
+        public static string Description(this Type type, QuantityAttribute quantityAttribute)
         {
             if (type == null)
             {
@@ -92,6 +102,14 @@ namespace BH.Engine.Reflection
             if (attribute != null)
                 desc = attribute.Description + Environment.NewLine;
 
+            //If a quantity attribute is present, this is used to generate the default description
+            if (quantityAttribute != null)
+            {
+                desc += "This is a " + quantityAttribute.GetType().Name + " [" + quantityAttribute.SIUnit + "]";
+                desc += " (as a " + type.ToText(type.Namespace.StartsWith("BH.")) + ")";
+                return desc;
+            }
+
             //Add the default description
             desc += "This is a " + type.ToText(type.Namespace.StartsWith("BH."));
 
@@ -102,7 +120,7 @@ namespace BH.Engine.Reflection
 
             if (innerType.IsInterface)
             {
-                desc += ":";
+                desc += ": ";
                 List<Type> t = innerType.ImplementingTypes();
                 int m = Math.Min(15, t.Count);
 
@@ -140,3 +158,4 @@ namespace BH.Engine.Reflection
         /***************************************************/
     }
 }
+

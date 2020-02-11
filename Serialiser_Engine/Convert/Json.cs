@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -77,16 +77,18 @@ namespace BH.Engine.Serialiser
             else if (json.StartsWith("["))
             {
                 Reflection.Compute.RecordNote("The string provided represents a top-level Json Array instead of a Json object.\nDeserializing to a CustomObject.");
+
                 BsonArray array = MongoDB.Bson.Serialization.BsonSerializer.Deserialize<BsonArray>(json);
 
-                return new BH.oM.Base.CustomObject
+                return new BH.oM.Base.CustomObject()
                 {
                     CustomData = new Dictionary<string, object>()
                     {
-                        { "Objects", array.Select(b => Convert.FromBson(b.AsBsonDocument)).ToList() }
+                        { "Objects", array.Select(b => b.IsBsonDocument ? Convert.FromBson(b.AsBsonDocument) : Convert.FromJson(b.ToString())).ToList() }
                     }
                 };
             }
+
             else
             {
                 // Could we do something when a string is not a valid json?
@@ -98,3 +100,4 @@ namespace BH.Engine.Serialiser
         /*******************************************/
     }
 }
+

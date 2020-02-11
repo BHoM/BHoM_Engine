@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -21,6 +21,7 @@
  */
 
 using BH.oM.Data.Collections;
+using System.Collections.Generic;
 
 namespace BH.Engine.Data
 {
@@ -30,14 +31,16 @@ namespace BH.Engine.Data
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static GraphNode<T> GraphNode<T>(T value = default(T))
+        public static GraphNode<T> GraphNode<T>(T value = default(T), Dictionary<string,object> attributes = null)
         {
             return new GraphNode<T>
             {
-                Value = value
+                Value = value,
+                Attributes = attributes
             };
         }
 
         /***************************************************/
     }
 }
+

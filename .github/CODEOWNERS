@@ -20,9 +20,11 @@
 /MEP_Engine @kayleighhoude @FraserGreenroyd
 /Physical_Engine @al-fisher @rwemay @IsakNaslundBh @FraserGreenroyd
 /Planning_Engine @rwemay @al-fisher
+/Programming_Engine @adecler @FraserGreenroyd @al-fisher
 /Reflection_Engine @adecler @FraserGreenroyd @al-fisher
 /Results_Engine @IsakNaslundBh @FraserGreenroyd @rwemay
 #NEED OWNER: /SVG_Engine
 /Serialiser_Engine @adecler @FraserGreenroyd
+/Spatial_Engine @al-fisher @IsakNaslundBh @pawelbaran
 #NEED OWNER: /Speech_Engine
 /Structure_Engine @IsakNaslundBh @rwemay

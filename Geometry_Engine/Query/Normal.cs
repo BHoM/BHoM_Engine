@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -247,7 +247,18 @@ namespace BH.Engine.Geometry
         {
             throw new NotImplementedException();
         }
-        
+
+
+        /***************************************************/
+        /**** Public Methods - Surfaces                 ****/
+        /***************************************************/
+
+        public static Vector Normal(this PlanarSurface surface)
+        {
+            return surface.ExternalBoundary.INormal();
+        }
+
+
         /***************************************************/
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
@@ -260,4 +271,5 @@ namespace BH.Engine.Geometry
         /***************************************************/
     }
 }
+
 

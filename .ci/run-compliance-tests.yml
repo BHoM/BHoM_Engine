@@ -47,7 +47,7 @@ steps:
 - task: PowerShell@2
   displayName: 'Build Test Toolkit'
   inputs:
-    filePath: '$(Build.SourcesDirectory)/Test_Toolkit/BuildTest.ps1'
+    filePath: '$(Build.SourcesDirectory)/$(projectName)/.ci/BuildTest.ps1'
 
 - task: NuGetCommand@2
   displayName: 'Restore NuGets for Primary Solution'
@@ -67,5 +67,5 @@ steps:
 - task: VSTest@2
   inputs:
     testSelector: 'testAssemblies'
-    testAssemblyVer2: '$(Build.SourcesDirectory)/Test_Toolkit/Build/CodeComplianceTest_Test.dll'
+    testAssemblyVer2: '$(Build.SourcesDirectory)/Test_Toolkit_Corner/Test_Toolkit/Build/CodeComplianceTest_Test.dll'
     runSettingsFile: '.ci/testSettings.runsettings'

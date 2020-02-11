@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -26,6 +26,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
+using BH.oM.Quantities.Attributes;
 
 namespace BH.Engine.Reflection
 {
@@ -39,13 +40,17 @@ namespace BH.Engine.Reflection
         public static string OutputDescription(this MethodBase method)
         {
             OutputAttribute attribute = method.GetCustomAttribute<OutputAttribute>();
+            QuantityAttribute quantityAttribute = null;
 
             string desc = "";
 
             if (attribute != null && !string.IsNullOrWhiteSpace(attribute.Description))
                 desc = attribute.Description + Environment.NewLine;
 
-            desc += method.OutputType().Description();
+            if (attribute != null)
+                quantityAttribute = attribute.Quantity;
+
+            desc += method.OutputType().Description(quantityAttribute);
 
             return desc;
         }
@@ -53,3 +58,4 @@ namespace BH.Engine.Reflection
         /***************************************************/
     }
 }
+
