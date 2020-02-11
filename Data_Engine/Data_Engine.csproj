@@ -94,6 +94,7 @@
     <Compile Include="Query\AdjacencyDictionary.cs" />
     <Compile Include="Query\Axes.cs" />
     <Compile Include="Query\AxisExists.cs" />
+    <Compile Include="Query\DepthDictionary.cs" />
     <Compile Include="Query\CloseToPoint.cs" />
     <Compile Include="Query\ClosestData.cs" />
     <Compile Include="Query\ClosestNode.cs" />

@@ -31,23 +31,42 @@ namespace BH.Engine.Data
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        public static Dictionary<GraphNode<T>, List<GraphNode<T>>> AdjacencyDictionary<T>(this Graph<T> graph)
-        {
-            //get graph representation as adjacency list
-            //adjacency list is a collection of unordered lists used to represent a finite graph
-            Dictionary<GraphNode<T>, List<GraphNode<T>>> adjacency = new Dictionary<GraphNode<T>, List<GraphNode<T>>>();
-            foreach (GraphNode<T> node in graph.Nodes)
+        public static Dictionary<GraphNode<T>, int> DepthDictionary<T>(Dictionary<GraphNode<T>, List<GraphNode<T>>> adjacency, GraphNode<T> x)
+        {//https://www.geeksforgeeks.org/level-node-tree-source-node-using-bfs/
+         // dictionary to store level of each node  
+            Dictionary<GraphNode<T>, int> level = new Dictionary<GraphNode<T>, int>();
+            Dictionary<GraphNode<T>, bool> marked = new Dictionary<GraphNode<T>, bool>();
+            // create a queue  
+            Queue<GraphNode<T>> que = new Queue<GraphNode<T>>();
+            // enqueue element x  
+            que.Enqueue(x);
+            // initialize level of source node to 0  
+            level[x] = 0;
+            // marked it as visited  
+            marked[x] = true;
+            // do until queue is empty  
+            while (que.Count > 0)
             {
-                List<GraphNode<T>> neighbours = new List<GraphNode<T>>();
-                //neigbours in both directions
-                List<GraphNode<T>> neighboursOut = graph.Links.Where(x => x.StartNode == node).Select(x => x.EndNode).ToList();
-                List<GraphNode<T>> neighboursIn = graph.Links.Where(x => x.EndNode == node).Select(x => x.StartNode).ToList();
-                
-                neighbours.AddRange(neighboursOut);
-                neighbours.AddRange(neighboursIn);
-                adjacency.Add(node, neighbours);
+                // dequeue element  
+                x = que.Dequeue();
+                // traverse neighbors of node x  
+                foreach (GraphNode<T> b in adjacency[x])
+                {
+                    // b is neighbor of node x  
+                    // if b is not marked already  
+                    if (!marked.ContainsKey(b))
+                    {
+                        // enqueue b in queue  
+                        que.Enqueue(b);
+                        // level of b is level of x + 1  
+                        level[b] = level[x] + 1;
+                        // mark b  
+                        marked[b] = true;
+                    }
+                }
             }
-            return adjacency;
+
+            return level;
         }
     }
 }
