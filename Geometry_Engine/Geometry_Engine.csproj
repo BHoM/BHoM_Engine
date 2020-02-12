@@ -216,6 +216,7 @@
     <Compile Include="Query\IsValid.cs" />
     <Compile Include="Modify\Orient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Query\PointAtX.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Data_Engine\Data_Engine.csproj">
