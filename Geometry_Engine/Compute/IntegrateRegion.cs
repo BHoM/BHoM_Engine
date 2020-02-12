@@ -34,12 +34,12 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Integrates a closed region with x to the specified power on the XY-Plane")]
-        [Input("curve", "Defined counter clockwise on the XY-Plane")]
-        [Input("powX", "The region will be evaluated under the function: x^(powX)")]
-        [Input("tol", "The tolerance for considering a linesegment horisontal or vertical. /n" + 
-                      "i.e. (value at endpoint - value at startpoint) < tol")]
-        [Output("V", "Calculated value")]
+        [Description("Integrates a closed region with x to the specified power on the XY-Plane.")]
+        [Input("curve", "Defined counter clockwise on the XY-Plane.")]
+        [Input("powX", "The region will be evaluated under the function: x^(powX).")]
+        [Input("tol", "The tolerance for considering a line segment horizontal or vertical. /n" + 
+                      "i.e. (value at endpoint - value at startpoint) < tol.")]
+        [Output("V", "Calculated value.")]
         public static double IIntegrateRegion(this ICurve curve, int powX, double tol = Tolerance.Distance)
         {
             // Add tests (?)
@@ -49,11 +49,11 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [Description("Integrates a according to Green's Therom between two points with x to the specified power on the XY-Plane")]
-        [Input("a", "the point to begin from")]
-        [Input("b", "the point to end at")]
-        [Input("powX", "the region will be evaluated under the function: x^(powX)")]
-        [Output("V", "Calculated value, a 'meningless' value unless combined with other values to enclose a region")]
+        [Description("Integrates according to Green's Theorem between two points with x to the specified power on the XY-Plane.")]
+        [Input("a", "the point to begin from.")]
+        [Input("b", "the point to end at.")]
+        [Input("powX", "the region will be evaluated under the function: x^(powX).")]
+        [Output("V", "Calculated value, a 'meaningless' value unless combined with other values to enclose a region.")]
         public static double IntSurfLine(Point a, Point b, int powX, double tol = Tolerance.Distance)
         {
             //TODO powX could be a double, but that might slow thing down somewhat
