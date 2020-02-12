@@ -35,9 +35,9 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Takes a List of Polylines and creates a `squished` version with the same area at every X-location, and hence the same total area as well. Required for some calculations")]
-        [Input("pLines", "the outermost Polyline must be counter-clockwise and clockwise ones are holes wthin it, should be on the XY-plane")]
-        [Output("C", "A single Polyline oriented counter clockwise with the same area as the sum of all the polylines")]
+        [Description("Takes a List of Polylines and creates a `squished` version with the same area at every X-location, and hence the same total area as well. Required for some calculations.")]
+        [Input("pLines", "the outermost Polyline must be counter-clockwise. Clockwise ones are holes within it. Both Polylines should be on the XY-plane.")]
+        [Output("C", "A single Polyline oriented counter clockwise with the same area as the sum of all the polylines.")]
         public static Polyline WetBlanketInterpretation(List<Polyline> pLines, double tol = Tolerance.Distance)
         {
             List<Polyline> clones = pLines.Select(x => x.Clone()).ToList();
@@ -210,7 +210,7 @@ namespace BH.Engine.Geometry
                 // TODO handle this?    
                 // would ideally take another step along the polyline in the direction
                 Engine.Reflection.Compute.RecordWarning(
-                    "WetBlanketInterpretation issue, points ontop of eachother");
+                    "WetBlanketInterpretation issue, points on top of each other");
             }
             else
             {           // All curves with positive area are oriented counter-clockwise, hence we can know which side of the curve is area
