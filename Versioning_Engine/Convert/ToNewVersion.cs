@@ -31,6 +31,7 @@ using System.Diagnostics;
 using System.IO;
 using System.IO.Pipes;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -62,16 +63,17 @@ namespace BH.Engine.Versioning
 
         /***************************************************/
 
-        public static BsonDocument ToNewVersion(BsonDocument document)
+        public static BsonDocument ToNewVersion(BsonDocument document, string version = "")
         {
             if (document == null)
                 return null;
 
-            // Get the current version of the BHoM
-            Version currentVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+            // Get the current version of the BHoM if not provided
+            if (version.Length == 0)
+                version = GetCurrentAssemblyVersion();
 
             // Create a connection with the upgrader
-            NamedPipeServerStream pipe = GetPipe(currentVersion.Major + "." + currentVersion.Minor);
+            NamedPipeServerStream pipe = GetPipe(version);
             if (pipe == null)
                 return null;
 
@@ -168,6 +170,35 @@ namespace BH.Engine.Versioning
             reader.Read(content, 0, contentSize);
 
             return BsonSerializer.Deserialize(content, typeof(BsonDocument)) as BsonDocument;
+        }
+
+        /***************************************************/
+
+        private static string GetCurrentAssemblyVersion()
+        {
+            string version = "";
+
+            // First try to get the assembly file version
+            object[] attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyFileVersionAttribute), true);
+            if (attributes.Length > 0)
+            {
+                AssemblyFileVersionAttribute attribute = attributes.First() as AssemblyFileVersionAttribute;
+                if (attribute != null && attribute.Version != null)
+                {
+                    string[] split = attribute.Version.Split('.');
+                    if (split.Length >= 2)
+                        version = split[0] + "." + split[1];
+                }
+            }
+
+            // Get the assembly version as a fallback
+            if (version.Length == 0)
+            {
+                Version currentVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+                version = currentVersion.Major + "." + currentVersion.Minor;
+            }
+
+            return version;
         }
 
 
