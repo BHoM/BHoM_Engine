@@ -156,9 +156,9 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        private static double IntegrateRegion(NurbsCurve pLine, int powX, double tol = Tolerance.Distance)
+        private static double IntegrateRegion(ICurve curve, int powX, double tol = Tolerance.Distance)
         {
-            throw new NotImplementedException("NurbsCurve is not imlemented yet so this cannot be calculated");
+            throw new NotImplementedException("Region integration is not get implemented for curves of type " + curve.GetType().Name);
         }
 
         /***************************************************/
