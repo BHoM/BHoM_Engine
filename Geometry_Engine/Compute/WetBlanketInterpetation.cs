@@ -166,7 +166,7 @@ namespace BH.Engine.Geometry
                         if (xValues[j] > dMax)
                             break;
 
-                        Point pt = PointAtX(pLine.ControlPoints[i], pLine.ControlPoints[i + 1], xValues[j]);
+                        Point pt = Query.PointAtX(pLine.ControlPoints[i], pLine.ControlPoints[i + 1], xValues[j]);
                         polyline.ControlPoints.Add(pt);
                         list.Add(new Tuple<Point, int, int>(pt, k, polyline.ControlPoints.Count - 1));
                     }
@@ -182,7 +182,7 @@ namespace BH.Engine.Geometry
                         if (xValues[j] < dMin)
                             break;
 
-                        Point pt = PointAtX(pLine.ControlPoints[i], pLine.ControlPoints[i + 1], xValues[j]);
+                        Point pt = Query.PointAtX(pLine.ControlPoints[i], pLine.ControlPoints[i + 1], xValues[j]);
                         polyline.ControlPoints.Add(pt);
                         list.Add(new Tuple<Point, int, int>(pt, k, polyline.ControlPoints.Count - 1));
                     }
@@ -266,19 +266,6 @@ namespace BH.Engine.Geometry
             if (center.Y - tol > a.Y)
                 return 3;   // under
             return -100;  // the same
-        }
-
-        /***************************************************/
-
-        public static Point PointAtX(Point a, Point b, double x)    //Public??
-        {
-            return new Point()  
-            {
-                X = x,
-                Y = ((b.Y - a.Y) * (x - a.X)
-                                     / (b.X - a.X)
-                                     + a.Y)
-            };
         }
 
         /***************************************************/
