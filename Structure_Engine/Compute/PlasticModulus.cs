@@ -266,7 +266,7 @@ namespace BH.Engine.Structure
                     if (ptOn != null)
                         control[0] = ptOn;
                     
-                    ptOn = Geometry.Compute.PointAtX(one, two, x);
+                    ptOn = Geometry.Query.PointAtX(one, two, x);
                     control.Add(ptOn);
                     results.Add(new Polyline() { ControlPoints = control });
                     lastSplit = i;
@@ -401,7 +401,7 @@ namespace BH.Engine.Structure
             if (line.Start.X < x && line.End.X > x ||
                 line.Start.X > x && line.End.X < x)
             {
-                Point ptOn = Geometry.Compute.PointAtX(line.Start, line.End, x);
+                Point ptOn = Geometry.Query.PointAtX(line.Start, line.End, x);
                 results.Add(new Line() { Start = line.Start, End = ptOn });
                 results.Add(new Line() { Start = ptOn, End = line.End });
             }
