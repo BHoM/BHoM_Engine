@@ -42,9 +42,10 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Calculates the PlasticModulus [Wpl] for a enclosed region")]
-        [Input("pLine", "Polyline, should have the upper side along the x-axis and the rest of the lines should be defineble as a function of x apart for veritcal segments \n" +
+        [Input("pLine", "Polyline, should have the upper side along the x-axis and the rest of the lines should be defineble as a function of x apart for veritcal segments. \n" +
                         "The last LineSegment should be the upper one, use WetBlanketInterpertation() to convert a collection of regions to compliant form")]
-        [Input("curves", "The true curves of the section where counter-clockwise curves are positive area and clockwise ones are negative")]
+        [Input("curves", "The true curves of the section where counter-clockwise curves are positive area and clockwise ones are negative. /n" +
+                         "Should be the curves whos Polyline version was provided for WetBlanketInterpetation()")]
         [Input("trueArea", "The true area of the region")]
         [Output("plasticModulus", "The plasticModulus for the region")]
         public static double PlasticModulus(this Polyline pLine, IEnumerable<ICurve> curves = null, double trueArea = double.NaN)
@@ -408,6 +409,13 @@ namespace BH.Engine.Structure
                 results.Add(line.Clone());
 
             return results;
+        }
+
+        /***************************************************/
+        
+        private static IEnumerable<ICurve> SplitAtX(ICurve curve, double x, double tol = Tolerance.Distance)
+        {
+            throw new NotImplementedException("Plastic modulus could not be calculated. Can not preform necessary splitting operation on curves of type " + curve.GetType().Name + ".");
         }
 
         /***************************************************/
