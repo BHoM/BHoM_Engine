@@ -1,0 +1,240 @@
+{
+"BH.Engine.Common.Compute.DistributeOutlines(System.Collections.Generic.List<System.Collections.Generic.List<BH.oM.Geometry.IElement1D>>, System.Boolean, System.Double)",
+typeof(BH.Engine.Common.Compute).GetMethod("DistributeOutlines", new Type[] {typeof(System.Collections.Generic.List<System.Collections.Generic.List<BH.oM.Dimensional.IElement1D>>), typeof(System.Boolean), typeof(System.Double)})
+},
+{
+"BH.Engine.Common.Compute.DistributeOutlines(System.Collections.Generic.List<System.Collections.Generic.List<BH.oM.Geometry.IElement1D>>, System.Double)",
+typeof(BH.Engine.Common.Compute).GetMethod("DistributeOutlines", new Type[] {typeof(System.Collections.Generic.List<System.Collections.Generic.List<BH.oM.Dimensional.IElement1D>>), typeof(System.Double)})
+},
+{
+"BH.oM.Geometry.IElement0D.INewElement0D(BH.oM.Geometry.IElement1D, BH.oM.Geometry.Point)",
+typeof(BH.oM.Dimensional.IElement0D).GetMethod("INewElement0D", new Type[] {typeof(BH.oM.Dimensional.IElement1D), typeof(BH.oM.Geometry.Point)})
+},
+{
+"BH.oM.Geometry.IElement1D.INewElement1D(BH.oM.Geometry.IElement2D, BH.oM.Geometry.ICurve)",
+typeof(BH.oM.Dimensional.IElement1D).GetMethod("INewElement1D", new Type[] {typeof(BH.oM.Dimensional.IElement2D), typeof(BH.oM.Geometry.ICurve)})
+},
+{
+"BH.oM.Geometry.IElement2D.INewInternalElement2D(BH.oM.Geometry.IElement2D)",
+typeof(BH.oM.Dimensional.IElement2D).GetMethod("INewInternalElement2D", new Type[] {typeof(BH.oM.Dimensional.IElement2D)})
+},
+{
+"BH.Engine.Common.Modify.Translate(BH.oM.Geometry.IElement2D, BH.oM.Geometry.Vector)",
+typeof(BH.Engine.Common.Modify).GetMethod("Translate", new Type[] {typeof(BH.oM.Dimensional.IElement2D), typeof(BH.oM.Geometry.Vector)})
+},
+{
+"BH.Engine.Common.Modify.Translate(BH.oM.Geometry.IElement1D, BH.oM.Geometry.Vector)",
+typeof(BH.Engine.Common.Modify).GetMethod("Translate", new Type[] {typeof(BH.oM.Dimensional.IElement1D), typeof(BH.oM.Geometry.Vector)})
+},
+{
+"BH.Engine.Common.Modify.Translate(BH.oM.Geometry.IElement0D, BH.oM.Geometry.Vector)",
+typeof(BH.Engine.Common.Modify).GetMethod("Translate", new Type[] {typeof(BH.oM.Dimensional.IElement0D), typeof(BH.oM.Geometry.Vector)})
+},
+{
+"BH.Engine.Common.Modify.ISetElements0D(BH.oM.Geometry.IElement1D, System.Collections.Generic.List<BH.oM.Geometry.IElement0D>)",
+typeof(BH.Engine.Common.Modify).GetMethod("ISetElements0D", new Type[] {typeof(BH.oM.Dimensional.IElement1D), typeof(System.Collections.Generic.List<BH.oM.Dimensional.IElement0D>)})
+},
+{
+"BH.Engine.Common.Modify.ISetGeometry(BH.oM.Geometry.IElement0D, BH.oM.Geometry.Point)",
+typeof(BH.Engine.Common.Modify).GetMethod("ISetGeometry", new Type[] {typeof(BH.oM.Dimensional.IElement0D), typeof(BH.oM.Geometry.Point)})
+},
+{
+"BH.Engine.Common.Modify.ISetGeometry(BH.oM.Geometry.IElement1D, BH.oM.Geometry.ICurve)",
+typeof(BH.Engine.Common.Modify).GetMethod("ISetGeometry", new Type[] {typeof(BH.oM.Dimensional.IElement1D), typeof(BH.oM.Geometry.ICurve)})
+},
+{
+"BH.Engine.Common.Modify.ISetInternalElements2D(BH.oM.Geometry.IElement2D, System.Collections.Generic.List<BH.oM.Geometry.IElement2D>)",
+typeof(BH.Engine.Common.Modify).GetMethod("ISetInternalElements2D", new Type[] {typeof(BH.oM.Dimensional.IElement2D), typeof(System.Collections.Generic.List<BH.oM.Dimensional.IElement2D>)})
+},
+{
+"BH.Engine.Common.Modify.ISetOutlineElements1D(BH.oM.Geometry.IElement2D, System.Collections.Generic.List<BH.oM.Geometry.IElement1D>)",
+typeof(BH.Engine.Common.Modify).GetMethod("ISetOutlineElements1D", new Type[] {typeof(BH.oM.Dimensional.IElement2D), typeof(System.Collections.Generic.List<BH.oM.Dimensional.IElement1D>)})
+},
+{
+"BH.Engine.Common.Query.Area(BH.oM.Geometry.IElement2D)",
+typeof(BH.Engine.Common.Query).GetMethod("Area", new Type[] {typeof(BH.oM.Dimensional.IElement2D)})
+},
+{
+"BH.Engine.Common.Query.Bounds(BH.oM.Geometry.IElement0D)",
+typeof(BH.Engine.Common.Query).GetMethod("Bounds", new Type[] {typeof(BH.oM.Dimensional.IElement0D)})
+},
+{
+"BH.Engine.Common.Query.Bounds(BH.oM.Geometry.IElement1D)",
+typeof(BH.Engine.Common.Query).GetMethod("Bounds", new Type[] {typeof(BH.oM.Dimensional.IElement1D)})
+},
+{
+"BH.Engine.Common.Query.Bounds(BH.oM.Geometry.IElement2D)",
+typeof(BH.Engine.Common.Query).GetMethod("Bounds", new Type[] {typeof(BH.oM.Dimensional.IElement2D)})
+},
+{
+"BH.Engine.Common.Query.IBounds(BH.oM.Geometry.IElement)",
+typeof(BH.Engine.Common.Query).GetMethod("IBounds", new Type[] {typeof(BH.oM.Dimensional.IElement)})
+},
+{
+"BH.Engine.Common.Query.IBounds(System.Collections.Generic.IEnumerable<BH.oM.Geometry.IElement>)",
+typeof(BH.Engine.Common.Query).GetMethod("IBounds", new Type[] {typeof(System.Collections.Generic.IEnumerable<BH.oM.Dimensional.IElement>)})
+},
+{
+"BH.Engine.Common.Query.Centroid(BH.oM.Geometry.IElement1D)",
+typeof(BH.Engine.Common.Query).GetMethod("Centroid", new Type[] {typeof(BH.oM.Dimensional.IElement1D)})
+},
+{
+"BH.Engine.Common.Query.Centroid(BH.oM.Geometry.IElement2D)",
+typeof(BH.Engine.Common.Query).GetMethod("Centroid", new Type[] {typeof(BH.oM.Dimensional.IElement2D)})
+},
+{
+"BH.Engine.Common.Query.ControlPoints(BH.oM.Geometry.IElement1D)",
+typeof(BH.Engine.Common.Query).GetMethod("ControlPoints", new Type[] {typeof(BH.oM.Dimensional.IElement1D)})
+},
+{
+"BH.Engine.Common.Query.ControlPoints(BH.oM.Geometry.IElement2D, System.Boolean)",
+typeof(BH.Engine.Common.Query).GetMethod("ControlPoints", new Type[] {typeof(BH.oM.Dimensional.IElement2D), typeof(System.Boolean)})
+},
+{
+"BH.Engine.Common.Query.ElementCurves(BH.oM.Geometry.IElement1D, System.Boolean)",
+typeof(BH.Engine.Common.Query).GetMethod("ElementCurves", new Type[] {typeof(BH.oM.Dimensional.IElement1D), typeof(System.Boolean)})
+},
+{
+"BH.Engine.Common.Query.ElementCurves(BH.oM.Geometry.IElement2D, System.Boolean)",
+typeof(BH.Engine.Common.Query).GetMethod("ElementCurves", new Type[] {typeof(BH.oM.Dimensional.IElement2D), typeof(System.Boolean)})
+},
+{
+"BH.Engine.Common.Query.IElementCurves(BH.oM.Geometry.IElement, System.Boolean)",
+typeof(BH.Engine.Common.Query).GetMethod("IElementCurves", new Type[] {typeof(BH.oM.Dimensional.IElement), typeof(System.Boolean)})
+},
+{
+"BH.Engine.Common.Query.IElementCurves(System.Collections.Generic.IEnumerable<BH.oM.Geometry.IElement>, System.Boolean)",
+typeof(BH.Engine.Common.Query).GetMethod("IElementCurves", new Type[] {typeof(System.Collections.Generic.IEnumerable<BH.oM.Dimensional.IElement>), typeof(System.Boolean)})
+},
+{
+"BH.Engine.Common.Query.ElementVertices(BH.oM.Geometry.IElement1D)",
+typeof(BH.Engine.Common.Query).GetMethod("ElementVertices", new Type[] {typeof(BH.oM.Dimensional.IElement1D)})
+},
+{
+"BH.Engine.Common.Query.ElementVertices(BH.oM.Geometry.IElement2D)",
+typeof(BH.Engine.Common.Query).GetMethod("ElementVertices", new Type[] {typeof(BH.oM.Dimensional.IElement2D)})
+},
+{
+"BH.Engine.Common.Query.IElementVertices(BH.oM.Geometry.IElement)",
+typeof(BH.Engine.Common.Query).GetMethod("IElementVertices", new Type[] {typeof(BH.oM.Dimensional.IElement)})
+},
+{
+"BH.Engine.Common.Query.IElementVertices(System.Collections.Generic.IEnumerable<BH.oM.Geometry.IElement>)",
+typeof(BH.Engine.Common.Query).GetMethod("IElementVertices", new Type[] {typeof(System.Collections.Generic.IEnumerable<BH.oM.Dimensional.IElement>)})
+},
+{
+"BH.Engine.Common.Query.IElements0D(BH.oM.Geometry.IElement1D)",
+typeof(BH.Engine.Common.Query).GetMethod("IElements0D", new Type[] {typeof(BH.oM.Dimensional.IElement1D)})
+},
+{
+"BH.Engine.Common.Query.IGeometry(BH.oM.Geometry.IElement0D)",
+typeof(BH.Engine.Common.Query).GetMethod("IGeometry", new Type[] {typeof(BH.oM.Dimensional.IElement0D)})
+},
+{
+"BH.Engine.Common.Query.IGeometry(BH.oM.Geometry.IElement1D)",
+typeof(BH.Engine.Common.Query).GetMethod("IGeometry", new Type[] {typeof(BH.oM.Dimensional.IElement1D)})
+},
+{
+"BH.Engine.Common.Query.IInternalElements2D(BH.oM.Geometry.IElement2D)",
+typeof(BH.Engine.Common.Query).GetMethod("IInternalElements2D", new Type[] {typeof(BH.oM.Dimensional.IElement2D)})
+},
+{
+"BH.Engine.Common.Query.IsSelfIntersecting(BH.oM.Geometry.IElement1D, System.Double)",
+typeof(BH.Engine.Common.Query).GetMethod("IsSelfIntersecting", new Type[] {typeof(BH.oM.Dimensional.IElement1D), typeof(System.Double)})
+},
+{
+"BH.Engine.Common.Query.IsSelfIntersecting(BH.oM.Geometry.IElement2D, System.Double)",
+typeof(BH.Engine.Common.Query).GetMethod("IsSelfIntersecting", new Type[] {typeof(BH.oM.Dimensional.IElement2D), typeof(System.Double)})
+},
+{
+"BH.Engine.Common.Query.Length(BH.oM.Geometry.IElement1D)",
+typeof(BH.Engine.Common.Query).GetMethod("Length", new Type[] {typeof(BH.oM.Dimensional.IElement1D)})
+},
+{
+"BH.Engine.Common.Query.Normal(BH.oM.Geometry.IElement2D)",
+typeof(BH.Engine.Common.Query).GetMethod("Normal", new Type[] {typeof(BH.oM.Dimensional.IElement2D)})
+},
+{
+"BH.Engine.Common.Query.IOutlineElements1D(BH.oM.Geometry.IElement2D)",
+typeof(BH.Engine.Common.Query).GetMethod("IOutlineElements1D", new Type[] {typeof(BH.oM.Dimensional.IElement2D)})
+},
+{
+"BH.Engine.Common.Query.IOutlineCurve(BH.oM.Geometry.IElement2D)",
+typeof(BH.Engine.Common.Query).GetMethod("IOutlineCurve", new Type[] {typeof(BH.oM.Dimensional.IElement2D)})
+},
+{
+"BH.Engine.Common.Query.IOutlineCurve(System.Collections.Generic.List<BH.oM.Geometry.IElement1D>)",
+typeof(BH.Engine.Common.Query).GetMethod("IOutlineCurve", new Type[] {typeof(System.Collections.Generic.List<BH.oM.Dimensional.IElement1D>)})
+},
+{
+"BH.Engine.Common.Query.IInternalOutlineCurves(BH.oM.Geometry.IElement2D)",
+typeof(BH.Engine.Common.Query).GetMethod("IInternalOutlineCurves", new Type[] {typeof(BH.oM.Dimensional.IElement2D)})
+},
+{
+"BH.oM.Geometry.IElement1D.NewElement1D(BH.oM.Environment.Elements.Opening, BH.oM.Geometry.ICurve)",
+typeof(BH.oM.Dimensional.IElement1D).GetMethod("NewElement1D", new Type[] {typeof(BH.oM.Environment.Elements.Opening), typeof(BH.oM.Geometry.ICurve)})
+},
+{
+"BH.oM.Geometry.IElement1D.NewElement1D(BH.oM.Environment.Elements.Panel, BH.oM.Geometry.ICurve)",
+typeof(BH.oM.Dimensional.IElement1D).GetMethod("NewElement1D", new Type[] {typeof(BH.oM.Environment.Elements.Panel), typeof(BH.oM.Geometry.ICurve)})
+},
+{
+"BH.oM.Geometry.IElement2D.NewInternalElement2D(BH.oM.Environment.Elements.Panel)",
+typeof(BH.oM.Dimensional.IElement2D).GetMethod("NewInternalElement2D", new Type[] {typeof(BH.oM.Environment.Elements.Panel)})
+},
+{
+"BH.Engine.Environment.Modify.SetInternalElements2D(BH.oM.Environment.Elements.Opening, System.Collections.Generic.List<BH.oM.Geometry.IElement2D>)",
+typeof(BH.Engine.Environment.Modify).GetMethod("SetInternalElements2D", new Type[] {typeof(BH.oM.Environment.Elements.Opening), typeof(System.Collections.Generic.List<BH.oM.Dimensional.IElement2D>)})
+},
+{
+"BH.Engine.Environment.Modify.SetInternalElements2D(BH.oM.Environment.Elements.Panel, System.Collections.Generic.List<BH.oM.Geometry.IElement2D>)",
+typeof(BH.Engine.Environment.Modify).GetMethod("SetInternalElements2D", new Type[] {typeof(BH.oM.Environment.Elements.Panel), typeof(System.Collections.Generic.List<BH.oM.Dimensional.IElement2D>)})
+},
+{
+"BH.Engine.Environment.Modify.SetOutlineElements1D(BH.oM.Environment.Elements.Opening, System.Collections.Generic.List<BH.oM.Geometry.IElement1D>)",
+typeof(BH.Engine.Environment.Modify).GetMethod("SetOutlineElements1D", new Type[] {typeof(BH.oM.Environment.Elements.Opening), typeof(System.Collections.Generic.List<BH.oM.Dimensional.IElement1D>)})
+},
+{
+"BH.Engine.Environment.Modify.SetOutlineElements1D(BH.oM.Environment.Elements.Panel, System.Collections.Generic.List<BH.oM.Geometry.IElement1D>)",
+typeof(BH.Engine.Environment.Modify).GetMethod("SetOutlineElements1D", new Type[] {typeof(BH.oM.Environment.Elements.Panel), typeof(System.Collections.Generic.List<BH.oM.Dimensional.IElement1D>)})
+},
+{
+"BH.Engine.ModelLaundry.Query.ClosestElements2D(System.Collections.Generic.List<BH.oM.Geometry.IElement2D>, System.Double, System.Double)",
+typeof(BH.Engine.ModelLaundry.Query).GetMethod("ClosestElements2D", new Type[] {typeof(System.Collections.Generic.List<BH.oM.Dimensional.IElement2D>), typeof(System.Double), typeof(System.Double)})
+},
+{
+"BH.oM.Geometry.IElement0D.NewElement0D(BH.oM.Structure.Elements.Bar, BH.oM.Geometry.Point)",
+typeof(BH.oM.Dimensional.IElement0D).GetMethod("NewElement0D", new Type[] {typeof(BH.oM.Structure.Elements.Bar), typeof(BH.oM.Geometry.Point)})
+},
+{
+"BH.oM.Geometry.IElement1D.NewElement1D(BH.oM.Structure.Elements.Opening, BH.oM.Geometry.ICurve)",
+typeof(BH.oM.Dimensional.IElement1D).GetMethod("NewElement1D", new Type[] {typeof(BH.oM.Structure.Elements.Opening), typeof(BH.oM.Geometry.ICurve)})
+},
+{
+"BH.oM.Geometry.IElement1D.NewElement1D(BH.oM.Structure.Elements.Panel, BH.oM.Geometry.ICurve)",
+typeof(BH.oM.Dimensional.IElement1D).GetMethod("NewElement1D", new Type[] {typeof(BH.oM.Structure.Elements.Panel), typeof(BH.oM.Geometry.ICurve)})
+},
+{
+"BH.oM.Geometry.IElement2D.NewInternalElement2D(BH.oM.Structure.Elements.Panel)",
+typeof(BH.oM.Dimensional.IElement2D).GetMethod("NewInternalElement2D", new Type[] {typeof(BH.oM.Structure.Elements.Panel)})
+},
+{
+"BH.Engine.Structure.Modify.SetElements0D(BH.oM.Structure.Elements.Bar, System.Collections.Generic.List<BH.oM.Geometry.IElement0D>)",
+typeof(BH.Engine.Structure.Modify).GetMethod("SetElements0D", new Type[] {typeof(BH.oM.Structure.Elements.Bar), typeof(System.Collections.Generic.List<BH.oM.Dimensional.IElement0D>)})
+},
+{
+"BH.Engine.Structure.Modify.SetInternalElements2D(BH.oM.Structure.Elements.Opening, System.Collections.Generic.List<BH.oM.Geometry.IElement2D>)",
+typeof(BH.Engine.Structure.Modify).GetMethod("SetInternalElements2D", new Type[] {typeof(BH.oM.Structure.Elements.Opening), typeof(System.Collections.Generic.List<BH.oM.Dimensional.IElement2D>)})
+},
+{
+"BH.Engine.Structure.Modify.SetInternalElements2D(BH.oM.Structure.Elements.Panel, System.Collections.Generic.List<BH.oM.Geometry.IElement2D>)",
+typeof(BH.Engine.Structure.Modify).GetMethod("SetInternalElements2D", new Type[] {typeof(BH.oM.Structure.Elements.Panel), typeof(System.Collections.Generic.List<BH.oM.Dimensional.IElement2D>)})
+},
+{
+"BH.Engine.Structure.Modify.SetOutlineElements1D(BH.oM.Structure.Elements.Opening, System.Collections.Generic.List<BH.oM.Geometry.IElement1D>)",
+typeof(BH.Engine.Structure.Modify).GetMethod("SetOutlineElements1D", new Type[] {typeof(BH.oM.Structure.Elements.Opening), typeof(System.Collections.Generic.List<BH.oM.Dimensional.IElement1D>)})
+},
+{
+"BH.Engine.Structure.Modify.SetOutlineElements1D(BH.oM.Structure.Elements.Panel, System.Collections.Generic.List<BH.oM.Geometry.IElement1D>)",
+typeof(BH.Engine.Structure.Modify).GetMethod("SetOutlineElements1D", new Type[] {typeof(BH.oM.Structure.Elements.Panel), typeof(System.Collections.Generic.List<BH.oM.Dimensional.IElement1D>)})
+},
