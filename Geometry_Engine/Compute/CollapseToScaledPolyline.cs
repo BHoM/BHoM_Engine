@@ -39,7 +39,7 @@ namespace BH.Engine.Geometry
         [Input("tolerance", "tolerance is the angleTolerance for a unit circle, the tolerance value will vary by: toleranceGrowth over curvature")]
         [Input("toleranceGrowth", "toleranceGrowth is the value that decides how much the angleTolerance varies due to curvature")]
         [Input("maxDivisionsPerSegment", "The maximum number of segment each sub-curve can be broken into")]
-        [Input("scale", "the radius of a baseline circle for the angle tolerance, smaller circles will have less segments and bigger more. Default of 0 will auto-generate for the PolyCurve")]
+        [Input("scale", "the radius of a baseline circle for the angle tolerance, smaller circles will have less segments and bigger more. Default of 0 means the program will determine an appropriate radius for the PolyCurve")]
         [Output("C", "A polyline approximating the provided curve")]
         public static Polyline CollapseToScaledPolyline(this PolyCurve curve, double tolerance = 0.04, double toleranceGrowth = 0.001, int maxDivisionsPerSegment = 200, double scale = 0)
         {

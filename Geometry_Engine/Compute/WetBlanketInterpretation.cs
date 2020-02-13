@@ -141,8 +141,8 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [Description("Modifies a Polyline to have verticies at every xValue, i.e. lineIntersections at every x in xValues. \n" + 
-                     "But also creates a separate list of every point which also stores its index on the Polyline and k")]
+        [Description("Modifies a Polyline to have verticies at every xValue, i.e. lineIntersections at every x in xValues. \n" +
+                     "Also creates a separate list of every point which also stores its index on the Polyline and k")]
         private static Polyline SplitPolylineAtXValues(Polyline pLine, ref List<Tuple<Point, int, int>> list, List<double> xValues, int k, double tol)
         {
             Polyline polyline = new Polyline();

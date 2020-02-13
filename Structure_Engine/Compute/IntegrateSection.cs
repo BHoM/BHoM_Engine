@@ -40,10 +40,10 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Calculates Section properties for a region on the XY-Plane. /n" +
-                     "The resulting properties are in relation to the orientation on the plane.")]
+                     "The resulting properties are oriented to the XY-Plane.")]
         [Input("curves", "Non-intersecting edge curves that make up the section.")]
         [Input("tolerance", "The angleTolerance for dividing the section curves.")]
-        [Output("V", "Dictionary containing the section properties for the X- and Y-axis.")]
+        [Output("V", "Dictionary containing the section properties for the X and Y axis.")]
         public static Dictionary<string, object> IntegrateSection(List<ICurve> curves, double tolerance = 0.04)
         {
             Dictionary<string, object> results = new Dictionary<string, object>();
