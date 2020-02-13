@@ -53,7 +53,9 @@ namespace BH.Engine.Geometry
         [Input("a", "the point to begin from.")]
         [Input("b", "the point to end at.")]
         [Input("powX", "the region will be evaluated under the function: x^(powX).")]
-        [Output("V", "Calculated value, a 'meaningless' value unless combined with other values to enclose a region.")]
+        [Output("V", "Calculated value. The region intergral calculated over a boundery, the line from a to b./n" + 
+                     "The solution is only defined for closed counter-clockwise oriented regions, this can be achived by a sum of solutions." +
+                     "This value should only be used on its own with this in mind.")]
         public static double IntSurfLine(Point a, Point b, int powX, double tol = Tolerance.Distance)
         {
             //TODO powX could be a double, but that might slow thing down somewhat
