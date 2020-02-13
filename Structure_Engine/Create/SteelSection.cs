@@ -204,12 +204,12 @@ namespace BH.Engine.Structure
             var preProcessValues = PreProcessSectionCreate(name, profile);
             name = preProcessValues.Item1;
             profile = preProcessValues.Item2;
-            Dictionary<string,object> constants= preProcessValues.Item3;
+            Dictionary<string,double> constants= preProcessValues.Item3;
 
             SteelSection section = new SteelSection(profile,
-                (double)constants["Area"], (double)constants["Rgy"], (double)constants["Rgz"], (double)constants["J"], (double)constants["Iy"], (double)constants["Iz"], (double)constants["Iw"], (double)constants["Wely"],
-                (double)constants["Welz"], (double)constants["Wply"], (double)constants["Wplz"], (double)constants["CentreZ"], (double)constants["CentreY"], (double)constants["Vz"],
-                (double)constants["Vpz"], (double)constants["Vy"], (double)constants["Vpy"], (double)constants["Asy"], (double)constants["Asz"]);
+                constants["Area"], constants["Rgy"], constants["Rgz"], constants["J"], constants["Iy"], constants["Iz"], constants["Iw"], constants["Wely"],
+                constants["Welz"], constants["Wply"], constants["Wplz"], constants["CentreZ"], constants["CentreY"], constants["Vz"],
+                constants["Vpz"], constants["Vy"], constants["Vpy"], constants["Asy"], constants["Asz"]);
 
             //Postprocess section. Sets default name if null, and grabs default material for section if noting is provided
             return PostProcessSectionCreate(section, name, material, MaterialType.Steel);
