@@ -47,11 +47,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Compute\DangerZoneMethods.cs" />
     <Compile Include="Convert\ToNewVersion.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Compute\" />
     <Folder Include="Create\" />
     <Folder Include="Modify\" />
     <Folder Include="Query\" />
