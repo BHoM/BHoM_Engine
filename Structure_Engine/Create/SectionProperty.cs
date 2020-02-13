@@ -75,7 +75,7 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Run standard pre-processing needed for all section creates. Checks name and grabs value from profile if nothing provided and calculates all section constants")]
-        private static Output<string, IProfile, Dictionary<string, object>> PreProcessSectionCreate(string name, IProfile profile)
+        private static Output<string, IProfile, Dictionary<string, double>> PreProcessSectionCreate(string name, IProfile profile)
         {
             //Check name, if nothing provided, try grabbing name from profile
             if (string.IsNullOrWhiteSpace(name) && profile.Name != null)
@@ -87,15 +87,15 @@ namespace BH.Engine.Structure
                 Engine.Reflection.Compute.RecordWarning("Profile with name " + profile.Name + " does not contain any edges. Section named " + name + " made with this profile will have 0 value sections constants");
             }
 
-            Output<IProfile, Dictionary<string, object>> result = Compute.Integrate(profile, Tolerance.MicroDistance);
+            Output<IProfile, Dictionary<string, double>> result = Compute.Integrate(profile, Tolerance.MicroDistance);
 
             profile = result.Item1;
-            Dictionary<string, object> constants = result.Item2;
+            Dictionary<string, double> constants = result.Item2;
 
             constants["J"] = profile.ITorsionalConstant();
             constants["Iw"] = profile.IWarpingConstant();
 
-            return new Output<string, IProfile, Dictionary<string, object>> { Item1 = name, Item2 = profile, Item3 = constants };
+            return new Output<string, IProfile, Dictionary<string, double>> { Item1 = name, Item2 = profile, Item3 = constants };
         }
 
         /***************************************************/

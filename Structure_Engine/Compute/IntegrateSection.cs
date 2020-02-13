@@ -44,9 +44,9 @@ namespace BH.Engine.Structure
         [Input("curves", "Non-intersecting edge curves that make up the section.")]
         [Input("tolerance", "The angleTolerance for dividing the section curves.")]
         [Output("V", "Dictionary containing the section properties for the X and Y axis.")]
-        public static Dictionary<string, object> IntegrateSection(List<ICurve> curves, double tolerance = 0.04)
+        public static Dictionary<string, double> IntegrateSection(List<ICurve> curves, double tolerance = 0.04)
         {
-            Dictionary<string, object> results = new Dictionary<string, object>();
+            Dictionary<string, double> results = new Dictionary<string, double>();
 
             List<PolyCurve> curvesZ = Geometry.Compute.IJoin(curves);
 
@@ -154,16 +154,16 @@ namespace BH.Engine.Structure
             results["Wply"] = pLineY.PlasticModulus(curvesY, area);
             results["Wplz"] = pLineZ.PlasticModulus(curvesZ, area);
 
-            results["Rgy"] = Math.Sqrt((double)results["Iy"] / area);
-            results["Rgz"] = Math.Sqrt((double)results["Iz"] / area);
+            results["Rgy"] = Math.Sqrt(results["Iy"] / area);
+            results["Rgz"] = Math.Sqrt(results["Iz"] / area);
 
             results["Vy"] = max.X - centreY;
             results["Vpy"] = centreY - min.X;
             results["Vz"] = max.Y - centreZ;
             results["Vpz"] = centreZ - min.Y;
 
-            results["Welz"] = (double)results["Iz"] / Math.Max((double)results["Vy"], (double)results["Vpy"]);
-            results["Wely"] = (double)results["Iy"] / Math.Max((double)results["Vz"], (double)results["Vpz"]);
+            results["Welz"] = results["Iz"] / Math.Max(results["Vy"], results["Vpy"]);
+            results["Wely"] = results["Iy"] / Math.Max(results["Vz"], results["Vpz"]);
 
             if (discontinius)
             {
@@ -173,13 +173,9 @@ namespace BH.Engine.Structure
             }
             else
             {
-                results["Asy"] = pLineZ.ShearAreaPolyline((double)results["Iz"]);
-                results["Asz"] = pLineY.ShearAreaPolyline((double)results["Iy"]);
+                results["Asy"] = pLineZ.ShearAreaPolyline(results["Iz"]);
+                results["Asz"] = pLineY.ShearAreaPolyline(results["Iy"]);
             }
-
-            // For testing
-            results["pLineY"] = pLineY;
-            results["pLineZ"] = pLineZ;
 
             return results;
         }

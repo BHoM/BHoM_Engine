@@ -95,16 +95,16 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static Output<IProfile, Dictionary<string, object>> Integrate(IProfile profile, double tolerance = Tolerance.Distance)
+        public static Output<IProfile, Dictionary<string, double>> Integrate(IProfile profile, double tolerance = Tolerance.Distance)
         {
-            Dictionary<string, object> results = Integrate(profile.Edges.ToList(), tolerance);
+            Dictionary<string, double> results = IntegrateSection(profile.Edges.ToList(), tolerance);
 
-            Vector adjustment = new Vector() { X = -(double)results["CentreY"], Y = -(double)results["CentreZ"], Z = 0 };
+            Vector adjustment = new Vector() { X = -results["CentreY"], Y = -results["CentreZ"], Z = 0 };
 
             results["CentreY"] = 0.0d;
             results["CentreZ"] = 0.0d;
 
-            return new Output<IProfile, Dictionary<string, object>> { Item1 = AdjustCurves(profile, adjustment), Item2 = results };
+            return new Output<IProfile, Dictionary<string, double>> { Item1 = AdjustCurves(profile, adjustment), Item2 = results };
         }
 
         /***************************************************/
