@@ -78,6 +78,9 @@ namespace BH.Engine.Structure
 
         /******************************************/
 
+        [Description("Gets the start and end node positions of a Bar")]
+        [Input("panel", "The Bar to extract the control points from")]
+        [Output("points", "The extracted control points")]
         public static List<Point> ControlPoints(this Bar bar)
         {
             return new List<Point> { bar.StartNode.Position().Clone(), bar.EndNode.Position().Clone() };
