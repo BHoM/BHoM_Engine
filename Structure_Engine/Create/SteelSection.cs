@@ -167,7 +167,7 @@ namespace BH.Engine.Structure
         [Description("Creates a steel L-section from input dimensions. Please note that all units are in S.I., that is meters [m]")]
         [Input("height", "Full height of the section [m]")]
         [Input("webThickness", "Thickness of the web [m]")]
-        [Input("flangeWidth", "Width of the top and bottom flange [m]")]
+        [Input("width", "Full width of the section [m]")]
         [Input("flangeThickness", "Thickness of the top and bottom flange [m]")]
         [Input("rootRadius", "Optional fillet radius between inner face of flange and face of web [m]")]
         [Input("toeRadius", "Optional fillet radius at the outer edge of the flange [m]")]
