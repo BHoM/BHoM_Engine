@@ -25,6 +25,10 @@ using System.Collections.Generic;
 using BH.oM.Geometry;
 using BH.oM.Structure.Elements;
 
+using BH.oM.Reflection.Attributes;
+using BH.oM.Quantities.Attributes;
+using System.ComponentModel;
+
 namespace BH.Engine.Structure
 {
     public static partial class Query
@@ -33,8 +37,19 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static List<Point> DistributedPoints(Bar bar, int divisions, double startLength = 0, double endLength = 0)
+        [Description("Gets a list of evenly distributed points along a bar from a given number of dividsions")]
+        [Input("bar", "The bar to get division points for")]
+        [Input("divisions", "Number of segments to divide the bar into. The number of points returned will be divisions +1.")]
+        [Input("startLength", "Optional offset from bar start node to start of divisions.")]
+        [Input("startLength", "Optional offset from bar end node to start of divisions.")]
+        public static List<Point> DistributedPoints(this Bar bar, int divisions, double startLength = 0, double endLength = 0)
         {
+            if (divisions < 1)
+            {
+                Reflection.Compute.RecordWarning("Cant handle 0 or negative divisions. Divisions has been set to 1!");
+                divisions = 1;
+            }
+
             Point startPos;
             Vector tan;
             if (startLength == 0 && endLength == 0)
