@@ -31,6 +31,7 @@ using System.ComponentModel;
 using System;
 using BH.oM.Structure.SectionProperties;
 using BH.oM.Structure.MaterialFragments;
+using BH.oM.Quantities.Attributes;
 
 using BHP = BH.oM.Physical;
 
@@ -46,8 +47,9 @@ namespace BH.Engine.Structure
 
         [Description("Create a seres of analytical Bar elements from the framing element. Could return any number of bars for each framing element depending on the settings")]
         [Input("element", "The framing element to generate bars from")]
-        [Input("angleTolerance", "Angle tolerance to control the splitting up of non-linear curves. Unused for line based FramingElements")]
+        [Input("angleTolerance", "Angle tolerance to control the splitting up of non-linear curves. Unused for line based FramingElements", typeof(Angle))]
         [Input("maxNbBarsPerArc", "The maximum number of bars that each arc segement of the element will be split up into. Unused for line based FramingElements")]
+        [Output("bars", "A list of bars per framing element. For straight framing elements with prismatic sections thiw will be a single bar")]
         public static List<List<Bar>> AnalyticalBars(this List<BHP.Elements.IFramingElement> elements, double angleTolerance = 0.05 * Math.PI, int maxNbBarsPerArc = 10)
         {
             //Store the converted proeprties as the elements are being converted.
