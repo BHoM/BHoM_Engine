@@ -26,6 +26,10 @@ using BH.oM.Structure.Elements;
 using System.Collections.Generic;
 using System.Linq;
 
+using BH.oM.Reflection.Attributes;
+using BH.oM.Quantities.Attributes;
+using System.ComponentModel;
+
 namespace BH.Engine.Structure
 {
     public static partial class Query
@@ -34,6 +38,9 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Extracts the edge curves from the geometric surface of the element.")]
+        [Input("surface","The structural surface to extract edges from.")]
+        [Output("edges", "The list of curves representing the edges of the underlying surface.")]
         public static List<ICurve> Edges(this Surface surface)
         {
             if (surface.Extents != null)
@@ -44,6 +51,10 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+
+        [Description("Extracts the edge curves from all of the Openings of a Panel.")]
+        [Input("panel", "The Panel to extract opening edges from.")]
+        [Output("edges", "The list of curves representing the edges of the openings of the panel.")]
         public static List<ICurve> InternalEdgeCurves(this Panel panel)
         {
             List<ICurve> edges = new List<ICurve>();
@@ -56,6 +67,9 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Description("Extracts the edge curves from the external edges of a Panel.")]
+        [Input("panel", "The Panel to extract external edges from.")]
+        [Output("edges", "The list of curves representing the external edges of the panel.")]
         public static List<ICurve> ExternalEdgeCurves(this Panel panel)
         {
             return panel.ExternalEdges.Select(x => x.Curve).ToList();
@@ -63,6 +77,9 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Description("Extracts the edge curves from the external edges as well as all the Openings of a Panel.")]
+        [Input("panel", "The Panel to extract all edges from.")]
+        [Output("edges", "The list of curves representing the external edges and the edges of the openings of the panel.")]
         public static List<ICurve> AllEdgeCurves(this Panel panel)
         {
             List<ICurve> result = panel.ExternalEdgeCurves();
@@ -72,6 +89,9 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Description("Extracts the edge curves from all of an Openings.")]
+        [Input("opening", "The Opening to extract opening edges from.")]
+        [Output("edges", "The list of curves representing the edges of the Opening.")]
         public static List<ICurve> EdgeCurves(this Opening opening)
         {
             return opening.Edges.Select(e => e.Curve).ToList();
@@ -82,12 +102,23 @@ namespace BH.Engine.Structure
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
+        [Description("Extracts all the edge curves from an AreaElement.")]
+        [Input("element", "The element to extract opening edges from.")]
+        [Output("edges", "The list of curves representing all internal and external edges of an element.")]
         public static IEnumerable<ICurve> IEdges(this IAreaElement element)
         {
             if (element is Panel)
                 return (AllEdgeCurves(element as Panel));
             else
                 return Edges(element as dynamic);
+        }
+
+        /***************************************************/
+
+        private static IEnumerable<ICurve> Edges(this IAreaElement element)
+        {
+            Reflection.Compute.RecordWarning("Can not extract edges for obejcts of type " + element.GetType().FullName);
+            return new List<ICurve>();
         }
 
         /***************************************************/
