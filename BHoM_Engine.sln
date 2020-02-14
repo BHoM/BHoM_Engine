@@ -19,6 +19,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Geometry_Engine", "Geometry_Engine\Geometry_Engine.csproj", "{89AB2DCB-EF87-4CBA-B59C-C16A8A71D333}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Structure_Engine", "Structure_Engine\Structure_Engine.csproj", "{52A31A0A-E340-4909-AAD6-228045B07BF3}"
+	ProjectSection(ProjectDependencies) = postProject
+		{89AB2DCB-EF87-4CBA-B59C-C16A8A71D333} = {89AB2DCB-EF87-4CBA-B59C-C16A8A71D333}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Architecture_Engine", "Architecture_Engine\Architecture_Engine.csproj", "{338E9DA8-8AAF-4F51-B4AD-264B5F329A5F}"
 	ProjectSection(ProjectDependencies) = postProject
