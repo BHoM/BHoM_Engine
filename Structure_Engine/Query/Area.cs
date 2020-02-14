@@ -25,6 +25,9 @@ using BH.oM.Geometry;
 using BH.oM.Structure.Elements;
 using System.Collections.Generic;
 using System.Linq;
+using BH.oM.Reflection.Attributes;
+using BH.oM.Quantities.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Structure
 {
@@ -34,6 +37,9 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Calculates the area of a panel as the area of the external edges - area of all openings")]
+        [Input("panel", "The structural Panel to calculate the area for")]
+        [Output("area","The area of the Panel", typeof(Area))]
         public static double Area(this Panel panel)
         {
             List<PolyCurve> externalEdges = BH.Engine.Geometry.Compute.IJoin(panel.ExternalEdgeCurves());
@@ -44,6 +50,9 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Description("Calculates the area of an opening as the area of its edges")]
+        [Input("opening", "The structural Opening to calculate the area for")]
+        [Output("area", "The area of the Opening", typeof(Area))]
         public static double Area(this Opening opening)
         {
             List<PolyCurve> edges = BH.Engine.Geometry.Compute.IJoin(opening.EdgeCurves());
@@ -53,6 +62,9 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Description("Calculates the area of a FEMesh as the sum of the area of all faces. Quad faces will be triangulated to preform the area calculation")]
+        [Input("mesh", "The FEMesh to calculate the area for")]
+        [Output("area", "The area of the FEMesh", typeof(Area))]
         public static double Area(this FEMesh mesh)
         {
             return mesh.Geometry().Area();
@@ -62,6 +74,9 @@ namespace BH.Engine.Structure
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
+        [Description("Calculates the area of an IAreaElement")]
+        [Input("mesh", "The element to calculate the area for")]
+        [Output("area", "The area of the element", typeof(Area))]
         public static double IArea(this IAreaElement element)
         {
             return Area(element as dynamic);
