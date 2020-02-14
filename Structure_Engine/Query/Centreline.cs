@@ -22,6 +22,8 @@
 
 using BH.oM.Geometry;
 using BH.oM.Structure.Elements;
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Structure
 {
@@ -30,7 +32,10 @@ namespace BH.Engine.Structure
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-
+        
+        [Description("Returns the centreline of the Bar as the line between the start and end node. No offsets or similar is accounted for.")]
+        [Input("bar", "The Bar to get the centreline from")]
+        [Output("centreLine", "The centreline of the Bar")]
         public static Line Centreline(this Bar bar)
         {
             return new Line { Start = bar.StartNode.Position(), End = bar.EndNode.Position() };
