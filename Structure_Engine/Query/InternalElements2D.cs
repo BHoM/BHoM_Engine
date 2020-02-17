@@ -23,6 +23,9 @@
 using BH.oM.Geometry;
 using BH.oM.Structure.Elements;
 using System.Collections.Generic;
+using BH.oM.Reflection.Attributes;
+using BH.oM.Quantities.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Structure
 {
@@ -32,6 +35,10 @@ namespace BH.Engine.Structure
         /****               Public Methods              ****/
         /***************************************************/
 
+        [Description("Gets inner IElement2Ds from an Opening. Method required for all IElement2Ds. \n" + 
+                     "As an opening does not contain any internal elements, this will always return an empty list.")]
+        [Input("opening","The Opening to get internal IElement2Ds from.")]
+        [Output("elements", "Inner elements. This will always be an empty list for openings.")]
         public static List<IElement2D> InternalElements2D(this Opening opening)
         {
             return new List<IElement2D>();
@@ -39,9 +46,13 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static List<IElement2D> InternalElements2D(this Panel Panel)
+        [Description("Gets inner IElement2Ds from a Panel. Method required for all IElement2Ds. \n" +
+         "For a Panel this method will return a list of all of its openings.")]
+        [Input("panel", "The Panel to get internal IElement2Ds from.")]
+        [Output("elements", "The list of the internal IELement2Ds of the panel, i.e. a list of the Openings of the Panel.")]
+        public static List<IElement2D> InternalElements2D(this Panel panel)
         {
-            return new List<IElement2D>(Panel.Openings);
+            return new List<IElement2D>(panel.Openings);
         }
 
         /***************************************************/
