@@ -39,21 +39,22 @@ namespace BH.Engine.Base
         [Input("fragment", "Any fragment object implementing the IBHoMFragment interface to append to the object")]
         [Input("replace", "If set to true and the object already contains a fragment of the type being added, the fragment will be replaced by this instance")]
         [Output("iBHoMObject", "The BHoM object with the added fragment")]
-        public static IBHoMObject RemoveFragment(this IBHoMObject iBHoMObject, Type fragmentType)
+        public static IBHoMObject RemoveFragment(this IBHoMObject iBHoMObject, Type fragmentType = null)
         {
+            if (fragmentType == null) return iBHoMObject;
             if (iBHoMObject == null) return null;
             IBHoMObject o = iBHoMObject.DeepClone();
 
             if (!typeof(IBHoMFragment).IsAssignableFrom(fragmentType))
             {
                 Reflection.Compute.RecordError("Provided input in fragmentType is not a Fragment type (does not implement IBHoMFragment interface).");
-                return null;
+                return iBHoMObject;
             }
 
             if (!iBHoMObject.Fragments.Contains(fragmentType))
             {
-                Reflection.Compute.RecordWarning("iBHoMObject does not contain any fragment of the provided fragmentType.");
-                return null;
+                Reflection.Compute.RecordWarning($"{iBHoMObject.GetType().Name} does not contain any `{fragmentType.Name}` fragment.");
+                return iBHoMObject;
             }
 
             o.Fragments.Remove(fragmentType);
