@@ -102,6 +102,7 @@
     <Compile Include="Query\DescriptionOrName.cs" />
     <Compile Include="Query\Description.cs" />
     <Compile Include="Query\EmbodiedCarbon.cs" />
+    <Compile Include="Query\HasModifiers.cs" />
     <Compile Include="Query\MaterialType.cs" />
     <Compile Include="Create\NewElement0D.cs" />
     <Compile Include="Create\NewElement1D.cs" />
@@ -151,7 +152,7 @@
     <Compile Include="Query\Centreline.cs" />
     <Compile Include="Query\Elements0D.cs" />
     <Compile Include="Query\InternalElements2D.cs" />
-    <Compile Include="Query\IsStructural.cs" />
+    <Compile Include="Query\IsValidStructural.cs" />
     <Compile Include="Query\OutlineElements1D.cs" />
     <Compile Include="Query\IsVertical.cs" />
     <Compile Include="Query\LoadType.cs" />
