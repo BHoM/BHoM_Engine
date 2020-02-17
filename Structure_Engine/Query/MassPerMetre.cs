@@ -22,6 +22,9 @@
 
 using BH.oM.Structure.Elements;
 using BH.oM.Structure.SectionProperties;
+using BH.oM.Reflection.Attributes;
+using BH.oM.Quantities.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Structure
 {
@@ -31,6 +34,9 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Calculates the mass per length for the section as its area times density.")]
+        [Input("section", "The SectionProperty to calculate the mass per area for.")]
+        [Output("massPerLength", "The mass per length for the section.", typeof(MassPerUnitLength))]
         public static double MassPerMetre(this ISectionProperty section)
         {
             return section.Area * section.Material.Density;
@@ -38,6 +44,9 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Description("Calculates the mass per length for the section as its area times density. Does not take any reinforcement into acount")]
+        [Input("section", "The ConcreteSection to calculate the mass per area for.")]
+        [Output("massPerLength", "The mass per length for the section.", typeof(MassPerUnitLength))]
         public static double MassPerMetre(this ConcreteSection section)
         {
             //TODO: Handle reinforcement
@@ -46,6 +55,9 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Description("Calculates the mass per length for the section the mass per metre of the concrete section + the mass per metre of the steel section. Does not take any reinforcement into acount")]
+        [Input("section", "The CompositeSection to calculate the mass per area for.")]
+        [Output("massPerLength", "The mass per length for the section.", typeof(MassPerUnitLength))]
         public static double MassPerMetre(this CompositeSection section)
         {
             //TODO: Handle embedment etc..
@@ -54,6 +66,9 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Description("Calculates the mass per length for the section as its area times density.")]
+        [Input("section", "The SectionProperty to calculate the mass per area for.")]
+        [Output("massPerLength", "The mass per length for the section.", typeof(MassPerUnitLength))]
         public static double MassPerMetre(this CableSection section)
         {
             //TODO: Add property for kg/m as part of the cable section?
@@ -65,6 +80,9 @@ namespace BH.Engine.Structure
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
+        [Description("Calculates the mass per length for the section as its area times density. General dispatch method that calls the correct method based on type")]
+        [Input("section", "The SectionProperty to calculate the mass per area for.")]
+        [Output("massPerLength", "The mass per length for the section.", typeof(MassPerUnitLength))]
         public static double IMassPerMetre(this ISectionProperty section)
         {
             return MassPerMetre(section as dynamic);
