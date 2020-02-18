@@ -172,7 +172,7 @@
     <Compile Include="Objects\EqualityComparers\NodeDistanceComparer.cs" />
     <Compile Include="Query\ElasticValues.cs" />
     <Compile Include="Query\DepthAt.cs" />
-    <Compile Include="Query\PlotForce.cs" />
+    <Compile Include="Query\PlotBarForce.cs" />
     <Compile Include="Query\PointGrid.cs" />
     <Compile Include="Query\Position.cs" />
     <Compile Include="Query\BarSectionTranformation.cs" />
