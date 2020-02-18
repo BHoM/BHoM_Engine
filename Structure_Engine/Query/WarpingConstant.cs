@@ -23,6 +23,10 @@
 using System;
 using BH.oM.Geometry.ShapeProfiles;
 
+using BH.oM.Reflection.Attributes;
+using BH.oM.Quantities.Attributes;
+using System.ComponentModel;
+
 namespace BH.Engine.Structure
 {
     public static partial class Query
@@ -32,40 +36,71 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        //public static double WarpingConstant(ShapeType shape, double totalDepth, double totalWidth, double b1, double b2, double tf1, double tf2, double tw)
-        //{
-
-        //    switch (shape)
-        //    {
-        //        case ShapeType.ISection:
-        //            if (tf1 == tf2 && b1 == b2)
-        //            {
-        //                return tf1 * Math.Pow(totalDepth - tf1, 2) * Math.Pow(totalWidth, 3) / 24;
-        //            }
-        //            else
-        //            {
-        //                return tf1 * Math.Pow(totalDepth - (tf1 + tf2) / 2, 2) / 12 * (Math.Pow(b1, 3) * Math.Pow(b2, 3) / (Math.Pow(b1, 3) + Math.Pow(b2, 3)));
-        //            }
-        //        case ShapeType.Channel:
-        //            return tf1 * Math.Pow(totalDepth, 2) / 12 * (3 * b1 * tf1 + 2 * totalDepth * tw / (6 * b1 * tf1 + totalDepth * tw));
-        //        default:
-        //            return 0;
-
-        //    }
-        //}
-
-
-        //TODO: Implement more warping constants
-
-        /***************************************************/
-        
-        public static double WarpingConstant(this IProfile profile)
+        [Description("Gets the warping constant for the profile. This will always return 0 for closed sections.")]
+        [Input("profile", "The profile to get the warping section from")]
+        [Output("Iw", "The warping constant of the profile", typeof(WarpingConstant))]
+        public static double WarpingConstant(this CircleProfile profile)
         {
-            return 0; // Return 0 for not specifically implemented ones
+            return 0;
         }
 
         /***************************************************/
 
+        [Description("Gets the warping constant for the profile. This will always return 0 for closed sections.")]
+        [Input("profile", "The profile to get the warping section from")]
+        [Output("Iw", "The warping constant of the profile", typeof(WarpingConstant))]
+        public static double WarpingConstant(this TubeProfile profile)
+        {
+            return 0;
+        }
+
+        /***************************************************/
+
+        [Description("Gets the warping constant for the profile. This will always return 0 for closed sections.")]
+        [Input("profile", "The profile to get the warping section from")]
+        [Output("Iw", "The warping constant of the profile", typeof(WarpingConstant))]
+        public static double WarpingConstant(this BoxProfile profile)
+        {
+            return 0;
+        }
+
+        /***************************************************/
+
+        [Description("Gets the warping constant for the profile. This will always return 0 for closed sections.")]
+        [Input("profile", "The profile to get the warping section from")]
+        [Output("Iw", "The warping constant of the profile", typeof(WarpingConstant))]
+        public static double WarpingConstant(this FabricatedBoxProfile profile)
+        {
+            return 0;
+        }
+
+        /***************************************************/
+
+        [Description("Gets the warping constant for the profile. This will always return 0 for closed sections.")]
+        [Input("profile", "The profile to get the warping section from")]
+        [Output("Iw", "The warping constant of the profile", typeof(WarpingConstant))]
+        public static double WarpingConstant(this KiteProfile profile)
+        {
+            return 0;
+        }
+
+        /***************************************************/
+
+        [Description("Gets the warping constant for the profile. This will always return 0 for closed sections.")]
+        [Input("profile", "The profile to get the warping section from")]
+        [Output("Iw", "The warping constant of the profile", typeof(WarpingConstant))]
+        public static double WarpingConstant(this RectangleProfile profile)
+        {
+            return 0;
+        }
+
+        /***************************************************/
+
+        //TODO: Add warping constant calculation for Angle, T sections, generalised fabricated box, generalised T section and Z.
+
+        [Description("Gets the warping constant for the profile.")]
+        [Input("profile", "The profile to get the warping section from")]
+        [Output("Iw", "The warping constant of the profile", typeof(WarpingConstant))]
         public static double WarpingConstant(this ISectionProfile profile)
         {
             double width = profile.Width;
@@ -80,6 +115,9 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Description("Gets the warping constant for the profile.")]
+        [Input("profile", "The profile to get the warping section from")]
+        [Output("Iw", "The warping constant of the profile", typeof(WarpingConstant))]
         public static double WarpingConstant(this FabricatedISectionProfile profile)
         {
             double b1 = profile.TopFlangeWidth;
@@ -102,6 +140,9 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Description("Gets the warping constant for the profile.")]
+        [Input("profile", "The profile to get the warping section from")]
+        [Output("Iw", "The warping constant of the profile", typeof(WarpingConstant))]
         public static double WarpingConstant(this ChannelProfile profile)
         {
             double width = profile.FlangeWidth;
@@ -118,9 +159,22 @@ namespace BH.Engine.Structure
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
+        [Description("Gets the warping constant for the profile.")]
+        [Input("profile", "The profile to get the warping section from")]
+        [Output("Iw", "The warping constant of the profile", typeof(WarpingConstant))]
         public static double IWarpingConstant(this IProfile profile)
         {
             return WarpingConstant(profile as dynamic);
+        }
+
+        /***************************************************/
+        /**** Private Methods - fall back               ****/
+        /***************************************************/
+
+        private static double WarpingConstant(this IProfile profile)
+        {
+            Reflection.Compute.RecordWarning("Can not calculate Warping constants for profiles of type " + profile.GetType().Name + ". Returned value will be 0.");
+            return 0; // Return 0 for not specifically implemented ones
         }
 
         /***************************************************/
