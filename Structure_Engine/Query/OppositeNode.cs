@@ -21,6 +21,9 @@
  */
 
 using BH.oM.Structure.Elements;
+using BH.oM.Reflection.Attributes;
+using BH.oM.Quantities.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Structure
 {
@@ -30,12 +33,21 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("If the provided node belongs to the Bar, this method returns the Node on the end of the Bar. The node if checked if it belongs to the bar by comparing its Guid. If the provided node is neither start or end node, null is returned.")]
+        [Input("bar", "The bar to get the oposite node from")]
+        [Input("node", "The node used to check for the oposite. This should be either the start or the end node of the Bar for the method to return anything.")]
+        [Output("node", "The oposite node of the bar in relation to the one provided.")]
         public static Node OppositeNode(this Bar bar, Node node)
         {
             if (bar.EndNode.BHoM_Guid == node.BHoM_Guid)
                 return bar.StartNode;
-            else
+            else if (bar.StartNode.BHoM_Guid == node.BHoM_Guid)
                 return bar.EndNode;
+            else
+            {
+                Reflection.Compute.RecordError("The bar does not contain the provided node.");
+                return null;
+            }
         }
 
         /***************************************************/
