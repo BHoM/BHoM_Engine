@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -25,6 +25,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel;
 using BH.oM.Reflection.Attributes;
+using BH.oM.Quantities.Attributes;
 using BH.oM.Structure.MaterialFragments;
 using BH.oM.Physical.Materials;
 using BH.oM.Geometry;
@@ -37,8 +38,9 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Shear modulus of the isotropic material fragment. Evaluated based on Youngs modulus and Poissons ratio")]
-        [Output("G", "Shear modulus of the material fragment")]
+        [Description("Shear modulus of the isotropic material fragment. Evaluated based on Youngs modulus and Poissons ratio as G = E/2(1+ν)")]
+        [Input("materialFragment", "The isotropic material to get the ShearModulus from")]
+        [Output("G", "Shear modulus of the material fragment", typeof(ShearModulus))]
         public static double ShearModulus(this IIsotropic materialFragment)
         {
             return materialFragment.YoungsModulus / (2 * (1 + materialFragment.PoissonsRatio));
