@@ -41,7 +41,7 @@ namespace BH.Engine.Structure
 
         [Description("Filters out results from a specific case given a identifier, Loadcase or LoadCombination. For Loadcase and LoadCombination the number property will be used as identifier for filtering.")]
         [Input("results","The list of results to filter.")]
-        [Input("loadCase", "The case or combination to filter by. Should either be a string/int as identifier of the case or a BHoM Loadcase/LoadCombination where the number will be used as the identifier. If identifier can be extracted, all results are returned.")]
+        [Input("loadcase", "The case or combination to filter by. Should either be a string/int as identifier of the case or a BHoM Loadcase/LoadCombination where the number will be used as the identifier. If identifier can be extracted, all results are returned.")]
         [Output("results","The filtered results. If no filtering param could be extracted, all results are returned.")]
         public static List<T> SelectCase<T>(this List<T> results, object loadcase) where T : IResult
         {

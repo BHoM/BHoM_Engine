@@ -156,7 +156,7 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Draws lines representing the bar load over the length of the Bar elements in the load.")]
-        [Input("barVaryingDistLoad", "The bar load to visualise.")]
+        [Input("barPrestressLoad", "The bar load to visualise.")]
         [Input("scaleFactor", "Scales the lines drawn. Default scaling of 1 means 1 kN per metre")]
         [Input("displayForces", "Toggles whether forces should be displayed or not.")]
         [Input("displayMoments", "Toggles whether moments should be displayed or not. Unused for bar prestress loads.")]
@@ -179,7 +179,7 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Draws lines representing the bar load over the length of the Bar elements in the load.")]
-        [Input("barVaryingDistLoad", "The bar load to visualise.")]
+        [Input("barTempLoad", "The bar load to visualise.")]
         [Input("scaleFactor", "Scales the lines drawn. Default scaling of 1 means 1 kN per metre")]
         [Input("displayForces", "Toggles whether forces should be displayed or not. Unused for bar temprature loads.")]
         [Input("displayMoments", "Toggles whether moments should be displayed or not. Unused for bar temprature loads.")]
@@ -314,7 +314,7 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Draws arrows representing the gravity load. FOr bars it will be drawn as a series of arrows over the length of the Bar elements in the load. For panels it will be displayed as a list of arrows along the boundary on the element.")]
-        [Input("barVaryingDistLoad", "The gravity load to visualise.")]
+        [Input("gravityLoad", "The gravity load to visualise.")]
         [Input("scaleFactor", "Scales the arrows drawn. Default scaling of 1 means 1 kN per metre")]
         [Input("displayForces", "Toggles whether forces should be displayed or not.")]
         [Input("displayMoments", "Toggles whether moments should be displayed or not. Not in use for gravity loads.")]
@@ -365,7 +365,7 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Draws arrows representing the point load at the location of the Node elements of the load.")]
-        [Input("barPointForce", "The node load to visualise.")]
+        [Input("pointAcceleration", "The node load to visualise.")]
         [Input("scaleFactor", "Scales the arrows drawn. Default scaling of 1 means 1 m/s² per metre")]
         [Input("displayTranslations", "Toggles whether translational acceleration should be displayed or not.")]
         [Input("displayRotations", "Toggles whether rotational acceleration should be displayed or not.")]
@@ -390,7 +390,7 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Draws arrows representing the point load at the location of the Node elements of the load.")]
-        [Input("barPointForce", "The node load to visualise.")]
+        [Input("pointDisplacement", "The node load to visualise.")]
         [Input("scaleFactor", "Scales the arrows drawn. Default scaling of 1 means 1 m per metre")]
         [Input("displayTranslations", "Toggles whether translations should be displayed or not.")]
         [Input("displayRotations", "Toggles whether rotations should be displayed or not.")]
@@ -415,7 +415,7 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Draws arrows representing the point load at the location of the Node elements of the load.")]
-        [Input("barPointForce", "The node load to visualise.")]
+        [Input("pointForce", "The node load to visualise.")]
         [Input("scaleFactor", "Scales the arrows drawn. Default scaling of 1 means 1 kN per metre")]
         [Input("displayForces", "Toggles whether forces should be displayed or not.")]
         [Input("displayMoments", "Toggles whether moments should be displayed or not.")]
@@ -440,7 +440,7 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Draws arrows representing the point load at the location of the Node elements of the load.")]
-        [Input("barPointForce", "The node load to visualise.")]
+        [Input("pointVelocity", "The node load to visualise.")]
         [Input("scaleFactor", "Scales the arrows drawn. Default scaling of 1 means 1 m/s per metre")]
         [Input("displayTranslations", "Toggles whether translational velocity should be displayed or not.")]
         [Input("displayRotations", "Toggles whether rotational velocity should be displayed or not.")]
@@ -467,7 +467,7 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Draws arrows representing the load. Visualisation will depend on the load type.")]
-        [Input("barPointForce", "The node load to visualise.")]
+        [Input("load", "The node load to visualise.")]
         [Input("scaleFactor", "Scales the arrows drawn. Default scaling of 1 means 1 kN per metre")]
         [Input("displayForces", "Toggles whether forces or other translational loads should be displayed or not. ")]
         [Input("displayMoments", "Toggles whether moments or other rotational loads should be displayed or not.")]

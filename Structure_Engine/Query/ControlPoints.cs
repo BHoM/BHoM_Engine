@@ -68,7 +68,7 @@ namespace BH.Engine.Structure
         /******************************************/
 
         [Description("Gets all control points from a collection of Edges. Control point extraction will depend on the type of curve in the edges.")]
-        [Input("panel", "The Edges to extract the control points from")]
+        [Input("edges", "The Edges to extract the control points from")]
         [Output("points", "The extracted control points")]
         public static List<Point> ControlPoints(this List<Edge> edges)
         {
@@ -79,7 +79,7 @@ namespace BH.Engine.Structure
         /******************************************/
 
         [Description("Gets the start and end node positions of a Bar")]
-        [Input("panel", "The Bar to extract the control points from")]
+        [Input("bar", "The Bar to extract the control points from")]
         [Output("points", "The extracted control points")]
         public static List<Point> ControlPoints(this Bar bar)
         {

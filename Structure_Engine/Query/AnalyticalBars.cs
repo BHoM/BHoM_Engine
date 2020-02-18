@@ -46,7 +46,7 @@ namespace BH.Engine.Structure
 
 
         [Description("Create a seres of analytical Bar elements from the framing element. Could return any number of bars for each framing element depending on the settings")]
-        [Input("element", "The framing element to generate bars from")]
+        [Input("elements", "The framing element to generate bars from")]
         [Input("angleTolerance", "Angle tolerance to control the splitting up of non-linear curves. Unused for line based FramingElements", typeof(Angle))]
         [Input("maxNbBarsPerArc", "The maximum number of bars that each arc segement of the element will be split up into. Unused for line based FramingElements")]
         [Output("bars", "A list of bars per framing element. For straight framing elements with prismatic sections thiw will be a single bar")]
