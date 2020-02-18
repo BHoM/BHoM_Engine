@@ -36,9 +36,11 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns the bars local Z-axis")]
+        [Description("Returns the bars local z-axis, generally the major axis direction of the section of the Bar. \n" +
+                     "For non - vertical members the local z is aligned with the global z and rotated with the orientation angle around the local x. \n" +
+                     "For vertical members the local y is aligned with the global y and rotated with the orientation angle around the local x. For this case the normal will be the vector orthogonal to the local y and local x")]
         [Input("bar", "The Bar to evaluate the normal of")]
-        [Output("normal", "Vector representing the bars local Z-axis")]
+        [Output("normal", "Vector representing the local z-axis of the Bar")]
         public static Vector Normal(this Bar bar)
         {
             return bar.Centreline().ElementNormal(bar.OrientationAngle);
@@ -46,6 +48,10 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Deprecated("3.1", "Deprecated by method targeting IElement2D")]
+        [Description("Returns the Panels local z-axis, a vector orthogonal to the plane of the panel. This is found by fitting a plane through all the edge curves and taking the Normal from this plane.")]
+        [Input("bar", "The Panel to evaluate the normal of")]
+        [Output("normal", "Vector representing the local z-axis Panel")]
         public static Vector Normal(this Panel panel)
         {
             return panel.AllEdgeCurves().SelectMany(x => x.IControlPoints()).ToList().FitPlane().Normal;
@@ -55,9 +61,22 @@ namespace BH.Engine.Structure
         /**** Public Methods - Interface methods        ****/
         /***************************************************/
 
+        [Description("Returns the local z-axis of the IAreaElement")]
+        [Input("bar", "The element to evaluate the normal of")]
+        [Output("normal", "Vector representing the local z-axis element")]
         public static Vector INormal(this IAreaElement areaElement)
         {
             return Normal(areaElement as dynamic);
+        }
+
+        /***************************************************/
+        /**** Private Methods - fall back               ****/
+        /***************************************************/
+
+        private static Vector Normal(this IAreaElement areaElement)
+        {
+            Reflection.Compute.RecordWarning("Can not get normal for element of type " + areaElement.GetType().Name);
+            return null;
         }
 
         /***************************************************/
