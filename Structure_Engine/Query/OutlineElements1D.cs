@@ -23,6 +23,9 @@
 using BH.oM.Geometry;
 using BH.oM.Structure.Elements;
 using System.Collections.Generic;
+using BH.oM.Reflection.Attributes;
+using BH.oM.Quantities.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Structure
 {
@@ -32,6 +35,10 @@ namespace BH.Engine.Structure
         /****               Public Methods              ****/
         /***************************************************/
 
+        [Description("Gets the elements from an Opening defining the boundary of the element. Method required for all IElement2Ds. \n" +
+             "For an opening this will return a list of its edges")]
+        [Input("opening", "The Opening to get outline elements from.")]
+        [Output("elements", "Outline elements of the Opening, i.e. the Edges of the Opening")]
         public static List<IElement1D> OutlineElements1D(this Opening opening)
         {
             return new List<IElement1D>(opening.Edges);
@@ -39,9 +46,13 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static List<IElement1D> OutlineElements1D(this Panel Panel)
+        [Description("Gets the elements from a Panel defining the boundary of the element. Method required for all IElement2Ds. \n" +
+                     "For a Panel this will return a list of its external Edges")]
+        [Input("panel", "The Panel to get outline elements from.")]
+        [Output("elements", "Outline elements of the Panel, i.e. the external Edges of the Panel")]
+        public static List<IElement1D> OutlineElements1D(this Panel panel)
         {
-            return new List<IElement1D>(Panel.ExternalEdges);
+            return new List<IElement1D>(panel.ExternalEdges);
         }
 
         /***************************************************/
