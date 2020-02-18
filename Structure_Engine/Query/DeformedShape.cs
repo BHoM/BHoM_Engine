@@ -91,15 +91,15 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Gets deformed shape of a FEMesh based on MeshDisplacements.")]
-        [Input("bars", "The FEMeshes to get the deformed shape for. The FEMeshes input here should generally have been pulled from an analysis package to ensure they carry the necessary identifier information.")]
+        [Input("meshes", "The FEMeshes to get the deformed shape for. The FEMeshes input here should generally have been pulled from an analysis package to ensure they carry the necessary identifier information.")]
         [Input("meshDisplacements", "The displacement results to use to generate the deformed shape. This input should be a list of MeshResults which in turn should contain results of type MeshDisplacements. These displacements are assumed to be in global coordinates. This list does NOT need to match the mesh input list, grouping is done by the method.")]
         [Input("adapterId", "The custom data identifier to look for ID information on for the FEMeshes. This will depend on the software package used, but generally be for example 'Robot_id', 'GSA_id' etc. Try exploding the custom data of your bars to find the name of the identifier.")]
         [Input("loadcase", "Loadcase to display results for. Should generally be either an identifier matching the one used in the analysis package that the results were pulled from or a Loadcase/LoadCombination class.")]
         [Input("scaleFactor", "Controls by how much the results should be scaled.")]
         [Output("deformed", "The shape of the FEMeshes from the displacements")]
-        public static List<Mesh> DeformedShape(List<FEMesh> meshes, List<MeshResult> meshDisplacements, string adapterId, object loadCase, double scaleFactor = 1.0)
+        public static List<Mesh> DeformedShape(List<FEMesh> meshes, List<MeshResult> meshDisplacements, string adapterId, object loadcase, double scaleFactor = 1.0)
         {
-            meshDisplacements = meshDisplacements.SelectCase(loadCase);
+            meshDisplacements = meshDisplacements.SelectCase(loadcase);
 
             List<Mesh> defMeshes = new List<Mesh>();
 

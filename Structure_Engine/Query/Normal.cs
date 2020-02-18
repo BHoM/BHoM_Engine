@@ -50,7 +50,7 @@ namespace BH.Engine.Structure
 
         [Deprecated("3.1", "Deprecated by method targeting IElement2D")]
         [Description("Returns the Panels local z-axis, a vector orthogonal to the plane of the panel. This is found by fitting a plane through all the edge curves and taking the Normal from this plane.")]
-        [Input("bar", "The Panel to evaluate the normal of")]
+        [Input("panel", "The Panel to evaluate the normal of")]
         [Output("normal", "Vector representing the local z-axis Panel")]
         public static Vector Normal(this Panel panel)
         {
@@ -62,7 +62,7 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Returns the local z-axis of the IAreaElement")]
-        [Input("bar", "The element to evaluate the normal of")]
+        [Input("areaElement", "The element to evaluate the normal of")]
         [Output("normal", "Vector representing the local z-axis element")]
         public static Vector INormal(this IAreaElement areaElement)
         {

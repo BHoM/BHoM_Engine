@@ -118,7 +118,7 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Generates a rectangular grid of points on an IAreaElement. Used for load visualisation.")]
-        [Input("panel", "The element to generate a grid on.")]
+        [Input("element", "The element to generate a grid on.")]
         [Output("grid", "The generated rectangular grid of points on the element.")]
         public static List<Point> IPointGrid(this IAreaElement element)
         {

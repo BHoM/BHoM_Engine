@@ -75,7 +75,7 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Calculates the area of an IAreaElement")]
-        [Input("mesh", "The element to calculate the area for")]
+        [Input("element", "The element to calculate the area for")]
         [Output("area", "The area of the element", typeof(Area))]
         public static double IArea(this IAreaElement element)
         {
