@@ -22,6 +22,9 @@
 
 using BH.oM.Structure.SurfaceProperties;
 using BH.oM.Structure.SectionProperties;
+using BH.oM.Reflection.Attributes;
+using BH.oM.Quantities.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Structure
 {
@@ -31,22 +34,10 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static bool HasModifiers(this ISurfaceProperty property)
-        {
-            double[] modifiers = property.Modifiers();
-
-            if (modifiers == null)
-                return false;
-
-            foreach (double modifier in modifiers)
-            {
-                if (modifier != 1) return true;
-            }
-            return false;
-        }
-
-        /***************************************************/
-
+        [Description("Gets any modifiers from a property as an array of doubles. The modifiers are used to scale one or more of the property constants for analysis. Constants are multiplied with the modifiers, hence a modifier value of 1 means no change. \n" + 
+                     "The values returned are in the following order: f11, f12, f22, m11, m12, m22, v13, v23, mass, weight. Method returns null if no modifiers are found.")]
+        [Input("property", "The property to extract modifiers from.")]
+        [Output("modifiers", "Returns the modifier values of the property as a double array in the following order: f11, f12, f22, m11, m12, m22, v13, v23, mass, weight. Returns null if no modifiers are found.")]
         public static double[] Modifiers(this ISurfaceProperty property)
         {
             object modifersObj;
@@ -61,22 +52,10 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static bool HasModifiers(this ISectionProperty property)
-        {
-            double[] modifiers = property.Modifiers();
-
-            if (modifiers == null)
-                return false;
-
-            foreach (double modifier in modifiers)
-            {
-                if (modifier != 1) return true;
-            }
-            return false;
-        }
-
-        /***************************************************/
-
+        [Description("Gets any modifiers from a section as an array of doubles. The modifiers are used to scale one or more of the section constants for analysis.  Constants are multiplied with the modifiers, hence a modifier value of 1 means no change. \n" + 
+                     "The values returned are in the following order: area, iy, iz, j, asy, asz. Method returns null if no modifiers are found.")]
+        [Input("property", "The SectionProperty to extract modifiers from.")]
+        [Output("modifiers", "Returns the modifier values of the section as a double array in the following order: area, iy, iz, j, asy, asz. Returns null if no modifiers are found.")]
         public static double[] Modifiers(this ISectionProperty property)
         {
             object modifersObj;
