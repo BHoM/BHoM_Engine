@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -21,6 +21,9 @@
  */
 
 using BH.oM.Structure.Constraints;
+using BH.oM.Reflection.Attributes;
+using BH.oM.Quantities.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Structure
 {
@@ -30,18 +33,20 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Gets the fixitiy values from a constraint as a bool array. The value returned will be true if the DOFType is fixed. Values returned in the following order: TransX, TranxY, TransZ, RotX, RotY, RotZ")]
+        [Input("constraint", "The constraint to check for fixities")]
+        [Output("springValues", "The fixity values from a constraint as a bool array, where true indicates a fixity, in the following order: TransX, TransY, TransZ, RotX, RotY, RotZ")]
         public static bool[] Fixities(this Constraint6DOF constraint)
         {
-            return new bool[] { constraint.TranslationX == DOFType.Fixed, constraint.TranslationY == DOFType.Fixed, constraint.TranslationZ == DOFType.Fixed,
-                        constraint.RotationX == DOFType.Fixed, constraint.RotationY == DOFType.Fixed, constraint.RotationZ == DOFType.Fixed };
-        }
-
-        /***************************************************/
-
-        public static double[] ElasticValues(this Constraint6DOF constraint)
-        {
-            return new double[] { constraint.TranslationalStiffnessX, constraint.TranslationalStiffnessY, constraint.TranslationalStiffnessZ,
-                        constraint.RotationalStiffnessX, constraint.RotationalStiffnessY, constraint.RotationalStiffnessZ };
+            return new bool[] 
+            {
+                constraint.TranslationX == DOFType.Fixed,
+                constraint.TranslationY == DOFType.Fixed,
+                constraint.TranslationZ == DOFType.Fixed,
+                constraint.RotationX == DOFType.Fixed,
+                constraint.RotationY == DOFType.Fixed,
+                constraint.RotationZ == DOFType.Fixed
+            };
         }
 
         /***************************************************/
