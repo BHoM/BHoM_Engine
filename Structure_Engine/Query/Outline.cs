@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using BH.oM.Geometry;
 using BH.oM.Structure.Elements;
 using System.Linq;
+using BH.oM.Reflection.Attributes;
 
 namespace BH.Engine.Structure
 {
@@ -33,6 +34,7 @@ namespace BH.Engine.Structure
         /****          Panel outline           ****/
         /******************************************/
 
+        [Deprecated("3.1", "Replaced by method `IOutlineCurve` targeting IElement2D")]
         public static PolyCurve Outline(this Panel panel)
         {
             return new PolyCurve { Curves = panel.ExternalEdgeCurves() };
@@ -43,6 +45,7 @@ namespace BH.Engine.Structure
         /****         Opening outline          ****/
         /******************************************/
 
+        [Deprecated("3.1", "Replaced by method `IOutlineCurve` targeting IElement2D")]
         public static PolyCurve Outline(this Opening opening)
         {
             return new PolyCurve { Curves = opening.EdgeCurves() };
@@ -50,6 +53,7 @@ namespace BH.Engine.Structure
 
         /******************************************/
 
+        [Deprecated("3.1", "Replaced by method `IOutlineCurve` targeting IElement2D")]
         public static PolyCurve Outline(this List<Edge> edges)
         {
             return new PolyCurve { Curves = edges.Select(e => e.Curve).ToList() };
