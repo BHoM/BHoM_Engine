@@ -27,6 +27,9 @@ using System.Text;
 using System.Threading.Tasks;
 using BH.oM.Common;
 using BH.oM.Structure.Loads;
+using BH.oM.Reflection.Attributes;
+using BH.oM.Quantities.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Structure
 {
@@ -36,22 +39,30 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static List<T> SelectCase<T>(this List<T> results, object loadCase) where T : IResult
+        [Description("Filters out results from a specific case given a identifier, Loadcase or LoadCombination. For Loadcase and LoadCombination the number property will be used as identifier for filtering.")]
+        [Input("results","The list of results to filter.")]
+        [Input("loadCase", "The case or combination to filter by. Should either be a string/int as identifier of the case or a BHoM Loadcase/LoadCombination where the number will be used as the identifier. If identifier can be extracted, all results are returned.")]
+        [Output("results","The filtered results. If no filtering param could be extracted, all results are returned.")]
+        public static List<T> SelectCase<T>(this List<T> results, object loadcase) where T : IResult
         {
-            if (loadCase != null)
+            if (loadcase != null)
             {
                 string loadCaseId = null;
 
-                if (loadCase is string)
-                    loadCaseId = loadCase as string;
-                else if (loadCase is ICase)
-                    loadCaseId = (loadCase as ICase).Number.ToString();
-                else if (loadCase is int || loadCase is double)
-                    loadCaseId = loadCase.ToString();
+                if (loadcase is string)
+                    loadCaseId = loadcase as string;
+                else if (loadcase is ICase)
+                    loadCaseId = (loadcase as ICase).Number.ToString();
+                else if (loadcase is int || loadcase is double)
+                    loadCaseId = loadcase.ToString();
 
                 if (!string.IsNullOrWhiteSpace(loadCaseId))
                     return results.Where(x => x.ResultCase.ToString() == loadCaseId).ToList();
+                else
+                    Reflection.Compute.RecordWarning("Could not extract filter identifier from the provided loadcase filter. All results are returned.");
             }
+            else
+                Reflection.Compute.RecordWarning("loadCase filter is null. No filtering is applied. All results are returned.");
 
             return results;
         }
