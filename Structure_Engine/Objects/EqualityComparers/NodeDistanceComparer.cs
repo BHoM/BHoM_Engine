@@ -63,13 +63,13 @@ namespace BH.Engine.Structure
             if (node1.BHoM_Guid == node2.BHoM_Guid)
                 return true;
 
-            if ((int)Math.Round(node1.Position().X * m_multiplier) != (int)Math.Round(node2.Position().X * m_multiplier))
+            if ((int)Math.Round(node1.Position.X * m_multiplier) != (int)Math.Round(node2.Position.X * m_multiplier))
                 return false;
 
-            if ((int)Math.Round(node1.Position().Y * m_multiplier) != (int)Math.Round(node2.Position().Y * m_multiplier))
+            if ((int)Math.Round(node1.Position.Y * m_multiplier) != (int)Math.Round(node2.Position.Y * m_multiplier))
                 return false;
 
-            if ((int)Math.Round(node1.Position().Z * m_multiplier) != (int)Math.Round(node2.Position().Z * m_multiplier))
+            if ((int)Math.Round(node1.Position.Z * m_multiplier) != (int)Math.Round(node2.Position.Z * m_multiplier))
                 return false;
 
             return true;
@@ -82,9 +82,9 @@ namespace BH.Engine.Structure
             //Check whether the object is null
             if (Object.ReferenceEquals(node, null)) return 0;
 
-            int x = ((int)Math.Round(node.Position().X * m_multiplier)).GetHashCode();
-            int y = ((int)Math.Round(node.Position().Y * m_multiplier)).GetHashCode();
-            int z = ((int)Math.Round(node.Position().Z * m_multiplier)).GetHashCode();
+            int x = ((int)Math.Round(node.Position.X * m_multiplier)).GetHashCode();
+            int y = ((int)Math.Round(node.Position.Y * m_multiplier)).GetHashCode();
+            int z = ((int)Math.Round(node.Position.Z * m_multiplier)).GetHashCode();
             return x ^ y ^ z;
 
         }
