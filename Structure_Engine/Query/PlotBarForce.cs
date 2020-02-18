@@ -58,6 +58,9 @@ namespace BH.Engine.Structure
             return plots;
         }
 
+
+        /***************************************************/
+        /**** Private Methods                           ****/
         /***************************************************/
 
         private static List<ICurve> PlotBarForce(Bar bar, List<BarForce> forces, double scaleFactor = 1.0, bool fx = true, bool fy = true, bool fz = true, bool mx = true, bool my = true, bool mz = true)
@@ -83,8 +86,6 @@ namespace BH.Engine.Structure
             return plots;
         }
 
-        /***************************************************/
-        /**** Private Methods                           ****/
         /***************************************************/
 
         private static List<ICurve> PlotSpecificForce(Vector v, List<Point> pts, List<double> values)
