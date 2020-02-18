@@ -23,6 +23,9 @@
 using BH.Engine.Geometry;
 using BH.oM.Geometry;
 using BH.oM.Structure.Elements;
+using BH.oM.Reflection.Attributes;
+using BH.oM.Quantities.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Structure
 {
@@ -32,6 +35,10 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Gets the tangent vector of a bar as the direction vector from start to end node. No offsets or similar are taken into account.")]
+        [Input("bar", "The Bar to get the tangent from.")]
+        [Input("normalise", "If true, the tangent vector returned will be a unit vector, that is, a vector with length 1.")]
+        [Output("tan", "The tangent vector of the bar.")]
         public static Vector Tangent(this Bar bar, bool normalise = false)
         {
             Vector tan = bar.EndNode.Position - bar.StartNode.Position;
