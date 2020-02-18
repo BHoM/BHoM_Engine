@@ -83,7 +83,7 @@ namespace BH.Engine.Structure
         [Output("points", "The extracted control points")]
         public static List<Point> ControlPoints(this Bar bar)
         {
-            return new List<Point> { bar.StartNode.Position().Clone(), bar.EndNode.Position().Clone() };
+            return new List<Point> { bar.StartNode.Position.Clone(), bar.EndNode.Position.Clone() };
         }
 
         /******************************************/

@@ -39,7 +39,7 @@ namespace BH.Engine.Structure
         [Output("length", "The length of the Bar as the distance between the end Nodes", typeof(Length))]
         public static double Length(this Bar bar)
         {
-            return bar.StartNode.Position().Distance(bar.EndNode.Position());
+            return bar.StartNode.Position.Distance(bar.EndNode.Position);
         }
 
         /***************************************************/
