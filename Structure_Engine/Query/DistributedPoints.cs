@@ -41,7 +41,7 @@ namespace BH.Engine.Structure
         [Input("bar", "The bar to get division points for")]
         [Input("divisions", "Number of segments to divide the bar into. The number of points returned will be divisions +1.")]
         [Input("startLength", "Optional offset from bar start node to start of divisions.", typeof(Length))]
-        [Input("startLength", "Optional offset from bar end node to start of divisions.", typeof(Length))]
+        [Input("endLength", "Optional offset from bar end node to start of divisions.", typeof(Length))]
         [Output("points", "List of evenly distibuted points along the bar.")]
         public static List<Point> DistributedPoints(this Bar bar, int divisions, double startLength = 0, double endLength = 0)
         {
