@@ -34,7 +34,7 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Method returns whether the reinforcement is longitudinal or not. This is always true for LayerReinforcement.")]
-        [Input("reinforcement", "The reinforcement object to check")]
+        [Input("reinforcement", "The reinforcement object to check.")]
         [Output("result", "Returns true if the reinforcement is longitudinal. Always true for LayerReinforcement.")]
         public static bool IsLongitudinal(this LayerReinforcement reinforcement)
         {

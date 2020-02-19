@@ -34,7 +34,7 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Deprecated("3.1", "Should not need this method as it was historically used to easy type switch via enum instead of type switching. Method not in use in any toolkit, and its usecase should be solved by the 'as dynamic' dispatching")]
+        [Deprecated("3.1", "Should not need this method as it was historically used to easy type switch via enum instead of type switching. Method not in use in any toolkit, and its usecase should be solved by the 'as dynamic' dispatching.")]
         [Description("Gets the CaseType for the Loadcase. This will always return the type Simple for a Loadcase.")]
         public static CaseType CaseType(this Loadcase loadcase)
         {
@@ -43,7 +43,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Deprecated("3.1", "Should not need this method as it was historically used to easy type switch via enum instead of type switching. Method not in use in any toolkit, and its usecase should be solved by the 'as dynamic' dispatching")]
+        [Deprecated("3.1", "Should not need this method as it was historically used to easy type switch via enum instead of type switching. Method not in use in any toolkit, and its usecase should be solved by the 'as dynamic' dispatching.")]
         [Description("Gets the CaseType for the LoadCombination. This will always return the type Combination for a LoadCombination.")]
         public static CaseType CaseType(this LoadCombination loadCombination)
         {

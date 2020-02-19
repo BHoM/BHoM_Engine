@@ -38,9 +38,9 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Shear modulus of the isotropic material fragment. Evaluated based on Youngs modulus and Poissons ratio as G = E/2(1+ν)")]
-        [Input("materialFragment", "The isotropic material to get the ShearModulus from")]
-        [Output("G", "Shear modulus of the material fragment", typeof(ShearModulus))]
+        [Description("Shear modulus of the isotropic material fragment. Evaluated based on Youngs modulus and Poissons ratio as G = E/2(1+ν).")]
+        [Input("materialFragment", "The isotropic material to get the ShearModulus from.")]
+        [Output("G", "Shear modulus of the material fragment.", typeof(ShearModulus))]
         public static double ShearModulus(this IIsotropic materialFragment)
         {
             return materialFragment.YoungsModulus / (2 * (1 + materialFragment.PoissonsRatio));

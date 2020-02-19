@@ -43,13 +43,13 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Draws lines representing the area load, either as a grid over the element, or along the boundary of the elements.")]
-        [Input("areaTempLoad", "The area load to visualise. Currently only supports area loads with Panels")]
-        [Input("scaleFactor", "Scales the lines drawn. Default scaling of 1 means 1 Kelvin per metre")]
-        [Input("displayForces", "Toggles whether forces should be displayed or not. Unused for temperature loads")]
-        [Input("displayMoments", "Toggles whether moments should be displayed or not. Unused for temperature loads")]
-        [Input("asResultants", "Toggles whether loads should be displayed as resultant vectors or as components. Unused for temperature loads")]
+        [Input("areaTempLoad", "The area load to visualise. Currently only supports area loads with Panels.")]
+        [Input("scaleFactor", "Scales the lines drawn. Default scaling of 1 means 1 Kelvin per metre.")]
+        [Input("displayForces", "Toggles whether forces should be displayed or not. Unused for temperature loads.")]
+        [Input("displayMoments", "Toggles whether moments should be displayed or not. Unused for temperature loads.")]
+        [Input("asResultants", "Toggles whether loads should be displayed as resultant vectors or as components. Unused for temperature loads.")]
         [Input("edgeDisplay", "Set to true to visualise the loads along the boundary of the elements.")]
-        [Input("gridDisplay", "Set to true to visualise the load as a grid over the elements")]
+        [Input("gridDisplay", "Set to true to visualise the load as a grid over the elements.")]
         [Output("lines", "A list of lines representing the load.")]
         public static List<ICurve> Visualize(this AreaTemperatureLoad areaTempLoad, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true, bool asResultants = true, bool edgeDisplay = true, bool gridDisplay = false)
         {
@@ -69,13 +69,13 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Draws arrows representing the area load, either as a grid over the element, or along the boundary of the elements.")]
-        [Input("areaUDL", "The area load to visualise. Currently only supports area loads with Panels")]
-        [Input("scaleFactor", "Scales the arrows drawn. Default scaling of 1 means 1 kN per metre")]
+        [Input("areaUDL", "The area load to visualise. Currently only supports area loads with Panels.")]
+        [Input("scaleFactor", "Scales the arrows drawn. Default scaling of 1 means 1 kN per metre.")]
         [Input("displayForces", "Toggles whether forces should be displayed or not.")]
-        [Input("displayMoments", "Toggles whether moments should be displayed or not. Unused for area loads")]
+        [Input("displayMoments", "Toggles whether moments should be displayed or not. Unused for area loads.")]
         [Input("asResultants", "Toggles whether loads should be displayed as resultant vectors or as components.")]
         [Input("edgeDisplay", "Set to true to visualise the loads along the boundary of the elements.")]
-        [Input("gridDisplay", "Set to true to visualise the load as a grid over the elements")]
+        [Input("gridDisplay", "Set to true to visualise the load as a grid over the elements.")]
         [Output("arrows", "A list of arrows representing the load.")]
         public static List<ICurve> Visualize(this AreaUniformlyDistributedLoad areaUDL, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true, bool asResultants = true, bool edgeDisplay = true, bool gridDisplay = false)
         {
@@ -126,7 +126,7 @@ namespace BH.Engine.Structure
 
         [Description("Draws arrows representing the bar point load at its location on the bar.")]
         [Input("barPointForce", "The bar load to visualise.")]
-        [Input("scaleFactor", "Scales the arrows drawn. Default scaling of 1 means 1 kN per metre")]
+        [Input("scaleFactor", "Scales the arrows drawn. Default scaling of 1 means 1 kN per metre.")]
         [Input("displayForces", "Toggles whether forces should be displayed or not.")]
         [Input("displayMoments", "Toggles whether moments should be displayed or not.")]
         [Input("asResultants", "Toggles whether loads should be displayed as resultant vectors or as components.")]
@@ -157,7 +157,7 @@ namespace BH.Engine.Structure
 
         [Description("Draws lines representing the bar load over the length of the Bar elements in the load.")]
         [Input("barPrestressLoad", "The bar load to visualise.")]
-        [Input("scaleFactor", "Scales the lines drawn. Default scaling of 1 means 1 kN per metre")]
+        [Input("scaleFactor", "Scales the lines drawn. Default scaling of 1 means 1 kN per metre.")]
         [Input("displayForces", "Toggles whether forces should be displayed or not.")]
         [Input("displayMoments", "Toggles whether moments should be displayed or not. Unused for bar prestress loads.")]
         [Input("asResultants", "Toggles whether loads should be displayed as resultant vectors or as components. Unused for bar prestress loads.")]
@@ -180,7 +180,7 @@ namespace BH.Engine.Structure
 
         [Description("Draws lines representing the bar load over the length of the Bar elements in the load.")]
         [Input("barTempLoad", "The bar load to visualise.")]
-        [Input("scaleFactor", "Scales the lines drawn. Default scaling of 1 means 1 kN per metre")]
+        [Input("scaleFactor", "Scales the lines drawn. Default scaling of 1 means 1 kN per metre.")]
         [Input("displayForces", "Toggles whether forces should be displayed or not. Unused for bar temprature loads.")]
         [Input("displayMoments", "Toggles whether moments should be displayed or not. Unused for bar temprature loads.")]
         [Input("asResultants", "Toggles whether loads should be displayed as resultant vectors or as components. Unused for bar temprature loads.")]
@@ -203,7 +203,7 @@ namespace BH.Engine.Structure
 
         [Description("Draws arrows representing the bar load over the length of the Bar elements in the load.")]
         [Input("barUDL", "The bar load to visualise.")]
-        [Input("scaleFactor", "Scales the arrows drawn. Default scaling of 1 means 1 kN per metre")]
+        [Input("scaleFactor", "Scales the arrows drawn. Default scaling of 1 means 1 kN per metre.")]
         [Input("displayForces", "Toggles whether forces should be displayed or not.")]
         [Input("displayMoments", "Toggles whether moments should be displayed or not.")]
         [Input("asResultants", "Toggles whether loads should be displayed as resultant vectors or as components.")]
@@ -237,7 +237,7 @@ namespace BH.Engine.Structure
 
         [Description("Draws arrows representing the bar load over the length of the Bar elements in the load.")]
         [Input("barVaryingDistLoad", "The bar load to visualise.")]
-        [Input("scaleFactor", "Scales the arrows drawn. Default scaling of 1 means 1 kN per metre")]
+        [Input("scaleFactor", "Scales the arrows drawn. Default scaling of 1 means 1 kN per metre.")]
         [Input("displayForces", "Toggles whether forces should be displayed or not.")]
         [Input("displayMoments", "Toggles whether moments should be displayed or not.")]
         [Input("asResultants", "Toggles whether loads should be displayed as resultant vectors or as components.")]
@@ -315,7 +315,7 @@ namespace BH.Engine.Structure
 
         [Description("Draws arrows representing the gravity load. FOr bars it will be drawn as a series of arrows over the length of the Bar elements in the load. For panels it will be displayed as a list of arrows along the boundary on the element.")]
         [Input("gravityLoad", "The gravity load to visualise.")]
-        [Input("scaleFactor", "Scales the arrows drawn. Default scaling of 1 means 1 kN per metre")]
+        [Input("scaleFactor", "Scales the arrows drawn. Default scaling of 1 means 1 kN per metre.")]
         [Input("displayForces", "Toggles whether forces should be displayed or not.")]
         [Input("displayMoments", "Toggles whether moments should be displayed or not. Not in use for gravity loads.")]
         [Input("asResultants", "Toggles whether loads should be displayed as resultant vectors or as components. Not in use for gravity loads.")]
@@ -366,7 +366,7 @@ namespace BH.Engine.Structure
 
         [Description("Draws arrows representing the point load at the location of the Node elements of the load.")]
         [Input("pointAcceleration", "The node load to visualise.")]
-        [Input("scaleFactor", "Scales the arrows drawn. Default scaling of 1 means 1 m/s² per metre")]
+        [Input("scaleFactor", "Scales the arrows drawn. Default scaling of 1 means 1 m/s² per metre.")]
         [Input("displayTranslations", "Toggles whether translational acceleration should be displayed or not.")]
         [Input("displayRotations", "Toggles whether rotational acceleration should be displayed or not.")]
         [Input("asResultants", "Toggles whether loads should be displayed as resultant vectors or as components.")]
@@ -391,7 +391,7 @@ namespace BH.Engine.Structure
 
         [Description("Draws arrows representing the point load at the location of the Node elements of the load.")]
         [Input("pointDisplacement", "The node load to visualise.")]
-        [Input("scaleFactor", "Scales the arrows drawn. Default scaling of 1 means 1 m per metre")]
+        [Input("scaleFactor", "Scales the arrows drawn. Default scaling of 1 means 1 m per metre.")]
         [Input("displayTranslations", "Toggles whether translations should be displayed or not.")]
         [Input("displayRotations", "Toggles whether rotations should be displayed or not.")]
         [Input("asResultants", "Toggles whether loads should be displayed as resultant vectors or as components.")]
@@ -416,7 +416,7 @@ namespace BH.Engine.Structure
 
         [Description("Draws arrows representing the point load at the location of the Node elements of the load.")]
         [Input("pointForce", "The node load to visualise.")]
-        [Input("scaleFactor", "Scales the arrows drawn. Default scaling of 1 means 1 kN per metre")]
+        [Input("scaleFactor", "Scales the arrows drawn. Default scaling of 1 means 1 kN per metre.")]
         [Input("displayForces", "Toggles whether forces should be displayed or not.")]
         [Input("displayMoments", "Toggles whether moments should be displayed or not.")]
         [Input("asResultants", "Toggles whether loads should be displayed as resultant vectors or as components.")]
@@ -441,7 +441,7 @@ namespace BH.Engine.Structure
 
         [Description("Draws arrows representing the point load at the location of the Node elements of the load.")]
         [Input("pointVelocity", "The node load to visualise.")]
-        [Input("scaleFactor", "Scales the arrows drawn. Default scaling of 1 means 1 m/s per metre")]
+        [Input("scaleFactor", "Scales the arrows drawn. Default scaling of 1 means 1 m/s per metre.")]
         [Input("displayTranslations", "Toggles whether translational velocity should be displayed or not.")]
         [Input("displayRotations", "Toggles whether rotational velocity should be displayed or not.")]
         [Input("asResultants", "Toggles whether loads should be displayed as resultant vectors or as components.")]
@@ -468,8 +468,8 @@ namespace BH.Engine.Structure
 
         [Description("Draws arrows representing the load. Visualisation will depend on the load type.")]
         [Input("load", "The node load to visualise.")]
-        [Input("scaleFactor", "Scales the arrows drawn. Default scaling of 1 means 1 kN per metre")]
-        [Input("displayForces", "Toggles whether forces or other translational loads should be displayed or not. ")]
+        [Input("scaleFactor", "Scales the arrows drawn. Default scaling of 1 means 1 kN per metre.")]
+        [Input("displayForces", "Toggles whether forces or other translational loads should be displayed or not. .")]
         [Input("displayMoments", "Toggles whether moments or other rotational loads should be displayed or not.")]
         [Input("asResultants", "Toggles whether loads should be displayed as resultant vectors or as components.")]
         [Output("arrows", "A list of arrows representing the load.")]

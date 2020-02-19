@@ -34,7 +34,7 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("If the provided node belongs to the Bar, this method returns the Node on the end of the Bar. The node if checked if it belongs to the bar by comparing its Guid. If the provided node is neither start or end node, null is returned.")]
-        [Input("bar", "The bar to get the oposite node from")]
+        [Input("bar", "The bar to get the oposite node from.")]
         [Input("node", "The node used to check for the oposite. This should be either the start or the end node of the Bar for the method to return anything.")]
         [Output("node", "The oposite node of the bar in relation to the one provided.")]
         public static Node OppositeNode(this Bar bar, Node node)

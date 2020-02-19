@@ -44,7 +44,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Calculates the mass per length for the section as its area times density. Does not take any reinforcement into acount")]
+        [Description("Calculates the mass per length for the section as its area times density. Does not take any reinforcement into acount.")]
         [Input("section", "The ConcreteSection to calculate the mass per area for.")]
         [Output("massPerLength", "The mass per length for the section.", typeof(MassPerUnitLength))]
         public static double MassPerMetre(this ConcreteSection section)
@@ -55,7 +55,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Calculates the mass per length for the section the mass per metre of the concrete section + the mass per metre of the steel section. Does not take any reinforcement into acount")]
+        [Description("Calculates the mass per length for the section the mass per metre of the concrete section + the mass per metre of the steel section. Does not take any reinforcement into acount.")]
         [Input("section", "The CompositeSection to calculate the mass per area for.")]
         [Output("massPerLength", "The mass per length for the section.", typeof(MassPerUnitLength))]
         public static double MassPerMetre(this CompositeSection section)
@@ -80,7 +80,7 @@ namespace BH.Engine.Structure
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
-        [Description("Calculates the mass per length for the section as its area times density. General dispatch method that calls the correct method based on type")]
+        [Description("Calculates the mass per length for the section as its area times density. General dispatch method that calls the correct method based on type.")]
         [Input("section", "The SectionProperty to calculate the mass per area for.")]
         [Output("massPerLength", "The mass per length for the section.", typeof(MassPerUnitLength))]
         public static double IMassPerMetre(this ISectionProperty section)

@@ -33,8 +33,8 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Method checks if a Node as a support assigned")]
-        [Input("node","The Node to check")]
+        [Description("Method checks if a Node as a support assigned.")]
+        [Input("node","The Node to check.")]
         [Output("isConstrained", "Returns true if the support of the Node is not null.")]
         public static bool IsConstrained(this Node node)
         {
