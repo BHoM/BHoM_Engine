@@ -339,7 +339,7 @@ namespace BH.Engine.Structure
                         continue;
                     }
 
-                    Vector loadVector = bar.SectionProperty.MassPerMetre() * gravityDir;
+                    Vector loadVector = bar.SectionProperty.IMassPerMetre() * gravityDir;
 
                     List<Point> pts = DistributedPoints(bar, barDivisions);
 
