@@ -45,11 +45,11 @@ namespace BH.Engine.Structure
         /***************************************************/
 
 
-        [Description("Create a seres of analytical Bar elements from the framing element. Could return any number of bars for each framing element depending on the settings")]
-        [Input("elements", "The framing element to generate bars from")]
-        [Input("angleTolerance", "Angle tolerance to control the splitting up of non-linear curves. Unused for line based FramingElements", typeof(Angle))]
-        [Input("maxNbBarsPerArc", "The maximum number of bars that each arc segement of the element will be split up into. Unused for line based FramingElements")]
-        [Output("bars", "A list of bars per framing element. For straight framing elements with prismatic sections thiw will be a single bar")]
+        [Description("Create a seres of analytical Bar elements from the framing element. Could return any number of bars for each framing element depending on the settings.")]
+        [Input("elements", "The framing element to generate bars from.")]
+        [Input("angleTolerance", "Angle tolerance to control the splitting up of non-linear curves. Unused for line based FramingElements.", typeof(Angle))]
+        [Input("maxNbBarsPerArc", "The maximum number of bars that each arc segement of the element will be split up into. Unused for line based FramingElements.")]
+        [Output("bars", "A list of bars per framing element. For straight framing elements with prismatic sections thiw will be a single bar.")]
         public static List<List<Bar>> AnalyticalBars(this List<BHP.Elements.IFramingElement> elements, double angleTolerance = 0.05 * Math.PI, int maxNbBarsPerArc = 10)
         {
             //Store the converted proeprties as the elements are being converted.
@@ -147,7 +147,7 @@ namespace BH.Engine.Structure
         /**** Public Methods - Deprecated               ****/
         /***************************************************/
 
-        [Deprecated("2.3", "Deprecated to be replaced with method with same name with more settings", null, "AnalyticalBars")]
+        [Deprecated("2.3", "Deprecated to be replaced with method with same name with more settings", null, "AnalyticalBars.")]
         public static List<Bar> AnalyticalBars(this FramingElement element)
         {
             return element.AnalyticalBars(0.05 * Math.PI);
@@ -155,11 +155,11 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Create a seres of analytical Bar elements from the framing element. Could return any number of bars for each framing element depending on the settings")]
-        [Input("element", "The framing element to generate bars from")]
-        [Input("angleTolerance", "Angle tolerance to control the splitting up of non-linear curves. Unused for line based FramingElements")]
-        [Input("maxNbBarsPerArc", "The maximum number of bars that each arc segement of the element will be split up into. Unused for line based FramingElements")]
-        [Deprecated("2.3", "Methods replaced with methods targeting BH.oM.Physical.Elements.IFramingElement")]
+        [Description("Create a seres of analytical Bar elements from the framing element. Could return any number of bars for each framing element depending on the settings.")]
+        [Input("element", "The framing element to generate bars from.")]
+        [Input("angleTolerance", "Angle tolerance to control the splitting up of non-linear curves. Unused for line based FramingElements.")]
+        [Input("maxNbBarsPerArc", "The maximum number of bars that each arc segement of the element will be split up into. Unused for line based FramingElements.")]
+        [Deprecated("2.3", "Methods replaced with methods targeting BH.oM.Physical.Elements.IFramingElement.")]
         public static List<Bar> AnalyticalBars(this FramingElement element, double angleTolerance = 0.05 * Math.PI, int maxNbBarsPerArc = 10)
         {
             return AnalyticalBars(element.Property as dynamic, element.LocationCurve, element.Name, angleTolerance, maxNbBarsPerArc);
@@ -169,7 +169,7 @@ namespace BH.Engine.Structure
         /**** Private Methods -Deprecated               ****/
         /***************************************************/
 
-        [Deprecated("2.3", "Methods replaced with methods targeting BH.oM.Physical.FramingProperties.ConstantFramingElementProperty in Physical_oM")]
+        [Deprecated("2.3", "Methods replaced with methods targeting BH.oM.Physical.FramingProperties.ConstantFramingElementProperty in Physical_oM.")]
         private static List<Bar> AnalyticalBars(ConstantFramingElementProperty property, ICurve centreLine, string name, double angleTolerance, int maxNbBars)
         {
             if (centreLine is NurbsCurve)

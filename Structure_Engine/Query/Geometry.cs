@@ -40,8 +40,8 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Gets the geometry of a Node as a point. Method required for automatic display in UI packages.")]
-        [Input("node", "Node to get the point geometry from")]
-        [Output("point", "The geometry of the node as its position")]
+        [Input("node", "Node to get the point geometry from.")]
+        [Output("point", "The geometry of the node as its position.")]
         public static Point Geometry(this Node node)
         {
             return node.Position;
@@ -50,8 +50,8 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Gets the geometry of a Bar as its CentreLine. Method required for automatic display in UI packages.")]
-        [Input("bar", "Bar to get the centre line geometry from")]
-        [Output("line", "The geometry of the Bar as its CentreLine")]
+        [Input("bar", "Bar to get the centre line geometry from.")]
+        [Output("line", "The geometry of the Bar as its CentreLine.")]
         public static Line Geometry(this Bar bar)
         {
             return bar.Centreline();
@@ -60,8 +60,8 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Gets the geometry of a Edge as its curve. Method required for automatic display in UI packages.")]
-        [Input("edge", "Edge to get the curve geometry from")]
-        [Output("curve", "The geometry of the Edge as its Curve")]
+        [Input("edge", "Edge to get the curve geometry from.")]
+        [Output("curve", "The geometry of the Edge as its Curve.")]
         public static ICurve Geometry(this Edge edge)
         {
             return edge.Curve;
@@ -70,8 +70,8 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Gets the geometry of a Structural surface as its geometrical 'centre plane' location surface. Method required for automatic display in UI packages.")]
-        [Input("surface", "Structural surface to get the geometrical surface geometry from")]
-        [Output("surface", "The geometry of the structural Surface as its 'centre plane' geometrical surface")]
+        [Input("surface", "Structural surface to get the geometrical surface geometry from.")]
+        [Output("surface", "The geometry of the structural Surface as its 'centre plane' geometrical surface.")]
         public static IGeometry Geometry(this Surface surface)
         {
             return surface.Extents;
@@ -80,8 +80,8 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Gets the geometry of a Panel as a geometrical 'centre plane' planar surface. Method required for automatic display in UI packages.")]
-        [Input("panel", "Panel to get the planar surface geometry from")]
-        [Output("surface", "The geometry of the Panel as its 'centre plane' geometrical surface")]
+        [Input("panel", "Panel to get the planar surface geometry from.")]
+        [Output("surface", "The geometry of the Panel as its 'centre plane' geometrical surface.")]
         public static IGeometry Geometry(this Panel panel)
         {
             return Engine.Geometry.Create.PlanarSurface(
@@ -93,8 +93,8 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Gets the geometry of a ConcreteSection as its profile outlines and reinforcement in the global XY plane. Method required for automatic display in UI packages.")]
-        [Input("section", "ConcreteSection to get outline and reinforcement geometry from")]
-        [Output("outlines", "The geometry of the ConcreteSection as its outline and reinforment curves in the global XY")]
+        [Input("section", "ConcreteSection to get outline and reinforcement geometry from.")]
+        [Output("outlines", "The geometry of the ConcreteSection as its outline and reinforment curves in the global XY.")]
         public static CompositeGeometry Geometry(this ConcreteSection section)
         {
             if (section.SectionProfile.Edges.Count == 0)
@@ -109,7 +109,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Deprecated("3.1", "Replaced with method for base interface IGeometricalSection", typeof(Query), "Geometry(this IGeometricalSection section)")]
+        [Deprecated("3.1", "Replaced with method for base interface IGeometricalSection.", typeof(Query), "Geometry(this IGeometricalSection section).")]
         public static IGeometry Geometry(this SteelSection section)
         {
             return new CompositeGeometry { Elements = section.SectionProfile.Edges.ToList<IGeometry>() };
@@ -118,8 +118,8 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Gets the geometry of a GeometricalSEction as its profile outlines the global XY plane. Method required for automatic display in UI packages.")]
-        [Input("section", "GeometricalSection to get outline geometry from")]
-        [Output("outlines", "The geometry of the GeometricalSection as its outline in the global XY plane")]
+        [Input("section", "GeometricalSection to get outline geometry from.")]
+        [Output("outlines", "The geometry of the GeometricalSection as its outline in the global XY plane.")]
         public static IGeometry Geometry(this IGeometricalSection section)
         {
             return new CompositeGeometry { Elements = section.SectionProfile.Edges.ToList<IGeometry>() };
@@ -128,8 +128,8 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Gets the geometry of a RigidLink as a list of lines between the master node and the slave nodes. Method required for automatic display in UI packages.")]
-        [Input("link", "RigidLink to get the line geometry from")]
-        [Output("lines", "The geometry of the RigidLink as a list of master-slave lines")]
+        [Input("link", "RigidLink to get the line geometry from.")]
+        [Output("lines", "The geometry of the RigidLink as a list of master-slave lines.")]
         public static IGeometry Geometry(this RigidLink link)
         {
             List<IGeometry> lines = new List<IGeometry>();
@@ -143,7 +143,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Deprecated("2.3", "Methods replaced with methods targeting BH.oM.Physical.Elements.IFramingElement")]
+        [Deprecated("2.3", "Methods replaced with methods targeting BH.oM.Physical.Elements.IFramingElement.")]
         public static ICurve Geometry(this FramingElement element)
         {
             return element.LocationCurve;
@@ -152,8 +152,8 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Gets the geometry of a FEMesh as a geometrical Mesh. A geometrical mesh only support 3 and 4 nodes faces, while a FEMesh does not have this limitation. For FEMeshFaces with more than 4 nodes or less than 3 this operation is therefore not possible. Method required for automatic display in UI packages.")]
-        [Input("feMesh", "FEMesh to get the mesh geometry from")]
-        [Output("lines", "The geometry of the FEMesh as a geometrical Mesh")]
+        [Input("feMesh", "FEMesh to get the mesh geometry from.")]
+        [Output("lines", "The geometry of the FEMesh as a geometrical Mesh.")]
         public static Mesh Geometry(this FEMesh feMesh)
         {
             Mesh mesh = new Mesh();
@@ -193,8 +193,8 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Gets the geometry of a SectionProeprty, generally as its profile outlines the global XY plane. Method required for automatic display in UI packages.")]
-        [Input("section", "SectionProperty to get outline geometry from")]
-        [Output("outlines", "The geometry of the SectionProperty")]
+        [Input("section", "SectionProperty to get outline geometry from.")]
+        [Output("outlines", "The geometry of the SectionProperty.")]
         public static IGeometry IGeometry(this ISectionProperty section)
         {
             return Geometry(section as dynamic);

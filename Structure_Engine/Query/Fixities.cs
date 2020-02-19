@@ -33,9 +33,9 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Gets the fixitiy values from a constraint as a bool array. The value returned will be true if the DOFType is fixed. Values returned in the following order: TransX, TranxY, TransZ, RotX, RotY, RotZ")]
-        [Input("constraint", "The constraint to check for fixities")]
-        [Output("springValues", "The fixity values from a constraint as a bool array, where true indicates a fixity, in the following order: TransX, TransY, TransZ, RotX, RotY, RotZ")]
+        [Description("Gets the fixitiy values from a constraint as a bool array. The value returned will be true if the DOFType is fixed. Values returned in the following order: TransX, TranxY, TransZ, RotX, RotY, RotZ.")]
+        [Input("constraint", "The constraint to check for fixities.")]
+        [Output("springValues", "The fixity values from a constraint as a bool array, where true indicates a fixity, in the following order: TransX, TransY, TransZ, RotX, RotY, RotZ.")]
         public static bool[] Fixities(this Constraint6DOF constraint)
         {
             return new bool[] 

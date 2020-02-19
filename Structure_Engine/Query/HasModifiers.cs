@@ -34,7 +34,7 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Checks if a surface property has any modifiers by first checking if any modifiers has been assigned, and if any of them are set to a value different than 1")]
+        [Description("Checks if a surface property has any modifiers by first checking if any modifiers has been assigned, and if any of them are set to a value different than 1.")]
         [Input("property", "The property to check for modifiers.")]
         [Output("result","Returns true if any modifiers exists on the section.")]
         public static bool HasModifiers(this ISurfaceProperty property)
@@ -53,7 +53,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Checks if a section property has any modifiers by first checking if any modifiers has been assigned, and if any of them are set to a value different than 1")]
+        [Description("Checks if a section property has any modifiers by first checking if any modifiers has been assigned, and if any of them are set to a value different than 1.")]
         [Input("property", "The property to check for modifiers.")]
         [Output("result", "Returns true if any modifiers exists on the section.")]
         public static bool HasModifiers(this ISectionProperty property)

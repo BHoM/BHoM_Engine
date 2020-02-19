@@ -41,8 +41,8 @@ namespace BH.Engine.Structure
                      "To use this method for a closed set of Curves, first call Geometry.Create.IntegrationSlices() to generate the slices.")]
         [Input("slices", "The list of integration slices used to calculate the shear area. To generate the integration slices from as set of closed curves first call Geometry.Create.IntegrationSlices().")]
         [Input("momentOfInertia", "The moment of inertia around the axis orthogonal to the one being used to generate the slices.", typeof(SecondMomentOfArea))]
-        [Input("centroid", "The centroid of the curves along the axis used to generate the slices", typeof(Length))]
-        [Output("shearArea", "The shear area calculated based on the slices", typeof(Area))]
+        [Input("centroid", "The centroid of the curves along the axis used to generate the slices.", typeof(Length))]
+        [Output("shearArea", "The shear area calculated based on the slices.", typeof(Area))]
         public static double ShearArea(List<IntegrationSlice> slices, double momentOfInertia, double centroid)
         {
             double sy = 0;

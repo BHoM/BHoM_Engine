@@ -52,8 +52,8 @@ namespace BH.Engine.Structure
         [Input("adapterId","The custom data identifier to look for ID information on for the Bars. This will depend on the software package used, but generally be for example 'Robot_id', 'GSA_id' etc. Try exploding the custom data of your bars to find the name of the identifier.")]
         [Input("loadcase", "Loadcase to display results for. Should generally be either an identifier matching the one used in the analysis package that the results were pulled from or a Loadcase/LoadCombination class.")]
         [Input("scaleFactor", "Controls by how much the results should be scaled.")]
-        [Input("drawSections", "Toggles if output should be just centre lines or include section geometry. Note that currently section geometry only supports displacements, no rotations!")]
-        [Output("deformed","The shape of the Bars from the displacements")]
+        [Input("drawSections", "Toggles if output should be just centre lines or include section geometry. Note that currently section geometry only supports displacements, no rotations!.")]
+        [Output("deformed","The shape of the Bars from the displacements.")]
         public static List<IGeometry> DeformedShape(List<Bar> bars, List<BarDisplacement> barDisplacements, string adapterId, object loadcase, double scaleFactor = 1.0, bool drawSections = false)
         {
             barDisplacements = barDisplacements.SelectCase(loadcase);
@@ -96,7 +96,7 @@ namespace BH.Engine.Structure
         [Input("adapterId", "The custom data identifier to look for ID information on for the FEMeshes. This will depend on the software package used, but generally be for example 'Robot_id', 'GSA_id' etc. Try exploding the custom data of your bars to find the name of the identifier.")]
         [Input("loadcase", "Loadcase to display results for. Should generally be either an identifier matching the one used in the analysis package that the results were pulled from or a Loadcase/LoadCombination class.")]
         [Input("scaleFactor", "Controls by how much the results should be scaled.")]
-        [Output("deformed", "The shape of the FEMeshes from the displacements")]
+        [Output("deformed", "The shape of the FEMeshes from the displacements.")]
         public static List<Mesh> DeformedShape(List<FEMesh> meshes, List<MeshResult> meshDisplacements, string adapterId, object loadcase, double scaleFactor = 1.0)
         {
             meshDisplacements = meshDisplacements.SelectCase(loadcase);

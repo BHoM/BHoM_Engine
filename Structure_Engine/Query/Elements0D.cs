@@ -37,7 +37,7 @@ namespace BH.Engine.Structure
         /******************************************/
 
         [Description("Gets the Element0Ds of a Bar, which for the case of a Bar means getting the start and the end Node. Method necessary for IElement pattern.")]
-        [Input("bar", "The bar to extract IElement0ds from")]
+        [Input("bar", "The bar to extract IElement0ds from.")]
         [Output("element0Ds","The list of element0ds of the bar, basically the start and end nodes.")]
         public static List<IElement0D> Elements0D(this Bar bar)
         {

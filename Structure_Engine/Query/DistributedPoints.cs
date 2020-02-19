@@ -37,8 +37,8 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Gets a list of evenly distributed points along a bar from a given number of dividsions")]
-        [Input("bar", "The bar to get division points for")]
+        [Description("Gets a list of evenly distributed points along a bar from a given number of dividsions.")]
+        [Input("bar", "The bar to get division points for.")]
         [Input("divisions", "Number of segments to divide the bar into. The number of points returned will be divisions +1.")]
         [Input("startLength", "Optional offset from bar start node to start of divisions.", typeof(Length))]
         [Input("endLength", "Optional offset from bar end node to start of divisions.", typeof(Length))]
