@@ -30,7 +30,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Analytical_oM, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Analytical_oM">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\BHoM\Build\Analytical_oM.dll</HintPath>
       <Private>False</Private>
@@ -44,21 +44,22 @@
       <HintPath>..\..\BHoM\Build\Common_oM.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Data_oM, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Data_oM">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\BHoM\Build\Data_oM.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Dimensional_oM, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Dimensional_oM">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\BHoM\Build\Dimensional_oM.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Geometry_oM">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\BHoM\Build\Geometry_oM.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Physical_oM, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Physical_oM">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\BHoM\Build\Physical_oM.dll</HintPath>
       <Private>False</Private>
