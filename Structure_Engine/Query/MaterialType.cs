@@ -34,8 +34,8 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Gets the material type from the material fragment. This will for a Steel material always return type Steel.")]
-        [Input("materialFragment", "The structural material fragment to get the type from.")]
+        [Description("Gets the material type from the MaterialFragment. For a Steel material this will always return type Steel.")]
+        [Input("materialFragment", "The structural MaterialFragment to get the type from.")]
         [Output("type", "The material type of the provided material.")]
         public static MaterialType MaterialType(this Steel materialFragment)
         {
@@ -44,8 +44,8 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Gets the material type from the material fragment. This will for a Concrete material always return type Concrete.")]
-        [Input("materialFragment", "The structural material fragment to get the type from.")]
+        [Description("Gets the material type from the MaterialFragment. For a Concrete material this will always return type Concrete.")]
+        [Input("materialFragment", "The structural MaterialFragment to get the type from.")]
         [Output("type", "The material type of the provided material.")]
         public static MaterialType MaterialType(this Concrete materialFragment)
         {
@@ -54,8 +54,8 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Gets the material type from the material fragment. This will for a Timber material always return type Timber.")]
-        [Input("materialFragment", "The structural material fragment to get the type from.")]
+        [Description("Gets the material type from the MaterialFragment. For a Timber material this will always return type Timber.")]
+        [Input("materialFragment", "The structural MaterialFragment to get the type from.")]
         [Output("type", "The material type of the provided material.")]
         public static MaterialType MaterialType(this Timber materialFragment)
         {
@@ -64,8 +64,8 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Gets the material type from the material fragment. This will for a Aluminium material always return type Aluminium.")]
-        [Input("materialFragment", "The structural material fragment to get the type from.")]
+        [Description("Gets the material type from the MaterialFragment. For a Aluminium material this will always return type Aluminium.")]
+        [Input("materialFragment", "The structural MaterialFragment to get the type from.")]
         [Output("type", "The material type of the provided material.")]
         public static MaterialType MaterialType(this Aluminium materialFragment)
         {
@@ -74,8 +74,8 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Gets the material type from the material fragment. This will for a GenericIsotropicMaterial material always return type Undefined.")]
-        [Input("materialFragment", "The structural material fragment to get the type from.")]
+        [Description("Gets the material type from the MaterialFragment. For a GenericIsotropicMaterial material this will always return type Undefined.")]
+        [Input("materialFragment", "The structural MaterialFragment to get the type from.")]
         [Output("type", "The material type of the provided material.")]
         public static MaterialType MaterialType(this GenericIsotropicMaterial materialFragment)
         {
@@ -84,8 +84,8 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Gets the material type from the material fragment. This will for a GenericOrthotropicMaterial material always return type Undefined.")]
-        [Input("materialFragment", "The structural material fragment to get the type from.")]
+        [Description("Gets the material type from the MaterialFragment. For a GenericOrthotropicMaterial material this will always return type Undefined.")]
+        [Input("materialFragment", "The structural MaterialFragment to get the type from.")]
         [Output("type", "The material type of the provided material.")]
         public static MaterialType MaterialType(this GenericOrthotropicMaterial materialFragment)
         {
@@ -96,8 +96,8 @@ namespace BH.Engine.Structure
         /**** Public Methods - Interface                ****/
         /***************************************************/
 
-        [Description("Gets the material type from the material fragment.")]
-        [Input("materialFragment", "The structural material fragment to get the type from.")]
+        [Description("Gets the material type from the MaterialFragment.")]
+        [Input("materialFragment", "The structural MaterialFragment to get the type from.")]
         [Output("type", "The material type of the provided material.")]
         public static MaterialType IMaterialType(this IMaterialFragment materialFragment)
         {
