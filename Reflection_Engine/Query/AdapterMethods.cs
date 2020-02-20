@@ -37,16 +37,18 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
+
+        [Description("Returns a list of MethodInfo for all methods contained in classes whose name ends with `_Adapter`.")]
         public static List<MethodInfo> AdapterMethods()
         {
+            // If we move the IBHoMAdapter interface from the BHoM_Adapter down in the base BH.oM, we can test for inheritance instead.
             return BHoMMethodList().Where(x => x.DeclaringType.Name.Contains("_Adapter")).ToList();
-            // If we move the IBHoMAdapter interface from the BHoM_Adapter down in the base BH.oM, we can test for inheritance instead
         }
 
         /***************************************************/
 
         [Description("Returns a collection of all CRUD methods found in all Adapters loaded at runtime, grouped per CRUD type.")]
-        [Output("Dictionary with key that can be one of the following: `Create`, `Read`, `Update`, `Delete`; corresponding value is the List of CRUD methods.")]
+        [Output("Dictionary with string key, one of: `Create`, `Read`, `Update`, `Delete`; value is the List of CRUD methods.")]
         public static Dictionary<string, List<MethodInfo>> AdapterCRUDMethods()
         {
             List<MethodInfo> adapterMethods = AdapterMethods();
@@ -70,23 +72,66 @@ namespace BH.Engine.Reflection
         /***************************************************/
 
         [Description("Returns a collection of all Types that are supported by some CRUD action, grouped per object type.")]
-        [Output("Dictionary with key that is the Type of the BHoM class that has some CRUD method that supports it; corresponding value is the list of CRUD methods compatible with that Type.")]
-        public static Dictionary<Type, List<MethodInfo>> CRUDcompatibleTypes()
+        [Output("Dictionary with string key, one of: `Create`, `Read`, `Update`, `Delete`;\n" +
+            "value is a Dictionary with key: BHoM Type of with some CRUD method that supports it; value: list of CRUD methods compatible with that Type.")]
+        public static Dictionary<string, Dictionary<Type, List<MethodInfo>>> CRUDcompatibleTypes()
         {
-            List<MethodInfo> adapterMethods = AdapterMethods();
+            Dictionary<string, Dictionary<Type, List<MethodInfo>>> result = new Dictionary<string, Dictionary<Type, List<MethodInfo>>>();
 
+            Dictionary<string, List<MethodInfo>> adapterCRUDMethods = AdapterCRUDMethods();
 
-            return null;
+            result["Create"] = Create_CompatibleTypes(adapterCRUDMethods["Create"]);
+            result["Read"] = Read_CompatibleTypes(adapterCRUDMethods["Read"]);
+            // Update and Delete to be done.
+
+            return result;
         }
 
-        public static Dictionary<Type, List<MethodInfo>> CreateCompatibleTypes(List<MethodInfo> createMethods)
+        private static Dictionary<Type, List<MethodInfo>> Create_CompatibleTypes(List<MethodInfo> createMethods)
         {
-            createMethods.Where(m => m.GetParameters().First().GetType().IsOfAllowedTypes())
-            return null;
+            Dictionary<Type, List<MethodInfo>> result = new Dictionary<Type, List<MethodInfo>>();
+
+            for (int i = 0; i < createMethods.Count; i++)
+            {
+                // For Create methods, the compatibility is given by the type of the FIRST parameter of the method.
+                ParameterInfo firstPar = createMethods[i].GetParameters().FirstOrDefault(null);
+
+                if (firstPar != null && firstPar.ParameterType.IsOfAllowedTypes())
+                {
+                    if (result[firstPar.ParameterType] == null)
+                        result[firstPar.ParameterType] = new List<MethodInfo>() { createMethods[i] };
+                    else
+                        result[firstPar.ParameterType].Add(createMethods[i]);
+                }
+            }
+
+            return result;
         }
+
+
+        private static Dictionary<Type, List<MethodInfo>> Read_CompatibleTypes(List<MethodInfo> readMethods)
+        {
+            Dictionary<Type, List<MethodInfo>> result = new Dictionary<Type, List<MethodInfo>>();
+
+            for (int i = 0; i < readMethods.Count; i++)
+            {
+                // For Read methods, the compatibility is given by the return type of the method.
+                Type returnType = readMethods[i].ReturnType;
+                if (returnType != null && returnType.IsOfAllowedTypes())
+                {
+                    if (result[returnType] == null)
+                        result[returnType] = new List<MethodInfo>() { readMethods[i] };
+                    else
+                        result[returnType].Add(readMethods[i]);
+                }
+            }
+
+            return result;
+        }
+
 
         // To collect CRUD methods that support certain object types, we need to exclude all types that are not one of allowed types.
-        internal static bool IsOfAllowedTypes(this Type type)
+        private static bool IsOfAllowedTypes(this Type type)
         {
             bool isOfAllowedTypes = false;
 

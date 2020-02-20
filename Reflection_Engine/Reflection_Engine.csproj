@@ -109,6 +109,7 @@
     <Compile Include="Query\CurrentAssemblyFolder.cs" />
     <Compile Include="Query\BHoMFolder.cs" />
     <Compile Include="Query\EnumValues.cs" />
+    <Compile Include="Query\AdapterMethods.cs" />
     <Compile Include="Query\GenericTypeConstraint.cs" />
     <Compile Include="Query\ImplementedTypes.cs" />
     <Compile Include="Query\Count.cs" />
