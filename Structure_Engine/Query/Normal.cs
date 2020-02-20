@@ -37,8 +37,8 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Returns the bars local z-axis, generally the major axis direction of the section of the Bar. \n" +
-                     "For non - vertical members the local z is aligned with the global z and rotated with the orientation angle around the local x. \n" +
-                     "For vertical members the local y is aligned with the global y and rotated with the orientation angle around the local x. For this case the normal will be the vector orthogonal to the local y and local x.")]
+                     "For non - vertical members the local z-axis is aligned with the global Z-axis and rotated with the orientation angle around the local x-axis. \n" +
+                     "For vertical members the local y-axis is aligned with the global Y-axis and rotated with the orientation angle around the local x-axis. For this case the normal will be the vector orthogonal to the local x-axis and local y-axis.")]
         [Input("bar", "The Bar to evaluate the normal of.")]
         [Output("normal", "Vector representing the local z-axis of the Bar.")]
         public static Vector Normal(this Bar bar)

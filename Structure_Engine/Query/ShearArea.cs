@@ -36,7 +36,7 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("This method is mainly replaced by the Compute.ShearAreaPolyline() Method. \n" +
+        [Description("This method is largely replaced by the Compute.ShearAreaPolyline() Method. \n" +
                      "Calculates the Shear area from a list of IntegrationSlices, based on the integral found https://github.com/BHoM/documentation/wiki/Shear-Area-Derivation \n" +
                      "To use this method for a closed set of Curves, first call Geometry.Create.IntegrationSlices() to generate the slices.")]
         [Input("slices", "The list of integration slices used to calculate the shear area. To generate the integration slices from as set of closed curves first call Geometry.Create.IntegrationSlices().")]

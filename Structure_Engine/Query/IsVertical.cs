@@ -35,10 +35,10 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Checks if a bar is vertical. A bar is vertical if its projected length to the horizontal plane is less than 0.0001, i.e. a tolerance of 0.1mm on verticality. \n" +
+        [Description("Checks if a Bar is vertical. A Bar is vertical if its projected length to the horizontal plane is less than 0.0001, i.e. a tolerance of 0.1mm on verticality. \n" +
                      "For general structural conventions please see  https://github.com/BHoM/documentation/wiki/BHoM-Structural-Conventions.")]
-        [Input("bar", "The bar to check for verticality.")]
-        [Output("result", "Returns true if the bar is vertical.")]
+        [Input("bar", "The Bar to check for verticality.")]
+        [Output("result", "Returns true if the Bar is vertical.")]
         public static bool IsVertical(this Bar bar)
         {
             return Engine.Geometry.Query.IsVertical(bar.Centreline());

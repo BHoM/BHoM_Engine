@@ -36,8 +36,8 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Checks if a physical material contains exactly one structural material fragment, i.e. checks if the material contains structural data.")]
-        [Input("material", "The physical material to check.")]
+        [Description("Checks if a physical Material contains exactly one structural material fragment, i.e. checks if the Material contains structural data.")]
+        [Input("material", "The physical Material to check.")]
         [Output("result", "Returns true if the physical Material contains structural data.")]
         public static bool IsValidStructural(this Material material)
         {

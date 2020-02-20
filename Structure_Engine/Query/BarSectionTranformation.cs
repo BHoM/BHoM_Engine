@@ -37,8 +37,8 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Constructs the transformation matrix needed to move the section curves of the bar from the default drawing position around the global origin to the start of the bar and aligned with its tangent.")]
-        [Input("bar", "The bar to extract the transformation matrix from. Will make use of the position, tangent and normal of the bar to generate the matrix.")]
+        [Description("Constructs the transformation matrix needed to move the section curves of the Bar from the default drawing position around the global origin to the start of the Bar and aligned with its tangent.")]
+        [Input("bar", "The Bar to extract the transformation matrix from. Will make use of the position, tangent and normal of the Bar to generate the matrix.")]
         [Output("transform", "The generated transformation matrix.")]
         public static TransformMatrix BarSectionTranformation(this Bar bar)
         {

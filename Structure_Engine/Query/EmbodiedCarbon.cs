@@ -34,9 +34,9 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Calculates the total amount of embodied carbon of a Bar by taken the mass of the bar (as section area*length*density) times the EmbodiedCarbon value of the material.")]
+        [Description("Calculates the total amount of embodied carbon of a Bar by getting the mass of the Bar (generally as section area*length*density) multiplied by the EmbodiedCarbon value of the material.")]
         [Input("bar", "The Bar to get the total embodied carbon from.")]
-        [Output("emobodiedCarbon","The total embodied carbon of the bar.", typeof(Mass))]
+        [Output("embodiedCarbon", "The total embodied carbon of the bar.", typeof(Mass))]
         public static double EmbodiedCarbon(this Bar bar)
         {
             return bar.Mass() * bar.SectionProperty.Material.EmbodiedCarbon;
@@ -44,9 +44,9 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Calculates the total amount of embodied carbon of a Panel by taken the mass of the panel (as area*thickness*density) times the EmbodiedCarbon value of the material.")]
+        [Description("Calculates the total amount of embodied carbon of a Panel by getting the mass of the Panel (generally as area*thickness*density) multiplied by the EmbodiedCarbon value of the material.")]
         [Input("panel", "The Panel to get the total embodied carbon from.")]
-        [Output("emobodiedCarbon", "The total embodied carbon of the panel.", typeof(Mass))]
+        [Output("embodiedCarbon", "The total embodied carbon of the panel.", typeof(Mass))]
         public static double EmbodiedCarbon(this Panel panel)
         {
             return panel.Mass() * panel.Property.Material.EmbodiedCarbon;

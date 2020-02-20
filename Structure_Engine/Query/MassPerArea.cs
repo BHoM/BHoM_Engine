@@ -34,7 +34,7 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Calculates the mass per area for the property as its thickness times density.")]
+        [Description("Calculates the mass per area for the property as its thickness mutiplied by the density.")]
         [Input("constantThickness", "The ConstantThickness property to calculate the mass per area for.")]
         [Output("massPerArea", "The mass per area for the property.", typeof(MassPerUnitArea))]
         public static double MassPerArea(this ConstantThickness constantThickness)

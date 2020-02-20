@@ -37,10 +37,10 @@ namespace BH.Engine.Structure
         /****      Element control points      ****/
         /******************************************/
 
-        [Description("Gets all control points from the edgecurves of a Panel. Control point extraction will depend on the type of curve in the edges. \n" + 
+        [Description("Gets all control points from the edge curves of a Panel. Control point extraction will depend on the type of curve in the edges. \n" + 
                      "Method will return point from only the external edges or from external edges as well as openings depending on input setting.")]
         [Input("panel", "The Panel to extract the control points from.")]
-        [Input("externalOnly", "If true, only controlpoints from the external edges is extracted. If false, external edges as well as opening controlpoints are included.")]
+        [Input("externalOnly", "If true, only control points from the external edges is extracted. If false, external edges as well as opening control points are included.")]
         [Output("points","The extracted control points.")]
         public static List<Point> ControlPoints(this Panel panel, bool externalOnly = false)
         {
@@ -57,7 +57,7 @@ namespace BH.Engine.Structure
 
         /******************************************/
 
-        [Description("Gets all control points from the edgecurves of an Opening. Control point extraction will depend on the type of curve in the edges.")]
+        [Description("Gets all control points from the edge curves of an Opening. Control point extraction will depend on the type of curve in the edges.")]
         [Input("opening", "The Opening to extract the control points from.")]
         [Output("points", "The extracted control points.")]
         public static List<Point> ControlPoints(this Opening opening)
@@ -78,7 +78,7 @@ namespace BH.Engine.Structure
 
         /******************************************/
 
-        [Description("Gets the start and end node positions of a Bar.")]
+        [Description("Gets the StartNode and EndNode positions of a Bar.")]
         [Input("bar", "The Bar to extract the control points from.")]
         [Output("points", "The extracted control points.")]
         public static List<Point> ControlPoints(this Bar bar)

@@ -34,7 +34,7 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Calculates the mass per length for the section as its area times density.")]
+        [Description("Calculates the mass per length for the section as its area mulitplied by the density.")]
         [Input("section", "The SectionProperty to calculate the mass per area for.")]
         [Output("massPerLength", "The mass per length for the section.", typeof(MassPerUnitLength))]
         public static double MassPerMetre(this ISectionProperty section)
@@ -66,7 +66,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Calculates the mass per length for the section as its area times density.")]
+        [Description("Calculates the mass per length for the section as its area mulitplied by the density.")]
         [Input("section", "The SectionProperty to calculate the mass per area for.")]
         [Output("massPerLength", "The mass per length for the section.", typeof(MassPerUnitLength))]
         public static double MassPerMetre(this CableSection section)
@@ -80,7 +80,7 @@ namespace BH.Engine.Structure
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
-        [Description("Calculates the mass per length for the section as its area times density. General dispatch method that calls the correct method based on type.")]
+        [Description("Calculates the mass per length for the section, generally as its area mulitplied by the density. General dispatch method that calls the correct method based on type.")]
         [Input("section", "The SectionProperty to calculate the mass per area for.")]
         [Output("massPerLength", "The mass per length for the section.", typeof(MassPerUnitLength))]
         public static double IMassPerMetre(this ISectionProperty section)

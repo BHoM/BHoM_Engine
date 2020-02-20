@@ -48,7 +48,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Get a carteseian coordinate system descibring the position and orientation of the bar in the Global XY system where the bars tangent is the local X-axis and the Normal is the local Z-axis.")]
+        [Description("Get a carteseian coordinate system descibring the position and orientation of the Bar in the Global XY system where the bars tangent is the local X-axis and the Normal is the local Z-axis.")]
         [Input("bar", "The Bar to extract the local coordinate system from.")]
         [Output("CoordinateSystem", "The local cartesian coordinate system of the Bar.")]
         public static Cartesian CoordinateSystem(this Bar bar)

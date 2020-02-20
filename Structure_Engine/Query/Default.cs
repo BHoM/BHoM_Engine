@@ -36,7 +36,7 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Extracts a default material from the material Datasets for a specific material type.")]
+        [Description("Extracts a default material from the material datasets for a specific material type.")]
         [Input("materialType","The material type to extract a default value for.")]
         [Output("material","The default material of the type provided.")]
         public static IMaterialFragment Default(this MaterialType materialType)

@@ -124,8 +124,8 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Draws arrows representing the bar point load at its location on the bar.")]
-        [Input("barPointForce", "The bar load to visualise.")]
+        [Description("Draws arrows representing the Bar point load at its location on the bar.")]
+        [Input("barPointForce", "The Bar load to visualise.")]
         [Input("scaleFactor", "Scales the arrows drawn. Default scaling of 1 means 1 kN per metre.")]
         [Input("displayForces", "Toggles whether forces should be displayed or not.")]
         [Input("displayMoments", "Toggles whether moments should be displayed or not.")]
@@ -155,12 +155,12 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Draws lines representing the bar load over the length of the Bar elements in the load.")]
-        [Input("barPrestressLoad", "The bar load to visualise.")]
+        [Description("Draws lines representing the Bar load over the length of the Bar elements in the load.")]
+        [Input("barPrestressLoad", "The Bar load to visualise.")]
         [Input("scaleFactor", "Scales the lines drawn. Default scaling of 1 means 1 kN per metre.")]
         [Input("displayForces", "Toggles whether forces should be displayed or not.")]
-        [Input("displayMoments", "Toggles whether moments should be displayed or not. Unused for bar prestress loads.")]
-        [Input("asResultants", "Toggles whether loads should be displayed as resultant vectors or as components. Unused for bar prestress loads.")]
+        [Input("displayMoments", "Toggles whether moments should be displayed or not. Unused for Bar prestress loads.")]
+        [Input("asResultants", "Toggles whether loads should be displayed as resultant vectors or as components. Unused for Bar prestress loads.")]
         [Output("lines", "A list of lines representing the load.")]
         public static List<ICurve> Visualize(this BarPrestressLoad barPrestressLoad, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true, bool asResultants = true)
         {
@@ -178,12 +178,12 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Draws lines representing the bar load over the length of the Bar elements in the load.")]
-        [Input("barTempLoad", "The bar load to visualise.")]
+        [Description("Draws lines representing the Bar load over the length of the Bar elements in the load.")]
+        [Input("barTempLoad", "The Bar load to visualise.")]
         [Input("scaleFactor", "Scales the lines drawn. Default scaling of 1 means 1 kN per metre.")]
-        [Input("displayForces", "Toggles whether forces should be displayed or not. Unused for bar temprature loads.")]
-        [Input("displayMoments", "Toggles whether moments should be displayed or not. Unused for bar temprature loads.")]
-        [Input("asResultants", "Toggles whether loads should be displayed as resultant vectors or as components. Unused for bar temprature loads.")]
+        [Input("displayForces", "Toggles whether forces should be displayed or not. Unused for Bar temprature loads.")]
+        [Input("displayMoments", "Toggles whether moments should be displayed or not. Unused for Bar temprature loads.")]
+        [Input("asResultants", "Toggles whether loads should be displayed as resultant vectors or as components. Unused for Bar temprature loads.")]
         [Output("lines", "A list of lines representing the load.")]
         public static List<ICurve> Visualize(this BarTemperatureLoad barTempLoad, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true, bool asResultants = true)
         {
@@ -201,8 +201,8 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Draws arrows representing the bar load over the length of the Bar elements in the load.")]
-        [Input("barUDL", "The bar load to visualise.")]
+        [Description("Draws arrows representing the Bar load over the length of the Bar elements in the load.")]
+        [Input("barUDL", "The Bar load to visualise.")]
         [Input("scaleFactor", "Scales the arrows drawn. Default scaling of 1 means 1 kN per metre.")]
         [Input("displayForces", "Toggles whether forces should be displayed or not.")]
         [Input("displayMoments", "Toggles whether moments should be displayed or not.")]
@@ -235,8 +235,8 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Draws arrows representing the bar load over the length of the Bar elements in the load.")]
-        [Input("barVaryingDistLoad", "The bar load to visualise.")]
+        [Description("Draws arrows representing the Bar load over the length of the Bar elements in the load.")]
+        [Input("barVaryingDistLoad", "The Bar load to visualise.")]
         [Input("scaleFactor", "Scales the arrows drawn. Default scaling of 1 means 1 kN per metre.")]
         [Input("displayForces", "Toggles whether forces should be displayed or not.")]
         [Input("displayMoments", "Toggles whether moments should be displayed or not.")]
