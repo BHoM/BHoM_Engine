@@ -45,21 +45,39 @@ namespace BH.Engine.Structure
         /***************************************************/
 
 
-        [Description("Create a series of analytical Bar elements from the framing element. Could return any number of Bars per each FramingElement depending on property and type curve on the FramingElement.")]
+        [Description("Create a series of analytical Bar elements from the framing element. The relationship of Bars to FramingElements is not necessarily one to one and this is dictated by property and curve type of the FramingElement.")]
         [Input("elements", "The framing element to generate bars from.")]
         [Input("angleTolerance", "Angle tolerance to control the splitting up of non-linear curves. Unused for line based FramingElements.", typeof(Angle))]
         [Input("maxNbBarsPerArc", "The maximum number of bars that each arc segement of the element will be split up into. Unused for line based FramingElements.")]
         [Output("bars", "A list of bars per framing element. For straight framing elements with prismatic sections this will be a single bar.")]
         public static List<List<Bar>> AnalyticalBars(this List<BHP.Elements.IFramingElement> elements, double angleTolerance = 0.05 * Math.PI, int maxNbBarsPerArc = 10)
         {
-            //Store the converted proeprties as the elements are being converted.
+            //Store the converted properties as the elements are being converted.
             Dictionary<BHP.FramingProperties.IFramingElementProperty, object> convertedProps = new Dictionary<BHP.FramingProperties.IFramingElementProperty, object>();
 
             List<List<Bar>> bars = new List<List<Bar>>();
 
             foreach (BHP.Elements.IFramingElement element in elements)
             {
-                bars.Add(AnalyticalBars(element.Property as dynamic, element.Location, element.Name, angleTolerance, maxNbBarsPerArc, ref convertedProps));
+                try
+                {
+                    bars.Add(AnalyticalBars(element.Property as dynamic, element.Location, element.Name, angleTolerance, maxNbBarsPerArc, ref convertedProps));
+                }
+                catch (Exception e)
+                {
+                    bars.Add(new List<Bar>());
+                    string nameMsg = "an element with no name.";
+                    if (element != null && element.Name != null)
+                        nameMsg = "an element named " + element.Name;
+
+                    string errorMessage = "";
+                    if (e.InnerException != null && !string.IsNullOrEmpty(e.InnerException.Message))
+                        errorMessage = e.InnerException.Message;
+                    else
+                        errorMessage = e.Message;
+
+                    Reflection.Compute.RecordError("Failed to get analytical bars from " + nameMsg + ". The following error was thrown by the method: " + errorMessage);
+                }
             }
 
             return bars;
