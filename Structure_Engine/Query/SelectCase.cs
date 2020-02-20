@@ -39,9 +39,9 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Filters out results from a specific case given a identifier, Loadcase or LoadCombination. For Loadcase and LoadCombination the number property will be used as identifier for filtering.")]
+        [Description("Filters out results from a specific case given an identifier, Loadcase or LoadCombination. For Loadcase and LoadCombination the number property will be used as identifier for filtering.")]
         [Input("results","The list of results to filter.")]
-        [Input("loadcase", "The case or combination to filter by. Should either be a string/int as identifier of the case or a BHoM Loadcase/LoadCombination where the number will be used as the identifier. If identifier can be extracted, all results are returned.")]
+        [Input("loadcase", "The case or combination to filter by. Should either be a string/int as identifier of the case or a Loadcase/LoadCombination where the number will be used as the identifier. If identifier can be extracted, all results are returned.")]
         [Output("results","The filtered results. If no filtering param could be extracted, all results are returned.")]
         public static List<T> SelectCase<T>(this List<T> results, object loadcase) where T : IResult
         {
@@ -62,7 +62,7 @@ namespace BH.Engine.Structure
                     Reflection.Compute.RecordWarning("Could not extract filter identifier from the provided loadcase filter. All results are returned.");
             }
             else
-                Reflection.Compute.RecordWarning("loadCase filter is null. No filtering is applied. All results are returned.");
+                Reflection.Compute.RecordWarning("Loadcase filter is null. No filtering is applied. All results are returned.");
 
             return results;
         }

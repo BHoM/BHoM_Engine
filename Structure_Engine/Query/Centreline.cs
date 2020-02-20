@@ -33,7 +33,7 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
         
-        [Description("Returns the centreline of the Bar as the line between the start and end node. No offsets or similar is accounted for.")]
+        [Description("Returns the centreline of the Bar as the line between the StratNode and EndNode. No offsets or similar is accounted for.")]
         [Input("bar", "The Bar to get the centreline from.")]
         [Output("centreLine", "The centreline of the Bar.")]
         public static Line Centreline(this Bar bar)

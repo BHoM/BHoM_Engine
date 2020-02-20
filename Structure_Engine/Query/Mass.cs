@@ -33,7 +33,7 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Calculates the mass of a Bar as its length times mass per metre. The mass per metre is generally takes as section area times density. No offsets or similar ar taken into acount.")]
+        [Description("Calculates the mass of a Bar as its length times mass per metre. The mass per metre is generally calculated as section area multiplied by the density. No offsets or similar ar taken into acount.")]
         [Input("bar", "The Bar to calculate the mass for.")]
         [Output("mass", "The mass of the Bar.", typeof(Mass))]
         public static double Mass(this Bar bar)
@@ -43,7 +43,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Calculates the mass of a Panel as its area times mass per area. The mass per area is for a constant thickness takes as thickness times density.")]
+        [Description("Calculates the mass of a Panel as its area times mass per area. The mass per area is for a constant thickness calculated as thickness multiplied by the density.")]
         [Input("panel", "The Panel to calculate the mass for.")]
         [Output("mass", "The mass of the Panel.", typeof(Mass))]
         public static double Mass(this Panel panel)

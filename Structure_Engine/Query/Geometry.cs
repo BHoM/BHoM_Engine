@@ -39,9 +39,9 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Gets the geometry of a Node as a point. Method required for automatic display in UI packages.")]
-        [Input("node", "Node to get the point geometry from.")]
-        [Output("point", "The geometry of the node as its position.")]
+        [Description("Gets the geometry of a Node as a Point. Method required for automatic display in UI packages.")]
+        [Input("node", "Node to get the Point from.")]
+        [Output("point", "The geometry of the Node")]
         public static Point Geometry(this Node node)
         {
             return node.Position;
@@ -69,9 +69,9 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Gets the geometry of a Structural surface as its geometrical 'centre plane' location surface. Method required for automatic display in UI packages.")]
-        [Input("surface", "Structural surface to get the geometrical surface geometry from.")]
-        [Output("surface", "The geometry of the structural Surface as its 'centre plane' geometrical surface.")]
+        [Description("Gets the geometry of a structural Surface at its centre. Method required for automatic display in UI packages.")]
+        [Input("surface", "Structural Surface to get the geometrical Surface geometry from.")]
+        [Output("surface", "The geomtry of the structural Sufarce at its centre.")]
         public static IGeometry Geometry(this Surface surface)
         {
             return surface.Extents;
@@ -79,9 +79,9 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Gets the geometry of a Panel as a geometrical 'centre plane' planar surface. Method required for automatic display in UI packages.")]
+        [Description("Gets the geometry of a structural Panel at its centre. Method required for automatic display in UI packages.")]
         [Input("panel", "Panel to get the planar surface geometry from.")]
-        [Output("surface", "The geometry of the Panel as its 'centre plane' geometrical surface.")]
+        [Output("surface", "The geomtry of the structural Panel at its centre.")]
         public static IGeometry Geometry(this Panel panel)
         {
             return Engine.Geometry.Create.PlanarSurface(
@@ -117,7 +117,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Gets the geometry of a GeometricalSEction as its profile outlines the global XY plane. Method required for automatic display in UI packages.")]
+        [Description("Gets the geometry of a GeometricalSection as its profile outlines the global XY plane. Method required for automatic display in UI packages.")]
         [Input("section", "GeometricalSection to get outline geometry from.")]
         [Output("outlines", "The geometry of the GeometricalSection as its outline in the global XY plane.")]
         public static IGeometry Geometry(this IGeometricalSection section)
@@ -192,7 +192,7 @@ namespace BH.Engine.Structure
         /**** Public Methods - Interface                ****/
         /***************************************************/
 
-        [Description("Gets the geometry of a SectionProeprty, generally as its profile outlines the global XY plane. Method required for automatic display in UI packages.")]
+        [Description("Gets the geometry of a SectionProperty, generally as its profile outlines the global XY plane. Method required for automatic display in UI packages.")]
         [Input("section", "SectionProperty to get outline geometry from.")]
         [Output("outlines", "The geometry of the SectionProperty.")]
         public static IGeometry IGeometry(this ISectionProperty section)
