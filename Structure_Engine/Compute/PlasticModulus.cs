@@ -203,11 +203,29 @@ namespace BH.Engine.Structure
         private static IEnumerable<ICurve> SplitAtX(PolyCurve polyCurve, double x, double tol = Tolerance.Distance)
         {
             // Assumes 2D
-            List<ICurve> results = new List<ICurve>();
-
             if (polyCurve.Curves.Count == 1 && polyCurve.Curves[0] is Circle)
                 return SplitAtX(polyCurve.Curves[0] as Circle, x, tol);
 
+            List<ICurve> results = SplitOnCurve(polyCurve, x, tol).ToList();
+            
+            results = SplitOnPoints(results, x, tol * 2).ToList();
+
+            // Close the curve if it was closed and the start point is not on the splitline
+            if (results.Count > 1 && polyCurve.IsClosed() && Math.Abs(polyCurve.StartPoint().X - x) > tol * 2)
+            {
+                results.Add(new PolyCurve() { Curves = results.Last().ISubParts().Concat(results.First().ISubParts()).ToList() });
+                results.RemoveAt(results.Count - 2);
+                results.RemoveAt(0);
+            }
+
+            return results;
+        }
+
+        /***************************************************/
+
+        private static IEnumerable<ICurve> SplitOnCurve(PolyCurve polyCurve, double x, double tol = Tolerance.Distance)
+        {
+            List<ICurve> results = new List<ICurve>();
             List<ICurve> temp;
             PolyCurve current = new PolyCurve();
             for (int i = 0; i < polyCurve.Curves.Count; i++)
@@ -227,11 +245,29 @@ namespace BH.Engine.Structure
 
             }
             results.Add(current);
-            if (results.Count > 1 && polyCurve.IsClosed() && Math.Abs(polyCurve.StartPoint().X - x) > tol)
+            return results;
+        }
+
+        /***************************************************/
+
+        private static IEnumerable<ICurve> SplitOnPoints(IEnumerable<ICurve> curves, double x, double tol = Tolerance.Distance)
+        {
+            List<PolyCurve> results = new List<PolyCurve>();
+            foreach (PolyCurve curve in curves)
             {
-                results.Add(new PolyCurve() { Curves = results.Last().ISubParts().Concat(results.First().ISubParts()).ToList() });
-                results.RemoveAt(results.Count - 2);
-                results.RemoveAt(0);
+                List<ICurve> subCurves = curve.ISubParts().ToList();
+                List<ICurve> temp = new List<ICurve>();
+                for (int i = 0; i < subCurves.Count; i++)
+                {
+                    temp.Add(subCurves[i]);
+                    if (Math.Abs(subCurves[i].IEndPoint().X - x) < tol)
+                    {
+                        results.Add(Geometry.Compute.IJoin(temp)[0]);
+                        temp = new List<ICurve>();
+                    }
+                }
+                if (temp.Count != 0)
+                    results.Add(Geometry.Compute.IJoin(temp)[0]);
             }
             return results;
         }
@@ -241,55 +277,7 @@ namespace BH.Engine.Structure
         private static IEnumerable<ICurve> SplitAtX(Polyline polyline, double x, double tol = Tolerance.Distance)
         {
             // Assumes 2D
-            List<ICurve> results = new List<ICurve>();
-
-            int lastSplit = 0;
-            Point ptOn = null;
-            for (int i = 0; i < polyline.ControlPoints.Count - 1; i++)
-            {
-                Point one = polyline.ControlPoints[i];
-                Point two = polyline.ControlPoints[i + 1];
-
-                if (Math.Abs(two.X - x) < tol ) //On Point
-                {
-                    List<Point> control = new List<Point>(polyline.ControlPoints.GetRange(lastSplit, i + 2 - lastSplit));
-                    if (ptOn != null)
-                        control[0] = ptOn;
-                    results.Add(new Polyline() { ControlPoints = control });
-                    ptOn = null;
-                    lastSplit = i + 1;
-                }
-                else if (one.X < x - tol && two.X > x ||    // On Line
-                           one.X > x + tol && two.X < x)
-                {
-                    List<Point> control = new List<Point>(polyline.ControlPoints.GetRange(lastSplit, i + 1 - lastSplit));
-                    if (ptOn != null)
-                        control[0] = ptOn;
-                    
-                    ptOn = Geometry.Query.PointAtX(one, two, x);
-                    control.Add(ptOn);
-                    results.Add(new Polyline() { ControlPoints = control });
-                    lastSplit = i;
-                }
-            }
-
-            if (ptOn != null || lastSplit != polyline.ControlPoints.Count - 2) // Finish Curve
-            {
-                List<Point> control = new List<Point>(polyline.ControlPoints.GetRange(lastSplit, polyline.ControlPoints.Count - lastSplit));
-                if (ptOn != null)
-                    control[0] = ptOn;
-                results.Add(new Polyline() { ControlPoints = control });
-
-                if (polyline.IsClosed(tol))     // Close curve
-                {
-                    (results[0] as Polyline).ControlPoints.RemoveAt(0);
-                    results.Add(new Polyline() { ControlPoints = results.Last().IControlPoints().Concat(results.First().IControlPoints()).ToList() });
-                    results.RemoveAt(results.Count - 2);
-                    results.RemoveAt(0);
-                }
-            }
-
-            return results;
+            return SplitAtX(new PolyCurve() { Curves = polyline.SubParts().Cast<ICurve>().ToList() }, x, tol);
         }
 
         /***************************************************/
@@ -299,7 +287,7 @@ namespace BH.Engine.Structure
             // Assumes 2D
             List<ICurve> results = new List<ICurve>();
 
-            if (IntersectsArc(arc, x))
+            if (IntersectsArc(arc, x, tol))
             {
                 Point centre = arc.CoordinateSystem.Origin;
                 results.AddRange(SplitAtX(new Circle() { Centre = centre, Radius = arc.Radius }, x, tol));
@@ -398,8 +386,8 @@ namespace BH.Engine.Structure
             // Assumes 2D
             List<ICurve> results = new List<ICurve>();
 
-            if (line.Start.X < x && line.End.X > x ||
-                line.Start.X > x && line.End.X < x)
+            if (line.Start.X < x - tol && line.End.X > x + tol ||
+                line.Start.X > x + tol && line.End.X < x - tol)
             {
                 Point ptOn = Geometry.Query.PointAtX(line.Start, line.End, x);
                 results.Add(new Line() { Start = line.Start, End = ptOn });
@@ -420,7 +408,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        private static bool IntersectsArc(this Arc arc, double xValue)
+        private static bool IntersectsArc(this Arc arc, double xValue, double tol = Tolerance.Distance)
         {
 
             if (!arc.IsValid())
@@ -428,8 +416,8 @@ namespace BH.Engine.Structure
 
             Circle circle = new Circle { Centre = arc.CoordinateSystem.Origin, Normal = arc.CoordinateSystem.Z, Radius = arc.Radius };
 
-            if (circle.Centre.X + circle.Radius < xValue &&
-                circle.Centre.X - circle.Radius > xValue)
+            if (circle.Centre.X + circle.Radius < xValue - tol &&
+                circle.Centre.X - circle.Radius > xValue + tol)
             {
                 return false;
             }
@@ -489,7 +477,7 @@ namespace BH.Engine.Structure
                 theta += Math.PI;
             }
 
-            return (xMax > xValue && xMin < xValue);
+            return (xMax > xValue + tol && xMin < xValue - tol);
         }
 
         /***************************************************/
