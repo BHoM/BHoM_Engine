@@ -49,9 +49,9 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Gets the geometry of a Bar as its CentreLine. Method required for automatic display in UI packages.")]
-        [Input("bar", "Bar to get the centre line geometry from.")]
-        [Output("line", "The geometry of the Bar as its CentreLine.")]
+        [Description("Gets the geometry of a Bar as its centreline. Method required for automatic display in UI packages.")]
+        [Input("bar", "Bar to get the centreline geometry from.")]
+        [Output("line", "The geometry of the Bar as its centreline.")]
         public static Line Geometry(this Bar bar)
         {
             return bar.Centreline();
@@ -59,7 +59,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Gets the geometry of a Edge as its curve. Method required for automatic display in UI packages.")]
+        [Description("Gets the geometry of a Edge as its Curve. Method required for automatic display in UI packages.")]
         [Input("edge", "Edge to get the curve geometry from.")]
         [Output("curve", "The geometry of the Edge as its Curve.")]
         public static ICurve Geometry(this Edge edge)
@@ -71,7 +71,7 @@ namespace BH.Engine.Structure
 
         [Description("Gets the geometry of a structural Surface at its centre. Method required for automatic display in UI packages.")]
         [Input("surface", "Structural Surface to get the geometrical Surface geometry from.")]
-        [Output("surface", "The geomtry of the structural Sufarce at its centre.")]
+        [Output("surface", "The geometry of the structural Sufarce at its centre.")]
         public static IGeometry Geometry(this Surface surface)
         {
             return surface.Extents;
@@ -81,7 +81,7 @@ namespace BH.Engine.Structure
 
         [Description("Gets the geometry of a structural Panel at its centre. Method required for automatic display in UI packages.")]
         [Input("panel", "Panel to get the planar surface geometry from.")]
-        [Output("surface", "The geomtry of the structural Panel at its centre.")]
+        [Output("surface", "The geometry of the structural Panel at its centre.")]
         public static IGeometry Geometry(this Panel panel)
         {
             return Engine.Geometry.Create.PlanarSurface(

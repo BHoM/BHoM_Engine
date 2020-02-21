@@ -124,7 +124,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Draws arrows representing the Bar point load at its location on the bar.")]
+        [Description("Draws arrows representing the Bar point load at its location on the Bar.")]
         [Input("barPointForce", "The Bar load to visualise.")]
         [Input("scaleFactor", "Scales the arrows drawn. Default scaling of 1 means 1 kN per metre.")]
         [Input("displayForces", "Toggles whether forces should be displayed or not.")]
