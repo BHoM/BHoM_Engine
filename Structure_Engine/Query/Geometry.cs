@@ -109,14 +109,6 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Deprecated("3.1", "Replaced with method for base interface IGeometricalSection.", typeof(Query), "Geometry(this IGeometricalSection section).")]
-        public static IGeometry Geometry(this SteelSection section)
-        {
-            return new CompositeGeometry { Elements = section.SectionProfile.Edges.ToList<IGeometry>() };
-        }
-
-        /***************************************************/
-
         [Description("Gets the geometry of a GeometricalSection as its profile outlines the global XY plane. Method required for automatic display in UI packages.")]
         [Input("section", "GeometricalSection to get outline geometry from.")]
         [Output("outlines", "The geometry of the GeometricalSection as its outline in the global XY plane.")]
@@ -143,15 +135,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Deprecated("2.3", "Methods replaced with methods targeting BH.oM.Physical.Elements.IFramingElement.")]
-        public static ICurve Geometry(this FramingElement element)
-        {
-            return element.LocationCurve;
-        }
-
-        /***************************************************/
-
-        [Description("Gets the geometry of a FEMesh as a geometrical Mesh. A geometrical mesh only support 3 and 4 nodes faces, while a FEMesh does not have this limitation. For FEMeshFaces with more than 4 nodes or less than 3 this operation is therefore not possible. Method required for automatic display in UI packages.")]
+        [Description("Gets the geometry of a FEMesh as a geometrical Mesh. A geometrical mesh only supports 3 and 4 nodes faces, while a FEMesh does not have this limitation. For FEMeshFaces with more than 4 nodes or less than 3 this operation is therefore not possible. Method required for automatic display in UI packages.")]
         [Input("feMesh", "FEMesh to get the mesh geometry from.")]
         [Output("lines", "The geometry of the FEMesh as a geometrical Mesh.")]
         public static Mesh Geometry(this FEMesh feMesh)
@@ -207,6 +191,24 @@ namespace BH.Engine.Structure
         private static IGeometry Geometry(this object section)
         {
             return null;
+        }
+
+        /***************************************************/
+        /**** Public Methods - Deprecated               ****/
+        /***************************************************/
+
+        [Deprecated("3.1", "Replaced with method for base interface IGeometricalSection.", typeof(Query), "Geometry(this IGeometricalSection section).")]
+        public static IGeometry Geometry(this SteelSection section)
+        {
+            return new CompositeGeometry { Elements = section.SectionProfile.Edges.ToList<IGeometry>() };
+        }
+
+        /***************************************************/
+
+        [Deprecated("2.3", "Methods replaced with methods targeting BH.oM.Physical.Elements.IFramingElement.")]
+        public static ICurve Geometry(this FramingElement element)
+        {
+            return element.LocationCurve;
         }
 
         /***************************************************/

@@ -37,7 +37,7 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Calculates the area of a Panel as the area of the external edges - area of all openings.")]
+        [Description("Calculates the area of a Panel as the (area bound by the external edges) - (area of all openings).")]
         [Input("panel", "The structural Panel to calculate the area for.")]
         [Output("area","The area of the Panel.", typeof(Area))]
         public static double Area(this Panel panel)
@@ -50,7 +50,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Calculates the area of an opening as the area of its edges.")]
+        [Description("Calculates the area of an Opening as the area bound by its edges.")]
         [Input("opening", "The structural Opening to calculate the area for.")]
         [Output("area", "The area of the Opening.", typeof(Area))]
         public static double Area(this Opening opening)
@@ -62,7 +62,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Calculates the area of a FEMesh as the sum of the area of all faces. Quad faces will be triangulated to preform the area calculation.")]
+        [Description("Calculates the area of a FEMesh as the sum of the area of all faces. Quad faces will be triangulated to perform the area calculation.")]
         [Input("mesh", "The FEMesh to calculate the area for.")]
         [Output("area", "The area of the FEMesh.", typeof(Area))]
         public static double Area(this FEMesh mesh)

@@ -38,7 +38,7 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Get the carteseian coordinate system descibring the position and orientation of the node in the Global system")]
+        [Description("Get the carteseian coordinate system descibring the position and local orientation of the node in the Global coordinate system")]
         [Input("node","The Node to extract the local coordinate system from.")]
         [Output("CoordinateSystem","The local cartesian coordinate system of the Node.")]
         public static Cartesian CoordinateSystem(this Node node)
@@ -48,7 +48,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Get the carteseian coordinate system descibring the position and orientation of the Bar in the Global system where the Bar tangent is the local x-axis and the normal is the local z-axis")]
+        [Description("Get the carteseian coordinate system descibring the position and local orientation of the Bar in the Global coordinate system where the Bar tangent is the local x-axis and the normal is the local z-axis")]
         [Input("bar", "The Bar to extract the local coordinate system from.")]
         [Output("CoordinateSystem", "The local cartesian coordinate system of the Bar.")]
         public static Cartesian CoordinateSystem(this Bar bar)
