@@ -37,12 +37,19 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
-
         [Description("Returns a list of MethodInfo for all methods contained in classes whose name ends with `_Adapter`.")]
         public static List<MethodInfo> AdapterMethods()
         {
-            // If we move the IBHoMAdapter interface from the BHoM_Adapter down in the base BH.oM, we can test for inheritance instead.
-            return BHoMMethodList().Where(x => x.DeclaringType.Name.Contains("_Adapter")).ToList();
+            // If the list exists already, return it
+            if (m_AdapterMethodsList != null && m_AdapterMethodsList.Count > 0)
+                return m_AdapterMethodsList;
+
+            // Else, create it
+            ExtractAllMethods();
+            m_AdapterMethodsList = m_AllMethodList.Cast<MethodInfo>().Where(x => x.DeclaringType.Name.EndsWith("_Adapter")).ToList();
+            // (if we moved the IBHoMAdapter interface from the BHoM_Adapter down in the base BH.oM, we could test for inheritance instead of "EndsWith")
+
+            return m_AdapterMethodsList;
         }
 
         /***************************************************/
@@ -155,6 +162,11 @@ namespace BH.Engine.Reflection
             return isOfAllowedTypes;
         }
 
+        /***************************************************/
+        /**** Private Fields                            ****/
+        /***************************************************/
+
+        private static List<MethodInfo> m_AdapterMethodsList = new List<MethodInfo>();
     }
 }
 
