@@ -44,10 +44,9 @@ namespace BH.Engine.Reflection
             if (m_AdapterMethodsList != null && m_AdapterMethodsList.Count > 0)
                 return m_AdapterMethodsList;
 
-            // Else, create it
-            ExtractAllMethods();
-            m_AdapterMethodsList = m_AllMethodList.Cast<MethodInfo>().Where(x => x.DeclaringType.Name.EndsWith("_Adapter")).ToList();
-            // (if we moved the IBHoMAdapter interface from the BHoM_Adapter down in the base BH.oM, we could test for inheritance instead of "EndsWith")
+            // Check if the allMethodList has already been populated; otherwise populate it
+            if (m_AllMethodList == null || m_AllMethodList.Count == 0)
+                ExtractAllMethods();
 
             return m_AdapterMethodsList;
         }
@@ -166,7 +165,7 @@ namespace BH.Engine.Reflection
         /**** Private Fields                            ****/
         /***************************************************/
 
-        private static List<MethodInfo> m_AdapterMethodsList = new List<MethodInfo>();
+    
     }
 }
 
