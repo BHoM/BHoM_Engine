@@ -100,11 +100,11 @@ namespace BH.Engine.Reflection
             for (int i = 0; i < createMethods.Count; i++)
             {
                 // For Create methods, the compatibility is given by the type of the FIRST parameter of the method.
-                ParameterInfo firstPar = createMethods[i].GetParameters().FirstOrDefault(null);
+                ParameterInfo firstPar = createMethods[i].GetParameters().FirstOrDefault();
 
                 if (firstPar != null && firstPar.ParameterType.IsOfAllowedTypes())
                 {
-                    if (result[firstPar.ParameterType] == null)
+                    if (!result.ContainsKey(firstPar.ParameterType))
                         result[firstPar.ParameterType] = new List<MethodInfo>() { createMethods[i] };
                     else
                         result[firstPar.ParameterType].Add(createMethods[i]);
@@ -125,7 +125,7 @@ namespace BH.Engine.Reflection
                 Type returnType = readMethods[i].ReturnType;
                 if (returnType != null && returnType.IsOfAllowedTypes())
                 {
-                    if (result[returnType] == null)
+                    if (!result.ContainsKey(returnType))
                         result[returnType] = new List<MethodInfo>() { readMethods[i] };
                     else
                         result[returnType].Add(readMethods[i]);
@@ -143,7 +143,7 @@ namespace BH.Engine.Reflection
 
             // If the type is a collection with a generic argument, extract the contained type.
             // This way we can collect types like IEnumerable<Bar> --> Bar.
-            Type genericType = type.GetGenericArguments().First();
+            Type genericType = type.GetGenericArguments().FirstOrDefault();
             if (genericType != null)
                 type = genericType;
 
