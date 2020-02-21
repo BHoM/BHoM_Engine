@@ -67,7 +67,7 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Calculates the mass per length for the section as its area mulitplied by the density.")]
-        [Input("section", "The SectionProperty to calculate the mass per area for.")]
+        [Input("section", "The CableSection to calculate the mass per area for.")]
         [Output("massPerLength", "The mass per length for the section.", typeof(MassPerUnitLength))]
         public static double MassPerMetre(this CableSection section)
         {

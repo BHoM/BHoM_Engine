@@ -49,7 +49,7 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Deprecated("3.1", "Deprecated by method targeting IElement2D.")]
-        [Description("Returns the Panels local z-axis, a vector orthogonal to the plane of the panel. This is found by fitting a plane through all the edge curves and taking the Normal from this plane.")]
+        [Description("Returns the Panels local z-axis, a vector orthogonal to the plane of the Panel. This is found by fitting a plane through all the edge curves and taking the Normal from this plane.")]
         [Input("panel", "The Panel to evaluate the normal of.")]
         [Output("normal", "Vector representing the local z-axis Panel.")]
         public static Vector Normal(this Panel panel)
@@ -75,7 +75,7 @@ namespace BH.Engine.Structure
 
         private static Vector Normal(this IAreaElement areaElement)
         {
-            Reflection.Compute.RecordWarning("Can not get normal for element of type " + areaElement.GetType().Name);
+            Reflection.Compute.RecordWarning("Cannot get normal for element of type " + areaElement.GetType().Name);
             return null;
         }
 

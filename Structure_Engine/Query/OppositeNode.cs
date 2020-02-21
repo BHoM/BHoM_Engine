@@ -45,7 +45,7 @@ namespace BH.Engine.Structure
                 return bar.EndNode;
             else
             {
-                Reflection.Compute.RecordError("The Bar does not contain the provided node.");
+                Reflection.Compute.RecordError("The Bar does not contain the provided Node.");
                 return null;
             }
         }

@@ -41,7 +41,7 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Generates a rectangular grid of points on the Panel, scaled depending on panel size. Used for load visualisation.")]
+        [Description("Generates a rectangular grid of points on the Panel, scaled depending on Panel size. Used for load visualisation.")]
         [Input("panel","The Panel to generate a grid on.")]
         [Output("grid", "Rectangular grid of points on the Panel.")]
         public static List<Point> PointGrid(this Panel panel)

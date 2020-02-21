@@ -37,7 +37,7 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Calculates the area of a panel as the area of the external edges - area of all openings.")]
+        [Description("Calculates the area of a Panel as the area of the external edges - area of all openings.")]
         [Input("panel", "The structural Panel to calculate the area for.")]
         [Output("area","The area of the Panel.", typeof(Area))]
         public static double Area(this Panel panel)
