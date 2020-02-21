@@ -390,8 +390,13 @@ namespace BH.Engine.Structure
                 line.Start.X > x + tol && line.End.X < x - tol)
             {
                 Point ptOn = Geometry.Query.PointAtX(line.Start, line.End, x);
-                results.Add(new Line() { Start = line.Start, End = ptOn });
-                results.Add(new Line() { Start = ptOn, End = line.End });
+                if (ptOn != null)
+                {
+                    results.Add(new Line() { Start = line.Start, End = ptOn });
+                    results.Add(new Line() { Start = ptOn, End = line.End });
+                }
+                else
+                    results.Add(line.Clone());
             }
             else
                 results.Add(line.Clone());
