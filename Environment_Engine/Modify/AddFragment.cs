@@ -39,9 +39,9 @@ namespace BH.Engine.Environment
     {
         [Description("Appends a Fragment Property to a given Environment Object")]
         [Input("environmentObject", "Any object implementing the IEnvironmentObject interface that can have fragment properties appended to it")]
-        [Input("fragment", "Any fragment object implementing the IBHoMFragment interface to append to the object")]
+        [Input("fragment", "Any fragment object implementing the IFragment interface to append to the object")]
         [Output("environmentObject", "The environment object with the added fragment")]
-        public static IEnvironmentObject AddFragment(this IEnvironmentObject environmentObject, IBHoMFragment fragment)
+        public static IEnvironmentObject AddFragment(this IEnvironmentObject environmentObject, IFragment fragment)
         {
             if (environmentObject == null) return null;
             environmentObject.Fragments.Add(fragment);
