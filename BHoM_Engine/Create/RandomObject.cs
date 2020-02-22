@@ -102,7 +102,7 @@ namespace BH.Engine.Base
                 type = GetType(type);
                 obj = Activator.CreateInstance(type);
             }
-            else if (typeof(BH.oM.Base.IBHoMFragment).IsAssignableFrom(type))
+            else if (typeof(BH.oM.Base.IFragment).IsAssignableFrom(type))
             {
                 // Do not instantiate random Fragments to avoid "missing parameterless constructor" exception
                 return null;

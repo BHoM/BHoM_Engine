@@ -41,16 +41,16 @@ namespace BH.Engine.Base
         [Input("iBHoMObject", "Any IBHoMObject object.")]
         [Input("parentType", "All fragments of a type that inherits from this parent type will be returned. If not specified, all fragments are returned.")]
         [Output("fragmentList", "A deep copy of the fragments is returned for immutability.")]
-        public static List<IBHoMFragment> GetAllFragments(this IBHoMObject iBHoMObject, Type parentType = null)
+        public static List<IFragment> GetAllFragments(this IBHoMObject iBHoMObject, Type parentType = null)
         {
-            List<IBHoMFragment> fragments = new List<IBHoMFragment>();
+            List<IFragment> fragments = new List<IFragment>();
 
             if (parentType == null)
                 return iBHoMObject.Fragments.Select(fr => fr.DeepClone()).ToList();
 
-            if (!typeof(IBHoMFragment).IsAssignableFrom(parentType))
+            if (!typeof(IFragment).IsAssignableFrom(parentType))
             {
-                Reflection.Compute.RecordError("Provided input in parentType is not a Fragment type (does not implement IBHoMFragment interface).");
+                Reflection.Compute.RecordError("Provided input in parentType is not a Fragment type (does not implement IFragment interface).");
                 return null;
             }
 
