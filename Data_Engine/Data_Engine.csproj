@@ -102,6 +102,7 @@
     <Compile Include="Query\DepthFirstTraversal.cs" />
     <Compile Include="Query\Filter.cs" />
     <Compile Include="Query\FolderContent.cs" />
+    <Compile Include="Query\GetSubGraph.cs" />
     <Compile Include="Query\Neighbours.cs" />
     <Compile Include="Query\OppositeNode.cs" />
     <Compile Include="Query\Peek.cs" />
