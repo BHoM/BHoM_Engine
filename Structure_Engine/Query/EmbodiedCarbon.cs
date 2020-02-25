@@ -22,6 +22,10 @@
 
 using BH.oM.Structure.Elements;
 
+using BH.oM.Reflection.Attributes;
+using BH.oM.Quantities.Attributes;
+using System.ComponentModel;
+
 namespace BH.Engine.Structure
 {
     public static partial class Query
@@ -30,6 +34,9 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Calculates the total amount of embodied carbon of a Bar by getting the mass of the Bar (generally as section area*length*density) multiplied by the EmbodiedCarbon value of the material.")]
+        [Input("bar", "The Bar to get the total embodied carbon from.")]
+        [Output("embodiedCarbon", "The total embodied carbon of the Bar.", typeof(Mass))]
         public static double EmbodiedCarbon(this Bar bar)
         {
             return bar.Mass() * bar.SectionProperty.Material.EmbodiedCarbon;
@@ -37,6 +44,9 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Description("Calculates the total amount of embodied carbon of a Panel by getting the mass of the Panel (generally as area*thickness*density) multiplied by the EmbodiedCarbon value of the material.")]
+        [Input("panel", "The Panel to get the total embodied carbon from.")]
+        [Output("embodiedCarbon", "The total embodied carbon of the Panel.", typeof(Mass))]
         public static double EmbodiedCarbon(this Panel panel)
         {
             return panel.Mass() * panel.Property.Material.EmbodiedCarbon;

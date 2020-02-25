@@ -24,6 +24,10 @@ using BH.oM.Geometry;
 using BH.oM.Structure.Elements;
 using System.Collections.Generic;
 
+using BH.oM.Reflection.Attributes;
+using BH.oM.Quantities.Attributes;
+using System.ComponentModel;
+
 namespace BH.Engine.Structure
 {
     public static partial class Query
@@ -32,6 +36,9 @@ namespace BH.Engine.Structure
         /****            IElement1D            ****/
         /******************************************/
 
+        [Description("Gets the Element0Ds of a Bar, which for the case of a Bar means getting the StartNode and EndNode. Method necessary for IElement pattern.")]
+        [Input("bar", "The Bar to extract IElement0ds from.")]
+        [Output("element0Ds", "The list of Elements0D of the Bar, i.e. the StartNode and EndNode.")]
         public static List<IElement0D> Elements0D(this Bar bar)
         {
             return new List<IElement0D> { bar.StartNode, bar.EndNode };

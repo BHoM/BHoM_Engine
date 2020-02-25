@@ -52,6 +52,18 @@ namespace BH.Engine.Reflection
 
         public static bool SetPropertyValue(this object obj, string propName, object value)
         {
+            if (propName.Contains("."))
+            {
+                string[] props = propName.Split('.');
+                for (int i = 0; i < props.Length - 1; i++)
+                {
+                    obj = obj.PropertyValue(props[i]);
+                    if (obj == null)
+                        break;
+                }
+                propName = props[props.Length - 1];
+            }
+
             System.Reflection.PropertyInfo prop = obj.GetType().GetProperty(propName);
 
             if (prop != null)
@@ -125,7 +137,6 @@ namespace BH.Engine.Reflection
             }
 
         }
-
 
         /***************************************************/
     }

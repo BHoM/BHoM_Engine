@@ -21,6 +21,9 @@
  */
 
 using BH.oM.Structure.SectionProperties.Reinforcement;
+using BH.oM.Reflection.Attributes;
+using BH.oM.Quantities.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Structure
 {
@@ -30,6 +33,9 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Method returns whether the reinforcement is longitudinal or not. This is always true for LayerReinforcement.")]
+        [Input("reinforcement", "The reinforcement object to check.")]
+        [Output("result", "Returns true if the reinforcement is longitudinal. Always true for LayerReinforcement.")]
         public static bool IsLongitudinal(this LayerReinforcement reinforcement)
         {
             return true;
@@ -37,6 +43,9 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Description("Method returns whether the reinforcement is longitudinal or not. This is always true for PerimeterReinforcement.")]
+        [Input("reinforcement", "The reinforcement object to check.")]
+        [Output("result", "Returns true if the reinforcement is longitudinal. Always true for PerimeterReinforcement.")]
         public static bool IsLongitudinal(this PerimeterReinforcement reinforcement)
         {
             return true;
@@ -44,6 +53,9 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Description("Method returns whether the reinforcement is longitudinal or not. This is always false for TieReinforcement.")]
+        [Input("reinforcement", "The reinforcement object to check.")]
+        [Output("result", "Returns true if the reinforcement is longitudinal. Always false for TieReinforcement.")]
         public static bool IsLongitudinal(this TieReinforcement reinforcement)
         {
             return false;
@@ -54,6 +66,9 @@ namespace BH.Engine.Structure
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
+        [Description("Method returns whether the reinforcement is longitudinal or not.")]
+        [Input("reinforcement", "The reinforcement object to check.")]
+        [Output("result", "Returns true if the reinforcement is longitudinal.")]
         public static bool IIsLongitudinal(this Reinforcement reinforcement)
         {
             return IsLongitudinal(reinforcement as dynamic);

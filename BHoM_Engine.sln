@@ -19,6 +19,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Geometry_Engine", "Geometry_Engine\Geometry_Engine.csproj", "{89AB2DCB-EF87-4CBA-B59C-C16A8A71D333}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Structure_Engine", "Structure_Engine\Structure_Engine.csproj", "{52A31A0A-E340-4909-AAD6-228045B07BF3}"
+	ProjectSection(ProjectDependencies) = postProject
+		{89AB2DCB-EF87-4CBA-B59C-C16A8A71D333} = {89AB2DCB-EF87-4CBA-B59C-C16A8A71D333}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Architecture_Engine", "Architecture_Engine\Architecture_Engine.csproj", "{338E9DA8-8AAF-4F51-B4AD-264B5F329A5F}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -56,6 +59,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Graphics_Engine", "Graphics_Engine\Graphics_Engine.csproj", "{D5C7704D-F59A-4FC6-8D1E-356699A174E0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Programming_Engine", "Programming_Engine\Programming_Engine.csproj", "{BDE4A84F-5672-41B6-834B-6139C32C3560}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spatial_Engine", "Spatial_Engine\Spatial_Engine.csproj", "{A84FDFE5-C267-430E-8FEC-AF4F4BF5B745}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -242,6 +247,14 @@ Global
 		{BDE4A84F-5672-41B6-834B-6139C32C3560}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BDE4A84F-5672-41B6-834B-6139C32C3560}.Release|x86.ActiveCfg = Release|Any CPU
 		{BDE4A84F-5672-41B6-834B-6139C32C3560}.Release|x86.Build.0 = Release|Any CPU
+		{A84FDFE5-C267-430E-8FEC-AF4F4BF5B745}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A84FDFE5-C267-430E-8FEC-AF4F4BF5B745}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A84FDFE5-C267-430E-8FEC-AF4F4BF5B745}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A84FDFE5-C267-430E-8FEC-AF4F4BF5B745}.Debug|x86.Build.0 = Debug|Any CPU
+		{A84FDFE5-C267-430E-8FEC-AF4F4BF5B745}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A84FDFE5-C267-430E-8FEC-AF4F4BF5B745}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A84FDFE5-C267-430E-8FEC-AF4F4BF5B745}.Release|x86.ActiveCfg = Release|Any CPU
+		{A84FDFE5-C267-430E-8FEC-AF4F4BF5B745}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

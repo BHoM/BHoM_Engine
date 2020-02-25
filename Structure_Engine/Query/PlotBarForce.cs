@@ -58,6 +58,9 @@ namespace BH.Engine.Structure
             return plots;
         }
 
+
+        /***************************************************/
+        /**** Private Methods                           ****/
         /***************************************************/
 
         private static List<ICurve> PlotBarForce(Bar bar, List<BarForce> forces, double scaleFactor = 1.0, bool fx = true, bool fy = true, bool fz = true, bool mx = true, bool my = true, bool mz = true)
@@ -69,7 +72,7 @@ namespace BH.Engine.Structure
 
             scaleFactor /= 1000;
 
-            List<Point> basePoints = forces.Select(x => bar.StartNode.Position() + tan * x.Position).ToList();
+            List<Point> basePoints = forces.Select(x => bar.StartNode.Position + tan * x.Position).ToList();
 
             List<ICurve> plots = new List<ICurve>();
 
@@ -83,8 +86,6 @@ namespace BH.Engine.Structure
             return plots;
         }
 
-        /***************************************************/
-        /**** Private Methods                           ****/
         /***************************************************/
 
         private static List<ICurve> PlotSpecificForce(Vector v, List<Point> pts, List<double> values)

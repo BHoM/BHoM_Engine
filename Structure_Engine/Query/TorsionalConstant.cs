@@ -23,6 +23,9 @@
 using System;
 using BH.oM.Geometry.ShapeProfiles;
 using BH.oM.Geometry;
+using BH.oM.Reflection.Attributes;
+using BH.oM.Quantities.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Structure
 {
@@ -66,14 +69,10 @@ namespace BH.Engine.Structure
 
 
         /***************************************************/
-        
-        public static double TorsionalConstant(this IProfile profile) 
-        {
-            return 0; //Return 0 for not specifically implemented ones
-        }
 
-        /***************************************************/
-
+        [Description("Calcualtes the Torsinal constant for the profile. Note that this is not the polar moment of inertia.")]
+        [Input("profile", "The ShapeProfile to calculate the torsional constant for.")]
+        [Output("J", "Torsional constant of the profile. Note that this is not the polar moment of inertia.", typeof(TorsionConstant))]
         public static double TorsionalConstant(this CircleProfile profile)
         {
             return Math.PI * Math.Pow(profile.Diameter, 4) / 32;
@@ -81,6 +80,9 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Description("Calcualtes the Torsinal constant for the profile. Note that this is not the polar moment of inertia.")]
+        [Input("profile", "The ShapeProfile to calculate the torsional constant for.")]
+        [Output("J", "Torsional constant of the profile. Note that this is not the polar moment of inertia.", typeof(TorsionConstant))]
         public static double TorsionalConstant(this TubeProfile profile)
         {
             return Math.PI * (Math.Pow(profile.Diameter, 4) - Math.Pow(profile.Diameter - 2* profile.Thickness, 4)) / 32;
@@ -88,6 +90,9 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Description("Calcualtes the Torsinal constant for the profile. Note that this is not the polar moment of inertia.")]
+        [Input("profile", "The ShapeProfile to calculate the torsional constant for.")]
+        [Output("J", "Torsional constant of the profile. Note that this is not the polar moment of inertia.", typeof(TorsionConstant))]
         public static double TorsionalConstant(this FabricatedBoxProfile profile)
         {
             double tf1 = profile.TopFlangeThickness; //TODO: Allow for varying plate thickness
@@ -102,6 +107,9 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Description("Calcualtes the Torsinal constant for the profile. Note that this is not the polar moment of inertia.")]
+        [Input("profile", "The ShapeProfile to calculate the torsional constant for.")]
+        [Output("J", "Torsional constant of the profile. Note that this is not the polar moment of inertia.", typeof(TorsionConstant))]
         public static double TorsionalConstant(this BoxProfile profile)
         {
             double tf1 = profile.Thickness;
@@ -117,6 +125,9 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Description("Calcualtes the Torsinal constant for the profile. Note that this is not the polar moment of inertia.")]
+        [Input("profile", "The ShapeProfile to calculate the torsional constant for.")]
+        [Output("J", "Torsional constant of the profile. Note that this is not the polar moment of inertia.", typeof(TorsionConstant))]
         public static double TorsionalConstant(this FabricatedISectionProfile profile)
         {
             double b1 = profile.TopFlangeWidth;
@@ -131,6 +142,9 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Description("Calcualtes the Torsinal constant for the profile. Note that this is not the polar moment of inertia.")]
+        [Input("profile", "The ShapeProfile to calculate the torsional constant for.")]
+        [Output("J", "Torsional constant of the profile. Note that this is not the polar moment of inertia.", typeof(TorsionConstant))]
         public static double TorsionalConstant(this ISectionProfile profile)
         {
             double b1 = profile.Width;
@@ -145,6 +159,9 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Description("Calcualtes the Torsinal constant for the profile. Note that this is not the polar moment of inertia.")]
+        [Input("profile", "The ShapeProfile to calculate the torsional constant for.")]
+        [Output("J", "Torsional constant of the profile. Note that this is not the polar moment of inertia.", typeof(TorsionConstant))]
         public static double TorsionalConstant(this ChannelProfile profile)
         {
             double b = profile.FlangeWidth;
@@ -157,6 +174,9 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Description("Calcualtes the Torsinal constant for the profile. Note that this is not the polar moment of inertia.")]
+        [Input("profile", "The ShapeProfile to calculate the torsional constant for.")]
+        [Output("J", "Torsional constant of the profile. Note that this is not the polar moment of inertia.", typeof(TorsionConstant))]
         public static double TorsionalConstant(this ZSectionProfile profile)
         {
             double b1 = profile.FlangeWidth;
@@ -171,6 +191,9 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Description("Calcualtes the Torsinal constant for the profile. Note that this is not the polar moment of inertia.")]
+        [Input("profile", "The ShapeProfile to calculate the torsional constant for.")]
+        [Output("J", "Torsional constant of the profile. Note that this is not the polar moment of inertia.", typeof(TorsionConstant))]
         public static double TorsionalConstant(this TSectionProfile profile)
         {
             double totalWidth = profile.Width;
@@ -183,6 +206,9 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Description("Calcualtes the Torsinal constant for the profile. Note that this is not the polar moment of inertia.")]
+        [Input("profile", "The ShapeProfile to calculate the torsional constant for.")]
+        [Output("J", "Torsional constant of the profile. Note that this is not the polar moment of inertia.", typeof(TorsionConstant))]
         public static double TorsionalConstant(this GeneralisedTSectionProfile profile)
         {
 
@@ -230,6 +256,9 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Description("Calcualtes the Torsinal constant for the profile. Note that this is not the polar moment of inertia.")]
+        [Input("profile", "The ShapeProfile to calculate the torsional constant for.")]
+        [Output("J", "Torsional constant of the profile. Note that this is not the polar moment of inertia.", typeof(TorsionConstant))]
         public static double TorsionalConstant(this AngleProfile profile)
         {
             double totalWidth = profile.Width;
@@ -242,6 +271,9 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Description("Calcualtes the Torsinal constant for the profile. Note that this is not the polar moment of inertia.")]
+        [Input("profile", "The ShapeProfile to calculate the torsional constant for.")]
+        [Output("J", "Torsional constant of the profile. Note that this is not the polar moment of inertia.", typeof(TorsionConstant))]
         public static double TorsionalConstant(this RectangleProfile profile)
         {
             if (Math.Abs(profile.Height - profile.Width) < Tolerance.Distance)
@@ -258,9 +290,22 @@ namespace BH.Engine.Structure
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
+        [Description("Calcualtes the Torsinal constant for the profile. Note that this is not the polar moment of inertia.")]
+        [Input("profile", "The ShapeProfile to calculate the torsional constant for.")]
+        [Output("J", "Torsional constant of the profile. Note that this is not the polar moment of inertia.", typeof(TorsionConstant))]
         public static double ITorsionalConstant(this IProfile profile)
         {
             return TorsionalConstant(profile as dynamic);
+        }
+
+        /***************************************************/
+        /**** Private Methods - fall back               ****/
+        /***************************************************/
+
+        private static double TorsionalConstant(this IProfile profile)
+        {
+            Reflection.Compute.RecordWarning("Can not calculate Tosional constants for profiles of type " + profile.GetType().Name + ". Returned value will be 0.");
+            return 0; //Return 0 for not specifically implemented ones
         }
 
         /***************************************************/

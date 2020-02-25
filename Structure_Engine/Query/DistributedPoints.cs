@@ -25,6 +25,10 @@ using System.Collections.Generic;
 using BH.oM.Geometry;
 using BH.oM.Structure.Elements;
 
+using BH.oM.Reflection.Attributes;
+using BH.oM.Quantities.Attributes;
+using System.ComponentModel;
+
 namespace BH.Engine.Structure
 {
     public static partial class Query
@@ -33,20 +37,32 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static List<Point> DistributedPoints(Bar bar, int divisions, double startLength = 0, double endLength = 0)
+        [Description("Gets a list of evenly distributed points along a Bar from a given number of divisions.")]
+        [Input("bar", "The Bar to get division points for.")]
+        [Input("divisions", "Number of segments to divide the Bar into. The number of points returned will be divisions + 1.")]
+        [Input("startLength", "Optional offset from Bar StartNode to start of divisions.", typeof(Length))]
+        [Input("endLength", "Optional offset from Bar EndNode to start of divisions.", typeof(Length))]
+        [Output("points", "List of evenly distibuted points along the Bar.")]
+        public static List<Point> DistributedPoints(this Bar bar, int divisions, double startLength = 0, double endLength = 0)
         {
+            if (divisions < 1)
+            {
+                Reflection.Compute.RecordWarning("Cant handle 0 or negative divisions. Divisions has been set to 1!");
+                divisions = 1;
+            }
+
             Point startPos;
             Vector tan;
             if (startLength == 0 && endLength == 0)
             {
-                startPos = bar.StartNode.Position();
+                startPos = bar.StartNode.Position;
                 tan = bar.Tangent() / (double)divisions;
             }
             else
             {
                 double length = bar.Length();
                 tan = bar.Tangent() / length;
-                startPos = bar.StartNode.Position() + tan * startLength;
+                startPos = bar.StartNode.Position + tan * startLength;
 
                 tan *= (length - endLength - startLength) / (double)divisions;
             }

@@ -20,7 +20,13 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Structure.Constraints;
+using System;
+using System.Linq;
+using System.Collections.Generic;
+using System.ComponentModel;
+using BH.oM.Reflection.Attributes;
+using BH.oM.Structure.MaterialFragments;
+using BH.oM.Physical.Materials;
 
 namespace BH.Engine.Structure
 {
@@ -30,21 +36,16 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static bool[] Fixities(this Constraint6DOF constraint)
+        [Description("Checks if a physical Material contains exactly one structural material fragment, i.e. checks if the Material contains structural data.")]
+        [Input("material", "The physical Material to check.")]
+        [Output("result", "Returns true if the physical Material contains structural data.")]
+        public static bool IsValidStructural(this Material material)
         {
-            return new bool[] { constraint.TranslationX == DOFType.Fixed, constraint.TranslationY == DOFType.Fixed, constraint.TranslationZ == DOFType.Fixed,
-                        constraint.RotationX == DOFType.Fixed, constraint.RotationY == DOFType.Fixed, constraint.RotationZ == DOFType.Fixed };
+            return material.Properties.Where(x => x is IMaterialFragment).Count() == 1;
         }
 
         /***************************************************/
-
-        public static double[] ElasticValues(this Constraint6DOF constraint)
-        {
-            return new double[] { constraint.TranslationalStiffnessX, constraint.TranslationalStiffnessY, constraint.TranslationalStiffnessZ,
-                        constraint.RotationalStiffnessX, constraint.RotationalStiffnessY, constraint.RotationalStiffnessZ };
-        }
-
-        /***************************************************/
+        
     }
 }
 

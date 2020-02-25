@@ -28,6 +28,8 @@ using System.Collections.Generic;
 using System.Linq;
 
 using BH.oM.Reflection.Attributes;
+using BH.oM.Quantities.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Structure
 {
@@ -37,13 +39,19 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Gets the geometry of a Node as a Point. Method required for automatic display in UI packages.")]
+        [Input("node", "Node to get the Point from.")]
+        [Output("point", "The geometry of the Node")]
         public static Point Geometry(this Node node)
         {
-            return node.Position();
+            return node.Position;
         }
 
         /***************************************************/
 
+        [Description("Gets the geometry of a Bar as its centreline. Method required for automatic display in UI packages.")]
+        [Input("bar", "Bar to get the centreline geometry from.")]
+        [Output("line", "The geometry of the Bar as its centreline.")]
         public static Line Geometry(this Bar bar)
         {
             return bar.Centreline();
@@ -51,6 +59,9 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Description("Gets the geometry of a Edge as its Curve. Method required for automatic display in UI packages.")]
+        [Input("edge", "Edge to get the curve geometry from.")]
+        [Output("curve", "The geometry of the Edge as its Curve.")]
         public static ICurve Geometry(this Edge edge)
         {
             return edge.Curve;
@@ -58,6 +69,9 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Description("Gets the geometry of a structural Surface at its centre. Method required for automatic display in UI packages.")]
+        [Input("surface", "Structural Surface to get the geometrical Surface geometry from.")]
+        [Output("surface", "The geometry of the structural Sufarce at its centre.")]
         public static IGeometry Geometry(this Surface surface)
         {
             return surface.Extents;
@@ -65,6 +79,9 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Description("Gets the geometry of a structural Panel at its centre. Method required for automatic display in UI packages.")]
+        [Input("panel", "Panel to get the planar surface geometry from.")]
+        [Output("surface", "The geometry of the structural Panel at its centre.")]
         public static IGeometry Geometry(this Panel panel)
         {
             return Engine.Geometry.Create.PlanarSurface(
@@ -75,6 +92,9 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Description("Gets the geometry of a ConcreteSection as its profile outlines and reinforcement in the global XY plane. Method required for automatic display in UI packages.")]
+        [Input("section", "ConcreteSection to get outline and reinforcement geometry from.")]
+        [Output("outlines", "The geometry of the ConcreteSection as its outline and reinforment curves in the global XY.")]
         public static CompositeGeometry Geometry(this ConcreteSection section)
         {
             if (section.SectionProfile.Edges.Count == 0)
@@ -89,14 +109,9 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Deprecated("3.1", "Replaced with method for base interface IGeometricalSection", typeof(Query), "Geometry(this IGeometricalSection section)")]
-        public static IGeometry Geometry(this SteelSection section)
-        {
-            return new CompositeGeometry { Elements = section.SectionProfile.Edges.ToList<IGeometry>() };
-        }
-
-        /***************************************************/
-
+        [Description("Gets the geometry of a GeometricalSection as its profile outlines the global XY plane. Method required for automatic display in UI packages.")]
+        [Input("section", "GeometricalSection to get outline geometry from.")]
+        [Output("outlines", "The geometry of the GeometricalSection as its outline in the global XY plane.")]
         public static IGeometry Geometry(this IGeometricalSection section)
         {
             return new CompositeGeometry { Elements = section.SectionProfile.Edges.ToList<IGeometry>() };
@@ -104,32 +119,30 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Description("Gets the geometry of a RigidLink as a list of lines between the master node and the slave nodes. Method required for automatic display in UI packages.")]
+        [Input("link", "RigidLink to get the line geometry from.")]
+        [Output("lines", "The geometry of the RigidLink as a list of master-slave lines.")]
         public static IGeometry Geometry(this RigidLink link)
         {
             List<IGeometry> lines = new List<IGeometry>();
 
             foreach (Node sn in link.SlaveNodes)
             {
-                lines.Add(new Line() { Start = link.MasterNode.Position(), End = sn.Position() });
+                lines.Add(new Line() { Start = link.MasterNode.Position, End = sn.Position });
             }
             return new CompositeGeometry() { Elements = lines };
         }
 
         /***************************************************/
 
-        [Deprecated("2.3", "Methods replaced with methods targeting BH.oM.Physical.Elements.IFramingElement")]
-        public static ICurve Geometry(this FramingElement element)
-        {
-            return element.LocationCurve;
-        }
-
-        /***************************************************/
-
+        [Description("Gets the geometry of a FEMesh as a geometrical Mesh. A geometrical mesh only supports 3 and 4 nodes faces, while a FEMesh does not have this limitation. For FEMeshFaces with more than 4 nodes or less than 3 this operation is therefore not possible. Method required for automatic display in UI packages.")]
+        [Input("feMesh", "FEMesh to get the mesh geometry from.")]
+        [Output("lines", "The geometry of the FEMesh as a geometrical Mesh.")]
         public static Mesh Geometry(this FEMesh feMesh)
         {
             Mesh mesh = new Mesh();
 
-            mesh.Vertices = feMesh.Nodes.Select(x => x.Position()).ToList();
+            mesh.Vertices = feMesh.Nodes.Select(x => x.Position).ToList();
 
             foreach (FEMeshFace feFace in feMesh.Faces)
             {
@@ -163,6 +176,9 @@ namespace BH.Engine.Structure
         /**** Public Methods - Interface                ****/
         /***************************************************/
 
+        [Description("Gets the geometry of a SectionProperty, generally as its profile outlines the global XY plane. Method required for automatic display in UI packages.")]
+        [Input("section", "SectionProperty to get outline geometry from.")]
+        [Output("outlines", "The geometry of the SectionProperty.")]
         public static IGeometry IGeometry(this ISectionProperty section)
         {
             return Geometry(section as dynamic);
@@ -175,6 +191,24 @@ namespace BH.Engine.Structure
         private static IGeometry Geometry(this object section)
         {
             return null;
+        }
+
+        /***************************************************/
+        /**** Public Methods - Deprecated               ****/
+        /***************************************************/
+
+        [Deprecated("3.1", "Replaced with method for base interface IGeometricalSection.", typeof(Query), "Geometry(this IGeometricalSection section).")]
+        public static IGeometry Geometry(this SteelSection section)
+        {
+            return new CompositeGeometry { Elements = section.SectionProfile.Edges.ToList<IGeometry>() };
+        }
+
+        /***************************************************/
+
+        [Deprecated("2.3", "Methods replaced with methods targeting BH.oM.Physical.Elements.IFramingElement.")]
+        public static ICurve Geometry(this FramingElement element)
+        {
+            return element.LocationCurve;
         }
 
         /***************************************************/

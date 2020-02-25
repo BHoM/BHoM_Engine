@@ -23,7 +23,7 @@
 using BH.oM.Geometry;
 using BH.oM.Structure.Elements;
 using BH.Engine.Geometry;
-using System;
+using System.ComponentModel;
 
 using BH.oM.Reflection.Attributes;
 
@@ -35,6 +35,10 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Checks if a Bar is vertical. A Bar is vertical if its projected length to the horizontal plane is less than 0.0001, i.e. a tolerance of 0.1mm on verticality. \n" +
+                     "For general structural conventions please see  https://github.com/BHoM/documentation/wiki/BHoM-Structural-Conventions.")]
+        [Input("bar", "The Bar to check for verticality.")]
+        [Output("result", "Returns true if the Bar is vertical.")]
         public static bool IsVertical(this Bar bar)
         {
             return Engine.Geometry.Query.IsVertical(bar.Centreline());
@@ -42,7 +46,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Deprecated("3.1", "Moved to Geometry_Engine")]
+        [Deprecated("3.1", "Moved to Geometry_Engine.")]
         public static bool IsVertical(this Line line)
         {
             return Engine.Geometry.Query.IsVertical(line);
@@ -50,7 +54,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Deprecated("2.3", "Methods replaced with methods targeting BH.oM.Physical.Elements.IFramingElement")]
+        [Deprecated("2.3", "Methods replaced with methods targeting BH.oM.Physical.Elements.IFramingElement.")]
         public static bool IsVertical(this FramingElement element)
         {
             return Engine.Geometry.Query.IsVertical(new Line() { Start = element.LocationCurve.IStartPoint(), End = element.LocationCurve.IEndPoint() } ); //TODO: is this correct? what is the framing element is curved?

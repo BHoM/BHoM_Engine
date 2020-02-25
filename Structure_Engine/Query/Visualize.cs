@@ -25,11 +25,14 @@ using BH.oM.Geometry.CoordinateSystem;
 using BH.oM.Structure.Elements;
 using BH.oM.Structure.Loads;
 using BH.Engine.Geometry;
-using BH.oM.Reflection.Attributes;
 
 using System.Collections.Generic;
 using System.Linq;
 using System;
+
+using BH.oM.Reflection.Attributes;
+using BH.oM.Quantities.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Structure
 {
@@ -39,6 +42,15 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Draws lines representing the area load, either as a grid over the element, or along the boundary of the elements.")]
+        [Input("areaTempLoad", "The area load to visualise. Currently only supports area loads with Panels.")]
+        [Input("scaleFactor", "Scales the lines drawn. Default scaling of 1 means 1 Kelvin per metre.")]
+        [Input("displayForces", "Toggles whether forces should be displayed or not. Unused for temperature loads.")]
+        [Input("displayMoments", "Toggles whether moments should be displayed or not. Unused for temperature loads.")]
+        [Input("asResultants", "Toggles whether loads should be displayed as resultant vectors or as components. Unused for temperature loads.")]
+        [Input("edgeDisplay", "Set to true to visualise the loads along the boundary of the elements.")]
+        [Input("gridDisplay", "Set to true to visualise the load as a grid over the elements.")]
+        [Output("lines", "A list of lines representing the load.")]
         public static List<ICurve> Visualize(this AreaTemperatureLoad areaTempLoad, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true, bool asResultants = true, bool edgeDisplay = true, bool gridDisplay = false)
         {
             List<ICurve> arrows = new List<ICurve>();
@@ -56,6 +68,15 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Description("Draws arrows representing the area load, either as a grid over the element, or along the boundary of the elements.")]
+        [Input("areaUDL", "The area load to visualise. Currently only supports area loads with Panels.")]
+        [Input("scaleFactor", "Scales the arrows drawn. Default scaling of 1 means 1 kN per metre.")]
+        [Input("displayForces", "Toggles whether forces should be displayed or not.")]
+        [Input("displayMoments", "Toggles whether moments should be displayed or not. Unused for area loads.")]
+        [Input("asResultants", "Toggles whether loads should be displayed as resultant vectors or as components.")]
+        [Input("edgeDisplay", "Set to true to visualise the loads along the boundary of the elements.")]
+        [Input("gridDisplay", "Set to true to visualise the load as a grid over the elements.")]
+        [Output("arrows", "A list of arrows representing the load.")]
         public static List<ICurve> Visualize(this AreaUniformlyDistributedLoad areaUDL, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true, bool asResultants = true, bool edgeDisplay = true, bool gridDisplay = false)
         {
             if (!displayForces)
@@ -103,6 +124,13 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Description("Draws arrows representing the Bar point load at its location on the Bar.")]
+        [Input("barPointForce", "The Bar load to visualise.")]
+        [Input("scaleFactor", "Scales the arrows drawn. Default scaling of 1 means 1 kN per metre.")]
+        [Input("displayForces", "Toggles whether forces should be displayed or not.")]
+        [Input("displayMoments", "Toggles whether moments should be displayed or not.")]
+        [Input("asResultants", "Toggles whether loads should be displayed as resultant vectors or as components.")]
+        [Output("arrows", "A list of arrows representing the load.")]
         public static List<ICurve> Visualize(this BarPointLoad barPointForce, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true, bool asResultants = true)
         {
             List<ICurve> arrows = new List<ICurve>();
@@ -114,7 +142,7 @@ namespace BH.Engine.Structure
             {
                 Cartesian system;
                 Vector[] loads = BarForceVectors(bar, forceVec, momentVec, barPointForce.Axis, barPointForce.Projected, out system);
-                Point point = bar.StartNode.Position();
+                Point point = bar.StartNode.Position;
                 Vector tan = bar.Tangent(true);
                 point += tan * barPointForce.DistanceFromA;
 
@@ -127,6 +155,13 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Description("Draws lines representing the Bar load over the length of the Bar elements in the load.")]
+        [Input("barPrestressLoad", "The Bar load to visualise.")]
+        [Input("scaleFactor", "Scales the lines drawn. Default scaling of 1 means 1 kN per metre.")]
+        [Input("displayForces", "Toggles whether forces should be displayed or not.")]
+        [Input("displayMoments", "Toggles whether moments should be displayed or not. Unused for Bar prestress loads.")]
+        [Input("asResultants", "Toggles whether loads should be displayed as resultant vectors or as components. Unused for Bar prestress loads.")]
+        [Output("lines", "A list of lines representing the load.")]
         public static List<ICurve> Visualize(this BarPrestressLoad barPrestressLoad, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true, bool asResultants = true)
         {
             List<ICurve> arrows = new List<ICurve>();
@@ -143,6 +178,13 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Description("Draws lines representing the Bar load over the length of the Bar elements in the load.")]
+        [Input("barTempLoad", "The Bar load to visualise.")]
+        [Input("scaleFactor", "Scales the lines drawn. Default scaling of 1 means 1 kN per metre.")]
+        [Input("displayForces", "Toggles whether forces should be displayed or not. Unused for Bar temprature loads.")]
+        [Input("displayMoments", "Toggles whether moments should be displayed or not. Unused for Bar temprature loads.")]
+        [Input("asResultants", "Toggles whether loads should be displayed as resultant vectors or as components. Unused for Bar temprature loads.")]
+        [Output("lines", "A list of lines representing the load.")]
         public static List<ICurve> Visualize(this BarTemperatureLoad barTempLoad, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true, bool asResultants = true)
         {
             List<ICurve> arrows = new List<ICurve>();
@@ -151,8 +193,7 @@ namespace BH.Engine.Structure
 
             foreach (Bar bar in barTempLoad.Objects.Elements)
             {
-
-                if (displayForces) arrows.AddRange(ConnectedArrows(new List<ICurve> { bar.Centreline() }, bar.Normal() * loadFactor, true, null, 0, true));
+                arrows.AddRange(ConnectedArrows(new List<ICurve> { bar.Centreline() }, bar.Normal() * loadFactor, true, null, 0, true));
             }
 
             return arrows;
@@ -160,6 +201,13 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Description("Draws arrows representing the Bar load over the length of the Bar elements in the load.")]
+        [Input("barUDL", "The Bar load to visualise.")]
+        [Input("scaleFactor", "Scales the arrows drawn. Default scaling of 1 means 1 kN per metre.")]
+        [Input("displayForces", "Toggles whether forces should be displayed or not.")]
+        [Input("displayMoments", "Toggles whether moments should be displayed or not.")]
+        [Input("asResultants", "Toggles whether loads should be displayed as resultant vectors or as components.")]
+        [Output("arrows", "A list of arrows representing the load.")]
         public static List<ICurve> Visualize(this BarUniformlyDistributedLoad barUDL, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true, bool asResultants = true)
         {
             List<ICurve> arrows = new List<ICurve>();
@@ -187,6 +235,13 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Description("Draws arrows representing the Bar load over the length of the Bar elements in the load.")]
+        [Input("barVaryingDistLoad", "The Bar load to visualise.")]
+        [Input("scaleFactor", "Scales the arrows drawn. Default scaling of 1 means 1 kN per metre.")]
+        [Input("displayForces", "Toggles whether forces should be displayed or not.")]
+        [Input("displayMoments", "Toggles whether moments should be displayed or not.")]
+        [Input("asResultants", "Toggles whether loads should be displayed as resultant vectors or as components.")]
+        [Output("arrows", "A list of arrows representing the load.")]
         public static List<ICurve> Visualize(this BarVaryingDistributedLoad barVaryingDistLoad, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true, bool asResultants = true)
         {
             List<ICurve> arrows = new List<ICurve>();
@@ -258,6 +313,13 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Description("Draws arrows representing the gravity load. FOr bars it will be drawn as a series of arrows over the length of the Bar elements in the load. For panels it will be displayed as a list of arrows along the boundary on the element.")]
+        [Input("gravityLoad", "The gravity load to visualise.")]
+        [Input("scaleFactor", "Scales the arrows drawn. Default scaling of 1 means 1 kN per metre.")]
+        [Input("displayForces", "Toggles whether forces should be displayed or not.")]
+        [Input("displayMoments", "Toggles whether moments should be displayed or not. Not in use for gravity loads.")]
+        [Input("asResultants", "Toggles whether loads should be displayed as resultant vectors or as components. Not in use for gravity loads.")]
+        [Output("arrows", "A list of arrows representing the load.")]
         public static List<ICurve> Visualize(this GravityLoad gravityLoad, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true, bool asResultants = true)
         {
             List<ICurve> arrows = new List<ICurve>();
@@ -277,7 +339,7 @@ namespace BH.Engine.Structure
                         continue;
                     }
 
-                    Vector loadVector = bar.SectionProperty.MassPerMetre() * gravityDir;
+                    Vector loadVector = bar.SectionProperty.IMassPerMetre() * gravityDir;
 
                     List<Point> pts = DistributedPoints(bar, barDivisions);
 
@@ -302,7 +364,14 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static List<ICurve> Visualize(this PointAcceleration pointAcceleration, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true, bool asResultants = true)
+        [Description("Draws arrows representing the point load at the location of the Node elements of the load.")]
+        [Input("pointAcceleration", "The node load to visualise.")]
+        [Input("scaleFactor", "Scales the arrows drawn. Default scaling of 1 means 1 m/s² per metre.")]
+        [Input("displayTranslations", "Toggles whether translational acceleration should be displayed or not.")]
+        [Input("displayRotations", "Toggles whether rotational acceleration should be displayed or not.")]
+        [Input("asResultants", "Toggles whether loads should be displayed as resultant vectors or as components.")]
+        [Output("arrows", "A list of arrows representing the load.")]
+        public static List<ICurve> Visualize(this PointAcceleration pointAcceleration, double scaleFactor = 1.0, bool displayTranslations = true, bool displayRotations = true, bool asResultants = true)
         {
             List<ICurve> arrows = new List<ICurve>();
 
@@ -311,8 +380,8 @@ namespace BH.Engine.Structure
 
             foreach (Node node in pointAcceleration.Objects.Elements)
             {
-                if (displayForces) arrows.AddRange(Arrows(node.Position(), forceVec, true, asResultants));
-                if (displayMoments) arrows.AddRange(Arrows(node.Position(), momentVec, false, asResultants));
+                if (displayTranslations) arrows.AddRange(Arrows(node.Position, forceVec, true, asResultants));
+                if (displayRotations) arrows.AddRange(Arrows(node.Position, momentVec, false, asResultants));
             }
 
             return arrows;
@@ -320,7 +389,14 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static List<ICurve> Visualize(this PointDisplacement pointDisplacement, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true, bool asResultants = true)
+        [Description("Draws arrows representing the point load at the location of the Node elements of the load.")]
+        [Input("pointDisplacement", "The node load to visualise.")]
+        [Input("scaleFactor", "Scales the arrows drawn. Default scaling of 1 means 1 m per metre.")]
+        [Input("displayTranslations", "Toggles whether translations should be displayed or not.")]
+        [Input("displayRotations", "Toggles whether rotations should be displayed or not.")]
+        [Input("asResultants", "Toggles whether loads should be displayed as resultant vectors or as components.")]
+        [Output("arrows", "A list of arrows representing the load.")]
+        public static List<ICurve> Visualize(this PointDisplacement pointDisplacement, double scaleFactor = 1.0, bool displayTranslations = true, bool displayRotations = true, bool asResultants = true)
         {
             List<ICurve> arrows = new List<ICurve>();
 
@@ -329,8 +405,8 @@ namespace BH.Engine.Structure
 
             foreach (Node node in pointDisplacement.Objects.Elements)
             {
-                if (displayForces) arrows.AddRange(Arrows(node.Position(), forceVec, true, asResultants));
-                if (displayMoments) arrows.AddRange(Arrows(node.Position(), momentVec, false, asResultants));
+                if (displayTranslations) arrows.AddRange(Arrows(node.Position, forceVec, true, asResultants));
+                if (displayRotations) arrows.AddRange(Arrows(node.Position, momentVec, false, asResultants));
             }
 
             return arrows;
@@ -338,6 +414,13 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Description("Draws arrows representing the point load at the location of the Node elements of the load.")]
+        [Input("pointForce", "The node load to visualise.")]
+        [Input("scaleFactor", "Scales the arrows drawn. Default scaling of 1 means 1 kN per metre.")]
+        [Input("displayForces", "Toggles whether forces should be displayed or not.")]
+        [Input("displayMoments", "Toggles whether moments should be displayed or not.")]
+        [Input("asResultants", "Toggles whether loads should be displayed as resultant vectors or as components.")]
+        [Output("arrows", "A list of arrows representing the load.")]
         public static List<ICurve> Visualize(this PointLoad pointForce, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true, bool asResultants = true)
         {
             List<ICurve> arrows = new List<ICurve>();
@@ -347,8 +430,8 @@ namespace BH.Engine.Structure
 
             foreach (Node node in pointForce.Objects.Elements)
             {
-                if (displayForces) arrows.AddRange(Arrows(node.Position(), forceVec, true, asResultants));
-                if (displayMoments) arrows.AddRange(Arrows(node.Position(), momentVec, false, asResultants));
+                if (displayForces) arrows.AddRange(Arrows(node.Position, forceVec, true, asResultants));
+                if (displayMoments) arrows.AddRange(Arrows(node.Position, momentVec, false, asResultants));
             }
 
             return arrows;
@@ -356,7 +439,14 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static List<ICurve> Visualize(this PointVelocity pointVelocity, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true, bool asResultants = true)
+        [Description("Draws arrows representing the point load at the location of the Node elements of the load.")]
+        [Input("pointVelocity", "The node load to visualise.")]
+        [Input("scaleFactor", "Scales the arrows drawn. Default scaling of 1 means 1 m/s per metre.")]
+        [Input("displayTranslations", "Toggles whether translational velocity should be displayed or not.")]
+        [Input("displayRotations", "Toggles whether rotational velocity should be displayed or not.")]
+        [Input("asResultants", "Toggles whether loads should be displayed as resultant vectors or as components.")]
+        [Output("arrows", "A list of arrows representing the load.")]
+        public static List<ICurve> Visualize(this PointVelocity pointVelocity, double scaleFactor = 1.0, bool displayTranslations = true, bool displayRotations = true, bool asResultants = true)
         {
             List<ICurve> arrows = new List<ICurve>();
 
@@ -365,8 +455,8 @@ namespace BH.Engine.Structure
 
             foreach (Node node in pointVelocity.Objects.Elements)
             {
-                if (displayForces) arrows.AddRange(Arrows(node.Position(), forceVec, true, asResultants));
-                if (displayMoments) arrows.AddRange(Arrows(node.Position(), momentVec, false, asResultants));
+                if (displayTranslations) arrows.AddRange(Arrows(node.Position, forceVec, true, asResultants));
+                if (displayRotations) arrows.AddRange(Arrows(node.Position, momentVec, false, asResultants));
             }
 
             return arrows;
@@ -376,9 +466,26 @@ namespace BH.Engine.Structure
         /**** Public Methods Interface                  ****/
         /***************************************************/
 
+        [Description("Draws arrows representing the load. Visualisation will depend on the load type.")]
+        [Input("load", "The node load to visualise.")]
+        [Input("scaleFactor", "Scales the arrows drawn. Default scaling of 1 means 1 kN per metre.")]
+        [Input("displayForces", "Toggles whether forces or other translational loads should be displayed or not. .")]
+        [Input("displayMoments", "Toggles whether moments or other rotational loads should be displayed or not.")]
+        [Input("asResultants", "Toggles whether loads should be displayed as resultant vectors or as components.")]
+        [Output("arrows", "A list of arrows representing the load.")]
         public static IEnumerable<IGeometry> IVisualize(this ILoad load, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true, bool asResultants = true)
         {
             return Visualize(load as dynamic, scaleFactor, displayForces, displayMoments, asResultants);
+        }
+
+        /***************************************************/
+        /**** Private Methods - fall back               ****/
+        /***************************************************/
+
+        public static IEnumerable<IGeometry> Visualize(this ILoad load, double scaleFactor, bool displayForces, bool displayMoments, bool asResultants)
+        {
+            Reflection.Compute.RecordWarning("No load visualisation is yet implemented for load of type " + load.GetType().Name);
+            return new List<IGeometry>();
         }
 
         /***************************************************/
@@ -392,7 +499,7 @@ namespace BH.Engine.Structure
                 system = null;
                 if (isProjected)
                 {
-                    Point startPos = bar.StartNode.Position();
+                    Point startPos = bar.StartNode.Position;
                     Vector tan = bar.Tangent();
 
                     Vector tanUnit = tan.Normalise();

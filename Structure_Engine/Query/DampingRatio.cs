@@ -37,8 +37,9 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Damping ratio of the material. Gets the damping ratio from the structural material fragment")]
-        [Output("ζ", "Damping ratio of the material. ")]
+        [Deprecated("3.1","Deprecated as method only used for early proof of concept, not in use any longer.")]
+        [Description("Damping ratio of the material. Gets the damping ratio from the structural material fragment.")]
+        [Output("ζ", "Damping ratio of the material. .")]
         public static double DampingRatio(this Material material)
         {
             IMaterialFragment fragment = material.StructuralMaterialFragment();

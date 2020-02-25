@@ -30,6 +30,10 @@ using System;
 using BH.oM.Reflection.Attributes;
 using BH.Engine.Geometry;
 
+using BH.oM.Reflection.Attributes;
+using BH.oM.Quantities.Attributes;
+using System.ComponentModel;
+
 namespace BH.Engine.Structure
 {
     public static partial class Query
@@ -38,6 +42,10 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Computes an extrusion of the section along the Bar centreline.")]
+        [Input("bar", "The Bar to get an extruded shape from. This requires the property of the Bar to be of a type with a section profile.")]
+        [Input("simple", "If false, a full extrusion of the section curves along the Bar will be returned. If true, a geometrical mesh as a bounding box in local coordinates, enclosing the extruded section will be returned.")]
+        [Output("extrusion", "The volumetric representation of the Bar as an extrusion or a geometrical bounding box mesh.")]
         public static List<IGeometry> Extrude(this Bar bar, bool simple = false)
         {
             if (bar.SectionProperty == null || !(bar.SectionProperty is IGeometricalSection))

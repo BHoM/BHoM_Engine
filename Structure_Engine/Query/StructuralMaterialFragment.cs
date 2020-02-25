@@ -36,7 +36,9 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Gets a structural material fragment from a material class")]
+        [Description("Checks if the physical Material contains a single structural MaterialFragment, and if it does returns this fragment, containing all relevant structural material data. Returns null if not exactly one structural MaterialFragment is found.")]
+        [Input("material", "The physical Material to extract a structural MaterialFragment from.")]
+        [Output("strMat", "The structural MaterialFragment.")]
         public static IMaterialFragment StructuralMaterialFragment(this Material material)
         {
             if (!material.IsValidStructural())

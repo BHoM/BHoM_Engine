@@ -25,5 +25,6 @@
 /Results_Engine @IsakNaslundBh @FraserGreenroyd @rwemay
 #NEED OWNER: /SVG_Engine
 /Serialiser_Engine @adecler @FraserGreenroyd
+/Spatial_Engine @al-fisher @IsakNaslundBh @pawelbaran
 #NEED OWNER: /Speech_Engine
 /Structure_Engine @IsakNaslundBh @rwemay

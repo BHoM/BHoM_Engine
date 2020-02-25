@@ -71,6 +71,27 @@ namespace BH.Engine.Reflection
                 desc = inputDesc.First().Description + Environment.NewLine;
                 quantityAttribute = inputDesc.First().Quantity;
             }
+            else
+            {
+                //If no input descs are found, check if inputFromProperty descs can be found
+                IEnumerable<InputFromProperty> inputFromPropDesc = parameter.Member.GetCustomAttributes<InputFromProperty>().Where(x => x.InputName == parameter.Name);
+
+                //Only valid for engine type methods
+                MethodInfo methodInfo = parameter.Member as MethodInfo;
+                if (inputFromPropDesc.Count() > 0 && methodInfo != null && methodInfo.DeclaringType != null)
+                {
+                    Type returnType = methodInfo.ReturnType.UnderlyingType().Type;
+                    if (returnType != null)
+                    {
+                        //Try to find matching proeprty type, matching both name and type
+                        PropertyInfo prop = returnType.GetProperty(inputFromPropDesc.First().PropertyName, parameter.ParameterType);
+
+                        //If found return description of property
+                        if (prop != null)
+                            return prop.Description();
+                    }
+                }
+            }
             if (parameter.ParameterType != null)
             {
                 desc += parameter.ParameterType.Description(quantityAttribute);
@@ -99,8 +120,6 @@ namespace BH.Engine.Reflection
 
             string desc = "";
 
-            if (attribute != null)
-                desc = attribute.Description + Environment.NewLine;
 
             //If a quantity attribute is present, this is used to generate the default description
             if (quantityAttribute != null)
@@ -113,6 +132,11 @@ namespace BH.Engine.Reflection
             //Add the default description
             desc += "This is a " + type.ToText(type.Namespace.StartsWith("BH."));
 
+            if (attribute != null)
+            {
+                desc += ":" + Environment.NewLine;
+                desc += attribute.Description;
+            }
             Type innerType = type;
 
             while (typeof(IEnumerable).IsAssignableFrom(innerType) && innerType.IsGenericType)
@@ -120,7 +144,8 @@ namespace BH.Engine.Reflection
 
             if (innerType.IsInterface)
             {
-                desc += ": ";
+                desc += Environment.NewLine;
+                desc += "This can be of the following types: ";
                 List<Type> t = innerType.ImplementingTypes();
                 int m = Math.Min(15, t.Count);
 

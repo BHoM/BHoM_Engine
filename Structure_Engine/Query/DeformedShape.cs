@@ -31,6 +31,10 @@ using BH.oM.Structure.Elements;
 using BH.oM.Structure.Results;
 using BH.oM.Structure.Loads;
 
+using BH.oM.Reflection.Attributes;
+using BH.oM.Quantities.Attributes;
+using System.ComponentModel;
+
 using BH.Engine.Geometry;
 
 namespace BH.Engine.Structure
@@ -42,9 +46,17 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static List<IGeometry> DeformedShape(List<Bar> bars, List<BarDisplacement> barDisplacements, string adapterId, object loadCase, double scaleFactor = 1.0, bool drawSections = false)
+        [Description("Gets deformed shape of a Bar based on BarDisplacements.")]
+        [Input("bars", "The Bars to get the deformed shape for. The Bars input here should generally have been pulled from an analysis package to ensure they carry the AdapterNameId.")]
+        [Input("barDisplacements", "The displacement results used to compute the deformed shape. The displacements are assumed to be in global coordinates. This list does NOT need to match the Bar input list, grouping is completed by the method.")]
+        [Input("adapterNameId", "The CustomData identifier to look for identifying information on for the Bars. This will depend on the software package used, but generally be for example 'Robot_id', 'GSA_id' etc. Try exploding the CustomData of your Bars to find the name of the identifier.")]
+        [Input("loadcase", "Loadcase to display results for. Should generally be either an identifier matching the one used in the analysis package that the results were pulled from or a Loadcase/LoadCombination.")]
+        [Input("scaleFactor", "Controls by how much the results should be scaled.")]
+        [Input("drawSections", "Toggles if output should be just centrelines or include section geometry. Note that currently section geometry only supports displacements, no rotations!")]
+        [Output("deformed","The shape of the Bars from the displacements.")]
+        public static List<IGeometry> DeformedShape(List<Bar> bars, List<BarDisplacement> barDisplacements, string adapterNameId, object loadcase, double scaleFactor = 1.0, bool drawSections = false)
         {
-            barDisplacements = barDisplacements.SelectCase(loadCase);
+            barDisplacements = barDisplacements.SelectCase(loadcase);
 
             List<IGeometry> geom = new List<IGeometry>();
 
@@ -55,7 +67,7 @@ namespace BH.Engine.Structure
 
             foreach (Bar bar in bars)
             {
-                string id = bar.CustomData[adapterId].ToString();
+                string id = bar.CustomData[adapterNameId].ToString();
 
                 List<BarDisplacement> deformations;
 
@@ -78,18 +90,24 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-
-        public static List<Mesh> DeformedShape(List<FEMesh> meshes, List<MeshResult> meshDeformations, string adapterId, object loadCase, double scaleFactor = 1.0)
+        [Description("Gets deformed shape of a FEMesh based on MeshDisplacements.")]
+        [Input("meshes", "The FEMeshes to get the deformed shape for. The FEMeshes input here should generally have been pulled from an analysis package to ensure they carry the AdapterNameId.")]
+        [Input("meshDisplacements", "The displacement results used to compute the deformed shape.  This input should be a list of MeshResults which in turn should contain results of type MeshDisplacements. The displacements are assumed to be in global coordinates. This list does NOT need to match the FEMesh input list, grouping is completed by the method.")]
+        [Input("adapterNameId", "The CustomData identifier to look for identifying information on for the FEMeshes. This will depend on the software package used, but generally be for example 'Robot_id', 'GSA_id' etc. Try exploding the CustomData of your FEMeshes to find the name of the identifier.")]
+        [Input("loadcase", "Loadcase to display results for. Should generally be either an identifier matching the one used in the analysis package that the results were pulled from or a Loadcase/LoadCombination.")]
+        [Input("scaleFactor", "Controls by how much the results should be scaled.")]
+        [Output("deformed", "The shape of the FEMeshes from the displacements.")]
+        public static List<Mesh> DeformedShape(List<FEMesh> meshes, List<MeshResult> meshDisplacements, string adapterNameId, object loadcase, double scaleFactor = 1.0)
         {
-            meshDeformations = meshDeformations.SelectCase(loadCase);
+            meshDisplacements = meshDisplacements.SelectCase(loadcase);
 
             List<Mesh> defMeshes = new List<Mesh>();
 
-            var resGroups = meshDeformations.GroupBy(x => x.ObjectId.ToString()).ToDictionary(x => x.Key);
+            var resGroups = meshDisplacements.GroupBy(x => x.ObjectId.ToString()).ToDictionary(x => x.Key);
 
             foreach (FEMesh feMesh in meshes)
             {
-                string id = feMesh.CustomData[adapterId].ToString();
+                string id = feMesh.CustomData[adapterNameId].ToString();
 
                 List<MeshResult> deformations;
 
@@ -101,7 +119,7 @@ namespace BH.Engine.Structure
 
                 MeshResult singleDisp = deformations.Where(x => x.ObjectId.ToString() == id && x.Results.First() is MeshDisplacement).First();
 
-                defMeshes.Add(DeformedMesh(feMesh, singleDisp.Results.Cast<MeshDisplacement>(), adapterId, scaleFactor));
+                defMeshes.Add(DeformedMesh(feMesh, singleDisp.Results.Cast<MeshDisplacement>(), adapterNameId, scaleFactor));
             }
 
             return defMeshes;
@@ -113,13 +131,13 @@ namespace BH.Engine.Structure
 
         private static Polyline DeformedShapeCentreLine(Bar bar, List<BarDisplacement> deformations, double scaleFactor = 1.0)
         {
-            Vector tan = (bar.EndNode.Position() - bar.StartNode.Position());
+            Vector tan = (bar.EndNode.Position - bar.StartNode.Position);
             List<Point> pts = new List<Point>();
 
             foreach (BarDisplacement defo in deformations)
             {
                 Vector disp = new Vector { X = defo.UX * scaleFactor, Y = defo.UY * scaleFactor, Z = defo.UZ * scaleFactor };
-                Point pt = bar.StartNode.Position() + tan * defo.Position + disp;
+                Point pt = bar.StartNode.Position + tan * defo.Position + disp;
                 pts.Add(pt);
             }
 
@@ -144,7 +162,7 @@ namespace BH.Engine.Structure
                 Loft loft = new Loft();
                 foreach (BarDisplacement defo in deformations)
                 {
-                    //ICurve curve = sectionCurve.IRotate(bar.StartNode.Position(), tan, defo.RX * scaleFactor);
+                    //ICurve curve = sectionCurve.IRotate(bar.StartNode.Position, tan, defo.RX * scaleFactor);
                     //Vector disp = unitTan * defo.UX * scaleFactor + yAxis * defo.UY * scaleFactor + normal * defo.UZ * scaleFactor;
                     Vector disp = new Vector { X = defo.UX * scaleFactor, Y = defo.UY * scaleFactor, Z = defo.UZ * scaleFactor };
                     disp += tan * defo.Position;
@@ -160,23 +178,23 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        private static Mesh DeformedMesh(FEMesh feMesh, IEnumerable<MeshDisplacement> disps, string adapterId, double scaleFactor)
+        private static Mesh DeformedMesh(FEMesh feMesh, IEnumerable<MeshDisplacement> disps, string adapterNameId, double scaleFactor)
         {
             Mesh mesh = new Mesh();
 
             foreach (Node node in feMesh.Nodes)
             {
-                MeshDisplacement disp = disps.FirstOrDefault(x => x.NodeId.ToString() == node.CustomData[adapterId].ToString());
+                MeshDisplacement disp = disps.FirstOrDefault(x => x.NodeId.ToString() == node.CustomData[adapterNameId].ToString());
 
                 if (disp == null)
                 {
-                    Reflection.Compute.RecordError("Could not find displacement for node with adapter Id: " + node.CustomData[adapterId].ToString() + ", from mesh with Id: " + feMesh.CustomData[adapterId].ToString());
+                    Reflection.Compute.RecordError("Could not find displacement for node with adapter Id: " + node.CustomData[adapterNameId].ToString() + ", from mesh with Id: " + feMesh.CustomData[adapterNameId].ToString());
                     return new Mesh();
                 }
 
                 Vector dispVector = disp.Orientation.X * disp.UXX * scaleFactor + disp.Orientation.Y * disp.UYY * scaleFactor + disp.Orientation.Z * disp.UZZ * scaleFactor;
 
-                mesh.Vertices.Add(node.Position() + dispVector);
+                mesh.Vertices.Add(node.Position + dispVector);
 
             }
 

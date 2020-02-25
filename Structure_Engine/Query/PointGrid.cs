@@ -29,6 +29,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System;
 
+using BH.oM.Reflection.Attributes;
+using BH.oM.Quantities.Attributes;
+using System.ComponentModel;
+
 namespace BH.Engine.Structure
 {
     public static partial class Query
@@ -37,6 +41,9 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Generates a rectangular grid of points on the Panel, scaled depending on Panel size. Used for load visualisation.")]
+        [Input("panel","The Panel to generate a grid on.")]
+        [Output("grid", "Rectangular grid of points on the Panel.")]
         public static List<Point> PointGrid(this Panel panel)
         {
             List<ICurve> curves = panel.ExternalEdgeCurves();
@@ -110,24 +117,22 @@ namespace BH.Engine.Structure
         /**** Public Methods Interface                  ****/
         /***************************************************/
 
+        [Description("Generates a rectangular grid of points on an IAreaElement. Used for load visualisation.")]
+        [Input("element", "The element to generate a grid on.")]
+        [Output("grid", "The generated rectangular grid of points on the element.")]
         public static List<Point> IPointGrid(this IAreaElement element)
         {
             return PointGrid(element as dynamic);
         }
 
         /***************************************************/
-        /**** Private methods                           ****/
+        /**** Private Methods - fall back               ****/
         /***************************************************/
 
-        private static bool SimpleIsContaining(PolyCurve crv, Plane plane, Point pt)
+        public static List<Point> PointGrid(this IAreaElement element)
         {
-            Point end = pt.Translate(Engine.Geometry.Create.RandomVectorInPlane(plane, true));
-            Line ray = new Line { Start = pt, End = end };
-            ray.Infinite = true;
-
-            List<Point> interPts = crv.Curves.SelectMany(x => x.ILineIntersections(ray, true)).ToList();
-
-            return interPts.Count % 2 != 0;
+            Reflection.Compute.RecordWarning("Point grid for element of type " + element.GetType().Name + " not implemented.");
+            return new List<Point>();
         }
 
         /***************************************************/

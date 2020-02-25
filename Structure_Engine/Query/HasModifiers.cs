@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -20,13 +20,11 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System;
-using System.Linq;
-using System.Collections.Generic;
-using System.ComponentModel;
+using BH.oM.Structure.SurfaceProperties;
+using BH.oM.Structure.SectionProperties;
 using BH.oM.Reflection.Attributes;
-using BH.oM.Structure.MaterialFragments;
-using BH.oM.Physical.Materials;
+using BH.oM.Quantities.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Structure
 {
@@ -36,14 +34,43 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Checks if a material contains a structural material fragment")]
-        public static bool IsValidStructural(this Material material)
+        [Description("Checks if a SurfaceProperty has any modifiers by first checking if any modifiers has been assigned, and if any of them are set to a value different than 1.")]
+        [Input("property", "The property to check for modifiers.")]
+        [Output("result","Returns true if any modifiers exists on the section.")]
+        public static bool HasModifiers(this ISurfaceProperty property)
         {
-            return material.Properties.Where(x => x is IMaterialFragment).Count() == 1;
+            double[] modifiers = property.Modifiers();
+
+            if (modifiers == null)
+                return false;
+
+            foreach (double modifier in modifiers)
+            {
+                if (modifier != 1) return true;
+            }
+            return false;
         }
 
         /***************************************************/
-        
+
+        [Description("Checks if a SectionProperty has any modifiers by first checking if any modifiers has been assigned, and if any of them are set to a value different than 1.")]
+        [Input("property", "The property to check for modifiers.")]
+        [Output("result", "Returns true if any modifiers exists on the section.")]
+        public static bool HasModifiers(this ISectionProperty property)
+        {
+            double[] modifiers = property.Modifiers();
+
+            if (modifiers == null)
+                return false;
+
+            foreach (double modifier in modifiers)
+            {
+                if (modifier != 1) return true;
+            }
+            return false;
+        }
+
+        /***************************************************/
     }
 }
 

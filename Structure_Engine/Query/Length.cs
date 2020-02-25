@@ -22,6 +22,9 @@
 
 using BH.Engine.Geometry;
 using BH.oM.Structure.Elements;
+using BH.oM.Reflection.Attributes;
+using BH.oM.Quantities.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Structure
 {
@@ -31,9 +34,12 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Calculates the length of a Bar as the distance between its two end Nodes. No offsets or similar ar taken into acount.")]
+        [Input("bar", "The Bar to calculate the length for.")]
+        [Output("length", "The length of the Bar as the distance between the end Nodes.", typeof(Length))]
         public static double Length(this Bar bar)
         {
-            return bar.StartNode.Position().Distance(bar.EndNode.Position());
+            return bar.StartNode.Position.Distance(bar.EndNode.Position);
         }
 
         /***************************************************/

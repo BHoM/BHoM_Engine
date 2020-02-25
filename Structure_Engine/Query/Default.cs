@@ -23,6 +23,10 @@
 using BH.oM.Geometry;
 using BH.oM.Physical.Materials;
 using BH.oM.Structure.MaterialFragments;
+using BH.oM.Reflection.Attributes;
+using BH.oM.Quantities.Attributes;
+using System.ComponentModel;
+
 
 namespace BH.Engine.Structure
 {
@@ -32,6 +36,9 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Extracts a default material from the material datasets for a specific material type.")]
+        [Input("materialType","The material type to extract a default value for.")]
+        [Output("material","The default material of the type provided.")]
         public static IMaterialFragment Default(this MaterialType materialType)
         {
             string libraryName = "Materials";
