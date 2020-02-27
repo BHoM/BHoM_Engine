@@ -137,7 +137,7 @@ namespace BH.Engine.Structure
 
         [Description("Gets the geometry of a FEMesh as a geometrical Mesh. A geometrical mesh only supports 3 and 4 nodes faces, while a FEMesh does not have this limitation. For FEMeshFaces with more than 4 nodes or less than 3 this operation is therefore not possible. Method required for automatic display in UI packages.")]
         [Input("feMesh", "FEMesh to get the mesh geometry from.")]
-        [Output("lines", "The geometry of the FEMesh as a geometrical Mesh.")]
+        [Output("mesh", "The geometry of the FEMesh as a geometrical Mesh.")]
         public static Mesh Geometry(this FEMesh feMesh)
         {
             Mesh mesh = new Mesh();
