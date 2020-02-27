@@ -34,7 +34,7 @@ namespace BH.Engine.Common
 
         public static IElement2D ISetOutlineElements1D(this IElement2D element2D, List<IElement1D> newOutline)
         {
-            return Reflection.Compute.RunExtensionMethod(element2D, "SetOutlineElements1D", new object[] { newOutline }) as IElement2D;
+            return Spatial.Modify.ISetOutlineElements1D(element2D, newOutline);
         }
 
         /******************************************/

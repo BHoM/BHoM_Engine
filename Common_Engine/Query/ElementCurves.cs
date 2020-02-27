@@ -38,7 +38,7 @@ namespace BH.Engine.Common
 
         public static List<ICurve> ElementCurves(this IElement1D element1D, bool recursive = true)
         {
-            return new List<ICurve> { element1D.IGeometry() };
+            return Spatial.Query.ElementCurves(element1D, recursive);
         }
 
 
@@ -48,23 +48,7 @@ namespace BH.Engine.Common
 
         public static List<ICurve> ElementCurves(this IElement2D element2D, bool recursive)
         {
-            List<ICurve> result = new List<ICurve>();
-
-            PolyCurve outline = element2D.IOutlineCurve();
-            foreach (ICurve curve in outline.Curves)
-            {
-                if (recursive)
-                    result.AddRange(curve.ISubParts());
-                else
-                    result.Add(curve);
-            }
-
-            foreach (IElement2D e in element2D.IInternalElements2D())
-            {
-                result.AddRange(e.ElementCurves(recursive));
-            }
-
-            return result;
+            return Spatial.Query.ElementCurves(element2D, recursive);
         }
 
 
@@ -74,7 +58,7 @@ namespace BH.Engine.Common
 
         public static List<ICurve> IElementCurves(this IElement element, bool recursive = true)
         {
-            return ElementCurves(element as dynamic, recursive);
+            return Spatial.Query.IElementCurves(element, recursive);
         }
 
 
@@ -82,12 +66,8 @@ namespace BH.Engine.Common
 
         public static List<ICurve> IElementCurves(this IEnumerable<IElement> elements, bool recursive = true)
         {
-            List<ICurve> result = new List<ICurve>();
-            foreach (BHoMObject element in elements)
-            {
-                result.AddRange(element.IElementCurves(recursive));
-            }
-            return result;
+            return Spatial.Query.IElementCurves(elements, recursive);
+
         }
 
 

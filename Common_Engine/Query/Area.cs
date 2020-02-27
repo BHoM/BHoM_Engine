@@ -36,14 +36,7 @@ namespace BH.Engine.Common
 
         public static double Area(this IElement2D element2D)
         {
-            double result = element2D.IOutlineCurve().IArea();
-
-            List<PolyCurve> openings = element2D.IInternalOutlineCurves().BooleanUnion();
-
-            foreach (PolyCurve o in openings)
-                result -= o.Area();
-
-            return result;
+            return Spatial.Query.Area(element2D);
         }
 
         /******************************************/

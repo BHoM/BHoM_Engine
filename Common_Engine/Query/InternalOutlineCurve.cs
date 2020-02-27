@@ -35,7 +35,7 @@ namespace BH.Engine.Common
 
         public static List<PolyCurve> IInternalOutlineCurves(this IElement2D element2D)
         {
-            return element2D.IInternalElements2D().Select(x => x.IOutlineCurve()).ToList();
+            return Spatial.Query.IInternalOutlineCurves(element2D);
         }
 
         /******************************************/
