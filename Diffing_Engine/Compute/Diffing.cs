@@ -44,18 +44,18 @@ namespace BH.Engine.Diffing
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns a Delta object with the differences between the Stream objects and the provided object list.")]
-        [Input("previousStream", "A previous version of a Stream")]
-        [Input("currentStream", "A new version of a Stream")]
-        [Input("diffConfig", "Sets configs such as properties to be ignored in the diffing, or enable/disable property-by-property diffing.\nBy default it takes the diffConfig property of the Stream. This input can be used to override it.")]
-        public static Delta Diffing(Stream previousStream, Stream currentStream, DiffConfig diffConfig = null)
+        [Description("Returns a Delta object with the differences between the Revision objects and the provided object list.")]
+        [Input("previousRevision", "A previous Revision")]
+        [Input("currentRevision", "A new Revision")]
+        [Input("diffConfig", "Sets configs such as properties to be ignored in the diffing, or enable/disable property-by-property diffing.\nBy default it takes the diffConfig property of the Revision. This input can be used to override it.")]
+        public static Diff Diffing(Revision previousRevision, Revision currentRevision, DiffConfig diffConfig = null)
         {
             // Set configurations if diffConfig is null
             diffConfig = diffConfig == null ? new DiffConfig() : diffConfig;
 
-            // Take the Stream's objects
-            List<IBHoMObject> currentObjs = currentStream.Objects.ToList();
-            List<IBHoMObject> readObjs = previousStream.Objects.ToList();
+            // Take the Revision's objects
+            List<IBHoMObject> currentObjs = currentRevision.Objects.ToList();
+            List<IBHoMObject> readObjs = previousRevision.Objects.ToList();
 
             // Make dictionary with object hashes to speed up the next lookups
             Dictionary<string, IBHoMObject> readObjs_dict = readObjs.ToDictionary(obj => obj.GetHashFragment().Hash, obj => obj);
@@ -64,6 +64,8 @@ namespace BH.Engine.Diffing
             List<IBHoMObject> toBeCreated = new List<IBHoMObject>();
             List<IBHoMObject> toBeUpdated = new List<IBHoMObject>();
             List<IBHoMObject> toBeDeleted = new List<IBHoMObject>();
+            List<IBHoMObject> unChanged = new List<IBHoMObject>();
+
             var objModifiedProps = new Dictionary<string, Dictionary<string, Tuple<object, object>>>();
 
             foreach (var obj in currentObjs)
@@ -78,6 +80,7 @@ namespace BH.Engine.Diffing
                 else if (hashFragm.PreviousHash == hashFragm.Hash)
                 {
                     // It's NOT been modified
+                    unChanged.Add(obj);
                 }
 
                 else if (hashFragm.PreviousHash != hashFragm.Hash)
@@ -114,7 +117,7 @@ namespace BH.Engine.Diffing
             toBeDeleted = readObjs_dict.Keys.Except(CurrentObjs_withPreviousHash_dict.Keys)
                 .Where(k => readObjs_dict.ContainsKey(k)).Select(k => readObjs_dict[k]).ToList();
 
-            return new Delta(toBeCreated, toBeDeleted, toBeUpdated, objModifiedProps);
+            return new Diff(toBeCreated, toBeDeleted, toBeUpdated, objModifiedProps, unChanged);
 
         }
 
@@ -123,15 +126,15 @@ namespace BH.Engine.Diffing
 
 
         [Description("Dispatch objects in two sets into the ones exclusive to one set, the other, or both.")]
-        [Input("setA", "A previous version of a Stream")]
-        [Input("setB", "A new version of a Stream")]
+        [Input("setA", "A set of object representing a Previous revision")]
+        [Input("setB", "A set of object representing a new Revision")]
         [Input("diffConfig", "Sets configs such as properties to be ignored in the diffing, or enable/disable property-by-property diffing.")]
-        public static Delta Diffing(IEnumerable<IBHoMObject> setA, IEnumerable<IBHoMObject> setB, DiffConfig diffConfig = null, bool saveHashInTags = true)
+        public static Diff Diffing(IEnumerable<IBHoMObject> setA, IEnumerable<IBHoMObject> setB, DiffConfig diffConfig = null, bool saveHashInTags = true)
         {
-            Stream streamA = BH.Engine.Diffing.Create.Stream(setA, diffConfig, "");
-            Stream streamB = BH.Engine.Diffing.Create.Stream(setB, diffConfig, "");
+            Revision RevisionA = BH.Engine.Diffing.Create.Revision(setA, diffConfig, "");
+            Revision RevisionB = BH.Engine.Diffing.Create.Revision(setB, diffConfig, "");
 
-            return Diffing(streamA, streamB);
+            return Diffing(RevisionA, RevisionB);
         }
 
 
