@@ -144,33 +144,59 @@ namespace BH.Engine.Structure
 
             mesh.Vertices = feMesh.Nodes.Select(x => x.Position).ToList();
 
-            foreach (FEMeshFace feFace in feMesh.Faces)
-            {
-                if (feFace.NodeListIndices.Count < 3)
-                {
-                    Reflection.Compute.RecordError("Insuffiecient node indices");
-                    continue;
-                }
-                if (feFace.NodeListIndices.Count > 4)
-                {
-                    Reflection.Compute.RecordError("To high number of node indices. Can only handle triangular and quads");
-                    continue;
-                }
-
-                Face face = new Face();
-
-                face.A = feFace.NodeListIndices[0];
-                face.B = feFace.NodeListIndices[1];
-                face.C = feFace.NodeListIndices[2];
-
-                if (feFace.NodeListIndices.Count == 4)
-                    face.D = feFace.NodeListIndices[3];
-
-                mesh.Faces.Add(face);
-            }
+            mesh.Faces.AddRange(feMesh.Faces.Geometry());
 
             return mesh;
         }
+
+        /***************************************************/
+
+        [Description("Gets the geometry of a collection of FEMeshFaces as a geometrical Mesh's Faces. A geometrical mesh face only supports 3 and 4 nodes faces, while a FEMeshFace does not have this limitation. For FEMeshFaces with more than 4 nodes or less than 3 this operation is therefore not possible. Method required for automatic display in UI packages.")]
+        [Input("feFaces", "FEMeshFaces to get the mesh faces geometry from.")]
+        [Output("faces", "The geometry of the FEMeshFaces as geometrical Mesh Faces.")]
+        private static IEnumerable<Face> Geometry(this IEnumerable<FEMeshFace> feFaces)
+        {
+            List<Face> result = new List<Face>();
+            foreach (FEMeshFace feFace in feFaces)
+            {
+                Face face = Geometry(feFace);
+                if (face != null)
+                    result.Add(face);
+            }
+            return result;
+        }
+
+        /***************************************************/
+
+        [Description("Gets the geometry of a FEMeshFace as a geometrical Mesh's Face. A geometrical mesh face only supports 3 and 4 nodes faces, while a FEMeshFace does not have this limitation. For FEMeshFaces with more than 4 nodes or less than 3 this operation is therefore not possible. Method required for automatic display in UI packages.")]
+        [Input("feFace", "FEMeshFace to get the mesh face geometry from.")]
+        [Output("face", "The geometry of the FEMeshFace as geometrical Mesh Face.")]
+        private static Face Geometry(this FEMeshFace feFace)
+        {
+
+            if (feFace.NodeListIndices.Count < 3)
+            {
+                Reflection.Compute.RecordError("Insuffiecient node indices");
+                return null;
+            }
+            if (feFace.NodeListIndices.Count > 4)
+            {
+                Reflection.Compute.RecordError("To high number of node indices. Can only handle triangular and quads");
+                return null;
+            }
+
+            Face face = new Face();
+
+            face.A = feFace.NodeListIndices[0];
+            face.B = feFace.NodeListIndices[1];
+            face.C = feFace.NodeListIndices[2];
+
+            if (feFace.NodeListIndices.Count == 4)
+                face.D = feFace.NodeListIndices[3];
+
+            return face;
+        }
+
 
         /***************************************************/
         /**** Public Methods - Interface                ****/
