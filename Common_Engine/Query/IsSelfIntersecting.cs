@@ -24,6 +24,7 @@ using BH.Engine.Geometry;
 using BH.oM.Dimensional;
 using BH.oM.Geometry;
 using System;
+using BH.oM.Reflection.Attributes;
 using System.Collections.Generic;
 
 namespace BH.Engine.Common
@@ -34,6 +35,7 @@ namespace BH.Engine.Common
         /****            IElement1D            ****/
         /******************************************/
 
+        [Deprecated("3.1", "Migrated to the Spatial_Engine")]
         public static bool IsSelfIntersecting(this IElement1D element1D, double tolerance = Tolerance.Distance)
         {
             return Spatial.Query.IsSelfIntersecting(element1D, tolerance);
@@ -44,6 +46,7 @@ namespace BH.Engine.Common
         /****            IElement2D            ****/
         /******************************************/
 
+        [Deprecated("3.1", "Migrated to the Spatial_Engine")]
         public static bool IsSelfIntersecting(this IElement2D element2D, double tolerance = Tolerance.Distance)
         {
             return Spatial.Query.IsSelfIntersecting(element2D, tolerance);

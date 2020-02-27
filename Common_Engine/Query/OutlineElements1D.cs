@@ -21,6 +21,7 @@
  */
 
 using BH.oM.Dimensional;
+using BH.oM.Reflection.Attributes;
 using BH.oM.Geometry;
 using System.Collections.Generic;
 
@@ -32,6 +33,7 @@ namespace BH.Engine.Common
         /****            IElement2D            ****/
         /******************************************/
 
+        [Deprecated("3.1", "Migrated to the Spatial_Engine")]
         public static List<IElement1D> IOutlineElements1D(this IElement2D element2D)
         {
             return Spatial.Query.IOutlineElements1D(element2D);

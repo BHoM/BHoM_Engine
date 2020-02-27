@@ -22,6 +22,7 @@
 
 using BH.Engine.Geometry;
 using BH.oM.Geometry;
+using BH.oM.Reflection.Attributes;
 using BH.oM.Dimensional;
 using System;
 
@@ -33,6 +34,7 @@ namespace BH.Engine.Common
         /****            IElement2D            ****/
         /******************************************/
 
+        [Deprecated("3.1", "Migrated to the Spatial_Engine")]
         public static Vector Normal(this IElement2D element2D)
         {
             return Spatial.Query.Normal(element2D);
