@@ -32,7 +32,7 @@ namespace BH.Engine.Spatial
         /**** Public Methods - IElements                ****/
         /***************************************************/
 
-        public static IElement2D Translate(this IElement2D element2D, Vector transform) //todo: move this to analytical along with other IElement methods
+        public static IElement2D Translate(this IElement2D element2D, Vector transform)
         {
             List<IElement1D> newOutline = new List<IElement1D>();
             foreach (IElement1D element1D in element2D.IOutlineElements1D())
@@ -52,14 +52,14 @@ namespace BH.Engine.Spatial
 
         /***************************************************/
 
-        public static IElement1D Translate(this IElement1D element1D, Vector transform) //todo: move this to analytical along with other IElement methods
+        public static IElement1D Translate(this IElement1D element1D, Vector transform)
         {
             return element1D.ISetGeometry(Geometry.Modify.ITranslate(element1D.IGeometry(), transform));
         }
 
         /******************************************/
 
-        public static IElement0D Translate(this IElement0D element0D, Vector transform) //todo: move this to analytical along with other IElement methods
+        public static IElement0D Translate(this IElement0D element0D, Vector transform)
         {
             return element0D.ISetGeometry(Geometry.Modify.Translate(element0D.IGeometry(), transform));
         }

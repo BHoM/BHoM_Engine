@@ -85,26 +85,7 @@ namespace BH.Engine.Spatial
             }
             return result;
         }
-
-
-        /******************************************/
-        /****        Deprecated methods        ****/
-        /******************************************/
-
-        [DeprecatedAttribute("2.3", "Input type changed from BHoMObject to IElement", null, "IElementVertices")]
-        public static List<Point> IElementVertices(this BHoMObject element)
-        {
-            return IElementVertices(element as IElement);
-        }
-
-        /******************************************/
-
-        [DeprecatedAttribute("2.3", "Input type changed from List<BHoMObject> to IEnumerable<IElement>", null, "IElementVertices")]
-        public static List<Point> IElementVertices(this List<BHoMObject> elements)
-        {
-            return IElementVertices(elements.Cast<IElement>());
-        }
-
+        
         /******************************************/
     }
 }

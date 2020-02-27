@@ -77,15 +77,6 @@ namespace BH.Engine.Spatial
         }
 
         /***************************************************/
-
-        [DeprecatedAttribute("2.3", "Replaced with the same method taking an extra canCutOpenings argument.", null, "DistributeOutlines")]
-        public static List<List<List<IElement1D>>> DistributeOutlines(this List<List<IElement1D>> outlines, double tolerance = Tolerance.Distance)
-        {
-            return outlines.DistributeOutlines(true, tolerance);
-        }
-
-
-        /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
 
