@@ -22,6 +22,7 @@
 
 using BH.oM.Dimensional;
 using BH.oM.Geometry;
+using BH.oM.Reflection.Attributes;
 using System.Collections.Generic;
 
 namespace BH.Engine.Common
@@ -32,6 +33,7 @@ namespace BH.Engine.Common
         /****            IElement1D            ****/
         /******************************************/
 
+        [Deprecated("3.1", "Migrated to the Spatial_Engine")]
         public static IElement1D ISetElements0D(this IElement1D element1D, List<IElement0D> newElements0D)
         {
             return Spatial.Modify.ISetElements0D(element1D, newElements0D);

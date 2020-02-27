@@ -33,6 +33,7 @@ namespace BH.Engine.Common
         /****            IElement2D            ****/
         /******************************************/
 
+        [Deprecated("3.1", "Migrated to the Spatial_Engine")]
         public static List<PolyCurve> IInternalOutlineCurves(this IElement2D element2D)
         {
             return Spatial.Query.IInternalOutlineCurves(element2D);

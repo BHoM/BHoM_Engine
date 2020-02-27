@@ -26,6 +26,7 @@ using BH.oM.Dimensional;
 using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
 using System.Collections.Generic;
+using BH.oM.Reflection.Attributes;
 using System.Linq;
 
 namespace BH.Engine.Common
@@ -36,6 +37,7 @@ namespace BH.Engine.Common
         /****            IElement1D            ****/
         /******************************************/
 
+        [Deprecated("3.1", "Migrated to the Spatial_Engine")]
         public static List<ICurve> ElementCurves(this IElement1D element1D, bool recursive = true)
         {
             return Spatial.Query.ElementCurves(element1D, recursive);
@@ -46,6 +48,7 @@ namespace BH.Engine.Common
         /****            IElement2D            ****/
         /******************************************/
 
+        [Deprecated("3.1", "Migrated to the Spatial_Engine")]
         public static List<ICurve> ElementCurves(this IElement2D element2D, bool recursive)
         {
             return Spatial.Query.ElementCurves(element2D, recursive);
@@ -56,6 +59,7 @@ namespace BH.Engine.Common
         /**** Public Methods - Interfaces      ****/
         /******************************************/
 
+        [Deprecated("3.1", "Migrated to the Spatial_Engine")]
         public static List<ICurve> IElementCurves(this IElement element, bool recursive = true)
         {
             return Spatial.Query.IElementCurves(element, recursive);
@@ -64,6 +68,7 @@ namespace BH.Engine.Common
 
         /******************************************/
 
+        [Deprecated("3.1", "Migrated to the Spatial_Engine")]
         public static List<ICurve> IElementCurves(this IEnumerable<IElement> elements, bool recursive = true)
         {
             return Spatial.Query.IElementCurves(elements, recursive);

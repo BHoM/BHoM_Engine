@@ -25,6 +25,7 @@ using BH.oM.Base;
 using BH.oM.Dimensional;
 using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
+using BH.oM.Reflection.Attributes;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -36,6 +37,7 @@ namespace BH.Engine.Common
         /****            IElement1D            ****/
         /******************************************/
 
+        [Deprecated("3.1", "Migrated to the Spatial_Engine")]
         public static List<Point> ElementVertices(this IElement1D element1D)
         {
             return Spatial.Query.ElementVertices(element1D);
@@ -46,6 +48,7 @@ namespace BH.Engine.Common
         /****            IElement2D            ****/
         /******************************************/
 
+        [Deprecated("3.1", "Migrated to the Spatial_Engine")]
         public static List<Point> ElementVertices(this IElement2D element2D)
         {
             return Spatial.Query.ElementVertices(element2D);
@@ -56,6 +59,7 @@ namespace BH.Engine.Common
         /**** Public Methods - Interfaces      ****/
         /******************************************/
 
+        [Deprecated("3.1", "Migrated to the Spatial_Engine")]
         public static List<Point> IElementVertices(this IElement element)
         {
             return Spatial.Query.IElementVertices(element);
@@ -63,6 +67,7 @@ namespace BH.Engine.Common
 
         /******************************************/
 
+        [Deprecated("3.1", "Migrated to the Spatial_Engine")]
         public static List<Point> IElementVertices(this IEnumerable<IElement> elements)
         {
             return Spatial.Query.IElementVertices(elements);

@@ -21,6 +21,7 @@
  */
 
 using BH.oM.Dimensional;
+using BH.oM.Reflection.Attributes;
 using BH.oM.Geometry;
 using System.Collections.Generic;
 
@@ -32,6 +33,7 @@ namespace BH.Engine.Common
         /****            IElement2D            ****/
         /******************************************/
 
+        [Deprecated("3.1", "Migrated to the Spatial_Engine")]
         public static List<IElement2D> IInternalElements2D(this IElement2D element2D)
         {
             return Spatial.Query.IInternalElements2D(element2D);

@@ -21,6 +21,7 @@
  */
 
 using System.Collections.Generic;
+using BH.oM.Reflection.Attributes;
 using BH.oM.Dimensional;
 using BH.oM.Geometry;
 
@@ -32,6 +33,7 @@ namespace BH.Engine.Common
         /**** Public Methods - IElements                ****/
         /***************************************************/
 
+        [Deprecated("3.1", "Migrated to the Spatial_Engine")]
         public static IElement2D Translate(this IElement2D element2D, Vector transform)
         {
             return Spatial.Modify.Translate(element2D, transform);
@@ -39,6 +41,7 @@ namespace BH.Engine.Common
 
         /***************************************************/
 
+        [Deprecated("3.1", "Migrated to the Spatial_Engine")]
         public static IElement1D Translate(this IElement1D element1D, Vector transform)
         {
             return Spatial.Modify.Translate(element1D, transform);
@@ -46,7 +49,8 @@ namespace BH.Engine.Common
 
         /******************************************/
 
-        public static IElement0D Translate(this IElement0D element0D, Vector transform) 
+        [Deprecated("3.1", "Migrated to the Spatial_Engine")]
+        public static IElement0D Translate(this IElement0D element0D, Vector transform)
         {
             return Spatial.Modify.Translate(element0D, transform);
         }

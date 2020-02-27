@@ -21,6 +21,7 @@
  */
 
 using BH.Engine.Geometry;
+using BH.oM.Reflection.Attributes;
 using BH.oM.Dimensional;
 using BH.oM.Geometry;
 using System;
@@ -34,6 +35,7 @@ namespace BH.Engine.Common
         /****            IElement2D            ****/
         /******************************************/
 
+        [Deprecated("3.1", "Migrated to the Spatial_Engine")]
         public static double Area(this IElement2D element2D)
         {
             return Spatial.Query.Area(element2D);

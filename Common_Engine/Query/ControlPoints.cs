@@ -22,6 +22,7 @@
 
 using BH.oM.Dimensional;
 using BH.oM.Geometry;
+using BH.oM.Reflection.Attributes;
 using System.Collections.Generic;
 
 namespace BH.Engine.Common
@@ -32,6 +33,7 @@ namespace BH.Engine.Common
         /****            IElement1D            ****/
         /******************************************/
 
+        [Deprecated("3.1", "Migrated to the Spatial_Engine")]
         public static List<Point> ControlPoints(this IElement1D element1D)
         {
             return Spatial.Query.ControlPoints(element1D);
@@ -42,6 +44,7 @@ namespace BH.Engine.Common
         /****            IElement2D            ****/
         /******************************************/
 
+        [Deprecated("3.1", "Migrated to the Spatial_Engine")]
         public static List<Point> ControlPoints(this IElement2D element2D, bool externalOnly = false)
         {
             return Spatial.Query.ControlPoints(element2D, externalOnly);

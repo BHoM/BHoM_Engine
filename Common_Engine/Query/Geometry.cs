@@ -21,6 +21,7 @@
  */
 
 using BH.oM.Dimensional;
+using BH.oM.Reflection.Attributes;
 using BH.oM.Geometry;
 
 namespace BH.Engine.Common
@@ -31,6 +32,7 @@ namespace BH.Engine.Common
         /****            IElement0D            ****/
         /******************************************/
 
+        [Deprecated("3.1", "Migrated to the Spatial_Engine")]
         public static Point IGeometry(this IElement0D element0D)
         {
             return Spatial.Query.IGeometry(element0D);
@@ -41,6 +43,7 @@ namespace BH.Engine.Common
         /****            IElement1D            ****/
         /******************************************/
 
+        [Deprecated("3.1", "Migrated to the Spatial_Engine")]
         public static ICurve IGeometry(this IElement1D element1D)
         {
             return Spatial.Query.IGeometry(element1D);

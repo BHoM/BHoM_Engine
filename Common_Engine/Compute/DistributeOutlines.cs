@@ -36,6 +36,7 @@ namespace BH.Engine.Common
         /****            IElement2D            ****/
         /******************************************/
 
+        [Deprecated("3.1", "Migrated to the Spatial_Engine")]
         public static List<List<List<IElement1D>>> DistributeOutlines(this List<List<IElement1D>> outlines, bool canCutOpenings = true, double tolerance = Tolerance.Distance)
         {
             return Spatial.Compute.DistributeOutlines(outlines, canCutOpenings, tolerance);
