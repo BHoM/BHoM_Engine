@@ -47,10 +47,10 @@ namespace BH.Engine
         [Output("VennDiagram", "Venn diagram containing: objects existing exclusively in set1/set2 or their intersection.")]
         public static VennDiagram<T> HashComparing<T>(IEnumerable<T> set1, IEnumerable<T> set2, DiffConfig diffConfig = null) where T : class, IBHoMObject
         {
-            Stream streamA = BH.Engine.Diffing.Create.Stream(set1, diffConfig, "");
-            Stream streamB = BH.Engine.Diffing.Create.Stream(set2, diffConfig, "");
+            Revision revisionA = BH.Engine.Diffing.Create.Revision(set1, diffConfig, "");
+            Revision revisionB = BH.Engine.Diffing.Create.Revision(set2, diffConfig, "");
 
-            return Engine.Data.Create.VennDiagram(streamA.Objects.Cast<T>(), streamB.Objects.Cast<T>(), new HashFragmComparer<T>());
+            return Engine.Data.Create.VennDiagram(revisionA.Objects.Cast<T>(), revisionB.Objects.Cast<T>(), new HashFragmComparer<T>());
         }
     }
 }

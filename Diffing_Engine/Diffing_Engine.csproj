@@ -80,9 +80,8 @@
     <Compile Include="Compute\DiffingHash.cs" />
     <Compile Include="Convert\ToDiffingByteArray.cs" />
     <Compile Include="Create\DiffConfig.cs" />
-    <Compile Include="Create\Stream.cs" />
+    <Compile Include="Create\Revision.cs" />
     <Compile Include="Modify\SetHashFragment.cs" />
-    <Compile Include="Modify\UpdateRevision.cs" />
     <Compile Include="Query\DifferentProperties.cs" />
     <Compile Include="Query\RemoveDuplicatesByHash.cs" />
     <Compile Include="Query\GetHash.cs" />
