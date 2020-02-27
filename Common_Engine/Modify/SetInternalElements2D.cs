@@ -34,7 +34,7 @@ namespace BH.Engine.Common
 
         public static IElement2D ISetInternalElements2D(this IElement2D element2D, List<IElement2D> newElements2D)
         {
-            return Reflection.Compute.RunExtensionMethod(element2D, "SetInternalElements2D", new object[] { newElements2D }) as IElement2D;
+            return Spatial.Modify.ISetInternalElements2D(element2D, newElements2D);
         }
 
         /******************************************/

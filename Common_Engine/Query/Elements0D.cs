@@ -34,7 +34,7 @@ namespace BH.Engine.Common
 
         public static List<IElement0D> IElements0D(this IElement1D element1D)
         {
-            return Reflection.Compute.RunExtensionMethod(element1D, "Elements0D") as List<IElement0D>;
+            return Spatial.Query.IElements0D(element1D);
         }
 
         /******************************************/

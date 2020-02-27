@@ -38,7 +38,7 @@ namespace BH.Engine.Common
 
         public static BoundingBox Bounds(this IElement0D element0D)
         {
-            return Geometry.Query.Bounds(element0D.IGeometry());
+            return Spatial.Query.Bounds(element0D);
         }
 
 
@@ -48,7 +48,7 @@ namespace BH.Engine.Common
 
         public static BoundingBox Bounds(this IElement1D element1D)
         {
-            return Geometry.Query.IBounds(element1D.IGeometry());
+            return Spatial.Query.Bounds(element1D);
         }
 
 
@@ -58,16 +58,8 @@ namespace BH.Engine.Common
 
         public static BoundingBox Bounds(this IElement2D element2D)
         {
-            List<ICurve> elementCurves = element2D.ElementCurves(true);
+            return Spatial.Query.Bounds(element2D);
 
-            if (elementCurves.Count == 0)
-                return null;
-
-            BoundingBox box = Geometry.Query.IBounds(elementCurves[0]);
-            for (int i = 1; i < elementCurves.Count; i++)
-                box += Geometry.Query.IBounds(elementCurves[i]);
-
-            return box;
         }
 
 
@@ -77,23 +69,14 @@ namespace BH.Engine.Common
 
         public static BoundingBox IBounds(this IElement element)
         {
-            return Bounds(element as dynamic);
+            return Spatial.Query.IBounds(element);
         }
 
         /******************************************/
 
         public static BoundingBox IBounds(this IEnumerable<IElement> elements)
         {
-            if (elements.Count() == 0)
-                return null;
-
-            BoundingBox box = elements.First().IBounds();
-            foreach (IElement element in elements.Skip(1))
-            {
-                box += element.IBounds();
-            }
-
-            return box;
+            return Spatial.Query.IBounds(elements);
         }
 
         /******************************************/

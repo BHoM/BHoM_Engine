@@ -33,7 +33,7 @@ namespace BH.Engine.Common
 
         public static Point IGeometry(this IElement0D element0D)
         {
-            return Reflection.Compute.RunExtensionMethod(element0D, "Geometry") as Point;
+            return Spatial.Query.IGeometry(element0D);
         }
 
 
@@ -43,7 +43,7 @@ namespace BH.Engine.Common
 
         public static ICurve IGeometry(this IElement1D element1D)
         {
-            return Reflection.Compute.RunExtensionMethod(element1D, "Geometry") as ICurve;
+            return Spatial.Query.IGeometry(element1D);
         }
 
         /******************************************/
