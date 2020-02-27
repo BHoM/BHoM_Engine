@@ -36,7 +36,7 @@ namespace BH.Engine.Common
 
         public static double Length(this IElement1D element1D)
         {
-            return element1D.IGeometry().ILength();
+            return Spatial.Query.Length(element1D);
         }
 
         /******************************************/
