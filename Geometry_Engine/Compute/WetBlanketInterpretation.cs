@@ -26,6 +26,7 @@ using System.Linq;
 using BH.oM.Geometry;
 using System.ComponentModel;
 using BH.oM.Reflection.Attributes;
+using BH.oM.Quantities.Attributes;
 
 namespace BH.Engine.Geometry
 {
@@ -37,6 +38,7 @@ namespace BH.Engine.Geometry
 
         [Description("Takes a List of Polylines and creates a `squished` version with the same area at every X-location, and hence the same total area as well. Required for some calculations.")]
         [Input("pLines", "the outermost Polyline must be counter-clockwise. Clockwise ones are holes within it. Both Polylines should be on the XY-plane.")]
+        [Input("tol", "The tolerance for considering two points as one. Note: resulting points will be moved to be on a multiple of the tolerance for its x-value.", typeof(Length))]
         [Output("C", "A single Polyline oriented counter clockwise with the same area as the sum of all the polylines.")]
         public static Polyline WetBlanketInterpretation(List<Polyline> pLines, double tol = Tolerance.Distance)
         {
