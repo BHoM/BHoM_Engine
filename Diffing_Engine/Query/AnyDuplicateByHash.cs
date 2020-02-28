@@ -20,37 +20,29 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.Engine.Base;
 using BH.oM.Base;
-using BH.Engine;
-using BH.oM.Data.Collections;
-using BH.oM.Diffing;
+using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Security.Cryptography;
-using System.Reflection;
-using BH.Engine.Serialiser;
-using System.ComponentModel;
-using BH.oM.Reflection.Attributes;
-using BH.oM.Reflection;
 
 namespace BH.Engine.Diffing
 {
-    public static partial class Compute
+    public static partial class Query
     {
-        [Description("Dispatch objects in two sets into the ones exclusive to one set, the other, or both.")]
-        [Input("set1", "A previous version of a list of IBHoMObjects")]
-        [Input("set2", "A new version of a list of IBHoMObjects")]
-        [Input("diffConfig", "Sets configs such as properties to be ignored in the comparison.")]
-        [Output("VennDiagram", "Venn diagram containing: objects existing exclusively in set1/set2 or their intersection.")]
-        public static VennDiagram<T> HashComparing<T>(IEnumerable<T> set1, IEnumerable<T> set2, DiffConfig diffConfig = null) where T : class, IBHoMObject
-        {
-            IEnumerable<T> set1Cloned = Modify.PrepareForDiffing(set1);
-            IEnumerable<T> set2Cloned = Modify.PrepareForDiffing(set2);
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
 
-            return Engine.Data.Create.VennDiagram(set1Cloned, set2Cloned, new HashFragmComparer<T>());
+        [Description("Removes duplicates from a collection of objects. The comparison is made through their Diffing Hash.")]
+        [Input("objects", "Collection of objects whose duplicates have to be removed. If they don't already have an Hash assigned, it will be calculated.")]
+        public static bool AnyDuplicateByHash<T>(this IEnumerable<T> objects) where T : IBHoMObject
+        {
+            return Modify.RemoveDuplicatesByHash(objects).ToList().Count != objects.ToList().Count;
         }
     }
 }

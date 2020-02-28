@@ -35,75 +35,28 @@ namespace BH.Engine.Diffing
     public static partial class Create
     {
         /***************************************************/
-        /**** Public Methods                            ****/
-        /***************************************************/
 
-        [Description("Creates new Diffing Stream")]
-        [Input("objects", "Objects to be included in the Stream")]
-        [Input("diffConfig", "Diffing settings for this Stream. Hashes of objects contained in this stream will be computed based on these configs.")]
-        [Input("streamId", "If not specified, streamId will be a GUID")]
+        [Description("Creates new Stream Revision")]
+        [Input("objects", "Objects to be included in the Stream Revision")]
+        [Input("streamId", "Id of the Stream owning this Revision.")]
+        [Input("revisionId", "If not specified, revisionId will be an auto-generated GUID.")]
+        [Input("diffConfig", "Diffing settings for this Stream Revision. Hashes of objects contained in this stream will be computed based on these configs.")]
         [Input("comment", "Any comment to be added for this stream.")]
-        public static Revision Revision(IEnumerable<IBHoMObject> objects, DiffConfig diffConfig = null, string comment = null)
+        public static Revision Revision(IEnumerable<IBHoMObject> objects, string streamId, string revisionId = null, DiffConfig diffConfig = null, string comment = null)
         {
-            return new Revision(PrepareRevisionObjects(objects, diffConfig), diffConfig, null, null, comment);
-        }
-        
-        /***************************************************/
-
-        [Description("Creates new Diffing Stream")]
-        [Input("objects", "Objects to be included in the Stream")]
-        [Input("diffConfig", "Diffing settings for this Stream. Hashes of objects contained in this stream will be computed based on these configs.")]
-        [Input("streamId", "If not specified, streamId will be a GUID")]
-        [Input("revision", "If not specified, revision is initially set to 0")]
-        [Input("comment", "Any comment to be added for this stream.")]
-        public static Revision Revision(IEnumerable<IBHoMObject> objects, DiffConfig diffConfig = null, string streamId = null, string revision = null, string comment = null)
-        {
-            return new Revision(PrepareRevisionObjects(objects, diffConfig), diffConfig, streamId, revision, comment);
+            return new Revision(Modify.PrepareForDiffing(objects, diffConfig), streamId, diffConfig, revisionId, comment);
         }
 
 
-        [Description("Includes the given objects into a new Revision, as an update of a previous Revision.")]
+        [Description("Returns a new Revision as an update of a previous one, replacing its objects with the input objects.")]
         [Input("stream", "Stream to be updated")]
         [Input("objects", "Objects to be included in the updated Revision")]
+        [Input("newRevisionId", "If not specified, newRevisionId will be an auto-generated GUID.")]
         [Output("The new Revision containing the given objects.")]
-        public static Revision Revision(Revision previousRevision, IEnumerable<IBHoMObject> objects)
+        public static Revision Revision(Revision previousRevision, IEnumerable<IBHoMObject> objects, string newRevisionId = null)
         {
-            // Clone the current objects to preserve immutability
-            List<IBHoMObject> objs_cloned = objects.Select(obj => BH.Engine.Base.Query.DeepClone(obj)).ToList();
-
-            // Calculate and set the hash fragment
-            Modify.SetHashFragment(objs_cloned);
-
-            // Remove duplicates by hash
-            int numObjs = objs_cloned.Count();
-            objs_cloned = objs_cloned.GroupBy(obj => obj.GetHashFragment().Hash).Select(gr => gr.First()).ToList();
-
-            if (numObjs != objs_cloned.Count())
-                BH.Engine.Reflection.Compute.RecordWarning("Some Objects were duplicates (same hash) and therefore have been discarded.");
-
-            return new Revision(objs_cloned, previousRevision.RevisionDiffConfing, previousRevision.StreamId);
+            return new Revision(Modify.PrepareForDiffing(objects, previousRevision.RevisionDiffConfing), previousRevision.StreamId, previousRevision.RevisionDiffConfing, newRevisionId);
         }
-
-
-        /***************************************************/
-        /**** Private Methods                           ****/
-        /***************************************************/
-        public static List<IBHoMObject> PrepareRevisionObjects(IEnumerable<IBHoMObject> objects, DiffConfig diffConfig = null)
-        {
-            // Clone the current objects to preserve immutability
-            List<IBHoMObject> objs_cloned = objects.Select(obj => BH.Engine.Base.Query.DeepClone(obj)).ToList();
-
-            // Calculate and set the hash fragment
-            Modify.SetHashFragment(objs_cloned, diffConfig);
-
-            // Remove duplicates by hash
-            if (Query.RemoveDuplicatesByHash(objs_cloned))
-                Reflection.Compute.RecordWarning("Some Objects were duplicates (same hash) and therefore have been discarded.");
-
-            return objs_cloned;
-        }
-
-        /***************************************************/
     }
 }
 

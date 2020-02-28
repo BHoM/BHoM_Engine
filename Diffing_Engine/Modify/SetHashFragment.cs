@@ -38,13 +38,9 @@ namespace BH.Engine.Diffing
 {
     public static partial class Modify
     {
-        ///***************************************************/
-        ///**** Public Methods                            ****/
-        ///***************************************************/
-
-        [Description("Computes and sets the HashFragment for a given IBHoMObject. " +
+        [Description("Computes and sets the HashFragment for the given IBHoMObjects. " +
             "If the object already has a HashFragment, it stores the existing hash aside from the current one.")]
-        public static void SetHashFragment(IEnumerable<IBHoMObject> objs, DiffConfig diffConfig = null)
+        public static void SetHashFragment<T>(IEnumerable<T> objs, DiffConfig diffConfig = null) where T : IBHoMObject
         {
             // Set configurations if diffConfig is null
             diffConfig = diffConfig == null ? new DiffConfig() : diffConfig;

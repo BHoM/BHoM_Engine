@@ -44,18 +44,34 @@ namespace BH.Engine.Diffing
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns a Delta object with the differences between the Revision objects and the provided object list.")]
+        [Description("Returns a Diff object with the differences between the Revision objects and the provided object list.")]
         [Input("previousRevision", "A previous Revision")]
         [Input("currentRevision", "A new Revision")]
         [Input("diffConfig", "Sets configs such as properties to be ignored in the diffing, or enable/disable property-by-property diffing.\nBy default it takes the diffConfig property of the Revision. This input can be used to override it.")]
-        public static Diff Diffing(Revision previousRevision, Revision currentRevision, DiffConfig diffConfig = null)
+        public static Delta Diffing(Revision previousRevision, Revision currentRevision, DiffConfig diffConfig = null, string comment = null)
+        {
+            Diff diff = Diffing(previousRevision.Objects, currentRevision.Objects, diffConfig);
+
+            long timestamp = DateTime.UtcNow.Ticks;
+            string author = Environment.UserDomainName + "/" + Environment.UserName;
+
+            return new Delta(previousRevision.StreamId, diff, previousRevision.RevisionId, currentRevision.RevisionId, timestamp, author, comment);
+        }
+
+        /***************************************************/
+
+        [Description("Dispatch objects in two sets into the ones exclusive to one set, the other, or both.")]
+        [Input("setA", "A set of object representing a previous revision")]
+        [Input("setB", "A set of object representing a new Revision")]
+        [Input("diffConfig", "Sets configs such as properties to be ignored in the diffing, or enable/disable property-by-property diffing.")]
+        public static Diff Diffing(IEnumerable<IBHoMObject> setA, IEnumerable<IBHoMObject> setB, DiffConfig diffConfig = null, bool saveHashInTags = true)
         {
             // Set configurations if diffConfig is null
             diffConfig = diffConfig == null ? new DiffConfig() : diffConfig;
 
             // Take the Revision's objects
-            List<IBHoMObject> currentObjs = currentRevision.Objects.ToList();
-            List<IBHoMObject> readObjs = previousRevision.Objects.ToList();
+            List<IBHoMObject> currentObjs = setB.ToList();
+            List<IBHoMObject> readObjs = setA.ToList();
 
             // Make dictionary with object hashes to speed up the next lookups
             Dictionary<string, IBHoMObject> readObjs_dict = readObjs.ToDictionary(obj => obj.GetHashFragment().Hash, obj => obj);
@@ -117,27 +133,8 @@ namespace BH.Engine.Diffing
             toBeDeleted = readObjs_dict.Keys.Except(CurrentObjs_withPreviousHash_dict.Keys)
                 .Where(k => readObjs_dict.ContainsKey(k)).Select(k => readObjs_dict[k]).ToList();
 
-            return new Diff(toBeCreated, toBeDeleted, toBeUpdated, objModifiedProps, unChanged);
-
+            return new Diff(toBeCreated, toBeDeleted, toBeUpdated, diffConfig, objModifiedProps, unChanged);
         }
-
-
-        /***************************************************/
-
-
-        [Description("Dispatch objects in two sets into the ones exclusive to one set, the other, or both.")]
-        [Input("setA", "A set of object representing a Previous revision")]
-        [Input("setB", "A set of object representing a new Revision")]
-        [Input("diffConfig", "Sets configs such as properties to be ignored in the diffing, or enable/disable property-by-property diffing.")]
-        public static Diff Diffing(IEnumerable<IBHoMObject> setA, IEnumerable<IBHoMObject> setB, DiffConfig diffConfig = null, bool saveHashInTags = true)
-        {
-            Revision RevisionA = BH.Engine.Diffing.Create.Revision(setA, diffConfig, "");
-            Revision RevisionB = BH.Engine.Diffing.Create.Revision(setB, diffConfig, "");
-
-            return Diffing(RevisionA, RevisionB);
-        }
-
-
     }
 }
 
