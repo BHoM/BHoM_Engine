@@ -300,13 +300,13 @@ namespace BH.Engine.Geometry
                 return null;
             }
 
-            if (botFlangeWidth <= webThickness + 2 * Math.Sqrt(2) * weldSize)
+            if (botFlangeWidth < webThickness + 2 * Math.Sqrt(2) * weldSize)
             {
                 InvalidRatioError("botFlangeWidth", "webThickness and weldSize");
                 return null;
             }
 
-            if (topFlangeWidth <= webThickness + 2 * Math.Sqrt(2) * weldSize)
+            if (topFlangeWidth < webThickness + 2 * Math.Sqrt(2) * weldSize)
             {
                 InvalidRatioError("topFlangeWidth", "webThickness and weldSize");
                 return null;
