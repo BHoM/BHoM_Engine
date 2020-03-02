@@ -117,18 +117,24 @@ namespace BH.Engine.Diffing
             return new Diff(newObjs, oldObjs, modifiedObjs, diffConfig, objModifiedProps, unChanged);
         }
 
+
+        [Description("Dispatch objects in two sets into the ones exclusive to one set, the other, or both.")]
+        [Input("previousObjects", "A set of object representing a previous revision")]
+        [Input("currentObjects", "A set of object representing a new Revision")]
+        [Input("diffConfig", "Sets configs such as properties to be ignored in the diffing, or enable/disable property-by-property diffing.")]
         public static Diff Diffing(IEnumerable<object> previousObjects, IEnumerable<object> currentObjects, DiffConfig diffConfig = null)
         {
+            // Dispatch the objects in BHoMObjects and generic objects.
             List<object> prevObjs_nonBHoM = new List<object>();
-            List<IBHoMObject> prevObjs_BHoM = new List<IBHoMObject>();
+            List<object> prevObjs_BHoM = new List<object>();
 
             List<object> currObjs_nonBHoM = new List<object>();
-            List<IBHoMObject> currObjs_BHoM = new List<IBHoMObject>();
+            List<object> currObjs_BHoM = new List<object>();
 
             foreach (var obj in previousObjects)
             {
                 if (typeof(IBHoMObject).IsAssignableFrom(obj.GetType()))
-                    prevObjs_BHoM.Add((IBHoMObject)obj);
+                    prevObjs_BHoM.Add(obj);
                 else
                     prevObjs_nonBHoM.Add(obj);
             }
@@ -136,43 +142,32 @@ namespace BH.Engine.Diffing
             foreach (var obj in currentObjects)
             {
                 if (typeof(IBHoMObject).IsAssignableFrom(obj.GetType()))
-                    currObjs_BHoM.Add((IBHoMObject)obj);
+                    currObjs_BHoM.Add(obj);
                 else
                     currObjs_nonBHoM.Add(obj);
             }
 
-            Diff diff = Diffing(prevObjs_BHoM, currObjs_BHoM, diffConfig);
+            // Compute the specific Diffing for the BHoMObjects.
+            Diff diff = Compute.Diffing(prevObjs_BHoM, currObjs_BHoM, diffConfig);
 
-            //Hash<string> prevObjs_nonBHoM_hashes = new HashSet<string>(prevObjs_nonBHoM.Select(o => o.DiffingHash(diffConfig)));
-            //HashSet<string> currObjs_nonBHoM_hashes = new HashSet<string>(currObjs_nonBHoM.Select(o => o.DiffingHash(diffConfig)));
+            // Compute the generic Diffing for the other objects.
+            // This is left to the VennDiagram with a HashComparer (specifically, this doesn't use the HashFragment).
+            VennDiagram<object> vd = Engine.Data.Create.VennDiagram(prevObjs_nonBHoM, currObjs_nonBHoM, new DiffingHashComparer<object>());
 
-            Hashtable prevObjs_nonBHoM_hashes = new Hashtable();
-            prevObjs_nonBHoM.ForEach(o => prevObjs_nonBHoM_hashes[o.DiffingHash(diffConfig)] = o);
+            // Concatenate the results of the two diffing operations.
+            List<object> allPrevObjs = new List<object>();
+            List<object> allCurrObjs = new List<object>();
 
-            Hashtable currObjs_nonBHoM_hashes = new Hashtable();
-            currObjs_nonBHoM.ForEach(o => currObjs_nonBHoM_hashes[o.DiffingHash(diffConfig)] = o);
+            allPrevObjs.AddRange(diff.NewObjects);
+            allPrevObjs.AddRange(vd.OnlySet1);
 
+            allPrevObjs.AddRange(diff.OldObjects);
+            allPrevObjs.AddRange(vd.OnlySet2);
 
-            //for (int i = 0; i < currObjs_nonBHoM.Count; i++)
-            //{
-            //    prevObjs_nonBHoM_hashes.Add();
+            // Create the final, actual diff.
+            Diff finalDiff = new Diff(allCurrObjs, allPrevObjs, diff.ModifiedObjects, diffConfig, diff.ModifiedPropsPerObject, diff.UnchangedObjects);
 
-            //    for (int j = 0; j < prevObjs_nonBHoM_hashes.Count; i++)
-            //    {
-            //        if ()
-            //    }
-            //}
-
-
-            //foreach (var obj in currObjs_nonBHoM)
-            //{
-            //    string objHash = Compute.DiffingHash(obj, diffConfig);
-
-            //    if ()
-
-
-            return null;
-
+            return finalDiff;
         }
 
     }
