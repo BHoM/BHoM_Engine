@@ -345,7 +345,7 @@ namespace BH.Engine.Geometry
                 return null;
             }
 
-            if (height <= 0 || width <= 0 || cornerRadius< 0)
+            if (height <= 0 || width <= 0 || cornerRadius < 0)
             {
                 Engine.Reflection.Compute.RecordError("Input length less or equal to 0");
                 return null;
