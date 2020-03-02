@@ -79,6 +79,7 @@
     <Compile Include="Compute\Diffing.cs" />
     <Compile Include="Compute\DiffingHash.cs" />
     <Compile Include="Convert\ToDiffingByteArray.cs" />
+    <Compile Include="Create\Delta.cs" />
     <Compile Include="Create\DiffConfig.cs" />
     <Compile Include="Create\Revision.cs" />
     <Compile Include="Modify\RemoveDuplicatesByHash.cs" />

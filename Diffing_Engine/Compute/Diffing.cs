@@ -35,51 +35,32 @@ using BH.Engine.Serialiser;
 using System.ComponentModel;
 using BH.oM.Reflection.Attributes;
 using BH.oM.Reflection;
+using System.Collections;
 
 namespace BH.Engine.Diffing
 {
     public static partial class Compute
     {
-        /***************************************************/
-        /**** Public Methods                            ****/
-        /***************************************************/
-
-        [Description("Returns a Diff object with the differences between the Revision objects and the provided object list.")]
-        [Input("previousRevision", "A previous Revision")]
-        [Input("currentRevision", "A new Revision")]
-        [Input("diffConfig", "Sets configs such as properties to be ignored in the diffing, or enable/disable property-by-property diffing.\nBy default it takes the diffConfig property of the Revision. This input can be used to override it.")]
-        public static Delta Diffing(Revision previousRevision, Revision currentRevision, DiffConfig diffConfig = null, string comment = null)
-        {
-            Diff diff = Diffing(previousRevision.Objects, currentRevision.Objects, diffConfig);
-
-            long timestamp = DateTime.UtcNow.Ticks;
-            string author = Environment.UserDomainName + "/" + Environment.UserName;
-
-            return new Delta(previousRevision.StreamId, diff, previousRevision.RevisionId, currentRevision.RevisionId, timestamp, author, comment);
-        }
-
-        /***************************************************/
-
         [Description("Dispatch objects in two sets into the ones exclusive to one set, the other, or both.")]
-        [Input("setA", "A set of object representing a previous revision")]
-        [Input("setB", "A set of object representing a new Revision")]
+        [Input("previousObjects", "A set of object representing a previous revision")]
+        [Input("currentObjects", "A set of object representing a new Revision")]
         [Input("diffConfig", "Sets configs such as properties to be ignored in the diffing, or enable/disable property-by-property diffing.")]
-        public static Diff Diffing(IEnumerable<IBHoMObject> setA, IEnumerable<IBHoMObject> setB, DiffConfig diffConfig = null, bool saveHashInTags = true)
+        public static Diff Diffing(IEnumerable<IBHoMObject> previousObjects, IEnumerable<IBHoMObject> currentObjects, DiffConfig diffConfig = null)
         {
             // Set configurations if diffConfig is null
             diffConfig = diffConfig == null ? new DiffConfig() : diffConfig;
 
             // Take the Revision's objects
-            List<IBHoMObject> currentObjs = setB.ToList();
-            List<IBHoMObject> readObjs = setA.ToList();
+            List<IBHoMObject> currentObjs = currentObjects.ToList();
+            List<IBHoMObject> readObjs = previousObjects.ToList();
 
             // Make dictionary with object hashes to speed up the next lookups
             Dictionary<string, IBHoMObject> readObjs_dict = readObjs.ToDictionary(obj => obj.GetHashFragment().Hash, obj => obj);
 
             // Dispatch the objects: new, modified or old
-            List<IBHoMObject> toBeCreated = new List<IBHoMObject>();
-            List<IBHoMObject> toBeUpdated = new List<IBHoMObject>();
-            List<IBHoMObject> toBeDeleted = new List<IBHoMObject>();
+            List<IBHoMObject> newObjs = new List<IBHoMObject>();
+            List<IBHoMObject> modifiedObjs = new List<IBHoMObject>();
+            List<IBHoMObject> oldObjs = new List<IBHoMObject>();
             List<IBHoMObject> unChanged = new List<IBHoMObject>();
 
             var objModifiedProps = new Dictionary<string, Dictionary<string, Tuple<object, object>>>();
@@ -90,7 +71,7 @@ namespace BH.Engine.Diffing
 
                 if (hashFragm?.PreviousHash == null)
                 {
-                    toBeCreated.Add(obj); // It's a new object
+                    newObjs.Add(obj); // It's a new object
                 }
 
                 else if (hashFragm.PreviousHash == hashFragm.Hash)
@@ -101,7 +82,7 @@ namespace BH.Engine.Diffing
 
                 else if (hashFragm.PreviousHash != hashFragm.Hash)
                 {
-                    toBeUpdated.Add(obj); // It's been modified
+                    modifiedObjs.Add(obj); // It's been modified
 
                     if (diffConfig.EnablePropertyDiffing)
                     {
@@ -130,11 +111,70 @@ namespace BH.Engine.Diffing
                   .Where(obj => obj.GetHashFragment().PreviousHash != null)
                   .ToDictionary(obj => obj.GetHashFragment().PreviousHash, obj => obj);
 
-            toBeDeleted = readObjs_dict.Keys.Except(CurrentObjs_withPreviousHash_dict.Keys)
+            oldObjs = readObjs_dict.Keys.Except(CurrentObjs_withPreviousHash_dict.Keys)
                 .Where(k => readObjs_dict.ContainsKey(k)).Select(k => readObjs_dict[k]).ToList();
 
-            return new Diff(toBeCreated, toBeDeleted, toBeUpdated, diffConfig, objModifiedProps, unChanged);
+            return new Diff(newObjs, oldObjs, modifiedObjs, diffConfig, objModifiedProps, unChanged);
         }
+
+        public static Diff Diffing(IEnumerable<object> previousObjects, IEnumerable<object> currentObjects, DiffConfig diffConfig = null)
+        {
+            List<object> prevObjs_nonBHoM = new List<object>();
+            List<IBHoMObject> prevObjs_BHoM = new List<IBHoMObject>();
+
+            List<object> currObjs_nonBHoM = new List<object>();
+            List<IBHoMObject> currObjs_BHoM = new List<IBHoMObject>();
+
+            foreach (var obj in previousObjects)
+            {
+                if (typeof(IBHoMObject).IsAssignableFrom(obj.GetType()))
+                    prevObjs_BHoM.Add((IBHoMObject)obj);
+                else
+                    prevObjs_nonBHoM.Add(obj);
+            }
+
+            foreach (var obj in currentObjects)
+            {
+                if (typeof(IBHoMObject).IsAssignableFrom(obj.GetType()))
+                    currObjs_BHoM.Add((IBHoMObject)obj);
+                else
+                    currObjs_nonBHoM.Add(obj);
+            }
+
+            Diff diff = Diffing(prevObjs_BHoM, currObjs_BHoM, diffConfig);
+
+            //Hash<string> prevObjs_nonBHoM_hashes = new HashSet<string>(prevObjs_nonBHoM.Select(o => o.DiffingHash(diffConfig)));
+            //HashSet<string> currObjs_nonBHoM_hashes = new HashSet<string>(currObjs_nonBHoM.Select(o => o.DiffingHash(diffConfig)));
+
+            Hashtable prevObjs_nonBHoM_hashes = new Hashtable();
+            prevObjs_nonBHoM.ForEach(o => prevObjs_nonBHoM_hashes[o.DiffingHash(diffConfig)] = o);
+
+            Hashtable currObjs_nonBHoM_hashes = new Hashtable();
+            currObjs_nonBHoM.ForEach(o => currObjs_nonBHoM_hashes[o.DiffingHash(diffConfig)] = o);
+
+
+            //for (int i = 0; i < currObjs_nonBHoM.Count; i++)
+            //{
+            //    prevObjs_nonBHoM_hashes.Add();
+
+            //    for (int j = 0; j < prevObjs_nonBHoM_hashes.Count; i++)
+            //    {
+            //        if ()
+            //    }
+            //}
+
+
+            //foreach (var obj in currObjs_nonBHoM)
+            //{
+            //    string objHash = Compute.DiffingHash(obj, diffConfig);
+
+            //    if ()
+
+
+            return null;
+
+        }
+
     }
 }
 
