@@ -85,11 +85,11 @@
     <Compile Include="Query\AvalueAnalysis.cs" />
     <Compile Include="Create\AvalueSettings.cs" />
     <Compile Include="Create\EyePositionParameters.cs" />
-    <Compile Include="Create\ViewConeType.cs" />
+    <Compile Include="Create\ViewConeEnum\ViewConeType.cs" />
     <Compile Include="Query\CvalueAnalysis.cs" />
     <Compile Include="Create\CvalueSettings.cs" />
-    <Compile Include="Create\CvalueFocalMethod.cs" />
-    <Compile Include="Create\EvalueAnalysis.cs" />
+    <Compile Include="Create\CvalueFocalMethodEnum\CvalueFocalMethod.cs" />
+    <Compile Include="Query\EvalueAnalysis.cs" />
     <Compile Include="Create\EvalueSettings.cs" />
     <Compile Include="Create\EvalueViewType.cs" />
     <Compile Include="Create\ViewCone.cs" />
