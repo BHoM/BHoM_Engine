@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -39,28 +39,28 @@ namespace BH.Engine.Physical
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns a Polyline representation of a physical object (e.g. wall or window)")]
+        [Description("Returns the Internal Polyline representation of a physical object (e.g. wall or window)")]
         [Input("physicalObject", "A physical object to query the polyline representation of")]
         [Output("polyline", "BHoM Geometry Polyline")]
-        public static List<Polyline> Polyline(IPhysical physicalObject)
+        public static List<Polyline> InternalPolyline(IPhysical physicalObject)
         {
-            return Polyline(physicalObject as dynamic);
+            return InternalPolyline(physicalObject as dynamic);
         }
 
-        [Description("Returns a Polyline representation of a physical object that represents a solid impassable object (e.g. wall or roof)")]
+        [Description("Returns the Internal Polyline representation of a physical object that represents a solid impassable object (e.g. wall or roof)")]
         [Input("physicalObject", "A physical object to query the polyline representation of")]
         [Output("polyline", "BHoM Geometry Polyline")]
-        public static List<Polyline> Polyline(BH.oM.Physical.Elements.ISurface physicalObject)
+        public static List<Polyline> InternalPolyline(BH.oM.Physical.Elements.ISurface physicalObject)
         {
-            return physicalObject.Location.Edges().Select(x => x.ICollapseToPolyline(Tolerance.Angle)).ToList();
+            return physicalObject.Location.IInternalEdges().Select(x => x.ICollapseToPolyline(Tolerance.Angle)).ToList();
         }
 
-        [Description("Returns a Polyline representation of a physical object that represents an opening (e.g. window or door)")]
+        [Description("Returns the Internal Polyline representation of a physical object that represents an opening (e.g. window or door)")]
         [Input("physicalOpening", "A physical opening to query the polyline representation of")]
         [Output("polyline", "BHoM Geometry Polyline")]
-        public static List<Polyline> Polyline(IOpening physicalOpening)
+        public static List<Polyline> InternalPolyline(IOpening physicalOpening)
         {
-            return physicalOpening.Location.Edges().Select(x => x.ICollapseToPolyline(Tolerance.Angle)).ToList();
+            return physicalOpening.Location.IInternalEdges().Select(x => x.ICollapseToPolyline(Tolerance.Angle)).ToList();
         }
     }
 }
