@@ -67,9 +67,9 @@
     <Compile Include="Compute\DistributeOutlines.cs" />
     <Compile Include="Create\ConstructionPhase.cs" />
     <Compile Include="Create\Material.cs" />
-    <Compile Include="Create\NewElement0D.cs" />
-    <Compile Include="Create\NewElement1D.cs" />
-    <Compile Include="Create\NewInternalElement2D.cs" />
+    <Compile Include="Create\IElement0D\NewElement0D.cs" />
+    <Compile Include="Create\IElement1D\NewElement1D.cs" />
+    <Compile Include="Create\IElement2D\NewInternalElement2D.cs" />
     <Compile Include="Modify\Translate.cs" />
     <Compile Include="Modify\SetElements0D.cs" />
     <Compile Include="Modify\SetGeometry.cs" />
