@@ -56,7 +56,7 @@ namespace BH.Engine.Physical
         }
 
         [Description("Returns the External Polyline representation of a physical object that represents an opening (e.g. window or door)")]
-        [Input("physicalObject", "A physical object to query the polyline representation of")]
+        [Input("physicalOpening", "A physical opening to query the polyline representation of")]
         [Output("polyline", "BHoM Geometry Polyline")]
         public static List<Polyline> ExternalPolyline(IOpening physicalOpening)
         {
@@ -80,7 +80,7 @@ namespace BH.Engine.Physical
         }
 
         [Description("Returns the Internal Polyline representation of a physical object that represents an opening (e.g. window or door)")]
-        [Input("physicalObject", "A physical object to query the polyline representation of")]
+        [Input("physicalOpening", "A physical opening to query the polyline representation of")]
         [Output("polyline", "BHoM Geometry Polyline")]
         public static List<Polyline> InternalPolyline(IOpening physicalOpening)
         {
@@ -104,7 +104,7 @@ namespace BH.Engine.Physical
         }
 
         [Description("Returns a Polyline representation of a physical object that represents an opening (e.g. window or door)")]
-        [Input("physicalObject", "A physical object to query the polyline representation of")]
+        [Input("physicalOpening", "A physical opening to query the polyline representation of")]
         [Output("polyline", "BHoM Geometry Polyline")]
         public static List<Polyline> Polyline(IOpening physicalOpening)
         {
