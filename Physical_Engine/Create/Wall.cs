@@ -82,7 +82,6 @@ namespace BH.Engine.Physical
         [Input("line", "Base line of the wall")]
         [Input("height", "Height of the wall")]
         [Input("construction", "Construction representing the thickness and materiality of the Wall")]
-        [Input("openings", "Openings of the Wall. Could be simple voids or more detailed obejcts")]
         [Input("offset", "Represents the positioning of the construction in relation to the location surface of the Wall")]
         [Input("name", "The name of the wall, default empty string")]
         [Output("Wall", "The created physical Wall")]

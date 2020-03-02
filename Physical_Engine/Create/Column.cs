@@ -48,7 +48,7 @@ namespace BH.Engine.Physical
         /***************************************************/
 
         [Description("Creates a physical Column element. To generate elements compatible with structural packages, have a look at the Bar class")]
-        [Input("location", "The centre line geometry of the Column")]
+        [Input("basePoint", "The basePoint geometry of the Column")]
         [Input("property", "The property of the column, containing its profile, orientation and materiality")]
         [Input("name", "The name of the column, default empty string")]
         [Output("Column", "The created physical column")]
