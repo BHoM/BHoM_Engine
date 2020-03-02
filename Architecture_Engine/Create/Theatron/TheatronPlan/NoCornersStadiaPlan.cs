@@ -36,14 +36,14 @@ namespace BH.Engine.Architecture.Theatron
         public static TheatronPlan NoCornersPlan (StadiaParameters parameters)
         {
             TheatronPlan plan = new TheatronPlan();
-            noCornerPlanSetUp(ref plan, parameters.PitchLength,parameters.PitchWidth, parameters.EndBound, parameters.StructBayWidth, parameters.SideBound);
+            NoCornerPlanSetUp(ref plan, parameters.PitchLength,parameters.PitchWidth, parameters.EndBound, parameters.StructBayWidth, parameters.SideBound);
             return plan;
         }
         
         /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
-        private static void noCornerPlanSetUp(ref TheatronPlan plan,double length,double width, double endBound, double structBayW, double sideBound)
+        private static void NoCornerPlanSetUp(ref TheatronPlan plan,double length,double width, double endBound, double structBayW, double sideBound)
         {
             int nSideBays = (int)(Math.Floor(((length + endBound) / 2) / structBayW) * 2);
             int nEndBays = (int)(Math.Floor(((width + sideBound) / 2) / structBayW) * 2);

@@ -49,7 +49,7 @@ namespace BH.Engine.Architecture.Theatron
                 FocalCurve = focalPolyline,
             };
             planGeometry.SectionOrigins.ForEach(x => planGeometry.StructBayType.Add(BayType.Undefined));
-            setPlanes(ref planGeometry);
+            SetPlanes(ref planGeometry);
             return planGeometry;
 
         }
@@ -81,7 +81,7 @@ namespace BH.Engine.Architecture.Theatron
             }
             planGeometry.ActivityArea = parameters.ActivityArea;
             planGeometry.FocalCurve = planGeometry.ActivityArea.PlayingArea;
-            setPlanes(ref planGeometry);
+            SetPlanes(ref planGeometry);
             
             return planGeometry;
 
@@ -90,15 +90,15 @@ namespace BH.Engine.Architecture.Theatron
         /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
-        private static void setPlanes(ref TheatronPlan planGeometry)
+        private static void SetPlanes(ref TheatronPlan planGeometry)
         {
-            planGeometry.TheatronFront = setFront(planGeometry.SectionOrigins);
-            planGeometry.VomitoryOrigins = setVomitories(planGeometry.SectionOrigins);
-            planGeometry.CombinedOrigins = combinedPlanes(planGeometry.SectionOrigins, planGeometry.VomitoryOrigins);
-            if(planGeometry.FocalCurve!=null)findClosestSection(ref planGeometry);
+            planGeometry.TheatronFront = SetFront(planGeometry.SectionOrigins);
+            planGeometry.VomitoryOrigins = SetVomitories(planGeometry.SectionOrigins);
+            planGeometry.CombinedOrigins = CombinedPlanes(planGeometry.SectionOrigins, planGeometry.VomitoryOrigins);
+            if(planGeometry.FocalCurve!=null)FindClosestSection(ref planGeometry);
             
         }
-        private static List<ProfileOrigin> setVomitories(List<ProfileOrigin> sections)
+        private static List<ProfileOrigin> SetVomitories(List<ProfileOrigin> sections)
         {
             List<ProfileOrigin> vomitoryOrigins = new List<ProfileOrigin>();
             double deltaX, deltaY, x, y;
@@ -128,7 +128,7 @@ namespace BH.Engine.Architecture.Theatron
             return vomitoryOrigins;
         }
         /***************************************************/
-        private static List<ProfileOrigin> combinedPlanes(List<ProfileOrigin> sections, List<ProfileOrigin> vomitories)
+        private static List<ProfileOrigin> CombinedPlanes(List<ProfileOrigin> sections, List<ProfileOrigin> vomitories)
         {
             List<ProfileOrigin> combined = new List<ProfileOrigin>();
             for (int i = 0; i < sections.Count-1; i++)
@@ -140,7 +140,7 @@ namespace BH.Engine.Architecture.Theatron
             return combined;
         }
         /***************************************************/
-        private static void findClosestSection(ref TheatronPlan plan)
+        private static void FindClosestSection(ref TheatronPlan plan)
         {
             //this needs to be implmented on ICurve as the focal curve
             double shortestDist = double.PositiveInfinity;
@@ -165,7 +165,7 @@ namespace BH.Engine.Architecture.Theatron
 
         }
         /***************************************************/
-        private static Polyline setFront(List<ProfileOrigin> sections)
+        private static Polyline SetFront(List<ProfileOrigin> sections)
         {
             List<Point> pts = sections.Select(item => item.Origin).ToList();
             
