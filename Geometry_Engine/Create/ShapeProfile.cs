@@ -436,13 +436,13 @@ namespace BH.Engine.Geometry
 
         public static TubeProfile TubeProfile(double diameter, double thickness)
         {
-            if (thickness >= diameter/2)
+            if (thickness >= diameter / 2)
             {
                 InvalidRatioError("diameter", "thickness");
                 return null;
             }
 
-            if (diameter<=0 || thickness<=0)
+            if (diameter <= 0 || thickness <= 0)
             {
                 Engine.Reflection.Compute.RecordError("Input length less or equal to 0");
                 return null;
