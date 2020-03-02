@@ -294,7 +294,7 @@ namespace BH.Engine.Geometry
 
         public static FabricatedISectionProfile FabricatedISectionProfile(double height, double topFlangeWidth, double botFlangeWidth, double webThickness, double topFlangeThickness, double botFlangeThickness, double weldSize)
         {
-            if (height <= topFlangeThickness + botFlangeThickness + 2 * Math.Sqrt(2) * weldSize)
+            if (height < topFlangeThickness + botFlangeThickness + 2 * Math.Sqrt(2) * weldSize)
             {
                 InvalidRatioError("height","topFlangeThickness, botFlangeThickness and weldSize");
                 return null;
