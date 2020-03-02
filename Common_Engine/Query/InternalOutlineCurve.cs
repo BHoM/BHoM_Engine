@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -33,16 +33,9 @@ namespace BH.Engine.Common
         /****            IElement2D            ****/
         /******************************************/
 
-        public static PolyCurve IOutlineCurve(this IElement2D element2D)
+        public static List<PolyCurve> IInternalOutlineCurves(this IElement2D element2D)
         {
-            return new PolyCurve { Curves = element2D.IOutlineElements1D().Select(e => e.IGeometry()).ToList() };
-        }
-
-        /******************************************/
-
-        public static PolyCurve IOutlineCurve(this List<IElement1D> elements1D)
-        {
-            return new PolyCurve { Curves = elements1D.Select(e => e.IGeometry()).ToList() };
+            return element2D.IInternalElements2D().Select(x => x.IOutlineCurve()).ToList();
         }
 
         /******************************************/
