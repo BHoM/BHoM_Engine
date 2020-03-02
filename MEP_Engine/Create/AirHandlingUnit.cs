@@ -51,7 +51,7 @@ namespace BH.Engine.MEP
         [Input("totalOutdoorAirFlowExternalStaticPressure", "Default 0")]
         [Input("totalReliefAirFlow", "Default 0")]
         [Input("totalReliefExternalStaticPressure", "Default 0")]
-        [Input("supplyAirEcoomiser", "Default 0")]
+        [Input("supplyAirEconomiser", "Default 0")]
         [Input("waterEconomiser", "Default 0")]
         [Input("parts", "A collection of MEP Parts which are housed by the air handling unit, default null")]
         [Output("airHandlingUnit", "An MEP Air Handling Unit")]
