@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -35,13 +35,13 @@ namespace BH.Engine.Base
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Filters a list of objects by a type. Any objects that is assignable from the provided type will be returned.")]
-        [Input("list", "The list of elements to filter.")]
-        [Input("type", "Type to filter by.")]
-        [Output("List", "Filtered list containing only objects assignable from the provided type.")]
-        public static List<object> FilterByType(this IEnumerable<object> list, Type type)
+        [Description("Returns a collection of objects which are of the provided object type.")]
+        [Input("objects", "A collection of generic BHoM objects.")]
+        [Input("type", "The type of object to be queried and returned.")]
+        [Output("bhomObjects", "A collection of generic BHoM objects matching the provided type.")]
+        public static List<IBHoMObject> ObjectsByType(this List<IBHoMObject> objects, Type type)
         {
-            return list.Where(x => x.GetType().IsAssignableFrom(type)).ToList();
+            return objects.Where(x => x.GetType() == type).ToList();
         }
     }
 }

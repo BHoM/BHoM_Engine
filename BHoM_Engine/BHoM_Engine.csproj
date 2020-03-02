@@ -79,7 +79,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Compute\ExecutionSpeed.cs" />
     <Compile Include="Query\GroupByType.cs" />
+    <Compile Include="Query\ObjectsByType.cs" />
     <Compile Include="Query\ShallowClone.cs" />
+    <Compile Include="Query\TryGetValue.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Convert\" />

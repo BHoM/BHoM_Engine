@@ -51,23 +51,5 @@ namespace BH.Engine.Base
 
             return (T)System.Convert.ChangeType(fragment, fragmentType);
         }
-
-        public static bool TryGetValue(this FragmentSet fragmentSet, Type fragmentType, out IFragment fragment)
-        {
-            if (fragmentType == null)
-                throw new ArgumentNullException($"Passed fragment type is null.");
-
-            if (!typeof(IFragment).IsAssignableFrom(fragmentType))
-                throw new ArgumentException($"Passed type {fragmentType} is not an IFragment.");
-
-            if (fragmentSet != null && fragmentSet.Contains(fragmentType))
-            {
-                fragment = fragmentSet[fragmentType];
-                return true;
-            }
-
-            fragment = default(IFragment);
-            return false;
-        }
     }
 }
