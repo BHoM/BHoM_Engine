@@ -133,8 +133,6 @@
     <Compile Include="Create\Elements\RigidLink.cs" />
     <Compile Include="Create\Framing\FramingElement.cs" />
     <Compile Include="Create\Elements\Panel.cs" />
-    <Compile Include="Create\Span.cs" />
-    <Compile Include="Create\StructuralLayout.cs" />
     <Compile Include="Create\Elements\Node.cs" />
     <Compile Include="Create\Elements\Bar.cs" />
     <Compile Include="Create\SectionProperties\ConcreteSection.cs" />
