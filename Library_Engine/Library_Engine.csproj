@@ -60,10 +60,17 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Query\AllLibraryPathNames.cs" />
+    <Compile Include="Query\Datasets.cs" />
     <Compile Include="Query\Libraries.cs" />
+    <Compile Include="Query\LibraryNames.cs" />
+    <Compile Include="Query\LibraryTree.cs" />
     <Compile Include="Query\Names.cs" />
     <Compile Include="Query\Match.cs" />
+    <Compile Include="Query\PartialMatch.cs" />
+    <Compile Include="Query\RefreshLibraries.cs" />
     <Compile Include="Query\Source.cs" />
+    <Compile Include="Query\StringMatch.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Data_Engine\Data_Engine.csproj">

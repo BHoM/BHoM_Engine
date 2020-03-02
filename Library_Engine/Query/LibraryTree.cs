@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -22,11 +22,14 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel;
 using BH.oM.Base;
-using BH.Engine.Reflection;
+using System.IO;
+using System.Linq;
+using BH.oM.Data.Collections;
+using BH.Engine.Data;
+using BH.oM.Data.Library;
+using BH.oM.Reflection.Attributes;
 
 namespace BH.Engine.Library
 {
@@ -36,27 +39,14 @@ namespace BH.Engine.Library
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static IBHoMObject Match(string libraryName, string objectName, bool removeWhiteSpace = true, bool ignoreCase = true)
+        public static Tree<string> LibraryTree()
         {
-            objectName = removeWhiteSpace ? objectName.Replace(" ", "") : objectName;
-            objectName = ignoreCase ? objectName.ToLower() : objectName;
-
-            Func<IBHoMObject, bool> conditionalMatch = delegate (IBHoMObject x)
+            if (m_dbTree == null || m_dbTree.Count() == 0 || m_dbTree.Children.Count == 0)
             {
-                string name = x.Name;
-                name = removeWhiteSpace ? name.Replace(" ", "") : name;
-                name = ignoreCase ? name.ToLower() : name;
-                return name == objectName;
-            };
-
-            return Library(libraryName).Where(conditionalMatch).FirstOrDefault();
-        }
-
-        /***************************************************/
-
-        public static List<IBHoMObject> Match(string libraryName, string propertyName, string value)
-        {
-            return Library(libraryName).StringMatch(propertyName, value);
+                List<string> paths = LibraryStrings().Keys.ToList();
+                m_dbTree = Data.Create.Tree(paths, paths.Select(x => x.Split('\\').ToList()).ToList(), "Select a data set").ShortenBranches();
+            }
+            return m_dbTree;
         }
     }
 }

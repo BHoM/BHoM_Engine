@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -36,28 +36,13 @@ namespace BH.Engine.Library
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static IBHoMObject Match(string libraryName, string objectName, bool removeWhiteSpace = true, bool ignoreCase = true)
+        //TODO: Move this extension method to somewhere else. Reflection_Engine/BHoM_Engine
+        public static List<IBHoMObject> StringMatch(this List<IBHoMObject> objects, string propertyName, string value)
         {
-            objectName = removeWhiteSpace ? objectName.Replace(" ", "") : objectName;
-            objectName = ignoreCase ? objectName.ToLower() : objectName;
-
-            Func<IBHoMObject, bool> conditionalMatch = delegate (IBHoMObject x)
-            {
-                string name = x.Name;
-                name = removeWhiteSpace ? name.Replace(" ", "") : name;
-                name = ignoreCase ? name.ToLower() : name;
-                return name == objectName;
-            };
-
-            return Library(libraryName).Where(conditionalMatch).FirstOrDefault();
+            return objects.Where(x => x.PropertyValue(propertyName).ToString() == value).ToList();
         }
 
         /***************************************************/
-
-        public static List<IBHoMObject> Match(string libraryName, string propertyName, string value)
-        {
-            return Library(libraryName).StringMatch(propertyName, value);
-        }
     }
 }
 

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -22,11 +22,14 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel;
 using BH.oM.Base;
-using BH.Engine.Reflection;
+using System.IO;
+using System.Linq;
+using BH.oM.Data.Collections;
+using BH.Engine.Data;
+using BH.oM.Data.Library;
+using BH.oM.Reflection.Attributes;
 
 namespace BH.Engine.Library
 {
@@ -36,27 +39,17 @@ namespace BH.Engine.Library
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static IBHoMObject Match(string libraryName, string objectName, bool removeWhiteSpace = true, bool ignoreCase = true)
+        [Description("Gets the full Dataset(s) from the library, containing source information and Data")]
+        [Input("libraryName", "The name of the Dataset(s) to extract")]
+        [Output("dataset", "The datasets extracted from the library")]
+        public static List<Dataset> Datasets(string libraryName)
         {
-            objectName = removeWhiteSpace ? objectName.Replace(" ", "") : objectName;
-            objectName = ignoreCase ? objectName.ToLower() : objectName;
+            List<string> keys;
+            if (!LibraryPaths().TryGetValue(libraryName, out keys))
+                return new List<Dataset>();
 
-            Func<IBHoMObject, bool> conditionalMatch = delegate (IBHoMObject x)
-            {
-                string name = x.Name;
-                name = removeWhiteSpace ? name.Replace(" ", "") : name;
-                name = ignoreCase ? name.ToLower() : name;
-                return name == objectName;
-            };
+            return keys.Select(x => ParseLibrary(x)).ToList();
 
-            return Library(libraryName).Where(conditionalMatch).FirstOrDefault();
-        }
-
-        /***************************************************/
-
-        public static List<IBHoMObject> Match(string libraryName, string propertyName, string value)
-        {
-            return Library(libraryName).StringMatch(propertyName, value);
         }
     }
 }
