@@ -61,7 +61,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Create\BHoMGroup.cs" />
-    <Compile Include="Create\RandomObject.cs" />
+    <Compile Include="Create\IObject\RandomObject.cs" />
     <Compile Include="Create\CustomObject.cs" />
     <Compile Include="Modify\RemoveFragment.cs" />
     <Compile Include="Modify\AddFragment.cs" />
