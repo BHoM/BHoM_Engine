@@ -36,14 +36,14 @@ namespace BH.Engine.Architecture.Theatron
         public static TheatronPlan OrthogonalPlan(StadiaParameters parameters)
         {
             TheatronPlan plan = new TheatronPlan();
-            orthoPlanSetUp(ref plan, parameters.PitchLength,parameters.PitchWidth, parameters.EndBound, parameters.SideBound, 
+            OrthoPlanSetUp(ref plan, parameters.PitchLength,parameters.PitchWidth, parameters.EndBound, parameters.SideBound, 
                 parameters.CornerRadius, parameters.StructBayWidth, parameters.NumCornerBays);
             return plan;
         }
         /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
-        private static void orthoPlanSetUp(ref TheatronPlan plan, double length,double width, double endBound, double sideBound, double cornerR, double structBayW, int nCornerBays)
+        private static void OrthoPlanSetUp(ref TheatronPlan plan, double length,double width, double endBound, double sideBound, double cornerR, double structBayW, int nCornerBays)
         {
             int nSideBays = (int)(Math.Floor(((length + endBound) / 2 - cornerR) / structBayW) * 2);
             int nEndBays = (int)(Math.Floor(((width + sideBound) / 2 - cornerR) / structBayW) * 2);

@@ -36,7 +36,7 @@ namespace BH.Engine.Architecture.Theatron
         public static TheatronPlan EightArcPlan(StadiaParameters parameters)
         {
             TheatronPlan plan = new TheatronPlan();
-            radialPlanSetUp(ref plan,parameters.PitchLength,parameters.PitchWidth, parameters.SideBound, parameters.SideRadius,
+            RadialPlanSetUp(ref plan,parameters.PitchLength,parameters.PitchWidth, parameters.SideBound, parameters.SideRadius,
                 parameters.EndBound, parameters.EndRadius, parameters.CornerRadius, parameters.NumCornerBays, parameters.StructBayWidth,
                 parameters.CornerFraction);
             return plan;
@@ -44,7 +44,7 @@ namespace BH.Engine.Architecture.Theatron
         /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
-        private static void radialPlanSetUp(ref TheatronPlan plan,double length, double width, double sideBound, double sideRadius, double endBound, double endRadius, double cornerR, int nCornerBays, double structBayW, double cornerFraction)
+        private static void RadialPlanSetUp(ref TheatronPlan plan,double length, double width, double sideBound, double sideRadius, double endBound, double endRadius, double cornerR, int nCornerBays, double structBayW, double cornerFraction)
         {
             plan.SectionOrigins = new List<ProfileOrigin>();
             
@@ -53,7 +53,7 @@ namespace BH.Engine.Architecture.Theatron
             double sidecentreY = 0;
             double endcentreX = 0;
             double endcentreY = length / 2 + endBound - endRadius;
-            Point intersect = intersectCircles(sidecentreX, sidecentreY, sideRadius - cornerR, endcentreX, endcentreY, endRadius - cornerR);
+            Point intersect = IntersectCircles(sidecentreX, sidecentreY, sideRadius - cornerR, endcentreX, endcentreY, endRadius - cornerR);
             double centreX = intersect.X;
             double centreY = intersect.Y;
 
@@ -163,7 +163,7 @@ namespace BH.Engine.Architecture.Theatron
                         bayType = BayType.Corner;
                         break;
                 }
-                List<ProfileOrigin> partPlanes = arcSweepBay(centreX, centreY, theta, startAngle, radius, numBays, fractionbayStart, cornerFraction);
+                List<ProfileOrigin> partPlanes = ArcSweepBay(centreX, centreY, theta, startAngle, radius, numBays, fractionbayStart, cornerFraction);
                 for (int p = 0; p < partPlanes.Count; p++)
                 {
                     plan.SectionOrigins.Add(partPlanes[p]);
@@ -176,7 +176,7 @@ namespace BH.Engine.Architecture.Theatron
 
         }
         /***************************************************/
-        private static List<ProfileOrigin> arcSweepBay(double centreX, double centreY, double theta, double startAngle, double radius, int numBays, bool fractionbayStart, double fraction)
+        private static List<ProfileOrigin> ArcSweepBay(double centreX, double centreY, double theta, double startAngle, double radius, int numBays, bool fractionbayStart, double fraction)
         {
             List<ProfileOrigin> sectionPlane = new List<ProfileOrigin>();
             double xO, yO, xP, yP;
@@ -223,7 +223,7 @@ namespace BH.Engine.Architecture.Theatron
             return sectionPlane;
         }
         /***************************************************/
-        private static Point intersectCircles(double c1x, double c1y, double c1rad, double c2x, double c2y, double c2rad)
+        private static Point IntersectCircles(double c1x, double c1y, double c1rad, double c2x, double c2y, double c2rad)
         {
             // see http://local.wasp.uwa.edu.au/~pbourke/geometry/2circle/
             Point intersect = new Point();

@@ -43,14 +43,14 @@ namespace BH.Engine.Architecture.Theatron
         /**** Private Methods                           ****/
         /***************************************************/
         
-        private static void CircularPlaneSetUp(ref TheatronPlan plan,double radius, double structBayW)
+        private static void CircularPlaneSetUp(ref TheatronPlan plan, double radius, double structBayW)
         {
             plan.SectionOrigins = new List<ProfileOrigin>();
             
             int numBays = (int)(Math.Floor(Math.PI * radius * 2 / structBayW));
             double theta = 2 * Math.PI / numBays;
             bool halfbayStart = false;
-            plan.SectionOrigins = arcSweepBay(0, 0, theta, 0, radius, numBays, halfbayStart, 1.0);
+            plan.SectionOrigins = ArcSweepBay(0, 0, theta, 0, radius, numBays, halfbayStart, 1.0);
             BayType bayType = BayType.Side;
             for (int i = 0; i < plan.SectionOrigins.Count; i++)
             {
