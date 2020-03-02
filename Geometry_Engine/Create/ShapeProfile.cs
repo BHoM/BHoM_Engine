@@ -41,7 +41,7 @@ namespace BH.Engine.Geometry
 
         public static ISectionProfile ISectionProfile(double height, double width, double webthickness, double flangeThickness, double rootRadius, double toeRadius)
         {
-            if (height < flangeThickness * 2 + rootRadius * 2)
+            if (height < flangeThickness * 2 + rootRadius * 2 || height <= flangeThickness * 2)
             {
                 InvalidRatioError("height","flangeThickness and rootRadius");
                 return null;
