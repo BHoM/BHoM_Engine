@@ -138,7 +138,7 @@
     <Compile Include="Create\Node.cs" />
     <Compile Include="Create\Bar.cs" />
     <Compile Include="Create\ConcreteSection.cs" />
-    <Compile Include="Create\LinkConstraints.cs" />
+    <Compile Include="Create\LinkConstraint.cs" />
     <Compile Include="Create\Opening.cs" />
     <Compile Include="Create\Surface.cs" />
     <Compile Include="Create\SteelSection.cs" />
