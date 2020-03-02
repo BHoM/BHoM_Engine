@@ -54,7 +54,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Compute\Compute.cs" />
+    <Compile Include="Compute\AllowUpgradeFromBson.cs" />
     <Compile Include="Convert\Bson.cs" />
     <Compile Include="Convert\Encrypted.cs" />
     <Compile Include="Convert\Zip.cs" />
