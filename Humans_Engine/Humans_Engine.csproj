@@ -91,7 +91,7 @@
     <Compile Include="Create\CvalueFocalMethodEnum\CvalueFocalMethod.cs" />
     <Compile Include="Query\EvalueAnalysis.cs" />
     <Compile Include="Create\EvalueSettings.cs" />
-    <Compile Include="Create\EvalueViewType.cs" />
+    <Compile Include="Create\EvalueViewEnum\EvalueViewType.cs" />
     <Compile Include="Create\ViewCone.cs" />
     <Compile Include="Create\Employee.cs" />
     <Compile Include="Create\Eye.cs" />
