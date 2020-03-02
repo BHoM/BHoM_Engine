@@ -36,14 +36,14 @@ using BH.Engine.Diffing;
 
 namespace BH.Engine
 {
-    public class HashFragmComparer<T> : IEqualityComparer<T> where T : IBHoMObject
+    public class HashComparer<T> : IEqualityComparer<T> //where T : IBHoMObject
     {
         /***************************************************/
         /**** Constructors                              ****/
         /***************************************************/
         public List<string> PropertiesToIgnore { get; set; } = null;
 
-        public HashFragmComparer(List<string> propertiesToIgnore = null)
+        public HashComparer(List<string> propertiesToIgnore = null)
         {
             if (propertiesToIgnore == null)
                 propertiesToIgnore = new List<string>() { "BHoM_Guid", "CustomData", "Fragments" };
@@ -66,7 +66,15 @@ namespace BH.Engine
 
         public int GetHashCode(T obj)
         {
-            return obj.GetHashFragment().GetHashCode();
+            if (typeof(IBHoMObject).IsAssignableFrom(typeof(T)))
+            {
+                IBHoMObject bHoMObject = (IBHoMObject)obj;
+                HashFragment hashFragment = bHoMObject.GetHashFragment();
+                if (!string.IsNullOrWhiteSpace(hashFragment?.Hash))
+                    return hashFragment.Hash.GetHashCode();
+            }
+
+            return obj.DiffingHash().GetHashCode();
         }
     }
 }

@@ -50,7 +50,7 @@ namespace BH.Engine.Diffing
             IEnumerable<T> set1Cloned = Modify.PrepareForDiffing(set1);
             IEnumerable<T> set2Cloned = Modify.PrepareForDiffing(set2);
 
-            return Engine.Data.Create.VennDiagram(set1Cloned, set2Cloned, new HashFragmComparer<T>());
+            return Engine.Data.Create.VennDiagram(set1Cloned, set2Cloned, new HashComparer<T>());
         }
     }
 }
