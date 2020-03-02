@@ -73,13 +73,13 @@ namespace BH.Engine.Geometry
 
         public static BoxProfile BoxProfile(double height, double width, double thickness, double outerRadius, double innerRadius)
         {
-            if (thickness > height / 2)
+            if (thickness >= height / 2)
             {
                 InvalidRatioError("thickness", "height");
                 return null;
             }
 
-            if (thickness > width / 2)
+            if (thickness >= width / 2)
             {
                 InvalidRatioError("thickness", "width");
                 return null;
