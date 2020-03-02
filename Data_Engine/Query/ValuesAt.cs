@@ -84,18 +84,6 @@ namespace BH.Engine.Data
         }
 
         /***************************************************/
-
-        [Description("Gets the first table row matching the expression string sorted by a specified axis. Values returned as CustomObjects")]
-        [Input("table", "The table to extract values from")]
-        [Input("expression", "Expression string for extracting the values from the table.")]
-        [Input("sortOrder", "The axis the values should be sorted by.")]
-        [Output("Data", "The data matching the provided axes and values as CustomObjects.")]
-        public static CustomObject FirstValueAt(this Table table, string expression, string sortOrder)
-        {
-            return AsCustomObject(table.Data.Select(expression, sortOrder).First(), table.Data.Columns);
-        }
-
-        /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
 
