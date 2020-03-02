@@ -274,7 +274,7 @@ namespace BH.Engine.Geometry
 
         public static KiteProfile KiteProfile(double width1, double angle1, double thickness)
         {
-            if ((width1*Math.Sin(angle1/2)/Math.Sqrt(2)) /(Math.Sin(Math.PI*0.75- (angle1/2)))<thickness)
+            if ((width1 * Math.Sin(angle1 / 2) / Math.Sqrt(2)) / (Math.Sin(Math.PI * 0.75 - (angle1 / 2))) <= thickness)
             {
                 InvalidRatioError("thickness", "width and angle1");
                 return null;
