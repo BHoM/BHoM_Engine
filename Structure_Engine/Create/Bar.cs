@@ -29,6 +29,11 @@ using BH.oM.Structure.Constraints;
 using BH.Engine.Geometry;
 using BH.Engine.Reflection;
 
+using BH.oM.Reflection.Attributes;
+using BH.oM.Quantities.Attributes;
+using System.ComponentModel;
+
+
 namespace BH.Engine.Structure
 {
     public static partial class Create
@@ -37,30 +42,39 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Bar Bar(Line line, ISectionProperty property = null, double orientationAngle = 0, BarRelease release = null, BarFEAType feaType = BarFEAType.Flexural, string name = "")
+        [Description("Creates a Bar element from a Line, to be used as centre line of the Bar, and properties.")]
+        [Input("line","Geometrical Line used as centreline of the Bar. The StartNode and EndNode of the bar will be extracted from the Line.")]
+        [InputFromProperty("sectionProperty")]
+        [InputFromProperty("orientationAngle")]
+        [InputFromProperty("release")]
+        [InputFromProperty("feaType", "FEAType")]
+        [Input("name","The name of the created Bar.")]
+        [Output("bar","The created Bar with a centreline matching the provided geometrical Line.")]
+        public static Bar Bar(Line line, ISectionProperty sectionProperty = null, double orientationAngle = 0, BarRelease release = null, BarFEAType feaType = BarFEAType.Flexural, string name = "")
         {          
-            return Bar(Node(line.Start), Node(line.End), property, orientationAngle, release, feaType, name);
-        }
-
-        /***************************************************/
-
-        public static Bar Bar(Node startNode, Node endNode, ISectionProperty property = null, double orientationAngle = 0, BarRelease release = null, BarFEAType feaType = BarFEAType.Flexural,  string name = "")
-        {
             return new Bar
             {
                 Name = name,
-                StartNode = startNode,
-                EndNode = endNode,
-                SectionProperty = property,
+                StartNode = (Node)line.Start,
+                EndNode = (Node)line.End,
+                SectionProperty = sectionProperty,
                 Release = release == null ? BarReleaseFixFix() : release,
                 FEAType = feaType,
                 OrientationAngle = orientationAngle
             };
         }
 
-
         /***************************************************/
 
+        [Description("Creates a Bar element from a Line, to be used as centre line of the Bar, and properties.")]
+        [Input("line", "Geometrical Line used as centreline of the Bar. The StartNode and EndNode of the bar will be extracted from the Line.")]
+        [InputFromProperty("sectionProperty")]
+        [Input("normal", "Vector to be used as normal of the Bar. This vector should generally be orthogonal to the Bar, if it is not, it will be made orthogonal by removing any composant paralell to the tangent of the Bar. This means that the Normal cannot be paralell to the Tangent of the Bar. \n"+
+                         "Vector will be used to determain the orientation angle of the Bar. This is done by measuring the counter clockwise angle in the section plane of the Bar (a plane that has that Bar tangent as its normal) between a reference Vector and the provided Vector. For a non-vertical Bar, the reference vector will be the global Z-axis. For a vertical bar the reference vector will be a vector that is orthogonal to the tangent vector of the Bar and the global Y-axis.")]
+        [InputFromProperty("release")]
+        [InputFromProperty("feaType", "FEAType")]
+        [Input("name", "The name of the created Bar.")]
+        [Output("bar", "The created Bar with a centreline matching the provided geometrical Line.")]
         public static Bar Bar(Line line, ISectionProperty property = null, Vector normal =  null, BarRelease release = null, BarFEAType feaType = BarFEAType.Flexural, string name = "")
         {
             double orientationAngle;
@@ -76,12 +90,12 @@ namespace BH.Engine.Structure
 
                 if (Math.Abs(1 - dot) < oM.Geometry.Tolerance.Angle)
                 {
-                    Reflection.Compute.RecordError("The normal is parallell to the centreline of the bar");
+                    Reflection.Compute.RecordError("The normal is parallell to the centreline of the Bar.");
                     return null;
                 }
                 else if (Math.Abs(dot) > oM.Geometry.Tolerance.Angle)
                 {
-                    Reflection.Compute.RecordWarning("Normal not othogonal to the centreline and will get projected");
+                    Reflection.Compute.RecordWarning("Normal not othogonal to the centreline and will get projected.");
                 }
 
                 Vector reference;
@@ -97,8 +111,27 @@ namespace BH.Engine.Structure
 
             }
                 
+            return Bar(line, property, orientationAngle, release, feaType, name);
+        }
 
-            return Bar(Node(line.Start), Node(line.End), property, orientationAngle, release, feaType, name);
+        /***************************************************/
+        /**** Public Methods - Deprecated               ****/
+        /***************************************************/
+
+
+        [Deprecated("3.1", "Deprecated by autogenerated property assignment method")]
+        public static Bar Bar(Node startNode, Node endNode, ISectionProperty property = null, double orientationAngle = 0, BarRelease release = null, BarFEAType feaType = BarFEAType.Flexural, string name = "")
+        {
+            return new Bar
+            {
+                Name = name,
+                StartNode = startNode,
+                EndNode = endNode,
+                SectionProperty = property,
+                Release = release == null ? BarReleaseFixFix() : release,
+                FEAType = feaType,
+                OrientationAngle = orientationAngle
+            };
         }
 
         /***************************************************/
