@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -21,11 +21,13 @@
  */
 
 using System;
-using System.Linq;
 using System.Collections.Generic;
-using System.ComponentModel;
-using BH.oM.Reflection.Attributes;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using BH.oM.Base;
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Base
 {
@@ -35,14 +37,22 @@ namespace BH.Engine.Base
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Filters a list of objects by a type. Any objects that is assignable from the provided type will be returned.")]
-        [Input("list", "The list of elements to filter.")]
-        [Input("type", "Type to filter by.")]
-        [Output("List", "Filtered list containing only objects assignable from the provided type.")]
-        public static List<object> FilterByType(this IEnumerable<object> list, Type type)
+        public static bool TryGetValue(this FragmentSet fragmentSet, Type fragmentType, out IFragment fragment)
         {
-            return list.Where(x => x.GetType().IsAssignableFrom(type)).ToList();
+            if (fragmentType == null)
+                throw new ArgumentNullException($"Passed fragment type is null.");
+
+            if (!typeof(IFragment).IsAssignableFrom(fragmentType))
+                throw new ArgumentException($"Passed type {fragmentType} is not an IFragment.");
+
+            if (fragmentSet != null && fragmentSet.Contains(fragmentType))
+            {
+                fragment = fragmentSet[fragmentType];
+                return true;
+            }
+
+            fragment = default(IFragment);
+            return false;
         }
     }
 }
-
