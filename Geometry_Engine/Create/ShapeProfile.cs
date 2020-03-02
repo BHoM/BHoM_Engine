@@ -222,13 +222,13 @@ namespace BH.Engine.Geometry
 
         public static FabricatedBoxProfile FabricatedBoxProfile(double height, double width, double webThickness, double topFlangeThickness, double botFlangeThickness, double weldSize)
         {
-            if (height <= topFlangeThickness + botFlangeThickness + 2 * Math.Sqrt(2) * weldSize)
+            if (height < topFlangeThickness + botFlangeThickness + 2 * Math.Sqrt(2) * weldSize)
             {
                 InvalidRatioError("height", "topFlangeThickness, botFlangeThickness and weldSize");
                 return null;
             }
 
-            if (width <= webThickness * 2 + 2 * Math.Sqrt(2) * weldSize)
+            if (width < webThickness * 2 + 2 * Math.Sqrt(2) * weldSize)
             {
                 InvalidRatioError("width", "webThickness and weldSize");
                 return null;
