@@ -394,13 +394,13 @@ namespace BH.Engine.Geometry
 
         public static GeneralisedTSectionProfile GeneralisedTSectionProfile(double height, double webThickness, double leftOutstandWidth, double leftOutstandThickness, double rightOutstandWidth, double rightOutstandThickness, bool mirrorAboutLocalY = false)
         {
-            if (height <= leftOutstandThickness)
+            if (height < leftOutstandThickness)
             {
                 InvalidRatioError("height", "leftOutstandThickness");
                 return null;
             }
 
-            if (height <= rightOutstandThickness)
+            if (height < rightOutstandThickness)
             {
                 InvalidRatioError("height", "rightOutstandThickness");
                 return null;
