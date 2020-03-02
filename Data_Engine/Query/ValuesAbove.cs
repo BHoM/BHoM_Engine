@@ -68,23 +68,6 @@ namespace BH.Engine.Data
         }
 
         /***************************************************/
-
-        [Description("Gets the first table row with values exeeding the values provided sorted by the sortAxis. Values returned as CustomObjects")]
-        [Input("table", "The table to extract values from")]
-        [Input("axes", "The axis of the table to match values for")]
-        [Input("values", "The value of the axis to match with")]
-        [Input("sortAxis", "The axis the values should be sorted by.")]
-        [Input("allowEqual", "Sets whether exact matching values are allowed or not")]
-        [Output("Data", "The data matching the provided axes and values as CustomObjects.")]
-        public static CustomObject FirstValueAbove(this Table table, List<string> axes, List<object> values, string sortAxis, bool allowEqual = true)
-        {
-            if (!table.AxisExists(axes.Concat(new string[] { sortAxis }).ToList()))
-                return new CustomObject();
-
-            return FirstValueAt(table, AboveExpressionString(axes, values, allowEqual), sortAxis);
-        }
-
-        /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
 
