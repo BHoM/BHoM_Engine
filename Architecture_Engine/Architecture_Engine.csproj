@@ -68,11 +68,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Create\Theatron\CircularStadiaPlan.cs" />
-    <Compile Include="Create\Theatron\EightArcStadiaPlan.cs" />
-    <Compile Include="Create\Theatron\FourArcStadiaPlan.cs" />
-    <Compile Include="Create\Theatron\NoCornersStadiaPlan.cs" />
-    <Compile Include="Create\Theatron\OrthogonalStadiaPlan.cs" />
+    <Compile Include="Create\Theatron\TheatronPlan\CircularStadiaPlan.cs" />
+    <Compile Include="Create\Theatron\TheatronPlan\EightArcStadiaPlan.cs" />
+    <Compile Include="Create\Theatron\TheatronPlan\FourArcStadiaPlan.cs" />
+    <Compile Include="Create\Theatron\TheatronPlan\NoCornersStadiaPlan.cs" />
+    <Compile Include="Create\Theatron\TheatronPlan\OrthogonalStadiaPlan.cs" />
     <Compile Include="Create\Grid.cs" />
     <Compile Include="Create\Level.cs" />
     <Compile Include="Create\Theatron\ActivityArea.cs" />

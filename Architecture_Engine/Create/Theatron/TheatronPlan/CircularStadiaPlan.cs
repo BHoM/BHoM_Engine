@@ -36,13 +36,14 @@ namespace BH.Engine.Architecture.Theatron
         public static TheatronPlan CircularPlan(StadiaParameters parameters)
         {
             TheatronPlan plan = new TheatronPlan();
-            circularPlaneSetUp(ref plan, parameters.TheatronRadius, parameters.StructBayWidth);
+            CircularPlaneSetUp(ref plan, parameters.TheatronRadius, parameters.StructBayWidth);
             return plan;
         }
         /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
-        private static void circularPlaneSetUp(ref TheatronPlan plan,double radius, double structBayW)
+        
+        private static void CircularPlaneSetUp(ref TheatronPlan plan,double radius, double structBayW)
         {
             plan.SectionOrigins = new List<ProfileOrigin>();
             
@@ -54,9 +55,7 @@ namespace BH.Engine.Architecture.Theatron
             for (int i = 0; i < plan.SectionOrigins.Count; i++)
             {
                 plan.StructBayType.Add(bayType);
-                
             }
-
         }
     }
 }

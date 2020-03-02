@@ -56,7 +56,6 @@ namespace BH.Engine.Architecture.Theatron
         /***************************************************/
         [Description("Create a full TheatronPlan from StadiaParameters")]
         [Input("parameters", "StadiaParameters to define the TheatronPlan")]
-        
         public static TheatronPlan PlanGeometry(StadiaParameters parameters)
         {
             //assuming its a full stadium
