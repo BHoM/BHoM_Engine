@@ -33,7 +33,7 @@ namespace BH.Engine.Architecture.Theatron
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        public static TheatronPlan NoCornersPlan (StadiaParameters parameters)
+        public static TheatronPlan NoCornersPlan(StadiaParameters parameters)
         {
             TheatronPlan plan = new TheatronPlan();
             NoCornerPlanSetUp(ref plan, parameters.PitchLength,parameters.PitchWidth, parameters.EndBound, parameters.StructBayWidth, parameters.SideBound);
