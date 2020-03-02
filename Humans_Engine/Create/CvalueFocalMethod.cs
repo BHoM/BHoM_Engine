@@ -31,8 +31,7 @@ namespace BH.Engine.Humans.ViewQuality
         /**** Public Methods                            ****/
         /***************************************************/
         [Description("Define the method used to find Cvalue focal points")]
-        [Input("tyepNum", "0 = OffsetThroughCorners,1 = Closest,2 = Perpendicular,3 = Undefined")]
-       
+        [Input("typeNum", "0 = OffsetThroughCorners,1 = Closest,2 = Perpendicular,3 = Undefined")]
         public static CvalueFocalMethodEnum CvalueFocalMethod(int typeNum)
         {
             var enumCount = CvalueFocalMethodEnum.GetNames(typeof(CvalueFocalMethodEnum)).Length;

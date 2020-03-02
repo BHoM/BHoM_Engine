@@ -44,7 +44,7 @@ namespace BH.Engine.Humans.ViewQuality
         /***************************************************/
         [Description("Evaulate Avalues for a single Audience")]
         [Input("audience", "Audience to evalaute")]
-        [Input("setting", "AvalueSettings to configure the evaluation")]
+        [Input("settings", "AvalueSettings to configure the evaluation")]
         [Input("activityArea", "ActivityArea to use in the evaluation")]
         public static List<Avalue> AvalueAnalysis(Audience audience, AvalueSettings settings, ActivityArea activityArea)
         {
@@ -54,7 +54,7 @@ namespace BH.Engine.Humans.ViewQuality
         /***************************************************/
         [Description("Evaulate Avalues for a List of Audience")]
         [Input("audience", "Audience to evalaute")]
-        [Input("setting", "AvalueSettings to configure the evaluation")]
+        [Input("settings", "AvalueSettings to configure the evaluation")]
         [Input("activityArea", "ActivityArea to use in the evaluation")]
         public static List<List<Avalue>> AvalueAnalysis(List<Audience> audience, AvalueSettings settings, ActivityArea activityArea)
         {
@@ -185,13 +185,13 @@ namespace BH.Engine.Humans.ViewQuality
         }
 
         /***************************************************/
-        private static List<Polyline> ClipHeads(List<Spectator> nearSpecs, Spectator current, Plane viewPlane, List<Polyline> ClippedArea)
+        private static List<Polyline> ClipHeads(List<Spectator> nearSpecs, Spectator current, Plane viewPlane, List<Polyline> clippedArea)
         {
             //using the project activity area to clip heads infront that over lap
             List<Polyline> clippedHeads = new List<Polyline>();
             foreach (Spectator s in nearSpecs)
             {
-                foreach (Polyline pl in ClippedArea)
+                foreach (Polyline pl in clippedArea)
                 {
                     Polyline projectedHead = ProjectPolylineToPlane(viewPlane, s.HeadOutline, current.Head.PairOfEyes.ReferenceLocation);
 
