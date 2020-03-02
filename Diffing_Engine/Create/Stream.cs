@@ -41,7 +41,6 @@ namespace BH.Engine.Diffing
         [Description("Creates new Diffing Stream")]
         [Input("objects", "Objects to be included in the Stream")]
         [Input("diffConfig", "Diffing settings for this Stream. Hashes of objects contained in this stream will be computed based on these configs.")]
-        [Input("streamId", "If not specified, streamId will be a GUID")]
         [Input("comment", "Any comment to be added for this stream.")]
         public static BH.oM.Diffing.Stream Stream(IEnumerable<IBHoMObject> objects, DiffConfig diffConfig = null, string comment = null)
         {
