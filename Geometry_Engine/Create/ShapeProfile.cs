@@ -173,7 +173,7 @@ namespace BH.Engine.Geometry
 
         public static ChannelProfile ChannelProfile(double height, double width, double webthickness, double flangeThickness, double rootRadius, double toeRadius, bool mirrorAboutLocalZ = false)
         {
-            if (height < flangeThickness * 2 + rootRadius * 2)
+            if (height < flangeThickness * 2 + rootRadius * 2 || height <= flangeThickness * 2)
             {
                 InvalidRatioError("height", "flangeThickness and rootRadius");
                 return null;
