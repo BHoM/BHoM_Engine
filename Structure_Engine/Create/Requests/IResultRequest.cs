@@ -41,7 +41,7 @@ namespace BH.Engine.Structure
 
         [Description("Generates a IResultRequest of the appropriate type based on provided type as well as optional ids, cases and divisions."+
             "\n As a user, please have a look at BarResultRequest, MeshResultRequest, NodeResultRequest and GlobalResultRequest instead for greater control.")]
-        [Input("Type", "Type of result")]
+        [Input("type", "Type of result")]
         [Input("ids", "Object ids to extract results for")]
         [Input("cases", "Cases to extract results for")]
         [Input("divisions", "Only used for bar results. Sets how many points should be looked at for the result extraction")]
