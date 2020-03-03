@@ -115,6 +115,7 @@
     <Compile Include="Modify\SplitPanelsByPoints.cs" />
     <Compile Include="Modify\UpdatePanelTypeByCustomData.cs" />
     <Compile Include="Query\Absorptance.cs" />
+    <Compile Include="Query\PointsInSpaces.cs" />
     <Compile Include="Query\CullDuplicateLines.cs" />
     <Compile Include="Query\CullOverlaps.cs" />
     <Compile Include="Query\FindDuplicatePanels.cs" />
@@ -144,6 +145,10 @@
     <Compile Include="Query\PanelsContainingPoint.cs" />
     <Compile Include="Query\PanelsFromPhysical.cs" />
     <Compile Include="Query\PanelsNotByType.cs" />
+    <Compile Include="Query\ResultsByResultType.cs" />
+    <Compile Include="Query\ResultsByTypeUnit.cs" />
+    <Compile Include="Query\ResultsByTypeUnitResultType.cs" />
+    <Compile Include="Query\ResultsByUnit.cs" />
     <Compile Include="Query\ToEdges.cs" />
     <Compile Include="Query\InvalidPanels.cs" />
     <Compile Include="Query\IsTransparent.cs" />
@@ -215,7 +220,7 @@
     <Compile Include="Query\FloorGeometry.cs" />
     <Compile Include="Query\Height.cs" />
     <Compile Include="Query\IsCoPlanar.cs" />
-    <Compile Include="Query\SimulationResult.cs" />
+    <Compile Include="Query\ResultsByType.cs" />
     <Compile Include="Query\UniqueConstructions.cs" />
     <Compile Include="Query\UniqueMaterials..cs" />
     <Compile Include="Query\UniqueOpeningInstances.cs" />
