@@ -229,7 +229,7 @@
     <Compile Include="Query\IsCoPlanar.cs" />
     <Compile Include="Query\ResultsByType.cs" />
     <Compile Include="Query\UniqueConstructions.cs" />
-    <Compile Include="Query\UniqueMaterials..cs" />
+    <Compile Include="Query\UniqueMaterials.cs" />
     <Compile Include="Query\UniqueOpeningInstances.cs" />
     <Compile Include="Query\UniquePanelInstances.cs" />
     <Compile Include="Query\UniquePanels.cs" />
