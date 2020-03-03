@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -33,10 +33,18 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static ConcreteSection SetReinforcement(this ConcreteSection section, IEnumerable<Reinforcement> reinforcement)
+        public static ConcreteSection AddReinforcement(this ConcreteSection section, IEnumerable<Reinforcement> reinforcement)
         {
             ConcreteSection clone = section.GetShallowClone() as ConcreteSection;
-            clone.Reinforcement = reinforcement.ToList();
+
+            if (clone.Reinforcement == null)
+                clone.Reinforcement = new List<Reinforcement>();
+            else
+                clone.Reinforcement = new List<Reinforcement>(clone.Reinforcement);
+
+
+            clone.Reinforcement.AddRange(reinforcement);
+
             return clone;
         }
 
