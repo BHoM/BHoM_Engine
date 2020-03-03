@@ -115,10 +115,15 @@
     <Compile Include="Modify\SplitPanelsByPoints.cs" />
     <Compile Include="Modify\UpdatePanelTypeByCustomData.cs" />
     <Compile Include="Query\Absorptance.cs" />
+    <Compile Include="Query\CullDuplicateLines.cs" />
+    <Compile Include="Query\CullOverlaps.cs" />
     <Compile Include="Query\IsValidLocation.cs" />
     <Compile Include="Query\DateTime.cs" />
     <Compile Include="Query\DateTimeList.cs" />
-    <Compile Include="Query\ICurve.cs" />
+    <Compile Include="Query\Level.cs" />
+    <Compile Include="Query\MaximumLevel.cs" />
+    <Compile Include="Query\MinimumLevel.cs" />
+    <Compile Include="Query\ToEdges.cs" />
     <Compile Include="Query\InvalidPanels.cs" />
     <Compile Include="Query\IsTransparent.cs" />
     <Compile Include="Query\Line.cs" />
@@ -159,7 +164,7 @@
     <Compile Include="Modify\SetOutlineElements1D.cs" />
     <Compile Include="Modify\SplitPanelsByOverlap.cs" />
     <Compile Include="Query\Buildings.cs" />
-    <Compile Include="Query\ConstructionRoughness.cs" />
+    <Compile Include="Query\Roughness.cs" />
     <Compile Include="Query\FindFragment.cs" />
     <Compile Include="Query\MatchPoint.cs" />
     <Compile Include="Query\FindMaterial.cs" />
@@ -173,7 +178,7 @@
     <Compile Include="Query\Spaces.cs" />
     <Compile Include="Query\CleanSpace.cs" />
     <Compile Include="Query\ClosedShellGeometry.cs" />
-    <Compile Include="Query\Construction.cs" />
+    <Compile Include="Query\ConstructionByName.cs" />
     <Compile Include="Query\CullDuplicates.cs" />
     <Compile Include="Modify\Add.cs" />
     <Compile Include="Modify\Move.cs" />
@@ -212,7 +217,7 @@
     <Compile Include="Query\Volume.cs" />
     <Compile Include="Query\Azimuth.cs" />
     <Compile Include="Query\Tilt.cs" />
-    <Compile Include="Query\Level.cs" />
+    <Compile Include="Query\Levels.cs" />
     <Compile Include="Query\Bounds.cs" />
     <Compile Include="Query\Width.cs" />
   </ItemGroup>
