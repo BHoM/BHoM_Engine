@@ -125,27 +125,15 @@ namespace BH.Engine.Diffing
         public static Diff Diffing(IEnumerable<object> previousObjects, IEnumerable<object> currentObjects, DiffConfig diffConfig = null)
         {
             // Dispatch the objects in BHoMObjects and generic objects.
-            List<object> prevObjs_nonBHoM = new List<object>();
-            List<object> prevObjs_BHoM = new List<object>();
+            IEnumerable<IBHoMObject> prevObjs_BHoM = previousObjects.OfType<IBHoMObject>();
+            IEnumerable<IBHoMObject> currObjs_BHoM = currentObjects.OfType<IBHoMObject>();
 
-            List<object> currObjs_nonBHoM = new List<object>();
-            List<object> currObjs_BHoM = new List<object>();
+            // If all objects are bhomobjects, just call the appropriate method
+            if (previousObjects.Count() == prevObjs_BHoM.Count() && currentObjects.Count() == currObjs_BHoM.Count())
+                return Diffing(prevObjs_BHoM, currObjs_BHoM, diffConfig);
 
-            foreach (var obj in previousObjects)
-            {
-                if (typeof(IBHoMObject).IsAssignableFrom(obj.GetType()))
-                    prevObjs_BHoM.Add(obj);
-                else
-                    prevObjs_nonBHoM.Add(obj);
-            }
-
-            foreach (var obj in currentObjects)
-            {
-                if (typeof(IBHoMObject).IsAssignableFrom(obj.GetType()))
-                    currObjs_BHoM.Add(obj);
-                else
-                    currObjs_nonBHoM.Add(obj);
-            }
+            IEnumerable<object> prevObjs_nonBHoM = previousObjects.Where(o => !(o is IBHoMObject));
+            IEnumerable<object> currObjs_nonBHoM = currentObjects.Where(o => !(o is IBHoMObject));
 
             // Compute the specific Diffing for the BHoMObjects.
             Diff diff = Compute.Diffing(prevObjs_BHoM, currObjs_BHoM, diffConfig);
