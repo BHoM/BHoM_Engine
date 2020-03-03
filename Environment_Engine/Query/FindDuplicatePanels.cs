@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -50,17 +50,21 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns a collection of Environment Panels from a list of generic BHoM objects")]
-        [Input("bhomObjects", "A collection of generic BHoM objects")]
-        [Output("panels", "A collection of Environment Panel objects")]
-        public static List<Panel> Panels(this List<IBHoMObject> bhomObjects)
+        [Description("Returns a collection of Environment Panels that contain duplicates in the given collection")]
+        [Input("panels", "A collection of Environment Panels to search in")]
+        [Output("panels", "A nested collection of Environment Panels that are duplicates")]
+        public static List<List<Panel>> FindDuplicatePanels(this List<Panel> panels)
         {
-            bhomObjects = bhomObjects.ObjectsByType(typeof(Panel));
-            List<Panel> spaces = new List<Panel>();
-            foreach (IBHoMObject o in bhomObjects)
-                spaces.Add(o as Panel);
+            List<List<Panel>> duplicates = new List<List<Panel>>();
 
-            return spaces;
+            foreach (Panel p in panels)
+            {
+                List<Panel> found = panels.Where(x => x.IsIdentical(p)).ToList();
+                if (found.Count > 1)
+                    duplicates.Add(found);
+            }
+
+            return duplicates;
         }
     }
 }

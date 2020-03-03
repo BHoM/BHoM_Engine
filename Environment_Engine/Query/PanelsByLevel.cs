@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -50,17 +50,32 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns a collection of Environment Panels from a list of generic BHoM objects")]
-        [Input("bhomObjects", "A collection of generic BHoM objects")]
-        [Output("panels", "A collection of Environment Panel objects")]
-        public static List<Panel> Panels(this List<IBHoMObject> bhomObjects)
+        [Description("Returns a collection of Environment Panels that sit entirely on a given levels elevation")]
+        [Input("panels", "A collection of Environment Panels to filter")]
+        [Input("searchLevel", "The Setting Out Level to search by")]
+        [Output("panels", "A collection of Environment Panels which match the given level")]
+        public static List<Panel> PanelsByLevel(this List<Panel> panels, Level searchLevel)
         {
-            bhomObjects = bhomObjects.ObjectsByType(typeof(Panel));
-            List<Panel> spaces = new List<Panel>();
-            foreach (IBHoMObject o in bhomObjects)
-                spaces.Add(o as Panel);
+            return panels.PanelsByLevel(searchLevel.Elevation);
+        }
 
-            return spaces;
+        [Description("Returns a collection of Environment Panels that sit entirely on a given levels elevation")]
+        [Input("panels", "A collection of Environment Panels to filter")]
+        [Input("searchLevel", "The level to search by")]
+        [Output("panels", "A collection of Environment Panels which match the given level")]
+        public static List<Panel> PanelsByLevel(this List<Panel> panels, double searchLevel)
+        {
+            return panels.Where(x => x.MinimumLevel() == searchLevel && x.MaximumLevel() == searchLevel).ToList();
+        }
+
+        [Description("Returns a collection of Environment Panels that sit entirely on a given levels elevation")]
+        [Input("panels", "A collection of Environment Panels to filter")]
+        [Input("searchLevel", "The Architecture level to search by")]
+        [Output("panels", "A collection of Environment Panels which match the given level")]
+        [Deprecated("2.4", "BH.oM.Architecture.Elements.Level superseded by BH.oM.Geometry.SettingOut.Level")]
+        public static List<Panel> PanelsByLevel(this List<Panel> panels, BH.oM.Architecture.Elements.Level searchLevel)
+        {
+            return panels.PanelsByLevel(searchLevel.Elevation);
         }
     }
 }
