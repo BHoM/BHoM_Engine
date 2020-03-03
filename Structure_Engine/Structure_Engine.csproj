@@ -118,12 +118,16 @@
     <Compile Include="Modify\AddReinforcement.cs" />
     <Compile Include="Modify\SetMaterial.cs" />
     <Compile Include="Modify\SetStructuralFragment.cs" />
+    <Compile Include="Query\AllEdgeCurves.cs" />
     <Compile Include="Query\CoordinateSystem.cs" />
     <Compile Include="Query\DescriptionOrName.cs" />
     <Compile Include="Query\Description.cs" />
+    <Compile Include="Query\EdgeCurves.cs" />
     <Compile Include="Query\EmbodiedCarbon.cs" />
+    <Compile Include="Query\ExternalEdgeCurves.cs" />
     <Compile Include="Query\Fixities.cs" />
     <Compile Include="Query\HasModifiers.cs" />
+    <Compile Include="Query\InternalEdgeCurves.cs" />
     <Compile Include="Query\MaterialType.cs" />
     <Compile Include="Create\Elements\NewElement0D.cs" />
     <Compile Include="Create\Elements\NewElement1D.cs" />
