@@ -203,6 +203,7 @@
     <Compile Include="Query\Openings.cs" />
     <Compile Include="Query\Panels.cs" />
     <Compile Include="Query\RValue.cs" />
+    <Compile Include="Query\UniqueConstructionName.cs" />
     <Compile Include="Query\UniqueSpaceNames.cs" />
     <Compile Include="Query\AdjacentSpaces.cs" />
     <Compile Include="Query\Area.cs" />
