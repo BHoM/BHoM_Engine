@@ -37,14 +37,14 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates a aluminium material. First constructs a Aluminium material fragment, then applies it to a new Material class")]
-        [Input("youngsModulus", "Youngs modulus. Given in [Pa] or [N/m]. Will be stored on the material fragment")]
-        [Input("poissonsRatio", "Poissons Ratio. Will be stored on the material fragment")]
-        [Input("thermalExpansionCoeff", "Modulus of thermal expansion. Given in [1/°C] or [1/K]. Will be stored on the material fragment")]
-        [Input("density", "Given as [kg/m3]. Will be stored on the base material")]
-        [Input("dampingRatio", "Dynamic damping ratio of the material. Will be stored on the material fragment")]
-        [Input("embodiedCarbon", "Embodied carbon for the material. Will be stored on the material fragment")]
-        [Output("Material", "The created material with a aluminium fragment")]
+        [Description("Creates a structural Aluminium material fragment to be used on analytical structural elements, or as a fragment of the physical material.")]
+        [InputFromProperty("youngsModulus")]
+        [InputFromProperty("poissonsRatio")]
+        [InputFromProperty("thermalExpansionCoeff")]
+        [InputFromProperty("density")]
+        [InputFromProperty("dampingRatio")]
+        [InputFromProperty("embodiedCarbon")]
+        [Output("aluminium", "The created tructural Aluminium material fragment.")]
         public static Aluminium Aluminium(string name, double youngsModulus = 70000000000, double poissonsRatio = 0.34, double thermalExpansionCoeff = 0.000023, double density = 2710, double dampingRatio = 0, double embodiedCarbon = 7.9)
         {
             return new Aluminium()

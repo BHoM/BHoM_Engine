@@ -37,16 +37,14 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates a concrete material. First constructs a concrete material fragment, then applies it to a new Material class")]
-        [Input("youngsModulus", "Youngs modulus. Given in [Pa] or [N/m]. Will be stored on the material fragment")]
-        [Input("poissonsRatio", "Poissons Ratio. Will be stored on the material fragment")]
-        [Input("thermalExpansionCoeff", "Modulus of thermal expansion. Given in [1/°C] or [1/K]. Will be stored on the material fragment")]
-        [Input("density", "Given as [kg/m3]. Will be stored on the base material")]
-        [Input("dampingRatio", "Dynamic damping ratio of the material. Will be stored on the material fragment")]
-        [Input("cubeStrength", "Cube strength of the concrete material. Given in [Pa] or [N/m]. Will be stored on the material fragment")]
-        [Input("cylinderStrength", "Cylinder strength of the concrete material. Given in [Pa] or [N/m].Will be stored on the material fragment")]
-        [Input("embodiedCarbon", "Embodied carbon for the material. Will be stored on the material fragment")]
-        [Output("Material", "The created material with a concrete fragment")]
+        [Description("Creates a structural Concrete material fragment to be used on analytical structural elements, or as a fragment of the physical material.")]
+        [InputFromProperty("youngsModulus")]
+        [InputFromProperty("poissonsRatio")]
+        [InputFromProperty("thermalExpansionCoeff")]
+        [InputFromProperty("density")]
+        [InputFromProperty("dampingRatio")]
+        [InputFromProperty("embodiedCarbon")]
+        [Output("aluminium", "The created tructural Concrete material fragment.")]
         public static Concrete Concrete(string name, double youngsModulus = 33000000000, double poissonsRatio = 0.2, double thermalExpansionCoeff = 0.00001, double density = 2550, double dampingRatio = 0, double cubeStrength = 0, double cylinderStrength = 0, double embodiedCarbon = 0.12)
         {
             return new Concrete()
