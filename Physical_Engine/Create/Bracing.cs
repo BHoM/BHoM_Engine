@@ -44,6 +44,8 @@ namespace BH.Engine.Physical
         {
             return new Bracing { Location = location, Property = property, Name = name };
         }
+
+        /***************************************************/
     }
 }
 
