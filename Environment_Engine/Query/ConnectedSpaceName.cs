@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -20,41 +20,44 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using BH.oM.Environment;
+using System.Collections.Generic;
 using BH.oM.Environment.Elements;
-using BH.oM.Environment.Fragments;
+using BH.oM.Geometry;
 using BH.oM.Base;
+using BH.oM.Environment.Fragments;
 
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
-
-using BH.Engine.Base;
 
 namespace BH.Engine.Environment
 {
     public static partial class Query
     {
-        /***************************************************/
-        /**** Public Methods                            ****/
-        /***************************************************/
-
-        [Description("Returns a collection of Environment Spaces from a list of generic BHoM objects")]
-        [Input("bhomObjects", "A collection of generic BHoM objects")]
-        [Output("spaces", "A collection of Environment Space objects")]
-        public static List<Space> Spaces(this List<IBHoMObject> bhomObjects)
+        [Description("Returns the name of the space the panels are enclosing")]
+        [Input("panels", "A collection of Environment Panels")]
+        [Output("spaceName", "The space name the panels are jointly connected to")]
+        public static string ConnectedSpaceName(this List<Panel> panels)
         {
-            bhomObjects = bhomObjects.ObjectsByType(typeof(Space));
-            List<Space> spaces = new List<Space>();
-            foreach (IBHoMObject o in bhomObjects)
-                spaces.Add(o as Space);
+            //Gets the single space name which most commonly unites these panels
+            List<string> uniqueNames = panels.UniqueSpaceNames();
 
-            return spaces;
+            Dictionary<string, int> nameCount = new Dictionary<string, int>();
+
+            foreach (string s in uniqueNames)
+                nameCount.Add(s, 0);
+
+            foreach (Panel be in panels)
+            {
+                foreach (string name in be.ConnectedSpaces)
+                {
+                    if (name != "-1")
+                        nameCount[name]++;
+                }
+            }
+
+            return nameCount.Where(x => x.Value == nameCount.Max(y => y.Value)).FirstOrDefault().Key;
         }
     }
 }
+

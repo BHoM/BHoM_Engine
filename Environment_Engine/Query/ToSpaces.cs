@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -20,41 +20,37 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.oM.Geometry;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-using BH.oM.Environment;
 using BH.oM.Environment.Elements;
-using BH.oM.Environment.Fragments;
-using BH.oM.Base;
-
+using BH.Engine.Geometry;
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
-
-using BH.Engine.Base;
 
 namespace BH.Engine.Environment
 {
     public static partial class Query
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /****          public Methods                   ****/
         /***************************************************/
 
-        [Description("Returns a collection of Environment Spaces from a list of generic BHoM objects")]
-        [Input("bhomObjects", "A collection of generic BHoM objects")]
-        [Output("spaces", "A collection of Environment Space objects")]
-        public static List<Space> Spaces(this List<IBHoMObject> bhomObjects)
+        [Description("Returns a nested collection of Environment Panels which are grouped by the spaces they are connected to")]
+        [Input("panels", "A collection of Environment Panels")]
+        [Output("panelsAsSpaces", "A nested collection of Environment Panels grouped by the space they enclose")]
+        public static List<List<Panel>> ToSpaces(this List<Panel> panels)
         {
-            bhomObjects = bhomObjects.ObjectsByType(typeof(Space));
-            List<Space> spaces = new List<Space>();
-            foreach (IBHoMObject o in bhomObjects)
-                spaces.Add(o as Space);
+            List<List<Panel>> panelsAsSpaces = new List<List<Panel>>();
 
-            return spaces;
+            List<string> uniqueSpaceNames = panels.UniqueSpaceNames();
+            foreach (string s in uniqueSpaceNames)
+                panelsAsSpaces.Add(panels.ToSpace(s));
+
+            return panelsAsSpaces;
         }
     }
 }
+

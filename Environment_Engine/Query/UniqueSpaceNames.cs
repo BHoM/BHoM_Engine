@@ -45,31 +45,6 @@ namespace BH.Engine.Environment
 
             return spaceNames.Where(x => !x.Equals("-1")).Distinct().ToList();
         }
-
-        [Description("Returns the name of the space the panels are enclosing")]
-        [Input("panels", "A collection of Environment Panels")]
-        [Output("spaceName", "The space name the panels are jointly connected to")]
-        public static string ConnectedSpaceName(this List<Panel> panels)
-        {
-            //Gets the single space name which most commonly unites these panels
-            List<string> uniqueNames = panels.UniqueSpaceNames();
-
-            Dictionary<string, int> nameCount = new Dictionary<string, int>();
-
-            foreach (string s in uniqueNames)
-                nameCount.Add(s, 0);
-
-            foreach (Panel be in panels)
-            {
-                foreach (string name in be.ConnectedSpaces)
-                {
-                    if (name != "-1")
-                        nameCount[name]++;
-                }
-            }
-
-            return nameCount.Where(x => x.Value == nameCount.Max(y => y.Value)).FirstOrDefault().Key;
-        }
     }
 }
 
