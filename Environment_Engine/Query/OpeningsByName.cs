@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -49,17 +49,13 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns a collection of Environment Openings from a list of generic BHoM objects")]
-        [Input("bhomObjects", "A collection of generic BHoM objects")]
-        [Output("openings", "A collection of Environment Opening objects")]
-        public static List<Opening> Openings(this List<IBHoMObject> bhomObjects)
+        [Description("Returns a collection of Environment Openings that match the given opening name")]
+        [Input("openings", "A collection of Environment Openings")]
+        [Input("openingName", "The Opening Name to filter by")]
+        [Output("openings", "A collection of Environment Opening objects that match the name")]
+        public static List<Opening> OpeningsByName(this List<Opening> openings, string openingName)
         {
-            bhomObjects = bhomObjects.ObjectsByType(typeof(Opening));
-            List<Opening> Openings = new List<Opening>();
-            foreach (IBHoMObject o in bhomObjects)
-                Openings.Add(o as Opening);
-
-            return Openings;
+            return openings.Where(x => x.Name == openingName).ToList();
         }
     }
 }

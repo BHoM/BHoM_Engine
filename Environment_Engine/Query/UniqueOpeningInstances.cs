@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -26,11 +26,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using BH.oM.Physical.Materials;
-using BH.oM.Environment.MaterialFragments;
+using BH.oM.Environment;
+using BH.oM.Environment.Elements;
+using BH.oM.Environment.Fragments;
+using BH.oM.Base;
 
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
+
+using BH.Engine.Base;
+
+using BH.oM.Physical.Elements;
+using BH.Engine.Geometry;
+
+using BH.oM.Geometry.SettingOut;
 
 namespace BH.Engine.Environment
 {
@@ -40,32 +49,25 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns the numerical roughness of a material")]
-        [Input("material", "A Material object")]
-        [Output("roughness", "The numerical roughness of the material")]
-        public static double Roughness(this Material material)
+        [Description("BH.Engine.Environment Query, Returns a collection of Environment Openings that are unique by their instance data from their origin context fragment")]
+        [Input("openings", "A collection of Environment Opening to filter")]
+        [Output("openings", "A collection of Environment Opening objects with one per instance")]
+        public static List<Opening> UniqueOpeningInstances(this List<Opening> openings)
         {
-            IEnvironmentMaterial materialProperties = material.Properties.Where(x => x is IEnvironmentMaterial).FirstOrDefault() as IEnvironmentMaterial;
+            List<Opening> returnOpenings = new List<Opening>();
 
-            if (materialProperties == null) return 0.0;
-
-            switch(materialProperties.Roughness)
+            foreach (Opening p in openings)
             {
-                case oM.Environment.MaterialFragments.Roughness.VerySmooth:
-                    return 0.0;
-                case oM.Environment.MaterialFragments.Roughness.MediumSmooth:
-                    return 0.04;
-                case oM.Environment.MaterialFragments.Roughness.Smooth:
-                    return 0.08;
-                case oM.Environment.MaterialFragments.Roughness.Rough:
-                    return 0.12;
-                case oM.Environment.MaterialFragments.Roughness.MediumRough:
-                    return 0.16;
-                case oM.Environment.MaterialFragments.Roughness.VeryRough:
-                    return 0.2;
-                default:
-                    return 0.0;
+                OriginContextFragment o = p.FindFragment<OriginContextFragment>(typeof(OriginContextFragment));
+                if (o != null)
+                {
+                    Opening testCheck = returnOpenings.Where(x => x.FindFragment<OriginContextFragment>(typeof(OriginContextFragment)) != null && x.FindFragment<OriginContextFragment>(typeof(OriginContextFragment)).TypeName == o.TypeName).FirstOrDefault();
+                    if (testCheck == null)
+                        returnOpenings.Add(p);
+                }
             }
+
+            return returnOpenings;
         }
     }
 }

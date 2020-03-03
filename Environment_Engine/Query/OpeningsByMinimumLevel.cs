@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -49,17 +49,22 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns a collection of Environment Openings from a list of generic BHoM objects")]
-        [Input("bhomObjects", "A collection of generic BHoM objects")]
-        [Output("openings", "A collection of Environment Opening objects")]
-        public static List<Opening> Openings(this List<IBHoMObject> bhomObjects)
+        [Description("Returns a collection of Environment Openings where the minimum level of the Opening matches the elevation of the given search level")]
+        [Input("openings", "A collection of Environment Openings to filter")]
+        [Input("searchLevel", "The Setting Out Level to search by")]
+        [Output("openings", "A collection of Environment Openings where the minimum level meets the search level")]
+        public static List<Opening> OpeningsByMinimumLevel(this List<Opening> openings, Level searchLevel)
         {
-            bhomObjects = bhomObjects.ObjectsByType(typeof(Opening));
-            List<Opening> Openings = new List<Opening>();
-            foreach (IBHoMObject o in bhomObjects)
-                Openings.Add(o as Opening);
+            return openings.OpeningsByMinimumLevel(searchLevel.Elevation);
+        }
 
-            return Openings;
+        [Description("Returns a collection of Environment Openings where the minimum level of the Opening matches the elevation of the given search level")]
+        [Input("openings", "A collection of Environment Opening to filter")]
+        [Input("searchLevel", "The level to search by")]
+        [Output("openings", "A collection of Environment Opening where the minimum level meets the search level")]
+        public static List<Opening> OpeningsByMinimumLevel(this List<Opening> openings, double searchLevel)
+        {
+            return openings.Where(x => x.MinimumLevel() == searchLevel).ToList();
         }
     }
 }
