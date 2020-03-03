@@ -113,7 +113,7 @@
     <Compile Include="Create\SectionProperties\GenericSection.cs" />
     <Compile Include="Create\Requests\IResultRequest.cs" />
     <Compile Include="Create\MaterialFragments\MaterialFragment.cs" />
-    <Compile Include="Create\SectionProperties\SectionProperty.cs" />
+    <Compile Include="Create\SectionProperties\GeometricalSection.cs" />
     <Compile Include="Create\SectionProperties\TimberSection.cs" />
     <Compile Include="Modify\SetMaterial.cs" />
     <Compile Include="Modify\SetStructuralFragment.cs" />
