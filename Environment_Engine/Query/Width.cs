@@ -67,7 +67,7 @@ namespace BH.Engine.Environment
         }
 
         [Description("Returns the width of a BHoM Geometry ICurve based on the bounding box of the curve")]
-        [Input("curve", "BHoM Geometry ICurve")]
+        [Input("panelCurve", "BHoM Geometry ICurve")]
         [Output("width", "The width of the curve based on the difference in XY values for its bounding box")]
         public static double Width(this ICurve panelCurve)
         {
