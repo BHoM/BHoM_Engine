@@ -142,7 +142,7 @@
     <Compile Include="Create\Constraints\Constraint6DOF.cs" />
     <Compile Include="Create\Constraints\Constraint4DOF.cs" />
     <Compile Include="Create\Loads\Load.cs" />
-    <Compile Include="Create\Loads\LoadCombination2.cs" />
+    <Compile Include="Create\Loads\LoadCombination.cs" />
     <Compile Include="Create\Loads\Loadcase.cs" />
     <Compile Include="Create\Elements\RigidLink.cs" />
     <Compile Include="Create\Framing\FramingElement.cs" />
