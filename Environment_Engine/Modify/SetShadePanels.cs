@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -25,9 +25,11 @@ using System.Collections.Generic;
 using BH.oM.Environment.Elements;
 using BH.oM.Geometry;
 using BH.Engine.Geometry;
-
+using BH.oM.Environment.Fragments;
+using System;
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
+
 using BH.Engine.Base;
 
 namespace BH.Engine.Environment
@@ -38,16 +40,20 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns a single Environment Panel with the provided opening. Opening is added to the provided panel regardless of geometric association")]
-        [Input("panel", "A single Environment Panel to add the opening to")]
-        [Input("opening", "The Environment Opening to add to the panel")]
-        [Output("panel", "A modified Environment Panel with the provided opening added")]
-        public static Panel AddOpening(this Panel panel, Opening opening)
+        [Description("Returns the shade panels represented by Environment Panels with no adj spaces and fixes PanelType")]
+        [Input("panels", "A collection of Environment Panels")]
+        [Output("shadePanels", "BHoM Environment panel representing the shade")]
+        public static List<Panel> SetShadePanels(this List<Panel> panels)
         {
-            Panel clone = panel.DeepClone<Panel>();
-            if (clone.Openings == null) clone.Openings = new List<Opening>();
-            clone.Openings.Add(opening);
-            return clone;
+            //Find the panel(s) without connected spaces and set as shade
+            List<Panel> shadePanels = new List<Panel>(panels.Select(x => x.DeepClone<Panel>()).ToList());
+            foreach (Panel panel in shadePanels)
+            {
+                if (panel.ConnectedSpaces.Where(x => x != "-1").ToList().Count == 0)
+                    panel.Type = PanelType.Shade;
+            }
+
+            return shadePanels;
         }
     }
 }

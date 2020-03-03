@@ -20,35 +20,39 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System.Linq;
-using System.Collections.Generic;
-using BH.oM.Environment.Elements;
-using BH.oM.Geometry;
-using BH.Engine.Geometry;
-
-using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
-using BH.Engine.Base;
+using BH.oM.Reflection.Attributes;
+using System.Collections.Generic;
+using System.Linq;
+
+using BH.oM.Environment.Elements;
 
 namespace BH.Engine.Environment
 {
     public static partial class Modify
     {
-        /***************************************************/
-        /**** Public Methods                            ****/
-        /***************************************************/
-
-        [Description("Returns a single Environment Panel with the provided opening. Opening is added to the provided panel regardless of geometric association")]
-        [Input("panel", "A single Environment Panel to add the opening to")]
-        [Input("opening", "The Environment Opening to add to the panel")]
-        [Output("panel", "A modified Environment Panel with the provided opening added")]
-        public static Panel AddOpening(this Panel panel, Opening opening)
+        [Description("Remove all openings which match the given name from a collection of panels")]
+        [Input("panels", "The Environment Panels to have openings filtered")]
+        [Input("openingName", "The name of the opening to be removed from the panels")]
+        [Output("panels", "A collection of Environment Panels with the named opening removed")]
+        public static List<Panel> RemoveOpeningsByName(this List<Panel> panels, string openingName)
         {
-            Panel clone = panel.DeepClone<Panel>();
-            if (clone.Openings == null) clone.Openings = new List<Opening>();
-            clone.Openings.Add(opening);
-            return clone;
+            List<Panel> rtnPanels = new List<Panel>();
+
+            foreach (Panel p in panels)
+            {
+                Panel pan = p.GetShallowClone(true) as Panel;
+                pan.Openings = new List<Opening>();
+                foreach (Opening o in p.Openings)
+                {
+                    if (o.Name != openingName)
+                        pan.Openings.Add(o.GetShallowClone(true) as Opening);
+                }
+
+                rtnPanels.Add(pan);
+            }
+
+            return rtnPanels;
         }
     }
 }
-

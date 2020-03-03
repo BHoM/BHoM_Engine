@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -20,14 +20,20 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System.Linq;
-using System.Collections.Generic;
-using BH.oM.Environment.Elements;
-using BH.oM.Geometry;
 using BH.Engine.Geometry;
+using BH.oM.Environment.Elements;
+using BH.oM.Environment;
+using BH.oM.Geometry;
+
+using BH.oM.Physical.Constructions;
+
+using System.Collections.Generic;
+using System.Linq;
+using BH.oM.Environment.Fragments;
 
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
+
 using BH.Engine.Base;
 
 namespace BH.Engine.Environment
@@ -38,16 +44,18 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns a single Environment Panel with the provided opening. Opening is added to the provided panel regardless of geometric association")]
-        [Input("panel", "A single Environment Panel to add the opening to")]
-        [Input("opening", "The Environment Opening to add to the panel")]
-        [Output("panel", "A modified Environment Panel with the provided opening added")]
-        public static Panel AddOpening(this Panel panel, Opening opening)
+        [Description("Update a new construction to openings hosted on panels. OPTIONAL - filter the openings to receive the new construction by their Origin Context Fragment type name")]
+        [Input("panels", "A collection of Environment Panels to update the hosted openings constructions of")]
+        [Input("newConstruction", "The new construction to assign to the openings")]
+        [Input("typeNames", "OPTIONAL: The type names of the openings to update - if any openings type name is contained in the list given it will have its construction updated, default null")]
+        [Output("panels", "The collection of Environment Panels with updated construction on the hosted openings")]
+        public static List<Panel> SetOpeningConstruction(this List<Panel> panels, IConstruction newConstruction, List<string> typeNames = null)
         {
-            Panel clone = panel.DeepClone<Panel>();
-            if (clone.Openings == null) clone.Openings = new List<Opening>();
-            clone.Openings.Add(opening);
-            return clone;
+            List<Panel> clones = new List<Panel>(panels.Select(x => x.DeepClone<Panel>()).ToList());
+            foreach (Panel p in clones)
+                p.Openings = p.Openings.SetConstructions(newConstruction, typeNames);
+
+            return clones;
         }
     }
 }

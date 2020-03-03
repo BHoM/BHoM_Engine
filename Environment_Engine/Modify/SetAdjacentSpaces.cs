@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -20,14 +20,13 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System.Linq;
 using System.Collections.Generic;
 using BH.oM.Environment.Elements;
-using BH.oM.Geometry;
-using BH.Engine.Geometry;
 
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
+
+using System.Linq;
 using BH.Engine.Base;
 
 namespace BH.Engine.Environment
@@ -38,16 +37,15 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns a single Environment Panel with the provided opening. Opening is added to the provided panel regardless of geometric association")]
-        [Input("panel", "A single Environment Panel to add the opening to")]
-        [Input("opening", "The Environment Opening to add to the panel")]
-        [Output("panel", "A modified Environment Panel with the provided opening added")]
-        public static Panel AddOpening(this Panel panel, Opening opening)
+        [Description("Returns a single Environment Panel with the provided space names added as the connecting spaces")]
+        [Input("panel", "A single Environment Panel to add the space names to")]
+        [Input("spaceNames", "The collection of names of the spaces the panel is connected to")]
+        [Output("panel", "A modified Environment Panel with the provided space names listed as the connecting spaces")]
+        public static Panel SetAdjancentSpaces(this Panel panel, List<string> spaceNames)
         {
-            Panel clone = panel.DeepClone<Panel>();
-            if (clone.Openings == null) clone.Openings = new List<Opening>();
-            clone.Openings.Add(opening);
-            return clone;
+            Panel clonedPanel = panel.DeepClone<Panel>();
+            clonedPanel.ConnectedSpaces = spaceNames;
+            return clonedPanel;
         }
     }
 }

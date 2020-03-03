@@ -97,20 +97,6 @@ namespace BH.Engine.Environment
 
             return returnOpenings;
         }
-
-        [Description("Update a new construction to openings hosted on panels. OPTIONAL - filter the openings to receive the new construction by their Origin Context Fragment type name")]
-        [Input("panels", "A collection of Environment Panels to update the hosted openings constructions of")]
-        [Input("newConstruction", "The new construction to assign to the openings")]
-        [Input("typeNames", "OPTIONAL: The type names of the openings to update - if any openings type name is contained in the list given it will have its construction updated, default null")]
-        [Output("panels", "The collection of Environment Panels with updated construction on the hosted openings")]
-        public static List<Panel> SetOpeningConstruction(this List<Panel> panels, IConstruction newConstruction, List<string> typeNames = null)
-        {
-            List<Panel> clones = new List<Panel>(panels.Select(x => x.DeepClone<Panel>()).ToList());
-            foreach(Panel p in clones)
-                p.Openings = p.Openings.SetConstructions(newConstruction, typeNames);
-
-            return clones;
-        }
     }
 }
 

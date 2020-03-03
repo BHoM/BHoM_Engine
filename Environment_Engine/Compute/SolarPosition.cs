@@ -585,47 +585,5 @@ namespace BH.Engine.Environment
 
             return new Sun { Altitude = (90 - zenith), Azimuth = azimuth };
         }
-
-        [Description("Calculate the Third Order Polynominal for the numbers provided. The equation is: ((a * x + b) * x * c) * x + d")]
-        [Output("thirdOrderPolynominal", "The calculated Third Order Polynominal")]
-        public static double ThirdOrderPolynomial(double a, double b, double c, double d, double x)
-        {
-            return ((a * x + b) * x + c) * x + d;
-        }
-
-        [Description("Calculate the Julian Day for the curent date time provided")]
-        [Input("year", "The year for calculating the Julian Day from")]
-        [Input("month", "The month for calculating the Julian Day from")]
-        [Input("day", "The day for calculating the Julian Day from")]
-        [Input("hour", "The hour for calculating the Julian Day from")]
-        [Input("minute", "The minute for calculating the Julian Day from")]
-        [Input("second", "The second for calculating the Julian Day from")]
-        [Input("timezone", "The timezone for calculating the Julian Day for, defined as the UTC Offset")]
-        [Output("julianDay", "The calculated Julian Day")]
-        public static double JulianDay(int year, int month, int day, int hour, int minute, double second, double timezone)
-        {
-            double dayDecimal = day + (hour - timezone + (minute + (second) / 60) / 60) / 24;
-            if(month < 3)
-            {
-                month += 12;
-                year--;
-            }
-
-            int y = (int)(365.25 * (year + 4716));
-            int m = (int)(30.6001 * (month + 1));
-            
-            double julianDay = y + m + dayDecimal - 1524.5;
-
-            if(julianDay > 2299160)
-            {
-                int alteration = ((int)year / 100);
-                int a = (int)(alteration / 4);
-                julianDay += (2 - alteration + a);
-            }
-
-            return julianDay;
-        }
-
     }
-
 }

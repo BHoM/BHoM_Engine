@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -35,18 +35,6 @@ namespace BH.Engine.Environment
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-
-        [Description("Removes a single Environment Panel from a collection of Environment Panels if it exists within the list")]
-        [Input("panels", "A collection of Environment Panels to modify")]
-        [Input("panelToRemove", "The Environment Panel to remove")]
-        [Output("panels", "A collection of Environment Panels with the panelToRemove excluded from the list")]
-        public static List<Panel> RemovePanel(this List<Panel> panels, Panel panelToRemove)
-        {
-            List<Panel> clones = new List<Panel>(panels.Select(x => x.DeepClone<Panel>()).ToList());
-            List<Panel> rtnElements = clones.Where(x => x.BHoM_Guid != panelToRemove.BHoM_Guid).ToList(); //Back up in case the element isn't removed the first time
-
-            return rtnElements;
-        }
 
         [Description("Removes a collection of Environment Panels from a collection of Environment Panels if they exist within the list")]
         [Input("panels", "A collection of Environment Panels to modify")]
