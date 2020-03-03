@@ -127,7 +127,7 @@
     <Compile Include="Create\Elements\NewElement0D.cs" />
     <Compile Include="Create\Elements\NewElement1D.cs" />
     <Compile Include="Create\Elements\NewInternalElement2D.cs" />
-    <Compile Include="Create\Requests\MeshResult.cs" />
+    <Compile Include="Create\Requests\FilterRequest.cs" />
     <Compile Include="Create\Elements\Edge.cs" />
     <Compile Include="Create\Framing\FramingElementProperty.cs" />
     <Compile Include="Create\SurfaceProperties\LoadingPanelProperty.cs" />
