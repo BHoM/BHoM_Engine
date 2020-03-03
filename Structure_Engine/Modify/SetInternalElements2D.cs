@@ -44,9 +44,9 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static Panel SetInternalElements2D(this Panel Panel, List<IElement2D> internalElements2D)
+        public static Panel SetInternalElements2D(this Panel panel, List<IElement2D> internalElements2D)
         {
-            Panel pp = Panel.GetShallowClone() as Panel;
+            Panel pp = panel.GetShallowClone() as Panel;
             pp.Openings = new List<Opening>(internalElements2D.Cast<Opening>().ToList());
             return pp;
         }
