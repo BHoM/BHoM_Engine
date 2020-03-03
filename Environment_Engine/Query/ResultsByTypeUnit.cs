@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -22,11 +22,12 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
-using BH.oM.Environment.Elements;
-using BH.oM.Geometry;
+using System.Linq;
+using BH.oM.Environment.Results;
+
 using BH.Engine.Geometry;
+using BH.oM.Geometry;
 
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
@@ -39,23 +40,16 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns a BHoM Geometry Point that is in the provided space")]
-        [Input("panelsAsSpace", "The collection of Environment Panels that represent a single space to get the point in")]
-        [Output("spacePoint", "A point in the space")]
-        public static Point PointInSpace(this List<Panel> panelsAsSpace)
+        [Description("Returns a collection of Environment Simulation Results that match both Simulation Result Type and Profile Result Unit")]
+        [Input("results", "A collection of Simulation Results")]
+        [Input("simulationType", "The Simulation Result Type filter")]
+        [Input("unit", "The Profile Result Unit filter")]
+        [Output("simulationResults", "A collection of filtered simulation results")]
+        public static List<SimulationResult> ResultsByTypeUnit(this List<SimulationResult> results, SimulationResultType simulationType, ProfileResultUnit unit)
         {
-            Polyline floor = panelsAsSpace.FloorGeometry();
-            Point spacePnt = floor.PointInRegion();
-
-            double height = 0.0;
-            foreach (Panel p in panelsAsSpace)
-                height = Math.Max(height, p.Height());
-
-            spacePnt.Z += height / 2;
-
-            return spacePnt;
+            results = results.ResultsByType(simulationType);
+            return results.ResultsByUnit(unit);
         }
     }
 }
-
 
