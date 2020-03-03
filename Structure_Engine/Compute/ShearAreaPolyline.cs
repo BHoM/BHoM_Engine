@@ -42,11 +42,11 @@ namespace BH.Engine.Structure
         [Description("Calculates the the exact shear area of a simplified boundary of a section.")]
         [Input("pLine", "The Polyline should have the upper side along the x-axis and the rest of the lines should be definable as /n" +
                         "a function of x apart for vertical segments. The last line segment should be the upper one /n" +
-                        "use WetBlanketInterpretation()")]
-        [Input("momentOfInertia", "The true moment of inertia of the section")]
+                        "use WetBlanketInterpretation().")]
+        [Input("momentOfInertia", "The true moment of inertia of the section.")]
         [Input("tol", "The tolerance for considering a line segment horizontal or vertical. /n" +
-                      "i.e. (value at endpoint - value at startpoint) < tol")]
-        [Output("shearArea", "The shear area of the section")]
+                      "i.e. (value at endpoint - value at startpoint) < tol.")]
+        [Output("shearArea", "The shear area of the section.")]
         public static double ShearAreaPolyline(this Polyline pLine, double momentOfInertia, double tol = Tolerance.Distance)
         {
             double sy = 0;

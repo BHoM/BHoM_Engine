@@ -41,13 +41,13 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Calculates the PlasticModulus [Wpl] for an enclosed region")]
+        [Description("Calculates the PlasticModulus [Wpl] for an enclosed region.")]
         [Input("pLine", "Polyline, should have the upper side along the x-axis and the rest of the lines should be definable as a function of x apart for vertical segments. \n" +
-                        "The last LineSegment should be the upper one, use WetBlanketInterpretation() to convert a collection of regions to compliant form")]
+                        "The last LineSegment should be the upper one, use WetBlanketInterpretation() to convert a collection of regions to compliant form.")]
         [Input("curves", "The true curves of the section where counter-clockwise curves are positive area and clockwise ones are negative. /n" +
-                         "Should be the curves whose Polyline version was provided for WetBlanketInterpetation()")]
-        [Input("trueArea", "The true area of the region")]
-        [Output("plasticModulus", "The plasticModulus for the region")]
+                         "Should be the curves whose Polyline version was provided for WetBlanketInterpetation().")]
+        [Input("trueArea", "The true area of the region.")]
+        [Output("plasticModulus", "The plasticModulus for the region.")]
         public static double PlasticModulus(this Polyline pLine, IEnumerable<ICurve> curves = null, double trueArea = double.NaN)
         {
             double area = BH.Engine.Geometry.Compute.IIntegrateRegion(pLine, 0);   //Should be calculated here for consistency
@@ -142,7 +142,7 @@ namespace BH.Engine.Structure
         /**** Private Methods                           ****/
         /***************************************************/
 
-        [Description("Closes a curve with a line if open")]
+        [Description("Closes a curve with a line if open.")]
         private static ICurve Close(this ICurve curve, out double d, double tol = Tolerance.Distance)
         {
             Point start = curve.IStartPoint();
