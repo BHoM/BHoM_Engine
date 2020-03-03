@@ -126,8 +126,8 @@
     <Compile Include="Create\PanelContextFragment.cs" />
     <Compile Include="Create\BuildingResultFragment.cs" />
     <Compile Include="Create\OriginContextFragment.cs" />
-    <Compile Include="Create\NewElement1D.cs" />
-    <Compile Include="Create\NewInternalElement2D.cs" />
+    <Compile Include="Create\IElement1D\NewElement1D.cs" />
+    <Compile Include="Create\IElement2D\NewInternalElement2D.cs" />
     <Compile Include="Create\SimulationResult.cs" />
     <Compile Include="Create\SpaceAnalyticalFragment.cs" />
     <Compile Include="Modify\AdjacentSpace.cs" />
