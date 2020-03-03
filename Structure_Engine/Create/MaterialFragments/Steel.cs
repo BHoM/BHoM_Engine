@@ -44,7 +44,7 @@ namespace BH.Engine.Structure
         [InputFromProperty("density")]
         [InputFromProperty("dampingRatio")]
         [InputFromProperty("embodiedCarbon")]
-        [Output("aluminium", "The created tructural Steel material fragment.")]
+        [Output("steel", "The created structural Steel material fragment.")]
         public static Steel Steel(string name, double youngsModulus = 210000000000, double poissonsRatio = 0.3, double thermalExpansionCoeff = 0.000012, double density = 7850, double dampingRatio = 0, double yieldStress = 0, double ultimateStress = 0, double embodiedCarbon = 1.3)
         {
             return new Steel()
@@ -65,4 +65,3 @@ namespace BH.Engine.Structure
 
     }
 }
-

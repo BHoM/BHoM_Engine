@@ -44,7 +44,7 @@ namespace BH.Engine.Structure
         [InputFromProperty("density")]
         [InputFromProperty("dampingRatio")]
         [InputFromProperty("embodiedCarbon")]
-        [Output("aluminium", "The created tructural Aluminium material fragment.")]
+        [Output("aluminium", "The created structural Aluminium material fragment.")]
         public static Aluminium Aluminium(string name, double youngsModulus = 70000000000, double poissonsRatio = 0.34, double thermalExpansionCoeff = 0.000023, double density = 2710, double dampingRatio = 0, double embodiedCarbon = 7.9)
         {
             return new Aluminium()
@@ -62,4 +62,3 @@ namespace BH.Engine.Structure
         /***************************************************/
     }
 }
-
