@@ -102,6 +102,46 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        public static double PlasticModulus(List<IntegrationSlice> slices, double area, double max, double min)
+        {
+            double result = 0;
+            slices = slices.OrderBy(x => x.Centre).ToList();
+
+            double plasticNeutralAxis = 0;
+            for (int i = 0; i < slices.Count; i++)
+            {
+                IntegrationSlice slice = slices[i];
+                double sliceArea = slice.Length * slice.Width;
+                if (result + sliceArea < area / 2)
+                {
+                    result += sliceArea;
+                }
+                else
+                {
+                    plasticNeutralAxis = slices[i - 1].Centre + slices[i - 1].Width / 2;
+                    double diff = area / 2 - result;
+                    double ratio = diff / sliceArea;
+                    plasticNeutralAxis += ratio * slice.Width;
+
+
+                    break;
+                }
+            }
+
+            double centreTop = 0;
+            double centreBot = 0;
+
+            double areaTop = Geometry.Query.AreaIntegration(slices, 1, max, plasticNeutralAxis, ref centreTop);
+            double areaBot = Geometry.Query.AreaIntegration(slices, 1, min, plasticNeutralAxis, ref centreBot);
+
+            return areaTop * Math.Abs(centreTop - plasticNeutralAxis) + areaBot * Math.Abs(centreBot - plasticNeutralAxis);
+
+        }
+
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+
         [Description("Closes a curve with a line if open")]
         private static ICurve Close(this ICurve curve, out double d, double tol = Tolerance.Distance)
         {
