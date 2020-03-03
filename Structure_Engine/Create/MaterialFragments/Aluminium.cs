@@ -38,22 +38,22 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Creates a aluminium material. First constructs a Aluminium material fragment, then applies it to a new Material class")]
-        [Input("e", "Youngs modulus. Given in [Pa] or [N/m]. Will be stored on the material fragment")]
-        [Input("v", "Poissons Ratio. Will be stored on the material fragment")]
-        [Input("tC", "Modulus of thermal expansion. Given in [1/°C] or [1/K]. Will be stored on the material fragment")]
+        [Input("youngsModulus", "Youngs modulus. Given in [Pa] or [N/m]. Will be stored on the material fragment")]
+        [Input("poissonsRatio", "Poissons Ratio. Will be stored on the material fragment")]
+        [Input("thermalExpansionCoeff", "Modulus of thermal expansion. Given in [1/°C] or [1/K]. Will be stored on the material fragment")]
         [Input("density", "Given as [kg/m3]. Will be stored on the base material")]
         [Input("dampingRatio", "Dynamic damping ratio of the material. Will be stored on the material fragment")]
         [Input("embodiedCarbon", "Embodied carbon for the material. Will be stored on the material fragment")]
         [Output("Material", "The created material with a aluminium fragment")]
-        public static Aluminium Aluminium(string name, double e = 70000000000, double v = 0.34, double tC = 0.000023, double density = 2710, double dampingRatio = 0, double embodiedCarbon = 7.9)
+        public static Aluminium Aluminium(string name, double youngsModulus = 70000000000, double poissonsRatio = 0.34, double thermalExpansionCoeff = 0.000023, double density = 2710, double dampingRatio = 0, double embodiedCarbon = 7.9)
         {
             return new Aluminium()
             {
                 Name = name,
                 Density = density,
-                YoungsModulus = e,
-                PoissonsRatio = v,
-                ThermalExpansionCoeff = tC,
+                YoungsModulus = youngsModulus,
+                PoissonsRatio = poissonsRatio,
+                ThermalExpansionCoeff = thermalExpansionCoeff,
                 DampingRatio = dampingRatio,
                 EmbodiedCarbon = embodiedCarbon,
             };

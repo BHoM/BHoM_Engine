@@ -38,24 +38,24 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Creates a timber material. First constructs a timber material fragment, then applies it to a new Material class")]
-        [Input("e", "Youngs modulus as Vector. Given in [Pa] or [N/m]. Will be stored on the material fragment")]
-        [Input("g", "Shear modulus as Vector. Given in [Pa] or [N/m]. Will be stored on the material fragment")]
-        [Input("v", "Poissons Ratio as Vector. Will be stored on the material fragment")]
-        [Input("tC", "Modulus of thermal expansion as Vector. Given in [1/°C] or [1/K]. Will be stored on the material fragment")]
+        [Input("youngsModulus", "Youngs modulus as Vector. Given in [Pa] or [N/m]. Will be stored on the material fragment")]
+        [Input("shearModulus", "Shear modulus as Vector. Given in [Pa] or [N/m]. Will be stored on the material fragment")]
+        [Input("poissonsRatio", "Poissons Ratio as Vector. Will be stored on the material fragment")]
+        [Input("thermalExpansionCoeff", "Modulus of thermal expansion as Vector. Given in [1/°C] or [1/K]. Will be stored on the material fragment")]
         [Input("density", "Given as [kg/m3]. Will be stored on the base material")]
         [Input("dampingRatio", "Dynamic damping ratio of the material. Will be stored on the material fragment")]
         [Input("embodiedCarbon", "Embodied carbon for the material. Will be stored on the material fragment")]
         [Output("Material", "The created material with a timber fragment")]
-        public static Timber Timber(string name, Vector e, Vector v, Vector g, Vector tC, double density, double dampingRatio, double embodiedCarbon = 0.4)
+        public static Timber Timber(string name, Vector youngsModulus, Vector poissonsRatio, Vector shearModulus, Vector thermalExpansionCoeff, double density, double dampingRatio, double embodiedCarbon = 0.4)
         {
             return new Timber()
             {
                 Name = name,
                 Density = density,
-                YoungsModulus = e,
-                PoissonsRatio = v,
-                ShearModulus = g,
-                ThermalExpansionCoeff = tC,
+                YoungsModulus = youngsModulus,
+                PoissonsRatio = poissonsRatio,
+                ShearModulus = shearModulus,
+                ThermalExpansionCoeff = thermalExpansionCoeff,
                 DampingRatio = dampingRatio,
                 EmbodiedCarbon = embodiedCarbon,
             };
