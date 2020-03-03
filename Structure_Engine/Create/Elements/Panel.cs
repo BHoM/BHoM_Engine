@@ -80,7 +80,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [DeprecatedAttribute("Generic method for ICurve in place")]
+        [Deprecated("2.2", "Generic method for ICurve in place")]
         public static List<Panel> PanelPlanar(List<Polyline> outlines, ISurfaceProperty property = null, string name = "")
         {
             return Panel(new List<ICurve>(outlines), property, name);
