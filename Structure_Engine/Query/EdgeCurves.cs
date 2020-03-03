@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -38,41 +38,16 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Extracts the edge curves from the geometric surface of the element.")]
-        [Input("surface","The structural surface to extract edges from.")]
-        [Output("edges", "The list of curves representing the edges of the underlying surface.")]
-        public static List<ICurve> Edges(this Surface surface)
+        [Description("Extracts the edge curves from all of an Openings.")]
+        [Input("opening", "The Opening to extract opening edges from.")]
+        [Output("edges", "The list of curves representing the edges of the Opening.")]
+        public static List<ICurve> EdgeCurves(this Opening opening)
         {
-            if (surface.Extents != null)
-                return surface.Extents.IExternalEdges();
-            else
-                return new List<ICurve>();
-        }
-
-        /***************************************************/
-        /**** Public Methods - Interfaces               ****/
-        /***************************************************/
-
-        [Description("Extracts all the edge curves from an AreaElement.")]
-        [Input("element", "The element to extract opening edges from.")]
-        [Output("edges", "The list of curves representing all internal and external edges of an element.")]
-        public static IEnumerable<ICurve> IEdges(this IAreaElement element)
-        {
-            if (element is Panel)
-                return (AllEdgeCurves(element as Panel));
-            else
-                return Edges(element as dynamic);
+            return opening.Edges.Select(e => e.Curve).ToList();
         }
 
         /***************************************************/
 
-        private static IEnumerable<ICurve> Edges(this IAreaElement element)
-        {
-            Reflection.Compute.RecordWarning("Can not extract edges for obejcts of type " + element.GetType().FullName);
-            return new List<ICurve>();
-        }
-
-        /***************************************************/
     }
 
 }
