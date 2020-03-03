@@ -37,15 +37,15 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates a timber material. First constructs a timber material fragment, then applies it to a new Material class")]
-        [Input("youngsModulus", "Youngs modulus as Vector. Given in [Pa] or [N/m]. Will be stored on the material fragment")]
-        [Input("shearModulus", "Shear modulus as Vector. Given in [Pa] or [N/m]. Will be stored on the material fragment")]
-        [Input("poissonsRatio", "Poissons Ratio as Vector. Will be stored on the material fragment")]
-        [Input("thermalExpansionCoeff", "Modulus of thermal expansion as Vector. Given in [1/°C] or [1/K]. Will be stored on the material fragment")]
-        [Input("density", "Given as [kg/m3]. Will be stored on the base material")]
-        [Input("dampingRatio", "Dynamic damping ratio of the material. Will be stored on the material fragment")]
-        [Input("embodiedCarbon", "Embodied carbon for the material. Will be stored on the material fragment")]
-        [Output("Material", "The created material with a timber fragment")]
+        [Description("Creates a structural Timber material fragment to be used on analytical structural elements, or as a fragment of the physical material.")]
+        [InputFromProperty("youngsModulus")]
+        [InputFromProperty("poissonsRatio")]
+        [InputFromProperty("shearModulus")]
+        [InputFromProperty("thermalExpansionCoeff")]
+        [InputFromProperty("density")]
+        [InputFromProperty("dampingRatio")]
+        [InputFromProperty("embodiedCarbon")]
+        [Output("aluminium", "The created tructural Timber material fragment.")]
         public static Timber Timber(string name, Vector youngsModulus, Vector poissonsRatio, Vector shearModulus, Vector thermalExpansionCoeff, double density, double dampingRatio, double embodiedCarbon = 0.4)
         {
             return new Timber()
