@@ -75,7 +75,7 @@ namespace BH.Engine.Structure
         [InputFromProperty("feaType", "FEAType")]
         [Input("name", "The name of the created Bar.")]
         [Output("bar", "The created Bar with a centreline matching the provided geometrical Line.")]
-        public static Bar Bar(Line line, ISectionProperty property = null, Vector normal =  null, BarRelease release = null, BarFEAType feaType = BarFEAType.Flexural, string name = "")
+        public static Bar Bar(Line line, ISectionProperty sectionProperty = null, Vector normal =  null, BarRelease release = null, BarFEAType feaType = BarFEAType.Flexural, string name = "")
         {
             double orientationAngle;
 
@@ -111,7 +111,7 @@ namespace BH.Engine.Structure
 
             }
                 
-            return Bar(line, property, orientationAngle, release, feaType, name);
+            return Bar(line, sectionProperty, orientationAngle, release, feaType, name);
         }
 
         /***************************************************/
