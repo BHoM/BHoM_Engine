@@ -40,11 +40,8 @@ namespace BH.Engine.Diffing
     {
         public static IEnumerable<T> PrepareForDiffing<T>(this IEnumerable<T> objects, DiffConfig diffConfig = null) where T : IBHoMObject
         {
-            // Clone the current objects to preserve immutability
-            IEnumerable<T> objs_cloned = objects.Select(obj => BH.Engine.Base.Query.DeepClone(obj)).ToList();
-
-            // Calculate and set the hash fragment
-            Modify.SetHashFragment(objs_cloned, diffConfig);
+            // Clone the current objects to preserve immutability; calculate and set the hash fragment
+            IEnumerable<T> objs_cloned = Modify.SetHashFragment(objects, diffConfig);
 
             // Remove duplicates by hash
             objs_cloned = Modify.RemoveDuplicatesByHash(objs_cloned);
