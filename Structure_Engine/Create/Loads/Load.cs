@@ -38,7 +38,6 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-
         public static ILoad Load(LoadType type, Loadcase loadCase, List<double> magnitude, string groupName, LoadAxis axis, bool isProjected, string units = "kN")
         {
             units = units.ToUpper();
@@ -136,14 +135,7 @@ namespace BH.Engine.Structure
             }
         }
 
-
-
-
         /***************************************************/
-
-
-        /***************************************************/
-
 
     }
 }
