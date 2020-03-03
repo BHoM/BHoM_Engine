@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -40,81 +40,6 @@ namespace BH.Engine.Environment
         /***************************************************/
         /**** Public Methods - Curves                   ****/
         /***************************************************/
-
-        [Description("Returns a collection of Environment Panels that have been split if any of them overlap each other to ensure no panels overlap")]
-        [Input("panels", "A collection of Environment Panels to split")]
-        [Output("panels", "A collection of Environment Panels that do not overlap")]
-        public static List<Panel> SplitPanelsByOverlap(this List<Panel> panels)
-        {
-            List<Panel> rtnElements = new List<Panel>();
-            List<Panel> oriElements = new List<Panel>(panels.Select(x => x.DeepClone<Panel>()).ToList());
-
-            while (oriElements.Count > 0)
-            {
-                Panel currentElement = oriElements[0];
-                List<Panel> overlaps = currentElement.IdentifyOverlaps(oriElements);
-                overlaps.AddRange(currentElement.IdentifyOverlaps(rtnElements));
-
-                if (overlaps.Count == 0)
-                    rtnElements.Add(currentElement);
-                else
-                {
-                    //Cut the smaller building element out of the bigger one as an opening
-                    List<Line> cuttingLines = new List<Line>();
-                    foreach(Panel be in overlaps)
-                        cuttingLines.AddRange(be.Polyline().SubParts());
-
-
-                    rtnElements.AddRange(currentElement.Split(cuttingLines));
-                }
-
-                oriElements.RemoveAt(0);
-            }
-
-            return rtnElements;
-        }
-
-        [Description("Returns a collection of Environment Panels that are split by their edge points ensuring panels which span multiple spaces are split and have adjacencies assigned correctly")]
-        [Input("panels", "A collection of Environment Panels to split")]
-        [Output("panels", "A collection of Environment Panels that have been split")]
-        public static List<Panel> SplitPanelsByPoints(this List<Panel> panels)
-        {
-            List<Panel> rtnElements = new List<Panel>();
-            List<Panel> oriElements = new List<Panel>(panels.Select(x => x.DeepClone<Panel>()).ToList());
-
-            while(oriElements.Count > 0)
-            {
-                Panel currentElement = oriElements[0];
-
-                bool wasSplit = false;
-                List<Panel> elementSplitResult = new List<Panel>();
-                for(int x = 0; x < oriElements.Count; x++)
-                {
-                    if (oriElements[x].BHoM_Guid == currentElement.BHoM_Guid) continue; //Don't split by the same element
-
-                    //Split this element by each other element in the list
-                    elementSplitResult = currentElement.Split(oriElements[x]);
-
-                    if (elementSplitResult.Count > 1)
-                    {
-                        oriElements.AddRange(elementSplitResult);
-                        wasSplit = true;
-                        break; //Don't attempt to split this element any further, wait to split its new parts later in the loop...
-                    }
-                }
-
-                oriElements.RemoveAt(0); //Remove the element we have just worked with, regardless of whether we split it or not
-                if (!wasSplit) rtnElements.Add(currentElement); //We have a pure element ready to use
-                else
-                {
-                    //Add the new elements to the list of cutting objects
-                    oriElements.RemoveAt(oriElements.IndexOf(oriElements.Where(x => x.BHoM_Guid == currentElement.BHoM_Guid).FirstOrDefault()));
-                    oriElements.AddRange(elementSplitResult);
-                }
-            }
-
-            return rtnElements;
-        }
 
         [Description("Returns a collection of Environment Panels that are split by a collection of provided cutting lines")]
         [Input("panel", "An Environment Panel to split")]
@@ -180,9 +105,9 @@ namespace BH.Engine.Environment
 
             List<Panel> splitElements = new List<Panel>();
 
-            foreach(Polyline pLine in cutLines)
+            foreach (Polyline pLine in cutLines)
             {
-                if(!pLine.IsLinear())
+                if (!pLine.IsLinear())
                 {
                     //Only do this for non-straight line cuts
                     List<Point> ctrlPts = pLine.IControlPoints();
@@ -206,7 +131,7 @@ namespace BH.Engine.Environment
         {
             //Go through all building elements and compare to see if any should be split into smaller building elements
             List<Panel> clones = new List<Panel>(panels.Select(x => x.DeepClone<Panel>()).ToList());
- 
+
             List<Panel> rtn = new List<Panel>();
 
             Dictionary<Panel, List<Panel>> overlaps = new Dictionary<Panel, List<Panel>>();
@@ -229,16 +154,16 @@ namespace BH.Engine.Environment
                     geomBuild.Add(be2, new List<Polyline>());
 
                     List<Polyline> intersections = be1P.BooleanIntersection(be2p);
-                    foreach(Polyline p in intersections)
+                    foreach (Polyline p in intersections)
                     {
                         geomBuild[kvp.Key].AddRange(be1P.SplitAtPoints(p.ControlPoints));
                         geomBuild[be2].AddRange(be2p.SplitAtPoints(p.ControlPoints));
                     }
 
-                    foreach(KeyValuePair<Panel, List<Polyline>> kvp2 in geomBuild)
+                    foreach (KeyValuePair<Panel, List<Polyline>> kvp2 in geomBuild)
                     {
                         List<Polyline> remove = new List<Polyline>();
-                        foreach(Polyline p5 in kvp2.Value)
+                        foreach (Polyline p5 in kvp2.Value)
                         {
                             bool isNotIn = true;
                             foreach (Point px in p5.ControlPoints)
@@ -330,24 +255,6 @@ namespace BH.Engine.Environment
             }
 
             return rtn;
-        }
-
-        [Description("Split an Environment Panel by assigning new geometry with the original core data. Returns one panel per geometry provided")]
-        [Input("panel", "An Environment Panel to split")]
-        [Input("polylines", "Geometry polylines to split the panel by - one panel per polyline will be returned")]
-        [Output("panels", "A collection of Environment Panels split into the geometry parts provided")]
-        public static List<Panel> SplitPanelByGeometry(this Panel panel, List<Polyline> polylines)
-        {
-            List<Panel> panels = new List<Panel>();
-
-            foreach (Polyline p in polylines)
-            {
-                Panel pan = panel.GetShallowClone(true) as Panel;
-                pan.ExternalEdges = p.ToEdges();
-                panels.Add(pan);
-            }
-
-            return panels;
         }
     }
 }
