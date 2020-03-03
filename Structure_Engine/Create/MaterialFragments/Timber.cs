@@ -45,7 +45,7 @@ namespace BH.Engine.Structure
         [InputFromProperty("density")]
         [InputFromProperty("dampingRatio")]
         [InputFromProperty("embodiedCarbon")]
-        [Output("aluminium", "The created tructural Timber material fragment.")]
+        [Output("timber", "The created structural Timber material fragment.")]
         public static Timber Timber(string name, Vector youngsModulus, Vector poissonsRatio, Vector shearModulus, Vector thermalExpansionCoeff, double density, double dampingRatio, double embodiedCarbon = 0.4)
         {
             return new Timber()
@@ -65,4 +65,3 @@ namespace BH.Engine.Structure
         /***************************************************/
     }
 }
-
