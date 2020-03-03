@@ -107,12 +107,15 @@
     <Compile Include="Create\Loads\PointLoad.cs" />
     <Compile Include="Create\Loads\PointDisplacement.cs" />
     <Compile Include="Create\Loads\PointAcceleration.cs" />
+    <Compile Include="Create\MaterialFragments\Aluminium.cs" />
+    <Compile Include="Create\MaterialFragments\Concrete.cs" />
+    <Compile Include="Create\MaterialFragments\Steel.cs" />
     <Compile Include="Create\SectionProperties\AluminiumSection.cs" />
     <Compile Include="Create\Framing\ConstantFramingProperty.cs" />
     <Compile Include="Create\Elements\FEMesh.cs" />
     <Compile Include="Create\SectionProperties\GenericSection.cs" />
     <Compile Include="Create\Requests\IResultRequest.cs" />
-    <Compile Include="Create\MaterialFragments\MaterialFragment.cs" />
+    <Compile Include="Create\MaterialFragments\Timber.cs" />
     <Compile Include="Create\SectionProperties\GeometricalSection.cs" />
     <Compile Include="Create\SectionProperties\TimberSection.cs" />
     <Compile Include="Modify\AddReinforcement.cs" />
