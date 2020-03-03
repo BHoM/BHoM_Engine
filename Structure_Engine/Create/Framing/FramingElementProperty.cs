@@ -34,10 +34,10 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Constructs the simplest type of FramingELementProperty, with constant section proeprty along the element as well as a constant orientation angle along the element")]
-        [Input("sectionProperty", "The section property used by the element. Constant along the whole element")]
-        [Input("orientationAngle", "orientation angle of the element. Constant along the whole element")]
-        [Input("name", "Name of the ConstantFramingElementProeprty. If no name is provided, the name of the provided SectionProeprty will be used")]
+        [Description("Constructs the simplest type of FramingELementProperty, with constant section proeprty along the element as well as a constant orientation angle along the element.")]
+        [Input("sectionProperty", "The section property used by the element. Constant along the whole element.")]
+        [Input("orientationAngle", "orientation angle of the element. Constant along the whole element.")]
+        [Input("name", "Name of the ConstantFramingElementProeprty. If no name is provided, the name of the provided SectionProeprty will be used.")]
         [Deprecated("2.3", "Methods replaced with methods targeting BH.oM.Physical.FramingProperties.ConstantFramingElementProperty in Physical_oM")]
         public static ConstantFramingElementProperty ConstantFramingElementProperty(ISectionProperty sectionProperty, double orientationAngle, string name = "")
         {

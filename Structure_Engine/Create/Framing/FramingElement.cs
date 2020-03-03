@@ -82,9 +82,9 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
-        [Description("Creates a framing elements from a curve and a property")]
-        [Input("locationCurve", "The centreline curve of the framing element")]
-        [Input("property", "The property to be used on the framing element. The most simple version for this would be the ConstantFramingElementProperty, used for beams with constant section and rotation along the full element")]
+        [Description("Creates a framing elements from a curve and a property.")]
+        [Input("locationCurve", "The centreline curve of the framing element.")]
+        [Input("property", "The property to be used on the framing element. The most simple version for this would be the ConstantFramingElementProperty, used for beams with constant section and rotation along the full element.")]
         [Input("structuralUsage", "Describes the usage of the element.")]
         [Input("name", "The name of the element.")]
         [Deprecated("2.3", "Methods replaced with methods targeting BH.oM.Physical.Elements.IFramingElement")]
