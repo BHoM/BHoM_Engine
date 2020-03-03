@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -20,35 +20,60 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System.Linq;
+using System;
 using System.Collections.Generic;
-using BH.oM.Environment.Elements;
-using BH.oM.Geometry;
+
+using System.Linq;
+using BH.oM.Environment;
+
 using BH.Engine.Geometry;
+using BH.oM.Geometry;
 
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
-using BH.Engine.Base;
+
+using BH.oM.Environment.Climate;
 
 namespace BH.Engine.Environment
 {
-    public static partial class Modify
+    public static partial class Compute
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns a single Environment Panel with the provided opening. Opening is added to the provided panel regardless of geometric association")]
-        [Input("panel", "A single Environment Panel to add the opening to")]
-        [Input("opening", "The Environment Opening to add to the panel")]
-        [Output("panel", "A modified Environment Panel with the provided opening added")]
-        public static Panel AddOpening(this Panel panel, Opening opening)
+        [Description("Calculate the Julian Day for the curent date time provided")]
+        [Input("year", "The year for calculating the Julian Day from")]
+        [Input("month", "The month for calculating the Julian Day from")]
+        [Input("day", "The day for calculating the Julian Day from")]
+        [Input("hour", "The hour for calculating the Julian Day from")]
+        [Input("minute", "The minute for calculating the Julian Day from")]
+        [Input("second", "The second for calculating the Julian Day from")]
+        [Input("timezone", "The timezone for calculating the Julian Day for, defined as the UTC Offset")]
+        [Output("julianDay", "The calculated Julian Day")]
+        public static double JulianDay(int year, int month, int day, int hour, int minute, double second, double timezone)
         {
-            Panel clone = panel.DeepClone<Panel>();
-            if (clone.Openings == null) clone.Openings = new List<Opening>();
-            clone.Openings.Add(opening);
-            return clone;
+            double dayDecimal = day + (hour - timezone + (minute + (second) / 60) / 60) / 24;
+            if (month < 3)
+            {
+                month += 12;
+                year--;
+            }
+
+            int y = (int)(365.25 * (year + 4716));
+            int m = (int)(30.6001 * (month + 1));
+
+            double julianDay = y + m + dayDecimal - 1524.5;
+
+            if (julianDay > 2299160)
+            {
+                int alteration = ((int)year / 100);
+                int a = (int)(alteration / 4);
+                julianDay += (2 - alteration + a);
+            }
+
+            return julianDay;
         }
     }
-}
 
+}

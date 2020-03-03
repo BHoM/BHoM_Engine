@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -42,30 +42,6 @@ namespace BH.Engine.Environment
             {
                 Panel pan = p.GetShallowClone(true) as Panel;
                 pan.Openings = new List<Opening>();
-                rtnPanels.Add(pan);
-            }
-
-            return rtnPanels;
-        }
-
-        [Description("Remove all openings which match the given name from a collection of panels")]
-        [Input("panels", "The Environment Panels to have openings filtered")]
-        [Input("openingName", "The name of the opening to be removed from the panels")]
-        [Output("panels", "A collection of Environment Panels with the named opening removed")]
-        public static List<Panel> RemoveOpeningsByName(this List<Panel> panels, string openingName)
-        {
-            List<Panel> rtnPanels = new List<Panel>();
-
-            foreach (Panel p in panels)
-            {
-                Panel pan = p.GetShallowClone(true) as Panel;
-                pan.Openings = new List<Opening>();
-                foreach (Opening o in p.Openings)
-                {
-                    if (o.Name != openingName)
-                        pan.Openings.Add(o.GetShallowClone(true) as Opening);
-                }
-
                 rtnPanels.Add(pan);
             }
 

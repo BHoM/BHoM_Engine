@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -25,9 +25,11 @@ using System.Collections.Generic;
 using BH.oM.Environment.Elements;
 using BH.oM.Geometry;
 using BH.Engine.Geometry;
-
+using BH.oM.Environment.Fragments;
+using System;
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
+
 using BH.Engine.Base;
 
 namespace BH.Engine.Environment
@@ -38,16 +40,38 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns a single Environment Panel with the provided opening. Opening is added to the provided panel regardless of geometric association")]
-        [Input("panel", "A single Environment Panel to add the opening to")]
-        [Input("opening", "The Environment Opening to add to the panel")]
-        [Output("panel", "A modified Environment Panel with the provided opening added")]
-        public static Panel AddOpening(this Panel panel, Opening opening)
+        [Description("Returns the wall panels of a space represented by Environment Panels and fixes PanelType")]
+        [Input("panelsAsSpace", "A collection of Environment Panels that represent a closed space")]
+        [Output("wallPanels", "BHoM Environment panel representing the wall of the space")]
+        public static List<Panel> SetWallPanels(this List<Panel> panelsAsSpace)
         {
-            Panel clone = panel.DeepClone<Panel>();
-            if (clone.Openings == null) clone.Openings = new List<Opening>();
-            clone.Openings.Add(opening);
-            return clone;
+            List<Panel> clones = new List<Panel>(panelsAsSpace.Select(x => x.DeepClone<Panel>()).ToList());
+
+            //Find the panel(s) that are horizontal
+            double minZ = 1e10;
+            foreach (Panel panel in clones)
+            {
+                if (panel.MinimumLevel() == panel.MaximumLevel())
+                    minZ = Math.Min(minZ, panel.MinimumLevel());
+            }
+
+            List<Panel> wallPanels = clones.Where(x => x.Tilt() < 92 && x.Tilt() > 88).ToList();
+
+            if (wallPanels.Count == 0)
+            {
+                BH.Engine.Reflection.Compute.RecordWarning("Could not find wall panel");
+                return null;
+            }
+
+            foreach (Panel panel in wallPanels)
+            {
+                if (panel.ConnectedSpaces.Where(x => x != "-1").ToList().Count == 1)
+                    panel.Type = PanelType.WallExternal;
+                else if (panel.ConnectedSpaces.Where(x => x != "-1").ToList().Count == 2)
+                    panel.Type = PanelType.WallInternal;
+            }
+
+            return wallPanels;
         }
     }
 }

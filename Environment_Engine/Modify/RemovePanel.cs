@@ -20,11 +20,9 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System.Linq;
 using System.Collections.Generic;
 using BH.oM.Environment.Elements;
-using BH.oM.Geometry;
-using BH.Engine.Geometry;
+using System.Linq;
 
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
@@ -38,16 +36,16 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns a single Environment Panel with the provided opening. Opening is added to the provided panel regardless of geometric association")]
-        [Input("panel", "A single Environment Panel to add the opening to")]
-        [Input("opening", "The Environment Opening to add to the panel")]
-        [Output("panel", "A modified Environment Panel with the provided opening added")]
-        public static Panel AddOpening(this Panel panel, Opening opening)
+        [Description("Removes a single Environment Panel from a collection of Environment Panels if it exists within the list")]
+        [Input("panels", "A collection of Environment Panels to modify")]
+        [Input("panelToRemove", "The Environment Panel to remove")]
+        [Output("panels", "A collection of Environment Panels with the panelToRemove excluded from the list")]
+        public static List<Panel> RemovePanel(this List<Panel> panels, Panel panelToRemove)
         {
-            Panel clone = panel.DeepClone<Panel>();
-            if (clone.Openings == null) clone.Openings = new List<Opening>();
-            clone.Openings.Add(opening);
-            return clone;
+            List<Panel> clones = new List<Panel>(panels.Select(x => x.DeepClone<Panel>()).ToList());
+            List<Panel> rtnElements = clones.Where(x => x.BHoM_Guid != panelToRemove.BHoM_Guid).ToList(); //Back up in case the element isn't removed the first time
+
+            return rtnElements;
         }
     }
 }
