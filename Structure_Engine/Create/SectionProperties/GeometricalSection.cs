@@ -40,9 +40,9 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Creates a Section property from a Profile and a Material. The type of section that will be created depends on the material provided. Null material or unsupported materials will return a GenericSection.")]
-        [Input("profile", "The profile of the section property")]
+        [Input("profile", "The profile of the section property.")]
         [Input("material", "The material of the section property. Used to determain which type of section that will be created. If null or a not yet explicitly supported material type, a generic section will be created.")]
-        [Input("name", "The name of the section property")]
+        [Input("name", "The name of the section property.")]
         [Output("section", "The created section property of a type matching the material provided.")]
         public static IGeometricalSection SectionPropertyFromProfile(IProfile profile, IMaterialFragment material = null, string name = "")
         {
@@ -74,7 +74,7 @@ namespace BH.Engine.Structure
         /**** Private Methods                           ****/
         /***************************************************/
 
-        [Description("Run standard pre-processing needed for all section creates. Checks name and grabs value from profile if nothing provided and calculates all section constants")]
+        [Description("Run standard pre-processing needed for all section creates. Checks name and grabs value from profile if nothing provided and calculates all section constants.")]
         private static Output<string, IProfile, Dictionary<string, double>> PreProcessSectionCreate(string name, IProfile profile)
         {
             //Check name, if nothing provided, try grabbing name from profile
@@ -100,7 +100,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("PostProcess needed for all section creates. Null checks the material and sets to empty if nothing provided and tries to grab material from Library")]
+        [Description("PostProcess needed for all section creates. Null checks the material and sets to empty if nothing provided and tries to grab material from Library.")]
         private static T PostProcessSectionCreate<T>(T section, string name, IMaterialFragment material, MaterialType materialType) where T: ISectionProperty
         {
             name = name ?? "";

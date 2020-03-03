@@ -39,11 +39,11 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates a generic section from any shape profile. Should only be used for material types not yet explicitly supported")]
-        [Input("profile", "Profile containing the geometric information to be used to create the generic section")]
-        [Input("material", "Material to use on the section")]
-        [Input("name", "Name of the section. If no name is provided, the name from the profile will be used")]
-        [Output("genericSec", "The created generic section")]
+        [Description("Creates a generic section from any shape profile. Should only be used for material types not yet explicitly supported.")]
+        [Input("profile", "Profile containing the geometric information to be used to create the generic section.")]
+        [Input("material", "Material to use on the section.")]
+        [Input("name", "Name of the section. If no name is provided, the name from the profile will be used.")]
+        [Output("genericSec", "The created generic section.")]
         public static GenericSection GenericSectionFromProfile(IProfile profile, IMaterialFragment material = null, string name = "")
         {
             //Run pre-process for section create. Calculates all section constants and checks name of profile
