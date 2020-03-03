@@ -150,9 +150,9 @@ namespace BH.Engine.Environment
         [Input("panels", "A collection of Environment Panels")]
         [Input("searchGeometry", "The BHoM Geometry ICurve representation to search by")]
         [Output("panels", "A collection of Environment Panel where the external edges match the given search geometry")]
-        public static List<Panel> PanelsByGeometry(this List<Panel> panels, ICurve searchGeomtry)
+        public static List<Panel> PanelsByGeometry(this List<Panel> panels, ICurve searchGeometry)
         {
-            List<Point> searchPoints = searchGeomtry.ICollapseToPolyline(BH.oM.Geometry.Tolerance.Angle).DiscontinuityPoints();
+            List<Point> searchPoints = searchGeometry.ICollapseToPolyline(BH.oM.Geometry.Tolerance.Angle).DiscontinuityPoints();
             return panels.Where(x => x.Polyline().DiscontinuityPoints().PointsMatch(searchPoints)).ToList();
         }
 

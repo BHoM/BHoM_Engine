@@ -43,10 +43,7 @@ namespace BH.Engine.Environment
         /***************************************************/
 
         [Description("Calculate the solar azimuth (degrees clockwise from 0 at North) from Datetime and Location objects")]
-        [Input("latitude", "The latitude of the location to calculate the solar azimuth from. This should be given in degrees. Default 0")]
-        [Input("longitude", "The longitude of the location to calculate the solar azimuth from. This should be given in degrees. Default 0")]
-        [Input("dateTime", "The date and time for the calculation of the solar azimuth. Default null - will default to the 1st January 1900 00:00:00.0")]
-        [Input("utcOffset", "The number of hours offset from UTC time, default 0")]
+        [Input("spaceTime", "A SpaceTime object containing latitude, longitude, azimuth, and date data to calculate the solar position from")]
         [Output("sun", "The sun with calculated position")]
         public static Sun SolarPosition(this SpaceTime spaceTime)
         {
