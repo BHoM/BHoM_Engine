@@ -32,7 +32,7 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static IElement2D NewInternalElement2D(this Panel Panel)
+        public static IElement2D NewInternalElement2D(this Panel panel)
         {
             return new Opening();
         }
