@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -50,17 +50,25 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns a collection of Environment Panels from a list of generic BHoM objects")]
-        [Input("bhomObjects", "A collection of generic BHoM objects")]
-        [Output("panels", "A collection of Environment Panel objects")]
-        public static List<Panel> Panels(this List<IBHoMObject> bhomObjects)
+        [Description("Returns a collection of Environment Panels that match the given element ID")]
+        [Input("panels", "A collection of Environment Panels")]
+        [Input("elementID", "The Element ID to filter by")]
+        [Output("panels", "A collection of Environment Panel objects that match the element ID")]
+        public static List<Panel> PanelsByElementID(this List<Panel> panels, string elementID)
         {
-            bhomObjects = bhomObjects.ObjectsByType(typeof(Panel));
-            List<Panel> spaces = new List<Panel>();
-            foreach (IBHoMObject o in bhomObjects)
-                spaces.Add(o as Panel);
+            List<IEnvironmentObject> envObjects = new List<IEnvironmentObject>();
+            foreach (Panel p in panels)
+                envObjects.Add(p as IEnvironmentObject);
 
-            return spaces;
+            envObjects = envObjects.ObjectsByFragment(typeof(OriginContextFragment));
+
+            envObjects = envObjects.Where(x => (x.Fragments.Where(y => y.GetType() == typeof(OriginContextFragment)).FirstOrDefault() as OriginContextFragment).ElementID == elementID).ToList();
+
+            List<Panel> rtnPanels = new List<Panel>();
+            foreach (IEnvironmentObject o in envObjects)
+                rtnPanels.Add(o as Panel);
+
+            return rtnPanels;
         }
     }
 }

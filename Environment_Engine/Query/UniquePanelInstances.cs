@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -50,17 +50,24 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns a collection of Environment Panels from a list of generic BHoM objects")]
-        [Input("bhomObjects", "A collection of generic BHoM objects")]
-        [Output("panels", "A collection of Environment Panel objects")]
-        public static List<Panel> Panels(this List<IBHoMObject> bhomObjects)
+        [Description("Returns a collection of Environment Panels that are unique by their instance data from their origin context fragment")]
+        [Input("panels", "A collection of Environment Panels to filter")]
+        [Output("panels", "A collection of Environment Panel objects with one per instance")]
+        public static List<Panel> UniquePanelInstances(this List<Panel> panels)
         {
-            bhomObjects = bhomObjects.ObjectsByType(typeof(Panel));
-            List<Panel> spaces = new List<Panel>();
-            foreach (IBHoMObject o in bhomObjects)
-                spaces.Add(o as Panel);
+            List<Panel> returnPanels = new List<Panel>();
 
-            return spaces;
+            foreach (Panel p in panels)
+            {
+                OriginContextFragment o = p.FindFragment<OriginContextFragment>(typeof(OriginContextFragment));
+                if (o != null)
+                {
+                    Panel testCheck = returnPanels.Where(x => x.FindFragment<OriginContextFragment>(typeof(OriginContextFragment)) != null && x.FindFragment<OriginContextFragment>(typeof(OriginContextFragment)).TypeName == o.TypeName).FirstOrDefault();
+                    if (testCheck == null)
+                        returnPanels.Add(p);
+                }
+            }
+            return returnPanels;
         }
     }
 }

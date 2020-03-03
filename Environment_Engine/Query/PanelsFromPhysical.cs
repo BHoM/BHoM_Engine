@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -50,17 +50,26 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns a collection of Environment Panels from a list of generic BHoM objects")]
-        [Input("bhomObjects", "A collection of generic BHoM objects")]
-        [Output("panels", "A collection of Environment Panel objects")]
-        public static List<Panel> Panels(this List<IBHoMObject> bhomObjects)
+        [Description("Returns a collection of Environment Panels queried from a collection of Physical Objects (walls, floors, etc.)")]
+        [Input("physicalObjects", "A collection of Physical Objects to query Environment Panels from")]
+        [Output("panels", "A collection of Environment Panels from Physical Objects")]
+        public static List<Panel> PanelsFromPhysical(this List<BH.oM.Physical.Elements.ISurface> physicalObjects)
         {
-            bhomObjects = bhomObjects.ObjectsByType(typeof(Panel));
-            List<Panel> spaces = new List<Panel>();
-            foreach (IBHoMObject o in bhomObjects)
-                spaces.Add(o as Panel);
+            List<Panel> panels = new List<Panel>();
 
-            return spaces;
+            foreach (BH.oM.Physical.Elements.ISurface srf in physicalObjects)
+            {
+                Panel p = new Panel();
+                p.Name = srf.Name;
+                p.Construction = srf.Construction;
+                p.ExternalEdges = srf.Location.IExternalEdges().ToEdges();
+                p.Openings = srf.Openings.OpeningsFromPhysical();
+                if (p.Openings == null) p.Openings = new List<Opening>();
+                p.Type = (srf is BH.oM.Physical.Elements.Wall ? PanelType.Wall : (srf is BH.oM.Physical.Elements.Roof ? PanelType.Roof : PanelType.Floor));
+                panels.Add(p);
+            }
+
+            return panels;
         }
     }
 }

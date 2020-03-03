@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -50,17 +50,14 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns a collection of Environment Panels from a list of generic BHoM objects")]
-        [Input("bhomObjects", "A collection of generic BHoM objects")]
-        [Output("panels", "A collection of Environment Panel objects")]
-        public static List<Panel> Panels(this List<IBHoMObject> bhomObjects)
+        [Description("Returns a collection of Environment Panels that match the given geometry")]
+        [Input("panels", "A collection of Environment Panels")]
+        [Input("searchGeometry", "The BHoM Geometry ICurve representation to search by")]
+        [Output("panels", "A collection of Environment Panel where the external edges match the given search geometry")]
+        public static List<Panel> PanelsByGeometry(this List<Panel> panels, ICurve searchGeometry)
         {
-            bhomObjects = bhomObjects.ObjectsByType(typeof(Panel));
-            List<Panel> spaces = new List<Panel>();
-            foreach (IBHoMObject o in bhomObjects)
-                spaces.Add(o as Panel);
-
-            return spaces;
+            List<Point> searchPoints = searchGeometry.ICollapseToPolyline(BH.oM.Geometry.Tolerance.Angle).DiscontinuityPoints();
+            return panels.Where(x => x.Polyline().DiscontinuityPoints().PointsMatch(searchPoints)).ToList();
         }
     }
 }

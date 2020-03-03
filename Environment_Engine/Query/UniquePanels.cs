@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -50,17 +50,24 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns a collection of Environment Panels from a list of generic BHoM objects")]
-        [Input("bhomObjects", "A collection of generic BHoM objects")]
-        [Output("panels", "A collection of Environment Panel objects")]
-        public static List<Panel> Panels(this List<IBHoMObject> bhomObjects)
+        [Description("Returns a collection of unique Environment Panels from a list of panels representing spaces")]
+        [Input("panelsAsSpaces", "A collection of Environment Panels that represent spaces")]
+        [Output("uniquePanels", "A collection of Environment Panel without duplicates")]
+        public static List<Panel> UniquePanels(this List<List<Panel>> panelsAsSpaces)
         {
-            bhomObjects = bhomObjects.ObjectsByType(typeof(Panel));
-            List<Panel> spaces = new List<Panel>();
-            foreach (IBHoMObject o in bhomObjects)
-                spaces.Add(o as Panel);
+            List<Panel> rtn = new List<Panel>();
 
-            return spaces;
+            foreach (List<Panel> lst in panelsAsSpaces)
+            {
+                foreach (Panel be in lst)
+                {
+                    Panel beInList = rtn.Where(x => x.BHoM_Guid == be.BHoM_Guid).FirstOrDefault();
+                    if (beInList == null)
+                        rtn.Add(be);
+                }
+            }
+
+            return rtn;
         }
     }
 }

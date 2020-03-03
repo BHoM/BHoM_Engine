@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -50,17 +50,21 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns a collection of Environment Panels from a list of generic BHoM objects")]
-        [Input("bhomObjects", "A collection of generic BHoM objects")]
-        [Output("panels", "A collection of Environment Panel objects")]
-        public static List<Panel> Panels(this List<IBHoMObject> bhomObjects)
+        [Deprecated("2.4", "Deprecated to expose tolerance as optional parameter for greater control", null, "PanelsContainingPoint(this List<Panel> panels, Point searchPoint, bool acceptOnEdge = false, double tolerance = Tolerance.Distance)")]
+        public static List<Panel> PanelsContainingPoint(this List<Panel> panels, Point searchPoint)
         {
-            bhomObjects = bhomObjects.ObjectsByType(typeof(Panel));
-            List<Panel> spaces = new List<Panel>();
-            foreach (IBHoMObject o in bhomObjects)
-                spaces.Add(o as Panel);
+            return panels.PanelsContainingPoint(searchPoint, false, BH.oM.Geometry.Tolerance.Distance);
+        }
 
-            return spaces;
+        [Description("Returns a collection of Environment Panels containing the given search point")]
+        [Input("panels", "A collection of Environment Panels")]
+        [Input("searchPoint", "The BHoM Geometry Point to search by")]
+        [Input("acceptOnEdge", "Set whether or not to accept points on the edge of panels, default false")]
+        [Input("tolerance", "Set the distance tolerance for containing a point, default is equal to that given by BH.oM.Geometry.Tolerance.Distance")]
+        [Output("panels", "A collection of Environment Panel where the external edges contain the given search point")]
+        public static List<Panel> PanelsContainingPoint(this List<Panel> panels, Point searchPoint, bool acceptOnEdge = false, double tolerance = BH.oM.Geometry.Tolerance.Distance)
+        {
+            return panels.Where(x => x.Polyline().IsContaining(new List<Point>() { searchPoint }, acceptOnEdge, tolerance)).ToList();
         }
     }
 }

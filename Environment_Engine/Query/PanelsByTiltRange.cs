@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -50,17 +50,14 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns a collection of Environment Panels from a list of generic BHoM objects")]
-        [Input("bhomObjects", "A collection of generic BHoM objects")]
-        [Output("panels", "A collection of Environment Panel objects")]
-        public static List<Panel> Panels(this List<IBHoMObject> bhomObjects)
+        [Description("Returns a collection of Environment Panels that are tilted between the given tilt range")]
+        [Input("panels", "A collection of Environment Panels")]
+        [Input("minTilt", "The minimum tilt to filter by")]
+        [Input("maxTilt", "The maximum tilt to filter by")]
+        [Output("panels", "A collection of Environment Panel that are between the given tilt range")]
+        public static List<Panel> PanelsByTiltRange(this List<Panel> panels, double minTilt, double maxTilt)
         {
-            bhomObjects = bhomObjects.ObjectsByType(typeof(Panel));
-            List<Panel> spaces = new List<Panel>();
-            foreach (IBHoMObject o in bhomObjects)
-                spaces.Add(o as Panel);
-
-            return spaces;
+            return panels.Where(x => x.Tilt() >= minTilt && x.Tilt() <= maxTilt).ToList();
         }
     }
 }
