@@ -47,6 +47,8 @@ namespace BH.Engine.Physical
             return ExternalPolyline(physicalObject as dynamic);
         }
 
+        /***************************************************/
+
         [Description("Returns the External Polyline representation of a physical object that represents a solid impassable object (e.g. wall or roof)")]
         [Input("physicalObject", "A physical object to query the polyline representation of")]
         [Output("polyline", "BHoM Geometry Polyline")]
@@ -55,6 +57,8 @@ namespace BH.Engine.Physical
             return physicalObject.Location.IExternalEdges().Select(x => x.ICollapseToPolyline(Tolerance.Angle)).ToList();
         }
 
+        /***************************************************/
+
         [Description("Returns the External Polyline representation of a physical object that represents an opening (e.g. window or door)")]
         [Input("physicalOpening", "A physical opening to query the polyline representation of")]
         [Output("polyline", "BHoM Geometry Polyline")]
@@ -62,6 +66,9 @@ namespace BH.Engine.Physical
         {
             return physicalOpening.Location.IExternalEdges().Select(x => x.ICollapseToPolyline(Tolerance.Angle)).ToList();
         }
+
+        /***************************************************/
+
     }
 }
 
