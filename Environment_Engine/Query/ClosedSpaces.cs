@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -44,17 +44,20 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns a collection of Environment Spaces from a list of generic BHoM objects")]
-        [Input("bhomObjects", "A collection of generic BHoM objects")]
-        [Output("spaces", "A collection of Environment Space objects")]
-        public static List<Space> Spaces(this List<IBHoMObject> bhomObjects)
+        [Description("Returns a nested collection of Environment Panels that represent fully closed spaces")]
+        [Input("panelsAsSpaces", "A nested collection of Environment Panels representing spaces")]
+        [Output("panelsAsSpaces", "A nested collection of Environment Panels that represent fully closed spaces")]
+        public static List<List<Panel>> ClosedSpaces(this List<List<Panel>> panelsAsSpaces)
         {
-            bhomObjects = bhomObjects.ObjectsByType(typeof(Space));
-            List<Space> spaces = new List<Space>();
-            foreach (IBHoMObject o in bhomObjects)
-                spaces.Add(o as Space);
+            List<List<Panel>> closedSpaces = new List<List<Panel>>();
 
-            return spaces;
+            foreach (List<Panel> space in panelsAsSpaces)
+            {
+                if (space.IsClosed())
+                    closedSpaces.Add(space);
+            }
+
+            return closedSpaces;
         }
     }
 }

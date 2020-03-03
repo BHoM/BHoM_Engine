@@ -115,6 +115,9 @@
     <Compile Include="Modify\SplitPanelsByPoints.cs" />
     <Compile Include="Modify\UpdatePanelTypeByCustomData.cs" />
     <Compile Include="Query\Absorptance.cs" />
+    <Compile Include="Query\ClosedSpaces.cs" />
+    <Compile Include="Query\ConnectedSpaceName.cs" />
+    <Compile Include="Query\NotClosedSpaces.cs" />
     <Compile Include="Query\PointsInSpaces.cs" />
     <Compile Include="Query\CullDuplicateLines.cs" />
     <Compile Include="Query\CullOverlaps.cs" />
@@ -149,12 +152,14 @@
     <Compile Include="Query\ResultsByTypeUnit.cs" />
     <Compile Include="Query\ResultsByTypeUnitResultType.cs" />
     <Compile Include="Query\ResultsByUnit.cs" />
+    <Compile Include="Query\SpaceByName.cs" />
+    <Compile Include="Query\SpacesByElementID.cs" />
     <Compile Include="Query\ToEdges.cs" />
     <Compile Include="Query\InvalidPanels.cs" />
     <Compile Include="Query\IsTransparent.cs" />
     <Compile Include="Query\ToLines.cs" />
     <Compile Include="Query\Polyline.cs" />
-    <Compile Include="Query\Space.cs" />
+    <Compile Include="Query\ToSpace.cs" />
     <Compile Include="Create\Building.cs" />
     <Compile Include="Create\CoefficientFragment.cs" />
     <Compile Include="Create\Edge.cs" />
@@ -198,7 +203,7 @@
     <Compile Include="Query\Openings.cs" />
     <Compile Include="Query\Panels.cs" />
     <Compile Include="Query\RValue.cs" />
-    <Compile Include="Query\SpaceName.cs" />
+    <Compile Include="Query\UniqueSpaceNames.cs" />
     <Compile Include="Query\AdjacentSpaces.cs" />
     <Compile Include="Query\Area.cs" />
     <Compile Include="Query\Spaces.cs" />
@@ -214,6 +219,7 @@
     <Compile Include="Query\AltitudeRange.cs" />
     <Compile Include="Query\Altitude.cs" />
     <Compile Include="Query\Thickness.cs" />
+    <Compile Include="Query\ToSpaces.cs" />
     <Compile Include="Query\UnconnectedEdges.cs" />
     <Compile Include="Query\ElementsNotMatched.cs" />
     <Compile Include="Query\ExposedToSun.cs" />
