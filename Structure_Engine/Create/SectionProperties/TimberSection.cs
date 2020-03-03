@@ -40,13 +40,13 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates a rectangular solid timber section from input dimensions. Please note that all units are in S.I., that is meters [m]")]
-        [Input("height", "Height of the section [m]")]
-        [Input("width", "Width of the section [m]")]
-        [Input("cornerRadius", "Optional corner radius for the section [m]")]
-        [Input("material", "Timber material to be used on the section. If null a default material will be extracted from the database")]
+        [Description("Creates a rectangular solid timber section from input dimensions. Please note that all units are in S.I., that is meters [m].")]
+        [Input("height", "Height of the section [m].")]
+        [Input("width", "Width of the section [m].")]
+        [Input("cornerRadius", "Optional corner radius for the section [m].")]
+        [Input("material", "Timber material to be used on the section. If null a default material will be extracted from the database.")]
         [Input("name", "Name of the timber section.")]
-        [Output("section", "The created rectangular solid timber section")]
+        [Output("section", "The created rectangular solid timber section.")]
         public static TimberSection TimberRectangleSection(double height, double width, double cornerRadius = 0, Timber material = null, string name = "")
         {
             return TimberSectionFromProfile(Geometry.Create.RectangleProfile(height, width, cornerRadius), material, name);
@@ -54,11 +54,11 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Generates a timber section based on a Profile and a material. \n This is the main create method for timber sections, responsible for calculating section constants etc. and is being called from all other create methods for timber sections")]
-        [Input("profile", "The section profile the timber section. All section constants are derived based on the dimensions of this")]
+        [Description("Generates a timber section based on a Profile and a material. \n This is the main create method for timber sections, responsible for calculating section constants etc. and is being called from all other create methods for timber sections.")]
+        [Input("profile", "The section profile the timber section. All section constants are derived based on the dimensions of this.")]
         [Input("material", "timber material to be used on the section.")]
-        [Input("name", "Name of the timber section. If null or empty the name of the profile will be used")]
-        [Output("section", "The created timber section")]
+        [Input("name", "Name of the timber section. If null or empty the name of the profile will be used.")]
+        [Output("section", "The created timber section.")]
         public static TimberSection TimberSectionFromProfile(IProfile profile, Timber material = null, string name = "")
         {
             //Run pre-process for section create. Calculates all section constants and checks name of profile

@@ -36,8 +36,8 @@ namespace BH.Engine.Structure.Results
         /**** Public Methods - Deprecated               ****/
         /***************************************************/
 
-        [Deprecated("3.1", "Deprecated as functionality has been replaced by MeshResultRequest")]
-        [Description("Specific filter request to retrieve structural mesh results")]
+        [Deprecated("3.1", "Deprecated as functionality has been replaced by MeshResultRequest.")]
+        [Description("Specific filter request to retrieve structural mesh results.")]
         public static FilterRequest MeshResult(   MeshResultSmoothingType smoothing, 
                                                 MeshResultLayer layer,
                                                 double layerPosition,

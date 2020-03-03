@@ -40,16 +40,16 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates a steel I-section from input dimensions. Please note that all units are in S.I., that is meters [m]")]
-        [Input("height", "Full height of the section [m]")]
-        [Input("webThickness", "Thickness of the web [m]")]
-        [Input("flangeWidth", "Width of the top and bottom flange [m]")]
-        [Input("flangeThickness", "Thickness of the top and bottom flange [m]")]
-        [Input("rootRadius", "Optional fillet radius between inner face of flange and face of web [m]")]
-        [Input("toeRadius", "Optional fillet radius at the outer edge of the flange [m]")]
-        [Input("material", "Steel material to be used on the section. If null a default material will be extracted from the database")]
+        [Description("Creates a steel I-section from input dimensions. Please note that all units are in S.I., that is meters [m].")]
+        [Input("height", "Full height of the section [m].")]
+        [Input("webThickness", "Thickness of the web [m].")]
+        [Input("flangeWidth", "Width of the top and bottom flange [m].")]
+        [Input("flangeThickness", "Thickness of the top and bottom flange [m].")]
+        [Input("rootRadius", "Optional fillet radius between inner face of flange and face of web [m].")]
+        [Input("toeRadius", "Optional fillet radius at the outer edge of the flange [m].")]
+        [Input("material", "Steel material to be used on the section. If null a default material will be extracted from the database.")]
         [Input("name", "Name of the steel section.")]
-        [Output("section", "The created steel I-section")]
+        [Output("section", "The created steel I-section.")]
         public static SteelSection SteelISection(double height, double webThickness, double flangeWidth, double flangeThickness, double rootRadius = 0, double toeRadius = 0, Steel material = null, string name = null)
         {
             return SteelSectionFromProfile(Geometry.Create.ISectionProfile(height, flangeWidth, webThickness, flangeThickness, rootRadius, toeRadius), material, name);
@@ -57,17 +57,17 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Creates a fabricated steel I-section from input dimensions. Please note that all units are in S.I., that is meters [m]")]
-        [Input("height", "Full height of the section [m]")]
-        [Input("webThickness", "Thickness of the web [m]")]
-        [Input("topFlangeWidth", "Width of the top flange [m]")]
-        [Input("topFlangeThickness", "Thickness of the top flange [m]")]
-        [Input("botFlangeWidth", "Width of the bottom flange [m]")]
-        [Input("botFlangeThickness", "Thickness of the bottom flange [m]")]
-        [Input("weldSize", "Optional fillet weld size between web and flanges. Meassured as the distance between intersection of web and flange perpendicular to the edge of the weld [m]")]
-        [Input("material", "Steel material to be used on the section. If null a default material will be extracted from the database")]
+        [Description("Creates a fabricated steel I-section from input dimensions. Please note that all units are in S.I., that is meters [m].")]
+        [Input("height", "Full height of the section [m].")]
+        [Input("webThickness", "Thickness of the web [m].")]
+        [Input("topFlangeWidth", "Width of the top flange [m].")]
+        [Input("topFlangeThickness", "Thickness of the top flange [m].")]
+        [Input("botFlangeWidth", "Width of the bottom flange [m].")]
+        [Input("botFlangeThickness", "Thickness of the bottom flange [m].")]
+        [Input("weldSize", "Optional fillet weld size between web and flanges. Meassured as the distance between intersection of web and flange perpendicular to the edge of the weld [m].")]
+        [Input("material", "Steel material to be used on the section. If null a default material will be extracted from the database.")]
         [Input("name", "Name of the steel section.")]
-        [Output("section", "The created fabricated steel I-section")]
+        [Output("section", "The created fabricated steel I-section.")]
         public static SteelSection SteelFabricatedISection(double height, double webThickness, double topFlangeWidth, double topFlangeThickness, double botFlangeWidth, double botFlangeThickness,  double weldSize, Steel material = null, string name = null)
         {
             return SteelSectionFromProfile(Geometry.Create.FabricatedISectionProfile(height, topFlangeWidth, botFlangeWidth, webThickness, topFlangeThickness, botFlangeThickness, weldSize), material, name);
@@ -75,15 +75,15 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Creates a steel box-section from input dimensions. Please note that all units are in S.I., that is meters [m]")]
-        [Input("height", "Full height of the section [m]")]
-        [Input("width", "Full width of the section [m]")]
-        [Input("thickness", "Thickness of the webs and flanges [m]")]
-        [Input("innerRadius", "Optional inner corner radius. Commonly set equal to the thickness [m]")]
-        [Input("outerRadius", "Optional outer corner radius. Commonly set to 1.5-2 times the thickness [m]")]
-        [Input("material", "Steel material to be used on the section. If null a default material will be extracted from the database")]
+        [Description("Creates a steel box-section from input dimensions. Please note that all units are in S.I., that is meters [m].")]
+        [Input("height", "Full height of the section [m].")]
+        [Input("width", "Full width of the section [m].")]
+        [Input("thickness", "Thickness of the webs and flanges [m].")]
+        [Input("innerRadius", "Optional inner corner radius. Commonly set equal to the thickness [m].")]
+        [Input("outerRadius", "Optional outer corner radius. Commonly set to 1.5-2 times the thickness [m].")]
+        [Input("material", "Steel material to be used on the section. If null a default material will be extracted from the database.")]
         [Input("name", "Name of the steel section.")]
-        [Output("section", "The created steel box-section")]
+        [Output("section", "The created steel box-section.")]
         public static SteelSection SteelBoxSection(double height, double width, double thickness, double innerRadius = 0, double outerRadius = 0, Steel material = null, string name = null)
         {
             return SteelSectionFromProfile(Geometry.Create.BoxProfile(height, width, thickness, outerRadius, innerRadius), material, name);
@@ -91,15 +91,15 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Creates a fabricated steel box-section from input dimensions. Please note that all units are in S.I., that is meters [m]")]
-        [Input("height", "Full height of the section [m]")]
-        [Input("width", "Full width of the section [m]")]
-        [Input("webThickness", "Thickness of the webs [m]")]
-        [Input("flangeThickness", "Thickness of the flanges [m]")]
-        [Input("weldSize", "Optional fillet weld size between inside of web and flanges. Meassured as the distance between intersection of web and flange perpendicular to the edge of the weld [m]")]
-        [Input("material", "Steel material to be used on the section. If null a default material will be extracted from the database")]
+        [Description("Creates a fabricated steel box-section from input dimensions. Please note that all units are in S.I., that is meters [m].")]
+        [Input("height", "Full height of the section [m].")]
+        [Input("width", "Full width of the section [m].")]
+        [Input("webThickness", "Thickness of the webs [m].")]
+        [Input("flangeThickness", "Thickness of the flanges [m].")]
+        [Input("weldSize", "Optional fillet weld size between inside of web and flanges. Meassured as the distance between intersection of web and flange perpendicular to the edge of the weld [m].")]
+        [Input("material", "Steel material to be used on the section. If null a default material will be extracted from the database.")]
         [Input("name", "Name of the steel section.")]
-        [Output("section", "The created fabricated steel box-section")]
+        [Output("section", "The created fabricated steel box-section.")]
         public static SteelSection FabricatedSteelBoxSection(double height, double width, double webThickness, double flangeThickness, double weldSize, Steel material = null, string name = null)
         {
             return SteelSectionFromProfile(Geometry.Create.FabricatedBoxProfile(height, width, webThickness, flangeThickness, flangeThickness, weldSize), material, name);
@@ -107,12 +107,12 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Creates a circular hollow steel section from input dimensions. Please note that all units are in S.I., that is meters [m]")]
-        [Input("diameter", "Outer diameter of the section [m]")]
-        [Input("thickness", "Plate thickness of the section [m]")]
-        [Input("material", "Steel material to be used on the section. If null a default material will be extracted from the database")]
+        [Description("Creates a circular hollow steel section from input dimensions. Please note that all units are in S.I., that is meters [m].")]
+        [Input("diameter", "Outer diameter of the section [m].")]
+        [Input("thickness", "Plate thickness of the section [m].")]
+        [Input("material", "Steel material to be used on the section. If null a default material will be extracted from the database.")]
         [Input("name", "Name of the steel section.")]
-        [Output("section", "The created circular hollow steel section")]
+        [Output("section", "The created circular hollow steel section.")]
         public static SteelSection SteelTubeSection(double diameter, double thickness, Steel material = null, string name = null)
         {
             return SteelSectionFromProfile(Geometry.Create.TubeProfile(diameter, thickness), material, name);
@@ -120,13 +120,13 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Creates a rectangular solid steel section from input dimensions. Please note that all units are in S.I., that is meters [m]")]
-        [Input("height", "Height of the section [m]")]
-        [Input("width", "Width of the section [m]")]
-        [Input("cornerRadius", "Optional corner radius for the section [m]")]
-        [Input("material", "Steel material to be used on the section. If null a default material will be extracted from the database")]
+        [Description("Creates a rectangular solid steel section from input dimensions. Please note that all units are in S.I., that is meters [m].")]
+        [Input("height", "Height of the section [m].")]
+        [Input("width", "Width of the section [m].")]
+        [Input("cornerRadius", "Optional corner radius for the section [m].")]
+        [Input("material", "Steel material to be used on the section. If null a default material will be extracted from the database.")]
         [Input("name", "Name of the steel section.")]
-        [Output("section", "The created rectangular solid steel section")]
+        [Output("section", "The created rectangular solid steel section.")]
         public static SteelSection SteelRectangleSection(double height, double width, double cornerRadius = 0, Steel material = null, string name = null)
         {
             return SteelSectionFromProfile(Geometry.Create.RectangleProfile(height, width, cornerRadius), material, name);
@@ -134,11 +134,11 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Creates a circular solid steel section from input dimensions. Please note that all units are in S.I., that is meters [m]")]
-        [Input("diameter", "Diameter of the section [m]")]
-        [Input("material", "Steel material to be used on the section. If null a default material will be extracted from the database")]
+        [Description("Creates a circular solid steel section from input dimensions. Please note that all units are in S.I., that is meters [m].")]
+        [Input("diameter", "Diameter of the section [m].")]
+        [Input("material", "Steel material to be used on the section. If null a default material will be extracted from the database.")]
         [Input("name", "Name of the steel section.")]
-        [Output("section", "The created circular solid steel section")]
+        [Output("section", "The created circular solid steel section.")]
         public static SteelSection SteelCircularSection(double diameter, Steel material = null, string name = null)
         {
             return SteelSectionFromProfile(Geometry.Create.CircleProfile(diameter), material, name);
@@ -146,16 +146,16 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Creates a steel T-section from input dimensions. Please note that all units are in S.I., that is meters [m]")]
-        [Input("height", "Full height of the section [m]")]
-        [Input("webThickness", "Thickness of the web [m]")]
-        [Input("flangeWidth", "Width of the top and bottom flange [m]")]
-        [Input("flangeThickness", "Thickness of the top and bottom flange [m]")]
-        [Input("rootRadius", "Optional fillet radius between inner face of flange and face of web [m]")]
-        [Input("toeRadius", "Optional fillet radius at the outer edge of the flange [m]")]
-        [Input("material", "Steel material to be used on the section. If null a default material will be extracted from the database")]
+        [Description("Creates a steel T-section from input dimensions. Please note that all units are in S.I., that is meters [m].")]
+        [Input("height", "Full height of the section [m].")]
+        [Input("webThickness", "Thickness of the web [m].")]
+        [Input("flangeWidth", "Width of the top and bottom flange [m].")]
+        [Input("flangeThickness", "Thickness of the top and bottom flange [m].")]
+        [Input("rootRadius", "Optional fillet radius between inner face of flange and face of web [m].")]
+        [Input("toeRadius", "Optional fillet radius at the outer edge of the flange [m].")]
+        [Input("material", "Steel material to be used on the section. If null a default material will be extracted from the database.")]
         [Input("name", "Name of the steel section.")]
-        [Output("section", "The created steel T-section")]
+        [Output("section", "The created steel T-section.")]
         public static SteelSection SteelTSection(double height, double webThickness, double flangeWidth, double flangeThickness,  double rootRadius = 0, double toeRadius = 0, Steel material = null, string name = null)
         {
             return SteelSectionFromProfile(Geometry.Create.TSectionProfile(height, flangeWidth, webThickness, flangeThickness, rootRadius, toeRadius), material, name);
@@ -164,16 +164,16 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Creates a steel L-section from input dimensions. Please note that all units are in S.I., that is meters [m]")]
-        [Input("height", "Full height of the section [m]")]
-        [Input("webThickness", "Thickness of the web [m]")]
-        [Input("width", "Full width of the section [m]")]
-        [Input("flangeThickness", "Thickness of the top and bottom flange [m]")]
-        [Input("rootRadius", "Optional fillet radius between inner face of flange and face of web [m]")]
-        [Input("toeRadius", "Optional fillet radius at the outer edge of the flange [m]")]
-        [Input("material", "Steel material to be used on the section. If null a default material will be extracted from the database")]
+        [Description("Creates a steel L-section from input dimensions. Please note that all units are in S.I., that is meters [m].")]
+        [Input("height", "Full height of the section [m].")]
+        [Input("webThickness", "Thickness of the web [m].")]
+        [Input("width", "Full width of the section [m].")]
+        [Input("flangeThickness", "Thickness of the top and bottom flange [m].")]
+        [Input("rootRadius", "Optional fillet radius between inner face of flange and face of web [m].")]
+        [Input("toeRadius", "Optional fillet radius at the outer edge of the flange [m].")]
+        [Input("material", "Steel material to be used on the section. If null a default material will be extracted from the database.")]
         [Input("name", "Name of the steel section.")]
-        [Output("section", "The created steel L-section")]
+        [Output("section", "The created steel L-section.")]
         public static SteelSection SteelAngleSection(double height, double webThickness, double width, double flangeThickness, double rootRadius = 0, double toeRadius = 0, Steel material = null, string name = null)
         {
             return SteelSectionFromProfile(Geometry.Create.AngleProfile(height, width, webThickness, flangeThickness, rootRadius, toeRadius), material, name);
@@ -182,10 +182,10 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Creates a steel freeform section based on edge curves. Please note that this type of section generally will have less support in adapters. If the type of section being created can be achieved by any other profile, aim use them instead.")]
-        [Input("edges", "Edges defining the section. Should consist of closed curve(s) in the global xy-plane")]
-        [Input("material", "Steel material to be used on the section. If null a default material will be extracted from the database")]
+        [Input("edges", "Edges defining the section. Should consist of closed curve(s) in the global xy-plane.")]
+        [Input("material", "Steel material to be used on the section. If null a default material will be extracted from the database.")]
         [Input("name", "Name of the steel section.")]
-        [Output("section", "The created free form steel section")]
+        [Output("section", "The created free form steel section.")]
         public static SteelSection SteelFreeFormSection(List<ICurve> edges, Steel material = null, string name = null)
         {
             return SteelSectionFromProfile(Geometry.Create.FreeFormProfile(edges), material, name);
@@ -193,11 +193,11 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Generates a steel section based on a Profile and a material. \n This is the main create method for steel sections, responsible for calculating section constants etc. and is being called from all other create methods for steel sections")]
-        [Input("profile", "The section profile the steel section. All section constants are derived based on the dimensions of this")]
-        [Input("material", "Steel material to be used on the section. If null a default material will be extracted from the database")]
-        [Input("name", "Name of the steel section. If null or empty the name of the profile will be used")]
-        [Output("section", "The created steel section")]
+        [Description("Generates a steel section based on a Profile and a material. \n This is the main create method for steel sections, responsible for calculating section constants etc. and is being called from all other create methods for steel sections.")]
+        [Input("profile", "The section profile the steel section. All section constants are derived based on the dimensions of this.")]
+        [Input("material", "Steel material to be used on the section. If null a default material will be extracted from the database.")]
+        [Input("name", "Name of the steel section. If null or empty the name of the profile will be used.")]
+        [Output("section", "The created steel section.")]
         public static SteelSection SteelSectionFromProfile(IProfile profile, Steel material = null, string name = "")
         {
             //Run pre-process for section create. Calculates all section constants and checks name of profile
