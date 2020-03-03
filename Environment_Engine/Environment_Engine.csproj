@@ -109,7 +109,10 @@
     <Compile Include="Modify\SetRoofPanels.cs" />
     <Compile Include="Modify\SetShadePanels.cs" />
     <Compile Include="Modify\SetWallPanels.cs" />
-    <Compile Include="Modify\SplitOpening.cs" />
+    <Compile Include="Modify\Split.cs" />
+    <Compile Include="Modify\SplitOpeningByGeometry.cs" />
+    <Compile Include="Modify\SplitPanelByGeometry.cs" />
+    <Compile Include="Modify\SplitPanelsByPoints.cs" />
     <Compile Include="Modify\UpdatePanelTypeByCustomData.cs" />
     <Compile Include="Query\Absorptance.cs" />
     <Compile Include="Query\IsValidLocation.cs" />
@@ -154,7 +157,7 @@
     <Compile Include="Modify\AddFragment.cs" />
     <Compile Include="Modify\SetInternalElements2D.cs" />
     <Compile Include="Modify\SetOutlineElements1D.cs" />
-    <Compile Include="Modify\SplitPanels.cs" />
+    <Compile Include="Modify\SplitPanelsByOverlap.cs" />
     <Compile Include="Query\Buildings.cs" />
     <Compile Include="Query\ConstructionRoughness.cs" />
     <Compile Include="Query\FindFragment.cs" />
