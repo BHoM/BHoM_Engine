@@ -37,11 +37,11 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates a ConstantFramingProperty from a ISectionProperty and orientation angle. Extracts the SectionProfile (if existing) and Structural MaterialFragment and creates a physical material with the same name")]
-        [Input("sectionProperty", "Structural section property to extract profile and material from. For explicit sections lacking a profile only the material will get extracted")]
-        [Input("orientationAngle", "Defines the sections rotation around its own axis")]
-        [Input("name", "Name of the property. If null/empty the name of the section property will be used")]
-        [Output("FramingProeprty", "The constructed physical Constant Framing Property to be used with IFramingElements such as Beams/Columns/Bracing")]
+        [Description("Creates a ConstantFramingProperty from a ISectionProperty and orientation angle. Extracts the SectionProfile (if existing) and Structural MaterialFragment and creates a physical material with the same name.")]
+        [Input("sectionProperty", "Structural section property to extract profile and material from. For explicit sections lacking a profile only the material will get extracted.")]
+        [Input("orientationAngle", "Defines the sections rotation around its own axis.")]
+        [Input("name", "Name of the property. If null/empty the name of the section property will be used.")]
+        [Output("FramingProeprty", "The constructed physical Constant Framing Property to be used with IFramingElements such as Beams/Columns/Bracing.")]
         public static ConstantFramingProperty ConstantFramingProperty(ISectionProperty sectionProperty, double orientationAngle, string name = "")
         {
 
@@ -50,7 +50,7 @@ namespace BH.Engine.Structure
             if (sectionProperty is IGeometricalSection)
                 profile = (sectionProperty as IGeometricalSection).SectionProfile;
             else
-                Reflection.Compute.RecordWarning("Was not able to extract any section profile");
+                Reflection.Compute.RecordWarning("Was not able to extract any section profile.");
 
 
             BH.oM.Physical.Materials.Material material = null;
@@ -62,7 +62,7 @@ namespace BH.Engine.Structure
             }
             else
             {
-                Engine.Reflection.Compute.RecordWarning("Material from sectiion property of the bar is null");
+                Engine.Reflection.Compute.RecordWarning("Material from sectiion property of the bar is null.");
             }
 
             name = string.IsNullOrEmpty(name) ? sectionProperty.Name : name;
