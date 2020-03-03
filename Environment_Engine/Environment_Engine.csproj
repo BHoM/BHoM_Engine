@@ -123,10 +123,17 @@
     <Compile Include="Query\Level.cs" />
     <Compile Include="Query\MaximumLevel.cs" />
     <Compile Include="Query\MinimumLevel.cs" />
+    <Compile Include="Query\OpeningsByElementID.cs" />
+    <Compile Include="Query\OpeningsByLevel.cs" />
+    <Compile Include="Query\OpeningsByMaximumLevel.cs" />
+    <Compile Include="Query\OpeningsByMinimumLevel.cs" />
+    <Compile Include="Query\OpeningsByName.cs" />
+    <Compile Include="Query\OpeningsFromElements.cs" />
+    <Compile Include="Query\OpeningsFromPhysical.cs" />
     <Compile Include="Query\ToEdges.cs" />
     <Compile Include="Query\InvalidPanels.cs" />
     <Compile Include="Query\IsTransparent.cs" />
-    <Compile Include="Query\Line.cs" />
+    <Compile Include="Query\ToLines.cs" />
     <Compile Include="Query\Polyline.cs" />
     <Compile Include="Query\Space.cs" />
     <Compile Include="Create\Building.cs" />
@@ -166,7 +173,7 @@
     <Compile Include="Query\Buildings.cs" />
     <Compile Include="Query\Roughness.cs" />
     <Compile Include="Query\FindFragment.cs" />
-    <Compile Include="Query\MatchPoint.cs" />
+    <Compile Include="Query\MatchPointOn2Of3.cs" />
     <Compile Include="Query\FindMaterial.cs" />
     <Compile Include="Query\ObjectsByFragment.cs" />
     <Compile Include="Query\Openings.cs" />
@@ -197,6 +204,7 @@
     <Compile Include="Query\SimulationResult.cs" />
     <Compile Include="Query\UniqueConstructions.cs" />
     <Compile Include="Query\UniqueMaterials..cs" />
+    <Compile Include="Query\UniqueOpeningInstances.cs" />
     <Compile Include="Query\UValue.cs" />
     <Compile Include="Query\Vertices.cs" />
     <Compile Include="Query\InternalElements2D.cs" />
@@ -208,7 +216,7 @@
     <Compile Include="Query\IsExternal.cs" />
     <Compile Include="Query\IsIdentical.cs" />
     <Compile Include="Query\IsInternal.cs" />
-    <Compile Include="Query\LongestSegment.cs" />
+    <Compile Include="Query\LongestSegmentLength.cs" />
     <Compile Include="Query\NormalAwayFromSpace.cs" />
     <Compile Include="Query\Orientation.cs" />
     <Compile Include="Query\PointsMatch.cs" />
@@ -250,9 +258,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />
-  <ItemGroup>
-    <Compile Include="Query\MaterialRoughness.cs" />
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

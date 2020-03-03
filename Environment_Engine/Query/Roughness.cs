@@ -33,6 +33,9 @@ using BH.oM.Physical.Constructions;
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
 
+using BH.oM.Physical.Materials;
+using BH.oM.Environment.MaterialFragments;
+
 namespace BH.Engine.Environment
 {
     public static partial class Query
@@ -54,6 +57,34 @@ namespace BH.Engine.Environment
 
             int totalRoughness = (int)firstSide.Roughness + (int)finalSide.Roughness;
             return (BHM.Roughness)(totalRoughness / 2);
+        }
+
+        [Description("Returns the numerical roughness of a material")]
+        [Input("material", "A Material object")]
+        [Output("roughness", "The numerical roughness of the material")]
+        public static double Roughness(this Material material)
+        {
+            IEnvironmentMaterial materialProperties = material.Properties.Where(x => x is IEnvironmentMaterial).FirstOrDefault() as IEnvironmentMaterial;
+
+            if (materialProperties == null) return 0.0;
+
+            switch (materialProperties.Roughness)
+            {
+                case oM.Environment.MaterialFragments.Roughness.VerySmooth:
+                    return 0.0;
+                case oM.Environment.MaterialFragments.Roughness.MediumSmooth:
+                    return 0.04;
+                case oM.Environment.MaterialFragments.Roughness.Smooth:
+                    return 0.08;
+                case oM.Environment.MaterialFragments.Roughness.Rough:
+                    return 0.12;
+                case oM.Environment.MaterialFragments.Roughness.MediumRough:
+                    return 0.16;
+                case oM.Environment.MaterialFragments.Roughness.VeryRough:
+                    return 0.2;
+                default:
+                    return 0.0;
+            }
         }
     }
 }

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -49,17 +49,38 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns a collection of Environment Openings from a list of generic BHoM objects")]
-        [Input("bhomObjects", "A collection of generic BHoM objects")]
-        [Output("openings", "A collection of Environment Opening objects")]
-        public static List<Opening> Openings(this List<IBHoMObject> bhomObjects)
+        [Description("Returns a collection of Environment Openings that match the given element ID")]
+        [Input("openings", "A collection of Environment Openings")]
+        [Input("elementID", "The Element ID to filter by")]
+        [Output("openings", "A collection of Environment Opening objects that match the element ID")]
+        public static List<Opening> OpeningsByElementID(this List<Opening> openings, string elementID)
         {
-            bhomObjects = bhomObjects.ObjectsByType(typeof(Opening));
-            List<Opening> Openings = new List<Opening>();
-            foreach (IBHoMObject o in bhomObjects)
-                Openings.Add(o as Opening);
+            List<IEnvironmentObject> envObjects = new List<IEnvironmentObject>();
+            foreach (Opening o in openings)
+                envObjects.Add(o as IEnvironmentObject);
 
-            return Openings;
+            envObjects = envObjects.ObjectsByFragment(typeof(OriginContextFragment));
+
+            envObjects = envObjects.Where(x => (x.Fragments.Where(y => y.GetType() == typeof(OriginContextFragment)).FirstOrDefault() as OriginContextFragment).ElementID == elementID).ToList();
+
+            List<Opening> rtnOpenings = new List<Opening>();
+            foreach (IEnvironmentObject o in envObjects)
+                rtnOpenings.Add(o as Opening);
+
+            return rtnOpenings;
+        }
+
+        [Description("Returns a collection of Environment Openings that match the given element ID")]
+        [Input("panels", "A collection of Environment Panels to query for openings")]
+        [Input("elementID", "The Element ID to filter by")]
+        [Output("openings", "A collection of Environment Opening objects that match the element ID")]
+        public static List<Opening> OpeningsByElementID(this List<Panel> panels, string elementID)
+        {
+            List<Opening> allOpenings = new List<Opening>();
+            foreach (Panel p in panels)
+                allOpenings.AddRange(p.Openings);
+
+            return allOpenings.OpeningsByElementID(elementID);
         }
     }
 }
