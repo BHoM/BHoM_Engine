@@ -129,9 +129,9 @@
     <Compile Include="Query\HasModifiers.cs" />
     <Compile Include="Query\InternalEdgeCurves.cs" />
     <Compile Include="Query\MaterialType.cs" />
-    <Compile Include="Create\Elements\NewElement0D.cs" />
-    <Compile Include="Create\Elements\NewElement1D.cs" />
-    <Compile Include="Create\Elements\NewInternalElement2D.cs" />
+    <Compile Include="Create\Elements\IElement0D\NewElement0D.cs" />
+    <Compile Include="Create\Elements\IElement1D\NewElement1D.cs" />
+    <Compile Include="Create\Elements\IElement2D\NewInternalElement2D.cs" />
     <Compile Include="Create\Requests\FilterRequest.cs" />
     <Compile Include="Create\Elements\Edge.cs" />
     <Compile Include="Create\Framing\FramingElementProperty.cs" />
