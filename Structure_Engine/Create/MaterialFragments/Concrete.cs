@@ -38,24 +38,24 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Creates a concrete material. First constructs a concrete material fragment, then applies it to a new Material class")]
-        [Input("e", "Youngs modulus. Given in [Pa] or [N/m]. Will be stored on the material fragment")]
-        [Input("v", "Poissons Ratio. Will be stored on the material fragment")]
-        [Input("tC", "Modulus of thermal expansion. Given in [1/°C] or [1/K]. Will be stored on the material fragment")]
+        [Input("youngsModulus", "Youngs modulus. Given in [Pa] or [N/m]. Will be stored on the material fragment")]
+        [Input("poissonsRatio", "Poissons Ratio. Will be stored on the material fragment")]
+        [Input("thermalExpansionCoeff", "Modulus of thermal expansion. Given in [1/°C] or [1/K]. Will be stored on the material fragment")]
         [Input("density", "Given as [kg/m3]. Will be stored on the base material")]
         [Input("dampingRatio", "Dynamic damping ratio of the material. Will be stored on the material fragment")]
         [Input("cubeStrength", "Cube strength of the concrete material. Given in [Pa] or [N/m]. Will be stored on the material fragment")]
         [Input("cylinderStrength", "Cylinder strength of the concrete material. Given in [Pa] or [N/m].Will be stored on the material fragment")]
         [Input("embodiedCarbon", "Embodied carbon for the material. Will be stored on the material fragment")]
         [Output("Material", "The created material with a concrete fragment")]
-        public static Concrete Concrete(string name, double e = 33000000000, double v = 0.2, double tC = 0.00001, double density = 2550, double dampingRatio = 0, double cubeStrength = 0, double cylinderStrength = 0, double embodiedCarbon = 0.12)
+        public static Concrete Concrete(string name, double youngsModulus = 33000000000, double poissonsRatio = 0.2, double thermalExpansionCoeff = 0.00001, double density = 2550, double dampingRatio = 0, double cubeStrength = 0, double cylinderStrength = 0, double embodiedCarbon = 0.12)
         {
             return new Concrete()
             {
                 Name = name,
                 Density = density,
-                YoungsModulus = e,
-                PoissonsRatio = v,
-                ThermalExpansionCoeff = tC,
+                YoungsModulus = youngsModulus,
+                PoissonsRatio = poissonsRatio,
+                ThermalExpansionCoeff = thermalExpansionCoeff,
                 CubeStrength = cubeStrength,
                 DampingRatio = dampingRatio,
                 CylinderStrength = cylinderStrength,

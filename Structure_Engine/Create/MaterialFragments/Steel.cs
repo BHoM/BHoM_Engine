@@ -38,24 +38,24 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Creates a steelmaterial. First constructs a Steel material fragment, then applies it to a new Material class")]
-        [Input("e", "Youngs modulus. Given in [Pa] or [N/m]. Will be stored on the material fragment")]
-        [Input("v", "Poissons Ratio. Will be stored on the material fragment")]
-        [Input("tC", "Modulus of thermal expansion. Given in [1/°C] or [1/K]. Will be stored on the material fragment")]
+        [Input("youngsModulus", "Youngs modulus. Given in [Pa] or [N/m]. Will be stored on the material fragment")]
+        [Input("poissonsRatio", "Poissons Ratio. Will be stored on the material fragment")]
+        [Input("thermalExpansionCoeff", "Modulus of thermal expansion. Given in [1/°C] or [1/K]. Will be stored on the material fragment")]
         [Input("density", "Given as [kg/m3]. Will be stored on the base material")]
         [Input("dampingRatio", "Dynamic damping ratio of the material. Will be stored on the material fragment")]
         [Input("yieldStress", "Stress level at yield for the material. Given in [Pa] or [N/m]. Will be stored on the material fragment")]
         [Input("ultimateStress", "Stress level at break for the material. Given in [Pa] or [N/m]. Will be stored on the material fragment")]
         [Input("embodiedCarbon", "Embodied carbon for the material. Will be stored on the material fragment")]
         [Output("Material", "The created material with a steel fragment")]
-        public static Steel Steel(string name, double e = 210000000000, double v = 0.3, double tC = 0.000012, double density = 7850, double dampingRatio = 0, double yieldStress = 0, double ultimateStress = 0, double embodiedCarbon = 1.3)
+        public static Steel Steel(string name, double youngsModulus = 210000000000, double poissonsRatio = 0.3, double thermalExpansionCoeff = 0.000012, double density = 7850, double dampingRatio = 0, double yieldStress = 0, double ultimateStress = 0, double embodiedCarbon = 1.3)
         {
             return new Steel()
             {
                 Name = name,
                 Density = density,
-                YoungsModulus = e,
-                PoissonsRatio = v,
-                ThermalExpansionCoeff = tC,
+                YoungsModulus = youngsModulus,
+                PoissonsRatio = poissonsRatio,
+                ThermalExpansionCoeff = thermalExpansionCoeff,
                 DampingRatio = dampingRatio,
                 YieldStress = yieldStress,
                 UltimateStress = ultimateStress,
