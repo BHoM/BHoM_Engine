@@ -43,6 +43,8 @@ namespace BH.Engine.Reflection
         {
             return RecordEvent(new Event { Message = message, Type = EventType.Warning });
         }
+
+        /***************************************************/
     }
 }
 
