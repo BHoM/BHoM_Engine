@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -20,24 +20,34 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Reflection;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Mono.Cecil;
+using Mono.Reflection;
 
 namespace BH.Engine.Reflection
 {
-    public static partial class Query
+    public static partial class Compute
     {
         /***************************************************/
-        /**** Interface Methods                         ****/
+        /**** Public Methods                            ****/
         /***************************************************/
 
-        public static int ICount<T>(this List<T> list)
+        public static List<string> SplitByIndices(string text, List<int> indices)
         {
-            return Item(list as dynamic);
+            int previousIndex = 0;
+            List<string> result = new List<string>();
+
+            foreach (int index in indices.OrderBy(x => x))
+            {
+                result.Add(text.Substring(previousIndex, index - previousIndex));
+                previousIndex = index + 1;
+            }
+            result.Add(text.Substring(previousIndex));
+
+            return result;
         }
     }
 }

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -20,24 +20,28 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Reflection;
+using BH.oM.Reflection.Debugging;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace BH.Engine.Reflection
 {
-    public static partial class Query
+    public static partial class Compute
     {
         /***************************************************/
-        /**** Interface Methods                         ****/
+        /**** Public Methods                            ****/
         /***************************************************/
 
-        public static int ICount<T>(this List<T> list)
+        public static bool RecordError(string message)
         {
-            return Item(list as dynamic);
+            return RecordEvent(new Event { Message = message, Type = EventType.Error });
         }
     }
 }
