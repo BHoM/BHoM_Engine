@@ -28,7 +28,7 @@ using System.Reflection;
 
 namespace BH.Engine.Reflection
 {
-    static partial class Query
+    public static partial class Query
     {
         /***************************************************/
         /**** Public Methods                            ****/

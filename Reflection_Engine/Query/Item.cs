@@ -132,6 +132,18 @@ namespace BH.Engine.Reflection
         }
 
         /***************************************************/
+
+        public static int Item<T>(this object obj)
+        {
+            return 0;
+        }
+
+        /***************************************************/
+
+        public static int Item<T>(this List<T> list)
+        {
+            return list.Count;
+        }
     }
 }
 

@@ -77,25 +77,6 @@ namespace BH.Engine.Reflection
 
             return indices;
         }
-
-        /***************************************************/
-
-        public static List<string> SplitByIndices(string text, List<int> indices)
-        {
-            int previousIndex = 0;
-            List<string> result = new List<string>();
-
-            foreach (int index in indices.OrderBy(x => x))
-            {
-                result.Add(text.Substring(previousIndex, index - previousIndex));
-                previousIndex = index + 1;
-            }
-            result.Add(text.Substring(previousIndex));
-
-            return result;
-        }
-
-        /***************************************************/
     }
 }
 

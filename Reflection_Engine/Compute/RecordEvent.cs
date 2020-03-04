@@ -45,28 +45,6 @@ namespace BH.Engine.Reflection
         }
 
         /***************************************************/
-
-        public static bool RecordError(string message)
-        {
-            return RecordEvent(new Event { Message = message, Type = EventType.Error });
-        }
-
-        /***************************************************/
-
-        public static bool RecordWarning(string message)
-        {
-            return RecordEvent(new Event { Message = message, Type = EventType.Warning });
-        }
-
-        /***************************************************/
-
-        public static bool RecordNote(string message)
-        {
-            return RecordEvent(new Event { Message = message, Type = EventType.Note });
-        }
-
-
-        /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
 
