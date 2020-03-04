@@ -62,6 +62,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Programming_Engine", "Progr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spatial_Engine", "Spatial_Engine\Spatial_Engine.csproj", "{A84FDFE5-C267-430E-8FEC-AF4F4BF5B745}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Matter_Engine", "Matter_Engine\Matter_Engine.csproj", "{65198EEA-B572-418F-B77D-B348082EC92E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

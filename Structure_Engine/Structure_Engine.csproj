@@ -131,6 +131,7 @@
     <Compile Include="Query\Fixities.cs" />
     <Compile Include="Query\HasModifiers.cs" />
     <Compile Include="Query\InternalEdgeCurves.cs" />
+    <Compile Include="Query\MaterialComposition.cs" />
     <Compile Include="Query\MaterialType.cs" />
     <Compile Include="Create\Elements\IElement0D\NewElement0D.cs" />
     <Compile Include="Create\Elements\IElement1D\NewElement1D.cs" />
@@ -207,6 +208,7 @@
     <Compile Include="Query\StructuralMaterialFragment.cs" />
     <Compile Include="Query\Tangent.cs" />
     <Compile Include="Query\Visualize.cs" />
+    <Compile Include="Query\Volume.cs" />
     <Compile Include="Query\WidthAt.cs" />
     <Compile Include="Query\IsLongitudinal.cs" />
     <Compile Include="Query\Layout.cs" />
