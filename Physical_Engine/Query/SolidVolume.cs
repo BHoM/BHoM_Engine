@@ -41,7 +41,7 @@ namespace BH.Engine.Physical
         /**** Public Methods                            ****/
         /***************************************************/
         
-        public static double Volume(this IFramingElement framingElement)
+        public static double SolidVolume(this IFramingElement framingElement)
         {
             List<ICurve> profileEdges= (framingElement.Property as ConstantFramingProperty).Profile.Edges.ToList();
             return framingElement.Location.Length() * Engine.Geometry.Compute.IJoin(profileEdges).First().Area();

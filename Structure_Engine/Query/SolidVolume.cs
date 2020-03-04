@@ -38,7 +38,7 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static double Volume(this Bar bar)
+        public static double SolidVolume(this Bar bar)
         {
             return bar.SectionProperty.Area * bar.Length();
         }

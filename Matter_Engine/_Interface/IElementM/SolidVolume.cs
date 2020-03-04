@@ -33,10 +33,10 @@ namespace BH.Engine.Matter
         /****            IElement1D            ****/
         /******************************************/
 
-        [Output("volume", "The elements physical extents volume", typeof(Volume))]
-        public static double IVolume(this IElementM elementM)
+        [Output("volume", "The element's material volume.", typeof(Volume))]
+        public static double ISolidVolume(this IElementM elementM)
         {
-            return (double)Reflection.Compute.RunExtensionMethod(elementM, "Volume");
+            return (double)Reflection.Compute.RunExtensionMethod(elementM, "SolidVolume");
         }
 
         /******************************************/

@@ -40,7 +40,7 @@ namespace BH.Engine.Matter
         public static double IMass(this IElementM elementM)
         {
             MaterialComposition mat = elementM.IMaterialComposition();
-            return elementM.IVolume() * mat.Materials.Zip(mat.Ratios, (m,r) => r * m.Density<IMaterialProperties>()).Sum();
+            return elementM.ISolidVolume() * mat.Materials.Zip(mat.Ratios, (m,r) => r * m.Density()).Sum();
         }
 
         /******************************************/
