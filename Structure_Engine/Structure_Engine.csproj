@@ -208,7 +208,7 @@
     <Compile Include="Query\StructuralMaterialFragment.cs" />
     <Compile Include="Query\Tangent.cs" />
     <Compile Include="Query\Visualize.cs" />
-    <Compile Include="Query\Volume.cs" />
+    <Compile Include="Query\SolidVolume.cs" />
     <Compile Include="Query\WidthAt.cs" />
     <Compile Include="Query\IsLongitudinal.cs" />
     <Compile Include="Query\Layout.cs" />

@@ -76,7 +76,6 @@
     <Compile Include="Create\ConstantFramingProperty.cs" />
     <Compile Include="Create\Floor.cs" />
     <Compile Include="Create\Wall.cs" />
-    <Compile Include="Create\MaterialComposition.cs" />
     <Compile Include="Create\Layer.cs" />
     <Compile Include="Create\Material.cs" />
     <Compile Include="Modify\SetInternalElements2D.cs" />
@@ -91,7 +90,7 @@
     <Compile Include="Query\InternalPolyline.cs" />
     <Compile Include="Query\Construction.cs" />
     <Compile Include="Query\MaterialComposition.cs" />
-    <Compile Include="Query\Volume.cs" />
+    <Compile Include="Query\SolidVolume.cs" />
     <Compile Include="Query\Normal.cs" />
     <Compile Include="Query\Doors.cs" />
     <Compile Include="Query\Floors.cs" />
@@ -100,7 +99,6 @@
     <Compile Include="Query\Roofs.cs" />
     <Compile Include="Query\Thickness.cs" />
     <Compile Include="Query\Walls.cs" />
-    <Compile Include="Query\Density.cs" />
     <Compile Include="Query\Windows.cs" />
   </ItemGroup>
   <ItemGroup>

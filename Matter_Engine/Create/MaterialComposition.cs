@@ -34,7 +34,7 @@ using System.ComponentModel;
 using BH.oM.Physical.Elements;
 using BH.oM.Geometry;
 
-namespace BH.Engine.Physical
+namespace BH.Engine.Matter
 {
     public static partial class Create
     {

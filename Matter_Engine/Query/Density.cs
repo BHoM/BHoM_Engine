@@ -39,11 +39,14 @@ namespace BH.Engine.Physical
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static double Density<T>(this Material material) where T : IMaterialProperties
+        public static double Density(this Material material, Type type = null)
         {
+            if (type == null)
+                type = typeof(IMaterialProperties);
+
             List<double> densities = new List<double>();
 
-            foreach (T mat in material.Properties)
+            foreach (IMaterialProperties mat in material.Properties.Where(x => type.IsAssignableFrom(x.GetType())))
             {
                 try
                 {
@@ -55,7 +58,7 @@ namespace BH.Engine.Physical
 
             if (densities.Count == 0)
             {
-                Reflection.Compute.RecordWarning("no density on any of the fragments of " + material.Name + " by type " + typeof(T).Name);
+                Reflection.Compute.RecordWarning("no density on any of the fragments of " + material.Name + " by type " + type.Name);
                 return 0;
             }
             if (densities.Count > 1)
