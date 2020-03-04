@@ -49,7 +49,7 @@ namespace BH.Engine.Results
 
         /***************************************************/
 
-        public static double TotalDisplacement(NodeDisplacement disp)
+        public static double TotalDisplacement(this NodeDisplacement disp)
         {
             return Math.Sqrt(disp.UX * disp.UX + disp.UY * disp.UY + disp.UZ * disp.UZ);
         }
