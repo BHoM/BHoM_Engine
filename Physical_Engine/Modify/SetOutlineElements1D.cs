@@ -43,6 +43,10 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
+        [Description("Set the external outline elements of an ISurface.")]
+        [Input("surface", "The ISurface to set the external outline elements of.")]
+        [Input("outlineElements1D", "New outline elements, will replace any existing ones. They must be closed and planar.")]
+        [Output("surface", "The ISurface with new external outline elements.")]
         public static oM.Physical.Elements.ISurface SetOutlineElements1D(this oM.Physical.Elements.ISurface surface, List<IElement1D> outlineElements1D)
         {
             oM.Physical.Elements.ISurface clone = (oM.Physical.Elements.ISurface)surface.GetShallowClone();
@@ -53,6 +57,10 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
+        [Description("Set the external outline elements of an IOpening.")]
+        [Input("surface", "The IOpening to set the external outline elements of.")]
+        [Input("outlineElements1D", "New outline elements, will replace any existing ones. They must be closed and planar.")]
+        [Output("opening", "The IOpening with new external outline elements.")]
         public static IOpening SetOutlineElements1D(this IOpening surface, List<IElement1D> outlineElements1D)
         {
             IOpening clone = (IOpening)surface.GetShallowClone();

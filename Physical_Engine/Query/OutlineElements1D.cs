@@ -38,6 +38,9 @@ namespace BH.Engine.Physical
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Gets the external outline elements of an ISurface.")]
+        [Input("surface", "The ISurface to get the external outline elements from.")]
+        [Output("curves", "The curves defining the external boundery of the ISurface.")]
         public static List<IElement1D> OutlineElements1D(this oM.Physical.Elements.ISurface surface)
         {
             PlanarSurface pSurface = surface.Location as PlanarSurface;
@@ -52,6 +55,9 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
+        [Description("Gets the external outline elements of an IOpening.")]
+        [Input("opening", "The IOpening to get the external outline elements from.")]
+        [Output("curves", "The curves defining the external boundery of the IOpening.")]
         public static List<IElement1D> OutlineElements1D(this IOpening surface)
         {
             PlanarSurface pSurface = surface.Location as PlanarSurface;
