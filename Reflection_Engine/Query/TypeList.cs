@@ -32,7 +32,7 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static List<Type> BHoMInterfaceTypeList()
+        public static List<Type> BHoMInterfaceList()
         {
             // If the dictionary exists already return it
             if (m_InterfaceList != null && m_InterfaceList.Count > 0)
