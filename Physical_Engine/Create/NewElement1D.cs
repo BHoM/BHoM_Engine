@@ -24,6 +24,8 @@ using BH.oM.Geometry;
 using BH.oM.Dimensional;
 using BH.Engine.Geometry;
 using BH.oM.Physical.Elements;
+using System.ComponentModel;
+using BH.oM.Reflection.Attributes;
 
 namespace BH.Engine.Physical
 {
@@ -33,6 +35,10 @@ namespace BH.Engine.Physical
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Creates a valid IElement1D which can be assigned to the ISurface")]
+        [Input("surface", "The 2-dimensional element which a valid IElement1D is to be gotten from")]
+        [Input("curve", "The geometrical location of the new IElement1D")]
+        [Output("element1D", "a valid IElement1D which can be assigned to the ISurface")]
         public static IElement1D NewElement1D(this oM.Physical.Elements.ISurface surface, ICurve curve)
         {
             return curve.IClone();
@@ -40,6 +46,10 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
+        [Description("Creates a valid IElement1D which can be assigned to the IOpening")]
+        [Input("surface", "The 2-dimensional element which a valid IElement1D is to be gotten from")]
+        [Input("curve", "The geometrical location of the new IElement1D")]
+        [Output("element1D", "a valid IElement1D which can be assigned to the IOpening")]
         public static IElement1D NewElement1D(this IOpening surface, ICurve curve)
         {
             return curve.IClone();

@@ -41,6 +41,10 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
+        [Description("Replaces the location of the IFramingElement with the provided curve.")]
+        [Input("framingElement", "The framingElement to modify the location of.")]
+        [Input("curve", "The new location of the IFramingElement.")]
+        [Output("element1D", "The IFramingElement with modified location")]
         public static IFramingElement SetGeometry(this IFramingElement framingElement, ICurve curve)
         {
             IFramingElement clone = (IFramingElement)framingElement.GetShallowClone();

@@ -23,6 +23,8 @@
 using BH.oM.Dimensional;
 using BH.oM.Geometry;
 using BH.oM.Physical.Elements;
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Physical
 {
@@ -32,7 +34,10 @@ namespace BH.Engine.Physical
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static IElement2D NewInternalElement2D(this oM.Physical.Elements.ISurface panel)
+        [Description("Creates a valid IElement2D which can be assigned as an internal element")]
+        [Input("surface", "The 2-dimensional element which a valid internal element is to be gotten from")]
+        [Output("element1D", "a Void which can be assigned as an internal element")]
+        public static IElement2D NewInternalElement2D(this oM.Physical.Elements.ISurface surface)
         {
             return new Void();
         }

@@ -45,6 +45,10 @@ namespace BH.Engine.Physical
         /****               Public Methods              ****/
         /***************************************************/
 
+        [Description("Attempts to set the internal 2D elements of a IOpening, returns a error if any internal elements are provided as IOpening does not have internal elements.")]
+        [Input("opening", "The IOpening to set the internal elements of.")]
+        [Input("internalElements2D", "New internal elements, returns a error if any are provided as IOpening does not have internal elements")]
+        [Output("opening", "The IOpening with new internal elements.")]
         public static IOpening SetInternalElements2D(this IOpening opening, List<IElement2D> internalElements2D)
         {
             if (internalElements2D.Count != 0)
@@ -55,9 +59,13 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        public static oM.Physical.Elements.ISurface SetInternalElements2D(this oM.Physical.Elements.ISurface panel, List<IElement2D> internalElements2D)
+        [Description("Set the internal 2D elements of a ISurface.")]
+        [Input("surface", "The ISurface to set the internal elements of.")]
+        [Input("internalElements2D", "New internal elements, will replace any existing ones.")]
+        [Output("surface", "The ISurface with new internal elements.")]
+        public static oM.Physical.Elements.ISurface SetInternalElements2D(this oM.Physical.Elements.ISurface surface, List<IElement2D> internalElements2D)
         {
-            oM.Physical.Elements.ISurface pp = panel.GetShallowClone() as oM.Physical.Elements.ISurface;
+            oM.Physical.Elements.ISurface pp = surface.GetShallowClone() as oM.Physical.Elements.ISurface;
             pp.Openings = new List<IOpening>(internalElements2D.Cast<IOpening>().ToList());
             return pp;
         }
