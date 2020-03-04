@@ -170,7 +170,8 @@ namespace BH.Engine.Serialiser
 
                 BsonDefaults.DynamicDocumentSerializer = new CustomObjectSerializer();
 
-                BsonSerializer.RegisterDiscriminatorConvention(typeof(object), new GenericDiscriminatorConvention());
+                BsonSerializer.RegisterDiscriminatorConvention(typeof(IBHoMObject), new BHoMObjectDiscriminatorConvention());
+                BsonSerializer.RegisterDiscriminatorConvention(typeof(IObject), new BHoMObjectDiscriminatorConvention());
             }
             catch (Exception)
             {
