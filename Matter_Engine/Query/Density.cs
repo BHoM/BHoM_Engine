@@ -30,6 +30,7 @@ using BH.oM.Physical.Elements;
 using BH.Engine.Base;
 using BH.oM.Physical.FramingProperties;
 using BH.oM.Physical.Materials;
+using BH.oM.Reflection;
 
 namespace BH.Engine.Physical
 {
@@ -45,15 +46,17 @@ namespace BH.Engine.Physical
                 type = typeof(IMaterialProperties);
 
             List<double> densities = new List<double>();
+            List<string> warnings = new List<string>() { "Density report for " + material.Name + ":" };
 
             foreach (IMaterialProperties mat in material.Properties.Where(x => type.IsAssignableFrom(x.GetType())))
             {
-                try
+                Output<double, string> result = IDensityWithReport(mat, 293, 0.8);
+                if (!double.IsNaN(result.Item1))
                 {
-                    densities.Add((double)Engine.Reflection.Query.PropertyValue(mat, "Density"));
+                    if (!string.IsNullOrWhiteSpace(result.Item2))
+                        warnings.Add("  " + result.Item2);
+                    densities.Add(result.Item1);
                 }
-                catch
-                { }
             }
 
             if (densities.Count == 0)
@@ -64,7 +67,90 @@ namespace BH.Engine.Physical
             if (densities.Count > 1)
                 Reflection.Compute.RecordWarning("Average of multiple Fragments taken from " + material.Name);
 
+            if (warnings.Count > 1)
+                Reflection.Compute.RecordWarning(string.Join(System.Environment.NewLine, warnings.ToArray()));
+
             return densities.Average();
+        }
+
+        /***************************************************/
+
+        public static double IDensity(this IMaterialProperties materialProp, double temprature, double humidity)
+        {
+            Output<double, string> result = IDensityWithReport(materialProp, temprature, humidity);
+            Reflection.Compute.RecordWarning(result.Item2);
+            return result.Item1;
+        }
+
+        /***************************************************/
+
+        private static Output<double, string> IDensityWithReport(this IMaterialProperties materialProp, double temprature, double humidity)
+        {
+            object density = null;
+            Output<double, string> result = new Output<double, string>();
+
+            density = Reflection.Compute.RunExtensionMethod(materialProp, "Density", new object[] { temprature, humidity });
+            if (density != null)
+            {
+                return new Output<double, string>()
+                {
+                    Item1 = System.Convert.ToDouble(density),
+                    Item2 = ""
+                };
+            }
+
+            density = Reflection.Compute.RunExtensionMethod(materialProp, "Density", new object[] { temprature });
+            if (density != null)
+            {
+                return new Output<double, string>()
+                {
+                    Item1 = System.Convert.ToDouble(density),
+                    Item2 = UnUsedVaribles(materialProp.Name, "humidity")
+                };
+            }
+
+            density = Reflection.Compute.RunExtensionMethod(materialProp, "Density", new object[] { humidity });
+            if (density != null)
+            {
+                return new Output<double, string>()
+                {
+                    Item1 = System.Convert.ToDouble(density),
+                    Item2 = UnUsedVaribles(materialProp.Name, "temprature")
+                };
+            }
+
+            density = Reflection.Compute.RunExtensionMethod(materialProp, "Density");
+            if (density != null)
+            {
+                return new Output<double, string>()
+                {
+                    Item1 = System.Convert.ToDouble(density),
+                    Item2 = UnUsedVaribles(materialProp.Name, "temprature and humidity")
+                };
+            }
+
+            density = Reflection.Query.PropertyValue(materialProp, "Density");
+            if (density != null)
+            {
+                return new Output<double, string>()
+                {
+                    Item1 = System.Convert.ToDouble(density),
+                    Item2 = "The value of the density for the MaterialFragment: " + materialProp.Name + "was acquired through its properties"
+                };
+            }
+
+            return new Output<double, string>()
+            {
+                Item1 = System.Convert.ToDouble(density),
+                Item2 = "The density could not be acquired from the material " + materialProp.Name
+            };
+        }
+
+        /***************************************************/
+
+        private static string UnUsedVaribles(string name, string missing)
+        {
+            return "The value of the density for the MaterialFragment: " + name + "was acquired without the input: " + missing;
         }
 
         /***************************************************/
