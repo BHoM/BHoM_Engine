@@ -33,6 +33,7 @@ using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
 using BH.oM.Physical.Elements;
 using BH.oM.Geometry;
+using BH.Engine.Geometry;
 
 namespace BH.Engine.Physical
 {
@@ -60,14 +61,11 @@ namespace BH.Engine.Physical
                 Reflection.Compute.RecordError("Physical Wall could not be created because bottom edge cannot be closed curve");
                 return null;
             }
+            
+            ICurve aICurve = bottomEdge.ITranslate(Geometry.Create.Vector(0, 0, height)).IFlip();
 
-            Point aPoint_1 = Geometry.Query.IStartPoint(bottomEdge);
-            Point aPoint_2 = Geometry.Query.IEndPoint(bottomEdge);
-
-            ICurve aICurve = Geometry.Modify.ITranslate(bottomEdge, Geometry.Create.Vector(0, 0, height));
-
-            Line aLine_1 = Geometry.Create.Line(Geometry.Query.IEndPoint(bottomEdge), Geometry.Query.IStartPoint(aICurve));
-            Line aLine_2 = Geometry.Create.Line(Geometry.Query.IEndPoint(aICurve), Geometry.Query.IStartPoint(bottomEdge));
+            Line aLine_1 = Geometry.Create.Line(bottomEdge.IEndPoint(), aICurve.IStartPoint());
+            Line aLine_2 = Geometry.Create.Line(aICurve.IEndPoint(), bottomEdge.IStartPoint());
 
             PolyCurve aPolyCurve = Geometry.Create.PolyCurve(new ICurve[] { bottomEdge, aLine_1, aICurve, aLine_2 });
 
