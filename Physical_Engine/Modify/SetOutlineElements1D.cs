@@ -43,10 +43,10 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        [Description("Set the external outline elements of an ISurface.")]
-        [Input("surface", "The ISurface to set the external outline elements of.")]
-        [Input("outlineElements1D", "New outline elements, will replace any existing ones. They must be closed and planar.")]
-        [Output("surface", "The ISurface with new external outline elements.")]
+        [Description("Set the location surface of an ISurface as a PlanarSurface by providing a list of IElements1D.")]
+        [Input("surface", "The ISurface to set the location surface of.")]
+        [Input("outlineElements1D", "One dimensional elements defining the external boundery geometry, ISurface has no edge properties and all IElements1D will be treated as their geometry. They must be closed and planar.")]
+        [Output("surface", "The ISurface with new location surface.")]
         public static oM.Physical.Elements.ISurface SetOutlineElements1D(this oM.Physical.Elements.ISurface surface, List<IElement1D> outlineElements1D)
         {
             oM.Physical.Elements.ISurface clone = (oM.Physical.Elements.ISurface)surface.GetShallowClone();
@@ -57,13 +57,13 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        [Description("Set the external outline elements of an IOpening.")]
-        [Input("surface", "The IOpening to set the external outline elements of.")]
-        [Input("outlineElements1D", "New outline elements, will replace any existing ones. They must be closed and planar.")]
-        [Output("opening", "The IOpening with new external outline elements.")]
-        public static IOpening SetOutlineElements1D(this IOpening surface, List<IElement1D> outlineElements1D)
+        [Description("Set the location surface of an IOpening as a PlanarSurface by providing a list of IElements1D.")]
+        [Input("opening", "The IOpening to set the location surface of.")]
+        [Input("outlineElements1D", "One dimensional elements defining the external boundery geometry, IOpening has no edge properties and all IElements1D will be treated as their geometry. They must be closed and planar.")]
+        [Output("opening", "The IOpening with new location surface.")]
+        public static IOpening SetOutlineElements1D(this IOpening opening, List<IElement1D> outlineElements1D)
         {
-            IOpening clone = (IOpening)surface.GetShallowClone();
+            IOpening clone = (IOpening)opening.GetShallowClone();
             ICurve outline = Engine.Geometry.Compute.IJoin(outlineElements1D.Select(x => x.IGeometry()).ToList()).Single();
             clone.Location = Engine.Geometry.Create.PlanarSurface(outline);
             return clone;
