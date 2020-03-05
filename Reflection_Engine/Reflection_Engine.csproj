@@ -161,7 +161,7 @@
     <Compile Include="Query\PropertyValue.cs" />
     <Compile Include="Query\ObjectsByType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Modify\PropertyValue.cs" />
+    <Compile Include="Modify\SetPropertyValue.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
