@@ -31,6 +31,7 @@ using BH.oM.Reflection;
 using BH.oM.Reflection.Attributes;
 using BH.oM.Structure.MaterialFragments;
 using System.Linq;
+using BH.oM.Quantities.Attributes;
 
 namespace BH.Engine.Structure
 {
@@ -41,8 +42,8 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Creates a rectangular solid concrete section from input dimensions. Please note that all units are in S.I., that is meters [m].")]
-        [Input("height", "Height of the section [m].")]
-        [Input("width", "Width of the section [m].")]
+        [Input("height", "Height of the section.", typeof(Length))]
+        [Input("width", "Width of the section.", typeof(Length))]
         [Input("material", "Concrete material to be used on the section. If null a default material will be extracted from the database.")]
         [Input("name", "Name of the concrete section.")]
         [Input("reinforcement", "Optional list of reinforcement to be applied to the section.")]
@@ -55,10 +56,10 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Creates a rectangular solid concrete section from input dimensions. Please note that all units are in S.I., that is meters [m].")]
-        [Input("height", "Full height of the section [m].")]
-        [Input("webThickness", "Thickness of the web [m].")]
-        [Input("flangeWidth", "Width of the flange [m].")]
-        [Input("flangeThickness", "Thickness of the flange [m].")]
+        [Input("height", "Full height of the section.", typeof(Length))]
+        [Input("webThickness", "Thickness of the web.", typeof(Length))]
+        [Input("flangeWidth", "Width of the flange.", typeof(Length))]
+        [Input("flangeThickness", "Thickness of the flange.", typeof(Length))]
         [Input("material", "Concrete material to be used on the section. If null a default material will be extracted from the database.")]
         [Input("name", "Name of the concrete section.")]
         [Input("reinforcement", "Optional list of reinforcement to be applied to the section.")]
@@ -72,7 +73,7 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Creates a circular solid concrete section from input dimensions. Please note that all units are in S.I., that is meters [m].")]
-        [Input("diameter", "Diameter of the section [m].")]
+        [Input("diameter", "Diameter of the section.", typeof(Length))]
         [Input("material", "Concrete material to be used on the section. If null a default material will be extracted from the database.")]
         [Input("name", "Name of the concrete section.")]
         [Input("reinforcement", "Optional list of reinforcement to be applied to the section.")]

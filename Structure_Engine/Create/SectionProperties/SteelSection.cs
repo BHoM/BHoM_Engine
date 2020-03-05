@@ -30,6 +30,7 @@ using BH.oM.Structure.MaterialFragments;
 using BH.oM.Reflection;
 using BH.oM.Reflection.Attributes;
 using System.Linq;
+using BH.oM.Quantities.Attributes;
 
 
 namespace BH.Engine.Structure
@@ -41,12 +42,12 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Creates a steel I-section from input dimensions. Please note that all units are in S.I., that is meters [m].")]
-        [Input("height", "Full height of the section [m].")]
-        [Input("webThickness", "Thickness of the web [m].")]
-        [Input("flangeWidth", "Width of the top and bottom flange [m].")]
-        [Input("flangeThickness", "Thickness of the top and bottom flange [m].")]
-        [Input("rootRadius", "Optional fillet radius between inner face of flange and face of web [m].")]
-        [Input("toeRadius", "Optional fillet radius at the outer edge of the flange [m].")]
+        [Input("height", "Full height of the section.", typeof(Length))]
+        [Input("webThickness", "Thickness of the web.", typeof(Length))]
+        [Input("flangeWidth", "Width of the top and bottom flange.", typeof(Length))]
+        [Input("flangeThickness", "Thickness of the top and bottom flange.", typeof(Length))]
+        [Input("rootRadius", "Optional fillet radius between inner face of flange and face of web.", typeof(Length))]
+        [Input("toeRadius", "Optional fillet radius at the outer edge of the flange.", typeof(Length))]
         [Input("material", "Steel material to be used on the section. If null a default material will be extracted from the database.")]
         [Input("name", "Name of the steel section.")]
         [Output("section", "The created steel I-section.")]
@@ -58,13 +59,13 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Creates a fabricated steel I-section from input dimensions. Please note that all units are in S.I., that is meters [m].")]
-        [Input("height", "Full height of the section [m].")]
-        [Input("webThickness", "Thickness of the web [m].")]
-        [Input("topFlangeWidth", "Width of the top flange [m].")]
-        [Input("topFlangeThickness", "Thickness of the top flange [m].")]
-        [Input("botFlangeWidth", "Width of the bottom flange [m].")]
-        [Input("botFlangeThickness", "Thickness of the bottom flange [m].")]
-        [Input("weldSize", "Optional fillet weld size between web and flanges. Meassured as the distance between intersection of web and flange perpendicular to the edge of the weld [m].")]
+        [Input("height", "Full height of the section.", typeof(Length))]
+        [Input("webThickness", "Thickness of the web.", typeof(Length))]
+        [Input("topFlangeWidth", "Width of the top flange.", typeof(Length))]
+        [Input("topFlangeThickness", "Thickness of the top flange.", typeof(Length))]
+        [Input("botFlangeWidth", "Width of the bottom flange.", typeof(Length))]
+        [Input("botFlangeThickness", "Thickness of the bottom flange.", typeof(Length))]
+        [Input("weldSize", "Optional fillet weld size between web and flanges. Meassured as the distance between intersection of web and flange perpendicular to the edge of the weld.", typeof(Length))]
         [Input("material", "Steel material to be used on the section. If null a default material will be extracted from the database.")]
         [Input("name", "Name of the steel section.")]
         [Output("section", "The created fabricated steel I-section.")]
@@ -76,11 +77,11 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Creates a steel box-section from input dimensions. Please note that all units are in S.I., that is meters [m].")]
-        [Input("height", "Full height of the section [m].")]
-        [Input("width", "Full width of the section [m].")]
-        [Input("thickness", "Thickness of the webs and flanges [m].")]
-        [Input("innerRadius", "Optional inner corner radius. Commonly set equal to the thickness [m].")]
-        [Input("outerRadius", "Optional outer corner radius. Commonly set to 1.5-2 times the thickness [m].")]
+        [Input("height", "Full height of the section.", typeof(Length))]
+        [Input("width", "Full width of the section.", typeof(Length))]
+        [Input("thickness", "Thickness of the webs and flanges.", typeof(Length))]
+        [Input("innerRadius", "Optional inner corner radius. Commonly set equal to the thickness.", typeof(Length))]
+        [Input("outerRadius", "Optional outer corner radius. Commonly set to 1.5-2 times the thickness.", typeof(Length))]
         [Input("material", "Steel material to be used on the section. If null a default material will be extracted from the database.")]
         [Input("name", "Name of the steel section.")]
         [Output("section", "The created steel box-section.")]
@@ -92,11 +93,11 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Creates a fabricated steel box-section from input dimensions. Please note that all units are in S.I., that is meters [m].")]
-        [Input("height", "Full height of the section [m].")]
-        [Input("width", "Full width of the section [m].")]
-        [Input("webThickness", "Thickness of the webs [m].")]
-        [Input("flangeThickness", "Thickness of the flanges [m].")]
-        [Input("weldSize", "Optional fillet weld size between inside of web and flanges. Meassured as the distance between intersection of web and flange perpendicular to the edge of the weld [m].")]
+        [Input("height", "Full height of the section.", typeof(Length))]
+        [Input("width", "Full width of the section.", typeof(Length))]
+        [Input("webThickness", "Thickness of the webs.", typeof(Length))]
+        [Input("flangeThickness", "Thickness of the flanges.", typeof(Length))]
+        [Input("weldSize", "Optional fillet weld size between inside of web and flanges. Meassured as the distance between intersection of web and flange perpendicular to the edge of the weld.", typeof(Length))]
         [Input("material", "Steel material to be used on the section. If null a default material will be extracted from the database.")]
         [Input("name", "Name of the steel section.")]
         [Output("section", "The created fabricated steel box-section.")]
@@ -108,8 +109,8 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Creates a circular hollow steel section from input dimensions. Please note that all units are in S.I., that is meters [m].")]
-        [Input("diameter", "Outer diameter of the section [m].")]
-        [Input("thickness", "Plate thickness of the section [m].")]
+        [Input("diameter", "Outer diameter of the section.", typeof(Length))]
+        [Input("thickness", "Plate thickness of the section.", typeof(Length))]
         [Input("material", "Steel material to be used on the section. If null a default material will be extracted from the database.")]
         [Input("name", "Name of the steel section.")]
         [Output("section", "The created circular hollow steel section.")]
@@ -121,9 +122,9 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Creates a rectangular solid steel section from input dimensions. Please note that all units are in S.I., that is meters [m].")]
-        [Input("height", "Height of the section [m].")]
-        [Input("width", "Width of the section [m].")]
-        [Input("cornerRadius", "Optional corner radius for the section [m].")]
+        [Input("height", "Height of the section.", typeof(Length))]
+        [Input("width", "Width of the section.", typeof(Length))]
+        [Input("cornerRadius", "Optional corner radius for the section.", typeof(Length))]
         [Input("material", "Steel material to be used on the section. If null a default material will be extracted from the database.")]
         [Input("name", "Name of the steel section.")]
         [Output("section", "The created rectangular solid steel section.")]
@@ -135,7 +136,7 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Creates a circular solid steel section from input dimensions. Please note that all units are in S.I., that is meters [m].")]
-        [Input("diameter", "Diameter of the section [m].")]
+        [Input("diameter", "Diameter of the section.", typeof(Length))]
         [Input("material", "Steel material to be used on the section. If null a default material will be extracted from the database.")]
         [Input("name", "Name of the steel section.")]
         [Output("section", "The created circular solid steel section.")]
@@ -147,12 +148,12 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Creates a steel T-section from input dimensions. Please note that all units are in S.I., that is meters [m].")]
-        [Input("height", "Full height of the section [m].")]
-        [Input("webThickness", "Thickness of the web [m].")]
-        [Input("flangeWidth", "Width of the top and bottom flange [m].")]
-        [Input("flangeThickness", "Thickness of the top and bottom flange [m].")]
-        [Input("rootRadius", "Optional fillet radius between inner face of flange and face of web [m].")]
-        [Input("toeRadius", "Optional fillet radius at the outer edge of the flange [m].")]
+        [Input("height", "Full height of the section.", typeof(Length))]
+        [Input("webThickness", "Thickness of the web.", typeof(Length))]
+        [Input("flangeWidth", "Width of the top and bottom flange.", typeof(Length))]
+        [Input("flangeThickness", "Thickness of the top and bottom flange.", typeof(Length))]
+        [Input("rootRadius", "Optional fillet radius between inner face of flange and face of web.", typeof(Length))]
+        [Input("toeRadius", "Optional fillet radius at the outer edge of the flange.", typeof(Length))]
         [Input("material", "Steel material to be used on the section. If null a default material will be extracted from the database.")]
         [Input("name", "Name of the steel section.")]
         [Output("section", "The created steel T-section.")]
@@ -165,12 +166,12 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Creates a steel L-section from input dimensions. Please note that all units are in S.I., that is meters [m].")]
-        [Input("height", "Full height of the section [m].")]
-        [Input("webThickness", "Thickness of the web [m].")]
-        [Input("width", "Full width of the section [m].")]
-        [Input("flangeThickness", "Thickness of the top and bottom flange [m].")]
-        [Input("rootRadius", "Optional fillet radius between inner face of flange and face of web [m].")]
-        [Input("toeRadius", "Optional fillet radius at the outer edge of the flange [m].")]
+        [Input("height", "Full height of the section.", typeof(Length))]
+        [Input("webThickness", "Thickness of the web.", typeof(Length))]
+        [Input("width", "Full width of the section.", typeof(Length))]
+        [Input("flangeThickness", "Thickness of the top and bottom flange.", typeof(Length))]
+        [Input("rootRadius", "Optional fillet radius between inner face of flange and face of web.", typeof(Length))]
+        [Input("toeRadius", "Optional fillet radius at the outer edge of the flange.", typeof(Length))]
         [Input("material", "Steel material to be used on the section. If null a default material will be extracted from the database.")]
         [Input("name", "Name of the steel section.")]
         [Output("section", "The created steel L-section.")]
