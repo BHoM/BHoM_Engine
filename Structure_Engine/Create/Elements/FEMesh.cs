@@ -27,6 +27,9 @@ using System.Collections.Generic;
 using System.Linq;
 using BH.oM.Geometry;
 using BH.Engine.Geometry;
+using BH.oM.Reflection.Attributes;
+using BH.oM.Quantities.Attributes;
+using System.ComponentModel;
 
 
 namespace BH.Engine.Structure
@@ -37,7 +40,13 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static FEMesh FEMesh(BH.oM.Geometry.Mesh mesh, ISurfaceProperty property = null, string name = null)
+
+        [Description("Creates a FEMesh based on a geometrical Mesh.")]
+        [Input("mesh","The geometrical Mesh to extract geometrical and topological information from.")]
+        [InputFromProperty("property")]
+        [Input("name", "The name of the created FEMesh.")]
+        [Output("feMesh", "The created FEMesh with same geometry and topology as the geometrical Mesh.")]
+        public static FEMesh FEMesh(Mesh mesh, ISurfaceProperty property = null, string name = null)
         {
             FEMesh feMesh = new FEMesh();
             feMesh.Nodes = mesh.Vertices.Select(x => Node(x)).ToList();
