@@ -20,7 +20,7 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Common;
+using BH.oM.Dimensional;
 using BH.oM.Geometry;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,13 +43,6 @@ namespace BH.Engine.Common
         public static PolyCurve IOutlineCurve(this List<IElement1D> elements1D)
         {
             return new PolyCurve { Curves = elements1D.Select(e => e.IGeometry()).ToList() };
-        }
-
-        /******************************************/
-
-        public static List<PolyCurve> IInternalOutlineCurves(this IElement2D element2D)
-        {
-            return element2D.IInternalElements2D().Select(x => x.IOutlineCurve()).ToList();
         }
 
         /******************************************/

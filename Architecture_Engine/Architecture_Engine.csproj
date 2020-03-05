@@ -38,6 +38,11 @@
       <HintPath>..\..\BHoM\Build\BHoM.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Dimensional_oM">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\BHoM\Build\Dimensional_oM.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Geometry_oM">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\BHoM\Build\Geometry_oM.dll</HintPath>
@@ -63,11 +68,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Create\Theatron\CircularStadiaPlan.cs" />
-    <Compile Include="Create\Theatron\EightArcStadiaPlan.cs" />
-    <Compile Include="Create\Theatron\FourArcStadiaPlan.cs" />
-    <Compile Include="Create\Theatron\NoCornersStadiaPlan.cs" />
-    <Compile Include="Create\Theatron\OrthogonalStadiaPlan.cs" />
+    <Compile Include="Create\Theatron\TheatronPlan\CircularPlan.cs" />
+    <Compile Include="Create\Theatron\TheatronPlan\EightArcPlan.cs" />
+    <Compile Include="Create\Theatron\TheatronPlan\FourArcPlan.cs" />
+    <Compile Include="Create\Theatron\TheatronPlan\NoCornersPlan.cs" />
+    <Compile Include="Create\Theatron\TheatronPlan\OrthogonalPlan.cs" />
     <Compile Include="Create\Grid.cs" />
     <Compile Include="Create\Level.cs" />
     <Compile Include="Create\Theatron\ActivityArea.cs" />

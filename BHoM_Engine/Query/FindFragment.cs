@@ -46,28 +46,10 @@ namespace BH.Engine.Base
             if (fragmentType == null)
                 fragmentType = typeof(T);
 
-            IBHoMFragment fragment;
+            IFragment fragment;
             iBHoMObject.Fragments.TryGetValue(fragmentType, out fragment);
 
             return (T)System.Convert.ChangeType(fragment, fragmentType);
-        }
-
-        public static bool TryGetValue(this FragmentSet fragmentSet, Type fragmentType, out IBHoMFragment fragment)
-        {
-            if (fragmentType == null)
-                throw new ArgumentNullException($"Passed fragment type is null.");
-
-            if (!typeof(IBHoMFragment).IsAssignableFrom(fragmentType))
-                throw new ArgumentException($"Passed type {fragmentType} is not an IBHoMFragment.");
-
-            if (fragmentSet != null && fragmentSet.Contains(fragmentType))
-            {
-                fragment = fragmentSet[fragmentType];
-                return true;
-            }
-
-            fragment = default(IBHoMFragment);
-            return false;
         }
     }
 }

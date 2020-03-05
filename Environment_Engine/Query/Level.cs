@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -44,79 +44,6 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns a collection of Setting Out Levels from a list of generic BHoM objects")]
-        [Input("bhomObjects", "A collection of generic BHoM objects")]
-        [Output("levels", "A collection of Setting Out Level objects")]
-        public static List<Level> Levels(this List<IBHoMObject> bhomObjects)
-        {
-            bhomObjects = bhomObjects.ObjectsByType(typeof(Level));
-            List<Level> levels = new List<Level>();
-            foreach (IBHoMObject o in bhomObjects)
-                levels.Add(o as Level);
-
-            return levels;
-        }
-
-        [Description("Returns the minimum level of the given polyline based on the z axis")]
-        [Input("polyline", "An Environment polyline to find the minimum level from")]
-        [Output("minimumLevel", "The minimum level of the z axis of the polyline")]
-        public static double MinimumLevel(this Polyline polyline)
-        {
-            List<Point> crvPts = polyline.IControlPoints();
-
-            double min = 1e10;
-            foreach (Point p in crvPts)
-                min = Math.Min(min, p.Z);
-
-            return Math.Round(min, 3);
-        }
-
-        [Description("Returns the maximum level of the given polyline based on the z axis")]
-        [Input("polyline", "An Environment polyline to find the maximum level from")]
-        [Output("maximumLevel", "The maximum level of the z axis of the polyline")]
-        public static double MaximumLevel(this Polyline polyline)
-        {
-            List<Point> crvPts = polyline.IControlPoints();
-
-            double max = -1e10;
-            foreach (Point p in crvPts)
-                max = Math.Max(max, p.Z);
-
-            return Math.Round(max, 3);
-        }
-
-        [Description("Returns the minimum level of the given panel based on the z axis")]
-        [Input("panel", "An Environment Panel to find the minimum level from")]
-        [Output("minimumLevel", "The minimum level of the z axis of the panel")]
-        public static double MinimumLevel(this Panel panel)
-        {
-            return panel.Polyline().MinimumLevel();
-        }
-
-        [Description("Returns the maximum level of the given panel based on the z axis")]
-        [Input("panel", "An Environment Panel to find the maximum level from")]
-        [Output("maximumLevel", "The maximum level of the z axis of the panel")]
-        public static double MaximumLevel(this Panel panel)
-        {
-            return panel.Polyline().MaximumLevel();
-        }
-
-        [Description("Returns the minimum level of the given opening based on the z axis")]
-        [Input("opening", "An Environment Opening to find the minimum level from")]
-        [Output("minimumLevel", "The minimum level of the z axis of the opening")]
-        public static double MinimumLevel(this Opening opening)
-        {
-            return opening.Polyline().MinimumLevel();
-        }
-
-        [Description("Returns the maximum level of the given opening based on the z axis")]
-        [Input("opening", "An Environment Opening to find the maximum level from")]
-        [Output("maximumLevel", "The maximum level of the z axis of the opening")]
-        public static double MaximumLevel(this Opening opening)
-        {
-            return opening.Polyline().MaximumLevel();
-        }
-
         [Description("Returns the Setting Out Level that the Environment Panel resides on")]
         [Input("panel", "An Environment Panel to find the level from")]
         [Input("levels", "A collection of Setting Out Levels to search from")]
@@ -141,7 +68,7 @@ namespace BH.Engine.Environment
             List<Point> floorPts = floor.IControlPoints();
 
             bool allPointsOnLevel = true;
-            foreach(Point pt in floorPts)
+            foreach (Point pt in floorPts)
                 allPointsOnLevel &= (pt.Z > (level.Elevation - BH.oM.Geometry.Tolerance.Distance) && pt.Z < (level.Elevation + BH.oM.Geometry.Tolerance.Distance));
 
             if (!allPointsOnLevel) return null;
@@ -154,7 +81,7 @@ namespace BH.Engine.Environment
         [Output("level", "The Setting Out Level of the space")]
         public static Level Level(this List<Panel> panelsAsSpace, List<Level> levels)
         {
-            foreach(Level l in levels)
+            foreach (Level l in levels)
             {
                 Level match = panelsAsSpace.Level(l);
                 if (match != null) return match;

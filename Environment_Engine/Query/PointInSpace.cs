@@ -39,18 +39,6 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns a collection of BHoM Geometry Points that are in each space")]
-        [Input("panelsAsSpaces", "The nested collection of Environment Panels that represent the spaces to points in")]
-        [Output("spacePoints", "A collection of points in each space")]
-        public static List<Point> PointsInSpaces(this List<List<Panel>> panelsAsSpaces)
-        {
-            List<Point> spacePnts = new List<Point>();
-            foreach (List<Panel> space in panelsAsSpaces)
-                spacePnts.Add(space.PointInSpace());
-
-            return spacePnts;
-        }
-
         [Description("Returns a BHoM Geometry Point that is in the provided space")]
         [Input("panelsAsSpace", "The collection of Environment Panels that represent a single space to get the point in")]
         [Output("spacePoint", "A point in the space")]

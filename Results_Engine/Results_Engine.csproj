@@ -57,7 +57,7 @@
     <Compile Include="Query\Group.cs" />
     <Compile Include="Query\Max.cs" />
     <Compile Include="Query\Min.cs" />
-    <Compile Include="Query\Totals.cs" />
+    <Compile Include="Query\Total.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Compute\" />

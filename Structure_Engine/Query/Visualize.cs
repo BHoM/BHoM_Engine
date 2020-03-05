@@ -482,7 +482,7 @@ namespace BH.Engine.Structure
         /**** Private Methods - fall back               ****/
         /***************************************************/
 
-        public static IEnumerable<IGeometry> Visualize(this ILoad load, double scaleFactor, bool displayForces, bool displayMoments, bool asResultants)
+        private static IEnumerable<IGeometry> Visualize(this ILoad load, double scaleFactor, bool displayForces, bool displayMoments, bool asResultants)
         {
             Reflection.Compute.RecordWarning("No load visualisation is yet implemented for load of type " + load.GetType().Name);
             return new List<IGeometry>();

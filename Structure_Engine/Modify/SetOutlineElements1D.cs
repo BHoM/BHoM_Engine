@@ -20,6 +20,7 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.oM.Dimensional;
 using BH.oM.Geometry;
 using BH.oM.Structure.Elements;
 using System.Collections.Generic;
@@ -42,9 +43,9 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static Panel SetOutlineElements1D(this Panel Panel, List<IElement1D> outlineElements1D)
+        public static Panel SetOutlineElements1D(this Panel panel, List<IElement1D> outlineElements1D)
         {
-            Panel pp = Panel.GetShallowClone(true) as Panel;
+            Panel pp = panel.GetShallowClone(true) as Panel;
             pp.ExternalEdges = new List<Edge>(outlineElements1D.Cast<Edge>());
             return pp;
         }

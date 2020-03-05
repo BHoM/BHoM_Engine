@@ -95,9 +95,13 @@
   <ItemGroup>
     <Compile Include="Compute\DeepDependencies.cs" />
     <Compile Include="Compute\OpenHelpPage.cs" />
+    <Compile Include="Compute\RecordError.cs" />
     <Compile Include="Compute\RecordEvent.cs" />
     <Compile Include="Compute\LoadAllAssemblies.cs" />
+    <Compile Include="Compute\RecordNote.cs" />
+    <Compile Include="Compute\RecordWarning.cs" />
     <Compile Include="Compute\RunExtensionMethod.cs" />
+    <Compile Include="Compute\SplitByIndicies.cs" />
     <Compile Include="Convert\ToFunc.cs" />
     <Compile Include="Convert\ToText.cs" />
     <Compile Include="Create\MethodBase.cs" />
@@ -110,7 +114,7 @@
     <Compile Include="Query\BHoMFolder.cs" />
     <Compile Include="Query\EnumValues.cs" />
     <Compile Include="Query\GenericTypeConstraint.cs" />
-    <Compile Include="Query\ImplementedTypes.cs" />
+    <Compile Include="Query\ImplementingTypes.cs" />
     <Compile Include="Query\Count.cs" />
     <Compile Include="Query\IsExposed.cs" />
     <Compile Include="Query\Item.cs" />

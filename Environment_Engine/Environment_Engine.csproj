@@ -43,6 +43,11 @@
       <HintPath>..\..\BHoM\Build\BHoM.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Dimensional_oM">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\BHoM\Build\Dimensional_oM.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Environment_oM">
       <HintPath>..\..\BHoM\Build\Environment_oM.dll</HintPath>
       <Private>False</Private>
@@ -73,34 +78,88 @@
   <ItemGroup>
     <Compile Include="Compute\BooleanIntersect.cs" />
     <Compile Include="Compute\EquipmentGain.cs" />
+    <Compile Include="Compute\JulianDay.cs" />
     <Compile Include="Compute\LightingGain.cs" />
     <Compile Include="Compute\Occupancy.cs" />
     <Compile Include="Compute\PeopleGain.cs" />
     <Compile Include="Compute\PlugGain.cs" />
     <Compile Include="Compute\SolarPosition.cs" />
+    <Compile Include="Compute\ThirdOrderPolynomial.cs" />
     <Compile Include="Convert\Degrees.cs" />
     <Compile Include="Convert\Edge.cs" />
     <Compile Include="Create\LightReflectanceFragment.cs" />
     <Compile Include="Create\LightTransmittanceFragment.cs" />
     <Compile Include="Create\Location.cs" />
     <Compile Include="Create\SpaceTime.cs" />
+    <Compile Include="Modify\AddOpenings.cs" />
+    <Compile Include="Modify\ChangeAdjacentSpace.cs" />
+    <Compile Include="Modify\ChangeAdjacentSpaces.cs" />
     <Compile Include="Modify\CleanPanel.cs" />
     <Compile Include="Modify\FixNormal.cs" />
     <Compile Include="Modify\OffsetOpenings.cs" />
-    <Compile Include="Modify\Remove.cs" />
-    <Compile Include="Modify\RemoveOpenings.cs" />
+    <Compile Include="Modify\RemoveOpening.cs" />
+    <Compile Include="Modify\RemovePanel.cs" />
+    <Compile Include="Modify\RemoveOpeningsByName.cs" />
+    <Compile Include="Modify\RemovePanels.cs" />
+    <Compile Include="Modify\SetAdjacentSpaces.cs" />
+    <Compile Include="Modify\SetFloorPanels.cs" />
+    <Compile Include="Modify\SetOpeningConstruction.cs" />
     <Compile Include="Modify\SetOpeningType.cs" />
-    <Compile Include="Modify\SplitOpening.cs" />
+    <Compile Include="Modify\SetPanelTypeByAdjacencies.cs" />
+    <Compile Include="Modify\SetRoofPanels.cs" />
+    <Compile Include="Modify\SetShadePanels.cs" />
+    <Compile Include="Modify\SetWallPanels.cs" />
+    <Compile Include="Modify\Split.cs" />
+    <Compile Include="Modify\SplitOpeningByGeometry.cs" />
+    <Compile Include="Modify\SplitPanelByGeometry.cs" />
+    <Compile Include="Modify\SplitPanelsByPoints.cs" />
+    <Compile Include="Modify\UpdatePanelTypeByCustomData.cs" />
     <Compile Include="Query\Absorptance.cs" />
+    <Compile Include="Query\ClosedSpaces.cs" />
+    <Compile Include="Query\ConnectedSpaceName.cs" />
+    <Compile Include="Query\NotClosedSpaces.cs" />
+    <Compile Include="Query\PointsInSpaces.cs" />
+    <Compile Include="Query\CullDuplicateLines.cs" />
+    <Compile Include="Query\CullOverlaps.cs" />
+    <Compile Include="Query\FindDuplicatePanels.cs" />
     <Compile Include="Query\IsValidLocation.cs" />
     <Compile Include="Query\DateTime.cs" />
     <Compile Include="Query\DateTimeList.cs" />
-    <Compile Include="Query\ICurve.cs" />
+    <Compile Include="Query\Level.cs" />
+    <Compile Include="Query\MaximumLevel.cs" />
+    <Compile Include="Query\MinimumLevel.cs" />
+    <Compile Include="Query\OpeningsByElementID.cs" />
+    <Compile Include="Query\OpeningsByLevel.cs" />
+    <Compile Include="Query\OpeningsByMaximumLevel.cs" />
+    <Compile Include="Query\OpeningsByMinimumLevel.cs" />
+    <Compile Include="Query\OpeningsByName.cs" />
+    <Compile Include="Query\OpeningsFromElements.cs" />
+    <Compile Include="Query\OpeningsFromPhysical.cs" />
+    <Compile Include="Query\PanelByGuid.cs" />
+    <Compile Include="Query\PanelsByElementID.cs" />
+    <Compile Include="Query\PanelsByGeometry.cs" />
+    <Compile Include="Query\PanelsByLevel.cs" />
+    <Compile Include="Query\PanelsByMaximumLevel.cs" />
+    <Compile Include="Query\PanelsByMinimumLevel.cs" />
+    <Compile Include="Query\PanelsByName.cs" />
+    <Compile Include="Query\PanelsByTilt.cs" />
+    <Compile Include="Query\PanelsByTiltRange.cs" />
+    <Compile Include="Query\PanelsByType.cs" />
+    <Compile Include="Query\PanelsContainingPoint.cs" />
+    <Compile Include="Query\PanelsFromPhysical.cs" />
+    <Compile Include="Query\PanelsNotByType.cs" />
+    <Compile Include="Query\ResultsByResultType.cs" />
+    <Compile Include="Query\ResultsByTypeUnit.cs" />
+    <Compile Include="Query\ResultsByTypeUnitResultType.cs" />
+    <Compile Include="Query\ResultsByUnit.cs" />
+    <Compile Include="Query\SpaceByName.cs" />
+    <Compile Include="Query\SpacesByElementID.cs" />
+    <Compile Include="Query\ToEdges.cs" />
     <Compile Include="Query\InvalidPanels.cs" />
     <Compile Include="Query\IsTransparent.cs" />
-    <Compile Include="Query\Line.cs" />
+    <Compile Include="Query\ToLines.cs" />
     <Compile Include="Query\Polyline.cs" />
-    <Compile Include="Query\Space.cs" />
+    <Compile Include="Query\ToSpace.cs" />
     <Compile Include="Create\Building.cs" />
     <Compile Include="Create\CoefficientFragment.cs" />
     <Compile Include="Create\Edge.cs" />
@@ -121,36 +180,37 @@
     <Compile Include="Create\PanelContextFragment.cs" />
     <Compile Include="Create\BuildingResultFragment.cs" />
     <Compile Include="Create\OriginContextFragment.cs" />
-    <Compile Include="Create\NewElement1D.cs" />
-    <Compile Include="Create\NewInternalElement2D.cs" />
+    <Compile Include="Create\IElement1D\NewElement1D.cs" />
+    <Compile Include="Create\IElement2D\NewInternalElement2D.cs" />
     <Compile Include="Create\SimulationResult.cs" />
     <Compile Include="Create\SpaceAnalyticalFragment.cs" />
-    <Compile Include="Modify\AdjacentSpace.cs" />
+    <Compile Include="Modify\AddAdjacentSpace.cs" />
     <Compile Include="Modify\AddOpening.cs" />
-    <Compile Include="Compute\MergeBuildingElements.cs" />
+    <Compile Include="Compute\MergePanels.cs" />
     <Compile Include="Modify\Copy.cs" />
-    <Compile Include="Modify\SetConstruction.cs" />
+    <Compile Include="Modify\SetConstructions.cs" />
     <Compile Include="Modify\SetPanelType.cs" />
     <Compile Include="Modify\AddFragment.cs" />
     <Compile Include="Modify\SetInternalElements2D.cs" />
     <Compile Include="Modify\SetOutlineElements1D.cs" />
-    <Compile Include="Modify\SplitPanels.cs" />
+    <Compile Include="Modify\SplitPanelsByOverlap.cs" />
     <Compile Include="Query\Buildings.cs" />
-    <Compile Include="Query\ConstructionRoughness.cs" />
+    <Compile Include="Query\Roughness.cs" />
     <Compile Include="Query\FindFragment.cs" />
-    <Compile Include="Query\MatchPoint.cs" />
+    <Compile Include="Query\MatchPointOn2Of3.cs" />
     <Compile Include="Query\FindMaterial.cs" />
     <Compile Include="Query\ObjectsByFragment.cs" />
     <Compile Include="Query\Openings.cs" />
     <Compile Include="Query\Panels.cs" />
     <Compile Include="Query\RValue.cs" />
-    <Compile Include="Query\SpaceName.cs" />
+    <Compile Include="Query\UniqueConstructionName.cs" />
+    <Compile Include="Query\UniqueSpaceNames.cs" />
     <Compile Include="Query\AdjacentSpaces.cs" />
     <Compile Include="Query\Area.cs" />
     <Compile Include="Query\Spaces.cs" />
     <Compile Include="Query\CleanSpace.cs" />
     <Compile Include="Query\ClosedShellGeometry.cs" />
-    <Compile Include="Query\Construction.cs" />
+    <Compile Include="Query\ConstructionByName.cs" />
     <Compile Include="Query\CullDuplicates.cs" />
     <Compile Include="Modify\Add.cs" />
     <Compile Include="Modify\Move.cs" />
@@ -160,15 +220,19 @@
     <Compile Include="Query\AltitudeRange.cs" />
     <Compile Include="Query\Altitude.cs" />
     <Compile Include="Query\Thickness.cs" />
+    <Compile Include="Query\ToSpaces.cs" />
     <Compile Include="Query\UnconnectedEdges.cs" />
     <Compile Include="Query\ElementsNotMatched.cs" />
     <Compile Include="Query\ExposedToSun.cs" />
     <Compile Include="Query\FloorGeometry.cs" />
     <Compile Include="Query\Height.cs" />
     <Compile Include="Query\IsCoPlanar.cs" />
-    <Compile Include="Query\SimulationResult.cs" />
+    <Compile Include="Query\ResultsByType.cs" />
     <Compile Include="Query\UniqueConstructions.cs" />
-    <Compile Include="Query\UniqueMaterials..cs" />
+    <Compile Include="Query\UniqueMaterials.cs" />
+    <Compile Include="Query\UniqueOpeningInstances.cs" />
+    <Compile Include="Query\UniquePanelInstances.cs" />
+    <Compile Include="Query\UniquePanels.cs" />
     <Compile Include="Query\UValue.cs" />
     <Compile Include="Query\Vertices.cs" />
     <Compile Include="Query\InternalElements2D.cs" />
@@ -180,7 +244,7 @@
     <Compile Include="Query\IsExternal.cs" />
     <Compile Include="Query\IsIdentical.cs" />
     <Compile Include="Query\IsInternal.cs" />
-    <Compile Include="Query\LongestSegment.cs" />
+    <Compile Include="Query\LongestSegmentLength.cs" />
     <Compile Include="Query\NormalAwayFromSpace.cs" />
     <Compile Include="Query\Orientation.cs" />
     <Compile Include="Query\PointsMatch.cs" />
@@ -189,7 +253,7 @@
     <Compile Include="Query\Volume.cs" />
     <Compile Include="Query\Azimuth.cs" />
     <Compile Include="Query\Tilt.cs" />
-    <Compile Include="Query\Level.cs" />
+    <Compile Include="Query\Levels.cs" />
     <Compile Include="Query\Bounds.cs" />
     <Compile Include="Query\Width.cs" />
   </ItemGroup>
@@ -222,9 +286,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />
-  <ItemGroup>
-    <Compile Include="Query\MaterialRoughness.cs" />
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

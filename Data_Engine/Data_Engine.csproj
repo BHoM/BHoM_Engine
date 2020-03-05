@@ -94,7 +94,14 @@
     <Compile Include="Query\AdjacencyDictionary.cs" />
     <Compile Include="Query\Axes.cs" />
     <Compile Include="Query\AxisExists.cs" />
+<<<<<<< HEAD
     <Compile Include="Query\DepthDictionary.cs" />
+=======
+    <Compile Include="Query\FirstValueAbove.cs" />
+    <Compile Include="Query\FirstValueAt.cs" />
+    <Compile Include="Query\Linq\FilterBy.cs" />
+    <Compile Include="Query\Linq\OrderBy.cs" />
+>>>>>>> 819abe4f63bf3352f1c6e2d410055932ce0b1a43
     <Compile Include="Query\CloseToPoint.cs" />
     <Compile Include="Query\ClosestData.cs" />
     <Compile Include="Query\ClosestNode.cs" />
@@ -108,8 +115,8 @@
     <Compile Include="Query\Peek.cs" />
     <Compile Include="Query\SquareDistance.cs" />
     <Compile Include="Query\SubMatrixData.cs" />
-    <Compile Include="Query\ValueAbove.cs" />
-    <Compile Include="Query\ValueAt.cs" />
+    <Compile Include="Query\ValuesAbove.cs" />
+    <Compile Include="Query\ValuesAt.cs" />
     <Compile Include="Query\Values.cs" />
   </ItemGroup>
   <ItemGroup>

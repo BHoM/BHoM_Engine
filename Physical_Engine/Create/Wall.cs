@@ -78,11 +78,12 @@ namespace BH.Engine.Physical
             };
         }
 
+        /***************************************************/
+
         [Description("Creates a physical Wall element. For elements for structral analytical applications look at BH.oM.Structure.Elements.Panel. For elements for environmental analytical applications look at BH.oM.Environments.Elements.Panel")]
         [Input("line", "Base line of the wall")]
         [Input("height", "Height of the wall")]
         [Input("construction", "Construction representing the thickness and materiality of the Wall")]
-        [Input("openings", "Openings of the Wall. Could be simple voids or more detailed obejcts")]
         [Input("offset", "Represents the positioning of the construction in relation to the location surface of the Wall")]
         [Input("name", "The name of the wall, default empty string")]
         [Output("Wall", "The created physical Wall")]
@@ -135,6 +136,8 @@ namespace BH.Engine.Physical
                 Location = aPlanarSurface
             };
         }
+
+        /***************************************************/
 
         [Description("Creates a physical Wall element. For elements for structral analytical applications look at BH.oM.Structure.Elements.Panel. For elements for environmental analytical applications look at BH.oM.Environments.Elements.Panel")]
         [Input("location", "Location surface which represents the outer geometry of the Wall. Should not contain any openings")]

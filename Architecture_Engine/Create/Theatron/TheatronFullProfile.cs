@@ -66,7 +66,6 @@ namespace BH.Engine.Architecture.Theatron
         /***************************************************/
         [Description("Create a full profile from one or more ProfileParameters and a focal point and ProfileOrigin")]
         [Input("parameters", "List of ProfileParameters")]
-        [Input("planGeometry", "A TheatronPlan")]
         public static TheatronFullProfile TheatronFullProfile(List<ProfileParameters> parameters, Point focalPoint, ProfileOrigin sectionOrigin)
         {
             //this assumes no relation with the plan geometry setting out is from the origin

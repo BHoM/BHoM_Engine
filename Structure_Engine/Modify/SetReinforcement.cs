@@ -41,23 +41,6 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
-
-        public static ConcreteSection AddReinforcement(this ConcreteSection section, IEnumerable<Reinforcement> reinforcement)
-        {
-            ConcreteSection clone = section.GetShallowClone() as ConcreteSection;
-
-            if (clone.Reinforcement == null)
-                clone.Reinforcement = new List<Reinforcement>();
-            else
-                clone.Reinforcement = new List<Reinforcement>(clone.Reinforcement);
-
-
-            clone.Reinforcement.AddRange(reinforcement);
-
-            return clone;
-        }
-
-        /***************************************************/
     }
 }
 

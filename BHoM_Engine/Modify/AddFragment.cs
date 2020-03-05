@@ -36,10 +36,10 @@ namespace BH.Engine.Base
     {
         [Description("Returns a deep clone of a given BHoM Object and attaches to it the given Fragment.")]
         [Input("iBHoMObject", "Any object implementing the IBHoMObject interface that can have fragment properties appended to it")]
-        [Input("fragment", "Any fragment object implementing the IBHoMFragment interface to append to the object")]
+        [Input("fragment", "Any fragment object implementing the IFragment interface to append to the object")]
         [Input("replace", "If set to true and the object already contains a fragment of the type being added, the fragment will be replaced by this instance")]
         [Output("iBHoMObject", "The BHoM object with the added fragment")]
-        public static IBHoMObject AddFragment(this IBHoMObject iBHoMObject, IBHoMFragment fragment, bool replace = false)
+        public static IBHoMObject AddFragment(this IBHoMObject iBHoMObject, IFragment fragment, bool replace = false)
         {
             if (iBHoMObject == null) return null;
             IBHoMObject o = iBHoMObject.DeepClone();

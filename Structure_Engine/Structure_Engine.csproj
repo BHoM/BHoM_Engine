@@ -30,7 +30,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Analytical_oM, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Analytical_oM">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\BHoM\Build\Analytical_oM.dll</HintPath>
       <Private>False</Private>
@@ -44,9 +44,14 @@
       <HintPath>..\..\BHoM\Build\Common_oM.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Data_oM, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Data_oM">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\BHoM\Build\Data_oM.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Dimensional_oM">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\BHoM\Build\Dimensional_oM.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Geometry_oM">
@@ -54,7 +59,7 @@
       <HintPath>..\..\BHoM\Build\Geometry_oM.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Physical_oM, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Physical_oM">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\BHoM\Build\Physical_oM.dll</HintPath>
       <Private>False</Private>
@@ -85,58 +90,78 @@
   <ItemGroup>
     <Compile Include="Compute\IntegrateSection.cs" />
     <Compile Include="Compute\PlasticModulus.cs" />
-    <Compile Include="Compute\ShearArea.cs" />
+    <Compile Include="Compute\ShearAreaPolyline.cs" />
     <Compile Include="Compute\Integrate.cs" />
     <Compile Include="Convert\ToFramingElement.cs" />
-    <Compile Include="Create\AluminiumSection.cs" />
-    <Compile Include="Create\ConstantFramingProperty.cs" />
-    <Compile Include="Create\FEMesh.cs" />
-    <Compile Include="Create\GenericSection.cs" />
-    <Compile Include="Create\IResultRequest.cs" />
-    <Compile Include="Create\MaterialFragment.cs" />
-    <Compile Include="Create\SectionProperty.cs" />
-    <Compile Include="Create\TimberSection.cs" />
+    <Compile Include="Create\Loads\AreaTemperatureLoad.cs" />
+    <Compile Include="Create\Loads\AreaUniformlyDistributedLoad.cs" />
+    <Compile Include="Create\Loads\BarPointLoad.cs" />
+    <Compile Include="Create\Loads\BarPrestressLoad.cs" />
+    <Compile Include="Create\Loads\BarTemperatureLoad.cs" />
+    <Compile Include="Create\Loads\BarUniformlyDistributedLoad.cs" />
+    <Compile Include="Create\Loads\BarVaryingDistributedLoad.cs" />
+    <Compile Include="Create\Loads\ContourLoad.cs" />
+    <Compile Include="Create\Loads\GeometricalLineLoad.cs" />
+    <Compile Include="Create\Loads\GravityLoad.cs" />
+    <Compile Include="Create\Loads\PointVelocity.cs" />
+    <Compile Include="Create\Loads\PointLoad.cs" />
+    <Compile Include="Create\Loads\PointDisplacement.cs" />
+    <Compile Include="Create\Loads\PointAcceleration.cs" />
+    <Compile Include="Create\MaterialFragments\Aluminium.cs" />
+    <Compile Include="Create\MaterialFragments\Concrete.cs" />
+    <Compile Include="Create\MaterialFragments\Steel.cs" />
+    <Compile Include="Create\SectionProperties\AluminiumSection.cs" />
+    <Compile Include="Create\Framing\ConstantFramingProperty.cs" />
+    <Compile Include="Create\Elements\FEMesh.cs" />
+    <Compile Include="Create\SectionProperties\GenericSection.cs" />
+    <Compile Include="Create\Requests\IResultRequest.cs" />
+    <Compile Include="Create\MaterialFragments\Timber.cs" />
+    <Compile Include="Create\SectionProperties\GeometricalSection.cs" />
+    <Compile Include="Create\SectionProperties\TimberSection.cs" />
+    <Compile Include="Modify\AddReinforcement.cs" />
     <Compile Include="Modify\SetMaterial.cs" />
     <Compile Include="Modify\SetStructuralFragment.cs" />
+    <Compile Include="Query\AllEdgeCurves.cs" />
     <Compile Include="Query\CoordinateSystem.cs" />
     <Compile Include="Query\DescriptionOrName.cs" />
     <Compile Include="Query\Description.cs" />
+    <Compile Include="Query\EdgeCurves.cs" />
     <Compile Include="Query\EmbodiedCarbon.cs" />
+    <Compile Include="Query\ExternalEdgeCurves.cs" />
     <Compile Include="Query\Fixities.cs" />
     <Compile Include="Query\HasModifiers.cs" />
+    <Compile Include="Query\InternalEdgeCurves.cs" />
     <Compile Include="Query\MaterialType.cs" />
-    <Compile Include="Create\NewElement0D.cs" />
-    <Compile Include="Create\NewElement1D.cs" />
-    <Compile Include="Create\NewInternalElement2D.cs" />
-    <Compile Include="Create\MeshResult.cs" />
-    <Compile Include="Create\Edge.cs" />
-    <Compile Include="Create\FramingElementProperty.cs" />
-    <Compile Include="Create\LoadingPanelProperty.cs" />
-    <Compile Include="Create\Offset.cs" />
-    <Compile Include="Create\Reinforcement.cs" />
-    <Compile Include="Create\ConstantThickness.cs" />
-    <Compile Include="Create\SectionProfile.cs" />
-    <Compile Include="Create\Waffle.cs" />
-    <Compile Include="Create\Ribbed.cs" />
-    <Compile Include="Create\BarRelease.cs" />
-    <Compile Include="Create\Constraint3DOF.cs" />
-    <Compile Include="Create\Constraint6DOF.cs" />
-    <Compile Include="Create\Constraint4DOF.cs" />
-    <Compile Include="Create\Load.cs" />
-    <Compile Include="Create\LoadCombination.cs" />
-    <Compile Include="Create\Loadcase.cs" />
-    <Compile Include="Create\RigidLink.cs" />
-    <Compile Include="Create\FramingElement.cs" />
-    <Compile Include="Create\Panel.cs" />
-    <Compile Include="Create\Span.cs" />
-    <Compile Include="Create\StructuralLayout.cs" />
-    <Compile Include="Create\Node.cs" />
-    <Compile Include="Create\Bar.cs" />
-    <Compile Include="Create\ConcreteSection.cs" />
-    <Compile Include="Create\LinkConstraints.cs" />
-    <Compile Include="Create\Opening.cs" />
-    <Compile Include="Create\Surface.cs" />
-    <Compile Include="Create\SteelSection.cs" />
+    <Compile Include="Create\Elements\IElement0D\NewElement0D.cs" />
+    <Compile Include="Create\Elements\IElement1D\NewElement1D.cs" />
+    <Compile Include="Create\Elements\IElement2D\NewInternalElement2D.cs" />
+    <Compile Include="Create\Requests\FilterRequest.cs" />
+    <Compile Include="Create\Elements\Edge.cs" />
+    <Compile Include="Create\Framing\FramingElementProperty.cs" />
+    <Compile Include="Create\SurfaceProperties\LoadingPanelProperty.cs" />
+    <Compile Include="Create\Offsets\Offset.cs" />
+    <Compile Include="Create\SectionProperties\Reinforcement.cs" />
+    <Compile Include="Create\SurfaceProperties\ConstantThickness.cs" />
+    <Compile Include="Create\SectionProperties\SectionProfile.cs" />
+    <Compile Include="Create\SurfaceProperties\Waffle.cs" />
+    <Compile Include="Create\SurfaceProperties\Ribbed.cs" />
+    <Compile Include="Create\Constraints\BarRelease.cs" />
+    <Compile Include="Create\Constraints\Constraint3DOF.cs" />
+    <Compile Include="Create\Constraints\Constraint6DOF.cs" />
+    <Compile Include="Create\Constraints\Constraint4DOF.cs" />
+    <Compile Include="Create\Loads\Load.cs" />
+    <Compile Include="Create\Loads\LoadCombination.cs" />
+    <Compile Include="Create\Loads\Loadcase.cs" />
+    <Compile Include="Create\Elements\RigidLink.cs" />
+    <Compile Include="Create\Framing\FramingElement.cs" />
+    <Compile Include="Create\Elements\Panel.cs" />
+    <Compile Include="Create\Elements\Node.cs" />
+    <Compile Include="Create\Elements\Bar.cs" />
+    <Compile Include="Create\SectionProperties\ConcreteSection.cs" />
+    <Compile Include="Create\Constraints\LinkConstraint.cs" />
+    <Compile Include="Create\Elements\Opening.cs" />
+    <Compile Include="Create\Elements\Surface.cs" />
+    <Compile Include="Create\SectionProperties\SteelSection.cs" />
     <Compile Include="Modify\ApplyModifiers.cs" />
     <Compile Include="Modify\SetElements0D.cs" />
     <Compile Include="Modify\SetInternalElements2D.cs" />

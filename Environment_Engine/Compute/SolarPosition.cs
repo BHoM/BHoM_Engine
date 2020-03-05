@@ -43,10 +43,7 @@ namespace BH.Engine.Environment
         /***************************************************/
 
         [Description("Calculate the solar azimuth (degrees clockwise from 0 at North) from Datetime and Location objects")]
-        [Input("latitude", "The latitude of the location to calculate the solar azimuth from. This should be given in degrees. Default 0")]
-        [Input("longitude", "The longitude of the location to calculate the solar azimuth from. This should be given in degrees. Default 0")]
-        [Input("dateTime", "The date and time for the calculation of the solar azimuth. Default null - will default to the 1st January 1900 00:00:00.0")]
-        [Input("utcOffset", "The number of hours offset from UTC time, default 0")]
+        [Input("spaceTime", "A SpaceTime object containing latitude, longitude, azimuth, and date data to calculate the solar position from")]
         [Output("sun", "The sun with calculated position")]
         public static Sun SolarPosition(this SpaceTime spaceTime)
         {
@@ -588,47 +585,5 @@ namespace BH.Engine.Environment
 
             return new Sun { Altitude = (90 - zenith), Azimuth = azimuth };
         }
-
-        [Description("Calculate the Third Order Polynominal for the numbers provided. The equation is: ((a * x + b) * x * c) * x + d")]
-        [Output("thirdOrderPolynominal", "The calculated Third Order Polynominal")]
-        public static double ThirdOrderPolynomial(double a, double b, double c, double d, double x)
-        {
-            return ((a * x + b) * x + c) * x + d;
-        }
-
-        [Description("Calculate the Julian Day for the curent date time provided")]
-        [Input("year", "The year for calculating the Julian Day from")]
-        [Input("month", "The month for calculating the Julian Day from")]
-        [Input("day", "The day for calculating the Julian Day from")]
-        [Input("hour", "The hour for calculating the Julian Day from")]
-        [Input("minute", "The minute for calculating the Julian Day from")]
-        [Input("second", "The second for calculating the Julian Day from")]
-        [Input("timezone", "The timezone for calculating the Julian Day for, defined as the UTC Offset")]
-        [Output("julianDay", "The calculated Julian Day")]
-        public static double JulianDay(int year, int month, int day, int hour, int minute, double second, double timezone)
-        {
-            double dayDecimal = day + (hour - timezone + (minute + (second) / 60) / 60) / 24;
-            if(month < 3)
-            {
-                month += 12;
-                year--;
-            }
-
-            int y = (int)(365.25 * (year + 4716));
-            int m = (int)(30.6001 * (month + 1));
-            
-            double julianDay = y + m + dayDecimal - 1524.5;
-
-            if(julianDay > 2299160)
-            {
-                int alteration = ((int)year / 100);
-                int a = (int)(alteration / 4);
-                julianDay += (2 - alteration + a);
-            }
-
-            return julianDay;
-        }
-
     }
-
 }
