@@ -38,6 +38,14 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Creates a point velocity to be applied to Node elements.")]
+        [InputFromProperty("loadcase")]
+        [InputFromProperty("group", "Objects")]
+        [InputFromProperty("translation", "TranslationalAcceleration")]
+        [InputFromProperty("rotation", "RotationalAcceleration")]
+        [InputFromProperty("axis")]
+        [Input("name", "The name of the created load.")]
+        [Output("ptVel", "The created PointVelocity.")]
         public static PointVelocity PointVelocity(Loadcase loadcase, BHoMGroup<Node> group, Vector translation = null, Vector rotation = null, LoadAxis axis = LoadAxis.Global, string name = "")
         {
             if (translation == null && rotation == null)
@@ -57,6 +65,14 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Description("Creates a point velocity to be applied to Node elements.")]
+        [InputFromProperty("loadcase")]
+        [Input("objects", "The collection of Nodes the load should be applied to.")]
+        [InputFromProperty("translation", "TranslationalAcceleration")]
+        [InputFromProperty("rotation", "RotationalAcceleration")]
+        [InputFromProperty("axis")]
+        [Input("name", "The name of the created load.")]
+        [Output("ptVel", "The created PointVelocity.")]
         public static PointVelocity PointVelocity(Loadcase loadcase, IEnumerable<Node> objects, Vector translation = null, Vector rotation = null, LoadAxis axis = LoadAxis.Global, string name = "")
         {
             return PointVelocity(loadcase, new BHoMGroup<Node>() { Elements = objects.ToList() }, translation, rotation, axis, name);
