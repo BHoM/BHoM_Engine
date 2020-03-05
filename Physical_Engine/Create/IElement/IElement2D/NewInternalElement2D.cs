@@ -20,59 +20,30 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System;
-using System.Linq;
-using System.Collections.Generic;
-using System.ComponentModel;
-using BH.oM.Reflection.Attributes;
-using BH.oM.Physical.Elements;
-using BH.oM.Geometry;
-using BH.Engine.Geometry;
 using BH.oM.Dimensional;
+using BH.oM.Geometry;
+using BH.oM.Physical.Elements;
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Physical
 {
-    public static partial class Query
+    public static partial class Create
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Gets the external outline elements of an ISurface.")]
-        [Input("surface", "The ISurface to get the external outline elements from.")]
-        [Output("curves", "The curves defining the external boundery of the ISurface.")]
-        public static List<IElement1D> OutlineElements1D(this oM.Physical.Elements.ISurface surface)
+        [Description("Creates a valid IElement2D which can be assigned as an internal element")]
+        [Input("surface", "The 2-dimensional element which a valid internal element is to be gotten from")]
+        [Output("element2D", "a Void which can be assigned as an internal element")]
+        public static IElement2D NewInternalElement2D(this oM.Physical.Elements.ISurface surface)
         {
-            PlanarSurface pSurface = surface.Location as PlanarSurface;
-            if (pSurface == null)
-            {
-                Engine.Reflection.Compute.RecordError("Not implemented for non-PlanarSurfaces");
-                return null;
-            }
-
-            return pSurface.ExternalBoundary.ISubParts().ToList<IElement1D>();
+            Engine.Reflection.Compute.RecordNote("The ISurface's IOpening has been modified and may have been replaced as a Void");
+            return new Void();
         }
 
         /***************************************************/
-
-        [Description("Gets the external outline elements of an IOpening.")]
-        [Input("opening", "The IOpening to get the external outline elements from.")]
-        [Output("curves", "The curves defining the external boundery of the IOpening.")]
-        public static List<IElement1D> OutlineElements1D(this IOpening opening)
-        {
-            PlanarSurface pSurface = opening.Location as PlanarSurface;
-            if (pSurface == null)
-            {
-                Engine.Reflection.Compute.RecordError("Not implemented for non-PlanarSurfaces");
-                return null;
-            }
-
-            return pSurface.ExternalBoundary.ISubParts().ToList<IElement1D>();
-        }
-
-        /***************************************************/
-
-
     }
 }
 

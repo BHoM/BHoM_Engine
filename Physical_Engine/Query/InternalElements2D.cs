@@ -20,29 +20,45 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Dimensional;
-using BH.oM.Geometry;
-using BH.oM.Physical.Elements;
-using BH.oM.Reflection.Attributes;
+using System;
+using System.Linq;
+using System.Collections.Generic;
 using System.ComponentModel;
+using BH.oM.Reflection.Attributes;
+using BH.oM.Physical.Elements;
+using BH.oM.Geometry;
+using BH.Engine.Geometry;
+using BH.oM.Dimensional;
 
 namespace BH.Engine.Physical
 {
-    public static partial class Create
+    public static partial class Query
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates a valid IElement2D which can be assigned as an internal element")]
-        [Input("surface", "The 2-dimensional element which a valid internal element is to be gotten from")]
-        [Output("element1D", "a Void which can be assigned as an internal element")]
-        public static IElement2D NewInternalElement2D(this oM.Physical.Elements.ISurface surface)
+        [Description("Gets the internal elements of an ISurface.")]
+        [Input("surface", "The ISurface to get the internal elements from.")]
+        [Output("openings", "The IOpenings of the ISurface.")]
+        public static List<IElement2D> InternalElements2D(this oM.Physical.Elements.ISurface surface)
         {
-            return new Void();
+            return new List<IElement2D>(surface.Openings);
         }
 
         /***************************************************/
+
+        [Description("Gets the internal elements of an IOpening.")]
+        [Input("opening", "The IOpening to get the internal elements from.")]
+        [Output("element2d", "Always an empty list as IOpening does not have an definintion for internal elements")]
+        public static List<IElement2D> InternalElements2D(this IOpening surface)
+        {
+            return new List<IElement2D>();
+        }
+
+        /***************************************************/
+
+
     }
 }
 
