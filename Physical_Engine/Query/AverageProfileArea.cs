@@ -40,10 +40,41 @@ namespace BH.Engine.Physical
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        
-        public static double SolidVolume(this IFramingElement framingElement)
+
+        public static double IAverageProfileArea(this IFramingElementProperty framingProperty)
         {
-            return framingElement.Location.Length() * IAverageProfileArea(framingElement.Property);
+            return AverageProfileArea(framingProperty as dynamic);
+        }
+
+        /***************************************************/
+
+        public static double AverageProfileArea(this ConstantFramingProperty framingProperty)
+        {
+            List<PolyCurve> curvesZ = Engine.Geometry.Compute.IJoin(framingProperty.Profile.Edges.ToList());
+
+            int[] depth = new int[curvesZ.Count];
+            if (curvesZ.Count > 1)
+            {
+                // find which is in which
+                for (int i = 0; i < curvesZ.Count; i++)
+                    for (int j = 0; j < curvesZ.Count; j++)
+                        if (i != j)
+                            if (curvesZ[i].IsContaining(new List<Point>() { curvesZ[j].IStartPoint() }))
+                                depth[j]++;
+            }
+
+            depth = depth.Select(x => x % 2 == 0 ? 1 : -1).ToArray();
+            return curvesZ.Select((x, i) => Math.Abs(x.IIntegrateRegion(0)) * depth[i]).Sum();
+        }
+
+
+        /***************************************************/
+        /****    private fallback method            ********/
+        /***************************************************/
+
+        public static double AverageProfileArea(this IFramingElementProperty framingProperty)
+        {
+            throw new NotImplementedException();
         }
 
         /***************************************************/
