@@ -38,6 +38,12 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Creates an pre-stress load to be applied to Bars.")]
+        [InputFromProperty("loadcase")]
+        [InputFromProperty("prestress")]
+        [Input("objects", "The collection of Bars the load should be applied to.")]
+        [Input("name", "The name of the created load.")]
+        [Output("barPreStress", "The created BarPrestressLoad.")]
         public static BarPrestressLoad BarPrestressLoad(Loadcase loadcase, double prestress, IEnumerable<Bar> objects, string name = "")
         {
             return new BarPrestressLoad
