@@ -22,6 +22,10 @@
 
 using BH.oM.Structure.Constraints;
 using System.Collections.Generic;
+using BH.oM.Reflection.Attributes;
+using BH.oM.Quantities.Attributes;
+using System.ComponentModel;
+
 
 namespace BH.Engine.Structure
 {
@@ -31,13 +35,12 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Constraint6DOF Constraint6DOF(string name = "")
-        {
-            return new Constraint6DOF { Name = name };
-        }
-
-        /***************************************************/
-
+        [Description("Creates a Constraint6DOF from a list of fixities and spring values.")]
+        [Input("name", "Name to be used for the Constraint. Important for this to be set for multiple structural packages to be able to recognise this object.")]
+        [Input("fixity", "Should be a list of 6 booleans, in the order TransX, TranxY, TransZ, RotX, RotY, RotZ. If true, the fixity is set to fixed. If false, the fixity is set to free or spring, depending if the double values provided are 0 or not.")]
+        [Input("values", "Should be a list of 6 doubles with positive values (>= 0), in the orderTransX, TranxY, TransZ, RotX, RotY, RotZ. If zero, and corresponding fixity is false, the DOF will be free. If non-zero, these values will be set as the spring values. \n" +
+                         "First three should have the quantity force per unit length, last three should be moment per unit angle.")]
+        [Output("constraint6DOF", "The created custom Constraint6DOF.")]
         public static Constraint6DOF Constraint6DOF(string name, List<bool> fixity, List<double> values)
         {
             return new Constraint6DOF
@@ -61,6 +64,9 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Description("Creates a pinned Constraint6DOF, i.e. a constraint that have all translational degrees of freedom fixed and all the rotational degrees of freedom free.")]
+        [Input("name", "Name of the Constraint6DOF. Defaults to Pin.")]
+        [Output("release", "The created pinned Constraint6DOF.")]
         public static Constraint6DOF PinConstraint6DOF(string name = "Pin")
         {
             return new Constraint6DOF
@@ -74,6 +80,9 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Description("Creates a fully fixed Constraint6DOF, i.e. a constraint that have all degrees of freedom, translational and rotational, fixed.")]
+        [Input("name", "Name of the Constraint6DOF. Defaults to Fix.")]
+        [Output("release", "The created fully fixed Constraint6DOF.")]
         public static Constraint6DOF FixConstraint6DOF(string name = "Fix")
         {
             return new Constraint6DOF
@@ -90,6 +99,9 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Description("Creates a fully free Constraint6DOF, i.e. a constraint that have all degrees of freedom, translational and rotational, free.")]
+        [Input("name", "Name of the Constraint6DOF. Defaults to Release.")]
+        [Output("release", "The created fully free Constraint6DOF.")]
         public static Constraint6DOF FullReleaseConstraint6DOF(string name = "Release")
         {
             return new Constraint6DOF
@@ -106,6 +118,15 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Description("Creates a Constraint6DOF from a set of booleans. True means fixed, false means free")]
+        [Input("x", "Translational fixity in x-direction. True means fixed, false means free.")]
+        [Input("y", "Translational fixity in y-direction. True means fixed, false means free.")]
+        [Input("z", "Translational fixity in z-direction. True means fixed, false means free.")]
+        [Input("xx", "Rotational fixity about the x-axis. True means fixed, false means free.")]
+        [Input("yy", "Rotational fixity about the y-axis. True means fixed, false means free.")]
+        [Input("zz", "Rotational fixity about the z-axis. True means fixed, false means free.")]
+        [Input("name", "Name of the Constraint6DOF. Important for this to be set for multiple structural packages to be able to recognise this object.")]
+        [Output("release", "The created custom Constraint6DOF.")]
         public static Constraint6DOF Constraint6DOF(bool x, bool y, bool z, bool xx, bool yy, bool zz, string name = "")
         {
             return new Constraint6DOF
@@ -118,6 +139,16 @@ namespace BH.Engine.Structure
                 RotationY = yy ? DOFType.Fixed : DOFType.Free,
                 RotationZ = zz ? DOFType.Fixed : DOFType.Free,
             };
+        }
+
+        /***************************************************/
+        /**** Public Methods - Deprecated               ****/
+        /***************************************************/
+
+        [Deprecated("3.1", "Replaced by Autogenerated property assignment method")]
+        public static Constraint6DOF Constraint6DOF(string name = "")
+        {
+            return new Constraint6DOF { Name = name };
         }
 
         /***************************************************/
