@@ -90,6 +90,7 @@
     <Compile Include="Query\InternalPolyline.cs" />
     <Compile Include="Query\Construction.cs" />
     <Compile Include="Query\MaterialComposition.cs" />
+    <Compile Include="Query\AverageProfileArea.cs" />
     <Compile Include="Query\SolidVolume.cs" />
     <Compile Include="Query\Normal.cs" />
     <Compile Include="Query\Doors.cs" />
