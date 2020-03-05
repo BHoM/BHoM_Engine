@@ -24,6 +24,10 @@ using BH.oM.Structure.Elements;
 using BH.oM.Geometry;
 using BH.oM.Dimensional;
 using BH.Engine.Geometry;
+using BH.oM.Reflection.Attributes;
+using BH.oM.Quantities.Attributes;
+using System.ComponentModel;
+
 
 namespace BH.Engine.Structure
 {
@@ -33,6 +37,11 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Creates a new Element0D, appropriate to the input type. For this case the appropriate type for the Bar will be a new Node, in the position provided. \n" +
+                     "Method required for any IElement1D element that contains IElement0D(s).")]
+        [Input("bar", "Bar just used to determain the appropriate type of IElement0D to create.")]
+        [Input("point", "The position of the new IElement0D, i.e. the position of the returned Node.")]
+        [Output("node", "The created Node in the position provided as a IElement0D.")]
         public static IElement0D NewElement0D(this Bar bar, Point point)
         {
             return Create.Node(point);

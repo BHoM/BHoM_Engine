@@ -24,6 +24,11 @@ using BH.oM.Structure.Elements;
 using BH.oM.Dimensional;
 using BH.oM.Geometry;
 
+using BH.oM.Reflection.Attributes;
+using BH.oM.Quantities.Attributes;
+using System.ComponentModel;
+
+
 namespace BH.Engine.Structure
 {
     public static partial class Create
@@ -32,6 +37,10 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Creates a new Element2D, appropriate to the input type. For this case the appropriate type for the Panel will be a new Opening, in the position provided. \n" +
+                     "Method required for any IElement2D that contians internal IElement2Ds.")]
+        [Input("panel", "Panel just used to determain the appropriate type of IElement2D to create.")]
+        [Output("opening", "The created Opening as a IElement2D.")]
         public static IElement2D NewInternalElement2D(this Panel panel)
         {
             return new Opening();
