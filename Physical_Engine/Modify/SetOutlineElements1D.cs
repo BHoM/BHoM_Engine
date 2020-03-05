@@ -50,7 +50,7 @@ namespace BH.Engine.Physical
         public static oM.Physical.Elements.ISurface SetOutlineElements1D(this oM.Physical.Elements.ISurface surface, List<IElement1D> outlineElements1D)
         {
             oM.Physical.Elements.ISurface clone = (oM.Physical.Elements.ISurface)surface.GetShallowClone();
-            ICurve outline = outlineElements1D.Select(x => x.IGeometry()).Single();
+            ICurve outline = Engine.Geometry.Modify.IJoin(outlineElements1D.Select(x => x.IGeometry()).ToList()).Single();
             clone.Location = Engine.Geometry.Create.PlanarSurface(outline);
             return clone;
         }
