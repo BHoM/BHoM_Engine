@@ -29,6 +29,7 @@ using System.Linq;
 using System;
 using System.ComponentModel;
 using BH.oM.Reflection.Attributes;
+using BH.oM.Quantities.Attributes;
 
 namespace BH.Engine.Structure
 {
@@ -38,6 +39,12 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Creates a GeometricalLineLoad with a constant force across the length of the Line")]
+        [InputFromProperty("location")]
+        [InputFromProperty("loadcase")]
+        [Input("force", "The force to be applied to the full length of the Line.", typeof(Force))]
+        [Input("name", "The name of the created load.")]
+        [Output("geoLineLoad", "The created GeometricalLineLoad.")]
         public static GeometricalLineLoad GeometricalLineLoad(Line location, Loadcase loadcase, Vector force, string name = "")
         {
             return new GeometricalLineLoad
