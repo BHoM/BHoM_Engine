@@ -38,7 +38,7 @@ namespace BH.Engine.Physical
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Gets the internal elements of an ISurface.")]
+        [Description("Gets the internal 2D elements of an ISurface.")]
         [Input("surface", "The ISurface to get the internal elements from.")]
         [Output("openings", "The IOpenings of the ISurface.")]
         public static List<IElement2D> InternalElements2D(this oM.Physical.Elements.ISurface surface)
@@ -48,9 +48,9 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        [Description("Gets the internal elements of an IOpening.")]
+        [Description("Gets the internal 2D elements of an IOpening.")]
         [Input("opening", "The IOpening to get the internal elements from.")]
-        [Output("element2d", "Always an empty list as IOpening does not have an definintion for internal elements")]
+        [Output("element2d", "Always an empty list as IOpening does not have an definintion for internal elements.")]
         public static List<IElement2D> InternalElements2D(this IOpening surface)
         {
             return new List<IElement2D>();

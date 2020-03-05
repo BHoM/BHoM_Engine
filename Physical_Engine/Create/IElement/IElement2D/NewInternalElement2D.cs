@@ -34,9 +34,9 @@ namespace BH.Engine.Physical
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates a valid IElement2D which can be assigned as an internal element")]
-        [Input("surface", "The 2-dimensional element which a valid internal element is to be gotten from")]
-        [Output("element2D", "a Void which can be assigned as an internal element")]
+        [Description("Creates a valid IElement2D which can be assigned as an internal element to the ISurface")]
+        [Input("surface", "The 2-dimensional element which a valid corresponding internal element is to be gotten from")]
+        [Output("element2D", "a Void which can be assigned as an internal element to a ISurface")]
         public static IElement2D NewInternalElement2D(this oM.Physical.Elements.ISurface surface)
         {
             Engine.Reflection.Compute.RecordNote("The ISurface's IOpening may have been modified and replaced, if so the new IOpening has been set as a Void");

@@ -45,8 +45,8 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        [Description("Gets the defining surface geometry from the ISurface, the elements extents are further decided by its Offset")]
-        [Output("surface", "The defining surface geometry of the ISurface")]
+        [Description("Gets the defining surface geometry from the ISurface, the elements physical extents are further defined by its Offset")]
+        [Output("surface", "The defining location surface geometry of the ISurface with its openings represented")]
         public static oM.Geometry.ISurface Geometry(this oM.Physical.Elements.ISurface surface)
         {
             ICurve exBound = (surface.Location as PlanarSurface).ExternalBoundary;
