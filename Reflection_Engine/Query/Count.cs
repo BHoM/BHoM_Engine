@@ -41,6 +41,8 @@ namespace BH.Engine.Reflection
         }
 
         /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
 
         public static int Item<T>(this object obj)
         {
