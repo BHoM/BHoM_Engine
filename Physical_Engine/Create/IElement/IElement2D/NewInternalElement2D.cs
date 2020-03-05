@@ -39,7 +39,7 @@ namespace BH.Engine.Physical
         [Output("element2D", "a Void which can be assigned as an internal element")]
         public static IElement2D NewInternalElement2D(this oM.Physical.Elements.ISurface surface)
         {
-            Engine.Reflection.Compute.RecordNote("The ISurface's IOpening has been modified and may have been replaced as a Void");
+            Engine.Reflection.Compute.RecordNote("The ISurface's IOpening may have been modified and replaced, if so the new IOpening has been set as a Void");
             return new Void();
         }
 
