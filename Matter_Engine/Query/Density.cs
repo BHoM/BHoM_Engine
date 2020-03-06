@@ -141,8 +141,8 @@ namespace BH.Engine.Physical
 
             return new Output<double, string>()
             {
-                Item1 = System.Convert.ToDouble(density),
-                Item2 = "The density could not be acquired from the material " + materialProp.Name
+                Item1 = double.NaN,
+                Item2 = "The density could not be acquired from the MaterialFragment " + materialProp.Name
             };
         }
 
