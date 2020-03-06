@@ -95,11 +95,15 @@ namespace BH.Engine.Versioning
             if (m_Pipes.ContainsKey(version))
                 return m_Pipes[version];
 
+            // Get the pipe name
+            int processId = Process.GetCurrentProcess().Id;
+            string pipeName = processId.ToString() + "_" + version;
+
             // Create the pipe
             NamedPipeServerStream pipe;
             try
             {
-                pipe = new NamedPipeServerStream(version, PipeDirection.InOut);
+                pipe = new NamedPipeServerStream(pipeName, PipeDirection.InOut);
             }
             catch
             {
@@ -124,7 +128,7 @@ namespace BH.Engine.Versioning
 
             // Create the process for the upgrader
             Process process = new Process();
-            process.StartInfo = new ProcessStartInfo(processFile, version);
+            process.StartInfo = new ProcessStartInfo(processFile, pipeName);
             process.StartInfo.UseShellExecute = false;
             process.StartInfo.CreateNoWindow = true;
             bool ok = process.Start();                
