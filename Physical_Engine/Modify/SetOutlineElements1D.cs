@@ -20,13 +20,8 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using BH.oM.Physical.Materials;
 
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
@@ -41,6 +36,8 @@ namespace BH.Engine.Physical
     public static partial class Modify
     {
 
+        /***************************************************/
+        /****               Public Methods              ****/
         /***************************************************/
 
         [Description("Set the location surface of an ISurface as a PlanarSurface by providing a list of IElements1D.")]

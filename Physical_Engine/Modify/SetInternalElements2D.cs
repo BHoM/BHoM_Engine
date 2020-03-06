@@ -20,21 +20,13 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using BH.oM.Physical.Materials;
 
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
 using BH.oM.Physical.Elements;
-using BH.oM.Geometry;
-using BH.Engine.Geometry;
 using BH.oM.Dimensional;
-using BH.Engine.Common;
 
 namespace BH.Engine.Physical
 {
