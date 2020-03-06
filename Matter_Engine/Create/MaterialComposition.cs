@@ -33,6 +33,7 @@ using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
 using BH.oM.Physical.Elements;
 using BH.oM.Geometry;
+using BH.oM.Dimensional;
 
 namespace BH.Engine.Matter
 {
@@ -40,6 +41,13 @@ namespace BH.Engine.Matter
     {
         /***************************************************/
         /**** Public Methods                            ****/
+        /***************************************************/
+
+        public static MaterialComposition CombinedMaterialComposition(IEnumerable<IElementM> elements)
+        {
+            return MaterialComposition(elements.Select(x => x.IMaterialComposition()), elements.Select(x => x.ISolidVolume()));
+        }
+
         /***************************************************/
 
         public static MaterialComposition MaterialComposition(IEnumerable<Material> materials, IEnumerable<double> ratios)
