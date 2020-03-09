@@ -36,7 +36,7 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Creates a Constraint6DOF from a list of fixities and spring values.")]
-        [Input("name", "Name to be used for the Constraint. Important for this to be set for multiple structural packages to be able to recognise this object.")]
+        [Input("name", "Name to be used for the Constraint. This is required for various structural packages to create the object.")]
         [Input("fixity", "Should be a list of 6 booleans, in the order TransX, TranxY, TransZ, RotX, RotY, RotZ. If true, the fixity is set to fixed. If false, the fixity is set to free or spring, depending if the double values provided are 0 or not.")]
         [Input("values", "Should be a list of 6 doubles with positive values (>= 0), in the orderTransX, TranxY, TransZ, RotX, RotY, RotZ. If zero, and corresponding fixity is false, the DOF will be free. If non-zero, these values will be set as the spring values. \n" +
                          "First three should have the quantity force per unit length, last three should be moment per unit angle.")]
@@ -125,7 +125,7 @@ namespace BH.Engine.Structure
         [Input("xx", "Rotational fixity about the x-axis. True means fixed, false means free.")]
         [Input("yy", "Rotational fixity about the y-axis. True means fixed, false means free.")]
         [Input("zz", "Rotational fixity about the z-axis. True means fixed, false means free.")]
-        [Input("name", "Name of the Constraint6DOF. Important for this to be set for multiple structural packages to be able to recognise this object.")]
+        [Input("name", "Name of the Constraint6DOF. This is required for various structural packages to create the object.")]
         [Output("release", "The created custom Constraint6DOF.")]
         public static Constraint6DOF Constraint6DOF(bool x, bool y, bool z, bool xx, bool yy, bool zz, string name = "")
         {

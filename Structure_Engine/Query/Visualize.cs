@@ -364,7 +364,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Draws arrows representing the point load at the location of the Node elements of the load.")]
+        [Description("Draws arrows representing the point load at the location of the Nodes of the load.")]
         [Input("pointAcceleration", "The node load to visualise.")]
         [Input("scaleFactor", "Scales the arrows drawn. Default scaling of 1 means 1 m/s² per metre.")]
         [Input("displayTranslations", "Toggles whether translational acceleration should be displayed or not.")]
@@ -389,7 +389,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Draws arrows representing the point load at the location of the Node elements of the load.")]
+        [Description("Draws arrows representing the point load at the location of the Nodes of the load.")]
         [Input("pointDisplacement", "The node load to visualise.")]
         [Input("scaleFactor", "Scales the arrows drawn. Default scaling of 1 means 1 m per metre.")]
         [Input("displayTranslations", "Toggles whether translations should be displayed or not.")]
@@ -414,7 +414,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Draws arrows representing the point load at the location of the Node elements of the load.")]
+        [Description("Draws arrows representing the point load at the location of the Nodes of the load.")]
         [Input("pointForce", "The node load to visualise.")]
         [Input("scaleFactor", "Scales the arrows drawn. Default scaling of 1 means 1 kN per metre.")]
         [Input("displayForces", "Toggles whether forces should be displayed or not.")]
@@ -439,7 +439,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Draws arrows representing the point load at the location of the Node elements of the load.")]
+        [Description("Draws arrows representing the point load at the location of the Nodes of the load.")]
         [Input("pointVelocity", "The node load to visualise.")]
         [Input("scaleFactor", "Scales the arrows drawn. Default scaling of 1 means 1 m/s per metre.")]
         [Input("displayTranslations", "Toggles whether translational velocity should be displayed or not.")]

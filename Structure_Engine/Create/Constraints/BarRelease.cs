@@ -33,7 +33,7 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates a Bar release that is fully fixed in both ends, i.e. all degrees of freedom, translational and rotational will be fixed.")]
+        [Description("Creates a BarRelease that is fully fixed in both ends, i.e. all degrees of freedom, translational and rotational will be fixed.")]
         [Input("name", "Name of the BarRelease. Defaults to FixFix.")]
         [Output("release", "The created fully fixed BarRelease.")]
         public static BarRelease BarReleaseFixFix( string name = "FixFix")
@@ -43,7 +43,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Creates a Bar release that is pinned in both ends, i.e. all translational degrees of freedom will be fixed, and rotational released, with one exception. The RX release on the start will be fixed to avoid instability of the Bar, to prevent it from spinning around its own axis.")]
+        [Description("Creates a BarRelease that is pinned in both ends, i.e. all translational degrees of freedom will be fixed, and rotational released, with one exception. The RX release on the start will be fixed to avoid instability of the Bar, to prevent it from rotating about the local x-axis (the centreline axis).")]
         [Input("name", "Name of the BarRelease. Defaults to PinPin.")]
         [Output("release", "The created pinned BarRelease.")]
         public static BarRelease BarReleasePinPin(string name = "PinPin")
@@ -61,9 +61,9 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Creates a Bar release that is pinned in one end and axially releaased in the other. \n" +
-                     "This means that the start node will have all tranlational degrees fixed as well as the RX, to avoid instability, i.e. to prevent the Bar from spinning around its own axis. \n" +
-                     "The end node will have the translational y and z directions fixed, all other free, i.e. it will be free to rotate as well as tranlate along the axis of the Bar.")]
+        [Description("Creates a BarRelease that is pinned at one end and axially releaased in the other. \n" +
+                     "This means that the start node will have all tranlational degrees fixed as well as the RX, to avoid instability, i.e. to prevent it from rotating about the local x-axis (the centreline axis). \n" +
+                     "The end node will be fixed in the y-axis and z-axis translationally, all other degrees of freedom will be free, i.e. it will be free to rotate as well as translate along the local x-axis (the centreline axis) of the Bar.")]
         [Input("name", "Name of the BarRelease. Defaults to PinSlip.")]
         [Output("release", "The created pin-slip BarRelease.")]
         public static BarRelease BarReleasePinSlip(string name = "PinSlip")

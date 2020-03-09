@@ -38,7 +38,7 @@ namespace BH.Engine.Structure
 
 
         [Description("Creates a LinkConstraint from a list of booleans. True denotes fixity.")]
-        [Input("name", "Name of the created LinkConstraint. Important for this to be set for multiple structural packages to be able to recognise this object.")]
+        [Input("name", "Name of the created LinkConstraint. This is required for various structural packages to create the object.")]
         [Input("fixity", "List of booleans setting the fixities of the LinkConstraint. True denotes fixity. Should be a list of 12 booleans in the following order: XtoX, YtoY, ZtoZ, XtoYY, XtoZZ, YtoXX, YtoZZ, ZtoXX, ZtoYY, XXtoXX, YYtoYY, ZZtoZZ")]
         [Output("linkCOnstraint", "The created custom LinkConstraint.")]
         public static LinkConstraint LinkConstraint(string name, List<bool> fixity)

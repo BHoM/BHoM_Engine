@@ -55,7 +55,7 @@ namespace BH.Engine.Structure
         public static BarVaryingDistributedLoad BarVaryingDistributedLoad(Loadcase loadcase, BHoMGroup<Bar> group, double distanceFromA = 0, Vector forceA = null, Vector momentA = null, double distanceFromB = 0, Vector forceB = null, Vector momentB = null, LoadAxis axis = LoadAxis.Global, bool projected = false, string name = "")
         {
             if ((forceA == null || forceB == null) && (momentA == null || momentB == null))
-                throw new ArgumentException("Bar varying load requires either the force at A and B AND/OR the moment at A and B to be defined");
+                throw new ArgumentException("Bar varying load requires either the force at A and B and/or the moment at A and B to be defined");
 
             return new BarVaryingDistributedLoad
             {
