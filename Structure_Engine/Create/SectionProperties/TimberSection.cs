@@ -45,8 +45,8 @@ namespace BH.Engine.Structure
         [Input("height", "Height of the section.", typeof(Length))]
         [Input("width", "Width of the section.", typeof(Length))]
         [Input("cornerRadius", "Optional corner radius for the section.", typeof(Length))]
-        [Input("material", "Timber material to be used on the section. If null a default material will be extracted from the database.")]
-        [Input("name", "Name of the timber section.")]
+        [Input("material", "Timber material to be applied to the section. If null a default material will be extracted from the database.")]
+        [Input("name", "Name of the timber section. This is required for most structural packages to create the section.")]
         [Output("section", "The created rectangular solid timber section.")]
         public static TimberSection TimberRectangleSection(double height, double width, double cornerRadius = 0, Timber material = null, string name = "")
         {
@@ -57,8 +57,8 @@ namespace BH.Engine.Structure
 
         [Description("Generates a timber section based on a Profile and a material. \n This is the main create method for timber sections, responsible for calculating section constants etc. and is being called from all other create methods for timber sections.")]
         [Input("profile", "The section profile the timber section. All section constants are derived based on the dimensions of this.")]
-        [Input("material", "timber material to be used on the section.")]
-        [Input("name", "Name of the timber section. If null or empty the name of the profile will be used.")]
+        [Input("material", "timber material to be applied to the section.")]
+        [Input("name", "Name of the timber section. If null or empty the name of the profile will be used. This is required for most structural packages to create the section.")]
         [Output("section", "The created timber section.")]
         public static TimberSection TimberSectionFromProfile(IProfile profile, Timber material = null, string name = "")
         {

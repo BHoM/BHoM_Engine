@@ -38,7 +38,7 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates a point acceleration to be applied to Node elements.")]
+        [Description("Creates a point acceleration to be applied to Nodes.")]
         [InputFromProperty("loadcase")]
         [InputFromProperty("group", "Objects")]
         [InputFromProperty("translationAcc", "TranslationalAcceleration")]
@@ -64,7 +64,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Creates a point acceleration to be applied to Node elements.")]
+        [Description("Creates a point acceleration to be applied to Nodes.")]
         [InputFromProperty("loadcase")]
         [Input("objects", "The collection of Nodes the load should be applied to.")]
         [InputFromProperty("translationAcc", "TranslationalAcceleration")]

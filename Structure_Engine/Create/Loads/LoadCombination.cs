@@ -37,12 +37,12 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates a LoadCombination from two matching lists of load cases and factors.")]
-        [Input("name", "The name of the load combination. Important for this to be set for multiple structural packages to be able to recognise this object.")]
+        [Description("Creates a LoadCombination from two equal length lists of Loadcases and factors.")]
+        [Input("name", "The name of the load combination. This is required for various structural packages to create the object.")]
         [InputFromProperty("number")]
         [Input("cases", "The cases to be assigned to the LoadCombination. This list should have the exact same length as the factors.")]
         [Input("factors", "The factor to scale each of the cases with.  This list should have the exact same length as the cases.")]
-        [Input("excludeZeroFactorCases", "If set to true, any case that has a coresponding factor of 0 will NOT be added to the case.")]
+        [Input("excludeZeroFactorCases", "If set to true, any case that has a corresponding factor of 0 will NOT be added to the case.")]
         [Output("comb", "The created LoadCombination.")]
         public static LoadCombination LoadCombination(string name, int number, List<Loadcase> cases, List<double> factors, bool excludeZeroFactorCases = true)
         {

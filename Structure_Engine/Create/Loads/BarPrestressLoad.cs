@@ -38,7 +38,7 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates an pre-stress load to be applied to Bars.")]
+        [Description("Creates a prestress load to be applied to Bars.")]
         [InputFromProperty("loadcase")]
         [InputFromProperty("prestress")]
         [Input("objects", "The collection of Bars the load should be applied to.")]

@@ -69,7 +69,7 @@ namespace BH.Engine.Structure
         [Description("Creates a list of Panels based on a collection of outline curves. \n" + 
                      "Method will distribute the outlines such that the outermost curve will be assumed to be an external outline of a panel, and any curve contained in this outline will be assumed as an opening of this Panel. \n" +
                      "Any outline curve inside an opening will again be assumed to be the outline of a new Panel.")]
-        [Input("outlines", "A collection of outline Curves representing outlines of external edges and opening used to create the Panel(s).")]
+        [Input("outlines", "A collection of outline curves representing outlines of external edges and opening used to create the Panel(s).")]
         [InputFromProperty("property")]
         [Input("name", "The name of the created Panel(s).")]
         [Output("panel", "The created Panel(s).")]

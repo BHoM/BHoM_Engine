@@ -41,7 +41,7 @@ namespace BH.Engine.Structure
 
         [Description("Creates a new Element1D, appropriate to the input type. For this case the appropriate type for the Opening will be a new Edge, in the position provided. \n" +
                      "Method required for any IElement2D.")]
-        [Input("opening", "Opening just used to determain the appropriate type of IElement1D to create.")]
+        [Input("opening", "Opening just used to determine the appropriate type of IElement1D to create.")]
         [Input("curve", "The position of the new IElement1D, i.e. the position of the returned Edge.")]
         [Output("edge", "The created Edge in the position provided as a IElement1D.")]
         public static IElement1D NewElement1D(this Opening opening, ICurve curve)
@@ -53,7 +53,7 @@ namespace BH.Engine.Structure
 
         [Description("Creates a new Element1D, appropriate to the input type. For this case the appropriate type for the Panel will be a new Edge, in the position provided. \n" +
                      "Method required for any IElement2D.")]
-        [Input("panel", "Panel just used to determain the appropriate type of IElement1D to create.")]
+        [Input("panel", "Panel just used to determine the appropriate type of IElement1D to create.")]
         [Input("curve", "The position of the new IElement1D, i.e. the position of the returned Edge.")]
         [Output("edge", "The created Edge in the position provided as a IElement1D.")]
         public static IElement1D NewElement1D(this Panel panel, ICurve curve)

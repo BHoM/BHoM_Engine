@@ -38,11 +38,11 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates a point velocity to be applied to Node elements.")]
+        [Description("Creates a point velocity to be applied to Nodes.")]
         [InputFromProperty("loadcase")]
         [InputFromProperty("group", "Objects")]
-        [InputFromProperty("translation", "TranslationalAcceleration")]
-        [InputFromProperty("rotation", "RotationalAcceleration")]
+        [InputFromProperty("translation", "TranslationalVelocity")]
+        [InputFromProperty("rotation", "RotationalVelocity")]
         [InputFromProperty("axis")]
         [Input("name", "The name of the created load.")]
         [Output("ptVel", "The created PointVelocity.")]
@@ -65,11 +65,11 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Creates a point velocity to be applied to Node elements.")]
+        [Description("Creates a point velocity to be applied to Nodes.")]
         [InputFromProperty("loadcase")]
         [Input("objects", "The collection of Nodes the load should be applied to.")]
-        [InputFromProperty("translation", "TranslationalAcceleration")]
-        [InputFromProperty("rotation", "RotationalAcceleration")]
+        [InputFromProperty("translation", "TranslationalVelocity")]
+        [InputFromProperty("rotation", "RotationalVelocity")]
         [InputFromProperty("axis")]
         [Input("name", "The name of the created load.")]
         [Output("ptVel", "The created PointVelocity.")]

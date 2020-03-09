@@ -38,7 +38,7 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates a point load to be applied to Node elements.")]
+        [Description("Creates a point load to be applied to Nodes.")]
         [InputFromProperty("loadcase")]
         [InputFromProperty("group", "Objects")]
         [InputFromProperty("force")]
@@ -65,7 +65,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Creates a point load to be applied to Node elements.")]
+        [Description("Creates a point load to be applied to Nodes.")]
         [InputFromProperty("loadcase")]
         [Input("objects", "The collection of Nodes the load should be applied to.")]
         [InputFromProperty("force")]

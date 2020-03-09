@@ -38,7 +38,7 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates a gravity load to be applied to Area elements such as Panels and FEMeshes as well as Bar elements.")]
+        [Description("Creates a gravity load to be applied to area elements such as Panels and FEMeshes as well as Bar elements.")]
         [InputFromProperty("loadcase")]
         [InputFromProperty("direction")]
         [Input("objects", "The collection of elements the load should be applied to.")]
