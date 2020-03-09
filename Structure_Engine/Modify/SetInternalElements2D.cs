@@ -54,7 +54,7 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Sets internal IElement2Ds of a Panel, i.e. sets the Openings of a Panel. Method required for all IElement2Ds.")]
-        [Input("panel", "The Panel to update the ")]
+        [Input("panel", "The Panel to update.")]
         [Input("openings", "The internal IElement2Ds to set. For a Panel this should be a list of structural Openings.")]
         [Output("panel", "The Panel with updated Openings.")]
         public static Panel SetInternalElements2D(this Panel panel, List<IElement2D> openings)

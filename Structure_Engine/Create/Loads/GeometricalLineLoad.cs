@@ -39,7 +39,7 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates a GeometricalLineLoad with a constant force across the length of the Line")]
+        [Description("Creates a GeometricalLineLoad with a constant force across the length of the Line.")]
         [InputFromProperty("location")]
         [InputFromProperty("loadcase")]
         [Input("force", "The force to be applied to the full length of the Line.", typeof(Force))]

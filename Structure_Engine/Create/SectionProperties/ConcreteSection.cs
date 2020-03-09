@@ -89,6 +89,7 @@ namespace BH.Engine.Structure
         [Input("edges", "Edges defining the section. Should consist of closed curve(s) in the global xy-plane.")]
         [Input("material", "Concrete material to be applied to the section. If null a default material will be extracted from the database.")]
         [Input("name", "Name of the concrete section. This is required for most structural packages to create the section.")]
+        [Input("reinforcement", "Optional list of reinforcement to be applied to the section.")]
         [Output("section", "The created free form concrete section.")]
         public static ConcreteSection ConcreteFreeFormSection(List<ICurve> edges, Concrete material = null, string name = "", List<Reinforcement> reinforcement = null)
         {
@@ -101,6 +102,7 @@ namespace BH.Engine.Structure
         [Input("profile", "The section profile the concrete section. All section constants are derived based on the dimensions of this.")]
         [Input("material", "concrete material to be applied to the section. If null a default material will be extracted from the database.")]
         [Input("name", "Name of the concrete section. If null or empty the name of the profile will be used. This is required for most structural packages to create the section.")]
+        [Input("reinforcement", "Optional list of reinforcement to be applied to the section.")]
         [Output("section", "The created concrete section.")]
         public static ConcreteSection ConcreteSectionFromProfile(IProfile profile, Concrete material = null, string name = "", List<Reinforcement> reinforcement = null)
         {

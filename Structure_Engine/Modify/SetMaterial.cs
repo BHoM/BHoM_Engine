@@ -36,7 +36,7 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Sets the material of a Bar by updating the material of its SectionProperty")]
+        [Description("Sets the material of a Bar by updating the material of its SectionProperty.")]
         [Input("bar", "The Bar to set the material to, i.e. the Bar to get the Material of its SectionProeprty updated.")]
         [Input("material", "The material to set to the Bar.")]
         [Output("bar", "The Bar with updated material.")]
