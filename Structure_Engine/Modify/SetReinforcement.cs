@@ -40,7 +40,7 @@ namespace BH.Engine.Structure
         [Description("Sets Reinforcement to a ConcreteSection. Any previous Reinforcement will be overwritten.")]
         [Input("section", "The concrete section to set Reinforcement to.")]
         [Input("reinforcement", "The collection of Reinforcement to set to the ConcreteSection.")]
-        [Output("concSection", "The ConcreteSection with new Reinforcement")]
+        [Output("concSection", "The ConcreteSection with new Reinforcement.")]
         public static ConcreteSection SetReinforcement(this ConcreteSection section, IEnumerable<Reinforcement> reinforcement)
         {
             ConcreteSection clone = section.GetShallowClone() as ConcreteSection;

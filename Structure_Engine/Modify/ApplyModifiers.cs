@@ -41,6 +41,7 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Sets modifiers to the SurfaceProperty. The modifiers are used to scale one or more of the property constants for analysis. Constants are multiplied with the modifiers, hence a modifier value of 1 means no change.")]
+        [Input("prop", "The SurfaceProperty to apply modifiers to.")]
         [Input("f11", "Modifier of the axial stiffness along the local x-axis.", typeof(Ratio))]
         [Input("f12", "Modifier of the the in-plane shear.", typeof(Ratio))]
         [Input("f22", "Modifier of the axial stiffness along the local y-axis.", typeof(Ratio))]
@@ -66,6 +67,7 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Sets modifiers to the SectionProperty. The modifiers are used to scale one or more of the property constants for analysis. Constants are multiplied with the modifiers, hence a modifier value of 1 means no change.")]
+        [Input("prop", "The SectionProperty to apply modifiers to.")]
         [Input("area", "Modifier of the area.", typeof(Ratio))]
         [Input("iy", "Modifier of the second moment about the local y-axis (generally major axis).", typeof(Ratio))]
         [Input("iz", "Modifier of the second moment about the local z-axis (generally minor axis).", typeof(Ratio))]

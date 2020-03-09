@@ -118,7 +118,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Creates a Constraint6DOF from a set of booleans. True means fixed, false means free")]
+        [Description("Creates a Constraint6DOF from a set of booleans. True means fixed, false means free.")]
         [Input("x", "Translational fixity in x-direction. True means fixed, false means free.")]
         [Input("y", "Translational fixity in y-direction. True means fixed, false means free.")]
         [Input("z", "Translational fixity in z-direction. True means fixed, false means free.")]

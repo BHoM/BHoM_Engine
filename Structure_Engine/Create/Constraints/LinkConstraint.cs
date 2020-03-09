@@ -39,7 +39,7 @@ namespace BH.Engine.Structure
 
         [Description("Creates a LinkConstraint from a list of booleans. True denotes fixity.")]
         [Input("name", "Name of the created LinkConstraint. This is required for various structural packages to create the object.")]
-        [Input("fixity", "List of booleans setting the fixities of the LinkConstraint. True denotes fixity. Should be a list of 12 booleans in the following order: XtoX, YtoY, ZtoZ, XtoYY, XtoZZ, YtoXX, YtoZZ, ZtoXX, ZtoYY, XXtoXX, YYtoYY, ZZtoZZ")]
+        [Input("fixity", "List of booleans setting the fixities of the LinkConstraint. True denotes fixity. Should be a list of 12 booleans in the following order: XtoX, YtoY, ZtoZ, XtoYY, XtoZZ, YtoXX, YtoZZ, ZtoXX, ZtoYY, XXtoXX, YYtoYY, ZZtoZZ.")]
         [Output("linkCOnstraint", "The created custom LinkConstraint.")]
         public static LinkConstraint LinkConstraint(string name, List<bool> fixity)
         {
@@ -63,7 +63,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
         
-        [Description("Creates a LinkConstraint where all directions are linked, rotations at slave nodes are linked to rotations of masters")]
+        [Description("Creates a LinkConstraint where all directions are linked, rotations at slave nodes are linked to rotations of masters.")]
         public static LinkConstraint LinkConstraintFixed(string name = "Fixed")
         {
             return new LinkConstraint
@@ -86,7 +86,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Creates a LinkConstraint where all directions are linked, but the rotations of the slave nodes are not linked to the master")]
+        [Description("Creates a LinkConstraint where all directions are linked, but the rotations of the slave nodes are not linked to the master.")]
         public static LinkConstraint LinkConstraintPinned(string name = "Pinned")
         {
 
@@ -103,7 +103,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Creates a LinkConstraint where the directions are linked to give rigidity in the xy-plane but there is no constraint out of plane")]
+        [Description("Creates a LinkConstraint where the directions are linked to give rigidity in the xy-plane but there is no constraint out of plane.")]
         public static LinkConstraint LinkConstraintXYPlane(string name = "xy-Plane")
         {
                 LinkConstraint constr = new LinkConstraint();
@@ -118,7 +118,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Creates a LinkConstraint where the directions are linked to give rigidity in the yz-plane but there is no constraint out of plane")]
+        [Description("Creates a LinkConstraint where the directions are linked to give rigidity in the yz-plane but there is no constraint out of plane.")]
         public static LinkConstraint LinkConstraintYZPlane(string name = "yz-Plane")
         {
                 LinkConstraint constr = new LinkConstraint();
@@ -133,7 +133,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Creates a LinkConstraint where the directions are linked to give rigidity in the zx-plane but there is no constraint out of plane")]
+        [Description("Creates a LinkConstraint where the directions are linked to give rigidity in the zx-plane but there is no constraint out of plane.")]
         public static LinkConstraint LinkConstraintZXPlane(string name = "zx-Plane")
         {
                 LinkConstraint constr = new LinkConstraint();
@@ -148,7 +148,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Creates a LinkConstraint where the directions are linked to give rigidity in the xy-plane, but the rotations of the slave nodes are not linked to the master, and there is no constraint out of plane")]
+        [Description("Creates a LinkConstraint where the directions are linked to give rigidity in the xy-plane, but the rotations of the slave nodes are not linked to the master, and there is no constraint out of plane.")]
         public static LinkConstraint LinkConstraintXYPlanePin(string name = "xy-Plane Pin")
         {
                 LinkConstraint constr = new LinkConstraint();
@@ -162,7 +162,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Creates a LinkConstraint where the directions are linked to give rigidity in the yz-plane, but the rotations of the slave nodes are not linked to the master, and there is no constraint out of plane")]
+        [Description("Creates a LinkConstraint where the directions are linked to give rigidity in the yz-plane, but the rotations of the slave nodes are not linked to the master, and there is no constraint out of plane.")]
         public static LinkConstraint LinkConstraintYZPlanePin(string name = "yz-Plane Pin")
         {
                 LinkConstraint constr = new LinkConstraint();
@@ -176,7 +176,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Creates a LinkConstraint where the directions are linked to give rigidity in the zx-plane, but the rotations of the slave nodes are not linked to the master, and there is no constraint out of plane")]
+        [Description("Creates a LinkConstraint where the directions are linked to give rigidity in the zx-plane, but the rotations of the slave nodes are not linked to the master, and there is no constraint out of plane.")]
         public static LinkConstraint LinkConstraintZXPlanePin(string name = "zx-Plane Pin")
         {
                 LinkConstraint constr = new LinkConstraint();

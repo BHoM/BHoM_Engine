@@ -41,7 +41,7 @@ namespace BH.Engine.Structure
         [Input("endX", "Offset of the EndNode along the local x-axis, i.e. along the tangent.", typeof(Length))]
         [Input("endY", "Offset of the EndNode along the local y-axis, i.e. along the axis perpendicular to the normal and tangent (generally minor axis).", typeof(Length))]
         [Input("endZ", "Offset of the EndNode along the local z-axis, i.e. along the normal (generally major axis).", typeof(Length))]
-        [Output("offset", "The created Offset")]
+        [Output("offset", "The created Offset.")]
         public static Offset Offset(double startX, double startY, double startZ, double endX, double endY, double endZ)
         {
             return new Offset
