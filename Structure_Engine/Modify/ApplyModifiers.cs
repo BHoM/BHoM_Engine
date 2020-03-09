@@ -47,12 +47,12 @@ namespace BH.Engine.Structure
         [Input("m11", "Modifier of the bending stiffness about the local x-axis.", typeof(Ratio))]
         [Input("m12", "Modifier of the in-plane twist stiffness.", typeof(Ratio))]
         [Input("m22", "Modifier of the bending stiffness about the local y-axis.", typeof(Ratio))]
-        [Input("v12", "Modifier of the out of plane shear stiffness along the local x-axis.", typeof(Ratio))]
-        [Input("v12", "Modifier of the out of plane shear stiffness along the local y-axis.", typeof(Ratio))]
+        [Input("v13", "Modifier of the out of plane shear stiffness along the local x-axis.", typeof(Ratio))]
+        [Input("v23", "Modifier of the out of plane shear stiffness along the local y-axis.", typeof(Ratio))]
         [Input("mass", "Modifier of the mass.", typeof(Ratio))]
         [Input("weight", "Modifier of the weight.", typeof(Ratio))]
-        [Output("prop","SurfaceProperty with applied modifiers.")]
-        public static ISurfaceProperty ApplyModifiers(this ISurfaceProperty prop, double f11 =1, double f12=1, double f22=1, double m11=1, double m12=1, double m22=1, double v13=1, double v23=1, double mass=1, double weight=1)
+        [Output("prop", "SurfaceProperty with applied modifiers.")]
+        public static ISurfaceProperty ApplyModifiers(this ISurfaceProperty prop, double f11 = 1, double f12 = 1, double f22 = 1, double m11 = 1, double m12 = 1, double m22 = 1, double v13 = 1, double v23 = 1, double mass = 1, double weight = 1)
         {
             ISurfaceProperty clone = prop.GetShallowClone() as ISurfaceProperty;
 
