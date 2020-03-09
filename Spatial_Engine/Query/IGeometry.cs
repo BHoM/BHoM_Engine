@@ -28,6 +28,15 @@ namespace BH.Engine.Spatial
     public static partial class Query
     {
         /******************************************/
+        /****            IElement0D            ****/
+        /******************************************/
+
+        public static Point IGeometry(this IElement0D element0D)
+        {
+            return Reflection.Compute.RunExtensionMethod(element0D, "Geometry") as Point;
+        }
+
+        /******************************************/
         /****            IElement1D            ****/
         /******************************************/
 
