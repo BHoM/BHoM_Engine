@@ -33,6 +33,9 @@
     <Reference Include="BHoM">
       <HintPath>..\..\..\BHoM\Build\BHoM.dll</HintPath>
     </Reference>
+    <Reference Include="Data_oM">
+      <HintPath>..\..\BHoM\Build\Data_oM.dll</HintPath>
+    </Reference>
     <Reference Include="Dimensional_oM">
       <HintPath>..\..\BHoM\Build\Dimensional_oM.dll</HintPath>
     </Reference>
@@ -62,8 +65,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Query\Density.cs" />
     <Compile Include="Query\Mass.cs" />
-    <Compile Include="_Interface\IElementM\MaterialComposition.cs" />
-    <Compile Include="_Interface\IElementM\SolidVolume.cs" />
+    <Compile Include="Query\MaterialComposition.cs" />
+    <Compile Include="Query\SolidVolume.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Compute\" />
