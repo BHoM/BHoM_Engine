@@ -37,7 +37,7 @@ namespace BH.Engine.Matter
         /******************************************/
 
         [Output("mass", "The physical mass of the element", typeof(Mass))]
-        public static double IMass(this IElementM elementM)
+        public static double Mass(this IElementM elementM)
         {
             MaterialComposition mat = elementM.IMaterialComposition();
             return elementM.ISolidVolume() * mat.Materials.Zip(mat.Ratios, (m,r) => r * m.Density()).Sum();
