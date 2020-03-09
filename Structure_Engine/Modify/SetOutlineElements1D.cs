@@ -25,6 +25,10 @@ using BH.oM.Geometry;
 using BH.oM.Structure.Elements;
 using System.Collections.Generic;
 using System.Linq;
+using BH.oM.Reflection.Attributes;
+using BH.oM.Quantities.Attributes;
+using System.ComponentModel;
+
 
 namespace BH.Engine.Structure
 {
@@ -34,19 +38,27 @@ namespace BH.Engine.Structure
         /****               Public Methods              ****/
         /***************************************************/
 
-        public static Opening SetOutlineElements1D(this Opening opening, List<IElement1D> outlineElements1D)
+        [Description("Sets the Outline Element1Ds of an opening, i.e. the Edges of an Opening. Method required for all IElement2Ds.")]
+        [Input("opening", "The Opening to update the Edges of.")]
+        [Input("edges", "A list of IElement1Ds which all should be of type structural Edge.")]
+        [Output("opening", "The opening with updated Edges.")]
+        public static Opening SetOutlineElements1D(this Opening opening, List<IElement1D> edges)
         {
             Opening o = opening.GetShallowClone(true) as Opening;
-            o.Edges = new List<Edge>(outlineElements1D.Cast<Edge>());
+            o.Edges = new List<Edge>(edges.Cast<Edge>());
             return o;
         }
 
         /***************************************************/
 
-        public static Panel SetOutlineElements1D(this Panel panel, List<IElement1D> outlineElements1D)
+        [Description("Sets the outline Element1Ds of a Panel, i.e. the ExternalEdges of a Panel. Method required for all IElement2Ds.")]
+        [Input("panel", "The Panel to update the ExternalEdges of.")]
+        [Input("edges", "A list of IElement1Ds which all should be of type structural Edge.")]
+        [Output("panel", "The Panel with updated ExternalEdges.")]
+        public static Panel SetOutlineElements1D(this Panel panel, List<IElement1D> edges)
         {
             Panel pp = panel.GetShallowClone(true) as Panel;
-            pp.ExternalEdges = new List<Edge>(outlineElements1D.Cast<Edge>());
+            pp.ExternalEdges = new List<Edge>(edges.Cast<Edge>());
             return pp;
         }
 
