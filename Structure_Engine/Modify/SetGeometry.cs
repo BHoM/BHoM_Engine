@@ -24,6 +24,10 @@ using BH.Engine.Geometry;
 using BH.oM.Geometry;
 using BH.oM.Geometry.CoordinateSystem;
 using BH.oM.Structure.Elements;
+using BH.oM.Reflection.Attributes;
+using BH.oM.Quantities.Attributes;
+using System.ComponentModel;
+
 
 namespace BH.Engine.Structure
 {
@@ -33,32 +37,44 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Updates the position of a Node.")]
+        [Input("node", "The Node to set the postion to.")]
+        [Input("point", "The new position of the Node.")]
+        [Output("node", "The Node with updated geometry.")]
         public static Node SetGeometry(this Node node, Point point)
         {
             Node clone = node.GetShallowClone(true) as Node;
-            clone.Position = point;
+            clone.Position = point.Clone();
             return clone;
         }
 
         /***************************************************/
 
+        [Description("Updates geometry of a Bar by updating the positions of its end Nodes.")]
+        [Input("bar", "The Bar to update.")]
+        [Input("curve", "The new centreline curve of the Bar. Should be a linear curve. \n" +
+                        "The start point of the curve will be used to set the position of the StartNode and the end point to set the position of the EndNode.")]
+        [Output("bar", "The Bar with updated geometry.")]
         public static Bar SetGeometry(this Bar bar, ICurve curve)
         {
-            Line line = curve.IClone() as Line;
-            if (line == null)
+            if (!curve.IIsLinear())
             {
-                Reflection.Compute.RecordError("The bar needs to be linear.");
+                Reflection.Compute.RecordError("The curve used to set the geometry of a Bar needs to be linear.");
                 return null;
             }
 
             Bar clone = bar.GetShallowClone(true) as Bar;
-            clone.StartNode = clone.StartNode.SetGeometry(line.Start);
-            clone.EndNode = clone.EndNode.SetGeometry(line.End);
+            clone.StartNode = clone.StartNode.SetGeometry(curve.IStartPoint());
+            clone.EndNode = clone.EndNode.SetGeometry(curve.IEndPoint());
             return clone;
         }
 
         /***************************************************/
 
+        [Description("Updates the curve geometry of an Edge.")]
+        [Input("edge", "The Edge to update.")]
+        [Input("curve", "The curve to set to the Edge.")]
+        [Output("edge", "The Edge with updated geometry.")]
         public static Edge SetGeometry(this Edge edge, ICurve curve)
         {
             Edge clone = edge.GetShallowClone(true) as Edge;
@@ -68,10 +84,14 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static Surface SetGeometry(this Surface contour, ISurface surface)
+        [Description("Updates the geometrical ISurface of a structural Surface.")]
+        [Input("strSurface", "The structural Surface to update.")]
+        [Input("geoSurface", "The geometrical ISurface to set to the structural Surface.")]
+        [Output("strSurface", "The structural Surface with updated geometry.")]
+        public static Surface SetGeometry(this Surface strSurface, ISurface geoSurface)
         {
-            Surface clone = contour.GetShallowClone(true) as Surface;
-            clone.Extents = surface.IClone() as ISurface;
+            Surface clone = strSurface.GetShallowClone(true) as Surface;
+            clone.Extents = geoSurface.IClone() as ISurface;
             return clone;
         }
 
