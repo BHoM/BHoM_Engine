@@ -31,7 +31,7 @@ using BH.Engine.Geometry;
 using System.ComponentModel;
 using BH.oM.Reflection.Attributes;
 using BH.oM.Geometry.CoordinateSystem;
-using BH.oM.Reflection;
+using BH.oM.Quantities.Attributes;
 
 namespace BH.Engine.Structure
 {
@@ -47,7 +47,7 @@ namespace BH.Engine.Structure
         [Input("curves", "The true curves of the section where counter-clockwise curves are positive area and clockwise ones are negative. /n" +
                          "Should be the curves whose Polyline version was provided for WetBlanketInterpetation().")]
         [Input("trueArea", "The true area of the region.")]
-        [Output("plasticModulus", "The plasticModulus for the region.")]
+        [Output("plasticModulus", "The plasticModulus for the region.", typeof(SectionModulus))]
         public static double PlasticModulus(this Polyline pLine, IEnumerable<ICurve> curves = null, double trueArea = double.NaN)
         {
             double area = BH.Engine.Geometry.Compute.IIntegrateRegion(pLine, 0);   //Should be calculated here for consistency
@@ -102,6 +102,14 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Description("This method is largely replaced by the Compute.PlasticModulus() Method accepting a Polyline and closed curves. \n" +
+                     "Calculates the PlasticModulus[Wpl] from a list of IntegrationSlices. \n" +
+                     "To use this method for a closed set of Curves, first call Geometry.Create.IntegrationSlices() to generate the slices.")]
+        [Input("slices", "The list of integration slices used to calculate the plastic modulus. To generate the integration slices from as set of closed curves first call Geometry.Create.IntegrationSlices().")]
+        [Input("area", "The area of the curves used to generate the slices.", typeof(Area))]
+        [Input("max", "The upper limit coordinate value along the axis used to generate the slices.", typeof(Length))]
+        [Input("min", "The lower limit coordinate value along the axis used to generate the slices.", typeof(Length))]
+        [Output("wpl", "The plastic modulus calculated based on the slices.", typeof(SectionModulus))]
         public static double PlasticModulus(List<IntegrationSlice> slices, double area, double max, double min)
         {
             double result = 0;
