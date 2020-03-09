@@ -98,26 +98,27 @@ namespace BH.Engine.Physical
                     Item2 = ""
                 };
             }
+            // Does not work without more sofisticated use of reflection to check input param names
 
-            density = Reflection.Compute.RunExtensionMethod(materialProp, "Density", new object[] { temprature });
-            if (density != null)
-            {
-                return new Output<double, string>()
-                {
-                    Item1 = System.Convert.ToDouble(density),
-                    Item2 = UnUsedVaribles(materialProp.Name, "humidity")
-                };
-            }
+            //density = Reflection.Compute.RunExtensionMethod(materialProp, "Density", new object[] { temprature });
+            //if (density != null)
+            //{
+            //    return new Output<double, string>()
+            //    {
+            //        Item1 = System.Convert.ToDouble(density),
+            //        Item2 = UnUsedVaribles(materialProp.Name, "humidity")
+            //    };
+            //}
 
-            density = Reflection.Compute.RunExtensionMethod(materialProp, "Density", new object[] { humidity });
-            if (density != null)
-            {
-                return new Output<double, string>()
-                {
-                    Item1 = System.Convert.ToDouble(density),
-                    Item2 = UnUsedVaribles(materialProp.Name, "temprature")
-                };
-            }
+            //density = Reflection.Compute.RunExtensionMethod(materialProp, "Density", new object[] { humidity });
+            //if (density != null)
+            //{
+            //    return new Output<double, string>()
+            //    {
+            //        Item1 = System.Convert.ToDouble(density),
+            //        Item2 = UnUsedVaribles(materialProp.Name, "temprature")
+            //    };
+            //}
 
             density = Reflection.Compute.RunExtensionMethod(materialProp, "Density");
             if (density != null)
