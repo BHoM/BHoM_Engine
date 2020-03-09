@@ -63,13 +63,13 @@
   <ItemGroup>
     <Compile Include="Compute\DistributeOutlines.cs" />
     <Compile Include="Query\InternalOutlineCurves.cs" />
-    <Compile Include="_Interface\Element1D\Create\INewElement0D.cs" />
-    <Compile Include="_Interface\Element2D\Create\INewElement1D.cs" />
-    <Compile Include="_Interface\Element2D\Create\INewInternalElement2D.cs" />
-    <Compile Include="_Interface\Element1D\Modify\SetElements0D.cs" />
-    <Compile Include="_Interface\Element0D\Modify\SetGeometry.cs" />
-    <Compile Include="_Interface\Element2D\Modify\SetInternalElements2D.cs" />
-    <Compile Include="_Interface\Element2D\Modify\SetOutlineElements1D.cs" />
+    <Compile Include="Create\INewElement0D.cs" />
+    <Compile Include="Create\INewElement1D.cs" />
+    <Compile Include="Create\INewInternalElement2D.cs" />
+    <Compile Include="Modify\ISetElements0D.cs" />
+    <Compile Include="Modify\ISetGeometry.cs" />
+    <Compile Include="Modify\ISetInternalElements2D.cs" />
+    <Compile Include="Modify\ISetOutlineElements1D.cs" />
     <Compile Include="Modify\Translate.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Query\Area.cs" />
@@ -77,20 +77,18 @@
     <Compile Include="Query\Centroid.cs" />
     <Compile Include="Query\ControlPoints.cs" />
     <Compile Include="Query\ElementCurves.cs" />
-    <Compile Include="_Interface\Element1D\Query\Elements0D.cs" />
+    <Compile Include="Query\IElements0D.cs" />
     <Compile Include="Query\ElementVertices.cs" />
-    <Compile Include="_Interface\Element1D\Query\Geometry.cs" />
-    <Compile Include="_Interface\Element2D\Query\InternalElements2D.cs" />
+    <Compile Include="Query\IInternalElements2D.cs" />
     <Compile Include="Query\IsSelfIntersecting.cs" />
     <Compile Include="Query\Length.cs" />
     <Compile Include="Query\Normal.cs" />
     <Compile Include="Query\OutlineCurve.cs" />
-    <Compile Include="_Interface\Element2D\Query\OutlineElements1D.cs" />
-    <Compile Include="_Interface\Element0D\Query\Geometry.cs" />
-    <Compile Include="_Interface\Element1D\Modify\SetGeometry.cs" />
+    <Compile Include="Query\IOutlineElements1D.cs" />
+    <Compile Include="Query\IGeometry.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Create\" />
+    <Folder Include="_Interface\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BHoM_Engine\BHoM_Engine.csproj">

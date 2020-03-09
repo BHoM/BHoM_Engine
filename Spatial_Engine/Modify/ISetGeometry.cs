@@ -20,22 +20,32 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.Engine.Geometry;
 using BH.oM.Dimensional;
 using BH.oM.Geometry;
 
 namespace BH.Engine.Spatial
 {
-    public static partial class Query
+    public static partial class Modify
     {
         /******************************************/
         /****            IElement0D            ****/
         /******************************************/
 
-        public static Point IGeometry(this IElement0D element0D)
+        public static IElement0D ISetGeometry(this IElement0D element0D, Point point)
         {
-            return Reflection.Compute.RunExtensionMethod(element0D, "Geometry") as Point;
+            return Reflection.Compute.RunExtensionMethod(element0D, "SetGeometry", new object[] { point }) as IElement0D;
         }
-        
+
+        /******************************************/
+        /****            IElement1D            ****/
+        /******************************************/
+
+        public static IElement1D ISetGeometry(this IElement1D element1D, ICurve curve)
+        {
+            return Reflection.Compute.RunExtensionMethod(element1D, "SetGeometry", new object[] { curve }) as IElement1D;
+        }
+
         /******************************************/
     }
 }
