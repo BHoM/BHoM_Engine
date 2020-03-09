@@ -24,6 +24,10 @@ using BH.oM.Dimensional;
 using BH.oM.Geometry;
 using BH.oM.Structure.Elements;
 using System.Collections.Generic;
+using BH.oM.Reflection.Attributes;
+using BH.oM.Quantities.Attributes;
+using System.ComponentModel;
+
 
 namespace BH.Engine.Structure
 {
@@ -33,6 +37,10 @@ namespace BH.Engine.Structure
         /****            IElement1D            ****/
         /******************************************/
 
+        [Description("Sets the IElement0Ds of the Bar, i.e. its two end Nodes. Method required for IElement1Ds.")]
+        [Input("bar", "The Bar to set the IElement0Ds to.")]
+        [Input("newElements0D", "The new IElement0Ds of the Bar. Should be a list of length two, containing exactly two structural Nodes.")]
+        [Output("bar","The bar with updated Nodes.")]
         public static Bar SetElements0D(this Bar bar, List<IElement0D> newElements0D)
         {
             if (newElements0D.Count != 2)
