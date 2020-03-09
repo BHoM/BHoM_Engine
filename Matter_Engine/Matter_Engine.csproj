@@ -65,8 +65,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Query\Density.cs" />
     <Compile Include="Query\Mass.cs" />
-    <Compile Include="Query\MaterialComposition.cs" />
-    <Compile Include="Query\SolidVolume.cs" />
+    <Compile Include="Query\IMaterialComposition.cs" />
+    <Compile Include="Query\ISolidVolume.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Compute\" />
@@ -77,6 +77,10 @@
     <ProjectReference Include="..\BHoM_Engine\BHoM_Engine.csproj">
       <Project>{1ad45c88-dd54-48e5-951f-55edfeb70e35}</Project>
       <Name>BHoM_Engine</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Data_Engine\Data_Engine.csproj">
+      <Project>{8082ca2a-ac5c-4690-9f09-960e0d3e4102}</Project>
+      <Name>Data_Engine</Name>
     </ProjectReference>
     <ProjectReference Include="..\Geometry_Engine\Geometry_Engine.csproj">
       <Project>{89ab2dcb-ef87-4cba-b59c-c16a8a71d333}</Project>
