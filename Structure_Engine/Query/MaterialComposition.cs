@@ -38,6 +38,9 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Gets all the Material's a Bar is composed of and in which ratios")]
+        [Input("bar", "The Bar to get the materialcomposition of")]
+        [Output("materialComposition", "The kind of matter the Bar is composed of and in which ratios")]
         public static MaterialComposition MaterialComposition(this Bar bar)
         {
             Material mat = new Material();

@@ -33,6 +33,7 @@ using BH.oM.Geometry;
 using BH.Engine.Geometry;
 using BH.Engine.Common;
 using BH.oM.Base;
+using BH.oM.Quantities.Attributes;
 
 namespace BH.Engine.Physical
 {
@@ -41,7 +42,10 @@ namespace BH.Engine.Physical
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        
+
+        [Description("Gets a IFramingElement's solid volume from the avrageArea and length")]
+        [Input("framingElement", "the IFramingElement to get the volume from")]
+        [Output("volume", "The IFramingElement's solid material volume.", typeof(Volume))]
         public static double SolidVolume(this IFramingElement framingElement)
         {
             return framingElement.Location.Length() * IAverageProfileArea(framingElement.Property);
@@ -49,6 +53,10 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
+        [Description("Gets a ISurface's solid volume from it's thickness and area." + 
+                     "ISurfaces with offsets other than Centre are not fully supported.")]
+        [Input("surface", "the ISurface to get the volume from")]
+        [Output("volume", "The ISurface's solid material volume.", typeof(Volume))]
         public static double SolidVolume(this oM.Physical.Elements.ISurface surface)
         {
             if (surface.Offset != Offset.Centre && !surface.Location.IIsPlanar())

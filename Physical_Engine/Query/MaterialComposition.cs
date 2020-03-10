@@ -40,6 +40,9 @@ namespace BH.Engine.Physical
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Gets all the Material's a IFramingElement is composed of and in which ratios")]
+        [Input("framingElement", "The IFramingElement to get the materialcomposition of")]
+        [Output("materialComposition", "The kind of matter the IFramingElement is composed of and in which ratios")]
         public static MaterialComposition MaterialComposition(this IFramingElement framingElement)
         {
             return framingElement.Property.IMaterialComposition();
@@ -47,6 +50,9 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
+        [Description("Gets all the Material's a ISurface is composed of and in which ratios")]
+        [Input("surface", "The ISurface to get the materialcomposition of")]
+        [Output("materialComposition", "The kind of matter the ISurface is composed of and in which ratios")]
         public static MaterialComposition MaterialComposition(this ISurface surface)
         {
             List<Layer> layers = (surface.Construction as Construction).Layers;
