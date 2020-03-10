@@ -54,6 +54,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Convert\ToText.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -70,6 +71,7 @@
     <Compile Include="Query\PartialMatch.cs" />
     <Compile Include="Query\RefreshLibraries.cs" />
     <Compile Include="Query\Source.cs" />
+    <Compile Include="Query\SourceAndDisclaimer.cs" />
     <Compile Include="Query\StringMatch.cs" />
   </ItemGroup>
   <ItemGroup>
