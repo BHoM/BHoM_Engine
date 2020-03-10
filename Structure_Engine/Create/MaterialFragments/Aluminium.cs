@@ -38,6 +38,7 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Creates a structural Aluminium material fragment to be used on analytical structural elements, or as a fragment of the physical material.")]
+        [Input("name", "The name of the created Aluminium material. This is required for various structural packages to create the object.")]
         [InputFromProperty("youngsModulus")]
         [InputFromProperty("poissonsRatio")]
         [InputFromProperty("thermalExpansionCoeff")]

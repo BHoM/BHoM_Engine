@@ -45,7 +45,7 @@ namespace BH.Engine.Structure
         [Input("height", "Height of the section.", typeof(Length))]
         [Input("width", "Width of the section.", typeof(Length))]
         [Input("material", "Concrete material to be applied to the section. If null a default material will be extracted from the database.")]
-        [Input("name", "Name of the concrete section.")]
+        [Input("name", "Name of the concrete section. This is required for various structural packages to create the object.")]
         [Input("reinforcement", "Optional list of reinforcement to be applied to the section.")]
         [Output("section", "The created rectangular concrete section.")]
         public static ConcreteSection ConcreteRectangleSection(double height, double width, Concrete material = null, string name = "", List<Reinforcement> reinforcement = null)
@@ -61,7 +61,7 @@ namespace BH.Engine.Structure
         [Input("flangeWidth", "Width of the flange.", typeof(Length))]
         [Input("flangeThickness", "Thickness of the flange.", typeof(Length))]
         [Input("material", "Concrete material to be applied to the section. If null a default material will be extracted from the database.")]
-        [Input("name", "Name of the concrete section.")]
+        [Input("name", "Name of the concrete section. This is required for various structural packages to create the object.")]
         [Input("reinforcement", "Optional list of reinforcement to be applied to the section.")]
         [Output("section", "The created concrete T-section.")]
         public static ConcreteSection ConcreteTSection(double height, double webThickness, double flangeWidth, double flangeThickness, Concrete material = null, string name = "", List<Reinforcement> reinforcement = null)

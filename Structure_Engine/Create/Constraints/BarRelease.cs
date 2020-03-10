@@ -34,7 +34,7 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Creates a BarRelease that is fully fixed in both ends, i.e. all degrees of freedom, translational and rotational will be fixed.")]
-        [Input("name", "Name of the BarRelease. Defaults to FixFix.")]
+        [Input("name", "Name of the BarRelease. Defaults to FixFix. This is required by most structural analysis software to create the object")]
         [Output("release", "The created fully fixed BarRelease.")]
         public static BarRelease BarReleaseFixFix( string name = "FixFix")
         {
@@ -44,7 +44,7 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Creates a BarRelease that is pinned in both ends, i.e. all translational degrees of freedom will be fixed, and rotational released, with one exception. The RX release on the start will be fixed to avoid instability of the Bar, to prevent it from rotating about the local x-axis (the centreline axis).")]
-        [Input("name", "Name of the BarRelease. Defaults to PinPin.")]
+        [Input("name", "Name of the BarRelease. Defaults to PinPin. This is required by most structural analysis software to create the object")]
         [Output("release", "The created pinned BarRelease.")]
         public static BarRelease BarReleasePinPin(string name = "PinPin")
         {
@@ -64,7 +64,7 @@ namespace BH.Engine.Structure
         [Description("Creates a BarRelease that is pinned at one end and axially releaased in the other. \n" +
                      "This means that the start node will have all tranlational degrees fixed as well as the RX, to avoid instability, i.e. to prevent it from rotating about the local x-axis (the centreline axis). \n" +
                      "The end node will be fixed in the y-axis and z-axis translationally, all other degrees of freedom will be free, i.e. it will be free to rotate as well as translate along the local x-axis (the centreline axis) of the Bar.")]
-        [Input("name", "Name of the BarRelease. Defaults to PinSlip.")]
+        [Input("name", "Name of the BarRelease. Defaults to PinSlip. This is required by most structural analysis software to create the object")]
         [Output("release", "The created pin-slip BarRelease.")]
         public static BarRelease BarReleasePinSlip(string name = "PinSlip")
         {

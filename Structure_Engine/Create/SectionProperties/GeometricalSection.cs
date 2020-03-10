@@ -42,7 +42,7 @@ namespace BH.Engine.Structure
         [Description("Creates a Section property from a Profile and a Material. The type of section that will be created depends on the material provided. Null material or unsupported materials will return a GenericSection.")]
         [Input("profile", "The profile of the section property.")]
         [Input("material", "The material of the section property. Used to determain which type of section that will be created. If null or a not yet explicitly supported material type, a generic section will be created.")]
-        [Input("name", "The name of the section property.")]
+        [Input("name", "The name of the section property. This is required for various structural packages to create the object.")]
         [Output("section", "The created section property of a type matching the material provided.")]
         public static IGeometricalSection SectionPropertyFromProfile(IProfile profile, IMaterialFragment material = null, string name = "")
         {
