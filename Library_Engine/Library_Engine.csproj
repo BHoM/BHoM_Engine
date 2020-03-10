@@ -63,6 +63,7 @@
     </Compile>
     <Compile Include="Query\AllLibraryPathNames.cs" />
     <Compile Include="Query\Datasets.cs" />
+    <Compile Include="Query\GeneralDisclaimer.cs" />
     <Compile Include="Query\Libraries.cs" />
     <Compile Include="Query\LibraryNames.cs" />
     <Compile Include="Query\LibraryTree.cs" />

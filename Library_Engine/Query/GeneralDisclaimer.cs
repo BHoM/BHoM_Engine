@@ -1,6 +1,6 @@
 ﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -27,20 +27,18 @@ using System.ComponentModel;
 using BH.oM.Reflection.Attributes;
 using BH.oM.Base;
 
-namespace BH.Engine.Library.Query //`Query` is a partial class. Remove any reference to `Query` from namespace.
-{
+namespace BH.Engine.Library
+{ 
     public static partial class Query
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("")]
-        [Input("", "")]
-        [Output("", "")]
-        public static void GeneralDisclaimer()
+        [Description("General disclaimer for all BHoM Datasets.")]
+        public static string GeneralDisclaimer()
         {
-            throw new NotImplementedException();
+            return "Although care has been taken to ensure, to the best of our knowledge, that all information contained herein is accurate, the BHoM contributors assume no responsibility for any errors in or misinterpretations of such information or any loss or damage arising from or related to its use.";
         }
 
         /***************************************************/
