@@ -37,10 +37,10 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Assigns a material fragemnt to a material. First removes any previous instances of the IMaterialFragment from the list, then adds the new.")]
+        [Description("Assigns a MaterialFragment to a physical Material. First removes any previous instances of the structural IMaterialFragment from the list, then adds the new.")]
         [Input("material", "The physical material to add a structural fragment to.")]
         [Input("structuralFragment", "The structural fragment to be appended to the material. Will replace any previous instance.")]
-        [Output("material", "Physical Material with structural material fragment set.")]
+        [Output("material", "Physical Material with structural MaterialFragment set.")]
         public static Material SetStructuralFragment(this Material material, IMaterialFragment structuralFragment)
         {
             //Clone the object

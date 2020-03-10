@@ -40,7 +40,7 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates a structural Panel from a closed curve defining the outline, and any number of closed curves definig openings.")]
+        [Description("Creates a structural Panel from a closed curve defining the outline, and any number of closed curves defining openings.")]
         [Input("outline", "A closed Curve defining the outline of the Panel. The ExternalEdges of the Panel will be the subparts of this curve, where each edge will corespond to one curve segment.")]
         [Input("openings", "A collection of closed curves representing the openings of the Panel.")]
         [InputFromProperty("property")]

@@ -47,7 +47,7 @@ namespace BH.Engine.Structure
         [Input("curves", "The true curves of the section where counter-clockwise curves are positive area and clockwise ones are negative. /n" +
                          "Should be the curves whose Polyline version was provided for WetBlanketInterpetation().")]
         [Input("trueArea", "The true area of the region.")]
-        [Output("plasticModulus", "The plasticModulus for the region.", typeof(SectionModulus))]
+        [Output("plasticModulus", "The plasticModulus of the region.", typeof(SectionModulus))]
         public static double PlasticModulus(this Polyline pLine, IEnumerable<ICurve> curves = null, double trueArea = double.NaN)
         {
             double area = BH.Engine.Geometry.Compute.IIntegrateRegion(pLine, 0);   //Should be calculated here for consistency
