@@ -41,7 +41,7 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates a rectangular solid timber section from input dimensions. Please note that all units are in S.I., that is meters [m].")]
+        [Description("Creates a rectangular solid timber section from input dimensions.")]
         [Input("height", "Height of the section.", typeof(Length))]
         [Input("width", "Width of the section.", typeof(Length))]
         [Input("cornerRadius", "Optional corner radius for the section.", typeof(Length))]

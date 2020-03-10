@@ -41,7 +41,7 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates a rectangular solid concrete section from input dimensions. Please note that all units are in S.I., that is meters [m].")]
+        [Description("Creates a rectangular solid concrete section from input dimensions.")]
         [Input("height", "Height of the section.", typeof(Length))]
         [Input("width", "Width of the section.", typeof(Length))]
         [Input("material", "Concrete material to be applied to the section. If null a default material will be extracted from the database.")]
@@ -55,7 +55,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Creates a rectangular solid concrete section from input dimensions. Please note that all units are in S.I., that is meters [m].")]
+        [Description("Creates a rectangular solid concrete section from input dimensions.")]
         [Input("height", "Full height of the section.", typeof(Length))]
         [Input("webThickness", "Thickness of the web.", typeof(Length))]
         [Input("flangeWidth", "Width of the flange.", typeof(Length))]
@@ -72,7 +72,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Creates a circular solid concrete section from input dimensions. Please note that all units are in S.I., that is meters [m].")]
+        [Description("Creates a circular solid concrete section from input dimensions.")]
         [Input("diameter", "Diameter of the section.", typeof(Length))]
         [Input("material", "Concrete material to be applied to the section. If null a default material will be extracted from the database.")]
         [Input("name", "Name of the concrete section. This is required for most structural packages to create the section.")]
