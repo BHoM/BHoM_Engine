@@ -30,7 +30,7 @@ using System.ComponentModel;
 
 namespace BH.Engine.Architecture
 {
-    public static partial class Create
+    public static partial class Query
     {
         /***************************************************/
         /**** Public Methods                            ****/

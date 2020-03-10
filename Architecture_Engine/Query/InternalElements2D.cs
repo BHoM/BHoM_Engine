@@ -48,7 +48,7 @@ namespace BH.Engine.Architecture
         [Output("element2D", "A collection of internal 2D elements")]
         public static List<IElement2D> InternalElements2D(this Room room)
         {
-            return room.Perimeter.ISubParts().Cast<IElement2D>().ToList();
+            return new List<IElement2D>();
         }
     }
 }

@@ -95,7 +95,6 @@
     <Compile Include="Query\Geometry.cs" />
     <Compile Include="Query\InternalElements2D.cs" />
     <Compile Include="Query\NewElement1D.cs" />
-    <Compile Include="Query\NewInternalElement2D.cs" />
     <Compile Include="Query\OutlineElements1D.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -113,6 +112,10 @@
       <Project>{f17df4d6-d155-4ffa-9917-ef1487faa978}</Project>
       <Name>Humans_Engine</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Reflection_Engine\Reflection_Engine.csproj">
+      <Project>{b0154405-9390-472d-9b5c-a2280823b18d}</Project>
+      <Name>Reflection_Engine</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
