@@ -32,6 +32,7 @@ using BH.oM.Physical.FramingProperties;
 using BH.oM.Geometry;
 using BH.Engine.Geometry;
 using BH.Engine.Common;
+using BH.oM.Base;
 
 namespace BH.Engine.Physical
 {
@@ -44,6 +45,16 @@ namespace BH.Engine.Physical
         public static double SolidVolume(this IFramingElement framingElement)
         {
             return framingElement.Location.Length() * IAverageProfileArea(framingElement.Property);
+        }
+
+        /***************************************************/
+
+        public static double SolidVolume(this oM.Physical.Elements.ISurface surface)
+        {
+            if (surface.Offset != Offset.Centre && !surface.Location.IIsPlanar())
+                Reflection.Compute.RecordWarning("The SolidVolume for non-Planar ISurfaces with offsets other than Centre is approxamite at best");
+
+            return surface.Location.IArea() * surface.Construction.IThickness();
         }
 
         /***************************************************/

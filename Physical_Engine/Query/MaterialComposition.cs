@@ -30,6 +30,7 @@ using BH.oM.Physical.Elements;
 using BH.Engine.Base;
 using BH.oM.Physical.Materials;
 using BH.oM.Physical.FramingProperties;
+using BH.oM.Physical.Constructions;
 
 namespace BH.Engine.Physical
 {
@@ -41,7 +42,72 @@ namespace BH.Engine.Physical
 
         public static MaterialComposition MaterialComposition(this IFramingElement framingElement)
         {
-            return (MaterialComposition)(framingElement.Property as ConstantFramingProperty).Material;
+            return framingElement.Property.IMaterialComposition();
         }
+
+        /***************************************************/
+
+        public static MaterialComposition MaterialComposition(this ISurface surface)
+        {
+            List<Layer> layers = (surface.Construction as Construction).Layers;
+            return Matter.Create.MaterialComposition(layers.Select(x => x.Material), layers.Select(x => x.Thickness));
+        }
+
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+        /******************************************************/
+        /**** IConstruction Methods                        ****/
+        /******************************************************/
+
+        private static MaterialComposition IMaterialComposition(this IConstruction prop)
+        {
+            return MaterialComposition(prop as dynamic);
+        }
+
+        /***************************************************/
+
+        private static MaterialComposition MaterialComposition(this Construction prop)
+        {
+            return Matter.Create.MaterialComposition(prop.Layers.Select(x => x.Material), prop.Layers.Select(x => x.Thickness));
+        }
+
+        /***************************************************/
+        /**** Private Fallback Methods                  ****/
+        /***************************************************/
+
+        private static MaterialComposition MaterialComposition(this IConstruction prop)
+        {
+            throw new NotImplementedException();
+        }
+
+        /******************************************************/
+        /**** IFramingElementProperty Methods              ****/
+        /******************************************************/
+
+        private static MaterialComposition IMaterialComposition(this IFramingElementProperty prop)
+        {
+            return MaterialComposition(prop as dynamic);
+        }
+
+        /***************************************************/
+
+        private static MaterialComposition MaterialComposition(this ConstantFramingProperty prop)
+        {
+            return (MaterialComposition)prop.Material;
+        }
+
+        /***************************************************/
+        /**** Private Fallback Methods                  ****/
+        /***************************************************/
+
+        private static MaterialComposition MaterialComposition(this IFramingElementProperty prop)
+        {
+            throw new NotImplementedException();
+        }
+
+        /***************************************************/
+
     }
 }

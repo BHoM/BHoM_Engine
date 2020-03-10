@@ -31,6 +31,7 @@ using BH.Engine.Base;
 using BH.oM.Physical.FramingProperties;
 using BH.oM.Physical.Materials;
 using BH.oM.Reflection;
+using BH.oM.Quantities.Attributes;
 
 namespace BH.Engine.Physical
 {
@@ -40,6 +41,12 @@ namespace BH.Engine.Physical
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Gets the density of a Material by querying each of its IMaterialProperties for theirs." +
+                     "The density is either gotten from a method or a property with that name." + 
+                     "If the density is found on diffrent IMaterialProperties, the avarage is taken.")]
+        [Input("material", "The material to get the density of")]
+        [Input("type", "The kind of IMaterialProperties to cull the result by")]
+        [Output("density", "The density of the material, further info on how the value was accuired is recorded in the warning", typeof(Density))]
         public static double Density(this Material material, Type type = null)
         {
             if (type == null)
@@ -82,6 +89,8 @@ namespace BH.Engine.Physical
             return result.Item1;
         }
 
+        /***************************************************/
+        /**** Private Methods                           ****/
         /***************************************************/
 
         private static Output<double, string> IDensityWithReport(this IMaterialProperties materialProp, double temprature, double humidity)
