@@ -57,7 +57,7 @@ namespace BH.Engine.Library
                 for (int i = 0; i < sources.Count; i++)
                 {
                     desc += Environment.NewLine;
-                    desc += "Source " + i + ":" + Environment.NewLine;
+                    desc += "Source " + i + 1 + ":" + Environment.NewLine;
                     desc += sources[i].ToText();
                 }
             }
@@ -66,7 +66,7 @@ namespace BH.Engine.Library
                 desc = "No available source information available for this dataset." + Environment.NewLine;
             }
             desc += Environment.NewLine;
-            desc += "Although care has been taken to ensure, to the best of our knowledge, that all information contained herein is accurate, the BHoM contributors assume no responsibility for any errors in or misinterpretations of such information or any loss or damage arising from or related to its use.";
+            desc += GeneralDisclaimer();
 
             return desc;
         }
