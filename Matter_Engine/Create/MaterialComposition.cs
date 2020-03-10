@@ -43,6 +43,9 @@ namespace BH.Engine.Matter
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Creates the combined MaterialComposition for a collection of IElementMs")]
+        [Input("elements", "The elements to get the combined materialCombination of")]
+        [Output("materialComposition", "A material composition which contain which materials were used in the elements and in which proportions")]
         public static MaterialComposition CombinedMaterialComposition(IEnumerable<IElementM> elements)
         {
             return MaterialComposition(elements.Select(x => x.IMaterialComposition()), elements.Select(x => x.ISolidVolume()));
@@ -50,6 +53,10 @@ namespace BH.Engine.Matter
 
         /***************************************************/
 
+        [Description("Creates a MaterialComposition for a collection of Materials given their ratios")]
+        [Input("materials", "The Materials the MaterialCombination is composed of")]
+        [Input("ratios", "The ratios of each material, the number of ratios must match the number of materials")]
+        [Output("materialComposition", "A material composition composed of the provided materials and ratios scaled so that their sum equals 1")]
         public static MaterialComposition MaterialComposition(IEnumerable<Material> materials, IEnumerable<double> ratios)
         {
             if (Math.Abs(1 - ratios.Sum()) > Tolerance.Distance)
@@ -64,6 +71,10 @@ namespace BH.Engine.Matter
 
         /***************************************************/
 
+        [Description("Creates a MaterialComposition for a collection of MaterialCompositions given their ratios")]
+        [Input("materials", "The MaterialCompositions the MaterialCombination is composed of")]
+        [Input("ratios", "The ratios of each material, the number of ratios must match the number of MaterialCompositions")]
+        [Output("materialComposition", "A material composition composed of the provided MaterialComposition materials and ratios factoring both the inputted ones and the ones in the existing MaterialCompositions")]
         public static MaterialComposition MaterialComposition(IEnumerable<MaterialComposition> materialCompositions, IEnumerable<double> ratios)
         {
             List<Material> allMaterials = new List<Material>();
@@ -103,6 +114,9 @@ namespace BH.Engine.Matter
 
         /***************************************************/
 
+        [Description("Creates a MaterialComposition from a Material, equivellant to casting to MaterialComposition")]
+        [Input("material", "This material will be the only Material in the Composition")]
+        [Output("materialComposition", "A MaterialComposition whos only Material is the provided one with a ratio of one")]
         public static MaterialComposition MaterialComposition(Material material)
         {
             return (MaterialComposition)material;
