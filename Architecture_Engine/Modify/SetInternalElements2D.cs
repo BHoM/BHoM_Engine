@@ -39,7 +39,7 @@ namespace BH.Engine.Architecture
 
         [Description("Assign a new collection of internal 2D elements to an Architecture Room")]
         [Input("room", "An Architecture Room to update")]
-        [Input("internalElements2D", "A collection of internal 2D elements to assign to the panel")]
+        [Input("internalElements2D", "A collection of internal 2D elements to assign to the room")]
         [Output("room", "The updated Architecture Room")]
         public static Room SetInternalElements2D(this Room room, List<IElement2D> internalElements2D)
         {
