@@ -43,9 +43,11 @@ namespace BH.Engine.Architecture
         [Output("room", "The updated Architecture Room")]
         public static Room SetInternalElements2D(this Room room, List<IElement2D> internalElements2D)
         {
-            Room rr = room.GetShallowClone() as Room;
-            rr.Perimeter = internalElements2D.Cast<ICurve>().ToList()[0];
-            return rr;
+            if (internalElements2D.Count != 0)
+                BH.Engine.Reflection.Compute.RecordError("Cannot set internal 2D elements to a room");
+
+            return room.GetShallowClone() as Room;
+
         }
     }
 }

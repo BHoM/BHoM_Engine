@@ -44,7 +44,7 @@ namespace BH.Engine.Architecture
         public static Room SetOutlineElements1D(this Room room, List<IElement1D> outlineElements1D)
         {
             Room r = room.GetShallowClone() as Room;
-            r.Perimeter = outlineElements1D.Cast<ICurve>().ToList()[0];
+            r.Perimeter = BH.Engine.Geometry.Compute.Join(outlineElements1D.Cast<Polyline>().ToList())[0];
             return r;
         }
     }
