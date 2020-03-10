@@ -40,12 +40,9 @@ namespace BH.Engine.Structure
 
         public static MaterialComposition MaterialComposition(this Bar bar)
         {
-            return (MaterialComposition)new Material()
-            {
-                Properties = new List<IMaterialProperties>() {
-                            bar.SectionProperty.Material
-                        }
-            };
+            Material mat = new Material();
+            mat.Properties.Add(bar.SectionProperty.Material);
+            return (MaterialComposition)mat;
         }
         
         /***************************************************/

@@ -27,6 +27,7 @@ using BH.oM.Quantities.Attributes;
 using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace BH.Engine.Matter
 {
@@ -36,6 +37,8 @@ namespace BH.Engine.Matter
         /****            IElement1D            ****/
         /******************************************/
 
+        [Description("Gets all the materials a elements is composed of and in which ratios")]
+        [Input("elementM", "The element to get the materialcomposition of")]
         [Output("material", "The kind of matter the element is composed of and in which ratios")]
         public static MaterialComposition IMaterialComposition(this IElementM elementM)
         {

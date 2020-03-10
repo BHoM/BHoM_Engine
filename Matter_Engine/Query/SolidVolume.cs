@@ -24,6 +24,7 @@ using BH.oM.Dimensional;
 using BH.oM.Geometry;
 using BH.oM.Quantities.Attributes;
 using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Matter
 {
@@ -33,7 +34,9 @@ namespace BH.Engine.Matter
         /****            IElement1D            ****/
         /******************************************/
 
-        [Output("volume", "The element's material volume.", typeof(Volume))]
+        [Description("Gets a elements solid volume")]
+        [Input("elementM", "the element to get the volume from")]
+        [Output("volume", "The element's solid material volume.", typeof(Volume))]
         public static double ISolidVolume(this IElementM elementM)
         {
             return (double)Reflection.Compute.RunExtensionMethod(elementM, "SolidVolume");
