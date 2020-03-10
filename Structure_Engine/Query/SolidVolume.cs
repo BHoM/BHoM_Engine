@@ -38,6 +38,9 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Gets a Bar's solid volume from it's SectionProperties area and the Bars length")]
+        [Input("bar", "the Bar to get the volume from")]
+        [Output("volume", "The IFramingElement's solid material volume.", typeof(Volume))]
         public static double SolidVolume(this Bar bar)
         {
             return bar.SectionProperty.Area * bar.Length();

@@ -82,6 +82,11 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
+        [Description("Gets the density of a IMaterialProperties. The density is either gotten from a method or a property with that name.")]
+        [Input("material", "The IMaterialProperties to get the density of")]
+        [Input("temprature", "The temprature to get the density at")]
+        [Input("humidity", "The humidity to get the density at")]
+        [Output("density", "The density of the IMaterialProperties, further info on how the value was accuired is recorded in the warning", typeof(Density))]
         public static double IDensity(this IMaterialProperties materialProp, double temprature, double humidity)
         {
             Output<double, string> result = IDensityWithReport(materialProp, temprature, humidity);

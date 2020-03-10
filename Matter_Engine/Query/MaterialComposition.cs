@@ -37,9 +37,9 @@ namespace BH.Engine.Matter
         /****            IElement1D            ****/
         /******************************************/
 
-        [Description("Gets all the materials a elements is composed of and in which ratios")]
+        [Description("Gets all the Material's a elements is composed of and in which ratios")]
         [Input("elementM", "The element to get the materialcomposition of")]
-        [Output("material", "The kind of matter the element is composed of and in which ratios")]
+        [Output("materialComposition", "The kind of matter the element is composed of and in which ratios")]
         public static MaterialComposition IMaterialComposition(this IElementM elementM)
         {
             return Reflection.Compute.RunExtensionMethod(elementM, "MaterialComposition") as MaterialComposition;

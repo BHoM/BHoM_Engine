@@ -41,6 +41,9 @@ namespace BH.Engine.Physical
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Gets the avarage cross-section area of a IFramingElementProperty in such a way that multiplying with the length of the element would give the volume")]
+        [Input("framingProperty", "The framingProperty to evaluate the avarage area of")]
+        [Output("avrageArea", "The avarage cross-section area of a IFramingElementProperty")]
         public static double IAverageProfileArea(this IFramingElementProperty framingProperty)
         {
             return AverageProfileArea(framingProperty as dynamic);
@@ -48,6 +51,9 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
+        [Description("Gets the avarage cross-section area of a ConstantFramingProperty in such a way that multiplying with the length of the element would give the volume")]
+        [Input("framingProperty", "The framingProperty to evaluate the avarage area of")]
+        [Output("avrageArea", "The avarage cross-section area of a ConstantFramingProperty")]
         public static double AverageProfileArea(this ConstantFramingProperty framingProperty)
         {
             List<PolyCurve> curvesZ = Engine.Geometry.Compute.IJoin(framingProperty.Profile.Edges.ToList());
@@ -63,7 +69,7 @@ namespace BH.Engine.Physical
                                 depth[j]++;
             }
 
-            depth = depth.Select(x => x % 2 == 0 ? 1 : -1).ToArray();
+            depth = depth.Select(x => x % 2 == 0 ? 1 : -1).ToArray();   // positive area as 1 and negative area as -1
             return curvesZ.Select((x, i) => Math.Abs(x.IIntegrateRegion(0)) * depth[i]).Sum();
         }
 
@@ -72,7 +78,7 @@ namespace BH.Engine.Physical
         /****    private fallback method            ********/
         /***************************************************/
 
-        public static double AverageProfileArea(this IFramingElementProperty framingProperty)
+        private static double AverageProfileArea(this IFramingElementProperty framingProperty)
         {
             throw new NotImplementedException();
         }
