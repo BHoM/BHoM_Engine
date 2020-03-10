@@ -64,7 +64,6 @@
     <Compile Include="Create\MaterialComposition.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Query\Density.cs" />
-    <Compile Include="Query\MatchMaterialFragment.cs" />
     <Compile Include="Query\Mass.cs" />
     <Compile Include="Query\MaterialComposition.cs" />
     <Compile Include="Query\SolidVolume.cs" />
