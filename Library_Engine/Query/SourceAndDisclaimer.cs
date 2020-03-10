@@ -57,7 +57,8 @@ namespace BH.Engine.Library
                 for (int i = 0; i < sources.Count; i++)
                 {
                     desc += Environment.NewLine;
-                    desc += "Source " + i + 1 + ":" + Environment.NewLine;
+                    int sourceNumber = i + 1;
+                    desc += "Source " + sourceNumber + ":" + Environment.NewLine;
                     desc += sources[i].ToText();
                 }
             }
