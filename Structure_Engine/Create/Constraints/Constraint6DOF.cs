@@ -65,7 +65,7 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Creates a pinned Constraint6DOF, i.e. a constraint that have all translational degrees of freedom fixed and all the rotational degrees of freedom free.")]
-        [Input("name", "Name of the Constraint6DOF. Defaults to Pin.")]
+        [Input("name", "Name of the Constraint6DOF. Defaults to Pin. This is required by most structural analysis software to create the object")]
         [Output("release", "The created pinned Constraint6DOF.")]
         public static Constraint6DOF PinConstraint6DOF(string name = "Pin")
         {
@@ -81,7 +81,7 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Creates a fully fixed Constraint6DOF, i.e. a constraint that have all degrees of freedom, translational and rotational, fixed.")]
-        [Input("name", "Name of the Constraint6DOF. Defaults to Fix.")]
+        [Input("name", "Name of the Constraint6DOF. Defaults to Fix. This is required by most structural analysis software to create the object")]
         [Output("release", "The created fully fixed Constraint6DOF.")]
         public static Constraint6DOF FixConstraint6DOF(string name = "Fix")
         {
@@ -100,7 +100,7 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Creates a fully free Constraint6DOF, i.e. a constraint that have all degrees of freedom, translational and rotational, free.")]
-        [Input("name", "Name of the Constraint6DOF. Defaults to Release.")]
+        [Input("name", "Name of the Constraint6DOF. Defaults to Release. This is required by most structural analysis software to create the object")]
         [Output("release", "The created fully free Constraint6DOF.")]
         public static Constraint6DOF FullReleaseConstraint6DOF(string name = "Release")
         {

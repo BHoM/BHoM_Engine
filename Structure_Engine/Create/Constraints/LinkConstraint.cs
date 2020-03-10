@@ -40,7 +40,7 @@ namespace BH.Engine.Structure
         [Description("Creates a LinkConstraint from a list of booleans. True denotes fixity.")]
         [Input("name", "Name of the created LinkConstraint. This is required for various structural packages to create the object.")]
         [Input("fixity", "List of booleans setting the fixities of the LinkConstraint. True denotes fixity. Should be a list of 12 booleans in the following order: XtoX, YtoY, ZtoZ, XtoYY, XtoZZ, YtoXX, YtoZZ, ZtoXX, ZtoYY, XXtoXX, YYtoYY, ZZtoZZ.")]
-        [Output("linkCOnstraint", "The created custom LinkConstraint.")]
+        [Output("linkConstraint", "The created custom LinkConstraint.")]
         public static LinkConstraint LinkConstraint(string name, List<bool> fixity)
         {
             return new LinkConstraint
@@ -64,6 +64,8 @@ namespace BH.Engine.Structure
         /***************************************************/
         
         [Description("Creates a LinkConstraint where all directions are linked, rotations at slave nodes are linked to rotations of masters.")]
+        [Input("name", "Name of the created LinkConstraint. Defaults to 'Fixed'. This is required for various structural packages to create the object.")]
+        [Output("linkConstraint", "The created LinkConstraint.")]
         public static LinkConstraint LinkConstraintFixed(string name = "Fixed")
         {
             return new LinkConstraint
@@ -87,6 +89,8 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Creates a LinkConstraint where all directions are linked, but the rotations of the slave nodes are not linked to the master.")]
+        [Input("name", "Name of the created LinkConstraint. Defaults to 'Pinned'. This is required for various structural packages to create the object.")]
+        [Output("linkConstraint", "The created LinkConstraint.")]
         public static LinkConstraint LinkConstraintPinned(string name = "Pinned")
         {
 
@@ -104,6 +108,8 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Creates a LinkConstraint where the directions are linked to give rigidity in the xy-plane but there is no constraint out of plane.")]
+        [Input("name", "Name of the created LinkConstraint. Defaults to 'xy-Plane'. This is required for various structural packages to create the object.")]
+        [Output("linkConstraint", "The created LinkConstraint.")]
         public static LinkConstraint LinkConstraintXYPlane(string name = "xy-Plane")
         {
                 LinkConstraint constr = new LinkConstraint();
@@ -119,6 +125,8 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Creates a LinkConstraint where the directions are linked to give rigidity in the yz-plane but there is no constraint out of plane.")]
+        [Input("name", "Name of the created LinkConstraint. Defaults to 'yz-Plane'. This is required for various structural packages to create the object.")]
+        [Output("linkConstraint", "The created LinkConstraint.")]
         public static LinkConstraint LinkConstraintYZPlane(string name = "yz-Plane")
         {
                 LinkConstraint constr = new LinkConstraint();
@@ -134,6 +142,8 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Creates a LinkConstraint where the directions are linked to give rigidity in the zx-plane but there is no constraint out of plane.")]
+        [Input("name", "Name of the created LinkConstraint. Defaults to 'zx-Plane'. This is required for various structural packages to create the object.")]
+        [Output("linkConstraint", "The created LinkConstraint.")]
         public static LinkConstraint LinkConstraintZXPlane(string name = "zx-Plane")
         {
                 LinkConstraint constr = new LinkConstraint();
@@ -149,6 +159,8 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Creates a LinkConstraint where the directions are linked to give rigidity in the xy-plane, but the rotations of the slave nodes are not linked to the master, and there is no constraint out of plane.")]
+        [Input("name", "Name of the created LinkConstraint. Defaults to 'xy-Plane Pin'. This is required for various structural packages to create the object.")]
+        [Output("linkConstraint", "The created LinkConstraint.")]
         public static LinkConstraint LinkConstraintXYPlanePin(string name = "xy-Plane Pin")
         {
                 LinkConstraint constr = new LinkConstraint();
@@ -163,6 +175,8 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Creates a LinkConstraint where the directions are linked to give rigidity in the yz-plane, but the rotations of the slave nodes are not linked to the master, and there is no constraint out of plane.")]
+        [Input("name", "Name of the created LinkConstraint. Defaults to 'yz-Plane Pin'. This is required for various structural packages to create the object.")]
+        [Output("linkConstraint", "The created LinkConstraint.")]
         public static LinkConstraint LinkConstraintYZPlanePin(string name = "yz-Plane Pin")
         {
                 LinkConstraint constr = new LinkConstraint();
@@ -177,6 +191,8 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Creates a LinkConstraint where the directions are linked to give rigidity in the zx-plane, but the rotations of the slave nodes are not linked to the master, and there is no constraint out of plane.")]
+        [Input("name", "Name of the created LinkConstraint. Defaults to 'zx-Plane Pin'. This is required for various structural packages to create the object.")]
+        [Output("linkConstraint", "The created LinkConstraint.")]
         public static LinkConstraint LinkConstraintZXPlanePin(string name = "zx-Plane Pin")
         {
                 LinkConstraint constr = new LinkConstraint();
