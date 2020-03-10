@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>BH.Engine.Matter</RootNamespace>
-    <AssemblyName>$(MSBuildProjectName)</AssemblyName>
+    <AssemblyName>Matter_Engine</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -24,7 +24,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\Build\</OutputPath>
+    <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -32,10 +32,6 @@
   <ItemGroup>
     <Reference Include="BHoM">
       <HintPath>..\..\..\BHoM\Build\BHoM.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Data_oM">
-      <HintPath>..\..\BHoM\Build\Data_oM.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Dimensional_oM">
@@ -84,18 +80,17 @@
     <ProjectReference Include="..\BHoM_Engine\BHoM_Engine.csproj">
       <Project>{1ad45c88-dd54-48e5-951f-55edfeb70e35}</Project>
       <Name>BHoM_Engine</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Data_Engine\Data_Engine.csproj">
-      <Project>{8082ca2a-ac5c-4690-9f09-960e0d3e4102}</Project>
-      <Name>Data_Engine</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\Geometry_Engine\Geometry_Engine.csproj">
       <Project>{89ab2dcb-ef87-4cba-b59c-c16a8a71d333}</Project>
       <Name>Geometry_Engine</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\Reflection_Engine\Reflection_Engine.csproj">
       <Project>{b0154405-9390-472d-9b5c-a2280823b18d}</Project>
       <Name>Reflection_Engine</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
