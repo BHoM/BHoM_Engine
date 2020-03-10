@@ -37,7 +37,7 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Sets the material of a Bar by updating the material of its SectionProperty.")]
-        [Input("bar", "The Bar to set the material to, i.e. the Bar to get the Material of its SectionProeprty updated.")]
+        [Input("bar", "The Bar to set the material to, i.e. the Bar to have the Material of its SectionProperty updated.")]
         [Input("material", "The material to set to the Bar.")]
         [Output("bar", "The Bar with updated material.")]
         public static Bar SetMaterial(this Bar bar, IMaterialFragment material)

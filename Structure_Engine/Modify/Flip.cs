@@ -36,7 +36,7 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Flips the StartNode and EndNode of the Bar, i.e. the StartNode is set to the EndNode and vice versa. No modification is being made to releases, oriantation angle, offsets etc.")]
+        [Description("Flips the StartNode and EndNode of the Bar, i.e. the StartNode is set to the EndNode and vice versa. No modification is being made to releases, orientation angle, offsets etc.")]
         [Input("bar", "The Bar to flip.")]
         [Output("bar", "The Bar with flipped end Nodes.")]
         public static Bar Flip(this Bar bar)

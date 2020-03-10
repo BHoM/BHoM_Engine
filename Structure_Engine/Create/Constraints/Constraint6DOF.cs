@@ -37,8 +37,8 @@ namespace BH.Engine.Structure
 
         [Description("Creates a Constraint6DOF from a list of fixities and spring values.")]
         [Input("name", "Name to be used for the Constraint. This is required for various structural packages to create the object.")]
-        [Input("fixity", "Should be a list of 6 booleans, in the order TransX, TranxY, TransZ, RotX, RotY, RotZ. If true, the fixity is set to fixed. If false, the fixity is set to free or spring, depending if the double values provided are 0 or not.")]
-        [Input("values", "Should be a list of 6 doubles with positive values (>= 0), in the orderTransX, TranxY, TransZ, RotX, RotY, RotZ. If zero, and corresponding fixity is false, the DOF will be free. If non-zero, these values will be set as the spring values. \n" +
+        [Input("fixity", "A list of 6 booleans, in the order TransX, TranxY, TransZ, RotX, RotY, RotZ. If true, the fixity is set to fixed. If false, the fixity is set to free or spring, depending if the double values provided are 0 or not.")]
+        [Input("values", "A list of 6 doubles with positive values (>= 0), in the orderTransX, TranxY, TransZ, RotX, RotY, RotZ. If zero, and corresponding fixity is false, the DOF will be free. If non-zero, these values will be set as the spring values. \n" +
                          "First three should have the quantity force per unit length, last three should be moment per unit angle.")]
         [Output("constraint6DOF", "The created custom Constraint6DOF.")]
         public static Constraint6DOF Constraint6DOF(string name, List<bool> fixity, List<double> values)
@@ -118,13 +118,13 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Creates a Constraint6DOF from a set of booleans. True means fixed, false means free.")]
-        [Input("x", "Translational fixity in x-direction. True means fixed, false means free.")]
-        [Input("y", "Translational fixity in y-direction. True means fixed, false means free.")]
-        [Input("z", "Translational fixity in z-direction. True means fixed, false means free.")]
-        [Input("xx", "Rotational fixity about the x-axis. True means fixed, false means free.")]
-        [Input("yy", "Rotational fixity about the y-axis. True means fixed, false means free.")]
-        [Input("zz", "Rotational fixity about the z-axis. True means fixed, false means free.")]
+        [Description("Creates a Constraint6DOF from a set of booleans. True denotes fixed, false denotes free.")]
+        [Input("x", "Translational fixity in x-direction. True denotes fixed, false denotes free.")]
+        [Input("y", "Translational fixity in y-direction. True denotes fixed, false denotes free.")]
+        [Input("z", "Translational fixity in z-direction. True denotes fixed, false denotes free.")]
+        [Input("xx", "Rotational fixity about the x-axis. True denotes fixed, false denotes free.")]
+        [Input("yy", "Rotational fixity about the y-axis. True denotes fixed, false denotes free.")]
+        [Input("zz", "Rotational fixity about the z-axis. True denotes fixed, false denotes free.")]
         [Input("name", "Name of the Constraint6DOF. This is required for various structural packages to create the object.")]
         [Output("release", "The created custom Constraint6DOF.")]
         public static Constraint6DOF Constraint6DOF(bool x, bool y, bool z, bool xx, bool yy, bool zz, string name = "")
