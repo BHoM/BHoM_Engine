@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -22,46 +22,32 @@
 
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Mono.Cecil;
+using Mono.Reflection;
 
-using BH.oM.Environment.Elements;
-using BH.oM.Environment.Gains;
-
-using BH.oM.Reflection.Attributes;
-using System.ComponentModel;
-
-using BH.oM.Geometry;
-
-namespace BH.Engine.Environment
+namespace BH.Engine.Reflection
 {
-    public static partial class Create
+    public static partial class Compute
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns an Environment Space object")]
-        [Input("name", "The name of the space, default empty string")]
-        [Input("zones", "A collection of zone names the space is to be included in, default null")]
-        [Input("gains", "A collection of gains to be applied to the space, default null")]
-        [Input("type", "The type of space from the Space Type enum, default undefined")]
-        [Input("location", "A point in 3D space providing a basic location point of the space, default null")]
-        [Output("space", "An Environment Space object")]
-        [Deprecated("3.0", "Deprecated in favour of default create components produced by BHoM")]
-        public static Space Space(string name = "", List<string> zones = null, List<IGain> gains = null, SpaceType type = SpaceType.Undefined, Point location = null)
+        public static List<string> SplitByIndices(string text, List<int> indices)
         {
-            zones = zones ?? new List<string>();
-            gains = gains ?? new List<IGain>();
+            int previousIndex = 0;
+            List<string> result = new List<string>();
 
-            return new Space
+            foreach (int index in indices.OrderBy(x => x))
             {
-                Name = name,
-                Zones = zones,
-                Type = type,
-                Location = location,
-            };
+                result.Add(text.Substring(previousIndex, index - previousIndex));
+                previousIndex = index + 1;
+            }
+            result.Add(text.Substring(previousIndex));
+
+            return result;
         }
     }
 }

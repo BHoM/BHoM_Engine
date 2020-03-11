@@ -78,6 +78,7 @@
   <ItemGroup>
     <Compile Include="Compute\BooleanIntersect.cs" />
     <Compile Include="Compute\EquipmentGain.cs" />
+    <Compile Include="Compute\ExtrudeToVolume.cs" />
     <Compile Include="Compute\JulianDay.cs" />
     <Compile Include="Compute\LightingGain.cs" />
     <Compile Include="Compute\Occupancy.cs" />
@@ -117,6 +118,7 @@
     <Compile Include="Query\Absorptance.cs" />
     <Compile Include="Query\ClosedSpaces.cs" />
     <Compile Include="Query\ConnectedSpaceName.cs" />
+    <Compile Include="Query\FrameFactor.cs" />
     <Compile Include="Query\NotClosedSpaces.cs" />
     <Compile Include="Query\PointsInSpaces.cs" />
     <Compile Include="Query\CullDuplicateLines.cs" />

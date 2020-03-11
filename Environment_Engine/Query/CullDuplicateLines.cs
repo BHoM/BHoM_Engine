@@ -53,12 +53,8 @@ namespace BH.Engine.Environment
                 {
                     Line l1 = lines[i];
                     Line l2 = lines[j];
-                    {
-                        if ((l1.Start.SquareDistance(l2.Start) <= sqTol && l1.End.SquareDistance(l2.End) <= sqTol) || (l1.Start.SquareDistance(l2.End) <= sqTol && l1.End.SquareDistance(l2.Start) <= sqTol))
-                        {
-                            lines.RemoveAt(j);
-                        }
-                    }
+                    if ((l1.Start.SquareDistance(l2.Start) <= sqTol && l1.End.SquareDistance(l2.End) <= sqTol) || (l1.Start.SquareDistance(l2.End) <= sqTol && l1.End.SquareDistance(l2.Start) <= sqTol))
+                        lines.RemoveAt(j);
                 }
             }
             return lines;

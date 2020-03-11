@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -26,42 +26,29 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using BH.oM.Environment.Elements;
-using BH.oM.Environment.Gains;
+using BH.oM.Architecture;
+using BH.oM.Architecture.Elements;
+using BH.oM.Dimensional;
+using BH.oM.Geometry;
+using BH.Engine.Geometry;
 
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
 
-using BH.oM.Geometry;
-
-namespace BH.Engine.Environment
+namespace BH.Engine.Architecture
 {
-    public static partial class Create
+    public static partial class Query
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns an Environment Space object")]
-        [Input("name", "The name of the space, default empty string")]
-        [Input("zones", "A collection of zone names the space is to be included in, default null")]
-        [Input("gains", "A collection of gains to be applied to the space, default null")]
-        [Input("type", "The type of space from the Space Type enum, default undefined")]
-        [Input("location", "A point in 3D space providing a basic location point of the space, default null")]
-        [Output("space", "An Environment Space object")]
-        [Deprecated("3.0", "Deprecated in favour of default create components produced by BHoM")]
-        public static Space Space(string name = "", List<string> zones = null, List<IGain> gains = null, SpaceType type = SpaceType.Undefined, Point location = null)
+        [Description("Returns the internal 2D elements of an Architecture Room")]
+        [Input("room", "An Architecture Room")]
+        [Output("element2D", "A collection of internal 2D elements")]
+        public static List<IElement2D> InternalElements2D(this Room room)
         {
-            zones = zones ?? new List<string>();
-            gains = gains ?? new List<IGain>();
-
-            return new Space
-            {
-                Name = name,
-                Zones = zones,
-                Type = type,
-                Location = location,
-            };
+            return new List<IElement2D>();
         }
     }
 }
