@@ -53,7 +53,7 @@ namespace BH.Engine.Physical
                 type = typeof(IMaterialProperties);
 
             List<double> densities = new List<double>();
-            List<string> warnings = new List<string>() { "Density report for " + material.Name + ":" };
+            List<string> warnings = new List<string>() { "Density report for the Material " + material.Name + ":" };
 
             foreach (IMaterialProperties mat in material.Properties.Where(x => type.IsAssignableFrom(x.GetType())))
             {
