@@ -77,7 +77,19 @@ namespace BH.Engine.Serialiser.BsonSerializers
                 // Write the name of the type
                 bsonWriter.WriteName("Name");
                 if (value.IsGenericParameter)
+                {
                     bsonWriter.WriteString("T");
+
+                    Type[] constraints = value.GetGenericParameterConstraints();
+                    if (constraints.Length > 0)
+                    {
+                        bsonWriter.WriteName("Constraints");
+                        bsonWriter.WriteStartArray();
+                        foreach (Type constraint in constraints)
+                            BsonSerializer.Serialize(bsonWriter, constraint);
+                        bsonWriter.WriteEndArray();
+                    }
+                }
                 else if (value.Namespace.StartsWith("BH.oM"))
                     bsonWriter.WriteString(value.FullName);
                 else if (value.AssemblyQualifiedName != null)
@@ -141,7 +153,7 @@ namespace BH.Engine.Serialiser.BsonSerializers
 
                 if (type == null)
                     Reflection.Compute.RecordError("Type " + fullName + " failed to deserialise.");
-                else if (type.IsGenericType && type.GetGenericArguments().Length == genericTypes.Count)
+                else if (type.IsGenericType && type.GetGenericArguments().Length == genericTypes.Where(x => x != null).Count())
                     type = type.MakeGenericType(genericTypes.ToArray()); 
 
                 return type;
