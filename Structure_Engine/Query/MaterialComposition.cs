@@ -43,6 +43,11 @@ namespace BH.Engine.Structure
         [Output("materialComposition", "The kind of matter the Bar is composed of and in which ratios")]
         public static MaterialComposition MaterialComposition(this Bar bar)
         {
+            if (bar.SectionProperty == null || bar.SectionProperty.Material == null)
+            {
+                Engine.Reflection.Compute.RecordError("The Bars MaterialComposition could not be calculated as no Material has been assigned.");
+                return null;
+            }
             Material mat = new Material();
             mat.Properties.Add(bar.SectionProperty.Material);
             return (MaterialComposition)mat;

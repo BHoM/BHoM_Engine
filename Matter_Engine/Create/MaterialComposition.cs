@@ -56,13 +56,13 @@ namespace BH.Engine.Matter
 
         [Description("Creates a MaterialComposition for a collection of Materials given their ratios")]
         [Input("materials", "The Materials the MaterialCombination is composed of")]
-        [Input("ratios", "The ratios of each material, the number of ratios must match the number of materials", typeof(Ratio))]
+        [Input("ratios", "The ratios of each material, the number of ratios must match the number of materials." +
+                         "If the ratios sum does not equal 1 they will be factored to do so.", typeof(Ratio))]
         [Output("materialComposition", "A material composition composed of the provided materials and ratios scaled so that their sum equals 1")]
         public static MaterialComposition MaterialComposition(IEnumerable<Material> materials, IEnumerable<double> ratios)
         {
             if (Math.Abs(1 - ratios.Sum()) > Tolerance.Distance)
             {
-                Engine.Reflection.Compute.RecordWarning("The ratios sum did not equal 1, the values have been factored to do so");
                 double factor = 1 / ratios.Sum();
                 return new MaterialComposition(materials, ratios.Select(x => x * factor));
             }

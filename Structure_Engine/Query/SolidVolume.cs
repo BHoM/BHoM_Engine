@@ -43,6 +43,11 @@ namespace BH.Engine.Structure
         [Output("volume", "The IFramingElement's solid material volume.", typeof(Volume))]
         public static double SolidVolume(this Bar bar)
         {
+            if (bar.SectionProperty == null)
+            {
+                Engine.Reflection.Compute.RecordError("The Bars Solid Volume could not be calculated as no section property has been assigned. Returning zero volume.");
+                return 0;
+            }
             return bar.SectionProperty.Area * bar.Length();
         }
         

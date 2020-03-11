@@ -48,6 +48,11 @@ namespace BH.Engine.Physical
         [Output("volume", "The IFramingElement's solid material volume.", typeof(Volume))]
         public static double SolidVolume(this IFramingElement framingElement)
         {
+            if (framingElement.Property == null)
+            {
+                Engine.Reflection.Compute.RecordError("The IFramingElement Solid Volume could not be calculated as no property has been assigned. Returning zero volume.");
+                return 0;
+            }
             return framingElement.Location.Length() * IAverageProfileArea(framingElement.Property);
         }
 
@@ -59,10 +64,26 @@ namespace BH.Engine.Physical
         [Output("volume", "The ISurface's solid material volume.", typeof(Volume))]
         public static double SolidVolume(this oM.Physical.Elements.ISurface surface)
         {
+            if (surface.Construction == null)
+            {
+                Engine.Reflection.Compute.RecordError("The ISurface Solid Volume could not be calculated as no IConstruction has been assigned. Returning zero volume.");
+                return 0;
+            }
+
             if (surface.Offset != Offset.Centre && !surface.Location.IIsPlanar())
                 Reflection.Compute.RecordWarning("The SolidVolume for non-Planar ISurfaces with offsets other than Centre is approxamite at best");
 
-            return surface.Location.IArea() * surface.Construction.IThickness();
+            // Temp, remove when Geometry_Engine implements IArea for PlanarSurface
+            if (!(surface.Location is PlanarSurface))
+            {
+                Engine.Reflection.Compute.RecordError("No area methods for non-PlanarSurface");
+                return 0;
+            }
+            PlanarSurface p = surface.Location as PlanarSurface;
+            double area = p.ExternalBoundary.IArea();
+            area -= p.InternalBoundaries.Sum(x => x.IArea());
+
+            return area * surface.Construction.IThickness();
         }
 
         /***************************************************/

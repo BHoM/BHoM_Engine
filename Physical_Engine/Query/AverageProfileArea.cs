@@ -57,6 +57,12 @@ namespace BH.Engine.Physical
         [Output("avrageArea", "The avarage cross-section area of a ConstantFramingProperty", typeof(Area))]
         public static double AverageProfileArea(this ConstantFramingProperty framingProperty)
         {
+            if (framingProperty.Profile == null)
+            {
+                Engine.Reflection.Compute.RecordError("The framingProperty Average Profile Area could not be calculated as no Profile has been assigned. Returning zero Area.");
+                return 0;
+            }
+
             List<PolyCurve> curvesZ = Engine.Geometry.Compute.IJoin(framingProperty.Profile.Edges.ToList());
 
             int[] depth = new int[curvesZ.Count];

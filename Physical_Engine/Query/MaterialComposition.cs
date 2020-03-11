@@ -45,6 +45,11 @@ namespace BH.Engine.Physical
         [Output("materialComposition", "The kind of matter the IFramingElement is composed of and in which ratios")]
         public static MaterialComposition MaterialComposition(this IFramingElement framingElement)
         {
+            if (framingElement.Property == null)
+            {
+                Engine.Reflection.Compute.RecordError("The IFramingElement MaterialComposition could not be calculated as no Property has been assigned.");
+                return null;
+            }
             return framingElement.Property.IMaterialComposition();
         }
 
@@ -55,8 +60,12 @@ namespace BH.Engine.Physical
         [Output("materialComposition", "The kind of matter the ISurface is composed of and in which ratios")]
         public static MaterialComposition MaterialComposition(this ISurface surface)
         {
-            List<Layer> layers = (surface.Construction as Construction).Layers;
-            return Matter.Create.MaterialComposition(layers.Select(x => x.Material), layers.Select(x => x.Thickness));
+            if (surface.Construction == null)
+            {
+                Engine.Reflection.Compute.RecordError("The ISurface MaterialComposition could not be calculated as no IConstruction has been assigned.");
+                return null;
+            }
+            return surface.Construction.IMaterialComposition();
         }
 
         /***************************************************/
@@ -76,6 +85,11 @@ namespace BH.Engine.Physical
 
         private static MaterialComposition MaterialComposition(this Construction prop)
         {
+            if (prop.Layers.Any(x => x.Material == null))
+            {
+                Engine.Reflection.Compute.RecordError("The Construction MaterialComposition could not be calculated as no Material has been assigned.");
+                return null;
+            }
             return Matter.Create.MaterialComposition(prop.Layers.Select(x => x.Material), prop.Layers.Select(x => x.Thickness));
         }
 
@@ -101,6 +115,11 @@ namespace BH.Engine.Physical
 
         private static MaterialComposition MaterialComposition(this ConstantFramingProperty prop)
         {
+            if (prop.Material == null)
+            {
+                Engine.Reflection.Compute.RecordError("The ConstantFramingProperty MaterialComposition could not be calculated as no Material has been assigned.");
+                return null;
+            }
             return (MaterialComposition)prop.Material;
         }
 
