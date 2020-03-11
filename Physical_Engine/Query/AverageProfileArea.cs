@@ -32,6 +32,7 @@ using BH.oM.Physical.FramingProperties;
 using BH.oM.Geometry;
 using BH.Engine.Geometry;
 using BH.Engine.Common;
+using BH.oM.Quantities.Attributes;
 
 namespace BH.Engine.Physical
 {
@@ -43,7 +44,7 @@ namespace BH.Engine.Physical
 
         [Description("Gets the avarage cross-section area of a IFramingElementProperty in such a way that multiplying with the length of the element would give the volume")]
         [Input("framingProperty", "The framingProperty to evaluate the avarage area of")]
-        [Output("avrageArea", "The avarage cross-section area of a IFramingElementProperty")]
+        [Output("avrageArea", "The avarage cross-section area of a IFramingElementProperty", typeof(Area))]
         public static double IAverageProfileArea(this IFramingElementProperty framingProperty)
         {
             return AverageProfileArea(framingProperty as dynamic);
@@ -53,7 +54,7 @@ namespace BH.Engine.Physical
 
         [Description("Gets the avarage cross-section area of a ConstantFramingProperty in such a way that multiplying with the length of the element would give the volume")]
         [Input("framingProperty", "The framingProperty to evaluate the avarage area of")]
-        [Output("avrageArea", "The avarage cross-section area of a ConstantFramingProperty")]
+        [Output("avrageArea", "The avarage cross-section area of a ConstantFramingProperty", typeof(Area))]
         public static double AverageProfileArea(this ConstantFramingProperty framingProperty)
         {
             List<PolyCurve> curvesZ = Engine.Geometry.Compute.IJoin(framingProperty.Profile.Edges.ToList());

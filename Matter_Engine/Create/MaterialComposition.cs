@@ -34,6 +34,7 @@ using System.ComponentModel;
 using BH.oM.Physical.Elements;
 using BH.oM.Geometry;
 using BH.oM.Dimensional;
+using BH.oM.Quantities.Attributes;
 
 namespace BH.Engine.Matter
 {
@@ -55,7 +56,7 @@ namespace BH.Engine.Matter
 
         [Description("Creates a MaterialComposition for a collection of Materials given their ratios")]
         [Input("materials", "The Materials the MaterialCombination is composed of")]
-        [Input("ratios", "The ratios of each material, the number of ratios must match the number of materials")]
+        [Input("ratios", "The ratios of each material, the number of ratios must match the number of materials", typeof(Ratio))]
         [Output("materialComposition", "A material composition composed of the provided materials and ratios scaled so that their sum equals 1")]
         public static MaterialComposition MaterialComposition(IEnumerable<Material> materials, IEnumerable<double> ratios)
         {
@@ -73,7 +74,7 @@ namespace BH.Engine.Matter
 
         [Description("Creates a MaterialComposition for a collection of MaterialCompositions given their ratios")]
         [Input("materials", "The MaterialCompositions the MaterialCombination is composed of")]
-        [Input("ratios", "The ratios of each material, the number of ratios must match the number of MaterialCompositions")]
+        [Input("ratios", "The ratios of each material, the number of ratios must match the number of MaterialCompositions", typeof(Ratio))]
         [Output("materialComposition", "A material composition composed of the provided MaterialComposition materials and ratios factoring both the inputted ones and the ones in the existing MaterialCompositions")]
         public static MaterialComposition MaterialComposition(IEnumerable<MaterialComposition> materialCompositions, IEnumerable<double> ratios)
         {
