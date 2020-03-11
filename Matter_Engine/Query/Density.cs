@@ -72,7 +72,7 @@ namespace BH.Engine.Physical
                 return 0;
             }
             if (densities.Count > 1)
-                Reflection.Compute.RecordWarning("Average of multiple Fragments taken from " + material.Name);
+                warnings.Add("The density for " + material.Name + " is a average of multiple Fragments");
 
             if (warnings.Count > 1)
                 Reflection.Compute.RecordWarning(string.Join(System.Environment.NewLine, warnings.ToArray()));
@@ -150,7 +150,7 @@ namespace BH.Engine.Physical
                 return new Output<double, string>()
                 {
                     Item1 = System.Convert.ToDouble(density),
-                    Item2 = "The value of the density for the MaterialFragment: " + materialProp.Name + "was acquired through its properties"
+                    Item2 = "The value of the density for the MaterialFragment: " + materialProp.Name + " was acquired through its properties"
                 };
             }
 
@@ -165,7 +165,7 @@ namespace BH.Engine.Physical
 
         private static string UnUsedVaribles(string name, string missing)
         {
-            return "The value of the density for the MaterialFragment: " + name + "was acquired without the input: " + missing;
+            return "The value of the density for the MaterialFragment: " + name + " was acquired without the input: " + missing;
         }
 
         /***************************************************/
