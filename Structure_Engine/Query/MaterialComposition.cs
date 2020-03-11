@@ -48,8 +48,7 @@ namespace BH.Engine.Structure
                 Engine.Reflection.Compute.RecordError("The Bars MaterialComposition could not be calculated as no Material has been assigned.");
                 return null;
             }
-            Material mat = new Material();
-            mat.Properties.Add(bar.SectionProperty.Material);
+            Material mat = Physical.Create.Material(bar.SectionProperty.Material);
             return (MaterialComposition)mat;
         }
         

@@ -35,6 +35,8 @@ namespace BH.Engine.Physical
 {
     public static partial class Create
     {
+        /***************************************************/
+
         [Description("Returns a Material object")]
         [Input("name", "The name of the material, default empty string")]
         [Input("properties", "A collection of the specific properties of the material to be created, default null")]
@@ -49,6 +51,21 @@ namespace BH.Engine.Physical
                 Properties = properties,
             };
         }
+
+        /***************************************************/
+
+        [Description("Returns a Material object")]
+        [Input("property", "The specific property of the material to be created, its name will be carried over to the Material")]
+        [Output("A Material object")]
+        public static Material Material(IMaterialProperties property)
+        {
+            return new Material
+            {
+                Name = property.Name,
+                Properties = new List<IMaterialProperties>() { property },
+            };
+        }
+
     }
 }
 

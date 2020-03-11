@@ -85,11 +85,11 @@ namespace BH.Engine.Physical
         [Description("Gets the density of a IMaterialProperties. The density is either gotten from a method or a property with that name.")]
         [Input("material", "The IMaterialProperties to get the density of")]
         [Input("temprature", "The temprature to get the density at", typeof(Temperature))]
-        [Input("humidity", "The humidity to get the density at", typeof(Ratio))]
+        [Input("relativeHumidity", "The humidity to get the density at", typeof(Ratio))]
         [Output("density", "The density of the IMaterialProperties, further info on how the value was accuired is recorded in the warning", typeof(Density))]
-        public static double IDensity(this IMaterialProperties materialProp, double temperature, double humidity)
+        public static double IDensity(this IMaterialProperties materialProp, double temperature, double relativeHumidity)
         {
-            Output<double, string> result = IDensityWithReport(materialProp, temperature, humidity);
+            Output<double, string> result = IDensityWithReport(materialProp, temperature, relativeHumidity);
             Reflection.Compute.RecordWarning(result.Item2);
             return result.Item1;
         }
@@ -98,12 +98,12 @@ namespace BH.Engine.Physical
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private static Output<double, string> IDensityWithReport(this IMaterialProperties materialProp, double temperature, double humidity)
+        private static Output<double, string> IDensityWithReport(this IMaterialProperties materialProp, double temperature, double relativeHumidity)
         {
             object density = null;
             Output<double, string> result = new Output<double, string>();
 
-            density = Reflection.Compute.RunExtensionMethod(materialProp, "Density", new object[] { temperature, humidity });
+            density = Reflection.Compute.RunExtensionMethod(materialProp, "Density", new object[] { temperature, relativeHumidity });
             if (density != null)
             {
                 return new Output<double, string>()
@@ -120,11 +120,11 @@ namespace BH.Engine.Physical
             //    return new Output<double, string>()
             //    {
             //        Item1 = System.Convert.ToDouble(density),
-            //        Item2 = UnUsedVaribles(materialProp.Name, "humidity")
+            //        Item2 = UnUsedVaribles(materialProp.Name, "relativeHumidity")
             //    };
             //}
 
-            //density = Reflection.Compute.RunExtensionMethod(materialProp, "Density", new object[] { humidity });
+            //density = Reflection.Compute.RunExtensionMethod(materialProp, "Density", new object[] { relativeHumidity });
             //if (density != null)
             //{
             //    return new Output<double, string>()
@@ -140,7 +140,7 @@ namespace BH.Engine.Physical
                 return new Output<double, string>()
                 {
                     Item1 = System.Convert.ToDouble(density),
-                    Item2 = UnUsedVaribles(materialProp.Name, "temperature and humidity")
+                    Item2 = UnUsedVaribles(materialProp.Name, "temperature and relativeHumidity")
                 };
             }
 
