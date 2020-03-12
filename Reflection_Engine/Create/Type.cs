@@ -22,6 +22,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 
 namespace BH.Engine.Reflection
@@ -53,6 +54,38 @@ namespace BH.Engine.Reflection
                 Compute.RecordError(message);
                 return null;
             }  
+        }
+
+        /***************************************************/
+
+        public static Type MethodType(string name)
+        {
+            List<Type> methodTypeList = Query.MethodTypeList();
+
+            List<Type> types = methodTypeList.Where(x => x.AssemblyQualifiedName.StartsWith(name)).ToList();
+
+            if (types.Count == 1)
+                return types[0];
+            else
+            {
+                //Unique method not found in list, check if it can be extracted using the system Type
+                Type type = System.Type.GetType(name);
+                if (type == null)
+                {
+                    if (types.Count == 0)
+                        Compute.RecordError($"A type corresponding to {name} cannot be found.");
+                    else
+                    {
+                        string message = "Ambiguous match: Multiple types correspond the the name provided: \n";
+                        foreach (Type t in types)
+                            message += "- " + t.FullName + "\n";
+
+                        Compute.RecordError(message);
+                    }
+                    return null;
+                }
+                return type;
+            }
         }
 
         /***************************************************/
