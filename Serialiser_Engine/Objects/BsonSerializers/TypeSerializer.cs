@@ -147,6 +147,8 @@ namespace BH.Engine.Serialiser.BsonSerializers
                     return null;
                 if (fullName.StartsWith("BH.oM"))
                     type = Reflection.Create.Type(fullName);
+                else if (fullName.StartsWith("BH.Engine"))
+                    type = Reflection.Create.MethodType(fullName);
                 else
                     type = Type.GetType(fullName);
 
