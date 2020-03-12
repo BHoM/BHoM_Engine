@@ -86,6 +86,20 @@ namespace BH.Engine.Reflection
             return m_AllTypeList;
         }
 
+        /***************************************************/
+
+        public static List<Type> MethodTypeList()
+        {
+            // If the dictionary exists already return it
+            if (m_EngineTypeList != null && m_EngineTypeList.Count > 0)
+                return m_EngineTypeList;
+
+            // Otherwise, create it
+            ExtractAllMethods();
+
+            return m_EngineTypeList;
+        }
+
 
         /***************************************************/
         /**** Private Methods                           ****/
