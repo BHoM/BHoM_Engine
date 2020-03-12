@@ -34,7 +34,7 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates a Offset defining offsets for Bar objects from its end Nodes to be applied in analysis packages.")]
+        [Description("Creates an Offset defining offsets for Bar objects from its end Nodes to be applied in analysis packages.")]
         [Input("startX", "Offset of the StartNode along the local x-axis, i.e. along the tangent.", typeof(Length))]
         [Input("startY", "Offset of the StartNode along the local y-axis, i.e. along the axis perpendicular to the normal and tangent.", typeof(Length))]
         [Input("startZ", "Offset of the StartNode along the local z-axis, i.e. along the normal.", typeof(Length))]
