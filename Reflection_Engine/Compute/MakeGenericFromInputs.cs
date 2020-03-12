@@ -44,8 +44,6 @@ namespace BH.Engine.Reflection
             Type[] genericArguments = method.GetGenericArguments();
             List<Type> paramTypes = method.GetParameters().Select(x => x.ParameterType).ToList();
 
-            Type t = typeof(List<>).MakeGenericType(new Type[] { typeof(List<>) });
-
             // Get where the generic arguments are actually used
             Dictionary<string, List<int>> dic = new Dictionary<string, List<int>>(); 
             for (int i = 0; i < paramTypes.Count; i++)
