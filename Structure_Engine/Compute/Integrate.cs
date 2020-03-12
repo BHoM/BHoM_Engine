@@ -42,7 +42,7 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("This method is largely replaced by the Compute.IntegrateSection() Method. \n" +
-                     "Calculates Section properties for a region on the XY-Plane. \n" +
+                     "Calculates section constants for a region on the XY-Plane. \n" +
                      "The resulting properties are oriented to the XY-Plane.")]
         [Input("curves", "Non-intersecting planar edge curves that make up the section. All curves should be in the global XY-plane. Curves not in this plane will be projected which might give inaccurate results.")]
         [Input("tolerance", "The distance tolerance used in the algorithm.", typeof(Length))]
@@ -105,10 +105,10 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Calculates all non-torsional section constants for a section profile based its edge curves and adjusts the profile curves to make them centred around the origin.")]
+        [Description("Calculates all non-torsional section constants for a section profile based on its edge curves and translates the profile curves to be centred around the origin.")]
         [Input("profile", "The profile to integrate.")]
         [Input("tolerance", "The angleTolerance for dividing the section curves.")]
-        [MultiOutput(0, "profile", "The profile used in the integration, with section curves updated to be centred around the global origin.")]
+        [MultiOutput(0, "profile", "The profile used in the integration. The section curves are translated to be centred around the global origin.")]
         [MultiOutput(1, "constants", "The section constants calculated based on the provided section profile.")]
         public static Output<IProfile, Dictionary<string, double>> Integrate(IProfile profile, double tolerance = Tolerance.Distance)
         {
