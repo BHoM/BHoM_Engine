@@ -88,7 +88,7 @@ namespace BH.Engine.Reflection
 
         /***************************************************/
 
-        public static List<Type> MethodTypeList()
+        public static List<Type> EngineTypeList()
         {
             // If the dictionary exists already return it
             if (m_EngineTypeList != null && m_EngineTypeList.Count > 0)
