@@ -93,6 +93,12 @@ namespace BH.Engine.Reflection
                 bhomObj.CustomData[propName] = value;
                 return true;
             }
+            else if (obj is IDictionary)
+            {
+                IDictionary dic = obj as IDictionary;
+                dic[propName] = value;
+                return true;
+            }
 
             return false;
         }
