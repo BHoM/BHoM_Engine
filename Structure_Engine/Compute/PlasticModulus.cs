@@ -31,7 +31,7 @@ using BH.Engine.Geometry;
 using System.ComponentModel;
 using BH.oM.Reflection.Attributes;
 using BH.oM.Geometry.CoordinateSystem;
-using BH.oM.Reflection;
+using BH.oM.Quantities.Attributes;
 
 namespace BH.Engine.Structure
 {
@@ -41,13 +41,13 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Calculates the PlasticModulus [Wpl] for an enclosed region")]
+        [Description("Calculates the PlasticModulus [Wpl] for an enclosed region.")]
         [Input("pLine", "Polyline, should have the upper side along the x-axis and the rest of the lines should be definable as a function of x apart for vertical segments. \n" +
-                        "The last LineSegment should be the upper one, use WetBlanketInterpretation() to convert a collection of regions to compliant form")]
+                        "The last LineSegment should be the upper one, use WetBlanketInterpretation() to convert a collection of regions to compliant form.")]
         [Input("curves", "The true curves of the section where counter-clockwise curves are positive area and clockwise ones are negative. /n" +
-                         "Should be the curves whose Polyline version was provided for WetBlanketInterpetation()")]
-        [Input("trueArea", "The true area of the region")]
-        [Output("plasticModulus", "The plasticModulus for the region")]
+                         "Should be the curves whose Polyline version was provided for WetBlanketInterpetation().")]
+        [Input("trueArea", "The true area of the region.")]
+        [Output("plasticModulus", "The plasticModulus of the region.", typeof(SectionModulus))]
         public static double PlasticModulus(this Polyline pLine, IEnumerable<ICurve> curves = null, double trueArea = double.NaN)
         {
             double area = BH.Engine.Geometry.Compute.IIntegrateRegion(pLine, 0);   //Should be calculated here for consistency
@@ -102,7 +102,55 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Closes a curve with a line if open")]
+        [Description("This method is largely replaced by the Compute.PlasticModulus() Method accepting a Polyline and closed curves. \n" +
+                     "Calculates the PlasticModulus[Wpl] from a list of IntegrationSlices. \n" +
+                     "To use this method for a closed set of Curves, first call Geometry.Create.IntegrationSlices() to generate the slices.")]
+        [Input("slices", "The list of integration slices used to calculate the plastic modulus. To generate the integration slices from as set of closed curves first call Geometry.Create.IntegrationSlices().")]
+        [Input("area", "The area of the curves used to generate the slices.", typeof(Area))]
+        [Input("max", "The upper limit coordinate value along the axis used to generate the slices.", typeof(Length))]
+        [Input("min", "The lower limit coordinate value along the axis used to generate the slices.", typeof(Length))]
+        [Output("wpl", "The plastic modulus calculated based on the slices.", typeof(SectionModulus))]
+        public static double PlasticModulus(List<IntegrationSlice> slices, double area, double max, double min)
+        {
+            double result = 0;
+            slices = slices.OrderBy(x => x.Centre).ToList();
+
+            double plasticNeutralAxis = 0;
+            for (int i = 0; i < slices.Count; i++)
+            {
+                IntegrationSlice slice = slices[i];
+                double sliceArea = slice.Length * slice.Width;
+                if (result + sliceArea < area / 2)
+                {
+                    result += sliceArea;
+                }
+                else
+                {
+                    plasticNeutralAxis = slices[i - 1].Centre + slices[i - 1].Width / 2;
+                    double diff = area / 2 - result;
+                    double ratio = diff / sliceArea;
+                    plasticNeutralAxis += ratio * slice.Width;
+
+
+                    break;
+                }
+            }
+
+            double centreTop = 0;
+            double centreBot = 0;
+
+            double areaTop = Geometry.Query.AreaIntegration(slices, 1, max, plasticNeutralAxis, ref centreTop);
+            double areaBot = Geometry.Query.AreaIntegration(slices, 1, min, plasticNeutralAxis, ref centreBot);
+
+            return areaTop * Math.Abs(centreTop - plasticNeutralAxis) + areaBot * Math.Abs(centreBot - plasticNeutralAxis);
+
+        }
+
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+        [Description("Closes a curve with a line if open.")]
         private static ICurve Close(this ICurve curve, out double d, double tol = Tolerance.Distance)
         {
             Point start = curve.IStartPoint();

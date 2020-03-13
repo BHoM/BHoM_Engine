@@ -58,34 +58,6 @@ namespace BH.Engine.Library
         {
             return Library(libraryName).StringMatch(propertyName, value);
         }
-
-        /***************************************************/
-
-        public static List<IBHoMObject> PartialMatch(string libraryName, string objectName, bool removeWhiteSpace = true, bool ignoreCase = true)
-        {
-                objectName = removeWhiteSpace ? objectName.Replace(" ", "") : objectName;
-                objectName = ignoreCase ? objectName.ToLower() : objectName;
-
-                Func<IBHoMObject, bool> conditionalMatch = delegate (IBHoMObject x)
-                {
-                    string name = x.Name;
-                    name = removeWhiteSpace ? name.Replace(" ", "") : name;
-                    name = ignoreCase ? name.ToLower() : name;
-                    return name.Contains(objectName);
-                };
-
-                return Library(libraryName).Where(conditionalMatch).ToList();
-        }
-
-        /***************************************************/
-
-        //TODO: Move this extension method to somewhere else. Reflection_Engine/BHoM_Engine
-        public static List<IBHoMObject> StringMatch(this List<IBHoMObject> objects, string propertyName, string value)
-        {
-            return objects.Where(x => x.PropertyValue(propertyName).ToString() == value).ToList();
-        }
-
-        /***************************************************/
     }
 }
 

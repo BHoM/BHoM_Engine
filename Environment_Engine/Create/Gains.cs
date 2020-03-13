@@ -83,7 +83,7 @@ namespace BH.Engine.Environment
         [Input("profile", "The profile for this gain being active, default null")]
         [Input("radiantFraction", "The fraction of radiance from this lighting gain, default 0.0")]
         [Input("viewCoefficient", "The view coefficient of this lighting gain, default 0.0")]
-        [Input("luminousEfficacy", "The luminous efficacy of this lighting gain, default 0.0")]
+        [Input("luminousEfficiacy", "The luminous efficacy of this lighting gain, default 0.0")]
         [Input("name", "The name of this lighting gain, default empty string")]
         [Output("lightingGain", "The lighting gain object to associate to a space")]
         [Deprecated("3.0", "Deprecated in favour of default create components produced by BHoM")]

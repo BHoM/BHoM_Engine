@@ -68,11 +68,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Create\Theatron\CircularStadiaPlan.cs" />
-    <Compile Include="Create\Theatron\EightArcStadiaPlan.cs" />
-    <Compile Include="Create\Theatron\FourArcStadiaPlan.cs" />
-    <Compile Include="Create\Theatron\NoCornersStadiaPlan.cs" />
-    <Compile Include="Create\Theatron\OrthogonalStadiaPlan.cs" />
+    <Compile Include="Create\Theatron\TheatronPlan\CircularPlan.cs" />
+    <Compile Include="Create\Theatron\TheatronPlan\EightArcPlan.cs" />
+    <Compile Include="Create\Theatron\TheatronPlan\FourArcPlan.cs" />
+    <Compile Include="Create\Theatron\TheatronPlan\NoCornersPlan.cs" />
+    <Compile Include="Create\Theatron\TheatronPlan\OrthogonalPlan.cs" />
     <Compile Include="Create\Grid.cs" />
     <Compile Include="Create\Level.cs" />
     <Compile Include="Create\Theatron\ActivityArea.cs" />
@@ -89,8 +89,13 @@
     <Compile Include="Create\Theatron\TierProfile.cs" />
     <Compile Include="Create\Theatron\VomitoryParameters.cs" />
     <Compile Include="Modify\SetGeometry.cs" />
+    <Compile Include="Modify\SetInternalElements2D.cs" />
+    <Compile Include="Modify\SetOutlineElements1D.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Query\Geometry.cs" />
+    <Compile Include="Query\InternalElements2D.cs" />
+    <Compile Include="Query\NewElement1D.cs" />
+    <Compile Include="Query\OutlineElements1D.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BHoM_Engine\BHoM_Engine.csproj">
@@ -107,6 +112,10 @@
       <Project>{f17df4d6-d155-4ffa-9917-ef1487faa978}</Project>
       <Name>Humans_Engine</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Reflection_Engine\Reflection_Engine.csproj">
+      <Project>{b0154405-9390-472d-9b5c-a2280823b18d}</Project>
+      <Name>Reflection_Engine</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

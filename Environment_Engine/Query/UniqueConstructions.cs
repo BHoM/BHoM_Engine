@@ -39,20 +39,6 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns a unique name for a given IConstruction object based on the material names, and the construction name if the flag is set")]
-        [Input("construction", "A physical construction object")]
-        [Input("includeConstructionName", "Flag to determine whether or not the construction name itself should be included in the unique name. Default false")]
-        [Output("constructionName", "A unique name for the construction")]
-        public static string UniqueConstructionName(this IConstruction construction, bool includeConstructionName = false)
-        {
-            string name = includeConstructionName ? construction.Name : "construction-";
-            Construction c = construction as Construction;
-            foreach (Layer l in c.Layers)
-                name += l.Material.Name + "-";
-
-            return name;
-        }
-
         [Description("Returns a collection of unique constructions from a collection of Environment Panels")]
         [Input("panels", "A collection of Environment Panels")]
         [Input("includeConstructionName", "Flag to determine whether or not to use the construction name as a parameter of uniqueness. Default false")]
@@ -120,15 +106,6 @@ namespace BH.Engine.Environment
         public static List<Construction> UniqueConstructions(this List<List<Panel>> panelsAsSpaces)
         {
             return panelsAsSpaces.UniqueConstructions(false);
-        }
-
-        [Description("Returns a unique name for a given IConstruction object based on the layer and material names")]
-        [Input("construction", "A physical construction object")]
-        [Output("constructionName", "A unique name for the construction")]
-        [Deprecated("3.1", "Deprecated to allow to include option for including the construction name in its unique name")]
-        public static string UniqueConstructionName(this IConstruction construction)
-        {
-            return construction.UniqueConstructionName(false);
         }
     }
 }

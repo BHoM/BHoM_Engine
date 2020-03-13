@@ -49,7 +49,7 @@ namespace BH.Engine.Environment
         }
 
         [Description("BH.Engine.Environment.Modify.SetOutlineElements1D => Assign a new collection of external 1D boundaries to an Environment Opening")]
-        [Input("opening", "An Environment Opening to update")]
+        [Input("panel", "An Environment Panel to update")]
         [Input("outlineElements1D", "A collection of outline 1D elements to assign to the opening")]
         [Output("panel", "The updated Environment Opening")]
         public static Panel SetOutlineElements1D(this Panel panel, List<IElement1D> outlineElements1D)

@@ -50,55 +50,6 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
-
-
-        [Description("Extracts the edge curves from all of the Openings of a Panel.")]
-        [Input("panel", "The Panel to extract opening edges from.")]
-        [Output("edges", "The list of curves representing the edges of the openings of the panel.")]
-        public static List<ICurve> InternalEdgeCurves(this Panel panel)
-        {
-            List<ICurve> edges = new List<ICurve>();
-            foreach (Opening o in panel.Openings)
-            {
-                edges.AddRange(o.Edges.Select(e => e.Curve).ToList());
-            }
-            return edges;
-        }
-
-        /***************************************************/
-
-        [Description("Extracts the edge curves from the external edges of a Panel.")]
-        [Input("panel", "The Panel to extract external edges from.")]
-        [Output("edges", "The list of curves representing the external edges of the panel.")]
-        public static List<ICurve> ExternalEdgeCurves(this Panel panel)
-        {
-            return panel.ExternalEdges.Select(x => x.Curve).ToList();
-        }
-
-        /***************************************************/
-
-        [Description("Extracts the edge curves from the external edges as well as all the Openings of a Panel.")]
-        [Input("panel", "The Panel to extract all edges from.")]
-        [Output("edges", "The list of curves representing the external edges and the edges of the openings of the panel.")]
-        public static List<ICurve> AllEdgeCurves(this Panel panel)
-        {
-            List<ICurve> result = panel.ExternalEdgeCurves();
-            result.AddRange(panel.InternalEdgeCurves());
-            return result;
-        }
-
-        /***************************************************/
-
-        [Description("Extracts the edge curves from all of an Openings.")]
-        [Input("opening", "The Opening to extract opening edges from.")]
-        [Output("edges", "The list of curves representing the edges of the Opening.")]
-        public static List<ICurve> EdgeCurves(this Opening opening)
-        {
-            return opening.Edges.Select(e => e.Curve).ToList();
-        }
-
-
-        /***************************************************/
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 

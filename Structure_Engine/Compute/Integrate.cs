@@ -28,6 +28,10 @@ using BH.Engine.Geometry;
 using BH.oM.Geometry.ShapeProfiles;
 using BH.oM.Reflection;
 using BH.Engine.Base;
+using BH.oM.Reflection.Attributes;
+using BH.oM.Quantities.Attributes;
+using System.ComponentModel;
+
 
 namespace BH.Engine.Structure
 {
@@ -37,6 +41,12 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("This method is largely replaced by the Compute.IntegrateSection() Method. \n" +
+                     "Calculates section constants for a region on the XY-Plane. \n" +
+                     "The resulting properties are oriented to the XY-Plane.")]
+        [Input("curves", "Non-intersecting planar edge curves that make up the section. All curves should be in the global XY-plane. Curves not in this plane will be projected which might give inaccurate results.")]
+        [Input("tolerance", "The distance tolerance used in the algorithm.", typeof(Length))]
+        [Output("V", "Dictionary containing the section properties for the X and Y axis as well as integration slices created and used in the algorithm.")]
         public static Dictionary<string, object> Integrate(List<ICurve> curves, double tolerance = Tolerance.Distance)
         {
             Dictionary<string, object> results = new Dictionary<string, object>();
@@ -95,6 +105,11 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Description("Calculates all non-torsional section constants for a section profile based on its edge curves and translates the profile curves to be centred around the origin.")]
+        [Input("profile", "The profile to integrate.")]
+        [Input("tolerance", "The angleTolerance for dividing the section curves.")]
+        [MultiOutput(0, "profile", "The profile used in the integration. The section curves are translated to be centred around the global origin.")]
+        [MultiOutput(1, "constants", "The section constants calculated based on the provided section profile.")]
         public static Output<IProfile, Dictionary<string, double>> Integrate(IProfile profile, double tolerance = Tolerance.Distance)
         {
             Dictionary<string, double> results = IntegrateSection(profile.Edges.ToList(), tolerance);
@@ -169,43 +184,6 @@ namespace BH.Engine.Structure
             }
         }
 
-        /***************************************************/
-
-        public static double PlasticModulus(List<IntegrationSlice> slices, double area, double max, double min)
-        {
-            double result = 0;
-            slices = slices.OrderBy(x => x.Centre).ToList();
-
-            double plasticNeutralAxis = 0;
-            for (int i = 0; i < slices.Count; i++)
-            {
-                IntegrationSlice slice = slices[i];
-                double sliceArea = slice.Length * slice.Width;
-                if (result + sliceArea < area / 2)
-                {
-                    result += sliceArea;
-                }
-                else
-                {
-                    plasticNeutralAxis = slices[i - 1].Centre + slices[i - 1].Width / 2;
-                    double diff = area / 2 - result;
-                    double ratio = diff / sliceArea;
-                    plasticNeutralAxis += ratio * slice.Width;
-
-
-                    break;
-                }
-            }
-
-            double centreTop = 0;
-            double centreBot = 0;
-
-            double areaTop = Geometry.Query.AreaIntegration(slices, 1, max, plasticNeutralAxis, ref centreTop);
-            double areaBot = Geometry.Query.AreaIntegration(slices, 1, min, plasticNeutralAxis, ref centreBot);
-
-            return areaTop * Math.Abs(centreTop - plasticNeutralAxis) + areaBot * Math.Abs(centreBot - plasticNeutralAxis);
-
-        }
 
         /***************************************************/
     }

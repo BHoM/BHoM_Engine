@@ -41,7 +41,7 @@ namespace BH.Engine.Structure
 
         [Description("Gets the geometry of a Node as a Point. Method required for automatic display in UI packages.")]
         [Input("node", "Node to get the Point from.")]
-        [Output("point", "The geometry of the Node")]
+        [Output("point", "The geometry of the Node.")]
         public static Point Geometry(this Node node)
         {
             return node.Position;
