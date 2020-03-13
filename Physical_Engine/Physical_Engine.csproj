@@ -87,6 +87,9 @@
     <Compile Include="Modify\SetGeometry.cs" />
     <Compile Include="Modify\AddMaterialProperties.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Query\MaterialComposition.cs" />
+    <Compile Include="Query\AverageProfileArea.cs" />
+    <Compile Include="Query\SolidVolume.cs" />
     <Compile Include="Query\ConstructionByName.cs" />
     <Compile Include="Query\ExternalPolyline.cs" />
     <Compile Include="Query\InternalElements2D.cs" />
