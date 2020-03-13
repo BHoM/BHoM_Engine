@@ -41,8 +41,8 @@ namespace BH.Engine.Structure
 
         [Description("Generates a aluminium section based on a Profile and a material. \n This is the main create method for aluminium sections, responsible for calculating section constants etc. and is being called from all other create methods for aluminium sections.")]
         [Input("profile", "The section profile the aluminium section. All section constants are derived based on the dimensions of this.")]
-        [Input("material", "aluminium material to be used on the section.")]
-        [Input("name", "Name of the aluminium section. If null or empty the name of the profile will be used.")]
+        [Input("material", "aluminium material to be applied to the section.")]
+        [Input("name", "Name of the aluminium section. If null or empty the name of the profile will be used. This is required for most structural packages to create the section.")]
         [Output("section", "The created aluminium section.")]
         public static AluminiumSection AluminiumSectionFromProfile(IProfile profile, Aluminium material = null, string name = "")
         {

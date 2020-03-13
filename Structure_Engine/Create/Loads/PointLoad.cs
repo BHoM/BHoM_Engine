@@ -38,6 +38,14 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Creates a point load to be applied to Nodes.")]
+        [InputFromProperty("loadcase")]
+        [InputFromProperty("group", "Objects")]
+        [InputFromProperty("force")]
+        [InputFromProperty("moment")]
+        [InputFromProperty("axis")]
+        [Input("name", "The name of the created load.")]
+        [Output("ptLoad", "The created PointLoad.")]
         public static PointLoad PointLoad(Loadcase loadcase, BHoMGroup<Node> group, Vector force = null, Vector moment = null, LoadAxis axis = LoadAxis.Global, string name = "")
         {
             if (force == null && moment == null)
@@ -57,6 +65,14 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Description("Creates a point load to be applied to Nodes.")]
+        [InputFromProperty("loadcase")]
+        [Input("objects", "The collection of Nodes the load should be applied to.")]
+        [InputFromProperty("force")]
+        [InputFromProperty("moment")]
+        [InputFromProperty("axis")]
+        [Input("name", "The name of the created load.")]
+        [Output("ptLoad", "The created PointLoad.")]
         public static PointLoad PointLoad(Loadcase loadcase, IEnumerable<Node> objects, Vector force = null, Vector moment = null, LoadAxis axis = LoadAxis.Global, string name = "")
         {
             return PointLoad(loadcase, new BHoMGroup<Node>() { Elements = objects.ToList() }, force, moment, axis, name);

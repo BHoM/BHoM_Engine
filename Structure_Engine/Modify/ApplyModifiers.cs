@@ -27,6 +27,10 @@ using System.Text;
 using System.Threading.Tasks;
 using BH.oM.Structure.SurfaceProperties;
 using BH.oM.Structure.SectionProperties;
+using BH.oM.Reflection.Attributes;
+using BH.oM.Quantities.Attributes;
+using System.ComponentModel;
+
 
 namespace BH.Engine.Structure
 {
@@ -36,7 +40,20 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static ISurfaceProperty ApplyModifiers(this ISurfaceProperty prop, double f11 =1, double f12=1, double f22=1, double m11=1, double m12=1, double m22=1, double v13=1, double v23=1, double mass=1, double weight=1)
+        [Description("Sets modifiers to the SurfaceProperty. The modifiers are used to scale one or more of the property constants for analysis. Constants are multiplied with the modifiers, hence a modifier value of 1 means no change.")]
+        [Input("prop", "The SurfaceProperty to apply modifiers to.")]
+        [Input("f11", "Modifier of the axial stiffness along the local x-axis.", typeof(Ratio))]
+        [Input("f12", "Modifier of the the in-plane shear.", typeof(Ratio))]
+        [Input("f22", "Modifier of the axial stiffness along the local y-axis.", typeof(Ratio))]
+        [Input("m11", "Modifier of the bending stiffness about the local x-axis.", typeof(Ratio))]
+        [Input("m12", "Modifier of the in-plane twist stiffness.", typeof(Ratio))]
+        [Input("m22", "Modifier of the bending stiffness about the local y-axis.", typeof(Ratio))]
+        [Input("v13", "Modifier of the out of plane shear stiffness along the local x-axis.", typeof(Ratio))]
+        [Input("v23", "Modifier of the out of plane shear stiffness along the local y-axis.", typeof(Ratio))]
+        [Input("mass", "Modifier of the mass.", typeof(Ratio))]
+        [Input("weight", "Modifier of the weight.", typeof(Ratio))]
+        [Output("prop", "SurfaceProperty with applied modifiers.")]
+        public static ISurfaceProperty ApplyModifiers(this ISurfaceProperty prop, double f11 = 1, double f12 = 1, double f22 = 1, double m11 = 1, double m12 = 1, double m22 = 1, double v13 = 1, double v23 = 1, double mass = 1, double weight = 1)
         {
             ISurfaceProperty clone = prop.GetShallowClone() as ISurfaceProperty;
 
@@ -49,6 +66,15 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Description("Sets modifiers to the SectionProperty. The modifiers are used to scale one or more of the property constants for analysis. Constants are multiplied with the modifiers, hence a modifier value of 1 means no change.")]
+        [Input("prop", "The SectionProperty to apply modifiers to.")]
+        [Input("area", "Modifier of the area.", typeof(Ratio))]
+        [Input("iy", "Modifier of the second moment about the local y-axis (generally major axis).", typeof(Ratio))]
+        [Input("iz", "Modifier of the second moment about the local z-axis (generally minor axis).", typeof(Ratio))]
+        [Input("j", "Modifier of the torsional constant.", typeof(Ratio))]
+        [Input("asy", "Modifier of the shear area along the local y-axis (generally minor axis).", typeof(Ratio))]
+        [Input("asz", "Modifier of the shear area along the local z-axis (generally major axis).", typeof(Ratio))]
+        [Output("prop", "SectionProperty with applied modifiers.")]
         public static ISectionProperty ApplyModifiers(this ISectionProperty prop, double area = 1, double iy = 1, double iz = 1, double j = 1, double asy = 1, double asz = 1)
         {
             ISectionProperty clone = prop.GetShallowClone() as ISectionProperty;

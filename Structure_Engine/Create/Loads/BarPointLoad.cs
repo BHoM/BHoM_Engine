@@ -38,10 +38,19 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Creates a point load to be applied to Bar elements.")]
+        [InputFromProperty("loadcase")]
+        [InputFromProperty("group", "Objects")]
+        [InputFromProperty("distFromA")]
+        [InputFromProperty("force")]
+        [InputFromProperty("moment")]
+        [InputFromProperty("axis")]
+        [Input("name", "The name of the created load.")]
+        [Output("barPtLoad", "The created BarPointLoad.")]
         public static BarPointLoad BarPointLoad(Loadcase loadcase, BHoMGroup<Bar> group, double distFromA, Vector force = null, Vector moment = null, LoadAxis axis = LoadAxis.Global, string name = "")
         {
             if (force == null && moment == null)
-                throw new ArgumentException("Bar point load requires either the force or the moment vector to be defined");
+                throw new ArgumentException("Bar point load requires either the force and/or the moment vector to be defined");
 
             return new BarPointLoad
             {
@@ -57,6 +66,15 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Description("Creates a point load to be applied to Bar elements.")]
+        [InputFromProperty("loadcase")]
+        [Input("objects", "The collection of Bars the load should be applied to.")]
+        [InputFromProperty("distFromA")]
+        [InputFromProperty("force")]
+        [InputFromProperty("moment")]
+        [InputFromProperty("axis")]
+        [Input("name", "The name of the created load.")]
+        [Output("barPtLoad", "The created BarPointLoad.")]
         public static BarPointLoad BarPointLoad(Loadcase loadcase, double distFromA, IEnumerable<Bar> objects, Vector force = null, Vector moment = null, LoadAxis axis = LoadAxis.Global, string name = "")
         {
             return BarPointLoad(loadcase, new BHoMGroup<Bar>() { Elements = objects.ToList() }, distFromA, force, moment, axis, name);

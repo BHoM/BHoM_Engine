@@ -35,7 +35,7 @@ namespace BH.Engine.Results
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static List<BarForce> MaxForces(IEnumerable<BarForce> forces)
+        public static List<BarForce> MaxForces(this IEnumerable<BarForce> forces)
         {
 
             List<BarForce> maxForces = new List<BarForce>();
@@ -51,14 +51,14 @@ namespace BH.Engine.Results
 
         /***************************************************/
 
-        public static List<BarForce> MaxEnvelopeByCase(IEnumerable<BarForce> forces)
+        public static List<BarForce> MaxEnvelopeByCase(this IEnumerable<BarForce> forces)
         {
             return forces.GroupByCase().Select(x => x.MaxEnvelope(false, true)).ToList();
         }
 
         /***************************************************/
 
-        public static List<BarForce> MaxEnvelopeByObject(IEnumerable<BarForce> forces)
+        public static List<BarForce> MaxEnvelopeByObject(this IEnumerable<BarForce> forces)
         {
             return forces.GroupByObjectId().Select(x => x.MaxEnvelope(true, false)).ToList();
         }

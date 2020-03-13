@@ -37,7 +37,16 @@ namespace BH.Engine.Structure
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-       
+
+
+        [Description("Creates an uniform temprature load to be applied to Bars.")]
+        [InputFromProperty("loadcase")]
+        [InputFromProperty("temperatureChange")]
+        [Input("objects", "The collection of Bars the load should be applied to.")]
+        [InputFromProperty("axis")]
+        [InputFromProperty("projected")]
+        [Input("name", "The name of the created load.")]
+        [Output("barTempLoad", "The created BarTemperatureLoad.")]
         public static BarTemperatureLoad BarTemperatureLoad(Loadcase loadcase, double temperatureChange, IEnumerable<Bar> objects, LoadAxis axis = LoadAxis.Global, bool projected = false, string name = "")
         {
             return new BarTemperatureLoad

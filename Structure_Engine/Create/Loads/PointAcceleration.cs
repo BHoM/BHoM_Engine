@@ -38,6 +38,14 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Creates a point acceleration to be applied to Nodes.")]
+        [InputFromProperty("loadcase")]
+        [InputFromProperty("group", "Objects")]
+        [InputFromProperty("translationAcc", "TranslationalAcceleration")]
+        [InputFromProperty("rotationAcc", "RotationalAcceleration")]
+        [InputFromProperty("axis")]
+        [Input("name", "The name of the created load.")]
+        [Output("ptAcc", "The created PointAcceleration.")]
         public static PointAcceleration PointAcceleration(Loadcase loadcase, BHoMGroup<Node> group, Vector translationAcc = null, Vector rotationAcc = null, LoadAxis axis = LoadAxis.Global, string name = "")
         {
             if (translationAcc == null && rotationAcc == null)
@@ -56,6 +64,14 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Description("Creates a point acceleration to be applied to Nodes.")]
+        [InputFromProperty("loadcase")]
+        [Input("objects", "The collection of Nodes the load should be applied to.")]
+        [InputFromProperty("translationAcc", "TranslationalAcceleration")]
+        [InputFromProperty("rotationAcc", "RotationalAcceleration")]
+        [InputFromProperty("axis")]
+        [Input("name", "The name of the created load.")]
+        [Output("ptAcc", "The created PointAcceleration.")]
         public static PointAcceleration PointAcceleration(Loadcase loadcase, IEnumerable<Node> objects, Vector translationAcc = null, Vector rotationAcc = null, LoadAxis axis = LoadAxis.Global, string name = "")
         {
             return PointAcceleration(loadcase, new BHoMGroup<Node>() { Elements = objects.ToList() }, translationAcc, rotationAcc, axis, name);

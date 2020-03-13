@@ -38,6 +38,14 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Creates an uniformly distributed load to be applied to area elements such as Panels and FEMeshes.")]
+        [InputFromProperty("loadcase")]
+        [InputFromProperty("pressure")]
+        [Input("objects", "The collection of elements the load should be applied to.")]
+        [InputFromProperty("axis")]
+        [InputFromProperty("projected")]
+        [Input("name", "The name of the created load.")]
+        [Output("areaUDL", "The created AreaUniformlyDistributedLoad.")]
         public static AreaUniformlyDistributedLoad AreaUniformlyDistributedLoad(Loadcase loadcase, Vector pressure, IEnumerable<IAreaElement> objects, LoadAxis axis = LoadAxis.Global, bool projected = false, string name = "")
         {
             return new AreaUniformlyDistributedLoad

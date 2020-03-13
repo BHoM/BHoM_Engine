@@ -23,6 +23,10 @@
 using BH.oM.Structure.Elements;
 using BH.oM.Geometry;
 using BH.Engine.Geometry;
+using BH.oM.Reflection.Attributes;
+using BH.oM.Quantities.Attributes;
+using System.ComponentModel;
+
 
 namespace BH.Engine.Structure
 {
@@ -32,6 +36,9 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Flips the StartNode and EndNode of the Bar, i.e. the StartNode is set to the EndNode and vice versa. No modification is being made to releases, orientation angle, offsets etc.")]
+        [Input("bar", "The Bar to flip.")]
+        [Output("bar", "The Bar with flipped end Nodes.")]
         public static Bar Flip(this Bar bar)
         {
             Bar flipped = bar.GetShallowClone() as Bar;
@@ -45,6 +52,9 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Description("Flips the location curve of the Edge, i.e. the start becomes the end and vice versa.")]
+        [Input("edge", "The Edge to flip.")]
+        [Output("edge", "The Edge with a flipped location curve.")]
         public static Edge Flip(this Edge edge)
         {
             Edge flipped = edge.GetShallowClone() as Edge;

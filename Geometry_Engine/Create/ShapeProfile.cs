@@ -41,7 +41,7 @@ namespace BH.Engine.Geometry
 
         public static ISectionProfile ISectionProfile(double height, double width, double webthickness, double flangeThickness, double rootRadius, double toeRadius)
         {
-            if (height < flangeThickness * 2 + rootRadius * 2)
+            if (height < flangeThickness * 2 + rootRadius * 2 || height <= flangeThickness * 2)
             {
                 InvalidRatioError("height","flangeThickness and rootRadius");
                 return null;
@@ -73,13 +73,13 @@ namespace BH.Engine.Geometry
 
         public static BoxProfile BoxProfile(double height, double width, double thickness, double outerRadius, double innerRadius)
         {
-            if (thickness > height / 2)
+            if (thickness >= height / 2)
             {
                 InvalidRatioError("thickness", "height");
                 return null;
             }
 
-            if (thickness > width / 2)
+            if (thickness >= width / 2)
             {
                 InvalidRatioError("thickness", "width");
                 return null;
@@ -173,7 +173,7 @@ namespace BH.Engine.Geometry
 
         public static ChannelProfile ChannelProfile(double height, double width, double webthickness, double flangeThickness, double rootRadius, double toeRadius, bool mirrorAboutLocalZ = false)
         {
-            if (height < flangeThickness * 2 + rootRadius * 2)
+            if (height < flangeThickness * 2 + rootRadius * 2 || height <= flangeThickness * 2)
             {
                 InvalidRatioError("height", "flangeThickness and rootRadius");
                 return null;
@@ -222,13 +222,13 @@ namespace BH.Engine.Geometry
 
         public static FabricatedBoxProfile FabricatedBoxProfile(double height, double width, double webThickness, double topFlangeThickness, double botFlangeThickness, double weldSize)
         {
-            if (height <= topFlangeThickness + botFlangeThickness + 2 * Math.Sqrt(2) * weldSize)
+            if (height < topFlangeThickness + botFlangeThickness + 2 * Math.Sqrt(2) * weldSize || height <= topFlangeThickness + botFlangeThickness)
             {
                 InvalidRatioError("height", "topFlangeThickness, botFlangeThickness and weldSize");
                 return null;
             }
 
-            if (width <= webThickness * 2 + 2 * Math.Sqrt(2) * weldSize)
+            if (width < webThickness * 2 + 2 * Math.Sqrt(2) * weldSize || width <= webThickness * 2)
             {
                 InvalidRatioError("width", "webThickness and weldSize");
                 return null;
@@ -274,7 +274,7 @@ namespace BH.Engine.Geometry
 
         public static KiteProfile KiteProfile(double width1, double angle1, double thickness)
         {
-            if ((width1*Math.Sin(angle1/2)/Math.Sqrt(2)) /(Math.Sin(Math.PI*0.75- (angle1/2)))<thickness)
+            if ((width1 * Math.Sin(angle1 / 2) / Math.Sqrt(2)) / (Math.Sin(Math.PI * 0.75 - (angle1 / 2))) <= thickness)
             {
                 InvalidRatioError("thickness", "width and angle1");
                 return null;
@@ -294,19 +294,19 @@ namespace BH.Engine.Geometry
 
         public static FabricatedISectionProfile FabricatedISectionProfile(double height, double topFlangeWidth, double botFlangeWidth, double webThickness, double topFlangeThickness, double botFlangeThickness, double weldSize)
         {
-            if (height <= topFlangeThickness + botFlangeThickness + 2 * Math.Sqrt(2) * weldSize)
+            if (height < topFlangeThickness + botFlangeThickness + 2 * Math.Sqrt(2) * weldSize || height <= topFlangeThickness + botFlangeThickness)
             {
                 InvalidRatioError("height","topFlangeThickness, botFlangeThickness and weldSize");
                 return null;
             }
 
-            if (botFlangeWidth <= webThickness + 2 * Math.Sqrt(2) * weldSize)
+            if (botFlangeWidth < webThickness + 2 * Math.Sqrt(2) * weldSize)
             {
                 InvalidRatioError("botFlangeWidth", "webThickness and weldSize");
                 return null;
             }
 
-            if (topFlangeWidth <= webThickness + 2 * Math.Sqrt(2) * weldSize)
+            if (topFlangeWidth < webThickness + 2 * Math.Sqrt(2) * weldSize)
             {
                 InvalidRatioError("topFlangeWidth", "webThickness and weldSize");
                 return null;
@@ -345,7 +345,7 @@ namespace BH.Engine.Geometry
                 return null;
             }
 
-            if (height <= 0 || width <= 0 || cornerRadius< 0)
+            if (height <= 0 || width <= 0 || cornerRadius < 0)
             {
                 Engine.Reflection.Compute.RecordError("Input length less or equal to 0");
                 return null;
@@ -376,7 +376,7 @@ namespace BH.Engine.Geometry
                 return null;
             }
 
-            if (height <= 0 || width <= 0 || webthickness<= 0 || flangeThickness <= 0 || rootRadius < 0 || toeRadius < 0)
+            if (height <= 0 || width <= 0 || webthickness <= 0 || flangeThickness <= 0 || rootRadius < 0 || toeRadius < 0)
             {
                 Engine.Reflection.Compute.RecordError("Input length less or equal to 0");
                 return null;
@@ -394,13 +394,13 @@ namespace BH.Engine.Geometry
 
         public static GeneralisedTSectionProfile GeneralisedTSectionProfile(double height, double webThickness, double leftOutstandWidth, double leftOutstandThickness, double rightOutstandWidth, double rightOutstandThickness, bool mirrorAboutLocalY = false)
         {
-            if (height <= leftOutstandThickness)
+            if (height < leftOutstandThickness)
             {
                 InvalidRatioError("height", "leftOutstandThickness");
                 return null;
             }
 
-            if (height <= rightOutstandThickness)
+            if (height < rightOutstandThickness)
             {
                 InvalidRatioError("height", "rightOutstandThickness");
                 return null;
@@ -436,13 +436,13 @@ namespace BH.Engine.Geometry
 
         public static TubeProfile TubeProfile(double diameter, double thickness)
         {
-            if (thickness >= diameter/2)
+            if (thickness >= diameter / 2)
             {
                 InvalidRatioError("diameter", "thickness");
                 return null;
             }
 
-            if (diameter<=0 || thickness<=0)
+            if (diameter <= 0 || thickness <= 0)
             {
                 Engine.Reflection.Compute.RecordError("Input length less or equal to 0");
                 return null;

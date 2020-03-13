@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -20,14 +20,15 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BH.oM.Structure.Results;
+using BH.oM.Architecture.Elements;
+using BH.oM.Dimensional;
+using BH.oM.Geometry;
+using BH.Engine.Geometry;
 
-namespace BH.Engine.Results
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
+
+namespace BH.Engine.Architecture
 {
     public static partial class Query
     {
@@ -35,23 +36,13 @@ namespace BH.Engine.Results
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static double FTotal(this GlobalReactions reaction)
+        [Description("Returns an instance of an IElement1D from the given object")]
+        [Input("room", "An Architecture Room object")]
+        [Input("curve", "The curve to clone")]
+        [Output("element", "A 1D element object")]
+        public static IElement1D NewElement1D(this Room room, ICurve curve)
         {
-            return Math.Sqrt(reaction.FX * reaction.FX + reaction.FY * reaction.FY + reaction.FZ * reaction.FZ);
-        }
-
-        /***************************************************/
-
-        public static double MTotal(this GlobalReactions reaction)
-        {
-            return Math.Sqrt(reaction.MX * reaction.MX + reaction.MY * reaction.MY + reaction.MZ * reaction.MZ);
-        }
-
-        /***************************************************/
-
-        public static double TotalDisplacement(NodeDisplacement disp)
-        {
-            return Math.Sqrt(disp.UX * disp.UX + disp.UY * disp.UY + disp.UZ * disp.UZ);
+            return curve.IClone();
         }
 
         /***************************************************/

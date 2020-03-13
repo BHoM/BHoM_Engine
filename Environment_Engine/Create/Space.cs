@@ -59,7 +59,6 @@ namespace BH.Engine.Environment
             {
                 Name = name,
                 Zones = zones,
-                Gains = gains,
                 Type = type,
                 Location = location,
             };

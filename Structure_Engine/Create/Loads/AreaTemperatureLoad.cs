@@ -38,12 +38,20 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static AreaTemperatureLoad AreaTemperatureLoad(Loadcase loadcase, double t, IEnumerable<IAreaElement> objects, LoadAxis axis = LoadAxis.Global, bool projected = false, string name = "")
+        [Description("Creates an uniform temperature load to be applied to area elements such as Panels and FEMeshes.")]
+        [InputFromProperty("loadcase")]
+        [InputFromProperty("temperatureChange")]
+        [Input("objects", "The collection of elements the load should be applied to.")]
+        [InputFromProperty("axis")]
+        [InputFromProperty("projected")]
+        [Input("name", "The name of the created load.")]
+        [Output("areaTempLoad", "The created AreaTempratureLoad.")]
+        public static AreaTemperatureLoad AreaTemperatureLoad(Loadcase loadcase, double temperatureChange, IEnumerable<IAreaElement> objects, LoadAxis axis = LoadAxis.Global, bool projected = false, string name = "")
         {
             return new AreaTemperatureLoad
             {
                 Loadcase = loadcase,
-                TemperatureChange = t,
+                TemperatureChange = temperatureChange,
                 Objects = new BHoMGroup<IAreaElement>() { Elements = objects.ToList() },
                 Axis = axis,
                 Projected = projected,

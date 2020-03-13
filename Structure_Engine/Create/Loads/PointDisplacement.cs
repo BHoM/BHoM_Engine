@@ -38,6 +38,14 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Creates a point displacement to be applied to Nodes.")]
+        [InputFromProperty("loadcase")]
+        [InputFromProperty("group", "Objects")]
+        [InputFromProperty("translation")]
+        [InputFromProperty("rotation")]
+        [InputFromProperty("axis")]
+        [Input("name", "The name of the created load.")]
+        [Output("ptDisp", "The created PointDisplacement.")]
         public static PointDisplacement PointDisplacement(Loadcase loadcase, BHoMGroup<Node> group, Vector translation = null, Vector rotation = null, LoadAxis axis = LoadAxis.Global, string name = "")
         {
             if (translation == null && rotation == null)
@@ -57,6 +65,14 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Description("Creates a point displacement to be applied to Nodes.")]
+        [InputFromProperty("loadcase")]
+        [Input("objects", "The collection of Nodes the load should be applied to.")]
+        [InputFromProperty("translation")]
+        [InputFromProperty("rotation")]
+        [InputFromProperty("axis")]
+        [Input("name", "The name of the created load.")]
+        [Output("ptDisp", "The created PointDisplacement.")]
         public static PointDisplacement PointDisplacement(Loadcase loadcase, IEnumerable<Node> objects, Vector translation = null, Vector rotation = null, LoadAxis axis = LoadAxis.Global, string name = "")
         {
             return PointDisplacement(loadcase, new BHoMGroup<Node>() { Elements = objects.ToList() }, translation, rotation, axis, name);

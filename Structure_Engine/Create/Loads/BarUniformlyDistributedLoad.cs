@@ -38,10 +38,19 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Creates a uniformly distributed load to be applied to Bar elements.")]
+        [InputFromProperty("loadcase")]
+        [InputFromProperty("group", "Objects")]
+        [InputFromProperty("force")]
+        [InputFromProperty("moment")]
+        [InputFromProperty("axis")]
+        [InputFromProperty("projected")]
+        [Input("name", "The name of the created load.")]
+        [Output("barUDL", "The created BarPointLoad.")]
         public static BarUniformlyDistributedLoad BarUniformlyDistributedLoad(Loadcase loadcase, BHoMGroup<Bar> group, Vector force = null, Vector moment = null, LoadAxis axis = LoadAxis.Global, bool projected = false, string name = "")
         {
             if (force == null && moment == null)
-                throw new ArgumentException("Bar uniform load requires either the force or the moment vector to be defined");
+                throw new ArgumentException("Bar uniform load requires either the force and/or the moment vector to be defined");
 
             return new BarUniformlyDistributedLoad
             {
@@ -58,6 +67,15 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Description("Creates a uniformly distributed load to be applied to Bar elements.")]
+        [InputFromProperty("loadcase")]
+        [Input("objects", "The collection of Bars the load should be applied to.")]
+        [InputFromProperty("force")]
+        [InputFromProperty("moment")]
+        [InputFromProperty("axis")]
+        [InputFromProperty("projected")]
+        [Input("name", "The name of the created load.")]
+        [Output("barUDL", "The created BarPointLoad.")]
         public static BarUniformlyDistributedLoad BarUniformlyDistributedLoad(Loadcase loadcase, IEnumerable<Bar> objects, Vector force = null, Vector moment = null, LoadAxis axis = LoadAxis.Global, bool projected = false, string name = "")
         {
             return BarUniformlyDistributedLoad(loadcase, new BHoMGroup<Bar>() { Elements = objects.ToList() }, force, moment, axis, projected, name);

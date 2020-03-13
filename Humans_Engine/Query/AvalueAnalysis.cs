@@ -197,10 +197,10 @@ namespace BH.Engine.Humans.ViewQuality
 
                     Polyline subject = projectedHead.DeepClone();
                     int np = subject.ControlPoints.Count;
-                    Polyline clippedHead = Geometry.Compute.ClipPolylines(subject, pl);
-                    if (clippedHead.Area() > 0)
+                    List<Polyline> clippedHead = Geometry.Compute.BooleanIntersection(pl,subject);
+                    if (clippedHead[0].Area() > 0)
                     {
-                        clippedHeads.Add(clippedHead);
+                        clippedHeads.Add(clippedHead[0]);
                     }
                     
                 }
@@ -258,9 +258,9 @@ namespace BH.Engine.Humans.ViewQuality
             for (int i = 0; i < viewCone.ConeBoundary.Count; i++)
             {
                 var subject = projected.DeepClone();
-                Polyline temp = Geometry.Compute.ClipPolylines(subject, viewCone.ConeBoundary[i]);
+                List<Polyline> temp = Geometry.Compute.BooleanIntersection(viewCone.ConeBoundary[i], subject);
 
-                clippedArea.Add(temp);
+                if(temp.Count>0)clippedArea.Add(temp[0]);
             }
             return clippedArea;
         }

@@ -22,9 +22,14 @@
 
 using BH.oM.Structure.Elements;
 using BH.oM.Geometry;
-using BHE = BH.Engine.Geometry;
+using BH.Engine.Geometry;
 using System.Collections.Generic;
 using System.Linq;
+
+using BH.oM.Reflection.Attributes;
+using BH.oM.Quantities.Attributes;
+using System.ComponentModel;
+
 
 namespace BH.Engine.Structure
 {
@@ -34,19 +39,52 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Opening Opening(IEnumerable<ICurve> edges)
+        [Description("Creates a structural Opening from a closed curve.")]
+        [Input("outline", "Closed curve defining the outline of the Opening.")]
+        [Output("opening", "Created structural Opening.")]
+        public static Opening Opening(ICurve outline)
         {
-            // Todo:
-            // - check if the edges are closed
-            return new Opening { Edges = edges.Select(x => new Edge { Curve = x }).ToList() };
+            if (outline.IIsClosed())
+                return new Opening { Edges = outline.ISubParts().Select(x => new Edge { Curve = x }).ToList() };
+            else
+            {
+                Reflection.Compute.RecordError("Provided curve is not closed. Could not create opening.");
+                return null;
+            }
         }
 
         /***************************************************/
 
-        public static Opening Opening(ICurve outline)
+        [Description("Creates a structural Opening from a collection of curves forming a closed loop.")]
+        [Input("edges", "Closed curve defining the outline of the Opening.")]
+        [Output("opening", "Created structural Opening.")]
+        public static Opening Opening(IEnumerable<ICurve> edges)
         {
-            return BHE.Query.IIsClosed(outline) ? Opening(BHE.Query.ISubParts(outline)) : null;
+            List<PolyCurve> joined = Geometry.Compute.IJoin(edges.ToList());
+
+            if (joined.Count == 0)
+            {
+                Reflection.Compute.RecordError("Could not join Curves. Opening not Created.");
+                return null;
+            }
+            else if (joined.Count > 1)
+            {
+                Reflection.Compute.RecordError("Provided curves could not be joined to a single curve. Opening not created.");
+                return null;
+            }
+
+            //Single joined curve
+            if (joined[0].IIsClosed())
+                return new Opening { Edges = edges.Select(x => new Edge { Curve = x }).ToList() };
+            else
+            {
+                Reflection.Compute.RecordError("Provided curves does not form a closed loop. Could not create opening.");
+                return null;
+            }
+            
         }
+
+        /***************************************************/
     }
 }
 

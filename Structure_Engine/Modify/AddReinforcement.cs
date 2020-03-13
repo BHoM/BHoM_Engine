@@ -24,6 +24,10 @@ using BH.oM.Structure.SectionProperties;
 using BH.oM.Structure.SectionProperties.Reinforcement;
 using System.Collections.Generic;
 using System.Linq;
+using BH.oM.Reflection.Attributes;
+using BH.oM.Quantities.Attributes;
+using System.ComponentModel;
+
 
 namespace BH.Engine.Structure
 {
@@ -33,6 +37,10 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Adds Reinforcement to a ConcreteSection. Any previous Reinforcement will be kept.")]
+        [Input("section", "The concrete section to add Reinforcement to.")]
+        [Input("reinforcement", "The collection of Reinforcement to add to the ConcreteSection.")]
+        [Output("concSection", "The ConcreteSection with additional Reinforcement.")]
         public static ConcreteSection AddReinforcement(this ConcreteSection section, IEnumerable<Reinforcement> reinforcement)
         {
             ConcreteSection clone = section.GetShallowClone() as ConcreteSection;
