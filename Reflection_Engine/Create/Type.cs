@@ -58,9 +58,9 @@ namespace BH.Engine.Reflection
 
         /***************************************************/
 
-        public static Type MethodType(string name)
+        public static Type EngineType(string name)
         {
-            List<Type> methodTypeList = Query.MethodTypeList();
+            List<Type> methodTypeList = Query.EngineTypeList();
 
             List<Type> types = methodTypeList.Where(x => x.AssemblyQualifiedName.StartsWith(name)).ToList();
 
