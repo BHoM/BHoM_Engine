@@ -52,13 +52,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Query\PerimeterLength.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Compute\" />
     <Folder Include="Convert\" />
     <Folder Include="Create\" />
     <Folder Include="Modify\" />
+    <Folder Include="Query\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Geometry_Engine\Geometry_Engine.csproj">
