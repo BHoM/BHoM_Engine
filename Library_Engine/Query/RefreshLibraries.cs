@@ -41,7 +41,7 @@ namespace BH.Engine.Library
 
         public static void RefreshLibraries()
         {
-            m_libraryPaths = new Dictionary<string, List<string>>();
+            m_libraryPaths = new Dictionary<string, HashSet<string>>();
             m_libraryStrings = new Dictionary<string, string[]>();
             m_datasets = new Dictionary<string, Dataset>();
             m_deserialisationEvents = new Dictionary<string, List<Tuple<oM.Reflection.Debugging.EventType, string>>>();

@@ -44,7 +44,7 @@ namespace BH.Engine.Library
         [Output("dataset", "The datasets extracted from the library")]
         public static List<Dataset> Datasets(string libraryName)
         {
-            List<string> keys;
+            HashSet<string> keys;
             if (!LibraryPaths().TryGetValue(libraryName, out keys))
                 return new List<Dataset>();
 

@@ -149,7 +149,7 @@ namespace BH.Engine.Library
 
         /***************************************************/
 
-        private static Dictionary<string, List<string>> LibraryPaths()
+        private static Dictionary<string, HashSet<string>> LibraryPaths()
         {
             if (m_libraryPaths.Count < 1)
                 RefreshLibraries();
@@ -202,7 +202,7 @@ namespace BH.Engine.Library
                 m_libraryPaths[folderName].Add(dictionaryPath);
             else
             {
-                m_libraryPaths[folderName] = new List<string>();
+                m_libraryPaths[folderName] = new HashSet<string>();
                 m_libraryPaths[folderName].Add(dictionaryPath);
             }
 
@@ -213,7 +213,7 @@ namespace BH.Engine.Library
                     m_libraryPaths[path].Add(dictionaryPath);
                 else
                 {
-                    m_libraryPaths[path] = new List<string>();
+                    m_libraryPaths[path] = new HashSet<string>();
                     m_libraryPaths[path].Add(dictionaryPath);
                 }
             }
@@ -234,7 +234,7 @@ namespace BH.Engine.Library
         private static Dictionary<string, List<Tuple<BH.oM.Reflection.Debugging.EventType, string>>> m_deserialisationEvents = new Dictionary<string, List<Tuple<oM.Reflection.Debugging.EventType, string>>>();
 
         private static Dictionary<string, string[]> m_libraryStrings = new Dictionary<string, string[]>();
-        private static Dictionary<string, List<string>> m_libraryPaths = new Dictionary<string, List<string>>();
+        private static Dictionary<string, HashSet<string>> m_libraryPaths = new Dictionary<string, HashSet<string>>();
         private static Tree<string> m_dbTree = new Tree<string>();
 
         /***************************************************/
