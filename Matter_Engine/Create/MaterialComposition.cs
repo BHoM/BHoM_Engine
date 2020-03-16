@@ -49,7 +49,7 @@ namespace BH.Engine.Matter
         [Description("Creates the combined MaterialComposition for a collection of IElementMs. Two Materials are considered equal if their names are equal.")]
         [Input("elements", "The elements to get the combined materialCombination of.")]
         [Output("materialComposition", "A material composition which contain which materials were used in the elements and in which proportions.")]
-        public static MaterialComposition CombinedMaterialComposition(IEnumerable<IElementM> elements)
+        public static MaterialComposition MaterialComposition(IEnumerable<IElementM> elements)
         {
             return MaterialComposition(elements.Select(x => x.IMaterialComposition()), elements.Select(x => x.ISolidVolume()));
         }
