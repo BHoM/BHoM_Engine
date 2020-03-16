@@ -69,9 +69,7 @@ namespace BH.Engine.Environment
                 double zLevel = Math.Round(bbox.Min.Z, decimals);
 
                 if (roundedLevels.Where(x => x.Elevation == zLevel).FirstOrDefault() != null && searchLevels.Where(x => x.Elevation == zLevel).FirstOrDefault() == null)
-                    searchLevels.Add(roundedLevels.Where(x => x.Elevation == zLevel).FirstOrDefault());
-                else
-                    BH.Engine.Reflection.Compute.RecordWarning("Room with ID " + room.BHoM_Guid + " does not sit on any provided level");
+                    searchLevels.Add(roundedLevels.Where(x => x.Elevation == zLevel).FirstOrDefault());                    
             }
 
             Dictionary<double, List<Room>> mappedRooms = new Dictionary<double, List<Room>>();
@@ -83,7 +81,11 @@ namespace BH.Engine.Environment
                 double zLevel = Math.Round(bbox.Min.Z, decimals);
                 int levelIndex = roundedLevels.IndexOf(roundedLevels.Where(x => x.Elevation == zLevel).First());
 
-                if (levelIndex == -1) continue; //zLevel does not exist in the search levels
+                if (levelIndex == -1) //zLevel does not exist in the search levels
+                {
+                    BH.Engine.Reflection.Compute.RecordWarning("Room with ID " + room.BHoM_Guid + " does not sit on any provided level");
+                    continue;
+                }
 
                 if (!mappedRooms.ContainsKey(levelIndex))
                     mappedRooms.Add(levelIndex, new List<Room>());
