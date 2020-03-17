@@ -360,6 +360,7 @@ namespace BH.Engine.Geometry
 
                 result = result.Select(x => x.ITransform(trans));
             }
+
             // Is on XY
             if (result.First().IControlPoints().FirstOrDefault().Distance(oM.Geometry.Plane.XY) > Tolerance.Distance)
             {
@@ -370,7 +371,7 @@ namespace BH.Engine.Geometry
                 result = result.Select(x => x.ITranslate(-v));
             }
 
-            if (!edges.Any(x => x is NurbsCurve))
+            if (!edges.Any(x => x.ISubParts().Any(y => y is NurbsCurve)))
             {
                 // Join the curves
                 List<PolyCurve> joinedCurves = Compute.IJoin(edges.ToList()).ToList();
