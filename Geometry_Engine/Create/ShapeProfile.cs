@@ -397,6 +397,9 @@ namespace BH.Engine.Geometry
                 if (intersects)
                     Engine.Reflection.Compute.RecordWarning("The Profiles curves are intersecting eachother.");
 
+                if (joinedCurves.Any(x => x.IIsSelfIntersecting()))
+                    Engine.Reflection.Compute.RecordWarning("One or more of the Profiles curves is intersecting itself.");
+                
             }
 
             return new FreeFormProfile(result);
