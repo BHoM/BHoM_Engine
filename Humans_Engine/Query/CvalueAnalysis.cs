@@ -75,7 +75,7 @@ namespace BH.Engine.Humans.ViewQuality
                 Spectator infront = GetSpecInfront(s, spectatorTree);
                 double riserHeight = 0;
                 double rowWidth = 0;
-                Point focal = new Point();
+                Point focal = GetFocalPoint(rowVector, s, settings.FocalMethod, focalPolyline);
                 if (infront == null)
                 {
                     //no spectator infront
@@ -84,7 +84,7 @@ namespace BH.Engine.Humans.ViewQuality
                 else
                 {
                     //check the infront and current are on parallel rows
-                    if (infront.Head.PairOfEyes.ViewDirection != s.Head.PairOfEyes.ViewDirection)
+                    if (infront.Head.PairOfEyes.ViewDirection.Angle(s.Head.PairOfEyes.ViewDirection)> 0.00872665)
                     {
                         cvalueExists = false;
                     }
@@ -92,9 +92,10 @@ namespace BH.Engine.Humans.ViewQuality
                 if (cvalueExists)
                 {
                     riserHeight = s.Head.PairOfEyes.ReferenceLocation.Z - infront.Head.PairOfEyes.ReferenceLocation.Z;
+                    //rowWidth = GetRowWidth(s, infront, focal, rowVector);
                     rowWidth = GetRowWidth(s, infront, rowVector);
                 }
-                focal = GetFocalPoint(rowVector, s, settings.FocalMethod, focalPolyline);
+                
                 results.Add(CvalueResult(s, focal, riserHeight, rowWidth, cvalueExists, rowVector, settings));
             }
             return results;
@@ -111,6 +112,22 @@ namespace BH.Engine.Humans.ViewQuality
         Vector rowWidth = row2d - projected;
         width = rowWidth.Length();
         return width;
+        }
+        /***************************************************/
+        private static double GetRowWidth(Spectator current, Spectator nearest, Point focal, Vector rowV)
+        {
+
+            Line rowInfront = Geometry.Create.Line(nearest.Head.PairOfEyes.ReferenceLocation, rowV);
+
+            Vector toFocal = focal - current.Head.PairOfEyes.ReferenceLocation;
+            toFocal.Z = 0;
+            Vector focalPerpend = toFocal.CrossProduct(Vector.ZAxis);
+            Plane plane = Geometry.Create.Plane(current.Head.PairOfEyes.ReferenceLocation, focalPerpend);
+            //theoretical head infront
+            Point point = rowInfront.PlaneIntersection(plane, true);
+            Vector toHeadInfront = point - current.Head.PairOfEyes.ReferenceLocation;
+            toHeadInfront.Z = 0;
+            return toHeadInfront.Length();
         }
         /***************************************************/
         private static Point GetFocalPoint(Vector rowV, Spectator spectator,CvalueFocalMethodEnum focalMethod,Polyline focalPolyline)
@@ -162,12 +179,10 @@ namespace BH.Engine.Humans.ViewQuality
             //plane is perpendicular to row
             Plane interPlane = Geometry.Create.Plane(spect.Head.PairOfEyes.ReferenceLocation, rowV);
             double dist = Double.MaxValue;
-            Point ipt = new Point();
             //loop the segments in the focalPolyline find the closest perpendicular point
-            foreach(var seg in focalPolyline.SubParts())
+            List<Point> interpts = focalPolyline.IPlaneIntersections(interPlane);
+            foreach(Point ipt in interpts)
             {
-                seg.Infinite = true;
-                ipt = Geometry.Query.PlaneIntersection(seg, interPlane);
                 if (Geometry.Query.Distance(ipt, interPlane.Origin) < dist)
                 {
                     focal = ipt;
