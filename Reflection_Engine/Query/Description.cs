@@ -194,8 +194,13 @@ namespace BH.Engine.Reflection
         {
             FieldInfo[] fields = type.GetFields();
             string desc = Environment.NewLine + "Enum values:";
-            foreach (var field in fields)
+
+            int m = Math.Min(fields.Length, 20);
+
+            for (int i = 0; i < m; i++)
             {
+                FieldInfo field = fields[i];
+
                 //Skip the value option
                 if (field.Name == "value__")
                     continue;
@@ -208,6 +213,9 @@ namespace BH.Engine.Reflection
                 if (attribute != null)
                     desc += ": " + attribute.Description;
             }
+
+            if (fields.Length > m)
+                desc += Environment.NewLine + "-...And more";
 
             return desc;
         }
