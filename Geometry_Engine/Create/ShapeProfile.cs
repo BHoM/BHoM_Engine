@@ -328,34 +328,8 @@ namespace BH.Engine.Geometry
         {
             bool nurbs = edges.Any(x => x is NurbsCurve);
             IEnumerable<ICurve> result = edges.ToList();
-
-            List<PolyCurve> joinedCurves = Compute.IJoin(edges.ToList()).ToList();
-            if (nurbs)
-            {
-                if (!joinedCurves.Any(x => x.Curves.Count > 1 && x.Curves.Any(y => y is NurbsCurve)))
-                {
-                    bool closed = true;
-                    foreach (PolyCurve pCurve in joinedCurves)
-                    {
-                        if (pCurve.Curves.Count == 1 && pCurve.Curves.Any(y => y is NurbsCurve))
-                        {
-                            closed &= (pCurve.Curves.First() as NurbsCurve).IsClosed();
-                        }
-                        else
-                        {
-                            closed &= pCurve.IsClosed();
-                        }
-                    }
-                    if (!closed)
-                        Reflection.Compute.RecordWarning("The Profiles curves does not form closed curves");
-                }
-            }
-            else
-            {
-                if (joinedCurves.Any(x => !x.IsClosed()))
-                    Reflection.Compute.RecordWarning("The Profiles curves does not form closed curves");
-            }
-
+            
+            // Is Planar
             List<Point> cPoints = edges.SelectMany(x => x.IControlPoints()).ToList();
             Plane plane = Compute.FitPlane(cPoints);
             if (cPoints.Any(x => x.Distance(plane) > Tolerance.Distance))
@@ -369,6 +343,8 @@ namespace BH.Engine.Geometry
                 catch
                 { }
             }
+
+            // Is Coplanar with XY
             if (plane.Normal.IsParallel(oM.Geometry.Vector.ZAxis) == 0)
             {
                 Reflection.Compute.RecordWarning("The Profiles curves are not coplanar with the XY-Plane. Automatic orientation has occured.");
@@ -385,7 +361,7 @@ namespace BH.Engine.Geometry
 
                 result = result.Select(x => x.ITransform(trans));
             }
-
+            // Is on XY
             if (result.First().IControlPoints().FirstOrDefault().Distance(oM.Geometry.Plane.XY) > Tolerance.Distance)
             {
                 Reflection.Compute.RecordWarning("The Profiles curves are not on the XY-Plane. Automatic translation has occured.");
@@ -397,9 +373,14 @@ namespace BH.Engine.Geometry
 
             if (!nurbs)
             {
-                if (joinedCurves.Any(x => x.IsSelfIntersecting()))
-                    Reflection.Compute.RecordWarning("");
+                // Join the curves
+                List<PolyCurve> joinedCurves = Compute.IJoin(edges.ToList()).ToList();
 
+                // Is Closed
+                if (joinedCurves.Any(x => !x.IsClosed()))
+                    Reflection.Compute.RecordWarning("The Profiles curves does not form closed curves");
+
+                // Has non-zero area
                 if (joinedCurves.Any(x => x.IArea() < Tolerance.Distance))
                     Reflection.Compute.RecordWarning("One or more of the profile curves have close to zero area.");
 
@@ -421,6 +402,7 @@ namespace BH.Engine.Geometry
                 if (intersects)
                     Engine.Reflection.Compute.RecordWarning("The Profiles curves are intersecting eachother.");
 
+                // Is SelfInteersecting
                 if (joinedCurves.Any(x => x.IsSelfIntersecting()))
                     Engine.Reflection.Compute.RecordWarning("One or more of the Profiles curves is intersecting itself.");
 
