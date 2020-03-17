@@ -348,9 +348,12 @@ namespace BH.Engine.Geometry
             if (plane.Normal.IsParallel(oM.Geometry.Vector.ZAxis) == 0)
             {
                 Reflection.Compute.RecordWarning("The Profiles curves are not coplanar with the XY-Plane. Automatic orientation has occured.");
-                
-                Vector localX = plane.Normal.CrossProduct(oM.Geometry.Vector.ZAxis);
-                Vector localY = plane.Normal.CrossProduct(localX);
+
+                Vector planeN = plane.Normal;
+                planeN = planeN.Z > 0 ? planeN : -planeN;
+
+                Vector localX = planeN.CrossProduct(-oM.Geometry.Vector.ZAxis);
+                Vector localY = planeN.CrossProduct(-localX);
                 oM.Geometry.CoordinateSystem.Cartesian localCar = Create.CartesianCoordinateSystem(cPoints.FirstOrDefault(), localX, localY);
                 oM.Geometry.CoordinateSystem.Cartesian globalCar = Create.CartesianCoordinateSystem(oM.Geometry.Point.Origin, oM.Geometry.Vector.XAxis, oM.Geometry.Vector.YAxis);
 
