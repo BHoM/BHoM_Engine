@@ -374,7 +374,7 @@ namespace BH.Engine.Geometry
             if (!edges.Any(x => x.ISubParts().Any(y => y is NurbsCurve)))
             {
                 // Join the curves
-                List<PolyCurve> joinedCurves = Compute.IJoin(edges.ToList()).ToList();
+                List<PolyCurve> joinedCurves = Compute.IJoin(result.ToList()).ToList();
 
                 // Is Closed
                 if (joinedCurves.Any(x => !x.IsClosed()))
