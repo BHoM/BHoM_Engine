@@ -71,7 +71,7 @@ namespace BH.Engine.Matter
             if (localMatComps.Count != localRatios.Count)
                 return null;
 
-            BHoMObjectNameComparer equalityComparer = new BHoMObjectNameComparer();
+            HashFragmComparer<Material> hashComparer = new HashFragmComparer<Material>();
 
             for (int j = 0; j < localMatComps.Count; j++)
             {
@@ -80,7 +80,7 @@ namespace BH.Engine.Matter
                     bool existed = false;
                     for (int k = 0; k < allMaterials.Count; k++)
                     {
-                        if (equalityComparer.Equals(allMaterials[k], localMatComps[j].Materials[i]))
+                        if (hashComparer.Equals(allMaterials[k], localMatComps[j].Materials[i]))
                         {
                             allRatios[k] += localMatComps[j].Ratios[i] * localRatios[j];
                             existed = true;
