@@ -336,7 +336,7 @@ namespace BH.Engine.Geometry
                 Reflection.Compute.RecordWarning("The Profiles curves are not Planar");
                 try
                 {
-                    result = edges.Select(x => x.IProject(plane));
+                    result = edges.Select(x => x.IProject(plane)).ToList();
                     Reflection.Compute.RecordWarning("The Profiles curves have been planerized onto a plane fitted through their control points.");
                 }
                 catch
