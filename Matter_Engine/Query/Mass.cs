@@ -20,7 +20,6 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.Engine.Physical;
 using BH.oM.Dimensional;
 using BH.oM.Geometry;
 using BH.oM.Physical.Materials;
