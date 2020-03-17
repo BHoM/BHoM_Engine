@@ -326,11 +326,35 @@ namespace BH.Engine.Geometry
 
         public static FreeFormProfile FreeFormProfile(IEnumerable<ICurve> edges)
         {
+            bool nurbs = edges.Any(x => x is NurbsCurve);
             IEnumerable<ICurve> result = edges.ToList();
 
-            List<ICurve> joinedCurves = edges.ToList();
-            if (Compute.IJoin(joinedCurves).Any(x => !x.IsClosed()))
-                Reflection.Compute.RecordWarning("The Profiles curves does not form closed curves");
+            List<PolyCurve> joinedCurves = Compute.IJoin(edges.ToList()).ToList();
+            if (nurbs)
+            {
+                if (!joinedCurves.Any(x => x.Curves.Count > 1 && x.Curves.Any(y => y is NurbsCurve)))
+                {
+                    bool closed = true;
+                    foreach (PolyCurve pCurve in joinedCurves)
+                    {
+                        if (pCurve.Curves.Count == 1 && pCurve.Curves.Any(y => y is NurbsCurve))
+                        {
+                            closed &= (pCurve.Curves.First() as NurbsCurve).IsClosed();
+                        }
+                        else
+                        {
+                            closed &= pCurve.IsClosed();
+                        }
+                    }
+                    if (!closed)
+                        Reflection.Compute.RecordWarning("The Profiles curves does not form closed curves");
+                }
+            }
+            else
+            {
+                if (joinedCurves.Any(x => !x.IsClosed()))
+                    Reflection.Compute.RecordWarning("The Profiles curves does not form closed curves");
+            }
 
             List<Point> cPoints = edges.SelectMany(x => x.IControlPoints()).ToList();
             Plane plane = Compute.FitPlane(cPoints);
@@ -353,7 +377,7 @@ namespace BH.Engine.Geometry
                 planeN = planeN.Z > 0 ? planeN : -planeN;
 
                 Vector localX = planeN.CrossProduct(-oM.Geometry.Vector.ZAxis);
-                Vector localY = planeN.CrossProduct(-localX);
+                Vector localY = planeN.CrossProduct(localX);
                 oM.Geometry.CoordinateSystem.Cartesian localCar = Create.CartesianCoordinateSystem(cPoints.FirstOrDefault(), localX, localY);
                 oM.Geometry.CoordinateSystem.Cartesian globalCar = Create.CartesianCoordinateSystem(oM.Geometry.Point.Origin, oM.Geometry.Vector.XAxis, oM.Geometry.Vector.YAxis);
 
@@ -362,7 +386,7 @@ namespace BH.Engine.Geometry
                 result = result.Select(x => x.ITransform(trans));
             }
 
-            if (cPoints.FirstOrDefault().Distance(oM.Geometry.Plane.XY) > Tolerance.Distance)
+            if (result.First().IControlPoints().FirstOrDefault().Distance(oM.Geometry.Plane.XY) > Tolerance.Distance)
             {
                 Reflection.Compute.RecordWarning("The Profiles curves are not on the XY-Plane. Automatic translation has occured.");
                 Point p = cPoints.FirstOrDefault();
@@ -371,9 +395,9 @@ namespace BH.Engine.Geometry
                 result = result.Select(x => x.ITranslate(-v));
             }
 
-            if (!edges.Any(x => x is NurbsCurve))
+            if (!nurbs)
             {
-                if (joinedCurves.Any(x => x.IIsSelfIntersecting()))
+                if (joinedCurves.Any(x => x.IsSelfIntersecting()))
                     Reflection.Compute.RecordWarning("");
 
                 if (joinedCurves.Any(x => x.IArea() < Tolerance.Distance))
@@ -385,7 +409,7 @@ namespace BH.Engine.Geometry
                 {
                     for (int j = i + 1; j < joinedCurves.Count; j++)
                     {
-                        if (joinedCurves[i].ICurveIntersections(joinedCurves[j]).Count > 0)
+                        if (joinedCurves[i].CurveIntersections(joinedCurves[j]).Count > 0)
                         {
                             intersects = true;
                             break;
@@ -397,9 +421,9 @@ namespace BH.Engine.Geometry
                 if (intersects)
                     Engine.Reflection.Compute.RecordWarning("The Profiles curves are intersecting eachother.");
 
-                if (joinedCurves.Any(x => x.IIsSelfIntersecting()))
+                if (joinedCurves.Any(x => x.IsSelfIntersecting()))
                     Engine.Reflection.Compute.RecordWarning("One or more of the Profiles curves is intersecting itself.");
-                
+
             }
 
             return new FreeFormProfile(result);
