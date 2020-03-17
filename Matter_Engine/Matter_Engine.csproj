@@ -83,6 +83,11 @@
       <Name>BHoM_Engine</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\Diffing_Engine\Diffing_Engine.csproj">
+      <Project>{073dfd36-0829-4792-8c32-67bf692a9413}</Project>
+      <Name>Diffing_Engine</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\Geometry_Engine\Geometry_Engine.csproj">
       <Project>{89ab2dcb-ef87-4cba-b59c-c16a8a71d333}</Project>
       <Name>Geometry_Engine</Name>

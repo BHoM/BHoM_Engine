@@ -53,14 +53,16 @@ namespace BH.Engine.Matter
                 type = typeof(IMaterialProperties);
 
             List<double> densities = new List<double>();
-            List<string> warnings = new List<string>() { "Density report for the Material " + material.Name + ":" };
+            List<string> notes = new List<string>() { "Density report for the Material " + material.Name + ":" };
 
             foreach (IMaterialProperties mat in material.Properties.Where(x => type.IsAssignableFrom(x.GetType())))
             {
                 object density = Reflection.Query.PropertyValue(mat, "Density");
                 if (density != null)
+                {
                     densities.Add((double)density);
-                warnings.Add("The value of the density for the MaterialFragment: " + mat.Name + " was acquired through its properties");
+                    notes.Add("The value of the density for the MaterialFragment: " + mat.Name + " was acquired through its properties");
+                }
             }
 
             if (densities.Count == 0)
@@ -68,29 +70,34 @@ namespace BH.Engine.Matter
                 Reflection.Compute.RecordWarning("no density on any of the fragments of " + material.Name + " by type " + type.Name);
                 return 0;
             }
-            if (densities.Count > 1 && CheckRange(densities, tolerance))
+            if (densities.Count > 1 && !CheckRange(densities, tolerance))
             {
                 Reflection.Compute.RecordWarning("The density for " + material.Name + " is found on multiple IMaterialProperties, please specify one type for a result");
                 return double.NaN;
             }
+            if (densities.Count > 1)
+                notes.Add("");
 
-            Reflection.Compute.RecordWarning(string.Join(System.Environment.NewLine, warnings.ToArray()));
+            Reflection.Compute.RecordNote(string.Join(System.Environment.NewLine, notes.ToArray()));
 
-            return densities.Average();
+            return densities.First();
         }
 
         /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private static bool CheckRange(IEnumerable<double> densities, double tolerance)
+        private static bool CheckRange(IEnumerable<double> numbers, double relativeTolerance, double zeroTolerance = 0.0001)
         {
-            double min = densities.Min();
-            double max = densities.Max();
+            double min = numbers.Min();
+            double max = numbers.Max();
 
-            double median = (min + max) / 2;
+            if (max < zeroTolerance)
+                return true;
 
-            return (max - min) / median > tolerance;
+            double mean = (min + max) / 2;
+            
+            return (max - min) / mean < relativeTolerance;
         }
 
         /***************************************************/
