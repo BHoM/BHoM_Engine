@@ -108,6 +108,7 @@ namespace BH.Engine.Reflection
         }
 
         /***************************************************/
+
         [Description("Return the custom description of a C# class")]
         public static string Description(this Type type, QuantityAttribute quantityAttribute)
         {
@@ -119,7 +120,6 @@ namespace BH.Engine.Reflection
             DescriptionAttribute attribute = type.GetCustomAttribute<DescriptionAttribute>();
 
             string desc = "";
-
 
             //If a quantity attribute is present, this is used to generate the default description
             if (quantityAttribute != null)
@@ -137,6 +137,11 @@ namespace BH.Engine.Reflection
                 desc += ":" + Environment.NewLine;
                 desc += attribute.Description;
             }
+
+            //If type is enum, list options with descriptions
+            if (type.IsEnum)
+                desc += EnumItemDescription(type);
+
             Type innerType = type;
 
             while (typeof(IEnumerable).IsAssignableFrom(innerType) && innerType.IsGenericType)
@@ -178,6 +183,33 @@ namespace BH.Engine.Reflection
                 return Description(item as MemberInfo);
             else
                 return "";
+        }
+
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+        [Description("Lists all the enum options and their descriptions.")]
+        private static string EnumItemDescription(this Type type)
+        {
+            FieldInfo[] fields = type.GetFields();
+            string desc = Environment.NewLine + "Enum values:";
+            foreach (var field in fields)
+            {
+                //Skip the value option
+                if (field.Name == "value__")
+                    continue;
+
+                desc += Environment.NewLine;
+                desc += "-" + field.Name;
+
+                DescriptionAttribute attribute = field.GetCustomAttribute<DescriptionAttribute>();
+
+                if (attribute != null)
+                    desc += ": " + attribute.Description;
+            }
+
+            return desc;
         }
 
         /***************************************************/
