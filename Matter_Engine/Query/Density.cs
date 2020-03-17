@@ -33,7 +33,7 @@ using BH.oM.Physical.Materials;
 using BH.oM.Reflection;
 using BH.oM.Quantities.Attributes;
 
-namespace BH.Engine.Physical
+namespace BH.Engine.Matter
 {
     public static partial class Query
     {
@@ -42,12 +42,12 @@ namespace BH.Engine.Physical
         /***************************************************/
 
         [Description("Gets the density of a Material by querying each of its IMaterialProperties for theirs." +
-                     "The density is gotten from a property with that name." + 
+                     "The density is gotten from a property with that name." +
                      "If the density is found on diffrent IMaterialProperties, not result will be returned.")]
         [Input("material", "The material to get the density of")]
         [Input("type", "The kind of IMaterialProperties to cull the result by, use this if multiple IMaterialProperties have densities")]
         [Output("density", "The density of the material, further info on how the value was accuired is recorded in the warning", typeof(Density))]
-        public static double Density(this Material material, Type type = null)
+        public static double Density(this Material material, Type type = null, double tolerance = 0.001)
         {
             if (type == null)
                 type = typeof(IMaterialProperties);
@@ -68,15 +68,29 @@ namespace BH.Engine.Physical
                 Reflection.Compute.RecordWarning("no density on any of the fragments of " + material.Name + " by type " + type.Name);
                 return 0;
             }
-            if (densities.Count > 1)
+            if (densities.Count > 1 && CheckRange(densities, tolerance))
             {
                 Reflection.Compute.RecordWarning("The density for " + material.Name + " is found on multiple IMaterialProperties, please specify one type for a result");
                 return double.NaN;
             }
-            
+
             Reflection.Compute.RecordWarning(string.Join(System.Environment.NewLine, warnings.ToArray()));
 
             return densities.Average();
+        }
+
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+        private static bool CheckRange(IEnumerable<double> densities, double tolerance)
+        {
+            double min = densities.Min();
+            double max = densities.Max();
+
+            double median = (min + max) / 2;
+
+            return (max - min) / median > tolerance;
         }
 
         /***************************************************/
