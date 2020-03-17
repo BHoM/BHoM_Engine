@@ -326,7 +326,77 @@ namespace BH.Engine.Geometry
 
         public static FreeFormProfile FreeFormProfile(IEnumerable<ICurve> edges)
         {
-            return new FreeFormProfile(edges);
+            IEnumerable<ICurve> result = edges.ToList();
+
+            List<ICurve> joinedCurves = edges.ToList();
+            if (Compute.IJoin(joinedCurves).Any(x => !x.IsClosed()))
+                Reflection.Compute.RecordWarning("The Profiles curves does not form closed curves");
+
+            List<Point> cPoints = edges.SelectMany(x => x.IControlPoints()).ToList();
+            Plane plane = Compute.FitPlane(cPoints);
+            if (cPoints.Any(x => x.Distance(plane) > Tolerance.Distance))
+            {
+                Reflection.Compute.RecordWarning("The Profiles curves are not Planar");
+                try
+                {
+                    result = edges.Select(x => x.IProject(plane));
+                    Reflection.Compute.RecordWarning("The Profiles curves have been planerized onto a plane fitted through their control points.");
+                }
+                catch
+                { }
+            }
+            if (plane.Normal.IsParallel(oM.Geometry.Vector.ZAxis) == 0)
+            {
+                Reflection.Compute.RecordWarning("The Profiles curves are not coplanar with the XY-Plane. Automatic orientation has occured.");
+                
+                Vector localX = plane.Normal.CrossProduct(oM.Geometry.Vector.ZAxis);
+                Vector localY = plane.Normal.CrossProduct(localX);
+                oM.Geometry.CoordinateSystem.Cartesian localCar = Create.CartesianCoordinateSystem(cPoints.FirstOrDefault(), localX, localY);
+                oM.Geometry.CoordinateSystem.Cartesian globalCar = Create.CartesianCoordinateSystem(oM.Geometry.Point.Origin, oM.Geometry.Vector.XAxis, oM.Geometry.Vector.YAxis);
+
+                TransformMatrix trans = OrientationMatrix(localCar, globalCar);
+
+                result = result.Select(x => x.ITransform(trans));
+            }
+
+            if (cPoints.FirstOrDefault().Distance(oM.Geometry.Plane.XY) > Tolerance.Distance)
+            {
+                Reflection.Compute.RecordWarning("The Profiles curves are not on the XY-Plane. Automatic translation has occured.");
+                Point p = cPoints.FirstOrDefault();
+                Vector v = new oM.Geometry.Vector() { X = p.X, Y = p.Y, Z = p.Z };
+
+                result = result.Select(x => x.ITranslate(-v));
+            }
+
+            if (!edges.Any(x => x is NurbsCurve))
+            {
+                if (joinedCurves.Any(x => x.IIsSelfIntersecting()))
+                    Reflection.Compute.RecordWarning("");
+
+                if (joinedCurves.Any(x => x.IArea() < Tolerance.Distance))
+                    Reflection.Compute.RecordWarning("One or more of the profile curves have close to zero area.");
+
+                // Check curve curve Intersections
+                bool intersects = false;
+                for (int i = 0; i < joinedCurves.Count - 1; i++)
+                {
+                    for (int j = i + 1; j < joinedCurves.Count; j++)
+                    {
+                        if (joinedCurves[i].ICurveIntersections(joinedCurves[j]).Count > 0)
+                        {
+                            intersects = true;
+                            break;
+                        }
+                    }
+                    if (intersects)
+                        break;
+                }
+                if (intersects)
+                    Engine.Reflection.Compute.RecordWarning("The Profiles curves are intersecting eachother.");
+
+            }
+
+            return new FreeFormProfile(result);
         }
 
         /***************************************************/
