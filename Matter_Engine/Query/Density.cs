@@ -87,7 +87,7 @@ namespace BH.Engine.Matter
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private static bool CheckRange(IEnumerable<double> numbers, double relativeTolerance, double zeroTolerance = 0.0001)
+        private static bool CheckRange(IEnumerable<double> numbers, double relativeTolerance, double zeroTolerance = 1e-6)
         {
             double min = numbers.Min();
             double max = numbers.Max();
