@@ -93,9 +93,8 @@ namespace BH.Engine.Humans.ViewQuality
                 {
                     riserHeight = s.Head.PairOfEyes.ReferenceLocation.Z - infront.Head.PairOfEyes.ReferenceLocation.Z;
                     rowWidth = GetRowWidth(s, infront, rowVector);
-                    focal = GetFocalPoint(rowVector, s, settings.FocalMethod, focalPolyline);
                 }
-
+                focal = GetFocalPoint(rowVector, s, settings.FocalMethod, focalPolyline);
                 results.Add(CvalueResult(s, focal, riserHeight, rowWidth, cvalueExists, rowVector, settings));
             }
             return results;
@@ -144,7 +143,7 @@ namespace BH.Engine.Humans.ViewQuality
             result.HorizDist = Geometry.Create.Vector(d.X, d.Y, 0).Length();
             result.HeightAbovePitch = s.Head.PairOfEyes.ReferenceLocation.Z - focal.Z;
             
-            if (!cvalueExists|| riser > settings.RowTolerance)//
+            if (!cvalueExists|| riser > settings.RowTolerance)
             {
                 result.CValue = settings.DefaultCValue;
             }
