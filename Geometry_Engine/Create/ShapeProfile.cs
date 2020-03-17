@@ -326,7 +326,6 @@ namespace BH.Engine.Geometry
 
         public static FreeFormProfile FreeFormProfile(IEnumerable<ICurve> edges)
         {
-            bool nurbs = edges.Any(x => x is NurbsCurve);
             IEnumerable<ICurve> result = edges.ToList();
             
             // Is Planar
@@ -371,7 +370,7 @@ namespace BH.Engine.Geometry
                 result = result.Select(x => x.ITranslate(-v));
             }
 
-            if (!nurbs)
+            if (!edges.Any(x => x is NurbsCurve))
             {
                 // Join the curves
                 List<PolyCurve> joinedCurves = Compute.IJoin(edges.ToList()).ToList();
