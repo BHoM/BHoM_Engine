@@ -34,7 +34,7 @@ using BH.oM.Reflection.Attributes;
 using BH.oM.Reflection;
 using BH.Engine.Diffing;
 
-namespace BH.Engine
+namespace BH.Engine.Diffing
 {
     public class DiffingHashComparer<T> : IEqualityComparer<T> //where T : IBHoMObject
     {
