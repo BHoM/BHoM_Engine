@@ -43,7 +43,7 @@ namespace BH.Engine.Physical
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Gets a IFramingElement's solid volume from the avrageArea and length")]
+        [Description("Gets an IFramingElement's solid volume from the average area and length")]
         [Input("framingElement", "the IFramingElement to get the volume from")]
         [Output("volume", "The IFramingElement's solid material volume.", typeof(Volume))]
         public static double SolidVolume(this IFramingElement framingElement)
@@ -58,7 +58,7 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        [Description("Gets a ISurface's solid volume from it's thickness and area." + 
+        [Description("Returns an ISurface's solid volume based on thickness and area." + 
                      "ISurfaces with offsets other than Centre are not fully supported.")]
         [Input("surface", "the ISurface to get the volume from")]
         [Output("volume", "The ISurface's solid material volume.", typeof(Volume))]
