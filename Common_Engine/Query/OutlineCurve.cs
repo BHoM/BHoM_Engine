@@ -37,7 +37,7 @@ namespace BH.Engine.Common
         [Deprecated("3.1", "Migrated to the Spatial_Engine")]
         public static PolyCurve IOutlineCurve(this IElement2D element2D)
         {
-            return Spatial.Query.IOutlineCurve(element2D);
+            return Spatial.Query.OutlineCurve(element2D);
         }
 
         /******************************************/
@@ -45,7 +45,7 @@ namespace BH.Engine.Common
         [Deprecated("3.1", "Migrated to the Spatial_Engine")]
         public static PolyCurve IOutlineCurve(this List<IElement1D> elements1D)
         {
-            return Spatial.Query.IOutlineCurve(elements1D);
+            return Spatial.Query.OutlineCurve(elements1D);
         }
     }
 }

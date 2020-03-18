@@ -72,17 +72,10 @@ namespace BH.Engine.Spatial
 
 
         /******************************************/
-        /****        Interface methods         ****/
+        /****            IElement              ****/
         /******************************************/
 
-        public static BoundingBox IBounds(this IElement element)
-        {
-            return Bounds(element as dynamic);
-        }
-
-        /******************************************/
-
-        public static BoundingBox IBounds(this IEnumerable<IElement> elements)
+        public static BoundingBox Bounds(this IEnumerable<IElement> elements)
         {
             if (elements.Count() == 0)
                 return null;
@@ -95,6 +88,17 @@ namespace BH.Engine.Spatial
 
             return box;
         }
+
+
+        /******************************************/
+        /****        Interface methods         ****/
+        /******************************************/
+
+        public static BoundingBox IBounds(this IElement element)
+        {
+            return Bounds(element as dynamic);
+        }
+
 
         /******************************************/
     }

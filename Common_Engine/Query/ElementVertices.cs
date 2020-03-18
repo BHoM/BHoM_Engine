@@ -70,7 +70,7 @@ namespace BH.Engine.Common
         [Deprecated("3.1", "Migrated to the Spatial_Engine")]
         public static List<Point> IElementVertices(this IEnumerable<IElement> elements)
         {
-            return Spatial.Query.IElementVertices(elements);
+            return Spatial.Query.ElementVertices(elements);
         }
 
 

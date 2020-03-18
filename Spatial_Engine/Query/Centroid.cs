@@ -47,15 +47,15 @@ namespace BH.Engine.Spatial
 
         public static Point Centroid(this IElement2D element2D)
         {
-            Point tmp = Geometry.Query.Centroid(element2D.IOutlineCurve());
-            double area = Geometry.Query.Area(element2D.IOutlineCurve());
+            Point tmp = Geometry.Query.Centroid(element2D.OutlineCurve());
+            double area = Geometry.Query.Area(element2D.OutlineCurve());
 
             double x = tmp.X * area;
             double y = tmp.Y * area;
             double z = tmp.Z * area;
 
 
-            List<PolyCurve> openings = Geometry.Compute.BooleanUnion(element2D.IInternalOutlineCurves());
+            List<PolyCurve> openings = Geometry.Compute.BooleanUnion(element2D.InternalOutlineCurves());
 
             foreach (ICurve o in openings)
             {
