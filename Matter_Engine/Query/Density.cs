@@ -46,6 +46,8 @@ namespace BH.Engine.Matter
                      "\nIf inconsistent density values are found on multiple different IMaterialProperties, no result will be returned.")]
         [Input("material", "The material to query density from.")]
         [Input("type", "A specific type of IMaterialProperties to limit the search to. Set a preferred type here if multiple IMaterialProperties have densities.")]
+        [Input("tolerance", "The ratio tolerance for considering the value of the densities as equal." +
+                            "\nCompares to the differance between min and max over their mean.", typeof(Ratio))]
         [Output("density", "The density of the material. Additional info on how the value has been acquired is recorded in the warning", typeof(Density))]
         public static double Density(this Material material, Type type = null, double tolerance = 0.001)
         {
