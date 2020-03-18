@@ -38,7 +38,6 @@ namespace BH.Engine.Architecture.Theatron
         /***************************************************/
         [Description("Create an activityArea rectangle with width: 60 and length: 90, focal point is at 0,0,0")]
         [Input("scale", "Optional input to scale from default values")]
-        
         public static ActivityArea ActivityArea(double scale = 1.0)
         {
             var p1 = Geometry.Create.Point(30*scale, 45 * scale, 0);
@@ -54,8 +53,8 @@ namespace BH.Engine.Architecture.Theatron
         /***************************************************/
         [Description("Create an activityArea rectangle, focal point is at 0,0,0")]
         [Input("width", "Optional, width default is 60")]
-        [Input("width", "Optional, length default is 90")]
-        public static ActivityArea ActivityArea(double width = 60,double length = 90)
+        [Input("length", "Optional, length default is 90")]
+        public static ActivityArea ActivityArea(double width = 60, double length = 90)
         {
             var p1 = Geometry.Create.Point(width/2, length/2, 0);
             var p2 = Geometry.Create.Point(width / 2, -length / 2, 0);

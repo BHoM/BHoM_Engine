@@ -38,12 +38,6 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Deprecated("2.4", "Deprecated to expose tolerance as optional parameter for greater control", null, "AddOpenings(this List<Panel> panels, List<Opening> openings, double tolerance = Tolerance.Distance)")]
-        public static List<Panel> AddOpenings(this List<Panel> panels, List<Opening> openings)
-        {
-            return panels.AddOpenings(openings, BH.oM.Geometry.Tolerance.Distance);
-        }
-
         [Description("Returns a single Environment Panel with the provided opening. Opening is added to the provided panel regardless of geometric association")]
         [Input("panel", "A single Environment Panel to add the opening to")]
         [Input("opening", "The Environment Opening to add to the panel")]
@@ -54,34 +48,6 @@ namespace BH.Engine.Environment
             if (clone.Openings == null) clone.Openings = new List<Opening>();
             clone.Openings.Add(opening);
             return clone;
-        }
-
-        [Description("Returns a list of Environment Panel with the provided openings added. Openings are added to the panels which contain them geometrically.")]
-        [Input("panels", "A collection of Environment Panels to add the opening to")]
-        [Input("openings", "A collection of Environment Openings to add to the panels")]
-        [Input("centroidTolerance", "Set the tolerance for obtaining the centroid of openings, default is set to BH.oM.Geometry.Tolerance.Distance")]
-        [Input("containingTolerance", "Set the tolerance for determining geometric association of openings to panels, default is set to BH.oM.Geometry.Tolerance.Distance")]
-        [Output("panels", "A collection of modified Environment Panels with the provided openings added")]
-        public static List<Panel> AddOpenings(this List<Panel> panels, List<Opening> openings, double centroidTolerance = BH.oM.Geometry.Tolerance.Distance, double containingTolerance = BH.oM.Geometry.Tolerance.Distance)
-        {
-            List<Panel> clonedPanels = new List<Panel>(panels.Select(x => x.DeepClone<Panel>()).ToList());
-            List<Opening> clonedOpenings = new List<Opening>(openings.Select(x => x.DeepClone<Opening>()).ToList());
-
-            foreach(Opening o in clonedOpenings)
-            {
-                Point centre = o.Polyline().Centroid(centroidTolerance);
-                if(centre != null)
-                {
-                    Panel panel = clonedPanels.PanelsContainingPoint(centre, false, containingTolerance).FirstOrDefault();
-                    if (panel != null)
-                    {
-                        if (panel.Openings == null) panel.Openings = new List<Opening>();
-                        panel.Openings.Add(o);
-                    }
-                }
-            }
-
-            return clonedPanels;
         }
     }
 }

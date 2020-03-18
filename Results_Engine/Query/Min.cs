@@ -35,7 +35,7 @@ namespace BH.Engine.Results
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static List<BarForce> MinForces(IEnumerable<BarForce> forces)
+        public static List<BarForce> MinForces(this IEnumerable<BarForce> forces)
         {
 
             List<BarForce> minForces = new List<BarForce>();
@@ -51,14 +51,14 @@ namespace BH.Engine.Results
 
         /***************************************************/
 
-        public static List<BarForce> MinEnvelopeByCase(IEnumerable<BarForce> forces)
+        public static List<BarForce> MinEnvelopeByCase(this IEnumerable<BarForce> forces)
         {
             return forces.GroupByCase().Select(x => x.MinEnvelope(false, true)).ToList();
         }
 
         /***************************************************/
 
-        public static List<BarForce> MinEnvelopeByObject(IEnumerable<BarForce> forces)
+        public static List<BarForce> MinEnvelopeByObject(this IEnumerable<BarForce> forces)
         {
             return forces.GroupByObjectId().Select(x => x.MinEnvelope(true, false)).ToList();
         }

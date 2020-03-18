@@ -39,22 +39,6 @@ namespace BH.Engine.Library
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Gets the full Dataset(s) from the library, containing source information and Data")]
-        [Input("libraryName", "The name of the Dataset(s) to extract")]
-        [Output("dataset", "The datasets extracted from the library")]
-        public static List<Dataset> Datasets(string libraryName)
-        {
-            List<string> keys;
-            if (!LibraryPaths().TryGetValue(libraryName, out keys))
-                return new List<Dataset>();
-
-            return keys.Select(x => ParseLibrary(x)).ToList();
-
-        }
-
-        /***************************************************/
-
-
         [Description("Gets the content of the Datasets from the library")]
         [Input("libraryName", "The name of the Dataset(s) to extract")]
         [Output("libraryData", "The data from the Dataset(s)")]
@@ -64,34 +48,8 @@ namespace BH.Engine.Library
         }
 
         /***************************************************/
-
-        public static Tree<string> LibraryTree()
-        {
-            if (m_dbTree == null || m_dbTree.Count() == 0 || m_dbTree.Children.Count == 0)
-            {
-                List<string> paths = LibraryStrings().Keys.ToList();
-                m_dbTree = Data.Create.Tree(paths, paths.Select(x => x.Split('\\').ToList()).ToList(), "Select a data set").ShortenBranches();
-            }
-            return m_dbTree;
-        }
-
-        /***************************************************/
-
-        public static void RefreshLibraries()
-        {
-            m_libraryPaths = new Dictionary<string, List<string>>();
-            m_libraryStrings = new Dictionary<string, string[]>();
-            m_datasets = new Dictionary<string, Dataset>();
-            m_deserialisationEvents = new Dictionary<string, List<Tuple<oM.Reflection.Debugging.EventType, string>>>();
-            m_dbTree = new Tree<string>();
-            GetPathsAndLoadLibraries();
-
-        }
-
-        /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
-
 
         private static Dataset ParseLibrary(string name)
         {
@@ -191,7 +149,7 @@ namespace BH.Engine.Library
 
         /***************************************************/
 
-        private static Dictionary<string, List<string>> LibraryPaths()
+        private static Dictionary<string, HashSet<string>> LibraryPaths()
         {
             if (m_libraryPaths.Count < 1)
                 RefreshLibraries();
@@ -244,7 +202,7 @@ namespace BH.Engine.Library
                 m_libraryPaths[folderName].Add(dictionaryPath);
             else
             {
-                m_libraryPaths[folderName] = new List<string>();
+                m_libraryPaths[folderName] = new HashSet<string>();
                 m_libraryPaths[folderName].Add(dictionaryPath);
             }
 
@@ -255,7 +213,7 @@ namespace BH.Engine.Library
                     m_libraryPaths[path].Add(dictionaryPath);
                 else
                 {
-                    m_libraryPaths[path] = new List<string>();
+                    m_libraryPaths[path] = new HashSet<string>();
                     m_libraryPaths[path].Add(dictionaryPath);
                 }
             }
@@ -276,7 +234,7 @@ namespace BH.Engine.Library
         private static Dictionary<string, List<Tuple<BH.oM.Reflection.Debugging.EventType, string>>> m_deserialisationEvents = new Dictionary<string, List<Tuple<oM.Reflection.Debugging.EventType, string>>>();
 
         private static Dictionary<string, string[]> m_libraryStrings = new Dictionary<string, string[]>();
-        private static Dictionary<string, List<string>> m_libraryPaths = new Dictionary<string, List<string>>();
+        private static Dictionary<string, HashSet<string>> m_libraryPaths = new Dictionary<string, HashSet<string>>();
         private static Tree<string> m_dbTree = new Tree<string>();
 
         /***************************************************/

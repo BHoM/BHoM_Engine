@@ -67,10 +67,10 @@
     <Compile Include="Compute\DistributeOutlines.cs" />
     <Compile Include="Create\ConstructionPhase.cs" />
     <Compile Include="Create\Material.cs" />
-    <Compile Include="Create\NewElement0D.cs" />
-    <Compile Include="Create\NewElement1D.cs" />
-    <Compile Include="Create\NewInternalElement2D.cs" />
-    <Compile Include="Modify\TranslateIElements.cs" />
+    <Compile Include="Create\IElement0D\NewElement0D.cs" />
+    <Compile Include="Create\IElement1D\NewElement1D.cs" />
+    <Compile Include="Create\IElement2D\NewInternalElement2D.cs" />
+    <Compile Include="Modify\Translate.cs" />
     <Compile Include="Modify\SetElements0D.cs" />
     <Compile Include="Modify\SetGeometry.cs" />
     <Compile Include="Modify\SetInternalElements2D.cs" />
@@ -85,6 +85,7 @@
     <Compile Include="Query\Elements0D.cs" />
     <Compile Include="Query\Geometry.cs" />
     <Compile Include="Query\InternalElements2D.cs" />
+    <Compile Include="Query\InternalOutlineCurve.cs" />
     <Compile Include="Query\IsSelfIntersecting.cs" />
     <Compile Include="Query\Length.cs" />
     <Compile Include="Query\Normal.cs" />

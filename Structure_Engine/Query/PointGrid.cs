@@ -129,7 +129,7 @@ namespace BH.Engine.Structure
         /**** Private Methods - fall back               ****/
         /***************************************************/
 
-        public static List<Point> PointGrid(this IAreaElement element)
+        private static List<Point> PointGrid(this IAreaElement element)
         {
             Reflection.Compute.RecordWarning("Point grid for element of type " + element.GetType().Name + " not implemented.");
             return new List<Point>();
