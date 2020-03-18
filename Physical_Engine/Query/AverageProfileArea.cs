@@ -42,9 +42,9 @@ namespace BH.Engine.Physical
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Gets the avarage cross-section area of a IFramingElementProperty in such a way that multiplying with the length of the element would give the volume")]
-        [Input("framingProperty", "The framingProperty to evaluate the avarage area of")]
-        [Output("avrageArea", "The avarage cross-section area of a IFramingElementProperty", typeof(Area))]
+        [Description("Gets the average cross-section area of a IFramingElementProperty in such a way that multiplying with the length of the element would give the volume")]
+        [Input("framingProperty", "The framingProperty to evaluate the average area of")]
+        [Output("averageArea", "The average cross-section area of a IFramingElementProperty", typeof(Area))]
         public static double IAverageProfileArea(this IFramingElementProperty framingProperty)
         {
             return AverageProfileArea(framingProperty as dynamic);
@@ -52,9 +52,9 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        [Description("Gets the avarage cross-section area of a ConstantFramingProperty in such a way that multiplying with the length of the element would give the volume")]
-        [Input("framingProperty", "The framingProperty to evaluate the avarage area of")]
-        [Output("avrageArea", "The avarage cross-section area of a ConstantFramingProperty", typeof(Area))]
+        [Description("Gets the average cross-section area of a ConstantFramingProperty in such a way that multiplying with the length of the element would give the volume")]
+        [Input("framingProperty", "The framingProperty to evaluate the average area of")]
+        [Output("averageArea", "The average cross-section area of a ConstantFramingProperty", typeof(Area))]
         public static double AverageProfileArea(this ConstantFramingProperty framingProperty)
         {
             if (framingProperty.Profile == null)

@@ -34,8 +34,8 @@ namespace BH.Engine.Matter
         /****            IElement1D            ****/
         /******************************************/
 
-        [Description("Gets a elements solid volume")]
-        [Input("elementM", "the element to get the volume from")]
+        [Description("Returns an element's solid volume")]
+        [Input("elementM", "The element to get the volume from")]
         [Output("volume", "The element's solid material volume.", typeof(Volume))]
         public static double ISolidVolume(this IElementM elementM)
         {
@@ -45,4 +45,3 @@ namespace BH.Engine.Matter
         /******************************************/
     }
 }
-
