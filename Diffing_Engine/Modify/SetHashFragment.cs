@@ -41,25 +41,41 @@ namespace BH.Engine.Diffing
     {
         [Description("Clones the IBHoMObjects, computes their hash and stores it in a HashFragment. " +
             "If the object already has a HashFragment, it computes the current one and stores the `previousHash` in the HashFragment.")]
-        public static IEnumerable<T> SetHashFragment<T>(IEnumerable<T> objs, DiffConfig diffConfig = null) where T : IBHoMObject
+        public static List<T> SetHashFragment<T>(IEnumerable<T> objs, DiffConfig diffConfig = null) where T : IBHoMObject
         {
             // Clone the current objects to preserve immutability
-            IEnumerable<T> objs_cloned = objs.Select(obj => BH.Engine.Base.Query.DeepClone(obj)).ToList();
+            List<T> objs_cloned = new List<T>();
 
             // Set configurations if diffConfig is null
             diffConfig = diffConfig == null ? new DiffConfig() : diffConfig;
 
             // Calculate and set the object hashes
-            foreach (var obj in objs_cloned)
+            foreach (var obj in objs)
             {
-                string hash = BH.Engine.Diffing.Compute.DiffingHash(obj, diffConfig);
-
-                HashFragment existingFragm = obj.GetHashFragment();
-
-                obj.Fragments.AddOrReplace(new HashFragment(hash, existingFragm?.Hash));
+                objs_cloned.Add(SetHashFragment(obj));
             }
 
             return objs_cloned;
+        }
+
+        [Description("Clones the IBHoMObject, computes their hash and stores it in a HashFragment. " +
+            "If the object already has a HashFragment, it computes the current one and stores the `previousHash` in the HashFragment.")]
+        public static T SetHashFragment<T>(T obj, DiffConfig diffConfig = null) where T : IBHoMObject
+        {
+            // Clone the current object to preserve immutability
+            T obj_cloned = BH.Engine.Base.Query.DeepClone(obj);
+
+            // Set configurations if diffConfig is null
+            diffConfig = diffConfig == null ? new DiffConfig() : diffConfig;
+
+            // Calculate and set the object hashes
+            string hash = BH.Engine.Diffing.Compute.DiffingHash(obj_cloned, diffConfig);
+
+            HashFragment existingFragm = obj_cloned.GetHashFragment();
+
+            obj_cloned.Fragments.AddOrReplace(new HashFragment(hash, existingFragm?.Hash));
+
+            return obj_cloned;
         }
     }
 }
