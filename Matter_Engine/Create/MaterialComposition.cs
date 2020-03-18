@@ -47,10 +47,10 @@ namespace BH.Engine.Matter
         /***************************************************/
 
         [Description("Creates a MaterialComposition for a collection of Materials given their ratios.")]
-        [Input("materials", "The Materials the MaterialCombination is composed of.")]
-        [Input("ratios", "The ratios of each material, the number of ratios must match the number of materials." +
-                         "If the ratios sum does not equal 1 they will be factored to do so.", typeof(Ratio))]
-        [Output("materialComposition", "A material composition composed of the provided materials and ratios scaled so that their sum equals 1.")]
+        [Input("materials", "The discrete Materials the MaterialComposition is comprised of.")]
+        [Input("ratios", "The ratios of each material based on their relative volumes. The number of ratios must match the number of materials." +
+                         "The ratio sum will be normalised as required, to ensure the total equates to one.", typeof(Ratio))]
+        [Output("materialComposition", "A material composition composed of the provided materials and ratios scaled so that their sum equals one.")]
         public static MaterialComposition MaterialComposition(IEnumerable<Material> materials, IEnumerable<double> ratios)
         {
             if (Math.Abs(1 - ratios.Sum()) > Tolerance.Distance)
@@ -64,9 +64,9 @@ namespace BH.Engine.Matter
 
         /***************************************************/
 
-        [Description("Creates a MaterialComposition from a Material, equivellant to casting to MaterialComposition.")]
+        [Description("Creates a homogeneous MaterialComposition from a single Material.")]
         [Input("material", "This material will be the only Material in the Composition.")]
-        [Output("materialComposition", "A MaterialComposition whos only Material is the provided one with a ratio of one.")]
+        [Output("materialComposition", "A single Material MaterialComposition with a ratio of one.")]
         public static MaterialComposition MaterialComposition(Material material)
         {
             return (MaterialComposition)material;
@@ -74,9 +74,9 @@ namespace BH.Engine.Matter
 
         /***************************************************/
 
-        [Description("Creates a MaterialComposition from a IMaterialProperties. Sets the IMaterialProperties name as the Materials name.")]
+        [Description("Creates a homogeneous MaterialComposition from a single IMaterialProperties. Sets the Material's name as the IMaterialProperties' name.")]
         [Input("materialProperty", "This material will be the only Material in the Composition.")]
-        [Output("materialComposition", "A MaterialComposition whos only Material is the provided one with a ratio of one.")]
+        [Output("materialComposition", "A single Material MaterialComposition with a ratio of one.")]
         public static MaterialComposition MaterialComposition(IMaterialProperties materialProperty)
         {
             Material material = new Material
@@ -92,4 +92,3 @@ namespace BH.Engine.Matter
 
     }
 }
-

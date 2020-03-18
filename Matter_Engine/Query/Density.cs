@@ -41,12 +41,12 @@ namespace BH.Engine.Matter
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Gets the density of a Material by querying each of its IMaterialProperties for theirs." +
-                     "The density is gotten from a property with that name." +
-                     "If the density is found on diffrent IMaterialProperties, not result will be returned.")]
-        [Input("material", "The material to get the density of")]
-        [Input("type", "The kind of IMaterialProperties to cull the result by, use this if multiple IMaterialProperties have densities")]
-        [Output("density", "The density of the material, further info on how the value was accuired is recorded in the warning", typeof(Density))]
+        [Description("Returns the density of a Material though querying each of the individual IMaterialProperties." +
+                     "\nThe density is based on properties with an exact matching name." +
+                     "\nIf inconsistent density values are found on multiple different IMaterialProperties, no result will be returned.")]
+        [Input("material", "The material to query density from.")]
+        [Input("type", "A specific type of IMaterialProperties to limit the search to. Set a preferred type here if multiple IMaterialProperties have densities.")]
+        [Output("density", "The density of the material. Additional info on how the value has been acquired is recorded in the warning", typeof(Density))]
         public static double Density(this Material material, Type type = null, double tolerance = 0.001)
         {
             if (type == null)
