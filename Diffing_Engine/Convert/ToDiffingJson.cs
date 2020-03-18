@@ -39,7 +39,7 @@ using System.ComponentModel;
 
 namespace BH.Engine.Diffing
 {
-    public static partial class Compute
+    public static partial class Convert
     {
         ///***************************************************/
         ///**** Public Methods                            ****/
