@@ -49,7 +49,7 @@ namespace BH.Engine.Diffing
 
 
         [Description("Returns a new Revision as an update of a previous one, replacing its objects with the input objects.")]
-        [Input("stream", "Stream to be updated")]
+        [Input("previousRevision", "Previous Revision being updated")]
         [Input("objects", "Objects to be included in the updated Revision")]
         [Input("newRevisionId", "If not specified, newRevisionId will be an auto-generated GUID.")]
         [Output("The new Revision containing the given objects.")]
