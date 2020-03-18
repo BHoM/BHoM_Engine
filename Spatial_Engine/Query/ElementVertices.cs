@@ -55,12 +55,24 @@ namespace BH.Engine.Spatial
         public static List<Point> ElementVertices(this IElement2D element2D)
         {
             List<Point> result = new List<Point>();
-            result.AddRange(element2D.IOutlineCurve().ElementVertices());
+            result.AddRange(element2D.OutlineCurve().ElementVertices());
             foreach (IElement2D e in element2D.IInternalElements2D())
             {
                 result.AddRange(e.ElementVertices());
             }
 
+            return result;
+        }
+
+        /******************************************/
+
+        public static List<Point> ElementVertices(this IEnumerable<IElement> elements)
+        {
+            List<Point> result = new List<Point>();
+            foreach (IElement element in elements)
+            {
+                result.AddRange(element.IElementVertices());
+            }
             return result;
         }
 
@@ -76,17 +88,6 @@ namespace BH.Engine.Spatial
 
         /******************************************/
 
-        public static List<Point> IElementVertices(this IEnumerable<IElement> elements)
-        {
-            List<Point> result = new List<Point>();
-            foreach(IElement element in elements)
-            {
-                result.AddRange(element.IElementVertices());
-            }
-            return result;
-        }
-        
-        /******************************************/
     }
 }
 

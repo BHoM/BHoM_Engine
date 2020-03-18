@@ -44,7 +44,7 @@ namespace BH.Engine.Spatial
 
         public static List<Point> ControlPoints(this IElement2D element2D, bool externalOnly = false)
         {
-            List<Point> pts = Geometry.Query.ControlPoints(element2D.IOutlineCurve());
+            List<Point> pts = Geometry.Query.ControlPoints(element2D.OutlineCurve());
             if (!externalOnly)
             {
                 foreach (IElement2D e in element2D.IInternalElements2D())

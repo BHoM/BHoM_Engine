@@ -71,7 +71,7 @@ namespace BH.Engine.Common
         [Deprecated("3.1", "Migrated to the Spatial_Engine")]
         public static List<ICurve> IElementCurves(this IEnumerable<IElement> elements, bool recursive = true)
         {
-            return Spatial.Query.IElementCurves(elements, recursive);
+            return Spatial.Query.ElementCurves(elements, recursive);
 
         }
 

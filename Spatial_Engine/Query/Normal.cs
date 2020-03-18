@@ -35,7 +35,7 @@ namespace BH.Engine.Spatial
 
         public static Vector Normal(this IElement2D element2D)
         {
-            return element2D.IOutlineCurve().Normal();
+            return element2D.OutlineCurve().Normal();
         }
 
         /******************************************/

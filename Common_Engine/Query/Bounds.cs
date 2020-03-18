@@ -82,7 +82,7 @@ namespace BH.Engine.Common
         [Deprecated("3.1", "Migrated to the Spatial_Engine")]
         public static BoundingBox IBounds(this IEnumerable<IElement> elements)
         {
-            return Spatial.Query.IBounds(elements);
+            return Spatial.Query.Bounds(elements);
         }
 
         /******************************************/

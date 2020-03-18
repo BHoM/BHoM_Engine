@@ -33,14 +33,14 @@ namespace BH.Engine.Spatial
         /****            IElement2D            ****/
         /******************************************/
 
-        public static PolyCurve IOutlineCurve(this IElement2D element2D)
+        public static PolyCurve OutlineCurve(this IElement2D element2D)
         {
             return new PolyCurve { Curves = element2D.IOutlineElements1D().Select(e => e.IGeometry()).ToList() };
         }
 
         /******************************************/
 
-        public static PolyCurve IOutlineCurve(this List<IElement1D> elements1D)
+        public static PolyCurve OutlineCurve(this List<IElement1D> elements1D)
         {
             return new PolyCurve { Curves = elements1D.Select(e => e.IGeometry()).ToList() };
         }

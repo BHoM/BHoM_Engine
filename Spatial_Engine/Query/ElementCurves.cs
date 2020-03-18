@@ -50,7 +50,7 @@ namespace BH.Engine.Spatial
         {
             List<ICurve> result = new List<ICurve>();
 
-            PolyCurve outline = element2D.IOutlineCurve();
+            PolyCurve outline = element2D.OutlineCurve();
             foreach (ICurve curve in outline.Curves)
             {
                 if (recursive)
@@ -69,18 +69,10 @@ namespace BH.Engine.Spatial
 
 
         /******************************************/
-        /**** Public Methods - Interfaces      ****/
+        /****            IElement              ****/
         /******************************************/
 
-        public static List<ICurve> IElementCurves(this IElement element, bool recursive = true)
-        {
-            return ElementCurves(element as dynamic, recursive);
-        }
-
-
-        /******************************************/
-
-        public static List<ICurve> IElementCurves(this IEnumerable<IElement> elements, bool recursive = true)
+        public static List<ICurve> ElementCurves(this IEnumerable<IElement> elements, bool recursive = true)
         {
             List<ICurve> result = new List<ICurve>();
             foreach (IElement element in elements)
@@ -88,6 +80,16 @@ namespace BH.Engine.Spatial
                 result.AddRange(element.IElementCurves(recursive));
             }
             return result;
+        }
+
+
+        /******************************************/
+        /**** Public Methods - Interfaces      ****/
+        /******************************************/
+
+        public static List<ICurve> IElementCurves(this IElement element, bool recursive = true)
+        {
+            return ElementCurves(element as dynamic, recursive);
         }
         
         /******************************************/
