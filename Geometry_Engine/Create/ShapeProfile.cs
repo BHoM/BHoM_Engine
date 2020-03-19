@@ -365,7 +365,7 @@ namespace BH.Engine.Geometry
 
                     TransformMatrix trans = OrientationMatrix(localCar, globalCar);
 
-                    result = result.Select(x => x.ITransform(trans));
+                    result = result.Select(x => x.ITransform(trans)).ToList();
                 }
 
                 // Is on XY
@@ -375,7 +375,7 @@ namespace BH.Engine.Geometry
                     Point p = cPoints.FirstOrDefault();
                     Vector v = new oM.Geometry.Vector() { X = p.X, Y = p.Y, Z = p.Z };
 
-                    result = result.Select(x => x.ITranslate(-v));
+                    result = result.Select(x => x.ITranslate(-v)).ToList();
                 }
             }
 
