@@ -344,7 +344,8 @@ namespace BH.Engine.Geometry
                         plane = Compute.IJoin(edges.ToList()).OrderBy(x => x.Area()).Last().ControlPoints().FitPlane();
 
                         result = edges.Select(x => x.IProject(plane)).ToList();
-                        Reflection.Compute.RecordWarning("The Profiles curves have been planerized onto a plane fitted through their control points.");
+                        Reflection.Compute.RecordWarning("The Profiles curves have been planerized onto a plane fitted through the biggest curves control points.");
+                        cPoints = result.SelectMany(x => x.IControlPoints()).ToList();
                     }
                     catch
                     { }
@@ -365,10 +366,11 @@ namespace BH.Engine.Geometry
                     TransformMatrix trans = OrientationMatrixLocalToGlobal(localCar);
 
                     result = result.Select(x => x.ITransform(trans)).ToList();
+                    cPoints = result.SelectMany(x => x.IControlPoints()).ToList();
                 }
 
                 // Is on XY
-                if (result.First().IControlPoints().FirstOrDefault().Distance(oM.Geometry.Plane.XY) > Tolerance.Distance)
+                if (cPoints.FirstOrDefault().Distance(oM.Geometry.Plane.XY) > Tolerance.Distance)
                 {
                     Reflection.Compute.RecordWarning("The Profiles curves are not on the XY-Plane. Automatic translation has occured.");
                     Point p = cPoints.FirstOrDefault();
