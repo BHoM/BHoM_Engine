@@ -20,55 +20,28 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using BH.oM.Physical.Materials;
-
+using BH.oM.Dimensional;
+using BH.oM.Geometry;
+using BH.oM.Quantities.Attributes;
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
 
-namespace BH.Engine.Physical
+namespace BH.Engine.Matter
 {
-    public static partial class Create
+    public static partial class Query
     {
+        /******************************************/
+        /****            IElement1D            ****/
+        /******************************************/
 
-        /***************************************************/
-
-        [Description("Returns a Material object")]
-        [Input("name", "The name of the material, default empty string")]
-        [Input("properties", "A collection of the specific properties of the material to be created, default null")]
-        [Output("A Material object")]
-        public static Material Material(string name = "", List<IMaterialProperties> properties = null)
+        [Description("Returns an element's solid volume")]
+        [Input("elementM", "The element to get the volume from")]
+        [Output("volume", "The element's solid material volume.", typeof(Volume))]
+        public static double ISolidVolume(this IElementM elementM)
         {
-            properties = properties ?? new List<IMaterialProperties>();
-
-            return new Material
-            {
-                Name = name,
-                Properties = properties,
-            };
+            return (double)Reflection.Compute.RunExtensionMethod(elementM, "SolidVolume");
         }
 
-        /***************************************************/
-
-        [Description("Returns a Material object")]
-        [Input("property", "The specific property of the material to be created, its name will be carried over to the Material")]
-        [Output("A Material object")]
-        public static Material Material(IMaterialProperties property)
-        {
-            return new Material
-            {
-                Name = property.Name,
-                Properties = new List<IMaterialProperties>() { property },
-            };
-        }
-
-        /***************************************************/
-
+        /******************************************/
     }
 }
-
