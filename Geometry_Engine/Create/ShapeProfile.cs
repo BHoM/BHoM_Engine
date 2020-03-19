@@ -340,6 +340,9 @@ namespace BH.Engine.Geometry
                     Reflection.Compute.RecordWarning("The Profiles curves are not Planar");
                     try
                     {
+                        // Get biggest contributing curve and fit a plane to it
+                        plane = Compute.IJoin(edges.ToList()).OrderBy(x => x.Area()).Last().ControlPoints().FitPlane();
+
                         result = edges.Select(x => x.IProject(plane)).ToList();
                         Reflection.Compute.RecordWarning("The Profiles curves have been planerized onto a plane fitted through their control points.");
                     }
