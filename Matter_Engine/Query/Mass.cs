@@ -36,7 +36,7 @@ namespace BH.Engine.Matter
         /****            IElement1D            ****/
         /******************************************/
 
-        [Description("Evaluates the mass of an object based its Solid Volume and Density")]
+        [Description("Evaluates the mass of an object based its Solid Volume and Density.\nRequires a single consistent value of Density to be provided across all MaterialProperties of a given element.")]
         [Input("elementM", "The element to evaluate the mass of")]
         [Output("mass", "The physical mass of the element", typeof(Mass))]
         public static double Mass(this IElementM elementM)

@@ -74,7 +74,7 @@ namespace BH.Engine.Matter
             }
             if (densities.Count > 1 && !CheckRange(densities, tolerance))
             {
-                Reflection.Compute.RecordWarning("The density for " + material.Name + " is found on multiple IMaterialProperties, please specify one type for a result");
+                Reflection.Compute.RecordWarning("Multiple unique values for density found across multiple IMaterialProperties for " + material.Name + ". Please either ensure consistency of values or provide a specific material property type to define a valid density.");
                 return double.NaN;
             }
             if (densities.Count > 1)
