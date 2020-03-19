@@ -20,38 +20,37 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System;
-using System.Linq;
 
-namespace BH.Engine.Serialiser
+using BH.oM.Structure.MaterialFragments;
+using BH.oM.Reflection.Attributes;
+using BH.oM.Quantities.Attributes;
+using System.ComponentModel;
+using BH.oM.Structure.Elements;
+using System.Collections.Generic;
+using System;
+using BH.oM.Physical.Materials;
+
+namespace BH.Engine.Structure
 {
     public static partial class Query
     {
-        /*******************************************/
-        /**** Public Methods                    ****/
-        /*******************************************/
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
 
-        public static Type GenericTypeConstraint(this Type type)
+        [Description("Returns a Bar's solid volume based on its SectionProperty area and the CentreLine length")]
+        [Input("bar", "The Bar to get the volume from")]
+        [Output("volume", "The Bar solid material volume.", typeof(Volume))]
+        public static double SolidVolume(this Bar bar)
         {
-            Type constraint = type.GetGenericParameterConstraints().FirstOrDefault();
-
-            if (constraint == null)
-                return typeof(object);
-            else if (constraint.ContainsGenericParameters)
+            if (bar.SectionProperty == null)
             {
-                if (constraint.GetGenericArguments().Any(x => x == type))
-                    return constraint.GetGenericTypeDefinition().MakeGenericType(new Type[] { typeof(object) });
-
-                Type[] generics = constraint.GetGenericArguments().Select(x => GenericTypeConstraint(x)).ToArray();
-                if (generics.Length == 0)
-                    generics = new Type[] { typeof(object) };
-                return constraint.GetGenericTypeDefinition().MakeGenericType(generics);
+                Engine.Reflection.Compute.RecordError("The Bars Solid Volume could not be calculated as no section property has been assigned. Returning zero volume.");
+                return 0;
             }
-            else
-                return constraint;
+            return bar.SectionProperty.Area * bar.Length();
         }
-
-        /*******************************************/
+        
+        /***************************************************/
     }
 }
-

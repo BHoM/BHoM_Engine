@@ -20,38 +20,32 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.oM.Dimensional;
+using BH.oM.Geometry;
+using BH.oM.Physical.Materials;
+using BH.oM.Quantities.Attributes;
+using BH.oM.Reflection.Attributes;
 using System;
-using System.Linq;
+using System.Collections.Generic;
+using System.ComponentModel;
 
-namespace BH.Engine.Serialiser
+namespace BH.Engine.Matter
 {
     public static partial class Query
     {
-        /*******************************************/
-        /**** Public Methods                    ****/
-        /*******************************************/
+        /******************************************/
+        /****            IElement1D            ****/
+        /******************************************/
 
-        public static Type GenericTypeConstraint(this Type type)
+        [Description("Gets the unique Materials along with their relative proportions defining an object's make-up.")]
+        [Input("elementM", "The element to get the MaterialComposition from.")]
+        [Output("materialComposition", "The kind of matter the element is composed of and in which ratios.")]
+        public static MaterialComposition IMaterialComposition(this IElementM elementM)
         {
-            Type constraint = type.GetGenericParameterConstraints().FirstOrDefault();
-
-            if (constraint == null)
-                return typeof(object);
-            else if (constraint.ContainsGenericParameters)
-            {
-                if (constraint.GetGenericArguments().Any(x => x == type))
-                    return constraint.GetGenericTypeDefinition().MakeGenericType(new Type[] { typeof(object) });
-
-                Type[] generics = constraint.GetGenericArguments().Select(x => GenericTypeConstraint(x)).ToArray();
-                if (generics.Length == 0)
-                    generics = new Type[] { typeof(object) };
-                return constraint.GetGenericTypeDefinition().MakeGenericType(generics);
-            }
-            else
-                return constraint;
+            return Reflection.Compute.RunExtensionMethod(elementM, "MaterialComposition") as MaterialComposition;
         }
 
-        /*******************************************/
+        /******************************************/
     }
 }
 

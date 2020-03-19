@@ -20,38 +20,31 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System;
+using BH.oM.Dimensional;
+using BH.oM.Geometry;
+using BH.oM.Physical.Materials;
+using BH.oM.Quantities.Attributes;
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 using System.Linq;
 
-namespace BH.Engine.Serialiser
+namespace BH.Engine.Matter
 {
     public static partial class Query
     {
-        /*******************************************/
-        /**** Public Methods                    ****/
-        /*******************************************/
+        /******************************************/
+        /****            IElement1D            ****/
+        /******************************************/
 
-        public static Type GenericTypeConstraint(this Type type)
+        [Description("Evaluates the mass of an object based its Solid Volume and Density.\nRequires a single consistent value of Density to be provided across all MaterialProperties of a given element.")]
+        [Input("elementM", "The element to evaluate the mass of")]
+        [Output("mass", "The physical mass of the element", typeof(Mass))]
+        public static double Mass(this IElementM elementM)
         {
-            Type constraint = type.GetGenericParameterConstraints().FirstOrDefault();
-
-            if (constraint == null)
-                return typeof(object);
-            else if (constraint.ContainsGenericParameters)
-            {
-                if (constraint.GetGenericArguments().Any(x => x == type))
-                    return constraint.GetGenericTypeDefinition().MakeGenericType(new Type[] { typeof(object) });
-
-                Type[] generics = constraint.GetGenericArguments().Select(x => GenericTypeConstraint(x)).ToArray();
-                if (generics.Length == 0)
-                    generics = new Type[] { typeof(object) };
-                return constraint.GetGenericTypeDefinition().MakeGenericType(generics);
-            }
-            else
-                return constraint;
+            MaterialComposition mat = elementM.IMaterialComposition();
+            return elementM.ISolidVolume() * mat.Materials.Zip(mat.Ratios, (m,r) => r * m.Density()).Sum();
         }
 
-        /*******************************************/
+        /******************************************/
     }
 }
-

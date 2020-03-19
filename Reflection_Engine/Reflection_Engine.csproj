@@ -93,6 +93,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Compute\MakeGenericFromInputs.cs" />
     <Compile Include="Compute\DeepDependencies.cs" />
     <Compile Include="Compute\OpenHelpPage.cs" />
     <Compile Include="Compute\RecordError.cs" />

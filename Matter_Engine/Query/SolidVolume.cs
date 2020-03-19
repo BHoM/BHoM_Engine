@@ -20,38 +20,28 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System;
-using System.Linq;
+using BH.oM.Dimensional;
+using BH.oM.Geometry;
+using BH.oM.Quantities.Attributes;
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
-namespace BH.Engine.Serialiser
+namespace BH.Engine.Matter
 {
     public static partial class Query
     {
-        /*******************************************/
-        /**** Public Methods                    ****/
-        /*******************************************/
+        /******************************************/
+        /****            IElement1D            ****/
+        /******************************************/
 
-        public static Type GenericTypeConstraint(this Type type)
+        [Description("Returns an element's solid volume")]
+        [Input("elementM", "The element to get the volume from")]
+        [Output("volume", "The element's solid material volume.", typeof(Volume))]
+        public static double ISolidVolume(this IElementM elementM)
         {
-            Type constraint = type.GetGenericParameterConstraints().FirstOrDefault();
-
-            if (constraint == null)
-                return typeof(object);
-            else if (constraint.ContainsGenericParameters)
-            {
-                if (constraint.GetGenericArguments().Any(x => x == type))
-                    return constraint.GetGenericTypeDefinition().MakeGenericType(new Type[] { typeof(object) });
-
-                Type[] generics = constraint.GetGenericArguments().Select(x => GenericTypeConstraint(x)).ToArray();
-                if (generics.Length == 0)
-                    generics = new Type[] { typeof(object) };
-                return constraint.GetGenericTypeDefinition().MakeGenericType(generics);
-            }
-            else
-                return constraint;
+            return (double)Reflection.Compute.RunExtensionMethod(elementM, "SolidVolume");
         }
 
-        /*******************************************/
+        /******************************************/
     }
 }
-
