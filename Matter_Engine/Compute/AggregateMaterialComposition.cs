@@ -37,6 +37,7 @@ using BH.oM.Dimensional;
 using BH.oM.Quantities.Attributes;
 using BH.Engine.Base.Objects;
 using BH.oM.Base;
+using BH.Engine.Diffing;
 
 namespace BH.Engine.Matter
 {
@@ -71,7 +72,7 @@ namespace BH.Engine.Matter
             if (localMatComps.Count != localRatios.Count)
                 return null;
 
-            HashFragmComparer<Material> hashComparer = new HashFragmComparer<Material>();
+            DiffingHashComparer<Material> hashComparer = new DiffingHashComparer<Material>();
 
             for (int j = 0; j < localMatComps.Count; j++)
             {
