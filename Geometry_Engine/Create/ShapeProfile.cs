@@ -328,47 +328,52 @@ namespace BH.Engine.Geometry
         {
             IEnumerable<ICurve> result = edges.ToList();
             
-            // Is Planar
             List<Point> cPoints = edges.SelectMany(x => x.IControlPoints()).ToList();
-            Plane plane = Compute.FitPlane(cPoints);
-            if (cPoints.Any(x => x.Distance(plane) > Tolerance.Distance))
+
+            // Any Point not on the XY-Plane
+            if (cPoints.Any(x => Math.Abs(x.Z) > Tolerance.Distance))
             {
-                Reflection.Compute.RecordWarning("The Profiles curves are not Planar");
-                try
+                // Is Planar
+                Plane plane = Compute.FitPlane(cPoints);
+                if (cPoints.Any(x => x.Distance(plane) > Tolerance.Distance))
                 {
-                    result = edges.Select(x => x.IProject(plane)).ToList();
-                    Reflection.Compute.RecordWarning("The Profiles curves have been planerized onto a plane fitted through their control points.");
+                    Reflection.Compute.RecordWarning("The Profiles curves are not Planar");
+                    try
+                    {
+                        result = edges.Select(x => x.IProject(plane)).ToList();
+                        Reflection.Compute.RecordWarning("The Profiles curves have been planerized onto a plane fitted through their control points.");
+                    }
+                    catch
+                    { }
                 }
-                catch
-                { }
-            }
 
-            // Is Coplanar with XY
-            if (plane.Normal.IsParallel(oM.Geometry.Vector.ZAxis) == 0)
-            {
-                Reflection.Compute.RecordWarning("The Profiles curves are not coplanar with the XY-Plane. Automatic orientation has occured.");
+                // Is Coplanar with XY
+                if (plane.Normal.IsParallel(oM.Geometry.Vector.ZAxis) == 0)
+                {
+                    Reflection.Compute.RecordWarning("The Profiles curves are not coplanar with the XY-Plane. Automatic orientation has occured.");
 
-                Vector planeN = plane.Normal;
-                planeN = planeN.Z > 0 ? planeN : -planeN;
+                    Vector planeN = plane.Normal;
+                    planeN = planeN.Z > 0 ? planeN : -planeN;
 
-                Vector localX = planeN.CrossProduct(-oM.Geometry.Vector.ZAxis);
-                Vector localY = planeN.CrossProduct(localX);
-                oM.Geometry.CoordinateSystem.Cartesian localCar = Create.CartesianCoordinateSystem(cPoints.FirstOrDefault(), localX, localY);
-                oM.Geometry.CoordinateSystem.Cartesian globalCar = Create.CartesianCoordinateSystem(oM.Geometry.Point.Origin, oM.Geometry.Vector.XAxis, oM.Geometry.Vector.YAxis);
+                    Vector localX = planeN.CrossProduct(-oM.Geometry.Vector.ZAxis);
+                    Vector localY = planeN.CrossProduct(localX);
+                    oM.Geometry.CoordinateSystem.Cartesian localCar = Create.CartesianCoordinateSystem(cPoints.FirstOrDefault(), localX, localY);
+                    oM.Geometry.CoordinateSystem.Cartesian globalCar = Create.CartesianCoordinateSystem(oM.Geometry.Point.Origin, oM.Geometry.Vector.XAxis, oM.Geometry.Vector.YAxis);
 
-                TransformMatrix trans = OrientationMatrix(localCar, globalCar);
+                    TransformMatrix trans = OrientationMatrix(localCar, globalCar);
 
-                result = result.Select(x => x.ITransform(trans));
-            }
+                    result = result.Select(x => x.ITransform(trans));
+                }
 
-            // Is on XY
-            if (result.First().IControlPoints().FirstOrDefault().Distance(oM.Geometry.Plane.XY) > Tolerance.Distance)
-            {
-                Reflection.Compute.RecordWarning("The Profiles curves are not on the XY-Plane. Automatic translation has occured.");
-                Point p = cPoints.FirstOrDefault();
-                Vector v = new oM.Geometry.Vector() { X = p.X, Y = p.Y, Z = p.Z };
+                // Is on XY
+                if (result.First().IControlPoints().FirstOrDefault().Distance(oM.Geometry.Plane.XY) > Tolerance.Distance)
+                {
+                    Reflection.Compute.RecordWarning("The Profiles curves are not on the XY-Plane. Automatic translation has occured.");
+                    Point p = cPoints.FirstOrDefault();
+                    Vector v = new oM.Geometry.Vector() { X = p.X, Y = p.Y, Z = p.Z };
 
-                result = result.Select(x => x.ITranslate(-v));
+                    result = result.Select(x => x.ITranslate(-v));
+                }
             }
 
             if (!edges.Any(x => x.ISubParts().Any(y => y is NurbsCurve)))
