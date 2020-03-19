@@ -361,9 +361,8 @@ namespace BH.Engine.Geometry
                     Vector localX = planeN.CrossProduct(-oM.Geometry.Vector.ZAxis);
                     Vector localY = planeN.CrossProduct(localX);
                     oM.Geometry.CoordinateSystem.Cartesian localCar = Create.CartesianCoordinateSystem(cPoints.FirstOrDefault(), localX, localY);
-                    oM.Geometry.CoordinateSystem.Cartesian globalCar = Create.CartesianCoordinateSystem(oM.Geometry.Point.Origin, oM.Geometry.Vector.XAxis, oM.Geometry.Vector.YAxis);
 
-                    TransformMatrix trans = OrientationMatrix(localCar, globalCar);
+                    TransformMatrix trans = OrientationMatrixLocalToGlobal(localCar);
 
                     result = result.Select(x => x.ITransform(trans)).ToList();
                 }
