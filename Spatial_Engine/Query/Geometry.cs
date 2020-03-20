@@ -22,6 +22,8 @@
 
 using BH.oM.Dimensional;
 using BH.oM.Geometry;
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Spatial
 {
@@ -31,6 +33,9 @@ namespace BH.Engine.Spatial
         /****            IElement0D            ****/
         /******************************************/
 
+        [Description("Queries the defining geometrical object which all spatial operations will act on.")]
+        [Input("element0D", "The IElement0D to get the defining geometry from.")]
+        [Output("point", "The IElement0Ds base geometrical point object.")]
         public static Point IGeometry(this IElement0D element0D)
         {
             return Reflection.Compute.RunExtensionMethod(element0D, "Geometry") as Point;
@@ -40,6 +45,9 @@ namespace BH.Engine.Spatial
         /****            IElement1D            ****/
         /******************************************/
 
+        [Description("Queries the defining geometrical object which all spatial operations will act on.")]
+        [Input("element1D", "The IElement1D to get the defining geometry from.")]
+        [Output("curve", "The IElement1Ds base geometrical curve object.")]
         public static ICurve IGeometry(this IElement1D element1D)
         {
             return Reflection.Compute.RunExtensionMethod(element1D, "Geometry") as ICurve;
