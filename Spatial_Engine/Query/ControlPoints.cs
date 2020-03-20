@@ -22,7 +22,9 @@
 
 using BH.oM.Dimensional;
 using BH.oM.Geometry;
+using BH.oM.Reflection.Attributes;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace BH.Engine.Spatial
 {
@@ -32,6 +34,9 @@ namespace BH.Engine.Spatial
         /****            IElement1D            ****/
         /******************************************/
 
+        [Description("Queries the control points of the one dimensional representation of the IElement1D.")]
+        [Input("element1D", "The IElement1D with the geometry to get the control points from.")]
+        [Output("cPoints", "The control points of all the defining geometry for the one dimensional representation.")]
         public static List<Point> ControlPoints(this IElement1D element1D)
         {
             return Geometry.Query.IControlPoints(element1D.IGeometry());
@@ -42,6 +47,10 @@ namespace BH.Engine.Spatial
         /****            IElement2D            ****/
         /******************************************/
 
+        [Description("Queries the control points of the element curve representation of the IElement2D.")]
+        [Input("element2D", "The IElement2D with the element curves to get the control points from.")]
+        [Input("externalOnly", "Controls if the control points from the internal elements are queried as well.")]
+        [Output("cPoints", "The control points of all the defining geometry for the element curve representation.")]
         public static List<Point> ControlPoints(this IElement2D element2D, bool externalOnly = false)
         {
             List<Point> pts = Geometry.Query.ControlPoints(element2D.OutlineCurve());
