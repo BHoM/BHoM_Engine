@@ -22,6 +22,8 @@
 
 using BH.oM.Geometry;
 using BH.oM.Dimensional;
+using System.ComponentModel;
+using BH.oM.Reflection.Attributes;
 
 namespace BH.Engine.Spatial
 {
@@ -31,6 +33,9 @@ namespace BH.Engine.Spatial
         /****            IElement2D            ****/
         /******************************************/
 
+        [Description("Creates a IElement2D of a type which can be assigned to the IElement2D.")]
+        [Input("element2D", "A IElement2D with a internal IElement2D type defined. Its property assignmets are not used in this operation.")]
+        [Output("element2D", "A internal IElement2D which can be assigned to the IElement2D. Returns null if the IElement2D does not have a type of internal IElement2D.")]
         public static IElement2D INewInternalElement2D(this IElement2D element2D)
         {
             return Reflection.Compute.RunExtensionMethod(element2D, "NewInternalElement2D") as IElement2D;
