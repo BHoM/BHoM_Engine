@@ -60,21 +60,7 @@ namespace BH.Engine.Environment
                 roundedLevels.Add(lvl); //Round the levels
             }
 
-            List<oM.Geometry.SettingOut.Level> searchLevels = new List<oM.Geometry.SettingOut.Level>();
-
-            //Loop through each surface
-            foreach (Room room in rooms)
-            {
-                BoundingBox bbox = room.Perimeter.IBounds();
-                double zLevel = Math.Round(bbox.Min.Z, decimals);
-
-                if (roundedLevels.Where(x => x.Elevation == zLevel).FirstOrDefault() != null && searchLevels.Where(x => x.Elevation == zLevel).FirstOrDefault() == null)
-                    searchLevels.Add(roundedLevels.Where(x => x.Elevation == zLevel).FirstOrDefault());
-                else
-                    BH.Engine.Reflection.Compute.RecordWarning("Room with ID " + room.BHoM_Guid + " does not sit on any provided level");
-            }
-
-            Dictionary<double, List<Room>> mappedRooms = new Dictionary<double, List<Room>>();
+            Dictionary<oM.Geometry.SettingOut.Level, List<Room>> mappedRooms = new Dictionary<oM.Geometry.SettingOut.Level, List<Room>>();
 
             //Map everything
             foreach (Room room in rooms)
@@ -83,23 +69,27 @@ namespace BH.Engine.Environment
                 double zLevel = Math.Round(bbox.Min.Z, decimals);
                 int levelIndex = roundedLevels.IndexOf(roundedLevels.Where(x => x.Elevation == zLevel).First());
 
-                if (levelIndex == -1) continue; //zLevel does not exist in the search levels
+                if (levelIndex == -1)
+                {
+                    BH.Engine.Reflection.Compute.RecordWarning("Room with ID " + room.BHoM_Guid + " does not sit on any provided level");
+                    continue; //zLevel does not exist in the search levels
+                }
 
-                if (!mappedRooms.ContainsKey(levelIndex))
-                    mappedRooms.Add(levelIndex, new List<Room>());
+                if (!mappedRooms.ContainsKey(levels[levelIndex]))
+                    mappedRooms.Add(levels[levelIndex], new List<Room>());
 
                 levelsInUse.Add(levels[levelIndex]);
 
-                mappedRooms[levelIndex].Add(room);
+                mappedRooms[levels[levelIndex]].Add(room);
             }
 
-            foreach (KeyValuePair<double, List<Room>> kvp in mappedRooms.OrderBy(i => i.Key))
+            foreach (KeyValuePair<oM.Geometry.SettingOut.Level, List<Room>> kvp in mappedRooms.OrderBy(x => x.Key.Elevation))
                 roomsByLevel.Add(kvp.Value);
 
             Output<List<List<Room>>, List<oM.Geometry.SettingOut.Level>> output = new Output<List<List<Room>>, List<oM.Geometry.SettingOut.Level>>
             {
                 Item1 = roomsByLevel,
-                Item2 = levelsInUse.OrderBy(i => i.Elevation).Distinct().ToList(),
+                Item2 = levelsInUse.OrderBy(x => x.Elevation).Distinct().ToList(),
             };
 
             return output;
