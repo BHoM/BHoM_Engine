@@ -77,7 +77,8 @@ namespace BH.Engine.Diffing
                 else if (hashFragm.PreviousHash == hashFragm.Hash)
                 {
                     // It's NOT been modified
-                    unChanged.Add(obj);
+                    if (diffConfig.StoreUnchangedObjects)
+                        unChanged.Add(obj);
                 }
 
                 else if (hashFragm.PreviousHash != hashFragm.Hash)
