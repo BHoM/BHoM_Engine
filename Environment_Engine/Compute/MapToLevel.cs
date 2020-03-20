@@ -93,13 +93,13 @@ namespace BH.Engine.Environment
                 mappedRooms[levelIndex].Add(room);
             }
 
-            foreach (KeyValuePair<double, List<Room>> kvp in mappedRooms)
+            foreach (KeyValuePair<double, List<Room>> kvp in mappedRooms.OrderBy(i => i.Key))
                 roomsByLevel.Add(kvp.Value);
 
             Output<List<List<Room>>, List<oM.Geometry.SettingOut.Level>> output = new Output<List<List<Room>>, List<oM.Geometry.SettingOut.Level>>
             {
                 Item1 = roomsByLevel,
-                Item2 = levelsInUse.Distinct().ToList(),
+                Item2 = levelsInUse.OrderBy(i => i.Elevation).Distinct().ToList(),
             };
 
             return output;
