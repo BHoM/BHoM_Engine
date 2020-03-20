@@ -53,9 +53,9 @@ namespace BH.Engine.Diffing
         [Input("objects", "Objects to be included in the updated Revision")]
         [Input("newRevisionId", "If not specified, newRevisionId will be an auto-generated GUID.")]
         [Output("The new Revision containing the given objects.")]
-        public static Revision Revision(Revision previousRevision, IEnumerable<IBHoMObject> objects, string newRevisionId = null)
+        public static Revision Revision(Revision previousRevision, IEnumerable<IBHoMObject> objects, string newRevisionId = null, string comment = null)
         {
-            return new Revision(Modify.PrepareForDiffing(objects, previousRevision.RevisionDiffConfing), previousRevision.StreamId, previousRevision.RevisionDiffConfing, newRevisionId);
+            return new Revision(Modify.PrepareForDiffing(objects, previousRevision.RevisionDiffConfing), previousRevision.StreamId, previousRevision.RevisionDiffConfing, newRevisionId, comment);
         }
     }
 }
