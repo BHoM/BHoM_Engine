@@ -23,8 +23,11 @@
 using BH.Engine.Geometry;
 using BH.oM.Dimensional;
 using BH.oM.Geometry;
+using BH.oM.Quantities.Attributes;
+using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace BH.Engine.Spatial
 {
@@ -34,6 +37,9 @@ namespace BH.Engine.Spatial
         /****            IElement2D            ****/
         /******************************************/
 
+        [Description("Queries the IElement2Ds area defined as the area confined by the outline curves subtracting the area of the internal elements.")]
+        [Input("element2D", "The IElement2D to query the area of.")]
+        [Output("area", "The area of the region confined by the IElement2Ds outline elements subtracting the area of the internal elements", typeof(Area))]
         public static double Area(this IElement2D element2D)
         {
             double result = element2D.OutlineCurve().IArea();
