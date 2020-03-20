@@ -26,6 +26,7 @@ using BH.oM.Dimensional;
 using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 
 namespace BH.Engine.Spatial
@@ -36,6 +37,9 @@ namespace BH.Engine.Spatial
         /****            IElement1D            ****/
         /******************************************/
 
+        [Description("Queries the vertecies from a IElement1D. They are the defining ICurves discontinuity points.")]
+        [Input("element1D", "The IElement1D of which to get the vertecies from.")]
+        [Output("vertices", "The IElement1Ds curves discontinuity points.")]
         public static List<Point> ElementVertices(this IElement1D element1D)
         {
             ICurve curve = element1D.IGeometry();
@@ -52,6 +56,9 @@ namespace BH.Engine.Spatial
         /****            IElement2D            ****/
         /******************************************/
 
+        [Description("Queries the vertecies from a IElement2D. They are the defining element curves discontinuity points.")]
+        [Input("element2D", "The IElement2D of which to get the vertecies from.")]
+        [Output("vertices", "The IElement2Ds element curves discontinuity points.")]
         public static List<Point> ElementVertices(this IElement2D element2D)
         {
             List<Point> result = new List<Point>();
@@ -66,6 +73,9 @@ namespace BH.Engine.Spatial
 
         /******************************************/
 
+        [Description("Queries the vertecies from a collection of IElements. They are the defining element curves discontinuity points.")]
+        [Input("elements", "The IElements of which to get the vertecies from.")]
+        [Output("vertices", "The IElements element curves discontinuity points.")]
         public static List<Point> ElementVertices(this IEnumerable<IElement> elements)
         {
             List<Point> result = new List<Point>();
@@ -81,6 +91,9 @@ namespace BH.Engine.Spatial
         /**** Public Methods - Interfaces      ****/
         /******************************************/
 
+        [Description("Queries the vertecies from a IElement. They are the defining element curves discontinuity points.")]
+        [Input("element", "The IElement of which to get the vertecies from.")]
+        [Output("vertices", "The IElements element curves discontinuity points.")]
         public static List<Point> IElementVertices(this IElement element)
         {
             return ElementVertices(element as dynamic);
