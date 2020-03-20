@@ -23,8 +23,10 @@
 using BH.Engine.Geometry;
 using BH.oM.Dimensional;
 using BH.oM.Geometry;
+using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace BH.Engine.Spatial
 {
@@ -34,6 +36,9 @@ namespace BH.Engine.Spatial
         /****            IElement1D            ****/
         /******************************************/
 
+        [Description("Queries the centre of weight for a IElement1Ds ICurve representation.")]
+        [Input("element1D", "The IElement1D with the geometry to get the centre of weight of. The IElement1D will be considered homogeneous.")]
+        [Output("centroid", "The Point at the centre of weight for the homogeneous geometrical representation of the IElement1D.")]
         public static Point Centroid(this IElement1D element1D)
         {
             //TODO: find a proper centre of weight of a curve (not an average of control points)
@@ -45,6 +50,9 @@ namespace BH.Engine.Spatial
         /****            IElement2D            ****/
         /******************************************/
 
+        [Description("Queries the centre of weight for a IElement2Ds surface representation.")]
+        [Input("element2D", "The IElement2D with the geometry to get the centre of weight of. The IElement2D will be considered homogeneous.")]
+        [Output("centroid", "The Point at the centre of weight for the homogeneous geometrical representation of the IElement2D.")]
         public static Point Centroid(this IElement2D element2D)
         {
             Point tmp = Geometry.Query.Centroid(element2D.OutlineCurve());
