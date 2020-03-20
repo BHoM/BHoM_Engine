@@ -23,6 +23,8 @@
 using BH.Engine.Geometry;
 using BH.oM.Dimensional;
 using BH.oM.Geometry;
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Spatial
 {
@@ -32,6 +34,10 @@ namespace BH.Engine.Spatial
         /****            IElement0D            ****/
         /******************************************/
 
+        [Description("Modifies the geometry of a IElement0D to be the provided point's. The IElement0Ds other properties are unaffected.")]
+        [Input("element0D", "The IElement0D to modify the geometry of.")]
+        [Input("point", "The new point geometry for the IElement0D.")]
+        [Output("element0D", "A IElement0D with the properties of 'element0D' and the location of 'point'.")]
         public static IElement0D ISetGeometry(this IElement0D element0D, Point point)
         {
             return Reflection.Compute.RunExtensionMethod(element0D, "SetGeometry", new object[] { point }) as IElement0D;
@@ -41,6 +47,10 @@ namespace BH.Engine.Spatial
         /****            IElement1D            ****/
         /******************************************/
 
+        [Description("Modifies the geometry of a IElement1D to be the provided curve. The IElement1Ds other properties are unaffected.")]
+        [Input("element1D", "The IElement1D to modify the geomerty of.")]
+        [Input("curve", "The new geometry curve for the IElement1D.")]
+        [Output("element1D", "A IElement1D with the properties of 'element1D' and the location of 'curve'.")]
         public static IElement1D ISetGeometry(this IElement1D element1D, ICurve curve)
         {
             return Reflection.Compute.RunExtensionMethod(element1D, "SetGeometry", new object[] { curve }) as IElement1D;
