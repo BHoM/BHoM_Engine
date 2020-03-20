@@ -22,6 +22,8 @@
 
 using BH.oM.Dimensional;
 using BH.oM.Geometry;
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Spatial
 {
@@ -31,6 +33,10 @@ namespace BH.Engine.Spatial
         /****            IElement2D            ****/
         /******************************************/
 
+        [Description("Creates a IElement1D of a type which can be assigned to the IElement2D at the location of the curve.")]
+        [Input("element2D", "A IElement2D of which to get the correct IElement1D type of. Its property assignmets are not used in this operation.")]
+        [Input("curve", "The curve loaction of which to assign to the new IElement1D.")]
+        [Output("element1D", "A IElement1D which can be assigned to the IElement2D located at the curve's location.")]
         public static IElement1D INewElement1D(this IElement2D element2D, ICurve curve)
         {
             return Reflection.Compute.RunExtensionMethod(element2D, "NewElement1D", new object[] { curve }) as IElement1D;
