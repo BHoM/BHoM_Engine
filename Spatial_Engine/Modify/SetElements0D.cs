@@ -22,7 +22,9 @@
 
 using BH.oM.Dimensional;
 using BH.oM.Geometry;
+using BH.oM.Reflection.Attributes;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace BH.Engine.Spatial
 {
@@ -32,6 +34,10 @@ namespace BH.Engine.Spatial
         /****            IElement1D            ****/
         /******************************************/
 
+        [Description("Assigns the provided IElement0Ds to the IElement1D. The IElement0Ds location is used and may change the IElement1Ds geometry.")]
+        [Input("element1D", "The IElement1D to modify the IElement0D's properties of. This includes their location.")]
+        [Input("newElements0D", "The IElement0Ds to assign to the IElement1D. Must be of the correct type.")]
+        [Output("element1D", "The modified IElement1D which has unchanged properties and new IElement0Ds.")]
         public static IElement1D ISetElements0D(this IElement1D element1D, List<IElement0D> newElements0D)
         {
             return Reflection.Compute.RunExtensionMethod(element1D, "SetElements0D", new object[] { newElements0D }) as IElement1D;
