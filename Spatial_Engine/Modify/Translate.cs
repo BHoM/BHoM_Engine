@@ -23,6 +23,8 @@
 using System.Collections.Generic;
 using BH.oM.Dimensional;
 using BH.oM.Geometry;
+using System.ComponentModel;
+using BH.oM.Reflection.Attributes;
 
 namespace BH.Engine.Spatial
 {
@@ -32,6 +34,10 @@ namespace BH.Engine.Spatial
         /**** Public Methods - IElements                ****/
         /***************************************************/
 
+        [Description("Translates the IElement2Ds geometrical definition by the transform vector.")]
+        [Input("element2D", "The IElement2D to translate the geometry of.")]
+        [Input("transform", "The translation vector.")]
+        [Output("element2D", "The modified IElement2D which has unchanged properties and translated geometrical definition.")]
         public static IElement2D Translate(this IElement2D element2D, Vector transform)
         {
             List<IElement1D> newOutline = new List<IElement1D>();
@@ -52,6 +58,10 @@ namespace BH.Engine.Spatial
 
         /***************************************************/
 
+        [Description("Translates the IElement1Ds geometrical definition by the transform vector.")]
+        [Input("element1D", "The IElement1D to translate the geometry of.")]
+        [Input("transform", "The translation vector.")]
+        [Output("element1D", "The modified IElement1D which has unchanged properties and translated geometrical definition.")]
         public static IElement1D Translate(this IElement1D element1D, Vector transform)
         {
             return element1D.ISetGeometry(Geometry.Modify.ITranslate(element1D.IGeometry(), transform));
@@ -59,10 +69,17 @@ namespace BH.Engine.Spatial
 
         /******************************************/
 
+        [Description("Translates the IElement0Ds geometrical definition by the transform vector.")]
+        [Input("element0D", "The IElement0D to translate the geometry of.")]
+        [Input("transform", "The translation vector.")]
+        [Output("element0D", "The modified IElement0D which has unchanged properties and translated geometrical definition.")]
         public static IElement0D Translate(this IElement0D element0D, Vector transform)
         {
             return element0D.ISetGeometry(Geometry.Modify.Translate(element0D.IGeometry(), transform));
         }
+
+        /******************************************/
+
     }
 }
 
