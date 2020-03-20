@@ -38,11 +38,15 @@ namespace BH.Engine.Diffing
 {
     public static partial class Create
     {
-        [Description("Returns a Delta object with the differences between the Revision objects and the provided object list.")]
+        // ----------------------------------------------- //
+        //                Diff-based Delta                 //
+        // ----------------------------------------------- //
+
+        [Description("Returns a Delta object with the Diff between the two input Revisions, also called `Diff-based Delta`.")]
         [Input("previousRevision", "A previous Revision")]
         [Input("currentRevision", "A new Revision")]
         [Input("diffConfig", "Sets configs such as properties to be ignored in the diffing, or enable/disable property-by-property diffing.\nBy default it takes the diffConfig property of the Revision. This input can be used to override it.")]
-        public static Delta DiffBasedDelta(Revision previousRevision, Revision currentRevision, DiffConfig diffConfig = null, string comment = null)
+        public static Delta Delta(Revision previousRevision, Revision currentRevision, DiffConfig diffConfig = null, string comment = null)
         {
             Diff diff = Compute.Diffing(previousRevision.Objects, currentRevision.Objects, diffConfig);
 
@@ -52,10 +56,14 @@ namespace BH.Engine.Diffing
             return new Delta(previousRevision.StreamId, diff, previousRevision.RevisionId, currentRevision.RevisionId, timestamp, author, comment);
         }
 
-        [Description("Returns a Delta object containing all the objects of the input Revision.")]
+        // ----------------------------------------------- //
+        //              Revision-based Delta               //
+        // ----------------------------------------------- //
+
+        [Description("Returns a Delta object containing all the objects of the input Revision, also called `Revision-Based Delta`.")]
         [Input("revision", "A new Revision")]
         [Input("diffConfig", "Sets configs such as properties to be ignored in the diffing, or enable/disable property-by-property diffing.\nBy default it takes the diffConfig property of the Revision. This input can be used to override it.")]
-        public static Delta RevisionBasedDelta(Revision revision, DiffConfig diffConfig = null, string comment = null)
+        public static Delta Delta(Revision revision, DiffConfig diffConfig = null, string comment = null)
         {
             Diff diff = Compute.Diffing(null, revision.Objects, diffConfig);
 
@@ -65,15 +73,18 @@ namespace BH.Engine.Diffing
             return new Delta(revision.StreamId, diff, revision.RevisionId, null, timestamp, author, comment);
         }
 
-        [Description("Returns a Delta object, containing all the input objects wrapped in a Revision.")]
+        [Description("Returns a Delta object, containing all the input objects wrapped in a Revision. Also called `Revision-Based Delta`.")]
         [Input("revision", "A new Revision")]
         [Input("diffConfig", "Sets configs such as properties to be ignored in the diffing, or enable/disable property-by-property diffing.\nBy default it takes the diffConfig property of the Revision. This input can be used to override it.")]
-        public static Delta RevisionBasedDelta(List<IBHoMObject> revisionObjects, string streamId, string revisionId = null, 
+        public static Delta Delta(List<IBHoMObject> revisionObjects, string streamId, string revisionId = null, 
             DiffConfig diffConfig = null, string comment = null)
         {
             Revision revision = Create.Revision(revisionObjects, streamId, revisionId, diffConfig, comment);
-            return RevisionBasedDelta(revision, diffConfig, comment);
+            return Delta(revision, diffConfig, comment);
         }
+
+        // ----------------------------------------------- //
+
     }
 }
 
