@@ -67,6 +67,7 @@ namespace BH.Engine.Environment
                 panelPoints.Add(new Point { X = floorPoints[a].X, Y = floorPoints[a].Y, Z = floorPoints[a].Z + height });
                 panelPoints.Add(new Point { X = floorPoints[a + 1].X, Y = floorPoints[a + 1].Y, Z = floorPoints[a + 1].Z + height });
                 panelPoints.Add(floorPoints[a + 1]);
+                panelPoints.Add(floorPoints[a]);
 
                 panels.Add(new Panel { ExternalEdges = new Polyline { ControlPoints = panelPoints, }.ToEdges(), Type = PanelType.Wall });
             }
