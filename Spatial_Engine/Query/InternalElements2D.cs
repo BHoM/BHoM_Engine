@@ -22,7 +22,9 @@
 
 using BH.oM.Dimensional;
 using BH.oM.Geometry;
+using BH.oM.Reflection.Attributes;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace BH.Engine.Spatial
 {
@@ -32,6 +34,9 @@ namespace BH.Engine.Spatial
         /****            IElement2D            ****/
         /******************************************/
 
+        [Description("Queries the IElement2Ds internal IElement2Ds. Returns a empty list for objects without definied internal elements")]
+        [Input("element2D", "The IElement2D to get the internal IElement2Ds from.")]
+        [Output("element2D", "A list of the IElement2Ds internal elements.")]
         public static List<IElement2D> IInternalElements2D(this IElement2D element2D)
         {
             return Reflection.Compute.RunExtensionMethod(element2D, "InternalElements2D") as List<IElement2D>;
