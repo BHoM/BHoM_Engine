@@ -22,7 +22,9 @@
 
 using BH.oM.Dimensional;
 using BH.oM.Geometry;
+using BH.oM.Reflection.Attributes;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace BH.Engine.Spatial
 {
@@ -32,6 +34,9 @@ namespace BH.Engine.Spatial
         /****            IElement2D            ****/
         /******************************************/
 
+        [Description("Returns every IElement1D which makes up the exterior perimeter of the IElement2D.")]
+        [Input("element2D", "The IElement2D of which to get the exterior sub IElement1Ds from.")]
+        [Output("element1Ds", "The IElement1Ds which geometry make up the perimeter curve for the IElement2D.")]
         public static List<IElement1D> IOutlineElements1D(this IElement2D element2D)
         {
             return Reflection.Compute.RunExtensionMethod(element2D, "OutlineElements1D") as List<IElement1D>;
