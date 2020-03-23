@@ -22,7 +22,9 @@
 
 using BH.oM.Dimensional;
 using BH.oM.Geometry;
+using BH.oM.Reflection.Attributes;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 
 namespace BH.Engine.Spatial
@@ -33,6 +35,9 @@ namespace BH.Engine.Spatial
         /****            IElement2D            ****/
         /******************************************/
 
+        [Description("Returns a single polycurve outline created from the external elements.")]
+        [Input("element2D", "The IElement2D to get the outline curve from.")]
+        [Output("curve", "A single outline curve for the IElement2D.")]
         public static PolyCurve OutlineCurve(this IElement2D element2D)
         {
             return new PolyCurve { Curves = element2D.IOutlineElements1D().Select(e => e.IGeometry()).ToList() };
@@ -40,6 +45,9 @@ namespace BH.Engine.Spatial
 
         /******************************************/
 
+        [Description("Returns a single polycurve outline created from the IElement1Ds.")]
+        [Input("element1D", "The IElement1Ds are expected to be provided in order in such a way that each elements end meets the start of the next.")]
+        [Output("curve", "A single poly curve for the IElement1Ds where the next item in the list is set as the next curve in a single curve.")]
         public static PolyCurve OutlineCurve(this List<IElement1D> elements1D)
         {
             return new PolyCurve { Curves = elements1D.Select(e => e.IGeometry()).ToList() };
