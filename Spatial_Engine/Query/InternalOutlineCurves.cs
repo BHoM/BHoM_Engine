@@ -22,7 +22,9 @@
 
 using BH.oM.Dimensional;
 using BH.oM.Geometry;
+using BH.oM.Reflection.Attributes;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 
 namespace BH.Engine.Spatial
@@ -33,6 +35,9 @@ namespace BH.Engine.Spatial
         /****            IElement2D            ****/
         /******************************************/
 
+        [Description("Queries the IElement2Ds internal IElement2Ds outline curves.")]
+        [Input("element2D", "The IElement2D to get the internal IElement2Ds outlinecurves from.")]
+        [Output("outlines", "A list of the IElement2Ds internal elements outline curves. Each internal element returns a single outline curve.")]
         public static List<PolyCurve> InternalOutlineCurves(this IElement2D element2D)
         {
             return element2D.IInternalElements2D().Select(x => x.OutlineCurve()).ToList();
