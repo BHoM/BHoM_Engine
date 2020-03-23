@@ -24,6 +24,8 @@ using BH.Engine.Geometry;
 using BH.oM.Geometry;
 using BH.oM.Dimensional;
 using System;
+using System.ComponentModel;
+using BH.oM.Reflection.Attributes;
 
 namespace BH.Engine.Spatial
 {
@@ -33,6 +35,9 @@ namespace BH.Engine.Spatial
         /****            IElement2D            ****/
         /******************************************/
 
+        [Description("Returns the normal of the external outline curve.")]
+        [Input("element2D", "The IElement2D to get the normal from.")]
+        [Output("n", "The normal to the IElement2D which is perpendicular to its plane and oriented according to the rigth hand rule in relation to the outline curve.")]
         public static Vector Normal(this IElement2D element2D)
         {
             return element2D.OutlineCurve().Normal();
