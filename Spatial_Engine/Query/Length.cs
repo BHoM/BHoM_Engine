@@ -23,8 +23,11 @@
 using BH.Engine.Geometry;
 using BH.oM.Dimensional;
 using BH.oM.Geometry;
+using BH.oM.Quantities.Attributes;
+using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace BH.Engine.Spatial
 {
@@ -34,6 +37,9 @@ namespace BH.Engine.Spatial
         /****            IElement1D            ****/
         /******************************************/
 
+        [Description("Returns the length of the IElement1Ds curve.")]
+        [Input("element1D", "The IElement1D to get the length from.")]
+        [Output("l", "The length of the IElement1Ds curve.", typeof(Length))]
         public static double Length(this IElement1D element1D)
         {
             return element1D.IGeometry().ILength();
