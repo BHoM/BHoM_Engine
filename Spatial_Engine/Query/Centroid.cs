@@ -36,6 +36,7 @@ namespace BH.Engine.Spatial
         /****            IElement1D            ****/
         /******************************************/
 
+        [NotImplemented]
         [Description("Queries the centre of weight for a IElement1Ds ICurve representation.")]
         [Input("element1D", "The IElement1D with the geometry to get the centre of weight of. The IElement1D will be considered homogeneous.")]
         [Output("centroid", "The Point at the centre of weight for the homogeneous geometrical representation of the IElement1D.")]
