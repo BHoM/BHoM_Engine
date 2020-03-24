@@ -81,7 +81,7 @@ namespace BH.Engine.Environment
                 panels.Add(new Panel { ExternalEdges = new Polyline { ControlPoints = panelPoints, }.ToEdges(), Type = PanelType.Wall });
             }
 
-            panels.ForEach(x => x.ConnectedSpaces.Add(room.Name));
+            panels.ForEach(x => x.ConnectedSpaces.Add(connectingSpaceName));
 
             return panels;
         }
