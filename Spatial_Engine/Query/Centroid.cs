@@ -53,7 +53,7 @@ namespace BH.Engine.Spatial
 
         [Description("Queries the centre of area for a IElement2Ds surface representation. For an IElement2D with homogeneous material and thickness this will also be the centre of weight.")]
         [Input("element2D", "The IElement2D with the geometry to get the centre of area of.")]
-        [Output("centroid", "The Point at the centre of weight for the homogeneous geometrical representation of the IElement2D.")]
+        [Output("centroid", "The Point at the centre of area for the homogeneous geometrical representation of the IElement2D.")]
         public static Point Centroid(this IElement2D element2D)
         {
             Point tmp = Geometry.Query.Centroid(element2D.OutlineCurve());
