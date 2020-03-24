@@ -34,9 +34,9 @@ namespace BH.Engine.Spatial
         /****            IElement2D            ****/
         /******************************************/
 
-        [Description("Exchanges the internal IElement2Ds for the provided internal IElement2Ds. The internal IElement2Ds location is used and must align with the host IElement2Ds geometry.")]
+        [Description("Exchanges the existing internal IElement2Ds for the provided new internal IElement2Ds. The internal IElement2Ds location is used and must align with the host IElement2Ds geometry.")]
         [Input("element2D", "The host IElement2D to exchange the internal IElement2D's of. This includes their location.")]
-        [Input("newElements2D", "The internal IElement2Ds to set to the host IElement2D. Must be of the correct type.")]
+        [Input("newElements2D", "The internal IElement2Ds to set to the host IElement2D. Must be of a type assignable to the host IElement2D.")]
         [Output("element2D", "The modified host IElement2D which has unchanged properties and exchanged internal IElement2Ds.")]
         public static IElement2D ISetInternalElements2D(this IElement2D element2D, List<IElement2D> newElements2D)
         {
@@ -46,4 +46,3 @@ namespace BH.Engine.Spatial
         /******************************************/
     }
 }
-

@@ -36,7 +36,7 @@ namespace BH.Engine.Spatial
 
         [Description("Sets the outline IElement1Ds of the IElement2D. This will maintain the IElement2D properties but exchange the outlines IElement1Ds.")]
         [Input("element2D", "The IElement2D to exchange the outline IElement1D's of. This includes their location.")]
-        [Input("newOutline", "The outline IElement1Ds to set to the IElement2D. Must be of the correct type and planar.")]
+        [Input("newOutline", "The outline IElement1Ds to set to the IElement2D. Must be planar and of a type assignable to the IElement2D.")]
         [Output("element2D", "The modified IElement2D which has unchanged properties and exchanged outline IElement1Ds.")]
         public static IElement2D ISetOutlineElements1D(this IElement2D element2D, List<IElement1D> newOutline)
         {
@@ -46,4 +46,3 @@ namespace BH.Engine.Spatial
         /******************************************/
     }
 }
-
