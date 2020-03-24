@@ -36,7 +36,7 @@ namespace BH.Engine.Spatial
 
         [Description("Assigns the provided IElement0Ds to the IElement1D. The IElement0Ds location is used and may change the IElement1Ds geometry.")]
         [Input("element1D", "The IElement1D to modify the IElement0D's properties of. This includes their location.")]
-        [Input("newElements0D", "The IElement0Ds to assign to the IElement1D. Must be of the correct type.")]
+        [Input("newElements0D", "The IElement0Ds to assign to the IElement1D. Must be of a type assignable to the IElement1D.")]
         [Output("element1D", "The modified IElement1D which has unchanged properties and new IElement0Ds.")]
         public static IElement1D ISetElements0D(this IElement1D element1D, List<IElement0D> newElements0D)
         {
@@ -46,4 +46,3 @@ namespace BH.Engine.Spatial
         /******************************************/
     }
 }
-
