@@ -35,7 +35,7 @@ namespace BH.Engine.Spatial
         /****            IElement2D            ****/
         /******************************************/
 
-        [Description("Returns the normal of the external outline curve.")]
+        [Description("Returns the normal based on the external outline curve.")]
         [Input("element2D", "The IElement2D to get the normal from.")]
         [Output("n", "The normal to the IElement2D which is perpendicular to its plane and oriented according to the rigth hand rule in relation to the outline curve.")]
         public static Vector Normal(this IElement2D element2D)
@@ -46,4 +46,3 @@ namespace BH.Engine.Spatial
         /******************************************/
     }
 }
-

@@ -51,7 +51,7 @@ namespace BH.Engine.Spatial
         /****            IElement2D            ****/
         /******************************************/
 
-        [Description("Returns if any of the element curves of the IElement2D is closer to itself than the tolerance at any two points. Does not check for intersections between different curves.")]
+        [Description("Returns if any of the element curves of the IElement2D is closer to itself than the tolerance at any two points. Does not check for intersections between external and internal curves, or between different internal curves.")]
         [Input("element2D", "The IElement2D which curves are to be evaluated for self intersection.")]
         [Input("tolerance", "Minimum distance to be considered intersecting.", typeof(Length))]
         [Output("o", "A boolean which is true if any of the IElement2Ds element curves are self intersecting.")]
@@ -72,4 +72,3 @@ namespace BH.Engine.Spatial
         /******************************************/
     }
 }
-

@@ -34,8 +34,8 @@ namespace BH.Engine.Spatial
         /******************************************/
 
         [Description("Creates a IElement0D of a type which can be assigned to the IElement1D at the location of the point.")]
-        [Input("element1D", "A IElement1D with a IElement0D type defined. Its property assignmets are not used in this operation.")]
-        [Input("point", "The point loaction of which to assign to the new IElement0D.")]
+        [Input("element1D", "A IElement1D with a IElement0D type defined. The element is only used to identify the type of IElement0D to create, and will remain unchanged by this method.")]
+        [Input("point", "The point location of which to assign to the new IElement0D.")]
         [Output("element0D", "A IElement0D which can be assigned to the IElement1D located at the point's location. Returns null if the IElement1D does not have a IElement0D type defined.")]
         public static IElement0D INewElement0D(this IElement1D element1D, Point point)
         {
@@ -45,4 +45,3 @@ namespace BH.Engine.Spatial
         /******************************************/
     }
 }
-
