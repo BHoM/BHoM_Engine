@@ -74,15 +74,15 @@ namespace BH.Engine.Environment
                     continue; //zLevel does not exist in the search levels
                 }
 
-                if (!mappedRooms.ContainsKey(levelIndex))
-                    mappedRooms.Add(levelIndex, new List<Room>());
+                if (!mappedRooms.ContainsKey(levels[levelIndex].Elevation))
+                    mappedRooms.Add(levels[levelIndex].Elevation, new List<Room>());
 
                 levelsInUse.Add(levels[levelIndex]);
 
-                mappedRooms[levelIndex].Add(room);
+                mappedRooms[levels[levelIndex].Elevation].Add(room);
             }
 
-            foreach (KeyValuePair<double, List<Room>> kvp in mappedRooms)
+            foreach (KeyValuePair<double, List<Room>> kvp in mappedRooms.OrderBy(x => x.Key))
                 roomsByLevel.Add(kvp.Value);
 
             Output<List<List<Room>>, List<oM.Geometry.SettingOut.Level>> output = new Output<List<List<Room>>, List<oM.Geometry.SettingOut.Level>>
