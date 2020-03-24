@@ -51,7 +51,6 @@ namespace BH.Engine.Environment
         {
             List<List<Room>> roomsByLevel = new List<List<Room>>();
             List<oM.Geometry.SettingOut.Level> levelsInUse = new List<oM.Geometry.SettingOut.Level>();
-
             List<oM.Geometry.SettingOut.Level> roundedLevels = new List<oM.Geometry.SettingOut.Level>();
 
             for (int x = 0; x < levels.Count; x++)
@@ -60,7 +59,7 @@ namespace BH.Engine.Environment
                 roundedLevels.Add(lvl); //Round the levels
             }
 
-            Dictionary<oM.Geometry.SettingOut.Level, List<Room>> mappedRooms = new Dictionary<oM.Geometry.SettingOut.Level, List<Room>>();
+            Dictionary<double, List<Room>> mappedRooms = new Dictionary<double, List<Room>>();
 
             //Map everything
             foreach (Room room in rooms)
@@ -75,15 +74,15 @@ namespace BH.Engine.Environment
                     continue; //zLevel does not exist in the search levels
                 }
 
-                if (!mappedRooms.ContainsKey(levels[levelIndex]))
-                    mappedRooms.Add(levels[levelIndex], new List<Room>());
+                if (!mappedRooms.ContainsKey(levelIndex))
+                    mappedRooms.Add(levelIndex, new List<Room>());
 
                 levelsInUse.Add(levels[levelIndex]);
 
-                mappedRooms[levels[levelIndex]].Add(room);
+                mappedRooms[levelIndex].Add(room);
             }
 
-            foreach (KeyValuePair<oM.Geometry.SettingOut.Level, List<Room>> kvp in mappedRooms.OrderBy(x => x.Key.Elevation))
+            foreach (KeyValuePair<double, List<Room>> kvp in mappedRooms)
                 roomsByLevel.Add(kvp.Value);
 
             Output<List<List<Room>>, List<oM.Geometry.SettingOut.Level>> output = new Output<List<List<Room>>, List<oM.Geometry.SettingOut.Level>>
