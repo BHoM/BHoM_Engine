@@ -50,8 +50,8 @@ namespace BH.Engine.Spatial
         /****            IElement2D            ****/
         /******************************************/
 
-        [Description("Queries the centre of weight for a IElement2Ds surface representation.")]
-        [Input("element2D", "The IElement2D with the geometry to get the centre of weight of. The IElement2D will be considered homogeneous.")]
+        [Description("Queries the centre of area for a IElement2Ds surface representation. For an IElement2D with homogeneous material and thickness this will also be the centre of weight.")]
+        [Input("element2D", "The IElement2D with the geometry to get the centre of area of.")]
         [Output("centroid", "The Point at the centre of weight for the homogeneous geometrical representation of the IElement2D.")]
         public static Point Centroid(this IElement2D element2D)
         {
@@ -81,4 +81,3 @@ namespace BH.Engine.Spatial
         /******************************************/
     }
 }
-

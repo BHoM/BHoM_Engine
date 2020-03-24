@@ -34,8 +34,8 @@ namespace BH.Engine.Spatial
         /******************************************/
 
         [Description("Creates a IElement1D of a type which can be assigned to the IElement2D at the location of the curve.")]
-        [Input("element2D", "A IElement2D of which to get the correct IElement1D type of. Its property assignmets are not used in this operation.")]
-        [Input("curve", "The curve loaction of which to assign to the new IElement1D.")]
+        [Input("element2D", "A IElement2D of which to get the correct IElement1D type of. The element is only used to identify the type of IElement1D to create, and will remain unchanged by this method.")]
+        [Input("curve", "The curve location of which to assign to the new IElement1D.")]
         [Output("element1D", "A IElement1D which can be assigned to the IElement2D located at the curve's location.")]
         public static IElement1D INewElement1D(this IElement2D element2D, ICurve curve)
         {
@@ -45,4 +45,3 @@ namespace BH.Engine.Spatial
         /******************************************/
     }
 }
-

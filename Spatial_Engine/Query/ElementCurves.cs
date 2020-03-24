@@ -39,7 +39,7 @@ namespace BH.Engine.Spatial
 
         [Description("Queries the geometricly defining curve of the IElement1D.")]
         [Input("element1D", "The IElement1D of which to get the curve definintion.")]
-        [Input("recursive", "Does nothing")]
+        [Input("recursive", "Has no effect for IElement1D. Input here to unify inputs between all IElements.")]
         [Output("elementCurves", "The curve defining the base geometry of the IElement1D.")]
         public static List<ICurve> ElementCurves(this IElement1D element1D, bool recursive = true)
         {
@@ -112,4 +112,3 @@ namespace BH.Engine.Spatial
         /******************************************/
     }
 }
-

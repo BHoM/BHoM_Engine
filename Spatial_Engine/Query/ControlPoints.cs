@@ -36,7 +36,7 @@ namespace BH.Engine.Spatial
 
         [Description("Queries the control points of the one dimensional representation of the IElement1D.")]
         [Input("element1D", "The IElement1D with the geometry to get the control points from.")]
-        [Output("cPoints", "The control points of all the defining geometry for the one dimensional representation.")]
+        [Output("cPoints", "The control points of the defining geometry for the one dimensional representation.")]
         public static List<Point> ControlPoints(this IElement1D element1D)
         {
             return Geometry.Query.IControlPoints(element1D.IGeometry());
@@ -67,4 +67,3 @@ namespace BH.Engine.Spatial
         /******************************************/
     }
 }
-
