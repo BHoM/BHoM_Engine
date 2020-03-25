@@ -120,20 +120,20 @@ namespace BH.Engine.Diffing
 
 
         [Description("Dispatch objects in two sets into the ones exclusive to one set, the other, or both.")]
-        [Input("previousObjects", "A set of object representing a previous revision")]
-        [Input("currentObjects", "A set of object representing a new Revision")]
+        [Input("pastObjects", "A set of object representing a past revision")]
+        [Input("currentObjects", "A set of object representing a newer Revision")]
         [Input("diffConfig", "Sets configs such as properties to be ignored in the diffing, or enable/disable property-by-property diffing.")]
-        public static Diff Diffing(IEnumerable<object> previousObjects, IEnumerable<object> currentObjects, DiffConfig diffConfig = null)
+        public static Diff Diffing(IEnumerable<object> pastObjects, IEnumerable<object> currentObjects, DiffConfig diffConfig = null)
         {
             // Dispatch the objects in BHoMObjects and generic objects.
-            IEnumerable<IBHoMObject> prevObjs_BHoM = previousObjects.OfType<IBHoMObject>();
+            IEnumerable<IBHoMObject> prevObjs_BHoM = pastObjects.OfType<IBHoMObject>();
             IEnumerable<IBHoMObject> currObjs_BHoM = currentObjects.OfType<IBHoMObject>();
 
             // If all objects are bhomobjects, just call the appropriate method
-            if (previousObjects.Count() == prevObjs_BHoM.Count() && currentObjects.Count() == currObjs_BHoM.Count())
+            if (pastObjects.Count() == prevObjs_BHoM.Count() && currentObjects.Count() == currObjs_BHoM.Count())
                 return Diffing(prevObjs_BHoM, currObjs_BHoM, diffConfig);
 
-            IEnumerable<object> prevObjs_nonBHoM = previousObjects.Where(o => !(o is IBHoMObject));
+            IEnumerable<object> prevObjs_nonBHoM = pastObjects.Where(o => !(o is IBHoMObject));
             IEnumerable<object> currObjs_nonBHoM = currentObjects.Where(o => !(o is IBHoMObject));
 
             // Compute the specific Diffing for the BHoMObjects.
@@ -147,10 +147,10 @@ namespace BH.Engine.Diffing
             List<object> allPrevObjs = new List<object>();
             List<object> allCurrObjs = new List<object>();
 
-            allPrevObjs.AddRange(diff.NewObjects);
+            allPrevObjs.AddRange(diff.AddedObjects);
             allPrevObjs.AddRange(vd.OnlySet1);
 
-            allPrevObjs.AddRange(diff.OldObjects);
+            allPrevObjs.AddRange(diff.RemovedObjects);
             allPrevObjs.AddRange(vd.OnlySet2);
 
             // Create the final, actual diff.
