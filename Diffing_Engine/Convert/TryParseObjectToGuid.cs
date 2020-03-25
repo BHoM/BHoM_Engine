@@ -21,38 +21,62 @@
  */
 
 using BH.oM.Base;
+using BH.oM.Data.Collections;
 using BH.oM.Diffing;
-using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Security.Cryptography;
+using System.Reflection;
+using BH.Engine.Serialiser;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
+
 
 namespace BH.Engine.Diffing
 {
-    public static partial class Create
+    public static partial class Convert
     {
-        /***************************************************/
+        ///***************************************************/
+        ///**** Public Methods                            ****/
+        ///***************************************************/
 
-        [Description("Creates new Stream Revision")]
-        [Input("objects", "Objects to be included in the Stream Revision")]
-        [Input("streamId", "Input either: a Guid of an existing stream; a previous Revision from which to extract the StreamId; or a StreamPointer object.")]
-        [Input("revisionName", "Name of the Revision.")]
-        [Input("comment", "Any comment to be added for this Revision. Much like git commit comment.")]
-        [Input("diffConfig", "Diffing settings for this Stream Revision. Hashes of objects contained in this stream will be computed based on these configs.")]
-        public static Revision Revision(IEnumerable<IBHoMObject> objects, object streamId, string revisionName = null, string comment = null, DiffConfig diffConfig = null)
+        public static bool TryParseObjectToGuid(this object obj, out Guid guid)
         {
-            if (streamId == null)
-                throw new ArgumentNullException($"Input {nameof(streamId)} cannot be null.");
+            guid = Guid.Empty;
 
-            Guid _streamId;
-            if (!Convert.TryParseObjectToGuid(streamId, out _streamId))
-                BH.Engine.Reflection.Compute.RecordError($"Specified input in {nameof(streamId)} is not valid.");
+            // If it's a Guid, extract the Id from there. 
+            // Note: at this stage we cannot check if the provided GUID belongs to an existing Stream or not.
+            if (!Guid.TryParse(obj.ToString(), out guid))
+            {
+                // Check if it's a StreamPointer, and extract the StreamId from there.
+                var sP = obj as StreamPointer;
+                if (sP != null)
+                {
+                    guid = sP.StreamId;
+                    return true;
+                }
 
-            return new Revision(Modify.PrepareForDiffing(objects, diffConfig), _streamId, diffConfig, revisionName, comment);
+                // Check if it's a Revision, and extract the StreamId from there.
+                var rev = obj as Revision;
+                if (rev != null)
+                {
+                    guid = rev.StreamId;
+                    return true;
+                }
+
+                return false;
+            }
+
+            return true;
+
         }
+
+        ///***************************************************/
 
     }
 }

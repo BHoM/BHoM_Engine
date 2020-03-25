@@ -36,24 +36,11 @@ namespace BH.Engine.Diffing
     {
         /***************************************************/
 
-        [Description("Creates new Stream Revision")]
-        [Input("objects", "Objects to be included in the Stream Revision")]
-        [Input("streamId", "Input either: a Guid of an existing stream; a previous Revision from which to extract the StreamId; or a StreamPointer object.")]
-        [Input("revisionName", "Name of the Revision.")]
-        [Input("comment", "Any comment to be added for this Revision. Much like git commit comment.")]
-        [Input("diffConfig", "Diffing settings for this Stream Revision. Hashes of objects contained in this stream will be computed based on these configs.")]
-        public static Revision Revision(IEnumerable<IBHoMObject> objects, object streamId, string revisionName = null, string comment = null, DiffConfig diffConfig = null)
+        [Description("Creates new Stream Pointer, generating a new StreamId.")]
+        public static StreamPointer StreamPointer(string name = null, string description = null)
         {
-            if (streamId == null)
-                throw new ArgumentNullException($"Input {nameof(streamId)} cannot be null.");
-
-            Guid _streamId;
-            if (!Convert.TryParseObjectToGuid(streamId, out _streamId))
-                BH.Engine.Reflection.Compute.RecordError($"Specified input in {nameof(streamId)} is not valid.");
-
-            return new Revision(Modify.PrepareForDiffing(objects, diffConfig), _streamId, diffConfig, revisionName, comment);
+            return new StreamPointer(name, description);
         }
-
     }
 }
 

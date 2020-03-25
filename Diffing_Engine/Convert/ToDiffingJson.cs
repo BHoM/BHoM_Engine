@@ -55,6 +55,8 @@ namespace BH.Engine.Diffing
             propList.ForEach(prop => propNames.Add(prop.Name));
             return ToDiffingJson(obj, propNames);
         }
+        
+        ///***************************************************/
 
         public static string ToDiffingJson(this object obj, List<string> fieldsToNullify)
         {
@@ -72,7 +74,6 @@ namespace BH.Engine.Diffing
             );
             return jObject.ToString();
         }
-
 
         ///***************************************************/
 
