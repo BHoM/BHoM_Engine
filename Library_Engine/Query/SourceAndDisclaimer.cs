@@ -64,7 +64,7 @@ namespace BH.Engine.Library
             }
             else
             {
-                desc = "No available source information available for this dataset." + Environment.NewLine;
+                desc = "No source information available for this dataset." + Environment.NewLine;
             }
             desc += Environment.NewLine;
             desc += GeneralDisclaimer();
