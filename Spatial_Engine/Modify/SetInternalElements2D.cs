@@ -20,6 +20,7 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.Engine.Base;
 using BH.oM.Dimensional;
 using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
@@ -40,7 +41,12 @@ namespace BH.Engine.Spatial
         [Output("element2D", "The modified host IElement2D which has unchanged properties and exchanged internal IElement2Ds.")]
         public static IElement2D ISetInternalElements2D(this IElement2D element2D, List<IElement2D> newElements2D)
         {
-            return Reflection.Compute.RunExtensionMethod(element2D, "SetInternalElements2D", new object[] { newElements2D }) as IElement2D;
+            IElement2D result = Reflection.Compute.RunExtensionMethod(element2D, "SetInternalElements2D", new object[] { newElements2D }) as IElement2D;
+
+            if (result == null && newElements2D.Count != 0)
+                Engine.Reflection.Compute.RecordError("Cannot set internal 2D elements to an " + element2D.GetType() + ".");
+
+            return result ?? element2D.ShallowClone();
         }
 
         /******************************************/
