@@ -36,17 +36,6 @@ namespace BH.Engine.Structure
         /****               Public Methods              ****/
         /***************************************************/
 
-        [Description("Gets inner IElement2Ds from an Opening. Method required for all IElement2Ds. \n" + 
-                     "As an opening does not contain any internal elements, this will always return an empty list.")]
-        [Input("opening","The Opening to get internal IElement2Ds from.")]
-        [Output("elements", "Inner elements. This will always be an empty list for openings.")]
-        public static List<IElement2D> InternalElements2D(this Opening opening)
-        {
-            return new List<IElement2D>();
-        }
-
-        /***************************************************/
-
         [Description("Gets inner IElement2Ds from a Panel. Method required for all IElement2Ds. \n" +
          "For a Panel this method will return a list of all of its openings.")]
         [Input("panel", "The Panel to get internal IElement2Ds from.")]
