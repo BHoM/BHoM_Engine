@@ -35,6 +35,17 @@ namespace BH.Engine.Spatial
         /******************************************/
 
         [Description("Evaluates if the two elements non-geometrical data is equal to the point that they could be merged into one object.")]
+        [Input("element", "An IElement0D to compare the properties of with an other IElement0D.")]
+        [Input("other", "The IElement0D to compare with the other IElement0D.")]
+        [Output("equal", "True if the Objects non-geometrical property is equal to the point that they could be merged into one object.")]
+        public static bool IIsEqualProperties(this IElement0D element, IElement0D other)
+        {
+            return IsEqualProperties(element, other);
+        }
+
+        /******************************************/
+
+        [Description("Evaluates if the two elements non-geometrical data is equal to the point that they could be merged into one object.")]
         [Input("element", "An IElement1D to compare the properties of with an other IElement1D.")]
         [Input("other", "The IElement1D to compare with the other IElement1D.")]
         [Output("equal", "True if the Objects non-geometrical property is equal to the point that they could be merged into one object.")]
