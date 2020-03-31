@@ -190,6 +190,16 @@ namespace BH.Engine.Geometry
             return Area(geometry as dynamic);
         }
 
+
+        /***************************************************/
+        /**** Private Methods - Fallbacks               ****/
+        /***************************************************/
+
+        public static double Area(this IGeometry geometry)
+        {
+            throw new NotImplementedException("Area for " + geometry.GetType().Name + " is not implemented.");
+        }
+
         /***************************************************/
     }
 }
