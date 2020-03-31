@@ -24,6 +24,7 @@ using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace BH.Engine.Geometry
 {
@@ -157,6 +158,22 @@ namespace BH.Engine.Geometry
             }
 
             return area / 2;
+        }
+
+        /***************************************************/
+
+        public static double Area(this PolySurface pSurf)
+        {
+            return pSurf.Surfaces.Sum(x => x.IArea());
+        }
+
+        /***************************************************/
+
+        public static double Area(this PlanarSurface pSurf)
+        {
+            double area = pSurf.ExternalBoundary.IArea();
+            area -= pSurf.InternalBoundaries.Sum(x => x.IArea());
+            return area;
         }
 
         /***************************************************/
