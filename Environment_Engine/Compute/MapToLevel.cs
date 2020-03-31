@@ -51,27 +51,12 @@ namespace BH.Engine.Environment
         {
             List<List<Room>> roomsByLevel = new List<List<Room>>();
             List<oM.Geometry.SettingOut.Level> levelsInUse = new List<oM.Geometry.SettingOut.Level>();
-
             List<oM.Geometry.SettingOut.Level> roundedLevels = new List<oM.Geometry.SettingOut.Level>();
 
             for (int x = 0; x < levels.Count; x++)
             {
                 oM.Geometry.SettingOut.Level lvl = new oM.Geometry.SettingOut.Level { Elevation = Math.Round(levels[x].Elevation, decimals), Name = levels[x].Name, Fragments = levels[x].Fragments, CustomData = levels[x].CustomData };
                 roundedLevels.Add(lvl); //Round the levels
-            }
-
-            List<oM.Geometry.SettingOut.Level> searchLevels = new List<oM.Geometry.SettingOut.Level>();
-
-            //Loop through each surface
-            foreach (Room room in rooms)
-            {
-                BoundingBox bbox = room.Perimeter.IBounds();
-                double zLevel = Math.Round(bbox.Min.Z, decimals);
-
-                if (roundedLevels.Where(x => x.Elevation == zLevel).FirstOrDefault() != null && searchLevels.Where(x => x.Elevation == zLevel).FirstOrDefault() == null)
-                    searchLevels.Add(roundedLevels.Where(x => x.Elevation == zLevel).FirstOrDefault());
-                else
-                    BH.Engine.Reflection.Compute.RecordWarning("Room with ID " + room.BHoM_Guid + " does not sit on any provided level");
             }
 
             Dictionary<double, List<Room>> mappedRooms = new Dictionary<double, List<Room>>();
@@ -83,23 +68,27 @@ namespace BH.Engine.Environment
                 double zLevel = Math.Round(bbox.Min.Z, decimals);
                 int levelIndex = roundedLevels.IndexOf(roundedLevels.Where(x => x.Elevation == zLevel).First());
 
-                if (levelIndex == -1) continue; //zLevel does not exist in the search levels
+                if (levelIndex == -1)
+                {
+                    BH.Engine.Reflection.Compute.RecordWarning("Room with ID " + room.BHoM_Guid + " does not sit on any provided level");
+                    continue; //zLevel does not exist in the search levels
+                }
 
-                if (!mappedRooms.ContainsKey(levelIndex))
-                    mappedRooms.Add(levelIndex, new List<Room>());
+                if (!mappedRooms.ContainsKey(levels[levelIndex].Elevation))
+                    mappedRooms.Add(levels[levelIndex].Elevation, new List<Room>());
 
                 levelsInUse.Add(levels[levelIndex]);
 
-                mappedRooms[levelIndex].Add(room);
+                mappedRooms[levels[levelIndex].Elevation].Add(room);
             }
 
-            foreach (KeyValuePair<double, List<Room>> kvp in mappedRooms)
+            foreach (KeyValuePair<double, List<Room>> kvp in mappedRooms.OrderBy(x => x.Key))
                 roomsByLevel.Add(kvp.Value);
 
             Output<List<List<Room>>, List<oM.Geometry.SettingOut.Level>> output = new Output<List<List<Room>>, List<oM.Geometry.SettingOut.Level>>
             {
                 Item1 = roomsByLevel,
-                Item2 = levelsInUse.Distinct().ToList(),
+                Item2 = levelsInUse.OrderBy(x => x.Elevation).Distinct().ToList(),
             };
 
             return output;

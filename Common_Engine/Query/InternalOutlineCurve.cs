@@ -24,6 +24,7 @@ using BH.oM.Dimensional;
 using BH.oM.Geometry;
 using System.Collections.Generic;
 using System.Linq;
+using BH.oM.Reflection.Attributes;
 
 namespace BH.Engine.Common
 {
@@ -33,9 +34,10 @@ namespace BH.Engine.Common
         /****            IElement2D            ****/
         /******************************************/
 
+        [Deprecated("3.1", "Migrated to the Spatial_Engine")]
         public static List<PolyCurve> IInternalOutlineCurves(this IElement2D element2D)
         {
-            return element2D.IInternalElements2D().Select(x => x.IOutlineCurve()).ToList();
+            return Spatial.Query.InternalOutlineCurves(element2D);
         }
 
         /******************************************/

@@ -46,13 +46,22 @@ namespace BH.Engine.Environment
         public static List<Panel> ExtrudeToVolume(this Room room, double height)
         {
             Polyline floor = room.Perimeter.ICollapseToPolyline(BH.oM.Geometry.Tolerance.Angle);
+            return floor.ExtrudeToVolume(room.Name, height);
+        }
 
+        [Description("Takes a polyline perimieter and creates a collection of Environment Panels which represent the closed volume of a space")]
+        [Input("pLine", "A polyline perimeter to extrude into a collection of panels")]
+        [Input("connectingSpaceName", "The name of the space the panels will enclose")]
+        [Input("height", "The height of the space, as a double, to calculate the ceiling level of the room. This will be used as the Z value of the perimeter + the given height")]
+        [Output("panels", "A collection of Environment Panels which represent the closed volume of the space")]
+        public static List<Panel> ExtrudeToVolume(this Polyline pLine, string connectingSpaceName, double height)
+        {
             List<Panel> panels = new List<Panel>();
 
-            Panel floorPanel = new Panel { ExternalEdges = floor.ToEdges(), Type = PanelType.Floor };
+            Panel floorPanel = new Panel { ExternalEdges = pLine.ToEdges(), Type = PanelType.Floor };
             panels.Add(floorPanel);
 
-            List<Point> floorPoints = floor.ControlPoints;
+            List<Point> floorPoints = pLine.ControlPoints;
             List<Point> roofPoints = new List<Point>();
             foreach (Point p in floorPoints)
                 roofPoints.Add(new Point { X = p.X, Y = p.Y, Z = p.Z + height });
@@ -60,18 +69,19 @@ namespace BH.Engine.Environment
             Panel roofPanel = new Panel { ExternalEdges = new Polyline { ControlPoints = roofPoints, }.ToEdges(), Type = PanelType.Ceiling };
             panels.Add(roofPanel);
 
-            for(int a = 0; a < floorPoints.Count - 1; a++)
+            for (int a = 0; a < floorPoints.Count - 1; a++)
             {
                 List<Point> panelPoints = new List<Point>();
                 panelPoints.Add(floorPoints[a]);
                 panelPoints.Add(new Point { X = floorPoints[a].X, Y = floorPoints[a].Y, Z = floorPoints[a].Z + height });
                 panelPoints.Add(new Point { X = floorPoints[a + 1].X, Y = floorPoints[a + 1].Y, Z = floorPoints[a + 1].Z + height });
                 panelPoints.Add(floorPoints[a + 1]);
+                panelPoints.Add(floorPoints[a]);
 
                 panels.Add(new Panel { ExternalEdges = new Polyline { ControlPoints = panelPoints, }.ToEdges(), Type = PanelType.Wall });
             }
 
-            panels.ForEach(x => x.ConnectedSpaces.Add(room.Name));
+            panels.ForEach(x => x.ConnectedSpaces.Add(connectingSpaceName));
 
             return panels;
         }

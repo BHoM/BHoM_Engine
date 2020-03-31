@@ -22,6 +22,7 @@
 
 using BH.oM.Dimensional;
 using BH.oM.Geometry;
+using BH.oM.Reflection.Attributes;
 using System.Collections.Generic;
 
 namespace BH.Engine.Common
@@ -32,9 +33,10 @@ namespace BH.Engine.Common
         /****            IElement2D            ****/
         /******************************************/
 
+        [Deprecated("3.1", "Migrated to the Spatial_Engine")]
         public static IElement2D ISetInternalElements2D(this IElement2D element2D, List<IElement2D> newElements2D)
         {
-            return Reflection.Compute.RunExtensionMethod(element2D, "SetInternalElements2D", new object[] { newElements2D }) as IElement2D;
+            return Spatial.Modify.ISetInternalElements2D(element2D, newElements2D);
         }
 
         /******************************************/

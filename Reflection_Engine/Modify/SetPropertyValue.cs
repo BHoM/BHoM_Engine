@@ -87,10 +87,16 @@ namespace BH.Engine.Reflection
                 IBHoMObject bhomObj = obj as IBHoMObject;
                 if (bhomObj == null) return false;
 
-                if (!(bhomObj is CustomObject))
+                if (!bhomObj.CustomData.ContainsKey(propName))
                     Compute.RecordWarning("The objects does not contain any property with the name " + propName + ". The value is being set as custom data");
 
                 bhomObj.CustomData[propName] = value;
+                return true;
+            }
+            else if (obj is IDictionary)
+            {
+                IDictionary dic = obj as IDictionary;
+                dic[propName] = value;
                 return true;
             }
 
