@@ -40,7 +40,7 @@ namespace BH.Engine.Spatial
         [Output("equal", "True if the Objects non-geometrical property is equal to the point that they could be merged into one object.")]
         public static bool IIsEqualProperties(this IElement0D element, IElement0D other)
         {
-            return IsEqualProperties(element, other);
+            return IIIsEqualProperties(element, other);
         }
 
         /******************************************/
@@ -51,7 +51,7 @@ namespace BH.Engine.Spatial
         [Output("equal", "True if the Objects non-geometrical property is equal to the point that they could be merged into one object.")]
         public static bool IIsEqualProperties(this IElement1D element, IElement1D other)
         {
-            return IsEqualProperties(element, other);
+            return IIIsEqualProperties(element, other);
         }
 
         /******************************************/
@@ -62,14 +62,14 @@ namespace BH.Engine.Spatial
         [Output("equal", "True if the Objects non-geometrical property is equal to the point that they could be merged into one object.")]
         public static bool IIsEqualProperties(this IElement2D element, IElement2D other)
         {
-            return IsEqualProperties(element, other);
+            return IIIsEqualProperties(element, other);
         }
 
         /******************************************/
         /****        Private Methods           ****/
         /******************************************/
 
-        private static bool IsEqualProperties(this IElement element, IElement other)
+        private static bool IIIsEqualProperties(this IElement element, IElement other)
         {
             // Geometrical objects don't have properties
             if (typeof(IGeometry).IsAssignableFrom(element.GetType()) && typeof(IGeometry).IsAssignableFrom(other.GetType()))
