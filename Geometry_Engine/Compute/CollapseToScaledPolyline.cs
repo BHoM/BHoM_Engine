@@ -41,7 +41,7 @@ namespace BH.Engine.Geometry
         [Input("maxDivisionsPerSegment", "The maximum number of segment each sub-curve can be broken into")]
         [Input("scale", "the radius of a baseline circle for the angle tolerance, smaller circles will have less segments and bigger more. Default of 0 means the program will determine an appropriate radius for the PolyCurve")]
         [Output("C", "A polyline approximating the provided curve")]
-        public static Polyline CollapseToScaledPolyline(this PolyCurve curve, double tolerance = 0.04, double toleranceGrowth = 0.001, int maxDivisionsPerSegment = 200, double scale = 0)
+        public static Polyline CollapseToScaledPolyline(this PolyCurve curve, double tolerance, double toleranceGrowth = 0.001, int maxDivisionsPerSegment = 200, double scale = 0)
         {
             if (tolerance <= 0)
                 return null;
