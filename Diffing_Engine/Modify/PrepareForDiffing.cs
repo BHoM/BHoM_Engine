@@ -1,4 +1,4 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -20,35 +20,36 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.oM.Base;
+using BH.oM.Data.Collections;
+using BH.oM.Diffing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
-using BH.oM.Architecture;
-using BH.oM.Architecture.Elements;
-using BH.oM.Dimensional;
-using BH.oM.Geometry;
-using BH.Engine.Geometry;
-
+using System.Security.Cryptography;
+using System.Reflection;
+using BH.Engine.Serialiser;
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
 
-namespace BH.Engine.Architecture
+namespace BH.Engine.Diffing
 {
-    public static partial class Query
+    public static partial class Modify
     {
-        /***************************************************/
-        /**** Public Methods                            ****/
-        /***************************************************/
-
-        [Description("Returns the internal 2D elements of an Architecture Room")]
-        [Input("room", "An Architecture Room")]
-        [Output("element2D", "A collection of internal 2D elements")]
-        public static List<IElement2D> InternalElements2D(this Room room)
+        public static IEnumerable<T> PrepareForDiffing<T>(this IEnumerable<T> objects, DiffConfig diffConfig = null) where T : IBHoMObject
         {
-            return new List<IElement2D>();
+            // Clone the current objects to preserve immutability; calculate and set the hash fragment
+            IEnumerable<T> objs_cloned = Modify.SetHashFragment(objects, diffConfig);
+
+            // Remove duplicates by hash
+            objs_cloned = Modify.RemoveDuplicatesByHash(objs_cloned);
+
+            if (objs_cloned.Count() != objects.Count())
+                Reflection.Compute.RecordWarning("Some Objects were duplicates (same hash) and therefore have been discarded.");
+
+            return objs_cloned;
         }
     }
 }

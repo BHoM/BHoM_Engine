@@ -48,17 +48,6 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        [Description("Gets the internal 2D elements of an IOpening.")]
-        [Input("opening", "The IOpening to get the internal elements from.")]
-        [Output("element2d", "Always an empty list as IOpening does not have an definintion for internal elements.")]
-        public static List<IElement2D> InternalElements2D(this IOpening opening)
-        {
-            return new List<IElement2D>();
-        }
-
-        /***************************************************/
-
-
     }
 }
 

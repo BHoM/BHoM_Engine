@@ -34,29 +34,31 @@ using BH.oM.Reflection.Attributes;
 using BH.oM.Reflection;
 using BH.Engine.Diffing;
 
-namespace BH.Engine
+namespace BH.Engine.Diffing
 {
-    public class HashFragmComparer<T> : IEqualityComparer<T> where T : IBHoMObject
+    public class DiffingHashComparer<T> : IEqualityComparer<T> //where T : IBHoMObject
     {
         /***************************************************/
         /**** Constructors                              ****/
         /***************************************************/
-        public List<string> PropertiesToIgnore { get; set; } = null;
 
-        public HashFragmComparer(List<string> propertiesToIgnore = null)
+        public DiffConfig DiffConfig { get; set; } = null;
+
+        public DiffingHashComparer(DiffConfig diffConfig = null)
         {
-            if (propertiesToIgnore == null)
-                propertiesToIgnore = new List<string>() { "BHoM_Guid", "CustomData", "Fragments" };
+            if (diffConfig == null)
+                diffConfig = new DiffConfig();
 
-            PropertiesToIgnore = propertiesToIgnore;
+            DiffConfig = diffConfig;
         }
+
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
         public bool Equals(T x, T y)
         {
-            if (x.SHA256Hash(PropertiesToIgnore) == y.SHA256Hash(PropertiesToIgnore))
+            if (x.DiffingHash(DiffConfig) == y.DiffingHash(DiffConfig))
                 return true;
             else
                 return false;
@@ -66,7 +68,15 @@ namespace BH.Engine
 
         public int GetHashCode(T obj)
         {
-            return obj.GetHashFragment().GetHashCode();
+            if (typeof(IBHoMObject).IsAssignableFrom(typeof(T)))
+            {
+                IBHoMObject bHoMObject = (IBHoMObject)obj;
+                HashFragment hashFragment = bHoMObject.GetHashFragment();
+                if (!string.IsNullOrWhiteSpace(hashFragment?.Hash))
+                    return hashFragment.Hash.GetHashCode();
+            }
+
+            return obj.DiffingHash().GetHashCode();
         }
     }
 }

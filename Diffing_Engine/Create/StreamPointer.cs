@@ -1,4 +1,4 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -20,34 +20,26 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Dimensional;
-using BH.oM.Geometry;
-using BH.oM.Architecture.Elements;
-using System.Collections.Generic;
-using System.Linq;
-
+using BH.oM.Base;
+using BH.oM.Diffing;
 using BH.oM.Reflection.Attributes;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace BH.Engine.Architecture
+namespace BH.Engine.Diffing
 {
-    public static partial class Modify
+    public static partial class Create
     {
         /***************************************************/
-        /****               Public Methods              ****/
-        /***************************************************/
 
-        [Description("Assign a new collection of internal 2D elements to an Architecture Room")]
-        [Input("room", "An Architecture Room to update")]
-        [Input("internalElements2D", "A collection of internal 2D elements to assign to the room")]
-        [Output("room", "The updated Architecture Room")]
-        public static Room SetInternalElements2D(this Room room, List<IElement2D> internalElements2D)
+        [Description("Creates new Stream Pointer, generating a new StreamId.")]
+        public static StreamPointer StreamPointer(string name = null, string description = null)
         {
-            if (internalElements2D.Count != 0)
-                BH.Engine.Reflection.Compute.RecordError("Cannot set internal 2D elements to a room");
-
-            return room.GetShallowClone() as Room;
-
+            return new StreamPointer(name, description);
         }
     }
 }

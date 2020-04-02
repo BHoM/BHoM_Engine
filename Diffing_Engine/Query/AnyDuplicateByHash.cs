@@ -20,37 +20,29 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.Engine.Base;
 using BH.oM.Base;
-using BH.oM.Data.Collections;
-using BH.oM.Diffing;
+using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Security.Cryptography;
-using System.Reflection;
-using BH.Engine.Serialiser;
-using BH.oM.Reflection.Attributes;
-using System.ComponentModel;
 
 namespace BH.Engine.Diffing
 {
-    public static partial class Compute
+    public static partial class Query
     {
-        ///***************************************************/
-        ///**** Public Methods                            ****/
-        ///***************************************************/
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
 
-        [Description("Computes the hash code required for the Diffing.")]
-        [Input("obj", "Objects the hash code should be calculated for")]
-        [Input("diffConfig", "Sets configs for the hash calculation, such as properties to be ignored.")]
-        public static string DiffingHash(this object obj, DiffConfig diffConfig = null)
+        [Description("Removes duplicates from a collection of objects. The comparison is made through their Diffing Hash.")]
+        [Input("objects", "Collection of objects whose duplicates have to be removed. If they don't already have an Hash assigned, it will be calculated.")]
+        public static bool AnyDuplicateByHash<T>(this IEnumerable<T> objects) where T : IBHoMObject
         {
-            if (diffConfig == null)
-                diffConfig = new DiffConfig();
-
-            return Compute.SHA256Hash(obj, diffConfig.PropertiesToIgnore);
+            return Modify.RemoveDuplicatesByHash(objects).ToList().Count != objects.ToList().Count;
         }
     }
 }

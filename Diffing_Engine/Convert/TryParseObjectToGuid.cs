@@ -21,42 +21,63 @@
  */
 
 using BH.oM.Base;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Data.Collections;
+using BH.oM.Diffing;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Security.Cryptography;
+using System.Reflection;
+using BH.Engine.Serialiser;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
+
 
 namespace BH.Engine.Diffing
 {
-    public static partial class Modify
+    public static partial class Convert
     {
-        /***************************************************/
-        /**** Public Methods                            ****/
-        /***************************************************/
+        ///***************************************************/
+        ///**** Public Methods                            ****/
+        ///***************************************************/
 
-        [Description("Returns a new Diffing Stream as a new revision of a previous Stream")]
-        [Input("stream", "Stream to be updated")]
-        [Input("objects", "Objects to be included in the updated version of the Stream")]
-        public static BH.oM.Diffing.Stream StreamRevision(BH.oM.Diffing.Stream stream, IEnumerable<IBHoMObject> objects)
+        public static bool TryParseObjectToGuid(this object obj, out Guid guid)
         {
-            // Clone the current objects to preserve immutability
-            List<IBHoMObject> objs_cloned = objects.Select(obj => BH.Engine.Base.Query.DeepClone(obj)).ToList();
+            guid = Guid.Empty;
 
-            // Calculate and set the hash fragment
-            BH.Engine.Diffing.Modify.SetHashFragment(objs_cloned);
+            // If it's a Guid, extract the Id from there. 
+            // Note: at this stage we cannot check if the provided GUID belongs to an existing Stream or not.
+            if (!Guid.TryParse(obj.ToString(), out guid))
+            {
+                // Check if it's a StreamPointer, and extract the StreamId from there.
+                var sP = obj as StreamPointer;
+                if (sP != null)
+                {
+                    guid = sP.StreamId;
+                    return true;
+                }
 
-            // Remove duplicates by hash
-            int numObjs = objs_cloned.Count();
-            objs_cloned = objs_cloned.GroupBy(obj => obj.GetHashFragment().Hash).Select(gr => gr.First()).ToList();
+                // Check if it's a Revision, and extract the StreamId from there.
+                var rev = obj as Revision;
+                if (rev != null)
+                {
+                    guid = rev.StreamId;
+                    return true;
+                }
 
-            if (numObjs != objs_cloned.Count())
-                BH.Engine.Reflection.Compute.RecordWarning("Some Objects were duplicates (same hash) and therefore have been discarded.");
+                return false;
+            }
 
-            return new BH.oM.Diffing.Stream(objs_cloned, stream.StreamDiffConfig, stream.StreamId);
+            return true;
+
         }
+
+        ///***************************************************/
+
     }
 }
 
