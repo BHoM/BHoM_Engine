@@ -40,7 +40,7 @@ namespace BH.Engine.Diffing
     {
         ///***************************************************/
         ///**** Public Methods                            ****/
-        ///***************************************************/
+        ///***************************************************/ 
 
         [Description("Computes the hash code required for the Diffing.")]
         [Input("obj", "Objects the hash code should be calculated for")]
@@ -49,6 +49,15 @@ namespace BH.Engine.Diffing
         {
             if (diffConfig == null)
                 diffConfig = new DiffConfig();
+
+            //Remove HashFragments if present. Hashing cannot be computed including also HashFragment.
+            //IBHoMObject bhomobj = obj as IBHoMObject;
+            //if (bhomobj != null)
+            //{
+            //    bhomobj = BH.Engine.Base.Query.DeepClone(obj) as IBHoMObject;
+            //    bhomobj.Fragments.Remove(typeof(HashFragment));
+            //    return Compute.SHA256Hash(bhomobj, diffConfig.PropertiesToIgnore);
+            //}
 
             return Compute.SHA256Hash(obj, diffConfig.PropertiesToIgnore);
         }

@@ -45,7 +45,7 @@ namespace BH.Engine.Diffing
         ///**** Public Methods                            ****/
         ///***************************************************/
 
-        public static string ToDiffingJson(this object obj, PropertyInfo[] fieldsToNullify = null)
+        public static string ToDiffingJson(this object obj, PropertyInfo[] fieldsToNullify)
         {
             List<PropertyInfo> propList = fieldsToNullify.ToList();
             if (propList == null && propList.Count == 0)
@@ -66,12 +66,12 @@ namespace BH.Engine.Diffing
             var jObject = JsonConvert.DeserializeObject<JObject>(BH.Engine.Serialiser.Convert.ToJson(obj));
 
             // Sets fields to be ignored as null, without altering the tree.
-            fieldsToNullify.ForEach(propName =>
+            //fieldsToNullify.ForEach(propName =>
             jObject.Properties()
-                .Where(attr => attr.Name.StartsWith(propName))
+                .Where(attr => fieldsToNullify.Any(f => attr.Name.StartsWith(f)))
                 .ToList()
-                .ForEach(attr => attr.Value = null)
-            );
+                .ForEach(attr => attr.Value = null);
+            //);
             return jObject.ToString();
         }
 

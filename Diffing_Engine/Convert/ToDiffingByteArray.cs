@@ -63,11 +63,14 @@ namespace BH.Engine.Diffing
             if (fieldsToIgnore == null || fieldsToIgnore.Count == 0)
                 return BsonExtensionMethods.ToBson(obj);
 
-            var objDoc = obj.ToBsonDocument();
 
-            fieldsToIgnore.ForEach(propName =>
-                objDoc.Remove(propName)
-            );
+            string objStr = ToDiffingJson(obj, fieldsToIgnore);
+
+            BsonDocument objDoc = BsonDocument.Parse(objStr);
+
+            //fieldsToIgnore.ForEach(propName =>
+            //    objDoc.Remove(propName)
+            //);
 
             return BsonExtensionMethods.ToBson(objDoc);
         }
