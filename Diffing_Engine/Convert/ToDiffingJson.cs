@@ -46,38 +46,13 @@ namespace BH.Engine.Diffing
         ///**** Public Methods                            ****/
         ///***************************************************/
 
-        public static string ToDiffingJson(this object obj, PropertyInfo[] fieldsToNullify)
-        {
-            List<PropertyInfo> propList = fieldsToNullify.ToList();
-            if (propList == null && propList.Count == 0)
-                return BH.Engine.Serialiser.Convert.ToJson(obj);
-
-            List<string> propNames = new List<string>();
-            propList.ForEach(prop => propNames.Add(prop.Name));
-            return ToDiffingJson(obj, propNames);
-        }
-
-        ///***************************************************/
-
         public static string ToDiffingJson(this object obj, List<string> fieldsToRemove)
         {
             if (fieldsToRemove == null && fieldsToRemove.Count == 0)
                 return BH.Engine.Serialiser.Convert.ToJson(obj);
 
-            Stopwatch sw = Stopwatch.StartNew();
-            string jsonObj = BH.Engine.Serialiser.Convert.ToJson(obj);
-            sw.Stop();
-
-            long timespan1 = sw.ElapsedMilliseconds;
-
-            sw = Stopwatch.StartNew();
-            jsonObj = JsonConvert.SerializeObject(obj);
-            sw.Stop();
-
-            long timespan2 = sw.ElapsedMilliseconds;
-
-
-
+            string jsonObj = JsonConvert.SerializeObject(obj);
+           
             // Sets fields to be ignored as null, without altering the tree.
             List<Regex> regexes = new List<Regex>();
 
