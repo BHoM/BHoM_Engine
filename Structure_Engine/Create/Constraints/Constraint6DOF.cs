@@ -40,7 +40,7 @@ namespace BH.Engine.Structure
         [Input("fixity", "A list of 6 booleans, in the order TransX, TranxY, TransZ, RotX, RotY, RotZ. If true, the fixity is set to fixed. If false, the fixity is set to free or spring, depending if the double values provided are 0 or not.")]
         [Input("values", "A list of 6 doubles with positive values (>= 0), in the orderTransX, TranxY, TransZ, RotX, RotY, RotZ. If zero, and corresponding fixity is false, the DOF will be free. If non-zero, these values will be set as the spring values. \n" +
                          "First three should have the quantity force per unit length, last three should be moment per unit angle.")]
-        [Output("constraint6DOF", "The created custom Constraint6DOF.")]
+        [Output("cons", "The created custom Constraint6DOF.")]
         public static Constraint6DOF Constraint6DOF(string name, List<bool> fixity, List<double> values)
         {
             return new Constraint6DOF
@@ -66,7 +66,7 @@ namespace BH.Engine.Structure
 
         [Description("Creates a pinned Constraint6DOF, i.e. a constraint that have all translational degrees of freedom fixed and all the rotational degrees of freedom free.")]
         [Input("name", "Name of the Constraint6DOF. Defaults to Pin. This is required by most structural analysis software to create the object")]
-        [Output("release", "The created pinned Constraint6DOF.")]
+        [Output("cons", "The created pinned Constraint6DOF.")]
         public static Constraint6DOF PinConstraint6DOF(string name = "Pin")
         {
             return new Constraint6DOF
@@ -82,7 +82,7 @@ namespace BH.Engine.Structure
 
         [Description("Creates a fully fixed Constraint6DOF, i.e. a constraint that have all degrees of freedom, translational and rotational, fixed.")]
         [Input("name", "Name of the Constraint6DOF. Defaults to Fix. This is required by most structural analysis software to create the object")]
-        [Output("release", "The created fully fixed Constraint6DOF.")]
+        [Output("cons", "The created fully fixed Constraint6DOF.")]
         public static Constraint6DOF FixConstraint6DOF(string name = "Fix")
         {
             return new Constraint6DOF
@@ -101,7 +101,7 @@ namespace BH.Engine.Structure
 
         [Description("Creates a fully free Constraint6DOF, i.e. a constraint that have all degrees of freedom, translational and rotational, free.")]
         [Input("name", "Name of the Constraint6DOF. Defaults to Release. This is required by most structural analysis software to create the object")]
-        [Output("release", "The created fully free Constraint6DOF.")]
+        [Output("cons", "The created fully free Constraint6DOF.")]
         public static Constraint6DOF FullReleaseConstraint6DOF(string name = "Release")
         {
             return new Constraint6DOF
@@ -126,7 +126,7 @@ namespace BH.Engine.Structure
         [Input("yy", "Rotational fixity about the y-axis. True denotes fixed, false denotes free.")]
         [Input("zz", "Rotational fixity about the z-axis. True denotes fixed, false denotes free.")]
         [Input("name", "Name of the Constraint6DOF. This is required for various structural packages to create the object.")]
-        [Output("release", "The created custom Constraint6DOF.")]
+        [Output("cons", "The created custom Constraint6DOF.")]
         public static Constraint6DOF Constraint6DOF(bool x, bool y, bool z, bool xx, bool yy, bool zz, string name = "")
         {
             return new Constraint6DOF
