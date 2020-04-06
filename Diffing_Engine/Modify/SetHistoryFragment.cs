@@ -39,9 +39,9 @@ namespace BH.Engine.Diffing
 {
     public static partial class Modify
     {
-        [Description("Clones the IBHoMObjects, computes their hash and stores it in a HashFragment. " +
-            "If the object already has a HashFragment, it computes the current one and stores the `previousHash` in the HashFragment.")]
-        public static List<T> SetHashFragment<T>(IEnumerable<T> objs, DiffConfig diffConfig = null) where T : IBHoMObject
+        [Description("Clones the IBHoMObjects, computes their hash and stores it in a HistoryFragment. " +
+            "If the object already has a HistoryFragment, it computes the current one and stores the `previousHash` in the HistoryFragment.")]
+        public static List<T> SetHistoryFragment<T>(IEnumerable<T> objs, DiffConfig diffConfig = null) where T : IBHoMObject
         {
             // Clone the current objects to preserve immutability
             List<T> objs_cloned = new List<T>();
@@ -52,15 +52,15 @@ namespace BH.Engine.Diffing
             // Calculate and set the object hashes
             foreach (var obj in objs)
             {
-                objs_cloned.Add(SetHashFragment(obj));
+                objs_cloned.Add(SetHistoryFragment(obj));
             }
 
             return objs_cloned;
         }
 
-        [Description("Clones the IBHoMObject, computes their hash and stores it in a HashFragment. " +
-            "If the object already has a HashFragment, it computes the current one and stores the `previousHash` in the HashFragment.")]
-        public static T SetHashFragment<T>(T obj, DiffConfig diffConfig = null) where T : IBHoMObject
+        [Description("Clones the IBHoMObject, computes their hash and stores it in a HistoryFragment. " +
+            "If the object already has a HistoryFragment, it computes the current one and stores the `previousHash` in the HistoryFragment.")]
+        public static T SetHistoryFragment<T>(T obj, DiffConfig diffConfig = null) where T : IBHoMObject
         {
             // Clone the current object to preserve immutability
             T obj_cloned = BH.Engine.Base.Query.DeepClone(obj);
@@ -71,9 +71,9 @@ namespace BH.Engine.Diffing
             // Calculate and set the object hashes
             string hash = BH.Engine.Diffing.Compute.DiffingHash(obj_cloned, diffConfig);
 
-            HashFragment existingFragm = obj_cloned.GetHashFragment();
+            HistoryFragment existingFragm = obj_cloned.GetHistoryFragment();
 
-            obj_cloned.Fragments.AddOrReplace(new HashFragment(hash, existingFragm?.Hash));
+            obj_cloned.Fragments.AddOrReplace(new HistoryFragment(hash, existingFragm?.Hash));
 
             return obj_cloned;
         }

@@ -33,9 +33,9 @@ namespace BH.Engine.Diffing
 {
     public static partial class Query
     {
-        public static HashFragment GetHashFragment(this IBHoMObject obj)
+        public static HistoryFragment GetHistoryFragment(this IBHoMObject obj)
         {
-            return obj.FindFragment<HashFragment>(); 
+            return obj.FindFragment<HistoryFragment>(); 
         }
     }
 }
