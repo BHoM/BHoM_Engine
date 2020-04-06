@@ -55,7 +55,7 @@ namespace BH.Engine.Diffing
             List<IBHoMObject> readObjs = previousObjects.ToList();
 
             // Make dictionary with object hashes to speed up the next lookups
-            Dictionary<string, IBHoMObject> readObjs_dict = readObjs.ToDictionary(obj => obj.GetHistoryFragment().CurrentHash, obj => obj);
+            Dictionary<string, IBHoMObject> readObjs_dict = readObjs.ToDictionary(obj => obj.GetHistoryFragment().Hash, obj => obj);
 
             // Dispatch the objects: new, modified or old
             List<IBHoMObject> newObjs = new List<IBHoMObject>();
@@ -67,21 +67,21 @@ namespace BH.Engine.Diffing
 
             foreach (var obj in currentObjs)
             {
-                var histFragm = obj.GetHistoryFragment();
+                var hashFragm = obj.GetHistoryFragment();
 
-                if (histFragm?.PreviousHash == null)
+                if (hashFragm?.PreviousHash == null)
                 {
                     newObjs.Add(obj); // It's a new object
                 }
 
-                else if (histFragm.PreviousHash == histFragm.CurrentHash)
+                else if (hashFragm.PreviousHash == hashFragm.Hash)
                 {
                     // It's NOT been modified
                     if (diffConfig.StoreUnchangedObjects)
                         unChanged.Add(obj);
                 }
 
-                else if (histFragm.PreviousHash != histFragm.CurrentHash)
+                else if (hashFragm.PreviousHash != hashFragm.Hash)
                 {
                     modifiedObjs.Add(obj); // It's been modified
 
@@ -89,13 +89,13 @@ namespace BH.Engine.Diffing
                     {
                         // Determine changed properties
                         IBHoMObject oldObjState = null;
-                        readObjs_dict.TryGetValue(histFragm.PreviousHash, out oldObjState);
+                        readObjs_dict.TryGetValue(hashFragm.PreviousHash, out oldObjState);
 
                         if (oldObjState == null) continue;
 
                         var differentProps = Query.DifferentProperties(obj, oldObjState, diffConfig);
 
-                        objModifiedProps.Add(histFragm.CurrentHash, differentProps);
+                        objModifiedProps.Add(hashFragm.Hash, differentProps);
                     }
                 }
                 else
