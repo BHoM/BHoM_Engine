@@ -383,7 +383,7 @@ namespace BH.Engine.Structure
         [Output("desc", "The generated descritpion for the material.")]
         public static string Description(this Steel material)
         {
-            return "Steel " + material.MaterialAnalyticalValues() + "fy:" + material.YieldStress + ", fu:" + material.UltimateStress;
+            return "Steel " + material.MaterialAnalyticalValues() + ", fy:" + material.YieldStress + ", fu:" + material.UltimateStress;
         }
 
         /***************************************************/
@@ -393,7 +393,7 @@ namespace BH.Engine.Structure
         [Output("desc", "The generated descritpion for the material.")]
         public static string Description(this Concrete material)
         {
-            return "Concrete " + material.MaterialAnalyticalValues() + "cube:" + material.CubeStrength + ", cyl:" + material.CylinderStrength;
+            return "Concrete " + material.MaterialAnalyticalValues() + ", cyl:" + material.CylinderStrength + ", cube:" + material.CubeStrength;
         }
 
         /***************************************************/
