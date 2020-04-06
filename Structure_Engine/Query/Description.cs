@@ -22,6 +22,7 @@
 
 using BH.oM.Geometry.ShapeProfiles;
 using BH.oM.Structure.SectionProperties;
+using BH.oM.Structure.Offsets;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -358,6 +359,18 @@ namespace BH.Engine.Structure
         public static string Description(this BarRelease release)
         {
             return release.StartRelease.DescriptionOrName() + " - " + release.EndRelease.DescriptionOrName();
+        }
+
+        /***************************************************/
+        /**** Public Methods - Offset                   ****/
+        /***************************************************/
+
+        [Description("Generates a default description for the Offset as 'Start - End'.")]
+        [Input("release", "The Constraint6DOF to get a default description for.")]
+        [Output("desc", "The generated descritpion for the constraint.")]
+        public static string Description(this Offset offset)
+        {
+            return "[" + offset.Start.X + "," + offset.Start.Y + "," + offset.Start.Z + "] - [" + offset.End.X + "," + offset.End.Y + "," + offset.End.Z + "]";
         }
 
         /***************************************************/
