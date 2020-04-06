@@ -437,7 +437,7 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Generates a default description for the Iproeprty, depending on type and its properties.")]
-        [Input("section", "The property to get a default description for.")]
+        [Input("property", "The property to get a default description for.")]
         [Output("desc", "The generated descritpion for the property, depending on its proeprty values.")]
         public static string IDescription(this IProperty property)
         {
