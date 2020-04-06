@@ -55,7 +55,7 @@ namespace BH.Engine.Diffing
             List<IBHoMObject> readObjs = previousObjects.ToList();
 
             // Make dictionary with object hashes to speed up the next lookups
-            Dictionary<string, IBHoMObject> readObjs_dict = readObjs.ToDictionary(obj => obj.GetHashFragment().Hash, obj => obj);
+            Dictionary<string, IBHoMObject> readObjs_dict = readObjs.ToDictionary(obj => obj.GetHistoryFragment().Hash, obj => obj);
 
             // Dispatch the objects: new, modified or old
             List<IBHoMObject> newObjs = new List<IBHoMObject>();
@@ -67,7 +67,7 @@ namespace BH.Engine.Diffing
 
             foreach (var obj in currentObjs)
             {
-                var hashFragm = obj.GetHashFragment();
+                var hashFragm = obj.GetHistoryFragment();
 
                 if (hashFragm?.PreviousHash == null)
                 {
@@ -109,8 +109,8 @@ namespace BH.Engine.Diffing
 
             // All ReadObjs that cannot be found by hash in the previousHash of the CurrentObjs are toBeDeleted
             Dictionary<string, IBHoMObject> CurrentObjs_withPreviousHash_dict = currentObjs
-                  .Where(obj => obj.GetHashFragment().PreviousHash != null)
-                  .ToDictionary(obj => obj.GetHashFragment().PreviousHash, obj => obj);
+                  .Where(obj => obj.GetHistoryFragment().PreviousHash != null)
+                  .ToDictionary(obj => obj.GetHistoryFragment().PreviousHash, obj => obj);
 
             oldObjs = readObjs_dict.Keys.Except(CurrentObjs_withPreviousHash_dict.Keys)
                 .Where(k => readObjs_dict.ContainsKey(k)).Select(k => readObjs_dict[k]).ToList();
@@ -140,7 +140,7 @@ namespace BH.Engine.Diffing
             Diff diff = Compute.Diffing(prevObjs_BHoM, currObjs_BHoM, diffConfig);
 
             // Compute the generic Diffing for the other objects.
-            // This is left to the VennDiagram with a HashComparer (specifically, this doesn't use the HashFragment).
+            // This is left to the VennDiagram with a HashComparer (specifically, this doesn't use the HistoryFragment).
             VennDiagram<object> vd = Engine.Data.Create.VennDiagram(prevObjs_nonBHoM, currObjs_nonBHoM, new DiffingHashComparer<object>());
 
             // Concatenate the results of the two diffing operations.
