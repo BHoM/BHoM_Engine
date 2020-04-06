@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -30,9 +30,11 @@ using System.Threading.Tasks;
 using BH.oM.Base;
 using BH.oM.Structure.SurfaceProperties;
 using BH.oM.Structure.MaterialFragments;
+using BH.oM.Structure.Constraints;
 using BH.oM.Reflection.Attributes;
 using BH.oM.Quantities.Attributes;
 using System.ComponentModel;
+using BH.oM.Structure;
 
 namespace BH.Engine.Structure
 {
@@ -118,7 +120,7 @@ namespace BH.Engine.Structure
         [Output("desc", "The generated descritpion for the profile depending on its dimensions.")]
         public static string Description(this KiteProfile profile)
         {
-            return "Kite " + Math.Round(profile.Angle1,2) + "x" + profile.Width1 + "x" + profile.Thickness;
+            return "Kite " + Math.Round(profile.Angle1, 2) + "x" + profile.Width1 + "x" + profile.Thickness;
         }
 
         /***************************************************/
@@ -262,7 +264,7 @@ namespace BH.Engine.Structure
         [Output("desc", "The generated descritpion for the property depending on its dimensions, material and type.")]
         public static string Description(this ConstantThickness property)
         {
-            return "THK " + property.Thickness + " - " + CheckGetMaterialName(property.Material);            
+            return "THK " + property.Thickness + " - " + CheckGetMaterialName(property.Material);
         }
 
         /***************************************************/
@@ -296,7 +298,80 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
+        /**** Public Methods - Constraints              ****/
+        /***************************************************/
+
+        [Description("Generates a default description for the Constraint3DOF as 'DOftypes-Values'.")]
+        [Input("constraint", "The Constraint3DOF to get a default description for.")]
+        [Output("desc", "The generated descritpion for the constraint.")]
+        public static string Description(this Constraint3DOF constraint)
+        {
+            string desc = constraint.UX.DofSign() + constraint.UY.DofSign() + constraint.Normal.DofSign();
+            if (constraint.ElasticValuesWritten())
+            {
+                desc += "-" + constraint.KX + "," + constraint.KY + "," + constraint.KNorm; 
+            }
+            return desc;
+        }
+
+        /***************************************************/
+
+        [Description("Generates a default description for the Constraint4DOF as 'DOftypes-Values'.")]
+        [Input("constraint", "The Constraint4DOF to get a default description for.")]
+        [Output("desc", "The generated descritpion for the constraint.")]
+        public static string Description(this Constraint4DOF constraint)
+        {
+            string desc = constraint.TranslationX.DofSign() + constraint.TranslationY.DofSign() + constraint.TranslationZ.DofSign() +
+                          constraint.RotationX.DofSign();
+
+            if (constraint.ElasticValuesWritten())
+            {
+                desc += "-" + constraint.TranslationalStiffnessX + "," + constraint.TranslationalStiffnessY + "," + constraint.TranslationalStiffnessZ +
+                        "," + constraint.RotationalStiffnessX;
+            }
+            return desc;
+        }
+
+        /***************************************************/
+
+        [Description("Generates a default description for the Constraint6DOF as 'DOftypes-Values'.")]
+        [Input("constraint", "The Constraint6DOF to get a default description for.")]
+        [Output("desc", "The generated descritpion for the constraint.")]
+        public static string Description(this Constraint6DOF constraint)
+        {
+            string desc = constraint.TranslationX.DofSign() + constraint.TranslationY.DofSign() + constraint.TranslationZ.DofSign() +
+                          constraint.RotationX.DofSign() + constraint.RotationY.DofSign() + constraint.RotationZ.DofSign();
+
+            if (constraint.ElasticValuesWritten())
+            {
+                desc += "-" + constraint.TranslationalStiffnessX + "," + constraint.TranslationalStiffnessY + "," + constraint.TranslationalStiffnessZ +
+                        "," + constraint.RotationalStiffnessX +  "," + constraint.RotationalStiffnessY +  "," + constraint.RotationalStiffnessZ;
+            }
+            return desc;
+        }
+
+        /***************************************************/
+
+        [Description("Generates a default description for the BarRelease as 'StartReleaseNameOrDesc - EndReleaseNameOrDesc'.")]
+        [Input("release", "The Constraint6DOF to get a default description for.")]
+        [Output("desc", "The generated descritpion for the constraint.")]
+        public static string Description(this BarRelease release)
+        {
+            return release.StartRelease.DescriptionOrName() + " - " + release.EndRelease.DescriptionOrName();
+        }
+
+        /***************************************************/
         /**** Public Methods - Interfaces               ****/
+        /***************************************************/
+
+        [Description("Generates a default description for the Iproeprty, depending on type and its properties.")]
+        [Input("section", "The property to get a default description for.")]
+        [Output("desc", "The generated descritpion for the property, depending on its proeprty values.")]
+        public static string IDescription(this IProperty property)
+        {
+            return Description(property as dynamic);
+        }
+
         /***************************************************/
 
         [Description("Generates a default description for the Section, depending on type, profile and material.")]
@@ -348,6 +423,174 @@ namespace BH.Engine.Structure
                 return "Unnamed Material";
 
             return material.Name;
+        }
+
+        /***************************************************/
+
+        [Description("Returns a text sign for the DOFType.")]
+        private static string DofSign(this DOFType dof)
+        {
+            switch (dof)
+            {
+                case DOFType.Free:
+                    return "f";
+                case DOFType.Fixed:
+                    return "x";
+                case DOFType.FixedNegative:
+                    return "x⁻";
+                case DOFType.FixedPositive:
+                    return "x⁺";
+                case DOFType.Spring:
+                    return "e";
+                case DOFType.SpringNegative:
+                    return "e⁻";
+                case DOFType.SpringPositive:
+                    return "e⁺";
+                case DOFType.SpringRelative:
+                    return "r";
+                case DOFType.SpringRelativeNegative:
+                    return "r⁻";
+                case DOFType.SpringRelativePositive:
+                    return "r⁺";
+                case DOFType.NonLinear:
+                    return "n";
+                case DOFType.Friction:
+                    return "fᵣ";
+                case DOFType.Damped:
+                    return "d";
+                case DOFType.Gap:
+                    return "g";
+                default:
+                    return "-";
+            }
+        }
+
+        /***************************************************/
+
+        [Description("Returns true if any of the dof elements is of a value based type or if any of the values are non-zero.")]
+        private static bool ElasticValuesWritten(this Constraint3DOF constraint)
+        {
+            if (constraint.UX.ValueBasedDOF())
+                return true;
+
+            if (constraint.UY.ValueBasedDOF())
+                return true;
+
+            if (constraint.Normal.ValueBasedDOF())
+                return true;
+
+            if (constraint.KX != 0)
+                return true;
+
+            if (constraint.KY != 0)
+                return true;
+
+            if (constraint.KNorm != 0)
+                return true;
+
+            return false;
+        }
+
+        /***************************************************/
+
+        [Description("Returns true if any of the dof elements is of a value based type or if any of the values are non-zero.")]
+        private static bool ElasticValuesWritten(this Constraint4DOF constraint)
+        {
+            if (constraint.TranslationX.ValueBasedDOF())
+                return true;
+
+            if (constraint.TranslationY.ValueBasedDOF())
+                return true;
+
+            if (constraint.TranslationZ.ValueBasedDOF())
+                return true;
+
+            if (constraint.RotationX.ValueBasedDOF())
+                return true;
+
+            if (constraint.TranslationalStiffnessX != 0)
+                return true;
+
+            if (constraint.TranslationalStiffnessY != 0)
+                return true;
+
+            if (constraint.TranslationalStiffnessZ != 0)
+                return true;
+
+            if (constraint.RotationalStiffnessX != 0)
+                return true;
+
+            return false;
+        }
+
+        /***************************************************/
+
+        [Description("Returns true if any of the dof elements is of a value based type or if any of the values are non-zero.")]
+        private static bool ElasticValuesWritten(this Constraint6DOF constraint)
+        {
+            if (constraint.TranslationX.ValueBasedDOF())
+                return true;
+
+            if (constraint.TranslationY.ValueBasedDOF())
+                return true;
+
+            if (constraint.TranslationZ.ValueBasedDOF())
+                return true;
+
+            if (constraint.RotationX.ValueBasedDOF())
+                return true;
+
+            if (constraint.RotationY.ValueBasedDOF())
+                return true;
+
+            if (constraint.RotationZ.ValueBasedDOF())
+                return true;
+
+            if (constraint.TranslationalStiffnessX != 0)
+                return true;
+
+            if (constraint.TranslationalStiffnessY != 0)
+                return true;
+
+            if (constraint.TranslationalStiffnessZ != 0)
+                return true;
+
+            if (constraint.RotationalStiffnessX != 0)
+                return true;
+
+            if (constraint.RotationalStiffnessY != 0)
+                return true;
+
+            if (constraint.RotationalStiffnessZ != 0)
+                return true;
+
+            return false;
+        }
+
+        /***************************************************/
+
+        [Description("Returns true if the DOF is of a type that depends on a stiffness value.")]
+        private static bool ValueBasedDOF(this DOFType dof)
+        {
+            switch (dof)
+            {
+                case DOFType.Free:
+                case DOFType.Fixed:
+                case DOFType.FixedNegative:
+                case DOFType.FixedPositive:
+                    return false;
+                case DOFType.SpringNegative:
+                case DOFType.SpringPositive:
+                case DOFType.SpringRelative:
+                case DOFType.SpringRelativeNegative:
+                case DOFType.SpringRelativePositive:
+                case DOFType.NonLinear:
+                case DOFType.Friction:
+                case DOFType.Damped:
+                case DOFType.Gap:
+                default:
+                    return true;
+            }
         }
 
         /***************************************************/
