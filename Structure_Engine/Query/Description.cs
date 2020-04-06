@@ -23,6 +23,7 @@
 using BH.oM.Geometry.ShapeProfiles;
 using BH.oM.Structure.SectionProperties;
 using BH.oM.Structure.Offsets;
+using BH.oM.Geometry;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -366,11 +367,69 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Generates a default description for the Offset as 'Start - End'.")]
-        [Input("release", "The Constraint6DOF to get a default description for.")]
+        [Input("offset", "The Constraint6DOF to get a default description for.")]
         [Output("desc", "The generated descritpion for the constraint.")]
         public static string Description(this Offset offset)
         {
-            return "[" + offset.Start.X + "," + offset.Start.Y + "," + offset.Start.Z + "] - [" + offset.End.X + "," + offset.End.Y + "," + offset.End.Z + "]";
+            return offset.Start.VectorComponents() + " - " + offset.End.VectorComponents();
+        }
+
+        /***************************************************/
+        /**** Public Methods - Material                 ****/
+        /***************************************************/
+
+        [Description("Generates a default description for the material as a description fo its properties.")]
+        [Input("material", "The material to get a default description for.")]
+        [Output("desc", "The generated descritpion for the material.")]
+        public static string Description(this Steel material)
+        {
+            return "Steel " + material.MaterialAnalyticalValues() + "fy:" + material.YieldStress + ", fu:" + material.UltimateStress;
+        }
+
+        /***************************************************/
+
+        [Description("Generates a default description for the material as a description fo its properties.")]
+        [Input("material", "The material to get a default description for.")]
+        [Output("desc", "The generated descritpion for the material.")]
+        public static string Description(this Concrete material)
+        {
+            return "Concrete " + material.MaterialAnalyticalValues() + "cube:" + material.CubeStrength + ", cyl:" + material.CylinderStrength;
+        }
+
+        /***************************************************/
+
+        [Description("Generates a default description for the material as a description fo its properties.")]
+        [Input("material", "The material to get a default description for.")]
+        [Output("desc", "The generated descritpion for the material.")]
+        public static string Description(this Aluminium material)
+        {
+            return "Alum " + material.MaterialAnalyticalValues();
+        }
+
+        /***************************************************/
+
+        [Description("Generates a default description for the material as a description fo its properties.")]
+        [Input("material", "The material to get a default description for.")]
+        [Output("desc", "The generated descritpion for the material.")]
+        public static string Description(this GenericIsotropicMaterial material)
+        {
+            return "Gen " + material.MaterialAnalyticalValues();
+        }
+
+        [Description("Generates a default description for the material as a description fo its properties.")]
+        [Input("material", "The material to get a default description for.")]
+        [Output("desc", "The generated descritpion for the material.")]
+        public static string Description(this Timber material)
+        {
+            return "Timber " + material.MaterialAnalyticalValues();
+        }
+
+        [Description("Generates a default description for the material as a description fo its properties.")]
+        [Input("material", "The material to get a default description for.")]
+        [Output("desc", "The generated descritpion for the material.")]
+        public static string Description(this GenericOrthotropicMaterial material)
+        {
+            return "Gen " + material.MaterialAnalyticalValues();
         }
 
         /***************************************************/
@@ -436,6 +495,35 @@ namespace BH.Engine.Structure
                 return "Unnamed Material";
 
             return material.Name;
+        }
+
+        /***************************************************/
+
+        private static string MaterialAnalyticalValues(this IIsotropic isotropicMaterial)
+        {
+            return "E:" + isotropicMaterial.YoungsModulus +
+                   ", ρ:" + isotropicMaterial.Density +
+                   ", ν:" + isotropicMaterial.PoissonsRatio +
+                   ", α:" + isotropicMaterial.ThermalExpansionCoeff +
+                   ", ζ:" + isotropicMaterial.DampingRatio;
+        }
+
+        /***************************************************/
+
+        private static string MaterialAnalyticalValues(this IOrthotropic orthoTropicMaterial)
+        {
+            return "E:" + orthoTropicMaterial.YoungsModulus.VectorComponents() +
+                   ", ρ:" + orthoTropicMaterial.Density +
+                   ", ν:" + orthoTropicMaterial.PoissonsRatio.VectorComponents() +
+                   ", α:" + orthoTropicMaterial.ThermalExpansionCoeff.VectorComponents() +
+                   ", ζ:" + orthoTropicMaterial.DampingRatio;
+        }
+
+        /***************************************************/
+
+        private static string VectorComponents(this Vector vector)
+        {
+            return "[" + vector.X + "," + vector.Y + "," + vector.Z + "]";
         }
 
         /***************************************************/
