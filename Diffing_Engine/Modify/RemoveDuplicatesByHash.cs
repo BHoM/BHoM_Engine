@@ -42,7 +42,7 @@ namespace BH.Engine.Diffing
         [Input("objects", "Collection of objects whose duplicates have to be removed. If they don't already have an Hash assigned, it will be calculated.")]
         public static IEnumerable<T> RemoveDuplicatesByHash<T>(IEnumerable<T> objects) where T : IBHoMObject
         {
-            return objects.GroupBy(obj => obj.GetHistoryFragment().CurrentHash).Select(gr => gr.First()).ToList();
+            return objects.GroupBy(obj => obj.GetHistoryFragment().Hash).Select(gr => gr.First()).ToList();
         }
     }
 }
