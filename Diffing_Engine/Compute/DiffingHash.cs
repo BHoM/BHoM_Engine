@@ -50,12 +50,12 @@ namespace BH.Engine.Diffing
             if (diffConfig == null)
                 diffConfig = new DiffConfig();
 
-            //Remove HistoryFragments if present.Hashing cannot be computed including also HistoryFragment.
+            //Remove HistoryFragments if present.CurrentHashing cannot be computed including also HistoryFragment.
             IBHoMObject bhomobj = obj as IBHoMObject;
             if (bhomobj != null)
             {
                 bhomobj = BH.Engine.Base.Query.DeepClone(obj) as IBHoMObject;
-                bhomobj.Fragments.Remove(typeof(HistoryFragment));
+                bhomobj.Fragments.Remove(typeof(HashFragment));
                 return Compute.SHA256Hash(bhomobj, diffConfig.PropertiesToIgnore);
             }
 

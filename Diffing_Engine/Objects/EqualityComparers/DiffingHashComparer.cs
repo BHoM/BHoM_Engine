@@ -72,8 +72,8 @@ namespace BH.Engine.Diffing
             {
                 IBHoMObject bHoMObject = (IBHoMObject)obj;
                 HashFragment hashFragment = bHoMObject.GetHashFragment();
-                if (!string.IsNullOrWhiteSpace(hashFragment?.Hash))
-                    return hashFragment.Hash.GetHashCode();
+                if (!string.IsNullOrWhiteSpace(hashFragment?.CurrentHash))
+                    return hashFragment.CurrentHash.GetHashCode();
             }
 
             return obj.DiffingHash().GetHashCode();
