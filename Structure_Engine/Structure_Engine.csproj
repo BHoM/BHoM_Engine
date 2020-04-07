@@ -131,6 +131,7 @@
     <Compile Include="Query\Fixities.cs" />
     <Compile Include="Query\HasModifiers.cs" />
     <Compile Include="Query\InternalEdgeCurves.cs" />
+    <Compile Include="Query\IsNumericallyDependant.cs" />
     <Compile Include="Query\MaterialComposition.cs" />
     <Compile Include="Query\MaterialType.cs" />
     <Compile Include="Create\Elements\IElement0D\NewElement0D.cs" />
