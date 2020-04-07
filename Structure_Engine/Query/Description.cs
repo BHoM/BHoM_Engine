@@ -48,7 +48,7 @@ namespace BH.Engine.Structure
 
         [Description("Generates a default description for the profile as 'I Hegiht x Width x WebThickness x FlangeThickness'.")]
         [Input("profile", "The profile to get a default description for.")]
-        [Output("desc", "The generated descritpion for the profile depending on its dimensions.")]
+        [Output("desc", "The generated descritpion for the profile based on its dimensions.")]
         public static string Description(this ISectionProfile profile)
         {
             return "I " + profile.Height + "x" + profile.Width + "x" + profile.WebThickness + "x" + profile.FlangeThickness;
@@ -58,7 +58,7 @@ namespace BH.Engine.Structure
 
         [Description("Generates a default description for the profile as 'Box Hegiht x Width x Thickness'.")]
         [Input("profile", "The profile to get a default description for.")]
-        [Output("desc", "The generated descritpion for the profile depending on its dimensions.")]
+        [Output("desc", "The generated descritpion for the profile based on its dimensions.")]
         public static string Description(this BoxProfile profile)
         {
             return "Box " + profile.Height + "x" + profile.Width + "x" + profile.Thickness;
@@ -68,7 +68,7 @@ namespace BH.Engine.Structure
 
         [Description("Generates a default description for the profile as 'Angle Hegiht x Width x WebThickness x FlangeThickness'.")]
         [Input("profile", "The profile to get a default description for.")]
-        [Output("desc", "The generated descritpion for the profile depending on its dimensions.")]
+        [Output("desc", "The generated descritpion for the profile based on its dimensions.")]
         public static string Description(this AngleProfile profile)
         {
             return "Angle " + profile.Height + "x" + profile.Width + "x" + profile.WebThickness + "x" + profile.FlangeThickness;
@@ -78,7 +78,7 @@ namespace BH.Engine.Structure
 
         [Description("Generates a default description for the profile as 'Channel Hegiht x Width x WebThickness x FlangeThickness'.")]
         [Input("profile", "The profile to get a default description for.")]
-        [Output("desc", "The generated descritpion for the profile depending on its dimensions.")]
+        [Output("desc", "The generated descritpion for the profile based on its dimensions.")]
         public static string Description(this ChannelProfile profile)
         {
             return "Channel " + profile.Height + "x" + profile.FlangeWidth + "x" + profile.WebThickness + "x" + profile.FlangeThickness;
@@ -88,7 +88,7 @@ namespace BH.Engine.Structure
 
         [Description("Generates a default description for the profile as 'Circle Diameter'.")]
         [Input("profile", "The profile to get a default description for.")]
-        [Output("desc", "The generated descritpion for the profile depending on its dimensions.")]
+        [Output("desc", "The generated descritpion for the profile based on its dimensions.")]
         public static string Description(this CircleProfile profile)
         {
             return "Circle " + profile.Diameter;
@@ -98,7 +98,7 @@ namespace BH.Engine.Structure
 
         [Description("Generates a default description for the profile as 'FabBox Hegiht x Width x WebThickness x TopFlangeThickness x BotFlangeThickness'.")]
         [Input("profile", "The profile to get a default description for.")]
-        [Output("desc", "The generated descritpion for the profile depending on its dimensions.")]
+        [Output("desc", "The generated descritpion for the profile based on its dimensions.")]
         public static string Description(this FabricatedBoxProfile profile)
         {
             return "FabBox " + profile.Height + "x" + profile.Width + "x" + profile.WebThickness + "x" + profile.TopFlangeThickness + "x" + profile.BotFlangeThickness;
@@ -108,7 +108,7 @@ namespace BH.Engine.Structure
 
         [Description("Generates a default description for the profile as 'GenFabBox Hegiht x TotalWidth x WebThickness x TopFlangeThickness x BotFlangeThickness'.")]
         [Input("profile", "The profile to get a default description for.")]
-        [Output("desc", "The generated descritpion for the profile depending on its dimensions.")]
+        [Output("desc", "The generated descritpion for the profile based on its dimensions.")]
         public static string Description(this GeneralisedFabricatedBoxProfile profile)
         {
             double width = Math.Max(profile.Width + profile.BotLeftCorbelWidth + profile.BotRightCorbelWidth, profile.Width + profile.TopLeftCorbelWidth + profile.TopRightCorbelWidth);
@@ -119,7 +119,7 @@ namespace BH.Engine.Structure
 
         [Description("Generates a default description for the profile as 'Kite Angle x Width x Thickness'.")]
         [Input("profile", "The profile to get a default description for.")]
-        [Output("desc", "The generated description for the profile depending on its dimensions.")]
+        [Output("desc", "The generated description for the profile based on its dimensions.")]
         public static string Description(this KiteProfile profile)
         {
             return "Kite " + Math.Round(profile.Angle1, 2) + "x" + profile.Width1 + "x" + profile.Thickness;
@@ -129,7 +129,7 @@ namespace BH.Engine.Structure
 
         [Description("Generates a default description for the profile as 'FabI Hegiht x TopFlangeWidth x BotFLangeWidth x WebThickness x TopFlangeThickness x BotFlangeThickness'.")]
         [Input("profile", "The profile to get a default description for.")]
-        [Output("desc", "The generated descritpion for the profile depending on its dimensions.")]
+        [Output("desc", "The generated descritpion for the profile based on its dimensions.")]
         public static string Description(this FabricatedISectionProfile profile)
         {
             return "FabI " + profile.Height + "x" + profile.TopFlangeWidth + "x" + profile.BotFlangeWidth + "x" + profile.WebThickness + "x" + profile.TopFlangeThickness + "x" + profile.BotFlangeThickness;
@@ -139,7 +139,7 @@ namespace BH.Engine.Structure
 
         [Description("Generates a default description for the profile as 'FreeForm'.")]
         [Input("profile", "The profile to get a default description for.")]
-        [Output("desc", "The generated descritpion for the profile depending on its dimensions.")]
+        [Output("desc", "The generated descritpion for the profile based on its dimensions.")]
         public static string Description(this FreeFormProfile profile)
         {
             return "FreeForm";
@@ -149,7 +149,7 @@ namespace BH.Engine.Structure
 
         [Description("Generates a default description for the profile as 'Rectangle Hegiht x Width x CornerRadius'.")]
         [Input("profile", "The profile to get a default description for.")]
-        [Output("desc", "The generated descritpion for the profile depending on its dimensions.")]
+        [Output("desc", "The generated descritpion for the profile based on its dimensions.")]
         public static string Description(this RectangleProfile profile)
         {
             return "Rectangle " + profile.Height + "x" + profile.Width + "x" + profile.CornerRadius;
@@ -159,7 +159,7 @@ namespace BH.Engine.Structure
 
         [Description("Generates a default description for the profile as 'T Hegiht x Width x WebThickness x FlangeThickness'.")]
         [Input("profile", "The profile to get a default description for.")]
-        [Output("desc", "The generated descritpion for the profile depending on its dimensions.")]
+        [Output("desc", "The generated descritpion for the profile based on its dimensions.")]
         public static string Description(this TSectionProfile profile)
         {
             return "T " + profile.Height + "x" + profile.Width + "x" + profile.WebThickness + "x" + profile.FlangeThickness;
@@ -169,7 +169,7 @@ namespace BH.Engine.Structure
 
         [Description("Generates a default description for the profile as 'GenT  Height x WebThickness x LeftOutstandWidth x LeftOutstandThickness x RightOutstandWidth x RightOutstandThickness'.")]
         [Input("profile", "The profile to get a default description for.")]
-        [Output("desc", "The generated descritpion for the profile depending on its dimensions.")]
+        [Output("desc", "The generated descritpion for the profile based on its dimensions.")]
         public static string Description(this GeneralisedTSectionProfile profile)
         {
             return "GenT " + profile.Height + "x" + profile.WebThickness + "x" + profile.LeftOutstandWidth + "x" + profile.LeftOutstandThickness + "x" + profile.RightOutstandWidth + "x" + profile.RightOutstandThickness;
@@ -179,7 +179,7 @@ namespace BH.Engine.Structure
 
         [Description("Generates a default description for the profile as 'Tube Diameter x Thickness'.")]
         [Input("profile", "The profile to get a default description for.")]
-        [Output("desc", "The generated descritpion for the profile depending on its dimensions.")]
+        [Output("desc", "The generated descritpion for the profile based on its dimensions.")]
         public static string Description(this TubeProfile profile)
         {
             return "Tube " + profile.Diameter + "x" + profile.Thickness;
@@ -191,7 +191,7 @@ namespace BH.Engine.Structure
 
         [Description("Generates a default description for the Section as 'Steel ProfileDescription - MaterialName'.")]
         [Input("section", "The section to get a default description for.")]
-        [Output("desc", "The generated descritpion for the section depending on its dimensions, material and type.")]
+        [Output("desc", "The generated descritpion for the section based on its dimensions, material and type.")]
         public static string Description(this SteelSection section)
         {
             return "Steel " + section.SectionProfile.IDescription() + " - " + CheckGetMaterialName(section.Material);
@@ -201,7 +201,7 @@ namespace BH.Engine.Structure
 
         [Description("Generates a default description for the Section as 'Concrete ProfileDescription - MaterialName'.")]
         [Input("section", "The section to get a default description for.")]
-        [Output("desc", "The generated descritpion for the section depending on its dimensions, material and type.")]
+        [Output("desc", "The generated descritpion for the section based on its dimensions, material and type.")]
         public static string Description(this ConcreteSection section)
         {
             return "Concrete " + section.SectionProfile.IDescription() + " - " + CheckGetMaterialName(section.Material);
@@ -211,7 +211,7 @@ namespace BH.Engine.Structure
 
         [Description("Generates a default description for the Section as 'Timber ProfileDescription - MaterialName'.")]
         [Input("section", "The section to get a default description for.")]
-        [Output("desc", "The generated descritpion for the section depending on its dimensions, material and type.")]
+        [Output("desc", "The generated descritpion for the section based on its dimensions, material and type.")]
         public static string Description(this TimberSection section)
         {
             return "Timber  " + section.SectionProfile.IDescription() + " - " + CheckGetMaterialName(section.Material);
@@ -221,7 +221,7 @@ namespace BH.Engine.Structure
 
         [Description("Generates a default description for the Section as 'Aluminium ProfileDescription - MaterialName'.")]
         [Input("section", "The section to get a default description for.")]
-        [Output("desc", "The generated descritpion for the section depending on its dimensions, material and type.")]
+        [Output("desc", "The generated descritpion for the section based on its dimensions, material and type.")]
         public static string Description(this AluminiumSection section)
         {
             return "Aluminium " + section.SectionProfile.IDescription() + " - " + CheckGetMaterialName(section.Material);
@@ -231,7 +231,7 @@ namespace BH.Engine.Structure
 
         [Description("Generates a default description for the Section as 'Generic ProfileDescription - MaterialName'.")]
         [Input("section", "The section to get a default description for.")]
-        [Output("desc", "The generated descritpion for the section depending on its dimensions, material and type.")]
+        [Output("desc", "The generated descritpion for the section based on its dimensions, material and type.")]
         public static string Description(this GenericSection section)
         {
             return "Generic " + section.SectionProfile.IDescription() + " - " + CheckGetMaterialName(section.Material);
@@ -241,7 +241,7 @@ namespace BH.Engine.Structure
 
         [Description("Generates a default description for the Section as 'Cable NumberOfCables x Diameter - MaterialName'.")]
         [Input("section", "The section to get a default description for.")]
-        [Output("desc", "The generated descritpion for the section depending on its dimensions, material and type.")]
+        [Output("desc", "The generated descritpion for the section based on its dimensions, material and type.")]
         public static string Description(this CableSection section)
         {
             return "Cable " + section.NumberOfCables + " x dia " + section.CableDiameter + " - " + CheckGetMaterialName(section.Material);
@@ -251,7 +251,7 @@ namespace BH.Engine.Structure
 
         [Description("Generates a default description for the Section as 'Explicit Area Iy Iz J  - MaterialName'.")]
         [Input("section", "The section to get a default description for.")]
-        [Output("desc", "The generated descritpion for the section depending on its dimensions, material and type.")]
+        [Output("desc", "The generated descritpion for the section based on its dimensions, material and type.")]
         public static string Description(this ExplicitSection section)
         {
             return "Explicit A: " + section.Area + " Iy: " + section.Iy + " Iz: " + section.Iz + " J: " + section.J + " - " + CheckGetMaterialName(section.Material);
@@ -263,7 +263,7 @@ namespace BH.Engine.Structure
 
         [Description("Generates a default description for the SurfaceProperty as 'THK Thickness - MaterialName'.")]
         [Input("property", "The SurfaceProperty to get a default description for.")]
-        [Output("desc", "The generated description for the property depending on its dimensions, material and type.")]
+        [Output("desc", "The generated description for the property based on its dimensions, material and type.")]
         public static string Description(this ConstantThickness property)
         {
             return "THK " + property.Thickness + " - " + CheckGetMaterialName(property.Material);
@@ -273,7 +273,7 @@ namespace BH.Engine.Structure
 
         [Description("Generates a default description for the SurfaceProperty as 'Ribbed Depth Spacing StemWidth - MaterialName'.")]
         [Input("property", "The SurfaceProperty to get a default description for.")]
-        [Output("desc", "The generated descritpion for the property depending on its dimensions, material and type.")]
+        [Output("desc", "The generated descritpion for the property based on its dimensions, material and type.")]
         public static string Description(this Ribbed property)
         {
             return "Ribbed Depth:" + property.TotalDepth + " Spacing: " + property.Spacing + " sWidth: " + property.StemWidth + " - " + CheckGetMaterialName(property.Material);
@@ -283,7 +283,7 @@ namespace BH.Engine.Structure
 
         [Description("Generates a default description for the SurfaceProperty as 'Ribbed DepthX DepthY SpacingX SpacingY StemWidthX StemWidthY - MaterialName'.")]
         [Input("property", "The SurfaceProperty to get a default description for.")]
-        [Output("desc", "The generated descritpion for the property depending on its dimensions, material and type.")]
+        [Output("desc", "The generated descritpion for the property based on its dimensions, material and type.")]
         public static string Description(this Waffle property)
         {
             return "Waffle DepthX: " + property.TotalDepthX + " DepthY: " + property.TotalDepthY + " SpacingX: " + property.SpacingX + " SpacingY: " + property.SpacingY + " sWidthX: " + property.StemWidthX + " sWidthY: " + property.StemWidthY + " - " + CheckGetMaterialName(property.Material);
@@ -309,7 +309,7 @@ namespace BH.Engine.Structure
         public static string Description(this Constraint3DOF constraint)
         {
             string desc = constraint.UX.DofSign() + constraint.UY.DofSign() + constraint.Normal.DofSign();
-            if (constraint.ElasticValuesWritten())
+            if (constraint.IsNumericallyDependant())
             {
                 desc += "-" + constraint.KX + "," + constraint.KY + "," + constraint.KNorm; 
             }
@@ -326,7 +326,7 @@ namespace BH.Engine.Structure
             string desc = constraint.TranslationX.DofSign() + constraint.TranslationY.DofSign() + constraint.TranslationZ.DofSign() +
                           constraint.RotationX.DofSign();
 
-            if (constraint.ElasticValuesWritten())
+            if (constraint.IsNumericallyDependant())
             {
                 desc += "-" + constraint.TranslationalStiffnessX + "," + constraint.TranslationalStiffnessY + "," + constraint.TranslationalStiffnessZ +
                         "," + constraint.RotationalStiffnessX;
@@ -344,7 +344,7 @@ namespace BH.Engine.Structure
             string desc = constraint.TranslationX.DofSign() + constraint.TranslationY.DofSign() + constraint.TranslationZ.DofSign() +
                           constraint.RotationX.DofSign() + constraint.RotationY.DofSign() + constraint.RotationZ.DofSign();
 
-            if (constraint.ElasticValuesWritten())
+            if (constraint.IsNumericallyDependant())
             {
                 desc += "-" + constraint.TranslationalStiffnessX + "," + constraint.TranslationalStiffnessY + "," + constraint.TranslationalStiffnessZ +
                         "," + constraint.RotationalStiffnessX +  "," + constraint.RotationalStiffnessY +  "," + constraint.RotationalStiffnessZ;
@@ -438,7 +438,7 @@ namespace BH.Engine.Structure
 
         [Description("Generates a default description for the IProperty, based on its properties.")]
         [Input("property", "The property to get a default description for.")]
-        [Output("desc", "The generated description for the property, depending on its property values.")]
+        [Output("desc", "The generated description for the property, based on its property values.")]
         public static string IDescription(this IProperty property)
         {
             return Description(property as dynamic);
@@ -446,9 +446,9 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Generates a default description for the Section, depending on type, profile and material.")]
+        [Description("Generates a default description for the Section, based on type, profile and material.")]
         [Input("section", "The section to get a default description for.")]
-        [Output("desc", "The generated description for the section depending on its dimensions, material and type.")]
+        [Output("desc", "The generated description for the section based on its dimensions, material and type.")]
         public static string IDescription(this ISectionProperty section)
         {
             return Description(section as dynamic);
@@ -456,9 +456,9 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Generates a default description for the Profile, depending on dimensions.")]
+        [Description("Generates a default description for the Profile, based on dimensions.")]
         [Input("profile", "The profile to get a default description for.")]
-        [Output("desc", "The generated descritpion for the profile depending on its dimensions.")]
+        [Output("desc", "The generated descritpion for the profile based on its dimensions.")]
         public static string IDescription(this IProfile profile)
         {
             return Description(profile as dynamic);
@@ -466,9 +466,9 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Generates a default description for the Section, depending on type, dimensions and material.")]
+        [Description("Generates a default description for the Section, based on type, dimensions and material.")]
         [Input("property", "The SurfaceProperty to get a default description for.")]
-        [Output("desc", "The generated descritpion for the property depending on its dimensions, material and type.")]
+        [Output("desc", "The generated descritpion for the property based on its dimensions, material and type.")]
         public static string IDescription(this ISurfaceProperty property)
         {
             return Description(property as dynamic);
@@ -568,132 +568,5 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Returns true if any of the dof elements is of a value based type or if any of the values are non-zero.")]
-        private static bool ElasticValuesWritten(this Constraint3DOF constraint)
-        {
-            if (constraint.UX.ValueBasedDOF())
-                return true;
-
-            if (constraint.UY.ValueBasedDOF())
-                return true;
-
-            if (constraint.Normal.ValueBasedDOF())
-                return true;
-
-            if (constraint.KX != 0)
-                return true;
-
-            if (constraint.KY != 0)
-                return true;
-
-            if (constraint.KNorm != 0)
-                return true;
-
-            return false;
-        }
-
-        /***************************************************/
-
-        [Description("Returns true if any of the dof elements is of a value based type or if any of the values are non-zero.")]
-        private static bool ElasticValuesWritten(this Constraint4DOF constraint)
-        {
-            if (constraint.TranslationX.ValueBasedDOF())
-                return true;
-
-            if (constraint.TranslationY.ValueBasedDOF())
-                return true;
-
-            if (constraint.TranslationZ.ValueBasedDOF())
-                return true;
-
-            if (constraint.RotationX.ValueBasedDOF())
-                return true;
-
-            if (constraint.TranslationalStiffnessX != 0)
-                return true;
-
-            if (constraint.TranslationalStiffnessY != 0)
-                return true;
-
-            if (constraint.TranslationalStiffnessZ != 0)
-                return true;
-
-            if (constraint.RotationalStiffnessX != 0)
-                return true;
-
-            return false;
-        }
-
-        /***************************************************/
-
-        [Description("Returns true if any of the dof elements is of a value based type or if any of the values are non-zero.")]
-        private static bool ElasticValuesWritten(this Constraint6DOF constraint)
-        {
-            if (constraint.TranslationX.ValueBasedDOF())
-                return true;
-
-            if (constraint.TranslationY.ValueBasedDOF())
-                return true;
-
-            if (constraint.TranslationZ.ValueBasedDOF())
-                return true;
-
-            if (constraint.RotationX.ValueBasedDOF())
-                return true;
-
-            if (constraint.RotationY.ValueBasedDOF())
-                return true;
-
-            if (constraint.RotationZ.ValueBasedDOF())
-                return true;
-
-            if (constraint.TranslationalStiffnessX != 0)
-                return true;
-
-            if (constraint.TranslationalStiffnessY != 0)
-                return true;
-
-            if (constraint.TranslationalStiffnessZ != 0)
-                return true;
-
-            if (constraint.RotationalStiffnessX != 0)
-                return true;
-
-            if (constraint.RotationalStiffnessY != 0)
-                return true;
-
-            if (constraint.RotationalStiffnessZ != 0)
-                return true;
-
-            return false;
-        }
-
-        /***************************************************/
-
-        [Description("Returns true if the DOF is of a type that depends on a stiffness value.")]
-        private static bool ValueBasedDOF(this DOFType dof)
-        {
-            switch (dof)
-            {
-                case DOFType.Free:
-                case DOFType.Fixed:
-                case DOFType.FixedNegative:
-                case DOFType.FixedPositive:
-                    return false;
-                case DOFType.SpringNegative:
-                case DOFType.SpringPositive:
-                case DOFType.SpringRelative:
-                case DOFType.SpringRelativeNegative:
-                case DOFType.SpringRelativePositive:
-                case DOFType.NonLinear:
-                case DOFType.Friction:
-                case DOFType.Damped:
-                case DOFType.Gap:
-                default:
-                    return true;
-            }
-        }
-
-        /***************************************************/
     }
 }
