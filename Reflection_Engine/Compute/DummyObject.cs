@@ -199,7 +199,6 @@ namespace BH.Engine.Reflection
                     Type tupleType = Type.GetType("System.Tuple`" + keys.Length);
                     Type constructedType = tupleType.MakeGenericType(keys);
                     return Activator.CreateInstance(constructedType, keys.Select(x => GetValue(x, depth + 1)).ToArray());
-
                 }
                 else if (type.Name == "IDictionary`2")
                 {
