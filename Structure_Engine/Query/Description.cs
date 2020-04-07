@@ -119,7 +119,7 @@ namespace BH.Engine.Structure
 
         [Description("Generates a default description for the profile as 'Kite Angle x Width x Thickness'.")]
         [Input("profile", "The profile to get a default description for.")]
-        [Output("desc", "The generated descritpion for the profile depending on its dimensions.")]
+        [Output("desc", "The generated description for the profile depending on its dimensions.")]
         public static string Description(this KiteProfile profile)
         {
             return "Kite " + Math.Round(profile.Angle1, 2) + "x" + profile.Width1 + "x" + profile.Thickness;
@@ -263,7 +263,7 @@ namespace BH.Engine.Structure
 
         [Description("Generates a default description for the SurfaceProperty as 'THK Thickness - MaterialName'.")]
         [Input("property", "The SurfaceProperty to get a default description for.")]
-        [Output("desc", "The generated descritpion for the property depending on its dimensions, material and type.")]
+        [Output("desc", "The generated description for the property depending on its dimensions, material and type.")]
         public static string Description(this ConstantThickness property)
         {
             return "THK " + property.Thickness + " - " + CheckGetMaterialName(property.Material);
@@ -305,7 +305,7 @@ namespace BH.Engine.Structure
 
         [Description("Generates a default description for the Constraint3DOF as 'DOftypes-Values'.")]
         [Input("constraint", "The Constraint3DOF to get a default description for.")]
-        [Output("desc", "The generated descritpion for the constraint.")]
+        [Output("desc", "The generated description for the constraint.")]
         public static string Description(this Constraint3DOF constraint)
         {
             string desc = constraint.UX.DofSign() + constraint.UY.DofSign() + constraint.Normal.DofSign();
@@ -320,7 +320,7 @@ namespace BH.Engine.Structure
 
         [Description("Generates a default description for the Constraint4DOF as 'DOftypes-Values'.")]
         [Input("constraint", "The Constraint4DOF to get a default description for.")]
-        [Output("desc", "The generated descritpion for the constraint.")]
+        [Output("desc", "The generated description for the constraint.")]
         public static string Description(this Constraint4DOF constraint)
         {
             string desc = constraint.TranslationX.DofSign() + constraint.TranslationY.DofSign() + constraint.TranslationZ.DofSign() +
@@ -338,7 +338,7 @@ namespace BH.Engine.Structure
 
         [Description("Generates a default description for the Constraint6DOF as 'DOftypes-Values'.")]
         [Input("constraint", "The Constraint6DOF to get a default description for.")]
-        [Output("desc", "The generated descritpion for the constraint.")]
+        [Output("desc", "The generated description for the constraint.")]
         public static string Description(this Constraint6DOF constraint)
         {
             string desc = constraint.TranslationX.DofSign() + constraint.TranslationY.DofSign() + constraint.TranslationZ.DofSign() +
@@ -356,7 +356,7 @@ namespace BH.Engine.Structure
 
         [Description("Generates a default description for the BarRelease as 'StartReleaseNameOrDesc - EndReleaseNameOrDesc'.")]
         [Input("release", "The Constraint6DOF to get a default description for.")]
-        [Output("desc", "The generated descritpion for the constraint.")]
+        [Output("desc", "The generated description for the constraint.")]
         public static string Description(this BarRelease release)
         {
             return release.StartRelease.DescriptionOrName() + " - " + release.EndRelease.DescriptionOrName();
@@ -368,7 +368,7 @@ namespace BH.Engine.Structure
 
         [Description("Generates a default description for the Offset as 'Start - End'.")]
         [Input("offset", "The Constraint6DOF to get a default description for.")]
-        [Output("desc", "The generated descritpion for the constraint.")]
+        [Output("desc", "The generated description for the constraint.")]
         public static string Description(this Offset offset)
         {
             return offset.Start.VectorComponents() + " - " + offset.End.VectorComponents();
@@ -378,9 +378,9 @@ namespace BH.Engine.Structure
         /**** Public Methods - Material                 ****/
         /***************************************************/
 
-        [Description("Generates a default description for the material as a description fo its properties.")]
+        [Description("Generates a default description for the material based on its properties.")]
         [Input("material", "The material to get a default description for.")]
-        [Output("desc", "The generated descritpion for the material.")]
+        [Output("desc", "The generated description for the material.")]
         public static string Description(this Steel material)
         {
             return "Steel " + material.MaterialAnalyticalValues() + ", fy:" + material.YieldStress + ", fu:" + material.UltimateStress;
@@ -388,9 +388,9 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Generates a default description for the material as a description fo its properties.")]
+        [Description("Generates a default description for the material based on its properties.")]
         [Input("material", "The material to get a default description for.")]
-        [Output("desc", "The generated descritpion for the material.")]
+        [Output("desc", "The generated description for the material.")]
         public static string Description(this Concrete material)
         {
             return "Concrete " + material.MaterialAnalyticalValues() + ", cyl:" + material.CylinderStrength + ", cube:" + material.CubeStrength;
@@ -398,9 +398,9 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Generates a default description for the material as a description fo its properties.")]
+        [Description("Generates a default description for the material based on its properties.")]
         [Input("material", "The material to get a default description for.")]
-        [Output("desc", "The generated descritpion for the material.")]
+        [Output("desc", "The generated description for the material.")]
         public static string Description(this Aluminium material)
         {
             return "Alum " + material.MaterialAnalyticalValues();
@@ -408,25 +408,25 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Generates a default description for the material as a description fo its properties.")]
+        [Description("Generates a default description for the material based on its properties.")]
         [Input("material", "The material to get a default description for.")]
-        [Output("desc", "The generated descritpion for the material.")]
+        [Output("desc", "The generated description for the material.")]
         public static string Description(this GenericIsotropicMaterial material)
         {
             return "Gen " + material.MaterialAnalyticalValues();
         }
 
-        [Description("Generates a default description for the material as a description fo its properties.")]
+        [Description("Generates a default description for the material based on its properties.")]
         [Input("material", "The material to get a default description for.")]
-        [Output("desc", "The generated descritpion for the material.")]
+        [Output("desc", "The generated description for the material.")]
         public static string Description(this Timber material)
         {
             return "Timber " + material.MaterialAnalyticalValues();
         }
 
-        [Description("Generates a default description for the material as a description fo its properties.")]
+        [Description("Generates a default description for the material based on its properties.")]
         [Input("material", "The material to get a default description for.")]
-        [Output("desc", "The generated descritpion for the material.")]
+        [Output("desc", "The generated description for the material.")]
         public static string Description(this GenericOrthotropicMaterial material)
         {
             return "Gen " + material.MaterialAnalyticalValues();
@@ -436,9 +436,9 @@ namespace BH.Engine.Structure
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
-        [Description("Generates a default description for the Iproeprty, depending on type and its properties.")]
+        [Description("Generates a default description for the IProperty, based on its properties.")]
         [Input("property", "The property to get a default description for.")]
-        [Output("desc", "The generated descritpion for the property, depending on its proeprty values.")]
+        [Output("desc", "The generated description for the property, depending on its property values.")]
         public static string IDescription(this IProperty property)
         {
             return Description(property as dynamic);
@@ -448,7 +448,7 @@ namespace BH.Engine.Structure
 
         [Description("Generates a default description for the Section, depending on type, profile and material.")]
         [Input("section", "The section to get a default description for.")]
-        [Output("desc", "The generated descritpion for the section depending on its dimensions, material and type.")]
+        [Output("desc", "The generated description for the section depending on its dimensions, material and type.")]
         public static string IDescription(this ISectionProperty section)
         {
             return Description(section as dynamic);
@@ -697,4 +697,3 @@ namespace BH.Engine.Structure
         /***************************************************/
     }
 }
-
