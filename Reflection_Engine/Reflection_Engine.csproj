@@ -47,6 +47,9 @@
       <HintPath>..\packages\ICSharpCode.Decompiler.3.1.0.3652\lib\net45\ICSharpCode.Decompiler.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="KellermanSoftware.Compare-NET-Objects, Version=4.65.0.0, Culture=neutral, PublicKeyToken=d970ace04cc85217, processorArchitecture=MSIL">
+      <HintPath>..\packages\CompareNETObjects.4.65.0\lib\net452\KellermanSoftware.Compare-NET-Objects.dll</HintPath>
+    </Reference>
     <Reference Include="Mono.Cecil, Version=0.10.0.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e, processorArchitecture=MSIL">
       <HintPath>..\packages\Mono.Cecil.0.10.0\lib\net40\Mono.Cecil.dll</HintPath>
       <Private>True</Private>
@@ -80,7 +83,9 @@
       <HintPath>..\packages\System.Collections.Immutable.1.3.1\lib\portable-net45+win8+wp8+wpa81\System.Collections.Immutable.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.ValueTuple, Version=4.0.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.ValueTuple.4.3.0\lib\portable-net40+sl4+win8+wp8\System.ValueTuple.dll</HintPath>
       <Private>True</Private>
@@ -93,6 +98,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Compute\DummyObject.cs" />
     <Compile Include="Compute\MakeGenericFromInputs.cs" />
     <Compile Include="Compute\DeepDependencies.cs" />
     <Compile Include="Compute\OpenHelpPage.cs" />
@@ -118,6 +124,7 @@
     <Compile Include="Query\ImplementingTypes.cs" />
     <Compile Include="Query\Count.cs" />
     <Compile Include="Query\IsExposed.cs" />
+    <Compile Include="Query\IsEqual.cs" />
     <Compile Include="Query\Item.cs" />
     <Compile Include="Query\NestedMethods.cs" />
     <Compile Include="Query\OutputType.cs" />
