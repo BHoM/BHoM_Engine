@@ -45,8 +45,8 @@ namespace BH.Engine.Data
                 List<GraphNode<T>> neighboursOut = graph.Links.Where(x => x.StartNode == node).Select(x => x.EndNode).ToList();
                 List<GraphNode<T>> neighboursIn = graph.Links.Where(x => x.EndNode == node).Select(x => x.StartNode).ToList();
 
-                neighbours.AddRange(neighboursOut);
-                neighbours.AddRange(neighboursIn);
+                neighbours.AddRange(neighboursOut.Distinct());
+                neighbours.AddRange(neighboursIn.Distinct());
                 adjacency.Add(node, neighbours);
             }
             return adjacency;
