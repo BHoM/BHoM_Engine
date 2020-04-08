@@ -40,14 +40,7 @@ namespace BH.Engine.Data
             Dictionary<GraphNode<T>, List<GraphNode<T>>> adjacency = new Dictionary<GraphNode<T>, List<GraphNode<T>>>();
             foreach (GraphNode<T> node in graph.Nodes)
             {
-                List<GraphNode<T>> neighbours = new List<GraphNode<T>>();
-                //neigbours in both directions
-                List<GraphNode<T>> neighboursOut = graph.Links.Where(x => x.StartNode == node).Select(x => x.EndNode).ToList();
-                List<GraphNode<T>> neighboursIn = graph.Links.Where(x => x.EndNode == node).Select(x => x.StartNode).ToList();
-
-                neighbours.AddRange(neighboursOut.Distinct());
-                neighbours.AddRange(neighboursIn.Distinct());
-                adjacency.Add(node, neighbours);
+                List<GraphNode<T>> neighbours = graph.Neighbours<T>(node, true);
             }
             return adjacency;
         }

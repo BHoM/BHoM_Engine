@@ -32,9 +32,19 @@ namespace BH.Engine.Data
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static List<GraphNode<T>> Neighbours<T>(this Graph<T> graph, GraphNode<T> node)
+        public static List<GraphNode<T>> Neighbours<T>(this Graph<T> graph, GraphNode<T> node,bool useBothDirections = false)
         {
-            return graph.Links.Where(x => x.StartNode == node).Select(x => x.EndNode).ToList();
+            if(useBothDirections)
+            {
+                List<GraphNode<T>> neighbours = new List<GraphNode<T>>();
+                List<GraphNode<T>> neighboursOut = graph.Links.Where(x => x.StartNode == node).Select(x => x.EndNode).ToList();
+                List<GraphNode<T>> neighboursIn = graph.Links.Where(x => x.EndNode == node).Select(x => x.StartNode).ToList();
+                neighbours.AddRange(neighboursOut.Distinct());
+                neighbours.AddRange(neighboursIn.Distinct());
+                return neighbours;
+            }
+            else
+                return graph.Links.Where(x => x.StartNode == node).Select(x => x.EndNode).Distinct().ToList();
         }
 
         /***************************************************/
