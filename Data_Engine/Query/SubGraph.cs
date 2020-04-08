@@ -41,7 +41,7 @@ namespace BH.Engine.Data
             Graph<T> subgraph = new Graph<T>();
             subgraph.Nodes.Add(rootNode);
             if (!graph.Nodes.Contains(rootNode))
-                throw new ArgumentException("rootnode provided cannot be found in the original graph. Ensure the node is from the original graph");
+                RecordError("rootnode provided cannot be found in the original graph. Ensure the node is from the original graph");
             List<GraphLink<T>> links = graph.Links.FindAll(x => x.EndNode.Value.Equals(rootNode.Value));
             GetChildren<T>(links, graph, ref subgraph);
             return subgraph;
