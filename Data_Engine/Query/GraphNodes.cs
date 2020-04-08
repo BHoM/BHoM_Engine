@@ -35,7 +35,7 @@ namespace BH.Engine.Data
         /***************************************************/
         [Description("Finds the nodes of a graph with value that matches the input value")]
         [Input("value", "The value to match")]
-        public static List<GraphNode<T>> FindGraphNodes<T>(this Graph<T> graph, T value)
+        public static List<GraphNode<T>> GraphNodes<T>(this Graph<T> graph, T value)
         {
             return graph.Nodes.FindAll(x => x.Value.Equals(value));
         }

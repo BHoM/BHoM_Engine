@@ -97,7 +97,7 @@
     <Compile Include="Query\Axes.cs" />
     <Compile Include="Query\AxisExists.cs" />
     <Compile Include="Query\DepthDictionary.cs" />
-    <Compile Include="Query\FindGraphNodes.cs" />
+    <Compile Include="Query\GraphNodes.cs" />
     <Compile Include="Query\FirstValueAbove.cs" />
     <Compile Include="Query\FirstValueAt.cs" />
     <Compile Include="Query\LeafNodes.cs" />
