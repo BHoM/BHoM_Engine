@@ -35,15 +35,20 @@ namespace BH.Engine.Data
         /***************************************************/
         [Description("Extracts a list of leaf nodes from a graph, leaf nodes have no incoming links")]
         [Input("graph", "The graph to extract the leaf nodes from")]
-        public static List<GraphNode<T>> LeafNodes<T>(this Graph<T> graph)
+        public static List<GraphNode<T>> LeafNodes<T>(this Graph<T> graph, GraphNode<T> startNode)
         {
+            Dictionary<GraphNode<T>, int> depthDictionary = graph.DepthDictionary(startNode);
             List<GraphNode<T>> leafnodes = new List<GraphNode<T>>();
             foreach (GraphNode<T> node in graph.Nodes)
             {
-                //get all the links ending here
-                List<GraphLink<T>> linksIn = graph.Links.Where(x => x.EndNode == node).ToList();
-                //if no links ending here its a leaf 
-                if (linksIn.Count == 0) leafnodes.Add(node);
+                List<GraphNode<T>> neighbours = Neighbours(graph, node, true);
+                //its a leaf if no neighbour is deeper in the graph
+                int nodeDepth = depthDictionary[node];
+                bool leaf = true;
+                foreach (GraphNode<T> n in neighbours)
+                    if (depthDictionary[n] > nodeDepth)
+                        leaf = false;
+                if(leaf) leafnodes.Add(node);
             }
             return leafnodes;
         }

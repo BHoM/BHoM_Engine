@@ -84,7 +84,7 @@ namespace BH.Engine.Data
         [Description("Gets the depth dictionary of a graph using breadth first search, each key value pair in the resulting dictionary is in the form <graph node, depth>")]
         [Input("graph", "The graph to extract the depth dictionary from")]
         [Input("startNode", "The graph node from which the depth dictionary is created")]
-        public static Dictionary<GraphNode<T>, int> DepthDictionary<T>(Graph<T> graph, GraphNode<T> startNode)
+        public static Dictionary<GraphNode<T>, int> DepthDictionary<T>(this Graph<T> graph, GraphNode<T> startNode)
         {
             Dictionary<GraphNode<T>, List<GraphNode<T>>> adjacency = graph.AdjacencyDictionary();
             return DepthDictionary<T>(adjacency, startNode);
