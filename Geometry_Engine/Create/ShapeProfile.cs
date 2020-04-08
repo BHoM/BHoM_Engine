@@ -356,16 +356,11 @@ namespace BH.Engine.Geometry
                 {
                     Reflection.Compute.RecordWarning("The Profiles curves are not coplanar with the XY-Plane. Automatic orientation has occured.");
 
-                    Vector planeN = plane.Normal;
-                    planeN = planeN.Z > 0 ? planeN : -planeN;
+                    plane.Normal = plane.Normal.Z > 0 ? plane.Normal : -plane.Normal;
+                    double rad = plane.Normal.Angle(oM.Geometry.Vector.ZAxis);
 
-                    Vector localX = planeN.CrossProduct(-oM.Geometry.Vector.ZAxis);
-                    Vector localY = planeN.CrossProduct(localX);
-                    oM.Geometry.CoordinateSystem.Cartesian localCar = Create.CartesianCoordinateSystem(cPoints.FirstOrDefault(), localX, localY);
-
-                    TransformMatrix trans = OrientationMatrixLocalToGlobal(localCar);
-
-                    result = result.Select(x => x.ITransform(trans)).ToList();
+                    Line axis = plane.PlaneIntersection(oM.Geometry.Plane.XY);
+                    result = result.Select(x => x.IRotate(axis.Start, axis.TangentAtParameter(0), rad)).ToList();
                     cPoints = result.SelectMany(x => x.IControlPoints()).ToList();
                 }
 
