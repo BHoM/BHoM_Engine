@@ -42,7 +42,7 @@ namespace BH.Engine.Data
             //https://www.geeksforgeeks.org/level-node-tree-source-node-using-bfs/
             if(!adjacency.ContainsKey(startNode))
             {
-                Reflection.Compute.RecordError("startNode provided cannot be found in the adjacency dictionary. Ensure the node is from the original graph");
+                Reflection.Compute.RecordError("startNode provided cannot be found in the adjacency dictionary. Ensure the node exists in the original graph");
                 return null;
             }   
             // dictionary to store level of each node  
