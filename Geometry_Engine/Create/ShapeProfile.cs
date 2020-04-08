@@ -344,7 +344,7 @@ namespace BH.Engine.Geometry
                         plane = Compute.IJoin(edges.ToList()).OrderBy(x => x.Area()).Last().ControlPoints().FitPlane();
 
                         result = edges.Select(x => x.IProject(plane)).ToList();
-                        Reflection.Compute.RecordWarning("The Profiles curves have been projected onto a plane fitted through the biggest curves control points.");
+                        Reflection.Compute.RecordWarning("The Profiles curves have been projected onto a plane fitted through the biggest curve's control points.");
                         cPoints = result.SelectMany(x => x.IControlPoints()).ToList();
                     }
                     catch
