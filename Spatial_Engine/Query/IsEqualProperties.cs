@@ -38,9 +38,9 @@ namespace BH.Engine.Spatial
         [Input("element", "An IElement0D to compare the properties of with an other IElement0D.")]
         [Input("other", "The IElement0D to compare with the other IElement0D.")]
         [Output("equal", "True if the Objects non-geometrical property is equal to the point that they could be merged into one object.")]
-        public static bool IIsEqualProperties(this IElement0D element, IElement0D other)
+        public static bool IHaveMergebleProperties(this IElement0D element, IElement0D other)
         {
-            return IIIsEqualProperties(element, other);
+            return HaveMergeblePropertiesIElement(element, other);
         }
 
         /******************************************/
@@ -49,9 +49,9 @@ namespace BH.Engine.Spatial
         [Input("element", "An IElement1D to compare the properties of with an other IElement1D.")]
         [Input("other", "The IElement1D to compare with the other IElement1D.")]
         [Output("equal", "True if the Objects non-geometrical property is equal to the point that they could be merged into one object.")]
-        public static bool IIsEqualProperties(this IElement1D element, IElement1D other)
+        public static bool IHaveMergebleProperties(this IElement1D element, IElement1D other)
         {
-            return IIIsEqualProperties(element, other);
+            return HaveMergeblePropertiesIElement(element, other);
         }
 
         /******************************************/
@@ -60,16 +60,17 @@ namespace BH.Engine.Spatial
         [Input("element", "An IElement2D to compare the properties of with an other IElement2D.")]
         [Input("other", "The IElement2D to compare with the other IElement2D.")]
         [Output("equal", "True if the Objects non-geometrical property is equal to the point that they could be merged into one object.")]
-        public static bool IIsEqualProperties(this IElement2D element, IElement2D other)
+        public static bool IHaveMergebleProperties(this IElement2D element, IElement2D other)
         {
-            return IIIsEqualProperties(element, other);
+            return HaveMergeblePropertiesIElement(element, other);
         }
+
 
         /******************************************/
         /****        Private Methods           ****/
         /******************************************/
 
-        private static bool IIIsEqualProperties(this IElement element, IElement other)
+        private static bool HaveMergeblePropertiesIElement(this IElement element, IElement other)
         {
             // Geometrical objects don't have properties
             if (typeof(IGeometry).IsAssignableFrom(element.GetType()) && typeof(IGeometry).IsAssignableFrom(other.GetType()))
@@ -80,12 +81,12 @@ namespace BH.Engine.Spatial
                 return false;
 
             // look for a specific comparing method
-            object result = Reflection.Compute.RunExtensionMethod(element, "IsEqualProperties", new object[] { other });
+            object result = Reflection.Compute.RunExtensionMethod(element, "HaveMergebleProperties", new object[] { other });
 
-            if (result == null)
+            if (result == null || !result.GetType().IsAssignableFrom(typeof(bool)))
             {
-                Reflection.Compute.RecordWarning("No comparer found for comparing the properties, diffrent kind of objects may have been merged");
-                return true;
+                Reflection.Compute.RecordWarning("No comparer found for comparing the properties");
+                return false;
             }
 
             return (bool)result;
