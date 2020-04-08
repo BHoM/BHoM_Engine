@@ -36,18 +36,18 @@ namespace BH.Engine.Geometry
 
         [Description("Collapses a PolyCurve to a polyline where curved segments are split into Polyline segments for computations. Where their partitioning is based on both their curvature and size, ergo; shorter segment less partitions, very curved segment more partitions")]
         [Input("curve", "The curve to collapse")]
-        [Input("tolerance", "tolerance is the angleTolerance for a unit circle, the tolerance value will vary by: toleranceGrowth over curvature")]
-        [Input("toleranceGrowth", "toleranceGrowth is the value that decides how much the angleTolerance varies due to curvature")]
+        [Input("relativeAngleTolerance", "relativeAngleTolerance is the angleTolerance for a unit circle, the tolerance value will vary by: toleranceGrowth over curvature")]
+        [Input("toleranceScaleFactor", "toleranceScaleFactor is the value that decides how much the angleTolerance varies due to curvature")]
         [Input("maxDivisionsPerSegment", "The maximum number of segment each sub-curve can be broken into")]
         [Input("scale", "the radius of a baseline circle for the angle tolerance, smaller circles will have less segments and bigger more. Default of 0 means the program will determine an appropriate radius for the PolyCurve")]
         [Output("C", "A polyline approximating the provided curve")]
-        public static Polyline CollapseToScaledPolyline(this PolyCurve curve, double tolerance, double toleranceGrowth = 0.001, int maxDivisionsPerSegment = 200, double scale = 0)
+        public static Polyline CollapseToScaledPolyline(this PolyCurve curve, double relativeAngleTolerance = 0.04, double toleranceScaleFactor = 0.001, int maxDivisionsPerSegment = 200, double scale = 0)
         {
-            if (tolerance <= 0)
+            if (relativeAngleTolerance <= 0)
                 return null;
-            if (toleranceGrowth < 0)
-                toleranceGrowth = 0;
-            else if (toleranceGrowth > 0.01)
+            if (toleranceScaleFactor < 0)
+                toleranceScaleFactor = 0;
+            else if (toleranceScaleFactor > 0.01)
                 Reflection.Compute.RecordWarning("High values for toleranceGrowth can be unstable and are not recommended");
             if (scale <= 0)
             {
@@ -61,17 +61,17 @@ namespace BH.Engine.Geometry
                 scale = Math.Max(totalHeight, totalWidth) / 2;
             }
 
-            double scaledTolerance = scale * toleranceGrowth;
+            double scaledTolerance = scale * toleranceScaleFactor;
 
-            tolerance -= scaledTolerance;
+            relativeAngleTolerance -= scaledTolerance;
 
             List<Polyline> list = new List<Polyline>();
             foreach (ICurve c in curve.Curves)
             {
                 if (c is PolyCurve)
-                    list.Add(CollapseToScaledPolyline(c as PolyCurve, tolerance, toleranceGrowth, maxDivisionsPerSegment, scale));
+                    list.Add(CollapseToScaledPolyline(c as PolyCurve, relativeAngleTolerance, toleranceScaleFactor, maxDivisionsPerSegment, scale));
 
-                list.Add(Divide(c as dynamic, scaledTolerance, tolerance, maxDivisionsPerSegment));
+                list.Add(Divide(c as dynamic, scaledTolerance, relativeAngleTolerance, maxDivisionsPerSegment));
             }
             return (Geometry.Compute.Join(list))[0];
         }
@@ -80,30 +80,30 @@ namespace BH.Engine.Geometry
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private static Polyline Divide(this Line line, double tolerance, double baseTolerance, int maxDivisionsPerSegment = 200)
+        private static Polyline Divide(this Line line, double angleTolerance, double baseTolerance, int maxDivisionsPerSegment = 200)
         {
             return new Polyline() { ControlPoints = new List<Point>() { line.Start, line.End } };
         }
 
         /***************************************************/
 
-        private static Polyline Divide(this Polyline line, double tolerance, double baseTolerance, int maxDivisionsPerSegment = 200)
+        private static Polyline Divide(this Polyline line, double angleTolerance, double baseTolerance, int maxDivisionsPerSegment = 200)
         {
             return new Polyline() { ControlPoints = line.ControlPoints };
         }
 
         /***************************************************/
 
-        private static Polyline Divide(this Arc arc, double tolerance, double baseTolerance, int maxDivisionsPerSegment = 200)
+        private static Polyline Divide(this Arc arc, double angleTolerance, double baseTolerance, int maxDivisionsPerSegment = 200)
         {
-            return arc.CollapseToPolyline(Soften(arc.Radius, tolerance, baseTolerance), maxDivisionsPerSegment);
+            return arc.CollapseToPolyline(Soften(arc.Radius, angleTolerance, baseTolerance), maxDivisionsPerSegment);
         }
 
         /***************************************************/
 
-        private static Polyline Divide(this Circle circle, double tolerance, double baseTolerance, int maxDivisionsPerSegment = 200)
+        private static Polyline Divide(this Circle circle, double angleTolerance, double baseTolerance, int maxDivisionsPerSegment = 200)
         {
-            double factor = Math.Min(Math.PI * 0.25, Math.Max(Math.PI / maxDivisionsPerSegment, Soften(circle.Radius, tolerance, baseTolerance)));
+            double factor = Math.Min(Math.PI * 0.25, Math.Max(Math.PI / maxDivisionsPerSegment, Soften(circle.Radius, angleTolerance, baseTolerance)));
             int result = System.Convert.ToInt32(Math.Ceiling(Math.PI / factor));
             result += result < 4 ? 4 : 0;
             return circle.CollapseToPolyline(0, result - (result % 4));
@@ -111,9 +111,9 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        private static double Soften(double r, double tolerance, double baseTolerance)
+        private static double Soften(double r, double angleTolerance, double baseTolerance)
         {
-            return (tolerance / r) + baseTolerance;     
+            return (angleTolerance / r) + baseTolerance;     
         }
 
         /***************************************************/
