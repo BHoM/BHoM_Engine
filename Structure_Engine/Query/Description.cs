@@ -309,7 +309,7 @@ namespace BH.Engine.Structure
         public static string Description(this Constraint3DOF constraint)
         {
             string desc = constraint.UX.DofSign() + constraint.UY.DofSign() + constraint.Normal.DofSign();
-            if (constraint.IsNumericallyDependant())
+            if (constraint.IsNumericallyDependent())
             {
                 desc += "-" + constraint.KX + "," + constraint.KY + "," + constraint.KNorm; 
             }
@@ -326,7 +326,7 @@ namespace BH.Engine.Structure
             string desc = constraint.TranslationX.DofSign() + constraint.TranslationY.DofSign() + constraint.TranslationZ.DofSign() +
                           constraint.RotationX.DofSign();
 
-            if (constraint.IsNumericallyDependant())
+            if (constraint.IsNumericallyDependent())
             {
                 desc += "-" + constraint.TranslationalStiffnessX + "," + constraint.TranslationalStiffnessY + "," + constraint.TranslationalStiffnessZ +
                         "," + constraint.RotationalStiffnessX;
@@ -344,7 +344,7 @@ namespace BH.Engine.Structure
             string desc = constraint.TranslationX.DofSign() + constraint.TranslationY.DofSign() + constraint.TranslationZ.DofSign() +
                           constraint.RotationX.DofSign() + constraint.RotationY.DofSign() + constraint.RotationZ.DofSign();
 
-            if (constraint.IsNumericallyDependant())
+            if (constraint.IsNumericallyDependent())
             {
                 desc += "-" + constraint.TranslationalStiffnessX + "," + constraint.TranslationalStiffnessY + "," + constraint.TranslationalStiffnessZ +
                         "," + constraint.RotationalStiffnessX +  "," + constraint.RotationalStiffnessY +  "," + constraint.RotationalStiffnessZ;
@@ -446,9 +446,9 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Generates a default description for the Section, based on type, profile and material.")]
-        [Input("section", "The section to get a default description for.")]
-        [Output("desc", "The generated description for the section based on its dimensions, material and type.")]
+        [Description("Generates a default description for the SectionProperty, based on type, profile and material.")]
+        [Input("section", "The SectionProperty to get a default description for.")]
+        [Output("desc", "The generated description for the SectionProperty based on its dimensions, material and type.")]
         public static string IDescription(this ISectionProperty section)
         {
             return Description(section as dynamic);
@@ -457,8 +457,8 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Generates a default description for the Profile, based on dimensions.")]
-        [Input("profile", "The profile to get a default description for.")]
-        [Output("desc", "The generated description for the profile based on its dimensions.")]
+        [Input("profile", "The Profile to get a default description for.")]
+        [Output("desc", "The generated description for the Profile based on its dimensions.")]
         public static string IDescription(this IProfile profile)
         {
             return Description(profile as dynamic);
@@ -466,9 +466,9 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Generates a default description for the Section, based on type, dimensions and material.")]
+        [Description("Generates a default description for the SurfaceProperty, based on type, dimensions and material.")]
         [Input("property", "The SurfaceProperty to get a default description for.")]
-        [Output("desc", "The generated description for the property based on its dimensions, material and type.")]
+        [Output("desc", "The generated description for the SurfaceProperty based on its dimensions, material and type.")]
         public static string IDescription(this ISurfaceProperty property)
         {
             return Description(property as dynamic);
