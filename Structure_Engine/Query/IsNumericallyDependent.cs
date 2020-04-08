@@ -37,15 +37,15 @@ namespace BH.Engine.Structure
 
 
         [Description("Returns true if any of the degrees of freedom is of a value based type or the values are non-zero.")]
-        public static bool IsNumericallyDependant(this Constraint3DOF constraint)
+        public static bool IsNumericallyDependent(this Constraint3DOF constraint)
         {
-            if (constraint.UX.IsNumericallyDependant())
+            if (constraint.UX.IsNumericallyDependent())
                 return true;
 
-            if (constraint.UY.IsNumericallyDependant())
+            if (constraint.UY.IsNumericallyDependent())
                 return true;
 
-            if (constraint.Normal.IsNumericallyDependant())
+            if (constraint.Normal.IsNumericallyDependent())
                 return true;
 
             if (constraint.KX != 0)
@@ -63,18 +63,18 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Returns true if any of the degrees of freedom is of a value based type or the values are non-zero.")]
-        public static bool IsNumericallyDependant(this Constraint4DOF constraint)
+        public static bool IsNumericallyDependent(this Constraint4DOF constraint)
         {
-            if (constraint.TranslationX.IsNumericallyDependant())
+            if (constraint.TranslationX.IsNumericallyDependent())
                 return true;
 
-            if (constraint.TranslationY.IsNumericallyDependant())
+            if (constraint.TranslationY.IsNumericallyDependent())
                 return true;
 
-            if (constraint.TranslationZ.IsNumericallyDependant())
+            if (constraint.TranslationZ.IsNumericallyDependent())
                 return true;
 
-            if (constraint.RotationX.IsNumericallyDependant())
+            if (constraint.RotationX.IsNumericallyDependent())
                 return true;
 
             if (constraint.TranslationalStiffnessX != 0)
@@ -95,24 +95,24 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Returns true if any of the degrees of freedom is of a value based type or the values are non-zero.")]
-        public static bool IsNumericallyDependant(this Constraint6DOF constraint)
+        public static bool IsNumericallyDependent(this Constraint6DOF constraint)
         {
-            if (constraint.TranslationX.IsNumericallyDependant())
+            if (constraint.TranslationX.IsNumericallyDependent())
                 return true;
 
-            if (constraint.TranslationY.IsNumericallyDependant())
+            if (constraint.TranslationY.IsNumericallyDependent())
                 return true;
 
-            if (constraint.TranslationZ.IsNumericallyDependant())
+            if (constraint.TranslationZ.IsNumericallyDependent())
                 return true;
 
-            if (constraint.RotationX.IsNumericallyDependant())
+            if (constraint.RotationX.IsNumericallyDependent())
                 return true;
 
-            if (constraint.RotationY.IsNumericallyDependant())
+            if (constraint.RotationY.IsNumericallyDependent())
                 return true;
 
-            if (constraint.RotationZ.IsNumericallyDependant())
+            if (constraint.RotationZ.IsNumericallyDependent())
                 return true;
 
             if (constraint.TranslationalStiffnessX != 0)
@@ -139,7 +139,7 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Returns true if the DOF is of a type that depends on a stiffness value.")]
-        public static bool IsNumericallyDependant(this DOFType dof)
+        public static bool IsNumericallyDependent(this DOFType dof)
         {
             switch (dof)
             {
