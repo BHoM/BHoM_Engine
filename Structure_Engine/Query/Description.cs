@@ -303,7 +303,7 @@ namespace BH.Engine.Structure
         /**** Public Methods - Constraints              ****/
         /***************************************************/
 
-        [Description("Generates a default description for the Constraint3DOF as 'DOftypes-Values'.")]
+        [Description("Generates a default description for the Constraint3DOF based on the constraints at each degree of freedom.")]
         [Input("constraint", "The Constraint3DOF to get a default description for.")]
         [Output("desc", "The generated description for the constraint.")]
         public static string Description(this Constraint3DOF constraint)
@@ -318,7 +318,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Generates a default description for the Constraint4DOF as 'DOftypes-Values'.")]
+        [Description("Generates a default description for the Constraint4DOF based on the constraints at each degree of freedom.")]
         [Input("constraint", "The Constraint4DOF to get a default description for.")]
         [Output("desc", "The generated description for the constraint.")]
         public static string Description(this Constraint4DOF constraint)
@@ -336,7 +336,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Generates a default description for the Constraint6DOF as 'DOftypes-Values'.")]
+        [Description("Generates a default description for the Constraint6DOF based on the constraints at each degree of freedom.")]
         [Input("constraint", "The Constraint6DOF to get a default description for.")]
         [Output("desc", "The generated description for the constraint.")]
         public static string Description(this Constraint6DOF constraint)
