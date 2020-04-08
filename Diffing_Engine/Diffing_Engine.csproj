@@ -74,17 +74,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Comparers\HashComparer.cs" />
-    <Compile Include="Compute\HashComparing.cs" />
+    <Compile Include="Convert\TryParseObjectToGuid.cs" />
+    <Compile Include="Create\StreamPointer.cs" />
+    <Compile Include="Objects\EqualityComparers\DiffingHashComparer.cs" />
     <Compile Include="Compute\Diffing.cs" />
     <Compile Include="Compute\DiffingHash.cs" />
     <Compile Include="Convert\ToDiffingByteArray.cs" />
+    <Compile Include="Create\Delta.cs" />
     <Compile Include="Create\DiffConfig.cs" />
-    <Compile Include="Create\Stream.cs" />
+    <Compile Include="Create\Revision.cs" />
+    <Compile Include="Modify\RemoveDuplicatesByHash.cs" />
+    <Compile Include="Modify\PrepareForDiffing.cs" />
     <Compile Include="Modify\SetHashFragment.cs" />
-    <Compile Include="Modify\UpdateRevision.cs" />
     <Compile Include="Query\DifferentProperties.cs" />
-    <Compile Include="Query\RemoveDuplicatesByHash.cs" />
+    <Compile Include="Query\AnyDuplicateByHash.cs" />
     <Compile Include="Query\GetHash.cs" />
     <Compile Include="Compute\SHA256Hash.cs" />
     <Compile Include="Convert\ToDiffingJson.cs" />
@@ -117,4 +120,8 @@
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
 </Project>

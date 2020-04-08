@@ -1,4 +1,4 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -25,17 +25,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Reflection;
+using KellermanSoftware.CompareNetObjects;
 
-using BH.oM.Architecture;
-using BH.oM.Architecture.Elements;
-using BH.oM.Dimensional;
-using BH.oM.Geometry;
-using BH.Engine.Geometry;
-
-using BH.oM.Reflection.Attributes;
-using System.ComponentModel;
-
-namespace BH.Engine.Architecture
+namespace BH.Engine.Reflection
 {
     public static partial class Query
     {
@@ -43,13 +36,21 @@ namespace BH.Engine.Architecture
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns the internal 2D elements of an Architecture Room")]
-        [Input("room", "An Architecture Room")]
-        [Output("element2D", "A collection of internal 2D elements")]
-        public static List<IElement2D> InternalElements2D(this Room room)
+        public static bool IsEqual(this object a, object b)
         {
-            return new List<IElement2D>();
+            if (a.GetType() != b.GetType())
+                return false;
+
+            return m_EqualityComparer.Compare(a, b).AreEqual;
         }
+
+        /***************************************************/
+        /**** Private Static Fields                     ****/
+        /***************************************************/
+
+        private static CompareLogic m_EqualityComparer = new CompareLogic();
+
+        /***************************************************/
     }
 }
 

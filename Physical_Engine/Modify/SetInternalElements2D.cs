@@ -37,20 +37,6 @@ namespace BH.Engine.Physical
         /****               Public Methods              ****/
         /***************************************************/
 
-        [Description("Attempts to set the internal 2D elements of a IOpening, returns a error if any internal elements are provided as IOpening can not contain internal elements.")]
-        [Input("opening", "The IOpening to set the internal elements of.")]
-        [Input("internalElements2D", "New internal elements, returns a error if any are provided as IOpening can not contain internal elements.")]
-        [Output("opening", "The IOpening with new internal elements.")]
-        public static IOpening SetInternalElements2D(this IOpening opening, List<IElement2D> internalElements2D)
-        {
-            if (internalElements2D.Count != 0)
-                Reflection.Compute.RecordError("Cannot set internal 2D elements to an opening.");
-
-            return opening.GetShallowClone() as IOpening;
-        }
-
-        /***************************************************/
-
         [Description("Replace the internal 2D elements of a ISurface.")]
         [Input("surface", "The ISurface to replace the internal elements of.")]
         [Input("internalElements2D", "New internal elements, will replace any existing ones.")]

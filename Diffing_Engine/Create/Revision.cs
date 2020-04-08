@@ -21,37 +21,39 @@
  */
 
 using BH.oM.Base;
-using BH.Engine;
-using BH.oM.Data.Collections;
 using BH.oM.Diffing;
+using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Security.Cryptography;
-using System.Reflection;
-using BH.Engine.Serialiser;
-using System.ComponentModel;
-using BH.oM.Reflection.Attributes;
-using BH.oM.Reflection;
 
-namespace BH.Engine
+namespace BH.Engine.Diffing
 {
-    public static partial class Compute
+    public static partial class Create
     {
-        [Description("Dispatch objects in two sets into the ones exclusive to one set, the other, or both.")]
-        [Input("set1", "A previous version of a list of IBHoMObjects")]
-        [Input("set2", "A new version of a list of IBHoMObjects")]
-        [Input("diffConfig", "Sets configs such as properties to be ignored in the comparison.")]
-        [Output("VennDiagram", "Venn diagram containing: objects existing exclusively in set1/set2 or their intersection.")]
-        public static VennDiagram<T> HashComparing<T>(IEnumerable<T> set1, IEnumerable<T> set2, DiffConfig diffConfig = null) where T : class, IBHoMObject
-        {
-            Stream streamA = BH.Engine.Diffing.Create.Stream(set1, diffConfig, "");
-            Stream streamB = BH.Engine.Diffing.Create.Stream(set2, diffConfig, "");
+        /***************************************************/
 
-            return Engine.Data.Create.VennDiagram(streamA.Objects.Cast<T>(), streamB.Objects.Cast<T>(), new HashFragmComparer<T>());
+        [Description("Creates new Stream Revision")]
+        [Input("objects", "Objects to be included in the Stream Revision")]
+        [Input("streamId", "Input either: a Guid of an existing stream; a previous Revision from which to extract the StreamId; or a StreamPointer object.")]
+        [Input("revisionName", "Name of the Revision.")]
+        [Input("comment", "Any comment to be added for this Revision. Much like git commit comment.")]
+        [Input("diffConfig", "Diffing settings for this Stream Revision. Hashes of objects contained in this stream will be computed based on these configs.")]
+        public static Revision Revision(IEnumerable<IBHoMObject> objects, object streamId, string revisionName = null, string comment = null, DiffConfig diffConfig = null)
+        {
+            if (streamId == null)
+                throw new ArgumentNullException($"Input {nameof(streamId)} cannot be null.");
+
+            Guid _streamId;
+            if (!Convert.TryParseObjectToGuid(streamId, out _streamId))
+                BH.Engine.Reflection.Compute.RecordError($"Specified input in {nameof(streamId)} is not valid.");
+
+            return new Revision(Modify.PrepareForDiffing(objects, diffConfig), _streamId, diffConfig, revisionName, comment);
         }
+
     }
 }
 

@@ -21,33 +21,28 @@
  */
 
 using BH.oM.Base;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Data.Collections;
+using BH.oM.Diffing;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Security.Cryptography;
+using System.Reflection;
+using BH.Engine.Serialiser;
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Diffing
 {
-    public static partial class Query
+    public static partial class Modify
     {
-        /***************************************************/
-        /**** Public Methods                            ****/
-        /***************************************************/
-
         [Description("Removes duplicates from a collection of objects. The comparison is made through their Diffing Hash.")]
         [Input("objects", "Collection of objects whose duplicates have to be removed. If they don't already have an Hash assigned, it will be calculated.")]
-        public static bool RemoveDuplicatesByHash(IEnumerable<IBHoMObject> objects)
+        public static IEnumerable<T> RemoveDuplicatesByHash<T>(IEnumerable<T> objects) where T : IBHoMObject
         {
-            int numObjs = objects.Count();
-            objects = objects.GroupBy(obj => obj.GetHashFragment().Hash).Select(gr => gr.First()).ToList();
-
-            if (numObjs != objects.Count())
-                return true;
-
-            return false;
+            return objects.GroupBy(obj => obj.GetHashFragment().Hash).Select(gr => gr.First()).ToList();
         }
     }
 }

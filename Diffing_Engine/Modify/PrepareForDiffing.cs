@@ -36,21 +36,20 @@ using System.ComponentModel;
 
 namespace BH.Engine.Diffing
 {
-    public static partial class Compute
+    public static partial class Modify
     {
-        ///***************************************************/
-        ///**** Public Methods                            ****/
-        ///***************************************************/
-
-        [Description("Computes the hash code required for the Diffing.")]
-        [Input("obj", "Objects the hash code should be calculated for")]
-        [Input("diffConfig", "Sets configs for the hash calculation, such as properties to be ignored.")]
-        public static string DiffingHash(this object obj, DiffConfig diffConfig = null)
+        public static IEnumerable<T> PrepareForDiffing<T>(this IEnumerable<T> objects, DiffConfig diffConfig = null) where T : IBHoMObject
         {
-            if (diffConfig == null)
-                diffConfig = new DiffConfig();
+            // Clone the current objects to preserve immutability; calculate and set the hash fragment
+            IEnumerable<T> objs_cloned = Modify.SetHashFragment(objects, diffConfig);
 
-            return Compute.SHA256Hash(obj, diffConfig.PropertiesToIgnore);
+            // Remove duplicates by hash
+            objs_cloned = Modify.RemoveDuplicatesByHash(objs_cloned);
+
+            if (objs_cloned.Count() != objects.Count())
+                Reflection.Compute.RecordWarning("Some Objects were duplicates (same hash) and therefore have been discarded.");
+
+            return objs_cloned;
         }
     }
 }
