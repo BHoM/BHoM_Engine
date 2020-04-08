@@ -214,7 +214,8 @@ namespace BH.Engine.Geometry
 
         private static double Area(this IGeometry geometry)
         {
-            throw new NotImplementedException("Area for " + geometry.GetType().Name + " is not implemented.");
+            Reflection.Compute.RecordError("Area for " + geometry.GetType().Name + " is not implemented.");
+            return double.NaN;
         }
 
         /***************************************************/
