@@ -41,7 +41,10 @@ namespace BH.Engine.Data
         {
             //https://www.geeksforgeeks.org/level-node-tree-source-node-using-bfs/
             if(!adjacency.ContainsKey(startNode))
-                throw new ArgumentException("startNode provided cannot be found in the adjacency dictionary. Ensure the node is from the original graph");
+            {
+                Reflection.Compute.RecordError("startNode provided cannot be found in the adjacency dictionary. Ensure the node is from the original graph");
+                return null;
+            }   
             // dictionary to store level of each node  
             Dictionary<GraphNode<T>, int> level = new Dictionary<GraphNode<T>, int>();
             // dictionary to store when node has been visited
