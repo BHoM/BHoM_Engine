@@ -68,6 +68,10 @@ namespace BH.Engine.Serialiser
             if (!m_TypesRegistered)
                 RegisterTypes();
 
+            // Patch for handling the case where a string is a top object - will need proper review in next quarter
+            if (bson.Contains("_t") && bson["_t"] == "System.String" && bson.Contains("_v"))
+                return bson["_v"].AsString;
+
             bson.Remove("_id");
             object obj = BsonSerializer.Deserialize(bson, typeof(object));
             if (obj is ExpandoObject)

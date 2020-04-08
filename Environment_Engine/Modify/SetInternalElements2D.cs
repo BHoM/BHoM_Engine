@@ -37,18 +37,6 @@ namespace BH.Engine.Environment
         /****               Public Methods              ****/
         /***************************************************/
 
-        [Description("BH.Engine.Environment.Modify.SetInternalElements2D => Assign a new collection of internal 2D elements to an Environment Opening")]
-        [Input("opening", "An Environment Opening to update")]
-        [Input("internalElements2D", "A collection of internal 2D elements to add to the opening")]
-        [Output("opening", "The updated Environment Opening")]
-        public static Opening SetInternalElements2D(this Opening opening, List<IElement2D> internalElements2D)
-        {
-            if (internalElements2D.Count != 0)
-                Reflection.Compute.RecordError("Cannot set internal 2D elements to an opening.");
-
-            return opening.GetShallowClone() as Opening;
-        }
-
         [Description("BH.Engine.Environment.Modify.SetInternalElements2D => Assign a new collection of internal 2D elements to an Environment Panel")]
         [Input("panel", "An Environment Panel to update")]
         [Input("internalElements2D", "A collection of internal 2D elements to assign to the panel")]
@@ -59,6 +47,9 @@ namespace BH.Engine.Environment
             pp.Openings = new List<Opening>(internalElements2D.Cast<Opening>().ToList());
             return pp;
         }
+
+        /***************************************************/
+
     }
 }
 

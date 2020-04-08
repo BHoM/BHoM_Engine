@@ -22,6 +22,7 @@
 
 using BH.oM.Dimensional;
 using BH.oM.Geometry;
+using BH.oM.Reflection.Attributes;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -33,19 +34,19 @@ namespace BH.Engine.Common
         /****            IElement2D            ****/
         /******************************************/
 
+        [Deprecated("3.1", "Migrated to the Spatial_Engine")]
         public static PolyCurve IOutlineCurve(this IElement2D element2D)
         {
-            return new PolyCurve { Curves = element2D.IOutlineElements1D().Select(e => e.IGeometry()).ToList() };
+            return Spatial.Query.OutlineCurve(element2D);
         }
 
         /******************************************/
 
+        [Deprecated("3.1", "Migrated to the Spatial_Engine")]
         public static PolyCurve IOutlineCurve(this List<IElement1D> elements1D)
         {
-            return new PolyCurve { Curves = elements1D.Select(e => e.IGeometry()).ToList() };
+            return Spatial.Query.OutlineCurve(elements1D);
         }
-
-        /******************************************/
     }
 }
 

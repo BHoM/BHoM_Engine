@@ -31,6 +31,26 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="BHoM">
+      <HintPath>..\..\BHoM\Build\BHoM.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Dimensional_oM">
+      <HintPath>..\..\BHoM\Build\Dimensional_oM.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Geometry_oM">
+      <HintPath>..\..\BHoM\Build\Geometry_oM.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Quantities_oM">
+      <HintPath>..\..\BHoM\Build\Quantities_oM.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Reflection_oM">
+      <HintPath>..\..\BHoM\Build\Reflection_oM.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -41,7 +61,49 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Compute\DistributeOutlines.cs" />
+    <Compile Include="Query\InternalOutlineCurves.cs" />
+    <Compile Include="Create\NewElement0D.cs" />
+    <Compile Include="Create\NewElement1D.cs" />
+    <Compile Include="Create\NewInternalElement2D.cs" />
+    <Compile Include="Modify\SetElements0D.cs" />
+    <Compile Include="Modify\SetGeometry.cs" />
+    <Compile Include="Modify\SetInternalElements2D.cs" />
+    <Compile Include="Modify\SetOutlineElements1D.cs" />
+    <Compile Include="Modify\Translate.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Query\Area.cs" />
+    <Compile Include="Query\Bounds.cs" />
+    <Compile Include="Query\Centroid.cs" />
+    <Compile Include="Query\ControlPoints.cs" />
+    <Compile Include="Query\ElementCurves.cs" />
+    <Compile Include="Query\Elements0D.cs" />
+    <Compile Include="Query\ElementVertices.cs" />
+    <Compile Include="Query\InternalElements2D.cs" />
+    <Compile Include="Query\IsSelfIntersecting.cs" />
+    <Compile Include="Query\Length.cs" />
+    <Compile Include="Query\Normal.cs" />
+    <Compile Include="Query\OutlineCurve.cs" />
+    <Compile Include="Query\OutlineElements1D.cs" />
+    <Compile Include="Query\Geometry.cs" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\BHoM_Engine\BHoM_Engine.csproj">
+      <Project>{1ad45c88-dd54-48e5-951f-55edfeb70e35}</Project>
+      <Name>BHoM_Engine</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Geometry_Engine\Geometry_Engine.csproj">
+      <Project>{89ab2dcb-ef87-4cba-b59c-c16a8a71d333}</Project>
+      <Name>Geometry_Engine</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Reflection_Engine\Reflection_Engine.csproj">
+      <Project>{b0154405-9390-472d-9b5c-a2280823b18d}</Project>
+      <Name>Reflection_Engine</Name>
+      <Private>False</Private>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

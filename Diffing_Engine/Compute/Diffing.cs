@@ -35,35 +35,34 @@ using BH.Engine.Serialiser;
 using System.ComponentModel;
 using BH.oM.Reflection.Attributes;
 using BH.oM.Reflection;
+using System.Collections;
 
 namespace BH.Engine.Diffing
 {
     public static partial class Compute
     {
-        /***************************************************/
-        /**** Public Methods                            ****/
-        /***************************************************/
-
-        [Description("Returns a Delta object with the differences between the Stream objects and the provided object list.")]
-        [Input("previousStream", "A previous version of a Stream")]
-        [Input("currentStream", "A new version of a Stream")]
-        [Input("diffConfig", "Sets configs such as properties to be ignored in the diffing, or enable/disable property-by-property diffing.\nBy default it takes the diffConfig property of the Stream. This input can be used to override it.")]
-        public static Delta Diffing(Stream previousStream, Stream currentStream, DiffConfig diffConfig = null)
+        [Description("Dispatch objects in two sets into the ones exclusive to one set, the other, or both.")]
+        [Input("previousObjects", "A set of object representing a previous revision")]
+        [Input("currentObjects", "A set of object representing a new Revision")]
+        [Input("diffConfig", "Sets configs such as properties to be ignored in the diffing, or enable/disable property-by-property diffing.")]
+        public static Diff Diffing(IEnumerable<IBHoMObject> previousObjects, IEnumerable<IBHoMObject> currentObjects, DiffConfig diffConfig = null)
         {
             // Set configurations if diffConfig is null
             diffConfig = diffConfig == null ? new DiffConfig() : diffConfig;
 
-            // Take the Stream's objects
-            List<IBHoMObject> currentObjs = currentStream.Objects.ToList();
-            List<IBHoMObject> readObjs = previousStream.Objects.ToList();
+            // Take the Revision's objects
+            List<IBHoMObject> currentObjs = currentObjects.ToList();
+            List<IBHoMObject> readObjs = previousObjects.ToList();
 
             // Make dictionary with object hashes to speed up the next lookups
             Dictionary<string, IBHoMObject> readObjs_dict = readObjs.ToDictionary(obj => obj.GetHashFragment().Hash, obj => obj);
 
             // Dispatch the objects: new, modified or old
-            List<IBHoMObject> toBeCreated = new List<IBHoMObject>();
-            List<IBHoMObject> toBeUpdated = new List<IBHoMObject>();
-            List<IBHoMObject> toBeDeleted = new List<IBHoMObject>();
+            List<IBHoMObject> newObjs = new List<IBHoMObject>();
+            List<IBHoMObject> modifiedObjs = new List<IBHoMObject>();
+            List<IBHoMObject> oldObjs = new List<IBHoMObject>();
+            List<IBHoMObject> unChanged = new List<IBHoMObject>();
+
             var objModifiedProps = new Dictionary<string, Dictionary<string, Tuple<object, object>>>();
 
             foreach (var obj in currentObjs)
@@ -72,17 +71,19 @@ namespace BH.Engine.Diffing
 
                 if (hashFragm?.PreviousHash == null)
                 {
-                    toBeCreated.Add(obj); // It's a new object
+                    newObjs.Add(obj); // It's a new object
                 }
 
                 else if (hashFragm.PreviousHash == hashFragm.Hash)
                 {
                     // It's NOT been modified
+                    if (diffConfig.StoreUnchangedObjects)
+                        unChanged.Add(obj);
                 }
 
                 else if (hashFragm.PreviousHash != hashFragm.Hash)
                 {
-                    toBeUpdated.Add(obj); // It's been modified
+                    modifiedObjs.Add(obj); // It's been modified
 
                     if (diffConfig.EnablePropertyDiffing)
                     {
@@ -111,29 +112,52 @@ namespace BH.Engine.Diffing
                   .Where(obj => obj.GetHashFragment().PreviousHash != null)
                   .ToDictionary(obj => obj.GetHashFragment().PreviousHash, obj => obj);
 
-            toBeDeleted = readObjs_dict.Keys.Except(CurrentObjs_withPreviousHash_dict.Keys)
+            oldObjs = readObjs_dict.Keys.Except(CurrentObjs_withPreviousHash_dict.Keys)
                 .Where(k => readObjs_dict.ContainsKey(k)).Select(k => readObjs_dict[k]).ToList();
 
-            return new Delta(toBeCreated, toBeDeleted, toBeUpdated, objModifiedProps);
-
+            return new Diff(newObjs, oldObjs, modifiedObjs, diffConfig, objModifiedProps, unChanged);
         }
-
-
-        /***************************************************/
 
 
         [Description("Dispatch objects in two sets into the ones exclusive to one set, the other, or both.")]
-        [Input("setA", "A previous version of a Stream")]
-        [Input("setB", "A new version of a Stream")]
+        [Input("pastObjects", "A set of object representing a past revision")]
+        [Input("currentObjects", "A set of object representing a newer Revision")]
         [Input("diffConfig", "Sets configs such as properties to be ignored in the diffing, or enable/disable property-by-property diffing.")]
-        public static Delta Diffing(IEnumerable<IBHoMObject> setA, IEnumerable<IBHoMObject> setB, DiffConfig diffConfig = null, bool saveHashInTags = true)
+        public static Diff Diffing(IEnumerable<object> pastObjects, IEnumerable<object> currentObjects, DiffConfig diffConfig = null)
         {
-            Stream streamA = BH.Engine.Diffing.Create.Stream(setA, diffConfig, "");
-            Stream streamB = BH.Engine.Diffing.Create.Stream(setB, diffConfig, "");
+            // Dispatch the objects in BHoMObjects and generic objects.
+            IEnumerable<IBHoMObject> prevObjs_BHoM = pastObjects.OfType<IBHoMObject>();
+            IEnumerable<IBHoMObject> currObjs_BHoM = currentObjects.OfType<IBHoMObject>();
 
-            return Diffing(streamA, streamB);
+            // If all objects are bhomobjects, just call the appropriate method
+            if (pastObjects.Count() == prevObjs_BHoM.Count() && currentObjects.Count() == currObjs_BHoM.Count())
+                return Diffing(prevObjs_BHoM, currObjs_BHoM, diffConfig);
+
+            IEnumerable<object> prevObjs_nonBHoM = pastObjects.Where(o => !(o is IBHoMObject));
+            IEnumerable<object> currObjs_nonBHoM = currentObjects.Where(o => !(o is IBHoMObject));
+
+            // Compute the specific Diffing for the BHoMObjects.
+            Diff diff = Compute.Diffing(prevObjs_BHoM, currObjs_BHoM, diffConfig);
+
+            // Compute the generic Diffing for the other objects.
+            // This is left to the VennDiagram with a HashComparer (specifically, this doesn't use the HashFragment).
+            VennDiagram<object> vd = Engine.Data.Create.VennDiagram(prevObjs_nonBHoM, currObjs_nonBHoM, new DiffingHashComparer<object>());
+
+            // Concatenate the results of the two diffing operations.
+            List<object> allPrevObjs = new List<object>();
+            List<object> allCurrObjs = new List<object>();
+
+            allPrevObjs.AddRange(diff.AddedObjects);
+            allPrevObjs.AddRange(vd.OnlySet1);
+
+            allPrevObjs.AddRange(diff.RemovedObjects);
+            allPrevObjs.AddRange(vd.OnlySet2);
+
+            // Create the final, actual diff.
+            Diff finalDiff = new Diff(allCurrObjs, allPrevObjs, diff.ModifiedObjects, diffConfig, diff.ModifiedPropsPerObject, diff.UnchangedObjects);
+
+            return finalDiff;
         }
-
 
     }
 }

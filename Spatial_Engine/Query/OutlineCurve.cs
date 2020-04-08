@@ -20,43 +20,40 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Base;
+using BH.oM.Dimensional;
+using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace BH.Engine.Diffing
+namespace BH.Engine.Spatial
 {
-    public static partial class Modify
+    public static partial class Query
     {
-        /***************************************************/
-        /**** Public Methods                            ****/
-        /***************************************************/
+        /******************************************/
+        /****            IElement2D            ****/
+        /******************************************/
 
-        [Description("Returns a new Diffing Stream as a new revision of a previous Stream")]
-        [Input("stream", "Stream to be updated")]
-        [Input("objects", "Objects to be included in the updated version of the Stream")]
-        public static BH.oM.Diffing.Stream StreamRevision(BH.oM.Diffing.Stream stream, IEnumerable<IBHoMObject> objects)
+        [Description("Returns a single polycurve outline created from the external elements.")]
+        [Input("element2D", "The IElement2D to get the outline curve from.")]
+        [Output("curve", "A single outline curve for the IElement2D.")]
+        public static PolyCurve OutlineCurve(this IElement2D element2D)
         {
-            // Clone the current objects to preserve immutability
-            List<IBHoMObject> objs_cloned = objects.Select(obj => BH.Engine.Base.Query.DeepClone(obj)).ToList();
-
-            // Calculate and set the hash fragment
-            BH.Engine.Diffing.Modify.SetHashFragment(objs_cloned);
-
-            // Remove duplicates by hash
-            int numObjs = objs_cloned.Count();
-            objs_cloned = objs_cloned.GroupBy(obj => obj.GetHashFragment().Hash).Select(gr => gr.First()).ToList();
-
-            if (numObjs != objs_cloned.Count())
-                BH.Engine.Reflection.Compute.RecordWarning("Some Objects were duplicates (same hash) and therefore have been discarded.");
-
-            return new BH.oM.Diffing.Stream(objs_cloned, stream.StreamDiffConfig, stream.StreamId);
+            return new PolyCurve { Curves = element2D.IOutlineElements1D().Select(e => e.IGeometry()).ToList() };
         }
+
+        /******************************************/
+
+        [Description("Returns a single polycurve outline created from the IElement1Ds.")]
+        [Input("elements1D", "The IElement1Ds are expected to be provided in order in such a way that each elements end meets the start of the next.")]
+        [Output("curve", "A single poly curve for the IElement1Ds where the next item in the list is set as the next curve in a single curve.")]
+        public static PolyCurve OutlineCurve(this List<IElement1D> elements1D)
+        {
+            return new PolyCurve { Curves = elements1D.Select(e => e.IGeometry()).ToList() };
+        }
+
+        /******************************************/
     }
 }
 

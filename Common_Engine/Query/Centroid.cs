@@ -22,6 +22,7 @@
 
 using BH.Engine.Geometry;
 using BH.oM.Dimensional;
+using BH.oM.Reflection.Attributes;
 using BH.oM.Geometry;
 using System;
 using System.Collections.Generic;
@@ -34,10 +35,10 @@ namespace BH.Engine.Common
         /****            IElement1D            ****/
         /******************************************/
 
+        [Deprecated("3.1", "Migrated to the Spatial_Engine")]
         public static Point Centroid(this IElement1D element1D)
         {
-            //TODO: find a proper centre of weight of a curve (not an average of control points)
-            throw new NotImplementedException();
+            return Spatial.Query.Centroid(element1D);
         }
 
 
@@ -45,29 +46,10 @@ namespace BH.Engine.Common
         /****            IElement2D            ****/
         /******************************************/
 
+        [Deprecated("3.1", "Migrated to the Spatial_Engine")]
         public static Point Centroid(this IElement2D element2D)
         {
-            Point tmp = Geometry.Query.Centroid(element2D.IOutlineCurve());
-            double area = Geometry.Query.Area(element2D.IOutlineCurve());
-
-            double x = tmp.X * area;
-            double y = tmp.Y * area;
-            double z = tmp.Z * area;
-
-
-            List<PolyCurve> openings = Geometry.Compute.BooleanUnion(element2D.IInternalOutlineCurves());
-
-            foreach (ICurve o in openings)
-            {
-                Point oTmp = Geometry.Query.ICentroid(o);
-                double oArea = o.IArea();
-                x -= oTmp.X * oArea;
-                y -= oTmp.Y * oArea;
-                z -= oTmp.Z * oArea;
-                area -= oArea;
-            }
-            
-            return new Point { X = x / area, Y = y / area, Z = z / area };
+            return Spatial.Query.Centroid(element2D);
         }
 
         /******************************************/

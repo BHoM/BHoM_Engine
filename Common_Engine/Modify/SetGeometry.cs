@@ -23,6 +23,7 @@
 using BH.Engine.Geometry;
 using BH.oM.Dimensional;
 using BH.oM.Geometry;
+using BH.oM.Reflection.Attributes;
 
 namespace BH.Engine.Common
 {
@@ -32,9 +33,10 @@ namespace BH.Engine.Common
         /****            IElement0D            ****/
         /******************************************/
 
+        [Deprecated("3.1", "Migrated to the Spatial_Engine")]
         public static IElement0D ISetGeometry(this IElement0D element0D, Point point)
         {
-            return Reflection.Compute.RunExtensionMethod(element0D, "SetGeometry", new object[] { point }) as IElement0D;
+            return Spatial.Modify.ISetGeometry(element0D, point);
         }
 
 
@@ -42,9 +44,10 @@ namespace BH.Engine.Common
         /****            IElement1D            ****/
         /******************************************/
 
+        [Deprecated("3.1", "Migrated to the Spatial_Engine")]
         public static IElement1D ISetGeometry(this IElement1D element1D, ICurve curve)
         {
-            return Reflection.Compute.RunExtensionMethod(element1D, "SetGeometry", new object[] { curve }) as IElement1D;
+            return Spatial.Modify.ISetGeometry(element1D, curve);
         }
 
         /******************************************/

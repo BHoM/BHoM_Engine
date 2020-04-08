@@ -39,7 +39,10 @@ namespace BH.Engine.Serialiser
                 return typeof(object);
             else if (constraint.ContainsGenericParameters)
             {
-                Type[] generics = type.GetGenericArguments().Select(x => GenericTypeConstraint(x)).ToArray();
+                if (constraint.GetGenericArguments().Any(x => x == type))
+                    return constraint.GetGenericTypeDefinition().MakeGenericType(new Type[] { typeof(object) });
+
+                Type[] generics = constraint.GetGenericArguments().Select(x => GenericTypeConstraint(x)).ToArray();
                 if (generics.Length == 0)
                     generics = new Type[] { typeof(object) };
                 return constraint.GetGenericTypeDefinition().MakeGenericType(generics);

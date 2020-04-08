@@ -21,34 +21,63 @@
  */
 
 using BH.oM.Base;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Data.Collections;
+using BH.oM.Diffing;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Security.Cryptography;
+using System.Reflection;
+using BH.Engine.Serialiser;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
+
 
 namespace BH.Engine.Diffing
 {
-    public static partial class Query
+    public static partial class Convert
     {
-        /***************************************************/
-        /**** Public Methods                            ****/
-        /***************************************************/
+        ///***************************************************/
+        ///**** Public Methods                            ****/
+        ///***************************************************/
 
-        [Description("Removes duplicates from a collection of objects. The comparison is made through their Diffing Hash.")]
-        [Input("objects", "Collection of objects whose duplicates have to be removed. If they don't already have an Hash assigned, it will be calculated.")]
-        public static bool RemoveDuplicatesByHash(IEnumerable<IBHoMObject> objects)
+        public static bool TryParseObjectToGuid(this object obj, out Guid guid)
         {
-            int numObjs = objects.Count();
-            objects = objects.GroupBy(obj => obj.GetHashFragment().Hash).Select(gr => gr.First()).ToList();
+            guid = Guid.Empty;
 
-            if (numObjs != objects.Count())
-                return true;
+            // If it's a Guid, extract the Id from there. 
+            // Note: at this stage we cannot check if the provided GUID belongs to an existing Stream or not.
+            if (!Guid.TryParse(obj.ToString(), out guid))
+            {
+                // Check if it's a StreamPointer, and extract the StreamId from there.
+                var sP = obj as StreamPointer;
+                if (sP != null)
+                {
+                    guid = sP.StreamId;
+                    return true;
+                }
 
-            return false;
+                // Check if it's a Revision, and extract the StreamId from there.
+                var rev = obj as Revision;
+                if (rev != null)
+                {
+                    guid = rev.StreamId;
+                    return true;
+                }
+
+                return false;
+            }
+
+            return true;
+
         }
+
+        ///***************************************************/
+
     }
 }
 

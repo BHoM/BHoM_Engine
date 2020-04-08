@@ -22,6 +22,7 @@
 
 using BH.Engine.Geometry;
 using BH.oM.Dimensional;
+using BH.oM.Reflection.Attributes;
 using BH.oM.Geometry;
 using System;
 using System.Collections.Generic;
@@ -34,9 +35,10 @@ namespace BH.Engine.Common
         /****            IElement1D            ****/
         /******************************************/
 
+        [Deprecated("3.1", "Migrated to the Spatial_Engine")]
         public static double Length(this IElement1D element1D)
         {
-            return element1D.IGeometry().ILength();
+            return Spatial.Query.Length(element1D);
         }
 
         /******************************************/

@@ -21,6 +21,7 @@
  */
 
 using BH.Engine.Geometry;
+using BH.oM.Reflection.Attributes;
 using BH.oM.Dimensional;
 using BH.oM.Geometry;
 using System;
@@ -34,16 +35,10 @@ namespace BH.Engine.Common
         /****            IElement2D            ****/
         /******************************************/
 
+        [Deprecated("3.1", "Migrated to the Spatial_Engine")]
         public static double Area(this IElement2D element2D)
         {
-            double result = element2D.IOutlineCurve().IArea();
-
-            List<PolyCurve> openings = element2D.IInternalOutlineCurves().BooleanUnion();
-
-            foreach (PolyCurve o in openings)
-                result -= o.Area();
-
-            return result;
+            return Spatial.Query.Area(element2D);
         }
 
         /******************************************/

@@ -45,10 +45,13 @@ namespace BH.Engine.Reflection
                 if (constrains.Length == 0)
                     return typeof(object);
                 else
-                    return constrains[0];
+                    return MakeFromGeneric(constrains[0]);
             }
             else if (genericType.ContainsGenericParameters)
             {
+                if (genericType.GetGenericArguments().Any(x => x.GetGenericParameterConstraints().Any(c => c == genericType)))
+                    return genericType.GetGenericTypeDefinition().MakeGenericType(new Type[] { typeof(object) });
+
                 Type[] constrains = genericType.GetGenericArguments().Select(x => MakeFromGeneric(x)).ToArray();
                 return genericType.GetGenericTypeDefinition().MakeGenericType(constrains);
             }

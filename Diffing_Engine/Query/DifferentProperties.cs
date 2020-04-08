@@ -54,12 +54,12 @@ namespace BH.Engine.Diffing
             comparer.Config.MembersToIgnore = diffConfig.PropertiesToIgnore;
             comparer.Config.DoublePrecision = diffConfig.NumericTolerance;
 
-            if (diffConfig.IgnoreCustomData)
+            if (diffConfig.PropertiesToIgnore.Contains("CustomData"))
             {
                 comparer.Config.MembersToIgnore.Add("CustomData");
             }
 
-            if (diffConfig.IgnoreGuid)
+            if (diffConfig.PropertiesToIgnore.Contains("BHoM_Guid") || diffConfig.PropertiesToIgnore.Contains("Guid"))
                 comparer.Config.TypesToIgnore.Add(typeof(Guid));
 
             ComparisonResult result = comparer.Compare(obj1, obj2);
