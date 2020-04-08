@@ -324,6 +324,12 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Creates a single FreeFormProfile from a collection of ICurves. " +
+                     "Checks if it's a valid profile and attempts to fix; " + 
+                     " - coplanarity with eachother, by projecting onto the plane of the curve with the biggest area. " + 
+                     " - coplanarity with XYPlane, by rotating the curves to align. " + 
+                     " - curves on the XYPlane, by translating from one controlpoint to the origin. " +
+                     "Checks if it's a valid profile; If they're closed, Not zero area, curve curve intersections, selfintersections. ")]
         public static FreeFormProfile FreeFormProfile(IEnumerable<ICurve> edges)
         {
             IEnumerable<ICurve> result = edges.ToList();
