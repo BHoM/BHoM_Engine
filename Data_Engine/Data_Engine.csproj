@@ -101,7 +101,6 @@
     <Compile Include="Query\FirstValueAbove.cs" />
     <Compile Include="Query\FirstValueAt.cs" />
     <Compile Include="Query\LeafNodes.cs" />
-    <Compile Include="Query\SubGraph.cs" />
     <Compile Include="Query\Linq\FilterBy.cs" />
     <Compile Include="Query\Linq\OrderBy.cs" />
     <Compile Include="Query\CloseToPoint.cs" />
