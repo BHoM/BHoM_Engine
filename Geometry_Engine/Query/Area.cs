@@ -31,6 +31,16 @@ namespace BH.Engine.Geometry
     public static partial class Query
     {
         /***************************************************/
+        /**** Public Methods - Interfaces               ****/
+        /***************************************************/
+
+        public static double IArea(this IGeometry geometry)
+        {
+            return Area(geometry as dynamic);
+        }
+
+
+        /***************************************************/
         /**** Public Methods - Curves                   ****/
         /***************************************************/
 
@@ -197,16 +207,6 @@ namespace BH.Engine.Geometry
             return area;
         }
         
-
-        /***************************************************/
-        /**** Public Methods - Interfaces               ****/
-        /***************************************************/
-
-        public static double IArea(this IGeometry geometry)
-        {
-            return Area(geometry as dynamic);
-        }
-
 
         /***************************************************/
         /**** Private Methods - Fallbacks               ****/
