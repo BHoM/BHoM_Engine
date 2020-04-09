@@ -34,13 +34,15 @@ using BH.Engine.Serialiser;
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
 using BH.Engine.Base;
+using System.Collections.Concurrent;
+using System.Threading;
 
 namespace BH.Engine.Diffing
 {
     public static partial class Modify
     {
-        [Description("Clones the IBHoMObjects, computes their hash and stores it in a HashFragment. " +
-            "If the object already has a HashFragment, it computes the current one and stores the `previousHash` in the HashFragment.")]
+        [Description("Clones the IBHoMObjects, computes their hash and stores it in a new HashFragment.\n" +
+            "The hash just computed goes in `HashFragment.CurrentHash`. If the object already had a HashFragment, the existing hash is copied in `HashFragment.PreviousHash`.")]
         public static List<T> SetHashFragment<T>(IEnumerable<T> objs, DiffConfig diffConfig = null) where T : IBHoMObject
         {
             // Clone the current objects to preserve immutability
@@ -50,16 +52,31 @@ namespace BH.Engine.Diffing
             diffConfig = diffConfig == null ? new DiffConfig() : diffConfig;
 
             // Calculate and set the object hashes
-            foreach (var obj in objs)
+            int objCount = objs.Count();
+            if (objCount < 1000)
             {
-                objs_cloned.Add(SetHashFragment(obj));
+                foreach (var obj in objs)
+                    objs_cloned.Add(SetHashFragment(obj));
+
+                return objs_cloned;
+            }
+            else
+            {
+                // Parellelize for large collection. Proven to reduce up to 50% of the total time.
+                var objsList = objs.ToList();
+                ConcurrentDictionary<int, T> cDict = new ConcurrentDictionary<int, T>();
+                Parallel.For(0, objCount, i =>
+                {
+                    cDict[i] = SetHashFragment(objsList[i]);
+                });
+
+                return cDict.Values.ToList<T>();
             }
 
-            return objs_cloned;
         }
 
-        [Description("Clones the IBHoMObject, computes their hash and stores it in a HashFragment. " +
-            "If the object already has a HashFragment, it computes the current one and stores the `previousHash` in the HashFragment.")]
+        [Description("Clones the IBHoMObject, computes its hash and stores it in a new HashFragment.\n" +
+            "The hash just computed goes in `HashFragment.CurrentHash`. If the object already had a HashFragment, the existing hash is copied in `HashFragment.PreviousHash`.")]
         public static T SetHashFragment<T>(T obj, DiffConfig diffConfig = null) where T : IBHoMObject
         {
             // Clone the current object to preserve immutability
