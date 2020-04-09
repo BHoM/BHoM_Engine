@@ -84,7 +84,7 @@ namespace BH.Engine.Humans.ViewQuality
                 else
                 {
                     //check the infront and current are on parallel rows
-                    if (infront.Head.PairOfEyes.ViewDirection.Angle(s.Head.PairOfEyes.ViewDirection) > Tolerance.Angle)
+                    if (infront.Head.PairOfEyes.ViewDirection.Angle(s.Head.PairOfEyes.ViewDirection)> 0.00872665)
                     {
                         cvalueExists = false;
                     }
@@ -92,7 +92,8 @@ namespace BH.Engine.Humans.ViewQuality
                 if (cvalueExists)
                 {
                     riserHeight = s.Head.PairOfEyes.ReferenceLocation.Z - infront.Head.PairOfEyes.ReferenceLocation.Z;
-                    rowWidth = GetRowWidth(s, infront, focal,rowVector);
+                    //rowWidth = GetRowWidth(s, infront, focal, rowVector);
+                    rowWidth = GetRowWidth(s, infront, rowVector);
                 }
                 
                 results.Add(CvalueResult(s, focal, riserHeight, rowWidth, cvalueExists, rowVector, settings));
@@ -100,16 +101,33 @@ namespace BH.Engine.Humans.ViewQuality
             return results;
         }
         /***************************************************/
-        private static double GetRowWidth(Spectator current, Spectator infront, Point focal,Vector rowVector)
+        private static double GetRowWidth(Spectator current, Spectator nearest, Vector rowV)
         {
-            Vector focalVector = focal - current.Head.PairOfEyes.ReferenceLocation;
-            Vector normal = focalVector.CrossProduct(Vector.ZAxis);
-            Plane plane = Geometry.Create.Plane(current.Head.PairOfEyes.ReferenceLocation, normal);
+        double width = 0;
+        Vector row = nearest.Head.PairOfEyes.ReferenceLocation - current.Head.PairOfEyes.ReferenceLocation;
 
-            Point effectiveEye = infront.Head.PairOfEyes.ReferenceLocation.ProjectAlong(plane, rowVector);
-            Vector effectiveRow = effectiveEye - current.Head.PairOfEyes.ReferenceLocation;
-            effectiveRow.Z = 0;
-            return effectiveRow.Length();
+        Vector row2d = Geometry.Create.Vector(row.X, row.Y, 0);//horiz vector to spectator row in front
+        Vector projected = row2d.Project(rowV);
+            
+        Vector rowWidth = row2d - projected;
+        width = rowWidth.Length();
+        return width;
+        }
+        /***************************************************/
+        private static double GetRowWidth(Spectator current, Spectator nearest, Point focal, Vector rowV)
+        {
+
+            Line rowInfront = Geometry.Create.Line(nearest.Head.PairOfEyes.ReferenceLocation, rowV);
+
+            Vector toFocal = focal - current.Head.PairOfEyes.ReferenceLocation;
+            toFocal.Z = 0;
+            Vector focalPerpend = toFocal.CrossProduct(Vector.ZAxis);
+            Plane plane = Geometry.Create.Plane(current.Head.PairOfEyes.ReferenceLocation, focalPerpend);
+            //theoretical head infront
+            Point point = rowInfront.PlaneIntersection(plane, true);
+            Vector toHeadInfront = point - current.Head.PairOfEyes.ReferenceLocation;
+            toHeadInfront.Z = 0;
+            return toHeadInfront.Length();
         }
         /***************************************************/
         private static Point GetFocalPoint(Vector rowV, Spectator spectator,CvalueFocalMethodEnum focalMethod,Polyline focalPolyline)
