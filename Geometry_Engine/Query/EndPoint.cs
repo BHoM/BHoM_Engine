@@ -48,6 +48,13 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        public static Point EndPoint(this Ellipse ellipse)
+        {
+            return ellipse.StartPoint();
+        }
+
+        /***************************************************/
+
         public static Point EndPoint(this Line line)
         {
             return line.End;
