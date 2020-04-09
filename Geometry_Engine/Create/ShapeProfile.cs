@@ -360,7 +360,7 @@ namespace BH.Engine.Geometry
                     }
                 }
 
-                if (failedProject)
+                if (!failedProject)
                 {
                     // Is Coplanar with XY
                     if (plane.Normal.IsParallel(oM.Geometry.Vector.ZAxis) == 0)
@@ -631,4 +631,3 @@ namespace BH.Engine.Geometry
         /***************************************************/
     }
 }
-
