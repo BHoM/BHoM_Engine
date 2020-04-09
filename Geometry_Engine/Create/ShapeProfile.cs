@@ -400,24 +400,26 @@ namespace BH.Engine.Geometry
                 if (joinedCurves.Any(x => x.IArea() < Tolerance.Distance))
                     Reflection.Compute.RecordWarning("One or more of the profile curves have close to zero area.");
 
-                // Check curve curve Intersections
-                bool intersects = false;
-                for (int i = 0; i < joinedCurves.Count - 1; i++)
+                if (!edges.Any(x => x.ISubParts().Any(y => y is Ellipse)))
                 {
-                    for (int j = i + 1; j < joinedCurves.Count; j++)
+                    // Check curve curve Intersections
+                    bool intersects = false;
+                    for (int i = 0; i < joinedCurves.Count - 1; i++)
                     {
-                        if (joinedCurves[i].CurveIntersections(joinedCurves[j]).Count > 0)
+                        for (int j = i + 1; j < joinedCurves.Count; j++)
                         {
-                            intersects = true;
-                            break;
+                            if (joinedCurves[i].CurveIntersections(joinedCurves[j]).Count > 0)
+                            {
+                                intersects = true;
+                                break;
+                            }
                         }
+                        if (intersects)
+                            break;
                     }
                     if (intersects)
-                        break;
+                        Engine.Reflection.Compute.RecordWarning("The Profiles curves are intersecting eachother.");
                 }
-                if (intersects)
-                    Engine.Reflection.Compute.RecordWarning("The Profiles curves are intersecting eachother.");
-
                 // Is SelfInteersecting
                 if (joinedCurves.Any(x => x.IsSelfIntersecting()))
                     Engine.Reflection.Compute.RecordWarning("One or more of the Profiles curves is intersecting itself.");
