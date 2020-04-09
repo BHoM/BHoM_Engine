@@ -73,16 +73,9 @@ namespace BH.Engine.Physical
             if (surface.Offset != Offset.Centre && !surface.Location.IIsPlanar())
                 Reflection.Compute.RecordWarning("The SolidVolume for non-Planar ISurfaces with offsets other than Centre is approxamite at best");
 
-            // Temp, remove when Geometry_Engine implements IArea for PlanarSurface
-            if (!(surface.Location is PlanarSurface))
-            {
-                Engine.Reflection.Compute.RecordError("No area methods for non-PlanarSurface");
-                return 0;
-            }
-            PlanarSurface p = surface.Location as PlanarSurface;
-            double area = p.ExternalBoundary.IArea();
-            area -= p.InternalBoundaries.Sum(x => x.IArea());
-
+            double area = surface.Location.IArea();
+            area -= surface.Openings.Sum(x => x.Location.IArea());
+            
             return area * surface.Construction.IThickness();
         }
 
