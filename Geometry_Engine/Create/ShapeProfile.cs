@@ -341,6 +341,7 @@ namespace BH.Engine.Geometry
             {
                 // Is Planar
                 Plane plane = Compute.FitPlane(cPoints);
+                bool failedProject = false;
                 if (cPoints.Any(x => x.Distance(plane) > Tolerance.Distance))
                 {
                     Reflection.Compute.RecordWarning("The Profiles curves are not Planar");
