@@ -355,30 +355,35 @@ namespace BH.Engine.Geometry
                         cPoints = result.SelectMany(x => x.IControlPoints()).ToList();
                     }
                     catch
-                    { }
+                    {
+                        failedProject = true;
+                    }
                 }
 
-                // Is Coplanar with XY
-                if (plane.Normal.IsParallel(oM.Geometry.Vector.ZAxis) == 0)
+                if (failedProject)
                 {
-                    Reflection.Compute.RecordWarning("The Profiles curves are not coplanar with the XY-Plane. Automatic orientation has occured.");
+                    // Is Coplanar with XY
+                    if (plane.Normal.IsParallel(oM.Geometry.Vector.ZAxis) == 0)
+                    {
+                        Reflection.Compute.RecordWarning("The Profiles curves are not coplanar with the XY-Plane. Automatic orientation has occured.");
 
-                    plane.Normal = plane.Normal.Z > 0 ? plane.Normal : -plane.Normal;
-                    double rad = plane.Normal.Angle(oM.Geometry.Vector.ZAxis);
+                        plane.Normal = plane.Normal.Z > 0 ? plane.Normal : -plane.Normal;
+                        double rad = plane.Normal.Angle(oM.Geometry.Vector.ZAxis);
 
-                    Line axis = plane.PlaneIntersection(oM.Geometry.Plane.XY);
-                    result = result.Select(x => x.IRotate(axis.Start, axis.TangentAtParameter(0), rad)).ToList();
-                    cPoints = result.SelectMany(x => x.IControlPoints()).ToList();
-                }
+                        Line axis = plane.PlaneIntersection(oM.Geometry.Plane.XY);
+                        result = result.Select(x => x.IRotate(axis.Start, axis.TangentAtParameter(0), rad)).ToList();
+                        cPoints = result.SelectMany(x => x.IControlPoints()).ToList();
+                    }
 
-                // Is on XY
-                if (cPoints.FirstOrDefault().Distance(oM.Geometry.Plane.XY) > Tolerance.Distance)
-                {
-                    Reflection.Compute.RecordWarning("The Profiles curves are not on the XY-Plane. Automatic translation has occured.");
-                    Point p = cPoints.FirstOrDefault();
-                    Vector v = new oM.Geometry.Vector() { X = p.X, Y = p.Y, Z = p.Z };
+                    // Is on XY
+                    if (cPoints.FirstOrDefault().Distance(oM.Geometry.Plane.XY) > Tolerance.Distance)
+                    {
+                        Reflection.Compute.RecordWarning("The Profiles curves are not on the XY-Plane. Automatic translation has occured.");
+                        Point p = cPoints.FirstOrDefault();
+                        Vector v = new oM.Geometry.Vector() { X = p.X, Y = p.Y, Z = p.Z };
 
-                    result = result.Select(x => x.ITranslate(-v)).ToList();
+                        result = result.Select(x => x.ITranslate(-v)).ToList();
+                    }
                 }
             }
 
@@ -626,3 +631,4 @@ namespace BH.Engine.Geometry
         /***************************************************/
     }
 }
+
