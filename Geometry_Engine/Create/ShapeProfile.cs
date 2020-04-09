@@ -387,7 +387,7 @@ namespace BH.Engine.Geometry
                 }
             }
 
-            if (!edges.Any(x => x.ISubParts().Any(y => y is NurbsCurve)))
+            if (!result.Any(x => x.ISubParts().Any(y => y is NurbsCurve)))
             {
                 // Join the curves
                 List<PolyCurve> joinedCurves = Compute.IJoin(result.ToList()).ToList();
@@ -400,7 +400,7 @@ namespace BH.Engine.Geometry
                 if (joinedCurves.Any(x => x.IArea() < Tolerance.Distance))
                     Reflection.Compute.RecordWarning("One or more of the profile curves have close to zero area.");
 
-                if (!edges.Any(x => x.ISubParts().Any(y => y is Ellipse)))
+                if (!joinedCurves.Any(x => x.ISubParts().Any(y => y is Ellipse)))
                 {
                     // Check curve curve Intersections
                     bool intersects = false;
