@@ -50,7 +50,7 @@ namespace BH.Engine.Diffing
             if (diffConfig == null)
                 diffConfig = new DiffConfig();
 
-            //Remove HashFragment if present. CurrentHashing cannot be computed including also HashFragment.
+            //Remove HashFragment if present. CurrentHash cannot be computed including also HashFragment.
             IBHoMObject bhomobj = obj as IBHoMObject;
             if (bhomobj != null)
             {
