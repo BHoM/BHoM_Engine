@@ -355,11 +355,38 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Generates a default description for the BarRelease as 'StartReleaseNameOrDesc - EndReleaseNameOrDesc'.")]
-        [Input("release", "The Constraint6DOF to get a default description for.")]
-        [Output("desc", "The generated description for the constraint.")]
+        [Input("release", "The BarRelease to get a default description for.")]
+        [Output("desc", "The generated description for the BarRelease.")]
         public static string Description(this BarRelease release)
         {
             return release.StartRelease.DescriptionOrName() + " - " + release.EndRelease.DescriptionOrName();
+        }
+
+        /***************************************************/
+
+        [Description("Generates a default description for the LinkConstraint based on its fixities where x denoted fixed and f denotes free.")]
+        [Input("release", "The LinkConstraint to get a default description for.")]
+        [Output("desc", "The generated description for the LinkConstraint.")]
+        public static string Description(this LinkConstraint constraint)
+        {
+            string desc = constraint.XtoX ? "x" : "f";
+            desc += constraint.YtoY ? "x" : "f";
+            desc += constraint.ZtoZ ? "x" : "f";
+
+            desc += constraint.XXtoXX ? "x" : "f";
+            desc += constraint.YYtoYY ? "x" : "f";
+            desc += constraint.ZZtoZZ ? "x" : "f";
+
+            desc += constraint.XtoYY ? "x" : "f";
+            desc += constraint.XtoZZ ? "x" : "f";
+
+            desc += constraint.YtoXX ? "x" : "f";
+            desc += constraint.YtoZZ ? "x" : "f";
+
+            desc += constraint.ZtoXX ? "x" : "f";
+            desc += constraint.ZtoYY ? "x" : "f";
+
+            return desc;
         }
 
         /***************************************************/
