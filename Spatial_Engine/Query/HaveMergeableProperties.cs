@@ -38,9 +38,9 @@ namespace BH.Engine.Spatial
         [Input("element", "An IElement0D to compare the properties of with an other IElement0D.")]
         [Input("other", "The IElement0D to compare with the other IElement0D.")]
         [Output("equal", "True if the Objects non-geometrical property is equal to the point that they could be merged into one object.")]
-        public static bool IHaveMergebleProperties(this IElement0D element, IElement0D other)
+        public static bool IHaveMergeableProperties(this IElement0D element, IElement0D other)
         {
-            return HaveMergeblePropertiesIElement(element, other);
+            return HaveMergeablePropertiesIElement(element, other);
         }
 
         /******************************************/
@@ -49,9 +49,9 @@ namespace BH.Engine.Spatial
         [Input("element", "An IElement1D to compare the properties of with an other IElement1D.")]
         [Input("other", "The IElement1D to compare with the other IElement1D.")]
         [Output("equal", "True if the Objects non-geometrical property is equal to the point that they could be merged into one object.")]
-        public static bool IHaveMergebleProperties(this IElement1D element, IElement1D other)
+        public static bool IHaveMergeableProperties(this IElement1D element, IElement1D other)
         {
-            return HaveMergeblePropertiesIElement(element, other);
+            return HaveMergeablePropertiesIElement(element, other);
         }
 
         /******************************************/
@@ -60,9 +60,9 @@ namespace BH.Engine.Spatial
         [Input("element", "An IElement2D to compare the properties of with an other IElement2D.")]
         [Input("other", "The IElement2D to compare with the other IElement2D.")]
         [Output("equal", "True if the Objects non-geometrical property is equal to the point that they could be merged into one object.")]
-        public static bool IHaveMergebleProperties(this IElement2D element, IElement2D other)
+        public static bool IHaveMergeableProperties(this IElement2D element, IElement2D other)
         {
-            return HaveMergeblePropertiesIElement(element, other);
+            return HaveMergeablePropertiesIElement(element, other);
         }
 
 
@@ -70,7 +70,7 @@ namespace BH.Engine.Spatial
         /****        Private Methods           ****/
         /******************************************/
 
-        private static bool HaveMergeblePropertiesIElement(this IElement element, IElement other)
+        private static bool HaveMergeablePropertiesIElement(this IElement element, IElement other)
         {
             // Geometrical objects don't have properties
             if (typeof(IGeometry).IsAssignableFrom(element.GetType()) && typeof(IGeometry).IsAssignableFrom(other.GetType()))
@@ -81,7 +81,7 @@ namespace BH.Engine.Spatial
                 return false;
 
             // look for a specific comparing method
-            object result = Reflection.Compute.RunExtensionMethod(element, "HaveMergebleProperties", new object[] { other });
+            object result = Reflection.Compute.RunExtensionMethod(element, "HaveMergeableProperties", new object[] { other });
 
             if (result == null || !result.GetType().IsAssignableFrom(typeof(bool)))
             {
