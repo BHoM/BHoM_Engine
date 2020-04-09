@@ -108,6 +108,17 @@ namespace BH.Engine.Geometry
             return EndPoint(curve as dynamic);
         }
 
+
+        /***************************************************/
+        /**** Private Methods - Fallback                ****/
+        /***************************************************/
+
+        private static Point EndPoint(this ICurve curve)
+        {
+            Reflection.Compute.RecordError("EndPoint is not implemented for curve of type: " + curve.GetType().Name + ". ");
+            return null;
+        }
+
         /***************************************************/
     }
 }
