@@ -36,6 +36,7 @@ using System.ComponentModel;
 using BH.oM.Reflection.Attributes;
 using BH.oM.Reflection;
 using System.Collections;
+using System.Collections.Concurrent;
 
 namespace BH.Engine.Diffing
 {
@@ -63,46 +64,12 @@ namespace BH.Engine.Diffing
             List<IBHoMObject> oldObjs = new List<IBHoMObject>();
             List<IBHoMObject> unChanged = new List<IBHoMObject>();
 
-            var objModifiedProps = new Dictionary<string, Dictionary<string, Tuple<object, object>>>();
+            Dictionary<string, Dictionary<string, Tuple<object, object>>> objModifiedProps = new Dictionary<string, Dictionary<string, Tuple<object, object>>>();
 
-            foreach (var obj in currentObjs)
-            {
-                var hashFragm = obj.GetHashFragment();
-
-                if (hashFragm?.PreviousHash == null)
-                {
-                    newObjs.Add(obj); // It's a new object
-                }
-
-                else if (hashFragm.PreviousHash == hashFragm.CurrentHash)
-                {
-                    // It's NOT been modified
-                    if (diffConfig.StoreUnchangedObjects)
-                        unChanged.Add(obj);
-                }
-
-                else if (hashFragm.PreviousHash != hashFragm.CurrentHash)
-                {
-                    modifiedObjs.Add(obj); // It's been modified
-
-                    if (diffConfig.EnablePropertyDiffing)
-                    {
-                        // Determine changed properties
-                        IBHoMObject oldObjState = null;
-                        readObjs_dict.TryGetValue(hashFragm.PreviousHash, out oldObjState);
-
-                        if (oldObjState == null) continue;
-
-                        var differentProps = Query.DifferentProperties(obj, oldObjState, diffConfig);
-
-                        objModifiedProps.Add(hashFragm.CurrentHash, differentProps);
-                    }
-                }
-                else
-                {
-                    throw new Exception("Could not find hash information to perform Diffing on some objects.");
-                }
-            }
+            if (diffConfig.EnablePropertyDiffing && currentObjects.Count() < 1000)
+                ComputeDiff(readObjs_dict, currentObjs, diffConfig, newObjs, modifiedObjs, unChanged, objModifiedProps);
+            else
+                ComputeDiff_Parall(readObjs_dict, currentObjs, diffConfig, newObjs, modifiedObjs, unChanged, objModifiedProps);
 
             // If no modified property was found, set the field to null (otherwise will get empty list)
             objModifiedProps = objModifiedProps.Count == 0 ? null : objModifiedProps;
@@ -157,6 +124,109 @@ namespace BH.Engine.Diffing
             Diff finalDiff = new Diff(allCurrObjs, allPrevObjs, diff.ModifiedObjects, diffConfig, diff.ModifiedPropsPerObject, diff.UnchangedObjects);
 
             return finalDiff;
+        }
+
+        private static void ComputeDiff(Dictionary<string, IBHoMObject> readObjs_dict, List<IBHoMObject> currentObjs, DiffConfig diffConfig,
+            List<IBHoMObject> newObjs, List<IBHoMObject> modifiedObjs, List<IBHoMObject> unChanged,
+            Dictionary<string, Dictionary<string, Tuple<object, object>>> objModifiedProps)
+        {
+            foreach (var obj in currentObjs)
+            {
+                var hashFragm = obj.GetHashFragment();
+
+                if (hashFragm?.PreviousHash == null)
+                {
+                    newObjs.Add(obj); // It's a new object
+                }
+
+                else if (hashFragm.PreviousHash == hashFragm.CurrentHash)
+                {
+                    // It's NOT been modified
+                    if (diffConfig.StoreUnchangedObjects)
+                        unChanged.Add(obj);
+                }
+
+                else if (hashFragm.PreviousHash != hashFragm.CurrentHash)
+                {
+                    modifiedObjs.Add(obj); // It's been modified
+
+                    if (diffConfig.EnablePropertyDiffing)
+                    {
+                        // Determine changed properties
+                        IBHoMObject oldObjState = null;
+                        readObjs_dict.TryGetValue(hashFragm.PreviousHash, out oldObjState);
+
+                        if (oldObjState == null) continue;
+
+                        var differentProps = Query.DifferentProperties(obj, oldObjState, diffConfig);
+
+                        objModifiedProps.Add(hashFragm.CurrentHash, differentProps);
+                    }
+                }
+                else
+                {
+                    throw new Exception("Could not find hash information to perform Diffing on some objects.");
+                }
+            }
+
+        }
+
+        private static void ComputeDiff_Parall(Dictionary<string, IBHoMObject> readObjs_dict, List<IBHoMObject> currentObjs, DiffConfig diffConfig,
+          List<IBHoMObject> newObjs, List<IBHoMObject> modifiedObjs, List<IBHoMObject> unChanged,
+          Dictionary<string, Dictionary<string, Tuple<object, object>>> objModifiedProps)
+        {
+            ConcurrentBag<IBHoMObject> newObjsCD = new ConcurrentBag<IBHoMObject>();
+            ConcurrentBag<IBHoMObject> modObjsCD =  new ConcurrentBag<IBHoMObject>();
+            ConcurrentBag<IBHoMObject> unChangedCD = new ConcurrentBag<IBHoMObject>();
+
+            ConcurrentDictionary<string, Dictionary<string, Tuple<object, object>>> objModifiedPropsCD = new ConcurrentDictionary<string, Dictionary<string, Tuple<object, object>>>();
+
+            int objCount = currentObjs.Count;
+
+            Parallel.For(0, objCount, i =>
+            {
+                IBHoMObject obj = currentObjs[i];
+
+                var hashFragm = obj.GetHashFragment();
+
+                if (hashFragm?.PreviousHash == null)
+                {
+                    newObjsCD.Add(obj); // It's a new object
+                }
+
+                else if (hashFragm.PreviousHash == hashFragm.CurrentHash)
+                {
+                    // It's NOT been modified
+                    if (diffConfig.StoreUnchangedObjects)
+                        unChangedCD.Add(obj);
+                }
+
+                else if (hashFragm.PreviousHash != hashFragm.CurrentHash)
+                {
+                    modObjsCD.Add(obj); // It's been modified
+
+                    // Determine changed properties
+                    IBHoMObject oldObjState = null;
+                    readObjs_dict.TryGetValue(hashFragm.PreviousHash, out oldObjState);
+
+                    if (oldObjState != null)
+                    {
+                        var differentProps = Query.DifferentProperties(obj, oldObjState, diffConfig);
+
+                        objModifiedProps.Add(hashFragm.CurrentHash, differentProps);
+                    }
+                }
+                else
+                {
+                    throw new Exception("Could not find hash information to perform Diffing on some objects.");
+                }
+            });
+
+            newObjs = newObjsCD.ToList();
+            modifiedObjs = modObjsCD.ToList();
+            unChanged = unChangedCD.ToList();
+
+            objModifiedProps = new Dictionary<string, Dictionary<string, Tuple<object, object>>>(objModifiedPropsCD);
         }
 
     }
