@@ -72,30 +72,6 @@ namespace BH.Engine.Diffing
 
             return dict;
         }
-
-        public static Dictionary<string, Tuple<object, object>> DifferentProperties2(this IBHoMObject obj1, IBHoMObject obj2, DiffConfig diffConfig = null)
-        {
-            var dict = new Dictionary<string, Tuple<object, object>>();
-
-            //Use default config if null
-            diffConfig = diffConfig ?? new DiffConfig();
-
-            PropertyInfo[] pi = obj1.GetType().GetProperties();
-            foreach (PropertyInfo f in pi)
-            {
-                string pName = f.Name;
-                if (diffConfig.PropertiesToIgnore.Contains(f.Name))
-                    continue;
-
-                object val1 = f.GetValue(obj1);
-                object val2 = f.GetValue(obj2);
-
-                if (!val1.Equals(val2))
-                    dict.Add(f.Name, new Tuple<object, object>(val1, val2));
-
-            }
-            return dict;
-        }
     }
 }
 
