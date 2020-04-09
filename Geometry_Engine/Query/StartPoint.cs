@@ -108,6 +108,17 @@ namespace BH.Engine.Geometry
             return StartPoint(curve as dynamic);
         }
 
+
+        /***************************************************/
+        /**** Private Methods - Fallback                ****/
+        /***************************************************/
+
+        private static Point StartPoint(this ICurve curve)
+        {
+            Reflection.Compute.RecordError("StartPoint is not implemented for curve of type: " + curve.GetType().Name + ". ");
+            return null;
+        }
+
         /***************************************************/
     }
 }
