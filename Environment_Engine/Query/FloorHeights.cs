@@ -47,7 +47,7 @@ namespace BH.Engine.Environment
         /***************************************************/
 
         [Description("Returns the floor heights for a collection of levels, calculated as the difference between elevations in levels. Levels are sorted by their elevation prior to calculating the floor heights, and the output order will be from lowest elevation floor to highest")]
-        [Input("panelsAsSpaces", "A collection of levels with elevations. The floor height will be calculated as the difference between two consecutive level elevations")]
+        [Input("levels", "A collection of levels with elevations. The floor height will be calculated as the difference between two consecutive level elevations")]
         [Input("roofHeight", "The height/elevation of the roof the building to provide the floor height for the top-most floor level provided")]
         [Output("floorHeights", "A collection of floor heights based on the elevation differences")]
         public static List<double> FloorHeights(this List<Level> levels, double roofHeight)
