@@ -40,7 +40,7 @@ namespace BH.Engine.Architecture
         [Input("angleTolerance", "The tolerance of the angle that defines a straight line. Default is set to the value defined by BH.oM.Geometry.Tolerance.Angle")]
         [Input("minimumSegmentLength", "The length of the smallest allowed segment. Segments smaller than this will be removed. Default is set to the value defined by BH.oM.Geometry.Tolerance.Distance")]
         [Output("cleanedRoom", "A room that has been cleaned")]
-        public static Room CleanPanel(this Room room, double angleTolerance = Tolerance.Angle, double minimumSegmentLength = Tolerance.Distance)
+        public static Room CleanRoom(this Room room, double angleTolerance = Tolerance.Angle, double minimumSegmentLength = Tolerance.Distance)
         {
             Room clonedRoom = room.DeepClone<Room>();
             clonedRoom.Perimeter = clonedRoom.Perimeter.ICollapseToPolyline(Tolerance.Angle).CleanPolyline(angleTolerance, minimumSegmentLength);
