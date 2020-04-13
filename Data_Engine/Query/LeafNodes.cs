@@ -33,23 +33,52 @@ namespace BH.Engine.Data
         /***************************************************/
         /****           Public Methods                  ****/
         /***************************************************/
-        [Description("Extracts a list of leaf nodes from a graph, leaf nodes have no incoming links")]
+        [Description("Extracts a list of leaf nodes from a graph, leaf nodes have no neighbours deeper in the graph")]
         [Input("graph", "The graph to extract the leaf nodes from")]
         public static List<GraphNode<T>> LeafNodes<T>(this Graph<T> graph, GraphNode<T> startNode)
         {
             Dictionary<GraphNode<T>, int> depthDictionary = graph.DepthDictionary(startNode);
             List<GraphNode<T>> leafnodes = new List<GraphNode<T>>();
-            foreach (GraphNode<T> node in graph.Nodes)
+            //get the adjacency dict
+            Dictionary<GraphNode<T>, List<GraphNode<T>>> adjacency = graph.AdjacencyDictionary();
+            if (!adjacency.ContainsKey(startNode))
             {
-                List<GraphNode<T>> neighbours = Neighbours(graph, node, true);
-                //its a leaf if no neighbour is deeper in the graph
-                int nodeDepth = depthDictionary[node];
-                bool leaf = true;
-                foreach (GraphNode<T> n in neighbours)
-                    if (depthDictionary[n] > nodeDepth)
-                        leaf = false;
-                if(leaf) leafnodes.Add(node);
+                Reflection.Compute.RecordError("startNode provided cannot be found in the adjacency dictionary. Ensure the node exists in the original graph");
+                return leafnodes;
             }
+            // dictionary to store when node has been visited
+            Dictionary<GraphNode<T>, bool> marked = new Dictionary<GraphNode<T>, bool>();
+            // create a queue  
+            Queue<GraphNode<T>> que = new Queue<GraphNode<T>>();
+            // enqueue element x  
+            que.Enqueue(startNode);
+            // marked it as visited  
+            marked[startNode] = true;
+            // do until queue is empty  
+            while (que.Count > 0)
+            {
+                // dequeue element  
+                startNode = que.Dequeue();
+                // traverse neighbours of node x  
+                int totalMarked = 0;
+                foreach (GraphNode<T> b in adjacency[startNode])
+                {
+                    // b is neighbor of node x  
+                    // if b is not marked already  
+                    if (!marked.ContainsKey(b))
+                    {
+                        // enqueue b in queue  
+                        que.Enqueue(b);
+                        // mark b  
+                        marked[b] = true;
+                    }
+                    else
+                        totalMarked++;
+                }
+                if (totalMarked == adjacency[startNode].Count)
+                    leafnodes.Add(startNode);
+            }
+            
             return leafnodes;
         }
     }

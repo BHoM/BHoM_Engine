@@ -40,13 +40,13 @@ namespace BH.Engine.Data
         public static Dictionary<GraphNode<T>, int> DepthDictionary<T>(Dictionary<GraphNode<T>, List<GraphNode<T>>> adjacency, GraphNode<T> startNode)
         {
             //https://www.geeksforgeeks.org/level-node-tree-source-node-using-bfs/
-            if(!adjacency.ContainsKey(startNode))
-            {
-                Reflection.Compute.RecordError("startNode provided cannot be found in the adjacency dictionary. Ensure the node exists in the original graph");
-                return null;
-            }   
             // dictionary to store level of each node  
             Dictionary<GraphNode<T>, int> level = new Dictionary<GraphNode<T>, int>();
+            if (!adjacency.ContainsKey(startNode))
+            {
+                Reflection.Compute.RecordError("startNode provided cannot be found in the adjacency dictionary. Ensure the node exists in the original graph");
+                return level;
+            }   
             // dictionary to store when node has been visited
             Dictionary<GraphNode<T>, bool> marked = new Dictionary<GraphNode<T>, bool>();
             // create a queue  

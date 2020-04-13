@@ -20,6 +20,7 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.oM.Data;
 using BH.oM.Data.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,21 +33,24 @@ namespace BH.Engine.Data
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static List<GraphNode<T>> Neighbours<T>(this Graph<T> graph, GraphNode<T> node,bool useBothDirections = false)
+        public static List<GraphNode<T>> Neighbours<T>(this Graph<T> graph, GraphNode<T> node,GraphNodeNeighbours graphNodeNeighbours = GraphNodeNeighbours.Both)
         {
-            if(useBothDirections)
+            List<GraphNode<T>> neighbours = new List<GraphNode<T>>();
+            switch (graphNodeNeighbours)
             {
-                List<GraphNode<T>> neighbours = new List<GraphNode<T>>();
-                List<GraphNode<T>> neighboursOut = graph.Links.Where(x => x.StartNode == node).Select(x => x.EndNode).ToList();
-                List<GraphNode<T>> neighboursIn = graph.Links.Where(x => x.EndNode == node).Select(x => x.StartNode).ToList();
-                neighbours.AddRange(neighboursOut.Distinct());
-                neighbours.AddRange(neighboursIn.Distinct());
-                return neighbours;
+                case GraphNodeNeighbours.Both:
+                    neighbours.AddRange(graph.Links.Where(x => x.StartNode == node).Select(x => x.EndNode).ToList());
+                    neighbours.AddRange(graph.Links.Where(x => x.EndNode == node).Select(x => x.StartNode).ToList());
+                    break;
+                case GraphNodeNeighbours.Incoming:
+                    neighbours.AddRange(graph.Links.Where(x => x.EndNode == node).Select(x => x.StartNode).ToList());
+                    break;
+                case GraphNodeNeighbours.Outgoing:
+                    neighbours.AddRange(graph.Links.Where(x => x.StartNode == node).Select(x => x.EndNode).ToList());
+                    break;
             }
-            else
-                return graph.Links.Where(x => x.StartNode == node).Select(x => x.EndNode).Distinct().ToList();
+            return neighbours.Distinct().ToList();
         }
-
         /***************************************************/
     }
 }
