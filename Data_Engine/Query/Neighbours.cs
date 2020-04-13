@@ -33,7 +33,7 @@ namespace BH.Engine.Data
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static List<GraphNode<T>> Neighbours<T>(this Graph<T> graph, GraphNode<T> node,GraphNodeNeighbours graphNodeNeighbours = GraphNodeNeighbours.Both)
+        public static List<GraphNode<T>> Neighbours<T>(this Graph<T> graph, GraphNode<T> node,GraphNodeNeighbours graphNodeNeighbours = GraphNodeNeighbours.Outgoing)
         {
             List<GraphNode<T>> neighbours = new List<GraphNode<T>>();
             switch (graphNodeNeighbours)
