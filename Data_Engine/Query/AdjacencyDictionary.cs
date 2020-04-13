@@ -40,7 +40,7 @@ namespace BH.Engine.Data
             Dictionary<GraphNode<T>, List<GraphNode<T>>> adjacency = new Dictionary<GraphNode<T>, List<GraphNode<T>>>();
             foreach (GraphNode<T> node in graph.Nodes)
             {
-                List<GraphNode<T>> neighbours = graph.Neighbours(node, true);
+                List<GraphNode<T>> neighbours = graph.Neighbours(node);
                 adjacency.Add(node, neighbours);
             }
             return adjacency;
