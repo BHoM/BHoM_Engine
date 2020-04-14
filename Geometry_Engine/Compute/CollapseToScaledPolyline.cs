@@ -36,7 +36,7 @@ namespace BH.Engine.Geometry
 
         [Description("Collapses a PolyCurve to a polyline where curved segments are split into Polyline segments for computations. Where their partitioning is based on both their curvature and size, ergo; shorter segment less partitions, very curved segment more partitions")]
         [Input("curve", "The curve to collapse")]
-        [Input("relativeAngleTolerance", "relativeAngleTolerance is the angleTolerance for a unit circle, the tolerance value will vary by: toleranceGrowth over curvature")]
+        [Input("relativeAngleTolerance", "relativeAngleTolerance is the angleTolerance for a unit circle, the tolerance value will vary by: toleranceScaleFactor over curvature")]
         [Input("toleranceScaleFactor", "toleranceScaleFactor is the value that decides how much the angleTolerance varies due to curvature")]
         [Input("maxDivisionsPerSegment", "The maximum number of segment each sub-curve can be broken into")]
         [Input("scale", "the radius of a baseline circle for the angle tolerance, smaller circles will have less segments and bigger more. Default of 0 means the program will determine an appropriate radius for the PolyCurve")]
