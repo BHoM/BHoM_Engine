@@ -45,7 +45,7 @@ namespace BH.Engine.Data
                 case GraphLinkDirection.Incoming:
                     neighbours.AddRange(graph.Links.Where(x => x.EndNode == node).Select(x => x.StartNode).ToList());
                     break;
-                case GraphLinkDirectionGraphLinkDirection.Outgoing:
+                case GraphLinkDirection.Outgoing:
                     neighbours.AddRange(graph.Links.Where(x => x.StartNode == node).Select(x => x.EndNode).ToList());
                     break;
             }
