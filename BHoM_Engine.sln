@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.28307.757
+VisualStudioVersion = 15.0.28307.852
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Acoustic_Engine", "Acoustic_Engine\Acoustic_Engine.csproj", "{68300030-BC17-49BD-A363-CFCD3828E812}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -61,6 +61,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Programming_Engine", "Programming_Engine\Programming_Engine.csproj", "{BDE4A84F-5672-41B6-834B-6139C32C3560}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spatial_Engine", "Spatial_Engine\Spatial_Engine.csproj", "{A84FDFE5-C267-430E-8FEC-AF4F4BF5B745}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Matter_Engine", "Matter_Engine\Matter_Engine.csproj", "{65198EEA-B572-418F-B77D-B348082EC92E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -255,6 +257,14 @@ Global
 		{A84FDFE5-C267-430E-8FEC-AF4F4BF5B745}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A84FDFE5-C267-430E-8FEC-AF4F4BF5B745}.Release|x86.ActiveCfg = Release|Any CPU
 		{A84FDFE5-C267-430E-8FEC-AF4F4BF5B745}.Release|x86.Build.0 = Release|Any CPU
+		{65198EEA-B572-418F-B77D-B348082EC92E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{65198EEA-B572-418F-B77D-B348082EC92E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{65198EEA-B572-418F-B77D-B348082EC92E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{65198EEA-B572-418F-B77D-B348082EC92E}.Debug|x86.Build.0 = Debug|Any CPU
+		{65198EEA-B572-418F-B77D-B348082EC92E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{65198EEA-B572-418F-B77D-B348082EC92E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{65198EEA-B572-418F-B77D-B348082EC92E}.Release|x86.ActiveCfg = Release|Any CPU
+		{65198EEA-B572-418F-B77D-B348082EC92E}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

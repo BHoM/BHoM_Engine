@@ -86,6 +86,20 @@ namespace BH.Engine.Reflection
             return m_AllTypeList;
         }
 
+        /***************************************************/
+
+        public static List<Type> EngineTypeList()
+        {
+            // If the dictionary exists already return it
+            if (m_EngineTypeList != null && m_EngineTypeList.Count > 0)
+                return m_EngineTypeList;
+
+            // Otherwise, create it
+            ExtractAllMethods();
+
+            return m_EngineTypeList;
+        }
+
 
         /***************************************************/
         /**** Private Methods                           ****/
@@ -110,7 +124,7 @@ namespace BH.Engine.Reflection
                             if (type.Namespace != null && type.Namespace.StartsWith("BH.oM"))
                             {
                                 AddBHoMTypeToDictionary(type.FullName, type);
-                                if (!type.IsInterface)
+                                if (!type.IsInterface && !(type.IsAbstract && type.IsSealed)) // Avoid interfaces and static classes
                                     m_BHoMTypeList.Add(type);
                                 else
                                     m_InterfaceList.Add(type);

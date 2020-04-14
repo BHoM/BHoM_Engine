@@ -25,6 +25,7 @@ using BH.oM.Base;
 using BH.oM.Dimensional;
 using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
+using BH.oM.Reflection.Attributes;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -36,15 +37,10 @@ namespace BH.Engine.Common
         /****            IElement1D            ****/
         /******************************************/
 
+        [Deprecated("3.1", "Migrated to the Spatial_Engine")]
         public static List<Point> ElementVertices(this IElement1D element1D)
         {
-            ICurve curve = element1D.IGeometry();
-            List<Point> vertices = curve.IDiscontinuityPoints();
-
-            if (curve.IIsClosed())
-                vertices.RemoveAt(vertices.Count - 1);
-
-            return vertices;
+            return Spatial.Query.ElementVertices(element1D);
         }
 
 
@@ -52,16 +48,10 @@ namespace BH.Engine.Common
         /****            IElement2D            ****/
         /******************************************/
 
+        [Deprecated("3.1", "Migrated to the Spatial_Engine")]
         public static List<Point> ElementVertices(this IElement2D element2D)
         {
-            List<Point> result = new List<Point>();
-            result.AddRange(element2D.IOutlineCurve().ElementVertices());
-            foreach (IElement2D e in element2D.IInternalElements2D())
-            {
-                result.AddRange(e.ElementVertices());
-            }
-
-            return result;
+            return Spatial.Query.ElementVertices(element2D);
         }
 
 
@@ -69,21 +59,18 @@ namespace BH.Engine.Common
         /**** Public Methods - Interfaces      ****/
         /******************************************/
 
+        [Deprecated("3.1", "Migrated to the Spatial_Engine")]
         public static List<Point> IElementVertices(this IElement element)
         {
-            return ElementVertices(element as dynamic);
+            return Spatial.Query.IElementVertices(element);
         }
 
         /******************************************/
 
+        [Deprecated("3.1", "Migrated to the Spatial_Engine")]
         public static List<Point> IElementVertices(this IEnumerable<IElement> elements)
         {
-            List<Point> result = new List<Point>();
-            foreach(IElement element in elements)
-            {
-                result.AddRange(element.IElementVertices());
-            }
-            return result;
+            return Spatial.Query.ElementVertices(elements);
         }
 
 

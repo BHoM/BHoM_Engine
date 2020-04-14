@@ -21,6 +21,7 @@
  */
 
 using System.Collections.Generic;
+using BH.oM.Reflection.Attributes;
 using BH.oM.Dimensional;
 using BH.oM.Geometry;
 
@@ -32,36 +33,26 @@ namespace BH.Engine.Common
         /**** Public Methods - IElements                ****/
         /***************************************************/
 
-        public static IElement2D Translate(this IElement2D element2D, Vector transform) //todo: move this to analytical along with other IElement methods
+        [Deprecated("3.1", "Migrated to the Spatial_Engine")]
+        public static IElement2D Translate(this IElement2D element2D, Vector transform)
         {
-            List<IElement1D> newOutline = new List<IElement1D>();
-            foreach (IElement1D element1D in element2D.IOutlineElements1D())
-            {
-                newOutline.Add(element1D.Translate(transform));
-            }
-            IElement2D result = element2D.ISetOutlineElements1D(newOutline);
-
-            List<IElement2D> newInternalOutlines = new List<IElement2D>();
-            foreach (IElement2D internalElement2D in result.IInternalElements2D())
-            {
-                newInternalOutlines.Add(internalElement2D.Translate(transform));
-            }
-            result = result.ISetInternalElements2D(newInternalOutlines);
-            return result;
+            return Spatial.Modify.Translate(element2D, transform);
         }
 
         /***************************************************/
 
-        public static IElement1D Translate(this IElement1D element1D, Vector transform) //todo: move this to analytical along with other IElement methods
+        [Deprecated("3.1", "Migrated to the Spatial_Engine")]
+        public static IElement1D Translate(this IElement1D element1D, Vector transform)
         {
-            return element1D.ISetGeometry(Geometry.Modify.ITranslate(element1D.IGeometry(), transform));
+            return Spatial.Modify.Translate(element1D, transform);
         }
 
         /******************************************/
 
-        public static IElement0D Translate(this IElement0D element0D, Vector transform) //todo: move this to analytical along with other IElement methods
+        [Deprecated("3.1", "Migrated to the Spatial_Engine")]
+        public static IElement0D Translate(this IElement0D element0D, Vector transform)
         {
-            return element0D.ISetGeometry(Geometry.Modify.Translate(element0D.IGeometry(), transform));
+            return Spatial.Modify.Translate(element0D, transform);
         }
     }
 }

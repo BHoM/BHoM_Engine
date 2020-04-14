@@ -35,7 +35,6 @@ namespace BH.Engine.Geometry
         {
             bool isClosed = polyline.IsClosed(distanceTolerance);
             List<Point> ctrlPts = polyline.DiscontinuityPoints(distanceTolerance, angleTolerance);
-            List<Point> newPts = new List<Point>(ctrlPts);
 
             for (int i = 1; i < ctrlPts.Count - 1; i++)
             {
@@ -50,6 +49,9 @@ namespace BH.Engine.Geometry
 
             if (ctrlPts.Count < 2)
                 return polyline;
+
+            if (isClosed)
+                ctrlPts.Add(ctrlPts[0]);
 
             return new Polyline { ControlPoints = ctrlPts };
         }

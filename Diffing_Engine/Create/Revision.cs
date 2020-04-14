@@ -1,4 +1,4 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -20,36 +20,40 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.oM.Base;
+using BH.oM.Diffing;
+using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using BH.oM.Architecture;
-using BH.oM.Architecture.Elements;
-using BH.oM.Dimensional;
-using BH.oM.Geometry;
-using BH.Engine.Geometry;
-
-using BH.oM.Reflection.Attributes;
-using System.ComponentModel;
-
-namespace BH.Engine.Architecture
+namespace BH.Engine.Diffing
 {
-    public static partial class Query
+    public static partial class Create
     {
         /***************************************************/
-        /**** Public Methods                            ****/
-        /***************************************************/
 
-        [Description("Returns the internal 2D elements of an Architecture Room")]
-        [Input("room", "An Architecture Room")]
-        [Output("element2D", "A collection of internal 2D elements")]
-        public static List<IElement2D> InternalElements2D(this Room room)
+        [Description("Creates new Stream Revision")]
+        [Input("objects", "Objects to be included in the Stream Revision")]
+        [Input("streamId", "Input either: a Guid of an existing stream; a previous Revision from which to extract the StreamId; or a StreamPointer object.")]
+        [Input("revisionName", "Name of the Revision.")]
+        [Input("comment", "Any comment to be added for this Revision. Much like git commit comment.")]
+        [Input("diffConfig", "Diffing settings for this Stream Revision. Hashes of objects contained in this stream will be computed based on these configs.")]
+        public static Revision Revision(IEnumerable<IBHoMObject> objects, object streamId, string revisionName = null, string comment = null, DiffConfig diffConfig = null)
         {
-            return new List<IElement2D>();
+            if (streamId == null)
+                throw new ArgumentNullException($"Input {nameof(streamId)} cannot be null.");
+
+            Guid _streamId;
+            if (!Convert.TryParseObjectToGuid(streamId, out _streamId))
+                BH.Engine.Reflection.Compute.RecordError($"Specified input in {nameof(streamId)} is not valid.");
+
+            return new Revision(Modify.PrepareForDiffing(objects, diffConfig), _streamId, diffConfig, revisionName, comment);
         }
+
     }
 }
 

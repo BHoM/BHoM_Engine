@@ -1,4 +1,4 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -22,33 +22,38 @@
 
 using BH.oM.Dimensional;
 using BH.oM.Geometry;
-using BH.oM.Architecture.Elements;
-using System.Collections.Generic;
-using System.Linq;
-
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
 
-namespace BH.Engine.Architecture
+namespace BH.Engine.Spatial
 {
-    public static partial class Modify
+    public static partial class Query
     {
-        /***************************************************/
-        /****               Public Methods              ****/
-        /***************************************************/
+        /******************************************/
+        /****            IElement0D            ****/
+        /******************************************/
 
-        [Description("Assign a new collection of internal 2D elements to an Architecture Room")]
-        [Input("room", "An Architecture Room to update")]
-        [Input("internalElements2D", "A collection of internal 2D elements to assign to the room")]
-        [Output("room", "The updated Architecture Room")]
-        public static Room SetInternalElements2D(this Room room, List<IElement2D> internalElements2D)
+        [Description("Queries the defining geometrical object which all spatial operations will act on.")]
+        [Input("element0D", "The IElement0D to get the defining geometry from.")]
+        [Output("point", "The IElement0Ds base geometrical point object.")]
+        public static Point IGeometry(this IElement0D element0D)
         {
-            if (internalElements2D.Count != 0)
-                BH.Engine.Reflection.Compute.RecordError("Cannot set internal 2D elements to a room");
-
-            return room.GetShallowClone() as Room;
-
+            return Reflection.Compute.RunExtensionMethod(element0D, "Geometry") as Point;
         }
+
+        /******************************************/
+        /****            IElement1D            ****/
+        /******************************************/
+
+        [Description("Queries the defining geometrical object which all spatial operations will act on.")]
+        [Input("element1D", "The IElement1D to get the defining geometry from.")]
+        [Output("curve", "The IElement1Ds base geometrical curve object.")]
+        public static ICurve IGeometry(this IElement1D element1D)
+        {
+            return Reflection.Compute.RunExtensionMethod(element1D, "Geometry") as ICurve;
+        }
+
+        /******************************************/
     }
 }
 

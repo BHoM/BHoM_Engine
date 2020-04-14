@@ -38,21 +38,6 @@ namespace BH.Engine.Structure
         /****               Public Methods              ****/
         /***************************************************/
 
-        [Description("Sets internal IElement2Ds of an Opening. Method required for all IElement2Ds. \n" +
-                     "As the opening does not contain any internal IElement2Ds, this method if called will simply raise an error and return a shallow clone of the Opening.")]
-        [Input("opening", "The Opening, nothing will be updated as no Property available to be updated.")]
-        [Input("internalElements2D", "The internal IElement2Ds to set. Will be unused, as nothing can be set to the Opening.")]
-        [Output("opening", "The Opening cloned. No other changes applied.")]
-        public static Opening SetInternalElements2D(this Opening opening, List<IElement2D> internalElements2D)
-        {
-            if (internalElements2D.Count != 0)
-                Reflection.Compute.RecordError("Cannot set internal 2D elements to an Opening.");
-
-            return opening.GetShallowClone() as Opening;
-        }
-
-        /***************************************************/
-
         [Description("Sets internal IElement2Ds of a Panel, i.e. sets the Openings of a Panel. Method required for all IElement2Ds.")]
         [Input("panel", "The Panel to update.")]
         [Input("openings", "The internal IElement2Ds to set. For a Panel this should be a list of structural Openings.")]

@@ -22,6 +22,7 @@
 
 using BH.oM.Geometry;
 using BH.oM.Dimensional;
+using BH.oM.Reflection.Attributes;
 
 namespace BH.Engine.Common
 {
@@ -31,9 +32,10 @@ namespace BH.Engine.Common
         /****            IElement2D            ****/
         /******************************************/
 
+        [Deprecated("3.1", "Migrated to the Spatial_Engine")]
         public static IElement2D INewInternalElement2D(this IElement2D element2D)
         {
-            return Reflection.Compute.RunExtensionMethod(element2D, "NewInternalElement2D") as IElement2D;
+            return Spatial.Create.INewInternalElement2D(element2D);
         }
 
         /******************************************/

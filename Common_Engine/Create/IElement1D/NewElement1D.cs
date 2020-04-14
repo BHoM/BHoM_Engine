@@ -22,6 +22,7 @@
 
 using BH.oM.Dimensional;
 using BH.oM.Geometry;
+using BH.oM.Reflection.Attributes;
 
 namespace BH.Engine.Common
 {
@@ -31,9 +32,10 @@ namespace BH.Engine.Common
         /****            IElement2D            ****/
         /******************************************/
 
+        [Deprecated("3.1", "Migrated to the Spatial_Engine")]
         public static IElement1D INewElement1D(this IElement2D element2D, ICurve curve)
         {
-            return Reflection.Compute.RunExtensionMethod(element2D, "NewElement1D", new object[] { curve }) as IElement1D;
+            return Spatial.Create.INewElement1D(element2D, curve);
         }
 
         /******************************************/

@@ -20,38 +20,35 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Base;
-using BH.Engine;
-using BH.oM.Data.Collections;
-using BH.oM.Diffing;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Security.Cryptography;
-using System.Reflection;
-using BH.Engine.Serialiser;
-using System.ComponentModel;
+using BH.Engine.Base;
+using BH.oM.Dimensional;
+using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
-using BH.oM.Reflection;
+using System.Collections.Generic;
+using System.ComponentModel;
 
-namespace BH.Engine
+namespace BH.Engine.Spatial
 {
-    public static partial class Compute
+    public static partial class Modify
     {
-        [Description("Dispatch objects in two sets into the ones exclusive to one set, the other, or both.")]
-        [Input("set1", "A previous version of a list of IBHoMObjects")]
-        [Input("set2", "A new version of a list of IBHoMObjects")]
-        [Input("diffConfig", "Sets configs such as properties to be ignored in the comparison.")]
-        [Output("VennDiagram", "Venn diagram containing: objects existing exclusively in set1/set2 or their intersection.")]
-        public static VennDiagram<T> HashComparing<T>(IEnumerable<T> set1, IEnumerable<T> set2, DiffConfig diffConfig = null) where T : class, IBHoMObject
-        {
-            Stream streamA = BH.Engine.Diffing.Create.Stream(set1, diffConfig, "");
-            Stream streamB = BH.Engine.Diffing.Create.Stream(set2, diffConfig, "");
+        /******************************************/
+        /****            IElement2D            ****/
+        /******************************************/
 
-            return Engine.Data.Create.VennDiagram(streamA.Objects.Cast<T>(), streamB.Objects.Cast<T>(), new HashFragmComparer<T>());
+        [Description("Exchanges the existing internal IElement2Ds for the provided new internal IElement2Ds. The internal IElement2Ds location is used and must align with the host IElement2Ds geometry.")]
+        [Input("element2D", "The host IElement2D to exchange the internal IElement2D's of. This includes their location.")]
+        [Input("newElements2D", "The internal IElement2Ds to set to the host IElement2D. Must be of a type assignable to the host IElement2D.")]
+        [Output("element2D", "The modified host IElement2D which has unchanged properties and exchanged internal IElement2Ds.")]
+        public static IElement2D ISetInternalElements2D(this IElement2D element2D, List<IElement2D> newElements2D)
+        {
+            IElement2D result = Reflection.Compute.RunExtensionMethod(element2D, "SetInternalElements2D", new object[] { newElements2D }) as IElement2D;
+
+            if (result == null && newElements2D.Count != 0)
+                Engine.Reflection.Compute.RecordError("Cannot set internal 2D elements to an " + element2D.GetType() + ".");
+
+            return result ?? element2D.ShallowClone();
         }
+
+        /******************************************/
     }
 }
-

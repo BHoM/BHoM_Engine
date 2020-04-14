@@ -21,52 +21,25 @@
  */
 
 using BH.oM.Base;
-using BH.Engine;
-using BH.oM.Data.Collections;
 using BH.oM.Diffing;
+using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using BH.Engine.Serialiser;
 using System.ComponentModel;
-using BH.oM.Reflection.Attributes;
-using BH.oM.Reflection;
-using BH.Engine.Diffing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace BH.Engine
+namespace BH.Engine.Diffing
 {
-    public class HashFragmComparer<T> : IEqualityComparer<T> where T : IBHoMObject
+    public static partial class Create
     {
         /***************************************************/
-        /**** Constructors                              ****/
-        /***************************************************/
-        public List<string> PropertiesToIgnore { get; set; } = null;
 
-        public HashFragmComparer(List<string> propertiesToIgnore = null)
+        [Description("Creates new Stream Pointer, generating a new StreamId.")]
+        public static StreamPointer StreamPointer(string name = null, string description = null)
         {
-            if (propertiesToIgnore == null)
-                propertiesToIgnore = new List<string>() { "BHoM_Guid", "CustomData", "Fragments" };
-
-            PropertiesToIgnore = propertiesToIgnore;
-        }
-        /***************************************************/
-        /**** Public Methods                            ****/
-        /***************************************************/
-
-        public bool Equals(T x, T y)
-        {
-            if (x.SHA256Hash(PropertiesToIgnore) == y.SHA256Hash(PropertiesToIgnore))
-                return true;
-            else
-                return false;
-        }
-
-        /***************************************************/
-
-        public int GetHashCode(T obj)
-        {
-            return obj.GetHashFragment().GetHashCode();
+            return new StreamPointer(name, description);
         }
     }
 }

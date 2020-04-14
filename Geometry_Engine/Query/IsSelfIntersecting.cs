@@ -55,6 +55,13 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        public static bool IsSelfIntersecting(this Ellipse curve, double tolerance = Tolerance.Distance)
+        {
+            return false;
+        }
+
+        /***************************************************/
+
         [NotImplemented]
         public static bool IsSelfIntersecting(this NurbsCurve curve, double tolerance = Tolerance.Distance)
         {

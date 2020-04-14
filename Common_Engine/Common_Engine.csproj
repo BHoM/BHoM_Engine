@@ -107,6 +107,11 @@
       <Name>Reflection_Engine</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\Spatial_Engine\Spatial_Engine.csproj">
+      <Project>{a84fdfe5-c267-430e-8fec-af4f4bf5b745}</Project>
+      <Name>Spatial_Engine</Name>
+      <Private>False</Private>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

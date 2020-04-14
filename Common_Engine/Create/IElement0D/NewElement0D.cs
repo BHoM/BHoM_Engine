@@ -22,6 +22,7 @@
 
 using BH.oM.Dimensional;
 using BH.oM.Geometry;
+using BH.oM.Reflection.Attributes;
 
 namespace BH.Engine.Common
 {
@@ -31,9 +32,10 @@ namespace BH.Engine.Common
         /****            IElement1D            ****/
         /******************************************/
 
+        [Deprecated("3.1", "Migrated to the Spatial_Engine")]
         public static IElement0D INewElement0D(this IElement1D element1D, Point point)
         {
-            return Reflection.Compute.RunExtensionMethod(element1D, "NewElement0D", new object[] { point }) as IElement0D;
+            return Spatial.Create.INewElement0D(element1D, point);
         }
 
         /******************************************/

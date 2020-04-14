@@ -121,6 +121,7 @@
     <Compile Include="Modify\AddReinforcement.cs" />
     <Compile Include="Modify\SetMaterial.cs" />
     <Compile Include="Modify\SetStructuralFragment.cs" />
+    <Compile Include="Objects\EqualityComparers\NameOrDescriptionComparer.cs" />
     <Compile Include="Query\AllEdgeCurves.cs" />
     <Compile Include="Query\CoordinateSystem.cs" />
     <Compile Include="Query\DescriptionOrName.cs" />
@@ -131,6 +132,8 @@
     <Compile Include="Query\Fixities.cs" />
     <Compile Include="Query\HasModifiers.cs" />
     <Compile Include="Query\InternalEdgeCurves.cs" />
+    <Compile Include="Query\IsNumericallyDependent.cs" />
+    <Compile Include="Query\MaterialComposition.cs" />
     <Compile Include="Query\MaterialType.cs" />
     <Compile Include="Create\Elements\IElement0D\NewElement0D.cs" />
     <Compile Include="Create\Elements\IElement1D\NewElement1D.cs" />
@@ -204,6 +207,7 @@
     <Compile Include="Query\SelectCase.cs" />
     <Compile Include="Query\ShearArea.cs" />
     <Compile Include="Query\ShearModulus.cs" />
+    <Compile Include="Query\SolidVolume.cs" />
     <Compile Include="Query\StructuralMaterialFragment.cs" />
     <Compile Include="Query\Tangent.cs" />
     <Compile Include="Query\Visualize.cs" />

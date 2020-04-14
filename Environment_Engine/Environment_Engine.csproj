@@ -119,6 +119,7 @@
     <Compile Include="Query\Absorptance.cs" />
     <Compile Include="Query\ClosedSpaces.cs" />
     <Compile Include="Query\ConnectedSpaceName.cs" />
+    <Compile Include="Query\FloorHeights.cs" />
     <Compile Include="Query\FrameFactor.cs" />
     <Compile Include="Query\NotClosedSpaces.cs" />
     <Compile Include="Query\PointsInSpaces.cs" />

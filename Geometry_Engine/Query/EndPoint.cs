@@ -48,6 +48,13 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        public static Point EndPoint(this Ellipse ellipse)
+        {
+            return ellipse.StartPoint();
+        }
+
+        /***************************************************/
+
         public static Point EndPoint(this Line line)
         {
             return line.End;
@@ -99,6 +106,17 @@ namespace BH.Engine.Geometry
         public static Point IEndPoint(this ICurve curve)
         {
             return EndPoint(curve as dynamic);
+        }
+
+
+        /***************************************************/
+        /**** Private Methods - Fallback                ****/
+        /***************************************************/
+
+        private static Point EndPoint(this ICurve curve)
+        {
+            Reflection.Compute.RecordError("EndPoint is not implemented for curve of type: " + curve.GetType().Name + ". ");
+            return null;
         }
 
         /***************************************************/
