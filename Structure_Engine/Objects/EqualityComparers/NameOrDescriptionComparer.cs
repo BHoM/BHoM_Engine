@@ -47,7 +47,7 @@ namespace BH.Engine.Structure
             if (Object.ReferenceEquals(prop1, prop2)) return true;
 
             //Check whether any of the compared objects is null.
-            if (Object.ReferenceEquals(prop1, null) || Object.ReferenceEquals(prop2, null))
+            if (prop1 == null || prop2 == null)
                 return false;
 
             //Return true if name or description string for both objects are the same
