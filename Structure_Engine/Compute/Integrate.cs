@@ -51,12 +51,7 @@ namespace BH.Engine.Structure
         {
             Dictionary<string, object> results = new Dictionary<string, object>();
 
-            BoundingBox box = new BoundingBox();
-
-            for (int i = 0; i < curves.Count; i++)
-            {
-                box += curves[i].IBounds();
-            }
+            BoundingBox box = Geometry.Query.Bounds(curves.Select(x => x.IBounds()).ToList());
 
             Point min = box.Min;
             Point max = box.Max;
