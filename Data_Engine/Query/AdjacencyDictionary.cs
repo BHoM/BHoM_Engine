@@ -25,6 +25,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.ComponentModel;
 using BH.oM.Reflection.Attributes;
+using BH.oM.Data;
 
 namespace BH.Engine.Data
 {
@@ -40,7 +41,7 @@ namespace BH.Engine.Data
             Dictionary<GraphNode<T>, List<GraphNode<T>>> adjacency = new Dictionary<GraphNode<T>, List<GraphNode<T>>>();
             foreach (GraphNode<T> node in graph.Nodes)
             {
-                List<GraphNode<T>> neighbours = graph.Neighbours(node);
+                List<GraphNode<T>> neighbours = graph.Neighbours(node, GraphLinkDirection.Both);
                 adjacency.Add(node, neighbours);
             }
             return adjacency;
