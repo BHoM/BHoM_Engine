@@ -50,6 +50,13 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        public static Point StartPoint(this Ellipse ellipse)
+        {
+            return ellipse.Centre + ellipse.Radius1 * ellipse.Axis1.Normalise();
+        }
+
+        /***************************************************/
+
         public static Point StartPoint(this Line line)
         {
             return line.Start;
@@ -99,6 +106,17 @@ namespace BH.Engine.Geometry
         public static Point IStartPoint(this ICurve curve)
         {
             return StartPoint(curve as dynamic);
+        }
+
+
+        /***************************************************/
+        /**** Private Methods - Fallback                ****/
+        /***************************************************/
+
+        private static Point StartPoint(this ICurve curve)
+        {
+            Reflection.Compute.RecordError("StartPoint is not implemented for curve of type: " + curve.GetType().Name + ". ");
+            return null;
         }
 
         /***************************************************/

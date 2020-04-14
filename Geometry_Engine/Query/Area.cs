@@ -24,11 +24,22 @@ using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace BH.Engine.Geometry
 {
     public static partial class Query
     {
+        /***************************************************/
+        /**** Public Methods - Interfaces               ****/
+        /***************************************************/
+
+        public static double IArea(this IGeometry geometry)
+        {
+            return Area(geometry as dynamic);
+        }
+
+
         /***************************************************/
         /**** Public Methods - Curves                   ****/
         /***************************************************/
@@ -161,6 +172,22 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        public static double Area(this PolySurface pSurf)
+        {
+            return pSurf.Surfaces.Sum(x => x.IArea());
+        }
+
+        /***************************************************/
+
+        public static double Area(this PlanarSurface pSurf)
+        {
+            double area = pSurf.ExternalBoundary.IArea();
+            area -= pSurf.InternalBoundaries.Sum(x => x.IArea());
+            return area;
+        }
+
+        /***************************************************/
+
         [NotImplemented]
         public static double Area(this NurbsSurface nurbs)
         {
@@ -182,12 +209,13 @@ namespace BH.Engine.Geometry
         
 
         /***************************************************/
-        /**** Public Methods - Interfaces               ****/
+        /**** Private Methods - Fallbacks               ****/
         /***************************************************/
 
-        public static double IArea(this IGeometry geometry)
+        private static double Area(this IGeometry geometry)
         {
-            return Area(geometry as dynamic);
+            Reflection.Compute.RecordError("Area for " + geometry.GetType().Name + " is not implemented.");
+            return double.NaN;
         }
 
         /***************************************************/

@@ -124,7 +124,7 @@ namespace BH.Engine.Reflection
                             if (type.Namespace != null && type.Namespace.StartsWith("BH.oM"))
                             {
                                 AddBHoMTypeToDictionary(type.FullName, type);
-                                if (!type.IsInterface)
+                                if (!type.IsInterface && !(type.IsAbstract && type.IsSealed)) // Avoid interfaces and static classes
                                     m_BHoMTypeList.Add(type);
                                 else
                                     m_InterfaceList.Add(type);
