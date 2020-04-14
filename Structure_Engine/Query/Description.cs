@@ -365,7 +365,7 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Generates a default description for the LinkConstraint based on its fixities where x denoted fixed and f denotes free.")]
-        [Input("release", "The LinkConstraint to get a default description for.")]
+        [Input("constraint", "The LinkConstraint to get a default description for.")]
         [Output("desc", "The generated description for the LinkConstraint.")]
         public static string Description(this LinkConstraint constraint)
         {
