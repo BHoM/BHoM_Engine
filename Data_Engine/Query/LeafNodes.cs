@@ -41,14 +41,13 @@ namespace BH.Engine.Data
         {
             Dictionary<GraphNode<T>, int> depthDictionary = graph.DepthDictionary(startNode);
             List<GraphNode<T>> leafnodes = new List<GraphNode<T>>();
-
+            Dictionary<GraphNode<T>, List<GraphNode<T>>> adjacency = graph.AdjacencyDictionary();
             foreach (GraphNode<T> node in graph.Nodes)
             {
-                List<GraphNode<T>> neighbours = Neighbours(graph, node, GraphLinkDirection.Both);
                 //its a leaf if no neighbour is deeper in the graph
                 int nodeDepth = depthDictionary[node];
                 bool leaf = true;
-                foreach (GraphNode<T> n in neighbours)
+                foreach (GraphNode<T> n in adjacency[node])
                     if (depthDictionary[n] > nodeDepth)
                         leaf = false;
                 if (leaf) leafnodes.Add(node);
