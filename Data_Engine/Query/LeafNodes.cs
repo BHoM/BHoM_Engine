@@ -39,18 +39,30 @@ namespace BH.Engine.Data
         [Input("startNode", "The graph node used to determine depth in the graph of all nodes")]
         public static List<GraphNode<T>> LeafNodes<T>(this Graph<T> graph, GraphNode<T> startNode)
         {
-            Dictionary<GraphNode<T>, int> depthDictionary = graph.DepthDictionary(startNode);
             List<GraphNode<T>> leafnodes = new List<GraphNode<T>>();
             Dictionary<GraphNode<T>, List<GraphNode<T>>> adjacency = graph.AdjacencyDictionary();
+            Dictionary<GraphNode<T>, int> depthDictionary = DepthDictionary(adjacency, startNode);
             foreach (GraphNode<T> node in graph.Nodes)
             {
                 //its a leaf if no neighbour is deeper in the graph
-                int nodeDepth = depthDictionary[node];
-                bool leaf = true;
-                foreach (GraphNode<T> n in adjacency[node])
-                    if (depthDictionary[n] > nodeDepth)
-                        leaf = false;
-                if (leaf) leafnodes.Add(node);
+                try
+                {
+                    int nodeDepth = depthDictionary[node];
+                    bool leaf = true;
+                    foreach (GraphNode<T> n in adjacency[node])
+                    {
+                        if (depthDictionary[n] > nodeDepth)
+                        {
+                            leaf = false;
+                            break;
+                        }
+                    }         
+                    if (leaf) leafnodes.Add(node);
+                }
+                catch
+                {
+                    int b = 0;
+                }
             }
 
             return leafnodes;
