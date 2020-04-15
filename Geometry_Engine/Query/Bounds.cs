@@ -399,9 +399,9 @@ namespace BH.Engine.Geometry
                 },
                 Max = new Point
                 {
-                    X = boxes.Max(x => x.Min.X),
-                    Y = boxes.Max(x => x.Min.Y),
-                    Z = boxes.Max(x => x.Min.Z)
+                    X = boxes.Max(x => x.Max.X),
+                    Y = boxes.Max(x => x.Max.Y),
+                    Z = boxes.Max(x => x.Max.Z)
                 }
             };
         }
