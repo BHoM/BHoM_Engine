@@ -50,7 +50,7 @@ namespace BH.Engine.Diffing
         {
             Diff diff = Compute.Diffing(pastRevision.Objects, currentRevision.Objects, diffConfig);
 
-            return new Delta(pastRevision.StreamId, diff, pastRevision.RevisionId, currentRevision.RevisionId, comment);
+            return new Delta(pastRevision.StreamId, diff, pastRevision.RevisionId, currentRevision.RevisionId, DateTime.UtcNow.Ticks, m_Author, comment);
         }
 
         // ----------------------------------------------- //
@@ -64,7 +64,7 @@ namespace BH.Engine.Diffing
         {
             Diff diff = Compute.Diffing(null, revision.Objects, diffConfig);
            
-            return new Delta(revision.StreamId, diff, revision.RevisionId, null, comment);
+            return new Delta(revision.StreamId, diff, revision.RevisionId, new Guid(), DateTime.UtcNow.Ticks, m_Author, comment);
         }
 
         [Description("Returns a Delta object, containing all the input objects wrapped in a Revision. Also called `Revision-Based Delta`.")]
@@ -81,6 +81,8 @@ namespace BH.Engine.Diffing
         }
 
         // ----------------------------------------------- //
+
+        private static string m_Author = Environment.UserDomainName + "/" + Environment.UserName;
 
     }
 }

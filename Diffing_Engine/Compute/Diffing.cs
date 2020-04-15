@@ -55,7 +55,7 @@ namespace BH.Engine.Diffing
             List<IBHoMObject> readObjs = previousObjects.ToList();
 
             // Make dictionary with object hashes to speed up the next lookups
-            Dictionary<string, IBHoMObject> readObjs_dict = readObjs.ToDictionary(obj => obj.GetHashFragment().Hash, obj => obj);
+            Dictionary<string, IBHoMObject> readObjs_dict = readObjs.ToDictionary(obj => obj.GetHashFragment().CurrentHash, obj => obj);
 
             // Dispatch the objects: new, modified or old
             List<IBHoMObject> newObjs = new List<IBHoMObject>();
@@ -74,14 +74,14 @@ namespace BH.Engine.Diffing
                     newObjs.Add(obj); // It's a new object
                 }
 
-                else if (hashFragm.PreviousHash == hashFragm.Hash)
+                else if (hashFragm.PreviousHash == hashFragm.CurrentHash)
                 {
                     // It's NOT been modified
                     if (diffConfig.StoreUnchangedObjects)
                         unChanged.Add(obj);
                 }
 
-                else if (hashFragm.PreviousHash != hashFragm.Hash)
+                else if (hashFragm.PreviousHash != hashFragm.CurrentHash)
                 {
                     modifiedObjs.Add(obj); // It's been modified
 
@@ -95,7 +95,7 @@ namespace BH.Engine.Diffing
 
                         var differentProps = Query.DifferentProperties(obj, oldObjState, diffConfig);
 
-                        objModifiedProps.Add(hashFragm.Hash, differentProps);
+                        objModifiedProps.Add(hashFragm.CurrentHash, differentProps);
                     }
                 }
                 else

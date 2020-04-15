@@ -33,6 +33,7 @@ using BH.oM.Diffing;
 using BH.oM.Base;
 
 using KellermanSoftware.CompareNetObjects;
+using System.Reflection;
 
 namespace BH.Engine.Diffing
 {
@@ -55,12 +56,13 @@ namespace BH.Engine.Diffing
             comparer.Config.DoublePrecision = diffConfig.NumericTolerance;
 
             if (diffConfig.PropertiesToIgnore.Contains("CustomData"))
-            {
                 comparer.Config.MembersToIgnore.Add("CustomData");
-            }
 
             if (diffConfig.PropertiesToIgnore.Contains("BHoM_Guid") || diffConfig.PropertiesToIgnore.Contains("Guid"))
                 comparer.Config.TypesToIgnore.Add(typeof(Guid));
+
+            // Never include the changes in HistoryFragment.
+            comparer.Config.TypesToIgnore.Add(typeof(HashFragment));
 
             ComparisonResult result = comparer.Compare(obj1, obj2);
             dict = result.Differences.ToDictionary(diff => diff.PropertyName, diff => new Tuple<object, object>(diff.Object1, diff.Object2));
