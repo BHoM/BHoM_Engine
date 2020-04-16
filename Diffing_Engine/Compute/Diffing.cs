@@ -42,17 +42,28 @@ namespace BH.Engine.Diffing
     public static partial class Compute
     {
         [Description("Dispatch objects in two sets into the ones exclusive to one set, the other, or both.")]
-        [Input("previousObjects", "A set of object representing a previous revision")]
+        [Input("pastObjects", "A set of object representing a previous revision")]
         [Input("currentObjects", "A set of object representing a new Revision")]
         [Input("diffConfig", "Sets configs such as properties to be ignored in the diffing, or enable/disable property-by-property diffing.")]
-        public static Diff Diffing(IEnumerable<IBHoMObject> previousObjects, IEnumerable<IBHoMObject> currentObjects, DiffConfig diffConfig = null)
+        public static Diff Diffing(IEnumerable<IBHoMObject> pastObjects, IEnumerable<IBHoMObject> currentObjects, DiffConfig diffConfig = null, string customdataIdName = null)
         {
             // Set configurations if diffConfig is null
             diffConfig = diffConfig == null ? new DiffConfig() : diffConfig;
 
+            // Check if objects have hashfragment.
+            // If they don't, try to rely on something else (e.g. their CustomData - SoftwareId).
+            if (pastObjects.Select(o => o.GetHashFragment()).Where(o => o != null).Count() < pastObjects.Count())
+                if (customdataIdName == null)
+                {
+                    BH.Engine.Reflection.Compute.RecordError("The objects did not pass through a Diffing Revision.\nIn order to do the Diffing, specify a CustomData key where to find the ID to be used (e.g. Revit_elementId)");
+                    return null;
+                }
+                else
+                    return DiffingWithCustomId(pastObjects, currentObjects, customdataIdName, diffConfig);
+        
             // Take the Revision's objects
             List<IBHoMObject> currentObjs = currentObjects.ToList();
-            List<IBHoMObject> readObjs = previousObjects.ToList();
+            List<IBHoMObject> readObjs = pastObjects.ToList();
 
             // Make dictionary with object hashes to speed up the next lookups
             Dictionary<string, IBHoMObject> readObjs_dict = readObjs.ToDictionary(obj => obj.GetHashFragment().CurrentHash, obj => obj);
@@ -119,7 +130,7 @@ namespace BH.Engine.Diffing
         }
 
 
-        [Description("Dispatch objects in two sets into the ones exclusive to one set, the other, or both.")]
+        [Description("Attempts the diffing for objects of mixed types, also non-BHoMObjects.")]
         [Input("pastObjects", "A set of object representing a past revision")]
         [Input("currentObjects", "A set of object representing a newer Revision")]
         [Input("diffConfig", "Sets configs such as properties to be ignored in the diffing, or enable/disable property-by-property diffing.")]
@@ -159,6 +170,89 @@ namespace BH.Engine.Diffing
             return finalDiff;
         }
 
+
+        private static Diff DiffingWithCustomId(IEnumerable<IBHoMObject> pastObjects, IEnumerable<IBHoMObject> currentObjects, string customdataIdName, DiffConfig diffConfig = null)
+        {
+            // Here we are in the scenario where the objects do not have an HashFragment,
+            // but we assume they an identifier in CustomData that let us identify the objects
+
+            // Set configurations if diffConfig is null
+            diffConfig = diffConfig == null ? new DiffConfig() : diffConfig;
+
+            List<IBHoMObject> currentObjs = currentObjects.ToList();
+            List<IBHoMObject> pastObjs = pastObjects.ToList();
+
+            // Make dictionary with object ids to speed up the next lookups
+            Dictionary<string, IBHoMObject> currObjs_dict = currentObjs.ToDictionary(obj => obj.CustomData[customdataIdName].ToString(), obj => obj);
+            Dictionary<string, IBHoMObject> pastObjs_dict = pastObjs.ToDictionary(obj => obj.CustomData[customdataIdName].ToString(), obj => obj); 
+
+            // Dispatch the objects: new, modified or deleted
+            List<IBHoMObject> newObjs = new List<IBHoMObject>();
+            List<IBHoMObject> modifiedObjs = new List<IBHoMObject>();
+            List<IBHoMObject> deletedObjs = new List<IBHoMObject>();
+            List<IBHoMObject> unChanged = new List<IBHoMObject>();
+
+            var objModifiedProps = new Dictionary<string, Dictionary<string, Tuple<object, object>>>();
+
+            foreach (var kv_curr in currObjs_dict)
+            {
+                IBHoMObject currentObj = kv_curr.Value;
+                string currentObjID = kv_curr.Key;
+
+                // Try to find an object between the pastObjs that has the same ID of the current one.
+                IBHoMObject correspondingObj = null;
+                pastObjs_dict.TryGetValue(kv_curr.Key, out correspondingObj);
+
+                // If none is found, the current object is new.
+                if (correspondingObj == null)
+                {
+                    newObjs.Add(kv_curr.Value);
+                    continue;
+                }
+
+                // Otherwise, the current object existed in the past set.
+
+                // Compute the hashes to find if they are different
+                string currentHash = Compute.DiffingHash(currentObj, diffConfig);
+                string pastHash = Compute.DiffingHash(correspondingObj, diffConfig);
+
+                if (pastHash == currentHash)
+                {
+                    // It's NOT been modified
+                    if (diffConfig.StoreUnchangedObjects)
+                        unChanged.Add(currentObj);
+
+                    continue;
+                }
+
+                if (pastHash != currentHash)
+                {
+                    // It's been modified
+                    modifiedObjs.Add(currentObj); 
+
+                    if (diffConfig.EnablePropertyDiffing)
+                    {
+                        // Determine changed properties
+                        var differentProps = Query.DifferentProperties(currentObj, correspondingObj, diffConfig);
+
+                        objModifiedProps.Add(currentObjID, differentProps);
+                    }
+
+                    continue;
+                }
+                else
+                    throw new Exception("Could not find hash information to perform Diffing on some objects.");
+            }
+
+            // If no modified property was found, set the field to null (otherwise will get empty list)
+            objModifiedProps = objModifiedProps.Count == 0 ? null : objModifiedProps;
+
+            // All ReadObjs that cannot be found by id in the previousHash of the CurrentObjs are toBeDeleted
+            deletedObjs = pastObjs_dict.Keys.Except(currObjs_dict.Keys)
+                .Where(k => pastObjs_dict.ContainsKey(k)).Select(k => pastObjs_dict[k]).ToList();
+
+            return new Diff(newObjs, deletedObjs, modifiedObjs, diffConfig, objModifiedProps, unChanged);
+        }
     }
 }
 
