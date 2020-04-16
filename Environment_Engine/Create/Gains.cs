@@ -69,10 +69,9 @@ namespace BH.Engine.Environment
         [Deprecated("3.0", "Deprecated in favour of default create components produced by BHoM")]
         public static Infiltration Infiltration(double sensible = 0.0, double latent = 0.0, Profile profile = null, string name = "")
         {
+            BH.Engine.Reflection.Compute.RecordWarning("Infiltration no longer takes sensible and latent inputs. Recommend upgrading to new component.");
             return new Infiltration
             {
-                Sensible = sensible,
-                Latent = latent,
                 Profile = profile,
                 Name = name,
             };
