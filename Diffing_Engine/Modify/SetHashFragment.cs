@@ -73,7 +73,7 @@ namespace BH.Engine.Diffing
 
             HashFragment existingFragm = obj_cloned.GetHashFragment();
 
-            obj_cloned.Fragments.AddOrReplace(new HashFragment(hash, existingFragm?.Hash));
+            obj_cloned.Fragments.AddOrReplace(new HashFragment(hash, existingFragm?.CurrentHash));
 
             return obj_cloned;
         }

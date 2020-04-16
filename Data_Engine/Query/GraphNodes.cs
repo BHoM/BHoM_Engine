@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -20,30 +20,24 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Base;
 using BH.oM.Data.Collections;
-using BH.oM.Diffing;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Security.Cryptography;
-using System.Reflection;
-using BH.Engine.Serialiser;
-using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
+using BH.oM.Reflection.Attributes;
+using System.Linq;
 
-namespace BH.Engine.Diffing
+namespace BH.Engine.Data
 {
-    public static partial class Modify
+    public static partial class Query
     {
-        [Description("Removes duplicates from a collection of objects. The comparison is made through their Diffing Hash.")]
-        [Input("objects", "Collection of objects whose duplicates have to be removed. If they don't already have an Hash assigned, it will be calculated.")]
-        public static IEnumerable<T> RemoveDuplicatesByHash<T>(IEnumerable<T> objects) where T : IBHoMObject
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
+        [Description("Finds the nodes of a graph with value that matches the input value")]
+        [Input("value", "The value to match")]
+        public static List<GraphNode<T>> GraphNodes<T>(this Graph<T> graph, T value)
         {
-            return objects.GroupBy(obj => obj.GetHashFragment().CurrentHash).Select(gr => gr.First()).ToList();
+            return graph.Nodes.FindAll(x => x.Value.Equals(value));
         }
     }
 }
-

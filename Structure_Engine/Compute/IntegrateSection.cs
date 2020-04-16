@@ -94,9 +94,7 @@ namespace BH.Engine.Structure
                 area += Math.Abs(areaTemp) * depth[i];
             }
 
-            BoundingBox box = new BoundingBox();
-            for (int i = 0; i < curvesZ.Count; i++)
-                box += curvesZ[i].IBounds();
+            BoundingBox box = Geometry.Query.Bounds(curvesZ.Select(x => x.IBounds()).ToList());
             
             Point min = box.Min;
             Point max = box.Max;

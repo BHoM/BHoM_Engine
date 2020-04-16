@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -20,38 +20,45 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Data;
-using BH.oM.Data.Collections;
 using System.Collections.Generic;
+using BH.oM.Data.Collections;
 using System.Linq;
+using System.ComponentModel;
+using BH.oM.Reflection.Attributes;
+using BH.oM.Data;
 
 namespace BH.Engine.Data
 {
     public static partial class Query
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /****           Public Methods                  ****/
         /***************************************************/
-
-        public static List<GraphNode<T>> Neighbours<T>(this Graph<T> graph, GraphNode<T> node,GraphLinkDirection graphLinkDirection = GraphLinkDirection.Outgoing)
+        [Description("Extracts a list of leaf nodes from a graph, leaf nodes have no neighbours deeper in the graph")]
+        [Input("graph", "The graph to extract the leaf nodes from")]
+        [Input("startNode", "The graph node used to determine depth in the graph of all nodes")]
+        public static List<GraphNode<T>> LeafNodes<T>(this Graph<T> graph, GraphNode<T> startNode)
         {
-            List<GraphNode<T>> neighbours = new List<GraphNode<T>>();
-            switch (graphLinkDirection)
+            List<GraphNode<T>> leafnodes = new List<GraphNode<T>>();
+            Dictionary<GraphNode<T>, List<GraphNode<T>>> adjacency = graph.AdjacencyDictionary();
+            Dictionary<GraphNode<T>, int> depthDictionary = DepthDictionary(adjacency, startNode);
+            foreach (GraphNode<T> node in graph.Nodes)
             {
-                case GraphLinkDirection.Both:
-                    neighbours.AddRange(graph.Links.Where(x => x.StartNode == node).Select(x => x.EndNode).ToList());
-                    neighbours.AddRange(graph.Links.Where(x => x.EndNode == node).Select(x => x.StartNode).ToList());
-                    break;
-                case GraphLinkDirection.Incoming:
-                    neighbours.AddRange(graph.Links.Where(x => x.EndNode == node).Select(x => x.StartNode).ToList());
-                    break;
-                case GraphLinkDirection.Outgoing:
-                    neighbours.AddRange(graph.Links.Where(x => x.StartNode == node).Select(x => x.EndNode).ToList());
-                    break;
+                //its a leaf if no neighbour is deeper in the graph
+                int nodeDepth = depthDictionary[node];
+                bool leaf = true;
+                foreach (GraphNode<T> n in adjacency[node])
+                {
+                    if (depthDictionary[n] > nodeDepth)
+                    {
+                        leaf = false;
+                        break;
+                    }
+                }         
+                if (leaf) leafnodes.Add(node);
             }
-            return neighbours.Distinct().ToList();
+
+            return leafnodes;
         }
-        /***************************************************/
     }
 }
-

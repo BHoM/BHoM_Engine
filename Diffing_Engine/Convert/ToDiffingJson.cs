@@ -35,7 +35,8 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
-
+using System.Text.RegularExpressions;
+using System.Diagnostics;
 
 namespace BH.Engine.Diffing
 {
@@ -45,37 +46,62 @@ namespace BH.Engine.Diffing
         ///**** Public Methods                            ****/
         ///***************************************************/
 
-        public static string ToDiffingJson(this object obj, PropertyInfo[] fieldsToNullify = null)
+        public static string ToDiffingJson(this object obj, List<string> fieldsToRemove)
         {
-            List<PropertyInfo> propList = fieldsToNullify.ToList();
-            if (propList == null && propList.Count == 0)
+            if (fieldsToRemove == null && fieldsToRemove.Count == 0)
                 return BH.Engine.Serialiser.Convert.ToJson(obj);
 
-            List<string> propNames = new List<string>();
-            propList.ForEach(prop => propNames.Add(prop.Name));
-            return ToDiffingJson(obj, propNames);
-        }
-        
-        ///***************************************************/
-
-        public static string ToDiffingJson(this object obj, List<string> fieldsToNullify)
-        {
-            if (fieldsToNullify == null && fieldsToNullify.Count == 0)
-                return BH.Engine.Serialiser.Convert.ToJson(obj);
-
-            var jObject = JsonConvert.DeserializeObject<JObject>(BH.Engine.Serialiser.Convert.ToJson(obj));
-
+            string jsonObj = JsonConvert.SerializeObject(obj);
+           
             // Sets fields to be ignored as null, without altering the tree.
-            fieldsToNullify.ForEach(propName =>
-            jObject.Properties()
-                .Where(attr => attr.Name.StartsWith(propName))
-                .ToList()
-                .ForEach(attr => attr.Value = null)
-            );
-            return jObject.ToString();
+            List<Regex> regexes = new List<Regex>();
+
+            foreach (string fieldName in fieldsToRemove)
+                regexes.Add(new Regex(fieldName, RegexOptions.Compiled));
+
+            return RemoveFields(jsonObj, regexes);
         }
 
         ///***************************************************/
+
+
+        private static string RemoveFields(string json, IEnumerable<Regex> regexes)
+        {
+            JToken token = JToken.Parse(json);
+            RemoveFields(token, regexes);
+            return token.ToString();
+        }
+
+        private static void RemoveFields(JToken token, IEnumerable<Regex> regexes)
+        {
+            if (token.Type == JTokenType.Object)
+            {
+                foreach (JProperty prop in token.Children<JProperty>().ToList())
+                {
+                    bool removed = false;
+                    foreach (Regex regex in regexes)
+                    {
+                        if (regex.IsMatch(prop.Name))
+                        {
+                            prop.Remove();
+                            removed = true;
+                            break;
+                        }
+                    }
+                    if (!removed)
+                    {
+                        RemoveFields(prop.Value, regexes);
+                    }
+                }
+            }
+            else if (token.Type == JTokenType.Array)
+            {
+                foreach (JToken child in token.Children())
+                {
+                    RemoveFields(child, regexes);
+                }
+            }
+        }
 
     }
 }
