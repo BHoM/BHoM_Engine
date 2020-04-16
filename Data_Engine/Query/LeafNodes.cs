@@ -45,24 +45,17 @@ namespace BH.Engine.Data
             foreach (GraphNode<T> node in graph.Nodes)
             {
                 //its a leaf if no neighbour is deeper in the graph
-                try
+                int nodeDepth = depthDictionary[node];
+                bool leaf = true;
+                foreach (GraphNode<T> n in adjacency[node])
                 {
-                    int nodeDepth = depthDictionary[node];
-                    bool leaf = true;
-                    foreach (GraphNode<T> n in adjacency[node])
+                    if (depthDictionary[n] > nodeDepth)
                     {
-                        if (depthDictionary[n] > nodeDepth)
-                        {
-                            leaf = false;
-                            break;
-                        }
-                    }         
-                    if (leaf) leafnodes.Add(node);
-                }
-                catch
-                {
-                    int b = 0;
-                }
+                        leaf = false;
+                        break;
+                    }
+                }         
+                if (leaf) leafnodes.Add(node);
             }
 
             return leafnodes;
