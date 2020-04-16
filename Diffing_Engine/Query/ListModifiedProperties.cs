@@ -37,7 +37,7 @@ namespace BH.Engine.Diffing
     public static partial class Query
     {
         
-        [MultiOutput(0, "objectHashes", "Hashes of the objects which have some modified properties.")]
+        [MultiOutput(0, "identifier", "Identifier of the objects which have some modified properties.\nWhen using Revisions, this is the Hash of the objects. When Diffing using CustomData, this is the specified Id.")]
         [MultiOutput(1, "propNames", "List of properties changed per each object.")]
         [MultiOutput(2, "value_Current", "List of current values of the properties.")]
         [MultiOutput(3, "value_Past", "List of past values of the properties.")]
