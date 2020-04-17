@@ -25,6 +25,7 @@ using BH.oM.Geometry.CoordinateSystem;
 using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace BH.Engine.Geometry
 {
@@ -382,6 +383,27 @@ namespace BH.Engine.Geometry
             }
 
             return new BoundingBox { Min = new Point { X = minX, Y = minY, Z = minZ }, Max = new Point { X = maxX, Y = maxY, Z = maxZ } };
+        }
+
+        /***************************************************/
+
+        public static BoundingBox Bounds(this List<BoundingBox> boxes)
+        {
+            return new BoundingBox
+            {
+                Min = new Point
+                {
+                    X = boxes.Min(x => x.Min.X),
+                    Y = boxes.Min(x => x.Min.Y),
+                    Z = boxes.Min(x => x.Min.Z)
+                },
+                Max = new Point
+                {
+                    X = boxes.Max(x => x.Max.X),
+                    Y = boxes.Max(x => x.Max.Y),
+                    Z = boxes.Max(x => x.Max.Z)
+                }
+            };
         }
 
         /***************************************************/

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -20,10 +20,12 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Data;
 using BH.oM.Data.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.ComponentModel;
+using BH.oM.Reflection.Attributes;
+using BH.oM.Data;
 
 namespace BH.Engine.Data
 {
@@ -32,26 +34,17 @@ namespace BH.Engine.Data
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-
-        public static List<GraphNode<T>> Neighbours<T>(this Graph<T> graph, GraphNode<T> node,GraphLinkDirection graphLinkDirection = GraphLinkDirection.Outgoing)
+        [Description("Gets the adjacency dictionary of a graph, each key value pair in the resulting dictionary is in the form <node, neighbours>")]
+        [Input("graph", "The graph to extract the adjacency dictionary from")]
+        public static Dictionary<GraphNode<T>, List<GraphNode<T>>> AdjacencyDictionary<T>(this Graph<T> graph)
         {
-            List<GraphNode<T>> neighbours = new List<GraphNode<T>>();
-            switch (graphLinkDirection)
+            Dictionary<GraphNode<T>, List<GraphNode<T>>> adjacency = new Dictionary<GraphNode<T>, List<GraphNode<T>>>();
+            foreach (GraphNode<T> node in graph.Nodes)
             {
-                case GraphLinkDirection.Both:
-                    neighbours.AddRange(graph.Links.Where(x => x.StartNode == node).Select(x => x.EndNode).ToList());
-                    neighbours.AddRange(graph.Links.Where(x => x.EndNode == node).Select(x => x.StartNode).ToList());
-                    break;
-                case GraphLinkDirection.Incoming:
-                    neighbours.AddRange(graph.Links.Where(x => x.EndNode == node).Select(x => x.StartNode).ToList());
-                    break;
-                case GraphLinkDirection.Outgoing:
-                    neighbours.AddRange(graph.Links.Where(x => x.StartNode == node).Select(x => x.EndNode).ToList());
-                    break;
+                List<GraphNode<T>> neighbours = graph.Neighbours(node, GraphLinkDirection.Both);
+                adjacency.Add(node, neighbours);
             }
-            return neighbours.Distinct().ToList();
+            return adjacency;
         }
-        /***************************************************/
     }
 }
-

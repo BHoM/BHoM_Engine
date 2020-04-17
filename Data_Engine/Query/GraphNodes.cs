@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -20,9 +20,10 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Data;
 using BH.oM.Data.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
+using BH.oM.Reflection.Attributes;
 using System.Linq;
 
 namespace BH.Engine.Data
@@ -32,26 +33,11 @@ namespace BH.Engine.Data
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-
-        public static List<GraphNode<T>> Neighbours<T>(this Graph<T> graph, GraphNode<T> node,GraphLinkDirection graphLinkDirection = GraphLinkDirection.Outgoing)
+        [Description("Finds the nodes of a graph with value that matches the input value")]
+        [Input("value", "The value to match")]
+        public static List<GraphNode<T>> GraphNodes<T>(this Graph<T> graph, T value)
         {
-            List<GraphNode<T>> neighbours = new List<GraphNode<T>>();
-            switch (graphLinkDirection)
-            {
-                case GraphLinkDirection.Both:
-                    neighbours.AddRange(graph.Links.Where(x => x.StartNode == node).Select(x => x.EndNode).ToList());
-                    neighbours.AddRange(graph.Links.Where(x => x.EndNode == node).Select(x => x.StartNode).ToList());
-                    break;
-                case GraphLinkDirection.Incoming:
-                    neighbours.AddRange(graph.Links.Where(x => x.EndNode == node).Select(x => x.StartNode).ToList());
-                    break;
-                case GraphLinkDirection.Outgoing:
-                    neighbours.AddRange(graph.Links.Where(x => x.StartNode == node).Select(x => x.EndNode).ToList());
-                    break;
-            }
-            return neighbours.Distinct().ToList();
+            return graph.Nodes.FindAll(x => x.Value.Equals(value));
         }
-        /***************************************************/
     }
 }
-
