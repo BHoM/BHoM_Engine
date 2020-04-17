@@ -48,6 +48,41 @@ namespace BH.Engine.Structure
         {
             Dictionary<string, double> results = new Dictionary<string, double>();
 
+            if (curves.Count == 0)
+            {
+                #region assing zero to everything
+                results["Area"] = 0;
+
+                results["CentreZ"] = 0;
+                results["CentreY"] = 0;
+
+                results["TotalWidth"] = 0;
+                results["TotalDepth"] = 0;
+
+                results["Iy"] = 0;
+                results["Iz"] = 0;
+
+                results["Wply"] = 0;
+                results["Wplz"] = 0;
+
+                results["Rgy"] = 0;
+                results["Rgz"] = 0;
+
+                results["Vy"] = 0;
+                results["Vpy"] = 0;
+                results["Vz"] = 0;
+                results["Vpz"] = 0;
+
+                results["Welz"] = 0;
+                results["Wely"] = 0;
+
+                results["Asy"] = 0;
+                results["Asz"] = 0;
+
+                #endregion 
+                return results;
+            }
+
             List<PolyCurve> curvesZ = Geometry.Compute.IJoin(curves);
 
             foreach (PolyCurve c in curvesZ)
