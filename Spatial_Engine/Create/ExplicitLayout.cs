@@ -26,8 +26,10 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using BH.oM.Reflection.Attributes;
 using BH.oM.Base;
+using BH.oM.Geometry;
+using BH.oM.Spatial.Layouts;
 
-namespace BH.Engine.Spatial.Create //`Create` is a partial class. Remove any reference to `Create` from namespace.
+namespace BH.Engine.Spatial
 {
     public static partial class Create
     {
@@ -35,12 +37,18 @@ namespace BH.Engine.Spatial.Create //`Create` is a partial class. Remove any ref
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("")]
-        [Input("", "")]
-        [Output("", "")]
-        public static void ExplicitLayout()
+        [Description("Creates an Explicit layout based on a free-form set of Points. Points not in the global XY-plane will get projected to it.")]
+        [InputFromProperty("points")]
+        [Output("expLayout", "Created explicit layout.")]
+        public static ExplicitLayout ExplicitLayout(IEnumerable<Point> points)
         {
-            throw new NotImplementedException();
+            IEnumerable<Point> xyPts = points;
+            if (points.Any(x => x.Z != 0))
+            {
+                xyPts = points.Select(pt => new Point() { X = pt.X, Y = pt.Y });
+                Engine.Reflection.Compute.RecordWarning("Points have been projected to the global XY-plane");
+            }
+            return new ExplicitLayout(xyPts);
         }
 
         /***************************************************/
