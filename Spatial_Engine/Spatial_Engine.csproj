@@ -51,6 +51,9 @@
       <HintPath>..\..\BHoM\Build\Reflection_oM.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Spatial_oM">
+      <HintPath>..\..\BHoM\Build\Spatial_oM.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -62,6 +65,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Compute\DistributeOutlines.cs" />
+    <Compile Include="Create\ExplicitLayout.cs" />
     <Compile Include="Query\HasMergeablePropertiesWith.cs" />
     <Compile Include="Query\InternalOutlineCurves.cs" />
     <Compile Include="Create\NewElement0D.cs" />
