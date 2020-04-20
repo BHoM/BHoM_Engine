@@ -55,7 +55,8 @@ namespace BH.Engine.Diffing
             if (pastObjects.Select(o => o.GetHashFragment()).Where(o => o != null).Count() < pastObjects.Count())
                 if (customdataIdName == null)
                 {
-                    BH.Engine.Reflection.Compute.RecordError("The objects did not pass through a Diffing Revision.\nIn order to do the Diffing, specify a CustomData key where to find the ID to be used (e.g. Revit_elementId)");
+                    BH.Engine.Reflection.Compute.RecordError("The objects did not pass through a Diffing Revision." +
+                        "\nIn order to do the Diffing, specify a CustomData key where to find the ID to be used (e.g. Revit_elementId).");
                     return null;
                 }
                 else
@@ -169,7 +170,6 @@ namespace BH.Engine.Diffing
 
             return finalDiff;
         }
-
 
         private static Diff DiffingWithCustomId(IEnumerable<IBHoMObject> pastObjects, IEnumerable<IBHoMObject> currentObjects, string customdataIdName, DiffConfig diffConfig = null)
         {
