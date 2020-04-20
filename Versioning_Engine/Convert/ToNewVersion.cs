@@ -129,8 +129,8 @@ namespace BH.Engine.Versioning
             // Create the process for the upgrader
             Process process = new Process();
             process.StartInfo = new ProcessStartInfo(processFile, pipeName);
-            process.StartInfo.UseShellExecute = false;
-            process.StartInfo.CreateNoWindow = true;
+            //process.StartInfo.UseShellExecute = false;
+            //process.StartInfo.CreateNoWindow = true;
             bool ok = process.Start();                
 
             // Waiting for pipe to connect
