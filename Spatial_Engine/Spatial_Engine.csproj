@@ -92,6 +92,7 @@
     <Compile Include="Query\OutlineCurve.cs" />
     <Compile Include="Query\OutlineElements1D.cs" />
     <Compile Include="Query\Geometry.cs" />
+    <Compile Include="Query\PointLayout.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
