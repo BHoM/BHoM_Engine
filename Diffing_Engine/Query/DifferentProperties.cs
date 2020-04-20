@@ -42,7 +42,7 @@ namespace BH.Engine.Diffing
         [Description("Checks two BHoMObjects property by property and returns the differences")]
         [Input("diffConfig", "Config to be used for the comparison. Can set numeric tolerance, wheter to check the guid, if custom data should be ignored and if any additional properties should be ignored")]
         [Output("Dictionary whose key is the name of the property, and value is a tuple with its value in obj1 and obj2.")]
-        public static Dictionary<string, Tuple<object, object>> DifferentProperties(this IBHoMObject obj1, IBHoMObject obj2, DiffConfig diffConfig = null)
+        public static Dictionary<string, Tuple<object, object>> DifferentProperties(this object obj1, object obj2, DiffConfig diffConfig = null)
         {
             var dict = new Dictionary<string, Tuple<object, object>>();
 
@@ -54,9 +54,6 @@ namespace BH.Engine.Diffing
             comparer.Config.MaxDifferences = 1000;
             comparer.Config.MembersToIgnore = diffConfig.PropertiesToIgnore;
             comparer.Config.DoublePrecision = diffConfig.NumericTolerance;
-
-            if (diffConfig.PropertiesToIgnore.Contains("CustomData"))
-                comparer.Config.MembersToIgnore.Add("CustomData");
 
             if (diffConfig.PropertiesToIgnore.Contains("BHoM_Guid") || diffConfig.PropertiesToIgnore.Contains("Guid"))
                 comparer.Config.TypesToIgnore.Add(typeof(Guid));
