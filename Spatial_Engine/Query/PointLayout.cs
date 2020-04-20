@@ -70,7 +70,9 @@ namespace BH.Engine.Spatial
                         if (divisions[i] == 0)
                             continue;
 
-                        int div = divisions[i] + 1; //Add one to make sure point not at end
+                        //Sample points always includes start and end (which are removed later) and gives back 1 more point than divisions.
+                        //To make sure point(s) on the middle of the are extracted, division is increased by 1, which should return 2 more points than divisions asked for.
+                        int div = divisions[i] + 1; 
 
                         List<Point> subPts = subCurves[i].SamplePoints(div);
 
@@ -86,7 +88,19 @@ namespace BH.Engine.Spatial
             }
             else
             {
-                return hostRegionCurve.SamplePoints(layout2D.NumberOfPoints - 1);
+                int divisions = layout2D.NumberOfPoints;
+                bool closed = hostRegionCurve.IIsClosed();
+
+                if (!closed)
+                    divisions--;
+
+                List<Point> pts = hostRegionCurve.SamplePoints(divisions);
+
+                //Remove duplicate endpoint
+                if (closed)
+                    pts.RemoveAt(pts.Count - 1);
+
+                return pts;
             }
         }
 
@@ -162,16 +176,14 @@ namespace BH.Engine.Spatial
 
         private static List<int> DistributeDivisions(IEnumerable<ICurve> curves, int nbPoints)
         {
-            List<ICurve> curveList = curves.ToList();
             List<double> lengths = curves.Select(x => x.ILength()).ToList();
             double fullLength = lengths.Sum();
-
 
             List<int> divs = new List<int>();
             List<double> remaining = new List<double>();
 
             //Check how many division points to extract from each curve, based on length ratio of the curve in relation to the length of all curves
-            for (int i = 0; i < curveList.Count; i++)
+            for (int i = 0; i < lengths.Count; i++)
             {
                 double pointRatio = lengths[i] / fullLength * nbPoints;
                 int fullCurveDivs = (int)Math.Floor(pointRatio);
