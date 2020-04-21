@@ -41,8 +41,9 @@ namespace BH.Engine.Spatial
         [InputFromProperty("numberOfPoints")]
         [InputFromProperty("direction")]
         [InputFromProperty("offset")]
+        [InputFromProperty("referencePoint")]
         [Output("linLayout", "The created LinearLayout.")]
-        public static LinearLayout LinearLayout(int numberOfPoints, Vector direction, Vector offset)
+        public static LinearLayout LinearLayout(int numberOfPoints, Vector direction, double offset, ReferencePoint referencePoint = ReferencePoint.Centroid)
         {
             Vector projDir = direction;
             if (direction.Z != 0)
@@ -51,14 +52,7 @@ namespace BH.Engine.Spatial
                 Engine.Reflection.Compute.RecordWarning("Direction vector has been projected to the global XY-plane.");
             }
 
-            Vector projOffset = offset;
-            if (direction.Z != 0)
-            {
-                projOffset = new Vector { X = offset.X, Y = offset.Y };
-                Engine.Reflection.Compute.RecordWarning("Offset vector has been projected to the global XY-plane.");
-            }
-
-            return new LinearLayout(numberOfPoints, projDir, projOffset);
+            return new LinearLayout(numberOfPoints, projDir, offset, referencePoint);
         }
 
         /***************************************************/
