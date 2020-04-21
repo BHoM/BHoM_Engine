@@ -52,9 +52,6 @@ namespace BH.Engine.Reflection
                 desc += ((PropertyInfo)member).PropertyType.Description(quantityAttribute) + Environment.NewLine;
             }
 
-            if (member.ReflectedType != null)
-                desc += member.Name + " is a " + member.MemberType.ToString() + " of " + member.ReflectedType.ToText(true);
-
             return desc;
         }
 
