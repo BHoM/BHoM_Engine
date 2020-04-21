@@ -45,20 +45,37 @@ namespace BH.Engine.Environment
         [Description("Gets all the Materials a Panel is composed of and in which ratios")]
         [Input("panel", "The Panel to get the MaterialComposition from")]
         [Output("materialComposition", "The kind of matter the Panel is composed of and in which ratios")]
-        public static MaterialComposition MaterialComposition(Panel panel)
+        public static MaterialComposition MaterialComposition(this Panel panel)
         {
-            if (panel.Construction == null)
+            if (panel.Construction == null || panel.Construction.IThickness() < oM.Geometry.Tolerance.Distance)
             {
                 BH.Engine.Reflection.Compute.RecordError("The Panel does not have a construction assigned");
                 return null;
             }
-            return panel.Construction.IMaterialComposition();
+            MaterialComposition pMat = panel.Construction.IMaterialComposition();
+
+            if (panel.Openings != null && panel.Openings.Count != 0)
+            {
+                List<MaterialComposition> matComps = new List<MaterialComposition>() { pMat };
+                List<double> volumes = new List<double>() { panel.SolidVolume() };
+                foreach (Opening opening in panel.Openings)
+                {
+                    matComps.Add(opening.MaterialComposition());
+
+                    double tempVolume = opening.SolidVolume();
+                    volumes.Add(tempVolume);
+                    volumes[0] -= tempVolume;
+                }
+                return Matter.Compute.AggregateMaterialComposition(matComps, volumes);
+            }
+
+            return pMat;
         }
 
         [Description("Gets all the Materials a Opening is composed of and in which ratios")]
         [Input("opening", "The Opening to get the MaterialComposition from")]
         [Output("materialComposition", "The kind of matter the Opening is composed of and in which ratios")]
-        public static MaterialComposition MaterialComposition(Opening opening)
+        public static MaterialComposition MaterialComposition(this Opening opening)
         {
             if (opening.OpeningConstruction == null && opening.FrameConstruction == null)
             {
@@ -72,7 +89,7 @@ namespace BH.Engine.Environment
             double glazedVolume = 0;
             double frameVolume = 0;
 
-            if (opening.InnerEdges != null)
+            if (opening.InnerEdges != null && opening.InnerEdges.Count != 0)
             {
                 double innerArea = opening.InnerEdges.Polyline().Area();
                 glazedVolume = innerArea * opening.OpeningConstruction.IThickness();
@@ -83,12 +100,12 @@ namespace BH.Engine.Environment
                 glazedVolume = opening.Polyline().Area() * opening.OpeningConstruction.IThickness();
             }
 
-            if (opening.FrameConstruction != null)
+            if (opening.FrameConstruction != null && opening.FrameConstruction.IThickness() > oM.Geometry.Tolerance.Distance)
             {
                 comps.Add(opening.FrameConstruction.IMaterialComposition());
                 ratios.Add(frameVolume);
             }
-            if (opening.OpeningConstruction != null)
+            if (opening.OpeningConstruction != null && opening.OpeningConstruction.IThickness() > oM.Geometry.Tolerance.Distance)
             {
                 comps.Add(opening.OpeningConstruction.IMaterialComposition());
                 ratios.Add(glazedVolume);
