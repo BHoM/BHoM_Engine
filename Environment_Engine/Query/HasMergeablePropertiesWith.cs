@@ -62,14 +62,13 @@ namespace BH.Engine.Environment
                     "Openings",
                     "ConnectedSpaces",
                     "Type",
+                    "BHoM_Guid",
+                    "CustomData",
                 },
                 NumericTolerance = BH.oM.Geometry.Tolerance.Distance,
             };
 
-            string elementDiff = element.DiffingHash(config);
-            string otherDiff = other.DiffingHash(config);
-
-            return elementDiff.Equals(otherDiff);
+            return Diffing.Query.DifferentProperties(element, other, config) == null;
         }
 
         [Description("Evaluates if the two elements non-geometrical data is equal to the point that they could be merged into one object")]
@@ -86,14 +85,13 @@ namespace BH.Engine.Environment
                     "FrameFactorValue",
                     "InnerEdges",
                     "Type",
+                    "BHoM_Guid",
+                    "CustomData",
                 },
                 NumericTolerance = BH.oM.Geometry.Tolerance.Distance,
             };
 
-            string elementDiff = element.DiffingHash(config);
-            string otherDiff = other.DiffingHash(config);
-
-            return elementDiff.Equals(otherDiff);
+            return Diffing.Query.DifferentProperties(element, other, config) == null;
         }
     }
 }
