@@ -34,18 +34,14 @@ namespace BH.Engine.Geometry
 {
     public static partial class Modify
     {
+        [Deprecated("3.2", "Renamed to RoundCoordinates and expanded for other Geometry", null, "BH.Engine.Geometry.Modify.RoundCoordinates")]
         [Description("Modifies a BHoM Geometry Point to be rounded to the number of provided decimal places")]
         [Input("point", "The BHoM Geometry Point to modify")]
         [Input("decimalPlaces", "The number of decimal places to round to, default 6")]
         [Output("point", "The modified BHoM Geometry Point")]
         public static Point RoundPoint(this Point point, int decimalPlaces = 6)
         {
-            return new Point
-            {
-                X = Math.Round(point.X, decimalPlaces),
-                Y = Math.Round(point.Y, decimalPlaces),
-                Z = Math.Round(point.Z, decimalPlaces),
-            };
+            return RoundCoordinates(point, decimalPlaces);
         }
     }
 }
