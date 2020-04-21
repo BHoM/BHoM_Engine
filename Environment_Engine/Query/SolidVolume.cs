@@ -41,23 +41,24 @@ namespace BH.Engine.Environment
 {
     public static partial class Query
     {
-        [Description("Returns a Panels solid volume based on its height, width, and construction thickness")]
+        [Description("Returns an Openings solid volume based on its area, and construction thickness")]
         [Input("panel", "The Panel to get the volume from")]
         [Output("volume", "The Panel solid volume", typeof(Volume))]
-        public static double SolidVolume(Panel panel)
+        public static double SolidVolume(this Panel panel)
         {
-            return panel.Area() * panel.Construction.IThickness();
+            double volume = panel.Area() * panel.Construction.IThickness();
+            return volume + panel.Openings.Sum(x => x.SolidVolume());
         }
 
         [Description("Returns an Openings solid volume based on its area, and construction thickness")]
         [Input("opening", "The Opening to get the volume from")]
         [Output("volume", "The Opening solid volume", typeof(Volume))]
-        public static double SolidVolume(Opening opening)
+        public static double SolidVolume(this Opening opening)
         {
             double glazedVolume = 0;
             double frameVolume = 0;
 
-            if (opening.InnerEdges != null)
+            if (opening.InnerEdges != null && opening.InnerEdges.Count != 0)
             {
                 double innerArea = opening.InnerEdges.Polyline().Area();
                 glazedVolume = innerArea * opening.OpeningConstruction.IThickness();
