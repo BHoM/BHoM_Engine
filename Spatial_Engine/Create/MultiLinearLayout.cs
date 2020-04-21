@@ -37,7 +37,7 @@ namespace BH.Engine.Spatial
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates a LinearLayout from its core proeprties. Ensures all vectors are in the global XY-plane.")]
+        [Description("Creates a MultiLinearLayout from its core proeprties. Ensures all vectors are in the global XY-plane.")]
         [InputFromProperty("numberOfPoints")]
         [InputFromProperty("minimumSpacing")]
         [InputFromProperty("direction")]
