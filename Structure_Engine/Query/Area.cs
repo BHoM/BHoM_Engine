@@ -71,6 +71,16 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
+
+        [Description("Calculates the area of a Surface based on the area of the geometrical surface stored in Extents.")]
+        [Input("mesh", "The Surface to calculate the area for.")]
+        [Output("area", "The area of the Surface.", typeof(Area))]
+        public static double Area(this Surface surface)
+        {
+            return surface.Extents.IArea();
+        }
+
+        /***************************************************/
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
