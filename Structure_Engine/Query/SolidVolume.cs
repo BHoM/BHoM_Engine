@@ -54,7 +54,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Returns a IAreaElement's solid volume based on its Surface Property and the Area.")]
+        [Description("Returns a IAreaElement's solid volume as the area of the element times the average thickness of its SurfaceProperty. The average thickness is evaluated as if it was applied to an infinite plane.")]
         [Input("areaElement", "The IAreaElement to get the volume from")]
         [Output("volume", "The IAreaElement solid material volume.", typeof(Volume))]
         public static double SolidVolume(this IAreaElement areaElement)
