@@ -77,6 +77,37 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Modifies a BHoM Geometry Vector to be rounded to the number of provided decimal places.")]
+        [Input("vector", "The BHoM Geometry Vector to modify.")]
+        [Input("decimalPlaces", "The number of decimal places to round to, default 6.")]
+        [Output("vector", "The modified BHoM Geometry Vector.")]
+        public static Vector RoundCoordinates(this Vector vector, int decimalPlaces = 6)
+        {
+            return new Vector
+            {
+                X = Math.Round(vector.X, decimalPlaces),
+                Y = Math.Round(vector.Y, decimalPlaces),
+                Z = Math.Round(vector.Z, decimalPlaces),
+            };
+        }
+
+        /***************************************************/
+
+        [Description("Modifies a BHoM Geometry Plane's Origin and Normal to be rounded to the number of provided decimal places.")]
+        [Input("plane", "The BHoM Geometry Plane to modify.")]
+        [Input("decimalPlaces", "The number of decimal places to round to, default 6.")]
+        [Output("plane", "The modified BHoM Geometry Plane.")]
+        public static Plane RoundCoordinates(this Plane plane, int decimalPlaces = 6)
+        {
+            return new Plane()
+            {
+                Origin = plane.Origin.RoundCoordinates(decimalPlaces),
+                Normal = plane.Normal.RoundCoordinates(decimalPlaces),
+            };
+        }
+
+        /***************************************************/
+
         [Description("Modifies a BHoM Geometry Line's points to be rounded to the number of provided decimal places.")]
         [Input("line", "The BHoM Geometry Line to modify.")]
         [Input("decimalPlaces", "The number of decimal places to round to, default 6.")]
