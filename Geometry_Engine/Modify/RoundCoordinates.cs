@@ -126,30 +126,79 @@ namespace BH.Engine.Geometry
         [Description("Modifies a BHoM Geometry Arc's start and end coordinates to be rounded to the number of provided decimal places.")]
         [Input("arc", "The BHoM Geometry Arc to modify.")]
         [Input("decimalPlaces", "The number of decimal places to round to, default 6.")]
-        [Output("curve", "The modified BHoM Geometry Arc. As Line if zero length.")]
-        public static ICurve RoundCoordinates(this Arc arc, int decimalPlaces = 6)
+        [Output("curve", "The modified BHoM Geometry Arc.")]
+        public static Arc RoundCoordinates(this Arc arc, int decimalPlaces = 6)
         {
+            // do the rounding
             Point start = arc.StartPoint().RoundCoordinates(decimalPlaces);
             Point end = arc.EndPoint().RoundCoordinates(decimalPlaces);
-            if (start.SquareDistance(end) == 0)
-                return new Line() { Start = start, End = end };
+            Vector normal = arc.CoordinateSystem.Z.RoundCoordinates(decimalPlaces);
 
-            // ---Set start point---
-            Arc c = arc.Translate(start - arc.StartPoint());
+            double angle = arc.Angle();
+            double dist = start.Distance(end);
 
-            // ---Set end point---
-            // Orient towards target (rotate)
-            Point pivot = start;
-            Point from = c.EndPoint();
-            Vector current = from - pivot;
-            Vector next = end - pivot;
-            Vector axis = current.CrossProduct(next);
-            c = c.Rotate(pivot, axis, current.SignedAngle(next, axis));
+            if (dist == 0)
+            {
+                // translate the origin as one of the points were, and set both angles to that ones angle
+                return new Arc()
+                {
+                    CoordinateSystem = arc.CoordinateSystem.Translate(start - arc.StartPoint()),
+                    Radius = arc.Radius,
+                    StartAngle = arc.StartAngle,
+                    EndAngle = arc.StartAngle,
+                };
+            }
 
-            // scale to attatch to target
-            double factor = Math.Sqrt(pivot.SquareDistance(end) / pivot.SquareDistance(from));
-            Vector scaleVector = new Vector() { X = factor, Y = factor, Z = factor };
-            return c.Scale(pivot, scaleVector);
+            // recalculate the radius based on not changing the total angle
+            //      Consider a equal legged triangle with endpoints at the arc's endpoints
+            //      we know the "top" angle and the "base" length and are solving for the last two sides length
+            double radius = Math.Sqrt(
+                Math.Pow(dist / (2 * Math.Tan(angle / 2)), 2) + // "Heigth"
+                Math.Pow(dist / 2, 2)   // "half the base"
+                );
+
+            //double radius = arc.Radius;
+            
+            Circle startCircle = new Circle() { Normal = normal, Centre = start, Radius = radius };
+            Circle endCircle = new Circle() { Normal = normal, Centre = end, Radius = radius };
+
+            List<Point> intersections = startCircle.CurveIntersections(endCircle).OrderBy(x => x.SquareDistance(arc.CoordinateSystem.Origin)).ToList();
+
+            Point newOrigin = null;
+            // 180degrees arc where the points got rounded away from eachother
+            if (intersections.Count == 0)
+            {
+                newOrigin = (start + end) / 2;
+                radius = newOrigin.Distance(start);
+            } else
+            {
+                Vector unitNormal = normal.Normalise();
+                foreach (Point pt in intersections)
+                {
+                    Vector temp = (start - pt).CrossProduct(end - pt).Normalise();
+                    if ((temp + unitNormal).SquareLength() > 1)
+                    {
+                        newOrigin = pt;
+                        break;
+                    }
+                }
+            }
+            
+            Vector newX = (start - newOrigin).Normalise();
+
+            oM.Geometry.CoordinateSystem.Cartesian coordClone = Create.CartesianCoordinateSystem(newOrigin, newX, Query.CrossProduct(normal, newX));
+
+            double endAngle = (start - newOrigin).Angle(end - newOrigin);
+
+            Arc result = new Arc()
+            {
+                CoordinateSystem = coordClone,
+                Radius = radius,
+                StartAngle = 0,
+                EndAngle = endAngle,
+            };
+
+            return result;
         }
 
         /***************************************************/
