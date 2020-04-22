@@ -121,6 +121,8 @@
     <Compile Include="Modify\AddReinforcement.cs" />
     <Compile Include="Modify\SetMaterial.cs" />
     <Compile Include="Modify\SetStructuralFragment.cs" />
+    <Compile Include="Objects\EqualityComparers\Constraint4DOFComparer.cs" />
+    <Compile Include="Objects\EqualityComparers\Constraint6DOFComparer.cs" />
     <Compile Include="Objects\EqualityComparers\NameOrDescriptionComparer.cs" />
     <Compile Include="Query\AllEdgeCurves.cs" />
     <Compile Include="Query\AverageThickness.cs" />
