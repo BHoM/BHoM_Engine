@@ -36,7 +36,7 @@ namespace BH.Engine.Geometry
         /**** Interface Methods                         ****/
         /***************************************************/
 
-        [Description("Modifies a BHoM IGeometry's Points' coordinates to be rounded to the number of provided decimal places.")]
+        [Description("Modifies a BHoM IGeometry's coordinates to be rounded to the number of provided decimal places.")]
         [Input("geometry", "The BHoM IGeometry to modify.")]
         [Input("decimalPlaces", "The number of decimal places to round to, default 6.")]
         [Output("geometry", "The modified BHoM IGeometry.")]
@@ -47,7 +47,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [Description("Modifies a BHoM ICurve's Points coordinates to be rounded to the number of provided decimal places.")]
+        [Description("Modifies a BHoM ICurve's coordinates to be rounded to the number of provided decimal places.")]
         [Input("curve", "The BHoM ICurve to modify.")]
         [Input("decimalPlaces", "The number of decimal places to round to, default 6.")]
         [Output("curve", "The modified BHoM ICurve.")]
@@ -77,7 +77,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [Description("Modifies a BHoM Geometry Line's end points to be rounded to the number of provided decimal places.")]
+        [Description("Modifies a BHoM Geometry Line's points to be rounded to the number of provided decimal places.")]
         [Input("line", "The BHoM Geometry Line to modify.")]
         [Input("decimalPlaces", "The number of decimal places to round to, default 6.")]
         [Output("line", "The modified BHoM Geometry Line.")]
@@ -92,7 +92,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [Description("Modifies a BHoM Geometry Arc's end points to be rounded to the number of provided decimal places.")]
+        [Description("Modifies a BHoM Geometry Arc's start and end coordinates to be rounded to the number of provided decimal places.")]
         [Input("arc", "The BHoM Geometry Arc to modify.")]
         [Input("decimalPlaces", "The number of decimal places to round to, default 6.")]
         [Output("curve", "The modified BHoM Geometry Arc. As Line if zero length.")]
