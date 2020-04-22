@@ -199,6 +199,20 @@ namespace BH.Engine.Geometry
             };
         }
 
+        /***************************************************/
+
+        [Description("Modifies a BHoM Geometry PlanarSurface's defining curves to be rounded to the number of provided decimal places.")]
+        [Input("nurbscurve", "The BHoM Geometry PlanarSurface to modify.")]
+        [Input("decimalPlaces", "The number of decimal places to round to, default 6.")]
+        [Output("surface", "The modified BHoM Geometry PlanarSurface.")]
+        public static PlanarSurface RoundCoordinates(this PlanarSurface planarSurface, int decimalPlaces = 6)
+        {
+            ICurve externalBoundery = planarSurface.ExternalBoundary.IRoundCoordinates(decimalPlaces);
+            List<ICurve> internalBounderies = planarSurface.InternalBoundaries.Select(x => x.IRoundCoordinates(decimalPlaces)).ToList();
+
+            return Create.PlanarSurface(externalBoundery, internalBounderies);
+        }
+
 
         /***************************************************/
         /**** Private Fallback Methods                  ****/
