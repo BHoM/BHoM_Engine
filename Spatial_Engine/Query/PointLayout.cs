@@ -115,22 +115,13 @@ namespace BH.Engine.Spatial
             Point centre = ReferencePoint(hostRegionCurve, layout2D.ReferencePoint);
             centre = centre + layout2D.Offset * Vector.ZAxis.CrossProduct(layout2D.Direction);
             Line axis = new Line { Start = centre, End = centre + layout2D.Direction, Infinite = true };
-            List<Point> interPts = hostRegionCurve.ILineIntersections(axis, true);
 
-            if (interPts.Count < 2)
+            List<Line> distributionLines = IntersectionLines(hostRegionCurve, axis);
+
+            if (distributionLines.Count == 0)
             {
                 Engine.Reflection.Compute.RecordError("Count not find extents of distribution for the layout.");
                 return new List<Point>();
-
-            }
-
-            interPts = interPts.SortCollinear().CullDuplicates();
-
-            List<Line> distributionLines = new List<Line>();
-
-            for (int i = 0; i < interPts.Count; i+= 2)
-            {
-                distributionLines.Add(new Line { Start = interPts[i], End = interPts[i + 1] });
             }
 
             //SamplePoints adds extra point at start/end. Hence subtracting count here to make sure correct number is extracted.
@@ -167,21 +158,27 @@ namespace BH.Engine.Spatial
             while (remainingPoints > 0)
             {
                 Line axis = new Line { Start = centre, End = centre + layout2D.Direction, Infinite = true };
-                List<Point> interPts = hostRegionCurve.ILineIntersections(axis, true);
+                List<Line> distributionLines = IntersectionLines(hostRegionCurve, axis);
 
-                if (interPts.Count < 2)
+                if (distributionLines.Count == 0)
                 {
-                    Engine.Reflection.Compute.RecordError("Count not find extents of distribution for the layout.");
+                    Engine.Reflection.Compute.RecordError("Could not generate distribution lines for the reinforcement. The number of points might not fit in the region curve. The resulting number of points might be different from the number requested.");
                     remainingPoints = 0;
                 }
 
-                interPts = interPts.SortCollinear().CullDuplicates();
-
-                List<Line> distributionLines = new List<Line>();
-
-                for (int i = 0; i < interPts.Count; i += 2)
+                //If number of point remaining is less or equal to the number of distribution lines,
+                //add a point in the middle of the longest lines, until points have run out
+                if (remainingPoints <= distributionLines.Count)
                 {
-                    distributionLines.Add(new Line { Start = interPts[i], End = interPts[i + 1] });
+                    distributionLines = distributionLines.OrderBy(x => x.ILength()).ToList();
+                    int i = 0;
+                    while (remainingPoints > 0 && i < distributionLines.Count)
+                    {
+                        result.Add(distributionLines[i].PointAtParameter(0.5));
+                        i++;
+                        remainingPoints--;
+                    }
+                    break;
                 }
 
                 int layerDivs = 0;
@@ -192,9 +189,6 @@ namespace BH.Engine.Spatial
                 }
 
                 layerDivs = Math.Min(layerDivs, remainingPoints);
-
-                if (remainingPoints - layerDivs == 1 && layerDivs != 1)
-                    layerDivs--;
 
                 //SamplePoints adds extra point at start/end. Hence subtracting count here to make sure correct number is extracted.
                 List<int> divisions = DistributeDivisions(distributionLines, layerDivs - distributionLines.Count);
@@ -306,6 +300,27 @@ namespace BH.Engine.Spatial
                 default:
                     return hostElementCurve.ICentroid();
             }
+        }
+
+        /***************************************************/
+
+        private static List<Line> IntersectionLines(this ICurve hostRegionCurve, Line axis, double tolerance = Tolerance.Distance)
+        {
+            List<Point> intPts = hostRegionCurve.ILineIntersections(axis, true);
+            intPts = intPts.CullDuplicates(tolerance);
+            intPts = intPts.SortCollinear(tolerance);
+
+            List<Line> result = new List<Line>();
+            for (int i = 0; i < intPts.Count - 1; i++)
+            {
+                if (hostRegionCurve.IIsContaining(new List<Point> { intPts.Skip(i).Take(2).Average() }, true, tolerance))
+                    result.Add(new Line { Start = intPts[i], End = intPts[i + 1] });
+            }
+
+            //Ensure a continous line is merged into one.
+            result = Engine.Geometry.Compute.Join(result).Select(x => new Line { Start = x.IStartPoint(), End = x.IEndPoint(), Infinite = false }).ToList();
+
+            return result;
         }
 
         /***************************************************/
