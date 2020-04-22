@@ -113,7 +113,7 @@ namespace BH.Engine.Spatial
         public static List<Point> PointLayout(this LinearLayout layout2D, ICurve hostRegionCurve)
         {
             Point centre = ReferencePoint(hostRegionCurve, layout2D.ReferencePoint);
-            centre = centre + layout2D.Offset * Vector.ZAxis.CrossProduct(layout2D.Direction);
+            centre = centre + layout2D.Offset * AlignOffsetVector(Vector.ZAxis.CrossProduct(layout2D.Direction), layout2D.ReferencePoint);
             Line axis = new Line { Start = centre, End = centre + layout2D.Direction, Infinite = true };
 
             List<Line> distributionLines = IntersectionLines(hostRegionCurve, axis);
@@ -146,11 +146,8 @@ namespace BH.Engine.Spatial
         public static List<Point> PointLayout(this MultiLinearLayout layout2D, ICurve hostRegionCurve)
         {
             Point centre = ReferencePoint(hostRegionCurve, layout2D.ReferencePoint);
-
-            Vector offsetDir = Vector.ZAxis.CrossProduct(layout2D.Direction);
-
+            Vector offsetDir = AlignOffsetVector(Vector.ZAxis.CrossProduct(layout2D.Direction), layout2D.ReferencePoint);
             centre = centre + layout2D.Offset* offsetDir;
-
             int remainingPoints = layout2D.NumberOfPoints;
 
             List<Point> result = new List<Point>();
@@ -170,7 +167,7 @@ namespace BH.Engine.Spatial
                 //add a point in the middle of the longest lines, until points have run out
                 if (remainingPoints <= distributionLines.Count)
                 {
-                    distributionLines = distributionLines.OrderBy(x => x.ILength()).ToList();
+                    distributionLines = distributionLines.OrderByDescending(x => x.ILength()).ToList();
                     int i = 0;
                     while (remainingPoints > 0 && i < distributionLines.Count)
                     {
@@ -179,6 +176,17 @@ namespace BH.Engine.Spatial
                         remainingPoints--;
                     }
                     break;
+                }
+
+                distributionLines = distributionLines.OrderBy(x => x.ILength()).ToList();
+                int n = 0;
+                //Not at least two point per line, add middle to the short, unitl rest can be handled by regular division.
+                while (remainingPoints < distributionLines.Count * 2)
+                {
+                    result.Add(distributionLines[n].PointAtParameter(0.5));
+                    remainingPoints--;
+                    distributionLines.RemoveAt(n);
+                    n++;
                 }
 
                 int layerDivs = 0;
@@ -205,6 +213,11 @@ namespace BH.Engine.Spatial
 
                     for (int i = 0; i < distributionLines.Count; i++)
                     {
+                        if (divisions[i] == 0)
+                        {
+                            result.Add(distributionLines[i].PointAtParameter(0.5));
+                            continue;
+                        }
                         List<Point> divPts = distributionLines[i].SamplePoints(divisions[i]);
                         result.AddRange(divPts);
                     }
@@ -311,6 +324,42 @@ namespace BH.Engine.Spatial
                 default:
                     return hostElementCurve.ICentroid();
             }
+        }
+
+        /***************************************************/
+
+        private static Vector AlignOffsetVector(Vector offsetVector, ReferencePoint referencePoint)
+        {
+            //Make the offset vector always point towards the centre when reference point is on the boundary
+            Vector clone = offsetVector.Clone();
+
+            if (referencePoint == oM.Spatial.Layouts.ReferencePoint.BottomCenter ||
+                referencePoint == oM.Spatial.Layouts.ReferencePoint.BottomLeft ||
+                referencePoint == oM.Spatial.Layouts.ReferencePoint.BottomRight)
+            {
+                clone.Y = Math.Abs(clone.Y);
+            }
+            else if (referencePoint == oM.Spatial.Layouts.ReferencePoint.TopCenter ||
+                     referencePoint == oM.Spatial.Layouts.ReferencePoint.TopLeft ||
+                     referencePoint == oM.Spatial.Layouts.ReferencePoint.TopRight)
+            {
+                clone.Y = -Math.Abs(clone.Y);
+            }
+
+            if (referencePoint == oM.Spatial.Layouts.ReferencePoint.BottomLeft ||
+                referencePoint == oM.Spatial.Layouts.ReferencePoint.MiddleLeft ||
+                referencePoint == oM.Spatial.Layouts.ReferencePoint.TopLeft)
+            {
+                clone.X = Math.Abs(clone.X);
+            }
+            else if (referencePoint == oM.Spatial.Layouts.ReferencePoint.BottomRight ||
+                     referencePoint == oM.Spatial.Layouts.ReferencePoint.MiddleRight ||
+                     referencePoint == oM.Spatial.Layouts.ReferencePoint.TopRight)
+            {
+                clone.X = -Math.Abs(clone.X);
+            }
+
+            return clone;
         }
 
         /***************************************************/
