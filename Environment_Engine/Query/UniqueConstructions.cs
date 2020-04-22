@@ -56,21 +56,34 @@ namespace BH.Engine.Environment
                         unique.Add(be.Construction as Construction);
                 }
 
-                foreach (Opening o in be.Openings)
-                {
-                    if (o.FrameConstruction != null)
-                    {
-                        Construction t2 = unique.Where(x => x.UniqueConstructionName(includeConstructionName) == o.FrameConstruction.UniqueConstructionName(includeConstructionName)).FirstOrDefault();
-                        if (t2 == null)
-                            unique.Add(o.FrameConstruction as Construction);
-                    }
+                unique.AddRange(be.Openings.UniqueConstructions());
+            }
 
-                    if (o.OpeningConstruction != null)
-                    {
-                        Construction t3 = unique.Where(x => x.UniqueConstructionName(includeConstructionName) == o.OpeningConstruction.UniqueConstructionName(includeConstructionName)).FirstOrDefault();
-                        if (t3 == null)
-                            unique.Add(o.OpeningConstruction as Construction);
-                    }
+            return unique;
+        }
+
+        [Description("Returns a collection of unique constructions from a collection of Environment Openings")]
+        [Input("openings", "A collection of Environment Openings")]
+        [Input("includeConstructionName", "Flag to determine whether or not to use the construction name as a parameter of uniqueness. Default false")]
+        [Output("uniqueConstructions", "A collection of unique Construction objects")]
+        public static List<Construction> UniqueConstructions(this List<Opening> openings, bool includeConstructionName = false)
+        {
+            List<Construction> unique = new List<Construction>();
+
+            foreach (Opening o in openings)
+            {
+                if (o.FrameConstruction != null)
+                {
+                    Construction t1 = unique.Where(x => x.UniqueConstructionName(includeConstructionName) == o.FrameConstruction.UniqueConstructionName(includeConstructionName)).FirstOrDefault();
+                    if (t1 == null)
+                        unique.Add(o.FrameConstruction as Construction);
+                }
+
+                if (o.OpeningConstruction != null)
+                {
+                    Construction t2 = unique.Where(x => x.UniqueConstructionName(includeConstructionName) == o.OpeningConstruction.UniqueConstructionName(includeConstructionName)).FirstOrDefault();
+                    if (t2 == null)
+                        unique.Add(o.OpeningConstruction as Construction);
                 }
             }
 
