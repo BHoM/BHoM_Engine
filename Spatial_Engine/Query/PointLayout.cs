@@ -184,22 +184,33 @@ namespace BH.Engine.Spatial
                 int layerDivs = 0;
                 for (int i = 0; i < distributionLines.Count; i++)
                 {
-                    int divs = (int)Math.Floor(distributionLines[i].ILength() / layout2D.MinimumSpacing);
-                    layerDivs += Math.Max(divs, 2);
+                    int divs = (int)Math.Floor(distributionLines[i].ILength() / layout2D.ParallellMinimumSpacing);
+                    if (divs == 0)
+                    {
+                        result.Add(distributionLines[i].PointAtParameter(0.5));
+                        remainingPoints--;
+                        distributionLines.RemoveAt(i);
+                        i--;
+                    }
+                    else
+                        layerDivs += Math.Max(divs, 2);
                 }
 
-                layerDivs = Math.Min(layerDivs, remainingPoints);
-
-                //SamplePoints adds extra point at start/end. Hence subtracting count here to make sure correct number is extracted.
-                List<int> divisions = DistributeDivisions(distributionLines, layerDivs - distributionLines.Count);
-
-                for (int i = 0; i < distributionLines.Count; i++)
+                if (distributionLines.Count > 0)
                 {
-                    List<Point> divPts = distributionLines[i].SamplePoints(divisions[i]);
-                    result.AddRange(divPts);
+                    layerDivs = Math.Min(layerDivs, remainingPoints);
+
+                    //SamplePoints adds extra point at start/end. Hence subtracting count here to make sure correct number is extracted.
+                    List<int> divisions = DistributeDivisions(distributionLines, layerDivs - distributionLines.Count);
+
+                    for (int i = 0; i < distributionLines.Count; i++)
+                    {
+                        List<Point> divPts = distributionLines[i].SamplePoints(divisions[i]);
+                        result.AddRange(divPts);
+                    }
+                    remainingPoints -= layerDivs;
                 }
-                remainingPoints -= layerDivs;
-                centre += offsetDir * layout2D.MinimumSpacing;
+                centre += offsetDir * layout2D.PerpendicularMinimumSpacing;
             }
 
             return result;

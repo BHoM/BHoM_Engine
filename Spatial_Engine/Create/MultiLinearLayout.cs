@@ -28,6 +28,7 @@ using BH.oM.Reflection.Attributes;
 using BH.oM.Base;
 using BH.oM.Spatial.Layouts;
 using BH.oM.Geometry;
+using BH.oM.Quantities.Attributes;
 
 namespace BH.Engine.Spatial
 {
@@ -39,12 +40,27 @@ namespace BH.Engine.Spatial
 
         [Description("Creates a MultiLinearLayout from its core proeprties. Ensures all vectors are in the global XY-plane.")]
         [InputFromProperty("numberOfPoints")]
-        [InputFromProperty("minimumSpacing")]
+        [Input("minimumSpacing", "Minimum spacing between points in layers and between each layer.", typeof(Length))]
         [InputFromProperty("direction")]
         [InputFromProperty("offset")]
         [InputFromProperty("referencePoint")]
         [Output("linLayout", "The created LinearLayout.")]
-        public static MultiLinearLayout MultiLinearLayout(int numberOfPoints, double minimumSpacing, Vector direction, double offset, ReferencePoint referencePoint = ReferencePoint.Centroid)
+        public static MultiLinearLayout MultiLinearLayout(int numberOfPoints, double minimumSpacing, Vector direction, double offset, ReferencePoint referencePoint = ReferencePoint.BottomCenter)
+        {
+            return MultiLinearLayout(numberOfPoints, minimumSpacing, minimumSpacing, direction, offset, referencePoint);
+        }
+
+        /***************************************************/
+
+        [Description("Creates a MultiLinearLayout from its core proeprties. Ensures all vectors are in the global XY-plane.")]
+        [InputFromProperty("numberOfPoints")]
+        [InputFromProperty("parallellMinimumSpacing")]
+        [InputFromProperty("perpendicularMinimumSpacing")]
+        [InputFromProperty("direction")]
+        [InputFromProperty("offset")]
+        [InputFromProperty("referencePoint")]
+        [Output("linLayout", "The created LinearLayout.")]
+        public static MultiLinearLayout MultiLinearLayout(int numberOfPoints, double parallellMinimumSpacing, double perpendicularMinimumSpacing, Vector direction, double offset, ReferencePoint referencePoint = ReferencePoint.BottomCenter)
         {
             Vector projDir = direction;
             if (direction.Z != 0)
@@ -53,7 +69,7 @@ namespace BH.Engine.Spatial
                 Engine.Reflection.Compute.RecordWarning("Direction vector has been projected to the global XY-plane.");
             }
 
-            return new MultiLinearLayout(numberOfPoints, minimumSpacing, projDir, offset, referencePoint);
+            return new MultiLinearLayout(numberOfPoints, parallellMinimumSpacing, perpendicularMinimumSpacing, projDir, offset, referencePoint);
         }
 
         /***************************************************/
