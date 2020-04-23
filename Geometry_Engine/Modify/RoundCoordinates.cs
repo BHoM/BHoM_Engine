@@ -153,25 +153,26 @@ namespace BH.Engine.Geometry
             //      Consider a equal legged triangle with endpoints at the arc's endpoints
             //      we know the "top" angle and the "base" length and are solving for the last two sides length
             double radius = Math.Sqrt(
-                Math.Pow(dist / (2 * Math.Tan(angle / 2)), 2) + // "Heigth"
+                Math.Pow(dist / (2 * Math.Tan(angle / 2)), 2) + // "Height"
                 Math.Pow(dist / 2, 2)   // "half the base"
                 );
 
-            //double radius = arc.Radius;
-            
             Circle startCircle = new Circle() { Normal = normal, Centre = start, Radius = radius };
             Circle endCircle = new Circle() { Normal = normal, Centre = end, Radius = radius };
 
             List<Point> intersections = startCircle.CurveIntersections(endCircle).OrderBy(x => x.SquareDistance(arc.CoordinateSystem.Origin)).ToList();
 
             Point newOrigin = null;
+
             // 180degrees arc where the points got rounded away from eachother
             if (intersections.Count == 0)
             {
                 newOrigin = (start + end) / 2;
                 radius = newOrigin.Distance(start);
-            } else
+            }
+            else
             {
+                // Ensure that the new centre is at the same side of the start/end points
                 Vector unitNormal = normal.Normalise();
                 foreach (Point pt in intersections)
                 {
@@ -185,7 +186,6 @@ namespace BH.Engine.Geometry
             }
             
             Vector newX = (start - newOrigin).Normalise();
-
             oM.Geometry.CoordinateSystem.Cartesian coordClone = Create.CartesianCoordinateSystem(newOrigin, newX, Query.CrossProduct(normal, newX));
 
             double endAngle = (start - newOrigin).Angle(end - newOrigin);
