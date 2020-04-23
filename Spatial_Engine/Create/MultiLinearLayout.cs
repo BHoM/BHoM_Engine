@@ -45,7 +45,7 @@ namespace BH.Engine.Spatial
         [InputFromProperty("offset")]
         [InputFromProperty("referencePoint")]
         [Output("linLayout", "The created LinearLayout.")]
-        public static MultiLinearLayout MultiLinearLayout(int numberOfPoints, double minimumSpacing, Vector direction, double offset, ReferencePoint referencePoint = ReferencePoint.BottomCenter)
+        public static MultiLinearLayout MultiLinearLayout(int numberOfPoints, double minimumSpacing, Vector direction = null, double offset = 0, ReferencePoint referencePoint = ReferencePoint.BottomCenter)
         {
             return MultiLinearLayout(numberOfPoints, minimumSpacing, minimumSpacing, direction, offset, referencePoint);
         }
@@ -60,9 +60,20 @@ namespace BH.Engine.Spatial
         [InputFromProperty("offset")]
         [InputFromProperty("referencePoint")]
         [Output("linLayout", "The created LinearLayout.")]
-        public static MultiLinearLayout MultiLinearLayout(int numberOfPoints, double parallellMinimumSpacing, double perpendicularMinimumSpacing, Vector direction, double offset, ReferencePoint referencePoint = ReferencePoint.BottomCenter)
+        public static MultiLinearLayout MultiLinearLayout(int numberOfPoints, double parallellMinimumSpacing, double perpendicularMinimumSpacing, Vector direction = null, double offset = 0, ReferencePoint referencePoint = ReferencePoint.BottomCenter)
         {
-            Vector projDir = direction;
+            if (numberOfPoints <= 0)
+            {
+                Engine.Reflection.Compute.RecordError("MultiLinearLayout requires number of points to be at least 1.");
+                return null;
+            }
+            if (parallellMinimumSpacing <= 0 || perpendicularMinimumSpacing <= 0)
+            {
+                Engine.Reflection.Compute.RecordError("MultiLinearLayout requires the minium spacing to be larger than 0.");
+                return null;
+            }
+
+            Vector projDir = direction ?? Vector.XAxis;
             if (direction.Z != 0)
             {
                 projDir = new Vector { X = direction.X, Y = direction.Y };
