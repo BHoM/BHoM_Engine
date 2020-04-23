@@ -124,20 +124,11 @@ namespace BH.Engine.Spatial
                 return new List<Point>();
             }
 
-            //SamplePoints adds extra point at start/end. Hence subtracting count here to make sure correct number is extracted.
-            List<int> divisions = DistributeDivisions(distributionLines, layout2D.NumberOfPoints - distributionLines.Count);
-
-            List<Point> result = new List<Point>();
-
-            for (int i = 0; i < distributionLines.Count; i++)
-            {
-                List<Point> divPts = distributionLines[i].SamplePoints(divisions[i]);
-                result.AddRange(divPts);
-            }
-            return result;
+            return DivisionPoints(distributionLines, layout2D.NumberOfPoints);
         }
 
         /***************************************************/
+
 
         [Description("Queries the points from the Layout based on the layout and a region curve associated with it.")]
         [Input("layout2D", "The layout object to query the points from.")]
@@ -147,7 +138,7 @@ namespace BH.Engine.Spatial
         {
             Point refPoint = ReferencePoint(hostRegionCurve, openingCurves, layout2D.ReferencePoint);
             Vector offsetDir = AlignOffsetVector(Vector.ZAxis.CrossProduct(layout2D.Direction), refPoint, hostRegionCurve.IBounds().Centre());
-            refPoint = refPoint + layout2D.Offset* offsetDir;
+            refPoint = refPoint + layout2D.Offset * offsetDir;
             int remainingPoints = layout2D.NumberOfPoints;
 
             List<Point> result = new List<Point>();
@@ -177,75 +168,26 @@ namespace BH.Engine.Spatial
                     }
                 }
 
-                //If number of point remaining is less or equal to the number of distribution lines,
-                //add a point in the middle of the longest lines, until points have run out
-                if (remainingPoints <= distributionLines.Count)
-                {
-                    distributionLines = distributionLines.OrderByDescending(x => x.ILength()).ToList();
-                    int i = 0;
-                    while (remainingPoints > 0 && i < distributionLines.Count)
-                    {
-                        result.Add(distributionLines[i].PointAtParameter(0.5));
-                        i++;
-                        remainingPoints--;
-                    }
-                    break;
-                }
-
-                distributionLines = distributionLines.OrderBy(x => x.ILength()).ToList();
-                int n = 0;
-                //Not at least two point per line, add middle to the short, unitl rest can be handled by regular division.
-                while (remainingPoints < distributionLines.Count * 2)
-                {
-                    result.Add(distributionLines[n].PointAtParameter(0.5));
-                    remainingPoints--;
-                    distributionLines.RemoveAt(n);
-                    n++;
-                }
-
                 int layerDivs = 0;
                 for (int i = 0; i < distributionLines.Count; i++)
                 {
                     int divs = (int)Math.Floor(distributionLines[i].ILength() / layout2D.ParallellMinimumSpacing);
-                    //if no full division can be achieved, one point is added to the middle
-                    if (divs == 0)
-                    {
-                        result.Add(distributionLines[i].PointAtParameter(0.5));
-                        remainingPoints--;
-                        distributionLines.RemoveAt(i);
-                        i--;
-                    }
-                    else
-                        layerDivs += Math.Max(divs, 2);
+                    layerDivs += Math.Max(divs, 1);
                 }
 
-                if (distributionLines.Count > 0)
-                {
-                    layerDivs = Math.Min(layerDivs, remainingPoints);
+                layerDivs = Math.Min(layerDivs, remainingPoints);
 
-                    //SamplePoints adds extra point at start/end. Hence subtracting count here to make sure correct number is extracted.
-                    List<int> divisions = DistributeDivisions(distributionLines, layerDivs - distributionLines.Count);
+                //SamplePoints adds extra point at start/ end.Hence subtracting count here to make sure correct number is extracted.
+                result.AddRange(DivisionPoints(distributionLines, layerDivs));
+                remainingPoints -= layerDivs;
 
-                    for (int i = 0; i < distributionLines.Count; i++)
-                    {
-                        //if no full division gets distributed from DistributeDivisions, one point is added to the middle
-                        if (divisions[i] == 0)
-                        {
-                            result.Add(distributionLines[i].PointAtParameter(0.5));
-                            continue;
-                        }
-                        List<Point> divPts = distributionLines[i].SamplePoints(divisions[i]);
-                        result.AddRange(divPts);
-                    }
-                    remainingPoints -= layerDivs;
-                }
                 //Find next layer by moving the centre of the axis
                 refPoint += offsetDir;
             }
 
             return result;
         }
-
+        
 
         /***************************************************/
         /**** Public Methods - Interface                ****/
@@ -305,6 +247,27 @@ namespace BH.Engine.Spatial
             }
 
             return divs;
+
+        }
+
+        /***************************************************/
+
+        private static List<Point> DivisionPoints(List<Line> lines, int nbPoints)
+        {
+            List<int> divs = DistributeDivisions(lines, nbPoints);
+
+            List<Point> pts = new List<Point>();
+            for (int i = 0; i < divs.Count; i++)
+            {
+                if (divs[i] == 0)
+                    continue;
+                else if (divs[i] == 1)
+                    pts.Add(lines[i].PointAtParameter(0.5));
+                else
+                    pts.AddRange(lines[i].SamplePoints(divs[i] - 1));
+            }
+
+            return pts;
 
         }
 
