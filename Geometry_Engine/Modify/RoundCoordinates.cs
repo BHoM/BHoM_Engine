@@ -287,10 +287,20 @@ namespace BH.Engine.Geometry
         [Output("surface", "The modified BHoM Geometry PlanarSurface.")]
         public static PlanarSurface RoundCoordinates(this PlanarSurface planarSurface, int decimalPlaces = 6)
         {
-            ICurve externalBoundery = planarSurface.ExternalBoundary.IRoundCoordinates(decimalPlaces);
-            List<ICurve> internalBounderies = planarSurface.InternalBoundaries.Select(x => x.IRoundCoordinates(decimalPlaces)).ToList();
+            Vector normal = planarSurface.Normal().Normalise();
 
-            return Create.PlanarSurface(externalBoundery, internalBounderies);
+            if (Math.Abs(Math.Abs(normal.X) - 1) < Tolerance.Distance ||
+                Math.Abs(Math.Abs(normal.Y) - 1) < Tolerance.Distance ||
+                Math.Abs(Math.Abs(normal.Z) - 1) < Tolerance.Distance)
+            {
+                ICurve externalBoundery = planarSurface.ExternalBoundary.IRoundCoordinates(decimalPlaces);
+                List<ICurve> internalBounderies = planarSurface.InternalBoundaries.Select(x => x.IRoundCoordinates(decimalPlaces)).ToList();
+
+                return Create.PlanarSurface(externalBoundery, internalBounderies);
+            }
+
+            Reflection.Compute.RecordWarning("Rounding the coordinates of a non-Axis-aligned planar surface while maintaining planarity needs to be done manually. No action has been taken.");
+            return planarSurface;
         }
 
 
