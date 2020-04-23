@@ -304,7 +304,7 @@ namespace BH.Engine.Geometry
                 return Create.PlanarSurface(externalBoundary, internalBoundaries);
             }
 
-            Reflection.Compute.RecordWarning("Rounding the coordinates of a non-Axis-aligned planar surface while maintaining planarity needs to be done manually. No action has been taken.");
+            Reflection.Compute.RecordWarning("Rounding the coordinates of a planar surface that is not aligned with the global coordinate system cannot be achieved without risk of losing planarity. No action has been taken.");
             return planarSurface;
         }
 
