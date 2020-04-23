@@ -48,8 +48,8 @@ namespace BH.Engine.Versioning
 
         [Description("Provide a string representation of a method as it used for versioning by the PreviousVersion attribute.")]
         [Input("declaringType", "Type in which the method is declared. You can use just the name of the type or include a (part of the) namespace in front of it.")]
-        [Input("methodName", "Name of the method. It has to be the exact string")]
-        [Output("Keys", "String representation for each method that matches the input filters.")]
+        [Input("methodName", "Name of the method. It has to be the exact string. If the method is a constructor, you can leave this input blank.")]
+        [Output("keys", "String representation for each method that matches the input filters.")]
         public static List<string> VersioningKey(string declaringType, string methodName = "")
         {
             if (methodName == "")
