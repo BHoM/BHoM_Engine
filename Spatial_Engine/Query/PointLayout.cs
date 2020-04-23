@@ -152,6 +152,9 @@ namespace BH.Engine.Spatial
 
             List<Point> result = new List<Point>();
 
+            BoundingBox bounds = hostRegionCurve.IBounds();
+            offsetDir = offsetDir.Normalise() * layout2D.PerpendicularMinimumSpacing;
+
             while (remainingPoints > 0)
             {
                 Line axis = new Line { Start = centre, End = centre + layout2D.Direction, Infinite = true };
@@ -159,8 +162,19 @@ namespace BH.Engine.Spatial
 
                 if (distributionLines.Count == 0)
                 {
-                    Engine.Reflection.Compute.RecordError("Could not generate distribution lines for the reinforcement. The number of points might not fit in the region curve. The resulting number of points might be different from the number requested.");
-                    remainingPoints = 0;
+                    //No lines found and axis is within boundingbox of the curve, try next layer
+                    if (axis.IsInRange(bounds) && offsetDir.SquareLength() != 0)
+                    {
+                        Engine.Reflection.Compute.RecordNote("Could not find distribution lines for one or more layer.");
+                        centre += offsetDir;
+                        continue;
+                    }
+                    else
+                    {
+                        //No more lines can be found
+                        Engine.Reflection.Compute.RecordError("Could not generate distribution lines for the reinforcement. The number of points might not fit in the region curve. The resulting number of points might be different from the number requested.");
+                        remainingPoints = 0;
+                    }
                 }
 
                 //If number of point remaining is less or equal to the number of distribution lines,
@@ -193,6 +207,7 @@ namespace BH.Engine.Spatial
                 for (int i = 0; i < distributionLines.Count; i++)
                 {
                     int divs = (int)Math.Floor(distributionLines[i].ILength() / layout2D.ParallellMinimumSpacing);
+                    //if no full division can be achieved, one point is added to the middle
                     if (divs == 0)
                     {
                         result.Add(distributionLines[i].PointAtParameter(0.5));
@@ -213,6 +228,7 @@ namespace BH.Engine.Spatial
 
                     for (int i = 0; i < distributionLines.Count; i++)
                     {
+                        //if no full division gets distributed from DistributeDivisions, one point is added to the middle
                         if (divisions[i] == 0)
                         {
                             result.Add(distributionLines[i].PointAtParameter(0.5));
@@ -223,7 +239,8 @@ namespace BH.Engine.Spatial
                     }
                     remainingPoints -= layerDivs;
                 }
-                centre += offsetDir * layout2D.PerpendicularMinimumSpacing;
+                //Find next layer by moving the centre of the axis
+                centre += offsetDir;
             }
 
             return result;
