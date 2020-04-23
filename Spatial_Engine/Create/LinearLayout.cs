@@ -43,9 +43,14 @@ namespace BH.Engine.Spatial
         [InputFromProperty("offset")]
         [InputFromProperty("referencePoint")]
         [Output("linLayout", "The created LinearLayout.")]
-        public static LinearLayout LinearLayout(int numberOfPoints, Vector direction, double offset, ReferencePoint referencePoint = ReferencePoint.Centroid)
+        public static LinearLayout LinearLayout(int numberOfPoints, Vector direction = null, double offset = 0, ReferencePoint referencePoint = ReferencePoint.BottomCenter)
         {
-            Vector projDir = direction;
+            if (numberOfPoints <= 0)
+            {
+                Engine.Reflection.Compute.RecordError("LinearLayouts requires number of points to be at least 1.");
+                return null;
+            }
+            Vector projDir = direction ?? Vector.XAxis;
             if (direction.Z != 0)
             {
                 projDir = new Vector { X = direction.X, Y = direction.Y };
