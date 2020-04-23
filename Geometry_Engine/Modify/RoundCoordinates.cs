@@ -123,7 +123,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [Description("Modifies a BHoM Geometry Arc's start and end coordinates to be rounded to the number of provided decimal places.")]
+        [Description("Modifies a BHoM Geometry Arc's start and end coordinates to be rounded to the number of provided decimal places while maintaining the Arc's total angle.")]
         [Input("arc", "The BHoM Geometry Arc to modify.")]
         [Input("decimalPlaces", "The number of decimal places to round to, default 6.")]
         [Output("curve", "The modified BHoM Geometry Arc.")]
@@ -132,7 +132,6 @@ namespace BH.Engine.Geometry
             // do the rounding
             Point start = arc.StartPoint().RoundCoordinates(decimalPlaces);
             Point end = arc.EndPoint().RoundCoordinates(decimalPlaces);
-            Vector normal = arc.CoordinateSystem.Z.RoundCoordinates(decimalPlaces);
 
             double angle = arc.Angle();
             double dist = start.Distance(end);
@@ -157,6 +156,9 @@ namespace BH.Engine.Geometry
                 Math.Pow(dist / 2, 2)   // "half the base"
                 );
 
+            // Align the normal to the new endpoints
+            Vector normal = arc.CoordinateSystem.Z.CrossProduct(end - start).CrossProduct(start - end).Normalise();
+
             Circle startCircle = new Circle() { Normal = normal, Centre = start, Radius = radius };
             Circle endCircle = new Circle() { Normal = normal, Centre = end, Radius = radius };
 
@@ -174,10 +176,11 @@ namespace BH.Engine.Geometry
             {
                 // Ensure that the new centre is at the same side of the start/end points
                 Vector unitNormal = normal.Normalise();
+                unitNormal *= angle > Math.PI ? -1 : 1;
                 foreach (Point pt in intersections)
                 {
                     Vector temp = (start - pt).CrossProduct(end - pt).Normalise();
-                    if ((temp + unitNormal).SquareLength() > 1)
+                    if ((temp + unitNormal).SquareLength() >= 1)
                     {
                         newOrigin = pt;
                         break;
@@ -189,6 +192,7 @@ namespace BH.Engine.Geometry
             oM.Geometry.CoordinateSystem.Cartesian coordClone = Create.CartesianCoordinateSystem(newOrigin, newX, Query.CrossProduct(normal, newX));
 
             double endAngle = (start - newOrigin).Angle(end - newOrigin);
+            endAngle = angle > Math.PI ? 2 * Math.PI - endAngle : endAngle; 
 
             Arc result = new Arc()
             {
