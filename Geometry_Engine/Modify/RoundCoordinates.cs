@@ -297,10 +297,11 @@ namespace BH.Engine.Geometry
                 Math.Abs(Math.Abs(normal.Y) - 1) < Tolerance.Angle ||
                 Math.Abs(Math.Abs(normal.Z) - 1) < Tolerance.Angle)
             {
-                ICurve externalBoundery = planarSurface.ExternalBoundary.IRoundCoordinates(decimalPlaces);
-                List<ICurve> internalBounderies = planarSurface.InternalBoundaries.Select(x => x.IRoundCoordinates(decimalPlaces)).ToList();
+                Plane plane = new Plane() { Origin = planarSurface.ExternalBoundary.IStartPoint().RoundCoordinates(decimalPlaces), Normal = normal.RoundCoordinates(0) };
+                ICurve externalBoundary = planarSurface.ExternalBoundary.IProject(plane).IRoundCoordinates(decimalPlaces);
+                List<ICurve> internalBoundaries = planarSurface.InternalBoundaries.Select(x => x.IProject(plane).IRoundCoordinates(decimalPlaces)).ToList();
 
-                return Create.PlanarSurface(externalBoundery, internalBounderies);
+                return Create.PlanarSurface(externalBoundary, internalBoundaries);
             }
 
             Reflection.Compute.RecordWarning("Rounding the coordinates of a non-Axis-aligned planar surface while maintaining planarity needs to be done manually. No action has been taken.");
