@@ -47,8 +47,8 @@ namespace BH.Engine.Versioning
         /***************************************************/
 
         [Description("Provide a string representation of a method as it used for versioning by the PreviousVersion attribute.")]
-        [Input("methodName", "Method to ge tthe key from")]
-        [Output("Key", "String representation of the method as it will be used by the PreviousVersion attribute.")]
+        [Input("method", "Method to generate the key for")]
+        [Output("key", "String representation of the method as it will be used by the PreviousVersion attribute.")]
         public static string VersioningKey(this MethodBase method)
         {
             if (method == null)
