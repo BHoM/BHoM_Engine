@@ -293,9 +293,9 @@ namespace BH.Engine.Geometry
         {
             Vector normal = planarSurface.Normal().Normalise();
 
-            if (Math.Abs(Math.Abs(normal.X) - 1) < Tolerance.Distance ||
-                Math.Abs(Math.Abs(normal.Y) - 1) < Tolerance.Distance ||
-                Math.Abs(Math.Abs(normal.Z) - 1) < Tolerance.Distance)
+            if (Math.Abs(Math.Abs(normal.X) - 1) < Tolerance.Angle ||
+                Math.Abs(Math.Abs(normal.Y) - 1) < Tolerance.Angle ||
+                Math.Abs(Math.Abs(normal.Z) - 1) < Tolerance.Angle)
             {
                 ICurve externalBoundery = planarSurface.ExternalBoundary.IRoundCoordinates(decimalPlaces);
                 List<ICurve> internalBounderies = planarSurface.InternalBoundaries.Select(x => x.IRoundCoordinates(decimalPlaces)).ToList();
