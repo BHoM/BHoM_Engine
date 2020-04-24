@@ -102,7 +102,7 @@ namespace BH.Engine.Reflection
                 return types;
             else
             {
-                //Unique method not found in list, check if it can be extracted using the system Type
+                //No method found in dictionary, try System.Type
                 Type type = System.Type.GetType(name);
                 if (type == null)
                 {
