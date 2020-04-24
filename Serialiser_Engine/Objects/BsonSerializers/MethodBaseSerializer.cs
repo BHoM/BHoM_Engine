@@ -106,7 +106,7 @@ namespace BH.Engine.Serialiser.BsonSerializers
                 if (BsonDocument.TryParse(typeName, out typeDocument) && typeDocument.Contains("Name"))
                 {
                     typeName = typeDocument["Name"].AsString;
-                    foreach (Type type in Reflection.Create.AllEngineTypes(typeName))
+                    foreach (Type type in Reflection.Create.AllTypes(typeName))
                     {
                         method = Create.MethodBase(type, methodName, types); // type overload
                         if (method != null)
