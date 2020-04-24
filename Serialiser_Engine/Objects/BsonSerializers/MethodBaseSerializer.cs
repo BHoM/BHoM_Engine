@@ -102,12 +102,16 @@ namespace BH.Engine.Serialiser.BsonSerializers
                 List<Type> types = paramTypesJson.Select(x => Convert.FromJson(x)).Cast<Type>().ToList();
 
                 MethodBase method = null;
-
-                foreach (Type type in Reflection.Create.AllEngineTypes(typeName))
+                BsonDocument typeDocument;
+                if (BsonDocument.TryParse(typeName, out typeDocument) && typeDocument.Contains("Name"))
                 {
-                    method = Create.MethodBase(type, methodName, types); // type overload
-                    if (method != null)
-                        return method;
+                    typeName = typeDocument["Name"].AsString;
+                    foreach (Type type in Reflection.Create.AllEngineTypes(typeName))
+                    {
+                        method = Create.MethodBase(type, methodName, types); // type overload
+                        if (method != null)
+                            return method;
+                    }
                 }
                
                 if (method == null)
