@@ -80,11 +80,36 @@ namespace BH.Engine.Reflection
                         foreach (Type t in types)
                             message += "- " + t.FullName + "\n";
 
+                        message += "To get a Engine type from a specific Assembly, try adding ', NameOfTheAssmebly' at the end of the name string, or use the AllEngineTypes method to retreive all the types.";
+
                         Compute.RecordError(message);
                     }
                     return null;
                 }
                 return type;
+            }
+        }
+
+        /***************************************************/
+
+        public static List<Type> AllEngineTypes(string name)
+        {
+            List<Type> methodTypeList = Query.EngineTypeList();
+
+            List<Type> types = methodTypeList.Where(x => x.AssemblyQualifiedName.StartsWith(name)).ToList();
+
+            if (types.Count != 0)
+                return types;
+            else
+            {
+                //Unique method not found in list, check if it can be extracted using the system Type
+                Type type = System.Type.GetType(name);
+                if (type == null)
+                {
+                    Compute.RecordError($"A type corresponding to {name} cannot be found.");
+                    return new List<Type>();
+                }
+                return new List<Type> { type };
             }
         }
 
