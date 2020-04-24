@@ -92,11 +92,17 @@ namespace BH.Engine.Reflection
 
         /***************************************************/
 
-        public static List<Type> AllEngineTypes(string name)
+        public static List<Type> AllTypes(string name)
         {
-            List<Type> methodTypeList = Query.EngineTypeList();
+            List<Type> typeList = new List<Type>();
+            if (name.StartsWith("BH.Engine"))
+                typeList = Query.EngineTypeList();
+            else if (name.StartsWith("BH.Adapter"))
+                typeList = Query.AdapterTypeList();
+            else if (name.StartsWith("BH.oM"))
+                typeList = Query.BHoMTypeList();
 
-            List<Type> types = methodTypeList.Where(x => x.AssemblyQualifiedName.StartsWith(name)).ToList();
+            List<Type> types = typeList.Where(x => x.AssemblyQualifiedName.StartsWith(name)).ToList();
 
             if (types.Count != 0)
                 return types;
