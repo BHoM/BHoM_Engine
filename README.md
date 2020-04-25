@@ -11,7 +11,7 @@ This particular repo contains all of the core _engine methods_ that operate on t
 The BHoM Engine is essentially a large list of funtions for processing BHoM objects, extending their capability. With the objects themselves a simple agreed list of properties, the engines are where all the intelligence is stored, capturing and encoding crowd sourced know-how. See [creating new algorithms](https://github.com/BHoM/documentation/wiki/BH.Engine-%E2%80%90-Create-New-Algorithms) for more details.
 
 
-Along with the rest of the core repositories - [BHoM](https://github.com/BHoM/BHoM), [BHoM_Adapter](https://github.com/BHoM/BHoM_Adapter) and [BHoM_UI](https://github.com/BHoM/BHoM_UI) – these all form the basis on which all the BHoM Toolkits are built.
+Along with the rest of the core repositories - [BHoM](https://github.com/BHoM/BHoM), [BHoM_Adapter](https://github.com/BHoM/BHoM_Adapter) and [BHoM_UI](https://github.com/BHoM/BHoM_UI) – this is the basis on which all of the BHoM Toolkits are built.
 
 ## Quick Start 🚀 
 
