@@ -60,14 +60,14 @@ namespace BH.Engine.Spatial
         [InputFromProperty("offset")]
         [InputFromProperty("referencePoint")]
         [Output("linLayout", "The created LinearLayout.")]
-        public static MultiLinearLayout MultiLinearLayout(int numberOfPoints, double parallellMinimumSpacing, double perpendicularMinimumSpacing, Vector direction = null, double offset = 0, ReferencePoint referencePoint = ReferencePoint.BottomCenter)
+        public static MultiLinearLayout MultiLinearLayout(int numberOfPoints, double parallelMinimumSpacing, double perpendicularMinimumSpacing, Vector direction = null, double offset = 0, ReferencePoint referencePoint = ReferencePoint.BottomCenter)
         {
             if (numberOfPoints <= 0)
             {
                 Engine.Reflection.Compute.RecordError("MultiLinearLayout requires number of points to be at least 1.");
                 return null;
             }
-            if (parallellMinimumSpacing <= 0 || perpendicularMinimumSpacing <= 0)
+            if (parallelMinimumSpacing <= 0 || perpendicularMinimumSpacing <= 0)
             {
                 Engine.Reflection.Compute.RecordError("MultiLinearLayout requires the minimum spacing to be larger than 0.");
                 return null;
@@ -80,7 +80,7 @@ namespace BH.Engine.Spatial
                 Engine.Reflection.Compute.RecordWarning("Direction vector has been projected to the global XY-plane.");
             }
 
-            return new MultiLinearLayout(numberOfPoints, parallellMinimumSpacing, perpendicularMinimumSpacing, projDir, offset, referencePoint);
+            return new MultiLinearLayout(numberOfPoints, parallelMinimumSpacing, perpendicularMinimumSpacing, projDir, offset, referencePoint);
         }
 
         /***************************************************/
