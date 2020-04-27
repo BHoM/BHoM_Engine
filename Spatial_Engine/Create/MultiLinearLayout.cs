@@ -38,7 +38,7 @@ namespace BH.Engine.Spatial
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates a MultiLinearLayout from its core proeprties. Ensures all vectors are in the global XY-plane.")]
+        [Description("Creates a MultiLinearLayout from its core properties. Ensures all vectors are in the global XY-plane.")]
         [InputFromProperty("numberOfPoints")]
         [Input("minimumSpacing", "Minimum spacing between points in layers and between each layer.", typeof(Length))]
         [InputFromProperty("direction")]
@@ -54,7 +54,7 @@ namespace BH.Engine.Spatial
 
         [Description("Creates a MultiLinearLayout from its core proeprties. Ensures all vectors are in the global XY-plane.")]
         [InputFromProperty("numberOfPoints")]
-        [InputFromProperty("parallellMinimumSpacing")]
+        [InputFromProperty("parallelMinimumSpacing")]
         [InputFromProperty("perpendicularMinimumSpacing")]
         [InputFromProperty("direction")]
         [InputFromProperty("offset")]
@@ -69,7 +69,7 @@ namespace BH.Engine.Spatial
             }
             if (parallellMinimumSpacing <= 0 || perpendicularMinimumSpacing <= 0)
             {
-                Engine.Reflection.Compute.RecordError("MultiLinearLayout requires the minium spacing to be larger than 0.");
+                Engine.Reflection.Compute.RecordError("MultiLinearLayout requires the minimum spacing to be larger than 0.");
                 return null;
             }
 

@@ -38,7 +38,7 @@ namespace BH.Engine.Spatial
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns the points in the layout. Will not take the host geometry into account for ExplicitLayout")]
+        [Description("Returns the points in the layout. For ExplicitLayouts, the host geometry will be ignored.")]
         [Input("layout2D", "The layout object to query the points from.")]
         [Input("hostRegionCurve", "The region curve of the objects associated with the layout. Unused for Explicit layouts.")]
         [Input("openingCurves", "Optional opening curves in the region. Unused for ExplicitLayout.")]
@@ -108,7 +108,7 @@ namespace BH.Engine.Spatial
 
         /***************************************************/
 
-        [Description("Returns Points along along a straight line through the region curve. If the line is segemented by openings or the region curve the points will be distributed to the different segments based on their length.")]
+        [Description("Returns Points along a straight line through the region curve. If the line is discontinuous because of openings or concave host region, Points will be distributed to the different segments based on their length.")]
         [Input("layout2D", "The layout object to query the points from.")]
         [Input("hostRegionCurve", "The region curve of the objects associated with the layout.")]
         [Input("openingCurves", "Optional opening curves in the region.")]
