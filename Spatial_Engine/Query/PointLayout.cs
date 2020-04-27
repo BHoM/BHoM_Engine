@@ -157,7 +157,7 @@ namespace BH.Engine.Spatial
             while (remainingPoints > 0)
             {
                 Line axis = new Line { Start = refPoint, End = refPoint + layout2D.Direction, Infinite = true };
-                List<Line> distributionLines = IntersectionLines(hostRegionCurve, openingCurves, axis);
+                List<Line> distributionLines = IntersectionLines(hostRegionCurve, openingCurves, axis, layout2D.ParallelMinimumSpacing);
 
                 if (distributionLines.Count == 0)
                 {
@@ -365,7 +365,7 @@ namespace BH.Engine.Spatial
 
         /***************************************************/
 
-        private static List<Line> IntersectionLines(this ICurve hostRegionCurve, List<ICurve> openingCurves, Line axis, double tolerance = Tolerance.Distance)
+        private static List<Line> IntersectionLines(this ICurve hostRegionCurve, List<ICurve> openingCurves, Line axis, double minimumEndDistance = -1, double tolerance = Tolerance.Distance)
         {
             openingCurves = openingCurves ?? new List<ICurve>();
             List<Point> intPts = hostRegionCurve.ILineIntersections(axis, true);
@@ -384,6 +384,32 @@ namespace BH.Engine.Spatial
 
             //Ensure a continous line is merged into one.
             result = Engine.Geometry.Compute.Join(result).Select(x => new Line { Start = x.IStartPoint(), End = x.IEndPoint(), Infinite = false }).ToList();
+
+            //Check if lines are too close together
+            if (minimumEndDistance > 0 && result.Count > 1)
+            {
+                Vector tan = (axis.End - axis.Start).Normalise();
+                for (int i = 0; i < result.Count -1; i++)
+                {
+                    double dist = result[i].End.Distance(result[i + 1].Start);
+                    if (dist < minimumEndDistance)
+                    {
+                        double diff = minimumEndDistance - dist;
+                        //If half the difference can be fit on both adjoining lines, then separate them by this distance
+                        if (result[i].Length() > diff / 2 && result[i + 1].Length() > diff / 2)
+                        {
+                            result[i].End -= tan * diff / 2;
+                            result[i + 1].Start += tan * diff / 2;
+                        }
+                        else
+                        {
+                            //For now, if the above does not work, leave a warning and continue.
+                            //TODO: make this work for these cases as well.
+                            Engine.Reflection.Compute.RecordWarning("The ends om some distribution lines are closer together than then minimumspacing, but could not be separated automatically. Please check the result of the Pointlayout distribution.");
+                        }
+                    }
+                }
+            }
 
             return result;
         }
