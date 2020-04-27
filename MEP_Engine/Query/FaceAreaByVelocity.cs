@@ -53,7 +53,6 @@ namespace BH.Engine.MEP
         public static double FaceAreaByVelocity(this AirHandlingUnit mepEquipmentObject)
         {
             return Math.Sqrt(mepEquipmentObject.TotalAirFlow / mepEquipmentObject.AirVelocityAcrossCoil);
-
         }
     }
 }
