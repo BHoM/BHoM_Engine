@@ -179,7 +179,7 @@ namespace BH.Engine.Spatial
                 int layerDivs = 0;
                 for (int i = 0; i < distributionLines.Count; i++)
                 {
-                    int divs = (int)Math.Floor(distributionLines[i].ILength() / layout2D.ParallelMinimumSpacing) + 1;
+                    int divs = (int)Math.Ceiling(distributionLines[i].ILength() / layout2D.ParallelMinimumSpacing);
                     layerDivs += divs;
                 }
 
