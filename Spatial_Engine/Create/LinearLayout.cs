@@ -37,7 +37,7 @@ namespace BH.Engine.Spatial
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates a LinearLayout from its core proeprties. Ensures all vectors are in the global XY-plane.")]
+        [Description("Creates a LinearLayout from its core properties. Ensures all vectors are in the global XY-plane.")]
         [InputFromProperty("numberOfPoints")]
         [InputFromProperty("direction")]
         [InputFromProperty("offset")]
@@ -47,7 +47,7 @@ namespace BH.Engine.Spatial
         {
             if (numberOfPoints <= 0)
             {
-                Engine.Reflection.Compute.RecordError("LinearLayouts requires number of points to be at least 1.");
+                Engine.Reflection.Compute.RecordError("LinearLayout requires numberOfPoints to be at least 1.");
                 return null;
             }
             Vector projDir = direction ?? Vector.XAxis;
