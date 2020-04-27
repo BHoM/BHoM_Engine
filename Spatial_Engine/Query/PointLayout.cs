@@ -176,8 +176,8 @@ namespace BH.Engine.Spatial
                 int layerDivs = 0;
                 for (int i = 0; i < distributionLines.Count; i++)
                 {
-                    int divs = (int)Math.Floor(distributionLines[i].ILength() / layout2D.ParallelMinimumSpacing);
-                    layerDivs += Math.Max(divs, 1);
+                    int divs = (int)Math.Floor(distributionLines[i].ILength() / layout2D.ParallelMinimumSpacing) + 1;
+                    layerDivs += divs;
                 }
 
                 layerDivs = Math.Min(layerDivs, remainingPoints);
@@ -228,17 +228,18 @@ namespace BH.Engine.Spatial
             double fullLength = lengths.Sum();
 
             List<int> divs = new List<int>();
-            List<double> remaining = new List<double>();
+            List<double> spacingWithAdditionalPoint = new List<double>();
 
             //Check how many division points to extract from each curve, based on length ratio of the curve in relation to the length of all curves
             for (int i = 0; i < lengths.Count; i++)
             {
-                double pointRatio = lengths[i] / fullLength * nbPoints;
-                int fullCurveDivs = (int)Math.Floor(pointRatio);
-                double remainder = pointRatio - fullCurveDivs;
+                int fullCurveDivs = (int)Math.Floor(lengths[i] / fullLength * nbPoints);
+
+                //what would an additional point mean in terms of length
+                double spacingWithAdditional = lengths[i] / (double)(fullCurveDivs + 1);
 
                 divs.Add(fullCurveDivs);
-                remaining.Add(remainder);
+                spacingWithAdditionalPoint.Add(spacingWithAdditional);
             }
 
             int remPoints = nbPoints - divs.Sum();
@@ -246,9 +247,9 @@ namespace BH.Engine.Spatial
             //Add points to the curve that has the largest reminder after the ratio extraction
             while (remPoints > 0)
             {
-                int maxIndex = remaining.IndexOf(remaining.Max());
+                int maxIndex = spacingWithAdditionalPoint.IndexOf(spacingWithAdditionalPoint.Max());
                 divs[maxIndex]++;
-                remaining[maxIndex] = 0;
+                spacingWithAdditionalPoint[maxIndex] = 0;
                 remPoints--;
             }
 
