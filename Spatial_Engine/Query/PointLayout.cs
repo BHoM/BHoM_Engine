@@ -247,7 +247,7 @@ namespace BH.Engine.Spatial
 
             int remPoints = nbPoints - divs.Sum();
 
-            //Add points to the curve that has the largest reminder after the ratio extraction
+            //Add points to the curve that would have the largest spacing after adding an additional point
             while (remPoints > 0)
             {
                 int maxIndex = spacingWithAdditionalPoint.IndexOf(spacingWithAdditionalPoint.Max());
