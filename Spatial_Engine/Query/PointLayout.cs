@@ -60,7 +60,10 @@ namespace BH.Engine.Spatial
             List<ICurve> subCurves = hostRegionCurve.ISubParts().ToList();
             if (layout2D.EnforceDiscontinuityPoints && subCurves.Count != 1)
             {
-                List<Point> pts = hostRegionCurve.IDiscontinuityPoints().CullDuplicates();
+                List<Point> pts = hostRegionCurve.IDiscontinuityPoints();
+                pts.Add(hostRegionCurve.IStartPoint());
+                pts.Add(hostRegionCurve.IEndPoint());
+                pts = pts.CullDuplicates();
                 int remainingPoints = layout2D.NumberOfPoints - pts.Count;
                 if (remainingPoints > 0)
                 {
