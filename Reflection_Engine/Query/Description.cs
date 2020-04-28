@@ -22,6 +22,7 @@
 
 using BH.oM.Reflection.Attributes;
 using BH.oM.Quantities.Attributes;
+using BH.oM.Base;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -47,13 +48,10 @@ namespace BH.Engine.Reflection
             if (descriptionAttribute != null && !string.IsNullOrWhiteSpace(descriptionAttribute.Description))
                 desc = descriptionAttribute.Description + Environment.NewLine;
 
-            if (member is PropertyInfo)
+            if (member is PropertyInfo && (typeof(IObject).IsAssignableFrom(((PropertyInfo)member).PropertyType)))
             {
                 desc += ((PropertyInfo)member).PropertyType.Description(quantityAttribute) + Environment.NewLine;
             }
-
-            if (member.ReflectedType != null)
-                desc += member.Name + " is a " + member.MemberType.ToString() + " of " + member.ReflectedType.ToText(true);
 
             return desc;
         }

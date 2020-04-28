@@ -26,22 +26,48 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using BH.oM.Geometry;
-using System.ComponentModel;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Environment.Elements;
 
-namespace BH.Engine.Geometry
+using BH.Engine.Physical;
+
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
+
+using BH.oM.Quantities.Attributes;
+
+using BH.Engine.Geometry;
+
+namespace BH.Engine.Environment
 {
-    public static partial class Modify
+    public static partial class Query
     {
-        [Deprecated("3.2", "Renamed to RoundCoordinates and expanded for other Geometry", null, "BH.Engine.Geometry.Modify.RoundCoordinates")]
-        [Description("Modifies a BHoM Geometry Point to be rounded to the number of provided decimal places")]
-        [Input("point", "The BHoM Geometry Point to modify")]
-        [Input("decimalPlaces", "The number of decimal places to round to, default 6")]
-        [Output("point", "The modified BHoM Geometry Point")]
-        public static Point RoundPoint(this Point point, int decimalPlaces = 6)
+        [Description("Returns an Openings solid volume based on its area, and construction thickness")]
+        [Input("panel", "The Panel to get the volume from")]
+        [Output("volume", "The Panel solid volume", typeof(Volume))]
+        public static double SolidVolume(this Panel panel)
         {
-            return RoundCoordinates(point, decimalPlaces);
+            double volume = panel.Area() * panel.Construction.IThickness();
+            return volume + panel.Openings.Sum(x => x.SolidVolume());
+        }
+
+        [Description("Returns an Openings solid volume based on its area, and construction thickness")]
+        [Input("opening", "The Opening to get the volume from")]
+        [Output("volume", "The Opening solid volume", typeof(Volume))]
+        public static double SolidVolume(this Opening opening)
+        {
+            double glazedVolume = 0;
+            double frameVolume = 0;
+
+            if (opening.InnerEdges != null && opening.InnerEdges.Count != 0)
+            {
+                double innerArea = opening.InnerEdges.Polyline().Area();
+                glazedVolume = innerArea * opening.OpeningConstruction.IThickness();
+                frameVolume = (opening.Polyline().Area() - innerArea) * opening.FrameConstruction.IThickness();
+            }
+            else
+                glazedVolume = opening.Polyline().Area() * opening.OpeningConstruction.IThickness();
+
+            return glazedVolume + frameVolume;
         }
     }
 }

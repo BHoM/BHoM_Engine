@@ -68,19 +68,17 @@ namespace BH.Engine.Physical
             return surface.Construction.IMaterialComposition();
         }
 
-        /***************************************************/
-        /**** Private Methods                           ****/
-        /***************************************************/
-
         /******************************************************/
         /**** IConstruction Methods                        ****/
         /******************************************************/
 
-        private static MaterialComposition IMaterialComposition(this IConstruction prop)
+        public static MaterialComposition IMaterialComposition(this IConstruction prop)
         {
             return MaterialComposition(prop as dynamic);
         }
 
+        /***************************************************/
+        /**** Private Methods                           ****/
         /***************************************************/
 
         private static MaterialComposition MaterialComposition(this Construction prop)
