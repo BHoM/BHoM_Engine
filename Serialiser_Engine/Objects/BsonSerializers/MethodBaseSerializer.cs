@@ -100,8 +100,20 @@ namespace BH.Engine.Serialiser.BsonSerializers
             try
             {
                 List<Type> types = paramTypesJson.Select(x => Convert.FromJson(x)).Cast<Type>().ToList();
-                MethodBase method = Create.MethodBase((Type)Convert.FromJson(typeName), methodName, types); // type overload
 
+                MethodBase method = null;
+                BsonDocument typeDocument;
+                if (BsonDocument.TryParse(typeName, out typeDocument) && typeDocument.Contains("Name"))
+                {
+                    typeName = typeDocument["Name"].AsString;
+                    foreach (Type type in Reflection.Create.AllTypes(typeName))
+                    {
+                        method = Create.MethodBase(type, methodName, types); // type overload
+                        if (method != null)
+                            return method;
+                    }
+                }
+               
                 if (method == null)
                     Reflection.Compute.RecordError("Method " + methodName + " from " + typeName + " failed to deserialise.");
                 return method;
