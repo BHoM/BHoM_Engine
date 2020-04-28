@@ -405,7 +405,7 @@ namespace BH.Engine.Spatial
                         {
                             //For now, if the above does not work, leave a warning and continue.
                             //TODO: make this work for these cases as well.
-                            Engine.Reflection.Compute.RecordWarning("The ends om some distribution lines are closer together than then minimumspacing, but could not be separated automatically. Please check the result of the Pointlayout distribution.");
+                            Engine.Reflection.Compute.RecordWarning("The ends of some distribution lines are closer together than the minimum spacing, but could not be separated automatically. Please check the result of the PointLayout distribution.");
                         }
                     }
                 }
