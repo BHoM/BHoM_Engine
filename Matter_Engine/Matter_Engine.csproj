@@ -24,7 +24,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>..\Build\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -36,6 +36,7 @@
     </Reference>
     <Reference Include="Diffing_oM">
       <HintPath>..\..\BHoM\Build\Diffing_oM.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Dimensional_oM">
       <HintPath>..\..\BHoM\Build\Dimensional_oM.dll</HintPath>
@@ -50,7 +51,8 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="Quantities_oM">
-      <HintPath>..\..\..\BHoM\Build\Quantities_oM.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\BHoM\Build\Quantities_oM.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Reflection_oM">
