@@ -55,7 +55,7 @@ namespace BH.Engine.Spatial
         [Input("hostRegionCurves", "The region curves of the objects associated with the layout. Unused for Explicit layouts.")]
         [Input("openingCurves", "Optional opening curves in the region. Unused for ExplicitLayout.")]
         [Output("points", "The Points stored in the ExplicitLayout object.")]
-        public static List<Point> PointLayout(this ExplicitLayout layout2D, IEnumerable<ICurve> hostRegionCurves, IEnumerable<ICurve> openingCurves = null)
+        public static List<Point> PointLayout(this ExplicitLayout layout2D, IEnumerable<ICurve> hostRegionCurves = null, IEnumerable<ICurve> openingCurves = null)
         {
             return layout2D.Points.ToList();
         }
