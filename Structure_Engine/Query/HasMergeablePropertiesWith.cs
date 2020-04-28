@@ -43,7 +43,7 @@ namespace BH.Engine.Structure
         [Input("element", "An Structure Edge to compare the properties of with an other Structure Edge")]
         [Input("other", "The Structure Edge to compare with the other Structure Edge.")]
         [Output("equal", "True if the Objects non-geometrical property is equal to the point that they could be merged into one object")]
-        public static bool HasMergeablePropertiesWith(Edge element, Edge other)
+        public static bool HasMergeablePropertiesWith(this Edge element, Edge other)
         {
             return new Constraint4DOFComparer().Equals(element.Release, other.Release) &&
                    new Constraint6DOFComparer().Equals(element.Support, other.Support);
