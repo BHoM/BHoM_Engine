@@ -38,10 +38,10 @@ namespace BH.Engine.Matter
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Adds a IMaterialFragment to a material based on the mapping defined by the keys and materialFragments. /n" + 
+        [Description("Adds a IMaterialFragment to a material based on the mapping defined by the keys and materialFragments. \n" + 
                      "i.e. The materialFragment on index 3 will be added to the Material with the same name as the key at index 3.")]
         [Input("materials", "The Materials to Modify, will be evaluated based on their name.")]
-        [Input("keys", "The key is the name of the Material to be affected. The keys index in this list relates to the index of a materialFragment to add in the other list. /n" + 
+        [Input("keys", "The key is the name of the Material to be affected. The keys index in this list relates to the index of a materialFragment to add in the other list. \n" + 
                        "Empty keys means that its related materialFragment will be disgarded.")]
         [Input("materialFragments", "The materialFragments to add to the Materials, the order of which relates to the keys.")]
         [Output("materials", "Materials with modified list of properties. Materials whos names did not appear among the keys are unaffected.")]
