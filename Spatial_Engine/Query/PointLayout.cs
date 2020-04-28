@@ -164,7 +164,7 @@ namespace BH.Engine.Spatial
         /***************************************************/
 
 
-        [Description("Returns Points along one or more straight lines through the region curves. If the line is discontinuous because of openings or concave host region, Points will be distributed to the different segments based on their length.\n" +
+        [Description("Returns Points along one or more straight lines through the region curves. If the line is discontinuous because of openings, a concave host region, or multiple host regions, Points will be distributed to the different segments based on their length.\n" +
                      "The method fits as many points as it can onto each Line along the Direction vector before populating the next.")]
         [Input("layout2D", "The layout object to query the points from.")]
         [Input("hostRegionCurves", "The region curves of the objects associated with the layout.")]
