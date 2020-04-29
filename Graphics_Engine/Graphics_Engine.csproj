@@ -62,6 +62,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Compute\Element3D\Cuboid.cs" />
+    <Compile Include="Compute\Element3D\BoundingBox.cs" />
+    <Compile Include="Compute\Element3D\Sphere.cs" />
+    <Compile Include="Compute\Element0D\Point.cs" />
     <Compile Include="Compute\IRenderMesh.cs" />
     <Compile Include="Compute\_Fallback.cs" />
     <Compile Include="Create\Gradient.cs" />
@@ -74,6 +78,10 @@
     <Compile Include="Convert\ToSVGString.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\BHoM_Engine\BHoM_Engine.csproj">
+      <Project>{1ad45c88-dd54-48e5-951f-55edfeb70e35}</Project>
+      <Name>BHoM_Engine</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Geometry_Engine\Geometry_Engine.csproj">
       <Project>{89ab2dcb-ef87-4cba-b59c-c16a8a71d333}</Project>
       <Name>Geometry_Engine</Name>
@@ -82,6 +90,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Compute\Element1D\" />
+    <Folder Include="Compute\Element2D\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
