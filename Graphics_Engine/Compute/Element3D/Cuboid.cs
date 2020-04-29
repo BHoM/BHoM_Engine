@@ -39,7 +39,6 @@ namespace BH.Engine.Graphics
         /**** Public Methods - Graphics                 ****/
         /***************************************************/
 
-        [Description("Returns a BHoM mesh representation for the BHoM Bar.")]
         public static BH.oM.Graphics.RenderMesh RenderMesh(this Cuboid cuboid, RenderMeshOptions renderMeshOptions = null)
         {
             renderMeshOptions = renderMeshOptions ?? new RenderMeshOptions();
