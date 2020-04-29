@@ -112,7 +112,19 @@ namespace BH.Engine.Spatial
                         }
 
                     }
+                    int count = pts.Count;
                     pts = pts.ISortAlongCurve(regionCurve);
+
+                    //SortAlongCurve might add extra points, generally duplicate of start and end point for closed curves.
+                    if (pts.Count == count + 1 && pts[0].Distance(pts[pts.Count - 1]) < Tolerance.Distance)
+                    {
+                        pts.RemoveAt(pts.Count - 1);
+                    }
+                    else if (pts.Count > count)
+                    {
+                        pts = pts.CullDuplicates();
+                    }
+
                     result.AddRange(pts);
                 }
                 else
@@ -260,29 +272,29 @@ namespace BH.Engine.Spatial
             double fullLength = lengths.Sum();
 
             List<int> divs = new List<int>();
-            List<double> spacingWithAdditionalPoint = new List<double>();
+            List<double> spacings = new List<double>();
 
             //Check how many division points to extract from each curve, based on length ratio of the curve in relation to the length of all curves
             for (int i = 0; i < lengths.Count; i++)
             {
-                int fullCurveDivs = (int)Math.Floor(lengths[i] / fullLength * nbPoints);
+                int fullCurveDivs = (int)Math.Ceiling(lengths[i] / fullLength * nbPoints);
 
-                //what would an additional point mean in terms of length
-                double spacingWithAdditional = lengths[i] / (double)(fullCurveDivs + 1);
+                //What is the current spacing of the points
+                double currentSpacing = lengths[i] / Math.Max((double)(fullCurveDivs - 1), 1);
 
                 divs.Add(fullCurveDivs);
-                spacingWithAdditionalPoint.Add(spacingWithAdditional);
+                spacings.Add(currentSpacing);
             }
 
-            int remPoints = nbPoints - divs.Sum();
+            int overshot = divs.Sum() - nbPoints;
 
-            //Add points to the curve that would have the largest spacing after adding an additional point
-            while (remPoints > 0)
+            //While to many points, remove one from the curve with smallest spacing
+            while (overshot > 0)
             {
-                int maxIndex = spacingWithAdditionalPoint.IndexOf(spacingWithAdditionalPoint.Max());
-                divs[maxIndex]++;
-                spacingWithAdditionalPoint[maxIndex] = 0;
-                remPoints--;
+                int minIndex = spacings.IndexOf(spacings.Min());
+                divs[minIndex]--;
+                spacings[minIndex] = double.MaxValue;
+                overshot--;
             }
 
             return divs;
