@@ -62,6 +62,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Compute\IRenderMesh.cs" />
+    <Compile Include="Compute\_Fallback.cs" />
     <Compile Include="Create\Gradient.cs" />
     <Compile Include="Create\SVGStyle.cs" />
     <Compile Include="Create\SVGObject.cs" />
