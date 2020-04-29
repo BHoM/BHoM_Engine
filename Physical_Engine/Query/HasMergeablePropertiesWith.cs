@@ -49,6 +49,12 @@ namespace BH.Engine.Physical
             if (element.GetType() != other.GetType())
                 return false;
 
+            if (element.Property == other.Property)
+                return true;
+
+            if (element.Property == null || other.Property == null)
+                return false;
+
             if (element.Property.Name != other.Property.Name)
                 return false;
 
@@ -58,7 +64,7 @@ namespace BH.Engine.Physical
         /***************************************************/
 
         [Description("Evaluates if the two ISurface non-geometrical data is equal to the point that they could be merged into one object.")]
-        [Input("element", "An ISurface to compare the properties of with an other IElement0D.")]
+        [Input("element", "An ISurface to compare the properties of with an other ISurface.")]
         [Input("other", "The ISurface to compare with the other ISurface.")]
         [Output("equal", "True if the ISurfaces' non-geometrical property is equal to the point that they could be merged into one object.")]
         public static bool HasMergeablePropertiesWith(this ISurface element, ISurface other)
@@ -67,6 +73,12 @@ namespace BH.Engine.Physical
                 return false;
 
             if (element.Offset != other.Offset)
+                return false;
+
+            if (element.Construction == other.Construction)
+                return true;
+
+            if (element.Construction == null || other.Construction == null)
                 return false;
 
             if (element.Construction.Name != other.Construction.Name)
