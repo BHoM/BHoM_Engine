@@ -39,13 +39,17 @@ namespace BH.Engine.Graphics
         /**** Public Methods - Graphics                 ****/
         /***************************************************/
 
-        [Description("Returns a BHoM mesh representation for the BHoM Bar.")]
         public static BH.oM.Graphics.RenderMesh RenderMesh(this BoundingBox bbox, RenderMeshOptions renderMeshOptions = null)
         {
             renderMeshOptions = renderMeshOptions ?? new RenderMeshOptions();
 
-            return null;
-        }
+            double length = bbox.Max.X - bbox.Min.X;
+            double depth = bbox.Max.Y - bbox.Min.Y;
+            double height = bbox.Max.Z - bbox.Min.Z;
 
-    } 
+            Point origin = new Point() { X = length/2, Y = depth/2, Z = height/2 };
+
+            return BoxRenderMesh(origin, length, depth, height);
+        }
+    }
 }

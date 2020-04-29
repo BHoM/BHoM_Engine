@@ -43,72 +43,79 @@ namespace BH.Engine.Graphics
         {
             renderMeshOptions = renderMeshOptions ?? new RenderMeshOptions();
 
+            return BoxRenderMesh(cuboid.CoordinateSystem.Origin, cuboid.Length, cuboid.Depth, cuboid.Height, renderMeshOptions);
+        }
+
+        private static BH.oM.Graphics.RenderMesh BoxRenderMesh(Point centrePoint, double length, double depth, double height, RenderMeshOptions renderMeshOptions = null)
+        {
+            renderMeshOptions = renderMeshOptions ?? new RenderMeshOptions();
+
             List<Vertex> vertices = new List<Vertex>();
 
             // Top face (normal to global z, +)
             //0
             vertices.Add((Vertex)new Point()
             {
-                X = cuboid.CoordinateSystem.Origin.X + (cuboid.Length / 2.0),
-                Y = cuboid.CoordinateSystem.Origin.Y + (cuboid.Depth / 2.0),
-                Z = cuboid.CoordinateSystem.Origin.Z + (cuboid.Height / 2.0)
+                X = centrePoint.X + (length / 2.0),
+                Y = centrePoint.Y + (depth / 2.0),
+                Z = centrePoint.Z + (height / 2.0)
             });
 
             //1
             vertices.Add((Vertex)new Point()
             {
-                X = cuboid.CoordinateSystem.Origin.X + (cuboid.Length / -2.0),
-                Y = cuboid.CoordinateSystem.Origin.Y + (cuboid.Depth / 2.0),
-                Z = cuboid.CoordinateSystem.Origin.Z + (cuboid.Height / 2.0)
+                X = centrePoint.X + (length / -2.0),
+                Y = centrePoint.Y + (depth / 2.0),
+                Z = centrePoint.Z + (height / 2.0)
             });
 
             //2
             vertices.Add((Vertex)new Point()
             {
-                X = cuboid.CoordinateSystem.Origin.X + (cuboid.Length / -2.0),
-                Y = cuboid.CoordinateSystem.Origin.Y + (cuboid.Depth / -2.0),
-                Z = cuboid.CoordinateSystem.Origin.Z + (cuboid.Height / 2.0)
+                X = centrePoint.X + (length / -2.0),
+                Y = centrePoint.Y + (depth / -2.0),
+                Z = centrePoint.Z + (height / 2.0)
             });
 
             //3
             vertices.Add((Vertex)new Point()
             {
-                X = cuboid.CoordinateSystem.Origin.X + (cuboid.Length / 2.0),
-                Y = cuboid.CoordinateSystem.Origin.Y + (cuboid.Depth / -2.0),
-                Z = cuboid.CoordinateSystem.Origin.Z + (cuboid.Height / 2.0)
+                X = centrePoint.X + (length / 2.0),
+                Y = centrePoint.Y + (depth / -2.0),
+                Z = centrePoint.Z + (height / 2.0)
             });
 
             // Bottom face (normal to global z, -)
             //4
             vertices.Add((Vertex)new Point()
             {
-                X = cuboid.CoordinateSystem.Origin.X + (cuboid.Length / 2.0),
-                Y = cuboid.CoordinateSystem.Origin.Y + (cuboid.Depth / 2.0),
-                Z = cuboid.CoordinateSystem.Origin.Z + (cuboid.Height / -2.0)
+                X = centrePoint.X + (length / 2.0),
+                Y = centrePoint.Y + (depth / 2.0),
+                Z = centrePoint.Z + (height / -2.0)
             });
 
             //5
             vertices.Add((Vertex)new Point()
             {
-                X = cuboid.CoordinateSystem.Origin.X + (cuboid.Length / 2.0),
-                Y = cuboid.CoordinateSystem.Origin.Y + (cuboid.Depth / -2.0),
-                Z = cuboid.CoordinateSystem.Origin.Z + (cuboid.Height / -2.0)
+                X = centrePoint.X + (length / 2.0),
+                Y = centrePoint.Y + (depth / -2.0),
+                Z = centrePoint.Z + (height / -2.0)
             });
 
             //6
             vertices.Add((Vertex)new Point()
             {
-                X = cuboid.CoordinateSystem.Origin.X + (cuboid.Length / -2.0),
-                Y = cuboid.CoordinateSystem.Origin.Y + (cuboid.Depth / -2.0),
-                Z = cuboid.CoordinateSystem.Origin.Z + (cuboid.Height / -2.0)
+                X = centrePoint.X + (length / -2.0),
+                Y = centrePoint.Y + (depth / -2.0),
+                Z = centrePoint.Z + (height / -2.0)
             });
 
             //7
             vertices.Add((Vertex)new Point()
             {
-                X = cuboid.CoordinateSystem.Origin.X + (cuboid.Length / -2.0),
-                Y = cuboid.CoordinateSystem.Origin.Y + (cuboid.Depth / 2.0),
-                Z = cuboid.CoordinateSystem.Origin.Z + (cuboid.Height / -2.0)
+                X = centrePoint.X + (length / -2.0),
+                Y = centrePoint.Y + (depth / 2.0),
+                Z = centrePoint.Z + (height / -2.0)
             });
 
             List<Face> faces = new List<Face>();
@@ -134,5 +141,6 @@ namespace BH.Engine.Graphics
             return new RenderMesh() { Faces = faces, Vertices = vertices };
         }
 
-    } 
+
+    }
 }
