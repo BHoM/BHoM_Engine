@@ -20,6 +20,7 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.Engine.Geometry;
 using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
 using System;
@@ -165,7 +166,7 @@ namespace BH.Engine.Geometry
             }
 
             bool regSameDir = false;
-            if (Math.Abs(region.Normal().DotProduct(refRegion.Normal()) - 1) <= tolerance)
+            if (Math.Abs(region.INormal().DotProduct(refRegion.INormal()) - 1) <= tolerance)
                 regSameDir = true;
 
             for (int i = 0; i < tmpResult.Count; i++)
@@ -234,23 +235,6 @@ namespace BH.Engine.Geometry
             }
 
             return result;
-        }
-
-        /***************************************************/
-
-        [DeprecatedAttribute("2.3", "Replaced with method for ICurve, ICurve", null, "BooleanIntersection")]
-        public static List<PolyCurve> BooleanIntersection(this PolyCurve region, PolyCurve refRegion, double tolerance = Tolerance.Distance)
-        {
-            return (region as ICurve).BooleanIntersection(refRegion, tolerance);
-        }
-
-        /***************************************************/
-
-        [DeprecatedAttribute("2.3", "Replaced with method for IEnumerable<ICurve>", null, "BooleanIntersection")]
-        public static List<PolyCurve> BooleanIntersection(this List<PolyCurve> regions, double tolerance = Tolerance.Distance)
-        {
-            List<ICurve> regionsICurve = new List<ICurve>(regions);
-            return regionsICurve.BooleanIntersection(tolerance);
         }
 
         /***************************************************/

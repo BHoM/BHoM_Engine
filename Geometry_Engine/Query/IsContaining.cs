@@ -33,37 +33,7 @@ namespace BH.Engine.Geometry
         /***************************************************/
         /**** Public Methods - BoundingBox              ****/
         /***************************************************/
-
-        [DeprecatedAttribute("2.3", "Reorganised methods, adding tolerance", null, "IsContaining")]
-        public static bool IsContaining(this BoundingBox box1, BoundingBox box2)
-        {
-            //return (box1.Min.X <= box2.Min.X && box1.Min.Y <= box2.Min.Y && box1.Min.Z <= box2.Min.Z && box1.Max.X >= box2.Max.X && box1.Max.Y >= box2.Max.Y && box1.Max.Z >= box2.Max.Z);
-            return box1.IsContaining(box2, true, Tolerance.Distance);
-        }
-
-        /***************************************************/
-
-        [DeprecatedAttribute("2.3", "Reorganised methods, adding tolerance", null, "IsContaining")]
-        public static bool IIsContaining(this BoundingBox box, Point pt)
-        {
-            //Point max = box.Max;
-            //Point min = box.Min;
-
-            //return (pt.X <= max.X && pt.X >= min.X && pt.Y <= max.Y && pt.Y >= min.Y && pt.Z <= max.Z && pt.Z >= min.Z);
-            return box.IsContaining(pt, true, Tolerance.Distance);
-        }
-
-        /***************************************************/
-
-        [DeprecatedAttribute("2.3", "Reorganised methods, adding tolerance", null, "IsContaining")]
-        public static bool IsContaining(this BoundingBox box, IGeometry geometry)
-        {
-            //return box.IsContaining(geometry.IBounds());
-            return box.IsContaining(geometry, true, Tolerance.Distance);
-        }
-
-        /***************************************************/
-
+        
         public static bool IsContaining(this BoundingBox box1, BoundingBox box2, bool acceptOnEdge = true, double tolerance = Tolerance.Distance)
         {
             Point max1 = box1.Max;
@@ -393,7 +363,7 @@ namespace BH.Engine.Geometry
         {
             if (curve2 is Line || curve2 is Polyline) return curve1.IsContaining(curve2.IControlPoints(), acceptOnEdge, tolerance);
 
-            List<Point> iPts = curve1.ICurvePlanarIntersections(curve2, tolerance);
+            List<Point> iPts = curve1.ICurveIntersections(curve2, tolerance);
             if (!acceptOnEdge && iPts.Count > 0) return false;
 
             List<double> cParams = new List<double> { 0, 1 };
@@ -431,7 +401,7 @@ namespace BH.Engine.Geometry
         {
             if (!curve1.IsClosed(tolerance)) return false;
 
-            List<Point> iPts = curve1.ICurvePlanarIntersections(curve2, tolerance);
+            List<Point> iPts = curve1.ICurveIntersections(curve2, tolerance);
             if (!acceptOnEdge && iPts.Count > 0) return false;
 
             List<double> cParams = new List<double> { 0, 1 };
@@ -455,7 +425,7 @@ namespace BH.Engine.Geometry
         {
             if (!curve1.IsClosed(tolerance)) return false;
 
-            List<Point> iPts = curve1.ICurvePlanarIntersections(curve2, tolerance);
+            List<Point> iPts = curve1.ICurveIntersections(curve2, tolerance);
             if (!acceptOnEdge && iPts.Count > 0) return false;
 
             List<double> cParams = new List<double> { 0, 1 };

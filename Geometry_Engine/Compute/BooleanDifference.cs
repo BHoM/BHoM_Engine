@@ -123,46 +123,7 @@ namespace BH.Engine.Geometry
         /***************************************************/
         /****         public Methods - Regions          ****/
         /***************************************************/
-
-        [DeprecatedAttribute("2.3", "Replaced with a method returning a list of lists", null, "BooleanDifference")]
-        public static List<Polyline> BooleanDifference(this List<Polyline> regions, List<Polyline> refRegions, double tolerance = Tolerance.Distance)
-        {
-            List<Polyline> result = new List<Polyline>();
-            List<Polyline> openings = new List<Polyline>();
-
-            bool isOpening;
-            List<Polyline> bDifference;
-            foreach (Polyline region in regions)
-            {
-                List<Polyline> splitRegion = new List<Polyline> { region.Clone() };
-                foreach (Polyline refRegion in refRegions)
-                {
-                    List<Polyline> split = new List<Polyline>();
-                    foreach (Polyline sr in splitRegion)
-                    {
-                        isOpening = false;
-                        bDifference = sr.BooleanDifference(refRegion, out isOpening, tolerance);
-
-                        if (isOpening)
-                        {
-                            split.Add(bDifference[0]);
-                            openings.AddRange(bDifference.Skip(1));
-                        }
-                        else
-                            split.AddRange(bDifference);
-                    }
-                    splitRegion = split;
-                }
-
-                result.AddRange(splitRegion);
-            }
-
-            result.AddRange(openings);
-            return result;
-        }
-
-        /***************************************************/
-
+        
         public static List<Polyline> BooleanDifference(this Polyline region, List<Polyline> refRegions, double tolerance = Tolerance.Distance)
         {
             if (!region.IsClosed(tolerance) || refRegions.Any(x => !x.IsClosed()))
@@ -182,7 +143,7 @@ namespace BH.Engine.Geometry
             if (allRegions.Count == 1)
                 return new List<Polyline> { region };
 
-            Vector normal = region.Normal();
+            Vector normal = region.INormal();
 
             for (int i = 0; i < allRegions.Count; i++)
                 if (!allRegions[i].IsClockwise(normal))
@@ -310,15 +271,7 @@ namespace BH.Engine.Geometry
 
             return result;
         }
-
-        /***************************************************/
-
-        [DeprecatedAttribute("2.3", "Replaced with method for ICurve, IEnumerable<ICurve>", null, "BooleanDifference")]
-        public static List<PolyCurve> BooleanDifference(this PolyCurve region, List<PolyCurve> refRegions, double tolerance = Tolerance.Distance)
-        {
-            return (region as ICurve).BooleanDifference(refRegions, tolerance);
-        }
-
+        
         /***************************************************/
 
         public static List<PolyCurve> BooleanDifference(this ICurve region, IEnumerable<ICurve> refRegions, double tolerance = Tolerance.Distance)
@@ -480,85 +433,6 @@ namespace BH.Engine.Geometry
             return result;
         }
     
-        /***************************************************/
-        /****              Private methods              ****/
-        /***************************************************/
-
-        [DeprecatedAttribute("2.3", "Useless as its parent method has been replaced with another one", null, "")]
-        private static List<Polyline> BooleanDifference(this Polyline region, Polyline refRegion, out bool isOpening, double tolerance = Tolerance.Distance)
-        {
-            List<Polyline> cutRegions = region.BooleanIntersection(refRegion, tolerance);
-            List<Polyline> result = new List<Polyline>();
-
-            isOpening = false;
-            if (region.IsCoplanar(refRegion, tolerance))
-            {
-                List<Point> iPts = new List<Point>();
-                cutRegions.ForEach(cr => iPts.AddRange(region.LineIntersections(cr, tolerance)));
-                List<Polyline> splitRegion = region.SplitAtPoints(iPts, tolerance);
-
-                if (splitRegion.Count == 1)
-                {
-                    result.Add(region.Clone());
-                    foreach (Point cPt in refRegion.ControlPoints)
-                    {
-                        if (!region.IsContaining(new List<Point> { cPt }, true, tolerance))
-                            return result;
-                    }
-
-                    result.Add(refRegion.Clone());
-                    isOpening = true;
-                    return result;
-                }
-
-                double sqTol = tolerance * tolerance;
-                foreach (Polyline segment in splitRegion)
-                {
-                    List<Point> cPts = segment.SubParts().Select(s => s.ControlPoints().Average()).ToList();
-                    cPts.AddRange(segment.ControlPoints);
-
-                    bool isInRegion = false;
-                    foreach (Polyline cr in cutRegions)
-                    {
-                        if (cr.IsContaining(cPts, true, tolerance))
-                        {
-                            isInRegion = true;
-                            break;
-                        }
-                    }
-
-                    if (!isInRegion)
-                        result.Add(segment);
-                }
-
-                foreach (Polyline cr in cutRegions)
-                {
-                    splitRegion = cr.SplitAtPoints(iPts, tolerance);
-                    foreach (Polyline segment in splitRegion)
-                    {
-                        List<Point> cPts = segment.SubParts().Select(s => s.ControlPoints().Average()).ToList();
-                        cPts.AddRange(segment.ControlPoints);
-
-                        if (region.IsContaining(cPts, true, tolerance))
-                        {
-                            foreach (Point pt in cPts)
-                            {
-                                if (region.ClosestPoint(pt).SquareDistance(pt) > sqTol)
-                                {
-                                    result.Add(segment);
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
-
-                return Join(result, tolerance);
-            }
-
-            return new List<Polyline> { region.Clone() };
-        }
-
         /***************************************************/
     }
 }

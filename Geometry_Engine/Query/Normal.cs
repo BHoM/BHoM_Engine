@@ -89,18 +89,6 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Curves                   ****/
         /***************************************************/
 
-        [Deprecated("2.4", "Deprecated to expose tolerance as optional parameter for greater control", null, "Normal(this Polyline curve, double tolerance = Tolerance.Distance)")]
-        public static Vector Normal(this Polyline curve)
-        {
-            return curve.Normal(Tolerance.Distance);
-        }
-
-        [Deprecated("2.4", "Deprecated to expose tolerance as optional parameter for greater control", null, "Normal(this PolyCurve curve, double tolerance = Tolerance.Distance)")]
-        public static Vector Normal(this PolyCurve curve)
-        {
-            return curve.Normal(Tolerance.Distance);
-        }
-
         public static Vector Normal(this Polyline curve, double tolerance = Tolerance.Distance)
         {
 
