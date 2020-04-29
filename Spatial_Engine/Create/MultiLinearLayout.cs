@@ -74,7 +74,7 @@ namespace BH.Engine.Spatial
             }
 
             Vector projDir = direction ?? Vector.XAxis;
-            if (direction.Z != 0)
+            if (projDir.Z != 0)
             {
                 projDir = new Vector { X = direction.X, Y = direction.Y };
                 Engine.Reflection.Compute.RecordWarning("Direction vector has been projected to the global XY-plane.");
