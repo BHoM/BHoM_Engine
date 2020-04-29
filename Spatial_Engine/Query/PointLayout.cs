@@ -129,19 +129,29 @@ namespace BH.Engine.Spatial
                 }
                 else
                 {
-                    int divisions = curveDivs;
-                    bool closed = regionCurve.IIsClosed();
 
-                    if (!closed)
-                        divisions--;
+                    if (curveDivs == 0)
+                        continue;
+                    if (curveDivs == 1)
+                    {
+                        result.Add(regionCurve.IPointAtParameter(0.5));
+                    }
+                    else
+                    {
+                        int divisions = curveDivs;
+                        bool closed = regionCurve.IIsClosed();
 
-                    List<Point> pts = regionCurve.SamplePoints(divisions);
+                        if (!closed)
+                            divisions--;
 
-                    //Remove duplicate endpoint
-                    if (closed)
-                        pts.RemoveAt(pts.Count - 1);
+                        List<Point> pts = regionCurve.SamplePoints(divisions);
 
-                    result.AddRange(pts);
+                        //Remove duplicate endpoint
+                        if (closed)
+                            pts.RemoveAt(pts.Count - 1);
+
+                        result.AddRange(pts);
+                    }
                 }
             }
 
