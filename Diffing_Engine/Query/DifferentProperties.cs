@@ -51,7 +51,7 @@ namespace BH.Engine.Diffing
 
             CompareLogic comparer = new CompareLogic();
 
-            comparer.Config.MaxDifferences = 1000;
+            comparer.Config.MaxDifferences = diffConfig.MaxPropertyDifferences;
             comparer.Config.MembersToIgnore = diffConfig.PropertiesToIgnore;
             comparer.Config.DoublePrecision = diffConfig.NumericTolerance;
 
