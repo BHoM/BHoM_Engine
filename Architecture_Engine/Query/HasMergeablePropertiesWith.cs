@@ -35,8 +35,8 @@ namespace BH.Engine.Architecture
         /****        Public Methods            ****/
         /******************************************/
 
-        [Description("Evaluates if the two Rooms is equal to the point that they could be merged into one object, as Rooms are only geometrical data this is always true.")]
-        [Input("element", "An Room to compare the properties of with an other Room.")]
+        [Description("Evaluates if the two Rooms are equal to the point that they could be merged into one object, as Rooms only have geometrical data this is always true.")]
+        [Input("element", "A Room to compare the properties of with an other Room.")]
         [Input("other", "The Room to compare with the other Room.")]
         [Output("equal", "True if the Rooms non-geometrical property is equal to the point that they could be merged into one object, always true for rooms.")]
         public static bool HasMergeablePropertiesWith(this Room element, Room other)
