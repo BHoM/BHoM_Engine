@@ -134,6 +134,8 @@
     <Compile Include="Query\FrameFactor.cs" />
     <Compile Include="Query\HasMergeablePropertiesWith.cs" />
     <Compile Include="Query\MaterialComposition.cs" />
+    <Compile Include="Query\NewElement1D.cs" />
+    <Compile Include="Query\NewElement2D.cs" />
     <Compile Include="Query\NotClosedSpaces.cs" />
     <Compile Include="Query\PointsInSpaces.cs" />
     <Compile Include="Query\CullDuplicateLines.cs" />
