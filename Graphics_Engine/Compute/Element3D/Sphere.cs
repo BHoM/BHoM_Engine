@@ -103,7 +103,12 @@ namespace BH.Engine.Graphics
                     else
                         j = i;
 
-                    allFaces.Add(new Face() { A = (i + 1 - nLatitude) + 2, B = (j + 2 - nLatitude) + 2, C = (j + 2) + 2, D = (i + 1) + 2 });
+                    int A = (i + 1 - nLatitude);
+                    int B = (j + 2 - nLatitude) + 2;
+                    int C = (j + 2) + 2;
+                    int D = (i + 1) + 2;
+
+                    allFaces.Add(new Face() { A = A + 2, B = B, C = C, D = D});
                 }
             }
 
