@@ -24,7 +24,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>..\Build\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -64,9 +64,10 @@
       <HintPath>..\..\BHoM\Build\Physical_oM.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Quantities_oM, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Quantities_oM">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\BHoM\Build\Quantities_oM.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Reflection_oM">
       <SpecificVersion>False</SpecificVersion>
@@ -121,8 +122,11 @@
     <Compile Include="Modify\AddReinforcement.cs" />
     <Compile Include="Modify\SetMaterial.cs" />
     <Compile Include="Modify\SetStructuralFragment.cs" />
+    <Compile Include="Objects\EqualityComparers\Constraint4DOFComparer.cs" />
+    <Compile Include="Objects\EqualityComparers\Constraint6DOFComparer.cs" />
     <Compile Include="Objects\EqualityComparers\NameOrDescriptionComparer.cs" />
     <Compile Include="Query\AllEdgeCurves.cs" />
+    <Compile Include="Query\AverageThickness.cs" />
     <Compile Include="Query\CoordinateSystem.cs" />
     <Compile Include="Query\DescriptionOrName.cs" />
     <Compile Include="Query\Description.cs" />
@@ -130,6 +134,7 @@
     <Compile Include="Query\EmbodiedCarbon.cs" />
     <Compile Include="Query\ExternalEdgeCurves.cs" />
     <Compile Include="Query\Fixities.cs" />
+    <Compile Include="Query\HasMergeablePropertiesWith.cs" />
     <Compile Include="Query\HasModifiers.cs" />
     <Compile Include="Query\InternalEdgeCurves.cs" />
     <Compile Include="Query\IsNumericallyDependent.cs" />

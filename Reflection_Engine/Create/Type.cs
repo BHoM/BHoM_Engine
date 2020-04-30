@@ -80,11 +80,42 @@ namespace BH.Engine.Reflection
                         foreach (Type t in types)
                             message += "- " + t.FullName + "\n";
 
+                        message += "To get a Engine type from a specific Assembly, try adding ', NameOfTheAssmebly' at the end of the name string, or use the AllEngineTypes method to retreive all the types.";
+
                         Compute.RecordError(message);
                     }
                     return null;
                 }
                 return type;
+            }
+        }
+
+        /***************************************************/
+
+        public static List<Type> AllTypes(string name)
+        {
+            List<Type> typeList = new List<Type>();
+            if (name.StartsWith("BH.Engine"))
+                typeList = Query.EngineTypeList();
+            else if (name.StartsWith("BH.Adapter"))
+                typeList = Query.AdapterTypeList();
+            else if (name.StartsWith("BH.oM"))
+                typeList = Query.BHoMTypeList();
+
+            List<Type> types = typeList.Where(x => x.AssemblyQualifiedName.StartsWith(name)).ToList();
+
+            if (types.Count != 0)
+                return types;
+            else
+            {
+                //No method found in dictionary, try System.Type
+                Type type = System.Type.GetType(name);
+                if (type == null)
+                {
+                    Compute.RecordError($"A type corresponding to {name} cannot be found.");
+                    return new List<Type>();
+                }
+                return new List<Type> { type };
             }
         }
 

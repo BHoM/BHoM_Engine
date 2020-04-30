@@ -26,22 +26,30 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using BH.oM.Geometry;
-using System.ComponentModel;
 using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
-namespace BH.Engine.Geometry
+using BH.oM.Structure.Elements;
+
+namespace BH.Engine.Structure
 {
-    public static partial class Modify
+    public static partial class Query
     {
-        [Deprecated("3.2", "Renamed to RoundCoordinates and expanded for other Geometry", null, "BH.Engine.Geometry.Modify.RoundCoordinates")]
-        [Description("Modifies a BHoM Geometry Point to be rounded to the number of provided decimal places")]
-        [Input("point", "The BHoM Geometry Point to modify")]
-        [Input("decimalPlaces", "The number of decimal places to round to, default 6")]
-        [Output("point", "The modified BHoM Geometry Point")]
-        public static Point RoundPoint(this Point point, int decimalPlaces = 6)
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
+
+        [Description("Evaluates if the two Edges Supports and Releases are equal with the Support and Release comparers.")]
+        [Input("element", "An Structure Edge to compare the properties of with an other Structure Edge")]
+        [Input("other", "The Structure Edge to compare with the other Structure Edge.")]
+        [Output("equal", "True if the Objects non-geometrical property is equal to the point that they could be merged into one object")]
+        public static bool HasMergeablePropertiesWith(this Edge element, Edge other)
         {
-            return RoundCoordinates(point, decimalPlaces);
+            return new Constraint4DOFComparer().Equals(element.Release, other.Release) &&
+                   new Constraint6DOFComparer().Equals(element.Support, other.Support);
         }
+
+        /***************************************************/
+
     }
 }

@@ -21,27 +21,45 @@
  */
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using BH.oM.Geometry;
+using System.Collections.Generic;
 using System.ComponentModel;
 using BH.oM.Reflection.Attributes;
+using BH.oM.Base;
+using BH.oM.Spatial.Layouts;
+using BH.oM.Geometry;
 
-namespace BH.Engine.Geometry
+namespace BH.Engine.Spatial
 {
-    public static partial class Modify
+    public static partial class Create
     {
-        [Deprecated("3.2", "Renamed to RoundCoordinates and expanded for other Geometry", null, "BH.Engine.Geometry.Modify.RoundCoordinates")]
-        [Description("Modifies a BHoM Geometry Point to be rounded to the number of provided decimal places")]
-        [Input("point", "The BHoM Geometry Point to modify")]
-        [Input("decimalPlaces", "The number of decimal places to round to, default 6")]
-        [Output("point", "The modified BHoM Geometry Point")]
-        public static Point RoundPoint(this Point point, int decimalPlaces = 6)
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
+
+        [Description("Creates a LinearLayout from its core properties. Ensures all vectors are in the global XY-plane.")]
+        [InputFromProperty("numberOfPoints")]
+        [InputFromProperty("direction")]
+        [InputFromProperty("offset")]
+        [InputFromProperty("referencePoint")]
+        [Output("linLayout", "The created LinearLayout.")]
+        public static LinearLayout LinearLayout(int numberOfPoints, Vector direction = null, double offset = 0, ReferencePoint referencePoint = ReferencePoint.BottomCenter)
         {
-            return RoundCoordinates(point, decimalPlaces);
+            if (numberOfPoints <= 0)
+            {
+                Engine.Reflection.Compute.RecordError("LinearLayout requires numberOfPoints to be at least 1.");
+                return null;
+            }
+            Vector projDir = direction ?? Vector.XAxis;
+            if (projDir.Z != 0)
+            {
+                projDir = new Vector { X = direction.X, Y = direction.Y };
+                Engine.Reflection.Compute.RecordWarning("Direction vector has been projected to the global XY-plane.");
+            }
+
+            return new LinearLayout(numberOfPoints, projDir, offset, referencePoint);
         }
+
+        /***************************************************/
     }
 }

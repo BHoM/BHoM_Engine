@@ -21,27 +21,36 @@
  */
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using BH.oM.Geometry;
+using System.Collections.Generic;
 using System.ComponentModel;
 using BH.oM.Reflection.Attributes;
+using BH.oM.Base;
+using BH.oM.Geometry;
+using BH.oM.Spatial.Layouts;
 
-namespace BH.Engine.Geometry
+namespace BH.Engine.Spatial
 {
-    public static partial class Modify
+    public static partial class Create
     {
-        [Deprecated("3.2", "Renamed to RoundCoordinates and expanded for other Geometry", null, "BH.Engine.Geometry.Modify.RoundCoordinates")]
-        [Description("Modifies a BHoM Geometry Point to be rounded to the number of provided decimal places")]
-        [Input("point", "The BHoM Geometry Point to modify")]
-        [Input("decimalPlaces", "The number of decimal places to round to, default 6")]
-        [Output("point", "The modified BHoM Geometry Point")]
-        public static Point RoundPoint(this Point point, int decimalPlaces = 6)
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
+
+        [Description("Creates an Explicit layout based on a free-form set of Points. Points not in the global XY-plane will get projected to it.")]
+        [InputFromProperty("points")]
+        [Output("expLayout", "Created explicit layout.")]
+        public static ExplicitLayout ExplicitLayout(IEnumerable<Point> points)
         {
-            return RoundCoordinates(point, decimalPlaces);
+            IEnumerable<Point> xyPts = points;
+            if (points.Any(x => x.Z != 0))
+            {
+                xyPts = points.Select(pt => new Point() { X = pt.X, Y = pt.Y });
+                Engine.Reflection.Compute.RecordWarning("Points have been projected to the global XY-plane");
+            }
+            return new ExplicitLayout(xyPts);
         }
+
+        /***************************************************/
     }
 }

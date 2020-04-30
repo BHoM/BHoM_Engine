@@ -26,22 +26,33 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using BH.oM.MEP;
+using BH.oM.MEP.Equipment;
+using BH.oM.Base;
 using BH.oM.Geometry;
-using System.ComponentModel;
-using BH.oM.Reflection.Attributes;
+using BH.Engine.Geometry;
 
-namespace BH.Engine.Geometry
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
+
+using BH.oM.Geometry.SettingOut;
+
+using BH.Engine.Base;
+
+namespace BH.Engine.MEP
 {
-    public static partial class Modify
+    public static partial class Query
     {
-        [Deprecated("3.2", "Renamed to RoundCoordinates and expanded for other Geometry", null, "BH.Engine.Geometry.Modify.RoundCoordinates")]
-        [Description("Modifies a BHoM Geometry Point to be rounded to the number of provided decimal places")]
-        [Input("point", "The BHoM Geometry Point to modify")]
-        [Input("decimalPlaces", "The number of decimal places to round to, default 6")]
-        [Output("point", "The modified BHoM Geometry Point")]
-        public static Point RoundPoint(this Point point, int decimalPlaces = 6)
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
+
+        [Description("Returns the height and width of the equipment based on the inputs of AirVelocityAcrossCoil and TotalAirFlow")]
+        [Input("mepEquipmentObject", "MEP object that contains properties for AirVelocityAcrossCoil and TotalAirFlow")]
+        [Output("widthlength", "This is the width OR the length (they are the same value), since the method is taking the square root of the airflow divided by the velocity")]
+        public static double FaceAreaByVelocity(this AirHandlingUnit mepEquipmentObject)
         {
-            return RoundCoordinates(point, decimalPlaces);
+            return Math.Sqrt(mepEquipmentObject.TotalAirFlow / mepEquipmentObject.AirVelocityAcrossCoil);
         }
     }
 }
