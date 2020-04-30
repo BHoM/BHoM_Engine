@@ -41,14 +41,14 @@ namespace BH.Engine.Structure
         [Input("section", "The concrete section to add Reinforcement to.")]
         [Input("reinforcement", "The collection of Reinforcement to add to the ConcreteSection.")]
         [Output("concSection", "The ConcreteSection with additional Reinforcement.")]
-        public static ConcreteSection AddReinforcement(this ConcreteSection section, IEnumerable<Reinforcement> reinforcement)
+        public static ConcreteSection AddReinforcement(this ConcreteSection section, IEnumerable<IBarReinforcement> reinforcement)
         {
             ConcreteSection clone = section.GetShallowClone() as ConcreteSection;
 
             if (clone.Reinforcement == null)
-                clone.Reinforcement = new List<Reinforcement>();
+                clone.Reinforcement = new List<IBarReinforcement>();
             else
-                clone.Reinforcement = new List<Reinforcement>(clone.Reinforcement);
+                clone.Reinforcement = new List<IBarReinforcement>(clone.Reinforcement);
 
 
             clone.Reinforcement.AddRange(reinforcement);
