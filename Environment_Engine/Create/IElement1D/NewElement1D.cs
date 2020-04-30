@@ -36,24 +36,18 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns an instance of an IElement1D from the given object")]
-        [Input("opening", "An Environmental Opening object")]
-        [Input("curve", "The curve to clone")]
-        [Output("element", "A 1D element object")]
+        [Replaced("3.2", "Method moved to query", typeof(BH.Engine.Environment.Query), "NewElement1D(BH.oM.Environment.Elements.Opening, BH.oM.Geometry.ICurve)")]
         public static IElement1D NewElement1D(this Opening opening, ICurve curve)
         {
-            return curve.IClone();
+            return Query.NewElement1D(opening, curve);
         }
 
         /***************************************************/
 
-        [Description("Returns an instance of an IElement1D from the given object")]
-        [Input("panel", "An Environmental Panel object")]
-        [Input("curve", "The curve to clone")]
-        [Output("element", "A 1D element object")]
+        [Replaced("3.2", "Method moved to query", typeof(BH.Engine.Environment.Query), "NewElement1D(BH.oM.Environment.Elements.Panel, BH.oM.Geometry.ICurve)")]
         public static IElement1D NewElement1D(this Panel panel, ICurve curve)
         {
-            return curve.IClone();
+            return Query.NewElement1D(panel, curve);
         }
 
         /***************************************************/
