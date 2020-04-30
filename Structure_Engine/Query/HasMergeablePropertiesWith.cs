@@ -22,16 +22,16 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using BH.oM.Base;
-using System.IO;
 using System.Linq;
-using BH.oM.Data.Collections;
-using BH.Engine.Data;
-using BH.oM.Data.Library;
-using BH.oM.Reflection.Attributes;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace BH.Engine.Library
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
+
+using BH.oM.Structure.Elements;
+
+namespace BH.Engine.Structure
 {
     public static partial class Query
     {
@@ -39,21 +39,17 @@ namespace BH.Engine.Library
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Gets the full Dataset(s) from the library, containing source information and Data")]
-        [Input("libraryName", "The name of the Dataset(s) to extract")]
-        [Output("dataset", "The datasets extracted from the library")]
-        public static List<Dataset> Datasets(string libraryName)
+        [Description("Evaluates if the two Edges Supports and Releases are equal with the Support and Release comparers.")]
+        [Input("element", "An Structure Edge to compare the properties of with an other Structure Edge")]
+        [Input("other", "The Structure Edge to compare with the other Structure Edge.")]
+        [Output("equal", "True if the Objects non-geometrical property is equal to the point that they could be merged into one object")]
+        public static bool HasMergeablePropertiesWith(this Edge element, Edge other)
         {
-            HashSet<string> keys;
-            if (!LibraryPaths().TryGetValue(libraryName, out keys))
-            {
-                BH.Engine.Reflection.Compute.RecordWarning(String.Format("No file or subfolder named {0} could be found in the Datasets folder.", libraryName));
-                return new List<Dataset>();
-            }
-
-            return keys.Select(x => ParseLibrary(x)).ToList();
-
+            return new Constraint4DOFComparer().Equals(element.Release, other.Release) &&
+                   new Constraint6DOFComparer().Equals(element.Support, other.Support);
         }
+
+        /***************************************************/
+
     }
 }
-

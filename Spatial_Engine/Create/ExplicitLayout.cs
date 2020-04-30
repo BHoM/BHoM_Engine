@@ -21,39 +21,36 @@
  */
 
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel;
-using BH.oM.Base;
-using System.IO;
-using System.Linq;
-using BH.oM.Data.Collections;
-using BH.Engine.Data;
-using BH.oM.Data.Library;
 using BH.oM.Reflection.Attributes;
+using BH.oM.Base;
+using BH.oM.Geometry;
+using BH.oM.Spatial.Layouts;
 
-namespace BH.Engine.Library
+namespace BH.Engine.Spatial
 {
-    public static partial class Query
+    public static partial class Create
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Gets the full Dataset(s) from the library, containing source information and Data")]
-        [Input("libraryName", "The name of the Dataset(s) to extract")]
-        [Output("dataset", "The datasets extracted from the library")]
-        public static List<Dataset> Datasets(string libraryName)
+        [Description("Creates an Explicit layout based on a free-form set of Points. Points not in the global XY-plane will get projected to it.")]
+        [InputFromProperty("points")]
+        [Output("expLayout", "Created explicit layout.")]
+        public static ExplicitLayout ExplicitLayout(IEnumerable<Point> points)
         {
-            HashSet<string> keys;
-            if (!LibraryPaths().TryGetValue(libraryName, out keys))
+            IEnumerable<Point> xyPts = points;
+            if (points.Any(x => x.Z != 0))
             {
-                BH.Engine.Reflection.Compute.RecordWarning(String.Format("No file or subfolder named {0} could be found in the Datasets folder.", libraryName));
-                return new List<Dataset>();
+                xyPts = points.Select(pt => new Point() { X = pt.X, Y = pt.Y });
+                Engine.Reflection.Compute.RecordWarning("Points have been projected to the global XY-plane");
             }
-
-            return keys.Select(x => ParseLibrary(x)).ToList();
-
+            return new ExplicitLayout(xyPts);
         }
+
+        /***************************************************/
     }
 }
-

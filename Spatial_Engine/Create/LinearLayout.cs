@@ -21,39 +21,45 @@
  */
 
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel;
-using BH.oM.Base;
-using System.IO;
-using System.Linq;
-using BH.oM.Data.Collections;
-using BH.Engine.Data;
-using BH.oM.Data.Library;
 using BH.oM.Reflection.Attributes;
+using BH.oM.Base;
+using BH.oM.Spatial.Layouts;
+using BH.oM.Geometry;
 
-namespace BH.Engine.Library
+namespace BH.Engine.Spatial
 {
-    public static partial class Query
+    public static partial class Create
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Gets the full Dataset(s) from the library, containing source information and Data")]
-        [Input("libraryName", "The name of the Dataset(s) to extract")]
-        [Output("dataset", "The datasets extracted from the library")]
-        public static List<Dataset> Datasets(string libraryName)
+        [Description("Creates a LinearLayout from its core properties. Ensures all vectors are in the global XY-plane.")]
+        [InputFromProperty("numberOfPoints")]
+        [InputFromProperty("direction")]
+        [InputFromProperty("offset")]
+        [InputFromProperty("referencePoint")]
+        [Output("linLayout", "The created LinearLayout.")]
+        public static LinearLayout LinearLayout(int numberOfPoints, Vector direction = null, double offset = 0, ReferencePoint referencePoint = ReferencePoint.BottomCenter)
         {
-            HashSet<string> keys;
-            if (!LibraryPaths().TryGetValue(libraryName, out keys))
+            if (numberOfPoints <= 0)
             {
-                BH.Engine.Reflection.Compute.RecordWarning(String.Format("No file or subfolder named {0} could be found in the Datasets folder.", libraryName));
-                return new List<Dataset>();
+                Engine.Reflection.Compute.RecordError("LinearLayout requires numberOfPoints to be at least 1.");
+                return null;
+            }
+            Vector projDir = direction ?? Vector.XAxis;
+            if (projDir.Z != 0)
+            {
+                projDir = new Vector { X = direction.X, Y = direction.Y };
+                Engine.Reflection.Compute.RecordWarning("Direction vector has been projected to the global XY-plane.");
             }
 
-            return keys.Select(x => ParseLibrary(x)).ToList();
-
+            return new LinearLayout(numberOfPoints, projDir, offset, referencePoint);
         }
+
+        /***************************************************/
     }
 }
-
