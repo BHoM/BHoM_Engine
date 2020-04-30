@@ -89,6 +89,7 @@
     <Compile Include="Compute\BooleanIntersect.cs" />
     <Compile Include="Compute\EquipmentGain.cs" />
     <Compile Include="Compute\ExtrudeToVolume.cs" />
+    <Compile Include="Compute\GenerateCylindricalFarfield.cs" />
     <Compile Include="Compute\JulianDay.cs" />
     <Compile Include="Compute\LightingGain.cs" />
     <Compile Include="Compute\MapToLevel.cs" />
