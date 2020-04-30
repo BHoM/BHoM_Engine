@@ -46,7 +46,10 @@ namespace BH.Engine.Library
         {
             HashSet<string> keys;
             if (!LibraryPaths().TryGetValue(libraryName, out keys))
+            {
+                BH.Engine.Reflection.Compute.RecordWarning(String.Format("Library named {0} could not be found in the Libraries folder.", libraryName));
                 return new List<Dataset>();
+            }
 
             return keys.Select(x => ParseLibrary(x)).ToList();
 
