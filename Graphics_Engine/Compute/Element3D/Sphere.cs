@@ -44,7 +44,7 @@ namespace BH.Engine.Graphics
         {
             renderMeshOptions = renderMeshOptions ?? new RenderMeshOptions();
 
-            int nLatitude = 8;                  // Number of vertical lines.
+            int nLatitude = 6;                  // Number of vertical lines.
             int nLongitude = nLatitude / 2;      // Number of horizontal lines. A good sphere mesh has about half the number of longitude lines than latitude.
 
             double DEGS_TO_RAD = Math.PI / 180;
@@ -69,7 +69,6 @@ namespace BH.Engine.Graphics
             allPoints.Add(top); allPoints.Add(bottom);
             numVertices = numVertices + 2;
 
-            int fVert = numVertices;    // Record the first vertex index for intermediate vertices.
             for (p = 1; p < nPitch; p++)     // Generate all "intermediate vertices"
             {
                 output = radius * Math.Sin(p * pitchInc);
@@ -97,19 +96,24 @@ namespace BH.Engine.Graphics
                 for (s = 0; s < nLatitude; s++)
                 {
                     i = p * nLatitude + s;
-                    j = (s == nLatitude - 1) ? i - nLatitude : i;
+                    //j = (s == nLatitude -  2) ? i - nLatitude : i;
 
-                    allFaces.Add(new Face() { A = (i + 1 - nLatitude) + fVert, B = (j + 2 - nLatitude) + fVert, C = (j + 2) + fVert, D = (i + 1) + fVert });
+                    if (s == nLatitude - 2)
+                        j = i - nLatitude;
+                    else
+                        j = i;
+
+                    allFaces.Add(new Face() { A = (i + 1 - nLatitude) + 2, B = (j + 2 - nLatitude) + 2, C = (j + 2) + 2, D = (i + 1) + 2 });
                 }
             }
 
             // Triangle faces between top/bottom points and the intermediate points
-            int offLastVerts = fVert + (nLatitude * (nLongitude - 1));
+            int offLastVerts = 2 + (nLatitude * (nLongitude - 1));
             for (s = 0; s < nLatitude; s++)
             {
                 j = (s == nLatitude - 1) ? -1 : s;
-                allFaces.Add(new Face() { A = fVert - 1, B = (j + 2) + fVert, C = (s + 1) + fVert });
-                allFaces.Add(new Face() { A = fVert, B = (s + 1) + offLastVerts, C = (j + 2) + offLastVerts });
+                allFaces.Add(new Face() { A = 0, B = (j + 2) + 2, C = (s + 1) + 2 });
+                allFaces.Add(new Face() { A = 1, B = (s + 1) + offLastVerts, C = (j + 2) + offLastVerts });
             }
 
             return new RenderMesh() { Faces = allFaces, Vertices = allPoints.Select(pt => (Vertex)pt).ToList() };
