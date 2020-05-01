@@ -122,6 +122,7 @@
     <Compile Include="Create\Requests\IResultRequest.cs" />
     <Compile Include="Create\MaterialFragments\Timber.cs" />
     <Compile Include="Create\SectionProperties\GeometricalSection.cs" />
+    <Compile Include="Create\SectionProperties\LongitudinalReinforcement.cs" />
     <Compile Include="Create\SectionProperties\TimberSection.cs" />
     <Compile Include="Modify\AddReinforcement.cs" />
     <Compile Include="Modify\SetMaterial.cs" />
