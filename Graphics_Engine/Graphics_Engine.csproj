@@ -35,6 +35,7 @@
       <HintPath>..\..\BHoM\Build\BHoM.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Dimensional_oM, Version=3.0.0.0, Culture=neutral, PublicKeyToken=null" />
     <Reference Include="Geometry_oM">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\BHoM\Build\Geometry_oM.dll</HintPath>
@@ -62,6 +63,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Compute\Element1D\Line.cs" />
+    <Compile Include="Compute\Element3D\Extrusion.cs" />
     <Compile Include="Compute\Element3D\Cuboid.cs" />
     <Compile Include="Compute\Element3D\BoundingBox.cs" />
     <Compile Include="Compute\Element3D\Sphere.cs" />
@@ -92,7 +95,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Compute\Element1D\" />
     <Folder Include="Compute\Element2D\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
