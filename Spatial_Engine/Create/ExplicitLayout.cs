@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -20,14 +20,16 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Environment.Elements;
-using BH.oM.Dimensional;
-using BH.oM.Geometry;
-
-using BH.oM.Reflection.Attributes;
+using System;
+using System.Linq;
+using System.Collections.Generic;
 using System.ComponentModel;
+using BH.oM.Reflection.Attributes;
+using BH.oM.Base;
+using BH.oM.Geometry;
+using BH.oM.Spatial.Layouts;
 
-namespace BH.Engine.Environment
+namespace BH.Engine.Spatial
 {
     public static partial class Create
     {
@@ -35,13 +37,20 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Replaced("3.2", "Method moved to query", typeof(BH.Engine.Environment.Query), "NewElement2D(BH.oM.Environment.Elements.Panel)")]
-        public static IElement2D NewInternalElement2D(this Panel panel)
+        [Description("Creates an Explicit layout based on a free-form set of Points. Points not in the global XY-plane will get projected to it.")]
+        [InputFromProperty("points")]
+        [Output("expLayout", "Created explicit layout.")]
+        public static ExplicitLayout ExplicitLayout(IEnumerable<Point> points)
         {
-            return new Opening();
+            IEnumerable<Point> xyPts = points;
+            if (points.Any(x => x.Z != 0))
+            {
+                xyPts = points.Select(pt => new Point() { X = pt.X, Y = pt.Y });
+                Engine.Reflection.Compute.RecordWarning("Points have been projected to the global XY-plane");
+            }
+            return new ExplicitLayout(xyPts);
         }
 
         /***************************************************/
     }
 }
-

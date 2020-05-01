@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -20,14 +20,16 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Environment.Elements;
-using BH.oM.Dimensional;
+using System;
+using System.Linq;
+using System.Collections.Generic;
+using System.ComponentModel;
+using BH.oM.Reflection.Attributes;
+using BH.oM.Base;
+using BH.oM.Spatial.Layouts;
 using BH.oM.Geometry;
 
-using BH.oM.Reflection.Attributes;
-using System.ComponentModel;
-
-namespace BH.Engine.Environment
+namespace BH.Engine.Spatial
 {
     public static partial class Create
     {
@@ -35,13 +37,29 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Replaced("3.2", "Method moved to query", typeof(BH.Engine.Environment.Query), "NewElement2D(BH.oM.Environment.Elements.Panel)")]
-        public static IElement2D NewInternalElement2D(this Panel panel)
+        [Description("Creates a LinearLayout from its core properties. Ensures all vectors are in the global XY-plane.")]
+        [InputFromProperty("numberOfPoints")]
+        [InputFromProperty("direction")]
+        [InputFromProperty("offset")]
+        [InputFromProperty("referencePoint")]
+        [Output("linLayout", "The created LinearLayout.")]
+        public static LinearLayout LinearLayout(int numberOfPoints, Vector direction = null, double offset = 0, ReferencePoint referencePoint = ReferencePoint.BottomCenter)
         {
-            return new Opening();
+            if (numberOfPoints <= 0)
+            {
+                Engine.Reflection.Compute.RecordError("LinearLayout requires numberOfPoints to be at least 1.");
+                return null;
+            }
+            Vector projDir = direction ?? Vector.XAxis;
+            if (projDir.Z != 0)
+            {
+                projDir = new Vector { X = direction.X, Y = direction.Y };
+                Engine.Reflection.Compute.RecordWarning("Direction vector has been projected to the global XY-plane.");
+            }
+
+            return new LinearLayout(numberOfPoints, projDir, offset, referencePoint);
         }
 
         /***************************************************/
     }
 }
-

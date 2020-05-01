@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -20,28 +20,39 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Environment.Elements;
-using BH.oM.Dimensional;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+using BH.oM.MEP;
+using BH.oM.MEP.Equipment;
+using BH.oM.Base;
 using BH.oM.Geometry;
+using BH.Engine.Geometry;
 
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
 
-namespace BH.Engine.Environment
+using BH.oM.Geometry.SettingOut;
+
+using BH.Engine.Base;
+
+namespace BH.Engine.MEP
 {
-    public static partial class Create
+    public static partial class Query
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Replaced("3.2", "Method moved to query", typeof(BH.Engine.Environment.Query), "NewElement2D(BH.oM.Environment.Elements.Panel)")]
-        public static IElement2D NewInternalElement2D(this Panel panel)
+        [Description("Returns the height and width of the equipment based on the inputs of AirVelocityAcrossCoil and TotalAirFlow")]
+        [Input("mepEquipmentObject", "MEP object that contains properties for AirVelocityAcrossCoil and TotalAirFlow")]
+        [Output("widthlength", "This is the width OR the length (they are the same value), since the method is taking the square root of the airflow divided by the velocity")]
+        public static double FaceAreaByVelocity(this AirHandlingUnit mepEquipmentObject)
         {
-            return new Opening();
+            return Math.Sqrt(mepEquipmentObject.TotalAirFlow / mepEquipmentObject.AirVelocityAcrossCoil);
         }
-
-        /***************************************************/
     }
 }
-

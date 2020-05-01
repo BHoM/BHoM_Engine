@@ -20,28 +20,32 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Environment.Elements;
+using BH.oM.Architecture.Elements;
 using BH.oM.Dimensional;
 using BH.oM.Geometry;
-
 using BH.oM.Reflection.Attributes;
+using System.Collections.Generic;
 using System.ComponentModel;
 
-namespace BH.Engine.Environment
+namespace BH.Engine.Architecture
 {
-    public static partial class Create
+    public static partial class Query
     {
-        /***************************************************/
-        /**** Public Methods                            ****/
-        /***************************************************/
+        /******************************************/
+        /****        Public Methods            ****/
+        /******************************************/
 
-        [Replaced("3.2", "Method moved to query", typeof(BH.Engine.Environment.Query), "NewElement2D(BH.oM.Environment.Elements.Panel)")]
-        public static IElement2D NewInternalElement2D(this Panel panel)
+        [Description("Evaluates if the two Rooms are equal to the point that they could be merged into one object, as Rooms only have geometrical data this is always true.")]
+        [Input("element", "A Room to compare the properties of with an other Room.")]
+        [Input("other", "The Room to compare with the other Room.")]
+        [Output("equal", "True if the Rooms non-geometrical property is equal to the point that they could be merged into one object, always true for rooms.")]
+        public static bool HasMergeablePropertiesWith(this Room element, Room other)
         {
-            return new Opening();
+            return true;
         }
 
-        /***************************************************/
+        /******************************************/
+        
     }
 }
 

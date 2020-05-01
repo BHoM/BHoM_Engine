@@ -24,7 +24,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>..\Build\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -89,6 +89,7 @@
     <Compile Include="Compute\BooleanIntersect.cs" />
     <Compile Include="Compute\EquipmentGain.cs" />
     <Compile Include="Compute\ExtrudeToVolume.cs" />
+    <Compile Include="Compute\GenerateCylindricalFarfield.cs" />
     <Compile Include="Compute\JulianDay.cs" />
     <Compile Include="Compute\LightingGain.cs" />
     <Compile Include="Compute\MapToLevel.cs" />
@@ -133,6 +134,8 @@
     <Compile Include="Query\FrameFactor.cs" />
     <Compile Include="Query\HasMergeablePropertiesWith.cs" />
     <Compile Include="Query\MaterialComposition.cs" />
+    <Compile Include="Query\NewElement1D.cs" />
+    <Compile Include="Query\NewInternalElement2D.cs" />
     <Compile Include="Query\NotClosedSpaces.cs" />
     <Compile Include="Query\PointsInSpaces.cs" />
     <Compile Include="Query\CullDuplicateLines.cs" />

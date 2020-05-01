@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -20,28 +20,36 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Environment.Elements;
-using BH.oM.Dimensional;
-using BH.oM.Geometry;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
 
-namespace BH.Engine.Environment
+using BH.oM.Structure.Elements;
+
+namespace BH.Engine.Structure
 {
-    public static partial class Create
+    public static partial class Query
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Replaced("3.2", "Method moved to query", typeof(BH.Engine.Environment.Query), "NewElement2D(BH.oM.Environment.Elements.Panel)")]
-        public static IElement2D NewInternalElement2D(this Panel panel)
+        [Description("Evaluates if the two Edges Supports and Releases are equal with the Support and Release comparers.")]
+        [Input("element", "An Structure Edge to compare the properties of with an other Structure Edge")]
+        [Input("other", "The Structure Edge to compare with the other Structure Edge.")]
+        [Output("equal", "True if the Objects non-geometrical property is equal to the point that they could be merged into one object")]
+        public static bool HasMergeablePropertiesWith(this Edge element, Edge other)
         {
-            return new Opening();
+            return new Constraint4DOFComparer().Equals(element.Release, other.Release) &&
+                   new Constraint6DOFComparer().Equals(element.Support, other.Support);
         }
 
         /***************************************************/
+
     }
 }
-
