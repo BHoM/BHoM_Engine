@@ -62,9 +62,9 @@ namespace BH.Engine.Diffing
             comparer.Config.TypesToIgnore.Add(typeof(HashFragment));
 
             ComparisonResult result = comparer.Compare(obj1, obj2);
-            dict = result.Differences.ToDictionary(
-                diff => diff.PropertyName.Replace('.', ':'), // replacing the character "fullstop" to avoid Explode component issue (BHoM/BHoM_UI#241).
-                diff => new Tuple<object, object>(diff.Object1, diff.Object2));
+
+            foreach (var difference in result.Differences)
+                dict[difference.PropertyName] = new Tuple<object, object>(difference.Object1, difference.Object2);
 
             if (dict.Count == 0)
                 return null;
