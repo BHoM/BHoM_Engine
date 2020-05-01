@@ -43,10 +43,21 @@ namespace BH.Engine.Diffing
         [MultiOutput(3, "value_Past", "List of past values of the properties.")]
         public static Output<List<List<string>>, List<List<string>>, List<List<object>>, List<List<object>>> ListModifiedProperties(Dictionary<string, Dictionary<string, Tuple<object, object>>> modProps)
         {
+            var output = new Output<List<List<string>>, List<List<string>>, List<List<object>>, List<List<object>>>();
+
             List<List<string>> objsHashTree = new List<List<string>>();
             List<List<string>> propNameTree = new List<List<string>>();
             List<List<object>> propValue_CurrentTree = new List<List<object>>();
             List<List<object>> propValue_ReadTree = new List<List<object>>();
+
+            // These first empty assignments are needed to avoid UI to throw error "Object not set to an instance of an object" when input is null.
+            output.Item1 = objsHashTree;
+            output.Item2 = propNameTree;
+            output.Item3 = propValue_CurrentTree;
+            output.Item4 = propValue_ReadTree;
+
+            if (modProps == null)
+                return output;
 
             foreach (var item in modProps)
             {
@@ -68,14 +79,10 @@ namespace BH.Engine.Diffing
                 propValue_ReadTree.Add(propValue_ReadList);
             }
 
-
-            var output = new Output<List<List<string>>, List<List<string>>, List<List<object>>, List<List<object>>>
-            {
-                Item1 = objsHashTree,
-                Item2 = propNameTree,
-                Item3 = propValue_CurrentTree,
-                Item4 = propValue_ReadTree
-            };
+            output.Item1 = objsHashTree;
+            output.Item2 = propNameTree;
+            output.Item3 = propValue_CurrentTree;
+            output.Item4 = propValue_ReadTree;
 
             return output;
         }
