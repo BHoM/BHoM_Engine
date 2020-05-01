@@ -69,6 +69,7 @@
     <Compile Include="Create\ExplicitLayout.cs" />
     <Compile Include="Create\LinearLayout.cs" />
     <Compile Include="Create\MultiLinearLayout.cs" />
+    <Compile Include="Modify\RoundCoordinates.cs" />
     <Compile Include="Query\HasMergeablePropertiesWith.cs" />
     <Compile Include="Query\InternalOutlineCurves.cs" />
     <Compile Include="Create\NewElement0D.cs" />

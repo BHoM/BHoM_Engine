@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -23,22 +23,37 @@
 using BH.oM.Environment.Elements;
 using BH.oM.Dimensional;
 using BH.oM.Geometry;
+using BH.Engine.Geometry;
 
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
 
 namespace BH.Engine.Environment
 {
-    public static partial class Create
+    public static partial class Query
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Replaced("3.2", "Method moved to query", typeof(BH.Engine.Environment.Query), "NewElement2D(BH.oM.Environment.Elements.Panel)")]
-        public static IElement2D NewInternalElement2D(this Panel panel)
+        [Description("Returns an instance of an IElement1D from the given object")]
+        [Input("opening", "An Environmental Opening object")]
+        [Input("curve", "The curve to clone")]
+        [Output("element", "A 1D element object")]
+        public static IElement1D NewElement1D(this Opening opening, ICurve curve)
         {
-            return new Opening();
+            return curve.IClone();
+        }
+
+        /***************************************************/
+
+        [Description("Returns an instance of an IElement1D from the given object")]
+        [Input("panel", "An Environmental Panel object")]
+        [Input("curve", "The curve to clone")]
+        [Output("element", "A 1D element object")]
+        public static IElement1D NewElement1D(this Panel panel, ICurve curve)
+        {
+            return curve.IClone();
         }
 
         /***************************************************/

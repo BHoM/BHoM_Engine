@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -29,13 +29,15 @@ using System.ComponentModel;
 
 namespace BH.Engine.Environment
 {
-    public static partial class Create
+    public static partial class Query
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Replaced("3.2", "Method moved to query", typeof(BH.Engine.Environment.Query), "NewElement2D(BH.oM.Environment.Elements.Panel)")]
+        [Description("Returns an instance of an IElement2D from the given object")]
+        [Input("panel", "An Environmental Panel object")]
+        [Output("element", "A 2D element object")]
         public static IElement2D NewInternalElement2D(this Panel panel)
         {
             return new Opening();
