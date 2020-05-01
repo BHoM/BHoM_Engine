@@ -74,6 +74,10 @@
       <HintPath>..\..\BHoM\Build\Reflection_oM.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Spatial_oM">
+      <HintPath>..\..\BHoM\Build\Spatial_oM.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Structure_oM">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\BHoM\Build\Structure_oM.dll</HintPath>
@@ -209,6 +213,7 @@
     <Compile Include="Query\PointGrid.cs" />
     <Compile Include="Query\Position.cs" />
     <Compile Include="Query\BarSectionTranformation.cs" />
+    <Compile Include="Query\ReinforcementLayout.cs" />
     <Compile Include="Query\SelectCase.cs" />
     <Compile Include="Query\ShearArea.cs" />
     <Compile Include="Query\ShearModulus.cs" />
@@ -256,6 +261,10 @@
     <ProjectReference Include="..\Reflection_Engine\Reflection_Engine.csproj">
       <Project>{b0154405-9390-472d-9b5c-a2280823b18d}</Project>
       <Name>Reflection_Engine</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Spatial_Engine\Spatial_Engine.csproj">
+      <Project>{a84fdfe5-c267-430e-8fec-af4f4bf5b745}</Project>
+      <Name>Spatial_Engine</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />
