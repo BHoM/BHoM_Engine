@@ -44,7 +44,8 @@ namespace BH.Engine.Diffing
         [Output("Dictionary whose key is the name of the property, and value is a tuple with its value in obj1 and obj2.")]
         public static Dictionary<string, Tuple<object, object>> DifferentProperties(this object obj1, object obj2, DiffConfig diffConfig = null)
         {
-            var dict = new Dictionary<string, Tuple<object, object>>();
+            // Set configurations if diffConfig is null. Clone it for immutability in the UI.
+            DiffConfig diffConfigCopy = diffConfig == null ? new DiffConfig() : diffConfig.GetShallowClone() as DiffConfig;
 
             var dict = new Dictionary<string, Tuple<object, object>>();
 
