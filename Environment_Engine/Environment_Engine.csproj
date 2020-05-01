@@ -137,6 +137,7 @@
     <Compile Include="Query\NewElement1D.cs" />
     <Compile Include="Query\NewInternalElement2D.cs" />
     <Compile Include="Query\NotClosedSpaces.cs" />
+    <Compile Include="Query\OpeningsByType.cs" />
     <Compile Include="Query\PointsInSpaces.cs" />
     <Compile Include="Query\CullDuplicateLines.cs" />
     <Compile Include="Query\CullOverlaps.cs" />
