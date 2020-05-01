@@ -277,14 +277,6 @@ namespace BH.Engine.Geometry
         {
 
             List<ICurve> subParts = curve.SubParts();
-
-            //Check if curve contains nurbs or ellipses, if so abort
-            if (subParts.Any(x => (x is NurbsCurve || x is Ellipse)))
-            {
-                Engine.Reflection.Compute.RecordError("Offset algorithm is not yet implemented for ellipses and nurbs curves");
-                return null;
-            }
-
             //Check if contains any circles, if so, handle them explicitly, and offset any potential leftovers by backcalling this method
             if (subParts.Any(x => x is Circle))
             {
@@ -329,8 +321,8 @@ namespace BH.Engine.Geometry
 
             PolyCurve result = new PolyCurve();
 
-            //if there are no Arcs switching to polyline method which is more reliable 
-            if (!curve.Curves.Any(x => x is Arc))
+            //if there are only Line segmensts switching to polyline method which is more reliable 
+            if (curve.Curves.All(x => x is Line))
             {
                 Polyline polyline = new Polyline { ControlPoints = curve.DiscontinuityPoints() };
                 result.Curves.AddRange(polyline.Offset(offset, normal, tangentExtensions, tolerance).SubParts());
@@ -384,8 +376,8 @@ namespace BH.Engine.Geometry
                 }
             }
 
-            //Again if there are no Arcs switching to polyline method as it is more reliable 
-            if (!offsetCurves.Any(x => x is Arc))
+            //Again if there are only Line segments switching to polyline method as it is more reliable 
+            if (offsetCurves.All(x => x is Line))
             {
                 Polyline polyline = new Polyline { ControlPoints = curve.DiscontinuityPoints() };
                 result.Curves.AddRange(polyline.Offset(offset, normal, tangentExtensions, tolerance).SubParts());
