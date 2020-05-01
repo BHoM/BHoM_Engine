@@ -47,8 +47,8 @@ namespace BH.Engine.Diffing
         [Input("diffConfig", "Sets configs such as properties to be ignored in the diffing, or enable/disable property-by-property diffing.")]
         public static Diff Diffing(IEnumerable<IBHoMObject> pastObjects, IEnumerable<IBHoMObject> currentObjects, DiffConfig diffConfig = null, string customdataIdName = null)
         {
-            // Set configurations if diffConfig is null
-            diffConfig = diffConfig == null ? new DiffConfig() : diffConfig;
+            // Set configurations if diffConfig is null. Clone it for immutability in the UI.
+            DiffConfig diffConfigCopy = diffConfig == null ? new DiffConfig() : diffConfig.GetShallowClone() as DiffConfig;
 
             // Check if objects have hashfragment.
             // If they don't, try to rely on something else (e.g. their CustomData - SoftwareId).
@@ -60,7 +60,7 @@ namespace BH.Engine.Diffing
                     return null;
                 }
                 else
-                    return DiffingWithCustomId(pastObjects, currentObjects, customdataIdName, diffConfig);
+                    return DiffingWithCustomId(pastObjects, currentObjects, customdataIdName, diffConfigCopy);
         
             // Take the Revision's objects
             List<IBHoMObject> currentObjs = currentObjects.ToList();
@@ -89,7 +89,7 @@ namespace BH.Engine.Diffing
                 else if (hashFragm.PreviousHash == hashFragm.CurrentHash)
                 {
                     // It's NOT been modified
-                    if (diffConfig.StoreUnchangedObjects)
+                    if (diffConfigCopy.StoreUnchangedObjects)
                         unChanged.Add(obj);
                 }
 
@@ -97,7 +97,7 @@ namespace BH.Engine.Diffing
                 {
                     modifiedObjs.Add(obj); // It's been modified
 
-                    if (diffConfig.EnablePropertyDiffing)
+                    if (diffConfigCopy.EnablePropertyDiffing)
                     {
                         // Determine changed properties
                         IBHoMObject oldObjState = null;
@@ -105,7 +105,7 @@ namespace BH.Engine.Diffing
 
                         if (oldObjState == null) continue;
 
-                        var differentProps = Query.DifferentProperties(obj, oldObjState, diffConfig);
+                        var differentProps = Query.DifferentProperties(obj, oldObjState, diffConfigCopy);
 
                         objModifiedProps.Add(hashFragm.CurrentHash, differentProps);
                     }
@@ -137,19 +137,22 @@ namespace BH.Engine.Diffing
         [Input("diffConfig", "Sets configs such as properties to be ignored in the diffing, or enable/disable property-by-property diffing.")]
         public static Diff Diffing(IEnumerable<object> pastObjects, IEnumerable<object> currentObjects, DiffConfig diffConfig = null)
         {
+            // Set configurations if diffConfig is null. Clone it for immutability in the UI.
+            DiffConfig diffConfigCopy = diffConfig == null ? new DiffConfig() : diffConfig.GetShallowClone() as DiffConfig;
+
             // Dispatch the objects in BHoMObjects and generic objects.
             IEnumerable<IBHoMObject> prevObjs_BHoM = pastObjects.OfType<IBHoMObject>();
             IEnumerable<IBHoMObject> currObjs_BHoM = currentObjects.OfType<IBHoMObject>();
 
             // If all objects are bhomobjects, just call the appropriate method
             if (pastObjects.Count() == prevObjs_BHoM.Count() && currentObjects.Count() == currObjs_BHoM.Count())
-                return Diffing(prevObjs_BHoM, currObjs_BHoM, diffConfig);
+                return Diffing(prevObjs_BHoM, currObjs_BHoM, diffConfigCopy);
 
             IEnumerable<object> prevObjs_nonBHoM = pastObjects.Where(o => !(o is IBHoMObject));
             IEnumerable<object> currObjs_nonBHoM = currentObjects.Where(o => !(o is IBHoMObject));
 
             // Compute the specific Diffing for the BHoMObjects.
-            Diff diff = Compute.Diffing(prevObjs_BHoM, currObjs_BHoM, diffConfig);
+            Diff diff = Compute.Diffing(prevObjs_BHoM, currObjs_BHoM, diffConfigCopy);
 
             // Compute the generic Diffing for the other objects.
             // This is left to the VennDiagram with a HashComparer (specifically, this doesn't use the HashFragment).
@@ -166,7 +169,7 @@ namespace BH.Engine.Diffing
             allPrevObjs.AddRange(vd.OnlySet2);
 
             // Create the final, actual diff.
-            Diff finalDiff = new Diff(allCurrObjs, allPrevObjs, diff.ModifiedObjects, diffConfig, diff.ModifiedPropsPerObject, diff.UnchangedObjects);
+            Diff finalDiff = new Diff(allCurrObjs, allPrevObjs, diff.ModifiedObjects, diffConfigCopy, diff.ModifiedPropsPerObject, diff.UnchangedObjects);
 
             return finalDiff;
         }
@@ -176,9 +179,10 @@ namespace BH.Engine.Diffing
             // Here we are in the scenario where the objects do not have an HashFragment,
             // but we assume they an identifier in CustomData that let us identify the objects
 
-            // Set configurations if diffConfig is null
-            diffConfig = diffConfig == null ? new DiffConfig() : diffConfig;
-            diffConfig.PropertiesToIgnore.Add("CustomData");
+            // Set configurations if diffConfig is null. Clone it for immutability in the UI.
+            DiffConfig diffConfigCopy = diffConfig == null ? new DiffConfig() : diffConfig.GetShallowClone() as DiffConfig;
+            if (!diffConfigCopy.PropertiesToIgnore.Contains("CustomData"))
+                diffConfigCopy.PropertiesToIgnore.Add("CustomData");
 
             List<IBHoMObject> currentObjs = currentObjects.ToList();
             List<IBHoMObject> pastObjs = pastObjects.ToList();
@@ -214,13 +218,13 @@ namespace BH.Engine.Diffing
                 // Otherwise, the current object existed in the past set.
 
                 // Compute the hashes to find if they are different
-                string currentHash = Compute.DiffingHash(currentObj, diffConfig);
-                string pastHash = Compute.DiffingHash(correspondingObj, diffConfig);
+                string currentHash = Compute.DiffingHash(currentObj, diffConfigCopy);
+                string pastHash = Compute.DiffingHash(correspondingObj, diffConfigCopy);
 
                 if (pastHash == currentHash)
                 {
                     // It's NOT been modified
-                    if (diffConfig.StoreUnchangedObjects)
+                    if (diffConfigCopy.StoreUnchangedObjects)
                         unChanged.Add(currentObj);
 
                     continue;
@@ -231,10 +235,10 @@ namespace BH.Engine.Diffing
                     // It's been modified
                     modifiedObjs.Add(currentObj); 
 
-                    if (diffConfig.EnablePropertyDiffing)
+                    if (diffConfigCopy.EnablePropertyDiffing)
                     {
                         // Determine changed properties
-                        var differentProps = Query.DifferentProperties(currentObj, correspondingObj, diffConfig);
+                        var differentProps = Query.DifferentProperties(currentObj, correspondingObj, diffConfigCopy);
 
                         objModifiedProps.Add(currentObjID, differentProps);
                     }
@@ -252,7 +256,7 @@ namespace BH.Engine.Diffing
             deletedObjs = pastObjs_dict.Keys.Except(currObjs_dict.Keys)
                 .Where(k => pastObjs_dict.ContainsKey(k)).Select(k => pastObjs_dict[k]).ToList();
 
-            return new Diff(newObjs, deletedObjs, modifiedObjs, diffConfig, objModifiedProps, unChanged);
+            return new Diff(newObjs, deletedObjs, modifiedObjs, diffConfigCopy, objModifiedProps, unChanged);
         }
     }
 }
