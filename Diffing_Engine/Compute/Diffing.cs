@@ -178,6 +178,7 @@ namespace BH.Engine.Diffing
 
             // Set configurations if diffConfig is null
             diffConfig = diffConfig == null ? new DiffConfig() : diffConfig;
+            diffConfig.PropertiesToIgnore.Add("CustomData");
 
             List<IBHoMObject> currentObjs = currentObjects.ToList();
             List<IBHoMObject> pastObjs = pastObjects.ToList();
