@@ -275,6 +275,28 @@ namespace BH.Engine.Geometry
         [Output("curve", "Resulting offset")]
         public static PolyCurve Offset(this PolyCurve curve, double offset, Vector normal = null, bool tangentExtensions = false, double tolerance = Tolerance.Distance)
         {
+
+            List<ICurve> subParts = curve.SubParts();
+
+            //Check if curve contains nurbs or ellipses, if so abort
+            if (subParts.Any(x => (x is NurbsCurve || x is Ellipse)))
+            {
+                Engine.Reflection.Compute.RecordError("Offset algorithm is not yet implemented for ellipses and nurbs curves");
+                return null;
+            }
+
+            //Check if contains any circles, if so, handle them explicitly, and offset any potential leftovers by backcalling this method
+            if (subParts.Any(x => x is Circle))
+            {
+                IEnumerable<Circle> circles = subParts.Where(x => x is Circle).Cast<Circle>().Select(x => x.Offset(offset, normal, tangentExtensions, tolerance));
+                PolyCurve nonCirclePolyCurve = new PolyCurve { Curves = curve.Curves.Where(x => !(x is Circle)).ToList() };
+                if (nonCirclePolyCurve.Curves.Count != 0)
+                    nonCirclePolyCurve = nonCirclePolyCurve.Offset(offset, normal, tangentExtensions, tolerance);
+
+                nonCirclePolyCurve.Curves.AddRange(circles);
+                return nonCirclePolyCurve;
+            }
+
             if (!curve.IsPlanar(tolerance))
             {
                 BH.Engine.Reflection.Compute.RecordError("Offset works only on planar curves");
@@ -316,17 +338,10 @@ namespace BH.Engine.Geometry
             }
 
             Vector normalNormalised = normal.Normalise();
-            List<ICurve> ICrvs = curve.SubParts();
-
-            if (ICrvs[0] is Circle)
-            {
-                result.Curves.Add(Offset((Circle)ICrvs[0], offset, normal));
-                return result;
-            }
 
             //First - offseting each individual element
             List<ICurve> offsetCurves = new List<ICurve>();
-            foreach (ICurve crv in ICrvs)
+            foreach (ICurve crv in subParts)
                 if (crv.IOffset(offset, normal, false, tolerance) != null)
                     offsetCurves.Add(crv.IOffset(offset, normal, false, tolerance));
 
