@@ -39,9 +39,10 @@ namespace BH.Engine.Graphics
         /**** Public Methods - Graphics                 ****/
         /***************************************************/
 
-        [Description("Returns a BHoM mesh representation for the BHoM Bar.")]
         public static BH.oM.Graphics.RenderMesh RenderMesh(this Sphere sphere, RenderMeshOptions renderMeshOptions = null)
         {
+            BH.Engine.Reflection.Compute.RecordWarning("RenderMesh for sphere still doesn't work properly and needs to be finished.");
+
             renderMeshOptions = renderMeshOptions ?? new RenderMeshOptions();
 
             int nLatitude = 6;                  // Number of vertical lines.
