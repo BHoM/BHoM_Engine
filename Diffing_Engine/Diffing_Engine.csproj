@@ -121,11 +121,7 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>rem update BHoM Assemblies folder
-call "..\..\BHoM_UI\Build\UI_PostBuild.exe" ..\..\ "$(AppData)\BHoM\Assemblies"
-
-rem copy Grasshopper_UI to BHoM Assemblies folder
-Copy /Y "..\..\Grasshopper_Toolkit\Build\BH.UI.Grasshopper.dll" "$(AppData)\BHoM\Assemblies\BH.UI.Grasshopper.dll"
-Copy /Y "..\..\Grasshopper_Toolkit\Build\BH.UI.Grasshopper.dll" "$(AppData)\BHoM\Assemblies\BH.UI.Grasshopper.gha"</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
 </Project>
