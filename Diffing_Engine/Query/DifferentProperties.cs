@@ -46,17 +46,17 @@ namespace BH.Engine.Diffing
         {
             var dict = new Dictionary<string, Tuple<object, object>>();
 
-            //Use default config if null
-            diffConfig = diffConfig ?? new DiffConfig();
+            var dict = new Dictionary<string, Tuple<object, object>>();
 
             CompareLogic comparer = new CompareLogic();
 
             comparer.Config.MaxDifferences = 1000;
-            comparer.Config.MembersToIgnore = diffConfig.PropertiesToIgnore;
-            comparer.Config.DoublePrecision = diffConfig.NumericTolerance;
 
-            if (diffConfig.PropertiesToIgnore.Contains("BHoM_Guid") || diffConfig.PropertiesToIgnore.Contains("Guid"))
-                comparer.Config.TypesToIgnore.Add(typeof(Guid));
+            if (!diffConfigCopy.PropertiesToIgnore.Contains("BHoM_Guid"))
+                diffConfigCopy.PropertiesToIgnore.Add("BHoM_Guid"); // BHoM_Guid should always be ignored in DifferentProperties.
+
+            comparer.Config.MembersToIgnore = diffConfigCopy.PropertiesToIgnore;
+            comparer.Config.DoublePrecision = diffConfigCopy.NumericTolerance;
 
             // Never include the changes in HistoryFragment.
             comparer.Config.TypesToIgnore.Add(typeof(HashFragment));
