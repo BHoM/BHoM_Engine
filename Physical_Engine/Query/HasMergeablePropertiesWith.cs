@@ -31,6 +31,7 @@ using System.ComponentModel;
 
 using BH.oM.Physical.Elements;
 using BH.oM.Diffing;
+using BH.Engine.Geometry;
 
 namespace BH.Engine.Physical
 {
@@ -49,6 +50,19 @@ namespace BH.Engine.Physical
             if (element.GetType() != other.GetType())
                 return false;
 
+            if (!element.Geometry().IIsLinear() || !other.Geometry().IIsLinear())
+            {
+                Engine.Reflection.Compute.RecordWarning("No merge comparison avalible for non-linear IFramingElements.");
+                return false;
+            }
+
+            int parallel = element.Geometry().IStartDir().IsParallel(other.Geometry().IStartDir());
+            if (parallel != 1)
+                return false;
+
+            if (element.Normal() != other.Normal())
+                return false;
+
             if (element.Property == other.Property)
                 return true;
 
@@ -60,6 +74,7 @@ namespace BH.Engine.Physical
 
             return Diffing.Query.DifferentProperties(element.Property, other.Property, new DiffConfig()) == null;
         }
+        
 
         /***************************************************/
 
