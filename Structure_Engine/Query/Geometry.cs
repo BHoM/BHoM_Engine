@@ -101,8 +101,8 @@ namespace BH.Engine.Structure
                 return null;
 
             CompositeGeometry geom = Engine.Geometry.Create.CompositeGeometry(section.SectionProfile.Edges);
-            if(section.Reinforcement != null)
-                geom.Elements.AddRange(section.Layout().Elements);
+            //if(section.Reinforcement != null)
+                //geom.Elements.AddRange(section.Layout().Elements);
 
             return geom;
         }

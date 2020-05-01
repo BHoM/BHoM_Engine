@@ -218,7 +218,6 @@
     <Compile Include="Query\Visualize.cs" />
     <Compile Include="Query\WidthAt.cs" />
     <Compile Include="Query\IsLongitudinal.cs" />
-    <Compile Include="Query\Layout.cs" />
     <Compile Include="Query\TieDiameter.cs" />
     <Compile Include="Query\TorsionalConstant.cs" />
     <Compile Include="Query\WarpingConstant.cs" />
