@@ -51,11 +51,11 @@ namespace BH.Engine.Graphics
             if (mesh != null)
                 return (RenderMesh)mesh;
 
-            return ToRenderMesh(Geometry(obj) as dynamic, renderMeshOptions);
+            return RenderMesh(Geometry(obj) as dynamic, renderMeshOptions);
         }
 
         // Fallback
-        private static BH.oM.Graphics.RenderMesh ToRenderMesh(this IGeometry geom, RenderMeshOptions renderMeshOptions = null)
+        private static BH.oM.Graphics.RenderMesh RenderMesh(this IGeometry geom, RenderMeshOptions renderMeshOptions = null)
         {
             BH.Engine.Reflection.Compute.RecordError($"Failed to find a method to compute the Mesh representation of {geom.GetType().Name}");
             return null;

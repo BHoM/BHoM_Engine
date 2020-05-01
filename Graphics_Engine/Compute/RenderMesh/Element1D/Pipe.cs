@@ -49,28 +49,34 @@ namespace BH.Engine.Graphics
             Polyline centrePolyline = pipe.Centreline as Polyline;
 
             if (centreLine != null)
-            {
-                int pipeFaces = 3;
-                List<double> pointParams = Enumerable.Range(0, pipeFaces + 1).Select(i => (double)(i / pipeFaces)).ToList();
-
-                Circle c = BH.Engine.Geometry.Create.Circle(centreLine.Start, centreLine.Direction(), radius);
-
-                Polyline polyline = BH.Engine.Geometry.Create.Polyline(pointParams.Select(par => c.IPointAtParameter(par)));
-                Extrusion extr = BH.Engine.Geometry.Create.Extrusion(polyline, centreLine.Direction());
-
-                return RenderMesh(extr, renderMeshOptions);
-            }
+                return RenderMesh(centreLine, renderMeshOptions);
 
             if (centrePolyline != null)
             {
+                RenderMesh unifiedMesh = new RenderMesh();
 
+                for (int i = 0; i < centrePolyline.ControlPoints.Count - 2; i++)
+                {
+                    Line line = BH.Engine.Geometry.Create.Line(centrePolyline.ControlPoints[i], centrePolyline.ControlPoints[i + 1]);
+                    RenderMesh m = RenderMesh(line, renderMeshOptions);
+                    
+                    // Join the meshes
+                    m.Faces.ForEach(f => unifiedMesh.Faces.Add(new Face()
+                    {
+                        A = f.A + unifiedMesh.Faces.Count,
+                        B = f.B + unifiedMesh.Faces.Count,
+                        C = f.C + unifiedMesh.Faces.Count,
+                        D = f.D + unifiedMesh.Faces.Count
+                    }));
+
+                    unifiedMesh.Vertices.AddRange(m.Vertices);
+                }
+
+                return unifiedMesh;
             }
 
-
+            BH.Engine.Reflection.Compute.RecordError("RenderMesh for Pipe currently only works with linear pipes (not curves).");
+            return null;
         }
-
-    
-
-
     }
 }

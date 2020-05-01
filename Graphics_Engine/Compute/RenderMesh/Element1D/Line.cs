@@ -23,24 +23,45 @@
 using BH.oM.Geometry;
 using BH.oM.Graphics;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using BH.Engine.Geometry;
 using BH.oM.Base;
+using System.ComponentModel;
 
 namespace BH.Engine.Graphics
 {
     public static partial class Compute
     {
         /***************************************************/
-        /**** Private Methods - Graphics                ****/
+        /**** Public Methods - Graphics                 ****/
         /***************************************************/
 
-        // Fallback
-        private static BH.oM.Geometry.Mesh RenderMesh(this IObject iObject, RenderMeshOptions renderMeshOptions = null)
+        public static BH.oM.Graphics.RenderMesh RenderMesh(this Line line, RenderMeshOptions renderMeshOptions = null)
         {
-            return null;
+            renderMeshOptions = renderMeshOptions ?? new RenderMeshOptions();
+
+            double radius = 0.1;//0.01;
+
+            int pipeFaces = 3;
+            List<double> pointParams = Enumerable.Range(0, pipeFaces + 1).Select(i => (double)((double)i / (double)pipeFaces)).ToList();
+
+            Circle c = BH.Engine.Geometry.Create.Circle(line.Start, line.Direction(), radius);
+
+            Polyline polyline = BH.Engine.Geometry.Create.Polyline(pointParams.Select(par => c.IPointAtParameter(par)));
+            Vector lengthVector = new Vector()
+            {
+                X = line.End.X - line.Start.X,
+                Y = line.End.Y - line.Start.Y,
+                Z = line.End.Z - line.Start.Z
+            };
+
+            Extrusion extr = BH.Engine.Geometry.Create.Extrusion(polyline, lengthVector);
+            extr.Capped = false;
+
+            return RenderMesh(extr, renderMeshOptions);
         }
     }
 }

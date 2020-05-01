@@ -64,6 +64,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Compute\Element1D\Line.cs" />
+    <Compile Include="Compute\Element1D\Pipe.cs" />
     <Compile Include="Compute\Element3D\Extrusion.cs" />
     <Compile Include="Compute\Element3D\Cuboid.cs" />
     <Compile Include="Compute\Element3D\BoundingBox.cs" />
