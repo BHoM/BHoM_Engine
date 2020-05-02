@@ -220,6 +220,7 @@ namespace BH.Engine.Serialiser
                 cm.SetDiscriminator(type.FullName);
                 cm.SetDiscriminatorIsRequired(true);
                 cm.SetIgnoreExtraElements(false);   // It would have been nice to use cm.MapExtraElementsProperty("CustomData") but it doesn't work for inherited properties
+                cm.SetIdMember(null);
 
                 BsonClassMap.RegisterClassMap(cm);
 
