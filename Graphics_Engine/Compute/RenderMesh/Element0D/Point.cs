@@ -47,9 +47,15 @@ namespace BH.Engine.Graphics
             renderMeshOptions = renderMeshOptions ?? new RenderMeshOptions();
 
             double radius = 0.12 * renderMeshOptions.Element0DScale;
-            Sphere sphere = BH.Engine.Geometry.Create.Sphere(point, radius);
 
-            return sphere.RenderMesh(renderMeshOptions);
+            // // - Sphere still doesn't work properly
+            //Sphere sphere = BH.Engine.Geometry.Create.Sphere(point, radius);
+
+            //return sphere.RenderMesh(renderMeshOptions);
+
+            // // - For now just return a little cube instead of a sphere.
+            Cuboid cuboid = BH.Engine.Geometry.Create.Cuboid(BH.Engine.Geometry.Create.CartesianCoordinateSystem(point, BH.Engine.Geometry.Create.Vector(1,0,0), BH.Engine.Geometry.Create.Vector(0, 1, 0)), radius, radius, radius);
+            return cuboid.RenderMesh(renderMeshOptions);
         }
    
     } 
