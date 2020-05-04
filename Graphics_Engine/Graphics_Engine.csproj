@@ -72,6 +72,8 @@
     <Compile Include="Compute\RenderMesh\Element3D\Sphere.cs" />
     <Compile Include="Compute\RenderMesh\Element0D\Point.cs" />
     <Compile Include="Compute\RenderMesh\IRenderMesh.cs" />
+    <Compile Include="Compute\RenderMesh\Other\CompositeGeometry.cs" />
+    <Compile Include="Query\JoinRenderMeshes.cs" />
     <Compile Include="Create\Gradient.cs" />
     <Compile Include="Create\SVGStyle.cs" />
     <Compile Include="Create\SVGObject.cs" />
