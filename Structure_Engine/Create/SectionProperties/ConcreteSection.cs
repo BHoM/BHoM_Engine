@@ -41,6 +41,7 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [PreviousVersion("3.2", "BH.Engine.Structure.Create.ConcreteRectangleSection(System.Double, System.Double, BH.oM.Structure.MaterialFragments.Concrete, System.String, System.Collections.Generic.List<BH.oM.Structure.SectionProperties.Reinforcement.Reinforcement>)")]
         [Description("Creates a rectangular solid concrete section from input dimensions.")]
         [Input("height", "Height of the section.", typeof(Length))]
         [Input("width", "Width of the section.", typeof(Length))]
@@ -55,6 +56,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [PreviousVersion("3.2", "BH.Engine.Structure.Create.ConcreteTSection(System.Double, System.Double, System.Double, System.Double, BH.oM.Structure.MaterialFragments.Concrete, System.String, System.Collections.Generic.List<BH.oM.Structure.SectionProperties.Reinforcement.Reinforcement>)")]
         [Description("Creates a rectangular solid concrete section from input dimensions.")]
         [Input("height", "Full height of the section.", typeof(Length))]
         [Input("webThickness", "Thickness of the web.", typeof(Length))]
@@ -72,6 +74,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [PreviousVersion("3.2", "BH.Engine.Structure.Create.ConcreteCircularSection(System.Double, BH.oM.Structure.MaterialFragments.Concrete, System.String, System.Collections.Generic.List<BH.oM.Structure.SectionProperties.Reinforcement.Reinforcement>)")]
         [Description("Creates a circular solid concrete section from input dimensions.")]
         [Input("diameter", "Diameter of the section.", typeof(Length))]
         [Input("material", "Concrete material to be applied to the section. If null a default material will be extracted from the database.")]
@@ -85,6 +88,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [PreviousVersion("3.2", "BH.Engine.Structure.Create.ConcreteFreeFormSection(System.Collections.Generic.List<BH.oM.Geometry.ICurve>, BH.oM.Structure.MaterialFragments.Concrete, System.String, System.Collections.Generic.List<BH.oM.Structure.SectionProperties.Reinforcement.Reinforcement>)")]
         [Description("Creates a concrete freeform section based on edge curves. Please note that this type of section generally will have less support in adapters. If the type of section being created can be achieved by any other profile, aim use them instead.")]
         [Input("edges", "Edges defining the section. Should consist of closed curve(s) in the global xy-plane.")]
         [Input("material", "Concrete material to be applied to the section. If null a default material will be extracted from the database.")]
@@ -98,6 +102,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [PreviousVersion("3.2", "BH.Engine.Structure.Create.ConcreteSectionFromProfile(BH.oM.Geometry.ShapeProfiles.IProfile, BH.oM.Structure.MaterialFragments.Concrete, System.String, System.Collections.Generic.List<BH.oM.Structure.SectionProperties.Reinforcement.Reinforcement>)")]
         [Description("Generates a concrete section based on a Profile and a material. \n This is the main create method for concrete sections, responsible for calculating section constants etc. and is being called from all other create methods for concrete sections.")]
         [Input("profile", "The section profile the concrete section. All section constants are derived based on the dimensions of this.")]
         [Input("material", "concrete material to be applied to the section. If null a default material will be extracted from the database.")]
