@@ -43,6 +43,8 @@ namespace BH.Engine.Graphics
         {
             BH.Engine.Reflection.Compute.RecordWarning("RenderMesh for sphere still doesn't work properly and needs to be finished.");
 
+            return sphere.Centre.RenderMesh();
+
             renderMeshOptions = renderMeshOptions ?? new RenderMeshOptions();
 
             int nLatitude = 6;                  // Number of vertical lines.

@@ -50,7 +50,7 @@ namespace BH.Engine.Graphics
                 return null;
             }
 
-            if (node.Support == null || !renderMeshOptions.Detailed1DElements) // If there is no support information, or by choice...
+            if (node.Support == null || !renderMeshOptions.Detailed0DElements) // If there is no support information, or by choice...
                 return BH.Engine.Structure.Query.Position(node).RenderMesh(renderMeshOptions, isSubObject); // ...just return the representation for the point.
 
             // -------------------------------------------- //
@@ -68,12 +68,12 @@ namespace BH.Engine.Graphics
             if (fixedToTranslation && fixedToRotation)
             {
                 // Fully fixed: box
-                double boxDims = 0.12 * renderMeshOptions.Element0DScale;
+                double boxDims = 0.2 * renderMeshOptions.Element0DScale;
 
                 var centrePoint = node.Position;
                 BoundingBox bbox = BH.Engine.Geometry.Create.BoundingBox(
-                    new Point() { X = centrePoint.X + 2 * boxDims, Y = centrePoint.Y + 2 * boxDims, Z = centrePoint.Z },
-                    new Point() { X = centrePoint.X - 2 * boxDims, Y = centrePoint.Y - 2 * boxDims, Z = centrePoint.Z - 3 * boxDims });
+                    new Point() { X = centrePoint.X + 2 * boxDims, Y = centrePoint.Y + 2 * boxDims, Z = centrePoint.Z + boxDims * 1.5},
+                    new Point() { X = centrePoint.X - 2 * boxDims, Y = centrePoint.Y - 2 * boxDims, Z = centrePoint.Z - boxDims * 1.5 });
 
                 return RenderMesh(bbox);
             }
@@ -81,18 +81,20 @@ namespace BH.Engine.Graphics
             if (fixedToTranslation && !fixedToRotation)
             {
                 // Pin: cone + sphere
-                double radius = 0.12 * renderMeshOptions.Element0DScale;
+                double radius = 0.15 * renderMeshOptions.Element0DScale;
 
                 CompositeGeometry compositeGeometry = new CompositeGeometry();
 
                 Sphere sphere = BH.Engine.Geometry.Create.Sphere(BH.Engine.Structure.Query.Position(node), radius);
                 compositeGeometry.Elements.Add(sphere);
 
+                double coneHeight = 4 * radius;
+
                 Cone cone = BH.Engine.Geometry.Create.Cone(
-                    new Point() { X = node.Position.X, Y = node.Position.Y, Z = node.Position.Z - radius },
-                    new Vector() { X = 0, Y = 0, Z = -1 },
-                    4 * radius,
-                    3 * radius
+                    new Point() { X = node.Position.X, Y = node.Position.Y, Z = node.Position.Z - radius/2 - coneHeight },
+                    new Vector() { X = 0, Y = 0, Z = 1 },
+                    3 * radius,
+                    coneHeight
                     );
                 compositeGeometry.Elements.Add(cone);
 

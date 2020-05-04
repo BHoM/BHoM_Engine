@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -29,61 +29,43 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using BH.Engine.Geometry;
 using BH.oM.Base;
-
+using System.ComponentModel;
 
 namespace BH.Engine.Graphics
 {
     public static partial class Compute
     {
         /***************************************************/
-        /**** Public Methods - Graphics                 ****/
+        /**** Private Methods - Utilities               ****/
         /***************************************************/
 
-        // Main interface method
-        public static BH.oM.Graphics.RenderMesh IRenderMesh(this IObject obj, RenderMeshOptions renderMeshOptions = null)
+        private static Vector Scale(this Vector vector, double factor)
         {
-            renderMeshOptions = renderMeshOptions ?? new RenderMeshOptions();
-
-            if (obj is BH.oM.Graphics.RenderMesh)
-                return obj as BH.oM.Graphics.RenderMesh;
-
-            BH.oM.Geometry.Mesh mesh = obj as BH.oM.Geometry.Mesh;
-            if (mesh != null)
-                return (RenderMesh)mesh;
-
-            return RenderMesh(obj as dynamic, renderMeshOptions);
+            return new Vector { X = vector.X * factor, Y = vector.Y * factor, Z = vector.Z * factor };
         }
 
-        // Fallback
-        private static BH.oM.Graphics.RenderMesh RenderMesh(this IGeometry geom, RenderMeshOptions renderMeshOptions = null)
+        private static Vector Product(this Vector a, double scalar)
         {
-            BH.Engine.Reflection.Compute.RecordError($"Failed to find a method to compute the Mesh representation of {geom.GetType().Name}");
-            return null;
+            return Modify.Scale(a, scalar);
         }
 
-        // Needed to pick geometry for any IObject
-        private static IGeometry Geometry(this object obj)
+        private static bool IsStraight(this ICurve curve)
         {
-            if (obj is IGeometry)
-                return obj as IGeometry;
-            else if (obj is IBHoMObject)
-                return BH.Engine.Base.Query.IGeometry(((IBHoMObject)obj));
-            else if (obj is IEnumerable)
-            {
-                List<IGeometry> geometries = new List<IGeometry>();
-                foreach (object item in (IEnumerable)obj)
-                {
-                    IGeometry geometry = item.Geometry();
-                    if (geometry != null)
-                        geometries.Add(geometry);
-                }
-                if (geometries.Count() > 0)
-                    return new CompositeGeometry { Elements = geometries.ToList() };
-                else
-                    return null;
-            }
-            else
-                return null;
+            if (curve.IStartDir() != curve.IEndDir())
+                return false;
+
+            List<double> pointParams = Enumerable.Range(0, 10).Select(i => (double)((double)i / (double)10)).ToList();
+
+            List<Point> pointsOnCurve = pointParams.Select(par => curve.IPointAtParameter(par)).ToList();
+
+            Line line = BH.Engine.Geometry.Create.Line(curve.IStartPoint(), curve.IEndPoint());
+
+            List<Point> pointsOnLine = pointParams.Select(par => line.IPointAtParameter(par)).ToList();
+
+            if (pointsOnCurve.SequenceEqual(pointsOnCurve))
+                return true;
+
+            return false;
         }
-    } 
+    }
 }

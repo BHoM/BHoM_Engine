@@ -43,11 +43,21 @@ namespace BH.Engine.Graphics
         {
             Line line = extrusion.Curve as Line;
             Polyline polyline = extrusion.Curve as Polyline;
+            ICurve curve = extrusion.Curve as ICurve;
+            PolyCurve polyCurve = extrusion.Curve as PolyCurve;
 
             if (line == null && polyline == null)
             {
-                BH.Engine.Reflection.Compute.RecordError($"Calling RenderMesh for {nameof(Extrusion)} currently works only if the {nameof(Extrusion.Curve)} is composed of linear segments.");
-                return null;
+                // Check if the Curve/PolyCurve is straight
+                if (curve != null && curve.IsStraight())
+                    line = BH.Engine.Geometry.Create.Line(curve.IStartPoint(), curve.IEndPoint()); // convert the curve into a straight line
+                else if (polyCurve != null && !polyCurve.Curves.Any(c => !c.IsStraight()))
+                    polyline = BH.Engine.Geometry.Convert.ToPolyline(polyCurve); // convert the polycurve into a polyline
+                else
+                {
+                    BH.Engine.Reflection.Compute.RecordError($"Calling RenderMesh for {nameof(Extrusion)} currently works only if the {nameof(Extrusion.Curve)} is composed of linear segments.");
+                    return null;
+                }
             }
 
             List<Face> faces = new List<Face>();
