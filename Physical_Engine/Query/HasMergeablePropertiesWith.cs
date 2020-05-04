@@ -50,17 +50,20 @@ namespace BH.Engine.Physical
             if (element.GetType() != other.GetType())
                 return false;
 
-            if (!element.Geometry().IIsLinear() || !other.Geometry().IIsLinear())
+            if (element.Location == null || other.Location == null)
+                return false;
+
+            if (!element.Location.IIsLinear() || !other.Location.IIsLinear())
             {
                 Engine.Reflection.Compute.RecordWarning("No merge comparison avalible for non-linear IFramingElements.");
                 return false;
             }
 
-            int parallel = element.Geometry().IStartDir().IsParallel(other.Geometry().IStartDir());
+            int parallel = element.Location.IStartDir().IsParallel(other.Location.IStartDir());
             if (parallel != 1)
                 return false;
 
-            if (element.Normal() != other.Normal())
+            if (element.Normal().Angle(other.Normal()) < BH.oM.Geometry.Tolerance.Angle)
                 return false;
 
             if (element.Property == other.Property)
