@@ -166,7 +166,7 @@ namespace BH.Engine.Geometry
             }
 
             bool regSameDir = false;
-            if (Math.Abs(region.INormal().DotProduct(refRegion.INormal()) - 1) <= tolerance)
+            if (Math.Abs(region.Normal().DotProduct(refRegion.Normal()) - 1) <= tolerance)
                 regSameDir = true;
 
             for (int i = 0; i < tmpResult.Count; i++)

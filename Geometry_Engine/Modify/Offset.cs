@@ -20,7 +20,6 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.Engine.Geometry;
 using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
 using BH.oM.Reflection.Debugging;
@@ -160,7 +159,7 @@ namespace BH.Engine.Geometry
                 if (!isClosed)
                     BH.Engine.Reflection.Compute.RecordError("Normal is missing. Normal vector is not needed only for closed curves");
                 else
-                    normal = curve.INormal();
+                    normal = curve.Normal();
             else
                 normal = normal.Normalise();
 

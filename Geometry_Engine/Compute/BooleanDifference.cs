@@ -143,7 +143,7 @@ namespace BH.Engine.Geometry
             if (allRegions.Count == 1)
                 return new List<Polyline> { region };
 
-            Vector normal = region.INormal();
+            Vector normal = region.Normal();
 
             for (int i = 0; i < allRegions.Count; i++)
                 if (!allRegions[i].IsClockwise(normal))
