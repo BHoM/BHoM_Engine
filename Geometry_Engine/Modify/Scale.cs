@@ -42,6 +42,13 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        public static Vector Scale(this Vector vector, double factor)
+        {
+            return new Vector { X = vector.X * factor, Y = vector.Y * factor, Z = vector.Z * factor };
+        }
+
+        /***************************************************/
+
         public static Vector Scale(this Vector vector, Point origin, Vector scaleVector)
         {
             return new Vector { X = vector.X * scaleVector.X, Y = vector.Y * scaleVector.Y, Z = vector.Z * scaleVector.Z };

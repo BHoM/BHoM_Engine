@@ -37,6 +37,13 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        public static Vector Product(this Vector a, double scalar)
+        {
+            return Modify.Scale(a, scalar);
+        }
+
+        /***************************************************/
+
         public static Vector CrossProduct(this Vector a, Vector b)
         {
             return new Vector { X = a.Y * b.Z - a.Z * b.Y, Y = a.Z * b.X - a.X * b.Z, Z = a.X * b.Y - a.Y * b.X };
