@@ -68,13 +68,13 @@ namespace BH.Engine.Structure
             }
 
             //TODO: include stirups for offset distance
-            double cover = section.MinimumCover;
+            double stirupOffset = 0;
 
             List<Point> rebarPoints = new List<Point>();
 
             foreach (LongitudinalReinforcement reif in longReif)
             {
-                double offset = cover + reif.Diameter / 2;
+                double offset = stirupOffset + reif.MinimumCover + reif.Diameter / 2;
                 IEnumerable<ICurve> outerCurves = outerEdges.Select(x => x.IOffset(offset, -Vector.ZAxis));
                 IEnumerable<ICurve> innerCurves = innerEdges.Select(x => x.IOffset(offset, Vector.ZAxis));
 

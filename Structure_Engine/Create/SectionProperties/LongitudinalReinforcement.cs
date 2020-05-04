@@ -42,7 +42,7 @@ namespace BH.Engine.Structure
         [Description("")]
         [Input("", "")]
         [Output("", "")]
-        public static LongitudinalReinforcement PerimiterReinforcement(double diameter, int barCount, bool rebarsAtProfileDiscontinuities, double startLocation = 0, double endLocation = 1, IMaterialFragment material = null)
+        public static LongitudinalReinforcement PerimiterReinforcement(double diameter, int barCount, bool rebarsAtProfileDiscontinuities, double miniumCover, double startLocation = 0, double endLocation = 1, IMaterialFragment material = null)
         {
             return new LongitudinalReinforcement
             {
@@ -50,7 +50,8 @@ namespace BH.Engine.Structure
                 Diameter = diameter,
                 Material = material ?? Query.Default(MaterialType.Rebar),
                 StartLocation = startLocation,
-                EndLocation = endLocation
+                EndLocation = endLocation,
+                MinimumCover = miniumCover
             };
         }
 
@@ -59,7 +60,7 @@ namespace BH.Engine.Structure
         [Description("")]
         [Input("", "")]
         [Output("", "")]
-        public static LongitudinalReinforcement LayerReinforcement(double diameter, int barCount, Vector direction = null, double offset = 0, ReferencePoint referencePoint = ReferencePoint.BottomCenter, double startLocation = 0, double endLocation = 1, IMaterialFragment material = null)
+        public static LongitudinalReinforcement LayerReinforcement(double diameter, int barCount, double miniumCover, Vector direction = null, double offset = 0, ReferencePoint referencePoint = ReferencePoint.BottomCenter, double startLocation = 0, double endLocation = 1, IMaterialFragment material = null)
         {
             return new LongitudinalReinforcement
             {
@@ -67,7 +68,8 @@ namespace BH.Engine.Structure
                 Diameter = diameter,
                 Material = material ?? Query.Default(MaterialType.Rebar),
                 StartLocation = startLocation,
-                EndLocation = endLocation
+                EndLocation = endLocation,
+                MinimumCover = miniumCover
             };
         }
 
@@ -76,16 +78,16 @@ namespace BH.Engine.Structure
         [Description("")]
         [Input("", "")]
         [Output("", "")]
-        public static LongitudinalReinforcement BottomReinforcement(double diameter, double area, double spacing, double startLocation = 0, double endLocation = 1, IMaterialFragment material = null)
+        public static LongitudinalReinforcement MultiLinearReinforcement(double diameter, int barCount, double spacing, double miniumCover, Vector direction = null, double offset = 0, ReferencePoint referencePoint = ReferencePoint.BottomCenter, double startLocation = 0, double endLocation = 1, IMaterialFragment material = null)
         {
-            int numberOfBars = (int)Math.Ceiling(area / (diameter * diameter * Math.PI / 4));
             return new LongitudinalReinforcement
             {
-                RebarLayout = Spatial.Create.MultiLinearLayout(numberOfBars, spacing + diameter, Vector.XAxis, 0, ReferencePoint.BottomCenter),
+                RebarLayout = Spatial.Create.MultiLinearLayout(barCount, spacing + diameter, Vector.XAxis, 0, ReferencePoint.BottomCenter),
                 Diameter = diameter,
                 Material = material ?? Query.Default(MaterialType.Rebar),
                 StartLocation = startLocation,
-                EndLocation = endLocation
+                EndLocation = endLocation,
+                MinimumCover = miniumCover
             };
         }
 
@@ -94,17 +96,21 @@ namespace BH.Engine.Structure
         [Description("")]
         [Input("", "")]
         [Output("", "")]
-        public static LongitudinalReinforcement TopReinforcement(double diameter, double area, double spacing, double startLocation = 0, double endLocation = 1, IMaterialFragment material = null)
+        public static LongitudinalReinforcement BottomReinforcement(double diameter, double area, double spacing, double miniumCover, double startLocation = 0, double endLocation = 1, IMaterialFragment material = null)
         {
             int numberOfBars = (int)Math.Ceiling(area / (diameter * diameter * Math.PI / 4));
-            return new LongitudinalReinforcement
-            {
-                RebarLayout = Spatial.Create.MultiLinearLayout(numberOfBars, spacing + diameter, Vector.XAxis, 0, ReferencePoint.TopCenter),
-                Diameter = diameter,
-                Material = material ?? Query.Default(MaterialType.Rebar),
-                StartLocation = startLocation,
-                EndLocation = endLocation
-            };
+            return MultiLinearReinforcement(diameter, numberOfBars, spacing, miniumCover, Vector.XAxis, 0, ReferencePoint.BottomCenter, startLocation, endLocation, material);
+        }
+
+        /***************************************************/
+
+        [Description("")]
+        [Input("", "")]
+        [Output("", "")]
+        public static LongitudinalReinforcement TopReinforcement(double diameter, double area, double spacing, double miniumCover, double startLocation = 0, double endLocation = 1, IMaterialFragment material = null)
+        {
+            int numberOfBars = (int)Math.Ceiling(area / (diameter * diameter * Math.PI / 4));
+            return MultiLinearReinforcement(diameter, numberOfBars, spacing, miniumCover, Vector.XAxis, 0, ReferencePoint.BottomCenter, startLocation, endLocation, material);
         }
 
         /***************************************************/
