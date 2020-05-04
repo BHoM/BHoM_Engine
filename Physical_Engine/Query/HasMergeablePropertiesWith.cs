@@ -50,7 +50,7 @@ namespace BH.Engine.Physical
             if (element.GetType() != other.GetType())
                 return false;
 
-            if (element.Location == null || other.Location == null)
+            if (element.Location == null || element.Location.ILength() < oM.Geometry.Tolerance.Distance || other.Location == null || other.Location.ILength() < oM.Geometry.Tolerance.Distance)
                 return false;
 
             if (!element.Location.IIsLinear() || !other.Location.IIsLinear())
