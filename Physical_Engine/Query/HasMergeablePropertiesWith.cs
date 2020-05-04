@@ -63,7 +63,7 @@ namespace BH.Engine.Physical
             if (parallel != 1)
                 return false;
 
-            if (element.Normal().Angle(other.Normal()) < BH.oM.Geometry.Tolerance.Angle)
+            if (element.Normal().Angle(other.Normal()) > BH.oM.Geometry.Tolerance.Angle)
                 return false;
 
             if (element.Property == other.Property)
