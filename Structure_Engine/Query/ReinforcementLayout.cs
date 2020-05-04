@@ -44,7 +44,7 @@ namespace BH.Engine.Structure
         [Description("")]
         [Input("", "")]
         [Output("", "")]
-        public static List<Point> ReinforcementLayout(ConcreteSection section)
+        public static List<Point> ReinforcementLayout(ConcreteSection section, double position = -1)
         {
             //Check geometry and reinforcement exists
             if (section == null || section.SectionProfile == null || section.SectionProfile.Edges == null || section.SectionProfile.Edges.Count == 0 || section.Reinforcement == null || section.Reinforcement.Count == 0)
@@ -74,11 +74,13 @@ namespace BH.Engine.Structure
 
             foreach (LongitudinalReinforcement reif in longReif)
             {
-                double offset = stirupOffset + reif.MinimumCover + reif.Diameter / 2;
-                IEnumerable<ICurve> outerCurves = outerEdges.Select(x => x.IOffset(offset, -Vector.ZAxis));
-                IEnumerable<ICurve> innerCurves = innerEdges.Select(x => x.IOffset(offset, Vector.ZAxis));
-
-                rebarPoints.AddRange(reif.RebarLayout.IPointLayout(outerCurves, innerCurves));
+                if (position > 0 && reif.StartLocation >= position && reif.EndLocation <= position)
+                {
+                    double offset = stirupOffset + reif.MinimumCover + reif.Diameter / 2;
+                    IEnumerable<ICurve> outerCurves = outerEdges.Select(x => x.IOffset(offset, -Vector.ZAxis));
+                    IEnumerable<ICurve> innerCurves = innerEdges.Select(x => x.IOffset(offset, Vector.ZAxis));
+                    rebarPoints.AddRange(reif.RebarLayout.IPointLayout(outerCurves, innerCurves));
+                }
             }
 
             return rebarPoints;
