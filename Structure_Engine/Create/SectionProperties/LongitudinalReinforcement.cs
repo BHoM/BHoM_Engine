@@ -44,6 +44,7 @@ namespace BH.Engine.Structure
         [Output("", "")]
         public static LongitudinalReinforcement PerimiterReinforcement(double diameter, int barCount, bool rebarsAtProfileDiscontinuities, double miniumCover, double startLocation = 0, double endLocation = 1, IMaterialFragment material = null)
         {
+            CheckEndLocations(ref startLocation, ref endLocation);
             return new LongitudinalReinforcement
             {
                 RebarLayout = new PerimeterLayout() { NumberOfPoints = barCount, EnforceDiscontinuityPoints = rebarsAtProfileDiscontinuities },
@@ -62,6 +63,7 @@ namespace BH.Engine.Structure
         [Output("", "")]
         public static LongitudinalReinforcement LayerReinforcement(double diameter, int barCount, double miniumCover, Vector direction = null, double offset = 0, ReferencePoint referencePoint = ReferencePoint.BottomCenter, double startLocation = 0, double endLocation = 1, IMaterialFragment material = null)
         {
+            CheckEndLocations(ref startLocation, ref endLocation);
             return new LongitudinalReinforcement
             {
                 RebarLayout = Spatial.Create.LinearLayout(barCount, direction, offset, referencePoint),
@@ -80,6 +82,7 @@ namespace BH.Engine.Structure
         [Output("", "")]
         public static LongitudinalReinforcement MultiLinearReinforcement(double diameter, int barCount, double spacing, double miniumCover, Vector direction = null, double offset = 0, ReferencePoint referencePoint = ReferencePoint.BottomCenter, double startLocation = 0, double endLocation = 1, IMaterialFragment material = null)
         {
+            CheckEndLocations(ref startLocation, ref endLocation);
             return new LongitudinalReinforcement
             {
                 RebarLayout = Spatial.Create.MultiLinearLayout(barCount, spacing + diameter, Vector.XAxis, 0, ReferencePoint.BottomCenter),
@@ -111,6 +114,43 @@ namespace BH.Engine.Structure
         {
             int numberOfBars = (int)Math.Ceiling(area / (diameter * diameter * Math.PI / 4));
             return MultiLinearReinforcement(diameter, numberOfBars, spacing, miniumCover, Vector.XAxis, 0, ReferencePoint.BottomCenter, startLocation, endLocation, material);
+        }
+
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+        private static void CheckEndLocations(ref double startLocation, ref double endLocation)
+        {
+            if (startLocation < 0)
+            {
+                startLocation = 0;
+                Reflection.Compute.RecordWarning("Start location need to be larger or equal to 0. To accomodate, the start location has been set to 0.");
+            }
+            else if (startLocation > 1)
+            {
+                startLocation = 1;
+                Reflection.Compute.RecordWarning("Start location need to be smaller or equal to 1. To accomodate, the start location has been set to 1.");
+            }
+
+            if (endLocation < 0)
+            {
+                startLocation = 0;
+                Reflection.Compute.RecordWarning("End location need to be larger or equal to 0. To accomodate, the end location has been set to 0.");
+            }
+            else if (startLocation > 1)
+            {
+                startLocation = 1;
+                Reflection.Compute.RecordWarning("End location need to be smaller or equal to 1. To accomodate, the end location has been set to 1.");
+            }
+
+            if (startLocation > endLocation)
+            {
+                double temp = startLocation;
+                startLocation = endLocation;
+                endLocation = temp;
+                Reflection.Compute.RecordWarning("Start location need to be smaller or equal than the end location. To accomodate, the start and end location have been switched.");
+            }
         }
 
         /***************************************************/
