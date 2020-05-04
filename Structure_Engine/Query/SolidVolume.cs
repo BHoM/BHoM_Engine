@@ -30,9 +30,6 @@ using System.Collections.Generic;
 using System;
 using BH.oM.Physical.Materials;
 using BH.oM.Structure.SurfaceProperties;
-using BH.oM.Geometry.ShapeProfiles;
-using BH.oM.Structure.SectionProperties;
-using BH.Engine.Spatial;
 
 namespace BH.Engine.Structure
 {
@@ -52,14 +49,6 @@ namespace BH.Engine.Structure
                 Engine.Reflection.Compute.RecordError("The Bars Solid Volume could not be calculated as no section property has been assigned. Returning zero volume.");
                 return 0;
             }
-
-            if (bar.SectionProperty is IGeometricalSection)
-            {
-                IGeometricalSection section = bar.SectionProperty as IGeometricalSection;
-                if (section.SectionProfile is TaperedProfile)
-                    return section.SectionProfile.Area() * bar.Length();
-            }
-
             return bar.SectionProperty.Area * bar.Length();
         }
 
