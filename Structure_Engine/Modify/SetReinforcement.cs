@@ -37,6 +37,7 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [PreviousVersion("3.2", "BH.Engine.Structure.Modify.SetReinforcement(BH.oM.Structure.SectionProperties.ConcreteSection, System.Collections.Generic.IEnumerable<BH.oM.Structure.SectionProperties.Reinforcement.Reinforcement>)")]
         [Description("Sets Reinforcement to a ConcreteSection. Any previous Reinforcement will be overwritten.")]
         [Input("section", "The ConcreteSection to set Reinforcement to.")]
         [Input("reinforcement", "The collection of Reinforcement to set to the ConcreteSection.")]
