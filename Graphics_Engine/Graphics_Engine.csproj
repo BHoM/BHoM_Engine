@@ -68,6 +68,7 @@
     <Compile Include="Compute\RenderMesh\Element3D\Extrusion.cs" />
     <Compile Include="Compute\RenderMesh\Element3D\Cuboid.cs" />
     <Compile Include="Compute\RenderMesh\Element3D\BoundingBox.cs" />
+    <Compile Include="Compute\RenderMesh\Element3D\Cone.cs" />
     <Compile Include="Compute\RenderMesh\Element3D\Sphere.cs" />
     <Compile Include="Compute\RenderMesh\Element0D\Point.cs" />
     <Compile Include="Compute\RenderMesh\IRenderMesh.cs" />
