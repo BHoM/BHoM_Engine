@@ -46,7 +46,7 @@ namespace BH.Engine.Graphics
 
             renderMeshOptions = renderMeshOptions ?? new RenderMeshOptions();
 
-            double radius = 0.12 * renderMeshOptions.Element0DScale;
+            double radius = 0.15 * renderMeshOptions.Element0DScale;
 
             // // - Sphere still doesn't work properly
             //Sphere sphere = BH.Engine.Geometry.Create.Sphere(point, radius);
