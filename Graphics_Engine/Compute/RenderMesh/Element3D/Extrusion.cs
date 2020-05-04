@@ -46,7 +46,7 @@ namespace BH.Engine.Graphics
 
             if (line == null && polyline == null)
             {
-                BH.Engine.Reflection.Compute.RecordError($"Calling RenderMesh for {nameof(Extrusion)} works only if the {nameof(Extrusion.Curve)} is composed of linear segments.");
+                BH.Engine.Reflection.Compute.RecordError($"Calling RenderMesh for {nameof(Extrusion)} currently works only if the {nameof(Extrusion.Curve)} is composed of linear segments.");
                 return null;
             }
 
@@ -88,6 +88,7 @@ namespace BH.Engine.Graphics
                 return new RenderMesh() { Vertices = points.Select(pt => (Vertex)pt).ToList(), Faces = faces };
             }
 
+            BH.Engine.Reflection.Compute.RecordError($"Calling RenderMesh for {nameof(Extrusion)} currently works only if the {nameof(Extrusion.Curve)} is composed of linear segments.");
             return null;
         }
     }
