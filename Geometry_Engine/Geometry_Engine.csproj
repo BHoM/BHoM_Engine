@@ -34,6 +34,9 @@
       <HintPath>..\..\BHoM\Build\BHoM.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Data_oM">
+      <HintPath>..\..\BHoM\Build\Data_oM.dll</HintPath>
+    </Reference>
     <Reference Include="Dimensional_oM">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\BHoM\Build\Dimensional_oM.dll</HintPath>
@@ -84,7 +87,9 @@
     <Compile Include="Compute\SkewLineProximity.cs" />
     <Compile Include="Compute\SortAlongCurve.cs" />
     <Compile Include="Compute\SortCollinear.cs" />
+    <Compile Include="Convert\NBound.cs" />
     <Compile Include="Convert\Polyline.cs" />
+    <Compile Include="Create\NTree.cs" />
     <Compile Include="Create\Basis.cs" />
     <Compile Include="Create\Cone.cs" />
     <Compile Include="Create\ConvexHull.cs" />
