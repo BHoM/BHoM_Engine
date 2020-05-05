@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -20,10 +20,16 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using System;
+using System.Threading;
+using System.Linq;
+using System.Collections.Generic;
+using System.ComponentModel;
+using BH.oM.Reflection.Attributes;
+using BH.oM.Base;
+using System.Threading.Tasks;
 using BH.oM.Data.Collections;
 using BH.oM.Geometry;
-using System;
-using System.Linq;
 
 namespace BH.Engine.Data
 {
@@ -33,41 +39,29 @@ namespace BH.Engine.Data
         /**** Public Methods                            ****/
         /***************************************************/
 
-        internal static double PMSquareDistance(this Point point1, Point point2)
+        public static IEnumerable<T> ItemsInRange<T>(this NTree<T> tree, NBound bounds)
         {
-            double dx = point1.X - point2.X;
-            double dy = point1.Y - point2.Y;
-            double dz = point1.Z - point2.Z;
-            return dx * dx + dy * dy + dz * dz;
+            return ItemsInRange<T>((ITree)tree, bounds);
         }
-
-        /***************************************************/
-
-        public static double SquareDistance(this NBound box1, NBound box2)
-        {
-            double sqDist = 0;
-            for (int i = 0; i < box1.Min.Length; i++)
-            {
-                sqDist += dist(box1.Min[i], box1.Max[i], box2.Min[i], box2.Max[i]);
-            }
-            return sqDist;
-        }
+        
 
         /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
-
-        private static double dist(double min1, double max1, double min2, double max2)
+        
+        private static IEnumerable<T> ItemsInRange<T>(ITree tree, NBound bounds)
         {
-            if (max1 < min2)
-                return Math.Pow(max1 - min2, 2);
-            else if (min1 > max2)
-                return Math.Pow(min1 - max2, 2);
-            else
-                return 0;
+            if (tree.Bounds.IsInRange(bounds))
+            {
+                if (tree is NTree<T>)
+                    return (tree as NTree<T>).Items.SelectMany(x => ItemsInRange<T>(x, bounds)).ToArray();
+                else
+                    return new T[] { (tree as Leaf<T>).Item };
+            }
+            return new T[0];
         }
 
         /***************************************************/
+
     }
 }
-
