@@ -73,6 +73,9 @@
   <ItemGroup>
     <Compile Include="Compute\RenderMesh\Element0D\Node.cs" />
     <Compile Include="Compute\RenderMesh\Element1D\Bar.cs" />
+    <Compile Include="Compute\RenderMesh\Element1D\ICurve.cs" />
+    <Compile Include="Compute\RenderMesh\Element1D\Polyline.cs" />
+    <Compile Include="Compute\RenderMesh\Element1D\PolyCurve.cs" />
     <Compile Include="Compute\RenderMesh\Element1D\Line.cs" />
     <Compile Include="Compute\RenderMesh\Element1D\Pipe.cs" />
     <Compile Include="Compute\RenderMesh\Element3D\Extrusion.cs" />

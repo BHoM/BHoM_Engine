@@ -39,18 +39,13 @@ namespace BH.Engine.Graphics
         /**** Public Methods - Graphics                 ****/
         /***************************************************/
 
-        public static BH.oM.Graphics.RenderMesh RenderMesh(this Line line, RenderMeshOptions renderMeshOptions = null)
+        public static BH.oM.Graphics.RenderMesh RenderMesh(this ICurve curve, RenderMeshOptions renderMeshOptions = null)
         {
             renderMeshOptions = renderMeshOptions ?? new RenderMeshOptions();
 
-            Polyline polyline = new Polyline();
+            BH.Engine.Reflection.Compute.RecordError($"RenderMesh currently works only with linear Curves (Lines, Polylines, and straight Polycurves).");
 
-            double radius = 0.05 * renderMeshOptions.Element1DScale;
-            bool capped = false;
-
-            Pipe pipe = BH.Engine.Geometry.Create.Pipe(line, radius, capped);
-
-            return pipe.RenderMesh();
+            return null;
         }
     }
 }

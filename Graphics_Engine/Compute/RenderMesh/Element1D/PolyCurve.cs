@@ -39,18 +39,22 @@ namespace BH.Engine.Graphics
         /**** Public Methods - Graphics                 ****/
         /***************************************************/
 
-        public static BH.oM.Graphics.RenderMesh RenderMesh(this Line line, RenderMeshOptions renderMeshOptions = null)
+        public static BH.oM.Graphics.RenderMesh RenderMesh(this PolyCurve polyCurve, RenderMeshOptions renderMeshOptions = null)
         {
             renderMeshOptions = renderMeshOptions ?? new RenderMeshOptions();
 
-            Polyline polyline = new Polyline();
+            Polyline polyline = null;
 
-            double radius = 0.05 * renderMeshOptions.Element1DScale;
-            bool capped = false;
+            // Check if the PolyCurve consists of straight segments
+            if (polyCurve != null) // && polyCurve.Curves.Any(c => c is NurbsCurve) && !polyCurve.Curves.All(c => c.IsStraight()))
+                polyline = BH.Engine.Geometry.Convert.ToPolyline(polyCurve); // convert the polycurve into a polyline
+            else
+            {
+                BH.Engine.Reflection.Compute.RecordError($"RenderMesh for {nameof(PolyCurve)} currently works only if it is composed of linear segments.");
+                return null;
+            }
 
-            Pipe pipe = BH.Engine.Geometry.Create.Pipe(line, radius, capped);
-
-            return pipe.RenderMesh();
+            return RenderMesh(polyline, renderMeshOptions);
         }
     }
 }

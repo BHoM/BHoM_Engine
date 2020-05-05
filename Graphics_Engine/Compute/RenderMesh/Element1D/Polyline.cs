@@ -39,16 +39,14 @@ namespace BH.Engine.Graphics
         /**** Public Methods - Graphics                 ****/
         /***************************************************/
 
-        public static BH.oM.Graphics.RenderMesh RenderMesh(this Line line, RenderMeshOptions renderMeshOptions = null)
+        public static BH.oM.Graphics.RenderMesh RenderMesh(this Polyline polyline, RenderMeshOptions renderMeshOptions = null)
         {
             renderMeshOptions = renderMeshOptions ?? new RenderMeshOptions();
-
-            Polyline polyline = new Polyline();
 
             double radius = 0.05 * renderMeshOptions.Element1DScale;
             bool capped = false;
 
-            Pipe pipe = BH.Engine.Geometry.Create.Pipe(line, radius, capped);
+            Pipe pipe = BH.Engine.Geometry.Create.Pipe(polyline, radius, capped);
 
             return pipe.RenderMesh();
         }
