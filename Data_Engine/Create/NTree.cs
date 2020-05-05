@@ -109,14 +109,14 @@ namespace BH.Engine.Data
         private static Output<List<Leaf<T>>, List<Leaf<T>>> SplitList<T>(List<Leaf<T>> list, int sampleSize = 60)
         {
             // find centre
-            NBound box = new NBound();
+            NBound box = null;
 
             //sampleSize = Math.Max(2, sampleSize);
             sampleSize = Math.Min(list.Count, sampleSize);
 
             int step = (int)Math.Floor((decimal)(list.Count / sampleSize));
             for (int i = 0; i < sampleSize; i++)
-                box += (NBound)list[i * step].Bounds;
+                box += list[i * step].Bounds;
 
             int index = -1;
             double max = 0;
@@ -140,7 +140,7 @@ namespace BH.Engine.Data
 
             foreach (Leaf<T> leaf in list)
             {
-                if ((((NBound)leaf.Bounds).Min[index] + ((NBound)leaf.Bounds).Max[index]) / 2 < centre)
+                if ((leaf.Bounds.Min[index] + leaf.Bounds.Max[index]) / 2 < centre)
                     one.Add(leaf);
                 else
                     two.Add(leaf);
@@ -153,11 +153,7 @@ namespace BH.Engine.Data
 
         private static NBound Bounds(this IEnumerable<ITree> branches)
         {
-            NBound box = branches.First().Bounds;
-            foreach (ITree leaf in branches)
-                box += leaf.Bounds;
-
-            return box;
+            return branches.Select(x => x.Bounds).Aggregate((x, y) => x + y);
         }
 
         /***************************************************/
