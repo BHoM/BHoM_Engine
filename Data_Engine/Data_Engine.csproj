@@ -69,6 +69,7 @@
     <Compile Include="Compute\Path.cs" />
     <Compile Include="Create\BatchRequest.cs" />
     <Compile Include="Create\CustomRequest.cs" />
+    <Compile Include="Create\NTree.cs" />
     <Compile Include="Create\Dataset.cs" />
     <Compile Include="Create\DBSCANObject.cs" />
     <Compile Include="Create\FilterRequest.cs" />
@@ -84,6 +85,7 @@
     <Compile Include="Create\Graph.cs" />
     <Compile Include="Create\GraphLink.cs" />
     <Compile Include="Create\GraphNode.cs" />
+    <Compile Include="Modify\Inflate.cs" />
     <Compile Include="Modify\Add.cs" />
     <Compile Include="Modify\GroupByName.cs" />
     <Compile Include="Modify\ShortenBranches.cs" />
@@ -93,6 +95,9 @@
     <Compile Include="Modify\AddNode.cs" />
     <Compile Include="Modify\RemoveNode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Query\FurthestDistance.cs" />
+    <Compile Include="Query\IsInRange.cs" />
+    <Compile Include="Query\ItemsInRange.cs" />
     <Compile Include="Query\AdjacencyDictionary.cs" />
     <Compile Include="Query\Axes.cs" />
     <Compile Include="Query\AxisExists.cs" />
