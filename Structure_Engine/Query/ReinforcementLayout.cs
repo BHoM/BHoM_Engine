@@ -117,24 +117,36 @@ namespace BH.Engine.Structure
             TransformMatrix transformation = bar.BarSectionTranformation();
             double length = bar.Length();
 
+            //TODO: include stirups for offset distance
+            double stirupOffset = 0;
+
             List<ICurve> barLocations = new List<ICurve>();
 
             foreach (LongitudinalReinforcement reif in longReif)
             {
-                List<Point> planLayout = ReinforcementLayout(reif, 0, outerProfileEdges, innerProfileEdges);
-
-                double start = reif.StartLocation * length;
-                double end = reif.EndLocation * length;
-
-                foreach (Point pt in planLayout)
-                {
-                    Point startPoint = new Point { X = pt.X, Y = pt.Y, Z = start };
-                    Point endPoint = new Point { X = pt.X, Y = pt.Y, Z = end };
-                    barLocations.Add((new Line { Start = startPoint, End = endPoint }).Transform(transformation));
-                }
+                barLocations.AddRange(ReinforcementLayout(reif, stirupOffset, outerProfileEdges, innerProfileEdges, length, transformation));
             }
 
             return barLocations;
+        }
+
+        /***************************************************/
+
+        public static List<Line> ReinforcementLayout(this LongitudinalReinforcement reinforcement, double extraOffset, List<ICurve> outerProfileEdges, List<ICurve> innerProfileEdges, double length, TransformMatrix transformation)
+        {
+            List<Point> planLayout = ReinforcementLayout(reinforcement, extraOffset, outerProfileEdges, innerProfileEdges);
+
+            double start = reinforcement.StartLocation * length;
+            double end = reinforcement.EndLocation * length;
+
+            List<Line> rebarLines = new List<Line>();
+            foreach (Point pt in planLayout)
+            {
+                Point startPoint = new Point { X = pt.X, Y = pt.Y, Z = start };
+                Point endPoint = new Point { X = pt.X, Y = pt.Y, Z = end };
+                rebarLines.Add((new Line { Start = startPoint, End = endPoint }).Transform(transformation));
+            }
+            return rebarLines;
         }
 
         /***************************************************/
