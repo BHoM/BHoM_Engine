@@ -76,7 +76,7 @@ namespace BH.Engine.Graphics
 
                 List<RenderMesh> allMeshes = new List<RenderMesh>();
 
-                for (int i = 0; i < centrePolyline.ControlPoints.Count - 2; i++)
+                for (int i = 0; i < centrePolyline.ControlPoints.Count - 1; i++)
                 {
                     Line line = BH.Engine.Geometry.Create.Line(centrePolyline.ControlPoints[i], centrePolyline.ControlPoints[i + 1]);
 

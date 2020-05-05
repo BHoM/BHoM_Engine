@@ -48,7 +48,8 @@ namespace BH.Engine.Graphics
             // Check if the PolyCurve consists of straight segments
             if (polyCurve != null) // && polyCurve.Curves.Any(c => c is NurbsCurve) && !polyCurve.Curves.All(c => c.IsStraight()))
                 polyline = BH.Engine.Geometry.Convert.ToPolyline(polyCurve); // convert the polycurve into a polyline
-            else
+
+            if (polyline == null)
             {
                 BH.Engine.Reflection.Compute.RecordError($"RenderMesh for {nameof(PolyCurve)} currently works only if it is composed of linear segments.");
                 return null;

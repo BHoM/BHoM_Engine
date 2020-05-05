@@ -41,7 +41,7 @@ namespace BH.Engine.Graphics
 
         public static BH.oM.Graphics.RenderMesh RenderMesh(this Sphere sphere, RenderMeshOptions renderMeshOptions = null)
         {
-            BH.Engine.Reflection.Compute.RecordWarning("RenderMesh for sphere still doesn't work properly and needs to be finished.");
+            BH.Engine.Reflection.Compute.RecordNote("RenderMesh for sphere still doesn't work properly and needs to be finished. A cube is output instead of a sphere.");
 
             return sphere.Centre.RenderMesh();
 
