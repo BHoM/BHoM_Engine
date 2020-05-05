@@ -38,6 +38,8 @@ using BH.oM.Quantities.Attributes;
 using BH.Engine.Base.Objects;
 using BH.oM.Base;
 using BH.Engine.Diffing;
+using BH.Engine.Base;
+using BH.oM.Diffing;
 
 namespace BH.Engine.Matter
 {
@@ -72,16 +74,17 @@ namespace BH.Engine.Matter
             if (localMatComps.Count != localRatios.Count)
                 return null;
 
-            DiffingHashComparer<Material> hashComparer = new DiffingHashComparer<Material>();
-
             for (int j = 0; j < localMatComps.Count; j++)
             {
                 for (int i = 0; i < localMatComps[j].Materials.Count; i++)
                 {
+                    Material mat = localMatComps[j].Materials[i];
+                    mat = BH.Engine.Diffing.Modify.SetHashFragment(mat);
+
                     bool existed = false;
                     for (int k = 0; k < allMaterials.Count; k++)
                     {
-                        if (hashComparer.Equals(allMaterials[k], localMatComps[j].Materials[i]))
+                        if (allMaterials[k].FindFragment<HashFragment>().CurrentHash == mat.FindFragment<HashFragment>().CurrentHash)
                         {
                             allRatios[k] += localMatComps[j].Ratios[i] * localRatios[j];
                             existed = true;
@@ -90,12 +93,17 @@ namespace BH.Engine.Matter
                     }
                     if (!existed)
                     {
-                        allMaterials.Add(localMatComps[j].Materials[i]);
+                        allMaterials.Add(mat);
                         allRatios.Add(localMatComps[j].Ratios[i] * localRatios[j]);
                     }
                 }
             }
-            
+
+            foreach (Material mat in allMaterials)
+            {
+                mat.RemoveFragment(typeof(HashFragment));
+            }
+
             double factor = 1 / allRatios.Sum();
             return new MaterialComposition(allMaterials, allRatios.Select(x => x * factor).ToList());
         }
