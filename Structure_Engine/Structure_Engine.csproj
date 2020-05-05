@@ -216,6 +216,7 @@
     <Compile Include="Query\BarSectionTranformation.cs" />
     <Compile Include="Query\ReinforcementLayout.cs" />
     <Compile Include="Query\ReinforcementTransitionPoints.cs" />
+    <Compile Include="Query\ReinforcingBarCount.cs" />
     <Compile Include="Query\ReinforcingBars.cs" />
     <Compile Include="Query\SelectCase.cs" />
     <Compile Include="Query\ShearArea.cs" />
@@ -255,6 +256,10 @@
       <Project>{fb4ed5c8-e7cc-44b3-95eb-95c304d54e5d}</Project>
       <Name>Library_Engine</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Matter_Engine\Matter_Engine.csproj">
+      <Project>{65198eea-b572-418f-b77d-b348082ec92e}</Project>
+      <Name>Matter_Engine</Name>
     </ProjectReference>
     <ProjectReference Include="..\Physical_Engine\Physical_Engine.csproj">
       <Project>{f2073888-9bd8-4d8f-9b3c-27577b388530}</Project>
