@@ -27,6 +27,7 @@ using System.ComponentModel;
 using BH.oM.Reflection.Attributes;
 using BH.oM.Structure.SectionProperties;
 using BH.oM.Structure.SectionProperties.Reinforcement;
+using BH.oM.Structure.Elements;
 using BH.oM.Spatial.Layouts;
 using BH.oM.Geometry;
 using BH.Engine.Spatial;
@@ -46,26 +47,21 @@ namespace BH.Engine.Structure
         [Output("", "")]
         public static List<Point> ReinforcementLayout(ConcreteSection section, double position = -1)
         {
-            //Check geometry and reinforcement exists
-            if (section == null || section.SectionProfile == null || section.SectionProfile.Edges == null || section.SectionProfile.Edges.Count == 0 || section.Reinforcement == null || section.Reinforcement.Count == 0)
-                return new List<Point>();
-
-            List<LongitudinalReinforcement> longReif = section.Reinforcement.Where(x => x is LongitudinalReinforcement).Cast<LongitudinalReinforcement>().ToList();
+            //Extract Longitudinal reinforcement
+            List<LongitudinalReinforcement> longReif = section.LongitudinalReinforcement();
 
             //No longitudinal reinforcement available
             if (longReif.Count == 0)
                 return new List<Point>();
 
-            List<ICurve> outerEdges = new List<ICurve>();
-            List<ICurve> innerEdges = new List<ICurve>();
+            List<ICurve> outerProfileEdges;
+            List<ICurve> innerProfileEdges;
 
-            List<List<ICurve>> distCurves = Engine.Geometry.Compute.DistributeOutlines(Engine.Geometry.Compute.IJoin(section.SectionProfile.Edges.ToList()).Cast<ICurve>().ToList());
+            ExtractInnerAndOuterEdges(section, out outerProfileEdges, out innerProfileEdges);
 
-            foreach (List<ICurve> curves in distCurves)
-            {
-                outerEdges.Add(curves.First());
-                innerEdges.AddRange(curves.Skip(1));
-            }
+            //Need at least one external edge curve
+            if (outerProfileEdges.Count == 0)
+                return new List<Point>();
 
             //TODO: include stirups for offset distance
             double stirupOffset = 0;
@@ -74,16 +70,102 @@ namespace BH.Engine.Structure
 
             foreach (LongitudinalReinforcement reif in longReif)
             {
-                if (position > 0 && reif.StartLocation >= position && reif.EndLocation <= position)
+                if (position < 0 || (reif.StartLocation <= position && reif.EndLocation >= position))
                 {
-                    double offset = stirupOffset + reif.MinimumCover + reif.Diameter / 2;
-                    IEnumerable<ICurve> outerCurves = outerEdges.Select(x => x.IOffset(offset, -Vector.ZAxis));
-                    IEnumerable<ICurve> innerCurves = innerEdges.Select(x => x.IOffset(offset, Vector.ZAxis));
-                    rebarPoints.AddRange(reif.RebarLayout.IPointLayout(outerCurves, innerCurves));
+                    rebarPoints.AddRange(ReinforcementLayout(reif, stirupOffset, outerProfileEdges, innerProfileEdges));
                 }
             }
 
             return rebarPoints;
+        }
+
+        /***************************************************/
+
+        public static List<Point> ReinforcementLayout(this LongitudinalReinforcement reinforcement, double extraOffset, List<ICurve> outerProfileEdges, List<ICurve> innerProfileEdges)
+        {
+            double offset = extraOffset + reinforcement.MinimumCover + reinforcement.Diameter / 2;
+            IEnumerable<ICurve> outerCurves = outerProfileEdges.Select(x => x.IOffset(offset, -Vector.ZAxis));
+            IEnumerable<ICurve> innerCurves = innerProfileEdges.Select(x => x.IOffset(offset, Vector.ZAxis));
+            return reinforcement.RebarLayout.IPointLayout(outerCurves, innerCurves);
+        }
+
+        /***************************************************/
+
+        public static List<ICurve> ReinforcementLayout(Bar bar)
+        {
+            ConcreteSection section = bar.SectionProperty as ConcreteSection;
+            if (section == null)
+                return new List<ICurve>();
+
+            //Extract Longitudinal reinforcement
+            List<LongitudinalReinforcement> longReif = section.LongitudinalReinforcement();
+
+            //No longitudinal reinforcement available
+            if (longReif.Count == 0)
+                return new List<ICurve>();
+
+            List<ICurve> outerProfileEdges;
+            List<ICurve> innerProfileEdges;
+
+            ExtractInnerAndOuterEdges(section, out outerProfileEdges, out innerProfileEdges);
+
+            //Need at least one external edge curve
+            if (outerProfileEdges.Count == 0)
+                return new List<ICurve>();
+
+
+            TransformMatrix transformation = bar.BarSectionTranformation();
+            double length = bar.Length();
+
+            List<ICurve> barLocations = new List<ICurve>();
+
+            foreach (LongitudinalReinforcement reif in longReif)
+            {
+                List<Point> planLayout = ReinforcementLayout(reif, 0, outerProfileEdges, innerProfileEdges);
+
+                double start = reif.StartLocation * length;
+                double end = reif.EndLocation * length;
+
+                foreach (Point pt in planLayout)
+                {
+                    Point startPoint = new Point { X = pt.X, Y = pt.Y, Z = start };
+                    Point endPoint = new Point { X = pt.X, Y = pt.Y, Z = end };
+                    barLocations.Add((new Line { Start = startPoint, End = endPoint }).Transform(transformation));
+                }
+            }
+
+            return barLocations;
+        }
+
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+        private static void ExtractInnerAndOuterEdges(ConcreteSection section, out List<ICurve> outerProfileEdges, out List<ICurve> innerProfileEdges)
+        {
+            outerProfileEdges = new List<ICurve>();
+            innerProfileEdges = new List<ICurve>();
+
+            if (section == null || section.SectionProfile == null || section.SectionProfile.Edges == null || section.SectionProfile.Edges.Count == 0)
+                return;
+
+            List <List<ICurve>> distCurves = Engine.Geometry.Compute.DistributeOutlines(Engine.Geometry.Compute.IJoin(section.SectionProfile.Edges.ToList()).Cast<ICurve>().ToList());
+
+            foreach (List<ICurve> curves in distCurves)
+            {
+                outerProfileEdges.Add(curves.First());
+                innerProfileEdges.AddRange(curves.Skip(1));
+            }
+        }
+
+        /***************************************************/
+
+        private static List<LongitudinalReinforcement> LongitudinalReinforcement(this ConcreteSection section)
+        {
+            if (section == null || section.Reinforcement == null || section.Reinforcement.Count == 0)
+                return new List<LongitudinalReinforcement>();
+
+            return section.Reinforcement.Where(x => x is LongitudinalReinforcement).Cast<LongitudinalReinforcement>().ToList();
         }
 
         /***************************************************/
