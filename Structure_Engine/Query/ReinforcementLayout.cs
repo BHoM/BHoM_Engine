@@ -33,6 +33,7 @@ using BH.oM.Geometry;
 using BH.Engine.Spatial;
 using BH.Engine.Geometry;
 using BH.oM.Base;
+using BH.oM.Quantities.Attributes;
 
 namespace BH.Engine.Structure
 {
@@ -42,9 +43,10 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("")]
-        [Input("", "")]
-        [Output("", "")]
+        [Description("Gets the LongitudinalReinforcement positions in the ConcreteSection as a list of Points.")]
+        [Input("section", "The concrete section to return all points from.")]
+        [Input("position", "Position along the section to extract reinforcement. A negative value will return all reinforcement.")]
+        [Output("points", "The positions of the LongitudinalReinforcement.")]
         public static List<Point> ReinforcementLayout(ConcreteSection section, double position = -1)
         {
             //Extract Longitudinal reinforcement
@@ -81,8 +83,15 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static List<Point> ReinforcementLayout(this LongitudinalReinforcement reinforcement, double extraOffset, List<ICurve> outerProfileEdges, List<ICurve> innerProfileEdges)
+        [Description("Gets the LongitudinalReinforcement positions as a list of points, based on inner and outer profile edges.")]
+        [Input("reinforcement", "The LongitudinalReinforcement to extract the points from.")]
+        [Input("extraOffset", "Any additional spacing to be added in relation to the edge curves. This will be added on top of the MinimumCover + half the rebar Diameter.", typeof(Length))]
+        [Input("outerProfileEdges", "The outer profile edges of the ConcreteSection to be populated.")]
+        [Input("innerProfileEdges", "The inner profile edges, or openings, of the ConcreteSection to be populated.")]
+        [Output("points", "The positions of the LongitudinalReinforcement.")]
+        public static List<Point> ReinforcementLayout(this LongitudinalReinforcement reinforcement, double extraOffset, List<ICurve> outerProfileEdges, List<ICurve> innerProfileEdges = null)
         {
+            innerProfileEdges = innerProfileEdges ?? new List<ICurve>();
             double offset = extraOffset + reinforcement.MinimumCover + reinforcement.Diameter / 2;
             IEnumerable<ICurve> outerCurves = outerProfileEdges.Select(x => x.IOffset(offset, -Vector.ZAxis));
             IEnumerable<ICurve> innerCurves = innerProfileEdges.Select(x => x.IOffset(offset, Vector.ZAxis));
@@ -91,6 +100,9 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Description("Gets the LongitudinalReinforcement centrelines in the Bar as a list of Lines.")]
+        [Input("bar", "The Bar to extract all longitudinal reinforcement from. If the bar does not contain a ConcreteSection an empty list will be returned.")]
+        [Output("lines", "The centrelines of the LongitudinalReinforcement.")]
         public static List<ICurve> ReinforcementLayout(Bar bar)
         {
             ConcreteSection section = bar.SectionProperty as ConcreteSection;
@@ -132,6 +144,14 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Description("Gets the LongitudinalReinforcement centrelines as a list of lines, based on inner and outer profile edges and Bar paramters..")]
+        [Input("reinforcement", "The LongitudinalReinforcement to extract the centrelines from.")]
+        [Input("extraOffset", "Any additional spacing to be added in relation to the edge curves. This will be added on top of the MinimumCover + half the rebar Diameter.", typeof(Length))]
+        [Input("outerProfileEdges", "The outer profile edges of the ConcreteSection to be populated.")]
+        [Input("innerProfileEdges", "The inner profile edges, or openings, of the ConcreteSection to be populated.")]
+        [Input("length", "Length of the host Bar used to generate the lines", typeof(Length))]
+        [Input("transformation", "Transformation needed to move the lines from the position of the host element.")]
+        [Output("points", "The centrelines of the LongitudinalReinforcement.")]
         public static List<Line> ReinforcementLayout(this LongitudinalReinforcement reinforcement, double extraOffset, List<ICurve> outerProfileEdges, List<ICurve> innerProfileEdges, double length, TransformMatrix transformation)
         {
             List<Point> planLayout = ReinforcementLayout(reinforcement, extraOffset, outerProfileEdges, innerProfileEdges);

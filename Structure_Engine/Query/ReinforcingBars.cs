@@ -46,7 +46,7 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Extract all ReinforcingBars from the structural Bar. Only extract reinforcement for bars owning a ConcreteSection, for other sectiontypes, an empty list will be returned.")]
-        [Input("bar", "THe structural bar to extract Reinforcement from.")]
+        [Input("bar", "The structural Bar to extract Reinforcement from.")]
         [Output("rebars", "All ReinforcingBar on the provided Bar.")]
         public static List<IReinforcingBar> ReinforcingBars(this Bar bar)
         {
