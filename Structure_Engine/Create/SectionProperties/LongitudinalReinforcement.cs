@@ -30,6 +30,7 @@ using BH.oM.Spatial.Layouts;
 using BH.oM.Structure.MaterialFragments;
 using BH.oM.Base;
 using BH.oM.Geometry;
+using BH.oM.Quantities.Attributes;
 
 namespace BH.Engine.Structure
 {
@@ -39,9 +40,15 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates a LongitudinalReinforcement with rebars along the perimiter of the ")]
-        [Input("", "")]
-        [Output("", "")]
+        [Description("Creates a LongitudinalReinforcement placing rebars along the perimiter of host ConcreteSection.")]
+        [InputFromProperty("diameter")]
+        [Input("barCount", "Number of Rebars along the perimiter.")]
+        [Input("rebarsAtProfileDiscontinuities", "If true, bars will be placed at any discontinuities of the perimiter of the crossection.")]
+        [InputFromProperty("miniumCover")]
+        [InputFromProperty("startLocation")]
+        [InputFromProperty("endLocation")]
+        [Input("material", "Material of the Rebars. If null, a defaul material will be pulled from the Datasets.")]
+        [Output("reinforcement", "The created Reinforcement to be applied to a ConcreteSection.")]
         public static LongitudinalReinforcement PerimiterReinforcement(double diameter, int barCount, bool rebarsAtProfileDiscontinuities, double miniumCover, double startLocation = 0, double endLocation = 1, IMaterialFragment material = null)
         {
             CheckEndLocations(ref startLocation, ref endLocation);
@@ -58,9 +65,18 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("")]
-        [Input("", "")]
-        [Output("", "")]
+        [Description("Creates a LongitudinalReinforcement placing rebars along a straight line throughout the ConcreteSection")]
+        [InputFromProperty("diameter")]
+        [Input("barCount", "Number of bars along the along the linear distribution.")]
+        [InputFromProperty("miniumCover")]
+        [Input("direction", "Direction of the axis of the reinforcement. Should be a vector in the global XY-plane, defaults to the global X-axis.")]
+        [Input("offset", "Offset of the linear layout in relation to the reference point, perpendicular to the Direction vector in the XY-plane.\n" +
+                     "A positive value will mean an offset towards the centre of the boundingbox of the ConcreteSection.", typeof(Length))]
+        [Input("referencePoint", "Controls, together with the offset, which point on the ConcreteSection that should be used for the layout.")]
+        [InputFromProperty("startLocation")]
+        [InputFromProperty("endLocation")]
+        [Input("material", "Material of the Rebars. If null, a defaul material will be pulled from the Datasets.")]
+        [Output("reinforcement", "The created Reinforcement to be applied to a ConcreteSection.")]
         public static LongitudinalReinforcement LayerReinforcement(double diameter, int barCount, double miniumCover, Vector direction = null, double offset = 0, ReferencePoint referencePoint = ReferencePoint.BottomCenter, double startLocation = 0, double endLocation = 1, IMaterialFragment material = null)
         {
             CheckEndLocations(ref startLocation, ref endLocation);
@@ -77,15 +93,27 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("")]
-        [Input("", "")]
-        [Output("", "")]
-        public static LongitudinalReinforcement MultiLinearReinforcement(double diameter, int barCount, double spacing, double miniumCover, Vector direction = null, double offset = 0, ReferencePoint referencePoint = ReferencePoint.BottomCenter, double startLocation = 0, double endLocation = 1, IMaterialFragment material = null)
+        [Description("Creates a LongitudinalReinforcement placing rebars along multiple linear parallel axes, defined along a vector from one side of the perimeter of ConcreteSection to the other. \n" +
+                 "Starts by fitting in as many points as possible in the first layer, then generates a new one and repeats.")]
+        [InputFromProperty("diameter")]
+        [Input("barCount", "Number of bars along the along the linear distribution axes.")]
+        [Input("parallelSPacing", "Minimum spacing allowed between two rebars in a single layer", typeof(Length))]
+        [Input("perpendicularSpacing", "Minimum spacing allowed between two rebars layers", typeof(Length))]
+        [InputFromProperty("miniumCover")]
+        [Input("direction", "Direction of the axis of the reinforcement. Should be a vector in the global XY-plane, defaults to the global X-axis.")]
+        [Input("offset", "Offset of the linear layout in relation to the reference point, perpendicular to the Direction vector in the XY-plane.\n" +
+                     "A positive value will mean an offset towards the centre of the boundingbox of the ConcreteSection.", typeof(Length))]
+        [Input("referencePoint", "Controls, together with the offset, which point on the ConcreteSection that should be used for the layout.")]
+        [InputFromProperty("startLocation")]
+        [InputFromProperty("endLocation")]
+        [Input("material", "Material of the Rebars. If null, a defaul material will be pulled from the Datasets.")]
+        [Output("reinforcement", "The created Reinforcement to be applied to a ConcreteSection.")]
+        public static LongitudinalReinforcement MultiLinearReinforcement(double diameter, int barCount, double parallelSPacing, double perpendicularSpacing, double miniumCover, Vector direction = null, double offset = 0, ReferencePoint referencePoint = ReferencePoint.BottomCenter, double startLocation = 0, double endLocation = 1, IMaterialFragment material = null)
         {
             CheckEndLocations(ref startLocation, ref endLocation);
             return new LongitudinalReinforcement
             {
-                RebarLayout = Spatial.Create.MultiLinearLayout(barCount, spacing + diameter, direction, offset, referencePoint),
+                RebarLayout = Spatial.Create.MultiLinearLayout(barCount, parallelSPacing + diameter, perpendicularSpacing + diameter, direction, offset, referencePoint),
                 Diameter = diameter,
                 Material = material ?? Query.Default(MaterialType.Rebar),
                 StartLocation = startLocation,
@@ -96,24 +124,38 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("")]
-        [Input("", "")]
-        [Output("", "")]
+        [Description("Creates a LongitudinalReinforcement placing rebars along multiple linear parallel axes along the local y-axis of the ConcreteSection, defined along a vector from one side of the perimeter of ConcreteSection to the other. \n" +
+                 "Starts by fitting in as many points as possible in a layer towards the bottom of the section, then generates a new one and repeats.")]
+        [InputFromProperty("diameter")]
+        [Input("area", "Total minimum required area of bottom reinforcement. Will be used to calculate required number of bars, based on their diameter, hence the resulting area can get higher the inout value.", typeof(Area))]
+        [Input("spacing", "Minimum spacing allowed between any two rebars.")]
+        [InputFromProperty("miniumCover")]
+        [InputFromProperty("startLocation")]
+        [InputFromProperty("endLocation")]
+        [Input("material", "Material of the Rebars. If null, a defaul material will be pulled from the Datasets.")]
+        [Output("reinforcement", "The created Reinforcement to be applied to a ConcreteSection.")]
         public static LongitudinalReinforcement BottomReinforcement(double diameter, double area, double spacing, double miniumCover, double startLocation = 0, double endLocation = 1, IMaterialFragment material = null)
         {
             int numberOfBars = (int)Math.Ceiling(area / (diameter * diameter * Math.PI / 4));
-            return MultiLinearReinforcement(diameter, numberOfBars, spacing, miniumCover, Vector.XAxis, 0, ReferencePoint.BottomCenter, startLocation, endLocation, material);
+            return MultiLinearReinforcement(diameter, numberOfBars, spacing, spacing, miniumCover, Vector.XAxis, 0, ReferencePoint.BottomCenter, startLocation, endLocation, material);
         }
 
         /***************************************************/
 
-        [Description("")]
-        [Input("", "")]
-        [Output("", "")]
+        [Description("Creates a LongitudinalReinforcement placing rebars along multiple linear parallel axes along the local y-axis of the ConcreteSection, defined along a vector from one side of the perimeter of ConcreteSection to the other. \n" +
+                 "Starts by fitting in as many points as possible in a layer towards the top of the section, then generates a new one and repeats.")]
+        [InputFromProperty("diameter")]
+        [Input("area", "Total minimum required area of bottom reinforcement. Will be used to calculate required number of bars, based on their diameter, hence the resulting area can get higher the inout value.", typeof(Area))]
+        [Input("spacing", "Minimum spacing allowed between any two rebars.")]
+        [InputFromProperty("miniumCover")]
+        [InputFromProperty("startLocation")]
+        [InputFromProperty("endLocation")]
+        [Input("material", "Material of the Rebars. If null, a defaul material will be pulled from the Datasets.")]
+        [Output("reinforcement", "The created Reinforcement to be applied to a ConcreteSection.")]
         public static LongitudinalReinforcement TopReinforcement(double diameter, double area, double spacing, double miniumCover, double startLocation = 0, double endLocation = 1, IMaterialFragment material = null)
         {
             int numberOfBars = (int)Math.Ceiling(area / (diameter * diameter * Math.PI / 4));
-            return MultiLinearReinforcement(diameter, numberOfBars, spacing, miniumCover, Vector.XAxis, 0, ReferencePoint.TopCenter, startLocation, endLocation, material);
+            return MultiLinearReinforcement(diameter, numberOfBars, spacing, spacing ,miniumCover, Vector.XAxis, 0, ReferencePoint.TopCenter, startLocation, endLocation, material);
         }
 
         /***************************************************/
