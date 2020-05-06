@@ -284,11 +284,6 @@
       <Name>BHoM_Engine</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\Common_Engine\Common_Engine.csproj">
-      <Project>{8d8cd66f-76f3-4750-936d-380d51bc67d6}</Project>
-      <Name>Common_Engine</Name>
-      <Private>False</Private>
-    </ProjectReference>
     <ProjectReference Include="..\Diffing_Engine\Diffing_Engine.csproj">
       <Project>{073dfd36-0829-4792-8c32-67bf692a9413}</Project>
       <Name>Diffing_Engine</Name>
@@ -309,6 +304,11 @@
     <ProjectReference Include="..\Reflection_Engine\Reflection_Engine.csproj">
       <Project>{b0154405-9390-472d-9b5c-a2280823b18d}</Project>
       <Name>Reflection_Engine</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Spatial_Engine\Spatial_Engine.csproj">
+      <Project>{a84fdfe5-c267-430e-8fec-af4f4bf5b745}</Project>
+      <Name>Spatial_Engine</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
