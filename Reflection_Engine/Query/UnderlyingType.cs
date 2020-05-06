@@ -25,6 +25,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -42,10 +43,40 @@ namespace BH.Engine.Reflection
                 return null;
 
             int depth = 0;
-            while ((type.GetGenericArguments().Count() == 1 || type.GetElementType() != null) && typeof(IEnumerable).IsAssignableFrom(type))
+            while (typeof(IEnumerable).IsAssignableFrom(type) && type != typeof(string))
             {
-                depth++;
-                type = type.GetElementType() ?? type.GetGenericArguments().First();
+                Type subType = type.GetElementType();
+                
+                if (subType == null)
+                {
+                    Type[] generics = type.GetGenericArguments();
+                    if (generics.Count() == 1)
+                        subType = generics.First();
+                    else if (generics.Count() == 0)
+                    {
+                        foreach (ConstructorInfo constructor in type.GetConstructors())
+                        {
+                            ParameterInfo[] parameters = constructor.GetParameters();
+                            if (parameters.Count() == 1)
+                            {
+                                string paramType = parameters[0].ParameterType.Name;
+                                if (paramType == "List`1" || paramType == "IEnumerable`1")
+                                {
+                                    subType = parameters[0].ParameterType.GetGenericArguments()[0];
+                                    break;
+                                }   
+                            }
+                        }
+                    }
+                }
+
+                if (subType != null)
+                {
+                    type = subType;
+                    depth++;
+                }
+                else
+                    break;
             }
 
             return new UnderlyingType { Type = type, Depth = depth };
