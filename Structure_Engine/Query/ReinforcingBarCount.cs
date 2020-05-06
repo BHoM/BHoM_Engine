@@ -46,8 +46,8 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Return the number of rebars in one particular Reinforcement object.")]
-        [Input("bar", "THe structural bar to extract Reinforcement from.")]
-        [Output("rebars", "All ReinforcingBar on the provided Bar.")]
+        [Input("reinforcement", "The reinforcement object to extract the count from.")]
+        [Output("count", "Number of bars in the provided LongitudinalReinforcement.")]
         public static int ReinforcingBarCount(this LongitudinalReinforcement reinforcement)
         {
             return LayoutCount(reinforcement.RebarLayout as dynamic);
