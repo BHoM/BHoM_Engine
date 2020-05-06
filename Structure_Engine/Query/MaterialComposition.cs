@@ -107,13 +107,21 @@ namespace BH.Engine.Structure
                     reifMaterial = Physical.Create.Material(reinforcement.Material);
                 else
                     reifMaterial = new Material();
+
                 materials.Add(reifMaterial);
             }
 
-            areas.Insert(0, sectionArea);
-            materials.Insert(0, Physical.Create.Material(sectionProperty.Material));
+            if (materials.Count == 0)
+            {
+                return (MaterialComposition)Physical.Create.Material(sectionProperty.Material);
+            }
+            else
+            {
+                areas.Insert(0, sectionArea);
+                materials.Insert(0, Physical.Create.Material(sectionProperty.Material));
 
-            return Engine.Matter.Compute.AggregateMaterialComposition(materials.Select(x => (MaterialComposition)x), areas);
+                return Engine.Matter.Compute.AggregateMaterialComposition(materials.Select(x => (MaterialComposition)x), areas);
+            }
         }
 
         /***************************************************/
