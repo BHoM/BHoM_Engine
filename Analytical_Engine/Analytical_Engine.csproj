@@ -35,6 +35,9 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="BHoM">
+      <HintPath>..\..\BHoM\Build\BHoM.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Dimensional_oM">
       <HintPath>..\..\BHoM\Build\Dimensional_oM.dll</HintPath>
       <Private>False</Private>
