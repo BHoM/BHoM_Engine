@@ -108,14 +108,13 @@ namespace BH.Engine.Data
         
         private static Output<List<Leaf<T>>, List<Leaf<T>>> SplitList<T>(List<Leaf<T>> list, int sampleSize = 60)
         {
-            // find centre
-            NBound box = null;
-
             //sampleSize = Math.Max(2, sampleSize);
             sampleSize = Math.Min(list.Count, sampleSize);
 
             int step = (int)Math.Floor((decimal)(list.Count / sampleSize));
-            for (int i = 0; i < sampleSize; i++)
+            // find centre
+            NBound box = list[0].Bounds;
+            for (int i = 1; i < sampleSize; i++)
                 box += list[i * step].Bounds;
 
             int index = -1;
