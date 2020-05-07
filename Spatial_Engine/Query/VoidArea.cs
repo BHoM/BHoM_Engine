@@ -39,14 +39,14 @@ namespace BH.Engine.Spatial
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Gets the hollow area enclosed by a IProfile where the curves are defining a region's border and eachother step inward defines a hole's border.")]
-        [Input("profile", "The IProfile to evaluate the enclosed hollow area of. TaperedProfiles average void area is returned.")]
-        [Output("area", "The hollow area for eached closed curve, subtracting eachother closed curve's area stepping inwards.", typeof(Area))]
+        [Description("Gets the void area enclosed by an IProfile. This assumes that the outermost curve(s) are solid. Curves inside a solid region are assumed to be openings, and curves within openings are assumed to be solid, etc. Also, for TaperedProfiles, the average void area is returned.")]
+        [Input("profile", "The IProfile to evaluate.")]
+        [Output("area", "The void area enclosed by the solid regions in the profile", typeof(Area))]
         public static double VoidArea(this IProfile profile)
         {
             if (profile is TaperedProfile)
             {
-                Engine.Reflection.Compute.RecordWarning("TaperedProfiles don't have one area. Linear relation between the profiles in the TaperedProfile has been assumed and it's average area returned.");
+                Engine.Reflection.Compute.RecordWarning("The sectional area of TaperedProfiles may vary along their length. The average area of the TaperedProfile has been returned, assuming that the section varies linearly.");
                 TaperedProfile taperedProfile = profile as TaperedProfile;
                 double sum = 0;
                 for (int i = 0; i < taperedProfile.Profiles.Count - 1; i++)

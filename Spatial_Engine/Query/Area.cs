@@ -59,14 +59,14 @@ namespace BH.Engine.Spatial
         /****            IProfile              ****/
         /******************************************/
 
-        [Description("Gets the area for a IProfile where the curves are defining a region's border and eachother step inward defines a hole's border.")]
-        [Input("profile", "The IProfile to evaluate the area of. TaperedProfiles average area is returned.")]
-        [Output("area", "The area for eached closed curve, subtracting eachother closed curve's area stepping inwards.", typeof(Area))]
+        [Description("Gets the area of an IProfile. This assumes that the outermost curve(s) are solid. Curves inside a solid region are assumed to be openings, and curves within openings are assumed to be solid, etc. Also, for TaperedProfiles, the average area is returned.")]
+        [Input("profile", "The IProfile to evaluate.")]
+        [Output("area", "The net area of the solid regions in the profile", typeof(Area))]
         public static double Area(this IProfile profile)
         {
             if (profile is TaperedProfile)
             {
-                Engine.Reflection.Compute.RecordWarning("TaperedProfiles don't have one area. Linear relation between the profiles in the TaperedProfile has been assumed and it's average area returned.");
+                Engine.Reflection.Compute.RecordWarning("The sectional area of TaperedProfiles vary along their length. The average area of the TaperedProfile has been returned, assuming that the section varies linearly.");
                 TaperedProfile taperedProfile = profile as TaperedProfile;
                 double sum = 0;
                 for (int i = 0; i < taperedProfile.Profiles.Count - 1; i++)
@@ -98,4 +98,3 @@ namespace BH.Engine.Spatial
         /******************************************/
     }
 }
-
