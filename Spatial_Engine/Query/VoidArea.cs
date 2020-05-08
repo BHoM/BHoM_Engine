@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -20,58 +20,38 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.Engine.Geometry;
-using BH.oM.Dimensional;
-using BH.oM.Geometry;
-using BH.oM.Geometry.ShapeProfiles;
-using BH.oM.Quantities.Attributes;
-using BH.oM.Reflection.Attributes;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
+using BH.oM.Reflection.Attributes;
+using BH.oM.Base;
+using BH.oM.Geometry.ShapeProfiles;
+using BH.oM.Geometry;
+using BH.Engine.Geometry;
+using BH.oM.Quantities.Attributes;
 
 namespace BH.Engine.Spatial
 {
     public static partial class Query
     {
-        /******************************************/
-        /****            IElement2D            ****/
-        /******************************************/
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
 
-        [Description("Queries the IElement2Ds area defined as the area confined by the outline curves subtracting the area of the internal elements.")]
-        [Input("element2D", "The IElement2D to query the area of.")]
-        [Output("area", "The area of the region confined by the IElement2Ds outline elements subtracting the area of the internal elements", typeof(Area))]
-        public static double Area(this IElement2D element2D)
-        {
-            double result = element2D.OutlineCurve().IArea();
-
-            List<PolyCurve> openings = element2D.InternalOutlineCurves().BooleanUnion();
-
-            foreach (PolyCurve o in openings)
-                result -= o.Area();
-
-            return result;
-        }
-
-
-        /******************************************/
-        /****            IProfile              ****/
-        /******************************************/
-
-        [Description("Gets the area of an IProfile. This assumes that the outermost curve(s) are solid. Curves inside a solid region are assumed to be openings, and curves within openings are assumed to be solid, etc. Also, for TaperedProfiles, the average area is returned.")]
+        [Description("Gets the void area enclosed by an IProfile. This assumes that the outermost curve(s) are solid. Curves inside a solid region are assumed to be openings, and curves within openings are assumed to be solid, etc. Also, for TaperedProfiles, the average void area is returned.")]
         [Input("profile", "The IProfile to evaluate.")]
-        [Output("area", "The net area of the solid regions in the profile", typeof(Area))]
-        public static double Area(this IProfile profile)
+        [Output("area", "The void area enclosed by the solid regions in the profile", typeof(Area))]
+        public static double VoidArea(this IProfile profile)
         {
             if (profile is TaperedProfile)
             {
-                Engine.Reflection.Compute.RecordWarning("The sectional area of TaperedProfiles vary along their length. The average area of the TaperedProfile has been returned, assuming that the section varies linearly.");
+                Engine.Reflection.Compute.RecordWarning("The sectional area of TaperedProfiles may vary along their length. The average area of the TaperedProfile has been returned, assuming that the section varies linearly.");
                 TaperedProfile taperedProfile = profile as TaperedProfile;
                 double sum = 0;
                 for (int i = 0; i < taperedProfile.Profiles.Count - 1; i++)
                 {
-                    double temArea = (taperedProfile.Profiles.ElementAt(i).Value.Area() + taperedProfile.Profiles.ElementAt(i + 1).Value.Area()) / 2;
+                    double temArea = (taperedProfile.Profiles.ElementAt(i).Value.VoidArea() + taperedProfile.Profiles.ElementAt(i + 1).Value.VoidArea()) / 2;
                     sum += temArea * System.Convert.ToDouble(taperedProfile.Profiles.ElementAt(i + 1).Key - taperedProfile.Profiles.ElementAt(i).Key);
                 }
                 return sum;
@@ -90,11 +70,14 @@ namespace BH.Engine.Spatial
                                 depth[j]++;
             }
 
+            curvesZ = curvesZ.Where((x, i) => depth[i] != 0).ToList();
+            depth = depth.Where(x => x != 0).ToArray();
+
             // Using region integration as the Curves are defined on the XY-Plane.
-            depth = depth.Select(x => x % 2 == 0 ? 1 : -1).ToArray();   // positive area as 1 and negative area as -1
+            depth = depth.Select(x => x % 2 != 0 ? 1 : -1).ToArray();   // positive area as 1 and negative area as -1
             return curvesZ.Select((x, i) => Math.Abs(x.IIntegrateRegion(0)) * depth[i]).Sum();
         }
 
-        /******************************************/
+        /***************************************************/
     }
 }

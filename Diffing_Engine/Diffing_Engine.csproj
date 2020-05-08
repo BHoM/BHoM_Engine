@@ -86,6 +86,7 @@
     <Compile Include="Modify\RemoveDuplicatesByHash.cs" />
     <Compile Include="Modify\PrepareForDiffing.cs" />
     <Compile Include="Modify\SetHashFragment.cs" />
+    <Compile Include="Query\ListModifiedProperties.cs" />
     <Compile Include="Query\DifferentProperties.cs" />
     <Compile Include="Query\AnyDuplicateByHash.cs" />
     <Compile Include="Query\GetHash.cs" />

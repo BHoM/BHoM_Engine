@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -20,27 +20,32 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Geometry;
 using System;
-using System.Linq;
-using System.ComponentModel;
 using System.Collections.Generic;
-using BH.oM.Reflection.Attributes;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace BH.Engine.Geometry
+using BH.oM.Environment.Elements;
+
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
+
+namespace BH.Engine.Environment
 {
-    public static partial class Create
+    public static partial class Query
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Deprecated("3.0", "Deprecated, method moved to compute file", null, "BH.Engine.Geometry.Compute.ConvexHull(List<Point>")]
-        
-        [Description("Creates a Convex Hull from a list of points. Currently only works for points in the XY plane")]
-        public static Polyline ConvexHull(List<Point> points)
+        [Description("Returns a collection of Environment Openings that match a given Opening Type")]
+        [Input("openings", "A collection of Environment Openings to filter")]
+        [Input("type", "An Opening Type to filter by from the Opening Type enum")]
+        [Output("openings", "A collection of Environment Opening that match the given type")]
+        public static List<Opening> OpeningsByType(this List<Opening> openings, OpeningType type)
         {
-            return BH.Engine.Geometry.Compute.ConvexHull(points);
+            return openings.Where(x => x.Type == type).ToList();
         }
     }
 }

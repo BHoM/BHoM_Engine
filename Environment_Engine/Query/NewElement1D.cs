@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -20,27 +20,42 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.Engine.Data;
+using BH.oM.Environment.Elements;
+using BH.oM.Dimensional;
 using BH.oM.Geometry;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using BH.oM.Reflection.Attributes;
+using BH.Engine.Geometry;
 
-namespace BH.Engine.Geometry
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
+
+namespace BH.Engine.Environment
 {
-    public static partial class Compute
+    public static partial class Query
     {
         /***************************************************/
-        /**** public Methods - Vectors                  ****/
+        /**** Public Methods                            ****/
         /***************************************************/
-        
-        [DeprecatedAttribute("PointClustersDBSCAN")]
-        public static List<List<Point>> PointClusters(this List<Point> points, double maxDist, int minPointCount = 1)
+
+        [Description("Returns an instance of an IElement1D from the given object")]
+        [Input("opening", "An Environmental Opening object")]
+        [Input("curve", "The curve to clone")]
+        [Output("element", "A 1D element object")]
+        public static IElement1D NewElement1D(this Opening opening, ICurve curve)
         {
-            return points.PointClustersDBSCAN(maxDist, minPointCount);
+            return curve.IClone();
         }
-        
+
+        /***************************************************/
+
+        [Description("Returns an instance of an IElement1D from the given object")]
+        [Input("panel", "An Environmental Panel object")]
+        [Input("curve", "The curve to clone")]
+        [Output("element", "A 1D element object")]
+        public static IElement1D NewElement1D(this Panel panel, ICurve curve)
+        {
+            return curve.IClone();
+        }
+
         /***************************************************/
     }
 }

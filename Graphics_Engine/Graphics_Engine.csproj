@@ -25,7 +25,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>..\Build\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -44,12 +44,9 @@
       <HintPath>..\..\BHoM\Build\Graphics_oM.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Reflection_Engine, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Build\Reflection_Engine.dll</HintPath>
-    </Reference>
     <Reference Include="Reflection_oM">
       <HintPath>..\..\BHoM\Build\Reflection_oM.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -76,6 +73,10 @@
       <Project>{89ab2dcb-ef87-4cba-b59c-c16a8a71d333}</Project>
       <Name>Geometry_Engine</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Reflection_Engine\Reflection_Engine.csproj">
+      <Project>{b0154405-9390-472d-9b5c-a2280823b18d}</Project>
+      <Name>Reflection_Engine</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

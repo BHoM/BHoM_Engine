@@ -78,14 +78,6 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Curves                   ****/
         /***************************************************/
 
-        [DeprecatedAttribute("2.3", "Replaced with method checking if point is arc.centre due to issue 896", null, "ClosestPoint")]
-        public static Point ClosestPoint(this Arc arc, Point point)
-        {
-            return arc.ClosestPoint(point, Tolerance.Distance);
-        }
-
-        /***************************************************/
-
         public static Point ClosestPoint(this Arc curve, Point point, double tolerance = Tolerance.Distance)
         {
             if (point.SquareDistance(curve.Centre()) <= tolerance * tolerance)
@@ -98,14 +90,6 @@ namespace BH.Engine.Geometry
             Point onCircle = center + (point.Project(p) - center).Normalise() * curve.Radius;
             double sqrd = midPoint.SquareDistance(curve.StartPoint());
             return midPoint.SquareDistance(onCircle) <= sqrd ? onCircle : onCircle.ClosestPoint(new List<Point> { curve.StartPoint(), curve.EndPoint() });
-        }
-
-        /***************************************************/
-
-        [DeprecatedAttribute("2.3", "Replaced with method that takes tolerance input", null, "ClosestPoint")]
-        public static Point ClosestPoint(this Circle circle, Point point)
-        {
-            return circle.ClosestPoint(point, Tolerance.Distance);
         }
 
         /***************************************************/

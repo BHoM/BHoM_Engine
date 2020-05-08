@@ -20,6 +20,7 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.Engine.Reflection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -51,7 +52,7 @@ namespace BH.Engine.Serialiser
                     if (parameters.Length == paramTypeNames.Count)
                     {
                         bool matching = true;
-                        List<string> names = parameters.Select(x => x.ParameterType.Name).ToList();
+                        List<string> names = parameters.Select(x => x.ParameterType.ToText(true)).ToList();
                         for (int i = 0; i < paramTypeNames.Count; i++)
                             matching &= names[i] == paramTypeNames[i];
 
@@ -82,7 +83,7 @@ namespace BH.Engine.Serialiser
                 return method;
 
             // So, let's try the other overload
-            return MethodBase(type, methodName, paramTypes.Select(x => x.Name).ToList());
+            return MethodBase(type, methodName, paramTypes.Select(x => x.ToText(true)).ToList());
         }
 
         /*******************************************/

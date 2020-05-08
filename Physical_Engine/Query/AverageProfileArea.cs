@@ -33,6 +33,7 @@ using BH.oM.Geometry;
 using BH.Engine.Geometry;
 using BH.Engine.Common;
 using BH.oM.Quantities.Attributes;
+using BH.Engine.Spatial;
 
 namespace BH.Engine.Physical
 {
@@ -63,21 +64,7 @@ namespace BH.Engine.Physical
                 return 0;
             }
 
-            List<PolyCurve> curvesZ = Engine.Geometry.Compute.IJoin(framingProperty.Profile.Edges.ToList());
-
-            int[] depth = new int[curvesZ.Count];
-            if (curvesZ.Count > 1)
-            {
-                // find which is in which
-                for (int i = 0; i < curvesZ.Count; i++)
-                    for (int j = 0; j < curvesZ.Count; j++)
-                        if (i != j)
-                            if (curvesZ[i].IsContaining(new List<Point>() { curvesZ[j].IStartPoint() }))
-                                depth[j]++;
-            }
-
-            depth = depth.Select(x => x % 2 == 0 ? 1 : -1).ToArray();   // positive area as 1 and negative area as -1
-            return curvesZ.Select((x, i) => Math.Abs(x.IIntegrateRegion(0)) * depth[i]).Sum();
+            return framingProperty.Profile.Area();
         }
 
 
