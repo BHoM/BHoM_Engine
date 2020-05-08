@@ -59,6 +59,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Convert\ToRenderMesh.cs" />
     <Compile Include="Create\Gradient.cs" />
     <Compile Include="Create\SVGStyle.cs" />
     <Compile Include="Create\SVGObject.cs" />
