@@ -39,7 +39,7 @@ namespace BH.Engine.Diffing
         [Description("Creates new Stream Pointer, generating a new StreamId.")]
         public static StreamPointer StreamPointer(string name = null, string description = null)
         {
-            return new StreamPointer(name, description);
+            return new StreamPointer(Guid.NewGuid(), name, description, DateTime.UtcNow.Ticks);
         }
     }
 }
