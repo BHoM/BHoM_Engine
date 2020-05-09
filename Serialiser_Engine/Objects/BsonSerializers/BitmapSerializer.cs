@@ -59,6 +59,12 @@ namespace BH.Engine.Serialiser.BsonSerializers
 
         public override Bitmap Deserialize(BsonDeserializationContext context, BsonDeserializationArgs args)
         {
+            if (context.Reader.CurrentBsonType == BsonType.Null)
+            {
+                context.Reader.ReadNull();
+                return null;
+            }
+
             BsonBinaryData data = context.Reader.ReadBinaryData();
             var stream = new MemoryStream(data.Bytes);
             return new Bitmap(stream);
