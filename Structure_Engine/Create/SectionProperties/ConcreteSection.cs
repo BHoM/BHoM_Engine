@@ -48,10 +48,11 @@ namespace BH.Engine.Structure
         [Input("material", "Concrete material to be applied to the section. If null a default material will be extracted from the database.")]
         [Input("name", "Name of the concrete section. This is required for various structural packages to create the object.")]
         [Input("reinforcement", "Optional list of reinforcement to be applied to the section.")]
+        [InputFromProperty("minimumCover")]
         [Output("section", "The created rectangular concrete section.")]
-        public static ConcreteSection ConcreteRectangleSection(double height, double width, Concrete material = null, string name = "", List<IBarReinforcement> reinforcement = null)
+        public static ConcreteSection ConcreteRectangleSection(double height, double width, Concrete material = null, string name = "", List<IBarReinforcement> reinforcement = null, double minimumCover = 0)
         {
-            return ConcreteSectionFromProfile(Geometry.Create.RectangleProfile(height, width, 0), material, name, reinforcement);
+            return ConcreteSectionFromProfile(Geometry.Create.RectangleProfile(height, width, 0), material, name, reinforcement, minimumCover);
         }
 
         /***************************************************/
@@ -65,10 +66,11 @@ namespace BH.Engine.Structure
         [Input("material", "Concrete material to be applied to the section. If null a default material will be extracted from the database.")]
         [Input("name", "Name of the concrete section. This is required for various structural packages to create the object.")]
         [Input("reinforcement", "Optional list of reinforcement to be applied to the section.")]
+        [InputFromProperty("minimumCover")]
         [Output("section", "The created concrete T-section.")]
-        public static ConcreteSection ConcreteTSection(double height, double webThickness, double flangeWidth, double flangeThickness, Concrete material = null, string name = "", List<IBarReinforcement> reinforcement = null)
+        public static ConcreteSection ConcreteTSection(double height, double webThickness, double flangeWidth, double flangeThickness, Concrete material = null, string name = "", List<IBarReinforcement> reinforcement = null, double minimumCover = 0)
         {
-            return ConcreteSectionFromProfile(Geometry.Create.TSectionProfile(height, flangeWidth, webThickness, flangeThickness, 0, 0), material, name, reinforcement);
+            return ConcreteSectionFromProfile(Geometry.Create.TSectionProfile(height, flangeWidth, webThickness, flangeThickness, 0, 0), material, name, reinforcement, minimumCover);
         }
 
 
@@ -80,10 +82,11 @@ namespace BH.Engine.Structure
         [Input("material", "Concrete material to be applied to the section. If null a default material will be extracted from the database.")]
         [Input("name", "Name of the concrete section. This is required for most structural packages to create the section.")]
         [Input("reinforcement", "Optional list of reinforcement to be applied to the section.")]
+        [InputFromProperty("minimumCover")]
         [Output("section", "The created circular concrete section.")]
-        public static ConcreteSection ConcreteCircularSection(double diameter, Concrete material = null, string name = "", List<IBarReinforcement> reinforcement = null)
+        public static ConcreteSection ConcreteCircularSection(double diameter, Concrete material = null, string name = "", List<IBarReinforcement> reinforcement = null, double minimumCover = 0)
         {
-            return ConcreteSectionFromProfile(Geometry.Create.CircleProfile(diameter), material, name, reinforcement);
+            return ConcreteSectionFromProfile(Geometry.Create.CircleProfile(diameter), material, name, reinforcement, minimumCover);
         }
 
         /***************************************************/
@@ -94,10 +97,11 @@ namespace BH.Engine.Structure
         [Input("material", "Concrete material to be applied to the section. If null a default material will be extracted from the database.")]
         [Input("name", "Name of the concrete section. This is required for most structural packages to create the section.")]
         [Input("reinforcement", "Optional list of reinforcement to be applied to the section.")]
+        [InputFromProperty("minimumCover")]
         [Output("section", "The created free form concrete section.")]
-        public static ConcreteSection ConcreteFreeFormSection(List<ICurve> edges, Concrete material = null, string name = "", List<IBarReinforcement> reinforcement = null)
+        public static ConcreteSection ConcreteFreeFormSection(List<ICurve> edges, Concrete material = null, string name = "", List<IBarReinforcement> reinforcement = null, double minimumCover = 0)
         {
-            return ConcreteSectionFromProfile(Geometry.Create.FreeFormProfile(edges), material, name, reinforcement);
+            return ConcreteSectionFromProfile(Geometry.Create.FreeFormProfile(edges), material, name, reinforcement, minimumCover);
         }
 
         /***************************************************/
@@ -108,8 +112,9 @@ namespace BH.Engine.Structure
         [Input("material", "concrete material to be applied to the section. If null a default material will be extracted from the database.")]
         [Input("name", "Name of the concrete section. If null or empty the name of the profile will be used. This is required for most structural packages to create the section.")]
         [Input("reinforcement", "Optional list of reinforcement to be applied to the section.")]
+        [InputFromProperty("minimumCover")]
         [Output("section", "The created concrete section.")]
-        public static ConcreteSection ConcreteSectionFromProfile(IProfile profile, Concrete material = null, string name = "", List<IBarReinforcement> reinforcement = null)
+        public static ConcreteSection ConcreteSectionFromProfile(IProfile profile, Concrete material = null, string name = "", List<IBarReinforcement> reinforcement = null, double minimumCover = 0)
         {
             //Run pre-process for section create. Calculates all section constants and checks name of profile
             var preProcessValues = PreProcessSectionCreate(name, profile);
@@ -125,6 +130,8 @@ namespace BH.Engine.Structure
             //Set reinforcement if any provided
             if (reinforcement != null)
                 section.Reinforcement = reinforcement;
+
+            section.MinimumCover = minimumCover;
 
             return PostProcessSectionCreate(section, name, material, MaterialType.Concrete);
         }
