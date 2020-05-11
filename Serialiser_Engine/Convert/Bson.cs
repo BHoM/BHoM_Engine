@@ -37,6 +37,7 @@ using System.Diagnostics;
 using BH.Engine.Serialiser.Objects.MemberMapConventions;
 using System.Reflection;
 using BH.Engine.Serialiser.Objects;
+using System.Drawing;
 
 namespace BH.Engine.Serialiser
 {
@@ -167,6 +168,8 @@ namespace BH.Engine.Serialiser
                 BsonSerializer.RegisterSerializer(typeof(Enum), new EnumSerializer());
                 BsonSerializer.RegisterSerializer(typeof(IDeprecated), new DeprecatedSerializer());
                 BsonSerializer.RegisterSerializer(typeof(DataTable), new DataTableSerialiser());
+                BsonSerializer.RegisterSerializer(typeof(Bitmap), new BitmapSerializer());
+                BsonSerializer.RegisterSerializer(typeof(IntPtr), new IntPtrSerializer());
 
                 var typeSerializer = new TypeSerializer();
                 BsonSerializer.RegisterSerializer(typeof(Type), typeSerializer);
@@ -207,6 +210,8 @@ namespace BH.Engine.Serialiser
             RegisterClassMap(typeof(System.Drawing.Color));
             RegisterClassMap(typeof(MethodInfo));
             RegisterClassMap(typeof(ConstructorInfo));
+            RegisterClassMap(typeof(Bitmap));
+            RegisterClassMap(typeof(IntPtr));
         }
 
         /*******************************************/
