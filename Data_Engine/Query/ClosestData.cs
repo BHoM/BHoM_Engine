@@ -70,7 +70,7 @@ namespace BH.Engine.Data
             list.RemoveAt(list.Count - 1);
 
             // Save the furthest possible distance from the item with the smallest furthest possible distance
-            double max = closest.Bounds.FurthestSquareDistance(box);
+            double max = closest.Bounds.FurthestSquareDistance(box) + Tolerance.Distance * Tolerance.Distance;
             List<Leaf<T>> result = new List<Leaf<T>>() { closest as Leaf<T> };
 
             // Get all the items with closest point closer than the max
@@ -79,7 +79,7 @@ namespace BH.Engine.Data
             {
                 if (list[i] is NTree<T>)
                 {
-                    OpenBranch(list, list[i] as NTree<T>, box);
+                    list = OpenBranch(list, list[i] as NTree<T>, box);
                 }
                 else
                 {
