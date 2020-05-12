@@ -52,11 +52,10 @@ namespace BH.Engine.Data
 
         private static double FurDist(double min1, double max1, double min2, double max2)
         {
-            double maxSide = min1 - max2;
-            double minSide = min2 - max2;
+            double maxSide = max2 - min1;
+            double minSide = max1 - min2;
 
-            double max = Math.Max(maxSide, minSide);
-            return max > 0 ? Math.Pow(max, 2) : 0;
+            return Math.Pow(Math.Max(maxSide, minSide), 2);
         }
 
         /***************************************************/
