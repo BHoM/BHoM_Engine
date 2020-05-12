@@ -98,7 +98,9 @@
     <Compile Include="Query\PointLayout.cs" />
     <Compile Include="Query\VoidArea.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="Versioning_32.json" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BHoM_Engine\BHoM_Engine.csproj">
       <Project>{1ad45c88-dd54-48e5-951f-55edfeb70e35}</Project>
