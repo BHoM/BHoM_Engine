@@ -79,6 +79,95 @@ namespace BH.Engine.Geometry
                 }
             }
 
+            bool nonExistantCheckWarning = false;
+
+            try
+            {
+                if (externalBoundary.IIsSelfIntersecting())
+                {
+                    Reflection.Compute.RecordError("The provided externalBoundary is selfintersecting.");
+                    return null;
+                }
+            } catch
+            {
+                nonExistantCheckWarning = true;
+            }
+
+            try
+            {
+                if (internalBoundaries.Any(x => x.IIsSelfIntersecting()))
+                {
+                    Reflection.Compute.RecordError("At least one of the internalBoundaries is selfintersecting.");
+                    return null;
+                }
+            }
+            catch
+            {
+                nonExistantCheckWarning = true;
+            }
+
+            try
+            {
+                if (internalBoundaries.Any(x => !externalBoundary.IIsContaining(x)))
+                {
+                    Reflection.Compute.RecordError("At least one of the internalBoundaries is not contained by the externalBoundary.");
+                    return null;
+                }
+            } catch
+            {
+                nonExistantCheckWarning = true;
+            }
+
+            bool unionDone = false;
+            try
+            { 
+                for (int i = 0; i < internalBoundaries.Count; i++)
+                {
+                    for (int j = i + 1; j < internalBoundaries.Count; j++)
+                    {
+                        if (internalBoundaries[i].ICurveIntersections(internalBoundaries[j]).Count != 0)
+                        {
+                            internalBoundaries = Compute.BooleanUnion(internalBoundaries).Cast<ICurve>().ToList();
+                            Reflection.Compute.RecordWarning("InternalBounderies were overlapping, BooleanUnion has been used to get non overlapping regions.");
+                            i = internalBoundaries.Count;
+                            j = i;
+                            unionDone = true;
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                nonExistantCheckWarning = true;
+            }
+
+            try
+            {
+                if (!unionDone)
+                {
+                    for (int i = 0; i < internalBoundaries.Count; i++)
+                    {
+                        for (int j = 0; j < internalBoundaries.Count; j++)
+                        {
+                            if (internalBoundaries[i].IIsContaining(internalBoundaries[j]))
+                            {
+                                internalBoundaries = Compute.BooleanUnion(internalBoundaries).Cast<ICurve>().ToList();
+                                Reflection.Compute.RecordWarning("InternalBounderies were overlapping, BooleanUnion has been used to get non overlapping regions.");
+                                i = internalBoundaries.Count;
+                                j = i;
+                            }
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                nonExistantCheckWarning = true;
+            }
+
+            if (nonExistantCheckWarning)
+                Reflection.Compute.RecordWarning("Neeseccary checks to ensure vadility of the PlanarSurface is not implemented. The PlanarSurfaces curves relations are not garanteueed.");
+
             return new PlanarSurface(externalBoundary, internalBoundaries);
         }
 
