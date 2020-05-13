@@ -265,9 +265,12 @@ namespace BH.Engine.Serialiser.BsonSerializers
             {
                 actualType = _discriminatorConvention.GetActualType(reader, typeof(object));
             }
-            catch
+            catch (Exception e)
             {
-                actualType = typeof(IDeprecated);
+                if (e.Message.Contains("DBNull"))
+                    actualType = null;
+                else
+                    actualType = typeof(IDeprecated);
             }
             finally
             {
