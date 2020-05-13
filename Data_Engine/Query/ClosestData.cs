@@ -54,42 +54,54 @@ namespace BH.Engine.Data
         [Description("Returns all possible closest data, assuming that they can be anywhere in their respective bounding box.")]
         public static IEnumerable<T> ClosestData<T>(this NTree<T> tree, NBound box, double maxDistance = double.NaN)
         {
-            List<ITree> list = new List<ITree>() { tree };
+            List<Tuple<double, ITree>> list = new List<Tuple<double, ITree>>()
+            {
+                new Tuple<double, ITree>(tree.Bounds.SquareDistance(box), tree)
+            };
 
-            ITree closest = list.Last();
+            int closestIndex = 0;
             do
             {
-                // if the closest item is a branch, find the sub Branches and add to the end of the list, sorted by distance
-                list = OpenBranch(list, closest as NTree<T>, box);
-                closest = list.Last();
+                // Add the sub items of the closest item to the list
+                list.AddRange((list[closestIndex].Item2 as NTree<T>).Items.Select(x =>
+                    new Tuple<double, ITree>(x.Bounds.SquareDistance(box), x)).ToList());
 
-                if (!double.IsNaN(maxDistance) && closest.Bounds.SquareDistance(box) > maxDistance)
+                // remove the parent item
+                list.RemoveAt(closestIndex);
+
+                // Find the index of the closest item
+                double min = double.PositiveInfinity;
+                for (int j = 0; j < list.Count; j++)
+                {
+                    if (list[j].Item1 < min)
+                    {
+                        min = list[j].Item1;
+                        closestIndex = j;
+                    }
+                }
+
+                // Break if the closest item is further away than the maxDistance
+                if (!double.IsNaN(maxDistance) && list[closestIndex].Item1 > maxDistance)
                     return new List<T>();
 
-            } while (closest is NTree<T>);
-            list.RemoveAt(list.Count - 1);
+            } while (list[closestIndex].Item2 is NTree<T>);
 
-            // Save the furthest possible distance from the item with the smallest furthest possible distance
-            double max = closest.Bounds.FurthestSquareDistance(box) + Tolerance.Distance * Tolerance.Distance;
-            List<Leaf<T>> result = new List<Leaf<T>>() { closest as Leaf<T> };
+            if (double.IsNaN(maxDistance))
+                maxDistance = double.PositiveInfinity;
 
-            // Get all the items with closest point closer than the max
-            int i = list.Count - 1;
-            while (i != -1 && list[i].Bounds.SquareDistance(box) < max)
-            {
-                if (list[i] is NTree<T>)
-                {
-                    list = OpenBranch(list, list[i] as NTree<T>, box);
-                }
-                else
-                {
-                    result.Add(list[i] as Leaf<T>);
-                    list.RemoveAt(i);
-                }
-                i = list.Count - 1;
-            }
+            // Save the furthest possible distance from the closest item
+            double max = list[closestIndex].Item2.Bounds.FurthestSquareDistance(box) + Tolerance.Distance * Tolerance.Distance;
+            max = Math.Min(max, maxDistance);
 
-            return result.Select(x => x.Item).ToList();
+            // gets every item with closest distance less than max
+            List<Tuple<double, Leaf<T>>> closest = LessThan<T>(list, max, box);
+
+            // Finds the smallest furtest distance among the closest items, (Due to how the tree structure encapsulates the smaller items it can't be done before this)
+            max = closest.Min(x => x.Item2.Bounds.FurthestSquareDistance(box)) + Tolerance.Distance * Tolerance.Distance;
+            max = Math.Min(max, maxDistance);
+
+            // Gets everything closer than that and returns the data
+            return closest.Where(x => x.Item1 < max).Select(x => x.Item2.Item).ToList();
         }
 
 
@@ -97,15 +109,29 @@ namespace BH.Engine.Data
         /**** Private Methods                           ****/
         /***************************************************/
 
-        [Description("Opens the branch, sorts it by furthest distance to box and adds to the end of the list")]
-        private static List<ITree> OpenBranch<T>(List<ITree> list, NTree<T> branch, NBound box)
+        private static List<Tuple<double, Leaf<T>>> LessThan<T>(List<Tuple<double, ITree>> list, double val, NBound box)
         {
-            list.RemoveAt(list.Count - 1);
-            list.AddRange(branch.Items.ToList());
-            return list.OrderBy(x => -x.Bounds.SquareDistance(box)).ToList();
+            List<Tuple<double, Leaf<T>>> result = new List<Tuple<double, Leaf<T>>>();
+            for (int i = 0; i < list.Count; i++)
+            {
+                Tuple<double, ITree> o = list[i];
+                if (o.Item1 < val)
+                {
+                    if (o.Item2 is Leaf<T>)
+                    {
+                        result.Add(new Tuple<double, Leaf<T>>(o.Item1, o.Item2 as Leaf<T>));
+                    }
+                    else
+                    {
+                        result.AddRange(LessThan<T>((o.Item2 as NTree<T>).Items.Select(x => new Tuple<double, ITree>(x.Bounds.SquareDistance(box), x)).ToList(), val, box));
+                    }
+                }
+            }
+            return result;
         }
 
         /***************************************************/
+
     }
 }
 
