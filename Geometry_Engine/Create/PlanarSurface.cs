@@ -79,7 +79,7 @@ namespace BH.Engine.Geometry
                 }
             }
 
-            return new PlanarSurface { ExternalBoundary = externalBoundary, InternalBoundaries = internalBoundaries };
+            return new PlanarSurface(externalBoundary, internalBoundaries);
         }
 
         /***************************************************/
@@ -96,11 +96,10 @@ namespace BH.Engine.Geometry
 
             for (int i = 0; i < distributed.Count; i++)
             {
-                PlanarSurface srf = new PlanarSurface()
-                {
-                    ExternalBoundary = distributed[i][0],
-                    InternalBoundaries = distributed[i].Skip(1).ToList()
-                };
+                PlanarSurface srf = new PlanarSurface(
+                    distributed[i][0],
+                    distributed[i].Skip(1).ToList()
+                );
 
                 surfaces.Add(srf);
             }
