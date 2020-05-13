@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -26,6 +26,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BH.oM.Reflection.Interface;
 
 namespace BH.Engine.Reflection
 {
@@ -35,28 +36,61 @@ namespace BH.Engine.Reflection
         /**** Interface Methods                         ****/
         /***************************************************/
 
-        public static int ICount<T>(this List<T> list)
+        public static int IOutputCount(this IOutput output)
         {
-            return Item(list as dynamic);
+            return OutputCount(output as dynamic);
+        }
+
+
+        /***************************************************/
+        /**** public Methods                           ****/
+        /***************************************************/
+
+        public static int OutputCount<T>(this Output<T> output)
+        {
+            return 1;
         }
 
         /***************************************************/
-        /**** Public Methods                            ****/
-        /***************************************************/
 
-        public static int Item<T>(this object obj)
+        public static int OutputCount<T1, T2>(this Output<T1, T2> output)
         {
-            return 0;
+            return 2;
         }
 
         /***************************************************/
 
-        public static int Item<T>(this List<T> list)
+        public static object OutputCount<T1, T2, T3>(this Output<T1, T2, T3> output)
         {
-            return list.Count;
+            return 3;
+        }
+
+        /*************************************/
+
+        public static object OutputCount<T1, T2, T3, T4>(this Output<T1, T2, T3, T4> output)
+        {
+            return 4;
+        }
+
+        /*************************************/
+
+        public static object OutputCount<T1, T2, T3, T4, T5>(this Output<T1, T2, T3, T4, T5> output)
+        {
+            return 5;
         }
 
         /***************************************************/
+        /**** Private Methods - fallback                ****/
+        /***************************************************/
+
+        private static object OutputCount(this object output)
+        {
+            Compute.RecordError("Could not find a suitable OutputCount method for the object provided. Method returns -1");
+            return -1;
+        }
+
+        /*************************************/
+
     }
 }
 
