@@ -149,7 +149,7 @@ namespace BH.Engine.Geometry
                     {
                         for (int j = 0; j < internalBoundaries.Count; j++)
                         {
-                            if (internalBoundaries[i].IIsContaining(internalBoundaries[j]))
+                            if (i != j && internalBoundaries[i].IIsContaining(internalBoundaries[j]))
                             {
                                 internalBoundaries = Compute.BooleanUnion(internalBoundaries).Cast<ICurve>().ToList();
                                 Reflection.Compute.RecordWarning("InternalBounderies were overlapping, BooleanUnion has been used to get non overlapping regions.");
