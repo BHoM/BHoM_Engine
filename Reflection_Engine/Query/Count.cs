@@ -26,6 +26,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BH.oM.Reflection.Interface;
 
 namespace BH.Engine.Reflection
 {
@@ -39,6 +40,14 @@ namespace BH.Engine.Reflection
         {
             return Item(list as dynamic);
         }
+
+        /***************************************************/
+
+        public static int ICount(this IOutput output)
+        {
+            return Count(output as dynamic);
+        }
+
 
         /***************************************************/
         /**** Public Methods                            ****/
@@ -57,6 +66,42 @@ namespace BH.Engine.Reflection
         }
 
         /***************************************************/
+
+        public static int Count<T>(this Output<T> output)
+        {
+            return 1;
+        }
+
+        /***************************************************/
+
+        public static int Count<T1,T2>(this Output<T1,T2> output)
+        {
+            return 2;
+        }
+
+        /***************************************************/
+
+        public static object Count<T1, T2, T3>(this Output<T1, T2, T3> output)
+        {
+            return 3;
+        }
+
+        /*************************************/
+
+        public static object Count<T1, T2, T3, T4>(this Output<T1, T2, T3, T4> output)
+        {
+            return 4;
+        }
+
+        /*************************************/
+
+        public static object Count<T1, T2, T3, T4, T5>(this Output<T1, T2, T3, T4, T5> output)
+        {
+            return 5;
+        }
+
+        /*************************************/
+
     }
 }
 
