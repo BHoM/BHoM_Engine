@@ -43,9 +43,9 @@ namespace BH.Engine.Reflection
 
         /***************************************************/
 
-        public static int ICount(this IOutput output)
+        public static int Count(this IOutput output)
         {
-            return Count(output as dynamic);
+            return OutputCount(output as dynamic);
         }
 
 
@@ -66,38 +66,49 @@ namespace BH.Engine.Reflection
         }
 
         /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
 
-        public static int Count<T>(this Output<T> output)
+        private static int OutputCount<T>(this Output<T> output)
         {
             return 1;
         }
 
         /***************************************************/
 
-        public static int Count<T1,T2>(this Output<T1,T2> output)
+        private static int OutputCount<T1,T2>(this Output<T1,T2> output)
         {
             return 2;
         }
 
         /***************************************************/
 
-        public static object Count<T1, T2, T3>(this Output<T1, T2, T3> output)
+        private static object OutputCount<T1, T2, T3>(this Output<T1, T2, T3> output)
         {
             return 3;
         }
 
         /*************************************/
 
-        public static object Count<T1, T2, T3, T4>(this Output<T1, T2, T3, T4> output)
+        private static object OutputCount<T1, T2, T3, T4>(this Output<T1, T2, T3, T4> output)
         {
             return 4;
         }
 
         /*************************************/
 
-        public static object Count<T1, T2, T3, T4, T5>(this Output<T1, T2, T3, T4, T5> output)
+        private static object OutputCount<T1, T2, T3, T4, T5>(this Output<T1, T2, T3, T4, T5> output)
         {
             return 5;
+        }
+
+        /***************************************************/
+        /**** Private Methods - fallback                ****/
+        /***************************************************/
+
+        private static object OutputCount(this object output)
+        {
+            return 0;
         }
 
         /*************************************/
