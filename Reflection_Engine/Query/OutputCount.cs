@@ -32,64 +32,20 @@ namespace BH.Engine.Reflection
 {
     public static partial class Query
     {
+
         /***************************************************/
-        /**** Interface Methods                         ****/
+        /**** public Methods                            ****/
         /***************************************************/
 
-        public static int IOutputCount(this IOutput output)
+        public static int OutputCount(this IOutput output)
         {
-            return OutputCount(output as dynamic);
-        }
-
-
-        /***************************************************/
-        /**** public Methods                           ****/
-        /***************************************************/
-
-        public static int OutputCount<T>(this Output<T> output)
-        {
-            return 1;
+            if (output == null)
+                return 0;
+            else
+                return output.GetType().GenericTypeArguments.Count();
         }
 
         /***************************************************/
-
-        public static int OutputCount<T1, T2>(this Output<T1, T2> output)
-        {
-            return 2;
-        }
-
-        /***************************************************/
-
-        public static object OutputCount<T1, T2, T3>(this Output<T1, T2, T3> output)
-        {
-            return 3;
-        }
-
-        /*************************************/
-
-        public static object OutputCount<T1, T2, T3, T4>(this Output<T1, T2, T3, T4> output)
-        {
-            return 4;
-        }
-
-        /*************************************/
-
-        public static object OutputCount<T1, T2, T3, T4, T5>(this Output<T1, T2, T3, T4, T5> output)
-        {
-            return 5;
-        }
-
-        /***************************************************/
-        /**** Private Methods - fallback                ****/
-        /***************************************************/
-
-        private static object OutputCount(this object output)
-        {
-            Compute.RecordError("Could not find a suitable OutputCount method for the object provided. Method returns -1");
-            return -1;
-        }
-
-        /*************************************/
 
     }
 }
