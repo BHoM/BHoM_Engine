@@ -20,27 +20,35 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Geometry;
-using System;
-using System.Linq;
-using System.ComponentModel;
-using System.Collections.Generic;
-using BH.oM.Reflection.Attributes;
+using MongoDB.Bson.IO;
+using MongoDB.Bson.Serialization;
+using MongoDB.Bson.Serialization.Serializers;
+using System.Drawing;
+using System.Text.RegularExpressions;
 
-namespace BH.Engine.Geometry
+namespace BH.Engine.Serialiser.BsonSerializers
 {
-    public static partial class Create
+    public class RegexSerializer : SerializerBase<Regex>
     {
-        /***************************************************/
-        /**** Public Methods                            ****/
-        /***************************************************/
+        /*******************************************/
+        /**** Public Methods                    ****/
+        /*******************************************/
 
-        [Deprecated("3.0", "Deprecated, method moved to compute file", null, "BH.Engine.Geometry.Compute.ConvexHull(List<Point>")]
-        
-        [Description("Creates a Convex Hull from a list of points. Currently only works for points in the XY plane")]
-        public static Polyline ConvexHull(List<Point> points)
+        public override void Serialize(BsonSerializationContext context, BsonSerializationArgs args, Regex value)
         {
-            return BH.Engine.Geometry.Compute.ConvexHull(points);
+            context.Writer.WriteString(value.ToString());
         }
+
+        /*******************************************/
+
+        public override Regex Deserialize(BsonDeserializationContext context, BsonDeserializationArgs args)
+        {
+            string text = context.Reader.ReadString();
+
+            return new Regex(text);
+        }
+
+        /*******************************************/
     }
 }
+

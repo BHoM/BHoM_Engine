@@ -68,6 +68,9 @@ namespace BH.Engine.Versioning
             if (document == null)
                 return null;
 
+            if (document.Contains("_t") && document["_t"].ToString() == "DBNull")
+                return null;
+
             // Get the current version of the BHoM if not provided
             if (version.Length == 0)
                 version = GetCurrentAssemblyVersion();

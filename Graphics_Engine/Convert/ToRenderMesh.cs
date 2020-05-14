@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -21,52 +21,22 @@
  */
 
 using BH.oM.Geometry;
-using System;
+using BH.oM.Graphics;
 using System.Linq;
-using System.Collections.Generic;
-using BH.oM.Reflection.Attributes;
 
-namespace BH.Engine.Geometry
+namespace BH.Engine.Graphics
 {
-    public static partial class Modify
+    public static partial class Convert
     {
         /***************************************************/
-        /****                Join curves                ****/
+        /**** Public Methods - Graphics                 ****/
         /***************************************************/
 
-        [DeprecatedAttribute("2.3", "Moved to Compute", typeof(Compute), "Join")]
-        public static List<PolyCurve> Join(this List<PolyCurve> curves, double tolerance = Tolerance.Distance)
+        public static RenderMesh ToRenderMesh(this Mesh mesh)
         {
-            return Compute.Join(curves, tolerance);
+            return new RenderMesh { Vertices = mesh.Vertices.Select(x => (Vertex)x).ToList(), Faces = mesh.Faces };
         }
 
-        /***************************************************/
-
-        [DeprecatedAttribute("2.3", "Moved to Compute", typeof(Compute), "Join")]
-        public static List<Polyline> Join(this List<Line> lines, double tolerance = Tolerance.Distance)
-        {
-            return Compute.Join(lines, tolerance);
-        }
-
-        /***************************************************/
-
-        [DeprecatedAttribute("2.3", "Moved to Compute", typeof(Compute), "Join")]
-        public static List<Polyline> Join(this List<Polyline> curves, double tolerance = Tolerance.Distance)
-        {
-            return Compute.Join(curves, tolerance);
-        }
-
-
-        /***************************************************/
-        /**** Public Methods - Interfaces               ****/
-        /***************************************************/
-
-        [DeprecatedAttribute("2.3", "Moved to Compute", typeof(Compute), "IJoin")]
-        public static List<PolyCurve> IJoin(this List<ICurve> curves, double tolerance = Tolerance.Distance)
-        {
-            return Compute.IJoin(curves, tolerance);
-        }
-        
         /***************************************************/
     }
 }

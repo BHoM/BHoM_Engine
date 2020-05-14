@@ -36,18 +36,7 @@ namespace BH.Engine.Geometry
         {
             return curve.Knots.Count - curve.ControlPoints.Count + 1;
         }
-
-
-        /***************************************************/
-        /**** Deprecated Methods                        ****/
-        /***************************************************/
-
-        [DeprecatedAttribute("3.0", "U and V degrees are currently stored as properties of NurbsSurface")]
-        public static List<int> Degrees(this NurbsSurface surf)
-        {
-            return new List<int> { surf.UDegree, surf.VDegree };
-        }
-
+        
         /***************************************************/
     }
 }

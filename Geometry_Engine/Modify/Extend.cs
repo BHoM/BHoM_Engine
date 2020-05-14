@@ -35,15 +35,7 @@ namespace BH.Engine.Geometry
         /***************************************************/
         /**** Public Methods - Curves                  ****/
         /***************************************************/
-
-        [DeprecatedAttribute("2.4", "Replaced with a method taking more arguments", null, "Extend")]
-        public static Line Extend(this Line curve, double start = 0.0, double end = 0.0)
-        {
-            return curve.Extend(start, end, false, Tolerance.Distance);
-        }
-
-        /***************************************************/
-
+        
         [Description("Extends curve by given lengths")]
         [Input("curve", "Curve to extend")]
         [Input("start", "Length of extension on the begining of a curve. Negative value will trim the curve")]

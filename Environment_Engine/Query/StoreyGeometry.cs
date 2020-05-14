@@ -64,7 +64,7 @@ namespace BH.Engine.Environment
                 }
             }
 
-            return BH.Engine.Geometry.Create.ConvexHull(ctrlPoints.CullDuplicates());
+            return BH.Engine.Geometry.Compute.ConvexHull(ctrlPoints.CullDuplicates());
         }
 
 
@@ -97,7 +97,7 @@ namespace BH.Engine.Environment
                 }
             }
 
-            return BH.Engine.Geometry.Create.ConvexHull(ctrlPoints.CullDuplicates());
+            return BH.Engine.Geometry.Compute.ConvexHull(ctrlPoints.CullDuplicates());
         }
 
         /***************************************************/

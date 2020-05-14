@@ -35,52 +35,7 @@ namespace BH.Engine.Geometry
         /***************************************************/
         /**** Public Methods - Curves                   ****/
         /***************************************************/
-        [Deprecated("2.4", "Deprecated to expose tolerance as optional parameter for greater control", null, "Centroid(this Polyline curve, double tolerance = Tolerance.Distance)")]
-        public static Point Centroid(this Polyline curve)
-        {
-            return curve.Centroid(Tolerance.Distance);
-        }
-
-        [Deprecated("2.4", "Deprecated to expose tolerance as optional parameter for greater control", null, "Centroid(this PolyCurve curve, double tolerance = Tolerance.Distance)")]
-        public static Point Centroid(this PolyCurve curve)
-        {
-            return curve.Centroid(Tolerance.Distance);
-        }
-
-        [Deprecated("2.4", "Deprecated to expose tolerance as optional parameter for greater control", null, "Centroid(this Ellipse ellipse, double tolerance = Tolerance.Distance)")]
-        public static Point Centroid(this Ellipse ellipse)
-        {
-            return ellipse.Centroid(Tolerance.Distance);
-        }
-
-        [Deprecated("2.4", "Deprecated to expose tolerance as optional parameter for greater control", null, "Centroid(this Circle circle, double tolerance = Tolerance.Distance)")]
-        public static Point Centroid(this Circle circle)
-        {
-            return circle.Centroid(Tolerance.Distance);
-        }
-
-        [Deprecated("2.4", "Deprecated to expose tolerance as optional parameter for greater control", null, "Centroid(this Line line, double tolerance = Tolerance.Distance)")]
-        public static Point Centroid(this Line line)
-        {
-            return line.Centroid(Tolerance.Distance);
-        }
-
-        [NotImplemented]
-        [Deprecated("2.4", "Deprecated to expose tolerance as optional parameter for greater control", null, "Centroid(this Arc arc, double tolerance = Tolerance.Distance)")]
-        public static Point Centroid(this Arc arc)
-        {
-            return arc.Centroid(Tolerance.Distance);
-        }
-
-        [NotImplemented]
-        [Deprecated("2.4", "Deprecated to expose tolerance as optional parameter for greater control", null, "Centroid(this NurbsCurve nurbsCurve, double tolerance = Tolerance.Distance)")]
-        public static Point Centroid(this NurbsCurve nurbsCurve)
-        {
-            return nurbsCurve.Centroid(Tolerance.Distance);
-        }
-
-        /***************************************************/
-
+        
         public static Point Centroid(this Polyline curve, double tolerance = Tolerance.Distance)
         {
             if (!curve.IsPlanar(tolerance))

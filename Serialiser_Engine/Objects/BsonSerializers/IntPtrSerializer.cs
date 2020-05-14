@@ -20,28 +20,43 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.Engine.Data;
-using BH.oM.Geometry;
+using MongoDB.Bson;
+using MongoDB.Bson.IO;
+using MongoDB.Bson.Serialization;
+using MongoDB.Bson.Serialization.Serializers;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using BH.oM.Reflection.Attributes;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
 
-namespace BH.Engine.Geometry
+namespace BH.Engine.Serialiser.BsonSerializers
 {
-    public static partial class Compute
+    public class IntPtrSerializer : SerializerBase<IntPtr>
     {
-        /***************************************************/
-        /**** public Methods - Vectors                  ****/
-        /***************************************************/
-        
-        [DeprecatedAttribute("PointClustersDBSCAN")]
-        public static List<List<Point>> PointClusters(this List<Point> points, double maxDist, int minPointCount = 1)
+        /*******************************************/
+        /**** Public Methods                    ****/
+        /*******************************************/
+
+        public override void Serialize(BsonSerializationContext context, BsonSerializationArgs args, IntPtr value)
         {
-            return points.PointClustersDBSCAN(maxDist, minPointCount);
+            context.Writer.WriteInt64(value.ToInt64());
         }
-        
-        /***************************************************/
+
+        /*******************************************/
+
+        public override IntPtr Deserialize(BsonDeserializationContext context, BsonDeserializationArgs args)
+        {
+            IBsonReader bsonReader = context.Reader;
+
+            if (bsonReader.CurrentBsonType == BsonType.Int32)
+                return new IntPtr(bsonReader.ReadInt32());
+            else if (bsonReader.CurrentBsonType == BsonType.Int64)
+                return new IntPtr(bsonReader.ReadInt64());
+            else
+                return new IntPtr();
+        }
+
+        /*******************************************/
     }
 }
 

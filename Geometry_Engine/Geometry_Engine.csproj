@@ -24,7 +24,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>..\Build\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -74,14 +74,13 @@
     <Compile Include="Compute\ConvexHull.cs" />
     <Compile Include="Compute\CullDuplicates.cs" />
     <Compile Include="Compute\CollapseToScaledPolyline.cs" />
+    <Compile Include="Compute\DistributeOutlines.cs" />
     <Compile Include="Compute\WetBlanketInterpretation.cs" />
     <Compile Include="Compute\IntegrateRegion.cs" />
-    <Compile Include="Compute\DistributeOutlines.cs" />
     <Compile Include="Compute\Eigenvalues.cs" />
     <Compile Include="Compute\Eigenvectors.cs" />
     <Compile Include="Compute\FitLine.cs" />
     <Compile Include="Compute\Join.cs" />
-    <Compile Include="Compute\PointClusters.cs" />
     <Compile Include="Compute\PointClustersDBSCAN.cs" />
     <Compile Include="Compute\RowEchelonForm.cs" />
     <Compile Include="Compute\SkewLineProximity.cs" />
@@ -92,7 +91,6 @@
     <Compile Include="Create\NTree.cs" />
     <Compile Include="Create\Basis.cs" />
     <Compile Include="Create\Cone.cs" />
-    <Compile Include="Create\ConvexHull.cs" />
     <Compile Include="Create\CartesianCoordinateSystem.cs" />
     <Compile Include="Create\Cuboid.cs" />
     <Compile Include="Create\Cylinder.cs" />
@@ -133,7 +131,6 @@
     <Compile Include="Modify\Simplify.cs" />
     <Compile Include="Modify\Extend.cs" />
     <Compile Include="Modify\Offset.cs" />
-    <Compile Include="Modify\Join.cs" />
     <Compile Include="Modify\ProjectAlong.cs" />
     <Compile Include="Modify\Reverse.cs" />
     <Compile Include="Modify\Scale.cs" />
@@ -162,7 +159,6 @@
     <Compile Include="Query\ClosestDistance.cs" />
     <Compile Include="Query\ClosestPoint.cs" />
     <Compile Include="Query\ControlPoints.cs" />
-    <Compile Include="Query\CurvePlanarIntersections.cs" />
     <Compile Include="Query\IsClockwise.cs" />
     <Compile Include="Query\IsCollinear.cs" />
     <Compile Include="Query\IsCoplanar.cs" />

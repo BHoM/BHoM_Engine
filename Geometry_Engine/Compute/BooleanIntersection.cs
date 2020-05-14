@@ -238,23 +238,6 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [DeprecatedAttribute("2.3", "Replaced with method for ICurve, ICurve", null, "BooleanIntersection")]
-        public static List<PolyCurve> BooleanIntersection(this PolyCurve region, PolyCurve refRegion, double tolerance = Tolerance.Distance)
-        {
-            return (region as ICurve).BooleanIntersection(refRegion, tolerance);
-        }
-
-        /***************************************************/
-
-        [DeprecatedAttribute("2.3", "Replaced with method for IEnumerable<ICurve>", null, "BooleanIntersection")]
-        public static List<PolyCurve> BooleanIntersection(this List<PolyCurve> regions, double tolerance = Tolerance.Distance)
-        {
-            List<ICurve> regionsICurve = new List<ICurve>(regions);
-            return regionsICurve.BooleanIntersection(tolerance);
-        }
-
-        /***************************************************/
-
         public static List<PolyCurve> BooleanIntersection(this ICurve region, ICurve refRegion, double tolerance = Tolerance.Distance)
         {
             if (region is NurbsCurve || region is Ellipse || refRegion is NurbsCurve || refRegion is Ellipse)

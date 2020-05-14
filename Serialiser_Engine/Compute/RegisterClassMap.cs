@@ -20,27 +20,48 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Base;
-using BH.oM.Diffing;
-using BH.oM.Reflection.Attributes;
+using BH.Engine.Serialiser.Objects;
+using BH.Engine.Serialiser.Objects.MemberMapConventions;
+using MongoDB.Bson.Serialization;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BH.Engine.Diffing
+namespace BH.Engine.Serialiser
 {
-    public static partial class Create
+    public static partial class Compute
     {
-        /***************************************************/
+        /*******************************************/
+        /**** Public Methods                    ****/
+        /*******************************************/
 
-        [Description("Creates new Stream Pointer, generating a new StreamId.")]
-        public static StreamPointer StreamPointer(string name = null, string description = null)
+        public static void RegisterClassMap(Type type)
         {
-            return new StreamPointer(Guid.NewGuid(), name, description, DateTime.UtcNow.Ticks);
+            try
+            {
+                if (type.Name.StartsWith("Tree"))
+                    Console.WriteLine("Here");
+
+                BsonClassMap cm = new BsonClassMap(type);
+                cm.AutoMap();
+                cm.SetDiscriminator(type.FullName);
+                cm.SetDiscriminatorIsRequired(true);
+                cm.SetIgnoreExtraElements(false);   // It would have been nice to use cm.MapExtraElementsProperty("CustomData") but it doesn't work for inherited properties
+                cm.SetIdMember(null);
+
+                BsonClassMap.RegisterClassMap(cm);
+
+                BsonSerializer.RegisterDiscriminatorConvention(type, new GenericDiscriminatorConvention());
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.ToString());
+            }
         }
+
+        /*******************************************/
     }
 }
-
