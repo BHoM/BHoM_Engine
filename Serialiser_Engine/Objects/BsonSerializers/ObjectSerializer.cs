@@ -267,15 +267,22 @@ namespace BH.Engine.Serialiser.BsonSerializers
             }
             catch (Exception e)
             {
-                if (e.Message.Contains("DBNull"))
-                    actualType = null;
+                BsonDocument doc = null;
+
+                try
+                {
+                    context.Reader.ReturnToBookmark(bookmark);
+                    IBsonSerializer bSerializer = BsonSerializer.LookupSerializer(typeof(BsonDocument));
+                    doc = bSerializer.Deserialize(context, args) as BsonDocument;
+                }
+                catch { }
+                
+                if (doc != null && doc.Contains("_t") && doc["_t"].AsString == "DBNull")
+                    return null;
                 else
                     actualType = typeof(IDeprecated);
             }
-            finally
-            {
-                context.Reader.ReturnToBookmark(bookmark);
-            }
+            context.Reader.ReturnToBookmark(bookmark);
 
             if (actualType == null)
                 return null;
