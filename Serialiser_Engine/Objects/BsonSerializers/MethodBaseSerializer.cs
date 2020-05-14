@@ -20,6 +20,7 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.Engine.Reflection;
 using MongoDB.Bson;
 using MongoDB.Bson.IO;
 using MongoDB.Bson.Serialization;
@@ -101,7 +102,7 @@ namespace BH.Engine.Serialiser.BsonSerializers
             {
                 MethodBase method = GetMethod(methodName, typeName, paramTypesJson);
 
-                if (method == null)
+                if (method == null || method.IsDeprecated())
                 {
                     // Try to upgrade through versioning
                     BsonDocument doc = new BsonDocument();
