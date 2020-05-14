@@ -55,19 +55,19 @@ namespace BH.Engine.Geometry
 
             internalBoundaries = internalBoundaries ?? new List<ICurve>();
 
-            foreach (ICurve crv in internalBoundaries)
+            if (internalBoundaries.Any(x => !x.IIsPlanar()))
             {
-                if (!crv.IIsPlanar())
-                {
-                    Reflection.Compute.RecordError("At least one of the internal edge curves is not planar");
-                    return null;
-                }
+                Reflection.Compute.RecordError("At least one of the internal edge curves is not planar");
+                return null;
+            }
 
-                if (!crv.IIsClosed())
-                {
-                    Reflection.Compute.RecordError("At least one of the internal edge curves is not closed");
-                    return null;
-                }
+            int count = internalBoundaries.Count;
+
+            internalBoundaries = internalBoundaries.Where(x => x.IIsClosed()).ToList();
+
+            if (internalBoundaries.Count != count)
+            {
+                Reflection.Compute.RecordWarning("At least one of the internalBoundaries is not closed. And have been disregarded.");
             }
 
             if (internalBoundaries.Count > 0)
@@ -79,93 +79,72 @@ namespace BH.Engine.Geometry
                 }
             }
 
-            bool nonExistantCheckWarning = false;
+            //// Internal checks independent from External
+            // Selfintersections Internal
+            count = internalBoundaries.Count;
 
-            try
+            internalBoundaries = internalBoundaries.Where(x => x is NurbsCurve || !x.IIsSelfIntersecting()).ToList();
+
+            if (internalBoundaries.Count != count)
             {
-                if (externalBoundary.IIsSelfIntersecting())
-                {
-                    Reflection.Compute.RecordError("The provided externalBoundary is selfintersecting.");
-                    return null;
-                }
-            } catch
-            {
-                nonExistantCheckWarning = true;
+                Reflection.Compute.RecordWarning("At least one of the internalBoundaries is selfintersecting. And have been disregarded.");
             }
 
-            try
+            // Runs Boolean Union to resolve intersections and containemnt
+            count = internalBoundaries.Count;
+
+            internalBoundaries = internalBoundaries.Where(x => x is NurbsCurve || x is Ellipse)
+                                .Concat(internalBoundaries.Where(x => !(x is NurbsCurve) && !(x is Ellipse)).BooleanUnion()).ToList();
+
+            if (internalBoundaries.Count != count)
             {
-                if (internalBoundaries.Any(x => x.IIsSelfIntersecting()))
-                {
-                    Reflection.Compute.RecordError("At least one of the internalBoundaries is selfintersecting.");
-                    return null;
-                }
-            }
-            catch
-            {
-                nonExistantCheckWarning = true;
+                Reflection.Compute.RecordWarning("At least one of the internalBoundaries was overlapping another one. BooleanUnion was used to resolve it.");
             }
 
-            try
+            //// Checks based around external curve
+            if (externalBoundary is NurbsCurve)
             {
-                if (internalBoundaries.Any(x => !externalBoundary.IIsContaining(x)))
-                {
-                    Reflection.Compute.RecordError("At least one of the internalBoundaries is not contained by the externalBoundary.");
-                    return null;
-                }
-            } catch
-            {
-                nonExistantCheckWarning = true;
+                Reflection.Compute.RecordWarning("Neeseccary checks to ensure vadility of the PlanarSurface is not implemented. The PlanarSurfaces curves relations are not garanteueed.");
+                // External done
+                return new PlanarSurface(externalBoundary, internalBoundaries);
             }
+            else if (externalBoundary.IIsSelfIntersecting())
+            {
+                Reflection.Compute.RecordError("The provided externalBoundary is selfintersecting.");
+                return null;
+            }
+            if (externalBoundary is Ellipse)
+                return new oM.Geometry.PlanarSurface(externalBoundary, internalBoundaries);
 
-            bool unionDone = false;
-            try
-            { 
-                for (int i = 0; i < internalBoundaries.Count; i++)
+
+            // Intersects External
+            for (int i = 0; i < internalBoundaries.Count; i++)
+            {
+                ICurve intCurve = internalBoundaries[i];
+                if (intCurve is NurbsCurve || intCurve is Ellipse)
+                    continue;
+
+                if (externalBoundary.ICurveIntersections(intCurve).Count != 0)
                 {
-                    for (int j = i + 1; j < internalBoundaries.Count; j++)
-                    {
-                        if (internalBoundaries[i].ICurveIntersections(internalBoundaries[j]).Count != 0)
-                        {
-                            internalBoundaries = Compute.BooleanUnion(internalBoundaries).Cast<ICurve>().ToList();
-                            Reflection.Compute.RecordWarning("InternalBounderies were overlapping, BooleanUnion has been used to get non overlapping regions.");
-                            i = internalBoundaries.Count;
-                            j = i;
-                            unionDone = true;
-                        }
-                    }
+                    externalBoundary = externalBoundary.BooleanDifference(new List<ICurve>() { intCurve }).Single();
+                    internalBoundaries.RemoveAt(i);
+                    i--;
+                    Reflection.Compute.RecordWarning("At least one of the internalBoundaries is intersecting the externalBoundary. BooleanDifference was used to resolve the issue.");
                 }
             }
-            catch
-            {
-                nonExistantCheckWarning = true;
-            }
 
-            try
-            {
-                if (!unionDone)
-                {
-                    for (int i = 0; i < internalBoundaries.Count; i++)
-                    {
-                        for (int j = 0; j < internalBoundaries.Count; j++)
-                        {
-                            if (i != j && internalBoundaries[i].IIsContaining(internalBoundaries[j]))
-                            {
-                                internalBoundaries = Compute.BooleanUnion(internalBoundaries).Cast<ICurve>().ToList();
-                                Reflection.Compute.RecordWarning("InternalBounderies were overlapping, BooleanUnion has been used to get non overlapping regions.");
-                                i = internalBoundaries.Count;
-                                j = i;
-                            }
-                        }
-                    }
-                }
-            }
-            catch
-            {
-                nonExistantCheckWarning = true;
-            }
+            // IsContained by External
+            count = internalBoundaries.Count;
 
-            if (nonExistantCheckWarning)
+            internalBoundaries = internalBoundaries.Where(x => x is NurbsCurve || x is Ellipse || externalBoundary.IIsContaining(x)).ToList();
+
+            if (internalBoundaries.Count != count)
+            {
+                Reflection.Compute.RecordWarning("At least one of the internalBoundaries is not contained by the externalBoundary. And have been disregarded.");
+            }
+            
+
+            if (internalBoundaries.Any(x => x is NurbsCurve || x is Ellipse))
                 Reflection.Compute.RecordWarning("Neeseccary checks to ensure vadility of the PlanarSurface is not implemented. The PlanarSurfaces curves relations are not garanteueed.");
 
             return new PlanarSurface(externalBoundary, internalBoundaries);
