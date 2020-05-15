@@ -147,6 +147,9 @@ namespace BH.Engine.Geometry
         [Output("curve", "Resulting offset")]
         public static Polyline Offset(this Polyline curve, double offset, Vector normal = null, bool tangentExtensions = false, double tolerance = Tolerance.Distance)
         {
+            if (curve == null || curve.Length() < tolerance)
+                return null;
+
             if (!curve.IsPlanar(tolerance))
             {
                 BH.Engine.Reflection.Compute.RecordError("Offset works only on planar curves");
@@ -167,7 +170,7 @@ namespace BH.Engine.Geometry
                 return curve;
 
             if (offset > 0.05 * curve.Length())
-                return (curve.Offset(offset / 2, normal, tangentExtensions, tolerance)).Offset(offset / 2, normal, tangentExtensions, tolerance);
+                return (curve.Offset(offset / 2, normal, tangentExtensions, tolerance))?.Offset(offset / 2, normal, tangentExtensions, tolerance);
 
             List<Point> cPts = new List<Point>(curve.ControlPoints);
             List<Point> tmp = new List<Point>(curve.ControlPoints);
@@ -276,6 +279,20 @@ namespace BH.Engine.Geometry
         public static PolyCurve Offset(this PolyCurve curve, double offset, Vector normal = null, bool tangentExtensions = false, double tolerance = Tolerance.Distance)
         {
 
+            if (curve == null || curve.Length() < tolerance)
+                return null;
+
+            //if there are only Line segmensts switching to polyline method which is more reliable 
+            if (curve.Curves.All(x => x is Line))
+            {
+                Polyline polyline = new Polyline { ControlPoints = curve.DiscontinuityPoints() };
+                polyline = polyline.Offset(offset, normal, tangentExtensions, tolerance);
+                if (polyline == null)
+                    return null;
+
+                return new PolyCurve { Curves = polyline.SubParts().Cast<ICurve>().ToList() };
+            }
+
             List<ICurve> subParts = curve.SubParts();
             //Check if contains any circles, if so, handle them explicitly, and offset any potential leftovers by backcalling this method
             if (subParts.Any(x => x is Circle))
@@ -317,17 +334,9 @@ namespace BH.Engine.Geometry
             }
 
             if (offset > 0.05 * curve.Length())
-                return (curve.Offset(offset / 2, normal, tangentExtensions, tolerance)).Offset(offset / 2, normal, tangentExtensions, tolerance);
+                return (curve.Offset(offset / 2, normal, tangentExtensions, tolerance))?.Offset(offset / 2, normal, tangentExtensions, tolerance);
 
             PolyCurve result = new PolyCurve();
-
-            //if there are only Line segmensts switching to polyline method which is more reliable 
-            if (curve.Curves.All(x => x is Line))
-            {
-                Polyline polyline = new Polyline { ControlPoints = curve.DiscontinuityPoints() };
-                result.Curves.AddRange(polyline.Offset(offset, normal, tangentExtensions, tolerance).SubParts());
-                return result;
-            }
 
             Vector normalNormalised = normal.Normalise();
 
