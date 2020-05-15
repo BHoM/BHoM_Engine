@@ -67,7 +67,7 @@ namespace BH.Engine.Geometry
 
             if (internalBoundaries.Count != count)
             {
-                Reflection.Compute.RecordWarning("At least one of the internalBoundaries is not closed. And have been disregarded.");
+                Reflection.Compute.RecordWarning("At least one of the internal boundaries is not closed and has been ignored on creation of the planar surface.");
             }
 
             if (internalBoundaries.Count > 0)
@@ -87,7 +87,7 @@ namespace BH.Engine.Geometry
 
             if (internalBoundaries.Count != count)
             {
-                Reflection.Compute.RecordWarning("At least one of the internalBoundaries is selfintersecting. And have been disregarded.");
+                Reflection.Compute.RecordWarning("At least one of the internal boundaries is self-intersecting and has been ignored on creation of the planar surface..");
             }
 
             // Runs Boolean Union to resolve intersections and containemnt
@@ -104,13 +104,13 @@ namespace BH.Engine.Geometry
             //// Checks based around external curve
             if (externalBoundary is NurbsCurve)
             {
-                Reflection.Compute.RecordWarning("Neeseccary checks to ensure vadility of the PlanarSurface is not implemented. The PlanarSurfaces curves relations are not garanteueed.");
+                Reflection.Compute.RecordWarning("External boundary is a nurbs curve. Necessary checks to ensure validity of a planar surface based on nurbs curve cannot be run, therefore correctness of the surface boundaries is not guaranteed.");
                 // External done
                 return new PlanarSurface(externalBoundary, internalBoundaries);
             }
             else if (externalBoundary.IIsSelfIntersecting())
             {
-                Reflection.Compute.RecordError("The provided externalBoundary is selfintersecting.");
+                Reflection.Compute.RecordError("The provided external boundary is self-intersecting.");
                 return null;
             }
             if (externalBoundary is Ellipse)
@@ -179,4 +179,3 @@ namespace BH.Engine.Geometry
         /***************************************************/
     }
 }
-
