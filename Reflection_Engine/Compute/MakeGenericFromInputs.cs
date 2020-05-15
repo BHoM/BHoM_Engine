@@ -20,6 +20,7 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.Engine.Serialiser;
 using BH.oM.Base;
 using BH.oM.Reflection.Debugging;
 using System;
@@ -80,6 +81,9 @@ namespace BH.Engine.Reflection
                 Type paramType = paramTypes[index];
                 Type type = inputTypes[index];
 
+                if (paramType.IsGenericParameter)
+                    paramType = paramType.GenericTypeConstraint();
+
                 if (type.Name != paramType.Name)
                 {
                     foreach (Type inter in type.GetInterfaces())
@@ -92,7 +96,7 @@ namespace BH.Engine.Reflection
                     }
                 }
 
-                if (type.Name != paramType.Name)
+                if (type.Name != paramType.Name && paramType.Name != "Object")
                 {
                     actualTypes.Add(null);
                     continue;

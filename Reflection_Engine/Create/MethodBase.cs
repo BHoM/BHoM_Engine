@@ -40,29 +40,84 @@ namespace BH.Engine.Serialiser
             if (methodName == ".ctor")
                 methods = type.GetConstructors().ToList<MethodBase>();
             else
-                methods = type.GetMethods(BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly).ToList<MethodBase>();
+                methods = type.GetMethods(BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)
+                    .Where(x => x.Name == methodName)
+                    .ToList<MethodBase>();
 
-            for (int k = 0; k < methods.Count; k++)
+            foreach (MethodBase method in methods)
             {
-                MethodBase method = methods[k];
-
-                if (method.Name == methodName)
+                ParameterInfo[] parameters = method.ParametersWithConstraints();
+                if (parameters.Length == paramTypeNames.Count)
                 {
-                    ParameterInfo[] parameters = method.ParametersWithConstraints();
-                    if (parameters.Length == paramTypeNames.Count)
-                    {
-                        bool matching = true;
-                        List<string> names = parameters.Select(x => x.ParameterType.ToText(true)).ToList();
-                        for (int i = 0; i < paramTypeNames.Count; i++)
-                            matching &= names[i] == paramTypeNames[i];
+                    bool matching = true;
+                    List<string> names = parameters.Select(x => x.ParameterType.ToText(true)).ToList();
+                    for (int i = 0; i < paramTypeNames.Count; i++)
+                        matching &= names[i] == paramTypeNames[i];
 
-                        if (matching)
-                        {
-                            return method;
-                        }
+                    if (matching)
+                    {
+                        return method;
                     }
                 }
             }
+
+            // If failed, look for a generic method that can satisfy the constraints
+            methods = methods.Where(x => x.ContainsGenericParameters).ToList();
+            foreach (MethodBase method in methods)
+            {
+                ParameterInfo[] parameters = method.GetParameters();
+                if (parameters.Length == paramTypeNames.Count)
+                {
+                    List<Type> types = paramTypeNames.Select(x => Reflection.Create.Type(x)).ToList();
+
+                    bool matching = true;
+                    for (int i = 0; i < parameters.Length; i++)
+                    {
+                        Type paramType = parameters[i].ParameterType;
+                        if (paramType.IsGenericType)
+                        {
+                            if (paramType.Name == types[i].Name)
+                            {
+                                try
+                                {
+                                    Type t = paramType.GetGenericTypeDefinition().MakeGenericType(types[i].GenericTypeArguments);
+                                    matching &= t != null;
+                                }
+                                catch
+                                {
+                                    matching = false;
+                                }
+                            }
+                            else
+                            {
+                                matching &= false;
+                            }
+                        }
+                        else if (paramType.IsGenericParameter)
+                        {
+                            matching &= paramType.GenericTypeConstraint().IsAssignableFrom(types[i]);
+                        }
+                        else
+                            matching &= parameters[i].ParameterType.ToText(true) == paramTypeNames[i];
+                    }
+
+                    if (matching)
+                    {
+                        if (method.IsGenericMethodDefinition && method is MethodInfo)
+                        {
+                            try
+                            {
+                                MethodInfo result = Compute.MakeGenericFromInputs(method as MethodInfo, types);
+                                if (result != null)
+                                    return result;
+                            }
+                            catch { }
+                        }
+                        return method;
+                    }
+                }
+            }
+
             return null;
         }
 
