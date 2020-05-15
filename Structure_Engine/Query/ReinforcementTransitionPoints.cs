@@ -37,8 +37,8 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns a list of the normalised locations (0 means start, 1 means end) in the crossection where the reinforcement changes. If section is null or does not contain any reinforcement, an empty list will be returned.")]
-        [Input("concreteSection", "The ConcreteSection to extract reinforcement changes from.")]
+        [Description("Returns a list of the normalised locations (0 means start, 1 means end) in the cross section where the reinforcement changes. If section is null or does not contain any reinforcement, an empty list will be returned.")]
+        [Input("concreteSection", "The ConcreteSection from which to extract reinforcement transitions.")]
         [Output("locations", "The locations of reinforcement transitions in the crossection.")]
         public static List<double> ReinforcementTransitionPoints(this ConcreteSection concreteSection)
         {
