@@ -94,8 +94,8 @@ namespace BH.Engine.Structure
         [InputFromProperty("diameter")]
         [Input("barCount", "Number of bars along the along the linear distribution axes.")]
         [Input("parallelSpacing", "Minimum spacing allowed between two rebars in a single layer", typeof(Length))]
-        [Input("perpendicularSpacing", "Minimum spacing allowed between two rebars layers", typeof(Length))]
-        [Input("direction", "Direction of the axis of the reinforcement. Should be a vector in the global XY-plane, defaults to the global X-axis.")]
+        [Input("perpendicularSpacing", "Minimum spacing allowed between two layers of rebar", typeof(Length))]
+        [Input("direction", "Direction of the axis of the reinforcement. Should be a vector in the global XY-plane. Defaults to the global X-axis.")]
         [Input("offset", "Offset of the linear layout in relation to the reference point, perpendicular to the Direction vector in the XY-plane.\n" +
                      "A positive value will mean an offset towards the centre of the boundingbox of the ConcreteSection.", typeof(Length))]
         [Input("referencePoint", "Controls, together with the offset, which point on the ConcreteSection that should be used for the layout.")]
