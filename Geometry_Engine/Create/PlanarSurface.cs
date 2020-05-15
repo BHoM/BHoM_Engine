@@ -118,9 +118,6 @@ namespace BH.Engine.Geometry
                 return new PlanarSurface(externalBoundary, internalBoundaries);
             }
 
-            
-
-
             //-------------------Internal-Boundary-Curves-------------------//
             //--------------Overlapping-External-Boundary-Curve-------------//
             for (int i = 0; i < internalBoundaries.Count; i++)
