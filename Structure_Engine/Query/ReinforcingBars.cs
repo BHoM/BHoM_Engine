@@ -88,7 +88,7 @@ namespace BH.Engine.Structure
                 else
                     material = new Material();
 
-                foreach (Line centreLine in reif.ReinforcementLayout(stirupOffset, outerProfileEdges, innerProfileEdges, length, transformation))
+                foreach (Line centreLine in reif.ReinforcementLayout(cover, outerProfileEdges, innerProfileEdges, length, transformation))
                 {
                     PrimaryReinforcingBar rebar = new PrimaryReinforcingBar
                     {
