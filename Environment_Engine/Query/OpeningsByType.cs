@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -20,28 +20,32 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
 using BH.oM.Environment.Elements;
-using BH.oM.Dimensional;
-using BH.oM.Geometry;
 
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
 
 namespace BH.Engine.Environment
 {
-    public static partial class Create
+    public static partial class Query
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Replaced("3.2", "Method moved to query", typeof(BH.Engine.Environment.Query), "NewElement2D(BH.oM.Environment.Elements.Panel)")]
-        public static IElement2D NewInternalElement2D(this Panel panel)
+        [Description("Returns a collection of Environment Openings that match a given Opening Type")]
+        [Input("openings", "A collection of Environment Openings to filter")]
+        [Input("type", "An Opening Type to filter by from the Opening Type enum")]
+        [Output("openings", "A collection of Environment Opening that match the given type")]
+        public static List<Opening> OpeningsByType(this List<Opening> openings, OpeningType type)
         {
-            return new Opening();
+            return openings.Where(x => x.Type == type).ToList();
         }
-
-        /***************************************************/
     }
 }
-

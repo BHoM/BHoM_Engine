@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -20,53 +20,42 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.oM.Environment.Elements;
+using BH.oM.Dimensional;
 using BH.oM.Geometry;
-using System;
-using System.Linq;
-using System.Collections.Generic;
-using BH.oM.Reflection.Attributes;
+using BH.Engine.Geometry;
 
-namespace BH.Engine.Geometry
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
+
+namespace BH.Engine.Environment
 {
-    public static partial class Modify
+    public static partial class Query
     {
         /***************************************************/
-        /****                Join curves                ****/
+        /**** Public Methods                            ****/
         /***************************************************/
 
-        [DeprecatedAttribute("2.3", "Moved to Compute", typeof(Compute), "Join")]
-        public static List<PolyCurve> Join(this List<PolyCurve> curves, double tolerance = Tolerance.Distance)
+        [Description("Returns an instance of an IElement1D from the given object")]
+        [Input("opening", "An Environmental Opening object")]
+        [Input("curve", "The curve to clone")]
+        [Output("element", "A 1D element object")]
+        public static IElement1D NewElement1D(this Opening opening, ICurve curve)
         {
-            return Compute.Join(curves, tolerance);
+            return curve.IClone();
         }
 
         /***************************************************/
 
-        [DeprecatedAttribute("2.3", "Moved to Compute", typeof(Compute), "Join")]
-        public static List<Polyline> Join(this List<Line> lines, double tolerance = Tolerance.Distance)
+        [Description("Returns an instance of an IElement1D from the given object")]
+        [Input("panel", "An Environmental Panel object")]
+        [Input("curve", "The curve to clone")]
+        [Output("element", "A 1D element object")]
+        public static IElement1D NewElement1D(this Panel panel, ICurve curve)
         {
-            return Compute.Join(lines, tolerance);
+            return curve.IClone();
         }
 
-        /***************************************************/
-
-        [DeprecatedAttribute("2.3", "Moved to Compute", typeof(Compute), "Join")]
-        public static List<Polyline> Join(this List<Polyline> curves, double tolerance = Tolerance.Distance)
-        {
-            return Compute.Join(curves, tolerance);
-        }
-
-
-        /***************************************************/
-        /**** Public Methods - Interfaces               ****/
-        /***************************************************/
-
-        [DeprecatedAttribute("2.3", "Moved to Compute", typeof(Compute), "IJoin")]
-        public static List<PolyCurve> IJoin(this List<ICurve> curves, double tolerance = Tolerance.Distance)
-        {
-            return Compute.IJoin(curves, tolerance);
-        }
-        
         /***************************************************/
     }
 }

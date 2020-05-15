@@ -20,28 +20,48 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Environment.Elements;
-using BH.oM.Dimensional;
-using BH.oM.Geometry;
+using BH.Engine.Serialiser.Objects;
+using BH.Engine.Serialiser.Objects.MemberMapConventions;
+using MongoDB.Bson.Serialization;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-using BH.oM.Reflection.Attributes;
-using System.ComponentModel;
-
-namespace BH.Engine.Environment
+namespace BH.Engine.Serialiser
 {
-    public static partial class Create
+    public static partial class Compute
     {
-        /***************************************************/
-        /**** Public Methods                            ****/
-        /***************************************************/
+        /*******************************************/
+        /**** Public Methods                    ****/
+        /*******************************************/
 
-        [Replaced("3.2", "Method moved to query", typeof(BH.Engine.Environment.Query), "NewElement2D(BH.oM.Environment.Elements.Panel)")]
-        public static IElement2D NewInternalElement2D(this Panel panel)
+        public static void RegisterClassMap(Type type)
         {
-            return new Opening();
+            try
+            {
+                if (type.Name.StartsWith("Tree"))
+                    Console.WriteLine("Here");
+
+                BsonClassMap cm = new BsonClassMap(type);
+                cm.AutoMap();
+                cm.SetDiscriminator(type.FullName);
+                cm.SetDiscriminatorIsRequired(true);
+                cm.SetIgnoreExtraElements(false);   // It would have been nice to use cm.MapExtraElementsProperty("CustomData") but it doesn't work for inherited properties
+                cm.SetIdMember(null);
+
+                BsonClassMap.RegisterClassMap(cm);
+
+                BsonSerializer.RegisterDiscriminatorConvention(type, new GenericDiscriminatorConvention());
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.ToString());
+            }
         }
 
-        /***************************************************/
+        /*******************************************/
     }
 }
-

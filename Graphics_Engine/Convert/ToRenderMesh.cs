@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -20,25 +20,21 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Environment.Elements;
-using BH.oM.Dimensional;
 using BH.oM.Geometry;
+using BH.oM.Graphics;
+using System.Linq;
 
-using BH.oM.Reflection.Attributes;
-using System.ComponentModel;
-
-namespace BH.Engine.Environment
+namespace BH.Engine.Graphics
 {
-    public static partial class Create
+    public static partial class Convert
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /**** Public Methods - Graphics                 ****/
         /***************************************************/
 
-        [Replaced("3.2", "Method moved to query", typeof(BH.Engine.Environment.Query), "NewElement2D(BH.oM.Environment.Elements.Panel)")]
-        public static IElement2D NewInternalElement2D(this Panel panel)
+        public static RenderMesh ToRenderMesh(this Mesh mesh)
         {
-            return new Opening();
+            return new RenderMesh { Vertices = mesh.Vertices.Select(x => (Vertex)x).ToList(), Faces = mesh.Faces };
         }
 
         /***************************************************/

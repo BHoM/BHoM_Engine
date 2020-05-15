@@ -42,30 +42,30 @@ namespace BH.Engine.Diffing
         [Description("Checks two BHoMObjects property by property and returns the differences")]
         [Input("diffConfig", "Config to be used for the comparison. Can set numeric tolerance, wheter to check the guid, if custom data should be ignored and if any additional properties should be ignored")]
         [Output("Dictionary whose key is the name of the property, and value is a tuple with its value in obj1 and obj2.")]
-        public static Dictionary<string, Tuple<object, object>> DifferentProperties(this IBHoMObject obj1, IBHoMObject obj2, DiffConfig diffConfig = null)
+        public static Dictionary<string, Tuple<object, object>> DifferentProperties(this object obj1, object obj2, DiffConfig diffConfig = null)
         {
-            var dict = new Dictionary<string, Tuple<object, object>>();
+            // Set configurations if diffConfig is null. Clone it for immutability in the UI.
+            DiffConfig diffConfigCopy = diffConfig == null ? new DiffConfig() : diffConfig.GetShallowClone() as DiffConfig;
 
-            //Use default config if null
-            diffConfig = diffConfig ?? new DiffConfig();
+            var dict = new Dictionary<string, Tuple<object, object>>();
 
             CompareLogic comparer = new CompareLogic();
 
             comparer.Config.MaxDifferences = 1000;
-            comparer.Config.MembersToIgnore = diffConfig.PropertiesToIgnore;
-            comparer.Config.DoublePrecision = diffConfig.NumericTolerance;
 
-            if (diffConfig.PropertiesToIgnore.Contains("CustomData"))
-                comparer.Config.MembersToIgnore.Add("CustomData");
+            if (!diffConfigCopy.PropertiesToIgnore.Contains("BHoM_Guid"))
+                diffConfigCopy.PropertiesToIgnore.Add("BHoM_Guid"); // BHoM_Guid should always be ignored in DifferentProperties.
 
-            if (diffConfig.PropertiesToIgnore.Contains("BHoM_Guid") || diffConfig.PropertiesToIgnore.Contains("Guid"))
-                comparer.Config.TypesToIgnore.Add(typeof(Guid));
+            comparer.Config.MembersToIgnore = diffConfigCopy.PropertiesToIgnore;
+            comparer.Config.DoublePrecision = diffConfigCopy.NumericTolerance;
 
             // Never include the changes in HistoryFragment.
             comparer.Config.TypesToIgnore.Add(typeof(HashFragment));
 
             ComparisonResult result = comparer.Compare(obj1, obj2);
-            dict = result.Differences.ToDictionary(diff => diff.PropertyName, diff => new Tuple<object, object>(diff.Object1, diff.Object2));
+
+            foreach (var difference in result.Differences)
+                dict[difference.PropertyName] = new Tuple<object, object>(difference.Object1, difference.Object2);
 
             if (dict.Count == 0)
                 return null;

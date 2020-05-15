@@ -232,15 +232,6 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [DeprecatedAttribute("2.3", "Replaced with method for IEnumerable<ICurve>", null, "BooleanUnion")]
-        public static List<PolyCurve> BooleanUnion(this List<PolyCurve> regions, double tolerance = Tolerance.Distance)
-        {
-            List<ICurve> regionsICurve = new List<ICurve>(regions);
-            return regionsICurve.BooleanUnion(tolerance);
-        }
-
-        /***************************************************/
-
         public static List<PolyCurve> BooleanUnion(this IEnumerable<ICurve> regions, double tolerance = Tolerance.Distance)
         {
             List<ICurve> regionsList = regions.ToList();

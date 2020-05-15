@@ -24,7 +24,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>..\Build\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -33,6 +33,11 @@
     <Reference Include="BHoM">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\BHoM\Build\BHoM.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Diffing_oM">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\BHoM\Build\Diffing_oM.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Dimensional_oM">
@@ -90,6 +95,7 @@
     <Compile Include="Query\AverageProfileArea.cs" />
     <Compile Include="Query\ConstructionByName.cs" />
     <Compile Include="Query\ExternalPolyline.cs" />
+    <Compile Include="Query\HasMergeablePropertiesWith.cs" />
     <Compile Include="Query\InternalElements2D.cs" />
     <Compile Include="Query\MaterialComposition.cs" />
     <Compile Include="Query\OutlineElements1D.cs" />
@@ -119,6 +125,11 @@
       <Project>{8D8CD66F-76F3-4750-936D-380D51BC67D6}</Project>
       <Name>Common_Engine</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Diffing_Engine\Diffing_Engine.csproj">
+      <Project>{073dfd36-0829-4792-8c32-67bf692a9413}</Project>
+      <Name>Diffing_Engine</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\Geometry_Engine\Geometry_Engine.csproj">
       <Project>{89ab2dcb-ef87-4cba-b59c-c16a8a71d333}</Project>
       <Name>Geometry_Engine</Name>
@@ -131,6 +142,11 @@
     <ProjectReference Include="..\Reflection_Engine\Reflection_Engine.csproj">
       <Project>{b0154405-9390-472d-9b5c-a2280823b18d}</Project>
       <Name>Reflection_Engine</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Spatial_Engine\Spatial_Engine.csproj">
+      <Project>{A84FDFE5-C267-430E-8FEC-AF4F4BF5B745}</Project>
+      <Name>Spatial_Engine</Name>
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>

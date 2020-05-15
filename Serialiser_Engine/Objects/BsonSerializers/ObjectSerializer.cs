@@ -198,7 +198,21 @@ namespace BH.Engine.Serialiser.BsonSerializers
             else if (value is Enum)
                 actualType = typeof(Enum);
 
+            if (!BsonClassMap.IsClassMapRegistered(actualType))
+            {
+                Compute.RegisterClassMap(actualType);
+            }
+
             var serializer = BsonSerializer.LookupSerializer(actualType);
+
+            if (serializer.GetType().Name == "EnumerableInterfaceImplementerSerializer`2" && context.Writer.State == BsonWriterState.Initial)
+            {
+                if (!m_FallbackSerialisers.ContainsKey(actualType))
+                    CreateFallbackSerialiser(actualType);
+                serializer = m_FallbackSerialisers[actualType];
+            }
+
+            
 
             var polymorphicSerializer = serializer as IBsonPolymorphicSerializer;
             if (polymorphicSerializer != null && polymorphicSerializer.IsDiscriminatorCompatibleWithObjectSerializer)
@@ -235,7 +249,6 @@ namespace BH.Engine.Serialiser.BsonSerializers
                     {
                         serializer.Serialize(context, value);
                     }
-                    
                 }
             }
         }
@@ -285,6 +298,14 @@ namespace BH.Engine.Serialiser.BsonSerializers
             try
             {
                 IBsonSerializer bsonSerializer = BsonSerializer.LookupSerializer(actualType);
+
+                if (bsonSerializer.GetType().Name == "EnumerableInterfaceImplementerSerializer`2" && context.Reader.CurrentBsonType == BsonType.Document)
+                {
+                    if (!m_FallbackSerialisers.ContainsKey(actualType))
+                        CreateFallbackSerialiser(actualType);
+                    bsonSerializer = m_FallbackSerialisers[actualType];
+                }
+
                 return bsonSerializer.Deserialize(context, args);
             }
             catch (Exception e)
@@ -337,6 +358,16 @@ namespace BH.Engine.Serialiser.BsonSerializers
             }
         }
 
+        /***************************************************/
+
+        private void CreateFallbackSerialiser(Type actualType)
+        {
+            var classMap = BsonClassMap.LookupClassMap(actualType);
+            var classMapSerializerDefinition = typeof(BsonClassMapSerializer<>);
+            var classMapSerializerType = classMapSerializerDefinition.MakeGenericType(actualType);
+            m_FallbackSerialisers[actualType] = (IBsonSerializer)Activator.CreateInstance(classMapSerializerType, classMap);
+        }
+
 
         /***************************************************/
         /**** Private Fields                            ****/
@@ -345,6 +376,8 @@ namespace BH.Engine.Serialiser.BsonSerializers
         private readonly IDiscriminatorConvention _discriminatorConvention;
 
         private static Dictionary<Guid, int> m_StackCounter = new Dictionary<Guid, int>();
+
+        private Dictionary<Type, IBsonSerializer> m_FallbackSerialisers = new Dictionary<Type, IBsonSerializer>();
 
 
         /*******************************************/

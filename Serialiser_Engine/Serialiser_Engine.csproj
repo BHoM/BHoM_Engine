@@ -24,7 +24,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>..\Build\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -54,12 +54,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Compute\RegisterClassMap.cs" />
     <Compile Include="Compute\AllowUpgradeFromBson.cs" />
     <Compile Include="Convert\Bson.cs" />
     <Compile Include="Convert\Encrypted.cs" />
     <Compile Include="Convert\Zip.cs" />
     <Compile Include="Convert\Json.cs" />
     <Compile Include="Modify\ApplyTaggedName.cs" />
+    <Compile Include="Objects\BsonSerializers\RegexSerializer.cs" />
+    <Compile Include="Objects\BsonSerializers\IntPtrSerializer.cs" />
+    <Compile Include="Objects\BsonSerializers\BitmapSerializer.cs" />
     <Compile Include="Objects\BsonSerializers\DataTableSerialiser.cs" />
     <Compile Include="Objects\BsonSerializers\EnumSerializer.cs" />
     <Compile Include="Objects\BsonSerializers\MethodBaseSerializer.cs" />

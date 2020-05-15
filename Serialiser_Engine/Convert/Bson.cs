@@ -37,6 +37,8 @@ using System.Diagnostics;
 using BH.Engine.Serialiser.Objects.MemberMapConventions;
 using System.Reflection;
 using BH.Engine.Serialiser.Objects;
+using System.Drawing;
+using System.Text.RegularExpressions;
 
 namespace BH.Engine.Serialiser
 {
@@ -167,6 +169,9 @@ namespace BH.Engine.Serialiser
                 BsonSerializer.RegisterSerializer(typeof(Enum), new EnumSerializer());
                 BsonSerializer.RegisterSerializer(typeof(IDeprecated), new DeprecatedSerializer());
                 BsonSerializer.RegisterSerializer(typeof(DataTable), new DataTableSerialiser());
+                BsonSerializer.RegisterSerializer(typeof(Bitmap), new BitmapSerializer());
+                BsonSerializer.RegisterSerializer(typeof(IntPtr), new IntPtrSerializer());
+                BsonSerializer.RegisterSerializer(typeof(Regex), new RegexSerializer());
 
                 var typeSerializer = new TypeSerializer();
                 BsonSerializer.RegisterSerializer(typeof(Type), typeSerializer);
@@ -198,37 +203,19 @@ namespace BH.Engine.Serialiser
                         generic.Invoke(null, null);
                     }
                     else if (!type.IsGenericType)
-                        RegisterClassMap(type);
-
+                        Compute.RegisterClassMap(type);
+                    else
+                        BsonSerializer.RegisterDiscriminatorConvention(type, new GenericDiscriminatorConvention());
                 }
 
             }
 
-            RegisterClassMap(typeof(System.Drawing.Color));
-            RegisterClassMap(typeof(MethodInfo));
-            RegisterClassMap(typeof(ConstructorInfo));
-        }
-
-        /*******************************************/
-
-        private static void RegisterClassMap(Type type)
-        {
-            try
-            {
-                BsonClassMap cm = new BsonClassMap(type);
-                cm.AutoMap();
-                cm.SetDiscriminator(type.FullName);
-                cm.SetDiscriminatorIsRequired(true);
-                cm.SetIgnoreExtraElements(false);   // It would have been nice to use cm.MapExtraElementsProperty("CustomData") but it doesn't work for inherited properties
-
-                BsonClassMap.RegisterClassMap(cm);
-
-                BsonSerializer.RegisterDiscriminatorConvention(type, new GenericDiscriminatorConvention());
-            }
-            catch (Exception e)
-            {
-                Debug.WriteLine(e.ToString());
-            }
+            Compute.RegisterClassMap(typeof(System.Drawing.Color));
+            Compute.RegisterClassMap(typeof(MethodInfo));
+            Compute.RegisterClassMap(typeof(ConstructorInfo));
+            Compute.RegisterClassMap(typeof(Bitmap));
+            Compute.RegisterClassMap(typeof(IntPtr));
+            Compute.RegisterClassMap(typeof(Regex));
         }
 
         /*******************************************/
