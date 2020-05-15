@@ -153,7 +153,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Gets the LongitudinalReinforcement centrelines as a list of lines, based on inner and outer profile edges and Bar paramters..")]
+        [Description("Gets the LongitudinalReinforcement centrelines as a list of lines, based on inner and outer profile edges and Bar parameters.")]
         [Input("reinforcement", "The LongitudinalReinforcement to extract the centrelines from.")]
         [Input("cover", "Any additional spacing to be added in relation to the edge curves, such as minimum cover and stirups. This will be added on top of half the rebar Diameter.", typeof(Length))]
         [Input("outerProfileEdges", "The outer profile edges of the ConcreteSection to be populated.")]
