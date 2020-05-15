@@ -93,7 +93,7 @@ namespace BH.Engine.Structure
                  "Starts by fitting in as many points as possible in the first layer, then generates a new one and repeats.")]
         [InputFromProperty("diameter")]
         [Input("barCount", "Number of bars along the along the linear distribution axes.")]
-        [Input("parallelSPacing", "Minimum spacing allowed between two rebars in a single layer", typeof(Length))]
+        [Input("parallelSpacing", "Minimum spacing allowed between two rebars in a single layer", typeof(Length))]
         [Input("perpendicularSpacing", "Minimum spacing allowed between two rebars layers", typeof(Length))]
         [Input("direction", "Direction of the axis of the reinforcement. Should be a vector in the global XY-plane, defaults to the global X-axis.")]
         [Input("offset", "Offset of the linear layout in relation to the reference point, perpendicular to the Direction vector in the XY-plane.\n" +
@@ -103,12 +103,12 @@ namespace BH.Engine.Structure
         [InputFromProperty("endLocation")]
         [Input("material", "Material of the Rebars. If null, a defaul material will be pulled from the Datasets.")]
         [Output("reinforcement", "The created Reinforcement to be applied to a ConcreteSection.")]
-        public static LongitudinalReinforcement MultiLinearReinforcement(double diameter, int barCount, double parallelSPacing, double perpendicularSpacing, Vector direction = null, double offset = 0, ReferencePoint referencePoint = ReferencePoint.BottomCenter, double startLocation = 0, double endLocation = 1, IMaterialFragment material = null)
+        public static LongitudinalReinforcement MultiLinearReinforcement(double diameter, int barCount, double parallelSpacing, double perpendicularSpacing, Vector direction = null, double offset = 0, ReferencePoint referencePoint = ReferencePoint.BottomCenter, double startLocation = 0, double endLocation = 1, IMaterialFragment material = null)
         {
             CheckEndLocations(ref startLocation, ref endLocation);
             return new LongitudinalReinforcement
             {
-                RebarLayout = Spatial.Create.MultiLinearLayout(barCount, parallelSPacing + diameter, perpendicularSpacing + diameter, direction, offset, referencePoint),
+                RebarLayout = Spatial.Create.MultiLinearLayout(barCount, parallelSpacing + diameter, perpendicularSpacing + diameter, direction, offset, referencePoint),
                 Diameter = diameter,
                 Material = material ?? Query.Default(MaterialType.Rebar),
                 StartLocation = startLocation,
