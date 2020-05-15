@@ -45,9 +45,9 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Extract all ReinforcingBars from the structural Bar. Only extract reinforcement for bars owning a ConcreteSection, for other sectiontypes, an empty list will be returned.")]
+        [Description("Extract all phsyical ReinforcingBars from the structural Bar. Only extract reinforcement for bars owning a ConcreteSection, for other sectiontypes, an empty list will be returned.")]
         [Input("bar", "The structural Bar to extract Reinforcement from.")]
-        [Output("rebars", "All ReinforcingBar on the provided Bar.")]
+        [Output("rebars", "All phsyical ReinforcingBar on the provided Bar.")]
         public static List<IReinforcingBar> ReinforcingBars(this Bar bar)
         {
             ConcreteSection section = bar.SectionProperty as ConcreteSection;
@@ -76,6 +76,7 @@ namespace BH.Engine.Structure
 
             //TODO: include stirups for offset distance
             double stirupOffset = 0;
+            double cover = section.MinimumCover + stirupOffset;
 
             List<IReinforcingBar> rebars = new List<IReinforcingBar>();
 
