@@ -55,6 +55,13 @@ namespace BH.Engine.Geometry
                 return null;
             }
 
+            //--------------SelfIntersecting-External-Boundary--------------//
+            if (!(externalBoundary is NurbsCurve) && externalBoundary.IIsSelfIntersecting())
+            {
+                Reflection.Compute.RecordError("The provided external boundary is self-intersecting.");
+                return null;
+            }
+
             internalBoundaries = internalBoundaries ?? new List<ICurve>();
 
             //----------------Closed-Internal-Boundaries--------------------//
@@ -111,12 +118,7 @@ namespace BH.Engine.Geometry
                 return new PlanarSurface(externalBoundary, internalBoundaries);
             }
 
-            //--------------SelfIntersecting-External-Boundary--------------//
-            if (externalBoundary.IIsSelfIntersecting())
-            {
-                Reflection.Compute.RecordError("The provided external boundary is self-intersecting.");
-                return null;
-            }
+            
 
 
             //-------------------Internal-Boundary-Curves-------------------//
@@ -147,7 +149,7 @@ namespace BH.Engine.Geometry
                 Reflection.Compute.RecordWarning("At least one of the internalBoundaries is not contained by the externalBoundary. And have been disregarded.");
             }
             
-            //------------------Return-Valid-Curve--------------------------//
+            //------------------Return-Valid-Surface------------------------//
             return new PlanarSurface(externalBoundary, internalBoundaries);
         }
 
