@@ -51,24 +51,7 @@ namespace BH.Engine.Structure
             Material mat = Physical.Create.Material(bar.SectionProperty.Material);
             return (MaterialComposition)mat;
         }
-
-        /***************************************************/
-
-        [Description("Returns a areaElement's homogeneous MaterialComposition.")]
-        [Input("areaElement", "The areaElement to material from")]
-        [Output("materialComposition", "The kind of matter the areaElement is composed of.")]
-        public static MaterialComposition MaterialComposition(this IAreaElement areaElement)
-        {   
-                if (areaElement.Property == null || areaElement.Property.Material == null)
-            {
-                Engine.Reflection.Compute.RecordError("The areaElements MaterialComposition could not be calculated as no Material has been assigned.");
-                return null;
-            }
-            Material mat = Physical.Create.Material(areaElement.Property.Material);
-            return (MaterialComposition)mat;
-        }
-
-        /***************************************************/
         
+        /***************************************************/
     }
 }

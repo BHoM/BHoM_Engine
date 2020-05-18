@@ -29,7 +29,6 @@ using BH.oM.Structure.Elements;
 using System.Collections.Generic;
 using System;
 using BH.oM.Physical.Materials;
-using BH.oM.Structure.SurfaceProperties;
 
 namespace BH.Engine.Structure
 {
@@ -51,27 +50,7 @@ namespace BH.Engine.Structure
             }
             return bar.SectionProperty.Area * bar.Length();
         }
-
+        
         /***************************************************/
-
-        [Description("Returns a IAreaElement's solid volume based on its Surface Property and the Area.")]
-        [Input("areaElement", "The IAreaElement to get the volume from")]
-        [Output("volume", "The IAreaElement solid material volume.", typeof(Volume))]
-        public static double SolidVolume(this IAreaElement areaElement)
-        {
-            if (areaElement.Property == null)
-            {
-                Engine.Reflection.Compute.RecordError("The IAreaElements Solid Volume could not be calculated as no surface property has been assigned. Returning zero volume.");
-                return 0;
-            }
-
-            double area = areaElement.IArea();
-            double thickness = areaElement.Property.IAverageThickness();
-
-            return area * thickness;
-        }
-
-        /***************************************************/
-
     }
 }

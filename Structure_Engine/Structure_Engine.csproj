@@ -126,7 +126,6 @@
     <Compile Include="Objects\EqualityComparers\Constraint6DOFComparer.cs" />
     <Compile Include="Objects\EqualityComparers\NameOrDescriptionComparer.cs" />
     <Compile Include="Query\AllEdgeCurves.cs" />
-    <Compile Include="Query\AverageThickness.cs" />
     <Compile Include="Query\CoordinateSystem.cs" />
     <Compile Include="Query\DescriptionOrName.cs" />
     <Compile Include="Query\Description.cs" />
