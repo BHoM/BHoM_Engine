@@ -27,6 +27,8 @@ using System.ComponentModel;
 using BH.oM.Reflection.Attributes;
 using BH.oM.Structure.SectionProperties;
 using BH.oM.Structure.SectionProperties.Reinforcement;
+using BH.oM.Geometry;
+using BH.oM.Quantities.Attributes;
 using BH.oM.Base;
 
 namespace BH.Engine.Structure
@@ -39,23 +41,24 @@ namespace BH.Engine.Structure
 
         [Description("Returns a list of the normalised locations (0 means start, 1 means end) in the cross section where the reinforcement changes. If section is null or does not contain any reinforcement, an empty list will be returned.")]
         [Input("concreteSection", "The ConcreteSection from which to extract reinforcement transitions.")]
+        [Input("tolerance", "Tolerance on how close two transition points should lie to be deemed the same.", typeof(Length))]
         [Output("locations", "The locations of reinforcement transitions in the crossection.")]
-        public static List<double> ReinforcementTransitionPoints(this ConcreteSection concreteSection)
+        public static List<double> ReinforcementTransitionPoints(this ConcreteSection concreteSection, double tolerance = Tolerance.Distance)
         {
             if (concreteSection == null || concreteSection.Reinforcement == null || concreteSection.Reinforcement.Count == 0)
             {
                 return new List<double>();
             }
 
-            HashSet<double> uniquePositions = new HashSet<double>();
+            HashSet<int> uniquePositions = new HashSet<int>();
 
             foreach (IBarReinforcement reinforcement in concreteSection.Reinforcement)
             {
-                uniquePositions.Add(reinforcement.StartLocation);
-                uniquePositions.Add(reinforcement.EndLocation);
+                uniquePositions.Add((int)Math.Round((reinforcement.StartLocation / tolerance)));
+                uniquePositions.Add((int)Math.Round((reinforcement.EndLocation / tolerance)));
             }
 
-            List<double> positions = uniquePositions.ToList();
+            List<double> positions = uniquePositions.Select(x => x * tolerance).ToList();
             positions.Sort();
             return positions;
         }
