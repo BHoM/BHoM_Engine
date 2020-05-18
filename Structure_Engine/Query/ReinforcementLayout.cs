@@ -95,8 +95,8 @@ namespace BH.Engine.Structure
             innerProfileEdges = innerProfileEdges ?? new List<ICurve>();
             double offset = cover + reinforcement.Diameter / 2;
             
-            IEnumerable<ICurve> outerCurves = outerProfileEdges.Select(x => x.IOffset(offset, x.INormal())).Where(x => x != null).ToList();
-            IEnumerable<ICurve> innerCurves = innerProfileEdges.Select(x => x.IOffset(offset, -x.INormal())).Where(x => x != null).ToList();
+            IEnumerable<ICurve> outerCurves = outerProfileEdges.Select(x => x.IOffset(offset, -x.INormal())).Where(x => x != null).ToList();
+            IEnumerable<ICurve> innerCurves = innerProfileEdges.Select(x => x.IOffset(offset, x.INormal())).Where(x => x != null).ToList();
 
             if (outerCurves.Count() == 0)
             {
