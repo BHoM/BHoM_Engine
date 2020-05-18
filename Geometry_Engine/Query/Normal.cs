@@ -126,7 +126,7 @@ namespace BH.Engine.Geometry
             normal = normal.Normalise();
 
             //Check if normal needs to be flipped from the right hand rule
-            if (curve.IsClockwise(normal, tolerance))
+            if (!curve.IsClockwise(normal, tolerance))
                 normal = -normal;
 
             return normal;
@@ -199,7 +199,7 @@ namespace BH.Engine.Geometry
                 normal = normal.Normalise();
 
                 //Check if normal needs to be flipped from the right hand rule
-                if (curve.IsClockwise(normal, tolerance))
+                if (!curve.IsClockwise(normal, tolerance))
                     normal = -normal;
 
                 return normal;
