@@ -47,7 +47,15 @@ namespace BH.Engine.Environment
         [Output("dateTime", "A C# DateTime object with the values from the SpaceTime object")]
         public static DateTime DateTime(this SpaceTime spaceTime)
         {
-            return new DateTime(spaceTime.Year, spaceTime.Month, spaceTime.Day, spaceTime.Hour, spaceTime.Minute, spaceTime.Second, spaceTime.Millisecond);
+            return spaceTime.Time.DateTime();
+        }
+
+        [Description("Returns the date time object from a Time object")]
+        [Input("time", "A Time object defining a point time for Environmental Analysis")]
+        [Output("dateTime", "A C# DateTime object with the values from the Time object")]
+        public static DateTime DateTime(this Time time)
+        {
+            return new DateTime(time.Year, time.Month, time.Day, time.Hour, time.Minute, time.Second, time.Millisecond);
         }
     }
 
