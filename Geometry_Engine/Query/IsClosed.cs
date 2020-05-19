@@ -74,6 +74,9 @@ namespace BH.Engine.Geometry
 
         public static bool IsClosed(this PolyCurve curve, double tolerance = Tolerance.Distance)
         {
+            if (curve.Curves.Count == 1)
+                return IIsClosed(curve.Curves[0], tolerance);
+
             List<ICurve> curves = curve.Curves;
             double sqTol = tolerance * tolerance;
             if (curves[0].IStartPoint().SquareDistance(curves.Last().IEndPoint()) > sqTol)
