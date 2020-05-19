@@ -53,15 +53,7 @@ namespace BH.Engine.Structure
         [Output("reinforcement", "The created Reinforcement to be applied to a ConcreteSection.")]
         public static LongitudinalReinforcement LayerReinforcement(double diameter, int barCount, Vector direction = null, double offset = 0, ReferencePoint referencePoint = ReferencePoint.BottomCenter, double startLocation = 0, double endLocation = 1, IMaterialFragment material = null)
         {
-            CheckEndLocations(ref startLocation, ref endLocation);
-            return new LongitudinalReinforcement
-            {
-                RebarLayout = Spatial.Create.LinearLayout(barCount, direction, offset, referencePoint),
-                Diameter = diameter,
-                Material = material ?? Query.Default(MaterialType.Rebar),
-                StartLocation = startLocation,
-                EndLocation = endLocation,
-            };
+            return LongitudinalReinforcement(Spatial.Create.LinearLayout(barCount, direction, offset, referencePoint), diameter, startLocation, endLocation, material);
         }
 
         /***************************************************/
