@@ -149,7 +149,7 @@ namespace BH.Engine.Geometry
         public static List<PolyCurve> IJoin(this List<ICurve> curves, double tolerance = Tolerance.Distance)
         {
             if (curves == null)
-                return new List<PolyCurve>();
+                return null;
 
             List<PolyCurve> sections = new List<PolyCurve>();
             
@@ -161,7 +161,7 @@ namespace BH.Engine.Geometry
                     sections.Add(new PolyCurve { Curves = curve.ISubParts().ToList() });
             }
 
-            if (sections.Count == 1)
+            if (sections.Count < 2)
                 return sections;
 
             double sqTol = tolerance * tolerance;
