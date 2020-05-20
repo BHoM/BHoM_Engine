@@ -103,5 +103,26 @@ namespace BH.Engine.Environment
         {
             return element.ID == other.ID; //If the IDs match, then they can be merged assuming their geometrical placement is the same
         }
+
+        [Description("Evaluates if the two elements non-geometrical data is equal to the point that they could be merged into one object")]
+        [Input("element", "An Environment Space to compare the properties of with an other Environment Space")]
+        [Input("other", "The Environment Space to compare with the other Environment Space")]
+        [Output("equal", "True if the Objects non-geometrical property is equal to the point that they could be merged into one object")]
+        public static bool HasMergeablePropertiesWith(Space element, Space other)
+        {
+            DiffConfig config = new DiffConfig()
+            {
+                PropertiesToIgnore = new List<string>
+                {
+                    "Location",
+                    "Type",
+                    "BHoM_Guid",
+                    "CustomData",
+                },
+                NumericTolerance = BH.oM.Geometry.Tolerance.Distance,
+            };
+
+            return Diffing.Query.DifferentProperties(element, other, config) == null;
+        }
     }
 }
