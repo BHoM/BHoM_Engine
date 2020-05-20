@@ -42,8 +42,8 @@ namespace BH.Engine.Humans.ViewQuality
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        [Description("Evaulate Avalues for a single Audience")]
-        [Input("audience", "Audience to evalaute")]
+        [Description("Evaluate Avalues for a single Audience")]
+        [Input("audience", "Audience to evaluate")]
         [Input("settings", "AvalueSettings to configure the evaluation")]
         [Input("activityArea", "ActivityArea to use in the evaluation")]
         public static List<Avalue> AvalueAnalysis(Audience audience, AvalueSettings settings, ActivityArea activityArea)
@@ -52,8 +52,8 @@ namespace BH.Engine.Humans.ViewQuality
             return results;
         }
         /***************************************************/
-        [Description("Evaulate Avalues for a List of Audience")]
-        [Input("audience", "Audience to evalaute")]
+        [Description("Evaluate Avalues for a List of Audience")]
+        [Input("audience", "Audience to evaluate")]
         [Input("settings", "AvalueSettings to configure the evaluation")]
         [Input("activityArea", "ActivityArea to use in the evaluation")]
         public static List<List<Avalue>> AvalueAnalysis(List<Audience> audience, AvalueSettings settings, ActivityArea activityArea)

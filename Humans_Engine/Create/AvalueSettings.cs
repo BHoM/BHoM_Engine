@@ -32,7 +32,7 @@ namespace BH.Engine.Humans.ViewQuality
         /***************************************************/
         [Description("Define the settings for an AvalueAnalysis")]
         [Input("conetype", "Type of view cone")]
-        [Input("calcOcclusion", "Evalaute occulsion of the playing area by the spectators in front")]
+        [Input("calcOcclusion", "evaluate occulsion of the playing area by the spectators in front")]
         
         public static AvalueSettings AvalueSettings(ViewConeEnum conetype, bool calcOcclusion)
         {

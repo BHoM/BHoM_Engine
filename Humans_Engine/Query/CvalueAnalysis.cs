@@ -37,8 +37,8 @@ namespace BH.Engine.Humans.ViewQuality
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        [Description("Evaulate Cvalues for a single Audience")]
-        [Input("audience", "Audience to evalaute")]
+        [Description("Evaluate Cvalues for a single Audience")]
+        [Input("audience", "Audience to evaluate")]
         [Input("settings", "CvalueSettings to configure the evaluation")]
         [Input("focalPolyline", "Polyline to be used for defining focal points")]
         public static List<Cvalue> CvalueAnalysis(Audience audience, CvalueSettings settings, Polyline focalPolyline)
@@ -47,8 +47,8 @@ namespace BH.Engine.Humans.ViewQuality
             return results;
         }
         /***************************************************/
-        [Description("Evaulate Cvalues for a List of Audience")]
-        [Input("audience", "Audience to evalaute")]
+        [Description("Evaluate Cvalues for a List of Audience")]
+        [Input("audience", "Audience to evaluate")]
         [Input("settings", "CvalueSettings to configure the evaluation")]
         [Input("focalPolyline", "Polyline to be used for defining focal points")]
         public static List<List<Cvalue>> CvalueAnalysis(List<Audience> audience, CvalueSettings settings, Polyline focalPolyline)
