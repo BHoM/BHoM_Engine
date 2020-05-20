@@ -28,6 +28,7 @@ using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
 using BH.Engine.Base;
+using BH.oM.Environment.Analysis;
 
 namespace BH.Engine.Environment
 {
@@ -36,6 +37,17 @@ namespace BH.Engine.Environment
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
+
+        [Description("Updates the position of a Node")]
+        [Input("node", "The Node to set the postion to")]
+        [Input("point", "The new position of the Node")]
+        [Output("node", "The Node with updated geometry")]
+        public static Node SetGeometry(this Node node, Point point)
+        {
+            Node clone = node.GetShallowClone(true) as Node;
+            clone.Position = point.Clone();
+            return clone;
+        }
 
         [Description("Assign a new ICurve boundary to a generic Environment Object")]
         [Input("environmentObject", "Any object implementing the IEnvironmentObject interface that can have its geometry changed")]
