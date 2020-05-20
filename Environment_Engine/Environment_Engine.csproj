@@ -184,7 +184,6 @@
     <Compile Include="Create\Building.cs" />
     <Compile Include="Create\CoefficientFragment.cs" />
     <Compile Include="Create\Edge.cs" />
-    <Compile Include="Create\Emitter.cs" />
     <Compile Include="Create\EnvironmentConstructionFragment.cs" />
     <Compile Include="Create\Gains.cs" />
     <Compile Include="Create\Layer.cs" />

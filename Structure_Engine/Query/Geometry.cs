@@ -23,7 +23,6 @@
 using BH.oM.Geometry;
 using BH.oM.Structure.Elements;
 using BH.oM.Structure.SectionProperties;
-using BH.Engine.Common;
 using System.Collections.Generic;
 using System.Linq;
 

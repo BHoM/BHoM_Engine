@@ -55,7 +55,6 @@ namespace BH.Engine.Environment
                 Latent = latent,
                 Profile = profile,
                 RadiantFraction = radiantFraction,
-                ViewCoefficient = viewCoefficient,
                 Name = name,
             };
         }
@@ -93,7 +92,6 @@ namespace BH.Engine.Environment
                 Sensible = sensible,
                 Profile = profile,
                 RadiantFraction = radiantFraction,
-                ViewCoefficient = viewCoefficient,
                 LuminousEfficacy = luminousEfficiacy,
                 Name = name,
             };
@@ -116,7 +114,6 @@ namespace BH.Engine.Environment
                 Latent = latent,
                 Profile = profile,
                 RadiantFraction = radiantFraction,
-                ViewCoefficient = viewCoefficient,
                 Name = name,
             };
         }
@@ -136,7 +133,6 @@ namespace BH.Engine.Environment
                 Sensible = sensible,
                 Profile = profile,
                 RadiantFraction = radiantFraction,
-                ViewCoefficient = viewCoefficient,
                 Name = name,
             };
         }
