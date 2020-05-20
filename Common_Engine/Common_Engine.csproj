@@ -64,33 +64,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Compute\DistributeOutlines.cs" />
     <Compile Include="Create\ConstructionPhase.cs" />
     <Compile Include="Create\Material.cs" />
-    <Compile Include="Create\IElement0D\NewElement0D.cs" />
-    <Compile Include="Create\IElement1D\NewElement1D.cs" />
-    <Compile Include="Create\IElement2D\NewInternalElement2D.cs" />
-    <Compile Include="Modify\Translate.cs" />
-    <Compile Include="Modify\SetElements0D.cs" />
-    <Compile Include="Modify\SetGeometry.cs" />
-    <Compile Include="Modify\SetInternalElements2D.cs" />
-    <Compile Include="Modify\SetOutlineElements1D.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Query\Area.cs" />
-    <Compile Include="Query\Bounds.cs" />
-    <Compile Include="Query\Centroid.cs" />
-    <Compile Include="Query\ControlPoints.cs" />
-    <Compile Include="Query\ElementCurves.cs" />
-    <Compile Include="Query\ElementVertices.cs" />
-    <Compile Include="Query\Elements0D.cs" />
-    <Compile Include="Query\Geometry.cs" />
-    <Compile Include="Query\InternalElements2D.cs" />
-    <Compile Include="Query\InternalOutlineCurve.cs" />
-    <Compile Include="Query\IsSelfIntersecting.cs" />
-    <Compile Include="Query\Length.cs" />
-    <Compile Include="Query\Normal.cs" />
-    <Compile Include="Query\OutlineElements1D.cs" />
-    <Compile Include="Query\OutlineCurve.cs" />
     <Compile Include="Query\ShearModulus.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -112,6 +88,9 @@
       <Name>Spatial_Engine</Name>
       <Private>False</Private>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Compute\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
