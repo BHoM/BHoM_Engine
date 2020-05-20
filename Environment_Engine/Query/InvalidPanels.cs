@@ -86,11 +86,11 @@ namespace BH.Engine.Environment
                 }
 
                 //check if panel polyline is closed
-                if (Geometry.Query.IsClosed(p.Polyline()) != true)
+                if (BH.Engine.Geometry.Query.IsClosed(p.Polyline()) != true)
                     listPanels[6].Add(p);
 
                 //check if self intersect
-                if (Geometry.Query.IIsSelfIntersecting(p.Polyline()) != false)
+                if (BH.Engine.Geometry.Query.IIsSelfIntersecting(p.Polyline()) != false)
                     listPanels[7].Add(p);
             }
 

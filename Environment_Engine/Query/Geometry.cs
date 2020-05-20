@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -26,29 +26,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using BH.oM.Environment.Elements;
-using BH.oM.Geometry;
-
+using BH.oM.Environment.Analysis;
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
+using BH.oM.Geometry;
 
 namespace BH.Engine.Environment
 {
     public static partial class Query
     {
-        /***************************************************/
-        /**** Public Methods                            ****/
-        /***************************************************/
-
-        [Description("Returns the bounding box of an Environment Panel")]
-        [Input("panel", "An Environment Panel to get the bounding box of")]
-        [Output("boundingBox", "The bounding box of the panel")]
-        public static BoundingBox Bounds(this Panel panel)
+        [Description("Gets the geometry of a Node as a Point. Method required for automatic display in UI packages")]
+        [Input("node", "Node to get the Point from")]
+        [Output("point", "The geometry of the Node")]
+        public static Point Geometry(this Node node)
         {
-            return BH.Engine.Geometry.Query.Bounds(panel.Polyline());
+            return node.Position;
         }
-
-        /***************************************************/
     }
 }
-

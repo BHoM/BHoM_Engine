@@ -132,6 +132,7 @@
     <Compile Include="Query\ConnectedSpaceName.cs" />
     <Compile Include="Query\FloorHeights.cs" />
     <Compile Include="Query\FrameFactor.cs" />
+    <Compile Include="Query\Geometry.cs" />
     <Compile Include="Query\HasMergeablePropertiesWith.cs" />
     <Compile Include="Query\MaterialComposition.cs" />
     <Compile Include="Query\NewElement1D.cs" />
