@@ -39,7 +39,7 @@ namespace BH.Engine.Environment
 {
     public static partial class Compute
     {
-        [Description("Takes an Architecture room with a Floor Perimieter and creates a collection of Environment Panels which represent the closed volume of the room. The name of the room becomes the connected space for the panels")]
+        [Description("Takes an Architecture Room with a Floor Perimieter and creates a collection of Environment Panels which represent the closed volume of the room. The name of the room becomes the connected space for the panels")]
         [Input("room", "An Architecture Room with a floor perimeter to extrude into a collection of panels")]
         [Input("height", "The height of the room, as a double, to calculate the ceiling level of the room. This will be used as the Z value of the perimeter + the given height")]
         [Output("panels", "A collection of Environment Panels which represent the closed volume of the room")]
@@ -47,6 +47,16 @@ namespace BH.Engine.Environment
         {
             Polyline floor = room.Perimeter.ICollapseToPolyline(BH.oM.Geometry.Tolerance.Angle);
             return floor.ExtrudeToVolume(room.Name, height);
+        }
+
+        [Description("Takes an Environment Space with a Floor Perimieter and creates a collection of Environment Panels which represent the closed volume of the space. The name of the space becomes the connected space for the panels")]
+        [Input("space", "An Environment Space with a floor perimeter to extrude into a collection of panels")]
+        [Input("height", "The height of the room, as a double, to calculate the ceiling level of the space. This will be used as the Z value of the perimeter + the given height")]
+        [Output("panels", "A collection of Environment Panels which represent the closed volume of the space")]
+        public static List<Panel> ExtrudeToVolume(this Space space, double height)
+        {
+            Polyline floor = space.Perimeter.ICollapseToPolyline(BH.oM.Geometry.Tolerance.Angle);
+            return floor.ExtrudeToVolume(space.Name, height);
         }
 
         [Description("Takes a polyline perimieter and creates a collection of Environment Panels which represent the closed volume of a space")]
