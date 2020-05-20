@@ -66,6 +66,8 @@ namespace BH.Engine.Humans.ViewQuality
         private static List<Evalue> EvaluateEvalue(Audience audience, EvalueSettings settings, ActivityArea activityArea)
         {
             List<Evalue> results = new List<Evalue>();
+            if (audience.Spectators.Count == 0)
+                return results;
             KDTree<Spectator> spectatorTree = SetKDTree(audience);
             foreach (Spectator s in audience.Spectators)
             {

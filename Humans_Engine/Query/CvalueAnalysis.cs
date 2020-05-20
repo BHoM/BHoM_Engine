@@ -66,6 +66,8 @@ namespace BH.Engine.Humans.ViewQuality
         private static List<Cvalue> EvaluateCvalue(Audience audience, CvalueSettings settings, Polyline focalPolyline)
         {
             List<Cvalue> results = new List<Cvalue>();
+            if (audience.Spectators.Count == 0)
+                return results;
             KDTree<Spectator> spectatorTree = SetKDTree(audience);
             foreach (Spectator s in audience.Spectators)
             {

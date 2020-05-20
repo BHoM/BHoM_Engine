@@ -71,6 +71,8 @@ namespace BH.Engine.Humans.ViewQuality
         private static List<Avalue> EvaluateAvalue(Audience audience, AvalueSettings settings, ActivityArea activityArea)
         {
             List<Avalue> results = new List<Avalue>();
+            if (audience.Spectators.Count == 0)
+                return results;
             KDTree<Spectator> spectatorTree = null;
             if (settings.CalculateOcclusion) spectatorTree = SetKDTree(audience);
 
