@@ -20,44 +20,42 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Structure.SectionProperties;
-using BH.oM.Structure.SectionProperties.Reinforcement;
 using System.Collections.Generic;
-using System.Linq;
-using BH.oM.Reflection.Attributes;
-using BH.oM.Quantities.Attributes;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
-
+using BH.oM.Structure.SectionProperties;
+using BH.oM.Geometry.ShapeProfiles;
+using BH.oM.Structure.SectionProperties.Reinforcement;
+using BH.oM.Geometry;
+using BH.oM.Reflection;
+using BH.oM.Reflection.Attributes;
+using BH.oM.Structure.MaterialFragments;
+using System.Linq;
+using BH.oM.Quantities.Attributes;
 
 namespace BH.Engine.Structure
 {
-    public static partial class Modify
+    public static partial class Create
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [PreviousVersion("3.2", "BH.Engine.Structure.Modify.AddReinforcement(BH.oM.Structure.SectionProperties.ConcreteSection, System.Collections.Generic.IEnumerable<BH.oM.Structure.SectionProperties.Reinforcement.Reinforcement>)")]
-        [Description("Adds Reinforcement to a ConcreteSection. Any previous Reinforcement will be kept.")]
-        [Input("section", "The concrete section to add Reinforcement to.")]
-        [Input("reinforcement", "The collection of Reinforcement to add to the ConcreteSection.")]
-        [Output("concSection", "The ConcreteSection with additional Reinforcement.")]
-        public static ConcreteSection AddReinforcement(this ConcreteSection section, IEnumerable<IBarReinforcement> reinforcement)
+        [PreviousVersion("3.2", "BH.Engine.Structure.Create.ConcreteFreeFormSection(System.Collections.Generic.List<BH.oM.Geometry.ICurve>, BH.oM.Structure.MaterialFragments.Concrete, System.String, System.Collections.Generic.List<BH.oM.Structure.SectionProperties.Reinforcement.Reinforcement>)")]
+        [Description("Creates a concrete freeform section based on edge curves. Please note that this type of section generally will have less support in adapters. If the type of section being created can be achieved by any other profile, aim use them instead.")]
+        [Input("edges", "Edges defining the section. Should consist of closed curve(s) in the global xy-plane.")]
+        [Input("material", "Concrete material to be applied to the section. If null a default material will be extracted from the database.")]
+        [Input("name", "Name of the concrete section. This is required for most structural packages to create the section.")]
+        [Input("reinforcement", "Optional list of reinforcement to be applied to the section.")]
+        [InputFromProperty("minimumCover")]
+        [Output("section", "The created free form concrete section.")]
+        public static ConcreteSection ConcreteFreeFormSection(List<ICurve> edges, Concrete material = null, string name = "", List<IBarReinforcement> reinforcement = null, double minimumCover = 0)
         {
-            ConcreteSection clone = section.GetShallowClone() as ConcreteSection;
-
-            if (clone.Reinforcement == null)
-                clone.Reinforcement = new List<IBarReinforcement>();
-            else
-                clone.Reinforcement = new List<IBarReinforcement>(clone.Reinforcement);
-
-
-            clone.Reinforcement.AddRange(reinforcement);
-
-            return clone;
+            return ConcreteSectionFromProfile(Geometry.Create.FreeFormProfile(edges), material, name, reinforcement, minimumCover);
         }
 
         /***************************************************/
+
     }
 }
 

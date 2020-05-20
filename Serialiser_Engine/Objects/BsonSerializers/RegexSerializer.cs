@@ -20,44 +20,35 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System;
-using System.Collections.Generic;
+using MongoDB.Bson.IO;
+using MongoDB.Bson.Serialization;
+using MongoDB.Bson.Serialization.Serializers;
+using System.Drawing;
+using System.Text.RegularExpressions;
 
-using System.Linq;
-using BH.oM.Environment;
-
-using BH.Engine.Geometry;
-using BH.oM.Geometry;
-
-using BH.oM.Reflection.Attributes;
-using System.ComponentModel;
-
-using BH.oM.Environment.Climate;
-
-namespace BH.Engine.Environment
+namespace BH.Engine.Serialiser.BsonSerializers
 {
-    public static partial class Query
+    public class RegexSerializer : SerializerBase<Regex>
     {
-        /***************************************************/
-        /**** Public Methods                            ****/
-        /***************************************************/
+        /*******************************************/
+        /**** Public Methods                    ****/
+        /*******************************************/
 
-        [Description("Returns the date time object from a Space Time")]
-        [Input("spaceTime", "A space time object defining a point in space and time")]
-        [Output("dateTime", "A C# DateTime object with the values from the SpaceTime object")]
-        public static DateTime DateTime(this SpaceTime spaceTime)
+        public override void Serialize(BsonSerializationContext context, BsonSerializationArgs args, Regex value)
         {
-            return spaceTime.Time.DateTime();
+            context.Writer.WriteString(value.ToString());
         }
 
-        [Description("Returns the date time object from a Time object")]
-        [Input("time", "A Time object defining a point time for Environmental Analysis")]
-        [Output("dateTime", "A C# DateTime object with the values from the Time object")]
-        public static DateTime DateTime(this Time time)
+        /*******************************************/
+
+        public override Regex Deserialize(BsonDeserializationContext context, BsonDeserializationArgs args)
         {
-            return new DateTime(time.Year, time.Month, time.Day, time.Hour, time.Minute, time.Second, time.Millisecond);
+            string text = context.Reader.ReadString();
+
+            return new Regex(text);
         }
+
+        /*******************************************/
     }
-
 }
 

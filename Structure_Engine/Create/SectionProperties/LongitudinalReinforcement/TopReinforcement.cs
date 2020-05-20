@@ -20,44 +20,41 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Structure.SectionProperties;
-using BH.oM.Structure.SectionProperties.Reinforcement;
-using System.Collections.Generic;
+using System;
 using System.Linq;
-using BH.oM.Reflection.Attributes;
-using BH.oM.Quantities.Attributes;
+using System.Collections.Generic;
 using System.ComponentModel;
-
+using BH.oM.Reflection.Attributes;
+using BH.oM.Structure.SectionProperties.Reinforcement;
+using BH.oM.Spatial.Layouts;
+using BH.oM.Structure.MaterialFragments;
+using BH.oM.Base;
+using BH.oM.Geometry;
+using BH.oM.Quantities.Attributes;
 
 namespace BH.Engine.Structure
 {
-    public static partial class Modify
+    public static partial class Create
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [PreviousVersion("3.2", "BH.Engine.Structure.Modify.AddReinforcement(BH.oM.Structure.SectionProperties.ConcreteSection, System.Collections.Generic.IEnumerable<BH.oM.Structure.SectionProperties.Reinforcement.Reinforcement>)")]
-        [Description("Adds Reinforcement to a ConcreteSection. Any previous Reinforcement will be kept.")]
-        [Input("section", "The concrete section to add Reinforcement to.")]
-        [Input("reinforcement", "The collection of Reinforcement to add to the ConcreteSection.")]
-        [Output("concSection", "The ConcreteSection with additional Reinforcement.")]
-        public static ConcreteSection AddReinforcement(this ConcreteSection section, IEnumerable<IBarReinforcement> reinforcement)
+        [Description("Creates a LongitudinalReinforcement placing rebars along multiple linear parallel axes along the local y-axis of the ConcreteSection, defined along a vector from one side of the perimeter of ConcreteSection to the other. \n" +
+                 "Starts by fitting in as many points as possible in a layer towards the top of the section, then generates a new one and repeats.")]
+        [InputFromProperty("diameter")]
+        [Input("area", "Total minimum required area of bottom reinforcement. Will be used to calculate required number of bars, based on their diameter, hence the resulting area may be larger than the input value.", typeof(Area))]
+        [Input("spacing", "Minimum spacing allowed between any two rebars.")]
+        [InputFromProperty("startLocation")]
+        [InputFromProperty("endLocation")]
+        [Input("material", "Material of the Rebars. If null, a default material will be pulled from the Datasets.")]
+        [Output("reinforcement", "The created Reinforcement to be applied to a ConcreteSection.")]
+        public static LongitudinalReinforcement TopReinforcement(double diameter, double area, double spacing, double startLocation = 0, double endLocation = 1, IMaterialFragment material = null)
         {
-            ConcreteSection clone = section.GetShallowClone() as ConcreteSection;
-
-            if (clone.Reinforcement == null)
-                clone.Reinforcement = new List<IBarReinforcement>();
-            else
-                clone.Reinforcement = new List<IBarReinforcement>(clone.Reinforcement);
-
-
-            clone.Reinforcement.AddRange(reinforcement);
-
-            return clone;
+            int numberOfBars = (int)Math.Ceiling(area / (diameter * diameter * Math.PI / 4));
+            return MultiLinearReinforcement(diameter, numberOfBars, spacing, spacing, Vector.XAxis, 0, ReferencePoint.TopCenter, startLocation, endLocation, material);
         }
 
         /***************************************************/
     }
 }
-

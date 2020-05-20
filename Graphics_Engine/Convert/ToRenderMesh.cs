@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -20,47 +20,24 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System;
-using System.Collections.Generic;
+using BH.oM.Geometry;
+using BH.oM.Graphics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-using BH.oM.Environment.Elements;
-
-using BH.oM.Reflection.Attributes;
-using System.ComponentModel;
-
-namespace BH.Engine.Environment
+namespace BH.Engine.Graphics
 {
-    public static partial class Create
+    public static partial class Convert
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /**** Public Methods - Graphics                 ****/
         /***************************************************/
 
-        [Description("Returns an Environment Building object")]
-        [Input("name", "The name of the building, default empty string")]
-        [Input("latitude", "The latitude of the building location, default 0.0")]
-        [Input("longitude", "The longitude of the building location, default 0.0")]
-        [Input("elevation", "The elevation of the building, default 0.0")]
-        [Input("type", "The type of building from the BuildingType enum, default undefined")]
-        [Output("building", "An Environment Building object")]
-        [Deprecated("3.0", "Deprecated in favour of default create components produced by BHoM")]
-        public static Building Building(string name = "", double latitude = 0.0, double longitude = 0.0, double elevation = 0.0, BuildingType type = BuildingType.Undefined)
+        public static RenderMesh ToRenderMesh(this Mesh mesh)
         {
-            return new Building
-            {
-                Name = name,
-                Location = new oM.Environment.Climate.Location
-                {
-                    Latitude = latitude,
-                    Longitude = longitude,
-                },
-                Elevation = elevation,
-                Type = type,
-            };
+            return new RenderMesh { Vertices = mesh.Vertices.Select(x => (Vertex)x).ToList(), Faces = mesh.Faces };
         }
+
+        /***************************************************/
     }
 }
 

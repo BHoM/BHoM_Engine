@@ -20,44 +20,49 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using System;
+using System.Linq;
+using System.Collections.Generic;
+using System.ComponentModel;
+using BH.oM.Reflection.Attributes;
 using BH.oM.Structure.SectionProperties;
 using BH.oM.Structure.SectionProperties.Reinforcement;
-using System.Collections.Generic;
-using System.Linq;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Geometry;
 using BH.oM.Quantities.Attributes;
-using System.ComponentModel;
-
+using BH.oM.Base;
 
 namespace BH.Engine.Structure
 {
-    public static partial class Modify
+    public static partial class Query
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [PreviousVersion("3.2", "BH.Engine.Structure.Modify.AddReinforcement(BH.oM.Structure.SectionProperties.ConcreteSection, System.Collections.Generic.IEnumerable<BH.oM.Structure.SectionProperties.Reinforcement.Reinforcement>)")]
-        [Description("Adds Reinforcement to a ConcreteSection. Any previous Reinforcement will be kept.")]
-        [Input("section", "The concrete section to add Reinforcement to.")]
-        [Input("reinforcement", "The collection of Reinforcement to add to the ConcreteSection.")]
-        [Output("concSection", "The ConcreteSection with additional Reinforcement.")]
-        public static ConcreteSection AddReinforcement(this ConcreteSection section, IEnumerable<IBarReinforcement> reinforcement)
+        [Description("Returns a list of the normalised locations (0 means start, 1 means end) in the cross section where the reinforcement changes. If section is null or does not contain any reinforcement, an empty list will be returned.")]
+        [Input("concreteSection", "The ConcreteSection from which to extract reinforcement transitions.")]
+        [Input("tolerance", "Tolerance on how close two transition points should lie to be deemed the same.", typeof(Length))]
+        [Output("locations", "The locations of reinforcement transitions in the crossection.")]
+        public static List<double> ReinforcementTransitionPoints(this ConcreteSection concreteSection, double tolerance = Tolerance.Distance)
         {
-            ConcreteSection clone = section.GetShallowClone() as ConcreteSection;
+            if (concreteSection == null || concreteSection.Reinforcement == null || concreteSection.Reinforcement.Count == 0)
+            {
+                return new List<double>();
+            }
 
-            if (clone.Reinforcement == null)
-                clone.Reinforcement = new List<IBarReinforcement>();
-            else
-                clone.Reinforcement = new List<IBarReinforcement>(clone.Reinforcement);
+            HashSet<int> uniquePositions = new HashSet<int>();
 
+            foreach (IBarReinforcement reinforcement in concreteSection.Reinforcement)
+            {
+                uniquePositions.Add((int)Math.Round((reinforcement.StartLocation / tolerance)));
+                uniquePositions.Add((int)Math.Round((reinforcement.EndLocation / tolerance)));
+            }
 
-            clone.Reinforcement.AddRange(reinforcement);
-
-            return clone;
+            List<double> positions = uniquePositions.Select(x => x * tolerance).ToList();
+            positions.Sort();
+            return positions;
         }
 
         /***************************************************/
     }
 }
-

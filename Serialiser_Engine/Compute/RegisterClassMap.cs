@@ -20,47 +20,48 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.Engine.Serialiser.Objects;
+using BH.Engine.Serialiser.Objects.MemberMapConventions;
+using MongoDB.Bson.Serialization;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using BH.oM.Environment.Elements;
-
-using BH.oM.Reflection.Attributes;
-using System.ComponentModel;
-
-namespace BH.Engine.Environment
+namespace BH.Engine.Serialiser
 {
-    public static partial class Create
+    public static partial class Compute
     {
-        /***************************************************/
-        /**** Public Methods                            ****/
-        /***************************************************/
+        /*******************************************/
+        /**** Public Methods                    ****/
+        /*******************************************/
 
-        [Description("Returns an Environment Building object")]
-        [Input("name", "The name of the building, default empty string")]
-        [Input("latitude", "The latitude of the building location, default 0.0")]
-        [Input("longitude", "The longitude of the building location, default 0.0")]
-        [Input("elevation", "The elevation of the building, default 0.0")]
-        [Input("type", "The type of building from the BuildingType enum, default undefined")]
-        [Output("building", "An Environment Building object")]
-        [Deprecated("3.0", "Deprecated in favour of default create components produced by BHoM")]
-        public static Building Building(string name = "", double latitude = 0.0, double longitude = 0.0, double elevation = 0.0, BuildingType type = BuildingType.Undefined)
+        public static void RegisterClassMap(Type type)
         {
-            return new Building
+            try
             {
-                Name = name,
-                Location = new oM.Environment.Climate.Location
-                {
-                    Latitude = latitude,
-                    Longitude = longitude,
-                },
-                Elevation = elevation,
-                Type = type,
-            };
+                if (type.Name.StartsWith("Tree"))
+                    Console.WriteLine("Here");
+
+                BsonClassMap cm = new BsonClassMap(type);
+                cm.AutoMap();
+                cm.SetDiscriminator(type.FullName);
+                cm.SetDiscriminatorIsRequired(true);
+                cm.SetIgnoreExtraElements(false);   // It would have been nice to use cm.MapExtraElementsProperty("CustomData") but it doesn't work for inherited properties
+                cm.SetIdMember(null);
+
+                BsonClassMap.RegisterClassMap(cm);
+
+                BsonSerializer.RegisterDiscriminatorConvention(type, new GenericDiscriminatorConvention());
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.ToString());
+            }
         }
+
+        /*******************************************/
     }
 }
-

@@ -100,13 +100,16 @@ namespace BH.Engine.Environment
             {
                 Name = name,
                 Location = (location ?? new Location()),
-                Year = year,
-                Month = month,
-                Day = day,
-                Hour = hour,
-                Minute = minute,
-                Second = second,
-                Millisecond = millisecond,
+                Time = new Time()
+                {
+                    Year = year,
+                    Month = month,
+                    Day = day,
+                    Hour = hour,
+                    Minute = minute,
+                    Second = second,
+                    Millisecond = millisecond,
+                },
             };
         }
     }

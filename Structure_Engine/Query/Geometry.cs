@@ -23,7 +23,6 @@
 using BH.oM.Geometry;
 using BH.oM.Structure.Elements;
 using BH.oM.Structure.SectionProperties;
-using BH.Engine.Common;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -101,8 +100,8 @@ namespace BH.Engine.Structure
                 return null;
 
             CompositeGeometry geom = Engine.Geometry.Create.CompositeGeometry(section.SectionProfile.Edges);
-            if(section.Reinforcement != null)
-                geom.Elements.AddRange(section.Layout().Elements);
+            //if(section.Reinforcement != null)
+                //geom.Elements.AddRange(section.Layout().Elements);
 
             return geom;
         }

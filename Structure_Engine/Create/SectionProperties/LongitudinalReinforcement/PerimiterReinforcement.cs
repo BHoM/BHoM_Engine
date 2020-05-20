@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -21,17 +21,18 @@
  */
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using BH.oM.Environment.Elements;
-
-using BH.oM.Reflection.Attributes;
+using System.Collections.Generic;
 using System.ComponentModel;
+using BH.oM.Reflection.Attributes;
+using BH.oM.Structure.SectionProperties.Reinforcement;
+using BH.oM.Spatial.Layouts;
+using BH.oM.Structure.MaterialFragments;
+using BH.oM.Base;
+using BH.oM.Geometry;
+using BH.oM.Quantities.Attributes;
 
-namespace BH.Engine.Environment
+namespace BH.Engine.Structure
 {
     public static partial class Create
     {
@@ -39,28 +40,20 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns an Environment Building object")]
-        [Input("name", "The name of the building, default empty string")]
-        [Input("latitude", "The latitude of the building location, default 0.0")]
-        [Input("longitude", "The longitude of the building location, default 0.0")]
-        [Input("elevation", "The elevation of the building, default 0.0")]
-        [Input("type", "The type of building from the BuildingType enum, default undefined")]
-        [Output("building", "An Environment Building object")]
-        [Deprecated("3.0", "Deprecated in favour of default create components produced by BHoM")]
-        public static Building Building(string name = "", double latitude = 0.0, double longitude = 0.0, double elevation = 0.0, BuildingType type = BuildingType.Undefined)
+        [Description("Creates a LongitudinalReinforcement placing rebars along the perimiter of host ConcreteSection.")]
+        [InputFromProperty("diameter")]
+        [Input("barCount", "Number of Rebars along the perimeter.")]
+        [Input("rebarsAtProfileDiscontinuities", "If true, bars will be placed at any discontinuities of the perimeter of the cross section.")]
+        [InputFromProperty("startLocation")]
+        [InputFromProperty("endLocation")]
+        [Input("material", "Material of the Rebars. If null, a default material will be pulled from the Datasets.")]
+        [Output("reinforcement", "The created Reinforcement to be applied to a ConcreteSection.")]
+        public static LongitudinalReinforcement PerimiterReinforcement(double diameter, int barCount, bool rebarsAtProfileDiscontinuities, double startLocation = 0, double endLocation = 1, IMaterialFragment material = null)
         {
-            return new Building
-            {
-                Name = name,
-                Location = new oM.Environment.Climate.Location
-                {
-                    Latitude = latitude,
-                    Longitude = longitude,
-                },
-                Elevation = elevation,
-                Type = type,
-            };
+            return LongitudinalReinforcement(new PerimeterLayout() { NumberOfPoints = barCount, EnforceDiscontinuityPoints = rebarsAtProfileDiscontinuities }, diameter, startLocation, endLocation, material);
         }
+
+        /***************************************************/
+
     }
 }
-

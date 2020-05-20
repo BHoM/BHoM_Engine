@@ -37,11 +37,20 @@ namespace BH.Engine.Reflection
         {
             Dictionary<string, List<Type>> typeDictionary = Query.BHoMTypeDictionary();
 
+            if (name.Contains('<'))
+                return GenericType(name);
+
             List<Type> types = null;
             if (!typeDictionary.TryGetValue(name, out types))
             {
-                Compute.RecordError($"A type corresponding to {name} cannot be found.");
-                return null;
+                Type type = System.Type.GetType(name);
+                if (type != null)
+                    return type;
+                else
+                {
+                    Compute.RecordError($"A type corresponding to {name} cannot be found.");
+                    return null;
+                }
             }
             else if (types.Count == 1)
                 return types[0];
@@ -54,6 +63,27 @@ namespace BH.Engine.Reflection
                 Compute.RecordError(message);
                 return null;
             }  
+        }
+
+        /***************************************************/
+
+        public static Type GenericType(string name)
+        {
+            string[] parts = name.Split('<', '>', ',').Select(x => x.Trim()).ToArray();
+            string[] arguments = parts.Skip(1).Where(x => x.Length > 0).ToArray();
+
+            Type typeDefinition = Type(parts[0] + "`" + arguments.Length);
+            if (typeDefinition == null)
+                return null;
+
+            try
+            {
+                return typeDefinition.MakeGenericType(arguments.Select(x => Type(x)).ToArray());
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         /***************************************************/

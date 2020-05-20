@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -20,18 +20,20 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using BH.oM.Environment.Elements;
-
-using BH.oM.Reflection.Attributes;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
+using BH.oM.Structure.SectionProperties;
+using BH.oM.Geometry.ShapeProfiles;
+using BH.oM.Structure.SectionProperties.Reinforcement;
+using BH.oM.Geometry;
+using BH.oM.Reflection;
+using BH.oM.Reflection.Attributes;
+using BH.oM.Structure.MaterialFragments;
+using System.Linq;
+using BH.oM.Quantities.Attributes;
 
-namespace BH.Engine.Environment
+namespace BH.Engine.Structure
 {
     public static partial class Create
     {
@@ -39,28 +41,20 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns an Environment Building object")]
-        [Input("name", "The name of the building, default empty string")]
-        [Input("latitude", "The latitude of the building location, default 0.0")]
-        [Input("longitude", "The longitude of the building location, default 0.0")]
-        [Input("elevation", "The elevation of the building, default 0.0")]
-        [Input("type", "The type of building from the BuildingType enum, default undefined")]
-        [Output("building", "An Environment Building object")]
-        [Deprecated("3.0", "Deprecated in favour of default create components produced by BHoM")]
-        public static Building Building(string name = "", double latitude = 0.0, double longitude = 0.0, double elevation = 0.0, BuildingType type = BuildingType.Undefined)
+        [PreviousVersion("3.2", "BH.Engine.Structure.Create.ConcreteCircularSection(System.Double, BH.oM.Structure.MaterialFragments.Concrete, System.String, System.Collections.Generic.List<BH.oM.Structure.SectionProperties.Reinforcement.Reinforcement>)")]
+        [Description("Creates a circular solid concrete section from input dimensions.")]
+        [Input("diameter", "Diameter of the section.", typeof(Length))]
+        [Input("material", "Concrete material to be applied to the section. If null a default material will be extracted from the database.")]
+        [Input("name", "Name of the concrete section. This is required for most structural packages to create the section.")]
+        [Input("reinforcement", "Optional list of reinforcement to be applied to the section.")]
+        [InputFromProperty("minimumCover")]
+        [Output("section", "The created circular concrete section.")]
+        public static ConcreteSection ConcreteCircularSection(double diameter, Concrete material = null, string name = "", List<IBarReinforcement> reinforcement = null, double minimumCover = 0)
         {
-            return new Building
-            {
-                Name = name,
-                Location = new oM.Environment.Climate.Location
-                {
-                    Latitude = latitude,
-                    Longitude = longitude,
-                },
-                Elevation = elevation,
-                Type = type,
-            };
+            return ConcreteSectionFromProfile(Geometry.Create.CircleProfile(diameter), material, name, reinforcement, minimumCover);
         }
+
+        /***************************************************/
     }
 }
 
