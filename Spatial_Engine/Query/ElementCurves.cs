@@ -81,6 +81,7 @@ namespace BH.Engine.Spatial
         /****            IElement              ****/
         /******************************************/
 
+        [PreviousVersion("3.2", "BH.Engine.Common.Query.IElementCurves(System.Collections.Generic.IEnumerable<BH.oM.Dimensional.IElement>, System.Boolean)")]
         [Description("Queries the geometricly defining curves of the IElements geometries.")]
         [Input("elements", "The IElements of which to get the curve definintions.")]
         [Input("recursive", "Ensures that the resulting curves are broken up into its smallest constituent parts if it is an IElement2D.")]
