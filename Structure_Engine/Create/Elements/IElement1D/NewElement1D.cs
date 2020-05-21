@@ -47,7 +47,7 @@ namespace BH.Engine.Structure
         [Output("edge", "The created Edge in the position provided as a IElement1D.")]
         public static IElement1D NewElement1D(this Opening opening, ICurve curve)
         {
-            return new Edge { Curve = curve.IClone() };
+            return curve.IClone();
         }
 
         /***************************************************/
@@ -60,7 +60,7 @@ namespace BH.Engine.Structure
         [Output("edge", "The created Edge in the position provided as a IElement1D.")]
         public static IElement1D NewElement1D(this Panel panel, ICurve curve)
         {
-            return new Edge { Curve = curve.IClone() };
+            return curve.IClone();
         }
 
         /***************************************************/
