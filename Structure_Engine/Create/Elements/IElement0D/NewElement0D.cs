@@ -37,6 +37,7 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [ToBeRemoved("3.2", "Was used for incode purposes of defaulting elements, a task which is now achived by providing a Point to the SetElements0D.")]
         [Description("Creates a new Element0D, appropriate to the input type. For this case the appropriate type for the Bar will be a new Node, in the position provided. \n" +
                      "Method required for any IElement1D element that contains IElement0D(s).")]
         [Input("bar", "Bar is used to determine the appropriate type of IElement0D to create.")]
