@@ -45,7 +45,7 @@ namespace BH.Engine.Structure
         [Output("node", "The created Node in the position provided as a IElement0D.")]
         public static IElement0D NewElement0D(this Bar bar, Point point)
         {
-            return Create.Node(point);
+            return point;
         }
 
         /***************************************************/
