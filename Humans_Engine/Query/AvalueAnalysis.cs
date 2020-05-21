@@ -26,9 +26,6 @@ using BH.oM.Architecture.Theatron;
 using BH.oM.Humans.ViewQuality;
 using BH.Engine.Geometry;
 using System.Linq;
-
-using Accord.MachineLearning;
-using Accord.Math.Distances;
 using Accord.Collections;
 using System.IO;
 using BH.Engine.Base;
@@ -125,7 +122,12 @@ namespace BH.Engine.Humans.ViewQuality
             //project the pitch
             result.FullActivityArea = ProjectPolylineToPlane(viewPlane, clippedArea, spectator.Head.PairOfEyes.ReferenceLocation);
             //clip the pitch against the viewcone
-            
+            if (result.FullActivityArea.IIsSelfIntersecting())
+            {
+                Reflection.Compute.RecordError("Projected curve is self-intersecting");
+                return result;
+            }
+
             result.ClippedActivityArea = ClipActivityArea(result.FullActivityArea, result.ViewCone, spectator, viewPlane);
             //calculate the avalue
             result.AValue = result.ClippedActivityArea.Sum(x=>x.Area())/result.ViewCone.ConeArea*100;
@@ -199,12 +201,12 @@ namespace BH.Engine.Humans.ViewQuality
 
                     Polyline subject = projectedHead.DeepClone();
                     int np = subject.ControlPoints.Count;
-                    List<Polyline> clippedHead = Geometry.Compute.BooleanIntersection(pl,subject);
+                    
+                    List<Polyline> clippedHead = Geometry.Compute.BooleanIntersection(pl, subject);
                     if (clippedHead[0].Area() > 0)
                     {
                         clippedHeads.Add(clippedHead[0]);
                     }
-                    
                 }
             }
             return clippedHeads;
@@ -260,9 +262,10 @@ namespace BH.Engine.Humans.ViewQuality
             for (int i = 0; i < viewCone.ConeBoundary.Count; i++)
             {
                 var subject = projected.DeepClone();
+
                 List<Polyline> temp = Geometry.Compute.BooleanIntersection(viewCone.ConeBoundary[i], subject);
 
-                if(temp.Count>0)clippedArea.Add(temp[0]);
+                if (temp.Count > 0) clippedArea.Add(temp[0]);
             }
             return clippedArea;
         }
