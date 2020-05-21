@@ -39,6 +39,7 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [ToBeRemoved("3.2", "Was used for incode purposes of defaulting elements, a task which is now achived by providing a ICurve to the SetOutlineElement1D.")]
         [Description("Creates a new Element1D, appropriate to the input type. For this case the appropriate type for the Opening will be a new Edge, in the position provided. \n" +
                      "Method required for any IElement2D.")]
         [Input("opening", "Opening just used to determine the appropriate type of IElement1D to create.")]
@@ -51,6 +52,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [ToBeRemoved("3.2", "Was used for incode purposes of defaulting elements, a task which is now achived by providing a ICurve to the SetOutlineElement1D.")]
         [Description("Creates a new Element1D, appropriate to the input type. For this case the appropriate type for the Panel will be a new Edge, in the position provided. \n" +
                      "Method required for any IElement2D.")]
         [Input("panel", "Panel just used to determine the appropriate type of IElement1D to create.")]
