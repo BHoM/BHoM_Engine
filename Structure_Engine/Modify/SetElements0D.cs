@@ -27,7 +27,7 @@ using System.Collections.Generic;
 using BH.oM.Reflection.Attributes;
 using BH.oM.Quantities.Attributes;
 using System.ComponentModel;
-
+using BH.Engine.Base;
 
 namespace BH.Engine.Structure
 {
@@ -49,9 +49,25 @@ namespace BH.Engine.Structure
                 return null;
             }
 
-            Bar clone = bar.GetShallowClone() as Bar;
-            clone.StartNode = newElements0D[0] as Node;
-            clone.EndNode = newElements0D[1] as Node;
+            Bar clone = bar.DeepClone() as Bar;
+
+            // Default the Bars end if the input is an Point
+            if (newElements0D[0] is Point)
+            {
+                clone.StartNode = Create.Node(newElements0D[0] as Point);
+                clone.Release.StartRelease = Create.FixConstraint6DOF();
+            } else
+                clone.StartNode = newElements0D[0] as Node;
+
+            // Default the Bars end if the input is an Point
+            if (newElements0D[1] is Point)
+            {
+                clone.EndNode = Create.Node(newElements0D[1] as Point);
+                clone.Release.EndRelease = Create.FixConstraint6DOF();
+            }
+            else
+                clone.EndNode = newElements0D[1] as Node;
+
             return clone;
         }
 
