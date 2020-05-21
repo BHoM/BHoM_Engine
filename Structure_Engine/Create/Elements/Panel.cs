@@ -98,6 +98,18 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
+
+        [Description("Creates a structural Panel from a PlanarSurface, creating external edges from the ExternalBoundary and openings from the InternalBoundaries of the PlanarSurface.")]
+        [Input("surface", "A planar surface used to define the geometry of the panel, i.e. the external edges and the openings.")]
+        [InputFromProperty("property")]
+        [Input("name", "The name of the created Panel.")]
+        [Output("panel", "The created Panel.")]
+        public static Panel Panel(PlanarSurface surface, ISurfaceProperty property = null, string name = "")
+        {
+            return Panel(surface.ExternalBoundary, surface.InternalBoundaries.ToList(), property, name);
+        }
+
+        /***************************************************/
         /**** Public Methods - Deprecated               ****/
         /***************************************************/
 
