@@ -40,7 +40,8 @@ namespace BH.Engine.Structure
 
         [Description("Sets the Outline Element1Ds of an opening, i.e. the Edges of an Opening. Method required for all IElement2Ds.")]
         [Input("opening", "The Opening to update the Edges of.")]
-        [Input("edges", "A list of IElement1Ds which all should be of type structural Edge.")]
+        [Input("edges", "A list of IElement1Ds which all should be of type structural Edge or Geometrical ICurve. \n" + 
+                        "ICurve will default the outlines properties.")]
         [Output("opening", "The opening with updated Edges.")]
         public static Opening SetOutlineElements1D(this Opening opening, List<IElement1D> edges)
         {
@@ -53,7 +54,8 @@ namespace BH.Engine.Structure
 
         [Description("Sets the outline Element1Ds of a Panel, i.e. the ExternalEdges of a Panel. Method required for all IElement2Ds.")]
         [Input("panel", "The Panel to update the ExternalEdges of.")]
-        [Input("edges", "A list of IElement1Ds which all should be of type structural Edge.")]
+        [Input("edges", "A list of IElement1Ds which all should be of type structural Edge or Geometrical ICurve. \n" +
+                        "ICurve will default the outlines properties.")]
         [Output("panel", "The Panel with updated ExternalEdges.")]
         public static Panel SetOutlineElements1D(this Panel panel, List<IElement1D> edges)
         {
