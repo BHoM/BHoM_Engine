@@ -48,7 +48,6 @@ namespace BH.Engine.Reflection
         public static Func<object[], object> ToFunc(this MethodInfo method)
         {
             ParameterExpression lambdaInput = Expression.Parameter(typeof(object[]), "x");
-            Expression[] inputs = method.GetParameters().Select((x, i) => Expression.Convert(Expression.ArrayIndex(lambdaInput, Expression.Constant(i)), x.ParameterType)).ToArray();
             Expression[] inputs = method.GetParameters().Select((x, i) => Expression.Convert(Expression.ArrayIndex(lambdaInput, Expression.Constant(i)), x.ParameterType.GetTypeIfRef())).ToArray();
 
             MethodCallExpression methodExpression;
