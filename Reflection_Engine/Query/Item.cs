@@ -132,6 +132,151 @@ namespace BH.Engine.Reflection
         }
 
         /***************************************************/
+
+        public static object Item<T1, T2, T3, T4, T5, T6>(this Output<T1, T2, T3, T4, T5, T6> output, int index)
+        {
+            switch (index)
+            {
+                case 0:
+                    return output.Item1;
+                case 1:
+                    return output.Item2;
+                case 2:
+                    return output.Item3;
+                case 3:
+                    return output.Item4;
+                case 4:
+                    return output.Item5;
+                case 5:
+                    return output.Item5;
+                case 6:
+                    return output.Item6;
+                default:
+                    return null;
+            }
+        }
+
+        /***************************************************/
+
+        public static object Item<T1, T2, T3, T4, T5, T6, T7>(this Output<T1, T2, T3, T4, T5, T6, T7> output, int index)
+        {
+            switch (index)
+            {
+                case 0:
+                    return output.Item1;
+                case 1:
+                    return output.Item2;
+                case 2:
+                    return output.Item3;
+                case 3:
+                    return output.Item4;
+                case 4:
+                    return output.Item5;
+                case 5:
+                    return output.Item5;
+                case 6:
+                    return output.Item6;
+                case 7:
+                    return output.Item7;
+                default:
+                    return null;
+            }
+        }
+
+        /***************************************************/
+
+        public static object Item<T1, T2, T3, T4, T5, T6, T7, T8>(this Output<T1, T2, T3, T4, T5, T6, T7, T8> output, int index)
+        {
+            switch (index)
+            {
+                case 0:
+                    return output.Item1;
+                case 1:
+                    return output.Item2;
+                case 2:
+                    return output.Item3;
+                case 3:
+                    return output.Item4;
+                case 4:
+                    return output.Item5;
+                case 5:
+                    return output.Item5;
+                case 6:
+                    return output.Item6;
+                case 7:
+                    return output.Item7;
+                case 8:
+                    return output.Item8;
+                default:
+                    return null;
+            }
+        }
+
+        /***************************************************/
+
+        public static object Item<T1, T2, T3, T4, T5, T6, T7, T8, T9>(this Output<T1, T2, T3, T4, T5, T6, T7, T8, T9> output, int index)
+        {
+            switch (index)
+            {
+                case 0:
+                    return output.Item1;
+                case 1:
+                    return output.Item2;
+                case 2:
+                    return output.Item3;
+                case 3:
+                    return output.Item4;
+                case 4:
+                    return output.Item5;
+                case 5:
+                    return output.Item5;
+                case 6:
+                    return output.Item6;
+                case 7:
+                    return output.Item7;
+                case 8:
+                    return output.Item8;
+                case 9:
+                    return output.Item9;
+                default:
+                    return null;
+            }
+        }
+
+        /***************************************************/
+
+        public static object Item<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(this Output<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> output, int index)
+        {
+            switch (index)
+            {
+                case 0:
+                    return output.Item1;
+                case 1:
+                    return output.Item2;
+                case 2:
+                    return output.Item3;
+                case 3:
+                    return output.Item4;
+                case 4:
+                    return output.Item5;
+                case 5:
+                    return output.Item5;
+                case 6:
+                    return output.Item6;
+                case 7:
+                    return output.Item7;
+                case 8:
+                    return output.Item8;
+                case 9:
+                    return output.Item9;
+                case 10:
+                    return output.Item10;
+                default:
+                    return null;
+            }
+        }
+
+        /***************************************************/
     }
 }
 
