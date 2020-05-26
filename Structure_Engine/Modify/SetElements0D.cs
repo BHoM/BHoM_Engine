@@ -37,9 +37,10 @@ namespace BH.Engine.Structure
         /****            IElement1D            ****/
         /******************************************/
 
-        [Description("Sets the IElement0Ds of the Bar, i.e. its two end Nodes. Method required for IElement1Ds.")]
+        [Description("Sets the IElement0Ds of the Bar, i.e. its two end Nodes or Points. Method required for IElement1Ds.")]
         [Input("bar", "The Bar to set the IElement0Ds to.")]
-        [Input("newElements0D", "The new IElement0Ds of the Bar. Should be a list of length two, containing exactly two structural Nodes.")]
+        [Input("newElements0D", "The new IElement0Ds of the Bar. Should be a list of length two, containing exactly two structural Nodes or Geometrical Points. \n" +
+                                "Points will assigin default end properties to the Bar, i.e. Fixed releases, no support.")]
         [Output("bar","The bar with updated Nodes.")]
         public static Bar SetElements0D(this Bar bar, List<IElement0D> newElements0D)
         {
