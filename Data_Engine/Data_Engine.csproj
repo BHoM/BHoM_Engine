@@ -69,7 +69,10 @@
     <Compile Include="Compute\Path.cs" />
     <Compile Include="Create\BatchRequest.cs" />
     <Compile Include="Create\CustomRequest.cs" />
-    <Compile Include="Create\NTree.cs" />
+    <Compile Include="Create\DomainBox.cs" />
+    <Compile Include="Create\Domain.cs" />
+    <Compile Include="Create\DomainTree.cs" />
+    <Compile Include="Create\Node.cs" />
     <Compile Include="Create\Dataset.cs" />
     <Compile Include="Create\DBSCANObject.cs" />
     <Compile Include="Create\FilterRequest.cs" />
@@ -94,6 +97,7 @@
     <Compile Include="Modify\AddNode.cs" />
     <Compile Include="Modify\RemoveNode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Query\ClosestData.cs" />
     <Compile Include="Query\FurthestDistance.cs" />
     <Compile Include="Query\IsInRange.cs" />
     <Compile Include="Query\ItemsInRange.cs" />
@@ -108,7 +112,6 @@
     <Compile Include="Query\Linq\FilterBy.cs" />
     <Compile Include="Query\Linq\OrderBy.cs" />
     <Compile Include="Query\CloseToPoint.cs" />
-    <Compile Include="Query\ClosestData.cs" />
     <Compile Include="Query\ClosestNode.cs" />
     <Compile Include="Query\Count.cs" />
     <Compile Include="Query\Filter.cs" />

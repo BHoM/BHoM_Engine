@@ -34,15 +34,38 @@ namespace BH.Engine.Data
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Gets the furthest possible distance between two points confined in respective NBounds.")]
-        public static double FurthestSquareDistance(this NBound box1, NBound box2)
+        [Description("Gets the furthest possible distance between two vectors confined in respective DomainBoxes.")]
+        public static double FurthestSquareDistance(this DomainBox box1, DomainBox box2)
         {
-            double sqDist = 0;
-            for (int i = 0; i < box1.Min.Length; i++)
+            return box1.Domains.Zip(box2.Domains, (a, b) => Math.Pow(FurdestEdgeDistance(a, b), 2)).Sum();
+        }
+
+        [Description("Gets the furthest possible distance between two vectors confined in respective tight DomainBoxes." + 
+                     "i.e. assume that the data in the DomainBoxes coincide with every side of the box and get a worst case distance between their data.")]
+        public static double FurthestThightSquareDistance(this DomainBox box1, DomainBox box2)
+        {
+            // Find in which axis the distance between the outer bounderies of the boxes is the least
+            int index = 0;
+            double min = double.MaxValue;
+            for (int i = 0; i < box1.Domains.Length; i++)
             {
-                sqDist += FurDist(box1.Min[i], box1.Max[i], box2.Min[i], box2.Max[i]);
+                double temp = ShortestEdgeDistance(box1.Domains[i], box2.Domains[i]);
+                if (temp < min)
+                {
+                    min = temp;
+                    index = i;
+                }
             }
-            return sqDist;
+
+            double sq = min * min;
+
+            for (int i = 0; i < box1.Domains.Length; i++)
+            {
+                if (i != index)
+                    sq += Math.Pow(FurdestEdgeDistance(box1.Domains[i], box2.Domains[i]), 2);
+            }
+
+            return sq;
         }
 
 
@@ -50,12 +73,27 @@ namespace BH.Engine.Data
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private static double FurDist(double min1, double max1, double min2, double max2)
+        private static double FurdestEdgeDistance(Domain a, Domain b)
         {
-            double maxSide = max2 - min1;
-            double minSide = max1 - min2;
+            return Math.Max(
+                b.Max - a.Min, 
+                a.Max - b.Min);
+        }
 
-            return Math.Pow(Math.Max(maxSide, minSide), 2);
+        /***************************************************/
+
+        private static double ShortestEdgeDistance(Domain a, Domain b)
+        {
+            double[] values = new double[] 
+            {
+                a.Min - b.Min,
+                a.Min - b.Max,
+                a.Max - b.Min,
+                a.Max - b.Max,
+
+            };
+
+            return values.Min(x => Math.Abs(x));
         }
 
         /***************************************************/

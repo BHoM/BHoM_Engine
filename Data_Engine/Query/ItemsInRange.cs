@@ -39,26 +39,26 @@ namespace BH.Engine.Data
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static IEnumerable<T> ItemsInRange<T>(this NTree<T> tree, NBound bounds)
+        public static IEnumerable<T> ItemsInRange<T>(this DomainTree<T> tree, DomainBox box)
         {
-            return ItemsInRange<T>((ITree)tree, bounds);
+            Func<DomainTree<T>, bool> isWithinSearch = x => x.Relation.IsInRange(box);
+
+            return ItemsInRange<DomainTree<T>, T>(tree, isWithinSearch);
         }
-        
 
         /***************************************************/
-        /**** Private Methods                           ****/
-        /***************************************************/
-        
-        private static IEnumerable<T> ItemsInRange<T>(ITree tree, NBound bounds)
+
+        [Description("Gets the values and evaluates the children based on the provided function.")]
+        public static IEnumerable<T> ItemsInRange<TNode, T>(this TNode tree, Func<TNode,bool> isWithinSearch) where TNode : Node<T>
         {
-            if (tree.Bounds.IsInRange(bounds))
+            if(isWithinSearch(tree))
             {
-                if (tree is NTree<T>)
-                    return (tree as NTree<T>).Items.SelectMany(x => ItemsInRange<T>(x, bounds)).ToArray();
-                else
-                    return new T[] { (tree as Leaf<T>).Item };
+                return tree.Children.SelectMany(x => ItemsInRange<TNode,T>(x as TNode, isWithinSearch)).Concat(tree.Values);
             }
-            return new T[0];
+            else
+            {
+                return new List<T>();
+            }
         }
 
         /***************************************************/

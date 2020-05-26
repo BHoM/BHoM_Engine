@@ -1,4 +1,4 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -21,41 +21,47 @@
  */
 
 using System;
-using System.Threading;
 using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel;
 using BH.oM.Reflection.Attributes;
 using BH.oM.Base;
-using System.Threading.Tasks;
-using BH.oM.Data.Collections;
 using BH.oM.Geometry;
+using BH.oM.Reflection;
+using BH.oM.Data.Collections;
 
 namespace BH.Engine.Data
 {
-    public static partial class Query
+    public static partial class Create
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-
-        public static bool IsInRange(this DomainBox box1, DomainBox box2, double tolerance = Tolerance.Distance)
+        
+        public static Domain Domain(double min, double max)
         {
-            return SquareDistance(box1, box2) < (tolerance * tolerance);
+            return new Domain(Math.Min(min, max), Math.Max(min, max));
         }
 
         /***************************************************/
 
-        public static bool IsInRange(this Domain domain1, Domain domain2, double tolerance = Tolerance.Distance)
+        public static Domain Domain(IEnumerable<double> values)
         {
-            return Distance(domain1, domain2) < tolerance;
-        }
+            if (!values.Any())
+                return null;
 
-        /***************************************************/
+            double min = values.First();
+            double max = min;
 
-        public static bool IsInRange(this Domain domain, double val, double tolerance = Tolerance.Distance)
-        {
-            return val > domain.Min && val < domain.Max;
+            foreach (double value in values.Skip(1))
+            {
+                if (value < min)
+                    min = value;
+                else if (value > max)
+                    max = value;
+            }
+
+            return new Domain(min, max);
         }
 
         /***************************************************/

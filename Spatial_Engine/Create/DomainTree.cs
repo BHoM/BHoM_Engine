@@ -20,32 +20,27 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Data.Collections;
-using BH.oM.Geometry;
-using BH.oM.Reflection.Attributes;
 using System;
+using System.ComponentModel;
+using BH.oM.Data.Collections;
 using System.Collections.Generic;
-using System.Linq;
+using BH.oM.Dimensional;
+using BH.Engine.Geometry;
 
-namespace BH.Engine.Geometry
+namespace BH.Engine.Spatial
 {
-    public static partial class Convert
+    public static partial class Create
     {
-        /*********************************************/
-        /**** Public  Methods                     ****/
-        /*********************************************/
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
 
-        public static NBound NBound(this BoundingBox box)
+        public static DomainTree<T> DomainTree<T>(this IEnumerable<T> elements, int treeDegree = 16, int leafSize = 16, int sampleSize = 60) where T : IElement
         {
-            return new NBound()
-            {
-                Min = new double[] { box.Min.X, box.Min.Y, box.Min.Z },
-                Max = new double[] { box.Max.X, box.Max.Y, box.Max.Z },
-            };
+            return Data.Create.DomainTree(elements, x => x.IBounds().DomainBox(), treeDegree, leafSize, sampleSize);
         }
-
-        /*********************************************/
-
+            
+        /***************************************************/
     }
 }
 

@@ -43,26 +43,21 @@ namespace BH.Engine.Data
 
         /***************************************************/
 
-        public static double SquareDistance(this NBound box1, NBound box2)
+        public static double SquareDistance(this DomainBox box1, DomainBox box2)
         {
-            double sqDist = 0;
-            for (int i = 0; i < box1.Min.Length; i++)
-            {
-                sqDist += dist(box1.Min[i], box1.Max[i], box2.Min[i], box2.Max[i]);
-            }
-            return sqDist;
+            return box1.Domains.Zip(box2.Domains, (a, b) => Math.Pow(Distance(a, b),2)).Sum();
         }
 
         /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private static double dist(double min1, double max1, double min2, double max2)
+        private static double Distance(Domain a, Domain b)
         {
-            if (max1 < min2)
-                return Math.Pow(max1 - min2, 2);
-            else if (min1 > max2)
-                return Math.Pow(min1 - max2, 2);
+            if (a.Max < b.Min)
+                return a.Max - b.Min;
+            else if (a.Min > b.Max)
+                return a.Min - b.Max;
             else
                 return 0;
         }

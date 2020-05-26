@@ -1,4 +1,4 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -20,45 +20,36 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System;
-using System.Threading;
-using System.Linq;
-using System.Collections.Generic;
-using System.ComponentModel;
-using BH.oM.Reflection.Attributes;
-using BH.oM.Base;
-using System.Threading.Tasks;
 using BH.oM.Data.Collections;
 using BH.oM.Geometry;
+using BH.oM.Reflection.Attributes;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
-namespace BH.Engine.Data
+namespace BH.Engine.Geometry
 {
-    public static partial class Query
+    public static partial class Convert
     {
-        /***************************************************/
-        /**** Public Methods                            ****/
-        /***************************************************/
+        /*********************************************/
+        /**** Public  Methods                     ****/
+        /*********************************************/
 
-        public static bool IsInRange(this DomainBox box1, DomainBox box2, double tolerance = Tolerance.Distance)
+        public static DomainBox DomainBox(this BoundingBox box)
         {
-            return SquareDistance(box1, box2) < (tolerance * tolerance);
+            return new oM.Data.Collections.DomainBox()
+            {
+                Domains = new Domain[]
+                {
+                    new Domain(box.Min.X, box.Max.X),
+                    new Domain(box.Min.Y, box.Max.Y),
+                    new Domain(box.Min.Z, box.Max.Z),
+                }
+            };
         }
 
-        /***************************************************/
-
-        public static bool IsInRange(this Domain domain1, Domain domain2, double tolerance = Tolerance.Distance)
-        {
-            return Distance(domain1, domain2) < tolerance;
-        }
-
-        /***************************************************/
-
-        public static bool IsInRange(this Domain domain, double val, double tolerance = Tolerance.Distance)
-        {
-            return val > domain.Min && val < domain.Max;
-        }
-
-        /***************************************************/
+        /*********************************************/
 
     }
 }
+

@@ -1,4 +1,4 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -20,45 +20,27 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System;
-using System.Threading;
-using System.Linq;
-using System.Collections.Generic;
-using System.ComponentModel;
-using BH.oM.Reflection.Attributes;
-using BH.oM.Base;
-using System.Threading.Tasks;
-using BH.oM.Data.Collections;
 using BH.oM.Geometry;
+using System;
+using System.Linq;
+using System.ComponentModel;
+using BH.oM.Data.Collections;
+using System.Collections.Generic;
 
-namespace BH.Engine.Data
+namespace BH.Engine.Geometry
 {
-    public static partial class Query
+    public static partial class Create
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static bool IsInRange(this DomainBox box1, DomainBox box2, double tolerance = Tolerance.Distance)
+        public static DomainTree<T> DomainTree<T>(this IEnumerable<T> geometries, int treeDegree = 16, int leafSize = 16, int sampleSize = 60) where T : IGeometry
         {
-            return SquareDistance(box1, box2) < (tolerance * tolerance);
+            return Data.Create.DomainTree(geometries, x => x.IBounds().DomainBox(), treeDegree, leafSize, sampleSize);
         }
-
+            
         /***************************************************/
-
-        public static bool IsInRange(this Domain domain1, Domain domain2, double tolerance = Tolerance.Distance)
-        {
-            return Distance(domain1, domain2) < tolerance;
-        }
-
-        /***************************************************/
-
-        public static bool IsInRange(this Domain domain, double val, double tolerance = Tolerance.Distance)
-        {
-            return val > domain.Min && val < domain.Max;
-        }
-
-        /***************************************************/
-
     }
 }
+

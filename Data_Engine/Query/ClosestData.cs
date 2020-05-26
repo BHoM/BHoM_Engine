@@ -20,6 +20,7 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.Engine.Base;
 using BH.oM.Data.Collections;
 using BH.oM.Geometry;
 using System;
@@ -31,10 +32,6 @@ namespace BH.Engine.Data
 {
     public static partial class Query
     {
-        /***************************************************/
-        /**** Public Methods                            ****/
-        /***************************************************/
-
         /***********************************************/
         /**** Point Matrix                          ****/
         /***********************************************/
@@ -48,23 +45,50 @@ namespace BH.Engine.Data
 
 
         /***********************************************/
-        /**** NTree                                 ****/
+        /**** DomainTree<T>                         ****/
         /***********************************************/
 
-        [Description("Returns all possible closest data, assuming that they can be anywhere in their respective bounding box.")]
-        public static IEnumerable<T> ClosestData<T>(this NTree<T> tree, NBound box, double maxDistance = double.NaN)
+        [Description("Finds all data which could be the closest item based on a best and worst case senario.")]
+        public static IEnumerable<T> ClosestData<T>(this DomainTree<T> tree, 
+                                        DomainBox searchBox,
+                                        bool tightBox = false,
+                                        double maxEvaluation = double.PositiveInfinity,
+                                        double tolerance = Tolerance.Distance)
         {
-            List<Tuple<double, ITree>> list = new List<Tuple<double, ITree>>()
+            Func<DomainTree<T>, double> evaluationMethod = (x) => x.Relation.SquareDistance(searchBox);
+
+            Func<DomainTree<T>, double> worstCaseMethod;
+            if (tightBox)
+                worstCaseMethod = (x) => x.Relation.FurthestThightSquareDistance(searchBox);
+            else
+                worstCaseMethod = (x) => x.Relation.FurthestSquareDistance(searchBox);
+
+            return ClosestData<DomainTree<T>, T>(tree, evaluationMethod, worstCaseMethod, maxEvaluation, tolerance);
+        }
+
+        /***********************************************/
+        /**** Node<T>                               ****/
+        /***********************************************/
+
+        [Description("Assumes all data to be queried is stored in leaves. i.e. Nodes without children." + 
+                     "Gets the data in all nodes which evaluationMethod evaluates to less than the smallest evaluation of the WorstCaseMethod.")]
+        public static IEnumerable<T> ClosestData<TNode,T>(this TNode tree, 
+                                            Func<TNode, double> evaluationMethod, 
+                                            Func<TNode, double> worstCaseMethod,
+                                            double maxEvaluation = double.PositiveInfinity,
+                                            double tolerance = Tolerance.Distance) where TNode : Node<T>
+        {
+            List<Tuple<double, TNode>> list = new List<Tuple<double, TNode>>()
             {
-                new Tuple<double, ITree>(tree.Bounds.SquareDistance(box), tree)
+                new Tuple<double, TNode>(evaluationMethod(tree), tree)
             };
 
             int closestIndex = 0;
             do
             {
                 // Add the sub items of the closest item to the list
-                list.AddRange((list[closestIndex].Item2 as NTree<T>).Items.Select(x =>
-                    new Tuple<double, ITree>(x.Bounds.SquareDistance(box), x)).ToList());
+                list.AddRange((list[closestIndex].Item2).Children.Select(x =>
+                    new Tuple<double, TNode>(evaluationMethod(x as TNode), x as TNode)).ToList());
 
                 // remove the parent item
                 list.RemoveAt(closestIndex);
@@ -81,27 +105,26 @@ namespace BH.Engine.Data
                 }
 
                 // Break if the closest item is further away than the maxDistance
-                if (!double.IsNaN(maxDistance) && list[closestIndex].Item1 > maxDistance)
+                if (list[closestIndex].Item1 > maxEvaluation)
                     return new List<T>();
 
-            } while (list[closestIndex].Item2 is NTree<T>);
+            } while (list[closestIndex].Item2.Children.Any());
 
-            if (double.IsNaN(maxDistance))
-                maxDistance = double.PositiveInfinity;
 
             // Save the furthest possible distance from the closest item
-            double max = list[closestIndex].Item2.Bounds.FurthestSquareDistance(box) + Tolerance.Distance * Tolerance.Distance;
-            max = Math.Min(max, maxDistance);
+            double max = worstCaseMethod(list[closestIndex].Item2) + tolerance;
+            max = Math.Min(max, maxEvaluation);
 
-            // gets every item with closest distance less than max
-            List<Tuple<double, Leaf<T>>> closest = LessThan<T>(list, max, box);
-
-            // Finds the smallest furtest distance among the closest items, (Due to how the tree structure encapsulates the smaller items it can't be done before this)
-            max = closest.Min(x => x.Item2.Bounds.FurthestSquareDistance(box)) + Tolerance.Distance * Tolerance.Distance;
-            max = Math.Min(max, maxDistance);
+            // gets every item with closest distance less than max, and evaluate new maxes based on the new closest data.
+            List<Tuple<double, TNode>> closest = LessThan<TNode,T>(
+                        list,
+                        evaluationMethod,
+                        worstCaseMethod,
+                        ref maxEvaluation, 
+                        tolerance);
 
             // Gets everything closer than that and returns the data
-            return closest.Where(x => x.Item1 < max).Select(x => x.Item2.Item).ToList();
+            return closest.Where(x => x.Item1 < max).SelectMany(x => x.Item2.Values).ToList();
         }
 
 
@@ -109,27 +132,43 @@ namespace BH.Engine.Data
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private static List<Tuple<double, Leaf<T>>> LessThan<T>(List<Tuple<double, ITree>> list, double val, NBound box)
+        private static List<Tuple<double, TNode>> LessThan<TNode,T>(List<Tuple<double, TNode>> list, 
+                                            Func<TNode, double> evaluationMethod,
+                                            Func<TNode, double> worstCaseMethod,
+                                            ref double maxEvaluation,
+                                            double tolerance) where TNode : Node<T>
         {
-            List<Tuple<double, Leaf<T>>> result = new List<Tuple<double, Leaf<T>>>();
+            List<Tuple<double, TNode>> result = new List<Tuple<double, TNode>>();
+            // find those which one can get a worst case from to attempt to lower that value asap
             for (int i = 0; i < list.Count; i++)
             {
-                Tuple<double, ITree> o = list[i];
-                if (o.Item1 < val)
+                Tuple<double, TNode> o = list[i];
+                if (o.Item1 < maxEvaluation && !o.Item2.Children.Any())
                 {
-                    if (o.Item2 is Leaf<T>)
-                    {
-                        result.Add(new Tuple<double, Leaf<T>>(o.Item1, o.Item2 as Leaf<T>));
-                    }
-                    else
-                    {
-                        result.AddRange(LessThan<T>((o.Item2 as NTree<T>).Items.Select(x => new Tuple<double, ITree>(x.Bounds.SquareDistance(box), x)).ToList(), val, box));
-                    }
+                    double temp = worstCaseMethod(o.Item2) + tolerance;
+                    if (temp < maxEvaluation)
+                        maxEvaluation = temp;
+
+                    result.Add(o);
+                }
+            }
+            // Afterwards go deeper into the children of those who pass the check
+            for (int i = 0; i < list.Count; i++)
+            {
+                Tuple<double, TNode> o = list[i];
+                if (o.Item1 < maxEvaluation)
+                {
+                    result.AddRange(LessThan<TNode, T>(
+                        o.Item2.Children.Select(x => new Tuple<double, TNode>(evaluationMethod(x as TNode), x as TNode)).ToList(), 
+                        evaluationMethod, 
+                        worstCaseMethod, 
+                        ref maxEvaluation, 
+                        tolerance));
                 }
             }
             return result;
         }
-
+        
         /***************************************************/
 
     }

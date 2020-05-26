@@ -86,9 +86,9 @@
     <Compile Include="Compute\SkewLineProximity.cs" />
     <Compile Include="Compute\SortAlongCurve.cs" />
     <Compile Include="Compute\SortCollinear.cs" />
-    <Compile Include="Convert\NBound.cs" />
+    <Compile Include="Convert\DomainBox.cs" />
     <Compile Include="Convert\Polyline.cs" />
-    <Compile Include="Create\NTree.cs" />
+    <Compile Include="Create\DomainTree.cs" />
     <Compile Include="Create\Basis.cs" />
     <Compile Include="Create\Cone.cs" />
     <Compile Include="Create\CartesianCoordinateSystem.cs" />

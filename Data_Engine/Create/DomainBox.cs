@@ -20,28 +20,48 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Geometry;
-using BH.oM.Geometry.CoordinateSystem;
 using System;
 using System.Linq;
-using System.ComponentModel;
-using BH.oM.Data.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
+using BH.oM.Reflection.Attributes;
+using BH.oM.Base;
+using BH.oM.Geometry;
+using BH.oM.Reflection;
+using BH.oM.Data.Collections;
 
-namespace BH.Engine.Geometry
+namespace BH.Engine.Data
 {
     public static partial class Create
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-
-        public static NTree<T> NTree<T>(IEnumerable<T> geometry, int split = 16) where T : IGeometry
+        
+        public static DomainBox DomainBox(double[] min, double[] max)
         {
-            return Data.Create.NTree(geometry.Select(x => new Leaf<T>() { Bounds = x.IBounds().NBound(), Item = x }), split);
+            return DomainBox(new List<double[]>() { min, max });
         }
-            
+
         /***************************************************/
+
+        public static DomainBox DomainBox(IEnumerable<double[]> values)
+        {
+            if (!values.Any())
+                return null;
+
+            DomainBox result = new DomainBox()
+            {
+                Domains = values.Select(x => Domain(x)).ToArray()
+            };
+
+            if (result.Domains.Any(x => x == null))
+                return null;
+
+            return null;
+        }
+
+        /***************************************************/
+
     }
 }
-
