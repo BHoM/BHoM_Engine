@@ -56,7 +56,8 @@ namespace BH.Engine.Structure
             if (newElements0D[0] is Point)
             {
                 clone.StartNode = Create.Node(newElements0D[0] as Point);
-                clone.Release.StartRelease = Create.FixConstraint6DOF();
+                if (clone.Release != null)
+                    clone.Release.StartRelease = Create.FixConstraint6DOF();
             } else
                 clone.StartNode = newElements0D[0] as Node;
 
@@ -64,7 +65,8 @@ namespace BH.Engine.Structure
             if (newElements0D[1] is Point)
             {
                 clone.EndNode = Create.Node(newElements0D[1] as Point);
-                clone.Release.EndRelease = Create.FixConstraint6DOF();
+                if (clone.Release != null)
+                    clone.Release.EndRelease = Create.FixConstraint6DOF();
             }
             else
                 clone.EndNode = newElements0D[1] as Node;
