@@ -58,7 +58,8 @@ namespace BH.Engine.Structure
                 clone.StartNode = Create.Node(newElements0D[0] as Point);
                 if (clone.Release != null)
                     clone.Release.StartRelease = Create.FixConstraint6DOF();
-            } else
+            }
+            else
                 clone.StartNode = newElements0D[0] as Node;
 
             // Default the Bars end if the input is an Point
