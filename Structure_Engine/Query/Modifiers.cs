@@ -47,7 +47,7 @@ namespace BH.Engine.Structure
             if(modifier == null)
                 return null;
 
-            return new double[] { modifier.FXX, modifier.FXY, modifier.FYY, modifier.MXX, modifier.MXY, modifier.MYY, modifier.VXZ, modifier.VYZ, modifier.Mass, modifier.Mass };
+            return new double[] { modifier.FXX, modifier.FXY, modifier.FYY, modifier.MXX, modifier.MXY, modifier.MYY, modifier.VXZ, modifier.VYZ, modifier.Mass, modifier.Weight };
         }
 
         /***************************************************/
