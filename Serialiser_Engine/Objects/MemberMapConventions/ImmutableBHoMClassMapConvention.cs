@@ -80,7 +80,7 @@ namespace BH.Engine.Serialiser.MemberMapConventions
                 
                 foreach (var property in properties)
                 {
-                    if (property.DeclaringType == classType)
+                    if (property.DeclaringType == classType && !IsOverridden(property))
                         classMap.MapMember(property);
                     else if(!property.CanWrite)
                     {
@@ -103,6 +103,16 @@ namespace BH.Engine.Serialiser.MemberMapConventions
                 }
             }
         }
+
+        /***************************************************/
+
+        private bool IsOverridden(PropertyInfo property)
+        {
+            var getMethod = property.GetGetMethod(false);
+            return getMethod.GetBaseDefinition() != getMethod;
+        }
+
+        /***************************************************/
     }
 }
 
