@@ -65,7 +65,7 @@ namespace BH.Engine.Environment
             //Offset the opening curves by the edgeOffset amount
             List<Polyline> offsetInner = new List<Polyline>();
             foreach (Polyline p in innerBoundaries)
-                offsetInner.Add(p.Offset(-edgeOffset));
+                offsetInner.Add(p.Offset(edgeOffset));
 
             //Project all of the geometry to the XY plane
             Vector zVector = BH.Engine.Geometry.Create.Vector(0, 0, 1);
