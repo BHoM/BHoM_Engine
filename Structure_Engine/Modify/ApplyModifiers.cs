@@ -30,6 +30,7 @@ using BH.oM.Structure.SectionProperties;
 using BH.oM.Reflection.Attributes;
 using BH.oM.Quantities.Attributes;
 using System.ComponentModel;
+using BH.oM.Structure.Fragments;
 
 
 namespace BH.Engine.Structure
@@ -57,10 +58,21 @@ namespace BH.Engine.Structure
         {
             ISurfaceProperty clone = prop.GetShallowClone() as ISurfaceProperty;
 
-            double[] modifiers = new double[] { f11, f12, f22, m11, m12, m22, v13, v23, mass, weight };
+            SurfacePropertyModifier modifier = new SurfacePropertyModifier
+            {
+                FXX = f11,
+                FXY = f12,
+                FYY = f22,
+                MXX = m11,
+                MXY = m12,
+                MYY = m22,
+                VXZ = v13,
+                VYZ = v23,
+                Mass = mass
+            };
 
-            clone.CustomData["Modifiers"] = modifiers;
-
+            clone.Fragments = new oM.Base.FragmentSet(clone.Fragments);
+            clone.Fragments.AddOrReplace(modifier);
             return clone;
         }
 
@@ -81,7 +93,18 @@ namespace BH.Engine.Structure
 
             double[] modifiers = new double[] { area, iy, iz, j, asy, asz };
 
-            clone.CustomData["Modifiers"] = modifiers;
+            SectionModifier modifier = new SectionModifier
+            {
+                Area = area,
+                Iy = iy,
+                Iz = iz,
+                J = j,
+                Asy = asy,
+                Asz = asz
+            };
+
+            clone.Fragments = new oM.Base.FragmentSet(clone.Fragments);
+            clone.Fragments.AddOrReplace(modifier);
 
             return clone;
         }
