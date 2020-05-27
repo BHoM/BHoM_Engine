@@ -52,7 +52,7 @@ namespace BH.Engine.Structure
         [Input("vxz", "Modifier of the out of plane shear stiffness along the local x-axis.", typeof(Ratio))]
         [Input("vyz", "Modifier of the out of plane shear stiffness along the local y-axis.", typeof(Ratio))]
         [Input("mass", "Modifier of the mass.", typeof(Ratio))]
-        [Input("weight", "Modifier of the weight. Not currently in use.", typeof(Ratio))]
+        [Input("weight", "Modifier of the weight.", typeof(Ratio))]
         [Output("prop", "SurfaceProperty with applied modifiers.")]
         public static ISurfaceProperty ApplyModifiers(this ISurfaceProperty prop, double fxx = 1, double fxy = 1, double fyy = 1, double mxx = 1, double mxy = 1, double myy = 1, double vxz = 1, double vyz = 1, double mass = 1, double weight = 1)
         {
@@ -68,7 +68,8 @@ namespace BH.Engine.Structure
                 MYY = myy,
                 VXZ = vxz,
                 VYZ = vyz,
-                Mass = mass
+                Mass = mass,
+                Weight = weight
             };
 
             clone.Fragments = new oM.Base.FragmentSet(clone.Fragments);
