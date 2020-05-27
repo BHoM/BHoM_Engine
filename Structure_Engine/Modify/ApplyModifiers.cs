@@ -43,31 +43,31 @@ namespace BH.Engine.Structure
 
         [Description("Sets modifiers to the SurfaceProperty. The modifiers are used to scale one or more of the property constants for analysis. Constants are multiplied with the modifiers, hence a modifier value of 1 means no change.")]
         [Input("prop", "The SurfaceProperty to apply modifiers to.")]
-        [Input("f11", "Modifier of the axial stiffness along the local x-axis.", typeof(Ratio))]
-        [Input("f12", "Modifier of the the in-plane shear.", typeof(Ratio))]
-        [Input("f22", "Modifier of the axial stiffness along the local y-axis.", typeof(Ratio))]
-        [Input("m11", "Modifier of the bending stiffness about the local x-axis.", typeof(Ratio))]
-        [Input("m12", "Modifier of the in-plane twist stiffness.", typeof(Ratio))]
-        [Input("m22", "Modifier of the bending stiffness about the local y-axis.", typeof(Ratio))]
-        [Input("v13", "Modifier of the out of plane shear stiffness along the local x-axis.", typeof(Ratio))]
-        [Input("v23", "Modifier of the out of plane shear stiffness along the local y-axis.", typeof(Ratio))]
+        [Input("fxx", "Modifier of the axial stiffness along the local x-axis.", typeof(Ratio))]
+        [Input("fxy", "Modifier of the the in-plane shear.", typeof(Ratio))]
+        [Input("fyy", "Modifier of the axial stiffness along the local y-axis.", typeof(Ratio))]
+        [Input("mxx", "Modifier of the bending stiffness about the local x-axis.", typeof(Ratio))]
+        [Input("mxy", "Modifier of the in-plane twist stiffness.", typeof(Ratio))]
+        [Input("myy", "Modifier of the bending stiffness about the local y-axis.", typeof(Ratio))]
+        [Input("vxz", "Modifier of the out of plane shear stiffness along the local x-axis.", typeof(Ratio))]
+        [Input("vyz", "Modifier of the out of plane shear stiffness along the local y-axis.", typeof(Ratio))]
         [Input("mass", "Modifier of the mass.", typeof(Ratio))]
-        [Input("weight", "Modifier of the weight.", typeof(Ratio))]
+        [Input("weight", "Modifier of the weight. Not currently in use.", typeof(Ratio))]
         [Output("prop", "SurfaceProperty with applied modifiers.")]
-        public static ISurfaceProperty ApplyModifiers(this ISurfaceProperty prop, double f11 = 1, double f12 = 1, double f22 = 1, double m11 = 1, double m12 = 1, double m22 = 1, double v13 = 1, double v23 = 1, double mass = 1, double weight = 1)
+        public static ISurfaceProperty ApplyModifiers(this ISurfaceProperty prop, double fxx = 1, double fxy = 1, double fyy = 1, double mxx = 1, double mxy = 1, double myy = 1, double vxz = 1, double vyz = 1, double mass = 1, double weight = 1)
         {
             ISurfaceProperty clone = prop.GetShallowClone() as ISurfaceProperty;
 
             SurfacePropertyModifier modifier = new SurfacePropertyModifier
             {
-                FXX = f11,
-                FXY = f12,
-                FYY = f22,
-                MXX = m11,
-                MXY = m12,
-                MYY = m22,
-                VXZ = v13,
-                VYZ = v23,
+                FXX = fxx,
+                FXY = fxy,
+                FYY = fyy,
+                MXX = mxx,
+                MXY = mxy,
+                MYY = myy,
+                VXZ = vxz,
+                VYZ = vyz,
                 Mass = mass
             };
 
