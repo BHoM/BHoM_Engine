@@ -25,6 +25,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Collections.ObjectModel;
 
 using BH.oM.Environment.Analysis;
 using BH.oM.Geometry;
@@ -129,7 +130,10 @@ namespace BH.Engine.Environment
             for (int x = 0; x < ptsCleanedRetransformed.Count; x++)
                 nodes.Add(new Node { ID = (x + 1), Position = ptsCleanedRetransformed[x] });
 
-            return new oM.Environment.Analysis.AnalysisGrid(externalBoundary, innerBoundaries, nodes, id, name);
+            AnalysisGrid grid = new AnalysisGrid(externalBoundary, new ReadOnlyCollection<Polyline>(innerBoundaries), new ReadOnlyCollection<Node>(nodes), id);
+            grid.Name = name;
+            
+            return grid;
         }
     }
 }
