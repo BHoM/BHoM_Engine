@@ -66,42 +66,6 @@ namespace BH.Engine.Environment
 
             return BH.Engine.Geometry.Compute.ConvexHull(ctrlPoints.CullDuplicates());
         }
-
-
-        /***************************************************/
-        /**** Deprecated Methods                        ****/
-        /***************************************************/
-
-        [Description("Returns the storey geometry for a given level")]
-        [Input("level", "An Architecture Level to get the geometry for")]
-        [Input("panelsAsSpaces", "A nested collection of Environment Panels representing spaces")]
-        [Output("polyline", "A BHoM Geometry Polyline outlining the geometry of the level")]
-        [Deprecated("2.4", "BH.oM.Architecture.Elements.Level superseded by BH.oM.Geometry.SettingOut.Level")]
-        public static Polyline StoreyGeometry(this BH.oM.Architecture.Elements.Level level, List<List<Panel>> panelsAsSpaces)
-        {
-            List<List<Panel>> spacesAtLevel = panelsAsSpaces.FindAll(x => x.Level(level) != null).ToList();
-
-            if (spacesAtLevel.Count == 0) return null;
-
-            List<Point> ctrlPoints = new List<Point>();
-
-            foreach (List<Panel> space in spacesAtLevel)
-            {
-                foreach (Panel element in space)
-                {
-                    foreach (Point pt in element.Polyline().IControlPoints())
-                    {
-                        if (pt.Z > (level.Elevation - BH.oM.Geometry.Tolerance.Distance) && pt.Z < (level.Elevation + BH.oM.Geometry.Tolerance.Distance))
-                            ctrlPoints.Add(pt);
-                    }
-                }
-            }
-
-            return BH.Engine.Geometry.Compute.ConvexHull(ctrlPoints.CullDuplicates());
-        }
-
-        /***************************************************/
-
     }
 }
 

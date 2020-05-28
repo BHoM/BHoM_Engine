@@ -68,16 +68,6 @@ namespace BH.Engine.Environment
             return panels.Where(x => x.MaximumLevel() == searchLevel).ToList();
         }
 
-        [Description("Returns a collection of Environment Panels where the maximum level of the panel matches the elevation of the given search level")]
-        [Input("panels", "A collection of Environment Panels to filter")]
-        [Input("searchLevel", "The Architecture level to search by")]
-        [Output("panels", "A collection of Environment Panels where the maximum level meets the search level")]
-        [Deprecated("2.4", "BH.oM.Architecture.Elements.Level superseded by BH.oM.Geometry.SettingOut.Level")]
-        public static List<Panel> PanelsByMaximumLevel(this List<Panel> panels, BH.oM.Architecture.Elements.Level searchLevel)
-        {
-            return panels.PanelsByMaximumLevel(searchLevel.Elevation);
-        }
-
         /***************************************************/
     }
 }
