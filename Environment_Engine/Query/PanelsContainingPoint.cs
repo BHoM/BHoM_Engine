@@ -50,12 +50,6 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Deprecated("2.4", "Deprecated to expose tolerance as optional parameter for greater control", null, "PanelsContainingPoint(this List<Panel> panels, Point searchPoint, bool acceptOnEdge = false, double tolerance = Tolerance.Distance)")]
-        public static List<Panel> PanelsContainingPoint(this List<Panel> panels, Point searchPoint)
-        {
-            return panels.PanelsContainingPoint(searchPoint, false, BH.oM.Geometry.Tolerance.Distance);
-        }
-
         [Description("Returns a collection of Environment Panels containing the given search point")]
         [Input("panels", "A collection of Environment Panels")]
         [Input("searchPoint", "The BHoM Geometry Point to search by")]
