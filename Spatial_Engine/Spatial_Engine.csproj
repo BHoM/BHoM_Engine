@@ -66,6 +66,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Compute\DistributeOutlines.cs" />
+    <Compile Include="Create\OffsetCurveLayout.cs" />
     <Compile Include="Create\ExplicitLayout.cs" />
     <Compile Include="Create\LinearLayout.cs" />
     <Compile Include="Create\MultiLinearLayout.cs" />
@@ -96,6 +97,7 @@
     <Compile Include="Query\OutlineElements1D.cs" />
     <Compile Include="Query\Geometry.cs" />
     <Compile Include="Query\PointLayout.cs" />
+    <Compile Include="Query\CurveLayout.cs" />
     <Compile Include="Query\VoidArea.cs" />
   </ItemGroup>
   <ItemGroup />
