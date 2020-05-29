@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -20,52 +20,49 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Environment.Elements;
+using BH.oM.Data.Collections;
+using BH.oM.Data.Requests;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
-using BH.oM.Geometry;
-using BH.Engine.Geometry;
-using BH.oM.Geometry.SettingOut;
-
-using BH.oM.Reflection.Attributes;
-using System.ComponentModel;
-
-namespace BH.Engine.Environment
+namespace BH.Engine.Data
 {
-    public static partial class Query
+    public static partial class Modify
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /****            Interface methods              ****/
         /***************************************************/
 
-        [Description("Returns the storey geometry for a given level")]
-        [Input("level", "An Setting Out Level to get the geometry for")]
-        [Input("panelsAsSpaces", "A nested collection of Environment Panels representing spaces")]
-        [Output("polyline", "A BHoM Geometry Polyline outlining the geometry of the level")]
-        public static Polyline StoreyGeometry(this Level level, List<List<Panel>> panelsAsSpaces)
+        public static List<IRequest> IRequests(this ILogicalRequest request)
         {
-            List<List<Panel>> spacesAtLevel = panelsAsSpaces.FindAll(x => x.Level(level) != null).ToList();
-
-            if (spacesAtLevel.Count == 0) return null;
-
-            List<Point> ctrlPoints = new List<Point>();
-
-            foreach (List<Panel> space in spacesAtLevel)
-            {
-                foreach (Panel element in space)
-                {
-                    foreach (Point pt in element.Polyline().IControlPoints())
-                    {
-                        if (pt.Z > (level.Elevation - BH.oM.Geometry.Tolerance.Distance) && pt.Z < (level.Elevation + BH.oM.Geometry.Tolerance.Distance))
-                            ctrlPoints.Add(pt);
-                    }
-                }
-            }
-
-            return BH.Engine.Geometry.Compute.ConvexHull(ctrlPoints.CullDuplicates());
+            return Requests(request as dynamic);
         }
+
+
+        /***************************************************/
+        /****              Public methods               ****/
+        /***************************************************/
+
+        public static List<IRequest> Requests(this LogicalAndRequest request)
+        {
+            return request.Requests;
+        }
+
+        /***************************************************/
+
+        public static List<IRequest> Requests(this LogicalOrRequest request)
+        {
+            return request.Requests;
+        }
+
+        /***************************************************/
+
+        public static List<IRequest> Requests(this LogicalNotRequest request)
+        {
+            return new List<IRequest> { request.Request };
+        }
+
+        /***************************************************/
     }
 }
 
