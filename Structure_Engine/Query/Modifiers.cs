@@ -37,9 +37,9 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Gets any modifiers from a property as an array of doubles. The modifiers are used to scale one or more of the property constants for analysis. Constants are multiplied with the modifiers, hence a modifier value of 1 means no change. \n" +
-                     "The values returned are in the following order: FXX, FXY, FYY, MXX, MXY, MYY, VXZ, VYZ, Mass, Mass. Method returns null if no modifiers are found.")]
+                     "The values returned are in the following order: FXX, FXY, FYY, MXX, MXY, MYY, VXZ, VYZ, Mass, Weight. Method returns null if no modifiers are found.")]
         [Input("property", "The property to extract modifiers from.")]
-        [Output("modifiers", "Returns the modifier values of the property as a double array in the following order: f11, f12, f22, m11, m12, m22, v13, v23, mass, weight. Returns null if no modifiers are found.")]
+        [Output("modifiers", "Returns the modifier values of the property as a double array in the following order: FXX, FXY, FYY, MXX, MXY, MYY, VXZ, VYZ, Mass, Weight. Returns null if no modifiers are found.")]
         public static double[] Modifiers(this ISurfaceProperty property)
         {
             SurfacePropertyModifier modifier = property.FindFragment<SurfacePropertyModifier>();
@@ -55,7 +55,7 @@ namespace BH.Engine.Structure
         [Description("Gets any modifiers from a section as an array of doubles. The modifiers are used to scale one or more of the section constants for analysis.  Constants are multiplied with the modifiers, hence a modifier value of 1 means no change. \n" +
                      "The values returned are in the following order: Area, Iy, Iz, J, Asy, Asz. Method returns null if no modifiers are found.")]
         [Input("property", "The SectionProperty to extract modifiers from.")]
-        [Output("modifiers", "Returns the modifier values of the section as a double array in the following order: area, iy, iz, j, asy, asz. Returns null if no modifiers are found.")]
+        [Output("modifiers", "Returns the modifier values of the section as a double array in the following order: Area, Iy, Iz, J, Asy, Asz. Returns null if no modifiers are found.")]
         public static double[] Modifiers(this ISectionProperty property)
         {
             SectionModifier modifier = property.FindFragment<SectionModifier>();
