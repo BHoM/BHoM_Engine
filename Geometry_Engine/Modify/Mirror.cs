@@ -24,6 +24,7 @@ using BH.oM.Geometry;
 using BH.oM.Geometry.CoordinateSystem;
 using BH.oM.Reflection.Attributes;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace BH.Engine.Geometry
@@ -51,6 +52,13 @@ namespace BH.Engine.Geometry
         public static Plane Mirror(this Plane plane, Plane p)
         {
             return new Plane { Origin = plane.Origin.Mirror(p), Normal = plane.Normal.Mirror(p) };
+        }
+
+        /***************************************************/
+
+        public static Basis Mirror(this Basis basis, Plane p)
+        {
+            return new Basis(basis.X.Mirror(p), basis.Y.Mirror(p), basis.Z.Mirror(p));
         }
 
         /***************************************************/
@@ -86,10 +94,14 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [NotImplemented]
         public static NurbsCurve Mirror(this NurbsCurve curve, Plane p)
         {
-            throw new NotImplementedException();
+            return new NurbsCurve()
+            {
+                ControlPoints = curve.ControlPoints.Select(x => x.Mirror(p)).ToList(),
+                Weights = curve.Weights,
+                Knots = curve.Knots
+            };
         }
 
 
@@ -126,10 +138,21 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [NotImplemented]
         public static NurbsSurface Mirror(this NurbsSurface surface, Plane p)
         {
-            throw new NotImplementedException();
+            List<SurfaceTrim> innerTrims = surface.InnerTrims.Select(x => new SurfaceTrim(IMirror(x.Curve3d, p), x.Curve2d)).ToList();
+
+            List<SurfaceTrim> outerTrims = surface.OuterTrims.Select(x => new SurfaceTrim(IMirror(x.Curve3d, p), x.Curve2d)).ToList();
+
+            return new NurbsSurface(
+                surface.ControlPoints.Select(x => Mirror(x, p)),
+                surface.Weights,
+                surface.UKnots,
+                surface.VKnots,
+                surface.UDegree,
+                surface.VDegree,
+                innerTrims,
+                outerTrims);
         }
 
         /***************************************************/
@@ -137,6 +160,13 @@ namespace BH.Engine.Geometry
         public static Pipe Mirror(this Pipe surface, Plane p)
         {
             return new Pipe { Centreline = surface.Centreline.IMirror(p), Radius = surface.Radius, Capped = surface.Capped };
+        }
+
+        /***************************************************/
+
+        public static PlanarSurface Mirror(this PlanarSurface surface, Plane p)
+        {
+            return new PlanarSurface(surface.ExternalBoundary.IMirror(p), surface.InternalBoundaries.Select(x => x.IMirror(p)).ToList());
         }
 
         /***************************************************/
@@ -185,6 +215,17 @@ namespace BH.Engine.Geometry
         public static ISurface IMirror(this ISurface geometry, Plane p)
         {
             return Mirror(geometry as dynamic, p);
+        }
+
+
+        /***************************************************/
+        /**** Private Methods - Fallback                ****/
+        /***************************************************/
+
+        public static IGeometry Mirror(this IGeometry geometry, Plane p)
+        {
+            Reflection.Compute.RecordError("Mirror not implemented for: " + geometry.GetType().Name);
+            return null;
         }
 
         /***************************************************/
