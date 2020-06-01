@@ -302,15 +302,14 @@ namespace BH.Engine.Structure
         {
             List<ICurve> rebarLines = new List<ICurve>();
             List<ICurve> stirrupOutline = reinforcement.CenterlineLayout.ICurveLayout(outerProfileEdges, innerProfileEdges);
-            double stirrupZone = length - (2 * cover + reinforcement.Diameter);
 
             Vector dir = Vector.ZAxis.Transform(transformation);
-            double stirrupRange = (reinforcement.EndLocation - reinforcement.StartLocation) * stirrupZone;
+            double stirrupRange = (reinforcement.EndLocation - reinforcement.StartLocation) * length - (2 * cover + reinforcement.Diameter);
             int count = (int)Math.Floor(stirrupRange / reinforcement.Spacing);
 
             double spacing = reinforcement.Spacing;
             if (reinforcement.AdjustSpacingToFit)
-                spacing = stirrupZone / count;
+                spacing = stirrupRange / count;
 
             if (stirrupOutline.Count != 0)
             {
