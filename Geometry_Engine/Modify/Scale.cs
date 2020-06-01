@@ -54,7 +54,7 @@ namespace BH.Engine.Geometry
             TransformMatrix scaleMatrix = Create.ScaleMatrix(origin, scaleVector);
             return Transform(plane, scaleMatrix);
         }
-
+        
 
         /***************************************************/
         /**** Public Methods - Curves                   ****/
@@ -136,10 +136,10 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [NotImplemented]
         public static NurbsSurface Scale(this NurbsSurface surface, Point origin, Vector scaleVector)
         {
-            throw new NotImplementedException();
+            TransformMatrix scaleMatrix = Create.ScaleMatrix(origin, scaleVector);
+            return surface.Transform(scaleMatrix);
         }
 
         /***************************************************/
@@ -148,6 +148,14 @@ namespace BH.Engine.Geometry
         {
             TransformMatrix scaleMatrix = Create.ScaleMatrix(origin, scaleVector);
             return Transform(surface, scaleMatrix);
+        }
+
+        /***************************************************/
+
+        public static PlanarSurface Scale(this PlanarSurface surface, Point origin, Vector scaleVector)
+        {
+            TransformMatrix scaleMatrix = Create.ScaleMatrix(origin, scaleVector);
+            return surface.Transform(scaleMatrix);
         }
 
         /***************************************************/
@@ -206,6 +214,17 @@ namespace BH.Engine.Geometry
         public static ISurface IScale(this ISurface geometry, Point origin, Vector scaleVector)
         {
             return Scale(geometry as dynamic, origin, scaleVector);
+        }
+
+
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+        public static IGeometry Scale(this IGeometry geometry, Point origin, Vector scaleVector)
+        {
+            Reflection.Compute.RecordError("Scale not implemented for: " + geometry.GetType().Name);
+            return null;
         }
 
         /***************************************************/
