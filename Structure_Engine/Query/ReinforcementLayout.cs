@@ -40,7 +40,7 @@ namespace BH.Engine.Structure
     public static partial class Query
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /**** Public Methods - 2D layout                ****/
         /***************************************************/
 
         [Description("Gets the LongitudinalReinforcement positions in the ConcreteSection as a list of Points.")]
@@ -184,7 +184,7 @@ namespace BH.Engine.Structure
 
             if (outerCurves.Count() == 0)
             {
-                Engine.Reflection.Compute.RecordError("Cover is to large for the section curve. Could not generate layout.");
+                Reflection.Compute.RecordError("Cover is to large for the section curve. Could not generate layout.");
                 return new List<Point>();
             }
             return reinforcement.RebarLayout.IPointLayout(outerCurves, innerCurves);
@@ -205,12 +205,15 @@ namespace BH.Engine.Structure
 
             if (outerProfileEdges.Count() == 0)
             {
-                Engine.Reflection.Compute.RecordError("Cover is to large for the section curve. Could not generate layout.");
+                Reflection.Compute.RecordError("Cover is to large for the section curve. Could not generate layout.");
                 return new List<ICurve>();
             }
             return reinforcement.CenterlineLayout.ICurveLayout(outerProfileEdges, innerProfileEdges);
         }
 
+
+        /***************************************************/
+        /**** Public Methods - 3D layout                ****/
         /***************************************************/
 
         [Description("Gets all the reinforcement centrelines in the Bar as a list of Curves.")]
@@ -299,19 +302,23 @@ namespace BH.Engine.Structure
         {
             List<ICurve> rebarLines = new List<ICurve>();
             List<ICurve> stirrupOutline = reinforcement.CenterlineLayout.ICurveLayout(outerProfileEdges, innerProfileEdges);
+            double stirrupZone = length - (2 * cover + reinforcement.Diameter);
 
             Vector dir = Vector.ZAxis.Transform(transformation);
-            double stirrupRange = (reinforcement.EndLocation - reinforcement.StartLocation) * length;
+            double stirrupRange = (reinforcement.EndLocation - reinforcement.StartLocation) * stirrupZone;
             int count = (int)Math.Floor(stirrupRange / reinforcement.Spacing);
-            //double spacing = length / count; //to be discussed w engineers 
+
+            double spacing = reinforcement.Spacing;
+            if (reinforcement.AdjustSpacingToFit)
+                spacing = stirrupZone / count;
 
             if (stirrupOutline.Count != 0)
             {
                 for (int k = 0; k < stirrupOutline.Count; k++)
                 {
-                    rebarLines.Add(stirrupOutline[k].ITransform(transformation).ITranslate(dir * reinforcement.StartLocation * length));
+                    rebarLines.Add(stirrupOutline[k].ITransform(transformation).ITranslate(dir * (reinforcement.StartLocation * length + cover + reinforcement.Diameter / 2)));
                     for (int i = 0; i < count; i++)
-                        rebarLines.Add(rebarLines.Last().ITranslate(dir * reinforcement.Spacing));
+                        rebarLines.Add(rebarLines.Last().ITranslate(dir * spacing));
                 }
             }
             return rebarLines;
