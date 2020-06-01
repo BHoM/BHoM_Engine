@@ -24,6 +24,7 @@ using BH.oM.Geometry;
 using BH.oM.Geometry.CoordinateSystem;
 using BH.oM.Reflection.Attributes;
 using System;
+using System.ComponentModel;
 using System.Linq;
 
 namespace BH.Engine.Geometry
@@ -56,6 +57,13 @@ namespace BH.Engine.Geometry
         {
             TransformMatrix rotationMatrix = Create.RotationMatrix(origin, axis, rad);
             return Transform(plane, rotationMatrix);
+        }
+
+        /***************************************************/
+
+        public static Basis Rotate(this Basis basis, double rad, Vector axis)
+        {
+            return Create.Basis(basis.X.Rotate(rad, axis), basis.Y.Rotate(rad, axis));
         }
 
 
@@ -143,15 +151,23 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [NotImplemented]
         public static NurbsSurface Rotate(this NurbsSurface surface, Point origin, Vector axis, double rad)
         {
-            throw new NotImplementedException();
+            TransformMatrix rotationMatrix = Create.RotationMatrix(origin, axis, rad);
+            return Transform(surface, rotationMatrix);
         }
 
         /***************************************************/
 
         public static Pipe Rotate(this Pipe surface, Point origin, Vector axis, double rad)
+        {
+            TransformMatrix rotationMatrix = Create.RotationMatrix(origin, axis, rad);
+            return Transform(surface, rotationMatrix);
+        }
+
+        /***************************************************/
+
+        public static PlanarSurface Rotate(this PlanarSurface surface, Point origin, Vector axis, double rad)
         {
             TransformMatrix rotationMatrix = Create.RotationMatrix(origin, axis, rad);
             return Transform(surface, rotationMatrix);
@@ -197,7 +213,7 @@ namespace BH.Engine.Geometry
 
         public static IGeometry IRotate(this IGeometry geometry, Point origin, Vector axis, double rad)
         {
-            return Rotate(geometry as dynamic, rad, axis);
+            return Rotate(geometry as dynamic, origin, axis, rad);
         }
 
         /***************************************************/
@@ -211,7 +227,25 @@ namespace BH.Engine.Geometry
 
         public static ISurface IRotate(this ISurface geometry, Point origin, Vector axis, double rad)
         {
+            return Rotate(geometry as dynamic, origin, axis, rad);
+        }
+
+        /***************************************************/
+        /**** Private Methods - Interfaces              ****/
+        /***************************************************/
+
+        [Description("Some objects have no use for origin, this method will make them calleble from the interface method.")]
+        public static IGeometry Rotate(this IGeometry geometry, Point origin, Vector axis, double rad)
+        {
             return Rotate(geometry as dynamic, rad, axis);
+        }
+
+        /***************************************************/
+
+        public static IGeometry Rotate(this IGeometry geometry, double rad, Vector axis)
+        {
+            Engine.Reflection.Compute.RecordError("Rotate not implemented for: " + geometry.GetType().Name);
+            return null;
         }
 
         /***************************************************/
