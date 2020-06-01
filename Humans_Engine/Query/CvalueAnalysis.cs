@@ -41,9 +41,9 @@ namespace BH.Engine.Humans.ViewQuality
         [Input("audience", "Audience to evaluate")]
         [Input("settings", "CvalueSettings to configure the evaluation")]
         [Input("focalPolyline", "Polyline to be used for defining focal points")]
-        public static List<Cvalue> CvalueAnalysis(Audience audience, CvalueSettings settings, Polyline focalPolyline)
+        public static List<Cvalue> CvalueAnalysis(Audience audience, CvalueSettings settings, ActivityArea activityArea)
         {
-            List<Cvalue> results = EvaluateCvalue(audience, settings, focalPolyline);
+            List<Cvalue> results = EvaluateCvalue(audience, settings, activityArea);
             return results;
         }
         /***************************************************/
@@ -51,19 +51,19 @@ namespace BH.Engine.Humans.ViewQuality
         [Input("audience", "Audience to evaluate")]
         [Input("settings", "CvalueSettings to configure the evaluation")]
         [Input("focalPolyline", "Polyline to be used for defining focal points")]
-        public static List<List<Cvalue>> CvalueAnalysis(List<Audience> audience, CvalueSettings settings, Polyline focalPolyline)
+        public static List<List<Cvalue>> CvalueAnalysis(List<Audience> audience, CvalueSettings settings, ActivityArea activityArea)
         {
             List<List<Cvalue>> results = new List<List<Cvalue>>();
             foreach(Audience a in audience)
             {
-                results.Add(EvaluateCvalue(a, settings, focalPolyline));
+                results.Add(EvaluateCvalue(a, settings, activityArea));
             }
             return results;
         }
         /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
-        private static List<Cvalue> EvaluateCvalue(Audience audience, CvalueSettings settings, Polyline focalPolyline)
+        private static List<Cvalue> EvaluateCvalue(Audience audience, CvalueSettings settings, ActivityArea activityArea)
         {
             List<Cvalue> results = new List<Cvalue>();
             if (audience.Spectators.Count == 0)
@@ -74,10 +74,11 @@ namespace BH.Engine.Humans.ViewQuality
                 bool cvalueExists = true;
                 Vector rowVector = Geometry.Query.CrossProduct(Vector.ZAxis, s.Head.PairOfEyes.ViewDirection);
 
-                Spectator infront = GetSpecInfront(s, spectatorTree);
+                
                 double riserHeight = 0;
                 double rowWidth = 0;
-                Point focal = GetFocalPoint(rowVector, s, settings.FocalMethod, focalPolyline);
+                Point focal = GetFocalPoint(rowVector, s, settings.FocalMethod, activityArea);
+                Spectator infront = GetSpecInfront(s, spectatorTree, focal);
                 if (infront == null)
                 {
                     //no spectator infront
@@ -86,10 +87,10 @@ namespace BH.Engine.Humans.ViewQuality
                 else
                 {
                     //check the infront and current are on parallel rows
-                    if (infront.Head.PairOfEyes.ViewDirection.Angle(s.Head.PairOfEyes.ViewDirection)> 0.00872665)
-                    {
-                        cvalueExists = false;
-                    }
+                    //if (infront.Head.PairOfEyes.ViewDirection.Angle(s.Head.PairOfEyes.ViewDirection)> 0.00872665)
+                    //{
+                    //    cvalueExists = false;
+                    //}
                 }
                 if (cvalueExists)
                 {
@@ -132,21 +133,25 @@ namespace BH.Engine.Humans.ViewQuality
             return toHeadInfront.Length();
         }
         /***************************************************/
-        private static Point GetFocalPoint(Vector rowV, Spectator spectator,CvalueFocalMethodEnum focalMethod,Polyline focalPolyline)
+        private static Point GetFocalPoint(Vector rowV, Spectator spectator,CvalueFocalMethodEnum focalMethod,ActivityArea activityArea)
         {
             Point focal = new Point();
             switch (focalMethod)
             {
                 case CvalueFocalMethodEnum.OffsetThroughCorners:
-                    focal = FindFocalOffset(rowV, spectator,focalPolyline);
+                    focal = FindFocalOffset(rowV, spectator, activityArea.PlayingArea);
 
                     break;
                 case CvalueFocalMethodEnum.Closest:
-                    focal = FindFocalClosest(spectator, focalPolyline);
+                    focal = FindFocalClosest(spectator, activityArea.PlayingArea);
 
                     break;
                 case CvalueFocalMethodEnum.Perpendicular:
-                    focal = FindFocalPerp(rowV, spectator, focalPolyline);
+                    focal = FindFocalPerp(rowV, spectator, activityArea.PlayingArea);
+
+                    break;
+                case CvalueFocalMethodEnum.ActivityFocalPoint:
+                    focal = activityArea.ActivityFocalPoint;
 
                     break;
             }
@@ -156,6 +161,7 @@ namespace BH.Engine.Humans.ViewQuality
         private static Cvalue CvalueResult(Spectator s, Point focal, double riser, double rowWidth, bool cvalueExists, Vector rowV,CvalueSettings settings)
         {
             Cvalue result = new Cvalue();
+            result.ObjectId = s.BHoM_Guid;
             Vector d = s.Head.PairOfEyes.ReferenceLocation - focal;
             result.AbsoluteDist = d.Length();
             result.Focalpoint = focal;
@@ -222,7 +228,7 @@ namespace BH.Engine.Humans.ViewQuality
             
         }
         /***************************************************/
-        private static Spectator GetSpecInfront(Spectator current, KDTree<Spectator> tree)
+        private static Spectator GetSpecInfront(Spectator current, KDTree<Spectator> tree,Point focalPoint)
         {
             
             double[] query = { current.Head.PairOfEyes.ReferenceLocation.X, current.Head.PairOfEyes.ReferenceLocation.Y, current.Head.PairOfEyes.ReferenceLocation.Z };
@@ -233,8 +239,8 @@ namespace BH.Engine.Humans.ViewQuality
             double dist = Double.MaxValue;
             foreach (var n in neighbours)
             {
-                //only those infront
-                if (n.Node.Value.Head.PairOfEyes.ReferenceLocation.Z < current.Head.PairOfEyes.ReferenceLocation.Z)
+                //only those in front closer to focal point
+                if (n.Node.Value.Head.PairOfEyes.ReferenceLocation.Distance(focalPoint) < current.Head.PairOfEyes.ReferenceLocation.Distance(focalPoint))
                 {
                     if (n.Distance < dist)
                     {

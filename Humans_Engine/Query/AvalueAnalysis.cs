@@ -102,7 +102,7 @@ namespace BH.Engine.Humans.ViewQuality
         private static Avalue ClipView(Spectator spectator, Vector rowV, Vector viewVect, AvalueSettings settings, ActivityArea activityArea, KDTree<Spectator> tree)
         {
             Avalue result = new Avalue();
-            
+            result.ObjectId = spectator.BHoM_Guid;
             Vector viewY = Geometry.Query.CrossProduct(viewVect, rowV);
             Vector viewX = Geometry.Query.CrossProduct(viewVect, viewY);
             

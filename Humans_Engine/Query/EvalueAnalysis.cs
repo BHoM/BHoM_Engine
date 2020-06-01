@@ -84,7 +84,7 @@ namespace BH.Engine.Humans.ViewQuality
         private static Evalue EvalueResult(Spectator s, Vector rowVector, Vector viewVect, Polyline playingArea,EvalueSettings settings)
         {
             Evalue result = new Evalue();
-
+            result.ObjectId = s.BHoM_Guid;
             Vector viewY =Geometry.Query.CrossProduct(viewVect, rowVector);
             viewY = viewY.Normalise();
             
