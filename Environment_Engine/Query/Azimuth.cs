@@ -66,14 +66,14 @@ namespace BH.Engine.Environment
                 plane.Normal = -plane.Normal;
 
             double azimuth;
-            if (Geometry.Modify.Normalise(plane.Normal).Z == 1)
+            if (BH.Engine.Geometry.Modify.Normalise(plane.Normal).Z == 1)
                 azimuth = 0;
-            else if (Geometry.Modify.Normalise(plane.Normal).Z == -1)
+            else if (BH.Engine.Geometry.Modify.Normalise(plane.Normal).Z == -1)
                 azimuth = 180;
             else
             {
-                Vector v1 = Geometry.Modify.Project(plane.Normal, Plane.XY);
-                Vector v2 = (Geometry.Modify.Project(refVector, Plane.XY));
+                Vector v1 = BH.Engine.Geometry.Modify.Project(plane.Normal, Plane.XY);
+                Vector v2 = (BH.Engine.Geometry.Modify.Project(refVector, Plane.XY));
                
                 azimuth = (BH.Engine.Geometry.Query.SignedAngle(v1, v2, Vector.ZAxis) * (180 / Math.PI));
                 if (azimuth < 0)

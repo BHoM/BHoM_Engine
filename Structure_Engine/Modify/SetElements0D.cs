@@ -27,7 +27,7 @@ using System.Collections.Generic;
 using BH.oM.Reflection.Attributes;
 using BH.oM.Quantities.Attributes;
 using System.ComponentModel;
-
+using BH.Engine.Base;
 
 namespace BH.Engine.Structure
 {
@@ -37,9 +37,10 @@ namespace BH.Engine.Structure
         /****            IElement1D            ****/
         /******************************************/
 
-        [Description("Sets the IElement0Ds of the Bar, i.e. its two end Nodes. Method required for IElement1Ds.")]
+        [Description("Sets the IElement0Ds of the Bar, i.e. its two end Nodes or Points. Method required for IElement1Ds.")]
         [Input("bar", "The Bar to set the IElement0Ds to.")]
-        [Input("newElements0D", "The new IElement0Ds of the Bar. Should be a list of length two, containing exactly two structural Nodes.")]
+        [Input("newElements0D", "The new IElement0Ds of the Bar. Should be a list of length two, containing exactly two structural Nodes or Geometrical Points. \n" +
+                                "Points will assigin default end properties to the Bar, i.e. Fixed releases, no support.")]
         [Output("bar","The bar with updated Nodes.")]
         public static Bar SetElements0D(this Bar bar, List<IElement0D> newElements0D)
         {
@@ -49,9 +50,28 @@ namespace BH.Engine.Structure
                 return null;
             }
 
-            Bar clone = bar.GetShallowClone() as Bar;
-            clone.StartNode = newElements0D[0] as Node;
-            clone.EndNode = newElements0D[1] as Node;
+            Bar clone = bar.DeepClone() as Bar;
+
+            // Default the Bars end if the input is an Point
+            if (newElements0D[0] is Point)
+            {
+                clone.StartNode = Create.Node(newElements0D[0] as Point);
+                if (clone.Release != null)
+                    clone.Release.StartRelease = Create.FixConstraint6DOF();
+            }
+            else
+                clone.StartNode = newElements0D[0] as Node;
+
+            // Default the Bars end if the input is an Point
+            if (newElements0D[1] is Point)
+            {
+                clone.EndNode = Create.Node(newElements0D[1] as Point);
+                if (clone.Release != null)
+                    clone.Release.EndRelease = Create.FixConstraint6DOF();
+            }
+            else
+                clone.EndNode = newElements0D[1] as Node;
+
             return clone;
         }
 

@@ -36,6 +36,7 @@ namespace BH.Engine.Architecture
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [ToBeRemoved("3.2", "Was used for incode purposes of defaulting elements, a task which is now achived by providing a ICurve to the SetOutlineElement1D.")]
         [Description("Returns an instance of an IElement1D from the given object")]
         [Input("room", "An Architecture Room object")]
         [Input("curve", "The curve to clone")]

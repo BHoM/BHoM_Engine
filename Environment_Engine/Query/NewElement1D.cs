@@ -36,6 +36,7 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [ToBeRemoved("3.2", "Was used for incode purposes of defaulting elements, a task which is now achived by providing a ICurve to the SetOutlineElement1D.")]
         [Description("Returns an instance of an IElement1D from the given object")]
         [Input("opening", "An Environmental Opening object")]
         [Input("curve", "The curve to clone")]
@@ -47,6 +48,7 @@ namespace BH.Engine.Environment
 
         /***************************************************/
 
+        [ToBeRemoved("3.2", "Was used for incode purposes of defaulting elements, a task which is now achived by providing a ICurve to the SetOutlineElement1D.")]
         [Description("Returns an instance of an IElement1D from the given object")]
         [Input("panel", "An Environmental Panel object")]
         [Input("curve", "The curve to clone")]
@@ -57,6 +59,16 @@ namespace BH.Engine.Environment
         }
 
         /***************************************************/
+
+        [ToBeRemoved("3.2", "Was used for incode purposes of defaulting elements, a task which is now achived by providing a ICurve to the SetOutlineElement1D.")]
+        [Description("Returns an instance of an IElement1D from the given object")]
+        [Input("space", "An Environment Space object")]
+        [Input("curve", "The curve to clone")]
+        [Output("element", "A 1D element object")]
+        public static IElement1D NewElement1D(this Space space, ICurve curve)
+        {
+            return curve.IClone();
+        }
     }
 }
 

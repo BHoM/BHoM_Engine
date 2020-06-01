@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -20,40 +20,49 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.oM.Data.Collections;
+using BH.oM.Data.Requests;
+using System;
 using System.Collections.Generic;
-using BH.oM.Reflection.Attributes;
-using BH.oM.Dimensional;
-using BH.oM.Geometry;
 
-namespace BH.Engine.Common
+namespace BH.Engine.Data
 {
     public static partial class Modify
     {
         /***************************************************/
-        /**** Public Methods - IElements                ****/
+        /****            Interface methods              ****/
         /***************************************************/
 
-        [Deprecated("3.1", "Migrated to the Spatial_Engine")]
-        public static IElement2D Translate(this IElement2D element2D, Vector transform)
+        public static List<IRequest> IRequests(this ILogicalRequest request)
         {
-            return Spatial.Modify.Translate(element2D, transform);
+            return Requests(request as dynamic);
+        }
+
+
+        /***************************************************/
+        /****              Public methods               ****/
+        /***************************************************/
+
+        public static List<IRequest> Requests(this LogicalAndRequest request)
+        {
+            return request.Requests;
         }
 
         /***************************************************/
 
-        [Deprecated("3.1", "Migrated to the Spatial_Engine")]
-        public static IElement1D Translate(this IElement1D element1D, Vector transform)
+        public static List<IRequest> Requests(this LogicalOrRequest request)
         {
-            return Spatial.Modify.Translate(element1D, transform);
+            return request.Requests;
         }
 
-        /******************************************/
+        /***************************************************/
 
-        [Deprecated("3.1", "Migrated to the Spatial_Engine")]
-        public static IElement0D Translate(this IElement0D element0D, Vector transform)
+        public static List<IRequest> Requests(this LogicalNotRequest request)
         {
-            return Spatial.Modify.Translate(element0D, transform);
+            return new List<IRequest> { request.Request };
         }
+
+        /***************************************************/
     }
 }
 

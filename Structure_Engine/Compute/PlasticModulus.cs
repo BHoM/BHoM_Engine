@@ -301,7 +301,7 @@ namespace BH.Engine.Structure
         private static IEnumerable<ICurve> SplitOnPoints(IEnumerable<ICurve> curves, double x, double tol = Tolerance.Distance)
         {
             List<PolyCurve> results = new List<PolyCurve>();
-            foreach (PolyCurve curve in curves)
+            foreach (ICurve curve in curves)
             {
                 List<ICurve> subCurves = curve.ISubParts().ToList();
                 List<ICurve> temp = new List<ICurve>();

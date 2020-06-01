@@ -77,7 +77,7 @@ namespace BH.Engine.Environment
             if (pts.Count < 3 || !BH.Engine.Geometry.Query.IsClosed(polyline, distanceTolerance) || !BH.Engine.Geometry.Query.IsPlanar(polyline, distanceTolerance)) return -1; //Error protection on pts having less than 3 elements to create a plane or pLine not being closed
 
 
-            polyline = Geometry.Modify.CleanPolyline(polyline, angleTolerance);
+            polyline = BH.Engine.Geometry.Modify.CleanPolyline(polyline, angleTolerance);
             Plane plane = BH.Engine.Geometry.Compute.FitPlane(polyline, distanceTolerance);
 
             //The polyline can be locally concave. Check if the polyline is clockwise.

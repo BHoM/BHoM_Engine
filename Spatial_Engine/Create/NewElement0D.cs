@@ -33,13 +33,14 @@ namespace BH.Engine.Spatial
         /****            IElement1D            ****/
         /******************************************/
 
+        [ToBeRemoved("3.2", "Was used for incode purposes of defaulting elements, a task which is now achived by providing a Point to the SetElement0D.")]
         [Description("Creates a IElement0D of a type which can be assigned to the IElement1D at the location of the point.")]
         [Input("element1D", "A IElement1D with a IElement0D type defined. The element is only used to identify the type of IElement0D to create, and will remain unchanged by this method.")]
         [Input("point", "The point location of which to assign to the new IElement0D.")]
         [Output("element0D", "A IElement0D which can be assigned to the IElement1D located at the point's location. Returns null if the IElement1D does not have a IElement0D type defined.")]
         public static IElement0D INewElement0D(this IElement1D element1D, Point point)
         {
-            return Reflection.Compute.RunExtensionMethod(element1D, "NewElement0D", new object[] { point }) as IElement0D;
+            return point;
         }
 
         /******************************************/

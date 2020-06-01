@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -20,26 +20,27 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Dimensional;
-using BH.oM.Reflection.Attributes;
-using BH.oM.Geometry;
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace BH.Engine.Common
+using BH.oM.Environment.Analysis;
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
+using BH.oM.Geometry;
+
+namespace BH.Engine.Environment
 {
     public static partial class Query
     {
-        /******************************************/
-        /****            IElement2D            ****/
-        /******************************************/
-
-        [Deprecated("3.1", "Migrated to the Spatial_Engine")]
-        public static List<IElement1D> IOutlineElements1D(this IElement2D element2D)
+        [Description("Gets the geometry of a Node as a Point. Method required for automatic display in UI packages")]
+        [Input("node", "Node to get the Point from")]
+        [Output("point", "The geometry of the Node")]
+        public static Point Geometry(this Node node)
         {
-            return Spatial.Query.IOutlineElements1D(element2D);
+            return node.Position;
         }
-
-        /******************************************/
     }
 }
-

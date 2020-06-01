@@ -265,14 +265,24 @@ namespace BH.Engine.Serialiser.BsonSerializers
             {
                 actualType = _discriminatorConvention.GetActualType(reader, typeof(object));
             }
-            catch
+            catch (Exception e)
             {
-                actualType = typeof(IDeprecated);
+                BsonDocument doc = null;
+
+                try
+                {
+                    context.Reader.ReturnToBookmark(bookmark);
+                    IBsonSerializer bSerializer = BsonSerializer.LookupSerializer(typeof(BsonDocument));
+                    doc = bSerializer.Deserialize(context, args) as BsonDocument;
+                }
+                catch { }
+                
+                if (doc != null && doc.Contains("_t") && doc["_t"].AsString == "DBNull")
+                    return null;
+                else
+                    actualType = typeof(IDeprecated);
             }
-            finally
-            {
-                context.Reader.ReturnToBookmark(bookmark);
-            }
+            context.Reader.ReturnToBookmark(bookmark);
 
             if (actualType == null)
                 return null;

@@ -20,6 +20,7 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.Engine.Reflection;
 using MongoDB.Bson;
 using MongoDB.Bson.IO;
 using MongoDB.Bson.Serialization;
@@ -99,21 +100,21 @@ namespace BH.Engine.Serialiser.BsonSerializers
 
             try
             {
-                List<Type> types = paramTypesJson.Select(x => Convert.FromJson(x)).Cast<Type>().ToList();
+                MethodBase method = GetMethod(methodName, typeName, paramTypesJson);
 
-                MethodBase method = null;
-                BsonDocument typeDocument;
-                if (BsonDocument.TryParse(typeName, out typeDocument) && typeDocument.Contains("Name"))
+                if (method == null || method.IsDeprecated())
                 {
-                    typeName = typeDocument["Name"].AsString;
-                    foreach (Type type in Reflection.Create.AllTypes(typeName))
-                    {
-                        method = Create.MethodBase(type, methodName, types); // type overload
-                        if (method != null)
-                            return method;
-                    }
+                    // Try to upgrade through versioning
+                    BsonDocument doc = new BsonDocument();
+                    doc["_t"] = "System.Reflection.MethodBase";
+                    doc["TypeName"] = typeName;
+                    doc["MethodName"] = methodName;
+                    doc["Parameters"] = new BsonArray(paramTypesJson);
+                    BsonDocument newDoc = Versioning.Convert.ToNewVersion(doc);
+                    if (newDoc != null && newDoc.Contains("TypeName") && newDoc.Contains("MethodName") && newDoc.Contains("Parameters"))
+                        method = GetMethod(newDoc["MethodName"].AsString, newDoc["TypeName"].AsString, newDoc["Parameters"].AsBsonArray.Select(x => x.AsString).ToList());
                 }
-               
+
                 if (method == null)
                     Reflection.Compute.RecordError("Method " + methodName + " from " + typeName + " failed to deserialise.");
                 return method;
@@ -124,6 +125,32 @@ namespace BH.Engine.Serialiser.BsonSerializers
                 return null;
             }
         }
+
+        /*******************************************/
+        /**** Private Methods                   ****/
+        /*******************************************/
+
+        private MethodBase GetMethod(string methodName, string typeName, List<string> paramTypesJson)
+        {
+            List<Type> types = paramTypesJson.Select(x => Convert.FromJson(x)).Cast<Type>().ToList();
+
+            MethodBase method = null;
+            BsonDocument typeDocument;
+            if (BsonDocument.TryParse(typeName, out typeDocument) && typeDocument.Contains("Name"))
+            {
+                typeName = typeDocument["Name"].AsString;
+                foreach (Type type in Reflection.Create.AllTypes(typeName))
+                {
+                    method = Create.MethodBase(type, methodName, types); // type overload
+                    if (method != null)
+                        return method;
+                }
+            }
+
+            return method;
+        }
+
+
 
         /*******************************************/
 
