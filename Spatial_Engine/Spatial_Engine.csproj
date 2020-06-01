@@ -100,6 +100,7 @@
     <Compile Include="Query\PointLayout.cs" />
     <Compile Include="Query\CurveLayout.cs" />
     <Compile Include="Query\VoidArea.cs" />
+    <None Include="Versioning_32.json" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
