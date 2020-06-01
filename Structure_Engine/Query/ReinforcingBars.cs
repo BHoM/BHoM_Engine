@@ -54,11 +54,12 @@ namespace BH.Engine.Structure
             if (section == null)
                 return new List<IReinforcingBar>();
 
-            //Extract Longitudinal reinforcement
+            //Extract Longitudinal and Transverse reinforcement
             List<LongitudinalReinforcement> longReif = section.LongitudinalReinforcement();
+            List<TransverseReinforcement> tranReif = section.TransverseReinforcement();
 
-            //No longitudinal reinforcement available
-            if (longReif.Count == 0)
+            //No reinforcement available
+            if (longReif.Count == 0 && tranReif.Count == 0)
                 return new List<IReinforcingBar>();
 
             List<ICurve> outerProfileEdges;
@@ -70,33 +71,44 @@ namespace BH.Engine.Structure
             if (outerProfileEdges.Count == 0)
                 return new List<IReinforcingBar>();
 
-
             TransformMatrix transformation = bar.BarSectionTranformation();
             double length = bar.Length();
 
-            //TODO: include stirups for offset distance
             double stirupOffset = 0;
-            double cover = section.MinimumCover + stirupOffset;
+            if (tranReif.Count > 0)
+                stirupOffset = tranReif.Select(r => r.Diameter).Max();
 
+            double stirrupCover = section.MinimumCover;
+            double primaryCover = stirrupCover + stirupOffset;
+
+            List<IBarReinforcement> barReinf = new List<IBarReinforcement>();
+            barReinf.AddRange(longReif);
+            barReinf.AddRange(tranReif);
             List<IReinforcingBar> rebars = new List<IReinforcingBar>();
 
-            foreach (LongitudinalReinforcement reif in longReif)
+            foreach (IBarReinforcement reif in barReinf)
             {
                 Material material;
                 if (reif.Material != null)
-                    material = Engine.Physical.Create.Material(reif.Material);
+                    material = Physical.Create.Material(reif.Material);
                 else
                     material = new Material();
 
-                foreach (Line centreLine in reif.ReinforcementLayout(cover, outerProfileEdges, innerProfileEdges, length, transformation))
+                if (reif is LongitudinalReinforcement)
                 {
-                    PrimaryReinforcingBar rebar = new PrimaryReinforcingBar
+                    foreach (ICurve centreLine in reif.IReinforcementLayout(primaryCover, outerProfileEdges, innerProfileEdges, length, transformation))
                     {
-                        CentreCurve = centreLine,
-                        Diameter = reif.Diameter,
-                        Material = material,
-                    };
-                    rebars.Add(rebar);
+                        PrimaryReinforcingBar rebar = new PrimaryReinforcingBar(centreLine, reif.Diameter, material);
+                        rebars.Add(rebar);
+                    }
+                }
+                else if (reif is TransverseReinforcement)
+                {
+                    foreach (ICurve centreLine in reif.IReinforcementLayout(stirrupCover, outerProfileEdges, innerProfileEdges, length, transformation))
+                    {
+                        Stirrup rebar = new Stirrup(centreLine, reif.Diameter, material);
+                        rebars.Add(rebar);
+                    }
                 }
             }
 
