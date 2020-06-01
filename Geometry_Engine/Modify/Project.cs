@@ -23,6 +23,7 @@
 using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace BH.Engine.Geometry
@@ -54,13 +55,15 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static Vector Project(this Vector vector,Vector other)
+        public static Vector Project(this Vector vector, Vector other)
         {
             other = other.Normalise();
             double dot = vector.DotProduct(other);
             Vector projected = other * dot;
             return projected;
         }
+
+        /***************************************************/
 
         public static Plane Project(this Plane plane, Plane p)
         {
@@ -109,6 +112,26 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        public static Ellipse Project(this Ellipse ellipse, Plane p)
+        {
+            Vector axis1 = ellipse.Axis1.Project(p);
+            Vector axis2 = ellipse.Axis2.Project(p);
+
+            double radius1 = Math.Sqrt(axis1.SquareLength() / ellipse.Axis1.SquareLength());
+            double radius2 = Math.Sqrt(axis2.SquareLength() / ellipse.Axis2.SquareLength());
+
+            return new Ellipse()
+            {
+                Axis1 = axis1,
+                Axis2 = axis2,
+                Centre = ellipse.Centre.Project(p),
+                Radius1 = ellipse.Radius1 * radius1,
+                Radius2 = ellipse.Radius2 * radius2
+            };
+        }
+
+        /***************************************************/
+
         public static Line Project(this Line line, Plane p)
         {
             return new Line { Start = line.Start.Project(p), End = line.End.Project(p) };
@@ -116,12 +139,15 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [NotImplemented]
         public static NurbsCurve Project(this NurbsCurve curve, Plane p)
         {
-            throw new NotImplementedException();
+            return new NurbsCurve()
+            {
+                ControlPoints = curve.ControlPoints.Select(x => x.Project(p)).ToList(),
+                Knots = curve.Knots,
+                Weights = curve.Weights,
+            };
         }
-
 
         /***************************************************/
 
@@ -156,10 +182,21 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [NotImplemented]
         public static NurbsSurface Project(this NurbsSurface surface, Plane p)
         {
-            throw new NotImplementedException();
+            List<SurfaceTrim> innerTrims = surface.InnerTrims.Select(x => new SurfaceTrim(IProject(x.Curve3d, p), x.Curve2d)).ToList();
+
+            List<SurfaceTrim> outerTrims = surface.OuterTrims.Select(x => new SurfaceTrim(IProject(x.Curve3d, p), x.Curve2d)).ToList();
+
+            return new NurbsSurface(
+                surface.ControlPoints.Select(x => Project(x, p)),
+                surface.Weights,
+                surface.UKnots,
+                surface.VKnots,
+                surface.UDegree,
+                surface.VDegree,
+                innerTrims,
+                outerTrims);
         }
 
         /***************************************************/
@@ -168,6 +205,13 @@ namespace BH.Engine.Geometry
         public static Pipe Project(this Pipe surface, Plane p)
         {
             throw new NotImplementedException(); //TODO: implement projection of a pipe on a plane
+        }
+
+        /***************************************************/
+
+        public static PlanarSurface Project(this PlanarSurface surface, Plane p)
+        {
+            return new PlanarSurface(surface.ExternalBoundary.IProject(p), surface.InternalBoundaries.Select(x => x.IProject(p)).ToList());
         }
 
         /***************************************************/
@@ -216,6 +260,17 @@ namespace BH.Engine.Geometry
         public static ISurface IProject(this ISurface geometry, Plane p)
         {
             return Project(geometry as dynamic, p);
+        }
+
+
+        /***************************************************/
+        /**** Private Methods - Fallback                ****/
+        /***************************************************/
+
+        public static IGeometry Project(this IGeometry geometry, Plane p)
+        {
+            Reflection.Compute.RecordError("Project not implemented for: " + geometry.GetType().Name);
+            return null;
         }
 
         /***************************************************/
