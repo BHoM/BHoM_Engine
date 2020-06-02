@@ -25,9 +25,9 @@ using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel;
 using BH.oM.Reflection.Attributes;
-using BH.oM.Base;
 using BH.oM.Geometry;
 using BH.oM.Spatial.Layouts;
+using BH.Engine.Geometry;
 
 namespace BH.Engine.Spatial
 {
@@ -37,12 +37,19 @@ namespace BH.Engine.Spatial
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates an explicit curve layout.")]
-        [InputFromProperty("curves")]
+        [Description("Creates an explicit curve layout. Curves not in the global XY-plane will get projected to it.")]
+        [Input("curves", "The explicit shape of curves in the layout. All curves shall be placed in the global XY plane.\nCurves not in the global XY-plane will get projected to it.")]
         [Output("curveLayout", "Created explicit curve layout.")]
         public static ExplicitCurveLayout ExplicitCurveLayout(IEnumerable<ICurve> curves)
-        {            
-            return new ExplicitCurveLayout(curves);
+        {
+            IEnumerable<ICurve> xyCurves = curves;
+            if (xyCurves.Any(curve => !curve.IIsInPlane(Plane.XY, Tolerance.Distance)))
+            {
+                xyCurves = curves.Select(curve => curve.IProject(Plane.XY));
+                Reflection.Compute.RecordWarning("Curves has been projected to the global XY-plane");
+            }
+
+            return new ExplicitCurveLayout(xyCurves);
         }
 
         /***************************************************/

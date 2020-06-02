@@ -41,7 +41,7 @@ namespace BH.Engine.Structure
         [InputFromProperty("rebarsCenterlinesLayout")]
         [InputFromProperty("diameter")]
         [InputFromProperty("spacing")]
-        [InputFromProperty("adjustSpacingToFit", "Toggles if provided spacing value should be fixed or adjusted to fit reinforcement from bar's start to end.")]
+        [InputFromProperty("adjustSpacingToFit")]
         [InputFromProperty("startLocation")]
         [InputFromProperty("endLocation")]
         [Input("material", "Material of the Rebars. If null, a default material will be pulled from the Datasets.")]
