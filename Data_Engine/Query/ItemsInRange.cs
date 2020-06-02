@@ -43,17 +43,17 @@ namespace BH.Engine.Data
         {
             Func<DomainTree<T>, bool> isWithinSearch = x => x.Relation.IsInRange(box);
 
-            return ItemsInRange<DomainTree<T>, T>(tree, isWithinSearch);
+            return privateItemsInRange<DomainTree<T>, T>(tree, isWithinSearch);
         }
 
         /***************************************************/
 
         [Description("Gets the values and evaluates the children based on the provided function.")]
-        public static IEnumerable<T> ItemsInRange<TNode, T>(this TNode tree, Func<TNode,bool> isWithinSearch) where TNode : Node<T>
+        private static IEnumerable<T> privateItemsInRange<TNode, T>(this TNode tree, Func<TNode,bool> isWithinSearch) where TNode : Node<T>
         {
             if(isWithinSearch(tree))
             {
-                return tree.Children.SelectMany(x => ItemsInRange<TNode,T>(x as TNode, isWithinSearch)).Concat(tree.Values);
+                return tree.Children.SelectMany(x => privateItemsInRange<TNode,T>(x as TNode, isWithinSearch)).Concat(tree.Values);
             }
             else
             {

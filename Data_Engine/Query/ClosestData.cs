@@ -72,7 +72,7 @@ namespace BH.Engine.Data
 
         [Description("Assumes all data to be queried is stored in leaves. i.e. Nodes without children." + 
                      "Gets the data in all nodes which evaluationMethod evaluates to less than the smallest evaluation of the WorstCaseMethod.")]
-        public static IEnumerable<T> ClosestData<TNode,T>(this TNode tree, 
+        private static IEnumerable<T> ClosestData<TNode,T>(this TNode tree, 
                                             Func<TNode, double> evaluationMethod, 
                                             Func<TNode, double> worstCaseMethod,
                                             double maxEvaluation = double.PositiveInfinity,

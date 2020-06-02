@@ -93,7 +93,7 @@ namespace BH.Engine.Data
                 box += list[i * step].Relation;
 
             int index = -1;
-            double max = 0;
+            double max = double.MinValue;
 
             for (int i = 0; i < box.Domains.Length; i++)
             {

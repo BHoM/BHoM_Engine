@@ -39,7 +39,7 @@ namespace BH.Engine.Data
         /***************************************************/
 
         [Description("Passes the data down trough the tree to the leaves and computes the relations on the way back")]
-        public static TNode Node<TNode, T>(IEnumerable<TNode> dataItems,
+        private static TNode Node<TNode, T>(IEnumerable<TNode> dataItems,
                                         Func<IEnumerable<TNode>, Output<List<TNode>, List<TNode>>> splitDataMethod,
                                         Func<IEnumerable<TNode>, TNode> setChildrenToNode,
                                         int treeDegree = 16, int leafSize = 16) where TNode : Node<T>
@@ -85,7 +85,7 @@ namespace BH.Engine.Data
         /***************************************************/
 
         [Description("Passes the data down trough the tree to the leaves and computes the relations on the way back")]
-        public static INode Node<INode, T>(IEnumerable<INode> dataItems,
+        private static INode Node<INode, T>(IEnumerable<INode> dataItems,
                                             Func<IEnumerable<INode>, IEnumerable<IEnumerable<INode>>> partitionMethod,
                                             Func<IEnumerable<INode>, INode> setChildrenToNode,
                                             int leafSize = 16) where INode : Node<T>
