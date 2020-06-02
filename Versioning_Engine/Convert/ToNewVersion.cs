@@ -119,8 +119,7 @@ namespace BH.Engine.Versioning
             string processFile = "bin\\" + upgraderName + "\\" + upgraderName + ".exe";
             if (!File.Exists(processFile))
             {
-                string roamingFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-                processFile = Path.Combine(roamingFolder, "BHoM\\Assemblies", processFile);
+                processFile = Path.Combine(Reflection.Query.BHoMFolder(), processFile);
 
                 if (!File.Exists(processFile))
                 {
