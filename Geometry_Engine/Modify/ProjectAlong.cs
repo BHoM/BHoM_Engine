@@ -88,6 +88,14 @@ namespace BH.Engine.Geometry
         }
 
         /***************************************************/
+        
+        public static ICurve ProjectAlong(this Ellipse ellipse, Plane plane, Vector vector)
+        {
+            TransformMatrix project = Create.ProjectionMatrix(plane, vector);
+            return ellipse.Transform(project);
+        }
+
+        /***************************************************/
 
         public static Line ProjectAlong(this Line line, Plane plane, Vector vector)
         {
