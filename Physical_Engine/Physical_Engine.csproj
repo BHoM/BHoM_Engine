@@ -35,6 +35,9 @@
       <HintPath>..\..\BHoM\Build\BHoM.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Common_oM">
+      <HintPath>..\..\BHoM\Build\Common_oM.dll</HintPath>
+    </Reference>
     <Reference Include="Diffing_oM">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\BHoM\Build\Diffing_oM.dll</HintPath>
@@ -79,6 +82,8 @@
     <Compile Include="Create\IElement\IElement1D\NewElement1D.cs" />
     <Compile Include="Create\IElement\IElement2D\NewInternalElement2D.cs" />
     <Compile Include="Create\Pile.cs" />
+    <Compile Include="Create\Stirrup.cs" />
+    <Compile Include="Create\PrimaryReinforcingBar.cs" />
     <Compile Include="Create\Roof.cs" />
     <Compile Include="Create\Beam.cs" />
     <Compile Include="Create\Construction.cs" />
