@@ -33,32 +33,64 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Type Type(string name)
+        public static Type Type(string name, bool silent = false)
         {
             Dictionary<string, List<Type>> typeDictionary = Query.BHoMTypeDictionary();
+
+            if (name.Contains('<'))
+                return GenericType(name, silent);
 
             List<Type> types = null;
             if (!typeDictionary.TryGetValue(name, out types))
             {
-                Compute.RecordError($"A type corresponding to {name} cannot be found.");
-                return null;
+                Type type = System.Type.GetType(name);
+                if (type != null)
+                    return type;
+                else
+                {
+                    if (!silent)
+                        Compute.RecordError($"A type corresponding to {name} cannot be found.");
+                    return null;
+                }
             }
             else if (types.Count == 1)
                 return types[0];
-            else
+            else if (!silent)
             {
                 string message = "Ambiguous match: Multiple types correspond the the name provided: \n";
                 foreach (Type type in types)
                     message += "- " + type.FullName + "\n";
 
                 Compute.RecordError(message);
-                return null;
-            }  
+            }
+
+            return null;
         }
 
         /***************************************************/
 
-        public static Type EngineType(string name)
+        public static Type GenericType(string name, bool silent = false)
+        {
+            string[] parts = name.Split('<', '>', ',').Select(x => x.Trim()).ToArray();
+            string[] arguments = parts.Skip(1).Where(x => x.Length > 0).ToArray();
+
+            Type typeDefinition = Type(parts[0] + "`" + arguments.Length);
+            if (typeDefinition == null)
+                return null;
+
+            try
+            {
+                return typeDefinition.MakeGenericType(arguments.Select(x => Type(x)).ToArray());
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        /***************************************************/
+
+        public static Type EngineType(string name, bool silent = false)
         {
             List<Type> methodTypeList = Query.EngineTypeList();
 
@@ -69,8 +101,8 @@ namespace BH.Engine.Reflection
             else
             {
                 //Unique method not found in list, check if it can be extracted using the system Type
-                Type type = System.Type.GetType(name);
-                if (type == null)
+                Type type = System.Type.GetType(name, silent);
+                if (type == null && !silent)
                 {
                     if (types.Count == 0)
                         Compute.RecordError($"A type corresponding to {name} cannot be found.");
@@ -84,15 +116,15 @@ namespace BH.Engine.Reflection
 
                         Compute.RecordError(message);
                     }
-                    return null;
                 }
+
                 return type;
             }
         }
 
         /***************************************************/
 
-        public static List<Type> AllTypes(string name)
+        public static List<Type> AllTypes(string name, bool silent = false)
         {
             List<Type> typeList = new List<Type>();
             if (name.StartsWith("BH.Engine"))
@@ -112,7 +144,8 @@ namespace BH.Engine.Reflection
                 Type type = System.Type.GetType(name);
                 if (type == null)
                 {
-                    Compute.RecordError($"A type corresponding to {name} cannot be found.");
+                    if (!silent)
+                        Compute.RecordError($"A type corresponding to {name} cannot be found.");
                     return new List<Type>();
                 }
                 return new List<Type> { type };

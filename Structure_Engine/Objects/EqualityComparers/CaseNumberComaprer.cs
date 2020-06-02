@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -20,39 +20,44 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.Engine.Geometry;
-using BH.oM.Dimensional;
-using BH.oM.Reflection.Attributes;
-using BH.oM.Geometry;
-using System;
+
+using BH.oM.Structure.Loads;
 using System.Collections.Generic;
+using System;
 
-namespace BH.Engine.Common
+namespace BH.Engine.Structure
 {
-    public static partial class Query
+    public class CaseNumberComaprer : IEqualityComparer<ICase>
     {
-        /******************************************/
-        /****            IElement1D            ****/
-        /******************************************/
+        /***************************************************/
+        /****           Public Methods                  ****/
+        /***************************************************/
 
-        [Deprecated("3.1", "Migrated to the Spatial_Engine")]
-        public static Point Centroid(this IElement1D element1D)
+        public bool Equals(ICase case1, ICase case2)
         {
-            return Spatial.Query.Centroid(element1D);
+            //Check whether the compared objects reference the same data.
+            if (Object.ReferenceEquals(case1, case2))
+                return true;
+
+            //Check whether any of the compared objects is null.
+            if (Object.ReferenceEquals(case1, null) || Object.ReferenceEquals(case2, null))
+                return false;
+
+            return case1.Number == case2.Number;
         }
 
+        /***************************************************/
 
-        /******************************************/
-        /****            IElement2D            ****/
-        /******************************************/
-
-        [Deprecated("3.1", "Migrated to the Spatial_Engine")]
-        public static Point Centroid(this IElement2D element2D)
+        public int GetHashCode(ICase obj)
         {
-            return Spatial.Query.Centroid(element2D);
+            //Check whether the object is null
+            if (Object.ReferenceEquals(obj, null)) return 0;
+
+            return obj.Number.GetHashCode();
         }
 
-        /******************************************/
+        /***************************************************/
+
     }
 }
 

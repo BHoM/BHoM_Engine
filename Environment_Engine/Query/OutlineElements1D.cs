@@ -43,7 +43,7 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("BH.Engine.Environment.Query.OutlineElements1D => Returns the outline 1D elements of an Environment Opening")]
+        [Description("Returns the outline 1D elements of an Environment Opening")]
         [Input("opening", "An Environment Opening")]
         [Output("outlineElements", "A collection of outline 1D elements")]
         public static List<IElement1D> OutlineElements1D(this Opening opening)
@@ -51,12 +51,20 @@ namespace BH.Engine.Environment
             return opening.Polyline().ISubParts().Cast<IElement1D>().ToList();
         }
 
-        [Description("BH.Engine.Environment.Query.OutlineElements1D => Returns the outline 1D elements of an Environment Panel")]
+        [Description("Returns the outline 1D elements of an Environment Panel")]
         [Input("panel", "An Environment Panel")]
         [Output("outlineElements", "A collection of outline 1D elements")]
         public static List<IElement1D> OutlineElements1D(this Panel panel)
         {
             return panel.Polyline().ISubParts().Cast<IElement1D>().ToList();
+        }
+
+        [Description("Returns the outline 1D elements of an Environments Space")]
+        [Input("space", "An Environments Space with perimeter curve")]
+        [Output("outlineElements", "A collection of outline 1D elements")]
+        public static List<IElement1D> OutlineElements1D(this Space space)
+        {
+            return space.Perimeter.ISubParts().Cast<IElement1D>().ToList();
         }
     }
 }

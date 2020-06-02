@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -20,40 +20,27 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+using BH.oM.Environment.Analysis;
 using BH.oM.Reflection.Attributes;
-using BH.oM.Dimensional;
+using System.ComponentModel;
 using BH.oM.Geometry;
 
-namespace BH.Engine.Common
+namespace BH.Engine.Environment
 {
-    public static partial class Modify
+    public static partial class Query
     {
-        /***************************************************/
-        /**** Public Methods - IElements                ****/
-        /***************************************************/
-
-        [Deprecated("3.1", "Migrated to the Spatial_Engine")]
-        public static IElement2D Translate(this IElement2D element2D, Vector transform)
+        [Description("Gets the geometry of a Node as a Point. Method required for automatic display in UI packages")]
+        [Input("node", "Node to get the Point from")]
+        [Output("point", "The geometry of the Node")]
+        public static Point Geometry(this Node node)
         {
-            return Spatial.Modify.Translate(element2D, transform);
-        }
-
-        /***************************************************/
-
-        [Deprecated("3.1", "Migrated to the Spatial_Engine")]
-        public static IElement1D Translate(this IElement1D element1D, Vector transform)
-        {
-            return Spatial.Modify.Translate(element1D, transform);
-        }
-
-        /******************************************/
-
-        [Deprecated("3.1", "Migrated to the Spatial_Engine")]
-        public static IElement0D Translate(this IElement0D element0D, Vector transform)
-        {
-            return Spatial.Modify.Translate(element0D, transform);
+            return node.Position;
         }
     }
 }
-

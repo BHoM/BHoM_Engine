@@ -26,9 +26,13 @@ using BH.oM.Reflection.Attributes;
 using BH.oM.Quantities.Attributes;
 using System.ComponentModel;
 using BH.oM.Structure.Elements;
+using BH.oM.Structure.SectionProperties;
+using BH.oM.Structure.SectionProperties.Reinforcement;
 using System.Collections.Generic;
 using System;
+using System.Linq;
 using BH.oM.Physical.Materials;
+using BH.Engine.Spatial;
 
 namespace BH.Engine.Structure
 {
@@ -48,8 +52,8 @@ namespace BH.Engine.Structure
                 Engine.Reflection.Compute.RecordError("The Bars MaterialComposition could not be calculated as no Material has been assigned.");
                 return null;
             }
-            Material mat = Physical.Create.Material(bar.SectionProperty.Material);
-            return (MaterialComposition)mat;
+
+            return MaterialComposition(bar.SectionProperty as dynamic);
         }
 
         /***************************************************/
@@ -69,6 +73,58 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
-        
+
+        public static MaterialComposition MaterialComposition(this ISectionProperty sectionProperty)
+        {
+            return (MaterialComposition)Physical.Create.Material(sectionProperty.Material); 
+        }
+
+        /***************************************************/
+
+        public static MaterialComposition MaterialComposition(this ConcreteSection sectionProperty)
+        {
+            double sectionArea = sectionProperty.Area;
+
+            List<double> areas = new List<double>();
+            List<Material> materials = new List<Material>();
+
+            //TODO: Resolve for stirups as well
+            foreach (LongitudinalReinforcement reinforcement in sectionProperty.Reinforcement.OfType<LongitudinalReinforcement>())
+            {
+                //Calculate reinforcement area for a section cut
+                double reinArea = reinforcement.Area();
+
+                //Scale area with distribution along the length
+                double factor = Math.Min(reinforcement.EndLocation - reinforcement.StartLocation, 1);
+                reinArea *= factor;
+
+                //Subtract reinforcement area from the section area
+                sectionArea -= reinArea;
+                areas.Add(reinArea);
+                Material reifMaterial;
+
+                if (reinforcement.Material != null)
+                    reifMaterial = Physical.Create.Material(reinforcement.Material);
+                else
+                    reifMaterial = new Material();
+
+                materials.Add(reifMaterial);
+            }
+
+            if (materials.Count == 0)
+            {
+                return (MaterialComposition)Physical.Create.Material(sectionProperty.Material);
+            }
+            else
+            {
+                areas.Insert(0, sectionArea);
+                materials.Insert(0, Physical.Create.Material(sectionProperty.Material));
+
+                return Engine.Matter.Compute.AggregateMaterialComposition(materials.Select(x => (MaterialComposition)x), areas);
+            }
+        }
+
+        /***************************************************/
+
     }
 }

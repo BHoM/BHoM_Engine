@@ -29,7 +29,7 @@ using BH.oM.Physical.Elements;
 using BH.oM.Geometry;
 using BH.Engine.Geometry;
 using BH.oM.Dimensional;
-using BH.Engine.Common;
+using BH.Engine.Spatial;
 
 namespace BH.Engine.Physical
 {

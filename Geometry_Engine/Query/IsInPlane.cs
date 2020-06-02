@@ -92,6 +92,14 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        public static bool IsInPlane(this Ellipse ellipse, Plane plane, double tolerance = Tolerance.Distance, double angTolerance = Tolerance.Angle)
+        {
+            //TODO: Is this check enough?
+            return ellipse.Normal().IsParallel(plane.Normal, angTolerance) != 0 && Math.Abs(plane.Normal.DotProduct(ellipse.Centre - plane.Origin)) <= tolerance;
+        }
+
+        /***************************************************/
+
         public static bool IsInPlane(this Line line, Plane plane, double tolerance = Tolerance.Distance)
         {
             return line.Start.IsInPlane(plane, tolerance) && line.End.IsInPlane(plane, tolerance);
@@ -99,10 +107,9 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [NotImplemented]
         public static bool IsInPlane(this NurbsCurve curve, Plane plane, double tolerance = Tolerance.Distance)
         {
-            throw new NotImplementedException();
+            return curve.ControlPoints.IsInPlane(plane, tolerance);
         }
         
         /***************************************************/

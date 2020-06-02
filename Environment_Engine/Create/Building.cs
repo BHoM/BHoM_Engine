@@ -52,8 +52,11 @@ namespace BH.Engine.Environment
             return new Building
             {
                 Name = name,
-                Latitude = latitude,
-                Longitude = longitude,
+                Location = new oM.Environment.Climate.Location
+                {
+                    Latitude = latitude,
+                    Longitude = longitude,
+                },
                 Elevation = elevation,
                 Type = type,
             };

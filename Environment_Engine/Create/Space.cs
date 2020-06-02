@@ -59,7 +59,7 @@ namespace BH.Engine.Environment
             {
                 Name = name,
                 Zones = zones,
-                Type = type,
+                SpaceType = type,
                 Location = location,
             };
         }

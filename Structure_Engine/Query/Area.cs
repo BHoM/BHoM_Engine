@@ -25,8 +25,10 @@ using BH.oM.Geometry;
 using BH.oM.Structure.Elements;
 using System.Collections.Generic;
 using System.Linq;
+using System;
 using BH.oM.Reflection.Attributes;
 using BH.oM.Quantities.Attributes;
+using BH.oM.Structure.SectionProperties.Reinforcement;
 using System.ComponentModel;
 
 namespace BH.Engine.Structure
@@ -81,6 +83,16 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
+
+        [Description("Calculates the total section area of all rebars in the reinforcement object.")]
+        [Input("reinforcement", "The LongitudinalReinforcement to calculate the area for.")]
+        [Output("area", "The area of the LongitudinalReinforcement.", typeof(Area))]
+        public static double Area(this LongitudinalReinforcement reinforcement)
+        {
+            return reinforcement.ReinforcingBarCount() * reinforcement.Diameter * reinforcement.Diameter / 4 * Math.PI;
+        }
+
+        /***************************************************/
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
@@ -91,6 +103,12 @@ namespace BH.Engine.Structure
         {
             return Area(element as dynamic);
         }
+
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+
 
         /***************************************************/
     }

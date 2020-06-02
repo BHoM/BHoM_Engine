@@ -34,6 +34,7 @@ using BH.oM.Physical.Constructions;
 using BH.oM.Physical.Materials;
 using BH.Engine.Diffing;
 using BH.oM.Diffing;
+using BH.oM.Environment.Analysis;
 
 namespace BH.Engine.Environment
 {
@@ -84,6 +85,36 @@ namespace BH.Engine.Environment
                     "Edges",
                     "FrameFactorValue",
                     "InnerEdges",
+                    "Type",
+                    "BHoM_Guid",
+                    "CustomData",
+                },
+                NumericTolerance = BH.oM.Geometry.Tolerance.Distance,
+            };
+
+            return Diffing.Query.DifferentProperties(element, other, config) == null;
+        }
+
+        [Description("Evaluates if the two elements non-geometrical data is equal to the point that they could be merged into one object. Environment Nodes are checked for their ID only")]
+        [Input("element", "An Environment Node to compare the properties of with an other Environment Node")]
+        [Input("other", "The Environment Node to compare with the other Environment Node")]
+        [Output("equal", "True if the Objects non-geometrical property is equal to the point that they could be merged into one object")]
+        public static bool HasMergeablePropertiesWith(Node element, Node other)
+        {
+            return element.ID == other.ID; //If the IDs match, then they can be merged assuming their geometrical placement is the same
+        }
+
+        [Description("Evaluates if the two elements non-geometrical data is equal to the point that they could be merged into one object")]
+        [Input("element", "An Environment Space to compare the properties of with an other Environment Space")]
+        [Input("other", "The Environment Space to compare with the other Environment Space")]
+        [Output("equal", "True if the Objects non-geometrical property is equal to the point that they could be merged into one object")]
+        public static bool HasMergeablePropertiesWith(Space element, Space other)
+        {
+            DiffConfig config = new DiffConfig()
+            {
+                PropertiesToIgnore = new List<string>
+                {
+                    "Location",
                     "Type",
                     "BHoM_Guid",
                     "CustomData",

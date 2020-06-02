@@ -139,19 +139,18 @@ namespace BH.Engine.Serialiser.BsonSerializers
 
             try
             {
-                if (string.IsNullOrEmpty(fullName))
-                    return null;
+                Type type = GetTypeFromName(fullName);
 
-                Type type = null;
-                if (fullName == "T")
-                    return null;
-                if (fullName.StartsWith("BH.oM"))
-                    type = Reflection.Create.Type(fullName);
-                else if (fullName.StartsWith("BH.Engine"))
-                    type = Reflection.Create.EngineType(fullName);
-                else
-                    type = Type.GetType(fullName);
-
+                if (type == null)
+                {
+                    // Try to upgrade through versioning
+                    BsonDocument doc = new BsonDocument();
+                    doc["_t"] = "System.Type";
+                    doc["Name"] = fullName;
+                    BsonDocument newDoc = Versioning.Convert.ToNewVersion(doc);
+                    if (newDoc != null && newDoc.Contains("Name"))
+                        type = GetTypeFromName(newDoc["Name"].AsString);
+                }
 
                 if (type == null)
                     Reflection.Compute.RecordError("Type " + fullName + " failed to deserialise.");
@@ -167,6 +166,27 @@ namespace BH.Engine.Serialiser.BsonSerializers
             }
         }
 
+        /*******************************************/
+        /**** Private Methods                   ****/
+        /*******************************************/
+
+        private Type GetTypeFromName(string fullName)
+        {
+            if (string.IsNullOrEmpty(fullName))
+                return null;
+
+            Type type = null;
+            if (fullName == "T")
+                return null;
+            if (fullName.StartsWith("BH.oM"))
+                type = Reflection.Create.Type(fullName, true);
+            else if (fullName.StartsWith("BH.Engine"))
+                type = Reflection.Create.EngineType(fullName, true);
+            else
+                type = Type.GetType(fullName);
+
+            return type;
+        }
 
         /*******************************************/
         /**** Private Fields                    ****/

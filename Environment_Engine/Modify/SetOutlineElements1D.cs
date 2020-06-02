@@ -58,6 +58,17 @@ namespace BH.Engine.Environment
             pp.ExternalEdges = outlineElements1D.Cast<ICurve>().ToList().ToEdges();
             return pp;
         }
+
+        [Description("Assign a new collection of external 1D boundaries to an Environment Space")]
+        [Input("space", "An Environment Space to update")]
+        [Input("outlineElements1D", "A collection of outline 1D elements to assign to the Space")]
+        [Output("space", "The updated Environment Space")]
+        public static Space SetOutlineElements1D(this Space space, List<IElement1D> outlineElements1D)
+        {
+            Space r = space.GetShallowClone() as Space;
+            r.Perimeter = BH.Engine.Geometry.Compute.IJoin(outlineElements1D.Cast<ICurve>().ToList())[0];
+            return r;
+        }
     }
 }
 

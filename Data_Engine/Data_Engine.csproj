@@ -120,6 +120,7 @@
     <Compile Include="Query\Children.cs" />
     <Compile Include="Query\OppositeNode.cs" />
     <Compile Include="Query\Peek.cs" />
+    <Compile Include="Query\Requests.cs" />
     <Compile Include="Query\SquareDistance.cs" />
     <Compile Include="Query\SubMatrixData.cs" />
     <Compile Include="Query\ValuesAbove.cs" />

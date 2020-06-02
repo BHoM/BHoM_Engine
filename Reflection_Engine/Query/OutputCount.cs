@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -20,26 +20,33 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Dimensional;
-using BH.oM.Reflection.Attributes;
-using BH.oM.Geometry;
+using BH.oM.Reflection;
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using BH.oM.Reflection.Interface;
 
-namespace BH.Engine.Common
+namespace BH.Engine.Reflection
 {
     public static partial class Query
     {
-        /******************************************/
-        /****            IElement2D            ****/
-        /******************************************/
 
-        [Deprecated("3.1", "Migrated to the Spatial_Engine")]
-        public static List<IElement1D> IOutlineElements1D(this IElement2D element2D)
+        /***************************************************/
+        /**** public Methods                            ****/
+        /***************************************************/
+
+        public static int OutputCount(this IOutput output)
         {
-            return Spatial.Query.IOutlineElements1D(element2D);
+            if (output == null)
+                return 0;
+            else
+                return output.GetType().GenericTypeArguments.Count();
         }
 
-        /******************************************/
+        /***************************************************/
+
     }
 }
 

@@ -121,10 +121,6 @@
       <Name>BHoM_Engine</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\Common_Engine\Common_Engine.csproj">
-      <Project>{8D8CD66F-76F3-4750-936D-380D51BC67D6}</Project>
-      <Name>Common_Engine</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Diffing_Engine\Diffing_Engine.csproj">
       <Project>{073dfd36-0829-4792-8c32-67bf692a9413}</Project>
       <Name>Diffing_Engine</Name>

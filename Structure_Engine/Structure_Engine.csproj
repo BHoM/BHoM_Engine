@@ -74,6 +74,10 @@
       <HintPath>..\..\BHoM\Build\Reflection_oM.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Spatial_oM">
+      <HintPath>..\..\BHoM\Build\Spatial_oM.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Structure_oM">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\BHoM\Build\Structure_oM.dll</HintPath>
@@ -114,14 +118,26 @@
     <Compile Include="Create\SectionProperties\AluminiumSection.cs" />
     <Compile Include="Create\Framing\ConstantFramingProperty.cs" />
     <Compile Include="Create\Elements\FEMesh.cs" />
+    <Compile Include="Create\SectionProperties\ConcreteSection\ConcreteCircularSection.cs" />
+    <Compile Include="Create\SectionProperties\ConcreteSection\ConcreteFreeFormSection.cs" />
+    <Compile Include="Create\SectionProperties\ConcreteSection\ConcreteRectangleSection.cs" />
+    <Compile Include="Create\SectionProperties\ConcreteSection\ConcreteSectionFromProfile.cs" />
+    <Compile Include="Create\SectionProperties\ConcreteSection\ConcreteTSection.cs" />
     <Compile Include="Create\SectionProperties\GenericSection.cs" />
     <Compile Include="Create\Requests\IResultRequest.cs" />
     <Compile Include="Create\MaterialFragments\Timber.cs" />
     <Compile Include="Create\SectionProperties\GeometricalSection.cs" />
+    <Compile Include="Create\SectionProperties\LongitudinalReinforcement\BottomReinforcement.cs" />
+    <Compile Include="Create\SectionProperties\LongitudinalReinforcement\LayerReinforcement.cs" />
+    <Compile Include="Create\SectionProperties\LongitudinalReinforcement\LongitudinalReinforcement.cs" />
+    <Compile Include="Create\SectionProperties\LongitudinalReinforcement\MultiLinearReinforcement.cs" />
+    <Compile Include="Create\SectionProperties\LongitudinalReinforcement\PerimiterReinforcement.cs" />
+    <Compile Include="Create\SectionProperties\LongitudinalReinforcement\TopReinforcement.cs" />
     <Compile Include="Create\SectionProperties\TimberSection.cs" />
     <Compile Include="Modify\AddReinforcement.cs" />
     <Compile Include="Modify\SetMaterial.cs" />
     <Compile Include="Modify\SetStructuralFragment.cs" />
+    <Compile Include="Objects\EqualityComparers\CaseNumberComaprer.cs" />
     <Compile Include="Objects\EqualityComparers\Constraint4DOFComparer.cs" />
     <Compile Include="Objects\EqualityComparers\Constraint6DOFComparer.cs" />
     <Compile Include="Objects\EqualityComparers\NameOrDescriptionComparer.cs" />
@@ -165,7 +181,6 @@
     <Compile Include="Create\Elements\Panel.cs" />
     <Compile Include="Create\Elements\Node.cs" />
     <Compile Include="Create\Elements\Bar.cs" />
-    <Compile Include="Create\SectionProperties\ConcreteSection.cs" />
     <Compile Include="Create\Constraints\LinkConstraint.cs" />
     <Compile Include="Create\Elements\Opening.cs" />
     <Compile Include="Create\Elements\Surface.cs" />
@@ -209,6 +224,10 @@
     <Compile Include="Query\PointGrid.cs" />
     <Compile Include="Query\Position.cs" />
     <Compile Include="Query\BarSectionTranformation.cs" />
+    <Compile Include="Query\ReinforcementLayout.cs" />
+    <Compile Include="Query\ReinforcementTransitionPoints.cs" />
+    <Compile Include="Query\ReinforcingBarCount.cs" />
+    <Compile Include="Query\ReinforcingBars.cs" />
     <Compile Include="Query\SelectCase.cs" />
     <Compile Include="Query\ShearArea.cs" />
     <Compile Include="Query\ShearModulus.cs" />
@@ -218,7 +237,6 @@
     <Compile Include="Query\Visualize.cs" />
     <Compile Include="Query\WidthAt.cs" />
     <Compile Include="Query\IsLongitudinal.cs" />
-    <Compile Include="Query\Layout.cs" />
     <Compile Include="Query\TieDiameter.cs" />
     <Compile Include="Query\TorsionalConstant.cs" />
     <Compile Include="Query\WarpingConstant.cs" />
@@ -234,11 +252,6 @@
       <Name>BHoM_Engine</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\Common_Engine\Common_Engine.csproj">
-      <Project>{8d8cd66f-76f3-4750-936d-380d51bc67d6}</Project>
-      <Name>Common_Engine</Name>
-      <Private>False</Private>
-    </ProjectReference>
     <ProjectReference Include="..\Geometry_Engine\Geometry_Engine.csproj">
       <Project>{89ab2dcb-ef87-4cba-b59c-c16a8a71d333}</Project>
       <Name>Geometry_Engine</Name>
@@ -249,6 +262,10 @@
       <Name>Library_Engine</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\Matter_Engine\Matter_Engine.csproj">
+      <Project>{65198eea-b572-418f-b77d-b348082ec92e}</Project>
+      <Name>Matter_Engine</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Physical_Engine\Physical_Engine.csproj">
       <Project>{f2073888-9bd8-4d8f-9b3c-27577b388530}</Project>
       <Name>Physical_Engine</Name>
@@ -257,6 +274,10 @@
     <ProjectReference Include="..\Reflection_Engine\Reflection_Engine.csproj">
       <Project>{b0154405-9390-472d-9b5c-a2280823b18d}</Project>
       <Name>Reflection_Engine</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Spatial_Engine\Spatial_Engine.csproj">
+      <Project>{a84fdfe5-c267-430e-8fec-af4f4bf5b745}</Project>
+      <Name>Spatial_Engine</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

@@ -20,6 +20,7 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using System.Collections.Generic;
 using BH.oM.Structure.Elements;
 using BH.oM.Structure.FramingProperties;
 using BH.oM.Structure.SectionProperties;
@@ -28,6 +29,7 @@ using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
 using BHPE = BH.oM.Physical.Elements;
 using BHPP = BH.oM.Physical.FramingProperties;
+using BH.oM.Physical.Reinforcement;
 using BH.oM.Geometry.ShapeProfiles;
 
 namespace BH.Engine.Structure
@@ -53,22 +55,38 @@ namespace BH.Engine.Structure
 
             Line location = bar.Centreline();
             string name = bar.Name ?? "";
+
+            BHPE.IFramingElement framingElement;
+
             switch (structuralUsage)
             {
                 case StructuralUsage1D.Column:
-                    return Physical.Create.Column(location, framingProp, name);
+                    framingElement = Physical.Create.Column(location, framingProp, name);
+                    break;
                 case StructuralUsage1D.Brace:
-                    return Physical.Create.Bracing(location, framingProp, name);
+                    framingElement = Physical.Create.Bracing(location, framingProp, name);
+                    break;
                 case StructuralUsage1D.Cable:
-                    return Physical.Create.Cable(location, framingProp, name);
+                    framingElement = Physical.Create.Cable(location, framingProp, name);
+                    break;
                 case StructuralUsage1D.Pile:
-                    return Physical.Create.Pile(location, framingProp, name);
+                    framingElement = Physical.Create.Pile(location, framingProp, name);
+                    break;
                 default:
                 case StructuralUsage1D.Undefined:
                 case StructuralUsage1D.Beam:
-                    return Physical.Create.Beam(location, framingProp, name);
-
+                    framingElement = Physical.Create.Beam(location, framingProp, name);
+                    break;
             }
+
+            List<IReinforcingBar> reinforcement = bar.ReinforcingBars();
+
+            if (reinforcement.Count != 0)
+            {
+                framingElement.Fragments.Add(new ReinforcementFragment { ReinforcingBars = reinforcement });
+            }
+
+            return framingElement;
         }
 
 

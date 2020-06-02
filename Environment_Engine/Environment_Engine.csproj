@@ -100,6 +100,7 @@
     <Compile Include="Compute\ThirdOrderPolynomial.cs" />
     <Compile Include="Convert\Degrees.cs" />
     <Compile Include="Convert\Edge.cs" />
+    <Compile Include="Create\AnalysisGrid.cs" />
     <Compile Include="Create\LightReflectanceFragment.cs" />
     <Compile Include="Create\LightTransmittanceFragment.cs" />
     <Compile Include="Create\Location.cs" />
@@ -132,6 +133,7 @@
     <Compile Include="Query\ConnectedSpaceName.cs" />
     <Compile Include="Query\FloorHeights.cs" />
     <Compile Include="Query\FrameFactor.cs" />
+    <Compile Include="Query\Geometry.cs" />
     <Compile Include="Query\HasMergeablePropertiesWith.cs" />
     <Compile Include="Query\MaterialComposition.cs" />
     <Compile Include="Query\NewElement1D.cs" />
@@ -184,7 +186,6 @@
     <Compile Include="Create\Building.cs" />
     <Compile Include="Create\CoefficientFragment.cs" />
     <Compile Include="Create\Edge.cs" />
-    <Compile Include="Create\Emitter.cs" />
     <Compile Include="Create\EnvironmentConstructionFragment.cs" />
     <Compile Include="Create\Gains.cs" />
     <Compile Include="Create\Layer.cs" />

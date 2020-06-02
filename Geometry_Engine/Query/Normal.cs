@@ -110,16 +110,26 @@ namespace BH.Engine.Geometry
 
             Vector normal = new Vector { X = 0, Y = 0, Z = 0 };
 
-            for (int i = 0; i < curve.ControlPoints.Count - 1; i++)
+            //Get out normal, from cross product of firt points that are not colinear
+            int i = 0;
+            do
             {
                 Point pA = curve.ControlPoints[i];
-                Point pB = curve.ControlPoints[i + 1];
+                Point pB = curve.ControlPoints[(i + 1) % curve.ControlPoints.Count];
                 Point pC = curve.ControlPoints[(i + 2) % curve.ControlPoints.Count];
 
-                normal += CrossProduct(pB - pA, pC - pB);
-            }
+                normal = CrossProduct(pB - pA, pC - pB);
+                i++;
 
-            return normal.Normalise();
+            } while (normal.SquareLength() < tolerance * tolerance && i < curve.ControlPoints.Count);
+
+            normal = normal.Normalise();
+
+            //Check if normal needs to be flipped from the right hand rule
+            if (!curve.IsClockwise(normal, tolerance))
+                normal = -normal;
+
+            return normal;
         }
 
         /***************************************************/
@@ -145,9 +155,6 @@ namespace BH.Engine.Geometry
 
             List<ICurve> crvs = new List<ICurve>(curve.ISubParts());
 
-            Vector normal = new Vector { X = 0, Y = 0, Z = 0 };
-
-            List<Point> pts = new List<Point> { curve.Curves[0].IStartPoint() };
 
             if (crvs.Count() == 0)
                 return null;
@@ -155,16 +162,18 @@ namespace BH.Engine.Geometry
                 return crvs[0].INormal();
             else
             {
+                List<Point> points = new List<Point>();
+
                 foreach (ICurve crv in crvs)
                 {
                     if (crv is Line)
-                        pts.Add((crv as Line).End);
+                        points.Add((crv as Line).End);
                     else if (crv is Arc)
                     {
-                        int numb = 4;
-                        List<Point> aPts = crv.SamplePoints(numb);
-                        for (int i = 1; i < aPts.Count; i++)
-                            pts.Add(aPts[i]);
+                        for (int j = 1; j < 5; j++)
+                        {
+                            points.Add((crv as Arc).PointAtParameter(j * 0.25));
+                        }
                     }
                     else
                     {
@@ -172,18 +181,28 @@ namespace BH.Engine.Geometry
                     }
                 }
 
-                Point pA = pts[0];
+                Vector normal = new Vector { X = 0, Y = 0, Z = 0 };
 
-                for (int i = 1; i < pts.Count - 1; i++)
+                //Get out normal, from cross product of firt points that are not colinear
+                int i = 0;
+                do
                 {
-                    Point pB = pts[i];
-                    Point pC = pts[i + 1];
+                    Point pA = points[i];
+                    Point pB = points[(i + 1) % points.Count];
+                    Point pC = points[(i + 2) % points.Count];
 
-                    normal += CrossProduct((pB - pA).Normalise(), (pC - pB).Normalise());
-                    normal += CrossProduct(pB - pA, pC - pA);
-                }
+                    normal = CrossProduct(pB - pA, pC - pB);
+                    i++;
 
-                return normal.Normalise();
+                } while (normal.SquareLength() < tolerance * tolerance && i < points.Count);
+
+                normal = normal.Normalise();
+
+                //Check if normal needs to be flipped from the right hand rule
+                if (!curve.IsClockwise(normal, tolerance))
+                    normal = -normal;
+
+                return normal;
             }
         }
 
