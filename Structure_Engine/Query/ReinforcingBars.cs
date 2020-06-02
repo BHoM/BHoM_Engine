@@ -98,7 +98,7 @@ namespace BH.Engine.Structure
                 {
                     foreach (ICurve centreLine in reif.IReinforcementLayout(primaryCover, outerProfileEdges, innerProfileEdges, length, transformation))
                     {
-                        PrimaryReinforcingBar rebar = new PrimaryReinforcingBar(centreLine, reif.Diameter, material);
+                        PrimaryReinforcingBar rebar = Physical.Create.PrimaryReinforcingBar(centreLine, reif.Diameter, material);
                         rebars.Add(rebar);
                     }
                 }
@@ -106,7 +106,7 @@ namespace BH.Engine.Structure
                 {
                     foreach (ICurve centreLine in reif.IReinforcementLayout(stirrupCover, outerProfileEdges, innerProfileEdges, length, transformation))
                     {
-                        Stirrup rebar = new Stirrup(centreLine, reif.Diameter, material);
+                        Stirrup rebar = Physical.Create.Stirrup(centreLine, reif.Diameter, material);
                         rebars.Add(rebar);
                     }
                 }
