@@ -305,11 +305,16 @@ namespace BH.Engine.Structure
 
             Vector dir = Vector.ZAxis.Transform(transformation);
             double stirrupRange = (reinforcement.EndLocation - reinforcement.StartLocation) * length - (2 * cover + reinforcement.Diameter);
-            int count = (int)Math.Floor(stirrupRange / reinforcement.Spacing);
-
+            int count;
             double spacing = reinforcement.Spacing;
+
             if (reinforcement.AdjustSpacingToFit)
+            {
+                count = (int)Math.Ceiling(stirrupRange / reinforcement.Spacing);
                 spacing = stirrupRange / count;
+            }
+            else
+                count = (int)Math.Floor(stirrupRange / reinforcement.Spacing);
 
             if (stirrupOutline.Count != 0)
             {
