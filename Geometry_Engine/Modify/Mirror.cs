@@ -222,7 +222,7 @@ namespace BH.Engine.Geometry
         /**** Private Methods - Fallback                ****/
         /***************************************************/
 
-        public static IGeometry Mirror(this IGeometry geometry, Plane p)
+        private static IGeometry Mirror(this IGeometry geometry, Plane p)
         {
             Reflection.Compute.RecordError("Mirror not implemented for: " + geometry.GetType().Name);
             return null;

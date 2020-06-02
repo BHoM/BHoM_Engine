@@ -304,7 +304,7 @@ namespace BH.Engine.Geometry
         /**** Private Methods                           ****/
         /***************************************************/
 
-        public static IGeometry Transform(this IGeometry geometry, TransformMatrix transform)
+        private static IGeometry Transform(this IGeometry geometry, TransformMatrix transform)
         {
             Reflection.Compute.RecordError("Transform not implemented for: " + geometry.GetType().Name);
             return null;

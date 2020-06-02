@@ -221,7 +221,7 @@ namespace BH.Engine.Geometry
         /**** Private Methods                           ****/
         /***************************************************/
 
-        public static IGeometry Scale(this IGeometry geometry, Point origin, Vector scaleVector)
+        private static IGeometry Scale(this IGeometry geometry, Point origin, Vector scaleVector)
         {
             Reflection.Compute.RecordError("Scale not implemented for: " + geometry.GetType().Name);
             return null;

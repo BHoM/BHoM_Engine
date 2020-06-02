@@ -211,7 +211,7 @@ namespace BH.Engine.Geometry
         /**** Private Methods - Fallback                ****/
         /***************************************************/
 
-        public static IGeometry Translate(this IGeometry geometry, Vector transform)
+        private static IGeometry Translate(this IGeometry geometry, Vector transform)
         {
             Reflection.Compute.RecordError("Translate not implemented for: " + geometry.GetType().Name);
             return null;

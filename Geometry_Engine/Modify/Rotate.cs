@@ -235,14 +235,14 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [Description("Some objects have no use for origin, this method will make them calleble from the interface method.")]
-        public static IGeometry Rotate(this IGeometry geometry, Point origin, Vector axis, double rad)
+        private static IGeometry Rotate(this IGeometry geometry, Point origin, Vector axis, double rad)
         {
             return Rotate(geometry as dynamic, rad, axis);
         }
 
         /***************************************************/
 
-        public static IGeometry Rotate(this IGeometry geometry, double rad, Vector axis)
+        private static IGeometry Rotate(this IGeometry geometry, double rad, Vector axis)
         {
             Engine.Reflection.Compute.RecordError("Rotate not implemented for: " + geometry.GetType().Name);
             return null;
