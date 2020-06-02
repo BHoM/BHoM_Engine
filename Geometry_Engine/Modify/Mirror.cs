@@ -87,6 +87,20 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        public static Ellipse Mirror(this Ellipse ellipse, Plane p)
+        {
+            return new Ellipse
+            {
+                Axis1 = ellipse.Axis1.Mirror(p),
+                Axis2 = ellipse.Axis2.Mirror(p),
+                Centre = ellipse.Centre.Mirror(p),
+                Radius1 = ellipse.Radius1,
+                Radius2 = ellipse.Radius2,
+            };
+        }
+
+        /***************************************************/
+
         public static Line Mirror(this Line line, Plane p)
         {
             return new Line { Start = line.Start.Mirror(p), End = line.End.Mirror(p) };
