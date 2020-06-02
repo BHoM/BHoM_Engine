@@ -64,6 +64,40 @@ namespace BH.Engine.Reflection
             return new Output<T1, T2, T3, T4, T5> { Item1 = item1, Item2 = item2, Item3 = item3, Item4 = item4, Item5 = item5 };
         }
 
+        /***************************************************/
+
+        public static Output<T1, T2, T3, T4, T5, T6> Output<T1, T2, T3, T4, T5, T6>(T1 item1, T2 item2, T3 item3, T4 item4, T5 item5, T6 item6)
+        {
+            return new Output<T1, T2, T3, T4, T5, T6> { Item1 = item1, Item2 = item2, Item3 = item3, Item4 = item4, Item5 = item5, Item6 = item6 };
+        }
+
+        /***************************************************/
+
+        public static Output<T1, T2, T3, T4, T5, T6, T7> Output<T1, T2, T3, T4, T5, T6, T7>(T1 item1, T2 item2, T3 item3, T4 item4, T5 item5, T6 item6, T7 item7)
+        {
+            return new Output<T1, T2, T3, T4, T5, T6, T7> { Item1 = item1, Item2 = item2, Item3 = item3, Item4 = item4, Item5 = item5, Item6 = item6 , Item7 = item7};
+        }
+
+        /***************************************************/
+
+        public static Output<T1, T2, T3, T4, T5, T6, T7, T8> Output<T1, T2, T3, T4, T5, T6, T7, T8>(T1 item1, T2 item2, T3 item3, T4 item4, T5 item5, T6 item6, T7 item7, T8 item8)
+        {
+            return new Output<T1, T2, T3, T4, T5, T6, T7, T8> { Item1 = item1, Item2 = item2, Item3 = item3, Item4 = item4, Item5 = item5, Item6 = item6, Item7 = item7, Item8 = item8};
+        }
+
+        /***************************************************/
+
+        public static Output<T1, T2, T3, T4, T5, T6, T7, T8, T9> Output<T1, T2, T3, T4, T5, T6, T7, T8, T9>(T1 item1, T2 item2, T3 item3, T4 item4, T5 item5, T6 item6, T7 item7, T8 item8, T9 item9)
+        {
+            return new Output<T1, T2, T3, T4, T5, T6, T7, T8, T9> { Item1 = item1, Item2 = item2, Item3 = item3, Item4 = item4, Item5 = item5, Item6 = item6, Item7 = item7, Item8 = item8, Item9 = item9 };
+        }
+
+        /***************************************************/
+
+        public static Output<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> Output<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(T1 item1, T2 item2, T3 item3, T4 item4, T5 item5, T6 item6, T7 item7, T8 item8, T9 item9, T10 item10)
+        {
+            return new Output<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> { Item1 = item1, Item2 = item2, Item3 = item3, Item4 = item4, Item5 = item5, Item6 = item6, Item7 = item7, Item8 = item8, Item9 = item9, Item10 = item10 };
+        }
 
         /***************************************************/
     }
