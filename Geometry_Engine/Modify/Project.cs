@@ -267,7 +267,7 @@ namespace BH.Engine.Geometry
         /**** Private Methods - Fallback                ****/
         /***************************************************/
 
-        public static IGeometry Project(this IGeometry geometry, Plane p)
+        private static IGeometry Project(this IGeometry geometry, Plane p)
         {
             Reflection.Compute.RecordError("Project not implemented for: " + geometry.GetType().Name);
             return null;

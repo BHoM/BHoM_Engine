@@ -226,7 +226,7 @@ namespace BH.Engine.Geometry
         /**** Private Methods - Fallback                ****/
         /***************************************************/
 
-        public static IGeometry ProjectAlong(this IGeometry geometry, Plane plane, Vector vector)
+        private static IGeometry ProjectAlong(this IGeometry geometry, Plane plane, Vector vector)
         {
             Reflection.Compute.RecordError("ProjectAlong not implemented for: " + geometry.GetType().Name);
             return null;
