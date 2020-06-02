@@ -111,6 +111,43 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        public static TransformMatrix ProjectionMatrix(Plane plane, Vector vector = null)
+        {
+            Point x = new Point() { X = 1 };
+            Point y = new Point() { Y = 1 };
+            Point z = new Point() { Z = 1 };
+
+            vector = vector ?? plane.Normal;
+
+            Vector refVector = (new Point()).ProjectAlong(plane, vector) - new Point();
+
+            // Set plane to origin for projection
+            plane = new Plane() { Normal = plane.Normal };
+
+            // Compute the projection for three controlPoints defining the transformation
+            x = x.ProjectAlong(plane, vector);
+            y = y.ProjectAlong(plane, vector);
+            z = z.ProjectAlong(plane, vector);
+
+            TransformMatrix project = new TransformMatrix
+            {
+                Matrix = new double[,]
+                {
+                    {  x.X, y.X, z.X, 0 },
+                    {  x.Y, y.Y, z.Y, 0 },
+                    {  x.Z, y.Z, z.Z, 0 },
+                    {  0,   0,   0,   1 }
+                }
+            };
+
+            // Move the projection out from the origin to the original plane
+            TransformMatrix move = TranslationMatrix(refVector);
+
+            return move * project;
+        }
+
+        /***************************************************/
+
         public static TransformMatrix RandomMatrix(int seed = -1, double minVal = -1, double maxVal = 1)
         {
             if (seed == -1)
