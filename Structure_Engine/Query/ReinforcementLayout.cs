@@ -49,35 +49,20 @@ namespace BH.Engine.Structure
         [Output("points", "The positions of the LongitudinalReinforcement.")]
         public static List<Point> LongitudinalReinforcementLayout(ConcreteSection section, double position = -1)
         {
-            //Extract Longitudinal and Transverse reinforcement
-            List<LongitudinalReinforcement> longReif = section.LongitudinalReinforcement();
-            List<TransverseReinforcement> tranReif = section.TransverseReinforcement();
-
-            //No longitudinal reinforcement available
-            if (longReif.Count == 0)
-                return new List<Point>();
+            List<Point> rebarPoints = new List<Point>();
 
             List<ICurve> outerProfileEdges;
             List<ICurve> innerProfileEdges;
+            List<LongitudinalReinforcement> longReif;
+            List<TransverseReinforcement> tranReif;
+            double longCover, tranCover;
 
-            ExtractInnerAndOuterEdges(section, out outerProfileEdges, out innerProfileEdges);
-
-            //Need at least one external edge curve
-            if (outerProfileEdges.Count == 0)
-                return new List<Point>();
-
-            double stirupOffset = 0;
-            if (tranReif.Count > 0)
-                stirupOffset = tranReif.Select(r => r.Diameter).Max();
-
-            double cover = section.MinimumCover + stirupOffset;
-
-            List<Point> rebarPoints = new List<Point>();
-
-            foreach (LongitudinalReinforcement reif in longReif)
-                if (position < 0 || (reif.StartLocation <= position && reif.EndLocation >= position))
-                    rebarPoints.AddRange(ReinforcementLayout(reif, cover, outerProfileEdges, innerProfileEdges));
-
+            if (section.CheckSectionAndExtractParameters(out outerProfileEdges, out innerProfileEdges, out longReif, out tranReif, out longCover, out tranCover))
+            {
+                foreach (LongitudinalReinforcement reif in longReif)
+                    if (position < 0 || (reif.StartLocation <= position && reif.EndLocation >= position))
+                        rebarPoints.AddRange(ReinforcementLayout(reif, longCover, outerProfileEdges, innerProfileEdges));
+            }
             return rebarPoints;
         }
 
@@ -91,32 +76,18 @@ namespace BH.Engine.Structure
         {
             List<ICurve> rebarCurves = new List<ICurve>();
 
-            //Extract Transverse reinforcement
-            List<TransverseReinforcement> tranReif = section.TransverseReinforcement();
-
-            //No Transverse reinforcement available
-            if (tranReif.Count == 0)
-                return rebarCurves;
-
             List<ICurve> outerProfileEdges;
             List<ICurve> innerProfileEdges;
+            List<LongitudinalReinforcement> longReif;
+            List<TransverseReinforcement> tranReif;
+            double longCover, tranCover;
 
-            ExtractInnerAndOuterEdges(section, out outerProfileEdges, out innerProfileEdges);
-
-            //Need at least one external edge curve
-            if (outerProfileEdges.Count == 0)
-                return rebarCurves;
-
-            double stirupOffset = 0;
-            if (tranReif.Count > 0)
-                stirupOffset = tranReif.Select(r => r.Diameter).Max();
-
-            double cover = section.MinimumCover + stirupOffset;
-
-            foreach (TransverseReinforcement reif in tranReif)
-                if (position < 0 || (reif.StartLocation <= position && reif.EndLocation >= position))
-                    rebarCurves.AddRange(ReinforcementLayout(reif, cover, outerProfileEdges, innerProfileEdges));
-
+            if (section.CheckSectionAndExtractParameters(out outerProfileEdges, out innerProfileEdges, out longReif, out tranReif, out longCover, out tranCover))
+            {
+                foreach (TransverseReinforcement reif in tranReif)
+                    if (position < 0 || (reif.StartLocation <= position && reif.EndLocation >= position))
+                        rebarCurves.AddRange(ReinforcementLayout(reif, tranCover, outerProfileEdges, innerProfileEdges));
+            }
             return rebarCurves;
         }
 
@@ -132,37 +103,22 @@ namespace BH.Engine.Structure
             List<ICurve> rebarCurves = new List<ICurve>();
             List<Point> rebarPoints = new List<Point>();
 
-            //Extract Longitudinal and Transverse reinforcement
-            List<LongitudinalReinforcement> longReif = section.LongitudinalReinforcement();
-            List<TransverseReinforcement> tranReif = section.TransverseReinforcement();
-
-            //No  reinforcement available
-            if (tranReif.Count == 0 && longReif.Count == 0)
-                return rebarLayout;
-
             List<ICurve> outerProfileEdges;
             List<ICurve> innerProfileEdges;
+            List<LongitudinalReinforcement> longReif;
+            List<TransverseReinforcement> tranReif;
+            double longCover, tranCover;
 
-            ExtractInnerAndOuterEdges(section, out outerProfileEdges, out innerProfileEdges);
+            if (section.CheckSectionAndExtractParameters(out outerProfileEdges, out innerProfileEdges, out longReif, out tranReif, out longCover, out tranCover))
+            {
+                foreach (LongitudinalReinforcement reif in longReif)
+                    if (position < 0 || (reif.StartLocation <= position && reif.EndLocation >= position))
+                        rebarLayout.AddRange(ReinforcementLayout(reif, longCover, outerProfileEdges, innerProfileEdges));
 
-            //Need at least one external edge curve
-            if (outerProfileEdges.Count == 0)
-                return rebarLayout;
-
-            double stirupOffset = 0;
-            if (tranReif.Count > 0)
-                stirupOffset = tranReif.Select(r => r.Diameter).Max();
-
-            double cover = section.MinimumCover + stirupOffset;
-
-            foreach (TransverseReinforcement reif in tranReif)
-                if (position < 0 || (reif.StartLocation <= position && reif.EndLocation >= position))
-                    rebarLayout.AddRange(ReinforcementLayout(reif, cover, outerProfileEdges, innerProfileEdges));
-
-            foreach (LongitudinalReinforcement reif in longReif)
-                if (position < 0 || (reif.StartLocation <= position && reif.EndLocation >= position))
-                    rebarLayout.AddRange(ReinforcementLayout(reif, cover, outerProfileEdges, innerProfileEdges));
-
+                foreach (TransverseReinforcement reif in tranReif)
+                    if (position < 0 || (reif.StartLocation <= position && reif.EndLocation >= position))
+                        rebarLayout.AddRange(ReinforcementLayout(reif, tranCover, outerProfileEdges, innerProfileEdges));
+            }
             return rebarLayout;
         }
 
@@ -200,14 +156,6 @@ namespace BH.Engine.Structure
         [Output("points", "The centerlines of the TransverseReinforcement.")]
         public static List<ICurve> ReinforcementLayout(this TransverseReinforcement reinforcement, double cover, List<ICurve> outerProfileEdges, List<ICurve> innerProfileEdges = null)
         {
-            innerProfileEdges = innerProfileEdges ?? new List<ICurve>();
-            double offset = cover + reinforcement.Diameter / 2;
-
-            if (outerProfileEdges.Count() == 0)
-            {
-                Reflection.Compute.RecordError("Cover is to large for the section curve. Could not generate layout.");
-                return new List<ICurve>();
-            }
             return reinforcement.CenterlineLayout.ICurveLayout(outerProfileEdges, innerProfileEdges);
         }
 
@@ -223,40 +171,24 @@ namespace BH.Engine.Structure
         {
             List<ICurve> barLocations = new List<ICurve>();
             ConcreteSection section = bar.SectionProperty as ConcreteSection;
-            if (section == null)
-                return barLocations;
-
-            //Extract Longitudinal and Transverse reinforcement
-            List<LongitudinalReinforcement> longReif = section.LongitudinalReinforcement();
-            List<TransverseReinforcement> tranReif = section.TransverseReinforcement();
-
-            //No longitudinal reinforcement available
-            if (longReif.Count == 0)
-                return barLocations;
 
             List<ICurve> outerProfileEdges;
             List<ICurve> innerProfileEdges;
+            List<LongitudinalReinforcement> longReif;
+            List<TransverseReinforcement> tranReif;
+            double longCover, tranCover;
 
-            ExtractInnerAndOuterEdges(section, out outerProfileEdges, out innerProfileEdges);
+            if (section.CheckSectionAndExtractParameters(out outerProfileEdges, out innerProfileEdges, out longReif, out tranReif, out longCover, out tranCover))
+            {
+                TransformMatrix transformation = bar.BarSectionTranformation();
+                double length = bar.Length();
 
-            //Need at least one external edge curve
-            if (outerProfileEdges.Count == 0)
-                return barLocations;
+                foreach (LongitudinalReinforcement reif in longReif)
+                    barLocations.AddRange(ReinforcementLayout(reif, longCover, outerProfileEdges, innerProfileEdges, length, transformation));
 
-            TransformMatrix transformation = bar.BarSectionTranformation();
-            double length = bar.Length();
-
-            double stirupOffset = 0;
-            if (tranReif.Count > 0)
-                stirupOffset = tranReif.Select(r => r.Diameter).Max();
-
-            double cover = section.MinimumCover + stirupOffset;
-
-            foreach (LongitudinalReinforcement reif in longReif)
-                barLocations.AddRange(ReinforcementLayout(reif, cover, outerProfileEdges, innerProfileEdges, length, transformation));
-
-            foreach (TransverseReinforcement reif in tranReif)
-                barLocations.AddRange(ReinforcementLayout(reif, cover, outerProfileEdges, innerProfileEdges, length, transformation));
+                foreach (TransverseReinforcement reif in tranReif)
+                    barLocations.AddRange(ReinforcementLayout(reif, tranCover, outerProfileEdges, innerProfileEdges, length, transformation));
+            }
 
             return barLocations;
         }
@@ -349,6 +281,37 @@ namespace BH.Engine.Structure
 
         /***************************************************/
         /**** Private Methods                           ****/
+        /***************************************************/
+
+        private static bool CheckSectionAndExtractParameters(this ConcreteSection section, out List<ICurve> outerProfileEdges, out List<ICurve> innerProfileEdges, out List<LongitudinalReinforcement> longReif, out List<TransverseReinforcement> tranReif, out double longCover, out double tranCover)
+        {
+            //Assigning out parameters
+            outerProfileEdges = new List<ICurve>();
+            innerProfileEdges = new List<ICurve>();
+            longReif = section.LongitudinalReinforcement();
+            tranReif = section.TransverseReinforcement();
+            longCover = section.MinimumCover;
+            tranCover = section.MinimumCover;
+
+            if (section == null)
+                return false;
+
+            //No  reinforcement available
+            if (longReif.Count == 0 && tranReif.Count == 0)
+                return false;
+
+            ExtractInnerAndOuterEdges(section, out outerProfileEdges, out innerProfileEdges);
+
+            //Need at least one external edge curve
+            if (outerProfileEdges.Count == 0)
+                return false;
+
+            if (tranReif.Count > 0)
+                longCover += tranReif.Select(r => r.Diameter).Max();
+
+            return true;
+        }
+
         /***************************************************/
 
         private static void ExtractInnerAndOuterEdges(ConcreteSection section, out List<ICurve> outerProfileEdges, out List<ICurve> innerProfileEdges)
