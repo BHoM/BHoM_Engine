@@ -72,11 +72,11 @@ namespace BH.Engine.Data
 
         [Description("Assumes all data to be queried is stored in leaves. i.e. Nodes without children." + 
                      "Gets the data in all nodes which evaluationMethod evaluates to less than the smallest evaluation of the WorstCaseMethod.")]
-        private static IEnumerable<T> ClosestData<TNode,T>(this TNode tree, 
+        public static IEnumerable<T> ClosestData<TNode,T>(this TNode tree, 
                                             Func<TNode, double> evaluationMethod, 
                                             Func<TNode, double> worstCaseMethod,
                                             double maxEvaluation = double.PositiveInfinity,
-                                            double tolerance = Tolerance.Distance) where TNode : Node<T>
+                                            double tolerance = Tolerance.Distance) where TNode : INode<T>
         {
             List<Tuple<double, TNode>> list = new List<Tuple<double, TNode>>()
             {
@@ -87,8 +87,8 @@ namespace BH.Engine.Data
             do
             {
                 // Add the sub items of the closest item to the list
-                list.AddRange((list[closestIndex].Item2).Children.Select(x =>
-                    new Tuple<double, TNode>(evaluationMethod(x as TNode), x as TNode)).ToList());
+                list.AddRange((list[closestIndex].Item2).IChildren<TNode,T>().Select(x =>
+                    new Tuple<double, TNode>(evaluationMethod(x), x)).ToList());
 
                 // remove the parent item
                 list.RemoveAt(closestIndex);
@@ -108,12 +108,12 @@ namespace BH.Engine.Data
                 if (list[closestIndex].Item1 > maxEvaluation)
                     return new List<T>();
 
-            } while (list[closestIndex].Item2.Children.Any());
+            } while (list[closestIndex].Item2.IChildren<TNode, T>().Any());
 
 
             // Save the furthest possible distance from the closest item
             double max = worstCaseMethod(list[closestIndex].Item2) + tolerance;
-            max = Math.Min(max, maxEvaluation);
+            maxEvaluation = Math.Min(max, maxEvaluation);
 
             // gets every item with closest distance less than max, and evaluate new maxes based on the new closest data.
             List<Tuple<double, TNode>> closest = LessThan<TNode,T>(
@@ -124,7 +124,7 @@ namespace BH.Engine.Data
                         tolerance);
 
             // Gets everything closer than that and returns the data
-            return closest.Where(x => x.Item1 < max).SelectMany(x => x.Item2.Values).ToList();
+            return closest.Where(x => x.Item1 < maxEvaluation).SelectMany(x => x.Item2.IValues()).ToList();
         }
 
 
@@ -136,14 +136,14 @@ namespace BH.Engine.Data
                                             Func<TNode, double> evaluationMethod,
                                             Func<TNode, double> worstCaseMethod,
                                             ref double maxEvaluation,
-                                            double tolerance) where TNode : Node<T>
+                                            double tolerance) where TNode : INode<T>
         {
             List<Tuple<double, TNode>> result = new List<Tuple<double, TNode>>();
             // find those which one can get a worst case from to attempt to lower that value asap
             for (int i = 0; i < list.Count; i++)
             {
                 Tuple<double, TNode> o = list[i];
-                if (o.Item1 < maxEvaluation && !o.Item2.Children.Any())
+                if (o.Item1 < maxEvaluation && !o.Item2.IChildren<TNode, T>().Any())
                 {
                     double temp = worstCaseMethod(o.Item2) + tolerance;
                     if (temp < maxEvaluation)
@@ -159,7 +159,7 @@ namespace BH.Engine.Data
                 if (o.Item1 < maxEvaluation)
                 {
                     result.AddRange(LessThan<TNode, T>(
-                        o.Item2.Children.Select(x => new Tuple<double, TNode>(evaluationMethod(x as TNode), x as TNode)).ToList(), 
+                        o.Item2.IChildren<TNode, T>().Select(x => new Tuple<double, TNode>(evaluationMethod(x), x)).ToList(), 
                         evaluationMethod, 
                         worstCaseMethod, 
                         ref maxEvaluation, 

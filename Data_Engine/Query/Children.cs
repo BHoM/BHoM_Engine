@@ -21,15 +21,12 @@
  */
 
 using System;
-using System.Threading;
 using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel;
 using BH.oM.Reflection.Attributes;
 using BH.oM.Base;
-using System.Threading.Tasks;
 using BH.oM.Data.Collections;
-using BH.oM.Geometry;
 
 namespace BH.Engine.Data
 {
@@ -39,29 +36,22 @@ namespace BH.Engine.Data
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static IEnumerable<T> ItemsInRange<T>(this DomainTree<T> tree, DomainBox box)
+        [Description("")]
+        [Input("", "")]
+        [Output("", "")]
+        public static IEnumerable<TNode> IChildren<TNode, T>(this TNode node) where TNode : INode<T>
         {
-            Func<DomainTree<T>, bool> isWithinSearch = x => x.Relation.IsInRange(box);
-
-            return privateItemsInRange<DomainTree<T>, T>(tree, isWithinSearch);
+            return Children(node as dynamic);
         }
 
         /***************************************************/
 
-        [Description("Gets the values and evaluates the children based on the provided function.")]
-        public static IEnumerable<T> privateItemsInRange<TNode, T>(this TNode tree, Func<TNode,bool> isWithinSearch) where TNode : INode<T>
+        public static List<DomainTree<T>> Children<T>(this DomainTree<T> node)
         {
-            if(isWithinSearch(tree))
-            {
-                return tree.IChildren<TNode, T>().SelectMany(x => privateItemsInRange<TNode,T>(x, isWithinSearch)).Concat(tree.IValues());
-            }
-            else
-            {
-                return new List<T>();
-            }
+            return node.Children;
         }
 
         /***************************************************/
-
+        
     }
 }

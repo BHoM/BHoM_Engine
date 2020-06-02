@@ -39,10 +39,10 @@ namespace BH.Engine.Data
         /***************************************************/
 
         [Description("Passes the data down trough the tree to the leaves and computes the relations on the way back")]
-        private static TNode Node<TNode, T>(IEnumerable<TNode> dataItems,
+        public static TNode Node<TNode, T>(IEnumerable<TNode> dataItems,
                                         Func<IEnumerable<TNode>, Output<List<TNode>, List<TNode>>> splitDataMethod,
                                         Func<IEnumerable<TNode>, TNode> setChildrenToNode,
-                                        int treeDegree = 16, int leafSize = 16) where TNode : Node<T>
+                                        int treeDegree = 16, int leafSize = 16) where TNode : INode<T>
         {
 
             Func<IEnumerable<TNode>, IEnumerable<IEnumerable<TNode>>> partitionMethod =
@@ -79,16 +79,16 @@ namespace BH.Engine.Data
                 };
 
 
-            return Node<TNode,T>(dataItems, partitionMethod, setChildrenToNode, leafSize);
+            return Node<TNode, T>(dataItems, partitionMethod, setChildrenToNode, leafSize);
         }
 
         /***************************************************/
 
         [Description("Passes the data down trough the tree to the leaves and computes the relations on the way back")]
-        private static INode Node<INode, T>(IEnumerable<INode> dataItems,
-                                            Func<IEnumerable<INode>, IEnumerable<IEnumerable<INode>>> partitionMethod,
-                                            Func<IEnumerable<INode>, INode> setChildrenToNode,
-                                            int leafSize = 16) where INode : Node<T>
+        public static TNode Node<TNode,T>(IEnumerable<TNode> dataItems,
+                                            Func<IEnumerable<TNode>, IEnumerable<IEnumerable<TNode>>> partitionMethod,
+                                            Func<IEnumerable<TNode>, TNode> setChildrenToNode,
+                                            int leafSize = 16) where TNode : INode<T>
         {
 
             leafSize = Math.Min(leafSize, 2);
@@ -96,7 +96,7 @@ namespace BH.Engine.Data
             if (dataItems.Count() > leafSize)
             {
                 // Partition the data where each collection will form a child Node
-                IEnumerable<IEnumerable<INode>> subLists = partitionMethod(dataItems);
+                IEnumerable<IEnumerable<TNode>> subLists = partitionMethod(dataItems);
 
                 // Singular solution, stop recursion
                 if (subLists.Count() == 1)
@@ -106,7 +106,7 @@ namespace BH.Engine.Data
                 }
 
                 // Recursion
-                IEnumerable<INode> branches = subLists.Select(x => Create.Node<INode, T>(x, partitionMethod, setChildrenToNode, leafSize));
+                IEnumerable<TNode> branches = subLists.Select(x => Create.Node<TNode, T>(x, partitionMethod, setChildrenToNode, leafSize));
 
                 // Sets the children to the Node and computes it's Relation afterwards
                 return setChildrenToNode(branches);

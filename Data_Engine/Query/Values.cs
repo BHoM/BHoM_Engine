@@ -45,6 +45,23 @@ namespace BH.Engine.Data
         }
 
         /***************************************************/
+
+        [Description("")]
+        [Input("", "")]
+        [Output("", "")]
+        public static IEnumerable<T> IValues<T>(this INode<T> node)
+        {
+            return Values(node as dynamic);
+        }
+
+        /***************************************************/
+
+        public static List<T> Values<T>(this DomainTree<T> node)
+        {
+            return node.Values ?? new List<T>();
+        }
+
+        /***************************************************/
     }
 }
 

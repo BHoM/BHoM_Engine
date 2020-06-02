@@ -67,7 +67,7 @@ namespace BH.Engine.Data
             {
                 DomainTree<T> tree = new DomainTree<T>()
                 {
-                    Children = children,
+                    Children = children.ToList(),
                     Relation = children.Select(x => x.Relation).Aggregate((x, y) => x + y)
                 };
 
