@@ -82,7 +82,8 @@ namespace BH.Engine.Geometry
 
             Vector axis1 = plane.Normal.CrossProduct(circle.Normal);
             Vector axis2 = axis1.CrossProduct(plane.Normal);
-            double radius2 = circle.Radius * circle.Normal.DotProduct(plane.Normal);
+            double denominator = circle.Normal.DotProduct(plane.Normal);
+            double radius2 = Math.Abs(denominator) < Tolerance.Distance ? double.PositiveInfinity : circle.Radius / denominator;
             
             return new Ellipse { Centre = circle.Centre.ProjectAlong(plane, vector), Axis1 = axis1, Axis2 = axis2, Radius1 = circle.Radius, Radius2 = radius2 };
         }
