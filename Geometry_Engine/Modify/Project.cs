@@ -112,22 +112,10 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static Ellipse Project(this Ellipse ellipse, Plane p)
+        public static ICurve Project(this Ellipse ellipse, Plane p)
         {
-            Vector axis1 = ellipse.Axis1.Project(p);
-            Vector axis2 = ellipse.Axis2.Project(p);
-
-            double radius1 = Math.Sqrt(axis1.SquareLength() / ellipse.Axis1.SquareLength());
-            double radius2 = Math.Sqrt(axis2.SquareLength() / ellipse.Axis2.SquareLength());
-
-            return new Ellipse()
-            {
-                Axis1 = axis1,
-                Axis2 = axis2,
-                Centre = ellipse.Centre.Project(p),
-                Radius1 = ellipse.Radius1 * radius1,
-                Radius2 = ellipse.Radius2 * radius2
-            };
+            TransformMatrix project = Create.ProjectionMatrix(p, p.Normal);
+            return ellipse.Transform(project);
         }
 
         /***************************************************/
