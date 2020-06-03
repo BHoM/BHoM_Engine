@@ -38,11 +38,11 @@ namespace BH.Engine.Physical
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates a physical reinforcement element. Bend radius will be calculated based on diameter")]
+        [Description("Creates a physical reinforcement element. Bend radius value is based on Eurocode 1992-1-1. For diameters less than or equal to 0.016m bend diameter will be equal 4 times the stirrups's diameter and 7 times for greater than 0.016m. Note that in the Eurocode there is an inner bend diameter and in Stirrup parameters there is a centerline radius.")]
         [InputFromProperty("centreCurve")]
         [InputFromProperty("diameter")]
         [InputFromProperty("material")]
-        [Output("PrimaryReinforcingBar", "The created physical Primary Reinforcing bar")]
+        [Output("PrimaryReinforcingBar", "The created physical Primary Reinforcing bar.")]
         public static PrimaryReinforcingBar PrimaryReinforcingBar(ICurve centreCurve, double diameter, Material material)
         {
             return new PrimaryReinforcingBar
@@ -50,26 +50,7 @@ namespace BH.Engine.Physical
                 CentreCurve = centreCurve,
                 Diameter = diameter,
                 Material = material,
-                BendRadius = diameter < 0.02 ? 5 * diameter : 7 * diameter //based on PN-EN 1992-1-1 to be discussed how to unify it or select specific standard
-            };
-        }
-
-        /***************************************************/
-
-        [Description("Creates a physical reinforcement element")]
-        [InputFromProperty("centreCurve")]
-        [InputFromProperty("diameter")]
-        [InputFromProperty("material")]
-        [InputFromProperty("bendRadius")]
-        [Output("PrimaryReinforcingBar", "The created physical Primary Reinforcing bar")]
-        public static PrimaryReinforcingBar PrimaryReinforcingBar(ICurve centreCurve, double diameter, Material material, double bendRadius)
-        {
-            return new PrimaryReinforcingBar
-            {
-                CentreCurve = centreCurve,
-                Diameter = diameter,
-                Material = material,
-                BendRadius = bendRadius
+                BendRadius = diameter <= 0.016 ? (4.5 * diameter) / 2 : (7.5 * diameter) / 2
             };
         }
 
