@@ -306,7 +306,7 @@ namespace BH.Engine.Geometry
 
         private static IGeometry Transform(this IGeometry geometry, TransformMatrix transform)
         {
-            Reflection.Compute.RecordError("Transform not implemented for: " + geometry.GetType().Name);
+            Reflection.Compute.RecordError("Transform method has not been implemented for type " + geometry.GetType().Name);
             return null;
         }
 
@@ -332,4 +332,3 @@ namespace BH.Engine.Geometry
         /***************************************************/
     }
 }
-

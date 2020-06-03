@@ -244,11 +244,10 @@ namespace BH.Engine.Geometry
 
         private static IGeometry Rotate(this IGeometry geometry, double rad, Vector axis)
         {
-            Engine.Reflection.Compute.RecordError("Rotate not implemented for: " + geometry.GetType().Name);
+            Engine.Reflection.Compute.RecordError("Rotate method has not been implemented for type " + geometry.GetType().Name);
             return null;
         }
 
         /***************************************************/
     }
 }
-

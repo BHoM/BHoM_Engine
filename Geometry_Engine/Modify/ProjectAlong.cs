@@ -233,11 +233,10 @@ namespace BH.Engine.Geometry
 
         private static IGeometry ProjectAlong(this IGeometry geometry, Plane plane, Vector vector)
         {
-            Reflection.Compute.RecordError("ProjectAlong not implemented for: " + geometry.GetType().Name);
+            Reflection.Compute.RecordError("ProjectAlong method has not been implemented for type " + geometry.GetType().Name);
             return null;
         }
 
         /***************************************************/
     }
 }
-
