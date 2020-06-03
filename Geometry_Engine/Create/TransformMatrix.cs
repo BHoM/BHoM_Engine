@@ -117,7 +117,7 @@ namespace BH.Engine.Geometry
             Point y = new Point() { Y = 1 };
             Point z = new Point() { Z = 1 };
 
-            vector = vector ?? plane.Normal;
+            vector = vector == null || vector.SquareLength() < Tolerance.Distance * Tolerance.Distance ? plane.Normal : vector;
 
             Vector refVector = (new Point()).ProjectAlong(plane, vector) - new Point();
 
