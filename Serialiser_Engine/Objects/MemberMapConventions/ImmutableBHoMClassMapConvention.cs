@@ -115,7 +115,7 @@ namespace BH.Engine.Serialiser.MemberMapConventions
             }
             else
             {
-                //This case should not happen for compliant BHoMObejcts, as all properties should have getters, but adding to be safe.
+                //This case should not happen for compliant BHoMObjects, as all properties should have getters, but adding to be safe.
                 var setMethod = property.GetSetMethod(false);
                 return setMethod.GetBaseDefinition() != getMethod;
             }
