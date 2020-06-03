@@ -38,7 +38,7 @@ namespace BH.Engine.Spatial
         /***************************************************/
 
         [Description("Creates an explicit curve layout. Curves not in the global XY-plane will get projected to it.")]
-        [Input("curves", "The explicit shape of curves in the layout. All curves shall be placed in the global XY plane.\nCurves not in the global XY-plane will get projected to it.")]
+        [Input("curves", "The explicit shape of curves in the layout. All curves should be planar curves in the global XY plane.\nCurves not in the global XY-plane will get projected to it.")]
         [Output("curveLayout", "Created explicit curve layout.")]
         public static ExplicitCurveLayout ExplicitCurveLayout(IEnumerable<ICurve> curves)
         {
@@ -46,7 +46,7 @@ namespace BH.Engine.Spatial
             if (xyCurves.Any(curve => !curve.IIsInPlane(Plane.XY, Tolerance.Distance)))
             {
                 xyCurves = curves.Select(curve => curve.IProject(Plane.XY));
-                Reflection.Compute.RecordWarning("Curves has been projected to the global XY-plane");
+                Reflection.Compute.RecordWarning("Curves has been projected to the global XY-plane.");
             }
 
             return new ExplicitCurveLayout(xyCurves);
