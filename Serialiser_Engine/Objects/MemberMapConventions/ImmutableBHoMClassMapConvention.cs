@@ -117,7 +117,7 @@ namespace BH.Engine.Serialiser.MemberMapConventions
             {
                 //This case should not happen for compliant BHoMObjects, as all properties should have getters, but adding to be safe.
                 var setMethod = property.GetSetMethod(false);
-                return setMethod.GetBaseDefinition() != getMethod;
+                return setMethod.GetBaseDefinition() != setMethod;
             }
         }
 
