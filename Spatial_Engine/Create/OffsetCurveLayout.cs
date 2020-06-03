@@ -40,7 +40,7 @@ namespace BH.Engine.Spatial
         [Description("Creates an offseet curve layout.")]
         [InputFromProperty("offset")]
         [Output("curveLayout", "Created offset curve layout.")]
-        public static OffsetCurveLayout OffsetCurveLayout(double offset)
+        public static OffsetCurveLayout OffsetCurveLayout(double offset = 0)
         {            
             return new OffsetCurveLayout(offset);
         }

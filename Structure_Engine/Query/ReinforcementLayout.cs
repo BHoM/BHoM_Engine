@@ -298,8 +298,14 @@ namespace BH.Engine.Structure
 
             longReif = section.LongitudinalReinforcement();
             tranReif = section.TransverseReinforcement();
-            longCover = section.MinimumCover;
-            tranCover = section.MinimumCover;           
+            
+            //Check if any offsetlayout, if so, check if larger than minimum cover
+            if (tranReif.Any(x => x.CenterlineLayout is OffsetCurveLayout))
+            {
+                double maxCover = Math.Max(section.MinimumCover, tranReif.Select(x => x.CenterlineLayout).OfType<OffsetCurveLayout>().Max(x => x.Offset));
+                longCover = maxCover;
+                tranCover = maxCover;
+            }
 
             //No  reinforcement available
             if (longReif.Count == 0 && tranReif.Count == 0)
@@ -311,8 +317,13 @@ namespace BH.Engine.Structure
             if (outerProfileEdges.Count == 0)
                 return false;
 
+            //Add additional offset to include transverse rebar's diameters
             if (tranReif.Count > 0)
-                longCover += tranReif.Select(r => r.Diameter).Max();
+            {
+                double maxTranDiam = tranReif.Select(r => r.Diameter).Max();
+                longCover += maxTranDiam;
+                tranCover += maxTranDiam / 2;
+            }
 
             return true;
         }
