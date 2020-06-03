@@ -38,12 +38,6 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Deprecated("2.4", "Deprecated to expose tolerance as optional parameter for greater control", null, "AddOpenings(this List<Panel> panels, List<Opening> openings, double tolerance = Tolerance.Distance)")]
-        public static List<Panel> AddOpenings(this List<Panel> panels, List<Opening> openings)
-        {
-            return panels.AddOpenings(openings, BH.oM.Geometry.Tolerance.Distance);
-        }
-
         [Description("Returns a list of Environment Panel with the provided openings added. Openings are added to the panels which contain them geometrically.")]
         [Input("panels", "A collection of Environment Panels to add the opening to")]
         [Input("openings", "A collection of Environment Openings to add to the panels")]

@@ -43,18 +43,6 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Deprecated("2.4", "Deprecated to expose tolerance as optional parameter for greater control", null, "NormalAwayFromSpace(this Panel panel, List<Panel> panelsAsSpace, double tolerance = Tolerance.Distance)")]
-        public static bool NormalAwayFromSpace(this Panel panel, List<Panel> panelsAsSpace)
-        {
-            return panel.NormalAwayFromSpace(panelsAsSpace, BH.oM.Geometry.Tolerance.Distance);
-        }
-
-        [Deprecated("2.4", "Deprecated to expose tolerance as optional parameter for greater control", null, "NormalAwayFromSpace(this Polyline polyline, List<Panel> panelsAsSpace, double tolerance = Tolerance.Distance)")]
-        public static bool NormalAwayFromSpace(this Polyline polyline, List<Panel> panelsAsSpace)
-        {
-            return polyline.NormalAwayFromSpace(panelsAsSpace, BH.oM.Geometry.Tolerance.Distance);
-        }
-
         [Description("Returns whether the normal of a given Environment Panel is facing away from the containing space")]
         [Input("panel", "An Environment Panel to check")]
         [Input("panelsAsSpace", "A collection of Environment Panels which represent a single space")]

@@ -35,6 +35,7 @@ namespace BH.Engine.Spatial
         /****            IElement2D            ****/
         /******************************************/
 
+        [PreviousVersion("3.2", "BH.Engine.Common.Query.IInternalOutlineCurves(BH.oM.Dimensional.IElement2D)")]
         [Description("Queries the IElement2Ds internal IElement2Ds outline curves.")]
         [Input("element2D", "The IElement2D to get the internal IElement2Ds outlinecurves from.")]
         [Output("outlines", "A list of the IElement2Ds internal elements outline curves. Each internal element returns a single outline curve.")]
