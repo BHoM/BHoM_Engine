@@ -46,7 +46,7 @@ namespace BH.Engine.Structure
         [InputFromProperty("endLocation")]
         [Input("material", "Material of the Rebars. If null, a default material will be pulled from the Datasets.")]
         [Output("reinforcement", "The created Reinforcement to be applied to a ConcreteSection.")]
-        public static TransverseReinforcement TransverseReinforcement(ICurveLaout curveLayout, double diameter, double spacing, bool adjustSpacingToFit, double startLocation = 0, double endLocation = 1, IMaterialFragment material = null)
+        public static TransverseReinforcement TransverseReinforcement(ICurveLayout curveLayout, double diameter, double spacing, bool adjustSpacingToFit, double startLocation = 0, double endLocation = 1, IMaterialFragment material = null)
         {
             CheckEndLocations(ref startLocation, ref endLocation);
             return new TransverseReinforcement
