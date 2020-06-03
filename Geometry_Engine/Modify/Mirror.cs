@@ -238,11 +238,10 @@ namespace BH.Engine.Geometry
 
         private static IGeometry Mirror(this IGeometry geometry, Plane p)
         {
-            Reflection.Compute.RecordError("Mirror not implemented for: " + geometry.GetType().Name);
+            Reflection.Compute.RecordError("Mirror method has not been implemented for type " + geometry.GetType().Name);
             return null;
         }
 
         /***************************************************/
     }
 }
-
