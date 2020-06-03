@@ -222,7 +222,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Gets the TransverseReinforcement centrelines as a list of polylines, based on inner and outer profile edges and Bar parameters.")]
+        [Description("Gets the TransverseReinforcement centrelines as a list of curves, based on inner and outer profile edges and Bar parameters.")]
         [Input("reinforcement", "The TransverseReinforcement to extract the centrelines from.")]
         [Input("cover", "Rebar cover.", typeof(Length))]
         [Input("outerProfileEdges", "The outer profile edges of the ConcreteSection to be populated.")]
