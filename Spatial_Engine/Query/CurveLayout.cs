@@ -39,7 +39,7 @@ namespace BH.Engine.Spatial
         /***************************************************/
 
         [Description("Queries the curves from the Layout based on the layout and a set of region curves and opening curves associated with it.")]
-        [Input("explicitCurveLayout", "The layout object to query the curves from.")]
+        [Input("offsetCurveLayout", "The layout object to query the curves from.")]
         [Input("hostRegionCurves", "The region curves of the objects associated with the layout. Unused for Explicit layouts.")]
         [Input("openingCurves", "Optional opening curves in the region. Unused for ExplicitLayout.")]
         [Output("curves", "The Curves stored in the ExplicitLayout object.")]
