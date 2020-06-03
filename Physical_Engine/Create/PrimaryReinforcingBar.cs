@@ -38,7 +38,7 @@ namespace BH.Engine.Physical
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates a physical reinforcement element. Bend radius value is based on Eurocode 1992-1-1. For diameters less than or equal to 0.016m bend diameter will be equal 4 times the stirrups's diameter and 7 times for greater than 0.016m. Note that in the Eurocode there is an inner bend diameter and in Stirrup parameters there is a centerline radius.")]
+        [Description("Creates a physical reinforcement element. Calculates BendRadius automatically value is based on Eurocode 1992-1-1. \nFor diameters less than or equal to 0.016m inner bend diameter will be equal 4 times the stirrups's diameter and 7 times for bar diameters greater than 0.016m. \nNote that in values in Eurocode refers to the inner bend diameter and PrimaryReinforcingBar in BHoM defines centerline radius, why values will be adjusted to account for this.")]
         [InputFromProperty("centreCurve")]
         [InputFromProperty("diameter")]
         [InputFromProperty("material")]
