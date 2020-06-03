@@ -156,7 +156,7 @@ namespace BH.Engine.Structure
         [Output("points", "The centerlines of the TransverseReinforcement.")]
         public static List<ICurve> ReinforcementLayout(this TransverseReinforcement reinforcement, double cover, List<ICurve> outerProfileEdges, List<ICurve> innerProfileEdges = null)
         {
-            return reinforcement.CenterlineLayout.ICurveLayout(outerProfileEdges, innerProfileEdges);
+            return reinforcement.CenterlineLayout.ICurveLayout(outerProfileEdges, innerProfileEdges, cover);
         }
 
 
@@ -227,13 +227,13 @@ namespace BH.Engine.Structure
         [Input("cover", "Rebar cover.", typeof(Length))]
         [Input("outerProfileEdges", "The outer profile edges of the ConcreteSection to be populated.")]
         [Input("innerProfileEdges", "The inner profile edges, or openings, of the ConcreteSection to be populated.")]
-        [Input("length", "Length of the host Bar used to generate the lines", typeof(Length))]
+        [Input("length", "Length of the host Bar used to generate the lines.", typeof(Length))]
         [Input("transformation", "Transformation needed to move the lines from the position of the host element.")]
         [Output("points", "The centrelines of the LongitudinalReinforcement.")]
         public static List<ICurve> ReinforcementLayout(this TransverseReinforcement reinforcement, double cover, List<ICurve> outerProfileEdges, List<ICurve> innerProfileEdges, double length, TransformMatrix transformation)
         {
             List<ICurve> rebarLines = new List<ICurve>();
-            List<ICurve> stirrupOutline = reinforcement.CenterlineLayout.ICurveLayout(outerProfileEdges, innerProfileEdges);
+            List<ICurve> stirrupOutline = reinforcement.ReinforcementLayout(cover, outerProfileEdges, innerProfileEdges);
 
             Vector dir = Vector.ZAxis.Transform(transformation);
             double stirrupRange = (reinforcement.EndLocation - reinforcement.StartLocation) * length - (2 * cover + reinforcement.Diameter);
@@ -270,7 +270,7 @@ namespace BH.Engine.Structure
         [Input("cover", "Rebar cover.", typeof(Length))]
         [Input("outerProfileEdges", "The outer profile edges of the ConcreteSection to be populated.")]
         [Input("innerProfileEdges", "The inner profile edges, or openings, of the ConcreteSection to be populated.")]
-        [Input("length", "Length of the host Bar used to generate the lines", typeof(Length))]
+        [Input("length", "Length of the host Bar used to generate the lines.", typeof(Length))]
         [Input("transformation", "Transformation needed to move the lines from the position of the host element.")]
         [Output("points", "The centrelines of the LongitudinalReinforcement.")]
         public static List<ICurve> IReinforcementLayout(this IBarReinforcement reinforcement, double cover, List<ICurve> outerProfileEdges, List<ICurve> innerProfileEdges, double length, TransformMatrix transformation)
@@ -288,13 +288,18 @@ namespace BH.Engine.Structure
             //Assigning out parameters
             outerProfileEdges = new List<ICurve>();
             innerProfileEdges = new List<ICurve>();
-            longReif = section.LongitudinalReinforcement();
-            tranReif = section.TransverseReinforcement();
-            longCover = section.MinimumCover;
-            tranCover = section.MinimumCover;
+            longReif = new List<LongitudinalReinforcement>();
+            tranReif = new List<TransverseReinforcement>();
+            longCover = 0;
+            tranCover = 0;
 
             if (section == null)
                 return false;
+
+            longReif = section.LongitudinalReinforcement();
+            tranReif = section.TransverseReinforcement();
+            longCover = section.MinimumCover;
+            tranCover = section.MinimumCover;           
 
             //No  reinforcement available
             if (longReif.Count == 0 && tranReif.Count == 0)
