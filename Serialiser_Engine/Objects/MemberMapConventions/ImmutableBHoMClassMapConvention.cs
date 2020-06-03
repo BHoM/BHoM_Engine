@@ -109,7 +109,16 @@ namespace BH.Engine.Serialiser.MemberMapConventions
         private bool IsOverridden(PropertyInfo property)
         {
             var getMethod = property.GetGetMethod(false);
-            return getMethod.GetBaseDefinition() != getMethod;
+            if (getMethod != null)
+            {
+                return getMethod.GetBaseDefinition() != getMethod;
+            }
+            else
+            {
+                //This case should not happen for compliant BHoMObejcts, as all properties should have getters, but adding to be safe.
+                var setMethod = property.GetSetMethod(false);
+                return setMethod.GetBaseDefinition() != getMethod;
+            }
         }
 
         /***************************************************/
