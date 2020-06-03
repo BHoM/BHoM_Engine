@@ -116,10 +116,10 @@ namespace BH.Engine.Versioning
 
             // Find the upgrader file
             string upgraderName = "BHoMUpgrader" + version.Replace(".", "");
-            string processFile = "bin\\" + upgraderName + "\\" + upgraderName + ".exe";
+            string processFile =  upgraderName + "\\" + upgraderName + ".exe";
             if (!File.Exists(processFile))
             {
-                processFile = Path.Combine(Reflection.Query.BHoMFolder(), processFile);
+                processFile = Path.Combine(@"C:\ProgramData\BHoM\Upgrades", processFile);
 
                 if (!File.Exists(processFile))
                 {
