@@ -24,6 +24,7 @@ using BH.oM.Geometry;
 using BH.oM.Geometry.CoordinateSystem;
 using BH.oM.Reflection.Attributes;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace BH.Engine.Geometry
@@ -55,6 +56,13 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        public static Basis Mirror(this Basis basis, Plane p)
+        {
+            return new Basis(basis.X.Mirror(p), basis.Y.Mirror(p), basis.Z.Mirror(p));
+        }
+
+        /***************************************************/
+
         public static Cartesian Mirror(this Cartesian coordinateSystem, Plane p)
         {
             return Create.CartesianCoordinateSystem(coordinateSystem.Origin.Mirror(p), coordinateSystem.X.Mirror(p), coordinateSystem.Y.Mirror(p));
@@ -79,6 +87,20 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        public static Ellipse Mirror(this Ellipse ellipse, Plane p)
+        {
+            return new Ellipse
+            {
+                Axis1 = ellipse.Axis1.Mirror(p),
+                Axis2 = ellipse.Axis2.Mirror(p),
+                Centre = ellipse.Centre.Mirror(p),
+                Radius1 = ellipse.Radius1,
+                Radius2 = ellipse.Radius2,
+            };
+        }
+
+        /***************************************************/
+
         public static Line Mirror(this Line line, Plane p)
         {
             return new Line { Start = line.Start.Mirror(p), End = line.End.Mirror(p) };
@@ -86,10 +108,14 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [NotImplemented]
         public static NurbsCurve Mirror(this NurbsCurve curve, Plane p)
         {
-            throw new NotImplementedException();
+            return new NurbsCurve()
+            {
+                ControlPoints = curve.ControlPoints.Select(x => x.Mirror(p)).ToList(),
+                Weights = curve.Weights,
+                Knots = curve.Knots
+            };
         }
 
 
@@ -126,10 +152,21 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [NotImplemented]
         public static NurbsSurface Mirror(this NurbsSurface surface, Plane p)
         {
-            throw new NotImplementedException();
+            List<SurfaceTrim> innerTrims = surface.InnerTrims.Select(x => new SurfaceTrim(IMirror(x.Curve3d, p), x.Curve2d)).ToList();
+
+            List<SurfaceTrim> outerTrims = surface.OuterTrims.Select(x => new SurfaceTrim(IMirror(x.Curve3d, p), x.Curve2d)).ToList();
+
+            return new NurbsSurface(
+                surface.ControlPoints.Select(x => Mirror(x, p)),
+                surface.Weights,
+                surface.UKnots,
+                surface.VKnots,
+                surface.UDegree,
+                surface.VDegree,
+                innerTrims,
+                outerTrims);
         }
 
         /***************************************************/
@@ -137,6 +174,13 @@ namespace BH.Engine.Geometry
         public static Pipe Mirror(this Pipe surface, Plane p)
         {
             return new Pipe { Centreline = surface.Centreline.IMirror(p), Radius = surface.Radius, Capped = surface.Capped };
+        }
+
+        /***************************************************/
+
+        public static PlanarSurface Mirror(this PlanarSurface surface, Plane p)
+        {
+            return new PlanarSurface(surface.ExternalBoundary.IMirror(p), surface.InternalBoundaries.Select(x => x.IMirror(p)).ToList());
         }
 
         /***************************************************/
@@ -187,7 +231,17 @@ namespace BH.Engine.Geometry
             return Mirror(geometry as dynamic, p);
         }
 
+
+        /***************************************************/
+        /**** Private Methods - Fallback                ****/
+        /***************************************************/
+
+        private static IGeometry Mirror(this IGeometry geometry, Plane p)
+        {
+            Reflection.Compute.RecordError("Mirror method has not been implemented for type " + geometry.GetType().Name);
+            return null;
+        }
+
         /***************************************************/
     }
 }
-

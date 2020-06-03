@@ -24,6 +24,7 @@ using BH.oM.Geometry;
 using BH.oM.Geometry.CoordinateSystem;
 using BH.oM.Reflection.Attributes;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace BH.Engine.Geometry
@@ -65,6 +66,13 @@ namespace BH.Engine.Geometry
         public static Plane Transform(this Plane plane, TransformMatrix transform)
         {
             return new Plane { Origin = plane.Origin.Transform(transform), Normal = plane.Normal.Transform(transform).Normalise() };
+        }
+
+        /***************************************************/
+
+        public static Basis Transform(this Basis basis, TransformMatrix transform)
+        {
+            return Create.Basis(basis.X.Transform(transform), basis.Y.Transform(transform));
         }
 
         /***************************************************/
@@ -192,10 +200,21 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [NotImplemented]
         public static NurbsSurface Transform(this NurbsSurface surface, TransformMatrix transform)
         {
-            throw new NotImplementedException();
+            List<SurfaceTrim> innerTrims = surface.InnerTrims.Select(x => new SurfaceTrim(ITransform(x.Curve3d, transform), x.Curve2d)).ToList();
+
+            List<SurfaceTrim> outerTrims = surface.OuterTrims.Select(x => new SurfaceTrim(ITransform(x.Curve3d, transform), x.Curve2d)).ToList();
+
+            return new NurbsSurface(
+                surface.ControlPoints.Select(x => Transform(x, transform)),
+                surface.Weights,
+                surface.UKnots,
+                surface.VKnots,
+                surface.UDegree,
+                surface.VDegree,
+                innerTrims,
+                outerTrims);
         }
 
         /***************************************************/
@@ -207,6 +226,13 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        public static PlanarSurface Transform(this PlanarSurface surface, TransformMatrix transform)
+        {
+            return new PlanarSurface(surface.ExternalBoundary.ITransform(transform), surface.InternalBoundaries.Select(x => x.ITransform(transform)).ToList());
+        }
+
+        /***************************************************/
+
         public static PolySurface Transform(this PolySurface surface, TransformMatrix transform)
         {
             return new PolySurface { Surfaces = surface.Surfaces.Select(x => x.ITransform(transform)).ToList() };
@@ -214,7 +240,7 @@ namespace BH.Engine.Geometry
 
 
         /***************************************************/
-        /**** Public Methods - Others                   ****/
+        /**** Public Methods - Mesh                     ****/
         /***************************************************/
 
         public static Mesh Transform(this Mesh mesh, TransformMatrix transform)
@@ -222,6 +248,19 @@ namespace BH.Engine.Geometry
             return new Mesh { Vertices = mesh.Vertices.Select(x => x.Transform(transform)).ToList(), Faces = mesh.Faces.Select(x => x.Clone() as Face).ToList() };
         }
 
+
+        /***************************************************/
+        /**** Public Methods - Solid                    ****/
+        /***************************************************/
+
+        public static BoundaryRepresentation Transform(this BoundaryRepresentation solid, TransformMatrix transform)
+        {
+            return new BoundaryRepresentation(solid.Surfaces.Select(x => x.ITransform(transform)));
+        }
+
+
+        /***************************************************/
+        /**** Public Methods - Misc                     ****/
         /***************************************************/
 
         public static CompositeGeometry Transform(this CompositeGeometry group, TransformMatrix transform)
@@ -253,9 +292,24 @@ namespace BH.Engine.Geometry
             return Transform(geometry as dynamic, transform);
         }
 
+        /***************************************************/
+
+        public static ISurface ITransform(this ISolid geometry, TransformMatrix transform)
+        {
+            return Transform(geometry as dynamic, transform);
+        }
+
 
         /***************************************************/
         /**** Private Methods                           ****/
+        /***************************************************/
+
+        private static IGeometry Transform(this IGeometry geometry, TransformMatrix transform)
+        {
+            Reflection.Compute.RecordError("Transform method has not been implemented for type " + geometry.GetType().Name);
+            return null;
+        }
+
         /***************************************************/
 
         private static bool IsUniformScaling(this TransformMatrix transform)
@@ -278,4 +332,3 @@ namespace BH.Engine.Geometry
         /***************************************************/
     }
 }
-

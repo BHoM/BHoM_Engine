@@ -64,7 +64,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Create\ConstructionPhase.cs" />
     <Compile Include="Create\Material.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Query\ShearModulus.cs" />

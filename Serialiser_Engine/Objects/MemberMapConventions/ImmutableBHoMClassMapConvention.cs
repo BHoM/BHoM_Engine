@@ -80,7 +80,7 @@ namespace BH.Engine.Serialiser.MemberMapConventions
                 
                 foreach (var property in properties)
                 {
-                    if (property.DeclaringType == classType)
+                    if (property.DeclaringType == classType && !IsOverridden(property))
                         classMap.MapMember(property);
                     else if(!property.CanWrite)
                     {
@@ -103,6 +103,25 @@ namespace BH.Engine.Serialiser.MemberMapConventions
                 }
             }
         }
+
+        /***************************************************/
+
+        private bool IsOverridden(PropertyInfo property)
+        {
+            var getMethod = property.GetGetMethod(false);
+            if (getMethod != null)
+            {
+                return getMethod.GetBaseDefinition() != getMethod;
+            }
+            else
+            {
+                //This case should not happen for compliant BHoMObjects, as all properties should have getters, but adding to be safe.
+                var setMethod = property.GetSetMethod(false);
+                return setMethod.GetBaseDefinition() != setMethod;
+            }
+        }
+
+        /***************************************************/
     }
 }
 

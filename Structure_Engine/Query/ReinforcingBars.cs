@@ -50,53 +50,48 @@ namespace BH.Engine.Structure
         [Output("rebars", "All physical ReinforcingBar on the provided Bar.")]
         public static List<IReinforcingBar> ReinforcingBars(this Bar bar)
         {
+            List<IReinforcingBar> rebars = new List<IReinforcingBar>();
             ConcreteSection section = bar.SectionProperty as ConcreteSection;
-            if (section == null)
-                return new List<IReinforcingBar>();
-
-            //Extract Longitudinal reinforcement
-            List<LongitudinalReinforcement> longReif = section.LongitudinalReinforcement();
-
-            //No longitudinal reinforcement available
-            if (longReif.Count == 0)
-                return new List<IReinforcingBar>();
 
             List<ICurve> outerProfileEdges;
             List<ICurve> innerProfileEdges;
+            List<LongitudinalReinforcement> longReif;
+            List<TransverseReinforcement> tranReif;
+            double longCover, tranCover;
 
-            ExtractInnerAndOuterEdges(section, out outerProfileEdges, out innerProfileEdges);
-
-            //Need at least one external edge curve
-            if (outerProfileEdges.Count == 0)
-                return new List<IReinforcingBar>();
-
-
-            TransformMatrix transformation = bar.BarSectionTranformation();
-            double length = bar.Length();
-
-            //TODO: include stirups for offset distance
-            double stirupOffset = 0;
-            double cover = section.MinimumCover + stirupOffset;
-
-            List<IReinforcingBar> rebars = new List<IReinforcingBar>();
-
-            foreach (LongitudinalReinforcement reif in longReif)
+            if (section.CheckSectionAndExtractParameters(out outerProfileEdges, out innerProfileEdges, out longReif, out tranReif, out longCover, out tranCover))
             {
-                Material material;
-                if (reif.Material != null)
-                    material = Engine.Physical.Create.Material(reif.Material);
-                else
-                    material = new Material();
+                TransformMatrix transformation = bar.BarSectionTranformation();
+                double length = bar.Length();
 
-                foreach (Line centreLine in reif.ReinforcementLayout(cover, outerProfileEdges, innerProfileEdges, length, transformation))
+                List<IBarReinforcement> barReinf = new List<IBarReinforcement>();
+                barReinf.AddRange(longReif);
+                barReinf.AddRange(tranReif);
+
+                foreach (IBarReinforcement reif in barReinf)
                 {
-                    PrimaryReinforcingBar rebar = new PrimaryReinforcingBar
+                    Material material;
+                    if (reif.Material != null)
+                        material = Physical.Create.Material(reif.Material);
+                    else
+                        material = new Material();
+
+                    if (reif is LongitudinalReinforcement)
                     {
-                        CentreCurve = centreLine,
-                        Diameter = reif.Diameter,
-                        Material = material,
-                    };
-                    rebars.Add(rebar);
+                        foreach (ICurve centreLine in reif.IReinforcementLayout(longCover, outerProfileEdges, innerProfileEdges, length, transformation))
+                        {
+                            PrimaryReinforcingBar rebar = Physical.Create.PrimaryReinforcingBar(centreLine, reif.Diameter, material);
+                            rebars.Add(rebar);
+                        }
+                    }
+                    else if (reif is TransverseReinforcement)
+                    {
+                        foreach (ICurve centreLine in reif.IReinforcementLayout(tranCover, outerProfileEdges, innerProfileEdges, length, transformation))
+                        {
+                            Stirrup rebar = Physical.Create.Stirrup(centreLine, reif.Diameter, material);
+                            rebars.Add(rebar);
+                        }
+                    }
                 }
             }
 
