@@ -46,7 +46,7 @@ namespace BH.Engine.Environment
 
         [Description("Filter a collection of Environment MeshResult objects to those which match the given result case")]
         [Input("results", "A collection of Environment MeshResult objects to filter")]
-        [Input("resutlCase", "The Result Case to filter by")]
+        [Input("resultCase", "The Result Case to filter by")]
         [Output("filteredResults", "The collection of Environment MeshResults which have the provided result case")]
         public static List<MeshResult> FilterResultsByResultCase(this List<MeshResult> results, IComparable resultCase)
         {
