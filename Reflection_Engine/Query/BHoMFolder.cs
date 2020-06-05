@@ -34,7 +34,7 @@ namespace BH.Engine.Reflection
 
         public static string BHoMFolder()
         {
-            return System.IO.Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.ApplicationData), @"BHoM\Assemblies\");
+            return @"C:\ProgramData\BHoM\Assemblies";
         }
 
 

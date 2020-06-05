@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -20,39 +20,31 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.Engine.Geometry;
-using BH.oM.Dimensional;
-using BH.oM.Geometry;
 using System;
-using BH.oM.Reflection.Attributes;
+using System.Linq;
 using System.Collections.Generic;
+using System.ComponentModel;
+using BH.oM.Reflection.Attributes;
+using BH.oM.Base;
+using BH.oM.Geometry;
+using BH.oM.Spatial.Layouts;
 
-namespace BH.Engine.Common
+namespace BH.Engine.Spatial
 {
-    public static partial class Query
+    public static partial class Create
     {
-        /******************************************/
-        /****            IElement1D            ****/
-        /******************************************/
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
 
-        [Deprecated("3.1", "Migrated to the Spatial_Engine")]
-        public static bool IsSelfIntersecting(this IElement1D element1D, double tolerance = Tolerance.Distance)
-        {
-            return Spatial.Query.IsSelfIntersecting(element1D, tolerance);
+        [Description("Creates an offseet curve layout.")]
+        [InputFromProperty("offset")]
+        [Output("curveLayout", "Created offset curve layout.")]
+        public static OffsetCurveLayout OffsetCurveLayout(double offset = 0)
+        {            
+            return new OffsetCurveLayout(offset);
         }
 
-
-        /******************************************/
-        /****            IElement2D            ****/
-        /******************************************/
-
-        [Deprecated("3.1", "Migrated to the Spatial_Engine")]
-        public static bool IsSelfIntersecting(this IElement2D element2D, double tolerance = Tolerance.Distance)
-        {
-            return Spatial.Query.IsSelfIntersecting(element2D, tolerance);
-        }
-
-        /******************************************/
+        /***************************************************/
     }
 }
-

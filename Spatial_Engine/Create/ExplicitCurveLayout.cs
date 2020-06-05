@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -20,26 +20,38 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Dimensional;
+using System;
+using System.Linq;
+using System.Collections.Generic;
+using System.ComponentModel;
 using BH.oM.Reflection.Attributes;
 using BH.oM.Geometry;
-using System.Collections.Generic;
+using BH.oM.Spatial.Layouts;
+using BH.Engine.Geometry;
 
-namespace BH.Engine.Common
+namespace BH.Engine.Spatial
 {
-    public static partial class Query
+    public static partial class Create
     {
-        /******************************************/
-        /****            IElement2D            ****/
-        /******************************************/
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
 
-        [Deprecated("3.1", "Migrated to the Spatial_Engine")]
-        public static List<IElement1D> IOutlineElements1D(this IElement2D element2D)
+        [Description("Creates an explicit curve layout. Curves not in the global XY-plane will get projected to it.")]
+        [Input("curves", "The explicit shape of curves in the layout. All curves should be planar curves in the global XY plane.\nCurves not in the global XY-plane will get projected to it.")]
+        [Output("curveLayout", "Created explicit curve layout.")]
+        public static ExplicitCurveLayout ExplicitCurveLayout(IEnumerable<ICurve> curves)
         {
-            return Spatial.Query.IOutlineElements1D(element2D);
+            IEnumerable<ICurve> xyCurves = curves;
+            if (xyCurves.Any(curve => !curve.IIsInPlane(Plane.XY, Tolerance.Distance)))
+            {
+                xyCurves = curves.Select(curve => curve.IProject(Plane.XY));
+                Reflection.Compute.RecordWarning("Curves has been projected to the global XY-plane.");
+            }
+
+            return new ExplicitCurveLayout(xyCurves);
         }
 
-        /******************************************/
+        /***************************************************/
     }
 }
-

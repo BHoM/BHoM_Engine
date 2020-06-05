@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -20,39 +20,49 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.Engine.Geometry;
-using BH.oM.Dimensional;
-using BH.oM.Reflection.Attributes;
-using BH.oM.Geometry;
+using BH.oM.Data.Collections;
+using BH.oM.Data.Requests;
 using System;
 using System.Collections.Generic;
 
-namespace BH.Engine.Common
+namespace BH.Engine.Data
 {
-    public static partial class Query
+    public static partial class Modify
     {
-        /******************************************/
-        /****            IElement1D            ****/
-        /******************************************/
+        /***************************************************/
+        /****            Interface methods              ****/
+        /***************************************************/
 
-        [Deprecated("3.1", "Migrated to the Spatial_Engine")]
-        public static Point Centroid(this IElement1D element1D)
+        public static List<IRequest> IRequests(this ILogicalRequest request)
         {
-            return Spatial.Query.Centroid(element1D);
+            return Requests(request as dynamic);
         }
 
 
-        /******************************************/
-        /****            IElement2D            ****/
-        /******************************************/
+        /***************************************************/
+        /****              Public methods               ****/
+        /***************************************************/
 
-        [Deprecated("3.1", "Migrated to the Spatial_Engine")]
-        public static Point Centroid(this IElement2D element2D)
+        public static List<IRequest> Requests(this LogicalAndRequest request)
         {
-            return Spatial.Query.Centroid(element2D);
+            return request.Requests;
         }
 
-        /******************************************/
+        /***************************************************/
+
+        public static List<IRequest> Requests(this LogicalOrRequest request)
+        {
+            return request.Requests;
+        }
+
+        /***************************************************/
+
+        public static List<IRequest> Requests(this LogicalNotRequest request)
+        {
+            return new List<IRequest> { request.Request };
+        }
+
+        /***************************************************/
     }
 }
 

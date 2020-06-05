@@ -31,9 +31,8 @@ using BH.Engine.Base;
 using BH.oM.Physical.FramingProperties;
 using BH.oM.Geometry;
 using BH.Engine.Geometry;
-using BH.Engine.Common;
-using BH.oM.Quantities.Attributes;
 using BH.Engine.Spatial;
+using BH.oM.Quantities.Attributes;
 
 namespace BH.Engine.Physical
 {

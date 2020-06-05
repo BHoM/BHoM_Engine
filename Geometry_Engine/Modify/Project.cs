@@ -23,6 +23,7 @@
 using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace BH.Engine.Geometry
@@ -54,13 +55,15 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static Vector Project(this Vector vector,Vector other)
+        public static Vector Project(this Vector vector, Vector other)
         {
             other = other.Normalise();
             double dot = vector.DotProduct(other);
             Vector projected = other * dot;
             return projected;
         }
+
+        /***************************************************/
 
         public static Plane Project(this Plane plane, Plane p)
         {
@@ -109,6 +112,14 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        public static ICurve Project(this Ellipse ellipse, Plane p)
+        {
+            TransformMatrix project = Create.ProjectionMatrix(p, p.Normal);
+            return ellipse.Transform(project);
+        }
+
+        /***************************************************/
+
         public static Line Project(this Line line, Plane p)
         {
             return new Line { Start = line.Start.Project(p), End = line.End.Project(p) };
@@ -116,12 +127,15 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [NotImplemented]
         public static NurbsCurve Project(this NurbsCurve curve, Plane p)
         {
-            throw new NotImplementedException();
+            return new NurbsCurve()
+            {
+                ControlPoints = curve.ControlPoints.Select(x => x.Project(p)).ToList(),
+                Knots = curve.Knots,
+                Weights = curve.Weights,
+            };
         }
-
 
         /***************************************************/
 
@@ -156,10 +170,21 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [NotImplemented]
         public static NurbsSurface Project(this NurbsSurface surface, Plane p)
         {
-            throw new NotImplementedException();
+            List<SurfaceTrim> innerTrims = surface.InnerTrims.Select(x => new SurfaceTrim(IProject(x.Curve3d, p), x.Curve2d)).ToList();
+
+            List<SurfaceTrim> outerTrims = surface.OuterTrims.Select(x => new SurfaceTrim(IProject(x.Curve3d, p), x.Curve2d)).ToList();
+
+            return new NurbsSurface(
+                surface.ControlPoints.Select(x => Project(x, p)),
+                surface.Weights,
+                surface.UKnots,
+                surface.VKnots,
+                surface.UDegree,
+                surface.VDegree,
+                innerTrims,
+                outerTrims);
         }
 
         /***************************************************/
@@ -168,6 +193,13 @@ namespace BH.Engine.Geometry
         public static Pipe Project(this Pipe surface, Plane p)
         {
             throw new NotImplementedException(); //TODO: implement projection of a pipe on a plane
+        }
+
+        /***************************************************/
+
+        public static PlanarSurface Project(this PlanarSurface surface, Plane p)
+        {
+            return new PlanarSurface(surface.ExternalBoundary.IProject(p), surface.InternalBoundaries.Select(x => x.IProject(p)).ToList());
         }
 
         /***************************************************/
@@ -218,7 +250,17 @@ namespace BH.Engine.Geometry
             return Project(geometry as dynamic, p);
         }
 
+
+        /***************************************************/
+        /**** Private Methods - Fallback                ****/
+        /***************************************************/
+
+        private static IGeometry Project(this IGeometry geometry, Plane p)
+        {
+            Reflection.Compute.RecordError("Project method has not been implemented for type " + geometry.GetType().Name);
+            return null;
+        }
+
         /***************************************************/
     }
 }
-

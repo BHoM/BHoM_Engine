@@ -89,66 +89,6 @@ namespace BH.Engine.Environment
 
             return null;
         }
-
-
-        /***************************************************/
-        /**** Deprecated Methods                        ****/
-        /***************************************************/
-
-        [Description("Returns the Architecture Level that the Environment Panel resides on")]
-        [Input("panel", "An Environment Panel to find the level from")]
-        [Input("levels", "A collection of Architecture Levels to search from")]
-        [Output("level", "The Architecture Level of the panel")]
-        [Deprecated("2.4", "BH.oM.Architecture.Elements.Level superseded by BH.oM.Geometry.SettingOut.Level")]
-        public static BH.oM.Architecture.Elements.Level Level(this Panel panel, IEnumerable<BH.oM.Architecture.Elements.Level> levels)
-        {
-            double min = panel.MinimumLevel();
-            double max = panel.MaximumLevel();
-
-            return levels.Where(x => x.Elevation >= min && x.Elevation <= max).FirstOrDefault();
-        }
-
-        /***************************************************/
-
-        [Description("Returns the Architecture Level that the space (represented by a collection of Environment Panels) resides on")]
-        [Input("panelsAsSpace", "A collection of Environment Panels that represent a single space to find the level from")]
-        [Input("level", "The Architecture Level to check against")]
-        [Output("level", "The Architecture Level of the space if the space resides on this level, otherwise returns null if the space does not reside on this level")]
-        [Deprecated("2.4", "BH.oM.Architecture.Elements.Level superseded by BH.oM.Geometry.SettingOut.Level")]
-        public static BH.oM.Architecture.Elements.Level Level(this List<Panel> panelsAsSpace, BH.oM.Architecture.Elements.Level level)
-        {
-            Polyline floor = panelsAsSpace.FloorGeometry();
-            if (floor == null) return null;
-
-            List<Point> floorPts = floor.IControlPoints();
-
-            bool allPointsOnLevel = true;
-            foreach (Point pt in floorPts)
-                allPointsOnLevel &= (pt.Z > (level.Elevation - BH.oM.Geometry.Tolerance.Distance) && pt.Z < (level.Elevation + BH.oM.Geometry.Tolerance.Distance));
-
-            if (!allPointsOnLevel) return null;
-            return level;
-        }
-
-        /***************************************************/
-
-        [Description("Returns the Architecture Level that the space (represented by a collection of Environment Panels) resides on")]
-        [Input("panelsAsSpace", "A collection of Environment Panels that represent a single space to find the level from")]
-        [Input("levels", "A collection of Architecture Levels to search from")]
-        [Output("level", "The Architecture Level of the space")]
-        [Deprecated("2.4", "BH.oM.Architecture.Elements.Level superseded by BH.oM.Geometry.SettingOut.Level")]
-        public static BH.oM.Architecture.Elements.Level Level(this List<Panel> panelsAsSpace, List<BH.oM.Architecture.Elements.Level> levels)
-        {
-            foreach (BH.oM.Architecture.Elements.Level l in levels)
-            {
-                BH.oM.Architecture.Elements.Level match = panelsAsSpace.Level(l);
-                if (match != null) return match;
-            }
-
-            return null;
-        }
-
-        /***************************************************/
     }
 }
 

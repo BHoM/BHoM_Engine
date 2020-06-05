@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -20,40 +20,47 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using System;
+using System.Linq;
 using System.Collections.Generic;
+using System.ComponentModel;
 using BH.oM.Reflection.Attributes;
-using BH.oM.Dimensional;
-using BH.oM.Geometry;
+using BH.oM.Structure.SectionProperties.Reinforcement;
+using BH.oM.Spatial.Layouts;
+using BH.oM.Structure.MaterialFragments;
 
-namespace BH.Engine.Common
+namespace BH.Engine.Structure
 {
-    public static partial class Modify
+    public static partial class Create
     {
         /***************************************************/
-        /**** Public Methods - IElements                ****/
+        /**** Public Methods                            ****/
         /***************************************************/
 
-        [Deprecated("3.1", "Migrated to the Spatial_Engine")]
-        public static IElement2D Translate(this IElement2D element2D, Vector transform)
+        [Description("Creates a TransverseReinforcement placing rebars across a straight line along the ConcreteSection")]
+        [InputFromProperty("rebarsCenterlinesLayout")]
+        [InputFromProperty("diameter")]
+        [InputFromProperty("spacing")]
+        [InputFromProperty("adjustSpacingToFit")]
+        [InputFromProperty("startLocation")]
+        [InputFromProperty("endLocation")]
+        [Input("material", "Material of the Rebars. If null, a default material will be pulled from the Datasets.")]
+        [Output("reinforcement", "The created Reinforcement to be applied to a ConcreteSection.")]
+        public static TransverseReinforcement TransverseReinforcement(ICurveLayout curveLayout, double diameter, double spacing, bool adjustSpacingToFit, double startLocation = 0, double endLocation = 1, IMaterialFragment material = null)
         {
-            return Spatial.Modify.Translate(element2D, transform);
+            CheckEndLocations(ref startLocation, ref endLocation);
+            return new TransverseReinforcement
+            {
+                CenterlineLayout = curveLayout,
+                Diameter = diameter,
+                Spacing = spacing,
+                AdjustSpacingToFit = adjustSpacingToFit,
+                Material = material ?? Query.Default(MaterialType.Rebar),
+                StartLocation = startLocation,
+                EndLocation = endLocation,
+            };
         }
 
         /***************************************************/
-
-        [Deprecated("3.1", "Migrated to the Spatial_Engine")]
-        public static IElement1D Translate(this IElement1D element1D, Vector transform)
-        {
-            return Spatial.Modify.Translate(element1D, transform);
-        }
-
-        /******************************************/
-
-        [Deprecated("3.1", "Migrated to the Spatial_Engine")]
-        public static IElement0D Translate(this IElement0D element0D, Vector transform)
-        {
-            return Spatial.Modify.Translate(element0D, transform);
-        }
     }
 }
-
