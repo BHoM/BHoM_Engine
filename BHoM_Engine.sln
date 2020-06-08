@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.852
+# Visual Studio Express 14 for Windows Desktop
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Acoustic_Engine", "Acoustic_Engine\Acoustic_Engine.csproj", "{68300030-BC17-49BD-A363-CFCD3828E812}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -35,8 +35,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Environment_Engine", "Envir
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Humans_Engine", "Humans_Engine\Humans_Engine.csproj", "{F17DF4D6-D155-4FFA-9917-EF1487FAA978}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common_Engine", "Common_Engine\Common_Engine.csproj", "{8D8CD66F-76F3-4750-936D-380D51BC67D6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Serialiser_Engine", "Serialiser_Engine\Serialiser_Engine.csproj", "{B013F0DA-7D21-4339-85FC-013EDD518C6D}"
 EndProject
@@ -153,14 +151,6 @@ Global
 		{F17DF4D6-D155-4FFA-9917-EF1487FAA978}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F17DF4D6-D155-4FFA-9917-EF1487FAA978}.Release|x86.ActiveCfg = Release|Any CPU
 		{F17DF4D6-D155-4FFA-9917-EF1487FAA978}.Release|x86.Build.0 = Release|Any CPU
-		{8D8CD66F-76F3-4750-936D-380D51BC67D6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8D8CD66F-76F3-4750-936D-380D51BC67D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8D8CD66F-76F3-4750-936D-380D51BC67D6}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{8D8CD66F-76F3-4750-936D-380D51BC67D6}.Debug|x86.Build.0 = Debug|Any CPU
-		{8D8CD66F-76F3-4750-936D-380D51BC67D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8D8CD66F-76F3-4750-936D-380D51BC67D6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8D8CD66F-76F3-4750-936D-380D51BC67D6}.Release|x86.ActiveCfg = Release|Any CPU
-		{8D8CD66F-76F3-4750-936D-380D51BC67D6}.Release|x86.Build.0 = Release|Any CPU
 		{B013F0DA-7D21-4339-85FC-013EDD518C6D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B013F0DA-7D21-4339-85FC-013EDD518C6D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B013F0DA-7D21-4339-85FC-013EDD518C6D}.Debug|x86.ActiveCfg = Debug|Any CPU
