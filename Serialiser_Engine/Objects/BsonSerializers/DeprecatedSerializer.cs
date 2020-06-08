@@ -57,7 +57,7 @@ namespace BH.Engine.Serialiser.BsonSerializers
             BsonDocument doc = bSerializer.Deserialize(context, args) as BsonDocument;
             BsonDocument newDoc = Versioning.Convert.ToNewVersion(doc);
 
-            if (newDoc == null)
+            if (newDoc == null || doc == newDoc)
             {
                 Engine.Reflection.Compute.RecordWarning("The type " + doc["_t"] + " is unknown -> data returned as custom objects.");
                 context.Reader.ReturnToBookmark(bookmark);
