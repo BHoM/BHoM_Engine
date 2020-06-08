@@ -67,17 +67,20 @@ namespace BH.Engine.Results
 
         public static BarForce MinEnvelope(this IEnumerable<BarForce> forces, bool idFromFirst = false, bool caseFromFirst = false)
         {
-            return new BarForce()
-            {
-                ObjectId = idFromFirst ? forces.First().ObjectId : "",
-                ResultCase = caseFromFirst ? forces.First().ResultCase : "",
-                FX = forces.Min(x => x.FX),
-                FY = forces.Min(x => x.FY),
-                FZ = forces.Min(x => x.FZ),
-                MX = forces.Min(x => x.MX),
-                MY = forces.Min(x => x.MY),
-                MZ = forces.Min(x => x.MZ),
-            };
+            return new BarForce(
+               idFromFirst ? forces.First().ObjectId : "",
+               caseFromFirst ? forces.First().ResultCase : "",
+               0,
+               0,
+               0,
+               0,
+               forces.Min(x => x.FX),
+               forces.Min(x => x.FY),
+               forces.Min(x => x.FZ),
+               forces.Min(x => x.MX),
+               forces.Min(x => x.MY),
+               forces.Min(x => x.MZ)
+               );
         }
 
         /***************************************************/
