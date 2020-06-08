@@ -67,17 +67,20 @@ namespace BH.Engine.Results
 
         public static BarForce MaxEnvelope(this IEnumerable<BarForce> forces, bool idFromFirst = false, bool caseFromFirst = false)
         {
-            return new BarForce()
-            {
-                ObjectId = idFromFirst ? forces.First().ObjectId : "",
-                ResultCase = caseFromFirst ? forces.First().ResultCase : "",
-                FX = forces.Max(x => x.FX),
-                FY = forces.Max(x => x.FY),
-                FZ = forces.Max(x => x.FZ),
-                MX = forces.Max(x => x.MX),
-                MY = forces.Max(x => x.MY),
-                MZ = forces.Max(x => x.MZ),
-            };
+            return new BarForce(
+                idFromFirst ? forces.First().ObjectId : "",
+                caseFromFirst ? forces.First().ResultCase : "",
+                0,
+                0,
+                0,
+                0,
+                forces.Max(x => x.FX),
+                forces.Max(x => x.FY),
+                forces.Max(x => x.FZ),
+                forces.Max(x => x.MX),
+                forces.Max(x => x.MY),
+                forces.Max(x => x.MZ)
+                );
         }
 
         /***************************************************/
