@@ -44,7 +44,7 @@ namespace BH.Engine.Data
         [Output("domainBox", "A DomainBox enclosing the values.")]
         public static DomainBox DomainBox(double[] min, double[] max)
         {
-            return DomainBox(new List<double[]>() { min, max });
+            return DomainBox(min.Zip(max, (x,y) => new double[] { x, y }));
         }
 
         /***************************************************/
@@ -65,7 +65,7 @@ namespace BH.Engine.Data
             if (result.Domains.Any(x => x == null))
                 return null;
 
-            return null;
+            return result;
         }
 
         /***************************************************/
