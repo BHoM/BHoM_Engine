@@ -20,12 +20,13 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Data.Collections;
-using BH.oM.Geometry;
-using BH.oM.Reflection.Attributes;
 using System;
-using System.ComponentModel;
 using System.Linq;
+using System.Collections.Generic;
+using System.ComponentModel;
+using BH.oM.Reflection.Attributes;
+using BH.oM.Base;
+using BH.oM.Data.Collections;
 
 namespace BH.Engine.Data
 {
@@ -35,40 +36,36 @@ namespace BH.Engine.Data
         /**** Public Methods                            ****/
         /***************************************************/
 
-        internal static double PMSquareDistance(this Point point1, Point point2)
+        [Description("Gets the child nodes of this node.")]
+        [Input("node", "The node to query for its children.")]
+        [Output("nodes", "Child nodes of the input node.")]
+        public static IEnumerable<TNode> IChildren<TNode, T>(this TNode node) where TNode : INode<T>
         {
-            double dx = point1.X - point2.X;
-            double dy = point1.Y - point2.Y;
-            double dz = point1.Z - point2.Z;
-            return dx * dx + dy * dy + dz * dz;
+            return Children(node as dynamic);
         }
 
         /***************************************************/
 
-        [Description("Queries the square distance between two DomainBoxes.")]
-        [Input("box1", "Box to evaluate square distance from.")]
-        [Input("box2", "Box to evaluate square distance from.")]
-        [Output("sqDist", "Square distance between the two DomainBoxes.")]
-        public static double SquareDistance(this DomainBox box1, DomainBox box2)
+        [Description("Gets the child nodes of this node.")]
+        [Input("node", "The node to query for its children.")]
+        [Output("nodes", "Child nodes of the input node.")]
+        public static List<DomainTree<T>> Children<T>(this DomainTree<T> node)
         {
-            return box1.Domains.Zip(box2.Domains, (a, b) => Math.Pow(Distance(a, b), 2)).Sum();
+            return node.Children;
         }
+
 
         /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private static double Distance(Domain a, Domain b)
+        public static IEnumerable<INode<T>> Children<T>(this INode<T> node)
         {
-            if (a.Max < b.Min)
-                return a.Max - b.Min;
-            else if (a.Min > b.Max)
-                return a.Min - b.Max;
-            else
-                return 0;
+            Reflection.Compute.RecordError("The method Values is not implemented for " + node.GetType().Name);
+            return null;
         }
 
         /***************************************************/
+
     }
 }
-

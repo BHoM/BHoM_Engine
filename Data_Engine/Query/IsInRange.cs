@@ -20,12 +20,16 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using System;
+using System.Threading;
+using System.Linq;
+using System.Collections.Generic;
+using System.ComponentModel;
+using BH.oM.Reflection.Attributes;
+using BH.oM.Base;
+using System.Threading.Tasks;
 using BH.oM.Data.Collections;
 using BH.oM.Geometry;
-using BH.oM.Reflection.Attributes;
-using System;
-using System.ComponentModel;
-using System.Linq;
 
 namespace BH.Engine.Data
 {
@@ -35,40 +39,41 @@ namespace BH.Engine.Data
         /**** Public Methods                            ****/
         /***************************************************/
 
-        internal static double PMSquareDistance(this Point point1, Point point2)
+        [Description("Queries if the two DomainBoxes are in range of each other.")]
+        [Input("box1", "Box to evaluate intersection of.")]
+        [Input("box2", "Box to evaluate intersection of.")]
+        [Input("tolerance", "Numerical tolerance for the operation.")]
+        [Output("true if the two Domainboxes are in range of each other.")]
+        public static bool IsInRange(this DomainBox box1, DomainBox box2, double tolerance = Tolerance.Distance)
         {
-            double dx = point1.X - point2.X;
-            double dy = point1.Y - point2.Y;
-            double dz = point1.Z - point2.Z;
-            return dx * dx + dy * dy + dz * dz;
+            return SquareDistance(box1, box2) < (tolerance * tolerance);
         }
 
         /***************************************************/
 
-        [Description("Queries the square distance between two DomainBoxes.")]
-        [Input("box1", "Box to evaluate square distance from.")]
-        [Input("box2", "Box to evaluate square distance from.")]
-        [Output("sqDist", "Square distance between the two DomainBoxes.")]
-        public static double SquareDistance(this DomainBox box1, DomainBox box2)
+        [Description("Queries if the two Domains are in range of each other.")]
+        [Input("domain1", "Domain to evaluate overlap with.")]
+        [Input("domain2", "Domain to evaluate overlap with.")]
+        [Input("tolerance", "Numerical tolerance for the operation.")]
+        [Output("true if the two Domains are in range of each other.")]
+        public static bool IsInRange(this Domain domain1, Domain domain2, double tolerance = Tolerance.Distance)
         {
-            return box1.Domains.Zip(box2.Domains, (a, b) => Math.Pow(Distance(a, b), 2)).Sum();
+            return Distance(domain1, domain2) < tolerance;
         }
 
         /***************************************************/
-        /**** Private Methods                           ****/
-        /***************************************************/
 
-        private static double Distance(Domain a, Domain b)
+        [Description("Queries if the value is in range of the domain.")]
+        [Input("domain1", "Domain to evaluate overlap with.")]
+        [Input("val", "Value to query overlap with the domain.")]
+        [Input("tolerance", "Numerical tolerance for the operation.")]
+        [Output("true if the value is in the domain.")]
+        public static bool IsInRange(this Domain domain, double val, double tolerance = Tolerance.Distance)
         {
-            if (a.Max < b.Min)
-                return a.Max - b.Min;
-            else if (a.Min > b.Max)
-                return a.Min - b.Max;
-            else
-                return 0;
+            return val > domain.Min && val < domain.Max;
         }
 
         /***************************************************/
+
     }
 }
-

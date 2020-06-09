@@ -27,6 +27,7 @@ using System.ComponentModel;
 using BH.oM.Reflection.Attributes;
 using BH.oM.Base;
 using BH.oM.Data.Collections;
+using BH.Engine.Data;
 
 namespace BH.Engine.Data
 {
@@ -41,7 +42,38 @@ namespace BH.Engine.Data
         [Output("Data", "All data in the table as CustomObjects.")]
         public static List<CustomObject> Values(this Table table)
         {
-            return AsCustomObjects(table.Data.Select(), table.Data.Columns);
+            return null; // AsCustomObjects(table.Data.Select(), table.Data.Columns);
+        }
+
+        /***************************************************/
+
+        [Description("Gets the data values contained in this node.")]
+        [Input("node", "The node to query for its data values.")]
+        [Output("data", "Data values contained in this node.")]
+        public static IEnumerable<T> IValues<T>(this INode<T> node)
+        {
+            return Values(node as dynamic);
+        }
+
+        /***************************************************/
+
+        [Description("Gets the data values contained in this node.")]
+        [Input("node", "The node to query for its data values.")]
+        [Output("data", "Data values contained in this node.")]
+        public static List<T> Values<T>(this DomainTree<T> node)
+        {
+            return node.Values ?? new List<T>();
+        }
+
+
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+        public static IEnumerable<T> Values<T>(this INode<T> node)
+        {
+            Reflection.Compute.RecordError("The method Values is not implemented for " + node.GetType().Name);
+            return null;
         }
 
         /***************************************************/

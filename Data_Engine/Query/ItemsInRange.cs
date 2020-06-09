@@ -20,12 +20,16 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using System;
+using System.Threading;
+using System.Linq;
+using System.Collections.Generic;
+using System.ComponentModel;
+using BH.oM.Reflection.Attributes;
+using BH.oM.Base;
+using System.Threading.Tasks;
 using BH.oM.Data.Collections;
 using BH.oM.Geometry;
-using BH.oM.Reflection.Attributes;
-using System;
-using System.ComponentModel;
-using System.Linq;
 
 namespace BH.Engine.Data
 {
@@ -35,40 +39,38 @@ namespace BH.Engine.Data
         /**** Public Methods                            ****/
         /***************************************************/
 
-        internal static double PMSquareDistance(this Point point1, Point point2)
+        [Description("Gets all data in the tree which DomainBox is in range of the box.")]
+        [Input("tree", "Tree to search from.")]
+        [Input("box", "Search box which will intersect all the retuned data's DomainBoxes.")]
+        [Output("data", "All data in the tree which DomainBox is in range of the box.")]
+        public static IEnumerable<T> ItemsInRange<T>(this DomainTree<T> tree, DomainBox box)
         {
-            double dx = point1.X - point2.X;
-            double dy = point1.Y - point2.Y;
-            double dz = point1.Z - point2.Z;
-            return dx * dx + dy * dy + dz * dz;
+            Func<DomainTree<T>, bool> isWithinSearch = x => x.DomainBox.IsInRange(box);
+
+            return ItemsInRange<DomainTree<T>, T>(tree, isWithinSearch);
         }
 
         /***************************************************/
 
-        [Description("Queries the square distance between two DomainBoxes.")]
-        [Input("box1", "Box to evaluate square distance from.")]
-        [Input("box2", "Box to evaluate square distance from.")]
-        [Output("sqDist", "Square distance between the two DomainBoxes.")]
-        public static double SquareDistance(this DomainBox box1, DomainBox box2)
+        [Description("Gets the values and evaluates the children based on the provided function.")]
+        [Input("tree", "Tree to search from.")]
+        [Input("isWithinSearch", "Method to traverse the tree. " +
+                                 "A false result means that no descendants of that node can return true. " +
+                                 "A true result means that that nodes data is returned and its descendants might return true.")]
+        [Output("data", "All data in the tree which nodes returned true for the isWithinSearch method.")]
+        public static IEnumerable<T> ItemsInRange<TNode, T>(this TNode tree, Func<TNode, bool> isWithinSearch) where TNode : INode<T>
         {
-            return box1.Domains.Zip(box2.Domains, (a, b) => Math.Pow(Distance(a, b), 2)).Sum();
-        }
-
-        /***************************************************/
-        /**** Private Methods                           ****/
-        /***************************************************/
-
-        private static double Distance(Domain a, Domain b)
-        {
-            if (a.Max < b.Min)
-                return a.Max - b.Min;
-            else if (a.Min > b.Max)
-                return a.Min - b.Max;
+            if (isWithinSearch(tree))
+            {
+                return tree.IChildren<TNode, T>().SelectMany(x => ItemsInRange<TNode, T>(x, isWithinSearch)).Concat(tree.IValues());
+            }
             else
-                return 0;
+            {
+                return new List<T>();
+            }
         }
 
         /***************************************************/
+
     }
 }
-
