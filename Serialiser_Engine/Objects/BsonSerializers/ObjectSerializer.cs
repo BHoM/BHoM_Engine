@@ -322,7 +322,7 @@ namespace BH.Engine.Serialiser.BsonSerializers
             {
                 context.Reader.ReturnToBookmark(bookmark);
 
-                if (e is FormatException && e.InnerException != null && e.InnerException is FormatException)
+                if (e is FormatException && e.InnerException != null && (e.InnerException is FormatException || e.InnerException is BsonSerializationException))
                 {
                     // A child of the object is causing problems. Try to recover from custom object
                     IBsonSerializer customSerializer = BsonSerializer.LookupSerializer(typeof(CustomObject));
