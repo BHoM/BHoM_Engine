@@ -37,7 +37,7 @@ namespace BH.Engine.Geometry
 
         public static BoundingBox Bounds(this Plane plane)
         {
-            if (plane == null)
+            if (plane == null || plane.Normal == null)
                 return null;
 
             double x = plane.Normal.X == 0 ? 0 : double.MaxValue;
@@ -85,7 +85,7 @@ namespace BH.Engine.Geometry
 
         public static BoundingBox Bounds(this Arc arc)
         {
-            if (arc == null)
+            if (arc == null || arc.CoordinateSystem == null)
                 return null;
 
             if (!arc.IsValid())
@@ -261,7 +261,7 @@ namespace BH.Engine.Geometry
 
         public static BoundingBox Bounds(this Line line)
         {
-            if (line == null)
+            if (line == null || line.Start == null || line.End == null)
                 return null;
 
             Point s = line.Start;
@@ -282,7 +282,7 @@ namespace BH.Engine.Geometry
 
         public static BoundingBox Bounds(this PolyCurve curve)
         {
-            if (curve == null)
+            if (curve == null || curve.Curves == null)
                 return null;
 
             List<ICurve> curves = curve.Curves;
@@ -311,18 +311,18 @@ namespace BH.Engine.Geometry
 
         public static BoundingBox Bounds(this Extrusion surface)
         {
-            if (surface == null)
+            if (surface == null || surface.Direction == null)
                 return null;
 
             BoundingBox box = surface.Curve.IBounds();
-            return box + (box + surface.Direction);
+            return box == null ? null :  box + (box + surface.Direction);
         }
 
         /***************************************************/
 
         public static BoundingBox Bounds(this Loft surface)
         {
-            if (surface == null)
+            if (surface == null || surface.Curves == null)
                 return null;
 
             List<ICurve> curves = surface.Curves;
@@ -348,7 +348,7 @@ namespace BH.Engine.Geometry
 
         public static BoundingBox Bounds(this Pipe surface)
         {
-            if (surface == null)
+            if (surface == null || surface.Centreline == null)
                 return null;
 
             BoundingBox box = surface.Centreline.IBounds();
@@ -369,7 +369,7 @@ namespace BH.Engine.Geometry
 
             List<ISurface> surfaces = surface.Surfaces;
 
-            if (surfaces.Count == 0)
+            if (surfaces == null || surfaces.Count == 0)
                 return null;
 
             BoundingBox box = surfaces[0].IBounds();
@@ -383,7 +383,7 @@ namespace BH.Engine.Geometry
 
         public static BoundingBox Bounds(this PlanarSurface surface)
         {
-            if (surface == null)
+            if (surface == null || surface.ExternalBoundary == null)
                 return null;
 
             BoundingBox box = surface.ExternalBoundary.IBounds();
@@ -463,7 +463,7 @@ namespace BH.Engine.Geometry
 
             List<IGeometry> elements = group.Elements;
 
-            if (elements.Count == 0)
+            if (elements == null || elements.Count == 0)
                 return null;
 
             BoundingBox box = elements[0].IBounds();
