@@ -263,6 +263,10 @@ namespace BH.Engine.Geometry
             // - to be replaced with a general method for a nurbs curve?
             // - this is very problematic for edge cases (cutting line going through a sharp corner, to be superseded?
 
+            BoundingBox box = curve.Bounds();
+            if (points.Any(x => !box.IsContaining(x, acceptOnEdge, tolerance)))
+                return false;
+
             if (!curve.IsClosed(tolerance))
                 return false;
 
