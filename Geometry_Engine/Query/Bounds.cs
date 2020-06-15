@@ -37,6 +37,9 @@ namespace BH.Engine.Geometry
 
         public static BoundingBox Bounds(this Plane plane)
         {
+            if (plane == null)
+                return null;
+
             double x = plane.Normal.X == 0 ? 0 : double.MaxValue;
             double y = plane.Normal.Y == 0 ? 0 : double.MaxValue;
             double z = plane.Normal.Z == 0 ? 0 : double.MaxValue;
@@ -48,13 +51,16 @@ namespace BH.Engine.Geometry
 
         public static BoundingBox Bounds(this Point pt)
         {
-            return new BoundingBox { Min = pt, Max = pt };
+            return pt == null ? null : new BoundingBox { Min = pt, Max = pt };
         }
 
         /***************************************************/
 
         public static BoundingBox Bounds(this Vector vector)
         {
+            if (vector == null)
+                return null;
+
             Point pt = new Point { X = vector.X, Y = vector.Y, Z = vector.Z };
             return new BoundingBox { Min = pt, Max = pt };
         }
@@ -63,14 +69,14 @@ namespace BH.Engine.Geometry
 
         public static BoundingBox Bounds(this Cartesian coordinateSystem)
         {
-            return ((Plane)coordinateSystem).Bounds();
+            return coordinateSystem == null ? null : ((Plane)coordinateSystem).Bounds();
         }
 
         /***************************************************/
 
         public static BoundingBox Bounds(this BoundingBox boundingBox)
         {
-            return boundingBox.Clone();
+            return boundingBox == null ? null : boundingBox.Clone();
         }
 
         /***************************************************/
@@ -79,6 +85,8 @@ namespace BH.Engine.Geometry
 
         public static BoundingBox Bounds(this Arc arc)
         {
+            if (arc == null)
+                return null;
 
             if (!arc.IsValid())
                 throw new Exception("Invalid Arc");
@@ -202,6 +210,9 @@ namespace BH.Engine.Geometry
 
         public static BoundingBox Bounds(this Circle circle)
         {
+            if (circle == null)
+                return null;
+
             Vector normal = circle.Normal;
 
             if (normal == new Vector { X = 0, Y = 0, Z = 0 })
@@ -221,6 +232,9 @@ namespace BH.Engine.Geometry
 
         public static BoundingBox Bounds(this Ellipse ellipse)
         {
+            if (ellipse == null)
+                return null;
+
             if (ellipse.Axis1 == new Vector { X = 0, Y = 0, Z = 0 } || ellipse.Axis2 == new Vector { X = 0, Y = 0, Z = 0 })
                 throw new InvalidOperationException("Method trying to operate on an invalid ellipse");
 
@@ -247,6 +261,9 @@ namespace BH.Engine.Geometry
 
         public static BoundingBox Bounds(this Line line)
         {
+            if (line == null)
+                return null;
+
             Point s = line.Start;
             Point e = line.End;
             Point min = new Point { X = Math.Min(s.X, e.X), Y = Math.Min(s.Y, e.Y), Z = Math.Min(s.Z, e.Z) };
@@ -258,13 +275,16 @@ namespace BH.Engine.Geometry
 
         public static BoundingBox Bounds(this NurbsCurve curve)
         {
-            return curve.ControlPoints.Bounds();
+            return curve == null ? null : curve.ControlPoints.Bounds();
         }
 
         /***************************************************/
 
         public static BoundingBox Bounds(this PolyCurve curve)
         {
+            if (curve == null)
+                return null;
+
             List<ICurve> curves = curve.Curves;
 
             if (curves.Count == 0)
@@ -281,7 +301,7 @@ namespace BH.Engine.Geometry
 
         public static BoundingBox Bounds(this Polyline curve)
         {
-            return curve.ControlPoints.Bounds();
+            return curve == null ? null : curve.ControlPoints.Bounds();
         }
 
 
@@ -291,6 +311,9 @@ namespace BH.Engine.Geometry
 
         public static BoundingBox Bounds(this Extrusion surface)
         {
+            if (surface == null)
+                return null;
+
             BoundingBox box = surface.Curve.IBounds();
             return box + (box + surface.Direction);
         }
@@ -299,6 +322,9 @@ namespace BH.Engine.Geometry
 
         public static BoundingBox Bounds(this Loft surface)
         {
+            if (surface == null)
+                return null;
+
             List<ICurve> curves = surface.Curves;
 
             if (curves.Count == 0)
@@ -315,13 +341,16 @@ namespace BH.Engine.Geometry
 
         public static BoundingBox Bounds(this NurbsSurface surface)
         {
-            return new List<Point>(surface.ControlPoints).Bounds();
+            return surface == null ? null : new List<Point>(surface.ControlPoints).Bounds();
         }
 
         /***************************************************/
 
         public static BoundingBox Bounds(this Pipe surface)
         {
+            if (surface == null)
+                return null;
+
             BoundingBox box = surface.Centreline.IBounds();
             double radius = surface.Radius;
 
@@ -335,6 +364,9 @@ namespace BH.Engine.Geometry
 
         public static BoundingBox Bounds(this PolySurface surface)
         {
+            if (surface == null)
+                return null;
+
             List<ISurface> surfaces = surface.Surfaces;
 
             if (surfaces.Count == 0)
@@ -351,6 +383,9 @@ namespace BH.Engine.Geometry
 
         public static BoundingBox Bounds(this PlanarSurface surface)
         {
+            if (surface == null)
+                return null;
+
             BoundingBox box = surface.ExternalBoundary.IBounds();
             if (surface.InternalBoundaries != null)
             {
@@ -367,6 +402,9 @@ namespace BH.Engine.Geometry
 
         public static BoundingBox Bounds(this List<Point> pts)
         {
+            if (pts == null || pts.Count == 0)
+                return null;
+
             Point pt = pts[0];
             double minX = pt.X; double minY = pt.Y; double minZ = pt.Z;
             double maxX = minX; double maxY = minY; double maxZ = minZ;
@@ -389,6 +427,9 @@ namespace BH.Engine.Geometry
 
         public static BoundingBox Bounds(this List<BoundingBox> boxes)
         {
+            if (boxes == null || boxes.Count == 0)
+                return null;
+
             return new BoundingBox
             {
                 Min = new Point
@@ -410,13 +451,16 @@ namespace BH.Engine.Geometry
 
         public static BoundingBox Bounds(this Mesh mesh)
         {
-            return Bounds(mesh.Vertices);
+            return mesh?.Vertices?.Bounds();
         }
 
         /***************************************************/
 
         public static BoundingBox Bounds(this CompositeGeometry group)
         {
+            if (group == null)
+                return null;
+
             List<IGeometry> elements = group.Elements;
 
             if (elements.Count == 0)
