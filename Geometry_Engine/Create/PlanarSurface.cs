@@ -56,7 +56,7 @@ namespace BH.Engine.Geometry
             }
 
             //--------------SelfIntersecting-External-Boundary--------------//
-            if (!(externalBoundary is NurbsCurve) && externalBoundary.IIsSelfIntersecting())
+            if (!externalBoundary.ISubParts().Any(y => y is NurbsCurve) && externalBoundary.IIsSelfIntersecting())
             {
                 Reflection.Compute.RecordError("The provided external boundary is self-intersecting.");
                 return null;
@@ -86,13 +86,13 @@ namespace BH.Engine.Geometry
             }
 
             //--------------Unsupported-Internal-Boundaries-Warning---------//
-            if (internalBoundaries.Any(x => x is NurbsCurve || x is Ellipse))
+            if (internalBoundaries.SelectMany(x => x.ISubParts()).Any(x => x is NurbsCurve || x is Ellipse))
                 Reflection.Compute.RecordWarning("At least one of the internal boundaries is a NurbsCurve or Ellipse and has not been checked for validity on creation of the planar surface.");
 
             //--------------Self-Intersecting-Internal-Boundaries-----------//
             count = internalBoundaries.Count;
 
-            internalBoundaries = internalBoundaries.Where(x => x is NurbsCurve || !x.IIsSelfIntersecting()).ToList();
+            internalBoundaries = internalBoundaries.Where(x => x.ISubParts().Any(y => y is NurbsCurve) || !x.IIsSelfIntersecting()).ToList();
 
             if (internalBoundaries.Count != count)
             {
@@ -102,8 +102,8 @@ namespace BH.Engine.Geometry
             //--------------Overlapping-Internal-Boundaries-----------------//
             count = internalBoundaries.Count;
 
-            internalBoundaries = internalBoundaries.Where(x => x is NurbsCurve || x is Ellipse)
-                                .Concat(internalBoundaries.Where(x => !(x is NurbsCurve) && !(x is Ellipse)).BooleanUnion()).ToList();
+            internalBoundaries = internalBoundaries.Where(x => x.ISubParts().Any(y => y is NurbsCurve || y is Ellipse))
+                                .Concat(internalBoundaries.Where(x => x.ISubParts().All(y => !(y is NurbsCurve) && !(y is Ellipse))).BooleanUnion()).ToList();
 
             if (internalBoundaries.Count != count)
             {
@@ -111,7 +111,7 @@ namespace BH.Engine.Geometry
             }
 
             //--------------Unsupported-External-Boundary-------------------//
-            if (externalBoundary is NurbsCurve || externalBoundary is Ellipse)
+            if (externalBoundary.ISubParts().Any(x => x is NurbsCurve) || externalBoundary.ISubParts().Any(x => x is Ellipse))
             {
                 Reflection.Compute.RecordWarning("External boundary is a nurbs curve or Ellipse. Necessary checks to ensure validity of a planar surface based on nurbs curve cannot be run, therefore correctness of the surface boundaries is not guaranteed.");
                 // External done
@@ -123,7 +123,7 @@ namespace BH.Engine.Geometry
             for (int i = 0; i < internalBoundaries.Count; i++)
             {
                 ICurve intCurve = internalBoundaries[i];
-                if (intCurve is NurbsCurve || intCurve is Ellipse)
+                if (intCurve.ISubParts().Any(x => x is NurbsCurve) || intCurve.ISubParts().Any(x => x is Ellipse))
                     continue;
 
                 if (externalBoundary.ICurveIntersections(intCurve).Count != 0)
@@ -139,7 +139,7 @@ namespace BH.Engine.Geometry
             //---------------Contained-By-External-Boundary-----------------//
             count = internalBoundaries.Count;
 
-            internalBoundaries = internalBoundaries.Where(x => x is NurbsCurve || x is Ellipse || externalBoundary.IIsContaining(x)).ToList();
+            internalBoundaries = internalBoundaries.Where(x => x.ISubParts().Any(y => y is NurbsCurve )|| x.ISubParts().Any(y => y is Ellipse) || externalBoundary.IIsContaining(x)).ToList();
 
             if (internalBoundaries.Count != count)
             {
