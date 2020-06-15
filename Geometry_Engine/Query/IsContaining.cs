@@ -180,7 +180,7 @@ namespace BH.Engine.Geometry
                         {
                             Point end = p.Origin;
                             Vector direction = (end - pPt).Normalise();
-                            while (direction.SquareLength() <= sqTol || edgeDirections.Any(e => 1 - Math.Abs(e.DotProduct(direction)) <= Tolerance.Angle))
+                            while (direction.SquareLength() <= 0.5 || edgeDirections.Any(e => 1 - Math.Abs(e.DotProduct(direction)) <= Tolerance.Angle))
                             {
                                 end = end.Translate(Create.RandomVectorInPlane(p, true));
                                 direction = (end - pPt).Normalise();
@@ -286,7 +286,7 @@ namespace BH.Engine.Geometry
 
                 Point end = p.Origin;   // Avrage of control points
                 Vector direction = (end - pPt).Normalise();     // Gets a line cutting through the curves and the point
-                while (direction.SquareLength() <= sqTol || edgeDirections.Any(e => 1 - Math.Abs(e.DotProduct(direction)) <= Tolerance.Angle)) // not zeroa or parallel to edges
+                while (direction.SquareLength() <= 0.5 || edgeDirections.Any(e => 1 - Math.Abs(e.DotProduct(direction)) <= Tolerance.Angle)) // not zeroa or parallel to edges
                 {
                     end = end.Translate(Create.RandomVectorInPlane(p, true));
                     direction = (end - pPt).Normalise();
