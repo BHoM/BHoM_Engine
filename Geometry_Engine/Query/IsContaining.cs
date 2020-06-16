@@ -264,7 +264,7 @@ namespace BH.Engine.Geometry
             // - this is very problematic for edge cases (cutting line going through a sharp corner, to be superseded?
 
             BoundingBox box = curve.Bounds();
-            if (points.Any(x => !box.IsContaining(x, acceptOnEdge, tolerance)))
+            if (points.Any(x => !box.IsContaining(x, true, tolerance)))
                 return false;
 
             if (!curve.IsClosed(tolerance))
