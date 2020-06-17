@@ -36,10 +36,20 @@ namespace BH.Engine.Data
         [Description("Creates an IRequest that combines a couple of requests into a logical OR statement.")]
         [Input("request1", "First request in logical statement")]
         [Input("request2", "Second request in logical statement")]
-        [Output("LogicalOrRequest")]
+        [Output("request")]
         public static LogicalOrRequest LogicalOrRequest(IRequest request1, IRequest request2)
         {
             return new LogicalOrRequest { Requests = new List<IRequest> { request1, request2 } };
+        }
+
+        /***************************************************/
+
+        [Description("Creates an IRequest that combines a group of requests into a logical OR statement.")]
+        [InputFromProperty("requests")]
+        [Output("request")]
+        public static LogicalOrRequest LogicalOrRequest(List<IRequest> requests)
+        {
+            return new LogicalOrRequest { Requests = requests };
         }
 
         /***************************************************/

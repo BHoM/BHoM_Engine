@@ -22,7 +22,6 @@
 
 using BH.oM.Data.Requests;
 using BH.oM.Reflection.Attributes;
-using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace BH.Engine.Data
@@ -33,23 +32,11 @@ namespace BH.Engine.Data
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates an IRequest that combines a couple of requests into a logical AND statement.")]
-        [Input("request1", "First request in logical statement")]
-        [Input("request2", "Second request in logical statement")]
+        [Description("Creates an IRequest that filters all elements currently selected in the software.")]
         [Output("request")]
-        public static LogicalAndRequest LogicalAndRequest(IRequest request1, IRequest request2)
+        public static SelectionRequest SelectionRequest()
         {
-            return new LogicalAndRequest { Requests = new List<IRequest> { request1, request2 } };
-        }
-
-        /***************************************************/
-
-        [Description("Creates an IRequest that combines a group of requests into a logical AND statement.")]
-        [InputFromProperty("requests")]
-        [Output("request")]
-        public static LogicalAndRequest LogicalAndRequest(List<IRequest> requests)
-        {
-            return new LogicalAndRequest { Requests = requests };
+            return new SelectionRequest();
         }
 
         /***************************************************/
