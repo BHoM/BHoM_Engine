@@ -75,6 +75,7 @@
     <Compile Include="Create\DomainTree.cs" />
     <Compile Include="Create\DomainBox.cs" />
     <Compile Include="Create\Domain.cs" />
+    <Compile Include="Create\LogicalNotRequest.cs" />
     <Compile Include="Create\Node.cs" />
     <Compile Include="Create\BatchRequest.cs" />
     <Compile Include="Create\CustomRequest.cs" />
@@ -87,6 +88,7 @@
     <Compile Include="Create\LocalData.cs" />
     <Compile Include="Create\DiscretePoint.cs" />
     <Compile Include="Create\PriorityQueue.cs" />
+    <Compile Include="Create\SelectionRequest.cs" />
     <Compile Include="Create\Table.cs" />
     <Compile Include="Create\Tree.cs" />
     <Compile Include="Create\VennDiagram.cs" />
