@@ -34,7 +34,7 @@ namespace BH.Engine.Data
 
         [Description("Creates a logical request that inverts the query specified by the input request, i.e. any object that fits this request will be excluded from a pull.")]
         [InputFromProperty("request")]
-        [Output("request")]
+        [Output("request", "Created request.")]
         public static LogicalNotRequest LogicalNotRequest(IRequest request)
         {
             return new LogicalNotRequest { Request = request };

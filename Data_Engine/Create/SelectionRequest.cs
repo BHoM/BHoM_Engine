@@ -33,7 +33,7 @@ namespace BH.Engine.Data
         /***************************************************/
 
         [Description("Creates an IRequest that filters all elements currently selected in the software.")]
-        [Output("request")]
+        [Output("request", "Created request.")]
         public static SelectionRequest SelectionRequest()
         {
             return new SelectionRequest();
