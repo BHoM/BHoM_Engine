@@ -42,9 +42,6 @@ namespace BH.Engine.Serialiser
         {
             try
             {
-                if (type.Name.StartsWith("Tree"))
-                    Console.WriteLine("Here");
-
                 BsonClassMap cm = new BsonClassMap(type);
                 cm.AutoMap();
                 cm.SetDiscriminator(type.FullName);
