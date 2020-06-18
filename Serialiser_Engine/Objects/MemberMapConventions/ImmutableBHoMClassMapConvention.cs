@@ -82,7 +82,7 @@ namespace BH.Engine.Serialiser.MemberMapConventions
                 {
                     if (property.DeclaringType == classType && !IsOverridden(property))
                         classMap.MapMember(property);
-                    else if(!property.CanWrite)
+                    else if(!property.CanWrite && classType.BaseType != null && classType.BaseType.IsAbstract)
                     {
                         //Forcing immutable properties from base class to be added via reflection.
                         //This is due to BsonClassMap refusing to add members from base class to the class map which is needed
