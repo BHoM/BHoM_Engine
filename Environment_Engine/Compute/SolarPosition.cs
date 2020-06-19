@@ -469,7 +469,7 @@ namespace BH.Engine.Environment
                 double xyTermSummation = 0;
                 for (int y3 = 0; y3 < meanTerms.Length; y3++)
                     xyTermSummation += meanTerms[y3] * Y_TERMS[x4][y3];
-                xyTermSummation = Convert.ToRadians(xyTermSummation, PI);
+                xyTermSummation = ToRadians(xyTermSummation, PI);
                 delPsi += (PE_TERMS[x4][0] + julianEphemerisCentury * PE_TERMS[x4][1]) * Math.Sin(xyTermSummation);
                 delEpsilon += (PE_TERMS[x4][2] + julianEphemerisCentury * PE_TERMS[x4][3]) * Math.Cos(xyTermSummation);
             }
@@ -487,7 +487,7 @@ namespace BH.Engine.Environment
             if (limit < 0) limit += 360;
             nu0 = limit;
 
-            double nu = nu0 + delPsi * Math.Cos(Convert.ToRadians(epsilon, PI)); //Greenwich Sidereal Time
+            double nu = nu0 + delPsi * Math.Cos(ToRadians(epsilon, PI)); //Greenwich Sidereal Time
 
             //EarthHeliocentricLongitude
             double l = 0;
@@ -500,7 +500,7 @@ namespace BH.Engine.Environment
             for (int x6 = 0; x6 < sum2.Length; x6++)
                 l += sum2[x6] * Math.Pow(julianEphemerisMillenium, x6);
             l /= 1.0e8;
-            l = Convert.ToDegrees(l, PI);
+            l = ToDegrees(l, PI);
             l /= 360;
             limit = 360 * (l - Math.Floor(l));
             if (limit < 0) limit += 360;
@@ -517,7 +517,7 @@ namespace BH.Engine.Environment
             for (int x8 = 0; x8 < sum2.Length; x8++)
                 b += sum2[x8] * Math.Pow(julianEphemerisMillenium, x8);
             b /= 1.0e8;
-            b = Convert.ToDegrees(b, PI);
+            b = ToDegrees(b, PI);
 
             //GeocentricLongitude
             double theta = l + 180;
@@ -531,13 +531,13 @@ namespace BH.Engine.Environment
             double lamba = theta + delPsi + delTau; //ApparentSunLongitude
 
             //GeocentricRightAscension
-            double alpha = Convert.ToDegrees(Math.Atan2(Math.Sin(Convert.ToRadians(lamba, PI)) * Math.Cos(Convert.ToRadians(epsilon, PI) - Math.Tan(Convert.ToRadians(beta, PI)) * Math.Sin(Convert.ToRadians(epsilon, PI))), Math.Cos(Convert.ToRadians(lamba, PI))), PI);
+            double alpha = ToDegrees(Math.Atan2(Math.Sin(ToRadians(lamba, PI)) * Math.Cos(ToRadians(epsilon, PI) - Math.Tan(ToRadians(beta, PI)) * Math.Sin(ToRadians(epsilon, PI))), Math.Cos(ToRadians(lamba, PI))), PI);
             alpha /= 360;
             limit = 360 * (alpha - Math.Floor(alpha));
             if (limit < 0) limit += 360;
             alpha = limit;
 
-            double delta = Convert.ToDegrees(Math.Asin(Math.Sin(Convert.ToRadians(beta, PI)) * Math.Cos(Convert.ToRadians(epsilon, PI)) + Math.Cos(Convert.ToRadians(beta, PI)) * Math.Sin(Convert.ToRadians(epsilon, PI) * Math.Sin(Convert.ToRadians(lamba, PI)))), PI); //GeocentricDeclination
+            double delta = ToDegrees(Math.Asin(Math.Sin(ToRadians(beta, PI)) * Math.Cos(ToRadians(epsilon, PI)) + Math.Cos(ToRadians(beta, PI)) * Math.Sin(ToRadians(epsilon, PI) * Math.Sin(ToRadians(lamba, PI)))), PI); //GeocentricDeclination
 
             //Observe Hour Angle
             double H = nu + longitude - alpha;
@@ -549,10 +549,10 @@ namespace BH.Engine.Environment
             double xi = 8.794 / (3600.0 * R); //SunEquatorialHorizontalParallax
 
             //RightAscensionParallaxAndTopocentricDec
-            double latRad = Convert.ToRadians(latitude, PI);
-            double xiRad = Convert.ToRadians(xi, PI);
-            double hRad = Convert.ToRadians(H, PI);
-            double deltaRad = Convert.ToRadians(delta, PI);
+            double latRad = ToRadians(latitude, PI);
+            double xiRad = ToRadians(xi, PI);
+            double hRad = ToRadians(H, PI);
+            double deltaRad = ToRadians(delta, PI);
             double u2 = Math.Atan(0.99664719 * Math.Tan(latRad));
             double y = 0.99664719 * Math.Sin(u2) * Math.Sin(latRad) / 6378140.0;
             double x = Math.Cos(u2) * Math.Cos(latRad) / 6378140.0;
@@ -560,13 +560,13 @@ namespace BH.Engine.Environment
             var deltaAlphaRad = Math.Atan2(-x * Math.Sin(xiRad) * Math.Sin(hRad),
                 Math.Cos(deltaRad) - x * Math.Sin(xiRad) * Math.Cos(hRad));
 
-            double deltaPrime = Convert.ToDegrees(Math.Atan2((Math.Sin(deltaRad) - y * Math.Sin(xiRad)) * Math.Cos(deltaAlphaRad), Math.Cos(deltaRad) - x * Math.Sin(xiRad) * Math.Cos(hRad)), PI);
-            double deltaAlpha = Convert.ToDegrees(deltaAlphaRad, PI);
+            double deltaPrime = ToDegrees(Math.Atan2((Math.Sin(deltaRad) - y * Math.Sin(xiRad)) * Math.Cos(deltaAlphaRad), Math.Cos(deltaRad) - x * Math.Sin(xiRad) * Math.Cos(hRad)), PI);
+            double deltaAlpha = ToDegrees(deltaAlphaRad, PI);
 
             double hPrime = H - deltaAlpha; //TopocentricLocalHourAngle
 
             //TopocentricAzimuthAngleAstro
-            double azimuthAstro = Convert.ToDegrees(Math.Atan2(Math.Sin(Convert.ToRadians(hPrime, PI)), Math.Cos(Convert.ToRadians(hPrime, PI)) * Math.Sin(Convert.ToRadians(latitude, PI)) - Math.Tan(Convert.ToRadians(deltaPrime, PI)) * Math.Cos(Convert.ToRadians(latitude, PI))), PI);
+            double azimuthAstro = ToDegrees(Math.Atan2(Math.Sin(ToRadians(hPrime, PI)), Math.Cos(ToRadians(hPrime, PI)) * Math.Sin(ToRadians(latitude, PI)) - Math.Tan(ToRadians(deltaPrime, PI)) * Math.Cos(ToRadians(latitude, PI))), PI);
             azimuthAstro /= 360;
             limit = 360 * (azimuthAstro - Math.Floor(azimuthAstro));
             if (limit < 0) limit += 360;
@@ -579,11 +579,21 @@ namespace BH.Engine.Environment
             if (limit < 0) limit += 360;
             azimuth = limit;
 
-            double e0 = Convert.ToDegrees(Math.Asin(Math.Sin(latRad) * Math.Sin(Convert.ToRadians(deltaPrime, PI)) + Math.Cos(latRad) * Math.Cos(Convert.ToRadians(deltaPrime, PI)) * Math.Cos(Convert.ToRadians(hPrime, PI))), PI); //TopocentricElevationAngle
+            double e0 = ToDegrees(Math.Asin(Math.Sin(latRad) * Math.Sin(ToRadians(deltaPrime, PI)) + Math.Cos(latRad) * Math.Cos(ToRadians(deltaPrime, PI)) * Math.Cos(ToRadians(hPrime, PI))), PI); //TopocentricElevationAngle
 
             double zenith = 90.0 - e0;
 
             return new Sun { Altitude = (90 - zenith), Azimuth = azimuth };
+        }
+
+        private static double ToDegrees(double radians, double pi = Math.PI)
+        {
+            return radians * (180 / pi);
+        }
+
+        private static double ToRadians(double degrees, double pi = Math.PI)
+        {
+            return degrees * (pi / 180);
         }
     }
 }
