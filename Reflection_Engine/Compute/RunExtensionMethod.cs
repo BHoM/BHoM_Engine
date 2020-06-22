@@ -22,6 +22,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -99,9 +100,8 @@ namespace BH.Engine.Reflection
         /**** Private fields                            ****/
         /***************************************************/
 
-        private static Dictionary<Tuple<Type, string>, MethodInfo> m_PreviousInvokedMethods = new Dictionary<Tuple<Type, string>, MethodInfo>();
-
-
+        private static ConcurrentDictionary<Tuple<Type, string>, MethodInfo> m_PreviousInvokedMethods = new ConcurrentDictionary<Tuple<Type, string>, MethodInfo>();
+        
         /***************************************************/
     }
 }
