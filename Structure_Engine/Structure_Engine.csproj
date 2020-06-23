@@ -110,6 +110,10 @@
     <Compile Include="Create\MaterialFragments\Aluminium.cs" />
     <Compile Include="Create\MaterialFragments\Concrete.cs" />
     <Compile Include="Create\MaterialFragments\Steel.cs" />
+    <Compile Include="Create\Requests\BarResultRequest.cs" />
+    <Compile Include="Create\Requests\GlobalResultRequest.cs" />
+    <Compile Include="Create\Requests\MeshResultRequest.cs" />
+    <Compile Include="Create\Requests\NodeResultRequest.cs" />
     <Compile Include="Create\SectionProperties\AluminiumSection.cs" />
     <Compile Include="Create\Framing\ConstantFramingProperty.cs" />
     <Compile Include="Create\Elements\FEMesh.cs" />
