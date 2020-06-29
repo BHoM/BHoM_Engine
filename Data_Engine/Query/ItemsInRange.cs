@@ -43,9 +43,9 @@ namespace BH.Engine.Data
         [Input("tree", "Tree to search from.")]
         [Input("box", "Search box which will intersect all the retuned data's DomainBoxes.")]
         [Output("data", "All data in the tree which DomainBox is in range of the box.")]
-        public static IEnumerable<T> ItemsInRange<T>(this DomainTree<T> tree, DomainBox box)
+        public static IEnumerable<T> ItemsInRange<T>(this DomainTree<T> tree, DomainBox box, double tolerance = Tolerance.Distance)
         {
-            Func<DomainTree<T>, bool> isWithinSearch = x => x.DomainBox.IsInRange(box);
+            Func<DomainTree<T>, bool> isWithinSearch = x => x.DomainBox.IsInRange(box, tolerance);
 
             return ItemsInRange<DomainTree<T>, T>(tree, isWithinSearch);
         }
