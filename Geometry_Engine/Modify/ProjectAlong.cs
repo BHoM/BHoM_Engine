@@ -23,6 +23,7 @@
 using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace BH.Engine.Geometry
@@ -67,10 +68,9 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Curves                   ****/
         /***************************************************/
 
-        [NotImplemented]
-        public static Arc ProjectAlong(this Arc arc, Plane plane, Vector vector)
+        public static ICurve ProjectAlong(this Arc arc, Plane plane, Vector vector)
         {
-            throw new NotImplementedException();
+            return arc.ToNurbsCurve().ProjectAlong(plane, vector);
         }
 
         /***************************************************/
@@ -80,11 +80,16 @@ namespace BH.Engine.Geometry
             if (circle.Normal.IsParallel(plane.Normal) != 0)
                 return new Circle { Centre = circle.Centre.ProjectAlong(plane, vector), Normal = circle.Normal.Clone(), Radius = circle.Radius };
 
-            Vector axis1 = plane.Normal.CrossProduct(circle.Normal);
-            Vector axis2 = axis1.CrossProduct(plane.Normal);
-            double radius2 = circle.Radius * circle.Normal.DotProduct(plane.Normal);
-            
-            return new Ellipse { Centre = circle.Centre.ProjectAlong(plane, vector), Axis1 = axis1, Axis2 = axis2, Radius1 = circle.Radius, Radius2 = radius2 };
+            TransformMatrix project = Create.ProjectionMatrix(plane, vector);
+            return circle.Transform(project);
+        }
+
+        /***************************************************/
+        
+        public static ICurve ProjectAlong(this Ellipse ellipse, Plane plane, Vector vector)
+        {
+            TransformMatrix project = Create.ProjectionMatrix(plane, vector);
+            return ellipse.Transform(project);
         }
 
         /***************************************************/
@@ -96,10 +101,14 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [NotImplemented]
         public static NurbsCurve ProjectAlong(this NurbsCurve curve, Plane plane, Vector vector)
         {
-            throw new NotImplementedException();
+            return new NurbsCurve()
+            {
+                ControlPoints = curve.ControlPoints.Select(x => x.ProjectAlong(plane, vector)).ToList(),
+                Knots = curve.Knots,
+                Weights = curve.Weights
+            };
         }
         
         /***************************************************/
@@ -135,10 +144,21 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [NotImplemented]
         public static NurbsSurface ProjectAlong(this NurbsSurface surface, Plane plane, Vector vector)
         {
-            throw new NotImplementedException();
+            List<SurfaceTrim> innerTrims = surface.InnerTrims.Select(x => new SurfaceTrim(x.Curve3d.IProjectAlong(plane, vector), x.Curve2d)).ToList();
+
+            List<SurfaceTrim> outerTrims = surface.OuterTrims.Select(x => new SurfaceTrim(x.Curve3d.IProjectAlong(plane, vector), x.Curve2d)).ToList();
+
+            return new NurbsSurface(
+                surface.ControlPoints.Select(x => x.ProjectAlong(plane, vector)),
+                surface.Weights,
+                surface.UKnots,
+                surface.VKnots,
+                surface.UDegree,
+                surface.VDegree,
+                innerTrims,
+                outerTrims);
         }
 
         /***************************************************/
@@ -147,6 +167,15 @@ namespace BH.Engine.Geometry
         public static Pipe ProjectAlong(this Pipe surface, Plane plane, Vector vector)
         {
             throw new NotImplementedException(); //TODO: implement projection of a pipe on a plane
+        }
+
+        /***************************************************/
+
+        public static PlanarSurface ProjectAlong(this PlanarSurface surface, Plane plane, Vector vector)
+        {
+            return new PlanarSurface(
+                surface.ExternalBoundary.IProjectAlong(plane, vector), 
+                surface.InternalBoundaries.Select(x => x.IProjectAlong(plane, vector)).ToList());
         }
 
         /***************************************************/
@@ -197,7 +226,17 @@ namespace BH.Engine.Geometry
             return ProjectAlong(geometry as dynamic, plane, vector);
         }
 
+
+        /***************************************************/
+        /**** Private Methods - Fallback                ****/
+        /***************************************************/
+
+        private static IGeometry ProjectAlong(this IGeometry geometry, Plane plane, Vector vector)
+        {
+            Reflection.Compute.RecordError("ProjectAlong method has not been implemented for type " + geometry.GetType().Name);
+            return null;
+        }
+
         /***************************************************/
     }
 }
-

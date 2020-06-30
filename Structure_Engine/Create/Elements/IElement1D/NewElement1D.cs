@@ -23,7 +23,6 @@
 using BH.oM.Structure.Elements;
 using BH.oM.Geometry;
 using BH.oM.Dimensional;
-using BH.oM.Common;
 using BH.Engine.Geometry;
 
 using BH.oM.Reflection.Attributes;

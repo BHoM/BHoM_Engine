@@ -46,6 +46,7 @@ namespace BH.Engine.Environment
         [Input("radians", "The radians to convert to degrees")]
         [Input("pi", "The value of PI to use for the convert, default is 3.14159265358979 from the C# Math.PI library")]
         [Output("degrees", "The degree representation of the radians")]
+        [ToBeRemoved("3.2", "Use methods within the Units_Engine from Localisation_Toolkit for degree conversions")]
         public static double ToDegrees(double radians, double pi = Math.PI)
         {
             return radians * (180 / pi);
@@ -55,6 +56,7 @@ namespace BH.Engine.Environment
         [Input("degrees", "The degrees to convert to radians")]
         [Input("pi", "The value of PI to use for the convert, default is 3.14159265358979 from the C# Math.PI library")]
         [Output("radians", "The radian representation of the degrees")]
+        [ToBeRemoved("3.2", "Use methods within the Units_Engine from Localisation_Toolkit for degree conversions")]
         public static double ToRadians(double degrees, double pi = Math.PI)
         {
             return degrees * (pi / 180);

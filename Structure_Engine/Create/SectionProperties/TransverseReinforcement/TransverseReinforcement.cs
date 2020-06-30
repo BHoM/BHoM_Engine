@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -20,10 +20,16 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Common.Materials;
+using System;
+using System.Linq;
+using System.Collections.Generic;
+using System.ComponentModel;
 using BH.oM.Reflection.Attributes;
+using BH.oM.Structure.SectionProperties.Reinforcement;
+using BH.oM.Spatial.Layouts;
+using BH.oM.Structure.MaterialFragments;
 
-namespace BH.Engine.Common
+namespace BH.Engine.Structure
 {
     public static partial class Create
     {
@@ -31,21 +37,30 @@ namespace BH.Engine.Common
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Deprecated("2.3", "Material class superseded by counterpart in Physical_oM, BH.oM.Phsyical.Materials.Material")]
-        public static Material Material(string name, MaterialType type = MaterialType.Steel, double E = 210000000000, double v = 0.3, double tC = 0.000012, double density = 7850)
+        [Description("Creates a TransverseReinforcement placing rebars across a straight line along the ConcreteSection")]
+        [InputFromProperty("rebarsCenterlinesLayout")]
+        [InputFromProperty("diameter")]
+        [InputFromProperty("spacing")]
+        [InputFromProperty("adjustSpacingToFit")]
+        [InputFromProperty("startLocation")]
+        [InputFromProperty("endLocation")]
+        [Input("material", "Material of the Rebars. If null, a default material will be pulled from the Datasets.")]
+        [Output("reinforcement", "The created Reinforcement to be applied to a ConcreteSection.")]
+        public static TransverseReinforcement TransverseReinforcement(ICurveLayout curveLayout, double diameter, double spacing, bool adjustSpacingToFit, double startLocation = 0, double endLocation = 1, IMaterialFragment material = null)
         {
-            return new Material
+            CheckEndLocations(ref startLocation, ref endLocation);
+            return new TransverseReinforcement
             {
-                Name = name,
-                Type = type,
-                YoungsModulus = E,
-                PoissonsRatio = v,
-                CoeffThermalExpansion = tC,
-                Density = density
+                CenterlineLayout = curveLayout,
+                Diameter = diameter,
+                Spacing = spacing,
+                AdjustSpacingToFit = adjustSpacingToFit,
+                Material = material ?? Query.Default(MaterialType.Rebar),
+                StartLocation = startLocation,
+                EndLocation = endLocation,
             };
         }
 
         /***************************************************/
     }
 }
-

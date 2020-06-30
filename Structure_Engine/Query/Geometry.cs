@@ -83,7 +83,7 @@ namespace BH.Engine.Structure
         [Output("surface", "The geometry of the structural Panel at its centre.")]
         public static IGeometry Geometry(this Panel panel)
         {
-            return Engine.Geometry.Create.PlanarSurface(
+            return new PlanarSurface(
                 Engine.Geometry.Compute.IJoin(panel.ExternalEdges.Select(x => x.Curve).ToList()).FirstOrDefault(),
                 panel.Openings.SelectMany(x => Engine.Geometry.Compute.IJoin(x.Edges.Select(y => y.Curve).ToList())).Cast<ICurve>().ToList()
             );

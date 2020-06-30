@@ -228,7 +228,7 @@ namespace BH.Engine.Library
         /**** Private Fields                            ****/
         /***************************************************/
 
-        private static readonly string m_sourceFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), @"BHoM\DataSets");
+        private static readonly string m_sourceFolder = @"C:\ProgramData\BHoM\Datasets";
 
         private static Dictionary<string, Dataset> m_datasets = new Dictionary<string, Dataset>();
         private static Dictionary<string, List<Tuple<BH.oM.Reflection.Debugging.EventType, string>>> m_deserialisationEvents = new Dictionary<string, List<Tuple<oM.Reflection.Debugging.EventType, string>>>();

@@ -104,7 +104,7 @@ namespace BH.Engine.Structure
         [Deprecated("2.3", "Class and method moved to Geometry_oM and Geometry_Engine", typeof(BH.Engine.Geometry.Create), "FabricatedISectionProfile")]
         public static FabricatedISectionProfile FabricatedISectionProfile(double height, double topFlangeWidth, double botFlangeWidth, double webThickness, double topFlangeThickness, double botFlangeThickness, double weldSize)
         {
-            return Geometry.Create.FabricatedISectionProfile(height, topFlangeThickness, botFlangeWidth, webThickness, topFlangeThickness, botFlangeThickness, weldSize);
+            return Geometry.Create.FabricatedISectionProfile(height, topFlangeWidth, botFlangeWidth, webThickness, topFlangeThickness, botFlangeThickness, weldSize);
         }
 
         /***************************************************/

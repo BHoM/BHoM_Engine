@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -20,10 +20,16 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Common.Planning;
 using System;
+using System.Linq;
+using System.Collections.Generic;
+using System.ComponentModel;
+using BH.oM.Reflection.Attributes;
+using BH.oM.Base;
+using BH.oM.Structure.Requests;
+using BH.oM.Structure.Loads;
 
-namespace BH.Engine.Common
+namespace BH.Engine.Structure
 {
     public static partial class Create
     {
@@ -31,17 +37,25 @@ namespace BH.Engine.Common
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static ConstructionPhase ConstructionPhase(string name, DateTime startTime, DateTime endTime)
+        [Description("Creates a request for extracting Bar results from an adapter.")]
+        [InputFromProperty("resultType")]
+        [InputFromProperty("axis")]
+        [InputFromProperty("cases")]
+        [InputFromProperty("modes")]
+        [InputFromProperty("objectIds")]
+        [Output("request", "The created NodeResultRequest.")]
+        public static NodeResultRequest NodeResultRequest(NodeResultType resultType = NodeResultType.NodeReaction, LoadAxis axis = LoadAxis.Global, List<object> cases = null, List<string> modes = null, List<object> objectIds = null)
         {
-            return new ConstructionPhase
+            return new NodeResultRequest
             {
-                Name = name,
-                StartTime = startTime,
-                EndTime = endTime
+                ResultType = resultType,
+                Axis = axis,
+                Cases = cases ?? new List<object>(),
+                Modes = modes ?? new List<string>(),
+                ObjectIds = objectIds ?? new List<object>()
             };
         }
 
         /***************************************************/
     }
 }
-

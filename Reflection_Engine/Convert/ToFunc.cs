@@ -48,7 +48,7 @@ namespace BH.Engine.Reflection
         public static Func<object[], object> ToFunc(this MethodInfo method)
         {
             ParameterExpression lambdaInput = Expression.Parameter(typeof(object[]), "x");
-            Expression[] inputs = method.GetParameters().Select((x, i) => Expression.Convert(Expression.ArrayIndex(lambdaInput, Expression.Constant(i)), x.ParameterType)).ToArray();
+            Expression[] inputs = method.GetParameters().Select((x, i) => Expression.Convert(Expression.ArrayIndex(lambdaInput, Expression.Constant(i)), x.ParameterType.GetTypeIfRef())).ToArray();
 
             MethodCallExpression methodExpression;
             if (method.IsStatic)
@@ -114,6 +114,14 @@ namespace BH.Engine.Reflection
         }
 
         /***************************************************/
+
+        // Adds support for ByRef types like `System.Double&`
+        private static Type GetTypeIfRef(this Type t)
+        {
+            if (t.IsByRef)
+                t = t.GetElementType();
+
+            return t;
+        }
     }
 }
-

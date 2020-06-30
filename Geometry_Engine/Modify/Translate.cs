@@ -139,10 +139,10 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [NotImplemented]
         public static NurbsSurface Translate(this NurbsSurface surface, Vector transform)
         {
-            throw new NotImplementedException();
+            TransformMatrix translationMatrix = Create.TranslationMatrix(transform);
+            return Transform(surface, translationMatrix);
         }
 
         /***************************************************/
@@ -150,6 +150,13 @@ namespace BH.Engine.Geometry
         public static Pipe Translate(this Pipe surface, Vector transform)
         {
             return new Pipe { Centreline = surface.Centreline.ITranslate(transform), Radius = surface.Radius, Capped = surface.Capped };
+        }
+
+        /***************************************************/
+
+        public static PlanarSurface Translate(this PlanarSurface surface, Vector transform)
+        {
+            return new PlanarSurface(surface.ExternalBoundary.ITranslate(transform), surface.InternalBoundaries.Select(x => x.ITranslate(transform)).ToList());
         }
 
         /***************************************************/
@@ -201,6 +208,15 @@ namespace BH.Engine.Geometry
         }
 
         /***************************************************/
+        /**** Private Methods - Fallback                ****/
+        /***************************************************/
+
+        private static IGeometry Translate(this IGeometry geometry, Vector transform)
+        {
+            Reflection.Compute.RecordError("Translate method has not been implemented for type " + geometry.GetType().Name);
+            return null;
+        }
+
+        /***************************************************/
     }
 }
-

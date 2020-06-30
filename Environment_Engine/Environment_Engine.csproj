@@ -31,49 +31,49 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Analytical_oM">
-      <HintPath>..\..\BHoM\Build\Analytical_oM.dll</HintPath>
+      <HintPath>C:\ProgramData\BHoM\Assemblies\Analytical_oM.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Architecture_oM">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\BHoM\Build\Architecture_oM.dll</HintPath>
+      <HintPath>C:\ProgramData\BHoM\Assemblies\Architecture_oM.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="BHoM">
-      <HintPath>..\..\BHoM\Build\BHoM.dll</HintPath>
+      <HintPath>C:\ProgramData\BHoM\Assemblies\BHoM.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Diffing_oM">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\BHoM\Build\Diffing_oM.dll</HintPath>
+      <HintPath>C:\ProgramData\BHoM\Assemblies\Diffing_oM.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Dimensional_oM">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\BHoM\Build\Dimensional_oM.dll</HintPath>
+      <HintPath>C:\ProgramData\BHoM\Assemblies\Dimensional_oM.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Environment_oM">
-      <HintPath>..\..\BHoM\Build\Environment_oM.dll</HintPath>
+      <HintPath>C:\ProgramData\BHoM\Assemblies\Environment_oM.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Geometry_oM">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\BHoM\Build\Geometry_oM.dll</HintPath>
+      <HintPath>C:\ProgramData\BHoM\Assemblies\Geometry_oM.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Physical_oM">
-      <HintPath>..\..\BHoM\Build\Physical_oM.dll</HintPath>
+      <HintPath>C:\ProgramData\BHoM\Assemblies\Physical_oM.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Quantities_oM">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\BHoM\Build\Quantities_oM.dll</HintPath>
+      <HintPath>C:\ProgramData\BHoM\Assemblies\Quantities_oM.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Reflection_oM">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\BHoM\Build\Reflection_oM.dll</HintPath>
+      <HintPath>C:\ProgramData\BHoM\Assemblies\Reflection_oM.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
@@ -129,12 +129,16 @@
     <Compile Include="Modify\SplitPanelsByPoints.cs" />
     <Compile Include="Modify\UpdatePanelTypeByCustomData.cs" />
     <Compile Include="Query\Absorptance.cs" />
+    <Compile Include="Query\BottomLeft.cs" />
+    <Compile Include="Query\BottomRight.cs" />
     <Compile Include="Query\ClosedSpaces.cs" />
     <Compile Include="Query\ConnectedSpaceName.cs" />
+    <Compile Include="Query\FilterResults.cs" />
     <Compile Include="Query\FloorHeights.cs" />
     <Compile Include="Query\FrameFactor.cs" />
     <Compile Include="Query\Geometry.cs" />
     <Compile Include="Query\HasMergeablePropertiesWith.cs" />
+    <Compile Include="Query\IsLeft.cs" />
     <Compile Include="Query\MaterialComposition.cs" />
     <Compile Include="Query\NewElement1D.cs" />
     <Compile Include="Query\NewInternalElement2D.cs" />
@@ -182,6 +186,7 @@
     <Compile Include="Query\IsTransparent.cs" />
     <Compile Include="Query\ToLines.cs" />
     <Compile Include="Query\Polyline.cs" />
+    <Compile Include="Query\TopRight.cs" />
     <Compile Include="Query\ToSpace.cs" />
     <Compile Include="Create\Building.cs" />
     <Compile Include="Create\CoefficientFragment.cs" />
@@ -226,6 +231,8 @@
     <Compile Include="Query\Panels.cs" />
     <Compile Include="Query\RValue.cs" />
     <Compile Include="Query\UniqueConstructionName.cs" />
+    <Compile Include="Query\UniqueObjectIDs.cs" />
+    <Compile Include="Query\UniqueResultCases.cs" />
     <Compile Include="Query\UniqueSpaceNames.cs" />
     <Compile Include="Query\AdjacentSpaces.cs" />
     <Compile Include="Query\Area.cs" />
@@ -317,6 +324,11 @@
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>
+xcopy "$(TargetDir)$(TargetFileName)"  "C:\ProgramData\BHoM\Assemblies" /Y
+    </PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

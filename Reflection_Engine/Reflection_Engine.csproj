@@ -36,7 +36,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="BHoM">
-      <HintPath>..\..\BHoM\Build\BHoM.dll</HintPath>
+      <HintPath>C:\ProgramData\BHoM\Assemblies\BHoM.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Humanizer, Version=2.2.0.0, Culture=neutral, PublicKeyToken=979442b78dfc278e, processorArchitecture=MSIL">
@@ -69,11 +69,11 @@
     </Reference>
     <Reference Include="Quantities_oM">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\BHoM\Build\Quantities_oM.dll</HintPath>
+      <HintPath>C:\ProgramData\BHoM\Assemblies\Quantities_oM.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Reflection_oM">
-      <HintPath>..\..\BHoM\Build\Reflection_oM.dll</HintPath>
+      <HintPath>C:\ProgramData\BHoM\Assemblies\Reflection_oM.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
@@ -172,6 +172,22 @@
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>
+xcopy "$(TargetDir)$(TargetFileName)"  "C:\ProgramData\BHoM\Assemblies" /Y
+
+xcopy "$(TargetDir)Humanizer.dll"  "C:\ProgramData\BHoM\Assemblies" /Y
+xcopy "$(TargetDir)ICSharpCode.Decompiler.dll"  "C:\ProgramData\BHoM\Assemblies" /Y
+
+xcopy "$(TargetDir)Mono.Cecil.dll"  "C:\ProgramData\BHoM\Assemblies" /Y
+xcopy "$(TargetDir)Mono.Cecil.Mdb.dll"  "C:\ProgramData\BHoM\Assemblies" /Y
+xcopy "$(TargetDir)Mono.Cecil.Pdb.dll"  "C:\ProgramData\BHoM\Assemblies" /Y
+xcopy "$(TargetDir)Mono.Cecil.Rocks.dll"  "C:\ProgramData\BHoM\Assemblies" /Y
+xcopy "$(TargetDir)Mono.Reflection.dll"  "C:\ProgramData\BHoM\Assemblies" /Y
+
+xcopy "$(TargetDir)System.Collections.Immutable.dll"  "C:\ProgramData\BHoM\Assemblies" /Y
+xcopy "$(TargetDir)System.ValueTuple.dll"  "C:\ProgramData\BHoM\Assemblies" /Y</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

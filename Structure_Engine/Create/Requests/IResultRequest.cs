@@ -112,6 +112,8 @@ namespace BH.Engine.Structure
                     resType = NodeResultType.NodeAcceleration;
                 else if (type == typeof(NodeVelocity))
                     resType = NodeResultType.NodeVelocity;
+                else if (type == typeof(NodeModalMass))
+                    resType = NodeResultType.NodeModalMass;
                 else
                     Reflection.Compute.RecordWarning("Did not find exact type. Assuming " + resType);
 

@@ -101,7 +101,7 @@ namespace BH.Engine.Geometry
 
         public static bool IsSelfIntersecting(this PolyCurve curve, double tolerance = Tolerance.Distance)
         {
-            List<ICurve> curves = curve.Curves;
+            List<ICurve> curves = curve.SubParts();
             if (curves.Count == 0)
                 return false;
 

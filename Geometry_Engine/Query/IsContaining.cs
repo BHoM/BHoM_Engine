@@ -180,7 +180,7 @@ namespace BH.Engine.Geometry
                         {
                             Point end = p.Origin;
                             Vector direction = (end - pPt).Normalise();
-                            while (direction.SquareLength() <= sqTol || edgeDirections.Any(e => 1 - Math.Abs(e.DotProduct(direction)) <= Tolerance.Angle))
+                            while (direction.SquareLength() <= 0.5 || edgeDirections.Any(e => 1 - Math.Abs(e.DotProduct(direction)) <= Tolerance.Angle))
                             {
                                 end = end.Translate(Create.RandomVectorInPlane(p, true));
                                 direction = (end - pPt).Normalise();
@@ -191,20 +191,29 @@ namespace BH.Engine.Geometry
                             List<Point> intersects = new List<Point>();
                             List<Point> extraIntersects = new List<Point>();
 
-                            foreach (Line subPart in subParts)
+                            Func<double, double, double> ToFactor = (t, n) => (1 - t * t) / (1 - n * n);
+
+                            Line current = subParts[1];
+                            double prevTolFactor = ToFactor(subParts[0].Direction().DotProduct(direction), current.Direction().DotProduct(direction));
+
+                            for (int i = 1; i < subParts.Count + 1; i++)
                             {
-                                Point iPt = subPart.LineIntersection(ray, false, tolerance);
+                                Line next = subParts[(i + 1) % subParts.Count];
+
+                                double nextTolFactor = ToFactor(next.Direction().DotProduct(direction), current.Direction().DotProduct(direction));
+
+                                Point iPt = current.LineIntersection(ray, false, tolerance);
                                 if (iPt != null)
                                 {
-                                    double signedAngle = direction.SignedAngle(subPart.Direction(), p.Normal);
-                                    if ((subPart.Start.SquareDistance(iPt) <= sqTol))
+                                    double signedAngle = direction.SignedAngle(current.Direction(), p.Normal);
+                                    if ((current.Start.SquareDistance(iPt) <= sqTol * prevTolFactor)) // Will we get a point on the previous line
                                     {
                                         if (signedAngle > Tolerance.Angle)
                                             intersects.Add(iPt);
                                         else
                                             extraIntersects.Add(iPt);
                                     }
-                                    else if ((subPart.End.SquareDistance(iPt) <= sqTol))
+                                    else if ((current.End.SquareDistance(iPt) <= sqTol * nextTolFactor))  // Will we get a point on the next line
                                     {
                                         if (signedAngle < -Tolerance.Angle)
                                             intersects.Add(iPt);
@@ -214,6 +223,8 @@ namespace BH.Engine.Geometry
                                     else
                                         intersects.Add(iPt);
                                 }
+                                prevTolFactor = 1 / nextTolFactor;
+                                current = next;
                             }
 
                             if (intersects.Count == 0)
@@ -252,6 +263,10 @@ namespace BH.Engine.Geometry
             // - to be replaced with a general method for a nurbs curve?
             // - this is very problematic for edge cases (cutting line going through a sharp corner, to be superseded?
 
+            BoundingBox box = curve.Bounds();
+            if (points.Any(x => !box.IsContaining(x, true, tolerance)))
+                return false;
+
             if (!curve.IsClosed(tolerance))
                 return false;
 
@@ -286,7 +301,7 @@ namespace BH.Engine.Geometry
 
                 Point end = p.Origin;   // Avrage of control points
                 Vector direction = (end - pPt).Normalise();     // Gets a line cutting through the curves and the point
-                while (direction.SquareLength() <= sqTol || edgeDirections.Any(e => 1 - Math.Abs(e.DotProduct(direction)) <= Tolerance.Angle)) // not zeroa or parallel to edges
+                while (direction.SquareLength() <= 0.5 || edgeDirections.Any(e => 1 - Math.Abs(e.DotProduct(direction)) <= Tolerance.Angle)) // not zeroa or parallel to edges
                 {
                     end = end.Translate(Create.RandomVectorInPlane(p, true));
                     direction = (end - pPt).Normalise();

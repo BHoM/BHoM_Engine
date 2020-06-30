@@ -40,46 +40,86 @@ namespace BH.Engine.Structure
     public static partial class Query
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /**** Public Methods - 2D layout                ****/
         /***************************************************/
 
         [Description("Gets the LongitudinalReinforcement positions in the ConcreteSection as a list of Points.")]
         [Input("section", "The concrete section to return all points from.")]
         [Input("position", "Position along the section to extract reinforcement. A negative value will return all reinforcement.")]
         [Output("points", "The positions of the LongitudinalReinforcement.")]
-        public static List<Point> ReinforcementLayout(ConcreteSection section, double position = -1)
+        public static List<Point> LongitudinalReinforcementLayout(ConcreteSection section, double position = -1)
         {
-            //Extract Longitudinal reinforcement
-            List<LongitudinalReinforcement> longReif = section.LongitudinalReinforcement();
-
-            //No longitudinal reinforcement available
-            if (longReif.Count == 0)
-                return new List<Point>();
+            List<Point> rebarPoints = new List<Point>();
 
             List<ICurve> outerProfileEdges;
             List<ICurve> innerProfileEdges;
+            List<LongitudinalReinforcement> longReif;
+            List<TransverseReinforcement> tranReif;
+            double longCover, tranCover;
 
-            ExtractInnerAndOuterEdges(section, out outerProfileEdges, out innerProfileEdges);
+            if (section.CheckSectionAndExtractParameters(out outerProfileEdges, out innerProfileEdges, out longReif, out tranReif, out longCover, out tranCover))
+            {
+                foreach (LongitudinalReinforcement reif in longReif)
+                    if (position < 0 || (reif.StartLocation <= position && reif.EndLocation >= position))
+                        rebarPoints.AddRange(ReinforcementLayout(reif, longCover, outerProfileEdges, innerProfileEdges));
+            }
+            return rebarPoints;
+        }
 
-            //Need at least one external edge curve
-            if (outerProfileEdges.Count == 0)
-                return new List<Point>();
+        /***************************************************/
 
-            //TODO: include stirups for offset distance
-            double stirupOffset = 0;
-            double cover = section.MinimumCover + stirupOffset;
+        [Description("Gets the TransverseReinforcement positions in the ConcreteSection as a list of Curves (centerlines).")]
+        [Input("section", "The concrete section to return all points from.")]
+        [Input("position", "Position along the section to extract reinforcement. A negative value will return all reinforcement.")]
+        [Output("curves", "The positions of the LongitudinalReinforcement.")]
+        public static List<ICurve> TransverseReinforcementLayout(ConcreteSection section, double position = -1)
+        {
+            List<ICurve> rebarCurves = new List<ICurve>();
 
+            List<ICurve> outerProfileEdges;
+            List<ICurve> innerProfileEdges;
+            List<LongitudinalReinforcement> longReif;
+            List<TransverseReinforcement> tranReif;
+            double longCover, tranCover;
+
+            if (section.CheckSectionAndExtractParameters(out outerProfileEdges, out innerProfileEdges, out longReif, out tranReif, out longCover, out tranCover))
+            {
+                foreach (TransverseReinforcement reif in tranReif)
+                    if (position < 0 || (reif.StartLocation <= position && reif.EndLocation >= position))
+                        rebarCurves.AddRange(ReinforcementLayout(reif, tranCover, outerProfileEdges, innerProfileEdges));
+            }
+            return rebarCurves;
+        }
+
+        /***************************************************/
+
+        [Description("Gets the IBarReinforcement positions in the ConcreteSection as a list of points (centers) and curves (centerlines).")]
+        [Input("section", "The concrete section to return all points from.")]
+        [Input("position", "Position along the section to extract reinforcement. A negative value will return all reinforcement.")]
+        [Output("geometry", "The positions of the IBarReinforcement.")]
+        public static List<IGeometry> ReinforcementLayout(ConcreteSection section, double position = -1)
+        {
+            List<IGeometry> rebarLayout = new List<IGeometry>();
+            List<ICurve> rebarCurves = new List<ICurve>();
             List<Point> rebarPoints = new List<Point>();
 
-            foreach (LongitudinalReinforcement reif in longReif)
-            {
-                if (position < 0 || (reif.StartLocation <= position && reif.EndLocation >= position))
-                {
-                    rebarPoints.AddRange(ReinforcementLayout(reif, cover, outerProfileEdges, innerProfileEdges));
-                }
-            }
+            List<ICurve> outerProfileEdges;
+            List<ICurve> innerProfileEdges;
+            List<LongitudinalReinforcement> longReif;
+            List<TransverseReinforcement> tranReif;
+            double longCover, tranCover;
 
-            return rebarPoints;
+            if (section.CheckSectionAndExtractParameters(out outerProfileEdges, out innerProfileEdges, out longReif, out tranReif, out longCover, out tranCover))
+            {
+                foreach (LongitudinalReinforcement reif in longReif)
+                    if (position < 0 || (reif.StartLocation <= position && reif.EndLocation >= position))
+                        rebarLayout.AddRange(ReinforcementLayout(reif, longCover, outerProfileEdges, innerProfileEdges));
+
+                foreach (TransverseReinforcement reif in tranReif)
+                    if (position < 0 || (reif.StartLocation <= position && reif.EndLocation >= position))
+                        rebarLayout.AddRange(ReinforcementLayout(reif, tranCover, outerProfileEdges, innerProfileEdges));
+            }
+            return rebarLayout;
         }
 
         /***************************************************/
@@ -94,13 +134,13 @@ namespace BH.Engine.Structure
         {
             innerProfileEdges = innerProfileEdges ?? new List<ICurve>();
             double offset = cover + reinforcement.Diameter / 2;
-            
+
             IEnumerable<ICurve> outerCurves = outerProfileEdges.Select(x => x.IOffset(offset, -x.INormal())).Where(x => x != null).ToList();
             IEnumerable<ICurve> innerCurves = innerProfileEdges.Select(x => x.IOffset(offset, x.INormal())).Where(x => x != null).ToList();
 
             if (outerCurves.Count() == 0)
             {
-                Engine.Reflection.Compute.RecordError("Cover is to large for the section curve. Could not generate layout.");
+                Reflection.Compute.RecordError("Cover is to large for the section curve. Could not generate layout.");
                 return new List<Point>();
             }
             return reinforcement.RebarLayout.IPointLayout(outerCurves, innerCurves);
@@ -108,44 +148,46 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Gets the LongitudinalReinforcement centrelines in the Bar as a list of Lines.")]
+        [Description("Gets the TransverseReinforcement positions as a list of curves, based on inner and outer profile edges.")]
+        [Input("reinforcement", "The TransverseReinforcement to extract the points from.")]
+        [Input("cover", "Rebar cover.", typeof(Length))]
+        [Input("outerProfileEdges", "The outer profile edges of the ConcreteSection to be populated.")]
+        [Input("innerProfileEdges", "The inner profile edges, or openings, of the ConcreteSection to be populated.")]
+        [Output("points", "The centerlines of the TransverseReinforcement.")]
+        public static List<ICurve> ReinforcementLayout(this TransverseReinforcement reinforcement, double cover, List<ICurve> outerProfileEdges, List<ICurve> innerProfileEdges = null)
+        {
+            return reinforcement.CenterlineLayout.ICurveLayout(outerProfileEdges, innerProfileEdges, cover);
+        }
+
+
+        /***************************************************/
+        /**** Public Methods - 3D layout                ****/
+        /***************************************************/
+
+        [Description("Gets all the reinforcement centrelines in the Bar as a list of Curves.")]
         [Input("bar", "The Bar to extract all longitudinal reinforcement from. If the bar does not contain a ConcreteSection an empty list will be returned.")]
-        [Output("lines", "The centrelines of the LongitudinalReinforcement.")]
+        [Output("lines", "The centrelines of the IBarReinforcement.")]
         public static List<ICurve> ReinforcementLayout(Bar bar)
         {
+            List<ICurve> barLocations = new List<ICurve>();
             ConcreteSection section = bar.SectionProperty as ConcreteSection;
-            if (section == null)
-                return new List<ICurve>();
-
-            //Extract Longitudinal reinforcement
-            List<LongitudinalReinforcement> longReif = section.LongitudinalReinforcement();
-
-            //No longitudinal reinforcement available
-            if (longReif.Count == 0)
-                return new List<ICurve>();
 
             List<ICurve> outerProfileEdges;
             List<ICurve> innerProfileEdges;
+            List<LongitudinalReinforcement> longReif;
+            List<TransverseReinforcement> tranReif;
+            double longCover, tranCover;
 
-            ExtractInnerAndOuterEdges(section, out outerProfileEdges, out innerProfileEdges);
-
-            //Need at least one external edge curve
-            if (outerProfileEdges.Count == 0)
-                return new List<ICurve>();
-
-
-            TransformMatrix transformation = bar.BarSectionTranformation();
-            double length = bar.Length();
-
-            //TODO: include stirups for offset distance
-            double stirupOffset = 0;
-            double cover = section.MinimumCover + stirupOffset;
-
-            List<ICurve> barLocations = new List<ICurve>();
-
-            foreach (LongitudinalReinforcement reif in longReif)
+            if (section.CheckSectionAndExtractParameters(out outerProfileEdges, out innerProfileEdges, out longReif, out tranReif, out longCover, out tranCover))
             {
-                barLocations.AddRange(ReinforcementLayout(reif, cover, outerProfileEdges, innerProfileEdges, length, transformation));
+                TransformMatrix transformation = bar.BarSectionTranformation();
+                double length = bar.Length();
+
+                foreach (LongitudinalReinforcement reif in longReif)
+                    barLocations.AddRange(ReinforcementLayout(reif, longCover, outerProfileEdges, innerProfileEdges, length, transformation));
+
+                foreach (TransverseReinforcement reif in tranReif)
+                    barLocations.AddRange(ReinforcementLayout(reif, tranCover, outerProfileEdges, innerProfileEdges, length, transformation));
             }
 
             return barLocations;
@@ -179,7 +221,113 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
+
+        [Description("Gets the TransverseReinforcement centrelines as a list of curves, based on inner and outer profile edges and Bar parameters.")]
+        [Input("reinforcement", "The TransverseReinforcement to extract the centrelines from.")]
+        [Input("cover", "Rebar cover.", typeof(Length))]
+        [Input("outerProfileEdges", "The outer profile edges of the ConcreteSection to be populated.")]
+        [Input("innerProfileEdges", "The inner profile edges, or openings, of the ConcreteSection to be populated.")]
+        [Input("length", "Length of the host Bar used to generate the lines.", typeof(Length))]
+        [Input("transformation", "Transformation needed to move the lines from the position of the host element.")]
+        [Output("points", "The centrelines of the LongitudinalReinforcement.")]
+        public static List<ICurve> ReinforcementLayout(this TransverseReinforcement reinforcement, double cover, List<ICurve> outerProfileEdges, List<ICurve> innerProfileEdges, double length, TransformMatrix transformation)
+        {
+            List<ICurve> rebarLines = new List<ICurve>();
+            List<ICurve> stirrupOutline = reinforcement.ReinforcementLayout(cover, outerProfileEdges, innerProfileEdges);
+
+            Vector dir = Vector.ZAxis.Transform(transformation);
+            double stirrupRange = (reinforcement.EndLocation - reinforcement.StartLocation) * length - (2 * cover + reinforcement.Diameter);
+            int count;
+            double spacing = reinforcement.Spacing;
+
+            if (reinforcement.AdjustSpacingToFit)
+            {
+                count = (int)Math.Ceiling(stirrupRange / reinforcement.Spacing);
+                spacing = stirrupRange / count;
+            }
+            else
+                count = (int)Math.Floor(stirrupRange / reinforcement.Spacing);
+
+            if (stirrupOutline.Count != 0)
+            {
+                for (int k = 0; k < stirrupOutline.Count; k++)
+                {
+                    rebarLines.Add(stirrupOutline[k].ITransform(transformation).ITranslate(dir * (reinforcement.StartLocation * length + cover + reinforcement.Diameter / 2)));
+                    for (int i = 0; i < count; i++)
+                        rebarLines.Add(rebarLines.Last().ITranslate(dir * spacing));
+                }
+            }
+            return rebarLines;
+        }
+
+
+        /***************************************************/
+        /**** Public Methods - Interface                ****/
+        /***************************************************/
+
+        [Description("Gets the IBarReinforcement centrelines as a list of curves, based on inner and outer profile edges and Bar parameters.")]
+        [Input("reinforcement", "The TransverseReinforcement to extract the centrelines from.")]
+        [Input("cover", "Rebar cover.", typeof(Length))]
+        [Input("outerProfileEdges", "The outer profile edges of the ConcreteSection to be populated.")]
+        [Input("innerProfileEdges", "The inner profile edges, or openings, of the ConcreteSection to be populated.")]
+        [Input("length", "Length of the host Bar used to generate the lines.", typeof(Length))]
+        [Input("transformation", "Transformation needed to move the lines from the position of the host element.")]
+        [Output("points", "The centrelines of the LongitudinalReinforcement.")]
+        public static List<ICurve> IReinforcementLayout(this IBarReinforcement reinforcement, double cover, List<ICurve> outerProfileEdges, List<ICurve> innerProfileEdges, double length, TransformMatrix transformation)
+        {
+            return new List<ICurve>(ReinforcementLayout(reinforcement as dynamic, cover, outerProfileEdges, innerProfileEdges, length, transformation));
+        }
+
+
+        /***************************************************/
         /**** Private Methods                           ****/
+        /***************************************************/
+
+        private static bool CheckSectionAndExtractParameters(this ConcreteSection section, out List<ICurve> outerProfileEdges, out List<ICurve> innerProfileEdges, out List<LongitudinalReinforcement> longReif, out List<TransverseReinforcement> tranReif, out double longCover, out double tranCover)
+        {
+            //Assigning out parameters
+            outerProfileEdges = new List<ICurve>();
+            innerProfileEdges = new List<ICurve>();
+            longReif = new List<LongitudinalReinforcement>();
+            tranReif = new List<TransverseReinforcement>();
+            longCover = 0;
+            tranCover = 0;
+
+            if (section == null)
+                return false;
+
+            longReif = section.LongitudinalReinforcement();
+            tranReif = section.TransverseReinforcement();
+            
+            //Check if any offsetlayout, if so, check if larger than minimum cover
+            if (tranReif.Any(x => x.CenterlineLayout is OffsetCurveLayout))
+            {
+                double maxCover = Math.Max(section.MinimumCover, tranReif.Select(x => x.CenterlineLayout).OfType<OffsetCurveLayout>().Max(x => x.Offset));
+                longCover = maxCover;
+                tranCover = maxCover;
+            }
+
+            //No  reinforcement available
+            if (longReif.Count == 0 && tranReif.Count == 0)
+                return false;
+
+            ExtractInnerAndOuterEdges(section, out outerProfileEdges, out innerProfileEdges);
+
+            //Need at least one external edge curve
+            if (outerProfileEdges.Count == 0)
+                return false;
+
+            //Add additional offset to include transverse rebar's diameters
+            if (tranReif.Count > 0)
+            {
+                double maxTranDiam = tranReif.Select(r => r.Diameter).Max();
+                longCover += maxTranDiam;
+                tranCover += maxTranDiam / 2;
+            }
+
+            return true;
+        }
+
         /***************************************************/
 
         private static void ExtractInnerAndOuterEdges(ConcreteSection section, out List<ICurve> outerProfileEdges, out List<ICurve> innerProfileEdges)
@@ -190,7 +338,7 @@ namespace BH.Engine.Structure
             if (section == null || section.SectionProfile == null || section.SectionProfile.Edges == null || section.SectionProfile.Edges.Count == 0)
                 return;
 
-            List <List<ICurve>> distCurves = Engine.Geometry.Compute.DistributeOutlines(Engine.Geometry.Compute.IJoin(section.SectionProfile.Edges.ToList()).Cast<ICurve>().ToList());
+            List<List<ICurve>> distCurves = Engine.Geometry.Compute.DistributeOutlines(Engine.Geometry.Compute.IJoin(section.SectionProfile.Edges.ToList()).Cast<ICurve>().ToList());
 
             foreach (List<ICurve> curves in distCurves)
             {
@@ -207,6 +355,16 @@ namespace BH.Engine.Structure
                 return new List<LongitudinalReinforcement>();
 
             return section.Reinforcement.Where(x => x is LongitudinalReinforcement).Cast<LongitudinalReinforcement>().ToList();
+        }
+
+        /***************************************************/
+
+        private static List<TransverseReinforcement> TransverseReinforcement(this ConcreteSection section)
+        {
+            if (section == null || section.Reinforcement == null || section.Reinforcement.Count == 0)
+                return new List<TransverseReinforcement>();
+
+            return section.Reinforcement.Where(x => x is TransverseReinforcement).Cast<TransverseReinforcement>().ToList();
         }
 
         /***************************************************/

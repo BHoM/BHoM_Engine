@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -20,24 +20,40 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Common.Materials;
+using System;
+using System.Linq;
+using System.Collections.Generic;
+using System.ComponentModel;
 using BH.oM.Reflection.Attributes;
+using BH.oM.Base;
+using BH.oM.Physical.Reinforcement;
+using BH.oM.Geometry;
+using BH.oM.Physical.Materials;
 
-namespace BH.Engine.Common
+namespace BH.Engine.Physical
 {
-    public static partial class Query
+    public static partial class Create
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Deprecated("2.3", "Material class superseeded by counterpart in Physical_oM and MaterialFragments in Structure_oM")]
-        public static double ShearModulus(this Material material)
+        [Description("Creates a physical reinforcement element. Calculates BendRadius automatically value is based on Eurocode 1992-1-1. \nFor diameters less than or equal to 0.016m inner bend diameter will be equal 4 times the stirrups's diameter and 7 times for bar diameters greater than 0.016m. \nNote that in values in Eurocode refers to the inner bend diameter and Stirrup in BHoM defines centerline radius, why values will be adjusted to account for this.")]
+        [InputFromProperty("centreCurve")]
+        [InputFromProperty("diameter")]
+        [InputFromProperty("material")]
+        [Output("PrimaryReinforcingBar", "The created physical Primary Reinforcing bar.")]
+        public static Stirrup Stirrup(ICurve centreCurve, double diameter, Material material)
         {
-            return material.YoungsModulus / (2 * (1 + material.PoissonsRatio));
+            return new Stirrup
+            {
+                CentreCurve = centreCurve,
+                Diameter = diameter,
+                Material = material,
+                BendRadius = diameter <= 0.016 ? (4.5 * diameter) / 2 : (7.5 * diameter) / 2
+            };
         }
-
+        
         /***************************************************/
     }
 }
-

@@ -80,9 +80,9 @@ namespace BH.Engine.Serialiser.MemberMapConventions
                 
                 foreach (var property in properties)
                 {
-                    if (property.DeclaringType == classType)
+                    if (property.DeclaringType == classType && !IsOverridden(property))
                         classMap.MapMember(property);
-                    else if(!property.CanWrite)
+                    else if(!property.CanWrite && classType.BaseType != null && classType.BaseType.IsAbstract)
                     {
                         //Forcing immutable properties from base class to be added via reflection.
                         //This is due to BsonClassMap refusing to add members from base class to the class map which is needed
@@ -103,6 +103,25 @@ namespace BH.Engine.Serialiser.MemberMapConventions
                 }
             }
         }
+
+        /***************************************************/
+
+        private bool IsOverridden(PropertyInfo property)
+        {
+            var getMethod = property.GetGetMethod(false);
+            if (getMethod != null)
+            {
+                return getMethod.GetBaseDefinition() != getMethod;
+            }
+            else
+            {
+                //This case should not happen for compliant BHoMObjects, as all properties should have getters, but adding to be safe.
+                var setMethod = property.GetSetMethod(false);
+                return setMethod.GetBaseDefinition() != setMethod;
+            }
+        }
+
+        /***************************************************/
     }
 }
 

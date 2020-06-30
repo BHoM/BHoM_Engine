@@ -19,9 +19,12 @@
  * You should have received a copy of the GNU Lesser General Public License     
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
- 
+
+using BH.oM.Data.Collections;
 using BH.oM.Geometry;
+using BH.oM.Reflection.Attributes;
 using System;
+using System.ComponentModel;
 using System.Linq;
 
 namespace BH.Engine.Data
@@ -38,6 +41,31 @@ namespace BH.Engine.Data
             double dy = point1.Y - point2.Y;
             double dz = point1.Z - point2.Z;
             return dx * dx + dy * dy + dz * dz;
+        }
+
+        /***************************************************/
+
+        [Description("Queries the square distance between two DomainBoxes.")]
+        [Input("box1", "Box to evaluate square distance from.")]
+        [Input("box2", "Box to evaluate square distance from.")]
+        [Output("sqDist", "Square distance between the two DomainBoxes.")]
+        public static double SquareDistance(this DomainBox box1, DomainBox box2)
+        {
+            return box1.Domains.Zip(box2.Domains, (a, b) => Math.Pow(Distance(a, b), 2)).Sum();
+        }
+
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+        private static double Distance(Domain a, Domain b)
+        {
+            if (a.Max < b.Min)
+                return a.Max - b.Min;
+            else if (a.Min > b.Max)
+                return a.Min - b.Max;
+            else
+                return 0;
         }
 
         /***************************************************/
