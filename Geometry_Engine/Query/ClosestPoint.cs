@@ -198,6 +198,23 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        public static Point ClosestPoint(this PlanarSurface surface, Point point)
+        {
+            Plane panelPlane = surface.FitPlane();
+            List<Point> cPt = new List<Point> { point.Project(panelPlane) };
+
+            foreach (ICurve outline in surface.InternalBoundaries)
+            {
+                if (outline.IIsContaining(cPt))
+                    return outline.IClosestPoint(cPt[0]);
+            }
+
+            ICurve panelOutline = surface.ExternalBoundary;
+            return (panelOutline.IIsContaining(cPt)) ? cPt[0] : panelOutline.IClosestPoint(cPt[0]);
+        }
+
+        /***************************************************/
+
         [NotImplemented]
         public static Point ClosestPoint(this Pipe surface, Point point)
         {
