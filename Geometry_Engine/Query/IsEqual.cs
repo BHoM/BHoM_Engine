@@ -181,7 +181,7 @@ namespace BH.Engine.Geometry
                     return false;
             }
 
-            return surface.ExternalBoundary.IIsEqual(other, tolerance);
+            return surface.ExternalBoundary.IIsEqual(other.ExternalBoundary, tolerance);
         }
 
         /***************************************************/
