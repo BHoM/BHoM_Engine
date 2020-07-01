@@ -22,10 +22,6 @@
 
 using BH.Engine.Reflection;
 using BH.oM.Base;
-using MongoDB.Bson;
-using MongoDB.Bson.IO;
-using MongoDB.Bson.Serialization;
-using MongoDB.Bson.Serialization.Serializers;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
