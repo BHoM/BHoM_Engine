@@ -160,6 +160,23 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        public static bool IsEqual(this PlanarSurface surface, PlanarSurface other, double tolerance = Tolerance.Distance)
+        {
+            if ((surface.InternalBoundaries != null ^ other.InternalBoundaries != null) &&
+                surface.InternalBoundaries.Count != other.InternalBoundaries.Count)
+                return false;
+
+            foreach (ICurve curve in surface.InternalBoundaries)
+            {
+                if (!other.InternalBoundaries.Any(x => x.IIsEqual(curve, tolerance)))
+                    return false;
+            }
+
+            return surface.ExternalBoundary.IIsEqual(other, tolerance);
+        }
+
+        /***************************************************/
+
         public static bool IsEqual(this Pipe surface, Pipe other, double tolerance = Tolerance.Distance)
         {
             return surface.Capped == other.Capped
