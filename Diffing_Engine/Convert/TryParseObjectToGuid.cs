@@ -31,8 +31,6 @@ using System.Threading.Tasks;
 using System.Security.Cryptography;
 using System.Reflection;
 using BH.Engine.Serialiser;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
 
