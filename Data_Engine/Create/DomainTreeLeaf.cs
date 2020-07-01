@@ -40,7 +40,7 @@ namespace BH.Engine.Data
 
         [Description("Create a leaf node for a DomainTree.")]
         [Input("data", "The data to store in the DomainTree leaf.")]
-        [Input("domainBox", "A DomainBox which encompasses the data.")]
+        [Input("domainBox", "A DomainBox that encompasses the data.")]
         [Output("leaf", "A leaf node for a DomainTree.")]
         public static DomainTree<T> DomainTreeLeaf<T>(T data, DomainBox domainBox)
         {
