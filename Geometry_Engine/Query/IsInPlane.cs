@@ -165,6 +165,13 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        public static bool IsInPlane(this PlanarSurface surface, Plane plane, double tolerance = Tolerance.Distance)
+        {
+            return surface.ExternalBoundary.IIsInPlane(plane, tolerance);
+        }
+
+        /***************************************************/
+
         public static bool IsInPlane(this Pipe surface, Plane plane, double tolerance = Tolerance.Distance)
         {
             return false;
