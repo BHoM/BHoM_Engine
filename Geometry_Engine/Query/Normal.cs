@@ -86,6 +86,14 @@ namespace BH.Engine.Geometry
         }
 
         /***************************************************/
+
+        public static List<Vector> Normals(this Mesh3D mesh)
+        {
+            return mesh.ToMesh().Normals();
+        }
+
+
+        /***************************************************/
         /**** Public Methods - Curves                   ****/
         /***************************************************/
 
