@@ -54,10 +54,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Compute\WriteToStream.cs" />
+    <Compile Include="Compute\ReadFromStream.cs" />
     <Compile Include="Compute\RegisterClassMap.cs" />
     <Compile Include="Compute\AllowUpgradeFromBson.cs" />
     <Compile Include="Convert\Bson.cs" />
     <Compile Include="Convert\Encrypted.cs" />
+    <Compile Include="Convert\Bytes.cs" />
     <Compile Include="Convert\Zip.cs" />
     <Compile Include="Convert\Json.cs" />
     <Compile Include="Modify\ApplyTaggedName.cs" />
