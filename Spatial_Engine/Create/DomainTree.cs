@@ -41,10 +41,10 @@ namespace BH.Engine.Spatial
 
         [Description("Creates a spatial data tree from the data. Useful for spatial queries in large data sets.")]
         [Input("elements", "The elements to store in the data tree.")]
-        [Input("treeDegree", "Degree of the tree. Determinse the number of children each node of the tree can have.")]
-        [Input("leafSize", "Determinse the number of siblings a leaf node can have.")]
+        [Input("treeDegree", "Degree of the tree. Determines the number of children each node of the tree can have.")]
+        [Input("leafSize", "Determines the number of siblings a leaf node can have.")]
         [Input("sampleSize", "The number of items used to determine how to split the collection.")]
-        [Output("domainTree", "A spatial data tree containing all the provided elements in its leaves.")]
+        [Output("domainTree", "A spatial data tree containing all provided elements in its leaves.")]
         public static DomainTree<T> DomainTree<T>(this IEnumerable<T> elements, int treeDegree = 16, int leafSize = 16, int sampleSize = 60) where T : IElement
         {
             return Data.Create.DomainTree(elements, x => x.IBounds().DomainBox(), treeDegree, leafSize, sampleSize);
