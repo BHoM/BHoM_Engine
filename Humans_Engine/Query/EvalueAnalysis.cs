@@ -22,7 +22,6 @@
 
 using System.Collections.Generic;
 using BH.oM.Geometry;
-using BH.oM.Architecture.Theatron;
 using BH.oM.Humans.ViewQuality;
 using BH.Engine.Geometry;
 using Accord.Collections;
@@ -40,30 +39,32 @@ namespace BH.Engine.Humans.ViewQuality
         [Description("Evaluate Evalues for a single Audience")]
         [Input("audience", "Audience to evaluate")]
         [Input("settings", "EvalueSettings to configure the evaluation")]
-        [Input("activityArea", "ActivityArea to use in the evaluation")]
-        public static List<Evalue> EvalueAnalysis(Audience audience, EvalueSettings settings, ActivityArea activityArea)
+        [Input("playingArea", "Polyline to be used for defining edge of performance or playing area")]
+        [Input("focalPoint", "Point defining the spectator focal point")]
+        public static List<Evalue> EvalueAnalysis(Audience audience, EvalueSettings settings, Polyline playingArea, Point focalPoint)
         {
-            List<Evalue> results = EvaluateEvalue(audience, settings, activityArea);
+            List<Evalue> results = EvaluateEvalue(audience, settings, playingArea, focalPoint);
             return results;
         }
         /***************************************************/
         [Description("Evaluate Evalues for a List of Audience")]
         [Input("audience", "Audience to evaluate")]
         [Input("settings", "EvalueSettings to configure the evaluation")]
-        [Input("activityArea", "ActivityArea to use in the evaluation")]
-        public static List<List<Evalue>> EvalueAnalysis(List<Audience> audience, EvalueSettings settings, ActivityArea activityArea)
+        [Input("playingArea", "Polyline to be used for defining edge of performance or playing area")]
+        [Input("focalPoint", "Point defining the spectator focal point")]
+        public static List<List<Evalue>> EvalueAnalysis(List<Audience> audience, EvalueSettings settings, Polyline playingArea, Point focalPoint)
         {
             List<List<Evalue>> results = new List<List<Evalue>>();
             foreach (Audience a in audience)
             {
-                results.Add(EvaluateEvalue(a, settings, activityArea));
+                results.Add(EvaluateEvalue(a, settings, playingArea, focalPoint));
             }
             return results;
         }
         /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
-        private static List<Evalue> EvaluateEvalue(Audience audience, EvalueSettings settings, ActivityArea activityArea)
+        private static List<Evalue> EvaluateEvalue(Audience audience, EvalueSettings settings, Polyline playingArea, Point focalPoint)
         {
             List<Evalue> results = new List<Evalue>();
             if (audience.Spectators.Count == 0)
@@ -75,13 +76,13 @@ namespace BH.Engine.Humans.ViewQuality
                 Vector viewVector = s.Head.PairOfEyes.ViewDirection;
                 if (settings.ViewType == EvalueViewEnum.ToPoint)
                 {
-                    viewVector = activityArea.ActivityFocalPoint - s.Head.PairOfEyes.ReferenceLocation;
+                    viewVector = focalPoint - s.Head.PairOfEyes.ReferenceLocation;
                 }
-                results.Add(EvalueResult(s, rowVector, viewVector,activityArea.PlayingArea,settings));
+                results.Add(EvalueResult(s, rowVector, viewVector, playingArea,settings));
             }
             return results;
         }
-        private static Evalue EvalueResult(Spectator s, Vector rowVector, Vector viewVect, Polyline playingArea,EvalueSettings settings)
+        private static Evalue EvalueResult(Spectator s, Vector rowVector, Vector viewVect, Polyline playingArea, EvalueSettings settings)
         {
             Evalue result = new Evalue();
             result.ObjectId = s.BHoM_Guid;

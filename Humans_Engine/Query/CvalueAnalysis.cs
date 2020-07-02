@@ -22,7 +22,6 @@
 
 using System.Collections.Generic;
 using BH.oM.Geometry;
-using BH.oM.Architecture.Theatron;
 using BH.oM.Humans.ViewQuality;
 using BH.Engine.Geometry;
 using Accord.Collections;
@@ -41,30 +40,32 @@ namespace BH.Engine.Humans.ViewQuality
         [Description("Evaluate Cvalues for a single Audience")]
         [Input("audience", "Audience to evaluate")]
         [Input("settings", "CvalueSettings to configure the evaluation")]
-        [Input("focalPolyline", "Polyline to be used for defining focal points")]
-        public static List<Cvalue> CvalueAnalysis(Audience audience, CvalueSettings settings, ActivityArea activityArea)
+        [Input("playingArea", "Polyline to be used for defining edge of performance or playing area")]
+        [Input("focalPoint", "Point defining the spectator focal point")]
+        public static List<Cvalue> CvalueAnalysis(Audience audience, CvalueSettings settings, Polyline playingArea, Point focalPoint)
         {
-            List<Cvalue> results = EvaluateCvalue(audience, settings, activityArea);
+            List<Cvalue> results = EvaluateCvalue(audience, settings, playingArea, focalPoint);
             return results;
         }
         /***************************************************/
         [Description("Evaluate Cvalues for a List of Audience")]
         [Input("audience", "Audience to evaluate")]
         [Input("settings", "CvalueSettings to configure the evaluation")]
-        [Input("focalPolyline", "Polyline to be used for defining focal points")]
-        public static List<List<Cvalue>> CvalueAnalysis(List<Audience> audience, CvalueSettings settings, ActivityArea activityArea)
+        [Input("playingArea", "Polyline to be used for defining edge of performance or playing area")]
+        [Input("focalPoint", "Point defining the spectator focal point")]
+        public static List<List<Cvalue>> CvalueAnalysis(List<Audience> audience, CvalueSettings settings, Polyline playingArea, Point focalPoint)
         {
             List<List<Cvalue>> results = new List<List<Cvalue>>();
             foreach(Audience a in audience)
             {
-                results.Add(EvaluateCvalue(a, settings, activityArea));
+                results.Add(EvaluateCvalue(a, settings, playingArea, focalPoint));
             }
             return results;
         }
         /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
-        private static List<Cvalue> EvaluateCvalue(Audience audience, CvalueSettings settings, ActivityArea activityArea)
+        private static List<Cvalue> EvaluateCvalue(Audience audience, CvalueSettings settings, Polyline playingArea, Point focalPoint)
         {
             List<Cvalue> results = new List<Cvalue>();
             if (audience.Spectators.Count == 0)
@@ -74,7 +75,7 @@ namespace BH.Engine.Humans.ViewQuality
             {
                 bool cvalueExists = true;
 
-                Point focal = GetFocalPoint(s, settings.FocalMethod, activityArea);
+                Point focal = GetFocalPoint(s, settings.FocalMethod, playingArea, focalPoint);
                 Spectator infront = GetSpecInfront(s, spectatorTree, focal);
                 if (infront == null)
                 {
@@ -88,27 +89,27 @@ namespace BH.Engine.Humans.ViewQuality
         }
         
         /***************************************************/
-        private static Point GetFocalPoint(Spectator spectator,CvalueFocalMethodEnum focalMethod,ActivityArea activityArea)
+        private static Point GetFocalPoint(Spectator spectator,CvalueFocalMethodEnum focalMethod, Polyline playingArea, Point focalPoint)
         {
             Point focal = new Point();
             switch (focalMethod)
             {
                 case CvalueFocalMethodEnum.OffsetThroughCorners:
-                    focal = FindFocalOffset(spectator, activityArea.PlayingArea);
+                    focal = FindFocalOffset(spectator, playingArea);
 
                     break;
                 case CvalueFocalMethodEnum.Closest:
-                    focal = FindFocalClosest(spectator, activityArea.PlayingArea);
+                    focal = FindFocalClosest(spectator, playingArea);
 
                     break;
                 case CvalueFocalMethodEnum.Perpendicular:
-                    focal = FindFocalPerp(spectator, activityArea.PlayingArea);
+                    focal = FindFocalPerp(spectator, playingArea);
 
                     break;
-                case CvalueFocalMethodEnum.ActivityFocalPoint:
-                    focal = activityArea.ActivityFocalPoint;
+                //case CvalueFocalMethodEnum.ActivityFocalPoint:
+                //    focal = focalPoint;
 
-                    break;
+                //    break;
             }
             return focal;
         }

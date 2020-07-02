@@ -22,7 +22,6 @@
 
 using System.Collections.Generic;
 using BH.oM.Geometry;
-using BH.oM.Architecture.Theatron;
 using BH.oM.Humans.ViewQuality;
 using BH.Engine.Geometry;
 using System.Linq;
@@ -42,30 +41,32 @@ namespace BH.Engine.Humans.ViewQuality
         [Description("Evaluate Avalues for a single Audience")]
         [Input("audience", "Audience to evaluate")]
         [Input("settings", "AvalueSettings to configure the evaluation")]
-        [Input("activityArea", "ActivityArea to use in the evaluation")]
-        public static List<Avalue> AvalueAnalysis(Audience audience, AvalueSettings settings, ActivityArea activityArea)
+        [Input("playingArea", "Polyline to be used for defining edge of performance or playing area")]
+        [Input("focalPoint", "Point defining the spectator focal point")]
+        public static List<Avalue> AvalueAnalysis(Audience audience, AvalueSettings settings, Polyline playingArea, Point focalPoint)
         {
-            List<Avalue> results = EvaluateAvalue(audience, settings, activityArea);
+            List<Avalue> results = EvaluateAvalue(audience, settings, playingArea, focalPoint);
             return results;
         }
         /***************************************************/
         [Description("Evaluate Avalues for a List of Audience")]
         [Input("audience", "Audience to evaluate")]
         [Input("settings", "AvalueSettings to configure the evaluation")]
-        [Input("activityArea", "ActivityArea to use in the evaluation")]
-        public static List<List<Avalue>> AvalueAnalysis(List<Audience> audience, AvalueSettings settings, ActivityArea activityArea)
+        [Input("playingArea", "Polyline to be used for defining edge of performance or playing area")]
+        [Input("focalPoint", "Point defining the spectator focal point")]
+        public static List<List<Avalue>> AvalueAnalysis(List<Audience> audience, AvalueSettings settings,Polyline playingArea, Point focalPoint)
         {
             List<List<Avalue>> results = new List<List<Avalue>>();
             foreach(Audience a in audience)
             {
-                results.Add(EvaluateAvalue(a, settings, activityArea));
+                results.Add(EvaluateAvalue(a, settings, playingArea, focalPoint));
             }
             return results;
         }
         /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
-        private static List<Avalue> EvaluateAvalue(Audience audience, AvalueSettings settings, ActivityArea activityArea)
+        private static List<Avalue> EvaluateAvalue(Audience audience, AvalueSettings settings, Polyline playingArea, Point focalPoint)
         {
             List<Avalue> results = new List<Avalue>();
             if (audience.Spectators.Count == 0)
@@ -76,8 +77,8 @@ namespace BH.Engine.Humans.ViewQuality
             foreach (Spectator s in audience.Spectators)
             {
                 Vector rowVector = Geometry.Query.CrossProduct(Vector.ZAxis, s.Head.PairOfEyes.ViewDirection);
-                Vector viewVect = activityArea.ActivityFocalPoint - s.Head.PairOfEyes.ReferenceLocation;
-                results.Add(ClipView(s, rowVector, viewVect, settings, activityArea, spectatorTree));
+                Vector viewVect = focalPoint - s.Head.PairOfEyes.ReferenceLocation;
+                results.Add(ClipView(s, rowVector, viewVect, settings, playingArea, spectatorTree));
             }
             return results;
         }
@@ -99,7 +100,7 @@ namespace BH.Engine.Humans.ViewQuality
         
         /***************************************************/
 
-        private static Avalue ClipView(Spectator spectator, Vector rowV, Vector viewVect, AvalueSettings settings, ActivityArea activityArea, KDTree<Spectator> tree)
+        private static Avalue ClipView(Spectator spectator, Vector rowV, Vector viewVect, AvalueSettings settings, Polyline playingArea, KDTree<Spectator> tree)
         {
             Avalue result = new Avalue();
             result.ObjectId = spectator.BHoM_Guid;
@@ -118,7 +119,7 @@ namespace BH.Engine.Humans.ViewQuality
             //get the view cone
             result.ViewCone = Create.ViewCone(viewY, viewX, shiftOrigin, 1, settings.ConeType);
             //find part of activity area to project
-            Polyline clippedArea = ClipActivityArea(viewClip, activityArea);
+            Polyline clippedArea = ClipActivityArea(viewClip, playingArea);
             //project the pitch
             result.FullActivityArea = ProjectPolylineToPlane(viewPlane, clippedArea, spectator.Head.PairOfEyes.ReferenceLocation);
             //clip the pitch against the viewcone
@@ -213,10 +214,10 @@ namespace BH.Engine.Humans.ViewQuality
         }
         /***************************************************/
 
-        private static Polyline ClipActivityArea(Plane clipping, ActivityArea activityArea)
+        private static Polyline ClipActivityArea(Plane clipping, Polyline playingArea)
         {
             List<Point> control = new List<Point>();
-            foreach(Line seg in activityArea.PlayingArea.SubParts())
+            foreach(Line seg in playingArea.SubParts())
             {
                 //is start infront or behind plane?
                 Point s = seg.StartPoint();
