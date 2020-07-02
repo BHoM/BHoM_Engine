@@ -77,8 +77,7 @@ namespace BH.Engine.Geometry
                 {
                     Point pD = vertices[(faces[i].D)];
                     Vector normal = (CrossProduct(pA - pD, pB - pA)) + (CrossProduct(pC - pB, pD - pC));
-                    normal.Normalise();
-                    normals[i] = normal;
+                    normals.Add(normal.Normalise());
                 }
             }
 

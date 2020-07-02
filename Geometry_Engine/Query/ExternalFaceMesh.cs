@@ -21,7 +21,6 @@
  */
 
 using BH.oM.Geometry;
-using BH.oM.Reflection;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -33,33 +32,28 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static List<List<Face>> Cells(this Mesh3D mesh3d)
+        public static Mesh ExternalFaceMesh(this Mesh3D mesh3d)
         {
-            Dictionary<int, List<Face>> result = new Dictionary<int, List<Face>>();
+            List<Face> externalFaces = new List<Face>();
 
             for (int i = 0; i < mesh3d.CellRelation.Count; i++)
             {
-                int key = mesh3d.CellRelation[i].FromCell;
-
-                if (!result.ContainsKey(key))
-                    result[key] = new List<Face>();
-                result[key].Add(mesh3d.Faces[i]);
-
-                key = mesh3d.CellRelation[i].ToCell;
-
-                if (!result.ContainsKey(key))
-                    result[key] = new List<Face>();
-                result[key].Add(mesh3d.Faces[i]);
-
+                CellRelation c = mesh3d.CellRelation[i];
+                if (c.ToCell == -1 ^ c.FromCell == -1)
+                {
+                    externalFaces.Add(mesh3d.Faces[i]);
+                }
             }
-
-            if (result.ContainsKey(-1))
-                result.Remove(-1);
-
-            return result.Select(x => x.Value).ToList();
+            
+            return new Mesh()
+            {
+                Vertices = mesh3d.Vertices.ToList(), // Should only take the sub set of points, but that will mess with the indecies of the faces
+                Faces = externalFaces,
+            };
         }
 
         /***************************************************/
+
     }
 }
 

@@ -21,43 +21,34 @@
  */
 
 using BH.oM.Geometry;
-using BH.oM.Reflection;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace BH.Engine.Geometry
 {
-    public static partial class Query
+    public static partial class Create
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static List<List<Face>> Cells(this Mesh3D mesh3d)
+        public static Mesh3D Mesh3D(List<Point> vertices, List<Face> faces, List<CellRelation> cellRelation)
         {
-            Dictionary<int, List<Face>> result = new Dictionary<int, List<Face>>();
-
-            for (int i = 0; i < mesh3d.CellRelation.Count; i++)
+            if (faces.Count != cellRelation.Count)
             {
-                int key = mesh3d.CellRelation[i].FromCell;
-
-                if (!result.ContainsKey(key))
-                    result[key] = new List<Face>();
-                result[key].Add(mesh3d.Faces[i]);
-
-                key = mesh3d.CellRelation[i].ToCell;
-
-                if (!result.ContainsKey(key))
-                    result[key] = new List<Face>();
-                result[key].Add(mesh3d.Faces[i]);
-
+                Engine.Reflection.Compute.RecordError("The number of cell relations must match the number of faces.");
+                return null;
             }
 
-            if (result.ContainsKey(-1))
-                result.Remove(-1);
-
-            return result.Select(x => x.Value).ToList();
+            return new Mesh3D(vertices, faces, cellRelation);
         }
+
+
+        /***************************************************/
+        /**** Random Geometry                           ****/
+        /***************************************************/
+        
 
         /***************************************************/
     }
