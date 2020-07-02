@@ -42,7 +42,9 @@ namespace BH.Engine.Geometry
         {
             return curve.ISubParts().Any(x => x is NurbsCurve); ;
         }
-        
+
+        /***************************************************/
+
     }
 }
 
