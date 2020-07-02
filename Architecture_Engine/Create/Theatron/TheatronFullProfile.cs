@@ -36,6 +36,7 @@ namespace BH.Engine.Architecture.Theatron
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
+        [Deprecated("3.2", "Superseded by objects and methods in Audience_oM and Engine")]
         [Description("Create a full profile from one or more ProfileParameters")]
         [Input("parameters", "List of ProfileParameters")]
         public static TheatronFullProfile TheatronFullProfile(List<ProfileParameters> parameters)

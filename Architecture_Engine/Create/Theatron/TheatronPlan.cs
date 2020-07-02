@@ -37,6 +37,7 @@ namespace BH.Engine.Architecture.Theatron
         /***************************************************/
         /**** public Methods                            ****/
         /***************************************************/
+        [Deprecated("3.2", "Superseded by objects and methods in Audience_oM and Engine")]
         [Description("Create a partial TheatronPlan")]
         [Input("structuralSections", "List of ProfileOrigin to orientate the structural sections")]
         [Input("focalPolyline", "The polyline used to define focal points for Cvalue profile generation")]

@@ -37,6 +37,7 @@ namespace BH.Engine.Architecture.Theatron
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
+        [Deprecated("3.2", "Superseded by objects and methods in Audience_oM and Engine")]
         [Description("Create a single TierProfile from a single ProfileParameters and setting out point. 0,0,0 is used as the focal point.")]
         [Input("parameters", "ProfileParameters")]
         [Input("lastPointPrevTier", "Spectator eye point from previous tier or 0,0,0 on first tier")]
@@ -57,6 +58,7 @@ namespace BH.Engine.Architecture.Theatron
 
 
         /***************************************************/
+        [Deprecated("3.2", "Superseded by objects and methods in Audience_oM and Engine")]
         [Description("Scale, rotate and translate a TierProfile")]
         [Input("originalSection", "TierProfile to transform")]
         [Input("scale", "Scaling amount")]

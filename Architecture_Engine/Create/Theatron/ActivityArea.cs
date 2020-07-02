@@ -36,6 +36,7 @@ namespace BH.Engine.Architecture.Theatron
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
+        [Deprecated("3.2", "Superseded by objects and methods in Audience_oM and Engine")]
         [Description("Create an activityArea rectangle with width: 60 and length: 90, focal point is at 0,0,0")]
         [Input("scale", "Optional input to scale from default values")]
         public static ActivityArea ActivityArea(double scale = 1.0)
@@ -51,6 +52,7 @@ namespace BH.Engine.Architecture.Theatron
         }
 
         /***************************************************/
+        [Deprecated("3.2", "Superseded by objects and methods in Audience_oM and Engine")]
         [Description("Create an activityArea rectangle, focal point is at 0,0,0")]
         [Input("width", "Optional, width default is 60")]
         [Input("length", "Optional, length default is 90")]
@@ -67,6 +69,7 @@ namespace BH.Engine.Architecture.Theatron
         }
 
         /***************************************************/
+        [Deprecated("3.2", "Superseded by objects and methods in Audience_oM and Engine")]
         [Description("Create an ActivityArea from any closed polyline and a focal point")]
         [Input("activityArea", "Closed polyline defining the activity area")]
         [Input("activityFocalPoint", "Point defining the centre of attention for the activity area")]

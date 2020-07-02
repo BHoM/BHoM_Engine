@@ -39,6 +39,7 @@ namespace BH.Engine.Architecture.Theatron
         /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
+        [Deprecated("3.2", "Superseded by objects and methods in Audience_oM and Engine")]
         [Description("Create a SeatignBlock")]
         [Input("start", "ProfileOrigin defining the start of the block")]
         [Input("vom", "ProfileOrigin defining the vomitory position of the block")]

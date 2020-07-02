@@ -33,6 +33,7 @@ namespace BH.Engine.Architecture.Theatron
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
+        [Deprecated("3.2", "Superseded by objects and methods in Audience_oM and Engine")]
         [Description("Create an enumerator for predfined stadia types.")]
         [Input("typeNum", "0 = EightArc, 1 = Orthogonal, 2 = NoCorners, 3 = Circular, 4 = FourArc, 5 = Oblong, 6 = undefined")]
         public static StadiaType StadiaTypeEnum(int typeNum)
