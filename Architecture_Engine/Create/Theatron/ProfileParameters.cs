@@ -34,7 +34,7 @@ namespace BH.Engine.Architecture.Theatron
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        [Deprecated("3.2", "Superseded by objects and methods in Audience_oM and Engine")]
+        [Deprecated("3.3", "Superseded by objects and methods in Audience_oM and Engine")]
         [Description("Create a default set of profile parameters")]
         [Input("scale", "Optional scale if working units are not metres")]
         
@@ -69,7 +69,7 @@ namespace BH.Engine.Architecture.Theatron
         }
 
         /***************************************************/
-        [Deprecated("3.2", "Superseded by objects and methods in Audience_oM and Engine")]
+        [Deprecated("3.3", "Superseded by objects and methods in Audience_oM and Engine")]
         [Description("Create a full set of profile parameters for a single tier, default values in metres")]
         [Input("startX", "The horizontal postion for the first spectator eye, ignored in the first tier if the profile depends on a plan geometry")]
         [Input("startZ", "The vertical postion for the first spectator eye")]

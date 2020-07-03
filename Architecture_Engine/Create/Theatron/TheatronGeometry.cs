@@ -35,7 +35,7 @@ namespace BH.Engine.Architecture.Theatron
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        [Deprecated("3.2", "Superseded by objects and methods in Audience_oM and Engine")]
+        [Deprecated("3.3", "Superseded by objects and methods in Audience_oM and Engine")]
         [Description("Create a full stadium TheatronGeometry based on predefined plan types, Cvalue is used to define the TheatronFullProfile")]
         [Input("planFull", "The theatron plan")]
         [Input("profile", "The TheatronFullProfile used in defining the plan")]

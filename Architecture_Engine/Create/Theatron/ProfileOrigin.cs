@@ -34,7 +34,7 @@ namespace BH.Engine.Architecture.Theatron
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        [Deprecated("3.2", "Superseded by objects and methods in Audience_oM and Engine")]
+        [Deprecated("3.3", "Superseded by objects and methods in Audience_oM and Engine")]
         [Description("Create a ProfileOrigin for a structural section, comprised of origin and section direction")]
         [Input("origin", "Origin point for the section")]
         [Input("direction", "Horizontal Vector defining the direction of the section")]

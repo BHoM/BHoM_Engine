@@ -32,7 +32,7 @@ namespace BH.Engine.Architecture.Theatron
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        [Deprecated("3.2", "Superseded by objects and methods in Audience_oM and Engine")]
+        [Deprecated("3.3", "Superseded by objects and methods in Audience_oM and Engine")]
         [Description("Create a default set of vomitory parameters")]
         [Input("scale", "Optional input to scale from default values")]
         public static VomitoryParameters VomitoryParameters(double scale = 1.0)
@@ -49,7 +49,7 @@ namespace BH.Engine.Architecture.Theatron
 
             };
         }
-        [Deprecated("3.2", "Superseded by objects and methods in Audience_oM and Engine")]
+        [Deprecated("3.3", "Superseded by objects and methods in Audience_oM and Engine")]
         [Description("Create a custom set of vomitory parameters")]
         [Input("vomitory", "Is there a vomitory?")]
         [Input("vomitoryStartRow", "What row does the vomitory start? (If there is a super riser the vomitory will start at the same row as the super riser)")]

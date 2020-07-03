@@ -32,7 +32,7 @@ namespace BH.Engine.Architecture.Theatron
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        [Deprecated("3.2", "Superseded by objects and methods in Audience_oM and Engine")]
+        [Deprecated("3.3", "Superseded by objects and methods in Audience_oM and Engine")]
         [Description("Create a default set of super riser parameters")]
         [Input("scale", "Optional input to scale from default values")]
         public static SuperRiserParameters SuperRiserParameters(double scale = 1.0)

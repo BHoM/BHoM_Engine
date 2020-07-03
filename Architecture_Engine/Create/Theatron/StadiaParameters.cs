@@ -32,7 +32,7 @@ namespace BH.Engine.Architecture.Theatron
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        [Deprecated("3.2", "Superseded by objects and methods in Audience_oM and Engine")]
+        [Deprecated("3.3", "Superseded by objects and methods in Audience_oM and Engine")]
         [Description("Create a default set of stadia parameters")]
         [Input("scale", "Optional input to scale from default values")]
         public static StadiaParameters StadiaParameters(double scale = 1.0)
