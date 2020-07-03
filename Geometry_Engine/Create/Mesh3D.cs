@@ -21,8 +21,10 @@
  */
 
 using BH.oM.Geometry;
+using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 
 namespace BH.Engine.Geometry
@@ -33,6 +35,11 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Explicitly create a Mesh3D. Only checks validity of list lengths.")]
+        [Input("vertices", "All the point objects which define the mesh.")]
+        [Input("faces", "Faces containing indices pointing to the vertices which defines them.")]
+        [Input("cellRelation", "A parallel list to the faces detailing a indicative index for which cell they are connected to.")]
+        [Output("mesh3d", "A volumetric mesh.")]
         public static Mesh3D Mesh3D(List<Point> vertices, List<Face> faces, List<CellRelation> cellRelation)
         {
             if (faces.Count != cellRelation.Count)
