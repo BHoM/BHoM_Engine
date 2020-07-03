@@ -37,7 +37,7 @@ namespace BH.Engine.Environment
     public static partial class Query
     {
         [Description("Filters a list of panels based on the number of adjacencies they have")]
-        [Input("panels", "A list of panels to be filterd")]
+        [Input("panels", "A list of panels to be filtered")]
         [Input("adjacencies", "The number of Adjacencies to filter by")]
         [Output("panels", "A list of panels which have the same number of adjacencies")]
         public static List<Panel> FilterByAdjacencies(this List<Panel> panels, int adjacencies)
