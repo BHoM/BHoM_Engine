@@ -36,8 +36,8 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [Description("Gets the faces which defines each cell in the mesh3d.")]
-        [Input("mesh3d", "The mesh3d to query the cells from.")]
-        [Output("cells", "The cells of the mesh3d defined as a list of faces for each cell.")]
+        [Input("mesh3d", "The Mesh3D to query the cells from.")]
+        [Output("cells", "The cells of the Mesh3D defined as a list of faces for each cell.")]
         public static List<List<Face>> Cells(this Mesh3D mesh3d)
         {
             Dictionary<int, List<Face>> result = new Dictionary<int, List<Face>>();
