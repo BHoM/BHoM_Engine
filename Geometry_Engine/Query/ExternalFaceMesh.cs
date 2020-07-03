@@ -21,7 +21,9 @@
  */
 
 using BH.oM.Geometry;
+using BH.oM.Reflection.Attributes;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 
 namespace BH.Engine.Geometry
@@ -32,6 +34,9 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Query the Mesh which only consists of the external faces of the Mesh3D.")]
+        [Input("mesh3d", "The mesh3d to query for its external face mesh.")]
+        [Output("mesh", "A mesh consistent of all the faces in the mesh3d which were only connected to one cell.")]
         public static Mesh ExternalFaceMesh(this Mesh3D mesh3d)
         {
             List<Face> externalFaces = new List<Face>();

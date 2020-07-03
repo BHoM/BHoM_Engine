@@ -22,7 +22,9 @@
 
 using BH.oM.Geometry;
 using BH.oM.Reflection;
+using BH.oM.Reflection.Attributes;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 
 namespace BH.Engine.Geometry
@@ -33,6 +35,9 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Gets the faces which defines each cell in the mesh3d.")]
+        [Input("mesh3d", "The mesh3d to query the cells from.")]
+        [Output("cells", "The cells of the mesh3d defined as a list of faces for each cell.")]
         public static List<List<Face>> Cells(this Mesh3D mesh3d)
         {
             Dictionary<int, List<Face>> result = new Dictionary<int, List<Face>>();

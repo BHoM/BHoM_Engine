@@ -25,6 +25,7 @@ using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 
 namespace BH.Engine.Geometry
@@ -35,6 +36,9 @@ namespace BH.Engine.Geometry
         /**** Public  Methods                     ****/
         /*********************************************/
 
+        [Description("Converts a Mesh3D into a regular mesh, which removes all the information about the volumetric cells.")]
+        [Input("mesh3d", "Volumetric 3d mesh to convert.")]
+        [Output("mesh", "A regular mesh with the same vertices and faces as the Mesh3D.")]
         public static Mesh ToMesh(this Mesh3D mesh3d)
         {
             return new Mesh()
