@@ -37,8 +37,8 @@ namespace BH.Engine.Geometry
 
         [Description("Explicitly create a Mesh3D. Only checks validity of list lengths.")]
         [Input("vertices", "All the point objects which define the mesh.")]
-        [Input("faces", "Faces containing indices pointing to the vertices which defines them.")]
-        [Input("cellRelation", "A parallel list to the faces detailing a indicative index for which cell they are connected to.")]
+        [Input("faces", "Faces containing indices pointing to the vertices which define them.")]
+        [Input("cellRelation", "A parallel list to the faces detailing an indicative index for which cell they are connected to.")]
         [Output("mesh3d", "A volumetric mesh.")]
         public static Mesh3D Mesh3D(List<Point> vertices, List<Face> faces, List<CellRelation> cellRelation)
         {
@@ -50,12 +50,6 @@ namespace BH.Engine.Geometry
 
             return new Mesh3D(vertices, faces, cellRelation);
         }
-
-
-        /***************************************************/
-        /**** Random Geometry                           ****/
-        /***************************************************/
-        
 
         /***************************************************/
     }
