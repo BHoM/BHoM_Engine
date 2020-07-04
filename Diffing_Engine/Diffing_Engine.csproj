@@ -50,7 +50,7 @@
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
-      <Private>False</Private>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Reflection_oM">
       <SpecificVersion>False</SpecificVersion>
@@ -122,6 +122,6 @@
 xcopy "$(TargetDir)$(TargetFileName)"  "C:\ProgramData\BHoM\Assemblies" /Y
 
 xcopy "$(TargetDir)KellermanSoftware.Compare-NET-Objects.dll"  "C:\ProgramData\BHoM\Assemblies" /Y
-</PostBuildEvent>
+xcopy "$(TargetDir)Newtonsoft.Json.dll"  "C:\ProgramData\BHoM\Assemblies" /Y</PostBuildEvent>
   </PropertyGroup>
 </Project>

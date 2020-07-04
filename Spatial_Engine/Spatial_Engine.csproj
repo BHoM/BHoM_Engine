@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -32,27 +32,31 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="BHoM">
-<HintPath>C:\ProgramData\BHoM\Assemblies\BHoM.dll</HintPath>
+      <HintPath>C:\ProgramData\BHoM\Assemblies\BHoM.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Data_oM">
+      <HintPath>C:\ProgramData\BHoM\Assemblies\Data_oM.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Dimensional_oM">
-<HintPath>C:\ProgramData\BHoM\Assemblies\Dimensional_oM.dll</HintPath>
+      <HintPath>C:\ProgramData\BHoM\Assemblies\Dimensional_oM.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Geometry_oM">
-<HintPath>C:\ProgramData\BHoM\Assemblies\Geometry_oM.dll</HintPath>
+      <HintPath>C:\ProgramData\BHoM\Assemblies\Geometry_oM.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Quantities_oM">
-<HintPath>C:\ProgramData\BHoM\Assemblies\Quantities_oM.dll</HintPath>
+      <HintPath>C:\ProgramData\BHoM\Assemblies\Quantities_oM.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Reflection_oM">
-<HintPath>C:\ProgramData\BHoM\Assemblies\Reflection_oM.dll</HintPath>
+      <HintPath>C:\ProgramData\BHoM\Assemblies\Reflection_oM.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Spatial_oM">
-<HintPath>C:\ProgramData\BHoM\Assemblies\Spatial_oM.dll</HintPath>
+      <HintPath>C:\ProgramData\BHoM\Assemblies\Spatial_oM.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
@@ -66,6 +70,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Compute\DistributeOutlines.cs" />
+    <Compile Include="Create\DomainTree.cs" />
     <Compile Include="Create\ExplicitCurveLayout.cs" />
     <Compile Include="Create\OffsetCurveLayout.cs" />
     <Compile Include="Create\ExplicitLayout.cs" />
@@ -108,6 +113,10 @@
       <Project>{1ad45c88-dd54-48e5-951f-55edfeb70e35}</Project>
       <Name>BHoM_Engine</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Data_Engine\Data_Engine.csproj">
+      <Project>{8082ca2a-ac5c-4690-9f09-960e0d3e4102}</Project>
+      <Name>Data_Engine</Name>
     </ProjectReference>
     <ProjectReference Include="..\Geometry_Engine\Geometry_Engine.csproj">
       <Project>{89ab2dcb-ef87-4cba-b59c-c16a8a71d333}</Project>

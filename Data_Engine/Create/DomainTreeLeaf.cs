@@ -21,53 +21,30 @@
  */
 
 using System;
-using System.Threading;
 using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel;
 using BH.oM.Reflection.Attributes;
 using BH.oM.Base;
-using System.Threading.Tasks;
-using BH.oM.Data.Collections;
 using BH.oM.Geometry;
+using BH.oM.Reflection;
+using BH.oM.Data.Collections;
 
 namespace BH.Engine.Data
 {
-    public static partial class Query
+    public static partial class Create
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Gets all data in the tree which DomainBox is in range of the box.")]
-        [Input("tree", "Tree to search from.")]
-        [Input("box", "Search box which will intersect all the retuned data's DomainBoxes.")]
-        [Output("data", "All data in the tree which DomainBox is in range of the box.")]
-        public static IEnumerable<T> ItemsInRange<T>(this DomainTree<T> tree, DomainBox box, double tolerance = Tolerance.Distance)
+        [Description("Create a leaf node for a DomainTree.")]
+        [Input("data", "The data to store in the DomainTree leaf.")]
+        [Input("domainBox", "A DomainBox that encompasses the data.")]
+        [Output("leaf", "A leaf node for a DomainTree.")]
+        public static DomainTree<T> DomainTreeLeaf<T>(T data, DomainBox domainBox)
         {
-            Func<DomainTree<T>, bool> isWithinSearch = x => x.DomainBox.IsInRange(box, tolerance);
-
-            return ItemsInRange<DomainTree<T>, T>(tree, isWithinSearch);
-        }
-
-        /***************************************************/
-
-        [Description("Gets the values and evaluates the children based on the provided function.")]
-        [Input("tree", "Tree to search from.")]
-        [Input("isWithinSearch", "Method to traverse the tree. " +
-                                 "A false result means that no descendants of that node can return true. " +
-                                 "A true result means that that nodes data is returned and its descendants might return true.")]
-        [Output("data", "All data in the tree which nodes returned true for the isWithinSearch method.")]
-        public static IEnumerable<T> ItemsInRange<TNode, T>(this TNode tree, Func<TNode, bool> isWithinSearch) where TNode : INode<T>
-        {
-            if (isWithinSearch(tree))
-            {
-                return tree.IChildren<TNode, T>().SelectMany(x => ItemsInRange<TNode, T>(x, isWithinSearch)).Concat(tree.IValues());
-            }
-            else
-            {
-                return new List<T>();
-            }
+            return new DomainTree<T>() { Values = new List<T>() { data }, DomainBox = domainBox };
         }
 
         /***************************************************/
