@@ -138,7 +138,7 @@ namespace BH.Engine.Geometry
 
         public static PlanarSurface Clone(this PlanarSurface surface)
         {
-            return new PlanarSurface(surface.ExternalBoundary, surface.InternalBoundaries.ToList());
+            return new PlanarSurface(surface.ExternalBoundary.IClone(), surface.InternalBoundaries.Select(x => x.IClone()).ToList());
         }
 
         /***************************************************/
