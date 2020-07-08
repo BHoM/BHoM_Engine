@@ -37,9 +37,11 @@ namespace BH.Engine.Geometry
         
         public static List<List<Point>> PointClustersDBSCAN(this List<Point> points, double maxDist, int minPointCount = 1)
         {
+            double sqDist = maxDist * maxDist;
             Func<Point, DomainBox> toDomainBox = a => a.IBounds().DomainBox();
-            Func<Point, Point, double> distanceFunction = (a, b) => 0;  // The distance between the boxes is enough to determine if a Point is in range
-            return Data.Compute.DomainTreeClusters<Point>(points, toDomainBox, distanceFunction, maxDist, minPointCount);
+            Func<DomainBox, DomainBox, bool> treeFunction = (a, b) => a.SquareDistance(b) < sqDist;
+            Func<Point, Point, bool> itemFunction = (a, b) => true;  // The distance between the boxes is enough to determine if a Point is in range
+            return Data.Compute.DomainTreeClusters<Point>(points, toDomainBox, treeFunction, itemFunction, minPointCount);
         }
 
         /***************************************************/
