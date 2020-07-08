@@ -67,6 +67,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Compute\DomainTreeClusters.cs" />
     <Compile Include="Compute\ClusterDBSCAN.cs" />
     <Compile Include="Compute\Series.cs" />
     <Compile Include="Compute\FilterData.cs" />

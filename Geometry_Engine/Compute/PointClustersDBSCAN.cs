@@ -37,50 +37,9 @@ namespace BH.Engine.Geometry
         
         public static List<List<Point>> PointClustersDBSCAN(this List<Point> points, double maxDist, int minPointCount = 1)
         {
-            List<Point> items = new List<Point>(points);
-            DomainTree<int> indexTree = Data.Create.DomainTree(items.Select((x,i) => Data.Create.DomainTreeLeaf(i, x.IBounds().DomainBox())));
-
-            double sqDist = maxDist * maxDist;
-
-            // Distance between boxes is the distance between Points for Points
-            Func<DomainTree<int>, DomainBox, bool> evaluator = (a, b) => a.DomainBox.SquareDistance(b) < sqDist;
-
-            List<List<Point>> result = new List<List<Point>>();
-            List<Point> toEvaluate = new List<Point>();
-
-            int count = -1;
-            for (int i = 0; i < items.Count; i++)
-            {
-                Point pivot = items[i];
-
-                if (pivot == null)
-                    continue;
-
-                result.Add(new List<Point>());
-                count++;
-                toEvaluate.Add(pivot);
-                items[i] = null;    // Set to null as it is not there anymore, but this also retains the indecies for the tree.
-
-                while (toEvaluate.Count > 0)
-                {
-                    // Find all the neighbours for each point in toEvaluate, and add them in toEvaluate
-                    foreach (int index in Data.Query.ItemsInRange<DomainTree<int>, int>(indexTree, x => evaluator(x, toEvaluate[0].IBounds().DomainBox())))
-                    {
-                        Point pt = items[index];
-                        if (pt != null)
-                        {
-                            toEvaluate.Add(pt);
-                            items[index] = null;
-                        }
-                    }
-
-                    // move the checked points from toEvaluate to result
-                    result[count].Add(toEvaluate[0]);
-                    toEvaluate.RemoveAt(0);
-                }
-            }
-
-            return result.Where(list => list.Count >= minPointCount).ToList();
+            Func<Point, DomainBox> toDomainBox = a => a.IBounds().DomainBox();
+            Func<Point, Point, double> distanceFunction = (a, b) => 0;  // The distance between the boxes is enough to determine if a Point is in range
+            return Data.Compute.DomainTreeClusters<Point>(points, toDomainBox, distanceFunction, maxDist, minPointCount);
         }
 
         /***************************************************/
