@@ -33,7 +33,7 @@ namespace BH.Engine.Data
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static List<List<T>> DomainTreeClusters<T>(this List<T> data, Func<T, DomainBox> toDomainBox, Func<T, T, double> distFunc, double maxDist, int minPointCount = 1)
+        public static List<List<T>> DomainTreeClusters<T>(this List<T> data, Func<T, DomainBox> toDomainBox, Func<DomainBox, DomainBox, bool> TreeEvaluator, Func<T, T, bool> itemEvaluator, int minPointCount = 1)
         {
             if (data.Count == 0)
                 return new List<List<T>>();
@@ -41,10 +41,6 @@ namespace BH.Engine.Data
             List<T> items = new List<T>(data);
             List<bool> check = items.Select(x => false).ToList();
             DomainTree<int> indexTree = Data.Create.DomainTree(items.Select((x, i) => Data.Create.DomainTreeLeaf(i, toDomainBox(x))));
-
-            double sqDist = maxDist * maxDist;
-
-            Func<DomainTree<int>, DomainBox, bool> evaluator = (a, b) => a.DomainBox.SquareDistance(b) < sqDist;
 
             List<List<T>> result = new List<List<T>>();
             List<T> toEvaluate = new List<T>();
@@ -65,12 +61,12 @@ namespace BH.Engine.Data
                 while (toEvaluate.Count > 0)
                 {
                     // Find all the neighbours for each item in toEvaluate, and add them in toEvaluate
-                    foreach (int index in Data.Query.ItemsInRange<DomainTree<int>, int>(indexTree, x => evaluator(x, toDomainBox(toEvaluate[0]))))
+                    foreach (int index in Data.Query.ItemsInRange<DomainTree<int>, int>(indexTree, x => TreeEvaluator(x.DomainBox, toDomainBox(toEvaluate[0]))))
                     {
                         if (!check[index])
                         {
                             T item = items[index];
-                            if (distFunc(toEvaluate[0], item) < maxDist)
+                            if (itemEvaluator(toEvaluate[0], item))
                             {
                                 toEvaluate.Add(item);
                                 check[index] = true;
