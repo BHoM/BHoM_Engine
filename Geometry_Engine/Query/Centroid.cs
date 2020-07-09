@@ -62,6 +62,10 @@ namespace BH.Engine.Geometry
 
             Vector normal = Normal(curve, tolerance);
 
+            //Check if a normal could be found.
+            if (normal == null)
+                return null;
+
             for (int i = 1; i < curve.ControlPoints.Count - 2; i++)
             {
 
@@ -134,6 +138,10 @@ namespace BH.Engine.Geometry
             double xc0 = 0, yc0 = 0, zc0 = 0;
 
             Vector normal = Normal(curve, tolerance);
+
+            //Check if a normal could be found.
+            if (normal == null)
+                return null;
 
             Point pA = pts[0];
 
