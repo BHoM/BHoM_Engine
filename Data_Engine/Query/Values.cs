@@ -52,7 +52,7 @@ namespace BH.Engine.Data
         [Output("data", "Data values contained in this node.")]
         public static IEnumerable<T> IValues<T>(this INode<T> node)
         {
-            return Values(node as dynamic);
+            return Values(node as dynamic) ?? new List<T>();
         }
 
         /***************************************************/
@@ -62,7 +62,7 @@ namespace BH.Engine.Data
         [Output("data", "Data values contained in this node.")]
         public static List<T> Values<T>(this DomainTree<T> node)
         {
-            return node.Values ?? new List<T>();
+            return node?.Values ?? new List<T>();
         }
 
 
@@ -70,7 +70,7 @@ namespace BH.Engine.Data
         /**** Private Methods                           ****/
         /***************************************************/
 
-        public static IEnumerable<T> Values<T>(this INode<T> node)
+        private static IEnumerable<T> Values<T>(this INode<T> node)
         {
             Reflection.Compute.RecordError("The method Values is not implemented for " + node.GetType().Name);
             return null;

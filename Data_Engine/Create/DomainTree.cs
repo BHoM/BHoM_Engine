@@ -80,8 +80,8 @@ namespace BH.Engine.Data
             {
                 DomainTree<T> tree = new DomainTree<T>()
                 {
-                    Children = children.ToList(),
-                    DomainBox = children.Select(x => x.DomainBox).Aggregate((x, y) => x + y)
+                    Children = children?.ToList() ?? new List<DomainTree<T>>(),
+                    DomainBox = children?.Select(x => x?.DomainBox).Aggregate((x, y) => x + y)
                 };
 
                 return tree;

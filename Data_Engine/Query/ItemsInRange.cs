@@ -45,7 +45,10 @@ namespace BH.Engine.Data
         [Output("data", "All data in the tree which DomainBox is in range of the box.")]
         public static IEnumerable<T> ItemsInRange<T>(this DomainTree<T> tree, DomainBox box, double tolerance = Tolerance.Distance)
         {
-            Func<DomainTree<T>, bool> isWithinSearch = x => x.DomainBox.IsInRange(box, tolerance);
+            if (box == null)
+                return new List<T>();
+
+            Func<DomainTree<T>, bool> isWithinSearch = x => x.DomainBox?.IsInRange(box, tolerance) ?? false;
 
             return ItemsInRange<DomainTree<T>, T>(tree, isWithinSearch);
         }
@@ -60,7 +63,7 @@ namespace BH.Engine.Data
         [Output("data", "All data in the tree which nodes returned true for the isWithinSearch method.")]
         public static IEnumerable<T> ItemsInRange<TNode, T>(this TNode tree, Func<TNode, bool> isWithinSearch) where TNode : INode<T>
         {
-            if (isWithinSearch(tree))
+            if (tree != null && isWithinSearch(tree))
             {
                 return tree.IChildren<TNode, T>().SelectMany(x => ItemsInRange<TNode, T>(x, isWithinSearch)).Concat(tree.IValues());
             }
