@@ -110,7 +110,7 @@ namespace BH.Engine.Data
 
             leafSize = Math.Max(leafSize, 2);
 
-            if (dataItems.Count() > leafSize)
+            if (dataItems != null && dataItems.Skip(leafSize).Any())
             {
                 // Partition the data where each collection will form a child Node
                 IEnumerable<IEnumerable<TNode>> subLists = partitionMethod(dataItems);
