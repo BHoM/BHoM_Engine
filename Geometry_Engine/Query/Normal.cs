@@ -117,10 +117,20 @@ namespace BH.Engine.Geometry
 
 
             //Get out normal, by cross product between the average of points and first points of the curve
-            Point avg = curve.ControlPoints.Average();
-            Point pA = curve.ControlPoints[0];
+            List<Point> points = curve.ControlPoints;
 
-            foreach (Point pt in curve.ControlPoints.Skip(1))
+            Point avg = points.Average();
+            Point pA = points[0];
+
+            if (pA.SquareDistance(avg) < tolerance * tolerance)
+            {
+                points = new List<Point>(points);
+                points.Add(points[0]);
+                points.RemoveAt(0);
+                pA = points[0];
+            }
+
+            foreach (Point pt in points.Skip(1))
             {
                 Vector normal = CrossProduct(avg - pA, avg - pt);
                 //If normal is non-zero (if the first points are not on a line with the average point) use this as the normal
@@ -194,6 +204,14 @@ namespace BH.Engine.Geometry
                 //Get out normal, from cross product of firt points that are not colinear
                 Point avg = points.Average();
                 Point pA = points[0];
+
+                if (pA.SquareDistance(avg) < tolerance * tolerance)
+                {
+                    points = new List<Point>(points);
+                    points.Add(points[0]);
+                    points.RemoveAt(0);
+                    pA = points[0];
+                }
 
                 foreach (Point pt in points.Skip(1))
                 {
@@ -286,6 +304,10 @@ namespace BH.Engine.Geometry
         {
             return Normal(curve as dynamic);
         }
+
+        /***************************************************/
+        /**** Public Methods - Interfaces               ****/
+        /***************************************************/
 
         /***************************************************/
     }
