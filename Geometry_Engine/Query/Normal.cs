@@ -115,28 +115,30 @@ namespace BH.Engine.Geometry
                 return null;
             }
 
-            Vector normal = new Vector { X = 0, Y = 0, Z = 0 };
 
-            //Get out normal, from cross product of firt points that are not colinear
-            int i = 0;
-            do
+            //Get out normal, by cross product between the average of points and 
+            Point avg = curve.ControlPoints.Average();
+            Point pA = curve.ControlPoints[0];
+
+            foreach (Point pt in curve.ControlPoints.Skip(1))
             {
-                Point pA = curve.ControlPoints[i];
-                Point pB = curve.ControlPoints[(i + 1) % curve.ControlPoints.Count];
-                Point pC = curve.ControlPoints[(i + 2) % curve.ControlPoints.Count];
+                Vector normal = CrossProduct(avg - pA, avg - pt);
+                if (normal.SquareLength() > tolerance * tolerance)
+                {
+                    normal = normal.Normalise();
 
-                normal = CrossProduct(pB - pA, pC - pB);
-                i++;
+                    //Check if normal needs to be flipped from the right hand rule
+                    if (!curve.IsClockwise(normal, tolerance))
+                        normal = -normal;
 
-            } while (normal.SquareLength() < tolerance * tolerance && i < curve.ControlPoints.Count);
+                    return normal;
+                }
+            }
 
-            normal = normal.Normalise();
+            //No normal found
+            Engine.Reflection.Compute.RecordError("Could not find the Normal of the provided curve.");
+            return null;
 
-            //Check if normal needs to be flipped from the right hand rule
-            if (!curve.IsClockwise(normal, tolerance))
-                normal = -normal;
-
-            return normal;
         }
 
         /***************************************************/
@@ -188,28 +190,29 @@ namespace BH.Engine.Geometry
                     }
                 }
 
-                Vector normal = new Vector { X = 0, Y = 0, Z = 0 };
-
                 //Get out normal, from cross product of firt points that are not colinear
-                int i = 0;
-                do
+                Point avg = points.Average();
+                Point pA = points[0];
+
+                foreach (Point pt in points.Skip(1))
                 {
-                    Point pA = points[i];
-                    Point pB = points[(i + 1) % points.Count];
-                    Point pC = points[(i + 2) % points.Count];
+                    Vector normal = CrossProduct(avg - pA, avg - pt);
+                    if (normal.SquareLength() > tolerance * tolerance)
+                    {
+                        normal = normal.Normalise();
 
-                    normal = CrossProduct(pB - pA, pC - pB);
-                    i++;
+                        //Check if normal needs to be flipped from the right hand rule
+                        if (!curve.IsClockwise(normal, tolerance))
+                            normal = -normal;
 
-                } while (normal.SquareLength() < tolerance * tolerance && i < points.Count);
+                        return normal;
+                    }
+                }
 
-                normal = normal.Normalise();
-
-                //Check if normal needs to be flipped from the right hand rule
-                if (!curve.IsClockwise(normal, tolerance))
-                    normal = -normal;
-
-                return normal;
+                //No normal found
+                Engine.Reflection.Compute.RecordError("Could not find the Normal of the provided curve.");
+                return null;
+                
             }
         }
 
