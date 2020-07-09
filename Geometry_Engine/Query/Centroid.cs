@@ -59,16 +59,8 @@ namespace BH.Engine.Geometry
             double xc0 = 0, yc0 = 0, zc0 = 0;
 
             Point pA = curve.ControlPoints[0];
-            Point pB0 = curve.ControlPoints[1];
-            Point pC0 = curve.ControlPoints[2];
-
-            Vector firstNormal;
-
-            firstNormal = CrossProduct(pB0 - pA, pC0 - pA);
 
             Vector normal = Normal(curve, tolerance);
-
-            Boolean dir = DotProduct(normal, firstNormal) > 0;
 
             for (int i = 1; i < curve.ControlPoints.Count - 2; i++)
             {
@@ -78,7 +70,7 @@ namespace BH.Engine.Geometry
 
                 double triangleArea = Area(pB - pA, pC - pA);
 
-                if (DotProduct(CrossProduct(pB - pA, pC - pA), firstNormal) > 0)
+                if (DotProduct(CrossProduct(pB - pA, pC - pA), normal) > 0)
                 {
                     xc0 += ((pA.X + pB.X + pC.X) / 3) * triangleArea;
                     yc0 += ((pA.Y + pB.Y + pC.Y) / 3) * triangleArea;
@@ -90,14 +82,6 @@ namespace BH.Engine.Geometry
                     yc0 -= ((pA.Y + pB.Y + pC.Y) / 3) * triangleArea;
                     zc0 -= ((pA.Z + pB.Z + pC.Z) / 3) * triangleArea;
                 }
-            }
-
-
-            if (!dir)
-            {
-                xc0 = -xc0;
-                yc0 = -yc0;
-                zc0 = -zc0;
             }
 
             double curveArea = curve.Area();
@@ -152,14 +136,6 @@ namespace BH.Engine.Geometry
             Vector normal = Normal(curve, tolerance);
 
             Point pA = pts[0];
-            Point pB0 = pts[1];
-            Point pC0 = pts[2];
-
-            Vector firstNormal;
-
-            firstNormal = CrossProduct(pB0 - pA, pC0 - pA);
-
-            Boolean dir = DotProduct(normal, firstNormal) > 0;
 
             for (int i = 1; i < pts.Count - 2; i++)
             {
@@ -169,7 +145,7 @@ namespace BH.Engine.Geometry
 
                 double triangleArea = Area(pB - pA, pC - pA);
 
-                if (DotProduct(CrossProduct(pB - pA, pC - pA), firstNormal) > 0)
+                if (DotProduct(CrossProduct(pB - pA, pC - pA), normal) > 0)
                 {
                     xc0 += ((pA.X + pB.X + pC.X) / 3) * triangleArea;
                     yc0 += ((pA.Y + pB.Y + pC.Y) / 3) * triangleArea;
@@ -196,7 +172,7 @@ namespace BH.Engine.Geometry
 
                     Point arcCentr = CircularSegmentCentroid(crv as Arc);
 
-                    if (DotProduct(CrossProduct(p2 - p1, p3 - p1), firstNormal) > 0)
+                    if (DotProduct(CrossProduct(p2 - p1, p3 - p1), normal) > 0)
                     {
                         xc0 += arcCentr.X * area;
                         yc0 += arcCentr.Y * area;
@@ -209,14 +185,6 @@ namespace BH.Engine.Geometry
                         zc0 -= arcCentr.Z * area;
                     }
                 }
-            }
-
-
-            if (!dir)
-            {
-                xc0 = -xc0;
-                yc0 = -yc0;
-                zc0 = -zc0;
             }
 
             double curveArea = curve.Area();
