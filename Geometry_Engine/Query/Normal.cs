@@ -116,13 +116,14 @@ namespace BH.Engine.Geometry
             }
 
 
-            //Get out normal, by cross product between the average of points and 
+            //Get out normal, by cross product between the average of points and first points of the curve
             Point avg = curve.ControlPoints.Average();
             Point pA = curve.ControlPoints[0];
 
             foreach (Point pt in curve.ControlPoints.Skip(1))
             {
                 Vector normal = CrossProduct(avg - pA, avg - pt);
+                //If normal is non-zero (if the first points are not on a line with the average point) use this as the normal
                 if (normal.SquareLength() > tolerance * tolerance)
                 {
                     normal = normal.Normalise();
@@ -197,6 +198,7 @@ namespace BH.Engine.Geometry
                 foreach (Point pt in points.Skip(1))
                 {
                     Vector normal = CrossProduct(avg - pA, avg - pt);
+                    //If normal is non-zero (if the first points are not on a line with the average point) use this as the normal
                     if (normal.SquareLength() > tolerance * tolerance)
                     {
                         normal = normal.Normalise();
