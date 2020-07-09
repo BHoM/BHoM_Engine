@@ -25,6 +25,7 @@ using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.ComponentModel;
 
 namespace BH.Engine.Geometry
 {
@@ -117,38 +118,23 @@ namespace BH.Engine.Geometry
 
 
             //Get out normal, by cross product between the average of points and first points of the curve
-            List<Point> points = curve.ControlPoints;
+            //Get out normal, from cross product of first points that are not colinear
+            Vector normal = Normal(curve.ControlPoints, tolerance);
 
-            Point avg = points.Average();
-            Point pA = points[0];
-
-            if (pA.SquareDistance(avg) < tolerance * tolerance)
+            if (normal != null)
             {
-                points = new List<Point>(points);
-                points.Add(points[0]);
-                points.RemoveAt(0);
-                pA = points[0];
-            }
+                //Check if normal needs to be flipped from the right hand rule
+                if (!curve.IsClockwise(normal, tolerance))
+                    normal = -normal;
 
-            foreach (Point pt in points.Skip(1))
+                return normal;
+            }
+            else
             {
-                Vector normal = CrossProduct(avg - pA, avg - pt);
-                //If normal is non-zero (if the first points are not on a line with the average point) use this as the normal
-                if (normal.SquareLength() > tolerance * tolerance)
-                {
-                    normal = normal.Normalise();
-
-                    //Check if normal needs to be flipped from the right hand rule
-                    if (!curve.IsClockwise(normal, tolerance))
-                        normal = -normal;
-
-                    return normal;
-                }
+                //No normal found
+                Engine.Reflection.Compute.RecordError("Could not find the Normal of the provided curve.");
+                return null;
             }
-
-            //No normal found
-            Engine.Reflection.Compute.RecordError("Could not find the Normal of the provided curve.");
-            return null;
 
         }
 
@@ -201,38 +187,23 @@ namespace BH.Engine.Geometry
                     }
                 }
 
-                //Get out normal, from cross product of firt points that are not colinear
-                Point avg = points.Average();
-                Point pA = points[0];
+                //Get out normal, from cross product of first points that are not colinear
+                Vector normal = Normal(points, tolerance);
 
-                if (pA.SquareDistance(avg) < tolerance * tolerance)
+                if (normal != null)
                 {
-                    points = new List<Point>(points);
-                    points.Add(points[0]);
-                    points.RemoveAt(0);
-                    pA = points[0];
-                }
+                    //Check if normal needs to be flipped from the right hand rule
+                    if (!curve.IsClockwise(normal, tolerance))
+                        normal = -normal;
 
-                foreach (Point pt in points.Skip(1))
+                    return normal;
+                }
+                else
                 {
-                    Vector normal = CrossProduct(avg - pA, avg - pt);
-                    //If normal is non-zero (if the first points are not on a line with the average point) use this as the normal
-                    if (normal.SquareLength() > tolerance * tolerance)
-                    {
-                        normal = normal.Normalise();
-
-                        //Check if normal needs to be flipped from the right hand rule
-                        if (!curve.IsClockwise(normal, tolerance))
-                            normal = -normal;
-
-                        return normal;
-                    }
+                    //No normal found
+                    Engine.Reflection.Compute.RecordError("Could not find the Normal of the provided curve.");
+                    return null;
                 }
-
-                //No normal found
-                Engine.Reflection.Compute.RecordError("Could not find the Normal of the provided curve.");
-                return null;
-                
             }
         }
 
@@ -306,8 +277,37 @@ namespace BH.Engine.Geometry
         }
 
         /***************************************************/
-        /**** Public Methods - Interfaces               ****/
+        /**** Private Methods                           ****/
         /***************************************************/
+
+        [Description("Private helper method used by Polyline and PolyCurve Normal methods. Extracting a normal based on the controlpoints of the curves. Assumes the incoming points to be planar.")]
+        private static Vector Normal(List<Point> points, double tolerance)
+        {
+            //Get out normal, from cross product of first points that are not colinear
+            Point avg = points.Average();
+            Point pA = points[0];
+
+            //If start and average points are equal, shift the list
+            if (pA.SquareDistance(avg) < tolerance * tolerance)
+            {
+                points = new List<Point>(points);
+                points.Add(points[0]);
+                points.RemoveAt(0);
+                pA = points[0];
+            }
+
+            foreach (Point pt in points.Skip(1))
+            {
+                Vector normal = CrossProduct(avg - pA, avg - pt);
+                //If normal is non-zero (if the first points are not on a line with the average point) use this as the normal
+                if (normal.SquareLength() > tolerance * tolerance)
+                {
+                    normal = normal.Normalise();
+                    return normal;
+                }
+            }
+            return null;
+        }
 
         /***************************************************/
     }
