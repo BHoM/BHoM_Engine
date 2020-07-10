@@ -116,11 +116,10 @@ namespace BH.Engine.Geometry
                 return null;
             }
 
-
-            //Get out normal, from cross product of first points that are not colinear
             Point avg = curve.ControlPoints.Average();
             Vector normal = new Vector();
 
+            //Get out normal, from cross products between vectors from the average point to adjecent controlpoints on the curve
             for (int i = 0; i < curve.ControlPoints.Count - 1; i++)
                 normal += (curve.ControlPoints[i] - avg).CrossProduct(curve.ControlPoints[i + 1] - avg);
 
@@ -183,10 +182,11 @@ namespace BH.Engine.Geometry
                     }
                 }
 
-                //Get out normal, from cross product of first points that are not colinear
+                
                 Point avg = points.Average();
                 Vector normal = new Vector();
 
+                //Get out normal, from cross products between vectors from the average point to adjecent controlpoints on the curve
                 for (int i = 0; i < points.Count - 1; i++)
                     normal += (points[i] - avg).CrossProduct(points[i + 1] - avg);
 
