@@ -117,24 +117,20 @@ namespace BH.Engine.Geometry
             }
 
 
-            //Get out normal, by cross product between the average of points and first points of the curve
             //Get out normal, from cross product of first points that are not colinear
-            Vector normal = Normal(curve.ControlPoints, tolerance);
+            Point avg = curve.ControlPoints.Average();
+            Vector normal = new Vector();
 
-            if (normal != null)
-            {
-                //Check if normal needs to be flipped from the right hand rule
-                if (!curve.IsClockwise(normal, tolerance))
-                    normal = -normal;
+            for (int i = 0; i < curve.ControlPoints.Count - 1; i++)
+                normal += (curve.ControlPoints[i] - avg).CrossProduct(curve.ControlPoints[i + 1] - avg);
 
-                return normal;
-            }
-            else
-            {
-                //No normal found
-                Engine.Reflection.Compute.RecordError("Could not find the Normal of the provided curve.");
-                return null;
-            }
+            normal = normal.Normalise();
+
+            //Check if normal needs to be flipped from the right hand rule
+            if (!curve.IsClockwise(normal, tolerance))
+                normal = -normal;
+
+            return normal;
 
         }
 
@@ -188,22 +184,19 @@ namespace BH.Engine.Geometry
                 }
 
                 //Get out normal, from cross product of first points that are not colinear
-                Vector normal = Normal(points, tolerance);
+                Point avg = points.Average();
+                Vector normal = new Vector();
 
-                if (normal != null)
-                {
-                    //Check if normal needs to be flipped from the right hand rule
-                    if (!curve.IsClockwise(normal, tolerance))
-                        normal = -normal;
+                for (int i = 0; i < points.Count - 1; i++)
+                    normal += (points[i] - avg).CrossProduct(points[i + 1] - avg);
 
-                    return normal;
-                }
-                else
-                {
-                    //No normal found
-                    Engine.Reflection.Compute.RecordError("Could not find the Normal of the provided curve.");
-                    return null;
-                }
+                normal = normal.Normalise();
+
+                //Check if normal needs to be flipped from the right hand rule
+                if (!curve.IsClockwise(normal, tolerance))
+                    normal = -normal;
+
+                return normal;
             }
         }
 
@@ -274,39 +267,6 @@ namespace BH.Engine.Geometry
         public static Vector INormal(this ICurve curve)
         {
             return Normal(curve as dynamic);
-        }
-
-        /***************************************************/
-        /**** Private Methods                           ****/
-        /***************************************************/
-
-        [Description("Private helper method used by Polyline and PolyCurve Normal methods. Extracting a normal based on the controlpoints of the curves. Assumes the incoming points to be planar.")]
-        private static Vector Normal(List<Point> points, double tolerance)
-        {
-            //Get out normal, from cross product of first points that are not colinear
-            Point avg = points.Average();
-            Point pA = points[0];
-
-            //If start and average points are equal, shift the list
-            if (pA.SquareDistance(avg) < tolerance * tolerance)
-            {
-                points = new List<Point>(points);
-                points.Add(points[0]);
-                points.RemoveAt(0);
-                pA = points[0];
-            }
-
-            foreach (Point pt in points.Skip(1))
-            {
-                Vector normal = CrossProduct(avg - pA, avg - pt);
-                //If normal is non-zero (if the first points are not on a line with the average point) use this as the normal
-                if (normal.SquareLength() > tolerance * tolerance)
-                {
-                    normal = normal.Normalise();
-                    return normal;
-                }
-            }
-            return null;
         }
 
         /***************************************************/
