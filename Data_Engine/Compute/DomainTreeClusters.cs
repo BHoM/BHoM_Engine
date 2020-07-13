@@ -40,42 +40,40 @@ namespace BH.Engine.Data
 
             List<T> items = new List<T>(data);
             List<bool> check = items.Select(x => false).ToList();
-            DomainTree<int> indexTree = Data.Create.DomainTree(items.Select((x, i) => Data.Create.DomainTreeLeaf(i, toDomainBox(x))));
+            List<DomainBox> domainBoxes = data.Select(x => toDomainBox(x)).ToList();
+            DomainTree<int> indexTree = Data.Create.DomainTree(domainBoxes.Select((x, i) => Data.Create.DomainTreeLeaf(i, x)));
 
             List<List<T>> result = new List<List<T>>();
-            List<T> toEvaluate = new List<T>();
+            List<int> toEvaluate = new List<int>();
 
             int count = -1;
             for (int i = 0; i < items.Count; i++)
             {
-                T pivot = items[i];
-
                 if (check[i])
                     continue;
 
                 result.Add(new List<T>());
                 count++;
-                toEvaluate.Add(pivot);
+                toEvaluate.Add(i);
                 check[i] = true;
 
                 while (toEvaluate.Count > 0)
                 {
                     // Find all the neighbours for each item in toEvaluate, and add them in toEvaluate
-                    foreach (int index in Data.Query.ItemsInRange<DomainTree<int>, int>(indexTree, x => TreeEvaluator(x.DomainBox, toDomainBox(toEvaluate[0]))))
+                    foreach (int index in Data.Query.ItemsInRange<DomainTree<int>, int>(indexTree, x => TreeEvaluator(x.DomainBox, domainBoxes[toEvaluate[0]])))
                     {
                         if (!check[index])
                         {
-                            T item = items[index];
-                            if (itemEvaluator(toEvaluate[0], item))
+                            if (itemEvaluator(items[toEvaluate[0]], items[index]))
                             {
-                                toEvaluate.Add(item);
+                                toEvaluate.Add(index);
                                 check[index] = true;
                             }
                         }
                     }
 
                     // move the checked items from toEvaluate to result
-                    result[count].Add(toEvaluate[0]);
+                    result[count].Add(items[toEvaluate[0]]);
                     toEvaluate.RemoveAt(0);
                 }
             }
