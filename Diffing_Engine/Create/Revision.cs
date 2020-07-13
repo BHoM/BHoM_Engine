@@ -51,9 +51,8 @@ namespace BH.Engine.Diffing
             if (!Convert.TryParseObjectToGuid(streamId, out _streamId))
                 BH.Engine.Reflection.Compute.RecordError($"Specified input in {nameof(streamId)} is not valid.");
 
-            return new Revision(Modify.PrepareForDiffing(objects, diffConfig), _streamId, diffConfig, revisionName, comment);
+            return new Revision(Modify.PrepareForRevision(objects, diffConfig), _streamId, diffConfig, revisionName, comment);
         }
-
     }
 }
 

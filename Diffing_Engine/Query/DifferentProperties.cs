@@ -51,7 +51,7 @@ namespace BH.Engine.Diffing
 
             CompareLogic comparer = new CompareLogic();
 
-            comparer.Config.MaxDifferences = 1000;
+            comparer.Config.MaxDifferences = diffConfig.MaxPropertyDifferences;
 
             if (!diffConfigCopy.PropertiesToIgnore.Contains("BHoM_Guid"))
                 diffConfigCopy.PropertiesToIgnore.Add("BHoM_Guid"); // BHoM_Guid should always be ignored in DifferentProperties.

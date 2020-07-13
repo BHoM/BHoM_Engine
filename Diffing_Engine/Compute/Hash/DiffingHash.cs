@@ -47,10 +47,18 @@ namespace BH.Engine.Diffing
         [Input("diffConfig", "Sets configs for the hash calculation, such as properties to be ignored.")]
         public static string DiffingHash(this object obj, DiffConfig diffConfig = null)
         {
-            if (diffConfig == null)
-                diffConfig = new DiffConfig();
+            diffConfig = diffConfig == null ? new DiffConfig() : (DiffConfig)diffConfig.GetShallowClone();
 
-            //Remove HashFragment if present. CurrentHash cannot be computed including also HashFragment.
+            // The following is to consider only the PropertiesToInclude specified in the diffConfig.
+            // Since the SHA hash algorithm can only consider "exceptions", we need to retrieve all the top level properties,
+            // intersect them with the set of PropertiesToInclude, and treat all the properties that remain out as "exceptions" (not to be considered).
+            if (diffConfig.PropertiesToConsider.Any())
+            {
+                IEnumerable<string> exceptions = BH.Engine.Reflection.Query.PropertyNames(obj).Except(diffConfig.PropertiesToConsider);
+                diffConfig.PropertiesToIgnore.AddRange(exceptions);
+            }
+
+            // The current Hash must not be considered when computing the hash. Remove HashFragment if present. 
             IBHoMObject bhomobj = obj as IBHoMObject;
             if (bhomobj != null)
             {
