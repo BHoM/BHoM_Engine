@@ -21,8 +21,10 @@
  */
 
 using BH.oM.Data.Collections;
+using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 
 namespace BH.Engine.Data
@@ -33,7 +35,14 @@ namespace BH.Engine.Data
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static List<List<T>> DomainTreeClusters<T>(this List<T> data, Func<T, DomainBox> toDomainBox, Func<DomainBox, DomainBox, bool> TreeEvaluator, Func<T, T, bool> itemEvaluator, int minPointCount = 1)
+        [Description("Clusters data in different collections using a DomainTree.")]
+        [Input("data", "Data to cluster.")]
+        [Input("toDomainBox", "Method which takes a item in the data and produces a DomainBox for the tree.")]
+        [Input("treeEvaluator", "Method which evaluates if the items within the second DomainBox could be in the same cluster as the first DomainBox.")]
+        [Input("itemEvaluator", "Method which evaluates if the two items should be in the same cluster.")]
+        [Input("minItemCount", "Lowest number of item in a cluster to return.")]
+        [Output("clusters", "Clusters where itemEvaluator is never true between items from different clusters.")]
+        public static List<List<T>> DomainTreeClusters<T>(this List<T> data, Func<T, DomainBox> toDomainBox, Func<DomainBox, DomainBox, bool> treeEvaluator, Func<T, T, bool> itemEvaluator, int minItemCount = 1)
         {
             if (data.Count == 0)
                 return new List<List<T>>();
@@ -60,7 +69,7 @@ namespace BH.Engine.Data
                 while (toEvaluate.Count > 0)
                 {
                     // Find all the neighbours for each item in toEvaluate, and add them in toEvaluate
-                    foreach (int index in Data.Query.ItemsInRange<DomainTree<int>, int>(indexTree, x => TreeEvaluator(x.DomainBox, domainBoxes[toEvaluate[0]])))
+                    foreach (int index in Data.Query.ItemsInRange<DomainTree<int>, int>(indexTree, x => treeEvaluator(x.DomainBox, domainBoxes[toEvaluate[0]])))
                     {
                         if (!check[index])
                         {
@@ -78,7 +87,7 @@ namespace BH.Engine.Data
                 }
             }
 
-            return result.Where(list => list.Count >= minPointCount).ToList();
+            return result.Where(list => list.Count >= minItemCount).ToList();
         }
 
         /***************************************************/
