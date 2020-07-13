@@ -68,7 +68,7 @@ namespace BH.Engine.Diffing
             Diff diff = Compute.DiffRevisionObjects(prevObjs_BHoM, currObjs_BHoM, diffConfigCopy);
 
             // Compute the generic Diffing for the other objects.
-            // This is left to the VennDiagram with a HashComparer (specifically, this doesn't use the HashFragment).
+            // This is left to the VennDiagram with a HashComparer.
             VennDiagram<object> vd = Engine.Data.Create.VennDiagram(prevObjs_nonBHoM, currObjs_nonBHoM, new DiffingHashComparer<object>(diffConfig));
 
             // Concatenate the results of the two diffing operations.

@@ -20,49 +20,54 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Base;
-using BH.Engine;
-using BH.oM.Data.Collections;
-using BH.oM.Diffing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Security.Cryptography;
-using System.Reflection;
-using BH.Engine.Serialiser;
 using System.ComponentModel;
 using BH.oM.Reflection.Attributes;
+using BH.oM.Diffing;
+using BH.oM.Base;
+using System.Reflection;
 using BH.oM.Reflection;
-using System.Collections;
 
 namespace BH.Engine.Diffing
 {
-    public static partial class Compute
+    public static partial class Query
     {
-        public static Diff Diff(IEnumerable<object> pastObjects, IEnumerable<object> currentObjects, DiffConfig diffConfig = null, bool useExistingHash = false)
+
+        [MultiOutput(0, "propNames", "List of properties changed per each object.")]
+        [MultiOutput(1, "value_Current", "List of current values of the properties.")]
+        [MultiOutput(2, "value_Past", "List of past values of the properties.")]
+        public static Output<List<string>, List<object>, List<object>> ListDifferentProperties(Dictionary<string, Tuple<object, object>> diffProps)
         {
-            // Set configurations if diffConfig is null. Clone it for immutability in the UI.
-            DiffConfig diffConfigCopy = diffConfig == null ? new DiffConfig() : (DiffConfig)diffConfig.GetShallowClone();
+            var output = new Output<List<string>, List<object>, List<object>>();
 
-            // Clone objects for immutability in the UI.
-            List<object> pastObjects_cloned = pastObjects.ToList();
-            List<object> currentObjects_cloned = currentObjects.ToList();
+            List<string> propNameList = new List<string>();
+            List<object> propValue_CurrentList = new List<object>();
+            List<object> propValue_ReadList = new List<object>();
 
-            if (!useExistingHash)
+            // These first empty assignments are needed to avoid UI to throw error "Object not set to an instance of an object" when input is null.
+            output.Item1 = propNameList;
+            output.Item2 = propValue_CurrentList;
+            output.Item3 = propValue_ReadList;
+
+            if (diffProps == null)
+                return output;
+
+            foreach (var item in diffProps)
             {
-                // Clean any existing hash fragment. 
-                // This ensures the hash will be re-computed within this method using the provided DiffConfig.
-                pastObjects_cloned.OfType<IBHoMObject>().ToList().ForEach(o => o.Fragments.Remove(typeof(HashFragment)));
-                currentObjects_cloned.OfType<IBHoMObject>().ToList().ForEach(o => o.Fragments.Remove(typeof(HashFragment)));
+                propNameList.Add(item.Key);
+                propValue_CurrentList.Add(item.Value.Item1);
+                propValue_ReadList.Add(item.Value.Item2);
             }
 
-            // Compute the "Diffing" by means of a VennDiagram.
-            // Hashes are computed in the DiffingHashComparer, once per each object (the hash is stored in a hashFragment).
-            VennDiagram<object> vd = Engine.Data.Create.VennDiagram(pastObjects, currentObjects, new DiffingHashComparer<object>(diffConfig, true));
-            
-            return new Diff(vd.OnlySet2, vd.OnlySet1, null, diffConfigCopy, null, vd.Intersection);
+            output.Item1 = propNameList;
+            output.Item2 = propValue_CurrentList;
+            output.Item3 = propValue_ReadList;
+
+            return output;
         }
     }
 }
