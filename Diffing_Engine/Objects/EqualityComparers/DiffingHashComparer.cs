@@ -42,12 +42,15 @@ namespace BH.Engine.Diffing
         /**** Constructors                              ****/
         /***************************************************/
 
+        public bool StoreHash { get; set; } = false;
         public DiffConfig DiffConfig { get; set; } = new DiffConfig();
 
-        public DiffingHashComparer(DiffConfig diffConfig = null)
+        public DiffingHashComparer(DiffConfig diffConfig = null, bool storeHash = false)
         {
             if (diffConfig != null)
                 DiffConfig = diffConfig;
+
+            StoreHash = storeHash;
         }
 
         /***************************************************/
@@ -56,10 +59,43 @@ namespace BH.Engine.Diffing
 
         public bool Equals(T x, T y)
         {
-            if (x.GetType() == y.GetType() && x.DiffingHash(DiffConfig) == y.DiffingHash(DiffConfig))
-                return true;
-            else
-                return false;
+            if (x.GetType() == y.GetType())
+            {
+                string xHash = null;
+                string yHash = null;
+
+                IBHoMObject xbHoM = x as IBHoMObject;
+                IBHoMObject ybHoM = y as IBHoMObject;
+
+                if (xbHoM != null && ybHoM != null)
+                {
+                    xHash = xbHoM?.GetHashFragment()?.CurrentHash;
+                    yHash = ybHoM?.GetHashFragment()?.CurrentHash;
+
+                    if (string.IsNullOrWhiteSpace(xHash))
+                    {
+                        xHash = x.DiffingHash(DiffConfig);
+
+                        if (StoreHash)
+                            SetHashFragment(xbHoM, xHash);
+                    }
+
+                    if (string.IsNullOrWhiteSpace(yHash))
+                    {
+                        yHash = y.DiffingHash(DiffConfig);
+
+                        if (StoreHash)
+                            SetHashFragment(ybHoM, yHash);
+                    }
+
+                    return xHash == yHash;
+                }
+
+
+                return x.DiffingHash(DiffConfig) == y.DiffingHash(DiffConfig);
+            }
+
+            return false;
         }
 
         /***************************************************/
@@ -75,6 +111,16 @@ namespace BH.Engine.Diffing
             }
 
             return obj.DiffingHash(DiffConfig).GetHashCode();
+        }
+
+        /***************************************************/
+
+        // Modify in-place.
+        private static bool SetHashFragment(IBHoMObject obj, string hash)
+        {
+            HashFragment existingFragm = obj.GetHashFragment();
+
+            return obj.Fragments.AddOrReplace(new HashFragment(hash, existingFragm?.CurrentHash));
         }
     }
 }

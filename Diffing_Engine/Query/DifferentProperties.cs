@@ -51,7 +51,7 @@ namespace BH.Engine.Diffing
 
             CompareLogic comparer = new CompareLogic();
 
-            comparer.Config.MaxDifferences = diffConfig.MaxPropertyDifferences;
+            comparer.Config.MaxDifferences = diffConfigCopy.MaxPropertyDifferences;
 
             if (!diffConfigCopy.PropertiesToIgnore.Contains("BHoM_Guid"))
                 diffConfigCopy.PropertiesToIgnore.Add("BHoM_Guid"); // BHoM_Guid should always be ignored in DifferentProperties.
@@ -70,7 +70,7 @@ namespace BH.Engine.Diffing
             if (dict.Count == 0)
                 return null;
 
-            return dict;
+            return dict; // this Dictionary may be exploded in the UI by using the method "ListDifferentProperties".
         }
     }
 }
