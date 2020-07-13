@@ -63,7 +63,7 @@ namespace BH.Engine.Diffing
         public static Delta Delta(Revision revision, DiffConfig diffConfig = null, string comment = null)
         {
             Diff diff = Compute.DiffRevisions(null, revision, diffConfig);
-           
+
             return new Delta(revision.StreamId, diff, revision.RevisionId, new Guid(), DateTime.UtcNow.Ticks, m_Author, comment);
         }
 
@@ -78,6 +78,17 @@ namespace BH.Engine.Diffing
         {
             Revision revision = Create.Revision(objects, streamId, revisionName, comment, diffConfig);
             return Delta(revision, diffConfig, comment);
+        }
+
+        [Description("Returns a Delta object based on the provided Diff.")]
+        [Input("diff", "Diff that will be included in this Delta.")]
+        [Input("streamId", "Id of the Stream that will own the revision produced by this Delta.")]
+        [Input("revisionName", "Name to be assigned to the Revision that this Delta will produce.")]
+        [Input("comment", "Comment to be stored along the Revision that this Delta will produce.")]
+        [Input("diffConfig", "Sets configs such as properties to be ignored in the diffing, or enable/disable property-by-property diffing.\nBy default it takes the diffConfig property of the Revision. This input can be used to override it.")]
+        public static Delta Delta(Diff diff, object streamId, string revisionName = null, string comment = null, DiffConfig diffConfig = null)
+        {
+            return Delta(diff, streamId, revisionName, comment, diffConfig);
         }
 
         // ----------------------------------------------- //
