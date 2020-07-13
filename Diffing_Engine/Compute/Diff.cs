@@ -46,40 +46,12 @@ namespace BH.Engine.Diffing
             // Set configurations if diffConfig is null. Clone it for immutability in the UI.
             DiffConfig diffConfigCopy = diffConfig == null ? new DiffConfig() : (DiffConfig)diffConfig.GetShallowClone();
 
-            // Output lists.
-            List<object> allOldObjs = new List<object>();
-            List<object> allNewObjs = new List<object>();
-
-            // Filter out the non-BHoMObjects.
-            IEnumerable<IBHoMObject> prevObjs_BHoM = pastObjects.OfType<IBHoMObject>();
-            IEnumerable<IBHoMObject> currObjs_BHoM = currentObjects.OfType<IBHoMObject>();
-
-            Diff bhomObjectsDiff = null;
-            if (pastObjects.Count() != 0 && pastObjects.Count() == prevObjs_BHoM.Count() && currentObjects.Count() == currObjs_BHoM.Count())
-            {
-                bhomObjectsDiff = DiffRevisionObjects(
-                    Modify.PrepareForRevision(prevObjs_BHoM, diffConfigCopy),
-                    Modify.PrepareForRevision(currObjs_BHoM, diffConfigCopy), 
-                    diffConfigCopy);
-
-                allNewObjs.AddRange(bhomObjectsDiff.AddedObjects);
-                allOldObjs.AddRange(bhomObjectsDiff.RemovedObjects);
-            }
-
-            // Filter out the BHoMObjects.
-            IEnumerable<object> prevObjs_nonBHoM = pastObjects.Where(o => !(o is IBHoMObject));
-            IEnumerable<object> currObjs_nonBHoM = currentObjects.Where(o => !(o is IBHoMObject));
-
-            if (prevObjs_nonBHoM.Count() > 0 || currObjs_BHoM.Count() > 0) {
-                // Compute the generic Diffing for the generic objects.
-                // This is left to the VennDiagram with a HashComparer (specifically, this doesn't use the HashFragment).
-                VennDiagram<object> vd = Engine.Data.Create.VennDiagram(prevObjs_nonBHoM, currObjs_nonBHoM, new DiffingHashComparer<object>(diffConfig));
-                allOldObjs.AddRange(vd.OnlySet1);
-                allOldObjs.AddRange(vd.OnlySet2);
-            }
-
+            // Compute the generic Diffing for the generic objects.
+            // This is left to the VennDiagram with a HashComparer (specifically, this doesn't use the HashFragment).
+            VennDiagram<object> vd = Engine.Data.Create.VennDiagram(pastObjects, currentObjects, new DiffingHashComparer<object>(diffConfig));
+            
             // Return the final, actual diff.
-            return new Diff(allNewObjs, allOldObjs, bhomObjectsDiff?.ModifiedObjects, diffConfigCopy, bhomObjectsDiff?.ModifiedPropsPerObject, bhomObjectsDiff?.UnchangedObjects);
+            return new Diff(vd.OnlySet2, vd.OnlySet1, null, diffConfigCopy, null, vd.Intersection);
         }
     }
 }

@@ -64,7 +64,7 @@ namespace BH.Engine.Diffing
             IEnumerable<object> prevObjs_nonBHoM = pastObjects.Where(o => !(o is IBHoMObject));
             IEnumerable<object> currObjs_nonBHoM = currentObjects.Where(o => !(o is IBHoMObject));
 
-            // Compute the specific Diffing for the Revision BHoMObjects.
+            // Compute the specific Diffing for the BHoMObjects.
             Diff diff = Compute.DiffRevisionObjects(prevObjs_BHoM, currObjs_BHoM, diffConfigCopy);
 
             // Compute the generic Diffing for the other objects.
@@ -74,9 +74,10 @@ namespace BH.Engine.Diffing
             // Concatenate the results of the two diffing operations.
             List<object> allPrevObjs = new List<object>();
             List<object> allCurrObjs = new List<object>();
+            List<object> allUnchangedObjs = new List<object>();
 
-            allPrevObjs.AddRange(diff.AddedObjects);
-            allPrevObjs.AddRange(vd.OnlySet1);
+            allCurrObjs.AddRange(diff.AddedObjects);
+            allCurrObjs.AddRange(vd.OnlySet1);
 
             allPrevObjs.AddRange(diff.RemovedObjects);
             allPrevObjs.AddRange(vd.OnlySet2);
@@ -91,22 +92,18 @@ namespace BH.Engine.Diffing
         [Input("pastObjects", "A set of objects coming from a past revision")]
         [Input("currentObjects", "A set of objects coming from a following Revision")]
         [Input("diffConfig", "Sets configs such as properties to be ignored in the diffing, or enable/disable property-by-property diffing.")]
-        private static Diff DiffRevisionObjects(IEnumerable<IBHoMObject> pastObjects, IEnumerable<IBHoMObject> currentObjects, DiffConfig diffConfig = null, string customdataIdName = null)
+        private static Diff DiffRevisionObjects(IEnumerable<IBHoMObject> pastObjects, IEnumerable<IBHoMObject> currentObjects, DiffConfig diffConfig = null)
         {
             // Set configurations if diffConfig is null. Clone it for immutability in the UI.
             DiffConfig diffConfigCopy = diffConfig == null ? new DiffConfig() : diffConfig.GetShallowClone() as DiffConfig;
 
             // Check if objects have hashfragment.
             if (pastObjects.Select(o => o.GetHashFragment()).Where(o => o != null).Count() < pastObjects.Count())
-                if (customdataIdName == null)
-                {
-                    BH.Engine.Reflection.Compute.RecordError("Some object does not have a HashFragment assigned, and no 'customdataIdName' was specified." +
-                        "\nIt may be that they did not pass through a Diffing Revision." +
-                        "\nIn order to do the Diffing, either specify a CustomData key where to find the ID to be used (e.g. Revit_elementId) in 'customdataIdName', or pass the objects through a Revision.");
-                    return null;
-                }
-                else
-                    return DiffWithCustomId(pastObjects, currentObjects, customdataIdName, diffConfigCopy);
+            {
+                BH.Engine.Reflection.Compute.RecordError("Some object do not have a HashFragment assigned." +
+                    "\nMake sure all objects passed through a Diffing Revision.");
+                return null;
+            }
 
             // Take the Revision's objects
             List<IBHoMObject> currentObjs = currentObjects.ToList();

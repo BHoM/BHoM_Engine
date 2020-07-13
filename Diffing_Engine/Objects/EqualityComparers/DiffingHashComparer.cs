@@ -56,7 +56,7 @@ namespace BH.Engine.Diffing
 
         public bool Equals(T x, T y)
         {
-            if (x.DiffingHash(DiffConfig) == y.DiffingHash(DiffConfig))
+            if (x.GetType() == y.GetType() && x.DiffingHash(DiffConfig) == y.DiffingHash(DiffConfig))
                 return true;
             else
                 return false;
