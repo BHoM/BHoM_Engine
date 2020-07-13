@@ -42,14 +42,12 @@ namespace BH.Engine.Diffing
         /**** Constructors                              ****/
         /***************************************************/
 
-        public DiffConfig DiffConfig { get; set; } = null;
+        public DiffConfig DiffConfig { get; set; } = new DiffConfig();
 
         public DiffingHashComparer(DiffConfig diffConfig = null)
         {
-            if (diffConfig == null)
-                diffConfig = new DiffConfig();
-
-            DiffConfig = diffConfig;
+            if (diffConfig != null)
+                DiffConfig = diffConfig;
         }
 
         /***************************************************/
@@ -76,7 +74,7 @@ namespace BH.Engine.Diffing
                     return hashFragment.CurrentHash.GetHashCode();
             }
 
-            return obj.DiffingHash().GetHashCode();
+            return obj.DiffingHash(DiffConfig).GetHashCode();
         }
     }
 }

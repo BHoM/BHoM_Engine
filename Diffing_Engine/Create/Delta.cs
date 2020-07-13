@@ -48,7 +48,7 @@ namespace BH.Engine.Diffing
         [Input("diffConfig", "Sets configs such as properties to be ignored in the diffing, or enable/disable property-by-property diffing.\nBy default it takes the diffConfig property of the Revision. This input can be used to override it.")]
         public static Delta Delta(Revision pastRevision, Revision currentRevision, DiffConfig diffConfig = null, string comment = null)
         {
-            Diff diff = Compute.Diffing(pastRevision.Objects, currentRevision.Objects, diffConfig);
+            Diff diff = Compute.DiffRevisions(pastRevision, currentRevision, diffConfig);
 
             return new Delta(pastRevision.StreamId, diff, pastRevision.RevisionId, currentRevision.RevisionId, DateTime.UtcNow.Ticks, m_Author, comment);
         }
@@ -62,7 +62,7 @@ namespace BH.Engine.Diffing
         [Input("diffConfig", "Sets configs such as properties to be ignored in the diffing, or enable/disable property-by-property diffing.\nBy default it takes the diffConfig property of the Revision. This input can be used to override it.")]
         public static Delta Delta(Revision revision, DiffConfig diffConfig = null, string comment = null)
         {
-            Diff diff = Compute.Diffing(null, revision.Objects, diffConfig);
+            Diff diff = Compute.DiffRevisions(null, revision, diffConfig);
            
             return new Delta(revision.StreamId, diff, revision.RevisionId, new Guid(), DateTime.UtcNow.Ticks, m_Author, comment);
         }
