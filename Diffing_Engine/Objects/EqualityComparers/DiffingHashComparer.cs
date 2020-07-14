@@ -45,11 +45,14 @@ namespace BH.Engine.Diffing
         public bool StoreHash { get; set; } = false;
         public DiffConfig DiffConfig { get; set; } = new DiffConfig();
 
-        public DiffingHashComparer(DiffConfig diffConfig = null, bool storeHash = false)
+        public DiffingHashComparer(DiffConfig diffConfig = null)
         {
             if (diffConfig != null)
                 DiffConfig = diffConfig;
+        }
 
+        public DiffingHashComparer(DiffConfig diffConfig = null, bool storeHash = false) : this(diffConfig)
+        {
             StoreHash = storeHash;
         }
 
@@ -59,7 +62,7 @@ namespace BH.Engine.Diffing
 
         public bool Equals(T x, T y)
         {
-            if (x.GetType() == y.GetType())
+            if (x?.GetType() == y?.GetType())
             {
                 string xHash = null;
                 string yHash = null;

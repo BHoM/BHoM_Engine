@@ -36,34 +36,37 @@ using System.ComponentModel;
 using BH.oM.Reflection.Attributes;
 using BH.oM.Reflection;
 using System.Collections;
+using BH.Engine.Base;
 
 namespace BH.Engine.Diffing
 {
     public static partial class Compute
     {
-        [Description("Computes the Diffing for BHoMObjects based on an id stored in their in CustomData.")]
+        [Description("Computes the Diffing for BHoMObjects based on an id stored in their CustomData.")]
         [Input("pastObjects", "A set of objects coming from a past revision")]
         [Input("currentObjects", "A set of objects coming from a following Revision")]
         [Input("customdataIdKey", "Name of the key where the Id of the objects may be found in the BHoMObjects' CustomData. The diff will be attempted using the Ids found there." +
             "\nE.g. 'Revit_UniqueId' may be used; an id must be stored under object.CustomData['Revit_UniqueId'].")]
         [Input("diffConfig", "Sets configs such as properties to be ignored in the diffing, or enable/disable property-by-property diffing.")]
-        public static Diff DiffWithCustomDataId(IEnumerable<IBHoMObject> pastObjects, IEnumerable<IBHoMObject> currentObjects, string customdataIdKey, DiffConfig diffConfig = null)
+        public static Diff DiffWithCustomId(IEnumerable<IBHoMObject> pastObjects, IEnumerable<IBHoMObject> currentObjects, string customdataIdKey, DiffConfig diffConfig = null)
         {
             // Set configurations if diffConfig is null. Clone it for immutability in the UI.
             DiffConfig diffConfigCopy = diffConfig == null ? new DiffConfig() : (DiffConfig)diffConfig.GetShallowClone();
 
-            if (string.IsNullOrWhiteSpace(customdataIdKey))
-            {
-                BH.Engine.Reflection.Compute.RecordError($"The DiffConfig must specify a {nameof(customdataIdKey)}.");
-                return null;
-            }
+            HashSet<string> currentObjectsIds = new HashSet<string>();
+            HashSet<string> pastObjectsIds = new HashSet<string>();
 
+            // Verifies inputs and populates the id lists.
+            ProcessObjectsForDiffing(pastObjects, currentObjects, customdataIdKey, out currentObjectsIds, out pastObjectsIds);
+
+            // Actual diffing
+            // Clone for immutability in the UI
             List<IBHoMObject> currentObjs = currentObjects.ToList();
             List<IBHoMObject> pastObjs = pastObjects.ToList();
 
             // Make dictionary with object ids to speed up the next lookups
-            Dictionary<string, IBHoMObject> currObjs_dict = currentObjs.ToDictionary(obj => obj.CustomData[customdataIdKey].ToString(), obj => obj);
-            Dictionary<string, IBHoMObject> pastObjs_dict = pastObjs.ToDictionary(obj => obj.CustomData[customdataIdKey].ToString(), obj => obj); 
+            Dictionary<string, IBHoMObject> currObjs_dict = currentObjectsIds.Zip(currentObjs, (k, v) => new { k, v }).ToDictionary(x => x.k, x => x.v);
+            Dictionary<string, IBHoMObject> pastObjs_dict = pastObjectsIds.Zip(pastObjs, (k, v) => new { k, v }).ToDictionary(x => x.k, x => x.v);
 
             // Dispatch the objects: new, modified or deleted
             List<IBHoMObject> newObjs = new List<IBHoMObject>();
@@ -91,11 +94,8 @@ namespace BH.Engine.Diffing
 
                 // Otherwise, the current object existed in the past set.
 
-                // The CustomData must be cleaned from the Id stored there, in order to compute a meaninfgul hash.
-                currentObj.CustomData.Remove(customdataIdKey);
-                correspondingObj.CustomData.Remove(customdataIdKey);
-
-                // Compute the hashes to find if they are different
+                // Compute the hashes to find if they are different. Here we could use a custom comparer, 
+                // but using the hash allows for more run-time control with the DiffConfig.
                 string currentHash = Compute.DiffingHash(currentObj, diffConfigCopy);
                 string pastHash = Compute.DiffingHash(correspondingObj, diffConfigCopy);
 
@@ -111,7 +111,7 @@ namespace BH.Engine.Diffing
                 if (pastHash != currentHash)
                 {
                     // It's been modified
-                    modifiedObjs.Add(currentObj); 
+                    modifiedObjs.Add(currentObj);
 
                     if (diffConfigCopy.EnablePropertyDiffing)
                     {
@@ -130,11 +130,74 @@ namespace BH.Engine.Diffing
             // If no modified property was found, set the field to null (otherwise will get empty list)
             objModifiedProps = objModifiedProps.Count == 0 ? null : objModifiedProps;
 
-            // All ReadObjs that cannot be found by id in the previousHash of the CurrentObjs are toBeDeleted
+            // All PastObjects that cannot be found by id in the CurrentObjs are deleted.
             deletedObjs = pastObjs_dict.Keys.Except(currObjs_dict.Keys)
-                .Where(k => pastObjs_dict.ContainsKey(k)).Select(k => pastObjs_dict[k]).ToList();
+                .Select(k => pastObjs_dict[k]).ToList();
 
             return new Diff(newObjs, deletedObjs, modifiedObjs, diffConfigCopy, objModifiedProps, unChanged);
+        }
+
+        private static bool ProcessObjectsForDiffing(IEnumerable<IBHoMObject> pastObjects, IEnumerable<IBHoMObject> currentObjects, string customdataIdKey, out HashSet<string> out_currentObjectsIds, out HashSet<string> out_pastObjectsIds)
+        {
+            // Output ids
+            out_currentObjectsIds = new HashSet<string>();
+            out_pastObjectsIds = new HashSet<string>();
+
+            HashSet<string> currentObjectsIds = new HashSet<string>();
+            HashSet<string> pastObjectsIds = new HashSet<string>();
+
+            // Check on customDataKey
+            if (string.IsNullOrWhiteSpace(customdataIdKey))
+            {
+                BH.Engine.Reflection.Compute.RecordError($"Invalid {nameof(customdataIdKey)} provided.");
+                return false;
+            }
+
+            // Flags
+            bool allRetrieved = true;
+            bool noDuplicates = true;
+
+            // Retrieve Id from CustomData for current objects
+            currentObjects.ToList().ForEach(o => {
+                object id = null;
+                allRetrieved &= o.CustomData.TryGetValue(customdataIdKey, out id);
+                currentObjectsIds.Add(id?.ToString());
+            });
+
+            // Checks on current Objects
+            if (!allRetrieved)
+                BH.Engine.Reflection.Compute.RecordWarning($"Some or all of the {nameof(currentObjects)}' CustomData do not contain a key `{customdataIdKey}`.");
+
+            if (allRetrieved && currentObjectsIds.Count != currentObjects.Count())
+            {
+                BH.Engine.Reflection.Compute.RecordWarning($"Some of the {nameof(currentObjects)} have duplicate Id.");
+                noDuplicates = false;
+            }
+
+            // Retrieve Id from CustomData for past objects
+            pastObjects.ToList().ForEach(o => {
+                object id = null;
+                allRetrieved &= o.CustomData.TryGetValue(customdataIdKey, out id);
+                pastObjectsIds.Add(id?.ToString());
+            });
+
+            // Checks on past Objects
+            if (!allRetrieved)
+                BH.Engine.Reflection.Compute.RecordWarning($"Some or all of the {nameof(pastObjects)}' CustomData do not contain a key `{customdataIdKey}`.");
+
+            if (allRetrieved && pastObjectsIds.Count != pastObjects.Count())
+            {
+                BH.Engine.Reflection.Compute.RecordError($"Some of the {nameof(pastObjects)} have duplicate Id.");
+                noDuplicates = false;
+            }
+
+            if (!allRetrieved || !noDuplicates)
+                return false;
+
+            out_currentObjectsIds = currentObjectsIds;
+            out_pastObjectsIds = pastObjectsIds;
+
+            return true;
         }
     }
 }
