@@ -47,22 +47,28 @@ namespace BH.Engine.Diffing
         [Input("diffConfig", "Sets configs such as properties to be ignored in the diffing, or enable/disable property-by-property diffing.")]
         public static Diff DiffRevisions(Revision pastRevision, Revision followingRevision, DiffConfig diffConfig = null)
         {
+            return DiffRevisionObjects(pastRevision.Objects, followingRevision.Objects, diffConfig);
+        }
+
+        // Computes the diffing for IEnumerable<object>.
+        // For BHoMObjects, it assumes that they all have a HashFragment assigned (like when they have been passed through a Revision).
+        // For non-BHoMObjects, it performs the VennDiagram comparision with a HashComparer. 
+        // Results for BHoMObjects and non are concatenated.
+        private static Diff DiffRevisionObjects(IEnumerable<object> pastRevisionObjs, IEnumerable<object> followingRevisionObjs, DiffConfig diffConfig = null)
+        {
             // Set configurations if diffConfig is null. Clone it for immutability in the UI.
             DiffConfig diffConfigCopy = diffConfig == null ? new DiffConfig() : diffConfig.GetShallowClone() as DiffConfig;
 
-            IEnumerable<object> pastObjects = pastRevision.Objects;
-            IEnumerable<object> currentObjects = followingRevision.Objects;
-
             // Dispatch the objects in BHoMObjects and generic objects.
-            IEnumerable<IBHoMObject> prevObjs_BHoM = pastObjects.OfType<IBHoMObject>();
-            IEnumerable<IBHoMObject> currObjs_BHoM = currentObjects.OfType<IBHoMObject>();
+            IEnumerable<IBHoMObject> prevObjs_BHoM = pastRevisionObjs.OfType<IBHoMObject>();
+            IEnumerable<IBHoMObject> currObjs_BHoM = followingRevisionObjs.OfType<IBHoMObject>();
 
             // If all objects are bhomobjects, just call the appropriate method
-            if (pastObjects.Count() != 0 && pastObjects.Count() == prevObjs_BHoM.Count() && currentObjects.Count() == currObjs_BHoM.Count())
+            if (pastRevisionObjs.Count() != 0 && pastRevisionObjs.Count() == prevObjs_BHoM.Count() && followingRevisionObjs.Count() == currObjs_BHoM.Count())
                 return DiffRevisionObjects(prevObjs_BHoM, currObjs_BHoM, diffConfigCopy);
 
-            IEnumerable<object> prevObjs_nonBHoM = pastObjects.Where(o => !(o is IBHoMObject));
-            IEnumerable<object> currObjs_nonBHoM = currentObjects.Where(o => !(o is IBHoMObject));
+            IEnumerable<object> prevObjs_nonBHoM = pastRevisionObjs.Where(o => !(o is IBHoMObject));
+            IEnumerable<object> currObjs_nonBHoM = followingRevisionObjs.Where(o => !(o is IBHoMObject));
 
             // Compute the specific Diffing for the BHoMObjects.
             Diff diff = Compute.DiffRevisionObjects(prevObjs_BHoM, currObjs_BHoM, diffConfigCopy);
@@ -88,22 +94,11 @@ namespace BH.Engine.Diffing
             return finalDiff;
         }
 
-        [Description("Computes the Diffing for BHoMObjects that have been passed through a Revision.")]
-        [Input("pastObjects", "A set of objects coming from a past revision")]
-        [Input("currentObjects", "A set of objects coming from a following Revision")]
-        [Input("diffConfig", "Sets configs such as properties to be ignored in the diffing, or enable/disable property-by-property diffing.")]
+        // Computes the Diffing for BHoMObjects that all have a HashFragment assigned (like when they have been passed through a Revision).
         private static Diff DiffRevisionObjects(IEnumerable<IBHoMObject> pastObjects, IEnumerable<IBHoMObject> currentObjects, DiffConfig diffConfig = null)
         {
             // Set configurations if diffConfig is null. Clone it for immutability in the UI.
             DiffConfig diffConfigCopy = diffConfig == null ? new DiffConfig() : diffConfig.GetShallowClone() as DiffConfig;
-
-            // Check if objects have hashfragment.
-            if (pastObjects.Select(o => o.GetHashFragment()).Where(o => o != null).Count() < pastObjects.Count())
-            {
-                BH.Engine.Reflection.Compute.RecordError("Some object do not have a HashFragment assigned." +
-                    "\nMake sure all objects passed through a Diffing Revision.");
-                return null;
-            }
 
             // Take the Revision's objects
             List<IBHoMObject> currentObjs = currentObjects.ToList();
@@ -171,6 +166,17 @@ namespace BH.Engine.Diffing
                 .Where(k => readObjs_dict.ContainsKey(k)).Select(k => readObjs_dict[k]).ToList();
 
             return new Diff(newObjs, oldObjs, modifiedObjs, diffConfig, objModifiedProps, unChanged);
+        }
+
+        private static bool AllHaveHashFragment(this IEnumerable<IBHoMObject> bHoMObjects)
+        {
+            // Check if objects have hashfragment.
+            if (bHoMObjects == null 
+                || bHoMObjects.Count() == 0 
+                || bHoMObjects.Select(o => o.GetHashFragment()).Where(o => o != null).Count() < bHoMObjects.Count())
+                    return false;
+
+            return true;
         }
     }
 }
