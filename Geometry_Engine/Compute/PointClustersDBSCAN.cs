@@ -22,6 +22,7 @@
 
 using BH.Engine.Data;
 using BH.oM.Geometry;
+using BH.oM.Data.Collections;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,12 +34,21 @@ namespace BH.Engine.Geometry
         /***************************************************/
         /**** public Methods - Vectors                  ****/
         /***************************************************/
-
+        
         public static List<List<Point>> PointClustersDBSCAN(this List<Point> points, double maxDist, int minPointCount = 1)
         {
-            double maxSqrDist = maxDist * maxDist;
-            Func<Point, Point, bool> metricFunction = (x, y) => x.SquareDistance(y) <= maxSqrDist;
-            return points.ClusterDBSCAN(metricFunction, minPointCount);
+            double sqDist = maxDist * maxDist;
+            Func<Point, DomainBox> toDomainBox = a => new DomainBox()
+            {
+                Domains = new Domain[] {
+                    new Domain(a.X, a.X),
+                    new Domain(a.Y, a.Y),
+                    new Domain(a.Z, a.Z),
+                }
+            };
+            Func<DomainBox, DomainBox, bool> treeFunction = (a, b) => a.SquareDistance(b) < sqDist;
+            Func<Point, Point, bool> itemFunction = (a, b) => true;  // The distance between the boxes is enough to determine if a Point is in range
+            return Data.Compute.DomainTreeClusters<Point>(points, toDomainBox, treeFunction, itemFunction, minPointCount);
         }
 
         /***************************************************/

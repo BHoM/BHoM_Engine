@@ -41,7 +41,7 @@ namespace BH.Engine.Data
         [Output("nodes", "Child nodes of the input node.")]
         public static IEnumerable<TNode> IChildren<TNode, T>(this TNode node) where TNode : INode<T>
         {
-            return Children(node as dynamic);
+            return Children(node as dynamic) ?? new List<TNode>();
         }
 
         /***************************************************/
@@ -51,7 +51,7 @@ namespace BH.Engine.Data
         [Output("nodes", "Child nodes of the input node.")]
         public static List<DomainTree<T>> Children<T>(this DomainTree<T> node)
         {
-            return node.Children;
+            return node?.Children ?? new List<DomainTree<T>>();
         }
 
 
@@ -59,7 +59,7 @@ namespace BH.Engine.Data
         /**** Private Methods                           ****/
         /***************************************************/
 
-        public static IEnumerable<INode<T>> Children<T>(this INode<T> node)
+        private static IEnumerable<INode<T>> Children<T>(this INode<T> node)
         {
             Reflection.Compute.RecordError("The method Values is not implemented for " + node.GetType().Name);
             return null;

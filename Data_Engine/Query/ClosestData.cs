@@ -63,13 +63,16 @@ namespace BH.Engine.Data
                                         double maxDistance = double.PositiveInfinity,
                                         double tolerance = Tolerance.Distance)
         {
-            Func<DomainTree<T>, double> evaluationMethod = (x) => x.DomainBox.SquareDistance(searchBox);
+            if (searchBox == null)
+                return new List<T>();
+
+            Func<DomainTree<T>, double> evaluationMethod = (x) => x.DomainBox?.SquareDistance(searchBox) ?? double.PositiveInfinity;
 
             Func<DomainTree<T>, double> worstCaseMethod;
             if (tightBox)
-                worstCaseMethod = (x) => x.DomainBox.FurthestTightSquareDistance(searchBox);
+                worstCaseMethod = (x) => x.DomainBox?.FurthestTightSquareDistance(searchBox) ?? double.PositiveInfinity;
             else
-                worstCaseMethod = (x) => x.DomainBox.FurthestSquareDistance(searchBox);
+                worstCaseMethod = (x) => x.DomainBox?.FurthestSquareDistance(searchBox) ?? double.PositiveInfinity;
 
             return ClosestData<DomainTree<T>, T>(tree, evaluationMethod, worstCaseMethod, maxDistance * maxDistance, tolerance * tolerance);
         }
@@ -92,6 +95,9 @@ namespace BH.Engine.Data
                                             double maxEvaluation = double.PositiveInfinity,
                                             double tolerance = Tolerance.Distance) where TNode : INode<T>
         {
+            if (tree == null)
+                return new List<T>();
+
             List<Tuple<double, TNode>> list = new List<Tuple<double, TNode>>()
             {
                 new Tuple<double, TNode>(evaluationMethod(tree), tree)
