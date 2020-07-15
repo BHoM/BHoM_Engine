@@ -114,6 +114,7 @@
     <Compile Include="Modify\Cast.cs" />
     <Compile Include="Modify\MakeFromGeneric.cs" />
     <Compile Include="Modify\SortExtensionMethods.cs" />
+    <Compile Include="Query\BHoMVersion.cs" />
     <Compile Include="Query\CurrentAssemblyFolder.cs" />
     <Compile Include="Query\BHoMFolder.cs" />
     <Compile Include="Query\EnumValues.cs" />
