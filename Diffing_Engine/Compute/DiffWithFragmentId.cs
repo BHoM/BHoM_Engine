@@ -86,21 +86,14 @@ namespace BH.Engine.Diffing
                 return null;
             }
 
-            PropertyInfo property = fragmentType.GetProperty(fragmentIdProperty);
-            if (property == null)
-            {
-                BH.Engine.Reflection.Compute.RecordError($"{fragmentIdProperty} is not a property of {fragmentType}.");
-                return null;
-            }
-
             IFragment idFragm = obj.FindFragment<IFragment>(fragmentType);
             if (idFragm == null)
             {
-                BH.Engine.Reflection.Compute.RecordWarning($"An object of type {obj.GetType()}, guid {obj.BHoM_Guid} does not contain a fragment of the provided Fragment type {fragmentType}.");
+                BH.Engine.Reflection.Compute.RecordWarning($"Object of type {obj.GetType()}, guid {obj.BHoM_Guid} does not contain a fragment of the provided Fragment type {fragmentType}.");
                 return null;
             }
 
-            object value = property.GetValue(idFragm, null);
+            object value = BH.Engine.Reflection.Query.PropertyValue(idFragm, fragmentIdProperty);
             if (value == null)
             {
                 BH.Engine.Reflection.Compute.RecordWarning($"The retrieved fragment for an object of type {obj.GetType()}, guid {obj.BHoM_Guid} has not any value under the property named {fragmentIdProperty}.");
