@@ -51,7 +51,7 @@ namespace BH.Engine.Diffing
         public static Diff DiffWithFragmentId(IEnumerable<IBHoMObject> pastObjects, IEnumerable<IBHoMObject> currentObjects, Type fragmentType, string fragmentIdProperty, DiffConfig diffConfig = null)
         {
             // Set configurations if diffConfig is null. Clone it for immutability in the UI.
-            DiffConfig diffConfigCopy = diffConfig == null ? new DiffConfig() : (DiffConfig)diffConfig.GetShallowClone();
+            DiffConfig diffConfigCopy = diffConfig == null ? new DiffConfig() : (DiffConfig)diffConfig.DeepClone();
 
             if (string.IsNullOrWhiteSpace(fragmentIdProperty))
             {

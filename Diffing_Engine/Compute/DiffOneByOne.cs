@@ -36,6 +36,7 @@ using System.ComponentModel;
 using BH.oM.Reflection.Attributes;
 using BH.oM.Reflection;
 using System.Collections;
+using BH.Engine.Base;
 
 namespace BH.Engine.Diffing
 {
@@ -61,7 +62,7 @@ namespace BH.Engine.Diffing
                 $"\nIt will work correctly only if the objects in the lists are in the same order and at most they have been modified (i.e. no new object has been added, no object has been deleted).");
 
             // Set configurations if diffConfig is null. Clone it for immutability in the UI.
-            DiffConfig diffConfigCopy = diffConfig == null ? new DiffConfig() : (DiffConfig)diffConfig.GetShallowClone();
+            DiffConfig diffConfigCopy = diffConfig == null ? new DiffConfig() : (DiffConfig)diffConfig.DeepClone();
             diffConfigCopy.EnablePropertyDiffing = true; // must be forced on for this Diffing method to make sense.
 
             // Clone objects for immutability in the UI.

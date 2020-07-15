@@ -33,6 +33,7 @@ using System.Reflection;
 using BH.Engine.Serialiser;
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
+using BH.Engine.Base;
 
 namespace BH.Engine.Diffing
 {
@@ -47,7 +48,7 @@ namespace BH.Engine.Diffing
         [Input("diffConfig", "Sets configs for the hash calculation, such as properties to be ignored.")]
         public static string DiffingHash(this object obj, DiffConfig diffConfig = null)
         {
-            diffConfig = diffConfig == null ? new DiffConfig() : (DiffConfig)diffConfig.GetShallowClone();
+            diffConfig = diffConfig == null ? new DiffConfig() : (DiffConfig)diffConfig.DeepClone();
 
             // The following is to consider only the PropertiesToInclude specified in the diffConfig.
             // Since the SHA hash algorithm can only consider "exceptions", we need to retrieve all the top level properties,

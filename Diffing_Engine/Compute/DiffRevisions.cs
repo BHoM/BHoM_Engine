@@ -36,6 +36,7 @@ using System.ComponentModel;
 using BH.oM.Reflection.Attributes;
 using BH.oM.Reflection;
 using System.Collections;
+using BH.Engine.Base;
 
 namespace BH.Engine.Diffing
 {
@@ -57,7 +58,7 @@ namespace BH.Engine.Diffing
         private static Diff DiffRevisionObjects(IEnumerable<object> pastRevisionObjs, IEnumerable<object> followingRevisionObjs, DiffConfig diffConfig = null)
         {
             // Set configurations if diffConfig is null. Clone it for immutability in the UI.
-            DiffConfig diffConfigCopy = diffConfig == null ? new DiffConfig() : diffConfig.GetShallowClone() as DiffConfig;
+            DiffConfig diffConfigCopy = diffConfig == null ? new DiffConfig() : diffConfig.DeepClone() as DiffConfig;
 
             // Dispatch the objects in BHoMObjects and generic objects.
             IEnumerable<IBHoMObject> prevObjs_BHoM = pastRevisionObjs.OfType<IBHoMObject>();
@@ -98,7 +99,7 @@ namespace BH.Engine.Diffing
         private static Diff DiffRevisionObjects(IEnumerable<IBHoMObject> pastObjects, IEnumerable<IBHoMObject> currentObjects, DiffConfig diffConfig = null)
         {
             // Set configurations if diffConfig is null. Clone it for immutability in the UI.
-            DiffConfig diffConfigCopy = diffConfig == null ? new DiffConfig() : diffConfig.GetShallowClone() as DiffConfig;
+            DiffConfig diffConfigCopy = diffConfig == null ? new DiffConfig() : diffConfig.DeepClone() as DiffConfig;
 
             // Take the Revision's objects
             List<IBHoMObject> currentObjs = currentObjects.ToList();

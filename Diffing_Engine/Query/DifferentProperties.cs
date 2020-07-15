@@ -25,15 +25,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
 using System.ComponentModel;
 using BH.oM.Reflection.Attributes;
 using BH.oM.Diffing;
-
 using BH.oM.Base;
-
 using KellermanSoftware.CompareNetObjects;
 using System.Reflection;
+using BH.Engine.Base;
 
 namespace BH.Engine.Diffing
 {
@@ -45,19 +43,21 @@ namespace BH.Engine.Diffing
         public static Dictionary<string, Tuple<object, object>> DifferentProperties(this object obj1, object obj2, DiffConfig diffConfig = null)
         {
             // Set configurations if diffConfig is null. Clone it for immutability in the UI.
-            DiffConfig diffConfigCopy = diffConfig == null ? new DiffConfig() : diffConfig.GetShallowClone() as DiffConfig;
+            DiffConfig diffConfigCopy = diffConfig == null ? new DiffConfig() : diffConfig.DeepClone() as DiffConfig;
 
             var dict = new Dictionary<string, Tuple<object, object>>();
 
             CompareLogic comparer = new CompareLogic();
-            
+
             // General configurations.
             comparer.Config.MaxDifferences = diffConfigCopy.MaxPropertyDifferences;
             comparer.Config.DoublePrecision = diffConfigCopy.NumericTolerance;
 
             // Set the properties to be ignored.
             if (!diffConfigCopy.PropertiesToIgnore.Contains("BHoM_Guid"))
-                BH.Engine.Reflection.Compute.RecordWarning($"`BHoM_Guid` should generally be ignored when computing the diffing. Consider adding it to the {nameof(diffConfig.PropertiesToIgnore)}.");
+                diffConfigCopy.PropertiesToIgnore.Add("BHoM_Guid");
+                // the above should be replaced by BH.Engine.Reflection.Compute.RecordWarning($"`BHoM_Guid` should generally be ignored when computing the diffing. Consider adding it to the {nameof(diffConfig.PropertiesToIgnore)}.");
+                // when the bug in the auto Create() method ("auto-property initialisers for ByRef values like lists do not populate default values") is resolved.
 
             comparer.Config.MembersToIgnore = diffConfigCopy.PropertiesToIgnore;
 
@@ -89,7 +89,7 @@ namespace BH.Engine.Diffing
                 string propertyName = difference.PropertyName;
 
                 //workaround for Revit's parameters in Fragments
-                if (propertyName.Contains("Fragments") && propertyName.Contains("Parameter") && propertyName.Contains("Value")) 
+                if (propertyName.Contains("Fragments") && propertyName.Contains("Parameter") && propertyName.Contains("Value"))
                     propertyName = BH.Engine.Reflection.Query.PropertyValue(difference.ParentObject2, "Name").ToString();
 
                 if (propertyName.Contains("CustomData") && propertyName.Contains("Value"))
