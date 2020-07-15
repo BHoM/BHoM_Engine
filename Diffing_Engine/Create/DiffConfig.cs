@@ -44,25 +44,10 @@ namespace BH.Engine.Diffing
         ///
         [Description("Defines configurations for the diffing.")]
         [Input("enablePropertyDiffing", "Enables the property-level diffing: differences in object properties are stored in the `ModifiedPropsPerObject` dictionary.")]
-        public static DiffConfig DiffConfig(bool enablePropertyDiffing = true, bool storeUnchangedObjects = false)
-        {
-            List<string> propertiesToIgnore = new List<string>() { "BHoM_Guid", "CustomData", "Fragments" };
-
-            return Create.DiffConfig(propertiesToIgnore, enablePropertyDiffing, storeUnchangedObjects);
-        }
-
-
-        [Description("Defines configurations for the diffing.")]
-        [Input("propertiesToIgnore", "List of strings specifying the names of the properties that should be ignored in the diffing. By default it includes BHoM_Guid, CustomData, Fragments."
-            + "Any property found with a name matching any of this list it will not be considered; this includes any sub-object.")]
-        [Input("enablePropertyDiffing", "Enables the property-level diffing: differences in object properties are stored in the `ModifiedPropsPerObject` dictionary.")]
         [Input("storeUnchangedObjects", "If enabled, the Diff stores also the objects that did not change (`Unchanged` property).")]
-        public static DiffConfig DiffConfig(List<string> propertiesToIgnore, bool enablePropertyDiffing, bool storeUnchangedObjects = false)
+        public static DiffConfig DiffConfig(bool enablePropertyDiffing, bool storeUnchangedObjects)
         {
-            if (propertiesToIgnore == null)
-                propertiesToIgnore = new List<string>() { "BHoM_Guid", "CustomData", "Fragments" };
-
-            return new DiffConfig() { PropertiesToIgnore = propertiesToIgnore, EnablePropertyDiffing = enablePropertyDiffing, StoreUnchangedObjects = storeUnchangedObjects };
+            return new DiffConfig() { EnablePropertyDiffing = enablePropertyDiffing, StoreUnchangedObjects = storeUnchangedObjects };
         }
     }
 }
