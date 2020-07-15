@@ -70,7 +70,10 @@ namespace BH.Engine.Diffing
                 if (item.Value != null)
                     foreach (var propItem in item.Value)
                     {
-                        propNameList.Add(propItem.Key.Replace(':', '.')); // removes the workaround imposed in DifferentProperties.cs. Allows to have the Explode working while maintaining the correct representation. See BHoM/BHoM_UI#241
+                        string propName = propItem.Key.Replace(':', '.');
+
+             
+                        propNameList.Add(propName); // removes the workaround imposed in DifferentProperties.cs. Allows to have the Explode working while maintaining the correct representation. See BHoM/BHoM_UI#241
                         propValue_CurrentList.Add(propItem.Value.Item1);
                         propValue_ReadList.Add(propItem.Value.Item2);
                     }

@@ -66,8 +66,20 @@ namespace BH.Engine.Diffing
 
             foreach (var difference in result.Differences)
             {
+                string propertyName = difference.PropertyName;
+
+                //workaround for Revit's parameters in Fragments
+                if (propertyName.Contains("Fragments") && propertyName.Contains("Parameter") && propertyName.Contains("Value")) 
+                    propertyName = BH.Engine.Reflection.Query.PropertyValue(difference.ParentObject2, "Name").ToString();
+
+                if (propertyName.Contains("CustomData") && propertyName.Contains("Value"))
+                {
+                    var splittedName = difference.PropertyName.Split('.');
+                    propertyName = splittedName.Take(2).Aggregate((a, b) => a + "." + b) + $"({difference.ParentObject2.GetType().Name})" + splittedName.Last();
+                }
+
                 if (!diffConfig.PropertiesToConsider.Any() || diffConfig.PropertiesToConsider.Contains(difference.PropertyName))
-                    dict[difference.PropertyName] = new Tuple<object, object>(difference.Object1, difference.Object2);
+                    dict[propertyName] = new Tuple<object, object>(difference.Object1, difference.Object2);
             }
 
             if (dict.Count == 0)
