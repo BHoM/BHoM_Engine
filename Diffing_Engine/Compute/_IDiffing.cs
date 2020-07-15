@@ -50,6 +50,9 @@ namespace BH.Engine.Diffing
                 return null;
             }
 
+            // Set configurations if diffConfig is null. Clone it for immutability in the UI.
+            DiffConfig diffConfigCopy = diffConfig == null ? new DiffConfig() : (DiffConfig)diffConfig.GetShallowClone();
+
             if (pastObjs.Count() == 1 && followingObjs.Count() == 1)
             {
                 Revision pastRev = pastObjs.First() as Revision;
@@ -62,7 +65,7 @@ namespace BH.Engine.Diffing
                     if (!string.IsNullOrWhiteSpace(customDataIdKey))
                         BH.Engine.Reflection.Compute.RecordWarning($"The input {customDataIdKey} is not considered when the input objects are both of type {nameof(Revision)}.");
 
-                    return DiffRevisions(pastRev, follRev, diffConfig);
+                    return DiffRevisions(pastRev, follRev, diffConfigCopy);
                 }
             }
 
@@ -74,7 +77,7 @@ namespace BH.Engine.Diffing
                 if (bHoMObjects_past.Count() == pastObjs.Count() && bHoMObjects_following.Count() == followingObjs.Count())
                 {
                     BH.Engine.Reflection.Compute.RecordNote($"Calling the diffing method '{nameof(DiffWithCustomId)}'.");
-                    return DiffWithCustomId(bHoMObjects_past, bHoMObjects_following, customDataIdKey, diffConfig);
+                    return DiffWithCustomId(bHoMObjects_past, bHoMObjects_following, customDataIdKey, diffConfigCopy);
                 }
                 else
                     BH.Engine.Reflection.Compute.RecordWarning($"To perform the diffing based on an Id stored in the Custom Data, the inputs must be collections of IBHoMObjects.");
@@ -85,14 +88,25 @@ namespace BH.Engine.Diffing
             if (bHoMObjects_past.AllHaveHashFragment() && bHoMObjects_following.AllHaveHashFragment())
             {
                 BH.Engine.Reflection.Compute.RecordNote($"Calling the diffing method '{nameof(DiffRevisionObjects)}'.");
-                return DiffRevisionObjects(pastObjs, followingObjs, diffConfig);
+                return DiffRevisionObjects(pastObjs, followingObjs, diffConfigCopy);
             }
 
+            if (diffConfigCopy.AllowOneByOneDiffing && pastObjs.Count() == followingObjs.Count())
+            {
+                BH.Engine.Reflection.Compute.RecordNote($"Calling the diffing method '{nameof(DiffOneByOne)}'" +
+                    $"\nThis will only identify 'modified' or 'unchanged' objects. It will work correctly only if the input objects are in the same order.");
+
+                return DiffOneByOne(pastObjs, followingObjs, diffConfigCopy);
+            }
+
+
             BH.Engine.Reflection.Compute.RecordNote($"Calling the most generic Diffing method, '{nameof(DiffGenericObjects)}'." +
-                $"\nThis is because the inputs do not satisfy any of the following conditions (at least one is needed):" +
+                $"\nThis will only identify new VS existing objects." +
+                $"\nReason: the inputs do not satisfy any of the following conditions (at least one is needed to trigger another more detailed diffing):" +
                 $"\n\t* Not all BHoMObjects have a HashFragment assigned (they didn't pass through a Revision);" +
-                $"\n\t* No {nameof(customDataIdKey)} was input.");
-            return DiffGenericObjects(pastObjs as dynamic, followingObjs as dynamic, diffConfig);
+                $"\n\t* No {nameof(customDataIdKey)} was input." +
+                $"\n\t* The input collections have different legths.");
+            return DiffGenericObjects(pastObjs as dynamic, followingObjs as dynamic, diffConfigCopy);
         }
     }
 }

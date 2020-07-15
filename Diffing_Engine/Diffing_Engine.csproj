@@ -70,6 +70,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Compute\DiffOneByOne.cs" />
     <Compile Include="Compute\DiffWithFragmentId.cs" />
     <Compile Include="Compute\_IDiffing.cs" />
     <Compile Include="Compute\DiffWithCustomId.cs" />

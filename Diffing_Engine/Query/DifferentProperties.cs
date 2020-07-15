@@ -65,7 +65,10 @@ namespace BH.Engine.Diffing
             ComparisonResult result = comparer.Compare(obj1, obj2);
 
             foreach (var difference in result.Differences)
-                dict[difference.PropertyName] = new Tuple<object, object>(difference.Object1, difference.Object2);
+            {
+                if (!diffConfig.PropertiesToConsider.Any() || diffConfig.PropertiesToConsider.Contains(difference.PropertyName))
+                    dict[difference.PropertyName] = new Tuple<object, object>(difference.Object1, difference.Object2);
+            }
 
             if (dict.Count == 0)
                 return null;
