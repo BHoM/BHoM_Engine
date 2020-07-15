@@ -50,20 +50,40 @@ namespace BH.Engine.Diffing
             var dict = new Dictionary<string, Tuple<object, object>>();
 
             CompareLogic comparer = new CompareLogic();
-
+            
+            // General configurations.
             comparer.Config.MaxDifferences = diffConfigCopy.MaxPropertyDifferences;
-
-            if (!diffConfigCopy.PropertiesToIgnore.Contains("BHoM_Guid"))
-                diffConfigCopy.PropertiesToIgnore.Add("BHoM_Guid"); // BHoM_Guid should always be ignored in DifferentProperties.
-
-            comparer.Config.MembersToIgnore = diffConfigCopy.PropertiesToIgnore;
             comparer.Config.DoublePrecision = diffConfigCopy.NumericTolerance;
 
-            // Never include the changes in HistoryFragment.
+            // Set the properties to be ignored.
+            if (!diffConfigCopy.PropertiesToIgnore.Contains("BHoM_Guid"))
+                BH.Engine.Reflection.Compute.RecordWarning($"`BHoM_Guid` should generally be ignored when computing the diffing. Consider adding it to the {nameof(diffConfig.PropertiesToIgnore)}.");
+
+            comparer.Config.MembersToIgnore = diffConfigCopy.PropertiesToIgnore;
+
+            // Removes the CustomData to be ignored.
+            var bhomobj1 = (obj1 as IBHoMObject);
+            var bhomobj2 = (obj2 as IBHoMObject);
+
+            if (bhomobj1 != null)
+            {
+                diffConfig.CustomDataToIgnore.Select(k => bhomobj1.CustomData.Remove(k));
+                obj1 = bhomobj1;
+            }
+
+            if (bhomobj2 != null)
+            {
+                diffConfig.CustomDataToIgnore.Select(k => bhomobj2.CustomData.Remove(k));
+                obj2 = bhomobj2;
+            }
+
+            // Never include the changes in HashFragment.
             comparer.Config.TypesToIgnore.Add(typeof(HashFragment));
 
+            // Perform the comparison.
             ComparisonResult result = comparer.Compare(obj1, obj2);
 
+            // Parse and store the differnces as appropriate.
             foreach (var difference in result.Differences)
             {
                 string propertyName = difference.PropertyName;
@@ -75,7 +95,13 @@ namespace BH.Engine.Diffing
                 if (propertyName.Contains("CustomData") && propertyName.Contains("Value"))
                 {
                     var splittedName = difference.PropertyName.Split('.');
-                    propertyName = splittedName.Take(2).Aggregate((a, b) => a + "." + b) + $"({difference.ParentObject2.GetType().Name})" + splittedName.Last();
+
+                    int idx = 0;
+                    Int32.TryParse(string.Join(null, System.Text.RegularExpressions.Regex.Split(splittedName.ElementAtOrDefault(1), "[^\\d]")), out idx);
+
+                    string keyName = (obj2 as IBHoMObject)?.CustomData.ElementAtOrDefault(idx - 1).Key; // this seems buggy ATM.
+
+                    propertyName = splittedName.FirstOrDefault() + $"['{keyName}']." + splittedName.Last();
                 }
 
                 if (!diffConfig.PropertiesToConsider.Any() || diffConfig.PropertiesToConsider.Contains(difference.PropertyName))

@@ -72,7 +72,6 @@ namespace BH.Engine.Diffing
                     {
                         string propName = propItem.Key.Replace(':', '.');
 
-             
                         propNameList.Add(propName); // removes the workaround imposed in DifferentProperties.cs. Allows to have the Explode working while maintaining the correct representation. See BHoM/BHoM_UI#241
                         propValue_CurrentList.Add(propItem.Value.Item1);
                         propValue_ReadList.Add(propItem.Value.Item2);
