@@ -101,7 +101,7 @@ namespace BH.Engine.Diffing
 
 
             BH.Engine.Reflection.Compute.RecordNote($"Calling the most generic Diffing method, '{nameof(DiffGenericObjects)}'." +
-                $"\nThis will only identify new VS existing objects." +
+                $"\nThis will only identify new/deleted objects; it will not track which object was modified." +
                 $"\nReason: the inputs do not satisfy any of the following conditions (at least one is needed to trigger another more detailed diffing):" +
                 $"\n\t* Not all BHoMObjects have a HashFragment assigned (they didn't pass through a Revision);" +
                 $"\n\t* No {nameof(customDataIdKey)} was input." +
