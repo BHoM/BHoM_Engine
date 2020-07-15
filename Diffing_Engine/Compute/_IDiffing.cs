@@ -36,6 +36,7 @@ using System.ComponentModel;
 using BH.oM.Reflection.Attributes;
 using BH.oM.Reflection;
 using System.Collections;
+using BH.Engine.Base;
 
 namespace BH.Engine.Diffing
 {
@@ -51,7 +52,7 @@ namespace BH.Engine.Diffing
             }
 
             // Set configurations if diffConfig is null. Clone it for immutability in the UI.
-            DiffConfig diffConfigCopy = diffConfig == null ? new DiffConfig() : (DiffConfig)diffConfig.GetShallowClone();
+            DiffConfig diffConfigCopy = diffConfig == null ? new DiffConfig() : (DiffConfig)diffConfig.DeepClone();
 
             if (pastObjs.Count() == 1 && followingObjs.Count() == 1)
             {
