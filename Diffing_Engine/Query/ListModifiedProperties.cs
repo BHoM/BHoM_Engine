@@ -36,7 +36,7 @@ namespace BH.Engine.Diffing
 {
     public static partial class Query
     {
-        
+
         [MultiOutput(0, "identifier", "Identifier of the objects which have some modified properties.\nWhen using Revisions, this is the Hash of the objects. When Diffing using CustomData, this is the specified Id.")]
         [MultiOutput(1, "propNames", "List of properties changed per each object.")]
         [MultiOutput(2, "value_Current", "List of current values of the properties.")]
@@ -67,12 +67,13 @@ namespace BH.Engine.Diffing
                 List<object> propValue_CurrentList = new List<object>();
                 List<object> propValue_ReadList = new List<object>();
 
-                foreach (var propItem in item.Value)
-                {
-                    propNameList.Add(propItem.Key.Replace(':', '.')); // removes the workaround imposed in DifferentProperties.cs. Allows to have the Explode working while maintaining the correct representation. See BHoM/BHoM_UI#241
-                    propValue_CurrentList.Add(propItem.Value.Item1);
-                    propValue_ReadList.Add(propItem.Value.Item2);
-                }
+                if (item.Value != null)
+                    foreach (var propItem in item.Value)
+                    {
+                        propNameList.Add(propItem.Key.Replace(':', '.')); // removes the workaround imposed in DifferentProperties.cs. Allows to have the Explode working while maintaining the correct representation. See BHoM/BHoM_UI#241
+                        propValue_CurrentList.Add(propItem.Value.Item1);
+                        propValue_ReadList.Add(propItem.Value.Item2);
+                    }
 
                 propNameTree.Add(propNameList);
                 propValue_CurrentTree.Add(propValue_CurrentList);
