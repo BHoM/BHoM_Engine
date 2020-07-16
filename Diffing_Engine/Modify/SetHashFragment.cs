@@ -52,7 +52,7 @@ namespace BH.Engine.Diffing
             // Calculate and set the object hashes
             foreach (var obj in objs)
             {
-                objs_cloned.Add(SetHashFragment(obj));
+                objs_cloned.Add(SetHashFragment(obj, diffConfig));
             }
 
             return objs_cloned;
