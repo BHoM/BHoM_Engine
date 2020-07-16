@@ -67,13 +67,13 @@ namespace BH.Engine.Diffing
 
             if (bhomobj1 != null)
             {
-                diffConfig.CustomDataToIgnore.Select(k => bhomobj1.CustomData.Remove(k));
+                diffConfig.CustomDataToIgnore.ForEach(k => bhomobj1.CustomData.Remove(k));
                 obj1 = bhomobj1;
             }
 
             if (bhomobj2 != null)
             {
-                diffConfig.CustomDataToIgnore.Select(k => bhomobj2.CustomData.Remove(k));
+                diffConfig.CustomDataToIgnore.ForEach(k => bhomobj2.CustomData.Remove(k));
                 obj2 = bhomobj2;
             }
 
