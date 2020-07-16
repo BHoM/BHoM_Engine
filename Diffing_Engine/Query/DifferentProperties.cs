@@ -45,6 +45,9 @@ namespace BH.Engine.Diffing
             // Set configurations if diffConfig is null. Clone it for immutability in the UI.
             DiffConfig diffConfigCopy = diffConfig == null ? new DiffConfig() : diffConfig.DeepClone() as DiffConfig;
 
+            object obj1Copy = obj1.DeepClone();
+            object obj2Copy = obj2.DeepClone();
+
             var dict = new Dictionary<string, Tuple<object, object>>();
 
             CompareLogic comparer = new CompareLogic();
@@ -62,26 +65,26 @@ namespace BH.Engine.Diffing
             comparer.Config.MembersToIgnore = diffConfigCopy.PropertiesToIgnore;
 
             // Removes the CustomData to be ignored.
-            var bhomobj1 = (obj1 as IBHoMObject);
-            var bhomobj2 = (obj2 as IBHoMObject);
+            var bhomobj1 = (obj1Copy as IBHoMObject);
+            var bhomobj2 = (obj2Copy as IBHoMObject);
 
             if (bhomobj1 != null)
             {
                 diffConfig.CustomDataToIgnore.ForEach(k => bhomobj1.CustomData.Remove(k));
-                obj1 = bhomobj1;
+                obj1Copy = bhomobj1;
             }
 
             if (bhomobj2 != null)
             {
                 diffConfig.CustomDataToIgnore.ForEach(k => bhomobj2.CustomData.Remove(k));
-                obj2 = bhomobj2;
+                obj2Copy = bhomobj2;
             }
 
             // Never include the changes in HashFragment.
             comparer.Config.TypesToIgnore.Add(typeof(HashFragment));
 
             // Perform the comparison.
-            ComparisonResult result = comparer.Compare(obj1, obj2);
+            ComparisonResult result = comparer.Compare(obj1Copy, obj2Copy);
 
             // Parse and store the differnces as appropriate.
             foreach (var difference in result.Differences)
@@ -99,7 +102,7 @@ namespace BH.Engine.Diffing
                     int idx = 0;
                     Int32.TryParse(string.Join(null, System.Text.RegularExpressions.Regex.Split(splittedName.ElementAtOrDefault(1), "[^\\d]")), out idx);
 
-                    string keyName = (obj2 as IBHoMObject)?.CustomData.ElementAtOrDefault(idx - 1).Key; // this seems buggy ATM.
+                    string keyName = (obj2Copy as IBHoMObject)?.CustomData.ElementAtOrDefault(idx - 1).Key; // this seems buggy ATM.
 
                     propertyName = splittedName.FirstOrDefault() + $"['{keyName}']." + splittedName.Last();
                 }
