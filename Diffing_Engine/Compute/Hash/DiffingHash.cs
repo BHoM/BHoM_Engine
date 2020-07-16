@@ -59,6 +59,9 @@ namespace BH.Engine.Diffing
                 diffConfig.PropertiesToIgnore.AddRange(exceptions);
             }
 
+            foreach (var pn in diffConfig.PropertiesToIgnore)
+                obj.SetPropertyToNull(pn);
+
             // The current Hash must not be considered when computing the hash. Remove HashFragment if present. 
             IBHoMObject bhomobj = obj as IBHoMObject;
             if (bhomobj != null)
@@ -69,6 +72,27 @@ namespace BH.Engine.Diffing
             }
 
             return Compute.SHA256Hash(obj, diffConfig.PropertiesToIgnore);
+        }
+
+
+        private static bool SetPropertyToNull(this object obj, string propName)
+        {
+            if (propName.Contains("."))
+            {
+                string[] props = propName.Split('.');
+                for (int i = 0; i < props.Length - 1; i++)
+                {
+                    obj = BH.Engine.Reflection.Query.PropertyValue(obj, props[i]);
+                    if (obj == null)
+                        break;
+                }
+                propName = props[props.Length - 1];
+            }
+
+            System.Reflection.PropertyInfo prop = obj.GetType().GetProperty(propName);
+
+            prop.SetValue(obj, null);
+            return true;
         }
     }
 }
