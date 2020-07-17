@@ -38,8 +38,8 @@ namespace BH.Engine.Spatial
         /******************************************/
 
         [Description("Returns the point from the IElement0D. Mainly to accomodate the interface method.")]
-        [Input("element0D", "The IElement0D of which to get the vertecies from.")]
-        [Output("vertices", "The IElement0Ds point.")]
+        [Input("element0D", "The IElement0D to query for its vertices.")]
+        [Output("vertices", "The location point of IElement0D.")]
         public static List<Point> ElementVertices(this IElement0D element0D)
         {
             return new List<Point>() { element0D.IGeometry() };
