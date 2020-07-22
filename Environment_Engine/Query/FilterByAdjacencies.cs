@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -20,39 +20,35 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
+using System;
+using System.Collections.Generic;
 
-// General Information about an assembly is controlled through the following
-// set of attributes. Change these attribute values to modify the information
-// associated with an assembly.
-[assembly: AssemblyTitle("Spatial_Engine")]
-[assembly: AssemblyDescription("")]
-[assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Spatial_Engine")]
-[assembly: AssemblyCopyright("Copyright © https://github.com/BHoM")]
-[assembly: AssemblyTrademark("")]
-[assembly: AssemblyCulture("")]
+using System.Linq;
+using BH.oM.Environment.Elements;
 
-// Setting ComVisible to false makes the types in this assembly not visible
-// to COM components.  If you need to access a type in this assembly from
-// COM, set the ComVisible attribute to true on that type.
-[assembly: ComVisible(false)]
+using BH.Engine.Geometry;
+using BH.oM.Geometry;
 
-// The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("a84fdfe5-c267-430e-8fec-af4f4bf5b745")]
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
-// Version information for an assembly consists of the following four values:
-//
-//      Major Version
-//      Minor Version
-//      Build Number
-//      Revision
-//
-// You can specify all the values or you can default the Build and Revision Numbers
-// by using the '*' as shown below:
-// [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("3.0.0.0")]
-[assembly: AssemblyFileVersion("3.3.0.0")]
+namespace BH.Engine.Environment
+{
+    public static partial class Query
+    {
+        [Description("Filters a list of panels based on the number of adjacencies they have")]
+        [Input("panels", "A list of panels to be filtered")]
+        [Input("adjacencies", "The number of Adjacencies to filter by")]
+        [Output("panels", "A list of panels which have the same number of adjacencies")]
+        public static List<Panel> FilterByAdjacencies(this List<Panel> panels, int adjacencies)
+        {
+            if (adjacencies < 0)
+                Reflection.Compute.RecordError("Input can't be less than 0");
+
+            if (adjacencies > 3)
+                Reflection.Compute.RecordWarning("A panel should not have more than 3 adjacencies");
+
+            return panels.Where(x => x.ConnectedSpaces.Count == adjacencies).ToList();
+        }
+    }
+}

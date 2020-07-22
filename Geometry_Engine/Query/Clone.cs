@@ -136,6 +136,13 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        public static PlanarSurface Clone(this PlanarSurface surface)
+        {
+            return new PlanarSurface(surface.ExternalBoundary.IClone(), surface.InternalBoundaries.Select(x => x.IClone()).ToList());
+        }
+
+        /***************************************************/
+
         public static Pipe Clone(this Pipe surface)
         {
             return new Pipe { Centreline = surface.Centreline.IClone(), Radius = surface.Radius, Capped = surface.Capped };

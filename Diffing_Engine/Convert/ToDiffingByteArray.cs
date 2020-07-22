@@ -31,11 +31,8 @@ using System.Threading.Tasks;
 using System.Security.Cryptography;
 using System.Reflection;
 using BH.Engine.Serialiser;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
-using MongoDB.Bson;
 
 namespace BH.Engine.Diffing
 {
@@ -48,13 +45,10 @@ namespace BH.Engine.Diffing
         public static byte[] ToDiffingByteArray(this object obj, List<string> fieldsToIgnore)
         {
             if (fieldsToIgnore == null || fieldsToIgnore.Count == 0)
-                return BsonExtensionMethods.ToBson(obj);
+                return obj.ToBytes();  
 
             string objStr = ToDiffingJson(obj, fieldsToIgnore);
-
-            BsonDocument objDoc = BsonDocument.Parse(objStr);
-
-            return BsonExtensionMethods.ToBson(objDoc);
+            return objStr.ToBytes();
         }
 
 

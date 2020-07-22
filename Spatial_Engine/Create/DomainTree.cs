@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -20,50 +20,34 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.Engine.Reflection;
-using BH.oM.Base;
-using BH.oM.Reflection.Attributes;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
-using System.IO;
-using System.IO.Pipes;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+using BH.oM.Reflection.Attributes;
+using BH.oM.Geometry;
+using BH.oM.Spatial.Layouts;
+using BH.Engine.Geometry;
+using BH.oM.Data.Collections;
+using BH.oM.Dimensional;
 
-namespace BH.Engine.Versioning
+namespace BH.Engine.Spatial
 {
-    public static partial class Query
+    public static partial class Create
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Provide a string representation of a method as it used for versioning by the PreviousVersion attribute.")]
-        [Input("method", "Method to generate the key for")]
-        [Output("key", "String representation of the method as it will be used by the PreviousVersion attribute.")]
-        public static string VersioningKey(this MethodBase method)
+        [Description("Creates a spatial data tree from the data. Useful for spatial queries in large data sets.")]
+        [Input("elements", "The elements to store in the data tree.")]
+        [Input("treeDegree", "Degree of the tree. Determines the number of children each node of the tree can have.")]
+        [Input("leafSize", "Determines the number of siblings a leaf node can have.")]
+        [Input("sampleSize", "The number of items used to determine how to split the collection.")]
+        [Output("domainTree", "A spatial data tree containing all provided elements in its leaves.")]
+        public static DomainTree<T> DomainTree<T>(this IEnumerable<T> elements, int treeDegree = 16, int leafSize = 16, int sampleSize = 60) where T : IElement
         {
-            if (method == null)
-                return "";
-
-            string name = method.Name;
-            if (name == ".ctor")
-                name = "";
-            else
-                name = "." + name;
-
-            string declaringType = method.DeclaringType.FullName;
-
-            string parametersString = "";
-            List<string> parameterTypes = method.GetParameters().Select(x => x.ParameterType.ToText(true)).ToList();
-            if (parameterTypes.Count > 0)
-                parametersString = parameterTypes.Aggregate((a, b) => a + ", " + b);
-
-            return declaringType + name + "(" + parametersString + ")";
+            return Data.Create.DomainTree(elements, x => x.IBounds().DomainBox(), treeDegree, leafSize, sampleSize);
         }
 
         /***************************************************/

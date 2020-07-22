@@ -20,39 +20,35 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
+using BH.oM.Data.Collections;
+using BH.oM.Geometry;
+using BH.oM.Reflection.Attributes;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
 
-// General Information about an assembly is controlled through the following
-// set of attributes. Change these attribute values to modify the information
-// associated with an assembly.
-[assembly: AssemblyTitle("Spatial_Engine")]
-[assembly: AssemblyDescription("")]
-[assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Spatial_Engine")]
-[assembly: AssemblyCopyright("Copyright © https://github.com/BHoM")]
-[assembly: AssemblyTrademark("")]
-[assembly: AssemblyCulture("")]
+namespace BH.Engine.Geometry
+{
+    public static partial class Convert
+    {
+        /*********************************************/
+        /**** Public  Methods                     ****/
+        /*********************************************/
 
-// Setting ComVisible to false makes the types in this assembly not visible
-// to COM components.  If you need to access a type in this assembly from
-// COM, set the ComVisible attribute to true on that type.
-[assembly: ComVisible(false)]
+        [Description("Converts a Mesh3D into a regular mesh, which removes all the information about the volumetric cells.")]
+        [Input("mesh3d", "Volumetric 3d mesh to convert.")]
+        [Output("mesh", "A regular mesh with the same vertices and faces as the Mesh3D.")]
+        public static Mesh ToMesh(this Mesh3D mesh3d)
+        {
+            return new Mesh()
+            {
+                Vertices = mesh3d.Vertices.ToList(),
+                Faces = mesh3d.Faces.ToList(),
+            };
+        }
 
-// The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("a84fdfe5-c267-430e-8fec-af4f4bf5b745")]
+        /*********************************************/
 
-// Version information for an assembly consists of the following four values:
-//
-//      Major Version
-//      Minor Version
-//      Build Number
-//      Revision
-//
-// You can specify all the values or you can default the Build and Revision Numbers
-// by using the '*' as shown below:
-// [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("3.0.0.0")]
-[assembly: AssemblyFileVersion("3.3.0.0")]
+    }
+}

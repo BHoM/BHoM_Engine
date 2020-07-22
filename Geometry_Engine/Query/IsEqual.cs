@@ -57,6 +57,15 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        public static bool IsEqual(this Basis basis, Basis other, double tolerance = Tolerance.Distance)
+        {
+            return basis.X.IsEqual(other.X, tolerance)
+                && basis.Y.IsEqual(other.Y, tolerance)
+                && basis.Z.IsEqual(other.Z, tolerance);
+        }
+
+        /***************************************************/
+
         public static bool IsEqual(this Cartesian coordinateSystem, Cartesian other, double tolerance = Tolerance.Distance)
         {
             return coordinateSystem.Origin.IsEqual(other.Origin, tolerance)
@@ -156,6 +165,23 @@ namespace BH.Engine.Geometry
         public static bool IsEqual(this NurbsSurface surface, NurbsSurface other, double tolerance = Tolerance.Distance)
         {
             throw new NotImplementedException();
+        }
+
+        /***************************************************/
+
+        public static bool IsEqual(this PlanarSurface surface, PlanarSurface other, double tolerance = Tolerance.Distance)
+        {
+            if ((surface.InternalBoundaries != null ^ other.InternalBoundaries != null) &&
+                surface.InternalBoundaries.Count != other.InternalBoundaries.Count)
+                return false;
+
+            foreach (ICurve curve in surface.InternalBoundaries)
+            {
+                if (!other.InternalBoundaries.Any(x => x.IIsEqual(curve, tolerance)))
+                    return false;
+            }
+
+            return surface.ExternalBoundary.IIsEqual(other.ExternalBoundary, tolerance);
         }
 
         /***************************************************/

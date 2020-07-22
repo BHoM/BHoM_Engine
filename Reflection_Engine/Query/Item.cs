@@ -148,8 +148,6 @@ namespace BH.Engine.Reflection
                 case 4:
                     return output.Item5;
                 case 5:
-                    return output.Item5;
-                case 6:
                     return output.Item6;
                 default:
                     return null;
@@ -173,10 +171,8 @@ namespace BH.Engine.Reflection
                 case 4:
                     return output.Item5;
                 case 5:
-                    return output.Item5;
-                case 6:
                     return output.Item6;
-                case 7:
+                case 6:
                     return output.Item7;
                 default:
                     return null;
@@ -200,12 +196,10 @@ namespace BH.Engine.Reflection
                 case 4:
                     return output.Item5;
                 case 5:
-                    return output.Item5;
-                case 6:
                     return output.Item6;
-                case 7:
+                case 6:
                     return output.Item7;
-                case 8:
+                case 7:
                     return output.Item8;
                 default:
                     return null;
@@ -229,14 +223,12 @@ namespace BH.Engine.Reflection
                 case 4:
                     return output.Item5;
                 case 5:
-                    return output.Item5;
-                case 6:
                     return output.Item6;
-                case 7:
+                case 6:
                     return output.Item7;
-                case 8:
+                case 7:
                     return output.Item8;
-                case 9:
+                case 8:
                     return output.Item9;
                 default:
                     return null;
@@ -260,16 +252,14 @@ namespace BH.Engine.Reflection
                 case 4:
                     return output.Item5;
                 case 5:
-                    return output.Item5;
-                case 6:
                     return output.Item6;
-                case 7:
+                case 6:
                     return output.Item7;
-                case 8:
+                case 7:
                     return output.Item8;
-                case 9:
+                case 8:
                     return output.Item9;
-                case 10:
+                case 9:
                     return output.Item10;
                 default:
                     return null;

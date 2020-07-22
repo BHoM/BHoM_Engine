@@ -34,9 +34,8 @@
       <HintPath>C:\ProgramData\BHoM\Assemblies\BHoM.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="MongoDB.Bson, Version=2.4.4.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MongoDB.Bson.2.4.4\lib\net45\MongoDB.Bson.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="MongoDB.Bson, Version=2.9.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MongoDB.Bson.2.9.3\lib\net452\MongoDB.Bson.dll</HintPath>
     </Reference>
     <Reference Include="Reflection_oM">
       <SpecificVersion>False</SpecificVersion>
@@ -54,10 +53,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Compute\WriteToStream.cs" />
+    <Compile Include="Compute\ReadFromStream.cs" />
     <Compile Include="Compute\RegisterClassMap.cs" />
     <Compile Include="Compute\AllowUpgradeFromBson.cs" />
     <Compile Include="Convert\Bson.cs" />
     <Compile Include="Convert\Encrypted.cs" />
+    <Compile Include="Convert\Bytes.cs" />
     <Compile Include="Convert\Zip.cs" />
     <Compile Include="Convert\Json.cs" />
     <Compile Include="Modify\ApplyTaggedName.cs" />

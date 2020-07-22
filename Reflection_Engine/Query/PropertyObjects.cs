@@ -21,6 +21,7 @@
  */
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -43,7 +44,15 @@ namespace BH.Engine.Reflection
                 {
                     properties.Add(value);
                     if (goDeep)
-                        properties.AddRange(value.PropertyObjects(true));
+                    {
+                        if (value is IEnumerable)
+                        {
+                            foreach (object child in (IEnumerable)value)
+                                properties.AddRange(PropertyObjects(child, true));
+                        }
+                        else
+                            properties.AddRange(PropertyObjects(value, true));
+                    }
                 }
             }
             return properties;

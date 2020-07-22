@@ -67,11 +67,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Compute\DomainTreeClusters.cs" />
     <Compile Include="Compute\ClusterDBSCAN.cs" />
     <Compile Include="Compute\Series.cs" />
     <Compile Include="Compute\FilterData.cs" />
     <Compile Include="Compute\RelatedPairs.cs" />
     <Compile Include="Compute\Path.cs" />
+    <Compile Include="Create\DomainTreeLeaf.cs" />
     <Compile Include="Create\DomainTree.cs" />
     <Compile Include="Create\DomainBox.cs" />
     <Compile Include="Create\Domain.cs" />

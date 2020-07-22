@@ -25,6 +25,7 @@ using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.ComponentModel;
 
 namespace BH.Engine.Geometry
 {
@@ -77,13 +78,20 @@ namespace BH.Engine.Geometry
                 {
                     Point pD = vertices[(faces[i].D)];
                     Vector normal = (CrossProduct(pA - pD, pB - pA)) + (CrossProduct(pC - pB, pD - pC));
-                    normal.Normalise();
-                    normals[i] = normal;
+                    normals.Add(normal.Normalise());
                 }
             }
 
             return normals.ToList();
         }
+
+        /***************************************************/
+
+        public static List<Vector> Normals(this Mesh3D mesh)
+        {
+            return mesh.ToMesh().Normals();
+        }
+
 
         /***************************************************/
         /**** Public Methods - Curves                   ****/
@@ -108,20 +116,12 @@ namespace BH.Engine.Geometry
                 return null;
             }
 
-            Vector normal = new Vector { X = 0, Y = 0, Z = 0 };
+            Point avg = curve.ControlPoints.Average();
+            Vector normal = new Vector();
 
-            //Get out normal, from cross product of firt points that are not colinear
-            int i = 0;
-            do
-            {
-                Point pA = curve.ControlPoints[i];
-                Point pB = curve.ControlPoints[(i + 1) % curve.ControlPoints.Count];
-                Point pC = curve.ControlPoints[(i + 2) % curve.ControlPoints.Count];
-
-                normal = CrossProduct(pB - pA, pC - pB);
-                i++;
-
-            } while (normal.SquareLength() < tolerance * tolerance && i < curve.ControlPoints.Count);
+            //Get out normal, from cross products between vectors from the average point to adjecent controlpoints on the curve
+            for (int i = 0; i < curve.ControlPoints.Count - 1; i++)
+                normal += (curve.ControlPoints[i] - avg).CrossProduct(curve.ControlPoints[i + 1] - avg);
 
             normal = normal.Normalise();
 
@@ -130,6 +130,7 @@ namespace BH.Engine.Geometry
                 normal = -normal;
 
             return normal;
+
         }
 
         /***************************************************/
@@ -181,20 +182,13 @@ namespace BH.Engine.Geometry
                     }
                 }
 
-                Vector normal = new Vector { X = 0, Y = 0, Z = 0 };
+                
+                Point avg = points.Average();
+                Vector normal = new Vector();
 
-                //Get out normal, from cross product of firt points that are not colinear
-                int i = 0;
-                do
-                {
-                    Point pA = points[i];
-                    Point pB = points[(i + 1) % points.Count];
-                    Point pC = points[(i + 2) % points.Count];
-
-                    normal = CrossProduct(pB - pA, pC - pB);
-                    i++;
-
-                } while (normal.SquareLength() < tolerance * tolerance && i < points.Count);
+                //Get out normal, from cross products between vectors from the average point to adjecent controlpoints on the curve
+                for (int i = 0; i < points.Count - 1; i++)
+                    normal += (points[i] - avg).CrossProduct(points[i + 1] - avg);
 
                 normal = normal.Normalise();
 

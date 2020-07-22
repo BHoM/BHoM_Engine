@@ -20,21 +20,13 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.Engine.Reflection;
-using BH.oM.Base;
+using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
-using System.IO;
-using System.IO.Pipes;
 using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace BH.Engine.Versioning
+namespace BH.Engine.Geometry
 {
     public static partial class Query
     {
@@ -42,30 +34,31 @@ namespace BH.Engine.Versioning
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Provide a string representation of a method as it used for versioning by the PreviousVersion attribute.")]
-        [Input("method", "Method to generate the key for")]
-        [Output("key", "String representation of the method as it will be used by the PreviousVersion attribute.")]
-        public static string VersioningKey(this MethodBase method)
+        [Description("Query the Mesh which only consists of the external faces of the Mesh3D.")]
+        [Input("mesh3d", "The Mesh3D to query for its external face mesh.")]
+        [Output("mesh", "A mesh consistent of all the faces in the Mesh3D which were only connected to one cell.")]
+        public static Mesh ExternalFaceMesh(this Mesh3D mesh3d)
         {
-            if (method == null)
-                return "";
+            List<Face> externalFaces = new List<Face>();
 
-            string name = method.Name;
-            if (name == ".ctor")
-                name = "";
-            else
-                name = "." + name;
-
-            string declaringType = method.DeclaringType.FullName;
-
-            string parametersString = "";
-            List<string> parameterTypes = method.GetParameters().Select(x => x.ParameterType.ToText(true)).ToList();
-            if (parameterTypes.Count > 0)
-                parametersString = parameterTypes.Aggregate((a, b) => a + ", " + b);
-
-            return declaringType + name + "(" + parametersString + ")";
+            for (int i = 0; i < mesh3d.CellRelation.Count; i++)
+            {
+                CellRelation c = mesh3d.CellRelation[i];
+                if (c.ToCell == -1 ^ c.FromCell == -1)
+                {
+                    externalFaces.Add(mesh3d.Faces[i]);
+                }
+            }
+            
+            return new Mesh()
+            {
+                Vertices = mesh3d.Vertices.ToList(), // Should only take the sub set of points, but that will mess with the indecies of the faces
+                Faces = externalFaces,
+            };
         }
 
         /***************************************************/
+
     }
 }
+

@@ -133,6 +133,7 @@
     <Compile Include="Query\BottomRight.cs" />
     <Compile Include="Query\ClosedSpaces.cs" />
     <Compile Include="Query\ConnectedSpaceName.cs" />
+    <Compile Include="Query\FilterByAdjacencies.cs" />
     <Compile Include="Query\FilterResults.cs" />
     <Compile Include="Query\FloorHeights.cs" />
     <Compile Include="Query\FrameFactor.cs" />
@@ -318,9 +319,6 @@
       <Name>Spatial_Engine</Name>
       <Private>False</Private>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

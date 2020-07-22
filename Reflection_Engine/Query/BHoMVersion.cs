@@ -20,21 +20,12 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.Engine.Reflection;
-using BH.oM.Base;
-using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.IO;
-using System.IO.Pipes;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace BH.Engine.Versioning
+namespace BH.Engine.Reflection
 {
     public static partial class Query
     {
@@ -42,30 +33,35 @@ namespace BH.Engine.Versioning
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Provide a string representation of a method as it used for versioning by the PreviousVersion attribute.")]
-        [Input("method", "Method to generate the key for")]
-        [Output("key", "String representation of the method as it will be used by the PreviousVersion attribute.")]
-        public static string VersioningKey(this MethodBase method)
+        public static string BHoMVersion()
         {
-            if (method == null)
-                return "";
+            string version = "";
 
-            string name = method.Name;
-            if (name == ".ctor")
-                name = "";
-            else
-                name = "." + name;
+            // First try to get the assembly file version
+            object[] attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyFileVersionAttribute), true);
+            if (attributes.Length > 0)
+            {
+                AssemblyFileVersionAttribute attribute = attributes.First() as AssemblyFileVersionAttribute;
+                if (attribute != null && attribute.Version != null)
+                {
+                    string[] split = attribute.Version.Split('.');
+                    if (split.Length >= 2)
+                        version = split[0] + "." + split[1];
+                }
+            }
 
-            string declaringType = method.DeclaringType.FullName;
+            // Get the assembly version as a fallback
+            if (version.Length == 0)
+            {
+                Version currentVersion = Assembly.GetExecutingAssembly().GetName().Version;
+                version = currentVersion.Major + "." + currentVersion.Minor;
+            }
 
-            string parametersString = "";
-            List<string> parameterTypes = method.GetParameters().Select(x => x.ParameterType.ToText(true)).ToList();
-            if (parameterTypes.Count > 0)
-                parametersString = parameterTypes.Aggregate((a, b) => a + ", " + b);
-
-            return declaringType + name + "(" + parametersString + ")";
+            return version;
         }
+
 
         /***************************************************/
     }
 }
+

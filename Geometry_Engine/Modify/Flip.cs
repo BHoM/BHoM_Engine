@@ -58,10 +58,16 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [NotImplemented]
         public static NurbsCurve Flip(this NurbsCurve curve)
         {
-            throw new NotImplementedException();
+            NurbsCurve result = curve.Clone();
+
+            result.ControlPoints.Reverse();
+            result.Weights.Reverse();
+            result.Knots.Reverse();
+            result.Knots = result.Knots.Select(x => -x).ToList();
+
+            return result;
         }
 
         /***************************************************/

@@ -20,21 +20,14 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.Engine.Reflection;
-using BH.oM.Base;
+using BH.oM.Geometry;
+using BH.oM.Reflection;
 using BH.oM.Reflection.Attributes;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
-using System.IO;
-using System.IO.Pipes;
 using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace BH.Engine.Versioning
+namespace BH.Engine.Geometry
 {
     public static partial class Query
     {
@@ -42,30 +35,36 @@ namespace BH.Engine.Versioning
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Provide a string representation of a method as it used for versioning by the PreviousVersion attribute.")]
-        [Input("method", "Method to generate the key for")]
-        [Output("key", "String representation of the method as it will be used by the PreviousVersion attribute.")]
-        public static string VersioningKey(this MethodBase method)
+        [Description("Gets the faces which defines each cell in the mesh3d.")]
+        [Input("mesh3d", "The Mesh3D to query the cells from.")]
+        [Output("cells", "The cells of the Mesh3D defined as a list of faces for each cell.")]
+        public static List<List<Face>> Cells(this Mesh3D mesh3d)
         {
-            if (method == null)
-                return "";
+            Dictionary<int, List<Face>> result = new Dictionary<int, List<Face>>();
 
-            string name = method.Name;
-            if (name == ".ctor")
-                name = "";
-            else
-                name = "." + name;
+            for (int i = 0; i < mesh3d.CellRelation.Count; i++)
+            {
+                int key = mesh3d.CellRelation[i].FromCell;
 
-            string declaringType = method.DeclaringType.FullName;
+                if (!result.ContainsKey(key))
+                    result[key] = new List<Face>();
+                result[key].Add(mesh3d.Faces[i]);
 
-            string parametersString = "";
-            List<string> parameterTypes = method.GetParameters().Select(x => x.ParameterType.ToText(true)).ToList();
-            if (parameterTypes.Count > 0)
-                parametersString = parameterTypes.Aggregate((a, b) => a + ", " + b);
+                key = mesh3d.CellRelation[i].ToCell;
 
-            return declaringType + name + "(" + parametersString + ")";
+                if (!result.ContainsKey(key))
+                    result[key] = new List<Face>();
+                result[key].Add(mesh3d.Faces[i]);
+
+            }
+
+            if (result.ContainsKey(-1))
+                result.Remove(-1);
+
+            return result.Select(x => x.Value).ToList();
         }
 
         /***************************************************/
     }
 }
+
