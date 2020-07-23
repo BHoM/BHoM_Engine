@@ -63,7 +63,7 @@ namespace BH.Engine.Diffing
             List<IBHoMObject> currentObjs = currentObjects.ToList();
             List<IBHoMObject> pastObjs = pastObjects.ToList();
 
-            string customDataIdKey = nameof(fragmentType) + "_fragmentIdProperty";
+            string customDataIdKey = fragmentType.Name + "_fragmentId";
 
             currentObjs.ForEach(o => o.CustomData[customDataIdKey] = o.GetIdFromFragment(fragmentType, fragmentIdProperty));
             pastObjs.ForEach(o => o.CustomData[customDataIdKey] = o.GetIdFromFragment(fragmentType, fragmentIdProperty));

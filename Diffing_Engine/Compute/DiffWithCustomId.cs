@@ -94,45 +94,44 @@ namespace BH.Engine.Diffing
 
                 // Otherwise, the current object existed in the past set.
 
-                // Compute the hashes to find if they are different. Here we could use a custom comparer, 
-                // but using the hash allows for more run-time control with the DiffConfig.
-                string currentHash = Compute.DiffingHash(currentObj, diffConfigCopy);
-                string pastHash = Compute.DiffingHash(correspondingObj, diffConfigCopy);
-
-                if (pastHash == currentHash)
+                if (diffConfig.EnablePropertyDiffing)
                 {
-                    // It's NOT been modified
-                    if (diffConfigCopy.StoreUnchangedObjects)
-                        unChanged.Add(currentObj);
+                    // Determine changed properties
+                    var differentProps = Query.DifferentProperties(currentObj, correspondingObj, diffConfigCopy);
 
-                    continue;
-                }
-
-                if (pastHash != currentHash)
-                {
-                    // It's been modified
-                    modifiedObjs.Add(currentObj);
-
-                    if (diffConfigCopy.EnablePropertyDiffing)
+                    if (differentProps != null && differentProps.Count > 0)
                     {
-                        // Determine changed properties
-                        var differentProps = Query.DifferentProperties(currentObj, correspondingObj, diffConfigCopy);
-
+                        // It's been modified
+                        modifiedObjs.Add(currentObj);
                         objModifiedProps.Add(currentObjID, differentProps);
-                    }
 
-                    continue;
+                    }
+                    else
+                    {
+                        // It's NOT been modified
+                        if (diffConfigCopy.StoreUnchangedObjects)
+                            unChanged.Add(currentObj);
+                    }
                 }
-                else
-                    throw new Exception("Could not find hash information to perform Diffing on some objects.");
             }
 
             // If no modified property was found, set the field to null (otherwise will get empty list)
             objModifiedProps = objModifiedProps.Count == 0 ? null : objModifiedProps;
 
-            // All PastObjects that cannot be found by id in the CurrentObjs are deleted.
+            // All PastObjects that cannot be found by id in the CurrentObjs are old.
             deletedObjs = pastObjs_dict.Keys.Except(currObjs_dict.Keys)
                 .Select(k => pastObjs_dict[k]).ToList();
+
+            if (!newObjs.Any() && !deletedObjs.Any() && !modifiedObjs.Any())
+            {
+                BH.Engine.Reflection.Compute.RecordWarning($"No difference could be found." +
+                    $"\nThe provided Id of the objects were completely different between {nameof(pastObjects)} and {nameof(currentObjects)}." +
+                    $"\nPlease make sure that:" +
+                    $"\n\t * The input objects constitute the entirety of the model that changed between revisions;" +
+                    $"\n\t * the input objects come from models that were not completely re-created between revisions.");
+            }
+            else if (!diffConfig.EnablePropertyDiffing)
+                BH.Engine.Reflection.Compute.RecordWarning($"For this Diffing method to detect modified/unchanged objects, you need to set '{nameof(DiffConfig.EnablePropertyDiffing)}' to true in the DiffConfig.");
 
             return new Diff(newObjs, deletedObjs, modifiedObjs, diffConfigCopy, objModifiedProps, unChanged);
         }
@@ -158,7 +157,8 @@ namespace BH.Engine.Diffing
             bool noDuplicates = true;
 
             // Retrieve Id from CustomData for current objects
-            currentObjects.ToList().ForEach(o => {
+            currentObjects.ToList().ForEach(o =>
+            {
                 object id = null;
                 allRetrieved &= o.CustomData.TryGetValue(customdataIdKey, out id);
                 currentObjectsIds.Add(id?.ToString());
@@ -175,7 +175,8 @@ namespace BH.Engine.Diffing
             }
 
             // Retrieve Id from CustomData for past objects
-            pastObjects.ToList().ForEach(o => {
+            pastObjects.ToList().ForEach(o =>
+            {
                 object id = null;
                 allRetrieved &= o.CustomData.TryGetValue(customdataIdKey, out id);
                 pastObjectsIds.Add(id?.ToString());
