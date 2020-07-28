@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -30,23 +30,33 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Analytical_oM, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Build\Analytical_oM.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="BHoM">
       <SpecificVersion>False</SpecificVersion>
-<HintPath>C:\ProgramData\BHoM\Assemblies\BHoM.dll</HintPath>
+      <HintPath>C:\ProgramData\BHoM\Assemblies\BHoM.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Dimensional_oM, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Build\Dimensional_oM.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Geometry_oM">
       <SpecificVersion>False</SpecificVersion>
-<HintPath>C:\ProgramData\BHoM\Assemblies\Geometry_oM.dll</HintPath>
+      <HintPath>C:\ProgramData\BHoM\Assemblies\Geometry_oM.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="MEP_oM">
-<HintPath>C:\ProgramData\BHoM\Assemblies\MEP_oM.dll</HintPath>
+      <HintPath>C:\ProgramData\BHoM\Assemblies\MEP_oM.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Reflection_oM">
       <SpecificVersion>False</SpecificVersion>
-<HintPath>C:\ProgramData\BHoM\Assemblies\Reflection_oM.dll</HintPath>
+      <HintPath>C:\ProgramData\BHoM\Assemblies\Reflection_oM.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
@@ -61,6 +71,13 @@
   <ItemGroup>
     <Compile Include="Create\CoolingCoil.cs" />
     <Compile Include="Create\ElectricalConnector.cs" />
+    <Compile Include="Create\Elements\Duct.cs" />
+    <Compile Include="Create\Elements\DuctSectionProperty.cs" />
+    <Compile Include="Create\Elements\Pipe.cs" />
+    <Compile Include="Create\Elements\PipeSectionProperty.cs" />
+    <Compile Include="Create\Elements\SectionProfile.cs" />
+    <Compile Include="Create\Elements\Wire.cs" />
+    <Compile Include="Create\Elements\WireSectionProperty.cs" />
     <Compile Include="Create\EnergyWheel.cs" />
     <Compile Include="Create\Fan.cs" />
     <Compile Include="Create\FanCoilUnit.cs" />
@@ -69,8 +86,14 @@
     <Compile Include="Create\HeatingCoil.cs" />
     <Compile Include="Create\IdentityFragment.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Query\Centreline.cs" />
+    <Compile Include="Query\CircularEquivalentDiameter.cs" />
     <Compile Include="Query\EquipmentLengthByPart.cs" />
     <Compile Include="Query\FaceAreaByVelocity.cs" />
+    <Compile Include="Query\Geometry.cs" />
+    <Compile Include="Query\HydraulicDiameter.cs" />
+    <Compile Include="Query\Length.cs" />
+    <Compile Include="Query\SolidVolume.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BHoM_Engine\BHoM_Engine.csproj">
@@ -86,6 +109,11 @@
     <ProjectReference Include="..\Reflection_Engine\Reflection_Engine.csproj">
       <Project>{b0154405-9390-472d-9b5c-a2280823b18d}</Project>
       <Name>Reflection_Engine</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Spatial_Engine\Spatial_Engine.csproj">
+      <Project>{a84fdfe5-c267-430e-8fec-af4f4bf5b745}</Project>
+      <Name>Spatial_Engine</Name>
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
