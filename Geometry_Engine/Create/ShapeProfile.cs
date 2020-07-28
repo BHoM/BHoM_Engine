@@ -109,17 +109,17 @@ namespace BH.Engine.Geometry
                 return null;
             }
 
-            if (Math.Sqrt(2) * thickness <= Math.Sqrt(2) * outerRadius - outerRadius - Math.Sqrt(2) * innerRadius + innerRadius)
-            {
-                InvalidRatioError("thickness", "outerRadius and innerRadius");
-                return null;
-            }
+            //if (Math.Sqrt(2) * thickness <= Math.Sqrt(2) * outerRadius - outerRadius - Math.Sqrt(2) * innerRadius + innerRadius)
+            //{
+            //    InvalidRatioError("thickness", "outerRadius and innerRadius");
+            //    return null;
+            //}
 
-            if (height <= 0 || width <= 0 || thickness <= 0 || outerRadius < 0 || innerRadius < 0)
-            {
-                Engine.Reflection.Compute.RecordError("Input length less or equal to 0");
-                return null;
-            }
+            //if (height <= 0 || width <= 0 || thickness <= 0 || outerRadius < 0 || innerRadius < 0)
+            //{
+            //    Engine.Reflection.Compute.RecordError("Input length less or equal to 0");
+            //    return null;
+            //}
 
             List<ICurve> curves = BoxProfileCurves(width, height, thickness, thickness, innerRadius, outerRadius);
             return new BoxProfile(height, width, thickness, outerRadius, innerRadius, curves);
@@ -542,11 +542,11 @@ namespace BH.Engine.Geometry
                 return null;
             }
 
-            if (diameter <= 0 || thickness <= 0)
-            {
-                Engine.Reflection.Compute.RecordError("Input length less or equal to 0");
-                return null;
-            }
+            //if (diameter <= 0 || thickness <= 0)
+            //{
+            //    Engine.Reflection.Compute.RecordError("Input length less or equal to 0");
+            //    return null;
+            //}
 
             List<ICurve> curves = TubeProfileCurves(diameter / 2, thickness);
             return new TubeProfile(diameter, thickness, curves);
