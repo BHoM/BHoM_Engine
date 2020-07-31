@@ -71,14 +71,6 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [NotImplemented]
-        public static Point PointAtParameter(this NurbsCurve curve, double t)
-        {
-            throw new NotImplementedException();
-        }
-
-        /***************************************************/
-
         public static Point PointAtParameter(this PolyCurve curve, double parameter)
         {
             if (parameter == 1)
@@ -124,7 +116,16 @@ namespace BH.Engine.Geometry
             return PointAtParameter(curve as dynamic, t);
         }
 
+
+        /***************************************************/
+        /**** Private Fallback Methods                  ****/
+        /***************************************************/
+
+        private static Point PointAtParameter(this ICurve curve, double t)
+        {
+            throw new NotImplementedException("ICurve of type: " + curve.GetType().Name + " is not implemented for PointAtParameter.");
+        }
+
         /***************************************************/
     }
 }
-

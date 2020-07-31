@@ -37,7 +37,7 @@ namespace BH.Engine.Geometry
 
         public static bool IsEqual(this Plane plane, Plane other, double tolerance = Tolerance.Distance)
         {
-            return plane.Normal.IsEqual(other.Normal, tolerance) 
+            return plane.Normal.IsEqual(other.Normal, tolerance)
                 && plane.Origin.IsEqual(other.Origin, tolerance);
         }
 
@@ -91,8 +91,8 @@ namespace BH.Engine.Geometry
 
         public static bool IsEqual(this Circle circle, Circle other, double tolerance = Tolerance.Distance)
         {
-            return Math.Abs(circle.Radius - other.Radius) < tolerance 
-                && circle.Centre.IsEqual(other.Centre, tolerance) 
+            return Math.Abs(circle.Radius - other.Radius) < tolerance
+                && circle.Centre.IsEqual(other.Centre, tolerance)
                 && circle.Normal.IsEqual(other.Normal, tolerance);
         }
 
@@ -113,14 +113,6 @@ namespace BH.Engine.Geometry
         {
             return line.Start.IsEqual(other.Start, tolerance)
                 && line.End.IsEqual(other.End, tolerance);
-        }
-
-        /***************************************************/
-
-        [NotImplemented]
-        public static bool IsEqual(this NurbsCurve curve, NurbsCurve other, double tolerance = Tolerance.Distance)
-        {
-            throw new NotImplementedException();
         }
 
         /***************************************************/
@@ -157,14 +149,6 @@ namespace BH.Engine.Geometry
         {
             return surface.Curves.Count == other.Curves.Count
                   && surface.Curves.Zip(other.Curves, (a, b) => a.IIsEqual(b, tolerance)).All(x => x);
-        }
-
-        /***************************************************/
-
-        [NotImplemented]
-        public static bool IsEqual(this NurbsSurface surface, NurbsSurface other, double tolerance = Tolerance.Distance)
-        {
-            throw new NotImplementedException();
         }
 
         /***************************************************/
@@ -247,10 +231,19 @@ namespace BH.Engine.Geometry
             if (geometry.GetType() != other.GetType())
                 return false;
             else
-             return IsEqual(geometry as dynamic, other as dynamic, tolerance);
+                return IsEqual(geometry as dynamic, other as dynamic, tolerance);
+        }
+
+
+        /***************************************************/
+        /**** Private Fallback Methods                  ****/
+        /***************************************************/
+
+        private static bool IsEqual(this IGeometry geometry, IGeometry other, double tolerance = Tolerance.Distance)
+        {
+            throw new NotImplementedException("IGeometry of type: " + geometry.GetType().Name + " is not implemented for IsEqual."); // Takes only first input because this method is supposed to be called only from the interface which culls out every case with inputs of different classes.
         }
 
         /***************************************************/
     }
 }
-

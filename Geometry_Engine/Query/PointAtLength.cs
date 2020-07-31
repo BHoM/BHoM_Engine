@@ -56,14 +56,6 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [NotImplemented]
-        public static Point PointAtLength(this NurbsCurve curve, double length)
-        {
-            throw new NotImplementedException();
-        }
-
-        /***************************************************/
-
         public static Point PointAtLength(this PolyCurve curve, double length)
         {
             double parameter = length / curve.Length();
@@ -91,7 +83,16 @@ namespace BH.Engine.Geometry
             return PointAtLength(curve as dynamic, length);
         }
 
+
+        /***************************************************/
+        /**** Private Fallback Methods                  ****/
+        /***************************************************/
+
+        private static Point PointAtLength(this ICurve curve, double length)
+        {
+            throw new NotImplementedException("ICurve of type: " + curve.GetType().Name + " is not implemented for PointAtLength.");
+        }
+
         /***************************************************/
     }
 }
-

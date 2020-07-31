@@ -38,7 +38,7 @@ namespace BH.Engine.Geometry
         {
             if (arc.Angle() <= angleTolerance)
                 return points.Select(p => p.Clone()).ToList();
-                        
+
             List<Tuple<Point, double>> cData = points.Select(p => new Tuple<Point, double>(p.Clone(), arc.ParameterAtPoint(arc.ClosestPoint(p)))).ToList();
 
             cData.Sort(delegate (Tuple<Point, double> d1, Tuple<Point, double> d2)
@@ -56,7 +56,7 @@ namespace BH.Engine.Geometry
             if (circle.Radius <= distanceTolerance)
                 return points.Select(p => p.Clone()).ToList();
 
-           List<Tuple<Point, double>> cData = points.Select(p => new Tuple<Point, double>(p.Clone(), circle.ParameterAtPoint(circle.ClosestPoint(p)))).ToList();
+            List<Tuple<Point, double>> cData = points.Select(p => new Tuple<Point, double>(p.Clone(), circle.ParameterAtPoint(circle.ClosestPoint(p)))).ToList();
 
             cData.Sort(delegate (Tuple<Point, double> d1, Tuple<Point, double> d2)
             {
@@ -75,7 +75,7 @@ namespace BH.Engine.Geometry
 
             Vector lDir = line.Direction();
             List<Tuple<Point, Point>> cData = points.Select(p => new Tuple<Point, Point>(p.Clone(), (p.Project(line)))).ToList();
-            
+
             if ((Math.Abs(lDir.X)) > angleTolerance)
             {
                 cData.Sort(delegate (Tuple<Point, Point> d1, Tuple<Point, Point> d2)
@@ -112,15 +112,6 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [NotImplemented]
-        public static List<Point> SortAlongCurve(this List<Point> points, NurbsCurve curve)
-        {
-            throw new NotImplementedException();
-        }
-
-        /***************************************************/
-
-        
         public static List<Point> SortAlongCurve(this List<Point> points, PolyCurve curve, double tolerance = Tolerance.Distance, double angleTolerance = Tolerance.Angle)
         {
 
@@ -159,7 +150,7 @@ namespace BH.Engine.Geometry
             {
                 foreach (Point pt in tmpResult)
                 {
-                    if (pt.IsOnCurve(subPart, tolerance))
+                    if (pt.IIsOnCurve(subPart, tolerance))
                         subPoints.Add(pt);
                 }
                 subPoints = subPoints.SortAlongCurve(subPart as Line);
@@ -184,6 +175,16 @@ namespace BH.Engine.Geometry
         public static List<Point> ISortAlongCurve(this List<Point> points, ICurve curve, double distanceTolerance = Tolerance.Distance, double angleTolerance = Tolerance.Angle)
         {
             return SortAlongCurve(points, curve as dynamic, distanceTolerance, angleTolerance);
+        }
+
+
+        /***************************************************/
+        /**** Private Fallback Methods                  ****/
+        /***************************************************/
+
+        private static List<Point> SortAlongCurve(this List<Point> points, ICurve curve, double distanceTolerance = Tolerance.Distance, double angleTolerance = Tolerance.Angle)
+        {
+            throw new NotImplementedException("ICurve of type: " + curve.GetType().Name + " is not implemented for SortAlongCurve.");
         }
 
         /***************************************************/

@@ -113,14 +113,6 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [NotImplemented]
-        public static double Distance(this Point point, Ellipse ellipse)
-        {
-            throw new NotImplementedException();
-        }
-
-        /***************************************************/
-
         public static double Distance(this Point point, Polyline curve)
         {
             return point.Distance(curve.ClosestPoint(point));
@@ -131,14 +123,6 @@ namespace BH.Engine.Geometry
         public static double Distance(this Point point, PolyCurve curve)
         {
             return point.Distance(curve.ClosestPoint(point));
-        }
-
-        /***************************************************/
-
-        [NotImplemented]
-        public static double Distance(this Point point, NurbsCurve curve)
-        {
-            throw new NotImplementedException();
         }
 
 
@@ -160,6 +144,16 @@ namespace BH.Engine.Geometry
         public static double IDistance(this Point point, ICurve curve)
         {
             return Distance(point, curve as dynamic);
+        }
+
+
+        /***************************************************/
+        /**** Private Fallback Methods                  ****/
+        /***************************************************/
+
+        private static double Distance(this Point point, ICurve curve)
+        {
+            throw new NotImplementedException("ICurve of type " + curve.GetType().Name + " is not implemented for Distance.");
         }
 
         /***************************************************/

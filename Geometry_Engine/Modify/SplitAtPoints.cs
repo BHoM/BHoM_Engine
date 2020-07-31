@@ -183,14 +183,6 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [NotImplemented]
-        public static List<NurbsCurve> SplitAtPoints(this NurbsCurve curve, List<Point> points, double tolerance = Tolerance.Distance)
-        {
-            throw new NotImplementedException();
-        }
-
-        /***************************************************/
-
         public static List<PolyCurve> SplitAtPoints(this PolyCurve curve, List<Point> points, double tolerance = Tolerance.Distance)
         {
             if (points.Count == 0)
@@ -220,7 +212,7 @@ namespace BH.Engine.Geometry
                 {
                     foreach (Point point in onCurvePoints)
                     {
-                        if (point.IsOnCurve(crv, tolerance))
+                        if (point.IIsOnCurve(crv, tolerance))
                             subPoints.Add(point);
                     }
                     tmpResult.AddRange((crv as Arc).SplitAtPoints(subPoints));
@@ -230,7 +222,7 @@ namespace BH.Engine.Geometry
                 {
                     foreach (Point point in onCurvePoints)
                     {
-                        if (point.IsOnCurve(crv, tolerance))
+                        if (point.IIsOnCurve(crv, tolerance))
                             subPoints.Add(point);
                     }
                     tmpResult.AddRange((crv as Line).SplitAtPoints(subPoints));
@@ -297,7 +289,6 @@ namespace BH.Engine.Geometry
                     result.RemoveAt(result.Count - 1);
                     result.Add(new PolyCurve { Curves = subResultList.ToList() });
                 }
-
 
             return result;
         }
@@ -382,6 +373,15 @@ namespace BH.Engine.Geometry
             return result;
         }
 
-        /***************************************************/        
+        /***************************************************/
+        /**** Private Fallback Methods                  ****/
+        /***************************************************/
+
+        private static List<ICurve> SplitAtPoints(this ICurve curve, List<Point> points, double tolerance = Tolerance.Distance)
+        {
+            throw new NotImplementedException("ICurve of type: " + curve.GetType().Name + " is not implemented for SplitAtPoints.");
+        }
+
+        /***************************************************/
     }
 }

@@ -147,14 +147,6 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [NotImplemented]
-        public static bool IsPlanar(this NurbsSurface surface, double tolerance = Tolerance.Distance)
-        {
-            throw new NotImplementedException();
-        }
-
-        /***************************************************/
-
         public static bool IsPlanar(this Pipe surface, double tolerance = Tolerance.Distance)
         {
             return surface.Centreline.ILength() <= tolerance || surface.Radius == 0;
@@ -179,7 +171,6 @@ namespace BH.Engine.Geometry
 
         public static bool IsPlanar(this Mesh mesh, double tolerance = Tolerance.Distance)
         {
-
             return mesh.Vertices.IsCoplanar(tolerance);
         }
 
@@ -199,13 +190,22 @@ namespace BH.Engine.Geometry
         /***************************************************/
         /**** Public Methods = Interfaces               ****/
         /***************************************************/
-        
+
         public static bool IIsPlanar(this IGeometry geometry, double tolerance = Tolerance.Distance)
         {
             return IsPlanar(geometry as dynamic, tolerance);
         }
 
+
+        /***************************************************/
+        /**** Private Fallback Methods                  ****/
+        /***************************************************/
+
+        private static bool IsPlanar(this IGeometry geometry, double tolerance = Tolerance.Distance)
+        {
+            throw new NotImplementedException("IGeometry of type: " + geometry.GetType().Name + " is not implemented for IsPlanar.");
+        }
+
         /***************************************************/
     }
 }
-

@@ -123,22 +123,6 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [NotImplemented]
-        public static Ellipse Offset(this Ellipse curve, double offset, Vector normal = null, bool tangentExtensions = false, double tolerance = Tolerance.Distance)
-        {
-            throw new NotImplementedException();
-        }
-
-        /***************************************************/
-
-        [NotImplemented]
-        public static NurbsCurve Offset(this NurbsCurve curve, double offset, Vector normal = null, bool tangentExtensions = false, double tolerance = Tolerance.Distance)
-        {
-            throw new NotImplementedException();
-        }
-
-        /***************************************************/
-
         [Description("Creates an offset of a curve. Works only on planar curves")]
         [Input("curve", "Curve to offset")]
         [Input("offset", "Offset distance. Positive value offsets outside of a curve. If normal is given then offsets to the right with normal pointing up and direction of a curve pointing forward")]
@@ -537,6 +521,16 @@ namespace BH.Engine.Geometry
 
 
         /***************************************************/
+        /**** Private Fallback Methods                  ****/
+        /***************************************************/
+
+        private static ICurve Offset(this ICurve curve, double offset, Vector normal = null, bool tangentExtensions = false, double tolerance = Tolerance.Distance)
+        {
+            throw new NotImplementedException("ICurve of type: " + curve.GetType().Name + " is not implemented for Offset.");
+        }
+
+
+        /***************************************************/
         /***  Private Methods                            ***/
         /***************************************************/
 
@@ -548,10 +542,10 @@ namespace BH.Engine.Geometry
             double start = startPoint.Distance(curve.IStartPoint());
             double end = endPoint.Distance(curve.IEndPoint());
 
-            if (startPoint.IsOnCurve(curve, tolerance))
+            if (startPoint.IIsOnCurve(curve, tolerance))
                 start = -start;
 
-            if (endPoint.IsOnCurve(curve, tolerance))
+            if (endPoint.IIsOnCurve(curve, tolerance))
                 end = -end;
 
             List<ICurve> result = new List<ICurve>();
@@ -679,9 +673,9 @@ namespace BH.Engine.Geometry
                     if (C1SP && C2SP)
                     {
                         if ((curve1.IStartPoint().Distance((curve2 as Line), true) < curve1.IEndPoint().Distance((curve2 as Line), true) &&
-                            !intersection.IsOnCurve(curve1)) ||
+                            !intersection.IIsOnCurve(curve1)) ||
                             (curve2.IStartPoint().Distance((curve1 as Line), true) < curve2.IEndPoint().Distance((curve1 as Line), true) &&
-                             !intersection.IsOnCurve(curve2)))
+                             !intersection.IIsOnCurve(curve2)))
                         {
                             Reflection.Compute.RecordWarning("Couldn't provide correct fillet for given input");
                             return null;
@@ -693,9 +687,9 @@ namespace BH.Engine.Geometry
                     else if (C1SP && !C2SP)
                     {
                         if ((curve1.IStartPoint().Distance((curve2 as Line), true) < curve1.IEndPoint().Distance((curve2 as Line), true) &&
-                            !intersection.IsOnCurve(curve1)) ||
+                            !intersection.IIsOnCurve(curve1)) ||
                             (curve2.IStartPoint().Distance((curve1 as Line), true) > curve2.IEndPoint().Distance((curve1 as Line), true) &&
-                             !intersection.IsOnCurve(curve2)))
+                             !intersection.IIsOnCurve(curve2)))
                         {
                             Reflection.Compute.RecordWarning("Couldn't provide correct fillet for given input");
                             return null;
@@ -706,9 +700,9 @@ namespace BH.Engine.Geometry
                     else if (!C1SP && C2SP)
                     {
                         if ((curve1.IStartPoint().Distance((curve2 as Line), true) > curve1.IEndPoint().Distance((curve2 as Line), true) &&
-                            !intersection.IsOnCurve(curve1)) ||
+                            !intersection.IIsOnCurve(curve1)) ||
                             (curve2.IStartPoint().Distance((curve1 as Line), true) < curve2.IEndPoint().Distance((curve1 as Line), true) &&
-                             !intersection.IsOnCurve(curve2)))
+                             !intersection.IIsOnCurve(curve2)))
                         {
                             Reflection.Compute.RecordWarning("Couldn't provide correct fillet for given input");
                             return null;
@@ -721,9 +715,9 @@ namespace BH.Engine.Geometry
                     else
                     {
                         if ((curve1.IStartPoint().Distance((curve2 as Line), true) > curve1.IEndPoint().Distance((curve2 as Line), true) &&
-                            !intersection.IsOnCurve(curve1)) ||
+                            !intersection.IIsOnCurve(curve1)) ||
                             (curve2.IStartPoint().Distance((curve1 as Line), true) > curve2.IEndPoint().Distance((curve1 as Line), true) &&
-                             !intersection.IsOnCurve(curve2)))
+                             !intersection.IIsOnCurve(curve2)))
                         {
                             Reflection.Compute.RecordWarning("Couldn't provide correct fillet for given input");
                             return null;

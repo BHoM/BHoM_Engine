@@ -63,25 +63,9 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [NotImplemented]
-        public static bool IsOnCurve(this Point point, Ellipse curve, double tolerance = Tolerance.Distance)
-        {
-            throw new NotImplementedException();
-        }
-
-        /***************************************************/
-
         public static bool IsOnCurve(this Point point, Line curve, double tolerance = Tolerance.Distance)
         {
             return point.Distance(curve) < tolerance;
-        }
-
-        /***************************************************/
-
-        [NotImplemented]
-        public static bool IsOnCurve(this Point point, NurbsCurve curve, double tolerance = Tolerance.Distance)
-        {
-            throw new NotImplementedException();
         }
 
         /***************************************************/
@@ -103,9 +87,19 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
-        public static bool IsOnCurve(this Point point, ICurve curve, double tolerance = Tolerance.Distance)
+        public static bool IIsOnCurve(this Point point, ICurve curve, double tolerance = Tolerance.Distance)
         {
             return IsOnCurve(point, curve as dynamic, tolerance);
+        }
+
+
+        /***************************************************/
+        /**** Private Fallback Methods                  ****/
+        /***************************************************/
+
+        private static bool IsOnCurve(this Point point, ICurve curve, double tolerance = Tolerance.Distance)
+        {
+            throw new NotImplementedException("ICurve of type: " + curve.GetType().Name + " is not implemented for IsOnCurve.");
         }
 
         /***************************************************/

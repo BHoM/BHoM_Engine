@@ -56,14 +56,6 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [NotImplemented]
-        public static Vector TangentAtLength(this NurbsCurve curve, double length, double tolerance = Tolerance.Distance)
-        {
-            throw new NotImplementedException();
-        }
-
-        /***************************************************/
-
         public static Vector TangentAtLength(this PolyCurve curve, double length, double tolerance = Tolerance.Distance)
         {
             double parameter = length / curve.Length();
@@ -88,7 +80,16 @@ namespace BH.Engine.Geometry
             return TangentAtLength(curve as dynamic, length, tolerance);
         }
 
+
+        /***************************************************/
+        /**** Private Methods - Fallback                ****/
+        /***************************************************/
+
+        private static Vector TangentAtLength(this ICurve curve, double length, double tolerance = Tolerance.Distance)
+        {
+            throw new NotImplementedException("ICurve of type: " + curve.GetType().Name + " is not implemented for TangentAtLength.");
+        }
+
         /***************************************************/
     }
 }
-

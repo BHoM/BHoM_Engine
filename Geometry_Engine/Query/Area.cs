@@ -65,14 +65,6 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [NotImplemented]
-        public static double Area(this NurbsCurve curve)
-        {
-            throw new NotImplementedException();
-        }
-
-        /***************************************************/
-
         public static double Area(this PolyCurve curve)
         {
             if (curve.Curves.Count == 1 && curve.Curves[0] is Circle)
@@ -84,15 +76,17 @@ namespace BH.Engine.Geometry
             Plane p = curve.FitPlane();
             if (p == null)
                 return 0.0;              // points are collinear
-            
+
             Point sPt = curve.StartPoint();
             double area = 0;
 
             foreach (ICurve c in curve.SubParts())
             {
                 if (c is NurbsCurve)
-                    throw new NotImplementedException("Area of NurbsCurve is not imlemented yet so the area of this PolyCurve cannot be calculated");
-
+                {
+                    Reflection.Compute.RecordError("Area for NurbsuCurve is not implemented.");
+                    return double.NaN;
+                }
                 Point ePt = c.IEndPoint();
                 Vector prod = CrossProduct(sPt - p.Origin, ePt - p.Origin);
                 area += prod * p.Normal * 0.5;
@@ -186,14 +180,6 @@ namespace BH.Engine.Geometry
             return area;
         }
 
-        /***************************************************/
-
-        [NotImplemented]
-        public static double Area(this NurbsSurface nurbs)
-        {
-            throw new NotImplementedException();
-        }
-
 
         /***************************************************/
         /**** Public Methods - Vectors                  ****/
@@ -206,7 +192,7 @@ namespace BH.Engine.Geometry
 
             return area;
         }
-        
+
 
         /***************************************************/
         /**** Private Methods - Fallbacks               ****/
@@ -221,4 +207,3 @@ namespace BH.Engine.Geometry
         /***************************************************/
     }
 }
-

@@ -241,7 +241,10 @@ namespace BH.Engine.Geometry
         public static List<PolyCurve> BooleanIntersection(this ICurve region, ICurve refRegion, double tolerance = Tolerance.Distance)
         {
             if (region is NurbsCurve || region is Ellipse || refRegion is NurbsCurve || refRegion is Ellipse)
-                throw new NotImplementedException("NurbsCurves and ellipses are not implemented yet.");
+            {
+                Reflection.Compute.RecordError("NurbsCurves and ellipses are not implemented for BooleanIntersection.");
+                return null;
+            }
 
             if (!region.IIsClosed(tolerance) || !refRegion.IIsClosed(tolerance))
             {

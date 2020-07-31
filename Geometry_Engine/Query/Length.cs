@@ -79,14 +79,6 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [NotImplemented]
-        public static double Length(this NurbsCurve curve)
-        {
-            throw new NotImplementedException();
-        }
-
-        /***************************************************/
-
         public static double Length(this PolyCurve curve)
         {
             return curve.Curves.Sum(c => c.ILength());
@@ -115,7 +107,16 @@ namespace BH.Engine.Geometry
             return Length(curve as dynamic);
         }
 
+
+        /***************************************************/
+        /**** Private Fallback Methods                  ****/
+        /***************************************************/
+
+        private static double Length(this ICurve curve)
+        {
+            throw new NotImplementedException("ICurve of type: " + curve.GetType().Name + " is not implemented for Length.");
+        }
+
         /***************************************************/
     }
 }
-
