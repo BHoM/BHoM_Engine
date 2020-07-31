@@ -52,30 +52,6 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [NotImplemented]
-        public static Polyline ToPolyline(NurbsCurve curve)
-        {
-            throw new NotImplementedException();
-        }
-
-        /***************************************************/
-
-        [NotImplemented]
-        public static Polyline ToPolyline(Arc curve)
-        {
-            throw new NotImplementedException();
-        }
-
-        /***************************************************/
-
-        [NotImplemented]
-        public static Polyline ToPolyline(Circle curve)
-        {
-            throw new NotImplementedException();
-        }
-
-        /***************************************************/
-
         public static Polyline ToPolyline(Line curve)
         {
             return new Polyline { ControlPoints = new List<Point> { curve.Start, curve.End } };
@@ -96,6 +72,16 @@ namespace BH.Engine.Geometry
         public static Polyline IToPolyline(ICurve curve)
         {
             return ToPolyline(curve as dynamic);
+        }
+
+
+        /***************************************************/
+        /**** Private Fallback Methods                  ****/
+        /***************************************************/
+
+        private static Polyline ToPolyline(ICurve curve)
+        {
+            throw new NotImplementedException("ICurve of type: " + curve.GetType().Name + " is not implemented for ToPolyline.");
         }
 
         /***************************************************/

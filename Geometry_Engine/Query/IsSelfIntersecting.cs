@@ -62,14 +62,6 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [NotImplemented]
-        public static bool IsSelfIntersecting(this NurbsCurve curve, double tolerance = Tolerance.Distance)
-        {
-            throw new NotImplementedException();
-        }
-
-        /***************************************************/
-
         public static bool IsSelfIntersecting(this Polyline curve, double tolerance = Tolerance.Distance)
         {
             List<Line> curves = curve.SubParts();
@@ -139,7 +131,16 @@ namespace BH.Engine.Geometry
             return IsSelfIntersecting(curve as dynamic, tolerance);
         }
 
+
+        /***************************************************/
+        /**** Private Fallback Methods                  ****/
+        /***************************************************/
+
+        private static bool IsSelfIntersecting(this ICurve curve, double tolerance = Tolerance.Distance)
+        {
+            throw new NotImplementedException("ICurve of type: " + curve.GetType().Name + " is not implemented for IsSelfIntersecting.");
+        }
+
         /***************************************************/
     }
 }
-

@@ -76,14 +76,6 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [NotImplemented]
-        public static double ParameterAtPoint(this NurbsCurve curve, Point point, double tolerance = Tolerance.Distance)
-        {
-            throw new NotImplementedException();
-        }
-
-        /***************************************************/
-
         public static double ParameterAtPoint(this PolyCurve curve, Point point, double tolerance = Tolerance.Distance)
         {
             double sqTol = tolerance * tolerance;
@@ -132,6 +124,16 @@ namespace BH.Engine.Geometry
         public static double IParameterAtPoint(this ICurve curve, Point point, double tolerance = Tolerance.Distance)
         {
             return ParameterAtPoint(curve as dynamic, point, tolerance);
+        }
+
+
+        /***************************************************/
+        /**** Private Fallback Methods                  ****/
+        /***************************************************/
+
+        private static double ParameterAtPoint(this ICurve curve, Point point, double tolerance = Tolerance.Distance)
+        {
+            throw new NotImplementedException("ICurve of type: " + curve.GetType().Name + " is not implemented for ParameterAtPoint.");
         }
 
         /***************************************************/

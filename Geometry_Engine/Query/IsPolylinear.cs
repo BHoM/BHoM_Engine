@@ -72,13 +72,6 @@ namespace BH.Engine.Geometry
             return true;
         }
 
-        /***************************************************/
-
-        [NotImplemented]
-        public static bool IsPolylinear(this NurbsCurve curve)
-        {
-            throw new NotImplementedException();
-        }
 
         /***************************************************/
         /**** Public Methods - Interface                ****/
@@ -93,6 +86,16 @@ namespace BH.Engine.Geometry
             }
 
             return true;
+        }
+
+
+        /***************************************************/
+        /**** Private Fallback Methods                  ****/
+        /***************************************************/
+
+        private static bool IsPolylinear(this ICurve curve)
+        {
+            throw new NotImplementedException("ICurve of type: " + curve.GetType().Name + " is not implemented for IsPolylinear.");
         }
 
         /***************************************************/

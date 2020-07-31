@@ -93,7 +93,7 @@ namespace BH.Engine.Geometry
         }
 
         /***************************************************/
-        
+
         public static Point ClosestPoint(this Circle circle, Point point, double tolerance = Tolerance.Distance)
         {
             Plane p = new Plane { Origin = circle.Centre, Normal = circle.Normal };
@@ -117,14 +117,6 @@ namespace BH.Engine.Geometry
             return line.Start + t * dir;
         }
 
-        /***************************************************/
-
-        [NotImplemented]
-        public static Point ClosestPoint(this NurbsCurve curve, Point point)
-        {
-            throw new NotImplementedException();
-        }
-        
         /***************************************************/
 
         public static Point ClosestPoint(this PolyCurve curve, Point point)
@@ -174,30 +166,6 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Surfaces                 ****/
         /***************************************************/
 
-        [NotImplemented]
-        public static Point ClosestPoint(this Extrusion surface, Point point)
-        {
-            throw new NotImplementedException();
-        }
-
-        /***************************************************/
-
-        [NotImplemented]
-        public static Point ClosestPoint(this Loft surface, Point point)
-        {
-            throw new NotImplementedException();
-        }
-
-        /***************************************************/
-
-        [NotImplemented]
-        public static Point ClosestPoint(this NurbsSurface surface, Point point)
-        {
-            throw new NotImplementedException();
-        }
-
-        /***************************************************/
-
         public static Point ClosestPoint(this PlanarSurface surface, Point point)
         {
             Plane panelPlane = surface.FitPlane();
@@ -213,41 +181,6 @@ namespace BH.Engine.Geometry
             return (panelOutline.IIsContaining(cPt)) ? cPt[0] : panelOutline.IClosestPoint(cPt[0]);
         }
 
-        /***************************************************/
-
-        [NotImplemented]
-        public static Point ClosestPoint(this Pipe surface, Point point)
-        {
-            throw new NotImplementedException();
-        }
-
-        /***************************************************/
-
-        [NotImplemented]
-        public static Point ClosestPoint(this PolySurface surface, Point point)
-        {
-            throw new NotImplementedException();
-        }
-
-
-        /***************************************************/
-        /**** Public Methods - Others                   ****/
-        /***************************************************/
-
-        [NotImplemented]
-        public static Point ClosestPoint(this Mesh mesh, Point point)
-        {
-            throw new NotImplementedException();
-        }
-
-        /***************************************************/
-
-        [NotImplemented]
-        public static Point ClosestPoint(this CompositeGeometry group, Point point)
-        {
-            throw new NotImplementedException();
-        }
-
 
         /***************************************************/
         /**** Public Methods - Interfaces               ****/
@@ -258,7 +191,16 @@ namespace BH.Engine.Geometry
             return ClosestPoint(geometry as dynamic, point);
         }
 
+
+        /***************************************************/
+        /**** Private Fallback Methods                  ****/
+        /***************************************************/
+
+        private static Point ClosestPoint(this IGeometry geometry, Point point)
+        {
+            throw new NotImplementedException("IGeometry of type: " + geometry.GetType().Name + " is not implemented for ClosestPoint.");
+        }
+
         /***************************************************/
     }
 }
-

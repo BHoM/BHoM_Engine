@@ -57,14 +57,6 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [NotImplemented]
-        public static Vector EndDir(this NurbsCurve curve)
-        {
-            throw new NotImplementedException();
-        }
-
-        /***************************************************/
-
         public static Vector EndDir(this PolyCurve curve)
         {
             return curve.Curves.Count > 0 ? curve.Curves.Last().IEndDir() : null;
@@ -93,6 +85,16 @@ namespace BH.Engine.Geometry
         public static Vector IEndDir(this ICurve curve)
         {
             return EndDir(curve as dynamic);
+        }
+
+
+        /***************************************************/
+        /**** Private Fallback Methods                  ****/
+        /***************************************************/
+
+        private static Vector EndDir(this ICurve curve)
+        {
+            throw new NotImplementedException("ICurve of type: " + curve.GetType().Name + " is not implemented for EndDir.");
         }
 
         /***************************************************/

@@ -182,7 +182,7 @@ namespace BH.Engine.Geometry
                     }
                 }
 
-                
+
                 Point avg = points.Average();
                 Vector normal = new Vector();
 
@@ -202,14 +202,14 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static Vector Normal(this Circle circle)
+        public static Vector Normal(this Circle circle, double tolerance = Tolerance.Distance)
         {
             return circle.Normal;
         }
-        
+
         /***************************************************/
 
-        public static Vector Normal(this Ellipse ellipse)
+        public static Vector Normal(this Ellipse ellipse, double tolerance = Tolerance.Distance)
         {
             Vector normal = (ellipse.Axis1).CrossProduct(ellipse.Axis2);
             return normal;
@@ -217,36 +217,12 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [NotImplemented]
-        public static List<Vector> Normals(this ISurface surface)
-        {
-            throw new NotImplementedException();
-        }
-
-        /***************************************************/
-
-        public static Vector Normal(this Arc arc)
+        public static Vector Normal(this Arc arc, double tolerance = Tolerance.Distance)
         {
             if (arc.Angle() > 0)
                 return arc.CoordinateSystem.Z;
             else
                 return arc.CoordinateSystem.Z.Reverse();
-        }
-
-        /***************************************************/
-
-        [NotImplemented]
-        public static Vector Normal(this Line line)
-        {
-            throw new NotImplementedException();
-        }
-        
-        /***************************************************/
-
-        [NotImplemented]
-        public static Vector Normal(this NurbsCurve nurbsCurve)
-        {
-            throw new NotImplementedException();
         }
 
 
@@ -264,13 +240,35 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
-        public static Vector INormal(this ICurve curve)
+        public static Vector INormal(this ICurve curve, double tolerance = Tolerance.Distance)
         {
-            return Normal(curve as dynamic);
+            return Normal(curve as dynamic, tolerance);
+        }
+
+        /***************************************************/
+
+        public static List<Vector> INormals(this IGeometry geometry)
+        {
+            return Normals(geometry as dynamic);
+        }
+
+
+        /***************************************************/
+        /**** Private Fallback Methods                  ****/
+        /***************************************************/
+
+        private static Vector Normal(this ICurve curve, double tolerance = Tolerance.Distance)
+        {
+            throw new NotImplementedException("ICurve of type: " + curve.GetType().Name + " is not implemented for Normal.");
+        }
+
+        /***************************************************/
+
+        private static List<Vector> Normals(this IGeometry geometry)
+        {
+            throw new NotImplementedException("IGeometry of type: " + geometry.GetType().Name + " is not implemented for Normals.");
         }
 
         /***************************************************/
     }
 }
-
-

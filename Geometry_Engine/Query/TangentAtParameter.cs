@@ -37,7 +37,7 @@ namespace BH.Engine.Geometry
             double paramTol = tolerance / curve.Length();
             if (parameter > 1 + paramTol || parameter < 0 - paramTol)
                 return null;
-            
+
             return curve.CoordinateSystem.Y.Rotate(curve.StartAngle + (curve.EndAngle - curve.StartAngle) * parameter, curve.CoordinateSystem.Z);
         }
 
@@ -64,14 +64,6 @@ namespace BH.Engine.Geometry
                 return null;
 
             return curve.Direction();
-        }
-
-        /***************************************************/
-
-        [NotImplemented]
-        public static Vector TangentAtParameter(this NurbsCurve curve, double parameter, double tolerance = Tolerance.Distance)
-        {
-            throw new NotImplementedException();
         }
 
         /***************************************************/
@@ -125,7 +117,16 @@ namespace BH.Engine.Geometry
             return TangentAtParameter(curve as dynamic, parameter, tolerance);
         }
 
+
+        /***************************************************/
+        /**** Private Methods - Fallback                ****/
+        /***************************************************/
+
+        private static Vector TangentAtParameter(this ICurve curve, double parameter, double tolerance = Tolerance.Distance)
+        {
+            throw new NotImplementedException("ICurve of type: " + curve.GetType().Name + " is not implemented for TangentAtParameter.");
+        }
+
         /***************************************************/
     }
 }
-

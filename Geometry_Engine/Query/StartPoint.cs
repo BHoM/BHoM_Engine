@@ -32,7 +32,7 @@ namespace BH.Engine.Geometry
         /***************************************************/
         /**** Public Methods - Curves                   ****/
         /***************************************************/
-        
+
         public static Point StartPoint(this Arc arc)
         {
             Vector locSt = arc.CoordinateSystem.X * arc.Radius;
@@ -63,14 +63,17 @@ namespace BH.Engine.Geometry
         }
 
         /***************************************************/
-        
+
         public static Point StartPoint(this NurbsCurve curve)
         {
             //TODO: This should be based on the basis function?
             if (!curve.IsPeriodic())
                 return curve.ControlPoints.FirstOrDefault();
             else
-                throw new NotImplementedException();
+            {
+                Reflection.Compute.RecordError("StartPoint is not implemented for non-periodic NurbsCurves");
+                return null;
+            }
         }
 
         /***************************************************/
@@ -122,4 +125,3 @@ namespace BH.Engine.Geometry
         /***************************************************/
     }
 }
-

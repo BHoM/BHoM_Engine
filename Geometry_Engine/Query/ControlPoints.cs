@@ -72,14 +72,6 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [NotImplemented]
-        public static List<Point> ControlPoints(this NurbsCurve curve)
-        {
-            return curve.ControlPoints;
-        }
-
-        /***************************************************/
-
         public static List<Point> ControlPoints(this PolyCurve curve)
         {
             return curve.Curves.SelectMany((x, i) => x.IControlPoints().Skip((i > 0) ? 1 : 0)).ToList();
@@ -102,7 +94,16 @@ namespace BH.Engine.Geometry
             return ControlPoints(curve as dynamic);
         }
 
+
+        /***************************************************/
+        /**** Private Fallback Methods                  ****/
+        /***************************************************/
+
+        private static List<Point> ControlPoints(this ICurve curve)
+        {
+            throw new NotImplementedException("ICurve of type: " + curve.GetType().Name + " is not implemented for ControlPoints.");
+        }
+
         /***************************************************/
     }
 }
-

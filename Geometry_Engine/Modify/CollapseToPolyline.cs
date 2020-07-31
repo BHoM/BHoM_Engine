@@ -69,14 +69,6 @@ namespace BH.Engine.Geometry
             return new Polyline { ControlPoints = controlPoints };
         }
 
-        /***************************************************/
-
-        [NotImplemented]
-        public static Polyline CollapseToPolyline(this NurbsCurve curve, double angleTolerance, int maxSegmentCount = 100)
-        {
-            throw new NotImplementedException();
-        }
-
 
         /***************************************************/
         /**** Public Methods - Interfaces               ****/
@@ -85,6 +77,16 @@ namespace BH.Engine.Geometry
         public static Polyline ICollapseToPolyline(this ICurve curve, double angleTolerance, int maxSegmentCount = 100)
         {
             return CollapseToPolyline(curve as dynamic, angleTolerance, maxSegmentCount);
+        }
+
+
+        /***************************************************/
+        /**** Private Fallback Methods                  ****/
+        /***************************************************/
+
+        private static Polyline CollapseToPolyline(this ICurve curve, double angleTolerance, int maxSegmentCount = 100)
+        {
+            throw new NotImplementedException("ICurve of type: " + curve.GetType().Name + " is not implemented for CollapseToPolyline.");
         }
 
 
@@ -167,4 +169,3 @@ namespace BH.Engine.Geometry
         /***************************************************/
     }
 }
-
