@@ -73,7 +73,7 @@ namespace BH.Engine.Versioning
 
             // Get the current version of the BHoM if not provided
             if (version.Length == 0)
-                version = GetCurrentAssemblyVersion();
+                version = Reflection.Query.BHoMVersion();
 
             // Create a connection with the upgrader
             NamedPipeServerStream pipe = GetPipe(version);
@@ -176,35 +176,6 @@ namespace BH.Engine.Versioning
             reader.Read(content, 0, contentSize);
 
             return BsonSerializer.Deserialize(content, typeof(BsonDocument)) as BsonDocument;
-        }
-
-        /***************************************************/
-
-        private static string GetCurrentAssemblyVersion()
-        {
-            string version = "";
-
-            // First try to get the assembly file version
-            object[] attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyFileVersionAttribute), true);
-            if (attributes.Length > 0)
-            {
-                AssemblyFileVersionAttribute attribute = attributes.First() as AssemblyFileVersionAttribute;
-                if (attribute != null && attribute.Version != null)
-                {
-                    string[] split = attribute.Version.Split('.');
-                    if (split.Length >= 2)
-                        version = split[0] + "." + split[1];
-                }
-            }
-
-            // Get the assembly version as a fallback
-            if (version.Length == 0)
-            {
-                Version currentVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
-                version = currentVersion.Major + "." + currentVersion.Minor;
-            }
-
-            return version;
         }
 
 
