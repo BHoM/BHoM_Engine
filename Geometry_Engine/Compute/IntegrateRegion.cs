@@ -125,7 +125,8 @@ namespace BH.Engine.Geometry
 
         private static double IntegrateRegion(ICurve curve, int powX, double tol = Tolerance.Distance)
         {
-            throw new NotImplementedException("Region integration is not implemented for curves of type " + curve.GetType().Name);
+            Reflection.Compute.RecordError($"IntegrateRegion is not implemented for a ICurves of type: {curve.GetType().Name}.");
+            return double.NaN;
         }
 
 

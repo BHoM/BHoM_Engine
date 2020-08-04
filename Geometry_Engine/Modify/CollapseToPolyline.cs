@@ -86,7 +86,8 @@ namespace BH.Engine.Geometry
 
         private static Polyline CollapseToPolyline(this ICurve curve, double angleTolerance, int maxSegmentCount = 100)
         {
-            throw new NotImplementedException("ICurve of type: " + curve.GetType().Name + " is not implemented for CollapseToPolyline.");
+            Reflection.Compute.RecordError($"CollapseToPolyline is not implemented for ICurves of type: {curve.GetType().Name}.");
+            return null;
         }
 
 

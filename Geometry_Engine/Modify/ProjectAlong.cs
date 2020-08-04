@@ -85,7 +85,7 @@ namespace BH.Engine.Geometry
         }
 
         /***************************************************/
-        
+
         public static ICurve ProjectAlong(this Ellipse ellipse, Plane plane, Vector vector)
         {
             TransformMatrix project = Create.ProjectionMatrix(plane, vector);
@@ -110,7 +110,7 @@ namespace BH.Engine.Geometry
                 Weights = curve.Weights
             };
         }
-        
+
         /***************************************************/
 
         public static PolyCurve ProjectAlong(this PolyCurve curve, Plane plane, Vector vector)
@@ -163,18 +163,10 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [NotImplemented]
-        public static Pipe ProjectAlong(this Pipe surface, Plane plane, Vector vector)
-        {
-            throw new NotImplementedException(); //TODO: implement projection of a pipe on a plane
-        }
-
-        /***************************************************/
-
         public static PlanarSurface ProjectAlong(this PlanarSurface surface, Plane plane, Vector vector)
         {
             return new PlanarSurface(
-                surface.ExternalBoundary.IProjectAlong(plane, vector), 
+                surface.ExternalBoundary.IProjectAlong(plane, vector),
                 surface.InternalBoundaries.Select(x => x.IProjectAlong(plane, vector)).ToList());
         }
 

@@ -188,7 +188,8 @@ namespace BH.Engine.Geometry
 
         private static NurbsCurve ToNurbsCurve(this ICurve curve)
         {
-            throw new NotImplementedException("ICurve of type: " + curve.GetType().Name + " is not implemented for NurbsForm.");
+            Reflection.Compute.RecordError($"ToNurbsCurve is not implemented for ICurves of type: {curve.GetType().Name}.");
+            return null;
         }
 
         /***************************************************/

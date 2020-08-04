@@ -153,7 +153,8 @@ namespace BH.Engine.Geometry
 
         private static double Distance(this Point point, ICurve curve)
         {
-            throw new NotImplementedException("ICurve of type " + curve.GetType().Name + " is not implemented for Distance.");
+            Reflection.Compute.RecordError($"Distance is not implemented for ICurves of type: {curve.GetType().Name}.");
+            return double.NaN;
         }
 
         /***************************************************/

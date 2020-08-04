@@ -35,7 +35,7 @@ namespace BH.Engine.Geometry
         /***************************************************/
         /**** Public Methods - Curves                  ****/
         /***************************************************/
-        
+
         [Description("Extends curve by given lengths")]
         [Input("curve", "Curve to extend")]
         [Input("start", "Length of extension on the begining of a curve. Negative value will trim the curve")]
@@ -282,7 +282,8 @@ namespace BH.Engine.Geometry
 
         private static ICurve Extend(this ICurve curve, double start = 0.0, double end = 0.0, bool tangentExtensions = false, double tolerance = Tolerance.Distance)
         {
-            throw new NotImplementedException("ICurve of type " + curve.GetType().Name + " is not implemented for Extend.");
+            Reflection.Compute.RecordError($"Extend is not implemented for ICurves of type: {curve.GetType().Name}.");
+            return null;
         }
 
 

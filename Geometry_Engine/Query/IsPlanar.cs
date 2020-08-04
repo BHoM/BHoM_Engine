@@ -203,7 +203,7 @@ namespace BH.Engine.Geometry
 
         private static bool IsPlanar(this IGeometry geometry, double tolerance = Tolerance.Distance)
         {
-            throw new NotImplementedException("IGeometry of type: " + geometry.GetType().Name + " is not implemented for IsPlanar.");
+            throw new NotImplementedException($"IsPlanar is not implemented for IGeometry of type: {geometry.GetType().Name}.");
         }
 
         /***************************************************/

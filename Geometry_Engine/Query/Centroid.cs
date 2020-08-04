@@ -246,7 +246,8 @@ namespace BH.Engine.Geometry
 
         private static Point Centroid(this ICurve curve, double tolerance = Tolerance.Distance)
         {
-            throw new NotImplementedException("ICurve of type: " + curve.GetType().Name + " is not implemented for Centroid.");
+            Reflection.Compute.RecordError($"Centroid is not implemented for ICurves of type: {curve.GetType().Name}.");
+            return null;
         }
 
 

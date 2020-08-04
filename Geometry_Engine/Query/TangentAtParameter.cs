@@ -124,7 +124,8 @@ namespace BH.Engine.Geometry
 
         private static Vector TangentAtParameter(this ICurve curve, double parameter, double tolerance = Tolerance.Distance)
         {
-            throw new NotImplementedException("ICurve of type: " + curve.GetType().Name + " is not implemented for TangentAtParameter.");
+            Reflection.Compute.RecordError($"TangentAtParameter is not implemented for ICurves of type: {curve.GetType().Name}.");
+            return null;
         }
 
         /***************************************************/

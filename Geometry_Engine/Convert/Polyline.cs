@@ -81,7 +81,8 @@ namespace BH.Engine.Geometry
 
         private static Polyline ToPolyline(ICurve curve)
         {
-            throw new NotImplementedException("ICurve of type: " + curve.GetType().Name + " is not implemented for ToPolyline.");
+            Reflection.Compute.RecordError($"ToPolyline is not implemented for ICurves of type: {curve.GetType().Name}.");
+            return null;
         }
 
         /***************************************************/
