@@ -90,7 +90,8 @@ namespace BH.Engine.Geometry
 
         private static Point PointAtLength(this ICurve curve, double length)
         {
-            throw new NotImplementedException("ICurve of type: " + curve.GetType().Name + " is not implemented for PointAtLength.");
+            Reflection.Compute.RecordError($"PointAtLength is not implemented for ICurves of type: {curve.GetType().Name}.");
+            return null;
         }
 
         /***************************************************/

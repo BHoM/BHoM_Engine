@@ -111,7 +111,8 @@ namespace BH.Engine.Geometry
 
         private static List<Point> DiscontinuityPoints(this ICurve curve)
         {
-            throw new NotImplementedException("ICurve of type: " + curve.GetType().Name + " is not implemented for DiscontinuityPoints.");
+            Reflection.Compute.RecordError($"DiscontinuityPoints is not implemented for ICurves of type: {curve.GetType().Name}.");
+            return null;
         }
 
         /***************************************************/

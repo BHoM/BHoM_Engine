@@ -114,7 +114,8 @@ namespace BH.Engine.Geometry
 
         private static double Length(this ICurve curve)
         {
-            throw new NotImplementedException("ICurve of type: " + curve.GetType().Name + " is not implemented for Length.");
+            Reflection.Compute.RecordError($"Length is not implemented for ICurves of type: {curve.GetType().Name}.");
+            return double.NaN;
         }
 
         /***************************************************/

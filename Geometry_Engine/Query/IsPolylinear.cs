@@ -95,7 +95,7 @@ namespace BH.Engine.Geometry
 
         private static bool IsPolylinear(this ICurve curve)
         {
-            throw new NotImplementedException("ICurve of type: " + curve.GetType().Name + " is not implemented for IsPolylinear.");
+            throw new NotImplementedException($"IsPolylinear is not implemented for ICurves of type: {curve.GetType().Name}.");
         }
 
         /***************************************************/

@@ -241,7 +241,7 @@ namespace BH.Engine.Geometry
 
         private static bool IsEqual(this IGeometry geometry, IGeometry other, double tolerance = Tolerance.Distance)
         {
-            throw new NotImplementedException("IGeometry of type: " + geometry.GetType().Name + " is not implemented for IsEqual."); // Takes only first input because this method is supposed to be called only from the interface which culls out every case with inputs of different classes.
+            throw new NotImplementedException($"IsEqual is not implemented for IGeometry of type: {geometry.GetType().Name}."); // Takes only first input because this method is supposed to be called only from the interface which culls out every case with inputs of different classes.
         }
 
         /***************************************************/

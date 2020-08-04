@@ -178,7 +178,8 @@ namespace BH.Engine.Geometry
                     }
                     else
                     {
-                        throw new NotImplementedException();
+                        Reflection.Compute.RecordError("Normal is implemented only for PolyCurves consisting of Lines or Arcs.");
+                        return null;
                     }
                 }
 
@@ -259,14 +260,16 @@ namespace BH.Engine.Geometry
 
         private static Vector Normal(this ICurve curve, double tolerance = Tolerance.Distance)
         {
-            throw new NotImplementedException("ICurve of type: " + curve.GetType().Name + " is not implemented for Normal.");
+            Reflection.Compute.RecordError($"Normal is not implemented for ICurves of type: {curve.GetType().Name}.");
+            return null;
         }
 
         /***************************************************/
 
         private static List<Vector> Normals(this IGeometry geometry)
         {
-            throw new NotImplementedException("IGeometry of type: " + geometry.GetType().Name + " is not implemented for Normals.");
+            Reflection.Compute.RecordError($"Normals is not implemented for IGeometry of type: {geometry.GetType().Name}.");
+            return null;
         }
 
         /***************************************************/

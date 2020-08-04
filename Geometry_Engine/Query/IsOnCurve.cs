@@ -99,7 +99,7 @@ namespace BH.Engine.Geometry
 
         private static bool IsOnCurve(this Point point, ICurve curve, double tolerance = Tolerance.Distance)
         {
-            throw new NotImplementedException("ICurve of type: " + curve.GetType().Name + " is not implemented for IsOnCurve.");
+            throw new NotImplementedException($"IsOnCurve is not implemented for ICurves of type: {curve.GetType().Name}.");
         }
 
         /***************************************************/

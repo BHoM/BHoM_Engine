@@ -236,7 +236,10 @@ namespace BH.Engine.Geometry
                     result.AddRange(tResult);
                 }
                 else
-                    throw new NotImplementedException();
+                {
+                    Reflection.Compute.RecordError($"SplitAtPoints is not implemented for PolyCurves consisting of ICurves of type: {crv.GetType().Name}.");
+                    return null;
+                }
             }
 
             int i = 0;
@@ -379,7 +382,8 @@ namespace BH.Engine.Geometry
 
         private static List<ICurve> SplitAtPoints(this ICurve curve, List<Point> points, double tolerance = Tolerance.Distance)
         {
-            throw new NotImplementedException("ICurve of type: " + curve.GetType().Name + " is not implemented for SplitAtPoints.");
+            Reflection.Compute.RecordError($"SplitAtPoints is not implemented for ICurves of type: {curve.GetType().Name}.");
+            return null;
         }
 
         /***************************************************/

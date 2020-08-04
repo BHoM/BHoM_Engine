@@ -465,7 +465,7 @@ namespace BH.Engine.Geometry
 
         private static bool IsContaining(this ICurve curve, List<Point> points, bool acceptOnEdge = true, double tolerance = Tolerance.Distance)
         {
-            throw new NotImplementedException("ICurve of type: " + curve.GetType().Name + " is not implemented for IsContaining.");
+            throw new NotImplementedException($"IsContaining is not implemented for ICurves of type: {curve.GetType().Name}.");
         }
 
         /***************************************************/

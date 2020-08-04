@@ -279,7 +279,8 @@ namespace BH.Engine.Geometry
 
             if (angle2 < tolerance || angle2 > Math.PI - tolerance)
             {
-                throw new NotImplementedException("Angles must be well between 0 and Pi");
+                Reflection.Compute.RecordError("Angles must be well between 0 and Pi");
+                return null;
             }
 
             Point p1 = new Point { X = 0, Y = 0, Z = 0 };

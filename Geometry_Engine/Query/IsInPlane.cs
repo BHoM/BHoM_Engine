@@ -222,7 +222,7 @@ namespace BH.Engine.Geometry
 
         private static bool IsInPlane(this IGeometry geometry, Plane plane, double tolerance = Tolerance.Distance)
         {
-            throw new NotImplementedException("IGeometry of type: " + geometry.GetType().Name + " is not implemented for IsInPlane.");
+            throw new NotImplementedException($"IsInPlane is not implemented for IGeometry of type: {geometry.GetType().Name}.");
         }
 
         /***************************************************/

@@ -187,12 +187,12 @@ namespace BH.Engine.Geometry
                     }
                 }
             }
-            
+
             Vector newX = (start - newOrigin).Normalise();
             oM.Geometry.CoordinateSystem.Cartesian coordClone = Create.CartesianCoordinateSystem(newOrigin, newX, Query.CrossProduct(normal, newX));
 
             double endAngle = (start - newOrigin).Angle(end - newOrigin);
-            endAngle = angle > Math.PI ? 2 * Math.PI - endAngle : endAngle; 
+            endAngle = angle > Math.PI ? 2 * Math.PI - endAngle : endAngle;
 
             Arc result = new Arc()
             {
@@ -315,7 +315,8 @@ namespace BH.Engine.Geometry
 
         private static IGeometry RoundCoordinates(this IGeometry geometry, int decimalPlaces = 6)
         {
-            throw new NotImplementedException("IGeometry of type: " + geometry.GetType().Name + " is not implemented for RoundCoordinates.");
+            Reflection.Compute.RecordError($"RoundCoordinates is not implemented for IGeometry of type: {geometry.GetType().Name}.");
+            return null;
         }
 
         /***************************************************/

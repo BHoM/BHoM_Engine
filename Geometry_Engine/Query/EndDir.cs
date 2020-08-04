@@ -94,7 +94,8 @@ namespace BH.Engine.Geometry
 
         private static Vector EndDir(this ICurve curve)
         {
-            throw new NotImplementedException("ICurve of type: " + curve.GetType().Name + " is not implemented for EndDir.");
+            Reflection.Compute.RecordError($"EndDir is not implemented for ICurves of type: {curve.GetType().Name}.");
+            return null;
         }
 
         /***************************************************/

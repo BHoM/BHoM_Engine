@@ -526,7 +526,8 @@ namespace BH.Engine.Geometry
 
         private static ICurve Offset(this ICurve curve, double offset, Vector normal = null, bool tangentExtensions = false, double tolerance = Tolerance.Distance)
         {
-            throw new NotImplementedException("ICurve of type: " + curve.GetType().Name + " is not implemented for Offset.");
+            Reflection.Compute.RecordError($"Offset is not implemented for ICurves of type: {curve.GetType().Name}.");
+            return null;
         }
 
 
@@ -595,7 +596,10 @@ namespace BH.Engine.Geometry
             //Write a proper fillet method, test and make it public            
 
             if (!((curve1 is Line || curve1 is Arc) && (curve2 is Line || curve2 is Arc))) //for now works only with combinations of lines and arcs
-                throw new NotImplementedException();
+            {
+                Reflection.Compute.RecordError("Private method fillet is implemented only for PolyCurves consisting of Lines or Arcs.");
+                return null;
+            }
 
             List<PolyCurve> joinCurves = Compute.IJoin(new List<ICurve> { curve1, curve2 }, tolerance).ToList();
 
