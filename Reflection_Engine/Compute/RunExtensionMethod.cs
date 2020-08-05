@@ -43,7 +43,7 @@ namespace BH.Engine.Reflection
             // If the method has been called before, just use that
             Tuple < Type, string> key = new Tuple<Type, string>(type, methodName);
             if (m_PreviousInvokedMethods.ContainsKey(key))
-                return m_PreviousInvokedMethods[key].Invoke(null, new object[] { target });
+                return m_PreviousInvokedMethods[key](new object[] { target });
 
             // Otherwise, search for the method and call it if found
             MethodInfo method = type.ExtensionMethods(methodName).Where(x => x.GetParameters().Length == 1).SortExtensionMethods(type).FirstOrDefault();
@@ -53,8 +53,9 @@ namespace BH.Engine.Reflection
                 if (method.IsGenericMethod)
                     method = method.MakeGenericFromInputs(new List<Type> { type });
 
-                m_PreviousInvokedMethods[key] = method;
-                return method.Invoke(null, new object[] { target });
+                Func<object[], object> func = method.ToFunc();
+                m_PreviousInvokedMethods[key] = func;
+                return func(new object[] { target });
             }
 
             // Return null if nothing found
@@ -71,7 +72,7 @@ namespace BH.Engine.Reflection
             string name = methodName + parameters.Select(x => x.GetType().ToString()).Aggregate((a,b) => a+b);
             Tuple<Type, string> key = new Tuple<Type, string>(type, name);
             if (m_PreviousInvokedMethods.ContainsKey(key))
-                return m_PreviousInvokedMethods[key].Invoke(null, new object[] { target }.Concat(parameters).ToArray());
+                return m_PreviousInvokedMethods[key](new object[] { target }.Concat(parameters).ToArray());
 
             foreach (MethodInfo method in target.GetType().ExtensionMethods(methodName).Where(x => x.GetParameters().Length == parameters.Length +1).SortExtensionMethods(type))
             {
@@ -101,8 +102,9 @@ namespace BH.Engine.Reflection
                 if (method.IsGenericMethod)
                     finalMethod = method.MakeGenericFromInputs(new List<Type> { type }.Concat(parameters.Select(x => x.GetType())).ToList());
 
-                m_PreviousInvokedMethods[key] = finalMethod;
-                return finalMethod.Invoke(null, new object[] { target }.Concat(parameters).ToArray());
+                Func<object[], object> func = finalMethod.ToFunc();
+                m_PreviousInvokedMethods[key] = func;
+                return func(new object[] { target }.Concat(parameters).ToArray());
             }
 
             // Return null if nothing found
@@ -114,7 +116,7 @@ namespace BH.Engine.Reflection
         /**** Private fields                            ****/
         /***************************************************/
 
-        private static ConcurrentDictionary<Tuple<Type, string>, MethodInfo> m_PreviousInvokedMethods = new ConcurrentDictionary<Tuple<Type, string>, MethodInfo>();
+        private static ConcurrentDictionary<Tuple<Type, string>, Func<object[], object>> m_PreviousInvokedMethods = new ConcurrentDictionary<Tuple<Type, string>, Func<object[], object>>();
         
         /***************************************************/
     }
