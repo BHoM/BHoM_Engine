@@ -92,7 +92,6 @@
     <Compile Include="Compute\PlasticModulus.cs" />
     <Compile Include="Compute\ShearAreaPolyline.cs" />
     <Compile Include="Compute\Integrate.cs" />
-    <Compile Include="Convert\ToFramingElement.cs" />
     <Compile Include="Create\Loads\AreaTemperatureLoad.cs" />
     <Compile Include="Create\Loads\AreaUniformlyDistributedLoad.cs" />
     <Compile Include="Create\Loads\BarPointLoad.cs" />
@@ -161,7 +160,6 @@
     <Compile Include="Create\Elements\IElement2D\NewInternalElement2D.cs" />
     <Compile Include="Create\Requests\FilterRequest.cs" />
     <Compile Include="Create\Elements\Edge.cs" />
-    <Compile Include="Create\Framing\FramingElementProperty.cs" />
     <Compile Include="Create\SurfaceProperties\LoadingPanelProperty.cs" />
     <Compile Include="Create\Offsets\Offset.cs" />
     <Compile Include="Create\SectionProperties\Reinforcement.cs" />
@@ -280,7 +278,9 @@
       <Name>Spatial_Engine</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Convert\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>
