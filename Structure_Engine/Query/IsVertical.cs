@@ -54,13 +54,5 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Deprecated("2.3", "Methods replaced with methods targeting BH.oM.Physical.Elements.IFramingElement.")]
-        public static bool IsVertical(this FramingElement element)
-        {
-            return Engine.Geometry.Query.IsVertical(new Line() { Start = element.LocationCurve.IStartPoint(), End = element.LocationCurve.IEndPoint() } ); //TODO: is this correct? what is the framing element is curved?
-        }
-
-        /***************************************************/
-
     }
 }
