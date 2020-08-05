@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -21,10 +21,11 @@
  */
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-
+using System.Collections.Generic;
+using System.ComponentModel;
+using BH.oM.Reflection.Attributes;
+using BH.oM.Base;
 
 namespace BH.Engine.Reflection
 {
@@ -34,34 +35,42 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static List<MethodInfo> ExtensionMethods(this Type type, string methodName)
+        [Description("Checks if the given method can be assigned to the generic type. Returns false if the second argument is a non generic.")]
+        [Input("givenType", "The type to check if it can be assigned to the generic type.")]
+        [Input("genericType", "The generic type to check assignability to.")]
+        [Output("result", "Returns true if the given type can be assigned to the generic type.")]
+        public static bool IsAssignableToGenericType(this Type givenType, Type genericType)
         {
-            List<MethodInfo> methods = new List<MethodInfo>();
+            //Check nulls
+            if (givenType == null || genericType == null)
+                return false;
 
-            foreach (MethodInfo method in BHoMMethodList().Where(x => x.Name == methodName))
+            //Check that the generic type is actually a generic
+            if (!genericType.IsGenericType)
+                return false;
+
+            //Check if the given type is generic, and if so, if its generic type definition matches the generic type
+            if (givenType.IsGenericType && givenType.GetGenericTypeDefinition() == genericType)
+                return true;
+
+            //Get out the interfaces of the generic type
+            var interfaceTypes = givenType.GetInterfaces();
+
+            foreach (var inter in interfaceTypes)
             {
-                ParameterInfo[] param = method.GetParameters();
-
-                if (param.Length > 0)
-                {
-                    //Get out first argument of the method. The type of this should be matching the provided type.
-                    Type firstArgument = param[0].ParameterType;
-
-                    //Check if standard IsAssignableFrom works.
-                    if (firstArgument.IsAssignableFrom(type))
-                        methods.Add(method);
-                    //If not, check if the argument is generic, and if so, use the IsAssignableToGenericType method to check if it can be assigned.
-                    else if (firstArgument.IsGenericType && type.IsAssignableToGenericType(firstArgument.GetGenericTypeDefinition()))
-                    {
-                        methods.Add(method);
-                    }
-                }
+                //Check if the generic type definition for any of the interfaces matches the generic type
+                if (inter.IsGenericType && inter.GetGenericTypeDefinition() == genericType)
+                    return true;
             }
 
-            return methods;
+            //Check if given type contains a base type
+            Type baseType = givenType.BaseType;
+            if (baseType == null) return false;
+
+            //Reqursively check the base type
+            return IsAssignableToGenericType(baseType, genericType);
         }
 
         /***************************************************/
     }
 }
-

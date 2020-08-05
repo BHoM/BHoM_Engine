@@ -50,6 +50,9 @@ namespace BH.Engine.Reflection
 
             if (method != null)
             {
+                if (method.IsGenericMethod)
+                    method = method.MakeGenericFromInputs(new List<Type> { type });
+
                 m_PreviousInvokedMethods[key] = method;
                 return method.Invoke(null, new object[] { target });
             }
@@ -78,17 +81,28 @@ namespace BH.Engine.Reflection
                 bool matchingTypes = true;
                 for (int i = 0; i < parameters.Length; i++)
                 {
-                    if (!paramInfo[i + 1].ParameterType.IsAssignableFrom(parameters[i].GetType()))
+                    Type methodArgument = paramInfo[i + 1].ParameterType;
+                    Type providedType = parameters[i].GetType();
+
+                    if (!methodArgument.IsAssignableFrom(providedType))
                     {
-                        matchingTypes = false;
-                        break;
+                        if (!(method.IsGenericMethod && method.IsGenericMethod && methodArgument.IsGenericType && providedType.IsAssignableToGenericType(methodArgument.GetGenericTypeDefinition())))
+                        {
+                            matchingTypes = false;
+                            break;
+                        }
                     }
                 }
                 if (!matchingTypes)
                     continue;
 
-                m_PreviousInvokedMethods[key] = method;
-                return method.Invoke(null, new object[] { target }.Concat(parameters).ToArray());
+                MethodInfo finalMethod = method;
+
+                if (method.IsGenericMethod)
+                    finalMethod = method.MakeGenericFromInputs(new List<Type> { type }.Concat(parameters.Select(x => x.GetType())).ToList());
+
+                m_PreviousInvokedMethods[key] = finalMethod;
+                return finalMethod.Invoke(null, new object[] { target }.Concat(parameters).ToArray());
             }
 
             // Return null if nothing found
