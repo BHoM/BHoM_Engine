@@ -37,7 +37,7 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static MethodInfo MakeGenericFromInputs(MethodInfo method, List<Type> inputTypes)
+        public static MethodInfo MakeGenericFromInputs(this MethodInfo method, List<Type> inputTypes)
         {
             if (!method.IsGenericMethod)
                 return method;
