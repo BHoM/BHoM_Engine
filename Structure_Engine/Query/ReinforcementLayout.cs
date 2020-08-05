@@ -290,12 +290,19 @@ namespace BH.Engine.Structure
             innerProfileEdges = new List<ICurve>();
             longReif = new List<LongitudinalReinforcement>();
             tranReif = new List<TransverseReinforcement>();
+
+            if (section == null)
+            {
+                longCover = 0;
+                tranCover = 0;
+                return false;
+            }
+
             //Starting default value to the minimum cover of the section.
             longCover = section.MinimumCover;
             tranCover = section.MinimumCover;
 
-            if (section == null)
-                return false;
+
 
             longReif = section.LongitudinalReinforcement();
             tranReif = section.TransverseReinforcement();
