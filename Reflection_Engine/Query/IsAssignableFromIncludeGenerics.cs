@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -21,10 +21,11 @@
  */
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-
+using System.Collections.Generic;
+using System.ComponentModel;
+using BH.oM.Reflection.Attributes;
+using BH.oM.Base;
 
 namespace BH.Engine.Reflection
 {
@@ -34,25 +35,21 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static List<MethodInfo> ExtensionMethods(this Type type, string methodName)
+        [Description("")]
+        [Input("", "")]
+        [Output("", "")]
+        public static bool IsAssignableFromIncludeGenerics(this Type assignableTo, Type assignableFrom)
         {
-            List<MethodInfo> methods = new List<MethodInfo>();
 
-            foreach (MethodInfo method in BHoMMethodList().Where(x => x.Name == methodName))
-            {
-                ParameterInfo[] param = method.GetParameters();
+            //Check if standard IsAssignableFrom works.
+            if (assignableTo.IsAssignableFrom(assignableFrom))
+                return true;
+            //If not, check if the argument is generic, and if so, use the IsAssignableToGenericType method to check if it can be assigned.
+            else
+                return assignableTo.IsGenericType && assignableFrom.IsAssignableToGenericType(assignableTo.GetGenericTypeDefinition());
 
-                if (param.Length > 0)
-                {
-                    if (param[0].ParameterType.IsAssignableFromIncludeGenerics(type))
-                        methods.Add(method);
-                }
-            }
-
-            return methods;
         }
 
         /***************************************************/
     }
 }
-
