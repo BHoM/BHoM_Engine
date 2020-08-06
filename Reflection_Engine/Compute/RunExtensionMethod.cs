@@ -55,7 +55,7 @@ namespace BH.Engine.Reflection
 
         private static object RunExtensionMethod(string methodName, object[] parameters)
         {
-            if (parameters == null || parameters.Length == 0 || string.IsNullOrWhiteSpace(methodName))
+            if (parameters == null || parameters.Length == 0 || parameters[0] == null || string.IsNullOrWhiteSpace(methodName))
                 return null;
 
             Type type = parameters[0].GetType();
