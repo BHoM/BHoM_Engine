@@ -27,6 +27,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.ComponentModel;
 
 namespace BH.Engine.Reflection
 {
@@ -62,9 +63,9 @@ namespace BH.Engine.Reflection
             // If the method has been called before, just use that
             string name = methodName + parameters.Select(x => x.GetType().ToString()).Aggregate((a, b) => a + b);
             Tuple<Type, string> key = new Tuple<Type, string>(type, name);
-            if (m_PreviousInvokedMethods.ContainsKey(key))
+            if (MethodPreviouslyExtracted(key))
             {
-                return m_PreviousInvokedMethods[key]?.Invoke(parameters);
+                return GetStoredExtensionMethod(key)?.Invoke(parameters);
             }
 
             foreach (MethodInfo method in type.ExtensionMethods(methodName).Where(x => x.GetParameters().Length == parameters.Length).SortExtensionMethods(type))
@@ -96,15 +97,48 @@ namespace BH.Engine.Reflection
                     finalMethod = method.MakeGenericFromInputs(parameters.Select(x => x.GetType()).ToList());
 
                 Func<object[], object> func = finalMethod.ToFunc();
-                m_PreviousInvokedMethods[key] = func;
+                StoreExtensionMethod(key, func);
                 return func(parameters);
             }
 
-            //If nothing found, store null, to avoid having to search agin in vain
-            m_PreviousInvokedMethods[key] = null;
+            //If nothing found, store null, to avoid having to search again in vain
+            StoreExtensionMethod(key, null);
 
             // Return null if nothing found
             return null;
+        }
+
+        /***************************************************/
+
+        [Description("Checkes if an entry with the provided key has already been extracted. Put in its own method to simplify the use of locks to provide thread safety.")]
+        private static bool MethodPreviouslyExtracted(Tuple<Type, string> key)
+        {
+            lock (m_RunExtensionMethodLock)
+            {
+                return m_PreviousInvokedMethods.ContainsKey(key);
+            }
+        }
+
+        /***************************************************/
+
+        [Description("Gets a previously extracted method from the stored methods. Put in its own method to simplify the use of locks to provide thread safety.")]
+        private static Func<object[], object> GetStoredExtensionMethod(Tuple<Type, string> key)
+        {
+            lock (m_RunExtensionMethodLock)
+            {
+                return m_PreviousInvokedMethods[key];
+            }
+        }
+
+        /***************************************************/
+
+        [Description("Stores an extracted method. Put in its own method to simplify the use of locks to provide thread safety.")]
+        private static void StoreExtensionMethod(Tuple<Type, string> key, Func<object[], object> method)
+        {
+            lock (m_RunExtensionMethodLock)
+            {
+                m_PreviousInvokedMethods[key] = method;
+            }
         }
 
         /***************************************************/
@@ -112,7 +146,8 @@ namespace BH.Engine.Reflection
         /***************************************************/
 
         private static ConcurrentDictionary<Tuple<Type, string>, Func<object[], object>> m_PreviousInvokedMethods = new ConcurrentDictionary<Tuple<Type, string>, Func<object[], object>>();
-        
+        private static readonly object m_RunExtensionMethodLock = new object();
+
         /***************************************************/
     }
 }
