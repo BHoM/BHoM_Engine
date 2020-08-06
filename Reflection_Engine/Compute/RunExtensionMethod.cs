@@ -38,56 +38,49 @@ namespace BH.Engine.Reflection
 
         public static object RunExtensionMethod(object target, string methodName)
         {
-            Type type = target.GetType();
-
-            // If the method has been called before, just use that
-            Tuple < Type, string> key = new Tuple<Type, string>(type, methodName);
-            if (m_PreviousInvokedMethods.ContainsKey(key))
-                return m_PreviousInvokedMethods[key](new object[] { target });
-
-            // Otherwise, search for the method and call it if found
-            MethodInfo method = type.ExtensionMethods(methodName).Where(x => x.GetParameters().Length == 1).SortExtensionMethods(type).FirstOrDefault();
-
-            if (method != null)
-            {
-                if (method.IsGenericMethod)
-                    method = method.MakeGenericFromInputs(new List<Type> { type });
-
-                Func<object[], object> func = method.ToFunc();
-                m_PreviousInvokedMethods[key] = func;
-                return func(new object[] { target });
-            }
-
-            // Return null if nothing found
-            return null;
+            return RunExtensionMethod(methodName, new object[] { target });
         }
 
         /***************************************************/
 
         public static object RunExtensionMethod(object target, string methodName, object[] parameters)
         {
-            Type type = target.GetType();
+            return RunExtensionMethod(methodName, new object[] { target }.Concat(parameters).ToArray());
+        }
+
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+        private static object RunExtensionMethod(string methodName, object[] parameters)
+        {
+            if (parameters == null || parameters.Length == 0 || string.IsNullOrWhiteSpace(methodName))
+                return null;
+
+            Type type = parameters[0].GetType();
 
             // If the method has been called before, just use that
-            string name = methodName + parameters.Select(x => x.GetType().ToString()).Aggregate((a,b) => a+b);
+            string name = methodName + parameters.Select(x => x.GetType().ToString()).Aggregate((a, b) => a + b);
             Tuple<Type, string> key = new Tuple<Type, string>(type, name);
             if (m_PreviousInvokedMethods.ContainsKey(key))
-                return m_PreviousInvokedMethods[key](new object[] { target }.Concat(parameters).ToArray());
+            {
+                return m_PreviousInvokedMethods[key]?.Invoke(parameters);
+            }
 
-            foreach (MethodInfo method in target.GetType().ExtensionMethods(methodName).Where(x => x.GetParameters().Length == parameters.Length +1).SortExtensionMethods(type))
+            foreach (MethodInfo method in type.ExtensionMethods(methodName).Where(x => x.GetParameters().Length == parameters.Length).SortExtensionMethods(type))
             {
                 ParameterInfo[] paramInfo = method.GetParameters();
 
-                // Make sure the type of parameters is matching
+                // Make sure the type of parameters is matching, skipping first as already used to extract parameters
                 bool matchingTypes = true;
-                for (int i = 0; i < parameters.Length; i++)
+                for (int i = 1; i < parameters.Length; i++)
                 {
-                    Type methodArgument = paramInfo[i + 1].ParameterType;
+                    Type methodArgument = paramInfo[i].ParameterType;
                     Type providedType = parameters[i].GetType();
 
                     if (!methodArgument.IsAssignableFrom(providedType))
                     {
-                        if (!(method.IsGenericMethod && method.IsGenericMethod && methodArgument.IsGenericType && providedType.IsAssignableToGenericType(methodArgument.GetGenericTypeDefinition())))
+                        if (!(method.IsGenericMethod && methodArgument.IsGenericType && providedType.IsAssignableToGenericType(methodArgument.GetGenericTypeDefinition())))
                         {
                             matchingTypes = false;
                             break;
@@ -100,17 +93,19 @@ namespace BH.Engine.Reflection
                 MethodInfo finalMethod = method;
 
                 if (method.IsGenericMethod)
-                    finalMethod = method.MakeGenericFromInputs(new List<Type> { type }.Concat(parameters.Select(x => x.GetType())).ToList());
+                    finalMethod = method.MakeGenericFromInputs(parameters.Select(x => x.GetType()).ToList());
 
                 Func<object[], object> func = finalMethod.ToFunc();
                 m_PreviousInvokedMethods[key] = func;
-                return func(new object[] { target }.Concat(parameters).ToArray());
+                return func(parameters);
             }
+
+            //If nothing found, store null, to avoid having to search agin in vain
+            m_PreviousInvokedMethods[key] = null;
 
             // Return null if nothing found
             return null;
         }
-
 
         /***************************************************/
         /**** Private fields                            ****/
