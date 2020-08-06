@@ -121,6 +121,7 @@
     <Compile Include="Query\GenericTypeConstraint.cs" />
     <Compile Include="Query\ImplementingTypes.cs" />
     <Compile Include="Query\Count.cs" />
+    <Compile Include="Query\IsAssignableFromIncludeGenerics.cs" />
     <Compile Include="Query\IsAssignableToGenericType.cs" />
     <Compile Include="Query\IsExposed.cs" />
     <Compile Include="Query\Item.cs" />

@@ -76,16 +76,10 @@ namespace BH.Engine.Reflection
                 bool matchingTypes = true;
                 for (int i = 1; i < parameters.Length; i++)
                 {
-                    Type methodArgument = paramInfo[i].ParameterType;
-                    Type providedType = parameters[i].GetType();
-
-                    if (!methodArgument.IsAssignableFrom(providedType))
+                    if(!paramInfo[i].ParameterType.IsAssignableFromIncludeGenerics(parameters[i].GetType()))
                     {
-                        if (!(method.IsGenericMethod && methodArgument.IsGenericType && providedType.IsAssignableToGenericType(methodArgument.GetGenericTypeDefinition())))
-                        {
-                            matchingTypes = false;
-                            break;
-                        }
+                        matchingTypes = false;
+                        break;
                     }
                 }
                 if (!matchingTypes)
