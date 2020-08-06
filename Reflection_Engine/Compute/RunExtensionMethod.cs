@@ -28,6 +28,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel;
+using BH.oM.Reflection.Attributes;
 
 namespace BH.Engine.Reflection
 {
@@ -37,6 +38,11 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Runs an extension method accepting a single argument based on a provided object and method name.\n" + 
+                     "Finds the method via reflection the first time it is run, thean compiles it to a function and stores it for subsequent calls.")]
+        [Input("target", "The object to find and run the extension method for.")]
+        [Input("methodName", "The name of the method to be run.")]
+        [Output("result", "The result of the method execution. If no method was found, null is returned.")]
         public static object RunExtensionMethod(object target, string methodName)
         {
             return RunExtensionMethod(methodName, new object[] { target });
@@ -44,6 +50,12 @@ namespace BH.Engine.Reflection
 
         /***************************************************/
 
+        [Description("Runs an extension method accepting a multiple argument based on a provided main object and method name and additional arguments.\n" +
+                     "Finds the method via reflection the first time it is run, thean compiles it to a function and stores it for subsequent calls.")]
+        [Input("target", "The first of the argument of the method to find and run the extention method for.")]
+        [Input("methodName", "The name of the method to be run.")]
+        [Input("parameters", "The additional arguments of the call to the method, skipping the first argument provided by 'target'.")]
+        [Output("result", "The result of the method execution. If no method was found, null is returned.")]
         public static object RunExtensionMethod(object target, string methodName, object[] parameters)
         {
             return RunExtensionMethod(methodName, new object[] { target }.Concat(parameters).ToArray());
@@ -53,21 +65,27 @@ namespace BH.Engine.Reflection
         /**** Private Methods                           ****/
         /***************************************************/
 
+        [Description("Helper method doing the heavy lifting of RunExtensionMethod. Finds the matching method via reflection, compiles it to a function, stores if for subsequent calls and finally runs it and returns the result.")]
+        [Input("methodName", "The name of the method to be run.")]
+        [Input("parameters", "All parameters of the method.")]
+        [Output("result", "The result of the method execution. If no method was found, null is returned.")]
         private static object RunExtensionMethod(string methodName, object[] parameters)
         {
-            if (parameters == null || parameters.Length == 0 || parameters[0] == null || string.IsNullOrWhiteSpace(methodName))
+            if (parameters == null || parameters.Length == 0 || parameters.Any(x => x == null) || string.IsNullOrWhiteSpace(methodName))
                 return null;
 
+            //Get type of first argument, to be used for first method extraction filtering
             Type type = parameters[0].GetType();
 
-            // If the method has been called before, just use that
+            //Construct key used to store/extract method
             string name = methodName + parameters.Select(x => x.GetType().ToString()).Aggregate((a, b) => a + b);
             Tuple<Type, string> key = new Tuple<Type, string>(type, name);
-            if (MethodPreviouslyExtracted(key))
-            {
-                return GetStoredExtensionMethod(key)?.Invoke(parameters);
-            }
 
+            // If the method has been called before, just use that
+            if (MethodPreviouslyExtracted(key))
+                return GetStoredExtensionMethod(key)?.Invoke(parameters);
+
+            //Loop through all methods with matching name, first argument and number of parameters, sorted by best match to the first argument
             foreach (MethodInfo method in type.ExtensionMethods(methodName).Where(x => x.GetParameters().Length == parameters.Length).SortExtensionMethods(type))
             {
                 ParameterInfo[] paramInfo = method.GetParameters();
@@ -78,6 +96,7 @@ namespace BH.Engine.Reflection
                 {
                     if(!paramInfo[i].ParameterType.IsAssignableFromIncludeGenerics(parameters[i].GetType()))
                     {
+                        //Parameter does not match, abort for this method
                         matchingTypes = false;
                         break;
                     }
@@ -87,9 +106,11 @@ namespace BH.Engine.Reflection
 
                 MethodInfo finalMethod = method;
 
+                //If method is generic, make sure the appropriate generic arguments are set
                 if (method.IsGenericMethod)
                     finalMethod = method.MakeGenericFromInputs(parameters.Select(x => x.GetType()).ToList());
 
+                //TUrn the MethodInfo to a compiled function, store it and finally call it
                 Func<object[], object> func = finalMethod.ToFunc();
                 StoreExtensionMethod(key, func);
                 return func(parameters);
