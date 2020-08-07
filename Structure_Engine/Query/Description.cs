@@ -51,7 +51,7 @@ namespace BH.Engine.Structure
         [Output("desc", "The generated description for the profile based on its dimensions.")]
         public static string Description(this ISectionProfile profile)
         {
-            return "I " + profile.Height + "x" + profile.Width + "x" + profile.WebThickness + "x" + profile.FlangeThickness;
+            return $"I {profile.Height:G3}x{profile.Width:G3}x{profile.WebThickness:G3}x{profile.FlangeThickness:G3}";
         }
 
         /***************************************************/
@@ -61,7 +61,7 @@ namespace BH.Engine.Structure
         [Output("desc", "The generated description for the profile based on its dimensions.")]
         public static string Description(this BoxProfile profile)
         {
-            return "Box " + profile.Height + "x" + profile.Width + "x" + profile.Thickness;
+            return $"Box {profile.Height:G3}x{profile.Width:G3}x{profile.Thickness:G3}";
         }
 
         /***************************************************/
@@ -71,7 +71,7 @@ namespace BH.Engine.Structure
         [Output("desc", "The generated description for the profile based on its dimensions.")]
         public static string Description(this AngleProfile profile)
         {
-            return "Angle " + profile.Height + "x" + profile.Width + "x" + profile.WebThickness + "x" + profile.FlangeThickness;
+            return $"Angle {profile.Height:G3}x{profile.Width:G3}x{profile.WebThickness:G3}x{profile.FlangeThickness:G3}";
         }
 
         /***************************************************/
@@ -81,7 +81,7 @@ namespace BH.Engine.Structure
         [Output("desc", "The generated description for the profile based on its dimensions.")]
         public static string Description(this ChannelProfile profile)
         {
-            return "Channel " + profile.Height + "x" + profile.FlangeWidth + "x" + profile.WebThickness + "x" + profile.FlangeThickness;
+            return $"Channel {profile.Height:G3}x{profile.FlangeWidth:G3}x{profile.WebThickness:G3}x{profile.FlangeThickness:G3}";
         }
 
         /***************************************************/
@@ -91,7 +91,7 @@ namespace BH.Engine.Structure
         [Output("desc", "The generated description for the profile based on its dimensions.")]
         public static string Description(this CircleProfile profile)
         {
-            return "Circle " + profile.Diameter;
+            return $"Circle {profile.Diameter:G3}";
         }
 
         /***************************************************/
@@ -101,7 +101,8 @@ namespace BH.Engine.Structure
         [Output("desc", "The generated description for the profile based on its dimensions.")]
         public static string Description(this FabricatedBoxProfile profile)
         {
-            return "FabBox " + profile.Height + "x" + profile.Width + "x" + profile.WebThickness + "x" + profile.TopFlangeThickness + "x" + profile.BotFlangeThickness;
+            return $"FabBox {profile.Height:G3}x{profile.Width:G3}x" +
+                $"{profile.WebThickness:G3}x{profile.TopFlangeThickness:G3}x{profile.BotFlangeThickness:G3}";
         }
 
         /***************************************************/
@@ -112,7 +113,8 @@ namespace BH.Engine.Structure
         public static string Description(this GeneralisedFabricatedBoxProfile profile)
         {
             double width = Math.Max(profile.Width + profile.BotLeftCorbelWidth + profile.BotRightCorbelWidth, profile.Width + profile.TopLeftCorbelWidth + profile.TopRightCorbelWidth);
-            return "GenFabBox " + profile.Height + "x" + width + "x" + profile.WebThickness + "x" + profile.TopFlangeThickness + "x" + profile.BotFlangeThickness;
+            return $"GenFabBox {profile.Height:G3}x{width:G3}x{profile.WebThickness:G3}x" +
+                $"{profile.TopFlangeThickness:G3}x{profile.BotFlangeThickness:G3}";
         }
 
         /***************************************************/
@@ -122,7 +124,7 @@ namespace BH.Engine.Structure
         [Output("desc", "The generated description for the profile based on its dimensions.")]
         public static string Description(this KiteProfile profile)
         {
-            return "Kite " + Math.Round(profile.Angle1, 2) + "x" + profile.Width1 + "x" + profile.Thickness;
+            return $"Kite {profile.Angle1:G2}x{profile.Width1:G3}x{profile.Thickness:G3}";
         }
 
         /***************************************************/
@@ -132,7 +134,8 @@ namespace BH.Engine.Structure
         [Output("desc", "The generated description for the profile based on its dimensions.")]
         public static string Description(this FabricatedISectionProfile profile)
         {
-            return "FabI " + profile.Height + "x" + profile.TopFlangeWidth + "x" + profile.BotFlangeWidth + "x" + profile.WebThickness + "x" + profile.TopFlangeThickness + "x" + profile.BotFlangeThickness;
+            return $"FabI {profile.Height:G3}x{profile.TopFlangeWidth:G3}x{profile.BotFlangeWidth:G3}x" +
+                $"{profile.WebThickness:G3}x{profile.TopFlangeThickness:G3}x{profile.BotFlangeThickness:G3}";
         }
 
         /***************************************************/
@@ -152,7 +155,7 @@ namespace BH.Engine.Structure
         [Output("desc", "The generated description for the profile based on its dimensions.")]
         public static string Description(this RectangleProfile profile)
         {
-            return "Rectangle " + profile.Height + "x" + profile.Width + "x" + profile.CornerRadius;
+            return $"Rectangle {profile.Height:G3}x{profile.Width:G3}x{profile.CornerRadius:G3}";
         }
 
         /***************************************************/
@@ -162,7 +165,7 @@ namespace BH.Engine.Structure
         [Output("desc", "The generated description for the profile based on its dimensions.")]
         public static string Description(this TSectionProfile profile)
         {
-            return "T " + profile.Height + "x" + profile.Width + "x" + profile.WebThickness + "x" + profile.FlangeThickness;
+            return $"T {profile.Height:G3}x{profile.Width:G3}x{profile.WebThickness:G3}x{profile.FlangeThickness:G3}";
         }
 
         /***************************************************/
@@ -172,7 +175,9 @@ namespace BH.Engine.Structure
         [Output("desc", "The generated description for the profile based on its dimensions.")]
         public static string Description(this GeneralisedTSectionProfile profile)
         {
-            return "GenT " + profile.Height + "x" + profile.WebThickness + "x" + profile.LeftOutstandWidth + "x" + profile.LeftOutstandThickness + "x" + profile.RightOutstandWidth + "x" + profile.RightOutstandThickness;
+            return $"GenT {profile.Height:G3}x{profile.WebThickness}x" +
+                $"{profile.LeftOutstandWidth:G3}x{profile.LeftOutstandThickness:G3}x" +
+                $"{profile.RightOutstandWidth:G3}x{profile.RightOutstandThickness:G3}";
         }
 
         /***************************************************/
@@ -182,7 +187,7 @@ namespace BH.Engine.Structure
         [Output("desc", "The generated description for the profile based on its dimensions.")]
         public static string Description(this TubeProfile profile)
         {
-            return "Tube " + profile.Diameter + "x" + profile.Thickness;
+            return $"Tube {profile.Diameter:G3} x {profile.Thickness:G3}";
         }
 
         /***************************************************/
@@ -244,7 +249,7 @@ namespace BH.Engine.Structure
         [Output("desc", "The generated description for the section based on its dimensions, material and type.")]
         public static string Description(this CableSection section)
         {
-            return "Cable " + section.NumberOfCables + " x dia " + section.CableDiameter + " - " + CheckGetMaterialName(section.Material);
+            return $"Cable {section.NumberOfCables:G3} x dia {section.CableDiameter:G3} - {CheckGetMaterialName(section.Material)}";
         }
 
         /***************************************************/
@@ -254,7 +259,7 @@ namespace BH.Engine.Structure
         [Output("desc", "The generated description for the section based on its dimensions, material and type.")]
         public static string Description(this ExplicitSection section)
         {
-            return "Explicit A: " + section.Area + " Iy: " + section.Iy + " Iz: " + section.Iz + " J: " + section.J + " - " + CheckGetMaterialName(section.Material);
+            return $"Explicit A: {section.Area:G3} Iy: {section.Iy:G3} Iz: {section.Iz:G3} J: {section.J:G3} - {CheckGetMaterialName(section.Material)}";
         }
 
         /***************************************************/
@@ -266,7 +271,7 @@ namespace BH.Engine.Structure
         [Output("desc", "The generated description for the property based on its dimensions, material and type.")]
         public static string Description(this ConstantThickness property)
         {
-            return "THK " + property.Thickness + " - " + CheckGetMaterialName(property.Material);
+            return $"THK {property.Thickness:G3} - {CheckGetMaterialName(property.Material)}";
         }
 
         /***************************************************/
@@ -276,7 +281,8 @@ namespace BH.Engine.Structure
         [Output("desc", "The generated description for the property based on its dimensions, material and type.")]
         public static string Description(this Ribbed property)
         {
-            return "Ribbed Depth:" + property.TotalDepth + " Spacing: " + property.Spacing + " sWidth: " + property.StemWidth + " - " + CheckGetMaterialName(property.Material);
+            return $"Ribbed Depth: {property.TotalDepth:G3} Spacing: {property.Spacing:G3} sWidth: {property.StemWidth:G3}" +
+                $" - {CheckGetMaterialName(property.Material)}";
         }
 
         /***************************************************/
@@ -286,7 +292,9 @@ namespace BH.Engine.Structure
         [Output("desc", "The generated description for the property based on its dimensions, material and type.")]
         public static string Description(this Waffle property)
         {
-            return "Waffle DepthX: " + property.TotalDepthX + " DepthY: " + property.TotalDepthY + " SpacingX: " + property.SpacingX + " SpacingY: " + property.SpacingY + " sWidthX: " + property.StemWidthX + " sWidthY: " + property.StemWidthY + " - " + CheckGetMaterialName(property.Material);
+            return $"Waffle DepthX: {property.TotalDepthX:G3} DepthY: {property.TotalDepthY:G3} " +
+                $"SpacingX: {property.SpacingX:G3} SpacingY: {property.SpacingY:G3} " +
+                $"sWidthX: {property.StemWidthX:G3} sWidthY: {property.StemWidthY:G3} - {CheckGetMaterialName(property.Material)}";
         }
 
         /***************************************************/
@@ -311,7 +319,7 @@ namespace BH.Engine.Structure
             string desc = constraint.UX.DofSign() + constraint.UY.DofSign() + constraint.Normal.DofSign();
             if (constraint.IsNumericallyDependent())
             {
-                desc += "-" + constraint.KX + "," + constraint.KY + "," + constraint.KNorm;
+                desc += $"- {constraint.KX:G3}, {constraint.KY:G3}, {constraint.KNorm:G3}";
             }
             return desc;
         }
@@ -328,8 +336,8 @@ namespace BH.Engine.Structure
 
             if (constraint.IsNumericallyDependent())
             {
-                desc += "-" + constraint.TranslationalStiffnessX + "," + constraint.TranslationalStiffnessY + "," + constraint.TranslationalStiffnessZ +
-                        "," + constraint.RotationalStiffnessX;
+                desc += $"- {constraint.TranslationalStiffnessX:G3}, {constraint.TranslationalStiffnessY:G3}, {constraint.TranslationalStiffnessZ:G3}, " +
+                    $"{constraint.RotationalStiffnessX:G3}";
             }
             return desc;
         }
@@ -346,8 +354,8 @@ namespace BH.Engine.Structure
 
             if (constraint.IsNumericallyDependent())
             {
-                desc += "-" + constraint.TranslationalStiffnessX + "," + constraint.TranslationalStiffnessY + "," + constraint.TranslationalStiffnessZ +
-                        "," + constraint.RotationalStiffnessX + "," + constraint.RotationalStiffnessY + "," + constraint.RotationalStiffnessZ;
+                desc += $"- {constraint.TranslationalStiffnessX:G3}, {constraint.TranslationalStiffnessY:G3}, {constraint.TranslationalStiffnessZ:G3}, " +
+                    $"{constraint.RotationalStiffnessX:G3}, {constraint.RotationalStiffnessY:G3}, {constraint.RotationalStiffnessZ:G3}";
             }
             return desc;
         }
@@ -398,7 +406,7 @@ namespace BH.Engine.Structure
         [Output("desc", "The generated description for the constraint.")]
         public static string Description(this Offset offset)
         {
-            return offset.Start.VectorComponents() + " - " + offset.End.VectorComponents();
+            return $"{offset.Start.VectorComponents()} - + {offset.End.VectorComponents()}";
         }
 
         /***************************************************/
@@ -410,7 +418,7 @@ namespace BH.Engine.Structure
         [Output("desc", "The generated description for the material.")]
         public static string Description(this Steel material)
         {
-            return "Steel " + material.MaterialAnalyticalValues() + ", fy:" + material.YieldStress + ", fu:" + material.UltimateStress;
+            return $"Steel {material.MaterialAnalyticalValues():G3}, fy: {material.YieldStress:G3}, fu: {material.UltimateStress:G3}";
         }
 
         /***************************************************/
@@ -420,7 +428,7 @@ namespace BH.Engine.Structure
         [Output("desc", "The generated description for the material.")]
         public static string Description(this Concrete material)
         {
-            return "Concrete " + material.MaterialAnalyticalValues() + ", cyl:" + material.CylinderStrength + ", cube:" + material.CubeStrength;
+            return $"Concrete {material.MaterialAnalyticalValues()}, cyl: {material.CylinderStrength:G3}, cube: {material.CubeStrength:G3}";
         }
 
         /***************************************************/
@@ -528,29 +536,29 @@ namespace BH.Engine.Structure
 
         private static string MaterialAnalyticalValues(this IIsotropic isotropicMaterial)
         {
-            return "E:" + isotropicMaterial.YoungsModulus +
-                   ", ρ:" + isotropicMaterial.Density +
-                   ", ν:" + isotropicMaterial.PoissonsRatio +
-                   ", α:" + isotropicMaterial.ThermalExpansionCoeff +
-                   ", ζ:" + isotropicMaterial.DampingRatio;
+            return $"E: {isotropicMaterial.YoungsModulus:G3}, " +
+                $"ρ: {isotropicMaterial.Density:G3}, " +
+                $"ν: {isotropicMaterial.PoissonsRatio:G3}, " +
+                $"α: {isotropicMaterial.ThermalExpansionCoeff:G3} , " +
+                $"ζ: {isotropicMaterial.DampingRatio:G3}";
         }
 
         /***************************************************/
 
         private static string MaterialAnalyticalValues(this IOrthotropic orthoTropicMaterial)
         {
-            return "E:" + orthoTropicMaterial.YoungsModulus.VectorComponents() +
-                   ", ρ:" + orthoTropicMaterial.Density +
-                   ", ν:" + orthoTropicMaterial.PoissonsRatio.VectorComponents() +
-                   ", α:" + orthoTropicMaterial.ThermalExpansionCoeff.VectorComponents() +
-                   ", ζ:" + orthoTropicMaterial.DampingRatio;
+            return $"E: {orthoTropicMaterial.YoungsModulus.VectorComponents()}, " +
+                $"ρ: { orthoTropicMaterial.Density:G3}, " +
+                $"ν: { orthoTropicMaterial.PoissonsRatio.VectorComponents()}," +
+                $"α: { orthoTropicMaterial.ThermalExpansionCoeff.VectorComponents()}," +
+                $"ζ: { orthoTropicMaterial.DampingRatio:G3}";
         }
 
         /***************************************************/
 
         private static string VectorComponents(this Vector vector)
         {
-            return (vector != null) ? "[" + vector.X + "," + vector.Y + "," + vector.Z + "]" : null;
+            return (vector != null) ? $"[{vector.X:G3}, {vector.Y:G3}, {vector.Z:G3}]" : null;
         }
 
         /***************************************************/
