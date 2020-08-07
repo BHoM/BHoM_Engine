@@ -311,7 +311,7 @@ namespace BH.Engine.Structure
             string desc = constraint.UX.DofSign() + constraint.UY.DofSign() + constraint.Normal.DofSign();
             if (constraint.IsNumericallyDependent())
             {
-                desc += "-" + constraint.KX + "," + constraint.KY + "," + constraint.KNorm; 
+                desc += "-" + constraint.KX + "," + constraint.KY + "," + constraint.KNorm;
             }
             return desc;
         }
@@ -347,7 +347,7 @@ namespace BH.Engine.Structure
             if (constraint.IsNumericallyDependent())
             {
                 desc += "-" + constraint.TranslationalStiffnessX + "," + constraint.TranslationalStiffnessY + "," + constraint.TranslationalStiffnessZ +
-                        "," + constraint.RotationalStiffnessX +  "," + constraint.RotationalStiffnessY +  "," + constraint.RotationalStiffnessZ;
+                        "," + constraint.RotationalStiffnessX + "," + constraint.RotationalStiffnessY + "," + constraint.RotationalStiffnessZ;
             }
             return desc;
         }
@@ -550,7 +550,7 @@ namespace BH.Engine.Structure
 
         private static string VectorComponents(this Vector vector)
         {
-            return "[" + vector.X + "," + vector.Y + "," + vector.Z + "]";
+            return (vector != null) ? "[" + vector.X + "," + vector.Y + "," + vector.Z + "]" : null;
         }
 
         /***************************************************/
