@@ -42,7 +42,7 @@ namespace BH.Engine.Data
         [Output("Data", "All data in the table as CustomObjects.")]
         public static List<CustomObject> Values(this Table table)
         {
-            return null; // AsCustomObjects(table.Data.Select(), table.Data.Columns);
+            return AsCustomObjects(table.Data.Select(), table.Data.Columns);
         }
 
         /***************************************************/
