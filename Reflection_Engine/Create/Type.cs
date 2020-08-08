@@ -133,8 +133,10 @@ namespace BH.Engine.Reflection
                 typeList = Query.AdapterTypeList();
             else if (name.StartsWith("BH.oM"))
                 typeList = Query.BHoMTypeList();
+            else
+                typeList = Query.AllTypeList();
 
-            List<Type> types = typeList.Where(x => x.AssemblyQualifiedName.StartsWith(name)).ToList();
+            List<Type> types = typeList.Where(x => x.AssemblyQualifiedName.Contains(name)).ToList();
 
             if (types.Count != 0)
                 return types;
