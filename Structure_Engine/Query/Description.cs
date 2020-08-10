@@ -406,7 +406,7 @@ namespace BH.Engine.Structure
         [Output("desc", "The generated description for the constraint.")]
         public static string Description(this Offset offset)
         {
-            return $"{offset.Start.VectorComponents()} - + {offset.End.VectorComponents()}";
+            return $"{offset.Start.VectorComponents()} - {offset.End.VectorComponents()}";
         }
 
         /***************************************************/
