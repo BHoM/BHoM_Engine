@@ -558,7 +558,7 @@ namespace BH.Engine.Structure
 
         private static string VectorComponents(this Vector vector)
         {
-            return (vector != null) ? $"[{vector.X:G3}, {vector.Y:G3}, {vector.Z:G3}]" : null;
+            return (vector != null) ? $"[{vector.X:G3}, {vector.Y:G3}, {vector.Z:G3}]" : "null";
         }
 
         /***************************************************/
