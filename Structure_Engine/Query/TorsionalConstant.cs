@@ -272,12 +272,25 @@ namespace BH.Engine.Structure
         [Output("J", "Torsional constant of the profile. Note that this is not the polar moment of inertia.", typeof(TorsionConstant))]
         public static double TorsionalConstant(this AngleProfile profile)
         {
-            double totalWidth = profile.Width;
-            double totalDepth = profile.Height;
+            double b = profile.Width;
+            double h = profile.Height;
             double tf = profile.FlangeThickness;
             double tw = profile.WebThickness;
 
-            return ((totalWidth - tw / 2) * Math.Pow(tf, 3) + (totalDepth - tf / 2) * Math.Pow(tw, 3)) / 3;
+            if (tf == 0 && tw == 0)
+                return 0;
+            else if (Math.Abs((tf - tw) / ((tf + tw) / 2)) < Tolerance.Distance)
+            {
+                //tw and tf equal, using equation from https://orangebook.arcelormittal.com/explanatory-notes/long-products/section-properties/
+                double t = tw;
+                double r = profile.RootRadius;
+
+                double alpha = 0.0768 + 0.0479 * r / t;
+                double D = 2 * ((3 * r + 2 * t) - Math.Sqrt(2 * Math.Pow(2 * r + t, 2)));
+                return 1d / 3d * b * Math.Pow(t, 3) + 1d / 3d * (h - t) * Math.Pow(t, 3) + alpha * Math.Pow(D, 4) - 0.21 * Math.Pow(t, 4);
+            }
+            else
+                return ((b - tw / 2) * Math.Pow(tf, 3) + (h - tf / 2) * Math.Pow(tw, 3)) / 3;
         }
 
         /***************************************************/
