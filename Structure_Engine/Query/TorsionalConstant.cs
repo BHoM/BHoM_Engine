@@ -143,7 +143,7 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Calcualtes the Torsinal constant for the profile. Note that this is not the polar moment of inertia.\n" +
-                      "Formulae taken from https://orangebook.arcelormittal.com/explanatory-notes/long-products/section-properties/")]
+                     "Formulae taken from https://orangebook.arcelormittal.com/explanatory-notes/long-products/section-properties/")]
         [Input("profile", "The ShapeProfile to calculate the torsional constant for.")]
         [Output("J", "Torsional constant of the profile. Note that this is not the polar moment of inertia.", typeof(TorsionConstant))]
         public static double TorsionalConstant(this ISectionProfile profile)
@@ -157,14 +157,15 @@ namespace BH.Engine.Structure
             double alpha = -0.042 + 0.2204 * tw / tf + 0.1355 * r / tf - 0.0865 * (r * tw) / Math.Pow(tf, 2) - 0.0725 * Math.Pow(tw / tf, 2);
             double D = (Math.Pow(tf + r, 2) + (r + 0.25 * tw) * tw) / (2 * r + tf);
 
-            //note the 'd's after the numbers needed to force values being recognised as doubles. Without 2/3 and 1/3 evaluates to 0 from integer division.
+            //Note the 'd's after the numbers needed to force values being recognised as doubles. Without 2/3 and 1/3 evaluates to 0 from integer division.
             return 2d / 3d * b * Math.Pow(tf, 3) + 1d / 3d * (height - 2 * tf) * Math.Pow(tw, 3) + 2 * alpha * Math.Pow(D, 4) - 0.420 * Math.Pow(tf, 4);
         }
 
 
         /***************************************************/
 
-        [Description("Calcualtes the Torsinal constant for the profile. Note that this is not the polar moment of inertia.")]
+        [Description("Calcualtes the Torsinal constant for the profile. Note that this is not the polar moment of inertia.\n" +
+                     "Formulae taken from https://orangebook.arcelormittal.com/explanatory-notes/long-products/section-properties/")]
         [Input("profile", "The ShapeProfile to calculate the torsional constant for.")]
         [Output("J", "Torsional constant of the profile. Note that this is not the polar moment of inertia.", typeof(TorsionConstant))]
         public static double TorsionalConstant(this ChannelProfile profile)
@@ -173,8 +174,13 @@ namespace BH.Engine.Structure
             double height = profile.Height;
             double tf = profile.FlangeThickness;
             double tw = profile.WebThickness;
+            double r = profile.RootRadius;
 
-            return (2 * (b - tw / 2) * Math.Pow(tf, 3) + (height - tf) * Math.Pow(tw, 3)) / 3;
+            double alpha = -0.0908 + 0.2621 * tw / tf + 0.1231 * r / tf - 0.0752 * (tw * r) / Math.Pow(tf, 2) - 0.0945 * Math.Pow(tw / tf, 2);
+            double D = 2 * ((3 * r + tw + tf) - Math.Sqrt(2 * (2 * r + tw) * (2 * r + tf)));
+
+            //Note the 'd's after the numbers needed to force values being recognised as doubles. Without 2/3 and 1/3 evaluates to 0 from integer division.
+            return 2d / 3d * b * Math.Pow(tf, 3) + 1d / 3d * (height - 2 * tf) * Math.Pow(tw, 3) + 2 * alpha * Math.Pow(D, 4) - 0.42 * Math.Pow(tf, 4);
         }
 
         /***************************************************/
