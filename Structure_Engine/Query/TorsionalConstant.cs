@@ -178,6 +178,8 @@ namespace BH.Engine.Structure
             double alpha = AlphaLJunction(tw, tf, r);
             double D = InscribedDiameterLJunction(tw, tf, r);
 
+            //Note that 'P385 Design of steel beams in torsion' states that the reduction in the end should only be  `- 0.210 * Math.Pow(tf, 4);`
+            //As orange and blue book is using `- 0.420 * Math.Pow(tf, 4);`, and this is more conservative, using the latter until clarified.
             return (2 * b * Math.Pow(tf, 3) + (h - 2 * tf) * Math.Pow(tw, 3)) / 3 + 2 * alpha * Math.Pow(D, 4) - 0.420 * Math.Pow(tf, 4);
         }
 
