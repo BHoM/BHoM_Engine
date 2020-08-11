@@ -202,17 +202,22 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Calcualtes the Torsinal constant for the profile. Note that this is not the polar moment of inertia.")]
+        [Description("Calcualtes the Torsinal constant for the profile. Note that this is not the polar moment of inertia.\n" +
+                     "Formulae taken from 'P385 Design of steel beams in torsion'.")]
         [Input("profile", "The ShapeProfile to calculate the torsional constant for.")]
         [Output("J", "Torsional constant of the profile. Note that this is not the polar moment of inertia.", typeof(TorsionConstant))]
         public static double TorsionalConstant(this TSectionProfile profile)
         {
-            double totalWidth = profile.Width;
-            double totalDepth = profile.Height;
+            double b = profile.Width;
+            double h = profile.Height;
             double tf = profile.FlangeThickness;
             double tw = profile.WebThickness;
+            double r = profile.RootRadius;
 
-            return (totalWidth * Math.Pow(tf, 3) + (totalDepth - tf / 2) * Math.Pow(tw, 3)) / 3;
+            double alpha = -0.042 + 0.2204 * tw / tf + 0.1355 * r / tf - 0.0865 * (r * tw) / Math.Pow(tf, 2) - 0.0725 * Math.Pow(tw / tf, 2);
+            double D = (Math.Pow(tf + r, 2) + (r + 0.25 * tw) * tw) / (2 * r + tf);
+
+            return (b * Math.Pow(tf, 3) + (h - tf) * Math.Pow(tw, 3)) / 3 + alpha * Math.Pow(D, 4) - 0.21 * Math.Pow(tf, 4) - 0.105 * Math.Pow(tw, 4);
         }
 
         /***************************************************/
@@ -330,6 +335,52 @@ namespace BH.Engine.Structure
         {
             Reflection.Compute.RecordWarning("Can not calculate Tosional constants for profiles of type " + profile.GetType().Name + ". Returned value will be 0.");
             return 0; //Return 0 for not specifically implemented ones
+        }
+
+        /***************************************************/
+        /**** Private Methods - helper methods          ****/
+        /***************************************************/
+
+        [Description("Diameter of an circles inscribed in a T-junction connection where tf is assumed to be the thickness of the top of the T. Taken from 'P385 Design of steel beams in torsion', Appendix B")]
+        [Input("tw", "Web thickness, assumed to be the stem of the T.", typeof(Length))]
+        [Input("tf", "Flange thickness, assumed to be the top of the T.", typeof(Length))]
+        [Input("r", "Root radius, assumed to be the same on both sides of the T.", typeof(Length))]
+        private static double InscribedDiameterTJunction(double tw, double tf, double r)
+        {
+            return (Math.Pow(tf + r, 2) + (r + 0.25 * tw) * tw) / (2 * r + tf);
+        }
+
+        /***************************************************/
+
+        [Description("Diameter of an circles inscribed in a L-junction connection. Taken from 'P385 Design of steel beams in torsion', Appendix B")]
+        [Input("tw", "Web thickness.", typeof(Length))]
+        [Input("tf", "Flange thickness.", typeof(Length))]
+        [Input("r", "Root radius.", typeof(Length))]
+        private static double InscribedDiameterLJunction(double tw, double tf, double r)
+        {
+            return 2 * ((3 * r + tw + tf) - Math.Sqrt(2 * (2 * r + tw) * (2 * r + tf)));
+        }
+
+        /***************************************************/
+
+        [Description("Emperical formula used to correct the torsional constant with enhancement from a T-junction. Taken from 'P385 Design of steel beams in torsion', Appendix B")]
+        [Input("tw", "Web thickness, assumed to be the stem of the T.", typeof(Length))]
+        [Input("tf", "Flange thickness, assumed to be the top of the T.", typeof(Length))]
+        [Input("r", "Root radius, assumed to be the same on both sides of the T.", typeof(Length))]
+        private static double AlphaTJunction(double tw, double tf, double r)
+        {
+            return -0.042 + 0.2204 * tw / tf + 0.1355 * r / tf - 0.0865 * (r * tw) / Math.Pow(tf, 2) - 0.0725 * Math.Pow(tw / tf, 2);
+        }
+
+        /***************************************************/
+
+        [Description("Emperical formula used to correct the torsional constant with enhancement from a L-junction. Taken from 'P385 Design of steel beams in torsion', Appendix B")]
+        [Input("tw", "Web thickness.", typeof(Length))]
+        [Input("tf", "Flange thickness.", typeof(Length))]
+        [Input("r", "Root radius.", typeof(Length))]
+        private static double AlphaLJunction(double tw, double tf, double r)
+        {
+            return -0.0908 + 0.2621 * tw / tf + 0.1231 * r / tf - 0.0752 * (tw * r) / Math.Pow(tf, 2) - 0.0945 * Math.Pow(tw / tf, 2);
         }
 
         /***************************************************/
