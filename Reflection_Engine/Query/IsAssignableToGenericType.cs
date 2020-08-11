@@ -65,7 +65,8 @@ namespace BH.Engine.Reflection
 
             //Check if given type contains a base type
             Type baseType = givenType.BaseType;
-            if (baseType == null) return false;
+            if (baseType == null)
+                return false;
 
             //Reqursively check the base type
             return IsAssignableToGenericType(baseType, genericType);

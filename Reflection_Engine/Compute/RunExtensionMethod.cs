@@ -101,16 +101,14 @@ namespace BH.Engine.Reflection
                         break;
                     }
                 }
+
                 if (!matchingTypes)
                     continue;
 
-                MethodInfo finalMethod = method;
-
                 //If method is generic, make sure the appropriate generic arguments are set
-                if (method.IsGenericMethod)
-                    finalMethod = method.MakeGenericFromInputs(parameters.Select(x => x.GetType()).ToList());
+                MethodInfo finalMethod = method.MakeGenericFromInputs(parameters.Select(x => x.GetType()).ToList());
 
-                //TUrn the MethodInfo to a compiled function, store it and finally call it
+                //Turn the MethodInfo to a compiled function, store it and finally call it
                 Func<object[], object> func = finalMethod.ToFunc();
                 StoreExtensionMethod(key, func);
                 return func(parameters);
