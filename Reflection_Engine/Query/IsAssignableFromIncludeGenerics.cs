@@ -37,7 +37,7 @@ namespace BH.Engine.Reflection
 
         [Description("Checks if a type is assignable from another type by first checking the system IsAssignableFrom and, if this is false, checks if the assignable is generic and tests if it can be assigned as a generics version.")]
         [Input("assignableTo", "The type to check if it can be assigned to.")]
-        [Input("assignableTo", "The type to check if it can be assigned from.")]
+        [Input("assignableFrom", "The type to check if it can be assigned from.")]
         [Output("result", "Returns true if 'assignableTo' is assignable from 'assignableFrom'.")]
         public static bool IsAssignableFromIncludeGenerics(this Type assignableTo, Type assignableFrom)
         {
