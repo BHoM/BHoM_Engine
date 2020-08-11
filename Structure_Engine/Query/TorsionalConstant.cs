@@ -149,16 +149,15 @@ namespace BH.Engine.Structure
         public static double TorsionalConstant(this ISectionProfile profile)
         {
             double b = profile.Width;
-            double height = profile.Height;
+            double h = profile.Height;
             double tf = profile.FlangeThickness;
             double tw = profile.WebThickness;
             double r = profile.RootRadius;
 
-            double alpha = -0.042 + 0.2204 * tw / tf + 0.1355 * r / tf - 0.0865 * (r * tw) / Math.Pow(tf, 2) - 0.0725 * Math.Pow(tw / tf, 2);
-            double D = (Math.Pow(tf + r, 2) + (r + 0.25 * tw) * tw) / (2 * r + tf);
+            double alpha = AlphaTJunction(tw, tf, r);
+            double D = InscribedDiameterTJunction(tw, tf, r);
 
-            //Note the 'd's after the numbers needed to force values being recognised as doubles. Without 2/3 and 1/3 evaluates to 0 from integer division.
-            return 2d / 3d * b * Math.Pow(tf, 3) + 1d / 3d * (height - 2 * tf) * Math.Pow(tw, 3) + 2 * alpha * Math.Pow(D, 4) - 0.420 * Math.Pow(tf, 4);
+            return (2 * b * Math.Pow(tf, 3) + (h - 2 * tf) * Math.Pow(tw, 3)) / 3 + 2 * alpha * Math.Pow(D, 4) - 0.42 * Math.Pow(tf, 4);
         }
 
 
@@ -171,16 +170,15 @@ namespace BH.Engine.Structure
         public static double TorsionalConstant(this ChannelProfile profile)
         {
             double b = profile.FlangeWidth;
-            double height = profile.Height;
+            double h = profile.Height;
             double tf = profile.FlangeThickness;
             double tw = profile.WebThickness;
             double r = profile.RootRadius;
 
-            double alpha = -0.0908 + 0.2621 * tw / tf + 0.1231 * r / tf - 0.0752 * (tw * r) / Math.Pow(tf, 2) - 0.0945 * Math.Pow(tw / tf, 2);
-            double D = 2 * ((3 * r + tw + tf) - Math.Sqrt(2 * (2 * r + tw) * (2 * r + tf)));
+            double alpha = AlphaLJunction(tw, tf, r);
+            double D = InscribedDiameterLJunction(tw, tf, r);
 
-            //Note the 'd's after the numbers needed to force values being recognised as doubles. Without 2/3 and 1/3 evaluates to 0 from integer division.
-            return 2d / 3d * b * Math.Pow(tf, 3) + 1d / 3d * (height - 2 * tf) * Math.Pow(tw, 3) + 2 * alpha * Math.Pow(D, 4) - 0.42 * Math.Pow(tf, 4);
+            return (2 * b * Math.Pow(tf, 3) + (h - 2 * tf) * Math.Pow(tw, 3)) / 3 + 2 * alpha * Math.Pow(D, 4) - 0.420 * Math.Pow(tf, 4);
         }
 
         /***************************************************/
@@ -214,8 +212,8 @@ namespace BH.Engine.Structure
             double tw = profile.WebThickness;
             double r = profile.RootRadius;
 
-            double alpha = -0.042 + 0.2204 * tw / tf + 0.1355 * r / tf - 0.0865 * (r * tw) / Math.Pow(tf, 2) - 0.0725 * Math.Pow(tw / tf, 2);
-            double D = (Math.Pow(tf + r, 2) + (r + 0.25 * tw) * tw) / (2 * r + tf);
+            double alpha = AlphaTJunction(tw, tf, r);
+            double D = InscribedDiameterTJunction(tw, tf, r);
 
             return (b * Math.Pow(tf, 3) + (h - tf) * Math.Pow(tw, 3)) / 3 + alpha * Math.Pow(D, 4) - 0.21 * Math.Pow(tf, 4) - 0.105 * Math.Pow(tw, 4);
         }
@@ -272,7 +270,8 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Calcualtes the Torsinal constant for the profile. Note that this is not the polar moment of inertia.")]
+        [Description("Calcualtes the Torsinal constant for the profile. Note that this is not the polar moment of inertia.\n" +
+                     "Formulae taken from 'P385 Design of steel beams in torsion'.")]
         [Input("profile", "The ShapeProfile to calculate the torsional constant for.")]
         [Output("J", "Torsional constant of the profile. Note that this is not the polar moment of inertia.", typeof(TorsionConstant))]
         public static double TorsionalConstant(this AngleProfile profile)
@@ -281,21 +280,12 @@ namespace BH.Engine.Structure
             double h = profile.Height;
             double tf = profile.FlangeThickness;
             double tw = profile.WebThickness;
+            double r = profile.RootRadius;
 
-            if (tf == 0 && tw == 0)
-                return 0;
-            else if (Math.Abs((tf - tw) / ((tf + tw) / 2)) < Tolerance.Distance)
-            {
-                //tw and tf equal, using equation from https://orangebook.arcelormittal.com/explanatory-notes/long-products/section-properties/
-                double t = tw;
-                double r = profile.RootRadius;
+            double alpha = AlphaLJunction(tw, tf, r);
+            double D = InscribedDiameterLJunction(tw, tf, r);
 
-                double alpha = 0.0768 + 0.0479 * r / t;
-                double D = 2 * ((3 * r + 2 * t) - Math.Sqrt(2 * Math.Pow(2 * r + t, 2)));
-                return 1d / 3d * b * Math.Pow(t, 3) + 1d / 3d * (h - t) * Math.Pow(t, 3) + alpha * Math.Pow(D, 4) - 0.21 * Math.Pow(t, 4);
-            }
-            else
-                return ((b - tw / 2) * Math.Pow(tf, 3) + (h - tf / 2) * Math.Pow(tw, 3)) / 3;
+            return (b * Math.Pow(tf, 3) + (h - tf) * Math.Pow(tw, 3)) / 3 + alpha * Math.Pow(D, 4) - 0.105 * Math.Pow(tf, 4) - 0.105 * Math.Pow(tw, 4);
         }
 
         /***************************************************/
