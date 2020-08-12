@@ -40,9 +40,9 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns the roof panels of a space represented by Environment Panels")]
+        [Description("Modifies a collection of Panels and sets their type to be roof or ceiling if they are the highest panel in the space. If the panel has one connected space then it is deemed to be a roof panel, otherwise it is a ceiling panel")]
         [Input("panelsAsSpace", "A collection of Environment Panels that represent a closed space")]
-        [Output("roofPanels", "BHoM Environment panel representing the roof of the space")]
+        [Output("panelsAsSpace", "BHoM Environment panels representing a closed space where the roof or ceiling panels have had their type set")]
         public static List<Panel> SetRoofPanels(this List<Panel> panelsAsSpace)
         {
             List<Panel> clones = new List<Panel>(panelsAsSpace.Select(x => x.DeepClone<Panel>()).ToList());
@@ -75,7 +75,7 @@ namespace BH.Engine.Environment
                     panel.Type = PanelType.FloorInternal;
             }
 
-            return roofPanels;
+            return clones;
         }
     }
 }
