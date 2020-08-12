@@ -59,6 +59,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Modify\SetGeometry.cs" />
     <Compile Include="Modify\SetInternalElements2D.cs" />
     <Compile Include="Modify\SetOutlineElements1D.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
