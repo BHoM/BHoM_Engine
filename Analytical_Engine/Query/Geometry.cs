@@ -39,6 +39,37 @@ namespace BH.Engine.Analytical
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Gets the geometry of a Node as a Point. Method required for automatic display in UI packages.")]
+        [Input("node", "Node to get the Point from.")]
+        [Output("point", "The geometry of the Node.")]
+        public static Point Geometry(this INode node)
+        {
+            return node.Position;
+        }
+
+        /***************************************************/
+
+        [Description("Gets the geometry of a Bar as its centreline. Method required for automatic display in UI packages.")]
+        [Input("bar", "Bar to get the centreline geometry from.")]
+        [Output("line", "The geometry of the Bar as its centreline.")]
+        public static Line Geometry<TNode>(this ILink<TNode> link)
+            where TNode : INode
+        {
+            return new Line { Start = link.StartNode.Position, End = link.EndNode.Position };
+        }
+
+        /***************************************************/
+
+        [Description("Gets the geometry of a Edge as its Curve. Method required for automatic display in UI packages.")]
+        [Input("edge", "Edge to get the curve geometry from.")]
+        [Output("curve", "The geometry of the Edge as its Curve.")]
+        public static ICurve Geometry(this IEdge edge)
+        {
+            return edge.Curve;
+        }
+
+        /***************************************************/
+
         [Description("Gets the geometry of a analytical Panel at its centre. Method required for automatic display in UI packages.")]
         [Input("panel", "Panel to get the planar surface geometry from.")]
         [Output("surface", "The geometry of the analytical Panel at its centre.")]
