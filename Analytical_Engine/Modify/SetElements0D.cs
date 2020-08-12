@@ -36,17 +36,17 @@ namespace BH.Engine.Structure
         /****            IElement1D            ****/
         /******************************************/
 
-        [Description("Sets the IElement0Ds of the Bar, i.e. its two end Nodes or Points. Method required for IElement1Ds.")]
+        [Description("Sets the IElement0Ds of the ILink, i.e. its two end Nodes or Points. Method required for IElement1Ds.")]
         [Input("bar", "The Bar to set the IElement0Ds to.")]
         [Input("newElements0D", "The new IElement0Ds of the ILink. Should be a list of length two, containing exactly two analytical Nodes mathcing the type of the ILink or Geometrical Points. \n" +
-                                "Points will assigin default end properties to the Bar, i.e. Fixed releases, no support.")]
+                                "Points will assigin default end properties to the ILink.")]
         [Output("bar", "The ILink with updated Nodes.")]
         public static ILink<TNode> SetElements0D<TNode>(this ILink<TNode> link, List<IElement0D> newElements0D)
             where TNode : class, INode, new()
         {
             if (newElements0D.Count != 2)
             {
-                Reflection.Compute.RecordError("A bar is defined by 2 nodes.");
+                Reflection.Compute.RecordError("A ILink is defined by 2 nodes.");
                 return null;
             }
 
@@ -55,8 +55,7 @@ namespace BH.Engine.Structure
             // Default the ILink end if the input is an Point
             if (newElements0D[0] is Point)
             {
-                clone.StartNode = new TNode();
-                clone.StartNode.Position = newElements0D[0] as Point;
+                clone.StartNode = new TNode() { Position = newElements0D[0] as Point };
             }
             else
                 clone.StartNode = newElements0D[0] as TNode;
@@ -64,8 +63,7 @@ namespace BH.Engine.Structure
             // Default the ILink end if the input is an Point
             if (newElements0D[1] is Point)
             {
-                clone.EndNode = new TNode();
-                clone.EndNode.Position = newElements0D[0] as Point;
+                clone.EndNode = new TNode() { Position = newElements0D[1] as Point };
             }
             else
                 clone.EndNode = newElements0D[1] as TNode;
