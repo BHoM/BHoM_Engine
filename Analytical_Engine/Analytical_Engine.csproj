@@ -59,6 +59,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Create\INewInternalElement2D.cs" />
     <Compile Include="Modify\SetElements0D.cs" />
     <Compile Include="Modify\SetGeometry.cs" />
     <Compile Include="Modify\SetInternalElements2D.cs" />
@@ -70,7 +71,6 @@
   <ItemGroup>
     <Folder Include="Compute\" />
     <Folder Include="Convert\" />
-    <Folder Include="Create\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BHoM_Engine\BHoM_Engine.csproj">
