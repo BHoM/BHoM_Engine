@@ -40,17 +40,17 @@ namespace BH.Engine.MEP
         [Input("liningThickness", "Thickness for the interior duct lining to be added to the overall section profile.")]
         [Input("insulationThickness", "Thickness for the exterior duct insulation to be added to the overall section profile.")]
 
-        public static SectionProfile SectionProfile(BoxProfile shapeProfile, double liningThickness, double insulationThickness)
+        public static SectionProfile SectionProfile(BoxProfile boxProfile, double liningThickness, double insulationThickness)
         {
             //Internal offset of original ShapeProfile
-            IProfile liningProfile = BH.Engine.Geometry.Create.BoxProfile(shapeProfile.Height, shapeProfile.Width, shapeProfile.Thickness + liningThickness, shapeProfile.OuterRadius, shapeProfile.InnerRadius);
+            IProfile liningProfile = BH.Engine.Geometry.Create.BoxProfile((boxProfile.Height - (boxProfile.Thickness * 2)), (boxProfile.Width - (boxProfile.Thickness * 2)), liningThickness, boxProfile.OuterRadius, boxProfile.InnerRadius);
 
             //External offset of original ShapeProfile
-            IProfile insulationProfile = BH.Engine.Geometry.Create.BoxProfile(shapeProfile.Height, shapeProfile.Width, (insulationThickness * -1), shapeProfile.OuterRadius, shapeProfile.InnerRadius);
+            IProfile insulationProfile = BH.Engine.Geometry.Create.BoxProfile((boxProfile.Height + (insulationThickness * 2)), (boxProfile.Width + (insulationThickness * 2)), insulationThickness, boxProfile.InnerRadius, boxProfile.OuterRadius);
 
             return new oM.MEP.SectionProperties.SectionProfile
             {
-                ElementProfile = shapeProfile,
+                ElementProfile = boxProfile,
                 LiningProfile = liningProfile,
                 InsulationProfile = insulationProfile,
             };
@@ -61,17 +61,17 @@ namespace BH.Engine.MEP
         [Input("liningThickness", "Thickness for the interior duct lining to be added to the overall section profile.")]
         [Input("insulationThickness", "Thickness for the exterior duct insulation to be added to the overall section profile.")]
 
-        public static SectionProfile SectionProfile(TubeProfile shapeProfile, double liningThickness, double insulationThickness)
+        public static SectionProfile SectionProfile(TubeProfile tubeProfile, double liningThickness, double insulationThickness)
         {
             //Internal offset of original ShapeProfile
-            IProfile liningProfile = BH.Engine.Geometry.Create.TubeProfile(shapeProfile.Diameter, shapeProfile.Thickness + liningThickness);
+            IProfile liningProfile = BH.Engine.Geometry.Create.TubeProfile(tubeProfile.Diameter, tubeProfile.Thickness + liningThickness);
 
             //External offset of original ShapeProfile
-            IProfile insulationProfile = BH.Engine.Geometry.Create.TubeProfile(shapeProfile.Diameter, (insulationThickness * -1));
+            IProfile insulationProfile = BH.Engine.Geometry.Create.TubeProfile(tubeProfile.Diameter, (insulationThickness * -1));
 
             return new oM.MEP.SectionProperties.SectionProfile
             {
-                ElementProfile = shapeProfile,
+                ElementProfile = tubeProfile,
                 LiningProfile = liningProfile,
                 InsulationProfile = insulationProfile,
             };
