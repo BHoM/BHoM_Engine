@@ -40,7 +40,7 @@ namespace BH.Engine.Structure
 
         [Description("Sets the Outline Element1Ds of an opening, i.e. the Edges of an Opening. Method required for all IElement2Ds.")]
         [Input("opening", "The Opening to update the Edges of.")]
-        [Input("edges", "A list of IElement1Ds which all should be of a type Edge accepted by the Opening or Geometrical ICurve. \n" +
+        [Input("edges", "A list of IElement1Ds which all should be of a type of Edge accepted by the Opening or Geometrical ICurve. \n" +
                 "ICurve will default the outlines properties.")]
         [Output("opening", "The opening with updated Edges.")]
         public static IOpening<TEdge> SetOutlineElements1D<TEdge>(this IOpening<TEdge> opening, IEnumerable<IElement1D> edges)
@@ -53,11 +53,11 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Sets the outline Element1Ds of a Panel, i.e. the ExternalEdges of a Panel. Method required for all IElement2Ds.")]
-        [Input("panel", "The Panel to update the ExternalEdges of.")]
-        [Input("edges", "A list of IElement1Ds which all should be of a type Edge accepted by the Panel or Geometrical ICurve. \n" +
+        [Description("Sets the outline Element1Ds of a IPanel, i.e. the ExternalEdges of a IPanel. Method required for all IElement2Ds.")]
+        [Input("panel", "The IPanel to update the ExternalEdges of.")]
+        [Input("edges", "A list of IElement1Ds which all should be of a type of Edge accepted by the IPanel or Geometrical ICurve. \n" +
                         "ICurve will default the outlines properties.")]
-        [Output("panel", "The Panel with updated ExternalEdges.")]
+        [Output("panel", "The IPanel with updated ExternalEdges.")]
         public static IPanel<TEdge, TOpening> SetOutlineElements1D<TEdge, TOpening>(this IPanel<TEdge, TOpening> panel, IEnumerable<IElement1D> edges)
             where TEdge : class, IEdge, new()
             where TOpening : IOpening<TEdge>

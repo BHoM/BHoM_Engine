@@ -52,10 +52,10 @@ namespace BH.Engine.Analytical
         /***************************************************/
 
         [Description("Updates geometry of an ILink by updating the positions of its end Nodes.")]
-        [Input("bar", "The ILink to update.")]
+        [Input("link", "The ILink to update.")]
         [Input("curve", "The new centreline curve of the ILink. Should be a linear curve. \n" +
                         "The start point of the curve will be used to set the position of the StartNode and the end point to set the position of the EndNode.")]
-        [Output("bar", "The Bar with updated geometry.")]
+        [Output("link", "The ILink with updated geometry.")]
         public static ILink<TNode> SetGeometry<TNode>(this ILink<TNode> link, ICurve curve)
             where TNode : class, INode
         {
@@ -73,10 +73,10 @@ namespace BH.Engine.Analytical
 
         /***************************************************/
 
-        [Description("Updates the curve geometry of an Edge.")]
-        [Input("edge", "The Edge to update.")]
-        [Input("curve", "The curve to set to the Edge.")]
-        [Output("edge", "The Edge with updated geometry.")]
+        [Description("Updates the curve geometry of an IEdge.")]
+        [Input("edge", "The IEdge to update.")]
+        [Input("curve", "The curve to set to the IEdge.")]
+        [Output("edge", "The IEdge with updated geometry.")]
         public static IEdge SetGeometry(this IEdge edge, ICurve curve)
         {
             IEdge clone = edge.GetShallowClone(true) as IEdge;

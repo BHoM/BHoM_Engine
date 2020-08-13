@@ -39,9 +39,9 @@ namespace BH.Engine.Analytical
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Gets the geometry of a Node as a Point. Method required for automatic display in UI packages.")]
-        [Input("node", "Node to get the Point from.")]
-        [Output("point", "The geometry of the Node.")]
+        [Description("Gets the geometry of a INode as a Point. Method required for automatic display in UI packages.")]
+        [Input("node", "INode to get the Point from.")]
+        [Output("point", "The geometry of the INode.")]
         public static Point Geometry(this INode node)
         {
             return node.Position;
@@ -60,9 +60,9 @@ namespace BH.Engine.Analytical
 
         /***************************************************/
 
-        [Description("Gets the geometry of a Edge as its Curve. Method required for automatic display in UI packages.")]
-        [Input("edge", "Edge to get the curve geometry from.")]
-        [Output("curve", "The geometry of the Edge as its Curve.")]
+        [Description("Gets the geometry of a IEdge as its Curve. Method required for automatic display in UI packages.")]
+        [Input("edge", "IEdge to get the curve geometry from.")]
+        [Output("curve", "The geometry of the IEdge as its Curve.")]
         public static ICurve Geometry(this IEdge edge)
         {
             return edge.Curve;
@@ -70,9 +70,9 @@ namespace BH.Engine.Analytical
 
         /***************************************************/
 
-        [Description("Gets the geometry of a analytical Panel at its centre. Method required for automatic display in UI packages.")]
-        [Input("panel", "Panel to get the planar surface geometry from.")]
-        [Output("surface", "The geometry of the analytical Panel at its centre.")]
+        [Description("Gets the geometry of a analytical IPanel at its centre. Method required for automatic display in UI packages.")]
+        [Input("panel", "IPanel to get the planar surface geometry from.")]
+        [Output("surface", "The geometry of the analytical IPanel at its centre.")]
         public static PlanarSurface Geometry<TEdge, TOpening>(this IPanel<TEdge, TOpening> panel)
             where TEdge : IEdge
             where TOpening : IOpening<TEdge>
@@ -84,9 +84,9 @@ namespace BH.Engine.Analytical
 
         /***************************************************/
 
-        [Description("Gets the geometry of a analytical Opening as an outline curve. Method required for automatic display in UI packages.")]
-        [Input("opening", "Opening to get the outline geometry from.")]
-        [Output("surface", "The geometry of the analytical Opening.")]
+        [Description("Gets the geometry of a analytical IOpening as an outline curve. Method required for automatic display in UI packages.")]
+        [Input("opening", "IOpening to get the outline geometry from.")]
+        [Output("surface", "The geometry of the analytical IOpening.")]
         public static PolyCurve Geometry<TEdge>(this IOpening<TEdge> opening)
             where TEdge : IEdge
 
@@ -96,9 +96,9 @@ namespace BH.Engine.Analytical
 
         /***************************************************/
 
-        [Description("Gets the geometry of a analytical Surface at its centre. Method required for automatic display in UI packages.")]
-        [Input("surface", "Analytical Surface to get the geometrical Surface geometry from.")]
-        [Output("surface", "The geometry of the structural Sufarce at its centre.")]
+        [Description("Gets the geometry of a analytical ISurface at its centre. Method required for automatic display in UI packages.")]
+        [Input("surface", "Analytical ISurface to get the geometrical Surface geometry from.")]
+        [Output("surface", "The underlying surface geometry of the analytical ISurface at its centre.")]
         public static IGeometry Geometry(this BH.oM.Analytical.Elements.ISurface surface)
         {
             return surface.Extents;
@@ -107,8 +107,8 @@ namespace BH.Engine.Analytical
         /***************************************************/
 
         [Description("Gets the geometry of a analytical IMesh as a geometrical Mesh. A geometrical mesh only supports 3 and 4 nodes faces, while a FEMesh does not have this limitation. For FEMeshFaces with more than 4 nodes or less than 3 this operation is therefore not possible. Method required for automatic display in UI packages.")]
-        [Input("feMesh", "Analytical IMesh to get the mesh geometry from.")]
-        [Output("mesh", "The geometry of the FEMesh as a geometrical Mesh.")]
+        [Input("mesh", "Analytical IMesh to get the mesh geometry from.")]
+        [Output("mesh", "The geometry of the IMesh as a geometrical Mesh.")]
         public static Mesh Geometry<TNode, TFace>(this IMesh<TNode, TFace> mesh)
             where TNode : INode
             where TFace : IFace
@@ -125,13 +125,13 @@ namespace BH.Engine.Analytical
         /***************************************************/
 
         [Description("Gets the geometry of a collection of IFaces as a geometrical Mesh's Faces. A geometrical mesh face only supports 3 and 4 nodes faces, while a FEMeshFace does not have this limitation. For FEMeshFaces with more than 4 nodes or less than 3 this operation is therefore not possible. Method required for automatic display in UI packages.")]
-        [Input("feFaces", "Analytical IFaces to get the mesh faces geometry from.")]
-        [Output("faces", "The geometry of the FEMeshFaces as geometrical Mesh Faces.")]
-        public static IEnumerable<Face> Geometry<TFace>(this IEnumerable<TFace> feFaces)
+        [Input("faces", "Analytical IFaces to get the mesh faces geometry from.")]
+        [Output("faces", "The geometry of the IFaces as geometrical Mesh Faces.")]
+        public static IEnumerable<Face> Geometry<TFace>(this IEnumerable<TFace> faces)
             where TFace : IFace
         {
             List<Face> result = new List<Face>();
-            foreach (IFace feFace in feFaces)
+            foreach (IFace feFace in faces)
             {
                 Face face = Geometry(feFace);
                 if (face != null)
@@ -143,32 +143,32 @@ namespace BH.Engine.Analytical
         /***************************************************/
 
         [Description("Gets the geometry of a analytical IFace as a geometrical Mesh's Face. A geometrical mesh face only supports 3 and 4 nodes faces, while a FEMeshFace does not have this limitation. For FEMeshFaces with more than 4 nodes or less than 3 this operation is therefore not possible. Method required for automatic display in UI packages.")]
-        [Input("feFace", "Analytical IFace to get the mesh face geometry from.")]
-        [Output("face", "The geometry of the FEMeshFace as geometrical Mesh Face.")]
-        public static Face Geometry(this IFace iface)
+        [Input("face", "Analytical IFace to get the mesh face geometry from.")]
+        [Output("face", "The geometry of the IFace as geometrical Mesh Face.")]
+        public static Face Geometry(this IFace face)
         {
 
-            if (iface.NodeListIndices.Count < 3)
+            if (face.NodeListIndices.Count < 3)
             {
                 Reflection.Compute.RecordError("Insuffiecient node indices");
                 return null;
             }
-            if (iface.NodeListIndices.Count > 4)
+            if (face.NodeListIndices.Count > 4)
             {
                 Reflection.Compute.RecordError("To high number of node indices. Can only handle triangular and quads");
                 return null;
             }
 
-            Face face = new Face();
+            Face geomFace = new Face();
 
-            face.A = iface.NodeListIndices[0];
-            face.B = iface.NodeListIndices[1];
-            face.C = iface.NodeListIndices[2];
+            geomFace.A = face.NodeListIndices[0];
+            geomFace.B = face.NodeListIndices[1];
+            geomFace.C = face.NodeListIndices[2];
 
-            if (iface.NodeListIndices.Count == 4)
-                face.D = iface.NodeListIndices[3];
+            if (face.NodeListIndices.Count == 4)
+                geomFace.D = face.NodeListIndices[3];
 
-            return face;
+            return geomFace;
         }
 
     }

@@ -37,10 +37,10 @@ namespace BH.Engine.Structure
         /****               Public Methods              ****/
         /***************************************************/
 
-        [Description("Sets internal IElement2Ds of a Panel, i.e. sets the Openings of a Panel. Method required for all IElement2Ds.")]
-        [Input("panel", "The Panel to update.")]
-        [Input("openings", "The internal IElement2Ds to set. For a Panel this should be a list of Openings matching the type of the panel.")]
-        [Output("panel", "The Panel with updated Openings.")]
+        [Description("Sets internal IElement2Ds of a IPanel, i.e. sets the Openings of an IPanel. Method required for all IElement2Ds.")]
+        [Input("panel", "The IPanel to update.")]
+        [Input("openings", "The internal IElement2Ds to set. For an IPanel this should be a list of Openings matching the type of the IPanel.")]
+        [Output("panel", "The IPanel with updated Openings.")]
         public static IPanel<TEdge, TOpening> SetInternalElements2D<TEdge, TOpening>(this IPanel<TEdge, TOpening> panel, List<IElement2D> openings)
     where TEdge : IEdge
     where TOpening : IOpening<TEdge>

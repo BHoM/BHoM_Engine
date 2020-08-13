@@ -37,10 +37,10 @@ namespace BH.Engine.Structure
         /******************************************/
 
         [Description("Sets the IElement0Ds of the ILink, i.e. its two end Nodes or Points. Method required for IElement1Ds.")]
-        [Input("bar", "The Bar to set the IElement0Ds to.")]
+        [Input("link", "The ILink to set the IElement0Ds to.")]
         [Input("newElements0D", "The new IElement0Ds of the ILink. Should be a list of length two, containing exactly two analytical Nodes mathcing the type of the ILink or Geometrical Points. \n" +
                                 "Points will assigin default end properties to the ILink.")]
-        [Output("bar", "The ILink with updated Nodes.")]
+        [Output("link", "The ILink with updated Nodes.")]
         public static ILink<TNode> SetElements0D<TNode>(this ILink<TNode> link, List<IElement0D> newElements0D)
             where TNode : class, INode, new()
         {
