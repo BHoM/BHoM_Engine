@@ -46,8 +46,8 @@ namespace BH.Engine.Structure
             return new RigidLink
             {
                 Name = name,
-                MasterNode = masterNode,
-                SlaveNodes = slaveNodes.ToList(),
+                PrimaryNode = masterNode,
+                SecondaryNodes = slaveNodes.ToList(),
                 Constraint = constraint == null ? LinkConstraintFixed() : constraint
             };
 
