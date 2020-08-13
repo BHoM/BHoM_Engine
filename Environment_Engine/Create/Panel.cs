@@ -82,10 +82,23 @@ namespace BH.Engine.Environment
             if (connectedSpaceName == null)
                 connectedSpaceName = Guid.NewGuid().ToString();
 
+            List<Polyline> openingLines = surface.IExternalEdges().Select(x => x.ICollapseToPolyline(angleTolerance)).ToList();
+            List<Opening> openings = new List<Opening>();
+
+            foreach(Polyline p in openingLines)
+            {
+                openings.Add(new Opening
+                {
+                    Edges = p.ToEdges(),
+                    Type = OpeningType.Window,
+                });
+            }
+
             return new Panel
             {
                 ExternalEdges = surface.IExternalEdges().Select(x => x.ICollapseToPolyline(angleTolerance)).ToList().Join().ToEdges(),
                 ConnectedSpaces = new List<string> { connectedSpaceName },
+                Openings = openings,
             };
         }
 
