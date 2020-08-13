@@ -118,16 +118,16 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Gets the geometry of a RigidLink as a list of lines between the master node and the slave nodes. Method required for automatic display in UI packages.")]
+        [Description("Gets the geometry of a RigidLink as a list of lines between the primary node and the secondary nodes. Method required for automatic display in UI packages.")]
         [Input("link", "RigidLink to get the line geometry from.")]
-        [Output("lines", "The geometry of the RigidLink as a list of master-slave lines.")]
+        [Output("lines", "The geometry of the RigidLink as a list of primary-secondary lines.")]
         public static IGeometry Geometry(this RigidLink link)
         {
             List<IGeometry> lines = new List<IGeometry>();
 
-            foreach (Node sn in link.SlaveNodes)
+            foreach (Node sn in link.SecondaryNodes)
             {
-                lines.Add(new Line() { Start = link.MasterNode.Position, End = sn.Position });
+                lines.Add(new Line() { Start = link.PrimaryNode.Position, End = sn.Position });
             }
             return new CompositeGeometry() { Elements = lines };
         }
