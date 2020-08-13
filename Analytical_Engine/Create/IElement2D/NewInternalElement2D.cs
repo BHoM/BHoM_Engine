@@ -28,7 +28,7 @@ using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
 
 
-namespace BH.Engine.Structure
+namespace BH.Engine.Analytical
 {
     public static partial class Create
     {
