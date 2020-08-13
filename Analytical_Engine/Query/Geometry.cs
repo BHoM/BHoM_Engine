@@ -85,7 +85,7 @@ namespace BH.Engine.Analytical
         /***************************************************/
 
         [Description("Gets the geometry of a analytical Surface at its centre. Method required for automatic display in UI packages.")]
-        [Input("surface", "ANalytical Surface to get the geometrical Surface geometry from.")]
+        [Input("surface", "Analytical Surface to get the geometrical Surface geometry from.")]
         [Output("surface", "The geometry of the structural Sufarce at its centre.")]
         public static IGeometry Geometry(this BH.oM.Analytical.Elements.ISurface surface)
         {
