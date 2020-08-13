@@ -20,6 +20,7 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using System;
 using BH.oM.Dimensional;
 using BH.oM.Geometry;
 using BH.oM.Analytical.Elements;
@@ -44,10 +45,11 @@ namespace BH.Engine.Analytical
                 "ICurve will default the outlines properties.")]
         [Output("opening", "The opening with updated Edges.")]
         public static IOpening<TEdge> SetOutlineElements1D<TEdge>(this IOpening<TEdge> opening, IEnumerable<IElement1D> edges)
-                where TEdge : class, IEdge, new()
+                where TEdge : IEdge
         {
             IOpening<TEdge> o = opening.GetShallowClone(true) as IOpening<TEdge>;
-            o.Edges = edges.Select(x => x is ICurve ? new TEdge() { Curve = (x as ICurve) } : x as TEdge).ToList();
+
+            o.Edges = ConvertToEdges<TEdge>(edges);
             return o;
         }
 
@@ -59,12 +61,39 @@ namespace BH.Engine.Analytical
                         "ICurve will default the outlines properties.")]
         [Output("panel", "The IPanel with updated ExternalEdges.")]
         public static IPanel<TEdge, TOpening> SetOutlineElements1D<TEdge, TOpening>(this IPanel<TEdge, TOpening> panel, IEnumerable<IElement1D> edges)
-            where TEdge : class, IEdge, new()
+            where TEdge : IEdge
             where TOpening : IOpening<TEdge>
         {
             IPanel<TEdge, TOpening> pp = panel.GetShallowClone(true) as IPanel<TEdge, TOpening>;
-            pp.ExternalEdges = edges.Select(x => x is ICurve ? new TEdge() { Curve = (x as ICurve) } : x as TEdge).ToList();
+
+            pp.ExternalEdges = ConvertToEdges<TEdge>(edges);
             return pp;
+        }
+
+        /***************************************************/
+        /****               Private Methods             ****/
+        /***************************************************/
+
+        [Description("Takes a list of IElement1D and returns a TEdge for each element. If the IElement1D is a curve a new TEdge is created and assigned the curve. If not, the IElement1D is cast to the TEdge.")]
+        private static List<TEdge> ConvertToEdges<TEdge>(IEnumerable<IElement1D> element1ds)
+            where TEdge : IEdge
+        {
+            List<TEdge> edges = new List<TEdge>();
+            foreach (IElement1D element1D in element1ds)
+            {
+                TEdge edge;
+                if (element1D is ICurve)
+                {
+                    //Using reflection as addig `new()` constraint to the method makes it not runnable in the UI
+                    edge = Activator.CreateInstance<TEdge>();
+                    edge.Curve = element1D as ICurve;
+                }
+                else
+                    edge = (TEdge)element1D;
+
+                edges.Add(edge);
+            }
+            return edges;
         }
 
         /***************************************************/

@@ -57,7 +57,7 @@ namespace BH.Engine.Analytical
                         "The start point of the curve will be used to set the position of the StartNode and the end point to set the position of the EndNode.")]
         [Output("link", "The ILink with updated geometry.")]
         public static ILink<TNode> SetGeometry<TNode>(this ILink<TNode> link, ICurve curve)
-            where TNode : class, INode
+            where TNode : INode
         {
             if (!curve.IIsLinear())
             {
@@ -66,8 +66,8 @@ namespace BH.Engine.Analytical
             }
 
             ILink<TNode> clone = link.GetShallowClone(true) as ILink<TNode>;
-            clone.StartNode = clone.StartNode.SetGeometry(curve.IStartPoint()) as TNode;
-            clone.EndNode = clone.EndNode.SetGeometry(curve.IEndPoint()) as TNode;
+            clone.StartNode = (TNode)clone.StartNode.SetGeometry(curve.IStartPoint());
+            clone.EndNode = (TNode)clone.EndNode.SetGeometry(curve.IEndPoint());
             return clone;
         }
 

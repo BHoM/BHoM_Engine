@@ -20,6 +20,8 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using System;
+using System.Reflection;
 using BH.oM.Dimensional;
 using BH.oM.Geometry;
 using BH.oM.Analytical.Elements;
@@ -42,7 +44,7 @@ namespace BH.Engine.Analytical
                                 "Points will assigin default end properties to the ILink.")]
         [Output("link", "The ILink with updated Nodes.")]
         public static ILink<TNode> SetElements0D<TNode>(this ILink<TNode> link, List<IElement0D> newElements0D)
-            where TNode : class, INode, new()
+            where TNode : INode
         {
             if (newElements0D.Count != 2)
             {
@@ -55,18 +57,22 @@ namespace BH.Engine.Analytical
             // Default the ILink end if the input is an Point
             if (newElements0D[0] is Point)
             {
-                clone.StartNode = new TNode() { Position = newElements0D[0] as Point };
+                //clone.StartNode = new TNode() { Position = newElements0D[0] as Point };
+                clone.StartNode = Activator.CreateInstance<TNode>();
+                clone.StartNode.Position = newElements0D[0] as Point;
             }
             else
-                clone.StartNode = newElements0D[0] as TNode;
+                clone.StartNode = (TNode)newElements0D[0];
 
             // Default the ILink end if the input is an Point
             if (newElements0D[1] is Point)
             {
-                clone.EndNode = new TNode() { Position = newElements0D[1] as Point };
+                //clone.EndNode = new TNode() { Position = newElements0D[1] as Point };
+                clone.EndNode = Activator.CreateInstance<TNode>();
+                clone.EndNode.Position = newElements0D[1] as Point;
             }
             else
-                clone.EndNode = newElements0D[1] as TNode;
+                clone.EndNode = (TNode)newElements0D[1];
 
             return clone;
         }

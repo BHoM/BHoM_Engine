@@ -20,6 +20,7 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using System;
 using BH.oM.Analytical.Elements;
 using BH.oM.Dimensional;
 using BH.oM.Geometry;
@@ -42,9 +43,9 @@ namespace BH.Engine.Analytical
         [Output("opening", "The created Opening as a IElement2D.")]
         public static IElement2D NewInternalElement2D<TEdge, TOpening>(this IPanel<TEdge, TOpening> panel)
             where TEdge : IEdge
-            where TOpening : IOpening<TEdge>, new()
+            where TOpening : IOpening<TEdge>
         {
-            return new TOpening();
+            return Activator.CreateInstance<TOpening>();
         }
 
         /***************************************************/
