@@ -38,6 +38,11 @@ namespace BH.Engine.Environment
         [MultiOutput(2, "vectors", "Vectors to sample points")]
         public static Output<List<double>, List<double>, List<Vector>> FibonacciSphere(int nSamples)
         {
+            if (nSamples <= 0)
+            {
+                BH.Engine.Reflection.Compute.RecordWarning("nSamples must be greater than 0 in order to generate sample vectors.");
+            }
+
             List<double> indices = new List<double>();
             for (int i = 0; i < nSamples; i++)
             {
