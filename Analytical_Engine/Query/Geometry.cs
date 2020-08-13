@@ -86,7 +86,7 @@ namespace BH.Engine.Analytical
 
         [Description("Gets the geometry of a analytical IOpening as an outline curve. Method required for automatic display in UI packages.")]
         [Input("opening", "IOpening to get the outline geometry from.")]
-        [Output("surface", "The geometry of the analytical IOpening.")]
+        [Output("outline", "The geometry of the analytical IOpening.")]
         public static PolyCurve Geometry<TEdge>(this IOpening<TEdge> opening)
             where TEdge : IEdge
 
