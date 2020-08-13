@@ -49,9 +49,9 @@ namespace BH.Engine.Analytical
 
         /***************************************************/
 
-        [Description("Gets the geometry of a Bar as its centreline. Method required for automatic display in UI packages.")]
-        [Input("bar", "Bar to get the centreline geometry from.")]
-        [Output("line", "The geometry of the Bar as its centreline.")]
+        [Description("Gets the geometry of a ILink as its centreline. Method required for automatic display in UI packages.")]
+        [Input("link", "ILink to get the centreline geometry from.")]
+        [Output("line", "The geometry of the ILink as its centreline.")]
         public static Line Geometry<TNode>(this ILink<TNode> link)
             where TNode : INode
         {
