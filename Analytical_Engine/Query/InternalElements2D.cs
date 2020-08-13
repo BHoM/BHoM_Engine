@@ -36,10 +36,10 @@ namespace BH.Engine.Structure
         /****               Public Methods              ****/
         /***************************************************/
 
-        [Description("Gets inner IElement2Ds from a Panel. Method required for all IElement2Ds. \n" +
-         "For a Panel this method will return a list of all of its openings.")]
-        [Input("panel", "The Panel to get internal IElement2Ds from.")]
-        [Output("elements", "The list of the internal IELement2Ds of the panel, i.e. a list of the Openings of the Panel.")]
+        [Description("Gets inner IElement2Ds from a IPanel. Method required for all IElement2Ds. \n" +
+         "For a IPanel this method will return a list of all of its openings.")]
+        [Input("panel", "The IPanel to get internal IElement2Ds from.")]
+        [Output("elements", "The list of the internal IELement2Ds of the IPanel, i.e. a list of the Openings of the IPanel.")]
         public static List<IElement2D> InternalElements2D<TEdge, TOpening>(this IPanel<TEdge, TOpening> panel)
             where TEdge : IEdge
             where TOpening : IOpening<TEdge>

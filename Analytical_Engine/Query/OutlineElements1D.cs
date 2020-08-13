@@ -36,10 +36,10 @@ namespace BH.Engine.Structure
         /****               Public Methods              ****/
         /***************************************************/
 
-        [Description("Gets the edge elements from an Opening defining the boundary of the element. Method required for all IElement2Ds. \n" +
-             "For an opening this will return a list of its Edges.")]
-        [Input("opening", "The Opening to get outline elements from.")]
-        [Output("elements", "Outline elements of the Opening, i.e. the Edges of the Opening.")]
+        [Description("Gets the edge elements from an IOpening defining the boundary of the element. Method required for all IElement2Ds. \n" +
+             "For an IOpening this will return a list of its Edges.")]
+        [Input("opening", "The IOpening to get outline elements from.")]
+        [Output("elements", "Outline elements of the IOpening, i.e. the Edges of the Opening.")]
         public static List<IElement1D> OutlineElements1D<TEdge>(this IOpening<TEdge> opening)
             where TEdge : IEdge
         {
@@ -48,10 +48,10 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Gets the edge elements from a Panel defining the boundary of the element. Method required for all IElement2Ds. \n" +
-                     "For a Panel this will return a list of its ExternalEdges.")]
-        [Input("panel", "The Panel to get outline elements from.")]
-        [Output("elements", "Outline elements of the Panel, i.e. the ExternalEdges of the Panel.")]
+        [Description("Gets the edge elements from an IPanel defining the boundary of the element. Method required for all IElement2Ds. \n" +
+                     "For an IPanel this will return a list of its ExternalEdges.")]
+        [Input("panel", "The IPanel to get outline elements from.")]
+        [Output("elements", "Outline elements of the IPanel, i.e. the ExternalEdges of the Panel.")]
         public static List<IElement1D> OutlineElements1D<TEdge, TOpening>(this IPanel<TEdge, TOpening> panel)
             where TEdge : IEdge
             where TOpening : IOpening<TEdge>
