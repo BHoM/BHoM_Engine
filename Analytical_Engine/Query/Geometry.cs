@@ -84,6 +84,18 @@ namespace BH.Engine.Analytical
 
         /***************************************************/
 
+        [Description("Gets the geometry of a analytical Opening as an outline curve. Method required for automatic display in UI packages.")]
+        [Input("opening", "Opening to get the outline geometry from.")]
+        [Output("surface", "The geometry of the analytical Opening.")]
+        public static PolyCurve Geometry<TEdge>(this IOpening<TEdge> opening)
+            where TEdge : IEdge
+
+        {
+            return new PolyCurve { Curves = opening.Edges.Select(x => x.Curve).ToList() };
+        }
+
+        /***************************************************/
+
         [Description("Gets the geometry of a analytical Surface at its centre. Method required for automatic display in UI packages.")]
         [Input("surface", "Analytical Surface to get the geometrical Surface geometry from.")]
         [Output("surface", "The geometry of the structural Sufarce at its centre.")]
