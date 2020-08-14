@@ -46,7 +46,6 @@ namespace BH.Engine.MEP
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-
         [Description("Returns the length of the equipment based on the input of a list of parts")]
         [Input("airsidePartsByLength", "Collection of airside parts from a dataset that contains parts by length")]
         [Output("length", "The total length of the equipment based on the length of the parts")]
@@ -58,8 +57,8 @@ namespace BH.Engine.MEP
                 if (o.CustomData.ContainsKey("length"))
                     length += System.Convert.ToDouble(o.CustomData["length"]);
             }
-
             return length;
         }
+        /***************************************************/
     }
 }

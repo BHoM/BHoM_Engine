@@ -29,6 +29,7 @@ using System.Threading.Tasks;
 
 using BH.oM.Geometry.ShapeProfiles;
 using BH.Engine.Geometry;
+using BH.oM.Reflection.Attributes;
 using BH.oM.Geometry;
 
 
@@ -36,7 +37,13 @@ namespace BH.Engine.MEP
 {
     public static partial class Query
     {
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
         [Description("Returns the Hydraulic Diameter for any IProfile that are non-circular (ie the equivalent diameter for flow based equations if the duct were to be circular).")]
+        [Input("profile", "IProfile used to define the element's cross section shape.")]
+        [Input("area", "Area of the IProfile used to define the section of the element.")]
+        [Output("hydraulicDiameter", "Hydraulic Diameter allows you to calculate the round equivalent hydraulic diameter for a non-round duct (rectangular/square).")]
         public static double HydraulicDiameter(this IProfile profile, double area)
         {
             List<List<ICurve>> distCurves = Engine.Geometry.Compute.DistributeOutlines(Engine.Geometry.Compute.IJoin(profile.Edges.ToList()).Cast<ICurve>().ToList());
@@ -48,5 +55,6 @@ namespace BH.Engine.MEP
             }
             return 4 * area / innerProfileEdges.Sum(x => x.ILength());
         }
+        /***************************************************/
     }
 }

@@ -31,13 +31,17 @@ using System.Collections.Generic;
 
 using System.Runtime.InteropServices;
 
-namespace BH.Engine.BuildingEnvironment
+namespace BH.Engine.MEP
 {
     public static partial class Query
     {
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
         public static IGeometry Geometry(this IFlow obj)
         {
-            return Engine.Geometry.Create.Line(obj.StartNode.Position, obj.EndNode.Position);
+            return new Line { Start = obj.StartNode.Position, End = obj.EndNode.Position};
         }
+        /***************************************************/
     }
 }

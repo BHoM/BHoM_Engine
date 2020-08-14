@@ -38,7 +38,6 @@ namespace BH.Engine.MEP
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-
         [Description("Returns an MEP Heating Coil part")]
         [Input("sensibleCapacity", "Default 0")]
         [Input("enteringDryBulbAirTemperature", "Default 0")]
@@ -61,6 +60,7 @@ namespace BH.Engine.MEP
                 NumberOfRows = numberOfRows,
             };
         }
+        /***************************************************/
     }
 }
 
