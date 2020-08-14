@@ -37,11 +37,15 @@ namespace BH.Engine.MEP
 {
     public static partial class Create
     {
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
         [Description("Creates a composite Duct sectionProfile including interior lining and exterior insulation.")]
         [Input("sectionProfile", "A base ShapeProfile upon which to base the composite section.")]
         [Input("ductMaterial", "Material properties for the Duct object.")]
         [Input("insulationMaterial", "Material properties for the insulation material, or material that wraps the exterior of the Duct object.")]
         [Input("liningMaterial", "Material properties for the lining material that wraps the inside surface of the Duct object. This is the layer that is in direct contact with interior flowing material.")]
+        [Output("ductSectionProperty", "Duct Section property used to provide accurate duct assembly and capacities.")]
         public static DuctSectionProperty DuctSectionProperty(
             SectionProfile sectionProfile,
             IMEPMaterial ductMaterial = null,
@@ -75,5 +79,6 @@ namespace BH.Engine.MEP
             }
             return property;
         }
+        /***************************************************/
     }
 }

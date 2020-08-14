@@ -27,15 +27,21 @@ using BH.Engine.Geometry;
 using BH.oM.MEP.Elements;
 using BH.oM.Reflection.Attributes;
 
-namespace BH.Engine.BuildingEnvironment
+namespace BH.Engine.MEP
 {
     public static partial class Query
     {
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
         [Description("Query the length of any IFlow Object.")]
         [Input("iFlowObj", "Any IFlow object to extract length.")]
+        [Output("length", "Linear length of the IFlow object.")]
         public static double Length(this IFlow IFlowObj)
         {
             return (IFlowObj.Geometry() as ICurve).ILength();
         }
+        /***************************************************/
     }
+
 }

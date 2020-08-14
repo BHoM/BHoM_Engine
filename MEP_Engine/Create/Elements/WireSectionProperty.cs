@@ -37,11 +37,15 @@ namespace BH.Engine.MEP
 {
     public static partial class Create
     {
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
         [Description("Creates a composite Wire sectionProfile including interior lining and exterior insulation.")]
         [Input("sectionProfile", "A base ShapeProfile upon which to base the composite section.")]
-        [Input("ductMaterial", "Material properties for the Wire object.")]
+        [Input("wireMaterial", "Material properties for the Wire object.")]
         [Input("insulationMaterial", "Material properties for the insulation material, or material that wraps the exterior of the Wire object.")]
         [Input("liningMaterial", "Material properties for the lining material that wraps the inside surface of the Wire object. This is the layer that is in direct contact with interior flowing material.")]
+        [Output("wireSectionProperty", "Wire Section property used to provide accurate wire assembly and capacities.")]
         public static WireSectionProperty WireSectionProperty(
             SectionProfile sectionProfile,
             IMEPMaterial conductiveMaterial = null,
@@ -69,5 +73,6 @@ namespace BH.Engine.MEP
             }
             return property;
         }
+        /***************************************************/
     }
 }

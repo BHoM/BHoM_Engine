@@ -36,10 +36,15 @@ namespace BH.Engine.MEP
 {
     public static partial class Create
     {
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
         [Description("Creates a Pipe object. Material that flows through this Pipe can be established at the system level.")]
         [Input("line", "A line that determines the Pipe's length and direction.")]
         [Input("flowRate", "The volume of fluid being conveyed by the Pipe per second (m3/s).")]
         [Input("sectionProperty", "Provide a pipeSectionProperty to prepare a composite Pipe section for accurate capacity and spatial quality.")]
+        [Output("pipe", "A pipe object is a passageway which conveys material (water, waste, glycol)")]
+
         public static BH.oM.MEP.Elements.Pipe Pipe(Line line, double flowRate = 0, PipeSectionProperty sectionProperty = null)
         {
             return new BH.oM.MEP.Elements.Pipe
@@ -49,5 +54,6 @@ namespace BH.Engine.MEP
                 SectionProperty = sectionProperty,
             };
         }
+        /***************************************************/
     }
 }

@@ -54,20 +54,24 @@ namespace BH.Engine.MEP
                 Engine.Reflection.Compute.RecordError("No section property defined.");
                 return null;
             }
+
             //Negative LiningThickness Warning
             if (duct.SectionProperty.LiningSolidArea < 0)
             {
                 Engine.Reflection.Compute.RecordWarning("LiningSolidArea is a negative value, and will result in incorrect SolidVolume results. Try adjusting LiningThickness to produce a positive value for SolidArea.");
             }
+
             //SolidArea = 0 user feedback.
             if (duct.SectionProperty.ElementSolidArea <= 0)
             {
                 Engine.Reflection.Compute.RecordNote("ElementSolidArea is 0. Returning 0 for ElementSolidVolume.");
             }
+
             if (duct.SectionProperty.LiningSolidArea <= 0)
             {
                 Engine.Reflection.Compute.RecordNote("LiningSolidArea is 0. Returning 0 for LiningSolidVolume.");
             }
+
             if (duct.SectionProperty.InsulationSolidArea <= 0)
             {
                 Engine.Reflection.Compute.RecordNote("InsulationSolidArea is 0. Returning 0 for InsulationSolidVolume.");
@@ -81,6 +85,7 @@ namespace BH.Engine.MEP
             };
             return output;
         }
+        /***************************************************/
 
         //This may get adjusted per finalised property names and section compositions.//
         [Description("Queries the solid volume of a Pipe by multiplying the section profile's solid area by the element's length.")]
@@ -100,20 +105,24 @@ namespace BH.Engine.MEP
                 Engine.Reflection.Compute.RecordError("No section property defined.");
                 return null;
             }
+
             //Negative LiningThickness Warning
             if (pipe.SectionProperty.LiningSolidArea < 0)
             {
                 Engine.Reflection.Compute.RecordWarning("LiningSolidArea is a negative value, and will result in incorrect SolidVolume results. Try adjusting LiningThickness to produce a positive value for SolidArea.");
             }
+
             //SolidArea = 0 user feedback.
             if (pipe.SectionProperty.ElementSolidArea <= 0)
             {
                 Engine.Reflection.Compute.RecordNote("ElementSolidArea is 0. Returning 0 for ElementSolidVolume.");
             }
+
             if (pipe.SectionProperty.LiningSolidArea <= 0)
             {
                 Engine.Reflection.Compute.RecordNote("LiningSolidArea is 0. Returning 0 for LiningSolidVolume.");
             }
+
             if (pipe.SectionProperty.InsulationSolidArea <= 0)
             {
                 Engine.Reflection.Compute.RecordNote("InsulationSolidArea is 0. Returning 0 for InsulationSolidVolume.");
@@ -127,6 +136,7 @@ namespace BH.Engine.MEP
             };
             return output;
         }
+        /***************************************************/
 
         //This method may get adjusted per finalised property names and section compositions.//
         [Description("Queries the solid volume of a Wire by multiplying the section profile's solid area by the element's length.")]
@@ -146,20 +156,24 @@ namespace BH.Engine.MEP
                 Engine.Reflection.Compute.RecordError("No section property defined.");
                 return null;
             }
+
             //Negative LiningThickness Warning
             if (wire.SectionProperty.LiningSolidArea < 0)
             {
                 Engine.Reflection.Compute.RecordWarning("LiningSolidArea is a negative value, and will result in incorrect SolidVolume results. Try adjusting LiningThickness to produce a positive value for SolidArea.");
             }
+
             //SolidArea = 0 user feedback.
             if (wire.SectionProperty.ElementSolidArea <= 0)
             {
                 Engine.Reflection.Compute.RecordNote("ElementSolidArea is 0. Returning 0 for ElementSolidVolume.");
             }
+
             if (wire.SectionProperty.LiningSolidArea <= 0)
             {
                 Engine.Reflection.Compute.RecordNote("LiningSolidArea is 0. Returning 0 for LiningSolidVolume.");
             }
+
             if (wire.SectionProperty.InsulationSolidArea <= 0)
             {
                 Engine.Reflection.Compute.RecordNote("InsulationSolidArea is 0. Returning 0 for InsulationSolidVolume.");

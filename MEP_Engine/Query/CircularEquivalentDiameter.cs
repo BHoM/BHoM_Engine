@@ -28,26 +28,32 @@ using System.Text;
 using System.Threading.Tasks;
 
 using BH.oM.Geometry.ShapeProfiles;
+using BH.oM.Reflection.Attributes;
 
 namespace BH.Engine.MEP
 {
     public static partial class Query
     {
-        [Description("Returns the Circular Equivalent Diameter for ducts that are non-circular, equivalent in length, fluid resistance and airflow")]
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
+        [Description("Returns the Circular Equivalent Diameter for elements that are non-circular, equivalent in length, fluid resistance and airflow.")]
+        [Input("profile", "Shape profile to query the Circular Equivalent Diameter.")]
+        [Output("circularEquivalentDiameter", "Circular Equivalent Diameter for element section profiles that are non-circular, equivalent in length, fluid resistance and airflow.")]
         public static double ICircularEquivalentDiameter(this IProfile profile)
         {
             return CircularEquivalentDiameter(profile as dynamic);
         }
-
+        /***************************************************/
+        [Description("Returns the Circular Equivalent Diameter for elements that are non-circular, equivalent in length, fluid resistance and airflow.")]
+        [Input("boxProfile", "Box Shape profile to query the Circular Equivalent Diameter.")]
+        [Output("circularEquivalentDiameter", "Circular Equivalent Diameter for element section profiles that are non-circular, equivalent in length, fluid resistance and airflow.")]
         public static double CircularEquivalentDiameter(this BoxProfile box)
         {
             double a = 1000 * (box.Height - 2 * box.Thickness);
             double b = 1000 * (box.Width - 2 * box.Thickness);
             return (1.30 * Math.Pow(a * b, 0.625) / Math.Pow(a + b, 0.250)) / 1000;
         }
-        private static double CircularEquivalentDiameter(this IProfile profile)
-        {
-            return -1;
-        }
+        /***************************************************/
     }
 }
