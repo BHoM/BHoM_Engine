@@ -22,7 +22,6 @@
 
 using System.Collections.Generic;
 using BH.oM.Structure.Elements;
-using BH.oM.Structure.FramingProperties;
 using BH.oM.Structure.SectionProperties;
 using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
@@ -40,6 +39,7 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [PreviousVersion("3.3", "BH.Engine.Structure.Convert.ToFramingElement(BH.oM.Structure.Elements.Bar, BH.oM.Structure.Elements.StructuralUsage1D)")]
         [Description("Creates a physical IFramingElement from a Bar. The framing element will be assigned a ConstantFramingProperty based on the sectionproeprty of the bar and have a type based on the structural usage.")]
         [Input("bar", "The Bar to use as the base for the framing element.")]
         [Input("structuralUsage", "Used to determine which type of framing element that should be constructed.")]
@@ -87,29 +87,6 @@ namespace BH.Engine.Structure
             }
 
             return framingElement;
-        }
-
-
-        /***************************************************/
-        /**** Public Methods -Deprecated                ****/
-        /***************************************************/
-
-        [Deprecated("2.3", "Deprecated by method accepting a ICurve", null, "FramingElement")]
-        public static FramingElement FramingElement(Line locationCurve, IFramingElementProperty property, StructuralUsage1D structuralUsage = StructuralUsage1D.Beam, string name = "")
-        {
-            return new FramingElement { LocationCurve = locationCurve, Property = property, StructuralUsage = structuralUsage, Name = name };
-        }
-
-        /***************************************************/
-        [Description("Creates a framing elements from a curve and a property.")]
-        [Input("locationCurve", "The centreline curve of the framing element.")]
-        [Input("property", "The property to be used on the framing element. The most simple version for this would be the ConstantFramingElementProperty, used for beams with constant section and rotation along the full element.")]
-        [Input("structuralUsage", "Describes the usage of the element.")]
-        [Input("name", "The name of the element.")]
-        [Deprecated("2.3", "Methods replaced with methods targeting BH.oM.Physical.Elements.IFramingElement")]
-        public static FramingElement FramingElement(ICurve locationCurve, IFramingElementProperty property, StructuralUsage1D structuralUsage = StructuralUsage1D.Beam, string name = "")
-        {
-            return new FramingElement { LocationCurve = locationCurve, Property = property, StructuralUsage = structuralUsage, Name = name };
         }
 
         /***************************************************/
