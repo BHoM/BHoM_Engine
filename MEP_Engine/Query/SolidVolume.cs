@@ -144,7 +144,7 @@ namespace BH.Engine.MEP
         [MultiOutput(0, "elementSolidVolume", "SolidVolume of the Element itself within a compiled SectionProfile.")]
         [MultiOutput(1, "insulationSolidVolume", "The solid volume of the Wire's exterior insulation.")]
         [MultiOutput(2, "liningSolidVolume", "The solid volume of the Wire's interior lining.")]
-        public static Output<double, double, double> SolidVolume(this Wire wire)
+        public static Output<double, double, double> SolidVolume(this WireSegment wire)
         {
             double length = wire.Length();
             double elementSolidVolume = wire.SectionProperty.ElementSolidArea * length;

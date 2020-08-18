@@ -44,9 +44,9 @@ namespace BH.Engine.MEP
         [Input("flowRate", "The volume of fluid being conveyed by the Wire per second (m3/s).")]
         [Input("sectionProperty", "Provide a pipeSectionProperty to prepare a composite Wire section for accurate capacity and spatial quality.")]
         [Output("wire", "Wire object to work within an MEP systems.")]
-        public static Wire Wire(Line line, double flowRate = 0, WireSectionProperty sectionProperty = null)
+        public static WireSegment Wire(Line line, double flowRate = 0, WireSectionProperty sectionProperty = null)
         {
-            return new Wire
+            return new WireSegment
             {
                 StartNode = (Node)line.Start,
                 EndNode = (Node)line.End,
