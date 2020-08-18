@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -20,36 +20,34 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System;
+using BH.oM.Dimensional;
+using BH.oM.Geometry;
+using BH.oM.Analytical.Elements;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 
-namespace BH.Engine.Reflection
+namespace BH.Engine.Analytical
 {
-    public static partial class Query
+    public static partial class Modify
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /****               Public Methods              ****/
         /***************************************************/
 
-        public static List<MethodInfo> ExtensionMethods(this Type type, string methodName)
+        [Description("Sets internal IElement2Ds of a IPanel, i.e. sets the Openings of an IPanel. Method required for all IElement2Ds.")]
+        [Input("panel", "The IPanel to update.")]
+        [Input("openings", "The internal IElement2Ds to set. For an IPanel this should be a list of Openings matching the type of the IPanel.")]
+        [Output("panel", "The IPanel with updated Openings.")]
+        public static IPanel<TEdge, TOpening> SetInternalElements2D<TEdge, TOpening>(this IPanel<TEdge, TOpening> panel, List<IElement2D> openings)
+    where TEdge : IEdge
+    where TOpening : IOpening<TEdge>
         {
-            List<MethodInfo> methods = new List<MethodInfo>();
-
-            foreach (MethodInfo method in BHoMMethodList().Where(x => x.Name == methodName))
-            {
-                ParameterInfo[] param = method.GetParameters();
-
-                if (param.Length > 0)
-                {
-                    if (param[0].ParameterType.IsAssignableFromIncludeGenerics(type))
-                        methods.Add(method);
-                }
-            }
-
-            return methods;
+            IPanel<TEdge, TOpening> pp = panel.GetShallowClone() as IPanel<TEdge, TOpening>;
+            pp.Openings = new List<TOpening>(openings.Cast<TOpening>().ToList());
+            return pp;
         }
 
         /***************************************************/

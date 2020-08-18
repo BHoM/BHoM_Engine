@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -20,36 +20,35 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Structure.FramingProperties;
-using BH.oM.Structure.SectionProperties;
-using BH.oM.Geometry;
+using System;
+using System.Linq;
+using System.Collections.Generic;
 using System.ComponentModel;
 using BH.oM.Reflection.Attributes;
+using BH.oM.Base;
 
-namespace BH.Engine.Structure
+namespace BH.Engine.Reflection
 {
-    public static partial class Create
+    public static partial class Query
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Constructs the simplest type of FramingELementProperty, with constant section proeprty along the element as well as a constant orientation angle along the element.")]
-        [Input("sectionProperty", "The section property used by the element. Constant along the whole element.")]
-        [Input("orientationAngle", "orientation angle of the element. Constant along the whole element.")]
-        [Input("name", "Name of the ConstantFramingElementProeprty. If no name is provided, the name of the provided SectionProeprty will be used.")]
-        [Deprecated("2.3", "Methods replaced with methods targeting BH.oM.Physical.FramingProperties.ConstantFramingElementProperty in Physical_oM")]
-        public static ConstantFramingElementProperty ConstantFramingElementProperty(ISectionProperty sectionProperty, double orientationAngle, string name = "")
+        [Description("Checks if a type is assignable from another type by first checking the system IsAssignableFrom and, if this is false, checks if the assignable is generic and tests if it can be assigned as a generics version.")]
+        [Input("assignableTo", "The type to check if it can be assigned to.")]
+        [Input("assignableFrom", "The type to check if it can be assigned from.")]
+        [Output("result", "Returns true if 'assignableTo' is assignable from 'assignableFrom'.")]
+        public static bool IsAssignableFromIncludeGenerics(this Type assignableTo, Type assignableFrom)
         {
-            //If no name is provided, use the name of the section proeprty
-            if (string.IsNullOrWhiteSpace(name) && !string.IsNullOrWhiteSpace(sectionProperty.Name))
-                name = sectionProperty.Name;
-
-            return new ConstantFramingElementProperty { SectionProperty = sectionProperty, OrientationAngle = orientationAngle, Name = name };
+            //Check if standard IsAssignableFrom works.
+            if (assignableTo.IsAssignableFrom(assignableFrom))
+                return true;
+            //If not, check if the argument is generic, and if so, use the IsAssignableToGenericType method to check if it can be assigned.
+            else
+                return assignableTo.IsGenericType && assignableFrom.IsAssignableToGenericType(assignableTo.GetGenericTypeDefinition());
         }
 
         /***************************************************/
     }
 }
-
-

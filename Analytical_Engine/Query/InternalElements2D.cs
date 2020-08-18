@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -20,36 +20,31 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
+using BH.oM.Dimensional;
+using BH.oM.Geometry;
+using BH.oM.Analytical.Elements;
+using System.Collections.Generic;
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
-
-namespace BH.Engine.Reflection
+namespace BH.Engine.Analytical
 {
     public static partial class Query
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /****               Public Methods              ****/
         /***************************************************/
 
-        public static List<MethodInfo> ExtensionMethods(this Type type, string methodName)
+        [Description("Gets inner IElement2Ds from a IPanel. Method required for all IElement2Ds. \n" +
+         "For a IPanel this method will return a list of all of its openings.")]
+        [Input("panel", "The IPanel to get internal IElement2Ds from.")]
+        [Output("elements", "The list of the internal IELement2Ds of the IPanel, i.e. a list of the Openings of the IPanel.")]
+        public static List<IElement2D> InternalElements2D<TEdge, TOpening>(this IPanel<TEdge, TOpening> panel)
+            where TEdge : IEdge
+            where TOpening : IOpening<TEdge>
         {
-            List<MethodInfo> methods = new List<MethodInfo>();
-
-            foreach (MethodInfo method in BHoMMethodList().Where(x => x.Name == methodName))
-            {
-                ParameterInfo[] param = method.GetParameters();
-
-                if (param.Length > 0)
-                {
-                    if (param[0].ParameterType.IsAssignableFromIncludeGenerics(type))
-                        methods.Add(method);
-                }
-            }
-
-            return methods;
+            return panel.Openings.Cast<IElement2D>().ToList();
         }
 
         /***************************************************/

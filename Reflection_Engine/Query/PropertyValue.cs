@@ -22,8 +22,11 @@
 
 using BH.oM.Base;
 using BH.oM.Reflection.Attributes;
+using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 
 namespace BH.Engine.Reflection
 {
@@ -57,43 +60,64 @@ namespace BH.Engine.Reflection
             System.Reflection.PropertyInfo prop = obj.GetType().GetProperty(propName);
 
             if (prop != null)
-            {
                 return prop.GetValue(obj);
-            }
-            else if (obj is IBHoMObject)
-            {
-                IBHoMObject bhom = obj as IBHoMObject;
-                if (bhom.CustomData.ContainsKey(propName))
-                {
-                    if (!(bhom is CustomObject))
-                        Compute.RecordNote($"{propName} is stored in CustomData");
-                    return bhom.CustomData[propName];
-                }
-                else
-                {
-                    Compute.RecordWarning($"{bhom} does not contain a property: {propName}, or: CustomData[{propName}]");
-                    return null;
-                }
+            else 
+                return GetValue(obj as dynamic, propName);
 
-            }
-            else if (obj is IDictionary)
+        }
+
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+        private static object GetValue(this IBHoMObject obj, string propName)
+        {
+            IBHoMObject bhom = obj as IBHoMObject;
+            if (bhom.CustomData.ContainsKey(propName))
             {
-                IDictionary dic = obj as IDictionary;
-                if (dic.Contains(propName))
-                {
-                    return dic[propName];
-                }
-                else
-                {
-                    Compute.RecordWarning($"{dic} does not contain the key: {propName}");
-                    return null;
-                }
+                if (!(bhom is CustomObject))
+                    Compute.RecordNote($"{propName} is stored in CustomData");
+                return bhom.CustomData[propName];
             }
             else
             {
-                Compute.RecordWarning($"This instance of {obj.GetType()} does not contain the property: {propName}");
+                Compute.RecordWarning($"{bhom} does not contain a property: {propName}, or: CustomData[{propName}]");
                 return null;
             }
+        }
+
+        /***************************************************/
+
+        private static object GetValue(this IDictionary obj, string propName)
+        {
+            IDictionary dic = obj as IDictionary;
+            if (dic.Contains(propName))
+            {
+                return dic[propName];
+            }
+            else
+            {
+                Compute.RecordWarning($"{dic} does not contain the key: {propName}");
+                return null;
+            }
+        }
+
+        /***************************************************/
+
+        private static object GetValue<T>(this IEnumerable<T> obj, string propName)
+        {
+            return obj.Select(x => x.PropertyValue(propName)).ToList();
+        }
+
+
+        /***************************************************/
+        /**** Fallback Methods                           ****/
+        /***************************************************/
+
+        private static object GetValue(this object obj, string propName)
+        {
+            Compute.RecordWarning($"This instance of {obj.GetType()} does not contain the property: {propName}");
+            return null;
         }
 
         /***************************************************/

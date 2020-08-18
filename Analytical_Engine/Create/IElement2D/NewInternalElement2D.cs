@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -21,35 +21,31 @@
  */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
+using BH.oM.Analytical.Elements;
+using BH.oM.Dimensional;
+using BH.oM.Geometry;
+
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 
-namespace BH.Engine.Reflection
+namespace BH.Engine.Analytical
 {
-    public static partial class Query
+    public static partial class Create
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static List<MethodInfo> ExtensionMethods(this Type type, string methodName)
+        [Description("Creates a new Element2D, appropriate to the input type. For this case the appropriate type for the Panel will be a new Opening, in the position provided. \n" +
+                     "Method required for any IElement2D that contians internal IElement2Ds.")]
+        [Input("panel", "Panel just used to determine the appropriate type of IElement2D to create.")]
+        [Output("opening", "The created Opening as a IElement2D.")]
+        public static IElement2D NewInternalElement2D<TEdge, TOpening>(this IPanel<TEdge, TOpening> panel)
+            where TEdge : IEdge
+            where TOpening : IOpening<TEdge>
         {
-            List<MethodInfo> methods = new List<MethodInfo>();
-
-            foreach (MethodInfo method in BHoMMethodList().Where(x => x.Name == methodName))
-            {
-                ParameterInfo[] param = method.GetParameters();
-
-                if (param.Length > 0)
-                {
-                    if (param[0].ParameterType.IsAssignableFromIncludeGenerics(type))
-                        methods.Add(method);
-                }
-            }
-
-            return methods;
+            return Activator.CreateInstance<TOpening>();
         }
 
         /***************************************************/

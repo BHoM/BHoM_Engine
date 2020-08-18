@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -20,36 +20,43 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System;
-using System.Collections.Generic;
+using BH.oM.Dimensional;
 using System.Linq;
-using System.Reflection;
+using BH.oM.Geometry;
+using BH.oM.Analytical.Elements;
+using System.Collections.Generic;
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
-
-namespace BH.Engine.Reflection
+namespace BH.Engine.Analytical
 {
     public static partial class Query
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /****               Public Methods              ****/
         /***************************************************/
 
-        public static List<MethodInfo> ExtensionMethods(this Type type, string methodName)
+        [Description("Gets the edge elements from an IOpening defining the boundary of the element. Method required for all IElement2Ds. \n" +
+             "For an IOpening this will return a list of its Edges.")]
+        [Input("opening", "The IOpening to get outline elements from.")]
+        [Output("elements", "Outline elements of the IOpening, i.e. the Edges of the Opening.")]
+        public static List<IElement1D> OutlineElements1D<TEdge>(this IOpening<TEdge> opening)
+            where TEdge : IEdge
         {
-            List<MethodInfo> methods = new List<MethodInfo>();
+            return opening.Edges.Cast<IElement1D>().ToList();
+        }
 
-            foreach (MethodInfo method in BHoMMethodList().Where(x => x.Name == methodName))
-            {
-                ParameterInfo[] param = method.GetParameters();
+        /***************************************************/
 
-                if (param.Length > 0)
-                {
-                    if (param[0].ParameterType.IsAssignableFromIncludeGenerics(type))
-                        methods.Add(method);
-                }
-            }
-
-            return methods;
+        [Description("Gets the edge elements from an IPanel defining the boundary of the element. Method required for all IElement2Ds. \n" +
+                     "For an IPanel this will return a list of its ExternalEdges.")]
+        [Input("panel", "The IPanel to get outline elements from.")]
+        [Output("elements", "Outline elements of the IPanel, i.e. the ExternalEdges of the Panel.")]
+        public static List<IElement1D> OutlineElements1D<TEdge, TOpening>(this IPanel<TEdge, TOpening> panel)
+            where TEdge : IEdge
+            where TOpening : IOpening<TEdge>
+        {
+            return panel.ExternalEdges.Cast<IElement1D>().ToList();
         }
 
         /***************************************************/

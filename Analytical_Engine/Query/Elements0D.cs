@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -20,36 +20,32 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System;
+using BH.oM.Dimensional;
+using BH.oM.Geometry;
+using BH.oM.Analytical.Elements;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BH.oM.Structure.Elements;
 
 using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
-namespace BH.Engine.Structure
+namespace BH.Engine.Analytical
 {
-    public static partial class Convert
+    public static partial class Query
     {
-        /***************************************************/
-        /**** Public  Methods                           ****/
-        /***************************************************/
-        [Deprecated("2.3", "Replaced by Create(Bar,StructuralUsage) in Structure_Engine")]
-        public static FramingElement ToFramingElement(this Bar bar, StructuralUsage1D usage = StructuralUsage1D.Beam)
+        /******************************************/
+        /****            IElement1D            ****/
+        /******************************************/
+
+        [Description("Gets the Element0Ds of an ILink, which for the case of a ILink means getting the StartNode and EndNode. Method necessary for IElement pattern.")]
+        [Input("link", "The ILink to extract IElement0ds from.")]
+        [Output("element0Ds", "The list of Elements0D of the ILink, i.e. the StartNode and EndNode.")]
+        public static List<IElement0D> Elements0D<TNode>(this ILink<TNode> link)
+            where TNode : INode
         {
-            return new FramingElement
-            {
-                LocationCurve = bar.Centreline(),
-                Name = bar.Name,
-                Property = Create.ConstantFramingElementProperty(bar.SectionProperty, bar.OrientationAngle, bar.SectionProperty.Name),
-                StructuralUsage = usage
-            };
+            return new List<IElement0D> { link.StartNode, link.EndNode };
         }
 
-        /***************************************************/
-
+        /******************************************/
     }
 }
 
