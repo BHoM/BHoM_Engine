@@ -77,6 +77,9 @@
     <Compile Include="Compute\CullDuplicates.cs" />
     <Compile Include="Compute\CollapseToScaledPolyline.cs" />
     <Compile Include="Compute\DistributeOutlines.cs" />
+    <Compile Include="Compute\MarchingCubes.cs" />
+    <Compile Include="Compute\SubMesh.cs" />
+    <Compile Include="Compute\MarchingSquares.cs" />
     <Compile Include="Compute\WetBlanketInterpretation.cs" />
     <Compile Include="Compute\IntegrateRegion.cs" />
     <Compile Include="Compute\Eigenvalues.cs" />
