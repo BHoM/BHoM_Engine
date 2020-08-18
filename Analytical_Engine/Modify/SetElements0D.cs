@@ -48,7 +48,7 @@ namespace BH.Engine.Analytical
         {
             if (newElements0D.Count != 2)
             {
-                Reflection.Compute.RecordError("A ILink is defined by 2 nodes.");
+                Reflection.Compute.RecordError("An ILink is defined by 2 nodes.");
                 return null;
             }
 
