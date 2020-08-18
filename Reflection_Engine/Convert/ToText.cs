@@ -32,6 +32,16 @@ namespace BH.Engine.Reflection
     public static partial class Convert
     {
         /***************************************************/
+        /**** Interface Methods                         ****/
+        /***************************************************/
+
+        public static string IToText(this object member, bool includePath = false)
+        {
+            return ToText(member as dynamic, includePath);
+        }
+
+
+        /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
@@ -136,6 +146,16 @@ namespace BH.Engine.Reflection
             }
         }
 
+
+
+        /***************************************************/
+        /**** Fallback Methods                          ****/
+        /***************************************************/
+
+        private static string ToText(object item, bool includePath = false)
+        {
+            return item.ToString();
+        }
 
         /***************************************************/
     }
