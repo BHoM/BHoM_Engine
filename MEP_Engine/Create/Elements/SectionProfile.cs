@@ -52,12 +52,7 @@ namespace BH.Engine.MEP
             //External offset of original ShapeProfile
             IProfile insulationProfile = BH.Engine.Geometry.Create.BoxProfile((boxProfile.Height + (insulationThickness * 2)), (boxProfile.Width + (insulationThickness * 2)), insulationThickness, boxProfile.InnerRadius, boxProfile.OuterRadius);
 
-            return new oM.MEP.SectionProperties.SectionProfile
-            {
-                ElementProfile = boxProfile,
-                LiningProfile = liningProfile,
-                InsulationProfile = insulationProfile,
-            };
+            return new SectionProfile(boxProfile, liningProfile, insulationProfile);
         }
         /***************************************************/
         [Description("Creates a composite section profile from the desired ShapeProfile. The composition is inclusive of interior Lining and exterior Insulation thicknesses.")]
@@ -74,12 +69,7 @@ namespace BH.Engine.MEP
             //External offset of original ShapeProfile
             IProfile insulationProfile = BH.Engine.Geometry.Create.TubeProfile((tubeProfile.Diameter + (insulationThickness * 2)), insulationThickness);
 
-            return new oM.MEP.SectionProperties.SectionProfile
-            {
-                ElementProfile = tubeProfile,
-                LiningProfile = liningProfile,
-                InsulationProfile = insulationProfile,
-            };
+            return new SectionProfile(tubeProfile, liningProfile, insulationProfile);
         }
         /***************************************************/
     }
