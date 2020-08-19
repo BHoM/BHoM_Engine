@@ -48,7 +48,8 @@ namespace BH.Engine.Environment
         {
             List<List<Panel>> spacesAtLevel = panelsAsSpaces.FindAll(x => x.Level(level) != null).ToList();
 
-            if (spacesAtLevel.Count == 0) return null;
+            if (spacesAtLevel.Count == 0)
+                return null;
 
             List<Point> ctrlPoints = new List<Point>();
 

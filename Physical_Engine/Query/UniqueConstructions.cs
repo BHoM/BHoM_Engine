@@ -20,37 +20,47 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Geometry;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-using BH.oM.Environment.Elements;
-using BH.Engine.Geometry;
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
 
-namespace BH.Engine.Environment
+using BH.oM.Physical.Constructions;
+
+using BH.oM.Diffing;
+
+namespace BH.Engine.Physical
 {
     public static partial class Query
     {
-        /***************************************************/
-        /****          public Methods                   ****/
-        /***************************************************/
-
-        [Description("Returns a nested collection of Environment Panels which are grouped by the spaces they are connected to")]
-        [Input("panels", "A collection of Environment Panels")]
-        [Output("panelsAsSpaces", "A nested collection of Environment Panels grouped by the space they enclose")]
-        public static List<List<Panel>> ToSpaces(this List<Panel> panels)
+        [Description("Returns a collection of unique constructions from a list of construction objects")]
+        [Input("constructions", "A collection of Constructions")]
+        [Input("includeConstructionName", "Flag to determine whether or not to use the construction name as a parameter of uniqueness. Default false")]
+        [Output("uniqueConstructions", "A collection of unique Construction objects")]
+        public static List<Construction> UniqueConstructions(this List<Construction> constructions, bool includeConstructionName = false)
         {
-            List<List<Panel>> panelsAsSpaces = new List<List<Panel>>();
+            DiffConfig config = new DiffConfig()
+            {
+                PropertiesToIgnore = new List<string>
+                {
+                    "BHoM_Guid",
+                    "CustomData",
+                },
+                NumericTolerance = BH.oM.Geometry.Tolerance.Distance,
+            };
 
-            List<string> uniqueSpaceNames = panels.UniqueSpaceNames();
-            foreach (string s in uniqueSpaceNames)
-                panelsAsSpaces.Add(panels.ToSpace(s));
+            if (!includeConstructionName)
+                config.PropertiesToIgnore.Add("Name");
 
-            return panelsAsSpaces;
+            List<Construction> allConstructions = constructions.Where(x => x != null).ToList();
+            List<Construction> hashedConstructions = BH.Engine.Diffing.Modify.SetHashFragment<Construction>(allConstructions, config);
+            List<Construction> uniqueConstructions = BH.Engine.Diffing.Modify.RemoveDuplicatesByHash<Construction>(hashedConstructions).ToList();
+
+            return uniqueConstructions;
         }
     }
 }
-

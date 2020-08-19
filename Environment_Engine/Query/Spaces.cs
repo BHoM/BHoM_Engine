@@ -51,6 +51,7 @@ namespace BH.Engine.Environment
         {
             bhomObjects = bhomObjects.ObjectsByType(typeof(Space));
             List<Space> spaces = new List<Space>();
+
             foreach (IBHoMObject o in bhomObjects)
                 spaces.Add(o as Space);
 

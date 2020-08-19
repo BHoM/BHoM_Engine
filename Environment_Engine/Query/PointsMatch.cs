@@ -51,7 +51,8 @@ namespace BH.Engine.Environment
             foreach (Point p in controlPoints)
             {
                 Point ptInMeasure = measurePoints.Where(x => x.X == p.X && x.Y == p.Y && x.Z == p.Z).FirstOrDefault();
-                if (ptInMeasure == null) return false; //Point did not have a match
+                if (ptInMeasure == null)
+                    return false; //Point did not have a match
             }
 
             return true; //No points returned false before now

@@ -30,6 +30,8 @@ using BH.oM.Physical.Constructions;
 
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
+using BH.oM.Diffing;
+using BH.Engine.Physical;
 
 namespace BH.Engine.Environment
 {
@@ -45,21 +47,9 @@ namespace BH.Engine.Environment
         [Output("uniqueConstructions", "A collection of unique Construction objects")]
         public static List<Construction> UniqueConstructions(this List<Panel> panels, bool includeConstructionName = false)
         {
-            List<Construction> unique = new List<Construction>();
+            List<Construction> allConstructions = panels.Where(x => x.Construction != null).Where(x => (x.Construction as Construction) != null).Select(x => x.Construction as Construction).ToList();
 
-            foreach (Panel be in panels)
-            {
-                if (be.Construction != null)
-                {
-                    Construction t = unique.Where(x => x.UniqueConstructionName(includeConstructionName) == be.Construction.UniqueConstructionName(includeConstructionName)).FirstOrDefault();
-                    if (t == null)
-                        unique.Add(be.Construction as Construction);
-                }
-
-                unique.AddRange(be.Openings.UniqueConstructions());
-            }
-
-            return unique;
+            return allConstructions.UniqueConstructions(includeConstructionName);
         }
 
         [Description("Returns a collection of unique constructions from a collection of Environment Openings")]
@@ -68,26 +58,10 @@ namespace BH.Engine.Environment
         [Output("uniqueConstructions", "A collection of unique Construction objects")]
         public static List<Construction> UniqueConstructions(this List<Opening> openings, bool includeConstructionName = false)
         {
-            List<Construction> unique = new List<Construction>();
+            List<Construction> allConstructions = openings.Where(x => x.OpeningConstruction != null).Where(x => (x.OpeningConstruction as Construction) != null).Select(x => x.OpeningConstruction as Construction).ToList();
+            allConstructions.AddRange(openings.Where(x => x.FrameConstruction != null).Where(x => (x.FrameConstruction as Construction) != null).Select(x => x.FrameConstruction as Construction));
 
-            foreach (Opening o in openings)
-            {
-                if (o.FrameConstruction != null)
-                {
-                    Construction t1 = unique.Where(x => x.UniqueConstructionName(includeConstructionName) == o.FrameConstruction.UniqueConstructionName(includeConstructionName)).FirstOrDefault();
-                    if (t1 == null)
-                        unique.Add(o.FrameConstruction as Construction);
-                }
-
-                if (o.OpeningConstruction != null)
-                {
-                    Construction t2 = unique.Where(x => x.UniqueConstructionName(includeConstructionName) == o.OpeningConstruction.UniqueConstructionName(includeConstructionName)).FirstOrDefault();
-                    if (t2 == null)
-                        unique.Add(o.OpeningConstruction as Construction);
-                }
-            }
-
-            return unique;
+            return allConstructions.UniqueConstructions(includeConstructionName);
         }
 
         [Description("Returns a collection of unique constructions from a nested collection of Environment Panels representing spaces")]
@@ -101,24 +75,6 @@ namespace BH.Engine.Environment
                 elements.AddRange(e);
 
             return elements.UniqueConstructions(includeConstructionName);
-        }
-
-        [Description("Returns a collection of unique constructions from a collection of Environment Panels")]
-        [Input("panels", "A collection of Environment Panels")]
-        [Output("uniqueConstructions", "A collection of unique Construction objects")]
-        [Deprecated("3.1", "Deprecated to allow to include option for including the construction name in its unique name")]
-        public static List<Construction> UniqueConstructions(this List<Panel> panels)
-        {
-            return panels.UniqueConstructions(false);
-        }
-
-        [Description("Returns a collection of unique constructions from a nested collection of Environment Panels representing spaces")]
-        [Input("panelsAsSpaces", "A nested collection of Environment Panels representing spaces")]
-        [Output("uniqueConstructions", "A collection of unique Construction objects")]
-        [Deprecated("3.1", "Deprecated to allow to include option for including the construction name in its unique name")]
-        public static List<Construction> UniqueConstructions(this List<List<Panel>> panelsAsSpaces)
-        {
-            return panelsAsSpaces.UniqueConstructions(false);
         }
     }
 }
