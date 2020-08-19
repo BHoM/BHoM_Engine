@@ -58,7 +58,7 @@ namespace BH.Engine.Geometry
             List<Point> vertices = new List<Point>();
             List<Face> resultFaces = new List<Face>();
 
-            List<int> indecies = faces.SelectMany(x => x.ToArray()).Distinct().ToList();
+            IEnumerable<int> indecies = faces.SelectMany(x => x.Vertices()).Distinct();
             Dictionary<int, int> map = indecies.Select((x, i) => new Tuple<int, int>(x, i))
                                                .ToDictionary(x => x.Item1, x => x.Item2);
 
