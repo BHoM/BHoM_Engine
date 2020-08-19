@@ -64,6 +64,8 @@ namespace BH.Engine.Structure
                     resType = BarResultType.BarStrain;
                 else if (type == typeof(BarDisplacement))
                     resType = BarResultType.BarDisplacement;
+                else if (type == typeof(BarModeShape))
+                    resType = BarResultType.BarModeShape;
                 else
                     Reflection.Compute.RecordWarning("Did not find exact type. Assuming " + resType);
 
@@ -81,6 +83,8 @@ namespace BH.Engine.Structure
                     resType = MeshResultType.VonMises;
                 else if (type == typeof(MeshDisplacement))
                     resType = MeshResultType.Displacements;
+                else if (type == typeof(MeshModeShape))
+                    resType = MeshResultType.MeshModeShape;
                 else
                     Reflection.Compute.RecordWarning("Did not find exact type. Assuming " + resType);
 
@@ -114,6 +118,8 @@ namespace BH.Engine.Structure
                     resType = NodeResultType.NodeVelocity;
                 else if (type == typeof(NodeModalMass))
                     resType = NodeResultType.NodeModalMass;
+                else if (type == typeof(NodeModeShape))
+                    resType = NodeResultType.NodeModeShape;
                 else
                     Reflection.Compute.RecordWarning("Did not find exact type. Assuming " + resType);
 

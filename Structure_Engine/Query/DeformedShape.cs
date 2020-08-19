@@ -54,7 +54,7 @@ namespace BH.Engine.Structure
         [Input("scaleFactor", "Controls by how much the results should be scaled.")]
         [Input("drawSections", "Toggles if output should be just centrelines or include section geometry. Note that currently section geometry only supports displacements, no rotations!")]
         [Output("deformed","The shape of the Bars from the displacements.")]
-        public static List<IGeometry> DeformedShape(List<Bar> bars, List<BarDisplacement> barDisplacements, string adapterNameId, object loadcase, double scaleFactor = 1.0, bool drawSections = false)
+        public static List<IGeometry> DeformedShape(List<Bar> bars, List<IBarDisplacement> barDisplacements, string adapterNameId, object loadcase, double scaleFactor = 1.0, bool drawSections = false)
         {
             barDisplacements = barDisplacements.SelectCase(loadcase);
 
@@ -69,9 +69,9 @@ namespace BH.Engine.Structure
             {
                 string id = bar.CustomData[adapterNameId].ToString();
 
-                List<BarDisplacement> deformations;
+                List<IBarDisplacement> deformations;
 
-                IGrouping<string, BarDisplacement> outVal;
+                IGrouping<string, IBarDisplacement> outVal;
                 if (resGroups.TryGetValue(id, out outVal))
                     deformations = outVal.ToList();
                 else
@@ -117,9 +117,9 @@ namespace BH.Engine.Structure
                 else
                     continue;
 
-                MeshResult singleDisp = deformations.Where(x => x.ObjectId.ToString() == id && x.Results.First() is MeshDisplacement).First();
+                MeshResult singleDisp = deformations.Where(x => x.ObjectId.ToString() == id && x.Results.First() is IMeshDisplacement).First();
 
-                defMeshes.Add(DeformedMesh(feMesh, singleDisp.Results.Cast<MeshDisplacement>(), adapterNameId, scaleFactor));
+                defMeshes.Add(DeformedMesh(feMesh, singleDisp.Results.Cast<IMeshDisplacement>(), adapterNameId, scaleFactor));
             }
 
             return defMeshes;
@@ -129,12 +129,12 @@ namespace BH.Engine.Structure
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private static Polyline DeformedShapeCentreLine(Bar bar, List<BarDisplacement> deformations, double scaleFactor = 1.0)
+        private static Polyline DeformedShapeCentreLine(Bar bar, List<IBarDisplacement> deformations, double scaleFactor = 1.0)
         {
             Vector tan = (bar.EndNode.Position - bar.StartNode.Position);
             List<Point> pts = new List<Point>();
 
-            foreach (BarDisplacement defo in deformations)
+            foreach (IBarDisplacement defo in deformations)
             {
                 Vector disp = new Vector { X = defo.UX * scaleFactor, Y = defo.UY * scaleFactor, Z = defo.UZ * scaleFactor };
                 Point pt = bar.StartNode.Position + tan * defo.Position + disp;
@@ -148,7 +148,7 @@ namespace BH.Engine.Structure
         /***************************************************/
 
 
-        private static List<Loft> DeformedShapeSection(Bar bar, List<BarDisplacement> deformations, double scaleFactor = 1.0)
+        private static List<Loft> DeformedShapeSection(Bar bar, List<IBarDisplacement> deformations, double scaleFactor = 1.0)
         {
             Vector tan = bar.Tangent();
 
@@ -160,7 +160,7 @@ namespace BH.Engine.Structure
             foreach (ICurve sectionCurve in sectionCurves)
             {
                 Loft loft = new Loft();
-                foreach (BarDisplacement defo in deformations)
+                foreach (IBarDisplacement defo in deformations)
                 {
                     //ICurve curve = sectionCurve.IRotate(bar.StartNode.Position, tan, defo.RX * scaleFactor);
                     //Vector disp = unitTan * defo.UX * scaleFactor + yAxis * defo.UY * scaleFactor + normal * defo.UZ * scaleFactor;
@@ -178,13 +178,13 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        private static Mesh DeformedMesh(FEMesh feMesh, IEnumerable<MeshDisplacement> disps, string adapterNameId, double scaleFactor)
+        private static Mesh DeformedMesh(FEMesh feMesh, IEnumerable<IMeshDisplacement> disps, string adapterNameId, double scaleFactor)
         {
             Mesh mesh = new Mesh();
 
             foreach (Node node in feMesh.Nodes)
             {
-                MeshDisplacement disp = disps.FirstOrDefault(x => x.NodeId.ToString() == node.CustomData[adapterNameId].ToString());
+                IMeshDisplacement disp = disps.FirstOrDefault(x => x.NodeId.ToString() == node.CustomData[adapterNameId].ToString());
 
                 if (disp == null)
                 {
