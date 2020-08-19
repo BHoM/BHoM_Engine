@@ -40,6 +40,7 @@ using BH.oM.Physical.Elements;
 using BH.Engine.Geometry;
 
 using BH.oM.Geometry.SettingOut;
+using BH.oM.Reflection;
 
 namespace BH.Engine.Environment
 {
@@ -150,21 +151,24 @@ namespace BH.Engine.Environment
         [Input("openingName", "The Opening Name to filter by")]
         [Output("openings", "A collection of Environment Opening objects that match the name")]
         [PreviousVersion("3.3", "BH.Engine.Environment.Query.OpeningsByName(List<BH.oM.Environment.Elements.Opening>, string)")]
-        public static List<Opening> OpeningsByName(this List<Opening> openings, string openingName)
+        public static List<Opening> FilterOpeningsByName(this List<Opening> openings, string openingName)
         {
             return openings.Where(x => x.Name == openingName).ToList();
         }
 
-        [Description("Returns a collection of Environment Openings that match a given Opening Type")]
-        [Input("openings", "A collection of Environment Openings to filter")]
+        [Description("Returns a collection of Environment Openings that match the provided type as the first output, and the openings which don't match the provided type as the second output")]
+        [Input("openings", "A collection of Environment Openings")]
         [Input("type", "An Opening Type to filter by from the Opening Type enum")]
-        [Output("openings", "A collection of Environment Opening that match the given type")]
+        [MultiOutput(0, "openingsMatchingType", "A collection of Environment Panels that match the provided type")]
+        [MultiOutput(1, "openingsNotMatchingType", "A collection of Environment Panel that DO NOT match the provided type")]
         [PreviousVersion("3.3", "BH.Engine.Environment.Query.OpeningsByType(List<BH.oM.Environment.Elements.Opening>, BH.oM.Environment.Elements.OpeningType)")]
-        public static List<Opening> FilterOpeningsByType(this List<Opening> openings, OpeningType type)
+        public static Output<List<Opening>, List<Opening>> FilterOpeningsByType(this List<Opening> openings, OpeningType type)
         {
-            return openings.Where(x => x.Type == type).ToList();
+            return new Output<List<Opening>, List<Opening>>
+            {
+                Item1 = openings.Where(x => x.Type == type).ToList(),
+                Item2 = openings.Where(x => x.Type != type).ToList(),
+            };
         }
-
-        
     }
 }
