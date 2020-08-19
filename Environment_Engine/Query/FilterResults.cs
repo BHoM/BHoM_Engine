@@ -31,6 +31,8 @@ using BH.oM.Environment.Results.Mesh;
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
 
+using BH.oM.Environment.Results;
+
 namespace BH.Engine.Environment
 {
     public static partial class Query
@@ -51,6 +53,79 @@ namespace BH.Engine.Environment
         public static List<MeshResult> FilterResultsByResultCase(this List<MeshResult> results, IComparable resultCase)
         {
             return results.Where(x => x.ResultCase == resultCase).ToList();
+        }
+
+        [Description("Returns a collection of Environment Simulation Results by Profile Result Type")]
+        [Input("results", "A collection of Simulation Results")]
+        [Input("resultType", "The Profile Result Type filter")]
+        [Output("simulationResults", "A collection of filtered simulation results")]
+        [PreviousVersion("3.3", "BH.Engine.Environment.Query.ResultsByResultType(List<BH.oM.Environment.Results.SimulationResult>, BH.oM.Environment.Results.ProfileResultType")]
+        public static List<SimulationResult> FilterResultsByResultType(this List<SimulationResult> results, ProfileResultType resultType)
+        {
+            List<SimulationResult> resultList = new List<SimulationResult>();
+
+            foreach (SimulationResult sr in results)
+            {
+                List<ProfileResult> pResults = sr.SimulationResults.Where(x => x.Type == resultType).ToList();
+                if (pResults.Count > 0)
+                    resultList.Add(Create.SimulationResult(sr.Name, sr.SimulationResultType, pResults));
+            }
+
+            return resultList;
+        }
+
+        [Description("Returns a collection of Environment Simulation Results that match both Simulation Result Type and Profile Result Unit and Profile Result Type")]
+        [Input("results", "A collection of Simulation Results")]
+        [Input("simulationType", "The Simulation Result Type filter")]
+        [Input("unit", "The Profile Result Unit filter")]
+        [Input("resultType", "The Profile Result Type filter")]
+        [Output("simulationResults", "A collection of filtered simulation results")]
+        [PreviousVersion("3.3", "BH.Engine.Environment.Query.ResultsByTypeUnitResultType(List<BH.oM.Environment.Results.SimulationResult>, BH.oM.Environment.Results.SimulationResultType, BH.oM.Environment.Results.ProfileResultUnit, BH.oM.Environment.Results.ProfileResultType")]
+        public static List<SimulationResult> FilterResultsByTypeUnitResultType(this List<SimulationResult> results, SimulationResultType simulationType, ProfileResultUnit unit, ProfileResultType resultType)
+        {
+            results = results.FilterResultsByTypeUnit(simulationType, unit);
+            return results.FilterResultsByResultType(resultType);
+        }
+
+        [Description("Returns a collection of Environment Simulation Results by Simulation Result Type")]
+        [Input("results", "A collection of Simulation Results")]
+        [Input("type", "The Simulation Result Type filter")]
+        [Output("simulationResults", "A collection of filtered simulation results")]
+        [PreviousVersion("3.3", "BH.Engine.Environment.Query.ResultsByType(List<BH.oM.Environment.Results.SimulationResult>, BH.oM.Environment.Results.SimulationResultType")]
+        public static List<SimulationResult> FilterResultsByType(this List<SimulationResult> results, SimulationResultType type)
+        {
+            return results.Where(x => x.SimulationResultType == type).ToList();
+        }
+
+        [Description("Returns a collection of Environment Simulation Results that match both Simulation Result Type and Profile Result Unit")]
+        [Input("results", "A collection of Simulation Results")]
+        [Input("simulationType", "The Simulation Result Type filter")]
+        [Input("unit", "The Profile Result Unit filter")]
+        [Output("simulationResults", "A collection of filtered simulation results")]
+        [PreviousVersion("3.3", "BH.Engine.Environment.Query.ResultsByTypeUnit(List<BH.oM.Environment.Results.SimulationResult>, BH.oM.Environment.Results.SimulationResultType, BH.oM.Environment.Results.ProfileResultUnit")]
+        public static List<SimulationResult> FilterResultsByTypeUnit(this List<SimulationResult> results, SimulationResultType simulationType, ProfileResultUnit unit)
+        {
+            results = results.FilterResultsByType(simulationType);
+            return results.FilterResultsByUnit(unit);
+        }
+
+        [Description("Returns a collection of Environment Simulation Results by Profile Result Unit")]
+        [Input("results", "A collection of Simulation Results")]
+        [Input("unit", "The Profile Result Unit filter")]
+        [Output("simulationResults", "A collection of filtered simulation results")]
+        [PreviousVersion("3.3", "BH.Engine.Environment.Query.ResultsByUnit(List<BH.oM.Environment.Results.SimulationResult>, BH.oM.Environment.Results.ProfileResultUnit")]
+        public static List<SimulationResult> FilterResultsByUnit(this List<SimulationResult> results, ProfileResultUnit unit)
+        {
+            List<SimulationResult> resultList = new List<SimulationResult>();
+
+            foreach (SimulationResult sr in results)
+            {
+                List<ProfileResult> pResults = sr.SimulationResults.Where(x => x.Unit == unit).ToList();
+                if (pResults.Count > 0)
+                    resultList.Add(Create.SimulationResult(sr.Name, sr.SimulationResultType, pResults));
+            }
+
+            return resultList;
         }
     }
 }
