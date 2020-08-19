@@ -105,6 +105,7 @@
     <Compile Include="Create\Location.cs" />
     <Compile Include="Create\SpaceTime.cs" />
     <Compile Include="Modify\AddOpenings.cs" />
+    <Compile Include="Modify\AssignGenericConstructions.cs" />
     <Compile Include="Modify\ChangeAdjacentSpace.cs" />
     <Compile Include="Modify\ChangeAdjacentSpaces.cs" />
     <Compile Include="Modify\CleanPanel.cs" />
@@ -273,6 +274,10 @@
     <ProjectReference Include="..\Geometry_Engine\Geometry_Engine.csproj">
       <Project>{89ab2dcb-ef87-4cba-b59c-c16a8a71d333}</Project>
       <Name>Geometry_Engine</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Library_Engine\Library_Engine.csproj">
+      <Project>{fb4ed5c8-e7cc-44b3-95eb-95c304d54e5d}</Project>
+      <Name>Library_Engine</Name>
     </ProjectReference>
     <ProjectReference Include="..\Matter_Engine\Matter_Engine.csproj">
       <Project>{65198eea-b572-418f-b77d-b348082ec92e}</Project>
