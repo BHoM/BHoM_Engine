@@ -145,13 +145,12 @@
     <Compile Include="Query\NewElement1D.cs" />
     <Compile Include="Query\NewInternalElement2D.cs" />
     <Compile Include="Query\NotClosedSpaces.cs" />
-    <Compile Include="Query\OpeningsByType.cs" />
     <Compile Include="Query\PointsInSpaces.cs" />
     <Compile Include="Modify\CullOverlaps.cs" />
     <Compile Include="Query\FindDuplicatePanels.cs" />
     <Compile Include="Query\IsValidLocation.cs" />
     <Compile Include="Query\DateTime.cs" />
-    <Compile Include="Query\DateTimeList.cs" />
+    <Compile Include="Compute\DateTimeList.cs" />
     <Compile Include="Query\Level.cs" />
     <Compile Include="Query\MaximumLevel.cs" />
     <Compile Include="Query\MinimumLevel.cs" />
@@ -160,7 +159,6 @@
     <Compile Include="Query\PanelByGuid.cs" />
     <Compile Include="Query\PanelsContainingPoint.cs" />
     <Compile Include="Query\PanelsFromPhysical.cs" />
-    <Compile Include="Query\PanelsNotByType.cs" />
     <Compile Include="Query\SolidVolume.cs" />
     <Compile Include="Query\SpaceByName.cs" />
     <Compile Include="Query\SpacesByElementID.cs" />

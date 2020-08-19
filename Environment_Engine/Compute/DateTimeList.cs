@@ -1,4 +1,4 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -23,40 +23,32 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 using BH.oM.Environment;
-using BH.oM.Environment.Elements;
-using BH.oM.Environment.Fragments;
-using BH.oM.Base;
-using BH.oM.Geometry;
 using BH.Engine.Geometry;
+using BH.oM.Geometry;
 
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
 
-using BH.oM.Geometry.SettingOut;
-
-using BH.Engine.Base;
-
-using BH.oM.Physical.Elements;
-
 namespace BH.Engine.Environment
 {
-    public static partial class Query
+    public static partial class Compute
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns a collection of Environment Panels that DO NOT match a given Panel Type")]
-        [Input("panels", "A collection of Environment Panels")]
-        [Input("type", "A Panel Type to filter by from the Panel Type enum")]
-        [Output("panels", "A collection of Environment Panel that DO NOT match the given type")]
-        public static List<Panel> PanelsNotByType(this List<Panel> panels, PanelType type)
+        [Description("A tool to help creation of a list of DateTime objects.")]
+        [Input("startDateTime", "The first DateTime to include")]
+        [Input("endDateTime", "The last DateTime to include in the list")]
+        [Input("minutesBetween", "Number of minutes by which to increment between startDateTime and endDateTime")]
+        [Output("dateTimeList", "A list of DateTime objects")]
+        [PreviousVersion("3.3", "BH.Engine.Environment.Query.DateTimeList(DateTime, DateTime, int)")]
+        public static IEnumerable<DateTime> DateTimeList(DateTime startDateTime, DateTime endDateTime, int minutesBetween)
         {
-            return panels.Where(x => x.Type != type).ToList();
+            int periods = (int)(endDateTime - startDateTime).TotalMinutes / minutesBetween;
+            return Enumerable.Range(0, periods + 1).Select(p => startDateTime.AddMinutes(minutesBetween * p));
         }
     }
 }
+

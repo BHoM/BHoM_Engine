@@ -164,5 +164,7 @@ namespace BH.Engine.Environment
         {
             return openings.Where(x => x.Type == type).ToList();
         }
+
+        
     }
 }
