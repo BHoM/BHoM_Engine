@@ -63,7 +63,7 @@ namespace BH.Engine.Geometry
             {
                 // go around its edges and create lines between the intermediate points
                 Point[] prePoint = new Point[isoValues.Count];
-                int[] indexArray = face.ToArray();
+                int[] indexArray = face.Vertices();
                 for (int i = 0; i < indexArray.Length; i++)
                 {
                     int indJ = indexArray[(i + 1) % indexArray.Length];
@@ -90,7 +90,7 @@ namespace BH.Engine.Geometry
                         {
                             results[k].Add(new Line()
                             {
-                                Start = prePoint[k].Clone(),
+                                Start = prePoint[k],
                                 End = pt,
                             });
                             prePoint[k] = null;
@@ -132,25 +132,6 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        private static int[] ToArray(this Face face)
-        {
-            if (face.IsQuad())
-            {
-                return new int[]
-                {
-                    face.A, face.B, face.C, face.D
-                };
-            }
-            else
-            {
-                return new int[]
-                {
-                    face.A, face.B, face.C
-                };
-            }
-        }
-
-        /***************************************************/
     }
 }
 
