@@ -88,8 +88,10 @@
   <ItemGroup>
     <Compile Include="Compute\BooleanIntersect.cs" />
     <Compile Include="Compute\EquipmentGain.cs" />
+    <Compile Include="Compute\ExportEPW.cs" />
     <Compile Include="Compute\ExtrudeToVolume.cs" />
     <Compile Include="Compute\GenerateCylindricalFarfield.cs" />
+    <Compile Include="Compute\ImportEPW.cs" />
     <Compile Include="Compute\JulianDay.cs" />
     <Compile Include="Compute\LightingGain.cs" />
     <Compile Include="Compute\MapToLevel.cs" />
@@ -267,6 +269,11 @@
       <Name>BHoM_Engine</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\Data_Engine\Data_Engine.csproj">
+      <Project>{8082ca2a-ac5c-4690-9f09-960e0d3e4102}</Project>
+      <Name>Data_Engine</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\Diffing_Engine\Diffing_Engine.csproj">
       <Project>{073dfd36-0829-4792-8c32-67bf692a9413}</Project>
       <Name>Diffing_Engine</Name>
@@ -278,6 +285,7 @@
     <ProjectReference Include="..\Library_Engine\Library_Engine.csproj">
       <Project>{fb4ed5c8-e7cc-44b3-95eb-95c304d54e5d}</Project>
       <Name>Library_Engine</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\Matter_Engine\Matter_Engine.csproj">
       <Project>{65198eea-b572-418f-b77d-b348082ec92e}</Project>
