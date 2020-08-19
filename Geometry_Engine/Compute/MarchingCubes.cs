@@ -47,6 +47,7 @@ namespace BH.Engine.Geometry
                 Reflection.Compute.RecordError("Number of vertexValues must match the number of vertices in the mesh.");
                 return new List<Mesh>();
             }
+
             if (isoValues == null)
                 return new List<Mesh>();
 

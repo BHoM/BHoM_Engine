@@ -71,12 +71,7 @@ namespace BH.Engine.Geometry
             if (vertexRelatedData != null && 
                 vertexRelatedData.Count == mesh.Vertices.Count)
             {
-                List<T> newList = new List<T>();
-                foreach (int i in indecies)
-                {
-                    newList.Add(vertexRelatedData[i]);
-                }
-                vertexRelatedData = newList;
+                vertexRelatedData = indecies.Select(i => vertexRelatedData[i]).ToList();
             }
 
             foreach (Face face in faces)
