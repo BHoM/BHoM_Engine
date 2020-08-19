@@ -37,6 +37,7 @@ using BH.oM.Geometry;
 using BH.Engine.Geometry;
 
 using BH.oM.Geometry.SettingOut;
+using BH.oM.Reflection;
 
 namespace BH.Engine.Environment
 {
@@ -170,14 +171,30 @@ namespace BH.Engine.Environment
             return panels.Where(x => x.Tilt() >= minTilt && x.Tilt() <= maxTilt).ToList();
         }
 
-        [Description("Returns a collection of Environment Panels that match a given Panel Type")]
+        [Description("Returns a collection of Environment Panels that DO NOT match a given Panel Type")]
         [Input("panels", "A collection of Environment Panels")]
         [Input("type", "A Panel Type to filter by from the Panel Type enum")]
-        [Output("panels", "A collection of Environment Panel that match the given type")]
-        [PreviousVersion("3.3", "BH.Engine.Environment.Query.PanelsByType(List<BH.oM.Environment.Elements.Panel>, BH.oM.Environment.Elements.PanelType)")]
-        public static List<Panel> FilterPanelsByType(this List<Panel> panels, PanelType type)
+        [Output("panels", "A collection of Environment Panel that DO NOT match the given type")]
+        [PreviousVersion("3.3", "BH.Engine.Environment.Query.PanelsNotByType(List<BH.oM.Environment.Elements.Panel>, BH.oM.Environment.Elements.PanelType)")]
+        [ToBeRemoved("3.3", "Replaced by FilterPanelsByType which provides the panels which match and don't match a given type")]
+        public static List<Panel> FilterPanelsNotByType(this List<Panel> panels, PanelType type)
         {
-            return panels.Where(x => x.Type == type).ToList();
+            return panels.Where(x => x.Type != type).ToList();
+        }
+
+        [Description("Returns a collection of Environment Panels that match the provided type as the first output, and the panels which don't match the provided type as the second output")]
+        [Input("panels", "A collection of Environment Panels")]
+        [Input("type", "A Panel Type to filter by from the Panel Type enum")]
+        [MultiOutput(0, "panelsMatchingType", "A collection of Environment Panels")]
+        [Output("panels", "A collection of Environment Panel that DO NOT match the given type")]
+        [PreviousVersion("3.3", "BH.Engine.Environment.Query.PanelsByType(List<BH.oM.Environment.Elements.Panel>, BH.oM.Environment.Elements.PanelType)")]
+        public static Output<List<Panel>, List<Panel>> FilterPanelsByType(this List<Panel> panels, PanelType type)
+        {
+            return new Output<List<Panel>, List<Panel>>
+            {
+                Item1 = panels.Where(x => x.Type == type).ToList(),
+                Item2 = panels.Where(x => x.Type != type).ToList(),
+            };
         }
     }
 }
