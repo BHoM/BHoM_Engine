@@ -165,10 +165,6 @@
     <Compile Include="Query\PanelsContainingPoint.cs" />
     <Compile Include="Query\PanelsFromPhysical.cs" />
     <Compile Include="Query\PanelsNotByType.cs" />
-    <Compile Include="Query\ResultsByResultType.cs" />
-    <Compile Include="Query\ResultsByTypeUnit.cs" />
-    <Compile Include="Query\ResultsByTypeUnitResultType.cs" />
-    <Compile Include="Query\ResultsByUnit.cs" />
     <Compile Include="Query\SolidVolume.cs" />
     <Compile Include="Query\SpaceByName.cs" />
     <Compile Include="Query\SpacesByElementID.cs" />
@@ -243,7 +239,6 @@
     <Compile Include="Query\FloorGeometry.cs" />
     <Compile Include="Query\Height.cs" />
     <Compile Include="Query\IsCoPlanar.cs" />
-    <Compile Include="Query\ResultsByType.cs" />
     <Compile Include="Query\UniqueConstructions.cs" />
     <Compile Include="Query\UniqueMaterials.cs" />
     <Compile Include="Query\UniqueOpeningInstances.cs" />
