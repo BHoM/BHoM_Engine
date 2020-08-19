@@ -21,6 +21,7 @@
  */
 
 using BH.oM.Geometry;
+using BH.oM.Reflection;
 using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
@@ -41,8 +42,7 @@ namespace BH.Engine.Geometry
         [Output("mesh", "Mesh composed of the faces and the vertices in those faces.")]
         public static Mesh SubMesh(this Mesh mesh, List<Face> faces)
         {
-            List<int> dummyList = new List<int>();
-            return SubMesh<int>(mesh, faces, ref dummyList);
+            return SubMesh<int>(mesh, faces, null).Item1;
         }
 
         /***************************************************/
@@ -50,18 +50,17 @@ namespace BH.Engine.Geometry
         [Description("Create a mesh from selected faces of an existing mesh.")]
         [Input("mesh", "Mesh to get a sub-section from.")]
         [Input("faces", "The faces of the old mesh to carry over to the new mesh.")]
-        [Input("vertexRelatedData", "A list where each item is related to the vertex at the same index in the mesh. \n" +
-                                    "Will be changed to relate to the new mesh's vertex list.")]
-        [Output("mesh", "Mesh composed of the faces and the vertices in those faces.")]
-        public static Mesh SubMesh<T>(this Mesh mesh, List<Face> faces, ref List<T> vertexRelatedData)
+        [Input("vertexRelatedData", "A list where each item is related to the vertex at the same index in the mesh.")]
+        [MultiOutput(0, "mesh", "Mesh composed of the faces and the vertices in those faces.")]
+        [MultiOutput(1, "vertexRelatedData", "The data relating to each corresponding vertex in the new mesh.")]
+        public static Output<Mesh, List<T>> SubMesh<T>(this Mesh mesh, List<Face> faces, List<T> vertexRelatedData)
         {
             List<Point> vertices = new List<Point>();
             List<Face> resultFaces = new List<Face>();
 
             List<int> indecies = faces.SelectMany(x => x.ToArray()).Distinct().ToList();
-            List<Tuple<int, int>> mapping = indecies.Select((x, i) => new Tuple<int, int>(x, i)).ToList();
-
-            Dictionary<int, int> map = mapping.ToDictionary(x => x.Item1, x => x.Item2);
+            Dictionary<int, int> map = indecies.Select((x, i) => new Tuple<int, int>(x, i))
+                                               .ToDictionary(x => x.Item1, x => x.Item2);
 
             foreach (int i in indecies)
             {
@@ -89,10 +88,14 @@ namespace BH.Engine.Geometry
                 resultFaces.Add(newFace);
             }
 
-            return new Mesh()
+            return new Output<Mesh, List<T>>()
             {
-                Vertices = vertices,
-                Faces = resultFaces,
+                Item1 = new Mesh()
+                {
+                    Vertices = vertices,
+                    Faces = resultFaces,
+                },
+                Item2 = vertexRelatedData,
             };
         }
 

@@ -66,11 +66,10 @@ namespace BH.Engine.Geometry
             foreach (List<Face> cell in mesh3d.Cells())
             {
                 // Create a mesh from the cell
-                List<double> tVertexVal = new List<double>(vertexValues);
-                Mesh mesh = SubMesh(meshVersion, cell, ref tVertexVal);
+                var meshAndValues = SubMesh(meshVersion, cell, vertexValues);
 
                 // Find the iso lines for the boundary of the cell
-                List<List<Polyline>> pLines = MarchingSquares(mesh, tVertexVal, isoValues).Select(x => x.Join()).ToList();
+                List<List<Polyline>> pLines = MarchingSquares(meshAndValues.Item1, meshAndValues.Item2, isoValues).Select(x => x.Join()).ToList();
 
                 // Create faces from the polyline
                 // Note that each vertex may be added twice here from neighboring cells
