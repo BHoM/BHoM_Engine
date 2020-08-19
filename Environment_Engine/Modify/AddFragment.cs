@@ -44,7 +44,9 @@ namespace BH.Engine.Environment
         [Deprecated("3.1", "Deprecated in favour of AddFragment method in the base engine")]
         public static IEnvironmentObject AddFragment(this IEnvironmentObject environmentObject, IFragment fragment)
         {
-            if (environmentObject == null) return null;
+            if (environmentObject == null)
+                return null;
+
             environmentObject.Fragments.Add(fragment);
             return environmentObject;
         }

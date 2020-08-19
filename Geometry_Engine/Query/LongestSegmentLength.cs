@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -20,18 +20,43 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Environment.Elements;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
 using BH.oM.Geometry;
 using BH.Engine.Geometry;
 
-namespace BH.Engine.Environment
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
+
+namespace BH.Engine.Geometry
 {
-    public static partial class Modify
+    public static partial class Query
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Returns the length of the longest segment from a BHoM Geometry Polyline")]
+        [Input("polyline", "A BHoM Geometry Polyline")]
+        [Output("segmentLength", "The length of the longest segment")]
+        [PreviousVersion("3.3", "BH.Engine.Environment.Query.LongestSegmentLength(BH.oM.Geometry.Polyline)")]
+        public static double LongestSegmentLength(Polyline polyline)
+        {
+            List<Point> pts = polyline.DiscontinuityPoints();
+            double length = pts.Last().Distance(pts.First());
+
+            for (int x = 0; x < pts.Count - 1; x++)
+            {
+                double dist = pts[x].Distance(pts[x + 1]);
+                length = dist > length ? dist : length;
+            }
+
+            return length;
+        }
     }
 }
 

@@ -41,7 +41,7 @@ namespace BH.Engine.Environment
         [Description("A tool to help creation of a list of DateTime objects.")]
         [Input("startDateTime", "The first DateTime to include")]
         [Input("endDateTime", "The last DateTime to include in the list")]
-        [Input("minutesBetween", "Number of minutes by which to increment from startDateTime and endDateTime")]
+        [Input("minutesBetween", "Number of minutes by which to increment between startDateTime and endDateTime")]
         [Output("dateTimeList", "A list of DateTime objects")]
         public static IEnumerable<DateTime> DateTimeList(DateTime startDateTime, DateTime endDateTime, int minutesBetween)
         {

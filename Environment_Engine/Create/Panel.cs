@@ -101,32 +101,6 @@ namespace BH.Engine.Environment
                 Openings = openings,
             };
         }
-
-        [Description("Returns an Environment Panel object")]
-        [Input("name", "The name of the panel, default empty string")]
-        [Input("externalEdges", "A collection of Environment Edge objects which define the external boundary of the panel, default null")]
-        [Input("openings", "A collection of Environment Opening objects, default null")]
-        [Input("construction", "A construction object providing layer and material information for the panel, default null")]
-        [Input("type", "The type of panel from the Panel Type enum, default undefined")]
-        [Input("connectedSpaces", "A collection of the spaces the panel is connected to, default null")]
-        [Output("panel", "An Environment Panel object")]
-        [Deprecated("3.0", "Deprecated in favour of default create components produced by BHoM")]
-        public static Panel Panel(string name = "", List<Edge> externalEdges = null, List<Opening> openings = null, IConstruction construction = null, PanelType type = PanelType.Undefined, List<string> connectedSpaces = null)
-        {
-            externalEdges = externalEdges ?? new List<Edge>();
-            openings = openings ?? new List<Opening>();
-            connectedSpaces = connectedSpaces ?? new List<string>();
-
-            return new Panel
-            {
-                Name = name,
-                ExternalEdges = externalEdges,
-                Openings = openings,
-                Construction = construction,
-                Type = type,
-                ConnectedSpaces = connectedSpaces,
-            };
-        }
     }
 }
 

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -22,47 +22,46 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
+using System.Linq;
 using BH.oM.Environment.Elements;
-using BH.oM.Physical.Constructions;
+
+using BH.Engine.Geometry;
+using BH.oM.Geometry;
 
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
 
 namespace BH.Engine.Environment
 {
-    public static partial class Create
+    public static partial class Modify
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns an Environment Opening object")]
-        [Input("name", "The name of the opening, default empty string")]
-        [Input("externalEdges", "A collection of Environment Edge objects which define the external boundary of the opening, default null")]
-        [Input("innerEdges", "A collection of Environment Edge objects which define the internal boundary of the opening, default null")]
-        [Input("frameConstruction", "A construction object providing construction information about the frame of the opening, default null")]
-        [Input("openingConstruction", "A construction object providing construction information about the opening - typically glazing construction, default null")]
-        [Input("type", "The type of opening from the Opening Type enum, default undefined")]
-        [Output("opening", "An Environment Opening object")]
-        [Deprecated("3.0", "Deprecated in favour of default create components produced by BHoM")]
-        public static Opening Opening(string name = "", List<Edge> externalEdges = null, List<Edge> innerEdges = null, IConstruction frameConstruction = null, IConstruction openingConstruction = null, OpeningType type = OpeningType.Undefined)
+        [Description("Removes panels which overlap each other")]
+        [Input("panels", "A collection of Environment Panels")]
+        [Output("panels", "A collection of Environment Panels with no overlaps")]
+        [PreviousVersion("3.3", "BH.Engine.Environment.Query.CullOverlaps(List<BH.oM.Environment.Element.Panel>)")]
+        public static List<Panel> CullOverlaps(this List<Panel> panels)
         {
-            externalEdges = externalEdges ?? new List<Edge>();
-            innerEdges = innerEdges ?? new List<Edge>();
+            List<Panel> ori = new List<Panel>(panels);
+            List<Panel> toReturn = new List<Panel>();
 
-            return new Opening
+            while (ori.Count > 0)
             {
-                Name = name,
-                Edges = externalEdges,
-                InnerEdges = innerEdges,
-                FrameConstruction = frameConstruction,
-                OpeningConstruction = openingConstruction,
-                Type = type,
-            };
+                Panel current = ori[0];
+                List<Panel> overlaps = current.IdentifyOverlaps(panels);
+
+                foreach (Panel be in overlaps)
+                    ori.Remove(be);
+
+                toReturn.Add(current);
+                ori.RemoveAt(0);
+            }
+
+            return toReturn;
         }
     }
 }

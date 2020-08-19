@@ -108,8 +108,8 @@ namespace BH.Engine.Environment
                 rtnPanel = rtnPanel.SetGeometry(max);
 
                 return rtnPanel;
-
             }
+
             Reflection.Compute.RecordError("These panels do not belong to the same space(s) and cannot be merged together");
             return null;
 

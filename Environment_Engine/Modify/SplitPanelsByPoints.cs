@@ -71,7 +71,8 @@ namespace BH.Engine.Environment
                 }
 
                 oriElements.RemoveAt(0); //Remove the element we have just worked with, regardless of whether we split it or not
-                if (!wasSplit) rtnElements.Add(currentElement); //We have a pure element ready to use
+                if (!wasSplit)
+                    rtnElements.Add(currentElement); //We have a pure element ready to use
                 else
                 {
                     //Add the new elements to the list of cutting objects
