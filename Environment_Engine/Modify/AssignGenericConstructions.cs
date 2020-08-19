@@ -54,6 +54,11 @@ namespace BH.Engine.Environment
                     break;
             }
 
+            for (int i = 0; i < panel.Openings.Count; i++)
+            {
+                panel.Openings[i] = panel.Openings[i].AssignGenericConstructions();
+            }
+
             return cloned;
         }
 
