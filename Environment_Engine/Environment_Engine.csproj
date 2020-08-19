@@ -133,6 +133,7 @@
     <Compile Include="Query\ClosedSpaces.cs" />
     <Compile Include="Query\ConnectedSpaceName.cs" />
     <Compile Include="Query\FilterByAdjacencies.cs" />
+    <Compile Include="Query\FilterOpenings.cs" />
     <Compile Include="Query\FilterPanels.cs" />
     <Compile Include="Query\FilterResults.cs" />
     <Compile Include="Query\FloorHeights.cs" />
@@ -154,11 +155,6 @@
     <Compile Include="Query\Level.cs" />
     <Compile Include="Query\MaximumLevel.cs" />
     <Compile Include="Query\MinimumLevel.cs" />
-    <Compile Include="Query\OpeningsByElementID.cs" />
-    <Compile Include="Query\OpeningsByLevel.cs" />
-    <Compile Include="Query\OpeningsByMaximumLevel.cs" />
-    <Compile Include="Query\OpeningsByMinimumLevel.cs" />
-    <Compile Include="Query\OpeningsByName.cs" />
     <Compile Include="Query\OpeningsFromElements.cs" />
     <Compile Include="Query\OpeningsFromPhysical.cs" />
     <Compile Include="Query\PanelByGuid.cs" />
