@@ -72,6 +72,7 @@
     <Compile Include="Compute\BooleanIntersection.cs" />
     <Compile Include="Compute\BooleanUnion.cs" />
     <Compile Include="Compute\ClusterCollinear.cs" />
+    <Compile Include="Compute\FibonacciSphere.cs" />
     <Compile Include="Compute\ClusterCoplanar.cs" />
     <Compile Include="Compute\ConvexHull.cs" />
     <Compile Include="Compute\CullDuplicates.cs" />
@@ -143,11 +144,13 @@
     <Compile Include="Query\BasisFunction.cs" />
     <Compile Include="Query\Cells.cs" />
     <Compile Include="Query\Centroid.cs" />
+    <Compile Include="Query\ClosestPoints.cs" />
     <Compile Include="Query\CurveIntersections.cs" />
     <Compile Include="Compute\CurveProximity.cs" />
     <Compile Include="Query\ExternalFaceMesh.cs" />
     <Compile Include="Query\Geometry.cs" />
     <Compile Include="Query\GetLineSegment.cs" />
+    <Compile Include="Query\IsPartiallyContaining.cs" />
     <Compile Include="Query\IsEqual.cs" />
     <Compile Include="Query\Clone.cs" />
     <Compile Include="Convert\NurbsForm.cs" />
