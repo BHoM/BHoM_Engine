@@ -39,7 +39,7 @@ namespace BH.Engine.Geometry
 
         [Description("Computes contour lines of the iso-values in the scalar field defined by the mesh and the values. \n" +
                      "The values are assumed to change linearly between vertices.")]
-        [Input("mesh3d", "Mesh which defines the positions of the values in the scalar field.")]
+        [Input("mesh", "Mesh defining the positions of the values in the scalar field.")]
         [Input("vertexValues", "The value for of scalar field for each vertex in the mesh.")]
         [Input("isoValues", "Values in the scalar field to produce the iso-lines for.")]
         [Output("isoLines", "Lines covering the iso-values in the scalar field defined by the mesh and values.")]
@@ -50,6 +50,7 @@ namespace BH.Engine.Geometry
                 Reflection.Compute.RecordError("Number of vertexValues must match the number of vertices in the mesh.");
                 return new List<List<Line>>();
             }
+
             if (isoValues == null)
                 return new List<List<Line>>();
 
@@ -69,7 +70,7 @@ namespace BH.Engine.Geometry
                     int indI = indexArray[i];
 
                     // get points on face edge at the iso value
-                    List<Point> pts = IntermidiatePoints(
+                    List<Point> pts = IntermediatePoints(
                         mesh.Vertices[indI], vertexValues[indI],
                         mesh.Vertices[indJ], vertexValues[indJ],
                         isoValues);
@@ -106,7 +107,7 @@ namespace BH.Engine.Geometry
         /****   Private Methods                         ****/
         /***************************************************/
 
-        private static List<Point> IntermidiatePoints(Point firstPt, double fisrtValue, Point secondPt, double secondValue, List<double> evaluationValues)
+        private static List<Point> IntermediatePoints(Point firstPt, double fisrtValue, Point secondPt, double secondValue, List<double> evaluationValues)
         {
             Domain domain = Data.Create.Domain(fisrtValue, secondValue);
             double distance = domain.Max - domain.Min;
