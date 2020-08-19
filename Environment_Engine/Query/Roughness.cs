@@ -53,7 +53,8 @@ namespace BH.Engine.Environment
             BHM.IEnvironmentMaterial firstSide = construction.Layers.First().Material.Properties.Where(x => x is BHM.IEnvironmentMaterial).FirstOrDefault() as BHM.IEnvironmentMaterial;
             BHM.IEnvironmentMaterial finalSide = construction.Layers.Last().Material.Properties.Where(x => x is BHM.IEnvironmentMaterial).FirstOrDefault() as BHM.IEnvironmentMaterial;
 
-            if (firstSide == null || finalSide == null) return BHM.Roughness.Undefined;
+            if (firstSide == null || finalSide == null)
+                return BHM.Roughness.Undefined;
 
             int totalRoughness = (int)firstSide.Roughness + (int)finalSide.Roughness;
             return (BHM.Roughness)(totalRoughness / 2);
@@ -66,7 +67,8 @@ namespace BH.Engine.Environment
         {
             IEnvironmentMaterial materialProperties = material.Properties.Where(x => x is IEnvironmentMaterial).FirstOrDefault() as IEnvironmentMaterial;
 
-            if (materialProperties == null) return 0.0;
+            if (materialProperties == null)
+                return 0.0;
 
             switch (materialProperties.Roughness)
             {

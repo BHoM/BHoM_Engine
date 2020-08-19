@@ -46,6 +46,9 @@ namespace BH.Engine.Environment
         [Output("thickness", "The total thickness of the panel as a result of the construction placed on it")]
         public static double Thickness(this Panel panel)
         {
+            if (panel.Construction == null)
+                return 0;
+
             return panel.Construction.IThickness();
         }
 
@@ -54,7 +57,19 @@ namespace BH.Engine.Environment
         [Output("thickness", "The thickness of the opening as the largest thickness between the frame construction and opening construction")]
         public static double Thickness(this Opening opening)
         {
-            return Math.Max(opening.OpeningConstruction.IThickness(), opening.FrameConstruction.IThickness());
+            if (opening.OpeningConstruction == null && opening.FrameConstruction == null)
+                return 0;
+
+            if(opening.OpeningConstruction != null && opening.FrameConstruction != null)
+                return Math.Max(opening.OpeningConstruction.IThickness(), opening.FrameConstruction.IThickness());
+
+            if (opening.OpeningConstruction != null)
+                return opening.OpeningConstruction.IThickness();
+
+            if (opening.FrameConstruction != null)
+                return opening.FrameConstruction.IThickness();
+
+            return 0;
         }
 
         [Description("Returns the thickness of an Environment Opening based on its construction")]
@@ -63,10 +78,12 @@ namespace BH.Engine.Environment
         [Output("thickness", "The thickness of the opening")]
         public static double Thickness(this Opening opening, bool useFrameConstruction = false)
         {
-            if (useFrameConstruction)
+            if (useFrameConstruction && opening.FrameConstruction != null)
                 return opening.FrameConstruction.IThickness();
-            else
+            else if (opening.OpeningConstruction != null)
                 return opening.OpeningConstruction.IThickness();
+            else
+                return 0;
         }
     }
 }

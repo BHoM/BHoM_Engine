@@ -72,7 +72,8 @@ namespace BH.Engine.Environment
 
             centrePtList.Add(centrePt);
 
-            if (!polyline.IsClosed()) return false; //Prevent failures of the clockwise check
+            if (!polyline.IsClosed())
+                return false; //Prevent failures of the clockwise check
 
             List<Point> pts = polyline.DiscontinuityPoints(tolerance);
             if (pts.Count < 3) return false; //Protection in case there aren't enough points to make a plane
