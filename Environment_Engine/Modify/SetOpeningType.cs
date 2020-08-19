@@ -46,8 +46,10 @@ namespace BH.Engine.Environment
         public static List<Opening> SetOpeningType(this List<Opening> openings, OpeningType openingType)
         {
             List<Opening> cloned = openings.DeepClone<List<Opening>>();
+
             foreach (Opening o in cloned)
                 o.Type = openingType;
+
             return cloned;
         }
     }

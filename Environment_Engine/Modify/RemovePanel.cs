@@ -43,7 +43,7 @@ namespace BH.Engine.Environment
         public static List<Panel> RemovePanel(this List<Panel> panels, Panel panelToRemove)
         {
             List<Panel> clones = new List<Panel>(panels.Select(x => x.DeepClone<Panel>()).ToList());
-            List<Panel> rtnElements = clones.Where(x => x.BHoM_Guid != panelToRemove.BHoM_Guid).ToList(); //Back up in case the element isn't removed the first time
+            List<Panel> rtnElements = clones.Where(x => x.BHoM_Guid != panelToRemove.BHoM_Guid).ToList();
 
             return rtnElements;
         }

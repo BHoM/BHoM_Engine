@@ -54,6 +54,7 @@ namespace BH.Engine.Environment
                 List<Opening> openings = panel.Openings;
                 List<double> openingAreas = new List<double>();
                 List<PolyCurve> openingPolyCurves = new List<PolyCurve>();
+
                 foreach (Opening opening in panel.Openings)
                 {
                     List<ICurve> openingCrvs = opening.Edges.Select(x => x.Curve).ToList();
@@ -62,6 +63,7 @@ namespace BH.Engine.Environment
                     openingAreas.Add(openingArea);
                     openingPolyCurves.Add(openingOutline);
                 }
+
                 double totalOpeningArea = openingAreas.Sum();
 
                 //PanelArea
@@ -79,9 +81,10 @@ namespace BH.Engine.Environment
                     List<BH.oM.Geometry.Polyline> openingPolylines = new List<BH.oM.Geometry.Polyline>();
                     List<List<BH.oM.Geometry.Polyline>> offsetPolylines = new List<List<BH.oM.Geometry.Polyline>>();
                     List<Opening> newOpenings = new List<Opening>();
-                    double distance = new double();
-                    distance = -0.01;
+
+                    double distance = -0.01;
                     panel.Openings.Clear();
+
                     foreach (BH.oM.Geometry.PolyCurve openingPolyCurve in openingPolyCurves)
                     {
                         List<BH.oM.Geometry.Point> polyPoints = openingPolyCurve.IDiscontinuityPoints();
@@ -91,6 +94,7 @@ namespace BH.Engine.Environment
                         Opening newOpening = new Opening { Edges = edges };
                         panel.Openings.Add(newOpening);
                     }
+
                     return panel;
                 }
             }

@@ -63,7 +63,8 @@ namespace BH.Engine.Environment
         public static Level Level(this List<Panel> panelsAsSpace, Level level)
         {
             Polyline floor = panelsAsSpace.FloorGeometry();
-            if (floor == null) return null;
+            if (floor == null)
+                return null;
 
             List<Point> floorPts = floor.IControlPoints();
 
@@ -71,7 +72,9 @@ namespace BH.Engine.Environment
             foreach (Point pt in floorPts)
                 allPointsOnLevel &= (pt.Z > (level.Elevation - BH.oM.Geometry.Tolerance.Distance) && pt.Z < (level.Elevation + BH.oM.Geometry.Tolerance.Distance));
 
-            if (!allPointsOnLevel) return null;
+            if (!allPointsOnLevel)
+                return null;
+            
             return level;
         }
 
@@ -88,6 +91,20 @@ namespace BH.Engine.Environment
             }
 
             return null;
+        }
+
+        [Description("Returns a collection of Setting Out Levels from a list of generic BHoM objects")]
+        [Input("bhomObjects", "A collection of generic BHoM objects")]
+        [Output("levels", "A collection of Setting Out Level objects")]
+        public static List<Level> Levels(this List<IBHoMObject> bhomObjects)
+        {
+            bhomObjects = bhomObjects.ObjectsByType(typeof(Level));
+            List<Level> levels = new List<Level>();
+
+            foreach (IBHoMObject o in bhomObjects)
+                levels.Add(o as Level);
+
+            return levels;
         }
     }
 }

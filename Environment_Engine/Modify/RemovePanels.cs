@@ -44,6 +44,7 @@ namespace BH.Engine.Environment
         {
             List<Panel> clones = new List<Panel>(panels.Select(x => x.DeepClone<Panel>()).ToList());
             List<Panel> toRemove = new List<Panel>(panelsToRemove.Select(x => x.DeepClone<Panel>()).ToList());
+
             foreach (Panel p in toRemove)
                 clones = clones.RemovePanel(p);
 

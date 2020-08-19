@@ -24,17 +24,15 @@ using System;
 using System.Collections.Generic;
 
 using System.Linq;
-using BH.oM.Environment.Elements;
 
-using BH.Engine.Geometry;
 using BH.oM.Geometry;
 
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
 
-namespace BH.Engine.Environment
+namespace BH.Engine.Geometry
 {
-    public static partial class Query
+    public static partial class Modify
     {
         /***************************************************/
         /**** Public Methods                            ****/
@@ -43,10 +41,12 @@ namespace BH.Engine.Environment
         [Description("Removes duplicate lines from the collection")]
         [Input("lines", "The nested collection of lines to cull duplicates from")]
         [Output("lines", "A collection of lines with no duplicates")]
+        [PreviousVersion("3.3", "BH.Engine.Environment.Query.CullDuplicateLines(List<BH.oM.Geometry.Line>, double)")]
         public static List<Line> CullDuplicateLines(this List<Line> lines, double tolerance = Tolerance.Distance)
         {
             double sqTol = tolerance * tolerance;
             List<Line> result = lines.Select(l => l).ToList();
+            
             for (int i = lines.Count - 2; i >= 0; i--)
             {
                 for (int j = lines.Count - 1; j > i; j--)
@@ -57,6 +57,7 @@ namespace BH.Engine.Environment
                         lines.RemoveAt(j);
                 }
             }
+
             return lines;
         }
     }

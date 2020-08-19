@@ -130,6 +130,7 @@
     <Compile Include="Create\IntegrationSlice.cs" />
     <Compile Include="Modify\CleanPolyline.cs" />
     <Compile Include="Modify\CollapseToPolyline.cs" />
+    <Compile Include="Modify\CullDuplicate.cs" />
     <Compile Include="Modify\RemoveLeastSignificantVertices.cs" />
     <Compile Include="Modify\RemoveShortSegments.cs" />
     <Compile Include="Modify\RoundCoordinates.cs" />
@@ -180,6 +181,7 @@
     <Compile Include="Query\IsQuad.cs" />
     <Compile Include="Query\IsSelfIntersecting.cs" />
     <Compile Include="Query\IsVertical.cs" />
+    <Compile Include="Query\LongestSegmentLength.cs" />
     <Compile Include="Query\MeshIntersections.cs" />
     <Compile Include="Query\LineIntersections.cs" />
     <Compile Include="Query\Degree.cs" />

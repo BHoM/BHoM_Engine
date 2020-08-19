@@ -45,11 +45,14 @@ namespace BH.Engine.Environment
         [Output("isTransparent", "True if the material is transparent, false otherwise")]
         public static bool IsTransparent(this Material material)
         {
-            if (material.Properties.Where(x => x is IEnvironmentMaterial).FirstOrDefault() == null) return false; //No Environment Material Fragment on this material
+            if (material.Properties.Where(x => x is IEnvironmentMaterial).FirstOrDefault() == null)
+                return false; //No Environment Material Fragment on this material
 
-            if (material.Properties.Where(x => x is GasMaterial).FirstOrDefault() != null) return true; //All gas materials are transparent
+            if (material.Properties.Where(x => x is GasMaterial).FirstOrDefault() != null)
+                return true; //All gas materials are transparent
 
-            if (material.Properties.Where(x => x is SolidMaterial).FirstOrDefault() == null) return false; //Protection in case there is no solid material on this material
+            if (material.Properties.Where(x => x is SolidMaterial).FirstOrDefault() == null)
+                return false; //Protection in case there is no solid material on this material
 
             return ((material.Properties.Where(x => x is SolidMaterial).First() as SolidMaterial).LightTransmittance > 0); //Solid material is transparent (partially or wholly) if it can transmit some light
         }
@@ -59,7 +62,9 @@ namespace BH.Engine.Environment
         [Output("isTransparent", "True if the material on the layer is transparent, false otherwise")]
         public static bool IsTransparent(this Layer layer)
         {
-            if (layer.Material == null) return false;
+            if (layer.Material == null)
+                return false;
+
             return layer.Material.IsTransparent();
         }
     }
