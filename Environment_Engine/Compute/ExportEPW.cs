@@ -33,12 +33,13 @@ using BH.oM.Environment.Climate;
 
 namespace BH.Engine.Environment
 {
-    public static partial class Create
+    public static partial class Compute
     {
         [Description("Serialise a weatherfile object as an EPW file")]
         [Input("weatherfile", "A BHoM Weatherfile object")]
         [Input("outputPath", "Full path to target output file")]
         [Output("outputPath", "Full path to target output file")]
+        [PreviousVersion("3.3", "BH.Engine.Climate.Create.ExportEPW(BH.oM.Climate.WeatherFile, string)")]
         public static string ExportEPW(WeatherFile weatherfile, string outputPath)
         {
             List<string> outputStrings = new List<string>();
