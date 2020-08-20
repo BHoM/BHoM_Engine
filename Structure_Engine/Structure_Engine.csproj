@@ -153,6 +153,7 @@
     <Compile Include="Query\HasModifiers.cs" />
     <Compile Include="Query\InternalEdgeCurves.cs" />
     <Compile Include="Query\IsNumericallyDependent.cs" />
+    <Compile Include="Query\LocalOrientation.cs" />
     <Compile Include="Query\MaterialComposition.cs" />
     <Compile Include="Query\MaterialType.cs" />
     <Compile Include="Create\Elements\IElement0D\NewElement0D.cs" />

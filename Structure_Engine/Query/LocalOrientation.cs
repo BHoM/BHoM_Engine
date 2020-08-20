@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -39,35 +39,32 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Get the carteseian coordinate system descibring the position and local orientation of the node in the global coordinate system.")]
-        [Input("node","The Node to extract the local coordinate system from.")]
-        [Output("CoordinateSystem","The local cartesian coordinate system of the Node.")]
-        public static Cartesian CoordinateSystem(this Node node)
+        [Description("Get the Vector basis system descibring the local axis orientation of the Panel in the global coordinate system where the z-axis is the normal of the panel and the x- and y-axes are the directions of the local in-plane axes.")]
+        [Input("panel", "The Panel to extract the local orientation from from.")]
+        [Output("orienation", "The local orientation of the Panel as a vector Basis.")]
+        public static Basis LocalOrientation(this Panel panel)
         {
-            return Engine.Geometry.Create.CartesianCoordinateSystem(node.Position, node.Orientation.X, node.Orientation.Y);
-        }
+            Vector normal = Engine.Spatial.Query.Normal(panel);
 
-        /***************************************************/
+            Vector localX, localY;
 
-        [Description("Get the carteseian coordinate system descibring the position and local orientation of the Bar in the global coordinate system where the Bar tangent is the local x-axis and the normal is the local z-axis.")]
-        [Input("bar", "The Bar to extract the local coordinate system from.")]
-        [Output("CoordinateSystem", "The local cartesian coordinate system of the Bar.")]
-        public static Cartesian CoordinateSystem(this Bar bar)
-        {
-            Vector tan = bar.Tangent(true);
-            Vector ax = bar.Normal().CrossProduct(tan);
-            return Engine.Geometry.Create.CartesianCoordinateSystem(bar.StartNode.Position, tan, ax);
-        }
+            if (normal.IsParallel(Vector.XAxis) == 0)
+            {
+                //Normal not parallel to global X
+                localX = Vector.XAxis.Project(new Plane { Normal = normal }).Normalise();
+                localX = localX.Rotate(panel.OrientationAngle, normal);
+                localY = normal.CrossProduct(localX);
+            }
+            else
+            {
+                //Normal is parallel to global x
+                localY = Vector.YAxis.Project(new Plane { Normal = normal }).Normalise();
+                localY = localY.Rotate(panel.OrientationAngle, normal);
+                localX = localY.CrossProduct(normal);
+            }
 
-        /***************************************************/
+            return new Basis(localX, localY, normal);
 
-        [Description("Get the carteseian coordinate system descibring the position and local orientation of the Panel in the global coordinate system where the z-axis is the normal of the panel and the x- and y-axes are the directions of the local in-plane axes.")]
-        [Input("panel", "The Panel to extract the local coordinate system from.")]
-        [Output("CoordinateSystem", "The local cartesian coordinate system of the Panel.")]
-        public static Cartesian CoordinateSystem(this Panel panel)
-        {
-            Basis orientation = panel.LocalOrientation();
-            return new Cartesian(panel.Centroid(), orientation.X, orientation.Y, orientation.Z);
         }
 
         /***************************************************/
