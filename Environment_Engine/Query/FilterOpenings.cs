@@ -54,7 +54,7 @@ namespace BH.Engine.Environment
         [Input("openings", "A collection of Environment Openings")]
         [Input("elementID", "The Element ID to filter by")]
         [Output("openings", "A collection of Environment Opening objects that match the element ID")]
-        [PreviousVersion("3.3", "BH.Engine.Environment.Query.OpeningsByElementID(List<BH.oM.Environment.Elements.Opening>, string)")]
+        [PreviousVersion("3.3", "BH.Engine.Environment.Query.OpeningsByElementID(System.Collections.Generic.List<BH.oM.Environment.Elements.Opening>, System.String)")]
         public static List<Opening> FilterOpeningsByElementID(this List<Opening> openings, string elementID)
         {
             List<IEnvironmentObject> envObjects = new List<IEnvironmentObject>();
@@ -76,7 +76,7 @@ namespace BH.Engine.Environment
         [Input("panels", "A collection of Environment Panels to query for openings")]
         [Input("elementID", "The Element ID to filter by")]
         [Output("openings", "A collection of Environment Opening objects that match the element ID")]
-        [PreviousVersion("3.3", "BH.Engine.Environment.Query.OpeningsByElementID(List<BH.oM.Environment.Elements.Panel>, string)")]
+        [PreviousVersion("3.3", "BH.Engine.Environment.Query.OpeningsByElementID(System.Collections.Generic.List<BH.oM.Environment.Elements.Panel>, System.String)")]
         public static List<Opening> FilterOpeningsByElementID(this List<Panel> panels, string elementID)
         {
             List<Opening> allOpenings = new List<Opening>();
@@ -90,7 +90,7 @@ namespace BH.Engine.Environment
         [Input("openings", "A collection of Environment Openings to filter")]
         [Input("searchLevel", "The Setting Out Level to search by")]
         [Output("openings", "A collection of Environment Openings which match the given level")]
-        [PreviousVersion("3.3", "BH.Engine.Environment.Query.OpeningsByLevel(List<BH.oM.Environment.Elements.Opening>, BH.oM.Geometry.SettingOut.Level)")]
+        [PreviousVersion("3.3", "BH.Engine.Environment.Query.OpeningsByLevel(System.Collections.Generic.List<BH.oM.Environment.Elements.Opening>, BH.oM.Geometry.SettingOut.Level)")]
         public static List<Opening> FilterOpeningsByLevel(this List<Opening> openings, Level searchLevel)
         {
             return openings.FilterOpeningsByLevel(searchLevel.Elevation);
@@ -100,7 +100,7 @@ namespace BH.Engine.Environment
         [Input("openings", "A collection of Environment Openings to filter")]
         [Input("searchLevel", "The level to search by")]
         [Output("openings", "A collection of Environment Openings which match the given level")]
-        [PreviousVersion("3.3", "BH.Engine.Environment.Query.OpeningsByLevel(List<BH.oM.Environment.Elements.Opening>, double)")]
+        [PreviousVersion("3.3", "BH.Engine.Environment.Query.OpeningsByLevel(System.Collections.Generic.List<BH.oM.Environment.Elements.Opening>, System.Double)")]
         public static List<Opening> FilterOpeningsByLevel(this List<Opening> openings, double searchLevel)
         {
             return openings.Where(x => x.MinimumLevel() == searchLevel && x.MaximumLevel() == searchLevel).ToList();
@@ -110,7 +110,7 @@ namespace BH.Engine.Environment
         [Input("openings", "A collection of Environment Openings to filter")]
         [Input("searchLevel", "The Setting Level to search by")]
         [Output("openings", "A collection of Environment Openings where the maximum level meets the search level")]
-        [PreviousVersion("3.3", "BH.Engine.Environment.Query.OpeningsByMaximumLevel(List<BH.oM.Environment.Elements.Opening>, BH.oM.Geometry.SettingOut.Level)")]
+        [PreviousVersion("3.3", "BH.Engine.Environment.Query.OpeningsByMaximumLevel(System.Collections.Generic.List<BH.oM.Environment.Elements.Opening>, BH.oM.Geometry.SettingOut.Level)")]
         public static List<Opening> FilterOpeningsByMaximumLevel(this List<Opening> openings, Level searchLevel)
         {
             return openings.FilterOpeningsByMaximumLevel(searchLevel.Elevation);
@@ -120,7 +120,7 @@ namespace BH.Engine.Environment
         [Input("openings", "A collection of Environment Openings to filter")]
         [Input("searchLevel", "The level to search by")]
         [Output("openings", "A collection of Environment Openings where the maximum level meets the search level")]
-        [PreviousVersion("3.3", "BH.Engine.Environment.Query.OpeningsByMaximumLevel(List<BH.oM.Environment.Elements.Opening>, double)")]
+        [PreviousVersion("3.3", "BH.Engine.Environment.Query.OpeningsByMaximumLevel(System.Collections.Generic.List<BH.oM.Environment.Elements.Opening>, System.Double)")]
         public static List<Opening> FilterOpeningsByMaximumLevel(this List<Opening> openings, double searchLevel)
         {
             return openings.Where(x => x.MaximumLevel() == searchLevel).ToList();
@@ -130,7 +130,7 @@ namespace BH.Engine.Environment
         [Input("openings", "A collection of Environment Openings to filter")]
         [Input("searchLevel", "The Setting Out Level to search by")]
         [Output("openings", "A collection of Environment Openings where the minimum level meets the search level")]
-        [PreviousVersion("3.3", "BH.Engine.Environment.Query.OpeningsByMinimumLevel(List<BH.oM.Environment.Elements.Opening>, BH.oM.Geometry.SettingOut.Level)")]
+        [PreviousVersion("3.3", "BH.Engine.Environment.Query.OpeningsByMinimumLevel(System.Collections.Generic.List<BH.oM.Environment.Elements.Opening>, BH.oM.Geometry.SettingOut.Level)")]
         public static List<Opening> FilterOpeningsByMinimumLevel(this List<Opening> openings, Level searchLevel)
         {
             return openings.FilterOpeningsByMinimumLevel(searchLevel.Elevation);
@@ -140,7 +140,7 @@ namespace BH.Engine.Environment
         [Input("openings", "A collection of Environment Opening to filter")]
         [Input("searchLevel", "The level to search by")]
         [Output("openings", "A collection of Environment Opening where the minimum level meets the search level")]
-        [PreviousVersion("3.3", "BH.Engine.Environment.Query.OpeningsByMinimumLevel(List<BH.oM.Environment.Elements.Opening>, double)")]
+        [PreviousVersion("3.3", "BH.Engine.Environment.Query.OpeningsByMinimumLevel(System.Collections.Generic.List<BH.oM.Environment.Elements.Opening>, System.Double)")]
         public static List<Opening> FilterOpeningsByMinimumLevel(this List<Opening> openings, double searchLevel)
         {
             return openings.Where(x => x.MinimumLevel() == searchLevel).ToList();
@@ -150,7 +150,7 @@ namespace BH.Engine.Environment
         [Input("openings", "A collection of Environment Openings")]
         [Input("openingName", "The Opening Name to filter by")]
         [Output("openings", "A collection of Environment Opening objects that match the name")]
-        [PreviousVersion("3.3", "BH.Engine.Environment.Query.OpeningsByName(List<BH.oM.Environment.Elements.Opening>, string)")]
+        [PreviousVersion("3.3", "BH.Engine.Environment.Query.OpeningsByName(System.Collections.Generic.List<BH.oM.Environment.Elements.Opening>, System.String)")]
         public static List<Opening> FilterOpeningsByName(this List<Opening> openings, string openingName)
         {
             return openings.Where(x => x.Name == openingName).ToList();
@@ -161,7 +161,7 @@ namespace BH.Engine.Environment
         [Input("type", "An Opening Type to filter by from the Opening Type enum")]
         [MultiOutput(0, "openingsMatchingType", "A collection of Environment Panels that match the provided type")]
         [MultiOutput(1, "openingsNotMatchingType", "A collection of Environment Panel that DO NOT match the provided type")]
-        [PreviousVersion("3.3", "BH.Engine.Environment.Query.OpeningsByType(List<BH.oM.Environment.Elements.Opening>, BH.oM.Environment.Elements.OpeningType)")]
+        [PreviousVersion("3.3", "BH.Engine.Environment.Query.OpeningsByType(System.Collections.Generic.List<BH.oM.Environment.Elements.Opening>, BH.oM.Environment.Elements.OpeningType)")]
         public static Output<List<Opening>, List<Opening>> FilterOpeningsByType(this List<Opening> openings, OpeningType type)
         {
             return new Output<List<Opening>, List<Opening>>

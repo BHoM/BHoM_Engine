@@ -43,7 +43,7 @@ namespace BH.Engine.Environment
         [Input("endDateTime", "The last DateTime to include in the list")]
         [Input("minutesBetween", "Number of minutes by which to increment between startDateTime and endDateTime")]
         [Output("dateTimeList", "A list of DateTime objects")]
-        [PreviousVersion("3.3", "BH.Engine.Environment.Query.DateTimeList(DateTime, DateTime, int)")]
+        [PreviousVersion("3.3", "BH.Engine.Environment.Query.DateTimeList(System.DateTime, System.DateTime, System.Int32)")]
         public static IEnumerable<DateTime> DateTimeList(DateTime startDateTime, DateTime endDateTime, int minutesBetween)
         {
             int periods = (int)(endDateTime - startDateTime).TotalMinutes / minutesBetween;
