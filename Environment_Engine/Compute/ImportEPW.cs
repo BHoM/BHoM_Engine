@@ -39,7 +39,8 @@ namespace BH.Engine.Environment
         [Description("Imports an epw-file from a given file path")]
         [Input("filePath", "The file path of the epw-file")]
         [Output("epwFile", "The imported weather-file object")]
-        public static WeatherFile ImportEpw(string filePath)
+        [PreviousVersion("3.3", "BH.Engine.Climate.Compute.ImportEpw(string)")]
+        public static WeatherFile ImportEPW(string filePath)
         {
             // Declare a weatherfile object to which attribtues can be passed
             WeatherFile epw = new WeatherFile();
