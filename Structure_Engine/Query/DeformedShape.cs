@@ -129,12 +129,12 @@ namespace BH.Engine.Structure
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private static Polyline DeformedShapeCentreLine(Bar bar, List<IBarDisplacement> deformations, double scaleFactor = 1.0)
+        private static Polyline DeformedShapeCentreLine(Bar bar, List<BarDisplacement> deformations, double scaleFactor = 1.0)
         {
             Vector tan = (bar.EndNode.Position - bar.StartNode.Position);
             List<Point> pts = new List<Point>();
 
-            foreach (IBarDisplacement defo in deformations)
+            foreach (BarDisplacement defo in deformations)
             {
                 Vector disp = new Vector { X = defo.UX * scaleFactor, Y = defo.UY * scaleFactor, Z = defo.UZ * scaleFactor };
                 Point pt = bar.StartNode.Position + tan * defo.Position + disp;
@@ -148,7 +148,7 @@ namespace BH.Engine.Structure
         /***************************************************/
 
 
-        private static List<Loft> DeformedShapeSection(Bar bar, List<IBarDisplacement> deformations, double scaleFactor = 1.0)
+        private static List<Loft> DeformedShapeSection(Bar bar, List<BarDisplacement> deformations, double scaleFactor = 1.0)
         {
             Vector tan = bar.Tangent();
 
@@ -160,7 +160,7 @@ namespace BH.Engine.Structure
             foreach (ICurve sectionCurve in sectionCurves)
             {
                 Loft loft = new Loft();
-                foreach (IBarDisplacement defo in deformations)
+                foreach (BarDisplacement defo in deformations)
                 {
                     //ICurve curve = sectionCurve.IRotate(bar.StartNode.Position, tan, defo.RX * scaleFactor);
                     //Vector disp = unitTan * defo.UX * scaleFactor + yAxis * defo.UY * scaleFactor + normal * defo.UZ * scaleFactor;
