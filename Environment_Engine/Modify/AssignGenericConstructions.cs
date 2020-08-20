@@ -31,6 +31,9 @@ namespace BH.Engine.Environment
 
             if (cloned.Construction != null)
                 BH.Engine.Reflection.Compute.RecordWarning(string.Format("The construction for the panel with GUID {0} was not null and will be replaced with a generic construction", cloned.BHoM_Guid));
+            else
+                BH.Engine.Reflection.Compute.RecordNote(string.Format("The construction for the panel with GUID {0} was automatically assigned a generic construction", cloned.BHoM_Guid));
+
 
             switch (cloned.Type)
             {
@@ -57,8 +60,8 @@ namespace BH.Engine.Environment
 
             if(assignOpenings)
             {
-                for(int x = 0; x < panel.Openings.Count; x++)
-                    panel.Openings[x] = panel.Openings[x].AssignGenericConstructions();
+                for(int x = 0; x < cloned.Openings.Count; x++)
+                    cloned.Openings[x] = cloned.Openings[x].AssignGenericConstructions();
             }
 
             return cloned;
@@ -80,6 +83,8 @@ namespace BH.Engine.Environment
 
             if (cloned.OpeningConstruction != null)
                 BH.Engine.Reflection.Compute.RecordWarning(string.Format("The construction for the opening with GUID {0} was not null and will be replaced with a generic construction", cloned.BHoM_Guid));
+            else
+                BH.Engine.Reflection.Compute.RecordNote(string.Format("The construction for the opening with GUID {0} was automatically assigned a generic construction", cloned.BHoM_Guid));
 
             switch (cloned.Type)
             {
