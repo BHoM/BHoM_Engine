@@ -54,7 +54,7 @@ namespace BH.Engine.Structure
         [Input("scaleFactor", "Controls by how much the results should be scaled.")]
         [Input("drawSections", "Toggles if output should be just centrelines or include section geometry. Note that currently section geometry only supports displacements, no rotations!")]
         [Output("deformed","The shape of the Bars from the displacements.")]
-        public static List<IGeometry> DeformedShape(List<Bar> bars, List<IBarDisplacement> barDisplacements, string adapterNameId, object loadcase, double scaleFactor = 1.0, bool drawSections = false)
+        public static List<IGeometry> DeformedShape(List<Bar> bars, List<BarDisplacement> barDisplacements, string adapterNameId, object loadcase, double scaleFactor = 1.0, bool drawSections = false)
         {
             barDisplacements = barDisplacements.SelectCase(loadcase);
 
@@ -69,9 +69,9 @@ namespace BH.Engine.Structure
             {
                 string id = bar.CustomData[adapterNameId].ToString();
 
-                List<IBarDisplacement> deformations;
+                List<BarDisplacement> deformations;
 
-                IGrouping<string, IBarDisplacement> outVal;
+                IGrouping<string, BarDisplacement> outVal;
                 if (resGroups.TryGetValue(id, out outVal))
                     deformations = outVal.ToList();
                 else
