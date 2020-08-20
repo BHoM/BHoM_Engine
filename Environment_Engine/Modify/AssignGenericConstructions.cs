@@ -16,8 +16,9 @@ namespace BH.Engine.Environment
     {
         [Description("Assign generic constructions to a collection of Environment Panels based on their panel type. This will load a dataset of Generic Constructions and attempt to assign each generic construction to the panel based on the panel type. For example, panel type wall will be assigned the 'generic_wall' construction. WARNING: This will overwrite constructions hosted on objects passed.")]
         [Input("panels", "A collection of Environment Panels to assign constructions to")]
+        [Input("assignOpenings", "Flag to determine whether to assign generic constructions to openings hosted by the panels at the same time. Default is false, meaning openings will not be updated. If set to true then openings will receive generic constructions as well")]
         [Output("panels", "A collection of Environment Panels with the generic constructions assigned")]
-        public static Panel AssignGenericConstructions(this Panel panel)
+        public static Panel AssignGenericConstructions(this Panel panel, bool assignOpenings = false)
         {
             Panel cloned = panel.DeepClone<Panel>();
 
@@ -54,9 +55,10 @@ namespace BH.Engine.Environment
                     break;
             }
 
-            for (int i = 0; i < panel.Openings.Count; i++)
+            if(assignOpenings)
             {
-                panel.Openings[i] = panel.Openings[i].AssignGenericConstructions();
+                for(int x = 0; x < panel.Openings.Count; x++)
+                    panel.Openings[x] = panel.Openings[x].AssignGenericConstructions();
             }
 
             return cloned;
