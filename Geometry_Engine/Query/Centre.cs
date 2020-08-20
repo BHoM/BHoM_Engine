@@ -79,8 +79,8 @@ namespace BH.Engine.Geometry
                     centres.Add(new Point { X = (pA.X + pB.X + pC.X) / 3, Y = (pA.Y + pB.Y + pC.Y) / 3, Z = (pA.Z + pB.Z + pC.Z) / 3 });
                 else
                 {
-                    Point p4 = vertices[(faces[i].D)];
-                    centres.Add(new Point { X = (pA.X + pB.X + pC.X + p4.X) / 4, Y = (pA.X + pB.X + pC.X + p4.Y) / 4, Z = (pA.X + pB.X + pC.X + p4.Z) / 4 });  // Assumption that if the face is quad, it is a flat quad.
+                    Point pD = vertices[(faces[i].D)];
+                    centres.Add(new Point { X = (pA.X + pB.X + pC.X + pD.X) / 4, Y = (pA.Y + pB.Y + pC.Y + pD.Y) / 4, Z = (pA.Z + pB.Z + pC.Z + pD.Z) / 4 });  // Assumption that if the face is quad, it is a flat quad.
                 }
             }
 
