@@ -41,7 +41,7 @@ namespace BH.Engine.Geometry
         [Description("Removes duplicate lines from the collection")]
         [Input("lines", "The nested collection of lines to cull duplicates from")]
         [Output("lines", "A collection of lines with no duplicates")]
-        [PreviousVersion("3.3", "BH.Engine.Environment.Query.CullDuplicateLines(List<BH.oM.Geometry.Line>, double)")]
+        [PreviousVersion("3.3", "BH.Engine.Environment.Query.CullDuplicateLines(System.Collections.Generic.List<BH.oM.Geometry.Line>, System.Double)")]
         public static List<Line> CullDuplicateLines(this List<Line> lines, double tolerance = Tolerance.Distance)
         {
             double sqTol = tolerance * tolerance;
