@@ -38,24 +38,72 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("")]
-        [Input("", "")]
-        [Output("", "")]
+        [Description("Sets the direction of the local x vector of the Panel. This is done by calculation of a new orientation angle matching the provided vector.")]
+        [Input("panel", "The Panel to set the local orientation to.")]
+        [Input("localX", "Vector to set as local x of the panel. If this vector is not in the plane of the Panel it will get projected. If the vector is parallel to the normal of the Panel the operation will fail and the Panel will not be updated.")]
+        [Output("panel", "The Panel with updated orientation.")]
         public static Panel SetLocalOrientation(this Panel panel, Vector localX)
         {
             Panel clone = panel.GetShallowClone() as Panel;
             Vector normal = Engine.Spatial.Query.Normal(panel);
 
+            double orientationAngle = CalcualteOrientationAngle(normal, localX);
+
+            if(!double.IsNaN(orientationAngle))
+                clone.OrientationAngle = orientationAngle;
+
+            return clone;
+        }
+
+        /***************************************************/
+
+        [Description("Sets the direction of the local x vector of all FEMeshFaces of the FEMesh. This is done by calculation of a new orientation angles matching the provided vector.")]
+        [Input("mesh", "The FEMesh to set the local orientations to.")]
+        [Input("localX", "Vector to set as local x of the FEMeshFaces of the FEMesh. If this vector is not in the plane of the FEMeshFace it will get projected. If the vector is parallel to the normal of the FEMeshFace the operation will fail and the FEMeshFace will not be updated.")]
+        [Output("mesh", "The FEMesh with updated face orientations.")]
+        public static FEMesh SetLocalOrientations(this FEMesh mesh, Vector localX)
+        {
+            FEMesh clone = mesh.GetShallowClone() as FEMesh;
+            clone.Faces = clone.Faces.Select(x => x.SetLocalOrientation(mesh, localX)).ToList();
+            return clone;
+        }
+
+        /***************************************************/
+
+        [Description("Sets the direction of the local x vector of the FEMeshFace. This is done by calculation of a new orientation angle matching the provided vector.")]
+        [Input("face", "The FEMeshFace to set the local orientation to.")]
+        [Input("mesh", "The FEMesh to which the face belongs.")]
+        [Input("localX", "Vector to set as local x of the FEMeshFaces. If this vector is not in the plane of the FEMeshFace it will get projected. If the vector is parallel to the normal of the FEMeshFace the operation will fail and the FEMeshFace will not be updated.")]
+        [Output("face", "The FEMeshFace with updated face orientation.")]
+        public static FEMeshFace SetLocalOrientation(this FEMeshFace face, FEMesh mesh, Vector localX)
+        {
+            FEMeshFace clone = face.GetShallowClone() as FEMeshFace;
+            Vector normal = face.Normal(mesh);
+
+            double orientationAngle = CalcualteOrientationAngle(normal, localX);
+
+            if (!double.IsNaN(orientationAngle))
+                clone.OrientationAngle = orientationAngle;
+
+            return clone;
+        }
+
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+        private static double CalcualteOrientationAngle(this Vector normal, Vector localX)
+        {
             double dot = normal.DotProduct(localX);
 
             if (Math.Abs(1 - dot) < oM.Geometry.Tolerance.Angle)
             {
-                Reflection.Compute.RecordError("The provided localX is parallel to the normal of the Panel. The local orientation could not be updated.");
-                return null;
+                Reflection.Compute.RecordError("The provided localX is parallel to the normal of the element. The local orientation could not be updated.");
+                return double.NaN;
             }
             else if (Math.Abs(dot) > oM.Geometry.Tolerance.Angle)
             {
-                Reflection.Compute.RecordWarning("The provided localX in the Plane of the panel and will get projected");
+                Reflection.Compute.RecordWarning("The provided localX in the Plane of the element and will get projected");
                 localX = localX.Project(new Plane { Normal = normal });
             }
 
@@ -72,9 +120,7 @@ namespace BH.Engine.Structure
                 refVec = Vector.YAxis.CrossProduct(normal);
             }
 
-            clone.OrientationAngle = refVec.Angle(localX, new Plane { Normal = normal });
-
-            return clone;
+            return refVec.Angle(localX, new Plane { Normal = normal });
         }
 
         /***************************************************/
