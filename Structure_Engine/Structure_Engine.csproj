@@ -135,6 +135,7 @@
     <Compile Include="Create\SectionProperties\TransverseReinforcement\TransverseReinforcement.cs" />
     <Compile Include="Create\SectionProperties\TimberSection.cs" />
     <Compile Include="Modify\AddReinforcement.cs" />
+    <Compile Include="Modify\OrientTowards.cs" />
     <Compile Include="Modify\SetLocalOrientation.cs" />
     <Compile Include="Modify\SetMaterial.cs" />
     <Compile Include="Modify\SetNormal.cs" />
