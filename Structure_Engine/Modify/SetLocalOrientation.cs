@@ -47,7 +47,7 @@ namespace BH.Engine.Structure
             Panel clone = panel.GetShallowClone() as Panel;
             Vector normal = Engine.Spatial.Query.Normal(panel);
 
-            double orientationAngle = CalcualteOrientationAngle(normal, localX);
+            double orientationAngle = Compute.OrientationAngleAreaElement(normal, localX);
 
             if(!double.IsNaN(orientationAngle))
                 clone.OrientationAngle = orientationAngle;
@@ -80,47 +80,12 @@ namespace BH.Engine.Structure
             FEMeshFace clone = face.GetShallowClone() as FEMeshFace;
             Vector normal = face.Normal(mesh);
 
-            double orientationAngle = CalcualteOrientationAngle(normal, localX);
+            double orientationAngle = Compute.OrientationAngleAreaElement(normal, localX);
 
             if (!double.IsNaN(orientationAngle))
                 clone.OrientationAngle = orientationAngle;
 
             return clone;
-        }
-
-        /***************************************************/
-        /**** Private Methods                           ****/
-        /***************************************************/
-
-        private static double CalcualteOrientationAngle(this Vector normal, Vector localX)
-        {
-            double dot = normal.DotProduct(localX);
-
-            if (Math.Abs(1 - dot) < oM.Geometry.Tolerance.Angle)
-            {
-                Reflection.Compute.RecordError("The provided localX is parallel to the normal of the element. The local orientation could not be updated.");
-                return double.NaN;
-            }
-            else if (Math.Abs(dot) > oM.Geometry.Tolerance.Angle)
-            {
-                Reflection.Compute.RecordWarning("The provided localX in the Plane of the element and will get projected");
-                localX = localX.Project(new Plane { Normal = normal });
-            }
-
-            Vector refVec;
-
-            if (normal.IsParallel(Vector.XAxis) == 0)
-            {
-                //Normal is not paralell to the global X-axis
-                refVec = Vector.XAxis;
-            }
-            else
-            {
-                //Normal _is_ paralell to the global X-axis
-                refVec = Vector.YAxis.CrossProduct(normal);
-            }
-
-            return refVec.Angle(localX, new Plane { Normal = normal });
         }
 
         /***************************************************/
