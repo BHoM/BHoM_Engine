@@ -57,12 +57,12 @@ namespace BH.Engine.Structure
 
                 if (Math.Abs(1 - dot) < oM.Geometry.Tolerance.Angle)
                 {
-                    Reflection.Compute.RecordError("The normal is parallell to the centreline of the Bar.");
+                    Reflection.Compute.RecordError("The normal is parallell to the centreline of the Bar. Orientation angle could not be calcualted.");
                     return double.NaN;
                 }
                 else if (Math.Abs(dot) > oM.Geometry.Tolerance.Angle)
                 {
-                    Reflection.Compute.RecordWarning("Normal not othogonal to the centreline and will get projected.");
+                    Reflection.Compute.RecordWarning("Normal is not othogonal to the centreline and will get projected.");
                 }
 
                 Vector reference;
@@ -82,18 +82,25 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Description("Calculates the orientation angle of an area element based on the normal of the element and a provided local X direction.\n" +
+                     "The orientation angle is calculated as the angle between localX and a reference vector in the plane of the element, defined by the normal.\n" +
+                     "This reference vector is the global X-vector projected to the plane of the element, except for the case were the normal is parallel to the global X-axis." +
+                     "For this case the reference vector is instead the crossproduct of global Y and the normal, projected to the plane of the element.")]
+        [Input("normal", "The normal of the element.")]
+        [Input("localX", "Vector to treat as local x of the element. If this vector is not in the plane of the element it will get projected. If the vector is parallel to the normal of the element the operation will fail and a NaN value will be returned.")]
+        [Output("orientationAngle", "The calculated orientation angle of the area element. Will return NaN if the normal and local x are parallel.")]
         public static double OrientationAngleAreaElement(this Vector normal, Vector localX)
         {
             double dot = normal.DotProduct(localX);
 
             if (Math.Abs(1 - dot) < oM.Geometry.Tolerance.Angle)
             {
-                Reflection.Compute.RecordError("The provided localX is parallel to the normal of the element. The local orientation could not be updated.");
+                Reflection.Compute.RecordError("The provided localX is parallel to the normal of the element. The orientation angle could not be calculated.");
                 return double.NaN;
             }
             else if (Math.Abs(dot) > oM.Geometry.Tolerance.Angle)
             {
-                Reflection.Compute.RecordWarning("The provided localX in the Plane of the element and will get projected");
+                Reflection.Compute.RecordWarning("The provided localX is not in the Plane of the element and will get projected");
                 localX = localX.Project(new Plane { Normal = normal });
             }
 
