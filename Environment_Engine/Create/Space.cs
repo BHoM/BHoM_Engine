@@ -27,7 +27,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using BH.oM.Environment.Elements;
-using BH.oM.Environment.Gains;
+using BH.oM.Environment.SpaceCriteria;
 
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
