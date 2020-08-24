@@ -50,6 +50,13 @@
       <HintPath>C:\ProgramData\BHoM\Assemblies\Reflection_oM.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Structure_Engine, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\ProgramData\BHoM\Assemblies\Structure_Engine.dll</HintPath>
+    </Reference>
+    <Reference Include="Structure_oM">
+      <HintPath>..\..\..\..\..\..\ProgramData\BHoM\Assemblies\Structure_oM.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -69,6 +76,7 @@
     <Compile Include="Query\Elements0D.cs" />
     <Compile Include="Query\Geometry.cs" />
     <Compile Include="Query\InternalElements2D.cs" />
+    <Compile Include="Query\IsRectangle.cs" />
     <Compile Include="Query\OutlineElements1D.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -88,6 +96,9 @@
       <Project>{b0154405-9390-472d-9b5c-a2280823b18d}</Project>
       <Name>Reflection_Engine</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Query\IsSquare.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
