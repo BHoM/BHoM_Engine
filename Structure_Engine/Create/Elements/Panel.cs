@@ -40,13 +40,43 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [PreviousVersion("3.3", "BH.Engine.Structure.Create.Panel(System.Collections.Generic.List<BH.oM.Structure.Elements.Edge>, System.Collections.Generic.List<BH.oM.Structure.Elements.Opening>, BH.oM.Structure.SurfaceProperties.ISurfaceProperty, System.String)")]
+        [PreviousVersion("3.3", "BH.Engine.Structure.Create.PanelPlanar(System.Collections.Generic.List<BH.oM.Structure.Elements.Edge>, System.Collections.Generic.List<BH.oM.Structure.Elements.Opening>, BH.oM.Structure.SurfaceProperties.ISurfaceProperty, System.String)")]
+        [Description("Creates a structural Panel from its fundamental parts and an local orientation vector.")]
+        [InputFromProperty("externalEdges")]
+        [InputFromProperty("openings")]
+        [InputFromProperty("property")]
+        [Input("localX", "Vector to set as local x of the Panel. Default value of null gives default orientation. If this vector is not in the plane of the Panel it will get projected. If the vector is parallel to the normal of the Panel the operation will fail and the Panel local orientation will be set to default.")]
+        [Input("name", "The name of the created Panel.")]
+        [Output("panel", "The created Panel.")]
+        public static Panel Panel(List<Edge> externalEdges, List<Opening> openings = null, ISurfaceProperty property = null, Vector localX = null, string name = "")
+        {
+            Panel panel = new Panel
+            {
+                ExternalEdges = externalEdges,
+                Openings = openings ?? new List<Opening>(),
+                Property = property,
+                Name = name
+            };
+
+            if (localX != null)
+                return panel.SetLocalOrientation(localX);
+            else
+                return panel;
+        }
+
+        /***************************************************/
+
+        [PreviousVersion("3.3", "BH.Engine.Structure.Create.Panel(BH.oM.Geometry.ICurve, System.Collections.Generic.List<BH.oM.Geometry.ICurve>, BH.oM.Structure.SurfaceProperties.ISurfaceProperty, System.String)")]
+        [PreviousVersion("3.3", "BH.Engine.Structure.Create.PanelPlanar(BH.oM.Geometry.ICurve, System.Collections.Generic.List<BH.oM.Geometry.ICurve>, BH.oM.Structure.SurfaceProperties.ISurfaceProperty, System.String)")]
         [Description("Creates a structural Panel from a closed curve defining the outline, and any number of closed curves defining openings.")]
         [Input("outline", "A closed Curve defining the outline of the Panel. The ExternalEdges of the Panel will be the subparts of this curve, where each edge will corespond to one curve segment.")]
         [Input("openings", "A collection of closed curves representing the openings of the Panel.")]
         [InputFromProperty("property")]
+        [Input("localX", "Vector to set as local x of the Panel. Default value of null gives default orientation. If this vector is not in the plane of the Panel it will get projected. If the vector is parallel to the normal of the Panel the operation will fail and the Panel local orientation will be set to default.")]
         [Input("name", "The name of the created Panel.")]
         [Output("panel","The created Panel.")]
-        public static Panel Panel(ICurve outline, List<ICurve> openings = null, ISurfaceProperty property = null, string name = "")
+        public static Panel Panel(ICurve outline, List<ICurve> openings = null, ISurfaceProperty property = null, Vector localX = null, string name = "")
         {
             if (!outline.IIsClosed())
             {
@@ -55,25 +85,24 @@ namespace BH.Engine.Structure
             }
             List<Opening> pOpenings = openings != null ? openings.Select(o => Create.Opening(o)).Where(x => x != null).ToList() : new List<Opening>();
             List<Edge> externalEdges = outline.ISubParts().Select(x => new Edge { Curve = x }).ToList();
-            return new Panel
-            {
-                ExternalEdges = externalEdges,
-                Openings = pOpenings ?? new List<Opening>(),
-                Property = property,
-                Name = name
-            };
+
+            return Create.Panel(externalEdges, pOpenings, property, localX, name);
         }
 
         /***************************************************/
 
+        [PreviousVersion("3.3", "BH.Engine.Structure.Create.Panel(System.Collections.Generic.List<BH.oM.Geometry.ICurve>, BH.oM.Structure.SurfaceProperties.ISurfaceProperty, System.String)")]
+        [PreviousVersion("3.3", "BH.Engine.Structure.Create.PanelPlanar(System.Collections.Generic.List<BH.oM.Geometry.ICurve>, BH.oM.Structure.SurfaceProperties.ISurfaceProperty, System.String)")]
+        [PreviousVersion("3.3", "BH.Engine.Structure.Create.PanelPlanar(System.Collections.Generic.List<BH.oM.Geometry.Polyline>, BH.oM.Structure.SurfaceProperties.ISurfaceProperty, System.String)")]
         [Description("Creates a list of Panels based on a collection of outline curves. \n" + 
                      "Method will distribute the outlines such that the outermost curve will be assumed to be an external outline of a panel, and any curve contained in this outline will be assumed as an opening of this Panel. \n" +
                      "Any outline curve inside an opening will again be assumed to be the outline of a new Panel.")]
         [Input("outlines", "A collection of outline curves representing outlines of external edges and opening used to create the Panel(s).")]
         [InputFromProperty("property")]
+        [Input("localX", "Vector to set as local x of the Panel. Default value of null gives default orientation. If this vector is not in the plane of the Panel it will get projected. If the vector is parallel to the normal of the Panel the operation will fail and the Panel local orientation will be set to default.")]
         [Input("name", "The name of the created Panel(s).")]
         [Output("panel", "The created Panel(s).")]
-        public static List<Panel> Panel(List<ICurve> outlines, ISurfaceProperty property = null, string name = "")
+        public static List<Panel> Panel(List<ICurve> outlines, ISurfaceProperty property = null, Vector localX = null, string name = "")
         {
             List<Panel> result = new List<Panel>();
             List<List<IElement1D>> outlineEdges = outlines.Select(x => x.ISubParts().Select(y => new Edge { Curve = y } as IElement1D).ToList()).ToList();
@@ -92,108 +121,55 @@ namespace BH.Engine.Structure
                 panel.Openings = openings;
                 panel.Property = property;
                 panel.Name = name;
-                result.Add(panel);
+
+                if (localX != null)
+                    result.Add(panel.SetLocalOrientation(localX));
+                else
+                    result.Add(panel);
             }
             return result;
         }
 
         /***************************************************/
 
+        [PreviousVersion("3.3", "BH.Engine.Structure.Create.Panel(BH.oM.Geometry.PlanarSurface, BH.oM.Structure.SurfaceProperties.ISurfaceProperty, System.String)")]
         [Description("Creates a structural Panel from a PlanarSurface, creating external edges from the ExternalBoundary and openings from the InternalBoundaries of the PlanarSurface.")]
         [Input("surface", "A planar surface used to define the geometry of the panel, i.e. the external edges and the openings.")]
         [InputFromProperty("property")]
+        [Input("localX", "Vector to set as local x of the Panel. Default value of null gives default orientation. If this vector is not in the plane of the Panel it will get projected. If the vector is parallel to the normal of the Panel the operation will fail and the Panel local orientation will be set to default.")]
         [Input("name", "The name of the created Panel.")]
         [Output("panel", "The created Panel.")]
-        public static Panel Panel(PlanarSurface surface, ISurfaceProperty property = null, string name = "")
+        public static Panel Panel(PlanarSurface surface, ISurfaceProperty property = null, Vector localX = null, string name = "")
         {
-            return Panel(surface.ExternalBoundary, surface.InternalBoundaries.ToList(), property, name);
+            return Panel(surface.ExternalBoundary, surface.InternalBoundaries.ToList(), property, localX, name);
         }
 
         /***************************************************/
         /**** Public Methods - Deprecated               ****/
         /***************************************************/
 
-        [Deprecated("3.1", "Replaced by Autogenerated property assignment method")]
-        public static Panel Panel(List<Edge> externalEdges, List<Opening> openings = null, ISurfaceProperty property = null, string name = "")
-        {
-            return new Panel
-            {
-                ExternalEdges = externalEdges,
-                Openings = openings ?? new List<Opening>(),
-                Property = property,
-                Name = name
-            };
-        }
-
-        /***************************************************/
-
-        [Deprecated("3.1", "Method that use a mixture of geometry and objects between edges and openings removed.")]
+        [PreviousVersion("3.3", "BH.Engine.Structure.Create.PanelPlanar(System.Collections.Generic.List<BH.oM.Structure.Elements.Edge>, System.Collections.Generic.List<BH.oM.Geometry.ICurve>, BH.oM.Structure.SurfaceProperties.ISurfaceProperty, System.String)")]
+        [ToBeRemoved("3.1", "Method that use a mixture of geometry and objects between edges and openings removed.")]
         public static Panel Panel(List<Edge> externalEdges, List<ICurve> openings = null, ISurfaceProperty property = null, string name = "")
         {
             List<Opening> pOpenings = openings != null ? openings.Select(o => Create.Opening(o)).ToList() : new List<Opening>();
-            return Panel(externalEdges, pOpenings, property, name);
+            return Panel(externalEdges, pOpenings, property, null, name);
         }
 
         /***************************************************/
 
-        [Deprecated("3.1", "Method that use a mixture of geometry and objects between edges and openings removed.")]
+        [PreviousVersion("3.3", "BH.Engine.Structure.Create.PanelPlanar(BH.oM.Geometry.ICurve, System.Collections.Generic.List<BH.oM.Structure.Elements.Opening>, BH.oM.Structure.SurfaceProperties.ISurfaceProperty, System.String)")]
+        [ToBeRemoved("3.1", "Method that use a mixture of geometry and objects between edges and openings removed.")]
         public static Panel Panel(ICurve outline, List<Opening> openings = null, ISurfaceProperty property = null, string name = "")
         {
             if (!outline.IIsClosed()) return null;
             List<Edge> externalEdges = outline.ISubParts().Select(x => new Edge { Curve = x }).ToList();
 
-            return Panel(externalEdges, openings, property, name);
+            return Panel(externalEdges, openings, property, null, name);
         }
 
         /***************************************************/
 
-        [Deprecated("2.3", "Name of class and method changed from PanelPlanar to Panel", null, "Panel")]
-        public static Panel PanelPlanar(ICurve outline, List<Opening> openings = null, ISurfaceProperty property = null, string name = "")
-        {
-            return Panel(outline, openings, property, name);
-        }
-
-        /***************************************************/
-
-        [Deprecated("2.3", "Name of class and method changed from PanelPlanar to Panel", null, "Panel")]
-        public static Panel PanelPlanar(ICurve outline, List<ICurve> openings = null, ISurfaceProperty property = null, string name = "")
-        {
-            return Panel(outline, openings, property, name);
-        }
-
-        /***************************************************/
-
-        [Deprecated("2.3", "Name of class and method changed from PanelPlanar to Panel", null, "Panel")]
-        public static Panel PanelPlanar(List<Edge> externalEdges, List<ICurve> openings = null, ISurfaceProperty property = null, string name = "")
-        {
-            return Panel(externalEdges, openings, property, name);
-        }
-
-        /***************************************************/
-
-        [Deprecated("2.3", "Name of class and method changed from PanelPlanar to Panel", null, "Panel")]
-        public static Panel PanelPlanar(List<Edge> externalEdges, List<Opening> openings = null, ISurfaceProperty property = null, string name = "")
-        {
-            return Panel(externalEdges, openings, property, name);
-        }
-
-        /***************************************************/
-
-        [Deprecated("2.3", "Name of class and method changed from PanelPlanar to Panel", null, "Panel")]
-        public static List<Panel> PanelPlanar(List<ICurve> outlines, ISurfaceProperty property = null, string name = "")
-        {
-            return Panel(outlines, property, name);
-        }
-
-        /***************************************************/
-
-        [Deprecated("2.2", "Generic method for ICurve in place")]
-        public static List<Panel> PanelPlanar(List<Polyline> outlines, ISurfaceProperty property = null, string name = "")
-        {
-            return Panel(new List<ICurve>(outlines), property, name);
-        }
-
-        /***************************************************/
     }
 }
 
