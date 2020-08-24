@@ -176,7 +176,6 @@
     <Compile Include="Create\CoefficientFragment.cs" />
     <Compile Include="Create\Edge.cs" />
     <Compile Include="Create\EnvironmentConstructionFragment.cs" />
-    <Compile Include="Create\Gains.cs" />
     <Compile Include="Create\Layer.cs" />
     <Compile Include="Create\MaterialFragment.cs" />
     <Compile Include="Create\Panel.cs" />
