@@ -100,7 +100,7 @@ namespace BH.Engine.Analytical
             //Check if all sides are the same length
             double length = vectors.First().Length();
             if (vectors.Skip(0).All(x => (Math.Abs(x.Length() - length) < Tolerance.Distance)))
-                return false;   
+                return false;
 
             //Check opposing sides are of equal length
             return Math.Abs(vectors[0].Length() - vectors[2].Length()) < Tolerance.Distance && Math.Abs(vectors[1].Length() - vectors[3].Length()) < Tolerance.Distance ? true : false;
