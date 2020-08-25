@@ -95,7 +95,7 @@ namespace BH.Engine.Analytical
             }
 
             //Check the three angles are pi/2 degrees within tolerance
-            if (angles.Any(x => Math.Abs(Math.PI/2 - x) > Tolerance.Angle))
+            if (angles.Any(x => Math.Abs(Math.PI / 2 - x) > Tolerance.Angle))
                 return false;
 
             //Check all lengths are the same within tolerance
