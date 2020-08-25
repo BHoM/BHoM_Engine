@@ -88,10 +88,9 @@ namespace BH.Engine.Reflection
 
         /***************************************************/
 
-        private static object GetValue(this IDictionary obj, string propName)
+        private static object GetValue<T>(this Dictionary<string, T> dic, string propName)
         {
-            IDictionary dic = obj as IDictionary;
-            if (dic.Contains(propName))
+            if (dic.ContainsKey(propName))
             {
                 return dic[propName];
             }
