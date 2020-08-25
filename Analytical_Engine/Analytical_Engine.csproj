@@ -50,12 +50,9 @@
       <HintPath>C:\ProgramData\BHoM\Assemblies\Reflection_oM.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Structure_Engine, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Spatial_Engine, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\ProgramData\BHoM\Assemblies\Structure_Engine.dll</HintPath>
-    </Reference>
-    <Reference Include="Structure_oM">
-      <HintPath>..\..\..\..\..\..\ProgramData\BHoM\Assemblies\Structure_oM.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\ProgramData\BHoM\Assemblies\Spatial_Engine.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
