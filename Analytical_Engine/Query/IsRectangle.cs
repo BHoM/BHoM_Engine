@@ -20,14 +20,15 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System.Collections.Generic;
-using BH.oM.Structure.Elements;
-using BH.oM.Reflection.Attributes;
-using BH.Engine.Reflection;
-using BH.Engine.Geometry;
-using BH.Engine.Structure;
+using BH.oM.Analytical.Elements;
 using BH.oM.Geometry;
+using BH.oM.Reflection.Attributes;
+using BH.Engine.Geometry;
+using BH.Engine.Reflection;
+using BH.Engine.Spatial;
+
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.ComponentModel;
 
@@ -42,26 +43,67 @@ namespace BH.Engine.Analytical
         [Description("Determines whether a panel is a rectangle")]
         [Input("panel", "The Panel to check if it is a rectangle")]
         [Output("bool", "True for rectangular panels or false for non-rectangular panels")]
-        public static bool IsRectangle(this Panel panel)
+        public static bool IsRectangle<TEdge, TOpening>(this IPanel<TEdge, TOpening> panel)
+            where TEdge : IEdge
+            where TOpening : IOpening<TEdge>
         {
-            List<ICurve> curves = panel.ExternalEdgeCurves();
-
-            if (curves.Count < 3 || !(panel.Openings.Count == 0))
+            //Check if there are any openings
+            if (panel.Openings.Count != 0)
                 return false;
 
-            try
-            {
-                curves.Select(x => x.IDiscontinuityPoints());
-            }
-            catch (NotImplementedException)
-            {
+            List<ICurve> curves = panel.ExternalEdges.SelectMany(x => x.Curve.ISubParts()).ToList();
+
+            List<PolyCurve> polycurves = Engine.Geometry.Compute.IJoin(curves);
+
+            //Check there is a single continuous curve defining the Panel
+            if (polycurves.Count != 1)
                 return false;
+
+            PolyCurve polycurve = polycurves.First();
+
+            //Check that all subparts of the curve are linear
+            if (polycurve.SubParts().Any(x => !x.IIsLinear()))
+                return false;
+
+            //Group curves by direction vector to obtain discontinuity points
+            List<Point> points = new List<Point>();
+            var groupedCurves = curves.GroupBy(x => x.IStartDir());
+            foreach (var groupedCurve in groupedCurves)
+            {
+                ICurve jointCurve = Engine.Geometry.Compute.IJoin(groupedCurve.Select(x => x).ToList()).First();
+                points.Add(jointCurve.IStartPoint());
             }
 
-            HashSet<Vector> vectorSet = new HashSet<Vector>(curves.Select(x => x.IStartDir()));
-            HashSet<double> length = new HashSet<double>(vectorSet.Select(x => x.Length()));
+            //Check there are four discontinuity points present (start and end same point)
+            if (points.Count != 4)
+                return false;
 
-            return vectorSet.Count == 4 && length.Count == 2 ? true : false;
+            //Create vectors for all four sides of the quadilateral
+            List<Vector> vectors = new List<Vector>();
+            for (int i = 0; i < 3; i++)
+            {
+                vectors.Add(points[i + 1] - points[i]);
+            }
+            vectors.Add(points[0] - points[3]);
+
+            //Get the angles in the panel, only three are needed
+            List<double> angles = new List<double>() { vectors[3].Angle(vectors[0]) };
+            for (int i = 0; i < 3; i++)
+            {
+                angles.Add(vectors[i].Angle(vectors[i + 1]));
+            }
+
+            //Check the three angles are pi/2 degrees within tolerance
+            if (angles.Any(x => Math.Abs(Math.PI / 2 - x) > Tolerance.Angle))
+                return false;
+
+            //Check if all sides are the same length
+            double length = vectors.First().Length();
+            if (vectors.Skip(0).All(x => (Math.Abs(x.Length() - length) < Tolerance.Distance)))
+                return false;   
+
+            //Check opposing sides are of equal length
+            return Math.Abs(vectors[0].Length() - vectors[2].Length()) < Tolerance.Distance && Math.Abs(vectors[1].Length() - vectors[3].Length()) < Tolerance.Distance ? true : false;
         }
 
         /***************************************************/
