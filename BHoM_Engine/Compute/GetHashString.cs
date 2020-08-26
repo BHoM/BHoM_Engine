@@ -102,13 +102,8 @@ namespace BH.Engine.Base
             }
             else if (typeof(IObject).IsAssignableFrom(type))
             {
-                var allProperties = type
-                .GetProperties();
+                PropertyInfo[] properties = type.GetProperties();
 
-                var properties = allProperties
-                    .Where(p => !p.GetIndexParameters().Any()); // skip indexers to avoid error on GetValue() for FragmentSet and the like.
-
-                // Iterate "normal" properties
                 foreach (PropertyInfo prop in properties)
                 {
                     bool isInPropertyNameExceptions = (propertyNameExceptions != null && propertyNameExceptions.Where(ex => prop.Name.Contains(ex)).Any());
@@ -140,4 +135,3 @@ namespace BH.Engine.Base
         }
     }
 }
-
