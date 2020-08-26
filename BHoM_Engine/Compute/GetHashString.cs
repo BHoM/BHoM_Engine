@@ -136,8 +136,6 @@ namespace BH.Engine.Base
 
             return composedString;
         }
-
-
     }
 }
 
