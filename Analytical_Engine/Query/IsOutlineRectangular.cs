@@ -42,14 +42,10 @@ namespace BH.Engine.Analytical
         [Description("Determines whether a panel is a rectangle")]
         [Input("panel", "The Panel to check if it is a rectangle")]
         [Output("bool", "True for rectangular panels or false for non-rectangular panels")]
-        public static bool IsRectangle<TEdge, TOpening>(this IPanel<TEdge, TOpening> panel)
+        public static bool IsOutlineRectangular<TEdge, TOpening>(this IPanel<TEdge, TOpening> panel)
             where TEdge : IEdge
             where TOpening : IOpening<TEdge>
         {
-            //Check if there are any openings
-            if (panel.Openings.Count != 0)
-                return false;
-
             List<ICurve> curves = panel.ExternalEdges.SelectMany(x => x.Curve.ISubParts()).ToList();
 
             List<PolyCurve> polycurves = Engine.Geometry.Compute.IJoin(curves);
