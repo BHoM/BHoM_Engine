@@ -21,6 +21,7 @@
  */
 
 using BH.Engine.Base.Objects;
+using BH.oM.Base;
 using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections;
@@ -99,7 +100,7 @@ namespace BH.Engine.Base
                 DataTable dt = obj as DataTable;
                 return composedString += $"{type.FullName} {string.Join(", ", dt.Columns.OfType<DataColumn>().Select(c => c.ColumnName))}\n{tabs}" + GetHashString(dt.AsEnumerable(), nestingLevel + 1, maxNesting, propertyNameExceptions, propertyFullNameExceptions, namespaceExceptions, typeExceptions);
             }
-            else if (typeof(object).IsAssignableFrom(type))
+            else if (typeof(IObject).IsAssignableFrom(type))
             {
                 var allProperties = type
                 .GetProperties();
@@ -110,9 +111,10 @@ namespace BH.Engine.Base
                 // Iterate "normal" properties
                 foreach (PropertyInfo prop in properties)
                 {
-                    if (
-                       (propertyNameExceptions != null && propertyNameExceptions.Where(ex => prop.Name.Contains(ex)).Any())
-                    || (propertyFullNameExceptions != null && propertyFullNameExceptions.Where(ex => $"{type.FullName}.{prop.Name}".Contains(ex)).Any()))
+                    bool isInPropertyNameExceptions = (propertyNameExceptions != null && propertyNameExceptions.Where(ex => prop.Name.Contains(ex)).Any());
+                    bool isInPropertyFullNameExceptions = isInPropertyNameExceptions || (propertyNameExceptions != null && propertyNameExceptions.Where(ex => prop.Name.Contains(ex)).Any());
+
+                    if (isInPropertyNameExceptions || isInPropertyFullNameExceptions)
                     {
                         continue;
                     }
