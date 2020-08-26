@@ -25,7 +25,6 @@ using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
 using BH.Engine.Geometry;
 using BH.Engine.Reflection;
-using BH.Engine.Spatial;
 
 using System;
 using System.Collections.Generic;
