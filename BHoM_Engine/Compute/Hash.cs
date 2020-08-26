@@ -49,14 +49,17 @@ namespace BH.Engine.Base
         [Input("typeExceptions", "(Optional) e.g. `typeof(Guid)`. Any corresponding type is ignored.")]
         [Input("maxNesting", "(Optional) e.g. `100`. If any property is nested into the object over that level, it is ignored.")]
         public static string Hash(
-            this object obj,
+            this IObject iObj,
             List<string> propertyNameExceptions = null, //e.g. `Fragments`
             List<string> propertyFullNameExceptions = null, //e.g. `BH.oM.Structure.Elements.Bar.Fragments`
             List<string> namespaceExceptions = null, //e.g. `BH.oM.Structure`
             List<Type> typeExceptions = null, //e.g. `typeof(Guid)`
             int maxNesting = 100)
         {
-            string hashString = obj.GetHashString(0, maxNesting, propertyNameExceptions, propertyFullNameExceptions, namespaceExceptions, typeExceptions);
+            // If null, add "BHoM_Guid" to the propertyNameExceptions.
+            propertyNameExceptions = propertyNameExceptions ?? new List<string>() { nameof(BHoMObject.BHoM_Guid) };
+
+            string hashString = iObj.GetHashString(0, maxNesting, propertyNameExceptions, propertyFullNameExceptions, namespaceExceptions, typeExceptions);
 
             return Compute.SHA256Hash(hashString);
         }
