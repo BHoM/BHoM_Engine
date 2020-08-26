@@ -39,8 +39,8 @@ namespace BH.Engine.Structure
 
         [Description("Aligns the normal of the bar with the provided normal by updating the OrientationAngle.")]
         [Input("bar", "The Bar to update.")]
-        [Input("normal", "Vector to be used as normal of the Bar. This vector should generally be orthogonal to the Bar, if it is not, it will be made orthogonal by projecting it to the section plane of the Bar (a plane that has that Bar tangent as its normal). This means that the Normal cannot be paralell to the Tangent of the Bar. \n" +
-                         "Vector will be used to determain the orientation angle of the Bar. This is done by measuring the counter clockwise angle in the section plane of the Bar between a reference Vector and the provided Vector. For a non-vertical Bar, the reference vector will be the global Z-axis. For a vertical bar the reference vector will be a vector that is orthogonal to the tangent vector of the Bar and the global Y-axis.")]
+        [Input("normal", "Vector to be used as normal of the Bar. This vector should generally be orthogonal to the Bar, if it is not, it will be made orthogonal by projecting it to the section plane of the Bar (a plane that has that Bar tangent as its normal). This means that the Normal cannot be parallel to the Tangent of the Bar. \n" +
+                         "Vector will be used to determine the orientation angle of the Bar. This is done by measuring the counter clockwise angle in the section plane of the Bar between a reference Vector and the provided Vector. For a non-vertical Bar, the reference vector will be the global Z-axis. For a vertical bar the reference vector will be a vector that is orthogonal to the tangent vector of the Bar and the global Y-axis.")]
         [Output("bar", "Bar with updated orientation angle. If the orientation angle could not be calculated, the unchanged bar is returned.")]
         public static Bar SetNormal(this Bar bar, Vector normal)
         {

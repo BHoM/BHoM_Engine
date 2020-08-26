@@ -40,7 +40,7 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Get the Vector basis system descibring the local axis orientation of the Panel in the global coordinate system where the z-axis is the normal of the panel and the x- and y-axes are the directions of the local in-plane axes.")]
+        [Description("Get the Vector basis system descibring the local axis orientation of the Panel in the global coordinate system where the z-axis is the normal of the panel and the x and y axes are the directions of the local in-plane axes.")]
         [Input("panel", "The Panel to extract the local orientation from from.")]
         [Output("orienation", "The local orientation of the Panel as a vector Basis.")]
         public static Basis LocalOrientation(this Panel panel)
@@ -50,7 +50,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Get the Vector basis system descibring the local axes orientation of the faces of the FEMesh in the global coordinate system where the z-axis is the normal of each face and the x- and y-axes are the directions of the local in-plane axes.")]
+        [Description("Get the Vector basis system descibring the local axes orientation of the faces of the FEMesh in the global coordinate system where the z-axis is the normal of each face and the x and y axes are the directions of the local in-plane axes.")]
         [Input("mesh", "The FEMesh to extract the local orientations from from.")]
         [Output("orienations", "The local orientations of the mesh as a vector Basis.")]
         public static List<Basis> LocalOrientations(this FEMesh mesh)
@@ -60,7 +60,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Get the Vector basis system descibring the local axes orientation of a face of a FEMesh in the global coordinate system where the z-axis is the normal of each face and the x- and y-axes are the directions of the local in-plane axes.")]
+        [Description("Get the Vector basis system descibring the local axes orientation of a face of a FEMesh in the global coordinate system where the z-axis is the normal of each face and the x and y axes are the directions of the local in-plane axes.")]
         [Input("face", "The FEMeshFace to extract the local orientation from from.")]
         [Input("mesh", "The FEMesh to which the face belongs.")]
         [Output("orienation", "The local orientation of the FEMeshFace as a vector Basis.")]
