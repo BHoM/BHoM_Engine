@@ -67,7 +67,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Orients the direction of the local x of each FEMeshFace of the FEMesh towards the provided point. The local x vectors is calculated as the vector from the centroid of each FEMeshFace of the FEMesh to the provided point.")]
+        [Description("Orients the direction of the local x of each FEMeshFace of the FEMesh towards the provided point. The local x vectors are calculated as the vector from the centroid of each FEMeshFace of the FEMesh to the provided point.")]
         [Input("mesh", "The FEMesh to update the local orientations of.")]
         [Input("orientationPoint", "The point to orient the local x vectors of the FEMeshFaces of the FEMesh towards.")]
         [Output("mesh", "FEMesh with updated local orientations. If the calcualtion of the orientation angle fails for an FEMeshFace, it remains unchanged.")]
@@ -80,7 +80,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Orients the direction of the local x of the FEMeshFace towards the provided point. The local x vectors is calculated as the vector from the centroid of the FEMeshFace of to the provided point.")]
+        [Description("Orients the direction of the local x of the FEMeshFace towards the provided point. The local x vector is calculated as the vector from the centroid of the FEMeshFace of to the provided point.")]
         [Input("face", "The FEMeshFace to update the local orientation of.")]
         [Input("mesh", "The FEMesh to which the face belongs.")]
         [Input("orientationPoint", "The point to orient the local x of the FEMeshFaces towards.")]
