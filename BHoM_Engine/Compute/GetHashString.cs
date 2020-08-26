@@ -21,9 +21,11 @@
  */
 
 using BH.Engine.Base.Objects;
+using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Linq;
@@ -38,6 +40,13 @@ namespace BH.Engine.Base
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Generates a string representing the whole structure of the object with its assigned values.")]
+        [Input("obj", "Objects the string should be calculated for.")]
+        [Input("propertyNameExceptions", "(Optional) e.g. `Fragments`. If you want to exclude a property that many objects have.")]
+        [Input("propertyFullNameExceptions", "(Optional) e.g. `BH.oM.Structure.Elements.Bar.Fragments`. If you want to exclude a specific property of an object.")]
+        [Input("namespaceExceptions", "(Optional) e.g. `BH.oM.Structure`. Any corresponding namespace is ignored.")]
+        [Input("typeExceptions", "(Optional) e.g. `typeof(Guid)`. Any corresponding type is ignored.")]
+        [Input("maxNesting", "(Optional) e.g. `100`. If any property is nested into the object over that level, it is ignored.")]
         public static string GetHashString(
             this object obj,
             int nestingLevel, //e.g. "Fragments"
