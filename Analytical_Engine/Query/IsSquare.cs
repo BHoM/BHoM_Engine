@@ -75,7 +75,7 @@ namespace BH.Engine.Analytical
                 points.Add(jointCurve.IStartPoint());
             }
 
-            //Check there are four discontinuity points present (start and end same point)
+            //Check there are four discontinuity points present 
             if (points.Count != 4)
                 return false;
 
