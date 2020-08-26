@@ -65,10 +65,10 @@ namespace BH.Engine.Diffing
             {
                 bhomobj = BH.Engine.Base.Query.DeepClone(obj) as IBHoMObject;
                 bhomobj.Fragments.Remove(typeof(HashFragment));
-                return Compute.SHA256Hash(bhomobj, diffConfig.PropertiesToIgnore);
+                return Base.Compute.Hash(bhomobj, diffConfig.PropertiesToIgnore);
             }
 
-            return Compute.SHA256Hash(obj, diffConfig.PropertiesToIgnore);
+            return Base.Compute.Hash(bhomobj, diffConfig.PropertiesToIgnore); // Compute.SHA256Hash(obj, diffConfig.PropertiesToIgnore);
         }
     }
 }
