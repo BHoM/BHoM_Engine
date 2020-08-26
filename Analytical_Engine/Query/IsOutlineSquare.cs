@@ -43,14 +43,10 @@ namespace BH.Engine.Analytical
         [Description("Determines whether a panel is a square")]
         [Input("panel", "The IPanel to check if it is a square")]
         [Output("bool", "True for square panels or false for non-square panels")]
-        public static bool IsSquare<TEdge, TOpening>(this IPanel<TEdge, TOpening> panel)
+        public static bool IsOutlineSquare<TEdge, TOpening>(this IPanel<TEdge, TOpening> panel)
             where TEdge : IEdge
             where TOpening : IOpening<TEdge>
         {
-            //Check if there are any openings
-            if (panel.Openings.Count != 0)
-                return false;
-
             List<ICurve> curves = panel.ExternalEdges.SelectMany(x => x.Curve.ISubParts()).ToList();
 
             List<PolyCurve> polycurves = Engine.Geometry.Compute.IJoin(curves);
