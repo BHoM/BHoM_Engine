@@ -52,7 +52,7 @@ namespace BH.Engine.Structure
 
         [Description("Returns the local z-axes of all FEMeshFaces in the FEMesh. Can only extract normals for 3 or 4-sided faces.")]
         [Input("mesh", "The FEMesh to extract the face normals from.")]
-        [Output("normal", "Vector representing the local z-axis faces. List order coresponds to the order of the faces.")]
+        [Output("normal", "List of vectors representing the local z-axes of mesh faces. List order corresponds to the order of the faces.")]
         public static List<Vector> Normals(this FEMesh mesh)
         {
             return mesh.Faces.Select(x => x.Normal(mesh)).ToList();
@@ -63,7 +63,7 @@ namespace BH.Engine.Structure
         [Description("Returns the local z-axis of an FEMeshFace. Can only extract normals for 3 or 4-sided faces.")]
         [Input("face", "The FEMeshFace to evaluate the normal of.")]
         [Input("mesh", "The FEMesh to which the face belongs.")]
-        [Output("normal", "Vector representing the local z-axis element.")]
+        [Output("normal", "Vector representing the local z-axis of a mesh face.")]
         public static Vector Normal(this FEMeshFace face, FEMesh mesh)
         {
 
