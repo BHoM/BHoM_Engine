@@ -48,14 +48,26 @@ namespace BH.Engine.Base
         [Input("namespaceExceptions", "(Optional) e.g. `BH.oM.Structure`. Any corresponding namespace is ignored.")]
         [Input("typeExceptions", "(Optional) e.g. `typeof(Guid)`. Any corresponding type is ignored.")]
         [Input("maxNesting", "(Optional) e.g. `100`. If any property is nested into the object over that level, it is ignored.")]
-        public static string GetHashString(
-            this object obj,
-            int nestingLevel, //e.g. "Fragments"
-            int maxNesting = 100, //e.g. "BH.oM.Structure.Elements.Bar.Fragments"
-            List<string> propertyNameExceptions = null, //e.g. "BH.oM.Structure"
-            List<string> propertyFullNameExceptions = null, //e.g. typeof(Guid)
-            List<string> namespaceExceptions = null,
-            List<Type> typeExceptions = null)
+        public static string DefiningString(
+            this IObject iObj,
+            List<string> propertyNameExceptions = null, //e.g. "Fragments"
+            List<string> propertyFullNameExceptions = null, //e.g. "BH.oM.Structure.Elements.Bar.Fragments"
+            List<string> namespaceExceptions = null, //e.g. "BH.oM.Structure"
+            List<Type> typeExceptions = null, //e.g. typeof(Guid)
+            int maxNesting = 100) 
+        {
+            return DefiningString(iObj, 0, maxNesting, propertyNameExceptions, propertyFullNameExceptions, namespaceExceptions, typeExceptions);
+        }
+
+
+        private static string DefiningString(
+            object obj,
+            int nestingLevel, 
+            int maxNesting = 100, 
+            List<string> propertyNameExceptions = null, //e.g. "Fragments"
+            List<string> propertyFullNameExceptions = null, //e.g. "BH.oM.Structure.Elements.Bar.Fragments"
+            List<string> namespaceExceptions = null, //e.g. "BH.oM.Structure"
+            List<Type> typeExceptions = null) //e.g. typeof(Guid)
         {
             string composedString = "";
             string tabs = new String('\t', nestingLevel);
@@ -76,20 +88,20 @@ namespace BH.Engine.Base
             else if (type.IsArray)
             {
                 foreach (var element in (obj as dynamic))
-                    composedString += $"\n{tabs}" + GetHashString(element, nestingLevel + 1, maxNesting, propertyNameExceptions, propertyFullNameExceptions, namespaceExceptions, typeExceptions);
+                    composedString += $"\n{tabs}" + DefiningString(element, nestingLevel + 1, maxNesting, propertyNameExceptions, propertyFullNameExceptions, namespaceExceptions, typeExceptions);
             }
             else if (typeof(IDictionary).IsAssignableFrom(type))
             {
                 IDictionary dic = obj as IDictionary;
                 foreach (DictionaryEntry entry in dic)
                 {
-                    composedString += $"\n{tabs}" + $"[{entry.Key.GetType().FullName}]\n{tabs}{entry.Key}:\n { GetHashString(entry.Value, nestingLevel + 1, maxNesting, propertyNameExceptions, propertyFullNameExceptions, namespaceExceptions, typeExceptions)}";
+                    composedString += $"\n{tabs}" + $"[{entry.Key.GetType().FullName}]\n{tabs}{entry.Key}:\n { DefiningString(entry.Value, nestingLevel + 1, maxNesting, propertyNameExceptions, propertyFullNameExceptions, namespaceExceptions, typeExceptions)}";
                 }
             }
             else if (typeof(IEnumerable).IsAssignableFrom(type) || typeof(IList).IsAssignableFrom(type) || typeof(ICollection).IsAssignableFrom(type))
             {
                 foreach (var element in (obj as dynamic))
-                    composedString += $"\n{tabs}" + GetHashString(element, nestingLevel + 1, maxNesting, propertyNameExceptions, propertyFullNameExceptions, namespaceExceptions, typeExceptions);
+                    composedString += $"\n{tabs}" + DefiningString(element, nestingLevel + 1, maxNesting, propertyNameExceptions, propertyFullNameExceptions, namespaceExceptions, typeExceptions);
             }
             else if (type.FullName.Contains("System.Collections.Generic.ObjectEqualityComparer`1"))
             {
@@ -98,7 +110,7 @@ namespace BH.Engine.Base
             else if (type == typeof(System.Data.DataTable))
             {
                 DataTable dt = obj as DataTable;
-                return composedString += $"{type.FullName} {string.Join(", ", dt.Columns.OfType<DataColumn>().Select(c => c.ColumnName))}\n{tabs}" + GetHashString(dt.AsEnumerable(), nestingLevel + 1, maxNesting, propertyNameExceptions, propertyFullNameExceptions, namespaceExceptions, typeExceptions);
+                return composedString += $"{type.FullName} {string.Join(", ", dt.Columns.OfType<DataColumn>().Select(c => c.ColumnName))}\n{tabs}" + DefiningString(dt.AsEnumerable(), nestingLevel + 1, maxNesting, propertyNameExceptions, propertyFullNameExceptions, namespaceExceptions, typeExceptions);
             }
             else if (typeof(IObject).IsAssignableFrom(type))
             {
@@ -117,7 +129,7 @@ namespace BH.Engine.Base
                     object propValue = prop.GetValue(obj);
                     if (propValue != null)
                     {
-                        string outString = GetHashString(propValue, nestingLevel + 1, maxNesting, propertyNameExceptions, propertyFullNameExceptions, namespaceExceptions, typeExceptions) ?? "";
+                        string outString = DefiningString(propValue, nestingLevel + 1, maxNesting, propertyNameExceptions, propertyFullNameExceptions, namespaceExceptions, typeExceptions) ?? "";
                         if (!string.IsNullOrWhiteSpace(outString))
                             composedString += $"\n{tabs}" + $"{type.FullName}.{prop.Name}:\n{tabs}{outString} ";
                     }

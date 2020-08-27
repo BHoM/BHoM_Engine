@@ -59,7 +59,7 @@ namespace BH.Engine.Base
             // If null, add "BHoM_Guid" to the propertyNameExceptions.
             propertyNameExceptions = propertyNameExceptions ?? new List<string>() { nameof(BHoMObject.BHoM_Guid) };
 
-            string hashString = iObj.GetHashString(0, maxNesting, propertyNameExceptions, propertyFullNameExceptions, namespaceExceptions, typeExceptions);
+            string hashString = DefiningString(iObj, 0, maxNesting, propertyNameExceptions, propertyFullNameExceptions, namespaceExceptions, typeExceptions);
 
             return Compute.SHA256Hash(hashString);
         }
