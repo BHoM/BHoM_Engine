@@ -61,7 +61,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Get the carteseian coordinate system descibring the position and local orientation of the Panel in the global coordinate system where the z-axis is the normal of the Panel and the x and y axes are the directions of the local in-plane axes.")]
+        [Description("Get the Cartesian coordinate system describing the position and local orientation of the Panel in the global coordinate system where the z-axis is the normal of the Panel and the x and y axes are the directions of the local in-plane axes.")]
         [Input("panel", "The Panel to extract the local coordinate system from.")]
         [Output("CoordinateSystem", "The local cartesian coordinate system of the Panel.")]
         public static Cartesian CoordinateSystem(this Panel panel)
@@ -72,7 +72,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Get the carteseian coordinate system descibring the position and local orientation of the FEMeshFaces of the FEMesh in the global coordinate system where the z-axis is the normal of the FEMeshFace and the x and y axes are the directions of the local in-plane axes.")]
+        [Description("Get the Cartesian coordinate system descibring the position and local orientation of the FEMeshFaces of the FEMesh in the global coordinate system where the z-axis is the normal of the FEMeshFace and the x and y axes are the directions of the local in-plane axes.")]
         [Input("mesh", "The FEMesh to extract the local coordinate systems of the FEMeshFaces from.")]
         [Output("CoordinateSystem", "The local cartesian coordinate system of the FEMeshFaces of the FEMesh.")]
         public static List<Cartesian> CoordinateSystem(this FEMesh mesh)
@@ -82,7 +82,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Get the carteseian coordinate system descibring the position and local orientation of the FEMeshFace in the global coordinate system where the z-axis is the normal of the FEMeshFace and the x and y axes are the directions of the local in-plane axes.")]
+        [Description("Get the Cartesian coordinate system descibring the position and local orientation of the FEMeshFace in the global coordinate system where the z-axis is the normal of the FEMeshFace and the x and y axes are the directions of the local in-plane axes.")]
         [Input("face", "The FEMeshFace to extract the local coordinate system from.")]
         [Input("mesh", "The FEMesh to which the face belongs.")]
         [Output("CoordinateSystem", "The local cartesian coordinate system of the FEMeshFace.")]
@@ -95,4 +95,3 @@ namespace BH.Engine.Structure
         /***************************************************/
     }
 }
-

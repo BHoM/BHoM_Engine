@@ -84,7 +84,7 @@ namespace BH.Engine.Structure
         [Input("face", "The FEMeshFace to update the local orientation of.")]
         [Input("mesh", "The FEMesh to which the face belongs.")]
         [Input("orientationPoint", "The point to orient the local x of the FEMeshFaces towards.")]
-        [Output("mesh", "FEMeshFaces with updated local orientation. If the calcualtion of the orientation angle fails, the unmodified FEMeshFace is returned.")]
+        [Output("meshFace", "FEMeshFace with updated local orientation. If the calcualtion of the orientation angle fails, the unmodified FEMeshFace is returned.")]
         public static FEMeshFace OrientTowards(this FEMeshFace face, FEMesh mesh, Point orientationPoint)
         {
             Point centre = face.NodeListIndices.Select(i => mesh.Nodes[i].Position).Average();
