@@ -61,7 +61,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Compute\Hash.cs" />
-    <Compile Include="Compute\GetHashString.cs" />
+    <Compile Include="Compute\DefiningString.cs" />
     <Compile Include="Compute\SHA256Hash.cs" />
     <Compile Include="Create\BHoMGroup.cs" />
     <Compile Include="Create\IObject\RandomObject.cs" />
