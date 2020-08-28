@@ -52,7 +52,7 @@ namespace BH.Engine.Structure
 
         [Description("Get the Vector basis system descibring the local axes orientation of the faces of the FEMesh in the global coordinate system where the z-axis is the normal of each face and the x and y axes are the directions of the local in-plane axes.")]
         [Input("mesh", "The FEMesh to extract the local orientations from from.")]
-        [Output("orienations", "The local orientations of the mesh as a vector Basis.")]
+        [Output("orienations", "The local orientations of the mesh faces as a list of vector Bases.")]
         public static List<Basis> LocalOrientations(this FEMesh mesh)
         {
             return mesh.Faces.Select(x => x.LocalOrientation(mesh)).ToList();
