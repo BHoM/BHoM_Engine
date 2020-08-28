@@ -45,7 +45,7 @@ namespace BH.Engine.Structure
         [Output("bar", "Bar with updated orientation. If the calcualtion of the orientation angle fails, the unmodified bar is returned.")]
         public static Bar OrientTowards(this Bar bar, Point orientationPoint)
         {
-            Point centre = (bar.StartNode.Position + bar.EndNode.Position) / 2;
+            Point centre = bar.Centreline().ClosestPoint(orientationPoint);
             Vector normal = (orientationPoint - centre).Normalise();
 
             return bar.SetNormal(normal);
