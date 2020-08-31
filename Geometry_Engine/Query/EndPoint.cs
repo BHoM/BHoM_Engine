@@ -69,7 +69,7 @@ namespace BH.Engine.Geometry
                 return curve.ControlPoints.LastOrDefault();
             else
             {
-                Reflection.Compute.RecordError("EndPoint is not implemented for non-periodic NurbsCurves");
+                Reflection.Compute.RecordError("EndPoint is not implemented for periodic NurbsCurves");
                 return null;
             }
         }
@@ -125,4 +125,3 @@ namespace BH.Engine.Geometry
         /***************************************************/
     }
 }
-
