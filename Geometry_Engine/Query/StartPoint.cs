@@ -71,7 +71,7 @@ namespace BH.Engine.Geometry
                 return curve.ControlPoints.FirstOrDefault();
             else
             {
-                Reflection.Compute.RecordError("StartPoint is not implemented for non-periodic NurbsCurves");
+                Reflection.Compute.RecordError("StartPoint is not implemented for periodic NurbsCurves");
                 return null;
             }
         }
