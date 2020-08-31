@@ -132,7 +132,7 @@ namespace BH.Engine.Geometry
                     pts.Add(crv.IEndPoint());
                 else
                 {
-                    Reflection.Compute.RecordError("PolyCurve connsisting of type: " + crv.GetType().Name + " is not implemented for Centroid.");
+                    Reflection.Compute.RecordError("PolyCurve consisting of type: " + crv.GetType().Name + " is not implemented for Centroid.");
                     return null;
                 }
             }
