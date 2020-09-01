@@ -41,7 +41,7 @@ namespace BH.Engine.Structure
         [Input("load", "The load to check for id assignment.")]
         [Input("adapterIdName", "The identifier key to check. For example 'Robot_id' for Autodesk Robot.")]
         [Output("result", "Returns true if all objects assigned to the load has an id matching the 'adapterIdName' assigned.")]
-        public static bool HasAssignedObjectIds<T>(IElementLoad<T> load, string adapterIdName) where T : IBHoMObject
+        public static bool HasAssignedObjectIds<T>(this IElementLoad<T> load, string adapterIdName) where T : IBHoMObject
         {
             return load.Objects.Elements.All(x => x.CustomData.ContainsKey(adapterIdName));
         }
