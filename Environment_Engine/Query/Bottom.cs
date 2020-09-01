@@ -55,7 +55,8 @@ namespace BH.Engine.Environment
             else if (environmentObject is Opening)
                 workingCurves = (environmentObject as Opening).Edges.Polyline();
 
-            if (workingCurves == null) return null;
+            if (workingCurves == null)
+                return null;
 
             double aZ = double.MaxValue;
             ICurve aResult = null;
@@ -70,6 +71,7 @@ namespace BH.Engine.Environment
                     aResult = aCurve;
                 }
             }
+
             return aResult;
         }
     }

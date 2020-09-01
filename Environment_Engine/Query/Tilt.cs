@@ -70,11 +70,12 @@ namespace BH.Engine.Environment
         [Output("tilt", "The tilt of the polyline")]
         public static double Tilt(this Polyline polyline, double distanceTolerance = BH.oM.Geometry.Tolerance.Distance, double angleTolerance = BH.oM.Geometry.Tolerance.Angle)
         {
-            double tilt;
+            double tilt = 0;
 
             List<Point> pts = polyline.DiscontinuityPoints(distanceTolerance, angleTolerance);
 
-            if (pts.Count < 3 || !BH.Engine.Geometry.Query.IsClosed(polyline, distanceTolerance) || !BH.Engine.Geometry.Query.IsPlanar(polyline, distanceTolerance)) return -1; //Error protection on pts having less than 3 elements to create a plane or pLine not being closed
+            if (pts.Count < 3 || !BH.Engine.Geometry.Query.IsClosed(polyline, distanceTolerance) || !BH.Engine.Geometry.Query.IsPlanar(polyline, distanceTolerance))
+                return -1; //Error protection on pts having less than 3 elements to create a plane or pLine not being closed
 
 
             polyline = BH.Engine.Geometry.Modify.CleanPolyline(polyline, angleTolerance);

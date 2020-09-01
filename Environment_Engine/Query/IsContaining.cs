@@ -51,7 +51,10 @@ namespace BH.Engine.Environment
         public static bool IsContaining(this List<List<Panel>> panelsAsSpaces, Panel panel)
         {
             foreach (List<Panel> lst in panelsAsSpaces)
-                if (lst.Where(x => x.BHoM_Guid == panel.BHoM_Guid).FirstOrDefault() != null) return true;
+            {
+                if (lst.Where(x => x.BHoM_Guid == panel.BHoM_Guid).FirstOrDefault() != null)
+                    return true;
+            }
 
             return false;
         }
@@ -72,7 +75,9 @@ namespace BH.Engine.Environment
         [Output("isContaining", "True if the point is contained within the panel, false if it is not")]
         public static bool IsContaining(this Panel panel, Point pt, bool acceptOnEdges = false)
         {
-            if (pt == null) return false;
+            if (pt == null)
+                return false;
+
             return new List<Panel> { panel }.IsContaining(pt, acceptOnEdges);
         }
 

@@ -63,7 +63,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
         
-        [Description("Creates a LinkConstraint where all directions are linked, rotations at slave nodes are linked to rotations of masters.")]
+        [Description("Creates a LinkConstraint where all directions are linked, rotations at secondary nodes are linked to rotations of the primary.")]
         [Input("name", "Name of the created LinkConstraint. Defaults to 'Fixed'. This is required for various structural packages to create the object.")]
         [Output("linkConstraint", "The created LinkConstraint.")]
         public static LinkConstraint LinkConstraintFixed(string name = "Fixed")
@@ -88,7 +88,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Creates a LinkConstraint where all directions are linked, but the rotations of the slave nodes are not linked to the master.")]
+        [Description("Creates a LinkConstraint where all directions are linked, but the rotations of the secondary nodes are not linked to the primary.")]
         [Input("name", "Name of the created LinkConstraint. Defaults to 'Pinned'. This is required for various structural packages to create the object.")]
         [Output("linkConstraint", "The created LinkConstraint.")]
         public static LinkConstraint LinkConstraintPinned(string name = "Pinned")
@@ -158,7 +158,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Creates a LinkConstraint where the directions are linked to give rigidity in the xy-plane, but the rotations of the slave nodes are not linked to the master, and there is no constraint out of plane.")]
+        [Description("Creates a LinkConstraint where the directions are linked to give rigidity in the xy-plane, but the rotations of the secondary nodes are not linked to the primary, and there is no constraint out of plane.")]
         [Input("name", "Name of the created LinkConstraint. Defaults to 'xy-Plane Pin'. This is required for various structural packages to create the object.")]
         [Output("linkConstraint", "The created LinkConstraint.")]
         public static LinkConstraint LinkConstraintXYPlanePin(string name = "xy-Plane Pin")
@@ -174,7 +174,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Creates a LinkConstraint where the directions are linked to give rigidity in the yz-plane, but the rotations of the slave nodes are not linked to the master, and there is no constraint out of plane.")]
+        [Description("Creates a LinkConstraint where the directions are linked to give rigidity in the yz-plane, but the rotations of the secondary nodes are not linked to the primary, and there is no constraint out of plane.")]
         [Input("name", "Name of the created LinkConstraint. Defaults to 'yz-Plane Pin'. This is required for various structural packages to create the object.")]
         [Output("linkConstraint", "The created LinkConstraint.")]
         public static LinkConstraint LinkConstraintYZPlanePin(string name = "yz-Plane Pin")
@@ -190,7 +190,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Creates a LinkConstraint where the directions are linked to give rigidity in the zx-plane, but the rotations of the slave nodes are not linked to the master, and there is no constraint out of plane.")]
+        [Description("Creates a LinkConstraint where the directions are linked to give rigidity in the zx-plane, but the rotations of the secondary nodes are not linked to the primary, and there is no constraint out of plane.")]
         [Input("name", "Name of the created LinkConstraint. Defaults to 'zx-Plane Pin'. This is required for various structural packages to create the object.")]
         [Output("linkConstraint", "The created LinkConstraint.")]
         public static LinkConstraint LinkConstraintZXPlanePin(string name = "zx-Plane Pin")

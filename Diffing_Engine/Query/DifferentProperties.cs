@@ -25,15 +25,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
 using System.ComponentModel;
 using BH.oM.Reflection.Attributes;
 using BH.oM.Diffing;
-
 using BH.oM.Base;
-
 using KellermanSoftware.CompareNetObjects;
 using System.Reflection;
+using BH.Engine.Base;
 
 namespace BH.Engine.Diffing
 {
@@ -45,32 +43,78 @@ namespace BH.Engine.Diffing
         public static Dictionary<string, Tuple<object, object>> DifferentProperties(this object obj1, object obj2, DiffConfig diffConfig = null)
         {
             // Set configurations if diffConfig is null. Clone it for immutability in the UI.
-            DiffConfig diffConfigCopy = diffConfig == null ? new DiffConfig() : diffConfig.GetShallowClone() as DiffConfig;
+            DiffConfig diffConfigCopy = diffConfig == null ? new DiffConfig() : diffConfig.DeepClone() as DiffConfig;
+
+            object obj1Copy = obj1.DeepClone();
+            object obj2Copy = obj2.DeepClone();
 
             var dict = new Dictionary<string, Tuple<object, object>>();
 
             CompareLogic comparer = new CompareLogic();
 
-            comparer.Config.MaxDifferences = 1000;
-
-            if (!diffConfigCopy.PropertiesToIgnore.Contains("BHoM_Guid"))
-                diffConfigCopy.PropertiesToIgnore.Add("BHoM_Guid"); // BHoM_Guid should always be ignored in DifferentProperties.
-
-            comparer.Config.MembersToIgnore = diffConfigCopy.PropertiesToIgnore;
+            // General configurations.
+            comparer.Config.MaxDifferences = diffConfigCopy.MaxPropertyDifferences;
             comparer.Config.DoublePrecision = diffConfigCopy.NumericTolerance;
 
-            // Never include the changes in HistoryFragment.
+            // Set the properties to be ignored.
+            if (!diffConfigCopy.PropertiesToIgnore.Contains("BHoM_Guid"))
+                diffConfigCopy.PropertiesToIgnore.Add("BHoM_Guid");
+                // the above should be replaced by BH.Engine.Reflection.Compute.RecordWarning($"`BHoM_Guid` should generally be ignored when computing the diffing. Consider adding it to the {nameof(diffConfig.PropertiesToIgnore)}.");
+                // when the bug in the auto Create() method ("auto-property initialisers for ByRef values like lists do not populate default values") is resolved.
+
+            comparer.Config.MembersToIgnore = diffConfigCopy.PropertiesToIgnore;
+
+            // Removes the CustomData to be ignored.
+            var bhomobj1 = (obj1Copy as IBHoMObject);
+            var bhomobj2 = (obj2Copy as IBHoMObject);
+
+            if (bhomobj1 != null)
+            {
+                diffConfig.CustomDataToIgnore.ForEach(k => bhomobj1.CustomData.Remove(k));
+                obj1Copy = bhomobj1;
+            }
+
+            if (bhomobj2 != null)
+            {
+                diffConfig.CustomDataToIgnore.ForEach(k => bhomobj2.CustomData.Remove(k));
+                obj2Copy = bhomobj2;
+            }
+
+            // Never include the changes in HashFragment.
             comparer.Config.TypesToIgnore.Add(typeof(HashFragment));
 
-            ComparisonResult result = comparer.Compare(obj1, obj2);
+            // Perform the comparison.
+            ComparisonResult result = comparer.Compare(obj1Copy, obj2Copy);
 
+            // Parse and store the differnces as appropriate.
             foreach (var difference in result.Differences)
-                dict[difference.PropertyName] = new Tuple<object, object>(difference.Object1, difference.Object2);
+            {
+                string propertyName = difference.PropertyName;
+
+                //workaround for Revit's parameters in Fragments
+                if (propertyName.Contains("Fragments") && propertyName.Contains("Parameter") && propertyName.Contains("Value"))
+                    propertyName = BH.Engine.Reflection.Query.PropertyValue(difference.ParentObject2, "Name").ToString();
+
+                if (propertyName.Contains("CustomData") && propertyName.Contains("Value"))
+                {
+                    var splittedName = difference.PropertyName.Split('.');
+
+                    int idx = 0;
+                    Int32.TryParse(string.Join(null, System.Text.RegularExpressions.Regex.Split(splittedName.ElementAtOrDefault(1), "[^\\d]")), out idx);
+
+                    string keyName = (obj2Copy as IBHoMObject)?.CustomData.ElementAtOrDefault(idx - 1).Key; // this seems buggy ATM.
+
+                    propertyName = splittedName.FirstOrDefault() + $"['{keyName}']." + splittedName.Last();
+                }
+
+                if (!diffConfig.PropertiesToConsider.Any() || diffConfig.PropertiesToConsider.Contains(difference.PropertyName))
+                    dict[propertyName] = new Tuple<object, object>(difference.Object1, difference.Object2);
+            }
 
             if (dict.Count == 0)
                 return null;
 
-            return dict;
+            return dict; // this Dictionary may be exploded in the UI by using the method "ListDifferentProperties".
         }
     }
 }

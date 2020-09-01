@@ -72,11 +72,15 @@
     <Compile Include="Compute\BooleanIntersection.cs" />
     <Compile Include="Compute\BooleanUnion.cs" />
     <Compile Include="Compute\ClusterCollinear.cs" />
+    <Compile Include="Compute\FibonacciSphere.cs" />
     <Compile Include="Compute\ClusterCoplanar.cs" />
     <Compile Include="Compute\ConvexHull.cs" />
     <Compile Include="Compute\CullDuplicates.cs" />
     <Compile Include="Compute\CollapseToScaledPolyline.cs" />
     <Compile Include="Compute\DistributeOutlines.cs" />
+    <Compile Include="Compute\MarchingCubes.cs" />
+    <Compile Include="Compute\SubMesh.cs" />
+    <Compile Include="Compute\MarchingSquares.cs" />
     <Compile Include="Compute\WetBlanketInterpretation.cs" />
     <Compile Include="Compute\IntegrateRegion.cs" />
     <Compile Include="Compute\Eigenvalues.cs" />
@@ -127,6 +131,7 @@
     <Compile Include="Create\IntegrationSlice.cs" />
     <Compile Include="Modify\CleanPolyline.cs" />
     <Compile Include="Modify\CollapseToPolyline.cs" />
+    <Compile Include="Modify\CullDuplicate.cs" />
     <Compile Include="Modify\RemoveLeastSignificantVertices.cs" />
     <Compile Include="Modify\RemoveShortSegments.cs" />
     <Compile Include="Modify\RoundCoordinates.cs" />
@@ -141,11 +146,13 @@
     <Compile Include="Modify\SplitAtPoints.cs" />
     <Compile Include="Query\Cells.cs" />
     <Compile Include="Query\Centroid.cs" />
+    <Compile Include="Query\ClosestPoints.cs" />
     <Compile Include="Query\CurveIntersections.cs" />
     <Compile Include="Compute\CurveProximity.cs" />
     <Compile Include="Query\ExternalFaceMesh.cs" />
     <Compile Include="Query\Geometry.cs" />
     <Compile Include="Query\GetLineSegment.cs" />
+    <Compile Include="Query\IsPartiallyContaining.cs" />
     <Compile Include="Query\IsEqual.cs" />
     <Compile Include="Query\Clone.cs" />
     <Compile Include="Convert\NurbsForm.cs" />
@@ -176,6 +183,7 @@
     <Compile Include="Query\IsQuad.cs" />
     <Compile Include="Query\IsSelfIntersecting.cs" />
     <Compile Include="Query\IsVertical.cs" />
+    <Compile Include="Query\LongestSegmentLength.cs" />
     <Compile Include="Query\MeshIntersections.cs" />
     <Compile Include="Query\LineIntersections.cs" />
     <Compile Include="Query\Degree.cs" />
@@ -207,6 +215,7 @@
     <Compile Include="Query\TangentAtLength.cs" />
     <Compile Include="Query\TangentAtParameter.cs" />
     <Compile Include="Query\TangentAtPoint.cs" />
+    <Compile Include="Query\Vertices.cs" />
     <Compile Include="Query\UVCount.cs" />
     <Compile Include="Query\SamplePoints.cs" />
     <Compile Include="Query\SubParts.cs" />

@@ -62,6 +62,11 @@ namespace BH.Engine.Environment
                 normal = polyline.Flip().Normal();
 
             Point centre = polyline.Centroid();
+            if (centre == null)
+                centre = polyline.Centre();
+
+            if(normal == null)
+                return null;
 
             Line line = new Line
             {

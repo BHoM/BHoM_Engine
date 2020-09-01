@@ -67,6 +67,7 @@ namespace BH.Engine.Environment
                         returnPanels.Add(p);
                 }
             }
+
             return returnPanels;
         }
     }

@@ -48,6 +48,9 @@ namespace BH.Engine.Environment
 
             foreach(Construction c in constructions)
             {
+                if (c == null)
+                    continue;
+
                 foreach(Layer l in c.Layers)
                 {
                     Material t = unique.Where(x => x.Name == l.Material.Name).FirstOrDefault();

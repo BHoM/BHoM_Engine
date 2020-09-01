@@ -46,7 +46,11 @@ namespace BH.Engine.Environment
         [Output("volume", "The Panel solid volume", typeof(Volume))]
         public static double SolidVolume(this Panel panel)
         {
-            double volume = panel.Area() * panel.Construction.IThickness();
+            double constructionThickness = 0;
+            if (panel.Construction != null)
+                constructionThickness = panel.Construction.IThickness();
+
+            double volume = panel.Area() * constructionThickness;
             return volume + panel.Openings.Sum(x => x.SolidVolume());
         }
 
@@ -58,14 +62,19 @@ namespace BH.Engine.Environment
             double glazedVolume = 0;
             double frameVolume = 0;
 
-            if (opening.InnerEdges != null && opening.InnerEdges.Count != 0)
+            if (opening.OpeningConstruction != null)
             {
-                double innerArea = opening.InnerEdges.Polyline().Area();
-                glazedVolume = innerArea * opening.OpeningConstruction.IThickness();
-                frameVolume = (opening.Polyline().Area() - innerArea) * opening.FrameConstruction.IThickness();
+                if (opening.InnerEdges != null && opening.InnerEdges.Count != 0)
+                {
+                    double innerArea = opening.InnerEdges.Polyline().Area();
+                    glazedVolume = innerArea * opening.OpeningConstruction.IThickness();
+                    
+                    if(opening.FrameConstruction != null)
+                        frameVolume = (opening.Polyline().Area() - innerArea) * opening.FrameConstruction.IThickness();
+                }
+                else
+                    glazedVolume = opening.Polyline().Area() * opening.OpeningConstruction.IThickness();
             }
-            else
-                glazedVolume = opening.Polyline().Area() * opening.OpeningConstruction.IThickness();
 
             return glazedVolume + frameVolume;
         }

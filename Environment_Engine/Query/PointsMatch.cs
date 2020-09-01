@@ -40,18 +40,20 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns whether a list of points contains every point in the second list - order is not relevant")]
-        [Input("controlPoints", "A collection of BHoM Geometry Points as the control list")]
-        [Input("measurePoints", "A collection of BHoM Geometry Points as the measure list")]
-        [Output("doPointsMatch", "True if all of the measurePoints are within the controlPoints list (independent of list order), false otherwise")]
-        public static bool PointsMatch(this List<Point> controlPoints, List<Point> measurePoints)
+        [Description("Returns whether a list of points contains every point in the second list - order is not relevant. Done by measuring the square distance between points and finding those that are under the square distance tolerance.")]
+        [Input("controlPoints", "A collection of BHoM Geometry Points as the control list.")]
+        [Input("measurePoints", "A collection of BHoM Geometry Points as the measure list.")]
+        [Input("squareTolerance", "The tolerance for how close points can be to be the same point. Points who's distance is greater than this tolerance are considered to be separate points.")]
+        [Output("doPointsMatch", "True if all of the measurePoints are within the controlPoints list (independent of list order), false otherwise.")]
+        public static bool PointsMatch(this List<Point> controlPoints, List<Point> measurePoints, double squareTolerance = BH.oM.Geometry.Tolerance.Distance)
         {
             if (controlPoints.Count != measurePoints.Count) return false;
 
             foreach (Point p in controlPoints)
             {
-                Point ptInMeasure = measurePoints.Where(x => x.X == p.X && x.Y == p.Y && x.Z == p.Z).FirstOrDefault();
-                if (ptInMeasure == null) return false; //Point did not have a match
+                Point ptInMeasure = measurePoints.Where(x => p.SquareDistance(x) <= squareTolerance).FirstOrDefault();
+                if (ptInMeasure == null)
+                    return false; //Point did not have a match
             }
 
             return true; //No points returned false before now

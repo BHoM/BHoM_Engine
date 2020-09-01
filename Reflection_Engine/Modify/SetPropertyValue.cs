@@ -82,25 +82,10 @@ namespace BH.Engine.Reflection
                 prop.SetValue(obj, value);
                 return true;
             }
-            else if (obj is IBHoMObject)
+            else 
             {
-                IBHoMObject bhomObj = obj as IBHoMObject;
-                if (bhomObj == null) return false;
-
-                if (!bhomObj.CustomData.ContainsKey(propName))
-                    Compute.RecordWarning("The objects does not contain any property with the name " + propName + ". The value is being set as custom data");
-
-                bhomObj.CustomData[propName] = value;
-                return true;
+                return SetValue(obj as dynamic, propName, value);
             }
-            else if (obj is IDictionary)
-            {
-                IDictionary dic = obj as IDictionary;
-                dic[propName] = value;
-                return true;
-            }
-
-            return false;
         }
 
         /***************************************************/
@@ -142,6 +127,50 @@ namespace BH.Engine.Reflection
                 return true;
             }
 
+        }
+
+
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+        private static bool SetValue(this IBHoMObject obj, string propName, object value)
+        {
+            if (obj == null) return false;
+
+            if (!obj.CustomData.ContainsKey(propName))
+                Compute.RecordWarning("The objects does not contain any property with the name " + propName + ". The value is being set as custom data");
+
+            obj.CustomData[propName] = value;
+            return true;
+        }
+
+        /***************************************************/
+
+        private static bool SetValue(this IDictionary dic, string propName, object value)
+        {
+            dic[propName] = value;
+            return true;
+        }
+
+        /***************************************************/
+
+        private static bool SetValue<T>(this IEnumerable<T> list, string propName, object value)
+        {
+            bool success = true;
+
+            foreach (T item in list)
+                success &= SetPropertyValue(item, propName, value);
+
+            return success;
+        }
+
+        /***************************************************/
+
+        private static bool SetValue(this object obj, string propName, object value)
+        {
+            Compute.RecordWarning("The objects does not contain any property with the name " + propName + ".");
+            return false;
         }
 
         /***************************************************/

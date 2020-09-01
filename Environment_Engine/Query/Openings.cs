@@ -56,6 +56,7 @@ namespace BH.Engine.Environment
         {
             bhomObjects = bhomObjects.ObjectsByType(typeof(Opening));
             List<Opening> Openings = new List<Opening>();
+
             foreach (IBHoMObject o in bhomObjects)
                 Openings.Add(o as Opening);
 

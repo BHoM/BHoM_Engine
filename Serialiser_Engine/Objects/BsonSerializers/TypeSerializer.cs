@@ -185,6 +185,13 @@ namespace BH.Engine.Serialiser.BsonSerializers
             else
                 type = Type.GetType(fullName);
 
+            if (type == null)
+            {
+                List<Type> types = Reflection.Create.AllTypes(fullName, true);
+                if (types.Count > 0)
+                    type = types.First();
+            }
+
             return type;
         }
 

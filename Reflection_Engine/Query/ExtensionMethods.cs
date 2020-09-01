@@ -42,8 +42,11 @@ namespace BH.Engine.Reflection
             {
                 ParameterInfo[] param = method.GetParameters();
 
-                if (param.Length > 0 && param[0].ParameterType.IsAssignableFrom(type))
-                    methods.Add(method);
+                if (param.Length > 0)
+                {
+                    if (param[0].ParameterType.IsAssignableFromIncludeGenerics(type))
+                        methods.Add(method);
+                }
             }
 
             return methods;

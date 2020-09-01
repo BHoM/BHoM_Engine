@@ -44,6 +44,7 @@ namespace BH.Engine.Environment
         [Input("environmentObject", "A generic Environment object")]
         [Input("fragmentType", "The type of fragment to be queried and returned")]
         [Output("fragment", "The instance of that Fragment if it exists on the object, null otherwise")]
+        [ToBeRemoved("3.3", "Replaced by the BH.Engine.Base.FindFragment")]
         public static T FindFragment<T>(this IEnvironmentObject environmentObject, Type fragmentType)
         {
             return (T)System.Convert.ChangeType(environmentObject.Fragments.Where(x => x.GetType() == fragmentType).FirstOrDefault(), fragmentType);

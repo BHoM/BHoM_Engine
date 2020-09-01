@@ -46,6 +46,7 @@ namespace BH.Engine.Environment
 
             foreach (Panel p in clonedPanels)
                 p.ExternalEdges = p.Polyline().CleanPolyline(angleTolerance, minimumSegmentLength).ToEdges();
+
             return clonedPanels;
         }
     }

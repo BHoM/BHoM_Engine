@@ -52,6 +52,7 @@ namespace BH.Engine.Environment
                 BH.Engine.Reflection.Compute.RecordError("The Panel does not have a construction assigned");
                 return null;
             }
+
             MaterialComposition pMat = panel.Construction.IMaterialComposition();
 
             if (panel.Openings != null && panel.Openings.Count != 0)
@@ -66,6 +67,7 @@ namespace BH.Engine.Environment
                     volumes.Add(tempVolume);
                     volumes[0] -= tempVolume;
                 }
+
                 return Matter.Compute.AggregateMaterialComposition(matComps, volumes);
             }
 
@@ -89,15 +91,18 @@ namespace BH.Engine.Environment
             double glazedVolume = 0;
             double frameVolume = 0;
 
-            if (opening.InnerEdges != null && opening.InnerEdges.Count != 0)
+            if (opening.OpeningConstruction != null)
             {
-                double innerArea = opening.InnerEdges.Polyline().Area();
-                glazedVolume = innerArea * opening.OpeningConstruction.IThickness();
-                frameVolume = (opening.Polyline().Area() - innerArea) * opening.FrameConstruction.IThickness();
-            }
-            else
-            {
-                glazedVolume = opening.Polyline().Area() * opening.OpeningConstruction.IThickness();
+                if (opening.InnerEdges != null && opening.InnerEdges.Count != 0)
+                {
+                    double innerArea = opening.InnerEdges.Polyline().Area();
+                    glazedVolume = innerArea * opening.OpeningConstruction.IThickness();
+                    frameVolume = (opening.Polyline().Area() - innerArea) * opening.FrameConstruction.IThickness();
+                }
+                else
+                {
+                    glazedVolume = opening.Polyline().Area() * opening.OpeningConstruction.IThickness();
+                }
             }
 
             if (opening.FrameConstruction != null && opening.FrameConstruction.IThickness() > oM.Geometry.Tolerance.Distance)
@@ -105,6 +110,7 @@ namespace BH.Engine.Environment
                 comps.Add(opening.FrameConstruction.IMaterialComposition());
                 ratios.Add(frameVolume);
             }
+
             if (opening.OpeningConstruction != null && opening.OpeningConstruction.IThickness() > oM.Geometry.Tolerance.Distance)
             {
                 comps.Add(opening.OpeningConstruction.IMaterialComposition());
