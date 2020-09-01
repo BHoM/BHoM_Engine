@@ -55,6 +55,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [NotImplemented]
         public static List<Point> DiscontinuityPoints(this PolyCurve curve)
         {
             return curve.Curves.SelectMany((x, i) => x.IDiscontinuityPoints().Skip((i > 0) ? 1 : 0)).ToList();
