@@ -72,6 +72,13 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        public static List<Point> ControlPoints(this NurbsCurve curve)
+        {
+            return curve.ControlPoints;
+        }
+
+        /***************************************************/
+
         public static List<Point> ControlPoints(this PolyCurve curve)
         {
             return curve.Curves.SelectMany((x, i) => x.IControlPoints().Skip((i > 0) ? 1 : 0)).ToList();
