@@ -40,20 +40,20 @@ namespace BH.Engine.Analytical
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Determines whether a panel is a square")]
-        [Input("panel", "The IPanel to check if it is a square")]
-        [Output("bool", "True for square panels or false for non-square panels")]
+        [Description("Determines whether a panel's outline is a square")]
+        [Input("panel", "The IPanel to check if the outline is a square")]
+        [Output("bool", "True for panels with a square outline or false for panels with a non square outline")]
         public static bool IsOutlineSquare<TEdge, TOpening>(this IPanel<TEdge, TOpening> panel)
             where TEdge : IEdge
             where TOpening : IOpening<TEdge>
         {
-            bool isCheck = true;
-            PolyCurve polycurve = GetPolycurve(panel, out isCheck);
-            if (!isCheck)
-                return isCheck;
-            List<Point> points = GetPoints(polycurve, out isCheck);
-            if (!isCheck)
-                return isCheck;
+            bool isOutlineSquare = true;
+            PolyCurve polycurve = GetPolycurve(panel, out isOutlineSquare);
+            if (!isOutlineSquare)
+                return isOutlineSquare;
+            List<Point> points = GetPoints(polycurve, out isOutlineSquare);
+            if (!isOutlineSquare)
+                return isOutlineSquare;
             List<Vector> vectors = GetVectors(points);
             List<double> angles = GetAngles(vectors);
 
