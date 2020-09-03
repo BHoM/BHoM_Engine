@@ -144,7 +144,6 @@
     <Compile Include="Modify\Reverse.cs" />
     <Compile Include="Modify\Scale.cs" />
     <Compile Include="Modify\SplitAtPoints.cs" />
-    <Compile Include="Query\BasisFunction.cs" />
     <Compile Include="Query\Cells.cs" />
     <Compile Include="Query\Centroid.cs" />
     <Compile Include="Query\ClosestPoints.cs" />
@@ -188,7 +187,6 @@
     <Compile Include="Query\MeshIntersections.cs" />
     <Compile Include="Query\LineIntersections.cs" />
     <Compile Include="Query\Degree.cs" />
-    <Compile Include="Query\DerivativeFunction.cs" />
     <Compile Include="Query\Determinant.cs" />
     <Compile Include="Query\Direction.cs" />
     <Compile Include="Query\DiscontinuityPoints.cs" />

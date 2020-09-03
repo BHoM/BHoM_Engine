@@ -111,7 +111,7 @@ namespace BH.Engine.Geometry
         {
             return curve.ControlPoints.IsInPlane(plane, tolerance);
         }
-        
+
         /***************************************************/
 
         public static bool IsInPlane(this PolyCurve curve, Plane plane, double tolerance = Tolerance.Distance)
@@ -153,14 +153,6 @@ namespace BH.Engine.Geometry
             }
 
             return true;
-        }
-
-        /***************************************************/
-
-        [NotImplemented]
-        public static bool IsInPlane(this NurbsSurface surface, Plane plane, double tolerance = Tolerance.Distance)
-        {
-            throw new NotImplementedException();
         }
 
         /***************************************************/
@@ -223,7 +215,16 @@ namespace BH.Engine.Geometry
             return IsInPlane(geometry as dynamic, plane, tolerance);
         }
 
+
+        /***************************************************/
+        /**** Private Fallback Methods                  ****/
+        /***************************************************/
+
+        private static bool IsInPlane(this IGeometry geometry, Plane plane, double tolerance = Tolerance.Distance)
+        {
+            throw new NotImplementedException($"IsInPlane is not implemented for IGeometry of type: {geometry.GetType().Name}.");
+        }
+
         /***************************************************/
     }
 }
-

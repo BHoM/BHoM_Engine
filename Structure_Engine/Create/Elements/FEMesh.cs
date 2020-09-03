@@ -40,13 +40,14 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-
+        [PreviousVersion("3.3", "BH.Engine.Structure.Create.FEMesh(BH.oM.Geometry.Mesh, BH.oM.Structure.SurfaceProperties.ISurfaceProperty, System.String)")]
         [Description("Creates a FEMesh based on a geometrical Mesh.")]
         [Input("mesh","The geometrical Mesh to extract geometrical and topological information from.")]
         [InputFromProperty("property")]
         [Input("name", "The name of the created FEMesh.")]
+        [Input("localX", "Vector to set as local x of the FEMeshFaces of the FEMesh. Default value of null gives default orientation. If this vector is not in the plane of the FEMeshFace it will get projected. If the vector is parallel to the normal of the FEMeshFace the operation will fail and the FEMeshFace will be assigned default orientation.")]
         [Output("feMesh", "The created FEMesh with same geometry and topology as the geometrical Mesh.")]
-        public static FEMesh FEMesh(Mesh mesh, ISurfaceProperty property = null, string name = null)
+        public static FEMesh FEMesh(Mesh mesh, ISurfaceProperty property = null, Vector localX = null, string name = null)
         {
             FEMesh feMesh = new FEMesh();
             feMesh.Nodes = mesh.Vertices.Select(x => Node(x)).ToList();
@@ -71,7 +72,10 @@ namespace BH.Engine.Structure
             if (name != null)
                 feMesh.Name = name;
 
-            return feMesh;
+            if (localX != null)
+                return feMesh.SetLocalOrientations(localX);
+            else
+                return feMesh;
         }
 
         /***************************************************/

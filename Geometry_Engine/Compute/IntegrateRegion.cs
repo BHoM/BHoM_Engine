@@ -34,21 +34,6 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Integrates a closed region with x to the specified power on the XY-Plane.")]
-        [Input("curve", "Defined counter clockwise on the XY-Plane.")]
-        [Input("powX", "The region will be evaluated under the function: x^(powX).")]
-        [Input("tol", "The tolerance for considering a line segment horizontal or vertical. /n" + 
-                      "i.e. (value at endpoint - value at startpoint) < tol.")]
-        [Output("V", "Calculated value.")]
-        public static double IIntegrateRegion(this ICurve curve, int powX, double tol = Tolerance.Distance)
-        {
-            // Add tests (?)
-
-            return IntegrateRegion(curve as dynamic, powX, tol);
-        }
-
-        /***************************************************/
-
         [Description("Integrates according to Green's Theorem between two points with x to the specified power on the XY-Plane.")]
         [Input("a", "the point to begin from.")]
         [Input("b", "the point to end at.")]
@@ -117,6 +102,35 @@ namespace BH.Engine.Geometry
         }
 
         /***************************************************/
+        /**** Public Methods - interfaces               ****/
+        /***************************************************/
+
+        [Description("Integrates a closed region with x to the specified power on the XY-Plane.")]
+        [Input("curve", "Defined counter clockwise on the XY-Plane.")]
+        [Input("powX", "The region will be evaluated under the function: x^(powX).")]
+        [Input("tol", "The tolerance for considering a line segment horizontal or vertical. /n" +
+                      "i.e. (value at endpoint - value at startpoint) < tol.")]
+        [Output("V", "Calculated value.")]
+        public static double IIntegrateRegion(this ICurve curve, int powX, double tol = Tolerance.Distance)
+        {
+            // Add tests (?)
+
+            return IntegrateRegion(curve as dynamic, powX, tol);
+        }
+
+
+        /***************************************************/
+        /**** Private Fallback  Methods                 ****/
+        /***************************************************/
+
+        private static double IntegrateRegion(ICurve curve, int powX, double tol = Tolerance.Distance)
+        {
+            Reflection.Compute.RecordError($"IntegrateRegion is not implemented for a ICurves of type: {curve.GetType().Name}.");
+            return double.NaN;
+        }
+
+
+        /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
 
@@ -154,13 +168,6 @@ namespace BH.Engine.Geometry
                 result += IntSurfLine(pts[i], pts[i + 1], powX, tol);
 
             return result;
-        }
-
-        /***************************************************/
-
-        private static double IntegrateRegion(ICurve curve, int powX, double tol = Tolerance.Distance)
-        {
-            throw new NotImplementedException("Region integration is not implemented for curves of type " + curve.GetType().Name);
         }
 
         /***************************************************/

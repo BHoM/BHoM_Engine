@@ -59,7 +59,7 @@ namespace BH.Engine.Geometry
             if (curve1.IsCoplanar(curve2))
                 return new Output<Point, Point> { Item1 = min1, Item2 = min2 };
 
-            Output<double,double> skewLineProximity = curve1.SkewLineProximity(curve2);
+            Output<double, double> skewLineProximity = curve1.SkewLineProximity(curve2);
             double[] t = new double[] { skewLineProximity.Item1, skewLineProximity.Item2 };
             double t1 = Math.Max(Math.Min(t[0], 1), 0);
             double t2 = Math.Max(Math.Min(t[1], 1), 0);
@@ -276,7 +276,7 @@ namespace BH.Engine.Geometry
             List<Point> fitPoints = new List<Point>();
             bool check = false;
 
-            if((fitPoints=curve1.PlaneIntersections(ftPln2)).Count>0)
+            if ((fitPoints = curve1.PlaneIntersections(ftPln2)).Count > 0)
             {
                 if (fitPoints.Count == 1)
                 {
@@ -343,15 +343,15 @@ namespace BH.Engine.Geometry
 
                     if (fitPoints[0].Distance(curve1) < fitPoints[1].Distance(curve1))
                     {
-                            result.Item2 = fitPoints[0];
-                            result.Item1 = curve1.ClosestPoint(fitPoints[0]);
-                            check = true;
+                        result.Item2 = fitPoints[0];
+                        result.Item1 = curve1.ClosestPoint(fitPoints[0]);
+                        check = true;
                     }
                     else
                     {
-                            result.Item2 = fitPoints[1];
-                            result.Item1 = curve1.ClosestPoint(fitPoints[1]);
-                            check = true;
+                        result.Item2 = fitPoints[1];
+                        result.Item1 = curve1.ClosestPoint(fitPoints[1]);
+                        check = true;
                     }
                 }
             }
@@ -369,7 +369,7 @@ namespace BH.Engine.Geometry
             }
 
             check = false;
-            Line intersect =new Line { Start = curve1.Centre(), End = curve2.Centre() };
+            Line intersect = new Line { Start = curve1.Centre(), End = curve2.Centre() };
             Point tmp1 = intersect.CurveProximity(curve1).Item2;
             Point tmp2 = intersect.CurveProximity(curve2).Item2;
 
@@ -393,7 +393,7 @@ namespace BH.Engine.Geometry
             }
             while (oldresult.Item2.Distance(result2.Item2) > tolerance * tolerance && oldresult.Item1.Distance(result2.Item1) > tolerance * tolerance);
 
-            if (curve1.EndPoint().Distance(curve2.ClosestPoint(curve1.EndPoint()))  <curve1.StartPoint().Distance(curve2.ClosestPoint(curve1.StartPoint())))
+            if (curve1.EndPoint().Distance(curve2.ClosestPoint(curve1.EndPoint())) < curve1.StartPoint().Distance(curve2.ClosestPoint(curve1.StartPoint())))
             {
                 result3.Item1 = curve1.EndPoint();
                 result3.Item2 = curve2.ClosestPoint(result3.Item1);
@@ -539,7 +539,7 @@ namespace BH.Engine.Geometry
             Output<Point, Point> oldresult2 = new Output<Point, Point>();
             Output<Point, Point> result2 = new Output<Point, Point>();
 
-            if (tmp!=null)
+            if (tmp != null)
             {
                 if (tmp.IsOnCurve(curve1))
                 {
@@ -685,11 +685,11 @@ namespace BH.Engine.Geometry
                 {
                     if (intPts[0].Distance(curve2) < intPts[1].Distance(curve2))
                     {
-                            tmp = intPts[0];
+                        tmp = intPts[0];
                     }
                     else
                     {
-                            tmp = intPts[1];
+                        tmp = intPts[1];
                     }
                 }
             }
@@ -725,7 +725,7 @@ namespace BH.Engine.Geometry
             Output<Point, Point> result2 = new Output<Point, Point>();
             Output<Point, Point> oldresult = new Output<Point, Point>();
 
-            if (tmp!=null)
+            if (tmp != null)
             {
                 if (tmp.IsOnCurve(curve1))
                 {
@@ -964,7 +964,7 @@ namespace BH.Engine.Geometry
             {
                 temp.Add(new Line { Start = curve1.ControlPoints[i], End = curve1.ControlPoints[i + 1] });
             }
-                
+
             Output<Point, Point> result = curve2.CurveProximity(temp[0]);
             Output<Point, Point> cp = new Output<Point, Point>();
 
@@ -1034,22 +1034,6 @@ namespace BH.Engine.Geometry
             return result;
         }
 
-        /***************************************************/
-
-        [NotImplemented]
-        public static Output<Point, Point> CurveProximity(this ICurve curve1, Ellipse curve2, double tolerance = Tolerance.Distance)
-        {
-            throw new NotImplementedException();
-        }
-
-        /***************************************************/
-
-        [NotImplemented]
-        public static Output<Point, Point> CurveProximity(this ICurve curve1, NurbsCurve curve2, double tolerance = Tolerance.Distance)
-        {
-            throw new NotImplementedException();
-        }
-
 
         /***************************************************/
         /**** Public Methods - Interfaces               ****/
@@ -1059,7 +1043,7 @@ namespace BH.Engine.Geometry
         {
             Output<Point, Point> result = CurveProximity(curve1 as dynamic, curve2 as dynamic);
 
-            if (result.Item1.IsOnCurve(curve1))
+            if (result.Item1.IIsOnCurve(curve1))
                 return result;
             else
             {
@@ -1070,7 +1054,18 @@ namespace BH.Engine.Geometry
                 };
             }
         }
-        
+
+
+        /***************************************************/
+        /**** Private Fallback Methods                  ****/
+        /***************************************************/
+
+        private static Output<Point, Point> CurveProximity(this ICurve curve1, ICurve curve2, double tolerance = Tolerance.Distance)
+        {
+            Reflection.Compute.RecordError($"CurveProximity is not implemented for a combination of {curve1.GetType().Name} and {curve2.GetType().Name}.");
+            return null;
+        }
+
         /***************************************************/
     }
 }

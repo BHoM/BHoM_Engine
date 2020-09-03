@@ -29,6 +29,7 @@ using BH.oM.Structure.Elements;
 using BH.oM.Geometry;
 using BH.oM.Geometry.CoordinateSystem;
 using BH.Engine.Geometry;
+using BH.Engine.Spatial;
 
 namespace BH.Engine.Structure
 {
@@ -40,7 +41,7 @@ namespace BH.Engine.Structure
 
         [Description("Get the carteseian coordinate system descibring the position and local orientation of the node in the global coordinate system.")]
         [Input("node","The Node to extract the local coordinate system from.")]
-        [Output("CoordinateSystem","The local cartesian coordinate system of the Node.")]
+        [Output("coordinateSystem", "The local cartesian coordinate system of the Node.")]
         public static Cartesian CoordinateSystem(this Node node)
         {
             return Engine.Geometry.Create.CartesianCoordinateSystem(node.Position, node.Orientation.X, node.Orientation.Y);
@@ -50,7 +51,7 @@ namespace BH.Engine.Structure
 
         [Description("Get the carteseian coordinate system descibring the position and local orientation of the Bar in the global coordinate system where the Bar tangent is the local x-axis and the normal is the local z-axis.")]
         [Input("bar", "The Bar to extract the local coordinate system from.")]
-        [Output("CoordinateSystem", "The local cartesian coordinate system of the Bar.")]
+        [Output("coordinateSystem", "The local cartesian coordinate system of the Bar.")]
         public static Cartesian CoordinateSystem(this Bar bar)
         {
             Vector tan = bar.Tangent(true);
@@ -59,6 +60,38 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
+
+        [Description("Get the Cartesian coordinate system describing the position and local orientation of the Panel in the global coordinate system where the z-axis is the normal of the Panel and the x and y axes are the directions of the local in-plane axes.")]
+        [Input("panel", "The Panel to extract the local coordinate system from.")]
+        [Output("coordinateSystem", "The local cartesian coordinate system of the Panel.")]
+        public static Cartesian CoordinateSystem(this Panel panel)
+        {
+            Basis orientation = panel.LocalOrientation();
+            return new Cartesian(panel.Centroid(), orientation.X, orientation.Y, orientation.Z);
+        }
+
+        /***************************************************/
+
+        [Description("Get the Cartesian coordinate system descibring the position and local orientation of the FEMeshFaces of the FEMesh in the global coordinate system where the z-axis is the normal of the FEMeshFace and the x and y axes are the directions of the local in-plane axes.")]
+        [Input("mesh", "The FEMesh to extract the local coordinate systems of the FEMeshFaces from.")]
+        [Output("coordinateSystems", "The local cartesian coordinate systems of the FEMeshFaces of the FEMesh.")]
+        public static List<Cartesian> CoordinateSystem(this FEMesh mesh)
+        {
+            return mesh.Faces.Select(x => x.CoordinateSystem(mesh)).ToList();
+        }
+
+        /***************************************************/
+
+        [Description("Get the Cartesian coordinate system descibring the position and local orientation of the FEMeshFace in the global coordinate system where the z-axis is the normal of the FEMeshFace and the x and y axes are the directions of the local in-plane axes.")]
+        [Input("face", "The FEMeshFace to extract the local coordinate system from.")]
+        [Input("mesh", "The FEMesh to which the face belongs.")]
+        [Output("coordinateSystem", "The local cartesian coordinate system of the FEMeshFace.")]
+        public static Cartesian CoordinateSystem(this FEMeshFace face, FEMesh mesh)
+        {
+            Basis orientation = face.LocalOrientation(mesh);
+            return new Cartesian(face.NodeListIndices.Select(i => mesh.Nodes[i].Position).Average(), orientation.X, orientation.Y, orientation.Z);
+        }
+
+        /***************************************************/
     }
 }
-

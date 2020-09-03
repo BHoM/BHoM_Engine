@@ -77,39 +77,10 @@ namespace BH.Engine.Structure
         [Output("bar", "The created Bar with a centreline matching the provided geometrical Line.")]
         public static Bar Bar(Line line, ISectionProperty sectionProperty = null, Vector normal =  null, BarRelease release = null, BarFEAType feaType = BarFEAType.Flexural, string name = "")
         {
-            double orientationAngle;
+            double orientationAngle = Compute.OrientationAngleBar(normal, line);
 
-            if (normal == null)
-                orientationAngle = 0;
-            else
-            {
-                normal = normal.Normalise();
-                Vector tan = (line.End - line.Start).Normalise();
-
-                double dot = normal.DotProduct(tan);
-
-                if (Math.Abs(1 - dot) < oM.Geometry.Tolerance.Angle)
-                {
-                    Reflection.Compute.RecordError("The normal is parallell to the centreline of the Bar.");
-                    return null;
-                }
-                else if (Math.Abs(dot) > oM.Geometry.Tolerance.Angle)
-                {
-                    Reflection.Compute.RecordWarning("Normal not othogonal to the centreline and will get projected.");
-                }
-
-                Vector reference;
-
-                if (!line.IsVertical())
-                    reference = Vector.ZAxis;
-                else
-                {
-                    reference = tan.CrossProduct(Vector.YAxis);
-                }
-
-                orientationAngle = reference.Angle(normal, new Plane { Normal = tan });
-
-            }
+            if (double.IsNaN(orientationAngle))
+                return null;
                 
             return Bar(line, sectionProperty, orientationAngle, release, feaType, name);
         }

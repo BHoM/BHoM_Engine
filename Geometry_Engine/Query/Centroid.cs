@@ -35,7 +35,7 @@ namespace BH.Engine.Geometry
         /***************************************************/
         /**** Public Methods - Curves                   ****/
         /***************************************************/
-        
+
         public static Point Centroid(this Polyline curve, double tolerance = Tolerance.Distance)
         {
             if (!curve.IsPlanar(tolerance))
@@ -131,7 +131,10 @@ namespace BH.Engine.Geometry
                 else if (crv is Arc)
                     pts.Add(crv.IEndPoint());
                 else
-                    throw new NotImplementedException();
+                {
+                    Reflection.Compute.RecordError("PolyCurve consisting of type: " + crv.GetType().Name + " is not implemented for Centroid.");
+                    return null;
+                }
             }
 
             double xc, yc, zc;
@@ -204,44 +207,50 @@ namespace BH.Engine.Geometry
             return new Point { X = xc, Y = yc, Z = zc };
 
         }
-        
+
         /***************************************************/
 
         public static Point Centroid(this Ellipse ellipse, double tolerance = Tolerance.Distance)
         {
             return ellipse.Centre;
         }
-                
+
         /***************************************************/
 
         public static Point Centroid(this Circle circle, double tolerance = Tolerance.Distance)
         {
             return circle.Centre;
         }
-        
+
         /***************************************************/
 
         public static Point Centroid(this Line line, double tolerance = Tolerance.Distance)
         {
             return line.PointAtParameter(0.5);
         }
-        
+
+
+        /***************************************************/
+        /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
-        [NotImplemented]
-        public static Point Centroid(this Arc arc, double tolerance = Tolerance.Distance)
+        public static Point ICentroid(this ICurve curve, double tolerance = Tolerance.Distance)
         {
-            throw new NotImplementedException();
+            return Centroid(curve as dynamic, tolerance);
         }
-        
+
+
+        /***************************************************/
+        /**** Private Fallback Methods                  ****/
         /***************************************************/
 
-        [NotImplemented]
-        public static Point Centroid(this NurbsCurve nurbsCurve, double tolerance = Tolerance.Distance)
+        private static Point Centroid(this ICurve curve, double tolerance = Tolerance.Distance)
         {
-            throw new NotImplementedException();
+            Reflection.Compute.RecordError($"Centroid is not implemented for ICurves of type: {curve.GetType().Name}.");
+            return null;
         }
-        
+
+
         /***************************************************/
         /**** Private methods                           ****/
         /***************************************************/
@@ -257,15 +266,6 @@ namespace BH.Engine.Geometry
             Double length = (4 * arc.Radius * Math.Pow(Math.Sin(alpha / 2), 3)) / (3 * (alpha - Math.Sin(alpha)));
 
             return o + ((v / arc.Radius) * length);
-        }
-                       
-        /***************************************************/
-        /**** Public Methods - Interfaces               ****/
-        /***************************************************/
-
-        public static Point ICentroid(this ICurve curve, double tolerance = Tolerance.Distance)
-        {
-            return Centroid(curve as dynamic, tolerance);
         }
 
         /***************************************************/

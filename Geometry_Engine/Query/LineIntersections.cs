@@ -279,14 +279,6 @@ namespace BH.Engine.Geometry
             return iPts.CullDuplicates(tolerance);
         }
 
-        /***************************************************/
-
-        [NotImplemented]
-        public static List<Point> LineIntersections(this NurbsCurve curve, Line line, bool useInfiniteLine = false, double tolerance = Tolerance.Distance)
-        {
-            throw new NotImplementedException();
-        }
-
 
         /***************************************************/
         /**** Public Methods - Interfaces               ****/
@@ -295,6 +287,17 @@ namespace BH.Engine.Geometry
         public static List<Point> ILineIntersections(this ICurve curve1, Line line, bool useInfiniteLine = false, double tolerance = Tolerance.Distance)
         {
             return LineIntersections(curve1 as dynamic, line, useInfiniteLine, tolerance);
+        }
+
+
+        /***************************************************/
+        /**** Private Fallback Methods                  ****/
+        /***************************************************/
+
+        private static List<Point> LineIntersections(this ICurve curve, Line line, bool useInfiniteLine = false, double tolerance = Tolerance.Distance)
+        {
+            Reflection.Compute.RecordError($"LineIntersections is not implemented for ICurves of type: {curve.GetType().Name}.");
+            return null;
         }
 
         /***************************************************/

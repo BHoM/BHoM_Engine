@@ -85,7 +85,7 @@ namespace BH.Engine.Geometry
                     cPts.Add((c as Circle).EndPoint());
                 }
                 else
-                    throw new NotImplementedException();
+                    throw new NotImplementedException("PolyCurve consisting of type: " + c.GetType().Name + " is not implemented for IsClockwise.");
             }
 
             return IsClockwise(new Polyline { ControlPoints = cPts }, normal, tolerance);
@@ -140,4 +140,3 @@ namespace BH.Engine.Geometry
         /***************************************************/
     }
 }
-

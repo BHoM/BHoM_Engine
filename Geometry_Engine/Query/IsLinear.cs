@@ -55,14 +55,6 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [NotImplemented]
-        public static bool IsLinear(this NurbsCurve curve, double tolerance = Tolerance.Distance)
-        {
-            throw new NotImplementedException();
-        }
-
-        /***************************************************/
-
         public static bool IsLinear(this Polyline curve, double tolerance = Tolerance.Distance)
         {
             return curve.ControlPoints.IsCollinear(tolerance);
@@ -85,7 +77,16 @@ namespace BH.Engine.Geometry
             return IsLinear(curve as dynamic, tolerance);
         }
 
+
+        /***************************************************/
+        /**** Private Fallback Methods                  ****/
+        /***************************************************/
+
+        private static bool IsLinear(this ICurve curve, double tolerance = Tolerance.Distance)
+        {
+            throw new NotImplementedException($"IsLinear is not implemented for ICurves of type: {curve.GetType().Name}.");
+        }
+
         /***************************************************/
     }
 }
-

@@ -237,7 +237,10 @@ namespace BH.Engine.Geometry
             List<ICurve> regionsList = regions.ToList();
 
             if (regionsList.Any(x => x is NurbsCurve || x is Ellipse))
-                throw new NotImplementedException("NurbsCurves and ellipses are not implemented yet.");
+            {
+                Reflection.Compute.RecordError("NurbsCurves and ellipses are not implemented for BooleanUnion.");
+                return null;
+            }
 
             List<PolyCurve> result = new List<PolyCurve>();
 

@@ -154,14 +154,6 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [NotImplemented]
-        public static NurbsCurve ToNurbsCurve(this PolyCurve curve)
-        {
-            throw new NotImplementedException();
-        }
-
-        /***************************************************/
-
         public static NurbsCurve ToNurbsCurve(this Polyline curve)
         {
             List<Point> points = curve.ControlPoints;
@@ -189,7 +181,17 @@ namespace BH.Engine.Geometry
             return ToNurbsCurve(curve as dynamic);
         }
 
+
+        /***************************************************/
+        /**** Private Fallback Methods                  ****/
+        /***************************************************/
+
+        private static NurbsCurve ToNurbsCurve(this ICurve curve)
+        {
+            Reflection.Compute.RecordError($"ToNurbsCurve is not implemented for ICurves of type: {curve.GetType().Name}.");
+            return null;
+        }
+
         /***************************************************/
     }
 }
-

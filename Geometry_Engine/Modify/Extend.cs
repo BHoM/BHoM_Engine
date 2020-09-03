@@ -35,7 +35,7 @@ namespace BH.Engine.Geometry
         /***************************************************/
         /**** Public Methods - Curves                  ****/
         /***************************************************/
-        
+
         [Description("Extends curve by given lengths")]
         [Input("curve", "Curve to extend")]
         [Input("start", "Length of extension on the begining of a curve. Negative value will trim the curve")]
@@ -125,14 +125,6 @@ namespace BH.Engine.Geometry
         {
             Reflection.Compute.RecordNote("Cannot Trim or Extend closed curves.");
             return curve;
-        }
-
-        /***************************************************/
-
-        [NotImplemented]
-        public static NurbsCurve Extend(this NurbsCurve curve, double start = 0.0, double end = 0.0, bool tangentExtensions = false, double tolerance = Tolerance.Distance)
-        {
-            throw new NotImplementedException();
         }
 
         /***************************************************/
@@ -281,6 +273,17 @@ namespace BH.Engine.Geometry
         public static ICurve IExtend(this ICurve curve, double start = 0.0, double end = 0.0, bool tangentExtensions = false, double tolerance = Tolerance.Distance)
         {
             return Extend(curve as dynamic, start, end, tangentExtensions, tolerance);
+        }
+
+
+        /***************************************************/
+        /**** Private Fallback Methods                  ****/
+        /***************************************************/
+
+        private static ICurve Extend(this ICurve curve, double start = 0.0, double end = 0.0, bool tangentExtensions = false, double tolerance = Tolerance.Distance)
+        {
+            Reflection.Compute.RecordError($"Extend is not implemented for ICurves of type: {curve.GetType().Name}.");
+            return null;
         }
 
 

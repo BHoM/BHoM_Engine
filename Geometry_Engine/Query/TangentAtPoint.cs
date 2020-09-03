@@ -56,14 +56,6 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [NotImplemented]
-        public static Vector TangentAtPoint(this NurbsCurve curve, Point point, double tolerance = Tolerance.Distance)
-        {
-            throw new NotImplementedException();
-        }
-
-        /***************************************************/
-
         public static Vector TangentAtPoint(this PolyCurve curve, Point point, double tolerance = Tolerance.Distance)
         {
             double parameterAtPoint = curve.ParameterAtPoint(point, tolerance);
@@ -88,7 +80,17 @@ namespace BH.Engine.Geometry
             return Query.TangentAtPoint(curve as dynamic, point, tolerance);
         }
 
+
+        /***************************************************/
+        /**** Private Methods - Fallback                ****/
+        /***************************************************/
+
+        public static Vector TangentAtPoint(this ICurve curve, Point point, double tolerance = Tolerance.Distance)
+        {
+            Reflection.Compute.RecordError($"TangentAtPoint is not implemented for ICurves of type: {curve.GetType().Name}.");
+            return null;
+        }
+
         /***************************************************/
     }
 }
-

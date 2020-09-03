@@ -56,14 +56,6 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [NotImplemented]
-        public static List<Point> DiscontinuityPoints(this NurbsCurve curve)
-        {
-            throw new NotImplementedException();
-        }
-
-        /***************************************************/
-
-        [NotImplemented]
         public static List<Point> DiscontinuityPoints(this PolyCurve curve)
         {
             return curve.Curves.SelectMany((x, i) => x.IDiscontinuityPoints().Skip((i > 0) ? 1 : 0)).ToList();
@@ -112,7 +104,17 @@ namespace BH.Engine.Geometry
             return DiscontinuityPoints(curve as dynamic);
         }
 
+
+        /***************************************************/
+        /**** Private Fallback Methods                  ****/
+        /***************************************************/
+
+        private static List<Point> DiscontinuityPoints(this ICurve curve)
+        {
+            Reflection.Compute.RecordError($"DiscontinuityPoints is not implemented for ICurves of type: {curve.GetType().Name}.");
+            return null;
+        }
+
         /***************************************************/
     }
 }
-

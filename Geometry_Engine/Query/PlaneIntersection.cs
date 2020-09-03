@@ -52,7 +52,7 @@ namespace BH.Engine.Geometry
 
             Vector n1 = plane1.Normal;
             Vector n2 = plane2.Normal;
-            
+
             if (Math.Abs(tangent.Z) >= Tolerance.Angle)
             {
                 double x0 = (n1.Y * d2 - n2.Y * d1) / (n1.X * n2.Y - n2.X * n1.Y);
@@ -129,7 +129,7 @@ namespace BH.Engine.Geometry
 
             //Construct lines for checking
             Line line1 = new Line { Start = st, End = mid };
-            Line line2 = new Line { Start = mid, End =end };
+            Line line2 = new Line { Start = mid, End = end };
 
             List<Point> interPoints = new List<Point>();
 
@@ -210,14 +210,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [NotImplemented]
-        public static List<Point> PlaneIntersections(this NurbsCurve c, Plane p, double tolerance = Tolerance.Distance)
-        {
-            throw new NotImplementedException();
-        }
-
-        /***************************************************/
-
+        //TODO: Resolve. Method is not implemented and have input not matching the interface.
         [NotImplemented]
         public static List<Point> PlaneIntersections(this NurbsCurve c, Plane p, out List<double> curveParameters, double tolerance = Tolerance.Distance)
         {
@@ -252,7 +245,7 @@ namespace BH.Engine.Geometry
                     {
                         Line line = new Line { Start = curve.ControlPoints[i - 1], End = curve.ControlPoints[i] };
                         Point pt = PlaneIntersection(line, plane, false, tolerance);
-                        if(pt != null)
+                        if (pt != null)
                             result.Add(pt);
                     }
                     else
@@ -281,7 +274,17 @@ namespace BH.Engine.Geometry
             return PlaneIntersections(curve as dynamic, plane, tolerance);
         }
 
+
+        /***************************************************/
+        /**** Private Fallback Methods                  ****/
+        /***************************************************/
+
+        private static List<Point> PlaneIntersections(this ICurve curve, Plane plane, double tolerance = Tolerance.Distance)
+        {
+            Reflection.Compute.RecordError($"PlaneIntersections is not implemented for ICurves of type: {curve.GetType().Name}.");
+            return null;
+        }
+
         /***************************************************/
     }
 }
-

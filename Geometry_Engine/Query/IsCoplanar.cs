@@ -114,7 +114,7 @@ namespace BH.Engine.Geometry
                 }
                 else
                 {
-                    throw new NotImplementedException();
+                    throw new NotImplementedException("PolyCurve consisting of type: " + crv.GetType().Name + " is not implemented for IsCoplanar.");
                 }
             }
 
@@ -136,7 +136,7 @@ namespace BH.Engine.Geometry
                 }
                 else
                 {
-                    throw new NotImplementedException();
+                    throw new NotImplementedException("PolyCurve consisting of type: " + crv.GetType().Name + " is not implemented for IsCoplanar.");
                 }
             }
             
@@ -165,7 +165,7 @@ namespace BH.Engine.Geometry
                 }
                 else
                 {
-                    throw new NotImplementedException();
+                    throw new NotImplementedException("ICurve of type: " + crv.GetType().Name + " is not implemented for IsCoplanar.");
                 }
             }
 
@@ -187,7 +187,7 @@ namespace BH.Engine.Geometry
                 }
                 else
                 {
-                    throw new NotImplementedException();
+                    throw new NotImplementedException("ICurve of type: " + crv.GetType().Name + " is not implemented for IsCoplanar.");
                 }
             }
 

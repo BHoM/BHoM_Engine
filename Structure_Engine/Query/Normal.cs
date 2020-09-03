@@ -20,12 +20,14 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+
 using BH.oM.Geometry;
 using BH.oM.Structure.Elements;
 using BH.Engine.Geometry;
 using System;
 using System.Linq;
 using System.ComponentModel;
+using System.Collections.Generic;
 using BH.oM.Reflection.Attributes;
 
 namespace BH.Engine.Structure
@@ -44,6 +46,52 @@ namespace BH.Engine.Structure
         public static Vector Normal(this Bar bar)
         {
             return bar.Centreline().ElementNormal(bar.OrientationAngle);
+        }
+
+        /***************************************************/
+
+        [Description("Returns the local z-axes of all FEMeshFaces in the FEMesh. Can only extract normals for 3 or 4-sided faces.")]
+        [Input("mesh", "The FEMesh to extract the face normals from.")]
+        [Output("normal", "List of vectors representing the local z-axes of mesh faces. List order corresponds to the order of the faces.")]
+        public static List<Vector> Normals(this FEMesh mesh)
+        {
+            return mesh.Faces.Select(x => x.Normal(mesh)).ToList();
+        }
+
+        /***************************************************/
+
+        [Description("Returns the local z-axis of an FEMeshFace. Can only extract normals for 3 or 4-sided faces.")]
+        [Input("face", "The FEMeshFace to evaluate the normal of.")]
+        [Input("mesh", "The FEMesh to which the face belongs.")]
+        [Output("normal", "Vector representing the local z-axis of a mesh face.")]
+        public static Vector Normal(this FEMeshFace face, FEMesh mesh)
+        {
+
+            if (face.NodeListIndices.Count < 3)
+            {
+                Engine.Reflection.Compute.RecordError("Face has insufficient number of nodes to calculate normal.");
+                return null;
+            }
+            else if (face.NodeListIndices.Count > 4)
+            {
+                Engine.Reflection.Compute.RecordError("Can only determain normal from 3 or 4 sided faces.");
+                return null;
+            }
+
+            Point pA = mesh.Nodes[face.NodeListIndices[0]].Position;
+            Point pB = mesh.Nodes[face.NodeListIndices[1]].Position;
+            Point pC = mesh.Nodes[face.NodeListIndices[2]].Position;
+
+            Vector normal;
+            if (face.NodeListIndices.Count == 3)
+                normal = Engine.Geometry.Query.CrossProduct(pB - pA, pC - pB);
+            else
+            {
+                Point pD = mesh.Nodes[face.NodeListIndices[3]].Position;
+                normal = (Engine.Geometry.Query.CrossProduct(pA - pD, pB - pA)) + (Engine.Geometry.Query.CrossProduct(pC - pB, pD - pC));
+            }
+
+            return normal.Normalise();
         }
 
         /***************************************************/
@@ -78,7 +126,7 @@ namespace BH.Engine.Structure
         [Output("normal", "Vector representing the local z-axis Panel.")]
         public static Vector Normal(this Panel panel)
         {
-            return panel.AllEdgeCurves().SelectMany(x => x.IControlPoints()).ToList().FitPlane().Normal;
+            return Engine.Spatial.Query.Normal(panel);
         }
 
         /***************************************************/
