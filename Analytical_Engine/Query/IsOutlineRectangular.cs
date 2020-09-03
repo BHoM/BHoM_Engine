@@ -39,20 +39,20 @@ namespace BH.Engine.Analytical
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Determines whether a panel is a rectangle")]
-        [Input("panel", "The Panel to check if it is a rectangle")]
-        [Output("bool", "True for rectangular panels or false for non-rectangular panels")]
+        [Description("Determines whether a panel's outline is a rectangular")]
+        [Input("panel", "The IPanel to check if the outline is a rectangular")]
+        [Output("bool", "True for panels with a rectangular outline or false for panels with a non rectangular outline")]
         public static bool IsOutlineRectangular<TEdge, TOpening>(this IPanel<TEdge, TOpening> panel)
             where TEdge : IEdge
             where TOpening : IOpening<TEdge>
         {
-            bool isCheck = true;
-            PolyCurve polycurve = GetPolycurve(panel, out isCheck);
-            if (!isCheck)
-                return isCheck;
-            List<Point> points = GetPoints(polycurve, out isCheck);
-            if (!isCheck)
-                return isCheck;
+            bool isOutlineRectanglular = true;
+            PolyCurve polycurve = GetPolycurve(panel, out isOutlineRectanglular);
+            if (!isOutlineRectanglular)
+                return isOutlineRectanglular;
+            List<Point> points = GetPoints(polycurve, out isOutlineRectanglular);
+            if (!isOutlineRectanglular)
+                return isOutlineRectanglular;
             List<Vector> vectors = GetVectors(points);
             List<double> angles = GetAngles(vectors);
 
