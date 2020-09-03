@@ -46,47 +46,15 @@ namespace BH.Engine.Analytical
             where TEdge : IEdge
             where TOpening : IOpening<TEdge>
         {
-            List<ICurve> curves = panel.ExternalEdges.SelectMany(x => x.Curve.ISubParts()).ToList();
-
-            List<PolyCurve> polycurves = Engine.Geometry.Compute.IJoin(curves);
-
-            //Check there is a single continuous curve defining the Panel
-            if (polycurves.Count != 1)
-                return false;
-
-            PolyCurve polycurve = polycurves.First();
-
-            //Check that all subparts of the curve are linear
-            if (polycurve.SubParts().Any(x => !x.IIsLinear()))
-                return false;
-
-            //Group curves by direction vector to obtain discontinuity points
-            List<Point> points = new List<Point>();
-            var groupedCurves = curves.GroupBy(x => x.IStartDir());
-            foreach (var groupedCurve in groupedCurves)
-            {
-                ICurve jointCurve = Engine.Geometry.Compute.IJoin(groupedCurve.Select(x => x).ToList()).First();
-                points.Add(jointCurve.IStartPoint());
-            }
-
-            //Check there are four discontinuity points present
-            if (points.Count != 4)
-                return false;
-
-            //Create vectors for all four sides of the quadilateral
-            List<Vector> vectors = new List<Vector>();
-            for (int i = 0; i < 3; i++)
-            {
-                vectors.Add(points[i + 1] - points[i]);
-            }
-            vectors.Add(points[0] - points[3]);
-
-            //Get the angles in the panel, only three are needed
-            List<double> angles = new List<double>() { vectors[3].Angle(vectors[0]) };
-            for (int i = 0; i < 3; i++)
-            {
-                angles.Add(vectors[i].Angle(vectors[i + 1]));
-            }
+            bool isCheck = true;
+            PolyCurve polycurve = GetPolycurve(panel, out isCheck);
+            if (!isCheck)
+                return isCheck;
+            List<Point> points = GetPoints(polycurve, out isCheck);
+            if (!isCheck)
+                return isCheck;
+            List<Vector> vectors = GetVectors(points);
+            List<double> angles = GetAngles(vectors);
 
             //Check the three angles are pi/2 degrees within tolerance
             if (angles.Any(x => Math.Abs(Math.PI / 2 - x) > Tolerance.Angle))
