@@ -48,7 +48,7 @@ namespace BH.Engine.Analytical
             where TOpening : IOpening<TEdge>
         {
             bool isOutlineSquare = true;
-            PolyCurve polycurve = GetPolycurve(panel, out isOutlineSquare);
+            PolyCurve polycurve = ExternalPolyCurve(panel);
             if (!isOutlineSquare)
                 return isOutlineSquare;
             List<Point> points = GetPoints(polycurve, out isOutlineSquare);
