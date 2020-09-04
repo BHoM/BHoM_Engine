@@ -56,11 +56,7 @@ namespace BH.Engine.Analytical
             List<double> angles = GetAngles(vectors);
 
             //Check the three angles are pi/2 degrees within tolerance
-            if (angles.Any(x => Math.Abs(Math.PI / 2 - x) > Tolerance.Angle))
-                return false;
-
-            //Check opposing sides are of equal length
-            return Math.Abs(vectors[0].Length() - vectors[2].Length()) < Tolerance.Distance && Math.Abs(vectors[1].Length() - vectors[3].Length()) < Tolerance.Distance ? true : false;
+            return (angles.Any(x => Math.Abs(Math.PI / 2 - x) > Tolerance.Angle)) ? false : true;
         }
 
         /***************************************************/
