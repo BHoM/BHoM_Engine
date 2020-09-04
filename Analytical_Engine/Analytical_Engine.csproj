@@ -73,7 +73,6 @@
     <Compile Include="Query\IsOutlineRectangular.cs" />
     <Compile Include="Query\IsOutlineSquare.cs" />
     <Compile Include="Query\OutlineElements1D.cs" />
-    <Compile Include="Query\PanelChecks.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Compute\" />
