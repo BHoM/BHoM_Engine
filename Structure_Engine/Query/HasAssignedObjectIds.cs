@@ -36,11 +36,11 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Checks if the objects assigned to the IElementLoad all have an identifier matching the 'adapterIdName' assigned.\n" + 
+        [Description("Checks if the objects assigned to the IElementLoad all have an identifier matching the AdapterIdName assigned.\n" + 
                      "Loads without correctly assigned ids to the objects can generally not be pushed through to structural packages.")]
         [Input("load", "The load to check for id assignment.")]
         [Input("adapterIdName", "The identifier key to check. For example 'Robot_id' for Autodesk Robot.")]
-        [Output("result", "Returns true if all objects assigned to the load has an id matching the 'adapterIdName' assigned.")]
+        [Output("result", "Returns true if all objects assigned to the load has an id matching the AdapterIdName assigned.")]
         public static bool HasAssignedObjectIds<T>(this IElementLoad<T> load, string adapterIdName) where T : IBHoMObject
         {
             return load.Objects.Elements.All(x => x.CustomData.ContainsKey(adapterIdName));
