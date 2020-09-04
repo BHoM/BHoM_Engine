@@ -41,33 +41,6 @@ namespace BH.Engine.Analytical
         /**** Private Methods                            ****/
         /***************************************************/
 
-        [Description("Gets the polycurve that defines the outline of the panel and checks for a single continuous linear curve")]
-        [Input("panel", "The IPanel to get the polycurve from")]
-        [Output("polycurve", "The polycurve defining the outline of the panel")]
-        private static PolyCurve GetPolycurve<TEdge, TOpening>(this IPanel<TEdge, TOpening> panel, out bool isCheck)
-            where TEdge : IEdge
-            where TOpening : IOpening<TEdge>
-        {
-            isCheck = true;
-            List<ICurve> curves = panel.ExternalEdges.SelectMany(x => x.Curve.ISubParts()).ToList();
-
-            List<PolyCurve> polycurves = Engine.Geometry.Compute.IJoin(curves);
-
-            //Check there is a single continuous curve defining the Panel
-            if (polycurves.Count != 1)
-                isCheck = false;
-
-            PolyCurve polycurve = polycurves.First();
-
-            //Check that all subparts of the curve are linear
-            if (polycurve.SubParts().Any(x => !x.IIsLinear()))
-                isCheck = false;
-
-            return polycurve;
-        }
-
-        /***************************************************/
-
         [Description("Gets the discrete discontinuity points from a Polycurve and checks four points are present")]
         [Input("polycurve", "The Polycurve to get discrete discontinuity points from")]
         [Output("points", "The discrete discontinuity points of the Polycurve")]

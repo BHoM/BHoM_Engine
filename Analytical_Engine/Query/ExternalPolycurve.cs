@@ -20,6 +20,7 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+
 using BH.oM.Analytical.Elements;
 using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
@@ -30,6 +31,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.ComponentModel;
+using System.Linq.Expressions;
 
 namespace BH.Engine.Analytical
 {
@@ -39,33 +41,35 @@ namespace BH.Engine.Analytical
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Determines whether a panel's outline is a rectangular")]
-        [Input("panel", "The IPanel to check if the outline is a rectangular")]
-        [Output("bool", "True for panels with a rectangular outline or false for panels with a non rectangular outline")]
-        public static bool IsOutlineRectangular<TEdge, TOpening>(this IPanel<TEdge, TOpening> panel)
+        [Description("Gets the polycurve that defines the outline of the panel and checks for a single continuous linear curve")]
+        [Input("panel", "The IPanel to get the polycurve from")]
+        [Output("polycurve", "The polycurve defining the outline of the panel")]
+        public static PolyCurve ExternalPolyCurve<TEdge, TOpening>(this IPanel<TEdge, TOpening> panel)
             where TEdge : IEdge
             where TOpening : IOpening<TEdge>
         {
-            bool isOutlineRectanglular = true;
-            PolyCurve polycurve = ExternalPolyCurve(panel);
-            if (!isOutlineRectanglular)
-                return isOutlineRectanglular;
-            List<Point> points = GetPoints(polycurve, out isOutlineRectanglular);
-            if (!isOutlineRectanglular)
-                return isOutlineRectanglular;
-            List<Vector> vectors = GetVectors(points);
-            List<double> angles = GetAngles(vectors);
+            List<ICurve> curves = panel.ExternalEdges.SelectMany(x => x.Curve.ISubParts()).ToList();
 
-            //Check the three angles are pi/2 degrees within tolerance
-            if (angles.Any(x => Math.Abs(Math.PI / 2 - x) > Tolerance.Angle))
-                return false;
+            List<PolyCurve> polycurves = Engine.Geometry.Compute.IJoin(curves);
 
-            //Check opposing sides are of equal length
-            return Math.Abs(vectors[0].Length() - vectors[2].Length()) < Tolerance.Distance && Math.Abs(vectors[1].Length() - vectors[3].Length()) < Tolerance.Distance ? true : false;
+            //Check there is a single continuous curve defining the Panel
+            if (polycurves.Count != 1)
+            {
+                Reflection.Compute.RecordError("The curve defining the Panel is not a single continuous curve");
+                return null;
+            }
+
+            PolyCurve polycurve = polycurves.First();
+
+            //Check that all subparts of the curve are linear
+            if (polycurve.SubParts().Any(x => !x.IIsLinear()))
+            {
+                Reflection.Compute.RecordError("All subparts of the curve are not linear");
+                return null;
+            }
+
+            return polycurve;
         }
 
-        /***************************************************/
-
     }
-
 }
