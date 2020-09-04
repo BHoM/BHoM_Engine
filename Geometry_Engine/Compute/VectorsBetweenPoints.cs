@@ -20,51 +20,38 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Analytical.Elements;
 using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
-using BH.Engine.Geometry;
-using BH.Engine.Reflection;
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.ComponentModel;
 
-namespace BH.Engine.Analytical
+namespace BH.Engine.Geometry
 {
-    public static partial class Query
+    public static partial class Compute
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /****   Public Methods                          ****/
         /***************************************************/
 
-        [Description("Determines whether a panel's outline is a rectangular")]
-        [Input("panel", "The IPanel to check if the outline is a rectangular")]
-        [Output("bool", "True for panels with a rectangular outline or false for panels with a non rectangular outline")]
-        public static bool IsOutlineRectangular<TEdge, TOpening>(this IPanel<TEdge, TOpening> panel)
-            where TEdge : IEdge
-            where TOpening : IOpening<TEdge>
+        [Description("Computes the vectors between the provided list of points")]
+        [Input("points", "The list of points")]
+        [Output("vectors", "The vectors computed from the list of points")]
+        public static List<Vector> VectorsBetweenPoints(this List<Point> points)
         {
-            PolyCurve polycurve = ExternalPolyCurve(panel);
+            List<Vector> vectors = new List<Vector>();
+            int lastIndex = points.Count - 1;
+            for (int i = 0; i < lastIndex; i++)
+            {
+                vectors.Add(points[i + 1] - points[i]);
+            }
+            vectors.Add(points[0] - points[lastIndex]);
 
-            List<Point> points = polycurve.DiscontinuityPoints();
-            if (points.Count != 4)
-                return false;
-
-            List<Vector> vectors = Engine.Geometry.Compute.VectorsBetweenPoints(points);
-            List<double> angles = GetAngles(vectors);
-
-            //Check the three angles are pi/2 degrees within tolerance
-            if (angles.Any(x => Math.Abs(Math.PI / 2 - x) > Tolerance.Angle))
-                return false;
-
-            //Check opposing sides are of equal length
-            return Math.Abs(vectors[0].Length() - vectors[2].Length()) < Tolerance.Distance && Math.Abs(vectors[1].Length() - vectors[3].Length()) < Tolerance.Distance ? true : false;
+            return vectors;
         }
 
         /***************************************************/
 
     }
-
 }
+

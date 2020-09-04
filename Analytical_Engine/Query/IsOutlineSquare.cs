@@ -53,7 +53,7 @@ namespace BH.Engine.Analytical
             if (points.Count != 4)
                 return false;
 
-            List<Vector> vectors = GetVectors(points);
+            List<Vector> vectors = Engine.Geometry.Compute.VectorsBetweenPoints(points);
             List<double> angles = GetAngles(vectors);
 
             //Check the three angles are pi/2 degrees within tolerance
