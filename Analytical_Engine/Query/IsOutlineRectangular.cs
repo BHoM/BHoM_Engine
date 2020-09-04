@@ -46,13 +46,12 @@ namespace BH.Engine.Analytical
             where TEdge : IEdge
             where TOpening : IOpening<TEdge>
         {
-            bool isOutlineRectanglular = true;
             PolyCurve polycurve = ExternalPolyCurve(panel);
-            if (!isOutlineRectanglular)
-                return isOutlineRectanglular;
-            List<Point> points = GetPoints(polycurve, out isOutlineRectanglular);
-            if (!isOutlineRectanglular)
-                return isOutlineRectanglular;
+
+            List<Point> points = polycurve.DiscontinuityPoints();
+            if (points.Count != 4)
+                return false;
+
             List<Vector> vectors = GetVectors(points);
             List<double> angles = GetAngles(vectors);
 

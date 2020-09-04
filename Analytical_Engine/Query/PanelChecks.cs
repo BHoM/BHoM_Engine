@@ -41,31 +41,6 @@ namespace BH.Engine.Analytical
         /**** Private Methods                            ****/
         /***************************************************/
 
-        [Description("Gets the discrete discontinuity points from a Polycurve and checks four points are present")]
-        [Input("polycurve", "The Polycurve to get discrete discontinuity points from")]
-        [Output("points", "The discrete discontinuity points of the Polycurve")]
-        private static List<Point> GetPoints(this PolyCurve polycurve, out bool isCheck)
-        {
-            isCheck = true;
-
-            //Group curves by direction vector to obtain discontinuity points
-            List<Point> points = new List<Point>();
-            var groupedCurves = polycurve.SubParts().GroupBy(x => x.IStartDir());
-            foreach (var groupedCurve in groupedCurves)
-            {
-                ICurve jointCurve = Engine.Geometry.Compute.IJoin(groupedCurve.Select(x => x).ToList()).First();
-                points.Add(jointCurve.IStartPoint());
-            }
-
-            //Check there are four discontinuity points present 
-            if (points.Count != 4)
-                isCheck = false;
-
-            return points;
-        }
-
-        /***************************************************/
-
         [Description("Gets the vectors from the provided list of pints")]
         [Input("points", "The list of points")]
         [Output("vectors", "The vectors computed from the list of points")]
