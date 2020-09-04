@@ -40,24 +40,6 @@ namespace BH.Engine.Analytical
         /**** Private Methods                            ****/
         /***************************************************/
 
-        [Description("Computes the vectors between the provided list of points")]
-        [Input("points", "The list of points")]
-        [Output("vectors", "The vectors computed from the list of points")]
-        private static List<Vector> VectorsBetweenPoints(this List<Point> points)
-        {
-            List<Vector> vectors = new List<Vector>();
-            int lastIndex = points.Count - 1;
-            for (int i = 0; i < lastIndex; i++)
-            {
-                vectors.Add(points[i + 1] - points[i]);
-            }
-            vectors.Add(points[0] - points[lastIndex]);
-
-            return vectors;
-        }
-
-        /***************************************************/
-
         [Description("Gets the internal angle between sequential vectors")]
         [Input("vectors", "The vectors to find the internal angle between")]
         [Output("angles", "The internal angle between sequential vectors")]
