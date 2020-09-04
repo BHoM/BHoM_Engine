@@ -20,34 +20,29 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Analytical.Elements;
 using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
-using BH.Engine.Geometry;
-using BH.Engine.Reflection;
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.ComponentModel;
-using System.Linq.Expressions;
 
-namespace BH.Engine.Analytical
+namespace BH.Engine.Geometry
 {
-    public static partial class Query
+    public static partial class Compute
     {
         /***************************************************/
-        /**** Private Methods                            ****/
+        /****   Public Methods                          ****/
         /***************************************************/
 
         [Description("Gets the internal angle between sequential vectors")]
         [Input("vectors", "The vectors to find the internal angle between")]
-        [Output("angles", "The internal angle between sequential vectors")]
-        private static List<double> GetAngles(this List<Vector> vectors)
+        [Output("angles", "The internal angles between sequential vectors")]
+        public static List<double> AnglesBetweenVectors(this List<Vector> vectors)
         {
             //Get the angles in the panel, only three are needed
-            List<double> angles = new List<double>() { vectors[3].Angle(vectors[0]) };
-            for (int i = 0; i < 3; i++)
+            int lastIndex = vectors.Count - 1;
+            List<double> angles = new List<double>() { vectors[lastIndex].Angle(vectors[0]) };
+            for (int i = 0; i < lastIndex; i++)
             {
                 angles.Add(vectors[i].Angle(vectors[i + 1]));
             }
@@ -58,5 +53,5 @@ namespace BH.Engine.Analytical
         /***************************************************/
 
     }
-
 }
+
