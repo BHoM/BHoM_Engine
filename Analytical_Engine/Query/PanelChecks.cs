@@ -20,7 +20,6 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-
 using BH.oM.Analytical.Elements;
 using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
@@ -41,18 +40,18 @@ namespace BH.Engine.Analytical
         /**** Private Methods                            ****/
         /***************************************************/
 
-        [Description("Gets the vectors from the provided list of pints")]
+        [Description("Computes the vectors between the provided list of points")]
         [Input("points", "The list of points")]
         [Output("vectors", "The vectors computed from the list of points")]
-        private static List<Vector> GetVectors(this List<Point> points)
+        private static List<Vector> VectorsBetweenPoints(this List<Point> points)
         {
-            //Create vectors for all four sides of the quadilateral
             List<Vector> vectors = new List<Vector>();
-            for (int i = 0; i < 3; i++)
+            int lastIndex = points.Count - 1;
+            for (int i = 0; i < lastIndex; i++)
             {
                 vectors.Add(points[i + 1] - points[i]);
             }
-            vectors.Add(points[0] - points[3]);
+            vectors.Add(points[0] - points[lastIndex]);
 
             return vectors;
         }
