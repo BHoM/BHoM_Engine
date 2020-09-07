@@ -40,22 +40,30 @@ namespace BH.Engine.Analytical
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Determines whether a panel's outline is a square")]
-        [Input("panel", "The IPanel to check if the outline is a square")]
-        [Output("bool", "True for panels with a square outline or false for panels with a non square outline")]
+        [Description("Determines whether a panel's outline is a square.")]
+        [Input("panel", "The IPanel to check if the outline is a square.")]
+        [Output("bool", "True for panels with a square outline or false for panels with a non square outline.")]
         public static bool IsOutlineSquare<TEdge, TOpening>(this IPanel<TEdge, TOpening> panel)
             where TEdge : IEdge
             where TOpening : IOpening<TEdge>
         {
             PolyCurve polycurve = ExternalPolyCurve(panel);
 
+            if (polycurve.SubParts().Any(x => !x.IIsLinear()))
+            {
+                Reflection.Compute.RecordError("At least one of the external Panel edges is not linear.");
+                return false;
+            }
+
             List<Point> points = polycurve.DiscontinuityPoints();
             if (points.Count != 4)
                 return false;
+            if (!points.IsCoplanar())
+                return false;
 
-            List<Vector> vectors = Engine.Geometry.Compute.VectorsBetweenPoints(points);
+            List<Vector> vectors = VectorsBetweenPoints(points);
 
-            List<double> angles = Engine.Geometry.Compute.AnglesBetweenVectors(vectors);
+            List<double> angles = AnglesBetweenVectors(vectors);
 
             //Check the three angles are pi/2 degrees within tolerance
             if (angles.Any(x => Math.Abs(Math.PI / 2 - x) > Tolerance.Angle))

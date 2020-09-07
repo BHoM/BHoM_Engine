@@ -52,7 +52,6 @@ namespace BH.Engine.Analytical
 
             List<PolyCurve> polycurves = Engine.Geometry.Compute.IJoin(curves);
 
-            //Check there is a single continuous curve defining the Panel
             if (polycurves.Count != 1)
             {
                 Reflection.Compute.RecordError("The curve defining the Panel is not a single continuous curve");
@@ -60,13 +59,6 @@ namespace BH.Engine.Analytical
             }
 
             PolyCurve polycurve = polycurves.First();
-
-            //Check that all subparts of the curve are linear
-            if (polycurve.SubParts().Any(x => !x.IIsLinear()))
-            {
-                Reflection.Compute.RecordError("All subparts of the curve are not linear");
-                return null;
-            }
 
             return polycurve;
         }
