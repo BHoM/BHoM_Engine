@@ -479,6 +479,127 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
+
+        [Description("Draws arrows representing the load along the edges of the contour of the load.")]
+        [Input("pointVelocity", "The node load to visualise.")]
+        [Input("scaleFactor", "Scales the arrows drawn. Default scaling of 1 means 1 m/s per metre.")]
+        [Input("displayForces", "Toggles whether forces should be displayed or not.")]
+        [Input("displayMoments", "Toggles whether moments should be displayed or not. Unused for contour loads.")]
+        [Input("asResultants", "Toggles whether loads should be displayed as resultant vectors or as components.")]
+        [Output("arrows", "A list of arrows representing the load.")]
+        public static List<ICurve> Visualize(this ContourLoad contourLoad, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true, bool asResultants = true)
+        {
+            if (!displayForces)
+                return new List<ICurve>();
+
+            List<ICurve> arrows = new List<ICurve>();
+            Vector globalForceVec = contourLoad.Force * scaleFactor;
+
+            Vector forceVec;
+            Basis orientation;
+
+            if (contourLoad.Axis == LoadAxis.Global)
+            {
+                if (contourLoad.Projected)
+                {
+                    Vector normal = contourLoad.Contour.Normal();
+                    double scale = Math.Abs(normal.DotProduct(globalForceVec.Normalise()));
+                    forceVec = globalForceVec * scale;
+                }
+                else
+                {
+                    forceVec = globalForceVec;
+                }
+                orientation = Basis.XY;
+            }
+            else
+            {
+                orientation = LocalOrientation(contourLoad.Contour.Normal(), 0);
+                forceVec = globalForceVec;
+            }
+
+            arrows.AddRange(ConnectedArrows(contourLoad.Contour.SubParts(), forceVec, asResultants, orientation, 1, true));
+
+
+            return arrows;
+        }
+
+        /***************************************************/
+
+        [Description("Draws arrows representing the load along the length of the line of the load.")]
+        [Input("pointVelocity", "The node load to visualise.")]
+        [Input("scaleFactor", "Scales the arrows drawn. Default scaling of 1 means 1 m/s per metre.")]
+        [Input("displayForces", "Toggles whether forces should be displayed or not.")]
+        [Input("displayMoments", "Toggles whether moments should be displayed or not. Unused for contour loads.")]
+        [Input("asResultants", "Toggles whether loads should be displayed as resultant vectors or as components.")]
+        [Output("arrows", "A list of arrows representing the load.")]
+        public static List<ICurve> Visualize(this GeometricalLineLoad lineLoad, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true, bool asResultants = true)
+        {
+            List<ICurve> arrows = new List<ICurve>();
+
+            Vector forceA = lineLoad.ForceA * scaleFactor;
+            Vector forceB = lineLoad.ForceB * scaleFactor;
+            Vector momentA = lineLoad.MomentA * scaleFactor;
+            Vector momentB = lineLoad.MomentB * scaleFactor;
+
+            int divisions = 5;
+            double sqTol = Tolerance.Distance * Tolerance.Distance;
+
+            if (lineLoad.Projected || lineLoad.Axis == LoadAxis.Local)
+            {
+                Engine.Reflection.Compute.RecordWarning("Can not currently visualize GeometricalLineLoads that are projected or in local coordinates.");
+                return arrows;
+            }
+
+            List<Point> pts = lineLoad.Location.SamplePoints(divisions);
+
+            Basis orientation = Basis.XY;
+
+            Vector[] forcesA = new Vector[] { forceA, momentA };    //TODO: handle local orientation and projected values
+            Vector[] forcesB = new Vector[] { forceB, momentB };    //TODO: handle local orientation and projected values
+
+            if (displayForces && (forcesA[0].SquareLength() > sqTol || forcesB[0].SquareLength() > sqTol))
+            {
+                Point[] prevPt = null;
+                for (int i = 0; i < pts.Count; i++)
+                {
+                    double factor = (double)i / (double)divisions;
+                    Point[] basePt;
+                    Vector v = (1 - factor) * forcesA[0] + factor * forcesB[0];
+                    arrows.AddRange(Arrows(pts[i], v, true, asResultants, out basePt, orientation, 1));
+
+                    if (i > 0)
+                    {
+                        for (int j = 0; j < basePt.Length; j++)
+                        {
+                            arrows.Add(new Line { Start = prevPt[j], End = basePt[j] });
+                        }
+
+                    }
+                    prevPt = basePt;
+                }
+            }
+            if (displayMoments && (forcesA[1].SquareLength() > sqTol || forcesB[1].SquareLength() > sqTol))
+            {
+                Point[] prevPt = null;
+                for (int i = 0; i < pts.Count; i++)
+                {
+                    double factor = (double)i / (double)divisions;
+                    Point[] basePt;
+                    Vector v = (1 - factor) * forcesA[1] + factor * forcesB[1];
+                    arrows.AddRange(Arrows(pts[i], v, false, asResultants, out basePt, orientation, 1));
+
+                    prevPt = basePt;
+                }
+
+            }
+
+
+            return arrows;
+        }
+
+
+        /***************************************************/
         /**** Public Methods Interface                  ****/
         /***************************************************/
 
