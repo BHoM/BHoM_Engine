@@ -156,14 +156,14 @@ namespace BH.Engine.Structure
 
             foreach (Bar bar in barPointForce.Objects.Elements)
             {
-                Cartesian system;
-                Vector[] loads = BarForceVectors(bar, forceVec, momentVec, barPointForce.Axis, barPointForce.Projected, out system);
+                Basis orientation;
+                Vector[] loads = BarForceVectors(bar, forceVec, momentVec, barPointForce.Axis, barPointForce.Projected, out orientation);
                 Point point = bar.StartNode.Position;
                 Vector tan = bar.Tangent(true);
                 point += tan * barPointForce.DistanceFromA;
 
-                if (displayForces) arrows.AddRange(Arrows(point, loads[0], true, asResultants, (Basis)system));
-                if (displayMoments) arrows.AddRange(Arrows(point, loads[1], false, asResultants, (Basis)system));
+                if (displayForces) arrows.AddRange(Arrows(point, loads[0], true, asResultants, orientation));
+                if (displayMoments) arrows.AddRange(Arrows(point, loads[1], false, asResultants, orientation));
             }
 
             return arrows;
@@ -235,14 +235,14 @@ namespace BH.Engine.Structure
 
             foreach (Bar bar in barUDL.Objects.Elements)
             {
-                Cartesian system;
+                Basis orientation;
 
-                Vector[] forceVectors = BarForceVectors(bar, forceVec, momentVec, barUDL.Axis, barUDL.Projected, out system);
+                Vector[] forceVectors = BarForceVectors(bar, forceVec, momentVec, barUDL.Axis, barUDL.Projected, out orientation);
 
                 if (displayForces && forceVectors[0].SquareLength() > sqTol)
-                    arrows.AddRange(ConnectedArrows(new List<ICurve> { bar.Centreline() }, forceVectors[0], asResultants, (Basis)system, 1, true));
+                    arrows.AddRange(ConnectedArrows(new List<ICurve> { bar.Centreline() }, forceVectors[0], asResultants, orientation, 1, true));
                 if (displayMoments && forceVectors[1].SquareLength() > sqTol)
-                    arrows.AddRange(ConnectedArrows(new List<ICurve> { bar.Centreline() }, forceVectors[1], asResultants, (Basis)system, 1, false));
+                    arrows.AddRange(ConnectedArrows(new List<ICurve> { bar.Centreline() }, forceVectors[1], asResultants, orientation, 1, false));
             }
             
 
@@ -274,10 +274,10 @@ namespace BH.Engine.Structure
             {
                 List<Point> pts = DistributedPoints(bar, divisions, barVaryingDistLoad.DistanceFromA, barVaryingDistLoad.DistanceFromB);
 
-                Cartesian system;
+                Basis orientation;
 
-                Vector[] forcesA = BarForceVectors(bar, forceA, momentA, barVaryingDistLoad.Axis, barVaryingDistLoad.Projected, out system);
-                Vector[] forcesB = BarForceVectors(bar, forceB, momentB, barVaryingDistLoad.Axis, barVaryingDistLoad.Projected, out system);
+                Vector[] forcesA = BarForceVectors(bar, forceA, momentA, barVaryingDistLoad.Axis, barVaryingDistLoad.Projected, out orientation);
+                Vector[] forcesB = BarForceVectors(bar, forceB, momentB, barVaryingDistLoad.Axis, barVaryingDistLoad.Projected, out orientation);
 
                 if (displayForces && (forcesA[0].SquareLength() > sqTol || forcesB[0].SquareLength() > sqTol))
                 {
@@ -287,7 +287,7 @@ namespace BH.Engine.Structure
                         double factor = (double)i / (double)divisions;
                         Point[] basePt;
                         Vector v = (1 - factor) * forcesA[0] + factor * forcesB[0];
-                        arrows.AddRange(Arrows(pts[i], v, true, asResultants, out basePt, (Basis)system, 1));
+                        arrows.AddRange(Arrows(pts[i], v, true, asResultants, out basePt, orientation, 1));
 
                         if (i > 0)
                         {
@@ -308,7 +308,7 @@ namespace BH.Engine.Structure
                         double factor = (double)i / (double)divisions;
                         Point[] basePt;
                         Vector v = (1 - factor) * forcesA[1] + factor * forcesB[1];
-                        arrows.AddRange(Arrows(pts[i], v, false, asResultants, out basePt, (Basis)system, 1));
+                        arrows.AddRange(Arrows(pts[i], v, false, asResultants, out basePt, orientation, 1));
 
                         //if (i > 0)
                         //{
@@ -705,11 +705,11 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        private static Vector[] BarForceVectors(Bar bar, Vector globalForce, Vector globalMoment, LoadAxis axis, bool isProjected, out Cartesian system)
+        private static Vector[] BarForceVectors(Bar bar, Vector globalForce, Vector globalMoment, LoadAxis axis, bool isProjected, out Basis orientation)
         {
             if (axis == LoadAxis.Global)
             {
-                system = null;
+                orientation = null;
                 if (isProjected)
                 {
                     Point startPos = bar.StartNode.Position;
@@ -731,14 +731,7 @@ namespace BH.Engine.Structure
             }
             else
             {
-
-                Vector normal = bar.Normal();
-                Vector tan = bar.Tangent();
-                Vector tanUnit = tan.Normalise();
-                Vector y = normal.CrossProduct(tanUnit);
-
-                system = new Cartesian(new Point(), tanUnit, y, normal);
-
+                orientation = (Basis)bar.CoordinateSystem();
                 return new Vector[] { globalForce, globalMoment };
             }
         }
