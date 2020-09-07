@@ -47,12 +47,11 @@ namespace BH.Engine.Analytical
             where TOpening : IOpening<TEdge>
         {
             PolyCurve polycurve = ExternalPolyCurve(panel);
-
-            if (polycurve.SubParts().Any(x => !x.IIsLinear()))
-            {
-                Reflection.Compute.RecordError("At least one of the external Panel edges is not linear.");
+            if (polycurve is null)
                 return false;
-            }
+            
+            if (polycurve.SubParts().Any(x => !x.IIsLinear()))
+                return false;
 
             List<Point> points = polycurve.DiscontinuityPoints();
             if (points.Count != 4)
