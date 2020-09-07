@@ -58,9 +58,20 @@ namespace BH.Engine.Structure
 
             foreach (IAreaElement element in areaTempLoad.Objects.Elements)
             {
-                Vector vector = element.INormal() * loadFactor;
-                if (edgeDisplay) arrows.AddRange(ConnectedArrows(element.IEdges(), vector, true, null, 0, true));
-                if (gridDisplay) arrows.AddRange(MultipleArrows(element.IPointGrid(), vector, true, null, 0, true));
+
+                List<List<ICurve>> allEdges = edgeDisplay ? ISubElementBoundaries(element) : new List<List<ICurve>>();
+                List<Basis> allOrientations = IAllLocalOrientations(element);
+                List<List<Point>> subElementGrids = gridDisplay ? ISubElementPointGrids(element) : new List<List<Point>>();
+
+                for (int i = 0; i < allOrientations.Count; i++)
+                {
+                    IEnumerable<ICurve> edges = edgeDisplay ? allEdges[i] : null;
+                    List<Point> pts = gridDisplay ? subElementGrids[i] : null;
+                    Basis orientation = allOrientations[i];
+                    Vector vector = orientation.Z * loadFactor;
+                    if (edgeDisplay) arrows.AddRange(ConnectedArrows(edges, vector, true, null, 0, true));
+                    if (gridDisplay) arrows.AddRange(MultipleArrows(pts, vector, true, null, 0, true));
+                }
             }
 
             return arrows;
@@ -88,35 +99,40 @@ namespace BH.Engine.Structure
             foreach (IAreaElement element in areaUDL.Objects.Elements)
             {
                 Vector forceVec;
-                Cartesian system = null;
 
-                IEnumerable<ICurve> edges = element.IEdges();
+                List<List<ICurve>> allEdges = edgeDisplay ? ISubElementBoundaries(element) : new List<List<ICurve>>();
+                List<Basis> allOrientations = IAllLocalOrientations(element);
+                List<List<Point>> subElementGrids = gridDisplay ? ISubElementPointGrids(element) : new List<List<Point>>();
 
-                if (areaUDL.Axis == LoadAxis.Global)
+                for (int i = 0; i < allOrientations.Count; i++)
                 {
-                    if (areaUDL.Projected)
+
+                    IEnumerable<ICurve> edges = edgeDisplay ? allEdges[i] : null;
+                    List<Point> pts = gridDisplay ? subElementGrids[i] : null;
+                    Basis orientation = allOrientations[i];
+
+                    if (areaUDL.Axis == LoadAxis.Global)
                     {
-                        Vector normal = element.INormal().Normalise();
-                        double scale = Math.Abs(normal.DotProduct(globalForceVec.Normalise()));
-                        forceVec = globalForceVec * scale;
+                        if (areaUDL.Projected)
+                        {
+                            Vector normal = orientation.Z;
+                            double scale = Math.Abs(normal.DotProduct(globalForceVec.Normalise()));
+                            forceVec = globalForceVec * scale;
+                        }
+                        else
+                        {
+                            forceVec = globalForceVec;
+                        }
+                        orientation = Basis.XY;
                     }
                     else
                     {
                         forceVec = globalForceVec;
                     }
-                }
-                else
-                {
-                    Vector normal = element.INormal();
-                    Vector x = edges.First().IStartDir();
-                    Vector y = normal.CrossProduct(x);
-                    system = new Cartesian(new Point(), x, y, normal);
-                    forceVec = globalForceVec;
-                }
 
-                if (edgeDisplay) arrows.AddRange(ConnectedArrows(edges, forceVec, asResultants, system, 1, true));
-                if (gridDisplay) arrows.AddRange(MultipleArrows(element.IPointGrid(), forceVec, asResultants, system, 1, true));
-
+                    if (edgeDisplay) arrows.AddRange(ConnectedArrows(edges, forceVec, asResultants, orientation, 1, true));
+                    if (gridDisplay) arrows.AddRange(MultipleArrows(pts, forceVec, asResultants, orientation, 1, true));
+                }
             }
 
             return arrows;
@@ -146,8 +162,8 @@ namespace BH.Engine.Structure
                 Vector tan = bar.Tangent(true);
                 point += tan * barPointForce.DistanceFromA;
 
-                if (displayForces) arrows.AddRange(Arrows(point, loads[0], true, asResultants, system));
-                if (displayMoments) arrows.AddRange(Arrows(point, loads[1], false, asResultants, system));
+                if (displayForces) arrows.AddRange(Arrows(point, loads[0], true, asResultants, (Basis)system));
+                if (displayMoments) arrows.AddRange(Arrows(point, loads[1], false, asResultants, (Basis)system));
             }
 
             return arrows;
@@ -224,9 +240,9 @@ namespace BH.Engine.Structure
                 Vector[] forceVectors = BarForceVectors(bar, forceVec, momentVec, barUDL.Axis, barUDL.Projected, out system);
 
                 if (displayForces && forceVectors[0].SquareLength() > sqTol)
-                    arrows.AddRange(ConnectedArrows(new List<ICurve> { bar.Centreline() }, forceVectors[0], asResultants, system, 1, true));
+                    arrows.AddRange(ConnectedArrows(new List<ICurve> { bar.Centreline() }, forceVectors[0], asResultants, (Basis)system, 1, true));
                 if (displayMoments && forceVectors[1].SquareLength() > sqTol)
-                    arrows.AddRange(ConnectedArrows(new List<ICurve> { bar.Centreline() }, forceVectors[1], asResultants, system, 1, false));
+                    arrows.AddRange(ConnectedArrows(new List<ICurve> { bar.Centreline() }, forceVectors[1], asResultants, (Basis)system, 1, false));
             }
             
 
@@ -271,7 +287,7 @@ namespace BH.Engine.Structure
                         double factor = (double)i / (double)divisions;
                         Point[] basePt;
                         Vector v = (1 - factor) * forcesA[0] + factor * forcesB[0];
-                        arrows.AddRange(Arrows(pts[i], v, true, asResultants, out basePt, system, 1));
+                        arrows.AddRange(Arrows(pts[i], v, true, asResultants, out basePt, (Basis)system, 1));
 
                         if (i > 0)
                         {
@@ -292,7 +308,7 @@ namespace BH.Engine.Structure
                         double factor = (double)i / (double)divisions;
                         Point[] basePt;
                         Vector v = (1 - factor) * forcesA[1] + factor * forcesB[1];
-                        arrows.AddRange(Arrows(pts[i], v, false, asResultants, out basePt, system, 1));
+                        arrows.AddRange(Arrows(pts[i], v, false, asResultants, out basePt, (Basis)system, 1));
 
                         //if (i > 0)
                         //{
@@ -492,6 +508,82 @@ namespace BH.Engine.Structure
         /**** Private Methods                           ****/
         /***************************************************/
 
+        private static List<List<Point>> ISubElementPointGrids(IAreaElement element)
+        {
+            return SubElementPointGrids(element as dynamic);
+        }
+
+        /***************************************************/
+
+        private static List<List<Point>> SubElementPointGrids(Panel element)
+        {
+            return new List<List<Point>>() { element.PointGrid() };
+        }
+
+        /***************************************************/
+
+        private static List<List<Point>> SubElementPointGrids(FEMesh element)
+        {
+            return element.PointGrid();
+        }
+
+        /***************************************************/
+
+        private static List<Basis> IAllLocalOrientations(IAreaElement element)
+        {
+            return AllLocalOrientations(element as dynamic);
+        }
+
+        /***************************************************/
+
+        private static List<Basis> AllLocalOrientations(Panel element)
+        {
+            return new List<Basis> { element.LocalOrientation() };
+        }
+
+        /***************************************************/
+
+        private static List<Basis> AllLocalOrientations(FEMesh element)
+        {
+            return element.LocalOrientations();
+        }
+
+        /***************************************************/
+
+        private static List<List<ICurve>> ISubElementBoundaries(IAreaElement element)
+        {
+            return SubElementBoundaries(element as dynamic);
+        }
+
+        /***************************************************/
+
+        private static List<List<ICurve>> SubElementBoundaries(Panel element)
+        {
+            return new List<List<ICurve>> { element.AllEdgeCurves() };
+        }
+
+        /***************************************************/
+
+        private static List<List<ICurve>> SubElementBoundaries(FEMesh element)
+        {
+            List<List<ICurve>> elementCurves = new List<List<ICurve>>();
+
+            foreach (FEMeshFace face in element.Faces)
+            {
+                List<ICurve> faceEdges = new List<ICurve>();
+                for (int i = 0; i < face.NodeListIndices.Count; i++)
+                {
+                    int next = (i + 1) % face.NodeListIndices.Count;
+                    Line edge = new Line { Start = element.Nodes[face.NodeListIndices[i]].Position, End = element.Nodes[face.NodeListIndices[next]].Position };
+                    faceEdges.Add(edge);
+                }
+                elementCurves.Add(faceEdges);
+            }
+            return elementCurves;
+        }
+
+        /***************************************************/
+
         private static Vector[] BarForceVectors(Bar bar, Vector globalForce, Vector globalMoment, LoadAxis axis, bool isProjected, out Cartesian system)
         {
             if (axis == LoadAxis.Global)
@@ -532,23 +624,23 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        private static List<ICurve> Arrows(Point pt, Vector load, bool straightArrow, bool asResultant, Cartesian coordinateSystem = null, int nbArrowHeads = 1)
+        private static List<ICurve> Arrows(Point pt, Vector load, bool straightArrow, bool asResultant, Basis orientation = null, int nbArrowHeads = 1)
         {
             Point[] basePoints;
-            return Arrows(pt, load, straightArrow, asResultant, out basePoints, coordinateSystem, nbArrowHeads);
+            return Arrows(pt, load, straightArrow, asResultant, out basePoints, orientation, nbArrowHeads);
         }
 
         /***************************************************/
 
-        private static List<ICurve> Arrows(Point pt, Vector load, bool straightArrow, bool asResultant, out Point[] basePoints, Cartesian coordinateSystem = null, int nbArrowHeads = 1)
+        private static List<ICurve> Arrows(Point pt, Vector load, bool straightArrow, bool asResultant, out Point[] basePoints, Basis orientation = null, int nbArrowHeads = 1)
         {
             if (asResultant)
             {
                 Vector vector;
-                if (coordinateSystem == null)
+                if (orientation == null)
                     vector = load;
                 else
-                    vector = coordinateSystem.X * load.X + coordinateSystem.Y * load.Y + coordinateSystem.Z * load.Z;
+                    vector = orientation.X * load.X + orientation.Y * load.Y + orientation.Z * load.Z;
 
                 basePoints = new Point[1];
                 if (straightArrow)
@@ -562,10 +654,10 @@ namespace BH.Engine.Structure
                 basePoints = new Point[3];
                 Vector[] vectors;
 
-                if (coordinateSystem == null)
+                if (orientation == null)
                     vectors = new Vector[] { new Vector { X = load.X }, new Vector { Y = load.Y }, new Vector { Z = load.Z } };
                 else
-                    vectors = new Vector[] { coordinateSystem.X * load.X, coordinateSystem.Y * load.Y, coordinateSystem.Z * load.Z };
+                    vectors = new Vector[] { orientation.X * load.X, orientation.Y * load.Y, orientation.Z * load.Z };
 
                 for (int i = 0; i < 3; i++)
                 {
@@ -709,14 +801,14 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        private static List<ICurve> ConnectedArrows(IEnumerable<ICurve> curves, Vector vector, bool asResultant, Cartesian coordinateSystem = null, int nbArrowHeads = 1, bool straightArrow = true)
+        private static List<ICurve> ConnectedArrows(IEnumerable<ICurve> curves, Vector vector, bool asResultant, Basis orientation = null, int nbArrowHeads = 1, bool straightArrow = true)
         {
             List<ICurve> allCurves = new List<ICurve>();
             Vector[] baseVec;
 
             int divisions = straightArrow ? 5 : 7;
 
-            allCurves = MultipleArrows(curves.SelectMany(x => x.SamplePoints((int)divisions)), vector, asResultant, out baseVec, coordinateSystem, nbArrowHeads, straightArrow);
+            allCurves = MultipleArrows(curves.SelectMany(x => x.SamplePoints((int)divisions)), vector, asResultant, out baseVec, orientation, nbArrowHeads, straightArrow);
             if(straightArrow) allCurves.AddRange(curves.SelectMany(x => baseVec.Select(v => x.ITranslate(v))));
 
             return allCurves;
@@ -724,21 +816,21 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        private static List<ICurve> MultipleArrows(IEnumerable<Point> basePoints, Vector vector, bool asResultant, Cartesian coordinateSYstem = null, int nbArrowHeads = 1, bool straightArrow = true)
+        private static List<ICurve> MultipleArrows(IEnumerable<Point> basePoints, Vector vector, bool asResultant, Basis orientation = null, int nbArrowHeads = 1, bool straightArrow = true)
         {
             Vector[] baseVec;
-            return MultipleArrows(basePoints, vector, asResultant, out baseVec, coordinateSYstem, nbArrowHeads, straightArrow);
+            return MultipleArrows(basePoints, vector, asResultant, out baseVec, orientation, nbArrowHeads, straightArrow);
         }
 
         /***************************************************/
 
-        private static List<ICurve> MultipleArrows(IEnumerable<Point> basePoints, Vector vector, bool asResultant, out Vector[] baseVec, Cartesian coordinateSystem = null, int nbArrowHeads = 1, bool straightArrow = true)
+        private static List<ICurve> MultipleArrows(IEnumerable<Point> basePoints, Vector vector, bool asResultant, out Vector[] baseVec, Basis orientation = null, int nbArrowHeads = 1, bool straightArrow = true)
         {
             List<ICurve> allCurves = new List<ICurve>();
             List<ICurve> arrow = new List<ICurve>();
             Point[] basePts;
 
-            arrow = Arrows(Point.Origin, vector, straightArrow, asResultant, out basePts, coordinateSystem, nbArrowHeads);
+            arrow = Arrows(Point.Origin, vector, straightArrow, asResultant, out basePts, orientation, nbArrowHeads);
 
             baseVec = basePts.Select(x => x - Point.Origin).ToArray();
 
