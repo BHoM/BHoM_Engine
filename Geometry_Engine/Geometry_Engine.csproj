@@ -81,8 +81,6 @@
     <Compile Include="Compute\MarchingCubes.cs" />
     <Compile Include="Compute\SubMesh.cs" />
     <Compile Include="Compute\MarchingSquares.cs" />
-    <Compile Include="Compute\AnglesBetweenVectors.cs" />
-    <Compile Include="Compute\VectorsBetweenPoints.cs" />
     <Compile Include="Compute\WetBlanketInterpretation.cs" />
     <Compile Include="Compute\IntegrateRegion.cs" />
     <Compile Include="Compute\Eigenvalues.cs" />

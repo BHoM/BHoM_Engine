@@ -20,38 +20,49 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.oM.Analytical.Elements;
 using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
+using BH.Engine.Geometry;
+using BH.Engine.Reflection;
 
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.ComponentModel;
 
-namespace BH.Engine.Geometry
+namespace BH.Engine.Analytical
 {
-    public static partial class Compute
+    public static partial class Query
     {
         /***************************************************/
-        /****   Public Methods                          ****/
+        /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Gets the internal angle between sequential vectors")]
-        [Input("vectors", "The vectors to find the internal angle between")]
-        [Output("angles", "The internal angles between sequential vectors")]
-        public static List<double> AnglesBetweenVectors(this List<Vector> vectors)
+        [Description("Determines whether a panel's outline is a quadilateral.")]
+        [Input("panel", "The IPanel to check if the outline is a quadilateral.")]
+        [Output("bool", "True for panels with a quadilateral outline or false for panels with a non-quadilateral outline.")]
+        public static bool IsOutlineQuad<TEdge, TOpening>(this IPanel<TEdge, TOpening> panel)
+            where TEdge : IEdge
+            where TOpening : IOpening<TEdge>
         {
-            //Get the angles in the panel, only three are needed
-            int lastIndex = vectors.Count - 1;
-            List<double> angles = new List<double>() { vectors[lastIndex].Angle(vectors[0]) };
-            for (int i = 0; i < lastIndex; i++)
+            PolyCurve polycurve = ExternalPolyCurve(panel);
+
+            if (polycurve.SubParts().Any(x => !x.IIsLinear()))
             {
-                angles.Add(vectors[i].Angle(vectors[i + 1]));
+                Reflection.Compute.RecordError("At least one of the external Panel edges is not linear.");
+                return false;
             }
 
-            return angles;
+            List<Point> points = polycurve.DiscontinuityPoints();
+            if (points.Count != 4)
+                return false;
+
+            return points.IsCoplanar();
+
         }
 
         /***************************************************/
 
     }
 }
-
