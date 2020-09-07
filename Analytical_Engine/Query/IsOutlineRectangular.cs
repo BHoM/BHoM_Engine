@@ -47,7 +47,7 @@ namespace BH.Engine.Analytical
             where TOpening : IOpening<TEdge>
         {
             PolyCurve polycurve = ExternalPolyCurve(panel);
-            if (polycurve is null)
+            if (polycurve == null)
                 return false;
 
             if (polycurve.SubParts().Any(x => !x.IIsLinear()))
@@ -94,7 +94,7 @@ namespace BH.Engine.Analytical
         [Output("angles", "The internal angles between sequential vectors.")]
         private static List<double> AnglesBetweenVectors(this List<Vector> vectors)
         {
- 
+
             List<double> angles = new List<double>();
             for (int i = 0; i < vectors.Count; i++)
             {
