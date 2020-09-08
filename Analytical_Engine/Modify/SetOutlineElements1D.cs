@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.Linq;
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
+using BH.Engine.Geometry;
 using BH.Engine.Base;
 
 
@@ -79,7 +80,27 @@ namespace BH.Engine.Analytical
         public static IRegion SetOutlineElements1D(this IRegion region, IEnumerable<IElement1D> outlineElements)
         {
             IRegion r = region.GetShallowClone(true) as IRegion;
-            r.Perimeter = BH.Engine.Geometry.Compute.IJoin(outlineElements.Cast<ICurve>().ToList())[0];
+
+            if (outlineElements.Count() == 1)
+                r.Perimeter = outlineElements.First() as ICurve;
+            else
+            {
+                List<PolyCurve> joinedCurves = Engine.Geometry.Compute.IJoin(outlineElements.Cast<ICurve>().ToList());
+
+                if (joinedCurves.Count == 1)
+                {
+                    if (!joinedCurves[0].IsClosed())
+                        Engine.Reflection.Compute.RecordWarning("The outline elements assigned to the region do not form a closed loop.");
+
+                    r.Perimeter = joinedCurves[0];
+                }
+                else
+                {
+                    Engine.Reflection.Compute.RecordWarning("The outline elements assigned to the region are disjointed.");
+                    r.Perimeter = new PolyCurve { Curves = outlineElements.Cast<ICurve>().ToList() };
+                }
+            }
+
             return r;
         }
 
