@@ -171,5 +171,17 @@ namespace BH.Engine.Analytical
             return geomFace;
         }
 
+        /***************************************************/
+
+        [Description("Gets the geometry of a IRegion as its Perimiter curve. Method required for automatic display in UI packages.")]
+        [Input("region", "IRegion to get the curve geometry from.")]
+        [Output("curve", "The geometry of the IRegion as its Perimiter curve.")]
+        public static ICurve Geometry(this IRegion region)
+        {
+            return region.Perimeter;
+        }
+
+        /***************************************************/
+
     }
 }
