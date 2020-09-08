@@ -123,9 +123,10 @@ namespace BH.Engine.Structure
             return mesh.Faces.Select(x => x.PointGrid(mesh)).ToList();
         }
 
-        [Description("Generates a rectangular grid of points on the each face of the FEMesh. Used for load visualisation.")]
-        [Input("mesh", "The FEMesh to generate a grid on.")]
-        [Output("grid", "Rectangular grid of points on the FEMesh.")]
+        [Description("Generates a rectangular grid of points on the FEMeshFace of the FEMesh. Used for load visualisation.")]
+        [Input("face", "The FEMeshFace to generate a grid on.")]
+        [Input("mesh", "The FEMesh to which the face belongs.")]
+        [Output("grid", "Rectangular grid of points on the FEMeshFace.")]
         public static List<Point> PointGrid(this FEMeshFace face, FEMesh mesh)
         {
             List<Point> pts = face.NodeListIndices.Select(i => mesh.Nodes[i].Position).ToList();

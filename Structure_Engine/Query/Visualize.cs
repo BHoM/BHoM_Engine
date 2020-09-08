@@ -58,7 +58,6 @@ namespace BH.Engine.Structure
 
             foreach (IAreaElement element in areaTempLoad.Objects.Elements)
             {
-
                 List<List<ICurve>> allEdges = edgeDisplay ? ISubElementBoundaries(element) : new List<List<ICurve>>();
                 List<Basis> allOrientations = IAllLocalOrientations(element);
                 List<List<Point>> subElementGrids = gridDisplay ? ISubElementPointGrids(element) : new List<List<Point>>();
@@ -106,7 +105,6 @@ namespace BH.Engine.Structure
 
                 for (int i = 0; i < allOrientations.Count; i++)
                 {
-
                     IEnumerable<ICurve> edges = edgeDisplay ? allEdges[i] : null;
                     List<Point> pts = gridDisplay ? subElementGrids[i] : null;
                     Basis orientation = allOrientations[i];
@@ -481,7 +479,7 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Draws arrows representing the load along the edges of the contour of the load.")]
-        [Input("pointVelocity", "The node load to visualise.")]
+        [Input("contourLoad", "The ContourLoad to visualise.")]
         [Input("scaleFactor", "Scales the arrows drawn. Default scaling of 1 means 1 m/s per metre.")]
         [Input("displayForces", "Toggles whether forces should be displayed or not.")]
         [Input("displayMoments", "Toggles whether moments should be displayed or not. Unused for contour loads.")]
@@ -520,14 +518,13 @@ namespace BH.Engine.Structure
 
             arrows.AddRange(ConnectedArrows(contourLoad.Contour.SubParts(), forceVec, asResultants, orientation, 1, true));
 
-
             return arrows;
         }
 
         /***************************************************/
 
         [Description("Draws arrows representing the load along the length of the line of the load.")]
-        [Input("pointVelocity", "The node load to visualise.")]
+        [Input("lineLoad", "The GeometricalLineLoad to visualise.")]
         [Input("scaleFactor", "Scales the arrows drawn. Default scaling of 1 means 1 m/s per metre.")]
         [Input("displayForces", "Toggles whether forces should be displayed or not.")]
         [Input("displayMoments", "Toggles whether moments should be displayed or not. Unused for contour loads.")]
@@ -593,7 +590,6 @@ namespace BH.Engine.Structure
                 }
 
             }
-
 
             return arrows;
         }
