@@ -56,8 +56,11 @@ namespace BH.Engine.Analytical
 
             if (!polycurve.IsPlanar())
                 return false;
-            Vector tangent = polycurve.TangentAtParameter(0);
+            Vector tangent1 = polycurve.TangentAtParameter(1);
+            if (tangent1.IsInPlane(PlaneDirection, Tolerance.Distance) == false)
+                return false;
 
+            Vector tangent = polycurve.TangentAtParameter(0);
             return tangent.IsInPlane(PlaneDirection, Tolerance.Distance) ? true : false;
         }
     }
