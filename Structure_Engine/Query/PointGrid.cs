@@ -114,6 +114,36 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
+
+        [Description("Generates a rectangular grid of points on the each face of the FEMesh. Used for load visualisation.")]
+        [Input("mesh", "The FEMesh to generate a grid on.")]
+        [Output("grid", "Rectangular grid of points on the FEMesh.")]
+        public static List<List<Point>> PointGrid(this FEMesh mesh)
+        {
+            return mesh.Faces.Select(x => x.PointGrid(mesh)).ToList();
+        }
+
+        [Description("Generates a rectangular grid of points on the FEMeshFace of the FEMesh. Used for load visualisation.")]
+        [Input("face", "The FEMeshFace to generate a grid on.")]
+        [Input("mesh", "The FEMesh to which the face belongs.")]
+        [Output("grid", "Rectangular grid of points on the FEMeshFace.")]
+        public static List<Point> PointGrid(this FEMeshFace face, FEMesh mesh)
+        {
+            List<Point> pts = face.NodeListIndices.Select(i => mesh.Nodes[i].Position).ToList();
+
+            List<Point> temp = new List<Point>();
+
+            for (int i = 0; i < pts.Count; i++)
+            {
+                int next = (i + 1) % pts.Count;
+                temp.Add((pts[i] + pts[next]) / 2);
+            }
+            pts.AddRange(temp);
+            pts.Add(pts.Average());
+            return pts;
+        }
+
+        /***************************************************/
         /**** Public Methods Interface                  ****/
         /***************************************************/
 
