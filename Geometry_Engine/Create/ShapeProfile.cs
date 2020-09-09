@@ -554,7 +554,9 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static TaperedProfile TaperedProfile(List<decimal> positions, List<IProfile> profiles)
+        [PreviousVersion("3.3", "BH.Engine.Geometry.Create.TaperedProfile(System.Collections.Generic.List<System.Decimal>, System.Collections.Generic.List<BH.oM.Geometry.ShapeProfiles.IProfile>)")]
+        [Input("interpolationOrder","Describes the polynomial function between profiles whereby 1 = Linear, 2 = Quadratic, 3 = Cubic etc.")]
+        public static TaperedProfile TaperedProfile(List<decimal> positions, List<IProfile> profiles, int interpolationOrder)
         {
             if (positions.Count != profiles.Count)
             {
@@ -579,19 +581,19 @@ namespace BH.Engine.Geometry
                 profileDict[positions[i]] = profiles[i];
             }
 
-            return new TaperedProfile(profileDict);
+            ShapeType shape = GetShapeType(profiles);
+            TaperedProfile taperedProfile = new TaperedProfile(profileDict, interpolationOrder, shape);
+
+            return taperedProfile;
         }
 
         /***************************************************/
 
-        public static TaperedProfile TaperedProfile(IProfile startProfile, IProfile endProfile)
+        [PreviousVersion("3.3", "BH.Engine.Geometry.Create.TaperedProfile(BH.oM.Geometry.ShapeProfiles.IProfile, BH.oM.Geometry.ShapeProfiles.IProfile)")]
+        [Input("interpolationOrder", "Describes the polynomial function between profiles whereby 1 = Linear, 2 = Quadratic, 3 = Cubic etc.")]
+        public static TaperedProfile TaperedProfile(IProfile startProfile, IProfile endProfile, int interpolationOrder)
         {
-            SortedDictionary<decimal, IProfile> profileDict = new SortedDictionary<decimal, IProfile>();
-
-            profileDict.Add(0, startProfile);
-            profileDict.Add(1, endProfile);
-
-            return new TaperedProfile(profileDict);
+            return TaperedProfile(new List<decimal>() { 0, 1 }, new List<IProfile>() { startProfile, endProfile }, interpolationOrder);
         }
 
         /***************************************************/
@@ -628,6 +630,15 @@ namespace BH.Engine.Geometry
         private static void InvalidRatioError(string first, string second)
         {
             Engine.Reflection.Compute.RecordError("The ratio of the " + first + " in relation to the " + second + " makes section inconceivable");
+        }
+
+        /***************************************************/
+
+        private static ShapeType GetShapeType(List<IProfile> profiles)
+        {
+            ShapeType shape = profiles.First().Shape;
+
+            return profiles.Any(x => x.Shape != shape) ? ShapeType.FreeForm : shape;
         }
 
         /***************************************************/
