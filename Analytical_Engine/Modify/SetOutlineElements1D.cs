@@ -81,24 +81,21 @@ namespace BH.Engine.Analytical
         {
             IRegion r = region.GetShallowClone(true) as IRegion;
 
-            if (outlineElements.Count() == 1)
-                r.Perimeter = outlineElements.First() as ICurve;
+            IEnumerable<ICurve> joinedCurves = outlineElements.Cast<ICurve>();
+            if (outlineElements.Count() != 1)
+                joinedCurves = Engine.Geometry.Compute.IJoin(outlineElements.Cast<ICurve>().ToList());
+
+            if (joinedCurves.Count() == 1)
+            {
+                if (!joinedCurves.First().IIsClosed())
+                    Engine.Reflection.Compute.RecordWarning("The outline elements assigned to the region do not form a closed loop.");
+
+                r.Perimeter = joinedCurves.First();
+            }
             else
             {
-                List<PolyCurve> joinedCurves = Engine.Geometry.Compute.IJoin(outlineElements.Cast<ICurve>().ToList());
-
-                if (joinedCurves.Count == 1)
-                {
-                    if (!joinedCurves[0].IsClosed())
-                        Engine.Reflection.Compute.RecordWarning("The outline elements assigned to the region do not form a closed loop.");
-
-                    r.Perimeter = joinedCurves[0];
-                }
-                else
-                {
-                    Engine.Reflection.Compute.RecordWarning("The outline elements assigned to the region are disjointed.");
-                    r.Perimeter = new PolyCurve { Curves = outlineElements.Cast<ICurve>().ToList() };
-                }
+                Engine.Reflection.Compute.RecordWarning("The outline elements assigned to the region are disjointed.");
+                r.Perimeter = new PolyCurve { Curves = outlineElements.Cast<ICurve>().ToList() };
             }
 
             return r;
