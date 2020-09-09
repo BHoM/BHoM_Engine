@@ -53,27 +53,24 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Curves lists             ****/
         /***************************************************/
 
-        [Description("Qieries the combined centre of area of a set of ICurves with optional set of openings.\nTo give a correct result all input curves must be planar, coplanar, closed and non-self-intersecting.\nOpening curves should also be inside outline curves.")]
+        [Description("Queries the combined centre of area of a set of ICurves with an optional set of openings.\nTo give a correct result all input curves must be planar, coplanar, closed and non-self-intersecting.\nOpening curves should also be inside of outline curves.")]
         [Input("outlines", "Set of planar, coplanar, closed and non-self-intersecting ICurves to get the combined centre of area of.")]
-        [Input("openings", "Set of planar, coplanar, closed and non-self-intersecting ICurves ilustrating openings in initial set of outlines.")]
+        [Input("openings", "Set of planar, coplanar, closed and non-self-intersecting ICurves illustrating openings in initial set of outlines.")]
         [Input("tolerance", "Distance tolerance, default set to BH.oM.Geometry.Tolerance.Distance")]
         [Output("centroid", "The Point at the centre of given PlanarSurface.")]
         public static Point Centroid(this IEnumerable<ICurve> outlines, IEnumerable<ICurve> openings = null, double tolerance = Tolerance.Distance)
         {
-            outlines = outlines.BooleanUnion(tolerance);
-            openings = openings.BooleanUnion(tolerance);
-
             Point centroid = new Point();
             double area = 0;
 
-            foreach (ICurve outline in outlines)
+            foreach (ICurve outline in outlines.BooleanUnion(tolerance))
             {
                 double outlineArea = outline.IArea();
                 centroid += (outline.ICentroid() * outlineArea);
                 area += outlineArea;
             }
 
-            foreach (ICurve opening in openings)
+            foreach (ICurve opening in openings.BooleanUnion(tolerance))
             {
                 Point openingCentroid = opening.ICentroid();
                 double openingArea = opening.IArea();
