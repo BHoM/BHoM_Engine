@@ -89,7 +89,7 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [Description("Queries the centre of area for a closed, planar, non-self-intersecting Polyline.")]
-        [Input("polyline", "The Polyline to get the centre of area of.")]
+        [Input("curve", "The Polyline to get the centre of area of.")]
         [Input("tolerance", "Distance tolerance, default set to BH.oM.Geometry.Tolerance.Distance")]
         [Output("centroid", "The Point at the centre of given Polyline.")]
         public static Point Centroid(this Polyline curve, double tolerance = Tolerance.Distance)
@@ -154,7 +154,7 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [Description("Queries the centre of area for a closed, planar, non-self-intersecting PolyCurve.")]
-        [Input("polyCurve", "The PolyCurve to get the centre of area of.")]
+        [Input("curve", "The PolyCurve to get the centre of area of.")]
         [Input("tolerance", "Distance tolerance, default set to BH.oM.Geometry.Tolerance.Distance")]
         [Output("centroid", "The Point at the centre of given Polyline.")]
         public static Point Centroid(this PolyCurve curve, double tolerance = Tolerance.Distance)
