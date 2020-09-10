@@ -44,17 +44,20 @@ namespace BH.Engine.Analytical
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Determines whether a panel is vertical.")]
-        [Input("panel", "The IPanel to check if a panel is vertical.")]
-        [Output("bool", "True for panels for panels is vertical.")]
+        [Description("Checks if the Panel is aligned with any vertical plane.")]
+        [Input("panel", "The IPanel to check if a panel is aligned with any vertical plane.")]
+        [Output("bool", "True if the Panel is aligned with any vertical plane.")]
         public static bool IsVertical<TEdge, TOpening>(this IPanel<TEdge, TOpening> panel)
             where TEdge : IEdge
             where TOpening : IOpening<TEdge>
         {
-            if (IsAligned(panel, Plane.XZ) == false)
-                return IsAligned(panel, Plane.YZ);
-            else
-                return IsAligned(panel, Plane.XZ);
+            PolyCurve polycurve = ExternalPolyCurve(panel);
+            if (!polycurve.IsPlanar())
+                return false;
+
+            Vector tangent = polycurve.Normal();
+            return (tangent.Normalise().IsInPlane(Plane.XY));
+
         }
     }
 }

@@ -44,11 +44,11 @@ namespace BH.Engine.Analytical
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Determines whether a panel is aligned.")]
-        [Input("panel", "The IPanel to check if a panel is aligned.")]
-        [Input("PlaneDirection", "A user defined plane direction .")]
-        [Output("bool", "True for panels for panels is aligned.")]
-        public static bool IsAligned<TEdge, TOpening>(this IPanel<TEdge, TOpening> panel,Plane PlaneDirection)
+        [Description("Checks if the Panel is aligned to a defined Plane.")]
+        [Input("panel", "The IPanel to check alignment for.")]
+        [Input("plane", "The Plane that the Panel is aligned to check against.")]
+        [Output("bool", "True for panels is aligned.")]
+        public static bool IsAligned<TEdge, TOpening>(this IPanel<TEdge, TOpening> panel, Plane plane)
             where TEdge : IEdge
             where TOpening : IOpening<TEdge>
         {
@@ -56,12 +56,11 @@ namespace BH.Engine.Analytical
 
             if (!polycurve.IsPlanar())
                 return false;
-            Vector tangent1 = polycurve.TangentAtParameter(1);
-            if (tangent1.IsInPlane(PlaneDirection, Tolerance.Distance) == false)
-                return false;
+            Vector vector = plane.Normal;
+            Vector tangent = polycurve.Normal();
 
-            Vector tangent = polycurve.TangentAtParameter(0);
-            return tangent.IsInPlane(PlaneDirection, Tolerance.Distance) ? true : false;
+            return vector.Normalise().IsParallel(tangent.Normalise(), Tolerance.Distance) == 1 ? true : false;
         }
+
     }
 }
