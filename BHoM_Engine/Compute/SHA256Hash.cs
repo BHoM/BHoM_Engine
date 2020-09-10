@@ -41,10 +41,8 @@ namespace BH.Engine.Base
         ///**** Private Methods                           ****/
         ///***************************************************/
 
-        [Description("Computes the a SHA 256 hash code representing the object.")]
-        [Input("obj", "Object the hash code should be calculated for")]
-        [Input("exceptions", "List of strings specifying the names of the properties that should be ignored in the calculation, e.g. 'BHoM_Guid'")]
-        private static string SHA256Hash(string hashString)
+        [Description("Computes a SHA 256 hash from the given string.")]
+        public static string SHA256Hash(string hashString)
         {
             byte[] hashBytes = System.Text.ASCIIEncoding.Default.GetBytes(hashString);
 
