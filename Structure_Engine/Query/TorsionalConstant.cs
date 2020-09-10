@@ -107,20 +107,20 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Calcualtes the Torsinal constant for the profile. Note that this is not the polar moment of inertia.")]
+        [Description("Calcualtes the Torsinal constant for the profile. Note that this is not the polar moment of inertia. Formulation taken from BS EN 10210-2:2019.")]
         [Input("profile", "The ShapeProfile to calculate the torsional constant for.")]
         [Output("J", "Torsional constant of the profile. Note that this is not the polar moment of inertia.", typeof(TorsionConstant))]
         public static double TorsionalConstant(this BoxProfile profile)
         {
-            double tf1 = profile.Thickness;
-            double tw = profile.Thickness;
+            double t = profile.Thickness;
             double width = profile.Width;
             double height = profile.Height;
 
-
-
-            return 2 * tf1 * tw * Math.Pow(width - tw, 2) * Math.Pow(height - tf1, 2) /
-                        (width * tw + height * tf1 - Math.Pow(tw, 2) - Math.Pow(tf1, 2));
+            double rc = (profile.OuterRadius + profile.InnerRadius) / 2;
+            double h = 2 * ((width - t) + (height - t)) - 2 * rc * (4 - Math.PI);
+            double ah = (width - t) * (height - t) - Math.Pow(rc, 2) * (4 - Math.PI);
+            double k = 2 * ah * t / h;
+            return Math.Pow(t, 3) * h / 3 + 2 * k * ah;
         }
 
         /***************************************************/
