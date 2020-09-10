@@ -61,21 +61,6 @@ namespace BH.Engine.Spatial
             return Geometry.Query.Centroid(new List<ICurve> { element2D.OutlineCurve() }, element2D.InternalOutlineCurves(), tolerance);
         }
 
-
-        /******************************************/
-        /****             IProfile             ****/
-        /******************************************/
-
-        //TODO: Before merging: create a method to query outer and inner curves or remove.
-        [Description("Queries the centre of area for a IProfile surface representation. For an IProfile with homogeneous material and thickness this will also be the centre of weight.")]
-        [Input("profile", "The IProfile with the geometry to get the centre of area of.")]
-        [Input("tolerance", "Distance tolerance, default set to BH.oM.Geometry.Tolerance.Distance")]
-        [Output("centroid", "The Point at the centre of area for the homogeneous geometrical representation of the IProfile.")]
-        public static Point Centroid(this IProfile profile, double tolerance = Tolerance.Distance)
-        {
-            return Geometry.Query.Centroid(profile.Edges, new List<ICurve>(), tolerance);
-        }
-
         /******************************************/
     }
 }

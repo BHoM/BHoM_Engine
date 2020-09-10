@@ -123,7 +123,6 @@ namespace BH.Engine.Geometry
 
             for (int i = 1; i < curve.ControlPoints.Count - 2; i++)
             {
-
                 Point pB = curve.ControlPoints[i];
                 Point pC = curve.ControlPoints[i + 1];
 
@@ -150,7 +149,6 @@ namespace BH.Engine.Geometry
             zc = zc0 / curveArea;
 
             return new Point { X = xc, Y = yc, Z = zc };
-
         }
 
         /***************************************************/
@@ -264,7 +262,6 @@ namespace BH.Engine.Geometry
             zc = zc0 / curveArea;
 
             return new Point { X = xc, Y = yc, Z = zc };
-
         }
 
         /***************************************************/
