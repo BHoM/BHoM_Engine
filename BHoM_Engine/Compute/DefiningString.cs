@@ -59,6 +59,9 @@ namespace BH.Engine.Base
             return DefiningString(iObj, 0, maxNesting, propertyNameExceptions, propertyFullNameExceptions, namespaceExceptions, typeExceptions);
         }
 
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
 
         private static string DefiningString(
             object obj,
@@ -145,5 +148,7 @@ namespace BH.Engine.Base
 
             return composedString;
         }
+
+        /***************************************************/
     }
 }
