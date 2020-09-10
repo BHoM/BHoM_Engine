@@ -44,9 +44,9 @@ namespace BH.Engine.Analytical
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Determines whether a panel is horizontal.")]
+        [Description("Checks if the Panel is aligned with the horizontal plane (global XY).")]
         [Input("panel", "The IPanel to check if a panel is horizontal.")]
-        [Output("bool", "True for panels for panels is horizontal.")]
+        [Output("bool", "True for panels is horizontal.")]
         public static bool IsHorizontal<TEdge, TOpening>(this IPanel<TEdge, TOpening> panel)
             where TEdge : IEdge
             where TOpening : IOpening<TEdge>
