@@ -555,7 +555,7 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [PreviousVersion("3.3", "BH.Engine.Geometry.Create.TaperedProfile(System.Collections.Generic.List<System.Decimal>, System.Collections.Generic.List<BH.oM.Geometry.ShapeProfiles.IProfile>)")]
-        [Input("interpolationOrder","Describes the polynomial function between profiles whereby 1 = Linear, 2 = Quadratic, 3 = Cubic etc.")]
+        [Input("interpolationOrder","Describes the order of the polynomial function between profiles whereby 1 = Linear, 2 = Quadratic, 3 = Cubic etc.")]
         public static TaperedProfile TaperedProfile(List<decimal> positions, List<IProfile> profiles, int interpolationOrder)
         {
             if (positions.Count != profiles.Count)
