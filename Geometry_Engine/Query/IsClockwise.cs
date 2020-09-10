@@ -75,13 +75,16 @@ namespace BH.Engine.Geometry
                     cPts.Add(c.IEndPoint());
                 else if (c is Arc)
                 {
+                    cPts.Add((c as Arc).PointAtParameter(0.25));
                     cPts.Add((c as Arc).PointAtParameter(0.5));
+                    cPts.Add((c as Arc).PointAtParameter(0.75));
                     cPts.Add((c as Arc).EndPoint());
                 }
                 else if (c is Circle)
                 {
-                    cPts.Add((c as Circle).PointAtParameter(1.0 / 3));
-                    cPts.Add((c as Circle).PointAtParameter(2.0 / 3));
+                    cPts.Add((c as Circle).PointAtParameter(0.25));
+                    cPts.Add((c as Circle).PointAtParameter(0.5));
+                    cPts.Add((c as Circle).PointAtParameter(0.75));
                     cPts.Add((c as Circle).EndPoint());
                 }
                 else
