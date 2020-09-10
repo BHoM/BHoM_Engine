@@ -117,6 +117,18 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        public static bool IsEqual(this NurbsCurve curve, NurbsCurve other, double tolerance = Tolerance.Distance)
+        {
+            return curve.ControlPoints.Count == other.ControlPoints.Count
+                && curve.Knots.Count == other.Knots.Count
+                && curve.Weights.Count == other.Weights.Count
+                && curve.ControlPoints.Zip(other.ControlPoints, (a, b) => a.IsEqual(b, tolerance)).All(x => x)
+                && curve.Knots.Zip(other.Knots, (a, b) => Math.Abs(a - b) < tolerance).All(x => x)          //TODO: Using distance tolerance. Find out what kind of tolerance should be used.
+                && curve.Weights.Zip(other.Weights, (a, b) => Math.Abs(a - b) < tolerance).All(x => x);     //TODO: Using distance tolerance. Find out what kind of tolerance should be used.
+        }
+
+        /***************************************************/
+
         public static bool IsEqual(this PolyCurve curve, PolyCurve other, double tolerance = Tolerance.Distance)
         {
             return curve.Curves.Count == other.Curves.Count

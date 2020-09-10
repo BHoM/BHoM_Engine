@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -20,36 +20,48 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+
+using BH.oM.Analytical.Elements;
 using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
+using BH.Engine.Geometry;
+using BH.Engine.Reflection;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.ComponentModel;
+using System.Linq.Expressions;
 
-namespace BH.Engine.Geometry
+namespace BH.Engine.Analytical
 {
-    public static partial class Create
+    public static partial class Query
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static NurbsCurve NurbsCurve(IEnumerable<Point> controlPoints, IEnumerable<double> weights, IEnumerable<double> knots)
+        [Description("Gets the polycurve that defines the outline of the panel and checks for a single continuous linear curve")]
+        [Input("panel", "The IPanel to get the polycurve from")]
+        [Output("polycurve", "The polycurve defining the outline of the panel")]
+        public static PolyCurve ExternalPolyCurve<TEdge, TOpening>(this IPanel<TEdge, TOpening> panel)
+            where TEdge : IEdge
+            where TOpening : IOpening<TEdge>
         {
-            return new NurbsCurve { ControlPoints = controlPoints.ToList(), Knots = knots.ToList(), Weights = weights.ToList() };
+            List<ICurve> curves = panel.ExternalEdges.SelectMany(x => x.Curve.ISubParts()).ToList();
+
+            List<PolyCurve> polycurves = Engine.Geometry.Compute.IJoin(curves);
+
+            if (polycurves.Count != 1)
+            {
+                Reflection.Compute.RecordError("The curve defining the Panel is not a single continuous curve");
+                return null;
+            }
+
+            PolyCurve polycurve = polycurves.First();
+
+            return polycurve;
         }
 
-
-        /***************************************************/
-        /**** Random Geometry                           ****/
-        /***************************************************/
-
-        [NotImplemented]
-        public static NurbsCurve RandomNurbsCurve(Random rnd, BoundingBox box = null, int minNbCPs = 5, int maxNbCPs = 20)
-        {
-            throw new NotImplementedException();
-        }
-
-        /***************************************************/
     }
 }

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -20,36 +20,61 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+
+using BH.oM.Analytical.Elements;
 using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
+using BH.Engine.Geometry;
+using BH.Engine.Reflection;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.ComponentModel;
 
-namespace BH.Engine.Geometry
+namespace BH.Engine.Analytical
 {
-    public static partial class Create
+    public static partial class Query
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static NurbsCurve NurbsCurve(IEnumerable<Point> controlPoints, IEnumerable<double> weights, IEnumerable<double> knots)
+        [Description("Determines whether a panel's outline is a square.")]
+        [Input("panel", "The IPanel to check if the outline is a square.")]
+        [Output("bool", "True for panels with a square outline or false for panels with a non square outline.")]
+        public static bool IsOutlineSquare<TEdge, TOpening>(this IPanel<TEdge, TOpening> panel)
+            where TEdge : IEdge
+            where TOpening : IOpening<TEdge>
         {
-            return new NurbsCurve { ControlPoints = controlPoints.ToList(), Knots = knots.ToList(), Weights = weights.ToList() };
+            PolyCurve polycurve = ExternalPolyCurve(panel);
+            if (polycurve == null)
+                return false;
+
+            if (polycurve.SubParts().Any(x => !x.IIsLinear()))
+                return false;
+
+            List<Point> points = polycurve.DiscontinuityPoints();
+            if (points.Count != 4)
+                return false;
+            if (!points.IsCoplanar())
+                return false;
+
+            List<Vector> vectors = VectorsBetweenPoints(points);
+
+            List<double> angles = AnglesBetweenVectors(vectors);
+
+            //Check the three angles are pi/2 degrees within tolerance
+            if (angles.Any(x => Math.Abs(Math.PI / 2 - x) > Tolerance.Angle))
+                return false;
+
+            //Check all lengths are the same within tolerance
+            double length = vectors.First().Length();
+            return vectors.Skip(0).All(x => (Math.Abs(x.Length() - length) < Tolerance.Distance)) ? true : false;
         }
 
-
-        /***************************************************/
-        /**** Random Geometry                           ****/
         /***************************************************/
 
-        [NotImplemented]
-        public static NurbsCurve RandomNurbsCurve(Random rnd, BoundingBox box = null, int minNbCPs = 5, int maxNbCPs = 20)
-        {
-            throw new NotImplementedException();
-        }
-
-        /***************************************************/
     }
+
 }

@@ -67,8 +67,12 @@
     <Compile Include="Modify\SetOutlineElements1D.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Query\Elements0D.cs" />
+    <Compile Include="Query\ExternalPolycurve.cs" />
     <Compile Include="Query\Geometry.cs" />
     <Compile Include="Query\InternalElements2D.cs" />
+    <Compile Include="Query\IsOutlineQuad.cs" />
+    <Compile Include="Query\IsOutlineRectangular.cs" />
+    <Compile Include="Query\IsOutlineSquare.cs" />
     <Compile Include="Query\OutlineElements1D.cs" />
   </ItemGroup>
   <ItemGroup>
