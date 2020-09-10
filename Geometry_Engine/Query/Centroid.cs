@@ -40,7 +40,7 @@ namespace BH.Engine.Geometry
 
         //TODO: Remove when PlanarSurface will implement IElement2D
         [Description("Queries the centre of area for a PlanarSurface.")]
-        [Input("planar surface", "The PlanarSurface to get the centre of area of.")]
+        [Input("surface", "The PlanarSurface to get the centre of area of.")]
         [Input("tolerance", "Distance tolerance, default set to BH.oM.Geometry.Tolerance.Distance")]
         [Output("centroid", "The Point at the centre of given PlanarSurface.")]
         public static Point Centroid(this PlanarSurface surface, double tolerance = Tolerance.Distance)
@@ -53,11 +53,11 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Curves lists             ****/
         /***************************************************/
 
-        [Description("Queries the combined centre of area of a set of ICurves with an optional set of openings.\nTo give a correct result all input curves must be planar, coplanar, closed and non-self-intersecting.\nOpening curves should also be inside of outline curves.")]
+        [Description("Queries the combined centre of area enclosed by a set of ICurves with an optional set of openings.\nTo give a correct result all input curves must be planar, coplanar, closed and non-self-intersecting.\nOpening curves should also be inside of outline curves.")]
         [Input("outlines", "Set of planar, coplanar, closed and non-self-intersecting ICurves to get the combined centre of area of.")]
         [Input("openings", "Set of planar, coplanar, closed and non-self-intersecting ICurves illustrating openings in initial set of outlines.")]
         [Input("tolerance", "Distance tolerance, default set to BH.oM.Geometry.Tolerance.Distance")]
-        [Output("centroid", "The Point at the centre of given PlanarSurface.")]
+        [Output("centroid", "The Point at the centre of given geometry.")]
         public static Point Centroid(this IEnumerable<ICurve> outlines, IEnumerable<ICurve> openings = null, double tolerance = Tolerance.Distance)
         {
             Point centroid = new Point();
@@ -88,10 +88,10 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Curves                   ****/
         /***************************************************/
 
-        [Description("Queries the centre of area for a closed, planar, non-self-intersecting Polyline.")]
+        [Description("Queries the centre of area enclosed by a closed, planar, non-self-intersecting Polyline.")]
         [Input("curve", "The Polyline to get the centre of area of.")]
         [Input("tolerance", "Distance tolerance, default set to BH.oM.Geometry.Tolerance.Distance")]
-        [Output("centroid", "The Point at the centre of given Polyline.")]
+        [Output("centroid", "The Point at the centre of a region enclosed by given Polyline.")]
         public static Point Centroid(this Polyline curve, double tolerance = Tolerance.Distance)
         {
             if (!curve.IsPlanar(tolerance))
@@ -153,10 +153,10 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [Description("Queries the centre of area for a closed, planar, non-self-intersecting PolyCurve.")]
+        [Description("Queries the centre of area enclosed by a closed, planar, non-self-intersecting PolyCurve.")]
         [Input("curve", "The PolyCurve to get the centre of area of.")]
         [Input("tolerance", "Distance tolerance, default set to BH.oM.Geometry.Tolerance.Distance")]
-        [Output("centroid", "The Point at the centre of given Polyline.")]
+        [Output("centroid", "The Point at the centre of area enclosed by given Polyline.")]
         public static Point Centroid(this PolyCurve curve, double tolerance = Tolerance.Distance)
         {
             if (!curve.IsPlanar(tolerance))
