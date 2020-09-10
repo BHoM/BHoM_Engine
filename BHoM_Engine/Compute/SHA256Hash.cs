@@ -20,52 +20,34 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Base;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Security.Cryptography;
-using System.Reflection;
-using BH.Engine.Serialiser;
-using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
 
 namespace BH.Engine.Base
 {
     public static partial class Compute
     {
-
-        ///***************************************************/
-        ///**** Private Methods                           ****/
-        ///***************************************************/
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
 
         [Description("Computes a SHA 256 hash from the given string.")]
-        public static string SHA256Hash(string hashString)
+        public static string SHA256Hash(string str)
         {
-            byte[] hashBytes = System.Text.ASCIIEncoding.Default.GetBytes(hashString);
+            byte[] strBytes = ASCIIEncoding.Default.GetBytes(str);
 
-            return SHA256Hash(hashBytes);
-        }
+            HashAlgorithm SHA256Algorithm = SHA256.Create();
+            byte[] byteHash = SHA256Algorithm.ComputeHash(strBytes);
 
-        private static string SHA256Hash(byte[] inputObj)
-        {
             StringBuilder sb = new StringBuilder();
-            foreach (byte b in SHA256_byte(inputObj))
+            foreach (byte b in byteHash)
                 sb.Append(b.ToString("X2"));
 
             return sb.ToString();
         }
-        
-        ///***************************************************/
 
-        private static byte[] SHA256_byte(byte[] inputObj)
-        {
-            HashAlgorithm algorithm = System.Security.Cryptography.SHA256.Create();
-            return algorithm.ComputeHash(inputObj);
-        }
-
+        /***************************************************/
     }
 }
 
