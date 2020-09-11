@@ -55,7 +55,7 @@ namespace BH.Engine.MEP
             double elementSolidArea = sectionProfile.ElementProfile.Area();
             double elementVoidArea = sectionProfile.ElementProfile.VoidArea();
 
-            double liningSolidArea = sectionProfile.LiningProfile.Area() - sectionProfile.ElementProfile.Area();
+            double liningSolidArea = sectionProfile.LiningProfile.Area();
             double liningVoidArea = sectionProfile.LiningProfile.VoidArea();
 
             double insulationSolidArea = sectionProfile.InsulationProfile.Area();
@@ -63,7 +63,7 @@ namespace BH.Engine.MEP
 
             if (sectionProfile.LiningProfile != null)
             {
-                liningSolidArea = sectionProfile.LiningProfile.Area() - sectionProfile.ElementProfile.Area();
+                liningSolidArea = sectionProfile.LiningProfile.Area();
                 liningVoidArea = sectionProfile.LiningProfile.VoidArea();
             }
 
