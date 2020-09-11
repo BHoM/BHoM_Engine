@@ -53,10 +53,10 @@ namespace BH.Engine.Analytical
 
             if (!polycurve.IsPlanar())
                 return false;
-            Vector vector = plane.Normal;
-            Vector tangent = polycurve.Normal();
+            Vector planeNormal = plane.Normal;
+            Vector polycurveNormal = polycurve.Normal();
 
-            return vector.Normalise().IsParallel(tangent.Normalise(), Tolerance.Distance) == 1 ? true : false;
+            return planeNormal.Normalise().IsParallel(polycurveNormal.Normalise(), Tolerance.Distance) == 1 ? true : false;
         }
 
     }

@@ -51,8 +51,8 @@ namespace BH.Engine.Analytical
             PolyCurve polycurve = ExternalPolyCurve(panel);
             if (!polycurve.IsPlanar())
                 return false;
-            Vector tangent = polycurve.Normal();
-            return (tangent.Normalise().IsInPlane(Plane.XY));
+            Vector polycurveNormal = polycurve.Normal();
+            return (polycurveNormal.Normalise().IsInPlane(Plane.XY));
         }
     }
 }
