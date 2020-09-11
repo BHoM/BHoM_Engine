@@ -28,9 +28,6 @@ using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
 using BH.Engine.Geometry;
 using BH.Engine.Reflection;
-
-
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -45,8 +42,8 @@ namespace BH.Engine.Analytical
         /***************************************************/
 
         [Description("Checks if the Panel is aligned with the horizontal plane (global XY).")]
-        [Input("panel", "The IPanel to check if a panel is horizontal.")]
-        [Output("bool", "True for panels is horizontal.")]
+        [Input("panel", "The IPanel to check if it is aligned to the horizontal plane (global XY).")]
+        [Output("bool", "True if the IPanel is aligned with the horizontal plane (global XY).")]
         public static bool IsHorizontal<TEdge, TOpening>(this IPanel<TEdge, TOpening> panel)
             where TEdge : IEdge
             where TOpening : IOpening<TEdge>
