@@ -61,7 +61,27 @@ namespace BH.Engine.Base
 
             string hashString = DefiningString(iObj, 0, maxNesting, propertyNameExceptions, propertyFullNameExceptions, namespaceExceptions, typeExceptions);
 
-            return Compute.SHA256Hash(hashString);
+            return SHA256Hash(hashString);
+        }
+
+
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/ 
+
+        // Computes a SHA 256 hash from the given string.
+        private static string SHA256Hash(string str)
+        {
+            byte[] strBytes = ASCIIEncoding.Default.GetBytes(str);
+
+            HashAlgorithm SHA256Algorithm = SHA256.Create();
+            byte[] byteHash = SHA256Algorithm.ComputeHash(strBytes);
+
+            StringBuilder sb = new StringBuilder();
+            foreach (byte b in byteHash)
+                sb.Append(b.ToString("X2"));
+
+            return sb.ToString();
         }
     }
 }
