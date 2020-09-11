@@ -55,5 +55,10 @@ namespace BH.Engine.MEP
             return (1.30 * Math.Pow(a * b, 0.625) / Math.Pow(a + b, 0.250)) / 1000;
         }
         /***************************************************/
+
+        public static double CircularEquivalentDiameter(this object profile)
+        {
+            return 0; //To catch things that are not box profile.
+        }
     }
 }
