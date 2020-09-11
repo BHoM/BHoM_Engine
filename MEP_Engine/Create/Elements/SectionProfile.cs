@@ -82,10 +82,28 @@ namespace BH.Engine.MEP
         public static SectionProfile SectionProfile(TubeProfile tubeProfile, double liningThickness, double insulationThickness)
         {
             //Internal offset of original ShapeProfile
-            IProfile liningProfile = BH.Engine.Geometry.Create.TubeProfile((((tubeProfile.Diameter/2) - tubeProfile.Thickness) * 2), liningThickness);
+            IProfile liningProfile = null;
+
+            if(liningThickness <= 0)
+            {
+                liningProfile = null;
+            }
+            else
+            {
+                liningProfile = BH.Engine.Geometry.Create.TubeProfile((((tubeProfile.Diameter / 2) - tubeProfile.Thickness) * 2), liningThickness);
+            }
 
             //External offset of original ShapeProfile
-            IProfile insulationProfile = BH.Engine.Geometry.Create.TubeProfile((tubeProfile.Diameter + (insulationThickness * 2)), insulationThickness);
+
+            IProfile insulationProfile = null;
+            if(insulationThickness <= 0)
+            {
+                insulationProfile = null;
+            }
+            else
+            {
+                insulationProfile = BH.Engine.Geometry.Create.TubeProfile((tubeProfile.Diameter + (insulationThickness * 2)), insulationThickness);
+            }
 
             return new SectionProfile(tubeProfile, liningProfile, insulationProfile);
         }
