@@ -23,11 +23,15 @@
  * along with this code.If not, see<https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+
+
+
 using BH.oM.Analytical.Elements;
 using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
 using BH.Engine.Geometry;
 using BH.Engine.Reflection;
+using BH.oM.Quantities.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,8 +48,9 @@ namespace BH.Engine.Analytical
         [Description("Checks if the Panel is planar and is aligned to the Plane provided.")]
         [Input("panel", "The IPanel to check if it is aligned to the Plane provided.")]
         [Input("plane", "The Plane that the IPanel alignment is checked against.")]
+        [Input("tolerance", "Angle tolerance between the IPanel and the Plane provided", typeof(Angle))]
         [Output("bool", "True if the IPanel is aligned withe the Plane provided")]
-        public static bool IsAligned<TEdge, TOpening>(this IPanel<TEdge, TOpening> panel, Plane plane)
+        public static bool IsAligned<TEdge, TOpening>(this IPanel<TEdge, TOpening> panel, Plane plane, double tolerance = Tolerance.Angle)
             where TEdge : IEdge
             where TOpening : IOpening<TEdge>
         {
