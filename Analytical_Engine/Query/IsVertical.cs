@@ -28,6 +28,7 @@ using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
 using BH.Engine.Geometry;
 using BH.Engine.Reflection;
+using BH.oM.Quantities.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,8 +44,9 @@ namespace BH.Engine.Analytical
 
         [Description("Checks if the IPanel is aligned with any vertical plane.")]
         [Input("panel", "The IPanel to check if it is aligned to any vertical plane.")]
+        [Input("tolerance", "Angle tolerance between the IPanel and any vertical plane", typeof(Angle))]
         [Output("bool", "True if the IPanel is aligned with any vertical plane.")]
-        public static bool IsVertical<TEdge, TOpening>(this IPanel<TEdge, TOpening> panel)
+        public static bool IsVertical<TEdge, TOpening>(this IPanel<TEdge, TOpening> panel, double tolerance = Tolerance.Angle)
             where TEdge : IEdge
             where TOpening : IOpening<TEdge>
         {
@@ -52,7 +54,7 @@ namespace BH.Engine.Analytical
             if (!polycurve.IsPlanar())
                 return false;
             Vector polycurveNormal = polycurve.Normal();
-            return (polycurveNormal.Normalise().IsInPlane(Plane.XY));
+            return (polycurveNormal.Normalise().IsInPlane(Plane.XY, tolerance));
         }
     }
 }
