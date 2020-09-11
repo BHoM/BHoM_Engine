@@ -118,8 +118,6 @@
     <PostBuildEvent>
 xcopy "$(TargetDir)$(TargetFileName)"  "C:\ProgramData\BHoM\Assemblies" /Y
 
-xcopy "$(TargetDir)KellermanSoftware.Compare-NET-Objects.dll"  "C:\ProgramData\BHoM\Assemblies" /Y
-
-xcopy "$(TargetDir)Newtonsoft.Json.dll"  "C:\ProgramData\BHoM\Assemblies" /Y</PostBuildEvent>
+xcopy "$(TargetDir)KellermanSoftware.Compare-NET-Objects.dll"  "C:\ProgramData\BHoM\Assemblies" /Y</PostBuildEvent>
   </PropertyGroup>
 </Project>
