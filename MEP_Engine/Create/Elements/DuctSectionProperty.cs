@@ -53,15 +53,26 @@ namespace BH.Engine.MEP
             IMEPMaterial liningMaterial = null,
             string name = "")
         {
-            //Solid Areas
             double elementSolidArea = sectionProfile.ElementProfile.Area();
-            double liningSolidArea = sectionProfile.LiningProfile.Area() - sectionProfile.ElementProfile.Area();
-            double insulationSolidArea = sectionProfile.InsulationProfile.Area();
-
-            //Void Areas
             double elementVoidArea = sectionProfile.ElementProfile.VoidArea();
-            double liningVoidArea = sectionProfile.LiningProfile.VoidArea();
-            double insulationVoidArea = sectionProfile.InsulationProfile.VoidArea();
+
+            double liningSolidArea = 0;
+            double liningVoidArea = double.NaN;
+
+            double insulationSolidArea = 0;
+            double insulationVoidArea = double.NaN;
+
+            if (sectionProfile.LiningProfile != null)
+            {
+                liningSolidArea = sectionProfile.LiningProfile.Area() - sectionProfile.ElementProfile.Area();
+                liningVoidArea = sectionProfile.LiningProfile.VoidArea();
+            }
+
+            if(sectionProfile.InsulationProfile != null)
+            {
+                insulationSolidArea = sectionProfile.InsulationProfile.Area();
+                insulationVoidArea = sectionProfile.InsulationProfile.VoidArea();
+            }
 
             //Duct specific properties
             double circularEquivalent = sectionProfile.ElementProfile.ICircularEquivalentDiameter();
