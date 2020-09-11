@@ -156,7 +156,7 @@ namespace BH.Engine.Geometry
         [Description("Queries the centre of area enclosed by a closed, planar, non-self-intersecting PolyCurve.")]
         [Input("curve", "The PolyCurve to get the centre of area of.")]
         [Input("tolerance", "Distance tolerance, default set to BH.oM.Geometry.Tolerance.Distance")]
-        [Output("centroid", "The Point at the centre of area enclosed by given Polyline.")]
+        [Output("centroid", "The Point at the centre of area enclosed by given PolyCurve.")]
         public static Point Centroid(this PolyCurve curve, double tolerance = Tolerance.Distance)
         {
             if (!curve.IsPlanar(tolerance))
@@ -303,7 +303,7 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [Description("Interface method that queries the centre of area for any ICurve.")]
-        [Input("iCurve", "The ICurve to get the centre of area of.")]
+        [Input("curve", "The ICurve to get the centre of area of.")]
         [Input("tolerance", "Distance tolerance, default set to BH.oM.Geometry.Tolerance.Distance")]
         [Output("centroid", "The Point at the centre of given ICurve.")]
         public static Point ICentroid(this ICurve curve, double tolerance = Tolerance.Distance)
