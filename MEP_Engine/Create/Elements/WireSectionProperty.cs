@@ -52,15 +52,26 @@ namespace BH.Engine.MEP
             IMEPMaterial insulationMaterial = null,
             string name = "")
         {
-            //Solid Areas
             double elementSolidArea = sectionProfile.ElementProfile.Area();
-            double liningSolidArea = sectionProfile.LiningProfile.Area() - sectionProfile.ElementProfile.Area();
-            double insulationSolidArea = sectionProfile.InsulationProfile.Area();
-
-            //Void Areas
             double elementVoidArea = sectionProfile.ElementProfile.VoidArea();
+
+            double liningSolidArea = sectionProfile.LiningProfile.Area() - sectionProfile.ElementProfile.Area();
             double liningVoidArea = sectionProfile.LiningProfile.VoidArea();
+
+            double insulationSolidArea = sectionProfile.InsulationProfile.Area();
             double insulationVoidArea = sectionProfile.InsulationProfile.VoidArea();
+
+            if (sectionProfile.LiningProfile != null)
+            {
+                liningSolidArea = sectionProfile.LiningProfile.Area() - sectionProfile.ElementProfile.Area();
+                liningVoidArea = sectionProfile.LiningProfile.VoidArea();
+            }
+
+            if (sectionProfile.InsulationProfile != null)
+            {
+                insulationSolidArea = sectionProfile.InsulationProfile.Area();
+                insulationVoidArea = sectionProfile.InsulationProfile.VoidArea();
+            }
 
             WireSectionProperty property = new WireSectionProperty(sectionProfile, elementSolidArea, liningSolidArea, insulationSolidArea, elementVoidArea, liningVoidArea, insulationVoidArea);
             property.ConductiveMaterial = conductiveMaterial;
