@@ -107,7 +107,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Calcualtes the Torsinal constant for the profile. Note that this is not the polar moment of inertia. Formulation taken from BS EN 10210-2:2019.")]
+        [Description("Calculates the torsional constant for the profile in accordance with section A.3 from BS EN 10210-2:2019. Note that this is not the polar moment of intertia.")]
         [Input("profile", "The ShapeProfile to calculate the torsional constant for.")]
         [Output("J", "Torsional constant of the profile. Note that this is not the polar moment of inertia.", typeof(TorsionConstant))]
         public static double TorsionalConstant(this BoxProfile profile)
