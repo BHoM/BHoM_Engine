@@ -86,6 +86,8 @@ namespace BH.Engine.Base
             return sb.ToString();
         }
 
+        /***************************************************/
+
         [Description("Generates a string representing the whole structure of the object with its assigned values.")]
         [Input("obj", "Objects the string should be calculated for.")]
         [Input("propertyNameExceptions", "(Optional) e.g. `Fragments`. If you want to exclude a property that many objects have.")]
@@ -178,6 +180,8 @@ namespace BH.Engine.Base
 
             return composedString;
         }
+
+        /***************************************************/
     }
 }
 
