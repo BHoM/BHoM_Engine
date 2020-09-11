@@ -61,7 +61,7 @@ namespace BH.Engine.Analytical
             Vector planeNormal = plane.Normal;
             Vector polycurveNormal = polycurve.Normal();
 
-            return planeNormal.Normalise().IsParallel(polycurveNormal.Normalise(), tolerance) == 1;
+            return planeNormal.IsParallel(polycurveNormal, tolerance) == 1 || planeNormal.IsParallel(polycurveNormal, tolerance) == -1;
         }
 
     }
