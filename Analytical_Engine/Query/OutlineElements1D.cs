@@ -27,6 +27,7 @@ using BH.oM.Analytical.Elements;
 using System.Collections.Generic;
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
+using BH.Engine.Geometry;
 
 namespace BH.Engine.Analytical
 {
@@ -60,6 +61,15 @@ namespace BH.Engine.Analytical
         }
 
         /***************************************************/
+
+        [Description("Gets the boundary from an IRegion defining the boundary of the element as the subparts of the perimiter curve. Method required for all IElement2Ds.")]
+        [Input("region", "The IRegion to get outline elements from.")]
+        [Output("elements", "Outline elements of the IRegion, i.e. the subparts of the Perimiter curve.")]
+        public static List<IElement1D> OutlineElements1D(this IRegion region)
+        {
+            return region.Perimeter.ISubParts().Cast<IElement1D>().ToList();
+        }
+
+        /***************************************************/
     }
 }
-
