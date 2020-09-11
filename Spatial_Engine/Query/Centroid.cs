@@ -54,11 +54,11 @@ namespace BH.Engine.Spatial
         [PreviousVersion("3.3", "BH.Engine.Spatial.Query.Centroid(BH.oM.Dimensional.IElement2D)")]
         [Description("Queries the centre of area for a IElement2Ds surface representation. For an IElement2D with homogeneous material and thickness this will also be the centre of weight.")]
         [Input("element2D", "The IElement2D with the geometry to get the centre of area of.")]
-        [Input("tolerance", "Distance tolerance, default set to BH.oM.Geometry.Tolerance.Distance")]
+        [Input("tolerance", "Distance tolerance used in geometry processing, default set to BH.oM.Geometry.Tolerance.Distance")]
         [Output("centroid", "The Point at the centre of area for the homogeneous geometrical representation of the IElement2D.")]
         public static Point Centroid(this IElement2D element2D, double tolerance = Tolerance.Distance)
         {
-            return Geometry.Query.Centroid(new List<ICurve> { element2D.OutlineCurve() }, element2D.InternalOutlineCurves(), tolerance);
+            return Geometry.Query.Centroid(new List<ICurve> { element2D.OutlineCurve() });//, element2D.InternalOutlineCurves(), tolerance);
         }
 
         /******************************************/
