@@ -64,7 +64,7 @@ namespace BH.Engine.MEP
 
             if (sectionProfile.LiningProfile != null)
             {
-                liningSolidArea = sectionProfile.LiningProfile.Area() - sectionProfile.ElementProfile.Area();
+                liningSolidArea = sectionProfile.LiningProfile.Area();
                 liningVoidArea = sectionProfile.LiningProfile.VoidArea();
             }
 
