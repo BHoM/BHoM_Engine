@@ -58,7 +58,7 @@ namespace BH.Engine.Spatial
         [Output("centroid", "The Point at the centre of area for the homogeneous geometrical representation of the IElement2D.")]
         public static Point Centroid(this IElement2D element2D, double tolerance = Tolerance.Distance)
         {
-            return Geometry.Query.Centroid(new List<ICurve> { element2D.OutlineCurve() });//, element2D.InternalOutlineCurves(), tolerance);
+            return Geometry.Query.Centroid(new List<ICurve> { element2D.OutlineCurve() }, element2D.InternalOutlineCurves(), tolerance);
         }
 
         /******************************************/
