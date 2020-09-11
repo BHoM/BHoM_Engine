@@ -54,7 +54,7 @@ namespace BH.Engine.Analytical
             if (!polycurve.IsPlanar())
                 return false;
             Vector polycurveNormal = polycurve.Normal();
-            return (polycurveNormal.Normalise().IsInPlane(Plane.XY, tolerance));
+            return (polycurveNormal.IsInPlane(Plane.XY, tolerance));
         }
     }
 }
