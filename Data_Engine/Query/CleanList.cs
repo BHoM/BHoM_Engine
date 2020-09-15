@@ -20,11 +20,9 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-
 using BH.oM.Reflection.Attributes;
 using System.Collections.Generic;
 using System.ComponentModel;
-
 
 namespace BH.Engine.Data
 {
@@ -43,6 +41,5 @@ namespace BH.Engine.Data
         }
 
         /***************************************************/
-
     }
 }
