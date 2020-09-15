@@ -111,6 +111,7 @@
     <Compile Include="Query\Axes.cs" />
     <Compile Include="Query\AxisExists.cs" />
     <Compile Include="Query\Children.cs" />
+    <Compile Include="Query\CleanList.cs" />
     <Compile Include="Query\DepthDictionary.cs" />
     <Compile Include="Query\ChunkBy.cs" />
     <Compile Include="Query\ItemsInRange.cs" />
