@@ -34,11 +34,11 @@ namespace BH.Engine.Data
         /***************************************************/
 
         [Description("Removing any null objects from the input collection.")]
-        [Input("list", "The collection to clean from null objects.")]
+        [Input("collection", "The collection to clean from null objects.")]
         [Output("list", "The collection without nulls in it as a list.")]
-        public static List<T> RemoveNulls<T>(this IEnumerable<T> list)
+        public static List<T> RemoveNulls<T>(this IEnumerable<T> collection)
         {
-            return list.Where(x => x != null).ToList();
+            return collection.Where(x => x != null).ToList();
         }
 
         /***************************************************/
