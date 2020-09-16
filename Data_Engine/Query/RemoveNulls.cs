@@ -20,6 +20,7 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using System.Linq;
 using BH.oM.Reflection.Attributes;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -32,12 +33,12 @@ namespace BH.Engine.Data
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Removing any null objects from the input list.")]
-        [Input("list", "The list to clean from null objects.")]
-        [Output("list", "The list without nulls in it.")]
-        public static List<T> RemoveNulls<T>(this List<T> list)
+        [Description("Removing any null objects from the input collection.")]
+        [Input("list", "The collection to clean from null objects.")]
+        [Output("list", "The collection without nulls in it as a list.")]
+        public static List<T> RemoveNulls<T>(this IEnumerable<T> list)
         {
-            return list.FindAll(x => x != null);
+            return list.Where(x => x != null).ToList();
         }
 
         /***************************************************/
