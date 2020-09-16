@@ -32,10 +32,10 @@ namespace BH.Engine.Data
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Cleans the list by removing any null objects from it.")]
+        [Description("Removing any null objects from the input list.")]
         [Input("list", "The list to clean from null objects.")]
         [Output("list", "The list without nulls in it.")]
-        public static List<T> CleanList<T>(this List<T> list)
+        public static List<T> RemoveNulls<T>(this List<T> list)
         {
             return list.FindAll(x => x != null);
         }
