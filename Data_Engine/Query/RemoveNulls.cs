@@ -34,7 +34,7 @@ namespace BH.Engine.Data
         /***************************************************/
 
         [Description("Removing any null objects from the input collection.")]
-        [Input("collection", "The collection to clean from null objects.")]
+        [Input("collection", "The collection to remove nulls from.")]
         [Output("list", "The collection without nulls in it as a list.")]
         public static List<T> RemoveNulls<T>(this IEnumerable<T> collection)
         {
