@@ -94,6 +94,7 @@
     <Compile Include="Query\Geometry.cs" />
     <Compile Include="Query\HydraulicDiameter.cs" />
     <Compile Include="Query\Length.cs" />
+    <Compile Include="Query\CompositeSolidVolumes.cs" />
     <Compile Include="Query\SolidVolume.cs" />
   </ItemGroup>
   <ItemGroup>
