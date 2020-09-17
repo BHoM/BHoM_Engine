@@ -21,14 +21,8 @@
  */
 
 using System.ComponentModel;
-using System.Collections.Generic;
-using System;
-
-using BH.oM.Reflection;
 using BH.oM.Reflection.Attributes;
 using BH.oM.MEP.Elements;
-using BH.Engine.Spatial;
-using System.Diagnostics.Eventing.Reader;
 
 namespace BH.Engine.MEP
 {
