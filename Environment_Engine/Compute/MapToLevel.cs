@@ -47,10 +47,12 @@ namespace BH.Engine.Environment
         [Input("decimals", "Provide decimal location to define the degree of tolerance for data matching.")]
         [MultiOutput(0, "roomsByLevel", "A collection of BHoM Rooms group by levels.")]
         [MultiOutput(1, "levelsInUse", "A sublist of the BHoM Levels that have Room.")]
-        public static Output<List<List<Room>>, List<oM.Geometry.SettingOut.Level>> MapToLevel(List<Room> rooms, List<oM.Geometry.SettingOut.Level> levels, int decimals = 6)
+        [MultiOutput(2, "roomsNotMapped", "A collection of BHoM Rooms which did not sit neatly on any of the provided levels")]
+        public static Output<List<List<Room>>, List<oM.Geometry.SettingOut.Level>, List<Room>> MapToLevel(List<Room> rooms, List<oM.Geometry.SettingOut.Level> levels, int decimals = 6)
         {
             List<List<Room>> roomsByLevel = new List<List<Room>>();
             List<oM.Geometry.SettingOut.Level> levelsInUse = new List<oM.Geometry.SettingOut.Level>();
+            List<Room> roomsNotByLevel = new List<Room>();
             List<oM.Geometry.SettingOut.Level> roundedLevels = new List<oM.Geometry.SettingOut.Level>();
 
             for (int x = 0; x < levels.Count; x++)
@@ -66,11 +68,19 @@ namespace BH.Engine.Environment
             {
                 BoundingBox bbox = room.Perimeter.IBounds();
                 double zLevel = Math.Round(bbox.Min.Z, decimals);
-                int levelIndex = roundedLevels.IndexOf(roundedLevels.Where(x => x.Elevation == zLevel).First());
+
+                oM.Geometry.SettingOut.Level roundedLevel = roundedLevels.Where(x => x.Elevation == zLevel).FirstOrDefault();
+                if(roundedLevel == null)
+                {
+                    roomsNotByLevel.Add(room);
+                    continue; //zLevel does not exist in the search levels
+                }
+
+                int levelIndex = roundedLevels.IndexOf(roundedLevel);
 
                 if (levelIndex == -1)
                 {
-                    BH.Engine.Reflection.Compute.RecordWarning("Room with ID " + room.BHoM_Guid + " does not sit on any provided level");
+                    roomsNotByLevel.Add(room);
                     continue; //zLevel does not exist in the search levels
                 }
 
@@ -85,11 +95,15 @@ namespace BH.Engine.Environment
             foreach (KeyValuePair<double, List<Room>> kvp in mappedRooms.OrderBy(x => x.Key))
                 roomsByLevel.Add(kvp.Value);
 
-            Output<List<List<Room>>, List<oM.Geometry.SettingOut.Level>> output = new Output<List<List<Room>>, List<oM.Geometry.SettingOut.Level>>
+            Output<List<List<Room>>, List<oM.Geometry.SettingOut.Level>, List<Room>> output = new Output<List<List<Room>>, List<oM.Geometry.SettingOut.Level>, List<Room>>
             {
                 Item1 = roomsByLevel,
                 Item2 = levelsInUse.OrderBy(x => x.Elevation).Distinct().ToList(),
+                Item3 = roomsNotByLevel,
             };
+
+            if(roomsNotByLevel.Count > 0)
+                BH.Engine.Reflection.Compute.RecordWarning("Some rooms were not able to be mapped to a level. See the roomsNotMapped output to examine which rooms and resolve any issues");
 
             return output;
         }
