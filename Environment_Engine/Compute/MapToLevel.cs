@@ -41,7 +41,7 @@ namespace BH.Engine.Environment
 {
     public static partial class Compute
     {
-        [Description("Organize the BHoM Room object into a data structure based on the level of each room.")]
+        [Description("Organise the BHoM Room object into a data structure based on the level of each room.")]
         [Input("rooms", "A collection of BHoM Rooms to be organized.")]
         [Input("levels", "A collection of BHoM Levels.")]
         [Input("decimals", "Provide decimal location to define the degree of tolerance for data matching.")]
