@@ -119,6 +119,7 @@
     <Compile Include="Modify\RemovePanels.cs" />
     <Compile Include="Modify\SetAdjacentSpaces.cs" />
     <Compile Include="Modify\SetFloorPanels.cs" />
+    <Compile Include="Modify\SetPanelConstructionByType.cs" />
     <Compile Include="Modify\SetOpeningConstruction.cs" />
     <Compile Include="Modify\SetOpeningType.cs" />
     <Compile Include="Modify\SetPanelTypeByAdjacencies.cs" />
