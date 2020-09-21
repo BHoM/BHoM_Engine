@@ -33,15 +33,18 @@ namespace BH.Engine.Reflection
 
         public static Dictionary<string, List<Type>> BHoMTypeDictionary()
         {
-            // If the dictionary exists already return it
-            if (m_BHoMTypeDictionary != null && m_BHoMTypeDictionary.Count > 0)
+            lock (m_GetTypesLock)
+            {
+                // If the dictionary exists already return it
+                if (m_BHoMTypeDictionary != null && m_BHoMTypeDictionary.Count > 0)
+                    return m_BHoMTypeDictionary;
+
+                // Otherwise, create it
+                m_BHoMTypeDictionary = new Dictionary<string, List<Type>>();
+                ExtractAllTypes();
+
                 return m_BHoMTypeDictionary;
-
-            // Otherwise, create it
-            m_BHoMTypeDictionary = new Dictionary<string, List<Type>>();
-            ExtractAllTypes();
-
-            return m_BHoMTypeDictionary;
+            }
         }
 
 
