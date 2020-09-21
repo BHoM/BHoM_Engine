@@ -129,7 +129,7 @@ namespace BH.Engine.Reflection
 
                     string message = "Cannot load types from assembly " + asm.GetName().Name + ". Exception message: " + e.Message;
 
-                    if (e.InnerException != null)
+                    if (!string.IsNullOrEmpty(e.InnerException?.Message))
                     {
                         message += "\nInnerException: " + e.InnerException.Message;
                     }
@@ -167,4 +167,3 @@ namespace BH.Engine.Reflection
         /***************************************************/
     }
 }
-
