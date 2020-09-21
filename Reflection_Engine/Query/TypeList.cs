@@ -34,70 +34,85 @@ namespace BH.Engine.Reflection
 
         public static List<Type> BHoMInterfaceList()
         {
-            // If the dictionary exists already return it
-            if (m_InterfaceList != null && m_InterfaceList.Count > 0)
+            lock (m_GetTypesLock)
+            {
+                // If the dictionary exists already return it
+                if (m_InterfaceList != null && m_InterfaceList.Count > 0)
+                    return m_InterfaceList;
+
+                // Otherwise, create it
+                ExtractAllTypes();
+
                 return m_InterfaceList;
-
-            // Otherwise, create it
-            ExtractAllTypes();
-
-            return m_InterfaceList;
+            }
         }
 
         /***************************************************/
 
         public static List<Type> BHoMTypeList()
         {
-            // If the dictionary exists already return it
-            if (m_BHoMTypeList != null && m_BHoMTypeList.Count > 0)
+            lock (m_GetTypesLock)
+            {
+                // If the dictionary exists already return it
+                if (m_BHoMTypeList != null && m_BHoMTypeList.Count > 0)
+                    return m_BHoMTypeList;
+
+                // Otherwise, create it
+                ExtractAllTypes();
+
                 return m_BHoMTypeList;
-
-            // Otherwise, create it
-            ExtractAllTypes();
-
-            return m_BHoMTypeList;
+            }
         }
 
         /***************************************************/
 
         public static List<Type> AdapterTypeList()
         {
-            // If the dictionary exists already return it
-            if (m_AdapterTypeList != null && m_AdapterTypeList.Count > 0)
+            lock (m_GetTypesLock)
+            {
+                // If the dictionary exists already return it
+                if (m_AdapterTypeList != null && m_AdapterTypeList.Count > 0)
+                    return m_AdapterTypeList;
+
+                // Otherwise, create it
+                ExtractAllTypes();
+
                 return m_AdapterTypeList;
-
-            // Otherwise, create it
-            ExtractAllTypes();
-
-            return m_AdapterTypeList;
+            }
         }
 
         /***************************************************/
 
         public static List<Type> AllTypeList()
         {
-            // If the dictionary exists already return it
-            if (m_AllTypeList != null && m_AllTypeList.Count > 0)
+            lock (m_GetTypesLock)
+            {
+                // If the dictionary exists already return it
+                if (m_AllTypeList != null && m_AllTypeList.Count > 0)
+                    return m_AllTypeList;
+
+                // Otherwise, create it
+                ExtractAllTypes();
+
                 return m_AllTypeList;
-
-            // Otherwise, create it
-            ExtractAllTypes();
-
-            return m_AllTypeList;
+            }
         }
 
         /***************************************************/
 
         public static List<Type> EngineTypeList()
         {
-            // If the dictionary exists already return it
-            if (m_EngineTypeList != null && m_EngineTypeList.Count > 0)
+            lock (m_GetMethodsLock)
+            {
+                // If the dictionary exists already return it
+                if (m_EngineTypeList != null && m_EngineTypeList.Count > 0)
+                    return m_EngineTypeList;
+
+                // Otherwise, create it
+                ExtractAllMethods();
+
                 return m_EngineTypeList;
-
-            // Otherwise, create it
-            ExtractAllMethods();
-
-            return m_EngineTypeList;
+            }
         }
 
 
@@ -173,7 +188,7 @@ namespace BH.Engine.Reflection
         private static List<Type> m_AdapterTypeList = new List<Type>();
         private static List<Type> m_AllTypeList = new List<Type>();
         private static List<Type> m_InterfaceList = new List<Type>();
-
+        private static readonly object m_GetTypesLock = new object();
 
         /***************************************************/
     }
