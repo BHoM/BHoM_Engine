@@ -124,9 +124,17 @@ namespace BH.Engine.Reflection
                         }
                     }
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
-                    Compute.RecordWarning("Cannot load types from assembly " + asm.GetName().Name);
+
+                    string message = "Cannot load types from assembly " + asm.GetName().Name + ". Exception message: " + e.Message;
+
+                    if (!string.IsNullOrEmpty(e.InnerException?.Message))
+                    {
+                        message += "\nInnerException: " + e.InnerException.Message;
+                    }
+
+                    Compute.RecordWarning(message);
                 }
             }
         }
@@ -159,4 +167,3 @@ namespace BH.Engine.Reflection
         /***************************************************/
     }
 }
-

@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.Linq;
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
+using BH.Engine.Geometry;
 using BH.Engine.Base;
 
 
@@ -71,6 +72,36 @@ namespace BH.Engine.Analytical
         }
 
         /***************************************************/
+
+        [Description("Sets the Outline Element1Ds of an IRegion, i.e. the perimiter. Method required for all IElement2Ds.")]
+        [Input("region", "The IRegion to update the Perimeter of.")]
+        [Input("outlineElements", "A list of IElement1Ds which all should be Geometrical ICurves.")]
+        [Output("region", "The region with updated perimiter.")]
+        public static IRegion SetOutlineElements1D(this IRegion region, IEnumerable<IElement1D> outlineElements)
+        {
+            IRegion r = region.GetShallowClone(true) as IRegion;
+
+            IEnumerable<ICurve> joinedCurves = outlineElements.Cast<ICurve>();
+            if (outlineElements.Count() != 1)
+                joinedCurves = Engine.Geometry.Compute.IJoin(outlineElements.Cast<ICurve>().ToList());
+
+            if (joinedCurves.Count() == 1)
+            {
+                if (!joinedCurves.First().IIsClosed())
+                    Engine.Reflection.Compute.RecordWarning("The outline elements assigned to the region do not form a closed loop.");
+
+                r.Perimeter = joinedCurves.First();
+            }
+            else
+            {
+                Engine.Reflection.Compute.RecordWarning("The outline elements assigned to the region are disjointed.");
+                r.Perimeter = new PolyCurve { Curves = outlineElements.Cast<ICurve>().ToList() };
+            }
+
+            return r;
+        }
+
+        /***************************************************/
         /****               Private Methods             ****/
         /***************************************************/
 
@@ -99,4 +130,3 @@ namespace BH.Engine.Analytical
         /***************************************************/
     }
 }
-

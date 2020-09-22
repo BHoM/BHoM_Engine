@@ -20,9 +20,9 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.Engine.Geometry;
 using BH.oM.Dimensional;
 using BH.oM.Geometry;
+using BH.oM.Geometry.ShapeProfiles;
 using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
@@ -51,32 +51,14 @@ namespace BH.Engine.Spatial
         /****            IElement2D            ****/
         /******************************************/
 
+        [PreviousVersion("3.3", "BH.Engine.Spatial.Query.Centroid(BH.oM.Dimensional.IElement2D)")]
         [Description("Queries the centre of area for a IElement2Ds surface representation. For an IElement2D with homogeneous material and thickness this will also be the centre of weight.")]
         [Input("element2D", "The IElement2D with the geometry to get the centre of area of.")]
+        [Input("tolerance", "Distance tolerance used in geometry processing, default set to BH.oM.Geometry.Tolerance.Distance")]
         [Output("centroid", "The Point at the centre of area for the homogeneous geometrical representation of the IElement2D.")]
-        public static Point Centroid(this IElement2D element2D)
+        public static Point Centroid(this IElement2D element2D, double tolerance = Tolerance.Distance)
         {
-            Point tmp = Geometry.Query.Centroid(element2D.OutlineCurve());
-            double area = Geometry.Query.Area(element2D.OutlineCurve());
-
-            double x = tmp.X * area;
-            double y = tmp.Y * area;
-            double z = tmp.Z * area;
-
-
-            List<PolyCurve> openings = Geometry.Compute.BooleanUnion(element2D.InternalOutlineCurves());
-
-            foreach (ICurve o in openings)
-            {
-                Point oTmp = Geometry.Query.ICentroid(o);
-                double oArea = o.IArea();
-                x -= oTmp.X * oArea;
-                y -= oTmp.Y * oArea;
-                z -= oTmp.Z * oArea;
-                area -= oArea;
-            }
-            
-            return new Point { X = x / area, Y = y / area, Z = z / area };
+            return Geometry.Query.Centroid(new List<ICurve> { element2D.OutlineCurve() }, element2D.InternalOutlineCurves(), tolerance);
         }
 
         /******************************************/

@@ -70,13 +70,13 @@ namespace BH.Engine.Diffing
 
             if (bhomobj1 != null)
             {
-                diffConfig.CustomDataToIgnore.ForEach(k => bhomobj1.CustomData.Remove(k));
+                diffConfigCopy.CustomDataToIgnore.ForEach(k => bhomobj1.CustomData.Remove(k));
                 obj1Copy = bhomobj1;
             }
 
             if (bhomobj2 != null)
             {
-                diffConfig.CustomDataToIgnore.ForEach(k => bhomobj2.CustomData.Remove(k));
+                diffConfigCopy.CustomDataToIgnore.ForEach(k => bhomobj2.CustomData.Remove(k));
                 obj2Copy = bhomobj2;
             }
 
@@ -107,7 +107,7 @@ namespace BH.Engine.Diffing
                     propertyName = splittedName.FirstOrDefault() + $"['{keyName}']." + splittedName.Last();
                 }
 
-                if (!diffConfig.PropertiesToConsider.Any() || diffConfig.PropertiesToConsider.Contains(difference.PropertyName))
+                if (!diffConfigCopy.PropertiesToConsider.Any() || diffConfigCopy.PropertiesToConsider.Contains(difference.PropertyName))
                     dict[propertyName] = new Tuple<object, object>(difference.Object1, difference.Object2);
             }
 

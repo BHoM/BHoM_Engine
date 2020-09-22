@@ -46,6 +46,10 @@
       <HintPath>C:\ProgramData\BHoM\Assemblies\Geometry_oM.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Quantities_oM">
+      <HintPath>C:\ProgramData\BHoM\Assemblies\Quantities_oM.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Reflection_oM">
       <HintPath>C:\ProgramData\BHoM\Assemblies\Reflection_oM.dll</HintPath>
       <Private>False</Private>
@@ -70,9 +74,12 @@
     <Compile Include="Query\ExternalPolycurve.cs" />
     <Compile Include="Query\Geometry.cs" />
     <Compile Include="Query\InternalElements2D.cs" />
+    <Compile Include="Query\IsAligned.cs" />
+    <Compile Include="Query\IsHorizontal.cs" />
     <Compile Include="Query\IsOutlineQuad.cs" />
     <Compile Include="Query\IsOutlineRectangular.cs" />
     <Compile Include="Query\IsOutlineSquare.cs" />
+    <Compile Include="Query\IsVertical.cs" />
     <Compile Include="Query\OutlineElements1D.cs" />
   </ItemGroup>
   <ItemGroup>

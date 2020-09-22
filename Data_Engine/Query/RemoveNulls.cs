@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -20,40 +20,27 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Base;
-using BH.oM.Data.Collections;
-using BH.oM.Diffing;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Security.Cryptography;
-using System.Reflection;
-using BH.Engine.Serialiser;
 using BH.oM.Reflection.Attributes;
+using System.Collections.Generic;
 using System.ComponentModel;
 
-namespace BH.Engine.Diffing
+namespace BH.Engine.Data
 {
-    public static partial class Convert
+    public static partial class Query
     {
-        ///***************************************************/
-        ///**** Public Methods                            ****/
-        ///***************************************************/
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
 
-        public static byte[] ToDiffingByteArray(this object obj, List<string> fieldsToIgnore)
+        [Description("Removing any null objects from the input collection.")]
+        [Input("collection", "The collection to remove nulls from.")]
+        [Output("list", "The collection without nulls in it as a list.")]
+        public static List<T> RemoveNulls<T>(this IEnumerable<T> collection)
         {
-            if (fieldsToIgnore == null || fieldsToIgnore.Count == 0)
-                return obj.ToBytes();  
-
-            string objStr = ToDiffingJson(obj, fieldsToIgnore);
-            return objStr.ToBytes();
+            return collection.Where(x => x != null).ToList();
         }
 
-
-        ///***************************************************/
-
+        /***************************************************/
     }
 }
-
