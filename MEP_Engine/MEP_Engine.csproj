@@ -75,7 +75,9 @@
   <ItemGroup>
     <Compile Include="Create\CoolingCoil.cs" />
     <Compile Include="Create\ElectricalConnector.cs" />
+    <Compile Include="Create\Elements\CableTray.cs" />
     <Compile Include="Create\Elements\Duct.cs" />
+    <Compile Include="Create\Elements\CableTraySectionProperty.cs" />
     <Compile Include="Create\Elements\DuctSectionProperty.cs" />
     <Compile Include="Create\Elements\Pipe.cs" />
     <Compile Include="Create\Elements\PipeSectionProperty.cs" />
