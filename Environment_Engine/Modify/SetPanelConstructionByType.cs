@@ -36,6 +36,7 @@ using System.ComponentModel;
 
 using BH.Engine.Base;
 using System;
+using BH.oM.Physical.Elements;
 
 namespace BH.Engine.Environment
 {
@@ -49,27 +50,14 @@ namespace BH.Engine.Environment
 
         {
             List<Panel> clones = new List<Panel>(panels.Select(x => x.DeepClone<Panel>()).ToList());
-# modifiedPanels=List<clones>
-            string constructionType="Wall"
-                Console.WriteLine("Which Construction type do you want?")
-                constructionType = Console.ReadLine()
-
-                foreach string in modifiedPanels
+            foreach (Panel clone in clones)
+            {  
+                if (clone.Type == panelType)
                 {
-                if string = constructionType
-                    bool true
-                else bool false
-                    }
-                
-
-        
-
-
-                    /*List all the objects being passed to the method
-Filter out all objects which don't match the specified Type (and store these for later)
-For the remaining objects, assign the given Construction to them
-Join the two lists back together and return them.*/
-                    return clones;
+                    clone.Construction = newConstruction; 
+                }
+            }
+            return clones;
         }
     }
 }
