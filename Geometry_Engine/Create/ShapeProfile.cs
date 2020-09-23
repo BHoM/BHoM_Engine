@@ -43,7 +43,7 @@ namespace BH.Engine.Geometry
         {
             if (height < flangeThickness * 2 + rootRadius * 2 || height <= flangeThickness * 2)
             {
-                InvalidRatioError("height","flangeThickness and rootRadius");
+                InvalidRatioError("height", "flangeThickness and rootRadius");
                 return null;
             }
 
@@ -59,13 +59,13 @@ namespace BH.Engine.Geometry
                 return null;
             }
 
-            if (height <= 0 || width <= 0 || webthickness <= 0 || flangeThickness<= 0 || rootRadius< 0 ||toeRadius< 0)
+            if (height <= 0 || width <= 0 || webthickness <= 0 || flangeThickness <= 0 || rootRadius < 0 || toeRadius < 0)
             {
                 Engine.Reflection.Compute.RecordError("Input length less or equal to 0");
-                return null; 
+                return null;
             }
 
-            List<ICurve> curves = IProfileCurves(flangeThickness, width, flangeThickness, width, webthickness, height - 2 * flangeThickness, rootRadius, toeRadius,0);
+            List<ICurve> curves = IProfileCurves(flangeThickness, width, flangeThickness, width, webthickness, height - 2 * flangeThickness, rootRadius, toeRadius, 0);
             return new ISectionProfile(height, width, webthickness, flangeThickness, rootRadius, toeRadius, curves);
         }
 
@@ -99,7 +99,7 @@ namespace BH.Engine.Geometry
 
             if (innerRadius * 2 > width - thickness * 2)
             {
-                InvalidRatioError("innerRadius","width and thickness");
+                InvalidRatioError("innerRadius", "width and thickness");
                 return null;
             }
 
@@ -256,7 +256,7 @@ namespace BH.Engine.Geometry
 
             if (height <= topFlangeThickness + botFlangeThickness)
             {
-                InvalidRatioError("height","topFlangeThickness and botFlangeThickness");
+                InvalidRatioError("height", "topFlangeThickness and botFlangeThickness");
                 return null;
             }
 
@@ -296,7 +296,7 @@ namespace BH.Engine.Geometry
         {
             if (height < topFlangeThickness + botFlangeThickness + 2 * Math.Sqrt(2) * weldSize || height <= topFlangeThickness + botFlangeThickness)
             {
-                InvalidRatioError("height","topFlangeThickness, botFlangeThickness and weldSize");
+                InvalidRatioError("height", "topFlangeThickness, botFlangeThickness and weldSize");
                 return null;
             }
 
@@ -318,22 +318,22 @@ namespace BH.Engine.Geometry
                 return null;
             }
 
-            List<ICurve> curves = IProfileCurves(topFlangeThickness, topFlangeWidth, botFlangeThickness, botFlangeWidth, webThickness, height - botFlangeThickness - topFlangeThickness,0,0,weldSize);
+            List<ICurve> curves = IProfileCurves(topFlangeThickness, topFlangeWidth, botFlangeThickness, botFlangeWidth, webThickness, height - botFlangeThickness - topFlangeThickness, 0, 0, weldSize);
             return new FabricatedISectionProfile(height, topFlangeWidth, botFlangeWidth, webThickness, topFlangeThickness, botFlangeThickness, weldSize, curves);
         }
 
         /***************************************************/
 
         [Description("Creates a single FreeFormProfile from a collection of ICurves. \n" +
-                     "Checks if it's a valid profile and attempts to fix;  \n" + 
-                     " - coplanarity with eachother, by projecting onto the plane of the curve with the biggest area. \n" + 
-                     " - coplanarity with XYPlane, by rotating the curves to align. \n" + 
+                     "Checks if it's a valid profile and attempts to fix;  \n" +
+                     " - coplanarity with eachother, by projecting onto the plane of the curve with the biggest area. \n" +
+                     " - coplanarity with XYPlane, by rotating the curves to align. \n" +
                      " - curves on the XYPlane, by translating from one controlpoint to the origin. \n" +
                      "Checks if it's a valid profile; If they're closed, Not zero area, curve curve intersections, selfintersections. ")]
         public static FreeFormProfile FreeFormProfile(IEnumerable<ICurve> edges)
         {
             IEnumerable<ICurve> result = edges.ToList();
-            
+
             List<Point> cPoints = edges.SelectMany(x => x.IControlPoints()).ToList();
 
             // Any Point not on the XY-Plane
@@ -508,7 +508,7 @@ namespace BH.Engine.Geometry
 
             if (leftOutstandThickness <= 0 && leftOutstandWidth > 0 || leftOutstandWidth <= 0 && leftOutstandThickness > 0)
             {
-                InvalidRatioError("leftOutstandThickness","leftOutstandWidth");
+                InvalidRatioError("leftOutstandThickness", "leftOutstandWidth");
                 return null;
             }
 
@@ -529,7 +529,7 @@ namespace BH.Engine.Geometry
             if (mirrorAboutLocalY)
                 curves = curves.MirrorAboutLocalY();
 
-            return new GeneralisedTSectionProfile(height, webThickness, leftOutstandWidth, leftOutstandThickness, rightOutstandWidth, rightOutstandThickness,mirrorAboutLocalY, curves);
+            return new GeneralisedTSectionProfile(height, webThickness, leftOutstandWidth, leftOutstandThickness, rightOutstandWidth, rightOutstandThickness, mirrorAboutLocalY, curves);
         }
 
         /***************************************************/
@@ -555,8 +555,9 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [PreviousVersion("3.3", "BH.Engine.Geometry.Create.TaperedProfile(System.Collections.Generic.List<System.Decimal>, System.Collections.Generic.List<BH.oM.Geometry.ShapeProfiles.IProfile>)")]
-        [Input("interpolationOrder","Describes the order of the polynomial function between profiles whereby 1 = Linear, 2 = Quadratic, 3 = Cubic etc.")]
-        public static TaperedProfile TaperedProfile(List<decimal> positions, List<IProfile> profiles, int interpolationOrder)
+        [Input("interpolationOrder", "Describes the order of the polynomial function between profiles whereby 1 = Linear, 2 = Quadratic, 3 = Cubic etc. " +
+            "There should be one fewer (n-1) interpolation values than profiles.")]
+        public static TaperedProfile TaperedProfile(List<decimal> positions, List<IProfile> profiles, List<int> interpolationOrder)
         {
             if (positions.Count != profiles.Count)
             {
@@ -590,10 +591,10 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [PreviousVersion("3.3", "BH.Engine.Geometry.Create.TaperedProfile(BH.oM.Geometry.ShapeProfiles.IProfile, BH.oM.Geometry.ShapeProfiles.IProfile)")]
-        [Input("interpolationOrder", "Describes the polynomial function between profiles whereby 1 = Linear, 2 = Quadratic, 3 = Cubic etc.")]
+        [Input("interpolationOrder", "Describes the polynomial function between each profile whereby 1 = Linear, 2 = Quadratic, 3 = Cubic etc.")]
         public static TaperedProfile TaperedProfile(IProfile startProfile, IProfile endProfile, int interpolationOrder)
         {
-            return TaperedProfile(new List<decimal>() { 0, 1 }, new List<IProfile>() { startProfile, endProfile }, interpolationOrder);
+            return TaperedProfile(new List<decimal>() { 0, 1 }, new List<IProfile>() { startProfile, endProfile }, new List<int>() { interpolationOrder });
         }
 
         /***************************************************/
