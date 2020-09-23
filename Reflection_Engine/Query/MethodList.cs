@@ -35,40 +35,49 @@ namespace BH.Engine.Reflection
 
         public static List<MethodInfo> BHoMMethodList()
         {
-            // If the dictionary exists already return it
-            if (m_BHoMMethodList != null && m_BHoMMethodList.Count > 0)
+            lock (m_GetMethodsLock)
+            {
+                // If the dictionary exists already return it
+                if (m_BHoMMethodList != null && m_BHoMMethodList.Count > 0)
+                    return m_BHoMMethodList;
+
+                // Otherwise, create it
+                ExtractAllMethods();
+
                 return m_BHoMMethodList;
-
-            // Otherwise, create it
-            ExtractAllMethods();
-
-            return m_BHoMMethodList;
+            }
         }
 
         /***************************************************/
 
         public static List<MethodBase> AllMethodList()
         {
-            // If the dictionary exists already return it
-            if (m_AllMethodList != null && m_AllMethodList.Count > 0)
+            lock (m_GetMethodsLock)
+            {
+                // If the dictionary exists already return it
+                if (m_AllMethodList != null && m_AllMethodList.Count > 0)
+                    return m_AllMethodList;
+
+                // Otherwise, create it
+                ExtractAllMethods();
+
                 return m_AllMethodList;
-
-            // Otherwise, create it
-            ExtractAllMethods();
-
-            return m_AllMethodList;
+            }
         }
 
         /***************************************************/
 
         public static List<MethodBase> ExternalMethodList()
         {
-            // Checking for an empty list may be dangerous, we should give different meaning to null and empty lists
-            // What if m_ExternalMethodList is empty after calling ExtractAllMethods() ?
-            if (m_ExternalMethodList == null || m_ExternalMethodList.Count <= 0)
-                ExtractAllMethods();
+            lock (m_GetMethodsLock)
+            {
+                // Checking for an empty list may be dangerous, we should give different meaning to null and empty lists
+                // What if m_ExternalMethodList is empty after calling ExtractAllMethods() ?
+                if (m_ExternalMethodList == null || m_ExternalMethodList.Count <= 0)
+                    ExtractAllMethods();
 
-            return m_ExternalMethodList;
+                return m_ExternalMethodList;
+            }
         }
 
 
@@ -163,6 +172,7 @@ namespace BH.Engine.Reflection
         private static List<MethodBase> m_AllMethodList = new List<MethodBase>();
         private static List<MethodBase> m_ExternalMethodList = new List<MethodBase>();
         private static List<Type> m_EngineTypeList = new List<Type>();
+        private static readonly object m_GetMethodsLock = new object();
 
         /***************************************************/
     }
