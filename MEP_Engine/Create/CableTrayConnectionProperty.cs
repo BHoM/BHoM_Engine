@@ -1,4 +1,4 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -20,18 +20,15 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System.ComponentModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.ComponentModel;
 
-using BH.oM.MEP.MaterialFragments;
-using BH.oM.MEP.SectionProperties;
-using BH.Engine.Spatial;
-using BH.Engine.Geometry;
 using BH.oM.Reflection.Attributes;
+using BH.oM.MEP.ConnectionProperties;
 
 namespace BH.Engine.MEP
 {
@@ -40,24 +37,19 @@ namespace BH.Engine.MEP
         /***************************************************/
         /****               Public Methods              ****/
         /***************************************************/
-        [Description("Creates a composite Cable Tray sectionProfile.")]
-        [Input("sectionProfile", "A base ShapeProfile upon which to base the composite section.")]
-        [Input("cableTrayMaterial", "Material properties for the Cable Tray object.")]
-        [Output("cableTraySectionProperty", "Cable Tray Section property used to provide accurate Cable Tray assembly and capacities.")]
-        public static CableTraySectionProperty CableTraySectionProperty(SectionProfile sectionProfile, IMEPMaterial cableTrayMaterial = null, string name = "")
+
+        [Description("Returns a cable tray connection property")]
+        [Input("isStartConnected", "Whether the start point of the Cable Tray is connected to another segment or not.")]
+        [Input("isEndConnected", "Whether the end point of the Cable Tray is connected to another segment or not.")]
+        [Output("cableTrayConnectionProperty", "A cable tray connection property")]
+        public static CableTrayConnectionProperty CableTrayConnectionProperty(bool isStartConnected, bool isEndConnected)
         {
-            double elementSolidArea = sectionProfile.ElementProfile.Area();
-            double elementVoidArea = sectionProfile.ElementProfile.VoidArea();          
-
-            CableTraySectionProperty property = new CableTraySectionProperty(sectionProfile, elementSolidArea, elementVoidArea);
-            property.Name = name;
-
-            if (property == null)
+            return new CableTrayConnectionProperty
             {
-                BH.Engine.Reflection.Compute.RecordError("Insufficient information to create a CableTraySectionProperty. Please ensure you have all required inputs.");
-            }
-            return property;
+                IsStartConnected = isStartConnected,
+                IsEndConnected = isEndConnected,      
+            };
         }
-        /***************************************************/
     }
 }
+
