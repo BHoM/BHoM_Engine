@@ -557,14 +557,14 @@ namespace BH.Engine.Geometry
         [PreviousVersion("3.3", "BH.Engine.Geometry.Create.TaperedProfile(System.Collections.Generic.List<System.Decimal>, System.Collections.Generic.List<BH.oM.Geometry.ShapeProfiles.IProfile>)")]
         [Input("interpolationOrder", "Describes the order of the polynomial function between profiles whereby 1 = Linear, 2 = Quadratic, 3 = Cubic etc. " +
             "There should be one fewer (n-1) interpolation values than profiles.")]
-        public static TaperedProfile TaperedProfile(List<decimal> positions, List<IProfile> profiles, List<int> interpolationOrder)
+        public static TaperedProfile TaperedProfile(List<double> positions, List<IProfile> profiles, List<int> interpolationOrder)
         {
             if (positions.Count != profiles.Count)
             {
                 Engine.Reflection.Compute.RecordError("Number of positions and profiles provided are not equal");
                 return null;
             }
-            else if (positions.Exists((decimal d) => { return d > 1; }) || positions.Exists((decimal d) => { return d < 0; }))
+            else if (positions.Exists((double d) => { return d > 1; }) || positions.Exists((double d) => { return d < 0; }))
             {
                 Engine.Reflection.Compute.RecordError("Positions must exist between 0 and 1 (inclusive)");
                 return null;
@@ -575,7 +575,7 @@ namespace BH.Engine.Geometry
                 return null;
             }
 
-            SortedDictionary<decimal, IProfile> profileDict = new SortedDictionary<decimal, IProfile>();
+            SortedDictionary<double, IProfile> profileDict = new SortedDictionary<double, IProfile>();
 
             for (int i = 0; i < positions.Count; i++)
             {
@@ -594,7 +594,7 @@ namespace BH.Engine.Geometry
         [Input("interpolationOrder", "Describes the polynomial function between each profile whereby 1 = Linear, 2 = Quadratic, 3 = Cubic etc.")]
         public static TaperedProfile TaperedProfile(IProfile startProfile, IProfile endProfile, int interpolationOrder)
         {
-            return TaperedProfile(new List<decimal>() { 0, 1 }, new List<IProfile>() { startProfile, endProfile }, new List<int>() { interpolationOrder });
+            return TaperedProfile(new List<double>() { 0, 1 }, new List<IProfile>() { startProfile, endProfile }, new List<int>() { interpolationOrder });
         }
 
         /***************************************************/
