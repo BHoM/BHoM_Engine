@@ -191,15 +191,25 @@ namespace BH.Engine.Structure
                         IProfile preProfile;
                         IProfile postProfile;
 
-                        taperedProfile.Profiles.TryGetValue(positions[i - 1], out preProfile);
+                        double prePosition = positions[i - 1];
+                        taperedProfile.Profiles.TryGetValue(prePosition, out preProfile);
                         //If the both new positions are between original positions 
                         if (preProfile == null)
+                        {
                             taperedProfile.Profiles.TryGetValue(positions[i - 2], out preProfile);
+                            prePosition = positions[i - 2];
+                        }
 
-                        taperedProfile.Profiles.TryGetValue(positions[i + 1], out postProfile);
+                        double postPosition = positions[i + 1];
+                        taperedProfile.Profiles.TryGetValue(postPosition, out postProfile);
                         //If the both new positions are between original positions 
                         if (postProfile == null)
+                        {
                             taperedProfile.Profiles.TryGetValue(positions[i + 2], out postProfile);
+                            postPosition = positions[i + 2];
+                        }
+
+                        double interpolationPosition = (position - prePosition) / (postPosition - prePosition);
 
                         newPosition = (position - startPosition) / newLength;
 
@@ -214,7 +224,7 @@ namespace BH.Engine.Structure
                             newInterpolationOrder = newInterpolationOrders[i - 1];
                         }
 
-                        newProfile = Geometry.Compute.InterpolateProfile(preProfile, postProfile, position, newInterpolationOrder);
+                        newProfile = Geometry.Compute.InterpolateProfile(preProfile, postProfile, interpolationPosition, newInterpolationOrder);
                     }
                     newProfiles.Add(newProfile);
                     newPositions.Add(newPosition);
