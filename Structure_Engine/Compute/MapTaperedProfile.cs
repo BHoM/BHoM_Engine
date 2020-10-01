@@ -102,12 +102,12 @@ namespace BH.Engine.Structure
         private static List<TaperedProfile> MapTaperedProfile(List<Bar> bars, TaperedProfile taperedProfile)
         {
             //Check profiles have the same shape
-            if(taperedProfile.Profiles.Values.Any(x=>x.Shape != taperedProfile.Profiles.Values.First().Shape))
+            if (taperedProfile.Profiles.Values.Any(x => x.Shape != taperedProfile.Profiles.Values.First().Shape))
             {
                 Reflection.Compute.RecordError("MapTaperedProfile does not support TaperedProfiles with different ShapeProfiles.");
                 return null;
             }
-            
+
             //Get geometry of Bars
             List<Line> lines = bars.Select(x => Query.Geometry(x)).ToList();
 
@@ -117,7 +117,7 @@ namespace BH.Engine.Structure
             {
                 Reflection.Compute.RecordError("Bars provided do not form a single continuous line.");
                 return null;
-            }    
+            }
 
 
             Polyline centreline = centrelines[0];
@@ -232,7 +232,7 @@ namespace BH.Engine.Structure
                 if (endIndex == 1 || endIndex - startIndex == 1)
                     taperedProfiles.Add(Geometry.Create.TaperedProfile(newPositions, newProfiles, newInterpolationOrders.GetRange(startIndex, 1)));
                 else
-                    taperedProfiles.Add(Geometry.Create.TaperedProfile(newPositions, newProfiles, newInterpolationOrders.GetRange(startIndex, (endIndex-startIndex))));
+                    taperedProfiles.Add(Geometry.Create.TaperedProfile(newPositions, newProfiles, newInterpolationOrders.GetRange(startIndex, (endIndex - startIndex))));
             }
 
             return taperedProfiles;
