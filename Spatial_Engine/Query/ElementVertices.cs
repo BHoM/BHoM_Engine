@@ -56,7 +56,11 @@ namespace BH.Engine.Spatial
         public static List<Point> ElementVertices(this IElement1D element1D)
         {
             ICurve curve = element1D.IGeometry();
-            List<Point> vertices = curve.IDiscontinuityPoints();
+            List<Point> vertices;
+            if (curve is Polyline)
+                vertices = ((Polyline)curve).ControlPoints;
+            else
+                vertices = curve.IDiscontinuityPoints();
 
             if (curve.IIsClosed())
                 vertices.RemoveAt(vertices.Count - 1);
