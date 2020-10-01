@@ -221,7 +221,7 @@ namespace BH.Engine.Geometry
 
         private static double Interpolate(double start, double end, double parameter, int interpolationOrder)
         {
-            return start + (end - start) * Math.Pow(parameter, interpolationOrder);
+            return end + (start - end) * Math.Pow(1-parameter, interpolationOrder);
         }
 
         /***************************************************/
