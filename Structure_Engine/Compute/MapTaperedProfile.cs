@@ -1,0 +1,266 @@
+﻿///*
+// * This file is part of the Buildings and Habitats object Model (BHoM)
+// * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
+// *
+// * Each contributor holds copyright over their respective contributions.
+// * The project versioning (Git) records all such contribution source information.
+// *                                           
+// *                                                                              
+// * The BHoM is free software: you can redistribute it and/or modify         
+// * it under the terms of the GNU Lesser General Public License as published by  
+// * the Free Software Foundation, either version 3.0 of the License, or          
+// * (at your option) any later version.                                          
+// *                                                                              
+// * The BHoM is distributed in the hope that it will be useful,              
+// * but WITHOUT ANY WARRANTY; without even the implied warranty of               
+// * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the                 
+// * GNU Lesser General Public License for more details.                          
+// *                                                                            
+// * You should have received a copy of the GNU Lesser General Public License     
+// * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
+// */
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using BH.oM.Structure.Elements;
+using BH.oM.Geometry;
+using BH.Engine.Geometry;
+using System.ComponentModel;
+using BH.oM.Reflection.Attributes;
+using BH.oM.Geometry.CoordinateSystem;
+using BH.oM.Quantities.Attributes;
+using BH.oM.Geometry.ShapeProfiles;
+using BH.oM.Structure.SectionProperties;
+using System.Runtime.CompilerServices;
+using BH.Engine.Base;
+using BH.Engine.Reflection;
+using BH.oM.Structure.MaterialFragments;
+
+namespace BH.Engine.Structure
+{
+    public static partial class Compute
+    {
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
+
+        [Description("Maps a TaperedProfile to a series of sequential Bars. For example, the start and end profiles are known for the series of bars, this method " +
+            "will interpolate between bars to create a TaperedProfile for each Bar.")]
+        [Input("section", "The section containing the TaperedProfile to be mapped to the series of Bars")]
+        [Input("bars", "The Bars for the TaperedProfile to be mapped to.")]
+        [Output("bars", "The Bars with interpolated SectionProperties based on the TaperedProfile provided.")]
+        public static List<Bar> IMapTaperedSection(List<Bar> bars, ISectionProperty section)
+        {
+            return MapTaperedProfile(bars, section as dynamic);
+        }
+
+        /***************************************************/
+
+        public static List<Bar> MapTaperedSection(List<Bar> bars, IGeometricalSection section)
+        {
+            List<Bar> newBars = bars.ShallowClone();
+
+            if (!(section.SectionProfile is TaperedProfile))
+            {
+                Reflection.Compute.RecordError("Section provided does not contain a TaperedProfile");
+                foreach (Bar newBar in newBars)
+                {
+                    newBar.SectionProperty = section;
+                }
+            }
+            else
+            {
+                List<TaperedProfile> mappedTaperedProfiles = MapTaperedProfile(bars, section.SectionProfile as TaperedProfile);
+                List<IGeometricalSection> sections = mappedTaperedProfiles.Select(x => Create.SectionPropertyFromProfile(x, section.Material)).ToList();
+                for (int i = 0; i < sections.Count; i++)
+                {
+                    sections[i].Name = section.Name + "-s" + i;
+                    newBars[i].SectionProperty = sections[i];
+                }
+            }
+
+            return newBars;
+        }
+
+        /***************************************************/
+        public static List<Bar> MapTaperedSection(List<Bar> bars, ISectionProperty section)
+        {
+            List<Bar> newBars = bars.ShallowClone();
+
+            foreach (Bar newBar in newBars)
+            {
+                newBar.SectionProperty = section;
+            }
+
+            return newBars;
+        }
+
+        /***************************************************/
+        private static List<TaperedProfile> MapTaperedProfile(List<Bar> bars, TaperedProfile taperedProfile)
+        {
+            //Check profiles have the same shape
+            if(taperedProfile.Profiles.Values.Any(x=>x.Shape != taperedProfile.Profiles.Values.First().Shape))
+            {
+                Reflection.Compute.RecordError("MapTaperedProfile does not support TaperedProfiles with different ShapeProfiles.");
+                return null;
+            }
+            
+            //Get geometry of Bars
+            List<Line> lines = bars.Select(x => Query.Geometry(x)).ToList();
+
+            //Checks bars form a single line
+            List<Polyline> centrelines = lines.Join();
+            if (lines.Join().Count > 1)
+            {
+                Reflection.Compute.RecordError("Bars provided do not form a single continuous line.");
+                return null;
+            }    
+
+
+            Polyline centreline = centrelines[0];
+
+            //Check bars are in order
+            List<Point> midpoints = lines.Select(x => x.PointAtParameter(0.5)).ToList();
+            List<Point> orderedMidpoints = midpoints.SortAlongCurve(centreline);
+
+            if (!midpoints.SequenceEqual(orderedMidpoints))
+            {
+                Reflection.Compute.RecordError("Bars provided are not sorted.");
+                return null;
+            }
+
+            List<double> originalPositions = new List<double>(taperedProfile.Profiles.Keys);
+            List<IProfile> originalProfiles = new List<IProfile>(taperedProfile.Profiles.Values);
+
+            List<TaperedProfile> taperedProfiles = new List<TaperedProfile>();
+
+            //For each bar interpolate the profiles as necessary and create a TaperedProfile 
+            foreach (Bar bar in bars)
+            {
+                double startPosition = centreline.ParameterAtPoint(bar.StartNode.Geometry());
+                double endPosition = centreline.ParameterAtPoint(bar.EndNode.Geometry());
+                double newLength = endPosition - startPosition;
+
+                List<double> positions = new List<double>(originalPositions);
+                if (!positions.Contains(startPosition))
+                    positions.Add(startPosition);
+                if (!positions.Contains(endPosition))
+                    positions.Add(endPosition);
+                positions.Sort();
+
+                int startIndex = positions.IndexOf(startPosition);
+                int endIndex = positions.IndexOf(endPosition);
+
+                //These are required to create the new TaperedProfile mapped to the Bar
+                List<IProfile> newProfiles = new List<IProfile>();
+                List<double> newPositions = new List<double>();
+                List<int> newInterpolationOrders = GetInterpolationOrder(taperedProfile, positions);
+
+
+                //Cycle through the positions in the extents of the Bar to get th newProfile and newPosition
+                for (int i = startIndex; i < endIndex + 1; i++)
+                {
+                    double position = positions[i];
+                    IProfile newProfile;
+                    double newPosition = 0;
+
+                    if (position == 0)
+                    {
+                        //If the position is the same as the start of the TaperedProfile
+                        taperedProfile.Profiles.TryGetValue(0, out newProfile);
+                        newPosition = 0;
+                    }
+                    else if (position == 1)
+                    {
+                        //If the position is the same as the end of the TaperedProfile
+                        taperedProfile.Profiles.TryGetValue(1, out newProfile);
+                        newPosition = (1 - startPosition) / newLength;
+                    }
+                    else if (taperedProfile.Profiles.ContainsKey(position))
+                    {
+                        //If the position is equal to an existing position in the TaperedProfile
+                        taperedProfile.Profiles.TryGetValue(position, out newProfile);
+                        newPosition = (positions[i] - startPosition) / newLength;
+                    }
+                    else
+                    {
+                        //If the position is between existing positions in the TaperedProfile
+                        IProfile preProfile;
+                        IProfile postProfile;
+
+                        taperedProfile.Profiles.TryGetValue(positions[i - 1], out preProfile);
+                        //If the both new positions are between original positions 
+                        if (preProfile == null)
+                            taperedProfile.Profiles.TryGetValue(positions[i - 2], out preProfile);
+
+                        taperedProfile.Profiles.TryGetValue(positions[i + 1], out postProfile);
+                        //If the both new positions are between original positions 
+                        if (postProfile == null)
+                            taperedProfile.Profiles.TryGetValue(positions[i + 2], out postProfile);
+
+                        newPosition = (position - startPosition) / newLength;
+
+                        int newInterpolationOrder;
+                        try
+                        {
+                            newInterpolationOrder = newInterpolationOrders[i];
+                        }
+                        catch (ArgumentOutOfRangeException)
+                        {
+                            //If it is the final index
+                            newInterpolationOrder = newInterpolationOrders[i - 1];
+                        }
+
+                        newProfile = Geometry.Compute.InterpolateProfile(preProfile, postProfile, position, newInterpolationOrder);
+                    }
+                    newProfiles.Add(newProfile);
+                    newPositions.Add(newPosition);
+                }
+                if (endIndex == 1 || endIndex - startIndex == 1)
+                    taperedProfiles.Add(Geometry.Create.TaperedProfile(newPositions, newProfiles, newInterpolationOrders.GetRange(startIndex, 1)));
+                else
+                    taperedProfiles.Add(Geometry.Create.TaperedProfile(newPositions, newProfiles, newInterpolationOrders.GetRange(startIndex, (endIndex-startIndex))));
+            }
+
+            return taperedProfiles;
+        }
+
+        /***************************************************/
+
+        private static List<int> GetInterpolationOrder(TaperedProfile taperedProfile, List<double> newPositions)
+        {
+            List<int> interpolationOrders = new List<int>();
+            List<double> originalPositions = new List<double>(taperedProfile.Profiles.Keys);
+            for (int i = 0; i < newPositions.Count - 1; i++)
+            {
+                bool containsPosition = taperedProfile.Profiles.ContainsKey(newPositions[i]);
+                bool containsNextPosition = taperedProfile.Profiles.ContainsKey(newPositions[i + 1]);
+                if (containsPosition)
+                {
+                    interpolationOrders.Add(taperedProfile.InterpolationOrder[originalPositions.IndexOf(newPositions[i])]);
+                }
+                else if (!containsPosition && !containsNextPosition)
+                {
+                    interpolationOrders.Add(taperedProfile.InterpolationOrder[originalPositions.IndexOf(newPositions[i - 1])]);
+                }
+                else if (containsNextPosition)
+                {
+                    if (taperedProfile.Profiles.ContainsKey(newPositions[i - 1]))
+                    {
+                        interpolationOrders.Add(taperedProfile.InterpolationOrder[originalPositions.IndexOf(newPositions[i - 1])]);
+                    }
+                    else
+                    {
+                        interpolationOrders.Add(taperedProfile.InterpolationOrder[originalPositions.IndexOf(newPositions[i - 2])]);
+                    }
+                }
+            }
+
+            return interpolationOrders;
+        }
+
+    }
+}

@@ -78,6 +78,7 @@
     <Compile Include="Compute\CullDuplicates.cs" />
     <Compile Include="Compute\CollapseToScaledPolyline.cs" />
     <Compile Include="Compute\DistributeOutlines.cs" />
+    <Compile Include="Compute\InterpolateProfile.cs" />
     <Compile Include="Compute\MarchingCubes.cs" />
     <Compile Include="Compute\SubMesh.cs" />
     <Compile Include="Compute\MarchingSquares.cs" />
