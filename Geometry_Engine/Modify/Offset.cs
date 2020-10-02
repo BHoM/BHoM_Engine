@@ -269,8 +269,7 @@ namespace BH.Engine.Geometry
             //if there are only Line segmensts switching to polyline method which is more reliable 
             if (curve.Curves.All(x => x is Line))
             {
-                Polyline polyline = (Polyline)curve;
-                polyline = polyline.Offset(offset, normal, tangentExtensions, tolerance);
+                Polyline polyline = ((Polyline)curve).Offset(offset, normal, tangentExtensions, tolerance);
                 if (polyline == null)
                     return null;
 
