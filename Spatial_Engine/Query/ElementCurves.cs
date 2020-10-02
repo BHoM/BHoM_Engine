@@ -34,10 +34,24 @@ namespace BH.Engine.Spatial
     public static partial class Query
     {
         /******************************************/
+        /****            IElement0D            ****/
+        /******************************************/
+
+        [Description("Queries the defining curves of the IElement0D. Always returns empty collection due to zero-dimensionality of an IElement0D.")]
+        [Input("element0D", "The IElement0D to extract the defining curves from.")]
+        [Input("recursive", "Has no effect for IElement0D. Input here to unify inputs between all IElements.")]
+        [Output("elementCurves", "The curves defining the base geometry of the IElement0D.")]
+        public static List<ICurve> ElementCurves(this IElement0D element0D, bool recursive = true)
+        {
+            return new List<ICurve>();
+        }
+
+
+        /******************************************/
         /****            IElement1D            ****/
         /******************************************/
 
-        [Description("Queries the geometricly defining curve of the IElement1D.")]
+        [Description("Queries the defining curves of the IElement1D.")]
         [Input("element1D", "The IElement1D of which to get the curve definintion.")]
         [Input("recursive", "Has no effect for IElement1D. Input here to unify inputs between all IElements.")]
         [Output("elementCurves", "The curve defining the base geometry of the IElement1D.")]
