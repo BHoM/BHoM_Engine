@@ -130,7 +130,7 @@ namespace BH.Engine.Spatial
         [Description("Queries the area of an IElement.")]
         [Input("element", "The IElement to query the area of.")]
         [Output("area", "The area of an IElement.", typeof(Area))]
-        public static bool IArea(this IElement element)
+        public static double IArea(this IElement element)
         {
             return Area(element as dynamic);
         }

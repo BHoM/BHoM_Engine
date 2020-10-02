@@ -83,7 +83,7 @@ namespace BH.Engine.Spatial
         [Input("element", "The IElement with the geometry to get the centre of mass of.")]
         [Input("tolerance", "Distance tolerance used in geometry processing, default set to BH.oM.Geometry.Tolerance.Distance")]
         [Output("centroid", "The Point at the centre of weight for the homogeneous geometrical representation of the IElement.")]
-        public static bool ICentroid(this IElement element, double tolerance = Tolerance.Distance)
+        public static Point ICentroid(this IElement element, double tolerance = Tolerance.Distance)
         {
             return Centroid(element as dynamic, tolerance);
         }
