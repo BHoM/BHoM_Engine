@@ -46,10 +46,15 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Update a panel construction based on the panel type")]
+        [Input("panels", "A collection of Environment Panels to update the constructions of")]
+        [Input("newConstruction", "The new construction to assign to the panels")]
+        [Input("panelType", "The type of the panels to update")]
+        [Output("panels", "The collection of Environment Panels with updated constructions")]
         public static List<Panel> SetPanelConstructionByType(this List<Panel> panels, IConstruction newConstruction, PanelType panelType)
-
         {
             List<Panel> clones = new List<Panel>(panels.Select(x => x.DeepClone<Panel>()).ToList());
+
             foreach (Panel clone in clones)
             {  
                 if (clone.Type == panelType)
@@ -57,6 +62,7 @@ namespace BH.Engine.Environment
                     clone.Construction = newConstruction; 
                 }
             }
+
             return clones;
         }
     }
