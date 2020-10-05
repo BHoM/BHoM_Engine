@@ -555,23 +555,21 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [PreviousVersion("3.3", "BH.Engine.Geometry.Create.TaperedProfile(System.Collections.Generic.List<System.Decimal>, System.Collections.Generic.List<BH.oM.Geometry.ShapeProfiles.IProfile>)")]
+        [Input("positions", "Describes the position of each profile parametrically (i.e. between 0 and 1) along the Bar it is assigned to. " +
+            "The smallest position indicates the start profile and the largest position indicates the end profile.")]
+        [Input("profiles", "The ShapeProfile at each of the positions specified.")]
         [Input("interpolationOrder", "Describes the order of the polynomial function between profiles whereby 1 = Linear, 2 = Quadratic, 3 = Cubic etc. " +
             "There should be one fewer (n-1) interpolation values than profiles.")]
         public static TaperedProfile TaperedProfile(List<double> positions, List<IProfile> profiles, List<int> interpolationOrder)
         {
             if (positions.Count != profiles.Count)
             {
-                Engine.Reflection.Compute.RecordError("Number of positions and profiles provided are not equal");
+                Reflection.Compute.RecordError("Number of positions and profiles provided are not equal");
                 return null;
             }
             else if (positions.Exists((double d) => { return d > 1; }) || positions.Exists((double d) => { return d < 0; }))
             {
-                Engine.Reflection.Compute.RecordError("Positions must exist between 0 and 1 (inclusive)");
-                return null;
-            }
-            else if (!positions.Contains(0) || !positions.Contains(1))
-            {
-                Engine.Reflection.Compute.RecordError("Start and end profile must be provided");
+                Reflection.Compute.RecordError("Positions must exist between 0 and 1 (inclusive)");
                 return null;
             }
 
