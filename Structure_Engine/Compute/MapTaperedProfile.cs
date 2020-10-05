@@ -23,21 +23,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using BH.oM.Structure.Elements;
 using BH.oM.Geometry;
 using BH.Engine.Geometry;
 using System.ComponentModel;
 using BH.oM.Reflection.Attributes;
-using BH.oM.Geometry.CoordinateSystem;
-using BH.oM.Quantities.Attributes;
 using BH.oM.Geometry.ShapeProfiles;
 using BH.oM.Structure.SectionProperties;
-using System.Runtime.CompilerServices;
 using BH.Engine.Base;
-using BH.Engine.Reflection;
-using BH.oM.Structure.MaterialFragments;
 
 namespace BH.Engine.Structure
 {
@@ -160,7 +153,7 @@ namespace BH.Engine.Structure
                 List<int> newInterpolationOrders = GetInterpolationOrder(taperedProfile, positions);
 
 
-                //Cycle through the positions in the extents of the Bar to get th newProfile and newPosition
+                //Cycle through the positions in the extents of the Bar to get the newProfile and newPosition
                 for (int i = startIndex; i < endIndex + 1; i++)
                 {
                     double position = positions[i];
@@ -211,8 +204,6 @@ namespace BH.Engine.Structure
 
                         double interpolationPosition = (position - prePosition) / (postPosition - prePosition);
 
-                        newPosition = (position - startPosition) / newLength;
-
                         int newInterpolationOrder;
                         try
                         {
@@ -227,7 +218,7 @@ namespace BH.Engine.Structure
                         newProfile = Geometry.Compute.InterpolateProfile(preProfile, postProfile, interpolationPosition, newInterpolationOrder);
                     }
                     newProfiles.Add(newProfile);
-                    newPositions.Add(newPosition);
+                    newPositions.Add(position);
                 }
                 if (endIndex == 1 || endIndex - startIndex == 1)
                     taperedProfiles.Add(Geometry.Create.TaperedProfile(newPositions, newProfiles, newInterpolationOrders.GetRange(startIndex, 1)));
