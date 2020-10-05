@@ -573,6 +573,15 @@ namespace BH.Engine.Geometry
                 return null;
             }
 
+            List<double> sortedPositions = positions;
+            sortedPositions.Sort();
+
+            if(!positions.SequenceEqual(sortedPositions))
+            {
+                Reflection.Compute.RecordError("Positions must be sorted in ascending order.");
+                return null;
+            }
+
             SortedDictionary<double, IProfile> profileDict = new SortedDictionary<double, IProfile>();
 
             for (int i = 0; i < positions.Count; i++)
