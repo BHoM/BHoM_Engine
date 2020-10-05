@@ -39,9 +39,9 @@ namespace BH.Engine.Spatial
         /****            IElement0D            ****/
         /******************************************/
 
-        [Description("Queries the area of an IElement0D. Always returns zero due to zero-dimensionality of an IElement0D.")]
+        [Description("Queries the area of the geometrical representation of an IElement0D. Always returns zero due to zero-dimensionality of an IElement0D.")]
         [Input("element0D", "The IElement0D to query the area of.")]
-        [Output("area", "The area of an IElement0D.", typeof(Area))]
+        [Output("area", "The area of the geometrical representation of an IElement0D.", typeof(Area))]
         public static double Area(this IElement0D element0D)
         {
             return 0;
@@ -52,9 +52,9 @@ namespace BH.Engine.Spatial
         /****            IElement1D            ****/
         /******************************************/
 
-        [Description("Queries the area of an IElement1D. Always returns zero because an IElement1D has only 1 dimension, i.e. should not be represented as a region even if closed.")]
+        [Description("Queries the area of the geometrical representation of an IElement1D. Always returns zero because an IElement1D has only 1 dimension, i.e. should not be represented as a region even if closed.")]
         [Input("element1D", "The IElement1D to query the area of.")]
-        [Output("area", "The area of an IElement1D.", typeof(Area))]
+        [Output("area", "The area of the geometrical representation of an IElement1D.", typeof(Area))]
         public static double Area(this IElement1D element1D)
         {
             BH.Engine.Reflection.Compute.RecordWarning("Area of an IElement1D cannot be queried because IElement1D has only 1 dimension, i.e. should not be represented as a region even if closed.");
@@ -127,9 +127,9 @@ namespace BH.Engine.Spatial
         /****   Public Methods - Interfaces    ****/
         /******************************************/
 
-        [Description("Queries the area of an IElement.")]
+        [Description("Queries the area of the geometrical representation of an IElement.")]
         [Input("element", "The IElement to query the area of.")]
-        [Output("area", "The area of an IElement.", typeof(Area))]
+        [Output("area", "The area of the geometrical representation of an IElement.", typeof(Area))]
         public static double IArea(this IElement element)
         {
             return Area(element as dynamic);
