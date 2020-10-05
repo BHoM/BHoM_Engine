@@ -34,10 +34,10 @@ namespace BH.Engine.Spatial
         /****            IElement0D            ****/
         /******************************************/
 
-        [Description("Returns if the one dimensional representation of the IElement0D is closer to itself than the tolerance at any two points. Always false due to zero-dimensionality of an IElement0D.")]
+        [Description("Checks if the one dimensional representation of the IElement0D is closer to itself than the tolerance at any two points. Always false because a zero-dimensional IElement0D does not consist of curves.")]
         [Input("element0D", "The IElement0D to evaluate self intersections from.")]
         [Input("tolerance", "Minimum distance to be considered intersecting.", typeof(Length))]
-        [Output("A boolean which is true if the IElement0D is self intersecting.")]
+        [Output("A boolean which is true if the geometrical representation of an IElement0D is self intersecting.")]
         public static bool IsSelfIntersecting(this IElement0D element0D, double tolerance = Tolerance.Distance)
         {
             return false;
@@ -48,7 +48,7 @@ namespace BH.Engine.Spatial
         /****            IElement1D            ****/
         /******************************************/
 
-        [Description("Returns if the one dimensional representation of the IElement1D is closer to itself than the tolerance at any two points.")]
+        [Description("Checks if the one dimensional representation of the IElement1D is closer to itself than the tolerance at any two points.")]
         [Input("element1D", "The IElement1D to evaluate self intersections from.")]
         [Input("tolerance", "Minimum distance to be considered intersecting.", typeof(Length))]
         [Output("A boolean which is true if the IElement1Ds curve is self intersecting.")]
@@ -62,7 +62,7 @@ namespace BH.Engine.Spatial
         /****            IElement2D            ****/
         /******************************************/
 
-        [Description("Returns if any of the element curves of the IElement2D is closer to itself than the tolerance at any two points. Does not check for intersections between external and internal curves, or between different internal curves.")]
+        [Description("Checks if any of the element curves of the IElement2D is closer to itself than the tolerance at any two points. Does not check for intersections between external and internal curves, or between different internal curves.")]
         [Input("element2D", "The IElement2D which curves are to be evaluated for self intersection.")]
         [Input("tolerance", "Minimum distance to be considered intersecting.", typeof(Length))]
         [Output("A boolean which is true if any of the IElement2Ds element curves are self intersecting.")]
@@ -85,10 +85,10 @@ namespace BH.Engine.Spatial
         /****   Public Methods - Interfaces    ****/
         /******************************************/
 
-        [Description("Returns if the one dimensional representation of the IElement is closer to itself than the tolerance at any two points.")]
+        [Description("Checks if any of the curves defining an IElement is closer to itself than the tolerance at any two points (is self intersecting). In case of IElement2D, does not check for intersections between external and internal curves, or between different internal curves.")]
         [Input("element", "The IElement to evaluate self intersections from.")]
         [Input("tolerance", "Minimum distance to be considered intersecting.", typeof(Length))]
-        [Output("A boolean which is true if the IElement is self intersecting.")]
+        [Output("A boolean which is true if any of the IElement's curves is self intersecting.")]
         public static bool IIsSelfIntersecting(this IElement element, double tolerance = Tolerance.Distance)
         {
             return IsSelfIntersecting(element as dynamic, tolerance);
