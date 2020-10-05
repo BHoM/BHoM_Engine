@@ -69,7 +69,7 @@ namespace BH.Engine.Geometry
             {
                 double minPosition = positions.First();
                 double maxPosition = positions.Last();
-                List<double> newPositions = positions.Select(x => x - minPosition / (maxPosition - minPosition)).ToList();
+                List<double> newPositions = positions.Select(x => (x - minPosition) / (maxPosition - minPosition)).ToList();
                 newTaperedProfile = Create.TaperedProfile(newPositions, new List<IProfile>(taperedProfile.Profiles.Values), taperedProfile.InterpolationOrder);
             }
             else
