@@ -34,7 +34,7 @@ namespace BH.Engine.Spatial
         /****            IElement0D            ****/
         /******************************************/
 
-        [Description("Queries the control points of the geometrical representation of the IElement0D. Always returns the point location due to zero-dimensionality of an IElement0D.")]
+        [Description("Queries the control points of the geometrical representation of an IElement0D. Always returns the point location due to zero-dimensionality of an IElement0D.")]
         [Input("element0D", "The IElement0D with the geometry to get the control points from.")]
         [Output("cPoints", "The control points of the geometrical representation of an IElement0D.")]
         public static List<Point> ControlPoints(this IElement0D element0D)
@@ -82,7 +82,7 @@ namespace BH.Engine.Spatial
         /****             IElement             ****/
         /******************************************/
 
-        [Description("Queries the control points of the geometrical representation of the IElement.")]
+        [Description("Queries the control points of the geometrical representation of an IElement.")]
         [Input("element", "The IElement with the geometry to get the control points from.")]
         [Output("cPoints", "The control points of the geometrical representation of an IElement.")]
         public static List<Point> IControlPoints(this IElement element)

@@ -36,10 +36,10 @@ namespace BH.Engine.Spatial
         /****            IElement0D            ****/
         /******************************************/
         
-        [Description("Queries the centre of weight of an IElement0D. Always returns the point location due to zero-dimensionality of an IElement0D.")]
+        [Description("Queries the centre of weight for the homogeneous geometrical representation of an IElement0D. Always returns the point location due to zero-dimensionality of an IElement0D.")]
         [Input("element0D", "The IElement0D with the geometry to get the centre of weight of.")]
         [Output("centroid", "The Point at the centre of weight for the homogeneous geometrical representation of the IElement0D.")]
-        public static Point Centroid(this IElement0D element0D)
+        public static Point Centroid(this IElement0D element0D, double tolerance = Tolerance.Distance)
         {
             return element0D.IGeometry();
         }
@@ -79,10 +79,10 @@ namespace BH.Engine.Spatial
         /****   Public Methods - Interfaces    ****/
         /******************************************/
         
-        [Description("Queries the centre of weight for a representation of the IElement.")]
+        [Description("Queries the centre of weight for the homogeneous geometrical representation of an IElement.")]
         [Input("element", "The IElement with the geometry to get the centre of mass of.")]
         [Input("tolerance", "Distance tolerance used in geometry processing, default set to BH.oM.Geometry.Tolerance.Distance")]
-        [Output("centroid", "The Point at the centre of weight for the homogeneous geometrical representation of the IElement.")]
+        [Output("centroid", "The Point at the centre of weight for the homogeneous geometrical representation of an IElement.")]
         public static Point ICentroid(this IElement element, double tolerance = Tolerance.Distance)
         {
             return Centroid(element as dynamic, tolerance);
