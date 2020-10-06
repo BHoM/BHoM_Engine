@@ -167,7 +167,7 @@ namespace BH.Engine.Geometry
             List<double> uKnots = surface.UKnots.ToList();
             List<double> vKnots = surface.VKnots.ToList();
 
-            int ind(int i, int j) => i * uv[1] + j;
+            Func<int, int, int> ind = (i,j) => i * uv[1] + j;
 
             for (int i = 0; i < uv[0]; i++)
             {
