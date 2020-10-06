@@ -23,6 +23,8 @@
 using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace BH.Engine.Geometry
 {
@@ -70,6 +72,35 @@ namespace BH.Engine.Geometry
         }
 
         /***************************************************/
+        
+        public static Point PointAtParameter(this NurbsCurve curve, double t)
+        {
+            double min = curve.Knots.First();
+            double max = curve.Knots.Last();
+
+            t = t < min ? min : t > max ? max : t;
+
+            int n = curve.Degree();
+
+            double a = 0;
+            Point result = new Point();
+
+            var knots = curve.Knots;
+
+            for (int i = 0; i < curve.Weights.Count; i++)
+            {
+                double basis = BasisFunction(knots, i - 1, n, t) * curve.Weights[i];
+                a += basis;
+
+                Point pt = curve.ControlPoints[i];
+
+                result += basis * pt;
+            }
+
+            return result / a;
+        }
+
+        /***************************************************/
 
         public static Point PointAtParameter(this PolyCurve curve, double parameter)
         {
@@ -104,6 +135,47 @@ namespace BH.Engine.Geometry
             }
 
             return null;
+        }
+
+
+        /***************************************************/
+        /**** Public Methods - Surfaces                 ****/
+        /***************************************************/
+
+        public static Point PointAtParameter(this NurbsSurface surface, double u, double v)
+        {
+            double minU = surface.UKnots.First();
+            double maxU = surface.UKnots.Last();
+            double minV = surface.VKnots.First();
+            double maxV = surface.VKnots.Last();
+
+            u = u < minU ? minU : u > maxU ? maxU : u;
+            v = v < minV ? minV : v > maxV ? maxV : v;
+
+            double a = 0;
+            Point result = new Point();
+
+            var uv = surface.UVCount();
+
+            List<double> uKnots = surface.UKnots.ToList();
+            List<double> vKnots = surface.VKnots.ToList();
+
+            int ind(int i, int j) => i * uv[1] + j;
+
+            for (int i = 0; i < uv[0]; i++)
+            {
+                for (int j = 0; j < uv[1]; j++)
+                {
+                    double basis = BasisFunction(uKnots, i - 1, surface.UDegree, u) *
+                                   BasisFunction(vKnots, j - 1, surface.VDegree, v) *
+                                   surface.Weights[ind(i, j)];
+
+                    a += basis;
+                    result += basis * surface.ControlPoints[ind(i, j)];
+                }
+            }
+
+            return result / a;
         }
 
 
