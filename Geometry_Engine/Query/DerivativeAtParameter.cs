@@ -108,7 +108,7 @@ namespace BH.Engine.Geometry
             List<double> vKnots = surface.VKnots.ToList();
 
             var uv = surface.UVCount();
-            int ind(int i, int j) => i * uv[1] + j;
+            Func<int, int, int> ind = (i,j) => i * uv[1] + j;
 
             Point Akl = new Point();
             for (int i = 0; i < uv[0]; i++)
