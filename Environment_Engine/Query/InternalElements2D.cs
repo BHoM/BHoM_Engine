@@ -43,7 +43,7 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("BH.Engine.Environment.Query.InternalElements2D => Returns the internal 2D elements of an Environment Panel")]
+        [Description("Returns the internal 2D elements of an Environment Panel")]
         [Input("panel", "An Environment Panel")]
         [Output("element2D", "A collection of internal 2D elements")]
         public static List<IElement2D> InternalElements2D(this Panel panel)

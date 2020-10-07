@@ -46,9 +46,9 @@ namespace BH.Engine.Environment
 
         /***************************************************/
 
-        [Description("")]
-        [Input("edge", "")]
-        [Output("curve", "")]
+        [Description("Gets the geometry of an Edge as an ICurve")]
+        [Input("edge", "Edge to get the ICurve from")]
+        [Output("curve", "The geometry of the curve")]
         public static ICurve Geometry(this Edge edge)
         {
             return edge.Curve;

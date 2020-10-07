@@ -51,20 +51,6 @@ namespace BH.Engine.Architecture
         {
             return Engine.Geometry.Create.CompositeGeometry(theatronFullProfile?.BaseTierProfiles?.Select(x => x?.Profile));
         }
-
-        /***************************************************/
-
-        public static ICurve Geometry(this Room room) 
-        {
-            return room.Perimeter;
-        }
-
-        /***************************************************/
-
-        public static ISurface Geometry(this Ceiling ceiling)
-        {
-            return ceiling.Surface;
-        }
     }
 }
 
