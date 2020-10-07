@@ -89,7 +89,6 @@
     <Compile Include="Create\Theatron\TierProfile.cs" />
     <Compile Include="Create\Theatron\VomitoryParameters.cs" />
     <Compile Include="Modify\CleanRoom.cs" />
-    <Compile Include="Modify\RoundingVertices.cs" />
     <Compile Include="Modify\SetGeometry.cs" />
     <Compile Include="Modify\SetOutlineElements1D.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
