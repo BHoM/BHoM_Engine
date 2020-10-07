@@ -59,7 +59,6 @@ namespace BH.Engine.Architecture
         {
             return ceiling.Surface.ISubParts().Cast<IElement1D>().ToList();
         }
-
     }
 }
 
