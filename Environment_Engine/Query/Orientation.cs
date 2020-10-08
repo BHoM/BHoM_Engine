@@ -45,7 +45,8 @@ namespace BH.Engine.Environment
         [Input("environmentObject", "Any object implementing the IEnvironmentObject interface that can have its orientation queried")]
         [Input("northAngle", "The angle in degrees for north. Default is 90.0.")]
         [Input("azimuthAngle", "Set to true to return the azimuth angle from north instead of the angle between north and the object normal. Default is false.")]
-        public static double NormalOrientation(this IEnvironmentObject environmentObject, double northAngle = 90.0, bool azimuthAngle = false)
+        [Output("orientation", "The orientation of the Environment Object")]
+        public static double Orientation(this IEnvironmentObject environmentObject, double northAngle = 90.0, bool azimuthAngle = false)
         {
             double northAngleRadians = northAngle * (Math.PI / 180);
             Vector northVector = BH.Engine.Geometry.Create.Vector((double)Math.Cos(northAngleRadians), (double)Math.Sin(northAngleRadians));
@@ -56,7 +57,6 @@ namespace BH.Engine.Environment
             Vector up = BH.Engine.Geometry.Create.Vector(0, 0, 1);
             Vector down = BH.Engine.Geometry.Create.Vector(0, 0, -1);
             Vector right = BH.Engine.Geometry.Create.Vector(1, 0, 0);
-
 
 
             if (normal == up || normal == down)
@@ -98,7 +98,7 @@ namespace BH.Engine.Environment
                     return (360 - ((BH.Engine.Geometry.Query.Angle(normal, northVector) * (180 / Math.PI))));
                 }
 
-                return (BH.Engine.Geometry.Query.Angle(plane.Normal, northVector) * (180 / Math.PI));
+                return (BH.Engine.Geometry.Query.Angle(normal, northVector) * (180 / Math.PI));
 
             }
         }
