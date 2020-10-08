@@ -31,7 +31,6 @@ using BH.oM.Geometry;
 
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
-using System.Security.Cryptography.X509Certificates;
 
 namespace BH.Engine.Environment
 {
@@ -46,7 +45,8 @@ namespace BH.Engine.Environment
         [Input("northAngle", "The angle in degrees for north. Default is 90.0.")]
         [Input("azimuthAngle", "Set to true to return the azimuth angle from north instead of the angle between north and the object normal. Default is false.")]
         [Output("orientation", "The orientation of the Environment Object")]
-        public static double Orientation(this IEnvironmentObject environmentObject, double northAngle = 90.0, bool azimuthAngle = false)
+        [PreviousVersion("4.0", "BH.Engine.Environment.Query.Orientation(BH.oM.Environment.IEnvironmentObject)")]
+        public static double Orientation(this IEnvironmentObject environmentObject, double northAngle = 90.0, bool returnazimuthAngle = false)
         {
             double northAngleRadians = northAngle * (Math.PI / 180);
             Vector northVector = BH.Engine.Geometry.Create.Vector((double)Math.Cos(northAngleRadians), (double)Math.Sin(northAngleRadians));
@@ -62,14 +62,12 @@ namespace BH.Engine.Environment
             if (normal == up || normal == down)
             {
                 BH.Engine.Reflection.Compute.RecordError("This method cannot successfully evaluate the orientation");
-                return (-1);
+                return -1;
             }
-
-            else if (normal.X > 0 && northAngle == 90.0 && azimuthAngle == true)
+            else if (normal.X > 0 && northAngle == 90.0 && returnazimuthAngle)
             {
                 return (360 - ((BH.Engine.Geometry.Query.Angle(normal, northVector) * (180 / Math.PI))));
             }
-
             else
             {
                 double normalAngle = 0;
@@ -80,26 +78,21 @@ namespace BH.Engine.Environment
                 }
                 else
                 {
-                    normalAngle = (BH.Engine.Geometry.Query.Angle(normal, right) * (180 / Math.PI));
+                    normalAngle = BH.Engine.Geometry.Query.Angle(normal, right) * (180 / Math.PI);
                 }
-
-                if ((normalAngle - northAngle) >= 180 && northAngle != 90.0 && northAngle <= 180 && azimuthAngle == true)
+                if ((normalAngle - northAngle) >= 180 && northAngle != 90.0 && northAngle <= 180 && returnazimuthAngle)
                 {
                     return (360 - ((BH.Engine.Geometry.Query.Angle(normal, northVector) * (180 / Math.PI))));
                 }
-
-                else if (normalAngle < northAngle && normalAngle >= 0 && northAngle != 90.0 && northAngle <= 180 && azimuthAngle == true)
+                else if (normalAngle < northAngle && normalAngle >= 0 && northAngle != 90.0 && northAngle <= 180 && returnazimuthAngle)
                 {
                     return (360 - ((BH.Engine.Geometry.Query.Angle(normal, northVector) * (180 / Math.PI))));
                 }
-
-                else if (normalAngle < northAngle && normalAngle >= (northAngle - 180) && northAngle != 90.0 && northAngle >= 180 && azimuthAngle == true)
+                else if (normalAngle < northAngle && normalAngle >= (northAngle - 180) && northAngle != 90.0 && northAngle >= 180 && returnazimuthAngle)
                 {
                     return (360 - ((BH.Engine.Geometry.Query.Angle(normal, northVector) * (180 / Math.PI))));
                 }
-
-                return (BH.Engine.Geometry.Query.Angle(normal, northVector) * (180 / Math.PI));
-
+                return BH.Engine.Geometry.Query.Angle(normal, northVector) * (180 / Math.PI);
             }
         }
     }
