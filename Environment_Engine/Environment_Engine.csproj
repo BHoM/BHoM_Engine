@@ -150,6 +150,7 @@
     <Compile Include="Query\NewElement1D.cs" />
     <Compile Include="Query\NewInternalElement2D.cs" />
     <Compile Include="Query\NotClosedSpaces.cs" />
+    <Compile Include="Query\Cardinality.cs" />
     <Compile Include="Query\PointsInSpaces.cs" />
     <Compile Include="Modify\CullOverlaps.cs" />
     <Compile Include="Query\FindDuplicatePanels.cs" />
