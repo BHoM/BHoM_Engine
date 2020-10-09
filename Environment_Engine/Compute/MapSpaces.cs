@@ -34,6 +34,9 @@ using BH.oM.Geometry;
 using BH.Engine.Geometry;
 
 using BH.oM.Analytical.Elements;
+using BH.oM.Quantities.Attributes;
+using BH.Engine.Spatial;
+using BH.oM.Reflection;
 
 namespace BH.Engine.Environment
 {
@@ -43,24 +46,51 @@ namespace BH.Engine.Environment
         [Input("spacesToMap", "A collection of Environment spaces to map to original spaces")]
         [Input("originalSpaces", "A collection of original spaces to map to")]
         [Output("mappedSpaces", "A nested list of spaces mapped to the originals")]
-        public static List<List<IRegion>> MapSpaces(this List<IRegion> regionsToMap, List<IRegion> originalRegions)
+        public static Output<List<List<IRegion>>, List<IRegion>, List<IRegion>> MapSpaces(this List<IRegion> regionsToMap, List<IRegion> originalRegions)
         {    
             List<List<IRegion>> data = new List<List<IRegion>>();
+            List<IRegion> notMatched = new List<IRegion>();
+            List<IRegion> regionNotFound = new List<IRegion>();
 
             foreach (IRegion region in originalRegions)
             {
                 data.Add(new List<IRegion>());
             }
 
-            foreach (IRegion region in regionsToMap)   
+            foreach (IRegion region in regionsToMap)
             {
-                Point centre = region.Perimeter.ICentroid();
-                IRegion matching = originalRegions.Where(x => x.Perimeter.IIsContaining(new List<Point> { centre })).First();
+                ICurve perimeter = region.Perimeter;
+                List<IRegion> matchingPerimeter = originalRegions.Where(x => x.Perimeter.BooleanIntersection(perimeter).Count > 0).ToList();
 
-                data[originalRegions.IndexOf(matching)].Add(region);
+                if (matchingPerimeter.Count == 0)
+                    notMatched.Add(region);
+
+                foreach (IRegion match in matchingPerimeter)
+                {
+                    data[originalRegions.IndexOf(match)].Add(region);
+                }
+
+                /* foreach (IRegion intersection in matchingPerimeter)
+                {
+                    Point centre = intersection.Perimeter.ICentroid();
+                    IRegion matchingCenterPoint = originalRegions.Where(x => x.Perimeter.IIsContaining(new List<Point> { centre })).First();
+                    data[originalRegions.IndexOf(matchingCenterPoint)].Add(region);
+                } */
             }
 
-            return data;
+            for (int x = 0; x < data.Count; x++)
+            {
+                if (data[x].Count == 0)
+                    regionNotFound.Add(originalRegions[x]);
+                
+            }
+
+            return new Output<List<List<IRegion>>, List<IRegion>, List<IRegion>>
+            {
+                Item1 = data.Where(x => x.Count > 0).ToList(),
+                Item2 = notMatched.ToList(),
+                Item3 = regionNotFound.ToList(),
+            };
         }
     }
 }
