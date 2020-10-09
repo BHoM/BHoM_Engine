@@ -33,6 +33,8 @@ using BH.oM.Environment.Elements;
 using BH.oM.Geometry;
 using BH.Engine.Geometry;
 
+using BH.oM.Analytical.Elements;
+
 namespace BH.Engine.Environment
 {
     public static partial class Compute
@@ -41,21 +43,21 @@ namespace BH.Engine.Environment
         [Input("spacesToMap", "A collection of Environment spaces to map to original spaces")]
         [Input("originalSpaces", "A collection of original spaces to map to")]
         [Output("mappedSpaces", "A nested list of spaces mapped to the originals")]
-        public static List<List<Space>> MapSpaces(List<Space> spacesToMap, List<Space> originalSpaces)
+        public static List<List<IRegion>> MapSpaces(this List<IRegion> regionsToMap, List<IRegion> originalRegions)
         {    
-            List<List<Space>> data = new List<List<Space>>();
+            List<List<IRegion>> data = new List<List<IRegion>>();
 
-            foreach (Space space in originalSpaces)
+            foreach (IRegion region in originalRegions)
             {
-                data.Add(new List<Space>());
+                data.Add(new List<IRegion>());
             }
 
-            foreach (Space space in spacesToMap)   
+            foreach (IRegion region in regionsToMap)   
             {
-                Point centre = space.Perimeter.ICentroid();
-                Space matching = originalSpaces.Where(x => x.Perimeter.IIsContaining(new List<Point> { centre })).First();
+                Point centre = region.Perimeter.ICentroid();
+                IRegion matching = originalRegions.Where(x => x.Perimeter.IIsContaining(new List<Point> { centre })).First();
 
-                data[originalSpaces.IndexOf(matching)].Add(space);
+                data[originalRegions.IndexOf(matching)].Add(region);
             }
 
             return data;
