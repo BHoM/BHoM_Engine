@@ -93,6 +93,9 @@ namespace BH.Engine.Geometry
 
         public static Point PointAtParameter(this Polyline curve, double parameter)
         {
+            if (parameter == 1)
+                return curve.IEndPoint();
+
             double cLength = parameter * curve.Length();
             foreach (Line line in curve.SubParts())
             {
