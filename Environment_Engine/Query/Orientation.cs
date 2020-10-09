@@ -44,10 +44,11 @@ namespace BH.Engine.Environment
         [Description("Returns the angle to north of a given environmental object")]
         [Input("environmentObject", "Any object implementing the IEnvironmentObject interface that can have its orientation queried")]
         [Input("northAngle", "The angle in degrees for north. Default is 0.0.")]
-        [Input("azimuthAngle", "Set to true to return the azimuth angle from north, instead of the angle between north and the object normal. Default is false.")]
+        [Input("returnAzimuthAngle", "Set to true to return the azimuth angle from north, instead of the angle between north and the object normal. Default is false.")]
+        [Input("returnDegrees", "Set to true to return the orienation angle in Radians. Default is false.")]
         [Output("orientation", "The orientation of the Environment Object")]
         [PreviousVersion("4.0", "BH.Engine.Environment.Query.Orientation(BH.oM.Environment.IEnvironmentObject)")]
-        public static double? Orientation(this IEnvironmentObject environmentObject, double northAngle = 0.0, bool returnAzimuthAngle = false)
+        public static double? Orientation(this IEnvironmentObject environmentObject, double northAngle = 0.0, bool returnAzimuthAngle = false, bool returnDegrees = false)
         {
             if (northAngle < 0 || northAngle > 360)
             {
@@ -78,7 +79,14 @@ namespace BH.Engine.Environment
                 }
             }
 
-            return angleBetweenDegrees == 360 ? 0 : angleBetweenDegrees;
+            if (returnDegrees)
+            {
+                return angleBetweenDegrees == 360 ? 0 : angleBetweenDegrees;
+            }
+            else
+            {
+                return angleBetweenDegrees * Math.PI / 180;
+            }
         }
     }
 }
