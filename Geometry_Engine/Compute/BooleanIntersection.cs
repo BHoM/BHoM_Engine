@@ -246,6 +246,8 @@ namespace BH.Engine.Geometry
                 return null;
             }
 
+            //tolerance *= 5;
+
             if (!region.IIsClosed(tolerance) || !refRegion.IIsClosed(tolerance))
             {
                 Reflection.Compute.RecordError("Boolean Intersection works on closed regions.");
@@ -274,17 +276,17 @@ namespace BH.Engine.Geometry
 
             foreach (ICurve segment in splitRegion1)
             {
-                List<Point> mPts = new List<Point> { segment.IPointAtParameter(0.5) };
+                List<Point> midPts1 = new List<Point> { segment.IPointAtParameter(0.5) };
 
-                if (refRegion.IIsContaining(mPts, true, tolerance))
+                if (refRegion.IIsContaining(segment, true, tolerance))
                     tmpResult.Add(segment);
             }
 
             foreach (ICurve segment in splitRegion2)
             {
-                List<Point> cPts = new List<Point> { segment.IPointAtParameter(0.5) };
+                List<Point> midPts2 = new List<Point> { segment.IPointAtParameter(0.5) };
 
-                if (region.IIsContaining(cPts, true, tolerance))
+                if (region.IIsContaining(segment, true, tolerance))
                     tmpResult.Add(segment);
             }
              
@@ -298,7 +300,7 @@ namespace BH.Engine.Geometry
                 {
                     if (i != j && tmpResult[i].IsSimilarSegment(tmpResult[j], tolerance))
                     {
-                        bool sameDir = tmpResult[i].ITangentAtParameter(0.5).IsEqual(tmpResult[j].ITangentAtParameter(0.5));
+                        bool sameDir = tmpResult[i].ITangentAtParameter(0.5).IsEqual(tmpResult[j].ITangentAtParameter(0.5), tolerance);
                         if ((regSameDir && sameDir) || (!regSameDir && !sameDir))
                         {
                             tmpResult.RemoveAt(Math.Min(j, i));

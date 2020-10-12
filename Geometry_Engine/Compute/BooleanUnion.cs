@@ -234,7 +234,7 @@ namespace BH.Engine.Geometry
 
         public static List<PolyCurve> BooleanUnion(this IEnumerable<ICurve> regions, double tolerance = Tolerance.Distance)
         {
-            List<ICurve> regionsList = regions.ToList();
+            List<ICurve> regionsList = regions.Select(c=>c.IClean()).ToList();
 
             if (regionsList.Any(x => x is NurbsCurve || x is Ellipse))
             {
