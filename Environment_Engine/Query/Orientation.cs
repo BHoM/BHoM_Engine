@@ -21,17 +21,12 @@
  */
 
 using System;
-using System.Collections.Generic;
-
-using System.Linq;
-using BH.oM.Environment;
-
-using BH.Engine.Geometry;
-using BH.oM.Geometry;
-
-using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
-using BH.oM.Base;
+
+using BH.oM.Environment;
+using BH.oM.Geometry;
+using BH.oM.Quantities.Attributes;
+using BH.oM.Reflection.Attributes;
 
 namespace BH.Engine.Environment
 {
@@ -41,21 +36,18 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns the angle to north of a given environmental object")]
+        [Description("Returns the angle to north of a given environmental object on an xyPlane")]
         [Input("environmentObject", "Any object implementing the IEnvironmentObject interface that can have its orientation queried")]
-        [Input("northAngle", "The angle in degrees for north. Default is 0.0.")]
+        [Input("northAngle", "The angle in radians for north. Default is 0.")]
         [Input("returnAzimuthAngle", "Set to true to return the azimuth angle from north, instead of the angle between north and the object normal. Default is false.")]
-        [Input("returnDegrees", "Set to true to return the orienation angle in Radians. Default is false.")]
         [Output("orientation", "The orientation of the Environment Object")]
         [PreviousVersion("4.0", "BH.Engine.Environment.Query.Orientation(BH.oM.Environment.IEnvironmentObject)")]
         public static double? Orientation(this IEnvironmentObject environmentObject, double northAngle = 0.0, bool returnAzimuthAngle = false, bool returnDegrees = false)
         {
-            if (northAngle < 0 || northAngle > 360)
-            {
-                BH.Engine.Reflection.Compute.RecordError("North angle must be between 0 and 360 degrees");
-                return null;
-            }
-
+            northAngle += Math.PI / 2; // Correct northAngle to be 0 at North, rather than East
+            Plane xyPlane = BH.Engine.Geometry.Create.Plane(BH.Engine.Geometry.Create.Point(0, 0, 0), BH.Engine.Geometry.Create.Vector(0, 0, 1));
+            Vector northVector = BH.Engine.Geometry.Create.Vector(Math.Cos(northAngle), Math.Sin(northAngle), 0);
+            
             Vector objectNormal = BH.Engine.Geometry.Query.Normal(environmentObject.Polyline());
             if (objectNormal.X == 0 && objectNormal.Y == 0)
             {
@@ -63,30 +55,10 @@ namespace BH.Engine.Environment
                 return null;
             }
             objectNormal.Z = 0;
-            
-            double northAngleRadians = -((northAngle * (Math.PI / 180)) - (0.5 * Math.PI));
-            Vector northVector = BH.Engine.Geometry.Create.Vector(Math.Cos(northAngleRadians), Math.Sin(northAngleRadians), 0);
 
-            Plane xyPlane = BH.Engine.Geometry.Create.Plane(BH.Engine.Geometry.Create.Point(0, 0, 0), BH.Engine.Geometry.Create.Vector(0, 0, 1));
+            double angleToNorth = returnAzimuthAngle ? Math.PI * 2 - BH.Engine.Geometry.Query.Angle(northVector, objectNormal, xyPlane) : BH.Engine.Geometry.Query.Angle(northVector, objectNormal);
 
-            double angleBetweenDegrees = 360 - (BH.Engine.Geometry.Query.Angle(northVector, objectNormal, xyPlane) * 180 / Math.PI);
-
-            if (!returnAzimuthAngle)
-            {
-                if (angleBetweenDegrees > 180)
-                {
-                    angleBetweenDegrees = 360 - angleBetweenDegrees;
-                }
-            }
-
-            if (returnDegrees)
-            {
-                return angleBetweenDegrees == 360 ? 0 : angleBetweenDegrees;
-            }
-            else
-            {
-                return angleBetweenDegrees * Math.PI / 180;
-            }
+            return returnDegrees ? angleToNorth * 180 / Math.PI : angleToNorth;
         }
     }
 }
