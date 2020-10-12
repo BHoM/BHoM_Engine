@@ -42,19 +42,21 @@ namespace BH.Engine.Environment
 {
     public static partial class Compute
     {
-        [Description("Map spaces based on geometry to an original set of spaces. This is done by taking the centre point of the space perimeter and checking which original space contains that centre point. E.G. mapping IES zoned spaces back to original Revit spaces.")]
-        [Input("spacesToMap", "A collection of Environment spaces to map to original spaces")]
-        [Input("originalSpaces", "A collection of original spaces to map to")]
-        [Output("mappedSpaces", "A nested list of spaces mapped to the originals")]
-        public static Output<List<List<IRegion>>, List<IRegion>, List<IRegion>> MapSpaces(this List<IRegion> regionsToMap, List<IRegion> originalRegions)
+        [Description("Map regions based on geometry to an original set of regions. This is done by taking the intersections of the region perimeter with the original region perimeter and checking which original region contains that intersection. E.G. mapping IES zoned spaces back to original Revit spaces.")]
+        [Input("regionsToMap", "A collection of Environment regions to map to original regions")]
+        [Input("originalRegions", "A collection of original regions to map to")]
+        [MultiOutput(0, "nestedList", "A list of the mapped regions")]
+        [MultiOutput(1, "notMatched", "A list of the regions that didn't map to any original regions")]
+        [MultiOutput(2, "regionsNotFound", "A list of the original regions that didn't find any regions to map")]
+        public static Output<List<List<IRegion>>, List<IRegion>, List<IRegion>> MapRegions(this List<IRegion> regionsToMap, List<IRegion> originalRegions)
         {    
-            List<List<IRegion>> data = new List<List<IRegion>>();
+            List<List<IRegion>> nestedList = new List<List<IRegion>>();
             List<IRegion> notMatched = new List<IRegion>();
             List<IRegion> regionNotFound = new List<IRegion>();
 
             foreach (IRegion region in originalRegions)
             {
-                data.Add(new List<IRegion>());
+                nestedList.Add(new List<IRegion>());
             }
 
             foreach (IRegion region in regionsToMap)
@@ -62,32 +64,29 @@ namespace BH.Engine.Environment
                 ICurve perimeter = region.Perimeter;
                 List<IRegion> matchingPerimeter = originalRegions.Where(x => x.Perimeter.BooleanIntersection(perimeter).Count > 0).ToList();
 
+                // Add a list for IES-spaces without a Revit space
+
                 if (matchingPerimeter.Count == 0)
                     notMatched.Add(region);
 
                 foreach (IRegion match in matchingPerimeter)
                 {
-                    data[originalRegions.IndexOf(match)].Add(region);
+                    nestedList[originalRegions.IndexOf(match)].Add(region);
                 }
-
-                /* foreach (IRegion intersection in matchingPerimeter)
-                {
-                    Point centre = intersection.Perimeter.ICentroid();
-                    IRegion matchingCenterPoint = originalRegions.Where(x => x.Perimeter.IIsContaining(new List<Point> { centre })).First();
-                    data[originalRegions.IndexOf(matchingCenterPoint)].Add(region);
-                } */
             }
 
-            for (int x = 0; x < data.Count; x++)
+            // Add a list for revitspaces without IES-spaces
+
+            for (int x = 0; x < nestedList.Count; x++)
             {
-                if (data[x].Count == 0)
+                if (nestedList[x].Count == 0)
                     regionNotFound.Add(originalRegions[x]);
-                
+
             }
 
             return new Output<List<List<IRegion>>, List<IRegion>, List<IRegion>>
             {
-                Item1 = data.Where(x => x.Count > 0).ToList(),
+                Item1 = nestedList.ToList(),
                 Item2 = notMatched.ToList(),
                 Item3 = regionNotFound.ToList(),
             };
