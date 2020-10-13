@@ -222,27 +222,26 @@ namespace BH.Engine.Spatial
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private static double Interpolate(double start, double end, double parameter, int interpolationOrder, double domainStart = 0, double domainEnd = 1)
+        private static double Interpolate(double startValue, double endValue, double parameter, int interpolationOrder, double domainStartParameter = 0, double domainEndParameter = 1)
         {
             //Check if the interpolation is not required (i.e. the range is constant)
-            if (Math.Abs(start - end) < double.Epsilon)
-                return start;
+            if (Math.Abs(startValue - endValue) < double.Epsilon)
+                return startValue;
 
             //Scale parameter to the domain
-            double rescaledParameter = domainStart + (domainEnd - domainStart) * parameter;
+            double scaledParameter = domainStartParameter + (domainEndParameter - domainStartParameter) * parameter;
 
-            //Interpolate between the start and end using the rescale parameter
-            double interpolation = end + (start - end) * Math.Pow(1 - rescaledParameter, interpolationOrder);
+            //Interpolate between the start and end using the scaled parameter
+            double interpolatedValue = endValue + (startValue - endValue) * Math.Pow(1 - scaledParameter, interpolationOrder);
 
             //Determine the values at the domain start and domain end
-            //double interpolationStart = end + (start - end) * Math.Pow(1 - domainStart, interpolationOrder);
-            //double interpolationEnd = end + (start - end) * Math.Pow(1 - domainEnd, interpolationOrder);
-            //double normalisedInterpolation = (interpolation - interpolationStart) / (interpolationEnd - interpolationStart);
+            double domainStartValue = endValue + (startValue - endValue) * Math.Pow(1 - domainStartParameter, interpolationOrder);
+            double domainEndValue = endValue + (startValue - endValue) * Math.Pow(1 - domainEndParameter, interpolationOrder);
 
-            double normalisedInterpolation = ((Math.Pow(1 - rescaledParameter, interpolationOrder) - Math.Pow(1 - domainStart, interpolationOrder))) /
-                ((Math.Pow(1 - domainEnd, interpolationOrder) - Math.Pow(1 - domainStart, interpolationOrder)));
+            //Scale interpolated value to the domain range
+            double scaledInterpolationValue = (interpolatedValue - domainStartValue) / (domainEndValue - domainStartValue);
 
-            return start + (end - start) * normalisedInterpolation;
+            return startValue + (endValue - startValue) * scaledInterpolationValue;
 
         }
 
