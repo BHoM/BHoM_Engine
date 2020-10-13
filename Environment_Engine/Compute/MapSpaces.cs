@@ -37,6 +37,7 @@ using BH.oM.Analytical.Elements;
 using BH.oM.Quantities.Attributes;
 using BH.Engine.Spatial;
 using BH.oM.Reflection;
+using System.Security.Cryptography.X509Certificates;
 
 namespace BH.Engine.Environment
 {
@@ -91,5 +92,98 @@ namespace BH.Engine.Environment
                 Item3 = regionNotFound.ToList(),
             };
         }
+
+        public static Output<List<List<Area>>> MapRegionsArea(this List<IRegion> regionsToMap, List<IRegion> originalRegions)
+        {
+            //List<ICurve> ogPerimeters = new List<ICurve>();
+
+            List<ICurve> perimeters = new List<ICurve>();
+
+            foreach (IRegion region in originalRegions)
+            {
+                ICurve regionPerimeter = region.Perimeter;
+
+                foreach (IRegion regionToMap in regionsToMap)
+                {
+                    perimeters.Add(BH.Engine.Geometry.Compute.BooleanIntersection(regionToMap/*.Select(x => x.Perimeter).ToList()*/, region.Perimeter));
+                }
+            }
+
+
+            /*foreach (IRegion intersection in matchingPerimeter)
+            {
+                 Point centre = intersection.Perimeter.ICentroid();
+                 IRegion matchingCenterPoint = originalRegions.Where(x => x.Perimeter.IIsContaining(new List<Point> { centre })).First();
+                 //nestedList[originalRegions.IndexOf(matchingCenterPoint)].Add(region);
+
+             } */
+
+
+
+            /*foreach (IRegion region in originalRegions)
+            {
+                List<ICurve> perimetersII = region.Perimeter.BooleanIntersection(regionsToMap);
+            }
+
+            foreach (IRegion region in originalRegions)
+            {
+                Compute.BooleanIntersection(regionsToMap, region);
+            }
+
+            List<List<IRegion>> nestedList = new List<List<IRegion>>();
+
+            foreach (IRegion region in originalRegions)
+            {
+                nestedList.Add(new List<IRegion>());
+            }
+
+            foreach (IRegion region in regionsToMap)
+            {
+                ICurve perimeter = region.Perimeter;
+                List<ICurve> perimetersIII = originalRegions.BooleanIntersection(perimeter);
+            }*/
+
+
+
+
+        }
+
+
+        /*public static Output<List<List<IRegion>>, List<IRegion>, List<IRegion>> MapRegions(this List<IRegion> regionsToMap, List<IRegion> originalRegions)
+        {
+            List<List<IRegion>> nestedList = new List<List<IRegion>>();
+            List<IRegion> notMatched = new List<IRegion>();
+            List<IRegion> regionNotFound = new List<IRegion>();
+
+            foreach (IRegion region in originalRegions)
+            {
+                nestedList.Add(new List<IRegion>());
+            }
+
+
+
+            foreach (IRegion region in regionsToMap)
+            {
+                ICurve perimeter = region.Perimeter;
+                List<IRegion> matchingPerimeter = originalRegions.Where(x => x.Perimeter.BooleanIntersection(perimeter).Count > 0).ToList();
+
+                foreach (IRegion intersection in matchingPerimeter)
+                {
+                    Point centre = intersection.Perimeter.ICentroid();
+                    IRegion matchingCenterPoint = originalRegions.Where(x => x.Perimeter.IIsContaining(new List<Point> { centre })).First();
+                    //nestedList[originalRegions.IndexOf(matchingCenterPoint)].Add(region);
+
+                }
+
+                foreach (IRegion intersection in matchingPerimeter)
+                {
+                    Area area = region.IArea();
+                }
+
+
+            }
+
+        }*/
+
     }
 }
