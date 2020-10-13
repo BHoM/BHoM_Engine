@@ -36,7 +36,7 @@ namespace BH.Engine.Environment
     public static partial class Compute
     {
         /***************************************************/
-        /****          public Methods                   ****/
+        /****          Public Methods                   ****/
         /***************************************************/
 
         [Description("Compute a lighting gain from the watts per square meter and floor area of the space")]

@@ -43,69 +43,54 @@ namespace BH.Engine.Environment
 {
     public static partial class Compute
     {
-        [Description("Map regions based on geometry to an original set of regions. This is done by taking the intersections of the region perimeter with the original region perimeter and checking which original region contains that intersection. E.G. mapping IES zoned spaces back to original Revit spaces.")]
+        /***************************************************/
+        /****          Public Methods                   ****/
+        /***************************************************/
+
+        [Description("Maps regions based on geometry to an original set of regions. This is done by taking the intersections of the regions to map perimeters with the original region perimeters and checking which original region contains those intersections. E.G. mapping IES zoned regions back to original Revit regions. Also filters out unmatched regions and calculates the area percentage of the mapped regions that has been matched to the original regions.")]
         [Input("regionsToMap", "A collection of Environment regions to map to original regions")]
         [Input("originalRegions", "A collection of original regions to map to")]
-        [MultiOutput(0, "nestedList", "A list of the mapped regions")]
-        [MultiOutput(1, "notMatched", "A list of the regions that didn't map to any original regions")]
-        [MultiOutput(2, "regionsNotFound", "A list of the original regions that didn't find any regions to map")]
-        public static Output<List<List<IRegion>>, List<IRegion>, List<IRegion>> MapRegions(this List<IRegion> regionsToMap, List<IRegion> originalRegions)
+        [MultiOutput(0, "mappedRegions", "A list of the mapped regions")]
+        [MultiOutput(1, "percentages", "A list of area percentages of the mapped regions matched to the original region")]
+        [MultiOutput(2, "regionsNotMatched", "A list of the regions that didn't map to any original regions")]
+        [MultiOutput(3, "regionsNotFound", "A list of the original regions that didn't find any regions to map")]
+        public static Output<List<List<IRegion>>, List<List<double>>, List<IRegion>, List<IRegion>> MapRegions(this List<IRegion> regionsToMap, List<IRegion> originalRegions, double distanceTolerance = BH.oM.Geometry.Tolerance.Distance, double angleTolerance = BH.oM.Geometry.Tolerance.Angle)
         {
-            List<List<IRegion>> nestedList = new List<List<IRegion>>();
-            List<IRegion> notMatched = new List<IRegion>();
+            List<List<IRegion>> mappedRegions = new List<List<IRegion>>();
+            List<List<double>> percentages = new List<List<double>>();
+            List<IRegion> regionsNotMatched = new List<IRegion>();
             List<IRegion> regionNotFound = new List<IRegion>();
 
             foreach (IRegion region in originalRegions)
             {
-                nestedList.Add(new List<IRegion>());
+                mappedRegions.Add(new List<IRegion>());
+                percentages.Add(new List<double>());
             }
 
             foreach (IRegion region in regionsToMap)
             {
                 ICurve perimeter = region.Perimeter;
-                List<IRegion> matchingPerimeter = originalRegions.Where(x => x.Perimeter.BooleanIntersection(perimeter).Count > 0).ToList();
+                List<IRegion> matchingPerimeter = originalRegions.Where(x => x.Perimeter.BooleanIntersection(perimeter, distanceTolerance).Count > 0).ToList();
 
                 // Add a list for IES-spaces without a Revit space
                 if (matchingPerimeter.Count == 0)
-                    notMatched.Add(region);
+                    regionsNotMatched.Add(region);
 
+                // Map the matching regions to the original regions  
                 foreach (IRegion match in matchingPerimeter)
                 {
-                    nestedList[originalRegions.IndexOf(match)].Add(region);
+                    mappedRegions[originalRegions.IndexOf(match)].Add(region);
                 }
             }
 
             // Add a list for revitspaces without IES-spaces
-            for (int x = 0; x < nestedList.Count; x++)
+            for (int x = 0; x < mappedRegions.Count; x++)
             {
-                if (nestedList[x].Count == 0)
+                if (mappedRegions[x].Count == 0)
                     regionNotFound.Add(originalRegions[x]);
-
             }
 
-            return new Output<List<List<IRegion>>, List<IRegion>, List<IRegion>>
-            {
-                Item1 = nestedList.ToList(),
-                Item2 = notMatched.ToList(),
-                Item3 = regionNotFound.ToList(),
-            };
-        }
-
-        [Description("Map regions based on geometry to an original set of regions. This is done by taking the intersections of the region perimeter with the original region perimeter and checking which original region contains that intersection. E.G. mapping IES zoned spaces back to original Revit spaces.")]
-        [Input("regionsToMap", "A collection of Environment regions to map to original regions")]
-        [Input("originalRegions", "A collection of original regions to map to")]
-        [MultiOutput(0, "nestedList", "A list of the mapped regions")]
-        [MultiOutput(1, "notMatched", "A list of the regions that didn't map to any original regions")]
-        [MultiOutput(2, "regionsNotFound", "A list of the original regions that didn't find any regions to map")]
-        public static Output<List<List<IRegion>>, List<List<double>>> MapRegionsArea(this List<IRegion> regionsToMap, List<IRegion> originalRegions, double angleTolerance = BH.oM.Geometry.Tolerance.Angle, double distanceTolerance = BH.oM.Geometry.Tolerance.Distance)
-
-        {
-            List<List<IRegion>> mappedRegions = regionsToMap.MapRegions(originalRegions).Item1;
-
-            List<List<double>> percentages = new List<List<double>>();
-            foreach (List<IRegion> l in mappedRegions)
-                percentages.Add(new List<double>());
-
+            // Add percentage of original regions matched to the mapped regions
             for (int x = 0; x < originalRegions.Count; x++)
             {
                 foreach (IRegion region in mappedRegions[x])
@@ -117,15 +102,17 @@ namespace BH.Engine.Environment
                     List<Polyline> intersections = BH.Engine.Geometry.Compute.BooleanIntersection(originalPerimeter, mappedPerimeter, distanceTolerance);
 
                     areaIntersecting = intersections.Sum(a => a.Area());
-                    percentages[x].Add(areaIntersecting/mappedPerimeter.Area());
+                    percentages[x].Add(areaIntersecting / mappedPerimeter.Area());
                 }
             }
 
-            return new Output<List<List<IRegion>>, List<List<double>>>
+            return new Output<List<List<IRegion>>, List<List<double>>, List<IRegion>, List<IRegion>>
             {
                 Item1 = mappedRegions,
                 Item2 = percentages,
+                Item3 = regionsNotMatched,
+                Item4 = regionNotFound,           
             };
-        }
+        }        
     }
 }

@@ -36,7 +36,7 @@ namespace BH.Engine.Environment
     public static partial class Compute
     {
         /***************************************************/
-        /****          public Methods                   ****/
+        /****          Public Methods                   ****/
         /***************************************************/
 
         [Description("Compute the sensible or latent equipment gain from the watts per meter squared and the area of the space")]
