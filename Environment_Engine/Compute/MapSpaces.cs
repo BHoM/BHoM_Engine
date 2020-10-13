@@ -50,6 +50,8 @@ namespace BH.Engine.Environment
         [Description("Maps regions based on geometry to an original set of regions. This is done by taking the intersections of the regions to map perimeters with the original region perimeters and checking which original region contains those intersections. E.G. mapping IES zoned regions back to original Revit regions. Also filters out unmatched regions and calculates the area percentage of the mapped regions that has been matched to the original regions.")]
         [Input("regionsToMap", "A collection of Environment regions to map to original regions")]
         [Input("originalRegions", "A collection of original regions to map to")]
+        [Input("distanceTolerance", "the tolerance used for distance calculations")]
+        [Input("angleTolerance", "the tolerance used for angle calculations")]
         [MultiOutput(0, "mappedRegions", "A list of the mapped regions")]
         [MultiOutput(1, "percentages", "A list of area percentages of the mapped regions matched to the original region")]
         [MultiOutput(2, "regionsNotMatched", "A list of the regions that didn't map to any original regions")]
