@@ -60,7 +60,14 @@ namespace BH.Engine.Reflection
                         outputs.Add(new OutputAttribute(outputDefs[i].Name, desc));
                     }
                     else
-                        outputs.Add(new OutputAttribute(types[i].UnderlyingType().Type.Name.Substring(0, 1), ""));
+                    {
+                        string name = types[i].UnderlyingType().Type.Name.Substring(0, 1);
+                        int nbSame = outputs.Where(x => x.Name.StartsWith(name)).Count();
+                        if (nbSame > 0)
+                            name += (nbSame + 1).ToString();
+                        outputs.Add(new OutputAttribute(name, ""));
+                    }
+                        
                 }
                 return outputs;
             }
