@@ -576,7 +576,7 @@ namespace BH.Engine.Geometry
             List<double> sortedPositions = positions;
             sortedPositions.Sort();
 
-            if(!positions.SequenceEqual(sortedPositions))
+            if (!positions.SequenceEqual(sortedPositions))
             {
                 Reflection.Compute.RecordError("Positions must be sorted in ascending order.");
                 return null;

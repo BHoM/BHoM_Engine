@@ -35,7 +35,7 @@ namespace BH.Engine.Spatial
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static AngleProfile InterpolateProfile(AngleProfile startProfile, AngleProfile endProfile, double parameter, int interpolationOrder, 
+        public static AngleProfile InterpolateProfile(AngleProfile startProfile, AngleProfile endProfile, double parameter, int interpolationOrder,
             double domainStart = 0, double domainEnd = 1)
         {
             return Geometry.Create.AngleProfile(
@@ -50,7 +50,7 @@ namespace BH.Engine.Spatial
 
         /***************************************************/
 
-        public static BoxProfile InterpolateProfile(BoxProfile startProfile, BoxProfile endProfile, double parameter, int interpolationOrder, 
+        public static BoxProfile InterpolateProfile(BoxProfile startProfile, BoxProfile endProfile, double parameter, int interpolationOrder,
             double domainStart = 0, double domainEnd = 1)
         {
             return Geometry.Create.BoxProfile(
@@ -63,7 +63,7 @@ namespace BH.Engine.Spatial
 
         /***************************************************/
 
-        public static ChannelProfile InterpolateProfile(ChannelProfile startProfile, ChannelProfile endProfile, double parameter, int interpolationOrder, 
+        public static ChannelProfile InterpolateProfile(ChannelProfile startProfile, ChannelProfile endProfile, double parameter, int interpolationOrder,
             double domainStart = 0, double domainEnd = 1)
         {
             return Geometry.Create.ChannelProfile(
@@ -78,7 +78,7 @@ namespace BH.Engine.Spatial
 
         /***************************************************/
 
-        public static CircleProfile InterpolateProfile(CircleProfile startProfile, CircleProfile endProfile, double parameter, int interpolationOrder, 
+        public static CircleProfile InterpolateProfile(CircleProfile startProfile, CircleProfile endProfile, double parameter, int interpolationOrder,
             double domainStart = 0, double domainEnd = 1)
         {
             return Geometry.Create.CircleProfile(Interpolate(startProfile.Diameter, endProfile.Diameter, parameter, interpolationOrder, domainStart, domainEnd));
@@ -86,7 +86,7 @@ namespace BH.Engine.Spatial
 
         /***************************************************/
 
-        public static FabricatedBoxProfile InterpolateProfile(FabricatedBoxProfile startProfile, FabricatedBoxProfile endProfile, double parameter, int interpolationOrder, 
+        public static FabricatedBoxProfile InterpolateProfile(FabricatedBoxProfile startProfile, FabricatedBoxProfile endProfile, double parameter, int interpolationOrder,
             double domainStart = 0, double domainEnd = 1)
         {
             return Geometry.Create.FabricatedBoxProfile(
@@ -100,7 +100,7 @@ namespace BH.Engine.Spatial
 
         /***************************************************/
 
-        public static FabricatedISectionProfile InterpolateProfile(FabricatedISectionProfile startProfile, FabricatedISectionProfile endProfile, double parameter, int interpolationOrder, 
+        public static FabricatedISectionProfile InterpolateProfile(FabricatedISectionProfile startProfile, FabricatedISectionProfile endProfile, double parameter, int interpolationOrder,
             double domainStart = 0, double domainEnd = 1)
         {
             return Geometry.Create.FabricatedISectionProfile(
@@ -115,7 +115,7 @@ namespace BH.Engine.Spatial
 
         /***************************************************/
 
-        public static GeneralisedFabricatedBoxProfile InterpolateProfile(GeneralisedFabricatedBoxProfile startProfile, GeneralisedFabricatedBoxProfile endProfile, 
+        public static GeneralisedFabricatedBoxProfile InterpolateProfile(GeneralisedFabricatedBoxProfile startProfile, GeneralisedFabricatedBoxProfile endProfile,
             double parameter, int interpolationOrder, double domainStart = 0, double domainEnd = 1)
         {
             return Geometry.Create.GeneralisedFabricatedBoxProfile(
@@ -130,7 +130,7 @@ namespace BH.Engine.Spatial
 
         /***************************************************/
 
-        public static GeneralisedTSectionProfile InterpolateProfile(GeneralisedTSectionProfile startProfile, GeneralisedTSectionProfile endProfile, double parameter, int interpolationOrder, 
+        public static GeneralisedTSectionProfile InterpolateProfile(GeneralisedTSectionProfile startProfile, GeneralisedTSectionProfile endProfile, double parameter, int interpolationOrder,
             double domainStart = 0, double domainEnd = 1)
         {
             return Geometry.Create.GeneralisedTSectionProfile(
@@ -144,7 +144,7 @@ namespace BH.Engine.Spatial
         }
 
         /***************************************************/
-        public static ISectionProfile InterpolateProfile(ISectionProfile startProfile, ISectionProfile endProfile, double parameter, int interpolationOrder, 
+        public static ISectionProfile InterpolateProfile(ISectionProfile startProfile, ISectionProfile endProfile, double parameter, int interpolationOrder,
             double domainStart = 0, double domainEnd = 1)
         {
             return Geometry.Create.ISectionProfile(
@@ -158,7 +158,7 @@ namespace BH.Engine.Spatial
 
         /***************************************************/
 
-        public static KiteProfile InterpolateProfile(KiteProfile startProfile, KiteProfile endProfile, double parameter, int interpolationOrder, 
+        public static KiteProfile InterpolateProfile(KiteProfile startProfile, KiteProfile endProfile, double parameter, int interpolationOrder,
             double domainStart = 0, double domainEnd = 1)
         {
             return Geometry.Create.KiteProfile(
@@ -169,7 +169,7 @@ namespace BH.Engine.Spatial
 
         /***************************************************/
 
-        public static RectangleProfile InterpolateProfile(RectangleProfile startProfile, RectangleProfile endProfile, double parameter, int interpolationOrder, 
+        public static RectangleProfile InterpolateProfile(RectangleProfile startProfile, RectangleProfile endProfile, double parameter, int interpolationOrder,
             double domainStart = 0, double domainEnd = 1)
         {
             return Geometry.Create.RectangleProfile(
@@ -181,7 +181,7 @@ namespace BH.Engine.Spatial
         /***************************************************/
 
 
-        public static TSectionProfile InterpolateProfile(TSectionProfile startProfile, TSectionProfile endProfile, double parameter, int interpolationOrder, 
+        public static TSectionProfile InterpolateProfile(TSectionProfile startProfile, TSectionProfile endProfile, double parameter, int interpolationOrder,
             double domainStart = 0, double domainEnd = 1)
         {
             return Geometry.Create.TSectionProfile(
@@ -196,7 +196,7 @@ namespace BH.Engine.Spatial
 
         /***************************************************/
 
-        public static TubeProfile InterpolateProfile(TubeProfile startProfile, TubeProfile endProfile, double parameter, int interpolationOrder, 
+        public static TubeProfile InterpolateProfile(TubeProfile startProfile, TubeProfile endProfile, double parameter, int interpolationOrder,
             double domainStart = 0, double domainEnd = 1)
         {
             return Geometry.Create.TubeProfile(
@@ -206,7 +206,7 @@ namespace BH.Engine.Spatial
 
         /***************************************************/
 
-        public static ZSectionProfile InterpolateProfile(ZSectionProfile startProfile, ZSectionProfile endProfile, double parameter, int interpolationOrder, 
+        public static ZSectionProfile InterpolateProfile(ZSectionProfile startProfile, ZSectionProfile endProfile, double parameter, int interpolationOrder,
             double domainStart = 0, double domainEnd = 1)
         {
             return Geometry.Create.ZSectionProfile(
@@ -227,10 +227,10 @@ namespace BH.Engine.Spatial
             //Check if the interpolation is not required (i.e. the range is constant)
             if (Math.Abs(start - end) < double.Epsilon)
                 return start;
-            
+
             //Scale parameter to the domain
             double rescaledParameter = domainStart + (domainEnd - domainStart) * parameter;
-            
+
             //Interpolate between the start and end using the rescale parameter
             double interpolation = end + (start - end) * Math.Pow(1 - rescaledParameter, interpolationOrder);
 
@@ -239,7 +239,7 @@ namespace BH.Engine.Spatial
             //double interpolationEnd = end + (start - end) * Math.Pow(1 - domainEnd, interpolationOrder);
             //double normalisedInterpolation = (interpolation - interpolationStart) / (interpolationEnd - interpolationStart);
 
-            double normalisedInterpolation = ((Math.Pow(1 - rescaledParameter, interpolationOrder) - Math.Pow(1 - domainStart, interpolationOrder))) / 
+            double normalisedInterpolation = ((Math.Pow(1 - rescaledParameter, interpolationOrder) - Math.Pow(1 - domainStart, interpolationOrder))) /
                 ((Math.Pow(1 - domainEnd, interpolationOrder) - Math.Pow(1 - domainStart, interpolationOrder)));
 
             return start + (end - start) * normalisedInterpolation;
