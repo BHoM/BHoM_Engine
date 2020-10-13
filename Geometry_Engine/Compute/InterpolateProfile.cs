@@ -62,14 +62,14 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        private static BoxProfile InterpolateProfile(BoxProfile startProfile, BoxProfile endProfile, double parameter, int interpolationOrder)
+        public static BoxProfile InterpolateProfile(BoxProfile startProfile, BoxProfile endProfile, double parameter, int interpolationOrder, double domainStart = 0, double domainEnd = 1)
         {
             return Create.BoxProfile(
-                Interpolate(startProfile.Height, endProfile.Height, parameter, interpolationOrder),
-                Interpolate(startProfile.Width, endProfile.Width, parameter, interpolationOrder),
-                Interpolate(startProfile.Thickness, endProfile.Thickness, parameter, interpolationOrder),
-                Interpolate(startProfile.OuterRadius, endProfile.OuterRadius, parameter, interpolationOrder),
-                Interpolate(startProfile.InnerRadius, endProfile.InnerRadius, parameter, interpolationOrder));
+                Interpolate(startProfile.Height, endProfile.Height, parameter, interpolationOrder, domainStart, domainEnd),
+                Interpolate(startProfile.Width, endProfile.Width, parameter, interpolationOrder, domainStart, domainEnd),
+                Interpolate(startProfile.Thickness, endProfile.Thickness, parameter, interpolationOrder, domainStart, domainEnd),
+                Interpolate(startProfile.OuterRadius, endProfile.OuterRadius, parameter, interpolationOrder, domainStart, domainEnd),
+                Interpolate(startProfile.InnerRadius, endProfile.InnerRadius, parameter, interpolationOrder, domainStart, domainEnd));
         }
 
         /***************************************************/
@@ -219,9 +219,23 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        private static double Interpolate(double start, double end, double parameter, int interpolationOrder)
+        private static double Interpolate(double start, double end, double parameter, int interpolationOrder, double domainStart = 0, double domainEnd = 1)
         {
-            return end + (start - end) * Math.Pow(1 - parameter, interpolationOrder);
+            if (Math.Abs(start - end) < double.Epsilon)
+                return start;
+
+            double rescaledParameter = domainStart + (domainEnd - domainStart) * parameter;
+
+            double interpolation =  end + (start - end) * Math.Pow(1 - rescaledParameter, interpolationOrder);
+
+            double interpolationStart = end + (start - end) * Math.Pow(1 - domainStart, interpolationOrder);
+
+            double interpolationEnd = end + (start - end) * Math.Pow(1 - domainEnd, interpolationOrder);
+
+            double normalisedParameter = (interpolation - interpolationStart) / (interpolationEnd - interpolationStart);
+
+            return start + (end - start) * normalisedParameter;
+
         }
 
         /***************************************************/
