@@ -78,7 +78,6 @@
     <Compile Include="Compute\CullDuplicates.cs" />
     <Compile Include="Compute\CollapseToScaledPolyline.cs" />
     <Compile Include="Compute\DistributeOutlines.cs" />
-    <Compile Include="Compute\InterpolateProfile.cs" />
     <Compile Include="Compute\MarchingCubes.cs" />
     <Compile Include="Compute\SubMesh.cs" />
     <Compile Include="Compute\MarchingSquares.cs" />
@@ -133,7 +132,6 @@
     <Compile Include="Modify\CleanPolyline.cs" />
     <Compile Include="Modify\CollapseToPolyline.cs" />
     <Compile Include="Modify\CullDuplicate.cs" />
-    <Compile Include="Modify\MapPositionDomain.cs" />
     <Compile Include="Modify\RemoveLeastSignificantVertices.cs" />
     <Compile Include="Modify\RemoveShortSegments.cs" />
     <Compile Include="Modify\RoundCoordinates.cs" />

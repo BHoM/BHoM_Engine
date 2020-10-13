@@ -37,61 +37,9 @@ namespace BH.Engine.Structure
     public static partial class Compute
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /**** Private Methods                           ****/
         /***************************************************/
 
-        [Description("Maps a TaperedProfile to a series of sequential Bars. For example, the start and end profiles are known for the series of bars, this method " +
-            "will interpolate between bars to create a TaperedProfile for each Bar.")]
-        [Input("section", "The section containing the TaperedProfile to be mapped to the series of Bars")]
-        [Input("bars", "The Bars for the TaperedProfile to be mapped to.")]
-        [Output("bars", "The Bars with interpolated SectionProperties based on the TaperedProfile provided.")]
-        public static List<Bar> IMapTaperedSection(List<Bar> bars, ISectionProperty section)
-        {
-            return MapTaperedProfile(bars, section as dynamic);
-        }
-
-        /***************************************************/
-
-        public static List<Bar> MapTaperedSection(List<Bar> bars, IGeometricalSection section)
-        {
-            List<Bar> newBars = bars.ShallowClone();
-
-            if (!(section.SectionProfile is TaperedProfile))
-            {
-                Reflection.Compute.RecordError("Section provided does not contain a TaperedProfile");
-                foreach (Bar newBar in newBars)
-                {
-                    newBar.SectionProperty = section;
-                }
-            }
-            else
-            {
-                List<TaperedProfile> mappedTaperedProfiles = MapTaperedProfile(bars, section.SectionProfile as TaperedProfile);
-                List<IGeometricalSection> sections = mappedTaperedProfiles.Select(x => Create.SectionPropertyFromProfile(x, section.Material)).ToList();
-                for (int i = 0; i < sections.Count; i++)
-                {
-                    sections[i].Name = section.Name + "-s" + i;
-                    newBars[i].SectionProperty = sections[i];
-                }
-            }
-
-            return newBars;
-        }
-
-        /***************************************************/
-        public static List<Bar> MapTaperedSection(List<Bar> bars, ISectionProperty section)
-        {
-            List<Bar> newBars = bars.ShallowClone();
-
-            foreach (Bar newBar in newBars)
-            {
-                newBar.SectionProperty = section;
-            }
-
-            return newBars;
-        }
-
-        /***************************************************/
         private static List<TaperedProfile> MapTaperedProfile(List<Bar> bars, TaperedProfile taperedProfile)
         {
             //Check profiles have the same shape
@@ -204,18 +152,11 @@ namespace BH.Engine.Structure
 
                         double interpolationPosition = (position - prePosition) / (postPosition - prePosition);
 
-                        int newInterpolationOrder;
-                        try
-                        {
-                            newInterpolationOrder = newInterpolationOrders[i];
-                        }
-                        catch (ArgumentOutOfRangeException)
-                        {
-                            //If it is the final index
-                            newInterpolationOrder = newInterpolationOrders[i - 1];
-                        }
+                        //One less interpolationOrder than positions/profiles
+                        int interpolationIndex = Math.Min(i, newInterpolationOrders.Count - 1);
+                        int newInterpolationOrder = newInterpolationOrders[interpolationIndex];
 
-                        newProfile = Geometry.Compute.InterpolateProfile(preProfile, postProfile, interpolationPosition, newInterpolationOrder);
+                        newProfile = Spatial.Compute.IInterpolateProfile(preProfile, postProfile, interpolationPosition, newInterpolationOrder);
                     }
                     newProfiles.Add(newProfile);
                     newPositions.Add(position);
@@ -262,6 +203,57 @@ namespace BH.Engine.Structure
 
             return interpolationOrders;
         }
+
+        /***************************************************/
+        /**** Public Methods - Interfaces               ****/
+        /***************************************************/
+
+        [Description("Maps a TaperedProfile to a series of sequential Bars. For example, the start and end profiles are known for the series of bars, this method " +
+            "will interpolate between bars to create a TaperedProfile for each Bar.")]
+        [Input("section", "The section containing the TaperedProfile to be mapped to the series of Bars")]
+        [Input("bars", "The Bars for the TaperedProfile to be mapped to.")]
+        [Output("bars", "The Bars with interpolated SectionProperties based on the TaperedProfile provided.")]
+        public static List<Bar> IMapTaperedProfile(List<Bar> bars, IGeometricalSection section)
+        {
+            List<Bar> newBars = bars.ShallowClone();
+
+            if (!(section.SectionProfile is TaperedProfile))
+            {
+                Reflection.Compute.RecordError("Section provided does not contain a TaperedProfile");
+                foreach (Bar newBar in newBars)
+                {
+                    newBar.SectionProperty = section;
+                }
+            }
+            else
+            {
+                List<TaperedProfile> mappedTaperedProfiles = MapTaperedProfile(bars, section.SectionProfile as TaperedProfile);
+                List<IGeometricalSection> sections = mappedTaperedProfiles.Select(x => Create.SectionPropertyFromProfile(x, section.Material)).ToList();
+                for (int i = 0; i < sections.Count; i++)
+                {
+                    sections[i].Name = section.Name + "-s" + i;
+                    newBars[i].SectionProperty = sections[i];
+                }
+            }
+
+            return newBars;
+        }
+
+        /***************************************************/
+
+        private static List<Bar> IMapTaperedProfile(List<Bar> bars, ISectionProperty section)
+        {
+            List<Bar> newBars = bars.ShallowClone();
+
+            foreach (Bar newBar in newBars)
+            {
+                newBar.SectionProperty = section;
+            }
+
+            return newBars;
+        }
+
+        /***************************************************/
 
     }
 }
