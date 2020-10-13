@@ -35,7 +35,7 @@ namespace BH.Engine.Environment
     public static partial class Compute
     {
         /***************************************************/
-        /****          public Methods                   ****/
+        /****          Public Methods                   ****/
         /***************************************************/
 
         [Description("Returns true if two Environment Panels boolean intersect")]

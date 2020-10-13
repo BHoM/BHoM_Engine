@@ -37,7 +37,7 @@ namespace BH.Engine.Environment
     public static partial class Query
     {
         /***************************************************/
-        /****          public Methods                   ****/
+        /****          Public Methods                   ****/
         /***************************************************/
 
         [Description("Returns a collection of Lines representing an Environment Edge")]
