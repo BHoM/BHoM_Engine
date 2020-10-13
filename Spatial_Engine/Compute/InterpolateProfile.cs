@@ -35,21 +35,23 @@ namespace BH.Engine.Spatial
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static AngleProfile InterpolateProfile(AngleProfile startProfile, AngleProfile endProfile, double parameter, int interpolationOrder)
+        public static AngleProfile InterpolateProfile(AngleProfile startProfile, AngleProfile endProfile, double parameter, int interpolationOrder, 
+            double domainStart = 0, double domainEnd = 1)
         {
             return Geometry.Create.AngleProfile(
-                Interpolate(startProfile.Height, endProfile.Height, parameter, interpolationOrder),
-                Interpolate(startProfile.Width, endProfile.Width, parameter, interpolationOrder),
-                Interpolate(startProfile.WebThickness, endProfile.WebThickness, parameter, interpolationOrder),
-                Interpolate(startProfile.FlangeThickness, endProfile.FlangeThickness, parameter, interpolationOrder),
-                Interpolate(startProfile.RootRadius, endProfile.RootRadius, parameter, interpolationOrder),
-                Interpolate(startProfile.ToeRadius, endProfile.ToeRadius, parameter, interpolationOrder),
+                Interpolate(startProfile.Height, endProfile.Height, parameter, interpolationOrder, domainStart, domainEnd),
+                Interpolate(startProfile.Width, endProfile.Width, parameter, interpolationOrder, domainStart, domainEnd),
+                Interpolate(startProfile.WebThickness, endProfile.WebThickness, parameter, interpolationOrder, domainStart, domainEnd),
+                Interpolate(startProfile.FlangeThickness, endProfile.FlangeThickness, parameter, interpolationOrder, domainStart, domainEnd),
+                Interpolate(startProfile.RootRadius, endProfile.RootRadius, parameter, interpolationOrder, domainStart, domainEnd),
+                Interpolate(startProfile.ToeRadius, endProfile.ToeRadius, parameter, interpolationOrder, domainStart, domainEnd),
                 startProfile.MirrorAboutLocalZ, startProfile.MirrorAboutLocalY);
         }
 
         /***************************************************/
 
-        public static BoxProfile InterpolateProfile(BoxProfile startProfile, BoxProfile endProfile, double parameter, int interpolationOrder, double domainStart = 0, double domainEnd = 1)
+        public static BoxProfile InterpolateProfile(BoxProfile startProfile, BoxProfile endProfile, double parameter, int interpolationOrder, 
+            double domainStart = 0, double domainEnd = 1)
         {
             return Geometry.Create.BoxProfile(
                 Interpolate(startProfile.Height, endProfile.Height, parameter, interpolationOrder, domainStart, domainEnd),
@@ -61,147 +63,159 @@ namespace BH.Engine.Spatial
 
         /***************************************************/
 
-        public static ChannelProfile InterpolateProfile(ChannelProfile startProfile, ChannelProfile endProfile, double parameter, int interpolationOrder)
+        public static ChannelProfile InterpolateProfile(ChannelProfile startProfile, ChannelProfile endProfile, double parameter, int interpolationOrder, 
+            double domainStart = 0, double domainEnd = 1)
         {
             return Geometry.Create.ChannelProfile(
-                Interpolate(startProfile.Height, endProfile.Height, parameter, interpolationOrder),
-                Interpolate(startProfile.FlangeWidth, endProfile.FlangeWidth, parameter, interpolationOrder),
-                Interpolate(startProfile.WebThickness, endProfile.WebThickness, parameter, interpolationOrder),
-                Interpolate(startProfile.FlangeThickness, endProfile.FlangeThickness, parameter, interpolationOrder),
-                Interpolate(startProfile.RootRadius, endProfile.RootRadius, parameter, interpolationOrder),
-                Interpolate(startProfile.ToeRadius, endProfile.ToeRadius, parameter, interpolationOrder),
+                Interpolate(startProfile.Height, endProfile.Height, parameter, interpolationOrder, domainStart, domainEnd),
+                Interpolate(startProfile.FlangeWidth, endProfile.FlangeWidth, parameter, interpolationOrder, domainStart, domainEnd),
+                Interpolate(startProfile.WebThickness, endProfile.WebThickness, parameter, interpolationOrder, domainStart, domainEnd),
+                Interpolate(startProfile.FlangeThickness, endProfile.FlangeThickness, parameter, interpolationOrder, domainStart, domainEnd),
+                Interpolate(startProfile.RootRadius, endProfile.RootRadius, parameter, interpolationOrder, domainStart, domainEnd),
+                Interpolate(startProfile.ToeRadius, endProfile.ToeRadius, parameter, interpolationOrder, domainStart, domainEnd),
                 startProfile.MirrorAboutLocalZ);
         }
 
         /***************************************************/
 
-        public static CircleProfile InterpolateProfile(CircleProfile startProfile, CircleProfile endProfile, double parameter, int interpolationOrder)
+        public static CircleProfile InterpolateProfile(CircleProfile startProfile, CircleProfile endProfile, double parameter, int interpolationOrder, 
+            double domainStart = 0, double domainEnd = 1)
         {
-            return Geometry.Create.CircleProfile(Interpolate(startProfile.Diameter, endProfile.Diameter, parameter, interpolationOrder));
+            return Geometry.Create.CircleProfile(Interpolate(startProfile.Diameter, endProfile.Diameter, parameter, interpolationOrder, domainStart, domainEnd));
         }
 
         /***************************************************/
 
-        public static FabricatedBoxProfile InterpolateProfile(FabricatedBoxProfile startProfile, FabricatedBoxProfile endProfile, double parameter, int interpolationOrder)
+        public static FabricatedBoxProfile InterpolateProfile(FabricatedBoxProfile startProfile, FabricatedBoxProfile endProfile, double parameter, int interpolationOrder, 
+            double domainStart = 0, double domainEnd = 1)
         {
             return Geometry.Create.FabricatedBoxProfile(
-                Interpolate(startProfile.Height, endProfile.Height, parameter, interpolationOrder),
-                Interpolate(startProfile.Width, endProfile.Width, parameter, interpolationOrder),
-                Interpolate(startProfile.WebThickness, endProfile.WebThickness, parameter, interpolationOrder),
-                Interpolate(startProfile.TopFlangeThickness, endProfile.TopFlangeThickness, parameter, interpolationOrder),
-                Interpolate(startProfile.BotFlangeThickness, endProfile.BotFlangeThickness, parameter, interpolationOrder),
-                Interpolate(startProfile.WeldSize, endProfile.WeldSize, parameter, interpolationOrder));
+                Interpolate(startProfile.Height, endProfile.Height, parameter, interpolationOrder, domainStart, domainEnd),
+                Interpolate(startProfile.Width, endProfile.Width, parameter, interpolationOrder, domainStart, domainEnd),
+                Interpolate(startProfile.WebThickness, endProfile.WebThickness, parameter, interpolationOrder, domainStart, domainEnd),
+                Interpolate(startProfile.TopFlangeThickness, endProfile.TopFlangeThickness, parameter, interpolationOrder, domainStart, domainEnd),
+                Interpolate(startProfile.BotFlangeThickness, endProfile.BotFlangeThickness, parameter, interpolationOrder, domainStart, domainEnd),
+                Interpolate(startProfile.WeldSize, endProfile.WeldSize, parameter, interpolationOrder, domainStart, domainEnd));
         }
 
         /***************************************************/
 
-        public static FabricatedISectionProfile InterpolateProfile(FabricatedISectionProfile startProfile, FabricatedISectionProfile endProfile, double parameter, int interpolationOrder)
+        public static FabricatedISectionProfile InterpolateProfile(FabricatedISectionProfile startProfile, FabricatedISectionProfile endProfile, double parameter, int interpolationOrder, 
+            double domainStart = 0, double domainEnd = 1)
         {
             return Geometry.Create.FabricatedISectionProfile(
-                Interpolate(startProfile.Height, endProfile.Height, parameter, interpolationOrder),
-                Interpolate(startProfile.TopFlangeWidth, endProfile.TopFlangeWidth, parameter, interpolationOrder),
-                Interpolate(startProfile.BotFlangeWidth, endProfile.BotFlangeWidth, parameter, interpolationOrder),
-                Interpolate(startProfile.WebThickness, endProfile.WebThickness, parameter, interpolationOrder),
-                Interpolate(startProfile.TopFlangeThickness, endProfile.TopFlangeThickness, parameter, interpolationOrder),
-                Interpolate(startProfile.BotFlangeThickness, endProfile.TopFlangeThickness, parameter, interpolationOrder),
-                Interpolate(startProfile.WeldSize, endProfile.WeldSize, parameter, interpolationOrder));
+                Interpolate(startProfile.Height, endProfile.Height, parameter, interpolationOrder, domainStart, domainEnd),
+                Interpolate(startProfile.TopFlangeWidth, endProfile.TopFlangeWidth, parameter, interpolationOrder, domainStart, domainEnd),
+                Interpolate(startProfile.BotFlangeWidth, endProfile.BotFlangeWidth, parameter, interpolationOrder, domainStart, domainEnd),
+                Interpolate(startProfile.WebThickness, endProfile.WebThickness, parameter, interpolationOrder, domainStart, domainEnd),
+                Interpolate(startProfile.TopFlangeThickness, endProfile.TopFlangeThickness, parameter, interpolationOrder, domainStart, domainEnd),
+                Interpolate(startProfile.BotFlangeThickness, endProfile.TopFlangeThickness, parameter, interpolationOrder, domainStart, domainEnd),
+                Interpolate(startProfile.WeldSize, endProfile.WeldSize, parameter, interpolationOrder, domainStart, domainEnd));
         }
 
         /***************************************************/
 
-        public static GeneralisedFabricatedBoxProfile InterpolateProfile(GeneralisedFabricatedBoxProfile startProfile, GeneralisedFabricatedBoxProfile endProfile, double parameter, int interpolationOrder)
+        public static GeneralisedFabricatedBoxProfile InterpolateProfile(GeneralisedFabricatedBoxProfile startProfile, GeneralisedFabricatedBoxProfile endProfile, 
+            double parameter, int interpolationOrder, double domainStart = 0, double domainEnd = 1)
         {
             return Geometry.Create.GeneralisedFabricatedBoxProfile(
-                Interpolate(startProfile.Height, endProfile.Height, parameter, interpolationOrder),
-                Interpolate(startProfile.Width, endProfile.Width, parameter, interpolationOrder),
-                Interpolate(startProfile.WebThickness, endProfile.WebThickness, parameter, interpolationOrder),
-                Interpolate(startProfile.TopFlangeThickness, endProfile.TopFlangeThickness, parameter, interpolationOrder),
-                Interpolate(startProfile.BotFlangeThickness, endProfile.BotFlangeThickness, parameter, interpolationOrder),
-                Interpolate(Math.Max(startProfile.TopLeftCorbelWidth, startProfile.TopRightCorbelWidth), Math.Max(endProfile.TopLeftCorbelWidth, endProfile.TopRightCorbelWidth), parameter, interpolationOrder),
-                Interpolate(Math.Max(startProfile.BotLeftCorbelWidth, startProfile.BotRightCorbelWidth), Math.Max(endProfile.BotLeftCorbelWidth, endProfile.BotRightCorbelWidth), parameter, interpolationOrder));
+                Interpolate(startProfile.Height, endProfile.Height, parameter, interpolationOrder, domainStart, domainEnd),
+                Interpolate(startProfile.Width, endProfile.Width, parameter, interpolationOrder, domainStart, domainEnd),
+                Interpolate(startProfile.WebThickness, endProfile.WebThickness, parameter, interpolationOrder, domainStart, domainEnd),
+                Interpolate(startProfile.TopFlangeThickness, endProfile.TopFlangeThickness, parameter, interpolationOrder, domainStart, domainEnd),
+                Interpolate(startProfile.BotFlangeThickness, endProfile.BotFlangeThickness, parameter, interpolationOrder, domainStart, domainEnd),
+                Interpolate(Math.Max(startProfile.TopLeftCorbelWidth, startProfile.TopRightCorbelWidth), Math.Max(endProfile.TopLeftCorbelWidth, endProfile.TopRightCorbelWidth), parameter, interpolationOrder, domainStart, domainEnd),
+                Interpolate(Math.Max(startProfile.BotLeftCorbelWidth, startProfile.BotRightCorbelWidth), Math.Max(endProfile.BotLeftCorbelWidth, endProfile.BotRightCorbelWidth), parameter, interpolationOrder, domainStart, domainEnd));
         }
 
         /***************************************************/
 
-        public static GeneralisedTSectionProfile InterpolateProfile(GeneralisedTSectionProfile startProfile, GeneralisedTSectionProfile endProfile, double parameter, int interpolationOrder)
+        public static GeneralisedTSectionProfile InterpolateProfile(GeneralisedTSectionProfile startProfile, GeneralisedTSectionProfile endProfile, double parameter, int interpolationOrder, 
+            double domainStart = 0, double domainEnd = 1)
         {
             return Geometry.Create.GeneralisedTSectionProfile(
-                Interpolate(startProfile.Height, endProfile.Height, parameter, interpolationOrder),
-                Interpolate(startProfile.WebThickness, endProfile.WebThickness, parameter, interpolationOrder),
-                Interpolate(startProfile.LeftOutstandWidth, endProfile.LeftOutstandWidth, parameter, interpolationOrder),
-                Interpolate(startProfile.LeftOutstandThickness, endProfile.LeftOutstandThickness, parameter, interpolationOrder),
-                Interpolate(startProfile.RightOutstandWidth, endProfile.RightOutstandWidth, parameter, interpolationOrder),
-                Interpolate(startProfile.RightOutstandThickness, endProfile.RightOutstandThickness, parameter, interpolationOrder),
+                Interpolate(startProfile.Height, endProfile.Height, parameter, interpolationOrder, domainStart, domainEnd),
+                Interpolate(startProfile.WebThickness, endProfile.WebThickness, parameter, interpolationOrder, domainStart, domainEnd),
+                Interpolate(startProfile.LeftOutstandWidth, endProfile.LeftOutstandWidth, parameter, interpolationOrder, domainStart, domainEnd),
+                Interpolate(startProfile.LeftOutstandThickness, endProfile.LeftOutstandThickness, parameter, interpolationOrder, domainStart, domainEnd),
+                Interpolate(startProfile.RightOutstandWidth, endProfile.RightOutstandWidth, parameter, interpolationOrder, domainStart, domainEnd),
+                Interpolate(startProfile.RightOutstandThickness, endProfile.RightOutstandThickness, parameter, interpolationOrder, domainStart, domainEnd),
                 startProfile.MirrorAboutLocalY);
         }
 
         /***************************************************/
-        public static ISectionProfile InterpolateProfile(ISectionProfile startProfile, ISectionProfile endProfile, double parameter, int interpolationOrder)
+        public static ISectionProfile InterpolateProfile(ISectionProfile startProfile, ISectionProfile endProfile, double parameter, int interpolationOrder, 
+            double domainStart = 0, double domainEnd = 1)
         {
             return Geometry.Create.ISectionProfile(
-                Interpolate(startProfile.Height, endProfile.Height, parameter, interpolationOrder),
-                Interpolate(startProfile.Width, endProfile.Width, parameter, interpolationOrder),
-                Interpolate(startProfile.WebThickness, endProfile.WebThickness, parameter, interpolationOrder),
-                Interpolate(startProfile.FlangeThickness, endProfile.FlangeThickness, parameter, interpolationOrder),
-                Interpolate(startProfile.RootRadius, endProfile.RootRadius, parameter, interpolationOrder),
-                Interpolate(startProfile.ToeRadius, endProfile.ToeRadius, parameter, interpolationOrder));
+                Interpolate(startProfile.Height, endProfile.Height, parameter, interpolationOrder, domainStart, domainEnd),
+                Interpolate(startProfile.Width, endProfile.Width, parameter, interpolationOrder, domainStart, domainEnd),
+                Interpolate(startProfile.WebThickness, endProfile.WebThickness, parameter, interpolationOrder, domainStart, domainEnd),
+                Interpolate(startProfile.FlangeThickness, endProfile.FlangeThickness, parameter, interpolationOrder, domainStart, domainEnd),
+                Interpolate(startProfile.RootRadius, endProfile.RootRadius, parameter, interpolationOrder, domainStart, domainEnd),
+                Interpolate(startProfile.ToeRadius, endProfile.ToeRadius, parameter, interpolationOrder, domainStart, domainEnd));
         }
 
         /***************************************************/
 
-        public static KiteProfile InterpolateProfile(KiteProfile startProfile, KiteProfile endProfile, double parameter, int interpolationOrder)
+        public static KiteProfile InterpolateProfile(KiteProfile startProfile, KiteProfile endProfile, double parameter, int interpolationOrder, 
+            double domainStart = 0, double domainEnd = 1)
         {
             return Geometry.Create.KiteProfile(
-                Interpolate(startProfile.Width1, endProfile.Width1, parameter, interpolationOrder),
-                Interpolate(startProfile.Angle1, endProfile.Angle1, parameter, interpolationOrder),
-                Interpolate(startProfile.Thickness, endProfile.Thickness, parameter, interpolationOrder));
+                Interpolate(startProfile.Width1, endProfile.Width1, parameter, interpolationOrder, domainStart, domainEnd),
+                Interpolate(startProfile.Angle1, endProfile.Angle1, parameter, interpolationOrder, domainStart, domainEnd),
+                Interpolate(startProfile.Thickness, endProfile.Thickness, parameter, interpolationOrder, domainStart, domainEnd));
         }
 
         /***************************************************/
 
-        public static RectangleProfile InterpolateProfile(RectangleProfile startProfile, RectangleProfile endProfile, double parameter, int interpolationOrder)
+        public static RectangleProfile InterpolateProfile(RectangleProfile startProfile, RectangleProfile endProfile, double parameter, int interpolationOrder, 
+            double domainStart = 0, double domainEnd = 1)
         {
             return Geometry.Create.RectangleProfile(
-                Interpolate(startProfile.Height, endProfile.Height, parameter, interpolationOrder),
-                Interpolate(startProfile.Width, endProfile.Width, parameter, interpolationOrder),
-                Interpolate(startProfile.CornerRadius, endProfile.CornerRadius, parameter, interpolationOrder));
+                Interpolate(startProfile.Height, endProfile.Height, parameter, interpolationOrder, domainStart, domainEnd),
+                Interpolate(startProfile.Width, endProfile.Width, parameter, interpolationOrder, domainStart, domainEnd),
+                Interpolate(startProfile.CornerRadius, endProfile.CornerRadius, parameter, interpolationOrder, domainStart, domainEnd));
         }
 
         /***************************************************/
 
 
-        public static TSectionProfile InterpolateProfile(TSectionProfile startProfile, TSectionProfile endProfile, double parameter, int interpolationOrder)
+        public static TSectionProfile InterpolateProfile(TSectionProfile startProfile, TSectionProfile endProfile, double parameter, int interpolationOrder, 
+            double domainStart = 0, double domainEnd = 1)
         {
             return Geometry.Create.TSectionProfile(
-                Interpolate(startProfile.Height, endProfile.Height, parameter, interpolationOrder),
-                Interpolate(startProfile.Width, endProfile.Width, parameter, interpolationOrder),
-                Interpolate(startProfile.WebThickness, endProfile.WebThickness, parameter, interpolationOrder),
-                Interpolate(startProfile.FlangeThickness, endProfile.FlangeThickness, parameter, interpolationOrder),
-                Interpolate(startProfile.RootRadius, endProfile.RootRadius, parameter, interpolationOrder),
-                Interpolate(startProfile.ToeRadius, endProfile.ToeRadius, parameter, interpolationOrder),
+                Interpolate(startProfile.Height, endProfile.Height, parameter, interpolationOrder, domainStart, domainEnd),
+                Interpolate(startProfile.Width, endProfile.Width, parameter, interpolationOrder, domainStart, domainEnd),
+                Interpolate(startProfile.WebThickness, endProfile.WebThickness, parameter, interpolationOrder, domainStart, domainEnd),
+                Interpolate(startProfile.FlangeThickness, endProfile.FlangeThickness, parameter, interpolationOrder, domainStart, domainEnd),
+                Interpolate(startProfile.RootRadius, endProfile.RootRadius, parameter, interpolationOrder, domainStart, domainEnd),
+                Interpolate(startProfile.ToeRadius, endProfile.ToeRadius, parameter, interpolationOrder, domainStart, domainEnd),
                 startProfile.MirrorAboutLocalY);
         }
 
         /***************************************************/
 
-        public static TubeProfile InterpolateProfile(TubeProfile startProfile, TubeProfile endProfile, double parameter, int interpolationOrder)
+        public static TubeProfile InterpolateProfile(TubeProfile startProfile, TubeProfile endProfile, double parameter, int interpolationOrder, 
+            double domainStart = 0, double domainEnd = 1)
         {
             return Geometry.Create.TubeProfile(
-                Interpolate(startProfile.Diameter, endProfile.Diameter, parameter, interpolationOrder),
-                Interpolate(startProfile.Thickness, endProfile.Thickness, parameter, interpolationOrder));
+                Interpolate(startProfile.Diameter, endProfile.Diameter, parameter, interpolationOrder, domainStart, domainEnd),
+                Interpolate(startProfile.Thickness, endProfile.Thickness, parameter, interpolationOrder, domainStart, domainEnd));
         }
 
         /***************************************************/
 
-        public static ZSectionProfile InterpolateProfile(ZSectionProfile startProfile, ZSectionProfile endProfile, double parameter, int interpolationOrder)
+        public static ZSectionProfile InterpolateProfile(ZSectionProfile startProfile, ZSectionProfile endProfile, double parameter, int interpolationOrder, 
+            double domainStart = 0, double domainEnd = 1)
         {
             return Geometry.Create.ZSectionProfile(
-                Interpolate(startProfile.Height, endProfile.Height, parameter, interpolationOrder),
-                Interpolate(startProfile.FlangeWidth, endProfile.FlangeWidth, parameter, interpolationOrder),
-                Interpolate(startProfile.WebThickness, endProfile.WebThickness, parameter, interpolationOrder),
-                Interpolate(startProfile.FlangeThickness, endProfile.FlangeThickness, parameter, interpolationOrder),
-                Interpolate(startProfile.RootRadius, endProfile.RootRadius, parameter, interpolationOrder),
-                Interpolate(startProfile.ToeRadius, endProfile.ToeRadius, parameter, interpolationOrder));
+                Interpolate(startProfile.Height, endProfile.Height, parameter, interpolationOrder, domainStart, domainEnd),
+                Interpolate(startProfile.FlangeWidth, endProfile.FlangeWidth, parameter, interpolationOrder, domainStart, domainEnd),
+                Interpolate(startProfile.WebThickness, endProfile.WebThickness, parameter, interpolationOrder, domainStart, domainEnd),
+                Interpolate(startProfile.FlangeThickness, endProfile.FlangeThickness, parameter, interpolationOrder, domainStart, domainEnd),
+                Interpolate(startProfile.RootRadius, endProfile.RootRadius, parameter, interpolationOrder, domainStart, domainEnd),
+                Interpolate(startProfile.ToeRadius, endProfile.ToeRadius, parameter, interpolationOrder, domainStart, domainEnd));
         }
 
         /***************************************************/
@@ -210,20 +224,25 @@ namespace BH.Engine.Spatial
 
         private static double Interpolate(double start, double end, double parameter, int interpolationOrder, double domainStart = 0, double domainEnd = 1)
         {
+            //Check if the interpolation is not required (i.e. the range is constant)
             if (Math.Abs(start - end) < double.Epsilon)
                 return start;
-
+            
+            //Scale parameter to the domain
             double rescaledParameter = domainStart + (domainEnd - domainStart) * parameter;
-
+            
+            //Interpolate between the start and end using the rescale parameter
             double interpolation = end + (start - end) * Math.Pow(1 - rescaledParameter, interpolationOrder);
 
-            double interpolationStart = end + (start - end) * Math.Pow(1 - domainStart, interpolationOrder);
+            //Determine the values at the domain start and domain end
+            //double interpolationStart = end + (start - end) * Math.Pow(1 - domainStart, interpolationOrder);
+            //double interpolationEnd = end + (start - end) * Math.Pow(1 - domainEnd, interpolationOrder);
+            //double normalisedInterpolation = (interpolation - interpolationStart) / (interpolationEnd - interpolationStart);
 
-            double interpolationEnd = end + (start - end) * Math.Pow(1 - domainEnd, interpolationOrder);
+            double normalisedInterpolation = ((Math.Pow(1 - rescaledParameter, interpolationOrder) - Math.Pow(1 - domainStart, interpolationOrder))) / 
+                ((Math.Pow(1 - domainEnd, interpolationOrder) - Math.Pow(1 - domainStart, interpolationOrder)));
 
-            double normalisedParameter = (interpolation - interpolationStart) / (interpolationEnd - interpolationStart);
-
-            return start + (end - start) * normalisedParameter;
+            return start + (end - start) * normalisedInterpolation;
 
         }
 
@@ -237,9 +256,9 @@ namespace BH.Engine.Spatial
         [Input("parameter", "A number between 0 and 1 that describes the distance along the line.")]
         [Input("interpolationOrder", "The value of the polynomimal function used the describe the transition between the startProfile and endProfile.")]
         [Output("interpolatedProfile", "The profile evaluated at the parameter given using interpolation between the startProfile and endProfile using a function with the given interpolation order.")]
-        public static IProfile IInterpolateProfile(IProfile startProfile, IProfile endProfile, double parameter, int interpolationOrder)
+        public static IProfile IInterpolateProfile(IProfile startProfile, IProfile endProfile, double parameter, int interpolationOrder, double domainStart = 0, double domainEnd = 1)
         {
-            return InterpolateProfile(startProfile as dynamic, endProfile as dynamic, parameter, interpolationOrder);
+            return InterpolateProfile(startProfile as dynamic, endProfile as dynamic, parameter, interpolationOrder, domainStart, domainEnd);
         }
 
         /***************************************************/
