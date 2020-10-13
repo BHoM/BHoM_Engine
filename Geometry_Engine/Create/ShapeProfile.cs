@@ -562,6 +562,18 @@ namespace BH.Engine.Geometry
             "There should be one fewer (n-1) interpolation values than profiles.")]
         public static TaperedProfile TaperedProfile(List<double> positions, List<IProfile> profiles, List<int> interpolationOrder)
         {
+            if (interpolationOrder.Any(x => x < 1))
+            {
+                Reflection.Compute.RecordError("The interpolationOrder values must be greater than 1.");
+                return null;
+            }
+
+            if(!(interpolationOrder.Count == positions.Count -1))
+            {
+                Reflection.Compute.RecordError("InterpolationOrder is between the profiles provided. Therefore, the number of interpolationOrder should be one less than the number of profiles/positions.");
+                return null;
+            }
+            
             if (positions.Count != profiles.Count)
             {
                 Reflection.Compute.RecordError("Number of positions and profiles provided are not equal");
