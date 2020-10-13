@@ -51,31 +51,21 @@ using BH.oM.Geometry.ShapeProfiles;
 
 namespace BH.Engine.Spatial
 {
-    public static partial class Modify
+    public static partial class Compute
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Maps the positions of a TaperedProfile to a domain of 0 and 1.")]
-        [Input("taperedProfile", "The TaperedProfile to modify the position domain.")]
-        [Output("taperedProfile", "TaperedProfile with a position domain of 0 and 1")]
-        public static TaperedProfile MapPositionDomain(this TaperedProfile taperedProfile)
+        [Description("Linearly maps the domain of the source to the target.")]
+        [Input("source", "The domain to be mapped.")]
+        [Input("target", "The domain that the source will be mapped to.")]
+        [Output("mappedDomain", "The source domain mapped to the target domain")]
+        public static List<double> MapDomain(List<double> source, List<double> target)
         {
-            TaperedProfile newTaperedProfile = null;
-            List<double> positions = new List<double>(taperedProfile.Profiles.Keys);
-
-            if (!positions.Contains(0) && !positions.Contains(1))
-            {
-                List<double> newPositions = Compute.MapDomain(positions, positions);
-                newTaperedProfile = Geometry.Create.TaperedProfile(newPositions, new List<IProfile>(taperedProfile.Profiles.Values), taperedProfile.InterpolationOrder);
-            }
-            else
-            {
-                newTaperedProfile = taperedProfile;
-            }
-
-            return newTaperedProfile;
+            double minPosition = target.First();
+            double maxPosition = target.Last();
+            return source.Select(x => (x - minPosition) / (maxPosition - minPosition)).ToList();
         }
     }
 }

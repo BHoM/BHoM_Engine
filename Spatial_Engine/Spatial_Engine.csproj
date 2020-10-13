@@ -71,6 +71,7 @@
   <ItemGroup>
     <Compile Include="Compute\DistributeOutlines.cs" />
     <Compile Include="Compute\InterpolateProfile.cs" />
+    <Compile Include="Compute\MapDomain.cs" />
     <Compile Include="Create\DomainTree.cs" />
     <Compile Include="Create\ExplicitCurveLayout.cs" />
     <Compile Include="Create\OffsetCurveLayout.cs" />
