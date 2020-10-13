@@ -70,12 +70,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Compute\DistributeOutlines.cs" />
+    <Compile Include="Compute\InterpolateProfile.cs" />
     <Compile Include="Create\DomainTree.cs" />
     <Compile Include="Create\ExplicitCurveLayout.cs" />
     <Compile Include="Create\OffsetCurveLayout.cs" />
     <Compile Include="Create\ExplicitLayout.cs" />
     <Compile Include="Create\LinearLayout.cs" />
     <Compile Include="Create\MultiLinearLayout.cs" />
+    <Compile Include="Modify\MapPositionDomain.cs" />
     <Compile Include="Modify\RoundCoordinates.cs" />
     <Compile Include="Query\HasMergeablePropertiesWith.cs" />
     <Compile Include="Query\InternalOutlineCurves.cs" />
