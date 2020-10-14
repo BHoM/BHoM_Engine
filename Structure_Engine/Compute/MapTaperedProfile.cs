@@ -208,7 +208,7 @@ namespace BH.Engine.Structure
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
         [Description("Maps a TaperedProfile to a series of sequential Bars by interpolating the profiles at the startNode and endNode of each bar using a polynomial defined by the interpolationOrder. " +
-            "To achieve a concave profile, the larger profile must be at the lowest position. To achieve a convex profile, the larger profile must be the endProfile.")]
+            "For nonlinear profiles a concave profile is achieved by setting the larger profile at the smallest position. To achieve a convex profile, the larger profile must be at the largest position.")]
         [Input("section", "The section containing the TaperedProfile to be mapped to the series of Bars")]
         [Input("bars", "The Bars in sequential order for the TaperedProfile to be mapped to.")]
         [Output("bars", "The Bars with interpolated SectionProperties based on the TaperedProfile provided.")]
