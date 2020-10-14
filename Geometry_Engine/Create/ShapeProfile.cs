@@ -585,7 +585,7 @@ namespace BH.Engine.Geometry
             }
 
             //Checks for interpolationOrder
-            if (interpolationOrder == null)
+            if (interpolationOrder == null || interpolationOrder.Count == 0)
             {
                 interpolationOrder = Enumerable.Repeat(1, positions.Count - 1).ToList();
             }
