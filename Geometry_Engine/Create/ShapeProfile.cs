@@ -559,7 +559,8 @@ namespace BH.Engine.Geometry
             "The smallest position indicates the start profile and the largest position indicates the end profile.")]
         [Input("profiles", "The ShapeProfile at each of the positions specified.")]
         [Input("interpolationOrder", "Describes the order of the polynomial function between profiles whereby 1 = Linear, 2 = Quadratic, 3 = Cubic etc. " +
-            "There should be one fewer (n-1) interpolation values than profiles.")]
+            "There should be one fewer (n-1) interpolation values than profiles. For nonlinear profiles a concave profile is achieved by setting the larger profile at the smallest position. " +
+            "To achieve a convex profile, the larger profile must be at the largest position.")]
         public static TaperedProfile TaperedProfile(List<double> positions, List<IProfile> profiles, List<int> interpolationOrder)
         {
             if (interpolationOrder.Any(x => x < 1))
@@ -610,7 +611,8 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [PreviousVersion("4.0", "BH.Engine.Geometry.Create.TaperedProfile(BH.oM.Geometry.ShapeProfiles.IProfile, BH.oM.Geometry.ShapeProfiles.IProfile)")]
-        [Input("interpolationOrder", "Describes the polynomial function between each profile whereby 1 = Linear, 2 = Quadratic, 3 = Cubic etc.")]
+        [Input("interpolationOrder", "Describes the polynomial function between each profile whereby 1 = Linear, 2 = Quadratic, 3 = Cubic etc." +
+            "For nonlinear profiles a concave profile is achieved by setting the larger profile at the startProfile. To achieve a convex profile, the larger profile must be at the endProfile.")]
         public static TaperedProfile TaperedProfile(IProfile startProfile, IProfile endProfile, int interpolationOrder)
         {
             return TaperedProfile(new List<double>() { 0, 1 }, new List<IProfile>() { startProfile, endProfile }, new List<int>() { interpolationOrder });
