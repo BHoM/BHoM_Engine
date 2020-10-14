@@ -561,20 +561,9 @@ namespace BH.Engine.Geometry
         [Input("interpolationOrder", "Describes the order of the polynomial function between profiles whereby 1 = Linear, 2 = Quadratic, 3 = Cubic etc. " +
             "There should be one fewer (n-1) interpolation values than profiles. For nonlinear profiles a concave profile is achieved by setting the larger profile at the smallest position. " +
             "To achieve a convex profile, the larger profile must be at the largest position.")]
-        public static TaperedProfile TaperedProfile(List<double> positions, List<IProfile> profiles, List<int> interpolationOrder)
+        public static TaperedProfile TaperedProfile(List<double> positions, List<IProfile> profiles, List<int> interpolationOrder = null)
         {
-            if (interpolationOrder.Any(x => x < 1))
-            {
-                Reflection.Compute.RecordError("The interpolationOrder values must be greater than 1.");
-                return null;
-            }
-
-            if(!(interpolationOrder.Count == positions.Count -1))
-            {
-                Reflection.Compute.RecordError("InterpolationOrder is between the profiles provided. Therefore, the number of interpolationOrder should be one less than the number of profiles/positions.");
-                return null;
-            }
-            
+            //Checks for positions and profiles
             if (positions.Count != profiles.Count)
             {
                 Reflection.Compute.RecordError("Number of positions and profiles provided are not equal");
@@ -595,8 +584,29 @@ namespace BH.Engine.Geometry
                 return null;
             }
 
-            SortedDictionary<double, IProfile> profileDict = new SortedDictionary<double, IProfile>();
+            //Checks for interpolationOrder
+            if (interpolationOrder == null)
+            {
+                interpolationOrder = Enumerable.Repeat(1, positions.Count - 1).ToList();
+            }
+            else if(interpolationOrder.Count == 1)
+            {
+                interpolationOrder = Enumerable.Repeat(interpolationOrder.First(), positions.Count - 1).ToList();
+            }
+            else if (!(interpolationOrder.Count == positions.Count - 1))
+            {
+                Reflection.Compute.RecordError("InterpolationOrder is between the profiles provided. Therefore, the number of interpolationOrder should be one less (n - 1) than the number of profiles/positions.");
+                return null;
+            }
 
+            if (interpolationOrder.Any(x => x < 1))
+            {
+                Reflection.Compute.RecordError("The interpolationOrder values must be greater than 1.");
+                return null;
+            }
+            
+            //Create ditionary for TaperedProfile
+            SortedDictionary<double, IProfile> profileDict = new SortedDictionary<double, IProfile>();
             for (int i = 0; i < positions.Count; i++)
             {
                 profileDict[positions[i]] = profiles[i];
