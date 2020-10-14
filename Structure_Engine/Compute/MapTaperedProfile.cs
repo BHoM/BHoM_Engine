@@ -207,11 +207,10 @@ namespace BH.Engine.Structure
         /***************************************************/
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
-
-        [Description("Maps a TaperedProfile to a series of sequential Bars. For example, the start and end profiles are known for the series of bars, this method " +
-            "will interpolate between bars to create a TaperedProfile for each Bar.")]
+        [Description("Maps a TaperedProfile to a series of sequential Bars by interpolating the profiles at the startNode and endNode of each bar using a polynomial defined by the interpolationOrder. " +
+            "To achieve a concave profile, the larger profile must be at the lowest position. To achieve a convex profile, the larger profile must be the endProfile.")]
         [Input("section", "The section containing the TaperedProfile to be mapped to the series of Bars")]
-        [Input("bars", "The Bars for the TaperedProfile to be mapped to.")]
+        [Input("bars", "The Bars in sequential order for the TaperedProfile to be mapped to.")]
         [Output("bars", "The Bars with interpolated SectionProperties based on the TaperedProfile provided.")]
         public static List<Bar> IMapTaperedProfile(List<Bar> bars, IGeometricalSection section)
         {
