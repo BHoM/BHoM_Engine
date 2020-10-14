@@ -70,22 +70,34 @@ namespace BH.Engine.Environment
             }
 
             foreach (IRegion region in regionsToMap)
-            {
-                ICurve perimeter = region.Perimeter;
-                List<IRegion> matchingPerimeter = originalRegions.Where(x => x.Perimeter.BooleanIntersection(perimeter, distanceTolerance).Count > 0).ToList();
+            {          
+                // Find the regions to map for each floor by using line intersections
+                Polyline perimeter = region.Perimeter.ICollapseToPolyline(angleTolerance);
 
-                // Add a list for IES-spaces without a Revit space
+                List<Point> controlPoints = perimeter.IControlPoints();
+                double minZ = controlPoints.Select(x => x.Z).Min() - distanceTolerance;
+                double maxZ = controlPoints.Select(x => x.Z).Max() + distanceTolerance;
+
+                List<IRegion> regionsOnLevel = originalRegions.Where(x =>
+                                                            {
+                                                                double zL = x.Perimeter.IControlPoints()[0].Z;
+                                                                return (zL >= minZ && zL <= maxZ);
+                                                            }).ToList();
+
+                List<IRegion> matchingPerimeter = regionsOnLevel.Where(x => x.Perimeter.ICollapseToPolyline(angleTolerance).LineIntersections(perimeter, distanceTolerance).Count > 0).ToList();
+
+                // Add a list of regions that haven't been mapped to any original regions
                 if (matchingPerimeter.Count == 0)
                     regionsNotMatched.Add(region);
 
-                // Map the matching regions to the original regions  
+                // Map the matching regions to the original regions 
                 foreach (IRegion match in matchingPerimeter)
                 {
                     mappedRegions[originalRegions.IndexOf(match)].Add(region);
                 }
             }
 
-            // Add a list for revitspaces without IES-spaces
+            // Add a list for original regions without mapped regions
             for (int x = 0; x < mappedRegions.Count; x++)
             {
                 if (mappedRegions[x].Count == 0)
@@ -95,17 +107,28 @@ namespace BH.Engine.Environment
             // Add percentage of original regions matched to the mapped regions
             for (int x = 0; x < originalRegions.Count; x++)
             {
+                List<IRegion> mappedRegionsI = new List<IRegion>();
+
                 foreach (IRegion region in mappedRegions[x])
                 {
                     double areaIntersecting = 0.0;
                     Polyline originalPerimeter = originalRegions[x].Perimeter.ICollapseToPolyline(angleTolerance);
                     Polyline mappedPerimeter = region.Perimeter.ICollapseToPolyline(angleTolerance);
 
-                    List<Polyline> intersections = BH.Engine.Geometry.Compute.BooleanIntersection(originalPerimeter, mappedPerimeter, distanceTolerance);
-
+                    List<Polyline> intersections = BH.Engine.Geometry.Compute.BooleanIntersection(originalPerimeter, mappedPerimeter, distanceTolerance);                  
                     areaIntersecting = intersections.Sum(a => a.Area());
-                    percentages[x].Add(areaIntersecting / mappedPerimeter.Area());
+
+                    if (areaIntersecting != 0)
+                    {
+                        percentages[x].Add(areaIntersecting / mappedPerimeter.Area());
+                    }
+
+                    if (areaIntersecting == 0)
+                        mappedRegionsI.Add(region);
                 }
+
+                foreach (IRegion r in mappedRegionsI)
+                    mappedRegions[x].Remove(r);                
             }
 
             return new Output<List<List<IRegion>>, List<List<double>>, List<IRegion>, List<IRegion>>
@@ -115,6 +138,6 @@ namespace BH.Engine.Environment
                 Item3 = regionsNotMatched,
                 Item4 = regionNotFound,           
             };
-        }        
+        }
     }
 }
