@@ -47,6 +47,18 @@ namespace BH.Engine.Architecture
             r.Perimeter = BH.Engine.Geometry.Compute.IJoin(outlineElements1D.Cast<ICurve>().ToList())[0];
             return r;
         }
+
+        /***************************************************/
+
+        [Description("Assign a new collection of external 1D boundaries to an Architecture Ceiling")]
+        [Input("ceiling", "An Architecture ceiling to update")]
+        [Input("outlineElements1D", "A collection of outline 1D elements to assign to the Ceiling")]
+        [Output("ceiling", "The updated Architecture Ceiling")]
+        public static Ceiling SetOutlineElements1D(this Ceiling ceiling, List<IElement1D> outlineElements1D)
+        {
+            ceiling.Surface = BH.Engine.Geometry.Create.PlanarSurface(BH.Engine.Geometry.Compute.IJoin(outlineElements1D.Cast<ICurve>().ToList())[0]);
+            return ceiling;
+        }
     }
 }
 

@@ -30,6 +30,8 @@ using BH.oM.Reflection.Attributes;
 using System.Collections.Generic;
 
 using System.Runtime.InteropServices;
+using System.Runtime.CompilerServices;
+using BH.oM.Analytical.Elements;
 
 namespace BH.Engine.MEP
 {
@@ -38,10 +40,12 @@ namespace BH.Engine.MEP
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
+        
         public static IGeometry Geometry(this IFlow obj)
         {
             return new Line { Start = obj.StartNode.Position, End = obj.EndNode.Position};
         }
+
         /***************************************************/
     }
 }

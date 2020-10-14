@@ -20,44 +20,50 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System;
+using BH.Engine.Geometry;
+using BH.oM.Environment.Elements;
+using BH.oM.Environment;
+using BH.oM.Geometry;
+
+using BH.oM.Physical.Constructions;
+
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using BH.oM.Architecture.Elements;
-using BH.oM.Dimensional;
-using BH.oM.Geometry;
-using BH.Engine.Geometry;
+using BH.oM.Environment.Fragments;
 
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
 
-namespace BH.Engine.Architecture
+using BH.Engine.Base;
+using System;
+using BH.oM.Physical.Elements;
+
+namespace BH.Engine.Environment
 {
-    public static partial class Query
+    public static partial class Modify
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns the outline 1D elements of an Architecture Room")]
-        [Input("room", "An Architecture Room")]
-        [Output("outlineElements", "A collection of outline 1D elements")]
-        public static List<IElement1D> OutlineElements1D(this Room room)
+        [Description("Update a panel construction based on the panel type")]
+        [Input("panels", "A collection of Environment Panels to update the constructions of")]
+        [Input("newConstruction", "The new construction to assign to the panels")]
+        [Input("panelType", "The type of the panels to update")]
+        [Output("panels", "The collection of Environment Panels with updated constructions")]
+        public static List<Panel> SetPanelConstructionByType(this List<Panel> panels, IConstruction newConstruction, PanelType panelType)
         {
-            return room.Perimeter.ISubParts().Cast<IElement1D>().ToList();
-        }
+            List<Panel> clones = new List<Panel>(panels.Select(x => x.DeepClone<Panel>()).ToList());
 
-        /***************************************************/
+            foreach (Panel clone in clones)
+            {  
+                if (clone.Type == panelType)
+                {
+                    clone.Construction = newConstruction; 
+                }
+            }
 
-        [Description("Returns the outline 1D elements of an Architecture Ceiling")]
-        [Input("ceiling", "An Architecture Ceiling")]
-        [Output("outlineElements", "A collection of outline 1D elements")]
-        public static List<IElement1D> OutlineElements1D(this Ceiling ceiling)
-        {
-            return ceiling.Surface.ISubParts().Cast<IElement1D>().ToList();
+            return clones;
         }
     }
 }

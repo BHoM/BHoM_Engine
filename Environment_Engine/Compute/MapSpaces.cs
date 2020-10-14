@@ -25,40 +25,40 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.ComponentModel;
 
-using BH.oM.Architecture.Elements;
-using BH.oM.Dimensional;
+using BH.oM.Reflection.Attributes;
+
+using BH.oM.Environment.Elements;
 using BH.oM.Geometry;
 using BH.Engine.Geometry;
 
-using BH.oM.Reflection.Attributes;
-using System.ComponentModel;
-
-namespace BH.Engine.Architecture
+namespace BH.Engine.Environment
 {
-    public static partial class Query
+    public static partial class Compute
     {
-        /***************************************************/
-        /**** Public Methods                            ****/
-        /***************************************************/
+        [Description("Map spaces based on geometry to an original set of spaces. This is done by taking the centre point of the space perimeter and checking which original space contains that centre point. E.G. mapping IES zoned spaces back to original Revit spaces.")]
+        [Input("spacesToMap", "A collection of Environment spaces to map to original spaces")]
+        [Input("originalSpaces", "A collection of original spaces to map to")]
+        [Output("mappedSpaces", "A nested list of spaces mapped to the originals")]
+        public static List<List<Space>> MapSpaces(List<Space> spacesToMap, List<Space> originalSpaces)
+        {    
+            List<List<Space>> data = new List<List<Space>>();
 
-        [Description("Returns the outline 1D elements of an Architecture Room")]
-        [Input("room", "An Architecture Room")]
-        [Output("outlineElements", "A collection of outline 1D elements")]
-        public static List<IElement1D> OutlineElements1D(this Room room)
-        {
-            return room.Perimeter.ISubParts().Cast<IElement1D>().ToList();
-        }
+            foreach (Space space in originalSpaces)
+            {
+                data.Add(new List<Space>());
+            }
 
-        /***************************************************/
+            foreach (Space space in spacesToMap)   
+            {
+                Point centre = space.Perimeter.ICentroid();
+                Space matching = originalSpaces.Where(x => x.Perimeter.IIsContaining(new List<Point> { centre })).First();
 
-        [Description("Returns the outline 1D elements of an Architecture Ceiling")]
-        [Input("ceiling", "An Architecture Ceiling")]
-        [Output("outlineElements", "A collection of outline 1D elements")]
-        public static List<IElement1D> OutlineElements1D(this Ceiling ceiling)
-        {
-            return ceiling.Surface.ISubParts().Cast<IElement1D>().ToList();
+                data[originalSpaces.IndexOf(matching)].Add(space);
+            }
+
+            return data;
         }
     }
 }
-

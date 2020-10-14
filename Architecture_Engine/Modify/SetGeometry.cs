@@ -46,7 +46,7 @@ namespace BH.Engine.Architecture
         /***************************************************/
 
         [Description("Assign new geometry to an Architecture Room. If either geometry is null then original geometry is used")]
-        [Input("room", "An Architecture Room to set the location of")]
+        [Input("room", "An Architecture Room to set the geometry of")]
         [Input("locationPoint", "A BHoM Geometry Point defining the location of the room, default null")]
         [Input("perimeterCurve", "A BHoM Geometry ICurve defining the perimeter of the room, default null")]
         [Output("room", "An Architecture Room with an updated geometry")]
