@@ -123,6 +123,9 @@
     <Compile Include="Query\Count.cs" />
     <Compile Include="Query\IsAssignableFromIncludeGenerics.cs" />
     <Compile Include="Query\IsAssignableToGenericType.cs" />
+    <Compile Include="Query\DefaultValueWarning.cs" />
+    <Compile Include="Query\IsRequired.cs" />
+    <Compile Include="Query\IsAutoConstructorAllowed.cs" />
     <Compile Include="Query\IsExposed.cs" />
     <Compile Include="Query\Item.cs" />
     <Compile Include="Query\NestedMethods.cs" />
