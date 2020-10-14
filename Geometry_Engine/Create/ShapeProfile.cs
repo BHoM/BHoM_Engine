@@ -589,7 +589,7 @@ namespace BH.Engine.Geometry
             {
                 interpolationOrder = Enumerable.Repeat(1, positions.Count - 1).ToList();
             }
-            else if(interpolationOrder.Count == 1)
+            else if (interpolationOrder.Count == 1)
             {
                 interpolationOrder = Enumerable.Repeat(interpolationOrder.First(), positions.Count - 1).ToList();
             }
@@ -604,7 +604,7 @@ namespace BH.Engine.Geometry
                 Reflection.Compute.RecordError("The interpolationOrder values must be greater than 1.");
                 return null;
             }
-            
+
             //Create ditionary for TaperedProfile
             SortedDictionary<double, IProfile> profileDict = new SortedDictionary<double, IProfile>();
             for (int i = 0; i < positions.Count; i++)
@@ -623,7 +623,7 @@ namespace BH.Engine.Geometry
         [PreviousVersion("4.0", "BH.Engine.Geometry.Create.TaperedProfile(BH.oM.Geometry.ShapeProfiles.IProfile, BH.oM.Geometry.ShapeProfiles.IProfile)")]
         [Input("interpolationOrder", "Describes the polynomial function between each profile whereby 1 = Linear, 2 = Quadratic, 3 = Cubic etc." +
             "For nonlinear profiles a concave profile is achieved by setting the larger profile at the startProfile. To achieve a convex profile, the larger profile must be at the endProfile.")]
-        public static TaperedProfile TaperedProfile(IProfile startProfile, IProfile endProfile, int interpolationOrder)
+        public static TaperedProfile TaperedProfile(IProfile startProfile, IProfile endProfile, int interpolationOrder = 1)
         {
             return TaperedProfile(new List<double>() { 0, 1 }, new List<IProfile>() { startProfile, endProfile }, new List<int>() { interpolationOrder });
         }
