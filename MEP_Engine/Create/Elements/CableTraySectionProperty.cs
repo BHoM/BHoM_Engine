@@ -51,12 +51,14 @@ namespace BH.Engine.MEP
             double elementVoidArea = sectionProfile.ElementProfile.VoidArea();          
 
             CableTraySectionProperty property = new CableTraySectionProperty(material, sectionProfile, elementSolidArea, elementVoidArea);
-            property.Name = name;
 
             if (property == null)
             {
                 BH.Engine.Reflection.Compute.RecordError("Insufficient information to create a CableTraySectionProperty. Please ensure you have all required inputs.");
             }
+
+            property.Name = name;
+            
             return property;
         }
         /***************************************************/
