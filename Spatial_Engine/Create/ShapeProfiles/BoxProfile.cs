@@ -41,7 +41,7 @@ namespace BH.Engine.Spatial
 
         [PreviousVersion("4.0", "BH.Engine.Geometry.Create.BoxProfile(System.Double, System.Double, System.Double, System.Double, System.Double)")]
         [PreviousVersion("4.0", "BH.Engine.Structure.Create.BoxProfile(System.Double, System.Double, System.Double, System.Double, System.Double)")]
-        [Description("Creates a rectangular hollow profile based on input dimensions. Method generates edgecurves based on the inputs.")]
+        [Description("Creates a rectangular hollow profile based on input dimensions. Method generates edge curves based on the inputs.")]
         [InputFromProperty("height")]
         [InputFromProperty("width")]
         [InputFromProperty("thickness")]
