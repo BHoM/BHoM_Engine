@@ -48,7 +48,7 @@ namespace BH.Engine.Spatial
         [InputFromProperty("toeRadius")]
         [InputFromProperty("mirrorAboutLocalY")]
         [Output("T", "The created TSectionProfile.")]
-        public static TSectionProfile TSectionProfile(double height, double width, double webThickness, double flangeThickness, double rootRadius, double toeRadius, bool mirrorAboutLocalY = false)
+        public static TSectionProfile TSectionProfile(double height, double width, double webThickness, double flangeThickness, double rootRadius = 0, double toeRadius = 0, bool mirrorAboutLocalY = false)
         {
             if (height < flangeThickness + rootRadius)
             {
