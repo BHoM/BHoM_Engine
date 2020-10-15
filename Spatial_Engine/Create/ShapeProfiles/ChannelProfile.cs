@@ -38,8 +38,16 @@ namespace BH.Engine.Spatial
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        
-        public static ChannelProfile ChannelProfile(double height, double width, double webthickness, double flangeThickness, double rootRadius, double toeRadius, bool mirrorAboutLocalZ = false)
+        [Description("Creates a C-shaped profile based on input dimensions. Method generates edgecurves based on the inputs.")]
+        [InputFromProperty("height")]
+        [InputFromProperty("flangeWidth")]
+        [InputFromProperty("webThickness")]
+        [InputFromProperty("flangeThickness")]
+        [InputFromProperty("rootRadius")]
+        [InputFromProperty("toeRadius")]
+        [InputFromProperty("mirrorAboutLocalZ")]
+        [Output("channel", "The created ChannelProfile.")]
+        public static ChannelProfile ChannelProfile(double height, double flangeWidth, double webThickness, double flangeThickness, double rootRadius = 0, double toeRadius = 0, bool mirrorAboutLocalZ = false)
         {
             if (height < flangeThickness * 2 + rootRadius * 2 || height <= flangeThickness * 2)
             {
@@ -47,7 +55,7 @@ namespace BH.Engine.Spatial
                 return null;
             }
 
-            if (width < webthickness + rootRadius + toeRadius)
+            if (flangeWidth < webThickness + rootRadius + toeRadius)
             {
                 InvalidRatioError("width", "webthickness, toeRadius and rootRadius");
                 return null;
@@ -59,18 +67,18 @@ namespace BH.Engine.Spatial
                 return null;
             }
 
-            if (height <= 0 || width <= 0 || webthickness <= 0 || flangeThickness <= 0 || rootRadius < 0 || toeRadius < 0)
+            if (height <= 0 || flangeWidth <= 0 || webThickness <= 0 || flangeThickness <= 0 || rootRadius < 0 || toeRadius < 0)
             {
                 Engine.Reflection.Compute.RecordError("Input length less or equal to 0");
                 return null;
             }
 
-            List<ICurve> curves = ChannelProfileCurves(height, width, webthickness, flangeThickness, rootRadius, toeRadius);
+            List<ICurve> curves = ChannelProfileCurves(height, flangeWidth, webThickness, flangeThickness, rootRadius, toeRadius);
 
             if (mirrorAboutLocalZ)
                 curves = curves.MirrorAboutLocalZ();
 
-            return new ChannelProfile(height, width, webthickness, flangeThickness, rootRadius, toeRadius, mirrorAboutLocalZ, curves);
+            return new ChannelProfile(height, flangeWidth, webThickness, flangeThickness, rootRadius, toeRadius, mirrorAboutLocalZ, curves);
         }
 
         /***************************************************/

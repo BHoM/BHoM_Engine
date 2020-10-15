@@ -39,7 +39,16 @@ namespace BH.Engine.Spatial
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static FabricatedISectionProfile FabricatedISectionProfile(double height, double topFlangeWidth, double botFlangeWidth, double webThickness, double topFlangeThickness, double botFlangeThickness, double weldSize)
+        [Description("Creates a I-shaped profile based on input dimensions. Method generates edgecurves based on the inputs.")]
+        [InputFromProperty("height")]
+        [InputFromProperty("topFlangeWidth")]
+        [InputFromProperty("botFlangeWidth")]
+        [InputFromProperty("webThickness")]
+        [InputFromProperty("topFlangeThickness")]
+        [InputFromProperty("botFlangeThickness")]
+        [InputFromProperty("weldSize")]
+        [Output("fabI", "The created FabricatedISectionProfile.")]
+        public static FabricatedISectionProfile FabricatedISectionProfile(double height, double topFlangeWidth, double botFlangeWidth, double webThickness, double topFlangeThickness, double botFlangeThickness, double weldSize = 0)
         {
             if (height < topFlangeThickness + botFlangeThickness + 2 * Math.Sqrt(2) * weldSize || height <= topFlangeThickness + botFlangeThickness)
             {

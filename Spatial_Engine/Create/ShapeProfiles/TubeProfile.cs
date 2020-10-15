@@ -39,6 +39,10 @@ namespace BH.Engine.Spatial
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Creates a circular hollow profile based on input dimensions. Method generates edgecurves based on the inputs.")]
+        [InputFromProperty("diameter")]
+        [InputFromProperty("thickness")]
+        [Output("tube", "The created TubeProfile.")]
         public static TubeProfile TubeProfile(double diameter, double thickness)
         {
             if (thickness >= diameter / 2)

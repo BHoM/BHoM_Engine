@@ -39,7 +39,16 @@ namespace BH.Engine.Spatial
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static TSectionProfile TSectionProfile(double height, double width, double webthickness, double flangeThickness, double rootRadius, double toeRadius, bool mirrorAboutLocalY = false)
+        [Description("Creates a T-shaped profile based on input dimensions. Method generates edgecurves based on the inputs.")]
+        [InputFromProperty("height")]
+        [InputFromProperty("width")]
+        [InputFromProperty("webThickness")]
+        [InputFromProperty("flangeThickness")]
+        [InputFromProperty("rootRadius")]
+        [InputFromProperty("toeRadius")]
+        [InputFromProperty("mirrorAboutLocalY")]
+        [Output("T", "The created TSectionProfile.")]
+        public static TSectionProfile TSectionProfile(double height, double width, double webThickness, double flangeThickness, double rootRadius, double toeRadius, bool mirrorAboutLocalY = false)
         {
             if (height < flangeThickness + rootRadius)
             {
@@ -47,7 +56,7 @@ namespace BH.Engine.Spatial
                 return null;
             }
 
-            if (width < webthickness + 2 * rootRadius + 2 * toeRadius)
+            if (width < webThickness + 2 * rootRadius + 2 * toeRadius)
             {
                 InvalidRatioError("width", "webThickess, rootRadius and toeRadius");
                 return null;
@@ -59,18 +68,18 @@ namespace BH.Engine.Spatial
                 return null;
             }
 
-            if (height <= 0 || width <= 0 || webthickness <= 0 || flangeThickness <= 0 || rootRadius < 0 || toeRadius < 0)
+            if (height <= 0 || width <= 0 || webThickness <= 0 || flangeThickness <= 0 || rootRadius < 0 || toeRadius < 0)
             {
                 Engine.Reflection.Compute.RecordError("Input length less or equal to 0");
                 return null;
             }
 
-            List<ICurve> curves = TeeProfileCurves(flangeThickness, width, webthickness, height - flangeThickness, rootRadius, toeRadius);
+            List<ICurve> curves = TeeProfileCurves(flangeThickness, width, webThickness, height - flangeThickness, rootRadius, toeRadius);
 
             if (mirrorAboutLocalY)
                 curves = curves.MirrorAboutLocalY();
 
-            return new TSectionProfile(height, width, webthickness, flangeThickness, rootRadius, toeRadius, mirrorAboutLocalY, curves);
+            return new TSectionProfile(height, width, webThickness, flangeThickness, rootRadius, toeRadius, mirrorAboutLocalY, curves);
         }
 
         /***************************************************/
