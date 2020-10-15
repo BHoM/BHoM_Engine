@@ -91,7 +91,6 @@
     <Compile Include="Create\ShapeProfiles\KiteProfile.cs" />
     <Compile Include="Create\ShapeProfiles\RectangleProfile.cs" />
     <Compile Include="Create\ShapeProfiles\ShapeProfile.cs" />
-    <Compile Include="Create\ShapeProfiles\ShapeProfileCurves.cs" />
     <Compile Include="Create\ShapeProfiles\TaperedProfile.cs" />
     <Compile Include="Create\ShapeProfiles\TSectionProfile.cs" />
     <Compile Include="Create\ShapeProfiles\TubeProfile.cs" />

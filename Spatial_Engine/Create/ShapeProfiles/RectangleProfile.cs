@@ -70,6 +70,28 @@ namespace BH.Engine.Spatial
         }
 
         /***************************************************/
-        
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+        private static List<ICurve> RectangleProfileCurves(double width, double height, double radius)
+        {
+            Vector xAxis = oM.Geometry.Vector.XAxis;
+            Vector yAxis = oM.Geometry.Vector.YAxis;
+            Point origin = oM.Geometry.Point.Origin;
+
+            List<ICurve> perimeter = new List<ICurve>();
+            Point p = new Point { X = -width / 2, Y = height / 2 - radius, Z = 0 };
+            perimeter.Add(new Line { Start = p, End = p = p - yAxis * (height - 2 * radius) });
+            if (radius > 0) perimeter.Add(BH.Engine.Geometry.Create.ArcByCentre(p + xAxis * radius, p, p = p + new Vector { X = radius, Y = -radius, Z = 0 }));
+            perimeter.Add(new Line { Start = p, End = p = p + xAxis * (width - 2 * radius) });
+            if (radius > 0) perimeter.Add(BH.Engine.Geometry.Create.ArcByCentre(p + yAxis * radius, p, p = p + new Vector { X = radius, Y = radius, Z = 0 }));
+            perimeter.Add(new Line { Start = p, End = p = p + yAxis * (height - 2 * radius) });
+            if (radius > 0) perimeter.Add(BH.Engine.Geometry.Create.ArcByCentre(p - xAxis * radius, p, p = p + new Vector { X = -radius, Y = radius, Z = 0 }));
+            perimeter.Add(new Line { Start = p, End = p = p - xAxis * (width - 2 * radius) });
+            if (radius > 0) perimeter.Add(BH.Engine.Geometry.Create.ArcByCentre(p - yAxis * radius, p, p = p + new Vector { X = -radius, Y = -radius, Z = 0 }));
+            return perimeter;
+        }
+
+        /***************************************************/
     }
 }

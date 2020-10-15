@@ -64,6 +64,17 @@ namespace BH.Engine.Spatial
         }
 
         /***************************************************/
-        
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+        private static List<ICurve> TubeProfileCurves(double outerRadius, double thickness)
+        {
+            List<ICurve> group = new List<ICurve>();
+            group.AddRange(CircleProfileCurves(outerRadius));
+            group.AddRange(CircleProfileCurves(outerRadius - thickness));
+            return group;
+        }
+
+        /***************************************************/
     }
 }
