@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -35,30 +35,32 @@ namespace BH.Engine.Spatial
 {
     public static partial class Create
     {
-
         /***************************************************/
-        /**** Private Methods                           ****/
+        /**** Public Methods                            ****/
         /***************************************************/
 
-        private static List<ICurve> MirrorAboutLocalY(this List<ICurve> curves)
+        public static FabricatedBoxProfile FabricatedBoxProfile(double height, double width, double webThickness, double topFlangeThickness, double botFlangeThickness, double weldSize)
         {
-            Plane plane = oM.Geometry.Plane.XZ;
-            return curves.Select(x => x.IMirror(plane)).ToList();
-        }
+            if (height < topFlangeThickness + botFlangeThickness + 2 * Math.Sqrt(2) * weldSize || height <= topFlangeThickness + botFlangeThickness)
+            {
+                InvalidRatioError("height", "topFlangeThickness, botFlangeThickness and weldSize");
+                return null;
+            }
 
-        /***************************************************/
+            if (width < webThickness * 2 + 2 * Math.Sqrt(2) * weldSize || width <= webThickness * 2)
+            {
+                InvalidRatioError("width", "webThickness and weldSize");
+                return null;
+            }
 
-        private static List<ICurve> MirrorAboutLocalZ(this List<ICurve> curves)
-        {
-            Plane plane = oM.Geometry.Plane.YZ;
-            return curves.Select(x => x.IMirror(plane)).ToList();
-        }
+            if (height <= 0 || width <= 0 || webThickness <= 0 || topFlangeThickness <= 0 || botFlangeThickness <= 0 || weldSize < 0)
+            {
+                Engine.Reflection.Compute.RecordError("Input length less or equal to 0");
+                return null;
+            }
 
-        /***************************************************/
-
-        private static void InvalidRatioError(string first, string second)
-        {
-            Engine.Reflection.Compute.RecordError("The ratio of the " + first + " in relation to the " + second + " makes section inconceivable");
+            List<ICurve> curves = FabricatedBoxProfileCurves(width, height, webThickness, topFlangeThickness, botFlangeThickness, weldSize);
+            return new FabricatedBoxProfile(height, width, webThickness, topFlangeThickness, botFlangeThickness, weldSize, curves);
         }
 
         /***************************************************/

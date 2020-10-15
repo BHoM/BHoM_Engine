@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -35,33 +35,41 @@ namespace BH.Engine.Spatial
 {
     public static partial class Create
     {
-
         /***************************************************/
-        /**** Private Methods                           ****/
+        /**** Public Methods                            ****/
         /***************************************************/
 
-        private static List<ICurve> MirrorAboutLocalY(this List<ICurve> curves)
+        public static FabricatedISectionProfile FabricatedISectionProfile(double height, double topFlangeWidth, double botFlangeWidth, double webThickness, double topFlangeThickness, double botFlangeThickness, double weldSize)
         {
-            Plane plane = oM.Geometry.Plane.XZ;
-            return curves.Select(x => x.IMirror(plane)).ToList();
+            if (height < topFlangeThickness + botFlangeThickness + 2 * Math.Sqrt(2) * weldSize || height <= topFlangeThickness + botFlangeThickness)
+            {
+                InvalidRatioError("height", "topFlangeThickness, botFlangeThickness and weldSize");
+                return null;
+            }
+
+            if (botFlangeWidth < webThickness + 2 * Math.Sqrt(2) * weldSize)
+            {
+                InvalidRatioError("botFlangeWidth", "webThickness and weldSize");
+                return null;
+            }
+
+            if (topFlangeWidth < webThickness + 2 * Math.Sqrt(2) * weldSize)
+            {
+                InvalidRatioError("topFlangeWidth", "webThickness and weldSize");
+                return null;
+            }
+
+            if (height <= 0 || topFlangeWidth <= 0 || botFlangeWidth <= 0 || webThickness <= 0 || topFlangeThickness <= 0 || botFlangeThickness <= 0 || weldSize < 0)
+            {
+                Engine.Reflection.Compute.RecordError("Input length less or equal to 0");
+                return null;
+            }
+
+            List<ICurve> curves = IProfileCurves(topFlangeThickness, topFlangeWidth, botFlangeThickness, botFlangeWidth, webThickness, height - botFlangeThickness - topFlangeThickness, 0, 0, weldSize);
+            return new FabricatedISectionProfile(height, topFlangeWidth, botFlangeWidth, webThickness, topFlangeThickness, botFlangeThickness, weldSize, curves);
         }
 
         /***************************************************/
-
-        private static List<ICurve> MirrorAboutLocalZ(this List<ICurve> curves)
-        {
-            Plane plane = oM.Geometry.Plane.YZ;
-            return curves.Select(x => x.IMirror(plane)).ToList();
-        }
-
-        /***************************************************/
-
-        private static void InvalidRatioError(string first, string second)
-        {
-            Engine.Reflection.Compute.RecordError("The ratio of the " + first + " in relation to the " + second + " makes section inconceivable");
-        }
-
-        /***************************************************/
-
+        
     }
 }

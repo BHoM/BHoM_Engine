@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -35,33 +35,64 @@ namespace BH.Engine.Spatial
 {
     public static partial class Create
     {
-
         /***************************************************/
-        /**** Private Methods                           ****/
+        /**** Public Methods                            ****/
         /***************************************************/
 
-        private static List<ICurve> MirrorAboutLocalY(this List<ICurve> curves)
+        public static BoxProfile BoxProfile(double height, double width, double thickness, double outerRadius, double innerRadius)
         {
-            Plane plane = oM.Geometry.Plane.XZ;
-            return curves.Select(x => x.IMirror(plane)).ToList();
+            if (thickness >= height / 2)
+            {
+                InvalidRatioError("thickness", "height");
+                return null;
+            }
+
+            if (thickness >= width / 2)
+            {
+                InvalidRatioError("thickness", "width");
+                return null;
+            }
+
+            if (outerRadius > height / 2)
+            {
+                InvalidRatioError("outerRadius", "height");
+                return null;
+            }
+
+            if (outerRadius > width / 2)
+            {
+                InvalidRatioError("outerRadius", "width");
+                return null;
+            }
+
+            if (innerRadius * 2 > width - thickness * 2)
+            {
+                InvalidRatioError("innerRadius", "width and thickness");
+                return null;
+            }
+
+            if (innerRadius * 2 > height - thickness * 2)
+            {
+                InvalidRatioError("innerRadius", "height and thickness");
+                return null;
+            }
+
+            if (Math.Sqrt(2) * thickness <= Math.Sqrt(2) * outerRadius - outerRadius - Math.Sqrt(2) * innerRadius + innerRadius)
+            {
+                InvalidRatioError("thickness", "outerRadius and innerRadius");
+                return null;
+            }
+
+            if (height <= 0 || width <= 0 || thickness <= 0 || outerRadius < 0 || innerRadius < 0)
+            {
+                Engine.Reflection.Compute.RecordError("Input length less or equal to 0");
+                return null;
+            }
+
+            List<ICurve> curves = BoxProfileCurves(width, height, thickness, thickness, innerRadius, outerRadius);
+            return new BoxProfile(height, width, thickness, outerRadius, innerRadius, curves);
         }
 
         /***************************************************/
-
-        private static List<ICurve> MirrorAboutLocalZ(this List<ICurve> curves)
-        {
-            Plane plane = oM.Geometry.Plane.YZ;
-            return curves.Select(x => x.IMirror(plane)).ToList();
-        }
-
-        /***************************************************/
-
-        private static void InvalidRatioError(string first, string second)
-        {
-            Engine.Reflection.Compute.RecordError("The ratio of the " + first + " in relation to the " + second + " makes section inconceivable");
-        }
-
-        /***************************************************/
-
     }
 }

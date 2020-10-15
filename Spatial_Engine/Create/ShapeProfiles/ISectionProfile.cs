@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -35,33 +35,41 @@ namespace BH.Engine.Spatial
 {
     public static partial class Create
     {
-
         /***************************************************/
-        /**** Private Methods                           ****/
+        /**** Public Methods                            ****/
         /***************************************************/
 
-        private static List<ICurve> MirrorAboutLocalY(this List<ICurve> curves)
+        public static ISectionProfile ISectionProfile(double height, double width, double webthickness, double flangeThickness, double rootRadius, double toeRadius)
         {
-            Plane plane = oM.Geometry.Plane.XZ;
-            return curves.Select(x => x.IMirror(plane)).ToList();
+            if (height < flangeThickness * 2 + rootRadius * 2 || height <= flangeThickness * 2)
+            {
+                InvalidRatioError("height", "flangeThickness and rootRadius");
+                return null;
+            }
+
+            if (width < webthickness + rootRadius * 2 + toeRadius * 2)
+            {
+                InvalidRatioError("width", "webthickness, rootRadius and toeRadius");
+                return null;
+            }
+
+            if (toeRadius > flangeThickness)
+            {
+                InvalidRatioError("toeRadius", "flangeThickness");
+                return null;
+            }
+
+            if (height <= 0 || width <= 0 || webthickness <= 0 || flangeThickness <= 0 || rootRadius < 0 || toeRadius < 0)
+            {
+                Engine.Reflection.Compute.RecordError("Input length less or equal to 0");
+                return null;
+            }
+
+            List<ICurve> curves = IProfileCurves(flangeThickness, width, flangeThickness, width, webthickness, height - 2 * flangeThickness, rootRadius, toeRadius, 0);
+            return new ISectionProfile(height, width, webthickness, flangeThickness, rootRadius, toeRadius, curves);
         }
 
         /***************************************************/
-
-        private static List<ICurve> MirrorAboutLocalZ(this List<ICurve> curves)
-        {
-            Plane plane = oM.Geometry.Plane.YZ;
-            return curves.Select(x => x.IMirror(plane)).ToList();
-        }
-
-        /***************************************************/
-
-        private static void InvalidRatioError(string first, string second)
-        {
-            Engine.Reflection.Compute.RecordError("The ratio of the " + first + " in relation to the " + second + " makes section inconceivable");
-        }
-
-        /***************************************************/
-
+        
     }
 }

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -35,33 +35,53 @@ namespace BH.Engine.Spatial
 {
     public static partial class Create
     {
-
         /***************************************************/
-        /**** Private Methods                           ****/
+        /**** Public Methods                            ****/
         /***************************************************/
 
-        private static List<ICurve> MirrorAboutLocalY(this List<ICurve> curves)
+        public static AngleProfile AngleProfile(double height, double width, double webthickness, double flangeThickness, double rootRadius, double toeRadius, bool mirrorAboutLocalZ = false, bool mirrorAboutLocalY = false)
         {
-            Plane plane = oM.Geometry.Plane.XZ;
-            return curves.Select(x => x.IMirror(plane)).ToList();
+            if (height < flangeThickness + rootRadius + toeRadius)
+            {
+                InvalidRatioError("height", "flangeThickness, rootRadius and toeRadius");
+                return null;
+            }
+
+            if (width < webthickness + rootRadius + toeRadius)
+            {
+                InvalidRatioError("width", "webthickness, rootRadius and toeRadius");
+                return null;
+            }
+
+            if (flangeThickness < toeRadius)
+            {
+                InvalidRatioError("flangeThickness", "toeRadius");
+                return null;
+            }
+
+            if (webthickness < toeRadius)
+            {
+                InvalidRatioError("webthickness", "toeRadius");
+                return null;
+            }
+
+            if (height <= 0 || width <= 0 || webthickness <= 0 || flangeThickness <= 0 || rootRadius < 0 || toeRadius < 0)
+            {
+                Engine.Reflection.Compute.RecordError("Input length less or equal to 0");
+                return null;
+            }
+
+            List<ICurve> curves = AngleProfileCurves(width, height, flangeThickness, webthickness, rootRadius, toeRadius);
+
+            if (mirrorAboutLocalZ)
+                curves = curves.MirrorAboutLocalZ();
+            if (mirrorAboutLocalY)
+                curves = curves.MirrorAboutLocalY();
+
+            return new AngleProfile(height, width, webthickness, flangeThickness, rootRadius, toeRadius, mirrorAboutLocalZ, mirrorAboutLocalY, curves);
         }
 
         /***************************************************/
-
-        private static List<ICurve> MirrorAboutLocalZ(this List<ICurve> curves)
-        {
-            Plane plane = oM.Geometry.Plane.YZ;
-            return curves.Select(x => x.IMirror(plane)).ToList();
-        }
-
-        /***************************************************/
-
-        private static void InvalidRatioError(string first, string second)
-        {
-            Engine.Reflection.Compute.RecordError("The ratio of the " + first + " in relation to the " + second + " makes section inconceivable");
-        }
-
-        /***************************************************/
-
+        
     }
 }
