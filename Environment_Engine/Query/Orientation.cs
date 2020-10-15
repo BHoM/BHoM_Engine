@@ -21,16 +21,12 @@
  */
 
 using System;
-using System.Collections.Generic;
-
-using System.Linq;
-using BH.oM.Environment;
-
-using BH.Engine.Geometry;
-using BH.oM.Geometry;
-
-using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
+
+using BH.oM.Environment;
+using BH.oM.Geometry;
+using BH.oM.Quantities.Attributes;
+using BH.oM.Reflection.Attributes;
 
 namespace BH.Engine.Environment
 {
@@ -40,19 +36,29 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns the orientation of a given environmental object")]
+        [PreviousVersion("4.0", "BH.Engine.Environment.Query.Orientation(BH.oM.Environment.IEnvironmentObject)")]
+        [Description("Returns the angle to north of a given environmental object on an xyPlane")]
         [Input("environmentObject", "Any object implementing the IEnvironmentObject interface that can have its orientation queried")]
+        [Input("northAngle", "The angle in radians for north. Default is 0.")]
+        [Input("returnAzimuthAngle", "Set to true to return the azimuth angle from north, instead of the angle between north and the object normal. Default is false.")]
         [Output("orientation", "The orientation of the Environment Object")]
-        public static double Orientation(this IEnvironmentObject environmentObject)
+        public static double? Orientation(this IEnvironmentObject environmentObject, double northAngle = 0.0, bool returnAzimuthAngle = false)
         {
-            Polyline pLine = environmentObject.Polyline();
+            northAngle += Math.PI / 2; // Correct northAngle to be 0 at North, rather than East
 
-            List<Point> pts = pLine.DiscontinuityPoints();
-            Plane plane = BH.Engine.Geometry.Create.Plane(pts[0], pts[1], pts[2]); //Some protection on this needed maybe?
+            Plane xyPlane = BH.Engine.Geometry.Create.Plane(BH.Engine.Geometry.Create.Point(0, 0, 0), BH.Engine.Geometry.Create.Vector(0, 0, 1));
+            Vector northVector = BH.Engine.Geometry.Create.Vector(Math.Cos(northAngle), Math.Sin(northAngle), 0);
+            
+            Vector objectNormal = BH.Engine.Geometry.Query.Normal(environmentObject.Polyline());
+            if (objectNormal.X == 0 && objectNormal.Y == 0)
+            {
+                BH.Engine.Reflection.Compute.RecordError("When an objects normal is either directly up or down, orientation angle cannot be successfully evaluated.");
+                return null;
+            }
 
-            Vector xyNormal = BH.Engine.Geometry.Create.Vector(0, 1, 0);
+            objectNormal.Z = 0;
 
-            return BH.Engine.Geometry.Query.Angle(plane.Normal, xyNormal) * (180 / Math.PI);
+            return returnAzimuthAngle ? Math.PI * 2 - BH.Engine.Geometry.Query.Angle(northVector, objectNormal, xyPlane) : BH.Engine.Geometry.Query.Angle(northVector, objectNormal);
         }
     }
 }
