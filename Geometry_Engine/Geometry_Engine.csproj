@@ -106,8 +106,6 @@
     <Compile Include="Create\SettingOut\Grid.cs" />
     <Compile Include="Create\SettingOut\Level.cs" />
     <Compile Include="Create\PlanarSurface.cs" />
-    <Compile Include="Create\ShapeProfileCurves.cs" />
-    <Compile Include="Create\ShapeProfile.cs" />
     <Compile Include="Create\Sphere.cs" />
     <Compile Include="Create\Surface.cs" />
     <Compile Include="Create\Curve.cs" />

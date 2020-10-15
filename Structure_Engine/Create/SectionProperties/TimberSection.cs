@@ -23,7 +23,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using BH.oM.Structure.SectionProperties;
-using BH.oM.Geometry.ShapeProfiles;
+using BH.oM.Spatial.ShapeProfiles;
 using BH.oM.Geometry;
 using BH.oM.Structure.MaterialFragments;
 using BH.oM.Reflection;
@@ -50,7 +50,7 @@ namespace BH.Engine.Structure
         [Output("section", "The created rectangular solid timber section.")]
         public static TimberSection TimberRectangleSection(double height, double width, double cornerRadius = 0, Timber material = null, string name = "")
         {
-            return TimberSectionFromProfile(Geometry.Create.RectangleProfile(height, width, cornerRadius), material, name);
+            return TimberSectionFromProfile(Spatial.Create.RectangleProfile(height, width, cornerRadius), material, name);
         }
 
         /***************************************************/

@@ -28,7 +28,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using BH.oM.Reflection.Attributes;
-using BH.oM.Geometry.ShapeProfiles;
+using BH.oM.Spatial.ShapeProfiles;
 using BH.oM.MEP.SectionProperties;
 
 namespace BH.Engine.MEP
@@ -55,7 +55,7 @@ namespace BH.Engine.MEP
             }
             else
             {
-                liningProfile = BH.Engine.Geometry.Create.BoxProfile((boxProfile.Height - (boxProfile.Thickness * 2)), (boxProfile.Width - (boxProfile.Thickness * 2)), liningThickness, boxProfile.OuterRadius, boxProfile.InnerRadius);
+                liningProfile = BH.Engine.Spatial.Create.BoxProfile((boxProfile.Height - (boxProfile.Thickness * 2)), (boxProfile.Width - (boxProfile.Thickness * 2)), liningThickness, boxProfile.OuterRadius, boxProfile.InnerRadius);
             }
 
             //External offset of original ShapeProfile
@@ -67,7 +67,7 @@ namespace BH.Engine.MEP
             }
             else
             {
-                insulationProfile = BH.Engine.Geometry.Create.BoxProfile((boxProfile.Height + (insulationThickness * 2)), (boxProfile.Width + (insulationThickness * 2)), insulationThickness, boxProfile.InnerRadius, boxProfile.OuterRadius);
+                insulationProfile = BH.Engine.Spatial.Create.BoxProfile((boxProfile.Height + (insulationThickness * 2)), (boxProfile.Width + (insulationThickness * 2)), insulationThickness, boxProfile.InnerRadius, boxProfile.OuterRadius);
             }
 
             return new SectionProfile(boxProfile, liningProfile, insulationProfile);
@@ -90,7 +90,7 @@ namespace BH.Engine.MEP
             }
             else
             {
-                liningProfile = BH.Engine.Geometry.Create.TubeProfile((((tubeProfile.Diameter / 2) - tubeProfile.Thickness) * 2), liningThickness);
+                liningProfile = BH.Engine.Spatial.Create.TubeProfile((((tubeProfile.Diameter / 2) - tubeProfile.Thickness) * 2), liningThickness);
             }
 
             //External offset of original ShapeProfile
@@ -102,7 +102,7 @@ namespace BH.Engine.MEP
             }
             else
             {
-                insulationProfile = BH.Engine.Geometry.Create.TubeProfile((tubeProfile.Diameter + (insulationThickness * 2)), insulationThickness);
+                insulationProfile = BH.Engine.Spatial.Create.TubeProfile((tubeProfile.Diameter + (insulationThickness * 2)), insulationThickness);
             }
 
             return new SectionProfile(tubeProfile, liningProfile, insulationProfile);
