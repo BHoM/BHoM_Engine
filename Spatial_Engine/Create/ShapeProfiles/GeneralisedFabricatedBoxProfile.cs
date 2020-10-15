@@ -30,6 +30,7 @@ using BH.Engine.Reflection;
 using BH.oM.Reflection.Attributes;
 using BH.Engine.Geometry;
 using System.ComponentModel;
+using BH.oM.Quantities.Attributes;
 
 namespace BH.Engine.Spatial
 {
@@ -39,6 +40,15 @@ namespace BH.Engine.Spatial
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Creates a rectangular hollow profile with outstands based on input dimensions. Method generates edgecurves based on the inputs.")]
+        [InputFromProperty("height")]
+        [InputFromProperty("width")]
+        [InputFromProperty("webThickness")]
+        [InputFromProperty("topFlangeThickness")]
+        [InputFromProperty("botFlangeThickness")]
+        [Input("topCorbelWidth", "Width of the outstands of each side at the top of the profile.", typeof(Length))]
+        [Input("botCorbelWidth", "Width of the outstands of each side at the bottom of the profile.", typeof(Length))]
+        [Output("fabBox", "The created GeneralisedFabricatedBoxProfile.")]
         public static GeneralisedFabricatedBoxProfile GeneralisedFabricatedBoxProfile(double height, double width, double webThickness, double topFlangeThickness = 0.0, double botFlangeThickness = 0.0, double topCorbelWidth = 0.0, double botCorbelWidth = 0.0)
         {
             if (webThickness >= width / 2)

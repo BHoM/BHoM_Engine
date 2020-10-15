@@ -39,7 +39,15 @@ namespace BH.Engine.Spatial
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static ISectionProfile ISectionProfile(double height, double width, double webthickness, double flangeThickness, double rootRadius, double toeRadius)
+        [Description("Creates a I-shaped profile based on input dimensions. Method generates edgecurves based on the inputs.")]
+        [InputFromProperty("height")]
+        [InputFromProperty("width")]
+        [InputFromProperty("webThickness")]
+        [InputFromProperty("flangeThickness")]
+        [InputFromProperty("rootRadius")]
+        [InputFromProperty("toeRadius")]
+        [Output("I", "The created ISectionProfile.")]
+        public static ISectionProfile ISectionProfile(double height, double width, double webThickness, double flangeThickness, double rootRadius, double toeRadius)
         {
             if (height < flangeThickness * 2 + rootRadius * 2 || height <= flangeThickness * 2)
             {
@@ -47,7 +55,7 @@ namespace BH.Engine.Spatial
                 return null;
             }
 
-            if (width < webthickness + rootRadius * 2 + toeRadius * 2)
+            if (width < webThickness + rootRadius * 2 + toeRadius * 2)
             {
                 InvalidRatioError("width", "webthickness, rootRadius and toeRadius");
                 return null;
@@ -59,14 +67,14 @@ namespace BH.Engine.Spatial
                 return null;
             }
 
-            if (height <= 0 || width <= 0 || webthickness <= 0 || flangeThickness <= 0 || rootRadius < 0 || toeRadius < 0)
+            if (height <= 0 || width <= 0 || webThickness <= 0 || flangeThickness <= 0 || rootRadius < 0 || toeRadius < 0)
             {
                 Engine.Reflection.Compute.RecordError("Input length less or equal to 0");
                 return null;
             }
 
-            List<ICurve> curves = IProfileCurves(flangeThickness, width, flangeThickness, width, webthickness, height - 2 * flangeThickness, rootRadius, toeRadius, 0);
-            return new ISectionProfile(height, width, webthickness, flangeThickness, rootRadius, toeRadius, curves);
+            List<ICurve> curves = IProfileCurves(flangeThickness, width, flangeThickness, width, webThickness, height - 2 * flangeThickness, rootRadius, toeRadius, 0);
+            return new ISectionProfile(height, width, webThickness, flangeThickness, rootRadius, toeRadius, curves);
         }
 
         /***************************************************/

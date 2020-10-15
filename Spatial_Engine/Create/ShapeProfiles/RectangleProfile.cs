@@ -39,6 +39,11 @@ namespace BH.Engine.Spatial
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Creates a rectangular solid profile based on input dimensions. Method generates edgecurves based on the inputs.")]
+        [InputFromProperty("height")]
+        [InputFromProperty("width")]
+        [InputFromProperty("cornerRadius")]
+        [Output("rectangle", "The created RectangleProfile.")]
         public static RectangleProfile RectangleProfile(double height, double width, double cornerRadius)
         {
             if (cornerRadius > height / 2)

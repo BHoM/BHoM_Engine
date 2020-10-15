@@ -38,7 +38,17 @@ namespace BH.Engine.Spatial
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        
+
+        [Description("Creates a T-shaped profile based on input dimensions. Method generates edgecurves based on the inputs.")]
+        [InputFromProperty("height")]
+        [InputFromProperty("width")]
+        [InputFromProperty("webThickness")]
+        [InputFromProperty("leftOutstandWidth")]
+        [InputFromProperty("leftOutstandThickness")]
+        [InputFromProperty("rightOutstandWidth")]
+        [InputFromProperty("rightOutstandThickness")]
+        [InputFromProperty("mirrorAboutLocalY")]
+        [Output("genT", "The created GeneralisedTSectionProfile.")]
         public static GeneralisedTSectionProfile GeneralisedTSectionProfile(double height, double webThickness, double leftOutstandWidth, double leftOutstandThickness, double rightOutstandWidth, double rightOutstandThickness, bool mirrorAboutLocalY = false)
         {
             if (height < leftOutstandThickness)

@@ -39,7 +39,14 @@ namespace BH.Engine.Spatial
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static BoxProfile BoxProfile(double height, double width, double thickness, double outerRadius, double innerRadius)
+        [Description("Creates a rectangular hollow profile based on input dimensions. Method generates edgecurves based on the inputs.")]
+        [InputFromProperty("height")]
+        [InputFromProperty("width")]
+        [InputFromProperty("thickness")]
+        [InputFromProperty("outerRadius")]
+        [InputFromProperty("innerRadius")]
+        [Output("box", "The created BoxProfile.")]
+        public static BoxProfile BoxProfile(double height, double width, double thickness, double outerRadius = 0, double innerRadius = 0)
         {
             if (thickness >= height / 2)
             {

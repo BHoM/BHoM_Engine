@@ -39,7 +39,17 @@ namespace BH.Engine.Spatial
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static AngleProfile AngleProfile(double height, double width, double webthickness, double flangeThickness, double rootRadius, double toeRadius, bool mirrorAboutLocalZ = false, bool mirrorAboutLocalY = false)
+        [Description("Creates a L-shaped profile based on input dimensions. Method generates edgecurves based on the inputs.")]
+        [InputFromProperty("height")]
+        [InputFromProperty("width")]
+        [InputFromProperty("webThickness")]
+        [InputFromProperty("flangeThickness")]
+        [InputFromProperty("rootRadius")]
+        [InputFromProperty("toeRadius")]
+        [InputFromProperty("mirrorAboutLocalZ")]
+        [InputFromProperty("mirrorAboutLocalY")]
+        [Output("angle", "The created AngleProfile.")]
+        public static AngleProfile AngleProfile(double height, double width, double webThickness, double flangeThickness, double rootRadius = 0, double toeRadius = 0, bool mirrorAboutLocalZ = false, bool mirrorAboutLocalY = false)
         {
             if (height < flangeThickness + rootRadius + toeRadius)
             {
@@ -47,7 +57,7 @@ namespace BH.Engine.Spatial
                 return null;
             }
 
-            if (width < webthickness + rootRadius + toeRadius)
+            if (width < webThickness + rootRadius + toeRadius)
             {
                 InvalidRatioError("width", "webthickness, rootRadius and toeRadius");
                 return null;
@@ -59,26 +69,26 @@ namespace BH.Engine.Spatial
                 return null;
             }
 
-            if (webthickness < toeRadius)
+            if (webThickness < toeRadius)
             {
                 InvalidRatioError("webthickness", "toeRadius");
                 return null;
             }
 
-            if (height <= 0 || width <= 0 || webthickness <= 0 || flangeThickness <= 0 || rootRadius < 0 || toeRadius < 0)
+            if (height <= 0 || width <= 0 || webThickness <= 0 || flangeThickness <= 0 || rootRadius < 0 || toeRadius < 0)
             {
                 Engine.Reflection.Compute.RecordError("Input length less or equal to 0");
                 return null;
             }
 
-            List<ICurve> curves = AngleProfileCurves(width, height, flangeThickness, webthickness, rootRadius, toeRadius);
+            List<ICurve> curves = AngleProfileCurves(width, height, flangeThickness, webThickness, rootRadius, toeRadius);
 
             if (mirrorAboutLocalZ)
                 curves = curves.MirrorAboutLocalZ();
             if (mirrorAboutLocalY)
                 curves = curves.MirrorAboutLocalY();
 
-            return new AngleProfile(height, width, webthickness, flangeThickness, rootRadius, toeRadius, mirrorAboutLocalZ, mirrorAboutLocalY, curves);
+            return new AngleProfile(height, width, webThickness, flangeThickness, rootRadius, toeRadius, mirrorAboutLocalZ, mirrorAboutLocalY, curves);
         }
 
         /***************************************************/
