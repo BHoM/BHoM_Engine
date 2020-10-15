@@ -122,7 +122,6 @@ namespace BH.Engine.Environment
                     {
                         percentages[x].Add(areaIntersecting / mappedPerimeter.Area());
                     }
-
                     else
                         mappedRegionsI.Add(region);
                 }
