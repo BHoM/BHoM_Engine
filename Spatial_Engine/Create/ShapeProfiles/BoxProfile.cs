@@ -103,5 +103,16 @@ namespace BH.Engine.Spatial
         }
 
         /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+        private static List<ICurve> BoxProfileCurves(double width, double height, double webThickness, double flangeThickness, double innerRadius, double outerRadius)
+        {
+            List<ICurve> box = RectangleProfileCurves(width, height, outerRadius);
+            box.AddRange(RectangleProfileCurves(width - 2 * webThickness, height - 2 * flangeThickness, innerRadius));
+            return box;
+        }
+
+        /***************************************************/
     }
 }

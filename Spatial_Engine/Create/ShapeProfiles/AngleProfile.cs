@@ -94,6 +94,35 @@ namespace BH.Engine.Spatial
         }
 
         /***************************************************/
-        
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+        private static List<ICurve> AngleProfileCurves(double width, double depth, double flangeThickness, double webThickness, double innerRadius, double toeRadius)
+        {
+            List<ICurve> perimeter = new List<ICurve>();
+
+            Vector xAxis = oM.Geometry.Vector.XAxis;
+            Vector yAxis = oM.Geometry.Vector.YAxis;
+            Point origin = oM.Geometry.Point.Origin;
+
+            Point p = new Point { X = 0, Y = 0, Z = 0 };
+            perimeter.Add(new Line { Start = p, End = p = p + xAxis * (width) });
+            perimeter.Add(new Line { Start = p, End = p = p + yAxis * (flangeThickness - toeRadius) });
+            if (toeRadius > 0) perimeter.Add(BH.Engine.Geometry.Create.ArcByCentre(p - xAxis * (toeRadius), p, p = p + new Vector { X = -toeRadius, Y = toeRadius, Z = 0 }));
+            perimeter.Add(new Line { Start = p, End = p = p - xAxis * (width - webThickness - innerRadius - toeRadius) });
+            if (innerRadius > 0) perimeter.Add(BH.Engine.Geometry.Create.ArcByCentre(p + yAxis * (innerRadius), p, p = p + new Vector { X = -innerRadius, Y = innerRadius, Z = 0 }));
+            perimeter.Add(new Line { Start = p, End = p = p + yAxis * (depth - flangeThickness - innerRadius - toeRadius) });
+            if (toeRadius > 0) perimeter.Add(BH.Engine.Geometry.Create.ArcByCentre(p - xAxis * (toeRadius), p, p = p + new Vector { X = -toeRadius, Y = toeRadius, Z = 0 }));
+            perimeter.Add(new Line { Start = p, End = p = p - xAxis * (webThickness - toeRadius) });
+            perimeter.Add(new Line { Start = p, End = p = p - yAxis * (depth) });
+            List<ICurve> translatedCurves = new List<ICurve>();
+
+            foreach (ICurve crv in perimeter)
+                translatedCurves.Add(crv.ITranslate(new Vector { X = -width / 2, Y = -depth / 2, Z = 0 }));
+
+            return translatedCurves;
+        }
+
+        /***************************************************/
     }
 }

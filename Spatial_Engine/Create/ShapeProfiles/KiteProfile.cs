@@ -60,6 +60,61 @@ namespace BH.Engine.Spatial
         }
 
         /***************************************************/
-        
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+        private static List<ICurve> KiteProfileCurves(double width1, double angle1, double thickness)
+        {
+            Vector xAxis = oM.Geometry.Vector.XAxis;
+            Vector yAxis = oM.Geometry.Vector.YAxis;
+            Vector zAxis = oM.Geometry.Vector.ZAxis;
+            Point origin = oM.Geometry.Point.Origin;
+
+            List<ICurve> externalEdges = new List<ICurve>();
+            List<ICurve> internalEdges = new List<ICurve>();
+            List<ICurve> group = new List<ICurve>();
+
+            double width2 = width1 * Math.Tan(angle1 / 2);
+            double angle2 = Math.PI - angle1;
+
+            double tolerance = 1e-3;
+
+            if (angle2 < tolerance || angle2 > Math.PI - tolerance)
+            {
+                Reflection.Compute.RecordError("Angles must be well between 0 and Pi");
+                return null;
+            }
+
+            Point p1 = new Point { X = 0, Y = 0, Z = 0 };
+            Point p2 = p1 + xAxis * Math.Abs(thickness / Math.Sin(angle1 / 2));
+
+            Vector dirVec1 = xAxis.Rotate(angle1 / 2, zAxis);
+            Vector dirVec2 = dirVec1.Rotate(-(Math.PI / 2), zAxis);
+
+            externalEdges.Add(new Line { Start = p1, End = p1 = p1 + dirVec1 * width1 });
+            externalEdges.Add(new Line { Start = p1, End = p1 + dirVec2 * (width1 * Math.Tan(angle1 / 2)) });
+
+            int extCount = externalEdges.Count;
+            for (int i = 0; i < extCount; i++)
+            {
+                externalEdges.Add(externalEdges[i].IMirror(new Plane { Origin = origin, Normal = yAxis }));
+            }
+
+            internalEdges.Add(new Line { Start = p2, End = p2 = p2 + dirVec1 * (width1 - thickness - (thickness * Math.Cos(angle1 / 2)) / Math.Sin(angle1 / 2)) });
+            internalEdges.Add(new Line { Start = p2, End = p2 + dirVec2 * (width2 - thickness - (thickness * Math.Cos(angle2 / 2)) / Math.Sin(angle2 / 2)) });
+
+            int intCount = internalEdges.Count;
+            for (int i = 0; i < intCount; i++)
+            {
+                internalEdges.Add(internalEdges[i].IMirror(new Plane { Origin = origin, Normal = yAxis }));
+            }
+
+            group.AddRange(externalEdges);
+            group.AddRange(internalEdges);
+
+            return group;
+        }
+
+        /***************************************************/
     }
 }

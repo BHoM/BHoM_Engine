@@ -92,6 +92,31 @@ namespace BH.Engine.Spatial
         }
 
         /***************************************************/
-        
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+        private static List<ICurve> GeneralisedTeeProfileCurves(double height, double webThickness, double leftOutstandWidth, double leftOutstandThickness, double rightOutstandWidth, double rightOutstandThickness)
+        {
+            List<ICurve> perimeter = new List<ICurve>();
+            Point p = new Point { X = -webThickness / 2, Y = 0, Z = 0 };
+
+            Vector xAxis = oM.Geometry.Vector.XAxis;
+            Vector yAxis = oM.Geometry.Vector.YAxis;
+            Point origin = oM.Geometry.Point.Origin;
+
+            perimeter.Add(new Line { Start = p, End = p = p + yAxis * (height - leftOutstandThickness) });
+            perimeter.Add(new Line { Start = p, End = p = p + xAxis * (-leftOutstandWidth) });
+            perimeter.Add(new Line { Start = p, End = p = p + yAxis * (leftOutstandThickness) });
+            perimeter.Add(new Line { Start = p, End = p = p + xAxis * (leftOutstandWidth + webThickness + rightOutstandWidth) });
+            perimeter.Add(new Line { Start = p, End = p = p + yAxis * (-rightOutstandThickness) });
+            perimeter.Add(new Line { Start = p, End = p = p + xAxis * (-rightOutstandWidth) });
+            perimeter.Add(new Line { Start = p, End = p = p + yAxis * (-height + rightOutstandThickness) });
+            perimeter.Add(new Line { Start = p, End = p = p + xAxis * (-webThickness) });
+
+            return perimeter;
+        }
+
+        /***************************************************/
+
     }
 }

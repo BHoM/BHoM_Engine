@@ -76,6 +76,53 @@ namespace BH.Engine.Spatial
         }
 
         /***************************************************/
-        
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+        private static List<ICurve> GeneralisedFabricatedBoxProfileCurves(double height, double width, double webThickness, double topFlangeThickness, double botFlangeThickness, double topLeftCorbelWidth, double topRightCorbelWidth, double botLeftCorbelWidth, double botRightCorbelWidth)
+        {
+
+            Vector xAxis = oM.Geometry.Vector.XAxis;
+            Vector yAxis = oM.Geometry.Vector.YAxis;
+            Point origin = oM.Geometry.Point.Origin;
+
+            List<ICurve> externalEdges = new List<ICurve>();
+            List<ICurve> internalEdges = new List<ICurve>();
+            List<ICurve> group = new List<ICurve>();
+            Point p1 = new Point { X = 0, Y = 0, Z = 0 };
+            Point p2 = new Point { X = 0, Y = botFlangeThickness, Z = 0 };
+
+            externalEdges.Add(new Line { Start = p1, End = p1 = p1 + xAxis * ((width / 2) + botRightCorbelWidth) });
+            externalEdges.Add(new Line { Start = p1, End = p1 = p1 + yAxis * botFlangeThickness });
+            externalEdges.Add(new Line { Start = p1, End = p1 = p1 - xAxis * botRightCorbelWidth });
+            externalEdges.Add(new Line { Start = p1, End = p1 = p1 + yAxis * (height - botFlangeThickness - topFlangeThickness) });
+            externalEdges.Add(new Line { Start = p1, End = p1 = p1 + xAxis * topRightCorbelWidth });
+            externalEdges.Add(new Line { Start = p1, End = p1 = p1 + yAxis * topFlangeThickness });
+            externalEdges.Add(new Line { Start = p1, End = p1 = p1 - xAxis * (width + topRightCorbelWidth + topLeftCorbelWidth) });
+            externalEdges.Add(new Line { Start = p1, End = p1 = p1 - yAxis * topFlangeThickness });
+            externalEdges.Add(new Line { Start = p1, End = p1 = p1 + xAxis * topLeftCorbelWidth });
+            externalEdges.Add(new Line { Start = p1, End = p1 = p1 - yAxis * (height - botFlangeThickness - topFlangeThickness) });
+            externalEdges.Add(new Line { Start = p1, End = p1 = p1 - xAxis * botLeftCorbelWidth });
+            externalEdges.Add(new Line { Start = p1, End = p1 = p1 - yAxis * botFlangeThickness });
+            externalEdges.Add(new Line { Start = p1, End = p1 = p1 + xAxis * ((width / 2) + botLeftCorbelWidth) });
+
+            internalEdges.Add(new Line { Start = p2, End = p2 = p2 + xAxis * ((width / 2) - webThickness) });
+            internalEdges.Add(new Line { Start = p2, End = p2 = p2 + yAxis * (height - botFlangeThickness - topFlangeThickness) });
+            internalEdges.Add(new Line { Start = p2, End = p2 = p2 - xAxis * ((width / 2) - webThickness) });
+
+            int intCount = internalEdges.Count;
+            for (int i = 0; i < intCount; i++)
+            {
+                internalEdges.Add(internalEdges[i].IMirror(new Plane { Origin = origin, Normal = xAxis }));
+            }
+
+            group.AddRange(externalEdges);
+            group.AddRange(internalEdges);
+
+            return group;
+        }
+
+        /***************************************************/
+
     }
 }

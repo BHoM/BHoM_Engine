@@ -56,5 +56,14 @@ namespace BH.Engine.Spatial
         }
 
         /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+        private static List<ICurve> CircleProfileCurves(double radius)
+        {
+            return new List<ICurve> { new Circle { Centre = BH.oM.Geometry.Point.Origin, Radius = radius } };
+        }
+
+        /***************************************************/
     }
 }
