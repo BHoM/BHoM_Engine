@@ -44,7 +44,7 @@ namespace BH.Engine.Spatial
         [InputFromProperty("width")]
         [InputFromProperty("cornerRadius")]
         [Output("rectangle", "The created RectangleProfile.")]
-        public static RectangleProfile RectangleProfile(double height, double width, double cornerRadius)
+        public static RectangleProfile RectangleProfile(double height, double width, double cornerRadius = 0)
         {
             if (cornerRadius > height / 2)
             {
