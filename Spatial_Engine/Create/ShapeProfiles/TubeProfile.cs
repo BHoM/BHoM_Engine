@@ -41,7 +41,7 @@ namespace BH.Engine.Spatial
 
         [PreviousVersion("4.0", "BH.Engine.Geometry.Create.TubeProfile(System.Double, System.Double)")]
         [PreviousVersion("4.0", "BH.Engine.Structure.Create.TubeProfile(System.Double, System.Double)")]
-        [Description("Creates a circular hollow profile based on input dimensions. Method generates edgecurves based on the inputs.")]
+        [Description("Creates a circular hollow profile based on input dimensions. Method generates edge curves based on the inputs.")]
         [InputFromProperty("diameter")]
         [InputFromProperty("thickness")]
         [Output("tube", "The created TubeProfile.")]
