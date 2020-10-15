@@ -39,6 +39,8 @@ namespace BH.Engine.Spatial
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [PreviousVersion("4.0", "BH.Engine.Geometry.Create.FabricatedISectionProfile(System.Double, System.Double, System.Double, System.Double, System.Double, System.Double, System.Double)")]
+        [PreviousVersion("4.0", "BH.Engine.Structure.Create.FabricatedISectionProfile(System.Double, System.Double, System.Double, System.Double, System.Double, System.Double, System.Double)")]
         [Description("Creates a I-shaped profile based on input dimensions. Method generates edgecurves based on the inputs.")]
         [InputFromProperty("height")]
         [InputFromProperty("topFlangeWidth")]

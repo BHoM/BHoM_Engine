@@ -39,6 +39,8 @@ namespace BH.Engine.Spatial
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [PreviousVersion("4.0", "BH.Engine.Geometry.Create.KiteProfile(System.Double, System.Double, System.Double)")]
+        [PreviousVersion("4.0", "BH.Engine.Structure.Create.KiteProfile(System.Double, System.Double, System.Double)")]
         public static KiteProfile KiteProfile(double width1, double angle1, double thickness)
         {
             if ((width1 * Math.Sin(angle1 / 2) / Math.Sqrt(2)) / (Math.Sin(Math.PI * 0.75 - (angle1 / 2))) <= thickness)

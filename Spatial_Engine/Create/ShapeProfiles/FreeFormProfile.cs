@@ -39,6 +39,8 @@ namespace BH.Engine.Spatial
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [PreviousVersion("4.0", "BH.Engine.Geometry.Create.FreeFormProfile(System.Collections.Generic.IEnumerable<BH.oM.Geometry.ICurve>)")]
+        [PreviousVersion("4.0", "BH.Engine.Structure.Create.FreeFormProfile(System.Collections.Generic.IEnumerable<BH.oM.Geometry.ICurve>)")]
         [Description("Creates a single FreeFormProfile from a collection of ICurves. \n" +
                      "Checks if it's a valid profile and attempts to fix;  \n" +
                      " - coplanarity with eachother, by projecting onto the plane of the curve with the biggest area. \n" +
