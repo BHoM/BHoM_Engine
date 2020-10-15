@@ -23,7 +23,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Collections.ObjectModel;
-using BH.oM.Geometry.ShapeProfiles;
+using BH.oM.Spatial.ShapeProfiles;
 using BH.oM.Geometry;
 using System;
 using BH.Engine.Reflection;
@@ -31,7 +31,7 @@ using BH.oM.Reflection.Attributes;
 using BH.Engine.Geometry;
 using System.ComponentModel;
 
-namespace BH.Engine.Geometry
+namespace BH.Engine.Spatial
 {
     public static partial class Create
     {
@@ -340,7 +340,7 @@ namespace BH.Engine.Geometry
             if (cPoints.Any(x => Math.Abs(x.Z) > Tolerance.Distance))
             {
                 // Is Planar
-                Plane plane = Compute.FitPlane(cPoints);
+                Plane plane = Geometry.Compute.FitPlane(cPoints);
                 bool failedProject = false;
                 if (cPoints.Any(x => x.Distance(plane) > Tolerance.Distance))
                 {
@@ -348,7 +348,7 @@ namespace BH.Engine.Geometry
                     try
                     {
                         // Get biggest contributing curve and fit a plane to it
-                        plane = Compute.IJoin(edges.ToList()).OrderBy(x => x.Area()).Last().ControlPoints().FitPlane();
+                        plane = Geometry.Compute.IJoin(edges.ToList()).OrderBy(x => x.Area()).Last().ControlPoints().FitPlane();
 
                         result = edges.Select(x => x.IProject(plane)).ToList();
                         Reflection.Compute.RecordWarning("The Profiles curves have been projected onto a plane fitted through the biggest curve's control points.");
@@ -390,7 +390,7 @@ namespace BH.Engine.Geometry
             if (!result.Any(x => x.ISubParts().Any(y => y is NurbsCurve)))
             {
                 // Join the curves
-                List<PolyCurve> joinedCurves = Compute.IJoin(result.ToList()).ToList();
+                List<PolyCurve> joinedCurves = Geometry.Compute.IJoin(result.ToList()).ToList();
 
                 // Is Closed
                 if (joinedCurves.Any(x => !x.IsClosed()))

@@ -24,7 +24,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using BH.oM.Structure.SectionProperties;
-using BH.oM.Geometry.ShapeProfiles;
+using BH.oM.Spatial.ShapeProfiles;
 using BH.oM.Structure.SectionProperties.Reinforcement;
 using BH.oM.Geometry;
 using BH.oM.Reflection;
@@ -51,7 +51,7 @@ namespace BH.Engine.Structure
         [Output("section", "The created free form concrete section.")]
         public static ConcreteSection ConcreteFreeFormSection(List<ICurve> edges, Concrete material = null, string name = "", List<IBarReinforcement> reinforcement = null, double minimumCover = 0)
         {
-            return ConcreteSectionFromProfile(Geometry.Create.FreeFormProfile(edges), material, name, reinforcement, minimumCover);
+            return ConcreteSectionFromProfile(Spatial.Create.FreeFormProfile(edges), material, name, reinforcement, minimumCover);
         }
 
         /***************************************************/

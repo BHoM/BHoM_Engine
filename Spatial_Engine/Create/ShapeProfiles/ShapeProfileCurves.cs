@@ -26,7 +26,7 @@ using BH.Engine.Geometry;
 using System.Linq;
 using System;
 
-namespace BH.Engine.Geometry
+namespace BH.Engine.Spatial
 {
     public static partial class Create
     {

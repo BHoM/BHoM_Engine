@@ -47,7 +47,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.ComponentModel;
 using BH.oM.Reflection.Attributes;
-using BH.oM.Geometry.ShapeProfiles;
+using BH.oM.Spatial.ShapeProfiles;
 
 namespace BH.Engine.Spatial
 {
@@ -68,7 +68,7 @@ namespace BH.Engine.Spatial
             if (!positions.Contains(0) && !positions.Contains(1))
             {
                 List<double> newPositions = Compute.MapDomain(positions, positions);
-                newTaperedProfile = Geometry.Create.TaperedProfile(newPositions, new List<IProfile>(taperedProfile.Profiles.Values), taperedProfile.InterpolationOrder);
+                newTaperedProfile = Create.TaperedProfile(newPositions, new List<IProfile>(taperedProfile.Profiles.Values), taperedProfile.InterpolationOrder);
             }
             else
             {

@@ -27,7 +27,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using BH.oM.Geometry.ShapeProfiles;
+using BH.oM.Spatial.ShapeProfiles;
 using BH.Engine.Geometry;
 using BH.oM.Reflection.Attributes;
 using BH.oM.Geometry;

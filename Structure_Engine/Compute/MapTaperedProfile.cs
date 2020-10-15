@@ -28,7 +28,7 @@ using BH.oM.Geometry;
 using BH.Engine.Geometry;
 using System.ComponentModel;
 using BH.oM.Reflection.Attributes;
-using BH.oM.Geometry.ShapeProfiles;
+using BH.oM.Spatial.ShapeProfiles;
 using BH.oM.Structure.SectionProperties;
 using BH.Engine.Base;
 
@@ -196,9 +196,9 @@ namespace BH.Engine.Structure
                     newPositions.Add(position);
                 }
                 if (endIndex == 1 || endIndex - startIndex == 1)
-                    taperedProfiles.Add(Geometry.Create.TaperedProfile(newPositions, newProfiles, newInterpolationOrders.GetRange(startIndex, 1)));
+                    taperedProfiles.Add(Spatial.Create.TaperedProfile(newPositions, newProfiles, newInterpolationOrders.GetRange(startIndex, 1)));
                 else
-                    taperedProfiles.Add(Geometry.Create.TaperedProfile(newPositions, newProfiles, newInterpolationOrders.GetRange(startIndex, (endIndex - startIndex))));
+                    taperedProfiles.Add(Spatial.Create.TaperedProfile(newPositions, newProfiles, newInterpolationOrders.GetRange(startIndex, (endIndex - startIndex))));
             }
 
             return taperedProfiles;
