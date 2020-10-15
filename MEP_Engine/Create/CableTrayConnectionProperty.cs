@@ -29,6 +29,7 @@ using System.ComponentModel;
 
 using BH.oM.Reflection.Attributes;
 using BH.oM.MEP.ConnectionProperties;
+using BH.oM.MEP.Elements;
 
 namespace BH.Engine.MEP
 {
@@ -39,13 +40,17 @@ namespace BH.Engine.MEP
         /***************************************************/
 
         [Description("Returns a cable tray connection property")]
+        [Input("startNode", "The point at which the Connector object begins.")]
+        [Input("endNode", "The point at which the Connector object ends.")]
         [Input("isStartConnected", "Whether the start point of the Cable Tray is connected to another segment or not.")]
         [Input("isEndConnected", "Whether the end point of the Cable Tray is connected to another segment or not.")]
         [Output("cableTrayConnectionProperty", "A cable tray connection property")]
-        public static CableTrayConnectionProperty CableTrayConnectionProperty(bool isStartConnected, bool isEndConnected)
+        public static CableTrayConnectionProperty CableTrayConnectionProperty(Node startNode, Node endNode, bool isStartConnected, bool isEndConnected)
         {
             return new CableTrayConnectionProperty
             {
+                StartNode = startNode,
+                EndNode = endNode,
                 IsStartConnected = isStartConnected,
                 IsEndConnected = isEndConnected,      
             };
