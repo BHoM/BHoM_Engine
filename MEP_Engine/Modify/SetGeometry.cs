@@ -40,6 +40,7 @@ namespace BH.Engine.MEP
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
+        
         [Description("Updates the position of a Node.")]
         [Input("node", "The Node to set the postion to.")]
         [Input("point", "The new position of the Node used to define an object.")]
@@ -50,7 +51,9 @@ namespace BH.Engine.MEP
             clone.Position = point.Clone();
             return clone;
         }
+        
         /***************************************************/
+        
         [Description("Updates geometry of an IFlow Object by updating the positions of its end Nodes.")]
         [Input("obj", "The IFlow Object to update.")]
         [Input("curve", "The new centerline curve of the pipe.")]
@@ -62,11 +65,13 @@ namespace BH.Engine.MEP
                 Engine.Reflection.Compute.RecordError("IFlow objects are not linear.");
                 return null;
             }
+            
             IFlow clone = obj.GetShallowClone(true) as IFlow;
             clone.StartNode = clone.StartNode.SetGeometry(curve.IStartPoint());
             clone.EndNode = clone.EndNode.SetGeometry(curve.IEndPoint());
             return clone;
         }
+        
         /***************************************************/
     }
 }

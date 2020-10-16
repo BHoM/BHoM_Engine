@@ -255,7 +255,14 @@ namespace BH.Engine.Geometry
 
         public static BoundaryRepresentation Transform(this BoundaryRepresentation solid, TransformMatrix transform)
         {
-            return new BoundaryRepresentation(solid.Surfaces.Select(x => x.ITransform(transform)));
+            double volume = solid.Volume;
+            if (!(Math.Abs(transform.Determinant() - 1) <= 1e-6))
+            {
+                Reflection.Compute.RecordWarning("Transformation is not rigid. Therefore stored BoundaryRepresentation Volume will be invalidated and reset to NaN (not a number)");
+                volume = double.NaN;
+            }
+                
+            return new BoundaryRepresentation(solid.Surfaces.Select(x => x.ITransform(transform)), volume);
         }
 
 

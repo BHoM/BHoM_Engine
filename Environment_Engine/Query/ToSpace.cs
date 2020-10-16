@@ -35,7 +35,7 @@ namespace BH.Engine.Environment
     public static partial class Query
     {
         /***************************************************/
-        /****          public Methods                   ****/
+        /****          Public Methods                   ****/
         /***************************************************/
 
         [Description("Returns a collection of Environment Panels which are connected to the space name provided")]

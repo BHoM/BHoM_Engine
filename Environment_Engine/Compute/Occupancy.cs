@@ -33,7 +33,7 @@ namespace BH.Engine.Environment
     public static partial class Compute
     {
         /***************************************************/
-        /****          public Methods                   ****/
+        /****          Public Methods                   ****/
         /***************************************************/
 
         [Description("Compute the occupancy from the square meters per person and floor area of the space")]

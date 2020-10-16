@@ -36,7 +36,7 @@ namespace BH.Engine.Environment
     public static partial class Compute
     {
         /***************************************************/
-        /****          public Methods                   ****/
+        /****          Public Methods                   ****/
         /***************************************************/
 
         [Description("Compute the sensible or latent people gain from the watts per person and occupancy of the space")]

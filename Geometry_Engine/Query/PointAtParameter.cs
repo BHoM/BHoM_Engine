@@ -104,8 +104,10 @@ namespace BH.Engine.Geometry
 
         public static Point PointAtParameter(this PolyCurve curve, double parameter)
         {
-            if (parameter == 1)
-                return curve.IEndPoint();
+            if (parameter == 0)
+                return curve.StartPoint();
+            else if (parameter == 1)
+                return curve.EndPoint();
 
             double cLength = parameter * curve.Length();
             foreach (ICurve c in curve.SubParts())
@@ -124,6 +126,11 @@ namespace BH.Engine.Geometry
 
         public static Point PointAtParameter(this Polyline curve, double parameter)
         {
+            if (parameter == 0)
+                return curve.StartPoint();
+            else if (parameter == 1)
+                return curve.EndPoint();
+
             double cLength = parameter * curve.Length();
             foreach (Line line in curve.SubParts())
             {

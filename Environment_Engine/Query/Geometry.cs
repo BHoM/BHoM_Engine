@@ -30,6 +30,7 @@ using BH.oM.Environment.Analysis;
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
 using BH.oM.Geometry;
+using BH.oM.Environment.Elements;
 
 namespace BH.Engine.Environment
 {
@@ -41,6 +42,16 @@ namespace BH.Engine.Environment
         public static Point Geometry(this Node node)
         {
             return node.Position;
+        }
+
+        /***************************************************/
+
+        [Description("Gets the geometry of an Edge as an ICurve")]
+        [Input("edge", "Edge to get the ICurve from")]
+        [Output("curve", "The geometry of the curve")]
+        public static ICurve Geometry(this Edge edge)
+        {
+            return edge.Curve;
         }
     }
 }

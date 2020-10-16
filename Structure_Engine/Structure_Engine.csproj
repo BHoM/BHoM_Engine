@@ -88,6 +88,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Compute\MapTaperedProfile.cs" />
     <Compile Include="Compute\IntegrateSection.cs" />
     <Compile Include="Compute\OrientationAngle.cs" />
     <Compile Include="Compute\PlasticModulus.cs" />
