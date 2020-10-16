@@ -168,7 +168,7 @@ namespace BH.Engine.Reflection
                     }
                     catch(Exception e)
                     {
-                        string message = "Cannot load method from type  " + type.Name + ". Exception message: " + e.Message;
+                        string message = "Cannot load method" + method.Name + " from type  " + type.Name + ". Exception message: " + e.Message;
 
                         if (!string.IsNullOrEmpty(e.InnerException?.Message))
                         {
