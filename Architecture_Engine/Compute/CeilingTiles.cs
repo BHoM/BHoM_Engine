@@ -8,12 +8,14 @@ using BH.oM.Architecture.Elements;
 
 using BH.oM.Geometry;
 using BH.Engine.Geometry;
+using BH.oM.Reflection;
 
 namespace BH.Engine.Architecture
 {
     public static partial class Compute
     {
-        public static List<CeilingTile> CeilingTiles(Polyline perimeterCurve, List<Line> ceilingTileLines)
+        //public static List<CeilingTile> CeilingTiles(Polyline perimeterCurve, List<Line> ceilingTileLines)
+        public static Output<List<Line>, List<Line>> CeilingTiles(Polyline perimeterCurve, List<Line> ceilingTileLines)
         {
             List<Point> intersectingPoints = BH.Engine.Geometry.Query.LineIntersections(ceilingTileLines);
 
@@ -46,8 +48,12 @@ namespace BH.Engine.Architecture
 
 
 
-
-            return new List<CeilingTile>();
+            return new Output<List<Line>, List<Line>>
+            {
+                Item1 = perimeterLines,
+                Item2 = splitCurves,
+            };
+            //return new List<CeilingTile>();
         }
     }
 }
