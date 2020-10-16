@@ -29,7 +29,7 @@ using System.ComponentModel;
 using BHPE = BH.oM.Physical.Elements;
 using BHPP = BH.oM.Physical.FramingProperties;
 using BH.oM.Physical.Reinforcement;
-using BH.oM.Geometry.ShapeProfiles;
+using BH.oM.Spatial.ShapeProfiles;
 
 namespace BH.Engine.Structure
 {

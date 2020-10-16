@@ -20,45 +20,50 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+using System.Collections.ObjectModel;
 using BH.oM.Spatial.ShapeProfiles;
+using BH.oM.Geometry;
+using System;
+using BH.Engine.Reflection;
 using BH.oM.Reflection.Attributes;
+using BH.Engine.Geometry;
+using System.ComponentModel;
 
-namespace BH.Engine.MEP
+namespace BH.Engine.Spatial
 {
-    public static partial class Query
+    public static partial class Create
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        [Description("Returns the Circular Equivalent Diameter for elements that are non-circular, equivalent in length, fluid resistance and airflow.")]
-        [Input("profile", "Shape profile to query the Circular Equivalent Diameter.")]
-        [Output("circularEquivalentDiameter", "Circular Equivalent Diameter for element section profiles that are non-circular, equivalent in length, fluid resistance and airflow.")]
-        public static double ICircularEquivalentDiameter(this IProfile profile)
+
+        [PreviousVersion("4.0", "BH.Engine.Geometry.Create.CircleProfile(System.Double)")]
+        [PreviousVersion("4.0", "BH.Engine.Structure.Create.CircleProfile(System.Double)")]
+        [Description("Creates a circular hollow profile based on input dimensions. Method generates edge curves based on the inputs.")]
+        [InputFromProperty("diameter")]
+        [Output("circle", "The created CircleProfile.")]
+        public static CircleProfile CircleProfile(double diameter)
         {
-            return CircularEquivalentDiameter(profile as dynamic);
+            if (diameter <= 0)
+            {
+                Engine.Reflection.Compute.RecordError("Input length less or equal to 0");
+                return null;
+            }
+            List<ICurve> curves = CircleProfileCurves(diameter / 2);
+            return new CircleProfile(diameter, curves);
         }
+
         /***************************************************/
-        [Description("Returns the Circular Equivalent Diameter for elements that are non-circular, equivalent in length, fluid resistance and airflow.")]
-        [Input("boxProfile", "Box Shape profile to query the Circular Equivalent Diameter.")]
-        [Output("circularEquivalentDiameter", "Circular Equivalent Diameter for element section profiles that are non-circular, equivalent in length, fluid resistance and airflow.")]
-        public static double CircularEquivalentDiameter(this BoxProfile box)
-        {
-            double a = 1000 * (box.Height - 2 * box.Thickness);
-            double b = 1000 * (box.Width - 2 * box.Thickness);
-            return (1.30 * Math.Pow(a * b, 0.625) / Math.Pow(a + b, 0.250)) / 1000;
-        }
+        /**** Private Methods                           ****/
         /***************************************************/
 
-        public static double CircularEquivalentDiameter(this object profile)
+        private static List<ICurve> CircleProfileCurves(double radius)
         {
-            return 0; //To catch things that are not box profile.
+            return new List<ICurve> { new Circle { Centre = BH.oM.Geometry.Point.Origin, Radius = radius } };
         }
+
+        /***************************************************/
     }
 }

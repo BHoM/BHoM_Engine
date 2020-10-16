@@ -28,7 +28,7 @@ using System.Threading.Tasks;
 
 using BH.oM.Physical.FramingProperties;
 using BH.oM.Physical.Materials;
-using BH.oM.Geometry.ShapeProfiles;
+using BH.oM.Spatial.ShapeProfiles;
 
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;

@@ -24,7 +24,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using BH.oM.Structure.SectionProperties;
-using BH.oM.Geometry.ShapeProfiles;
+using BH.oM.Spatial.ShapeProfiles;
 using BH.oM.Structure.SectionProperties.Reinforcement;
 using BH.oM.Geometry;
 using BH.oM.Reflection;
@@ -52,7 +52,7 @@ namespace BH.Engine.Structure
         [Output("section", "The created rectangular concrete section.")]
         public static ConcreteSection ConcreteRectangleSection(double height, double width, Concrete material = null, string name = "", List<IBarReinforcement> reinforcement = null, double minimumCover = 0)
         {
-            return ConcreteSectionFromProfile(Geometry.Create.RectangleProfile(height, width, 0), material, name, reinforcement, minimumCover);
+            return ConcreteSectionFromProfile(Spatial.Create.RectangleProfile(height, width, 0), material, name, reinforcement, minimumCover);
         }
 
         /***************************************************/

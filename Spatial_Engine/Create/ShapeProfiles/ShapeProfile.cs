@@ -1,4 +1,4 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -20,45 +20,48 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+using System.Collections.ObjectModel;
 using BH.oM.Spatial.ShapeProfiles;
+using BH.oM.Geometry;
+using System;
+using BH.Engine.Reflection;
 using BH.oM.Reflection.Attributes;
+using BH.Engine.Geometry;
+using System.ComponentModel;
 
-namespace BH.Engine.MEP
+namespace BH.Engine.Spatial
 {
-    public static partial class Query
+    public static partial class Create
     {
+
         /***************************************************/
-        /**** Public Methods                            ****/
-        /***************************************************/
-        [Description("Returns the Circular Equivalent Diameter for elements that are non-circular, equivalent in length, fluid resistance and airflow.")]
-        [Input("profile", "Shape profile to query the Circular Equivalent Diameter.")]
-        [Output("circularEquivalentDiameter", "Circular Equivalent Diameter for element section profiles that are non-circular, equivalent in length, fluid resistance and airflow.")]
-        public static double ICircularEquivalentDiameter(this IProfile profile)
-        {
-            return CircularEquivalentDiameter(profile as dynamic);
-        }
-        /***************************************************/
-        [Description("Returns the Circular Equivalent Diameter for elements that are non-circular, equivalent in length, fluid resistance and airflow.")]
-        [Input("boxProfile", "Box Shape profile to query the Circular Equivalent Diameter.")]
-        [Output("circularEquivalentDiameter", "Circular Equivalent Diameter for element section profiles that are non-circular, equivalent in length, fluid resistance and airflow.")]
-        public static double CircularEquivalentDiameter(this BoxProfile box)
-        {
-            double a = 1000 * (box.Height - 2 * box.Thickness);
-            double b = 1000 * (box.Width - 2 * box.Thickness);
-            return (1.30 * Math.Pow(a * b, 0.625) / Math.Pow(a + b, 0.250)) / 1000;
-        }
+        /**** Private Methods                           ****/
         /***************************************************/
 
-        public static double CircularEquivalentDiameter(this object profile)
+        private static List<ICurve> MirrorAboutLocalY(this List<ICurve> curves)
         {
-            return 0; //To catch things that are not box profile.
+            Plane plane = oM.Geometry.Plane.XZ;
+            return curves.Select(x => x.IMirror(plane)).ToList();
         }
+
+        /***************************************************/
+
+        private static List<ICurve> MirrorAboutLocalZ(this List<ICurve> curves)
+        {
+            Plane plane = oM.Geometry.Plane.YZ;
+            return curves.Select(x => x.IMirror(plane)).ToList();
+        }
+
+        /***************************************************/
+
+        private static void InvalidRatioError(string first, string second)
+        {
+            Engine.Reflection.Compute.RecordError("The ratio of the " + first + " in relation to the " + second + " makes section inconceivable");
+        }
+
+        /***************************************************/
+
     }
 }

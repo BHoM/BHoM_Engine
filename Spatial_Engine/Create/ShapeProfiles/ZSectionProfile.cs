@@ -20,45 +20,34 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+using System.Collections.ObjectModel;
 using BH.oM.Spatial.ShapeProfiles;
+using BH.oM.Geometry;
+using System;
+using BH.Engine.Reflection;
 using BH.oM.Reflection.Attributes;
+using BH.Engine.Geometry;
+using System.ComponentModel;
 
-namespace BH.Engine.MEP
+namespace BH.Engine.Spatial
 {
-    public static partial class Query
+    public static partial class Create
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        [Description("Returns the Circular Equivalent Diameter for elements that are non-circular, equivalent in length, fluid resistance and airflow.")]
-        [Input("profile", "Shape profile to query the Circular Equivalent Diameter.")]
-        [Output("circularEquivalentDiameter", "Circular Equivalent Diameter for element section profiles that are non-circular, equivalent in length, fluid resistance and airflow.")]
-        public static double ICircularEquivalentDiameter(this IProfile profile)
-        {
-            return CircularEquivalentDiameter(profile as dynamic);
-        }
-        /***************************************************/
-        [Description("Returns the Circular Equivalent Diameter for elements that are non-circular, equivalent in length, fluid resistance and airflow.")]
-        [Input("boxProfile", "Box Shape profile to query the Circular Equivalent Diameter.")]
-        [Output("circularEquivalentDiameter", "Circular Equivalent Diameter for element section profiles that are non-circular, equivalent in length, fluid resistance and airflow.")]
-        public static double CircularEquivalentDiameter(this BoxProfile box)
-        {
-            double a = 1000 * (box.Height - 2 * box.Thickness);
-            double b = 1000 * (box.Width - 2 * box.Thickness);
-            return (1.30 * Math.Pow(a * b, 0.625) / Math.Pow(a + b, 0.250)) / 1000;
-        }
-        /***************************************************/
 
-        public static double CircularEquivalentDiameter(this object profile)
+        [NotImplemented]
+        public static ZSectionProfile ZSectionProfile(double height, double width, double webthickness, double flangeThickness, double rootRadius, double toeRadius)
         {
-            return 0; //To catch things that are not box profile.
+            throw new NotImplementedException();
+            //TODO: Section curves for z-profile
+            //List<ICurve> curves = ZProfileCurves(flangeThickness, width, webthickness, height - flangeThickness, rootRadius, toeRadius);
+            //return new ZSectionProfile(height, width, webthickness, flangeThickness, rootRadius, toeRadius, curves);
         }
+
+        /***************************************************/
     }
 }

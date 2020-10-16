@@ -26,7 +26,6 @@ using System.Linq;
 using System;
 using BH.Engine.Reflection;
 using BH.oM.Reflection.Attributes;
-using BH.oM.Geometry.ShapeProfiles;
 using BH.oM.Base;
 using System.ComponentModel;
 
