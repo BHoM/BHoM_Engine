@@ -86,6 +86,8 @@ namespace BH.Engine.Architecture
                             smallestAngle = angle;
                             smallestAngleLine = check;
                         }
+
+                        count++;
                     }
 
                     if (smallestAngleLine == null)
