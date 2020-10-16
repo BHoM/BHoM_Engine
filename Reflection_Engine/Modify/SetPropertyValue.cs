@@ -41,30 +41,22 @@ namespace BH.Engine.Reflection
         [Input("propName", "name of the property to set the value of")]
         [Input("value", "new value of the property")]
         [Output("result", "New object with its property changed to the new value")]
-        public static BHoMObject PropertyValue(this BHoMObject obj, string propName, object value)
+        public static object SetPropertyValue(this object obj, string propName, object value)
         {
-            BHoMObject newObject = obj.GetShallowClone() as BHoMObject;
-            newObject.SetPropertyValue(propName, value);
-            return newObject;
-        }
-
-        /***************************************************/
-
-        public static bool SetPropertyValue(this object obj, string propName, object value)
-        {
+            object toChange = obj;
             if (propName.Contains("."))
             {
                 string[] props = propName.Split('.');
                 for (int i = 0; i < props.Length - 1; i++)
                 {
-                    obj = obj.PropertyValue(props[i]);
-                    if (obj == null)
+                    toChange = toChange.PropertyValue(props[i]);
+                    if (toChange == null)
                         break;
                 }
                 propName = props[props.Length - 1];
             }
 
-            System.Reflection.PropertyInfo prop = obj.GetType().GetProperty(propName);
+            System.Reflection.PropertyInfo prop = toChange.GetType().GetProperty(propName);
 
             if (prop != null)
             {
@@ -79,54 +71,14 @@ namespace BH.Engine.Reflection
                         value = constructor.Invoke(new object[] { value });
                 }
 
-                prop.SetValue(obj, value);
-                return true;
+                prop.SetValue(toChange, value);
+                return obj;
             }
             else 
             {
-                return SetValue(obj as dynamic, propName, value);
+                SetValue(toChange as dynamic, propName, value);
+                return obj;
             }
-        }
-
-        /***************************************************/
-
-        public static bool SetPropertyValue(this List<IBHoMObject> objects, Type objectType, string propName, object value)
-        {
-            PropertyInfo propInfo = objectType.GetProperty(propName);
-
-            if (propInfo == null)
-            {
-                Compute.RecordWarning("No property with the provided name found. The value is being set as custom data");
-                foreach (IBHoMObject obj in objects)
-                    obj.CustomData[propName] = value;
-                return true;
-            }
-            else
-            {
-                Action<object, object> setProp = (Action<object, object>)Delegate.CreateDelegate(typeof(Action<object, object>), propInfo.GetSetMethod());
-
-                if (value is IList && value.GetType() != propInfo.PropertyType)
-                {
-                    IList values = ((IList)value);
-
-                    // Check that the two lists are of equal length
-                    if (objects.Count != values.Count)
-                        return false;
-
-                    // Set their property
-                    for (int i = 0; i < values.Count; i++)
-                        setProp(objects[i], values[i]);
-                }
-                else
-                {
-                    // Set the same property to all objects
-                    foreach (object obj in objects)
-                        setProp(obj, value);
-                }
-
-                return true;
-            }
-
         }
 
 
@@ -160,7 +112,7 @@ namespace BH.Engine.Reflection
             bool success = true;
 
             foreach (T item in list)
-                success &= SetPropertyValue(item, propName, value);
+                success &= SetPropertyValue(item, propName, value) != null;
 
             return success;
         }
