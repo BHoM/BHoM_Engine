@@ -76,7 +76,7 @@ namespace BH.Engine.Architecture
 
                         if(pt3 == pt1)
                         {
-                            outlines.Add(check);
+                            smallestAngleLine = check;
                             break; //We've reached our starting point
                         }
 
