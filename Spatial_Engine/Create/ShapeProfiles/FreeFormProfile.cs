@@ -69,7 +69,7 @@ namespace BH.Engine.Spatial
 
                         result = edges.Select(x => x.IProject(plane)).ToList();
                         Reflection.Compute.RecordWarning("The Profiles curves have been projected onto a plane fitted through the biggest curve's control points.");
-                        cPoints = result.SelectMany(x => x.IControlPoints()).ToList();
+                        cPoints = result.SelectMany(x => Geometry.Query.IControlPoints(x)).ToList();
                     }
                     catch
                     {
@@ -89,7 +89,7 @@ namespace BH.Engine.Spatial
 
                         Line axis = plane.PlaneIntersection(oM.Geometry.Plane.XY);
                         result = result.Select(x => x.IRotate(axis.Start, axis.TangentAtParameter(0), rad)).ToList();
-                        cPoints = result.SelectMany(x => x.IControlPoints()).ToList();
+                        cPoints = result.SelectMany(x => Geometry.Query.IControlPoints(x)).ToList();
                     }
 
                     // Is on XY
@@ -114,7 +114,7 @@ namespace BH.Engine.Spatial
                     Reflection.Compute.RecordWarning("The Profiles curves does not form closed curves");
 
                 // Has non-zero area
-                if (joinedCurves.Any(x => x.IArea() < Tolerance.Distance))
+                if (joinedCurves.Any(x => Geometry.Query.IArea(x) < Tolerance.Distance))
                     Reflection.Compute.RecordWarning("One or more of the profile curves have close to zero area.");
 
                 if (!joinedCurves.Any(x => x.ISubParts().Any(y => y is Ellipse)))
@@ -138,7 +138,7 @@ namespace BH.Engine.Spatial
                         Engine.Reflection.Compute.RecordWarning("The Profiles curves are intersecting eachother.");
                 }
                 // Is SelfInteersecting
-                if (joinedCurves.Any(x => x.IsSelfIntersecting()))
+                if (joinedCurves.Any(x => Geometry.Query.IsSelfIntersecting(x)))
                     Engine.Reflection.Compute.RecordWarning("One or more of the Profiles curves is intersecting itself.");
 
             }
