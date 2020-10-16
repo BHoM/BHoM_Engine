@@ -49,68 +49,92 @@ namespace BH.Engine.Architecture
 
             List<CeilingTile> tiles = new List<CeilingTile>();
 
-            foreach(Line l in perimeterLines)
+            List<Line> usedPerimeterLines = new List<Line>();
+
+            int count2 = 0;
+
+            while (perimeterLines.Count > 0 && count2 < 1000)
             {
-                List<Line> outlines = new List<Line>();
-                outlines.Add(l);
-
-                Point pt1 = l.Start;
-                Point pt2 = l.End;
-
-                Point checkPt = pt2;
-
-                int count = 0; //Aim to remove this
-                while(!outlines.Join()[0].IsClosed() && count < 100)
+                count2++;
+                foreach (Line l in perimeterLines)
                 {
-                    List<Line> connectedLines = splitCurves.Where(x => x.Start == checkPt || x.End == checkPt).ToList();
-                    connectedLines = connectedLines.Where(x => x != l).ToList();
+                    if (usedPerimeterLines.Contains(l))
+                        continue;
 
-                    Line smallestAngleLine = null;
-                    double smallestAngle = 1e10;
+                    List<Line> outlines = new List<Line>();
+                    outlines.Add(l);
 
-                    foreach (Line check in connectedLines)
+                    usedPerimeterLines.Add(l);
+
+                    Point pt1 = l.Start.RoundCoordinates(6);
+                    Point pt2 = l.End.RoundCoordinates(6);
+
+                    Point checkPt = pt2.RoundCoordinates(6);
+
+                    int count = 0; //Aim to remove this
+                    while (!outlines.Join()[0].IsClosed() && count < 100)
                     {
-                        Point pt3 = check.Start;
-                        if (pt3 == checkPt)
-                            pt3 = check.End;
+                        List<Line> connectedLines = splitCurves.Where(x => x.Start.RoundCoordinates(6) == checkPt || x.End.RoundCoordinates(6) == checkPt).ToList();
+                        connectedLines = connectedLines.Where(x => x != outlines.Last()).ToList();
 
-                        if(pt3 == pt1)
+                        Line smallestAngleLine = null;
+                        double smallestAngle = 1e10;
+
+                        foreach (Line check in connectedLines)
                         {
-                            smallestAngleLine = check;
-                            break; //We've reached our starting point
-                        }
+                            Point pt3 = check.Start.RoundCoordinates(6);
+                            if (pt3 == checkPt)
+                                pt3 = check.End.RoundCoordinates(6);
 
-                        double angle = BH.Engine.Geometry.Query.Angle(pt1, pt2, pt3);
-                        angle = Math.PI - angle; //x - y = z, x - z = y
+                            if (pt3 == pt1)
+                            {
+                                smallestAngleLine = check;
+                                break; //We've reached our starting point
+                            }
 
-                        if (angle < smallestAngle)
-                        {
-                            smallestAngle = angle;
-                            smallestAngleLine = check;
+                            double angle = BH.Engine.Geometry.Query.Angle(pt1, pt2, pt3);
+                            angle = Math.PI - angle; //x - y = z, x - z = y
+
+                            if (angle < smallestAngle)
+                            {
+                                smallestAngle = angle;
+                                smallestAngleLine = check;
+                            }
                         }
 
                         count++;
+
+                        if (smallestAngleLine == null)
+                            break; //Error somewhere
+
+                        outlines.Add(smallestAngleLine);
+                        if (smallestAngleLine.Start == checkPt)
+                            checkPt = smallestAngleLine.End.RoundCoordinates(6);
+                        else
+                            checkPt = smallestAngleLine.Start.RoundCoordinates(6);
                     }
 
-                    if (smallestAngleLine == null)
-                        break; //Error somewhere
+                    tiles.Add(new CeilingTile
+                    {
+                        Perimeter = outlines.Join()[0]
+                    });
 
-                    outlines.Add(smallestAngleLine);
-                    if (smallestAngleLine.Start == checkPt)
-                        checkPt = smallestAngleLine.End;
-                    else
-                        checkPt = smallestAngleLine.Start;
+                    foreach (Line remove in outlines)
+                    {
+                        splitCurves.Remove(remove);
+                        if (perimeterLines.Contains(remove))
+                            usedPerimeterLines.Add(remove);
+                    }
+
+                    splitCurves.Remove(l);
                 }
 
-                tiles.Add(new CeilingTile
+                perimeterLines = new List<Line>();
+                foreach(Line add in splitCurves)
                 {
-                    Perimeter = outlines.Join()[0]
-                });
-
-                foreach (Line remove in outlines)
-                    splitCurves.Remove(remove);
-
-                splitCurves.Remove(l);
+                    if (splitCurves.Where(x => x == add).Count() == 1)
+                        perimeterLines.Add(add);
+                }
             }
 
 
