@@ -37,13 +37,15 @@ namespace BH.Engine.Architecture
                 }
             }
 
-            //foreach (Line l in perimeterLines)
-                //splitCurves.Remove(l); //Remove the perimeter from the splits
+            foreach (Line l in perimeterLines)
+                splitCurves.Remove(l); //Remove the perimeter from the splits
 
             List<Line> splitCurves2 = new List<Line>(splitCurves);
             foreach (Line l in splitCurves2)
                 splitCurves.Add(l); //Refactor this!!!!
 
+            foreach (Line l in perimeterLines)
+                splitCurves.Add(l);
 
             List<CeilingTile> tiles = new List<CeilingTile>();
 
