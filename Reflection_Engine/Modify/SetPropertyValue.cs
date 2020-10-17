@@ -60,6 +60,12 @@ namespace BH.Engine.Reflection
 
             if (prop != null)
             {
+                if (!prop.CanWrite)
+                {
+                    Engine.Reflection.Compute.RecordError("This property doesn't have a public setter so it is not possible to modify it.");
+                    return obj;
+                }
+
                 if (value.GetType() != prop.PropertyType && value.GetType().GenericTypeArguments.Length > 0 && prop.PropertyType.GenericTypeArguments.Length > 0)
                 {
                     value = Modify.CastGeneric(value as dynamic, prop.PropertyType.GenericTypeArguments[0]);
