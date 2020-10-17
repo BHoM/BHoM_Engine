@@ -35,14 +35,14 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Principled curvature is the max and min curvature of the intersection curve between the surface and a plane formed by the span of the normal vector and the principled direction.")]
+        [Description("Principal curvature is the max and min curvature of the intersection curve between the surface and a plane formed by the span of the normal vector and the principal  direction.")]
         [Input("surface", "Surface to evaluate.")]
         [Input("u", "The parameter to evaluate at.")]
         [Input("v", "The parameter to evaluate at.")]
-        [MultiOutput(0, "minC", "Minimum principled curvature. Curvature of the intersection of the surface and a plane spanned by the normal and minimum principle direction.")]
-        [MultiOutput(1, "maxC", "Maximum principled curvature. Curvature of the intersection of the surface and a plane spanned by the normal and maximum principle direction.")]
-        [MultiOutput(2, "minK", "Minimum principled direction. Tangent of the curve on the surface with the least curvature.")]
-        [MultiOutput(3, "maxK", "Maximum principled direction. Tangent of the curve on the surface with the most curvature.")]
+        [MultiOutput(0, "minC", "Minimum principal curvature. Curvature of the intersection of the surface and a plane spanned by the normal and minimum principal direction.")]
+        [MultiOutput(1, "maxC", "Maximum principal curvature. Curvature of the intersection of the surface and a plane spanned by the normal and maximum principal  direction.")]
+        [MultiOutput(2, "minK", "Minimum principal direction. Tangent of the curve on the surface with the least curvature.")]
+        [MultiOutput(3, "maxK", "Maximum principal direction. Tangent of the curve on the surface with the most curvature.")]
         public static Output<double, double, Vector,Vector> PrincipalCurvatureAtParameter(this NurbsSurface surface, double u, double v)
         {
             // Vector entries for a "Hessian" with regard to u and v
