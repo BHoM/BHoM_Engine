@@ -20,6 +20,7 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.Engine.Base;
 using BH.oM.Geometry;
 using BH.oM.Geometry.CoordinateSystem;
 using BH.oM.Reflection.Attributes;
@@ -50,7 +51,7 @@ namespace BH.Engine.Geometry
 
         public static Plane Translate(this Plane plane, Vector transform)
         {
-            return new Plane { Origin = plane.Origin + transform, Normal = plane.Normal.Clone() as Vector };
+            return new Plane { Origin = plane.Origin + transform, Normal = plane.Normal.DeepClone() };
         }
 
         /***************************************************/
@@ -79,7 +80,7 @@ namespace BH.Engine.Geometry
 
         public static Circle Translate(this Circle curve, Vector transform)
         {
-            return new Circle { Centre = curve.Centre + transform, Normal = curve.Normal.Clone() as Vector, Radius = curve.Radius };
+            return new Circle { Centre = curve.Centre + transform, Normal = curve.Normal.DeepClone(), Radius = curve.Radius };
         }
 
         /***************************************************/
@@ -127,7 +128,7 @@ namespace BH.Engine.Geometry
 
         public static Extrusion Translate(this Extrusion surface, Vector transform)
         {
-            return new Extrusion { Curve = surface.Curve.ITranslate(transform), Direction = surface.Direction.Clone() as Vector, Capped = surface.Capped };
+            return new Extrusion { Curve = surface.Curve.ITranslate(transform), Direction = surface.Direction.DeepClone(), Capped = surface.Capped };
         }
 
         /***************************************************/
@@ -173,7 +174,7 @@ namespace BH.Engine.Geometry
 
         public static Mesh Translate(this Mesh mesh, Vector transform)
         {
-            return new Mesh { Vertices = mesh.Vertices.Select(x => x + transform).ToList(), Faces = mesh.Faces.Select(x => x.Clone() as Face).ToList() };
+            return new Mesh { Vertices = mesh.Vertices.Select(x => x + transform).ToList(), Faces = mesh.Faces.Select(x => x.DeepClone()).ToList() };
         }
 
         /***************************************************/

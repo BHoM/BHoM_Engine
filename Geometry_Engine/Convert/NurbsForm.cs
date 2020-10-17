@@ -20,6 +20,7 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.Engine.Base;
 using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
 using System;
@@ -149,7 +150,7 @@ namespace BH.Engine.Geometry
 
         public static NurbsCurve ToNurbsCurve(this NurbsCurve curve)
         {
-            return curve.Clone();
+            return curve.DeepClone();
         }
 
         /***************************************************/

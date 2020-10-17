@@ -20,6 +20,7 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.Engine.Base;
 using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
 using System;
@@ -78,7 +79,7 @@ namespace BH.Engine.Geometry
         public static ICurve ProjectAlong(this Circle circle, Plane plane, Vector vector)
         {
             if (circle.Normal.IsParallel(plane.Normal) != 0)
-                return new Circle { Centre = circle.Centre.ProjectAlong(plane, vector), Normal = circle.Normal.Clone(), Radius = circle.Radius };
+                return new Circle { Centre = circle.Centre.ProjectAlong(plane, vector), Normal = circle.Normal.DeepClone(), Radius = circle.Radius };
 
             TransformMatrix project = Create.ProjectionMatrix(plane, vector);
             return circle.Transform(project);
@@ -184,7 +185,7 @@ namespace BH.Engine.Geometry
 
         public static Mesh ProjectAlong(this Mesh mesh, Plane plane, Vector vector)
         {
-            return new Mesh { Vertices = mesh.Vertices.Select(x => x.ProjectAlong(plane, vector)).ToList(), Faces = mesh.Faces.Select(x => x.Clone() as Face).ToList() };
+            return new Mesh { Vertices = mesh.Vertices.Select(x => x.ProjectAlong(plane, vector)).ToList(), Faces = mesh.Faces.Select(x => x.DeepClone()).ToList() };
         }
 
         /***************************************************/

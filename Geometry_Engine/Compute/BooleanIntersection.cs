@@ -20,6 +20,7 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.Engine.Base;
 using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
 using System;
@@ -84,7 +85,7 @@ namespace BH.Engine.Geometry
                     double sqTol = tolerance * tolerance;
                     Point aPt = splitLine[0].ControlPoints().Average();
                     Point aRPt = refLine.ControlPoints().Average();
-                    return aRPt.SquareDistance(splitLine[0]) > sqTol && aPt.SquareDistance(refLine) > sqTol ? null : line.Clone();
+                    return aRPt.SquareDistance(splitLine[0]) > sqTol && aPt.SquareDistance(refLine) > sqTol ? null : line.DeepClone();
                 }
             }
 
@@ -116,7 +117,7 @@ namespace BH.Engine.Geometry
             if (lines[0].Length() <= tolerance)
                 return null;
 
-            Line result = lines[0].Clone();
+            Line result = lines[0].DeepClone();
             for (int i = 1; i < lines.Count; i++)
             {
                 result = result.BooleanIntersection(lines[i], tolerance);

@@ -247,6 +247,10 @@
     <Compile Include="Query\PointAtX.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\BHoM_Engine\BHoM_Engine.csproj">
+      <Project>{1AD45C88-DD54-48E5-951F-55EDFEB70E35}</Project>
+      <Name>BHoM_Engine</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Data_Engine\Data_Engine.csproj">
       <Project>{8082ca2a-ac5c-4690-9f09-960e0d3e4102}</Project>
       <Name>Data_Engine</Name>

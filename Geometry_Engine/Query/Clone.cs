@@ -20,6 +20,7 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.Engine.Base;
 using BH.oM.Geometry;
 using BH.oM.Geometry.CoordinateSystem;
 using System.Collections.Generic;
@@ -35,7 +36,7 @@ namespace BH.Engine.Geometry
 
         public static Plane Clone(this Plane plane)
         {
-            return new Plane { Origin = plane.Origin.Clone(), Normal = plane.Normal.Clone() };
+            return new Plane { Origin = plane.Origin.DeepClone(), Normal = plane.Normal.DeepClone() };
         }
 
         /***************************************************/
@@ -56,7 +57,7 @@ namespace BH.Engine.Geometry
 
         public static Cartesian Clone(this Cartesian coordinateSystem)
         {
-            return new Cartesian(coordinateSystem.Origin.Clone(), coordinateSystem.X.Clone(), coordinateSystem.Y.Clone(), coordinateSystem.Z.Clone());
+            return new Cartesian(coordinateSystem.Origin.DeepClone(), coordinateSystem.X.DeepClone(), coordinateSystem.Y.DeepClone(), coordinateSystem.Z.DeepClone());
         }
 
         /***************************************************/
@@ -65,14 +66,14 @@ namespace BH.Engine.Geometry
 
         public static Arc Clone(this Arc arc)
         {
-            return new Arc { CoordinateSystem = arc.CoordinateSystem.Clone(), StartAngle = arc.StartAngle, EndAngle = arc.EndAngle, Radius = arc.Radius };
+            return new Arc { CoordinateSystem = arc.CoordinateSystem.DeepClone(), StartAngle = arc.StartAngle, EndAngle = arc.EndAngle, Radius = arc.Radius };
         }
 
         /***************************************************/
 
         public static Circle Clone(this Circle circle)
         {
-            return new Circle { Centre = circle.Centre.Clone(), Normal = circle.Normal.Clone(), Radius = circle.Radius };
+            return new Circle { Centre = circle.Centre.DeepClone(), Normal = circle.Normal.DeepClone(), Radius = circle.Radius };
         }
 
         /***************************************************/
@@ -86,28 +87,28 @@ namespace BH.Engine.Geometry
 
         public static Line Clone(this Line line)
         {
-            return new Line { Start = line.Start.Clone(), End = line.End.Clone(), Infinite = line.Infinite };
+            return new Line { Start = line.Start.DeepClone(), End = line.End.DeepClone(), Infinite = line.Infinite };
         }
 
         /***************************************************/
 
         public static NurbsCurve Clone(this NurbsCurve curve)
         {
-            return new NurbsCurve { ControlPoints = curve.ControlPoints.Select(x => x.Clone()).ToList(), Weights = curve.Weights.ToList(), Knots = curve.Knots.ToList() };
+            return new NurbsCurve { ControlPoints = curve.ControlPoints.Select(x => x.DeepClone()).ToList(), Weights = curve.Weights.ToList(), Knots = curve.Knots.ToList() };
         }
 
         /***************************************************/
 
         public static PolyCurve Clone(this PolyCurve curve)
         {
-            return new PolyCurve { Curves = curve.Curves.Select(x => x.IClone()).ToList() };
+            return new PolyCurve { Curves = curve.Curves.Select(x => x.DeepClone()).ToList() };
         }
 
         /***************************************************/
 
         public static Polyline Clone(this Polyline curve)
         {
-            return new Polyline { ControlPoints = curve.ControlPoints.Select(x => x.Clone()).ToList() };
+            return new Polyline { ControlPoints = curve.ControlPoints.Select(x => x.DeepClone()).ToList() };
         }
 
 
@@ -117,42 +118,42 @@ namespace BH.Engine.Geometry
 
         public static Extrusion Clone(this Extrusion surface)
         {
-            return new Extrusion { Curve = surface.Curve.IClone(), Direction = surface.Direction.Clone(), Capped = surface.Capped };
+            return new Extrusion { Curve = surface.Curve.DeepClone(), Direction = surface.Direction.DeepClone(), Capped = surface.Capped };
         }
 
         /***************************************************/
 
         public static Loft Clone(this Loft surface)
         {
-            return new Loft { Curves = surface.Curves.Select(x => x.IClone()).ToList() };
+            return new Loft { Curves = surface.Curves.Select(x => x.DeepClone()).ToList() };
         }
 
         /***************************************************/
 
         public static NurbsSurface Clone(this NurbsSurface surface)
         {
-            return new NurbsSurface(surface.ControlPoints.Select(x => x.Clone()), new List<double>(surface.Weights), new List<double>(surface.UKnots), new List<double>(surface.VKnots), surface.UDegree, surface.VDegree, surface.InnerTrims.Select(x => x.Clone()), surface.OuterTrims.Select(x => x.Clone()));
+            return new NurbsSurface(surface.ControlPoints.Select(x => x.DeepClone()), new List<double>(surface.Weights), new List<double>(surface.UKnots), new List<double>(surface.VKnots), surface.UDegree, surface.VDegree, surface.InnerTrims.Select(x => x.DeepClone()), surface.OuterTrims.Select(x => x.DeepClone()));
         }
 
         /***************************************************/
 
         public static PlanarSurface Clone(this PlanarSurface surface)
         {
-            return new PlanarSurface(surface.ExternalBoundary.IClone(), surface.InternalBoundaries.Select(x => x.IClone()).ToList());
+            return new PlanarSurface(surface.ExternalBoundary.DeepClone(), surface.InternalBoundaries.Select(x => x.DeepClone()).ToList());
         }
 
         /***************************************************/
 
         public static Pipe Clone(this Pipe surface)
         {
-            return new Pipe { Centreline = surface.Centreline.IClone(), Radius = surface.Radius, Capped = surface.Capped };
+            return new Pipe { Centreline = surface.Centreline.DeepClone(), Radius = surface.Radius, Capped = surface.Capped };
         }
 
         /***************************************************/
 
         public static PolySurface Clone(this PolySurface surface)
         {
-            return new PolySurface { Surfaces = surface.Surfaces.Select(x => x.IClone()).ToList() };
+            return new PolySurface { Surfaces = surface.Surfaces.Select(x => x.DeepClone()).ToList() };
         }
 
 
@@ -162,7 +163,7 @@ namespace BH.Engine.Geometry
 
         public static Mesh Clone(this Mesh mesh)
         {
-            return new Mesh { Vertices = mesh.Vertices.Select(x => x.Clone()).ToList(), Faces = mesh.Faces.Select(x => x.Clone()).ToList() };
+            return new Mesh { Vertices = mesh.Vertices.Select(x => x.DeepClone()).ToList(), Faces = mesh.Faces.Select(x => x.DeepClone()).ToList() };
         }
 
         /***************************************************/
@@ -176,14 +177,14 @@ namespace BH.Engine.Geometry
 
         public static BoundingBox Clone(this BoundingBox box)
         {
-            return new BoundingBox { Min = box.Min.Clone(), Max = box.Max.Clone() };
+            return new BoundingBox { Min = box.Min.DeepClone(), Max = box.Max.DeepClone() };
         }
 
         /***************************************************/
 
         public static CompositeGeometry Clone(this CompositeGeometry group)
         {
-            return new CompositeGeometry { Elements = group.Elements.Select(x => x.IClone()).ToList() };
+            return new CompositeGeometry { Elements = group.Elements.Select(x => x.DeepClone()).ToList() };
         }
 
         /***************************************************/
@@ -211,7 +212,7 @@ namespace BH.Engine.Geometry
 
         public static SurfaceTrim Clone(this SurfaceTrim trim)
         {
-            return new SurfaceTrim(trim.Curve3d.Clone(), trim.Curve2d.Clone());
+            return new SurfaceTrim(trim.Curve3d.DeepClone(), trim.Curve2d.DeepClone());
         }
 
 
