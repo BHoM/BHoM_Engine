@@ -68,7 +68,7 @@ namespace BH.Engine.Geometry
         [MultiOutput(1, "mean", "Mean curvature at the parameter.")]
         public static Output<double, double> CurvatureAtParameter(this NurbsSurface surface, double u, double v)
         {
-            var result = PrincipledCurvatureAtParameter(surface, u, v);
+            var result = PrincipalCurvatureAtParameter(surface, u, v);
 
             return new Output<double, double>()
             {
