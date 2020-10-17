@@ -20,6 +20,7 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.Engine.Base;
 using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
 using System;
@@ -63,14 +64,14 @@ namespace BH.Engine.Geometry
                 }
             }
 
-            return new List<Line> { line.Clone(), refLine.Clone() };
+            return new List<Line> { line.DeepClone(), refLine.DeepClone() };
         }
 
         /***************************************************/
 
         public static List<Line> BooleanUnion(this List<Line> lines, double tolerance = Tolerance.Distance)
         {
-            List<Line> result = lines.Select(l => l.Clone()).ToList();
+            List<Line> result = lines.Select(l => l.DeepClone()).ToList();
             bool union;
             do
             {

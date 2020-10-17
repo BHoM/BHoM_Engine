@@ -20,6 +20,7 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.Engine.Base;
 using BH.oM.Geometry;
 using System;
 using System.Collections.Generic;
@@ -87,8 +88,8 @@ namespace BH.Engine.Geometry
 
         public static bool IsCoplanar(this Polyline curve1, Polyline curve2, double tolerance = Tolerance.Distance)
         {
-            List<Point> cPts = curve1.Clone().ControlPoints;
-            cPts.AddRange(curve2.Clone().ControlPoints);
+            List<Point> cPts = curve1.DeepClone().ControlPoints;
+            cPts.AddRange(curve2.DeepClone().ControlPoints);
             return cPts.IsCoplanar(tolerance);
         }
 
