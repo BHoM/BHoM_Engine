@@ -108,7 +108,7 @@ namespace BH.Engine.Architecture
                             break; //Error somewhere
 
                         outlines.Add(smallestAngleLine);
-                        if (smallestAngleLine.Start == checkPt)
+                        if (smallestAngleLine.Start.RoundCoordinates(6) == checkPt)
                             checkPt = smallestAngleLine.End.RoundCoordinates(6);
                         else
                             checkPt = smallestAngleLine.Start.RoundCoordinates(6);
