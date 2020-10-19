@@ -59,9 +59,9 @@ namespace BH.Engine.Structure
             if (Object.ReferenceEquals(node1, null) || Object.ReferenceEquals(node2, null))
                 return false;
 
-            //Check if the GUIDs are the same
-            if (node1.BHoM_Guid == node2.BHoM_Guid)
-                return true;
+            //Check whether any of the compared objects nodes are null.
+            if (Object.ReferenceEquals(node1.Position, null) || Object.ReferenceEquals(node2.Position, null))
+                return false;
 
             if ((int)Math.Round(node1.Position.X * m_multiplier) != (int)Math.Round(node2.Position.X * m_multiplier))
                 return false;
@@ -81,6 +81,9 @@ namespace BH.Engine.Structure
         {
             //Check whether the object is null
             if (Object.ReferenceEquals(node, null)) return 0;
+
+            //Check whether the position is null
+            if (Object.ReferenceEquals(node.Position, null)) return 0;
 
             int x = ((int)Math.Round(node.Position.X * m_multiplier)).GetHashCode();
             int y = ((int)Math.Round(node.Position.Y * m_multiplier)).GetHashCode();
