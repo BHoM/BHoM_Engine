@@ -50,8 +50,14 @@ namespace BH.Engine.Structure
             if (prop1 == null || prop2 == null)
                 return false;
 
+            string desc1 = prop1.DescriptionOrName();
+            string desc2 = prop2.DescriptionOrName();
+
+            if (desc1 == null || desc2 == null)
+                return false;
+
             //Return true if name or description string for both objects are the same
-            return prop1.DescriptionOrName() == prop2.DescriptionOrName();
+            return desc1 == desc2;
         }
 
         /***************************************************/
