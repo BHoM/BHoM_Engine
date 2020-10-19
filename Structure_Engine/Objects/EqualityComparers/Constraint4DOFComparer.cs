@@ -43,9 +43,6 @@ namespace BH.Engine.Structure
             if (Object.ReferenceEquals(linearRelease1, null) || Object.ReferenceEquals(linearRelease2, null))
                 return false;
 
-            //Check if the GUIDs are the same
-            if (linearRelease1.BHoM_Guid == linearRelease2.BHoM_Guid)
-                return true;
 
             if (linearRelease1.Name == linearRelease2.Name &&
                 linearRelease1.TranslationX == linearRelease2.TranslationX &&
