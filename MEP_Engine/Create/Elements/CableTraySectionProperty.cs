@@ -55,6 +55,7 @@ namespace BH.Engine.MEP
             if (property == null)
             {
                 BH.Engine.Reflection.Compute.RecordError("Insufficient information to create a CableTraySectionProperty. Please ensure you have all required inputs.");
+                return null;
             }
 
             property.Name = name;
