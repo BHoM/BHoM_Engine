@@ -46,18 +46,13 @@ namespace BH.Engine.Structure
             return new RigidLink
             {
                 Name = name,
-                MasterNode = masterNode,
-                SlaveNodes = slaveNodes.ToList(),
+                PrimaryNode = masterNode,
+                SecondaryNodes = slaveNodes.ToList(),
                 Constraint = constraint == null ? LinkConstraintFixed() : constraint
             };
 
         }
 
-        [Deprecated("2.4", "Method replace with method to accept name input", null, "RigidLink")]
-        public static RigidLink RigidLink(Node masterNode, IEnumerable<Node> slaveNodes, LinkConstraint constraint = null)
-        {
-            return Engine.Structure.Create.RigidLink(masterNode, slaveNodes, constraint, "");
-        }
 
         /***************************************************/
     }

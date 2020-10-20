@@ -38,53 +38,54 @@ namespace BH.Engine.Reflection
 
         public static void LoadAllAssemblies(string folder = "")
         {
-            if (!m_AssemblyAlreadyLoaded)
+            lock (m_LoadAssembliesLock)
             {
-                m_AssemblyAlreadyLoaded = true;
-                HashSet<string> loaded = new HashSet<string>(AppDomain.CurrentDomain.GetAssemblies().Select(x => x.FullName.Split(',').First()));
-
-                if (string.IsNullOrEmpty(folder))
-                    folder = Query.BHoMFolder();
-
-                if (!Directory.Exists(folder))
+                if (!m_AssemblyAlreadyLoaded)
                 {
-                    RecordWarning("The folder provided to load the assemblies from does not exist: " + folder);
-                    return;
-                }
+                    m_AssemblyAlreadyLoaded = true;
+                    HashSet<string> loaded = new HashSet<string>(AppDomain.CurrentDomain.GetAssemblies().Select(x => x.FullName.Split(',').First()));
 
-                foreach (string file in Directory.GetFiles(folder))
-                {
-                    string[] parts = file.Split(new char[] { '.', '\\' });
-                    if (parts.Length >= 2)
+                    if (string.IsNullOrEmpty(folder))
+                        folder = Query.BHoMFolder();
+
+                    if (!Directory.Exists(folder))
                     {
-                        string name = parts[parts.Length - 2];
-                        if (loaded.Contains(name))
-                            continue;
+                        RecordWarning("The folder provided to load the assemblies from does not exist: " + folder);
+                        return;
                     }
 
-                    if (file.EndsWith("oM.dll") || file.EndsWith("_Engine.dll") || file.EndsWith("_Adapter.dll") || file.EndsWith("_Test.dll"))
+                    foreach (string file in Directory.GetFiles(folder))
                     {
-                        try
+                        string[] parts = file.Split(new char[] { '.', '\\' });
+                        if (parts.Length >= 2)
                         {
-                            Assembly.LoadFrom(file);
+                            string name = parts[parts.Length - 2];
+                            if (loaded.Contains(name))
+                                continue;
                         }
-                        catch
+
+                        if (file.EndsWith("oM.dll") || file.EndsWith("_Engine.dll") || file.EndsWith("_Adapter.dll") || file.EndsWith("_Test.dll"))
                         {
-                            RecordWarning("Failed to load assembly " + file);
+                            try
+                            {
+                                Assembly.LoadFrom(file);
+                            }
+                            catch
+                            {
+                                RecordWarning("Failed to load assembly " + file);
+                            }
                         }
                     }
                 }
             }
-            
         }
-
 
         /***************************************************/
         /**** Private Static Fields                     ****/
         /***************************************************/
 
         private static bool m_AssemblyAlreadyLoaded = false;
-
+        private static readonly object m_LoadAssembliesLock = new object();
 
         /***************************************************/
     }

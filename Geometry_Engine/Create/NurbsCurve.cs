@@ -34,22 +34,6 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [NotImplemented]
-        public static NurbsCurve NurbsCurve(IEnumerable<Point> controlPoints, int degree = 3)
-        {
-            throw new NotImplementedException();
-        }
-
-        /***************************************************/
-
-        [NotImplemented]
-        public static NurbsCurve NurbsCurve(IEnumerable<Point> controlPoints, IEnumerable<double> weights, int degree = 3)
-        {
-            throw new NotImplementedException();
-        }
-
-        /***************************************************/
-                
         public static NurbsCurve NurbsCurve(IEnumerable<Point> controlPoints, IEnumerable<double> weights, IEnumerable<double> knots)
         {
             return new NurbsCurve { ControlPoints = controlPoints.ToList(), Knots = knots.ToList(), Weights = weights.ToList() };
@@ -61,31 +45,7 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [NotImplemented]
-        public static NurbsCurve RandomNurbsCurve(int seed = -1, BoundingBox box = null, int minNbCPs = 5, int maxNbCPs = 20)
-        {
-            throw new NotImplementedException();
-        }
-
-        /***************************************************/
-
-        [NotImplemented]
         public static NurbsCurve RandomNurbsCurve(Random rnd, BoundingBox box = null, int minNbCPs = 5, int maxNbCPs = 20)
-        {
-            throw new NotImplementedException();
-        }
-
-        /***************************************************/
-
-        [NotImplemented]
-        public static NurbsCurve RandomNurbsCurve(Point from, int seed = -1, BoundingBox box = null, int minNbCPs = 5, int maxNbCPs = 20)
-        {
-            throw new NotImplementedException();
-        }
-
-        /***************************************************/
-
-        [NotImplemented]
-        public static NurbsCurve RandomNurbsCurve(Point from, Random rnd, BoundingBox box = null, int minNbCPs = 5, int maxNbCPs = 20)
         {
             throw new NotImplementedException();
         }
@@ -93,4 +53,3 @@ namespace BH.Engine.Geometry
         /***************************************************/
     }
 }
-

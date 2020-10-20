@@ -61,7 +61,9 @@ namespace BH.Engine.Environment
                     Polyline elementToSplitCrv = be.Polyline();
                     List<Point> cuttingPnts = elementToSplitCrv.LineIntersections(l, true);
                     List<Polyline> cutLines = elementToSplitCrv.SplitAtPoints(cuttingPnts);
-                    if (cutLines.Count == 1) continue;
+                    
+                    if (cutLines.Count == 1)
+                        continue;
 
                     splitElements.Remove(be);
                     foreach (Polyline pLine in cutLines)

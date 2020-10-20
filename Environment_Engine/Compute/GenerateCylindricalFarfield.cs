@@ -105,12 +105,12 @@ namespace BH.Engine.Environment
             }
             rectanglePolylines.RemoveAt(rectanglePolylines.Count - 1); //Because the first and last point in basePlane are the same, duplicate panels are created. Therefore the last one is removed manually.
 
-            Panel basePanel = Environment.Create.Panel(externalEdges: basePolyline.ToEdges());
-            Panel topPanel = Environment.Create.Panel(externalEdges: topPolyline.ToEdges());
+            Panel basePanel = new Panel() { ExternalEdges = basePolyline.ToEdges() };
+            Panel topPanel = new Panel() { ExternalEdges = topPolyline.ToEdges() };
             List<Panel> rectanglePanels = new List<Panel>();
 
             foreach (Polyline rectangle in rectanglePolylines)
-                rectanglePanels.Add(Environment.Create.Panel(externalEdges: rectangle.ToEdges()));
+                rectanglePanels.Add(new Panel() { ExternalEdges = rectangle.ToEdges() });
 
             List<Panel> allPanels = new List<Panel>();
             allPanels.Add(basePanel);

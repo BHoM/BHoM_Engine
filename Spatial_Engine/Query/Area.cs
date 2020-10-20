@@ -23,7 +23,7 @@
 using BH.Engine.Geometry;
 using BH.oM.Dimensional;
 using BH.oM.Geometry;
-using BH.oM.Geometry.ShapeProfiles;
+using BH.oM.Spatial.ShapeProfiles;
 using BH.oM.Quantities.Attributes;
 using BH.oM.Reflection.Attributes;
 using System;
@@ -35,6 +35,33 @@ namespace BH.Engine.Spatial
 {
     public static partial class Query
     {
+        /******************************************/
+        /****            IElement0D            ****/
+        /******************************************/
+
+        [Description("Queries the area of the geometrical representation of an IElement0D. Always returns zero due to zero-dimensionality of an IElement0D.")]
+        [Input("element0D", "The IElement0D to query the area of.")]
+        [Output("area", "The area of the geometrical representation of an IElement0D.", typeof(Area))]
+        public static double Area(this IElement0D element0D)
+        {
+            return 0;
+        }
+
+
+        /******************************************/
+        /****            IElement1D            ****/
+        /******************************************/
+
+        [Description("Queries the area of the geometrical representation of an IElement1D. Always returns zero because an IElement1D has only 1 dimension, i.e. should not be represented as a region even if closed.")]
+        [Input("element1D", "The IElement1D to query the area of.")]
+        [Output("area", "The area of the geometrical representation of an IElement1D.", typeof(Area))]
+        public static double Area(this IElement1D element1D)
+        {
+            BH.Engine.Reflection.Compute.RecordWarning("Area of an IElement1D cannot be queried because IElement1D has only 1 dimension, i.e. should not be represented as a region even if closed.");
+            return 0;
+        }
+
+
         /******************************************/
         /****            IElement2D            ****/
         /******************************************/
@@ -93,6 +120,19 @@ namespace BH.Engine.Spatial
             // Using region integration as the Curves are defined on the XY-Plane.
             depth = depth.Select(x => x % 2 == 0 ? 1 : -1).ToArray();   // positive area as 1 and negative area as -1
             return curvesZ.Select((x, i) => Math.Abs(x.IIntegrateRegion(0)) * depth[i]).Sum();
+        }
+
+
+        /******************************************/
+        /****   Public Methods - Interfaces    ****/
+        /******************************************/
+
+        [Description("Queries the area of the geometrical representation of an IElement.")]
+        [Input("element", "The IElement to query the area of.")]
+        [Output("area", "The area of the geometrical representation of an IElement.", typeof(Area))]
+        public static double IArea(this IElement element)
+        {
+            return Area(element as dynamic);
         }
 
         /******************************************/

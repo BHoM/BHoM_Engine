@@ -44,13 +44,8 @@
       <HintPath>C:\ProgramData\BHoM\Assemblies\Diffing_oM.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="KellermanSoftware.Compare-NET-Objects, Version=4.57.0.0, Culture=neutral, PublicKeyToken=d970ace04cc85217, processorArchitecture=MSIL">
-      <HintPath>..\packages\CompareNETObjects.4.57.0\lib\net452\KellermanSoftware.Compare-NET-Objects.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="KellermanSoftware.Compare-NET-Objects, Version=4.66.0.0, Culture=neutral, PublicKeyToken=d970ace04cc85217, processorArchitecture=MSIL">
+      <HintPath>..\packages\CompareNETObjects.4.66.0\lib\net452\KellermanSoftware.Compare-NET-Objects.dll</HintPath>
     </Reference>
     <Reference Include="Reflection_oM">
       <SpecificVersion>False</SpecificVersion>
@@ -70,28 +65,28 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Compute\DiffOneByOne.cs" />
+    <Compile Include="Compute\DiffWithFragmentId.cs" />
+    <Compile Include="Compute\_IDiffing.cs" />
+    <Compile Include="Compute\DiffWithCustomId.cs" />
+    <Compile Include="Compute\DiffRevisions.cs" />
     <Compile Include="Convert\TryParseObjectToGuid.cs" />
     <Compile Include="Create\StreamPointer.cs" />
     <Compile Include="Objects\EqualityComparers\DiffingHashComparer.cs" />
-    <Compile Include="Compute\Diffing.cs" />
-    <Compile Include="Compute\DiffingHash.cs" />
-    <Compile Include="Convert\ToDiffingByteArray.cs" />
+    <Compile Include="Compute\DiffGenericObjects.cs" />
+    <Compile Include="Compute\Hash\DiffingHash.cs" />
     <Compile Include="Create\Delta.cs" />
     <Compile Include="Create\DiffConfig.cs" />
     <Compile Include="Create\Revision.cs" />
     <Compile Include="Modify\RemoveDuplicatesByHash.cs" />
-    <Compile Include="Modify\PrepareForDiffing.cs" />
+    <Compile Include="Modify\PrepareForRevision.cs" />
     <Compile Include="Modify\SetHashFragment.cs" />
+    <Compile Include="Query\ListDifferentProperties.cs" />
     <Compile Include="Query\ListModifiedProperties.cs" />
     <Compile Include="Query\DifferentProperties.cs" />
     <Compile Include="Query\AnyDuplicateByHash.cs" />
-    <Compile Include="Query\GetHash.cs" />
-    <Compile Include="Compute\SHA256Hash.cs" />
-    <Compile Include="Convert\ToDiffingJson.cs" />
+    <Compile Include="Query\GetHashFragment.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BHoM_Engine\BHoM_Engine.csproj">
@@ -115,14 +110,14 @@
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>
 xcopy "$(TargetDir)$(TargetFileName)"  "C:\ProgramData\BHoM\Assemblies" /Y
 
-xcopy "$(TargetDir)KellermanSoftware.Compare-NET-Objects.dll"  "C:\ProgramData\BHoM\Assemblies" /Y
-
-xcopy "$(TargetDir)Newtonsoft.Json.dll"  "C:\ProgramData\BHoM\Assemblies" /Y</PostBuildEvent>
+xcopy "$(TargetDir)KellermanSoftware.Compare-NET-Objects.dll"  "C:\ProgramData\BHoM\Assemblies" /Y</PostBuildEvent>
   </PropertyGroup>
 </Project>

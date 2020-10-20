@@ -64,7 +64,6 @@ namespace BH.Engine.Environment
 
             return returnPanels;
         }
-
     }
 }
 

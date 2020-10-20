@@ -105,12 +105,15 @@
     <Compile Include="Modify\AddLink.cs" />
     <Compile Include="Modify\AddNode.cs" />
     <Compile Include="Modify\RemoveNode.cs" />
+    <Compile Include="Modify\TransposeRectangularCollection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Query\AdjacencyDictionary.cs" />
     <Compile Include="Query\Axes.cs" />
     <Compile Include="Query\AxisExists.cs" />
     <Compile Include="Query\Children.cs" />
+    <Compile Include="Query\RemoveNulls.cs" />
     <Compile Include="Query\DepthDictionary.cs" />
+    <Compile Include="Query\ChunkBy.cs" />
     <Compile Include="Query\ItemsInRange.cs" />
     <Compile Include="Query\IsInRange.cs" />
     <Compile Include="Query\FurthestSquareDistance.cs" />

@@ -23,7 +23,6 @@
 using BH.oM.Structure.Elements;
 using System.Linq;
 using System.Collections.Generic;
-using BH.oM.Structure.FramingProperties;
 using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
 using BH.Engine.Geometry;
@@ -44,7 +43,8 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-
+        [PreviousVersion("3.3", "BH.Engine.Structure.Query.AnalyticalBars(BH.oM.Structure.Elements.FramingElement)")]
+        [PreviousVersion("3.3", "BH.Engine.Structure.Query.AnalyticalBars(BH.oM.Structure.Elements.FramingElement, System.Double, System.Int32)")]
         [Description("Create a series of analytical Bar elements from the framing element. The relationship of Bars to FramingElements is not necessarily one to one and this is dictated by property and curve type of the FramingElement.")]
         [Input("elements", "The framing element to generate bars from.")]
         [Input("angleTolerance", "Angle tolerance to control the splitting up of non-linear curves. Unused for line based FramingElements.", typeof(Angle))]
@@ -159,43 +159,6 @@ namespace BH.Engine.Structure
             }
 
             return Create.SectionPropertyFromProfile(property.Profile, fragment, property.Name);
-        }
-
-        /***************************************************/
-        /**** Public Methods - Deprecated               ****/
-        /***************************************************/
-
-        [Deprecated("2.3", "Deprecated to be replaced with method with same name with more settings", null, "AnalyticalBars.")]
-        public static List<Bar> AnalyticalBars(this FramingElement element)
-        {
-            return element.AnalyticalBars(0.05 * Math.PI);
-        }
-
-        /***************************************************/
-
-        [Description("Create a seres of analytical Bar elements from the framing element. Could return any number of bars for each framing element depending on the settings.")]
-        [Input("element", "The framing element to generate bars from.")]
-        [Input("angleTolerance", "Angle tolerance to control the splitting up of non-linear curves. Unused for line based FramingElements.")]
-        [Input("maxNbBarsPerArc", "The maximum number of bars that each arc segement of the element will be split up into. Unused for line based FramingElements.")]
-        [Deprecated("2.3", "Methods replaced with methods targeting BH.oM.Physical.Elements.IFramingElement.")]
-        public static List<Bar> AnalyticalBars(this FramingElement element, double angleTolerance = 0.05 * Math.PI, int maxNbBarsPerArc = 10)
-        {
-            return AnalyticalBars(element.Property as dynamic, element.LocationCurve, element.Name, angleTolerance, maxNbBarsPerArc);
-        }
-
-        /***************************************************/
-        /**** Private Methods -Deprecated               ****/
-        /***************************************************/
-
-        [Deprecated("2.3", "Methods replaced with methods targeting BH.oM.Physical.FramingProperties.ConstantFramingElementProperty in Physical_oM.")]
-        private static List<Bar> AnalyticalBars(ConstantFramingElementProperty property, ICurve centreLine, string name, double angleTolerance, int maxNbBars)
-        {
-            if (centreLine is NurbsCurve)
-            {
-                Engine.Reflection.Compute.RecordError("The analytical bars method is currently not supported for NurbsCurves. Please use another method to split up the nurbs to polylines that can be used to construct the bars.");
-                return new List<Bar>();
-            }
-            return centreLine.ISubParts().SelectMany(x => x.ICollapseToPolyline(angleTolerance, maxNbBars).SubParts()).Select(x => Create.Bar(x, property.SectionProperty, property.OrientationAngle, Create.BarReleaseFixFix(), BarFEAType.Flexural, name)).ToList();
         }
 
         /***************************************************/

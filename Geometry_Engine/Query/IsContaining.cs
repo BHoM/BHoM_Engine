@@ -33,7 +33,7 @@ namespace BH.Engine.Geometry
         /***************************************************/
         /**** Public Methods - BoundingBox              ****/
         /***************************************************/
-        
+
         public static bool IsContaining(this BoundingBox box1, BoundingBox box2, bool acceptOnEdge = true, double tolerance = Tolerance.Distance)
         {
             Point max1 = box1.Max;
@@ -130,14 +130,6 @@ namespace BH.Engine.Geometry
         public static bool IsContaining(this Line curve1, List<Point> points, bool acceptOnEdge = true, double tolerance = Tolerance.Distance)
         {
             return false;
-        }
-
-        /***************************************************/
-
-        [NotImplemented]
-        public static bool IsContaining(this NurbsCurve curve1, List<Point> points, bool acceptOnEdge = true, double tolerance = Tolerance.Distance)
-        {
-            throw new NotImplementedException();
         }
 
         /***************************************************/
@@ -404,14 +396,6 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [NotImplemented]
-        public static bool IsContaining(this NurbsCurve curve1, ICurve curve2, bool acceptOnEdge = true, double tolerance = Tolerance.Distance)
-        {
-            throw new NotImplementedException();
-        }
-
-        /***************************************************/
-
         public static bool IsContaining(this Polyline curve1, ICurve curve2, bool acceptOnEdge = true, double tolerance = Tolerance.Distance)
         {
             if (!curve1.IsClosed(tolerance)) return false;
@@ -474,7 +458,23 @@ namespace BH.Engine.Geometry
             return IsContaining(curve1 as dynamic, curve2 as dynamic, acceptOnEdge, tolerance);
         }
 
+
+        /***************************************************/
+        /**** Private Fallback Methods                  ****/
+        /***************************************************/
+
+        private static bool IsContaining(this ICurve curve, List<Point> points, bool acceptOnEdge = true, double tolerance = Tolerance.Distance)
+        {
+            throw new NotImplementedException($"IsContaining is not implemented for ICurves of type: {curve.GetType().Name}.");
+        }
+
+        /***************************************************/
+
+        private static bool IsContaining(this ICurve curve1, ICurve curve2, bool acceptOnEdge = true, double tolerance = Tolerance.Distance)
+        {
+            throw new NotImplementedException($"IsContaining is not implemented for a combination of {curve1.GetType().Name} and {curve2.GetType().Name}.");
+        }
+
         /***************************************************/
     }
 }
-

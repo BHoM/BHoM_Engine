@@ -38,22 +38,6 @@ namespace BH.Engine.Geometry
         {
             throw new NotImplementedException();
         }
-        
-        /***************************************************/
-
-        [NotImplemented]
-        public static List<Point> MeshIntersections(this Arc curve, Mesh mesh, double tolerance = Tolerance.Distance)
-        {
-            throw new NotImplementedException();
-        }
-
-        /***************************************************/
-
-        [NotImplemented]
-        public static List<Point> MeshIntersections(this Circle curve, Mesh mesh, double tolerance = Tolerance.Distance)
-        {
-            throw new NotImplementedException();
-        }
 
         /***************************************************/
 
@@ -120,25 +104,9 @@ namespace BH.Engine.Geometry
                     continue;
 
                 if ((e2 * q * invDet) > Double.Epsilon)
-                    points.Add((1 - u - v) * p1 + u * p2 + v * p3);                             //ray does intersect
+                    points.Add((1 - u - v) * p1 + u * p2 + v * p3); //ray does intersect
             }
             return points;
-        }
-
-        /***************************************************/
-
-        [NotImplemented]
-        public static List<Point> MeshIntersections(this NurbsCurve c, Mesh mesh, double tolerance = Tolerance.Distance)
-        {
-            throw new NotImplementedException();
-        }
-
-        /***************************************************/
-
-        [NotImplemented]
-        public static List<Point> MeshIntersections(this PolyCurve curve, Mesh mesh, double tolerance = Tolerance.Distance)
-        {
-            throw new NotImplementedException();
         }
 
         /***************************************************/
@@ -161,6 +129,17 @@ namespace BH.Engine.Geometry
         public static List<Point> IMeshIntersections(this ICurve curve, Mesh mesh, double tolerance = Tolerance.Distance)
         {
             return MeshIntersections(curve as dynamic, mesh);
+        }
+
+
+        /***************************************************/
+        /**** Private Fallback Methods                  ****/
+        /***************************************************/
+
+        private static List<Point> MeshIntersections(this ICurve curve, Mesh mesh, double tolerance = Tolerance.Distance)
+        {
+            Reflection.Compute.RecordError($"MeshIntersections is not implemented for ICurves of type: {curve.GetType().Name}.");
+            return null;
         }
 
         /***************************************************/

@@ -50,8 +50,7 @@ namespace BH.Engine.Serialiser
 
         public static BsonDocument ToBson(this object obj)
         {
-            if (!m_TypesRegistered)
-                RegisterTypes();
+            RegisterTypes();
 
             if (obj is string)
             {
@@ -67,8 +66,7 @@ namespace BH.Engine.Serialiser
 
         public static object FromBson(BsonDocument bson)
         {
-            if (!m_TypesRegistered)
-                RegisterTypes();
+            RegisterTypes();
 
             // Patch for handling the case where a string is a top object - will need proper review in next quarter
             if (bson.Contains("_t") && bson["_t"] == "System.String" && bson.Contains("_v"))
@@ -84,7 +82,7 @@ namespace BH.Engine.Serialiser
                 {
                     co.Name = dic["Name"] as string;
                     dic.Remove("Name");
-                }   
+                }
                 if (dic.ContainsKey("Tags"))
                 {
                     co.Tags = new HashSet<string>(((List<object>)dic["Tags"]).Cast<string>());
@@ -116,13 +114,19 @@ namespace BH.Engine.Serialiser
 
         private static void RegisterTypes()
         {
-            RegisterPacks();
+            lock (m_RegisterTypesLock)
+            {
+                if (m_TypesRegistered)
+                    return;
 
-            RegisterSerializers();
+                RegisterPacks();
 
-            RegisterClassMaps();
-            
-            m_TypesRegistered = true;
+                RegisterSerializers();
+
+                RegisterClassMaps();
+
+                m_TypesRegistered = true;
+            }
         }
 
         /*******************************************/
@@ -226,7 +230,7 @@ namespace BH.Engine.Serialiser
             {
                 BsonSerializer.RegisterSerializer(typeof(T), new EnumSerializer<T>(BsonType.String));
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Console.WriteLine(e.ToString());
             }
@@ -238,7 +242,7 @@ namespace BH.Engine.Serialiser
         /*******************************************/
 
         private static bool m_TypesRegistered = false;
-
+        private static readonly object m_RegisterTypesLock = new object();
 
         /*******************************************/
     }

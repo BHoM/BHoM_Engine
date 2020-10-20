@@ -21,7 +21,7 @@
  */
 
 using System;
-using BH.oM.Geometry.ShapeProfiles;
+using BH.oM.Spatial.ShapeProfiles;
 using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
 using BH.oM.Quantities.Attributes;
@@ -70,7 +70,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Calcualtes the Torsinal constant for the profile. Note that this is not the polar moment of inertia.")]
+        [Description("Calcualtes the torsional constant for the profile. Note that this is not the polar moment of inertia.")]
         [Input("profile", "The ShapeProfile to calculate the torsional constant for.")]
         [Output("J", "Torsional constant of the profile. Note that this is not the polar moment of inertia.", typeof(TorsionConstant))]
         public static double TorsionalConstant(this CircleProfile profile)
@@ -80,7 +80,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Calcualtes the Torsinal constant for the profile. Note that this is not the polar moment of inertia.")]
+        [Description("Calcualtes the torsional constant for the profile. Note that this is not the polar moment of inertia.")]
         [Input("profile", "The ShapeProfile to calculate the torsional constant for.")]
         [Output("J", "Torsional constant of the profile. Note that this is not the polar moment of inertia.", typeof(TorsionConstant))]
         public static double TorsionalConstant(this TubeProfile profile)
@@ -90,7 +90,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Calcualtes the Torsinal constant for the profile. Note that this is not the polar moment of inertia.")]
+        [Description("Calcualtes the torsional constant for the profile. Note that this is not the polar moment of inertia.")]
         [Input("profile", "The ShapeProfile to calculate the torsional constant for.")]
         [Output("J", "Torsional constant of the profile. Note that this is not the polar moment of inertia.", typeof(TorsionConstant))]
         public static double TorsionalConstant(this FabricatedBoxProfile profile)
@@ -107,25 +107,25 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Calcualtes the Torsinal constant for the profile. Note that this is not the polar moment of inertia.")]
+        [Description("Calculates the torsional constant for the profile in accordance with section A.3 from BS EN 10210-2:2019. Note that this is not the polar moment of intertia.")]
         [Input("profile", "The ShapeProfile to calculate the torsional constant for.")]
         [Output("J", "Torsional constant of the profile. Note that this is not the polar moment of inertia.", typeof(TorsionConstant))]
         public static double TorsionalConstant(this BoxProfile profile)
         {
-            double tf1 = profile.Thickness;
-            double tw = profile.Thickness;
+            double t = profile.Thickness;
             double width = profile.Width;
             double height = profile.Height;
 
-
-
-            return 2 * tf1 * tw * Math.Pow(width - tw, 2) * Math.Pow(height - tf1, 2) /
-                        (width * tw + height * tf1 - Math.Pow(tw, 2) - Math.Pow(tf1, 2));
+            double rc = (profile.OuterRadius + profile.InnerRadius) / 2;
+            double h = 2 * ((width - t) + (height - t)) - 2 * rc * (4 - Math.PI);
+            double ah = (width - t) * (height - t) - Math.Pow(rc, 2) * (4 - Math.PI);
+            double k = 2 * ah * t / h;
+            return Math.Pow(t, 3) * h / 3 + 2 * k * ah;
         }
 
         /***************************************************/
 
-        [Description("Calcualtes the Torsinal constant for the profile. Note that this is not the polar moment of inertia.")]
+        [Description("Calcualtes the torsional constant for the profile. Note that this is not the polar moment of inertia.")]
         [Input("profile", "The ShapeProfile to calculate the torsional constant for.")]
         [Output("J", "Torsional constant of the profile. Note that this is not the polar moment of inertia.", typeof(TorsionConstant))]
         public static double TorsionalConstant(this FabricatedISectionProfile profile)
@@ -142,39 +142,50 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Calcualtes the Torsinal constant for the profile. Note that this is not the polar moment of inertia.")]
+        [Description("Calcualtes the torsional constant for the profile. Note that this is not the polar moment of inertia.\n" +
+                     "Formulae taken from https://orangebook.arcelormittal.com/explanatory-notes/long-products/section-properties/")]
         [Input("profile", "The ShapeProfile to calculate the torsional constant for.")]
         [Output("J", "Torsional constant of the profile. Note that this is not the polar moment of inertia.", typeof(TorsionConstant))]
         public static double TorsionalConstant(this ISectionProfile profile)
         {
-            double b1 = profile.Width;
-            double b2 = profile.Width;
-            double height = profile.Height;
+            double b = profile.Width;
+            double h = profile.Height;
             double tf = profile.FlangeThickness;
             double tw = profile.WebThickness;
+            double r = profile.RootRadius;
 
-            return (b1 * Math.Pow(tf, 3) + b2 * Math.Pow(tf, 3) + (height - tf) * Math.Pow(tw, 3)) / 3;
+            double alpha = AlphaTJunction(tw, tf, r);
+            double D = InscribedDiameterTJunction(tw, tf, r);
+
+            return (2 * b * Math.Pow(tf, 3) + (h - 2 * tf) * Math.Pow(tw, 3)) / 3 + 2 * alpha * Math.Pow(D, 4) - 0.42 * Math.Pow(tf, 4);
         }
 
 
         /***************************************************/
 
-        [Description("Calcualtes the Torsinal constant for the profile. Note that this is not the polar moment of inertia.")]
+        [Description("Calcualtes the torsional constant for the profile. Note that this is not the polar moment of inertia.\n" +
+                     "Formulae taken from https://orangebook.arcelormittal.com/explanatory-notes/long-products/section-properties/")]
         [Input("profile", "The ShapeProfile to calculate the torsional constant for.")]
         [Output("J", "Torsional constant of the profile. Note that this is not the polar moment of inertia.", typeof(TorsionConstant))]
         public static double TorsionalConstant(this ChannelProfile profile)
         {
             double b = profile.FlangeWidth;
-            double height = profile.Height;
+            double h = profile.Height;
             double tf = profile.FlangeThickness;
             double tw = profile.WebThickness;
+            double r = profile.RootRadius;
 
-            return (2 * (b - tw / 2) * Math.Pow(tf, 3) + (height - tf) * Math.Pow(tw, 3)) / 3;
+            double alpha = AlphaLJunction(tw, tf, r);
+            double D = InscribedDiameterLJunction(tw, tf, r);
+
+            //Note that 'P385 Design of steel beams in torsion' states that the reduction in the end should only be  `- 0.210 * Math.Pow(tf, 4);`
+            //As orange and blue book is using `- 0.420 * Math.Pow(tf, 4);`, and this is more conservative, using the latter until clarified.
+            return (2 * b * Math.Pow(tf, 3) + (h - 2 * tf) * Math.Pow(tw, 3)) / 3 + 2 * alpha * Math.Pow(D, 4) - 0.420 * Math.Pow(tf, 4);
         }
 
         /***************************************************/
 
-        [Description("Calcualtes the Torsinal constant for the profile. Note that this is not the polar moment of inertia.")]
+        [Description("Calcualtes the torsional constant for the profile. Note that this is not the polar moment of inertia.")]
         [Input("profile", "The ShapeProfile to calculate the torsional constant for.")]
         [Output("J", "Torsional constant of the profile. Note that this is not the polar moment of inertia.", typeof(TorsionConstant))]
         public static double TorsionalConstant(this ZSectionProfile profile)
@@ -191,22 +202,27 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Calcualtes the Torsinal constant for the profile. Note that this is not the polar moment of inertia.")]
+        [Description("Calcualtes the torsional constant for the profile. Note that this is not the polar moment of inertia.\n" +
+                     "Formulae taken from 'P385 Design of steel beams in torsion'.")]
         [Input("profile", "The ShapeProfile to calculate the torsional constant for.")]
         [Output("J", "Torsional constant of the profile. Note that this is not the polar moment of inertia.", typeof(TorsionConstant))]
         public static double TorsionalConstant(this TSectionProfile profile)
         {
-            double totalWidth = profile.Width;
-            double totalDepth = profile.Height;
+            double b = profile.Width;
+            double h = profile.Height;
             double tf = profile.FlangeThickness;
             double tw = profile.WebThickness;
+            double r = profile.RootRadius;
 
-            return (totalWidth * Math.Pow(tf, 3) + (totalDepth - tf / 2) * Math.Pow(tw, 3)) / 3;
+            double alpha = AlphaTJunction(tw, tf, r);
+            double D = InscribedDiameterTJunction(tw, tf, r);
+
+            return (b * Math.Pow(tf, 3) + (h - tf) * Math.Pow(tw, 3)) / 3 + alpha * Math.Pow(D, 4) - 0.21 * Math.Pow(tf, 4) - 0.105 * Math.Pow(tw, 4);
         }
 
         /***************************************************/
 
-        [Description("Calcualtes the Torsinal constant for the profile. Note that this is not the polar moment of inertia.")]
+        [Description("Calcualtes the torsional constant for the profile. Note that this is not the polar moment of inertia.")]
         [Input("profile", "The ShapeProfile to calculate the torsional constant for.")]
         [Output("J", "Torsional constant of the profile. Note that this is not the polar moment of inertia.", typeof(TorsionConstant))]
         public static double TorsionalConstant(this GeneralisedTSectionProfile profile)
@@ -256,22 +272,27 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Calcualtes the Torsinal constant for the profile. Note that this is not the polar moment of inertia.")]
+        [Description("Calcualtes the torsional constant for the profile. Note that this is not the polar moment of inertia.\n" +
+                     "Formulae taken from 'P385 Design of steel beams in torsion'.")]
         [Input("profile", "The ShapeProfile to calculate the torsional constant for.")]
         [Output("J", "Torsional constant of the profile. Note that this is not the polar moment of inertia.", typeof(TorsionConstant))]
         public static double TorsionalConstant(this AngleProfile profile)
         {
-            double totalWidth = profile.Width;
-            double totalDepth = profile.Height;
+            double b = profile.Width;
+            double h = profile.Height;
             double tf = profile.FlangeThickness;
             double tw = profile.WebThickness;
+            double r = profile.RootRadius;
 
-            return ((totalWidth - tw / 2) * Math.Pow(tf, 3) + (totalDepth - tf / 2) * Math.Pow(tw, 3)) / 3;
+            double alpha = AlphaLJunction(tw, tf, r);
+            double D = InscribedDiameterLJunction(tw, tf, r);
+
+            return (b * Math.Pow(tf, 3) + (h - tf) * Math.Pow(tw, 3)) / 3 + alpha * Math.Pow(D, 4) - 0.105 * Math.Pow(tf, 4) - 0.105 * Math.Pow(tw, 4);
         }
 
         /***************************************************/
 
-        [Description("Calcualtes the Torsinal constant for the profile. Note that this is not the polar moment of inertia.")]
+        [Description("Calcualtes the torsional constant for the profile. Note that this is not the polar moment of inertia.")]
         [Input("profile", "The ShapeProfile to calculate the torsional constant for.")]
         [Output("J", "Torsional constant of the profile. Note that this is not the polar moment of inertia.", typeof(TorsionConstant))]
         public static double TorsionalConstant(this RectangleProfile profile)
@@ -290,7 +311,7 @@ namespace BH.Engine.Structure
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
-        [Description("Calcualtes the Torsinal constant for the profile. Note that this is not the polar moment of inertia.")]
+        [Description("Calcualtes the torsional constant for the profile. Note that this is not the polar moment of inertia.")]
         [Input("profile", "The ShapeProfile to calculate the torsional constant for.")]
         [Output("J", "Torsional constant of the profile. Note that this is not the polar moment of inertia.", typeof(TorsionConstant))]
         public static double ITorsionalConstant(this IProfile profile)
@@ -306,6 +327,52 @@ namespace BH.Engine.Structure
         {
             Reflection.Compute.RecordWarning("Can not calculate Tosional constants for profiles of type " + profile.GetType().Name + ". Returned value will be 0.");
             return 0; //Return 0 for not specifically implemented ones
+        }
+
+        /***************************************************/
+        /**** Private Methods - helper methods          ****/
+        /***************************************************/
+
+        [Description("Diameter of an circles inscribed in a T-junction connection where tf is assumed to be the thickness of the top of the T. Taken from 'P385 Design of steel beams in torsion', Appendix B")]
+        [Input("tw", "Web thickness, assumed to be the stem of the T.", typeof(Length))]
+        [Input("tf", "Flange thickness, assumed to be the top of the T.", typeof(Length))]
+        [Input("r", "Root radius, assumed to be the same on both sides of the T.", typeof(Length))]
+        private static double InscribedDiameterTJunction(double tw, double tf, double r)
+        {
+            return (Math.Pow(tf + r, 2) + (r + 0.25 * tw) * tw) / (2 * r + tf);
+        }
+
+        /***************************************************/
+
+        [Description("Diameter of an circles inscribed in a L-junction connection. Taken from 'P385 Design of steel beams in torsion', Appendix B")]
+        [Input("tw", "Web thickness.", typeof(Length))]
+        [Input("tf", "Flange thickness.", typeof(Length))]
+        [Input("r", "Root radius.", typeof(Length))]
+        private static double InscribedDiameterLJunction(double tw, double tf, double r)
+        {
+            return 2 * ((3 * r + tw + tf) - Math.Sqrt(2 * (2 * r + tw) * (2 * r + tf)));
+        }
+
+        /***************************************************/
+
+        [Description("Emperical formula used to correct the torsional constant with enhancement from a T-junction. Taken from 'P385 Design of steel beams in torsion', Appendix B")]
+        [Input("tw", "Web thickness, assumed to be the stem of the T.", typeof(Length))]
+        [Input("tf", "Flange thickness, assumed to be the top of the T.", typeof(Length))]
+        [Input("r", "Root radius, assumed to be the same on both sides of the T.", typeof(Length))]
+        private static double AlphaTJunction(double tw, double tf, double r)
+        {
+            return -0.042 + 0.2204 * tw / tf + 0.1355 * r / tf - 0.0865 * (r * tw) / Math.Pow(tf, 2) - 0.0725 * Math.Pow(tw / tf, 2);
+        }
+
+        /***************************************************/
+
+        [Description("Emperical formula used to correct the torsional constant with enhancement from a L-junction. Taken from 'P385 Design of steel beams in torsion', Appendix B")]
+        [Input("tw", "Web thickness.", typeof(Length))]
+        [Input("tf", "Flange thickness.", typeof(Length))]
+        [Input("r", "Root radius.", typeof(Length))]
+        private static double AlphaLJunction(double tw, double tf, double r)
+        {
+            return -0.0908 + 0.2621 * tw / tf + 0.1231 * r / tf - 0.0752 * (tw * r) / Math.Pow(tf, 2) - 0.0945 * Math.Pow(tw / tf, 2);
         }
 
         /***************************************************/

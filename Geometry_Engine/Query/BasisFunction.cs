@@ -20,9 +20,10 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Geometry;
-using BH.oM.Reflection.Attributes;
 using System;
+using System.ComponentModel;
+using BH.oM.Reflection.Attributes;
+using System.Collections.Generic;
 
 namespace BH.Engine.Geometry
 {
@@ -31,14 +32,46 @@ namespace BH.Engine.Geometry
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        
-        [NotImplemented]
-        public static double BasisFunction(this NurbsCurve curve, int i, int n, double t)
+
+        [Description("Gets the partial values of the B-spline basis function.")]
+        [Input("knots", "Knot vector defining the basis function.")]
+        [Input("i", "Index the function is evaluated at. The value of the function is the sum of this functions value for all values of i.")]
+        [Input("n", "Degree of the of the basis function. Affects how many adjacent knots control the value.")]
+        [Input("t", "Parameter to evaluate the function at. Should be between the first and last knots value.")]
+        [Output("Value of the function for the specified index. The full value of the function should be a sum of all possible i's.")]
+        public static double BasisFunction(List<double> knots, int i, int n, double t)
         {
-            throw new NotImplementedException();
+            if (n == 0)
+            {
+                double sKnot = knots[Math.Max(Math.Min(i, knots.Count - 1), 0)];
+                double eKnot = knots[Math.Max(Math.Min(i + 1, knots.Count - 1), 0)];
+
+                if (t >= knots[knots.Count - 1])
+                    return t > sKnot && t <= eKnot ? 1 : 0;
+                else
+                    return t >= sKnot && t < eKnot ? 1 : 0;
+            }
+
+            return LinearKnotInterpelation(knots, i, n, t) * BasisFunction(knots, i, n - 1, t) +
+                   (1 - LinearKnotInterpelation(knots, i + 1, n, t)) * BasisFunction(knots, i + 1, n - 1, t);
         }
 
         /***************************************************/
+
+        [Description("Finds the function value of f(t) in the knot-span (i,n)")]
+        private static double LinearKnotInterpelation(List<double> knots, int i, int n, double t)
+        {
+            double sKnot = knots[Math.Max(Math.Min(i, knots.Count - 1), 0)];
+            double eKnot = knots[Math.Max(Math.Min(i + n, knots.Count - 1), 0)];
+
+            if (sKnot == eKnot)
+                return 0;
+
+            return (t - sKnot) / (eKnot - sKnot);
+        }
+
+        /***************************************************/
+
     }
 }
 

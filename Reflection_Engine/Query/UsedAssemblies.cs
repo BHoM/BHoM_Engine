@@ -39,14 +39,17 @@ namespace BH.Engine.Reflection
         {
             try
             {
-                if (m_AllAssemblies == null || m_AllAssemblies.Count == 0)
-                    ExtractAllAssemblies();
+                lock (m_GetAssembliesLock)
+                {
+                    if (m_AllAssemblies == null || m_AllAssemblies.Count == 0)
+                        ExtractAllAssemblies();
 
-                IEnumerable<AssemblyName> assemblyNames = assembly.GetReferencedAssemblies();
-                foreach (AssemblyName name in assemblyNames)
-                    Compute.RecordWarning("Could not find the assembly with the name " + name);
+                    IEnumerable<AssemblyName> assemblyNames = assembly.GetReferencedAssemblies();
+                    foreach (AssemblyName name in assemblyNames)
+                        Compute.RecordWarning("Could not find the assembly with the name " + name);
 
-                return assemblyNames.Where(x => m_BHoMAssemblies.ContainsKey(x.FullName)).Select(x => m_BHoMAssemblies[x.FullName]).ToList();
+                    return assemblyNames.Where(x => m_BHoMAssemblies.ContainsKey(x.FullName)).Select(x => m_BHoMAssemblies[x.FullName]).ToList();
+                }
             }
             catch (Exception e)
             {

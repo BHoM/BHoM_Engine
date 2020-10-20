@@ -38,7 +38,6 @@ namespace BH.Engine.MEP
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-
         [Description("Returns an MEP Identity Fragment which can be applied to an MEP object to provide information about an objects origins")]
         [Input("manufacturer", "The manufacturer of the equipment, default empty string")]
         [Input("modelNumber", "The model number of the equipment, default empty string")]
@@ -59,6 +58,7 @@ namespace BH.Engine.MEP
                 Remarks = remarks,
             };
         }
+        /***************************************************/
     }
 }
 

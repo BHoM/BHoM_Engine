@@ -57,14 +57,6 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [NotImplemented]
-        public static Vector StartDir(this NurbsCurve curve)
-        {
-            throw new NotImplementedException();
-        }
-
-        /***************************************************/
-
         public static Vector StartDir(this PolyCurve curve)
         {
             return curve.Curves.Count > 0 ? curve.Curves.First().IStartDir() : null;
@@ -82,7 +74,7 @@ namespace BH.Engine.Geometry
             Point pt1 = pts[0];
             Point pt2 = pts[1];
 
-            return new Vector { X = pt2.X - pt1.X, Y = pt2.Y - pt1.Y, Z = pt2.Z - pt1.Z }.Normalise(); 
+            return new Vector { X = pt2.X - pt1.X, Y = pt2.Y - pt1.Y, Z = pt2.Z - pt1.Z }.Normalise();
         }
 
 
@@ -95,7 +87,17 @@ namespace BH.Engine.Geometry
             return StartDir(curve as dynamic);
         }
 
+
+        /***************************************************/
+        /**** Private Fallback Methods                  ****/
+        /***************************************************/
+
+        private static Vector StartDir(this ICurve curve)
+        {
+            Reflection.Compute.RecordError($"StartDir is not implemented for ICurves of type: {curve.GetType().Name}.");
+            return null;
+        }
+
         /***************************************************/
     }
 }
-

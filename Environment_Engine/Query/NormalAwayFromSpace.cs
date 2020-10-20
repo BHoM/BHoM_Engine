@@ -62,9 +62,18 @@ namespace BH.Engine.Environment
         {
             List<Point> centrePtList = new List<Point>();
             Point centrePt = polyline.PointInRegion(false, tolerance); //Modifed to Centroid to fix special cases Point centrePt = polyline.Centre();
+            
+            if (centrePt == null)
+                centrePt = polyline.Centroid();
+            if (centrePt == null)
+                centrePt = polyline.Centre();
+            if (centrePt == null)
+                return false; //Problems
+
             centrePtList.Add(centrePt);
 
-            if (!polyline.IsClosed()) return false; //Prevent failures of the clockwise check
+            if (!polyline.IsClosed())
+                return false; //Prevent failures of the clockwise check
 
             List<Point> pts = polyline.DiscontinuityPoints(tolerance);
             if (pts.Count < 3) return false; //Protection in case there aren't enough points to make a plane

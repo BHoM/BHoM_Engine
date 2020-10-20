@@ -56,7 +56,19 @@ namespace BH.Engine.Spatial
         public static List<Point> ElementVertices(this IElement1D element1D)
         {
             ICurve curve = element1D.IGeometry();
-            List<Point> vertices = curve.IDiscontinuityPoints();
+
+            List<Point> vertices = new List<Point>();
+            List<ICurve> subParts = curve.ISubParts().ToList();
+            if (subParts.Count == 0 || subParts.All(x => x is Circle))
+                return new List<Point>();
+
+            vertices.Add(curve.IStartPoint());
+            foreach (ICurve c in subParts)
+            {
+                List<Point> discPoints = c.IDiscontinuityPoints();
+                if (discPoints.Count != 0)
+                    vertices.AddRange(discPoints.Skip(1));
+            }
 
             if (curve.IIsClosed())
                 vertices.RemoveAt(vertices.Count - 1);

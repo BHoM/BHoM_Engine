@@ -31,6 +31,19 @@ namespace BH.Engine.Spatial
     public static partial class Query
     {
         /******************************************/
+        /****            IElement0D            ****/
+        /******************************************/
+
+        [Description("Queries the control points of the geometrical representation of an IElement0D. Always returns the point location due to zero-dimensionality of an IElement0D.")]
+        [Input("element0D", "The IElement0D with the geometry to get the control points from.")]
+        [Output("cPoints", "The control points of the geometrical representation of an IElement0D.")]
+        public static List<Point> ControlPoints(this IElement0D element0D)
+        {
+            return new List<Point> { element0D.IGeometry() };
+        }
+
+
+        /******************************************/
         /****            IElement1D            ****/
         /******************************************/
 
@@ -62,6 +75,19 @@ namespace BH.Engine.Spatial
                 }
             }
             return pts;
+        }
+
+
+        /******************************************/
+        /****             IElement             ****/
+        /******************************************/
+
+        [Description("Queries the control points of the geometrical representation of an IElement.")]
+        [Input("element", "The IElement with the geometry to get the control points from.")]
+        [Output("cPoints", "The control points of the geometrical representation of an IElement.")]
+        public static List<Point> IControlPoints(this IElement element)
+        {
+            return ControlPoints(element as dynamic);
         }
 
         /******************************************/

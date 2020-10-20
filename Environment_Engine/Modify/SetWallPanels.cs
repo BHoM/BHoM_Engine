@@ -40,9 +40,9 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns the wall panels of a space represented by Environment Panels and fixes PanelType")]
+        [Description("Modifies a collection of Panels and sets their type to be interior or exterior wall if they have a tilt of 90 degrees. If the panel has one connected space then it is deemed to be an internal wall panel, otherwise it is an external wall panel")]
         [Input("panelsAsSpace", "A collection of Environment Panels that represent a closed space")]
-        [Output("wallPanels", "BHoM Environment panel representing the wall of the space")]
+        [Output("panelsAsSpace", "BHoM Environment panels representing a closed space where the internal or external wall panels have had their type set")]
         public static List<Panel> SetWallPanels(this List<Panel> panelsAsSpace)
         {
             List<Panel> clones = new List<Panel>(panelsAsSpace.Select(x => x.DeepClone<Panel>()).ToList());
@@ -59,8 +59,8 @@ namespace BH.Engine.Environment
 
             if (wallPanels.Count == 0)
             {
-                BH.Engine.Reflection.Compute.RecordWarning("Could not find wall panel");
-                return null;
+                BH.Engine.Reflection.Compute.RecordWarning("No wall panels were found to set the type for");
+                return clones;
             }
 
             foreach (Panel panel in wallPanels)
@@ -71,7 +71,7 @@ namespace BH.Engine.Environment
                     panel.Type = PanelType.WallInternal;
             }
 
-            return wallPanels;
+            return clones;
         }
     }
 }

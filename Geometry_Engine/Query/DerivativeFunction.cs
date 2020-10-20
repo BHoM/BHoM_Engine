@@ -20,9 +20,10 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Geometry;
-using BH.oM.Reflection.Attributes;
 using System;
+using System.ComponentModel;
+using BH.oM.Reflection.Attributes;
+using System.Collections.Generic;
 
 namespace BH.Engine.Geometry
 {
@@ -32,13 +33,40 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [NotImplemented]
-        public static double DerivativeFunction(this NurbsCurve curve, int i, int n, double t)
+        [Description("Gets the partial value derivatives of the B-spline Basis function.")]
+        [Input("knots", "Knot vector defining the basis function.")]
+        [Input("i", "Index the function is evaluated at. The value of the function is the sum of this functions value for all values of i.")]
+        [Input("n", "Degree of the of the basis function. Affects how many adjacent knots control the value.")]
+        [Input("t", "Parameter to evaluate the function at. Should be between the first and last knots value.")]
+        [Input("k", "Degree of the derivation.")]
+        [Output("Value of the function for the specified index. The full value of the function should be a sum of all possible i's.")]
+        public static double DerivativeFunction(List<double> knots, int i, int n, double t, int k = 1)
         {
-            throw new NotImplementedException();
+            if (k == 0)
+                return BasisFunction(knots, i, n, t);
+
+            double result = n * (
+                KnotFactor(knots, i, n) * DerivativeFunction(knots, i, n - 1, t, k - 1) -
+                KnotFactor(knots, i + 1, n) * DerivativeFunction(knots, i + 1, n - 1, t, k - 1));
+
+            return result;
         }
 
         /***************************************************/
+
+        private static double KnotFactor(List<double> knots, int i, int n)
+        {
+            double sKnot = knots[Math.Max(Math.Min(i, knots.Count - 1), 0)];
+            double eKnot = knots[Math.Max(Math.Min(i + n, knots.Count - 1), 0)];
+
+            if (eKnot == sKnot)
+                return 0;
+
+            return 1 / (eKnot - sKnot);
+        }
+
+        /***************************************************/
+
     }
 }
 

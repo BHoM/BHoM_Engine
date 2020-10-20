@@ -26,7 +26,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using BH.oM.Environment.Elements;
-using BH.oM.Environment.Gains;
+using BH.oM.Environment.SpaceCriteria;
 using BH.Engine.Geometry;
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
@@ -36,7 +36,7 @@ namespace BH.Engine.Environment
     public static partial class Compute
     {
         /***************************************************/
-        /****          public Methods                   ****/
+        /****          Public Methods                   ****/
         /***************************************************/
 
         [Description("Compute a lighting gain from the watts per square meter and floor area of the space")]
@@ -45,7 +45,7 @@ namespace BH.Engine.Environment
         [Output("lightingGain", "The calculated lighting gain with the sensible watts for the space")]
         public static Lighting LightingGain(double wattsPerMeterSquared = 0.0, double area = 0.0)
         {
-            return Create.Lighting(wattsPerMeterSquared * area);
+            return new Lighting() { Sensible = wattsPerMeterSquared * area };
         }
     }
 }

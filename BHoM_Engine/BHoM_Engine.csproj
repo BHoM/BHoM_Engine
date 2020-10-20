@@ -60,6 +60,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Compute\Hash.cs" />
     <Compile Include="Create\BHoMGroup.cs" />
     <Compile Include="Create\IObject\RandomObject.cs" />
     <Compile Include="Create\CustomObject.cs" />

@@ -21,7 +21,10 @@
  */
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using BH.oM.Geometry;
+using BH.oM.Reflection;
 using BH.oM.Reflection.Attributes;
 
 namespace BH.Engine.Geometry
@@ -37,7 +40,7 @@ namespace BH.Engine.Geometry
             double paramTol = tolerance / curve.Length();
             if (parameter > 1 + paramTol || parameter < 0 - paramTol)
                 return null;
-            
+
             return curve.CoordinateSystem.Y.Rotate(curve.StartAngle + (curve.EndAngle - curve.StartAngle) * parameter, curve.CoordinateSystem.Z);
         }
 
@@ -68,10 +71,14 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [NotImplemented]
-        public static Vector TangentAtParameter(this NurbsCurve curve, double parameter, double tolerance = Tolerance.Distance)
+        public static Vector TangentAtParameter(this NurbsCurve curve, double t, double tolerance = Tolerance.Distance)
         {
-            throw new NotImplementedException();
+            double min = curve.Knots.First();
+            double max = curve.Knots.Last();
+
+            t = t < min ? min : t > max ? max : t;
+
+            return DerivativeAtParameter(curve, t, 1).Normalise();
         }
 
         /***************************************************/
@@ -115,6 +122,68 @@ namespace BH.Engine.Geometry
             return curve.EndDir();
         }
 
+        /***************************************************/
+
+        [MultiOutput(0, "uTangent", "The tangent of the surface along it's U direction.")]
+        [MultiOutput(1, "vTangent", "The tangent of the surface along it's V direction.")]
+        public static Output<Vector, Vector> TangentAtParameter(this NurbsSurface surface, double u, double v, double tolerance = Tolerance.Distance)
+        {
+            double minU = surface.UKnots.First();
+            double maxU = surface.UKnots.Last();
+            double minV = surface.VKnots.First();
+            double maxV = surface.VKnots.Last();
+
+            u = u < minU ? minU : u > maxU ? maxU : u;
+            v = v < minV ? minV : v > maxV ? maxV : v;
+
+            double a = 0;
+            double dua = 0;
+            double dva = 0;
+            Point result = new Point();
+            Point resultU = new Point();
+            Point resultV = new Point();
+
+            var uKnots = surface.UKnots.ToList();
+            var vKnots = surface.VKnots.ToList();
+
+            var uv = surface.UVCount();
+
+            Func<int, int, int> ind = (i,j) => i * uv[1] + j;
+
+            for (int i = 0; i < uv[0]; i++)
+            {
+                for (int j = 0; j < uv[1]; j++)
+                {
+                    double ubasis = BasisFunction(uKnots, i - 1, surface.UDegree, u);
+                    double vbasis = BasisFunction(vKnots, j - 1, surface.VDegree, v);
+                    double basis = ubasis * vbasis * surface.Weights[ind(i, j)];
+
+                    double dubasis = DerivativeFunction(uKnots, i - 1, surface.UDegree, u) *
+                                     vbasis * surface.Weights[ind(i, j)];
+
+                    double dvbasis = DerivativeFunction(vKnots, j - 1, surface.VDegree, v) *
+                                     ubasis * surface.Weights[ind(i, j)];
+
+                    a += basis;
+                    dua += dubasis;
+                    dva += dvbasis;
+
+                    Point pt = surface.ControlPoints[ind(i, j)];
+
+                    result += basis * pt;
+
+                    resultU += dubasis * pt;
+                    resultV += dvbasis * pt;
+                }
+            }
+
+            return new Output<Vector, Vector>()
+            {
+                Item1 = (resultU * a - result * dua).Normalise(),
+                Item2 = (resultV * a - result * dva).Normalise(),
+            };
+        }
+
 
         /***************************************************/
         /**** Public Methods - Interfaces               ****/
@@ -125,7 +194,17 @@ namespace BH.Engine.Geometry
             return TangentAtParameter(curve as dynamic, parameter, tolerance);
         }
 
+
+        /***************************************************/
+        /**** Private Methods - Fallback                ****/
+        /***************************************************/
+
+        private static Vector TangentAtParameter(this ICurve curve, double parameter, double tolerance = Tolerance.Distance)
+        {
+            Reflection.Compute.RecordError($"TangentAtParameter is not implemented for ICurves of type: {curve.GetType().Name}.");
+            return null;
+        }
+
         /***************************************************/
     }
 }
-

@@ -117,9 +117,9 @@ namespace BH.Engine.Structure
                 else
                     continue;
 
-                MeshResult singleDisp = deformations.Where(x => x.ObjectId.ToString() == id && x.Results.First() is MeshDisplacement).First();
+                MeshResult singleDisp = deformations.Where(x => x.ObjectId.ToString() == id && x.Results.First() is IMeshDisplacement).First();
 
-                defMeshes.Add(DeformedMesh(feMesh, singleDisp.Results.Cast<MeshDisplacement>(), adapterNameId, scaleFactor));
+                defMeshes.Add(DeformedMesh(feMesh, singleDisp.Results.Cast<IMeshDisplacement>(), adapterNameId, scaleFactor));
             }
 
             return defMeshes;
@@ -178,13 +178,13 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        private static Mesh DeformedMesh(FEMesh feMesh, IEnumerable<MeshDisplacement> disps, string adapterNameId, double scaleFactor)
+        private static Mesh DeformedMesh(FEMesh feMesh, IEnumerable<IMeshDisplacement> disps, string adapterNameId, double scaleFactor)
         {
             Mesh mesh = new Mesh();
 
             foreach (Node node in feMesh.Nodes)
             {
-                MeshDisplacement disp = disps.FirstOrDefault(x => x.NodeId.ToString() == node.CustomData[adapterNameId].ToString());
+                IMeshDisplacement disp = disps.FirstOrDefault(x => x.NodeId.ToString() == node.CustomData[adapterNameId].ToString());
 
                 if (disp == null)
                 {

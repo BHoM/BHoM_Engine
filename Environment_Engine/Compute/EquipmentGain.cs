@@ -26,7 +26,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using BH.oM.Environment.Elements;
-using BH.oM.Environment.Gains;
+using BH.oM.Environment.SpaceCriteria;
 using BH.Engine.Geometry;
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
@@ -36,7 +36,7 @@ namespace BH.Engine.Environment
     public static partial class Compute
     {
         /***************************************************/
-        /****          public Methods                   ****/
+        /****          Public Methods                   ****/
         /***************************************************/
 
         [Description("Compute the sensible or latent equipment gain from the watts per meter squared and the area of the space")]
@@ -46,7 +46,11 @@ namespace BH.Engine.Environment
         [Output("equipmentGain", "The calculated sensible or latent equipment gain with the sensible or latent watts for the space")]
         public static Equipment EquipmentGain(double sensibleWattsPerSquareMeter = 0.0, double latentWattsPerSquareMeter = 0.0, double area = 0.0)
         {
-            return Create.Equipment(sensibleWattsPerSquareMeter * area, latentWattsPerSquareMeter * area);
+            return new Equipment()
+            {
+                Sensible = sensibleWattsPerSquareMeter * area,
+                Latent = latentWattsPerSquareMeter * area,
+            };
         }
     }
 }

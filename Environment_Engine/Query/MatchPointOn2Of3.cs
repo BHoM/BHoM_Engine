@@ -36,7 +36,7 @@ namespace BH.Engine.Environment
         /****               Public Methods              ****/
         /***************************************************/
 
-        [Description("BH.Engine.Environment.Query.MatchPointOn2Of3 => Returns whether two points match on 2 out of 3 axes")]
+        [Description("Returns whether two points match on 2 out of 3 axes")]
         [Input("point", "A BHoM Geometry Point to compare against")]
         [Input("comparePoint", "A BHoM Geometry Point to compare with")]
         [Output("doPointsMatch", "True if the two points match on 2 out of 3 axes, false otherwise")]

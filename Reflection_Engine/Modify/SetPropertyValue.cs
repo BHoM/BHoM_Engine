@@ -41,33 +41,31 @@ namespace BH.Engine.Reflection
         [Input("propName", "name of the property to set the value of")]
         [Input("value", "new value of the property")]
         [Output("result", "New object with its property changed to the new value")]
-        public static BHoMObject PropertyValue(this BHoMObject obj, string propName, object value)
+        public static object SetPropertyValue(this object obj, string propName, object value)
         {
-            BHoMObject newObject = obj.GetShallowClone() as BHoMObject;
-            newObject.SetPropertyValue(propName, value);
-            return newObject;
-        }
-
-        /***************************************************/
-
-        public static bool SetPropertyValue(this object obj, string propName, object value)
-        {
+            object toChange = obj;
             if (propName.Contains("."))
             {
                 string[] props = propName.Split('.');
                 for (int i = 0; i < props.Length - 1; i++)
                 {
-                    obj = obj.PropertyValue(props[i]);
-                    if (obj == null)
+                    toChange = toChange.PropertyValue(props[i]);
+                    if (toChange == null)
                         break;
                 }
                 propName = props[props.Length - 1];
             }
 
-            System.Reflection.PropertyInfo prop = obj.GetType().GetProperty(propName);
+            System.Reflection.PropertyInfo prop = toChange.GetType().GetProperty(propName);
 
             if (prop != null)
             {
+                if (!prop.CanWrite)
+                {
+                    Engine.Reflection.Compute.RecordError("This property doesn't have a public setter so it is not possible to modify it.");
+                    return obj;
+                }
+
                 if (value.GetType() != prop.PropertyType && value.GetType().GenericTypeArguments.Length > 0 && prop.PropertyType.GenericTypeArguments.Length > 0)
                 {
                     value = Modify.CastGeneric(value as dynamic, prop.PropertyType.GenericTypeArguments[0]);
@@ -79,69 +77,58 @@ namespace BH.Engine.Reflection
                         value = constructor.Invoke(new object[] { value });
                 }
 
-                prop.SetValue(obj, value);
-                return true;
+                prop.SetValue(toChange, value);
+                return obj;
             }
-            else if (obj is IBHoMObject)
+            else 
             {
-                IBHoMObject bhomObj = obj as IBHoMObject;
-                if (bhomObj == null) return false;
-
-                if (!bhomObj.CustomData.ContainsKey(propName))
-                    Compute.RecordWarning("The objects does not contain any property with the name " + propName + ". The value is being set as custom data");
-
-                bhomObj.CustomData[propName] = value;
-                return true;
+                SetValue(toChange as dynamic, propName, value);
+                return obj;
             }
-            else if (obj is IDictionary)
-            {
-                IDictionary dic = obj as IDictionary;
-                dic[propName] = value;
-                return true;
-            }
+        }
 
-            return false;
+
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+        private static bool SetValue(this IBHoMObject obj, string propName, object value)
+        {
+            if (obj == null) return false;
+
+            if (!obj.CustomData.ContainsKey(propName))
+                Compute.RecordWarning("The objects does not contain any property with the name " + propName + ". The value is being set as custom data");
+
+            obj.CustomData[propName] = value;
+            return true;
         }
 
         /***************************************************/
 
-        public static bool SetPropertyValue(this List<IBHoMObject> objects, Type objectType, string propName, object value)
+        private static bool SetValue(this IDictionary dic, string propName, object value)
         {
-            PropertyInfo propInfo = objectType.GetProperty(propName);
+            dic[propName] = value;
+            return true;
+        }
 
-            if (propInfo == null)
-            {
-                Compute.RecordWarning("No property with the provided name found. The value is being set as custom data");
-                foreach (IBHoMObject obj in objects)
-                    obj.CustomData[propName] = value;
-                return true;
-            }
-            else
-            {
-                Action<object, object> setProp = (Action<object, object>)Delegate.CreateDelegate(typeof(Action<object, object>), propInfo.GetSetMethod());
+        /***************************************************/
 
-                if (value is IList && value.GetType() != propInfo.PropertyType)
-                {
-                    IList values = ((IList)value);
+        private static bool SetValue<T>(this IEnumerable<T> list, string propName, object value)
+        {
+            bool success = true;
 
-                    // Check that the two lists are of equal length
-                    if (objects.Count != values.Count)
-                        return false;
+            foreach (T item in list)
+                success &= SetPropertyValue(item, propName, value) != null;
 
-                    // Set their property
-                    for (int i = 0; i < values.Count; i++)
-                        setProp(objects[i], values[i]);
-                }
-                else
-                {
-                    // Set the same property to all objects
-                    foreach (object obj in objects)
-                        setProp(obj, value);
-                }
+            return success;
+        }
 
-                return true;
-            }
+        /***************************************************/
 
+        private static bool SetValue(this object obj, string propName, object value)
+        {
+            Compute.RecordWarning("The objects does not contain any property with the name " + propName + ".");
+            return false;
         }
 
         /***************************************************/

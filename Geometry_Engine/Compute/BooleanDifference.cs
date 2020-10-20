@@ -279,7 +279,10 @@ namespace BH.Engine.Geometry
             List<ICurve> refRegionsList = refRegions.ToList();
 
             if (region is NurbsCurve || region is Ellipse || refRegionsList.Any(x => x is NurbsCurve || x is Ellipse))
-                throw new NotImplementedException("NurbsCurves and ellipses are not implemented yet.");
+            {
+                Reflection.Compute.RecordError("NurbsCurves and ellipses are not implemented for BooleanDifference.");
+                return null;
+            }
 
             if (!region.IIsClosed(tolerance) || refRegionsList.Any(x => !x.IIsClosed()))
             {
@@ -376,8 +379,8 @@ namespace BH.Engine.Geometry
                             if (tmpResult[k].IsSimilarSegment(tmpResult[j], tolerance))
                                 tmpResult.RemoveAt(k);
                         
-                        if (!tmpResult[i].IPointAtParameter(0.5).IsOnCurve(region,tolerance) &&
-                            !tmpResult[j].IPointAtParameter(0.5).IsOnCurve(region, tolerance))
+                        if (!tmpResult[i].IPointAtParameter(0.5).IIsOnCurve(region,tolerance) &&
+                            !tmpResult[j].IPointAtParameter(0.5).IIsOnCurve(region, tolerance))
                             if (tmpResult[i].ITangentAtParameter(0.5).IsEqual(tmpResult[j].ITangentAtParameter(0.5)))
                             {
                                 tmpResult.RemoveAt(Math.Min(j, i));

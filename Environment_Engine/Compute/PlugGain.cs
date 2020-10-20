@@ -26,7 +26,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using BH.oM.Environment.Elements;
-using BH.oM.Environment.Gains;
+using BH.oM.Environment.SpaceCriteria;
 using BH.Engine.Geometry;
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
@@ -36,7 +36,7 @@ namespace BH.Engine.Environment
     public static partial class Compute
     {
         /***************************************************/
-        /****          public Methods                   ****/
+        /****          Public Methods                   ****/
         /***************************************************/
 
         [Description("Compute a plug gain from the watts per square meter and floor area of the space")]
@@ -45,7 +45,7 @@ namespace BH.Engine.Environment
         [Output("plugGain", "The calculated plug gain with the sensible watts for the space")]
         public static Plug PlugGain(double wattsPerMeterSquared = 0.0, double area = 0.0)
         {
-            return Create.Plug(wattsPerMeterSquared * area);
+            return new Plug() { Sensible = wattsPerMeterSquared * area };
         }
     }
 }

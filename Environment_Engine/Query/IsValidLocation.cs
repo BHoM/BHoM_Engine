@@ -67,6 +67,7 @@ namespace BH.Engine.Environment
                 BH.Engine.Reflection.Compute.RecordError("Invalid UtcOffset passed. It should be between -12 and 12");
                 return false;
             }
+
             return true;
         }
     }

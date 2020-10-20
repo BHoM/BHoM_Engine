@@ -35,20 +35,26 @@ namespace BH.Engine.Reflection
 
         public static List<Assembly> BHoMAssemblyList()
         {
-            if (m_BHoMAssemblies == null || m_BHoMAssemblies.Count == 0)
-                ExtractAllAssemblies();
+            lock (m_GetAssembliesLock)
+            {
+                if (m_BHoMAssemblies == null || m_BHoMAssemblies.Count == 0)
+                    ExtractAllAssemblies();
 
-            return m_BHoMAssemblies.Values.ToList();
+                return m_BHoMAssemblies.Values.ToList();
+            }
         }
 
         /***************************************************/
 
         public static List<Assembly> AllAssemblyList()
         {
-            if (m_AllAssemblies == null || m_AllAssemblies.Count == 0)
-                ExtractAllAssemblies();
+            lock (m_GetAssembliesLock)
+            {
+                if (m_AllAssemblies == null || m_AllAssemblies.Count == 0)
+                    ExtractAllAssemblies();
 
-            return m_AllAssemblies.Values.ToList();
+                return m_AllAssemblies.Values.ToList();
+            }
         }
 
 
@@ -60,7 +66,7 @@ namespace BH.Engine.Reflection
         {
             IEnumerable<Assembly> assemblies = AppDomain.CurrentDomain.GetAssemblies();
             m_BHoMAssemblies = assemblies.Where(x => x.IsBHoM()).ToDictionary(x => x.FullName);
-            m_AllAssemblies = assemblies.ToDictionary(x => x.FullName);
+            m_AllAssemblies = assemblies.GroupBy(x => x.FullName).Select(g => g.First()).ToDictionary(x => x.FullName);
         }
 
         /***************************************************/
@@ -78,6 +84,7 @@ namespace BH.Engine.Reflection
 
         private static Dictionary<string, Assembly> m_BHoMAssemblies = null;
         private static Dictionary<string, Assembly> m_AllAssemblies = null;
+        private static readonly object m_GetAssembliesLock = new object();
 
         /***************************************************/
     }

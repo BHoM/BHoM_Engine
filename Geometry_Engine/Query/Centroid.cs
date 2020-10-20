@@ -26,16 +26,73 @@ using System.Linq;
 using System;
 using BH.Engine.Reflection;
 using BH.oM.Reflection.Attributes;
+using BH.oM.Base;
+using System.ComponentModel;
 
 namespace BH.Engine.Geometry
 {
     public static partial class Query
     {
+        /***************************************************/
+        /**** Public Methods - Surfaces                 ****/
+        /***************************************************/
+
+        //TODO: Remove when PlanarSurface will implement IElement2D
+        [Description("Queries the centre of area for a PlanarSurface.")]
+        [Input("surface", "The PlanarSurface to get the centre of area of.")]
+        [Input("tolerance", "Distance tolerance used in geometry processing, default set to BH.oM.Geometry.Tolerance.Distance")]
+        [Output("centroid", "The Point at the centre of given PlanarSurface.")]
+        public static Point Centroid(this PlanarSurface surface, double tolerance = Tolerance.Distance)
+        {
+            return Centroid(new List<ICurve> { surface.ExternalBoundary }, surface.InternalBoundaries, tolerance);
+        }
+
+
+        /***************************************************/
+        /**** Public Methods - Curves lists             ****/
+        /***************************************************/
+
+        [Description("Queries the combined centre of area enclosed by a set of ICurves with an optional set of openings.\nTo give a correct result all input curves must be planar, coplanar, closed and non-self-intersecting.\nOpening curves should also be inside of outline curves.")]
+        [Input("outlines", "Set of planar, coplanar, closed and non-self-intersecting ICurves to get the combined centre of area of.")]
+        [Input("openings", "Set of planar, coplanar, closed and non-self-intersecting ICurves illustrating openings in initial set of outlines.")]
+        [Input("tolerance", "Distance tolerance used in geometry processing, default set to BH.oM.Geometry.Tolerance.Distance")]
+        [Output("centroid", "The Point at the centre of given geometry.")]
+        public static Point Centroid(this IEnumerable<ICurve> outlines, IEnumerable<ICurve> openings = null, double tolerance = Tolerance.Distance)
+        {
+            openings = openings ?? new List<ICurve>();
+
+            Point centroid = new Point();
+            double area = 0;
+
+            foreach (ICurve outline in outlines.BooleanUnion(tolerance))
+            {
+                double outlineArea = outline.IArea();
+                centroid += (outline.ICentroid() * outlineArea);
+                area += outlineArea;
+            }
+
+            foreach (ICurve opening in openings.BooleanUnion(tolerance))
+            {
+                Point openingCentroid = opening.ICentroid();
+                double openingArea = opening.IArea();
+                centroid.X -= openingCentroid.X * openingArea;
+                centroid.Y -= openingCentroid.Y * openingArea;
+                centroid.Z -= openingCentroid.Z * openingArea;
+                area -= openingArea;
+            }
+
+            return centroid / area;
+        }
+
 
         /***************************************************/
         /**** Public Methods - Curves                   ****/
         /***************************************************/
-        
+
+        [Description("Queries the centre of area enclosed by a closed, planar, non-self-intersecting Polyline.")]
+        [Input("curve", "The Polyline to get the centre of area of.")]
+        [Input("tolerance", "Distance tolerance used in geometry processing, default set to BH.oM.Geometry.Tolerance.Distance")]
+        [Output("centroid", "The Point at the centre of a region enclosed by given Polyline.")]
         public static Point Centroid(this Polyline curve, double tolerance = Tolerance.Distance)
         {
             if (!curve.IsPlanar(tolerance))
@@ -54,7 +111,6 @@ namespace BH.Engine.Geometry
                 return null;
             }
 
-
             double xc, yc, zc;
             double xc0 = 0, yc0 = 0, zc0 = 0;
 
@@ -68,7 +124,6 @@ namespace BH.Engine.Geometry
 
             for (int i = 1; i < curve.ControlPoints.Count - 2; i++)
             {
-
                 Point pB = curve.ControlPoints[i];
                 Point pC = curve.ControlPoints[i + 1];
 
@@ -95,11 +150,14 @@ namespace BH.Engine.Geometry
             zc = zc0 / curveArea;
 
             return new Point { X = xc, Y = yc, Z = zc };
-
         }
 
         /***************************************************/
 
+        [Description("Queries the centre of area enclosed by a closed, planar, non-self-intersecting PolyCurve.")]
+        [Input("curve", "The PolyCurve to get the centre of area of.")]
+        [Input("tolerance", "Distance tolerance used in geometry processing, default set to BH.oM.Geometry.Tolerance.Distance")]
+        [Output("centroid", "The Point at the centre of area enclosed by given PolyCurve.")]
         public static Point Centroid(this PolyCurve curve, double tolerance = Tolerance.Distance)
         {
             if (!curve.IsPlanar(tolerance))
@@ -131,7 +189,10 @@ namespace BH.Engine.Geometry
                 else if (crv is Arc)
                     pts.Add(crv.IEndPoint());
                 else
-                    throw new NotImplementedException();
+                {
+                    Reflection.Compute.RecordError("PolyCurve consisting of type: " + crv.GetType().Name + " is not implemented for Centroid.");
+                    return null;
+                }
             }
 
             double xc, yc, zc;
@@ -202,46 +263,67 @@ namespace BH.Engine.Geometry
             zc = zc0 / curveArea;
 
             return new Point { X = xc, Y = yc, Z = zc };
-
         }
-        
+
         /***************************************************/
 
+        [Description("Queries the centre of area for an Ellipse.")]
+        [Input("ellipse", "The Ellipse to get the centre of area of.")]
+        [Input("tolerance", "Distance tolerance used in geometry processing, default set to BH.oM.Geometry.Tolerance.Distance")]
+        [Output("centroid", "The Point at the centre of given Ellipse.")]
         public static Point Centroid(this Ellipse ellipse, double tolerance = Tolerance.Distance)
         {
             return ellipse.Centre;
         }
-                
+
         /***************************************************/
 
+        [Description("Queries the centre of area for a Circle.")]
+        [Input("circle", "The Circle to get the centre of area of.")]
+        [Input("tolerance", "Distance tolerance used in geometry processing, default set to BH.oM.Geometry.Tolerance.Distance")]
+        [Output("centroid", "The Point at the centre of given Circle.")]
         public static Point Centroid(this Circle circle, double tolerance = Tolerance.Distance)
         {
             return circle.Centre;
         }
-        
+
         /***************************************************/
 
+        [Description("Queries the centre of area for a Line.")]
+        [Input("line", "The Line to get the centre of area of.")]
+        [Input("tolerance", "Distance tolerance used in geometry processing, default set to BH.oM.Geometry.Tolerance.Distance")]
+        [Output("centroid", "The Point at the centre of given Line.")]
         public static Point Centroid(this Line line, double tolerance = Tolerance.Distance)
         {
             return line.PointAtParameter(0.5);
         }
-        
+
+
+        /***************************************************/
+        /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
-        [NotImplemented]
-        public static Point Centroid(this Arc arc, double tolerance = Tolerance.Distance)
+        [Description("Interface method that queries the centre of area for any ICurve.")]
+        [Input("curve", "The ICurve to get the centre of area of.")]
+        [Input("tolerance", "Distance tolerance used in geometry processing, default set to BH.oM.Geometry.Tolerance.Distance")]
+        [Output("centroid", "The Point at the centre of given ICurve.")]
+        public static Point ICentroid(this ICurve curve, double tolerance = Tolerance.Distance)
         {
-            throw new NotImplementedException();
+            return Centroid(curve as dynamic, tolerance);
         }
-        
+
+
+        /***************************************************/
+        /**** Private Fallback Methods                  ****/
         /***************************************************/
 
-        [NotImplemented]
-        public static Point Centroid(this NurbsCurve nurbsCurve, double tolerance = Tolerance.Distance)
+        private static Point Centroid(this ICurve curve, double tolerance = Tolerance.Distance)
         {
-            throw new NotImplementedException();
+            Reflection.Compute.RecordError($"Centroid is not implemented for ICurves of type: {curve.GetType().Name}.");
+            return null;
         }
-        
+
+
         /***************************************************/
         /**** Private methods                           ****/
         /***************************************************/
@@ -258,17 +340,7 @@ namespace BH.Engine.Geometry
 
             return o + ((v / arc.Radius) * length);
         }
-                       
-        /***************************************************/
-        /**** Public Methods - Interfaces               ****/
-        /***************************************************/
-
-        public static Point ICentroid(this ICurve curve, double tolerance = Tolerance.Distance)
-        {
-            return Centroid(curve as dynamic, tolerance);
-        }
 
         /***************************************************/
     }
 }
-

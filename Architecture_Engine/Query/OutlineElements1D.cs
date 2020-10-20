@@ -49,6 +49,16 @@ namespace BH.Engine.Architecture
         {
             return room.Perimeter.ISubParts().Cast<IElement1D>().ToList();
         }
+
+        /***************************************************/
+
+        [Description("Returns the outline 1D elements of an Architecture Ceiling")]
+        [Input("ceiling", "An Architecture Ceiling")]
+        [Output("outlineElements", "A collection of outline 1D elements")]
+        public static List<IElement1D> OutlineElements1D(this Ceiling ceiling)
+        {
+            return ceiling.Surface.ISubParts().Cast<IElement1D>().ToList();
+        }
     }
 }
 

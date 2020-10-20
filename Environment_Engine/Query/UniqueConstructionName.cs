@@ -45,21 +45,15 @@ namespace BH.Engine.Environment
         [Output("constructionName", "A unique name for the construction")]
         public static string UniqueConstructionName(this IConstruction construction, bool includeConstructionName = false)
         {
+            if (construction == null)
+                return "";
+
             string name = includeConstructionName ? construction.Name : "construction-";
             Construction c = construction as Construction;
             foreach (Layer l in c.Layers)
                 name += l.Material.Name + "-";
 
             return name;
-        }
-
-        [Description("Returns a unique name for a given IConstruction object based on the layer and material names")]
-        [Input("construction", "A physical construction object")]
-        [Output("constructionName", "A unique name for the construction")]
-        [Deprecated("3.1", "Deprecated to allow to include option for including the construction name in its unique name")]
-        public static string UniqueConstructionName(this IConstruction construction)
-        {
-            return construction.UniqueConstructionName(false);
         }
     }
 }

@@ -26,7 +26,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using BH.oM.Environment.Elements;
-using BH.oM.Environment.Gains;
+using BH.oM.Environment.SpaceCriteria;
 using BH.Engine.Geometry;
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
@@ -36,7 +36,7 @@ namespace BH.Engine.Environment
     public static partial class Compute
     {
         /***************************************************/
-        /****          public Methods                   ****/
+        /****          Public Methods                   ****/
         /***************************************************/
 
         [Description("Compute the sensible or latent people gain from the watts per person and occupancy of the space")]
@@ -46,7 +46,11 @@ namespace BH.Engine.Environment
         [Output("peopleGain", "The calculated sensible or latent people gain with the sensible or latent watts for the space")]
         public static People PeopleGain(double sensibleWattsPerPerson = 0.0, double latentWattsPerPerson = 0.0, double occupancy = 0.0)
         {
-            return Create.People(sensibleWattsPerPerson * occupancy, latentWattsPerPerson * occupancy);
+            return new People()
+            {
+                Sensible = sensibleWattsPerPerson * occupancy,
+                Latent = latentWattsPerPerson * occupancy,
+            };
         }
     }
 }

@@ -67,14 +67,6 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [NotImplemented]
-        public static List<ICurve> ExternalEdges(this NurbsSurface surface)
-        {
-            throw new NotImplementedException();
-        }
-
-        /***************************************************/
-
         public static List<ICurve> ExternalEdges(this Pipe surface)
         {
             if (!surface.Capped)
@@ -116,7 +108,7 @@ namespace BH.Engine.Geometry
 
             if (mesh.Faces.Count < 1)
                 return null;
-            
+
             List<Line> edges = mesh.Faces.SelectMany(f => f.Edges(mesh)).ToList();
 
             for (int i = edges.Count - 1; i > 0; i--)
@@ -146,7 +138,17 @@ namespace BH.Engine.Geometry
             return ExternalEdges(surface as dynamic);
         }
 
+
+        /***************************************************/
+        /**** Private Fallback Methods                  ****/
+        /***************************************************/
+
+        private static List<ICurve> ExternalEdges(this ISurface surface)
+        {
+            Reflection.Compute.RecordError($"ExternalEdges is not implemented for ISurface of type: {surface.GetType().Name}.");
+            return null;
+        }
+
         /***************************************************/
     }
 }
-

@@ -59,6 +59,7 @@ namespace BH.Engine.Environment
             envObjects = envObjects.Where(x => (x.Fragments.Where(y => y.GetType() == typeof(OriginContextFragment)).FirstOrDefault() as OriginContextFragment).ElementID == elementID).ToList();
 
             List<Space> rtnSpaces = new List<Space>();
+
             foreach (IEnvironmentObject o in envObjects)
                 rtnSpaces.Add(o as Space);
 

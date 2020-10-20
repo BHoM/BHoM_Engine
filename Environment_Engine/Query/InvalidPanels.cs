@@ -51,7 +51,6 @@ namespace BH.Engine.Environment
                 listPanels.Add(new List<Panel>());
 
             foreach (Panel p in panels)
-
             {
                 //check external panels and make sure we have one adj space
                 if ((p.Type == PanelType.Roof || p.Type == PanelType.WallExternal || p.Type == PanelType.FloorExposed || p.Type == PanelType.FloorRaised || p.Type == PanelType.SlabOnGrade || p.Type == PanelType.UndergroundSlab || p.Type == PanelType.UndergroundWall) && p.ConnectedSpaces.Count != 1)
@@ -95,21 +94,21 @@ namespace BH.Engine.Environment
             }
 
             if (listPanels[0].Count > 0)
-                BH.Engine.Reflection.Compute.RecordWarning("External panels must have one adj space");
+                BH.Engine.Reflection.Compute.RecordWarning("External panels must have one adjacent space");
             if (listPanels[1].Count > 0)
-                BH.Engine.Reflection.Compute.RecordWarning("Shade must have no adj space");
+                BH.Engine.Reflection.Compute.RecordWarning("Shade must have no adjacent space");
             if (listPanels[2].Count > 0)
                 BH.Engine.Reflection.Compute.RecordWarning("Internal panel must have two different adj spaces");
             if (listPanels[3].Count > 0)
-                BH.Engine.Reflection.Compute.RecordWarning("Two the same spaces on both side");
+                BH.Engine.Reflection.Compute.RecordWarning("Internal panels have two adjacent spaces in their data which is the same space name");
             if (listPanels[4].Count > 0)
                 BH.Engine.Reflection.Compute.RecordWarning("Panel area is possibly to small, area is less than panel area");
             if (listPanels[5].Count > 0)
-                BH.Engine.Reflection.Compute.RecordWarning("One of panel poluline edge is less than panel edge length");
+                BH.Engine.Reflection.Compute.RecordWarning("One of panel edges is less than panel edge length");
             if (listPanels[6].Count > 0)
                 BH.Engine.Reflection.Compute.RecordWarning("Panel polyline is not closed");
             if (listPanels[7].Count > 0)
-                BH.Engine.Reflection.Compute.RecordWarning("Panel polyline intersect");
+                BH.Engine.Reflection.Compute.RecordWarning("Panel polyline is self intersecting");
 
             return listPanels;
         }

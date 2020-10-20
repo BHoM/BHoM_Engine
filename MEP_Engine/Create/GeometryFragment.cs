@@ -39,7 +39,6 @@ namespace BH.Engine.MEP
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-
         [Description("Returns an MEP Geometry Fragment which can be applied to an MEP object to provide geometric information")]
         [Input("geometry", "A BHoM Geometry object, any geometry which implements the IGeometry interface, such as Curves, Surfaces, etc. - default null")]
         [Output("geometryFragment", "An MEP Geometry Fragment")]
@@ -50,6 +49,7 @@ namespace BH.Engine.MEP
                 Geometry = geometry,
             };
         }
+        /***************************************************/
     }
 }
 

@@ -50,7 +50,10 @@ namespace BH.Engine.Environment
             //rValue is calculated as being the thickness of the layer dividied by the materials conductivity
 
             IEnvironmentMaterial envMaterial = layer.Material.Properties.Where(x => x is IEnvironmentMaterial).FirstOrDefault() as IEnvironmentMaterial;
-            if (envMaterial == null) return 0.0;
+            
+            if (envMaterial == null)
+                return 0.0;
+
             return (layer.Thickness / envMaterial.Conductivity);
         }
     }

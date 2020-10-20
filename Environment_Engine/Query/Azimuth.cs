@@ -57,7 +57,8 @@ namespace BH.Engine.Environment
         {
             List<Point> pts = polyline.DiscontinuityPoints();
 
-            if (pts.Count < 3 || !polyline.IsClosed()) return -1; //Protection in case there aren't enough points to make a plane
+            if (pts.Count < 3 || !polyline.IsClosed())
+                return -1; //Protection in case there aren't enough points to make a plane
 
             Plane plane = BH.Engine.Geometry.Create.Plane(pts[0], pts[1], pts[2]);
 
@@ -78,8 +79,8 @@ namespace BH.Engine.Environment
                 azimuth = (BH.Engine.Geometry.Query.SignedAngle(v1, v2, Vector.ZAxis) * (180 / Math.PI));
                 if (azimuth < 0)
                     azimuth = 360 + azimuth;
-
             }
+
             return azimuth;
         }
     }

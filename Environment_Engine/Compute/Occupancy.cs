@@ -25,9 +25,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-using BH.oM.Environment.Elements;
-using BH.oM.Environment.Gains;
-using BH.Engine.Geometry;
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
 
@@ -36,7 +33,7 @@ namespace BH.Engine.Environment
     public static partial class Compute
     {
         /***************************************************/
-        /****          public Methods                   ****/
+        /****          Public Methods                   ****/
         /***************************************************/
 
         [Description("Compute the occupancy from the square meters per person and floor area of the space")]

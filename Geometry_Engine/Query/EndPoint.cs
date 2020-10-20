@@ -68,7 +68,10 @@ namespace BH.Engine.Geometry
             if (!curve.IsPeriodic())
                 return curve.ControlPoints.LastOrDefault();
             else
-                throw new NotImplementedException();
+            {
+                Reflection.Compute.RecordError("EndPoint is not implemented for periodic NurbsCurves");
+                return null;
+            }
         }
 
         /***************************************************/
@@ -122,4 +125,3 @@ namespace BH.Engine.Geometry
         /***************************************************/
     }
 }
-

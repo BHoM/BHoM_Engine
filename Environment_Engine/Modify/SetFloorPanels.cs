@@ -40,9 +40,9 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns the floor panels of a space represented by Environment Panels")]
+        [Description("Modifies a collection of Panels and sets their type to be slab on grade or internal floor if they are the lowest panel in the space. If the panel has one connected space then it is deemed to be a slab on grade panel, otherwise it is an internal floor panel")]
         [Input("panelsAsSpace", "A collection of Environment Panels that represent a closed space")]
-        [Output("floorPanels", "BHoM Environment panel representing the floor of the space")]
+        [Output("panelsAsSpace", "BHoM Environment panels representing a closed space where the slab on grade or internal floor panels have had their type set")]
         public static List<Panel> SetFloorPanels(this List<Panel> panelsAsSpace)
         {
             List<Panel> clones = new List<Panel>(panelsAsSpace.Select(x => x.DeepClone<Panel>()).ToList());
@@ -59,8 +59,8 @@ namespace BH.Engine.Environment
 
             if (floorPanels.Count == 0)
             {
-                BH.Engine.Reflection.Compute.RecordWarning("Could not find floor panel");
-                return null;
+                BH.Engine.Reflection.Compute.RecordWarning("No floor panels were found to set the type for");
+                return clones;
             }
 
             foreach (Panel panel in floorPanels)
@@ -72,7 +72,7 @@ namespace BH.Engine.Environment
             }
 
 
-            return floorPanels;
+            return clones;
         }
     }
 }

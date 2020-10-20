@@ -53,8 +53,10 @@ namespace BH.Engine.Environment
         [Output("floorArea", "The floor area of the space")]
         public static double Area(this List<Panel> panelsAsSpace)
         {
-            if (panelsAsSpace.FloorGeometry() == null) return 0;
-            else return panelsAsSpace.FloorGeometry().Area();
+            if (panelsAsSpace.FloorGeometry() == null)
+                return 0;
+            else
+                return panelsAsSpace.FloorGeometry().Area();
         }
     }
 }

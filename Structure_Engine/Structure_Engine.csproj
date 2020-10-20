@@ -88,11 +88,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Compute\MapTaperedProfile.cs" />
     <Compile Include="Compute\IntegrateSection.cs" />
+    <Compile Include="Compute\OrientationAngle.cs" />
     <Compile Include="Compute\PlasticModulus.cs" />
     <Compile Include="Compute\ShearAreaPolyline.cs" />
     <Compile Include="Compute\Integrate.cs" />
-    <Compile Include="Convert\ToFramingElement.cs" />
     <Compile Include="Create\Loads\AreaTemperatureLoad.cs" />
     <Compile Include="Create\Loads\AreaUniformlyDistributedLoad.cs" />
     <Compile Include="Create\Loads\BarPointLoad.cs" />
@@ -135,7 +136,10 @@
     <Compile Include="Create\SectionProperties\TransverseReinforcement\TransverseReinforcement.cs" />
     <Compile Include="Create\SectionProperties\TimberSection.cs" />
     <Compile Include="Modify\AddReinforcement.cs" />
+    <Compile Include="Modify\OrientTowards.cs" />
+    <Compile Include="Modify\SetLocalOrientation.cs" />
     <Compile Include="Modify\SetMaterial.cs" />
+    <Compile Include="Modify\SetNormal.cs" />
     <Compile Include="Modify\SetStructuralFragment.cs" />
     <Compile Include="Objects\EqualityComparers\CaseNumberComaprer.cs" />
     <Compile Include="Objects\EqualityComparers\Constraint4DOFComparer.cs" />
@@ -150,10 +154,12 @@
     <Compile Include="Query\EmbodiedCarbon.cs" />
     <Compile Include="Query\ExternalEdgeCurves.cs" />
     <Compile Include="Query\Fixities.cs" />
+    <Compile Include="Query\HasAssignedObjectIds.cs" />
     <Compile Include="Query\HasMergeablePropertiesWith.cs" />
     <Compile Include="Query\HasModifiers.cs" />
     <Compile Include="Query\InternalEdgeCurves.cs" />
     <Compile Include="Query\IsNumericallyDependent.cs" />
+    <Compile Include="Query\LocalOrientation.cs" />
     <Compile Include="Query\MaterialComposition.cs" />
     <Compile Include="Query\MaterialType.cs" />
     <Compile Include="Create\Elements\IElement0D\NewElement0D.cs" />
@@ -161,12 +167,10 @@
     <Compile Include="Create\Elements\IElement2D\NewInternalElement2D.cs" />
     <Compile Include="Create\Requests\FilterRequest.cs" />
     <Compile Include="Create\Elements\Edge.cs" />
-    <Compile Include="Create\Framing\FramingElementProperty.cs" />
     <Compile Include="Create\SurfaceProperties\LoadingPanelProperty.cs" />
     <Compile Include="Create\Offsets\Offset.cs" />
     <Compile Include="Create\SectionProperties\Reinforcement.cs" />
     <Compile Include="Create\SurfaceProperties\ConstantThickness.cs" />
-    <Compile Include="Create\SectionProperties\SectionProfile.cs" />
     <Compile Include="Create\SurfaceProperties\Waffle.cs" />
     <Compile Include="Create\SurfaceProperties\Ribbed.cs" />
     <Compile Include="Create\Constraints\BarRelease.cs" />
@@ -280,7 +284,9 @@
       <Name>Spatial_Engine</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Convert\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>

@@ -92,7 +92,7 @@ namespace BH.Engine.Geometry
                     EndAngle = arc.EndAngle
                 };
             }
-            else  
+            else
                 return arc.ToNurbsCurve().Project(p);
         }
 
@@ -185,14 +185,6 @@ namespace BH.Engine.Geometry
                 surface.VDegree,
                 innerTrims,
                 outerTrims);
-        }
-
-        /***************************************************/
-
-        [NotImplemented]
-        public static Pipe Project(this Pipe surface, Plane p)
-        {
-            throw new NotImplementedException(); //TODO: implement projection of a pipe on a plane
         }
 
         /***************************************************/
