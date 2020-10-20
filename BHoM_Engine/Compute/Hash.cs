@@ -51,7 +51,7 @@ namespace BH.Engine.Base
         [Input("typeExceptions", "(Optional) e.g. `typeof(Guid)`. Any corresponding type is ignored.")]
         [Input("maxNesting", "(Optional) e.g. `100`. If any property is nested into the object over that level, it is ignored.")]
         public static string Hash(
-            this IObject iObj,
+            IObject iObj,
             List<string> propertyNameExceptions = null, //e.g. `Fragments`
             List<string> propertyFullNameExceptions = null, //e.g. `BH.oM.Structure.Elements.Bar.Fragments`
             List<string> namespaceExceptions = null, //e.g. `BH.oM.Structure`
