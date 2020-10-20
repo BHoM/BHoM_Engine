@@ -30,6 +30,7 @@ using BH.oM.Geometry;
 
 namespace BH.Engine.Geometry
 {
+    //This is used to support the Split method in BH.Engine.Geometry.Compute
     public class LineTree
     {
         public Line ThisLine { get; set; } = null;

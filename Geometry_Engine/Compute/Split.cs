@@ -27,10 +27,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
+
 namespace BH.Engine.Geometry
 {
     public static partial class Compute
     {
+        [Description("Split an outer region by the cutting lines into a collection of closed contained regions within the outer region.")]
+        [Input("outerRegion", "An outer region that will contain the closed regions generated.")]
+        [Input("cuttingLines", "The lines to cut the outer region by.")]
+        [Input("distanceTolerance", "Tolerance to use for distance measurment operations, default to BH.oM.Geometry.Tolerance.Distance.")]
+        [Input("decimalPlaces", "All coordinates of the geometry will be rounded to the number of decimal places specified. Default 6.")]
+        [Output("regions", "Closed polygon regions contained within the outer region cut by the cutting lines.")]
         public static List<Polyline> Split(Polyline outerRegion, List<Line> cuttingLines, double distanceTolerance = BH.oM.Geometry.Tolerance.Distance, int decimalPlaces = 6)
         {
             List<Point> intersectingPoints = BH.Engine.Geometry.Query.LineIntersections(cuttingLines); //Get the points to split the lines by

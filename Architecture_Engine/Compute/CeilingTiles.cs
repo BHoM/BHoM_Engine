@@ -33,10 +33,20 @@ using BH.Engine.Geometry;
 using BH.oM.Reflection;
 using System.Runtime.InteropServices;
 
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
+
 namespace BH.Engine.Architecture
 {
     public static partial class Compute
     {
+        [Description("Generate a collection of Ceiling Tile objects that can sit within the given ceiling. Uses the BH.Engine.Geometry.Compute.Split(Polyline, List<Line>) method for its core.")]
+        [Input("ceiling", "Ceiling object which provides the outer perimeter of the ceiling tiles")]
+        [Input("ceilingTileLines", "The lines across the ceiling which will be used to cut the ceiling into individual tiles.")]
+        [Input("angleTolerance", "Tolerance used for angle calculations. Default set to BH.oM.Geometry.Tolerance.Angle.")]
+        [Input("distanceTolerance", "Tolerance used for distance calculations. Default set to BH.oM.Geometry.Tolerance.Distance")]
+        [Input("decimalPlaces", "All coordinates of the geometry will be rounded to the number of decimal places specified. Default 6.")]
+        [Output("ceilingTiles", "Closed Ceiling Tile regions contained within the Ceiling.")]
         public static List<CeilingTile> CeilingTiles(Ceiling ceiling, List<Line> ceilingTileLines, double angleTolerance = BH.oM.Geometry.Tolerance.Angle, double distanceTolerance = BH.oM.Geometry.Tolerance.Distance, int decimalPlaces = 6)
         {
             List<Line> openingLines = ceiling.Surface.IInternalEdges().SelectMany(x => x.ISubParts()).Cast<Line>().ToList();
