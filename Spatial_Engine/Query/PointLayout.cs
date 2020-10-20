@@ -397,7 +397,7 @@ namespace BH.Engine.Spatial
                 foreach (ICurve o in openings)
                 {
                     Point oTmp = Geometry.Query.ICentroid(o);
-                    double oArea = o.IArea();
+                    double oArea = Geometry.Query.IArea(o);
                     x -= oTmp.X * oArea;
                     y -= oTmp.Y * oArea;
                     z -= oTmp.Z * oArea;
