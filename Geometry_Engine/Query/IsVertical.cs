@@ -47,6 +47,9 @@ namespace BH.Engine.Geometry
 
         private static bool IsVertical(Point p1, Point p2)
         {
+            if (p1 == null || p2 == null)
+                return false;
+
             double dx = p1.X - p2.X;
             double dy = p1.Y - p2.Y;
 
