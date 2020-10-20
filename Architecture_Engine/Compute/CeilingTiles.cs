@@ -9,13 +9,14 @@ using BH.oM.Architecture.Elements;
 using BH.oM.Geometry;
 using BH.Engine.Geometry;
 using BH.oM.Reflection;
+using System.Runtime.InteropServices;
 
 namespace BH.Engine.Architecture
 {
     public static partial class Compute
     {
         //public static List<CeilingTile> CeilingTiles(Polyline perimeterCurve, List<Line> ceilingTileLines)
-        public static Output<List<Line>, List<Line>, List<CeilingTile>> CeilingTiles(Polyline perimeterCurve, List<Line> ceilingTileLines)
+        /*public static Output<List<Line>, List<Line>, List<CeilingTile>> CeilingTiles(Polyline perimeterCurve, List<Line> ceilingTileLines)
         {
             List<Point> intersectingPoints = BH.Engine.Geometry.Query.LineIntersections(ceilingTileLines);
 
@@ -147,6 +148,165 @@ namespace BH.Engine.Architecture
                 Item3 = tiles,
             };
             //return new List<CeilingTile>();
+        }*/
+
+        public static Output<List<Line>, List<Line>, List<CeilingTile>> CeilingTiles(Polyline perimeterCurve, List<Line> ceilingTileLines)
+        {
+            List<Point> intersectingPoints = BH.Engine.Geometry.Query.LineIntersections(ceilingTileLines);
+
+            List<Line> splitCurves = ceilingTileLines.SelectMany(x => x.ISplitAtPoints(intersectingPoints)).Cast<Line>().ToList();
+
+            List<Line> perimeterLines = new List<Line>();
+            List<Line> perimeterCurveLines = perimeterCurve.ISubParts().Cast<Line>().ToList();
+
+            foreach (Line l in splitCurves)
+            {
+                foreach (Line l2 in perimeterCurveLines)
+                {
+                    Line intersect = l.BooleanIntersection(l2);
+                    if (intersect != null && intersect.Length() == l.Length())
+                    {
+                        //This line is part of the outer perimeter
+                        perimeterLines.Add(l);
+                    }
+                }
+            }
+
+            foreach (Line l in perimeterLines)
+                splitCurves.Remove(l); //Remove the perimeter from the splits
+
+            List<Line> splitCurves2 = new List<Line>(splitCurves);
+            foreach (Line l in splitCurves2)
+                splitCurves.Add(l); //Refactor this!!!!
+
+            foreach (Line l in perimeterLines)
+                splitCurves.Add(l);
+
+            
+
+            List<CeilingTile> tiles = new List<CeilingTile>();
+
+            List<Line> usedPerimeterLines = new List<Line>();
+
+            int count2 = 0;
+
+           while(perimeterLines.Count > 0 && count2 < 1000)
+            {
+                count2++; //Refactor out
+
+                Line start = perimeterLines[0];
+
+                List<Line> searchLines = splitCurves.Distinct().ToList();
+
+                searchLines.Remove(start);
+
+                List<LineTree> children = searchLines.Where(x => x.Start.RoundCoordinates(6) == start.End.RoundCoordinates(6) || x.End.RoundCoordinates(6) == start.End.RoundCoordinates(6)).Select(x =>
+                        {
+                            Point uPt = (x.Start.RoundCoordinates(6) == start.End.RoundCoordinates(6) ? x.End.RoundCoordinates(6) : x.Start.RoundCoordinates(6));
+                            return new LineTree
+                            {
+                                Parent = start,
+                                ThisLine = x,
+                                UnconnectedPoint = uPt,
+                            };
+                        }).ToList();
+
+                LineTree last = null;
+                List<LineTree> master = new List<LineTree>();
+
+                int count = 0;
+
+                while(children.Count > 0 && last == null && count < 1000)
+                {
+                    count++; //Refactor out
+
+                    master.AddRange(children);
+                    List<LineTree> grandchildren = new List<LineTree>();
+
+                    foreach(LineTree lt in children)
+                    {
+                        List<LineTree> ltChildren = searchLines.Where(x => master.Where(y => y.ThisLine == x).FirstOrDefault() == null && (x.Start.RoundCoordinates(6) == lt.UnconnectedPoint || x.End.RoundCoordinates(6) == lt.UnconnectedPoint)).Select(x =>
+                        {
+                            Point uPt = (x.Start.RoundCoordinates(6) == lt.UnconnectedPoint ? x.End.RoundCoordinates(6) : x.Start.RoundCoordinates(6));
+                            return new LineTree
+                            {
+                                Parent = lt.ThisLine,
+                                ThisLine = x,
+                                UnconnectedPoint = uPt,
+                            };
+                        }).ToList();
+
+                        ltChildren = ltChildren.Distinct().ToList();
+
+                        if(ltChildren.Where(x => x.ThisLine.Start.RoundCoordinates(6) == start.Start.RoundCoordinates(6) || x.ThisLine.End.RoundCoordinates(6) == start.Start.RoundCoordinates(6)).FirstOrDefault() != null)
+                        {
+                            last = ltChildren.Where(x => x.ThisLine.Start.RoundCoordinates(6) == start.Start.RoundCoordinates(6) || x.ThisLine.End.RoundCoordinates(6) == start.Start.RoundCoordinates(6)).FirstOrDefault();
+                            break;
+                        }
+
+                        grandchildren.AddRange(ltChildren);
+                    }
+
+                    children = new List<LineTree>(grandchildren);
+                }
+
+                if (last == null)
+                    continue;
+
+                List<Line> outlines = new List<Line>();
+                outlines.Add(last.ThisLine);
+                int count3 = 0;
+                while(last.Parent != start && count3 < 1000)
+                {
+                    count3++; //Refactor out
+
+                    last = master.Where(x => x.ThisLine == last.Parent).FirstOrDefault();
+                    outlines.Add(last.ThisLine);
+                }
+
+                outlines.Add(start);
+
+                foreach (Line l in outlines)
+                {
+                    if (perimeterLines.Contains(l))
+                        perimeterLines.Remove(l);
+
+                    splitCurves.Remove(l);
+                }
+
+                if(perimeterLines.Count > 0)
+                    perimeterLines.RemoveAt(0);
+
+                foreach (Line add in splitCurves)
+                {
+                    if (splitCurves.Where(x => x == add).Count() == 1)
+                        perimeterLines.Add(add);
+                }
+
+                perimeterLines = perimeterLines.Distinct().ToList();
+
+                tiles.Add(new CeilingTile { Perimeter = outlines.Join()[0] });
+            }
+
+
+
+
+
+            return new Output<List<Line>, List<Line>, List<CeilingTile>>
+            {
+                Item1 = new List<Line>(),
+                Item2 = new List<Line>(),
+                Item3 = tiles,
+            };
         }
+
+        
+    }
+
+    public class LineTree
+    {
+        public Line ThisLine { get; set; } = null;
+        public Line Parent { get; set; } = null;
+        public Point UnconnectedPoint { get; set; } = null;
     }
 }
