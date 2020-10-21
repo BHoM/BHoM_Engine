@@ -38,8 +38,9 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [PreviousVersion("4.0", "BH.Engine.Reflection.Query.Description(System.Reflection.MemberInfo)")]
         [Description("Return the custom description of a C# class member (e.g. property, method, field)")]
-        public static string Description(this MemberInfo member)
+        public static string Description(this MemberInfo member, bool addTypeDescription = true)
         {
             DescriptionAttribute descriptionAttribute = member.GetCustomAttribute<DescriptionAttribute>();
             QuantityAttribute quantityAttribute = member.GetCustomAttribute<QuantityAttribute>();
@@ -48,7 +49,7 @@ namespace BH.Engine.Reflection
             if (descriptionAttribute != null && !string.IsNullOrWhiteSpace(descriptionAttribute.Description))
                 desc = descriptionAttribute.Description + Environment.NewLine;
 
-            if (member is PropertyInfo && (typeof(IObject).IsAssignableFrom(((PropertyInfo)member).PropertyType)))
+            if (addTypeDescription && member is PropertyInfo && (typeof(IObject).IsAssignableFrom(((PropertyInfo)member).PropertyType)))
             {
                 desc += ((PropertyInfo)member).PropertyType.Description(quantityAttribute) + Environment.NewLine;
             }
@@ -58,8 +59,9 @@ namespace BH.Engine.Reflection
 
         /***************************************************/
 
+        [PreviousVersion("4.0", "BH.Engine.Reflection.Query.Description(System.Reflection.ParameterInfo)")]
         [Description("Return the custom description of a C# method argument")]
-        public static string Description(this ParameterInfo parameter)
+        public static string Description(this ParameterInfo parameter, bool addTypeDescription = true)
         {
             IEnumerable<InputAttribute> inputDesc = parameter.Member.GetCustomAttributes<InputAttribute>().Where(x => x.Name == parameter.Name);
             QuantityAttribute quantityAttribute = null;
@@ -90,7 +92,7 @@ namespace BH.Engine.Reflection
                     }
                 }
             }
-            if (parameter.ParameterType != null)
+            if (addTypeDescription && parameter.ParameterType != null)
             {
                 desc += parameter.ParameterType.Description(quantityAttribute);
             }
