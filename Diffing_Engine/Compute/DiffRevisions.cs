@@ -179,6 +179,17 @@ namespace BH.Engine.Diffing
 
             return true;
         }
+
+        private static bool AllHavePersistentIdFragment(this IEnumerable<IBHoMObject> bHoMObjects)
+        {
+            // Check if objects have persistentId fragment, and it has not null Id.
+            if (bHoMObjects == null
+                || bHoMObjects.Count() == 0
+                || bHoMObjects.Select(o => o.FindFragment<IPersistentId>()).Where(f => f.PersistentId != null).Count() < bHoMObjects.Count())
+                return false;
+
+            return true;
+        }
     }
 }
 
