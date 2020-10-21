@@ -50,6 +50,8 @@ namespace BH.Engine.Base
             return Hash(iObj, null);
         }
 
+        /***************************************************/
+
         [Description("Computes a Hash code for the iObject. The hash uniquely identifies the iObject based on its properties and their values.")]
         [Input("iObj", "iObject the hash code should be calculated for.")]
         [Input("propertyNameExceptions", "(Optional) e.g. `Fragments`. If you want to exclude a property that many objects have.")]
