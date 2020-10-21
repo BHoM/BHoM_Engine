@@ -89,9 +89,19 @@ namespace BH.Engine.Diffing
             if (bHoMObjects_past.AllHaveHashFragment() && bHoMObjects_following.AllHaveHashFragment())
             {
                 BH.Engine.Reflection.Compute.RecordNote($"Calling the diffing method '{nameof(DiffRevisionObjects)}'.");
-                return DiffRevisionObjects(pastObjs, followingObjs, diffConfigCopy);
+                return DiffRevisionObjects(bHoMObjects_past, bHoMObjects_following, diffConfigCopy);
             }
 
+            // Check if the BHoMObjects all have a `persistentId` assigned.
+            // If so, we may attempt the DiffWithFragmentId diffing.
+            if (bHoMObjects_past.AllHavePersistentIdFragment() && bHoMObjects_following.AllHavePersistentIdFragment())
+            {
+                BH.Engine.Reflection.Compute.RecordNote($"Calling the diffing method '{nameof(DiffWithFragmentId)}'.");
+                return DiffWithFragmentId(bHoMObjects_past, bHoMObjects_following, typeof(IPersistentId), nameof(IPersistentId.PersistentId), diffConfigCopy);
+            }
+
+            // If the collections have the same length, and `AllowOneByOneDiffing` is enabled,
+            // compare objects from the two collections one by one.
             if (diffConfigCopy.AllowOneByOneDiffing && pastObjs.Count() == followingObjs.Count())
             {
                 BH.Engine.Reflection.Compute.RecordNote($"Calling the diffing method '{nameof(DiffOneByOne)}'" +
@@ -100,13 +110,14 @@ namespace BH.Engine.Diffing
                 return DiffOneByOne(pastObjs, followingObjs, diffConfigCopy);
             }
 
-
+            // As last resort, compute the hash of each object and compare the objects with the same hash.
+            // Options on how the hash should be computed can be set in the diffconfig.
             BH.Engine.Reflection.Compute.RecordNote($"Calling the most generic Diffing method, '{nameof(DiffGenericObjects)}'." +
                 $"\nThis will only identify new/deleted objects; it will not track which object was modified." +
                 $"\nReason: the inputs do not satisfy any of the following conditions (at least one is needed to trigger another more detailed diffing):" +
                 $"\n\t* Not all BHoMObjects have a HashFragment assigned (they didn't pass through a Revision);" +
                 $"\n\t* No {nameof(customDataIdKey)} was input." +
-                $"\n\t* The input collections have different legths.");
+                $"\n\t* The input collections have different lengths.");
             return DiffGenericObjects(pastObjs as dynamic, followingObjs as dynamic, diffConfigCopy);
         }
     }
