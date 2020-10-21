@@ -40,10 +40,10 @@
     </Reference>
     <Reference Include="Diffing_Engine, Version=4.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\ProgramData\BHoM\Assemblies\Diffing_Engine.dll</HintPath>
+      <HintPath>ProgramData\BHoM\Assemblies\Diffing_Engine.dll</HintPath>
     </Reference>
     <Reference Include="Diffing_oM">
-      <HintPath>..\..\..\..\..\..\..\ProgramData\BHoM\Assemblies\Diffing_oM.dll</HintPath>
+      <HintPath>ProgramData\BHoM\Assemblies\Diffing_oM.dll</HintPath>
     </Reference>
     <Reference Include="Dimensional_oM">
       <HintPath>C:\ProgramData\BHoM\Assemblies\Dimensional_oM.dll</HintPath>
