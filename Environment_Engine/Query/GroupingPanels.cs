@@ -70,7 +70,6 @@ namespace BH.Engine.Environment
         [MultiOutput(7, "rooflight", "A collection of Openings that match the type: Rooflight")]
         [MultiOutput(8, "window", "A collection of Openings that match the type: Window")]
         [MultiOutput(9, "vehicleDoor", "A collection of Openings that match the type: VehicleDoor")]
-
         public static Output<List<Opening>, List<Opening>, List<Opening>, List<Opening>, List<Opening>, List<Opening>, List<Opening>, List<Opening>, List<Opening>, List<Opening>> Group(this List<Opening> openings)
         {
             List<Opening> undefined = openings.Where(x => x.Type == OpeningType.Undefined).ToList();
@@ -98,7 +97,5 @@ namespace BH.Engine.Environment
                 Item10 = vehicleDoor,
             };
         }
-
-
     }
 }
