@@ -182,6 +182,53 @@ namespace BH.Engine.Analytical
         }
 
         /***************************************************/
+        [Description("Gets the geometry of a Graph. Method required for automatic display in UI packages.")]
+        [Input("graph", "Graph to get the geometry from.")]
+        [Output("Composite Geometry", "The CompositeGeometry geometry of the Graph.")]
+        public static CompositeGeometry Geometry(this Graph graph)
+        {
+            List<IGeometry> geometries = new List<IGeometry>();
 
+            foreach (KeyValuePair<System.Guid, IBHoMObject> kvp in graph.Entities)
+            {
+                if (kvp.Value is INode)
+                {
+                    INode node = kvp.Value as INode;
+                    geometries.Add(node.Geometry());
+
+                    List<IBHoMObject> connected = graph.Destinations(kvp.Value);
+                    foreach (IBHoMObject c in connected)
+                    {
+                        if (c is INode)
+                        {
+                            INode end = c as INode;
+                            geometries.Add(BH.Engine.Geometry.Create.Line(node.Position, end.Position));
+                            geometries.Add(ArrowHead(node, end));
+                        }
+
+                    }
+                }
+
+            }
+            return BH.Engine.Geometry.Create.CompositeGeometry(geometries);
+        }
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+        private static CompositeGeometry ArrowHead(INode start, INode end)
+        {
+            Vector back = start.Position - end.Position;
+            Vector perp = back.CrossProduct(Vector.ZAxis);
+            if(perp.Length() == 0)
+                perp = back.CrossProduct(Vector.YAxis);
+            back = back * 0.1;
+            perp = perp * 0.025;
+            Point p1 = end.Position + (back + perp);
+            Point p2 = end.Position + (back - perp);
+            List<IGeometry> geometries = new List<IGeometry>();
+            geometries.Add(BH.Engine.Geometry.Create.Line(end.Position, p1));
+            geometries.Add(BH.Engine.Geometry.Create.Line(end.Position, p2));
+            return BH.Engine.Geometry.Create.CompositeGeometry(geometries);
+        }
     }
 }
