@@ -14,18 +14,22 @@ namespace BH.Engine.Environment
 {
     public static partial class Query  
     {
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
+
         [Description("Groups a collection of Environment Panels by their panel type")]
         [Input("panels", "A collection of Environment Panels")]
         [MultiOutput(0, "undefined", "A collection of Environment Panels that match the type: Undefined")]
         [MultiOutput(1, "air", "A collection of Environment Panels that match the type: Air")]
         [MultiOutput(2, "ceiling", "A collection of Environment Panels that match the type: Ceiling")]
         [MultiOutput(3, "curtainWall", "A collection of Environment Panels that match the type: CurtainWall")]
-        [MultiOutput(4, "floor", "A collection of Environment Panels that match the type: Floor, FloorExposed, FloorInternal, FloorRaised, SlabOnGrade")]
+        [MultiOutput(4, "floor", "A collection of Environment Panels that match the type: Floor, FloorExposed, FloorInternal, FloorRaised or SlabOnGrade")]
         [MultiOutput(5, "roof", "A collection of Environment Panels that match the type: Roof")]
         [MultiOutput(6, "shade", "A collection of Environment Panels that match the type: Shade")]
         [MultiOutput(7, "solarPanel", "A collection of Environment Panels that match the type: SolarPanel")]
-        [MultiOutput(8, "undergroundPanel", "A collection of Environment Panels that match the type: UndergroundCeiling, UndergroundSlab, UndergroundWall")]
-        [MultiOutput(9, "wall", "A collection of Environment Panels that match the type: Wall, WallExternal, WallInternal")]
+        [MultiOutput(8, "undergroundPanel", "A collection of Environment Panels that match the type: UndergroundCeiling, UndergroundSlab or UndergroundWall")]
+        [MultiOutput(9, "wall", "A collection of Environment Panels that match the type: Wall, WallExternal or WallInternal")]
         public static Output<List<Panel>, List<Panel>, List<Panel>, List<Panel>, List<Panel>, List<Panel>, List<Panel>, List<Panel>, List<Panel>, List<Panel>> Group(this List<Panel> panels)
         {
             List<Panel> undefined = panels.Where(x => x.Type == PanelType.Undefined).ToList();
@@ -53,7 +57,48 @@ namespace BH.Engine.Environment
                 Item10 = wall,
             };
         }
-        
+
+        [Description("Groups a collection of Openings by their opening type")]
+        [Input("openings", "A collection of Openings")]
+        [MultiOutput(0, "undefined", "A collection of Openings that match the type: Undefined")]
+        [MultiOutput(1, "curtainWall", "A collection of Openings that match the type: CurtainWall")]
+        [MultiOutput(2, "door", "A collection of Openings that match the type: Door")]
+        [MultiOutput(3, "frame", "A collection of Openings that match the type: Frame")]
+        [MultiOutput(4, "glazing", "A collection of Openings that match the type: Glazing")]
+        [MultiOutput(5, "hole", "A collection of Openings that match the type: Hole")]
+        [MultiOutput(6, "openingWithFrame", "A collection of Openings that match the type: RooflightWithFrame or WindowWithFrame")]
+        [MultiOutput(7, "rooflight", "A collection of Openings that match the type: Rooflight")]
+        [MultiOutput(8, "window", "A collection of Openings that match the type: Window")]
+        [MultiOutput(9, "vehicleDoor", "A collection of Openings that match the type: VehicleDoor")]
+
+        public static Output<List<Opening>, List<Opening>, List<Opening>, List<Opening>, List<Opening>, List<Opening>, List<Opening>, List<Opening>, List<Opening>, List<Opening>> Group(this List<Opening> openings)
+        {
+            List<Opening> undefined = openings.Where(x => x.Type == OpeningType.Undefined).ToList();
+            List<Opening> curtainWall = openings.Where(x => x.Type == OpeningType.CurtainWall).ToList();
+            List<Opening> door = openings.Where(x => x.Type == OpeningType.Door).ToList();
+            List<Opening> frame = openings.Where(x => x.Type == OpeningType.Frame).ToList();
+            List<Opening> glazing = openings.Where(x => x.Type == OpeningType.Glazing).ToList();
+            List<Opening> hole = openings.Where(x => x.Type == OpeningType.Hole).ToList();
+            List<Opening> openingWithFrame = openings.Where(x => x.Type == OpeningType.RooflightWithFrame || x.Type == OpeningType.WindowWithFrame).ToList();
+            List<Opening> rooflight = openings.Where(x => x.Type == OpeningType.Rooflight).ToList();
+            List<Opening> window = openings.Where(x => x.Type == OpeningType.Window).ToList();
+            List<Opening> vehicleDoor = openings.Where(x => x.Type == OpeningType.VehicleDoor).ToList();
+
+            return new Output<List<Opening>, List<Opening>, List<Opening>, List<Opening>, List<Opening>, List<Opening>, List<Opening>, List<Opening>, List<Opening>, List<Opening>>
+            {
+                Item1 = undefined,
+                Item2 = curtainWall,
+                Item3 = door,
+                Item4 = frame,
+                Item5 = glazing,
+                Item6 = hole,
+                Item7 = openingWithFrame,
+                Item8 = rooflight,
+                Item9 = window,
+                Item10 = vehicleDoor,
+            };
+        }
+
 
     }
 }
