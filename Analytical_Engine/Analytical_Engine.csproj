@@ -38,6 +38,13 @@
       <HintPath>C:\ProgramData\BHoM\Assemblies\BHoM.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Diffing_Engine, Version=4.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\..\ProgramData\BHoM\Assemblies\Diffing_Engine.dll</HintPath>
+    </Reference>
+    <Reference Include="Diffing_oM">
+      <HintPath>..\..\..\..\..\..\..\ProgramData\BHoM\Assemblies\Diffing_oM.dll</HintPath>
+    </Reference>
     <Reference Include="Dimensional_oM">
       <HintPath>C:\ProgramData\BHoM\Assemblies\Dimensional_oM.dll</HintPath>
       <Private>False</Private>
@@ -64,15 +71,34 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Convert\ToRelation.cs" />
+    <Compile Include="Create\Graph\Graph.cs" />
     <Compile Include="Create\IElement2D\NewInternalElement2D.cs" />
+    <Compile Include="Modify\RemoveIsolatedEntities.cs" />
+    <Compile Include="Modify\Reverse.cs" />
     <Compile Include="Modify\SetElements0D.cs" />
     <Compile Include="Modify\SetGeometry.cs" />
     <Compile Include="Modify\SetInternalElements2D.cs" />
     <Compile Include="Modify\SetOutlineElements1D.cs" />
+    <Compile Include="Modify\UniqueEntities.cs" />
+    <Compile Include="Modify\UniqueNodeNames.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Query\Elements0D.cs" />
     <Compile Include="Query\ExternalPolycurve.cs" />
     <Compile Include="Query\Geometry.cs" />
+    <Compile Include="Query\Graph\Adjacency.cs" />
+    <Compile Include="Query\Graph\AllNodesSpatial.cs" />
+    <Compile Include="Query\Graph\AStarShortestPath.cs" />
+    <Compile Include="Query\Graph\ClosestINode.cs" />
+    <Compile Include="Query\Graph\DepthDictionary.cs" />
+    <Compile Include="Query\Graph\Destinations.cs" />
+    <Compile Include="Query\Graph\DijkstraShortestPath.cs" />
+    <Compile Include="Query\Graph\Entity.cs" />
+    <Compile Include="Query\Graph\IncomingNodes.cs" />
+    <Compile Include="Query\Graph\NotSinks.cs" />
+    <Compile Include="Query\Graph\Sinks.cs" />
+    <Compile Include="Query\Graph\SubGraphs.cs" />
+    <Compile Include="Query\Graph\UnusedNodes.cs" />
     <Compile Include="Query\InternalElements2D.cs" />
     <Compile Include="Query\IsAligned.cs" />
     <Compile Include="Query\IsHorizontal.cs" />
@@ -82,10 +108,7 @@
     <Compile Include="Query\IsVertical.cs" />
     <Compile Include="Query\OutlineElements1D.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Compute\" />
-    <Folder Include="Convert\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\BHoM_Engine\BHoM_Engine.csproj">
       <Project>{1ad45c88-dd54-48e5-951f-55edfeb70e35}</Project>
