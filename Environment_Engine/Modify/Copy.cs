@@ -44,7 +44,6 @@ namespace BH.Engine.Environment
             Panel aPanel = panel.GetShallowClone(true) as Panel;
             aPanel.ExternalEdges = new List<Edge>(panel.ExternalEdges);
             aPanel.Openings = new List<Opening>(panel.Openings);
-            aPanel.CustomData = new Dictionary<string, object>(panel.CustomData);
             aPanel.ConnectedSpaces = new List<string>(panel.ConnectedSpaces);
             aPanel.Construction = panel.Construction;
             aPanel.Type = panel.Type;

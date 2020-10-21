@@ -36,6 +36,7 @@ using BH.Engine.Geometry;
 
 using System.ComponentModel;
 using BH.oM.Reflection.Attributes;
+using BH.Engine.Base;
 
 namespace BH.Engine.Environment
 {
@@ -57,7 +58,8 @@ namespace BH.Engine.Environment
 
             for (int x = 0; x < levels.Count; x++)
             {
-                oM.Geometry.SettingOut.Level lvl = new oM.Geometry.SettingOut.Level { Elevation = Math.Round(levels[x].Elevation, decimals), Name = levels[x].Name, Fragments = levels[x].Fragments, CustomData = levels[x].CustomData };
+                oM.Geometry.SettingOut.Level lvl = levels[x].DeepClone();
+                lvl.Elevation = Math.Round(lvl.Elevation, decimals); 
                 roundedLevels.Add(lvl); //Round the levels
             }
 
@@ -124,7 +126,8 @@ namespace BH.Engine.Environment
 
             for (int x = 0; x < levels.Count; x++)
             {
-                oM.Geometry.SettingOut.Level lvl = new oM.Geometry.SettingOut.Level { Elevation = Math.Round(levels[x].Elevation, decimals), Name = levels[x].Name, Fragments = levels[x].Fragments, CustomData = levels[x].CustomData };
+                oM.Geometry.SettingOut.Level lvl = levels[x].DeepClone();
+                lvl.Elevation = Math.Round(lvl.Elevation, decimals);
                 roundedLevels.Add(lvl); //Round the levels
             }
 
