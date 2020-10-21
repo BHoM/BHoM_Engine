@@ -23,14 +23,13 @@
 using BH.oM.Geometry;
 using BH.oM.Structure.Elements;
 using BH.oM.Structure.SectionProperties;
-using BH.oM.Geometry.ShapeProfiles;
+using BH.oM.Spatial.ShapeProfiles;
 using System.Collections.Generic;
 using System.Linq;
 using System;
 using BH.oM.Reflection.Attributes;
 using BH.Engine.Geometry;
 
-using BH.oM.Reflection.Attributes;
 using BH.oM.Quantities.Attributes;
 using System.ComponentModel;
 

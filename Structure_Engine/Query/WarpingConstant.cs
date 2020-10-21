@@ -21,7 +21,7 @@
  */
 
 using System;
-using BH.oM.Geometry.ShapeProfiles;
+using BH.oM.Spatial.ShapeProfiles;
 
 using BH.oM.Reflection.Attributes;
 using BH.oM.Quantities.Attributes;

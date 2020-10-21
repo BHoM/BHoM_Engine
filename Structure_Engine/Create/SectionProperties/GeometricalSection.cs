@@ -27,7 +27,7 @@ using System.ComponentModel;
 using BH.oM.Reflection;
 using BH.oM.Reflection.Attributes;
 using BH.oM.Structure.SectionProperties;
-using BH.oM.Geometry.ShapeProfiles;
+using BH.oM.Spatial.ShapeProfiles;
 using BH.oM.Structure.MaterialFragments;
 using BH.oM.Geometry;
 

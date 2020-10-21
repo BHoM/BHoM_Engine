@@ -25,7 +25,7 @@ using System.Linq;
 using System.Collections.Generic;
 using BH.oM.Geometry;
 using BH.Engine.Geometry;
-using BH.oM.Geometry.ShapeProfiles;
+using BH.oM.Spatial.ShapeProfiles;
 using BH.oM.Reflection;
 using BH.Engine.Base;
 using BH.oM.Reflection.Attributes;

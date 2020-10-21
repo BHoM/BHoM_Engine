@@ -171,7 +171,6 @@
     <Compile Include="Create\Offsets\Offset.cs" />
     <Compile Include="Create\SectionProperties\Reinforcement.cs" />
     <Compile Include="Create\SurfaceProperties\ConstantThickness.cs" />
-    <Compile Include="Create\SectionProperties\SectionProfile.cs" />
     <Compile Include="Create\SurfaceProperties\Waffle.cs" />
     <Compile Include="Create\SurfaceProperties\Ribbed.cs" />
     <Compile Include="Create\Constraints\BarRelease.cs" />

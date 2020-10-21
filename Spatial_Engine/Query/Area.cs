@@ -23,7 +23,7 @@
 using BH.Engine.Geometry;
 using BH.oM.Dimensional;
 using BH.oM.Geometry;
-using BH.oM.Geometry.ShapeProfiles;
+using BH.oM.Spatial.ShapeProfiles;
 using BH.oM.Quantities.Attributes;
 using BH.oM.Reflection.Attributes;
 using System;
@@ -71,12 +71,12 @@ namespace BH.Engine.Spatial
         [Output("area", "The area of the region confined by the IElement2Ds outline elements subtracting the area of the internal elements", typeof(Area))]
         public static double Area(this IElement2D element2D)
         {
-            double result = element2D.OutlineCurve().IArea();
+            double result = BH.Engine.Geometry.Query.Area(element2D.OutlineCurve());
 
             List<PolyCurve> openings = element2D.InternalOutlineCurves().BooleanUnion();
 
             foreach (PolyCurve o in openings)
-                result -= o.Area();
+                result -= BH.Engine.Geometry.Query.Area(o);
 
             return result;
         }

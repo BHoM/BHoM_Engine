@@ -106,8 +106,6 @@
     <Compile Include="Create\SettingOut\Grid.cs" />
     <Compile Include="Create\SettingOut\Level.cs" />
     <Compile Include="Create\PlanarSurface.cs" />
-    <Compile Include="Create\ShapeProfileCurves.cs" />
-    <Compile Include="Create\ShapeProfile.cs" />
     <Compile Include="Create\Sphere.cs" />
     <Compile Include="Create\Surface.cs" />
     <Compile Include="Create\Curve.cs" />
@@ -144,11 +142,16 @@
     <Compile Include="Modify\Reverse.cs" />
     <Compile Include="Modify\Scale.cs" />
     <Compile Include="Modify\SplitAtPoints.cs" />
+    <Compile Include="Query\DerivativeFunction.cs" />
+    <Compile Include="Query\BasisFunction.cs" />
     <Compile Include="Query\Cells.cs" />
     <Compile Include="Query\Centroid.cs" />
     <Compile Include="Query\ClosestPoints.cs" />
+    <Compile Include="Query\PrincipalCurvatureAtParameter.cs" />
     <Compile Include="Query\CurveIntersections.cs" />
     <Compile Include="Compute\CurveProximity.cs" />
+    <Compile Include="Query\CurvatureAtParameter.cs" />
+    <Compile Include="Query\DerivativeAtParameter.cs" />
     <Compile Include="Query\ExternalFaceMesh.cs" />
     <Compile Include="Query\Geometry.cs" />
     <Compile Include="Query\GetLineSegment.cs" />
@@ -213,6 +216,7 @@
     <Compile Include="Query\StartDir.cs" />
     <Compile Include="Query\StartPoint.cs" />
     <Compile Include="Query\TangentAtLength.cs" />
+    <Compile Include="Query\PlaneAtParameter.cs" />
     <Compile Include="Query\TangentAtParameter.cs" />
     <Compile Include="Query\TangentAtPoint.cs" />
     <Compile Include="Query\Vertices.cs" />

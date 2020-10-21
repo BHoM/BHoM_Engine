@@ -24,7 +24,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using BH.oM.Structure.SectionProperties;
-using BH.oM.Geometry.ShapeProfiles;
+using BH.oM.Spatial.ShapeProfiles;
 using BH.oM.Structure.SectionProperties.Reinforcement;
 using BH.oM.Geometry;
 using BH.oM.Reflection;
@@ -54,7 +54,7 @@ namespace BH.Engine.Structure
         [Output("section", "The created concrete T-section.")]
         public static ConcreteSection ConcreteTSection(double height, double webThickness, double flangeWidth, double flangeThickness, Concrete material = null, string name = "", List<IBarReinforcement> reinforcement = null, double minimumCover = 0)
         {
-            return ConcreteSectionFromProfile(Geometry.Create.TSectionProfile(height, flangeWidth, webThickness, flangeThickness, 0, 0), material, name, reinforcement, minimumCover);
+            return ConcreteSectionFromProfile(Spatial.Create.TSectionProfile(height, flangeWidth, webThickness, flangeThickness, 0, 0), material, name, reinforcement, minimumCover);
         }
 
 

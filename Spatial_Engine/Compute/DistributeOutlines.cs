@@ -47,7 +47,7 @@ namespace BH.Engine.Spatial
             
             outlineCurves.Sort(delegate (Tuple<PolyCurve, List<IElement1D>> t1, Tuple<PolyCurve, List<IElement1D>> t2)
             {
-                return t1.Item1.Area().CompareTo(t2.Item1.Area());
+                return Geometry.Query.Area(t1.Item1).CompareTo(Geometry.Query.Area(t2.Item1));
             });
             outlineCurves.Reverse();
 
@@ -94,7 +94,7 @@ namespace BH.Engine.Spatial
             {
                 for (int i = 0; i < result.Count; i++)
                 {
-                    if (result[i][0].Item1.IsContaining(opening.Item1, true, tolerance) && result[i][0].Item1.Area() - opening.Item1.Area() > sqTolerance)
+                    if (result[i][0].Item1.IsContaining(opening.Item1, true, tolerance) && Geometry.Query.Area(result[i][0].Item1) - Geometry.Query.Area(opening.Item1) > sqTolerance)
                     {
                         result[i].Add(opening);
                         break;

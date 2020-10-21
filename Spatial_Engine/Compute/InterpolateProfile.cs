@@ -23,7 +23,7 @@
 using System;
 using System.Collections.Generic;
 using BH.oM.Geometry;
-using BH.oM.Geometry.ShapeProfiles;
+using BH.oM.Spatial.ShapeProfiles;
 using System.ComponentModel;
 using BH.oM.Reflection.Attributes;
 
@@ -38,7 +38,7 @@ namespace BH.Engine.Spatial
         public static AngleProfile InterpolateProfile(AngleProfile startProfile, AngleProfile endProfile, double parameter, int interpolationOrder,
             double domainStart = 0, double domainEnd = 1)
         {
-            return Geometry.Create.AngleProfile(
+            return Create.AngleProfile(
                 Interpolate(startProfile.Height, endProfile.Height, parameter, interpolationOrder, domainStart, domainEnd),
                 Interpolate(startProfile.Width, endProfile.Width, parameter, interpolationOrder, domainStart, domainEnd),
                 Interpolate(startProfile.WebThickness, endProfile.WebThickness, parameter, interpolationOrder, domainStart, domainEnd),
@@ -53,7 +53,7 @@ namespace BH.Engine.Spatial
         public static BoxProfile InterpolateProfile(BoxProfile startProfile, BoxProfile endProfile, double parameter, int interpolationOrder,
             double domainStart = 0, double domainEnd = 1)
         {
-            return Geometry.Create.BoxProfile(
+            return Create.BoxProfile(
                 Interpolate(startProfile.Height, endProfile.Height, parameter, interpolationOrder, domainStart, domainEnd),
                 Interpolate(startProfile.Width, endProfile.Width, parameter, interpolationOrder, domainStart, domainEnd),
                 Interpolate(startProfile.Thickness, endProfile.Thickness, parameter, interpolationOrder, domainStart, domainEnd),
@@ -66,7 +66,7 @@ namespace BH.Engine.Spatial
         public static ChannelProfile InterpolateProfile(ChannelProfile startProfile, ChannelProfile endProfile, double parameter, int interpolationOrder,
             double domainStart = 0, double domainEnd = 1)
         {
-            return Geometry.Create.ChannelProfile(
+            return Create.ChannelProfile(
                 Interpolate(startProfile.Height, endProfile.Height, parameter, interpolationOrder, domainStart, domainEnd),
                 Interpolate(startProfile.FlangeWidth, endProfile.FlangeWidth, parameter, interpolationOrder, domainStart, domainEnd),
                 Interpolate(startProfile.WebThickness, endProfile.WebThickness, parameter, interpolationOrder, domainStart, domainEnd),
@@ -81,7 +81,7 @@ namespace BH.Engine.Spatial
         public static CircleProfile InterpolateProfile(CircleProfile startProfile, CircleProfile endProfile, double parameter, int interpolationOrder,
             double domainStart = 0, double domainEnd = 1)
         {
-            return Geometry.Create.CircleProfile(Interpolate(startProfile.Diameter, endProfile.Diameter, parameter, interpolationOrder, domainStart, domainEnd));
+            return Create.CircleProfile(Interpolate(startProfile.Diameter, endProfile.Diameter, parameter, interpolationOrder, domainStart, domainEnd));
         }
 
         /***************************************************/
@@ -89,7 +89,7 @@ namespace BH.Engine.Spatial
         public static FabricatedBoxProfile InterpolateProfile(FabricatedBoxProfile startProfile, FabricatedBoxProfile endProfile, double parameter, int interpolationOrder,
             double domainStart = 0, double domainEnd = 1)
         {
-            return Geometry.Create.FabricatedBoxProfile(
+            return Create.FabricatedBoxProfile(
                 Interpolate(startProfile.Height, endProfile.Height, parameter, interpolationOrder, domainStart, domainEnd),
                 Interpolate(startProfile.Width, endProfile.Width, parameter, interpolationOrder, domainStart, domainEnd),
                 Interpolate(startProfile.WebThickness, endProfile.WebThickness, parameter, interpolationOrder, domainStart, domainEnd),
@@ -103,7 +103,7 @@ namespace BH.Engine.Spatial
         public static FabricatedISectionProfile InterpolateProfile(FabricatedISectionProfile startProfile, FabricatedISectionProfile endProfile, double parameter, int interpolationOrder,
             double domainStart = 0, double domainEnd = 1)
         {
-            return Geometry.Create.FabricatedISectionProfile(
+            return Create.FabricatedISectionProfile(
                 Interpolate(startProfile.Height, endProfile.Height, parameter, interpolationOrder, domainStart, domainEnd),
                 Interpolate(startProfile.TopFlangeWidth, endProfile.TopFlangeWidth, parameter, interpolationOrder, domainStart, domainEnd),
                 Interpolate(startProfile.BotFlangeWidth, endProfile.BotFlangeWidth, parameter, interpolationOrder, domainStart, domainEnd),
@@ -118,7 +118,7 @@ namespace BH.Engine.Spatial
         public static GeneralisedFabricatedBoxProfile InterpolateProfile(GeneralisedFabricatedBoxProfile startProfile, GeneralisedFabricatedBoxProfile endProfile,
             double parameter, int interpolationOrder, double domainStart = 0, double domainEnd = 1)
         {
-            return Geometry.Create.GeneralisedFabricatedBoxProfile(
+            return Create.GeneralisedFabricatedBoxProfile(
                 Interpolate(startProfile.Height, endProfile.Height, parameter, interpolationOrder, domainStart, domainEnd),
                 Interpolate(startProfile.Width, endProfile.Width, parameter, interpolationOrder, domainStart, domainEnd),
                 Interpolate(startProfile.WebThickness, endProfile.WebThickness, parameter, interpolationOrder, domainStart, domainEnd),
@@ -133,7 +133,7 @@ namespace BH.Engine.Spatial
         public static GeneralisedTSectionProfile InterpolateProfile(GeneralisedTSectionProfile startProfile, GeneralisedTSectionProfile endProfile, double parameter, int interpolationOrder,
             double domainStart = 0, double domainEnd = 1)
         {
-            return Geometry.Create.GeneralisedTSectionProfile(
+            return Create.GeneralisedTSectionProfile(
                 Interpolate(startProfile.Height, endProfile.Height, parameter, interpolationOrder, domainStart, domainEnd),
                 Interpolate(startProfile.WebThickness, endProfile.WebThickness, parameter, interpolationOrder, domainStart, domainEnd),
                 Interpolate(startProfile.LeftOutstandWidth, endProfile.LeftOutstandWidth, parameter, interpolationOrder, domainStart, domainEnd),
@@ -147,7 +147,7 @@ namespace BH.Engine.Spatial
         public static ISectionProfile InterpolateProfile(ISectionProfile startProfile, ISectionProfile endProfile, double parameter, int interpolationOrder,
             double domainStart = 0, double domainEnd = 1)
         {
-            return Geometry.Create.ISectionProfile(
+            return Create.ISectionProfile(
                 Interpolate(startProfile.Height, endProfile.Height, parameter, interpolationOrder, domainStart, domainEnd),
                 Interpolate(startProfile.Width, endProfile.Width, parameter, interpolationOrder, domainStart, domainEnd),
                 Interpolate(startProfile.WebThickness, endProfile.WebThickness, parameter, interpolationOrder, domainStart, domainEnd),
@@ -161,7 +161,7 @@ namespace BH.Engine.Spatial
         public static KiteProfile InterpolateProfile(KiteProfile startProfile, KiteProfile endProfile, double parameter, int interpolationOrder,
             double domainStart = 0, double domainEnd = 1)
         {
-            return Geometry.Create.KiteProfile(
+            return Create.KiteProfile(
                 Interpolate(startProfile.Width1, endProfile.Width1, parameter, interpolationOrder, domainStart, domainEnd),
                 Interpolate(startProfile.Angle1, endProfile.Angle1, parameter, interpolationOrder, domainStart, domainEnd),
                 Interpolate(startProfile.Thickness, endProfile.Thickness, parameter, interpolationOrder, domainStart, domainEnd));
@@ -172,7 +172,7 @@ namespace BH.Engine.Spatial
         public static RectangleProfile InterpolateProfile(RectangleProfile startProfile, RectangleProfile endProfile, double parameter, int interpolationOrder,
             double domainStart = 0, double domainEnd = 1)
         {
-            return Geometry.Create.RectangleProfile(
+            return Create.RectangleProfile(
                 Interpolate(startProfile.Height, endProfile.Height, parameter, interpolationOrder, domainStart, domainEnd),
                 Interpolate(startProfile.Width, endProfile.Width, parameter, interpolationOrder, domainStart, domainEnd),
                 Interpolate(startProfile.CornerRadius, endProfile.CornerRadius, parameter, interpolationOrder, domainStart, domainEnd));
@@ -184,7 +184,7 @@ namespace BH.Engine.Spatial
         public static TSectionProfile InterpolateProfile(TSectionProfile startProfile, TSectionProfile endProfile, double parameter, int interpolationOrder,
             double domainStart = 0, double domainEnd = 1)
         {
-            return Geometry.Create.TSectionProfile(
+            return Create.TSectionProfile(
                 Interpolate(startProfile.Height, endProfile.Height, parameter, interpolationOrder, domainStart, domainEnd),
                 Interpolate(startProfile.Width, endProfile.Width, parameter, interpolationOrder, domainStart, domainEnd),
                 Interpolate(startProfile.WebThickness, endProfile.WebThickness, parameter, interpolationOrder, domainStart, domainEnd),
@@ -199,7 +199,7 @@ namespace BH.Engine.Spatial
         public static TubeProfile InterpolateProfile(TubeProfile startProfile, TubeProfile endProfile, double parameter, int interpolationOrder,
             double domainStart = 0, double domainEnd = 1)
         {
-            return Geometry.Create.TubeProfile(
+            return Create.TubeProfile(
                 Interpolate(startProfile.Diameter, endProfile.Diameter, parameter, interpolationOrder, domainStart, domainEnd),
                 Interpolate(startProfile.Thickness, endProfile.Thickness, parameter, interpolationOrder, domainStart, domainEnd));
         }
@@ -209,7 +209,7 @@ namespace BH.Engine.Spatial
         public static ZSectionProfile InterpolateProfile(ZSectionProfile startProfile, ZSectionProfile endProfile, double parameter, int interpolationOrder,
             double domainStart = 0, double domainEnd = 1)
         {
-            return Geometry.Create.ZSectionProfile(
+            return Create.ZSectionProfile(
                 Interpolate(startProfile.Height, endProfile.Height, parameter, interpolationOrder, domainStart, domainEnd),
                 Interpolate(startProfile.FlangeWidth, endProfile.FlangeWidth, parameter, interpolationOrder, domainStart, domainEnd),
                 Interpolate(startProfile.WebThickness, endProfile.WebThickness, parameter, interpolationOrder, domainStart, domainEnd),
