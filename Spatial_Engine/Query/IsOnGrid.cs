@@ -92,7 +92,7 @@ namespace BH.Engine.Spatial
         [Input("grid", "The Grid to use for evaulation.")]
         [Input("maxDistance", "The maximum distance allowed from the Grid for this method to return true.", typeof(Length))]
         [Output("isOnGrid", "A boolean which is true if the geometrical representation of the IElement is within a set distance from the grid line.")]
-        public static bool IsOnGrid(this IElement element, Grid grid, double maxDistance)
+        public static bool IIsOnGrid(this IElement element, Grid grid, double maxDistance)
         {
             return IsOnGrid(element as dynamic, grid, maxDistance);
         }
