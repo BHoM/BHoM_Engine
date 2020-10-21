@@ -60,7 +60,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Compute\Hash.cs" />
+    <Compile Include="Query\Hash.cs" />
     <Compile Include="Create\BHoMGroup.cs" />
     <Compile Include="Create\IObject\RandomObject.cs" />
     <Compile Include="Create\CustomObject.cs" />
@@ -80,7 +80,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Compute\ExecutionSpeed.cs" />
     <Compile Include="Query\GroupByType.cs" />
-    <Compile Include="Query\Hash.cs" />
     <Compile Include="Query\ObjectsByType.cs" />
     <Compile Include="Query\ShallowClone.cs" />
     <Compile Include="Query\TryGetValue.cs" />
