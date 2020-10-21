@@ -135,6 +135,7 @@
     <Compile Include="Query\Absorptance.cs" />
     <Compile Include="Query\BottomLeft.cs" />
     <Compile Include="Query\BottomRight.cs" />
+    <Compile Include="Query\GroupingPanels.cs" />
     <Compile Include="Query\ClosedSpaces.cs" />
     <Compile Include="Query\ConnectedSpaceName.cs" />
     <Compile Include="Query\FilterByAdjacencies.cs" />
