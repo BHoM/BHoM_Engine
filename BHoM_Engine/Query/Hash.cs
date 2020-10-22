@@ -52,7 +52,8 @@ namespace BH.Engine.Base
 
         /***************************************************/
 
-        [Description("Computes a Hash code for the iObject. The hash uniquely identifies the iObject based on its properties and their values.")]
+        [Description("Computes a Hash code for the iObject with exceptions and custom options.\n"
+            + "The hash uniquely identifies the iObject based on the included properties and their values.")]
         [Input("iObj", "iObject the hash code should be calculated for.")]
         [Input("propertyNameExceptions", "(Optional) e.g. `Fragments`. If you want to exclude a property that many objects have.")]
         [Input("propertyFullNameExceptions", "(Optional) e.g. `BH.oM.Structure.Elements.Bar.Fragments`. If you want to exclude a specific property of an object.")]
