@@ -43,7 +43,7 @@ namespace BH.Engine.Base
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Computes a Hash code for the iObject. The hash uniquely identifies the iObject based on its properties and their values.")]
+        [Description("Computes a Hash code for the iObject. The hash uniquely represents an object's state based on its combined properties and their values.")]
         [Input("iObj", "iObject the hash code should be calculated for.")]
         public static string Hash(this IObject iObj)
         {
@@ -196,4 +196,3 @@ namespace BH.Engine.Base
         /***************************************************/
     }
 }
-
