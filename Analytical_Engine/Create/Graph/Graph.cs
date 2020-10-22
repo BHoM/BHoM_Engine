@@ -230,7 +230,8 @@ namespace BH.Engine.Analytical
             if (linkDirection == RelationDirection.Both)
             {
                 relations.Add(relation);
-                relations.Add(relation.Reverse());
+                IRelation clone = relation.DeepClone();
+                relations.Add(clone.Reverse());
             }
             return relations;
         }
