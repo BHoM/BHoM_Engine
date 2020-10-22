@@ -47,7 +47,7 @@ namespace BH.Engine.Base
         [Input("iObj", "iObject the hash code should be calculated for.")]
         public static string Hash(this IObject iObj)
         {
-            return Hash(iObj, null);
+            return Hash(iObj, null, null, null, null, 100);
         }
 
         /***************************************************/
@@ -67,8 +67,10 @@ namespace BH.Engine.Base
             List<Type> typeExceptions = null, //e.g. `typeof(Guid)`
             int maxNesting = 100)
         {
-            // If null, add "BHoM_Guid" to the propertyNameExceptions.
-            propertyNameExceptions = propertyNameExceptions ?? new List<string>() { nameof(BHoMObject.BHoM_Guid) };
+            // Make sure that "BHoM_Guid" is added to the propertyNameExceptions.
+            propertyNameExceptions = propertyNameExceptions ?? new List<string>();
+            if (!propertyNameExceptions.Contains(nameof(BHoMObject.BHoM_Guid)))
+                propertyNameExceptions.Add(nameof(BHoMObject.BHoM_Guid));
 
             string hashString = DefiningString(iObj, 0, maxNesting, propertyNameExceptions, propertyFullNameExceptions, namespaceExceptions, typeExceptions);
 
