@@ -138,7 +138,6 @@
     <Compile Include="Query\Absorptance.cs" />
     <Compile Include="Query\BottomLeft.cs" />
     <Compile Include="Query\BottomRight.cs" />
-    <Compile Include="Query\GroupingPanels.cs" />
     <Compile Include="Query\ClosedSpaces.cs" />
     <Compile Include="Query\ConnectedSpaceName.cs" />
     <Compile Include="Query\FilterByAdjacencies.cs" />
@@ -148,6 +147,7 @@
     <Compile Include="Query\FloorHeights.cs" />
     <Compile Include="Query\FrameFactor.cs" />
     <Compile Include="Query\Geometry.cs" />
+    <Compile Include="Query\Group.cs" />
     <Compile Include="Query\HasMergeablePropertiesWith.cs" />
     <Compile Include="Query\IsLeft.cs" />
     <Compile Include="Query\MaterialComposition.cs" />
